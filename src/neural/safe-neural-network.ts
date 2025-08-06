@@ -18,7 +18,7 @@ import {
   type WasmError,
   type WasmResult,
   type WasmSuccess,
-} from '../../utils/type-guards';
+} from '../utils/type-guards';
 
 export interface NeuralNetworkConfig {
   layers: number[];

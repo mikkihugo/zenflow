@@ -18,7 +18,7 @@ import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
 } from '../../database/entities/product-entities';
-import { DocumentService } from '../../database/services/document-service';
+import { DocumentManager } from '../../database/managers/document-manager';
 import { DatabaseCoordinator } from '../../database/core/database-coordinator';
 
 describe('Product Flow + SPARC Integration', () => {

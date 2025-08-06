@@ -6,7 +6,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
+import type { ICoordinationDao } from '../../../database';
+import { DALFactory } from '../../../database';
 import { ZenSwarm } from './base-swarm';
 import { type SessionConfig, SessionManager, type SessionState } from './session-manager';
 import { SessionRecovery, SessionValidator } from './session-utils';
@@ -23,12 +24,20 @@ export class SessionEnabledSwarm extends ZenSwarm {
   constructor(
     options: SwarmOptions = {},
     sessionConfig: SessionConfig = {},
-    persistence?: SwarmPersistencePooled
+    persistence?: ICoordinationDao
   ) {
     super(options);
 
-    // Initialize session manager with existing or new persistence layer
-    const persistenceLayer = persistence || new SwarmPersistencePooled();
+    // Initialize session manager with existing or new persistence DAO
+    let persistenceLayer: ICoordinationDao;
+    if (persistence) {
+      persistenceLayer = persistence;
+    } else {
+      // Create a lazy promise for DAO initialization
+      const factory = new DALFactory();
+      const coordinationRepo = await factory.createCoordinationRepository('session');
+      persistenceLayer = coordinationRepo as any; // Type bridge
+    }
     this.sessionManager = new SessionManager(persistenceLayer, sessionConfig);
 
     // Set up event forwarding
@@ -568,7 +577,7 @@ export class SessionRecoveryService extends EventEmitter {
 export function createSessionEnabledSwarm(
   swarmOptions?: SwarmOptions,
   sessionConfig?: SessionConfig,
-  persistence?: SwarmPersistencePooled
+  persistence?: ICoordinationDao
 ): SessionEnabledSwarm {
   return new SessionEnabledSwarm(swarmOptions, sessionConfig, persistence);
 }

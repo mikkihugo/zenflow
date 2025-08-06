@@ -50,25 +50,45 @@ import { injectable, inject } from '../../di/decorators/injectable';
 import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 
 /**
- * Configuration for event manager creation
+ * Configuration for event manager creation through factories
+ * 
+ * Provides comprehensive options for customizing event manager creation,
+ * including type selection, configuration overrides, and reuse policies.
+ * 
+ * @interface EventManagerFactoryConfig
+ * @example
+ * ```typescript
+ * const factoryConfig: EventManagerFactoryConfig = {
+ *   managerType: EventManagerTypes.COORDINATION,
+ *   name: 'swarm-coordinator',
+ *   config: {
+ *     maxListeners: 500,
+ *     processing: { strategy: 'queued', queueSize: 10000 }
+ *   },
+ *   reuseExisting: false,
+ *   preset: 'HIGH_THROUGHPUT'
+ * };
+ * 
+ * const manager = await factory.createEventManager(factoryConfig);
+ * ```
  */
 export interface EventManagerFactoryConfig {
-  /** Event manager type to create */
+  /** Type of event manager to create (system, coordination, etc.) */
   managerType: EventManagerType;
   
-  /** Event manager name/identifier */
+  /** Unique name/identifier for the event manager */
   name: string;
   
-  /** Event manager specific configuration */
+  /** Optional configuration overrides for the event manager */
   config?: Partial<EventManagerConfig>;
   
-  /** Use existing event manager instance if available */
+  /** Whether to reuse an existing manager instance if available */
   reuseExisting?: boolean;
   
-  /** Custom event manager implementation */
+  /** Custom event manager implementation class to use */
   customImplementation?: new (...args: any[]) => IEventManager;
   
-  /** Preset configuration to apply */
+  /** Preset configuration to apply (REAL_TIME, BATCH_PROCESSING, etc.) */
   preset?: keyof typeof EventManagerPresets;
 }
 
@@ -120,11 +140,55 @@ export interface EventManagerTransaction {
 }
 
 /**
- * Specialized event manager interfaces
+ * Specialized system event manager interface for system lifecycle events
+ * 
+ * Extends the base event manager with system-specific methods for handling
+ * application lifecycle, startup, shutdown, and health monitoring events.
+ * 
+ * @interface ISystemEventManager
+ * @extends IEventManager
+ * @example
+ * ```typescript
+ * const systemManager = await factory.createSystemEventManager('app-system');
+ * 
+ * // Emit system lifecycle event
+ * await systemManager.emitSystemEvent({
+ *   id: 'startup-001',
+ *   timestamp: new Date(),
+ *   source: 'application',
+ *   type: 'system:startup',
+ *   operation: 'initialize',
+ *   status: 'success'
+ * });
+ * 
+ * // Subscribe to system events
+ * const subId = systemManager.subscribeSystemEvents((event) => {
+ *   console.log(`System event: ${event.operation} - ${event.status}`);
+ * });
+ * 
+ * // Check system health
+ * const health = await systemManager.getSystemHealth();
+ * ```
  */
 export interface ISystemEventManager extends IEventManager {
+  /** 
+   * Emit a system lifecycle event
+   * @param event - System lifecycle event to emit
+   * @throws {EventEmissionError} If emission fails
+   */
   emitSystemEvent(event: SystemLifecycleEvent): Promise<void>;
+  
+  /** 
+   * Subscribe to system lifecycle events
+   * @param listener - Function to handle system events
+   * @returns Subscription ID for unsubscribing
+   */
   subscribeSystemEvents(listener: (event: SystemLifecycleEvent) => void): string;
+  
+  /** 
+   * Get overall system health status
+   * @returns Promise resolving to health summary with any issues
+   */
   getSystemHealth(): Promise<{ healthy: boolean; issues: string[] }>;
 }
 
@@ -190,6 +254,30 @@ export interface IWorkflowEventManager extends IEventManager {
 
 /**
  * Main factory class for creating UEL event manager instances
+ * 
+ * Provides centralized creation, caching, and management of event managers.
+ * Supports factory caching, transaction logging, and batch operations.
+ * 
+ * @class UELFactory
+ * @example
+ * ```typescript
+ * // Create factory instance
+ * const factory = new UELFactory(logger, config);
+ * 
+ * // Create different types of event managers
+ * const systemManager = await factory.createSystemEventManager('app-system');
+ * const coordManager = await factory.createCoordinationEventManager('swarm-coord');
+ * 
+ * // Execute transaction across multiple managers
+ * const transaction = await factory.executeTransaction([
+ *   { manager: 'app-system', operation: 'emit', data: systemEvent },
+ *   { manager: 'swarm-coord', operation: 'emit', data: coordEvent }
+ * ]);
+ * 
+ * // Get factory statistics
+ * const stats = factory.getStats();
+ * console.log(`Total managers: ${stats.totalManagers}`);
+ * ```
  */
 @injectable
 export class UELFactory {
@@ -206,7 +294,29 @@ export class UELFactory {
   }
 
   /**
-   * Create an event manager instance
+   * Create an event manager instance with full configuration support
+   * 
+   * Creates a new event manager using the appropriate factory, with support for
+   * caching, configuration merging, and automatic registration.
+   * 
+   * @template T - Event manager type
+   * @param factoryConfig - Configuration for manager creation
+   * @returns Promise resolving to the created event manager
+   * @throws {Error} If manager creation or validation fails
+   * 
+   * @example
+   * ```typescript
+   * const manager = await factory.createEventManager({
+   *   managerType: EventManagerTypes.SYSTEM,
+   *   name: 'critical-system',
+   *   config: {
+   *     maxListeners: 1000,
+   *     processing: { strategy: 'immediate' }
+   *   },
+   *   preset: 'REAL_TIME',
+   *   reuseExisting: false
+   * });
+   * ```
    */
   async createEventManager<T extends EventManagerType>(
     factoryConfig: EventManagerFactoryConfig & { managerType: T }
@@ -434,6 +544,37 @@ export class UELFactory {
 
   /**
    * Execute transaction across multiple event managers
+   * 
+   * Performs multiple operations across different event managers as a coordinated
+   * transaction with rollback support and detailed logging.
+   * 
+   * @param operations - Array of operations to execute across managers
+   * @returns Promise resolving to transaction result with operation details
+   * @throws {Error} If transaction setup fails
+   * 
+   * @example
+   * ```typescript
+   * const transaction = await factory.executeTransaction([
+   *   {
+   *     manager: 'system-manager',
+   *     operation: 'emit',
+   *     data: { 
+   *       event: systemEvent, 
+   *       options: { priority: 'high' } 
+   *     }
+   *   },
+   *   {
+   *     manager: 'coord-manager',
+   *     operation: 'subscribe',
+   *     data: { 
+   *       eventTypes: ['coordination:swarm'], 
+   *       listener: handleCoordEvent 
+   *     }
+   *   }
+   * ]);
+   * 
+   * console.log(`Transaction ${transaction.id}: ${transaction.status}`);
+   * ```
    */
   async executeTransaction(operations: Array<{
     manager: string;

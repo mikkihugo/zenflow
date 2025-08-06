@@ -24,7 +24,7 @@ import type {
   TaskDocumentEntity,
   VisionDocumentEntity,
 } from '../../database/entities/product-entities';
-import type { DocumentService } from '../../database/services/document-service';
+import type { DocumentManager } from '../../database/managers/document-manager';
 import type {
   CompletedStepInfo,
   StepExecutionResult,
@@ -128,7 +128,7 @@ export interface ProductWorkflowConfig extends WorkflowEngineConfig {
  */
 export class ProductWorkflowEngine extends EventEmitter {
   private memory: MemorySystem;
-  private documentService: DocumentService;
+  private documentService: DocumentManager;
   private sparcEngine: SPARCEngineCore;
   private activeWorkflows = new Map<string, ProductWorkflowState>();
   private workflowDefinitions = new Map<string, WorkflowDefinition>();
@@ -140,7 +140,7 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   constructor(
     memory: MemorySystem,
-    documentService: DocumentService,
+    documentService: DocumentManager,
     config: Partial<ProductWorkflowConfig> = {}
   ) {
     super();

@@ -41,7 +41,14 @@ export class CommandExecutionEngine {
   private static readonly SUPPORTED_COMMANDS = [
     'init',
     'status',
-    'swarm',
+    'query',
+    'agents', 
+    'tasks',
+    'knowledge',
+    'health',
+    'sync',
+    'contribute',
+    'swarm', // Hidden from help but runnable for hooks/MCP
     'mcp',
     'workspace',
     'discover',
@@ -88,6 +95,27 @@ export class CommandExecutionEngine {
           break;
         case 'status':
           result = await CommandExecutionEngine.handleStatusCommand(executionContext);
+          break;
+        case 'query':
+          result = await CommandExecutionEngine.handleHiveQuery(executionContext);
+          break;
+        case 'agents':
+          result = await CommandExecutionEngine.handleHiveAgents(executionContext);
+          break;
+        case 'tasks':
+          result = await CommandExecutionEngine.handleHiveTasks(executionContext);
+          break;
+        case 'knowledge':
+          result = await CommandExecutionEngine.handleHiveKnowledge(executionContext);
+          break;
+        case 'health':
+          result = await CommandExecutionEngine.handleHiveHealth(executionContext);
+          break;
+        case 'sync':
+          result = await CommandExecutionEngine.handleHiveSync(executionContext);
+          break;
+        case 'contribute':
+          result = await CommandExecutionEngine.handleHiveContribute(executionContext);
           break;
         case 'swarm':
           result = await CommandExecutionEngine.handleSwarmCommand(executionContext);
@@ -212,7 +240,7 @@ export class CommandExecutionEngine {
       },
       performance: {
         cpuUsage: process.cpuUsage(),
-        loadAverage: process.platform !== 'win32' ? require('node:os').loadavg() : [0, 0, 0],
+        loadAverage: process.platform !== 'win32' ? (await import('node:os')).loadavg() : [0, 0, 0],
       },
     };
 
@@ -229,6 +257,43 @@ export class CommandExecutionEngine {
       message: 'System status retrieved successfully',
       data: systemStatus,
     };
+  }
+
+  /**
+   * Handle hive command - high-level Hive coordination
+   */
+  private static async handleHiveCommand(context: ExecutionContext): Promise<CommandResult> {
+    const action = context.args[0];
+    if (!action) {
+      return {
+        success: false,
+        error: 'Hive action required. Available actions: status, query, agents, tasks, knowledge, sync, health, contribute',
+      };
+    }
+    logger.debug(`Executing hive action: ${action}`);
+    switch (action) {
+      case 'status':
+        return CommandExecutionEngine.handleHiveStatus(context);
+      case 'query':
+        return CommandExecutionEngine.handleHiveQuery(context);
+      case 'agents':
+        return CommandExecutionEngine.handleHiveAgents(context);
+      case 'tasks':
+        return CommandExecutionEngine.handleHiveTasks(context);
+      case 'knowledge':
+        return CommandExecutionEngine.handleHiveKnowledge(context);
+      case 'sync':
+        return CommandExecutionEngine.handleHiveSync(context);
+      case 'health':
+        return CommandExecutionEngine.handleHiveHealth(context);
+      case 'contribute':
+        return CommandExecutionEngine.handleHiveContribute(context);
+      default:
+        return {
+          success: false,
+          error: `Unknown hive action: ${action}. Available: status, query, agents, tasks, knowledge, sync, health, contribute`,
+        };
+    }
   }
 
   /**
@@ -691,11 +756,41 @@ export class CommandExecutionEngine {
           options: ['--json', '--verbose'],
         },
         {
-          name: 'swarm <action>',
-          description: 'Manage AI agent swarms and coordination',
-          actions: ['start', 'stop', 'list', 'status', 'create', 'init', 'spawn', 'monitor', 'metrics', 'orchestrate'],
-          options: ['--agents <count>', '--topology <type>', '--strategy <type>'],
+          name: 'query <term>',
+          description: 'Search knowledge base for information',
+          options: ['--domain <domain>', '--confidence <float>'],
         },
+        {
+          name: 'agents',
+          description: 'View global agent status across all systems',
+          options: ['--detailed'],
+        },
+        {
+          name: 'tasks [status]',
+          description: 'View task overview and management',
+          options: ['--status <type>', '--priority <level>'],
+        },
+        {
+          name: 'knowledge',
+          description: 'Knowledge base statistics and health',
+          options: ['--stats', '--health'],
+        },
+        {
+          name: 'health',
+          description: 'System health metrics and alerts',
+          options: ['--components', '--alerts'],
+        },
+        {
+          name: 'sync [sources]',
+          description: 'Synchronize with external systems',
+          options: ['--sources <list>', '--force'],
+        },
+        {
+          name: 'contribute',
+          description: 'Contribute knowledge to the system',
+          options: ['--type <type>', '--content <text>', '--confidence <float>'],
+        },
+        // swarm commands hidden from help but remain functional for hooks/MCP integration
         {
           name: 'mcp <action>',
           description: 'Model Context Protocol server operations',
@@ -1118,6 +1213,263 @@ export class CommandExecutionEngine {
       return {
         success: false,
         error: `Failed to orchestrate task: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * Handle hive status command
+   */
+  private static async handleHiveStatus(_context: ExecutionContext): Promise<CommandResult> {
+    try {
+      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_status', {});
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: 'Hive system status retrieved successfully',
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to get Hive status: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling hive_status MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to get Hive status: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * Handle hive query command
+   */
+  private static async handleHiveQuery(context: ExecutionContext): Promise<CommandResult> {
+    try {
+      const query = context.args[1] || '';
+      const domain = context.flags.domain || context.flags.d || 'all';
+      const confidence = parseFloat(context.flags.confidence || context.flags.c) || 0.7;
+      
+      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_query', {
+        query,
+        domain,
+        confidence,
+      });
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: `Hive knowledge query completed: "${query}"`,
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to query Hive knowledge: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling hive_query MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to query Hive: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * Handle hive agents command
+   */
+  private static async handleHiveAgents(_context: ExecutionContext): Promise<CommandResult> {
+    try {
+      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_agents', {});
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: 'Hive agent overview retrieved successfully',
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to get Hive agents: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling hive_agents MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to get Hive agents: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * Handle hive tasks command
+   */
+  private static async handleHiveTasks(context: ExecutionContext): Promise<CommandResult> {
+    try {
+      const status = context.flags.status || context.flags.s || 'all';
+      
+      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_tasks', {
+        status,
+      });
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: 'Hive task overview retrieved successfully',
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to get Hive tasks: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling hive_tasks MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to get Hive tasks: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * Handle hive knowledge command
+   */
+  private static async handleHiveKnowledge(_context: ExecutionContext): Promise<CommandResult> {
+    try {
+      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_knowledge', {});
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: 'Hive knowledge base overview retrieved successfully',
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to get Hive knowledge: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling hive_knowledge MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to get Hive knowledge: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * Handle hive sync command
+   */
+  private static async handleHiveSync(context: ExecutionContext): Promise<CommandResult> {
+    try {
+      const sources = context.args.slice(1);
+      
+      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_sync', {
+        sources: sources.length > 0 ? sources : ['all'],
+      });
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: 'Hive synchronization completed successfully',
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to sync Hive: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling hive_sync MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to sync Hive: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * Handle hive health command
+   */
+  private static async handleHiveHealth(_context: ExecutionContext): Promise<CommandResult> {
+    try {
+      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_health', {});
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: 'Hive health metrics retrieved successfully',
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to get Hive health: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling hive_health MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to get Hive health: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * Handle hive contribute command
+   */
+  private static async handleHiveContribute(context: ExecutionContext): Promise<CommandResult> {
+    try {
+      const subject = context.args[1] || '';
+      const type = context.flags.type || context.flags.t || 'general';
+      const content = context.flags.content || context.flags.c || '';
+      const confidence = parseFloat(context.flags.confidence) || 0.8;
+      
+      if (!subject || !content) {
+        return {
+          success: false,
+          error: 'Subject and content are required for Hive contributions. Use: hive contribute <subject> --content "<content>"',
+        };
+      }
+      
+      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_contribute', {
+        type,
+        subject,
+        content,
+        confidence,
+      });
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: `Knowledge contributed to Hive: "${subject}"`,
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to contribute to Hive: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling hive_contribute MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to contribute to Hive: ${error.message}`,
       };
     }
   }

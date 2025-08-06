@@ -3,84 +3,80 @@
  */
 
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
+import type { ICoordinationDao } from '../../../database';
 import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
 import { SessionManager, type SessionState } from './session-manager';
 import { SessionSerializer, SessionStats, SessionValidator } from './session-utils';
 import type { SwarmOptions, SwarmState } from './types';
 
-// Mock persistence layer
-class MockPersistence extends SwarmPersistencePooled {
+// Mock DAO implementation
+class MockCoordinationDao implements ICoordinationDao {
   private mockData: Map<string, any> = new Map();
   public initialized: boolean = false;
 
-  constructor() {
-    super(':memory:'); // Use in-memory SQLite for testing
+  async query(sql: string, _params?: any[]): Promise<any[]> {
+    if (sql.includes('sessions')) {
+      return Array.from(this.mockData.values()).filter((item: any) => item.type === 'session');
+    }
+    if (sql.includes('session_checkpoints')) {
+      return Array.from(this.mockData.values()).filter((item: any) => item.type === 'checkpoint');
+    }
+    return [];
   }
 
-  override async initialize() {
-    // Mock initialization
-    this.initialized = true;
+  async execute(sql: string, params?: any[]): Promise<{ lastInsertId?: number; affectedRows?: number }> {
+    if (sql.includes('INSERT INTO sessions')) {
+      const [
+        id,
+        name,
+        status,
+        swarmOptions,
+        swarmState,
+        metadata,
+        createdAt,
+        lastAccessedAt,
+        version,
+      ] = params || [];
+      this.mockData.set(id, {
+        type: 'session',
+        id,
+        name,
+        status,
+        swarm_options: swarmOptions,
+        swarm_state: swarmState,
+        metadata,
+        created_at: createdAt,
+        last_accessed_at: lastAccessedAt,
+        version,
+      });
+    }
+    if (sql.includes('INSERT INTO session_checkpoints')) {
+      const [id, sessionId, timestamp, checksum, stateData, description, metadata] = params || [];
+      this.mockData.set(id, {
+        type: 'checkpoint',
+        id,
+        session_id: sessionId,
+        timestamp,
+        checksum,
+        state_data: stateData,
+        description,
+        metadata,
+      });
+    }
+    return { affectedRows: 1, lastInsertId: 1 };
   }
 
-  // Mock pool with read/write methods
-  override pool = {
-    read: jest.fn(async (sql: string, _params?: any[]) => {
-      if (sql.includes('sessions')) {
-        return Array.from(this.mockData.values()).filter((item: any) => item.type === 'session');
-      }
-      if (sql.includes('session_checkpoints')) {
-        return Array.from(this.mockData.values()).filter((item: any) => item.type === 'checkpoint');
-      }
-      return [];
-    }),
+  setMockData(key: string, value: any) {
+    this.mockData.set(key, value);
+  }
 
-    write: jest.fn(async (sql: string, params?: any[]) => {
-      if (sql.includes('INSERT INTO sessions')) {
-        const [
-          id,
-          name,
-          status,
-          swarmOptions,
-          swarmState,
-          metadata,
-          createdAt,
-          lastAccessedAt,
-          version,
-        ] = params || [];
-        this.mockData.set(id, {
-          type: 'session',
-          id,
-          name,
-          status,
-          swarm_options: swarmOptions,
-          swarm_state: swarmState,
-          metadata,
-          created_at: createdAt,
-          last_accessed_at: lastAccessedAt,
-          version,
-        });
-      }
-      if (sql.includes('INSERT INTO session_checkpoints')) {
-        const [id, sessionId, timestamp, checksum, stateData, description, metadata] = params || [];
-        this.mockData.set(id, {
-          type: 'checkpoint',
-          id,
-          session_id: sessionId,
-          timestamp,
-          checksum,
-          state_data: stateData,
-          description,
-          metadata,
-        });
-      }
-      return { changes: 1, lastInsertRowid: 1 };
-    }),
-  };
+  clearMockData() {
+    this.mockData.clear();
+  }
 }
 
 describe('SessionManager', () => {
-  let persistence: MockPersistence;
+  let persistence: MockCoordinationDao;
   let sessionManager: SessionManager;
 
   const mockSwarmOptions: SwarmOptions = {
@@ -106,8 +102,8 @@ describe('SessionManager', () => {
   };
 
   beforeEach(async () => {
-    persistence = new MockPersistence();
-    await persistence.initialize();
+    persistence = new MockCoordinationDao();
+    persistence.initialized = true;
 
     sessionManager = new SessionManager(persistence, {
       autoCheckpoint: false, // Disable for testing
@@ -308,11 +304,11 @@ describe('SessionManager', () => {
 });
 
 describe('SessionEnabledSwarm', () => {
-  let persistence: MockPersistence;
+  let persistence: MockCoordinationDao;
   let swarm: SessionEnabledSwarm;
 
   beforeEach(async () => {
-    persistence = new MockPersistence();
+    persistence = new MockCoordinationDao();
     swarm = new SessionEnabledSwarm(
       {
         topology: 'mesh',
@@ -551,13 +547,13 @@ describe('SessionStats', () => {
 });
 
 describe('SessionRecoveryService', () => {
-  let persistence: MockPersistence;
+  let persistence: MockCoordinationDao;
   let sessionManager: SessionManager;
   let recoveryService: SessionRecoveryService;
 
   beforeEach(async () => {
-    persistence = new MockPersistence();
-    await persistence.initialize();
+    persistence = new MockCoordinationDao();
+    persistence.initialized = true;
 
     sessionManager = new SessionManager(persistence, {
       autoCheckpoint: false,
@@ -591,8 +587,8 @@ describe('SessionRecoveryService', () => {
 // Integration tests
 describe('Session Management Integration', () => {
   test('should handle complete session lifecycle', async () => {
-    const persistence = new MockPersistence();
-    await persistence.initialize();
+    const persistence = new MockCoordinationDao();
+    persistence.initialized = true;
 
     const swarm = new SessionEnabledSwarm(
       { topology: 'mesh', maxAgents: 10 },

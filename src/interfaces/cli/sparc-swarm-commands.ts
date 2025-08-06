@@ -15,7 +15,7 @@ import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
 } from '../../database/entities/product-entities';
-import { DocumentService } from '../../database/services/document-service-legacy';
+import { DocumentManager } from '../../database/managers/document-manager';
 
 const logger = createLogger('SPARCSwarmCLI');
 

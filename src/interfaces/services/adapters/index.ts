@@ -1,9 +1,47 @@
 /**
  * USL Service Adapters - Index and Registry Integration
  * 
- * Exports all service adapter components and integrates them with
+ * @fileoverview Exports all service adapter components and integrates them with
  * the global USL service registry. This provides a unified entry point
- * for all service adapter functionality.
+ * for all service adapter functionality including data adapters, coordination adapters,
+ * integration adapters, and infrastructure adapters.
+ * 
+ * @description Service adapters provide enhanced implementations of core services
+ * with specialized capabilities:
+ * - Data adapters: Web API integration, database operations, caching
+ * - Coordination adapters: Agent management, task orchestration, swarm coordination
+ * - Integration adapters: External system connectivity, protocol management
+ * - Infrastructure adapters: System monitoring, health checks, metrics collection
+ * 
+ * @example
+ * ```typescript
+ * import {
+ *   DataServiceAdapter,
+ *   createDataServiceAdapter,
+ *   IntegrationServiceAdapter,
+ *   createIntegrationServiceAdapter
+ * } from '@claude-zen/usl/adapters';
+ * 
+ * // Create a web-enabled data adapter
+ * const webDataAdapter = createDataServiceAdapter({
+ *   name: 'api-data',
+ *   web: {
+ *     enabled: true,
+ *     apiEndpoint: 'https://api.example.com',
+ *     authentication: { type: 'bearer', token: 'your-token' }
+ *   }
+ * });
+ * 
+ * // Create an integration adapter with safe API features
+ * const integrationAdapter = createIntegrationServiceAdapter({
+ *   name: 'external-api',
+ *   safeAPI: {
+ *     enabled: true,
+ *     baseURL: 'https://external.api.com',
+ *     validation: { enabled: true, strictMode: true }
+ *   }
+ * });
+ * ```
  */
 
 // Data service adapter exports
@@ -77,6 +115,22 @@ import { ServiceType } from '../types';
 
 /**
  * Register data service factory with global registry
+ * 
+ * @function registerDataServiceFactory
+ * @returns {void}
+ * @description Registers the specialized data service factory with the global USL registry
+ * for handling DATA, WEB_DATA, and DOCUMENT service types
+ * @example
+ * ```typescript
+ * // Manually register if needed (auto-registered by default)
+ * registerDataServiceFactory();
+ * 
+ * // Now data services can be created through the registry
+ * const dataService = await globalUSLFactory.create({
+ *   name: 'my-data',
+ *   type: ServiceType.DATA
+ * });
+ * ```
  */
 export function registerDataServiceFactory(): void {
   // Register the specialized data service factory for DATA, WEB_DATA, and DOCUMENT types
@@ -87,6 +141,22 @@ export function registerDataServiceFactory(): void {
 
 /**
  * Register coordination service factory with global registry
+ * 
+ * @function registerCoordinationServiceFactory
+ * @returns {void}
+ * @description Registers the specialized coordination service factory with the global USL registry
+ * for handling COORDINATION, DAA (Distributed Autonomous Agent), and SESSION_RECOVERY service types
+ * @example
+ * ```typescript
+ * // Coordination services support agent management and task orchestration
+ * registerCoordinationServiceFactory();
+ * 
+ * const coordService = await globalUSLFactory.create({
+ *   name: 'swarm-coordinator',
+ *   type: ServiceType.COORDINATION,
+ *   swarm: { topology: 'mesh', maxAgents: 10 }
+ * });
+ * ```
  */
 export function registerCoordinationServiceFactory(): void {
   // Register the specialized coordination service factory for COORDINATION, DAA, and SESSION_RECOVERY types
@@ -97,6 +167,26 @@ export function registerCoordinationServiceFactory(): void {
 
 /**
  * Register integration service factory with global registry
+ * 
+ * @function registerIntegrationServiceFactory
+ * @returns {void}
+ * @description Registers the specialized integration service factory with the global USL registry
+ * for handling API, SAFE_API, and ARCHITECTURE_STORAGE service types
+ * @example
+ * ```typescript
+ * // Integration services provide external system connectivity
+ * registerIntegrationServiceFactory();
+ * 
+ * const apiService = await globalUSLFactory.create({
+ *   name: 'external-api',
+ *   type: ServiceType.SAFE_API,
+ *   safeAPI: {
+ *     enabled: true,
+ *     baseURL: 'https://api.example.com',
+ *     validation: { enabled: true }
+ *   }
+ * });
+ * ```
  */
 export function registerIntegrationServiceFactory(): void {
   // Register the specialized integration service factory for API, SAFE_API, and ARCHITECTURE_STORAGE types
@@ -107,6 +197,26 @@ export function registerIntegrationServiceFactory(): void {
 
 /**
  * Register infrastructure service factory with global registry
+ * 
+ * @function registerInfrastructureServiceFactory
+ * @returns {void}
+ * @description Registers the specialized infrastructure service factory with the global USL registry
+ * for handling INFRASTRUCTURE, SYSTEM, and MONITORING service types
+ * @example
+ * ```typescript
+ * // Infrastructure services provide system monitoring and health checks
+ * registerInfrastructureServiceFactory();
+ * 
+ * const monitoringService = await globalUSLFactory.create({
+ *   name: 'system-monitor',
+ *   type: ServiceType.MONITORING,
+ *   monitoring: {
+ *     enabled: true,
+ *     metricsInterval: 30000,
+ *     trackLatency: true
+ *   }
+ * });
+ * ```
  */
 export function registerInfrastructureServiceFactory(): void {
   // Register the specialized infrastructure service factory for INFRASTRUCTURE, SYSTEM, and MONITORING types

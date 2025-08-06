@@ -14,6 +14,7 @@ import type {
   WasmModule,
   WasmOptimizer,
 } from '../interfaces/optimization-interfaces';
+import { createLogger } from '../../core/logger';
 
 export interface WasmOptimizationConfig {
   enableStreaming: boolean;
@@ -47,6 +48,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   private moduleCache: Map<string, WebAssembly.Module> = new Map();
   private instanceCache: Map<string, WebAssembly.Instance> = new Map();
   private capabilities: WasmCapabilities;
+  private logger = createLogger('WasmPerformanceOptimizer');
 
   constructor(config: Partial<WasmOptimizationConfig> = {}) {
     this.config = {

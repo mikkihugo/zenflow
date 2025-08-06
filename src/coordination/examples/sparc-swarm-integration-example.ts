@@ -12,7 +12,7 @@ import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
 } from '../../database/entities/product-entities';
-import { DocumentService } from '../../database/services/document-service';
+import { DocumentManager } from '../../database/managers/document-manager';
 import { DatabaseSPARCBridge } from '../database-sparc-bridge';
 import { SPARCSwarmCoordinator } from '../swarm/core/sparc-swarm-coordinator';
 import { TaskCoordinator } from '../task-coordinator';
@@ -37,7 +37,7 @@ export class SPARCSwarmIntegrationExample {
   constructor() {
     // Initialize core systems with required dependencies
     const mockCoordinator = {} as any; // Mock for database coordinator
-    const documentService = new DocumentService(mockCoordinator);
+    const documentService = new DocumentManager(mockCoordinator);
     const mockMemory = {} as any; // Mock for unified memory system
     const workflowEngine = new WorkflowEngine(mockMemory, documentService);
 

@@ -5,7 +5,7 @@
  * Provides database-driven SPARC operations instead of isolated system
  */
 
-import type { DocumentService } from '../../../database/services/document-service';
+import type { DocumentManager } from '../../../database/managers/document-manager';
 import type { MCPTool } from '../tool-registry';
 
 export function createSPARCIntegrationTools(documentService: DocumentService): MCPTool[] {

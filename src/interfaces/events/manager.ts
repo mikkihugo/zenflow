@@ -64,35 +64,62 @@ import { injectable, inject } from '../../di/decorators/injectable';
 import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 
 /**
- * Event manager creation options
+ * Configuration options for creating new event managers
+ * 
+ * @interface EventManagerCreationOptions
+ * @example
+ * ```typescript
+ * const options: EventManagerCreationOptions = {
+ *   type: EventManagerTypes.SYSTEM,
+ *   name: 'critical-system',
+ *   preset: 'REAL_TIME',
+ *   autoStart: true,
+ *   healthMonitoring: {
+ *     enabled: true,
+ *     interval: 30000,
+ *     timeout: 5000
+ *   },
+ *   recovery: {
+ *     autoRestart: true,
+ *     maxRestarts: 3,
+ *     backoffMultiplier: 2
+ *   }
+ * };
+ * ```
  */
 export interface EventManagerCreationOptions {
-  /** Manager type to create */
+  /** Type of event manager to create (system, coordination, etc.) */
   type: EventManagerType;
   
-  /** Manager name/identifier */
+  /** Unique name/identifier for the manager */
   name: string;
   
-  /** Configuration options */
+  /** Optional configuration overrides for the manager */
   config?: Partial<EventManagerConfig>;
   
-  /** Preset to apply */
+  /** Preset configuration to apply (REAL_TIME, BATCH_PROCESSING, etc.) */
   preset?: keyof typeof EventManagerPresets;
   
-  /** Auto-start the manager */
+  /** Whether to automatically start the manager after creation */
   autoStart?: boolean;
   
-  /** Health monitoring settings */
+  /** Health monitoring configuration */
   healthMonitoring?: {
+    /** Whether health monitoring is enabled */
     enabled: boolean;
+    /** Health check interval in milliseconds */
     interval: number;
+    /** Health check timeout in milliseconds */
     timeout: number;
   };
   
-  /** Recovery settings */
+  /** Automatic recovery settings */
   recovery?: {
+    /** Whether to automatically restart failed managers */
     autoRestart: boolean;
+    /** Maximum number of restart attempts */
     maxRestarts: number;
+    /** Multiplier for backoff delay between restarts */
     backoffMultiplier: number;
   };
 }
@@ -176,6 +203,28 @@ export interface ManagerStatistics {
 
 /**
  * Main event manager class for comprehensive UEL management
+ * 
+ * Provides centralized management of event managers, factories, and coordination.
+ * Handles lifecycle management, health monitoring, and recovery operations.
+ * 
+ * @class EventManager
+ * @example
+ * ```typescript
+ * // Create and initialize event manager
+ * const eventManager = new EventManager(logger, config);
+ * await eventManager.initialize({
+ *   healthMonitoring: true,
+ *   autoRegisterFactories: true
+ * });
+ * 
+ * // Create specialized event managers
+ * const systemManager = await eventManager.createSystemEventManager('core-system');
+ * const coordManager = await eventManager.createCoordinationEventManager('swarm-coord');
+ * 
+ * // Monitor system health
+ * const healthStatus = await eventManager.performHealthCheck();
+ * const metrics = await eventManager.getGlobalMetrics();
+ * ```
  */
 @injectable
 export class EventManager {
@@ -238,6 +287,27 @@ export class EventManager {
 
   /**
    * Initialize the event manager system
+   * 
+   * Sets up the registry, registers default factories, and starts health monitoring.
+   * 
+   * @param options - Initialization configuration options
+   * @param options.autoRegisterFactories - Whether to register default factories (default: true)
+   * @param options.healthMonitoring - Whether to enable health monitoring (default: true)
+   * @param options.coordination - Coordination settings overrides
+   * @param options.connection - Connection manager overrides
+   * @throws {Error} If initialization fails
+   * 
+   * @example
+   * ```typescript
+   * await eventManager.initialize({
+   *   autoRegisterFactories: true,
+   *   healthMonitoring: true,
+   *   coordination: {
+   *     crossManagerRouting: true,
+   *     eventDeduplication: true
+   *   }
+   * });
+   * ```
    */
   async initialize(options?: {
     autoRegisterFactories?: boolean;
@@ -279,6 +349,28 @@ export class EventManager {
 
   /**
    * Create and register a new event manager
+   * 
+   * Creates a new event manager instance using the appropriate factory,
+   * registers it with the system, and optionally starts it.
+   * 
+   * @template T - Event manager type
+   * @param options - Configuration options for manager creation
+   * @returns Promise resolving to the created event manager
+   * @throws {Error} If manager creation fails
+   * 
+   * @example
+   * ```typescript
+   * const manager = await eventManager.createEventManager({
+   *   type: EventManagerTypes.SYSTEM,
+   *   name: 'core-system',
+   *   preset: 'REAL_TIME',
+   *   autoStart: true,
+   *   config: {
+   *     maxListeners: 1000,
+   *     processing: { strategy: 'immediate' }
+   *   }
+   * });
+   * ```
    */
   async createEventManager<T extends EventManagerType>(
     options: EventManagerCreationOptions & { type: T }

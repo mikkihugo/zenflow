@@ -18,7 +18,7 @@ import type {
   TaskDocumentEntity,
   VisionDocumentEntity,
 } from '../database/entities/document-entities';
-import type { DocumentService } from '../database/services/document-service';
+import type { DocumentManager } from '../database/managers/document-manager';
 import type { DocumentType } from '../types/workflow-types';
 import { createLogger } from './logger';
 import type { WorkflowEngine } from './workflow-engine';
@@ -30,7 +30,7 @@ export interface DatabaseWorkspaceContext {
   projectId: string;
   activeDocuments: Map<string, BaseDocumentEntity>;
   workflowEngine: WorkflowEngine;
-  documentService: DocumentService;
+  documentService: DocumentManager;
 }
 
 export interface DocumentProcessingOptions {
@@ -48,10 +48,10 @@ export interface DocumentProcessingOptions {
  */
 export class DatabaseDrivenSystem extends EventEmitter {
   private workspaces: Map<string, DatabaseWorkspaceContext> = new Map();
-  private documentService: DocumentService;
+  private documentService: DocumentManager;
   private workflowEngine: WorkflowEngine;
 
-  constructor(documentService: DocumentService, workflowEngine: WorkflowEngine) {
+  constructor(documentService: DocumentManager, workflowEngine: WorkflowEngine) {
     super();
     this.documentService = documentService;
     this.workflowEngine = workflowEngine;

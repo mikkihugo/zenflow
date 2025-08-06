@@ -247,10 +247,34 @@ export {
 } from './factories';
 
 /**
- * UEL Main Interface
+ * UEL Main Interface - Primary entry point for the Unified Event Layer
  * 
- * Primary interface for interacting with the Unified Event Layer.
- * Provides high-level methods for event manager creation and operations.
+ * Provides high-level methods for event manager creation, operations, and system management.
+ * Implements the singleton pattern to ensure system-wide consistency.
+ * 
+ * @class UEL
+ * @example
+ * ```typescript
+ * // Initialize UEL system
+ * const uel = UEL.getInstance();
+ * await uel.initialize({
+ *   enableValidation: true,
+ *   enableCompatibility: true,
+ *   healthMonitoring: true
+ * });
+ * 
+ * // Create event managers
+ * const systemManager = await uel.createSystemEventManager('main-system');
+ * const coordManager = await uel.createCoordinationEventManager('swarm-coord');
+ * 
+ * // Broadcast events globally
+ * await uel.broadcast({
+ *   id: 'global-event',
+ *   timestamp: new Date(),
+ *   source: 'uel-system',
+ *   type: 'system:announcement'
+ * });
+ * ```
  */
 export class UEL {
   private static instance: UEL;
@@ -265,7 +289,16 @@ export class UEL {
   private constructor() {}
 
   /**
-   * Get singleton UEL instance
+   * Get the singleton UEL instance
+   * 
+   * @returns The global UEL instance
+   * @example
+   * ```typescript
+   * const uel = UEL.getInstance();
+   * if (!uel.isInitialized()) {
+   *   await uel.initialize();
+   * }
+   * ```
    */
   static getInstance(): UEL {
     if (!UEL.instance) {
@@ -276,6 +309,29 @@ export class UEL {
 
   /**
    * Initialize UEL system with complete integration
+   * 
+   * Sets up all UEL components including factories, registries, event managers,
+   * validation framework, and compatibility layer.
+   * 
+   * @param config - Configuration options for UEL initialization
+   * @param config.logger - Custom logger instance (defaults to console)
+   * @param config.config - Configuration object for dependency injection
+   * @param config.autoRegisterFactories - Whether to auto-register default factories (default: true)
+   * @param config.enableValidation - Whether to enable validation framework (default: true)
+   * @param config.enableCompatibility - Whether to enable compatibility layer (default: true)
+   * @param config.healthMonitoring - Whether to enable health monitoring (default: true)
+   * @throws {Error} If initialization fails
+   * 
+   * @example
+   * ```typescript
+   * await uel.initialize({
+   *   logger: customLogger,
+   *   enableValidation: true,
+   *   enableCompatibility: true,
+   *   healthMonitoring: true,
+   *   autoRegisterFactories: true
+   * });
+   * ```
    */
   async initialize(config?: {
     logger?: any;
@@ -418,7 +474,31 @@ export class UEL {
   }
 
   /**
-   * Create and register system event manager
+   * Create and register a system event manager
+   * 
+   * Creates an event manager optimized for system lifecycle events with real-time processing.
+   * 
+   * @param name - Unique name for the event manager (default: 'default-system')
+   * @param config - Optional configuration overrides
+   * @returns Promise resolving to the created system event manager
+   * @throws {Error} If manager creation fails
+   * 
+   * @example
+   * ```typescript
+   * const systemManager = await uel.createSystemEventManager('core-system', {
+   *   processing: { strategy: 'immediate' },
+   *   maxListeners: 1000
+   * });
+   * 
+   * await systemManager.emitSystemEvent({
+   *   id: 'sys-001',
+   *   timestamp: new Date(),
+   *   source: 'core',
+   *   type: 'system:startup',
+   *   operation: 'initialize',
+   *   status: 'success'
+   * });
+   * ```
    */
   async createSystemEventManager(
     name: string = 'default-system',

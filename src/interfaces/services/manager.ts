@@ -1,9 +1,72 @@
 /**
  * USL Service Manager - Complete Service Lifecycle Management
  * 
- * Advanced service manager providing comprehensive lifecycle orchestration,
+ * @fileoverview Advanced service manager providing comprehensive lifecycle orchestration,
  * factory registration, health monitoring, auto-recovery, and service coordination
  * following the same patterns as UACL Agent 6.
+ * 
+ * @description The Service Manager is the central orchestrator for all USL services,
+ * providing enterprise-grade capabilities:
+ * 
+ * **Core Capabilities:**
+ * - Complete service lifecycle management (create, start, monitor, recover, destroy)
+ * - Automatic dependency resolution and service orchestration
+ * - Real-time health monitoring with configurable thresholds
+ * - Automated recovery and restart mechanisms
+ * - Performance metrics collection and analysis
+ * - Event-driven service coordination
+ * 
+ * **Service Management Patterns:**
+ * - Factory pattern for service creation with type safety
+ * - Observer pattern for event handling and notifications
+ * - Dependency injection for service relationships
+ * - Circuit breaker pattern for resilience
+ * 
+ * @example
+ * ```typescript
+ * import { ServiceManager, type ServiceManagerConfig } from '@claude-zen/usl';
+ * 
+ * // Configure comprehensive service management
+ * const config: ServiceManagerConfig = {
+ *   factory: {
+ *     maxConcurrentInits: 10,
+ *     enableDependencyResolution: true
+ *   },
+ *   lifecycle: {
+ *     startupTimeout: 60000,
+ *     parallelStartup: true,
+ *     dependencyResolution: true
+ *   },
+ *   monitoring: {
+ *     healthCheckInterval: 30000,
+ *     performanceThresholds: {
+ *       responseTime: 1000,
+ *       errorRate: 5.0
+ *     }
+ *   },
+ *   recovery: {
+ *     enabled: true,
+ *     maxRetries: 3,
+ *     strategy: 'exponential'
+ *   }
+ * };
+ * 
+ * const manager = new ServiceManager(config);
+ * await manager.initialize();
+ * 
+ * // Create services with automatic lifecycle management
+ * const webService = await manager.createService({
+ *   name: 'api-server',
+ *   type: ServiceType.WEB,
+ *   dependencies: [{ serviceName: 'database', required: true }]
+ * });
+ * 
+ * // Manager handles monitoring, recovery, and coordination automatically
+ * manager.on('service-health-degraded', async (event) => {
+ *   console.warn(`Service ${event.serviceName} health degraded`);
+ *   // Automatic recovery will be triggered based on configuration
+ * });
+ * ```
  */
 
 import type {
@@ -60,19 +123,80 @@ import {
 import { createLogger, type Logger } from '../../utils/logger';
 import { EventEmitter } from 'events';
 
+/**
+ * Service Manager Configuration
+ * 
+ * @interface ServiceManagerConfig
+ * @description Comprehensive configuration for the USL Service Manager,
+ * controlling all aspects of service lifecycle management, monitoring, and recovery
+ * @example
+ * ```typescript
+ * const managerConfig: ServiceManagerConfig = {
+ *   factory: {
+ *     maxConcurrentInits: 5,
+ *     defaultTimeout: 30000,
+ *     enableDependencyResolution: true
+ *   },
+ *   registry: {
+ *     discoveryEnabled: true,
+ *     healthCheckInterval: 30000
+ *   },
+ *   lifecycle: {
+ *     startupTimeout: 60000,
+ *     shutdownTimeout: 30000,
+ *     gracefulShutdownPeriod: 10000,
+ *     parallelStartup: true,
+ *     dependencyResolution: true
+ *   },
+ *   monitoring: {
+ *     healthCheckInterval: 30000,
+ *     metricsCollectionInterval: 60000,
+ *     performanceThresholds: {
+ *       responseTime: 1000,  // 1 second
+ *       errorRate: 5.0,      // 5%
+ *       memoryUsage: 80.0,   // 80%
+ *       cpuUsage: 75.0       // 75%
+ *     },
+ *     alerting: {
+ *       enabled: true,
+ *       channels: [
+ *         { type: 'console', config: { logLevel: 'warn' } },
+ *         { type: 'webhook', config: { url: 'https://alerts.example.com' } }
+ *       ]
+ *     }
+ *   },
+ *   recovery: {
+ *     enabled: true,
+ *     maxRetries: 3,
+ *     strategy: 'exponential',
+ *     backoffMultiplier: 2,
+ *     circuitBreaker: {
+ *       enabled: true,
+ *       failureThreshold: 5,
+ *       recoveryTimeout: 60000
+ *     }
+ *   }
+ * };
+ * ```
+ */
 export interface ServiceManagerConfig {
-  /** Core factory configuration */
+  /** Core factory configuration for service creation and management */
   factory: USLFactoryConfig;
   
-  /** Registry configuration */
+  /** Registry configuration for service discovery and registration */
   registry: ServiceRegistryConfig;
   
-  /** Service lifecycle management */
+  /** Service lifecycle management configuration */
   lifecycle: {
-    startupTimeout: number; // ms
-    shutdownTimeout: number; // ms
-    gracefulShutdownPeriod: number; // ms
+    /** Maximum time to wait for service startup in milliseconds (default: 60000) */
+    startupTimeout: number;
+    /** Maximum time to wait for service shutdown in milliseconds (default: 30000) */
+    shutdownTimeout: number;
+    /** Graceful shutdown period before forced termination in milliseconds (default: 10000) */
+    gracefulShutdownPeriod: number;
+    /** Enable parallel service startup for improved performance (default: true) */
     parallelStartup: boolean;
+    /** Enable automatic dependency resolution and ordering (default: true) */
     dependencyResolution: boolean;
   };
   

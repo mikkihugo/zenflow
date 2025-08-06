@@ -44,12 +44,12 @@ import type {
   CommandResult
 } from '../../web/web-data-service';
 
-import { DocumentService } from '../../../database/services/document-service-legacy';
+import { DocumentManager } from '../../../database/managers/document-manager';
 import type {
   DocumentCreateOptions,
   DocumentQueryOptions,
   DocumentSearchOptions
-} from '../../../database/services/document-service-legacy';
+} from '../../../database/managers/document-manager';
 
 import type { BaseDocumentEntity } from '../../../database/entities/document-entities';
 import type { DocumentType } from '../../../types/workflow-types';

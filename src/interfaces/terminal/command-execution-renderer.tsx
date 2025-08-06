@@ -59,7 +59,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
 
         // Check if this is an advanced CLI command
         // Skip advanced CLI for core commands that have been enhanced in CommandExecutionEngine
-        const coreCommands = ['init', 'status', 'swarm', 'mcp', 'workspace', 'discover', 'help'];
+        const coreCommands = ['init', 'status', 'query', 'agents', 'tasks', 'knowledge', 'health', 'sync', 'contribute', 'swarm', 'mcp', 'workspace', 'discover', 'help'];
         const shouldUseAdvancedCLI = !coreCommands.includes(command) && advancedCLI.isAdvancedCommand(command);
         
         if (shouldUseAdvancedCLI) {

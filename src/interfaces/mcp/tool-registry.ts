@@ -5,7 +5,7 @@
  * Integrates with existing HTTP and Stdio MCP servers.
  */
 
-import type { DocumentService } from '../../database/services/document-service';
+import type { DocumentManager } from '../../database/managers/document-manager';
 import coordinationTools from './tools/coordination-tools';
 import githubIntegrationTools from './tools/github-integration-tools';
 import memoryNeuralTools from './tools/memory-neural-tools';

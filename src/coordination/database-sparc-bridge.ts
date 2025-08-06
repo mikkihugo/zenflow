@@ -17,7 +17,7 @@ import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
 } from '../database/entities/product-entities';
-import type { DocumentService } from '../database/services/document-service';
+import type { DocumentManager } from '../database/managers/document-manager';
 import type { SPARCSwarmCoordinator, SPARCTask } from './swarm/core/sparc-swarm-coordinator';
 
 const logger = createLogger('DatabaseSPARCBridge');
@@ -63,14 +63,14 @@ export interface ImplementationResult {
  */
 class DatabaseSPARCBridge extends EventEmitter {
   private databaseSystem: DatabaseDrivenSystem;
-  private documentService: DocumentService;
+  private documentService: DocumentManager;
   private sparcSwarm: SPARCSwarmCoordinator;
   private activeAssignments = new Map<string, WorkAssignment>();
   private completedWork = new Map<string, ImplementationResult>();
 
   constructor(
     databaseSystem: DatabaseDrivenSystem,
-    documentService: DocumentService,
+    documentService: DocumentManager,
     sparcSwarm: SPARCSwarmCoordinator
   ) {
     super();

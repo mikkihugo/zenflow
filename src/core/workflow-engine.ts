@@ -8,7 +8,7 @@
 
 import { EventEmitter } from 'node:events';
 import type { BaseDocumentEntity } from '../database/entities/document-entities';
-import type { DocumentService } from '../database/services/document-service';
+import type { DocumentManager } from '../database/managers/document-manager';
 import type {
   DocumentContent,
   StepExecutionResult,
@@ -246,7 +246,7 @@ const DOCUMENT_WORKFLOWS: WorkflowDefinition[] = [
 
 export class WorkflowEngine extends EventEmitter {
   private memory: MemorySystem;
-  private documentService: DocumentService;
+  private documentService: DocumentManager;
   private activeWorkflows = new Map<string, WorkflowState>();
   private workflowDefinitions = new Map<string, WorkflowDefinition>();
   private stepHandlers = new Map<
@@ -262,8 +262,8 @@ export class WorkflowEngine extends EventEmitter {
   };
 
   constructor(
-    memory: UnifiedMemorySystem,
-    documentService: DocumentService,
+    memory: MemorySystem,
+    documentService: DocumentManager,
     config: Partial<WorkflowEngineConfig> = {}
   ) {
     super();

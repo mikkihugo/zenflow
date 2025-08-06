@@ -8,8 +8,10 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// Use any type for SwarmPersistence to avoid import issues
-type SwarmPersistence = any;
+import type { ICoordinationDao } from '../../../../database';
+import { DALFactory } from '../../../../database';
+
+type SwarmPersistence = ICoordinationDao;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,20 +44,13 @@ class ZenSwarmHooks {
    */
   async initializePersistence() {
     try {
-      // Dynamic import to avoid module resolution issues
-      try {
-        const { SwarmPersistencePooled } = await import(
-          '../../../../database/persistence/persistence-pooled.js'
-        );
-        this.persistence = new SwarmPersistencePooled();
-      } catch (error) {
-        // Fallback if module not available
-        console.warn('SwarmPersistencePooled not available:', error);
-        this.persistence = null;
-      }
+      const factory = new DALFactory();
+      const coordinationRepo = await factory.createCoordinationRepository('hooks');
+      this.persistence = coordinationRepo as any; // Type bridge
     } catch (error) {
       console.warn('⚠️ Failed to initialize persistence layer:', error.message);
       console.warn('⚠️ Operating in memory-only mode');
+      this.persistence = null;
     }
   }
 

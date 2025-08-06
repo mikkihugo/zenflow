@@ -5,7 +5,8 @@
  * for persistent swarm orchestration across multiple executions.
  */
 
-import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
+import type { ICoordinationDao } from '../../../database';
+import { DALFactory } from '../../../database';
 import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
 import { SessionManager } from './session-manager';
 import { SessionStats, SessionValidator } from './session-utils';
@@ -138,7 +139,8 @@ async function sessionRecoveryExample(existingSessionId: string) {
  * Example 3: Session Lifecycle Management
  */
 async function sessionLifecycleExample() {
-  const persistence = new SwarmPersistencePooled();
+  const factory = new DALFactory();
+  const persistence = await factory.createCoordinationRepository('session');
   await persistence.initialize();
 
   const sessionManager = new SessionManager(persistence, {
@@ -209,7 +211,8 @@ async function sessionLifecycleExample() {
  * Example 4: Session Health Monitoring and Recovery
  */
 async function sessionHealthExample() {
-  const persistence = new SwarmPersistencePooled();
+  const factory = new DALFactory();
+  const persistence = await factory.createCoordinationRepository('session');
   await persistence.initialize();
 
   const sessionManager = new SessionManager(persistence);

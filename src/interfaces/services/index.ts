@@ -183,6 +183,31 @@ export {
  * 
  * Primary interface for interacting with the Unified Service Layer.
  * Provides high-level methods for service management and operations.
+ * 
+ * @class USL
+ * @description Singleton class for managing all service layer operations
+ * @example
+ * ```typescript
+ * import { USL, usl } from '@claude-zen/usl';
+ * 
+ * // Initialize USL system
+ * await usl.initialize();
+ * 
+ * // Create a data service
+ * const dataService = await usl.createDataService('my-data', {
+ *   type: ServiceType.DATA,
+ *   enabled: true
+ * });
+ * 
+ * // Create a web service
+ * const webService = await usl.createWebService('my-web', 3000, {
+ *   server: { host: '0.0.0.0', port: 3000 }
+ * });
+ * 
+ * // Get system health
+ * const health = await usl.getSystemHealth();
+ * console.log(`System status: ${health.overall}`);
+ * ```
  */
 export class USL {
   private static instance: USL;
@@ -192,6 +217,15 @@ export class USL {
 
   /**
    * Get singleton USL instance
+   * 
+   * @static
+   * @returns {USL} The singleton USL instance
+   * @description Returns the global USL instance, creating it if it doesn't exist
+   * @example
+   * ```typescript
+   * const usl = USL.getInstance();
+   * await usl.initialize();
+   * ```
    */
   static getInstance(): USL {
     if (!USL.instance) {
@@ -202,6 +236,19 @@ export class USL {
 
   /**
    * Initialize USL system
+   * 
+   * @param {USLFactoryConfig} [config] Optional factory configuration
+   * @returns {Promise<void>} Promise that resolves when initialization is complete
+   * @throws {ServiceInitializationError} When initialization fails
+   * @description Initializes the USL system with optional configuration
+   * @example
+   * ```typescript
+   * await usl.initialize({
+   *   enableMetrics: true,
+   *   defaultTimeout: 30000,
+   *   logLevel: 'info'
+   * });
+   * ```
    */
   async initialize(config?: USLFactoryConfig): Promise<void> {
     if (this.initialized) {
@@ -216,6 +263,15 @@ export class USL {
 
   /**
    * Check if USL is initialized
+   * 
+   * @returns {boolean} True if USL system is initialized
+   * @description Returns the initialization status of the USL system
+   * @example
+   * ```typescript
+   * if (!usl.isInitialized()) {
+   *   await usl.initialize();
+   * }
+   * ```
    */
   isInitialized(): boolean {
     return this.initialized;
@@ -223,6 +279,28 @@ export class USL {
 
   /**
    * Create and register a data service (uses enhanced DataServiceAdapter)
+   * 
+   * @param {string} name Unique service name identifier
+   * @param {Partial<DataServiceConfig>} [options={}] Service configuration options
+   * @returns {Promise<IService>} Promise resolving to the created data service
+   * @throws {ServiceConfigurationError} When configuration is invalid
+   * @throws {ServiceInitializationError} When service creation fails
+   * @description Creates a new data service with enhanced adapter capabilities
+   * @example
+   * ```typescript
+   * const dataService = await usl.createDataService('user-data', {
+   *   type: ServiceType.DATA,
+   *   enabled: true,
+   *   health: { enabled: true, interval: 30000 },
+   *   monitoring: { enabled: true, trackLatency: true }
+   * });
+   * 
+   * // Execute data operations
+   * const result = await dataService.execute('query', {
+   *   collection: 'users',
+   *   filter: { active: true }
+   * });
+   * ```
    */
   async createDataService(
     name: string,
@@ -242,6 +320,29 @@ export class USL {
 
   /**
    * Create web data service adapter (optimized for web operations)
+   * 
+   * @param {string} name Unique service name identifier
+   * @param {Partial<DataServiceAdapterConfig>} [options={}] Web adapter configuration
+   * @returns {Promise<DataServiceAdapter>} Promise resolving to the web data adapter
+   * @throws {ServiceConfigurationError} When web configuration is invalid
+   * @throws {ServiceInitializationError} When adapter creation fails
+   * @description Creates an optimized data service adapter for web-based operations
+   * @example
+   * ```typescript
+   * const webAdapter = await usl.createWebDataService('api-data', {
+   *   web: {
+   *     enabled: true,
+   *     apiEndpoint: 'https://api.example.com',
+   *     authentication: { type: 'bearer', token: 'your-token' },
+   *     rateLimiting: { enabled: true, maxRequests: 1000 }
+   *   }
+   * });
+   * 
+   * // Fetch data from web API
+   * const users = await webAdapter.fetchData('/users', {
+   *   pagination: { page: 1, limit: 50 }
+   * });
+   * ```
    */
   async createWebDataService(
     name: string,
@@ -257,6 +358,33 @@ export class USL {
 
   /**
    * Create document service adapter (optimized for database operations)
+   * 
+   * @param {string} name Unique service name identifier
+   * @param {'postgresql' | 'sqlite' | 'mysql'} [databaseType='postgresql'] Database type to use
+   * @param {Partial<DataServiceAdapterConfig>} [options={}] Document adapter configuration
+   * @returns {Promise<DataServiceAdapter>} Promise resolving to the document adapter
+   * @throws {ServiceConfigurationError} When database configuration is invalid
+   * @throws {ServiceInitializationError} When adapter creation fails
+   * @description Creates an optimized data service adapter for document/database operations
+   * @example
+   * ```typescript
+   * const docAdapter = await usl.createDocumentService('user-docs', 'postgresql', {
+   *   document: {
+   *     enabled: true,
+   *     databaseType: 'postgresql',
+   *     connectionString: process.env.DATABASE_URL,
+   *     pooling: { min: 2, max: 10 },
+   *     migrations: { autoRun: true }
+   *   }
+   * });
+   * 
+   * // Store document in database
+   * const stored = await docAdapter.storeDocument('users', {
+   *   name: 'John Doe',
+   *   email: 'john@example.com',
+   *   metadata: { created: new Date() }
+   * });
+   * ```
    */
   async createDocumentService(
     name: string,
@@ -273,6 +401,34 @@ export class USL {
 
   /**
    * Create unified data service adapter (both web and document operations)
+   * 
+   * @param {string} name Unique service name identifier
+   * @param {'postgresql' | 'sqlite' | 'mysql'} [databaseType='postgresql'] Database type for document operations
+   * @param {Partial<DataServiceAdapterConfig>} [options={}] Unified adapter configuration
+   * @returns {Promise<DataServiceAdapter>} Promise resolving to the unified data adapter
+   * @throws {ServiceConfigurationError} When configuration is invalid
+   * @throws {ServiceInitializationError} When adapter creation fails
+   * @description Creates a unified data service adapter supporting both web and document operations
+   * @example
+   * ```typescript
+   * const unifiedAdapter = await usl.createUnifiedDataService('hybrid-data', 'postgresql', {
+   *   web: {
+   *     enabled: true,
+   *     apiEndpoint: 'https://api.example.com',
+   *     authentication: { type: 'apikey', key: process.env.API_KEY }
+   *   },
+   *   document: {
+   *     enabled: true,
+   *     databaseType: 'postgresql',
+   *     connectionString: process.env.DATABASE_URL,
+   *     caching: { enabled: true, ttl: 300 }
+   *   }
+   * });
+   * 
+   * // Use both web and document operations
+   * const webData = await unifiedAdapter.fetchData('/external/users');
+   * const dbData = await unifiedAdapter.findDocuments('users', { active: true });
+   * ```
    */
   async createUnifiedDataService(
     name: string,
@@ -289,6 +445,36 @@ export class USL {
 
   /**
    * Create and register a web service
+   * 
+   * @param {string} name Unique service name identifier
+   * @param {number} [port=3000] Port number for the web server
+   * @param {Partial<WebServiceConfig>} [options={}] Web service configuration options
+   * @returns {Promise<IService>} Promise resolving to the created web service
+   * @throws {ServiceConfigurationError} When web server configuration is invalid
+   * @throws {ServiceInitializationError} When web service creation fails
+   * @description Creates and registers a new web service with HTTP server capabilities
+   * @example
+   * ```typescript
+   * const webService = await usl.createWebService('api-server', 3000, {
+   *   server: {
+   *     host: '0.0.0.0',
+   *     port: 3000,
+   *     cors: { enabled: true, origins: ['http://localhost:3456'] }
+   *   },
+   *   middleware: {
+   *     compression: true,
+   *     rateLimiting: { enabled: true, maxRequests: 1000 }
+   *   },
+   *   security: {
+   *     helmet: true,
+   *     authentication: { required: false }
+   *   }
+   * });
+   * 
+   * // Service automatically starts HTTP server on specified port
+   * const status = await webService.getStatus();
+   * console.log(`Web service running: ${status.lifecycle}`);
+   * ```
    */
   async createWebService(
     name: string,
@@ -310,6 +496,40 @@ export class USL {
 
   /**
    * Create and register a coordination service
+   * 
+   * @param {string} name Unique service name identifier
+   * @param {Partial<CoordinationServiceConfig>} [options={}] Coordination service configuration
+   * @returns {Promise<IService>} Promise resolving to the created coordination service
+   * @throws {ServiceConfigurationError} When coordination configuration is invalid
+   * @throws {ServiceInitializationError} When coordination service creation fails
+   * @description Creates a coordination service for managing distributed operations and agent coordination
+   * @example
+   * ```typescript
+   * const coordService = await usl.createCoordinationService('swarm-coordinator', {
+   *   swarm: {
+   *     topology: 'mesh',
+   *     maxAgents: 10,
+   *     coordinationStrategy: 'parallel'
+   *   },
+   *   messaging: {
+   *     protocol: 'websocket',
+   *     heartbeatInterval: 30000,
+   *     reconnectAttempts: 3
+   *   },
+   *   taskManagement: {
+   *     queueSize: 1000,
+   *     executionTimeout: 300000,
+   *     retryPolicy: { attempts: 3, backoff: 'exponential' }
+   *   }
+   * });
+   * 
+   * // Execute coordinated operations
+   * const result = await coordService.execute('orchestrate-task', {
+   *   task: 'process-documents',
+   *   agents: ['agent-1', 'agent-2', 'agent-3'],
+   *   strategy: 'parallel'
+   * });
+   * ```
    */
   async createCoordinationService(
     name: string,
@@ -329,6 +549,46 @@ export class USL {
 
   /**
    * Create and register a neural service
+   * 
+   * @param {string} name Unique service name identifier
+   * @param {Partial<NeuralServiceConfig>} [options={}] Neural service configuration options
+   * @returns {Promise<IService>} Promise resolving to the created neural service
+   * @throws {ServiceConfigurationError} When neural network configuration is invalid
+   * @throws {ServiceInitializationError} When neural service creation fails
+   * @description Creates a neural service for machine learning operations and neural network management
+   * @example
+   * ```typescript
+   * const neuralService = await usl.createNeuralService('ml-processor', {
+   *   networks: {
+   *     defaultArchitecture: [784, 128, 64, 10],
+   *     activationFunction: 'relu',
+   *     optimizer: 'adam',
+   *     learningRate: 0.001
+   *   },
+   *   training: {
+   *     batchSize: 32,
+   *     epochs: 100,
+   *     validationSplit: 0.2,
+   *     earlyStoppingPatience: 10
+   *   },
+   *   wasm: {
+   *     enabled: true,
+   *     wasmPath: './neural.wasm',
+   *     useAcceleration: true
+   *   }
+   * });
+   * 
+   * // Train and use neural networks
+   * const trainResult = await neuralService.execute('train', {
+   *   dataset: trainingData,
+   *   networkId: 'classification-net'
+   * });
+   * 
+   * const prediction = await neuralService.execute('predict', {
+   *   input: inputData,
+   *   networkId: 'classification-net'
+   * });
+   * ```
    */
   async createNeuralService(
     name: string,
@@ -637,6 +897,33 @@ export class USL {
 
   /**
    * Get system health status
+   * 
+   * @returns {Promise<Object>} Promise resolving to comprehensive system health information
+   * @returns {Promise<Object>} returns.overall Overall system health status
+   * @returns {Promise<Map<string, ServiceStatus>>} returns.services Map of service statuses by name
+   * @returns {Promise<Object>} returns.summary Health summary statistics
+   * @throws {ServiceOperationError} When health check operations fail
+   * @description Performs comprehensive health checks across all registered services
+   * @example
+   * ```typescript
+   * const health = await usl.getSystemHealth();
+   * 
+   * console.log(`Overall health: ${health.overall}`);
+   * console.log(`Healthy services: ${health.summary.healthy}/${health.summary.total}`);
+   * console.log(`Error rate: ${health.summary.errorRate.toFixed(2)}%`);
+   * 
+   * // Check individual service health
+   * health.services.forEach((status, serviceName) => {
+   *   if (status.health !== 'healthy') {
+   *     console.warn(`Service ${serviceName} is ${status.health}: ${status.errorCount} errors`);
+   *   }
+   * });
+   * 
+   * // Alert on system degradation
+   * if (health.overall === 'unhealthy') {
+   *   await notifySystemAdministrators(health);
+   * }
+   * ```
    */
   async getSystemHealth(): Promise<{
     overall: 'healthy' | 'degraded' | 'unhealthy';
@@ -683,6 +970,36 @@ export class USL {
 
   /**
    * Get system metrics
+   * 
+   * @returns {Promise<Object>} Promise resolving to comprehensive system performance metrics
+   * @returns {Promise<number>} returns.totalServices Total number of registered services
+   * @returns {Promise<number>} returns.runningServices Number of currently running services
+   * @returns {Promise<number>} returns.healthyServices Number of healthy services
+   * @returns {Promise<number>} returns.errorServices Number of services with errors
+   * @returns {Promise<ServiceMetrics[]>} returns.aggregatedMetrics Individual service metrics
+   * @returns {Promise<Object>} returns.performanceSummary System-wide performance summary
+   * @throws {ServiceOperationError} When metrics collection fails
+   * @description Collects and aggregates performance metrics from all services
+   * @example
+   * ```typescript
+   * const metrics = await usl.getSystemMetrics();
+   * 
+   * // System overview
+   * console.log(`Services: ${metrics.runningServices}/${metrics.totalServices} running`);
+   * console.log(`Health: ${metrics.healthyServices}/${metrics.totalServices} healthy`);
+   * 
+   * // Performance metrics
+   * console.log(`Average latency: ${metrics.performanceSummary.averageLatency}ms`);
+   * console.log(`Total throughput: ${metrics.performanceSummary.totalThroughput} ops/sec`);
+   * console.log(`Error rate: ${(metrics.performanceSummary.totalErrors / metrics.performanceSummary.totalOperations * 100).toFixed(2)}%`);
+   * 
+   * // Individual service analysis
+   * metrics.aggregatedMetrics.forEach(metric => {
+   *   if (metric.averageLatency > 1000) {
+   *     console.warn(`High latency detected in ${metric.name}: ${metric.averageLatency}ms`);
+   *   }
+   * });
+   * ```
    */
   async getSystemMetrics(): Promise<{
     totalServices: number;
@@ -723,6 +1040,37 @@ export class USL {
 
   /**
    * Discover services by criteria
+   * 
+   * @param {Object} [criteria] Service discovery criteria
+   * @param {ServiceType} [criteria.type] Filter by service type
+   * @param {string[]} [criteria.capabilities] Filter by required capabilities
+   * @param {string[]} [criteria.tags] Filter by service tags
+   * @returns {IService[]} Array of services matching the criteria
+   * @description Discovers services based on specified criteria for dynamic service resolution
+   * @example
+   * ```typescript
+   * // Find all data services
+   * const dataServices = usl.discoverServices({
+   *   type: ServiceType.DATA
+   * });
+   * 
+   * // Find services with specific capabilities
+   * const searchServices = usl.discoverServices({
+   *   capabilities: ['search', 'index', 'query']
+   * });
+   * 
+   * // Find services by tags
+   * const productionServices = usl.discoverServices({
+   *   tags: ['production', 'critical']
+   * });
+   * 
+   * // Complex criteria
+   * const mlDataServices = usl.discoverServices({
+   *   type: ServiceType.NEURAL,
+   *   capabilities: ['training', 'inference'],
+   *   tags: ['ml', 'gpu-enabled']
+   * });
+   * ```
    */
   discoverServices(criteria?: {
     type?: ServiceType;
@@ -748,6 +1096,26 @@ export class USL {
 
   /**
    * Shutdown USL system
+   * 
+   * @returns {Promise<void>} Promise that resolves when shutdown is complete
+   * @throws {ServiceOperationError} When shutdown operations fail
+   * @description Gracefully shuts down all services and the USL system
+   * @example
+   * ```typescript
+   * // Graceful shutdown with cleanup
+   * process.on('SIGTERM', async () => {
+   *   console.log('Shutting down USL system...');
+   *   
+   *   try {
+   *     await usl.shutdown();
+   *     console.log('USL shutdown completed');
+   *     process.exit(0);
+   *   } catch (error) {
+   *     console.error('USL shutdown failed:', error);
+   *     process.exit(1);
+   *   }
+   * });
+   * ```
    */
   async shutdown(): Promise<void> {
     if (!this.initialized) {
@@ -761,11 +1129,41 @@ export class USL {
 
 /**
  * Global USL instance for convenience
+ * 
+ * @constant {USL}
+ * @description Pre-initialized global USL instance for immediate use across the application
+ * @example
+ * ```typescript
+ * import { usl } from '@claude-zen/usl';
+ * 
+ * // Direct usage without getInstance()
+ * await usl.initialize();
+ * const dataService = await usl.createDataService('my-data');
+ * ```
  */
 export const usl = USL.getInstance();
 
 /**
  * Initialize USL with default configuration
+ * 
+ * @param {USLFactoryConfig} [config] Optional factory configuration
+ * @returns {Promise<void>} Promise that resolves when initialization is complete
+ * @throws {ServiceInitializationError} When initialization fails
+ * @description Convenience function to initialize the global USL instance
+ * @example
+ * ```typescript
+ * import { initializeUSL } from '@claude-zen/usl';
+ * 
+ * // Initialize with default configuration
+ * await initializeUSL();
+ * 
+ * // Initialize with custom configuration
+ * await initializeUSL({
+ *   enableMetrics: true,
+ *   defaultTimeout: 60000,
+ *   logLevel: 'debug'
+ * });
+ * ```
  */
 export const initializeUSL = async (config?: USLFactoryConfig): Promise<void> => {
   await usl.initialize(config);
@@ -773,10 +1171,61 @@ export const initializeUSL = async (config?: USLFactoryConfig): Promise<void> =>
 
 /**
  * Convenience functions for common service operations
+ * 
+ * @namespace USLHelpers
+ * @description Collection of utility functions for common USL operations and workflows
+ * @example
+ * ```typescript
+ * import { USLHelpers } from '@claude-zen/usl';
+ * 
+ * // Setup common services quickly
+ * const services = await USLHelpers.setupCommonServices({
+ *   webPort: 3000,
+ *   enableMonitoring: true,
+ *   enableCoordination: true
+ * });
+ * 
+ * // Get quick system status
+ * const status = await USLHelpers.getQuickStatus();
+ * console.log(`System health: ${status.healthPercentage}%`);
+ * ```
  */
 export const USLHelpers = {
   /**
    * Initialize and create common services for a typical setup
+   * 
+   * @param {Object} config Configuration for common services setup
+   * @param {number} [config.webPort] Port for web service (creates web service if provided)
+   * @param {boolean} [config.enableMonitoring] Whether to create monitoring service
+   * @param {boolean} [config.enableCoordination] Whether to create coordination service
+   * @param {boolean} [config.enableNeural] Whether to create neural service
+   * @param {Partial<DatabaseServiceConfig>} [config.databaseConfig] Database service configuration
+   * @param {Partial<MemoryServiceConfig>} [config.memoryConfig] Memory service configuration
+   * @returns {Promise<Object>} Promise resolving to created services object
+   * @throws {ServiceInitializationError} When service creation fails
+   * @description Creates and starts a typical set of services for most applications
+   * @example
+   * ```typescript
+   * const services = await USLHelpers.setupCommonServices({
+   *   webPort: 3000,
+   *   enableMonitoring: true,
+   *   enableCoordination: true,
+   *   enableNeural: false,
+   *   databaseConfig: {
+   *     connectionString: process.env.DATABASE_URL,
+   *     pooling: { min: 2, max: 20 }
+   *   },
+   *   memoryConfig: {
+   *     cacheSize: 1000,
+   *     ttl: 3600
+   *   }
+   * });
+   * 
+   * // All services are now running and ready
+   * console.log('Web service:', services.web?.name);
+   * console.log('Data service:', services.data?.name);
+   * console.log('Memory service:', services.memory?.name);
+   * ```
    */
   async setupCommonServices(config: {
     webPort?: number;
@@ -1285,36 +1734,257 @@ export const USLHelpers = {
 };
 
 // Export common service creation functions
+
+/**
+ * Create a data service with specified configuration
+ * @function createDataService
+ * @param {string} name Service name identifier
+ * @param {Partial<DataServiceConfig>} options Service configuration options
+ * @returns {Promise<IService>} Promise resolving to created data service
+ * @example createDataService('user-data', { enabled: true })
+ */
 export const createDataService = usl.createDataService.bind(usl);
+
+/**
+ * Create a web-optimized data service adapter
+ * @function createWebDataService
+ * @param {string} name Service name identifier
+ * @param {Partial<DataServiceAdapterConfig>} options Adapter configuration options
+ * @returns {Promise<DataServiceAdapter>} Promise resolving to web data adapter
+ * @example createWebDataService('api-data', { web: { enabled: true } })
+ */
 export const createWebDataService = usl.createWebDataService.bind(usl);
+
+/**
+ * Create a document-optimized data service adapter
+ * @function createDocumentService
+ * @param {string} name Service name identifier
+ * @param {'postgresql' | 'sqlite' | 'mysql'} databaseType Database type
+ * @param {Partial<DataServiceAdapterConfig>} options Adapter configuration options
+ * @returns {Promise<DataServiceAdapter>} Promise resolving to document adapter
+ * @example createDocumentService('docs', 'postgresql', { document: { enabled: true } })
+ */
 export const createDocumentService = usl.createDocumentService.bind(usl);
+
+/**
+ * Create a unified data service adapter (web + document capabilities)
+ * @function createUnifiedDataService
+ * @param {string} name Service name identifier
+ * @param {'postgresql' | 'sqlite' | 'mysql'} databaseType Database type
+ * @param {Partial<DataServiceAdapterConfig>} options Adapter configuration options
+ * @returns {Promise<DataServiceAdapter>} Promise resolving to unified adapter
+ * @example createUnifiedDataService('hybrid', 'postgresql', { web: { enabled: true }, document: { enabled: true } })
+ */
 export const createUnifiedDataService = usl.createUnifiedDataService.bind(usl);
+
+/**
+ * Create a web service with HTTP server capabilities
+ * @function createWebService
+ * @param {string} name Service name identifier
+ * @param {number} port Server port number
+ * @param {Partial<WebServiceConfig>} options Web service configuration options
+ * @returns {Promise<IService>} Promise resolving to created web service
+ * @example createWebService('api', 3000, { server: { cors: { enabled: true } } })
+ */
 export const createWebService = usl.createWebService.bind(usl);
+
+/**
+ * Create a coordination service for distributed operations
+ * @function createCoordinationService
+ * @param {string} name Service name identifier
+ * @param {Partial<CoordinationServiceConfig>} options Coordination configuration options
+ * @returns {Promise<IService>} Promise resolving to created coordination service
+ * @example createCoordinationService('swarm', { swarm: { topology: 'mesh' } })
+ */
 export const createCoordinationService = usl.createCoordinationService.bind(usl);
+
+/**
+ * Create a neural service for machine learning operations
+ * @function createNeuralService
+ * @param {string} name Service name identifier
+ * @param {Partial<NeuralServiceConfig>} options Neural service configuration options
+ * @returns {Promise<IService>} Promise resolving to created neural service
+ * @example createNeuralService('ml', { networks: { defaultArchitecture: [784, 128, 10] } })
+ */
 export const createNeuralService = usl.createNeuralService.bind(usl);
+
+/**
+ * Create a memory service for caching and storage
+ * @function createMemoryService
+ * @param {string} name Service name identifier
+ * @param {Partial<MemoryServiceConfig>} options Memory service configuration options
+ * @returns {Promise<IService>} Promise resolving to created memory service
+ * @example createMemoryService('cache', { cacheSize: 1000, ttl: 3600 })
+ */
 export const createMemoryService = usl.createMemoryService.bind(usl);
+
+/**
+ * Create a database service for persistent data storage
+ * @function createDatabaseService
+ * @param {string} name Service name identifier
+ * @param {Partial<DatabaseServiceConfig>} options Database configuration options
+ * @returns {Promise<IService>} Promise resolving to created database service
+ * @example createDatabaseService('db', { connectionString: process.env.DATABASE_URL })
+ */
 export const createDatabaseService = usl.createDatabaseService.bind(usl);
+
+/**
+ * Create an integration service for external system connectivity
+ * @function createIntegrationService
+ * @param {string} name Service name identifier
+ * @param {Partial<IntegrationServiceConfig>} options Integration configuration options
+ * @returns {Promise<IService>} Promise resolving to created integration service
+ * @example createIntegrationService('api-client', { endpoints: { baseURL: 'https://api.example.com' } })
+ */
 export const createIntegrationService = usl.createIntegrationService.bind(usl);
+
+/**
+ * Create an integration service adapter with enhanced capabilities
+ * @function createIntegrationServiceAdapter
+ * @param {string} name Service name identifier
+ * @param {Partial<IntegrationServiceAdapterConfig>} options Adapter configuration options
+ * @returns {Promise<IntegrationServiceAdapter>} Promise resolving to integration adapter
+ * @example createIntegrationServiceAdapter('integration', { safeAPI: { enabled: true } })
+ */
 export const createIntegrationServiceAdapter = usl.createIntegrationServiceAdapter.bind(usl);
+
+/**
+ * Create an architecture storage service for system metadata
+ * @function createArchitectureStorageService
+ * @param {string} name Service name identifier
+ * @param {'postgresql' | 'sqlite' | 'mysql'} databaseType Database type
+ * @param {Partial<IntegrationServiceAdapterConfig>} options Configuration options
+ * @returns {Promise<IntegrationServiceAdapter>} Promise resolving to architecture storage service
+ * @example createArchitectureStorageService('arch-store', 'postgresql', { architectureStorage: { enableVersioning: true } })
+ */
 export const createArchitectureStorageService = usl.createArchitectureStorageService.bind(usl);
+
+/**
+ * Create a safe API service with validation and security features
+ * @function createSafeAPIService
+ * @param {string} name Service name identifier
+ * @param {string} baseURL Base URL for API operations
+ * @param {Partial<IntegrationServiceAdapterConfig>} options Configuration options
+ * @returns {Promise<IntegrationServiceAdapter>} Promise resolving to safe API service
+ * @example createSafeAPIService('safe-api', 'https://api.example.com', { safeAPI: { validation: { strictMode: true } } })
+ */
 export const createSafeAPIService = usl.createSafeAPIService.bind(usl);
+
+/**
+ * Create a protocol management service for multi-protocol communication
+ * @function createProtocolManagementService
+ * @param {string} name Service name identifier
+ * @param {string[]} supportedProtocols Array of supported protocols
+ * @param {Partial<IntegrationServiceAdapterConfig>} options Configuration options
+ * @returns {Promise<IntegrationServiceAdapter>} Promise resolving to protocol management service
+ * @example createProtocolManagementService('protocol-mgr', ['http', 'websocket'], { protocolManagement: { connectionPooling: { enabled: true } } })
+ */
 export const createProtocolManagementService = usl.createProtocolManagementService.bind(usl);
+
+/**
+ * Create a unified integration service with all features enabled
+ * @function createUnifiedIntegrationService
+ * @param {string} name Service name identifier
+ * @param {Object} options Configuration options with baseURL, databaseType, and supportedProtocols
+ * @returns {Promise<IntegrationServiceAdapter>} Promise resolving to unified integration service
+ * @example createUnifiedIntegrationService('full-integration', { baseURL: 'https://api.example.com', databaseType: 'postgresql' })
+ */
 export const createUnifiedIntegrationService = usl.createUnifiedIntegrationService.bind(usl);
+
+/**
+ * Create a monitoring service for system observability
+ * @function createMonitoringService
+ * @param {string} name Service name identifier
+ * @param {Partial<MonitoringServiceConfig>} options Monitoring configuration options
+ * @returns {Promise<IService>} Promise resolving to created monitoring service
+ * @example createMonitoringService('monitor', { metrics: { enabled: true, interval: 30000 } })
+ */
 export const createMonitoringService = usl.createMonitoringService.bind(usl);
 
 // Export service discovery functions
+
+/**
+ * Get a service by its unique name
+ * @function getService
+ * @param {string} serviceName Unique service identifier
+ * @returns {IService | undefined} Service instance or undefined if not found
+ * @example const userService = getService('user-data');
+ */
 export const getService = usl.getService.bind(usl);
+
+/**
+ * Get all services of a specific type
+ * @function getServicesByType
+ * @param {ServiceType} type Service type to filter by
+ * @returns {IService[]} Array of services matching the type
+ * @example const dataServices = getServicesByType(ServiceType.DATA);
+ */
 export const getServicesByType = usl.getServicesByType.bind(usl);
+
+/**
+ * Get all registered services
+ * @function getAllServices
+ * @returns {Map<string, IService>} Map of all services by name
+ * @example const allServices = getAllServices();
+ */
 export const getAllServices = usl.getAllServices.bind(usl);
+
+/**
+ * Discover services by criteria (type, capabilities, tags)
+ * @function discoverServices
+ * @param {Object} criteria Discovery criteria
+ * @returns {IService[]} Array of matching services
+ * @example const mlServices = discoverServices({ capabilities: ['training', 'inference'] });
+ */
 export const discoverServices = usl.discoverServices.bind(usl);
 
 // Export system management functions
+
+/**
+ * Start all registered services
+ * @function startAllServices
+ * @returns {Promise<void>} Promise that resolves when all services are started
+ * @throws {ServiceOperationError} When service startup fails
+ * @example await startAllServices();
+ */
 export const startAllServices = usl.startAllServices.bind(usl);
+
+/**
+ * Stop all registered services
+ * @function stopAllServices
+ * @returns {Promise<void>} Promise that resolves when all services are stopped
+ * @throws {ServiceOperationError} When service shutdown fails
+ * @example await stopAllServices();
+ */
 export const stopAllServices = usl.stopAllServices.bind(usl);
+
+/**
+ * Get comprehensive system health status
+ * @function getSystemHealth
+ * @returns {Promise<Object>} Promise resolving to system health information
+ * @example const health = await getSystemHealth(); console.log(health.overall);
+ */
 export const getSystemHealth = usl.getSystemHealth.bind(usl);
+
+/**
+ * Get system performance metrics
+ * @function getSystemMetrics
+ * @returns {Promise<Object>} Promise resolving to system metrics
+ * @example const metrics = await getSystemMetrics(); console.log(metrics.performanceSummary);
+ */
 export const getSystemMetrics = usl.getSystemMetrics.bind(usl);
 
 /**
  * Default export for convenience
+ * 
+ * @default {USL}
+ * @description The global USL instance as the default export
+ * @example
+ * ```typescript
+ * import usl from '@claude-zen/usl';
+ * 
+ * await usl.initialize();
+ * const service = await usl.createDataService('my-data');
+ * ```
  */
 export default usl;

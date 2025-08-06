@@ -6,7 +6,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
+import type { ICoordinationDao } from '../../../database';
+import { DALFactory } from '../../../database';
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.js';
 import { AgentPool, type BaseAgent } from '../../agents/agent';
 import { getContainer } from './singleton-container';
@@ -36,7 +37,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
   private swarmId: string;
   private agents: Map<string, BaseAgent> = new Map();
   private state: SwarmLifecycleState = 'initializing';
-  private persistence?: SwarmPersistencePooled;
+  private coordinationDao?: ICoordinationDao;
   private agentPool?: AgentPool;
   private wasmLoader: WasmModuleLoader;
   private options: ExtendedSwarmOptions;
@@ -99,10 +100,9 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
 
     // Initialize persistence if enabled
     if (this.options.persistence.enabled) {
-      this.persistence = new SwarmPersistencePooled(
-        this.options.persistence.dbPath || './swarm-state.db'
-      );
-      await this.persistence.initialize();
+      const factory = new DALFactory();
+      const coordinationRepo = await factory.createCoordinationRepository('swarm');
+      this.coordinationDao = coordinationRepo as any; // Type bridge
     }
 
     // Initialize WASM neural processor
@@ -140,10 +140,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
     }
     this.agents.clear();
 
-    // Clean up persistence
-    if (this.persistence) {
-      await this.persistence.close();
-    }
+    // Clean up coordination DAO - no explicit close needed for factory-managed DAOs
 
     // Clean up agent pool
     if (this.agentPool) {

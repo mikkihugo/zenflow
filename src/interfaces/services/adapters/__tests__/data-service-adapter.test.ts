@@ -17,7 +17,7 @@ import { DataServiceFactory } from '../data-service-factory';
 import { DataServiceHelper, DataServiceUtils } from '../data-service-helpers';
 
 import { WebDataService } from '../../../web/web-data-service';
-import { DocumentService } from '../../../../database/services/document-service-legacy';
+import { DocumentManager } from '../../../../database/managers/document-manager';
 
 import type {
   ServiceStatus,
@@ -30,7 +30,7 @@ import { ServiceType, ServicePriority, ServiceEnvironment } from '../../types';
 
 // Mock external dependencies
 jest.mock('../../../web/web-data-service');
-jest.mock('../../../../database/services/document-service-legacy');
+jest.mock('../../../../database/managers/document-manager');
 jest.mock('../../../../utils/logger', () => ({
   createLogger: jest.fn(() => ({
     info: jest.fn(),

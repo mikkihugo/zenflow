@@ -5,13 +5,14 @@
  * - WASM-accelerated neural networks
  * - Cognitive diversity and pattern evolution
  * - Progressive loading and memory optimization
- * - Full persistence with SwarmPersistencePooled
+ * - Full persistence with coordination DAO
  * - Enterprise-grade session management
  * - Real-time performance monitoring
  * - Chaos engineering and fault tolerance
  */
 
-import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
+import type { ICoordinationDao } from '../../../database';
+import { DALFactory } from '../../../database';
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
 import { AgentPool, BaseAgent, createAgent } from '../../agents/agent';
 import {
@@ -160,7 +161,7 @@ export class ZenSwarm implements SwarmEventEmitter {
   // Enhanced WASM and Neural capabilities
   private wasmModule?: any;
   public wasmLoader: WasmModuleLoader;
-  public persistence: SwarmPersistencePooled | null = null;
+  public persistence: ICoordinationDao | null = null;
   public activeSwarms: Map<string, SwarmWrapper> = new Map();
   private globalAgents: Map<string, any> = new Map();
 
@@ -338,22 +339,14 @@ export class ZenSwarm implements SwarmEventEmitter {
         await instance.detectFeatures(useSIMD);
       }
 
-      // Initialize pooled persistence if enabled
+      // Initialize DAO persistence if enabled
       if (enablePersistence) {
         try {
-          const poolOptions = {
-            maxReaders: parseInt(process.env.POOL_MAX_READERS || '6'),
-            maxWorkers: parseInt(process.env.POOL_MAX_WORKERS || '3'),
-            mmapSize: parseInt(process.env.POOL_MMAP_SIZE || '268435456'), // 256MB
-            cacheSize: parseInt(process.env.POOL_CACHE_SIZE || '-64000'), // 64MB
-            enableBackup: process.env.POOL_ENABLE_BACKUP === 'true',
-            healthCheckInterval: 60000, // 1 minute
-          };
-
-          instance.persistence = new SwarmPersistencePooled(undefined, poolOptions);
-          await instance.persistence.initialize();
+          const factory = new DALFactory();
+          const coordinationRepo = await factory.createCoordinationRepository('swarm');
+          instance.persistence = coordinationRepo as any; // Type bridge
         } catch (error) {
-          console.warn('⚠️ Pooled persistence not available:', (error as Error).message);
+          console.warn('⚠️ Persistence not available:', (error as Error).message);
           instance.persistence = null;
         }
       }
@@ -478,14 +471,10 @@ export class ZenSwarm implements SwarmEventEmitter {
     // Persist swarm if persistence is enabled and this is a new swarm
     if (this.persistence && !id) {
       try {
-        (this.persistence as any).createSwarm({
-          id: swarm.id,
-          name,
-          topology,
-          strategy,
-          maxAgents,
-          created: new Date().toISOString(),
-        });
+        await this.persistence.execute(
+          'INSERT INTO swarms (id, name, topology, strategy, max_agents, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+          [swarm.id, name, topology, strategy, maxAgents, new Date().toISOString()]
+        );
       } catch (error) {
         if (!(error as Error).message.includes('UNIQUE constraint failed')) {
           console.warn('Failed to persist swarm:', (error as Error).message);
@@ -684,10 +673,7 @@ export class ZenSwarm implements SwarmEventEmitter {
     this.activeSwarms.clear();
     this.globalAgents.clear();
 
-    // Cleanup persistence
-    if (this.persistence && typeof this.persistence.close === 'function') {
-      this.persistence.close();
-    }
+    // Cleanup persistence - DAO is managed by factory, no explicit close needed
 
     // Destroy WASM resources
     if (this.wasmModule && this.swarmId !== undefined) {

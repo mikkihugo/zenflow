@@ -51,45 +51,75 @@ import { injectable, inject } from '../../di/decorators/injectable';
 import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 
 /**
- * Event registry entry for managing event manager instances
+ * Registry entry for managing event manager instances and their lifecycle
+ * 
+ * Tracks the complete lifecycle and usage statistics of registered event managers.
+ * 
+ * @interface EventRegistryEntry
+ * @example
+ * ```typescript
+ * const entry: EventRegistryEntry = {
+ *   manager: systemEventManager,
+ *   factory: systemEventFactory,
+ *   config: managerConfig,
+ *   created: new Date(),
+ *   lastAccessed: new Date(),
+ *   lastHealthCheck: new Date(),
+ *   status: 'healthy',
+ *   usage: {
+ *     accessCount: 150,
+ *     totalEvents: 2500,
+ *     totalSubscriptions: 25,
+ *     errorCount: 2
+ *   },
+ *   metadata: {
+ *     version: '1.0.0',
+ *     tags: ['system', 'core']
+ *   }
+ * };
+ * ```
  */
 export interface EventRegistryEntry {
-  /** Event manager instance */
+  /** The registered event manager instance */
   manager: IEventManager;
   
   /** Factory that created this manager */
   factory: IEventManagerFactory;
   
-  /** Configuration used to create manager */
+  /** Configuration used to create the manager */
   config: EventManagerConfig;
   
-  /** Creation timestamp */
+  /** Timestamp when the manager was created */
   created: Date;
   
-  /** Last access timestamp */
+  /** Timestamp when the manager was last accessed */
   lastAccessed: Date;
   
-  /** Last health check timestamp */
+  /** Timestamp of the last health check */
   lastHealthCheck: Date;
   
-  /** Current status */
+  /** Current operational status of the manager */
   status: 'healthy' | 'unhealthy' | 'stopped' | 'error';
   
-  /** Health check results */
+  /** Latest health check results */
   healthStatus?: EventManagerStatus;
   
-  /** Latest metrics */
+  /** Latest performance metrics */
   metrics?: EventManagerMetrics;
   
-  /** Usage statistics */
+  /** Usage statistics for monitoring and optimization */
   usage: {
+    /** Number of times this manager has been accessed */
     accessCount: number;
+    /** Total number of events processed */
     totalEvents: number;
+    /** Total number of active subscriptions */
     totalSubscriptions: number;
+    /** Total number of errors encountered */
     errorCount: number;
   };
   
-  /** Metadata and tags */
+  /** Additional metadata and tags for categorization */
   metadata: Record<string, any>;
 }
 
@@ -197,7 +227,34 @@ export interface EventDiscoveryConfig {
 }
 
 /**
- * Main event registry implementation
+ * Main event registry implementation for centralized event manager management
+ * 
+ * Provides centralized registration, discovery, and lifecycle management of event managers
+ * and their factories. Includes health monitoring, metrics collection, and event broadcasting.
+ * 
+ * @class EventRegistry
+ * @implements IEventManagerRegistry
+ * @example
+ * ```typescript
+ * // Initialize registry
+ * const registry = new EventRegistry(logger);
+ * await registry.initialize({
+ *   healthMonitoring: { checkInterval: 30000, timeout: 5000 },
+ *   discovery: { autoDiscover: true, patterns: ['*Event'] }
+ * });
+ * 
+ * // Register factory and managers
+ * registry.registerFactory(EventManagerTypes.SYSTEM, systemFactory);
+ * registry.registerManager('system-1', manager, factory, config);
+ * 
+ * // Health monitoring and metrics
+ * const healthStatus = await registry.healthCheckAll();
+ * const metrics = await registry.getGlobalMetrics();
+ * 
+ * // Event broadcasting
+ * await registry.broadcast(globalEvent);
+ * await registry.broadcastToType(EventManagerTypes.SYSTEM, systemEvent);
+ * ```
  */
 @injectable
 export class EventRegistry implements IEventManagerRegistry {
@@ -232,6 +289,32 @@ export class EventRegistry implements IEventManagerRegistry {
 
   /**
    * Initialize the registry system
+   * 
+   * Sets up health monitoring, event discovery, and registers default event types.
+   * 
+   * @param config - Initialization configuration options
+   * @param config.healthMonitoring - Health monitoring settings overrides
+   * @param config.discovery - Event discovery settings overrides
+   * @param config.autoRegisterDefaults - Whether to register default event types (default: true)
+   * @throws {Error} If initialization fails
+   * 
+   * @example
+   * ```typescript
+   * await registry.initialize({
+   *   healthMonitoring: {
+   *     checkInterval: 30000,
+   *     timeout: 5000,
+   *     failureThreshold: 3,
+   *     autoRecovery: true
+   *   },
+   *   discovery: {
+   *     autoDiscover: true,
+   *     patterns: ['*Event', '*event'],
+   *     scanPaths: ['./events']
+   *   },
+   *   autoRegisterDefaults: true
+   * });
+   * ```
    */
   async initialize(config?: {
     healthMonitoring?: Partial<HealthMonitoringConfig>;
@@ -269,7 +352,21 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Register an event manager factory
+   * Register an event manager factory for a specific type
+   * 
+   * Registers a factory that can create event managers of the specified type.
+   * Updates the factory registry with metadata and usage tracking.
+   * 
+   * @template T - Configuration type extending EventManagerConfig
+   * @param type - Event manager type this factory creates
+   * @param factory - Factory instance to register
+   * @throws {Error} If factory registration fails
+   * 
+   * @example
+   * ```typescript
+   * const systemFactory = new SystemEventManagerFactory();
+   * registry.registerFactory(EventManagerTypes.SYSTEM, systemFactory);
+   * ```
    */
   registerFactory<T extends EventManagerConfig>(
     type: EventManagerType, 
@@ -318,7 +415,24 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Register an event manager instance
+   * Register an event manager instance with the registry
+   * 
+   * Creates a registry entry to track the manager's lifecycle, usage, and health.
+   * 
+   * @param name - Unique name for the event manager
+   * @param manager - Event manager instance to register
+   * @param factory - Factory that created this manager
+   * @param config - Configuration used to create the manager
+   * 
+   * @example
+   * ```typescript
+   * registry.registerManager(
+   *   'system-core', 
+   *   systemManager, 
+   *   systemFactory, 
+   *   managerConfig
+   * );
+   * ```
    */
   registerManager(
     name: string,

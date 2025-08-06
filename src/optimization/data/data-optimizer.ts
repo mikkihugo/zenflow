@@ -14,6 +14,7 @@ import type {
   QueryOptimization,
   StorageLayer,
 } from '../interfaces/optimization-interfaces';
+import { createLogger } from '../../core/logger';
 
 export interface DataOptimizationConfig {
   enableQueryOptimization: boolean;
@@ -46,6 +47,7 @@ export interface DatabaseMetrics {
 export class DataPerformanceOptimizer implements DataOptimizer {
   private config: DataOptimizationConfig;
   private queryCache: Map<string, any> = new Map();
+  private logger = createLogger('DataPerformanceOptimizer');
 
   constructor(config: Partial<DataOptimizationConfig> = {}) {
     this.config = {
@@ -114,9 +116,6 @@ export class DataPerformanceOptimizer implements DataOptimizer {
         indexOptimization: indexOptimizations,
         queryPlanImprovement: queryPlanOptimization.improvement,
         cacheUtilization,
-        performanceImprovement: performanceImprovement,
-        slowQueriesAnalysis: queryAnalysis,
-        executionTime,
       };
     } catch (error) {
       throw new Error(`Query optimization failed: ${error}`);
@@ -223,8 +222,6 @@ export class DataPerformanceOptimizer implements DataOptimizer {
         responseTime: performance.responseTime,
         memoryEfficiency: performance.memoryEfficiency,
         invalidationStrategy,
-        cachingStrategy,
-        accessPatterns: accessPatterns.summary,
       };
     } catch (error) {
       throw new Error(`Intelligent caching implementation failed: ${error}`);

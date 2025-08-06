@@ -8,6 +8,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio';
 import { z } from 'zod';
 import { createLogger } from '../../../core/logger';
 import { SwarmTools } from './swarm-tools';
+import { HiveTools } from './hive-tools';
 import type { MCPServerConfig } from './types';
 
 const logger = createLogger({ prefix: 'UnifiedMCPServer' });
@@ -17,6 +18,7 @@ export class StdioMcpServer {
   private transport: StdioServerTransport;
   private config: MCPServerConfig;
   private toolRegistry: SwarmTools;
+  private hiveRegistry: HiveTools;
 
   constructor(config: MCPServerConfig = {}) {
     this.config = {
@@ -28,6 +30,7 @@ export class StdioMcpServer {
 
     this.transport = new StdioServerTransport();
     this.toolRegistry = new SwarmTools();
+    this.hiveRegistry = new HiveTools();
     
     this.server = new McpServer(
       {
@@ -57,10 +60,12 @@ export class StdioMcpServer {
   }
 
   private async registerTools(): Promise<void> {
-    logger.info('Registering swarm MCP tools...');
+    logger.info('Registering swarm and hive MCP tools...');
     
-    // Get all tools from the registry
-    const tools = this.toolRegistry.tools;
+    // Get all tools from both registries
+    const swarmTools = this.toolRegistry.tools;
+    const hiveTools = this.hiveRegistry.tools;
+    const tools = { ...swarmTools, ...hiveTools };
     
     // Register each tool with the MCP server using the official SDK pattern
     for (const [toolName, toolFunction] of Object.entries(tools)) {
@@ -90,7 +95,7 @@ export class StdioMcpServer {
       }
     }
     
-    logger.info(`Registered ${Object.keys(tools).length} swarm tools`);
+    logger.info(`Registered ${Object.keys(swarmTools).length} swarm tools and ${Object.keys(hiveTools).length} hive tools`);
   }
 
   async stop(): Promise<void> {

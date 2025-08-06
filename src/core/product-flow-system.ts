@@ -10,7 +10,7 @@
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
 import type { ProductWorkflowEngine } from '../coordination/orchestration/product-workflow-engine';
-import type { DocumentService } from '../database/services/document-service';
+import type { DocumentManager } from '../database/managers/document-manager';
 import { createLogger } from './logger';
 
 const logger = createLogger('ProductFlowSystem');
@@ -23,10 +23,10 @@ const logger = createLogger('ProductFlowSystem');
  */
 export class ProductFlowSystem extends EventEmitter {
   private workflowEngine: ProductWorkflowEngine;
-  private documentService: DocumentService;
+  private documentService: DocumentManager;
   private activeWorkspaces = new Map<string, string>();
 
-  constructor(workflowEngine: ProductWorkflowEngine, documentService: DocumentService) {
+  constructor(workflowEngine: ProductWorkflowEngine, documentService: DocumentManager) {
     super();
     this.workflowEngine = workflowEngine;
     this.documentService = documentService;

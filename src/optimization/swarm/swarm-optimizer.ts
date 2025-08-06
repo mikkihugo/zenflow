@@ -13,13 +13,14 @@ import type {
   SwarmOptimizer,
   SwarmTopology,
 } from '../interfaces/optimization-interfaces';
+import { createLogger } from '../../core/logger';
 
 export interface SwarmOptimizationConfig {
   maxAgents: number;
   targetLatency: number;
   cacheEnabled: boolean;
   routingAlgorithm: 'shortest_path' | 'load_balanced' | 'adaptive';
-  loadBalancingStrategy: 'round_robin' | 'least_connections' | 'weighted' | 'adaptive';
+  loadBalancingStrategy: 'round-robin' | 'least-connections' | 'weighted' | 'adaptive';
   compressionEnabled: boolean;
   redundancyLevel: number;
 }
@@ -41,6 +42,7 @@ export interface CoordinationMetrics {
 
 export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   private config: SwarmOptimizationConfig;
+  private logger = createLogger('SwarmCoordinationOptimizer');
 
   constructor(config: Partial<SwarmOptimizationConfig> = {}) {
     this.config = {
@@ -242,7 +244,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
       this.logger.info('Horizontal scaling strategy determined', {
         currentUtilization: resourceAnalysis.utilization,
         recommendedAgents: maxSupportedAgents,
-        loadBalancingStrategy: loadBalancingStrategy.type,
+        loadBalancingStrategy: loadBalancingStrategy,
         autoScalingEnabled,
       });
 

@@ -1,9 +1,40 @@
 /**
  * USL (Unified Service Layer) Factory Implementation
  * 
- * Central factory system for creating, managing, and orchestrating service instances
+ * @fileoverview Central factory system for creating, managing, and orchestrating service instances
  * across the Claude-Zen ecosystem. Provides dependency injection, service discovery,
  * and lifecycle management following the same successful patterns as DAL and UACL.
+ * 
+ * @description The USL Factory system implements the Factory pattern with enhanced capabilities:
+ * - Automatic dependency resolution and injection
+ * - Service lifecycle management (initialize, start, stop, destroy)
+ * - Health monitoring and auto-recovery mechanisms
+ * - Service discovery and registration
+ * - Metrics collection and performance monitoring
+ * - Event-driven service coordination
+ * 
+ * @example
+ * ```typescript
+ * import { USLFactory, globalUSLFactory } from '@claude-zen/usl';
+ * 
+ * // Configure and use the global factory
+ * await globalUSLFactory.initialize({
+ *   maxConcurrentInits: 5,
+ *   enableDependencyResolution: true,
+ *   healthMonitoring: { enabled: true, interval: 30000 }
+ * });
+ * 
+ * // Create services with automatic dependency resolution
+ * const webService = await globalUSLFactory.create({
+ *   name: 'api-server',
+ *   type: ServiceType.WEB,
+ *   dependencies: [{ serviceName: 'database', required: true }]
+ * });
+ * 
+ * // Factory handles initialization, dependency injection, and lifecycle
+ * const status = await webService.getStatus();
+ * console.log(`Service ${webService.name} is ${status.lifecycle}`);
+ * ```
  */
 
 import type {
@@ -56,45 +87,91 @@ import { EventEmitter } from 'events';
 
 /**
  * Configuration for the USL Factory system
+ * 
+ * @interface USLFactoryConfig
+ * @description Comprehensive configuration options for the USL Factory system,
+ * controlling service creation, monitoring, discovery, and lifecycle management
+ * @example
+ * ```typescript
+ * const factoryConfig: USLFactoryConfig = {
+ *   maxConcurrentInits: 10,
+ *   defaultTimeout: 60000,
+ *   enableDependencyResolution: true,
+ *   discovery: {
+ *     enabled: true,
+ *     advertisementInterval: 30000,
+ *     heartbeatInterval: 15000
+ *   },
+ *   healthMonitoring: {
+ *     enabled: true,
+ *     interval: 30000,
+ *     alertThresholds: {
+ *       errorRate: 5.0,  // 5% error rate threshold
+ *       responseTime: 1000  // 1 second response time threshold
+ *     }
+ *   },
+ *   autoRecovery: {
+ *     enabled: true,
+ *     maxRetries: 3,
+ *     backoffMultiplier: 2
+ *   }
+ * };
+ * 
+ * await globalUSLFactory.initialize(factoryConfig);
+ * ```
  */
 export interface USLFactoryConfig {
-  /** Maximum number of concurrent service initializations */
+  /** Maximum number of concurrent service initializations (default: 5) */
   maxConcurrentInits?: number;
   
-  /** Default service timeout in milliseconds */
+  /** Default service timeout in milliseconds (default: 30000) */
   defaultTimeout?: number;
   
-  /** Enable dependency resolution */
+  /** Enable automatic dependency resolution and injection (default: true) */
   enableDependencyResolution?: boolean;
   
-  /** Service discovery configuration */
+  /** Service discovery and advertisement configuration */
   discovery?: {
+    /** Enable service discovery system */
     enabled: boolean;
+    /** Interval for service advertisements in milliseconds (default: 60000) */
     advertisementInterval?: number;
+    /** Heartbeat interval for service availability in milliseconds (default: 30000) */
     heartbeatInterval?: number;
   };
   
-  /** Health monitoring configuration */
+  /** Service health monitoring and alerting configuration */
   healthMonitoring?: {
+    /** Enable health monitoring system */
     enabled: boolean;
+    /** Health check interval in milliseconds (default: 30000) */
     interval?: number;
+    /** Alert thresholds for automated notifications */
     alertThresholds?: {
+      /** Error rate percentage threshold for alerts (e.g., 5.0 for 5%) */
       errorRate: number;
+      /** Response time threshold in milliseconds for alerts */
       responseTime: number;
     };
   };
   
-  /** Metrics collection configuration */
+  /** Performance metrics collection and storage configuration */
   metricsCollection?: {
+    /** Enable metrics collection system */
     enabled: boolean;
+    /** Metrics collection interval in milliseconds (default: 60000) */
     interval?: number;
+    /** Metrics retention period in milliseconds (default: 86400000 - 24 hours) */
     retention?: number;
   };
   
-  /** Auto-recovery configuration */
+  /** Automatic service recovery and restart configuration */
   autoRecovery?: {
+    /** Enable automatic recovery for failed services */
     enabled: boolean;
+    /** Maximum number of recovery attempts (default: 3) */
     maxRetries?: number;
+    /** Backoff multiplier for retry delays (default: 2) */
     backoffMultiplier?: number;
   };
 }

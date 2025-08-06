@@ -10,7 +10,7 @@ import { ProductWorkflowEngine } from '../../coordination/orchestration/product-
 import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine';
 import { ProductFlowSystem } from '../../core/product-flow-system';
 import { UnifiedMemorySystem } from '../../core/unified-memory-system';
-import { DocumentService } from '../../database/services/document-service';
+import { DocumentManager } from '../../database/managers/document-manager';
 import { DatabaseCoordinator } from '../../database/core/database-coordinator';
 
 describe('E2E: Complete Product Flow → SPARC Integration', () => {

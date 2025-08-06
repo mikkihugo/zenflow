@@ -87,7 +87,7 @@ export interface AgentMetrics {
 }
 
 // Composite pattern base interface
-export interface AgentComponent {
+export interface AgentComponent extends EventEmitter {
   getId(): string;
   getName(): string;
   getType(): 'individual' | 'group';
@@ -695,7 +695,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
         totalMembers: this.members.size,
         activeMembers: Array.from(this.members.values()).filter(m => {
           const status = m.getStatus();
-          return 'state' in status ? status.state !== 'offline' : status.state !== 'inactive';
+          return 'state' in status ? status.state !== 'offline' : status.status !== 'inactive';
         }).length,
         averageHealth: avgReliability,
         distributionByType
@@ -929,7 +929,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     });
   }
 
-  private selectByCapability(eligibleMembers: AgentComponent[], task: TaskDefinition): AgentComponent {
+  protected selectByCapability(eligibleMembers: AgentComponent[], task: TaskDefinition): AgentComponent {
     // Select member with the most matching capabilities
     return eligibleMembers.reduce((best, current) => {
       const bestCapabilities = best.getCapabilities();
