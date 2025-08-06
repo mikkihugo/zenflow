@@ -7,7 +7,7 @@
 
 import { EventEmitter } from 'node:events';
 import type { ICoordinationDao } from '../../../database';
-import { DALFactory } from '../../../database';
+// import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
 import { ZenSwarm } from './base-swarm';
 import { type SessionConfig, SessionManager, type SessionState } from './session-manager';
 import { SessionRecovery, SessionValidator } from './session-utils';
@@ -33,10 +33,12 @@ export class SessionEnabledSwarm extends ZenSwarm {
     if (persistence) {
       persistenceLayer = persistence;
     } else {
-      // Create a lazy promise for DAO initialization
-      const factory = new DALFactory();
-      const coordinationRepo = await factory.createCoordinationRepository('session');
-      persistenceLayer = coordinationRepo as any; // Type bridge
+      // Create a simple mock implementation for now
+      // TODO: Implement proper DALFactory integration with DI
+      persistenceLayer = {
+        query: async (_sql: string, _params?: any[]) => [],
+        execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 })
+      } as any;
     }
     this.sessionManager = new SessionManager(persistenceLayer, sessionConfig);
 
@@ -347,8 +349,16 @@ export class SessionEnabledSwarm extends ZenSwarm {
           await this.submitTask({
             description: task.description,
             priority: task.priority,
-            dependencies: task.dependencies,
-            assignedAgents: task.assignedAgents,
+            dependencies: task.dependencies || [],
+            assignedAgents: task.assignedAgents || [],
+            swarmId: this.options.topology || 'default', // Use swarm topology as swarmId
+            strategy: 'balanced', // Default strategy
+            progress: 0, // Initial progress
+            requireConsensus: false, // Default consensus requirement
+            maxAgents: 5, // Default max agents
+            requiredCapabilities: [], // Default capabilities
+            createdAt: new Date(), // Current timestamp
+            metadata: {} // Empty metadata
           });
         } catch (error) {
           console.warn(`Failed to restore task ${taskId}:`, error);

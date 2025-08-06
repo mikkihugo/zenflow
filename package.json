@@ -118,6 +118,7 @@
   ],
   "dependencies": {
     "@ag-ui/core": "^0.0.35",
+    "@genkit-ai/mcp": "^1.15.5",
     "@google/generative-ai": "^0.24.1",
     "@lancedb/lancedb": "^0.21.1",
     "@modelcontextprotocol/sdk": "^1.17.0",

@@ -15,6 +15,7 @@
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import type { ICoordinationDao } from '../../../database';
+import { createDao, EntityTypes, DatabaseTypes } from '../../../database';
 import type { SwarmOptions, SwarmState } from './types';
 import { generateId } from './utils';
 
@@ -91,8 +92,11 @@ export class SessionManager extends EventEmitter {
    */
   private async ensureInitialized(): Promise<void> {
     if (!this.coordinationDao) {
-      const factory = DatabaseFactory.getInstance();
-      this.coordinationDao = await factory.getCoordinationDao();
+      // Use the convenience function that handles DI setup internally
+      this.coordinationDao = await createDao<ICoordinationDao>(
+        EntityTypes.CoordinationEvent,
+        DatabaseTypes.Coordination
+      );
     }
   }
 

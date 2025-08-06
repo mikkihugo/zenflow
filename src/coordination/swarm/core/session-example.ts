@@ -6,7 +6,7 @@
  */
 
 import type { ICoordinationDao } from '../../../database';
-import { DALFactory } from '../../../database';
+// import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
 import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
 import { SessionManager } from './session-manager';
 import { SessionStats, SessionValidator } from './session-utils';
@@ -139,8 +139,14 @@ async function sessionRecoveryExample(existingSessionId: string) {
  * Example 3: Session Lifecycle Management
  */
 async function sessionLifecycleExample() {
-  const factory = new DALFactory();
-  const persistence = await factory.createCoordinationRepository('session');
+  // Create a simple mock implementation for now
+  // TODO: Implement proper DALFactory integration with DI
+  const persistence = {
+    query: async (_sql: string, _params?: any[]) => [],
+    execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
+    initialize: async () => {},
+    close: async () => {}
+  } as any;
   await persistence.initialize();
 
   const sessionManager = new SessionManager(persistence, {
@@ -211,8 +217,14 @@ async function sessionLifecycleExample() {
  * Example 4: Session Health Monitoring and Recovery
  */
 async function sessionHealthExample() {
-  const factory = new DALFactory();
-  const persistence = await factory.createCoordinationRepository('session');
+  // Create a simple mock implementation for now
+  // TODO: Implement proper DALFactory integration with DI
+  const persistence = {
+    query: async (_sql: string, _params?: any[]) => [],
+    execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
+    initialize: async () => {},
+    close: async () => {}
+  } as any;
   await persistence.initialize();
 
   const sessionManager = new SessionManager(persistence);

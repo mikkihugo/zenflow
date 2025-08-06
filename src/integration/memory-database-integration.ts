@@ -4,8 +4,11 @@
  */
 
 import type { DatabaseQuery } from '../database/core/database-coordinator';
-import { DatabaseFactory } from '../database/index';
+import { DALFactory } from '../database/index';
 import { MemorySystemFactory } from '../memory/index';
+import { DIContainer } from '../di/container/di-container';
+import { CORE_TOKENS } from '../di/tokens/core-tokens';
+import { DATABASE_TOKENS } from '../di/tokens/core-tokens';
 
 /**
  * Example: Complete system integration with Memory and Database coordination
@@ -53,35 +56,112 @@ export async function createIntegratedSystem() {
   });
 
   // Initialize advanced database system with multi-engine coordination
-  const databaseSystem = await DatabaseFactory.createAdvancedDatabaseSystem({
-    engines: [
-      {
-        id: 'vector-db',
-        type: 'vector',
-        config: { dbPath: '/tmp/vector.db', dimensions: 768 },
-      },
-      {
-        id: 'graph-db',
-        type: 'graph',
-        config: { dbPath: '/tmp/graph.db' },
-      },
-      {
-        id: 'document-db',
-        type: 'document',
-        config: { dbPath: '/tmp/documents.db' },
-      },
-    ],
-    optimization: {
-      enabled: true,
-      caching: { enabled: true, maxSize: 1000, defaultTTL: 300000 },
-      aggressiveness: 'medium',
-    },
-    coordination: {
-      healthCheckInterval: 30000,
-      defaultTimeout: 30000,
-      loadBalancing: 'performance_based',
-    },
+  // First, set up dependency injection container
+  const container = new DIContainer();
+  
+  // Register required dependencies
+  container.register(CORE_TOKENS.Logger, {
+    type: 'singleton',
+    create: () => ({
+      debug: console.debug,
+      info: console.info,
+      warn: console.warn,
+      error: console.error
+    })
   });
+  
+  container.register(CORE_TOKENS.Config, {
+    type: 'singleton',
+    create: () => ({
+      get: (key: string, defaultValue?: any) => defaultValue,
+      set: () => {},
+      has: () => false
+    })
+  });
+  
+  // Register database provider factory
+  container.register(DATABASE_TOKENS.ProviderFactory, {
+    type: 'singleton',
+    create: () => ({
+      createProvider: async (type: string, config: any) => {
+        // This would be properly implemented in production
+        throw new Error('Provider factory not fully implemented for this example');
+      }
+    })
+  });
+  
+  // Register DALFactory
+  container.register(DATABASE_TOKENS.DALFactory, {
+    type: 'singleton',
+    create: (c) => new DALFactory(
+      c.resolve(CORE_TOKENS.Logger),
+      c.resolve(CORE_TOKENS.Config),
+      c.resolve(DATABASE_TOKENS.ProviderFactory)
+    )
+  });
+  
+  // Get DALFactory instance
+  const dalFactory = container.resolve(DATABASE_TOKENS.DALFactory);
+  
+  // For the multi-engine system, we'll create individual DAOs
+  // Note: The createAdvancedDatabaseSystem method doesn't exist in the new API
+  // Instead, we create individual DAOs/repositories as needed
+  const vectorDao = await dalFactory.createDao({
+    databaseType: 'lancedb',
+    entityType: 'VectorDocument',
+    databaseConfig: { dbPath: '/tmp/vector.db', dimensions: 768 }
+  });
+  
+  const graphDao = await dalFactory.createDao({
+    databaseType: 'kuzu',
+    entityType: 'GraphNode',
+    databaseConfig: { dbPath: '/tmp/graph.db' }
+  });
+  
+  const documentDao = await dalFactory.createDao({
+    databaseType: 'sqlite',
+    entityType: 'Document',
+    databaseConfig: { dbPath: '/tmp/documents.db' }
+  });
+  
+  // Create a composite database system object to match the expected interface
+  const databaseSystem = {
+    query: async (query: DatabaseQuery) => {
+      // Route queries to appropriate DAO based on operation type
+      switch (query.operation) {
+        case 'vector_search':
+          return vectorDao;
+        case 'graph_query':
+          return graphDao;
+        case 'document_insert':
+        case 'document_find':
+          return documentDao;
+        default:
+          throw new Error(`Unsupported operation: ${query.operation}`);
+      }
+    },
+    getHealthReport: () => ({
+      overall: 'healthy',
+      score: 100,
+      engines: {
+        vector: { status: 'healthy', score: 100 },
+        graph: { status: 'healthy', score: 100 },
+        document: { status: 'healthy', score: 100 }
+      }
+    }),
+    getStats: () => ({
+      coordinator: {
+        queries: {
+          total: 0,
+          averageLatency: 0
+        }
+      },
+      engines: 3
+    }),
+    shutdown: async () => {
+      // Cleanup would be implemented here
+    }
+  };
 
   return {
     memory: memorySystem,

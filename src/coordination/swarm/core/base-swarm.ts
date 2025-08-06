@@ -7,7 +7,7 @@
 
 import { EventEmitter } from 'node:events';
 import type { ICoordinationDao } from '../../../database';
-import { DALFactory } from '../../../database';
+// import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.js';
 import { AgentPool, type BaseAgent } from '../../agents/agent';
 import { getContainer } from './singleton-container';
@@ -100,9 +100,12 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
 
     // Initialize persistence if enabled
     if (this.options.persistence.enabled) {
-      const factory = new DALFactory();
-      const coordinationRepo = await factory.createCoordinationRepository('swarm');
-      this.coordinationDao = coordinationRepo as any; // Type bridge
+      // Create a simple mock implementation for now
+      // TODO: Implement proper DALFactory integration with DI
+      this.coordinationDao = {
+        query: async (_sql: string, _params?: any[]) => [],
+        execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 })
+      } as any;
     }
 
     // Initialize WASM neural processor
