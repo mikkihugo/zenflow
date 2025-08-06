@@ -15,7 +15,7 @@ import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
 } from '../../database/entities/product-entities';
-import { DocumentService } from '../../database/services/document-service';
+import { DocumentService } from '../../database/services/document-service-legacy';
 
 const logger = createLogger('SPARCSwarmCLI');
 
@@ -1042,4 +1042,4 @@ function generateImplementationPlanMarkdown(plan: any): string {
   return markdown;
 }
 
-export { createSPARCSwarmCommands };
+// Export already defined above

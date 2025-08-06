@@ -5,9 +5,9 @@
  * and memory management for fast data access.
  */
 
-import { BaseRepository } from '../base-repository';
+import { BaseDao } from '../base.dao';
 import type {
-  IMemoryRepository,
+  IMemoryDao,
   MemoryStats,
   CustomQuery
 } from '../interfaces';

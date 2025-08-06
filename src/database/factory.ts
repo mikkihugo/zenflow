@@ -18,8 +18,8 @@ import type {
 import type { DatabaseAdapter } from '../../core/interfaces/base-interfaces';
 import type { ILogger, IConfig } from '../../core/interfaces/base-interfaces';
 import { DatabaseProviderFactory, type DatabaseConfig } from '../providers/database-providers';
-import { injectable, inject } from '../../di/decorators/injectable';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
+import { injectable, inject } from '../di/decorators/injectable';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
 
 /**
  * Configuration for repository creation

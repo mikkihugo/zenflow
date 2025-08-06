@@ -1,8 +1,8 @@
 /**
  * Swarm Backup & Recovery System
  * 
- * Provides automated backup, incremental sync, and disaster recovery
- * for hundreds of swarms with efficient storage and fast recovery.
+ * Provides automated daily backups and disaster recovery
+ * for hundreds of swarms with simple tar-based storage.
  */
 
 import { promises as fs } from 'fs';
@@ -13,12 +13,10 @@ import { spawn } from 'child_process';
 
 export interface BackupConfig {
   // Backup frequency
-  fullBackupIntervalHours: number; // default: 24
-  incrementalBackupIntervalHours: number; // default: 4
+  dailyBackupHour: number; // default: 2 (2 AM daily)
   
   // Retention policy
-  keepFullBackups: number; // default: 7 (weekly)
-  keepIncrementalBackups: number; // default: 72 (3 days * 24)
+  keepDailyBackups: number; // default: 7 (one week)
   
   // Compression and storage
   compressionLevel: number; // default: 6 (1-9)
@@ -32,12 +30,11 @@ export interface BackupConfig {
 
 export interface BackupMetadata {
   id: string;
-  type: 'full' | 'incremental';
+  type: 'daily';
   timestamp: Date;
   swarmIds: string[];
   sizeBytes: number;
   checksum: string;
-  basedOn?: string; // For incrementals, reference full backup
   compression: string;
   encrypted: boolean;
 }
@@ -46,8 +43,7 @@ export class SwarmBackupManager extends EventEmitter {
   private config: BackupConfig;
   private claudeZenPath: string;
   private backupsPath: string;
-  private fullBackupTimer?: NodeJS.Timeout;
-  private incrementalBackupTimer?: NodeJS.Timeout;
+  private dailyBackupTimer?: NodeJS.Timeout;
 
   constructor(claudeZenPath: string, config: Partial<BackupConfig> = {}) {
     super();
@@ -55,10 +51,8 @@ export class SwarmBackupManager extends EventEmitter {
     this.backupsPath = path.join(claudeZenPath, 'backups');
     
     this.config = {
-      fullBackupIntervalHours: 24,
-      incrementalBackupIntervalHours: 4,
-      keepFullBackups: 7,
-      keepIncrementalBackups: 72,
+      dailyBackupHour: 2,
+      keepDailyBackups: 7,
       compressionLevel: 6,
       useEncryption: false,
       enableRemoteSync: false,
@@ -71,8 +65,7 @@ export class SwarmBackupManager extends EventEmitter {
    */
   async initialize(): Promise<void> {
     await fs.mkdir(this.backupsPath, { recursive: true });
-    await fs.mkdir(path.join(this.backupsPath, 'full'), { recursive: true });
-    await fs.mkdir(path.join(this.backupsPath, 'incremental'), { recursive: true });
+    await fs.mkdir(path.join(this.backupsPath, 'daily'), { recursive: true });
     await fs.mkdir(path.join(this.backupsPath, 'metadata'), { recursive: true });
     
     this.startBackupSchedule();
@@ -80,14 +73,14 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   /**
-   * Create full backup of all active swarms
+   * Create daily backup of all active swarms
    */
-  async createFullBackup(): Promise<string> {
+  async createDailyBackup(): Promise<string> {
     const timestamp = new Date();
-    const backupId = `full-${timestamp.toISOString().replace(/[:.]/g, '-')}`;
-    const backupPath = path.join(this.backupsPath, 'full', `${backupId}.tar.gz`);
+    const backupId = `daily-${timestamp.toISOString().split('T')[0]}`;
+    const backupPath = path.join(this.backupsPath, 'daily', `${backupId}.tar.gz`);
     
-    this.emit('backup:started', { type: 'full', id: backupId });
+    this.emit('backup:started', { type: 'daily', id: backupId });
     
     const swarmsPath = path.join(this.claudeZenPath, 'swarms', 'active');
     const swarmDirs = await fs.readdir(swarmsPath);
@@ -102,7 +95,7 @@ export class SwarmBackupManager extends EventEmitter {
     // Create metadata
     const metadata: BackupMetadata = {
       id: backupId,
-      type: 'full',
+      type: 'daily',
       timestamp,
       swarmIds: swarmDirs,
       sizeBytes: stats.size,
@@ -123,71 +116,7 @@ export class SwarmBackupManager extends EventEmitter {
       await this.syncToRemote(backupPath);
     }
     
-    this.emit('backup:completed', { type: 'full', id: backupId, sizeBytes: stats.size });
-    return backupId;
-  }
-
-  /**
-   * Create incremental backup (only changed swarms)
-   */
-  async createIncrementalBackup(): Promise<string> {
-    const timestamp = new Date();
-    const backupId = `inc-${timestamp.toISOString().replace(/[:.]/g, '-')}`;
-    
-    // Find latest full backup as base
-    const latestFull = await this.getLatestFullBackup();
-    if (!latestFull) {
-      // No full backup exists, create one
-      return await this.createFullBackup();
-    }
-    
-    this.emit('backup:started', { type: 'incremental', id: backupId, basedOn: latestFull.id });
-    
-    // Find changed swarms since last backup
-    const changedSwarms = await this.findChangedSwarms(latestFull.timestamp);
-    
-    if (changedSwarms.length === 0) {
-      this.emit('backup:skipped', { reason: 'no-changes', since: latestFull.timestamp });
-      return backupId;
-    }
-    
-    const backupPath = path.join(this.backupsPath, 'incremental', `${backupId}.tar.gz`);
-    
-    // Create archive with only changed swarms
-    await this.createSelectiveArchive(changedSwarms, backupPath);
-    
-    const checksum = await this.calculateChecksum(backupPath);
-    const stats = await fs.stat(backupPath);
-    
-    const metadata: BackupMetadata = {
-      id: backupId,
-      type: 'incremental',
-      timestamp,
-      swarmIds: changedSwarms,
-      sizeBytes: stats.size,
-      checksum,
-      basedOn: latestFull.id,
-      compression: 'gzip',
-      encrypted: this.config.useEncryption
-    };
-    
-    await this.saveMetadata(metadata);
-    
-    if (this.config.useEncryption) {
-      await this.encryptBackup(backupPath);
-    }
-    
-    if (this.config.enableRemoteSync) {
-      await this.syncToRemote(backupPath);
-    }
-    
-    this.emit('backup:completed', { 
-      type: 'incremental', 
-      id: backupId, 
-      changedSwarms: changedSwarms.length,
-      sizeBytes: stats.size 
-    });
-    
+    this.emit('backup:completed', { type: 'daily', id: backupId, sizeBytes: stats.size });
     return backupId;
   }
 
@@ -200,18 +129,14 @@ export class SwarmBackupManager extends EventEmitter {
     try {
       const backup = backupId ? 
         await this.getBackupMetadata(backupId) : 
-        await this.getLatestBackupContaining(swarmId);
+        await this.getLatestBackup();
       
       if (!backup) {
         throw new Error(`No backup found for swarm ${swarmId}`);
       }
       
-      // Restore from backup chain if incremental
-      if (backup.type === 'incremental') {
-        await this.restoreFromIncrementalChain(swarmId, backup);
-      } else {
-        await this.restoreFromFullBackup(swarmId, backup);
-      }
+      // Restore from daily backup
+      await this.restoreFromDailyBackup(swarmId, backup);
       
       this.emit('restore:completed', { swarmId, backupId: backup.id });
       return true;
@@ -244,29 +169,19 @@ export class SwarmBackupManager extends EventEmitter {
   /**
    * Cleanup old backups according to retention policy
    */
-  async cleanupOldBackups(): Promise<{ deletedFull: number; deletedIncremental: number }> {
+  async cleanupOldBackups(): Promise<number> {
     const backups = await this.listBackups();
+    const oldBackups = backups.slice(this.config.keepDailyBackups);
     
-    const fullBackups = backups.filter(b => b.type === 'full').slice(this.config.keepFullBackups);
-    const incrementalBackups = backups.filter(b => b.type === 'incremental').slice(this.config.keepIncrementalBackups);
+    let deletedCount = 0;
     
-    let deletedFull = 0;
-    let deletedIncremental = 0;
-    
-    // Delete old full backups
-    for (const backup of fullBackups) {
+    for (const backup of oldBackups) {
       await this.deleteBackup(backup.id);
-      deletedFull++;
+      deletedCount++;
     }
     
-    // Delete old incremental backups
-    for (const backup of incrementalBackups) {
-      await this.deleteBackup(backup.id);
-      deletedIncremental++;
-    }
-    
-    this.emit('cleanup:completed', { deletedFull, deletedIncremental });
-    return { deletedFull, deletedIncremental };
+    this.emit('cleanup:completed', { deletedCount });
+    return deletedCount;
   }
 
   /**
@@ -274,22 +189,16 @@ export class SwarmBackupManager extends EventEmitter {
    */
   async getBackupStats(): Promise<{
     totalBackups: number;
-    fullBackups: number;
-    incrementalBackups: number;
     totalSizeBytes: number;
     oldestBackup: Date | null;
     newestBackup: Date | null;
   }> {
     const backups = await this.listBackups();
     
-    const fullBackups = backups.filter(b => b.type === 'full').length;
-    const incrementalBackups = backups.filter(b => b.type === 'incremental').length;
     const totalSizeBytes = backups.reduce((sum, b) => sum + b.sizeBytes, 0);
     
     return {
       totalBackups: backups.length,
-      fullBackups,
-      incrementalBackups,
       totalSizeBytes,
       oldestBackup: backups.length > 0 ? backups[backups.length - 1].timestamp : null,
       newestBackup: backups.length > 0 ? backups[0].timestamp : null
@@ -310,20 +219,6 @@ export class SwarmBackupManager extends EventEmitter {
     });
   }
 
-  private async createSelectiveArchive(swarmIds: string[], outputPath: string): Promise<void> {
-    const swarmsPath = path.join(this.claudeZenPath, 'swarms', 'active');
-    
-    return new Promise((resolve, reject) => {
-      const args = ['-czf', outputPath, '-C', swarmsPath];
-      args.push(...swarmIds);
-      
-      const tar = spawn('tar', args);
-      tar.on('close', (code) => {
-        code === 0 ? resolve() : reject(new Error(`tar failed with code ${code}`));
-      });
-    });
-  }
-
   private async calculateChecksum(filePath: string): Promise<string> {
     const hash = createHash('sha256');
     const stream = require('fs').createReadStream(filePath);
@@ -335,31 +230,14 @@ export class SwarmBackupManager extends EventEmitter {
     });
   }
 
-  private async findChangedSwarms(since: Date): Promise<string[]> {
-    const swarmsPath = path.join(this.claudeZenPath, 'swarms', 'active');
-    const swarmDirs = await fs.readdir(swarmsPath);
-    const changedSwarms: string[] = [];
-    
-    for (const swarmId of swarmDirs) {
-      const swarmPath = path.join(swarmsPath, swarmId);
-      const stats = await fs.stat(swarmPath);
-      
-      if (stats.mtime > since) {
-        changedSwarms.push(swarmId);
-      }
-    }
-    
-    return changedSwarms;
-  }
-
   private async saveMetadata(metadata: BackupMetadata): Promise<void> {
     const metadataPath = path.join(this.backupsPath, 'metadata', `${metadata.id}.json`);
     await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
   }
 
-  private async getLatestFullBackup(): Promise<BackupMetadata | null> {
+  private async getLatestBackup(): Promise<BackupMetadata | null> {
     const backups = await this.listBackups();
-    return backups.find(b => b.type === 'full') || null;
+    return backups.length > 0 ? backups[0] : null;
   }
 
   private async getBackupMetadata(backupId: string): Promise<BackupMetadata | null> {
@@ -372,13 +250,8 @@ export class SwarmBackupManager extends EventEmitter {
     }
   }
 
-  private async getLatestBackupContaining(swarmId: string): Promise<BackupMetadata | null> {
-    const backups = await this.listBackups();
-    return backups.find(b => b.swarmIds.includes(swarmId)) || null;
-  }
-
-  private async restoreFromFullBackup(swarmId: string, backup: BackupMetadata): Promise<void> {
-    const backupPath = path.join(this.backupsPath, 'full', `${backup.id}.tar.gz`);
+  private async restoreFromDailyBackup(swarmId: string, backup: BackupMetadata): Promise<void> {
+    const backupPath = path.join(this.backupsPath, 'daily', `${backup.id}.tar.gz`);
     const swarmsPath = path.join(this.claudeZenPath, 'swarms', 'active');
     
     // Extract specific swarm
@@ -395,43 +268,12 @@ export class SwarmBackupManager extends EventEmitter {
     });
   }
 
-  private async restoreFromIncrementalChain(swarmId: string, backup: BackupMetadata): Promise<void> {
-    // First restore from base full backup
-    if (backup.basedOn) {
-      const fullBackup = await this.getBackupMetadata(backup.basedOn);
-      if (fullBackup) {
-        await this.restoreFromFullBackup(swarmId, fullBackup);
-      }
-    }
-    
-    // Then apply incremental changes
-    const backupPath = path.join(this.backupsPath, 'incremental', `${backup.id}.tar.gz`);
-    const swarmsPath = path.join(this.claudeZenPath, 'swarms', 'active');
-    
-    return new Promise((resolve, reject) => {
-      const tar = spawn('tar', [
-        '-xzf', backupPath,
-        '-C', swarmsPath,
-        swarmId
-      ]);
-      
-      tar.on('close', (code) => {
-        code === 0 ? resolve() : reject(new Error(`incremental restore failed with code ${code}`));
-      });
-    });
-  }
-
   private async deleteBackup(backupId: string): Promise<void> {
     const metadata = await this.getBackupMetadata(backupId);
     if (!metadata) return;
     
     // Delete backup file
-    const backupPath = path.join(
-      this.backupsPath, 
-      metadata.type, 
-      `${backupId}.tar.gz`
-    );
-    
+    const backupPath = path.join(this.backupsPath, 'daily', `${backupId}.tar.gz`);
     try {
       await fs.unlink(backupPath);
     } catch {
@@ -449,7 +291,6 @@ export class SwarmBackupManager extends EventEmitter {
 
   private async encryptBackup(backupPath: string): Promise<void> {
     // TODO: Implement encryption using node crypto
-    // For now, just a placeholder
     this.emit('encryption:skipped', { path: backupPath });
   }
 
@@ -459,42 +300,40 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   private startBackupSchedule(): void {
-    // Full backup schedule
-    const fullIntervalMs = this.config.fullBackupIntervalHours * 60 * 60 * 1000;
-    this.fullBackupTimer = setInterval(() => {
-      this.createFullBackup().catch(error => {
-        this.emit('backup:error', { type: 'full', error });
-      });
-    }, fullIntervalMs);
+    // Calculate time until next backup (daily at specified hour)
+    const now = new Date();
+    const nextBackup = new Date();
+    nextBackup.setHours(this.config.dailyBackupHour, 0, 0, 0);
     
-    // Incremental backup schedule
-    const incIntervalMs = this.config.incrementalBackupIntervalHours * 60 * 60 * 1000;
-    this.incrementalBackupTimer = setInterval(() => {
-      this.createIncrementalBackup().catch(error => {
-        this.emit('backup:error', { type: 'incremental', error });
-      });
-    }, incIntervalMs);
+    if (nextBackup <= now) {
+      nextBackup.setDate(nextBackup.getDate() + 1);
+    }
     
-    // Initial backup after 1 minute
+    const timeUntilBackup = nextBackup.getTime() - now.getTime();
+    
+    // Schedule first backup
     setTimeout(() => {
-      this.createFullBackup().catch(error => {
-        this.emit('backup:error', { type: 'initial', error });
+      this.createDailyBackup().catch(error => {
+        this.emit('backup:error', { type: 'daily', error });
       });
-    }, 60000);
+      
+      // Then schedule daily backups
+      this.dailyBackupTimer = setInterval(() => {
+        this.createDailyBackup().catch(error => {
+          this.emit('backup:error', { type: 'daily', error });
+        });
+      }, 24 * 60 * 60 * 1000); // 24 hours
+      
+    }, timeUntilBackup);
   }
 
   /**
    * Shutdown backup system
    */
   async shutdown(): Promise<void> {
-    if (this.fullBackupTimer) {
-      clearInterval(this.fullBackupTimer);
-      this.fullBackupTimer = undefined;
-    }
-    
-    if (this.incrementalBackupTimer) {
-      clearInterval(this.incrementalBackupTimer);
-      this.incrementalBackupTimer = undefined;
+    if (this.dailyBackupTimer) {
+      clearInterval(this.dailyBackupTimer);
+      this.dailyBackupTimer = undefined;
     }
     
     this.emit('shutdown');

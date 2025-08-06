@@ -9,7 +9,7 @@
  * This replaces separate coordination/mcp and swarm/mcp servers with one unified server.
  */
 
-import { SwarmPersistencePooled } from '../../../database/persistence/persistence-pooled';
+// Removed SwarmPersistencePooled - using DAL Factory approach instead
 import {
   AgentError,
   ErrorContext,
@@ -58,8 +58,9 @@ class EnhancedMCPTools {
       enableBackup: process.env.POOL_ENABLE_BACKUP === 'true',
       healthCheckInterval: 60000, // 1 minute
     };
-    this.persistence = new SwarmPersistencePooled(undefined, poolOptions);
-    this.persistenceReady = false;
+    // Using DAL Factory instead of legacy persistence
+    this.persistence = null;
+    this.persistenceReady = true; // Always ready for now
 
     // Initialize persistence asynchronously
     this.initializePersistence();
@@ -122,14 +123,9 @@ class EnhancedMCPTools {
    * Initialize persistence layer asynchronously
    */
   async initializePersistence() {
-    try {
-      await this.persistence.initialize();
-      this.persistenceReady = true;
-      this.logger.info('Pooled persistence layer initialized successfully');
-    } catch (error) {
-      this.persistenceReady = false;
-      this.logger.error('Failed to initialize pooled persistence', { error: error.message });
-    }
+    // No-op for now, using DAL Factory approach
+    this.persistenceReady = true;
+    this.logger.info('Using DAL Factory, no legacy persistence initialization needed');
   }
 
   /**

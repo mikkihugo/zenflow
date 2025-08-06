@@ -46,10 +46,50 @@ export {
   createDevelopmentCoordinationEventManager
 } from './coordination-event-factory';
 
+// Communication Event Adapter - Main export
+export {
+  CommunicationEventAdapter,
+  createCommunicationEventAdapter,
+  createDefaultCommunicationEventAdapterConfig,
+  CommunicationEventHelpers,
+  type CommunicationEventAdapterConfig
+} from './communication-event-adapter';
+
+// Communication Event Factory - Factory pattern
+export {
+  CommunicationEventFactory,
+  communicationEventFactory,
+  createWebSocketCommunicationAdapter,
+  createMCPCommunicationAdapter,
+  createHTTPCommunicationAdapter,
+  createProtocolCommunicationAdapter,
+  createComprehensiveCommunicationAdapter
+} from './communication-event-factory';
+
+// Monitoring Event Adapter - Main export
+export {
+  MonitoringEventAdapter,
+  createMonitoringEventAdapter,
+  createDefaultMonitoringEventAdapterConfig,
+  MonitoringEventHelpers,
+  type MonitoringEventAdapterConfig
+} from './monitoring-event-adapter';
+
+// Monitoring Event Factory - Factory pattern
+export {
+  MonitoringEventFactory,
+  MonitoringEventConfigs,
+  MonitoringEventAdapterFactory,
+  MonitoringEventRegistry,
+  MonitoringEventManager
+} from './monitoring-event-factory';
+
 // Type exports for convenience
 export type {
   SystemLifecycleEvent,
   CoordinationEvent,
+  CommunicationEvent,
+  MonitoringEvent,
   EventPriority,
   EventProcessingStrategy
 } from '../types';
@@ -90,7 +130,9 @@ export {
  */
 export const EventAdapterTypes = {
   SYSTEM: 'system',
-  COORDINATION: 'coordination'
+  COORDINATION: 'coordination',
+  COMMUNICATION: 'communication',
+  MONITORING: 'monitoring'
 } as const;
 
 export type EventAdapterType = typeof EventAdapterTypes[keyof typeof EventAdapterTypes];
@@ -100,7 +142,9 @@ export type EventAdapterType = typeof EventAdapterTypes[keyof typeof EventAdapte
  */
 export const EventAdapterFactories = {
   [EventAdapterTypes.SYSTEM]: SystemEventManagerFactory,
-  [EventAdapterTypes.COORDINATION]: CoordinationEventManagerFactory
+  [EventAdapterTypes.COORDINATION]: CoordinationEventManagerFactory,
+  [EventAdapterTypes.COMMUNICATION]: CommunicationEventFactory,
+  [EventAdapterTypes.MONITORING]: MonitoringEventFactory
 } as const;
 
 /**
@@ -124,6 +168,22 @@ export const EventAdapterUtils = {
   },
 
   /**
+   * Create communication event adapter with sensible defaults
+   */
+  createCommunicationAdapter: (name: string, overrides?: Partial<CommunicationEventAdapterConfig>) => {
+    const config = createDefaultCommunicationEventAdapterConfig(name, overrides);
+    return createCommunicationEventAdapter(config);
+  },
+
+  /**
+   * Create monitoring event adapter with sensible defaults
+   */
+  createMonitoringAdapter: (name: string, overrides?: Partial<MonitoringEventAdapterConfig>) => {
+    const config = createDefaultMonitoringEventAdapterConfig(name, overrides);
+    return createMonitoringEventAdapter(config);
+  },
+
+  /**
    * Create system event adapter factory
    */
   createSystemFactory: () => new SystemEventManagerFactory(),
@@ -132,6 +192,16 @@ export const EventAdapterUtils = {
    * Create coordination event adapter factory
    */
   createCoordinationFactory: () => new CoordinationEventManagerFactory(),
+
+  /**
+   * Create communication event adapter factory
+   */
+  createCommunicationFactory: () => new CommunicationEventFactory(),
+
+  /**
+   * Create monitoring event adapter factory
+   */
+  createMonitoringFactory: () => MonitoringEventFactory,
 
   /**
    * Get all available adapter types
@@ -152,9 +222,15 @@ export default {
   SystemEventManagerFactory,
   CoordinationEventAdapter,
   CoordinationEventManagerFactory,
+  CommunicationEventAdapter,
+  CommunicationEventFactory,
+  MonitoringEventAdapter,
+  MonitoringEventFactory,
   EventAdapterTypes,
   EventAdapterFactories,
   EventAdapterUtils,
   SystemEventHelpers,
-  CoordinationEventHelpers
+  CoordinationEventHelpers,
+  CommunicationEventHelpers,
+  MonitoringEventHelpers
 };

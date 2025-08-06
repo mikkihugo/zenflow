@@ -6,6 +6,8 @@
  */
 
 import { createSimpleLogger } from './utils/logger';
+import { spawn } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
 
 const logger = createSimpleLogger('CommandEngine');
 
@@ -238,7 +240,7 @@ export class CommandExecutionEngine {
     if (!action) {
       return {
         success: false,
-        error: 'Swarm action required. Available actions: start, stop, list, status, create',
+        error: 'Swarm action required. Available actions: start, stop, list, status, create, init, spawn, monitor, metrics, orchestrate',
       };
     }
 
@@ -255,10 +257,20 @@ export class CommandExecutionEngine {
         return CommandExecutionEngine.handleSwarmStatus(context);
       case 'create':
         return CommandExecutionEngine.handleSwarmCreate(context);
+      case 'init':
+        return CommandExecutionEngine.handleSwarmInit(context);
+      case 'spawn':
+        return CommandExecutionEngine.handleSwarmSpawn(context);
+      case 'monitor':
+        return CommandExecutionEngine.handleSwarmMonitor(context);
+      case 'metrics':
+        return CommandExecutionEngine.handleSwarmMetrics(context);
+      case 'orchestrate':
+        return CommandExecutionEngine.handleSwarmOrchestrate(context);
       default:
         return {
           success: false,
-          error: `Unknown swarm action: ${action}. Available: start, stop, list, status, create`,
+          error: `Unknown swarm action: ${action}. Available: start, stop, list, status, create, init, spawn, monitor, metrics, orchestrate`,
         };
     }
   }
@@ -681,8 +693,8 @@ export class CommandExecutionEngine {
         {
           name: 'swarm <action>',
           description: 'Manage AI agent swarms and coordination',
-          actions: ['start', 'stop', 'list', 'status', 'create'],
-          options: ['--agents <count>', '--topology <type>'],
+          actions: ['start', 'stop', 'list', 'status', 'create', 'init', 'spawn', 'monitor', 'metrics', 'orchestrate'],
+          options: ['--agents <count>', '--topology <type>', '--strategy <type>'],
         },
         {
           name: 'mcp <action>',
@@ -785,24 +797,145 @@ export class CommandExecutionEngine {
     };
   }
 
-  private static async handleSwarmStatus(_context: ExecutionContext): Promise<CommandResult> {
-    return {
-      success: true,
-      message: 'Swarm system status retrieved',
-      data: {
-        totalSwarms: 2,
-        activeSwarms: 1,
-        totalAgents: 4,
-        activeAgents: 4,
-        averageUptime: 1800000,
-        systemLoad: 0.65,
-        coordination: {
-          messagesProcessed: 1247,
-          averageLatency: 85,
-          errorRate: 0.02,
+  /**
+   * Call MCP tool via stdio protocol
+   */
+  private static async callMcpTool(toolName: string, params: any = {}): Promise<{success: boolean, data?: any, error?: string}> {
+    return new Promise((resolve) => {
+      const mcpProcess = spawn('npx', ['tsx', 'src/coordination/swarm/mcp/mcp-server.ts'], {
+        stdio: ['pipe', 'pipe', 'pipe'],
+        cwd: process.cwd(),
+      });
+
+      let stdout = '';
+      let stderr = '';
+      let isResolved = false;
+
+      // Prepare MCP request
+      const request = {
+        jsonrpc: '2.0',
+        id: randomUUID(),
+        method: 'tools/call',
+        params: {
+          name: toolName,
+          arguments: params,
         },
-      },
-    };
+      };
+
+      // Set up timeout
+      const timeout = setTimeout(() => {
+        if (!isResolved) {
+          isResolved = true;
+          mcpProcess.kill();
+          resolve({ success: false, error: 'MCP call timeout' });
+        }
+      }, 5000);
+
+      mcpProcess.stdout?.on('data', (data) => {
+        stdout += data.toString();
+        // Look for JSON response
+        const lines = stdout.split('\n');
+        for (const line of lines) {
+          if (line.trim() && line.includes('"jsonrpc"')) {
+            try {
+              const response = JSON.parse(line.trim());
+              if (response.id === request.id && !isResolved) {
+                isResolved = true;
+                clearTimeout(timeout);
+                mcpProcess.kill();
+                
+                if (response.error) {
+                  resolve({ success: false, error: response.error.message });
+                } else {
+                  resolve({ success: true, data: response.result });
+                }
+                return;
+              }
+            } catch (e) {
+              // Ignore parsing errors, continue looking
+            }
+          }
+        }
+      });
+
+      mcpProcess.stderr?.on('data', (data) => {
+        stderr += data.toString();
+      });
+
+      mcpProcess.on('close', (code) => {
+        if (!isResolved) {
+          isResolved = true;
+          clearTimeout(timeout);
+          if (code !== 0) {
+            resolve({ success: false, error: `MCP process exited with code ${code}: ${stderr}` });
+          } else {
+            resolve({ success: false, error: 'No response from MCP server' });
+          }
+        }
+      });
+
+      mcpProcess.on('error', (error) => {
+        if (!isResolved) {
+          isResolved = true;
+          clearTimeout(timeout);
+          resolve({ success: false, error: `Failed to start MCP process: ${error.message}` });
+        }
+      });
+
+      // Send the request
+      try {
+        mcpProcess.stdin?.write(JSON.stringify(request) + '\n');
+        mcpProcess.stdin?.end();
+      } catch (error) {
+        if (!isResolved) {
+          isResolved = true;
+          clearTimeout(timeout);
+          resolve({ success: false, error: `Failed to send MCP request: ${error.message}` });
+        }
+      }
+    });
+  }
+
+  private static async handleSwarmStatus(_context: ExecutionContext): Promise<CommandResult> {
+    try {
+      // Call the swarm MCP tool for real status
+      const mcpResult = await CommandExecutionEngine.callMcpTool('swarm_status', {});
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: 'Swarm system status retrieved from MCP',
+          data: mcpResult.data,
+        };
+      } else {
+        // Fallback to mock data if MCP call fails
+        logger.warn('MCP swarm_status failed, using mock data');
+        return {
+          success: true,
+          message: 'Swarm system status retrieved (mock data - MCP unavailable)',
+          data: {
+            totalSwarms: 0,
+            activeSwarms: 0,
+            totalAgents: 0,
+            activeAgents: 0,
+            averageUptime: 0,
+            systemLoad: 0,
+            coordination: {
+              messagesProcessed: 0,
+              averageLatency: 0,
+              errorRate: 0,
+            },
+            note: 'MCP server not available, showing mock data',
+          },
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling swarm MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to get swarm status: ${error.message}`,
+      };
+    }
   }
 
   private static async handleSwarmCreate(context: ExecutionContext): Promise<CommandResult> {
@@ -822,6 +955,171 @@ export class CommandExecutionEngine {
         createdAt: new Date().toISOString(),
       },
     };
+  }
+
+  /**
+   * Handle swarm init command - initialize new swarm coordination
+   */
+  private static async handleSwarmInit(context: ExecutionContext): Promise<CommandResult> {
+    try {
+      const topology = context.flags.topology || context.flags.t || 'auto';
+      const maxAgents = parseInt(context.flags.agents || context.flags.a) || 4;
+      const name = context.args[1] || 'New Swarm';
+      
+      // Call the swarm MCP tool for real initialization
+      const mcpResult = await CommandExecutionEngine.callMcpTool('swarm_init', {
+        name,
+        topology,
+        maxAgents,
+      });
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: `Swarm "${name}" initialized successfully with ${topology} topology`,
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to initialize swarm: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling swarm_init MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to initialize swarm: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * Handle swarm spawn command - spawn new agent
+   */
+  private static async handleSwarmSpawn(context: ExecutionContext): Promise<CommandResult> {
+    try {
+      const agentType = context.args[1] || 'general';
+      const agentName = context.args[2] || `${agentType}-${Date.now()}`;
+      
+      // Call the swarm MCP tool for real agent spawning
+      const mcpResult = await CommandExecutionEngine.callMcpTool('agent_spawn', {
+        type: agentType,
+        name: agentName,
+      });
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: `Agent "${agentName}" of type "${agentType}" spawned successfully`,
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to spawn agent: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling agent_spawn MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to spawn agent: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * Handle swarm monitor command - real-time swarm monitoring
+   */
+  private static async handleSwarmMonitor(context: ExecutionContext): Promise<CommandResult> {
+    try {
+      // Call the swarm MCP tool for real monitoring data
+      const mcpResult = await CommandExecutionEngine.callMcpTool('swarm_monitor', {});
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: 'Real-time swarm monitoring data retrieved',
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to get monitoring data: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling swarm_monitor MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to get monitoring data: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * Handle swarm metrics command - agent metrics
+   */
+  private static async handleSwarmMetrics(context: ExecutionContext): Promise<CommandResult> {
+    try {
+      // Call the swarm MCP tool for real agent metrics
+      const mcpResult = await CommandExecutionEngine.callMcpTool('agent_metrics', {});
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: 'Agent performance metrics retrieved',
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to get agent metrics: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling agent_metrics MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to get agent metrics: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * Handle swarm orchestrate command - task orchestration
+   */
+  private static async handleSwarmOrchestrate(context: ExecutionContext): Promise<CommandResult> {
+    try {
+      const task = context.args[1] || 'Generic Task';
+      const strategy = context.flags.strategy || context.flags.s || 'auto';
+      
+      // Call the swarm MCP tool for real task orchestration
+      const mcpResult = await CommandExecutionEngine.callMcpTool('task_orchestrate', {
+        task,
+        strategy,
+      });
+      
+      if (mcpResult.success) {
+        return {
+          success: true,
+          message: `Task "${task}" orchestrated successfully using ${strategy} strategy`,
+          data: mcpResult.data,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Failed to orchestrate task: ${mcpResult.error}`,
+        };
+      }
+    } catch (error) {
+      logger.error('Error calling task_orchestrate MCP tool:', error);
+      return {
+        success: false,
+        error: `Failed to orchestrate task: ${error.message}`,
+      };
+    }
   }
 
   /**

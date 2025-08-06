@@ -56,7 +56,7 @@ import { TopologyManager } from '../../../coordination/protocols/topology/topolo
 import { AgentLifecycleManager } from '../../../coordination/protocols/lifecycle/agent-lifecycle-manager';
 import { CommunicationProtocols } from '../../../coordination/protocols/communication/communication-protocols';
 
-import { createLogger, type Logger } from '../../../utils/logger';
+import { createLogger, type Logger } from '../../../core/logger';
 import { EventEmitter } from 'events';
 
 /**

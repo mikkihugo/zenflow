@@ -5,9 +5,9 @@
  * distributed locking, pub/sub messaging, and change notifications.
  */
 
-import { BaseRepository } from '../base-repository';
+import { BaseDao } from '../base.dao';
 import type {
-  ICoordinationRepository,
+  ICoordinationDao,
   CoordinationLock,
   CoordinationChange,
   CoordinationEvent,

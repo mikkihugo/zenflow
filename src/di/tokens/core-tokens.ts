@@ -76,4 +76,14 @@ export const DATABASE_TOKENS = {
   ProviderFactory: createToken('DatabaseProviderFactory'),
   Config: createToken('DatabaseConfig'),
   Controller: createToken('DatabaseController'),
+  DALFactory: createToken('DALFactory'),
+} as const;
+
+// Swarm coordination tokens
+export const SWARM_TOKENS = {
+  DatabaseManager: createToken('SwarmDatabaseManager'),
+  MaintenanceManager: createToken('SwarmMaintenanceManager'),
+  BackupManager: createToken('SwarmBackupManager'),
+  Config: createToken('SwarmConfig'),
+  StoragePath: createToken('SwarmStoragePath'),
 } as const;

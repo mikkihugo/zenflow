@@ -577,12 +577,12 @@ export class UELFactory {
     
     switch (managerType) {
       case EventManagerTypes.SYSTEM:
-        const { SystemEventManagerFactory } = await import('./implementations/system-event-manager-factory');
+        const { SystemEventManagerFactory } = await import('./adapters/system-event-factory');
         FactoryClass = SystemEventManagerFactory;
         break;
         
       case EventManagerTypes.COORDINATION:
-        const { CoordinationEventManagerFactory } = await import('./implementations/coordination-event-manager-factory');
+        const { CoordinationEventManagerFactory } = await import('./adapters/coordination-event-factory');
         FactoryClass = CoordinationEventManagerFactory;
         break;
         

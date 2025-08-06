@@ -8,7 +8,7 @@
 import { nanoid } from 'nanoid';
 import type { DocumentType } from '../../types/workflow-types';
 import type { IRepository, IDataAccessObject } from '../interfaces';
-import { createRepository, createDAO, DatabaseTypes, EntityTypes } from '../index';
+import { createDao, createManager, DatabaseTypes, EntityTypes } from '../index';
 import type {
   ADRDocumentEntity,
   BaseDocumentEntity,
@@ -72,33 +72,33 @@ export class DocumentManager {
    */
   async initialize(): Promise<void> {
     // Initialize all repositories using DAL factory
-    this.documentRepository = await createRepository<BaseDocumentEntity>(
+    this.documentRepository = await createDao<BaseDocumentEntity>(
       EntityTypes.Document, 
       this.databaseType
     );
     
-    this.projectRepository = await createRepository<ProjectEntity>(
+    this.projectRepository = await createDao<ProjectEntity>(
       'Project', 
       this.databaseType
     );
     
-    this.relationshipRepository = await createRepository<DocumentRelationshipEntity>(
+    this.relationshipRepository = await createDao<DocumentRelationshipEntity>(
       'DocumentRelationship', 
       this.databaseType
     );
     
-    this.workflowRepository = await createRepository<DocumentWorkflowStateEntity>(
+    this.workflowRepository = await createDao<DocumentWorkflowStateEntity>(
       'DocumentWorkflowState', 
       this.databaseType
     );
 
     // Initialize DAOs for advanced operations
-    this.documentDAO = await createDAO<BaseDocumentEntity>(
+    this.documentDAO = await createDao<BaseDocumentEntity>(
       EntityTypes.Document, 
       this.databaseType
     );
     
-    this.projectDAO = await createDAO<ProjectEntity>(
+    this.projectDAO = await createDao<ProjectEntity>(
       'Project', 
       this.databaseType
     );

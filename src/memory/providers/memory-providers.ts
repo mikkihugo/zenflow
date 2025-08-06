@@ -7,7 +7,9 @@
  */
 
 import { Inject, Injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS, MEMORY_TOKENS } from '../../di/tokens/core-tokens';
+import { CORE_TOKENS, MEMORY_TOKENS, DATABASE_TOKENS, type ILogger, type IConfig } from '../../di/tokens/core-tokens';
+import { DALFactory } from '../../database/factory.js';
+import type { ICoordinationRepository, IVectorRepository } from '../../database/interfaces.js';
 
 /**
  * Interface for memory backend implementations
@@ -45,13 +47,14 @@ export interface MemoryConfig {
 
 /**
  * Factory for creating memory backend providers
- * Uses dependency injection for logger and configuration
+ * Uses dependency injection for logger, configuration, and DAL Factory
  */
 @Injectable()
 export class MemoryProviderFactory {
   constructor(
     @Inject(CORE_TOKENS.Logger) private logger: ILogger,
     @Inject(CORE_TOKENS.Config) private config: IConfig,
+    @Inject(DATABASE_TOKENS.DALFactory) private dalFactory: DALFactory
   ) {}
 
   /**
@@ -65,9 +68,9 @@ export class MemoryProviderFactory {
     try {
       switch (config.type) {
         case 'sqlite':
-          return new SqliteMemoryBackend(config, this.logger);
+          return new SqliteMemoryBackend(config, this.logger, this.dalFactory);
         case 'lancedb':
-          return new LanceDBMemoryBackend(config, this.logger);
+          return new LanceDBMemoryBackend(config, this.logger, this.dalFactory);
         case 'json':
           return new JsonMemoryBackend(config, this.logger);
         case 'memory':
@@ -84,15 +87,17 @@ export class MemoryProviderFactory {
 }
 
 /**
- * SQLite-based memory backend implementation
+ * SQLite-based memory backend implementation using DAL Factory
  */
 @Injectable()
 export class SqliteMemoryBackend implements MemoryBackend {
+  private repository: ICoordinationRepository<any>;
   private initialized = false;
 
   constructor(
     private config: MemoryConfig,
-    private logger: ILogger
+    private logger: ILogger,
+    private dalFactory: DALFactory
   ) {}
 
   async store(key: string, value: any): Promise<void> {
@@ -100,8 +105,12 @@ export class SqliteMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      const serializedValue = JSON.stringify(value);
-      // SQLite implementation would go here
+      await this.repository.create({
+        id: key,
+        data: value,
+        createdAt: new Date().toISOString(),
+        metadata: { type: 'memory_entry' }
+      });
       this.logger.debug(`Successfully stored key: ${key}`);
     } catch (error) {
       this.logger.error(`Failed to store key ${key}: ${error}`);
@@ -114,8 +123,8 @@ export class SqliteMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      // SQLite implementation would go here
-      return null; // Placeholder
+      const results = await this.repository.findByCriteria({ id: key });
+      return results.length > 0 ? results[0].data : null;
     } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;
@@ -127,7 +136,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      // SQLite implementation would go here
+      await this.repository.delete(key);
       this.logger.debug(`Successfully deleted key: ${key}`);
     } catch (error) {
       this.logger.error(`Failed to delete key ${key}: ${error}`);
@@ -140,7 +149,10 @@ export class SqliteMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      // SQLite implementation would go here
+      const allEntries = await this.repository.findByCriteria({});
+      for (const entry of allEntries) {
+        await this.repository.delete(entry.id);
+      }
       this.logger.info('Successfully cleared all data');
     } catch (error) {
       this.logger.error(`Failed to clear data: ${error}`);
@@ -152,8 +164,8 @@ export class SqliteMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      // SQLite implementation would go here
-      return 0; // Placeholder
+      const allEntries = await this.repository.findByCriteria({});
+      return allEntries.length;
     } catch (error) {
       this.logger.error(`Failed to get size: ${error}`);
       throw error;
@@ -163,7 +175,8 @@ export class SqliteMemoryBackend implements MemoryBackend {
   async health(): Promise<boolean> {
     try {
       await this.ensureInitialized();
-      // Additional health checks would go here
+      // Test basic operation
+      await this.repository.findByCriteria({ limit: 1 });
       return true;
     } catch (error) {
       this.logger.error(`Health check failed: ${error}`);
@@ -175,9 +188,10 @@ export class SqliteMemoryBackend implements MemoryBackend {
     if (this.initialized) return;
 
     try {
-      // SQLite initialization would go here
+      // Create coordination repository using DAL Factory
+      this.repository = await this.dalFactory.createCoordinationRepository('MemoryStore');
       this.initialized = true;
-      this.logger.info('SQLite memory backend initialized');
+      this.logger.info('SQLite memory backend initialized via DAL Factory');
     } catch (error) {
       this.logger.error(`Failed to initialize SQLite backend: ${error}`);
       throw error;
@@ -186,15 +200,17 @@ export class SqliteMemoryBackend implements MemoryBackend {
 }
 
 /**
- * LanceDB-based memory backend implementation
+ * LanceDB-based memory backend implementation using DAL Factory
  */
 @Injectable()
 export class LanceDBMemoryBackend implements MemoryBackend {
+  private repository: IVectorRepository<any>;
   private initialized = false;
 
   constructor(
     private config: MemoryConfig,
-    private logger: ILogger
+    private logger: ILogger,
+    private dalFactory: DALFactory
   ) {}
 
   async store(key: string, value: any): Promise<void> {
@@ -202,7 +218,18 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      // LanceDB implementation would go here
+      // Generate a simple vector representation for the key-value pair
+      const vector = this.generateVectorFromValue(value);
+      
+      await this.repository.addVector({
+        id: key,
+        vector,
+        metadata: {
+          originalValue: value,
+          storageType: 'memory',
+          createdAt: new Date().toISOString()
+        }
+      });
       this.logger.debug(`Successfully stored key: ${key}`);
     } catch (error) {
       this.logger.error(`Failed to store key ${key}: ${error}`);
@@ -215,8 +242,9 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      // LanceDB implementation would go here
-      return null; // Placeholder
+      const results = await this.repository.searchSimilar([0], { limit: 1000 });
+      const match = results.find(r => r.id === key);
+      return match?.metadata?.originalValue || null;
     } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;
@@ -228,7 +256,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      // LanceDB implementation would go here
+      await this.repository.deleteVector(key);
       this.logger.debug(`Successfully deleted key: ${key}`);
     } catch (error) {
       this.logger.error(`Failed to delete key ${key}: ${error}`);
@@ -241,7 +269,11 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      // LanceDB implementation would go here
+      // Get all vectors and delete them
+      const allVectors = await this.repository.searchSimilar([0], { limit: 10000 });
+      for (const vector of allVectors) {
+        await this.repository.deleteVector(vector.id);
+      }
       this.logger.info('Successfully cleared all data');
     } catch (error) {
       this.logger.error(`Failed to clear data: ${error}`);
@@ -253,8 +285,8 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      // LanceDB implementation would go here
-      return 0; // Placeholder
+      const allVectors = await this.repository.searchSimilar([0], { limit: 10000 });
+      return allVectors.length;
     } catch (error) {
       this.logger.error(`Failed to get size: ${error}`);
       throw error;
@@ -264,7 +296,8 @@ export class LanceDBMemoryBackend implements MemoryBackend {
   async health(): Promise<boolean> {
     try {
       await this.ensureInitialized();
-      // Additional health checks would go here
+      // Test basic operation
+      await this.repository.searchSimilar([0], { limit: 1 });
       return true;
     } catch (error) {
       this.logger.error(`Health check failed: ${error}`);
@@ -276,13 +309,30 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     if (this.initialized) return;
 
     try {
-      // LanceDB initialization would go here
+      // Create vector repository using DAL Factory
+      this.repository = await this.dalFactory.createLanceDBVectorRepository(
+        'MemoryVectors',
+        384 // Default vector size
+      );
       this.initialized = true;
-      this.logger.info('LanceDB memory backend initialized');
+      this.logger.info('LanceDB memory backend initialized via DAL Factory');
     } catch (error) {
       this.logger.error(`Failed to initialize LanceDB backend: ${error}`);
       throw error;
     }
+  }
+
+  private generateVectorFromValue(value: any): number[] {
+    // Simple hash-based vector generation for demo purposes
+    // In production, you'd use proper embeddings
+    const str = JSON.stringify(value);
+    const vector = new Array(384).fill(0);
+    
+    for (let i = 0; i < str.length && i < 384; i++) {
+      vector[i] = str.charCodeAt(i) / 255; // Normalize to 0-1
+    }
+    
+    return vector;
   }
 }
 
@@ -484,14 +534,5 @@ export class InMemoryBackend implements MemoryBackend {
   }
 }
 
-// Type definitions for DI integration
-interface ILogger {
-  info(message: string): void;
-  error(message: string): void;
-  warn(message: string): void;
-  debug(message: string): void;
-}
-
-interface IConfig {
-  get<T>(key: string, defaultValue?: T): T;
-}
+// Memory backends now properly integrated with DAL Factory
+// All database operations go through the existing repository patterns

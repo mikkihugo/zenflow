@@ -5,9 +5,9 @@
  * node and relationship management, traversals, and Cypher queries.
  */
 
-import { BaseRepository } from '../base-repository';
+import { BaseDao } from '../base.dao';
 import type { 
-  IGraphRepository,
+  IGraphDao,
   GraphNode,
   GraphRelationship,
   GraphTraversalResult,

@@ -22,7 +22,7 @@ import { CoordinationEventAdapter, createDefaultCoordinationEventAdapterConfig }
 import { EventManagerTypes } from '../core/interfaces';
 
 import type { ILogger, IConfig } from '../../../core/interfaces/base-interfaces';
-import { createLogger } from '../../../utils/logger';
+import { createLogger } from '../../../core/logger';
 
 /**
  * Coordination Event Manager Factory

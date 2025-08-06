@@ -10,9 +10,9 @@ import type React from 'react';
 import { useEffect, useState } from 'react';
 import { AdvancedCLIEngine } from '../cli/advanced-cli-engine';
 import type { CLIConfig } from '../cli/types/advanced-cli-types';
-import { CommandExecutionRenderer } from './command-execution-renderer';
-import { InteractiveTerminalApplication } from './interactive-terminal-application';
-import { detectMode, type TerminalMode } from './utils/mode-detector';
+import { CommandExecutionRenderer } from '../terminal/command-execution-renderer';
+import { InteractiveTerminalApplication } from '../terminal/interactive-terminal-application';
+import { detectMode, type TerminalMode } from '../terminal/utils/mode-detector';
 
 export interface TerminalAppProps {
   commands: string[];

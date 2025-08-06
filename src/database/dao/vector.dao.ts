@@ -5,9 +5,9 @@
  * similarity search, vector insertion, indexing, and clustering.
  */
 
-import { BaseRepository } from '../base-repository';
+import { BaseDao } from '../base.dao';
 import type {
-  IVectorRepository,
+  IVectorDao,
   VectorDocument,
   VectorSearchOptions,
   VectorSearchResult,

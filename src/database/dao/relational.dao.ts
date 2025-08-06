@@ -5,14 +5,15 @@
  * with standardized CRUD operations and query building.
  */
 
-import { BaseRepository } from '../base-repository';
+import { BaseDao } from '../base.dao';
+import type { IDao } from '../interfaces';
 import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
 
 /**
  * Relational database repository implementation
  * @template T The entity type this repository manages
  */
-export class RelationalDao<T> extends BaseDao<T> implements IRelationalDao<T> {
+export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   constructor(
     adapter: DatabaseAdapter,
     logger: ILogger,

@@ -11,7 +11,8 @@ import type React from 'react';
 import { useEffect, useState } from 'react';
 import AdvancedCLICommands from './advanced-cli-commands';
 import { ErrorMessage, Header, LoadingSpinner, StatusBadge } from './components/index';
-import { type CommandResult, MockCommandHandler } from './utils/mock-command-handler';
+import { CommandExecutionEngine, type CommandResult } from './command-execution-engine';
+import { MockCommandHandler } from './utils/mock-command-handler';
 
 export interface CommandExecutionProps {
   commands: string[];
@@ -57,7 +58,11 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
         let result: CommandResult;
 
         // Check if this is an advanced CLI command
-        if (advancedCLI.isAdvancedCommand(command)) {
+        // Skip advanced CLI for core commands that have been enhanced in CommandExecutionEngine
+        const coreCommands = ['init', 'status', 'swarm', 'mcp', 'workspace', 'discover', 'help'];
+        const shouldUseAdvancedCLI = !coreCommands.includes(command) && advancedCLI.isAdvancedCommand(command);
+        
+        if (shouldUseAdvancedCLI) {
           // Execute through Advanced CLI
           try {
             const advancedResult = await advancedCLI.executeCommand(command, args, flags);
@@ -75,8 +80,8 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
             };
           }
         } else {
-          // Execute through standard command handler
-          result = await MockCommandHandler.executeCommand(command, args, flags);
+          // Execute through real command execution engine
+          result = await CommandExecutionEngine.executeCommand(command, args, flags);
         }
 
         setState({
