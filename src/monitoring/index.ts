@@ -37,6 +37,8 @@ import { type IntegrationConfig, SystemIntegration } from './integrations/system
 
 /**
  * Main monitoring system factory
+ *
+ * @example
  */
 export class PerformanceMonitoringSystem {
   private integration: SystemIntegration;
@@ -92,6 +94,8 @@ export class PerformanceMonitoringSystem {
 
 /**
  * Create and start a monitoring system with default configuration
+ *
+ * @param config
  */
 export async function createMonitoringSystem(
   config?: Partial<IntegrationConfig>
@@ -103,6 +107,11 @@ export async function createMonitoringSystem(
 
 /**
  * Quick setup function for Claude-Zen integration
+ *
+ * @param options
+ * @param options.dashboardPort
+ * @param options.enableOptimization
+ * @param options.metricsInterval
  */
 export async function setupClaudeZenMonitoring(
   options: { dashboardPort?: number; enableOptimization?: boolean; metricsInterval?: number } = {}

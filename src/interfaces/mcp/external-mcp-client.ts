@@ -3,6 +3,8 @@ import { EventEmitter } from 'node:events';
 /**
  * External MCP Server Client
  * Connects to remote MCP servers like Context7, DeepWiki, GitMCP, and Semgrep
+ *
+ * @example
  */
 export class ExternalMCPClient extends EventEmitter {
   private servers: Map<string, MCPServerConfig> = new Map();
@@ -83,6 +85,9 @@ export class ExternalMCPClient extends EventEmitter {
 
   /**
    * Connect to a specific external MCP server
+   *
+   * @param name
+   * @param config
    */
   private async connectToServer(name: string, config: MCPServerConfig): Promise<ConnectionResult> {
     try {
@@ -118,6 +123,9 @@ export class ExternalMCPClient extends EventEmitter {
 
   /**
    * Create connection based on server type
+   *
+   * @param name
+   * @param config
    */
   private async createConnection(name: string, config: MCPServerConfig): Promise<MCPConnection> {
     if (config.type === 'http') {
@@ -131,6 +139,9 @@ export class ExternalMCPClient extends EventEmitter {
 
   /**
    * Create HTTP connection to MCP server
+   *
+   * @param _name
+   * @param config
    */
   private async createHTTPConnection(
     _name: string,
@@ -152,6 +163,9 @@ export class ExternalMCPClient extends EventEmitter {
 
   /**
    * Create SSE connection to MCP server
+   *
+   * @param _name
+   * @param config
    */
   private async createSSEConnection(
     _name: string,
@@ -173,6 +187,9 @@ export class ExternalMCPClient extends EventEmitter {
 
   /**
    * Discover available tools from connected server
+   *
+   * @param name
+   * @param _connection
    */
   private async discoverTools(name: string, _connection: MCPConnection): Promise<MCPTool[]> {
     try {
@@ -187,6 +204,8 @@ export class ExternalMCPClient extends EventEmitter {
 
   /**
    * Get mock tools for demonstration (replace with actual MCP tool discovery)
+   *
+   * @param serverName
    */
   private getMockToolsForServer(serverName: string): MCPTool[] {
     const toolSets = {
@@ -217,6 +236,10 @@ export class ExternalMCPClient extends EventEmitter {
 
   /**
    * Execute tool on external server
+   *
+   * @param serverName
+   * @param toolName
+   * @param parameters
    */
   async executeTool(
     serverName: string,
@@ -262,6 +285,10 @@ export class ExternalMCPClient extends EventEmitter {
 
   /**
    * Simulate tool execution (replace with actual MCP protocol calls)
+   *
+   * @param serverName
+   * @param toolName
+   * @param _parameters
    */
   private async simulateToolExecution(
     serverName: string,

@@ -22,6 +22,9 @@ export class DomainSplittingOrchestrator {
 
   /**
    * Execute complete domain splitting workflow
+   *
+   * @param domainPath
+   * @param plan
    */
   async executeDomainSplit(domainPath: string, plan?: SubDomainPlan): Promise<SplittingResult> {
     try {
@@ -65,6 +68,8 @@ export class DomainSplittingOrchestrator {
 
   /**
    * Analyze domain and provide recommendations
+   *
+   * @param domainPath
    */
   async analyzeDomain(domainPath: string) {
     const analysis = await this.analyzer.analyzeDomainComplexity(domainPath);
@@ -93,6 +98,8 @@ export class DomainSplittingOrchestrator {
 
   /**
    * Validate an existing domain split
+   *
+   * @param plans
    */
   async validateSplit(plans: SubDomainPlan[]): Promise<any> {
     const cyclicValidation = await this.validator.validateNoCyclicDependencies(plans);

@@ -279,6 +279,10 @@ export interface CoordinationMetrics {
 
 /**
  * Create an integrated advanced coordination system
+ *
+ * @param config
+ * @param logger
+ * @param eventBus
  */
 export async function createAdvancedCoordinationSystem(
   config: AdvancedCoordinationConfig,
@@ -362,6 +366,9 @@ export async function createAdvancedCoordinationSystem(
 
 /**
  * Set up integrations between coordination systems
+ *
+ * @param systems
+ * @param logger
  */
 async function setupIntegrations(
   systems: AdvancedCoordinationSystem,
@@ -412,6 +419,8 @@ async function setupIntegrations(
 
 /**
  * Get comprehensive coordination metrics
+ *
+ * @param systems
  */
 export function getCoordinationMetrics(systems: AdvancedCoordinationSystem): CoordinationMetrics {
   const topologyMetrics = systems.topologyManager.getTopologyMetrics();
@@ -494,6 +503,9 @@ function calculateAdaptabilityScore(metrics: any): number {
 
 /**
  * Shutdown coordination system gracefully
+ *
+ * @param systems
+ * @param logger
  */
 export async function shutdownCoordinationSystem(
   systems: AdvancedCoordinationSystem,
@@ -519,6 +531,8 @@ export async function shutdownCoordinationSystem(
 
 /**
  * Default configuration for advanced coordination system
+ *
+ * @param nodeId
  */
 export function getDefaultCoordinationConfig(nodeId: string): AdvancedCoordinationConfig {
   return {

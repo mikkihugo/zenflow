@@ -16,6 +16,8 @@ import type { ILogger } from '../core/logger';
 
 /**
  * Federated Learning Implementation
+ *
+ * @example
  */
 export interface FederatedLearningRound {
   roundId: string;
@@ -101,6 +103,8 @@ export type PrivacyLevel =
 
 /**
  * Experience Aggregation System
+ *
+ * @example
  */
 export interface ExperienceAggregator {
   experiences: Map<string, AgentExperience>;
@@ -168,6 +172,8 @@ export type PatternType =
 
 /**
  * Model Synchronization System
+ *
+ * @example
  */
 export interface ModelSynchronizer {
   versionControl: ModelVersionControl;
@@ -229,6 +235,8 @@ export type SyncTrigger =
 
 /**
  * Transfer Learning System
+ *
+ * @example
  */
 export interface TransferLearningEngine {
   knowledgeMap: KnowledgeTransferMap;
@@ -289,6 +297,8 @@ export type AdaptationStrategy =
 
 /**
  * Collective Memory Management
+ *
+ * @example
  */
 export interface CollectiveMemoryManager {
   sharedMemory: SharedMemorySpace;
@@ -342,6 +352,8 @@ export type ConsolidationTrigger =
 
 /**
  * Main Distributed Learning System
+ *
+ * @example
  */
 export class DistributedLearningSystem extends EventEmitter {
   private logger: ILogger;
@@ -439,6 +451,9 @@ export class DistributedLearningSystem extends EventEmitter {
 
   /**
    * Coordinate federated learning round
+   *
+   * @param participants
+   * @param globalModel
    */
   async coordinateFederatedLearning(
     participants: FederatedParticipant[],
@@ -509,6 +524,8 @@ export class DistributedLearningSystem extends EventEmitter {
 
   /**
    * Aggregate collective experiences from agents
+   *
+   * @param experiences
    */
   async aggregateCollectiveExperience(
     experiences: AgentExperience[]
@@ -564,6 +581,9 @@ export class DistributedLearningSystem extends EventEmitter {
 
   /**
    * Synchronize models across agent swarm
+   *
+   * @param models
+   * @param synchronizationStrategy
    */
   async synchronizeSwarmModels(
     models: ModelSnapshot[],
@@ -620,6 +640,10 @@ export class DistributedLearningSystem extends EventEmitter {
 
   /**
    * Facilitate cross-domain knowledge transfer
+   *
+   * @param sourceDomain
+   * @param targetDomain
+   * @param transferMethod
    */
   async facilitateKnowledgeTransfer(
     sourceDomain: string,
@@ -786,6 +810,8 @@ export class DistributedLearningSystem extends EventEmitter {
 
 /**
  * Configuration and result interfaces
+ *
+ * @example
  */
 export interface DistributedLearningConfig {
   federatedConfig: FederatedLearningConfig;

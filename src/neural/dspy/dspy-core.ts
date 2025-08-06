@@ -7,7 +7,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { ChainOfThought, DSPy, GenerateAnswer, Module, Signature } from 'dspy.ts';
 import type { SwarmCoordinator } from '../../coordination/swarm/core/swarm-coordinator';
 import { createLogger } from '../../core/logger';
 import type { SessionMemoryStore } from '../../memory/memory';
@@ -16,6 +15,8 @@ const logger = createLogger({ prefix: 'DSPyCore' });
 
 /**
  * DSPy Configuration Interface
+ *
+ * @example
  */
 export interface DSPyConfig {
   model: string;
@@ -41,6 +42,8 @@ export interface DSPyConfig {
 
 /**
  * DSPy Program Interface
+ *
+ * @example
  */
 export interface DSPyProgram {
   id: string;
@@ -59,6 +62,8 @@ export interface DSPyProgram {
 
 /**
  * Optimization Result Interface
+ *
+ * @example
  */
 export interface OptimizationResult {
   programId: string;
@@ -81,6 +86,8 @@ export interface OptimizationResult {
 
 /**
  * DSPy Integration Manager
+ *
+ * @example
  */
 export class DSPyIntegration extends EventEmitter {
   private config: DSPyConfig;
@@ -139,6 +146,14 @@ export class DSPyIntegration extends EventEmitter {
 
   /**
    * Create and optimize a DSPy program
+   *
+   * @param name
+   * @param signature
+   * @param description
+   * @param examples
+   * @param options
+   * @param options.optimization
+   * @param options.useSwarm
    */
   async createAndOptimizeProgram(
     name: string,
@@ -208,10 +223,13 @@ export class DSPyIntegration extends EventEmitter {
 
   /**
    * Optimize program using swarm coordination
+   *
+   * @param program
+   * @param optimizationConfig
    */
   private async optimizeWithSwarm(
     program: DSPyProgram,
-    optimizationConfig?: Partial<DSPyConfig['optimization']>
+    _optimizationConfig?: Partial<DSPyConfig['optimization']>
   ): Promise<OptimizationResult> {
     logger.info(`Starting swarm-based optimization for program: ${program.id}`);
 
@@ -254,6 +272,9 @@ export class DSPyIntegration extends EventEmitter {
 
   /**
    * Direct optimization without swarm
+   *
+   * @param program
+   * @param optimizationConfig
    */
   private async optimizeDirectly(
     program: DSPyProgram,
@@ -262,7 +283,7 @@ export class DSPyIntegration extends EventEmitter {
     logger.info(`Starting direct optimization for program: ${program.id}`);
 
     const startTime = Date.now();
-    const config = { ...this.config.optimization, ...optimizationConfig };
+    const _config = { ...this.config.optimization, ...optimizationConfig };
 
     // Simulate DSPy optimization process
     // In a real implementation, this would call actual DSPy methods
@@ -319,6 +340,9 @@ export class DSPyIntegration extends EventEmitter {
 
   /**
    * Agent-specific optimization methods
+   *
+   * @param program
+   * @param agent
    */
   private async optimizePrompts(program: DSPyProgram, agent: any): Promise<any> {
     // Simulate prompt optimization
@@ -338,7 +362,7 @@ export class DSPyIntegration extends EventEmitter {
     };
   }
 
-  private async analyzeMetrics(program: DSPyProgram, agent: any): Promise<any> {
+  private async analyzeMetrics(_program: DSPyProgram, agent: any): Promise<any> {
     // Simulate metric analysis
     return {
       agent: agent.id,
@@ -350,7 +374,7 @@ export class DSPyIntegration extends EventEmitter {
     };
   }
 
-  private async tunePipeline(program: DSPyProgram, agent: any): Promise<any> {
+  private async tunePipeline(_program: DSPyProgram, agent: any): Promise<any> {
     // Simulate pipeline tuning
     return {
       agent: agent.id,
@@ -362,7 +386,7 @@ export class DSPyIntegration extends EventEmitter {
     };
   }
 
-  private async enhanceWithNeural(program: DSPyProgram, agent: any): Promise<any> {
+  private async enhanceWithNeural(_program: DSPyProgram, agent: any): Promise<any> {
     // Simulate neural enhancement
     return {
       agent: agent.id,
@@ -376,6 +400,10 @@ export class DSPyIntegration extends EventEmitter {
 
   /**
    * Aggregate results from all optimization agents
+   *
+   * @param program
+   * @param results
+   * @param executionTime
    */
   private async aggregateOptimizationResults(
     program: DSPyProgram,
@@ -415,6 +443,11 @@ export class DSPyIntegration extends EventEmitter {
 
   /**
    * Batch optimize multiple programs
+   *
+   * @param programSpecs
+   * @param options
+   * @param options.optimization
+   * @param options.parallel
    */
   async batchOptimizePrograms(
     programSpecs: Array<{

@@ -86,7 +86,7 @@ export class TerminalInterface {
     const { TerminalApp } = await import('./terminal-interface-router');
 
     // Determine mode
-    const mode =
+    const _mode =
       this.config.mode === 'auto'
         ? detectMode(process.argv.slice(2), {})
         : (this.config.mode as TerminalMode);
@@ -117,6 +117,8 @@ export class TerminalInterface {
 
   /**
    * Parse command line flags
+   *
+   * @param args
    */
   private parseFlags(args: string[]): Record<string, any> {
     const flags: Record<string, any> = {};
@@ -152,6 +154,8 @@ export class TerminalInterface {
 
   /**
    * Update configuration
+   *
+   * @param updates
    */
   updateConfig(updates: Partial<TerminalInterfaceConfig>): void {
     this.config = { ...this.config, ...updates };

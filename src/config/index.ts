@@ -1,5 +1,5 @@
 /**
- * @fileoverview Unified Configuration System
+ * @file Unified Configuration System
  *
  * Central export point for the complete configuration system
  */
@@ -38,6 +38,8 @@ export { ConfigValidator } from './validator';
 export const config = {
   /**
    * Initialize configuration system
+   *
+   * @param configPaths
    */
   async init(configPaths?: string[]) {
     return configManager.initialize(configPaths);
@@ -45,6 +47,8 @@ export const config = {
 
   /**
    * Get configuration value
+   *
+   * @param path
    */
   get<T = any>(path: string): T | undefined {
     return configManager.get<T>(path);
@@ -52,6 +56,8 @@ export const config = {
 
   /**
    * Get configuration section
+   *
+   * @param section
    */
   getSection<K extends keyof SystemConfiguration>(section: K): SystemConfiguration[K] {
     return configManager.getSection(section);
@@ -59,6 +65,9 @@ export const config = {
 
   /**
    * Update configuration value
+   *
+   * @param path
+   * @param value
    */
   set(path: string, value: any) {
     return configManager.update(path, value);
@@ -87,6 +96,8 @@ export const config = {
 
   /**
    * Export configuration
+   *
+   * @param format
    */
   export(format: 'json' | 'yaml' = 'json'): string {
     return configManager.export(format);
@@ -94,6 +105,8 @@ export const config = {
 
   /**
    * Listen for configuration changes
+   *
+   * @param callback
    */
   onChange(callback: (event: any) => void) {
     configManager.on('config:changed', callback);
@@ -101,6 +114,8 @@ export const config = {
 
   /**
    * Remove change listener
+   *
+   * @param callback
    */
   removeListener(callback: (event: any) => void) {
     configManager.off('config:changed', callback);

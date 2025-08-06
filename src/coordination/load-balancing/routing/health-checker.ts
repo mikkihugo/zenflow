@@ -4,7 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { HealthChecker } from '../interfaces';
 import type { Agent } from '../types';
 
 interface HealthStatus {

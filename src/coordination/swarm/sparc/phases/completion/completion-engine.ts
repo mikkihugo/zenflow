@@ -28,6 +28,8 @@ import type {
 export class CompletionPhaseEngine implements CompletionEngine {
   /**
    * Generate complete implementation from refinement results
+   *
+   * @param refinement
    */
   async generateImplementation(refinement: RefinementResult): Promise<ImplementationArtifacts> {
     const codeGeneration = await this.generateCode(refinement);
@@ -63,6 +65,8 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
   /**
    * Generate production-ready code
+   *
+   * @param refinement
    */
   private async generateCode(refinement: RefinementResult): Promise<CodeGeneration> {
     const artifacts: CodeArtifact[] = [];
@@ -109,6 +113,8 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
   /**
    * Generate comprehensive test suite
+   *
+   * @param refinement
    */
   private async generateTests(refinement: RefinementResult): Promise<TestGeneration> {
     const artifacts: TestArtifact[] = [];
@@ -145,6 +151,8 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
   /**
    * Generate comprehensive documentation
+   *
+   * @param refinement
    */
   private async generateDocumentation(
     refinement: RefinementResult
@@ -183,6 +191,8 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
   /**
    * Generate deployment artifacts
+   *
+   * @param refinement
    */
   private async generateDeploymentArtifacts(
     refinement: RefinementResult
@@ -222,6 +232,8 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
   /**
    * Establish quality gates
+   *
+   * @param _refinement
    */
   private async establishQualityGates(_refinement: RefinementResult): Promise<QualityGate[]> {
     return [
@@ -286,6 +298,11 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
   /**
    * Perform production readiness checks
+   *
+   * @param _codeGen
+   * @param testGen
+   * @param _docGen
+   * @param _deployArtifacts
    */
   private async performProductionReadinessChecks(
     _codeGen: CodeGeneration,
@@ -1395,6 +1412,8 @@ groups:
 
   /**
    * Validate completion results
+   *
+   * @param implementation
    */
   async validateCompletion(implementation: ImplementationArtifacts): Promise<CompletionValidation> {
     const validationResults: ValidationResult[] = [];
@@ -1460,6 +1479,8 @@ groups:
 
   /**
    * Generate completion recommendations
+   *
+   * @param validationResults
    */
   private generateCompletionRecommendations(validationResults: ValidationResult[]): string[] {
     const recommendations: string[] = [];

@@ -132,6 +132,9 @@ export class OptimizationEngine extends EventEmitter {
 
   /**
    * Analyze performance insights and generate optimization actions
+   *
+   * @param insights
+   * @param metrics
    */
   public async optimizeFromInsights(
     insights: PerformanceInsights,
@@ -179,6 +182,9 @@ export class OptimizationEngine extends EventEmitter {
 
   /**
    * Handle performance anomalies
+   *
+   * @param anomaly
+   * @param _metrics
    */
   private async handleAnomaly(
     anomaly: AnomalyDetection,
@@ -268,6 +274,9 @@ export class OptimizationEngine extends EventEmitter {
 
   /**
    * Handle performance bottlenecks
+   *
+   * @param bottleneck
+   * @param metrics
    */
   private async handleBottleneck(
     bottleneck: BottleneckAnalysis,
@@ -360,6 +369,12 @@ export class OptimizationEngine extends EventEmitter {
 
   /**
    * Handle predicted resource exhaustion
+   *
+   * @param predictions
+   * @param predictions.capacityUtilization
+   * @param predictions.timeToCapacity
+   * @param predictions.resourceExhaustion
+   * @param _metrics
    */
   private async handleResourceExhaustion(
     predictions: {
@@ -412,6 +427,9 @@ export class OptimizationEngine extends EventEmitter {
 
   /**
    * Handle low system health
+   *
+   * @param healthScore
+   * @param _metrics
    */
   private async handleLowHealth(
     healthScore: number,
@@ -450,6 +468,8 @@ export class OptimizationEngine extends EventEmitter {
 
   /**
    * Filter and validate optimization actions
+   *
+   * @param actions
    */
   private filterActions(actions: OptimizationAction[]): OptimizationAction[] {
     const now = Date.now();
@@ -502,6 +522,8 @@ export class OptimizationEngine extends EventEmitter {
 
   /**
    * Check if action would exceed resource limits
+   *
+   * @param action
    */
   private wouldExceedLimits(action: OptimizationAction): boolean {
     // Implement resource limit checking based on action type and parameters
@@ -553,6 +575,8 @@ export class OptimizationEngine extends EventEmitter {
 
   /**
    * Execute a single optimization action
+   *
+   * @param action
    */
   private async executeAction(action: OptimizationAction): Promise<OptimizationResult> {
     this.executingActions.add(action.id);
@@ -597,6 +621,8 @@ export class OptimizationEngine extends EventEmitter {
 
   /**
    * Simulate action execution (replace with actual implementations)
+   *
+   * @param action
    */
   private async simulateActionExecution(
     action: OptimizationAction
@@ -630,6 +656,8 @@ export class OptimizationEngine extends EventEmitter {
 
   /**
    * Maintain action history size
+   *
+   * @param maxSize
    */
   private maintainActionHistory(maxSize = 1000): void {
     if (this.actionHistory.length > maxSize) {
@@ -676,6 +704,9 @@ export class OptimizationEngine extends EventEmitter {
 
   /**
    * Update optimization strategy
+   *
+   * @param strategyName
+   * @param updates
    */
   public updateStrategy(strategyName: string, updates: Partial<OptimizationStrategy>): void {
     const strategy = this.strategies.get(strategyName);

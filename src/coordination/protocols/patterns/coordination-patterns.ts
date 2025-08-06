@@ -213,6 +213,8 @@ export interface EscalationRequest {
 
 /**
  * Advanced Coordination Patterns Manager
+ *
+ * @example
  */
 export class CoordinationPatterns extends EventEmitter {
   private nodes = new Map<string, CoordinationNode>();
@@ -309,6 +311,8 @@ export class CoordinationPatterns extends EventEmitter {
 
   /**
    * Register a node in the coordination system
+   *
+   * @param node
    */
   async registerNode(node: CoordinationNode): Promise<void> {
     this.nodes.set(node.id, node);
@@ -337,6 +341,8 @@ export class CoordinationPatterns extends EventEmitter {
 
   /**
    * Propose a value for consensus
+   *
+   * @param value
    */
   async proposeConsensus(value: any): Promise<boolean> {
     return await this.consensusEngine.propose(value);
@@ -344,6 +350,8 @@ export class CoordinationPatterns extends EventEmitter {
 
   /**
    * Submit work to the work-stealing system
+   *
+   * @param item
    */
   async submitWork(item: Omit<WorkItem, 'id' | 'created' | 'attempts'>): Promise<string> {
     return await this.workStealingSystem.submitWork(item);
@@ -351,6 +359,8 @@ export class CoordinationPatterns extends EventEmitter {
 
   /**
    * Delegate a task in the hierarchy
+   *
+   * @param request
    */
   async delegateTask(request: DelegationRequest): Promise<boolean> {
     return await this.hierarchicalCoordinator.delegate(request);
@@ -358,6 +368,8 @@ export class CoordinationPatterns extends EventEmitter {
 
   /**
    * Escalate an issue up the hierarchy
+   *
+   * @param request
    */
   async escalate(request: EscalationRequest): Promise<boolean> {
     return await this.hierarchicalCoordinator.escalate(request);
@@ -365,6 +377,8 @@ export class CoordinationPatterns extends EventEmitter {
 
   /**
    * Switch coordination pattern
+   *
+   * @param pattern
    */
   async switchPattern(pattern: CoordinationPatterns['currentPattern']): Promise<void> {
     const oldPattern = this.currentPattern;
@@ -638,6 +652,8 @@ interface PatternMetrics {
 
 /**
  * Leader Election Implementation
+ *
+ * @example
  */
 class LeaderElection extends EventEmitter {
   private state: ElectionState;
@@ -995,6 +1011,8 @@ class LeaderElection extends EventEmitter {
 
 /**
  * Consensus Engine Implementation (Raft-like)
+ *
+ * @example
  */
 class ConsensusEngine extends EventEmitter {
   private state: ConsensusState;
@@ -1288,6 +1306,8 @@ class ConsensusEngine extends EventEmitter {
 
 /**
  * Work Stealing System Implementation
+ *
+ * @example
  */
 class WorkStealingSystem extends EventEmitter {
   private workQueues = new Map<string, WorkQueue>();
@@ -1675,6 +1695,8 @@ class WorkStealingSystem extends EventEmitter {
 
 /**
  * Hierarchical Coordinator Implementation
+ *
+ * @example
  */
 class HierarchicalCoordinator extends EventEmitter {
   private hierarchy = new Map<string, HierarchyNode>();

@@ -84,6 +84,9 @@ export class WebSocketManager {
 
   /**
    * Send initial data for a specific channel
+   *
+   * @param socket
+   * @param channel
    */
   private async sendChannelData(socket: any, channel: string): Promise<void> {
     try {
@@ -153,6 +156,9 @@ export class WebSocketManager {
 
   /**
    * Broadcast message to all connected clients
+   *
+   * @param event
+   * @param data
    */
   broadcast(event: string, data: any): void {
     if (!this.config.realTime) return;
@@ -169,6 +175,10 @@ export class WebSocketManager {
 
   /**
    * Broadcast to specific room/channel
+   *
+   * @param room
+   * @param event
+   * @param data
    */
   broadcastToRoom(room: string, event: string, data: any): void {
     if (!this.config.realTime) return;

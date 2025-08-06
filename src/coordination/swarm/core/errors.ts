@@ -5,6 +5,8 @@
 
 /**
  * Base error class for all ruv-swarm MCP errors
+ *
+ * @example
  */
 class ZenSwarmError extends Error {
   public code: string;
@@ -45,6 +47,8 @@ class ZenSwarmError extends Error {
 
 /**
  * Validation errors for input parameters
+ *
+ * @example
  */
 class ValidationError extends ZenSwarmError {
   public field: string | null;
@@ -96,6 +100,8 @@ class ValidationError extends ZenSwarmError {
 
 /**
  * Swarm-related errors
+ *
+ * @example
  */
 class SwarmError extends ZenSwarmError {
   public swarmId: string | null;
@@ -132,6 +138,8 @@ class SwarmError extends ZenSwarmError {
 
 /**
  * Agent-related errors
+ *
+ * @example
  */
 class AgentError extends ZenSwarmError {
   agentId: string | null;
@@ -174,6 +182,8 @@ class AgentError extends ZenSwarmError {
 
 /**
  * Task-related errors
+ *
+ * @example
  */
 class TaskError extends ZenSwarmError {
   public taskId: string | null;
@@ -216,6 +226,8 @@ class TaskError extends ZenSwarmError {
 
 /**
  * Neural network related errors
+ *
+ * @example
  */
 class NeuralError extends ZenSwarmError {
   public networkId: string | null;
@@ -258,6 +270,8 @@ class NeuralError extends ZenSwarmError {
 
 /**
  * WASM-related errors
+ *
+ * @example
  */
 class WasmError extends ZenSwarmError {
   public module: string | null;
@@ -298,6 +312,8 @@ class WasmError extends ZenSwarmError {
 
 /**
  * Configuration errors
+ *
+ * @example
  */
 class ConfigurationError extends ZenSwarmError {
   public configKey: string | null;
@@ -323,6 +339,8 @@ class ConfigurationError extends ZenSwarmError {
 
 /**
  * Network/connectivity errors
+ *
+ * @example
  */
 class NetworkError extends ZenSwarmError {
   public endpoint: string | null;
@@ -360,6 +378,8 @@ class NetworkError extends ZenSwarmError {
 
 /**
  * Database/persistence errors
+ *
+ * @example
  */
 class PersistenceError extends ZenSwarmError {
   public operation: string | null;
@@ -397,6 +417,8 @@ class PersistenceError extends ZenSwarmError {
 
 /**
  * Resource/memory errors
+ *
+ * @example
  */
 class ResourceError extends ZenSwarmError {
   public resourceType: string | null;
@@ -437,6 +459,8 @@ class ResourceError extends ZenSwarmError {
 
 /**
  * Concurrency/threading errors
+ *
+ * @example
  */
 class ConcurrencyError extends ZenSwarmError {
   operation: string | null;
@@ -463,10 +487,16 @@ class ConcurrencyError extends ZenSwarmError {
 
 /**
  * Error factory for creating appropriate error types
+ *
+ * @example
  */
 class ErrorFactory {
   /**
    * Create an appropriate error based on the context
+   *
+   * @param type
+   * @param message
+   * @param details
    */
   static createError(type: string, message: string, details: any = {}) {
     switch (type) {
@@ -504,6 +534,10 @@ class ErrorFactory {
 
   /**
    * Wrap an existing error with additional context
+   *
+   * @param originalError
+   * @param type
+   * @param additionalContext
    */
   static wrapError(originalError, type, additionalContext = {}) {
     const message = `${type.toUpperCase()}: ${originalError.message}`;
@@ -522,6 +556,8 @@ class ErrorFactory {
 
 /**
  * Error context for logging and debugging
+ *
+ * @example
  */
 class ErrorContext {
   public context: Map<string, any>;
@@ -548,6 +584,8 @@ class ErrorContext {
 
   /**
    * Add context to an error
+   *
+   * @param error
    */
   enrichError(error: any) {
     if (error instanceof ZenSwarmError) {

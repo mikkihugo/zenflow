@@ -1,5 +1,5 @@
 /**
- * @fileoverview Configuration Manager - Clean Export
+ * @file Configuration Manager - Clean Export
  *
  * Re-export of the unified configuration system for backward compatibility
  */

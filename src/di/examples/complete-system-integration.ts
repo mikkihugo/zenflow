@@ -255,6 +255,8 @@ class NeuralNetworkTrainer implements INeuralNetworkTrainer {
 
 /**
  * Complete system integration demonstration
+ *
+ * @example
  */
 export class CompleteSystemIntegration {
   private container: DIContainer;

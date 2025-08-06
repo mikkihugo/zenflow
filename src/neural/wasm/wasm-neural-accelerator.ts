@@ -17,6 +17,8 @@ export interface WasmMemoryStats {
 
 /**
  * WebAssembly-accelerated neural network computations
+ *
+ * @example
  */
 export class WasmNeuralAccelerator {
   private wasmModule?: any;
@@ -65,6 +67,12 @@ export class WasmNeuralAccelerator {
 
   /**
    * Perform matrix multiplication using WASM
+   *
+   * @param a
+   * @param b
+   * @param rows
+   * @param cols
+   * @param inner
    */
   async matrixMultiply(
     a: Float32Array,
@@ -82,6 +90,10 @@ export class WasmNeuralAccelerator {
 
   /**
    * Perform neural network forward pass
+   *
+   * @param inputs
+   * @param weights
+   * @param biases
    */
   async forwardPass(
     inputs: Float32Array,
@@ -97,6 +109,12 @@ export class WasmNeuralAccelerator {
 
   /**
    * Perform backpropagation
+   *
+   * @param inputs
+   * @param outputs
+   * @param targets
+   * @param weights
+   * @param learningRate
    */
   async backpropagation(
     inputs: Float32Array,
@@ -114,6 +132,9 @@ export class WasmNeuralAccelerator {
 
   /**
    * Apply activation function
+   *
+   * @param inputs
+   * @param activationType
    */
   async activation(
     inputs: Float32Array,
@@ -150,6 +171,8 @@ export class WasmNeuralAccelerator {
 
   /**
    * Benchmark WASM vs JavaScript performance
+   *
+   * @param size
    */
   async benchmark(size: number = 1000): Promise<{
     wasmTime: number;
@@ -322,6 +345,10 @@ export class WasmNeuralAccelerator {
 
   /**
    * Matrix multiplication operation
+   *
+   * @param a
+   * @param b
+   * @param _options
    */
   async multiplyMatrices(
     a: number[][] | Float32Array,
@@ -376,6 +403,10 @@ export class WasmNeuralAccelerator {
 
   /**
    * Optimized activation function application
+   *
+   * @param inputs
+   * @param activationType
+   * @param _options
    */
   async applyActivation(
     inputs: Float32Array | number[],
@@ -390,6 +421,10 @@ export class WasmNeuralAccelerator {
 
   /**
    * Vector reduction operations (sum, mean, max, min)
+   *
+   * @param vector
+   * @param operation
+   * @param _options
    */
   async vectorReduction(
     vector: Float32Array | number[],
@@ -416,6 +451,12 @@ export class WasmNeuralAccelerator {
 
   /**
    * 2D Convolution operation
+   *
+   * @param input
+   * @param kernel
+   * @param inputShape
+   * @param kernelShape
+   * @param _options
    */
   async convolution2D(
     input: Float32Array,

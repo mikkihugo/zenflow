@@ -131,7 +131,11 @@ export class WebSocketClient extends EventEmitter {
     }
   }
 
-  /** Queue message for later sending */
+  /**
+   * Queue message for later sending
+   *
+   * @param message
+   */
   private queueMessage(message: string): void {
     this.messageQueue.push(message);
     // Limit queue size to prevent memory issues

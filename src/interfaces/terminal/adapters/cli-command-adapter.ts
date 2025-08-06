@@ -18,10 +18,14 @@ import type {
  *
  * Adapts CLI functionality for use in terminal interface while
  * maintaining interface isolation through shared contracts.
+ *
+ * @example
  */
 export class CliCommandAdapter implements CommandExecutorContract {
   /**
    * Execute a command with the given context
+   *
+   * @param context
    */
   async executeCommand(context: CommandContext): Promise<CommandResult> {
     try {
@@ -58,6 +62,8 @@ export class CliCommandAdapter implements CommandExecutorContract {
 
   /**
    * Check if command is valid
+   *
+   * @param command
    */
   isValidCommand(command: string): boolean {
     const validCommands = [
@@ -76,6 +82,8 @@ export class CliCommandAdapter implements CommandExecutorContract {
 
   /**
    * Get help for commands
+   *
+   * @param command
    */
   getCommandHelp(command?: string): string {
     if (!command) {
@@ -113,6 +121,9 @@ export class CliCommandAdapter implements CommandExecutorContract {
 
   /**
    * Handle project creation
+   *
+   * @param args
+   * @param options
    */
   private async handleCreateProject(args: string[], options: any): Promise<CommandResult> {
     const projectName = args[0] || 'new-project';
@@ -163,6 +174,9 @@ export class CliCommandAdapter implements CommandExecutorContract {
 
   /**
    * Handle project optimization
+   *
+   * @param args
+   * @param _options
    */
   private async handleOptimizeProject(args: string[], _options: any): Promise<CommandResult> {
     const projectPath = args[0] || process.cwd();
@@ -191,6 +205,9 @@ export class CliCommandAdapter implements CommandExecutorContract {
 
   /**
    * Handle project status
+   *
+   * @param args
+   * @param _options
    */
   private async handleProjectStatus(args: string[], _options: any): Promise<CommandResult> {
     const projectPath = args[0] || process.cwd();
@@ -221,6 +238,9 @@ export class CliCommandAdapter implements CommandExecutorContract {
 
   /**
    * Handle swarm commands
+   *
+   * @param args
+   * @param options
    */
   private async handleSwarmCommand(args: string[], options: any): Promise<CommandResult> {
     const action = args[0];
@@ -257,6 +277,9 @@ export class CliCommandAdapter implements CommandExecutorContract {
 
   /**
    * Handle generate commands
+   *
+   * @param args
+   * @param options
    */
   private async handleGenerateCommand(args: string[], options: any): Promise<CommandResult> {
     const subCommand = args[0];
@@ -290,6 +313,9 @@ export class CliCommandAdapter implements CommandExecutorContract {
 
   /**
    * Handle test commands
+   *
+   * @param _args
+   * @param _options
    */
   private async handleTestCommand(_args: string[], _options: any): Promise<CommandResult> {
     return {
@@ -306,6 +332,9 @@ export class CliCommandAdapter implements CommandExecutorContract {
 
   /**
    * Handle performance commands
+   *
+   * @param _args
+   * @param _options
    */
   private async handlePerformanceCommand(_args: string[], _options: any): Promise<CommandResult> {
     return {
@@ -321,6 +350,8 @@ export class CliCommandAdapter implements CommandExecutorContract {
 
   /**
    * Parse domains from string
+   *
+   * @param domainsStr
    */
   private parseDomains(domainsStr: string): any[] {
     if (!domainsStr) return ['neural', 'swarm'];

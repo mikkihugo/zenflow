@@ -37,6 +37,8 @@ export interface MemoryMetadata {
 
 /**
  * Type-safe memory store with union type results
+ *
+ * @example
  */
 export class SafeMemoryStore extends EventEmitter {
   private store = new Map<string, any>();
@@ -73,6 +75,10 @@ export class SafeMemoryStore extends EventEmitter {
 
   /**
    * Store data with type-safe error handling
+   *
+   * @param key
+   * @param data
+   * @param ttl
    */
   async store<T>(key: string, data: T, ttl?: number): Promise<MemoryResult<void>> {
     try {
@@ -118,7 +124,7 @@ export class SafeMemoryStore extends EventEmitter {
 
       return {
         found: true,
-        data: undefined as void,
+        data: undefined as undefined,
         key: fullKey,
         timestamp: now,
         ttl: newMetadata.ttl,
@@ -132,6 +138,8 @@ export class SafeMemoryStore extends EventEmitter {
 
   /**
    * Retrieve data with type-safe result discrimination
+   *
+   * @param key
    */
   async retrieve<T>(key: string): Promise<MemoryResult<T>> {
     try {
@@ -185,6 +193,8 @@ export class SafeMemoryStore extends EventEmitter {
 
   /**
    * Delete data with type-safe result
+   *
+   * @param key
    */
   async delete(key: string): Promise<MemoryResult<boolean>> {
     try {
@@ -230,6 +240,8 @@ export class SafeMemoryStore extends EventEmitter {
 
   /**
    * Check if key exists with type-safe result
+   *
+   * @param key
    */
   async exists(key: string): Promise<MemoryResult<boolean>> {
     try {
@@ -421,7 +433,6 @@ export async function safeMemoryUsageExample(): Promise<void> {
 
   // Safe property access using type guards
   if (isMemorySuccess(storeResult)) {
-    console.log('✅ Data stored successfully');
   } else if (isMemoryError(storeResult)) {
     console.error('❌ Storage failed:', storeResult.error.message);
   }
@@ -430,12 +441,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
   const retrieveResult = await store.retrieve<{ name: string; age: number }>('user:123');
 
   if (isMemorySuccess(retrieveResult)) {
-    // TypeScript knows this is MemorySuccess<T> here
-    console.log('User name:', retrieveResult.data.name);
-    console.log('User age:', retrieveResult.data.age);
-    console.log('Last accessed:', retrieveResult.timestamp);
   } else if (isMemoryNotFound(retrieveResult)) {
-    console.log('User not found, reason:', retrieveResult.reason);
   } else if (isMemoryError(retrieveResult)) {
     console.error('Error retrieving user:', retrieveResult.error.message);
   }
@@ -444,9 +450,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
   const existsResult = await store.exists('user:456');
 
   if (isMemorySuccess(existsResult)) {
-    console.log('User 456 exists:', existsResult.data);
   } else if (isMemoryNotFound(existsResult)) {
-    console.log('User 456 does not exist');
   }
 
   await store.shutdown();

@@ -1,73 +1,82 @@
 /**
  * WebSocket Client Adapter Index
- * 
+ *
  * Exports all WebSocket client components for UACL integration
  */
 
-// Core WebSocket adapter
-export { 
-  WebSocketClientAdapter,
-  WebSocketClientFactory as WebSocketAdapterFactory,
-  createWebSocketClient
-} from './websocket-client-adapter';
-
-// Enhanced WebSocket client with backward compatibility
-export { 
-  EnhancedWebSocketClient,
-  WebSocketClient // Legacy export
-} from './enhanced-websocket-client';
-
-// WebSocket client factory with advanced features
-export { 
-  WebSocketClientFactory,
-  LoadBalancedWebSocketClient,
-  FailoverWebSocketClient,
-  createWebSocketClientFactory,
-  createWebSocketClientWithConfig
-} from './websocket-client-factory';
-
-// WebSocket types and utilities
-export {
-  // Configuration types
-  type WebSocketClientConfig,
-  type WebSocketAuthenticationConfig,
-  type WebSocketRetryConfig,
-  type WebSocketHeartbeatConfig,
-  type WebSocketMessageQueueConfig,
-  type WebSocketCompressionConfig,
-  type WebSocketRequestOptions,
-  type WebSocketResponse,
-  type WebSocketMessage,
-  type WebSocketConnectionInfo,
-  type WebSocketMetrics,
-  type WebSocketPoolConfig,
-  type WebSocketExtension,
-  type WebSocketSecurityConfig,
-  
-  // Enums and constants
-  WebSocketReadyState,
-  WebSocketMessageType,
-  WebSocketCloseCode,
-  WebSocketAuthMethod,
-  
-  // Utilities and type guards
-  WebSocketTypeGuards,
-  WebSocketUtils
-} from './websocket-types';
-
 // Re-export core UACL interfaces for convenience
 export type {
+  ClientConfig,
+  ClientMetrics,
+  ClientResponse,
+  ClientStatus,
   IClient,
   IClientFactory,
-  ClientConfig,
-  ClientStatus,
-  ClientMetrics,
   RequestOptions,
-  ClientResponse
 } from '../core/interfaces';
+
+// Enhanced WebSocket client with backward compatibility
+export {
+  EnhancedWebSocketClient,
+  WebSocketClient, // Legacy export
+} from './enhanced-websocket-client';
+// Core WebSocket adapter
+export {
+  createWebSocketClient,
+  WebSocketClientAdapter,
+  WebSocketClientFactory as WebSocketAdapterFactory,
+} from './websocket-client-adapter';
+// WebSocket client factory with advanced features
+export {
+  createWebSocketClientFactory,
+  createWebSocketClientWithConfig,
+  FailoverWebSocketClient,
+  LoadBalancedWebSocketClient,
+  WebSocketClientFactory,
+} from './websocket-client-factory';
+// WebSocket types and utilities
+export {
+  type WebSocketAuthenticationConfig,
+  WebSocketAuthMethod,
+  // Configuration types
+  type WebSocketClientConfig,
+  WebSocketCloseCode,
+  type WebSocketCompressionConfig,
+  type WebSocketConnectionInfo,
+  type WebSocketExtension,
+  type WebSocketHeartbeatConfig,
+  type WebSocketMessage,
+  type WebSocketMessageQueueConfig,
+  WebSocketMessageType,
+  type WebSocketMetrics,
+  type WebSocketPoolConfig,
+  // Enums and constants
+  WebSocketReadyState,
+  type WebSocketRequestOptions,
+  type WebSocketResponse,
+  type WebSocketRetryConfig,
+  type WebSocketSecurityConfig,
+  // Utilities and type guards
+  WebSocketTypeGuards,
+  WebSocketUtils,
+} from './websocket-types';
 
 /**
  * Convenience function to create a WebSocket client with automatic factory selection
+ *
+ * @param config
+ * @param options
+ * @param options.useEnhanced
+ * @param options.loadBalancing
+ * @param options.loadBalancing.enabled
+ * @param options.loadBalancing.strategy
+ * @param options.loadBalancing.urls
+ * @param options.failover
+ * @param options.failover.enabled
+ * @param options.failover.fallbackUrls
+ * @param options.pooling
+ * @param options.pooling.enabled
+ * @param options.pooling.size
  */
 export async function createOptimalWebSocketClient(
   config: WebSocketClientConfig,
@@ -89,49 +98,56 @@ export async function createOptimalWebSocketClient(
   }
 ): Promise<import('../core/interfaces').IClient> {
   const factory = new WebSocketClientFactory();
-  
+
   // Handle load balancing
   if (options?.loadBalancing?.enabled && options.loadBalancing.urls) {
-    const configs = options.loadBalancing.urls.map(url => ({
+    const configs = options.loadBalancing.urls.map((url) => ({
       ...config,
       url,
-      name: `${config.name || 'ws'}-${url.split('://')[1]?.replace(/[:.]/g, '-')}`
+      name: `${config.name || 'ws'}-${url.split('://')[1]?.replace(/[:.]/g, '-')}`,
     }));
-    
+
     return factory.createLoadBalanced(configs, options.loadBalancing.strategy);
   }
-  
+
   // Handle failover
   if (options?.failover?.enabled && options.failover.fallbackUrls) {
-    const fallbackConfigs = options.failover.fallbackUrls.map(url => ({
+    const fallbackConfigs = options.failover.fallbackUrls.map((url) => ({
       ...config,
       url,
-      name: `${config.name || 'ws'}-fallback-${url.split('://')[1]?.replace(/[:.]/g, '-')}`
+      name: `${config.name || 'ws'}-fallback-${url.split('://')[1]?.replace(/[:.]/g, '-')}`,
     }));
-    
+
     const primaryClient = await factory.create(config);
     const fallbackClients = await factory.createMultiple(fallbackConfigs);
-    
+
     return new FailoverWebSocketClient(primaryClient, fallbackClients);
   }
-  
+
   // Handle connection pooling
   if (options?.pooling?.enabled) {
     const pooledClients = await factory.createPooled(config, options.pooling.size);
     return new LoadBalancedWebSocketClient(pooledClients, 'round-robin');
   }
-  
+
   // Use enhanced client if requested
   if (options?.useEnhanced) {
     config.metadata = { ...config.metadata, clientType: 'enhanced' };
   }
-  
+
   // Create standard client
   return factory.create(config);
 }
 
 /**
  * Convenience function to create a WebSocket client from URL with minimal configuration
+ *
+ * @param url
+ * @param options
+ * @param options.timeout
+ * @param options.reconnect
+ * @param options.heartbeat
+ * @param options.useEnhanced
  */
 export async function createSimpleWebSocketClient(
   url: string,
@@ -152,19 +168,19 @@ export async function createSimpleWebSocketClient(
       maxAttempts: 10,
       initialDelay: 1000,
       maxDelay: 30000,
-      backoff: 'exponential'
+      backoff: 'exponential',
     },
     heartbeat: {
       enabled: options?.heartbeat !== false,
       interval: 30000,
-      message: { type: 'ping' }
+      message: { type: 'ping' },
     },
     messageQueue: {
       enabled: true,
-      maxSize: 1000
-    }
+      maxSize: 1000,
+    },
   };
-  
+
   return createOptimalWebSocketClient(config, { useEnhanced: options?.useEnhanced });
 }
 
@@ -174,6 +190,8 @@ export async function createSimpleWebSocketClient(
 export const WebSocketClientPresets = {
   /**
    * High-performance configuration for low-latency applications
+   *
+   * @param url
    */
   HighPerformance: (url: string): WebSocketClientConfig => ({
     name: 'high-performance-ws',
@@ -185,33 +203,35 @@ export const WebSocketClientPresets = {
       maxAttempts: 5,
       initialDelay: 100,
       maxDelay: 1000,
-      backoff: 'exponential'
+      backoff: 'exponential',
     },
     heartbeat: {
       enabled: true,
       interval: 10000,
       timeout: 2000,
-      message: { type: 'ping' }
+      message: { type: 'ping' },
     },
     messageQueue: {
       enabled: true,
       maxSize: 100,
-      drainOnReconnect: true
+      drainOnReconnect: true,
     },
     compression: {
       enabled: true,
       method: 'deflate',
       level: 6,
-      threshold: 1024
-    }
+      threshold: 1024,
+    },
   }),
-  
+
   /**
    * Robust configuration for unreliable networks
+   *
+   * @param url
    */
   Robust: (url: string): WebSocketClientConfig => ({
     name: 'robust-ws',
-    baseURL: url,    
+    baseURL: url,
     url,
     timeout: 60000,
     reconnection: {
@@ -220,30 +240,32 @@ export const WebSocketClientPresets = {
       initialDelay: 2000,
       maxDelay: 60000,
       backoff: 'exponential',
-      jitter: true
+      jitter: true,
     },
     heartbeat: {
       enabled: true,
       interval: 45000,
       timeout: 10000,
-      message: { type: 'heartbeat' }
+      message: { type: 'heartbeat' },
     },
     messageQueue: {
       enabled: true,
       maxSize: 10000,
       persistOnDisconnect: true,
-      drainOnReconnect: true
+      drainOnReconnect: true,
     },
     retry: {
       attempts: 10,
       delay: 1000,
       backoff: 'exponential',
-      maxDelay: 30000
-    }
+      maxDelay: 30000,
+    },
   }),
-  
+
   /**
    * Minimal configuration for simple applications
+   *
+   * @param url
    */
   Simple: (url: string): WebSocketClientConfig => ({
     name: 'simple-ws',
@@ -255,18 +277,21 @@ export const WebSocketClientPresets = {
       maxAttempts: 3,
       initialDelay: 1000,
       maxDelay: 5000,
-      backoff: 'linear'
+      backoff: 'linear',
     },
     heartbeat: {
-      enabled: false
+      enabled: false,
     },
     messageQueue: {
-      enabled: false
-    }
+      enabled: false,
+    },
   }),
-  
+
   /**
    * Secure configuration with authentication
+   *
+   * @param url
+   * @param token
    */
   Secure: (url: string, token: string): WebSocketClientConfig => ({
     name: 'secure-ws',
@@ -278,46 +303,55 @@ export const WebSocketClientPresets = {
       method: 'header',
       token,
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     },
     reconnection: {
       enabled: true,
       maxAttempts: 10,
       initialDelay: 1000,
       maxDelay: 30000,
-      backoff: 'exponential'
+      backoff: 'exponential',
     },
     heartbeat: {
       enabled: true,
       interval: 30000,
-      message: { type: 'auth-ping', token }
+      message: { type: 'auth-ping', token },
     },
     messageQueue: {
       enabled: true,
-      maxSize: 1000
-    }
-  })
+      maxSize: 1000,
+    },
+  }),
 };
 
 /**
  * WebSocket client health monitor utility
+ *
+ * @example
  */
 export class WebSocketHealthMonitor {
   private clients = new Map<string, import('../core/interfaces').IClient>();
   private intervals = new Map<string, NodeJS.Timeout>();
-  
+
   /**
    * Add client to monitoring
+   *
+   * @param name
+   * @param client
+   * @param checkInterval
    */
-  addClient(name: string, client: import('../core/interfaces').IClient, checkInterval: number = 60000): void {
+  addClient(
+    name: string,
+    client: import('../core/interfaces').IClient,
+    checkInterval: number = 60000
+  ): void {
     this.clients.set(name, client);
-    
+
     const interval = setInterval(async () => {
       try {
         const status = await client.healthCheck();
-        console.log(`WebSocket Health [${name}]:`, status.status, `(${status.responseTime}ms)`);
-        
+
         if (status.status === 'unhealthy') {
           console.warn(`WebSocket client ${name} is unhealthy:`, status.metadata);
         }
@@ -325,12 +359,14 @@ export class WebSocketHealthMonitor {
         console.error(`WebSocket health check failed for ${name}:`, error);
       }
     }, checkInterval);
-    
+
     this.intervals.set(name, interval);
   }
-  
+
   /**
    * Remove client from monitoring
+   *
+   * @param name
    */
   removeClient(name: string): void {
     const interval = this.intervals.get(name);
@@ -340,13 +376,13 @@ export class WebSocketHealthMonitor {
     }
     this.clients.delete(name);
   }
-  
+
   /**
    * Get health status for all monitored clients
    */
   async getHealthStatus(): Promise<Map<string, import('../core/interfaces').ClientStatus>> {
     const results = new Map();
-    
+
     for (const [name, client] of this.clients) {
       try {
         const status = await client.healthCheck();
@@ -359,14 +395,14 @@ export class WebSocketHealthMonitor {
           responseTime: -1,
           errorRate: 1,
           uptime: 0,
-          metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
+          metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
         });
       }
     }
-    
+
     return results;
   }
-  
+
   /**
    * Stop monitoring all clients
    */
@@ -388,5 +424,5 @@ export default {
   createOptimalWebSocketClient,
   createSimpleWebSocketClient,
   WebSocketClientPresets,
-  WebSocketHealthMonitor
+  WebSocketHealthMonitor,
 };

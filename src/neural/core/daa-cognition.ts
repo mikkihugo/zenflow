@@ -54,6 +54,9 @@ export class DAACognition {
 
   /**
    * Make a cognitive decision based on input data
+   *
+   * @param context
+   * @param options
    */
   async makeDecision(context: any, options: any = {}): Promise<CognitionDecision> {
     const decisionId = `decision_${Date.now()}_${Math.random().toString(36).slice(2)}`;
@@ -83,6 +86,10 @@ export class DAACognition {
 
   /**
    * Execute an action based on decision
+   *
+   * @param decisionId
+   * @param actionType
+   * @param parameters
    */
   async executeAction(decisionId, actionType, parameters = {}) {
     const decision = this.decisions.get(decisionId);
@@ -109,6 +116,8 @@ export class DAACognition {
 
   /**
    * Adapt based on feedback
+   *
+   * @param feedback
    */
   async adapt(feedback) {
     const adaptationId = `adapt_${Date.now()}_${Math.random().toString(36).slice(2)}`;
@@ -129,6 +138,8 @@ export class DAACognition {
 
   /**
    * Get decision history
+   *
+   * @param limit
    */
   getDecisionHistory(limit = 10) {
     return this.history.slice(-limit).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());

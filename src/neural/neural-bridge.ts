@@ -1,5 +1,5 @@
 /**
- * @fileoverview Neural Network Bridge
+ * @file Neural Network Bridge
  * Integrates neural network components with Claude-Zen system
  */
 
@@ -38,6 +38,8 @@ export interface PredictionResult {
 
 /**
  * Neural Network Bridge for Claude-Zen integration
+ *
+ * @example
  */
 export class NeuralBridge {
   private static instance: NeuralBridge;
@@ -90,6 +92,10 @@ export class NeuralBridge {
 
   /**
    * Create a new neural network
+   *
+   * @param id
+   * @param type
+   * @param layers
    */
   async createNetwork(id: string, type: NeuralNetwork['type'], layers: number[]): Promise<string> {
     if (!this.initialized) {
@@ -111,6 +117,10 @@ export class NeuralBridge {
 
   /**
    * Train a neural network
+   *
+   * @param networkId
+   * @param trainingData
+   * @param epochs
    */
   async trainNetwork(
     networkId: string,
@@ -151,6 +161,9 @@ export class NeuralBridge {
 
   /**
    * Make predictions with a neural network
+   *
+   * @param networkId
+   * @param inputs
    */
   async predict(networkId: string, inputs: number[]): Promise<PredictionResult> {
     const network = this.networks.get(networkId);
@@ -181,6 +194,8 @@ export class NeuralBridge {
 
   /**
    * Get network status
+   *
+   * @param networkId
    */
   getNetworkStatus(networkId: string): NeuralNetwork | undefined {
     return this.networks.get(networkId);
@@ -195,6 +210,8 @@ export class NeuralBridge {
 
   /**
    * Remove a network
+   *
+   * @param networkId
    */
   removeNetwork(networkId: string): boolean {
     return this.networks.delete(networkId);

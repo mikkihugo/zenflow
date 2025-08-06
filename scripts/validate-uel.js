@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
  * UEL (Unified Event Layer) - System Validation Script
- * 
+ *
  * Command-line validation tool for verifying UEL integration quality,
  * system health, and migration completeness across all components.
- * 
+ *
  * Usage:
  *   node scripts/validate-uel.js [options]
  *   npm run validate:uel [-- options]
- * 
+ *
  * Options:
  *   --verbose, -v         Show detailed validation output
  *   --health             Perform system health validation only
@@ -18,13 +18,13 @@
  *   --export-report      Export detailed validation report
  *   --fix-issues         Attempt to fix detected issues
  *   --format=json        Output format (json, table, summary)
- * 
+ *
  * @fileoverview UEL System Validation CLI Tool
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require('node:fs').promises;
+const path = require('node:path');
+const { execSync } = require('node:child_process');
 
 class UELValidationCLI {
   constructor() {
@@ -45,7 +45,7 @@ class UELValidationCLI {
       exportReport: false,
       fixIssues: false,
       format: 'table',
-      includeAll: true
+      includeAll: true,
     };
 
     for (const arg of args) {
@@ -80,9 +80,8 @@ class UELValidationCLI {
 
   createLogger() {
     return {
-      info: (msg, ...args) => {
+      info: (_msg, ..._args) => {
         if (this.options.verbose || this.options.format !== 'json') {
-          console.log(`ℹ️  ${msg}`, ...args);
         }
       },
       warn: (msg, ...args) => {
@@ -91,63 +90,18 @@ class UELValidationCLI {
       error: (msg, ...args) => {
         console.error(`❌ ${msg}`, ...args);
       },
-      success: (msg, ...args) => {
+      success: (_msg, ..._args) => {
         if (this.options.format !== 'json') {
-          console.log(`✅ ${msg}`, ...args);
         }
       },
-      debug: (msg, ...args) => {
+      debug: (_msg, ..._args) => {
         if (this.options.verbose) {
-          console.log(`🐛 ${msg}`, ...args);
         }
-      }
+      },
     };
   }
 
-  showHelp() {
-    console.log(`
-🔍 UEL (Unified Event Layer) System Validation Tool
-
-USAGE:
-  node scripts/validate-uel.js [options]
-  npm run validate:uel [-- options]
-
-OPTIONS:
-  --verbose, -v         Show detailed validation output
-  --health             Perform system health validation only
-  --integration        Perform integration validation only
-  --events             Validate event types and schemas
-  --compatibility      Test EventEmitter compatibility
-  --export-report      Export detailed validation report
-  --fix-issues         Attempt to fix detected issues
-  --format=FORMAT      Output format (json, table, summary)
-  --help, -h           Show this help message
-
-EXAMPLES:
-  # Full validation with detailed output
-  node scripts/validate-uel.js --verbose
-  
-  # Health check only
-  node scripts/validate-uel.js --health
-  
-  # Export JSON report
-  node scripts/validate-uel.js --format=json --export-report
-  
-  # Fix issues automatically
-  node scripts/validate-uel.js --fix-issues
-
-FORMATS:
-  json     - JSON output for programmatic use
-  table    - Formatted table output (default)
-  summary  - Brief summary only
-
-EXIT CODES:
-  0 - All validations passed
-  1 - Validation warnings found
-  2 - Validation errors found
-  3 - Critical system issues found
-    `);
-  }
+  showHelp() {}
 
   async run() {
     try {
@@ -159,7 +113,7 @@ EXIT CODES:
 
       // Main validation phases
       const validationTasks = this.getValidationTasks();
-      
+
       for (const task of validationTasks) {
         try {
           this.logger.info(`\n📋 Running ${task.name}...`);
@@ -167,9 +121,9 @@ EXIT CODES:
           this.validationResults.push({
             name: task.name,
             category: task.category,
-            ...result
+            ...result,
           });
-          
+
           if (result.success) {
             this.logger.success(`${task.name} completed successfully`);
           } else {
@@ -184,22 +138,22 @@ EXIT CODES:
             score: 0,
             errors: [{ message: error.message, severity: 'critical' }],
             warnings: [],
-            recommendations: []
+            recommendations: [],
           });
         }
       }
 
       // Generate final report
       const report = this.generateReport();
-      
+
       // Output results
       this.outputResults(report);
-      
+
       // Export detailed report if requested
       if (this.options.exportReport) {
         await this.exportReport(report);
       }
-      
+
       // Attempt fixes if requested
       if (this.options.fixIssues) {
         await this.attemptFixes(report);
@@ -207,15 +161,14 @@ EXIT CODES:
 
       // Exit with appropriate code
       const exitCode = this.determineExitCode(report);
-      
+
       if (exitCode === 0) {
         this.logger.success('🎉 All UEL validations passed!');
       } else {
         this.logger.warn(`⚠️  UEL validation completed with issues (exit code: ${exitCode})`);
       }
-      
-      process.exit(exitCode);
 
+      process.exit(exitCode);
     } catch (error) {
       this.logger.error('💥 UEL validation failed:', error);
       process.exit(3);
@@ -224,7 +177,7 @@ EXIT CODES:
 
   async performPreflightChecks() {
     this.logger.debug('Performing preflight checks...');
-    
+
     // Check if UEL module exists
     const uelPath = path.join(__dirname, '../src/interfaces/events/index.ts');
     try {
@@ -248,38 +201,38 @@ EXIT CODES:
       {
         name: 'System Health Validation',
         category: 'health',
-        run: () => this.validateSystemHealth()
+        run: () => this.validateSystemHealth(),
       },
       {
         name: 'Integration Completeness',
         category: 'integration',
-        run: () => this.validateIntegration()
+        run: () => this.validateIntegration(),
       },
       {
         name: 'Event Type Validation',
         category: 'events',
-        run: () => this.validateEventTypes()
+        run: () => this.validateEventTypes(),
       },
       {
         name: 'EventEmitter Compatibility',
         category: 'compatibility',
-        run: () => this.validateCompatibility()
+        run: () => this.validateCompatibility(),
       },
       {
         name: 'Factory Registration',
         category: 'integration',
-        run: () => this.validateFactories()
+        run: () => this.validateFactories(),
       },
       {
         name: 'Registry Functionality',
         category: 'integration',
-        run: () => this.validateRegistry()
+        run: () => this.validateRegistry(),
       },
       {
         name: 'Performance Benchmarks',
         category: 'health',
-        run: () => this.validatePerformance()
-      }
+        run: () => this.validatePerformance(),
+      },
     ];
 
     // Filter tasks based on options
@@ -287,11 +240,13 @@ EXIT CODES:
       return allTasks;
     }
 
-    return allTasks.filter(task => {
-      return (this.options.health && task.category === 'health') ||
-             (this.options.integration && task.category === 'integration') ||
-             (this.options.events && task.category === 'events') ||
-             (this.options.compatibility && task.category === 'compatibility');
+    return allTasks.filter((task) => {
+      return (
+        (this.options.health && task.category === 'health') ||
+        (this.options.integration && task.category === 'integration') ||
+        (this.options.events && task.category === 'events') ||
+        (this.options.compatibility && task.category === 'compatibility')
+      );
     });
   }
 
@@ -305,17 +260,17 @@ EXIT CODES:
       // Import UEL dynamically
       const { UEL } = await import('../src/interfaces/events/index.ts');
       const uel = UEL.getInstance();
-      
+
       // Initialize UEL system
       await uel.initialize({
         enableValidation: true,
         enableCompatibility: true,
-        healthMonitoring: true
+        healthMonitoring: true,
       });
 
       // Get system status
       const systemStatus = await uel.getSystemStatus();
-      
+
       // Validate system health
       if (!systemStatus.initialized) {
         errors.push({ message: 'UEL system not properly initialized', severity: 'critical' });
@@ -345,12 +300,18 @@ EXIT CODES:
       // Performance checks
       const globalMetrics = await uel.getGlobalMetrics();
       if (globalMetrics.errorRate > 0.05) {
-        errors.push({ message: `High error rate: ${(globalMetrics.errorRate * 100).toFixed(2)}%`, severity: 'medium' });
+        errors.push({
+          message: `High error rate: ${(globalMetrics.errorRate * 100).toFixed(2)}%`,
+          severity: 'medium',
+        });
         score -= 15;
       }
 
       if (globalMetrics.averageLatency > 100) {
-        warnings.push({ message: `High average latency: ${globalMetrics.averageLatency}ms`, impact: 'medium' });
+        warnings.push({
+          message: `High average latency: ${globalMetrics.averageLatency}ms`,
+          impact: 'medium',
+        });
         score -= 5;
       }
 
@@ -359,23 +320,25 @@ EXIT CODES:
         recommendations.push({
           type: 'setup',
           message: 'No event managers created yet - consider setting up default managers',
-          priority: 'medium'
+          priority: 'medium',
         });
       }
 
       await uel.shutdown();
-
     } catch (error) {
-      errors.push({ message: `System health check failed: ${error.message}`, severity: 'critical' });
+      errors.push({
+        message: `System health check failed: ${error.message}`,
+        severity: 'critical',
+      });
       score = 0;
     }
 
     return {
-      success: errors.filter(e => e.severity === 'critical').length === 0,
+      success: errors.filter((e) => e.severity === 'critical').length === 0,
       score: Math.max(0, score),
       errors,
       warnings,
-      recommendations
+      recommendations,
     };
   }
 
@@ -393,14 +356,17 @@ EXIT CODES:
         'src/interfaces/events/registry.ts',
         'src/interfaces/events/validation.ts',
         'src/interfaces/events/compatibility.ts',
-        'src/interfaces/events/factories.ts'
+        'src/interfaces/events/factories.ts',
       ];
 
       for (const component of requiredComponents) {
         try {
           await fs.access(path.join(__dirname, '..', component));
         } catch {
-          errors.push({ message: `Required component missing: ${component}`, severity: 'critical' });
+          errors.push({
+            message: `Required component missing: ${component}`,
+            severity: 'critical',
+          });
           score -= 20;
         }
       }
@@ -413,7 +379,7 @@ EXIT CODES:
           'system-event-adapter.ts',
           'coordination-event-adapter.ts',
           'communication-event-adapter.ts',
-          'monitoring-event-adapter.ts'
+          'monitoring-event-adapter.ts',
         ];
 
         for (const adapter of requiredAdapters) {
@@ -431,19 +397,19 @@ EXIT CODES:
       const integrationChecks = [
         { file: 'src/core/event-bus.ts', name: 'Core Event Bus' },
         { file: 'src/core/application-coordinator.ts', name: 'Application Coordinator' },
-        { file: 'src/interfaces/events/observer-system.ts', name: 'Observer System' }
+        { file: 'src/interfaces/events/observer-system.ts', name: 'Observer System' },
       ];
 
       for (const check of integrationChecks) {
         try {
           const content = await fs.readFile(path.join(__dirname, '..', check.file), 'utf8');
-          
+
           // Check if it uses EventEmitter
           if (content.includes('extends EventEmitter')) {
             recommendations.push({
               type: 'migration',
               message: `${check.name} could benefit from UEL integration`,
-              priority: 'low'
+              priority: 'low',
             });
           }
 
@@ -454,23 +420,21 @@ EXIT CODES:
             warnings.push({ message: `${check.name} not integrated with UEL`, impact: 'low' });
             score -= 3;
           }
-          
         } catch {
           warnings.push({ message: `Could not analyze ${check.name} integration`, impact: 'low' });
         }
       }
-
     } catch (error) {
       errors.push({ message: `Integration validation failed: ${error.message}`, severity: 'high' });
       score -= 25;
     }
 
     return {
-      success: errors.filter(e => e.severity === 'critical').length === 0,
+      success: errors.filter((e) => e.severity === 'critical').length === 0,
       score: Math.max(0, score),
       errors,
       warnings,
-      recommendations
+      recommendations,
     };
   }
 
@@ -495,7 +459,7 @@ EXIT CODES:
         'NeuralEvent',
         'DatabaseEvent',
         'MemoryEvent',
-        'WorkflowEvent'
+        'WorkflowEvent',
       ];
 
       for (const type of requiredTypes) {
@@ -521,7 +485,7 @@ EXIT CODES:
       const eventInterfaceRegex = /interface (\w+Event) extends \w+ \{[^}]+\}/g;
       let match;
       const eventInterfaces = [];
-      
+
       while ((match = eventInterfaceRegex.exec(content)) !== null) {
         eventInterfaces.push(match[1]);
       }
@@ -534,20 +498,20 @@ EXIT CODES:
       recommendations.push({
         type: 'enhancement',
         message: 'Consider adding JSDoc documentation for event types',
-        priority: 'low'
+        priority: 'low',
       });
-
     } catch (error) {
       errors.push({ message: `Event type validation failed: ${error.message}`, severity: 'high' });
       score = 0;
     }
 
     return {
-      success: errors.filter(e => e.severity === 'critical' || e.severity === 'high').length === 0,
+      success:
+        errors.filter((e) => e.severity === 'critical' || e.severity === 'high').length === 0,
       score: Math.max(0, score),
       errors,
       warnings,
-      recommendations
+      recommendations,
     };
   }
 
@@ -559,12 +523,13 @@ EXIT CODES:
 
     try {
       // Test compatibility layer
-      const { UELCompatibleEventEmitter, EventEmitterMigrationHelper } = 
-        await import('../src/interfaces/events/compatibility.ts');
+      const { UELCompatibleEventEmitter, EventEmitterMigrationHelper } = await import(
+        '../src/interfaces/events/compatibility.ts'
+      );
 
       // Create test EventEmitter
       const testEmitter = new UELCompatibleEventEmitter({
-        enableUEL: false // Start with disabled UEL
+        enableUEL: false, // Start with disabled UEL
       });
 
       let eventReceived = false;
@@ -596,23 +561,25 @@ EXIT CODES:
       // Test event mapping
       testEmitter.mapEventToUEL('legacy-event', 'system:legacy');
       const mappedStatus = testEmitter.getUELStatus();
-      
+
       if (mappedStatus.mappedEvents !== 1) {
         warnings.push({ message: 'Event mapping functionality may have issues', impact: 'medium' });
         score -= 10;
       }
-
     } catch (error) {
-      errors.push({ message: `Compatibility validation failed: ${error.message}`, severity: 'high' });
+      errors.push({
+        message: `Compatibility validation failed: ${error.message}`,
+        severity: 'high',
+      });
       score -= 30;
     }
 
     return {
-      success: errors.filter(e => e.severity === 'critical').length === 0,
+      success: errors.filter((e) => e.severity === 'critical').length === 0,
       score: Math.max(0, score),
       errors,
       warnings,
-      recommendations
+      recommendations,
     };
   }
 
@@ -631,7 +598,7 @@ EXIT CODES:
         'UELFactory',
         'UELRegistry',
         'SystemEventManagerFactory',
-        'CoordinationEventManagerFactory'
+        'CoordinationEventManagerFactory',
       ];
 
       for (const factory of requiredFactories) {
@@ -652,18 +619,18 @@ EXIT CODES:
         errors.push({ message: 'Event manager types enum missing', severity: 'medium' });
         score -= 15;
       }
-
     } catch (error) {
       errors.push({ message: `Factory validation failed: ${error.message}`, severity: 'high' });
       score = 0;
     }
 
     return {
-      success: errors.filter(e => e.severity === 'critical' || e.severity === 'high').length === 0,
+      success:
+        errors.filter((e) => e.severity === 'critical' || e.severity === 'high').length === 0,
       score: Math.max(0, score),
       errors,
       warnings,
-      recommendations
+      recommendations,
     };
   }
 
@@ -675,7 +642,7 @@ EXIT CODES:
 
     try {
       const { EventRegistry } = await import('../src/interfaces/events/registry.ts');
-      
+
       // Test registry creation
       const logger = { debug: () => {}, info: () => {}, warn: () => {}, error: () => {} };
       const registry = new EventRegistry(logger);
@@ -693,7 +660,7 @@ EXIT CODES:
       // Test event type registration
       registry.registerEventType('test:validation', {
         category: 'test',
-        managerTypes: ['system']
+        managerTypes: ['system'],
       });
 
       const eventTypes = registry.getEventTypes();
@@ -703,18 +670,18 @@ EXIT CODES:
       }
 
       await registry.shutdownAll();
-
     } catch (error) {
       errors.push({ message: `Registry validation failed: ${error.message}`, severity: 'high' });
       score -= 30;
     }
 
     return {
-      success: errors.filter(e => e.severity === 'critical' || e.severity === 'high').length === 0,
+      success:
+        errors.filter((e) => e.severity === 'critical' || e.severity === 'high').length === 0,
       score: Math.max(0, score),
       errors,
       warnings,
-      recommendations
+      recommendations,
     };
   }
 
@@ -730,10 +697,10 @@ EXIT CODES:
       // Import and initialize UEL
       const { UEL } = await import('../src/interfaces/events/index.ts');
       const uel = UEL.getInstance();
-      
+
       await uel.initialize({
         enableValidation: false, // Skip validation for performance test
-        healthMonitoring: false
+        healthMonitoring: false,
       });
 
       const initTime = Date.now() - startTime;
@@ -746,7 +713,7 @@ EXIT CODES:
 
       // Test event manager creation performance
       const createStartTime = Date.now();
-      const systemManager = await uel.createSystemEventManager('perf-test');
+      const _systemManager = await uel.createSystemEventManager('perf-test');
       const createTime = Date.now() - createStartTime;
 
       if (createTime > 1000) {
@@ -756,8 +723,12 @@ EXIT CODES:
 
       // Test memory usage (basic check)
       const memoryUsage = process.memoryUsage();
-      if (memoryUsage.heapUsed > 100 * 1024 * 1024) { // 100MB
-        warnings.push({ message: 'High memory usage detected during validation', impact: 'medium' });
+      if (memoryUsage.heapUsed > 100 * 1024 * 1024) {
+        // 100MB
+        warnings.push({
+          message: 'High memory usage detected during validation',
+          impact: 'medium',
+        });
         score -= 10;
       }
 
@@ -766,37 +737,39 @@ EXIT CODES:
       recommendations.push({
         type: 'performance',
         message: 'Consider implementing performance monitoring for production use',
-        priority: 'medium'
+        priority: 'medium',
       });
-
     } catch (error) {
-      errors.push({ message: `Performance validation failed: ${error.message}`, severity: 'medium' });
+      errors.push({
+        message: `Performance validation failed: ${error.message}`,
+        severity: 'medium',
+      });
       score -= 20;
     }
 
     return {
-      success: errors.filter(e => e.severity === 'critical' || e.severity === 'high').length === 0,
+      success:
+        errors.filter((e) => e.severity === 'critical' || e.severity === 'high').length === 0,
       score: Math.max(0, score),
       errors,
       warnings,
-      recommendations
+      recommendations,
     };
   }
 
   generateReport() {
     const totalTime = Date.now() - this.startTime;
     const totalTests = this.validationResults.length;
-    const passedTests = this.validationResults.filter(r => r.success).length;
-    const overallScore = totalTests > 0 
-      ? this.validationResults.reduce((sum, r) => sum + r.score, 0) / totalTests 
-      : 0;
+    const passedTests = this.validationResults.filter((r) => r.success).length;
+    const overallScore =
+      totalTests > 0 ? this.validationResults.reduce((sum, r) => sum + r.score, 0) / totalTests : 0;
 
-    const allErrors = this.validationResults.flatMap(r => r.errors || []);
-    const allWarnings = this.validationResults.flatMap(r => r.warnings || []);
-    const allRecommendations = this.validationResults.flatMap(r => r.recommendations || []);
+    const allErrors = this.validationResults.flatMap((r) => r.errors || []);
+    const allWarnings = this.validationResults.flatMap((r) => r.warnings || []);
+    const allRecommendations = this.validationResults.flatMap((r) => r.recommendations || []);
 
-    const criticalErrors = allErrors.filter(e => e.severity === 'critical').length;
-    const highErrors = allErrors.filter(e => e.severity === 'high').length;
+    const criticalErrors = allErrors.filter((e) => e.severity === 'critical').length;
+    const highErrors = allErrors.filter((e) => e.severity === 'high').length;
 
     return {
       summary: {
@@ -805,28 +778,34 @@ EXIT CODES:
         failedTests: totalTests - passedTests,
         overallScore: Math.round(overallScore),
         totalTime,
-        status: criticalErrors > 0 ? 'critical' : highErrors > 0 ? 'error' : allErrors.length > 0 ? 'warning' : 'success'
+        status:
+          criticalErrors > 0
+            ? 'critical'
+            : highErrors > 0
+              ? 'error'
+              : allErrors.length > 0
+                ? 'warning'
+                : 'success',
       },
       details: {
         errors: allErrors,
         warnings: allWarnings,
-        recommendations: allRecommendations
+        recommendations: allRecommendations,
       },
       results: this.validationResults,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
   outputResults(report) {
     switch (this.options.format) {
       case 'json':
-        console.log(JSON.stringify(report, null, 2));
         break;
-      
+
       case 'summary':
         this.outputSummary(report);
         break;
-      
+
       default:
         this.outputTable(report);
         break;
@@ -835,78 +814,44 @@ EXIT CODES:
 
   outputSummary(report) {
     const { summary } = report;
-    
-    console.log('\n🔍 UEL Validation Summary');
-    console.log('─'.repeat(50));
-    console.log(`Status: ${this.getStatusEmoji(summary.status)} ${summary.status.toUpperCase()}`);
-    console.log(`Tests: ${summary.passedTests}/${summary.totalTests} passed`);
-    console.log(`Score: ${summary.overallScore}/100`);
-    console.log(`Time: ${summary.totalTime}ms`);
-    
+
     if (report.details.errors.length > 0) {
-      console.log(`\n❌ ${report.details.errors.length} error(s) found`);
     }
-    
+
     if (report.details.warnings.length > 0) {
-      console.log(`⚠️  ${report.details.warnings.length} warning(s) found`);
     }
-    
+
     if (report.details.recommendations.length > 0) {
-      console.log(`💡 ${report.details.recommendations.length} recommendation(s) available`);
     }
   }
 
   outputTable(report) {
-    console.log('\n🔍 UEL Validation Results');
-    console.log('─'.repeat(80));
-    
     // Results table
     for (const result of report.results) {
-      const status = result.success ? '✅' : '❌';
-      const score = result.score.toString().padStart(3);
-      const name = result.name.padEnd(30);
-      
-      console.log(`${status} ${name} Score: ${score}/100`);
-      
+      const _status = result.success ? '✅' : '❌';
+      const _score = result.score.toString().padStart(3);
+      const _name = result.name.padEnd(30);
+
       if (this.options.verbose) {
         if (result.errors && result.errors.length > 0) {
-          result.errors.forEach(error => {
-            console.log(`    ❌ ${error.message}`);
-          });
+          result.errors.forEach((_error) => {});
         }
-        
+
         if (result.warnings && result.warnings.length > 0) {
-          result.warnings.forEach(warning => {
-            console.log(`    ⚠️  ${warning.message}`);
-          });
+          result.warnings.forEach((_warning) => {});
         }
       }
     }
-    
-    // Summary
-    console.log('\n📊 Overall Summary');
-    console.log('─'.repeat(50));
-    console.log(`Status: ${this.getStatusEmoji(report.summary.status)} ${report.summary.status.toUpperCase()}`);
-    console.log(`Tests: ${report.summary.passedTests}/${report.summary.totalTests} passed`);
-    console.log(`Score: ${report.summary.overallScore}/100`);
-    console.log(`Time: ${report.summary.totalTime}ms`);
-    
+
     // Issues summary
     if (report.details.errors.length > 0) {
-      console.log(`\n❌ Issues Found (${report.details.errors.length}):`);
-      report.details.errors.slice(0, 5).forEach(error => {
-        console.log(`   • ${error.message}`);
-      });
+      report.details.errors.slice(0, 5).forEach((_error) => {});
       if (report.details.errors.length > 5) {
-        console.log(`   ... and ${report.details.errors.length - 5} more`);
       }
     }
-    
+
     if (report.details.recommendations.length > 0 && this.options.verbose) {
-      console.log(`\n💡 Recommendations (${report.details.recommendations.length}):`);
-      report.details.recommendations.slice(0, 3).forEach(rec => {
-        console.log(`   • ${rec.message}`);
-      });
+      report.details.recommendations.slice(0, 3).forEach((_rec) => {});
     }
   }
 
@@ -915,7 +860,7 @@ EXIT CODES:
       success: '🟢',
       warning: '🟡',
       error: '🟠',
-      critical: '🔴'
+      critical: '🔴',
     };
     return emojis[status] || '❓';
   }
@@ -924,7 +869,7 @@ EXIT CODES:
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const filename = `uel-validation-report-${timestamp}.json`;
     const filepath = path.join(process.cwd(), filename);
-    
+
     try {
       await fs.writeFile(filepath, JSON.stringify(report, null, 2));
       this.logger.success(`Detailed report exported to: ${filename}`);
@@ -940,24 +885,24 @@ EXIT CODES:
     }
 
     this.logger.info('🔧 Attempting to fix issues...');
-    
+
     // Simple fixes that can be automated
-    let fixCount = 0;
-    
+    const fixCount = 0;
+
     for (const error of report.details.errors) {
       if (error.message.includes('missing') && error.message.includes('component')) {
         // Could attempt to generate missing components
         this.logger.debug(`Could potentially fix: ${error.message}`);
       }
     }
-    
+
     for (const warning of report.details.warnings) {
       if (warning.message.includes('not integrated')) {
         // Could suggest integration steps
         this.logger.debug(`Integration opportunity: ${warning.message}`);
       }
     }
-    
+
     if (fixCount > 0) {
       this.logger.success(`Applied ${fixCount} automated fixes`);
     } else {
@@ -967,14 +912,14 @@ EXIT CODES:
 
   determineExitCode(report) {
     const { errors } = report.details;
-    
-    const criticalErrors = errors.filter(e => e.severity === 'critical').length;
-    const highErrors = errors.filter(e => e.severity === 'high').length;
-    
+
+    const criticalErrors = errors.filter((e) => e.severity === 'critical').length;
+    const highErrors = errors.filter((e) => e.severity === 'high').length;
+
     if (criticalErrors > 0) return 3;
     if (highErrors > 0) return 2;
     if (errors.length > 0) return 1;
-    
+
     return 0;
   }
 }
@@ -982,7 +927,7 @@ EXIT CODES:
 // Run the CLI if this script is executed directly
 if (require.main === module) {
   const cli = new UELValidationCLI();
-  cli.run().catch(error => {
+  cli.run().catch((error) => {
     console.error('💥 Validation failed:', error);
     process.exit(3);
   });

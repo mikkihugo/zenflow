@@ -35,7 +35,6 @@ import type {
   WorkflowError,
   WorkflowExecutionOptions,
   WorkflowMetrics,
-  WorkflowState,
   WorkflowStatus,
   WorkflowStepResults,
   WorkflowStepState,
@@ -63,6 +62,8 @@ export type ProductFlowStep =
 
 /**
  * Mutable workflow state interface for runtime modifications
+ *
+ * @example
  */
 export interface MutableWorkflowState {
   id: string;
@@ -89,6 +90,8 @@ export interface MutableWorkflowState {
 
 /**
  * Integrated Product Flow + SPARC Workflow State
+ *
+ * @example
  */
 export interface ProductWorkflowState extends MutableWorkflowState {
   productFlow: {
@@ -112,6 +115,8 @@ export interface ProductWorkflowState extends MutableWorkflowState {
 
 /**
  * Product Workflow Configuration
+ *
+ * @example
  */
 export interface ProductWorkflowConfig extends WorkflowEngineConfig {
   enableSPARCIntegration: boolean;
@@ -125,6 +130,8 @@ export interface ProductWorkflowConfig extends WorkflowEngineConfig {
  *
  * Orchestrates the complete Product Flow (Vision→Task) with SPARC methodology
  * applied as the technical implementation tool WITHIN Features and Tasks.
+ *
+ * @example
  */
 export class ProductWorkflowEngine extends EventEmitter {
   private memory: MemorySystem;
@@ -191,6 +198,10 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   /**
    * Start a complete Product Flow workflow with optional SPARC integration
+   *
+   * @param workflowName
+   * @param context
+   * @param options
    */
   async startProductWorkflow(
     workflowName: string,
@@ -300,6 +311,9 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   /**
    * Execute the complete Product Flow workflow with SPARC integration
+   *
+   * @param workflow
+   * @param options
    */
   private async executeProductWorkflow(
     workflow: ProductWorkflowState,
@@ -393,6 +407,9 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   /**
    * Execute individual Product Flow steps
+   *
+   * @param workflow
+   * @param step
    */
   private async executeProductFlowStep(
     workflow: ProductWorkflowState,
@@ -439,6 +456,8 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   /**
    * SPARC Integration: Create SPARC projects for features that need technical implementation
+   *
+   * @param workflow
    */
   private async integrateSPARCForFeatures(workflow: ProductWorkflowState): Promise<void> {
     logger.info('🔧 Integrating SPARC methodology for feature implementation');
@@ -456,6 +475,8 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   /**
    * Determine if a feature should use SPARC methodology
+   *
+   * @param feature
    */
   private shouldApplySPARCToFeature(feature: FeatureDocumentEntity): boolean {
     const technicalFeatureTypes = ['api', 'database', 'integration', 'infrastructure'];
@@ -464,6 +485,9 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   /**
    * Create SPARC project for a feature
+   *
+   * @param workflow
+   * @param feature
    */
   private async createSPARCProjectForFeature(
     workflow: ProductWorkflowState,
@@ -518,6 +542,8 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   /**
    * Execute SPARC phases for all integrated features
+   *
+   * @param workflow
    */
   private async executeSPARCPhases(workflow: ProductWorkflowState): Promise<void> {
     const sparcPhases: SPARCPhase[] = [
@@ -567,6 +593,10 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   /**
    * Update feature document with SPARC progress
+   *
+   * @param featureId
+   * @param completedPhase
+   * @param _result
    */
   private async updateFeatureSPARCProgress(
     featureId: string,
@@ -579,6 +609,8 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   /**
    * Map feature type to SPARC domain
+   *
+   * @param featureType
    */
   private mapFeatureTypeToSPARCDomain(featureType: string): any {
     return this.config.sparcDomainMapping[featureType] || 'general';
@@ -586,6 +618,8 @@ export class ProductWorkflowEngine extends EventEmitter {
 
   /**
    * Assess feature complexity for SPARC
+   *
+   * @param feature
    */
   private assessFeatureComplexity(feature: FeatureDocumentEntity): any {
     // Simple heuristic - in production this would be more sophisticated

@@ -60,6 +60,8 @@ export interface ImplementationResult {
 
 /**
  * Bridge between Database-Driven Product Flow and SPARC Swarm Coordination
+ *
+ * @example
  */
 class DatabaseSPARCBridge extends EventEmitter {
   private databaseSystem: DatabaseDrivenSystem;
@@ -101,6 +103,8 @@ class DatabaseSPARCBridge extends EventEmitter {
 
   /**
    * Assign a Feature to SPARC swarm for implementation
+   *
+   * @param feature
    */
   async assignFeatureToSparcs(feature: FeatureDocumentEntity): Promise<string> {
     logger.info(`📋 Assigning feature to SPARC swarm: ${feature.title}`);
@@ -130,6 +134,8 @@ class DatabaseSPARCBridge extends EventEmitter {
 
   /**
    * Assign a Task to SPARC swarm for implementation
+   *
+   * @param task
    */
   async assignTaskToSparcs(task: TaskDocumentEntity): Promise<string> {
     logger.info(`🔧 Assigning task to SPARC swarm: ${task.title}`);
@@ -196,6 +202,8 @@ class DatabaseSPARCBridge extends EventEmitter {
 
   /**
    * Process completion of SPARC work and update database
+   *
+   * @param sparcTask
    */
   private async handleSPARCCompletion(sparcTask: SPARCTask): Promise<void> {
     logger.info(`🎯 Processing SPARC completion: ${sparcTask.id}`);
@@ -233,6 +241,9 @@ class DatabaseSPARCBridge extends EventEmitter {
 
   /**
    * Update the original document with SPARC implementation results
+   *
+   * @param assignment
+   * @param result
    */
   private async updateDocumentWithResults(
     assignment: WorkAssignment,
@@ -243,7 +254,7 @@ class DatabaseSPARCBridge extends EventEmitter {
     // Update document with SPARC implementation details
     const updatedDocument = {
       ...document,
-      status: result.status === 'completed' ? 'approved' as const : 'draft' as const,
+      status: result.status === 'completed' ? ('approved' as const) : ('draft' as const),
       completion_percentage:
         result.status === 'completed' ? 100 : result.status === 'partial' ? 75 : 0,
       workflow_stage: 'sparc-completed',
@@ -270,6 +281,8 @@ class DatabaseSPARCBridge extends EventEmitter {
 
   /**
    * Extract artifacts from completed SPARC task
+   *
+   * @param sparcTask
    */
   private extractArtifacts(sparcTask: SPARCTask): ImplementationResult['artifacts'] {
     const phases = Object.values(sparcTask.phaseProgress);
@@ -290,6 +303,8 @@ class DatabaseSPARCBridge extends EventEmitter {
 
   /**
    * Calculate metrics from SPARC task execution
+   *
+   * @param sparcTask
    */
   private calculateMetrics(sparcTask: SPARCTask): ImplementationResult['metrics'] {
     const phases = Object.values(sparcTask.phaseProgress);
@@ -324,6 +339,8 @@ class DatabaseSPARCBridge extends EventEmitter {
 
   /**
    * Generate completion report
+   *
+   * @param sparcTask
    */
   private generateCompletionReport(sparcTask: SPARCTask): string {
     const document = sparcTask.sourceDocument;
@@ -410,6 +427,8 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
 
   /**
    * Determine if a document should be auto-assigned to SPARC swarm
+   *
+   * @param document
    */
   private shouldAutoAssignToSparc(document: any): boolean {
     // Auto-assign high-priority items or items tagged for swarm processing
@@ -423,6 +442,8 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
 
   /**
    * Map document priority to work assignment priority
+   *
+   * @param priority
    */
   private mapPriority(priority: string): 'low' | 'medium' | 'high' | 'critical' {
     const mapping: Record<string, 'low' | 'medium' | 'high' | 'critical'> = {

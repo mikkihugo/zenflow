@@ -74,6 +74,8 @@ const initialSwarmState: SwarmState = {
  * Swarm Status React Hook
  *
  * Provides reactive swarm state management with real-time updates for React components.
+ *
+ * @param options
  */
 export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmStatusReturn => {
   const {
@@ -95,7 +97,7 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
       const interval = setInterval(refreshStatus, refreshInterval);
       return () => clearInterval(interval);
     }
-  }, [autoRefresh, refreshInterval]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [autoRefresh, refreshInterval, refreshStatus]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const refreshStatus = async () => {
     try {
@@ -221,7 +223,7 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
               avgLatency: 120 + Math.random() * 80,
             },
           },
-          agents: activeAgents.map((agentId, index) => ({
+          agents: activeAgents.map((agentId, _index) => ({
             id: agentId,
             role: 'worker' as const,
             status: 'active' as const,

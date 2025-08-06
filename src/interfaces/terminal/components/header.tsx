@@ -32,6 +32,16 @@ export interface HeaderProps {
  *
  * Displays application header with optional swarm status information.
  * Adapts display based on mode (standard command execution or swarm interactive terminal).
+ *
+ * @param root0
+ * @param root0.title
+ * @param root0.version
+ * @param root0.subtitle
+ * @param root0.swarmStatus
+ * @param root0.showBorder
+ * @param root0.centerAlign
+ * @param root0.mode
+ * @param root0.testId
  */
 export const Header: React.FC<HeaderProps> = ({
   title,

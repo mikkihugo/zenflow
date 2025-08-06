@@ -1,5 +1,5 @@
 /**
- * @fileoverview Advanced CLI Type Definitions
+ * @file Advanced CLI Type Definitions
  *
  * Comprehensive type system for the advanced CLI and project management system.
  * Defines interfaces for intelligent project scaffolding, swarm coordination,
@@ -8,6 +8,8 @@
 
 /**
  * Main Advanced CLI System Interface
+ *
+ * @example
  */
 export interface AdvancedCLISystem {
   // Intelligent project management
@@ -79,6 +81,8 @@ export interface PerformanceRequirements {
 
 /**
  * Project Management Results
+ *
+ * @example
  */
 export interface ProjectCreationResult {
   readonly projectStructure: ProjectStructure;
@@ -179,6 +183,8 @@ export interface Optimization {
 
 /**
  * Swarm Coordination Types
+ *
+ * @example
  */
 export interface SwarmCommand {
   readonly id: string;
@@ -381,6 +387,8 @@ export interface VisualizationResult {
 
 /**
  * Development Pipeline Types
+ *
+ * @example
  */
 export interface DevPipeline {
   readonly specifications: Specification[];
@@ -576,6 +584,8 @@ export interface TestCoverage {
 
 /**
  * Advanced Command Types
+ *
+ * @example
  */
 export interface AdvancedCommand {
   readonly name: string;
@@ -617,6 +627,8 @@ export interface CommandExample {
 
 /**
  * CLI Configuration Types
+ *
+ * @example
  */
 export interface CLIConfig {
   readonly theme: 'dark' | 'light' | 'auto';
@@ -644,6 +656,8 @@ export interface PerformanceConfig {
 
 /**
  * Error and Status Types
+ *
+ * @example
  */
 export interface CLIError {
   readonly code: string;

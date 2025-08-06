@@ -1,20 +1,26 @@
 /**
  * Communication Event Adapter Tests
- * 
+ *
  * Comprehensive test suite for CommunicationEventAdapter using hybrid TDD approach:
  * - 70% London TDD (mockist) for distributed components and protocol interactions
  * - 30% Classical TDD (detroit) for pure functions and mathematical operations
- * 
+ *
  * Tests cover WebSocket communication, MCP protocol events, HTTP communication,
  * and protocol management scenarios with full event correlation and performance tracking.
  */
 
-import { CommunicationEventAdapter, createDefaultCommunicationEventAdapterConfig } from '../../../interfaces/events/adapters/communication-event-adapter';
+import { EventEmitter } from 'node:events';
+import {
+  CommunicationEventAdapter,
+  createDefaultCommunicationEventAdapterConfig,
+} from '../../../interfaces/events/adapters/communication-event-adapter';
 import { CommunicationEventFactory } from '../../../interfaces/events/adapters/communication-event-factory';
+import type {
+  EventManagerMetrics,
+  EventManagerStatus,
+  EventPriority,
+} from '../../../interfaces/events/core/interfaces';
 import type { CommunicationEvent } from '../../../interfaces/events/types';
-import type { EventPriority } from '../../../interfaces/events/core/interfaces';
-import type { EventManagerStatus, EventManagerMetrics } from '../../../interfaces/events/core/interfaces';
-import { EventEmitter } from 'events';
 
 describe('CommunicationEventAdapter', () => {
   describe('🏗️ Constructor and Configuration (Classical TDD)', () => {
@@ -35,16 +41,16 @@ describe('CommunicationEventAdapter', () => {
         websocketCommunication: {
           enabled: false,
           wrapConnectionEvents: false,
-          clients: ['custom-client']
+          clients: ['custom-client'],
         },
         mcpProtocol: {
           enabled: true,
-          servers: ['custom-mcp-server']
+          servers: ['custom-mcp-server'],
         },
         performance: {
           enableConnectionCorrelation: false,
-          maxConcurrentConnections: 500
-        }
+          maxConcurrentConnections: 500,
+        },
       });
 
       const adapter = new CommunicationEventAdapter(config);
@@ -75,12 +81,12 @@ describe('CommunicationEventAdapter', () => {
         info: jest.fn(),
         debug: jest.fn(),
         warn: jest.fn(),
-        error: jest.fn()
+        error: jest.fn(),
       };
 
       const config = createDefaultCommunicationEventAdapterConfig('lifecycle-test');
       adapter = new CommunicationEventAdapter(config);
-      
+
       // Mock the logger
       (adapter as any).logger = mockLogger;
     });
@@ -93,15 +99,13 @@ describe('CommunicationEventAdapter', () => {
     });
 
     it('should start adapter and initialize communication integrations', async () => {
-      const mockInitializeCommunicationIntegrations = jest.spyOn(
-        adapter as any, 
-        'initializeCommunicationIntegrations'
-      ).mockResolvedValue(undefined);
+      const mockInitializeCommunicationIntegrations = jest
+        .spyOn(adapter as any, 'initializeCommunicationIntegrations')
+        .mockResolvedValue(undefined);
 
-      const mockStartEventProcessing = jest.spyOn(
-        adapter as any,
-        'startEventProcessing'
-      ).mockImplementation(() => {});
+      const mockStartEventProcessing = jest
+        .spyOn(adapter as any, 'startEventProcessing')
+        .mockImplementation(() => {});
 
       await adapter.start();
 
@@ -116,10 +120,9 @@ describe('CommunicationEventAdapter', () => {
     it('should stop adapter and cleanup resources', async () => {
       await adapter.start();
 
-      const mockUnwrapCommunicationComponents = jest.spyOn(
-        adapter as any,
-        'unwrapCommunicationComponents'
-      ).mockResolvedValue(undefined);
+      const mockUnwrapCommunicationComponents = jest
+        .spyOn(adapter as any, 'unwrapCommunicationComponents')
+        .mockResolvedValue(undefined);
 
       await adapter.stop();
 
@@ -131,10 +134,9 @@ describe('CommunicationEventAdapter', () => {
     });
 
     it('should handle start errors gracefully', async () => {
-      const mockInitializeCommunicationIntegrations = jest.spyOn(
-        adapter as any,
-        'initializeCommunicationIntegrations'
-      ).mockRejectedValue(new Error('Initialization failed'));
+      const _mockInitializeCommunicationIntegrations = jest
+        .spyOn(adapter as any, 'initializeCommunicationIntegrations')
+        .mockRejectedValue(new Error('Initialization failed'));
 
       await expect(adapter.start()).rejects.toThrow('Initialization failed');
       expect(adapter.isRunning()).toBe(false);
@@ -171,35 +173,34 @@ describe('CommunicationEventAdapter', () => {
       mockWebSocketClient.healthCheck = jest.fn().mockResolvedValue({
         status: 'healthy',
         responseTime: 50,
-        errorRate: 0.02
+        errorRate: 0.02,
       });
 
       // Mock WebSocket client wrapping
-      const mockWrapWebSocketClients = jest.spyOn(
-        adapter as any,
-        'wrapWebSocketClients'
-      ).mockImplementation(async () => {
-        const wrappedComponent = {
-          component: mockWebSocketClient,
-          componentType: 'websocket',
-          wrapper: new EventEmitter(),
-          originalMethods: new Map(),
-          eventMappings: new Map([
-            ['connect', 'communication:websocket'],
-            ['disconnect', 'communication:websocket'],
-            ['message', 'communication:websocket']
-          ]),
-          isActive: true,
-          healthMetrics: {
-            lastSeen: new Date(),
-            communicationCount: 0,
-            errorCount: 0,
-            avgLatency: 0
-          }
-        };
+      const _mockWrapWebSocketClients = jest
+        .spyOn(adapter as any, 'wrapWebSocketClients')
+        .mockImplementation(async () => {
+          const wrappedComponent = {
+            component: mockWebSocketClient,
+            componentType: 'websocket',
+            wrapper: new EventEmitter(),
+            originalMethods: new Map(),
+            eventMappings: new Map([
+              ['connect', 'communication:websocket'],
+              ['disconnect', 'communication:websocket'],
+              ['message', 'communication:websocket'],
+            ]),
+            isActive: true,
+            healthMetrics: {
+              lastSeen: new Date(),
+              communicationCount: 0,
+              errorCount: 0,
+              avgLatency: 0,
+            },
+          };
 
-        (adapter as any).wrappedComponents.set('websocket-client-default', wrappedComponent);
-      });
+          (adapter as any).wrappedComponents.set('websocket-client-default', wrappedComponent);
+        });
 
       await adapter.start();
     });
@@ -218,8 +219,8 @@ describe('CommunicationEventAdapter', () => {
         endpoint: 'ws://localhost:8080',
         details: {
           connectionId: 'conn-123',
-          clientName: 'test-client'
-        }
+          clientName: 'test-client',
+        },
       };
 
       const eventListener = jest.fn();
@@ -236,7 +237,7 @@ describe('CommunicationEventAdapter', () => {
           endpoint: 'ws://localhost:8080',
           id: expect.any(String),
           timestamp: expect.any(Date),
-          correlationId: expect.any(String)
+          correlationId: expect.any(String),
         })
       );
     });
@@ -251,7 +252,7 @@ describe('CommunicationEventAdapter', () => {
         protocol: 'ws' as const,
         endpoint: 'ws://localhost:8080',
         correlationId,
-        details: { connectionId: 'conn-123' }
+        details: { connectionId: 'conn-123' },
       };
 
       const messageEvent = {
@@ -261,11 +262,11 @@ describe('CommunicationEventAdapter', () => {
         protocol: 'ws' as const,
         endpoint: 'ws://localhost:8080',
         correlationId,
-        details: { 
+        details: {
           connectionId: 'conn-123',
           messageId: 'msg-456',
-          messageType: 'text'
-        }
+          messageType: 'text',
+        },
       };
 
       await adapter.emitWebSocketCommunicationEvent(connectEvent);
@@ -289,8 +290,8 @@ describe('CommunicationEventAdapter', () => {
         details: {
           connectionId: 'conn-123',
           errorCode: 'CONNECTION_LOST',
-          errorMessage: 'WebSocket connection lost'
-        }
+          errorMessage: 'WebSocket connection lost',
+        },
       };
 
       const eventListener = jest.fn();
@@ -303,8 +304,8 @@ describe('CommunicationEventAdapter', () => {
           operation: 'error',
           priority: 'high',
           details: expect.objectContaining({
-            errorCode: 'CONNECTION_LOST'
-          })
+            errorCode: 'CONNECTION_LOST',
+          }),
         })
       );
     });
@@ -322,35 +323,34 @@ describe('CommunicationEventAdapter', () => {
       mockMCPServer.healthCheck = jest.fn().mockResolvedValue({
         status: 'healthy',
         responseTime: 25,
-        errorRate: 0.01
+        errorRate: 0.01,
       });
 
       // Mock MCP server wrapping
-      const mockWrapMCPServers = jest.spyOn(
-        adapter as any,
-        'wrapMCPServers'
-      ).mockImplementation(async () => {
-        const wrappedComponent = {
-          component: mockMCPServer,
-          componentType: 'mcp-server',
-          wrapper: new EventEmitter(),
-          originalMethods: new Map(),
-          eventMappings: new Map([
-            ['tool:called', 'communication:mcp'],
-            ['tool:completed', 'communication:mcp'],
-            ['client:connected', 'communication:mcp']
-          ]),
-          isActive: true,
-          healthMetrics: {
-            lastSeen: new Date(),
-            communicationCount: 0,
-            errorCount: 0,
-            avgLatency: 0
-          }
-        };
+      const _mockWrapMCPServers = jest
+        .spyOn(adapter as any, 'wrapMCPServers')
+        .mockImplementation(async () => {
+          const wrappedComponent = {
+            component: mockMCPServer,
+            componentType: 'mcp-server',
+            wrapper: new EventEmitter(),
+            originalMethods: new Map(),
+            eventMappings: new Map([
+              ['tool:called', 'communication:mcp'],
+              ['tool:completed', 'communication:mcp'],
+              ['client:connected', 'communication:mcp'],
+            ]),
+            isActive: true,
+            healthMetrics: {
+              lastSeen: new Date(),
+              communicationCount: 0,
+              errorCount: 0,
+              avgLatency: 0,
+            },
+          };
 
-        (adapter as any).wrappedComponents.set('mcp-server-http-mcp-server', wrappedComponent);
-      });
+          (adapter as any).wrappedComponents.set('mcp-server-http-mcp-server', wrappedComponent);
+        });
 
       await adapter.start();
     });
@@ -371,8 +371,8 @@ describe('CommunicationEventAdapter', () => {
           toolName: 'system_info',
           requestId: 'req-789',
           statusCode: 200,
-          responseTime: 150
-        }
+          responseTime: 150,
+        },
       };
 
       const eventListener = jest.fn();
@@ -387,8 +387,8 @@ describe('CommunicationEventAdapter', () => {
           operation: 'send',
           details: expect.objectContaining({
             toolName: 'system_info',
-            requestId: 'req-789'
-          })
+            requestId: 'req-789',
+          }),
         })
       );
     });
@@ -405,8 +405,8 @@ describe('CommunicationEventAdapter', () => {
         correlationId,
         details: {
           toolName: 'swarm_init',
-          requestId: 'req-101'
-        }
+          requestId: 'req-101',
+        },
       };
 
       const responseEvent = {
@@ -420,8 +420,8 @@ describe('CommunicationEventAdapter', () => {
           toolName: 'swarm_init',
           requestId: 'req-101',
           statusCode: 200,
-          responseTime: 45
-        }
+          responseTime: 45,
+        },
       };
 
       await adapter.emitMCPProtocolEvent(requestEvent);
@@ -445,8 +445,8 @@ describe('CommunicationEventAdapter', () => {
         details: {
           toolName: 'long_running_task',
           requestId: 'req-timeout-202',
-          timeoutDuration: 30000
-        }
+          timeoutDuration: 30000,
+        },
       };
 
       const eventListener = jest.fn();
@@ -459,8 +459,8 @@ describe('CommunicationEventAdapter', () => {
           operation: 'timeout',
           priority: 'high',
           details: expect.objectContaining({
-            timeoutDuration: 30000
-          })
+            timeoutDuration: 30000,
+          }),
         })
       );
     });
@@ -474,31 +474,30 @@ describe('CommunicationEventAdapter', () => {
       adapter = new CommunicationEventAdapter(config);
 
       // Mock HTTP communication wrapping
-      const mockWrapHTTPCommunication = jest.spyOn(
-        adapter as any,
-        'wrapHTTPCommunication'
-      ).mockImplementation(async () => {
-        const wrappedComponent = {
-          component: null,
-          componentType: 'http',
-          wrapper: new EventEmitter(),
-          originalMethods: new Map(),
-          eventMappings: new Map([
-            ['request', 'communication:http'],
-            ['response', 'communication:http'],
-            ['timeout', 'communication:http']
-          ]),
-          isActive: true,
-          healthMetrics: {
-            lastSeen: new Date(),
-            communicationCount: 0,
-            errorCount: 0,
-            avgLatency: 0
-          }
-        };
+      const _mockWrapHTTPCommunication = jest
+        .spyOn(adapter as any, 'wrapHTTPCommunication')
+        .mockImplementation(async () => {
+          const wrappedComponent = {
+            component: null,
+            componentType: 'http',
+            wrapper: new EventEmitter(),
+            originalMethods: new Map(),
+            eventMappings: new Map([
+              ['request', 'communication:http'],
+              ['response', 'communication:http'],
+              ['timeout', 'communication:http'],
+            ]),
+            isActive: true,
+            healthMetrics: {
+              lastSeen: new Date(),
+              communicationCount: 0,
+              errorCount: 0,
+              avgLatency: 0,
+            },
+          };
 
-        (adapter as any).wrappedComponents.set('http-communication', wrappedComponent);
-      });
+          (adapter as any).wrappedComponents.set('http-communication', wrappedComponent);
+        });
 
       await adapter.start();
     });
@@ -521,8 +520,8 @@ describe('CommunicationEventAdapter', () => {
         details: {
           requestId: 'http-req-1',
           statusCode: 200,
-          responseTime: 320
-        }
+          responseTime: 320,
+        },
       };
 
       const eventListener = jest.fn();
@@ -535,7 +534,7 @@ describe('CommunicationEventAdapter', () => {
           type: 'communication:http',
           operation: 'send',
           protocol: 'https',
-          endpoint: 'https://api.example.com/data'
+          endpoint: 'https://api.example.com/data',
         })
       );
     });
@@ -553,7 +552,7 @@ describe('CommunicationEventAdapter', () => {
         endpoint: 'https://api.example.com/flaky',
         priority: 'medium' as EventPriority,
         correlationId,
-        details: { requestId: 'req-1', retryAttempt: 0 }
+        details: { requestId: 'req-1', retryAttempt: 0 },
       };
 
       const retryRequest = {
@@ -566,7 +565,7 @@ describe('CommunicationEventAdapter', () => {
         endpoint: 'https://api.example.com/flaky',
         priority: 'medium' as EventPriority,
         correlationId,
-        details: { requestId: 'req-1', retryAttempt: 1 }
+        details: { requestId: 'req-1', retryAttempt: 1 },
       };
 
       await adapter.emit(initialRequest);
@@ -587,33 +586,32 @@ describe('CommunicationEventAdapter', () => {
       adapter = new CommunicationEventAdapter(config);
 
       // Mock protocol communication wrapping
-      const mockWrapProtocolCommunication = jest.spyOn(
-        adapter as any,
-        'wrapProtocolCommunication'
-      ).mockImplementation(async () => {
-        ['http', 'https', 'ws', 'wss', 'stdio'].forEach(protocolType => {
-          const wrappedComponent = {
-            component: null,
-            componentType: 'protocol',
-            wrapper: new EventEmitter(),
-            originalMethods: new Map(),
-            eventMappings: new Map([
-              ['protocol:switched', 'communication:protocol'],
-              ['protocol:optimized', 'communication:protocol'],
-              ['routing:message', 'communication:protocol']
-            ]),
-            isActive: true,
-            healthMetrics: {
-              lastSeen: new Date(),
-              communicationCount: 0,
-              errorCount: 0,
-              avgLatency: 0
-            }
-          };
+      const _mockWrapProtocolCommunication = jest
+        .spyOn(adapter as any, 'wrapProtocolCommunication')
+        .mockImplementation(async () => {
+          ['http', 'https', 'ws', 'wss', 'stdio'].forEach((protocolType) => {
+            const wrappedComponent = {
+              component: null,
+              componentType: 'protocol',
+              wrapper: new EventEmitter(),
+              originalMethods: new Map(),
+              eventMappings: new Map([
+                ['protocol:switched', 'communication:protocol'],
+                ['protocol:optimized', 'communication:protocol'],
+                ['routing:message', 'communication:protocol'],
+              ]),
+              isActive: true,
+              healthMetrics: {
+                lastSeen: new Date(),
+                communicationCount: 0,
+                errorCount: 0,
+                avgLatency: 0,
+              },
+            };
 
-          (adapter as any).wrappedComponents.set(`${protocolType}-protocol`, wrappedComponent);
+            (adapter as any).wrappedComponents.set(`${protocolType}-protocol`, wrappedComponent);
+          });
         });
-      });
 
       await adapter.start();
     });
@@ -636,8 +634,8 @@ describe('CommunicationEventAdapter', () => {
         details: {
           requestId: 'protocol-switch-req',
           statusCode: 200,
-          responseTime: 25
-        }
+          responseTime: 25,
+        },
       };
 
       const eventListener = jest.fn();
@@ -650,8 +648,8 @@ describe('CommunicationEventAdapter', () => {
           type: 'communication:protocol',
           details: expect.objectContaining({
             statusCode: 200,
-            responseTime: 25
-          })
+            responseTime: 25,
+          }),
         })
       );
     });
@@ -669,8 +667,8 @@ describe('CommunicationEventAdapter', () => {
         details: {
           requestId: 'msg-routing-404',
           responseTime: 15,
-          statusCode: 200
-        }
+          statusCode: 200,
+        },
       };
 
       await adapter.emit(routingEvent);
@@ -693,11 +691,11 @@ describe('CommunicationEventAdapter', () => {
           maxCorrelationDepth: 10,
           correlationPatterns: [
             'communication:websocket->communication:mcp',
-            'communication:http->communication:mcp'
+            'communication:http->communication:mcp',
           ],
           trackMessageFlow: true,
-          trackConnectionHealth: true
-        }
+          trackConnectionHealth: true,
+        },
       });
       adapter = new CommunicationEventAdapter(config);
       await adapter.start();
@@ -712,18 +710,18 @@ describe('CommunicationEventAdapter', () => {
       const correlation = {
         correlationId: 'efficiency-test-505',
         events: [
-          { 
+          {
             operation: 'connect',
-            details: { statusCode: 200 }
+            details: { statusCode: 200 },
           },
-          { 
+          {
             operation: 'send',
-            details: { statusCode: 200 }
+            details: { statusCode: 200 },
           },
-          { 
+          {
             operation: 'receive',
-            details: { statusCode: 200 }
-          }
+            details: { statusCode: 200 },
+          },
         ],
         startTime: new Date(Date.now() - 5000),
         lastUpdate: new Date(),
@@ -734,9 +732,9 @@ describe('CommunicationEventAdapter', () => {
         performance: {
           totalLatency: 5000,
           communicationEfficiency: 0,
-          resourceUtilization: 0
+          resourceUtilization: 0,
         },
-        metadata: {}
+        metadata: {},
       };
 
       const efficiency = (adapter as any).calculateCommunicationEfficiency(correlation);
@@ -751,7 +749,7 @@ describe('CommunicationEventAdapter', () => {
         correlationId: 'pattern-test-606',
         events: [
           { type: 'communication:websocket', operation: 'connect' },
-          { type: 'communication:mcp', operation: 'send' }
+          { type: 'communication:mcp', operation: 'send' },
         ],
         startTime: new Date(),
         lastUpdate: new Date(),
@@ -762,12 +760,14 @@ describe('CommunicationEventAdapter', () => {
         performance: {
           totalLatency: 1000,
           communicationEfficiency: 1.0,
-          resourceUtilization: 0.5
+          resourceUtilization: 0.5,
         },
-        metadata: {}
+        metadata: {},
       };
 
-      const isComplete = (adapter as any).isCommunicationCorrelationComplete(correlationWithPattern);
+      const isComplete = (adapter as any).isCommunicationCorrelationComplete(
+        correlationWithPattern
+      );
       expect(isComplete).toBe(true);
     });
 
@@ -779,7 +779,7 @@ describe('CommunicationEventAdapter', () => {
         { eventType: 'protocol:error', expected: 'error' },
         { eventType: 'websocket:timeout', expected: 'timeout' },
         { eventType: 'mcp:retry', expected: 'retry' },
-        { eventType: 'unknown:operation', expected: 'send' }
+        { eventType: 'unknown:operation', expected: 'send' },
       ];
 
       testCases.forEach(({ eventType, expected }) => {
@@ -794,7 +794,7 @@ describe('CommunicationEventAdapter', () => {
         { eventType: 'http:request', data: null, expected: 'http' },
         { eventType: 'mcp:tool', data: null, expected: 'stdio' },
         { eventType: 'custom:event', data: { protocol: 'tcp' }, expected: 'tcp' },
-        { eventType: 'unknown:event', data: null, expected: 'custom' }
+        { eventType: 'unknown:event', data: null, expected: 'custom' },
       ];
 
       testCases.forEach(({ eventType, data, expected }) => {
@@ -812,7 +812,7 @@ describe('CommunicationEventAdapter', () => {
         { eventType: 'websocket:message', expected: 'medium' },
         { eventType: 'mcp:response', expected: 'medium' },
         { eventType: 'http:completed', expected: 'medium' },
-        { eventType: 'unknown:event', expected: 'medium' }
+        { eventType: 'unknown:event', expected: 'medium' },
       ];
 
       testCases.forEach(({ eventType, expected }) => {
@@ -833,37 +833,56 @@ describe('CommunicationEventAdapter', () => {
           connectionHealthThresholds: {
             'websocket-client': 0.9,
             'mcp-server': 0.85,
-            'http-client': 0.8
+            'http-client': 0.8,
           },
           protocolHealthThresholds: {
             'communication-latency': 100,
-            'throughput': 1000,
-            'reliability': 0.95
+            throughput: 1000,
+            reliability: 0.95,
           },
-          autoRecoveryEnabled: true
-        }
+          autoRecoveryEnabled: true,
+        },
       });
       adapter = new CommunicationEventAdapter(config);
 
       // Mock wrapped components for health testing
       (adapter as any).wrappedComponents.set('websocket-client-test', {
-        component: { healthCheck: jest.fn().mockResolvedValue({ responseTime: 50, errorRate: 0.05 }) },
+        component: {
+          healthCheck: jest.fn().mockResolvedValue({ responseTime: 50, errorRate: 0.05 }),
+        },
         componentType: 'websocket',
         wrapper: new EventEmitter(),
         originalMethods: new Map(),
         eventMappings: new Map(),
         isActive: true,
-        healthMetrics: { lastSeen: new Date(), communicationCount: 100, errorCount: 5, avgLatency: 50 }
+        healthMetrics: {
+          lastSeen: new Date(),
+          communicationCount: 100,
+          errorCount: 5,
+          avgLatency: 50,
+        },
       });
 
       (adapter as any).wrappedComponents.set('mcp-server-test', {
-        component: { getMetrics: jest.fn().mockResolvedValue({ averageLatency: 75, throughput: 500, requestCount: 200, errorCount: 10 }) },
+        component: {
+          getMetrics: jest.fn().mockResolvedValue({
+            averageLatency: 75,
+            throughput: 500,
+            requestCount: 200,
+            errorCount: 10,
+          }),
+        },
         componentType: 'mcp-server',
         wrapper: new EventEmitter(),
         originalMethods: new Map(),
         eventMappings: new Map(),
         isActive: true,
-        healthMetrics: { lastSeen: new Date(), communicationCount: 200, errorCount: 10, avgLatency: 75 }
+        healthMetrics: {
+          lastSeen: new Date(),
+          communicationCount: 200,
+          errorCount: 10,
+          avgLatency: 75,
+        },
       });
 
       await adapter.start();
@@ -909,10 +928,11 @@ describe('CommunicationEventAdapter', () => {
 
     it('should calculate correct health scores based on thresholds', async () => {
       const healthResults = await adapter.performCommunicationHealthCheck();
-      
+
       for (const [componentName, health] of Object.entries(healthResults)) {
-        const threshold = adapter.config.connectionHealthMonitoring?.connectionHealthThresholds?.[componentName];
-        
+        const threshold =
+          adapter.config.connectionHealthMonitoring?.connectionHealthThresholds?.[componentName];
+
         if (health.status === 'healthy') {
           expect(health.reliability).toBeGreaterThanOrEqual(threshold || 0.8);
         } else if (health.status === 'degraded') {
@@ -948,7 +968,7 @@ describe('CommunicationEventAdapter', () => {
         type: 'communication:websocket',
         operation: 'connect',
         protocol: 'ws',
-        priority: 'medium'
+        priority: 'medium',
       });
 
       await adapter.emit({
@@ -958,7 +978,7 @@ describe('CommunicationEventAdapter', () => {
         type: 'communication:mcp',
         operation: 'send',
         protocol: 'http',
-        priority: 'medium'
+        priority: 'medium',
       });
 
       const metrics: EventManagerMetrics = await adapter.getMetrics();
@@ -981,7 +1001,7 @@ describe('CommunicationEventAdapter', () => {
       (adapter as any).subscriptions.set('sub-1', { eventTypes: ['test'], listener: () => {} });
       (adapter as any).eventHistory.push({ type: 'test' }, { type: 'test2' });
       (adapter as any).communicationCorrelations.set('corr-1', {
-        events: [{ type: 'test' }, { type: 'test2' }]
+        events: [{ type: 'test' }, { type: 'test2' }],
       });
 
       const memoryUsage = (adapter as any).estimateMemoryUsage();
@@ -1001,8 +1021,8 @@ describe('CommunicationEventAdapter', () => {
         priority: 'medium',
         details: {
           connectionId: 'conn-789',
-          requestId: 'msg-101'
-        }
+          requestId: 'msg-101',
+        },
       };
 
       (adapter as any).updateCommunicationMetrics(testEvent);
@@ -1031,7 +1051,7 @@ describe('CommunicationEventAdapter', () => {
       const newConfig = {
         performance: {
           enableConnectionCorrelation: false,
-          maxConcurrentConnections: 2000
+          maxConcurrentConnections: 2000,
         },
         communicationOptimization: {
           enabled: false,
@@ -1039,11 +1059,11 @@ describe('CommunicationEventAdapter', () => {
           performanceThresholds: {
             latency: 50,
             throughput: 500,
-            reliability: 0.98
+            reliability: 0.98,
           },
           connectionPooling: true,
-          messageCompression: true
-        }
+          messageCompression: true,
+        },
       };
 
       adapter.updateConfig(newConfig);
@@ -1055,11 +1075,11 @@ describe('CommunicationEventAdapter', () => {
 
     it('should maintain existing configuration when partially updated', () => {
       const originalWebSocketConfig = adapter.config.websocketCommunication;
-      
+
       adapter.updateConfig({
         mcpProtocol: {
-          enabled: false
-        }
+          enabled: false,
+        },
       });
 
       expect(adapter.config.websocketCommunication).toEqual(originalWebSocketConfig);
@@ -1140,7 +1160,7 @@ describe('CommunicationEventAdapter', () => {
         type: 'communication:websocket',
         operation: 'connect',
         protocol: 'ws',
-        priority: 'medium'
+        priority: 'medium',
       });
 
       await adapter2.emit({
@@ -1150,7 +1170,7 @@ describe('CommunicationEventAdapter', () => {
         type: 'communication:mcp',
         operation: 'send',
         protocol: 'http',
-        priority: 'medium'
+        priority: 'medium',
       });
 
       const metricsSummary = await factory.getCommunicationMetricsSummary();
@@ -1192,7 +1212,7 @@ describe('CommunicationEventAdapter', () => {
       const invalidEvent = {
         // Missing required fields
         source: 'test',
-        type: 'communication:websocket' as const
+        type: 'communication:websocket' as const,
       } as any;
 
       await expect(adapter.emit(invalidEvent)).rejects.toThrow();
@@ -1212,7 +1232,7 @@ describe('CommunicationEventAdapter', () => {
         type: 'communication:websocket' as const,
         operation: 'connect' as const,
         protocol: 'ws' as const,
-        priority: 'medium' as const
+        priority: 'medium' as const,
       };
 
       // Should not throw despite listener error
@@ -1226,7 +1246,8 @@ describe('CommunicationEventAdapter', () => {
       );
 
       // Mock initialization to fail
-      jest.spyOn(failingAdapter as any, 'initializeCommunicationIntegrations')
+      jest
+        .spyOn(failingAdapter as any, 'initializeCommunicationIntegrations')
         .mockRejectedValue(new Error('Initialization failed'));
 
       await expect(failingAdapter.start()).rejects.toThrow('Initialization failed');

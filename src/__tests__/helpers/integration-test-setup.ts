@@ -78,6 +78,8 @@ export class IntegrationTestSetup {
 
   /**
    * Create isolated test environment
+   *
+   * @param testName
    */
   async createIsolatedEnvironment(testName: string): Promise<{
     workDir: string;

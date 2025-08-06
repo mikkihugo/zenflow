@@ -5,11 +5,13 @@
  * Replaces loose 'any' types with strict, type-safe interfaces.
  * Following Google TypeScript Style Guide.
  *
- * @fileoverview Strict event system type definitions
+ * @file Strict event system type definitions
  */
 
 /**
  * Base event payload structure
+ *
+ * @example
  */
 export interface BaseEventPayload {
   readonly timestamp: Date;
@@ -20,6 +22,8 @@ export interface BaseEventPayload {
 
 /**
  * System events
+ *
+ * @example
  */
 export interface SystemEvents {
   'system:started': SystemStartedPayload;
@@ -53,6 +57,8 @@ export interface SystemHealthChangedPayload extends BaseEventPayload {
 
 /**
  * Workflow events
+ *
+ * @example
  */
 export interface WorkflowEvents {
   'workflow:started': WorkflowStartedPayload;
@@ -126,6 +132,8 @@ export interface WorkflowStepFailedPayload extends BaseEventPayload {
 
 /**
  * Coordination events
+ *
+ * @example
  */
 export interface CoordinationEvents {
   'agent:created': AgentCreatedPayload;
@@ -930,6 +938,8 @@ export interface AgentStateUpdatedPayload extends BaseEventPayload {
 
 /**
  * Neural events
+ *
+ * @example
  */
 export interface NeuralEvents {
   'neural:network:created': NeuralNetworkCreatedPayload;
@@ -978,6 +988,8 @@ export interface NeuralPredictionMadePayload extends BaseEventPayload {
 
 /**
  * Memory events
+ *
+ * @example
  */
 export interface MemoryEvents {
   'memory:store:created': MemoryStoreCreatedPayload;
@@ -1057,6 +1069,8 @@ export type EventMiddleware<T extends keyof EventMap = keyof EventMap> = (
 
 /**
  * Supporting types
+ *
+ * @example
  */
 export interface SystemConfig {
   readonly [key: string]: unknown;
@@ -1129,6 +1143,8 @@ export interface MemoryStoreConfig {
 
 /**
  * Event bus configuration
+ *
+ * @example
  */
 export interface EventBusConfig {
   readonly maxListeners: number;
@@ -1140,6 +1156,8 @@ export interface EventBusConfig {
 
 /**
  * Event metrics
+ *
+ * @example
  */
 export interface EventMetrics {
   readonly eventCount: number;

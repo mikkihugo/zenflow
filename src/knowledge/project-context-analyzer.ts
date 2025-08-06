@@ -109,6 +109,8 @@ interface ProjectAnalyzerConfig {
 /**
  * Project Context Analyzer
  * Analyzes project context and determines what external knowledge should be gathered
+ *
+ * @example
  */
 export class ProjectContextAnalyzer extends EventEmitter {
   private config: ProjectAnalyzerConfig;
@@ -211,6 +213,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Detect if the project is a monorepo and what type
+   *
+   * @param context
    */
   private async detectMonorepo(context: ProjectContext): Promise<void> {
     const monorepoIndicators = {
@@ -337,6 +341,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Analyze monorepo structure in detail
+   *
+   * @param context
    */
   private async analyzeMonorepoStructure(context: ProjectContext): Promise<void> {
     if (context.monorepo.type === 'none') return;
@@ -449,6 +455,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Execute knowledge gathering missions through the swarm
+   *
+   * @param priority
    */
   async executeMissions(priority?: 'critical' | 'high' | 'medium' | 'low'): Promise<void> {
     const missions = Array.from(this.knowledgeMissions.values())
@@ -471,6 +479,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Execute a single knowledge gathering mission
+   *
+   * @param mission
    */
   private async executeMission(mission: KnowledgeGatheringMission): Promise<void> {
     mission.status = 'in-progress';
@@ -524,6 +534,9 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Query the knowledge base for specific information
+   *
+   * @param query
+   * @param context
    */
   async queryKnowledge(query: string, context?: string[]): Promise<string> {
     try {
@@ -547,6 +560,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Analyze dependencies from package.json, Cargo.toml, etc.
+   *
+   * @param context
    */
   private async analyzeDependencies(context: ProjectContext): Promise<void> {
     const packageJsonPath = path.join(context.rootPath, 'package.json');
@@ -589,6 +604,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Detect frameworks and libraries being used
+   *
+   * @param context
    */
   private async detectFrameworks(context: ProjectContext): Promise<void> {
     const allDeps = [...context.dependencies, ...context.devDependencies];
@@ -626,6 +643,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Analyze programming languages used in the project
+   *
+   * @param context
    */
   private async analyzeLanguages(context: ProjectContext): Promise<void> {
     try {
@@ -650,6 +669,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Analyze Cargo.toml for Rust dependencies
+   *
+   * @param context
    */
   private async analyzeCargoToml(context: ProjectContext): Promise<void> {
     try {
@@ -681,6 +702,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Analyze requirements.txt for Python dependencies
+   *
+   * @param context
    */
   private async analyzeRequirementsTxt(context: ProjectContext): Promise<void> {
     try {
@@ -713,6 +736,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Detect API usage patterns
+   *
+   * @param context
    */
   private async detectAPIs(context: ProjectContext): Promise<void> {
     // This could be enhanced to actually scan code for API usage patterns
@@ -734,6 +759,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Analyze current development context (TODOs, issues, etc.)
+   *
+   * @param context
    */
   private async analyzeCurrentContext(context: ProjectContext): Promise<void> {
     // TODO: This could be enhanced to:
@@ -749,6 +776,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Determine if we should gather knowledge for a dependency
+   *
+   * @param dep
    */
   private shouldGatherKnowledge(dep: DependencyInfo): boolean {
     // Gather knowledge for:
@@ -765,6 +794,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Create a dependency-focused knowledge gathering mission
+   *
+   * @param dep
    */
   private createDependencyMission(dep: DependencyInfo): KnowledgeGatheringMission {
     return {
@@ -787,6 +818,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Create a framework-focused knowledge gathering mission
+   *
+   * @param framework
    */
   private createFrameworkMission(framework: DetectedFramework): KnowledgeGatheringMission {
     const priority = framework.usage === 'primary' ? 'high' : 'medium';
@@ -811,6 +844,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Create an API-focused knowledge gathering mission
+   *
+   * @param api
    */
   private createAPIMission(api: DetectedAPI): KnowledgeGatheringMission {
     return {
@@ -832,6 +867,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Create a security-focused knowledge gathering mission
+   *
+   * @param vulnDeps
    */
   private createSecurityMission(vulnDeps: DependencyInfo[]): KnowledgeGatheringMission {
     return {
@@ -902,6 +939,9 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Create an ad-hoc mission for immediate queries
+   *
+   * @param query
+   * @param context
    */
   private createAdHocMission(query: string, context?: string[]): KnowledgeGatheringMission {
     return {
@@ -917,6 +957,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Get priority weight for sorting
+   *
+   * @param priority
    */
   private getPriorityWeight(priority: string): number {
     const weights = { critical: 4, high: 3, medium: 2, low: 1 };
@@ -925,6 +967,9 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Search cached knowledge in context cache
+   *
+   * @param query
+   * @param context
    */
   private async searchCachedKnowledge(query: string, context?: string[]): Promise<any[]> {
     try {
@@ -957,6 +1002,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Format cached knowledge for presentation
+   *
+   * @param knowledge
    */
   private formatCachedKnowledge(knowledge: any[]): string {
     let formatted = '# Cached Knowledge Results\\n\\n';
@@ -975,6 +1022,9 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Store knowledge in context cache
+   *
+   * @param mission
+   * @param result
    */
   private async storeKnowledgeInCache(
     mission: KnowledgeGatheringMission,
@@ -1055,6 +1105,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Check if project is a monorepo with high confidence
+   *
+   * @param confidenceThreshold
    */
   isMonorepo(confidenceThreshold: number = 0.7): boolean {
     const monorepo = this.getMonorepoInfo();

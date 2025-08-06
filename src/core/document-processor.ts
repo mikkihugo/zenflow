@@ -33,6 +33,8 @@ export type DocumentType = 'vision' | 'adr' | 'prd' | 'epic' | 'feature' | 'task
 
 /**
  * Document processing configuration
+ *
+ * @example
  */
 export interface DocumentProcessorConfig {
   /** Enable automatic file watching */
@@ -55,6 +57,8 @@ export interface DocumentProcessorConfig {
 
 /**
  * Document metadata
+ *
+ * @example
  */
 export interface DocumentMetadata {
   /** Document author */
@@ -75,6 +79,8 @@ export interface DocumentMetadata {
 
 /**
  * Document representation
+ *
+ * @example
  */
 export interface Document {
   /** Document type */
@@ -91,6 +97,8 @@ export interface Document {
 
 /**
  * Workspace structure for document organization
+ *
+ * @example
  */
 export interface DocumentWorkspace {
   /** Workspace root directory */
@@ -115,6 +123,8 @@ export interface DocumentWorkspace {
 
 /**
  * Document processing context
+ *
+ * @example
  */
 export interface ProcessingContext {
   /** Workspace configuration */
@@ -129,6 +139,8 @@ export interface ProcessingContext {
 
 /**
  * Document processor statistics
+ *
+ * @example
  */
 export interface DocumentStats {
   /** Total documents processed */
@@ -143,6 +155,8 @@ export interface DocumentStats {
 
 /**
  * Clean, focused document processor that consolidates file-based and database-driven approaches
+ *
+ * @example
  */
 export class DocumentProcessor extends EventEmitter {
   private memory: MemorySystem;
@@ -446,6 +460,9 @@ export class DocumentProcessor extends EventEmitter {
 
   /**
    * Process document based on its type
+   *
+   * @param workspaceId
+   * @param document
    */
   private async processDocumentByType(workspaceId: string, document: Document): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
@@ -482,6 +499,8 @@ export class DocumentProcessor extends EventEmitter {
 
   /**
    * Scan workspace for existing documents
+   *
+   * @param workspaceId
    */
   private async scanDocuments(workspaceId: string): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
@@ -522,6 +541,8 @@ export class DocumentProcessor extends EventEmitter {
 
   /**
    * Determine document type from path
+   *
+   * @param path
    */
   private getDocumentType(path: string): DocumentType {
     if (path.includes('/01-vision/') || path.includes('/vision/')) return 'vision';
@@ -536,6 +557,9 @@ export class DocumentProcessor extends EventEmitter {
 
   /**
    * Get document directory for a type
+   *
+   * @param workspace
+   * @param type
    */
   private getDocumentDirectory(workspace: DocumentWorkspace, type: DocumentType): string {
     switch (type) {
@@ -560,6 +584,8 @@ export class DocumentProcessor extends EventEmitter {
 
   /**
    * Extract metadata from document content
+   *
+   * @param content
    */
   private async extractMetadata(content: string): Promise<DocumentMetadata> {
     const metadata: DocumentMetadata = {};
@@ -596,6 +622,9 @@ export class DocumentProcessor extends EventEmitter {
 
   /**
    * Generate unique document ID
+   *
+   * @param type
+   * @param path
    */
   private generateDocumentId(type: DocumentType, path: string): string {
     const filename = basename(path, '.md');
@@ -605,6 +634,10 @@ export class DocumentProcessor extends EventEmitter {
 
   /**
    * Generate document content with metadata header
+   *
+   * @param title
+   * @param content
+   * @param type
    */
   private generateDocumentContent(title: string, content: string, type: DocumentType): string {
     const now = new Date().toISOString();
@@ -624,6 +657,8 @@ ${content}
 
   /**
    * Get suggested next steps for document type
+   *
+   * @param documentType
    */
   private getSuggestedNextSteps(documentType: DocumentType): string[] {
     const nextSteps = {
@@ -640,6 +675,8 @@ ${content}
 
   /**
    * Update processing statistics
+   *
+   * @param document
    */
   private updateStats(document: Document): void {
     this.stats.totalDocuments++;
@@ -651,6 +688,8 @@ ${content}
 
   /**
    * Ensure workspace directories exist
+   *
+   * @param workspace
    */
   private async ensureDirectories(workspace: DocumentWorkspace): Promise<void> {
     const dirs = [
@@ -677,6 +716,8 @@ ${content}
 
   /**
    * Setup file watchers for document changes
+   *
+   * @param workspaceId
    */
   private setupDocumentWatchers(workspaceId: string): void {
     // Note: In a real implementation, this would use fs.watch or chokidar

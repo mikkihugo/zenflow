@@ -16,6 +16,8 @@ import type { ILogger } from '../core/logger';
 
 /**
  * Expertise Discovery Engine
+ *
+ * @example
  */
 export interface ExpertiseDiscoveryEngine {
   expertiseProfiles: Map<string, ExpertiseProfile>;
@@ -2696,6 +2698,8 @@ export type ExceptionType = 'unavailable' | 'limited' | 'extended' | 'emergency'
 
 /**
  * Knowledge Routing System
+ *
+ * @example
  */
 export interface KnowledgeRoutingSystem {
   routingTable: Map<string, RoutingEntry[]>;
@@ -2774,6 +2778,8 @@ export type OptimizationObjective =
 
 /**
  * Specialization Emergence Detector
+ *
+ * @example
  */
 export interface SpecializationEmergenceDetector {
   emergencePatterns: EmergencePattern[];
@@ -2842,6 +2848,8 @@ export type AdaptationType =
 
 /**
  * Cross-Domain Transfer System
+ *
+ * @example
  */
 export interface CrossDomainTransferSystem {
   transferMap: CrossDomainTransferMap;
@@ -2910,6 +2918,8 @@ export type AbstractionLevel =
 
 /**
  * Collective Memory Manager
+ *
+ * @example
  */
 export interface CollectiveMemoryManager {
   sharedMemory: SharedMemorySpace;
@@ -2972,6 +2982,8 @@ export type RetrievalStrategy =
 
 /**
  * Main Intelligence Coordination System
+ *
+ * @example
  */
 export class IntelligenceCoordinationSystem extends EventEmitter {
   private logger: ILogger;
@@ -3074,6 +3086,8 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
 
   /**
    * Discover and map agent expertise across the swarm
+   *
+   * @param agents
    */
   async discoverSwarmExpertise(agents: string[]): Promise<ExpertiseDiscoveryResult> {
     const startTime = Date.now();
@@ -3136,6 +3150,9 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
 
   /**
    * Route knowledge queries to optimal experts
+   *
+   * @param query
+   * @param routingOptions
    */
   async routeKnowledgeQuery(
     query: KnowledgeQuery,
@@ -3203,6 +3220,8 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
 
   /**
    * Detect and foster agent specialization emergence
+   *
+   * @param observationPeriod
    */
   async detectSpecializationEmergence(
     observationPeriod: number = 3600000 // 1 hour default
@@ -3265,6 +3284,10 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
 
   /**
    * Facilitate cross-domain knowledge transfer
+   *
+   * @param sourceDomain
+   * @param targetDomain
+   * @param transferType
    */
   async facilitateCrossDomainTransfer(
     sourceDomain: string,
@@ -3423,6 +3446,8 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
 
 /**
  * Configuration and result interfaces
+ *
+ * @example
  */
 export interface IntelligenceCoordinationConfig {
   expertiseDiscovery: ExpertiseDiscoveryConfig;
@@ -3524,7 +3549,11 @@ interface ExpertiseDiscoverySystem {
 
 // Placeholder implementation for ExpertiseDiscoverySystem
 class ExpertiseDiscoverySystemImpl implements ExpertiseDiscoverySystem {
-  constructor(private config: any, private logger: any, private eventBus: any) {}
+  constructor(
+    private config: any,
+    private logger: any,
+    private eventBus: any
+  ) {}
 
   async incorporateSpecialization(specialization: any): Promise<void> {
     // Placeholder implementation

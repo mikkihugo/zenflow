@@ -1,6 +1,7 @@
 /**
  * DI Integration Tests - Comprehensive Coverage
- * @fileoverview Tests full dependency injection implementation across all domains
+ *
+ * @file Tests full dependency injection implementation across all domains
  */
 
 import { jest } from '@jest/globals';
@@ -107,7 +108,7 @@ describe('DI System Comprehensive Integration', () => {
 
       @injectable
       class TestService {
-        constructor(@inject(LOGGER_TOKEN) private logger: ITestLogger) {}
+        constructor(@inject(LOGGER_TOKEN) private _logger: ITestLogger) {}
 
         doSomething() {
           this.logger.log('doing something');

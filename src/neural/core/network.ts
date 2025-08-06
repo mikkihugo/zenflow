@@ -175,6 +175,8 @@ export async function initializeNeuralWasm(): Promise<any> {
 
 /**
  * Neural Network wrapper for WASM implementation
+ *
+ * @example
  */
 export class NeuralNetwork {
   private network: any;
@@ -188,6 +190,8 @@ export class NeuralNetwork {
 
   /**
    * Run inference on the network
+   *
+   * @param inputs
    */
   async run(inputs: number[]): Promise<number[]> {
     return this.network.run(new Float32Array(inputs));
@@ -202,6 +206,8 @@ export class NeuralNetwork {
 
   /**
    * Set network weights
+   *
+   * @param weights
    */
   setWeights(weights: Float32Array): void {
     this.network.set_weights(weights);
@@ -216,6 +222,8 @@ export class NeuralNetwork {
 
   /**
    * Set training data for the network
+   *
+   * @param data
    */
   setTrainingData(data: TrainingDataConfig): void {
     this.network.set_training_data(data);
@@ -235,6 +243,8 @@ export class NeuralNetwork {
 
 /**
  * Neural Network trainer with various algorithms
+ *
+ * @example
  */
 export class NeuralTrainer {
   private trainer: any;
@@ -248,6 +258,9 @@ export class NeuralTrainer {
 
   /**
    * Train a single epoch
+   *
+   * @param network
+   * @param data
    */
   async trainEpoch(network: NeuralNetwork, data: TrainingDataConfig): Promise<number> {
     return this.trainer.train_epoch(network.getInternalNetwork(), data);
@@ -255,6 +268,11 @@ export class NeuralTrainer {
 
   /**
    * Train until target error is reached
+   *
+   * @param network
+   * @param data
+   * @param targetError
+   * @param maxEpochs
    */
   async trainUntilTarget(
     network: NeuralNetwork,
@@ -291,6 +309,8 @@ export class NeuralTrainer {
 
 /**
  * Manager for agent-specific neural networks
+ *
+ * @example
  */
 export class AgentNeuralManager {
   private manager: any;
@@ -301,6 +321,8 @@ export class AgentNeuralManager {
 
   /**
    * Create a neural network for a specific agent
+   *
+   * @param config
    */
   async createAgentNetwork(config: AgentNetworkConfig): Promise<string> {
     return this.manager.create_agent_network(config);
@@ -308,6 +330,9 @@ export class AgentNeuralManager {
 
   /**
    * Train an agent's neural network
+   *
+   * @param agentId
+   * @param data
    */
   async trainAgentNetwork(agentId: string, data: TrainingDataConfig): Promise<any> {
     return this.manager.train_agent_network(agentId, data);
@@ -315,6 +340,9 @@ export class AgentNeuralManager {
 
   /**
    * Get inference results from an agent's network
+   *
+   * @param agentId
+   * @param inputs
    */
   async getAgentInference(agentId: string, inputs: number[]): Promise<number[]> {
     return this.manager.get_agent_inference(agentId, new Float32Array(inputs));
@@ -322,6 +350,8 @@ export class AgentNeuralManager {
 
   /**
    * Get cognitive state of an agent
+   *
+   * @param agentId
    */
   async getAgentCognitiveState(agentId: string): Promise<CognitiveState> {
     return this.manager.get_agent_cognitive_state(agentId);
@@ -329,6 +359,9 @@ export class AgentNeuralManager {
 
   /**
    * Fine-tune agent network during execution
+   *
+   * @param agentId
+   * @param experienceData
    */
   async fineTuneDuringExecution(agentId: string, experienceData: any): Promise<any> {
     return this.manager.fine_tune_during_execution(agentId, experienceData);
@@ -341,10 +374,14 @@ export class AgentNeuralManager {
 
 /**
  * Utility class for working with activation functions
+ *
+ * @example
  */
 export class ActivationFunctions {
   /**
    * Get all available activation functions
+   *
+   * @param wasm
    */
   static async getAll(wasm: any): Promise<[string, string][]> {
     return wasm.ActivationFunctionManager.get_all_functions();
@@ -352,6 +389,11 @@ export class ActivationFunctions {
 
   /**
    * Test an activation function with specific input
+   *
+   * @param wasm
+   * @param name
+   * @param input
+   * @param steepness
    */
   static async test(
     wasm: any,
@@ -364,6 +406,9 @@ export class ActivationFunctions {
 
   /**
    * Compare all activation functions with given input
+   *
+   * @param wasm
+   * @param input
    */
   static async compare(wasm: any, input: number): Promise<Record<string, number>> {
     return wasm.ActivationFunctionManager.compare_functions(input);
@@ -371,6 +416,9 @@ export class ActivationFunctions {
 
   /**
    * Get properties of a specific activation function
+   *
+   * @param wasm
+   * @param name
    */
   static async getProperties(wasm: any, name: string): Promise<any> {
     return wasm.ActivationFunctionManager.get_function_properties(name);
@@ -383,6 +431,8 @@ export class ActivationFunctions {
 
 /**
  * Cascade correlation trainer
+ *
+ * @example
  */
 export class CascadeTrainer {
   private trainer: any;
@@ -416,6 +466,8 @@ export class CascadeTrainer {
 
   /**
    * Get default cascade configuration
+   *
+   * @param wasm
    */
   static getDefaultConfig(wasm: any): CascadeConfig {
     return wasm.WasmCascadeTrainer.create_default_config();
@@ -435,6 +487,8 @@ export class CascadeTrainer {
 
 /**
  * Create a neural network with the given configuration
+ *
+ * @param config
  */
 export async function createNeuralNetwork(config: NetworkConfig): Promise<NeuralNetwork> {
   const wasm = await initializeNeuralWasm();
@@ -443,6 +497,8 @@ export async function createNeuralNetwork(config: NetworkConfig): Promise<Neural
 
 /**
  * Create a trainer with the given configuration
+ *
+ * @param config
  */
 export async function createTrainer(config: TrainingConfig): Promise<NeuralTrainer> {
   const wasm = await initializeNeuralWasm();
@@ -459,6 +515,10 @@ export async function createAgentNeuralManager(): Promise<AgentNeuralManager> {
 
 /**
  * Create a cascade trainer
+ *
+ * @param config
+ * @param network
+ * @param data
  */
 export async function createCascadeTrainer(
   config: CascadeConfig | null,
@@ -475,6 +535,8 @@ export async function createCascadeTrainer(
 
 /**
  * Validate network configuration
+ *
+ * @param config
  */
 export function validateNetworkConfig(config: NetworkConfig): boolean {
   return (
@@ -487,6 +549,8 @@ export function validateNetworkConfig(config: NetworkConfig): boolean {
 
 /**
  * Validate training configuration
+ *
+ * @param config
  */
 export function validateTrainingConfig(config: TrainingConfig): boolean {
   return (
@@ -498,6 +562,10 @@ export function validateTrainingConfig(config: TrainingConfig): boolean {
 
 /**
  * Get recommended network configuration for agent type
+ *
+ * @param cognitivePattern
+ * @param inputSize
+ * @param outputSize
  */
 export function getRecommendedAgentConfig(
   cognitivePattern: keyof typeof COGNITIVE_PATTERNS,

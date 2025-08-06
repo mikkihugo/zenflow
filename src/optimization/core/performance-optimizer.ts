@@ -187,6 +187,9 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Register a domain optimizer
+   *
+   * @param domain
+   * @param optimizer
    */
   public registerOptimizer(domain: string, optimizer: any): void {
     this.optimizers.set(domain, optimizer);
@@ -195,6 +198,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Generate optimization plan based on current performance
+   *
+   * @param currentMetrics
    */
   private async generateOptimizationPlan(
     currentMetrics: PerformanceMetrics
@@ -218,6 +223,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Execute a specific optimization plan
+   *
+   * @param plan
    */
   private async executeOptimizationPlan(plan: OptimizationPlan): Promise<OptimizationResult> {
     const startTime = Date.now();
@@ -269,6 +276,9 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Execute a specific optimization action
+   *
+   * @param optimizer
+   * @param action
    */
   private async executeOptimizationAction(
     optimizer: any,
@@ -378,6 +388,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Check if optimization is needed
+   *
+   * @param metrics
    */
   private needsOptimization(metrics: PerformanceMetrics): boolean {
     const targets = this.config.targetMetrics;
@@ -392,6 +404,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Identify performance bottlenecks
+   *
+   * @param metrics
    */
   private identifyBottlenecks(metrics: PerformanceMetrics): string[] {
     const bottlenecks: string[] = [];
@@ -415,6 +429,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Create optimization plan for bottleneck
+   *
+   * @param bottleneck
    */
   private async createOptimizationPlan(bottleneck: string): Promise<OptimizationPlan | null> {
     const planId = `opt-${Date.now()}-${bottleneck}`;
@@ -477,6 +493,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Sort optimization plans by priority and dependencies
+   *
+   * @param plans
    */
   private sortOptimizationPlans(plans: OptimizationPlan[]): OptimizationPlan[] {
     return plans.sort((a, b) => {
@@ -490,6 +508,9 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Calculate performance improvement
+   *
+   * @param before
+   * @param after
    */
   private calculateImprovement(before: PerformanceMetrics, after: PerformanceMetrics): number {
     const latencyImprovement = Math.max(0, (before.latency - after.latency) / before.latency);
@@ -523,6 +544,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Get domain-specific metrics
+   *
+   * @param _domain
    */
   private async getDomainMetrics(_domain: string): Promise<PerformanceMetrics> {
     // Mock implementation - replace with actual domain-specific metrics

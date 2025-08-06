@@ -9,6 +9,8 @@ import type { SwarmConfig, SwarmLifecycleState } from './swarm/core/types';
 
 /**
  * Public interface for swarm coordination
+ *
+ * @example
  */
 export interface PublicSwarmCoordinator {
   // Swarm lifecycle
@@ -36,6 +38,8 @@ export interface PublicSwarmCoordinator {
 /**
  * Factory function to create a public swarm coordinator
  * This wraps the internal SwarmCoordinator with a limited public interface
+ *
+ * @param config
  */
 export async function createPublicSwarmCoordinator(
   config?: SwarmConfig

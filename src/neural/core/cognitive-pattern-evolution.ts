@@ -21,6 +21,8 @@ export class CognitivePatternEvolution {
 
   /**
    * Evolve cognitive patterns based on performance
+   *
+   * @param performanceData
    */
   async evolvePatterns(performanceData) {
     const generation = this.evolutionHistory.length;
@@ -46,6 +48,9 @@ export class CognitivePatternEvolution {
 
   /**
    * Register a new cognitive pattern
+   *
+   * @param id
+   * @param pattern
    */
   registerPattern(id, pattern) {
     this.patterns.set(id, {
@@ -58,6 +63,8 @@ export class CognitivePatternEvolution {
 
   /**
    * Get pattern by ID
+   *
+   * @param id
    */
   getPattern(id) {
     return this.patterns.get(id);

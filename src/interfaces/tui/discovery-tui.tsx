@@ -1,5 +1,5 @@
 /**
- * @fileoverview Interactive Discovery TUI - Ink-based interactive discovery workflow
+ * @file Interactive Discovery TUI - Ink-based interactive discovery workflow
  *
  * This creates a beautiful, interactive TUI for the discovery process that allows users to:
  * 1. Watch analysis progress in real-time
@@ -55,6 +55,12 @@ export interface InteractiveDiscoveryProps {
 
 /**
  * Main Interactive Discovery TUI Component
+ *
+ * @param root0
+ * @param root0.projectPath
+ * @param root0.options
+ * @param root0.onComplete
+ * @param root0.onCancel
  */
 export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
   projectPath,

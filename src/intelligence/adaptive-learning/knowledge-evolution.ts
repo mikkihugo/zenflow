@@ -200,6 +200,10 @@ export class KnowledgeEvolution extends EventEmitter {
 
   /**
    * Learn from swarm interactions and update knowledge base
+   *
+   * @param patterns
+   * @param behaviors
+   * @param domain
    */
   async learnFromInteractions(
     patterns: ExecutionPattern[],
@@ -246,6 +250,9 @@ export class KnowledgeEvolution extends EventEmitter {
 
   /**
    * Update knowledge base with pattern-based insights
+   *
+   * @param patternClusters
+   * @param domain
    */
   async updateKnowledgeFromPatterns(
     patternClusters: PatternCluster[],
@@ -267,6 +274,10 @@ export class KnowledgeEvolution extends EventEmitter {
 
   /**
    * Track expertise evolution for agents
+   *
+   * @param agentId
+   * @param patterns
+   * @param domain
    */
   async trackExpertiseEvolution(
     agentId: string,
@@ -314,6 +325,10 @@ export class KnowledgeEvolution extends EventEmitter {
 
   /**
    * Identify and codify emerging best practices
+   *
+   * @param patterns
+   * @param minEffectiveness
+   * @param minOccurrences
    */
   async identifyBestPractices(
     patterns: ExecutionPattern[],
@@ -344,6 +359,9 @@ export class KnowledgeEvolution extends EventEmitter {
 
   /**
    * Detect and catalog anti-patterns
+   *
+   * @param patterns
+   * @param behaviors
    */
   async detectAntiPatterns(
     patterns: ExecutionPattern[],
@@ -378,6 +396,8 @@ export class KnowledgeEvolution extends EventEmitter {
 
   /**
    * Validate and maintain knowledge consistency
+   *
+   * @param knowledgeBase
    */
   async validateKnowledgeConsistency(knowledgeBase: KnowledgeBase): Promise<ConsistencyReport> {
     const report: ConsistencyReport = {
@@ -417,6 +437,10 @@ export class KnowledgeEvolution extends EventEmitter {
 
   /**
    * Evolve knowledge base based on new evidence
+   *
+   * @param domain
+   * @param trigger
+   * @param evidence
    */
   async evolveKnowledgeBase(
     domain: string,
@@ -469,6 +493,8 @@ export class KnowledgeEvolution extends EventEmitter {
 
   /**
    * Get knowledge recommendations based on context
+   *
+   * @param context
    */
   getKnowledgeRecommendations(context: RecommendationContext): KnowledgeRecommendation[] {
     const recommendations: KnowledgeRecommendation[] = [];
@@ -504,6 +530,9 @@ export class KnowledgeEvolution extends EventEmitter {
 
   /**
    * Export knowledge for transfer learning
+   *
+   * @param domain
+   * @param format
    */
   exportKnowledge(domain: string, format: 'json' | 'rdf' | 'ontology' = 'json'): KnowledgeExport {
     const knowledgeBase = this.knowledgeBases.get(domain);

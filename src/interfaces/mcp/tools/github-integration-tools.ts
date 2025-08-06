@@ -1,5 +1,5 @@
 /**
- * @fileoverview GitHub Integration MCP Tools
+ * @file GitHub Integration MCP Tools
  *
  * GitHub repository management, issue tracking, and automated workflows.
  */

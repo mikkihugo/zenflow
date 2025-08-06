@@ -40,6 +40,10 @@ interface TUIState {
  *
  * Manages multi-screen terminal interface with real-time updates and user interaction.
  * Coordinates between different screens and manages application state.
+ *
+ * @param root0
+ * @param root0.flags
+ * @param root0.onExit
  */
 export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, onExit }) => {
   const [state, setState] = useState<TUIState>({
@@ -224,7 +228,7 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
     const refreshInterval = setInterval(updateState, 3000);
 
     return () => clearInterval(refreshInterval);
-  }, []);
+  }, [initializeTUI, updateState]);
 
   // Global keyboard shortcuts
   useInput((_input, key) => {

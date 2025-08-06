@@ -4,7 +4,7 @@
  * This file provides a single point for importing all standardized interfaces,
  * ensuring consistency across the codebase and preventing interface conflicts.
  *
- * @fileoverview Central interface export registry
+ * @file Central interface export registry
  */
 
 // Neural interfaces

@@ -23,6 +23,8 @@ import { PerformanceOptimizationSystem } from './performance-optimization-system
 
 /**
  * Main Integration Configuration
+ *
+ * @example
  */
 export interface CrossAgentKnowledgeConfig {
   collectiveIntelligence: CollectiveIntelligenceConfig;
@@ -62,6 +64,8 @@ export interface RAGIntegrationConfig {
 
 /**
  * Integration Result Types
+ *
+ * @example
  */
 export interface IntegrationStatus {
   systemStatus: SystemStatus;
@@ -117,6 +121,8 @@ export interface CollectiveKnowledgeResponse {
 
 /**
  * Main Cross-Agent Knowledge Integration System
+ *
+ * @example
  */
 export class CrossAgentKnowledgeIntegration extends EventEmitter {
   private logger: ILogger;
@@ -189,6 +195,9 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
   /**
    * Process knowledge query using collective intelligence
+   *
+   * @param query
+   * @param options
    */
   async processKnowledgeCollectively(
     query: KnowledgeQuery,
@@ -262,6 +271,8 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
   /**
    * Coordinate distributed learning across agents
+   *
+   * @param learningRequest
    */
   async coordinateDistributedLearning(
     learningRequest: DistributedLearningRequest
@@ -319,6 +330,8 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
   /**
    * Facilitate cross-domain knowledge transfer
+   *
+   * @param transferRequest
    */
   async facilitateCrossDomainTransfer(
     transferRequest: CrossDomainTransferRequest
@@ -594,6 +607,8 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
 /**
  * Configuration and result type definitions
+ *
+ * @example
  */
 export interface KnowledgeQuery {
   id: string;
@@ -726,6 +741,10 @@ export interface OptimizationSummary {
 
 /**
  * Factory function to create and initialize the integration system
+ *
+ * @param config
+ * @param logger
+ * @param eventBus
  */
 export async function createCrossAgentKnowledgeIntegration(
   config: CrossAgentKnowledgeConfig,

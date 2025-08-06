@@ -88,6 +88,8 @@ function printUsage(): void {}
 
 /**
  * Setup graceful shutdown
+ *
+ * @param server
  */
 function setupGracefulShutdown(server: HTTPMCPServer): void {
   let shutdownInProgress = false;
@@ -130,6 +132,8 @@ function setupGracefulShutdown(server: HTTPMCPServer): void {
 
 /**
  * Validate startup configuration
+ *
+ * @param config
  */
 function validateConfig(config: StartupConfig): void {
   // Validate port

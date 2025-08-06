@@ -5,7 +5,7 @@
  * Following Google standards but with no authentication required.
  * Can be easily enhanced later if authentication is needed.
  *
- * @fileoverview No-op authentication middleware
+ * @file No-op authentication middleware
  */
 
 import type { NextFunction, Request, Response } from 'express';
@@ -14,6 +14,8 @@ import { LogLevel, log } from './logging';
 /**
  * User information interface (for future use)
  * Following Google Identity standards structure
+ *
+ * @example
  */
 export interface User {
   readonly id: string;
@@ -26,6 +28,8 @@ export interface User {
 
 /**
  * Authentication context (for future use)
+ *
+ * @example
  */
 export interface AuthContext {
   readonly user?: User;
@@ -42,6 +46,7 @@ export interface AuthContext {
  *
  * @param req Express request object
  * @param res Express response object
+ * @param _res
  * @param next Next function to continue middleware chain
  */
 export const authMiddleware = (req: Request, _res: Response, next: NextFunction): void => {
@@ -78,6 +83,10 @@ export const authMiddleware = (req: Request, _res: Response, next: NextFunction)
  *
  * For routes that might have authentication but don't require it.
  * Checks for auth tokens but doesn't reject if missing.
+ *
+ * @param req
+ * @param _res
+ * @param next
  */
 export const optionalAuthMiddleware = (req: Request, _res: Response, next: NextFunction): void => {
   // Check for auth headers (but don't enforce)
@@ -131,6 +140,9 @@ export const optionalAuthMiddleware = (req: Request, _res: Response, next: NextF
  *
  * Utility function to check if current user has required permission.
  * Currently always returns true since no auth is required.
+ *
+ * @param req
+ * @param permission
  */
 export const hasPermission = (req: Request, permission: string): boolean => {
   const authContext = req.auth;
@@ -150,6 +162,9 @@ export const hasPermission = (req: Request, permission: string): boolean => {
  *
  * Utility function to check if current user has required role.
  * Currently always returns true since no auth is required.
+ *
+ * @param req
+ * @param role
  */
 export const hasRole = (req: Request, role: string): boolean => {
   const authContext = req.auth;
@@ -166,6 +181,8 @@ export const hasRole = (req: Request, role: string): boolean => {
  *
  * Utility function to check if current user is admin.
  * Currently always returns true since no auth is required.
+ *
+ * @param _req
  */
 export const isAdmin = (_req: Request): boolean => {
   return true; // Allow all admin operations since no auth required
@@ -176,6 +193,8 @@ export const isAdmin = (_req: Request): boolean => {
  *
  * Utility function to get current authenticated user.
  * Returns anonymous user since no auth is required.
+ *
+ * @param req
  */
 export const getCurrentUser = (req: Request): User | undefined => {
   return req.auth?.user;

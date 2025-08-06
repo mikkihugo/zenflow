@@ -9,7 +9,10 @@
 
 // import { AGUIAdapter } from '@ag-ui/core'; // Module not available
 
-/** Demo class showcasing AG-UI integration */
+/**
+ * @example
+ * Demo class showcasing AG-UI integration
+ */
 export class AGUIDemoIntegration {
   /**
    * Demo 1: Text streaming demonstration

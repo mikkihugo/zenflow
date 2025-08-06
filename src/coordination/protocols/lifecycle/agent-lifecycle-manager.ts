@@ -264,6 +264,8 @@ export interface LifecycleMetrics {
 
 /**
  * Advanced Agent Lifecycle Manager with intelligent orchestration
+ *
+ * @example
  */
 export class AgentLifecycleManager extends EventEmitter {
   private agents = new Map<string, AgentInstance>();
@@ -328,6 +330,8 @@ export class AgentLifecycleManager extends EventEmitter {
 
   /**
    * Register an agent template
+   *
+   * @param template
    */
   async registerTemplate(template: AgentTemplate): Promise<void> {
     this.templates.set(template.id, template);
@@ -344,6 +348,8 @@ export class AgentLifecycleManager extends EventEmitter {
 
   /**
    * Spawn agents from template
+   *
+   * @param request
    */
   async spawnAgents(request: SpawnRequest): Promise<SpawnResult> {
     const startTime = Date.now();
@@ -403,6 +409,8 @@ export class AgentLifecycleManager extends EventEmitter {
 
   /**
    * Terminate agents
+   *
+   * @param request
    */
   async terminateAgents(request: TerminationRequest): Promise<TerminationResult> {
     const startTime = Date.now();
@@ -446,6 +454,8 @@ export class AgentLifecycleManager extends EventEmitter {
 
   /**
    * Get agent status
+   *
+   * @param agentId
    */
   getAgent(agentId: string): AgentInstance | undefined {
     return this.agents.get(agentId);
@@ -460,6 +470,8 @@ export class AgentLifecycleManager extends EventEmitter {
 
   /**
    * Get agents by status
+   *
+   * @param status
    */
   getAgentsByStatus(status: AgentStatus): AgentInstance[] {
     return Array.from(this.agents.values()).filter((agent) => agent.status === status);
@@ -467,6 +479,8 @@ export class AgentLifecycleManager extends EventEmitter {
 
   /**
    * Get agents by type
+   *
+   * @param type
    */
   getAgentsByType(type: string): AgentInstance[] {
     return Array.from(this.agents.values()).filter((agent) => agent.type === type);
@@ -489,6 +503,9 @@ export class AgentLifecycleManager extends EventEmitter {
 
   /**
    * Manually trigger scaling
+   *
+   * @param templateId
+   * @param targetCount
    */
   async triggerScaling(templateId: string, targetCount: number): Promise<void> {
     const template = this.templates.get(templateId);
@@ -522,6 +539,8 @@ export class AgentLifecycleManager extends EventEmitter {
 
   /**
    * Force health check on agent
+   *
+   * @param agentId
    */
   async checkAgentHealth(agentId: string): Promise<HealthStatus> {
     const agent = this.agents.get(agentId);
@@ -534,6 +553,8 @@ export class AgentLifecycleManager extends EventEmitter {
 
   /**
    * Get agent performance ranking
+   *
+   * @param type
    */
   getPerformanceRanking(type?: string): Array<{ agentId: string; score: number; rank: number }> {
     let agents = Array.from(this.agents.values());

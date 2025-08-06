@@ -36,6 +36,8 @@ const ENV_LOG_MAPPING = {
 
 /**
  * Logging configuration manager
+ *
+ * @example
  */
 export class LoggingConfig {
   private loggers: Map<string, Logger>;
@@ -69,6 +71,13 @@ export class LoggingConfig {
 
   /**
    * Get or create a logger for a component
+   *
+   * @param component
+   * @param options
+   * @param options.enableStderr
+   * @param options.enableFile
+   * @param options.formatJson
+   * @param options.logDir
    */
   getLogger(
     component: string,
@@ -102,6 +111,9 @@ export class LoggingConfig {
 
   /**
    * Set log level for a component
+   *
+   * @param component
+   * @param level
    */
   setLogLevel(component: string, level: string): void {
     this.componentLevels[component] = level.toUpperCase();
@@ -118,6 +130,8 @@ export class LoggingConfig {
 
   /**
    * Set global log level
+   *
+   * @param level
    */
   setGlobalLogLevel(level) {
     this.globalLevel = level.toUpperCase();
@@ -140,6 +154,10 @@ export class LoggingConfig {
 
   /**
    * Create child logger with correlation ID
+   *
+   * @param parentLogger
+   * @param module
+   * @param correlationId
    */
   createChildLogger(parentLogger, module, correlationId = null) {
     return parentLogger.child({

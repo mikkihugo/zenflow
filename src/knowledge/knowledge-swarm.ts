@@ -10,13 +10,12 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { KnowledgeClient, KnowledgeClientConfig, KnowledgeResult } from './knowledge-client';
-import { FACTIntegration } from './knowledge-client';
-import { createRepository, createDAO, DatabaseTypes, EntityTypes } from '../database/index';
-import type { IRepository, IDataAccessObject } from '../database/interfaces';
-
+import { createDAO, createRepository, DatabaseTypes, EntityTypes } from '../database/index';
+import type { IRepository } from '../database/interfaces';
 // Import UACL for unified client management
-import { uacl, ClientType, type ClientInstance } from '../interfaces/clients/index';
+import { type ClientInstance, ClientType, uacl } from '../interfaces/clients/index';
+import type { KnowledgeClientConfig, KnowledgeResult } from './knowledge-client';
+import { FACTIntegration } from './knowledge-client';
 
 export interface KnowledgeSwarmConfig extends KnowledgeClientConfig {
   swarmSize: number;
@@ -73,6 +72,8 @@ interface KnowledgeAgent {
 
 /**
  * FACT Swarm System - Orchestrates multiple FACT agents for comprehensive knowledge gathering
+ *
+ * @example
  */
 export class KnowledgeSwarm extends EventEmitter {
   private config: KnowledgeSwarmConfig;
@@ -81,7 +82,6 @@ export class KnowledgeSwarm extends EventEmitter {
   private isProcessing = false;
   private queryCounter = 0;
   private vectorRepository?: IRepository<any>;
-  private vectorDAO?: IDataAccessObject<any>;
 
   // Pre-defined agent specializations
   private static readonly DEFAULT_SPECIALIZATIONS: KnowledgeAgentSpecialization[] = [
@@ -152,7 +152,7 @@ export class KnowledgeSwarm extends EventEmitter {
         await uacl.initialize({
           healthCheckInterval: 30000,
           autoReconnect: true,
-          enableLogging: true
+          enableLogging: true,
         });
       }
 
@@ -163,19 +163,15 @@ export class KnowledgeSwarm extends EventEmitter {
           DatabaseTypes.LanceDB,
           {
             database: './data/knowledge-swarm',
-            options: { vectorSize: 1536, metricType: 'cosine' }
+            options: { vectorSize: 1536, metricType: 'cosine' },
           }
         );
-        
-        this.vectorDAO = await createDAO(
-          EntityTypes.VectorDocument,
-          DatabaseTypes.LanceDB,
-          {
-            database: './data/knowledge-swarm',
-            options: { vectorSize: 1536 }
-          }
-        );
-        
+
+        this.vectorDAO = await createDAO(EntityTypes.VectorDocument, DatabaseTypes.LanceDB, {
+          database: './data/knowledge-swarm',
+          options: { vectorSize: 1536 },
+        });
+
         await this.setupKnowledgeStorage();
       }
 
@@ -193,6 +189,8 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Query the swarm with intelligent agent selection and parallel processing
+   *
+   * @param query
    */
   async querySwarm(query: SwarmQuery): Promise<SwarmResult> {
     const startTime = Date.now();
@@ -244,6 +242,9 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Get comprehensive documentation for a technology
+   *
+   * @param technology
+   * @param version
    */
   async getTechnologyDocs(technology: string, version?: string): Promise<SwarmResult> {
     const query: SwarmQuery = {
@@ -260,6 +261,9 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Research solutions for a specific problem
+   *
+   * @param problem
+   * @param context
    */
   async researchProblem(problem: string, context?: string[]): Promise<SwarmResult> {
     const query: SwarmQuery = {
@@ -276,6 +280,9 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Get API integration guide
+   *
+   * @param api
+   * @param language
    */
   async getAPIIntegration(api: string, language?: string): Promise<SwarmResult> {
     const query: SwarmQuery = {
@@ -292,6 +299,8 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Research performance optimization strategies
+   *
+   * @param context
    */
   async getPerformanceOptimization(context: string): Promise<SwarmResult> {
     const query: SwarmQuery = {
@@ -308,6 +317,9 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Get security best practices and vulnerability information
+   *
+   * @param technology
+   * @param context
    */
   async getSecurityGuidance(technology: string, context?: string): Promise<SwarmResult> {
     const query: SwarmQuery = {
@@ -366,15 +378,11 @@ export class KnowledgeSwarm extends EventEmitter {
           };
 
           this.agents.set(agentId, agent);
-          
-          // Log successful UACL integration
-          console.log(`✅ UACL Knowledge client created for agent ${agentId} with priority ${spec.priority}`);
         } catch (error) {
           console.error(`❌ Failed to create UACL-managed agent ${agentId}:`, error);
-          
+
           // Fallback to direct FACT integration
           try {
-            console.log(`🔄 Falling back to direct FACT integration for agent ${agentId}`);
             const factInstance = new FACTIntegration({
               factRepoPath: this.config.factRepoPath,
               anthropicApiKey: this.config.anthropicApiKey,
@@ -399,9 +407,11 @@ export class KnowledgeSwarm extends EventEmitter {
             };
 
             this.agents.set(agentId, agent);
-            console.log(`⚠️ Agent ${agentId} created without UACL management`);
           } catch (fallbackError) {
-            console.error(`❌ Both UACL and direct FACT creation failed for ${agentId}:`, fallbackError);
+            console.error(
+              `❌ Both UACL and direct FACT creation failed for ${agentId}:`,
+              fallbackError
+            );
             throw fallbackError;
           }
         }
@@ -412,6 +422,8 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Select optimal agents for a query using intelligent routing
+   *
+   * @param query
    */
   private async selectOptimalAgents(query: SwarmQuery): Promise<KnowledgeAgent[]> {
     const candidates = Array.from(this.agents.values());
@@ -430,6 +442,9 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Intelligent agent selection based on specialization, load, and performance
+   *
+   * @param candidates
+   * @param query
    */
   private selectIntelligent(candidates: KnowledgeAgent[], query: SwarmQuery): KnowledgeAgent[] {
     const scores = candidates.map((agent) => {
@@ -475,8 +490,14 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Select agents by specialization
+   *
+   * @param candidates
+   * @param query
    */
-  private selectBySpecialization(candidates: KnowledgeAgent[], query: SwarmQuery): KnowledgeAgent[] {
+  private selectBySpecialization(
+    candidates: KnowledgeAgent[],
+    query: SwarmQuery
+  ): KnowledgeAgent[] {
     if (!query.domains) {
       return [candidates[0]]; // Fallback to first agent
     }
@@ -492,6 +513,9 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Select least loaded agents
+   *
+   * @param candidates
+   * @param query
    */
   private selectLeastLoaded(candidates: KnowledgeAgent[], query: SwarmQuery): KnowledgeAgent[] {
     const sorted = [...candidates].sort((a, b) => a.currentLoad - b.currentLoad);
@@ -500,6 +524,9 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Round-robin agent selection
+   *
+   * @param candidates
+   * @param _query
    */
   private selectRoundRobin(candidates: KnowledgeAgent[], _query: SwarmQuery): KnowledgeAgent[] {
     const index = this.queryCounter % candidates.length;
@@ -508,6 +535,9 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Execute query across multiple agents in parallel
+   *
+   * @param query
+   * @param agents
    */
   private async executeParallelQuery(
     query: SwarmQuery,
@@ -554,6 +584,8 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Consolidate results from multiple agents
+   *
+   * @param results
    */
   private async consolidateResults(results: KnowledgeResult[]): Promise<string> {
     if (results.length === 0) {
@@ -584,6 +616,8 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Deduplicate similar results
+   *
+   * @param results
    */
   private deduplicateResults(results: KnowledgeResult[]): KnowledgeResult[] {
     // Simple deduplication based on response similarity
@@ -605,6 +639,9 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Calculate text similarity (simple implementation)
+   *
+   * @param text1
+   * @param text2
    */
   private calculateSimilarity(text1: string, text2: string): number {
     const words1 = new Set(text1.toLowerCase().split(/\W+/));
@@ -618,6 +655,9 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Store knowledge in vector database
+   *
+   * @param query
+   * @param results
    */
   private async storeKnowledge(query: SwarmQuery, results: KnowledgeResult[]): Promise<void> {
     try {
@@ -643,7 +683,7 @@ export class KnowledgeSwarm extends EventEmitter {
           await this.vectorRepository.create({
             id: doc.id,
             vector: doc.vector,
-            metadata: doc.metadata
+            metadata: doc.metadata,
           });
         }
       }
@@ -654,8 +694,14 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Share knowledge across agents
+   *
+   * @param _agents
+   * @param results
    */
-  private async shareKnowledge(_agents: KnowledgeAgent[], results: KnowledgeResult[]): Promise<void> {
+  private async shareKnowledge(
+    _agents: KnowledgeAgent[],
+    results: KnowledgeResult[]
+  ): Promise<void> {
     // Update agent expertise based on successful results
     results.forEach((result) => {
       const agentId = result.metadata?.agentId;
@@ -675,6 +721,8 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Calculate confidence score for results
+   *
+   * @param results
    */
   private calculateConfidence(results: KnowledgeResult[]): number {
     if (results.length === 0) return 0;
@@ -705,6 +753,8 @@ export class KnowledgeSwarm extends EventEmitter {
 
   /**
    * Calculate diversity score for sources
+   *
+   * @param results
    */
   private calculateDiversity(results: KnowledgeResult[]): number {
     if (results.length <= 1) return 0;
@@ -724,9 +774,6 @@ export class KnowledgeSwarm extends EventEmitter {
    */
   private async setupKnowledgeStorage(): Promise<void> {
     try {
-      // Knowledge storage setup is handled by DAL repositories
-      // Vector repository automatically handles schema creation
-      console.log('✅ Knowledge storage initialized via DAL');
     } catch (error) {
       console.error('Failed to setup knowledge storage:', error);
     }
@@ -795,17 +842,21 @@ export class KnowledgeSwarm extends EventEmitter {
     uaclStatus: any;
   } {
     const agents = Array.from(this.agents.values());
-    const healthyAgents = agents.filter(agent => agent.clientInstance?.status === 'connected').length;
-    const averageLoad = agents.length > 0 ? agents.reduce((sum, a) => sum + a.currentLoad, 0) / agents.length : 0;
+    const healthyAgents = agents.filter(
+      (agent) => agent.clientInstance?.status === 'connected'
+    ).length;
+    const averageLoad =
+      agents.length > 0 ? agents.reduce((sum, a) => sum + a.currentLoad, 0) / agents.length : 0;
     const totalQueries = agents.reduce((sum, a) => sum + a.totalQueries, 0);
-    const averageSuccessRate = agents.length > 0 ? agents.reduce((sum, a) => sum + a.successRate, 0) / agents.length : 1.0;
+    const averageSuccessRate =
+      agents.length > 0 ? agents.reduce((sum, a) => sum + a.successRate, 0) / agents.length : 1.0;
 
     // Get UACL client health for knowledge clients
     const knowledgeClients = uacl.getClientsByType(ClientType.KNOWLEDGE);
     const uaclStatus = {
       knowledgeClients: knowledgeClients.length,
-      healthyKnowledgeClients: knowledgeClients.filter(c => c.status === 'connected').length,
-      overallHealth: uacl.getHealthStatus()
+      healthyKnowledgeClients: knowledgeClients.filter((c) => c.status === 'connected').length,
+      overallHealth: uacl.getHealthStatus(),
     };
 
     return {
@@ -814,7 +865,7 @@ export class KnowledgeSwarm extends EventEmitter {
       averageLoad,
       totalQueries,
       successRate: averageSuccessRate,
-      uaclStatus
+      uaclStatus,
     };
   }
 
@@ -831,7 +882,7 @@ export class KnowledgeSwarm extends EventEmitter {
     clientStatus: string;
     expertise: Record<string, number>;
   }> {
-    return Array.from(this.agents.values()).map(agent => ({
+    return Array.from(this.agents.values()).map((agent) => ({
       id: agent.id,
       specialization: agent.specialization.name,
       load: agent.currentLoad,
@@ -839,7 +890,7 @@ export class KnowledgeSwarm extends EventEmitter {
       successRate: agent.successRate,
       latency: agent.averageLatency,
       clientStatus: agent.clientInstance?.status || 'unknown',
-      expertise: Object.fromEntries(agent.expertise)
+      expertise: Object.fromEntries(agent.expertise),
     }));
   }
 }
@@ -851,10 +902,10 @@ let globalFACTSwarm: KnowledgeSwarm | null = null;
 
 /**
  * Initialize global FACT swarm system
+ *
+ * @param config
  */
-export async function initializeFACTSwarm(
-  config: FACTSwarmConfig
-): Promise<KnowledgeSwarm> {
+export async function initializeFACTSwarm(config: FACTSwarmConfig): Promise<KnowledgeSwarm> {
   if (globalFACTSwarm) {
     return globalFACTSwarm;
   }
@@ -878,6 +929,9 @@ export function getFACTSwarm(): KnowledgeSwarm | null {
 export const FACTSwarmHelpers = {
   /**
    * Research a development problem using the swarm
+   *
+   * @param problem
+   * @param context
    */
   async researchProblem(problem: string, context?: string[]): Promise<string> {
     const swarm = getFACTSwarm();
@@ -889,6 +943,9 @@ export const FACTSwarmHelpers = {
 
   /**
    * Get comprehensive technology documentation
+   *
+   * @param technology
+   * @param version
    */
   async getTechDocs(technology: string, version?: string): Promise<string> {
     const swarm = getFACTSwarm();
@@ -900,6 +957,9 @@ export const FACTSwarmHelpers = {
 
   /**
    * Get API integration guidance
+   *
+   * @param api
+   * @param language
    */
   async getAPIGuidance(api: string, language?: string): Promise<string> {
     const swarm = getFACTSwarm();
@@ -911,6 +971,8 @@ export const FACTSwarmHelpers = {
 
   /**
    * Get performance optimization strategies
+   *
+   * @param context
    */
   async getPerformanceGuidance(context: string): Promise<string> {
     const swarm = getFACTSwarm();
@@ -922,6 +984,9 @@ export const FACTSwarmHelpers = {
 
   /**
    * Get security guidance and best practices
+   *
+   * @param technology
+   * @param context
    */
   async getSecurityGuidance(technology: string, context?: string): Promise<string> {
     const swarm = getFACTSwarm();

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Complete Auto-Swarm Pipeline Integration Test
+ * @file Complete Auto-Swarm Pipeline Integration Test
  *
  * Tests the full integration pipeline for Sub-task 2.3 requirements
  */

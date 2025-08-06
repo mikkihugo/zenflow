@@ -1,5 +1,5 @@
 /**
- * @fileoverview Progress Bar Component for TUI
+ * @file Progress Bar Component for TUI
  */
 
 import { Box, Text } from 'ink';

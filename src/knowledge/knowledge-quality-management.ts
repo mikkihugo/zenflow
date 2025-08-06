@@ -80,6 +80,8 @@ export type ReviewType = 'peer' | 'expert' | 'automated' | 'hybrid' | 'crowdsour
 
 /**
  * Reputation System
+ *
+ * @example
  */
 export interface ReputationSystem {
   reputationModel: ReputationModel;
@@ -167,6 +169,8 @@ export type DecayFunctionType =
 
 /**
  * Validation Protocols
+ *
+ * @example
  */
 export interface ValidationProtocol {
   protocolName: string;
@@ -246,6 +250,8 @@ export type VerificationLevel = 'basic' | 'standard' | 'rigorous' | 'comprehensi
 
 /**
  * Quality Assurance System
+ *
+ * @example
  */
 export interface QualityAssuranceSystem {
   qualityMetrics: QualityMetricDefinition[];
@@ -324,6 +330,8 @@ export type ImprovementType =
 
 /**
  * Temporal Knowledge Management
+ *
+ * @example
  */
 export interface TemporalKnowledgeManager {
   versionControl: KnowledgeVersionControl;
@@ -383,6 +391,8 @@ export type MergeStrategy =
 
 /**
  * Peer Review System
+ *
+ * @example
  */
 export interface PeerReviewSystem {
   reviewProcesses: ReviewProcess[];
@@ -447,6 +457,8 @@ export type ReviewRecommendation =
 
 /**
  * Main Knowledge Quality Management System
+ *
+ * @example
  */
 export class KnowledgeQualityManagementSystem extends EventEmitter {
   private logger: ILogger;
@@ -549,6 +561,9 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 
   /**
    * Validate knowledge item through comprehensive validation
+   *
+   * @param knowledgeItem
+   * @param validationType
    */
   async validateKnowledge(
     knowledgeItem: KnowledgeItem,
@@ -626,6 +641,9 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 
   /**
    * Manage reputation scores for knowledge contributors
+   *
+   * @param agentId
+   * @param contribution
    */
   async updateReputationScore(
     agentId: string,
@@ -695,6 +713,9 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 
   /**
    * Conduct peer review process for knowledge items
+   *
+   * @param knowledgeItem
+   * @param reviewType
    */
   async conductPeerReview(
     knowledgeItem: KnowledgeItem,
@@ -918,6 +939,8 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 
 /**
  * Configuration and result interfaces
+ *
+ * @example
  */
 export interface KnowledgeQualityConfig {
   reputation: ReputationConfig;

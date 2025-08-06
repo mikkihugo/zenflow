@@ -14,12 +14,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import {
-  BaseClaudeZenError,
-  ConfigurationError,
-  SystemError,
-  ValidationError,
-} from '../../../core/errors';
+import { ConfigurationError, SystemError, ValidationError } from '../../../core/errors';
 import { createLogger } from '../../../core/logger';
 import { generateId } from '../core/utils';
 
@@ -90,7 +85,6 @@ export class ChaosEngineering extends EventEmitter {
   private healthMonitor: any;
   private recoveryWorkflows: any;
   private connectionManager: any;
-  private mcpTools: any;
 
   constructor(options: any = {}) {
     super();
@@ -180,6 +174,9 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Register a chaos experiment
+   *
+   * @param name
+   * @param experimentDefinition
    */
   registerExperiment(name, experimentDefinition) {
     const experiment: ChaosExperiment = {
@@ -224,6 +221,9 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Run a chaos experiment
+   *
+   * @param experimentName
+   * @param overrideParams
    */
   async runExperiment(experimentName, overrideParams = {}) {
     if (!this.options.enableChaos) {
@@ -397,6 +397,10 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Run experiment phase
+   *
+   * @param execution
+   * @param phaseName
+   * @param phaseFunction
    */
   async runExperimentPhase(execution, phaseName, phaseFunction) {
     const phaseStartTime = Date.now();
@@ -445,6 +449,8 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Perform safety checks before experiment
+   *
+   * @param experiment
    */
   async performSafetyChecks(experiment) {
     if (!this.options.safetyEnabled) {
@@ -489,6 +495,9 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Inject failure based on experiment configuration
+   *
+   * @param experiment
+   * @param execution
    */
   async injectFailure(experiment, execution) {
     const injector = this.failureInjectors.get(experiment.failureType);
@@ -515,6 +524,9 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Monitor failure impact
+   *
+   * @param execution
+   * @param duration
    */
   async monitorFailureImpact(execution, duration) {
     const monitoringStartTime = Date.now();
@@ -600,6 +612,8 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Trigger recovery manually if needed
+   *
+   * @param execution
    */
   async triggerRecovery(execution) {
     if (!this.recoveryWorkflows) {
@@ -631,6 +645,8 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Monitor recovery process
+   *
+   * @param execution
    */
   async monitorRecovery(execution) {
     if (!execution.recoveryTriggered) {
@@ -685,6 +701,8 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Cleanup after experiment
+   *
+   * @param execution
    */
   async cleanupExperiment(execution) {
     this.logger.info('Cleaning up experiment', {
@@ -720,6 +738,8 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Check if system has recovered
+   *
+   * @param _execution
    */
   async checkSystemRecovery(_execution) {
     // Check health monitor status
@@ -943,6 +963,9 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Register failure injector
+   *
+   * @param name
+   * @param injector
    */
   registerFailureInjector(name, injector) {
     this.failureInjectors.set(name, injector);
@@ -1096,6 +1119,8 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Emergency stop all experiments
+   *
+   * @param reason
    */
   async emergencyStopExperiments(reason = 'Manual emergency stop') {
     this.logger.warn('EMERGENCY STOP ACTIVATED', { reason });
@@ -1113,6 +1138,9 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Cancel an active experiment
+   *
+   * @param executionId
+   * @param reason
    */
   async cancelExperiment(executionId, reason = 'Manual cancellation') {
     const execution = this.activeExperiments.get(executionId);
@@ -1158,6 +1186,8 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Get experiment status
+   *
+   * @param executionId
    */
   getExperimentStatus(executionId = null) {
     if (executionId) {
@@ -1193,6 +1223,8 @@ export class ChaosEngineering extends EventEmitter {
 
   /**
    * Set integration points
+   *
+   * @param healthMonitor
    */
   setHealthMonitor(healthMonitor) {
     this.healthMonitor = healthMonitor;

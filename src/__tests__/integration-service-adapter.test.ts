@@ -1,13 +1,13 @@
 /**
  * Integration Service Adapter Tests
- * 
+ *
  * Comprehensive test suite for IntegrationServiceAdapter using hybrid TDD approach:
  * - TDD London (70%): For integration boundaries, API calls, protocol interactions
  * - Classical TDD (30%): For data transformations, validation logic, utility functions
- * 
+ *
  * Tests cover:
  * - Architecture Storage Service integration
- * - Safe API Service integration  
+ * - Safe API Service integration
  * - Protocol Management integration
  * - Configuration validation
  * - Error handling and recovery
@@ -15,18 +15,19 @@
  * - Helper utility functions
  */
 
+import type {
+  ArchitecturalValidation,
+  ArchitectureDesign,
+} from '../coordination/swarm/sparc/database/architecture-storage';
 import {
-  IntegrationServiceAdapter,
-  createIntegrationServiceAdapter,
   createDefaultIntegrationServiceAdapterConfig,
+  createIntegrationServiceAdapter,
+  type IntegrationOperationResult,
+  type IntegrationServiceAdapter,
+  type IntegrationServiceAdapterConfig,
   IntegrationServiceHelper,
   IntegrationServiceUtils,
-  type IntegrationServiceAdapterConfig,
-  type IntegrationOperationResult
 } from '../interfaces/services/adapters/integration-service-adapter';
-
-import type { ServiceStatus, ServiceMetrics } from '../interfaces/services/core/interfaces';
-import type { ArchitectureDesign, Component, ArchitecturalValidation } from '../coordination/swarm/sparc/database/architecture-storage';
 
 // ============================================
 // Test Data and Mocks
@@ -35,12 +36,8 @@ import type { ArchitectureDesign, Component, ArchitecturalValidation } from '../
 const mockArchitectureDesign: ArchitectureDesign = {
   id: 'test-arch-001',
   systemArchitecture: {
-    technologyStack: [
-      { category: 'web', name: 'React', version: '18.0.0' }
-    ],
-    architecturalPatterns: [
-      { name: 'MVC', description: 'Model-View-Controller pattern' }
-    ]
+    technologyStack: [{ category: 'web', name: 'React', version: '18.0.0' }],
+    architecturalPatterns: [{ name: 'MVC', description: 'Model-View-Controller pattern' }],
   },
   components: [
     {
@@ -50,23 +47,21 @@ const mockArchitectureDesign: ArchitectureDesign = {
       responsibilities: ['user management', 'authentication'],
       interfaces: ['REST API', 'GraphQL'],
       dependencies: ['database', 'auth-service'],
-      performance: { latency: 100, throughput: 1000 }
-    }
+      performance: { latency: 100, throughput: 1000 },
+    },
   ],
   qualityAttributes: [],
   securityRequirements: [],
   scalabilityRequirements: [],
   createdAt: new Date(),
-  updatedAt: new Date()
+  updatedAt: new Date(),
 };
 
 const mockValidation: ArchitecturalValidation = {
   overallScore: 85,
-  validationResults: [
-    { component: 'User Service', score: 85, passed: true, issues: [] }
-  ],
+  validationResults: [{ component: 'User Service', score: 85, passed: true, issues: [] }],
   recommendations: ['Consider adding caching layer'],
-  approved: true
+  approved: true,
 };
 
 const mockAPIResponse = {
@@ -76,16 +71,21 @@ const mockAPIResponse = {
     timestamp: new Date().toISOString(),
     requestId: 'req-123',
     version: '1.0.0',
-    duration: 150
-  }
+    duration: 150,
+  },
 };
 
 // ============================================
 // Helper Functions
 // ============================================
 
-function createTestAdapter(overrides: Partial<IntegrationServiceAdapterConfig> = {}): IntegrationServiceAdapter {
-  const config = createDefaultIntegrationServiceAdapterConfig('test-integration-adapter', overrides);
+function createTestAdapter(
+  overrides: Partial<IntegrationServiceAdapterConfig> = {}
+): IntegrationServiceAdapter {
+  const config = createDefaultIntegrationServiceAdapterConfig(
+    'test-integration-adapter',
+    overrides
+  );
   return createIntegrationServiceAdapter(config);
 }
 
@@ -94,7 +94,7 @@ function createMockLogger() {
     debug: jest.fn(),
     info: jest.fn(),
     warn: jest.fn(),
-    error: jest.fn()
+    error: jest.fn(),
   };
 }
 
@@ -104,14 +104,14 @@ function createMockLogger() {
 
 describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
   let adapter: IntegrationServiceAdapter;
-  let mockLogger: any;
+  let _mockLogger: any;
 
   beforeEach(() => {
-    mockLogger = createMockLogger();
+    _mockLogger = createMockLogger();
     adapter = createTestAdapter({
       architectureStorage: { enabled: true },
       safeAPI: { enabled: true, baseURL: 'http://test-api.com' },
-      protocolManagement: { enabled: true, supportedProtocols: ['http', 'websocket'] }
+      protocolManagement: { enabled: true, supportedProtocols: ['http', 'websocket'] },
     });
   });
 
@@ -181,17 +181,17 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: 'arch-001',
-        metadata: { duration: 100, timestamp: new Date(), operationId: 'op-001' }
+        metadata: { duration: 100, timestamp: new Date(), operationId: 'op-001' },
       });
 
       const result = await adapter.execute('architecture-save', {
         architecture: mockArchitectureDesign,
-        projectId: 'project-001'
+        projectId: 'project-001',
       });
 
       expect(executeSpy).toHaveBeenCalledWith('architecture-save', {
         architecture: mockArchitectureDesign,
-        projectId: 'project-001'
+        projectId: 'project-001',
       });
 
       expect(result.success).toBe(true);
@@ -202,25 +202,30 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should retrieve architecture with caching behavior', async () => {
       // TDD London: Test caching interaction
-      const executeSpy = jest.spyOn(adapter, 'execute')
+      const executeSpy = jest
+        .spyOn(adapter, 'execute')
         .mockResolvedValueOnce({
           success: true,
           data: mockArchitectureDesign,
-          metadata: { duration: 150, timestamp: new Date(), operationId: 'op-002' }
+          metadata: { duration: 150, timestamp: new Date(), operationId: 'op-002' },
         })
         .mockResolvedValueOnce({
           success: true,
           data: mockArchitectureDesign,
-          metadata: { duration: 5, timestamp: new Date(), operationId: 'op-003', cacheHit: true }
+          metadata: { duration: 5, timestamp: new Date(), operationId: 'op-003', cacheHit: true },
         });
 
       // First call - should hit database
-      const result1 = await adapter.execute('architecture-retrieve', { architectureId: 'arch-001' });
+      const result1 = await adapter.execute('architecture-retrieve', {
+        architectureId: 'arch-001',
+      });
       expect(result1.success).toBe(true);
       expect(result1.metadata?.duration).toBe(150);
 
       // Second call - should hit cache (if caching enabled)
-      const result2 = await adapter.execute('architecture-retrieve', { architectureId: 'arch-001' });
+      const result2 = await adapter.execute('architecture-retrieve', {
+        architectureId: 'arch-001',
+      });
       expect(result2.success).toBe(true);
 
       expect(executeSpy).toHaveBeenCalledTimes(2);
@@ -232,20 +237,20 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: [mockArchitectureDesign],
-        metadata: { duration: 200, timestamp: new Date(), operationId: 'op-004' }
+        metadata: { duration: 200, timestamp: new Date(), operationId: 'op-004' },
       });
 
       const searchCriteria = {
         domain: 'web',
         tags: ['microservices', 'react'],
         minScore: 80,
-        limit: 10
+        limit: 10,
       };
 
       await adapter.execute('architecture-search', { criteria: searchCriteria });
 
       expect(executeSpy).toHaveBeenCalledWith('architecture-search', {
-        criteria: searchCriteria
+        criteria: searchCriteria,
       });
 
       executeSpy.mockRestore();
@@ -256,19 +261,19 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: undefined,
-        metadata: { duration: 80, timestamp: new Date(), operationId: 'op-005' }
+        metadata: { duration: 80, timestamp: new Date(), operationId: 'op-005' },
       });
 
       await adapter.execute('architecture-validation-save', {
         architectureId: 'arch-001',
         validation: mockValidation,
-        type: 'comprehensive'
+        type: 'comprehensive',
       });
 
       expect(executeSpy).toHaveBeenCalledWith('architecture-validation-save', {
         architectureId: 'arch-001',
         validation: mockValidation,
-        type: 'comprehensive'
+        type: 'comprehensive',
       });
 
       executeSpy.mockRestore();
@@ -283,26 +288,27 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should make GET requests with proper error handling', async () => {
       // TDD London: Mock API call and verify error handling
-      const executeSpy = jest.spyOn(adapter, 'execute')
+      const executeSpy = jest
+        .spyOn(adapter, 'execute')
         .mockResolvedValueOnce({
           success: true,
           data: mockAPIResponse,
-          metadata: { duration: 120, timestamp: new Date(), operationId: 'op-006' }
+          metadata: { duration: 120, timestamp: new Date(), operationId: 'op-006' },
         })
         .mockResolvedValueOnce({
           success: false,
           error: {
             code: 'HTTP_404',
             message: 'Resource not found',
-            details: { status: 404, url: '/api/users/999' }
+            details: { status: 404, url: '/api/users/999' },
           },
-          metadata: { duration: 80, timestamp: new Date(), operationId: 'op-007' }
+          metadata: { duration: 80, timestamp: new Date(), operationId: 'op-007' },
         });
 
       // Successful request
       const successResult = await adapter.execute('api-get', {
         endpoint: '/api/users/1',
-        options: { timeout: 5000 }
+        options: { timeout: 5000 },
       });
 
       expect(successResult.success).toBe(true);
@@ -310,7 +316,7 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
       // Failed request
       const errorResult = await adapter.execute('api-get', {
-        endpoint: '/api/users/999'
+        endpoint: '/api/users/999',
       });
 
       expect(errorResult.success).toBe(false);
@@ -324,7 +330,7 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: { ...mockAPIResponse, data: { id: 2, name: 'New Resource' } },
-        metadata: { duration: 200, timestamp: new Date(), operationId: 'op-008' }
+        metadata: { duration: 200, timestamp: new Date(), operationId: 'op-008' },
       });
 
       const postData = { name: 'New Resource', type: 'test' };
@@ -332,13 +338,13 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       await adapter.execute('api-post', {
         endpoint: '/api/resources',
         data: postData,
-        options: { timeout: 10000, retries: 2 }
+        options: { timeout: 10000, retries: 2 },
       });
 
       expect(executeSpy).toHaveBeenCalledWith('api-post', {
         endpoint: '/api/resources',
         data: postData,
-        options: { timeout: 10000, retries: 2 }
+        options: { timeout: 10000, retries: 2 },
       });
 
       executeSpy.mockRestore();
@@ -352,49 +358,49 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       executeSpy.mockResolvedValueOnce({
         success: true,
         data: mockAPIResponse,
-        metadata: { duration: 150, timestamp: new Date(), operationId: 'op-009' }
+        metadata: { duration: 150, timestamp: new Date(), operationId: 'op-009' },
       });
 
       await adapter.execute('api-create-resource', {
         endpoint: '/api/users',
-        data: { name: 'John Doe', email: 'john@example.com' }
+        data: { name: 'John Doe', email: 'john@example.com' },
       });
 
       // Get resource
       executeSpy.mockResolvedValueOnce({
         success: true,
         data: mockAPIResponse,
-        metadata: { duration: 75, timestamp: new Date(), operationId: 'op-010' }
+        metadata: { duration: 75, timestamp: new Date(), operationId: 'op-010' },
       });
 
       await adapter.execute('api-get-resource', {
         endpoint: '/api/users',
-        id: 1
+        id: 1,
       });
 
       // Update resource
       executeSpy.mockResolvedValueOnce({
         success: true,
         data: mockAPIResponse,
-        metadata: { duration: 125, timestamp: new Date(), operationId: 'op-011' }
+        metadata: { duration: 125, timestamp: new Date(), operationId: 'op-011' },
       });
 
       await adapter.execute('api-update-resource', {
         endpoint: '/api/users',
         id: 1,
-        data: { name: 'Jane Doe' }
+        data: { name: 'Jane Doe' },
       });
 
       // Delete resource
       executeSpy.mockResolvedValueOnce({
         success: true,
         data: { deleted: true },
-        metadata: { duration: 90, timestamp: new Date(), operationId: 'op-012' }
+        metadata: { duration: 90, timestamp: new Date(), operationId: 'op-012' },
       });
 
       await adapter.execute('api-delete-resource', {
         endpoint: '/api/users',
-        id: 1
+        id: 1,
       });
 
       expect(executeSpy).toHaveBeenCalledTimes(4);
@@ -413,17 +419,17 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: undefined,
-        metadata: { duration: 100, timestamp: new Date(), operationId: 'op-013' }
+        metadata: { duration: 100, timestamp: new Date(), operationId: 'op-013' },
       });
 
       await adapter.execute('protocol-connect', {
         protocol: 'websocket',
-        config: { host: 'localhost', port: 8080, timeout: 5000 }
+        config: { host: 'localhost', port: 8080, timeout: 5000 },
       });
 
       expect(executeSpy).toHaveBeenCalledWith('protocol-connect', {
         protocol: 'websocket',
-        config: { host: 'localhost', port: 8080, timeout: 5000 }
+        config: { host: 'localhost', port: 8080, timeout: 5000 },
       });
 
       executeSpy.mockRestore();
@@ -434,19 +440,19 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: { messageId: 'msg-001', acknowledged: true },
-        metadata: { duration: 50, timestamp: new Date(), operationId: 'op-014' }
+        metadata: { duration: 50, timestamp: new Date(), operationId: 'op-014' },
       });
 
       const message = { type: 'heartbeat', data: { timestamp: Date.now() } };
 
       await adapter.execute('protocol-send', {
         protocol: 'websocket',
-        message
+        message,
       });
 
       expect(executeSpy).toHaveBeenCalledWith('protocol-send', {
         protocol: 'websocket',
-        message
+        message,
       });
 
       executeSpy.mockRestore();
@@ -458,21 +464,21 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
         success: true,
         data: [
           { protocol: 'http', success: true, result: { sent: true } },
-          { protocol: 'websocket', success: true, result: { sent: true } }
+          { protocol: 'websocket', success: true, result: { sent: true } },
         ],
-        metadata: { duration: 150, timestamp: new Date(), operationId: 'op-015' }
+        metadata: { duration: 150, timestamp: new Date(), operationId: 'op-015' },
       });
 
       const broadcastMessage = { type: 'announcement', content: 'System maintenance' };
 
       await adapter.execute('protocol-broadcast', {
         message: broadcastMessage,
-        protocols: ['http', 'websocket']
+        protocols: ['http', 'websocket'],
       });
 
       expect(executeSpy).toHaveBeenCalledWith('protocol-broadcast', {
         message: broadcastMessage,
-        protocols: ['http', 'websocket']
+        protocols: ['http', 'websocket'],
       });
 
       executeSpy.mockRestore();
@@ -480,16 +486,17 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should perform protocol health checks', async () => {
       // TDD London: Test health check interaction
-      const executeSpy = jest.spyOn(adapter, 'execute')
+      const executeSpy = jest
+        .spyOn(adapter, 'execute')
         .mockResolvedValueOnce({
           success: true,
           data: true,
-          metadata: { duration: 25, timestamp: new Date(), operationId: 'op-016' }
+          metadata: { duration: 25, timestamp: new Date(), operationId: 'op-016' },
         })
         .mockResolvedValueOnce({
           success: false,
           error: { code: 'CONNECTION_FAILED', message: 'Protocol unreachable' },
-          metadata: { duration: 5000, timestamp: new Date(), operationId: 'op-017' }
+          metadata: { duration: 5000, timestamp: new Date(), operationId: 'op-017' },
         });
 
       // Healthy protocol
@@ -521,18 +528,19 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should retry failed operations according to configuration', async () => {
       // TDD London: Test retry mechanism interaction
-      const executeSpy = jest.spyOn(adapter, 'execute')
+      const executeSpy = jest
+        .spyOn(adapter, 'execute')
         .mockRejectedValueOnce(new Error('Temporary failure'))
         .mockRejectedValueOnce(new Error('Temporary failure'))
         .mockResolvedValueOnce({
           success: true,
           data: 'success-after-retries',
-          metadata: { duration: 100, timestamp: new Date(), operationId: 'op-018', retryCount: 2 }
+          metadata: { duration: 100, timestamp: new Date(), operationId: 'op-018', retryCount: 2 },
         });
 
       // This would internally retry based on configuration
       const result = await adapter.execute('architecture-save', {
-        architecture: mockArchitectureDesign
+        architecture: mockArchitectureDesign,
       });
 
       // Should eventually succeed after retries
@@ -576,9 +584,9 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
           size: 10,
           maxSize: 1000,
           hitRate: 75.5,
-          memoryUsage: 1024
+          memoryUsage: 1024,
         },
-        metadata: { duration: 5, timestamp: new Date(), operationId: 'op-019' }
+        metadata: { duration: 5, timestamp: new Date(), operationId: 'op-019' },
       });
 
       const cacheStats = await adapter.execute('cache-stats');
@@ -614,19 +622,19 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         architectureStorage: {
           enabled: true,
           databaseType: 'postgresql',
-          autoInitialize: true
+          autoInitialize: true,
         },
         safeAPI: {
           enabled: true,
           baseURL: 'https://api.example.com',
           timeout: 30000,
-          retries: 3
+          retries: 3,
         },
         protocolManagement: {
           enabled: true,
           supportedProtocols: ['http', 'websocket'],
-          defaultProtocol: 'http'
-        }
+          defaultProtocol: 'http',
+        },
       });
 
       const testAdapter = createIntegrationServiceAdapter(validConfig);
@@ -642,16 +650,16 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         safeAPI: {
           enabled: true,
           timeout: -1000, // Invalid negative timeout
-          retries: -5 // Invalid negative retries
+          retries: -5, // Invalid negative retries
         },
         protocolManagement: {
           enabled: true,
           supportedProtocols: [], // Invalid empty protocols array
           connectionPooling: {
             enabled: true,
-            maxConnections: 0 // Invalid zero max connections
-          }
-        }
+            maxConnections: 0, // Invalid zero max connections
+          },
+        },
       });
 
       const testAdapter = createIntegrationServiceAdapter(invalidConfig);
@@ -670,11 +678,11 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         systemArchitecture: {
           technologyStack: [
             { category: 'backend', name: 'Node.js', version: '18.0.0' },
-            { category: 'database', name: 'PostgreSQL', version: '14.0' }
+            { category: 'database', name: 'PostgreSQL', version: '14.0' },
           ],
           architecturalPatterns: [
-            { name: 'Microservices', description: 'Distributed architecture pattern' }
-          ]
+            { name: 'Microservices', description: 'Distributed architecture pattern' },
+          ],
         },
         components: [
           {
@@ -684,18 +692,16 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
             responsibilities: ['user management', 'profile management'],
             interfaces: ['REST API', 'Message Queue'],
             dependencies: ['user-db', 'auth-service'],
-            performance: { latency: 100, throughput: 500 }
-          }
+            performance: { latency: 100, throughput: 500 },
+          },
         ],
-        qualityAttributes: [
-          { name: 'Scalability', value: 'High', priority: 1 }
-        ],
+        qualityAttributes: [{ name: 'Scalability', value: 'High', priority: 1 }],
         securityRequirements: [
-          { name: 'Authentication', description: 'JWT-based auth', priority: 'High' }
+          { name: 'Authentication', description: 'JWT-based auth', priority: 'High' },
         ],
         scalabilityRequirements: [
-          { name: 'Load Balancing', description: 'Auto-scaling', priority: 'Medium' }
-        ]
+          { name: 'Load Balancing', description: 'Auto-scaling', priority: 'Medium' },
+        ],
       };
 
       // Use the actual transformation logic
@@ -718,7 +724,7 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         components: [],
         qualityAttributes: [],
         securityRequirements: [],
-        scalabilityRequirements: []
+        scalabilityRequirements: [],
       };
 
       const sanitized = IntegrationServiceUtils.sanitizeArchitectureData(architectureWithoutId);
@@ -739,11 +745,13 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         metadata: {
           internalNotes: 'Secret internal notes',
           privateKeys: ['key1', 'key2'],
-          publicInfo: 'Public information'
-        }
+          publicInfo: 'Public information',
+        },
       };
 
-      const sanitized = IntegrationServiceUtils.sanitizeArchitectureData(architectureWithSensitiveData);
+      const sanitized = IntegrationServiceUtils.sanitizeArchitectureData(
+        architectureWithSensitiveData
+      );
 
       expect(sanitized.metadata.internalNotes).toBeUndefined();
       expect(sanitized.metadata.privateKeys).toBeUndefined();
@@ -757,7 +765,7 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       expect(IntegrationServiceUtils.validateEndpoint('https://api.example.com')).toBe(true);
       expect(IntegrationServiceUtils.validateEndpoint('http://localhost:3000')).toBe(true);
       expect(IntegrationServiceUtils.validateEndpoint('ftp://file.server.com')).toBe(true);
-      
+
       expect(IntegrationServiceUtils.validateEndpoint('invalid-url')).toBe(false);
       expect(IntegrationServiceUtils.validateEndpoint('')).toBe(false);
       expect(IntegrationServiceUtils.validateEndpoint('://missing-protocol')).toBe(false);
@@ -772,7 +780,7 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       expect(IntegrationServiceUtils.validateProtocolName('mcp-stdio')).toBe(true);
       expect(IntegrationServiceUtils.validateProtocolName('tcp')).toBe(true);
       expect(IntegrationServiceUtils.validateProtocolName('udp')).toBe(true);
-      
+
       expect(IntegrationServiceUtils.validateProtocolName('invalid-protocol')).toBe(false);
       expect(IntegrationServiceUtils.validateProtocolName('smtp')).toBe(false);
       expect(IntegrationServiceUtils.validateProtocolName('')).toBe(false);
@@ -809,19 +817,19 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       const allSuccessfulResults: IntegrationOperationResult[] = [
         { success: true, data: 'result1' },
         { success: true, data: 'result2' },
-        { success: true, data: 'result3' }
+        { success: true, data: 'result3' },
       ];
 
       const mixedResults: IntegrationOperationResult[] = [
         { success: true, data: 'result1' },
         { success: false, error: { code: 'ERROR1', message: 'Failed' } },
         { success: true, data: 'result3' },
-        { success: false, error: { code: 'ERROR2', message: 'Failed' } }
+        { success: false, error: { code: 'ERROR2', message: 'Failed' } },
       ];
 
       const allFailedResults: IntegrationOperationResult[] = [
         { success: false, error: { code: 'ERROR1', message: 'Failed' } },
-        { success: false, error: { code: 'ERROR2', message: 'Failed' } }
+        { success: false, error: { code: 'ERROR2', message: 'Failed' } },
       ];
 
       expect(IntegrationServiceUtils.calculateSuccessRate(allSuccessfulResults)).toBe(100);
@@ -836,23 +844,23 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         {
           success: true,
           data: 'result1',
-          metadata: { duration: 100, timestamp: new Date(), operationId: 'op1' }
+          metadata: { duration: 100, timestamp: new Date(), operationId: 'op1' },
         },
         {
           success: false,
           error: { code: 'ERROR1', message: 'Failed' },
-          metadata: { duration: 200, timestamp: new Date(), operationId: 'op2' }
+          metadata: { duration: 200, timestamp: new Date(), operationId: 'op2' },
         },
         {
           success: true,
           data: 'result3',
-          metadata: { duration: 150, timestamp: new Date(), operationId: 'op3' }
+          metadata: { duration: 150, timestamp: new Date(), operationId: 'op3' },
         },
         {
           success: true,
           data: 'result4',
-          metadata: { duration: 50, timestamp: new Date(), operationId: 'op4' }
-        }
+          metadata: { duration: 50, timestamp: new Date(), operationId: 'op4' },
+        },
       ];
 
       const metrics = IntegrationServiceUtils.extractMetrics(results);
@@ -871,32 +879,32 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         architectureStorage: {
           enabled: true,
           databaseType: 'postgresql',
-          autoInitialize: true
+          autoInitialize: true,
         },
         safeAPI: {
           enabled: false,
           baseURL: 'http://base.com',
-          timeout: 5000
+          timeout: 5000,
         },
         performance: {
           maxConcurrency: 10,
-          enableMetricsCollection: true
-        }
+          enableMetricsCollection: true,
+        },
       };
 
       const overrideConfig: Partial<IntegrationServiceAdapterConfig> = {
         architectureStorage: {
           databaseType: 'mysql',
-          enableVersioning: true
+          enableVersioning: true,
         },
         safeAPI: {
           enabled: true,
           timeout: 10000,
-          retries: 5
+          retries: 5,
         },
         performance: {
-          maxConcurrency: 20
-        }
+          maxConcurrency: 20,
+        },
       };
 
       const merged = IntegrationServiceUtils.mergeConfigurations(baseConfig, overrideConfig);
@@ -935,9 +943,10 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
 
     it('should provide correct service statistics aggregation', async () => {
       // Classical TDD: Test actual statistics aggregation
-      
+
       // Mock some operations to generate stats
-      jest.spyOn(adapter, 'execute')
+      jest
+        .spyOn(adapter, 'execute')
         .mockResolvedValueOnce({
           success: true,
           data: {
@@ -946,9 +955,9 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
             errorCount: 5,
             uptime: 3600000, // 1 hour
             avgLatency: 120,
-            errorRate: 5
+            errorRate: 5,
           },
-          metadata: { duration: 10, timestamp: new Date(), operationId: 'stats-1' }
+          metadata: { duration: 10, timestamp: new Date(), operationId: 'stats-1' },
         })
         .mockResolvedValueOnce({
           success: true,
@@ -956,25 +965,25 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
             size: 50,
             maxSize: 1000,
             hitRate: 85.5,
-            memoryUsage: 2048
+            memoryUsage: 2048,
           },
-          metadata: { duration: 5, timestamp: new Date(), operationId: 'stats-2' }
+          metadata: { duration: 5, timestamp: new Date(), operationId: 'stats-2' },
         })
         .mockResolvedValueOnce({
           success: true,
           data: [
             { protocol: 'http', status: 'healthy', latency: 50 },
-            { protocol: 'websocket', status: 'healthy', latency: 25 }
+            { protocol: 'websocket', status: 'healthy', latency: 25 },
           ],
-          metadata: { duration: 15, timestamp: new Date(), operationId: 'stats-3' }
+          metadata: { duration: 15, timestamp: new Date(), operationId: 'stats-3' },
         })
         .mockResolvedValueOnce({
           success: true,
           data: [
             { endpoint: '/api/users', requestCount: 150, averageResponseTime: 100 },
-            { endpoint: '/api/posts', requestCount: 200, averageResponseTime: 80 }
+            { endpoint: '/api/posts', requestCount: 200, averageResponseTime: 80 },
           ],
-          metadata: { duration: 8, timestamp: new Date(), operationId: 'stats-4' }
+          metadata: { duration: 8, timestamp: new Date(), operationId: 'stats-4' },
         });
 
       const stats = await helper.getServiceStatistics();
@@ -991,22 +1000,23 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
 
     it('should correctly validate service configuration with multiple checks', async () => {
       // Classical TDD: Test comprehensive validation logic
-      
+
       // Mock adapter state and responses
       jest.spyOn(adapter, 'isReady').mockReturnValue(true);
-      jest.spyOn(adapter, 'execute')
+      jest
+        .spyOn(adapter, 'execute')
         .mockResolvedValueOnce({
           success: true,
           data: { size: 900, maxSize: 1000 }, // High cache utilization
-          metadata: { duration: 5, timestamp: new Date(), operationId: 'val-1' }
+          metadata: { duration: 5, timestamp: new Date(), operationId: 'val-1' },
         })
         .mockResolvedValueOnce({
           success: true,
           data: [
             { protocol: 'http', status: 'healthy' },
-            { protocol: 'websocket', status: 'degraded' } // One degraded protocol
+            { protocol: 'websocket', status: 'degraded' }, // One degraded protocol
           ],
-          metadata: { duration: 10, timestamp: new Date(), operationId: 'val-2' }
+          metadata: { duration: 10, timestamp: new Date(), operationId: 'val-2' },
         });
 
       const validation = await helper.validateConfiguration();
@@ -1014,11 +1024,13 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       expect(validation.success).toBe(true);
       expect(validation.data?.valid).toBe(false); // Should be invalid due to degraded protocol
       expect(validation.data?.issues).toBeDefined();
-      
+
       const issues = validation.data?.issues || [];
-      const cacheWarning = issues.find(i => i.component === 'cache' && i.severity === 'warning');
-      const protocolError = issues.find(i => i.component === 'protocol' && i.severity === 'error');
-      
+      const cacheWarning = issues.find((i) => i.component === 'cache' && i.severity === 'warning');
+      const protocolError = issues.find(
+        (i) => i.component === 'protocol' && i.severity === 'error'
+      );
+
       expect(cacheWarning).toBeDefined();
       expect(cacheWarning?.message).toContain('Cache utilization is high');
       expect(protocolError).toBeDefined();
@@ -1040,7 +1052,7 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
       safeAPI: { enabled: true, baseURL: 'http://test-api.com' },
       protocolManagement: { enabled: true, supportedProtocols: ['http', 'websocket'] },
       cache: { enabled: true, defaultTTL: 60000, maxSize: 100 },
-      retry: { enabled: true, maxAttempts: 3, backoffMultiplier: 2 }
+      retry: { enabled: true, maxAttempts: 3, backoffMultiplier: 2 },
     });
   });
 
@@ -1060,12 +1072,12 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     executeSpy.mockResolvedValueOnce({
       success: true,
       data: 'arch-workflow-001',
-      metadata: { duration: 200, timestamp: new Date(), operationId: 'workflow-1' }
+      metadata: { duration: 200, timestamp: new Date(), operationId: 'workflow-1' },
     });
 
     const saveResult = await adapter.execute('architecture-save', {
       architecture: mockArchitectureDesign,
-      projectId: 'project-workflow'
+      projectId: 'project-workflow',
     });
 
     expect(saveResult.success).toBe(true);
@@ -1075,11 +1087,11 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     executeSpy.mockResolvedValueOnce({
       success: true,
       data: mockArchitectureDesign,
-      metadata: { duration: 150, timestamp: new Date(), operationId: 'workflow-2' }
+      metadata: { duration: 150, timestamp: new Date(), operationId: 'workflow-2' },
     });
 
     const retrieveResult = await adapter.execute('architecture-retrieve', {
-      architectureId: 'arch-workflow-001'
+      architectureId: 'arch-workflow-001',
     });
 
     expect(retrieveResult.success).toBe(true);
@@ -1089,13 +1101,13 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     executeSpy.mockResolvedValueOnce({
       success: true,
       data: undefined,
-      metadata: { duration: 100, timestamp: new Date(), operationId: 'workflow-3' }
+      metadata: { duration: 100, timestamp: new Date(), operationId: 'workflow-3' },
     });
 
     const validationResult = await adapter.execute('architecture-validation-save', {
       architectureId: 'arch-workflow-001',
       validation: mockValidation,
-      type: 'comprehensive'
+      type: 'comprehensive',
     });
 
     expect(validationResult.success).toBe(true);
@@ -1104,11 +1116,11 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     executeSpy.mockResolvedValueOnce({
       success: true,
       data: [mockArchitectureDesign],
-      metadata: { duration: 180, timestamp: new Date(), operationId: 'workflow-4' }
+      metadata: { duration: 180, timestamp: new Date(), operationId: 'workflow-4' },
     });
 
     const searchResult = await adapter.execute('architecture-search', {
-      criteria: { domain: 'web', projectId: 'project-workflow' }
+      criteria: { domain: 'web', projectId: 'project-workflow' },
     });
 
     expect(searchResult.success).toBe(true);
@@ -1127,16 +1139,22 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
 
     // Simulate API operation that fails first, then succeeds
     executeSpy
-      .mockRejectedValueOnce(new Error('Network timeout'))  // First attempt fails
-      .mockResolvedValueOnce({                               // Retry succeeds
+      .mockRejectedValueOnce(new Error('Network timeout')) // First attempt fails
+      .mockResolvedValueOnce({
+        // Retry succeeds
         success: true,
         data: mockAPIResponse,
-        metadata: { duration: 250, timestamp: new Date(), operationId: 'api-retry-1', retryCount: 1 }
+        metadata: {
+          duration: 250,
+          timestamp: new Date(),
+          operationId: 'api-retry-1',
+          retryCount: 1,
+        },
       });
 
     const apiResult = await adapter.execute('api-get', {
       endpoint: '/api/resilient-endpoint',
-      options: { timeout: 5000, retries: 2 }
+      options: { timeout: 5000, retries: 2 },
     });
 
     expect(apiResult.success).toBe(true);
@@ -1156,28 +1174,29 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     executeSpy.mockResolvedValueOnce({
       success: true,
       data: undefined,
-      metadata: { duration: 100, timestamp: new Date(), operationId: 'protocol-1' }
+      metadata: { duration: 100, timestamp: new Date(), operationId: 'protocol-1' },
     });
 
     const connectResult = await adapter.execute('protocol-connect', {
       protocol: 'websocket',
-      config: { host: 'primary.server.com', port: 8080 }
+      config: { host: 'primary.server.com', port: 8080 },
     });
 
     expect(connectResult.success).toBe(true);
 
     // Step 2: Primary protocol fails, switch to backup
     executeSpy
-      .mockRejectedValueOnce(new Error('Connection lost'))  // Primary fails
-      .mockResolvedValueOnce({                              // Switch succeeds
+      .mockRejectedValueOnce(new Error('Connection lost')) // Primary fails
+      .mockResolvedValueOnce({
+        // Switch succeeds
         success: true,
         data: undefined,
-        metadata: { duration: 120, timestamp: new Date(), operationId: 'protocol-2' }
+        metadata: { duration: 120, timestamp: new Date(), operationId: 'protocol-2' },
       });
 
     const switchResult = await adapter.execute('protocol-switch', {
       fromProtocol: 'websocket',
-      toProtocol: 'http'
+      toProtocol: 'http',
     });
 
     expect(switchResult.success).toBe(true);
@@ -1198,9 +1217,9 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
       performance: {
         enableMetricsCollection: true,
         enableRequestDeduplication: true,
-        maxConcurrency: 20
+        maxConcurrency: 20,
       },
-      cache: { enabled: true, maxSize: 1000 }
+      cache: { enabled: true, maxSize: 1000 },
     });
   });
 
@@ -1216,7 +1235,7 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
       success: true,
       data: 'concurrent-result',
-      metadata: { duration: 50, timestamp: new Date(), operationId: 'concurrent' }
+      metadata: { duration: 50, timestamp: new Date(), operationId: 'concurrent' },
     });
 
     const concurrentOperations = Array.from({ length: 50 }, (_, i) =>
@@ -1228,11 +1247,11 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     const duration = Date.now() - startTime;
 
     // All operations should succeed
-    expect(results.every(r => r.success)).toBe(true);
-    
+    expect(results.every((r) => r.success)).toBe(true);
+
     // Should complete reasonably quickly (allowing for test environment variance)
     expect(duration).toBeLessThan(5000); // 5 seconds max
-    
+
     // Should have called execute for each operation
     expect(executeSpy).toHaveBeenCalledTimes(50);
 
@@ -1244,12 +1263,11 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     await adapter.initialize();
     await adapter.start();
 
-    const executeSpy = jest.spyOn(adapter, 'execute')
-      .mockResolvedValue({
-        success: true,
-        data: mockArchitectureDesign,
-        metadata: { duration: 5, timestamp: new Date(), operationId: 'cache-test', cacheHit: true }
-      });
+    const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
+      success: true,
+      data: mockArchitectureDesign,
+      metadata: { duration: 5, timestamp: new Date(), operationId: 'cache-test', cacheHit: true },
+    });
 
     // Simulate repeated access to same resource
     const cacheKey = 'arch-cache-test';
@@ -1260,14 +1278,13 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     const results = await Promise.all(requests);
 
     // All should succeed
-    expect(results.every(r => r.success)).toBe(true);
-    
+    expect(results.every((r) => r.success)).toBe(true);
+
     // Due to caching, should have fast response times
-    const avgDuration = results.reduce((sum, r) => sum + (r.metadata?.duration || 0), 0) / results.length;
+    const avgDuration =
+      results.reduce((sum, r) => sum + (r.metadata?.duration || 0), 0) / results.length;
     expect(avgDuration).toBeLessThan(50); // Should be fast due to caching
 
     executeSpy.mockRestore();
   });
 });
-
-export {};

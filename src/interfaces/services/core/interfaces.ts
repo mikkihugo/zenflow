@@ -1,6 +1,6 @@
 /**
  * USL (Unified Service Layer) Core Interfaces
- * 
+ *
  * Provides unified abstractions for all service implementations across Claude-Zen:
  * - Data services, web services, coordination services, neural services
  * - Consistent initialization, lifecycle management, and monitoring patterns
@@ -11,7 +11,7 @@
 
 /**
  * Service authentication configuration
- * 
+ *
  * @interface ServiceAuthConfig
  * @description Configuration for various authentication methods supported by services
  * @example
@@ -22,7 +22,7 @@
  *   apiKey: process.env.API_KEY,
  *   apiKeyHeader: 'X-Custom-API-Key'
  * };
- * 
+ *
  * // JWT authentication
  * const jwtAuth: ServiceAuthConfig = {
  *   type: 'jwt',
@@ -32,7 +32,7 @@
  *     algorithm: 'HS256'
  *   }
  * };
- * 
+ *
  * // OAuth authentication
  * const oauthAuth: ServiceAuthConfig = {
  *   type: 'oauth',
@@ -48,12 +48,12 @@
 export interface ServiceAuthConfig {
   /** Authentication type to use */
   type: 'none' | 'apikey' | 'oauth' | 'jwt' | 'custom';
-  
+
   /** API key for authentication (used with 'apikey' type) */
   apiKey?: string;
   /** HTTP header name for API key (default: 'X-API-Key') */
   apiKeyHeader?: string;
-  
+
   /** OAuth credentials configuration (used with 'oauth' type) */
   credentials?: {
     /** OAuth client identifier */
@@ -65,7 +65,7 @@ export interface ServiceAuthConfig {
     /** OAuth scope string */
     scope?: string;
   };
-  
+
   /** JWT configuration (used with 'jwt' type) */
   jwt?: {
     /** JWT signing secret */
@@ -75,13 +75,15 @@ export interface ServiceAuthConfig {
     /** Signing algorithm (default: 'HS256') */
     algorithm?: string;
   };
-  
+
   /** Custom authentication handler function */
   customAuth?: (context: any) => Promise<boolean>;
 }
 
 /**
  * Service retry configuration with multiple backoff strategies
+ *
+ * @example
  */
 export interface ServiceRetryConfig {
   attempts: number;
@@ -93,6 +95,8 @@ export interface ServiceRetryConfig {
 
 /**
  * Service health check configuration
+ *
+ * @example
  */
 export interface ServiceHealthConfig {
   enabled: boolean;
@@ -105,6 +109,8 @@ export interface ServiceHealthConfig {
 
 /**
  * Service performance monitoring configuration
+ *
+ * @example
  */
 export interface ServiceMonitoringConfig {
   enabled: boolean;
@@ -118,6 +124,8 @@ export interface ServiceMonitoringConfig {
 
 /**
  * Service dependency configuration
+ *
+ * @example
  */
 export interface ServiceDependencyConfig {
   serviceName: string;
@@ -129,44 +137,46 @@ export interface ServiceDependencyConfig {
 
 /**
  * Base service configuration interface
+ *
+ * @example
  */
 export interface ServiceConfig {
   /** Service unique identifier */
   name: string;
-  
+
   /** Service type/category */
   type: string;
-  
+
   /** Service version */
   version?: string;
-  
+
   /** Service description */
   description?: string;
-  
+
   /** Is service enabled */
   enabled?: boolean;
-  
+
   /** Service initialization timeout */
   timeout?: number;
-  
+
   /** Service-specific configuration */
   options?: Record<string, any>;
-  
+
   /** Authentication configuration */
   auth?: ServiceAuthConfig;
-  
+
   /** Retry configuration */
   retry?: ServiceRetryConfig;
-  
+
   /** Health check configuration */
   health?: ServiceHealthConfig;
-  
+
   /** Performance monitoring configuration */
   monitoring?: ServiceMonitoringConfig;
-  
+
   /** Service dependencies */
   dependencies?: ServiceDependencyConfig[];
-  
+
   /** Custom metadata */
   metadata?: Record<string, any>;
 }
@@ -174,7 +184,7 @@ export interface ServiceConfig {
 /**
  * Service lifecycle status
  */
-export type ServiceLifecycleStatus = 
+export type ServiceLifecycleStatus =
   | 'uninitialized'
   | 'initializing'
   | 'initialized'
@@ -187,6 +197,8 @@ export type ServiceLifecycleStatus =
 
 /**
  * Service health status information
+ *
+ * @example
  */
 export interface ServiceStatus {
   name: string;
@@ -208,6 +220,8 @@ export interface ServiceStatus {
 
 /**
  * Service performance metrics
+ *
+ * @example
  */
 export interface ServiceMetrics {
   name: string;
@@ -230,6 +244,8 @@ export interface ServiceMetrics {
 
 /**
  * Generic service operation options
+ *
+ * @example
  */
 export interface ServiceOperationOptions {
   timeout?: number;
@@ -240,6 +256,8 @@ export interface ServiceOperationOptions {
 
 /**
  * Generic service operation response
+ *
+ * @example
  */
 export interface ServiceOperationResponse<T = any> {
   success: boolean;
@@ -260,7 +278,7 @@ export interface ServiceOperationResponse<T = any> {
 /**
  * Service event types for lifecycle and operations
  */
-export type ServiceEventType = 
+export type ServiceEventType =
   | 'initializing'
   | 'initialized'
   | 'starting'
@@ -274,6 +292,8 @@ export type ServiceEventType =
 
 /**
  * Service event data
+ *
+ * @example
  */
 export interface ServiceEvent {
   type: ServiceEventType;
@@ -285,7 +305,7 @@ export interface ServiceEvent {
 
 /**
  * Core service interface that all services must implement
- * 
+ *
  * @interface IService
  * @description Base interface that all USL services must implement for consistent lifecycle management,
  * monitoring, configuration, and operation execution across all service types
@@ -295,29 +315,29 @@ export interface ServiceEvent {
  *   readonly name: string = 'my-service';
  *   readonly type: string = 'custom';
  *   readonly config: ServiceConfig;
- * 
+ *
  *   constructor(config: ServiceConfig) {
  *     this.config = config;
  *   }
- * 
+ *
  *   async initialize(): Promise<void> {
  *     // Service initialization logic
  *     this.emit('initializing');
  *     // ... setup code ...
  *     this.emit('initialized');
  *   }
- * 
+ *
  *   async start(): Promise<void> {
  *     // Service startup logic
  *     this.emit('starting');
  *     // ... startup code ...
  *     this.emit('started');
  *   }
- * 
+ *
  *   async execute<T>(operation: string, params?: any): Promise<ServiceOperationResponse<T>> {
  *     // Handle service-specific operations
  *     const startTime = Date.now();
- * 
+ *
  *     try {
  *       const result = await this.performOperation(operation, params);
  *       return {
@@ -355,64 +375,72 @@ export interface IService {
   readonly type: string;
   /** Service configuration object */
   readonly config: ServiceConfig;
-  
+
   /**
    * Initialize the service with optional configuration override
+   *
    * @param config Optional configuration override
    * @returns Promise that resolves when initialization is complete
    * @throws {ServiceInitializationError} When initialization fails
    */
   initialize(config?: Partial<ServiceConfig>): Promise<void>;
-  
+
   /**
    * Start the service and begin processing
+   *
    * @returns Promise that resolves when service is started
    * @throws {ServiceOperationError} When startup fails
    */
   start(): Promise<void>;
-  
+
   /**
    * Stop the service gracefully
+   *
    * @returns Promise that resolves when service is stopped
    * @throws {ServiceOperationError} When shutdown fails
    */
   stop(): Promise<void>;
-  
+
   /**
    * Destroy the service and clean up resources
+   *
    * @returns Promise that resolves when destruction is complete
    * @throws {ServiceOperationError} When destruction fails
    */
   destroy(): Promise<void>;
-  
+
   /**
    * Get current service status and health information
+   *
    * @returns Promise resolving to service status
    */
   getStatus(): Promise<ServiceStatus>;
-  
+
   /**
    * Get service performance metrics
+   *
    * @returns Promise resolving to service metrics
    */
   getMetrics(): Promise<ServiceMetrics>;
-  
+
   /**
    * Perform health check on the service
+   *
    * @returns Promise resolving to true if service is healthy
    */
   healthCheck(): Promise<boolean>;
-  
+
   // Configuration management
   updateConfig(config: Partial<ServiceConfig>): Promise<void>;
   validateConfig(config: ServiceConfig): Promise<boolean>;
-  
+
   // Operation management
   isReady(): boolean;
   getCapabilities(): string[];
-  
+
   /**
    * Execute a service-specific operation
+   *
    * @template T The expected return type
    * @param operation Operation name to execute
    * @param params Operation parameters
@@ -431,7 +459,7 @@ export interface IService {
    *   timeout: 30000,
    *   trackMetrics: true
    * });
-   * 
+   *
    * if (result.success) {
    *   console.log('Users found:', result.data?.length);
    *   console.log('Query took:', result.metadata?.duration, 'ms');
@@ -441,36 +469,39 @@ export interface IService {
    * ```
    */
   execute<T = any>(
-    operation: string, 
-    params?: any, 
+    operation: string,
+    params?: any,
     options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>>;
-  
+
   /**
    * Register an event handler for service events
+   *
    * @param event Event type to listen for
    * @param handler Function to call when event occurs
    * @example service.on('started', (event) => console.log('Service started'));
    */
   on(event: ServiceEventType, handler: (event: ServiceEvent) => void): void;
-  
+
   /**
    * Remove an event handler
+   *
    * @param event Event type to stop listening for
    * @param handler Specific handler to remove (optional)
    * @example service.off('started', myHandler);
    */
   off(event: ServiceEventType, handler?: (event: ServiceEvent) => void): void;
-  
+
   /**
    * Emit a service event
+   *
    * @param event Event type to emit
    * @param data Optional event data
    * @param error Optional error object
    * @example service.emit('error', null, new Error('Something went wrong'));
    */
   emit(event: ServiceEventType, data?: any, error?: Error): void;
-  
+
   // Dependency management
   addDependency(dependency: ServiceDependencyConfig): Promise<void>;
   removeDependency(serviceName: string): Promise<void>;
@@ -479,7 +510,7 @@ export interface IService {
 
 /**
  * Service factory interface for creating and managing service instances
- * 
+ *
  * @interface IServiceFactory
  * @template TConfig Service configuration type
  * @description Factory interface for creating, managing, and coordinating service instances
@@ -488,22 +519,22 @@ export interface IService {
  * ```typescript
  * class DataServiceFactory implements IServiceFactory<DataServiceConfig> {
  *   private services = new Map<string, IService>();
- * 
+ *
  *   async create(config: DataServiceConfig): Promise<IService> {
  *     const service = new DataService(config);
  *     await service.initialize();
  *     this.services.set(config.name, service);
  *     return service;
  *   }
- * 
+ *
  *   async createMultiple(configs: DataServiceConfig[]): Promise<IService[]> {
  *     return Promise.all(configs.map(config => this.create(config)));
  *   }
- * 
+ *
  *   getSupportedTypes(): string[] {
  *     return ['data', 'cache', 'search'];
  *   }
- * 
+ *
  *   async healthCheckAll(): Promise<Map<string, ServiceStatus>> {
  *     const results = new Map<string, ServiceStatus>();
  *     for (const [name, service] of this.services) {
@@ -517,63 +548,69 @@ export interface IService {
 export interface IServiceFactory<TConfig extends ServiceConfig = ServiceConfig> {
   /**
    * Create a single service instance
+   *
    * @param config Service configuration
    * @returns Promise resolving to created service
    * @throws {ServiceInitializationError} When service creation fails
    */
   create(config: TConfig): Promise<IService>;
-  
+
   /**
    * Create multiple service instances
+   *
    * @param configs Array of service configurations
    * @returns Promise resolving to array of created services
    * @throws {ServiceInitializationError} When any service creation fails
    */
   createMultiple(configs: TConfig[]): Promise<IService[]>;
-  
+
   /**
    * Get a service instance by name
+   *
    * @param name Service name identifier
    * @returns Service instance or undefined if not found
    */
   get(name: string): IService | undefined;
-  
+
   /**
    * List all managed service instances
+   *
    * @returns Array of all service instances
    */
   list(): IService[];
-  
+
   /**
    * Check if a service with the given name exists
+   *
    * @param name Service name to check
    * @returns True if service exists
    */
   has(name: string): boolean;
-  
+
   /**
    * Remove and destroy a service instance
+   *
    * @param name Service name to remove
    * @returns Promise resolving to true if removed successfully
    * @throws {ServiceOperationError} When removal fails
    */
   remove(name: string): Promise<boolean>;
-  
+
   // Service type support
   getSupportedTypes(): string[];
   supportsType(type: string): boolean;
-  
+
   // Batch operations
   startAll(): Promise<void>;
   stopAll(): Promise<void>;
   healthCheckAll(): Promise<Map<string, ServiceStatus>>;
   getMetricsAll(): Promise<Map<string, ServiceMetrics>>;
-  
+
   // Factory management
   shutdown(): Promise<void>;
   getActiveCount(): number;
   getServicesByType(type: string): IService[];
-  
+
   // Configuration validation
   validateConfig(config: TConfig): Promise<boolean>;
   getConfigSchema(type: string): Record<string, any> | undefined;
@@ -581,23 +618,22 @@ export interface IServiceFactory<TConfig extends ServiceConfig = ServiceConfig> 
 
 /**
  * Service registry interface for global service management
+ *
+ * @example
  */
 export interface IServiceRegistry {
   // Factory registration
-  registerFactory<T extends ServiceConfig>(
-    type: string, 
-    factory: IServiceFactory<T>
-  ): void;
+  registerFactory<T extends ServiceConfig>(type: string, factory: IServiceFactory<T>): void;
   getFactory<T extends ServiceConfig>(type: string): IServiceFactory<T> | undefined;
   listFactoryTypes(): string[];
   unregisterFactory(type: string): void;
-  
+
   // Service management across all factories
   getAllServices(): Map<string, IService>;
   findService(name: string): IService | undefined;
   getServicesByType(type: string): IService[];
   getServicesByStatus(status: ServiceLifecycleStatus): IService[];
-  
+
   // Global operations
   startAllServices(): Promise<void>;
   stopAllServices(): Promise<void>;
@@ -610,7 +646,7 @@ export interface IServiceRegistry {
     aggregatedMetrics: ServiceMetrics[];
   }>;
   shutdownAll(): Promise<void>;
-  
+
   // Service discovery
   discoverServices(criteria?: {
     type?: string;
@@ -618,15 +654,19 @@ export interface IServiceRegistry {
     health?: 'healthy' | 'degraded' | 'unhealthy';
     tags?: string[];
   }): IService[];
-  
+
   // Event management
-  on(event: 'service-registered' | 'service-unregistered' | 'service-status-changed', 
-     handler: (serviceName: string, service?: IService) => void): void;
+  on(
+    event: 'service-registered' | 'service-unregistered' | 'service-status-changed',
+    handler: (serviceName: string, service?: IService) => void
+  ): void;
   off(event: string, handler?: Function): void;
 }
 
 /**
  * Service configuration validator interface
+ *
+ * @example
  */
 export interface IServiceConfigValidator {
   validate(config: ServiceConfig): Promise<{
@@ -634,16 +674,18 @@ export interface IServiceConfigValidator {
     errors: string[];
     warnings: string[];
   }>;
-  
+
   validateType(type: string, config: ServiceConfig): Promise<boolean>;
-  
+
   getSchema(type: string): Record<string, any> | undefined;
-  
+
   registerSchema(type: string, schema: Record<string, any>): void;
 }
 
 /**
  * Service error types
+ *
+ * @example
  */
 export class ServiceError extends Error {
   constructor(
@@ -660,9 +702,9 @@ export class ServiceError extends Error {
 export class ServiceInitializationError extends ServiceError {
   constructor(serviceName: string, cause?: Error) {
     super(
-      `Service initialization failed: ${serviceName}`, 
-      'SERVICE_INIT_ERROR', 
-      serviceName, 
+      `Service initialization failed: ${serviceName}`,
+      'SERVICE_INIT_ERROR',
+      serviceName,
       cause
     );
     this.name = 'ServiceInitializationError';
@@ -672,9 +714,9 @@ export class ServiceInitializationError extends ServiceError {
 export class ServiceConfigurationError extends ServiceError {
   constructor(serviceName: string, details: string, cause?: Error) {
     super(
-      `Service configuration error: ${serviceName} - ${details}`, 
-      'SERVICE_CONFIG_ERROR', 
-      serviceName, 
+      `Service configuration error: ${serviceName} - ${details}`,
+      'SERVICE_CONFIG_ERROR',
+      serviceName,
       cause
     );
     this.name = 'ServiceConfigurationError';
@@ -684,9 +726,9 @@ export class ServiceConfigurationError extends ServiceError {
 export class ServiceDependencyError extends ServiceError {
   constructor(serviceName: string, dependency: string, cause?: Error) {
     super(
-      `Service dependency error: ${serviceName} -> ${dependency}`, 
-      'SERVICE_DEPENDENCY_ERROR', 
-      serviceName, 
+      `Service dependency error: ${serviceName} -> ${dependency}`,
+      'SERVICE_DEPENDENCY_ERROR',
+      serviceName,
       cause
     );
     this.name = 'ServiceDependencyError';
@@ -696,9 +738,9 @@ export class ServiceDependencyError extends ServiceError {
 export class ServiceOperationError extends ServiceError {
   constructor(serviceName: string, operation: string, cause?: Error) {
     super(
-      `Service operation failed: ${serviceName}.${operation}`, 
-      'SERVICE_OPERATION_ERROR', 
-      serviceName, 
+      `Service operation failed: ${serviceName}.${operation}`,
+      'SERVICE_OPERATION_ERROR',
+      serviceName,
       cause
     );
     this.name = 'ServiceOperationError';
@@ -708,9 +750,9 @@ export class ServiceOperationError extends ServiceError {
 export class ServiceTimeoutError extends ServiceError {
   constructor(serviceName: string, operation: string, timeout: number, cause?: Error) {
     super(
-      `Service operation timeout: ${serviceName}.${operation} (${timeout}ms)`, 
-      'SERVICE_TIMEOUT_ERROR', 
-      serviceName, 
+      `Service operation timeout: ${serviceName}.${operation} (${timeout}ms)`,
+      'SERVICE_TIMEOUT_ERROR',
+      serviceName,
       cause
     );
     this.name = 'ServiceTimeoutError';
@@ -719,6 +761,8 @@ export class ServiceTimeoutError extends ServiceError {
 
 /**
  * Service capability definitions
+ *
+ * @example
  */
 export interface ServiceCapability {
   name: string;
@@ -730,6 +774,8 @@ export interface ServiceCapability {
 
 /**
  * Service capability registry
+ *
+ * @example
  */
 export interface IServiceCapabilityRegistry {
   register(serviceName: string, capability: ServiceCapability): void;

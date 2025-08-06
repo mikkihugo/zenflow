@@ -75,17 +75,17 @@ export interface SPARCTemplate {
   readonly specification: DetailedSpecification;
   readonly pseudocode: PseudocodeStructure;
   readonly architecture: ArchitectureDesign;
-  
+
   applyTo(projectSpec: ProjectSpecification): Promise<{
     specification: DetailedSpecification;
     pseudocode: PseudocodeStructure;
     architecture: ArchitectureDesign;
   }>;
-  
+
   customizeSpecification(projectSpec: ProjectSpecification): DetailedSpecification;
   customizePseudocode(projectSpec: ProjectSpecification): PseudocodeStructure;
   customizeArchitecture(projectSpec: ProjectSpecification): ArchitectureDesign;
-  
+
   validateCompatibility(projectSpec: ProjectSpecification): {
     compatible: boolean;
     warnings: string[];

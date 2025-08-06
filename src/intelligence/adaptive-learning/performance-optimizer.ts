@@ -47,6 +47,9 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   /**
    * Optimize agent behavior based on learned patterns
+   *
+   * @param agentId
+   * @param patterns
    */
   optimizeBehavior(agentId: string, patterns: Pattern[]): BehaviorOptimization {
     // Analyze patterns relevant to the agent
@@ -88,6 +91,9 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   /**
    * Optimize task allocation across agents
+   *
+   * @param tasks
+   * @param agents
    */
   optimizeTaskAllocation(tasks: Task[], agents: Agent[]): AllocationStrategy {
     // Analyze agent capabilities and current load
@@ -136,6 +142,8 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   /**
    * Optimize resource allocation
+   *
+   * @param resources
    */
   optimizeResourceAllocation(resources: Resource[]): ResourceStrategy {
     // Analyze current resource usage patterns
@@ -181,6 +189,8 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   /**
    * Improve overall system efficiency
+   *
+   * @param metrics
    */
   improveEfficiency(metrics: PerformanceMetrics): EfficiencyImprovement {
     // Identify efficiency bottlenecks
@@ -221,6 +231,8 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
 
   /**
    * Reduce system latency by addressing bottlenecks
+   *
+   * @param bottlenecks
    */
   reduceLatency(bottlenecks: Bottleneck[]): LatencyReduction {
     // Prioritize bottlenecks by impact and frequency

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Logger utility for Neural and Queen components
+ * @file Logger utility for Neural and Queen components
  * Simple wrapper around the core logger for component-specific logging
  * @module Logger
  */

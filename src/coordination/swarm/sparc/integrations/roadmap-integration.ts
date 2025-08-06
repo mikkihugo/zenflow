@@ -34,6 +34,8 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   /**
    * Generate an epic from a SPARC project
+   *
+   * @param project
    */
   async generateEpicFromSPARCProject(project: SPARCProject): Promise<Epic> {
     const epic: Epic = {
@@ -59,6 +61,8 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   /**
    * Generate features from SPARC project phases
+   *
+   * @param project
    */
   async generateFeaturesFromProject(project: SPARCProject): Promise<Feature[]> {
     const features: Feature[] = [];
@@ -118,6 +122,9 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   /**
    * Add SPARC project to enterprise roadmap
+   *
+   * @param project
+   * @param targetQuarter
    */
   async addProjectToRoadmap(project: SPARCProject, targetQuarter: string): Promise<void> {
     try {
@@ -170,6 +177,11 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   /**
    * Generate domain-specific roadmap
+   *
+   * @param domain
+   * @param timeframe
+   * @param timeframe.start
+   * @param timeframe.end
    */
   async generateDomainRoadmap(
     domain: ProjectDomain,
@@ -192,6 +204,8 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   /**
    * Save epics and features to project files
+   *
+   * @param project
    */
   async saveProjectArtifacts(project: SPARCProject): Promise<void> {
     try {

@@ -5,12 +5,12 @@
  * Following Google Code Standards with explicit exports.
  * Clean separation between API layer and business domains.
  *
- * @fileoverview Main entry point for REST API layer
+ * @file Main entry point for REST API layer
  */
 
-// Import server types for internal use
-import { APIServerConfig, APIClientConfig, APIServer } from './server';
 import { APIClient } from './client';
+// Import server types for internal use
+import { type APIClientConfig, APIServer, type APIServerConfig } from './server';
 
 export type { APIClientConfig, PaginationOptions, RequestOptions } from './client';
 // ===== API CLIENT SDK =====
@@ -82,6 +82,8 @@ export const SUPPORTED_API_VERSIONS = ['v1'] as const;
 /**
  * API Layer Configuration
  * Central configuration for the entire API layer
+ *
+ * @example
  */
 export interface APILayerConfig {
   readonly server: APIServerConfig;
@@ -122,6 +124,8 @@ export const DEFAULT_API_LAYER_CONFIG: APILayerConfig = {
 /**
  * API Layer Factory
  * Creates complete API layer with server and client
+ *
+ * @example
  */
 export class APILayer {
   private server: APIServer;
@@ -179,6 +183,8 @@ export class APILayer {
 
 /**
  * Create API layer with configuration
+ *
+ * @param config
  */
 export const createAPILayer = (config?: Partial<APILayerConfig>): APILayer => {
   return new APILayer(config);
@@ -187,6 +193,8 @@ export const createAPILayer = (config?: Partial<APILayerConfig>): APILayer => {
 /**
  * API Layer Health Check
  * Comprehensive health check for the entire API layer
+ *
+ * @param layer
  */
 export const checkAPILayerHealth = async (
   layer: APILayer

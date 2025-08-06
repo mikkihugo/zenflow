@@ -5,6 +5,8 @@
 
 /**
  * Dependency injection token for type-safe service registration
+ *
+ * @example
  */
 export interface DIToken<T> {
   readonly symbol: symbol;
@@ -19,6 +21,8 @@ export type ProviderLifestyle = 'singleton' | 'transient' | 'scoped';
 
 /**
  * Base provider interface for service creation
+ *
+ * @example
  */
 export interface Provider<T> {
   readonly type: ProviderLifestyle;
@@ -28,6 +32,8 @@ export interface Provider<T> {
 
 /**
  * Main dependency injection container interface
+ *
+ * @example
  */
 export interface DIContainer {
   register<T>(token: DIToken<T>, provider: Provider<T>): void;
@@ -38,6 +44,8 @@ export interface DIContainer {
 
 /**
  * Scoped container interface extending base container
+ *
+ * @example
  */
 export interface DIScope extends DIContainer {
   readonly parent: DIContainer | null;
@@ -46,6 +54,8 @@ export interface DIScope extends DIContainer {
 
 /**
  * Singleton provider configuration
+ *
+ * @example
  */
 export interface SingletonProvider<T> extends Provider<T> {
   readonly type: 'singleton';
@@ -54,6 +64,8 @@ export interface SingletonProvider<T> extends Provider<T> {
 
 /**
  * Factory provider configuration
+ *
+ * @example
  */
 export interface FactoryProvider<T> extends Provider<T> {
   readonly type: 'transient';
@@ -62,6 +74,8 @@ export interface FactoryProvider<T> extends Provider<T> {
 
 /**
  * Scoped provider configuration
+ *
+ * @example
  */
 export interface ScopedProvider<T> extends Provider<T> {
   readonly type: 'scoped';
@@ -69,6 +83,8 @@ export interface ScopedProvider<T> extends Provider<T> {
 
 /**
  * Service configuration for configuration-based registration
+ *
+ * @example
  */
 export interface ServiceConfiguration {
   services: Array<{
@@ -82,6 +98,8 @@ export interface ServiceConfiguration {
 
 /**
  * Service mapping for auto-registration
+ *
+ * @example
  */
 export interface ServiceMapping {
   token: DIToken<any>;
@@ -92,6 +110,8 @@ export interface ServiceMapping {
 
 /**
  * Service registration result
+ *
+ * @example
  */
 export interface ServiceRegistration {
   file: string;
@@ -104,6 +124,8 @@ export interface ServiceRegistration {
 
 /**
  * DI container configuration options
+ *
+ * @example
  */
 export interface DIContainerOptions {
   enableCircularDependencyDetection?: boolean;
@@ -114,6 +136,8 @@ export interface DIContainerOptions {
 
 /**
  * DI error types
+ *
+ * @example
  */
 export class DIError extends Error {
   constructor(
@@ -141,6 +165,8 @@ export class ServiceNotFoundError extends DIError {
 
 /**
  * Injection metadata for decorator support
+ *
+ * @example
  */
 export interface InjectionMetadata {
   parameterTypes: any[];

@@ -14,12 +14,8 @@
 import type { ICoordinationDao } from '../../../database';
 // import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
-import { AgentPool, BaseAgent, createAgent } from '../../agents/agent';
-import {
-  adaptAgentForCoordination,
-  createAgentPoolEntry,
-  executeTaskWithAgent,
-} from './agent-adapter';
+import { AgentPool, createAgent } from '../../agents/agent';
+import { executeTaskWithAgent } from './agent-adapter';
 import { getContainer } from './singleton-container';
 import type {
   AgentConfig,
@@ -62,6 +58,8 @@ export * from './utils';
 
 /**
  * Enhanced Agent class with neural capabilities and cognitive patterns
+ *
+ * @example
  */
 export class Agent {
   public id: string;
@@ -148,6 +146,8 @@ export class Agent {
 
 /**
  * 🚀 ULTIMATE ZenSwarm - The definitive swarm orchestration system
+ *
+ * @example
  */
 export class ZenSwarm implements SwarmEventEmitter {
   // Core swarm properties
@@ -279,6 +279,8 @@ export class ZenSwarm implements SwarmEventEmitter {
 
   /**
    * Static factory method for easy initialization
+   *
+   * @param options
    */
   static async create(options?: SwarmOptions): Promise<ZenSwarm> {
     const swarm = new ZenSwarm(options);
@@ -288,6 +290,8 @@ export class ZenSwarm implements SwarmEventEmitter {
 
   /**
    * Enhanced static initialization with comprehensive features
+   *
+   * @param options
    */
   static async initialize(options: any = {}): Promise<ZenSwarm> {
     const container = getContainer();
@@ -346,7 +350,7 @@ export class ZenSwarm implements SwarmEventEmitter {
           // TODO: Implement proper DALFactory integration with DI
           instance.persistence = {
             query: async (_sql: string, _params?: any[]) => [],
-            execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 })
+            execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
           } as any;
         } catch (error) {
           console.warn('⚠️ Persistence not available:', (error as Error).message);
@@ -393,6 +397,8 @@ export class ZenSwarm implements SwarmEventEmitter {
 
   /**
    * Detect available features (neural networks, SIMD, etc.)
+   *
+   * @param useSIMD
    */
   async detectFeatures(useSIMD = true): Promise<void> {
     try {
@@ -417,6 +423,8 @@ export class ZenSwarm implements SwarmEventEmitter {
 
   /**
    * Create a new swarm with neural capabilities
+   *
+   * @param config
    */
   async createSwarm(config: any): Promise<SwarmWrapper> {
     const {
@@ -520,6 +528,10 @@ export class ZenSwarm implements SwarmEventEmitter {
 
   /**
    * Legacy compatibility method for spawnAgent with neural capabilities
+   *
+   * @param name
+   * @param type
+   * @param options
    */
   async spawnAgent(name: string, type = 'researcher', options: any = {}): Promise<Agent> {
     // Create a default swarm if none exists
@@ -874,10 +886,11 @@ export class ZenSwarm implements SwarmEventEmitter {
 
 /**
  * Enhanced Swarm wrapper class with neural orchestration
+ *
+ * @example
  */
 export class SwarmWrapper {
   public id: string;
-  private wasmSwarm: any; // Add missing property declaration
   private ruvSwarm: ZenSwarm;
   public agents: Map<string, Agent>;
   private tasks: Map<string, TaskWrapper>;
@@ -932,6 +945,8 @@ export class SwarmWrapper {
 
 /**
  * Enhanced Task wrapper class with neural execution
+ *
+ * @example
  */
 export class TaskWrapper {
   public id: string;
@@ -971,6 +986,8 @@ export class TaskWrapper {
 export const NeuralSwarmUtils = {
   /**
    * Create a neural-enhanced swarm with pre-configured agents
+   *
+   * @param config
    */
   async createNeuralSwarm(config: any = {}): Promise<ZenSwarm> {
     const swarm = await ZenSwarm.initialize({
@@ -984,6 +1001,9 @@ export const NeuralSwarmUtils = {
 
   /**
    * Spawn a team of neural agents with different cognitive patterns
+   *
+   * @param swarm
+   * @param teamConfig
    */
   async spawnNeuralTeam(swarm: ZenSwarm, teamConfig: any = {}): Promise<Agent[]> {
     const {

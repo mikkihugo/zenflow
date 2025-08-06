@@ -5,7 +5,7 @@
  * Replaces loose 'any' types with strict, type-safe interfaces.
  * Following Google TypeScript Style Guide.
  *
- * @fileoverview Strict workflow type definitions
+ * @file Strict workflow type definitions
  */
 
 /**
@@ -64,6 +64,8 @@ export interface WorkflowParameterObject {
 
 /**
  * Document content structure
+ *
+ * @example
  */
 export interface DocumentContent {
   readonly id: string;
@@ -78,6 +80,8 @@ export interface DocumentContent {
 
 /**
  * Document metadata
+ *
+ * @example
  */
 export interface DocumentMetadata {
   readonly author?: string;
@@ -91,6 +95,8 @@ export interface DocumentMetadata {
 
 /**
  * Workflow step execution result
+ *
+ * @example
  */
 export interface StepExecutionResult {
   readonly success: boolean;
@@ -103,6 +109,8 @@ export interface StepExecutionResult {
 
 /**
  * Workflow result metadata
+ *
+ * @example
  */
 export interface WorkflowResultMetadata {
   readonly stepType: string;
@@ -113,6 +121,8 @@ export interface WorkflowResultMetadata {
 
 /**
  * Resource usage tracking
+ *
+ * @example
  */
 export interface ResourceUsage {
   readonly cpuTime: number;
@@ -123,6 +133,8 @@ export interface ResourceUsage {
 
 /**
  * Workflow error information
+ *
+ * @example
  */
 export interface WorkflowError {
   readonly code: string;
@@ -134,6 +146,8 @@ export interface WorkflowError {
 
 /**
  * Workflow error context
+ *
+ * @example
  */
 export interface WorkflowErrorContext {
   readonly stepIndex: number;
@@ -145,6 +159,8 @@ export interface WorkflowErrorContext {
 
 /**
  * Workflow data container
+ *
+ * @example
  */
 export interface WorkflowData {
   readonly [key: string]: WorkflowDataValue;
@@ -170,6 +186,8 @@ export interface WorkflowDataObject {
 
 /**
  * Workflow step definition with strict typing
+ *
+ * @example
  */
 export interface WorkflowStep {
   readonly type: string;
@@ -187,6 +205,8 @@ export interface WorkflowStep {
 
 /**
  * Workflow condition for conditional execution
+ *
+ * @example
  */
 export interface WorkflowCondition {
   readonly field: string;
@@ -197,6 +217,8 @@ export interface WorkflowCondition {
 
 /**
  * Workflow step validator
+ *
+ * @example
  */
 export interface WorkflowValidator {
   readonly type: 'required' | 'format' | 'range' | 'custom';
@@ -207,6 +229,8 @@ export interface WorkflowValidator {
 
 /**
  * Workflow definition with strict typing
+ *
+ * @example
  */
 export interface WorkflowDefinition {
   readonly name: string;
@@ -223,6 +247,8 @@ export interface WorkflowDefinition {
 
 /**
  * Workflow trigger configuration
+ *
+ * @example
  */
 export interface WorkflowTrigger {
   readonly event: WorkflowEvent;
@@ -246,6 +272,8 @@ export type WorkflowEvent =
 
 /**
  * Workflow variable definition
+ *
+ * @example
  */
 export interface WorkflowVariable {
   readonly name: string;
@@ -257,6 +285,8 @@ export interface WorkflowVariable {
 
 /**
  * Workflow execution context with strict typing
+ *
+ * @example
  */
 export interface WorkflowContext {
   readonly workspaceId: string;
@@ -272,6 +302,8 @@ export interface WorkflowContext {
 
 /**
  * Document registry for workflow context
+ *
+ * @example
  */
 export interface WorkflowDocumentRegistry {
   readonly [documentId: string]: DocumentContent;
@@ -279,6 +311,8 @@ export interface WorkflowDocumentRegistry {
 
 /**
  * Workflow execution environment
+ *
+ * @example
  */
 export interface WorkflowEnvironment {
   readonly type: 'development' | 'staging' | 'production';
@@ -290,6 +324,8 @@ export interface WorkflowEnvironment {
 
 /**
  * Workflow execution limits
+ *
+ * @example
  */
 export interface WorkflowLimits {
   readonly maxSteps: number;
@@ -301,6 +337,8 @@ export interface WorkflowLimits {
 
 /**
  * Workflow permissions
+ *
+ * @example
  */
 export interface WorkflowPermissions {
   readonly canReadDocuments: boolean;
@@ -312,6 +350,8 @@ export interface WorkflowPermissions {
 
 /**
  * Workflow execution state with strict typing
+ *
+ * @example
  */
 export interface WorkflowState {
   readonly id: string;
@@ -332,6 +372,8 @@ export interface WorkflowState {
 
 /**
  * Individual step execution state
+ *
+ * @example
  */
 export interface WorkflowStepState {
   readonly step: WorkflowStep;
@@ -345,6 +387,8 @@ export interface WorkflowStepState {
 
 /**
  * Workflow step results registry
+ *
+ * @example
  */
 export interface WorkflowStepResults {
   readonly [stepName: string]: StepExecutionResult;
@@ -352,6 +396,8 @@ export interface WorkflowStepResults {
 
 /**
  * Completed step information
+ *
+ * @example
  */
 export interface CompletedStepInfo {
   readonly index: number;
@@ -364,6 +410,8 @@ export interface CompletedStepInfo {
 
 /**
  * Workflow execution progress
+ *
+ * @example
  */
 export interface WorkflowProgress {
   readonly percentage: number;
@@ -375,6 +423,8 @@ export interface WorkflowProgress {
 
 /**
  * Workflow execution metrics
+ *
+ * @example
  */
 export interface WorkflowMetrics {
   readonly totalDuration: number;
@@ -387,6 +437,8 @@ export interface WorkflowMetrics {
 
 /**
  * Workflow execution options
+ *
+ * @example
  */
 export interface WorkflowExecutionOptions {
   readonly dryRun?: boolean;
@@ -400,6 +452,8 @@ export interface WorkflowExecutionOptions {
 
 /**
  * Retry policy configuration
+ *
+ * @example
  */
 export interface RetryPolicy {
   readonly maxAttempts: number;
@@ -411,6 +465,8 @@ export interface RetryPolicy {
 
 /**
  * Notification configuration
+ *
+ * @example
  */
 export interface NotificationConfig {
   readonly onComplete?: boolean;
@@ -421,6 +477,8 @@ export interface NotificationConfig {
 
 /**
  * Notification channel
+ *
+ * @example
  */
 export interface NotificationChannel {
   readonly type: 'email' | 'slack' | 'webhook' | 'console';
@@ -429,6 +487,8 @@ export interface NotificationChannel {
 
 /**
  * Notification channel configuration
+ *
+ * @example
  */
 export interface NotificationChannelConfig {
   readonly [key: string]: WorkflowDataValue;
@@ -436,6 +496,8 @@ export interface NotificationChannelConfig {
 
 /**
  * Logging configuration
+ *
+ * @example
  */
 export interface LoggingConfig {
   readonly level: 'debug' | 'info' | 'warn' | 'error';
@@ -446,6 +508,8 @@ export interface LoggingConfig {
 
 /**
  * Workflow engine configuration
+ *
+ * @example
  */
 export interface WorkflowEngineConfig {
   readonly workspaceRoot: string;
@@ -460,6 +524,8 @@ export interface WorkflowEngineConfig {
 
 /**
  * Storage backend configuration
+ *
+ * @example
  */
 export interface StorageBackend {
   readonly type: 'memory' | 'file' | 'database';
@@ -468,6 +534,8 @@ export interface StorageBackend {
 
 /**
  * Storage backend configuration
+ *
+ * @example
  */
 export interface StorageBackendConfig {
   readonly [key: string]: WorkflowDataValue;

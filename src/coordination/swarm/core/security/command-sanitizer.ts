@@ -10,6 +10,10 @@ class CommandSanitizer {
   /**
    * Safe command execution using spawn instead of execSync
    * Prevents command injection by using argument arrays
+   *
+   * @param command
+   * @param args
+   * @param options
    */
   static async safeExec(command: string, args: string[] = [], options: any = {}) {
     return new Promise((resolve, reject) => {
@@ -49,6 +53,8 @@ class CommandSanitizer {
 
   /**
    * Validate and sanitize issue numbers
+   *
+   * @param issueNumber
    */
   static validateIssueNumber(issueNumber) {
     const num = parseInt(issueNumber, 10);
@@ -60,6 +66,8 @@ class CommandSanitizer {
 
   /**
    * Validate and sanitize repository owner/name
+   *
+   * @param identifier
    */
   static validateRepoIdentifier(identifier) {
     // GitHub username/org name rules: alphanumeric, hyphens, max 39 chars
@@ -74,6 +82,8 @@ class CommandSanitizer {
 
   /**
    * Sanitize swarm ID to prevent path traversal and injection
+   *
+   * @param swarmId
    */
   static sanitizeSwarmId(swarmId) {
     // Allow only alphanumeric, hyphens, underscores, max 50 chars
@@ -88,6 +98,8 @@ class CommandSanitizer {
 
   /**
    * Sanitize labels to prevent injection
+   *
+   * @param label
    */
   static sanitizeLabel(label) {
     // GitHub label rules: no spaces, special chars limited
@@ -102,6 +114,8 @@ class CommandSanitizer {
 
   /**
    * Sanitize comment/message content
+   *
+   * @param message
    */
   static sanitizeMessage(message) {
     if (typeof message !== 'string') {
@@ -121,6 +135,8 @@ class CommandSanitizer {
 
   /**
    * Validate file paths to prevent directory traversal
+   *
+   * @param filePath
    */
   static validateFilePath(filePath) {
     const normalized = path.normalize(filePath);
@@ -142,6 +158,8 @@ class CommandSanitizer {
 
   /**
    * Sanitize branch names
+   *
+   * @param branchName
    */
   static sanitizeBranchName(branchName) {
     // Git branch name rules: no spaces, special chars, slashes at start/end
@@ -180,6 +198,9 @@ class CommandSanitizer {
 
   /**
    * Create safe GitHub CLI command arguments
+   *
+   * @param operation
+   * @param params
    */
   static createGitHubArgs(operation, params) {
     const validOperations = {
@@ -267,6 +288,9 @@ class CommandSanitizer {
 
   /**
    * Create safe git command arguments
+   *
+   * @param operation
+   * @param params
    */
   static createGitArgs(operation, params) {
     const validOperations = {

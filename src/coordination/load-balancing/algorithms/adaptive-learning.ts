@@ -80,6 +80,10 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Select agent using adaptive learning strategy
+   *
+   * @param task
+   * @param availableAgents
+   * @param metrics
    */
   public async selectAgent(
     task: Task,
@@ -116,6 +120,8 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Update algorithm configuration
+   *
+   * @param config
    */
   public async updateConfiguration(config: Record<string, any>): Promise<void> {
     this.config = { ...this.config, ...config };
@@ -165,6 +171,11 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Handle task completion for reinforcement learning
+   *
+   * @param agentId
+   * @param task
+   * @param duration
+   * @param success
    */
   public async onTaskComplete(
     agentId: string,
@@ -203,6 +214,9 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Handle agent failure
+   *
+   * @param agentId
+   * @param _error
    */
   public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
     // Find recent decisions involving this agent
@@ -247,6 +261,10 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Extract context features from current situation
+   *
+   * @param task
+   * @param availableAgents
+   * @param metrics
    */
   private extractContext(
     task: Task,
@@ -267,6 +285,8 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Detect patterns in historical data
+   *
+   * @param context
    */
   private detectPattern(context: PatternContext): LearningPattern | null {
     // Generate pattern key
@@ -285,6 +305,9 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Select strategy using epsilon-greedy or other methods
+   *
+   * @param _context
+   * @param detectedPattern
    */
   private async selectStrategy(
     _context: PatternContext,
@@ -390,6 +413,12 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Apply selected strategy to choose agent
+   *
+   * @param strategyName
+   * @param task
+   * @param availableAgents
+   * @param metrics
+   * @param _context
    */
   private async applyStrategy(
     strategyName: string,
@@ -447,6 +476,10 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Calculate reward for reinforcement learning
+   *
+   * @param duration
+   * @param success
+   * @param task
    */
   private calculateReward(duration: number, success: boolean, task: Task): number {
     let reward = 0;
@@ -474,6 +507,11 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Update strategy performance based on outcome
+   *
+   * @param strategyName
+   * @param duration
+   * @param success
+   * @param reward
    */
   private async updateStrategyPerformance(
     strategyName: string,
@@ -507,6 +545,11 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Record decision for learning
+   *
+   * @param task
+   * @param result
+   * @param strategy
+   * @param context
    */
   private recordDecision(
     task: Task,

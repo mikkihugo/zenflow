@@ -1,5 +1,5 @@
 /**
- * @fileoverview Unified Discovery CLI Command - The Complete Auto-Discovery System
+ * @file Unified Discovery CLI Command - The Complete Auto-Discovery System
  *
  * This is the FINAL PIECE that makes the entire auto-discovery system accessible to users.
  * Single command that orchestrates the complete pipeline:
@@ -9,9 +9,7 @@
 import { existsSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
-import { render } from 'ink';
 import meow from 'meow';
-import React from 'react';
 import { configManager } from '../../../config/config-manager';
 import { DomainDiscoveryBridge } from '../../../coordination/discovery/domain-discovery-bridge';
 import { ProgressiveConfidenceBuilder } from '../../../coordination/discovery/progressive-confidence-builder';
@@ -154,6 +152,8 @@ Examples
  *
  * This command orchestrates the entire pipeline from document analysis to running swarms.
  * It's the user-facing interface to the breakthrough auto-discovery system.
+ *
+ * @example
  */
 export class DiscoverCommand {
   private startTime: number = 0;
@@ -174,6 +174,9 @@ export class DiscoverCommand {
 
   /**
    * Main execution method - orchestrates the complete pipeline
+   *
+   * @param projectPath
+   * @param options
    */
   async execute(projectPath: string, options: DiscoverOptions): Promise<void> {
     const defaults = getDiscoveryDefaults();
@@ -222,8 +225,8 @@ export class DiscoverCommand {
       );
 
       // Override defaults with options
-      const topology = options.topology || defaults.DEFAULT_TOPOLOGY;
-      const skipValidation = options.skipValidation ?? defaults.SKIP_VALIDATION;
+      const _topology = options.topology || defaults.DEFAULT_TOPOLOGY;
+      const _skipValidation = options.skipValidation ?? defaults.SKIP_VALIDATION;
       const researchThreshold = defaults.RESEARCH_THRESHOLD;
 
       // Validate confidence range
@@ -626,6 +629,9 @@ export class DiscoverCommand {
 
   /**
    * Execute interactive TUI workflow
+   *
+   * @param projectPath
+   * @param options
    */
   private async executeInteractive(projectPath: string, options: DiscoverOptions): Promise<void> {
     try {
@@ -674,6 +680,9 @@ export class DiscoverCommand {
 
   /**
    * Save interactive results to file
+   *
+   * @param results
+   * @param outputPath
    */
   private async saveInteractiveResults(results: any, outputPath: string): Promise<void> {
     try {
@@ -720,6 +729,8 @@ export class DiscoverCommand {
 
   /**
    * Generate markdown report for interactive results
+   *
+   * @param results
    */
   private generateInteractiveMarkdownReport(results: any): string {
     return `# Interactive Discovery Results
@@ -770,6 +781,8 @@ ${results.configurations
 
   /**
    * Show phase header with progress
+   *
+   * @param _title
    */
   private async showPhase(_title: string): Promise<void> {
     const _elapsed = ((performance.now() - this.startTime) / 1000).toFixed(1);
@@ -780,6 +793,9 @@ ${results.configurations
 
   /**
    * Show comprehensive results
+   *
+   * @param confidenceResult
+   * @param options
    */
   private async showResults(confidenceResult: any, options: DiscoverOptions): Promise<void> {
     const duration = (performance.now() - this.startTime) / 1000;
@@ -855,6 +871,8 @@ ${results.configurations
 
   /**
    * Show results in console format
+   *
+   * @param results
    */
   private async showConsoleResults(results: any): Promise<void> {
     const _summary = results.summary;
@@ -877,6 +895,8 @@ ${results.configurations
 
   /**
    * Show results in markdown format
+   *
+   * @param results
    */
   private async showMarkdownResults(results: any): Promise<void> {
     const _markdown = await this.generateMarkdownReport(results);
@@ -884,6 +904,8 @@ ${results.configurations
 
   /**
    * Simulate basic domain discovery as fallback
+   *
+   * @param projectPath
    */
   private async simulateBasicDomainDiscovery(projectPath: string): Promise<any[]> {
     const fs = await import('node:fs');
@@ -975,6 +997,8 @@ ${results.configurations
 
   /**
    * Get files recursively from directory
+   *
+   * @param dirPath
    */
   private async getFilesRecursively(dirPath: string): Promise<string[]> {
     const fs = await import('node:fs');
@@ -999,7 +1023,7 @@ ${results.configurations
           }
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // Ignore directory access errors
     }
 

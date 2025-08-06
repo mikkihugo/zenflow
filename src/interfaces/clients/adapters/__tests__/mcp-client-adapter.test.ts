@@ -1,22 +1,21 @@
 /**
  * MCP Client Adapter Tests
- * 
+ *
  * Comprehensive test suite for UACL MCP client adapter
  * Tests both stdio and HTTP protocol implementations
  */
 
 import { EventEmitter } from 'node:events';
-import { 
-  MCPClientAdapter, 
-  MCPClientFactory, 
+import {
   createMCPConfigFromLegacy,
-  type MCPClientConfig 
+  MCPClientAdapter,
+  type MCPClientConfig,
+  MCPClientFactory,
 } from '../mcp-client-adapter.js';
-import type { IClient, ClientStatus, ClientMetrics } from '../../core/interfaces.js';
 
 // Mock child_process for testing
 jest.mock('node:child_process', () => ({
-  spawn: jest.fn()
+  spawn: jest.fn(),
 }));
 
 // Mock fetch for HTTP testing
@@ -29,13 +28,13 @@ describe('MCPClientAdapter', () => {
   beforeEach(() => {
     // Reset mocks
     jest.clearAllMocks();
-    
+
     // Mock process
     mockProcess = new EventEmitter();
     mockProcess.stdin = {
-      write: jest.fn((data, callback) => {
+      write: jest.fn((_data, callback) => {
         if (callback) callback();
-      })
+      }),
     };
     mockProcess.stdout = new EventEmitter();
     mockProcess.stderr = new EventEmitter();
@@ -56,7 +55,7 @@ describe('MCPClientAdapter', () => {
         command: ['node', 'test.js'],
         authentication: { type: 'none' },
         tools: { timeout: 10000, retries: 2, discovery: true },
-        server: { name: 'test', version: '1.0.0' }
+        server: { name: 'test', version: '1.0.0' },
       };
 
       adapter = new MCPClientAdapter(config);
@@ -87,7 +86,7 @@ describe('MCPClientAdapter', () => {
         command: ['node', 'test.js'],
         authentication: { type: 'none' },
         tools: { timeout: 10000, retries: 2, discovery: true },
-        server: { name: 'test', version: '1.0.0' }
+        server: { name: 'test', version: '1.0.0' },
       };
 
       adapter = new MCPClientAdapter(config);
@@ -106,7 +105,7 @@ describe('MCPClientAdapter', () => {
         command: ['node', 'test-server.js'],
         authentication: { type: 'none' },
         tools: { timeout: 10000, retries: 2, discovery: true },
-        server: { name: 'test-server', version: '1.0.0' }
+        server: { name: 'test-server', version: '1.0.0' },
       };
 
       adapter = new MCPClientAdapter(config);
@@ -117,11 +116,14 @@ describe('MCPClientAdapter', () => {
 
       // Simulate successful initialization response
       setTimeout(() => {
-        mockProcess.stdout.emit('data', JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          result: { protocolVersion: '2024-11-05' }
-        }) + '\n');
+        mockProcess.stdout.emit(
+          'data',
+          `${JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            result: { protocolVersion: '2024-11-05' },
+          })}\n`
+        );
       }, 10);
 
       await connectPromise;
@@ -143,13 +145,13 @@ describe('MCPClientAdapter', () => {
         result: {
           tools: [
             { name: 'test-tool', description: 'A test tool' },
-            { name: 'another-tool', description: 'Another test tool' }
-          ]
-        }
+            { name: 'another-tool', description: 'Another test tool' },
+          ],
+        },
       };
 
       setTimeout(() => {
-        mockProcess.stdout.emit('data', JSON.stringify(toolsResponse) + '\n');
+        mockProcess.stdout.emit('data', `${JSON.stringify(toolsResponse)}\n`);
       }, 10);
 
       const result = await adapter.get('/tools');
@@ -162,29 +164,35 @@ describe('MCPClientAdapter', () => {
 
       // Mock tool discovery
       setTimeout(() => {
-        mockProcess.stdout.emit('data', JSON.stringify({
-          jsonrpc: '2.0',
-          id: 2,
-          result: {
-            tools: [{ name: 'test-tool', description: 'A test tool' }]
-          }
-        }) + '\n');
+        mockProcess.stdout.emit(
+          'data',
+          `${JSON.stringify({
+            jsonrpc: '2.0',
+            id: 2,
+            result: {
+              tools: [{ name: 'test-tool', description: 'A test tool' }],
+            },
+          })}\n`
+        );
       }, 10);
 
       // Wait for tools discovery
-      await new Promise(resolve => setTimeout(resolve, 20));
+      await new Promise((resolve) => setTimeout(resolve, 20));
 
       // Mock tool execution response
       const executionPromise = adapter.post('test-tool', { param: 'value' });
 
       setTimeout(() => {
-        mockProcess.stdout.emit('data', JSON.stringify({
-          jsonrpc: '2.0',
-          id: 3,
-          result: {
-            content: [{ type: 'text', text: 'Tool executed successfully' }]
-          }
-        }) + '\n');
+        mockProcess.stdout.emit(
+          'data',
+          `${JSON.stringify({
+            jsonrpc: '2.0',
+            id: 3,
+            result: {
+              content: [{ type: 'text', text: 'Tool executed successfully' }],
+            },
+          })}\n`
+        );
       }, 10);
 
       const result = await executionPromise;
@@ -206,9 +214,9 @@ describe('MCPClientAdapter', () => {
 
     it('should disconnect properly', async () => {
       await adapter.connect();
-      
+
       const disconnectPromise = adapter.disconnect();
-      
+
       // Simulate process exit
       setTimeout(() => {
         mockProcess.killed = true;
@@ -216,7 +224,7 @@ describe('MCPClientAdapter', () => {
       }, 10);
 
       await disconnectPromise;
-      
+
       expect(adapter.isConnected()).toBe(false);
       expect(mockProcess.kill).toHaveBeenCalled();
     });
@@ -231,7 +239,7 @@ describe('MCPClientAdapter', () => {
         url: 'https://api.example.com/mcp',
         authentication: { type: 'bearer', credentials: 'test-token' },
         tools: { timeout: 30000, retries: 3, discovery: true },
-        server: { name: 'remote-server', version: '2.0.0' }
+        server: { name: 'remote-server', version: '2.0.0' },
       };
 
       adapter = new MCPClientAdapter(config);
@@ -241,7 +249,7 @@ describe('MCPClientAdapter', () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         status: 200,
-        statusText: 'OK'
+        statusText: 'OK',
       });
 
       await adapter.connect();
@@ -252,8 +260,8 @@ describe('MCPClientAdapter', () => {
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({
-            'Authorization': 'Bearer test-token'
-          })
+            Authorization: 'Bearer test-token',
+          }),
         })
       );
     });
@@ -263,7 +271,7 @@ describe('MCPClientAdapter', () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         status: 200,
-        statusText: 'OK'
+        statusText: 'OK',
       });
 
       await adapter.connect();
@@ -273,22 +281,22 @@ describe('MCPClientAdapter', () => {
         ok: true,
         json: async () => ({
           result: {
-            tools: [{ name: 'http-tool', description: 'HTTP test tool' }]
-          }
-        })
+            tools: [{ name: 'http-tool', description: 'HTTP test tool' }],
+          },
+        }),
       });
 
       // Wait for tool discovery
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       // Mock tool execution
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           result: {
-            content: [{ type: 'text', text: 'HTTP tool executed' }]
-          }
-        })
+            content: [{ type: 'text', text: 'HTTP tool executed' }],
+          },
+        }),
       });
 
       const result = await adapter.post('http-tool', { data: 'test' });
@@ -301,7 +309,7 @@ describe('MCPClientAdapter', () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
         status: 500,
-        statusText: 'Internal Server Error'
+        statusText: 'Internal Server Error',
       });
 
       await expect(adapter.connect()).rejects.toThrow('HTTP connection failed');
@@ -317,7 +325,7 @@ describe('MCPClientAdapter', () => {
         command: ['node', 'test.js'],
         authentication: { type: 'none' },
         tools: { timeout: 10000, retries: 2, discovery: true },
-        server: { name: 'test', version: '1.0.0' }
+        server: { name: 'test', version: '1.0.0' },
       };
 
       adapter = new MCPClientAdapter(config);
@@ -327,11 +335,14 @@ describe('MCPClientAdapter', () => {
     it('should perform health checks', async () => {
       // Mock ping response
       setTimeout(() => {
-        mockProcess.stdout.emit('data', JSON.stringify({
-          jsonrpc: '2.0',
-          id: expect.any(Number),
-          result: {}
-        }) + '\n');
+        mockProcess.stdout.emit(
+          'data',
+          `${JSON.stringify({
+            jsonrpc: '2.0',
+            id: expect.any(Number),
+            result: {},
+          })}\n`
+        );
       }, 10);
 
       const health = await adapter.healthCheck();
@@ -342,7 +353,7 @@ describe('MCPClientAdapter', () => {
         lastCheck: expect.any(Date),
         responseTime: expect.any(Number),
         errorRate: expect.any(Number),
-        uptime: expect.any(Number)
+        uptime: expect.any(Number),
       });
     });
 
@@ -358,7 +369,7 @@ describe('MCPClientAdapter', () => {
         p95Latency: expect.any(Number),
         p99Latency: expect.any(Number),
         throughput: expect.any(Number),
-        timestamp: expect.any(Date)
+        timestamp: expect.any(Date),
       });
     });
   });
@@ -373,7 +384,7 @@ describe('MCPClientAdapter', () => {
         timeout: 10000,
         authentication: { type: 'none' },
         tools: { timeout: 10000, retries: 2, discovery: true },
-        server: { name: 'test', version: '1.0.0' }
+        server: { name: 'test', version: '1.0.0' },
       };
 
       adapter = new MCPClientAdapter(config);
@@ -392,7 +403,7 @@ describe('MCPClientAdapter', () => {
         protocol: 'invalid' as any,
         authentication: { type: 'none' as const },
         tools: { timeout: 10000, retries: 2, discovery: true },
-        server: { name: 'test', version: '1.0.0' }
+        server: { name: 'test', version: '1.0.0' },
       };
 
       adapter = new MCPClientAdapter(config);
@@ -408,7 +419,7 @@ describe('MCPClientAdapter', () => {
         command: ['node', 'test.js'],
         authentication: { type: 'none' },
         tools: { timeout: 10000, retries: 2, discovery: true },
-        server: { name: 'test', version: '1.0.0' }
+        server: { name: 'test', version: '1.0.0' },
       };
 
       adapter = new MCPClientAdapter(config);
@@ -451,7 +462,7 @@ describe('MCPClientFactory', () => {
       command: ['node', 'test.js'],
       authentication: { type: 'none' },
       tools: { timeout: 10000, retries: 2, discovery: true },
-      server: { name: 'test', version: '1.0.0' }
+      server: { name: 'test', version: '1.0.0' },
     };
 
     const client = await factory.create(config);
@@ -471,7 +482,7 @@ describe('MCPClientFactory', () => {
         command: ['node', 'test1.js'],
         authentication: { type: 'none' },
         tools: { timeout: 10000, retries: 2, discovery: true },
-        server: { name: 'test1', version: '1.0.0' }
+        server: { name: 'test1', version: '1.0.0' },
       },
       {
         name: 'client-2',
@@ -480,8 +491,8 @@ describe('MCPClientFactory', () => {
         command: ['node', 'test2.js'],
         authentication: { type: 'none' },
         tools: { timeout: 10000, retries: 2, discovery: true },
-        server: { name: 'test2', version: '1.0.0' }
-      }
+        server: { name: 'test2', version: '1.0.0' },
+      },
     ];
 
     const clients = await factory.createMultiple(configs);
@@ -498,7 +509,7 @@ describe('MCPClientFactory', () => {
       command: ['node', 'test.js'],
       authentication: { type: 'none' },
       tools: { timeout: 10000, retries: 2, discovery: true },
-      server: { name: 'test', version: '1.0.0' }
+      server: { name: 'test', version: '1.0.0' },
     };
 
     await factory.create(config);
@@ -520,7 +531,7 @@ describe('MCPClientFactory', () => {
       command: ['node', 'test.js'],
       authentication: { type: 'none' },
       tools: { timeout: 10000, retries: 2, discovery: true },
-      server: { name: 'test', version: '1.0.0' }
+      server: { name: 'test', version: '1.0.0' },
     };
 
     await factory.create(config);
@@ -538,7 +549,7 @@ describe('createMCPConfigFromLegacy', () => {
       url: 'https://api.example.com/mcp',
       type: 'http' as const,
       timeout: 30000,
-      capabilities: ['research', 'analysis']
+      capabilities: ['research', 'analysis'],
     };
 
     const uaclConfig = createMCPConfigFromLegacy('test-client', legacyConfig);
@@ -552,8 +563,8 @@ describe('createMCPConfigFromLegacy', () => {
       server: {
         name: 'test-client',
         version: '1.0.0',
-        capabilities: ['research', 'analysis']
-      }
+        capabilities: ['research', 'analysis'],
+      },
     });
   });
 
@@ -561,7 +572,7 @@ describe('createMCPConfigFromLegacy', () => {
     const legacyConfig = {
       command: ['node', 'server.js'],
       timeout: 15000,
-      capabilities: ['coordination', 'swarm']
+      capabilities: ['coordination', 'swarm'],
     };
 
     const uaclConfig = createMCPConfigFromLegacy('stdio-client', legacyConfig);
@@ -574,8 +585,8 @@ describe('createMCPConfigFromLegacy', () => {
       server: {
         name: 'stdio-client',
         version: '1.0.0',
-        capabilities: ['coordination', 'swarm']
-      }
+        capabilities: ['coordination', 'swarm'],
+      },
     });
   });
 
@@ -592,8 +603,8 @@ describe('createMCPConfigFromLegacy', () => {
       tools: {
         timeout: 30000,
         retries: 3,
-        discovery: true
-      }
+        discovery: true,
+      },
     });
   });
 });

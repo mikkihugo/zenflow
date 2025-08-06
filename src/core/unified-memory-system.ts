@@ -1,6 +1,6 @@
 /**
  * Unified Memory System Stub
- * 
+ *
  * Simple stub implementation for compatibility with existing test files
  */
 
@@ -10,7 +10,6 @@ export interface UnifiedMemoryConfig {
 }
 
 export class UnifiedMemorySystem {
-  private config: UnifiedMemoryConfig;
   private storage: Map<string, any> = new Map();
 
   constructor(config: UnifiedMemoryConfig = {}) {

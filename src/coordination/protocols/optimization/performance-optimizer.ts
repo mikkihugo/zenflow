@@ -219,6 +219,8 @@ export interface LoadPrediction {
 
 /**
  * Advanced Performance Optimizer with ML-based adaptation
+ *
+ * @example
  */
 export class PerformanceOptimizer extends EventEmitter {
   private batchProcessor: AdaptiveBatchProcessor;
@@ -286,6 +288,9 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Process items with adaptive batching
+   *
+   * @param items
+   * @param processor
    */
   async processBatch<T>(items: T[], processor: (batch: T[]) => Promise<void>): Promise<void> {
     return await this.batchProcessor.process(items, processor);
@@ -300,6 +305,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Release connection back to pool
+   *
+   * @param connection
    */
   releaseConnection(connection: PooledConnection): void {
     this.connectionPool.release(connection);
@@ -307,6 +314,12 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Cache data with intelligent policies
+   *
+   * @param key
+   * @param value
+   * @param options
+   * @param options.ttl
+   * @param options.compress
    */
   async cacheData<T>(
     key: string,
@@ -318,6 +331,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Retrieve from cache with automatic optimization
+   *
+   * @param key
    */
   async getCached<T>(key: string): Promise<T | undefined> {
     return await this.cache.get<T>(key);
@@ -325,6 +340,9 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Deduplicate operations
+   *
+   * @param operation
+   * @param key
    */
   async deduplicate<T>(operation: () => Promise<T>, key: string): Promise<T> {
     return await this.cache.deduplicate(operation, key);
@@ -346,6 +364,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Apply optimization settings
+   *
+   * @param optimizations
    */
   async applyOptimizations(optimizations: OptimizationAction[]): Promise<void> {
     for (const optimization of optimizations) {
@@ -355,6 +375,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Predict future load and performance
+   *
+   * @param horizon
    */
   async predictLoad(horizon: number): Promise<LoadPrediction> {
     return await this.predictor.predictLoad(this.metrics, horizon);

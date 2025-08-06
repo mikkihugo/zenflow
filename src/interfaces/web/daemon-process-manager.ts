@@ -29,6 +29,8 @@ export interface ProcessInfo {
 
 /**
  * Manages daemon processes and background operations
+ *
+ * @example
  */
 export class DaemonProcessManager {
   private logger = createLogger('Daemon');
@@ -46,6 +48,9 @@ export class DaemonProcessManager {
 
   /**
    * Start process in daemon mode
+   *
+   * @param command
+   * @param args
    */
   async startDaemon(command: string, args: string[] = []): Promise<ProcessInfo> {
     // Check if already running
@@ -105,6 +110,8 @@ export class DaemonProcessManager {
 
   /**
    * Stop the daemon process
+   *
+   * @param signal
    */
   async stopDaemon(signal: NodeJS.Signals = 'SIGTERM'): Promise<boolean> {
     const processInfo = await this.getRunningProcess();
@@ -142,6 +149,9 @@ export class DaemonProcessManager {
 
   /**
    * Restart the daemon process
+   *
+   * @param command
+   * @param args
    */
   async restartDaemon(command: string, args: string[] = []): Promise<ProcessInfo> {
     this.logger.info('Restarting daemon process...');
@@ -240,6 +250,8 @@ export class DaemonProcessManager {
 
   /**
    * Read daemon logs
+   *
+   * @param maxLines
    */
   async readLogs(maxLines: number = 100): Promise<string[]> {
     if (!existsSync(this.config.logFile)) {
@@ -258,6 +270,8 @@ export class DaemonProcessManager {
 
   /**
    * Check if a process is running by PID
+   *
+   * @param pid
    */
   private isProcessRunning(pid: number): boolean {
     try {
@@ -271,6 +285,9 @@ export class DaemonProcessManager {
 
   /**
    * Wait for process to stop
+   *
+   * @param pid
+   * @param timeout
    */
   private async waitForProcessStop(pid: number, timeout: number): Promise<void> {
     const startTime = Date.now();
@@ -316,6 +333,8 @@ export class DaemonProcessManager {
 
   /**
    * Handle process errors
+   *
+   * @param error
    */
   private async handleProcessError(error: Error): Promise<void> {
     const errorLog = {

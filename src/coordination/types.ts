@@ -1,5 +1,5 @@
 /**
- * @fileoverview Shared types and interfaces for the coordination module.
+ * @file Shared types and interfaces for the coordination module.
  */
 
 export interface Agent {

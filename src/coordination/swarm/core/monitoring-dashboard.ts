@@ -36,7 +36,6 @@ export class MonitoringDashboard extends EventEmitter {
   private healthMonitor: any;
   private recoveryWorkflows: any;
   private connectionManager: any;
-  private mcpTools: any;
 
   // Aggregation timer
   private aggregationTimer: NodeJS.Timeout | null;
@@ -114,6 +113,8 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Set integration points
+   *
+   * @param healthMonitor
    */
   setHealthMonitor(healthMonitor) {
     this.healthMonitor = healthMonitor;
@@ -175,6 +176,8 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Record health metric
+   *
+   * @param healthResult
    */
   recordHealthMetric(healthResult) {
     const timestamp = new Date();
@@ -207,6 +210,8 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Record alert
+   *
+   * @param alert
    */
   recordAlert(alert) {
     const timestamp = new Date();
@@ -233,6 +238,9 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Record recovery metric
+   *
+   * @param eventType
+   * @param event
    */
   recordRecoveryMetric(eventType, event) {
     const timestamp = new Date();
@@ -258,6 +266,9 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Record connection metric
+   *
+   * @param eventType
+   * @param event
    */
   recordConnectionMetric(eventType, event) {
     const timestamp = new Date();
@@ -281,6 +292,9 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Add metric to storage
+   *
+   * @param key
+   * @param metric
    */
   addMetric(key, metric) {
     if (!this.metrics.has(key)) {
@@ -370,6 +384,9 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Aggregate health metrics
+   *
+   * @param aggregations
+   * @param timestamp
    */
   aggregateHealthMetrics(aggregations, timestamp) {
     const healthMetrics = {
@@ -419,6 +436,9 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Aggregate recovery metrics
+   *
+   * @param aggregations
+   * @param timestamp
    */
   aggregateRecoveryMetrics(aggregations, timestamp) {
     const recoveryMetrics = {
@@ -474,6 +494,9 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Aggregate connection metrics
+   *
+   * @param aggregations
+   * @param timestamp
    */
   aggregateConnectionMetrics(aggregations, timestamp) {
     const connectionMetrics = {
@@ -517,6 +540,9 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Aggregate system metrics
+   *
+   * @param aggregations
+   * @param timestamp
    */
   aggregateSystemMetrics(aggregations, timestamp) {
     const systemMetrics: any = {
@@ -544,6 +570,9 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Update trend analysis
+   *
+   * @param aggregations
+   * @param timestamp
    */
   updateTrends(aggregations, timestamp) {
     for (const [category, data] of aggregations) {
@@ -622,6 +651,9 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Record system metric
+   *
+   * @param name
+   * @param data
    */
   recordSystemMetric(name, data) {
     const timestamp = new Date();
@@ -638,6 +670,9 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Stream update to real-time clients
+   *
+   * @param type
+   * @param data
    */
   streamUpdate(type, data) {
     const update = {
@@ -667,6 +702,8 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Add streaming client
+   *
+   * @param client
    */
   addStreamingClient(client) {
     this.streamingClients.add(client);
@@ -699,6 +736,8 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Get dashboard data in specified format
+   *
+   * @param format
    */
   exportDashboardData(format = 'json') {
     const data = {
@@ -979,6 +1018,8 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Format data for Prometheus
+   *
+   * @param data
    */
   formatForPrometheus(data) {
     const metrics = [];
@@ -1009,6 +1050,8 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Format data for Grafana
+   *
+   * @param data
    */
   formatForGrafana(data) {
     return {
@@ -1040,6 +1083,9 @@ export class MonitoringDashboard extends EventEmitter {
 
   /**
    * Acknowledge alert
+   *
+   * @param alertId
+   * @param acknowledgedBy
    */
   acknowledgeAlert(alertId, acknowledgedBy = 'system') {
     const alert = this.alerts.get(alertId);

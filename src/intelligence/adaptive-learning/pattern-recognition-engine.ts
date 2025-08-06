@@ -125,6 +125,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   /**
    * Analyze execution patterns from execution data
+   *
+   * @param data
    */
   async analyzeExecutionPatterns(data: ExecutionData[]): Promise<PatternAnalysis> {
     // Convert ExecutionData to ExecutionTrace format for compatibility
@@ -169,6 +171,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   /**
    * Classify task completion patterns
+   *
+   * @param task
    */
   classifyTaskCompletion(task: TaskResult): TaskCompletionPattern {
     // Find similar task completions from historical data
@@ -232,6 +236,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   /**
    * Detect communication patterns from messages
+   *
+   * @param messages
    */
   detectCommunicationPatterns(messages: Message[]): ICommunicationPattern[] {
     const patterns: ICommunicationPattern[] = [];
@@ -278,6 +284,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   /**
    * Identify resource usage patterns
+   *
+   * @param usage
    */
   identifyResourcePatterns(usage: ResourceUsage[]): ResourcePattern[] {
     const patterns: ResourcePattern[] = [];
@@ -316,6 +324,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   /**
    * Predict failures based on failure patterns
+   *
+   * @param patterns
    */
   predictFailures(patterns: IFailurePattern[]): FailurePrediction[] {
     const predictions: FailurePrediction[] = [];
@@ -371,6 +381,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   /**
    * Record execution trace for pattern analysis
+   *
+   * @param trace
    */
   recordTrace(trace: ExecutionTrace): void {
     this.traces.push(trace);
@@ -559,6 +571,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   /**
    * Get patterns by type and confidence
+   *
+   * @param type
+   * @param minConfidence
    */
   getPatterns(type?: string, minConfidence?: number): ExecutionPattern[] {
     let patterns = Array.from(this.patterns.values());
@@ -576,6 +591,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   /**
    * Predict likely patterns for given context
+   *
+   * @param context
    */
   predictPatterns(context: ExecutionContext): ExecutionPattern[] {
     const relevantPatterns = Array.from(this.patterns.values())
@@ -587,6 +604,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   /**
    * Get communication patterns for agents
+   *
+   * @param agentId
    */
   getCommunicationPatterns(agentId?: string): CommunicationPattern[] {
     let patterns = Array.from(this.communicationPatterns.values());

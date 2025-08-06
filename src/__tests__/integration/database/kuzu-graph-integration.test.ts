@@ -19,7 +19,7 @@ const mockLogger = {
 };
 
 // Mock config
-const mockConfig = {
+const _mockConfig = {
   get: jest.fn(),
   set: jest.fn(),
   has: jest.fn(),

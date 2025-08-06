@@ -37,7 +37,6 @@
  *   confidence: 0.85
  * });
  * ```
- *
  * @features
  * - **Cognitive Patterns**: 12 specialized patterns for different thinking modes
  * - **WASM Acceleration**: 5-20x performance improvement for neural operations
@@ -46,7 +45,6 @@
  * - **Pattern Recognition**: Advanced pattern detection and classification
  * - **Real-time Inference**: Sub-100ms inference for code analysis
  * - **Distributed Training**: Multi-agent neural network training coordination
- *
  * @patterns
  * - **Convergent**: Focused problem-solving and optimization (260MB baseline)
  * - **Divergent**: Creative thinking and idea generation (275MB baseline)
@@ -60,27 +58,23 @@
  * - **CNN**: Visual and spatial pattern recognition (285MB baseline)
  * - **GRU**: Efficient sequence modeling (270MB baseline)
  * - **Autoencoder**: Data compression and feature extraction (265MB baseline)
- *
  * @performance
  * - **Inference Speed**: 10-50ms for standard patterns, 50-200ms for complex models
  * - **Training Throughput**: 1000+ samples/second with WASM acceleration
  * - **Memory Efficiency**: 95%+ memory utilization with adaptive pooling
  * - **Model Accuracy**: 85-95% depending on pattern complexity and training data
  * - **Concurrent Models**: Support for 10+ active neural networks simultaneously
- *
  * @optimization
  * - **Memory Pooling**: Shared memory allocation across pattern networks
  * - **Lazy Loading**: On-demand model loading to minimize resource usage
  * - **Progressive Training**: Incremental learning with checkpoint management
  * - **Batch Processing**: Optimized batch inference for multiple predictions
  * - **Model Quantization**: Reduced precision for deployment optimization
- *
  * @integration
  * - **Swarm Coordination**: Neural-powered task assignment and optimization
  * - **Code Analysis**: Real-time code quality and performance analysis
  * - **Performance Monitoring**: Predictive system health and anomaly detection
  * - **Load Balancing**: ML-based intelligent agent assignment
- *
  * @since 2.0.0-alpha.73
  * @author Claude Zen Flow Team
  */
@@ -173,14 +167,18 @@ export interface WeightsExport {
 /**
  * Neural CLI System
  * Provides comprehensive neural network management capabilities
+ *
+ * @example
  */
 export class NeuralCLI {
   private ruvSwarm: any = null;
 
   /**
    * Initialize the neural system
+   *
+   * @param config
    */
-  async initialize(config: NeuralConfig = {}): Promise<any> {
+  async initialize(_config: NeuralConfig = {}): Promise<any> {
     if (!this.ruvSwarm) {
       // TODO: Replace with proper ZenSwarm import after coordination restructure
       // const { ZenSwarm } = await import('../../coordination/swarm/core/index-complete.js');
@@ -197,6 +195,8 @@ export class NeuralCLI {
 
   /**
    * Get neural system status
+   *
+   * @param _args
    */
   async status(_args: string[] = []): Promise<void> {
     const rs = await this.initialize();
@@ -264,6 +264,8 @@ export class NeuralCLI {
 
   /**
    * Train neural models
+   *
+   * @param args
    */
   async train(args: string[] = []): Promise<void> {
     const rs = await this.initialize();
@@ -316,6 +318,8 @@ export class NeuralCLI {
 
   /**
    * Analyze neural patterns
+   *
+   * @param args
    */
   async patterns(args: string[] = []): Promise<void> {
     const rs = await this.initialize();
@@ -366,6 +370,8 @@ export class NeuralCLI {
 
   /**
    * Export neural weights
+   *
+   * @param args
    */
   async export(args: string[] = []): Promise<void> {
     const rs = await this.initialize();
@@ -421,6 +427,8 @@ export class NeuralCLI {
 
   /**
    * Calculate convergence rate from training results
+   *
+   * @param trainingResults
    */
   calculateConvergenceRate(trainingResults: Array<{ loss: number; accuracy: number }>): string {
     if (trainingResults.length < 3) {
@@ -443,6 +451,8 @@ export class NeuralCLI {
 
   /**
    * Calculate variance of values
+   *
+   * @param values
    */
   private calculateVariance(values: number[]): number {
     if (values.length === 0) {
@@ -454,6 +464,8 @@ export class NeuralCLI {
 
   /**
    * Calculate trend (positive = improving)
+   *
+   * @param values
    */
   private calculateTrend(values: number[]): number {
     if (values.length < 2) {
@@ -597,6 +609,8 @@ export class NeuralCLI {
 
   /**
    * Get memory usage for specific pattern type
+   *
+   * @param patternType
    */
   private async getPatternMemoryUsage(patternType: PatternType): Promise<number> {
     const config = PATTERN_MEMORY_CONFIG[patternType] || PATTERN_MEMORY_CONFIG.convergent;
@@ -672,6 +686,8 @@ export class NeuralCLI {
 
   /**
    * Display all patterns
+   *
+   * @param patterns
    */
   private displayAllPatterns(patterns: Record<string, PatternData>): void {
     const cognitivePatterns = [
@@ -697,6 +713,9 @@ export class NeuralCLI {
 
   /**
    * Display specific pattern
+   *
+   * @param patternType
+   * @param patterns
    */
   private displaySpecificPattern(patternType: string, patterns: Record<string, PatternData>): void {
     const patternData = patterns[patternType.toLowerCase()];
@@ -712,6 +731,9 @@ export class NeuralCLI {
 
   /**
    * Parse command line argument
+   *
+   * @param args
+   * @param flag
    */
   private getArg(args: string[], flag: string): string | null {
     const index = args.indexOf(flag);

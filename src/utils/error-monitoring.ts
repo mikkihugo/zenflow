@@ -68,6 +68,9 @@ export class ErrorMonitoring extends EventEmitter {
 
   /**
    * Record an error
+   *
+   * @param error
+   * @param context
    */
   recordError(error: Error, context: Partial<ErrorContext> = {}): void {
     const errorContext: ErrorContext = {
@@ -100,6 +103,8 @@ export class ErrorMonitoring extends EventEmitter {
 
   /**
    * Add error pattern monitoring
+   *
+   * @param pattern
    */
   addPattern(pattern: ErrorPattern): void {
     this.patterns.set(pattern.id, pattern);
@@ -108,6 +113,8 @@ export class ErrorMonitoring extends EventEmitter {
 
   /**
    * Remove error pattern
+   *
+   * @param patternId
    */
   removePattern(patternId: string): void {
     this.patterns.delete(patternId);
@@ -123,6 +130,9 @@ export class ErrorMonitoring extends EventEmitter {
 
   /**
    * Get errors for a specific component
+   *
+   * @param component
+   * @param since
    */
   getComponentErrors(component: string, since?: Date): ErrorContext[] {
     const allErrors: ErrorContext[] = [];
@@ -140,6 +150,9 @@ export class ErrorMonitoring extends EventEmitter {
 
   /**
    * Get error trends over time
+   *
+   * @param component
+   * @param timeWindow
    */
   getErrorTrends(
     component?: string,
@@ -179,6 +192,8 @@ export class ErrorMonitoring extends EventEmitter {
 
   /**
    * Clear old errors
+   *
+   * @param maxAge
    */
   clearOldErrors(maxAge: number = 7 * 24 * 60 * 60 * 1000): void {
     const cutoff = Date.now() - maxAge;
@@ -203,6 +218,8 @@ export class ErrorMonitoring extends EventEmitter {
 
   /**
    * Generate error report
+   *
+   * @param timeWindow
    */
   generateReport(timeWindow: number = 24 * 60 * 60 * 1000): {
     summary: ErrorMetrics;

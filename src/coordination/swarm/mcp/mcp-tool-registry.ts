@@ -9,6 +9,8 @@
  * This replaces separate coordination/mcp and swarm/mcp servers with one unified server.
  */
 
+import { createLogger } from '../../../interfaces/mcp/mcp-logger';
+import { BaseZenSwarm as ZenSwarm } from '../index';
 // Removed SwarmPersistencePooled - using DAL Factory approach instead
 import {
   AgentError,
@@ -20,13 +22,11 @@ import {
   SwarmError,
   TaskError,
   ValidationError,
+  MCPParameterValidator as ValidationUtils,
   WasmError,
   ZenSwarmError,
-} from './errors';
-import { ZenSwarm } from './index';
-import { Logger } from './logger';
+} from './error-handler';
 import { DAA_MCPTools } from './mcp-daa-tools';
-import { ValidationUtils } from './schemas';
 
 /**
  * Enhanced MCP Tools with comprehensive error handling and logging
@@ -50,7 +50,7 @@ class EnhancedMCPTools {
     this.activeSwarms = new Map();
     this.toolMetrics = new Map();
     // Initialize pooled persistence with production-optimized settings
-    const poolOptions = {
+    const _poolOptions = {
       maxReaders: process.env.POOL_MAX_READERS ? parseInt(process.env.POOL_MAX_READERS) : 6,
       maxWorkers: process.env.POOL_MAX_WORKERS ? parseInt(process.env.POOL_MAX_WORKERS) : 3,
       mmapSize: process.env.POOL_MMAP_SIZE ? parseInt(process.env.POOL_MMAP_SIZE) : 268435456, // 256MB
@@ -64,19 +64,12 @@ class EnhancedMCPTools {
 
     // Initialize persistence asynchronously
     this.initializePersistence();
-    this.errorContext = new ErrorContext();
+    this.errorContext = new ErrorContext('mcp-tools-initialization');
     this.errorLog = [];
     this.maxErrorLogSize = 1000;
 
     // Initialize logger
-    this.logger = new Logger({
-      name: 'mcp-tools',
-      enableStderr: process.env.MCP_MODE === 'stdio',
-      level: process.env.LOG_LEVEL || 'INFO',
-      metadata: {
-        component: 'mcp-tools-enhanced',
-      },
-    });
+    this.logger = createLogger('mcp-tools');
 
     // Initialize DAA tools integration
     this.daaTools = new DAA_MCPTools(this);
@@ -155,6 +148,11 @@ class EnhancedMCPTools {
 
   /**
    * Enhanced error handler with context and logging
+   *
+   * @param error
+   * @param toolName
+   * @param operation
+   * @param params
    */
   handleError(error, toolName, operation, params = null) {
     // Create detailed error context
@@ -209,6 +207,8 @@ class EnhancedMCPTools {
 
   /**
    * Determine error severity based on type and message
+   *
+   * @param error
    */
   determineSeverity(error) {
     if (error instanceof ValidationError) {
@@ -231,6 +231,8 @@ class EnhancedMCPTools {
 
   /**
    * Determine if error is recoverable
+   *
+   * @param error
    */
   isRecoverable(error) {
     if (error instanceof ValidationError) {
@@ -249,6 +251,9 @@ class EnhancedMCPTools {
 
   /**
    * Validate and sanitize input parameters for a tool
+   *
+   * @param params
+   * @param toolName
    */
   validateToolParams(params, toolName) {
     try {
@@ -281,6 +286,8 @@ class EnhancedMCPTools {
 
   /**
    * Get recent error logs for debugging
+   *
+   * @param limit
    */
   getErrorLogs(limit = 50) {
     return this.errorLog.slice(-limit);
@@ -311,6 +318,8 @@ class EnhancedMCPTools {
 
   /**
    * 🔧 CRITICAL FIX: Integrate hook notifications with MCP memory system
+   *
+   * @param hookInstance
    */
   async integrateHookNotifications(hookInstance) {
     if (!hookInstance || !this.persistence) {
@@ -346,6 +355,10 @@ class EnhancedMCPTools {
 
   /**
    * 🔧 CRITICAL FIX: Retrieve cross-agent notifications for coordinated decision making
+   *
+   * @param agentId
+   * @param type
+   * @param since
    */
   async getCrossAgentNotifications(agentId = null, type = null, since = null) {
     if (!this.persistence) {
@@ -428,13 +441,14 @@ class EnhancedMCPTools {
     }
 
     // Only initialize if no instance exists
-    this.ruvSwarm = await ZenSwarm.initialize({
-      loadingStrategy: 'progressive',
-      enablePersistence: true,
-      enableNeuralNetworks: true,
-      enableForecasting: true,
-      useSIMD: true,
+    this.ruvSwarm = new ZenSwarm({
+      persistence: { enabled: true },
+      wasmPath: './neural_fann_bg.wasm',
+      topology: 'mesh',
+      maxAgents: 10,
     });
+
+    await this.ruvSwarm.initialize();
 
     // Load existing swarms from database - CRITICAL for persistence
     await this.loadExistingSwarms();
@@ -1416,7 +1430,12 @@ class EnhancedMCPTools {
         environment: {
           features: this.ruvSwarm.features,
           memory_usage_mb: this.ruvSwarm?.wasmLoader?.getTotalMemoryUsage() / (1024 * 1024) || 0,
-          runtime_features: ZenSwarm.getRuntimeFeatures(),
+          runtime_features: {
+            node_version: process.version,
+            platform: process.platform,
+            arch: process.arch,
+            memory_limit: process.env.NODE_OPTIONS?.includes('--max-old-space-size') || 'default',
+          },
         },
         performance: {
           total_benchmark_time_ms: performance.now() - startTime,
@@ -1442,7 +1461,12 @@ class EnhancedMCPTools {
       await this.initialize();
 
       const features = {
-        runtime: ZenSwarm.getRuntimeFeatures(),
+        runtime: {
+          node_version: process.version,
+          platform: process.platform,
+          arch: process.arch,
+          memory_limit: process.env.NODE_OPTIONS?.includes('--max-old-space-size') || 'default',
+        },
         wasm: {
           modules_loaded: this.ruvSwarm.wasmLoader.getModuleStatus(),
           total_memory_mb: this.ruvSwarm.wasmLoader.getTotalMemoryUsage() / (1024 * 1024),
@@ -1491,13 +1515,13 @@ class EnhancedMCPTools {
       await this.initialize();
 
       const wasmMemory = this.ruvSwarm.wasmLoader.getTotalMemoryUsage();
-      const jsMemory = ZenSwarm.getMemoryUsage();
+      const jsMemory = process.memoryUsage();
 
       const summary = {
-        total_mb: (wasmMemory + (jsMemory?.used || 0)) / (1024 * 1024),
+        total_mb: (wasmMemory + jsMemory.heapUsed) / (1024 * 1024),
         wasm_mb: wasmMemory / (1024 * 1024),
-        javascript_mb: (jsMemory?.used || 0) / (1024 * 1024),
-        available_mb: (jsMemory?.limit || 0) / (1024 * 1024),
+        javascript_mb: jsMemory.heapUsed / (1024 * 1024),
+        available_mb: jsMemory.heapTotal / (1024 * 1024),
       };
 
       // Persist memory usage snapshot
@@ -1565,10 +1589,11 @@ class EnhancedMCPTools {
         // Add per-module memory usage
         const moduleStatus = this.ruvSwarm.wasmLoader.getModuleStatus();
         for (const [name, status] of Object.entries(moduleStatus)) {
-          if (status.loaded) {
+          const moduleStatus = status as { loaded?: boolean; size?: number };
+          if (moduleStatus.loaded) {
             detailed.wasm_modules[name] = {
-              size_mb: status.size / (1024 * 1024),
-              loaded: status.loaded,
+              size_mb: (moduleStatus.size || 0) / (1024 * 1024),
+              loaded: moduleStatus.loaded,
             };
           }
         }
@@ -1623,7 +1648,7 @@ class EnhancedMCPTools {
         };
       }
 
-      const result = {
+      const result: any = {
         available: true,
         activation_functions: 18,
         training_algorithms: 5,
@@ -1934,9 +1959,9 @@ class EnhancedMCPTools {
       this.recordToolMetrics('neural_train', startTime, 'error', error.message);
       if (error instanceof ValidationError) {
         // Re-throw with MCP error format
-        const mcpError = new Error(error.message);
-        mcpError.code = error.code || 'VALIDATION_ERROR';
-        mcpError.data = { parameter: error.context?.parameter || 'unknown' };
+        const mcpError = new Error(error.message) as any;
+        mcpError.code = 'VALIDATION_ERROR';
+        mcpError.data = { parameter: error.field || 'unknown' };
         throw mcpError;
       }
       throw error;
@@ -1977,7 +2002,7 @@ class EnhancedMCPTools {
         },
       };
 
-      let result = patterns;
+      let result: any = patterns;
       if (pattern !== 'all' && patterns[pattern]) {
         result = { [pattern]: patterns[pattern] };
       }
@@ -1993,7 +2018,7 @@ class EnhancedMCPTools {
   // Helper methods for benchmarking
   async runWasmBenchmarks(iterations) {
     await this.initialize();
-    const results = {};
+    const results: any = {};
     let successfulRuns = 0;
 
     // Test actual WASM module loading and execution
@@ -2314,7 +2339,7 @@ class EnhancedMCPTools {
       try {
         // Benchmark cognitive processing (simulated AI thinking)
         let start = performance.now();
-        const complexTask = {
+        const complexTask: any = {
           input: `Complex problem ${i}: ${Math.random()}`,
           context: Array.from({ length: 100 }, () => Math.random()),
           requirements: ['analysis', 'reasoning', 'decision'],
@@ -2723,7 +2748,7 @@ class EnhancedMCPTools {
 
       await this.initialize();
 
-      const monitoringData = {
+      const monitoringData: any = {
         timestamp: new Date().toISOString(),
         monitoring_session_id: `monitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         swarms: [],
@@ -2738,7 +2763,7 @@ class EnhancedMCPTools {
       }
 
       for (const swarm of swarmsToMonitor) {
-        const swarmMonitorData = {
+        const swarmMonitorData: any = {
           swarm_id: swarm.id,
           swarm_name: swarm.name,
           topology: swarm.topology,
@@ -2759,7 +2784,7 @@ class EnhancedMCPTools {
         };
 
         if (includeAgents) {
-          const agents = Array.from(swarm.agents.values());
+          const agents = Array.from(swarm.agents.values()) as any[];
           swarmMonitorData.agents = {
             total: agents.length,
             active: agents.filter((a) => a.status === 'active' || a.status === 'busy').length,
@@ -2779,7 +2804,7 @@ class EnhancedMCPTools {
         }
 
         if (includeTasks) {
-          const tasks = Array.from(swarm.tasks?.values() || []);
+          const tasks = Array.from(swarm.tasks?.values() || []) as any[];
           swarmMonitorData.tasks = {
             total: tasks.length,
             pending: tasks.filter((t) => t.status === 'pending').length,
@@ -2831,7 +2856,7 @@ class EnhancedMCPTools {
           0
         ),
         wasm_memory_usage_mb: this.ruvSwarm?.wasmLoader?.getTotalMemoryUsage() / (1024 * 1024) || 0,
-        system_uptime_ms: Date.now() - (this.systemStartTime || Date.now()),
+        system_uptime_ms: 0, // System uptime not tracked
         features_available: Object.keys(this.ruvSwarm.features).filter(
           (f) => this.ruvSwarm.features[f]
         ).length,
@@ -2920,13 +2945,7 @@ class EnhancedMCPTools {
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
-      return this.handleError(
-        new PersistenceError('Failed to get pool health status', 'POOL_HEALTH_ERROR', {
-          originalError: error,
-        }),
-        'pool_health',
-        'health_check'
-      );
+      return this.handleError(error, 'swarm_monitor', 'pool_health');
     }
   }
 
@@ -2980,13 +2999,7 @@ class EnhancedMCPTools {
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
-      return this.handleError(
-        new PersistenceError('Failed to get pool statistics', 'POOL_STATS_ERROR', {
-          originalError: error,
-        }),
-        'pool_stats',
-        'statistics'
-      );
+      return this.handleError(error, 'pool_stats', 'statistics');
     }
   }
 
@@ -3034,13 +3047,7 @@ class EnhancedMCPTools {
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
-      return this.handleError(
-        new PersistenceError('Failed to get persistence statistics', 'PERSISTENCE_STATS_ERROR', {
-          originalError: error,
-        }),
-        'persistence_stats',
-        'statistics'
-      );
+      return this.handleError(error, 'persistence_stats', 'statistics');
     }
   }
 

@@ -11,13 +11,12 @@
  * 4. Returns completed implementation artifacts
  */
 
-import { EventEmitter } from 'node:events';
 import { createLogger } from '../../../core/logger';
-import type { AgentType } from '../../../types/agent-types';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
-} from '../database/entities/product-entities';
+} from '../../../database/entities/product-entities';
+import type { AgentType } from '../../../types/agent-types';
 import type { SPARCPhase } from '../sparc/types/sparc-types';
 import { type SwarmAgent, SwarmCoordinator, type SwarmMetrics } from './swarm-coordinator';
 
@@ -76,10 +75,11 @@ export interface SPARCSwarmMetrics extends SwarmMetrics {
  *
  * Coordinates swarm agents using SPARC methodology for implementing
  * database-driven Features and Tasks
+ *
+ * @example
  */
 export class SPARCSwarmCoordinator extends SwarmCoordinator {
   private sparcTasks = new Map<string, SPARCTask>();
-  private phaseAgents = new Map<SPARCPhase, string[]>();
   private sparcMetrics: SPARCSwarmMetrics;
 
   constructor() {
@@ -97,6 +97,8 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Process a Feature using SPARC methodology
+   *
+   * @param feature
    */
   async processFeatureWithSPARC(feature: FeatureDocumentEntity): Promise<SPARCTask> {
     logger.info(`🎯 Starting SPARC processing for feature: ${feature.title}`);
@@ -124,6 +126,8 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Process a Task using SPARC methodology
+   *
+   * @param task
    */
   async processTaskWithSPARC(task: TaskDocumentEntity): Promise<SPARCTask> {
     logger.info(`🔧 Starting SPARC processing for task: ${task.title}`);
@@ -151,6 +155,8 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Execute complete SPARC cycle for a task
+   *
+   * @param sparcTask
    */
   private async startSPARCCycle(sparcTask: SPARCTask): Promise<void> {
     sparcTask.status = 'in_progress';
@@ -201,6 +207,9 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Execute a specific SPARC phase using specialized agents
+   *
+   * @param sparcTask
+   * @param phase
    */
   private async executeSPARCPhase(sparcTask: SPARCTask, phase: SPARCPhase): Promise<void> {
     const phaseResult = sparcTask.phaseProgress[phase];
@@ -238,6 +247,9 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Execute Specification Phase
+   *
+   * @param sparcTask
+   * @param agents
    */
   private async executeSpecificationPhase(
     sparcTask: SPARCTask,
@@ -267,6 +279,9 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Execute Pseudocode Phase
+   *
+   * @param sparcTask
+   * @param agents
    */
   private async executePseudocodePhase(sparcTask: SPARCTask, agents: SwarmAgent[]): Promise<void> {
     logger.info(`📐 Executing Pseudocode phase for ${sparcTask.id}`);
@@ -292,6 +307,9 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Execute Architecture Phase
+   *
+   * @param sparcTask
+   * @param agents
    */
   private async executeArchitecturePhase(
     sparcTask: SPARCTask,
@@ -320,6 +338,9 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Execute Refinement Phase
+   *
+   * @param sparcTask
+   * @param agents
    */
   private async executeRefinementPhase(sparcTask: SPARCTask, agents: SwarmAgent[]): Promise<void> {
     logger.info(`🔍 Executing Refinement phase for ${sparcTask.id}`);
@@ -345,6 +366,9 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Execute Completion Phase
+   *
+   * @param sparcTask
+   * @param agents
    */
   private async executeCompletionPhase(sparcTask: SPARCTask, agents: SwarmAgent[]): Promise<void> {
     logger.info(`🎯 Executing Completion phase for ${sparcTask.id}`);
@@ -370,8 +394,11 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Select specialized agents for a SPARC phase
+   *
+   * @param phase
+   * @param sparcTask
    */
-  private selectPhaseAgents(phase: SPARCPhase, sparcTask: SPARCTask): SwarmAgent[] {
+  private selectPhaseAgents(phase: SPARCPhase, _sparcTask: SPARCTask): SwarmAgent[] {
     const allAgents = this.getAgents();
     const phaseSpecialists = this.getPhaseSpecialists(phase);
 
@@ -398,6 +425,8 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Get agent types specialized for each SPARC phase
+   *
+   * @param phase
    */
   private getPhaseSpecialists(phase: SPARCPhase): AgentType[] {
     const specialists: Record<SPARCPhase, AgentType[]> = {
@@ -413,6 +442,9 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Validate completion of a SPARC phase
+   *
+   * @param sparcTask
+   * @param phase
    */
   private async validatePhaseCompletion(
     sparcTask: SPARCTask,
@@ -444,6 +476,9 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Retry a failed SPARC phase
+   *
+   * @param sparcTask
+   * @param phase
    */
   private async retryPhase(sparcTask: SPARCTask, phase: SPARCPhase): Promise<void> {
     logger.info(`🔄 Retrying SPARC phase: ${phase} for ${sparcTask.id}`);
@@ -472,6 +507,8 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Get SPARC task by ID
+   *
+   * @param taskId
    */
   getSPARCTask(taskId: string): SPARCTask | undefined {
     return this.sparcTasks.get(taskId);
@@ -625,12 +662,15 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   /**
    * Assign a task to a specific agent
+   *
+   * @param agentId
+   * @param task
    */
   private async assignTaskToAgent(agentId: string, task: any): Promise<void> {
     // This is a placeholder implementation
     // In a real implementation, this would use the agent communication system
     logger.debug(`Assigning task ${task.id} to agent ${agentId}`);
-    
+
     // Mock successful task assignment
     return Promise.resolve();
   }

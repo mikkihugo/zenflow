@@ -22,6 +22,8 @@ import {
 /**
  * Enhanced SwarmCoordinator using dependency injection
  * This shows how to refactor existing services to use DI
+ *
+ * @example
  */
 @injectable
 export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
@@ -178,6 +180,8 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
 
 /**
  * Mock implementations for testing and development
+ *
+ * @example
  */
 export class MockLogger implements ILogger {
   debug(_message: string, _meta?: any): void {}
@@ -293,6 +297,8 @@ export class MockMessageBroker implements IMessageBroker {
 
 /**
  * Factory function to set up a complete DI container with swarm services
+ *
+ * @param config
  */
 export function createSwarmContainer(config: Record<string, any> = {}): DIContainer {
   const container = new DIContainer();

@@ -1,6 +1,7 @@
 /**
  * Neural Network Test Helpers
- * @fileoverview Specialized helpers for testing neural network components (Classical TDD)
+ *
+ * @file Specialized helpers for testing neural network components (Classical TDD)
  */
 
 export interface NeuralTestData {
@@ -24,6 +25,10 @@ export interface TrainingTestConfig {
 export class NeuralTestDataGenerator {
   /**
    * Generate random vector for testing
+   *
+   * @param size
+   * @param min
+   * @param max
    */
   generateRandomVector(size: number, min: number = -1, max: number = 1): number[] {
     return Array.from({ length: size }, () => Math.random() * (max - min) + min);
@@ -31,6 +36,11 @@ export class NeuralTestDataGenerator {
 
   /**
    * Generate random batch for testing
+   *
+   * @param batchSize
+   * @param featureSize
+   * @param min
+   * @param max
    */
   generateRandomBatch(
     batchSize: number,
@@ -45,6 +55,10 @@ export class NeuralTestDataGenerator {
 
   /**
    * Check if two vectors are equal within tolerance
+   *
+   * @param a
+   * @param b
+   * @param tolerance
    */
   vectorsEqual(a: number[], b: number[], tolerance: number = 1e-6): boolean {
     if (a.length !== b.length) return false;
@@ -68,6 +82,9 @@ export class NeuralTestDataGenerator {
 
   /**
    * Generate linear regression data
+   *
+   * @param samples
+   * @param noise
    */
   static generateLinearData(samples: number, noise: number = 0.1): NeuralTestData[] {
     const data: NeuralTestData[] = [];
@@ -85,6 +102,10 @@ export class NeuralTestDataGenerator {
 
   /**
    * Generate polynomial regression data
+   *
+   * @param samples
+   * @param degree
+   * @param noise
    */
   static generatePolynomialData(
     samples: number,
@@ -113,6 +134,9 @@ export class NeuralTestDataGenerator {
 
   /**
    * Generate classification data (spiral pattern)
+   *
+   * @param samplesPerClass
+   * @param classes
    */
   static generateSpiralData(samplesPerClass: number = 50, classes: number = 2): NeuralTestData[] {
     const data: NeuralTestData[] = [];
@@ -142,6 +166,10 @@ export class NeuralTestDataGenerator {
 
   /**
    * Generate time series data
+   *
+   * @param length
+   * @param frequency
+   * @param noise
    */
   static generateTimeSeriesData(
     length: number,
@@ -179,6 +207,8 @@ export class NeuralTestDataGenerator {
 export class NeuralNetworkValidator {
   /**
    * Validate network topology
+   *
+   * @param topology
    */
   static validateTopology(topology: number[]): void {
     expect(topology.length).toBeGreaterThan(1);
@@ -190,6 +220,9 @@ export class NeuralNetworkValidator {
 
   /**
    * Validate training convergence
+   *
+   * @param errors
+   * @param config
    */
   static validateConvergence(
     errors: number[],
@@ -215,6 +248,10 @@ export class NeuralNetworkValidator {
 
   /**
    * Validate prediction accuracy
+   *
+   * @param predictions
+   * @param expected
+   * @param tolerance
    */
   static validatePredictionAccuracy(
     predictions: number[][],
@@ -244,6 +281,9 @@ export class NeuralNetworkValidator {
 
   /**
    * Validate weight initialization
+   *
+   * @param weights
+   * @param method
    */
   static validateWeightInitialization(
     weights: number[][],
@@ -277,6 +317,8 @@ export class NeuralNetworkValidator {
 
   /**
    * Validate gradient flow
+   *
+   * @param gradients
    */
   static validateGradientFlow(gradients: number[][]): void {
     const flatGradients = gradients.flat();
@@ -308,6 +350,9 @@ export class NeuralNetworkValidator {
 export class NeuralPerformanceTester {
   /**
    * Benchmark training speed
+   *
+   * @param trainingFunction
+   * @param expectedMaxTime
    */
   static async benchmarkTraining(
     trainingFunction: () => Promise<void>,
@@ -325,6 +370,10 @@ export class NeuralPerformanceTester {
 
   /**
    * Benchmark prediction speed
+   *
+   * @param predictionFunction
+   * @param iterations
+   * @param expectedMaxTimePerPrediction
    */
   static benchmarkPrediction(
     predictionFunction: () => number[],
@@ -351,6 +400,9 @@ export class NeuralPerformanceTester {
 
   /**
    * Memory usage validation
+   *
+   * @param networkFunction
+   * @param maxMemoryIncreaseMB
    */
   static validateMemoryUsage(
     networkFunction: () => void,
@@ -381,6 +433,10 @@ export class NeuralPerformanceTester {
 export class NeuralMathHelpers {
   /**
    * Generate test matrices for linear algebra operations
+   *
+   * @param rows
+   * @param cols
+   * @param fillType
    */
   static generateMatrix(
     rows: number,
@@ -414,6 +470,9 @@ export class NeuralMathHelpers {
 
   /**
    * Matrix multiplication for validation
+   *
+   * @param a
+   * @param b
    */
   static matrixMultiply(a: number[][], b: number[][]): number[][] {
     expect(a[0]).toHaveLength(b.length);
@@ -457,6 +516,10 @@ export class NeuralMathHelpers {
 
   /**
    * Numerical gradient calculation for testing
+   *
+   * @param f
+   * @param x
+   * @param h
    */
   static numericalGradient(f: (x: number) => number, x: number, h: number = 1e-5): number {
     return (f(x + h) - f(x - h)) / (2 * h);
@@ -464,6 +527,10 @@ export class NeuralMathHelpers {
 
   /**
    * Compare matrices with tolerance
+   *
+   * @param a
+   * @param b
+   * @param tolerance
    */
   static compareMatrices(a: number[][], b: number[][], tolerance: number = 1e-10): boolean {
     if (a.length !== b.length) return false;
@@ -481,6 +548,8 @@ export class NeuralMathHelpers {
 
 /**
  * Factory function for neural test setup
+ *
+ * @param config
  */
 export function createNeuralTestSuite(config?: Partial<TrainingTestConfig>) {
   const defaultConfig: TrainingTestConfig = {

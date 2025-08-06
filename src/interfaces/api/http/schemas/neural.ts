@@ -4,13 +4,15 @@
  * OpenAPI 3.0 schemas for neural network domain.
  * Consolidates neural network types and validation schemas.
  *
- * @fileoverview Neural network API schemas and types
+ * @file Neural network API schemas and types
  */
 
 import type { EntityFields, ResourceState, TimestampFields } from './common';
 
 /**
  * Neural Network Layer Configuration
+ *
+ * @example
  */
 export interface NeuralLayer {
   readonly type:
@@ -31,6 +33,8 @@ export interface NeuralLayer {
 
 /**
  * Neural Network Architecture
+ *
+ * @example
  */
 export interface NeuralNetwork extends EntityFields, TimestampFields, ResourceState {
   readonly type:
@@ -66,6 +70,8 @@ export interface NeuralNetwork extends EntityFields, TimestampFields, ResourceSt
 
 /**
  * Training Configuration
+ *
+ * @example
  */
 export interface TrainingConfig {
   readonly epochs: number;
@@ -92,6 +98,8 @@ export interface TrainingConfig {
 
 /**
  * Training Data Point
+ *
+ * @example
  */
 export interface TrainingDataPoint {
   readonly input: readonly number[];
@@ -101,6 +109,8 @@ export interface TrainingDataPoint {
 
 /**
  * Training Request
+ *
+ * @example
  */
 export interface TrainingRequest {
   readonly networkId: string;
@@ -116,6 +126,8 @@ export interface TrainingRequest {
 
 /**
  * Training Job Status
+ *
+ * @example
  */
 export interface TrainingJob extends EntityFields, TimestampFields {
   readonly networkId: string;
@@ -140,6 +152,8 @@ export interface TrainingJob extends EntityFields, TimestampFields {
 
 /**
  * Prediction Request
+ *
+ * @example
  */
 export interface PredictionRequest {
   readonly input: readonly number[];
@@ -152,6 +166,8 @@ export interface PredictionRequest {
 
 /**
  * Prediction Response
+ *
+ * @example
  */
 export interface PredictionResponse {
   readonly output: readonly number[];
@@ -164,6 +180,8 @@ export interface PredictionResponse {
 
 /**
  * Model Evaluation Metrics
+ *
+ * @example
  */
 export interface EvaluationMetrics {
   readonly accuracy?: number;
@@ -180,6 +198,8 @@ export interface EvaluationMetrics {
 
 /**
  * Model Export Configuration
+ *
+ * @example
  */
 export interface ModelExportConfig {
   readonly format: 'onnx' | 'tensorflow' | 'pytorch' | 'keras' | 'json';
@@ -197,6 +217,8 @@ export interface ModelExportConfig {
 
 /**
  * Model Import Configuration
+ *
+ * @example
  */
 export interface ModelImportConfig {
   readonly format: 'onnx' | 'tensorflow' | 'pytorch' | 'keras' | 'json';

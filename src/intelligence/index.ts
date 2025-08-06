@@ -54,6 +54,8 @@ export const IntelligenceUtils = {
 
   /**
    * Validate intelligence configuration
+   *
+   * @param config
    */
   validateConfig: (config: any): boolean => {
     return Boolean(
@@ -83,6 +85,8 @@ export const IntelligenceUtils = {
 
   /**
    * Initialize enhanced intelligence systems
+   *
+   * @param config
    */
   initialize: async (config: any = {}) => {
     const defaultConfig = {
@@ -143,6 +147,8 @@ export const IntelligenceUtils = {
 
   /**
    * Create adaptive learning system factory
+   *
+   * @param config
    */
   createAdaptiveLearningSystem: async (config?: any) => {
     const { PatternRecognitionEngine } = await import(
@@ -202,6 +208,9 @@ export class IntelligenceFactory {
 
   /**
    * Get intelligence system by type
+   *
+   * @param type
+   * @param config
    */
   static async getSystem(type: string, config: any = {}): Promise<any> {
     if (!IntelligenceFactory.systems.has(type)) {
@@ -214,6 +223,8 @@ export class IntelligenceFactory {
 
   /**
    * Get adaptive learning system
+   *
+   * @param config
    */
   static async getAdaptiveLearningSystem(config: any = {}): Promise<any> {
     const key = `adaptive_learning_${JSON.stringify(config)}`;

@@ -157,6 +157,9 @@ export class UnifiedExportSystem extends EventEmitter {
 
   /**
    * Register a custom exporter
+   *
+   * @param format
+   * @param definition
    */
   registerExporter(format: string, definition: ExporterDefinition): void {
     this.exporters.set(format.toLowerCase(), definition);
@@ -166,6 +169,10 @@ export class UnifiedExportSystem extends EventEmitter {
 
   /**
    * Export data to specified format
+   *
+   * @param data
+   * @param format
+   * @param options
    */
   async exportData(data: any, format: string, options: ExportOptions = {}): Promise<ExportResult> {
     const exporter = this.exporters.get(format.toLowerCase());
@@ -237,6 +244,10 @@ export class UnifiedExportSystem extends EventEmitter {
 
   /**
    * Export data to multiple formats
+   *
+   * @param data
+   * @param formats
+   * @param options
    */
   async batchExport(
     data: any,
@@ -266,6 +277,16 @@ export class UnifiedExportSystem extends EventEmitter {
 
   /**
    * Export document workflow data
+   *
+   * @param workflowData
+   * @param workflowData.vision
+   * @param workflowData.adrs
+   * @param workflowData.prds
+   * @param workflowData.epics
+   * @param workflowData.features
+   * @param workflowData.tasks
+   * @param format
+   * @param options
    */
   async exportWorkflowData(
     workflowData: {
@@ -303,6 +324,10 @@ export class UnifiedExportSystem extends EventEmitter {
 
   /**
    * Export system status and metrics
+   *
+   * @param statusData
+   * @param format
+   * @param options
    */
   async exportSystemStatus(
     statusData: any,
@@ -328,6 +353,8 @@ export class UnifiedExportSystem extends EventEmitter {
 
   /**
    * Format conversion methods
+   *
+   * @param data
    */
   private convertToCSV(data: any[]): string {
     if (!Array.isArray(data) || data.length === 0) {
@@ -544,6 +571,8 @@ export class UnifiedExportSystem extends EventEmitter {
 
   /**
    * Utility methods
+   *
+   * @param str
    */
   private escapeXML(str: string): string {
     return str

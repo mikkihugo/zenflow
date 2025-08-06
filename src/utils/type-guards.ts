@@ -5,7 +5,7 @@
  * throughout the claude-code-zen codebase. This addresses TypeScript
  * strict mode compilation issues with union type handling.
  *
- * @fileoverview Comprehensive type guards for union type safety
+ * @file Comprehensive type guards for union type safety
  */
 
 // ============================================
@@ -19,6 +19,8 @@ export type DatabaseResult<T = any> = QuerySuccess<T> | QueryError;
 
 /**
  * Successful query result with discriminant property
+ *
+ * @example
  */
 export interface QuerySuccess<T = any> {
   success: true;
@@ -34,6 +36,8 @@ export interface QuerySuccess<T = any> {
 
 /**
  * Query error result with discriminant property
+ *
+ * @example
  */
 export interface QueryError {
   success: false;
@@ -48,6 +52,8 @@ export interface QueryError {
 
 /**
  * Type guard for successful database query results
+ *
+ * @param result
  */
 export function isQuerySuccess<T = any>(result: DatabaseResult<T>): result is QuerySuccess<T> {
   return result.success === true && 'data' in result;
@@ -55,6 +61,8 @@ export function isQuerySuccess<T = any>(result: DatabaseResult<T>): result is Qu
 
 /**
  * Type guard for database query errors
+ *
+ * @param result
  */
 export function isQueryError(result: DatabaseResult): result is QueryError {
   return result.success === false && 'error' in result;
@@ -71,6 +79,8 @@ export type MemoryResult<T = any> = MemorySuccess<T> | MemoryNotFound | MemoryEr
 
 /**
  * Successful memory retrieval with discriminant property
+ *
+ * @example
  */
 export interface MemorySuccess<T = any> {
   found: true;
@@ -83,6 +93,8 @@ export interface MemorySuccess<T = any> {
 
 /**
  * Memory key not found result with discriminant property
+ *
+ * @example
  */
 export interface MemoryNotFound {
   found: false;
@@ -92,6 +104,8 @@ export interface MemoryNotFound {
 
 /**
  * Memory operation error with discriminant property
+ *
+ * @example
  */
 export interface MemoryError {
   found: false;
@@ -104,6 +118,8 @@ export interface MemoryError {
 
 /**
  * Type guard for successful memory operations
+ *
+ * @param result
  */
 export function isMemorySuccess<T = any>(result: MemoryResult<T>): result is MemorySuccess<T> {
   return result.found === true && 'data' in result;
@@ -111,6 +127,8 @@ export function isMemorySuccess<T = any>(result: MemoryResult<T>): result is Mem
 
 /**
  * Type guard for memory not found results
+ *
+ * @param result
  */
 export function isMemoryNotFound(result: MemoryResult): result is MemoryNotFound {
   return result.found === false && 'reason' in result;
@@ -118,6 +136,8 @@ export function isMemoryNotFound(result: MemoryResult): result is MemoryNotFound
 
 /**
  * Type guard for memory operation errors
+ *
+ * @param result
  */
 export function isMemoryError(result: MemoryResult): result is MemoryError {
   return result.found === false && 'error' in result;
@@ -134,6 +154,8 @@ export type NeuralResult = TrainingResult | InferenceResult | NeuralError;
 
 /**
  * Neural network training result with discriminant property
+ *
+ * @example
  */
 export interface TrainingResult {
   type: 'training';
@@ -148,6 +170,8 @@ export interface TrainingResult {
 
 /**
  * Neural network inference result with discriminant property
+ *
+ * @example
  */
 export interface InferenceResult {
   type: 'inference';
@@ -159,6 +183,8 @@ export interface InferenceResult {
 
 /**
  * Neural network operation error with discriminant property
+ *
+ * @example
  */
 export interface NeuralError {
   type: 'error';
@@ -173,6 +199,8 @@ export interface NeuralError {
 
 /**
  * Type guard for neural training results
+ *
+ * @param result
  */
 export function isTrainingResult(result: NeuralResult): result is TrainingResult {
   return result.type === 'training' && result.success === true;
@@ -180,6 +208,8 @@ export function isTrainingResult(result: NeuralResult): result is TrainingResult
 
 /**
  * Type guard for neural inference results
+ *
+ * @param result
  */
 export function isInferenceResult(result: NeuralResult): result is InferenceResult {
   return result.type === 'inference' && result.success === true;
@@ -187,6 +217,8 @@ export function isInferenceResult(result: NeuralResult): result is InferenceResu
 
 /**
  * Type guard for neural operation errors
+ *
+ * @param result
  */
 export function isNeuralError(result: NeuralResult): result is NeuralError {
   return result.type === 'error' && result.success === false;
@@ -203,6 +235,8 @@ export type APIResult<T = any> = APISuccess<T> | APIError;
 
 /**
  * Successful API response with discriminant property
+ *
+ * @example
  */
 export interface APISuccess<T = any> {
   success: true;
@@ -216,6 +250,8 @@ export interface APISuccess<T = any> {
 
 /**
  * API error response with discriminant property
+ *
+ * @example
  */
 export interface APIError {
   success: false;
@@ -234,6 +270,8 @@ export interface APIError {
 
 /**
  * Type guard for successful API responses
+ *
+ * @param result
  */
 export function isAPISuccess<T = any>(result: APIResult<T>): result is APISuccess<T> {
   return result.success === true && 'data' in result;
@@ -241,6 +279,8 @@ export function isAPISuccess<T = any>(result: APIResult<T>): result is APISucces
 
 /**
  * Type guard for API error responses
+ *
+ * @param result
  */
 export function isAPIError(result: APIResult): result is APIError {
   return result.success === false && 'error' in result;
@@ -257,6 +297,8 @@ export type WasmResult<T = any> = WasmSuccess<T> | WasmError;
 
 /**
  * Successful WASM operation with discriminant property
+ *
+ * @example
  */
 export interface WasmSuccess<T = any> {
   wasmSuccess: true;
@@ -267,6 +309,8 @@ export interface WasmSuccess<T = any> {
 
 /**
  * WASM operation error with discriminant property
+ *
+ * @example
  */
 export interface WasmError {
   wasmSuccess: false;
@@ -280,6 +324,8 @@ export interface WasmError {
 
 /**
  * Type guard for successful WASM operations
+ *
+ * @param result
  */
 export function isWasmSuccess<T = any>(result: WasmResult<T>): result is WasmSuccess<T> {
   return result.wasmSuccess === true && 'result' in result;
@@ -287,6 +333,8 @@ export function isWasmSuccess<T = any>(result: WasmResult<T>): result is WasmSuc
 
 /**
  * Type guard for WASM operation errors
+ *
+ * @param result
  */
 export function isWasmError(result: WasmResult): result is WasmError {
   return result.wasmSuccess === false && 'error' in result;
@@ -303,6 +351,8 @@ export type CoordinationResult<T = any> = CoordinationSuccess<T> | CoordinationE
 
 /**
  * Successful coordination operation with discriminant property
+ *
+ * @example
  */
 export interface CoordinationSuccess<T = any> {
   coordinated: true;
@@ -314,6 +364,8 @@ export interface CoordinationSuccess<T = any> {
 
 /**
  * Coordination operation error with discriminant property
+ *
+ * @example
  */
 export interface CoordinationError {
   coordinated: false;
@@ -328,6 +380,8 @@ export interface CoordinationError {
 
 /**
  * Type guard for successful coordination operations
+ *
+ * @param result
  */
 export function isCoordinationSuccess<T = any>(
   result: CoordinationResult<T>
@@ -337,6 +391,8 @@ export function isCoordinationSuccess<T = any>(
 
 /**
  * Type guard for coordination operation errors
+ *
+ * @param result
  */
 export function isCoordinationError(result: CoordinationResult): result is CoordinationError {
   return result.coordinated === false && 'error' in result;
@@ -353,6 +409,8 @@ export type Result<T, E = Error> = Success<T> | Failure<E>;
 
 /**
  * Generic success result
+ *
+ * @example
  */
 export interface Success<T> {
   ok: true;
@@ -361,6 +419,8 @@ export interface Success<T> {
 
 /**
  * Generic failure result
+ *
+ * @example
  */
 export interface Failure<E = Error> {
   ok: false;
@@ -369,6 +429,8 @@ export interface Failure<E = Error> {
 
 /**
  * Type guard for successful results
+ *
+ * @param result
  */
 export function isSuccess<T, E = Error>(result: Result<T, E>): result is Success<T> {
   return result.ok === true && 'value' in result;
@@ -376,6 +438,8 @@ export function isSuccess<T, E = Error>(result: Result<T, E>): result is Success
 
 /**
  * Type guard for failed results
+ *
+ * @param result
  */
 export function isFailure<T, E = Error>(result: Result<T, E>): result is Failure<E> {
   return result.ok === false && 'error' in result;
@@ -387,6 +451,8 @@ export function isFailure<T, E = Error>(result: Result<T, E>): result is Failure
 
 /**
  * Safely extract data from a result union type
+ *
+ * @param result
  */
 export function extractData<T>(result: DatabaseResult<T>): T | null {
   if (isQuerySuccess(result)) {
@@ -397,6 +463,8 @@ export function extractData<T>(result: DatabaseResult<T>): T | null {
 
 /**
  * Safely extract error message from any result type
+ *
+ * @param result
  */
 export function extractErrorMessage(
   result: DatabaseResult | MemoryResult | NeuralResult | APIResult | WasmResult | CoordinationResult
@@ -421,6 +489,9 @@ export function extractErrorMessage(
 
 /**
  * Type predicate to check if an object has a specific property
+ *
+ * @param obj
+ * @param prop
  */
 export function hasProperty<T, K extends PropertyKey>(
   obj: T,
@@ -431,6 +502,9 @@ export function hasProperty<T, K extends PropertyKey>(
 
 /**
  * Safe property access with type checking
+ *
+ * @param obj
+ * @param prop
  */
 export function safePropertyAccess<T, K extends keyof T>(
   obj: T | null | undefined,

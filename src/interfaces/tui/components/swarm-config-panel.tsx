@@ -1,5 +1,5 @@
 /**
- * @fileoverview Swarm Config Panel Component for TUI - Interactive swarm configuration
+ * @file Swarm Config Panel Component for TUI - Interactive swarm configuration
  */
 
 import { Box, Text, useInput } from 'ink';

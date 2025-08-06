@@ -11,6 +11,8 @@ import type { DocumentType } from '../../types/workflow-types';
 
 /**
  * Base entity for all Product Flow documents
+ *
+ * @example
  */
 export interface BaseProductEntity {
   id: string;
@@ -46,6 +48,8 @@ export interface BaseProductEntity {
 /**
  * Vision Document Entity
  * Strategic vision and high-level goals
+ *
+ * @example
  */
 export interface VisionDocumentEntity extends BaseProductEntity {
   type: 'vision';
@@ -72,6 +76,8 @@ export interface VisionDocumentEntity extends BaseProductEntity {
 /**
  * Architecture Decision Record Entity
  * Technical decisions and rationale
+ *
+ * @example
  */
 export interface ADRDocumentEntity extends BaseProductEntity {
   type: 'adr';
@@ -93,6 +99,8 @@ export interface ADRDocumentEntity extends BaseProductEntity {
 /**
  * Product Requirements Document Entity
  * Detailed feature specifications
+ *
+ * @example
  */
 export interface PRDDocumentEntity extends BaseProductEntity {
   type: 'prd';
@@ -129,6 +137,8 @@ export interface PRDDocumentEntity extends BaseProductEntity {
 /**
  * Epic Document Entity
  * Large feature groupings
+ *
+ * @example
  */
 export interface EpicDocumentEntity extends BaseProductEntity {
   type: 'epic';
@@ -160,6 +170,8 @@ export interface EpicDocumentEntity extends BaseProductEntity {
 /**
  * Feature Document Entity - ENHANCED with PROPER SPARC INTEGRATION
  * Individual implementable features with SPARC methodology as implementation tool
+ *
+ * @example
  */
 export interface FeatureDocumentEntity extends BaseProductEntity {
   type: 'feature';
@@ -263,6 +275,8 @@ export interface FeatureDocumentEntity extends BaseProductEntity {
 /**
  * Task Document Entity - ENHANCED with PROPER SPARC INTEGRATION
  * Granular implementation tasks with SPARC methodology details
+ *
+ * @example
  */
 export interface TaskDocumentEntity extends BaseProductEntity {
   type: 'task';
@@ -361,6 +375,8 @@ export interface TaskDocumentEntity extends BaseProductEntity {
 /**
  * Product Flow Relationship Entity
  * Tracks relationships between Product Flow documents
+ *
+ * @example
  */
 export interface ProductRelationshipEntity {
   id: string;
@@ -380,6 +396,8 @@ export interface ProductRelationshipEntity {
 /**
  * Product Workflow State Entity
  * Tracks Product Flow workflow progression
+ *
+ * @example
  */
 export interface ProductWorkflowStateEntity {
   id: string;
@@ -415,6 +433,8 @@ export interface ProductWorkflowStateEntity {
 /**
  * Product Project Entity - ENHANCED with COMPREHENSIVE SPARC INTEGRATION
  * Groups related Product Flow documents with SPARC methodology support
+ *
+ * @example
  */
 export interface ProductProjectEntity {
   id: string;
@@ -512,6 +532,8 @@ export interface ProductProjectEntity {
 /**
  * Product Search Index Entity
  * Optimized search and discovery for Product Flow
+ *
+ * @example
  */
 export interface ProductSearchIndexEntity {
   document_id: string;
@@ -793,6 +815,8 @@ export const PRODUCT_DATABASE_SCHEMAS = {
 
 /**
  * Type guards for Product Flow entities
+ *
+ * @param doc
  */
 export function isVisionDocument(doc: BaseProductEntity): doc is VisionDocumentEntity {
   return doc.type === 'vision';

@@ -339,6 +339,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Register agent with coordination protocol
+   *
+   * @param agentId
+   * @param agent
    */
   async registerAgent(agentId: string, agent: any): Promise<AgentInfo> {
     const agentInfo: AgentInfo = {
@@ -371,6 +374,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Analyze agent capabilities for coordination
+   *
+   * @param agent
    */
   private analyzeAgentCapabilities(agent: any): AgentCapabilities {
     const capabilities: AgentCapabilities = {
@@ -422,6 +427,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Initialize coordination session
+   *
+   * @param session
    */
   async initializeSession(
     session: Partial<CoordinationSession> & { id: string; agentIds: string[] }
@@ -458,6 +465,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Select optimal coordination strategy for session
+   *
+   * @param session
    */
   private selectCoordinationStrategy(
     session: Partial<CoordinationSession> & { agentIds: string[] }
@@ -522,6 +531,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Calculate scalability score for agent count
+   *
+   * @param agentCount
+   * @param strategyScalability
    */
   private calculateScalabilityScore(agentCount: number, strategyScalability: number): number {
     const optimalRange = strategyScalability * 10; // Optimal agent count for strategy
@@ -531,6 +543,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Calculate session trust level
+   *
+   * @param session
+   * @param session.agentIds
    */
   private calculateSessionTrustLevel(session: { agentIds: string[] }): number {
     if (!session.agentIds || session.agentIds.length === 0) {
@@ -553,6 +568,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Estimate task complexity for session
+   *
+   * @param session
    */
   private estimateTaskComplexity(session: any): number {
     let complexity = 0.5; // Base complexity
@@ -575,6 +592,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Check if session has heterogeneous agents
+   *
+   * @param session
+   * @param session.agentIds
    */
   private isHeterogeneousSession(session: { agentIds: string[] }): boolean {
     const agentTypes = new Set<string>();
@@ -591,6 +611,10 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Select consensus protocol for strategy
+   *
+   * @param session
+   * @param session.agentIds
+   * @param _strategy
    */
   private selectConsensusProtocol(
     session: { agentIds: string[] },
@@ -612,6 +636,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Build communication graph for session
+   *
+   * @param agentIds
+   * @param strategy
    */
   private buildCommunicationGraph(
     agentIds: string[],
@@ -647,6 +674,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Build star topology (one central node connected to all others)
+   *
+   * @param graph
+   * @param agentIds
    */
   private buildStarTopology(graph: Map<string, Set<string>>, agentIds: string[]): void {
     if (agentIds.length === 0) {
@@ -664,6 +694,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Build mesh topology (all nodes connected to all others)
+   *
+   * @param graph
+   * @param agentIds
    */
   private buildMeshTopology(graph: Map<string, Set<string>>, agentIds: string[]): void {
     for (let i = 0; i < agentIds.length; i++) {
@@ -678,6 +711,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Build ring topology (each node connected to neighbors in a ring)
+   *
+   * @param graph
+   * @param agentIds
    */
   private buildRingTopology(graph: Map<string, Set<string>>, agentIds: string[]): void {
     for (let i = 0; i < agentIds.length; i++) {
@@ -692,6 +728,10 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Build neighborhood topology (each node connected to nearby nodes)
+   *
+   * @param graph
+   * @param agentIds
+   * @param radius
    */
   private buildNeighborhoodTopology(
     graph: Map<string, Set<string>>,
@@ -718,6 +758,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Initialize communication channels for session
+   *
+   * @param session
    */
   private async initializeCommunicationChannels(session: CoordinationSession): Promise<void> {
     const { communicationGraph, agentIds } = session;
@@ -749,6 +791,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Calculate communication latency between agents
+   *
+   * @param _agentA
+   * @param _agentB
    */
   private calculateChannelLatency(_agentA: string, _agentB: string): number {
     // Simplified latency calculation (in practice, would consider network topology)
@@ -759,6 +804,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Calculate communication bandwidth between agents
+   *
+   * @param agentA
+   * @param agentB
    */
   private calculateChannelBandwidth(agentA: string, agentB: string): number {
     // Simplified bandwidth calculation (in practice, would consider agent capabilities)
@@ -775,6 +823,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Calculate communication reliability between agents
+   *
+   * @param agentA
+   * @param agentB
    */
   private calculateChannelReliability(agentA: string, agentB: string): number {
     const agentAMetrics = this.coordinationMetrics.get(agentA);
@@ -789,6 +840,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Coordinate agents in session
+   *
+   * @param session
+   * @param session.id
    */
   async coordinate(session: { id: string }): Promise<any> {
     const coordinationSession = this.activeSessions.get(session.id);
@@ -829,6 +883,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Execute coordination strategy
+   *
+   * @param session
    */
   private async executeCoordinationStrategy(session: CoordinationSession): Promise<any> {
     const { strategy } = session;
@@ -971,6 +1027,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Get coordination results for session
+   *
+   * @param sessionId
    */
   async getResults(sessionId: string): Promise<any> {
     return this.coordinationResults.get(sessionId) || null;

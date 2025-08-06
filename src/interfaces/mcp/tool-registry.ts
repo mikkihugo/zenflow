@@ -1,11 +1,10 @@
 /**
- * @fileoverview MCP Tools Registry
+ * @file MCP Tools Registry
  *
  * Central registry for MCP tools from claude-zen.
  * Integrates with existing HTTP and Stdio MCP servers.
  */
 
-import type { DocumentManager } from '../../database/managers/document-manager';
 import coordinationTools from './tools/coordination-tools';
 import githubIntegrationTools from './tools/github-integration-tools';
 import memoryNeuralTools from './tools/memory-neural-tools';
@@ -16,6 +15,8 @@ import systemTools from './tools/system-tools';
 
 /**
  * MCP Tool interface
+ *
+ * @example
  */
 export interface MCPTool {
   name: string;
@@ -34,6 +35,8 @@ export interface MCPTool {
 
 /**
  * Simple tool registry
+ *
+ * @example
  */
 class SimpleToolRegistry {
   private tools = new Map<string, MCPTool>();
@@ -76,6 +79,8 @@ export const toolRegistry = new SimpleToolRegistry();
 /**
  * MCP Tools Manager
  * Provides centralized management for MCP tools
+ *
+ * @example
  */
 export class MCPToolsManager {
   private initialized = false;
@@ -147,6 +152,8 @@ export class MCPToolsManager {
 
   /**
    * Get tool by name
+   *
+   * @param name
    */
   getTool(name: string): MCPTool | undefined {
     return toolRegistry.getTool(name);
@@ -154,6 +161,9 @@ export class MCPToolsManager {
 
   /**
    * Execute tool with enhanced error handling and metrics
+   *
+   * @param name
+   * @param params
    */
   async executeTool(name: string, params: any): Promise<any> {
     const startTime = Date.now();
@@ -201,6 +211,8 @@ export class MCPToolsManager {
 
   /**
    * Get tools by category
+   *
+   * @param category
    */
   getToolsByCategory(category: string): MCPTool[] {
     return toolRegistry.getToolsByCategory(category);
@@ -253,6 +265,8 @@ export class MCPToolsManager {
 
   /**
    * Search tools by tags or keywords
+   *
+   * @param query
    */
   searchTools(query: string): MCPTool[] {
     const lowercaseQuery = query.toLowerCase();
@@ -275,6 +289,8 @@ export class MCPToolsManager {
 
   /**
    * Check if tool exists
+   *
+   * @param name
    */
   hasTool(name: string): boolean {
     return toolRegistry.getTool(name) !== undefined;
@@ -282,6 +298,9 @@ export class MCPToolsManager {
 
   /**
    * Get tools requiring specific permissions
+   *
+   * @param permissionType
+   * @param resource
    */
   getToolsByPermission(permissionType: string, resource?: string): MCPTool[] {
     return toolRegistry
@@ -320,6 +339,8 @@ export const mcpToolsManager = new MCPToolsManager();
 
 /**
  * Initialize the MCP tools manager with database services for SPARC integration
+ *
+ * @param documentService
  */
 export function initializeWithDatabaseServices(documentService: DocumentService): MCPToolsManager {
   // Create new instance with database services for SPARC tools
@@ -329,10 +350,14 @@ export function initializeWithDatabaseServices(documentService: DocumentService)
 
 /**
  * Integration helper for existing MCP servers
+ *
+ * @example
  */
 export class MCPServerIntegration {
   /**
    * Register tools with HTTP MCP server
+   *
+   * @param mcpServer
    */
   static async integrateWithHTTPServer(mcpServer: any): Promise<void> {
     const tools = toolRegistry.getAllTools();
@@ -358,6 +383,8 @@ export class MCPServerIntegration {
 
   /**
    * Register tools with Stdio MCP server
+   *
+   * @param mcpServer
    */
   static async integrateWithStdioServer(mcpServer: any): Promise<void> {
     const tools = toolRegistry.getAllTools();

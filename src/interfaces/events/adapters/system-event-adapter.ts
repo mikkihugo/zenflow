@@ -1,64 +1,43 @@
 /**
  * UEL System Event Adapter
- * 
+ *
  * Unified Event Layer adapter for system-level events, providing
  * a consistent interface to scattered EventEmitter patterns across the core system
  * while maintaining full backward compatibility and adding enhanced monitoring,
  * event correlation, performance tracking, and unified system-level functionality.
- * 
+ *
  * This adapter follows the exact same patterns as the USL service adapters,
  * implementing the IEventManager interface and providing unified configuration
  * management for system events across Claude-Zen.
  */
 
+import { EventEmitter } from 'node:events';
+import type { ApplicationCoordinator } from '../../../core/application-coordinator';
+// Import core system classes to wrap their EventEmitter usage
+import type { CoreSystem } from '../../../core/core-system';
+import { createLogger, type Logger } from '../../../utils/logger';
 import type {
-  IEventManager,
-  EventManagerConfig,
-  EventManagerStatus,
-  EventManagerMetrics,
-  SystemEvent,
-  EventSubscription,
-  EventListener,
-  EventFilter,
-  EventTransform,
   EventBatch,
   EventEmissionOptions,
+  EventFilter,
+  EventListener,
+  EventManagerConfig,
+  EventManagerMetrics,
+  EventManagerStatus,
   EventQueryOptions,
-  EventError,
-  EventSubscriptionError,
-  EventEmissionError,
-  EventTimeoutError,
-  EventRetryExhaustedError
+  EventSubscription,
+  EventTransform,
+  IEventManager,
+  SystemEvent,
 } from '../core/interfaces';
-
-import {
-  EventTimeoutError,
-  EventEmissionError
-} from '../core/interfaces';
-
-import type {
-  SystemLifecycleEvent,
-  EventPriority,
-  EventProcessingStrategy
-} from '../types';
-
-import { EventManagerTypes, EventTypeGuards } from '../core/interfaces';
-import { EventCategories, DefaultEventManagerConfigs, EventPriorityMap, UELTypeGuards } from '../types';
-
-// Import core system classes to wrap their EventEmitter usage
-import { CoreSystem } from '../../../core/core-system';
-import { ApplicationCoordinator } from '../../../core/application-coordinator';
-import { WorkflowEngine } from '../../../core/workflow-engine';
-import { MemorySystem } from '../../../core/memory-system';
-import { InterfaceManager } from '../../../core/interface-manager';
-import { DocumentProcessor } from '../../../core/document-processor';
-import { ErrorRecoverySystem } from '../../../utils/error-recovery';
-
-import { createLogger, type Logger } from '../../../utils/logger';
-import { EventEmitter } from 'events';
+import { EventEmissionError, EventManagerTypes, EventTimeoutError } from '../core/interfaces';
+import type { SystemLifecycleEvent } from '../types';
+import { EventPriorityMap } from '../types';
 
 /**
  * System event adapter configuration extending UEL EventManagerConfig
+ *
+ * @example
  */
 export interface SystemEventAdapterConfig extends EventManagerConfig {
   /** Core system integration settings */
@@ -68,7 +47,7 @@ export interface SystemEventAdapterConfig extends EventManagerConfig {
     wrapHealthEvents?: boolean;
     wrapConfigEvents?: boolean;
   };
-  
+
   /** Application coordinator integration settings */
   applicationCoordinator?: {
     enabled: boolean;
@@ -76,7 +55,7 @@ export interface SystemEventAdapterConfig extends EventManagerConfig {
     wrapStatusEvents?: boolean;
     wrapWorkspaceEvents?: boolean;
   };
-  
+
   /** Process management integration settings */
   processManagement?: {
     enabled: boolean;
@@ -84,7 +63,7 @@ export interface SystemEventAdapterConfig extends EventManagerConfig {
     wrapDaemonEvents?: boolean;
     wrapResourceEvents?: boolean;
   };
-  
+
   /** Error recovery integration settings */
   errorRecovery?: {
     enabled: boolean;
@@ -92,7 +71,7 @@ export interface SystemEventAdapterConfig extends EventManagerConfig {
     wrapStrategyEvents?: boolean;
     correlateErrors?: boolean;
   };
-  
+
   /** Performance optimization settings */
   performance?: {
     enableEventCorrelation?: boolean;
@@ -100,7 +79,7 @@ export interface SystemEventAdapterConfig extends EventManagerConfig {
     eventTimeout?: number;
     enablePerformanceTracking?: boolean;
   };
-  
+
   /** Event correlation configuration */
   correlation?: {
     enabled: boolean;
@@ -109,7 +88,7 @@ export interface SystemEventAdapterConfig extends EventManagerConfig {
     maxCorrelationDepth: number;
     correlationPatterns: string[];
   };
-  
+
   /** Health monitoring configuration */
   healthMonitoring?: {
     enabled: boolean;
@@ -121,6 +100,8 @@ export interface SystemEventAdapterConfig extends EventManagerConfig {
 
 /**
  * System event operation metrics for performance monitoring
+ *
+ * @example
  */
 interface SystemEventMetrics {
   eventType: string;
@@ -136,6 +117,8 @@ interface SystemEventMetrics {
 
 /**
  * Event correlation entry for tracking related events
+ *
+ * @example
  */
 interface EventCorrelation {
   correlationId: string;
@@ -150,6 +133,8 @@ interface EventCorrelation {
 
 /**
  * System health tracking entry
+ *
+ * @example
  */
 interface SystemHealthEntry {
   component: string;
@@ -163,6 +148,8 @@ interface SystemHealthEntry {
 
 /**
  * Wrapped system component for unified event management
+ *
+ * @example
  */
 interface WrappedSystemComponent {
   component: any;
@@ -174,13 +161,13 @@ interface WrappedSystemComponent {
 
 /**
  * Unified System Event Adapter
- * 
+ *
  * Provides a unified interface to system-level EventEmitter patterns
  * while implementing the IEventManager interface for UEL compatibility.
- * 
+ *
  * Features:
  * - Application lifecycle event management
- * - System health monitoring and status reporting  
+ * - System health monitoring and status reporting
  * - Configuration change detection and notification
  * - Error correlation and recovery tracking
  * - Performance monitoring for system operations
@@ -189,6 +176,8 @@ interface WrappedSystemComponent {
  * - Health monitoring and auto-recovery
  * - Event forwarding and transformation
  * - Error handling with retry logic
+ *
+ * @example
  */
 export class SystemEventAdapter implements IEventManager {
   // Core event manager properties
@@ -210,7 +199,6 @@ export class SystemEventAdapter implements IEventManager {
   private wrappedComponents = new Map<string, WrappedSystemComponent>();
   private coreSystem?: CoreSystem;
   private applicationCoordinator?: ApplicationCoordinator;
-  private errorRecoverySystem?: ErrorRecoverySystem;
 
   // Event correlation and tracking
   private eventCorrelations = new Map<string, EventCorrelation>();
@@ -235,35 +223,35 @@ export class SystemEventAdapter implements IEventManager {
         wrapLifecycleEvents: true,
         wrapHealthEvents: true,
         wrapConfigEvents: true,
-        ...config.coreSystem
+        ...config.coreSystem,
       },
       applicationCoordinator: {
         enabled: true,
         wrapComponentEvents: true,
         wrapStatusEvents: true,
         wrapWorkspaceEvents: true,
-        ...config.applicationCoordinator
+        ...config.applicationCoordinator,
       },
       processManagement: {
         enabled: true,
         wrapServiceEvents: true,
         wrapDaemonEvents: true,
         wrapResourceEvents: true,
-        ...config.processManagement
+        ...config.processManagement,
       },
       errorRecovery: {
         enabled: true,
         wrapRecoveryEvents: true,
         wrapStrategyEvents: true,
         correlateErrors: true,
-        ...config.errorRecovery
+        ...config.errorRecovery,
       },
       performance: {
         enableEventCorrelation: true,
         maxConcurrentEvents: 100,
         eventTimeout: 30000,
         enablePerformanceTracking: true,
-        ...config.performance
+        ...config.performance,
       },
       correlation: {
         enabled: true,
@@ -273,9 +261,9 @@ export class SystemEventAdapter implements IEventManager {
         correlationPatterns: [
           'system:startup->system:health',
           'system:error->system:recovery',
-          'config:change->system:restart'
+          'config:change->system:restart',
         ],
-        ...config.correlation
+        ...config.correlation,
       },
       healthMonitoring: {
         enabled: true,
@@ -285,12 +273,12 @@ export class SystemEventAdapter implements IEventManager {
           'application-coordinator': 0.9,
           'workflow-engine': 0.85,
           'memory-system': 0.9,
-          'interface-manager': 0.8
+          'interface-manager': 0.8,
         },
         autoRecoveryEnabled: true,
-        ...config.healthMonitoring
+        ...config.healthMonitoring,
       },
-      ...config
+      ...config,
     };
 
     this.logger = createLogger(`SystemEventAdapter:${this.name}`);
@@ -314,19 +302,19 @@ export class SystemEventAdapter implements IEventManager {
     }
 
     this.logger.info(`Starting system event adapter: ${this.name}`);
-    
+
     try {
       // Initialize system component integrations
       await this.initializeSystemIntegrations();
-      
+
       // Start event processing
       this.startEventProcessing();
-      
+
       // Start health monitoring if enabled
       if (this.config.healthMonitoring?.enabled) {
         this.startHealthMonitoring();
       }
-      
+
       // Start correlation cleanup if enabled
       if (this.config.correlation?.enabled) {
         this.startCorrelationCleanup();
@@ -335,7 +323,7 @@ export class SystemEventAdapter implements IEventManager {
       this.running = true;
       this.startTime = new Date();
       this.emitInternal('start');
-      
+
       this.logger.info(`System event adapter started successfully: ${this.name}`);
     } catch (error) {
       this.logger.error(`Failed to start system event adapter ${this.name}:`, error);
@@ -354,20 +342,20 @@ export class SystemEventAdapter implements IEventManager {
     }
 
     this.logger.info(`Stopping system event adapter: ${this.name}`);
-    
+
     try {
       // Stop event processing
       this.processingEvents = false;
-      
+
       // Unwrap system components
       await this.unwrapSystemComponents();
-      
+
       // Clear event queues
       this.eventQueue.length = 0;
-      
+
       this.running = false;
       this.emitInternal('stop');
-      
+
       this.logger.info(`System event adapter stopped successfully: ${this.name}`);
     } catch (error) {
       this.logger.error(`Failed to stop system event adapter ${this.name}:`, error);
@@ -394,11 +382,14 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Emit a system event with correlation and performance tracking
+   *
+   * @param event
+   * @param options
    */
   async emit<T extends SystemEvent>(event: T, options?: EventEmissionOptions): Promise<void> {
     const startTime = Date.now();
     const eventId = event.id || this.generateEventId();
-    
+
     try {
       // Validate event
       if (!this.validateEvent(event)) {
@@ -416,7 +407,7 @@ export class SystemEventAdapter implements IEventManager {
       await Promise.race([emissionPromise, timeoutPromise]);
 
       const duration = Date.now() - startTime;
-      
+
       // Record success metrics
       this.recordEventMetrics({
         eventType: event.type,
@@ -425,7 +416,7 @@ export class SystemEventAdapter implements IEventManager {
         executionTime: duration,
         success: true,
         correlationId: event.correlationId,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       this.eventCount++;
@@ -433,10 +424,9 @@ export class SystemEventAdapter implements IEventManager {
       this.totalLatency += duration;
 
       this.eventEmitter.emit('emission', { event, success: true, duration });
-      
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       // Record error metrics
       this.recordEventMetrics({
         eventType: event.type,
@@ -446,7 +436,7 @@ export class SystemEventAdapter implements IEventManager {
         success: false,
         correlationId: event.correlationId,
         errorType: error instanceof Error ? error.constructor.name : 'UnknownError',
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       this.eventCount++;
@@ -455,7 +445,7 @@ export class SystemEventAdapter implements IEventManager {
 
       this.eventEmitter.emit('emission', { event, success: false, duration, error });
       this.eventEmitter.emit('error', error);
-      
+
       this.logger.error(`Event emission failed for ${event.type}:`, error);
       throw error;
     }
@@ -463,13 +453,19 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Emit batch of events with optimized processing
+   *
+   * @param batch
+   * @param options
    */
-  async emitBatch<T extends SystemEvent>(batch: EventBatch<T>, options?: EventEmissionOptions): Promise<void> {
+  async emitBatch<T extends SystemEvent>(
+    batch: EventBatch<T>,
+    options?: EventEmissionOptions
+  ): Promise<void> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.debug(`Emitting event batch: ${batch.id} (${batch.events.length} events)`);
-      
+
       // Process events based on strategy
       switch (this.config.processing?.strategy) {
         case 'immediate':
@@ -490,7 +486,6 @@ export class SystemEventAdapter implements IEventManager {
 
       const duration = Date.now() - startTime;
       this.logger.debug(`Event batch processed successfully: ${batch.id} in ${duration}ms`);
-      
     } catch (error) {
       this.logger.error(`Event batch processing failed for ${batch.id}:`, error);
       throw error;
@@ -499,6 +494,8 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Emit event immediately without queuing
+   *
+   * @param event
    */
   async emitImmediate<T extends SystemEvent>(event: T): Promise<void> {
     await this.emit(event, { timeout: 5000 });
@@ -506,6 +503,10 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Subscribe to system events with filtering and transformation
+   *
+   * @param eventTypes
+   * @param listener
+   * @param options
    */
   subscribe<T extends SystemEvent>(
     eventTypes: string | string[],
@@ -514,7 +515,7 @@ export class SystemEventAdapter implements IEventManager {
   ): string {
     const subscriptionId = this.generateSubscriptionId();
     const types = Array.isArray(eventTypes) ? eventTypes : [eventTypes];
-    
+
     const subscription: EventSubscription<T> = {
       id: subscriptionId,
       eventTypes: types,
@@ -524,19 +525,21 @@ export class SystemEventAdapter implements IEventManager {
       priority: options?.priority || 'medium',
       created: new Date(),
       active: true,
-      metadata: options?.metadata || {}
+      metadata: options?.metadata || {},
     };
 
     this.subscriptions.set(subscriptionId, subscription as EventSubscription);
 
     this.logger.debug(`Created subscription ${subscriptionId} for events: ${types.join(', ')}`);
     this.eventEmitter.emit('subscription', { subscriptionId, subscription });
-    
+
     return subscriptionId;
   }
 
   /**
    * Unsubscribe from events
+   *
+   * @param subscriptionId
    */
   unsubscribe(subscriptionId: string): boolean {
     const subscription = this.subscriptions.get(subscriptionId);
@@ -546,17 +549,19 @@ export class SystemEventAdapter implements IEventManager {
 
     subscription.active = false;
     this.subscriptions.delete(subscriptionId);
-    
+
     this.logger.debug(`Removed subscription: ${subscriptionId}`);
     return true;
   }
 
   /**
    * Unsubscribe all listeners for event type
+   *
+   * @param eventType
    */
   unsubscribeAll(eventType?: string): number {
     let removedCount = 0;
-    
+
     if (eventType) {
       // Remove subscriptions for specific event type
       for (const [id, subscription] of this.subscriptions.entries()) {
@@ -572,12 +577,16 @@ export class SystemEventAdapter implements IEventManager {
       this.eventEmitter.removeAllListeners();
     }
 
-    this.logger.debug(`Removed ${removedCount} subscriptions${eventType ? ` for ${eventType}` : ''}`);
+    this.logger.debug(
+      `Removed ${removedCount} subscriptions${eventType ? ` for ${eventType}` : ''}`
+    );
     return removedCount;
   }
 
   /**
    * Add event filter
+   *
+   * @param filter
    */
   addFilter(filter: EventFilter): string {
     const filterId = this.generateFilterId();
@@ -588,6 +597,8 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Remove event filter
+   *
+   * @param filterId
    */
   removeFilter(filterId: string): boolean {
     const result = this.filters.delete(filterId);
@@ -599,6 +610,8 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Add event transform
+   *
+   * @param transform
    */
   addTransform(transform: EventTransform): string {
     const transformId = this.generateTransformId();
@@ -609,6 +622,8 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Remove event transform
+   *
+   * @param transformId
    */
   removeTransform(transformId: string): boolean {
     const result = this.transforms.delete(transformId);
@@ -620,13 +635,15 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Query event history with filtering and pagination
+   *
+   * @param options
    */
   async query<T extends SystemEvent>(options: EventQueryOptions): Promise<T[]> {
     let events = [...this.eventHistory] as T[];
 
     // Apply filters
     if (options.filter) {
-      events = events.filter(event => this.applyFilter(event, options.filter!));
+      events = events.filter((event) => this.applyFilter(event, options.filter!));
     }
 
     // Apply sorting
@@ -649,9 +666,12 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Get event history for specific event type
+   *
+   * @param eventType
+   * @param limit
    */
   async getEventHistory(eventType: string, limit?: number): Promise<SystemEvent[]> {
-    const events = this.eventHistory.filter(event => event.type === eventType);
+    const events = this.eventHistory.filter((event) => event.type === eventType);
     return limit ? events.slice(-limit) : events;
   }
 
@@ -665,12 +685,15 @@ export class SystemEventAdapter implements IEventManager {
 
     // Check system component health
     const componentHealth = await this.checkSystemComponentHealth();
-    
+
     // Determine overall health status
     let status: EventManagerStatus['status'] = 'healthy';
     if (errorRate > 20 || !this.running) {
       status = 'unhealthy';
-    } else if (errorRate > 10 || Object.values(componentHealth).some(h => h.status !== 'healthy')) {
+    } else if (
+      errorRate > 10 ||
+      Object.values(componentHealth).some((h) => h.status !== 'healthy')
+    ) {
       status = 'degraded';
     }
 
@@ -689,8 +712,8 @@ export class SystemEventAdapter implements IEventManager {
         errorCount: this.errorCount,
         correlations: this.eventCorrelations.size,
         wrappedComponents: this.wrappedComponents.size,
-        componentHealth
-      }
+        componentHealth,
+      },
     };
   }
 
@@ -700,14 +723,14 @@ export class SystemEventAdapter implements IEventManager {
   async getMetrics(): Promise<EventManagerMetrics> {
     const now = new Date();
     const recentMetrics = this.metrics.filter(
-      m => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
     );
 
     const avgLatency = this.eventCount > 0 ? this.totalLatency / this.eventCount : 0;
     const throughput = recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // events per second
 
     // Calculate percentile latencies
-    const latencies = recentMetrics.map(m => m.executionTime).sort((a, b) => a - b);
+    const latencies = recentMetrics.map((m) => m.executionTime).sort((a, b) => a - b);
     const p95Index = Math.floor(latencies.length * 0.95);
     const p99Index = Math.floor(latencies.length * 0.99);
 
@@ -724,7 +747,7 @@ export class SystemEventAdapter implements IEventManager {
       subscriptionCount: this.subscriptions.size,
       queueSize: this.eventQueue.length,
       memoryUsage: this.estimateMemoryUsage(),
-      timestamp: now
+      timestamp: now,
     };
   }
 
@@ -732,11 +755,13 @@ export class SystemEventAdapter implements IEventManager {
    * Get active subscriptions
    */
   getSubscriptions(): EventSubscription[] {
-    return Array.from(this.subscriptions.values()).filter(sub => sub.active);
+    return Array.from(this.subscriptions.values()).filter((sub) => sub.active);
   }
 
   /**
    * Update adapter configuration
+   *
+   * @param config
    */
   updateConfig(config: Partial<SystemEventAdapterConfig>): void {
     this.logger.info(`Updating configuration for system event adapter: ${this.name}`);
@@ -746,8 +771,14 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Event handler management (EventEmitter compatibility)
+   *
+   * @param event
+   * @param handler
    */
-  on(event: 'start' | 'stop' | 'error' | 'subscription' | 'emission', handler: (...args: any[]) => void): void {
+  on(
+    event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
+    handler: (...args: any[]) => void
+  ): void {
     this.eventEmitter.on(event, handler);
   }
 
@@ -802,14 +833,18 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Emit system lifecycle event with enhanced tracking
+   *
+   * @param event
    */
-  async emitSystemLifecycleEvent(event: Omit<SystemLifecycleEvent, 'id' | 'timestamp'>): Promise<void> {
+  async emitSystemLifecycleEvent(
+    event: Omit<SystemLifecycleEvent, 'id' | 'timestamp'>
+  ): Promise<void> {
     const systemEvent: SystemLifecycleEvent = {
       ...event,
       id: this.generateEventId(),
       timestamp: new Date(),
       priority: event.priority || EventPriorityMap[event.type] || 'medium',
-      correlationId: event.correlationId || this.generateCorrelationId()
+      correlationId: event.correlationId || this.generateCorrelationId(),
     };
 
     // Start event correlation if enabled
@@ -822,13 +857,20 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Subscribe to system lifecycle events with convenience
+   *
+   * @param listener
    */
   subscribeSystemLifecycleEvents(listener: EventListener<SystemLifecycleEvent>): string {
-    return this.subscribe(['system:startup', 'system:shutdown', 'system:restart', 'system:error', 'system:health'], listener);
+    return this.subscribe(
+      ['system:startup', 'system:shutdown', 'system:restart', 'system:error', 'system:health'],
+      listener
+    );
   }
 
   /**
    * Subscribe to application lifecycle events
+   *
+   * @param listener
    */
   subscribeApplicationEvents(listener: EventListener<SystemLifecycleEvent>): string {
     return this.subscribe(['system:startup', 'system:health'], listener);
@@ -836,6 +878,8 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Subscribe to error and recovery events
+   *
+   * @param listener
    */
   subscribeErrorRecoveryEvents(listener: EventListener<SystemLifecycleEvent>): string {
     return this.subscribe(['system:error'], listener);
@@ -846,7 +890,7 @@ export class SystemEventAdapter implements IEventManager {
    */
   async getSystemHealthStatus(): Promise<Record<string, SystemHealthEntry>> {
     const healthStatus: Record<string, SystemHealthEntry> = {};
-    
+
     for (const [component, health] of this.systemHealth.entries()) {
       healthStatus[component] = { ...health };
     }
@@ -856,6 +900,8 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Get correlated events for a specific correlation ID
+   *
+   * @param correlationId
    */
   getCorrelatedEvents(correlationId: string): EventCorrelation | null {
     return this.eventCorrelations.get(correlationId) || null;
@@ -865,7 +911,7 @@ export class SystemEventAdapter implements IEventManager {
    * Get active event correlations
    */
   getActiveCorrelations(): EventCorrelation[] {
-    return Array.from(this.eventCorrelations.values()).filter(c => c.status === 'active');
+    return Array.from(this.eventCorrelations.values()).filter((c) => c.status === 'active');
   }
 
   /**
@@ -873,15 +919,15 @@ export class SystemEventAdapter implements IEventManager {
    */
   async performSystemHealthCheck(): Promise<Record<string, SystemHealthEntry>> {
     const healthResults: Record<string, SystemHealthEntry> = {};
-    
+
     for (const [componentName, wrapped] of this.wrappedComponents.entries()) {
       try {
         const startTime = Date.now();
-        
+
         // Perform component-specific health check
         let isHealthy = wrapped.isActive;
         let errorRate = 0;
-        
+
         // Get component-specific health data if available
         if (wrapped.component && typeof wrapped.component.getStatus === 'function') {
           const status = await wrapped.component.getStatus();
@@ -890,26 +936,33 @@ export class SystemEventAdapter implements IEventManager {
         }
 
         const responseTime = Date.now() - startTime;
-        const threshold = this.config.healthMonitoring?.componentHealthThresholds?.[componentName] || 0.8;
-        const healthScore = isHealthy ? (1 - errorRate) : 0;
-        
+        const threshold =
+          this.config.healthMonitoring?.componentHealthThresholds?.[componentName] || 0.8;
+        const healthScore = isHealthy ? 1 - errorRate : 0;
+
         const healthEntry: SystemHealthEntry = {
           component: componentName,
-          status: healthScore >= threshold ? 'healthy' : healthScore >= threshold * 0.7 ? 'degraded' : 'unhealthy',
+          status:
+            healthScore >= threshold
+              ? 'healthy'
+              : healthScore >= threshold * 0.7
+                ? 'degraded'
+                : 'unhealthy',
           lastCheck: new Date(),
-          consecutiveFailures: isHealthy ? 0 : (this.systemHealth.get(componentName)?.consecutiveFailures || 0) + 1,
+          consecutiveFailures: isHealthy
+            ? 0
+            : (this.systemHealth.get(componentName)?.consecutiveFailures || 0) + 1,
           errorRate,
           responseTime,
           metadata: {
             healthScore,
             threshold,
-            isActive: wrapped.isActive
-          }
+            isActive: wrapped.isActive,
+          },
         };
 
         this.systemHealth.set(componentName, healthEntry);
         healthResults[componentName] = healthEntry;
-        
       } catch (error) {
         const healthEntry: SystemHealthEntry = {
           component: componentName,
@@ -919,8 +972,8 @@ export class SystemEventAdapter implements IEventManager {
           errorRate: 1.0,
           responseTime: 0,
           metadata: {
-            error: error instanceof Error ? error.message : 'Unknown error'
-          }
+            error: error instanceof Error ? error.message : 'Unknown error',
+          },
         };
 
         this.systemHealth.set(componentName, healthEntry);
@@ -946,7 +999,7 @@ export class SystemEventAdapter implements IEventManager {
       await this.wrapCoreSystem();
     }
 
-    // Wrap ApplicationCoordinator if enabled  
+    // Wrap ApplicationCoordinator if enabled
     if (this.config.applicationCoordinator?.enabled) {
       await this.wrapApplicationCoordinator();
     }
@@ -965,7 +1018,7 @@ export class SystemEventAdapter implements IEventManager {
   private async wrapCoreSystem(): Promise<void> {
     // Note: In a real implementation, we would get a reference to the actual CoreSystem instance
     // For now, we'll create a mock wrapper to demonstrate the pattern
-    
+
     const wrapper = new EventEmitter();
     const wrappedComponent: WrappedSystemComponent = {
       component: null, // Would be actual CoreSystem instance
@@ -975,9 +1028,9 @@ export class SystemEventAdapter implements IEventManager {
         ['system-initialized', 'system:startup'],
         ['system-ready', 'system:health'],
         ['system-error', 'system:error'],
-        ['system-shutdown', 'system:shutdown']
+        ['system-shutdown', 'system:shutdown'],
       ]),
-      isActive: true
+      isActive: true,
     };
 
     // Set up event forwarding from CoreSystem to UEL
@@ -992,7 +1045,7 @@ export class SystemEventAdapter implements IEventManager {
           status: this.extractStatusFromData(data),
           priority: EventPriorityMap[uelEvent] || 'medium',
           correlationId: this.generateCorrelationId(),
-          metadata: { originalEvent, data }
+          metadata: { originalEvent, data },
         };
 
         this.eventEmitter.emit(uelEvent, systemEvent);
@@ -1016,9 +1069,9 @@ export class SystemEventAdapter implements IEventManager {
         ['component-initialized', 'system:startup'],
         ['component-status-change', 'system:health'],
         ['component-error', 'system:error'],
-        ['workspace-loaded', 'system:health']
+        ['workspace-loaded', 'system:health'],
       ]),
-      isActive: true
+      isActive: true,
     };
 
     // Set up event forwarding
@@ -1033,7 +1086,7 @@ export class SystemEventAdapter implements IEventManager {
           status: this.extractStatusFromData(data),
           priority: EventPriorityMap[uelEvent] || 'medium',
           correlationId: this.generateCorrelationId(),
-          metadata: { originalEvent, data }
+          metadata: { originalEvent, data },
         };
 
         this.eventEmitter.emit(uelEvent, systemEvent);
@@ -1045,7 +1098,7 @@ export class SystemEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap ErrorRecoverySystem events with UEL integration  
+   * Wrap ErrorRecoverySystem events with UEL integration
    */
   private async wrapErrorRecoverySystem(): Promise<void> {
     const wrapper = new EventEmitter();
@@ -1057,9 +1110,9 @@ export class SystemEventAdapter implements IEventManager {
         ['recovery:started', 'system:error'],
         ['recovery:completed', 'system:health'],
         ['recovery:failed', 'system:error'],
-        ['strategy:registered', 'system:health']
+        ['strategy:registered', 'system:health'],
       ]),
-      isActive: true
+      isActive: true,
     };
 
     // Set up event forwarding
@@ -1074,11 +1127,11 @@ export class SystemEventAdapter implements IEventManager {
           status: this.extractStatusFromData(data),
           priority: 'high', // Error recovery events are high priority
           correlationId: this.generateCorrelationId(),
-          metadata: { originalEvent, data }
+          metadata: { originalEvent, data },
         };
 
         this.eventEmitter.emit(uelEvent, systemEvent);
-        
+
         // Correlate error recovery events if enabled
         if (this.config.errorRecovery?.correlateErrors) {
           this.correlateErrorRecoveryEvent(systemEvent, data);
@@ -1098,7 +1151,7 @@ export class SystemEventAdapter implements IEventManager {
       try {
         // Restore original methods if they were wrapped
         wrapped.originalMethods.forEach((originalMethod, methodName) => {
-          if (wrapped.component && wrapped.component[methodName]) {
+          if (wrapped.component?.[methodName]) {
             wrapped.component[methodName] = originalMethod;
           }
         });
@@ -1106,7 +1159,7 @@ export class SystemEventAdapter implements IEventManager {
         // Remove event listeners
         wrapped.wrapper.removeAllListeners();
         wrapped.isActive = false;
-        
+
         this.logger.debug(`Unwrapped component: ${componentName}`);
       } catch (error) {
         this.logger.warn(`Failed to unwrap component ${componentName}:`, error);
@@ -1118,11 +1171,17 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Process event emission with correlation and filtering
+   *
+   * @param event
+   * @param options
    */
-  private async processEventEmission<T extends SystemEvent>(event: T, options?: EventEmissionOptions): Promise<void> {
+  private async processEventEmission<T extends SystemEvent>(
+    event: T,
+    _options?: EventEmissionOptions
+  ): Promise<void> {
     // Add to event history
     this.eventHistory.push(event);
-    
+
     // Limit history size
     if (this.eventHistory.length > 10000) {
       this.eventHistory = this.eventHistory.slice(-5000);
@@ -1183,7 +1242,7 @@ export class SystemEventAdapter implements IEventManager {
    */
   private startEventProcessing(): void {
     this.processingEvents = true;
-    
+
     const processQueue = async () => {
       if (!this.processingEvents || this.eventQueue.length === 0) {
         setTimeout(processQueue, 100);
@@ -1211,11 +1270,11 @@ export class SystemEventAdapter implements IEventManager {
    */
   private startHealthMonitoring(): void {
     const interval = this.config.healthMonitoring?.healthCheckInterval || 30000;
-    
+
     setInterval(async () => {
       try {
         await this.performSystemHealthCheck();
-        
+
         // Emit health status events
         for (const [component, health] of this.systemHealth.entries()) {
           if (health.status !== 'healthy') {
@@ -1228,8 +1287,8 @@ export class SystemEventAdapter implements IEventManager {
                 component,
                 healthScore: health.metadata?.healthScore,
                 errorRate: health.errorRate,
-                consecutiveFailures: health.consecutiveFailures
-              }
+                consecutiveFailures: health.consecutiveFailures,
+              },
             });
           }
         }
@@ -1245,25 +1304,25 @@ export class SystemEventAdapter implements IEventManager {
   private startCorrelationCleanup(): void {
     const cleanupInterval = 60000; // 1 minute
     const correlationTTL = this.config.correlation?.correlationTTL || 300000; // 5 minutes
-    
+
     setInterval(() => {
       const now = Date.now();
       const expiredCorrelations: string[] = [];
-      
+
       for (const [correlationId, correlation] of this.eventCorrelations.entries()) {
         if (now - correlation.lastUpdate.getTime() > correlationTTL) {
           expiredCorrelations.push(correlationId);
         }
       }
-      
-      expiredCorrelations.forEach(id => {
+
+      expiredCorrelations.forEach((id) => {
         const correlation = this.eventCorrelations.get(id);
         if (correlation) {
           correlation.status = 'timeout';
           this.eventCorrelations.delete(id);
         }
       });
-      
+
       if (expiredCorrelations.length > 0) {
         this.logger.debug(`Cleaned up ${expiredCorrelations.length} expired correlations`);
       }
@@ -1272,10 +1331,12 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Start event correlation for tracking related events
+   *
+   * @param event
    */
   private startEventCorrelation(event: SystemEvent): void {
     const correlationId = event.correlationId || this.generateCorrelationId();
-    
+
     if (!this.eventCorrelations.has(correlationId)) {
       const correlation: EventCorrelation = {
         correlationId,
@@ -1285,9 +1346,9 @@ export class SystemEventAdapter implements IEventManager {
         component: event.source,
         operation: this.extractOperationFromEvent(event.type),
         status: 'active',
-        metadata: {}
+        metadata: {},
       };
-      
+
       this.eventCorrelations.set(correlationId, correlation);
     } else {
       this.updateEventCorrelation(event);
@@ -1296,16 +1357,18 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Update existing event correlation
+   *
+   * @param event
    */
   private updateEventCorrelation(event: SystemEvent): void {
     const correlationId = event.correlationId;
     if (!correlationId) return;
-    
+
     const correlation = this.eventCorrelations.get(correlationId);
     if (correlation) {
       correlation.events.push(event);
       correlation.lastUpdate = new Date();
-      
+
       // Check for completion patterns
       if (this.isCorrelationComplete(correlation)) {
         correlation.status = 'completed';
@@ -1315,37 +1378,42 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Correlate error recovery events for enhanced tracking
+   *
+   * @param event
+   * @param data
    */
   private correlateErrorRecoveryEvent(event: SystemLifecycleEvent, data: any): void {
     // Create correlation between error and recovery events
     const recoveryCorrelationId = this.generateCorrelationId();
-    
+
     // Update event with recovery correlation
     event.correlationId = recoveryCorrelationId;
     event.metadata = {
       ...event.metadata,
-      recoveryData: data
+      recoveryData: data,
     };
-    
+
     this.startEventCorrelation(event);
   }
 
   /**
    * Check if event correlation is complete based on patterns
+   *
+   * @param correlation
    */
   private isCorrelationComplete(correlation: EventCorrelation): boolean {
     const patterns = this.config.correlation?.correlationPatterns || [];
-    
+
     for (const pattern of patterns) {
       const [startEvent, endEvent] = pattern.split('->');
-      const hasStart = correlation.events.some(e => e.type === startEvent);
-      const hasEnd = correlation.events.some(e => e.type === endEvent);
-      
+      const hasStart = correlation.events.some((e) => e.type === startEvent);
+      const hasEnd = correlation.events.some((e) => e.type === endEvent);
+
       if (hasStart && hasEnd) {
         return true;
       }
     }
-    
+
     return false;
   }
 
@@ -1354,7 +1422,7 @@ export class SystemEventAdapter implements IEventManager {
    */
   private async checkSystemComponentHealth(): Promise<Record<string, SystemHealthEntry>> {
     const componentHealth: Record<string, SystemHealthEntry> = {};
-    
+
     for (const [componentName, wrapped] of this.wrappedComponents.entries()) {
       const existing = this.systemHealth.get(componentName);
       const healthEntry: SystemHealthEntry = existing || {
@@ -1364,46 +1432,63 @@ export class SystemEventAdapter implements IEventManager {
         consecutiveFailures: 0,
         errorRate: 0,
         responseTime: 0,
-        metadata: {}
+        metadata: {},
       };
-      
+
       componentHealth[componentName] = healthEntry;
     }
-    
+
     return componentHealth;
   }
 
   /**
    * Batch processing methods for different strategies
+   *
+   * @param batch
+   * @param options
    */
-  private async processBatchImmediate<T extends SystemEvent>(batch: EventBatch<T>, options?: EventEmissionOptions): Promise<void> {
-    await Promise.all(batch.events.map(event => this.emit(event, options)));
+  private async processBatchImmediate<T extends SystemEvent>(
+    batch: EventBatch<T>,
+    options?: EventEmissionOptions
+  ): Promise<void> {
+    await Promise.all(batch.events.map((event) => this.emit(event, options)));
   }
 
-  private async processBatchQueued<T extends SystemEvent>(batch: EventBatch<T>, options?: EventEmissionOptions): Promise<void> {
+  private async processBatchQueued<T extends SystemEvent>(
+    batch: EventBatch<T>,
+    _options?: EventEmissionOptions
+  ): Promise<void> {
     this.eventQueue.push(...batch.events);
   }
 
-  private async processBatchBatched<T extends SystemEvent>(batch: EventBatch<T>, options?: EventEmissionOptions): Promise<void> {
+  private async processBatchBatched<T extends SystemEvent>(
+    batch: EventBatch<T>,
+    options?: EventEmissionOptions
+  ): Promise<void> {
     const batchSize = this.config.processing?.batchSize || 50;
-    
+
     for (let i = 0; i < batch.events.length; i += batchSize) {
       const chunk = batch.events.slice(i, i + batchSize);
-      await Promise.all(chunk.map(event => this.emit(event, options)));
+      await Promise.all(chunk.map((event) => this.emit(event, options)));
     }
   }
 
-  private async processBatchThrottled<T extends SystemEvent>(batch: EventBatch<T>, options?: EventEmissionOptions): Promise<void> {
+  private async processBatchThrottled<T extends SystemEvent>(
+    batch: EventBatch<T>,
+    options?: EventEmissionOptions
+  ): Promise<void> {
     const throttleMs = this.config.processing?.throttleMs || 100;
-    
+
     for (const event of batch.events) {
       await this.emit(event, options);
-      await new Promise(resolve => setTimeout(resolve, throttleMs));
+      await new Promise((resolve) => setTimeout(resolve, throttleMs));
     }
   }
 
   /**
    * Utility methods for event processing
+   *
+   * @param event
    */
   private validateEvent(event: SystemEvent): boolean {
     return !!(event.id && event.timestamp && event.source && event.type);
@@ -1414,17 +1499,17 @@ export class SystemEventAdapter implements IEventManager {
     if (filter.types && !filter.types.includes(event.type)) {
       return false;
     }
-    
+
     // Source filter
     if (filter.sources && !filter.sources.includes(event.source)) {
       return false;
     }
-    
+
     // Priority filter
     if (filter.priorities && event.priority && !filter.priorities.includes(event.priority)) {
       return false;
     }
-    
+
     // Metadata filter
     if (filter.metadata) {
       for (const [key, value] of Object.entries(filter.metadata)) {
@@ -1433,33 +1518,36 @@ export class SystemEventAdapter implements IEventManager {
         }
       }
     }
-    
+
     // Custom filter
     if (filter.customFilter && !filter.customFilter(event)) {
       return false;
     }
-    
+
     return true;
   }
 
-  private async applyTransform<T extends SystemEvent>(event: T, transform: EventTransform): Promise<T> {
+  private async applyTransform<T extends SystemEvent>(
+    event: T,
+    transform: EventTransform
+  ): Promise<T> {
     let transformedEvent = event;
-    
+
     // Apply mapper
     if (transform.mapper) {
       transformedEvent = transform.mapper(transformedEvent) as T;
     }
-    
+
     // Apply enricher
     if (transform.enricher) {
-      transformedEvent = await transform.enricher(transformedEvent) as T;
+      transformedEvent = (await transform.enricher(transformedEvent)) as T;
     }
-    
+
     // Apply validator
     if (transform.validator && !transform.validator(transformedEvent)) {
       throw new Error(`Event transformation validation failed for ${event.id}`);
     }
-    
+
     return transformedEvent;
   }
 
@@ -1467,9 +1555,10 @@ export class SystemEventAdapter implements IEventManager {
     switch (sortBy) {
       case 'timestamp':
         return event.timestamp.getTime();
-      case 'priority':
-        const priorities = { 'critical': 4, 'high': 3, 'medium': 2, 'low': 1 };
+      case 'priority': {
+        const priorities = { critical: 4, high: 3, medium: 2, low: 1 };
         return priorities[event.priority || 'medium'];
+      }
       case 'type':
         return event.type;
       case 'source':
@@ -1504,26 +1593,26 @@ export class SystemEventAdapter implements IEventManager {
 
     // Keep only recent metrics (last hour)
     const cutoff = new Date(Date.now() - 3600000);
-    this.metrics = this.metrics.filter(m => m.timestamp > cutoff);
+    this.metrics = this.metrics.filter((m) => m.timestamp > cutoff);
   }
 
   private estimateMemoryUsage(): number {
     let size = 0;
-    
+
     // Estimate subscriptions memory
     size += this.subscriptions.size * 200;
-    
-    // Estimate event history memory  
+
+    // Estimate event history memory
     size += this.eventHistory.length * 500;
-    
+
     // Estimate correlations memory
     for (const correlation of this.eventCorrelations.values()) {
       size += correlation.events.length * 300;
     }
-    
+
     // Estimate metrics memory
     size += this.metrics.length * 150;
-    
+
     return size;
   }
 
@@ -1552,6 +1641,9 @@ export class SystemEventAdapter implements IEventManager {
 
   /**
    * Emit wrapper for internal use
+   *
+   * @param event
+   * @param data
    */
   private emitInternal(event: string, data?: any): void {
     this.eventEmitter.emit(event, data);
@@ -1560,6 +1652,8 @@ export class SystemEventAdapter implements IEventManager {
 
 /**
  * Factory function for creating SystemEventAdapter instances
+ *
+ * @param config
  */
 export function createSystemEventAdapter(config: SystemEventAdapterConfig): SystemEventAdapter {
   return new SystemEventAdapter(config);
@@ -1567,6 +1661,9 @@ export function createSystemEventAdapter(config: SystemEventAdapterConfig): Syst
 
 /**
  * Helper function for creating default system event adapter configuration
+ *
+ * @param name
+ * @param overrides
  */
 export function createDefaultSystemEventAdapterConfig(
   name: string,
@@ -1577,20 +1674,20 @@ export function createDefaultSystemEventAdapterConfig(
     type: EventManagerTypes.SYSTEM,
     processing: {
       strategy: 'immediate',
-      queueSize: 1000
+      queueSize: 1000,
     },
     retry: {
       attempts: 3,
       delay: 1000,
       backoff: 'exponential',
-      maxDelay: 5000
+      maxDelay: 5000,
     },
     health: {
       checkInterval: 30000,
       timeout: 5000,
       failureThreshold: 3,
       successThreshold: 2,
-      enableAutoRecovery: true
+      enableAutoRecovery: true,
     },
     monitoring: {
       enabled: true,
@@ -1598,37 +1695,37 @@ export function createDefaultSystemEventAdapterConfig(
       trackLatency: true,
       trackThroughput: true,
       trackErrors: true,
-      enableProfiling: false
+      enableProfiling: false,
     },
     coreSystem: {
       enabled: true,
       wrapLifecycleEvents: true,
       wrapHealthEvents: true,
-      wrapConfigEvents: true
+      wrapConfigEvents: true,
     },
     applicationCoordinator: {
       enabled: true,
       wrapComponentEvents: true,
       wrapStatusEvents: true,
-      wrapWorkspaceEvents: true
+      wrapWorkspaceEvents: true,
     },
     processManagement: {
       enabled: true,
       wrapServiceEvents: true,
       wrapDaemonEvents: true,
-      wrapResourceEvents: true
+      wrapResourceEvents: true,
     },
     errorRecovery: {
       enabled: true,
       wrapRecoveryEvents: true,
       wrapStrategyEvents: true,
-      correlateErrors: true
+      correlateErrors: true,
     },
     performance: {
       enableEventCorrelation: true,
       maxConcurrentEvents: 100,
       eventTimeout: 30000,
-      enablePerformanceTracking: true
+      enablePerformanceTracking: true,
     },
     correlation: {
       enabled: true,
@@ -1638,8 +1735,8 @@ export function createDefaultSystemEventAdapterConfig(
       correlationPatterns: [
         'system:startup->system:health',
         'system:error->system:recovery',
-        'config:change->system:restart'
-      ]
+        'config:change->system:restart',
+      ],
     },
     healthMonitoring: {
       enabled: true,
@@ -1649,11 +1746,11 @@ export function createDefaultSystemEventAdapterConfig(
         'application-coordinator': 0.9,
         'workflow-engine': 0.85,
         'memory-system': 0.9,
-        'interface-manager': 0.8
+        'interface-manager': 0.8,
       },
-      autoRecoveryEnabled: true
+      autoRecoveryEnabled: true,
     },
-    ...overrides
+    ...overrides,
   };
 }
 
@@ -1663,36 +1760,56 @@ export function createDefaultSystemEventAdapterConfig(
 export const SystemEventHelpers = {
   /**
    * Create system startup event
+   *
+   * @param component
+   * @param details
    */
-  createStartupEvent(component: string, details?: any): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
+  createStartupEvent(
+    component: string,
+    details?: any
+  ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
     return {
       source: component,
       type: 'system:startup',
       operation: 'start',
       status: 'success',
       priority: 'high',
-      details
+      details,
     };
   },
 
   /**
    * Create system shutdown event
+   *
+   * @param component
+   * @param details
    */
-  createShutdownEvent(component: string, details?: any): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
+  createShutdownEvent(
+    component: string,
+    details?: any
+  ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
     return {
       source: component,
       type: 'system:shutdown',
       operation: 'stop',
       status: 'success',
       priority: 'critical',
-      details
+      details,
     };
   },
 
   /**
    * Create system health event
+   *
+   * @param component
+   * @param healthScore
+   * @param details
    */
-  createHealthEvent(component: string, healthScore: number, details?: any): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
+  createHealthEvent(
+    component: string,
+    healthScore: number,
+    details?: any
+  ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
     return {
       source: component,
       type: 'system:health',
@@ -1701,15 +1818,23 @@ export const SystemEventHelpers = {
       priority: 'medium',
       details: {
         ...details,
-        healthScore
-      }
+        healthScore,
+      },
     };
   },
 
   /**
    * Create system error event
+   *
+   * @param component
+   * @param error
+   * @param details
    */
-  createErrorEvent(component: string, error: Error, details?: any): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
+  createErrorEvent(
+    component: string,
+    error: Error,
+    details?: any
+  ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
     return {
       source: component,
       type: 'system:error',
@@ -1719,10 +1844,10 @@ export const SystemEventHelpers = {
       details: {
         ...details,
         errorCode: error.name,
-        errorMessage: error.message
-      }
+        errorMessage: error.message,
+      },
     };
-  }
+  },
 };
 
 export default SystemEventAdapter;

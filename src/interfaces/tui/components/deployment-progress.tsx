@@ -1,5 +1,5 @@
 /**
- * @fileoverview Deployment Progress Component for TUI - Shows per-swarm deployment status
+ * @file Deployment Progress Component for TUI - Shows per-swarm deployment status
  */
 
 import { Box, Text } from 'ink';

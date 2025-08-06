@@ -4,7 +4,7 @@
  */
 
 import { promises as fs } from 'node:fs';
-import { ZenSwarm } from './index-complete';
+import { ZenSwarm } from './index';
 
 class PerformanceCLI {
   public ruvSwarm: any;

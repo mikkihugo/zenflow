@@ -9,6 +9,8 @@ import type { AgentId, AgentType } from '../../types/agent-types';
 
 /**
  * Conversation message types for structured agent communication
+ *
+ * @example
  */
 export interface ConversationMessage {
   id: string;
@@ -58,6 +60,8 @@ export interface ConversationAttachment {
 
 /**
  * Conversation session management
+ *
+ * @example
  */
 export interface ConversationSession {
   id: string;
@@ -112,6 +116,8 @@ export interface ConversationMetrics {
 
 /**
  * Conversation patterns and orchestration
+ *
+ * @example
  */
 export interface ConversationPattern {
   name: string;
@@ -163,6 +169,8 @@ export interface PatternConstraint {
 
 /**
  * Conversation orchestration engine
+ *
+ * @example
  */
 export interface ConversationOrchestrator {
   createConversation(config: ConversationConfig): Promise<ConversationSession>;
@@ -194,6 +202,8 @@ export interface ModerationAction {
 
 /**
  * Learning and adaptation types
+ *
+ * @example
  */
 export interface ConversationLearning {
   patternId: string;
@@ -228,6 +238,8 @@ export interface ConversationFeedback {
 
 /**
  * Memory and persistence
+ *
+ * @example
  */
 export interface ConversationMemory {
   storeConversation(session: ConversationSession): Promise<void>;
@@ -251,6 +263,8 @@ export interface ConversationQuery {
 
 /**
  * Interface for MCP tools integration
+ *
+ * @example
  */
 export interface ConversationMCPTools {
   getTools(): Tool[];

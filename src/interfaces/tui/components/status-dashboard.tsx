@@ -1,5 +1,5 @@
 /**
- * @fileoverview Status Dashboard Component for TUI - Final completion status display
+ * @file Status Dashboard Component for TUI - Final completion status display
  */
 
 import { Box, Spacer, Text } from 'ink';

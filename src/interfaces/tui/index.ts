@@ -1,5 +1,5 @@
 /**
- * @fileoverview TUI Interface Index - Terminal User Interface components
+ * @file TUI Interface Index - Terminal User Interface components
  */
 
 export type { DeploymentProgressProps } from './components/deployment-progress.tsx';

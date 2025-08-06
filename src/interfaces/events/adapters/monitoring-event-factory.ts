@@ -1,21 +1,22 @@
 /**
  * UEL Monitoring Event Factory
- * 
+ *
  * Factory for creating and managing MonitoringEventAdapter instances
  * with unified configuration management and pre-configured setups
  * following the exact same patterns as other UEL adapter factories.
  */
 
-import { 
-  MonitoringEventAdapter, 
-  MonitoringEventAdapterConfig,
+import {
+  createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
-  createDefaultMonitoringEventAdapterConfig
+  type MonitoringEventAdapter,
+  type MonitoringEventAdapterConfig,
 } from './monitoring-event-adapter';
-import { EventManagerTypes } from '../core/interfaces';
 
 /**
  * Monitoring event manager factory class
+ *
+ * @example
  */
 export class MonitoringEventFactory {
   private static instances = new Map<string, MonitoringEventAdapter>();
@@ -23,60 +24,70 @@ export class MonitoringEventFactory {
 
   /**
    * Create a new monitoring event adapter instance
+   *
+   * @param name
+   * @param config
    */
   static create(
-    name: string, 
+    name: string,
     config?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
-    if (this.instances.has(name)) {
+    if (MonitoringEventFactory.instances.has(name)) {
       throw new Error(`Monitoring event adapter '${name}' already exists`);
     }
 
-    const defaultConfig = this.defaultConfigs.get(name) || {};
+    const defaultConfig = MonitoringEventFactory.defaultConfigs.get(name) || {};
     const finalConfig = createDefaultMonitoringEventAdapterConfig(name, {
       ...defaultConfig,
-      ...config
+      ...config,
     });
 
     const adapter = createMonitoringEventAdapter(finalConfig);
-    this.instances.set(name, adapter);
+    MonitoringEventFactory.instances.set(name, adapter);
 
     return adapter;
   }
 
   /**
    * Get existing monitoring event adapter instance
+   *
+   * @param name
    */
   static get(name: string): MonitoringEventAdapter | undefined {
-    return this.instances.get(name);
+    return MonitoringEventFactory.instances.get(name);
   }
 
   /**
    * Get or create monitoring event adapter instance
+   *
+   * @param name
+   * @param config
    */
   static getOrCreate(
     name: string,
     config?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
-    const existing = this.get(name);
+    const existing = MonitoringEventFactory.get(name);
     if (existing) {
       return existing;
     }
 
-    return this.create(name, config);
+    return MonitoringEventFactory.create(name, config);
   }
 
   /**
    * Remove monitoring event adapter instance
+   *
+   * @param name
    */
   static async remove(name: string): Promise<boolean> {
-    const adapter = this.instances.get(name);
+    const adapter = MonitoringEventFactory.instances.get(name);
     if (!adapter) {
       return false;
     }
 
     await adapter.destroy();
-    this.instances.delete(name);
+    MonitoringEventFactory.instances.delete(name);
     return true;
   }
 
@@ -84,47 +95,49 @@ export class MonitoringEventFactory {
    * List all monitoring event adapter names
    */
   static list(): string[] {
-    return Array.from(this.instances.keys());
+    return Array.from(MonitoringEventFactory.instances.keys());
   }
 
   /**
    * Get all monitoring event adapter instances
    */
   static getAll(): MonitoringEventAdapter[] {
-    return Array.from(this.instances.values());
+    return Array.from(MonitoringEventFactory.instances.values());
   }
 
   /**
    * Clear all monitoring event adapter instances
    */
   static async clear(): Promise<void> {
-    const adapters = Array.from(this.instances.values());
-    await Promise.all(adapters.map(adapter => adapter.destroy()));
-    this.instances.clear();
+    const adapters = Array.from(MonitoringEventFactory.instances.values());
+    await Promise.all(adapters.map((adapter) => adapter.destroy()));
+    MonitoringEventFactory.instances.clear();
   }
 
   /**
    * Register default configuration for a monitoring event adapter
+   *
+   * @param name
+   * @param config
    */
-  static registerDefaultConfig(
-    name: string,
-    config: Partial<MonitoringEventAdapterConfig>
-  ): void {
-    this.defaultConfigs.set(name, config);
+  static registerDefaultConfig(name: string, config: Partial<MonitoringEventAdapterConfig>): void {
+    MonitoringEventFactory.defaultConfigs.set(name, config);
   }
 
   /**
    * Check if monitoring event adapter exists
+   *
+   * @param name
    */
   static has(name: string): boolean {
-    return this.instances.has(name);
+    return MonitoringEventFactory.instances.has(name);
   }
 
   /**
    * Get monitoring event adapter count
    */
   static count(): number {
-    return this.instances.size;
+    return MonitoringEventFactory.instances.size;
   }
 }
 
@@ -142,13 +155,13 @@ export const MonitoringEventConfigs = {
       wrapThresholdEvents: true,
       wrapAlertEvents: true,
       wrapOptimizationEvents: true,
-      monitors: ['performance-monitor', 'resource-monitor', 'latency-monitor']
+      monitors: ['performance-monitor', 'resource-monitor', 'latency-monitor'],
     },
     monitoring: {
       strategy: 'metrics' as const,
       correlationTTL: 300000, // 5 minutes
       trackMetricsFlow: true,
-      trackPerformanceInsights: true
+      trackPerformanceInsights: true,
     },
     metricsOptimization: {
       enabled: true,
@@ -157,9 +170,9 @@ export const MonitoringEventConfigs = {
         latency: 50,
         throughput: 2000,
         accuracy: 0.99,
-        resourceUsage: 0.6
-      }
-    }
+        resourceUsage: 0.6,
+      },
+    },
   } as Partial<MonitoringEventAdapterConfig>,
 
   /**
@@ -172,19 +185,19 @@ export const MonitoringEventConfigs = {
       wrapStatusEvents: true,
       wrapRecoveryEvents: true,
       wrapCorrelationEvents: true,
-      components: ['system-health', 'service-health', 'component-health', 'network-health']
+      components: ['system-health', 'service-health', 'component-health', 'network-health'],
     },
     monitoring: {
       strategy: 'health' as const,
       correlationTTL: 600000, // 10 minutes
-      trackHealthStatus: true
+      trackHealthStatus: true,
     },
     healthMonitoringConfig: {
       enabled: true,
       healthCheckInterval: 15000, // 15 seconds
       autoRecoveryEnabled: true,
-      correlateHealthData: true
-    }
+      correlateHealthData: true,
+    },
   } as Partial<MonitoringEventAdapterConfig>,
 
   /**
@@ -197,19 +210,24 @@ export const MonitoringEventConfigs = {
       wrapAggregationEvents: true,
       wrapReportingEvents: true,
       wrapInsightEvents: true,
-      analyzers: ['performance-analyzer', 'trend-analyzer', 'anomaly-detector', 'predictive-analyzer']
+      analyzers: [
+        'performance-analyzer',
+        'trend-analyzer',
+        'anomaly-detector',
+        'predictive-analyzer',
+      ],
     },
     monitoring: {
       strategy: 'analytics' as const,
       correlationTTL: 900000, // 15 minutes
-      trackPerformanceInsights: true
+      trackPerformanceInsights: true,
     },
     metricsOptimization: {
       enabled: true,
       dataAggregation: true,
       intelligentSampling: true,
-      anomalyDetection: true
-    }
+      anomalyDetection: true,
+    },
   } as Partial<MonitoringEventAdapterConfig>,
 
   /**
@@ -222,7 +240,7 @@ export const MonitoringEventConfigs = {
       wrapEscalationEvents: true,
       wrapResolutionEvents: true,
       wrapNotificationEvents: true,
-      alertLevels: ['info', 'warning', 'error', 'critical']
+      alertLevels: ['info', 'warning', 'error', 'critical'],
     },
     monitoring: {
       strategy: 'alerts' as const,
@@ -230,8 +248,8 @@ export const MonitoringEventConfigs = {
       correlationPatterns: [
         'monitoring:alert->monitoring:health',
         'monitoring:health->monitoring:alert',
-        'monitoring:metrics->monitoring:alert'
-      ]
+        'monitoring:metrics->monitoring:alert',
+      ],
     },
     healthMonitoringConfig: {
       enabled: true,
@@ -240,9 +258,9 @@ export const MonitoringEventConfigs = {
         'monitoring-latency': 100,
         'data-accuracy': 0.99,
         'resource-usage': 0.5,
-        'monitoring-availability': 0.95
-      }
-    }
+        'monitoring-availability': 0.95,
+      },
+    },
   } as Partial<MonitoringEventAdapterConfig>,
 
   /**
@@ -255,19 +273,19 @@ export const MonitoringEventConfigs = {
       wrapVisualizationEvents: true,
       wrapStreamingEvents: true,
       wrapInteractionEvents: true,
-      dashboards: ['main-dashboard', 'metrics-dashboard', 'health-dashboard', 'alert-dashboard']
+      dashboards: ['main-dashboard', 'metrics-dashboard', 'health-dashboard', 'alert-dashboard'],
     },
     monitoring: {
       strategy: 'metrics' as const,
       trackMetricsFlow: true,
       trackHealthStatus: true,
-      trackPerformanceInsights: true
+      trackPerformanceInsights: true,
     },
     performance: {
       enableRealTimeTracking: true,
       enablePerformanceAggregation: true,
-      monitoringInterval: 2000 // 2 seconds for real-time updates
-    }
+      monitoringInterval: 2000, // 2 seconds for real-time updates
+    },
   } as Partial<MonitoringEventAdapterConfig>,
 
   /**
@@ -277,18 +295,18 @@ export const MonitoringEventConfigs = {
     processing: {
       strategy: 'batched' as const,
       batchSize: 100,
-      queueSize: 10000
+      queueSize: 10000,
     },
     performance: {
       enableMetricsCorrelation: true,
       enableRealTimeTracking: true,
       enablePerformanceAggregation: true,
-      maxConcurrentMonitors: 100
+      maxConcurrentMonitors: 100,
     },
     monitoring: {
       correlationTTL: 180000, // 3 minutes
-      maxCorrelationDepth: 50
-    }
+      maxCorrelationDepth: 50,
+    },
   } as Partial<MonitoringEventAdapterConfig>,
 
   /**
@@ -297,11 +315,11 @@ export const MonitoringEventConfigs = {
   LOW_LATENCY: {
     processing: {
       strategy: 'immediate' as const,
-      queueSize: 2000
+      queueSize: 2000,
     },
     performance: {
       monitoringInterval: 1000, // 1 second
-      enablePerformanceTracking: true
+      enablePerformanceTracking: true,
     },
     metricsOptimization: {
       enabled: true,
@@ -310,10 +328,10 @@ export const MonitoringEventConfigs = {
         latency: 10,
         throughput: 5000,
         accuracy: 0.995,
-        resourceUsage: 0.8
-      }
-    }
-  } as Partial<MonitoringEventAdapterConfig>
+        resourceUsage: 0.8,
+      },
+    },
+  } as Partial<MonitoringEventAdapterConfig>,
 };
 
 /**
@@ -322,109 +340,199 @@ export const MonitoringEventConfigs = {
 export const MonitoringEventAdapterFactory = {
   /**
    * Create performance-focused monitoring adapter
+   *
+   * @param name
+   * @param overrides
    */
-  createPerformanceMonitor(name: string, overrides?: Partial<MonitoringEventAdapterConfig>): MonitoringEventAdapter {
+  createPerformanceMonitor(
+    name: string,
+    overrides?: Partial<MonitoringEventAdapterConfig>
+  ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs.PERFORMANCE_FOCUSED,
-      ...overrides
+      ...overrides,
     });
   },
 
   /**
    * Create health-focused monitoring adapter
+   *
+   * @param name
+   * @param overrides
    */
-  createHealthMonitor(name: string, overrides?: Partial<MonitoringEventAdapterConfig>): MonitoringEventAdapter {
+  createHealthMonitor(
+    name: string,
+    overrides?: Partial<MonitoringEventAdapterConfig>
+  ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs.HEALTH_FOCUSED,
-      ...overrides
+      ...overrides,
     });
   },
 
   /**
    * Create analytics-focused monitoring adapter
+   *
+   * @param name
+   * @param overrides
    */
-  createAnalyticsMonitor(name: string, overrides?: Partial<MonitoringEventAdapterConfig>): MonitoringEventAdapter {
+  createAnalyticsMonitor(
+    name: string,
+    overrides?: Partial<MonitoringEventAdapterConfig>
+  ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs.ANALYTICS_FOCUSED,
-      ...overrides
+      ...overrides,
     });
   },
 
   /**
    * Create alert-focused monitoring adapter
+   *
+   * @param name
+   * @param overrides
    */
-  createAlertMonitor(name: string, overrides?: Partial<MonitoringEventAdapterConfig>): MonitoringEventAdapter {
+  createAlertMonitor(
+    name: string,
+    overrides?: Partial<MonitoringEventAdapterConfig>
+  ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs.ALERT_FOCUSED,
-      ...overrides
+      ...overrides,
     });
   },
 
   /**
    * Create dashboard-focused monitoring adapter
+   *
+   * @param name
+   * @param overrides
    */
-  createDashboardMonitor(name: string, overrides?: Partial<MonitoringEventAdapterConfig>): MonitoringEventAdapter {
+  createDashboardMonitor(
+    name: string,
+    overrides?: Partial<MonitoringEventAdapterConfig>
+  ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs.DASHBOARD_FOCUSED,
-      ...overrides
+      ...overrides,
     });
   },
 
   /**
    * Create high-throughput monitoring adapter
+   *
+   * @param name
+   * @param overrides
    */
-  createHighThroughputMonitor(name: string, overrides?: Partial<MonitoringEventAdapterConfig>): MonitoringEventAdapter {
+  createHighThroughputMonitor(
+    name: string,
+    overrides?: Partial<MonitoringEventAdapterConfig>
+  ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs.HIGH_THROUGHPUT,
-      ...overrides
+      ...overrides,
     });
   },
 
   /**
    * Create low-latency monitoring adapter
-   */  
-  createLowLatencyMonitor(name: string, overrides?: Partial<MonitoringEventAdapterConfig>): MonitoringEventAdapter {
+   *
+   * @param name
+   * @param overrides
+   */
+  createLowLatencyMonitor(
+    name: string,
+    overrides?: Partial<MonitoringEventAdapterConfig>
+  ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs.LOW_LATENCY,
-      ...overrides
+      ...overrides,
     });
   },
 
   /**
    * Create comprehensive monitoring adapter with all features enabled
+   *
+   * @param name
+   * @param overrides
    */
-  createComprehensiveMonitor(name: string, overrides?: Partial<MonitoringEventAdapterConfig>): MonitoringEventAdapter {
+  createComprehensiveMonitor(
+    name: string,
+    overrides?: Partial<MonitoringEventAdapterConfig>
+  ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      performanceMonitoring: { enabled: true, wrapMetricsEvents: true, wrapThresholdEvents: true, wrapAlertEvents: true, wrapOptimizationEvents: true },
-      healthMonitoring: { enabled: true, wrapHealthCheckEvents: true, wrapStatusEvents: true, wrapRecoveryEvents: true, wrapCorrelationEvents: true },
-      analyticsMonitoring: { enabled: true, wrapCollectionEvents: true, wrapAggregationEvents: true, wrapReportingEvents: true, wrapInsightEvents: true },
-      alertManagement: { enabled: true, wrapAlertEvents: true, wrapEscalationEvents: true, wrapResolutionEvents: true, wrapNotificationEvents: true },
-      dashboardIntegration: { enabled: true, wrapUpdateEvents: true, wrapVisualizationEvents: true, wrapStreamingEvents: true, wrapInteractionEvents: true },
+      performanceMonitoring: {
+        enabled: true,
+        wrapMetricsEvents: true,
+        wrapThresholdEvents: true,
+        wrapAlertEvents: true,
+        wrapOptimizationEvents: true,
+      },
+      healthMonitoring: {
+        enabled: true,
+        wrapHealthCheckEvents: true,
+        wrapStatusEvents: true,
+        wrapRecoveryEvents: true,
+        wrapCorrelationEvents: true,
+      },
+      analyticsMonitoring: {
+        enabled: true,
+        wrapCollectionEvents: true,
+        wrapAggregationEvents: true,
+        wrapReportingEvents: true,
+        wrapInsightEvents: true,
+      },
+      alertManagement: {
+        enabled: true,
+        wrapAlertEvents: true,
+        wrapEscalationEvents: true,
+        wrapResolutionEvents: true,
+        wrapNotificationEvents: true,
+      },
+      dashboardIntegration: {
+        enabled: true,
+        wrapUpdateEvents: true,
+        wrapVisualizationEvents: true,
+        wrapStreamingEvents: true,
+        wrapInteractionEvents: true,
+      },
       monitoring: {
         enabled: true,
         strategy: 'metrics' as const,
         trackMetricsFlow: true,
         trackHealthStatus: true,
-        trackPerformanceInsights: true
+        trackPerformanceInsights: true,
       },
-      ...overrides
+      ...overrides,
     });
-  }
+  },
 };
 
 /**
  * Registry for monitoring event adapters with automatic lifecycle management
+ *
+ * @example
  */
 export class MonitoringEventRegistry {
   private static adapters = new Map<string, MonitoringEventAdapter>();
-  private static lifecycleHooks = new Map<string, {
-    onStart?: (adapter: MonitoringEventAdapter) => Promise<void>;
-    onStop?: (adapter: MonitoringEventAdapter) => Promise<void>;
-    onError?: (adapter: MonitoringEventAdapter, error: Error) => Promise<void>;
-  }>();
+  private static lifecycleHooks = new Map<
+    string,
+    {
+      onStart?: (adapter: MonitoringEventAdapter) => Promise<void>;
+      onStop?: (adapter: MonitoringEventAdapter) => Promise<void>;
+      onError?: (adapter: MonitoringEventAdapter, error: Error) => Promise<void>;
+    }
+  >();
 
   /**
    * Register monitoring event adapter with lifecycle management
+   *
+   * @param name
+   * @param adapter
+   * @param hooks
+   * @param hooks.onStart
+   * @param hooks.onStop
+   * @param hooks.onError
    */
   static async register(
     name: string,
@@ -435,33 +543,33 @@ export class MonitoringEventRegistry {
       onError?: (adapter: MonitoringEventAdapter, error: Error) => Promise<void>;
     }
   ): Promise<void> {
-    if (this.adapters.has(name)) {
+    if (MonitoringEventRegistry.adapters.has(name)) {
       throw new Error(`Monitoring event adapter '${name}' is already registered`);
     }
 
-    this.adapters.set(name, adapter);
-    
+    MonitoringEventRegistry.adapters.set(name, adapter);
+
     if (hooks) {
-      this.lifecycleHooks.set(name, hooks);
+      MonitoringEventRegistry.lifecycleHooks.set(name, hooks);
     }
 
     // Set up event listeners for lifecycle management
     adapter.on('start', async () => {
-      const hook = this.lifecycleHooks.get(name)?.onStart;
+      const hook = MonitoringEventRegistry.lifecycleHooks.get(name)?.onStart;
       if (hook) {
         await hook(adapter);
       }
     });
 
     adapter.on('stop', async () => {
-      const hook = this.lifecycleHooks.get(name)?.onStop;
+      const hook = MonitoringEventRegistry.lifecycleHooks.get(name)?.onStop;
       if (hook) {
         await hook(adapter);
       }
     });
 
     adapter.on('error', async (error: Error) => {
-      const hook = this.lifecycleHooks.get(name)?.onError;
+      const hook = MonitoringEventRegistry.lifecycleHooks.get(name)?.onError;
       if (hook) {
         await hook(adapter, error);
       }
@@ -470,31 +578,35 @@ export class MonitoringEventRegistry {
 
   /**
    * Unregister monitoring event adapter
+   *
+   * @param name
    */
   static async unregister(name: string): Promise<boolean> {
-    const adapter = this.adapters.get(name);
+    const adapter = MonitoringEventRegistry.adapters.get(name);
     if (!adapter) {
       return false;
     }
 
     await adapter.destroy();
-    this.adapters.delete(name);
-    this.lifecycleHooks.delete(name);
+    MonitoringEventRegistry.adapters.delete(name);
+    MonitoringEventRegistry.lifecycleHooks.delete(name);
     return true;
   }
 
   /**
    * Get registered monitoring event adapter
+   *
+   * @param name
    */
   static get(name: string): MonitoringEventAdapter | undefined {
-    return this.adapters.get(name);
+    return MonitoringEventRegistry.adapters.get(name);
   }
 
   /**
    * Start all registered monitoring event adapters
    */
   static async startAll(): Promise<void> {
-    const startPromises = Array.from(this.adapters.values()).map(adapter => 
+    const startPromises = Array.from(MonitoringEventRegistry.adapters.values()).map((adapter) =>
       adapter.isRunning() ? Promise.resolve() : adapter.start()
     );
     await Promise.all(startPromises);
@@ -504,7 +616,7 @@ export class MonitoringEventRegistry {
    * Stop all registered monitoring event adapters
    */
   static async stopAll(): Promise<void> {
-    const stopPromises = Array.from(this.adapters.values()).map(adapter =>
+    const stopPromises = Array.from(MonitoringEventRegistry.adapters.values()).map((adapter) =>
       adapter.isRunning() ? adapter.stop() : Promise.resolve()
     );
     await Promise.all(stopPromises);
@@ -514,10 +626,12 @@ export class MonitoringEventRegistry {
    * Get health status of all registered adapters
    */
   static async getHealthStatus(): Promise<Record<string, any>> {
-    const healthPromises = Array.from(this.adapters.entries()).map(async ([name, adapter]) => {
-      const health = await adapter.healthCheck();
-      return [name, health];
-    });
+    const healthPromises = Array.from(MonitoringEventRegistry.adapters.entries()).map(
+      async ([name, adapter]) => {
+        const health = await adapter.healthCheck();
+        return [name, health];
+      }
+    );
 
     const results = await Promise.all(healthPromises);
     return Object.fromEntries(results);
@@ -527,10 +641,12 @@ export class MonitoringEventRegistry {
    * Get performance metrics of all registered adapters
    */
   static async getMetrics(): Promise<Record<string, any>> {
-    const metricsPromises = Array.from(this.adapters.entries()).map(async ([name, adapter]) => {
-      const metrics = await adapter.getMetrics();
-      return [name, metrics];
-    });
+    const metricsPromises = Array.from(MonitoringEventRegistry.adapters.entries()).map(
+      async ([name, adapter]) => {
+        const metrics = await adapter.getMetrics();
+        return [name, metrics];
+      }
+    );
 
     const results = await Promise.all(metricsPromises);
     return Object.fromEntries(results);
@@ -540,28 +656,30 @@ export class MonitoringEventRegistry {
    * List all registered adapter names
    */
   static list(): string[] {
-    return Array.from(this.adapters.keys());
+    return Array.from(MonitoringEventRegistry.adapters.keys());
   }
 
   /**
    * Get count of registered adapters
    */
   static count(): number {
-    return this.adapters.size;
+    return MonitoringEventRegistry.adapters.size;
   }
 
   /**
    * Clear all registered adapters
    */
   static async clear(): Promise<void> {
-    await this.stopAll();
-    this.adapters.clear();
-    this.lifecycleHooks.clear();
+    await MonitoringEventRegistry.stopAll();
+    MonitoringEventRegistry.adapters.clear();
+    MonitoringEventRegistry.lifecycleHooks.clear();
   }
 }
 
 /**
  * Singleton monitoring event manager for global access
+ *
+ * @example
  */
 export class MonitoringEventManager {
   private static instance: MonitoringEventAdapter | null = null;
@@ -569,37 +687,39 @@ export class MonitoringEventManager {
 
   /**
    * Initialize global monitoring event manager
+   *
+   * @param config
    */
   static async initialize(config: MonitoringEventAdapterConfig): Promise<MonitoringEventAdapter> {
-    if (this.instance) {
+    if (MonitoringEventManager.instance) {
       throw new Error('Monitoring event manager is already initialized');
     }
 
-    this.instance = createMonitoringEventAdapter(config);
-    this.config = config;
-    await this.instance.start();
-    
-    return this.instance;
+    MonitoringEventManager.instance = createMonitoringEventAdapter(config);
+    MonitoringEventManager.config = config;
+    await MonitoringEventManager.instance.start();
+
+    return MonitoringEventManager.instance;
   }
 
   /**
    * Get global monitoring event manager instance
    */
   static getInstance(): MonitoringEventAdapter {
-    if (!this.instance) {
+    if (!MonitoringEventManager.instance) {
       throw new Error('Monitoring event manager is not initialized. Call initialize() first.');
     }
-    return this.instance;
+    return MonitoringEventManager.instance;
   }
 
   /**
    * Shutdown global monitoring event manager
    */
   static async shutdown(): Promise<void> {
-    if (this.instance) {
-      await this.instance.destroy();
-      this.instance = null;
-      this.config = null;
+    if (MonitoringEventManager.instance) {
+      await MonitoringEventManager.instance.destroy();
+      MonitoringEventManager.instance = null;
+      MonitoringEventManager.config = null;
     }
   }
 
@@ -607,23 +727,23 @@ export class MonitoringEventManager {
    * Check if monitoring event manager is initialized
    */
   static isInitialized(): boolean {
-    return this.instance !== null;
+    return MonitoringEventManager.instance !== null;
   }
 
   /**
    * Get current configuration
    */
   static getConfig(): MonitoringEventAdapterConfig | null {
-    return this.config;
+    return MonitoringEventManager.config;
   }
 }
 
 // Export everything
 export {
+  createDefaultMonitoringEventAdapterConfig,
+  createMonitoringEventAdapter,
   MonitoringEventAdapter,
   MonitoringEventAdapterConfig,
-  createMonitoringEventAdapter,
-  createDefaultMonitoringEventAdapterConfig
 } from './monitoring-event-adapter';
 
 export default MonitoringEventFactory;

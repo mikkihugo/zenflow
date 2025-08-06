@@ -14,12 +14,11 @@ import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engin
 import type { SPARCPhase, SPARCProject } from '../../coordination/swarm/sparc/types/sparc-types';
 import { ProductFlowSystem } from '../../core/product-flow-system';
 import { UnifiedMemorySystem } from '../../core/unified-memory-system';
+import { DatabaseCoordinator } from '../../database/core/database-coordinator';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
 } from '../../database/entities/product-entities';
-import { DocumentManager } from '../../database/managers/document-manager';
-import { DatabaseCoordinator } from '../../database/core/database-coordinator';
 
 describe('Product Flow + SPARC Integration', () => {
   let productWorkflowEngine: ProductWorkflowEngine;

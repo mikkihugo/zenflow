@@ -1,5 +1,5 @@
 /**
- * @fileoverview Auto-Swarm Factory - Creates optimized swarms based on domain characteristics
+ * @file Auto-Swarm Factory - Creates optimized swarms based on domain characteristics
  *
  * This is the CRITICAL component that enables zero-manual-initialization swarm creation.
  * It uses confidence scores from Progressive Confidence Builder to automatically:
@@ -135,6 +135,8 @@ export interface ConfidentDomain {
  *
  * This factory analyzes confident domains and automatically creates
  * optimized swarm configurations without manual intervention.
+ *
+ * @example
  */
 export class AutoSwarmFactory extends EventEmitter {
   private config: AutoSwarmFactoryConfig;
@@ -168,6 +170,8 @@ export class AutoSwarmFactory extends EventEmitter {
 
   /**
    * Main entry point - Create swarms for all confident domains
+   *
+   * @param confidentDomains
    */
   async createSwarmsForDomains(
     confidentDomains: Map<string, ConfidentDomain>
@@ -232,6 +236,8 @@ export class AutoSwarmFactory extends EventEmitter {
 
   /**
    * Create optimized swarm configuration for a single domain
+   *
+   * @param domain
    */
   async createSwarmForDomain(domain: ConfidentDomain): Promise<SwarmConfig> {
     logger.info(`🔧 Creating swarm for domain: ${domain.name}`);
@@ -290,6 +296,8 @@ export class AutoSwarmFactory extends EventEmitter {
 
   /**
    * Analyze domain characteristics for optimal swarm configuration
+   *
+   * @param domain
    */
   private async analyzeDomainCharacteristics(
     domain: ConfidentDomain
@@ -350,6 +358,8 @@ export class AutoSwarmFactory extends EventEmitter {
 
   /**
    * Select optimal topology based on domain characteristics
+   *
+   * @param chars
    */
   private selectOptimalTopology(chars: DomainCharacteristics): SwarmTopology {
     let topology: SwarmTopology;
@@ -423,6 +433,9 @@ export class AutoSwarmFactory extends EventEmitter {
 
   /**
    * Configure agents based on domain characteristics and topology
+   *
+   * @param chars
+   * @param _topology
    */
   private configureAgents(
     chars: DomainCharacteristics,
@@ -511,6 +524,8 @@ export class AutoSwarmFactory extends EventEmitter {
 
   /**
    * Configure persistence strategy based on domain characteristics
+   *
+   * @param chars
    */
   private configurePersistence(chars: DomainCharacteristics): SwarmConfig['persistence'] {
     let backend: 'sqlite' | 'lancedb' | 'json' = this.config.defaultPersistenceBackend;
@@ -539,6 +554,9 @@ export class AutoSwarmFactory extends EventEmitter {
 
   /**
    * Configure coordination strategy
+   *
+   * @param chars
+   * @param topology
    */
   private configureCoordination(
     chars: DomainCharacteristics,
@@ -567,6 +585,10 @@ export class AutoSwarmFactory extends EventEmitter {
 
   /**
    * Calculate expected performance metrics
+   *
+   * @param chars
+   * @param topology
+   * @param agents
    */
   private calculatePerformanceExpectations(
     chars: DomainCharacteristics,
@@ -597,6 +619,8 @@ export class AutoSwarmFactory extends EventEmitter {
 
   /**
    * Calculate maximum agents for the swarm
+   *
+   * @param chars
    */
   private calculateMaxAgents(chars: DomainCharacteristics): number {
     let maxAgents = 8; // Base maximum
@@ -611,6 +635,8 @@ export class AutoSwarmFactory extends EventEmitter {
 
   /**
    * Validate resource constraints across all swarms
+   *
+   * @param configs
    */
   private async validateResourceConstraints(configs: SwarmConfig[]): Promise<void> {
     const totalAgents = configs.reduce(
@@ -633,6 +659,8 @@ export class AutoSwarmFactory extends EventEmitter {
 
   /**
    * Perform human validation of swarm configurations
+   *
+   * @param configs
    */
   private async performHumanValidation(configs: SwarmConfig[]): Promise<void> {
     if (!this.agui) return;
@@ -684,6 +712,8 @@ export class AutoSwarmFactory extends EventEmitter {
 
   /**
    * Initialize all approved swarms
+   *
+   * @param configs
    */
   private async initializeSwarms(configs: SwarmConfig[]): Promise<void> {
     logger.info(`🚀 Initializing ${configs.length} swarms...`);

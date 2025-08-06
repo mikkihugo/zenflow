@@ -13,6 +13,8 @@ let coordinationProvider: CoordinationProvider | null = null;
 /**
  * Set the coordination provider (dependency injection)
  * This breaks the direct dependency on coordination module
+ *
+ * @param provider
  */
 export function setCoordinationProvider(provider: CoordinationProvider): void {
   coordinationProvider = provider;
@@ -20,6 +22,7 @@ export function setCoordinationProvider(provider: CoordinationProvider): void {
 
 /**
  * Factory function to create orchestrator with injected dependencies
+ *
  * @param customCoordinationProvider Optional coordination provider override
  */
 export function createOrchestratorInstance(
@@ -58,6 +61,7 @@ export function createOrchestratorInstance(
 
 /**
  * Get or create orchestrator instance (singleton pattern)
+ *
  * @deprecated Use createOrchestratorInstance for better dependency management
  */
 export function getOrchestratorInstance(): Orchestrator {

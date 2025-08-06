@@ -1,6 +1,7 @@
 /**
  * Advanced Neural Training Techniques Test Suite - Classical TDD
- * @fileoverview Tests for regularization, optimization algorithms, early stopping, and cross-validation
+ *
+ * @file Tests for regularization, optimization algorithms, early stopping, and cross-validation
  * Focus: Training algorithm effectiveness, overfitting prevention, model selection
  */
 

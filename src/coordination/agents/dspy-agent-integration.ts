@@ -191,10 +191,11 @@ YOUR GOAL: Make workflows self-improving and continuously optimized!`,
 /**
  * DSPy Agent Integration Class
  * Bridges DSPy functionality with existing coordination system
+ *
+ * @example
  */
 export class DSPyAgentIntegration {
   private swarmCoordinator: SwarmCoordinator;
-  private memoryStore: SessionMemoryStore;
   private dspyIntegration: DSPyIntegration;
   private dspyAgents: Map<string, SwarmAgent> = new Map();
 
@@ -233,6 +234,8 @@ export class DSPyAgentIntegration {
 
   /**
    * Create a DSPy agent compatible with existing coordination system
+   *
+   * @param agentType
    */
   private createDSPyAgent(agentType: DSPyAgentType): SwarmAgent {
     const agent: SwarmAgent = {
@@ -253,6 +256,8 @@ export class DSPyAgentIntegration {
 
   /**
    * Get capabilities for each DSPy agent type
+   *
+   * @param agentType
    */
   private getDSPyAgentCapabilities(agentType: DSPyAgentType): string[] {
     const capabilityMap: Record<DSPyAgentType, string[]> = {
@@ -304,6 +309,14 @@ export class DSPyAgentIntegration {
 
   /**
    * Execute DSPy optimization using existing coordination system
+   *
+   * @param programName
+   * @param signature
+   * @param description
+   * @param examples
+   * @param options
+   * @param options.agentTypes
+   * @param options.coordinationStrategy
    */
   async executeDSPyOptimization(
     programName: string,
@@ -329,7 +342,7 @@ export class DSPyAgentIntegration {
     if (options.agentTypes) {
       // Filter agents by requested types
       const filteredAgents = availableAgents.filter((agent) =>
-        options.agentTypes!.includes(agent.type as DSPyAgentType)
+        options.agentTypes?.includes(agent.type as DSPyAgentType)
       );
 
       if (filteredAgents.length === 0) {
@@ -434,7 +447,7 @@ export class DSPyAgentIntegration {
    * Cleanup DSPy agents from coordination system
    */
   async cleanup(): Promise<void> {
-    for (const [agentId, agent] of this.dspyAgents) {
+    for (const [agentId, _agent] of this.dspyAgents) {
       await this.swarmCoordinator.removeAgent(agentId);
     }
 

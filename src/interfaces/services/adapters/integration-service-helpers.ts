@@ -1,31 +1,24 @@
 /**
  * USL Integration Service Helpers and Utilities
- * 
+ *
  * Provides helper functions and utilities for working with IntegrationServiceAdapter
  * instances, including common operations, batch processing, validation helpers,
  * and specialized integration patterns.
  */
 
+import type { ArchitectureDesign } from '../../../coordination/swarm/sparc/database/architecture-storage';
+
+import type { APIResult } from '../../../interfaces/api/safe-api-client';
+import { createLogger } from '../../../utils/logger';
 import type {
   IntegrationServiceAdapter,
-  IntegrationServiceAdapterConfig
+  IntegrationServiceAdapterConfig,
 } from './integration-service-adapter';
-
-import type { 
-  APIResult,
-  APIRequestOptions 
-} from '../../../interfaces/api/safe-api-client';
-
-import type { 
-  ArchitectureDesign,
-  Component,
-  ArchitecturalValidation
-} from '../../../coordination/swarm/sparc/database/architecture-storage';
-
-import { createLogger, type Logger } from '../../../utils/logger';
 
 /**
  * Integration operation result type
+ *
+ * @example
  */
 export interface IntegrationOperationResult<T = any> {
   success: boolean;
@@ -46,6 +39,8 @@ export interface IntegrationOperationResult<T = any> {
 
 /**
  * Batch integration operation configuration
+ *
+ * @example
  */
 export interface BatchIntegrationConfig {
   /** Maximum number of operations to run concurrently */
@@ -62,6 +57,8 @@ export interface BatchIntegrationConfig {
 
 /**
  * Architecture operation configuration
+ *
+ * @example
  */
 export interface ArchitectureOperationConfig {
   /** Whether to enable versioning for the operation */
@@ -78,6 +75,8 @@ export interface ArchitectureOperationConfig {
 
 /**
  * API operation configuration
+ *
+ * @example
  */
 export interface APIOperationConfig {
   /** Request timeout in milliseconds */
@@ -99,6 +98,8 @@ export interface APIOperationConfig {
 
 /**
  * Protocol operation configuration
+ *
+ * @example
  */
 export interface ProtocolOperationConfig {
   /** Protocol to use for the operation */
@@ -119,13 +120,13 @@ export interface ProtocolOperationConfig {
 
 /**
  * Integration Service Helper Class
- * 
+ *
  * Provides high-level helper methods for common integration operations
  * across Architecture Storage, Safe API, and Protocol Management.
+ *
+ * @example
  */
 export class IntegrationServiceHelper {
-  private logger: Logger;
-
   constructor(private adapter: IntegrationServiceAdapter) {
     this.logger = createLogger(`IntegrationServiceHelper:${adapter.name}`);
   }
@@ -136,6 +137,9 @@ export class IntegrationServiceHelper {
 
   /**
    * Save architecture with enhanced options
+   *
+   * @param architecture
+   * @param config
    */
   async saveArchitectureEnhanced(
     architecture: ArchitectureDesign,
@@ -150,8 +154,8 @@ export class IntegrationServiceHelper {
             success: false,
             error: {
               code: 'VALIDATION_FAILED',
-              message: 'Custom validation failed for architecture'
-            }
+              message: 'Custom validation failed for architecture',
+            },
           };
         }
       }
@@ -160,13 +164,13 @@ export class IntegrationServiceHelper {
       if (config.tags) {
         architecture.metadata = {
           ...architecture.metadata,
-          tags: config.tags
+          tags: config.tags,
         };
       }
 
       const result = await this.adapter.execute<string>('architecture-save', {
         architecture,
-        projectId: config.projectId
+        projectId: config.projectId,
       });
 
       return result;
@@ -176,24 +180,23 @@ export class IntegrationServiceHelper {
         error: {
           code: 'SAVE_ERROR',
           message: error instanceof Error ? error.message : 'Unknown error occurred',
-          details: error
-        }
+          details: error,
+        },
       };
     }
   }
 
   /**
    * Batch save multiple architectures
+   *
+   * @param architectures
+   * @param batchConfig
    */
   async batchSaveArchitectures(
     architectures: { architecture: ArchitectureDesign; config?: ArchitectureOperationConfig }[],
     batchConfig: BatchIntegrationConfig = {}
   ): Promise<IntegrationOperationResult<string[]>> {
-    const {
-      maxConcurrency = 5,
-      failFast = false,
-      operationTimeout = 30000
-    } = batchConfig;
+    const { maxConcurrency = 5, failFast = false, operationTimeout = 30000 } = batchConfig;
 
     const results: (string | null)[] = [];
     const errors: any[] = [];
@@ -202,14 +205,14 @@ export class IntegrationServiceHelper {
       // Process architectures in batches
       for (let i = 0; i < architectures.length; i += maxConcurrency) {
         const batch = architectures.slice(i, i + maxConcurrency);
-        
+
         const batchPromises = batch.map(async ({ architecture, config = {} }) => {
           try {
             const result = await Promise.race([
               this.saveArchitectureEnhanced(architecture, config),
-              new Promise<never>((_, reject) => 
+              new Promise<never>((_, reject) =>
                 setTimeout(() => reject(new Error('Operation timeout')), operationTimeout)
-              )
+              ),
             ]);
 
             if (result.success) {
@@ -230,16 +233,19 @@ export class IntegrationServiceHelper {
         results.push(...batchResults);
       }
 
-      const successfulResults = results.filter(r => r !== null) as string[];
+      const successfulResults = results.filter((r) => r !== null) as string[];
 
       return {
         success: errors.length === 0 || !failFast,
         data: successfulResults,
-        error: errors.length > 0 ? {
-          code: 'BATCH_PARTIAL_FAILURE',
-          message: `${errors.length} operations failed out of ${architectures.length}`,
-          details: errors
-        } : undefined
+        error:
+          errors.length > 0
+            ? {
+                code: 'BATCH_PARTIAL_FAILURE',
+                message: `${errors.length} operations failed out of ${architectures.length}`,
+                details: errors,
+              }
+            : undefined,
       };
     } catch (error) {
       return {
@@ -247,37 +253,45 @@ export class IntegrationServiceHelper {
         error: {
           code: 'BATCH_ERROR',
           message: error instanceof Error ? error.message : 'Batch operation failed',
-          details: { processedCount: results.length, errors }
-        }
+          details: { processedCount: results.length, errors },
+        },
       };
     }
   }
 
   /**
    * Search architectures with enhanced filtering
+   *
+   * @param criteria
+   * @param criteria.domain
+   * @param criteria.tags
+   * @param criteria.minScore
+   * @param criteria.limit
+   * @param criteria.projectId
+   * @param criteria.dateRange
+   * @param criteria.dateRange.start
+   * @param criteria.dateRange.end
    */
-  async searchArchitecturesEnhanced(
-    criteria: {
-      domain?: string;
-      tags?: string[];
-      minScore?: number;
-      limit?: number;
-      projectId?: string;
-      dateRange?: {
-        start: Date;
-        end: Date;
-      };
-    }
-  ): Promise<IntegrationOperationResult<ArchitectureDesign[]>> {
+  async searchArchitecturesEnhanced(criteria: {
+    domain?: string;
+    tags?: string[];
+    minScore?: number;
+    limit?: number;
+    projectId?: string;
+    dateRange?: {
+      start: Date;
+      end: Date;
+    };
+  }): Promise<IntegrationOperationResult<ArchitectureDesign[]>> {
     try {
       const result = await this.adapter.execute<ArchitectureDesign[]>('architecture-search', {
-        criteria
+        criteria,
       });
 
       // Additional client-side filtering if needed
       if (result.success && result.data && criteria.dateRange) {
         const { start, end } = criteria.dateRange;
-        result.data = result.data.filter(arch => {
+        result.data = result.data.filter((arch) => {
           const createdAt = new Date(arch.createdAt || Date.now());
           return createdAt >= start && createdAt <= end;
         });
@@ -289,8 +303,8 @@ export class IntegrationServiceHelper {
         success: false,
         error: {
           code: 'SEARCH_ERROR',
-          message: error instanceof Error ? error.message : 'Search operation failed'
-        }
+          message: error instanceof Error ? error.message : 'Search operation failed',
+        },
       };
     }
   }
@@ -301,6 +315,11 @@ export class IntegrationServiceHelper {
 
   /**
    * Enhanced API request with comprehensive configuration
+   *
+   * @param method
+   * @param endpoint
+   * @param data
+   * @param config
    */
   async apiRequestEnhanced<T>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
@@ -316,8 +335,8 @@ export class IntegrationServiceHelper {
         options: {
           timeout: config.timeout,
           retries: config.retries,
-          headers: config.headers
-        }
+          headers: config.headers,
+        },
       };
 
       const result = await this.adapter.execute<APIResult<T>>(operation, params);
@@ -329,7 +348,7 @@ export class IntegrationServiceHelper {
           return {
             success: true,
             data: apiResult.data,
-            metadata: result.metadata
+            metadata: result.metadata,
           };
         } else {
           return {
@@ -337,9 +356,9 @@ export class IntegrationServiceHelper {
             error: {
               code: apiResult.error?.code || 'API_ERROR',
               message: apiResult.error?.message || 'API request failed',
-              details: apiResult.error?.details
+              details: apiResult.error?.details,
             },
-            metadata: result.metadata
+            metadata: result.metadata,
           };
         }
       }
@@ -350,14 +369,17 @@ export class IntegrationServiceHelper {
         success: false,
         error: {
           code: 'REQUEST_ERROR',
-          message: error instanceof Error ? error.message : 'API request failed'
-        }
+          message: error instanceof Error ? error.message : 'API request failed',
+        },
       };
     }
   }
 
   /**
    * Batch API requests with intelligent concurrency control
+   *
+   * @param requests
+   * @param batchConfig
    */
   async batchAPIRequests<T>(
     requests: Array<{
@@ -368,11 +390,7 @@ export class IntegrationServiceHelper {
     }>,
     batchConfig: BatchIntegrationConfig = {}
   ): Promise<IntegrationOperationResult<T[]>> {
-    const {
-      maxConcurrency = 10,
-      failFast = false,
-      operationTimeout = 30000
-    } = batchConfig;
+    const { maxConcurrency = 10, failFast = false, operationTimeout = 30000 } = batchConfig;
 
     const results: (T | null)[] = [];
     const errors: any[] = [];
@@ -381,14 +399,19 @@ export class IntegrationServiceHelper {
       // Process requests in batches
       for (let i = 0; i < requests.length; i += maxConcurrency) {
         const batch = requests.slice(i, i + maxConcurrency);
-        
+
         const batchPromises = batch.map(async (request) => {
           try {
             const result = await Promise.race([
-              this.apiRequestEnhanced<T>(request.method, request.endpoint, request.data, request.config),
-              new Promise<never>((_, reject) => 
+              this.apiRequestEnhanced<T>(
+                request.method,
+                request.endpoint,
+                request.data,
+                request.config
+              ),
+              new Promise<never>((_, reject) =>
                 setTimeout(() => reject(new Error('Request timeout')), operationTimeout)
-              )
+              ),
             ]);
 
             if (result.success) {
@@ -409,16 +432,19 @@ export class IntegrationServiceHelper {
         results.push(...batchResults);
       }
 
-      const successfulResults = results.filter(r => r !== null) as T[];
+      const successfulResults = results.filter((r) => r !== null) as T[];
 
       return {
         success: errors.length === 0 || !failFast,
         data: successfulResults,
-        error: errors.length > 0 ? {
-          code: 'BATCH_API_PARTIAL_FAILURE',
-          message: `${errors.length} requests failed out of ${requests.length}`,
-          details: errors
-        } : undefined
+        error:
+          errors.length > 0
+            ? {
+                code: 'BATCH_API_PARTIAL_FAILURE',
+                message: `${errors.length} requests failed out of ${requests.length}`,
+                details: errors,
+              }
+            : undefined,
       };
     } catch (error) {
       return {
@@ -426,14 +452,22 @@ export class IntegrationServiceHelper {
         error: {
           code: 'BATCH_API_ERROR',
           message: error instanceof Error ? error.message : 'Batch API operation failed',
-          details: { processedCount: results.length, errors }
-        }
+          details: { processedCount: results.length, errors },
+        },
       };
     }
   }
 
   /**
    * Resource management with CRUD operations
+   *
+   * @param operation
+   * @param endpoint
+   * @param data
+   * @param data.id
+   * @param data.resourceData
+   * @param data.queryParams
+   * @param config
    */
   async manageResource<T>(
     operation: 'create' | 'read' | 'update' | 'delete' | 'list',
@@ -443,7 +477,7 @@ export class IntegrationServiceHelper {
       resourceData?: any;
       queryParams?: Record<string, any>;
     },
-    config: APIOperationConfig = {}
+    _config: APIOperationConfig = {}
   ): Promise<IntegrationOperationResult<T>> {
     try {
       let operationName: string;
@@ -480,8 +514,8 @@ export class IntegrationServiceHelper {
         success: false,
         error: {
           code: 'RESOURCE_MANAGEMENT_ERROR',
-          message: error instanceof Error ? error.message : 'Resource operation failed'
-        }
+          message: error instanceof Error ? error.message : 'Resource operation failed',
+        },
       };
     }
   }
@@ -492,6 +526,9 @@ export class IntegrationServiceHelper {
 
   /**
    * Enhanced protocol communication
+   *
+   * @param operation
+   * @param config
    */
   async protocolCommunicate<T>(
     operation: 'connect' | 'disconnect' | 'send' | 'receive' | 'broadcast',
@@ -508,12 +545,12 @@ export class IntegrationServiceHelper {
       switch (operation) {
         case 'connect':
           operationName = 'protocol-connect';
-          params = { 
+          params = {
             protocol: config.protocol,
             config: {
               timeout: config.connectionTimeout,
-              usePooling: config.useConnectionPooling
-            }
+              usePooling: config.useConnectionPooling,
+            },
           };
           break;
         case 'disconnect':
@@ -542,26 +579,33 @@ export class IntegrationServiceHelper {
         success: false,
         error: {
           code: 'PROTOCOL_COMMUNICATION_ERROR',
-          message: error instanceof Error ? error.message : 'Protocol operation failed'
-        }
+          message: error instanceof Error ? error.message : 'Protocol operation failed',
+        },
       };
     }
   }
 
   /**
    * Protocol health monitoring
+   *
+   * @param protocols
    */
-  async monitorProtocolHealth(
-    protocols?: string[]
-  ): Promise<IntegrationOperationResult<Record<string, {
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    latency: number;
-    lastCheck: Date;
-    errorCount: number;
-  }>>> {
+  async monitorProtocolHealth(protocols?: string[]): Promise<
+    IntegrationOperationResult<
+      Record<
+        string,
+        {
+          status: 'healthy' | 'degraded' | 'unhealthy';
+          latency: number;
+          lastCheck: Date;
+          errorCount: number;
+        }
+      >
+    >
+  > {
     try {
-      const targetProtocols = protocols || await this.adapter.execute<string[]>('protocol-list');
-      
+      const targetProtocols = protocols || (await this.adapter.execute<string[]>('protocol-list'));
+
       if (!targetProtocols.success || !targetProtocols.data) {
         throw new Error('Failed to get protocol list');
       }
@@ -571,36 +615,38 @@ export class IntegrationServiceHelper {
       for (const protocol of targetProtocols.data) {
         try {
           const startTime = Date.now();
-          const healthResult = await this.adapter.execute<boolean>('protocol-health-check', { protocol });
+          const healthResult = await this.adapter.execute<boolean>('protocol-health-check', {
+            protocol,
+          });
           const latency = Date.now() - startTime;
 
           healthResults[protocol] = {
             status: healthResult.success ? 'healthy' : 'unhealthy',
             latency,
             lastCheck: new Date(),
-            errorCount: healthResult.success ? 0 : 1
+            errorCount: healthResult.success ? 0 : 1,
           };
-        } catch (error) {
+        } catch (_error) {
           healthResults[protocol] = {
             status: 'unhealthy',
             latency: -1,
             lastCheck: new Date(),
-            errorCount: 1
+            errorCount: 1,
           };
         }
       }
 
       return {
         success: true,
-        data: healthResults
+        data: healthResults,
       };
     } catch (error) {
       return {
         success: false,
         error: {
           code: 'PROTOCOL_HEALTH_MONITOR_ERROR',
-          message: error instanceof Error ? error.message : 'Protocol health monitoring failed'
-        }
+          message: error instanceof Error ? error.message : 'Protocol health monitoring failed',
+        },
       };
     }
   }
@@ -612,28 +658,30 @@ export class IntegrationServiceHelper {
   /**
    * Get comprehensive service statistics
    */
-  async getServiceStatistics(): Promise<IntegrationOperationResult<{
-    service: {
-      name: string;
-      type: string;
-      uptime: number;
-      operationCount: number;
-      errorRate: number;
-    };
-    cache: {
-      size: number;
-      hitRate: number;
-      memoryUsage: number;
-    };
-    protocols: Record<string, any>;
-    endpoints: Record<string, any>;
-  }>> {
+  async getServiceStatistics(): Promise<
+    IntegrationOperationResult<{
+      service: {
+        name: string;
+        type: string;
+        uptime: number;
+        operationCount: number;
+        errorRate: number;
+      };
+      cache: {
+        size: number;
+        hitRate: number;
+        memoryUsage: number;
+      };
+      protocols: Record<string, any>;
+      endpoints: Record<string, any>;
+    }>
+  > {
     try {
       const [serviceStats, cacheStats, protocolMetrics, endpointMetrics] = await Promise.all([
         this.adapter.execute('service-stats'),
         this.adapter.execute('cache-stats'),
         this.adapter.execute('protocol-metrics'),
-        this.adapter.execute('endpoint-metrics')
+        this.adapter.execute('endpoint-metrics'),
       ]);
 
       const statistics = {
@@ -642,28 +690,28 @@ export class IntegrationServiceHelper {
           type: this.adapter.type,
           uptime: serviceStats.data?.uptime || 0,
           operationCount: serviceStats.data?.operationCount || 0,
-          errorRate: serviceStats.data?.errorRate || 0
+          errorRate: serviceStats.data?.errorRate || 0,
         },
         cache: {
           size: cacheStats.data?.size || 0,
           hitRate: cacheStats.data?.hitRate || 0,
-          memoryUsage: cacheStats.data?.memoryUsage || 0
+          memoryUsage: cacheStats.data?.memoryUsage || 0,
         },
         protocols: protocolMetrics.success ? protocolMetrics.data : {},
-        endpoints: endpointMetrics.success ? endpointMetrics.data : {}
+        endpoints: endpointMetrics.success ? endpointMetrics.data : {},
       };
 
       return {
         success: true,
-        data: statistics
+        data: statistics,
       };
     } catch (error) {
       return {
         success: false,
         error: {
           code: 'STATISTICS_ERROR',
-          message: error instanceof Error ? error.message : 'Failed to get service statistics'
-        }
+          message: error instanceof Error ? error.message : 'Failed to get service statistics',
+        },
       };
     }
   }
@@ -671,15 +719,17 @@ export class IntegrationServiceHelper {
   /**
    * Validate service configuration
    */
-  async validateConfiguration(): Promise<IntegrationOperationResult<{
-    valid: boolean;
-    issues: Array<{
-      severity: 'warning' | 'error';
-      component: string;
-      message: string;
-      suggestion?: string;
-    }>;
-  }>> {
+  async validateConfiguration(): Promise<
+    IntegrationOperationResult<{
+      valid: boolean;
+      issues: Array<{
+        severity: 'warning' | 'error';
+        component: string;
+        message: string;
+        suggestion?: string;
+      }>;
+    }>
+  > {
     const issues: Array<{
       severity: 'warning' | 'error';
       component: string;
@@ -694,7 +744,7 @@ export class IntegrationServiceHelper {
           severity: 'error',
           component: 'service',
           message: 'Service is not in ready state',
-          suggestion: 'Ensure service is properly initialized and started'
+          suggestion: 'Ensure service is properly initialized and started',
         });
       }
 
@@ -707,7 +757,7 @@ export class IntegrationServiceHelper {
             severity: 'warning',
             component: 'cache',
             message: 'Cache utilization is high (>90%)',
-            suggestion: 'Consider increasing cache size or implementing better eviction policies'
+            suggestion: 'Consider increasing cache size or implementing better eviction policies',
           });
         }
       }
@@ -716,13 +766,13 @@ export class IntegrationServiceHelper {
       const protocolMetrics = await this.adapter.execute('protocol-metrics');
       if (protocolMetrics.success && protocolMetrics.data) {
         const protocols = protocolMetrics.data as any[];
-        protocols.forEach(protocol => {
+        protocols.forEach((protocol) => {
           if (protocol.status !== 'healthy') {
             issues.push({
               severity: 'error',
               component: 'protocol',
               message: `Protocol ${protocol.protocol} is ${protocol.status}`,
-              suggestion: 'Check protocol configuration and network connectivity'
+              suggestion: 'Check protocol configuration and network connectivity',
             });
           }
         });
@@ -731,17 +781,17 @@ export class IntegrationServiceHelper {
       return {
         success: true,
         data: {
-          valid: issues.filter(i => i.severity === 'error').length === 0,
-          issues
-        }
+          valid: issues.filter((i) => i.severity === 'error').length === 0,
+          issues,
+        },
       };
     } catch (error) {
       return {
         success: false,
         error: {
           code: 'VALIDATION_ERROR',
-          message: error instanceof Error ? error.message : 'Configuration validation failed'
-        }
+          message: error instanceof Error ? error.message : 'Configuration validation failed',
+        },
       };
     }
   }
@@ -749,15 +799,17 @@ export class IntegrationServiceHelper {
   /**
    * Optimize service performance
    */
-  async optimizePerformance(): Promise<IntegrationOperationResult<{
-    optimizations: Array<{
-      component: string;
-      action: string;
-      impact: string;
-      applied: boolean;
-    }>;
-    overallImprovement: number;
-  }>> {
+  async optimizePerformance(): Promise<
+    IntegrationOperationResult<{
+      optimizations: Array<{
+        component: string;
+        action: string;
+        impact: string;
+        applied: boolean;
+      }>;
+      overallImprovement: number;
+    }>
+  > {
     const optimizations: Array<{
       component: string;
       action: string;
@@ -774,7 +826,7 @@ export class IntegrationServiceHelper {
           component: 'cache',
           action: 'Cleared cache',
           impact: 'Reduced memory usage and improved cache efficiency',
-          applied: clearResult.success
+          applied: clearResult.success,
         });
       }
 
@@ -785,29 +837,28 @@ export class IntegrationServiceHelper {
           component: 'connection-pool',
           action: 'Cleaned up idle connections',
           impact: 'Reduced resource usage and improved connection efficiency',
-          applied: true
+          applied: true,
         });
       }
 
-      const successfulOptimizations = optimizations.filter(o => o.applied).length;
-      const overallImprovement = optimizations.length > 0 
-        ? (successfulOptimizations / optimizations.length) * 100 
-        : 0;
+      const successfulOptimizations = optimizations.filter((o) => o.applied).length;
+      const overallImprovement =
+        optimizations.length > 0 ? (successfulOptimizations / optimizations.length) * 100 : 0;
 
       return {
         success: true,
         data: {
           optimizations,
-          overallImprovement
-        }
+          overallImprovement,
+        },
       };
     } catch (error) {
       return {
         success: false,
         error: {
           code: 'OPTIMIZATION_ERROR',
-          message: error instanceof Error ? error.message : 'Performance optimization failed'
-        }
+          message: error instanceof Error ? error.message : 'Performance optimization failed',
+        },
       };
     }
   }
@@ -815,12 +866,16 @@ export class IntegrationServiceHelper {
 
 /**
  * Integration Service Utilities
- * 
+ *
  * Static utility functions for integration operations
+ *
+ * @example
  */
 export class IntegrationServiceUtils {
   /**
    * Create helper instance for an adapter
+   *
+   * @param adapter
    */
   static createHelper(adapter: IntegrationServiceAdapter): IntegrationServiceHelper {
     return new IntegrationServiceHelper(adapter);
@@ -828,6 +883,8 @@ export class IntegrationServiceUtils {
 
   /**
    * Validate API endpoint URL
+   *
+   * @param url
    */
   static validateEndpoint(url: string): boolean {
     try {
@@ -847,19 +904,29 @@ export class IntegrationServiceUtils {
 
   /**
    * Calculate retry delay with exponential backoff
+   *
+   * @param attempt
+   * @param baseDelay
+   * @param maxDelay
    */
-  static calculateRetryDelay(attempt: number, baseDelay: number = 1000, maxDelay: number = 30000): number {
-    const delay = baseDelay * Math.pow(2, attempt - 1);
+  static calculateRetryDelay(
+    attempt: number,
+    baseDelay: number = 1000,
+    maxDelay: number = 30000
+  ): number {
+    const delay = baseDelay * 2 ** (attempt - 1);
     return Math.min(delay + Math.random() * 1000, maxDelay); // Add jitter
   }
 
   /**
    * Sanitize architecture data for storage
+   *
+   * @param architecture
    */
   static sanitizeArchitectureData(architecture: ArchitectureDesign): ArchitectureDesign {
     // Create a deep copy to avoid mutations
     const sanitized = JSON.parse(JSON.stringify(architecture));
-    
+
     // Remove potentially sensitive data
     if (sanitized.metadata) {
       delete sanitized.metadata.internalNotes;
@@ -876,6 +943,8 @@ export class IntegrationServiceUtils {
 
   /**
    * Validate protocol name
+   *
+   * @param protocol
    */
   static validateProtocolName(protocol: string): boolean {
     const validProtocols = ['http', 'https', 'websocket', 'mcp-http', 'mcp-stdio', 'tcp', 'udp'];
@@ -884,25 +953,32 @@ export class IntegrationServiceUtils {
 
   /**
    * Format error for logging
+   *
+   * @param error
    */
   static formatError(error: any): string {
     if (error instanceof Error) {
-      return `${error.name}: ${error.message}${error.stack ? '\n' + error.stack : ''}`;
+      return `${error.name}: ${error.message}${error.stack ? `\n${error.stack}` : ''}`;
     }
     return JSON.stringify(error, null, 2);
   }
 
   /**
    * Calculate success rate from operation results
+   *
+   * @param results
    */
   static calculateSuccessRate(results: IntegrationOperationResult[]): number {
     if (results.length === 0) return 0;
-    const successCount = results.filter(r => r.success).length;
+    const successCount = results.filter((r) => r.success).length;
     return (successCount / results.length) * 100;
   }
 
   /**
    * Merge integration configurations
+   *
+   * @param base
+   * @param override
    */
   static mergeConfigurations(
     base: Partial<IntegrationServiceAdapterConfig>,
@@ -913,41 +989,43 @@ export class IntegrationServiceUtils {
       ...override,
       architectureStorage: {
         ...base.architectureStorage,
-        ...override.architectureStorage
+        ...override.architectureStorage,
       },
       safeAPI: {
         ...base.safeAPI,
-        ...override.safeAPI
+        ...override.safeAPI,
       },
       protocolManagement: {
         ...base.protocolManagement,
-        ...override.protocolManagement
+        ...override.protocolManagement,
       },
       performance: {
         ...base.performance,
-        ...override.performance
+        ...override.performance,
       },
       retry: {
         ...base.retry,
-        ...override.retry
+        ...override.retry,
       },
       cache: {
         ...base.cache,
-        ...override.cache
+        ...override.cache,
       },
       security: {
         ...base.security,
-        ...override.security
+        ...override.security,
       },
       multiProtocol: {
         ...base.multiProtocol,
-        ...override.multiProtocol
-      }
+        ...override.multiProtocol,
+      },
     };
   }
 
   /**
    * Extract metrics from operation results
+   *
+   * @param results
    */
   static extractMetrics(results: IntegrationOperationResult[]): {
     totalOperations: number;
@@ -958,17 +1036,14 @@ export class IntegrationServiceUtils {
     errorRate: number;
   } {
     const totalOperations = results.length;
-    const successCount = results.filter(r => r.success).length;
+    const successCount = results.filter((r) => r.success).length;
     const errorCount = totalOperations - successCount;
-    
-    const latencies = results
-      .filter(r => r.metadata?.duration)
-      .map(r => r.metadata!.duration);
-    
-    const averageLatency = latencies.length > 0 
-      ? latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length 
-      : 0;
-    
+
+    const latencies = results.filter((r) => r.metadata?.duration).map((r) => r.metadata?.duration);
+
+    const averageLatency =
+      latencies.length > 0 ? latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length : 0;
+
     const successRate = totalOperations > 0 ? (successCount / totalOperations) * 100 : 0;
     const errorRate = totalOperations > 0 ? (errorCount / totalOperations) * 100 : 0;
 
@@ -978,7 +1053,7 @@ export class IntegrationServiceUtils {
       errorCount,
       averageLatency,
       successRate,
-      errorRate
+      errorRate,
     };
   }
 }
@@ -986,5 +1061,5 @@ export class IntegrationServiceUtils {
 // Export types and utilities
 export default {
   IntegrationServiceHelper,
-  IntegrationServiceUtils
+  IntegrationServiceUtils,
 };

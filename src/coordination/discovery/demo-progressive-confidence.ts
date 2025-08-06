@@ -1,5 +1,5 @@
 /**
- * @fileoverview Demo script for Progressive Confidence Builder
+ * @file Demo script for Progressive Confidence Builder
  * Shows how the system builds confidence through iterations
  */
 

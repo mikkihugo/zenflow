@@ -9,6 +9,8 @@ import type { ConversationMCPTools, ConversationMemory, ConversationOrchestrator
 
 /**
  * Configuration for conversation framework creation
+ *
+ * @example
  */
 export interface ConversationFrameworkConfig {
   memoryBackend?: 'sqlite' | 'json' | 'lancedb';
@@ -21,6 +23,8 @@ export interface ConversationFrameworkConfig {
 
 /**
  * Complete conversation framework system
+ *
+ * @example
  */
 export interface ConversationFrameworkSystem {
   orchestrator: ConversationOrchestrator;
@@ -41,10 +45,14 @@ export * from './types';
  * Conversation Framework Factory
  *
  * Main entry point for creating conversation systems
+ *
+ * @example
  */
 export class ConversationFramework {
   /**
    * Create a complete conversation system with orchestrator and memory
+   *
+   * @param config
    */
   static async create(
     config: ConversationFrameworkConfig = {}
@@ -121,6 +129,8 @@ export class ConversationFramework {
 
   /**
    * Validate conversation configuration
+   *
+   * @param config
    */
   static validateConfig(config: any): { valid: boolean; errors: string[] } {
     const errors: string[] = [];

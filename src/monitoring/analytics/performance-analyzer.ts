@@ -102,6 +102,8 @@ export class PerformanceAnalyzer extends EventEmitter {
 
   /**
    * Analyze new metrics
+   *
+   * @param metrics
    */
   public analyzeMetrics(metrics: CompositeMetrics): PerformanceInsights {
     if (!this.isAnalyzing) {
@@ -126,6 +128,8 @@ export class PerformanceAnalyzer extends EventEmitter {
 
   /**
    * Detect anomalies in current metrics
+   *
+   * @param metrics
    */
   private detectAnomalies(metrics: CompositeMetrics): AnomalyDetection[] {
     const anomalies: AnomalyDetection[] = [];
@@ -200,6 +204,11 @@ export class PerformanceAnalyzer extends EventEmitter {
 
   /**
    * Check for anomaly in a specific metric
+   *
+   * @param anomalies
+   * @param metricName
+   * @param value
+   * @param description
    */
   private checkAnomaly(
     anomalies: AnomalyDetection[],
@@ -299,6 +308,9 @@ export class PerformanceAnalyzer extends EventEmitter {
 
   /**
    * Analyze trend for a specific metric
+   *
+   * @param metricName
+   * @param values
    */
   private analyzeTrend(metricName: string, values: number[]): TrendAnalysis {
     if (values.length < 3) {
@@ -347,6 +359,8 @@ export class PerformanceAnalyzer extends EventEmitter {
 
   /**
    * Identify performance bottlenecks
+   *
+   * @param metrics
    */
   private identifyBottlenecks(metrics: CompositeMetrics): BottleneckAnalysis[] {
     const bottlenecks: BottleneckAnalysis[] = [];
@@ -445,6 +459,8 @@ export class PerformanceAnalyzer extends EventEmitter {
 
   /**
    * Calculate overall system health score
+   *
+   * @param metrics
    */
   private calculateHealthScore(metrics: CompositeMetrics): number {
     const weights = {
@@ -551,6 +567,8 @@ export class PerformanceAnalyzer extends EventEmitter {
 
   /**
    * Maintain metrics history size
+   *
+   * @param maxSize
    */
   private maintainHistorySize(maxSize = 1000): void {
     if (this.metricsHistory.length > maxSize) {
@@ -560,6 +578,10 @@ export class PerformanceAnalyzer extends EventEmitter {
 
   /**
    * Get historical performance insights
+   *
+   * @param timeRange
+   * @param timeRange.start
+   * @param timeRange.end
    */
   public getHistoricalInsights(timeRange?: { start: number; end: number }): PerformanceInsights[] {
     const relevantMetrics = timeRange

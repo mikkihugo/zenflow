@@ -35,6 +35,8 @@ export type JSONValue =
 
 /**
  * Storage operation result
+ *
+ * @example
  */
 export interface StorageResult {
   /** Unique identifier for the stored item */
@@ -49,6 +51,8 @@ export interface StorageResult {
 
 /**
  * Backend statistics
+ *
+ * @example
  */
 export interface BackendStats {
   /** Number of entries */
@@ -68,6 +72,8 @@ export type BackendType = 'lancedb' | 'sqlite' | 'json';
 
 /**
  * Memory system configuration
+ *
+ * @example
  */
 export interface MemoryConfig {
   /** Backend type */
@@ -84,6 +90,8 @@ export interface MemoryConfig {
 
 /**
  * Backend interface for storage implementations
+ *
+ * @example
  */
 export interface BackendInterface {
   /** Initialize the backend */
@@ -106,6 +114,8 @@ export interface BackendInterface {
 
 /**
  * JSON file backend implementation
+ *
+ * @example
  */
 class JSONBackend implements BackendInterface {
   private data = new Map<string, { value: JSONValue; timestamp: number; type: string }>();
@@ -250,11 +260,12 @@ class JSONBackend implements BackendInterface {
 
 /**
  * SQLite backend implementation
+ *
+ * @example
  */
 class SQLiteBackend implements BackendInterface {
   private db?: any;
   private dbPath: string;
-  private config: MemoryConfig;
 
   constructor(config: MemoryConfig) {
     this.config = config;
@@ -443,10 +454,10 @@ class SQLiteBackend implements BackendInterface {
 
 /**
  * LanceDB backend implementation (stub)
+ *
+ * @example
  */
 class LanceDBBackend implements BackendInterface {
-  private config: MemoryConfig;
-
   constructor(config: MemoryConfig) {
     this.config = config;
   }
@@ -497,6 +508,8 @@ class LanceDBBackend implements BackendInterface {
 
 /**
  * Clean, focused memory system with multi-backend support
+ *
+ * @example
  */
 export class MemorySystem extends EventEmitter {
   private backend: BackendInterface;

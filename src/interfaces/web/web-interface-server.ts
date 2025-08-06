@@ -36,6 +36,8 @@ export interface WebConfig {
 
 /**
  * Main web interface server coordinating all web functionality
+ *
+ * @example
  */
 export class WebInterfaceServer {
   // TODO: Use dependency injection for logger

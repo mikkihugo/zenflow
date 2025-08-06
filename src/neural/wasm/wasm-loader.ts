@@ -7,8 +7,6 @@ export class WasmModuleLoader {
   private loaded = false;
   private module: any = null;
 
-  constructor() {}
-
   async load(): Promise<void> {
     if (this.loaded) return;
 

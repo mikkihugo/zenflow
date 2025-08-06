@@ -1,5 +1,5 @@
 /**
- * @fileoverview Performance and Load Testing for Hive Knowledge System
+ * @file Performance and Load Testing for Hive Knowledge System
  * Tests system performance under various load conditions and measures key metrics
  */
 

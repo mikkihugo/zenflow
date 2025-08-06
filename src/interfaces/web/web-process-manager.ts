@@ -108,6 +108,8 @@ export class WebProcessManager {
 
   /**
    * Perform graceful shutdown
+   *
+   * @param signal
    */
   async gracefulShutdown(signal?: string): Promise<void> {
     if (this.isShuttingDown) {
@@ -173,6 +175,8 @@ export class WebProcessManager {
 
   /**
    * Check if a process is running by PID
+   *
+   * @param pid
    */
   private isProcessRunning(pid: number): boolean {
     try {
@@ -195,6 +199,8 @@ export class WebProcessManager {
 
   /**
    * Stop a running instance
+   *
+   * @param pid
    */
   async stopInstance(pid?: number): Promise<boolean> {
     try {

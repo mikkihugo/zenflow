@@ -2,11 +2,13 @@
  * Database Domain DI Container Setup - Simplified
  * Configures dependency injection for database operations
  *
- * @fileoverview Simplified DI container configuration for database domain
+ * @file Simplified DI container configuration for database domain
  */
 
 /**
  * Request interface for database query operations
+ *
+ * @example
  */
 export interface QueryRequest {
   /** SQL query to execute */
@@ -28,6 +30,8 @@ export interface QueryRequest {
 
 /**
  * Request interface for database command operations
+ *
+ * @example
  */
 export interface CommandRequest {
   /** SQL command to execute */
@@ -47,6 +51,8 @@ export interface CommandRequest {
 
 /**
  * Request interface for batch operations
+ *
+ * @example
  */
 export interface BatchRequest {
   /** Array of operations to execute */
@@ -66,6 +72,8 @@ export interface BatchRequest {
 
 /**
  * Migration operation interface
+ *
+ * @example
  */
 export interface MigrationRequest {
   /** Migration SQL statements */
@@ -80,6 +88,8 @@ export interface MigrationRequest {
 
 /**
  * Response interface for database operations
+ *
+ * @example
  */
 export interface DatabaseResponse {
   /** Whether the operation was successful */
@@ -105,6 +115,8 @@ export interface DatabaseResponse {
 
 /**
  * Database health status interface
+ *
+ * @example
  */
 export interface DatabaseHealthStatus {
   /** Overall health status */
@@ -127,17 +139,16 @@ export interface DatabaseHealthStatus {
 
 /**
  * Mock logger implementation for DI system
+ *
+ * @example
  */
 class ConsoleLogger {
-  debug(message: string, meta?: any): void {
+  debug(_message: string, _meta?: any): void {
     if (process.env.NODE_ENV === 'development') {
-      console.debug(`[DEBUG] ${message}`, meta || '');
     }
   }
 
-  info(message: string, meta?: any): void {
-    console.info(`[INFO] ${message}`, meta || '');
-  }
+  info(_message: string, _meta?: any): void {}
 
   warn(message: string, meta?: any): void {
     console.warn(`[WARN] ${message}`, meta || '');
@@ -150,6 +161,8 @@ class ConsoleLogger {
 
 /**
  * Mock database configuration
+ *
+ * @example
  */
 interface DatabaseConfig {
   type: 'sqlite' | 'postgresql' | 'mysql' | 'lancedb' | 'kuzu';
@@ -173,6 +186,8 @@ interface DatabaseConfig {
 
 /**
  * Connection statistics interface
+ *
+ * @example
  */
 interface ConnectionStats {
   active: number;
@@ -183,6 +198,8 @@ interface ConnectionStats {
 
 /**
  * Mock database adapter for testing and development
+ *
+ * @example
  */
 class MockDatabaseAdapter {
   private config: DatabaseConfig;
@@ -215,7 +232,7 @@ class MockDatabaseAdapter {
 
   async query(
     sql: string,
-    params?: any[]
+    _params?: any[]
   ): Promise<{
     rows: any[];
     fields: Array<{ name: string; type: string }>;
@@ -248,8 +265,8 @@ class MockDatabaseAdapter {
   }
 
   async execute(
-    sql: string,
-    params?: any[]
+    _sql: string,
+    _params?: any[]
   ): Promise<{
     affectedRows: number;
     insertId?: any;
@@ -315,6 +332,8 @@ class MockDatabaseAdapter {
 
 /**
  * Database provider factory for creating adapters
+ *
+ * @example
  */
 class MockDatabaseProviderFactory {
   createAdapter(config: DatabaseConfig): MockDatabaseAdapter {
@@ -325,6 +344,8 @@ class MockDatabaseProviderFactory {
 /**
  * Simplified Database Controller without DI decorators
  * Provides the same interface as the full DatabaseController
+ *
+ * @example
  */
 class SimplifiedDatabaseController {
   private adapter: MockDatabaseAdapter;
@@ -886,6 +907,8 @@ class SimplifiedDatabaseController {
 
   /**
    * Check if SQL statement is a query (SELECT)
+   *
+   * @param sql
    */
   private isQueryStatement(sql: string): boolean {
     const trimmedSql = sql.trim().toLowerCase();
@@ -900,6 +923,9 @@ class SimplifiedDatabaseController {
 
   /**
    * Update performance metrics
+   *
+   * @param responseTime
+   * @param success
    */
   private updateMetrics(responseTime: number, success: boolean): void {
     this.performanceMetrics.operationCount++;

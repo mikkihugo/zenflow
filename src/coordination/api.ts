@@ -4,7 +4,7 @@
  * RESTful API following Google API Design Guide standards.
  * OpenAPI 3.0 compatible with automatic Swagger documentation.
  *
- * @fileoverview REST API for coordination domain
+ * @file REST API for coordination domain
  */
 
 import type {
@@ -32,9 +32,16 @@ import type {
 /**
  * Agent Management API
  * Following Google API Design Guide: collection-based resource naming
+ *
+ * @example
  */
 export class AgentAPI {
   /**
+   * @param _params
+   * @param _params.status
+   * @param _params.type
+   * @param _params.limit
+   * @param _params.offset
    * @swagger
    * /api/v1/agents:
    *   get:
@@ -110,6 +117,9 @@ export class AgentAPI {
   }
 
   /**
+   * @param _request
+   * @param _request.type
+   * @param _request.capabilities
    * @swagger
    * /api/v1/agents:
    *   post:
@@ -156,6 +166,7 @@ export class AgentAPI {
   }
 
   /**
+   * @param _agentId
    * @swagger
    * /api/v1/agents/{agentId}:
    *   get:
@@ -189,6 +200,7 @@ export class AgentAPI {
   }
 
   /**
+   * @param _agentId
    * @swagger
    * /api/v1/agents/{agentId}:
    *   delete:
@@ -220,9 +232,16 @@ export class AgentAPI {
 /**
  * Task Management API
  * Following Google API Design Guide standards
+ *
+ * @example
  */
 export class TaskAPI {
   /**
+   * @param _request
+   * @param _request.type
+   * @param _request.description
+   * @param _request.priority
+   * @param _request.deadline
    * @swagger
    * /api/v1/tasks:
    *   post:
@@ -271,6 +290,7 @@ export class TaskAPI {
   }
 
   /**
+   * @param _taskId
    * @swagger
    * /api/v1/tasks/{taskId}:
    *   get:
@@ -300,6 +320,8 @@ export class TaskAPI {
 /**
  * Swarm Management API
  * Control swarm topology and coordination settings
+ *
+ * @example
  */
 export class SwarmAPI {
   /**
@@ -322,6 +344,7 @@ export class SwarmAPI {
   }
 
   /**
+   * @param _config
    * @swagger
    * /api/v1/swarm/config:
    *   put:
@@ -356,6 +379,8 @@ export class SwarmAPI {
 /**
  * Health and Monitoring API
  * System health checks and performance metrics
+ *
+ * @example
  */
 export class HealthAPI {
   /**
@@ -384,6 +409,7 @@ export class HealthAPI {
   }
 
   /**
+   * @param _timeRange
    * @swagger
    * /api/v1/metrics:
    *   get:
@@ -414,6 +440,8 @@ export class HealthAPI {
 /**
  * API Error Handler
  * Standardized error handling following Google API Design Guide
+ *
+ * @example
  */
 export class APIErrorHandler {
   static createError(

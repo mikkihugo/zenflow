@@ -150,6 +150,8 @@ export interface TaskOutcome {
 
 /**
  * Manages persistent learning across ephemeral swarm instances
+ *
+ * @example
  */
 export class PersistentLearningSystem extends EventEmitter {
   private agentKnowledge = new Map<AgentType, AgentKnowledge>();
@@ -168,6 +170,9 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * When a new swarm is created, inject accumulated knowledge
+   *
+   * @param swarmId
+   * @param agentTypes
    */
   async injectKnowledgeIntoSwarm(swarmId: string, agentTypes: AgentType[]): Promise<void> {
     this.logger?.info('Injecting knowledge into new swarm', {
@@ -241,6 +246,9 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * Collect learnings when a swarm completes
+   *
+   * @param swarmId
+   * @param swarmResults
    */
   async collectSwarmLearnings(swarmId: string, swarmResults: SwarmResults): Promise<void> {
     this.logger?.info('Collecting learnings from completed swarm', { swarmId });
@@ -267,6 +275,9 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * Process individual agent learnings
+   *
+   * @param agentResult
+   * @param swarmMemory
    */
   private async processAgentLearnings(
     agentResult: AgentResult,
@@ -327,6 +338,9 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * Extract patterns from agent behavior
+   *
+   * @param knowledge
+   * @param agentResult
    */
   private async extractAgentPatterns(
     knowledge: AgentKnowledge,
@@ -363,6 +377,9 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * Update agent capabilities based on performance
+   *
+   * @param knowledge
+   * @param agentResult
    */
   private async updateAgentCapabilities(
     knowledge: AgentKnowledge,
@@ -419,6 +436,10 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * Update agent relationships based on collaboration
+   *
+   * @param knowledge
+   * @param agentResult
+   * @param swarmMemory
    */
   private async updateAgentRelationships(
     knowledge: AgentKnowledge,
@@ -460,6 +481,9 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * Filter relevant knowledge for a new swarm
+   *
+   * @param knowledge
+   * @param _swarmMemory
    */
   private filterRelevantKnowledge(knowledge: AgentKnowledge, _swarmMemory: SwarmMemory): any {
     // Get most relevant experiences (recent + successful)
@@ -490,6 +514,8 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * Get cross-swarm insights for new swarm
+   *
+   * @param agentTypes
    */
   private getCrossSwarmInsights(agentTypes: AgentType[]): CrossSwarmInsight[] {
     return this.crossSwarmLearnings
@@ -503,6 +529,8 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * Initialize knowledge for a new agent type
+   *
+   * @param agentType
    */
   private initializeAgentKnowledge(agentType: AgentType): AgentKnowledge {
     return {
@@ -535,6 +563,8 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * Extract global patterns across all swarms
+   *
+   * @param swarmResults
    */
   private async extractGlobalPatterns(swarmResults: SwarmResults): Promise<void> {
     // Analyze patterns that emerge across different swarms
@@ -567,6 +597,8 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * Update cross-swarm learnings
+   *
+   * @param swarmResults
    */
   private async updateCrossSwarmLearnings(swarmResults: SwarmResults): Promise<void> {
     // Analyze what works well across different agent combinations
@@ -610,6 +642,9 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * Archive swarm memory for future reference
+   *
+   * @param swarmId
+   * @param swarmResults
    */
   private archiveSwarmMemory(swarmId: string, swarmResults: SwarmResults): void {
     // Keep a summary for future reference
@@ -694,6 +729,8 @@ export class PersistentLearningSystem extends EventEmitter {
 
   /**
    * Get knowledge summary for an agent type
+   *
+   * @param agentType
    */
   getAgentKnowledgeSummary(agentType: AgentType): AgentKnowledgeSummary | null {
     const knowledge = this.agentKnowledge.get(agentType);

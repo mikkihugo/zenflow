@@ -20,6 +20,13 @@ export interface FooterProps {
  * Unified Footer Component
  *
  * Provides context-appropriate navigation and help information.
+ *
+ * @param root0
+ * @param root0.mode
+ * @param root0.shortcuts
+ * @param root0.status
+ * @param root0.showBorder
+ * @param root0.testId
  */
 export const Footer: React.FC<FooterProps> = ({
   mode = 'command',

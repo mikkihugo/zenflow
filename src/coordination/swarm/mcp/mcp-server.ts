@@ -3,12 +3,12 @@
  * Single stdio MCP server combining coordination and swarm functionality
  */
 
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import { createLogger } from '../../../core/logger';
-import { SwarmTools } from './swarm-tools';
 import { HiveTools } from './hive-tools';
+import { SwarmTools } from './swarm-tools';
 import type { MCPServerConfig } from './types';
 
 const logger = createLogger({ prefix: 'UnifiedMCPServer' });
@@ -16,7 +16,6 @@ const logger = createLogger({ prefix: 'UnifiedMCPServer' });
 export class StdioMcpServer {
   private server: McpServer;
   private transport: StdioServerTransport;
-  private config: MCPServerConfig;
   private toolRegistry: SwarmTools;
   private hiveRegistry: HiveTools;
 
@@ -31,7 +30,7 @@ export class StdioMcpServer {
     this.transport = new StdioServerTransport();
     this.toolRegistry = new SwarmTools();
     this.hiveRegistry = new HiveTools();
-    
+
     this.server = new McpServer(
       {
         name: 'claude-zen-unified',
@@ -61,12 +60,12 @@ export class StdioMcpServer {
 
   private async registerTools(): Promise<void> {
     logger.info('Registering swarm and hive MCP tools...');
-    
+
     // Get all tools from both registries
     const swarmTools = this.toolRegistry.tools;
     const hiveTools = this.hiveRegistry.tools;
     const tools = { ...swarmTools, ...hiveTools };
-    
+
     // Register each tool with the MCP server using the official SDK pattern
     for (const [toolName, toolFunction] of Object.entries(tools)) {
       try {
@@ -88,14 +87,16 @@ export class StdioMcpServer {
             }
           }
         );
-        
+
         logger.debug(`Registered tool: ${toolName}`);
       } catch (error) {
         logger.error(`Failed to register tool ${toolName}:`, error);
       }
     }
-    
-    logger.info(`Registered ${Object.keys(swarmTools).length} swarm tools and ${Object.keys(hiveTools).length} hive tools`);
+
+    logger.info(
+      `Registered ${Object.keys(swarmTools).length} swarm tools and ${Object.keys(hiveTools).length} hive tools`
+    );
   }
 
   async stop(): Promise<void> {
@@ -111,19 +112,19 @@ export default StdioMcpServer;
 // Main execution when run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const server = new StdioMcpServer();
-  
+
   server.start().catch((error) => {
     logger.error('Failed to start MCP server:', error);
     process.exit(1);
   });
-  
+
   // Handle graceful shutdown
   process.on('SIGINT', async () => {
     logger.info('Received SIGINT, shutting down gracefully...');
     await server.stop();
     process.exit(0);
   });
-  
+
   process.on('SIGTERM', async () => {
     logger.info('Received SIGTERM, shutting down gracefully...');
     await server.stop();

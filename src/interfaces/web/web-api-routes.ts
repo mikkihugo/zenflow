@@ -25,6 +25,8 @@ export class WebApiRoutes {
 
   /**
    * Setup all API routes
+   *
+   * @param app
    */
   setupRoutes(app: Express): void {
     const api = this.config.apiPrefix!;
@@ -58,6 +60,9 @@ export class WebApiRoutes {
 
   /**
    * Health check endpoint
+   *
+   * @param _req
+   * @param res
    */
   private handleHealthCheck(_req: Request, res: Response): void {
     res.json({
@@ -70,6 +75,9 @@ export class WebApiRoutes {
 
   /**
    * System status endpoint
+   *
+   * @param _req
+   * @param res
    */
   private async handleSystemStatus(_req: Request, res: Response): Promise<void> {
     try {
@@ -83,6 +91,9 @@ export class WebApiRoutes {
 
   /**
    * Get swarms endpoint
+   *
+   * @param _req
+   * @param res
    */
   private async handleGetSwarms(_req: Request, res: Response): Promise<void> {
     try {
@@ -96,6 +107,9 @@ export class WebApiRoutes {
 
   /**
    * Create swarm endpoint
+   *
+   * @param req
+   * @param res
    */
   private async handleCreateSwarm(req: Request, res: Response): Promise<void> {
     try {
@@ -110,6 +124,9 @@ export class WebApiRoutes {
 
   /**
    * Get tasks endpoint
+   *
+   * @param _req
+   * @param res
    */
   private async handleGetTasks(_req: Request, res: Response): Promise<void> {
     try {
@@ -123,6 +140,9 @@ export class WebApiRoutes {
 
   /**
    * Create task endpoint
+   *
+   * @param req
+   * @param res
    */
   private async handleCreateTask(req: Request, res: Response): Promise<void> {
     try {
@@ -137,6 +157,9 @@ export class WebApiRoutes {
 
   /**
    * Get documents endpoint
+   *
+   * @param _req
+   * @param res
    */
   private async handleGetDocuments(_req: Request, res: Response): Promise<void> {
     try {
@@ -150,6 +173,9 @@ export class WebApiRoutes {
 
   /**
    * Execute command endpoint
+   *
+   * @param req
+   * @param res
    */
   private async handleExecuteCommand(req: Request, res: Response): Promise<void> {
     try {
@@ -165,6 +191,9 @@ export class WebApiRoutes {
 
   /**
    * Get settings endpoint
+   *
+   * @param req
+   * @param res
    */
   private handleGetSettings(req: Request, res: Response): void {
     const session = this.sessionManager.getSession(req.sessionId!);
@@ -179,6 +208,9 @@ export class WebApiRoutes {
 
   /**
    * Update settings endpoint
+   *
+   * @param req
+   * @param res
    */
   private handleUpdateSettings(req: Request, res: Response): void {
     const success = this.sessionManager.updateSessionPreferences(req.sessionId!, req.body);

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Advanced Memory Coordination System
+ * @file Advanced Memory Coordination System
  * Provides advanced coordination capabilities for distributed memory management
  */
 
@@ -48,6 +48,8 @@ export interface CoordinationDecision {
 /**
  * Advanced Memory Coordinator
  * Manages distributed memory operations with consensus and optimization
+ *
+ * @example
  */
 export class MemoryCoordinator extends EventEmitter {
   private nodes = new Map<string, MemoryNode>();
@@ -61,6 +63,9 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Register a memory node for coordination
+   *
+   * @param id
+   * @param backend
    */
   async registerNode(id: string, backend: BackendInterface): Promise<void> {
     const node: MemoryNode = {
@@ -78,6 +83,8 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Unregister a memory node
+   *
+   * @param id
    */
   async unregisterNode(id: string): Promise<void> {
     this.nodes.delete(id);
@@ -86,6 +93,8 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Coordinate a distributed memory operation
+   *
+   * @param operation
    */
   async coordinate(operation: Partial<CoordinationDecision>): Promise<CoordinationDecision> {
     const decision: CoordinationDecision = {
@@ -117,6 +126,8 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Select optimal nodes for an operation
+   *
+   * @param operationType
    */
   private selectParticipants(operationType: string): string[] {
     const activeNodes = Array.from(this.nodes.entries())
@@ -140,6 +151,8 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Execute coordination decision
+   *
+   * @param decision
    */
   private async executeCoordination(decision: CoordinationDecision): Promise<void> {
     decision.status = 'executing';
@@ -167,6 +180,8 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Execute distributed read operation
+   *
+   * @param decision
    */
   private async executeRead(decision: CoordinationDecision): Promise<any> {
     const node = this.nodes.get(decision.participants[0]);
@@ -179,6 +194,8 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Execute distributed write operation
+   *
+   * @param decision
    */
   private async executeWrite(decision: CoordinationDecision): Promise<void> {
     const writePromises = decision.participants.map(async (nodeId) => {
@@ -207,6 +224,8 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Execute distributed delete operation
+   *
+   * @param decision
    */
   private async executeDelete(decision: CoordinationDecision): Promise<void> {
     const deletePromises = decision.participants.map(async (nodeId) => {
@@ -223,6 +242,8 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Execute sync operation between nodes
+   *
+   * @param decision
    */
   private async executeSync(decision: CoordinationDecision): Promise<void> {
     // Synchronize data between nodes
@@ -246,6 +267,8 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Execute repair operation for inconsistent data
+   *
+   * @param decision
    */
   private async executeRepair(decision: CoordinationDecision): Promise<void> {
     // Implement repair logic for data inconsistencies
@@ -312,6 +335,12 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Store data across distributed memory nodes
+   *
+   * @param key
+   * @param data
+   * @param options
+   * @param options.ttl
+   * @param options.replicas
    */
   async store(
     key: string,
@@ -331,6 +360,8 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Retrieve data from distributed memory nodes
+   *
+   * @param key
    */
   async get(key: string): Promise<any> {
     const decision = await this.coordinate({
@@ -347,6 +378,8 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Delete data from distributed memory nodes
+   *
+   * @param key
    */
   async deleteEntry(key: string): Promise<void> {
     const decision = await this.coordinate({
@@ -361,6 +394,8 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * List all keys matching a pattern across distributed nodes
+   *
+   * @param pattern
    */
   async list(pattern: string): Promise<Array<{ key: string; value: any }>> {
     const results: Array<{ key: string; value: any }> = [];
@@ -398,6 +433,9 @@ export class MemoryCoordinator extends EventEmitter {
 
   /**
    * Simple pattern matching for key listing
+   *
+   * @param key
+   * @param pattern
    */
   private matchesPattern(key: string, pattern: string): boolean {
     // Convert simple glob pattern to regex

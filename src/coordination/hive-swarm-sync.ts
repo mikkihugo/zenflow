@@ -41,6 +41,8 @@ import type { SwarmPerformanceMetrics } from './hive-types';
 
 /**
  * Central hive mind synchronization coordinator
+ *
+ * @example
  */
 export class HiveSwarmCoordinator extends EventEmitter {
   private hiveRegistry: HiveRegistry;
@@ -237,6 +239,9 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
   /**
    * Find the best agent for a specific task
+   *
+   * @param task
+   * @param availableAgents
    */
   private findBestAgentForTask(
     task: HiveTask,
@@ -259,6 +264,9 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
   /**
    * Calculate how well an agent matches a task
+   *
+   * @param agent
+   * @param task
    */
   private calculateAgentTaskScore(agent: GlobalAgentInfo, task: HiveTask): number {
     let score = 0;
@@ -506,6 +514,8 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
   /**
    * Register a new swarm with the hive
+   *
+   * @param data
    */
   public registerSwarm(data: any): void {
     const swarmInfo: SwarmInfo = {
@@ -529,6 +539,8 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
   /**
    * Register a new agent with the hive
+   *
+   * @param data
    */
   private registerAgent(data: any): void {
     const agentInfo: GlobalAgentInfo = {
@@ -554,6 +566,8 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
   /**
    * Update agent state in hive registry
+   *
+   * @param data
    */
   private updateAgentState(data: any): void {
     const agent = this.hiveRegistry.availableAgents.get(data.agentId);
@@ -565,6 +579,8 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
   /**
    * Handle swarm heartbeat
+   *
+   * @param data
    */
   private handleSwarmHeartbeat(data: any): void {
     const swarm = this.hiveRegistry.activeSwarms.get(data.swarmId);
@@ -580,6 +596,8 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
   /**
    * Handle task completion
+   *
+   * @param data
    */
   private handleTaskCompletion(data: any): void {
     // Remove from task assignments
@@ -597,6 +615,8 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
   /**
    * Handle swarm disconnection
+   *
+   * @param data
    */
   private handleSwarmDisconnect(data: any): void {
     // Remove swarm
@@ -644,6 +664,10 @@ export class HiveSwarmCoordinator extends EventEmitter {
   /**
    * Request universal fact from HiveFACT
    * Used by swarms to access universal knowledge
+   *
+   * @param swarmId
+   * @param factType
+   * @param subject
    */
   async requestUniversalFact(
     swarmId: string,

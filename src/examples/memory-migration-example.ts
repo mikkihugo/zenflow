@@ -15,7 +15,6 @@ import {
   type MemoryNotFound,
   type MemoryResult,
   type MemorySuccess,
-  safePropertyAccess,
 } from '../utils/type-guards';
 
 // ============================================
@@ -24,6 +23,8 @@ import {
 
 /**
  * ❌ BEFORE: Unsafe memory service - potential runtime errors
+ *
+ * @example
  */
 class UnsafeMemoryService {
   constructor(private store: SessionMemoryStore) {}
@@ -60,12 +61,16 @@ class UnsafeMemoryService {
 
 /**
  * ✅ AFTER: Type-safe memory service with proper error handling
+ *
+ * @example
  */
 class SafeMemoryService {
   constructor(private store: SessionMemoryStore) {}
 
   /**
    * ✅ Safe: Proper type guards and error handling
+   *
+   * @param userId
    */
   async getUserProfile(userId: string): Promise<MemoryResult<UserProfile>> {
     try {
@@ -98,13 +103,15 @@ class SafeMemoryService {
 
   /**
    * ✅ Safe: Comprehensive error handling and logging
+   *
+   * @param userId
+   * @param sessionData
    */
   async cacheUserSession(userId: string, sessionData: UserSession): Promise<MemoryResult<void>> {
     try {
       const result = await this.storeWithResult('user-sessions', userId, sessionData);
 
       if (isMemorySuccess(result)) {
-        console.log(`✅ User session cached successfully for ${userId}`);
         return result;
       } else if (isMemoryError(result)) {
         console.error(`❌ Failed to cache session for ${userId}:`, result.error.message);
@@ -128,6 +135,8 @@ class SafeMemoryService {
 
   /**
    * ✅ Safe: Proper null checking and default values
+   *
+   * @param userId
    */
   async getUserPreferences(userId: string): Promise<{
     preferences: UserPreferences | null;
@@ -170,6 +179,8 @@ class SafeMemoryService {
 
   /**
    * ✅ Safe: Complex operation with multiple fallbacks
+   *
+   * @param userId
    */
   async getUserData(userId: string): Promise<{
     profile: UserProfile | null;
@@ -212,6 +223,8 @@ class SafeMemoryService {
 
   /**
    * ✅ Safe: Batch operations with individual error handling
+   *
+   * @param userIds
    */
   async getUsersData(userIds: string[]): Promise<
     Map<
@@ -265,6 +278,9 @@ class SafeMemoryService {
 
   /**
    * Enhanced retrieve method that returns MemoryResult
+   *
+   * @param namespace
+   * @param key
    */
   private async retrieveWithResult<T>(namespace: string, key: string): Promise<MemoryResult<T>> {
     try {
@@ -299,6 +315,10 @@ class SafeMemoryService {
 
   /**
    * Enhanced store method that returns MemoryResult
+   *
+   * @param namespace
+   * @param key
+   * @param data
    */
   private async storeWithResult<T>(
     namespace: string,
@@ -310,7 +330,7 @@ class SafeMemoryService {
 
       return {
         found: true,
-        data: undefined as void,
+        data: undefined as undefined,
         key: `${namespace}:${key}`,
         timestamp: new Date(),
         metadata: { operation: 'store' },
@@ -379,33 +399,24 @@ export async function demonstrateMigration(): Promise<void> {
   const safeService = new SafeMemoryService(mockStore);
 
   const userId = 'user123';
-
-  console.log('=== UNSAFE SERVICE USAGE ===');
   try {
     // ❌ This could fail at runtime with unclear errors
-    const unsafeProfile = await unsafeService.getUserProfile(userId);
-    console.log('Profile (unsafe):', unsafeProfile); // Could be undefined/null
+    const _unsafeProfile = await unsafeService.getUserProfile(userId);
 
     // ❌ No indication if this succeeded or failed
     await unsafeService.cacheUserSession(userId, { id: 'session123', userId, token: 'abc' });
 
     // ❌ Could throw runtime errors on property access
-    const unsafePrefs = await unsafeService.getUserPreferences(userId);
-    console.log('Preferences (unsafe):', unsafePrefs);
+    const _unsafePrefs = await unsafeService.getUserPreferences(userId);
   } catch (error) {
     console.error('❌ Unsafe service failed:', error);
   }
-
-  console.log('\n=== SAFE SERVICE USAGE ===');
 
   // ✅ Type-safe profile retrieval
   const profileResult = await safeService.getUserProfile(userId);
 
   if (isMemorySuccess(profileResult)) {
-    console.log('✅ Profile retrieved:', profileResult.data.name);
-    console.log('Cache info:', profileResult.timestamp);
   } else if (isMemoryNotFound(profileResult)) {
-    console.log('ℹ️ Profile not found:', profileResult.reason);
   } else if (isMemoryError(profileResult)) {
     console.error('❌ Profile error:', profileResult.error.message);
   }
@@ -422,7 +433,6 @@ export async function demonstrateMigration(): Promise<void> {
   const cacheResult = await safeService.cacheUserSession(userId, sessionData);
 
   if (isMemorySuccess(cacheResult)) {
-    console.log('✅ Session cached successfully');
   } else if (isMemoryError(cacheResult)) {
     console.error('❌ Session caching failed:', cacheResult.error.message);
   }
@@ -431,37 +441,23 @@ export async function demonstrateMigration(): Promise<void> {
   const preferencesData = await safeService.getUserPreferences(userId);
 
   if (preferencesData.preferences) {
-    console.log('✅ User theme:', preferencesData.preferences.theme);
   } else if (preferencesData.error) {
     console.error('❌ Preferences error:', preferencesData.error);
   } else {
-    console.log('ℹ️ No preferences found, using defaults');
   }
 
   // ✅ Complex operation with comprehensive error handling
   const userData = await safeService.getUserData(userId);
 
-  console.log('User data summary:');
-  console.log('- Profile:', userData.profile ? '✅ Found' : '❌ Missing');
-  console.log('- Session:', userData.session ? '✅ Active' : '❌ None');
-  console.log('- Preferences:', userData.preferences ? '✅ Set' : '❌ Default');
-
   if (userData.errors.length > 0) {
-    console.log('Errors encountered:', userData.errors);
   }
 
   // ✅ Batch operations with individual error handling
   const batchUserIds = ['user1', 'user2', 'user3'];
   const batchResults = await safeService.getUsersData(batchUserIds);
-
-  console.log('\nBatch operation results:');
-  batchResults.forEach((result, userId) => {
+  batchResults.forEach((result, _userId) => {
     if (result.error) {
-      console.log(`❌ ${userId}: Error - ${result.error}`);
     } else {
-      console.log(
-        `✅ ${userId}: Profile ${result.profile ? 'found' : 'missing'}, Session ${result.session ? 'active' : 'inactive'}`
-      );
     }
   });
 }
@@ -469,18 +465,4 @@ export async function demonstrateMigration(): Promise<void> {
 /**
  * Performance comparison between unsafe and safe approaches
  */
-export async function performanceComparison(): Promise<void> {
-  console.log('Performance comparison between unsafe and safe approaches:');
-  console.log('');
-  console.log('✅ Safe approach benefits:');
-  console.log('- Zero runtime overhead (type guards are compile-time)');
-  console.log('- Better compiler optimizations due to type narrowing');
-  console.log('- Reduced runtime errors leading to better performance');
-  console.log('- Improved caching through predictable error patterns');
-  console.log('');
-  console.log('❌ Unsafe approach issues:');
-  console.log('- Runtime type checking overhead');
-  console.log('- Frequent try-catch blocks for error handling');
-  console.log('- Unpredictable failure modes affecting performance');
-  console.log('- Memory leaks from unhandled error states');
-}
+export async function performanceComparison(): Promise<void> {}

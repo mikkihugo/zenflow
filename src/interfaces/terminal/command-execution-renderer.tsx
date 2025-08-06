@@ -10,9 +10,8 @@ import { Box, Text, useApp } from 'ink';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import AdvancedCLICommands from './advanced-cli-commands';
-import { ErrorMessage, Header, LoadingSpinner, StatusBadge } from './components/index';
 import { CommandExecutionEngine, type CommandResult } from './command-execution-engine';
-import { MockCommandHandler } from './utils/mock-command-handler';
+import { ErrorMessage, Header, LoadingSpinner, StatusBadge } from './components/index';
 
 export interface CommandExecutionProps {
   commands: string[];
@@ -31,6 +30,11 @@ interface ExecutionState {
  *
  * Renders command execution results in a clean, formatted way.
  * UI-only component - delegates business logic to MockCommandHandler.
+ *
+ * @param root0
+ * @param root0.commands
+ * @param root0.flags
+ * @param root0.onExit
  */
 export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
   commands,
@@ -59,9 +63,25 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
 
         // Check if this is an advanced CLI command
         // Skip advanced CLI for core commands that have been enhanced in CommandExecutionEngine
-        const coreCommands = ['init', 'status', 'query', 'agents', 'tasks', 'knowledge', 'health', 'sync', 'contribute', 'swarm', 'mcp', 'workspace', 'discover', 'help'];
-        const shouldUseAdvancedCLI = !coreCommands.includes(command) && advancedCLI.isAdvancedCommand(command);
-        
+        const coreCommands = [
+          'init',
+          'status',
+          'query',
+          'agents',
+          'tasks',
+          'knowledge',
+          'health',
+          'sync',
+          'contribute',
+          'swarm',
+          'mcp',
+          'workspace',
+          'discover',
+          'help',
+        ];
+        const shouldUseAdvancedCLI =
+          !coreCommands.includes(command) && advancedCLI.isAdvancedCommand(command);
+
         if (shouldUseAdvancedCLI) {
           // Execute through Advanced CLI
           try {

@@ -283,6 +283,8 @@ export interface DistributionMetrics {
 
 /**
  * Advanced Task Distribution Engine with ML-based optimization
+ *
+ * @example
  */
 export class TaskDistributionEngine extends EventEmitter {
   private tasks = new Map<string, TaskDefinition>();
@@ -358,6 +360,8 @@ export class TaskDistributionEngine extends EventEmitter {
 
   /**
    * Submit a task for distribution
+   *
+   * @param taskDef
    */
   async submitTask(taskDef: Omit<TaskDefinition, 'id' | 'created'>): Promise<string> {
     const task: TaskDefinition = {
@@ -395,6 +399,8 @@ export class TaskDistributionEngine extends EventEmitter {
 
   /**
    * Register an agent's capabilities
+   *
+   * @param agentCapability
    */
   async registerAgent(agentCapability: AgentCapability): Promise<void> {
     this.agentCapabilities.set(agentCapability.agentId, agentCapability);
@@ -420,6 +426,8 @@ export class TaskDistributionEngine extends EventEmitter {
 
   /**
    * Get task status
+   *
+   * @param taskId
    */
   getTaskStatus(taskId: string): TaskStatus | undefined {
     const task = this.tasks.get(taskId);
@@ -434,6 +442,9 @@ export class TaskDistributionEngine extends EventEmitter {
 
   /**
    * Cancel a task
+   *
+   * @param taskId
+   * @param reason
    */
   async cancelTask(taskId: string, reason: CancellationReason): Promise<boolean> {
     const task = this.tasks.get(taskId);
@@ -467,6 +478,9 @@ export class TaskDistributionEngine extends EventEmitter {
 
   /**
    * Reassign a task to a different agent
+   *
+   * @param taskId
+   * @param reason
    */
   async reassignTask(taskId: string, reason: CancellationReason): Promise<boolean> {
     const task = this.tasks.get(taskId);
@@ -673,7 +687,7 @@ export class TaskDistributionEngine extends EventEmitter {
         cpu: 1,
         memory: 512,
         network: 100,
-        storage: 256,
+        disk: 256,
       },
       timestamp: new Date(),
       source: 'task-distribution-engine',

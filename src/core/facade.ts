@@ -1,12 +1,12 @@
 /**
- * @fileoverview Facade Pattern Implementation for System Integration
+ * @file Facade Pattern Implementation for System Integration
  * Provides simplified interfaces to complex subsystems with dependency injection
  */
 
 import { EventEmitter } from 'node:events';
-import type { SwarmTopology, CoordinationResult, SwarmCoordinator } from '../coordination/swarm/core/strategy';
-import type { SystemEventManager, AllSystemEvents } from '../interfaces/events/observer-system';
-import type { MCPCommandQueue, CommandResult } from '../interfaces/mcp/command-system';
+import type { CoordinationResult, SwarmTopology } from '../coordination/swarm/core/strategy';
+import type { AllSystemEvents, SystemEventManager } from '../interfaces/events/observer-system';
+import type { MCPCommandQueue } from '../interfaces/mcp/command-system';
 
 // Service interface definitions for dependency injection
 export interface ISwarmService {
@@ -41,7 +41,11 @@ export interface IDatabaseService {
   insert(tableName: string, data: Record<string, any>): Promise<string>;
   update(tableName: string, id: string, data: Record<string, any>): Promise<boolean>;
   delete(tableName: string, id: string): Promise<boolean>;
-  vectorSearch(embedding: number[], limit: number, filters?: Record<string, any>): Promise<VectorSearchResult[]>;
+  vectorSearch(
+    embedding: number[],
+    limit: number,
+    filters?: Record<string, any>
+  ): Promise<VectorSearchResult[]>;
   createIndex(tableName: string, columns: string[]): Promise<void>;
   getHealth(): Promise<DatabaseHealth>;
 }
@@ -485,6 +489,8 @@ export interface IMetricsCollector {
 /**
  * ClaudeZenFacade - Main system facade providing simplified access to all subsystems
  * Implements comprehensive orchestration with dependency injection and error handling
+ *
+ * @example
  */
 export class ClaudeZenFacade extends EventEmitter {
   constructor(
@@ -506,6 +512,8 @@ export class ClaudeZenFacade extends EventEmitter {
 
   /**
    * High-level project initialization with comprehensive orchestration
+   *
+   * @param config
    */
   async initializeProject(config: ProjectInitConfig): Promise<ProjectResult> {
     const operationId = this.generateOperationId();
@@ -527,7 +535,7 @@ export class ClaudeZenFacade extends EventEmitter {
       const [swarmResult, memorySetup, databaseSetup] = await Promise.allSettled([
         this.swarmService.initializeSwarm(config.swarm),
         this.memoryService.store('project:config', config, { ttl: 86400 }),
-        this.databaseService.createIndex('projects', ['id', 'name', 'created_at'])
+        this.databaseService.createIndex('projects', ['id', 'name', 'created_at']),
       ]);
 
       // Handle initialization results
@@ -554,7 +562,7 @@ export class ClaudeZenFacade extends EventEmitter {
           config: JSON.stringify(config),
           swarm_id: swarmId,
           created_at: new Date(),
-          status: swarmId ? 'initialized' : 'partial'
+          status: swarmId ? 'initialized' : 'partial',
         });
       } catch (error) {
         initWarnings.push(`Project persistence failed: ${(error as Error).message}`);
@@ -567,25 +575,40 @@ export class ClaudeZenFacade extends EventEmitter {
 
       if (config.interfaces.http) {
         interfacePromises.push(
-          this.interfaceService.startHTTPMCP(config.interfaces.http)
-            .then(server => { interfaces.http = server; })
-            .catch(error => { initWarnings.push(`HTTP MCP startup failed: ${error.message}`); })
+          this.interfaceService
+            .startHTTPMCP(config.interfaces.http)
+            .then((server) => {
+              interfaces.http = server;
+            })
+            .catch((error) => {
+              initWarnings.push(`HTTP MCP startup failed: ${error.message}`);
+            })
         );
       }
 
       if (config.interfaces.web) {
         interfacePromises.push(
-          this.interfaceService.startWebDashboard(config.interfaces.web)
-            .then(server => { interfaces.web = server; })
-            .catch(error => { initWarnings.push(`Web dashboard startup failed: ${error.message}`); })
+          this.interfaceService
+            .startWebDashboard(config.interfaces.web)
+            .then((server) => {
+              interfaces.web = server;
+            })
+            .catch((error) => {
+              initWarnings.push(`Web dashboard startup failed: ${error.message}`);
+            })
         );
       }
 
       if (config.interfaces.tui) {
         interfacePromises.push(
-          this.interfaceService.startTUI(config.interfaces.tui.mode)
-            .then(instance => { interfaces.tui = instance; })
-            .catch(error => { initWarnings.push(`TUI startup failed: ${error.message}`); })
+          this.interfaceService
+            .startTUI(config.interfaces.tui.mode)
+            .then((instance) => {
+              interfaces.tui = instance;
+            })
+            .catch((error) => {
+              initWarnings.push(`TUI startup failed: ${error.message}`);
+            })
         );
       }
 
@@ -599,7 +622,9 @@ export class ClaudeZenFacade extends EventEmitter {
             // This would integrate with actual neural service
             this.logger.info(`Neural model ${modelType} initialization queued`);
           } catch (error) {
-            initWarnings.push(`Neural model ${modelType} initialization failed: ${(error as Error).message}`);
+            initWarnings.push(
+              `Neural model ${modelType} initialization failed: ${(error as Error).message}`
+            );
           }
         }
       }
@@ -628,19 +653,22 @@ export class ClaudeZenFacade extends EventEmitter {
           resourceUsage: await this.getCurrentResourceUsage(),
           operations: 1,
           errors: initErrors.length,
-          warnings: initWarnings.length
+          warnings: initWarnings.length,
         },
         errors: initErrors.length > 0 ? initErrors : undefined,
-        warnings: initWarnings.length > 0 ? initWarnings : undefined
+        warnings: initWarnings.length > 0 ? initWarnings : undefined,
       };
 
-      this.metrics.endOperation('project_init', operationId, result.status === 'failed' ? 'error' : 'success');
-      
+      this.metrics.endOperation(
+        'project_init',
+        operationId,
+        result.status === 'failed' ? 'error' : 'success'
+      );
+
       // Emit project initialization event
       this.emit('project:initialized', result);
-      
-      return result;
 
+      return result;
     } catch (error) {
       this.logger.error('Project initialization failed', { error, operationId });
       this.metrics.endOperation('project_init', operationId, 'error');
@@ -650,6 +678,9 @@ export class ClaudeZenFacade extends EventEmitter {
 
   /**
    * Complex document processing with AI coordination and caching
+   *
+   * @param documentPath
+   * @param options
    */
   async processDocument(
     documentPath: string,
@@ -657,7 +688,7 @@ export class ClaudeZenFacade extends EventEmitter {
   ): Promise<DocumentProcessingResult> {
     const operationId = this.generateOperationId();
     const startTime = Date.now();
-    
+
     this.logger.info('Processing document', { documentPath, options, operationId });
 
     try {
@@ -678,7 +709,7 @@ export class ClaudeZenFacade extends EventEmitter {
       }
 
       // Get or create swarm for processing
-      const swarmId = options.swarmId || await this.getOrCreateDefaultSwarm();
+      const swarmId = options.swarmId || (await this.getOrCreateDefaultSwarm());
       const swarmStatus = await this.swarmService.getSwarmStatus(swarmId);
 
       if (!swarmStatus.healthy) {
@@ -691,8 +722,9 @@ export class ClaudeZenFacade extends EventEmitter {
       // Text analysis using neural service
       if (options.useNeural !== false) {
         analysisPromises.push(
-          this.neuralService.predictWithModel('text-analyzer', [document.content])
-            .catch(error => {
+          this.neuralService
+            .predictWithModel('text-analyzer', [document.content])
+            .catch((error) => {
               this.logger.warn('Neural text analysis failed', { error, operationId });
               return { predictions: [], confidence: [], modelId: 'fallback', processingTime: 0 };
             })
@@ -704,32 +736,35 @@ export class ClaudeZenFacade extends EventEmitter {
 
       // Sentiment analysis if available
       analysisPromises.push(
-        this.analyzeSentiment(document.content)
-          .catch(error => {
-            this.logger.warn('Sentiment analysis failed', { error, operationId });
-            return null;
-          })
+        this.analyzeSentiment(document.content).catch((error) => {
+          this.logger.warn('Sentiment analysis failed', { error, operationId });
+          return null;
+        })
       );
 
       // Topic analysis
       analysisPromises.push(
-        this.analyzeTopics(document.content)
-          .catch(error => {
-            this.logger.warn('Topic analysis failed', { error, operationId });
-            return [];
-          })
+        this.analyzeTopics(document.content).catch((error) => {
+          this.logger.warn('Topic analysis failed', { error, operationId });
+          return [];
+        })
       );
 
-      const [textAnalysis, structureAnalysis, sentimentAnalysis, topicAnalysis] = await Promise.all(analysisPromises);
+      const [textAnalysis, structureAnalysis, sentimentAnalysis, topicAnalysis] =
+        await Promise.all(analysisPromises);
 
       // Store analysis results for future reference
-      await this.memoryService.store(`analysis:${document.id}`, {
-        textAnalysis,
-        structureAnalysis,
-        sentimentAnalysis,
-        topicAnalysis,
-        timestamp: new Date()
-      }, { ttl: 3600 }); // 1 hour TTL
+      await this.memoryService.store(
+        `analysis:${document.id}`,
+        {
+          textAnalysis,
+          structureAnalysis,
+          sentimentAnalysis,
+          topicAnalysis,
+          timestamp: new Date(),
+        },
+        { ttl: 3600 }
+      ); // 1 hour TTL
 
       // Generate actionable recommendations using swarm coordination
       const recommendations = await this.generateRecommendations(
@@ -745,7 +780,7 @@ export class ClaudeZenFacade extends EventEmitter {
           text: textAnalysis,
           structure: structureAnalysis,
           sentiment: sentimentAnalysis,
-          topics: topicAnalysis
+          topics: topicAnalysis,
         },
         recommendations,
         processingTime: Date.now() - startTime,
@@ -754,8 +789,8 @@ export class ClaudeZenFacade extends EventEmitter {
         metadata: {
           documentPath,
           processingOptions: options,
-          swarmTopology: swarmStatus.topology
-        }
+          swarmTopology: swarmStatus.topology,
+        },
       };
 
       // Store results in database for querying and analytics
@@ -768,7 +803,7 @@ export class ClaudeZenFacade extends EventEmitter {
           recommendations: JSON.stringify(recommendations),
           processing_time: result.processingTime,
           swarm_id: swarmId,
-          created_at: new Date()
+          created_at: new Date(),
         });
       } catch (dbError) {
         this.logger.warn('Failed to store document analysis in database', { dbError, operationId });
@@ -784,7 +819,6 @@ export class ClaudeZenFacade extends EventEmitter {
       this.emit('document:processed', result);
 
       return result;
-
     } catch (error) {
       this.logger.error('Document processing failed', { error, documentPath, operationId });
       throw error;
@@ -805,14 +839,14 @@ export class ClaudeZenFacade extends EventEmitter {
         databaseStatus,
         interfaceStatus,
         neuralStatus,
-        workflowStatus
+        workflowStatus,
       ] = await Promise.allSettled([
         this.getSwarmSystemStatus(),
         this.getMemorySystemStatus(),
         this.getDatabaseSystemStatus(),
         this.getInterfaceSystemStatus(),
         this.getNeuralSystemStatus(),
-        this.getWorkflowSystemStatus()
+        this.getWorkflowSystemStatus(),
       ]);
 
       const components = {
@@ -821,12 +855,13 @@ export class ClaudeZenFacade extends EventEmitter {
         database: this.extractComponentStatus(databaseStatus),
         interfaces: this.extractComponentStatus(interfaceStatus),
         neural: this.extractComponentStatus(neuralStatus),
-        workflows: this.extractComponentStatus(workflowStatus)
+        workflows: this.extractComponentStatus(workflowStatus),
       };
 
       // Calculate overall system health
-      const healthScores = Object.values(components).map(c => c.health);
-      const overallHealth = healthScores.reduce((sum, score) => sum + score, 0) / healthScores.length;
+      const healthScores = Object.values(components).map((c) => c.health);
+      const overallHealth =
+        healthScores.reduce((sum, score) => sum + score, 0) / healthScores.length;
 
       // Collect system alerts
       const alerts = await this.collectSystemAlerts(components);
@@ -835,15 +870,14 @@ export class ClaudeZenFacade extends EventEmitter {
         overall: {
           health: overallHealth,
           status: overallHealth > 0.8 ? 'healthy' : overallHealth > 0.5 ? 'degraded' : 'unhealthy',
-          timestamp: new Date()
+          timestamp: new Date(),
         },
         components,
         metrics: this.metrics.getSystemMetrics(),
-        alerts
+        alerts,
       };
 
       return systemStatus;
-
     } catch (error) {
       this.logger.error('Failed to get system status', { error, operationId });
       throw error;
@@ -852,6 +886,9 @@ export class ClaudeZenFacade extends EventEmitter {
 
   /**
    * Execute complex multi-service workflows
+   *
+   * @param workflowId
+   * @param inputs
    */
   async executeWorkflow(workflowId: string, inputs: Record<string, any>): Promise<WorkflowResult> {
     const operationId = this.generateOperationId();
@@ -859,13 +896,14 @@ export class ClaudeZenFacade extends EventEmitter {
 
     try {
       const result = await this.workflowService.executeWorkflow(workflowId, inputs);
-      
+
       // Store workflow execution history
-      await this.memoryService.store(`workflow:execution:${result.executionId}`, result, { ttl: 86400 });
-      
+      await this.memoryService.store(`workflow:execution:${result.executionId}`, result, {
+        ttl: 86400,
+      });
+
       this.emit('workflow:executed', result);
       return result;
-
     } catch (error) {
       this.logger.error('Workflow execution failed', { error, workflowId, operationId });
       throw error;
@@ -874,20 +912,25 @@ export class ClaudeZenFacade extends EventEmitter {
 
   /**
    * Batch operation execution with progress tracking
+   *
+   * @param operations
    */
   async executeBatch(operations: Array<{ type: string; params: any }>): Promise<any[]> {
     const operationId = this.generateOperationId();
-    this.logger.info('Executing batch operations', { operationCount: operations.length, operationId });
+    this.logger.info('Executing batch operations', {
+      operationCount: operations.length,
+      operationId,
+    });
 
     const results: any[] = [];
     const errors: any[] = [];
 
     for (let i = 0; i < operations.length; i++) {
       const operation = operations[i];
-      
+
       try {
         let result: any;
-        
+
         switch (operation.type) {
           case 'swarm:init':
             result = await this.swarmService.initializeSwarm(operation.params);
@@ -899,21 +942,23 @@ export class ClaudeZenFacade extends EventEmitter {
             result = await this.processDocument(operation.params.path, operation.params.options);
             break;
           case 'workflow:execute':
-            result = await this.executeWorkflow(operation.params.workflowId, operation.params.inputs);
+            result = await this.executeWorkflow(
+              operation.params.workflowId,
+              operation.params.inputs
+            );
             break;
           default:
             throw new Error(`Unknown operation type: ${operation.type}`);
         }
 
         results.push({ success: true, data: result, operationIndex: i });
-        
+
         // Emit progress update
         this.emit('batch:progress', {
           completed: i + 1,
           total: operations.length,
-          operationId
+          operationId,
         });
-
       } catch (error) {
         errors.push({ error, operationIndex: i, operation: operation.type });
         results.push({ success: false, error, operationIndex: i });
@@ -921,9 +966,9 @@ export class ClaudeZenFacade extends EventEmitter {
     }
 
     this.logger.info('Batch execution completed', {
-      successful: results.filter(r => r.success).length,
+      successful: results.filter((r) => r.success).length,
       failed: errors.length,
-      operationId
+      operationId,
     });
 
     return results;
@@ -957,7 +1002,6 @@ export class ClaudeZenFacade extends EventEmitter {
 
       this.logger.info('System shutdown completed');
       this.emit('system:shutdown');
-
     } catch (error) {
       this.logger.error('Error during system shutdown', { error });
       throw error;
@@ -1008,19 +1052,21 @@ export class ClaudeZenFacade extends EventEmitter {
     return `proj-${sanitized}-${Date.now()}`;
   }
 
-  private async loadDocument(path: string): Promise<{ id: string; content: string; metadata: any } | null> {
+  private async loadDocument(
+    path: string
+  ): Promise<{ id: string; content: string; metadata: any } | null> {
     // This would integrate with actual document loading service
     return {
       id: `doc-${Date.now()}`,
       content: `Document content from ${path}`,
-      metadata: { path, loadedAt: new Date() }
+      metadata: { path, loadedAt: new Date() },
     };
   }
 
   private async getOrCreateDefaultSwarm(): Promise<string> {
     const swarms = await this.swarmService.listSwarms();
-    const defaultSwarm = swarms.find(s => s.name === 'default');
-    
+    const defaultSwarm = swarms.find((s) => s.name === 'default');
+
     if (defaultSwarm) {
       return defaultSwarm.swarmId;
     }
@@ -1028,7 +1074,7 @@ export class ClaudeZenFacade extends EventEmitter {
     const result = await this.swarmService.initializeSwarm({
       topology: 'hierarchical',
       agentCount: 3,
-      capabilities: ['document-processing', 'analysis']
+      capabilities: ['document-processing', 'analysis'],
     });
 
     return result.swarmId;
@@ -1041,31 +1087,29 @@ export class ClaudeZenFacade extends EventEmitter {
       headings: [],
       wordCount: document.content.split(' ').length,
       readingTime: Math.ceil(document.content.split(' ').length / 200), // Assume 200 WPM
-      complexity: 0.5 // Placeholder
+      complexity: 0.5, // Placeholder
     };
   }
 
-  private async analyzeSentiment(content: string): Promise<SentimentAnalysis | null> {
+  private async analyzeSentiment(_content: string): Promise<SentimentAnalysis | null> {
     // This would integrate with actual sentiment analysis service
     return {
       overall: 'neutral',
       confidence: 0.8,
-      emotions: { neutral: 0.8, positive: 0.1, negative: 0.1 }
+      emotions: { neutral: 0.8, positive: 0.1, negative: 0.1 },
     };
   }
 
-  private async analyzeTopics(content: string): Promise<TopicAnalysis[]> {
+  private async analyzeTopics(_content: string): Promise<TopicAnalysis[]> {
     // This would integrate with actual topic analysis service
-    return [
-      { topic: 'technology', relevance: 0.8, keywords: ['code', 'system', 'development'] }
-    ];
+    return [{ topic: 'technology', relevance: 0.8, keywords: ['code', 'system', 'development'] }];
   }
 
   private async generateRecommendations(
-    textAnalysis: any,
+    _textAnalysis: any,
     structureAnalysis: any,
-    sentimentAnalysis: any,
-    topicAnalysis: any
+    _sentimentAnalysis: any,
+    _topicAnalysis: any
   ): Promise<Recommendation[]> {
     const recommendations: Recommendation[] = [];
 
@@ -1074,7 +1118,7 @@ export class ClaudeZenFacade extends EventEmitter {
         type: 'optimization',
         title: 'Long Document Detected',
         description: 'Consider breaking this document into smaller sections for better readability',
-        priority: 'medium'
+        priority: 'medium',
       });
     }
 
@@ -1087,14 +1131,14 @@ export class ClaudeZenFacade extends EventEmitter {
       memory: process.memoryUsage().heapUsed / 1024 / 1024,
       network: 0, // Would need actual monitoring
       storage: 0, // Would need actual monitoring
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
   private async getSwarmSystemStatus(): Promise<ComponentStatus> {
     try {
       const swarms = await this.swarmService.listSwarms();
-      const healthySwarms = swarms.filter(s => s.status.healthy).length;
+      const healthySwarms = swarms.filter((s) => s.status.healthy).length;
       const health = swarms.length > 0 ? healthySwarms / swarms.length : 1;
 
       return {
@@ -1103,9 +1147,9 @@ export class ClaudeZenFacade extends EventEmitter {
         metrics: {
           totalSwarms: swarms.length,
           healthySwarms,
-          totalAgents: swarms.reduce((sum, s) => sum + s.agentCount, 0)
+          totalAgents: swarms.reduce((sum, s) => sum + s.agentCount, 0),
         },
-        lastChecked: new Date()
+        lastChecked: new Date(),
       };
     } catch (error) {
       return {
@@ -1113,7 +1157,7 @@ export class ClaudeZenFacade extends EventEmitter {
         status: 'unhealthy',
         metrics: {},
         lastChecked: new Date(),
-        errors: [(error as Error).message]
+        errors: [(error as Error).message],
       };
     }
   }
@@ -1121,7 +1165,7 @@ export class ClaudeZenFacade extends EventEmitter {
   private async getMemorySystemStatus(): Promise<ComponentStatus> {
     try {
       const stats = await this.memoryService.getStats();
-      const health = Math.min(stats.hitRate, 1 - (stats.avgResponseTime / 1000));
+      const health = Math.min(stats.hitRate, 1 - stats.avgResponseTime / 1000);
 
       return {
         health,
@@ -1130,9 +1174,9 @@ export class ClaudeZenFacade extends EventEmitter {
           hitRate: stats.hitRate,
           totalKeys: stats.totalKeys,
           memoryUsage: stats.memoryUsage,
-          avgResponseTime: stats.avgResponseTime
+          avgResponseTime: stats.avgResponseTime,
         },
-        lastChecked: new Date()
+        lastChecked: new Date(),
       };
     } catch (error) {
       return {
@@ -1140,7 +1184,7 @@ export class ClaudeZenFacade extends EventEmitter {
         status: 'unhealthy',
         metrics: {},
         lastChecked: new Date(),
-        errors: [(error as Error).message]
+        errors: [(error as Error).message],
       };
     }
   }
@@ -1148,7 +1192,8 @@ export class ClaudeZenFacade extends EventEmitter {
   private async getDatabaseSystemStatus(): Promise<ComponentStatus> {
     try {
       const health = await this.databaseService.getHealth();
-      const healthScore = health.status === 'healthy' ? 1 : health.status === 'degraded' ? 0.6 : 0.2;
+      const healthScore =
+        health.status === 'healthy' ? 1 : health.status === 'degraded' ? 0.6 : 0.2;
 
       return {
         health: healthScore,
@@ -1156,9 +1201,9 @@ export class ClaudeZenFacade extends EventEmitter {
         metrics: {
           connectionCount: health.connectionCount,
           queryLatency: health.queryLatency,
-          diskUsage: health.diskUsage
+          diskUsage: health.diskUsage,
         },
-        lastChecked: new Date()
+        lastChecked: new Date(),
       };
     } catch (error) {
       return {
@@ -1166,7 +1211,7 @@ export class ClaudeZenFacade extends EventEmitter {
         status: 'unhealthy',
         metrics: {},
         lastChecked: new Date(),
-        errors: [(error as Error).message]
+        errors: [(error as Error).message],
       };
     }
   }
@@ -1174,7 +1219,7 @@ export class ClaudeZenFacade extends EventEmitter {
   private async getInterfaceSystemStatus(): Promise<ComponentStatus> {
     try {
       const interfaces = await this.interfaceService.getInterfaceStatus();
-      const runningInterfaces = interfaces.filter(i => i.status === 'running').length;
+      const runningInterfaces = interfaces.filter((i) => i.status === 'running').length;
       const health = interfaces.length > 0 ? runningInterfaces / interfaces.length : 1;
 
       return {
@@ -1183,9 +1228,9 @@ export class ClaudeZenFacade extends EventEmitter {
         metrics: {
           totalInterfaces: interfaces.length,
           runningInterfaces,
-          stoppedInterfaces: interfaces.filter(i => i.status === 'stopped').length
+          stoppedInterfaces: interfaces.filter((i) => i.status === 'stopped').length,
         },
-        lastChecked: new Date()
+        lastChecked: new Date(),
       };
     } catch (error) {
       return {
@@ -1193,7 +1238,7 @@ export class ClaudeZenFacade extends EventEmitter {
         status: 'unhealthy',
         metrics: {},
         lastChecked: new Date(),
-        errors: [(error as Error).message]
+        errors: [(error as Error).message],
       };
     }
   }
@@ -1201,7 +1246,9 @@ export class ClaudeZenFacade extends EventEmitter {
   private async getNeuralSystemStatus(): Promise<ComponentStatus> {
     try {
       const models = await this.neuralService.listModels();
-      const recentModels = models.filter(m => m.lastUsed > new Date(Date.now() - 86400000)).length;
+      const recentModels = models.filter(
+        (m) => m.lastUsed > new Date(Date.now() - 86400000)
+      ).length;
       const health = models.length > 0 ? Math.min(recentModels / models.length, 1) : 0.5;
 
       return {
@@ -1210,9 +1257,9 @@ export class ClaudeZenFacade extends EventEmitter {
         metrics: {
           totalModels: models.length,
           recentlyUsed: recentModels,
-          avgAccuracy: models.reduce((sum, m) => sum + m.accuracy, 0) / models.length || 0
+          avgAccuracy: models.reduce((sum, m) => sum + m.accuracy, 0) / models.length || 0,
         },
-        lastChecked: new Date()
+        lastChecked: new Date(),
       };
     } catch (error) {
       return {
@@ -1220,7 +1267,7 @@ export class ClaudeZenFacade extends EventEmitter {
         status: 'unhealthy',
         metrics: {},
         lastChecked: new Date(),
-        errors: [(error as Error).message]
+        errors: [(error as Error).message],
       };
     }
   }
@@ -1228,7 +1275,7 @@ export class ClaudeZenFacade extends EventEmitter {
   private async getWorkflowSystemStatus(): Promise<ComponentStatus> {
     try {
       const workflows = await this.workflowService.listWorkflows();
-      const activeWorkflows = workflows.filter(w => w.status === 'active').length;
+      const activeWorkflows = workflows.filter((w) => w.status === 'active').length;
       const health = workflows.length > 0 ? activeWorkflows / workflows.length : 1;
 
       return {
@@ -1237,9 +1284,9 @@ export class ClaudeZenFacade extends EventEmitter {
         metrics: {
           totalWorkflows: workflows.length,
           activeWorkflows,
-          totalExecutions: workflows.reduce((sum, w) => sum + w.executionCount, 0)
+          totalExecutions: workflows.reduce((sum, w) => sum + w.executionCount, 0),
         },
-        lastChecked: new Date()
+        lastChecked: new Date(),
       };
     } catch (error) {
       return {
@@ -1247,12 +1294,14 @@ export class ClaudeZenFacade extends EventEmitter {
         status: 'unhealthy',
         metrics: {},
         lastChecked: new Date(),
-        errors: [(error as Error).message]
+        errors: [(error as Error).message],
       };
     }
   }
 
-  private extractComponentStatus(settledResult: PromiseSettledResult<ComponentStatus>): ComponentStatus {
+  private extractComponentStatus(
+    settledResult: PromiseSettledResult<ComponentStatus>
+  ): ComponentStatus {
     if (settledResult.status === 'fulfilled') {
       return settledResult.value;
     } else {
@@ -1261,12 +1310,14 @@ export class ClaudeZenFacade extends EventEmitter {
         status: 'unhealthy',
         metrics: {},
         lastChecked: new Date(),
-        errors: [settledResult.reason.message]
+        errors: [settledResult.reason.message],
       };
     }
   }
 
-  private async collectSystemAlerts(components: Record<string, ComponentStatus>): Promise<SystemAlert[]> {
+  private async collectSystemAlerts(
+    components: Record<string, ComponentStatus>
+  ): Promise<SystemAlert[]> {
     const alerts: SystemAlert[] = [];
 
     Object.entries(components).forEach(([component, status]) => {
@@ -1277,7 +1328,7 @@ export class ClaudeZenFacade extends EventEmitter {
           message: `${component} system is unhealthy`,
           component,
           timestamp: new Date(),
-          resolved: false
+          resolved: false,
         });
       } else if (status.status === 'degraded') {
         alerts.push({
@@ -1286,19 +1337,19 @@ export class ClaudeZenFacade extends EventEmitter {
           message: `${component} system performance is degraded`,
           component,
           timestamp: new Date(),
-          resolved: false
+          resolved: false,
         });
       }
 
       if (status.errors?.length) {
-        status.errors.forEach(error => {
+        status.errors.forEach((error) => {
           alerts.push({
             id: `error-${component}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
             level: 'error',
             message: error,
             component,
             timestamp: new Date(),
-            resolved: false
+            resolved: false,
           });
         });
       }

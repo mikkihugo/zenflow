@@ -1,6 +1,7 @@
 /**
  * Coordination Test Helpers
- * @fileoverview Specialized helpers for testing coordination/swarm components (London TDD)
+ *
+ * @file Specialized helpers for testing coordination/swarm components (London TDD)
  */
 
 export interface SwarmTestConfig {
@@ -340,6 +341,8 @@ export class CoordinationTestBuilder {
 export class CoordinationProtocolValidator {
   /**
    * Validate MCP protocol compliance
+   *
+   * @param messages
    */
   static validateMCPProtocol(messages: any[]): void {
     messages.forEach((message) => {
@@ -357,6 +360,8 @@ export class CoordinationProtocolValidator {
 
   /**
    * Validate WebSocket protocol compliance
+   *
+   * @param messages
    */
   static validateWebSocketProtocol(messages: any[]): void {
     messages.forEach((message) => {
@@ -368,6 +373,9 @@ export class CoordinationProtocolValidator {
 
   /**
    * Validate coordination patterns
+   *
+   * @param interactions
+   * @param expectedPattern
    */
   static validateCoordinationPattern(
     interactions: any[],
@@ -412,6 +420,9 @@ export class CoordinationProtocolValidator {
 
   /**
    * Validate performance characteristics
+   *
+   * @param interactions
+   * @param thresholds
    */
   static validatePerformance(
     interactions: any[],
@@ -440,6 +451,9 @@ export class CoordinationProtocolValidator {
 export class SwarmBehaviorSimulator {
   /**
    * Simulate network partition scenario
+   *
+   * @param swarm
+   * @param partitionAgents
    */
   static simulateNetworkPartition(swarm: any, partitionAgents: string[]): void {
     // Remove connections for partitioned agents
@@ -454,6 +468,9 @@ export class SwarmBehaviorSimulator {
 
   /**
    * Simulate agent failure scenario
+   *
+   * @param swarm
+   * @param failedAgentId
    */
   static simulateAgentFailure(swarm: any, failedAgentId: string): void {
     const agent = swarm.agents.get(failedAgentId);
@@ -466,6 +483,9 @@ export class SwarmBehaviorSimulator {
 
   /**
    * Simulate high load scenario
+   *
+   * @param swarm
+   * @param taskCount
    */
   static simulateHighLoad(swarm: any, taskCount: number): any[] {
     const tasks = [];
@@ -498,6 +518,9 @@ export class SwarmBehaviorSimulator {
 
   /**
    * Simulate consensus scenario
+   *
+   * @param swarm
+   * @param proposal
    */
   static simulateConsensus(swarm: any, proposal: any): any {
     const agentIds = Array.from(swarm.agents.keys());
@@ -539,6 +562,8 @@ export class SwarmBehaviorSimulator {
 
 /**
  * Factory functions for coordination testing
+ *
+ * @param config
  */
 export function createCoordinationTestSuite(config?: Partial<SwarmTestConfig>) {
   return {
@@ -579,5 +604,7 @@ export function createPerformanceSwarmTest() {
 /**
  * Main coordination test helpers class
  * Alias for backward compatibility
+ *
+ * @example
  */
 export class CoordinationTestHelpers extends CoordinationTestBuilder {}

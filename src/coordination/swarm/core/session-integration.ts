@@ -1,26 +1,52 @@
 /**
- * Session Integration Layer
+ * @file Session Integration Layer
  *
  * Integrates the SessionManager with the existing ZenSwarm system,
  * providing seamless session persistence for swarm operations.
  */
 
+// Node.js modules
 import { EventEmitter } from 'node:events';
+
+// External dependencies
 import type { ICoordinationDao } from '../../../database';
-// import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
+
+// Internal modules - absolute paths
 import { ZenSwarm } from './base-swarm';
-import { type SessionConfig, SessionManager, type SessionState } from './session-manager';
+// Internal modules - types
+import type { SessionConfig, SessionState } from './session-manager';
+import { SessionManager } from './session-manager';
 import { SessionRecovery, SessionValidator } from './session-utils';
 import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './types';
 
 /**
  * Enhanced ZenSwarm with session management capabilities
+ *
+ * Provides persistent session support for swarm operations, allowing
+ * recovery from failures and resumption of long-running tasks.
+ *
+ * @example
  */
 export class SessionEnabledSwarm extends ZenSwarm {
   private sessionManager: SessionManager;
   private currentSessionId?: string;
   private sessionIntegrationEnabled: boolean = false;
 
+  /**
+   * Creates a new SessionEnabledSwarm instance
+   *
+   * @param options - Configuration options for the swarm
+   * @param sessionConfig - Configuration for session management
+   * @param persistence - Optional persistence layer for session data
+   * @example
+   * ```typescript
+   * const swarm = new SessionEnabledSwarm(
+   *   { maxAgents: 10 },
+   *   { autoSave: true, saveInterval: 5000 },
+   *   coordinationDao
+   * )
+   * ```
+   */
   constructor(
     options: SwarmOptions = {},
     sessionConfig: SessionConfig = {},
@@ -36,9 +62,9 @@ export class SessionEnabledSwarm extends ZenSwarm {
       // Create a simple mock implementation for now
       // TODO: Implement proper DALFactory integration with DI
       persistenceLayer = {
-        query: async (_sql: string, _params?: any[]) => [],
-        execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 })
-      } as any;
+        query: async (_sql: string, _params?: unknown[]) => [],
+        execute: async (_sql: string, _params?: unknown[]) => ({ affectedRows: 1 }),
+      } as ICoordinationDao;
     }
     this.sessionManager = new SessionManager(persistenceLayer, sessionConfig);
 
@@ -48,6 +74,16 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
   /**
    * Initialize swarm with session support
+   *
+   * Sets up the base swarm infrastructure and initializes the session
+   * management layer for persistent operation tracking.
+   *
+   * @throws Error if initialization fails
+   * @example
+   * ```typescript
+   * await swarm.initialize()
+   * console.log('Swarm ready with session support')
+   * ```
    */
   async initialize(): Promise<void> {
     // Initialize base swarm
@@ -62,6 +98,8 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
   /**
    * Create a new session and associate with this swarm
+   *
+   * @param sessionName
    */
   async createSession(sessionName: string): Promise<string> {
     if (!this.sessionIntegrationEnabled) {
@@ -83,6 +121,8 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
   /**
    * Load an existing session and restore swarm state
+   *
+   * @param sessionId
    */
   async loadSession(sessionId: string): Promise<void> {
     if (!this.sessionIntegrationEnabled) {
@@ -114,6 +154,8 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
   /**
    * Create a checkpoint of current state
+   *
+   * @param description
    */
   async createCheckpoint(description?: string): Promise<string> {
     if (!this.currentSessionId) {
@@ -139,6 +181,8 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
   /**
    * Restore from a specific checkpoint
+   *
+   * @param checkpointId
    */
   async restoreFromCheckpoint(checkpointId: string): Promise<void> {
     if (!this.currentSessionId) {
@@ -203,6 +247,8 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
   /**
    * Terminate the current session
+   *
+   * @param cleanup
    */
   async terminateSession(cleanup: boolean = false): Promise<void> {
     if (!this.currentSessionId) {
@@ -218,6 +264,8 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
   /**
    * List available sessions
+   *
+   * @param filter
    */
   async listSessions(filter?: any): Promise<SessionState[]> {
     if (!this.sessionIntegrationEnabled) {
@@ -240,6 +288,8 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
   /**
    * Get session statistics
+   *
+   * @param sessionId
    */
   async getSessionStats(sessionId?: string): Promise<Record<string, any>> {
     return this.sessionManager.getSessionStats(sessionId || this.currentSessionId);
@@ -247,11 +297,13 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
   /**
    * Enhanced agent operations with session persistence
+   *
+   * @param config
    */
   async addAgent(config: AgentConfig): Promise<string> {
     // Create agent ID and simulate adding agent
     const agentId = config.id || `agent-${Date.now()}`;
-    
+
     // For now, just emit the event since the base class doesn't have addAgent
     this.emit('agent:added', { agentId, config });
 
@@ -273,11 +325,13 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
   /**
    * Enhanced task submission with session persistence
+   *
+   * @param task
    */
   async submitTask(task: Omit<Task, 'id' | 'status'>): Promise<string> {
     // Create task ID and simulate task submission
     const taskId = `task-${Date.now()}`;
-    
+
     // For now, just emit the event since the base class doesn't have submitTask
     this.emit('task:created', { taskId, task });
 
@@ -342,7 +396,12 @@ export class SessionEnabledSwarm extends ZenSwarm {
       if (!(this as any).state.agents.has(agentId)) {
         // Re-add agent if not present
         try {
-          await this.addAgent(agent.config);
+          // Ensure the agent config has the required id field
+          const configWithId = {
+            ...agent.config,
+            id: agent.config.id || agentId,
+          };
+          await this.addAgent(configWithId);
         } catch (error) {
           console.warn(`Failed to restore agent ${agentId}:`, error);
         }
@@ -366,7 +425,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
             maxAgents: 5, // Default max agents
             requiredCapabilities: [], // Default capabilities
             createdAt: new Date(), // Current timestamp
-            metadata: {} // Empty metadata
+            metadata: {}, // Empty metadata
           });
         } catch (error) {
           console.warn(`Failed to restore task ${taskId}:`, error);
@@ -438,6 +497,8 @@ export class SessionEnabledSwarm extends ZenSwarm {
  * Session Recovery Service
  *
  * Provides automated recovery capabilities for corrupted sessions
+ *
+ * @example
  */
 export class SessionRecoveryService extends EventEmitter {
   private sessionManager: SessionManager;
@@ -450,6 +511,8 @@ export class SessionRecoveryService extends EventEmitter {
 
   /**
    * Attempt to recover a corrupted session
+   *
+   * @param sessionId
    */
   async recoverSession(sessionId: string): Promise<boolean> {
     if (this.recoveryInProgress.has(sessionId)) {
@@ -591,6 +654,10 @@ export class SessionRecoveryService extends EventEmitter {
 
 /**
  * Factory function for creating session-enabled swarms
+ *
+ * @param swarmOptions
+ * @param sessionConfig
+ * @param persistence
  */
 export function createSessionEnabledSwarm(
   swarmOptions?: SwarmOptions,

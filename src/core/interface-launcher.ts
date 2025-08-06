@@ -60,6 +60,8 @@ export class InterfaceLauncher extends EventEmitter {
 
   /**
    * Launch the appropriate interface based on options and environment
+   *
+   * @param options
    */
   async launch(options: LaunchOptions = {}): Promise<LaunchResult> {
     const detection = InterfaceModeDetector.detect(options);
@@ -134,6 +136,8 @@ export class InterfaceLauncher extends EventEmitter {
 
   /**
    * Launch CLI interface (Unified Terminal Interface)
+   *
+   * @param options
    */
   private async launchCLI(options: LaunchOptions): Promise<LaunchResult> {
     logger.debug('Launching Unified Terminal Interface in CLI mode');
@@ -177,6 +181,8 @@ export class InterfaceLauncher extends EventEmitter {
 
   /**
    * Launch TUI interface using Unified Terminal Interface
+   *
+   * @param options
    */
   private async launchTUI(options: LaunchOptions): Promise<LaunchResult> {
     logger.debug('Launching Unified Terminal Interface in TUI mode');
@@ -219,6 +225,9 @@ export class InterfaceLauncher extends EventEmitter {
 
   /**
    * Launch Web interface
+   *
+   * @param options
+   * @param port
    */
   private async launchWeb(options: LaunchOptions, port?: number): Promise<LaunchResult> {
     const webPort = port || options.webPort || 3456;
@@ -262,6 +271,8 @@ export class InterfaceLauncher extends EventEmitter {
 
   /**
    * Basic CLI fallback when TUI/Web interfaces aren't available
+   *
+   * @param options
    */
   private async launchBasicCLI(options: LaunchOptions): Promise<LaunchResult> {
     logger.info('🔧 Claude Code Zen - Basic CLI Mode');
@@ -341,6 +352,8 @@ export class InterfaceLauncher extends EventEmitter {
 
   /**
    * Restart interface with new options
+   *
+   * @param options
    */
   async restart(options: LaunchOptions = {}): Promise<LaunchResult> {
     logger.info('Restarting interface...');

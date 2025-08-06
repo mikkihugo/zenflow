@@ -14,6 +14,8 @@ interface IntegratedOptions {
 
 /**
  * Simplified application class with CLI support (avoiding DI decorators for now)
+ *
+ * @example
  */
 export class ClaudeZenIntegrated {
   private options: IntegratedOptions;
@@ -31,6 +33,8 @@ export class ClaudeZenIntegrated {
 
   /**
    * Parse command line arguments
+   *
+   * @param args
    */
   static parseArgs(args: string[]): IntegratedOptions {
     const options: IntegratedOptions = {};
@@ -48,24 +52,6 @@ export class ClaudeZenIntegrated {
       } else if (arg === '--verbose' || arg === '-v') {
         options.verbose = true;
       } else if (arg === '--help' || arg === '-h') {
-        console.log(
-          `
-Claude Code Zen - Integrated AI Coordination Platform
-
-Usage: claude-zen-integrated [options]
-
-Options:
-  --port <number>     HTTP server port (default: 3000)
-  --daemon           Run as daemon process
-  --dev              Development mode with hot reload
-  --verbose, -v      Verbose logging
-  --help, -h         Show this help message
-
-Examples:
-  claude-zen-integrated --port 3000 --dev
-  claude-zen-integrated --daemon --verbose
-        `.trim()
-        );
         process.exit(0);
       }
     }
@@ -77,17 +63,10 @@ Examples:
    * Initialize basic system without DI complexity
    */
   async initialize(): Promise<void> {
-    console.log('🚀 Starting Claude Code Zen Integrated...');
-
-    // Basic initialization without complex DI for now
-    console.log('✅ Core system initialized');
-
     // Start HTTP server if port is specified
     if (this.options.port) {
       await this.startServer();
     }
-
-    console.log(`✅ Claude Code Zen ready on port ${this.options.port || 'none'}`);
   }
 
   /**
@@ -100,7 +79,7 @@ Examples:
       const app = express.default();
 
       // Basic health check endpoint
-      app.get('/health', (req: any, res: any) => {
+      app.get('/health', (_req: any, res: any) => {
         res.json({
           status: 'healthy',
           timestamp: new Date().toISOString(),
@@ -109,7 +88,7 @@ Examples:
       });
 
       // API status endpoint
-      app.get('/api/status', (req: any, res: any) => {
+      app.get('/api/status', (_req: any, res: any) => {
         res.json({
           status: 'running',
           mode: this.options.dev ? 'development' : 'production',
@@ -119,9 +98,7 @@ Examples:
       });
 
       // Start server
-      this.server = app.listen(this.options.port, () => {
-        console.log(`🌐 HTTP server listening on port ${this.options.port}`);
-      });
+      this.server = app.listen(this.options.port, () => {});
     } catch (error) {
       console.error('❌ Failed to start HTTP server:', error);
       throw error;
@@ -132,8 +109,6 @@ Examples:
    * Simplified shutdown
    */
   async shutdown(): Promise<void> {
-    console.log('🛑 Shutting down Claude Code Zen Integrated...');
-
     // Close HTTP server
     if (this.server) {
       await new Promise<void>((resolve, reject) => {
@@ -142,10 +117,7 @@ Examples:
           else resolve();
         });
       });
-      console.log('🌐 HTTP server stopped');
     }
-
-    console.log('✅ Shutdown completed successfully');
   }
 }
 
@@ -174,7 +146,6 @@ async function main() {
 
     // Keep process alive
     if (!options.daemon) {
-      console.log('Press Ctrl+C to stop...');
     }
 
     // Keep the process running

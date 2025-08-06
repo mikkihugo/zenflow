@@ -6,27 +6,13 @@
  */
 
 import {
-  APIError,
-  // API type guards
-  APIResult,
-  APISuccess,
-  CoordinationError,
-  // Coordination type guards
-  CoordinationResult,
-  CoordinationSuccess,
   // Database type guards
   type DatabaseResult,
   // Utility functions
   extractData,
   extractErrorMessage,
-  Failure,
   hasProperty,
   type InferenceResult,
-  isAPIError,
-  isAPISuccess,
-  isCoordinationError,
-  isCoordinationSuccess,
-  isFailure,
   isInferenceResult,
   isMemoryError,
   isMemoryNotFound,
@@ -34,29 +20,15 @@ import {
   isNeuralError,
   isQueryError,
   isQuerySuccess,
-  isSuccess,
   isTrainingResult,
-  isWasmError,
-  isWasmSuccess,
   type MemoryError,
   type MemoryNotFound,
-  // Memory type guards
-  MemoryResult,
   type MemorySuccess,
   type NeuralError,
-  // Neural type guards
-  NeuralResult,
   type QueryError,
   type QuerySuccess,
-  // Generic type guards
-  Result,
-  Success,
   safePropertyAccess,
   type TrainingResult,
-  WasmError,
-  // WASM type guards
-  WasmResult,
-  WasmSuccess,
 } from '../../../../utils/type-guards';
 
 describe('Type Guards - Classical TDD', () => {

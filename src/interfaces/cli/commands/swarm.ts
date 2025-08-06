@@ -1,6 +1,6 @@
 /**
- * @fileoverview Swarm CLI Command - Direct MCP Integration
- * 
+ * @file Swarm CLI Command - Direct MCP Integration
+ *
  * Simple, direct swarm commands using meow CLI parsing and MCP tool calls.
  * Replaces the complex terminal interface system with straightforward command execution.
  */
@@ -8,9 +8,7 @@
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { performance } from 'node:perf_hooks';
-import { render } from 'ink';
 import meow from 'meow';
-import React from 'react';
 import { createLogger } from '../../../core/logger';
 
 const logger = createLogger({ prefix: 'SwarmCommand' });
@@ -87,8 +85,14 @@ Examples
 
 /**
  * Call MCP tool via stdio protocol
+ *
+ * @param toolName
+ * @param params
  */
-async function callMcpTool(toolName: string, params: any = {}): Promise<{success: boolean, data?: any, error?: string}> {
+async function callMcpTool(
+  toolName: string,
+  params: any = {}
+): Promise<{ success: boolean; data?: any; error?: string }> {
   return new Promise((resolve) => {
     const mcpProcess = spawn('npx', ['tsx', 'src/coordination/swarm/mcp/mcp-server.ts'], {
       stdio: ['pipe', 'pipe', 'pipe'],
@@ -131,7 +135,7 @@ async function callMcpTool(toolName: string, params: any = {}): Promise<{success
               isResolved = true;
               clearTimeout(timeout);
               mcpProcess.kill();
-              
+
               if (response.error) {
                 resolve({ success: false, error: response.error.message });
               } else {
@@ -139,7 +143,7 @@ async function callMcpTool(toolName: string, params: any = {}): Promise<{success
               }
               return;
             }
-          } catch (e) {
+          } catch (_e) {
             // Ignore parsing errors, continue looking
           }
         }
@@ -172,7 +176,7 @@ async function callMcpTool(toolName: string, params: any = {}): Promise<{success
 
     // Send the request
     try {
-      mcpProcess.stdin?.write(JSON.stringify(request) + '\n');
+      mcpProcess.stdin?.write(`${JSON.stringify(request)}\n`);
       mcpProcess.stdin?.end();
     } catch (error) {
       if (!isResolved) {
@@ -186,18 +190,22 @@ async function callMcpTool(toolName: string, params: any = {}): Promise<{success
 
 /**
  * Format output based on user preference
+ *
+ * @param data
+ * @param format
  */
-function formatOutput(data: any, format: string): string {
+function _formatOutput(data: any, format: string): string {
   switch (format) {
     case 'json':
       return JSON.stringify(data, null, 2);
     case 'compact':
       return JSON.stringify(data);
-    case 'table':
     default:
       if (typeof data === 'object' && data !== null) {
         return Object.entries(data)
-          .map(([key, value]) => `${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`)
+          .map(
+            ([key, value]) => `${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`
+          )
           .join('\n');
       }
       return String(data);
@@ -222,28 +230,28 @@ export async function executeSwarmCommand(): Promise<void> {
     logger.info(`Executing swarm command: ${command}`, { options });
 
     let result: any;
-    
+
     switch (command) {
       case 'status':
         result = await callMcpTool('swarm_status', {});
         break;
-        
+
       case 'init':
         result = await callMcpTool('swarm_init', {
           topology: options.topology || 'auto',
           maxAgents: options.agents || 4,
         });
         break;
-        
+
       case 'list':
         result = await callMcpTool('agent_list', {});
         break;
-        
+
       case 'monitor':
         result = await callMcpTool('swarm_monitor', {});
         break;
-        
-      case 'create':
+
+      case 'create': {
         const swarmName = input[1] || 'New Swarm';
         result = await callMcpTool('swarm_init', {
           name: swarmName,
@@ -251,18 +259,19 @@ export async function executeSwarmCommand(): Promise<void> {
           maxAgents: options.agents || 4,
         });
         break;
-        
-      case 'spawn':
+      }
+
+      case 'spawn': {
         const agentType = input[1] || 'general';
         result = await callMcpTool('agent_spawn', {
           type: agentType,
           name: `${agentType}-${Date.now()}`,
         });
         break;
-        
+      }
+
       default:
         console.error(`❌ Unknown swarm command: ${command}`);
-        console.log('Available commands: status, init, list, monitor, create, spawn');
         process.exit(1);
     }
 
@@ -270,21 +279,14 @@ export async function executeSwarmCommand(): Promise<void> {
     const duration = endTime - startTime;
 
     if (result.success) {
-      console.log(`✅ Swarm ${command} completed successfully (${duration.toFixed(2)}ms)`);
-      
       if (result.data) {
-        console.log('');
-        console.log(formatOutput(result.data, options.format || 'table'));
       }
-      
+
       if (options.verbose) {
-        console.log('');
-        console.log(`📊 Command executed in ${duration.toFixed(2)}ms`);
-        console.log(`🔧 Used MCP tool: ${getMcpToolName(command)}`);
       }
     } else {
       console.error(`❌ Swarm ${command} failed: ${result.error}`);
-      
+
       if (options.verbose && result.error) {
         console.error('');
         console.error('Debug information:');
@@ -292,31 +294,33 @@ export async function executeSwarmCommand(): Promise<void> {
         console.error(`Options: ${JSON.stringify(options, null, 2)}`);
         console.error(`Duration: ${duration.toFixed(2)}ms`);
       }
-      
+
       process.exit(1);
     }
   } catch (error) {
     const endTime = performance.now();
     const duration = endTime - startTime;
-    
+
     logger.error('Swarm command execution failed:', error);
     console.error(`❌ Swarm ${command} failed: ${error.message}`);
-    
+
     if (options.verbose) {
       console.error('');
       console.error('Debug information:');
       console.error(`Duration: ${duration.toFixed(2)}ms`);
       console.error(`Stack trace: ${error.stack}`);
     }
-    
+
     process.exit(1);
   }
 }
 
 /**
  * Get MCP tool name for a command
+ *
+ * @param command
  */
-function getMcpToolName(command: string): string {
+function _getMcpToolName(command: string): string {
   const toolMap: Record<string, string> = {
     status: 'swarm_status',
     init: 'swarm_init',

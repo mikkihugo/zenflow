@@ -45,6 +45,8 @@ export interface DocumentProcessingOptions {
  *
  * Pure database operations - NO file system interactions
  * All documents are database entities with export capabilities
+ *
+ * @example
  */
 export class DatabaseDrivenSystem extends EventEmitter {
   private workspaces: Map<string, DatabaseWorkspaceContext> = new Map();
@@ -74,6 +76,13 @@ export class DatabaseDrivenSystem extends EventEmitter {
 
   /**
    * Create new project workspace
+   *
+   * @param projectSpec
+   * @param projectSpec.name
+   * @param projectSpec.domain
+   * @param projectSpec.description
+   * @param projectSpec.complexity
+   * @param projectSpec.author
    */
   async createProjectWorkspace(projectSpec: {
     name: string;
@@ -122,6 +131,8 @@ export class DatabaseDrivenSystem extends EventEmitter {
 
   /**
    * Load existing project workspace
+   *
+   * @param projectId
    */
   async loadProjectWorkspace(projectId: string): Promise<string> {
     const workspaceId = nanoid();
@@ -172,6 +183,10 @@ export class DatabaseDrivenSystem extends EventEmitter {
 
   /**
    * Process document entity with database-driven workflow
+   *
+   * @param workspaceId
+   * @param document
+   * @param options
    */
   async processDocumentEntity(
     workspaceId: string,
@@ -211,6 +226,18 @@ export class DatabaseDrivenSystem extends EventEmitter {
 
   /**
    * Create vision document for project
+   *
+   * @param workspaceId
+   * @param visionSpec
+   * @param visionSpec.title
+   * @param visionSpec.businessObjectives
+   * @param visionSpec.successCriteria
+   * @param visionSpec.stakeholders
+   * @param visionSpec.timeline
+   * @param visionSpec.timeline.startDate
+   * @param visionSpec.timeline.targetCompletion
+   * @param visionSpec.timeline.milestones
+   * @param options
    */
   async createVisionDocument(
     workspaceId: string,
@@ -279,6 +306,11 @@ export class DatabaseDrivenSystem extends EventEmitter {
 
   /**
    * Generate documents from existing documents (e.g., PRDs from Vision)
+   *
+   * @param workspaceId
+   * @param sourceDocumentId
+   * @param targetType
+   * @param options
    */
   async generateDocumentsFromSource(
     workspaceId: string,
@@ -341,6 +373,8 @@ export class DatabaseDrivenSystem extends EventEmitter {
 
   /**
    * Get workspace status and progress
+   *
+   * @param workspaceId
    */
   async getWorkspaceStatus(workspaceId: string): Promise<{
     workspace: DatabaseWorkspaceContext;
@@ -422,6 +456,10 @@ export class DatabaseDrivenSystem extends EventEmitter {
 
   /**
    * Export workspace documents to files (optional capability)
+   *
+   * @param workspaceId
+   * @param outputPath
+   * @param _format
    */
   async exportWorkspaceToFiles(
     workspaceId: string,
@@ -920,6 +958,8 @@ ${spec.title} for ${feature.title}
 
   /**
    * Get workspace documents (legacy compatibility)
+   *
+   * @param workspaceId
    */
   getWorkspaceDocuments(workspaceId: string): Map<string, BaseDocumentEntity> {
     const context = this.workspaces.get(workspaceId);

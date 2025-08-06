@@ -149,6 +149,9 @@ export class BehavioralOptimization extends EventEmitter {
 
   /**
    * Register an agent's behavior for optimization
+   *
+   * @param agentId
+   * @param initialBehavior
    */
   registerAgentBehavior(agentId: string, initialBehavior?: Partial<BehaviorParameters>): string {
     const behavior: AgentBehavior = {
@@ -169,6 +172,10 @@ export class BehavioralOptimization extends EventEmitter {
 
   /**
    * Optimize agent behavior based on execution patterns
+   *
+   * @param agentId
+   * @param patterns
+   * @param strategy
    */
   async optimizeAgentBehavior(
     agentId: string,
@@ -248,6 +255,9 @@ export class BehavioralOptimization extends EventEmitter {
 
   /**
    * Refine task allocation based on successful patterns
+   *
+   * @param swarmId
+   * @param patterns
    */
   async refineTaskAllocation(
     swarmId: string,
@@ -294,6 +304,9 @@ export class BehavioralOptimization extends EventEmitter {
 
   /**
    * Optimize communication protocols based on patterns
+   *
+   * @param swarmId
+   * @param patterns
    */
   async optimizeCommunicationProtocols(
     swarmId: string,
@@ -330,6 +343,8 @@ export class BehavioralOptimization extends EventEmitter {
 
   /**
    * Optimize resource allocation based on usage patterns
+   *
+   * @param patterns
    */
   async optimizeResourceAllocation(
     patterns: ExecutionPattern[]
@@ -376,6 +391,9 @@ export class BehavioralOptimization extends EventEmitter {
 
   /**
    * Adapt coordination strategies based on swarm performance
+   *
+   * @param swarmId
+   * @param patterns
    */
   async adaptCoordinationStrategies(
     swarmId: string,
@@ -513,6 +531,10 @@ export class BehavioralOptimization extends EventEmitter {
 
   /**
    * Apply behavior adaptation based on feedback
+   *
+   * @param agentId
+   * @param adaptationType
+   * @param parameters
    */
   async applyBehaviorAdaptation(
     agentId: string,

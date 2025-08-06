@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Comprehensive End-to-End Test for SPARC Pseudocode Engine (Sub-task 4.2)
- * 
+ *
  * This test validates the complete implementation of SPARC Phase 2:
  * - Core pseudocode engine functionality
  * - CLI integration
@@ -9,72 +9,38 @@
  * - End-to-end specification → pseudocode flow
  */
 
-import { writeFile } from 'fs/promises';
+import { writeFile } from 'node:fs/promises';
 import type { Priority, RiskLevel } from './coordination/swarm/sparc/types/sparc-types';
 
 async function runComprehensiveTest() {
-  console.log('🎯 SPARC Pseudocode Engine - Comprehensive End-to-End Test');
-  console.log('=' .repeat(60));
-
   const results = {
     coreEngine: false,
     cliIntegration: false,
     mcpIntegration: false,
     endToEndFlow: false,
-    overallSuccess: false
+    overallSuccess: false,
   };
 
   try {
-    // 1. Test Core Engine
-    console.log('\n📍 Phase 1: Testing Core Pseudocode Engine...');
     const coreTest = await testCoreEngine();
     results.coreEngine = coreTest.success;
-    console.log(`   Result: ${coreTest.success ? '✅ PASSED' : '❌ FAILED'}`);
-
-    // 2. Test CLI Integration
-    console.log('\n📍 Phase 2: Testing CLI Integration...');
     const cliTest = await testCLIIntegration();
     results.cliIntegration = cliTest.success;
-    console.log(`   Result: ${cliTest.success ? '✅ PASSED' : '❌ FAILED'}`);
-
-    // 3. Test MCP Integration
-    console.log('\n📍 Phase 3: Testing MCP Tools Integration...');
     const mcpTest = await testMCPIntegration();
     results.mcpIntegration = mcpTest.success;
-    console.log(`   Result: ${mcpTest.success ? '✅ PASSED' : '❌ FAILED'}`);
-
-    // 4. Test End-to-End Flow
-    console.log('\n📍 Phase 4: Testing End-to-End Flow...');
     const e2eTest = await testEndToEndFlow();
     results.endToEndFlow = e2eTest.success;
-    console.log(`   Result: ${e2eTest.success ? '✅ PASSED' : '❌ FAILED'}`);
 
     // Overall assessment
-    results.overallSuccess = Object.values(results).slice(0, -1).every(r => r);
-
-    // Final report
-    console.log('\n' + '=' .repeat(60));
-    console.log('📊 COMPREHENSIVE TEST RESULTS');
-    console.log('=' .repeat(60));
-    console.log(`🔧 Core Engine:           ${results.coreEngine ? '✅ PASSED' : '❌ FAILED'}`);
-    console.log(`🖥️  CLI Integration:       ${results.cliIntegration ? '✅ PASSED' : '❌ FAILED'}`);
-    console.log(`🔌 MCP Integration:       ${results.mcpIntegration ? '✅ PASSED' : '❌ FAILED'}`);
-    console.log(`🔄 End-to-End Flow:       ${results.endToEndFlow ? '✅ PASSED' : '❌ FAILED'}`);
-    console.log('─' .repeat(60));
-    console.log(`🎯 OVERALL STATUS:        ${results.overallSuccess ? '✅ SUCCESS' : '❌ FAILED'}`);
+    results.overallSuccess = Object.values(results)
+      .slice(0, -1)
+      .every((r) => r);
 
     if (results.overallSuccess) {
-      console.log('\n🎉 SPARC Pseudocode Engine (Sub-task 4.2) - IMPLEMENTATION COMPLETE!');
-      console.log('✅ All integration requirements satisfied');
-      console.log('✅ Phase 2 ready for production use');
-      console.log('✅ CLI and MCP tools functional');
-      console.log('✅ End-to-end specification → pseudocode flow working');
     } else {
-      console.log('\n⚠️  Some tests failed - review implementation');
     }
 
     return results;
-
   } catch (error) {
     console.error('💥 Comprehensive test failed:', error);
     return { ...results, overallSuccess: false };
@@ -83,7 +49,9 @@ async function runComprehensiveTest() {
 
 async function testCoreEngine() {
   try {
-    const { PseudocodePhaseEngine } = await import('./coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
+    const { PseudocodePhaseEngine } = await import(
+      './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+    );
     const engine = new PseudocodePhaseEngine();
 
     const testSpec = {
@@ -96,8 +64,8 @@ async function testCoreEngine() {
           description: 'Test core algorithm generation',
           type: 'algorithmic',
           priority: 'HIGH' as Priority,
-          testCriteria: ['Algorithm generates correctly']
-        }
+          testCriteria: ['Algorithm generates correctly'],
+        },
       ],
       nonFunctionalRequirements: [],
       constraints: [],
@@ -105,7 +73,7 @@ async function testCoreEngine() {
       dependencies: [],
       acceptanceCriteria: [],
       riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' as RiskLevel },
-      successMetrics: []
+      successMetrics: [],
     };
 
     // Test all core methods
@@ -115,11 +83,12 @@ async function testCoreEngine() {
     const validation = await engine.validatePseudocodeLogic(algorithms);
     const pseudocodeStructure = await engine.generatePseudocode(testSpec);
 
-    const success: boolean = algorithms.length > 0 && 
-                   dataStructures.length > 0 && 
-                   controlFlows.length > 0 && 
-                   validation.length > 0 &&
-                   !!pseudocodeStructure.id;
+    const success: boolean =
+      algorithms.length > 0 &&
+      dataStructures.length > 0 &&
+      controlFlows.length > 0 &&
+      validation.length > 0 &&
+      !!pseudocodeStructure.id;
 
     return {
       success,
@@ -128,10 +97,9 @@ async function testCoreEngine() {
         dataStructures: dataStructures.length,
         controlFlows: controlFlows.length,
         validationResults: validation.length,
-        pseudocodeGenerated: !!pseudocodeStructure.id
-      }
+        pseudocodeGenerated: !!pseudocodeStructure.id,
+      },
     };
-
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
@@ -150,8 +118,8 @@ async function testCLIIntegration() {
           description: 'Test memory algorithm via CLI',
           type: 'algorithmic',
           priority: 'HIGH' as Priority,
-          testCriteria: ['CLI generation works']
-        }
+          testCriteria: ['CLI generation works'],
+        },
       ],
       nonFunctionalRequirements: [],
       constraints: [],
@@ -159,14 +127,14 @@ async function testCLIIntegration() {
       dependencies: [],
       acceptanceCriteria: [],
       riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' as RiskLevel },
-      successMetrics: []
+      successMetrics: [],
     };
 
     await writeFile('/tmp/cli-test-spec.json', JSON.stringify(testSpec, null, 2));
 
     // Import CLI command functions (simulate CLI usage)
-    const { exec } = await import('child_process');
-    const { promisify } = await import('util');
+    const { exec } = await import('node:child_process');
+    const { promisify } = await import('node:util');
     const execAsync = promisify(exec);
 
     // Test CLI commands (simulate via direct execution)
@@ -176,17 +144,17 @@ async function testCLIIntegration() {
     const generateResult = await execAsync(generateCommand);
     const validateResult = await execAsync(validateCommand);
 
-    const success: boolean = generateResult.stdout.includes('✅ Pseudocode generation completed') &&
-                   validateResult.stdout.includes('✅ APPROVED');
+    const success: boolean =
+      generateResult.stdout.includes('✅ Pseudocode generation completed') &&
+      validateResult.stdout.includes('✅ APPROVED');
 
     return {
       success,
       details: {
         generateOutput: generateResult.stdout.includes('Generated'),
-        validateOutput: validateResult.stdout.includes('APPROVED')
-      }
+        validateOutput: validateResult.stdout.includes('APPROVED'),
+      },
     };
-
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
@@ -194,12 +162,15 @@ async function testCLIIntegration() {
 
 async function testMCPIntegration() {
   try {
-    const createSPARCTools = (await import('./interfaces/mcp/tools/sparc-integration-tools')).default;
+    const createSPARCTools = (await import('./interfaces/mcp/tools/sparc-integration-tools'))
+      .default;
     const tools = createSPARCTools({} as any);
 
-    const pseudocodeGenerationTool = tools.find(tool => tool.name === 'sparc_generate_pseudocode');
-    const validationTool = tools.find(tool => tool.name === 'sparc_validate_pseudocode');
-    const algorithmsOnlyTool = tools.find(tool => tool.name === 'sparc_generate_algorithms_only');
+    const pseudocodeGenerationTool = tools.find(
+      (tool) => tool.name === 'sparc_generate_pseudocode'
+    );
+    const validationTool = tools.find((tool) => tool.name === 'sparc_validate_pseudocode');
+    const algorithmsOnlyTool = tools.find((tool) => tool.name === 'sparc_generate_algorithms_only');
 
     if (!pseudocodeGenerationTool || !validationTool || !algorithmsOnlyTool) {
       return { success: false, error: 'Required MCP tools not found' };
@@ -216,8 +187,8 @@ async function testMCPIntegration() {
           description: 'Test neural algorithm via MCP',
           type: 'algorithmic',
           priority: 'HIGH' as Priority,
-          testCriteria: ['MCP generation works']
-        }
+          testCriteria: ['MCP generation works'],
+        },
       ],
       nonFunctionalRequirements: [],
       constraints: [],
@@ -225,11 +196,11 @@ async function testMCPIntegration() {
       dependencies: [],
       acceptanceCriteria: [],
       riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' as RiskLevel },
-      successMetrics: []
+      successMetrics: [],
     };
 
     const generateResult = await pseudocodeGenerationTool.handler({ specification: testSpec });
-    
+
     if (!generateResult.success) {
       return { success: false, error: 'MCP generation failed' };
     }
@@ -239,16 +210,17 @@ async function testMCPIntegration() {
         id: generateResult.data.pseudocodeId,
         algorithms: generateResult.data.algorithms,
         dataStructures: generateResult.data.dataStructures,
-        controlFlows: generateResult.data.controlFlows
-      }
+        controlFlows: generateResult.data.controlFlows,
+      },
     });
 
     const algorithmsResult = await algorithmsOnlyTool.handler({ specification: testSpec });
 
-    const success: boolean = generateResult.success && 
-                   validateResult.success && 
-                   algorithmsResult.success &&
-                   validateResult.data.validation.approved;
+    const success: boolean =
+      generateResult.success &&
+      validateResult.success &&
+      algorithmsResult.success &&
+      validateResult.data.validation.approved;
 
     return {
       success,
@@ -256,10 +228,9 @@ async function testMCPIntegration() {
         generation: generateResult.success,
         validation: validateResult.success,
         algorithmsOnly: algorithmsResult.success,
-        approved: validateResult.data.validation.approved
-      }
+        approved: validateResult.data.validation.approved,
+      },
     };
-
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
@@ -267,9 +238,6 @@ async function testMCPIntegration() {
 
 async function testEndToEndFlow() {
   try {
-    // Simulate complete Phase 1 → Phase 2 flow
-    console.log('   🔄 Simulating Phase 1 → Phase 2 integration...');
-
     // Phase 1 Output (Specification)
     const phase1Output = {
       id: 'e2e-test-phase1-output',
@@ -281,7 +249,7 @@ async function testEndToEndFlow() {
           description: 'End-to-end data processing algorithm',
           type: 'algorithmic',
           priority: 'HIGH' as Priority,
-          testCriteria: ['Processes data correctly', 'Handles edge cases']
+          testCriteria: ['Processes data correctly', 'Handles edge cases'],
         },
         {
           id: 'req-e2e-002',
@@ -289,8 +257,8 @@ async function testEndToEndFlow() {
           description: 'Data validation and error handling',
           type: 'algorithmic',
           priority: 'MEDIUM' as Priority,
-          testCriteria: ['Validates input', 'Reports errors clearly']
-        }
+          testCriteria: ['Validates input', 'Reports errors clearly'],
+        },
       ],
       nonFunctionalRequirements: [
         {
@@ -298,16 +266,16 @@ async function testEndToEndFlow() {
           title: 'Performance',
           description: 'System performance requirements',
           metrics: { latency: '<50ms', throughput: '>2000/sec' },
-          priority: 'HIGH' as Priority
-        }
+          priority: 'HIGH' as Priority,
+        },
       ],
       constraints: [
         {
           id: 'const-e2e-001',
           type: 'performance' as const,
           description: 'Must process within time limits',
-          impact: 'high' as const
-        }
+          impact: 'high' as const,
+        },
       ],
       assumptions: [],
       dependencies: [],
@@ -319,13 +287,15 @@ async function testEndToEndFlow() {
           name: 'Processing Speed',
           description: 'Data processing performance',
           target: '2000 items/sec',
-          measurement: 'automated testing'
-        }
-      ]
+          measurement: 'automated testing',
+        },
+      ],
     };
 
     // Phase 2 Processing (Pseudocode Generation)
-    const { PseudocodePhaseEngine } = await import('./coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
+    const { PseudocodePhaseEngine } = await import(
+      './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+    );
     const engine = new PseudocodePhaseEngine();
 
     const phase2Output = await engine.generatePseudocode(phase1Output);
@@ -340,11 +310,12 @@ async function testEndToEndFlow() {
     const hasOptimizations = phase2Output.optimizations.length > 0;
     const validationPassed = validation.approved;
 
-    const success: boolean = hasRequiredAlgorithms && 
-                   hasDataStructures && 
-                   hasComplexityAnalysis && 
-                   hasOptimizations && 
-                   validationPassed;
+    const success: boolean =
+      hasRequiredAlgorithms &&
+      hasDataStructures &&
+      hasComplexityAnalysis &&
+      hasOptimizations &&
+      validationPassed;
 
     return {
       success,
@@ -354,10 +325,9 @@ async function testEndToEndFlow() {
         optimizationsIdentified: phase2Output.optimizations.length,
         complexityAnalysisPresent: hasComplexityAnalysis,
         validationScore: validation.overallScore,
-        approved: validationPassed
-      }
+        approved: validationPassed,
+      },
     };
-
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
@@ -365,7 +335,7 @@ async function testEndToEndFlow() {
 
 // Run the comprehensive test if this file is executed directly
 if (process.argv[1] === new URL(import.meta.url).pathname) {
-  runComprehensiveTest().then(results => {
+  runComprehensiveTest().then((results) => {
     process.exit(results.overallSuccess ? 0 : 1);
   });
 }

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Swarm Knowledge Synchronization
+ * @file Swarm Knowledge Synchronization
  * Handles knowledge synchronization between individual swarms and the Hive Knowledge Bridge
  *
  * Features:
@@ -73,6 +73,8 @@ export interface SwarmLearning {
 
 /**
  * Manages knowledge synchronization for an individual swarm
+ *
+ * @example
  */
 export class SwarmKnowledgeSync extends EventEmitter {
   private config: SwarmKnowledgeConfig;
@@ -131,6 +133,14 @@ export class SwarmKnowledgeSync extends EventEmitter {
 
   /**
    * Query knowledge from Hive FACT system
+   *
+   * @param query
+   * @param domain
+   * @param agentId
+   * @param options
+   * @param options.useCache
+   * @param options.priority
+   * @param options.filters
    */
   async queryKnowledge(
     query: string,
@@ -201,6 +211,9 @@ export class SwarmKnowledgeSync extends EventEmitter {
 
   /**
    * Contribute learned knowledge back to Hive
+   *
+   * @param learning
+   * @param agentId
    */
   async contributeKnowledge(
     learning: Omit<SwarmLearning, 'id' | 'timestamp'>,
@@ -279,6 +292,8 @@ export class SwarmKnowledgeSync extends EventEmitter {
 
   /**
    * Subscribe to knowledge updates for specific domain
+   *
+   * @param domain
    */
   async subscribeToDomain(domain: string): Promise<boolean> {
     if (this.subscriptions.has(domain)) {
@@ -317,6 +332,8 @@ export class SwarmKnowledgeSync extends EventEmitter {
 
   /**
    * Handle incoming knowledge update from Hive
+   *
+   * @param update
    */
   async handleKnowledgeUpdate(update: KnowledgeDistributionUpdate): Promise<void> {
     logger.info(`Received knowledge update: ${update.type} for domain ${update.domain}`);
@@ -416,7 +433,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
     if (!entry) return null;
 
     // Check if expired
-    if (Date.now() > entry.timestamp + entry.ttl) {
+    if (Date.now() > entry.metadata.timestamp + entry.ttl) {
       this.localCache.delete(key);
       return null;
     }
@@ -512,18 +529,22 @@ export class SwarmKnowledgeSync extends EventEmitter {
     return null;
   }
 
-  private generateContributionDescription(learning: SwarmLearning): string {
+  private generateContributionDescription(
+    learning: Omit<SwarmLearning, 'id' | 'timestamp'>
+  ): string {
     return `${learning.type} learned in ${learning.domain}: ${learning.insights.whatWorked.join(', ')}`;
   }
 
-  private extractImplementationDetails(learning: SwarmLearning): string {
+  private extractImplementationDetails(learning: Omit<SwarmLearning, 'id' | 'timestamp'>): string {
     return JSON.stringify({
       bestPractices: learning.insights.bestPractices,
       optimizations: learning.insights.optimizations,
     });
   }
 
-  private extractMetrics(learning: SwarmLearning): Record<string, number> {
+  private extractMetrics(
+    learning: Omit<SwarmLearning, 'id' | 'timestamp'>
+  ): Record<string, number> {
     return {
       duration: learning.outcome.duration,
       quality: learning.outcome.quality,
@@ -543,7 +564,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
       if (cached) {
         // Restore cache from persistent storage
         for (const [key, entry] of Object.entries(cached as Record<string, LocalKnowledgeEntry>)) {
-          if (Date.now() <= entry.timestamp + entry.ttl) {
+          if (Date.now() <= entry.metadata.timestamp + entry.ttl) {
             this.localCache.set(key, entry);
           }
         }
@@ -640,7 +661,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
     const expiredKeys = [];
 
     for (const [key, entry] of this.localCache) {
-      if (now > entry.timestamp + entry.ttl) {
+      if (now > entry.metadata.timestamp + entry.ttl) {
         expiredKeys.push(key);
       }
     }

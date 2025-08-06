@@ -22,6 +22,15 @@ export interface ErrorMessageProps {
  * Unified Error Message Component
  *
  * Displays error information with context-appropriate styling and actions.
+ *
+ * @param root0
+ * @param root0.error
+ * @param root0.title
+ * @param root0.showStack
+ * @param root0.showBorder
+ * @param root0.variant
+ * @param root0.actions
+ * @param root0.testId
  */
 export const ErrorMessage: React.FC<ErrorMessageProps> = ({
   error,

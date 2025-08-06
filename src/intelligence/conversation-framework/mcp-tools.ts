@@ -17,6 +17,8 @@ import type {
 
 /**
  * MCP tools for conversation management
+ *
+ * @example
  */
 export class ConversationMCPTools implements ConversationMCPToolsInterface {
   private orchestrator: ConversationOrchestratorImpl;
@@ -264,6 +266,9 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
 
   /**
    * Handle conversation MCP tool calls
+   *
+   * @param name
+   * @param args
    */
   async handleToolCall(name: string, args: any): Promise<any> {
     switch (name) {
@@ -515,6 +520,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
 
   /**
    * Static method for backward compatibility
+   *
    * @deprecated Use instance method getTools() instead
    */
   static getToolsStatic(): Tool[] {
@@ -538,6 +544,8 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
 
 /**
  * Factory for creating conversation MCP tools
+ *
+ * @example
  */
 export class ConversationMCPToolsFactory {
   static async create(): Promise<ConversationMCPTools> {

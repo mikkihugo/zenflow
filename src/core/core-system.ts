@@ -63,7 +63,6 @@
  * const components = coreSystem.getComponents();
  * await components.memory.store('key', { data: 'value' });
  * ```
- *
  * @since 2.0.0-clean-architecture
  */
 
@@ -80,6 +79,8 @@ const logger = createLogger('CoreSystem');
 
 /**
  * Core system configuration with clear, focused options
+ *
+ * @example
  */
 export interface CoreSystemConfig {
   // Memory configuration
@@ -122,6 +123,8 @@ export interface CoreSystemConfig {
 
 /**
  * System status with clear component boundaries
+ *
+ * @example
  */
 export interface SystemStatus {
   status: 'initializing' | 'ready' | 'error' | 'shutdown';
@@ -140,6 +143,8 @@ export interface SystemStatus {
 
 /**
  * Clean, focused core system without bloated "unified" architecture
+ *
+ * @example
  */
 export class CoreSystem extends EventEmitter {
   private config: CoreSystemConfig;
@@ -348,6 +353,8 @@ export class CoreSystem extends EventEmitter {
 
   /**
    * Process a document through the system
+   *
+   * @param documentPath
    */
   async processDocument(documentPath: string): Promise<{
     success: boolean;
@@ -371,6 +378,9 @@ export class CoreSystem extends EventEmitter {
 
   /**
    * Export system data
+   *
+   * @param format
+   * @param options
    */
   async exportSystemData(
     format: string,
@@ -448,6 +458,8 @@ export class CoreSystem extends EventEmitter {
 
   /**
    * Static factory method for easy initialization
+   *
+   * @param config
    */
   static async create(config?: CoreSystemConfig): Promise<CoreSystem> {
     const system = new CoreSystem(config);
@@ -457,6 +469,8 @@ export class CoreSystem extends EventEmitter {
 
   /**
    * Quick start method that initializes and launches
+   *
+   * @param config
    */
   static async quickStart(config?: CoreSystemConfig): Promise<CoreSystem> {
     const system = await CoreSystem.create(config);

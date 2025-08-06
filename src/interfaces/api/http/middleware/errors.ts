@@ -4,7 +4,7 @@
  * Standardized error handling following Google API Design Guide.
  * Provides consistent error responses across all API endpoints.
  *
- * @fileoverview Express error handling middleware
+ * @file Express error handling middleware
  */
 
 import type { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
@@ -12,6 +12,8 @@ import type { ErrorRequestHandler, NextFunction, Request, Response } from 'expre
 /**
  * Standard API Error Response Structure
  * Following Google API Design Guide error format
+ *
+ * @example
  */
 export interface APIErrorResponse {
   readonly error: {
@@ -51,6 +53,8 @@ export const ErrorCodes = {
 /**
  * Custom API Error Class
  * Extends Error with additional metadata for API responses
+ *
+ * @example
  */
 export class APIError extends Error {
   public readonly statusCode: number;
@@ -90,6 +94,8 @@ const generateTraceId = (): string => {
 /**
  * Determine error code from HTTP status code
  * Maps status codes to standardized error codes
+ *
+ * @param statusCode
  */
 const _getErrorCodeFromStatus = (statusCode: number): string => {
   switch (statusCode) {
@@ -127,6 +133,11 @@ const _getErrorCodeFromStatus = (statusCode: number): string => {
 /**
  * Main Error Handler Middleware
  * Catches all errors and formats them according to Google API standards
+ *
+ * @param error
+ * @param req
+ * @param res
+ * @param _next
  */
 export const errorHandler: ErrorRequestHandler = (
   error: Error | APIError,
@@ -225,6 +236,9 @@ export const errorHandler: ErrorRequestHandler = (
 /**
  * Not Found Handler
  * Handles 404 errors for unmatched routes
+ *
+ * @param req
+ * @param res
  */
 export const notFoundHandler = (req: Request, res: Response): void => {
   const errorResponse: APIErrorResponse = {
@@ -247,6 +261,8 @@ export const notFoundHandler = (req: Request, res: Response): void => {
 /**
  * Async Error Handler Wrapper
  * Wraps async route handlers to catch errors automatically
+ *
+ * @param fn
  */
 export const asyncHandler = (
   fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
@@ -259,6 +275,11 @@ export const asyncHandler = (
 /**
  * Validation Error Creator
  * Helper to create validation errors with detailed information
+ *
+ * @param field
+ * @param value
+ * @param message
+ * @param traceId
  */
 export const createValidationError = (
   field: string,
@@ -282,6 +303,10 @@ export const createValidationError = (
 /**
  * Not Found Error Creator
  * Helper to create consistent 404 errors
+ *
+ * @param resource
+ * @param identifier
+ * @param traceId
  */
 export const createNotFoundError = (
   resource: string,
@@ -303,6 +328,10 @@ export const createNotFoundError = (
 /**
  * Conflict Error Creator
  * Helper to create resource conflict errors
+ *
+ * @param resource
+ * @param reason
+ * @param traceId
  */
 export const createConflictError = (
   resource: string,
@@ -324,6 +353,10 @@ export const createConflictError = (
 /**
  * Rate Limit Error Creator
  * Helper to create rate limiting errors
+ *
+ * @param limit
+ * @param windowMs
+ * @param traceId
  */
 export const createRateLimitError = (
   limit: number,
@@ -346,6 +379,10 @@ export const createRateLimitError = (
 /**
  * Internal Error Creator
  * Helper to create internal server errors with optional details
+ *
+ * @param message
+ * @param details
+ * @param traceId
  */
 export const createInternalError = (
   message: string,

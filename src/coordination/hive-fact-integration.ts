@@ -1,5 +1,5 @@
 /**
- * @fileoverview Hive-Level FACT Integration
+ * @file Hive-Level FACT Integration
  * Centralized FACT (Fast Augmented Context Tools) system at the Hive level
  * Provides universal knowledge to all swarms - facts about npm packages, repos, etc.
  *
@@ -19,6 +19,8 @@ const logger = createLogger({ prefix: 'Hive-FACT' });
 /**
  * Centralized FACT system at Hive level
  * Manages universal facts accessible by all swarms
+ *
+ * @example
  */
 export class HiveFACTSystem extends EventEmitter {
   // private factOrchestrator: FACTExternalOrchestrator; // TODO: Migrate to unified MCP
@@ -47,6 +49,8 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Initialize Hive FACT system
+   *
+   * @param hiveCoordinator
    */
   async initialize(hiveCoordinator?: HiveSwarmCoordinator): Promise<void> {
     logger.info('Initializing Hive FACT System...');
@@ -76,6 +80,10 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Get universal fact - accessible by any swarm
+   *
+   * @param type
+   * @param subject
+   * @param swarmId
    */
   async getFact(
     type: UniversalFact['type'],
@@ -127,6 +135,8 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Search for facts across all knowledge
+   *
+   * @param query
    */
   async searchFacts(query: FACTSearchQuery): Promise<UniversalFact[]> {
     const results: UniversalFact[] = [];
@@ -152,6 +162,9 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Get facts for NPM package
+   *
+   * @param packageName
+   * @param version
    */
   async getNPMPackageFacts(packageName: string, version?: string): Promise<UniversalFact> {
     const subject = version ? `${packageName}@${version}` : packageName;
@@ -166,6 +179,9 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Get facts for GitHub repository
+   *
+   * @param owner
+   * @param repo
    */
   async getGitHubRepoFacts(owner: string, repo: string): Promise<UniversalFact> {
     const subject = `github.com/${owner}/${repo}`;
@@ -180,6 +196,9 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Get API documentation facts
+   *
+   * @param api
+   * @param endpoint
    */
   async getAPIDocsFacts(api: string, endpoint?: string): Promise<UniversalFact> {
     const subject = endpoint ? `${api}/${endpoint}` : api;
@@ -194,6 +213,8 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Get security advisory facts
+   *
+   * @param cve
    */
   async getSecurityAdvisoryFacts(cve: string): Promise<UniversalFact> {
     const fact = await this.getFact('security-advisory', cve);
@@ -207,6 +228,9 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Gather fact from external sources
+   *
+   * @param type
+   * @param subject
    */
   private async gatherFact(
     type: UniversalFact['type'],
@@ -214,7 +238,7 @@ export class HiveFACTSystem extends EventEmitter {
   ): Promise<UniversalFact | null> {
     try {
       // Determine query based on fact type
-      const query = this.buildQueryForFactType(type, subject);
+      const _query = this.buildQueryForFactType(type, subject);
 
       // Use FACT orchestrator to gather from external MCPs
       // const result = await this.factOrchestrator.gatherKnowledge(query, {
@@ -265,6 +289,9 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Build query based on fact type
+   *
+   * @param type
+   * @param subject
    */
   private buildQueryForFactType(type: UniversalFact['type'], subject: string): string {
     switch (type) {
@@ -282,25 +309,9 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Get appropriate sources for fact type
-   */
-  private getSourcesForFactType(type: UniversalFact['type']): string[] {
-    switch (type) {
-      case 'npm-package':
-        return ['context7', 'deepwiki']; // Documentation sources
-      case 'github-repo':
-        return ['gitmcp', 'context7']; // Git and documentation
-      case 'api-docs':
-        return ['context7', 'deepwiki']; // API documentation
-      case 'security-advisory':
-        return ['semgrep', 'deepwiki']; // Security sources
-      default:
-        return this.config.knowledgeSources || [];
-    }
-  }
-
-  /**
    * Get TTL (time to live) for fact type
+   *
+   * @param type
    */
   private getTTLForFactType(type: UniversalFact['type']): number {
     switch (type) {
@@ -319,6 +330,8 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Check if fact is still fresh
+   *
+   * @param fact
    */
   private isFactFresh(fact: UniversalFact): boolean {
     const ttl = fact.metadata?.ttl || this.getTTLForFactType(fact.type);
@@ -327,11 +340,13 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Calculate confidence score
+   *
+   * @param result
    */
   private calculateConfidence(result: any): number {
     const sourceCount = Array.isArray(result.sources) ? result.sources.length : 0;
     const hasErrors = Array.isArray(result.sources)
-      ? result.sources.some((s: any) => s && s.error)
+      ? result.sources.some((s: any) => s?.error)
       : false;
 
     let confidence = 0.5; // Base confidence
@@ -343,6 +358,9 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Match fact against search query
+   *
+   * @param fact
+   * @param query
    */
   private matchesQuery(fact: UniversalFact, query: FACTSearchQuery): boolean {
     // Simple text matching for now
@@ -355,13 +373,15 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Search external sources for facts
+   *
+   * @param query
    */
   private async searchExternalFacts(query: FACTSearchQuery): Promise<UniversalFact[]> {
     // const result = await this.factOrchestrator.gatherKnowledge(query.query, {
     //   sources: this.config.knowledgeSources,
     //   maxResults: query.limit,
     // });
-    const result = { knowledge: [] }; // TODO: Implement with unified MCP
+    const _result = { knowledge: [] }; // TODO: Implement with unified MCP
 
     // Convert to universal facts
     const facts: UniversalFact[] = [];
@@ -506,6 +526,9 @@ let globalHiveFACT: HiveFACTSystem | null = null;
 
 /**
  * Initialize global Hive FACT system
+ *
+ * @param config
+ * @param hiveCoordinator
  */
 export async function initializeHiveFACT(
   config?: HiveFACTConfig,
@@ -534,6 +557,9 @@ export function getHiveFACT(): HiveFACTSystem | null {
 export const HiveFACTHelpers = {
   /**
    * Get NPM package facts
+   *
+   * @param packageName
+   * @param version
    */
   async npmFacts(packageName: string, version?: string): Promise<any> {
     const fact = getHiveFACT();
@@ -545,6 +571,9 @@ export const HiveFACTHelpers = {
 
   /**
    * Get GitHub repo facts
+   *
+   * @param owner
+   * @param repo
    */
   async githubFacts(owner: string, repo: string): Promise<any> {
     const fact = getHiveFACT();
@@ -556,6 +585,9 @@ export const HiveFACTHelpers = {
 
   /**
    * Get API documentation
+   *
+   * @param api
+   * @param endpoint
    */
   async apiFacts(api: string, endpoint?: string): Promise<any> {
     const fact = getHiveFACT();
@@ -567,6 +599,8 @@ export const HiveFACTHelpers = {
 
   /**
    * Get security advisory
+   *
+   * @param cve
    */
   async securityFacts(cve: string): Promise<any> {
     const fact = getHiveFACT();

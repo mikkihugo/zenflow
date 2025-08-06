@@ -1,5 +1,5 @@
 /**
- * @fileoverview Comprehensive Test Suite for Hive Knowledge Integration
+ * @file Comprehensive Test Suite for Hive Knowledge Integration
  * Tests all components of the Hive Knowledge System Integration using swarm coordination
  */
 

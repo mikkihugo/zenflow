@@ -11,10 +11,7 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { TaskAPI } from '../../coordination/api';
-import { TaskCoordinator } from '../../coordination/task-coordinator';
 import { DocumentDrivenSystem } from '../../core/document-driven-system';
-import { MemorySystem } from '../../core/memory-system';
-import { WorkflowEngine } from '../../core/workflow-engine';
 import type { DetailedSpecification, SPARCProject } from '../types/sparc-types';
 
 // Task Management Integration Types
@@ -135,6 +132,8 @@ export interface Roadmap {
  * - Integrates with TaskDistributionEngine for task coordination
  * - Leverages existing ADR infrastructure
  * - Extends existing tasks.json format
+ *
+ * @example
  */
 export class ProjectManagementIntegration {
   private readonly projectRoot: string;
@@ -181,6 +180,9 @@ export class ProjectManagementIntegration {
 
   /**
    * Enhanced comprehensive project management artifacts using existing infrastructure
+   *
+   * @param project
+   * @param artifactTypes
    */
   async createAllProjectManagementArtifacts(
     project: SPARCProject,
@@ -250,6 +252,9 @@ export class ProjectManagementIntegration {
 
   /**
    * Create vision document from SPARC project using DocumentDrivenSystem patterns
+   *
+   * @param project
+   * @param _workspaceId
    */
   private async createVisionDocumentFromSPARC(
     project: SPARCProject,
@@ -298,6 +303,11 @@ Related: SPARC-${project.id}
 
   /**
    * Execute document workflows using UnifiedWorkflowEngine
+   *
+   * @param workspaceId
+   * @param visionDocument
+   * @param visionDocument.path
+   * @param visionDocument.content
    */
   private async executeDocumentWorkflows(
     workspaceId: string,
@@ -339,6 +349,8 @@ Related: SPARC-${project.id}
 
   /**
    * Generate tasks from SPARC project using existing task infrastructure
+   *
+   * @param project
    */
   async generateTasksFromSPARC(project: SPARCProject): Promise<Task[]> {
     const tasks: Task[] = [];
@@ -406,6 +418,8 @@ Related: SPARC-${project.id}
 
   /**
    * Update existing tasks with SPARC project information using TaskAPI
+   *
+   * @param project
    */
   async updateTasksWithSPARC(project: SPARCProject): Promise<void> {
     try {
@@ -441,6 +455,8 @@ Related: SPARC-${project.id}
 
   /**
    * Create tasks using enhanced task distribution engine
+   *
+   * @param project
    */
   async distributeTasksWithCoordination(project: SPARCProject): Promise<void> {
     try {
@@ -487,6 +503,8 @@ Related: SPARC-${project.id}
 
   /**
    * Generate ADR from SPARC architecture decisions
+   *
+   * @param project
    */
   async generateADRFromSPARC(project: SPARCProject): Promise<ADR[]> {
     const adrs: ADR[] = [];
@@ -536,6 +554,8 @@ Related: SPARC-${project.id}
 
   /**
    * Generate PRD from SPARC specification
+   *
+   * @param project
    */
   async generatePRDFromSPARC(project: SPARCProject): Promise<PRD> {
     const prd: PRD = {
@@ -766,6 +786,8 @@ Related: SPARC-${project.id}
 
   /**
    * Create ADR files from SPARC project using existing template structure
+   *
+   * @param project
    */
   async createADRFiles(project: SPARCProject): Promise<void> {
     try {
@@ -785,6 +807,8 @@ Related: SPARC-${project.id}
 
   /**
    * Create PRD file from SPARC project with enhanced integration
+   *
+   * @param project
    */
   async createPRDFile(project: SPARCProject): Promise<void> {
     try {
@@ -802,6 +826,8 @@ Related: SPARC-${project.id}
 
   /**
    * Create or update epics file from SPARC project
+   *
+   * @param project
    */
   async createEpicsFromSPARC(project: SPARCProject): Promise<Epic[]> {
     try {
@@ -852,6 +878,8 @@ Related: SPARC-${project.id}
 
   /**
    * Create or update features file from SPARC project
+   *
+   * @param project
    */
   async createFeaturesFromSPARC(project: SPARCProject): Promise<Feature[]> {
     try {
@@ -893,6 +921,8 @@ Related: SPARC-${project.id}
 
   /**
    * Create comprehensive project management artifacts
+   *
+   * @param project
    */
   async createAllProjectManagementArtifacts(project: SPARCProject): Promise<{
     tasks: Task[];
@@ -1106,6 +1136,9 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
 
   /**
    * Enhanced ADR creation using existing template structure and workspace management
+   *
+   * @param adrs
+   * @param workspaceId
    */
   async createADRFilesWithWorkspace(adrs: ADR[], workspaceId: string): Promise<string[]> {
     const createdFiles: string[] = [];
@@ -1194,6 +1227,9 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
 
   /**
    * Save epics to workspace using document-driven system
+   *
+   * @param epics
+   * @param workspaceId
    */
   async saveEpicsToWorkspace(epics: Epic[], workspaceId: string): Promise<void> {
     const epicsDir = path.join(this.projectRoot, 'docs/04-epics');
@@ -1247,6 +1283,9 @@ Type: Epic
 
   /**
    * Save features to workspace using document-driven system
+   *
+   * @param features
+   * @param workspaceId
    */
   async saveFeaturesFromWorkspace(features: Feature[], workspaceId: string): Promise<void> {
     const featuresDir = path.join(this.projectRoot, 'docs/05-features');

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Batch Performance Monitor
+ * @file Batch Performance Monitor
  * Tracks and compares batch vs sequential execution performance
  * Implements claude-zen's performance monitoring patterns
  */
@@ -42,6 +42,8 @@ export interface PerformanceTrend {
 /**
  * Monitors and tracks performance of batch operations vs sequential execution
  * Provides insights and recommendations for optimization
+ *
+ * @example
  */
 export class BatchPerformanceMonitor {
   private readonly metricsHistory: PerformanceMetrics[];
@@ -56,6 +58,11 @@ export class BatchPerformanceMonitor {
 
   /**
    * Record performance metrics for a batch execution
+   *
+   * @param summary
+   * @param resourceUsage
+   * @param resourceUsage.memory
+   * @param resourceUsage.cpu
    */
   recordBatchExecution(
     summary: BatchExecutionSummary,
@@ -91,6 +98,13 @@ export class BatchPerformanceMonitor {
 
   /**
    * Record performance metrics for sequential execution (for comparison)
+   *
+   * @param operationCount
+   * @param executionTime
+   * @param successfulOperations
+   * @param resourceUsage
+   * @param resourceUsage.memory
+   * @param resourceUsage.cpu
    */
   recordSequentialExecution(
     operationCount: number,
@@ -124,6 +138,9 @@ export class BatchPerformanceMonitor {
 
   /**
    * Compare batch vs sequential performance
+   *
+   * @param batchMetrics
+   * @param sequentialMetrics
    */
   comparePerformance(
     batchMetrics: PerformanceMetrics,
@@ -174,6 +191,12 @@ export class BatchPerformanceMonitor {
 
   /**
    * Generate performance improvement recommendations
+   *
+   * @param speedImprovement
+   * @param throughputImprovement
+   * @param resourceEfficiency
+   * @param batchMetrics
+   * @param _sequentialMetrics
    */
   private generateRecommendations(
     speedImprovement: number,
@@ -230,6 +253,9 @@ export class BatchPerformanceMonitor {
 
   /**
    * Get performance trends over time
+   *
+   * @param metric
+   * @param hours
    */
   getPerformanceTrends(metric: keyof PerformanceMetrics, hours = 24): PerformanceTrend {
     const cutoffTime = Date.now() - hours * 60 * 60 * 1000;
@@ -263,6 +289,9 @@ export class BatchPerformanceMonitor {
 
   /**
    * Calculate trend direction using simple linear regression
+   *
+   * @param values
+   * @param timestamps
    */
   private calculateTrend(
     values: number[],
@@ -284,6 +313,9 @@ export class BatchPerformanceMonitor {
 
   /**
    * Calculate percentage change rate per hour
+   *
+   * @param values
+   * @param hours
    */
   private calculateChangeRate(values: number[], hours: number): number {
     if (values.length < 2) return 0;
@@ -300,6 +332,8 @@ export class BatchPerformanceMonitor {
 
   /**
    * Get summary of recent performance
+   *
+   * @param hours
    */
   getPerformanceSummary(hours = 24): {
     totalExecutions: number;
@@ -360,6 +394,11 @@ export class BatchPerformanceMonitor {
 
   /**
    * Generate summary recommendations
+   *
+   * @param batchCount
+   * @param sequentialCount
+   * @param avgSpeedImprovement
+   * @param avgTokenReduction
    */
   private generateSummaryRecommendations(
     batchCount: number,
@@ -398,6 +437,8 @@ export class BatchPerformanceMonitor {
 
   /**
    * Set performance baseline for comparison
+   *
+   * @param metrics
    */
   setBaseline(metrics: PerformanceMetrics): void {
     this.performanceBaseline = { ...metrics };
@@ -410,6 +451,8 @@ export class BatchPerformanceMonitor {
 
   /**
    * Compare current metrics against baseline
+   *
+   * @param currentMetrics
    */
   compareToBaseline(currentMetrics: PerformanceMetrics): {
     improvement: number;
@@ -439,6 +482,8 @@ export class BatchPerformanceMonitor {
 
   /**
    * Add metrics to history with size management
+   *
+   * @param metrics
    */
   private addMetrics(metrics: PerformanceMetrics): void {
     this.metricsHistory.push(metrics);

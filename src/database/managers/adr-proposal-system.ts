@@ -1,13 +1,12 @@
 /**
  * ADR Proposal System - Human-Driven Architecture Decision Process
- * 
+ *
  * System for proposing ADRs to humans for discussion and decision.
  * ADRs are never imported - they must go through proper human review process.
  */
 
-import { adrManager } from './adr-manager';
-import type { ADRCreateOptions } from './adr-manager';
 import type { ADRDocumentEntity } from '../entities/document-entities';
+import { adrManager } from './adr-manager';
 
 export interface ADRProposal {
   title: string;
@@ -45,19 +44,17 @@ export interface ADRDiscussion {
 
 /**
  * ADR Proposal System for human-driven architecture decisions
+ *
+ * @example
  */
 export class ADRProposalSystem {
-  
   /**
    * Propose a new ADR for human discussion
    * Creates ADR in 'proposed' status awaiting human review
+   *
+   * @param proposal
    */
   async proposeADR(proposal: ADRProposal): Promise<ADRDocumentEntity> {
-    console.log(`📋 Proposing new ADR: ${proposal.title}`);
-    console.log(`👤 Proposer: ${proposal.proposer}`);
-    console.log(`🔥 Urgency: ${proposal.urgency}`);
-    console.log(`👥 Stakeholders: ${proposal.stakeholders.join(', ')}`);
-    
     // Create ADR in proposed status
     const adr = await adrManager.createADR({
       title: proposal.title,
@@ -84,26 +81,21 @@ export class ADRProposalSystem {
 
     // Log proposal for human attention
     await this.logProposalForHumanReview(adr, proposal);
-    
+
     return adr;
   }
 
   /**
    * Record human discussion and feedback on ADR
+   *
+   * @param adrNumber
+   * @param discussion
    */
-  async recordDiscussion(
-    adrNumber: number, 
-    discussion: ADRDiscussion
-  ): Promise<ADRDocumentEntity> {
+  async recordDiscussion(adrNumber: number, discussion: ADRDiscussion): Promise<ADRDocumentEntity> {
     const adr = await adrManager.getADRByNumber(adrNumber);
     if (!adr) {
       throw new Error(`ADR ${adrNumber} not found`);
     }
-
-    console.log(`💬 Recording discussion for ADR-${adrNumber.toString().padStart(3, '0')}`);
-    console.log(`👥 Participants: ${discussion.participants.join(', ')}`);
-    console.log(`📊 Consensus: ${discussion.consensus_level}`);
-    console.log(`✅ Status: ${discussion.decision_status}`);
 
     // Update ADR with discussion results
     const updated = await adrManager.updateADRStatus(
@@ -127,7 +119,7 @@ export class ADRProposalSystem {
             consensus: discussion.consensus_level,
             status: discussion.decision_status,
             next_steps: discussion.next_steps,
-          }
+          },
         ],
         current_consensus: discussion.consensus_level,
         discussion_status: discussion.decision_status,
@@ -140,6 +132,16 @@ export class ADRProposalSystem {
 
   /**
    * Make final decision on ADR after human discussion
+   *
+   * @param adrNumber
+   * @param decision
+   * @param decision.approved
+   * @param decision.final_decision
+   * @param decision.rationale
+   * @param decision.implementation_plan
+   * @param decision.decision_maker
+   * @param decision.stakeholder_signoffs
+   * @param decision.conditions
    */
   async makeDecision(
     adrNumber: number,
@@ -158,13 +160,8 @@ export class ADRProposalSystem {
       throw new Error(`ADR ${adrNumber} not found`);
     }
 
-    console.log(`⚖️  Making final decision on ADR-${adrNumber.toString().padStart(3, '0')}`);
-    console.log(`✅ Approved: ${decision.approved}`);
-    console.log(`👤 Decision Maker: ${decision.decision_maker}`);
-    console.log(`✍️  Signoffs: ${decision.stakeholder_signoffs.join(', ')}`);
-
     const newStatus = decision.approved ? 'decided' : 'rejected';
-    
+
     // Update ADR with final decision
     const updated = await adrManager.updateADRStatus(
       adrNumber,
@@ -192,9 +189,7 @@ export class ADRProposalSystem {
     });
 
     if (decision.approved) {
-      console.log(`🚀 ADR-${adrNumber.toString().padStart(3, '0')} approved for implementation`);
     } else {
-      console.log(`❌ ADR-${adrNumber.toString().padStart(3, '0')} rejected`);
     }
 
     return updated;
@@ -209,9 +204,10 @@ export class ADRProposalSystem {
       limit: 100,
     });
 
-    return adrs.filter(adr => 
-      adr.metadata?.requires_human_discussion && 
-      adr.metadata?.discussion_status === 'awaiting_discussion'
+    return adrs.filter(
+      (adr) =>
+        adr.metadata?.requires_human_discussion &&
+        adr.metadata?.discussion_status === 'awaiting_discussion'
     );
   }
 
@@ -236,9 +232,10 @@ export class ADRProposalSystem {
       limit: 100,
     });
 
-    return adrs.filter(adr => 
-      adr.metadata?.discussion_status === 'ready_for_decision' &&
-      adr.metadata?.current_consensus !== 'none'
+    return adrs.filter(
+      (adr) =>
+        adr.metadata?.discussion_status === 'ready_for_decision' &&
+        adr.metadata?.current_consensus !== 'none'
     );
   }
 
@@ -294,61 +291,68 @@ export class ADRProposalSystem {
         {
           name: 'Simpler Implementation',
           pros: ['Faster to implement', 'Less complexity'],
-          cons: ['Wouldn\'t meet workflow automation requirements', 'Limited scalability'],
-          why_not_chosen: 'Insufficient functionality for requirements'
+          cons: ["Wouldn't meet workflow automation requirements", 'Limited scalability'],
+          why_not_chosen: 'Insufficient functionality for requirements',
         },
         {
           name: 'External Workflow Engine',
           pros: ['Proven workflow capabilities'],
           cons: ['Additional dependency', 'Integration complexity', 'Licensing costs'],
-          why_not_chosen: 'Increased complexity and external dependencies'
+          why_not_chosen: 'Increased complexity and external dependencies',
         },
         {
           name: 'File-Based Document Storage',
           pros: ['Simple to understand and debug'],
           cons: ['No relationship management', 'Poor search performance', 'No transaction support'],
-          why_not_chosen: 'Cannot support advanced document management requirements'
-        }
+          why_not_chosen: 'Cannot support advanced document management requirements',
+        },
       ],
 
       proposer: 'claude-code-ai-system',
       urgency: 'high',
       stakeholders: ['human-reviewer', 'development-team', 'architecture-team'],
-      impact_areas: ['document-management', 'workflow-automation', 'search-system', 'database-architecture'],
+      impact_areas: [
+        'document-management',
+        'workflow-automation',
+        'search-system',
+        'database-architecture',
+      ],
       discussion_points: [
         'Is the 4-strategy search approach (fulltext/semantic/keyword/combined) the right balance?',
         'Are the 6 predefined workflows (Vision/ADR/PRD/Epic/Feature/Task) sufficient?',
         'Should relationship strength calculation include additional factors beyond keywords/priority/author/recency?',
         'Is the performance target of sub-100ms search realistic for 1000+ documents?',
-        'Are the automation rules (PRD→Epic, Epic→Feature, Feature→Task) appropriate?'
+        'Are the automation rules (PRD→Epic, Epic→Feature, Feature→Task) appropriate?',
       ],
       success_criteria: [
         '100% TODO comment replacement with functional code',
         'Sub-100ms search performance for complex queries',
         '85%+ accuracy in auto-generated document relationships',
         'Complete integration test coverage',
-        'Automated document generation workflows operational'
+        'Automated document generation workflows operational',
       ],
       risks: [
         'Automation creating inappropriate document hierarchies',
         'Search performance degrading with large document sets',
         'Complex relationship graphs causing user confusion',
-        'Learning curve impacting team productivity'
+        'Learning curve impacting team productivity',
       ],
-      implementation_effort: 'medium'
+      implementation_effort: 'medium',
     });
   }
 
   /**
    * Format context section with proposal details
+   *
+   * @param proposal
    */
   private formatContext(proposal: ADRProposal): string {
-    let context = proposal.context + '\n\n';
-    
+    let context = `${proposal.context}\n\n`;
+
     if (proposal.impact_areas.length > 0) {
       context += `**Impact Areas:** ${proposal.impact_areas.join(', ')}\n\n`;
     }
-    
+
     if (proposal.risks && proposal.risks.length > 0) {
       context += `**Identified Risks:**\n`;
       for (const risk of proposal.risks) {
@@ -356,7 +360,7 @@ export class ADRProposalSystem {
       }
       context += '\n';
     }
-    
+
     if (proposal.discussion_points.length > 0) {
       context += `**Key Discussion Points:**\n`;
       for (const point of proposal.discussion_points) {
@@ -364,64 +368,64 @@ export class ADRProposalSystem {
       }
       context += '\n';
     }
-    
+
     return context;
   }
 
   /**
    * Format consequences with expected outcomes
+   *
+   * @param proposal
    */
   private formatConsequences(proposal: ADRProposal): string {
-    let consequences = proposal.expected_consequences + '\n\n';
-    
+    let consequences = `${proposal.expected_consequences}\n\n`;
+
     if (proposal.implementation_effort) {
       consequences += `**Implementation Effort:** ${proposal.implementation_effort}\n\n`;
     }
-    
+
     return consequences;
   }
 
   /**
    * Map urgency to priority
+   *
+   * @param urgency
    */
   private mapUrgencyToPriority(urgency: string): 'low' | 'medium' | 'high' {
     switch (urgency) {
-      case 'critical': return 'high';
-      case 'high': return 'high';
-      case 'medium': return 'medium';
-      case 'low': return 'low';
-      default: return 'medium';
+      case 'critical':
+        return 'high';
+      case 'high':
+        return 'high';
+      case 'medium':
+        return 'medium';
+      case 'low':
+        return 'low';
+      default:
+        return 'medium';
     }
   }
 
   /**
    * Log proposal for human review
+   *
+   * @param adr
+   * @param proposal
    */
-  private async logProposalForHumanReview(adr: ADRDocumentEntity, proposal: ADRProposal): Promise<void> {
-    const adrId = adr.metadata?.adr_id || `ADR-${adr.metadata?.adr_number}`;
-    
-    console.log(`\n🔔 NEW ADR PROPOSAL REQUIRES HUMAN REVIEW`);
-    console.log(`═══════════════════════════════════════`);
-    console.log(`📋 ${adrId}: ${proposal.title}`);
-    console.log(`👤 Proposer: ${proposal.proposer}`);
-    console.log(`🔥 Urgency: ${proposal.urgency}`);
-    console.log(`👥 Stakeholders: ${proposal.stakeholders.join(', ')}`);
-    console.log(`🎯 Impact Areas: ${proposal.impact_areas.join(', ')}`);
-    console.log(`\n💭 Key Discussion Points:`);
-    proposal.discussion_points.forEach(point => {
-      console.log(`   • ${point}`);
-    });
-    console.log(`\n📍 Next Steps:`);
-    console.log(`   1. Review the proposal details in the database`);
-    console.log(`   2. Schedule discussion with stakeholders`);
-    console.log(`   3. Record discussion using recordDiscussion()`);
-    console.log(`   4. Make final decision using makeDecision()`);
-    console.log(`\n🔍 View: adrManager.getADRByNumber(${adr.metadata?.adr_number})`);
-    console.log(`═══════════════════════════════════════\n`);
+  private async logProposalForHumanReview(
+    adr: ADRDocumentEntity,
+    proposal: ADRProposal
+  ): Promise<void> {
+    const _adrId = adr.metadata?.adr_id || `ADR-${adr.metadata?.adr_number}`;
+    proposal.discussion_points.forEach((_point) => {});
   }
 
   /**
    * Update ADR content with final decision
+   *
+   * @param content
+   * @param decision
    */
   private updateContentWithDecision(content: string, decision: any): string {
     // Replace PROPOSED status with final decision

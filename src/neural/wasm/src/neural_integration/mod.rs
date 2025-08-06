@@ -22,6 +22,9 @@ pub mod wasm_types;
 pub mod examples;
 pub mod benchmarks;
 
+#[cfg(test)]
+pub mod property_tests;
+
 use crate::{CudaRust, Result as CudaResult};
 use std::sync::Arc;
 use std::marker::PhantomData;

@@ -30,6 +30,8 @@ export interface WebSocketConfig {
 
 /**
  * Manages WebSocket connections and real-time updates
+ *
+ * @example
  */
 export class WebSocketCoordinator {
   private logger = createLogger('WebSocket');
@@ -101,6 +103,9 @@ export class WebSocketCoordinator {
 
   /**
    * Broadcast message to all connected clients
+   *
+   * @param event
+   * @param data
    */
   broadcast(event: string, data: any): void {
     if (!this.config.realTime) return;
@@ -115,6 +120,10 @@ export class WebSocketCoordinator {
 
   /**
    * Send message to specific session
+   *
+   * @param sessionId
+   * @param event
+   * @param data
    */
   sendToSession(sessionId: string, event: string, data: any): boolean {
     const socket = this.io.sockets.sockets.get(sessionId);
@@ -140,6 +149,8 @@ export class WebSocketCoordinator {
 
   /**
    * Get session by ID
+   *
+   * @param sessionId
    */
   getSession(sessionId: string): WebSession | undefined {
     return this.sessions.get(sessionId);
@@ -147,6 +158,9 @@ export class WebSocketCoordinator {
 
   /**
    * Update session preferences
+   *
+   * @param sessionId
+   * @param preferences
    */
   updateSessionPreferences(
     sessionId: string,
@@ -166,6 +180,8 @@ export class WebSocketCoordinator {
 
   /**
    * Clean up expired sessions
+   *
+   * @param maxAge
    */
   cleanupSessions(maxAge: number = 24 * 60 * 60 * 1000): number {
     const now = new Date();

@@ -191,6 +191,7 @@
     "eslint-formatter-unix": "^8.40.0",
     "eslint-plugin-jsdoc": "^50.0.0",
     "eslint-plugin-react": "^7.37.5",
+    "fast-check": "^4.2.0",
     "globals": "^16.3.0",
     "jest": "^30.0.5",
     "jest-extended": "^6.0.0",

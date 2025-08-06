@@ -1,13 +1,13 @@
 /**
- * @fileoverview Integration test for the refactored Orchestrator.
+ * @file Integration test for the refactored Orchestrator.
  * This test adapts the London School TDD approach from the original test suite.
  */
 
 import { describe, expect, it, jest } from '@jest/globals';
 import { Orchestrator } from 'coordination/orchestrator';
-import { SwarmDatabase } from '../../src/database/swarm-database';
 import { ZenSwarmStrategy } from 'coordination/strategies/ruv-swarm.strategy';
-import { ILogger } from 'core/interfaces/base-interfaces';
+import type { ILogger } from 'core/interfaces/base-interfaces';
+import { SwarmDatabase } from '../../src/database/swarm-database';
 
 // Mock dependencies
 jest.mock('../../src/database/swarm-database');
@@ -69,7 +69,10 @@ describe('Orchestrator Integration Test', () => {
       expect(mockDb.createTask).toHaveBeenCalledWith(expect.objectContaining({ id: 'task-123' }));
       expect(mockStrategy.getAgents).toHaveBeenCalled();
       expect(mockStrategy.assignTaskToAgent).toHaveBeenCalledWith('agent-456', expect.any(Object));
-      expect(mockDb.updateTask).toHaveBeenCalledWith('task-123', expect.objectContaining({ status: 'completed' }));
+      expect(mockDb.updateTask).toHaveBeenCalledWith(
+        'task-123',
+        expect.objectContaining({ status: 'completed' })
+      );
     });
   });
 });

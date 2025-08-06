@@ -1,5 +1,5 @@
 /**
- * @fileoverview Simplified Demo for Progressive Confidence Builder
+ * @file Simplified Demo for Progressive Confidence Builder
  * Shows how the system builds confidence through iterations without external dependencies
  */
 

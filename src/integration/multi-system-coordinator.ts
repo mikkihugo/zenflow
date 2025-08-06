@@ -40,6 +40,9 @@ export class MultiSystemCoordinator extends EventEmitter {
 
   /**
    * Coordinate operation across multiple systems
+   *
+   * @param operation
+   * @param data
    */
   async coordinateOperation(operation: string, data: any): Promise<any> {
     if (!this.isInitialized) {

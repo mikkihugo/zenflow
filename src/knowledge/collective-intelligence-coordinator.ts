@@ -17,6 +17,8 @@ import type { ILogger } from '../core/logger';
 
 /**
  * Knowledge Exchange Protocols
+ *
+ * @example
  */
 export interface KnowledgeExchangeProtocol {
   id: string;
@@ -138,6 +140,8 @@ export type ConflictResolutionStrategy =
 
 /**
  * Distributed Learning Systems
+ *
+ * @example
  */
 export interface DistributedLearningConfig {
   aggregationStrategy: AggregationStrategy;
@@ -219,6 +223,8 @@ export type ConsolidationTrigger =
 
 /**
  * Collaborative Problem-Solving
+ *
+ * @example
  */
 export interface CollaborativeProblemSolver {
   problemId: string;
@@ -285,6 +291,8 @@ export type ConsensusAlgorithm =
 
 /**
  * Intelligence Coordination
+ *
+ * @example
  */
 export interface IntelligenceCoordinator {
   expertiseDiscovery: ExpertiseDiscoveryEngine;
@@ -330,6 +338,8 @@ export interface SpecializationEmergenceDetector {
 
 /**
  * Knowledge Quality Management
+ *
+ * @example
  */
 export interface KnowledgeQualityManager {
   reputationSystem: ReputationSystem;
@@ -372,6 +382,8 @@ export type ValidationType =
 
 /**
  * Performance Optimization
+ *
+ * @example
  */
 export interface PerformanceOptimizationConfig {
   cachingStrategy: CachingStrategy;
@@ -408,6 +420,8 @@ export type EvictionPolicy = 'lru' | 'lfu' | 'ttl' | 'quality-based' | 'access-p
 
 /**
  * Main Collective Intelligence Coordinator Class
+ *
+ * @example
  */
 export class CollectiveIntelligenceCoordinator extends EventEmitter {
   private logger: ILogger;
@@ -514,6 +528,8 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
   /**
    * Coordinate knowledge aggregation from multiple agents
+   *
+   * @param contributions
    */
   async aggregateKnowledge(contributions: AgentContribution[]): Promise<AggregatedKnowledge> {
     const startTime = Date.now();
@@ -561,6 +577,8 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
   /**
    * Coordinate collective decision making
+   *
+   * @param decisionContext
    */
   async coordinateDecision(decisionContext: DecisionContext): Promise<CollectiveDecision> {
     const startTime = Date.now();
@@ -618,6 +636,8 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
   /**
    * Distribute work using intelligent load balancing
+   *
+   * @param tasks
    */
   async distributeWork(tasks: TaskDefinition[]): Promise<WorkDistributionResult> {
     const startTime = Date.now();
@@ -666,6 +686,8 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
   /**
    * Weight agent contributions based on expertise and reputation
+   *
+   * @param contributions
    */
   private async weightContributions(
     contributions: AgentContribution[]
@@ -698,6 +720,8 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
   /**
    * Synthesize knowledge from weighted contributions
+   *
+   * @param weightedContributions
    */
   private async synthesizeKnowledge(
     weightedContributions: WeightedContribution[]
@@ -735,6 +759,8 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
   /**
    * Update knowledge graph with validated knowledge
+   *
+   * @param validatedKnowledge
    */
   private async updateKnowledgeGraph(
     validatedKnowledge: ValidatedKnowledge
@@ -854,6 +880,8 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
 /**
  * Configuration interfaces
+ *
+ * @example
  */
 export interface CollectiveIntelligenceConfig {
   knowledgeExchange: KnowledgeExchangeConfig;

@@ -103,6 +103,8 @@ export interface TopologyDecision {
 
 /**
  * Intelligent topology management with ML-based optimization
+ *
+ * @example
  */
 export class TopologyManager extends EventEmitter {
   private nodes = new Map<string, NetworkNode>();
@@ -154,6 +156,15 @@ export class TopologyManager extends EventEmitter {
 
   /**
    * Register a new node in the topology
+   *
+   * @param nodeConfig
+   * @param nodeConfig.id
+   * @param nodeConfig.type
+   * @param nodeConfig.capabilities
+   * @param nodeConfig.location
+   * @param nodeConfig.location.x
+   * @param nodeConfig.location.y
+   * @param nodeConfig.location.z
    */
   async registerNode(nodeConfig: {
     id: string;
@@ -189,6 +200,8 @@ export class TopologyManager extends EventEmitter {
 
   /**
    * Remove a node from the topology
+   *
+   * @param nodeId
    */
   async unregisterNode(nodeId: string): Promise<void> {
     const node = this.nodes.get(nodeId);
@@ -227,6 +240,9 @@ export class TopologyManager extends EventEmitter {
 
   /**
    * Manually trigger topology migration
+   *
+   * @param targetTopology
+   * @param force
    */
   async migrateTopology(targetTopology: TopologyType, force = false): Promise<boolean> {
     const decision = await this.getTopologyDecision();

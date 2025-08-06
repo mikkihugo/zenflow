@@ -1,5 +1,5 @@
 /**
- * @fileoverview Observer Pattern Implementation for Real-Time Event System
+ * @file Observer Pattern Implementation for Real-Time Event System
  * Provides type-safe event handling with priority management and error recovery
  */
 
@@ -72,13 +72,25 @@ export interface InterfaceEvent extends SystemEvent {
 }
 
 // Union type for all system events
-export type AllSystemEvents = SwarmEvent | MCPEvent | NeuralEvent | DatabaseEvent | MemoryEvent | InterfaceEvent;
+export type AllSystemEvents =
+  | SwarmEvent
+  | MCPEvent
+  | NeuralEvent
+  | DatabaseEvent
+  | MemoryEvent
+  | InterfaceEvent;
 
 // Priority levels for event handling
 export type EventPriority = 'critical' | 'high' | 'medium' | 'low';
 
 // Observer type definitions
-export type ObserverType = 'websocket' | 'database' | 'logger' | 'metrics' | 'notification' | 'custom';
+export type ObserverType =
+  | 'websocket'
+  | 'database'
+  | 'logger'
+  | 'metrics'
+  | 'notification'
+  | 'custom';
 
 // Supporting interfaces
 export interface SwarmStatus {
@@ -158,15 +170,16 @@ export class WebSocketObserver implements SystemObserver<SwarmEvent | MCPEvent |
   update(event: SwarmEvent | MCPEvent | InterfaceEvent): void {
     try {
       const payload = this.formatEventForWebSocket(event);
-      
-      this.connections.forEach(socket => {
-        if (socket.readyState === 1) { // WebSocket.OPEN
+
+      this.connections.forEach((socket) => {
+        if (socket.readyState === 1) {
+          // WebSocket.OPEN
           socket.send(JSON.stringify(payload));
         }
       });
 
       // Emit specific event types
-      this.connections.forEach(socket => {
+      this.connections.forEach((socket) => {
         switch (event.type) {
           case 'swarm':
             socket.emit('swarm:update', event);
@@ -204,7 +217,7 @@ export class WebSocketObserver implements SystemObserver<SwarmEvent | MCPEvent |
   handleError(error: Error, event: SwarmEvent | MCPEvent | InterfaceEvent): void {
     this.logger?.error('WebSocket observer error handling event:', { error, event });
     // Try to reconnect or cleanup bad connections
-    this.connections.forEach(socket => {
+    this.connections.forEach((socket) => {
       if (socket.readyState !== 1) {
         this.connections.delete(socket);
       }
@@ -218,7 +231,7 @@ export class WebSocketObserver implements SystemObserver<SwarmEvent | MCPEvent |
       timestamp: event.timestamp.toISOString(),
       source: event.source,
       data: event,
-      priority: this.getPriority()
+      priority: this.getPriority(),
     };
   }
 }
@@ -241,7 +254,7 @@ export class DatabaseObserver implements SystemObserver<SystemEvent> {
   update(event: SystemEvent): void {
     try {
       this.eventBatch.push(event);
-      
+
       if (this.eventBatch.length >= this.batchSize) {
         this.flushBatch();
       }
@@ -284,13 +297,15 @@ export class DatabaseObserver implements SystemObserver<SystemEvent> {
 
       await this.dbService.query(
         'INSERT INTO system_events (id, type, timestamp, source, data) VALUES ?',
-        [batch.map(event => [
-          event.id,
-          event.type,
-          event.timestamp,
-          event.source,
-          JSON.stringify(event)
-        ])]
+        [
+          batch.map((event) => [
+            event.id,
+            event.type,
+            event.timestamp,
+            event.source,
+            JSON.stringify(event),
+          ]),
+        ]
       );
     } catch (error) {
       this.healthy = false;
@@ -302,7 +317,7 @@ export class DatabaseObserver implements SystemObserver<SystemEvent> {
 
   private updateMetrics(event: SystemEvent): void {
     // Update real-time metrics based on event type
-    const metricsKey = `events:${event.type}:count`;
+    const _metricsKey = `events:${event.type}:count`;
     // This would integrate with actual metrics service
   }
 }
@@ -316,12 +331,12 @@ export class LoggerObserver implements SystemObserver<SystemEvent> {
     try {
       const logLevel = this.getLogLevel(event);
       const message = this.formatLogMessage(event);
-      
+
       this.logger[logLevel](message, {
         eventId: event.id,
         type: event.type,
         source: event.source,
-        timestamp: event.timestamp
+        timestamp: event.timestamp,
       });
     } catch (error) {
       this.healthy = false;
@@ -353,18 +368,21 @@ export class LoggerObserver implements SystemObserver<SystemEvent> {
 
   private formatLogMessage(event: SystemEvent): string {
     switch (event.type) {
-      case 'swarm':
+      case 'swarm': {
         const swarmEvent = event as SwarmEvent;
         return `Swarm ${swarmEvent.operation}: ${swarmEvent.swarmId} (${swarmEvent.agentCount} agents)`;
-      
-      case 'mcp':
+      }
+
+      case 'mcp': {
         const mcpEvent = event as MCPEvent;
         return `MCP ${mcpEvent.operation}: ${mcpEvent.toolName} (${mcpEvent.executionTime}ms)`;
-      
-      case 'neural':
+      }
+
+      case 'neural': {
         const neuralEvent = event as NeuralEvent;
         return `Neural ${neuralEvent.operation}: ${neuralEvent.modelId} (${neuralEvent.processingTime}ms)`;
-      
+      }
+
       default:
         return `${event.type} event from ${event.source}`;
     }
@@ -380,7 +398,7 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
   update(event: SystemEvent): void {
     try {
       this.collectMetrics(event);
-      
+
       if (this.metricsService) {
         this.metricsService.recordEvent(event);
       }
@@ -413,43 +431,46 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
   private collectMetrics(event: SystemEvent): void {
     const key = `${event.type}:${event.source}`;
     const current = this.metrics.get(key) || { count: 0, lastSeen: null };
-    
+
     this.metrics.set(key, {
       count: current.count + 1,
       lastSeen: event.timestamp,
       type: event.type,
-      source: event.source
+      source: event.source,
     });
 
     // Collect specific metrics based on event type
     switch (event.type) {
-      case 'mcp':
+      case 'mcp': {
         const mcpEvent = event as MCPEvent;
         this.recordExecutionTime('mcp', mcpEvent.executionTime);
         break;
-      
-      case 'neural':
+      }
+
+      case 'neural': {
         const neuralEvent = event as NeuralEvent;
         this.recordExecutionTime('neural', neuralEvent.processingTime);
         break;
-      
-      case 'database':
+      }
+
+      case 'database': {
         const dbEvent = event as DatabaseEvent;
         this.recordExecutionTime('database', dbEvent.queryTime);
         break;
+      }
     }
   }
 
   private recordExecutionTime(type: string, time: number): void {
     const key = `${type}:execution_time`;
     const current = this.metrics.get(key) || { sum: 0, count: 0, avg: 0, min: Infinity, max: 0 };
-    
+
     this.metrics.set(key, {
       sum: current.sum + time,
       count: current.count + 1,
       avg: (current.sum + time) / (current.count + 1),
       min: Math.min(current.min, time),
-      max: Math.max(current.max, time)
+      max: Math.max(current.max, time),
     });
   }
 }
@@ -457,7 +478,8 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
 // Main event manager with priority handling and error recovery
 export class SystemEventManager extends EventEmitter {
   private observers: Map<string, SystemObserver[]> = new Map();
-  private eventQueue: PriorityQueue<{ event: SystemEvent; observers: SystemObserver[] }> = new PriorityQueue();
+  private eventQueue: PriorityQueue<{ event: SystemEvent; observers: SystemObserver[] }> =
+    new PriorityQueue();
   private processing = false;
   private errorRecovery = true;
   private maxRetries = 3;
@@ -469,44 +491,40 @@ export class SystemEventManager extends EventEmitter {
     this.startEventProcessing();
   }
 
-  subscribe<T extends SystemEvent>(
-    eventType: T['type'],
-    observer: SystemObserver<T>
-  ): void {
+  subscribe<T extends SystemEvent>(eventType: T['type'], observer: SystemObserver<T>): void {
     const observers = this.observers.get(eventType) || [];
     observers.push(observer as SystemObserver);
-    
+
     // Sort by priority (critical = 4, high = 3, medium = 2, low = 1)
-    observers.sort((a, b) => this.getPriorityValue(b.getPriority()) - this.getPriorityValue(a.getPriority()));
-    
+    observers.sort(
+      (a, b) => this.getPriorityValue(b.getPriority()) - this.getPriorityValue(a.getPriority())
+    );
+
     this.observers.set(eventType, observers);
-    
+
     this.logger?.debug(`Observer subscribed to ${eventType}`, {
       observerType: observer.getObserverType(),
-      priority: observer.getPriority()
+      priority: observer.getPriority(),
     });
   }
 
-  unsubscribe<T extends SystemEvent>(
-    eventType: T['type'],
-    observer: SystemObserver<T>
-  ): void {
+  unsubscribe<T extends SystemEvent>(eventType: T['type'], observer: SystemObserver<T>): void {
     const observers = this.observers.get(eventType) || [];
     const index = observers.indexOf(observer as SystemObserver);
-    
+
     if (index > -1) {
       observers.splice(index, 1);
       this.observers.set(eventType, observers);
-      
+
       this.logger?.debug(`Observer unsubscribed from ${eventType}`, {
-        observerType: observer.getObserverType()
+        observerType: observer.getObserverType(),
       });
     }
   }
 
   async notify<T extends SystemEvent>(event: T): Promise<void> {
     const observers = this.observers.get(event.type) || [];
-    
+
     if (observers.length === 0) {
       this.logger?.warn(`No observers for event type: ${event.type}`);
       return;
@@ -515,7 +533,7 @@ export class SystemEventManager extends EventEmitter {
     // Add to priority queue for processing
     const priority = this.calculateEventPriority(event, observers);
     this.eventQueue.enqueue({ event, observers }, priority);
-    
+
     // Emit for EventEmitter compatibility
     this.emit(event.type, event);
   }
@@ -528,23 +546,23 @@ export class SystemEventManager extends EventEmitter {
 
   getObserverStats(): { type: string; count: number; healthy: number }[] {
     const stats: { type: string; count: number; healthy: number }[] = [];
-    
+
     this.observers.forEach((observers, eventType) => {
-      const healthy = observers.filter(o => o.isHealthy()).length;
+      const healthy = observers.filter((o) => o.isHealthy()).length;
       stats.push({
         type: eventType,
         count: observers.length,
-        healthy
+        healthy,
       });
     });
-    
+
     return stats;
   }
 
   getQueueStats(): { size: number; processing: boolean } {
     return {
       size: this.eventQueue.size(),
-      processing: this.processing
+      processing: this.processing,
     };
   }
 
@@ -555,15 +573,15 @@ export class SystemEventManager extends EventEmitter {
   async shutdown(): Promise<void> {
     this.processing = false;
     this.clearQueue();
-    
+
     // Notify all observers of shutdown
-    const shutdownEvent: SystemEvent = {
+    const _shutdownEvent: SystemEvent = {
       id: `shutdown-${Date.now()}`,
       timestamp: new Date(),
       source: 'system',
-      type: 'system:shutdown'
+      type: 'system:shutdown',
     };
-    
+
     for (const [, observers] of this.observers) {
       for (const observer of observers) {
         try {
@@ -579,19 +597,19 @@ export class SystemEventManager extends EventEmitter {
 
   private startEventProcessing(): void {
     this.processing = true;
-    
+
     const processNext = async () => {
       if (!this.processing) return;
-      
+
       const item = this.eventQueue.dequeue();
       if (item) {
         await this.processEventWithObservers(item.event, item.observers);
       }
-      
+
       // Continue processing
       setImmediate(processNext);
     };
-    
+
     processNext();
   }
 
@@ -601,24 +619,24 @@ export class SystemEventManager extends EventEmitter {
     immediate = false
   ): Promise<void> {
     // Separate observers by priority for batch processing
-    const criticalObservers = observers.filter(o => o.getPriority() === 'critical');
-    const highPriorityObservers = observers.filter(o => o.getPriority() === 'high');
-    const mediumPriorityObservers = observers.filter(o => o.getPriority() === 'medium');
-    const lowPriorityObservers = observers.filter(o => o.getPriority() === 'low');
+    const criticalObservers = observers.filter((o) => o.getPriority() === 'critical');
+    const highPriorityObservers = observers.filter((o) => o.getPriority() === 'high');
+    const mediumPriorityObservers = observers.filter((o) => o.getPriority() === 'medium');
+    const lowPriorityObservers = observers.filter((o) => o.getPriority() === 'low');
 
     try {
       // Process critical observers immediately in parallel
       if (criticalObservers.length > 0) {
-        await Promise.allSettled(criticalObservers.map(observer => 
-          this.safeUpdate(observer, event)
-        ));
+        await Promise.allSettled(
+          criticalObservers.map((observer) => this.safeUpdate(observer, event))
+        );
       }
 
       // Process high priority observers in parallel
       if (highPriorityObservers.length > 0) {
-        await Promise.allSettled(highPriorityObservers.map(observer => 
-          this.safeUpdate(observer, event)
-        ));
+        await Promise.allSettled(
+          highPriorityObservers.map((observer) => this.safeUpdate(observer, event))
+        );
       }
 
       // Process medium and low priority sequentially to avoid overwhelming system
@@ -626,7 +644,7 @@ export class SystemEventManager extends EventEmitter {
         for (const observer of mediumPriorityObservers) {
           await this.safeUpdate(observer, event);
         }
-        
+
         for (const observer of lowPriorityObservers) {
           await this.safeUpdate(observer, event);
         }
@@ -638,35 +656,35 @@ export class SystemEventManager extends EventEmitter {
 
   private async safeUpdate(observer: SystemObserver, event: SystemEvent): Promise<void> {
     let retries = 0;
-    
+
     while (retries <= this.maxRetries) {
       try {
         if (!observer.isHealthy()) {
-          this.logger?.warn('Skipping unhealthy observer', { 
+          this.logger?.warn('Skipping unhealthy observer', {
             type: observer.getObserverType(),
-            eventType: event.type 
+            eventType: event.type,
           });
           return;
         }
 
         const result = observer.update(event);
-        
+
         // Handle async observers
         if (result instanceof Promise) {
           await result;
         }
-        
+
         return; // Success
       } catch (error) {
         retries++;
-        
-        this.logger?.error('Observer update failed', { 
+
+        this.logger?.error('Observer update failed', {
           observer: observer.getObserverType(),
           eventId: event.id,
           attempt: retries,
-          error 
+          error,
         });
-        
+
         // Call observer's error handler if available
         if (observer.handleError) {
           try {
@@ -675,9 +693,9 @@ export class SystemEventManager extends EventEmitter {
             this.logger?.error('Observer error handler failed:', handlerError);
           }
         }
-        
+
         if (retries <= this.maxRetries && this.errorRecovery) {
-          await new Promise(resolve => setTimeout(resolve, this.retryDelay * retries));
+          await new Promise((resolve) => setTimeout(resolve, this.retryDelay * retries));
         } else {
           break;
         }
@@ -687,23 +705,31 @@ export class SystemEventManager extends EventEmitter {
 
   private getPriorityValue(priority: EventPriority): number {
     switch (priority) {
-      case 'critical': return 4;
-      case 'high': return 3;
-      case 'medium': return 2;
-      case 'low': return 1;
-      default: return 1;
+      case 'critical':
+        return 4;
+      case 'high':
+        return 3;
+      case 'medium':
+        return 2;
+      case 'low':
+        return 1;
+      default:
+        return 1;
     }
   }
 
   private calculateEventPriority(event: SystemEvent, observers: SystemObserver[]): number {
     // Calculate priority based on highest priority observer and event characteristics
-    const maxObserverPriority = Math.max(...observers.map(o => this.getPriorityValue(o.getPriority())));
-    
+    const maxObserverPriority = Math.max(
+      ...observers.map((o) => this.getPriorityValue(o.getPriority()))
+    );
+
     // Add event-specific priority adjustments
     let eventPriorityBonus = 0;
     if ('success' in event && !event.success) eventPriorityBonus += 1; // Errors get higher priority
-    if (event.type === 'swarm' && 'operation' in event && event.operation === 'destroy') eventPriorityBonus += 1;
-    
+    if (event.type === 'swarm' && 'operation' in event && event.operation === 'destroy')
+      eventPriorityBonus += 1;
+
     return maxObserverPriority + eventPriorityBonus;
   }
 }
@@ -728,7 +754,7 @@ export class EventBuilder {
       status,
       topology,
       metrics,
-      operation
+      operation,
     };
   }
 
@@ -751,7 +777,7 @@ export class EventBuilder {
       result,
       protocol,
       operation,
-      requestId
+      requestId,
     };
   }
 
@@ -776,7 +802,7 @@ export class EventBuilder {
       processingTime,
       accuracy: options.accuracy,
       loss: options.loss,
-      dataSize: options.dataSize
+      dataSize: options.dataSize,
     };
   }
 }

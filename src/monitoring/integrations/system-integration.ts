@@ -359,6 +359,8 @@ export class SystemIntegration extends EventEmitter {
 
   /**
    * Handle collected metrics
+   *
+   * @param metrics
    */
   private handleMetricsCollected(metrics: CompositeMetrics): void {
     // Enhance metrics with integration data
@@ -380,6 +382,8 @@ export class SystemIntegration extends EventEmitter {
 
   /**
    * Handle generated insights
+   *
+   * @param insights
    */
   private handleInsightsGenerated(insights: PerformanceInsights): void {
     // Update dashboard
@@ -403,6 +407,8 @@ export class SystemIntegration extends EventEmitter {
 
   /**
    * Handle completed optimizations
+   *
+   * @param result
    */
   private handleOptimizationCompleted(result: OptimizationResult): void {
     this.log(
@@ -421,6 +427,8 @@ export class SystemIntegration extends EventEmitter {
 
   /**
    * Enhance metrics with integration data
+   *
+   * @param metrics
    */
   private enhanceMetrics(metrics: CompositeMetrics): CompositeMetrics {
     // Enhance FACT metrics
@@ -557,6 +565,8 @@ export class SystemIntegration extends EventEmitter {
 
   /**
    * Generate alerts based on insights
+   *
+   * @param insights
    */
   private generateAlerts(insights: PerformanceInsights): void {
     // Critical anomalies
@@ -683,6 +693,10 @@ export class SystemIntegration extends EventEmitter {
 
   /**
    * Logging utility
+   *
+   * @param level
+   * @param _message
+   * @param {...any} _args
    */
   private log(level: 'error' | 'warn' | 'info' | 'debug', _message: string, ..._args: any[]): void {
     const levels = { error: 0, warn: 1, info: 2, debug: 3 };

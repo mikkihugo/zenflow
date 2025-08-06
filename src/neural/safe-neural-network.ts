@@ -11,7 +11,6 @@ import {
   isNeuralError,
   isTrainingResult,
   isWasmError,
-  isWasmSuccess,
   type NeuralError,
   type NeuralResult,
   type TrainingResult,
@@ -47,6 +46,8 @@ export interface TrainingOptions {
 
 /**
  * Type-safe neural network implementation with union type results
+ *
+ * @example
  */
 export class SafeNeuralNetwork {
   private config: NeuralNetworkConfig;
@@ -113,6 +114,9 @@ export class SafeNeuralNetwork {
 
   /**
    * Train the neural network with type-safe result handling
+   *
+   * @param data
+   * @param options
    */
   async train(data: TrainingData, options: TrainingOptions): Promise<NeuralResult> {
     if (!this.isInitialized) {
@@ -167,7 +171,6 @@ export class SafeNeuralNetwork {
         }
 
         if (options.verbose && epoch % 100 === 0) {
-          console.log(`Epoch ${epoch}: Error = ${finalError.toFixed(6)}`);
         }
       }
 
@@ -212,6 +215,8 @@ export class SafeNeuralNetwork {
 
   /**
    * Make predictions with type-safe result handling
+   *
+   * @param inputs
    */
   async predict(inputs: number[]): Promise<NeuralResult> {
     if (!this.isInitialized) {
@@ -348,7 +353,7 @@ export class SafeNeuralNetwork {
     }
   }
 
-  private async trainEpoch(data: TrainingData, options: TrainingOptions): Promise<NeuralResult> {
+  private async trainEpoch(_data: TrainingData, _options: TrainingOptions): Promise<NeuralResult> {
     try {
       // Mock training epoch - replace with actual backpropagation
       const error = Math.random() * 0.1;
@@ -374,7 +379,7 @@ export class SafeNeuralNetwork {
     }
   }
 
-  private async validateNetwork(inputs: number[][], outputs: number[][]): Promise<NeuralResult> {
+  private async validateNetwork(inputs: number[][], _outputs: number[][]): Promise<NeuralResult> {
     try {
       const predictions: number[] = [];
 
@@ -491,8 +496,6 @@ export async function safeNeuralUsageExample(): Promise<void> {
     return;
   }
 
-  console.log('✅ Network initialized successfully');
-
   // Prepare training data (XOR problem)
   const trainingData: TrainingData = {
     inputs: [
@@ -515,14 +518,7 @@ export async function safeNeuralUsageExample(): Promise<void> {
   const trainResult = await network.train(trainingData, trainingOptions);
 
   if (isTrainingResult(trainResult)) {
-    console.log('✅ Training completed successfully');
-    console.log(`Final error: ${trainResult.finalError.toFixed(6)}`);
-    console.log(`Epochs completed: ${trainResult.epochsCompleted}`);
-    console.log(`Converged: ${trainResult.converged}`);
-    console.log(`Duration: ${trainResult.duration}ms`);
-
     if (trainResult.accuracy !== undefined) {
-      console.log(`Accuracy: ${(trainResult.accuracy * 100).toFixed(2)}%`);
     }
   } else if (isNeuralError(trainResult)) {
     console.error('❌ Training failed:', trainResult.error.message);
@@ -541,11 +537,6 @@ export async function safeNeuralUsageExample(): Promise<void> {
     const predictionResult = await network.predict(input);
 
     if (isInferenceResult(predictionResult)) {
-      console.log(
-        `Input: [${input.join(', ')}] => Output: ${predictionResult.predictions[0].toFixed(3)}`
-      );
-      console.log(`Confidence: ${(predictionResult.confidence?.[0] ?? 0).toFixed(3)}`);
-      console.log(`Processing time: ${predictionResult.processingTime}ms`);
     } else if (isNeuralError(predictionResult)) {
       console.error(
         `❌ Prediction failed for input [${input.join(', ')}]:`,

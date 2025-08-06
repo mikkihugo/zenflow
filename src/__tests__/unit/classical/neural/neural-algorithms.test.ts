@@ -1,6 +1,7 @@
 /**
  * Advanced Neural Network Algorithms Test Suite - Classical TDD
- * @fileoverview Comprehensive validation of neural training algorithms using Classical School approach
+ *
+ * @file Comprehensive validation of neural training algorithms using Classical School approach
  * Focus: Algorithmic correctness, convergence validation, mathematical accuracy
  */
 

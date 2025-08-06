@@ -1,18 +1,16 @@
 /**
  * USL Service Adapters - Index and Registry Integration
- * 
- * @fileoverview Exports all service adapter components and integrates them with
+ *
+ * @file Exports all service adapter components and integrates them with
  * the global USL service registry. This provides a unified entry point
  * for all service adapter functionality including data adapters, coordination adapters,
  * integration adapters, and infrastructure adapters.
- * 
  * @description Service adapters provide enhanced implementations of core services
  * with specialized capabilities:
  * - Data adapters: Web API integration, database operations, caching
  * - Coordination adapters: Agent management, task orchestration, swarm coordination
  * - Integration adapters: External system connectivity, protocol management
  * - Infrastructure adapters: System monitoring, health checks, metrics collection
- * 
  * @example
  * ```typescript
  * import {
@@ -21,7 +19,7 @@
  *   IntegrationServiceAdapter,
  *   createIntegrationServiceAdapter
  * } from '@claude-zen/usl/adapters';
- * 
+ *
  * // Create a web-enabled data adapter
  * const webDataAdapter = createDataServiceAdapter({
  *   name: 'api-data',
@@ -31,7 +29,7 @@
  *     authentication: { type: 'bearer', token: 'your-token' }
  *   }
  * });
- * 
+ *
  * // Create an integration adapter with safe API features
  * const integrationAdapter = createIntegrationServiceAdapter({
  *   name: 'external-api',
@@ -44,78 +42,81 @@
  * ```
  */
 
-// Data service adapter exports
-export { DataServiceAdapter, type DataServiceAdapterConfig } from './data-service-adapter';
-export { DataServiceFactory, globalDataServiceFactory } from './data-service-factory';
-export { DataServiceHelper, DataServiceUtils, type DataOperationResult } from './data-service-helpers';
-
 // Coordination service adapter exports
-export { CoordinationServiceAdapter, type CoordinationServiceAdapterConfig } from './coordination-service-adapter';
-export { CoordinationServiceFactory, coordinationServiceFactory } from './coordination-service-factory';
+export {
+  CoordinationServiceAdapter,
+  type CoordinationServiceAdapterConfig,
+  createCoordinationServiceAdapter,
+  createDefaultCoordinationServiceAdapterConfig,
+} from './coordination-service-adapter';
+export {
+  CoordinationServiceFactory,
+  coordinationServiceFactory,
+} from './coordination-service-factory';
 export * from './coordination-service-helpers';
-
-// Integration service adapter exports
-export { 
-  IntegrationServiceAdapter, 
-  type IntegrationServiceAdapterConfig,
-  createIntegrationServiceAdapter,
-  createDefaultIntegrationServiceAdapterConfig
-} from './integration-service-adapter';
-export { IntegrationServiceFactory, integrationServiceFactory } from './integration-service-factory';
-export * from './integration-service-helpers';
-
-// Infrastructure service adapter exports
-export { 
-  InfrastructureServiceAdapter, 
-  type InfrastructureServiceAdapterConfig,
-  createInfrastructureServiceAdapter,
-  createDefaultInfrastructureServiceAdapterConfig
-} from './infrastructure-service-adapter';
-export { 
-  InfrastructureServiceFactory, 
-  getInfrastructureServiceFactory,
-  createInfrastructureServiceFactory,
-  createInfrastructureService
-} from './infrastructure-service-factory';
-export * from './infrastructure-service-helpers';
-
+// Data service adapter exports
 // Factory integration
 export {
   createDataServiceAdapter,
-  createDefaultDataServiceAdapterConfig
+  createDefaultDataServiceAdapterConfig,
+  DataServiceAdapter,
+  type DataServiceAdapterConfig,
 } from './data-service-adapter';
-
-export {
-  createCoordinationServiceAdapter,
-  createDefaultCoordinationServiceAdapterConfig
-} from './coordination-service-adapter';
-
-export {
-  createInfrastructureServiceAdapter,
-  createDefaultInfrastructureServiceAdapterConfig
-} from './infrastructure-service-adapter';
-
+export { DataServiceFactory, globalDataServiceFactory } from './data-service-factory';
 // Re-export types for convenience
 export type {
-  DataOperationResult,
   BatchOperationConfig,
+  DataAggregationOptions,
+  DataOperationResult,
   DataValidationResult,
   EnhancedSearchOptions,
-  DataAggregationOptions,
-  TransformationStep
+  TransformationStep,
 } from './data-service-helpers';
+export {
+  type DataOperationResult,
+  DataServiceHelper,
+  DataServiceUtils,
+} from './data-service-helpers';
+// Infrastructure service adapter exports
+export {
+  createDefaultInfrastructureServiceAdapterConfig,
+  createDefaultInfrastructureServiceAdapterConfig,
+  createInfrastructureServiceAdapter,
+  createInfrastructureServiceAdapter,
+  InfrastructureServiceAdapter,
+  type InfrastructureServiceAdapterConfig,
+} from './infrastructure-service-adapter';
+export {
+  createInfrastructureService,
+  createInfrastructureServiceFactory,
+  getInfrastructureServiceFactory,
+  InfrastructureServiceFactory,
+} from './infrastructure-service-factory';
+export * from './infrastructure-service-helpers';
+// Integration service adapter exports
+export {
+  createDefaultIntegrationServiceAdapterConfig,
+  createIntegrationServiceAdapter,
+  IntegrationServiceAdapter,
+  type IntegrationServiceAdapterConfig,
+} from './integration-service-adapter';
+export {
+  IntegrationServiceFactory,
+  integrationServiceFactory,
+} from './integration-service-factory';
+export * from './integration-service-helpers';
 
 // Integration with global service registry
 import { globalServiceRegistry } from '../factories';
-import { globalDataServiceFactory } from './data-service-factory';
-import { coordinationServiceFactory } from './coordination-service-factory';
-import { integrationServiceFactory } from './integration-service-factory';
-import { getInfrastructureServiceFactory } from './infrastructure-service-factory';
 import { ServiceType } from '../types';
+import { coordinationServiceFactory } from './coordination-service-factory';
+import { globalDataServiceFactory } from './data-service-factory';
+import { getInfrastructureServiceFactory } from './infrastructure-service-factory';
+import { integrationServiceFactory } from './integration-service-factory';
 
 /**
  * Register data service factory with global registry
- * 
+ *
  * @function registerDataServiceFactory
  * @returns {void}
  * @description Registers the specialized data service factory with the global USL registry
@@ -124,7 +125,7 @@ import { ServiceType } from '../types';
  * ```typescript
  * // Manually register if needed (auto-registered by default)
  * registerDataServiceFactory();
- * 
+ *
  * // Now data services can be created through the registry
  * const dataService = await globalUSLFactory.create({
  *   name: 'my-data',
@@ -141,7 +142,7 @@ export function registerDataServiceFactory(): void {
 
 /**
  * Register coordination service factory with global registry
- * 
+ *
  * @function registerCoordinationServiceFactory
  * @returns {void}
  * @description Registers the specialized coordination service factory with the global USL registry
@@ -150,7 +151,7 @@ export function registerDataServiceFactory(): void {
  * ```typescript
  * // Coordination services support agent management and task orchestration
  * registerCoordinationServiceFactory();
- * 
+ *
  * const coordService = await globalUSLFactory.create({
  *   name: 'swarm-coordinator',
  *   type: ServiceType.COORDINATION,
@@ -167,7 +168,7 @@ export function registerCoordinationServiceFactory(): void {
 
 /**
  * Register integration service factory with global registry
- * 
+ *
  * @function registerIntegrationServiceFactory
  * @returns {void}
  * @description Registers the specialized integration service factory with the global USL registry
@@ -176,7 +177,7 @@ export function registerCoordinationServiceFactory(): void {
  * ```typescript
  * // Integration services provide external system connectivity
  * registerIntegrationServiceFactory();
- * 
+ *
  * const apiService = await globalUSLFactory.create({
  *   name: 'external-api',
  *   type: ServiceType.SAFE_API,
@@ -192,12 +193,15 @@ export function registerIntegrationServiceFactory(): void {
   // Register the specialized integration service factory for API, SAFE_API, and ARCHITECTURE_STORAGE types
   globalServiceRegistry.registerFactory(ServiceType.API, integrationServiceFactory);
   globalServiceRegistry.registerFactory(ServiceType.SAFE_API, integrationServiceFactory);
-  globalServiceRegistry.registerFactory(ServiceType.ARCHITECTURE_STORAGE, integrationServiceFactory);
+  globalServiceRegistry.registerFactory(
+    ServiceType.ARCHITECTURE_STORAGE,
+    integrationServiceFactory
+  );
 }
 
 /**
  * Register infrastructure service factory with global registry
- * 
+ *
  * @function registerInfrastructureServiceFactory
  * @returns {void}
  * @description Registers the specialized infrastructure service factory with the global USL registry
@@ -206,7 +210,7 @@ export function registerIntegrationServiceFactory(): void {
  * ```typescript
  * // Infrastructure services provide system monitoring and health checks
  * registerInfrastructureServiceFactory();
- * 
+ *
  * const monitoringService = await globalUSLFactory.create({
  *   name: 'system-monitor',
  *   type: ServiceType.MONITORING,
@@ -252,5 +256,5 @@ export default {
   InfrastructureServiceAdapter,
   InfrastructureServiceFactory,
   getInfrastructureServiceFactory,
-  registerInfrastructureServiceFactory
+  registerInfrastructureServiceFactory,
 };

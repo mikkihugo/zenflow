@@ -1,26 +1,23 @@
 /**
  * CLI Commands for SPARC Architecture Management
- * 
+ *
  * Provides command-line interface for database-driven architecture operations
  */
 
-import { Command } from 'commander';
 import chalk from 'chalk';
-import { nanoid } from 'nanoid';
-import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
+import { Command } from 'commander';
 import { ArchitectureMCPToolsImpl } from '../mcp/architecture-tools';
-import type { PseudocodeStructure, ArchitectureDesign } from '../types/sparc-types';
+import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
+import type { PseudocodeStructure } from '../types/sparc-types';
 
 // Mock database for CLI (in production, this would use the actual database)
 class CLIDatabaseAdapter {
-  private data: Map<string, any> = new Map();
-  
-  async execute(sql: string, params?: any[]): Promise<any> {
+  async execute(_sql: string, _params?: any[]): Promise<any> {
     // Basic implementation for CLI demo
     return { affectedRows: 1 };
   }
-  
-  async query(sql: string, params?: any[]): Promise<any> {
+
+  async query(_sql: string, _params?: any[]): Promise<any> {
     return { rows: [] };
   }
 }
@@ -45,8 +42,6 @@ export function createArchitectureCLI(): Command {
     .option('--validate', 'Run validation after generation')
     .action(async (options) => {
       try {
-        console.log(chalk.blue('🏗️  Generating SPARC Architecture...\n'));
-
         // Initialize architecture engine
         const db = new CLIDatabaseAdapter();
         const engine = new DatabaseDrivenArchitecturePhaseEngine(db);
@@ -56,44 +51,36 @@ export function createArchitectureCLI(): Command {
 
         if (options.input) {
           // Load from file
-          const fs = await import('fs/promises');
+          const fs = await import('node:fs/promises');
           const content = await fs.readFile(options.input, 'utf-8');
           pseudocode = JSON.parse(content);
-          console.log(chalk.green(`✅ Loaded pseudocode from ${options.input}`));
         } else {
           // Use sample pseudocode for demo
           pseudocode = createSamplePseudocode();
-          console.log(chalk.yellow('ℹ️  Using sample pseudocode (use --input to specify file)'));
         }
 
         // Generate architecture
         const architecture = await engine.designArchitecture(pseudocode);
-        console.log(chalk.green(`✅ Architecture generated with ${architecture.components?.length || 0} components`));
 
         // Validate if requested
         if (options.validate) {
-          console.log(chalk.blue('\n🔍 Validating architecture...'));
-          const validation = await engine.validateArchitecturalConsistency(architecture.systemArchitecture);
-          console.log(chalk.green(`✅ Validation completed with score: ${validation.overallScore.toFixed(2)}`));
-          
+          const validation = await engine.validateArchitecturalConsistency(
+            architecture.systemArchitecture
+          );
+
           if (validation.recommendations.length > 0) {
-            console.log(chalk.yellow('\n💡 Recommendations:'));
-            validation.recommendations.forEach((rec, i) => {
-              console.log(chalk.yellow(`   ${i + 1}. ${rec}`));
-            });
+            validation.recommendations.forEach((_rec, _i) => {});
           }
         }
 
         // Save output
         if (options.output) {
-          const fs = await import('fs/promises');
+          const fs = await import('node:fs/promises');
           await fs.writeFile(options.output, JSON.stringify(architecture, null, 2));
-          console.log(chalk.green(`✅ Architecture saved to ${options.output}`));
         } else {
           // Display summary
           displayArchitectureSummary(architecture);
         }
-
       } catch (error) {
         console.error(chalk.red('❌ Architecture generation failed:'), error);
         process.exit(1);
@@ -110,8 +97,6 @@ export function createArchitectureCLI(): Command {
     .option('--report', 'Generate detailed validation report')
     .action(async (architectureId, options) => {
       try {
-        console.log(chalk.blue(`🔍 Validating architecture ${architectureId}...\n`));
-
         const db = new CLIDatabaseAdapter();
         const mcpTools = new ArchitectureMCPToolsImpl(db);
         await mcpTools.initialize();
@@ -123,32 +108,22 @@ export function createArchitectureCLI(): Command {
 
         if (result.success) {
           const validation = result.validation;
-          console.log(chalk.green(`✅ Validation completed`));
-          console.log(`   Score: ${chalk.bold(validation.overallScore.toFixed(2))}`);
-          console.log(`   Status: ${validation.approved ? chalk.green('✅ Approved') : chalk.red('❌ Needs Improvement')}`);
-          
+
           if (options.report && validation.validationResults) {
-            console.log(chalk.blue('\n📋 Detailed Validation Report:'));
-            validation.validationResults.forEach((result, i) => {
-              const status = result.passed ? chalk.green('✅') : chalk.red('❌');
-              console.log(`   ${i + 1}. ${status} ${result.criterion} (Score: ${result.score.toFixed(2)})`);
+            validation.validationResults.forEach((result, _i) => {
+              const _status = result.passed ? chalk.green('✅') : chalk.red('❌');
               if (result.feedback) {
-                console.log(`      ${chalk.gray(result.feedback)}`);
               }
             });
           }
 
           if (result.recommendations.length > 0) {
-            console.log(chalk.yellow('\n💡 Recommendations:'));
-            result.recommendations.forEach((rec, i) => {
-              console.log(chalk.yellow(`   ${i + 1}. ${rec}`));
-            });
+            result.recommendations.forEach((_rec, _i) => {});
           }
         } else {
           console.error(chalk.red('❌ Validation failed:'), result.message);
           process.exit(1);
         }
-
       } catch (error) {
         console.error(chalk.red('❌ Validation error:'), error);
         process.exit(1);
@@ -167,8 +142,6 @@ export function createArchitectureCLI(): Command {
     .option('--json', 'Output as JSON')
     .action(async (options) => {
       try {
-        console.log(chalk.blue('🔍 Searching architectures...\n'));
-
         const db = new CLIDatabaseAdapter();
         const mcpTools = new ArchitectureMCPToolsImpl(db);
         await mcpTools.initialize();
@@ -184,24 +157,15 @@ export function createArchitectureCLI(): Command {
 
         if (result.success) {
           if (options.json) {
-            console.log(JSON.stringify(result.architectures, null, 2));
           } else {
-            console.log(chalk.green(`✅ Found ${result.count} architectures`));
             if (result.architectures.length > 0) {
-              console.log(chalk.blue('\n📋 Results:'));
-              result.architectures.forEach((arch, i) => {
-                console.log(`   ${i + 1}. ${arch.id || 'Unknown ID'}`);
-                console.log(`      Components: ${arch.components?.length || 0}`);
-                console.log(`      Domain: ${arch.systemArchitecture?.technologyStack?.[0]?.category || 'general'}`);
-                console.log(`      Created: ${arch.createdAt ? new Date(arch.createdAt).toLocaleDateString() : 'Unknown'}`);
-              });
+              result.architectures.forEach((_arch, _i) => {});
             }
           }
         } else {
           console.error(chalk.red('❌ Search failed:'), result.message);
           process.exit(1);
         }
-
       } catch (error) {
         console.error(chalk.red('❌ Search error:'), error);
         process.exit(1);
@@ -217,8 +181,6 @@ export function createArchitectureCLI(): Command {
     .option('-o, --output <file>', 'Output file (defaults to stdout)')
     .action(async (architectureId, options) => {
       try {
-        console.log(chalk.blue(`📤 Exporting architecture ${architectureId} as ${options.format}...\n`));
-
         const db = new CLIDatabaseAdapter();
         const mcpTools = new ArchitectureMCPToolsImpl(db);
         await mcpTools.initialize();
@@ -230,17 +192,14 @@ export function createArchitectureCLI(): Command {
 
         if (result.success) {
           if (options.output) {
-            const fs = await import('fs/promises');
+            const fs = await import('node:fs/promises');
             await fs.writeFile(options.output, result.content);
-            console.log(chalk.green(`✅ Architecture exported to ${options.output}`));
           } else {
-            console.log(result.content);
           }
         } else {
           console.error(chalk.red('❌ Export failed:'), result.message);
           process.exit(1);
         }
-
       } catch (error) {
         console.error(chalk.red('❌ Export error:'), error);
         process.exit(1);
@@ -254,8 +213,6 @@ export function createArchitectureCLI(): Command {
     .option('--json', 'Output as JSON')
     .action(async (options) => {
       try {
-        console.log(chalk.blue('📊 Retrieving architecture statistics...\n'));
-
         const db = new CLIDatabaseAdapter();
         const mcpTools = new ArchitectureMCPToolsImpl(db);
         await mcpTools.initialize();
@@ -264,31 +221,19 @@ export function createArchitectureCLI(): Command {
 
         if (result.success) {
           if (options.json) {
-            console.log(JSON.stringify(result.stats, null, 2));
           } else {
             const stats = result.stats;
-            console.log(chalk.green('✅ Architecture Statistics:'));
-            console.log(`   Total Architectures: ${chalk.bold(stats.totalArchitectures)}`);
-            console.log(`   Average Components: ${chalk.bold(stats.averageComponents.toFixed(1))}`);
-            
+
             if (Object.keys(stats.byDomain).length > 0) {
-              console.log(chalk.blue('\n📊 By Domain:'));
-              Object.entries(stats.byDomain).forEach(([domain, count]) => {
-                console.log(`   ${domain}: ${count}`);
-              });
+              Object.entries(stats.byDomain).forEach(([_domain, _count]) => {});
             }
 
-            const valStats = stats.validationStats;
-            console.log(chalk.blue('\n🔍 Validation Statistics:'));
-            console.log(`   Total Validated: ${valStats.totalValidated}`);
-            console.log(`   Average Score: ${valStats.averageScore.toFixed(2)}`);
-            console.log(`   Pass Rate: ${(valStats.passRate * 100).toFixed(1)}%`);
+            const _valStats = stats.validationStats;
           }
         } else {
           console.error(chalk.red('❌ Failed to get statistics:'), result.message);
           process.exit(1);
         }
-
       } catch (error) {
         console.error(chalk.red('❌ Statistics error:'), error);
         process.exit(1);

@@ -54,6 +54,8 @@ export interface ResourceMetrics {
 
 /**
  * Multi-layered synchronization system for distributed swarms
+ *
+ * @example
  */
 export class SwarmSynchronizer extends EventEmitter {
   private config: SwarmSyncConfig;
@@ -203,6 +205,9 @@ export class SwarmSynchronizer extends EventEmitter {
 
   /**
    * Broadcast state to peer swarms
+   *
+   * @param localState
+   * @param syncId
    */
   private async broadcastState(localState: SwarmLocalState, syncId: string): Promise<void> {
     if (!this.eventBus) return;
@@ -223,6 +228,8 @@ export class SwarmSynchronizer extends EventEmitter {
 
   /**
    * Wait for peer swarm responses
+   *
+   * @param syncId
    */
   private async waitForPeerStates(syncId: string): Promise<SwarmLocalState[]> {
     return new Promise((resolve) => {
@@ -252,6 +259,9 @@ export class SwarmSynchronizer extends EventEmitter {
 
   /**
    * Reach consensus on global state
+   *
+   * @param localState
+   * @param peerStates
    */
   private async reachConsensus(
     localState: SwarmLocalState,
@@ -266,6 +276,8 @@ export class SwarmSynchronizer extends EventEmitter {
 
   /**
    * Apply consensus state changes locally
+   *
+   * @param consensusState
    */
   private async applyStateChanges(consensusState: SwarmConsensusState): Promise<void> {
     // Update local agent states
@@ -290,6 +302,8 @@ export class SwarmSynchronizer extends EventEmitter {
 
   /**
    * Create synchronization checkpoint
+   *
+   * @param consensusState
    */
   private async createCheckpoint(consensusState: SwarmConsensusState): Promise<void> {
     const checkpoint: SyncCheckpoint = {
@@ -339,6 +353,8 @@ export class SwarmSynchronizer extends EventEmitter {
 
   /**
    * Handle agents that have become unresponsive
+   *
+   * @param staleAgents
    */
   private handleStaleAgents(staleAgents: string[]): void {
     for (const agentId of staleAgents) {
@@ -403,6 +419,8 @@ export class SwarmSynchronizer extends EventEmitter {
 
   /**
    * Handle sync broadcast from peer swarm
+   *
+   * @param data
    */
   private handlePeerSyncBroadcast(data: any): void {
     // Respond with our current state
@@ -425,6 +443,9 @@ export class SwarmSynchronizer extends EventEmitter {
 
   /**
    * Update local agent state
+   *
+   * @param agentId
+   * @param newState
    */
   private updateAgentState(agentId: string, newState: Partial<AgentState>): void {
     const currentState = this.agentStates.get(agentId);
@@ -529,6 +550,8 @@ interface Task {
 
 /**
  * Consensus protocol implementation
+ *
+ * @example
  */
 class ConsensusProtocol {
   constructor(

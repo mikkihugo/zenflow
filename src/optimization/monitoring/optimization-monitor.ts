@@ -122,6 +122,8 @@ export class OptimizationMonitor extends EventEmitter {
 
   /**
    * Record optimization result
+   *
+   * @param result
    */
   public recordOptimizationResult(result: OptimizationResult): void {
     this.optimizationHistory.push(result);
@@ -140,6 +142,9 @@ export class OptimizationMonitor extends EventEmitter {
 
   /**
    * Record performance metrics
+   *
+   * @param domain
+   * @param metrics
    */
   public recordMetrics(domain: string, metrics: PerformanceMetrics): void {
     const domainHistory = this.metricsHistory.get(domain) || [];
@@ -178,6 +183,8 @@ export class OptimizationMonitor extends EventEmitter {
 
   /**
    * Get alerts by severity
+   *
+   * @param severity
    */
   public getAlertsBySeverity(
     severity: 'low' | 'medium' | 'high' | 'critical'
@@ -187,6 +194,8 @@ export class OptimizationMonitor extends EventEmitter {
 
   /**
    * Acknowledge alert
+   *
+   * @param alertId
    */
   public acknowledgeAlert(alertId: string): void {
     const alert = this.alerts.find((a) => a.id === alertId);
@@ -198,6 +207,9 @@ export class OptimizationMonitor extends EventEmitter {
 
   /**
    * Get optimization trends for domain
+   *
+   * @param _domain
+   * @param period
    */
   public getOptimizationTrends(
     _domain: string,
@@ -247,6 +259,8 @@ export class OptimizationMonitor extends EventEmitter {
 
   /**
    * Check for performance degradation
+   *
+   * @param result
    */
   private checkPerformanceDegradation(result: OptimizationResult): void {
     if (!result.success) {
@@ -273,6 +287,9 @@ export class OptimizationMonitor extends EventEmitter {
 
   /**
    * Check threshold violations
+   *
+   * @param domain
+   * @param metrics
    */
   private checkThresholds(domain: string, metrics: PerformanceMetrics): void {
     const thresholds = this.config.alertThresholds;
@@ -330,6 +347,13 @@ export class OptimizationMonitor extends EventEmitter {
 
   /**
    * Create alert
+   *
+   * @param alertData
+   * @param alertData.type
+   * @param alertData.severity
+   * @param alertData.domain
+   * @param alertData.message
+   * @param alertData.metrics
    */
   private createAlert(alertData: {
     type: OptimizationAlert['type'];
@@ -533,6 +557,8 @@ export class OptimizationMonitor extends EventEmitter {
 
   /**
    * Collect metrics for specific domain
+   *
+   * @param domain
    */
   private async collectDomainMetrics(domain: string): Promise<PerformanceMetrics> {
     // Mock implementation - replace with actual metrics collection

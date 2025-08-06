@@ -357,6 +357,9 @@ export class WorkflowEngine extends EventEmitter {
 
   /**
    * Register a custom step handler
+   *
+   * @param type
+   * @param handler
    */
   registerStepHandler(
     type: string,
@@ -368,6 +371,9 @@ export class WorkflowEngine extends EventEmitter {
 
   /**
    * Register a custom workflow definition
+   *
+   * @param name
+   * @param definition
    */
   registerWorkflowDefinition(name: string, definition: WorkflowDefinition): void {
     this.workflowDefinitions.set(name, definition);
@@ -376,6 +382,9 @@ export class WorkflowEngine extends EventEmitter {
 
   /**
    * Start a workflow
+   *
+   * @param workflowName
+   * @param context
    */
   async startWorkflow(
     workflowName: string,
@@ -478,6 +487,10 @@ export class WorkflowEngine extends EventEmitter {
 
   /**
    * Start workflow based on document entity event
+   *
+   * @param event
+   * @param document
+   * @param context
    */
   async processDocumentEvent(
     event: string,
@@ -534,6 +547,8 @@ export class WorkflowEngine extends EventEmitter {
 
   /**
    * Convert database entity to workflow document content
+   *
+   * @param entity
    */
   private convertEntityToDocumentContent(entity: BaseDocumentEntity): DocumentContent {
     return {
@@ -558,6 +573,8 @@ export class WorkflowEngine extends EventEmitter {
 
   /**
    * Execute a workflow
+   *
+   * @param workflow
    */
   private async executeWorkflow(workflow: WorkflowState): Promise<void> {
     try {
@@ -597,6 +614,10 @@ export class WorkflowEngine extends EventEmitter {
 
   /**
    * Execute a single workflow step
+   *
+   * @param workflow
+   * @param step
+   * @param stepIndex
    */
   private async executeWorkflowStep(
     workflow: WorkflowState,
@@ -688,6 +709,9 @@ export class WorkflowEngine extends EventEmitter {
 
   /**
    * Built-in step handlers
+   *
+   * @param context
+   * @param _params
    */
   private async handleExtractRequirements(context: WorkflowContext, _params: any): Promise<any> {
     const document = context.currentDocument;
@@ -911,6 +935,9 @@ export class WorkflowEngine extends EventEmitter {
 
   /**
    * Utility methods
+   *
+   * @param context
+   * @param expression
    */
   private evaluateCondition(context: WorkflowContext, expression: string): boolean {
     try {
@@ -1102,6 +1129,8 @@ export class WorkflowEngine extends EventEmitter {
 
   /**
    * Extract keywords from content for search indexing
+   *
+   * @param content
    */
   private extractKeywords(content: string): string[] {
     // Simple keyword extraction - in production use NLP/ML

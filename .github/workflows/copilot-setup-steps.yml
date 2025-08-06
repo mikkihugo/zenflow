@@ -67,24 +67,4 @@ jobs:
           # git dependencies, and compiled dependency artifacts to dramatically reduce build times. [11]
           cache: true
 
-      # Step 5: Setup Python Latest Stable Environment
-      # Configures the Python environment using the official GitHub Action.
-      - name: Setup Python 3.13
-        uses: actions/setup-python@v5
-        with:
-          # Specify '3.13' to use the latest stable patch release of Python 3.12. The action resolves this
-          # to the most recent version available (e.g., 3.13.5). [13, 14]
-          python-version: '3.12'
-          # Enable built-in caching for pip.
-          cache: 'pip'
-          # Specify the file(s) that determine the cache's validity. Hashing 'requirements.txt' ensures the cache
-          # is invalidated only when dependencies change. [15, 16]
-          cache-dependency-path: 'requirements.txt'
-
-      # Step 6: Install Python Dependencies
-      # Install Python packages from the specified requirements file. For caching to be effective,
-      # it is a best practice for 'requirements.txt' to contain pinned package versions. [5]
-      - name: Install Python Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+      

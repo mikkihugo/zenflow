@@ -32,6 +32,8 @@ export interface APIMetadata {
 
 /**
  * Type-safe API client with union type responses
+ *
+ * @example
  */
 export class SafeAPIClient {
   private baseURL: string;
@@ -54,6 +56,9 @@ export class SafeAPIClient {
 
   /**
    * Make a GET request with type-safe response handling
+   *
+   * @param endpoint
+   * @param options
    */
   async get<T = any>(
     endpoint: string,
@@ -64,6 +69,10 @@ export class SafeAPIClient {
 
   /**
    * Make a POST request with type-safe response handling
+   *
+   * @param endpoint
+   * @param data
+   * @param options
    */
   async post<T = any>(
     endpoint: string,
@@ -75,6 +84,10 @@ export class SafeAPIClient {
 
   /**
    * Make a PUT request with type-safe response handling
+   *
+   * @param endpoint
+   * @param data
+   * @param options
    */
   async put<T = any>(
     endpoint: string,
@@ -86,6 +99,9 @@ export class SafeAPIClient {
 
   /**
    * Make a DELETE request with type-safe response handling
+   *
+   * @param endpoint
+   * @param options
    */
   async delete<T = any>(
     endpoint: string,
@@ -96,6 +112,9 @@ export class SafeAPIClient {
 
   /**
    * Core request method with comprehensive error handling and type safety
+   *
+   * @param endpoint
+   * @param options
    */
   private async request<T = any>(
     endpoint: string,
@@ -105,7 +124,7 @@ export class SafeAPIClient {
     const startTime = Date.now();
 
     try {
-      const url = `${this.baseURL}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
+      const url = `${this.baseURL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
       const headers = { ...this.defaultHeaders, ...options.headers };
 
       const requestOptions: RequestInit = {
@@ -283,6 +302,8 @@ export class SafeAPIClient {
 
 /**
  * Service for handling specific API operations with type-safe responses
+ *
+ * @example
  */
 export class SafeAPIService {
   private client: SafeAPIClient;
@@ -294,6 +315,9 @@ export class SafeAPIService {
 
   /**
    * Create a resource with type-safe response
+   *
+   * @param endpoint
+   * @param data
    */
   async createResource<TResource, TCreateData>(
     endpoint: string,
@@ -304,6 +328,9 @@ export class SafeAPIService {
 
   /**
    * Get a resource by ID with type-safe response
+   *
+   * @param endpoint
+   * @param id
    */
   async getResource<TResource>(
     endpoint: string,
@@ -314,17 +341,24 @@ export class SafeAPIService {
 
   /**
    * List resources with pagination support
+   *
+   * @param endpoint
+   * @param params
    */
   async listResources<TResource>(
     endpoint: string,
     params?: Record<string, any>
   ): Promise<APIResult<{ items: TResource[]; pagination: any }>> {
-    const queryString = params ? '?' + new URLSearchParams(params).toString() : '';
+    const queryString = params ? `?${new URLSearchParams(params).toString()}` : '';
     return this.client.get<{ items: TResource[]; pagination: any }>(`${endpoint}${queryString}`);
   }
 
   /**
    * Update a resource with type-safe response
+   *
+   * @param endpoint
+   * @param id
+   * @param data
    */
   async updateResource<TResource, TUpdateData>(
     endpoint: string,
@@ -336,6 +370,9 @@ export class SafeAPIService {
 
   /**
    * Delete a resource with type-safe response
+   *
+   * @param endpoint
+   * @param id
    */
   async deleteResource(
     endpoint: string,
@@ -351,6 +388,8 @@ export class SafeAPIService {
 
 /**
  * Example interfaces for demonstration
+ *
+ * @example
  */
 interface User {
   id: number;
@@ -381,15 +420,10 @@ export async function safeAPIUsageExample(): Promise<void> {
   const createResult = await apiService.createResource<User, CreateUserData>('/users', createData);
 
   if (isAPISuccess(createResult)) {
-    console.log('✅ User created successfully:', createResult.data.name);
-    console.log('User ID:', createResult.data.id);
-    console.log('Request ID:', createResult.metadata?.requestId);
-
     // Get the created user
     const getResult = await apiService.getResource<User>('/users', createResult.data.id);
 
     if (isAPISuccess(getResult)) {
-      console.log('✅ User retrieved:', getResult.data.email);
     } else if (isAPIError(getResult)) {
       console.error('❌ Failed to retrieve user:', getResult.error.message);
       console.error('Error code:', getResult.error.code);
@@ -419,10 +453,7 @@ export async function safeAPIUsageExample(): Promise<void> {
   });
 
   if (isAPISuccess(listResult)) {
-    console.log(`✅ Retrieved ${listResult.data.items.length} users`);
-    listResult.data.items.forEach((user) => {
-      console.log(`- ${user.name} (${user.email})`);
-    });
+    listResult.data.items.forEach((_user) => {});
   } else if (isAPIError(listResult)) {
     console.error('❌ Failed to list users:', extractErrorMessage(listResult));
   }
@@ -451,9 +482,6 @@ export async function safeConcurrentAPIExample(): Promise<void> {
       errors.push(`User ${userIds[index]}: ${result.error.message}`);
     }
   });
-
-  console.log(`✅ Successfully retrieved ${successfulUsers.length} users`);
-  console.log(`❌ Failed to retrieve ${errors.length} users`);
 
   if (errors.length > 0) {
     console.error('Errors:', errors);

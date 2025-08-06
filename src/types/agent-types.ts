@@ -1,16 +1,31 @@
 /**
- * Agent type definitions for the agent management system
+ * @file Agent type definitions for the agent management system
+ * Provides comprehensive type definitions for all supported agent types
+ * and their associated metadata structures.
  */
 
+/**
+ * Unique identifier structure for agents within the swarm system
+ *
+ * @example
+ */
 export interface AgentId {
+  /** Unique identifier for the agent */
   id: string;
+  /** Identifier of the swarm this agent belongs to */
   swarmId: string;
+  /** Type classification of the agent */
   type: AgentType;
+  /** Instance number for agents of the same type */
   instance: number;
 }
 
+/**
+ * Enumeration of all supported agent types in the claude-code-zen system
+ * Agents are categorized by their primary functional domain
+ */
 export type AgentType =
-  // Core Foundation Agents
+  // Core Foundation Agents - Basic coordination and management
   | 'coder'
   | 'analyst'
   | 'researcher'
@@ -26,7 +41,7 @@ export type AgentType =
   | 'monitor'
   | 'planner'
 
-  // Development Agents
+  // Development Agents - Software development lifecycle
   | 'requirements-engineer'
   | 'design-architect'
   | 'task-planner'
@@ -38,7 +53,7 @@ export type AgentType =
   | 'fullstack-dev'
   | 'api-dev'
 
-  // Testing Agents
+  // Testing Agents - Quality assurance and validation
   | 'unit-tester'
   | 'integration-tester'
   | 'e2e-tester'
@@ -46,55 +61,55 @@ export type AgentType =
   | 'tdd-london-swarm'
   | 'production-validator'
 
-  // Architecture Agents
+  // Architecture Agents - System design and architecture
   | 'arch-system-design'
   | 'database-architect'
   | 'cloud-architect'
   | 'security-architect'
 
-  // DevOps Agents
+  // DevOps Agents - Operations and deployment
   | 'ops-cicd-github'
   | 'infrastructure-ops'
   | 'monitoring-ops'
   | 'deployment-ops'
 
-  // Documentation Agents
+  // Documentation Agents - Technical writing and documentation
   | 'docs-api-openapi'
   | 'user-guide-writer'
   | 'technical-writer'
   | 'readme-writer'
 
-  // Analysis Agents
+  // Analysis Agents - Code and system analysis
   | 'analyze-code-quality'
   | 'performance-analyzer'
   | 'security-analyzer'
   | 'refactoring-analyzer'
 
-  // Data Agents
+  // Data Agents - Data processing and analytics
   | 'data-ml-model'
   | 'etl-specialist'
   | 'analytics-specialist'
   | 'visualization-specialist'
 
-  // Specialized Agents
+  // Specialized Agents - Domain-specific specialists
   | 'spec-mobile-react-native'
   | 'embedded-specialist'
   | 'blockchain-specialist'
   | 'ai-ml-specialist'
 
-  // DSPy Neural Enhancement Agents
+  // DSPy Neural Enhancement Agents - AI optimization specialists
   | 'prompt-optimizer' // DSPy prompt optimization specialist
   | 'example-generator' // DSPy few-shot example generation
   | 'metric-analyzer' // DSPy performance metrics analysis
   | 'pipeline-tuner' // DSPy LM pipeline optimization
   | 'neural-enhancer' // DSPy neural workflow enhancement
 
-  // UI/UX Enhancement Agents
+  // UI/UX Enhancement Agents - User experience specialists
   | 'ux-designer' // User experience design
   | 'ui-designer' // User interface design
   | 'accessibility-specialist' // Accessibility compliance
 
-  // GitHub Integration Agents
+  // GitHub Integration Agents - Version control and collaboration
   | 'code-review-swarm'
   | 'github-modes'
   | 'issue-tracker'

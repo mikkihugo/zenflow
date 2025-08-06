@@ -1,5 +1,5 @@
 /**
- * @fileoverview Advanced CLI Engine - Revolutionary Command-Line Interface
+ * @file Advanced CLI Engine - Revolutionary Command-Line Interface
  *
  * Implements the most advanced AI project management and coordination platform CLI.
  * Features intelligent project scaffolding, real-time swarm monitoring, automated
@@ -24,6 +24,8 @@ import type {
  *
  * Revolutionary developer experience with AI-powered project management,
  * real-time swarm coordination, and intelligent development workflows.
+ *
+ * @example
  */
 export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem {
   private readonly projectScaffolder: IntelligentProjectScaffolder;
@@ -161,6 +163,8 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
 
   /**
    * Create intelligent project with AI-powered scaffolding
+   *
+   * @param config
    */
   async createIntelligentProject(config: ProjectConfig): Promise<ProjectCreationResult> {
     this.emit('projectCreationStarted', config);
@@ -184,6 +188,8 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
 
   /**
    * Manage complete project lifecycle with AI optimization
+   *
+   * @param project
    */
   async manageProjectLifecycle(project: any): Promise<any> {
     this.emit('lifecycleManagementStarted', project);
@@ -220,6 +226,8 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
 
   /**
    * Optimize project structure with AI analysis
+   *
+   * @param project
    */
   async optimizeProjectStructure(project: any): Promise<any> {
     return await this.projectScaffolder.optimizeExistingProject(project.path);
@@ -227,6 +235,8 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
 
   /**
    * Monitor swarm execution with real-time dashboard
+   *
+   * @param swarmId
    */
   async monitorSwarmExecution(swarmId: string): Promise<MonitoringDashboard> {
     return await this.swarmController.createMonitoringDashboard(swarmId);
@@ -234,6 +244,8 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
 
   /**
    * Control swarm operations with intelligent coordination
+   *
+   * @param commands
    */
   async controlSwarmOperations(commands: SwarmCommand[]): Promise<ControlResult> {
     return await this.swarmController.controlSwarmOperations('default', commands);
@@ -241,6 +253,8 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
 
   /**
    * Visualize swarm topology with advanced graphics
+   *
+   * @param topology
    */
   async visualizeSwarmTopology(topology: any): Promise<any> {
     return await this.swarmController.generateTopologyVisualization(topology);
@@ -248,6 +262,8 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
 
   /**
    * Orchestrate complete development pipeline
+   *
+   * @param pipeline
    */
   async orchestrateDevelopmentPipeline(pipeline: DevPipeline): Promise<PipelineResult> {
     return await this.workflowOrchestrator.orchestrateFullDevelopmentCycle(pipeline);
@@ -255,6 +271,8 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
 
   /**
    * Generate code automatically with AI assistance
+   *
+   * @param specs
    */
   async automateCodeGeneration(specs: any[]): Promise<any> {
     return await this.workflowOrchestrator.generateOptimalCode(specs);
@@ -262,6 +280,8 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
 
   /**
    * Perform intelligent testing with comprehensive strategies
+   *
+   * @param strategy
    */
   async performIntelligentTesting(strategy: any): Promise<any> {
     return await this.workflowOrchestrator.orchestrateComprehensiveTesting(strategy);
@@ -269,6 +289,9 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
 
   /**
    * Execute individual lifecycle stage
+   *
+   * @param project
+   * @param stage
    */
   private async executeLifecycleStage(project: any, stage: string): Promise<any> {
     // Stage-specific implementation
@@ -331,6 +354,10 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
 
   /**
    * Execute command with intelligent routing and monitoring
+   *
+   * @param commandName
+   * @param args
+   * @param options
    */
   async executeCommand(commandName: string, args: any[], options: any = {}): Promise<any> {
     const command = this.commandRegistry.getCommand(commandName);
@@ -515,6 +542,8 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
 
 /**
  * Advanced Command Registry for intelligent command management
+ *
+ * @example
  */
 export class AdvancedCommandRegistry {
   private categories: Map<string, any> = new Map();

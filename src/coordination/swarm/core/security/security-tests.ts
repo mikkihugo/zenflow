@@ -18,6 +18,10 @@ class SecurityTester {
 
   /**
    * Log test result
+   *
+   * @param testName
+   * @param passed
+   * @param details
    */
   logTest(testName, passed, details = '') {
     const result = { testName, passed, details, timestamp: new Date().toISOString() };

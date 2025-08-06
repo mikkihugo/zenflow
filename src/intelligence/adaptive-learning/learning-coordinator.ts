@@ -50,6 +50,8 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   /**
    * Coordinate learning across multiple agents
+   *
+   * @param agents
    */
   async coordinateLearning(agents: Agent[]): Promise<LearningResult> {
     // Update agent registry
@@ -83,6 +85,8 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   /**
    * Update the knowledge base with new patterns
+   *
+   * @param patterns
    */
   async updateKnowledgeBase(patterns: Pattern[]): Promise<void> {
     for (const pattern of patterns) {
@@ -121,6 +125,8 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   /**
    * Track expertise evolution for an agent
+   *
+   * @param agentId
    */
   trackExpertiseEvolution(agentId: string): ExpertiseEvolution {
     if (!this.expertiseTracking.has(agentId)) {
@@ -146,6 +152,8 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   /**
    * Emerge best practices from successful patterns
+   *
+   * @param successes
    */
   emergeBestPractices(successes: SuccessPattern[]): BestPractice[] {
     const practices: BestPractice[] = [];
@@ -181,6 +189,8 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   /**
    * Detect anti-patterns from failure patterns
+   *
+   * @param failures
    */
   detectAntiPatterns(failures: FailurePattern[]): AntiPattern[] {
     const antiPatterns: AntiPattern[] = [];
@@ -252,6 +262,8 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   /**
    * Get learning history for an agent
+   *
+   * @param agentId
    */
   getLearningHistory(agentId: string): LearningResult[] {
     return this.learningHistory.get(agentId) || [];

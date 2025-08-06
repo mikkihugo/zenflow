@@ -16,6 +16,8 @@ import { MemoryCoordinator } from '../src/memory/core/memory-coordinator';
 /**
  * Central Hive Knowledge Repository
  * This is where all the data lives that swarms need
+ *
+ * @example
  */
 export class HiveKnowledgeSystem {
   private memoryCoordinator: MemoryCoordinator;
@@ -449,6 +451,9 @@ export class HiveKnowledgeSystem {
 
   /**
    * Real-time knowledge distribution to swarms
+   *
+   * @param updateType
+   * @param data
    */
   async distributeKnowledgeUpdate(updateType: string, data: any) {
     await this.commProtocol.broadcast({

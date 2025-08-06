@@ -22,6 +22,8 @@ import SQLiteBackend from './knowledge-cache-backends/sqlite-backend';
 
 /**
  * Independent FACT Storage System with pluggable backends
+ *
+ * @example
  */
 export class FACTStorageSystem extends EventEmitter {
   private config: FACTStorageConfig;
@@ -76,6 +78,8 @@ export class FACTStorageSystem extends EventEmitter {
 
   /**
    * Store FACT knowledge entry
+   *
+   * @param entry
    */
   async storeKnowledge(
     entry: Omit<FACTKnowledgeEntry, 'id' | 'timestamp' | 'accessCount' | 'lastAccessed'>
@@ -110,6 +114,8 @@ export class FACTStorageSystem extends EventEmitter {
 
   /**
    * Retrieve FACT knowledge by ID
+   *
+   * @param id
    */
   async getKnowledge(id: string): Promise<FACTKnowledgeEntry | null> {
     // Check memory cache first
@@ -147,6 +153,8 @@ export class FACTStorageSystem extends EventEmitter {
 
   /**
    * Search FACT knowledge entries
+   *
+   * @param query
    */
   async searchKnowledge(query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]> {
     try {
@@ -261,6 +269,8 @@ export class FACTStorageSystem extends EventEmitter {
 
   /**
    * Delete specific knowledge entry
+   *
+   * @param id
    */
   async deleteKnowledge(id: string): Promise<boolean> {
     // Remove from memory cache

@@ -5,7 +5,7 @@
  * Auto-generated types from OpenAPI schemas for type safety.
  * Following Google API client library standards.
  *
- * @fileoverview TypeScript API client with full type safety
+ * @file TypeScript API client with full type safety
  */
 
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
@@ -27,6 +27,8 @@ import type {
 /**
  * API Client Configuration
  * Following Google client library patterns
+ *
+ * @example
  */
 export interface APIClientConfig {
   readonly baseURL: string;
@@ -50,6 +52,8 @@ export const DEFAULT_CLIENT_CONFIG: APIClientConfig = {
 
 /**
  * Request options for API calls
+ *
+ * @example
  */
 export interface RequestOptions {
   readonly timeout?: number;
@@ -59,6 +63,8 @@ export interface RequestOptions {
 
 /**
  * Pagination parameters for list operations
+ *
+ * @example
  */
 export interface PaginationOptions {
   readonly limit?: number;
@@ -68,6 +74,8 @@ export interface PaginationOptions {
 /**
  * Main API Client Class
  * Provides typed methods for all API endpoints
+ *
+ * @example
  */
 export class APIClient {
   private http: AxiosInstance;
@@ -111,6 +119,8 @@ export class APIClient {
 
   /**
    * Setup retry logic for failed requests
+   *
+   * @param client
    */
   private setupRetryLogic(client: AxiosInstance): void {
     client.interceptors.response.use(
@@ -142,6 +152,8 @@ export class APIClient {
 
   /**
    * Setup error handling and response transformation
+   *
+   * @param client
    */
   private setupErrorHandling(client: AxiosInstance): void {
     client.interceptors.response.use(
@@ -165,6 +177,11 @@ export class APIClient {
 
   /**
    * Generic HTTP method wrapper with type safety
+   *
+   * @param method
+   * @param endpoint
+   * @param data
+   * @param options
    */
   private async request<T>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
@@ -192,6 +209,13 @@ export class APIClient {
   public readonly coordination = {
     /**
      * List agents with filtering and pagination
+     *
+     * @param params
+     * @param params.status
+     * @param params.type
+     * @param params.limit
+     * @param params.offset
+     * @param options
      */
     listAgents: async (
       params?: {
@@ -218,6 +242,11 @@ export class APIClient {
 
     /**
      * Create new agent
+     *
+     * @param data
+     * @param data.type
+     * @param data.capabilities
+     * @param options
      */
     createAgent: async (
       data: {
@@ -231,6 +260,9 @@ export class APIClient {
 
     /**
      * Get agent by ID
+     *
+     * @param agentId
+     * @param options
      */
     getAgent: async (agentId: string, options?: RequestOptions) => {
       return this.request<Agent>(
@@ -243,6 +275,9 @@ export class APIClient {
 
     /**
      * Remove agent
+     *
+     * @param agentId
+     * @param options
      */
     removeAgent: async (agentId: string, options?: RequestOptions) => {
       return this.request<void>(
@@ -255,6 +290,13 @@ export class APIClient {
 
     /**
      * Create new task
+     *
+     * @param data
+     * @param data.type
+     * @param data.description
+     * @param data.priority
+     * @param data.deadline
+     * @param options
      */
     createTask: async (
       data: {
@@ -270,6 +312,9 @@ export class APIClient {
 
     /**
      * Get task by ID
+     *
+     * @param taskId
+     * @param options
      */
     getTask: async (taskId: string, options?: RequestOptions) => {
       return this.request<Task>('GET', `/api/v1/coordination/tasks/${taskId}`, undefined, options);
@@ -277,6 +322,8 @@ export class APIClient {
 
     /**
      * Get swarm configuration
+     *
+     * @param options
      */
     getSwarmConfig: async (options?: RequestOptions) => {
       return this.request<SwarmConfig>(
@@ -289,6 +336,9 @@ export class APIClient {
 
     /**
      * Update swarm configuration
+     *
+     * @param config
+     * @param options
      */
     updateSwarmConfig: async (config: SwarmConfig, options?: RequestOptions) => {
       return this.request<SwarmConfig>('PUT', '/api/v1/coordination/swarm/config', config, options);
@@ -296,6 +346,8 @@ export class APIClient {
 
     /**
      * Get coordination system health
+     *
+     * @param options
      */
     getHealth: async (options?: RequestOptions) => {
       return this.request<HealthStatus>('GET', '/api/v1/coordination/health', undefined, options);
@@ -303,6 +355,9 @@ export class APIClient {
 
     /**
      * Get performance metrics
+     *
+     * @param timeRange
+     * @param options
      */
     getMetrics: async (timeRange?: '1h' | '24h' | '7d' | '30d', options?: RequestOptions) => {
       const queryParams = timeRange ? `?timeRange=${timeRange}` : '';
@@ -323,6 +378,11 @@ export class APIClient {
   public readonly neural = {
     /**
      * List neural networks
+     *
+     * @param params
+     * @param params.type
+     * @param params.status
+     * @param options
      */
     listNetworks: async (
       params?: {
@@ -342,6 +402,11 @@ export class APIClient {
 
     /**
      * Create neural network
+     *
+     * @param data
+     * @param data.type
+     * @param data.layers
+     * @param options
      */
     createNetwork: async (
       data: {
@@ -355,6 +420,9 @@ export class APIClient {
 
     /**
      * Get neural network by ID
+     *
+     * @param networkId
+     * @param options
      */
     getNetwork: async (networkId: string, options?: RequestOptions) => {
       return this.request<NeuralNetwork>(
@@ -367,6 +435,10 @@ export class APIClient {
 
     /**
      * Start training
+     *
+     * @param networkId
+     * @param data
+     * @param options
      */
     trainNetwork: async (networkId: string, data: TrainingRequest, options?: RequestOptions) => {
       return this.request<{
@@ -377,6 +449,10 @@ export class APIClient {
 
     /**
      * Make prediction
+     *
+     * @param networkId
+     * @param data
+     * @param options
      */
     predict: async (networkId: string, data: PredictionRequest, options?: RequestOptions) => {
       return this.request<PredictionResponse>(
@@ -389,6 +465,10 @@ export class APIClient {
 
     /**
      * Get training job status
+     *
+     * @param networkId
+     * @param trainingId
+     * @param options
      */
     getTrainingStatus: async (networkId: string, trainingId: string, options?: RequestOptions) => {
       return this.request<{
@@ -403,6 +483,10 @@ export class APIClient {
 
     /**
      * Cancel training job
+     *
+     * @param networkId
+     * @param trainingId
+     * @param options
      */
     cancelTraining: async (networkId: string, trainingId: string, options?: RequestOptions) => {
       return this.request<void>(
@@ -422,6 +506,8 @@ export class APIClient {
   public readonly memory = {
     /**
      * List memory stores
+     *
+     * @param options
      */
     listStores: async (options?: RequestOptions) => {
       return this.request<{
@@ -439,6 +525,10 @@ export class APIClient {
 
     /**
      * Get value by key
+     *
+     * @param storeId
+     * @param key
+     * @param options
      */
     get: async (storeId: string, key: string, options?: RequestOptions) => {
       return this.request<{
@@ -453,6 +543,14 @@ export class APIClient {
 
     /**
      * Set value by key
+     *
+     * @param storeId
+     * @param key
+     * @param data
+     * @param data.value
+     * @param data.ttl
+     * @param data.metadata
+     * @param options
      */
     set: async (
       storeId: string,
@@ -475,6 +573,10 @@ export class APIClient {
 
     /**
      * Delete key
+     *
+     * @param storeId
+     * @param key
+     * @param options
      */
     delete: async (storeId: string, key: string, options?: RequestOptions) => {
       return this.request<void>(
@@ -487,6 +589,8 @@ export class APIClient {
 
     /**
      * Get memory health
+     *
+     * @param options
      */
     getHealth: async (options?: RequestOptions) => {
       return this.request<{
@@ -509,6 +613,8 @@ export class APIClient {
   public readonly database = {
     /**
      * List database connections
+     *
+     * @param options
      */
     listConnections: async (options?: RequestOptions) => {
       return this.request<{
@@ -526,6 +632,13 @@ export class APIClient {
 
     /**
      * Vector similarity search
+     *
+     * @param collection
+     * @param data
+     * @param data.vector
+     * @param data.limit
+     * @param data.filter
+     * @param options
      */
     vectorSearch: async (
       collection: string,
@@ -548,6 +661,11 @@ export class APIClient {
 
     /**
      * Execute graph query
+     *
+     * @param data
+     * @param data.query
+     * @param data.parameters
+     * @param options
      */
     graphQuery: async (
       data: {
@@ -564,6 +682,11 @@ export class APIClient {
 
     /**
      * Execute SQL query
+     *
+     * @param data
+     * @param data.query
+     * @param data.parameters
+     * @param options
      */
     sqlQuery: async (
       data: {
@@ -581,6 +704,8 @@ export class APIClient {
 
     /**
      * Get database health
+     *
+     * @param options
      */
     getHealth: async (options?: RequestOptions) => {
       return this.request<{
@@ -604,6 +729,8 @@ export class APIClient {
   public readonly system = {
     /**
      * Get system health
+     *
+     * @param options
      */
     getHealth: async (options?: RequestOptions) => {
       return this.request<{
@@ -622,6 +749,8 @@ export class APIClient {
 
     /**
      * Get system metrics
+     *
+     * @param options
      */
     getMetrics: async (options?: RequestOptions) => {
       return this.request<{
@@ -644,6 +773,8 @@ export class APIClient {
 
   /**
    * Update client configuration
+   *
+   * @param newConfig
    */
   public updateConfig(newConfig: Partial<APIClientConfig>): void {
     this.config = { ...this.config, ...newConfig };
@@ -659,6 +790,8 @@ export class APIClient {
 
   /**
    * Test API connectivity
+   *
+   * @param options
    */
   public async ping(options?: RequestOptions): Promise<boolean> {
     try {
@@ -672,6 +805,8 @@ export class APIClient {
 
 /**
  * Factory function to create API client
+ *
+ * @param config
  */
 export const createAPIClient = (config?: Partial<APIClientConfig>): APIClient => {
   return new APIClient(config);

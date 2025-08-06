@@ -1,5 +1,5 @@
 /**
- * @fileoverview Session-based memory storage with pluggable backends.
+ * @file Session-based memory storage with pluggable backends.
  */
 
 import { EventEmitter } from 'node:events';

@@ -6,7 +6,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ICoordinationDao } from '../../../database';
 // import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.js';
 import { AgentPool, type BaseAgent } from '../../agents/agent';
@@ -32,18 +31,16 @@ interface ExtendedSwarmOptions extends SwarmOptions {
 
 /**
  * Core ZenSwarm implementation with all base functionality
+ *
+ * @example
  */
 export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
   private swarmId: string;
   private agents: Map<string, BaseAgent> = new Map();
   private state: SwarmLifecycleState = 'initializing';
-  private coordinationDao?: ICoordinationDao;
   private agentPool?: AgentPool;
   private wasmLoader: WasmModuleLoader;
   protected options: ExtendedSwarmOptions;
-  private metrics: any;
-  private neuralProcessor: any;
-  private isRunning: boolean = false;
 
   constructor(options: SwarmOptions = {}) {
     super();
@@ -76,7 +73,8 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
     } as ExtendedSwarmOptions;
 
     this.swarmId = generateId('swarm');
-    this.wasmLoader = getContainer().get<WasmModuleLoader>('WasmModuleLoader') || new WasmModuleLoader();
+    this.wasmLoader =
+      getContainer().get<WasmModuleLoader>('WasmModuleLoader') || new WasmModuleLoader();
     this.isRunning = false;
 
     this.metrics = {
@@ -104,7 +102,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
       // TODO: Implement proper DALFactory integration with DI
       this.coordinationDao = {
         query: async (_sql: string, _params?: any[]) => [],
-        execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 })
+        execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
       } as any;
     }
 

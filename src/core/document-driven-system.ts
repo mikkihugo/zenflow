@@ -69,6 +69,8 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Load existing workspace with documents
+   *
+   * @param workspacePath
    */
   async loadWorkspace(workspacePath: string): Promise<string> {
     const workspaceId = `workspace-${Date.now()}`;
@@ -107,6 +109,9 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Process Visionary document with optional structured approach
+   *
+   * @param workspaceId
+   * @param docPath
    */
   async processVisionaryDocument(workspaceId: string, docPath: string): Promise<void> {
     const context = this.workspaces.get(workspaceId);
@@ -158,6 +163,9 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Process Vision document - top level strategic document
+   *
+   * @param workspaceId
+   * @param doc
    */
   private async processVisionDocument(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     logger.info('🔮 Processing Vision document');
@@ -172,6 +180,9 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Process ADR (Architecture Decision Record)
+   *
+   * @param workspaceId
+   * @param doc
    */
   private async processADR(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     logger.info('📐 Processing ADR document');
@@ -185,6 +196,9 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Process PRD with structured approach
+   *
+   * @param workspaceId
+   * @param doc
    */
   private async processPRD(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
@@ -203,6 +217,9 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Process Epic document
+   *
+   * @param workspaceId
+   * @param doc
    */
   private async processEpic(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     logger.info('🏔️ Processing Epic document');
@@ -216,6 +233,9 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Process Feature document
+   *
+   * @param workspaceId
+   * @param doc
    */
   private async processFeature(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
@@ -234,6 +254,9 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Process Task document - ready for implementation
+   *
+   * @param workspaceId
+   * @param doc
    */
   private async processTask(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
@@ -252,6 +275,8 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Scan workspace for existing documents
+   *
+   * @param workspaceId
    */
   private async scanDocuments(workspaceId: string): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
@@ -286,6 +311,8 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Determine document type from path
+   *
+   * @param path
    */
   private getDocumentType(path: string): VisionaryDocument['type'] {
     if (path.includes('/01-vision/') || path.includes('/vision/')) return 'vision';
@@ -300,6 +327,8 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Extract metadata from document content
+   *
+   * @param content
    */
   private async extractMetadata(content: string): Promise<any> {
     // Parse frontmatter or other metadata
@@ -325,6 +354,8 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Setup file watchers for document changes
+   *
+   * @param _workspaceId
    */
   private setupDocumentWatchers(_workspaceId: string): void {
     // Would implement file watching here
@@ -360,6 +391,8 @@ export class DocumentDrivenSystem extends EventEmitter {
 
   /**
    * Get workspace documents
+   *
+   * @param workspaceId
    */
   getWorkspaceDocuments(workspaceId: string): Map<string, VisionaryDocument> {
     const context = this.workspaces.get(workspaceId);

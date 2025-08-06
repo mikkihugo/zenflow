@@ -1,34 +1,22 @@
 /**
  * UEL (Unified Event Layer) - Backward Compatibility Layer
- * 
+ *
  * Provides 100% backward compatibility with existing EventEmitter code
  * while offering enhanced UEL capabilities and migration utilities.
- * 
- * @fileoverview Backward Compatibility Implementation
+ *
+ * @file Backward Compatibility Implementation
  */
 
 import { EventEmitter } from 'node:events';
-import type {
-  IEventManager,
-  EventManagerConfig,
-  EventManagerType,
-  SystemEvent
-} from './core/interfaces';
-
-import type {
-  SystemLifecycleEvent,
-  CoordinationEvent,
-  CommunicationEvent,
-  MonitoringEvent,
-  InterfaceEvent
-} from './types';
-
-import { EventManager } from './manager';
-import { EventManagerTypes } from './core/interfaces';
 import type { ILogger } from '../../core/interfaces/base-interfaces';
+import type { EventManagerType, IEventManager, SystemEvent } from './core/interfaces';
+import { EventManagerTypes } from './core/interfaces';
+import type { EventManager } from './manager';
 
 /**
  * Enhanced EventEmitter that provides UEL integration while maintaining compatibility
+ *
+ * @example
  */
 export class UELCompatibleEventEmitter extends EventEmitter {
   private uelManager?: IEventManager;
@@ -44,35 +32,43 @@ export class UELCompatibleEventEmitter extends EventEmitter {
     logger?: ILogger;
   }) {
     super();
-    
+
     this.uelEnabled = options?.enableUEL ?? false;
     this.uelManager = options?.uelManager;
     this.migrationMode = options?.migrationMode ?? 'passive';
     this.logger = options?.logger;
-    
+
     // Set higher max listeners for compatibility
     this.setMaxListeners(1000);
   }
 
   /**
    * Enable UEL integration with migration support
+   *
+   * @param manager
+   * @param options
+   * @param options.migrateExistingListeners
+   * @param options.preserveEventEmitterBehavior
    */
-  async enableUEL(manager?: IEventManager, options?: {
-    migrateExistingListeners?: boolean;
-    preserveEventEmitterBehavior?: boolean;
-  }): Promise<void> {
+  async enableUEL(
+    manager?: IEventManager,
+    options?: {
+      migrateExistingListeners?: boolean;
+      preserveEventEmitterBehavior?: boolean;
+    }
+  ): Promise<void> {
     if (manager) {
       this.uelManager = manager;
     }
-    
+
     this.uelEnabled = true;
     this.migrationMode = 'active';
-    
+
     // Migrate existing listeners if requested
     if (options?.migrateExistingListeners) {
       await this.migrateExistingListeners();
     }
-    
+
     this.logger?.info('✅ UEL integration enabled for EventEmitter');
   }
 
@@ -83,63 +79,72 @@ export class UELCompatibleEventEmitter extends EventEmitter {
     this.uelEnabled = false;
     this.migrationMode = 'disabled';
     this.uelManager = undefined;
-    
+
     this.logger?.info('❌ UEL integration disabled for EventEmitter');
   }
 
   /**
    * Enhanced emit with UEL integration
+   *
+   * @param eventName
+   * @param {...any} args
    */
   emit(eventName: string | symbol, ...args: any[]): boolean {
     const result = super.emit(eventName, ...args);
-    
+
     // UEL integration if enabled
     if (this.uelEnabled && this.uelManager && typeof eventName === 'string') {
-      this.emitToUEL(eventName, args)
-        .catch(error => {
-          this.logger?.error(`UEL emit failed for ${eventName}:`, error);
-        });
+      this.emitToUEL(eventName, args).catch((error) => {
+        this.logger?.error(`UEL emit failed for ${eventName}:`, error);
+      });
     }
-    
+
     return result;
   }
 
   /**
    * Enhanced on with UEL subscription tracking
+   *
+   * @param eventName
+   * @param listener
    */
   on(eventName: string | symbol, listener: (...args: any[]) => void): this {
     const result = super.on(eventName, listener);
-    
+
     // Track UEL subscriptions if enabled
     if (this.uelEnabled && this.uelManager && typeof eventName === 'string') {
-      this.trackUELSubscription(eventName, listener)
-        .catch(error => {
-          this.logger?.error(`UEL subscription tracking failed for ${eventName}:`, error);
-        });
+      this.trackUELSubscription(eventName, listener).catch((error) => {
+        this.logger?.error(`UEL subscription tracking failed for ${eventName}:`, error);
+      });
     }
-    
+
     return result;
   }
 
   /**
    * Enhanced once with UEL integration
+   *
+   * @param eventName
+   * @param listener
    */
   once(eventName: string | symbol, listener: (...args: any[]) => void): this {
     const result = super.once(eventName, listener);
-    
+
     // Track one-time UEL subscriptions if enabled
     if (this.uelEnabled && this.uelManager && typeof eventName === 'string') {
-      this.trackUELSubscription(eventName, listener, { once: true })
-        .catch(error => {
-          this.logger?.error(`UEL once subscription failed for ${eventName}:`, error);
-        });
+      this.trackUELSubscription(eventName, listener, { once: true }).catch((error) => {
+        this.logger?.error(`UEL once subscription failed for ${eventName}:`, error);
+      });
     }
-    
+
     return result;
   }
 
   /**
    * Map EventEmitter event to UEL event type
+   *
+   * @param eventEmitterEvent
+   * @param uelEventType
    */
   mapEventToUEL(eventEmitterEvent: string, uelEventType: string): void {
     this.eventMappings.set(eventEmitterEvent, uelEventType);
@@ -161,28 +166,29 @@ export class UELCompatibleEventEmitter extends EventEmitter {
       migrationMode: this.migrationMode,
       hasManager: !!this.uelManager,
       mappedEvents: this.eventMappings.size,
-      totalListeners: this.eventNames().reduce((total, name) => 
-        total + this.listenerCount(name), 0)
+      totalListeners: this.eventNames().reduce(
+        (total, name) => total + this.listenerCount(name),
+        0
+      ),
     };
   }
 
   /**
    * Private methods for UEL integration
    */
-  
+
   private async emitToUEL(eventName: string, args: any[]): Promise<void> {
     if (!this.uelManager) return;
-    
+
     try {
       // Get mapped event type or use original name
       const uelEventType = this.eventMappings.get(eventName) || eventName;
-      
+
       // Create UEL-compatible event
       const uelEvent = this.createUELEvent(uelEventType, eventName, args);
-      
+
       // Emit to UEL manager
       await this.uelManager.emit(uelEvent);
-      
     } catch (error) {
       if (this.migrationMode === 'active') {
         throw error;
@@ -193,29 +199,28 @@ export class UELCompatibleEventEmitter extends EventEmitter {
   }
 
   private async trackUELSubscription(
-    eventName: string, 
+    eventName: string,
     listener: (...args: any[]) => void,
     options?: { once?: boolean }
   ): Promise<void> {
     if (!this.uelManager) return;
-    
+
     try {
       const uelEventType = this.eventMappings.get(eventName) || eventName;
-      
+
       // Create UEL-compatible listener
       const uelListener = (event: SystemEvent) => {
         // Convert UEL event back to EventEmitter args
         const args = this.convertUELEventToArgs(event);
         listener(...args);
       };
-      
+
       // Subscribe to UEL manager
       const subscriptionId = this.uelManager.subscribe([uelEventType], uelListener, {
-        once: options?.once
+        once: options?.once,
       });
-      
+
       this.logger?.debug(`UEL subscription created: ${subscriptionId} for ${eventName}`);
-      
     } catch (error) {
       if (this.migrationMode === 'active') {
         throw error;
@@ -234,8 +239,8 @@ export class UELCompatibleEventEmitter extends EventEmitter {
       metadata: {
         originalEvent,
         args,
-        compatibility: true
-      }
+        compatibility: true,
+      },
     };
   }
 
@@ -244,30 +249,32 @@ export class UELCompatibleEventEmitter extends EventEmitter {
     if (event.metadata?.args && Array.isArray(event.metadata.args)) {
       return event.metadata.args;
     }
-    
+
     // Fallback to event object itself
     return [event];
   }
 
   private async migrateExistingListeners(): Promise<void> {
     const eventNames = this.eventNames();
-    
+
     for (const eventName of eventNames) {
       if (typeof eventName === 'string') {
         const listeners = this.listeners(eventName);
-        
+
         for (const listener of listeners) {
           await this.trackUELSubscription(eventName, listener as any);
         }
       }
     }
-    
+
     this.logger?.info(`Migrated ${eventNames.length} event types to UEL`);
   }
 }
 
 /**
  * Migration utilities for converting existing EventEmitter code to UEL
+ *
+ * @example
  */
 export class EventEmitterMigrationHelper {
   private eventManager: EventManager;
@@ -276,7 +283,7 @@ export class EventEmitterMigrationHelper {
     scanned: 0,
     migrated: 0,
     failed: 0,
-    warnings: 0
+    warnings: 0,
   };
 
   constructor(eventManager: EventManager, logger?: ILogger) {
@@ -286,6 +293,13 @@ export class EventEmitterMigrationHelper {
 
   /**
    * Create UEL-compatible EventEmitter instance
+   *
+   * @param managerName
+   * @param managerType
+   * @param options
+   * @param options.enableUEL
+   * @param options.migrationMode
+   * @param options.autoMigrate
    */
   async createCompatibleEventEmitter(
     managerName: string,
@@ -299,31 +313,35 @@ export class EventEmitterMigrationHelper {
     // Create UEL manager
     const uelManager = await this.eventManager.createEventManager({
       type: managerType,
-      name: managerName
+      name: managerName,
     });
-    
+
     // Create compatible EventEmitter
     const eventEmitter = new UELCompatibleEventEmitter({
       enableUEL: options?.enableUEL ?? true,
       uelManager,
       migrationMode: options?.migrationMode ?? 'passive',
-      logger: this.logger
+      logger: this.logger,
     });
-    
+
     // Auto-migrate if requested
     if (options?.autoMigrate) {
       await eventEmitter.enableUEL(uelManager, {
         migrateExistingListeners: true,
-        preserveEventEmitterBehavior: true
+        preserveEventEmitterBehavior: true,
       });
     }
-    
+
     this.migrationStats.migrated++;
     return eventEmitter;
   }
 
   /**
    * Wrap existing EventEmitter with UEL compatibility
+   *
+   * @param originalEmitter
+   * @param managerName
+   * @param managerType
    */
   async wrapEventEmitter(
     originalEmitter: EventEmitter,
@@ -332,21 +350,21 @@ export class EventEmitterMigrationHelper {
   ): Promise<UELCompatibleEventEmitter> {
     try {
       this.migrationStats.scanned++;
-      
+
       // Create UEL manager
       const uelManager = await this.eventManager.createEventManager({
         type: managerType,
-        name: managerName
+        name: managerName,
       });
-      
+
       // Create new compatible instance
       const compatibleEmitter = new UELCompatibleEventEmitter({
         enableUEL: true,
         uelManager,
         migrationMode: 'active',
-        logger: this.logger
+        logger: this.logger,
       });
-      
+
       // Copy existing listeners
       const eventNames = originalEmitter.eventNames();
       for (const eventName of eventNames) {
@@ -355,19 +373,18 @@ export class EventEmitterMigrationHelper {
           compatibleEmitter.on(eventName, listener as any);
         }
       }
-      
+
       // Copy properties
       compatibleEmitter.setMaxListeners(originalEmitter.getMaxListeners());
-      
+
       await compatibleEmitter.enableUEL(uelManager, {
-        migrateExistingListeners: true
+        migrateExistingListeners: true,
       });
-      
+
       this.migrationStats.migrated++;
       this.logger?.info(`✅ Successfully wrapped EventEmitter: ${managerName}`);
-      
+
       return compatibleEmitter;
-      
     } catch (error) {
       this.migrationStats.failed++;
       this.logger?.error(`❌ Failed to wrap EventEmitter ${managerName}:`, error);
@@ -377,6 +394,8 @@ export class EventEmitterMigrationHelper {
 
   /**
    * Analyze EventEmitter usage patterns
+   *
+   * @param emitter
    */
   analyzeEventEmitter(emitter: EventEmitter): {
     eventTypes: string[];
@@ -386,51 +405,53 @@ export class EventEmitterMigrationHelper {
     migrationComplexity: 'low' | 'medium' | 'high';
   } {
     const eventNames = emitter.eventNames();
-    const eventTypes = eventNames.map(name => String(name));
-    
+    const eventTypes = eventNames.map((name) => String(name));
+
     const listenerCounts: Record<string, number> = {};
     let totalListeners = 0;
-    
+
     for (const eventName of eventNames) {
       const count = emitter.listenerCount(eventName);
       listenerCounts[String(eventName)] = count;
       totalListeners += count;
     }
-    
+
     const recommendations: string[] = [];
     let complexity: 'low' | 'medium' | 'high' = 'low';
-    
+
     // Analyze patterns and provide recommendations
     if (totalListeners > 50) {
       recommendations.push('Consider using UEL for better performance with many listeners');
       complexity = 'medium';
     }
-    
+
     if (eventTypes.length > 20) {
       recommendations.push('High number of event types - UEL categorization would help');
       complexity = 'high';
     }
-    
-    if (eventTypes.some(type => type.includes(':') || type.includes('.'))) {
+
+    if (eventTypes.some((type) => type.includes(':') || type.includes('.'))) {
       recommendations.push('Structured event names detected - good UEL migration candidate');
     }
-    
+
     if (emitter.getMaxListeners() > 100) {
       recommendations.push('High max listeners - UEL provides better scaling');
       complexity = 'high';
     }
-    
+
     return {
       eventTypes,
       listenerCounts,
       maxListeners: emitter.getMaxListeners(),
       recommendations,
-      migrationComplexity: complexity
+      migrationComplexity: complexity,
     };
   }
 
   /**
    * Generate migration plan for EventEmitter conversion
+   *
+   * @param analysis
    */
   generateMigrationPlan(analysis: ReturnType<EventEmitterMigrationHelper['analyzeEventEmitter']>): {
     phases: Array<{
@@ -444,7 +465,7 @@ export class EventEmitterMigrationHelper {
     timeline: string;
   } {
     const phases = [];
-    
+
     // Phase 1: Preparation
     phases.push({
       phase: '1. Preparation',
@@ -453,12 +474,12 @@ export class EventEmitterMigrationHelper {
         'Initialize UEL Event Manager',
         'Analyze current EventEmitter patterns',
         'Create event type mappings',
-        'Set up compatibility layer'
+        'Set up compatibility layer',
       ],
       estimatedEffort: 'low' as const,
-      dependencies: []
+      dependencies: [],
     });
-    
+
     // Phase 2: Compatibility Layer
     phases.push({
       phase: '2. Compatibility',
@@ -467,12 +488,12 @@ export class EventEmitterMigrationHelper {
         'Wrap existing EventEmitter instances',
         'Enable passive UEL integration',
         'Test compatibility with existing code',
-        'Monitor performance impact'
+        'Monitor performance impact',
       ],
       estimatedEffort: analysis.migrationComplexity === 'high' ? 'medium' : 'low',
-      dependencies: ['Phase 1']
+      dependencies: ['Phase 1'],
     });
-    
+
     // Phase 3: Active Migration
     phases.push({
       phase: '3. Active Migration',
@@ -481,12 +502,12 @@ export class EventEmitterMigrationHelper {
         'Enable active UEL mode',
         'Migrate high-traffic event patterns',
         'Implement UEL-specific features',
-        'Update event handling code'
+        'Update event handling code',
       ],
       estimatedEffort: analysis.migrationComplexity,
-      dependencies: ['Phase 2']
+      dependencies: ['Phase 2'],
     });
-    
+
     // Phase 4: Optimization
     phases.push({
       phase: '4. Optimization',
@@ -495,23 +516,23 @@ export class EventEmitterMigrationHelper {
         'Remove EventEmitter compatibility layer',
         'Optimize event routing',
         'Implement advanced UEL features',
-        'Performance tuning'
+        'Performance tuning',
       ],
       estimatedEffort: analysis.migrationComplexity === 'low' ? 'low' : 'medium',
-      dependencies: ['Phase 3']
+      dependencies: ['Phase 3'],
     });
-    
+
     const totalEffort = analysis.migrationComplexity;
     const timeline = {
-      'low': '1-2 weeks',
-      'medium': '3-4 weeks',
-      'high': '6-8 weeks'
+      low: '1-2 weeks',
+      medium: '3-4 weeks',
+      high: '6-8 weeks',
     }[totalEffort];
-    
+
     return {
       phases,
       totalEffort,
-      timeline
+      timeline,
     };
   }
 
@@ -530,17 +551,18 @@ export class EventEmitterMigrationHelper {
       scanned: 0,
       migrated: 0,
       failed: 0,
-      warnings: 0
+      warnings: 0,
     };
   }
 }
 
 /**
  * Factory for creating backward-compatible event emitters
+ *
+ * @example
  */
 export class CompatibilityFactory {
   private static instance: CompatibilityFactory;
-  private eventManager?: EventManager;
   private migrationHelper?: EventEmitterMigrationHelper;
 
   private constructor() {}
@@ -554,6 +576,9 @@ export class CompatibilityFactory {
 
   /**
    * Initialize compatibility factory
+   *
+   * @param eventManager
+   * @param logger
    */
   async initialize(eventManager: EventManager, logger?: ILogger): Promise<void> {
     this.eventManager = eventManager;
@@ -562,6 +587,12 @@ export class CompatibilityFactory {
 
   /**
    * Create enhanced EventEmitter with UEL capabilities
+   *
+   * @param name
+   * @param type
+   * @param options
+   * @param options.enableUEL
+   * @param options.migrationMode
    */
   async createEnhancedEventEmitter(
     name: string,
@@ -574,12 +605,16 @@ export class CompatibilityFactory {
     if (!this.migrationHelper) {
       throw new Error('CompatibilityFactory not initialized');
     }
-    
+
     return await this.migrationHelper.createCompatibleEventEmitter(name, type, options);
   }
 
   /**
    * Wrap existing EventEmitter with UEL capabilities
+   *
+   * @param emitter
+   * @param name
+   * @param type
    */
   async wrapExistingEmitter(
     emitter: EventEmitter,
@@ -589,7 +624,7 @@ export class CompatibilityFactory {
     if (!this.migrationHelper) {
       throw new Error('CompatibilityFactory not initialized');
     }
-    
+
     return await this.migrationHelper.wrapEventEmitter(emitter, name, type);
   }
 
@@ -607,6 +642,10 @@ export class CompatibilityFactory {
 
 /**
  * Create UEL-compatible EventEmitter instance
+ *
+ * @param name
+ * @param type
+ * @param eventManager
  */
 export async function createCompatibleEventEmitter(
   name: string,
@@ -614,19 +653,24 @@ export async function createCompatibleEventEmitter(
   eventManager?: EventManager
 ): Promise<UELCompatibleEventEmitter> {
   const factory = CompatibilityFactory.getInstance();
-  
-  if (eventManager && !factory['eventManager']) {
+
+  if (eventManager && !factory.eventManager) {
     await factory.initialize(eventManager);
   }
-  
+
   return await factory.createEnhancedEventEmitter(name, type, {
     enableUEL: true,
-    migrationMode: 'passive'
+    migrationMode: 'passive',
   });
 }
 
 /**
  * Wrap existing EventEmitter with UEL compatibility
+ *
+ * @param emitter
+ * @param name
+ * @param type
+ * @param eventManager
  */
 export async function wrapWithUEL(
   emitter: EventEmitter,
@@ -635,15 +679,15 @@ export async function wrapWithUEL(
   eventManager?: EventManager
 ): Promise<UELCompatibleEventEmitter> {
   const factory = CompatibilityFactory.getInstance();
-  
-  if (eventManager && !factory['eventManager']) {
+
+  if (eventManager && !factory.eventManager) {
     await factory.initialize(eventManager);
   }
-  
+
   return await factory.wrapExistingEmitter(emitter, name, type);
 }
 
 export {
   UELCompatibleEventEmitter as CompatibleEventEmitter,
-  EventEmitterMigrationHelper as MigrationHelper
+  EventEmitterMigrationHelper as MigrationHelper,
 };

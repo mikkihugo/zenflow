@@ -29,6 +29,8 @@ export type DSPyAgentType =
 
 /**
  * DSPy Agent Configuration
+ *
+ * @example
  */
 export interface DSPyAgent {
   id: string;
@@ -47,6 +49,8 @@ export interface DSPyAgent {
 
 /**
  * Swarm Optimization Task
+ *
+ * @example
  */
 export interface SwarmOptimizationTask {
   id: string;
@@ -71,6 +75,8 @@ export interface SwarmOptimizationTask {
 
 /**
  * Swarm Coordination Result
+ *
+ * @example
  */
 export interface SwarmCoordinationResult {
   taskId: string;
@@ -91,12 +97,13 @@ export interface SwarmCoordinationResult {
 /**
  * DSPy Swarm Coordinator
  * Manages multiple specialized agents for distributed DSPy optimization
+ *
+ * @example
  */
 export class DSPySwarmCoordinator extends EventEmitter {
   private agents: Map<string, DSPyAgent> = new Map();
   private activeTasks: Map<string, SwarmOptimizationTask> = new Map();
   private memoryStore: SessionMemoryStore;
-  private swarmCoordinator?: SwarmCoordinator;
   private agentQueens: Map<DSPyAgentType, string[]> = new Map();
 
   constructor(memoryStore: SessionMemoryStore, swarmCoordinator?: SwarmCoordinator) {
@@ -172,6 +179,12 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Create agent queen and worker agents
+   *
+   * @param type
+   * @param config
+   * @param config.specialization
+   * @param config.capabilities
+   * @param config.count
    */
   private createAgentQueen(
     type: DSPyAgentType,
@@ -211,6 +224,16 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Coordinate swarm optimization for a DSPy program
+   *
+   * @param program
+   * @param options
+   * @param options.coordination
+   * @param options.priority
+   * @param options.agents
+   * @param options.requirements
+   * @param options.requirements.minAccuracy
+   * @param options.requirements.maxLatency
+   * @param options.requirements.maxCost
    */
   async coordinateOptimization(
     program: DSPyProgram,
@@ -265,7 +288,6 @@ export class DSPySwarmCoordinator extends EventEmitter {
         case 'sequential':
           agentResults = await this.executeSequentialOptimization(task, program);
           break;
-        case 'collaborative':
         default:
           agentResults = await this.executeCollaborativeOptimization(task, program);
           break;
@@ -314,6 +336,9 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Execute parallel optimization with all agents working simultaneously
+   *
+   * @param task
+   * @param program
    */
   private async executeParallelOptimization(
     task: SwarmOptimizationTask,
@@ -364,6 +389,9 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Execute sequential optimization with agents working in dependency order
+   *
+   * @param task
+   * @param program
    */
   private async executeSequentialOptimization(
     task: SwarmOptimizationTask,
@@ -428,6 +456,9 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Execute collaborative optimization with agent communication and consensus
+   *
+   * @param task
+   * @param program
    */
   private async executeCollaborativeOptimization(
     task: SwarmOptimizationTask,
@@ -499,6 +530,10 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Execute optimization for a specific agent
+   *
+   * @param agent
+   * @param program
+   * @param context
    */
   private async executeAgentOptimization(
     agent: DSPyAgent,
@@ -560,11 +595,15 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Agent-specific optimization implementations
+   *
+   * @param agent
+   * @param program
+   * @param context
    */
   private async executePromptOptimization(
-    agent: DSPyAgent,
+    _agent: DSPyAgent,
     program: DSPyProgram,
-    context?: any
+    _context?: any
   ): Promise<any> {
     // Simulate prompt optimization
     const optimizedPrompts = [
@@ -582,12 +621,12 @@ export class DSPySwarmCoordinator extends EventEmitter {
   }
 
   private async executeExampleGeneration(
-    agent: DSPyAgent,
+    _agent: DSPyAgent,
     program: DSPyProgram,
-    context?: any
+    _context?: any
   ): Promise<any> {
     // Simulate example generation
-    const generatedExamples = program.examples.slice(0, 3).map((example, i) => ({
+    const generatedExamples = program.examples.slice(0, 3).map((example, _i) => ({
       ...example,
       synthetic: true,
       quality: Math.random() * 0.4 + 0.6,
@@ -603,9 +642,9 @@ export class DSPySwarmCoordinator extends EventEmitter {
   }
 
   private async executeMetricAnalysis(
-    agent: DSPyAgent,
-    program: DSPyProgram,
-    context?: any
+    _agent: DSPyAgent,
+    _program: DSPyProgram,
+    _context?: any
   ): Promise<any> {
     // Simulate metric analysis
     return {
@@ -622,9 +661,9 @@ export class DSPySwarmCoordinator extends EventEmitter {
   }
 
   private async executePipelineTuning(
-    agent: DSPyAgent,
-    program: DSPyProgram,
-    context?: any
+    _agent: DSPyAgent,
+    _program: DSPyProgram,
+    _context?: any
   ): Promise<any> {
     // Simulate pipeline tuning
     return {
@@ -697,6 +736,9 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Build consensus from agent results
+   *
+   * @param agentResults
+   * @param program
    */
   private async buildConsensus(
     agentResults: Map<DSPyAgentType, any>,
@@ -764,6 +806,9 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Calculate collaboration efficiency
+   *
+   * @param task
+   * @param agentResults
    */
   private calculateCollaborationEfficiency(
     task: SwarmOptimizationTask,
@@ -781,6 +826,9 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Generate insights from swarm coordination
+   *
+   * @param agentResults
+   * @param task
    */
   private async generateInsights(
     agentResults: Map<DSPyAgentType, any>,
@@ -816,6 +864,8 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Utility methods
+   *
+   * @param agentType
    */
   private getAvailableAgent(agentType: DSPyAgentType): DSPyAgent | null {
     const agentIds = this.agentQueens.get(agentType) || [];
@@ -838,7 +888,7 @@ export class DSPySwarmCoordinator extends EventEmitter {
   }
 
   private async buildInterRoundConsensus(
-    agentResults: Map<DSPyAgentType, any>,
+    _agentResults: Map<DSPyAgentType, any>,
     task: SwarmOptimizationTask
   ): Promise<void> {
     // Simulate inter-round consensus building
@@ -920,10 +970,13 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Analyze cognitive patterns in DSPy programs for automatic enhancement
+   *
+   * @param program
+   * @param context
    */
   private async analyzeCognitivePatterns(
     program: DSPyProgram,
-    context?: any
+    _context?: any
   ): Promise<{
     patterns: string[];
     complexity: number;
@@ -952,10 +1005,13 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Apply adaptive learning to automatically improve program performance
+   *
+   * @param program
+   * @param context
    */
   private async applyAdaptiveLearning(
     program: DSPyProgram,
-    context?: any
+    _context?: any
   ): Promise<{
     adaptations: string[];
     adaptability: number;
@@ -977,8 +1033,10 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Optimize neural architecture for enhanced performance
+   *
+   * @param program
    */
-  private async optimizeNeuralArchitecture(program: DSPyProgram): Promise<{
+  private async optimizeNeuralArchitecture(_program: DSPyProgram): Promise<{
     optimizations: string[];
     efficiency: number;
     architectureScore: number;
@@ -999,10 +1057,13 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Enhance cross-modal learning capabilities
+   *
+   * @param program
+   * @param context
    */
   private async enhanceCrossModalLearning(
-    program: DSPyProgram,
-    context?: any
+    _program: DSPyProgram,
+    _context?: any
   ): Promise<{
     enhancements: string[];
     coherence: number;
@@ -1025,10 +1086,13 @@ export class DSPySwarmCoordinator extends EventEmitter {
   /**
    * ⚡ AUTOMATIC WORKFLOW ENHANCEMENT - Core neural capability
    * This method automatically improves DSPy workflows using neural intelligence
+   *
+   * @param program
+   * @param context
    */
   private async enhanceWorkflowAutomatically(
     program: DSPyProgram,
-    context?: any
+    _context?: any
   ): Promise<{
     automationLevel: number;
     workflowImprovements: string[];
@@ -1086,6 +1150,8 @@ export class DSPySwarmCoordinator extends EventEmitter {
 
   /**
    * Calculate neural integration score
+   *
+   * @param enhancement
    */
   private calculateNeuralIntegrationScore(enhancement: any): number {
     const scores = [

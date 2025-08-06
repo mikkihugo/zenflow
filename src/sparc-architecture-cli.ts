@@ -1,11 +1,12 @@
 #!/usr/bin/env node
+
 /**
  * SPARC Architecture Engine CLI
  * Standalone CLI for SPARC Phase 3: Architecture Generation
  */
 
+import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
-import { writeFile, readFile } from 'fs/promises';
 
 const program = new Command();
 
@@ -24,9 +25,9 @@ program
   .option('--format <format>', 'Output format (json|markdown)', 'json')
   .action(async (options) => {
     try {
-      console.log('🏗️ Generating system architecture from pseudocode...');
-
-      const { ArchitecturePhaseEngine } = await import('./coordination/swarm/sparc/phases/architecture/architecture-engine');
+      const { ArchitecturePhaseEngine } = await import(
+        './coordination/swarm/sparc/phases/architecture/architecture-engine'
+      );
 
       const engine = new ArchitecturePhaseEngine();
 
@@ -34,19 +35,16 @@ program
       const pseudocodeContent = await readFile(options.pseudocodeFile, 'utf8');
       let pseudocodeData = JSON.parse(pseudocodeContent);
 
-      console.log(`📖 Processing pseudocode: ${pseudocodeData.id || 'Unknown'}`);
-      console.log(`🧮 Algorithms: ${pseudocodeData.algorithms?.length || 0}`);
-
       // Convert to expected format if needed
       if (Array.isArray(pseudocodeData)) {
         pseudocodeData = {
-          id: 'generated-' + Date.now(),
+          id: `generated-${Date.now()}`,
           algorithms: pseudocodeData,
           coreAlgorithms: pseudocodeData,
           dataStructures: [],
           controlFlows: [],
           optimizations: [],
-          dependencies: []
+          dependencies: [],
         };
       }
 
@@ -55,33 +53,26 @@ program
       if (options.specFile) {
         const specContent = await readFile(options.specFile, 'utf8');
         specification = JSON.parse(specContent);
-        console.log(`📋 Using specification: ${specification.id || 'Unknown'}`);
       }
 
       // Generate architecture
       let architecture;
       if (specification) {
-        const systemArchitecture = await engine.designSystemArchitecture(specification, pseudocodeData.algorithms);
+        const systemArchitecture = await engine.designSystemArchitecture(
+          specification,
+          pseudocodeData.algorithms
+        );
         architecture = {
           systemArchitecture,
           components: systemArchitecture.components,
           interfaces: systemArchitecture.interfaces,
           dataFlow: systemArchitecture.dataFlow,
           qualityAttributes: systemArchitecture.qualityAttributes,
-          architecturalPatterns: systemArchitecture.architecturalPatterns
+          architecturalPatterns: systemArchitecture.architecturalPatterns,
         };
       } else {
-        // Use internal method when only pseudocode is available
-        console.log('⚠️ No specification provided - using pseudocode-only generation');
         architecture = await (engine as any).designArchitecture(pseudocodeData);
       }
-
-      console.log('✅ Architecture generation completed!');
-      console.log(`🏗️ Generated ${architecture.components?.length || 0} components`);
-      console.log(`🔌 Generated ${architecture.systemArchitecture?.interfaces?.length || 0} interfaces`);
-      console.log(`🔄 Generated ${architecture.systemArchitecture?.dataFlow?.length || 0} data flows`);
-      console.log(`📊 Defined ${architecture.systemArchitecture?.qualityAttributes?.length || 0} quality attributes`);
-      console.log(`🎯 Applied ${architecture.systemArchitecture?.architecturalPatterns?.length || 0} architecture patterns`);
 
       // Format output
       let output: string;
@@ -96,8 +87,6 @@ program
 
       // Write output
       await writeFile(outputPath, output, 'utf8');
-      console.log(`💾 Architecture saved to: ${outputPath}`);
-
     } catch (error) {
       console.error('❌ Failed to generate architecture:', error);
       process.exit(1);
@@ -112,9 +101,9 @@ program
   .option('--detailed', 'Show detailed validation results')
   .action(async (options) => {
     try {
-      console.log('🔍 Validating architecture design...');
-
-      const { ArchitecturePhaseEngine } = await import('./coordination/swarm/sparc/phases/architecture/architecture-engine');
+      const { ArchitecturePhaseEngine } = await import(
+        './coordination/swarm/sparc/phases/architecture/architecture-engine'
+      );
 
       const engine = new ArchitecturePhaseEngine();
 
@@ -122,34 +111,23 @@ program
       const archContent = await readFile(options.architectureFile, 'utf8');
       const architecture = JSON.parse(archContent);
 
-      console.log(`📖 Validating architecture: ${architecture.id || 'Unknown'}`);
-
       // Validate architecture
       const validationResults = await engine.validateArchitecture(architecture);
 
       // Calculate overall score
-      const overallScore = validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
-      const passed = validationResults.filter(r => r.passed).length;
-      const total = validationResults.length;
-
-      console.log('\n📋 Validation Results:');
-      console.log(`  Overall Score: ${(overallScore * 100).toFixed(1)}%`);
-      console.log(`  Tests Passed: ${passed}/${total}`);
-      console.log(`  Status: ${overallScore >= 0.7 ? '✅ APPROVED' : '❌ NEEDS IMPROVEMENT'}`);
+      const overallScore =
+        validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
+      const _passed = validationResults.filter((r) => r.passed).length;
+      const _total = validationResults.length;
 
       if (options.detailed) {
-        console.log('\n📝 Detailed Results:');
-        validationResults.forEach((result, index) => {
-          const status = result.passed ? '✅' : '❌';
-          console.log(`  ${index + 1}. ${status} ${result.criterion}`);
-          console.log(`     Score: ${(result.score * 100).toFixed(1)}%`);
-          console.log(`     Feedback: ${result.feedback}`);
+        validationResults.forEach((result, _index) => {
+          const _status = result.passed ? '✅' : '❌';
         });
       }
 
       // Exit with appropriate code
       process.exit(overallScore >= 0.7 ? 0 : 1);
-
     } catch (error) {
       console.error('❌ Failed to validate architecture:', error);
       process.exit(1);
@@ -165,9 +143,9 @@ program
   .option('--format <format>', 'Output format (json|markdown)', 'json')
   .action(async (options) => {
     try {
-      console.log('📋 Generating implementation plan from architecture...');
-
-      const { ArchitecturePhaseEngine } = await import('./coordination/swarm/sparc/phases/architecture/architecture-engine');
+      const { ArchitecturePhaseEngine } = await import(
+        './coordination/swarm/sparc/phases/architecture/architecture-engine'
+      );
 
       const engine = new ArchitecturePhaseEngine();
 
@@ -175,17 +153,8 @@ program
       const archContent = await readFile(options.architectureFile, 'utf8');
       const architecture = JSON.parse(archContent);
 
-      console.log(`📖 Processing architecture: ${architecture.id || 'Unknown'}`);
-
       // Generate implementation plan
       const implementationPlan = await engine.generateImplementationPlan(architecture);
-
-      console.log('✅ Implementation plan generation completed!');
-      console.log(`📅 Timeline: ${implementationPlan.timeline.totalDuration}`);
-      console.log(`🎯 Phases: ${implementationPlan.phases.length}`);
-      console.log(`📋 Total Tasks: ${implementationPlan.phases.reduce((sum: number, phase: any) => sum + phase.tasks.length, 0)}`);
-      console.log(`👥 Resource Requirements: ${implementationPlan.resourceRequirements.length}`);
-      console.log(`⚠️ Risk Level: ${implementationPlan.riskAssessment.overallRisk}`);
 
       // Format output
       let output: string;
@@ -200,8 +169,6 @@ program
 
       // Write output
       await writeFile(outputPath, output, 'utf8');
-      console.log(`💾 Implementation plan saved to: ${outputPath}`);
-
     } catch (error) {
       console.error('❌ Failed to generate implementation plan:', error);
       process.exit(1);
@@ -242,12 +209,15 @@ function generateArchitectureMarkdown(architecture: any): string {
   }
 
   // Architecture Patterns
-  if (architecture.systemArchitecture?.architecturalPatterns && architecture.systemArchitecture.architecturalPatterns.length > 0) {
+  if (
+    architecture.systemArchitecture?.architecturalPatterns &&
+    architecture.systemArchitecture.architecturalPatterns.length > 0
+  ) {
     markdown += `## 🎯 Architecture Patterns (${architecture.systemArchitecture.architecturalPatterns.length})\n\n`;
     architecture.systemArchitecture.architecturalPatterns.forEach((pattern: any, index: number) => {
       markdown += `### ${index + 1}. ${pattern.name}\n\n`;
       markdown += `${pattern.description}\n\n`;
-      
+
       markdown += `**Benefits:**\n`;
       pattern.benefits.forEach((benefit: string) => {
         markdown += `- ${benefit}\n`;
@@ -263,14 +233,17 @@ function generateArchitectureMarkdown(architecture: any): string {
   }
 
   // Quality Attributes
-  if (architecture.systemArchitecture?.qualityAttributes && architecture.systemArchitecture.qualityAttributes.length > 0) {
+  if (
+    architecture.systemArchitecture?.qualityAttributes &&
+    architecture.systemArchitecture.qualityAttributes.length > 0
+  ) {
     markdown += `## 📊 Quality Attributes (${architecture.systemArchitecture.qualityAttributes.length})\n\n`;
     architecture.systemArchitecture.qualityAttributes.forEach((qa: any, index: number) => {
       markdown += `### ${index + 1}. ${qa.name}\n\n`;
       markdown += `**Target:** ${qa.target}\n\n`;
       markdown += `**Priority:** ${qa.priority}\n\n`;
       markdown += `**Measurement:** ${qa.measurement}\n\n`;
-      
+
       if (qa.criteria && qa.criteria.length > 0) {
         markdown += `**Criteria:**\n`;
         qa.criteria.forEach((criterion: string) => {
@@ -278,7 +251,7 @@ function generateArchitectureMarkdown(architecture: any): string {
         });
         markdown += `\n`;
       }
-      
+
       markdown += `---\n\n`;
     });
   }
@@ -316,11 +289,11 @@ function generateImplementationPlanMarkdown(plan: any): string {
           markdown += `   - Type: ${task.type}\n`;
           markdown += `   - Effort: ${task.estimatedEffort}\n`;
           markdown += `   - Description: ${task.description}\n`;
-          
+
           if (task.dependencies && task.dependencies.length > 0) {
             markdown += `   - Dependencies: ${task.dependencies.join(', ')}\n`;
           }
-          
+
           markdown += `\n`;
         });
       }

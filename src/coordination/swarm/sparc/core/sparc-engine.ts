@@ -54,10 +54,7 @@ export class SPARCEngineCore implements SPARCEngine {
   // Deep infrastructure integration
   private readonly documentDrivenSystem: DocumentDrivenSystem;
   private readonly workflowEngine: WorkflowEngine;
-  private readonly memorySystem: MemorySystem;
   private readonly swarmCoordinator: SPARCSwarmCoordinator;
-  private readonly taskCoordinator: TaskCoordinator;
-  private readonly taskAPI: TaskAPI;
 
   constructor() {
     this.phaseDefinitions = this.initializePhaseDefinitions();
@@ -89,6 +86,8 @@ export class SPARCEngineCore implements SPARCEngine {
 
   /**
    * Initialize a new SPARC project with comprehensive setup and infrastructure integration
+   *
+   * @param projectSpec
    */
   async initializeProject(projectSpec: ProjectSpecification): Promise<SPARCProject> {
     const projectId = nanoid();
@@ -142,6 +141,9 @@ export class SPARCEngineCore implements SPARCEngine {
 
   /**
    * Execute a specific SPARC phase with comprehensive validation
+   *
+   * @param project
+   * @param phase
    */
   async executePhase(project: SPARCProject, phase: SPARCPhase): Promise<PhaseResult> {
     const startTime = Date.now();
@@ -229,6 +231,9 @@ export class SPARCEngineCore implements SPARCEngine {
 
   /**
    * Refine implementation based on feedback and metrics
+   *
+   * @param project
+   * @param feedback
    */
   async refineImplementation(
     project: SPARCProject,
@@ -284,6 +289,8 @@ export class SPARCEngineCore implements SPARCEngine {
 
   /**
    * Generate comprehensive artifact set for the project
+   *
+   * @param project
    */
   async generateArtifacts(project: SPARCProject): Promise<ArtifactSet> {
     const artifacts: ArtifactReference[] = [
@@ -356,6 +363,8 @@ export class SPARCEngineCore implements SPARCEngine {
 
   /**
    * Validate project completion and production readiness
+   *
+   * @param project
    */
   async validateCompletion(project: SPARCProject): Promise<CompletionValidation> {
     const validations = [
@@ -1018,6 +1027,9 @@ export class SPARCEngineCore implements SPARCEngine {
 
   /**
    * Create vision document for integration with DocumentDrivenSystem
+   *
+   * @param project
+   * @param spec
    */
   private async createVisionDocument(
     project: SPARCProject,
@@ -1052,6 +1064,9 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
 
   /**
    * Execute existing document workflows using UnifiedWorkflowEngine
+   *
+   * @param workspaceId
+   * @param project
    */
   private async executeDocumentWorkflows(
     workspaceId: string,
@@ -1081,6 +1096,8 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
 
   /**
    * Generate all project management artifacts using existing infrastructure
+   *
+   * @param project
    */
   private async createAllProjectManagementArtifacts(project: SPARCProject): Promise<void> {
     // Generate tasks using existing TaskAPI
@@ -1100,6 +1117,8 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
 
   /**
    * Create tasks from SPARC phases using existing TaskAPI
+   *
+   * @param project
    */
   private async createTasksFromSPARC(project: SPARCProject): Promise<void> {
     const sparcPhases: SPARCPhase[] = [
@@ -1124,6 +1143,10 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
 
   /**
    * Execute task using swarm coordination
+   *
+   * @param _taskId
+   * @param project
+   * @param phase
    */
   private async executeTaskWithSwarm(
     _taskId: string,
@@ -1144,6 +1167,8 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
 
   /**
    * Create ADR files using existing workspace structure
+   *
+   * @param project
    */
   private async createADRFilesWithWorkspace(project: SPARCProject): Promise<void> {
     // Use existing ADR template structure from the codebase
@@ -1166,6 +1191,8 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
 
   /**
    * Save epics to workspace using existing document structure
+   *
+   * @param project
    */
   private async saveEpicsToWorkspace(project: SPARCProject): Promise<void> {
     const _epics = this.createEpicsFromSPARC(project);
@@ -1173,6 +1200,8 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
 
   /**
    * Save features from workspace using existing document structure
+   *
+   * @param project
    */
   private async saveFeaturesFromWorkspace(project: SPARCProject): Promise<void> {
     const _features = this.createFeaturesFromSPARC(project);
@@ -1180,6 +1209,8 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
 
   /**
    * Create epics from SPARC project phases
+   *
+   * @param project
    */
   private createEpicsFromSPARC(project: SPARCProject): any[] {
     return [
@@ -1204,6 +1235,8 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
 
   /**
    * Create features from SPARC project
+   *
+   * @param project
    */
   private createFeaturesFromSPARC(project: SPARCProject): any[] {
     return [
@@ -1225,21 +1258,9 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
   }
 
   /**
-   * Get estimated hours for each SPARC phase
-   */
-  private getPhaseEstimatedHours(phase: SPARCPhase): number {
-    const estimates: Record<SPARCPhase, number> = {
-      specification: 8, // 1 day
-      pseudocode: 12, // 1.5 days
-      architecture: 16, // 2 days
-      refinement: 12, // 1.5 days
-      completion: 24, // 3 days
-    };
-    return estimates[phase] || 8;
-  }
-
-  /**
    * Get SPARC project status for external monitoring
+   *
+   * @param projectId
    */
   async getSPARCProjectStatus(projectId: string): Promise<{
     project: SPARCProject | null;

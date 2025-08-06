@@ -1,5 +1,5 @@
 /**
- * @fileoverview Shared Interface Configuration
+ * @file Shared Interface Configuration
  *
  * Interface-specific configuration utilities that integrate with the unified config system
  */
@@ -96,10 +96,14 @@ export const ERROR_MESSAGES = {
 
 /**
  * Configuration utilities integrated with unified config system
+ *
+ * @example
  */
 export class ConfigurationUtils {
   /**
    * Merge configuration with current interface config
+   *
+   * @param overrides
    */
   static mergeWithDefaults<T extends Partial<InterfaceConfig>>(overrides: T): T & InterfaceConfig {
     const current = getInterfaceConfig();
@@ -111,6 +115,8 @@ export class ConfigurationUtils {
 
   /**
    * Validate interface configuration
+   *
+   * @param configOverrides
    */
   static validateConfig(configOverrides: Partial<InterfaceConfig>): string[] {
     const errors: string[] = [];
@@ -155,6 +161,8 @@ export class ConfigurationUtils {
 
   /**
    * Get color scheme for theme from configuration
+   *
+   * @param theme
    */
   static getColorScheme(theme?: 'dark' | 'light' | 'auto'): typeof COLOR_SCHEMES.dark {
     const currentTheme = theme || config.get('interfaces.shared.theme') || 'dark';
@@ -171,6 +179,8 @@ export class ConfigurationUtils {
 
   /**
    * Update interface configuration at runtime
+   *
+   * @param updates
    */
   static updateInterfaceConfig(updates: Partial<InterfaceConfig>): boolean {
     const errors = ConfigurationUtils.validateConfig(updates);
@@ -200,6 +210,8 @@ export class ConfigurationUtils {
 
   /**
    * Listen for interface configuration changes
+   *
+   * @param callback
    */
   static onConfigChange(callback: (config: InterfaceConfig) => void): () => void {
     const handler = (event: any) => {

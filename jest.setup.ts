@@ -1,7 +1,7 @@
 /**
  * Jest Setup File - TypeScript ESM Compatible
  *
- * @fileoverview Test environment configuration with strict TypeScript standards
+ * @file Test environment configuration with strict TypeScript standards
  * @author Claude Code Flow Team
  * @version 2.0.0
  */

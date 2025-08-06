@@ -135,6 +135,8 @@ export interface Problem {
 
 /**
  * Problem Decomposition System
+ *
+ * @example
  */
 export interface ProblemDecomposer {
   decompositionStrategies: DecompositionStrategy[];
@@ -384,6 +386,8 @@ export interface BeliefRevisionSystem {
 
 /**
  * Distributed Reasoning System
+ *
+ * @example
  */
 export interface DistributedReasoningEngine {
   reasoningCoordinator: ReasoningCoordinator;
@@ -473,6 +477,8 @@ export type ReasoningStatus =
 
 /**
  * Consensus Building System
+ *
+ * @example
  */
 export interface ConsensusBuilder {
   consensusProtocols: ConsensusProtocol[];
@@ -718,6 +724,8 @@ export type ConsensusActivity =
 
 /**
  * Solution Synthesis System
+ *
+ * @example
  */
 export interface SolutionSynthesizer {
   synthesisStrategies: SynthesisStrategy[];
@@ -772,6 +780,8 @@ export type IntegrationMethod =
 
 /**
  * Context Sharing System
+ *
+ * @example
  */
 export interface ContextSharingManager {
   sharedContext: SharedReasoningContext;
@@ -826,6 +836,8 @@ export type ContextRole =
 
 /**
  * Main Collaborative Reasoning Engine
+ *
+ * @example
  */
 export class CollaborativeReasoningEngine extends EventEmitter {
   private logger: ILogger;
@@ -930,6 +942,9 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
   /**
    * Solve a complex problem collaboratively
+   *
+   * @param problem
+   * @param participants
    */
   async solveCollaboratively(
     problem: Problem,
@@ -1011,6 +1026,9 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
   /**
    * Decompose complex problem into manageable subproblems
+   *
+   * @param problem
+   * @param participants
    */
   async decomposeProblem(
     problem: Problem,
@@ -1070,6 +1088,9 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
   /**
    * Coordinate distributed reasoning across multiple agents
+   *
+   * @param reasoningTasks
+   * @param sharedContext
    */
   async coordinateDistributedReasoning(
     reasoningTasks: ReasoningTask[],
@@ -1131,6 +1152,9 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
   /**
    * Build consensus through structured dialogue and voting
+   *
+   * @param reasoningResults
+   * @param participants
    */
   async buildConsensusOnResults(
     reasoningResults: DistributedReasoningResult,
@@ -1194,6 +1218,9 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
   /**
    * Synthesize partial solutions into comprehensive solution
+   *
+   * @param consensusResults
+   * @param decomposition
    */
   async synthesizeComprehensiveSolution(
     consensusResults: ConsensusResult,
@@ -1347,6 +1374,8 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
 /**
  * Configuration and result interfaces
+ *
+ * @example
  */
 export interface CollaborativeReasoningConfig {
   decomposition: DecompositionConfig;
@@ -1701,7 +1730,6 @@ export interface ConsensusProcess {
 
 // Placeholder system classes
 export class ProblemDecompositionSystem {
-  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
   on(_event: string, _handler: Function) {}
   shutdown() {
     return Promise.resolve();
@@ -1709,7 +1737,6 @@ export class ProblemDecompositionSystem {
 }
 
 export class DistributedReasoningSystem {
-  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
   on(_event: string, _handler: Function) {}
   assignReasoningTasks(_subproblems: SubProblem[]) {
     return Promise.resolve();
@@ -1720,7 +1747,6 @@ export class DistributedReasoningSystem {
 }
 
 export class ConsensusBuilderSystem {
-  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
   on(_event: string, _handler: Function) {}
   initiateConsensus(_results: any) {
     return Promise.resolve();
@@ -1731,7 +1757,6 @@ export class ConsensusBuilderSystem {
 }
 
 export class SolutionSynthesisSystem {
-  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
   on(_event: string, _handler: Function) {}
   synthesizeSolution(_consensus: any) {
     return Promise.resolve();
@@ -1742,7 +1767,6 @@ export class SolutionSynthesisSystem {
 }
 
 export class ContextSharingSystem {
-  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
   on(_event: string, _handler: Function) {}
   updateSharedContext(_solution: any) {
     return Promise.resolve();

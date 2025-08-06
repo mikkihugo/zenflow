@@ -1,5 +1,5 @@
 /**
- * @fileoverview Domain Card Component for TUI - Shows domain information with selection state
+ * @file Domain Card Component for TUI - Shows domain information with selection state
  */
 
 import { Box, Text } from 'ink';

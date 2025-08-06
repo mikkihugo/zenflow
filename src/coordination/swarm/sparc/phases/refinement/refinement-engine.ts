@@ -39,6 +39,9 @@ import type {
 export class RefinementPhaseEngine implements RefinementEngine {
   /**
    * Apply refinements to architecture design based on feedback
+   *
+   * @param architecture
+   * @param feedback
    */
   async applyRefinements(
     architecture: ArchitectureDesign,
@@ -101,6 +104,9 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Identify optimization strategies based on feedback
+   *
+   * @param _architecture
+   * @param feedback
    */
   private async identifyOptimizationStrategies(
     _architecture: ArchitectureDesign,
@@ -217,6 +223,9 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Generate performance optimizations
+   *
+   * @param architecture
+   * @param _feedback
    */
   private async generatePerformanceOptimizations(
     architecture: ArchitectureDesign,
@@ -306,6 +315,9 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Generate security optimizations
+   *
+   * @param _architecture
+   * @param _feedback
    */
   private async generateSecurityOptimizations(
     _architecture: ArchitectureDesign,
@@ -387,6 +399,9 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Generate scalability optimizations
+   *
+   * @param _architecture
+   * @param _feedback
    */
   private async generateScalabilityOptimizations(
     _architecture: ArchitectureDesign,
@@ -460,6 +475,9 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Generate code quality optimizations
+   *
+   * @param _architecture
+   * @param _feedback
    */
   private async generateCodeQualityOptimizations(
     _architecture: ArchitectureDesign,
@@ -549,6 +567,13 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Apply optimizations to architecture
+   *
+   * @param architecture
+   * @param strategies
+   * @param performanceOpts
+   * @param securityOpts
+   * @param scalabilityOpts
+   * @param _codeQualityOpts
    */
   private async applyOptimizations(
     architecture: ArchitectureDesign,
@@ -617,6 +642,9 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Benchmark improvements between original and refined architecture
+   *
+   * @param _original
+   * @param _refined
    */
   private async benchmarkImprovements(
     _original: ArchitectureDesign,
@@ -673,6 +701,8 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Calculate improvement metrics
+   *
+   * @param benchmarks
    */
   private async calculateImprovementMetrics(
     benchmarks: BenchmarkResult[]
@@ -691,6 +721,8 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Identify refactoring opportunities
+   *
+   * @param _architecture
    */
   private async identifyRefactoringOpportunities(
     _architecture: ArchitectureDesign
@@ -738,6 +770,8 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Analyze technical debt
+   *
+   * @param architecture
    */
   private async analyzeTechnicalDebt(
     architecture: ArchitectureDesign
@@ -803,6 +837,8 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Generate next steps recommendations
+   *
+   * @param metrics
    */
   private async generateNextStepsRecommendations(metrics: ImprovementMetric[]): Promise<string[]> {
     const recommendations: string[] = [];
@@ -853,6 +889,8 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Validate refinement results
+   *
+   * @param refinement
    */
   async validateRefinement(refinement: RefinementResult): Promise<RefinementValidation> {
     const validationResults: ValidationResult[] = [];
@@ -925,6 +963,8 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   /**
    * Generate refinement recommendations
+   *
+   * @param validationResults
    */
   private generateRefinementRecommendations(validationResults: ValidationResult[]): string[] {
     const recommendations: string[] = [];
@@ -960,7 +1000,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   // Missing RefinementEngine interface methods
   async analyzeImplementationGaps(
     architecture: SystemArchitecture,
-    currentImpl: Implementation
+    _currentImpl: Implementation
   ): Promise<GapAnalysis> {
     // Implementation gap analysis
     const gaps: RefinementChange[] = [];
@@ -1053,9 +1093,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     };
 
     // Apply refinements to architecture
-    for (const refinement of refinements) {
-      // Update components based on refinement
-      console.log(`Applying refinement to ${refinement.component}`);
+    for (const _refinement of refinements) {
     }
 
     return updatedArchitecture;

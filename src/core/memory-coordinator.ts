@@ -6,8 +6,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createRepository, createDAO, DatabaseTypes, EntityTypes } from '../database/index';
-import type { IRepository, IDataAccessObject } from '../database/interfaces';
+import { createDAO, createRepository, DatabaseTypes, EntityTypes } from '../database/index';
+import type { IDataAccessObject, IRepository } from '../database/interfaces';
 import { createLogger } from './logger';
 
 const logger = createLogger('UnifiedMemory');
@@ -70,6 +70,8 @@ interface BackendInterface {
 
 /**
  * LanceDB Backend - Vector Database for Semantic Storage using DAL
+ *
+ * @example
  */
 class LanceDBBackend implements BackendInterface {
   private vectorRepository: IRepository<any>;
@@ -88,20 +90,16 @@ class LanceDBBackend implements BackendInterface {
         database: `${this.config.path}/lancedb`,
         options: {
           vectorSize: this.config.lancedb?.vectorDimension || 384,
-          metricType: 'cosine'
-        }
+          metricType: 'cosine',
+        },
       }
     );
-    
-    this.vectorDAO = await createDAO(
-      EntityTypes.VectorDocument,
-      DatabaseTypes.LanceDB,
-      {
-        database: `${this.config.path}/lancedb`,
-        options: this.config.lancedb
-      }
-    );
-    
+
+    this.vectorDAO = await createDAO(EntityTypes.VectorDocument, DatabaseTypes.LanceDB, {
+      database: `${this.config.path}/lancedb`,
+      options: this.config.lancedb,
+    });
+
     logger.info('LanceDB backend initialized with DAL');
   }
 
@@ -150,7 +148,12 @@ class LanceDBBackend implements BackendInterface {
   async retrieve(key: string, namespace: string = 'default'): Promise<JSONValue | null> {
     try {
       const searchResult = await this.vectorDAO.bulkVectorOperations(
-        [{ id: `${namespace}:${key}`, vector: new Array(this.config.lancedb?.vectorDimension || 384).fill(0) }],
+        [
+          {
+            id: `${namespace}:${key}`,
+            vector: new Array(this.config.lancedb?.vectorDimension || 384).fill(0),
+          },
+        ],
         'upsert'
       );
 
@@ -215,7 +218,10 @@ class LanceDBBackend implements BackendInterface {
 
   async getStats(): Promise<BackendStats> {
     const allEntries = await this.vectorRepository.findAll();
-    const stats = { totalVectors: allEntries.length, dimensions: this.config.lancedb?.vectorDimension || 384 };
+    const stats = {
+      totalVectors: allEntries.length,
+      dimensions: this.config.lancedb?.vectorDimension || 384,
+    };
     return {
       entries: stats.totalVectors || 0,
       size: stats.indexedVectors || 0,
@@ -234,6 +240,8 @@ class LanceDBBackend implements BackendInterface {
 
 /**
  * SQLite Backend - Relational Database for Structured Storage
+ *
+ * @example
  */
 class SQLiteBackend implements BackendInterface {
   private db?: any;
@@ -431,6 +439,8 @@ class SQLiteBackend implements BackendInterface {
 
 /**
  * JSON Backend - File-based Storage for Simple Use Cases
+ *
+ * @example
  */
 class JSONBackend implements BackendInterface {
   private data = new Map<string, { value: JSONValue; timestamp: number; type: string }>();
@@ -571,6 +581,8 @@ class JSONBackend implements BackendInterface {
 
 /**
  * Unified Memory System - Main Interface
+ *
+ * @example
  */
 export class UnifiedMemorySystem extends EventEmitter {
   private backend: BackendInterface;

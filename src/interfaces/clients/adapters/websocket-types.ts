@@ -1,15 +1,15 @@
 /**
  * WebSocket Client Types for UACL
- * 
+ *
  * WebSocket-specific extensions to UACL core interfaces and types
  */
 
-import type { 
-  ClientConfig, 
-  AuthenticationConfig, 
-  RetryConfig,
+import type {
+  AuthenticationConfig,
+  ClientConfig,
+  ClientResponse,
   RequestOptions,
-  ClientResponse 
+  RetryConfig,
 } from '../core/interfaces';
 
 /**
@@ -19,10 +19,10 @@ export const WebSocketReadyState = {
   CONNECTING: 0,
   OPEN: 1,
   CLOSING: 2,
-  CLOSED: 3
+  CLOSED: 3,
 } as const;
 
-export type WebSocketReadyState = typeof WebSocketReadyState[keyof typeof WebSocketReadyState];
+export type WebSocketReadyState = (typeof WebSocketReadyState)[keyof typeof WebSocketReadyState];
 
 /**
  * WebSocket message types
@@ -32,10 +32,10 @@ export const WebSocketMessageType = {
   BINARY: 'binary',
   PING: 'ping',
   PONG: 'pong',
-  CLOSE: 'close'
+  CLOSE: 'close',
 } as const;
 
-export type WebSocketMessageType = typeof WebSocketMessageType[keyof typeof WebSocketMessageType];
+export type WebSocketMessageType = (typeof WebSocketMessageType)[keyof typeof WebSocketMessageType];
 
 /**
  * WebSocket close codes (RFC 6455)
@@ -55,10 +55,10 @@ export const WebSocketCloseCode = {
   SERVICE_RESTART: 1012,
   TRY_AGAIN_LATER: 1013,
   BAD_GATEWAY: 1014,
-  TLS_HANDSHAKE: 1015
+  TLS_HANDSHAKE: 1015,
 } as const;
 
-export type WebSocketCloseCode = typeof WebSocketCloseCode[keyof typeof WebSocketCloseCode];
+export type WebSocketCloseCode = (typeof WebSocketCloseCode)[keyof typeof WebSocketCloseCode];
 
 /**
  * WebSocket authentication methods
@@ -69,49 +69,56 @@ export const WebSocketAuthMethod = {
   HEADER: 'header',
   QUERY: 'query',
   PROTOCOL: 'protocol',
-  CUSTOM: 'custom'
+  CUSTOM: 'custom',
 } as const;
 
-export type WebSocketAuthMethod = typeof WebSocketAuthMethod[keyof typeof WebSocketAuthMethod];
+export type WebSocketAuthMethod = (typeof WebSocketAuthMethod)[keyof typeof WebSocketAuthMethod];
 
 /**
  * WebSocket authentication configuration
+ *
+ * @example
  */
 export interface WebSocketAuthenticationConfig extends AuthenticationConfig {
   // WebSocket-specific auth methods
   method: WebSocketAuthMethod;
-  
+
   // Query parameters for authentication
   query?: Record<string, string>;
-  
+
   // Headers for initial handshake authentication
   headers?: Record<string, string>;
-  
+
   // Subprotocols for authentication
   protocols?: string[];
-  
+
   // Custom authentication function
-  customAuth?: (url: string, protocols?: string[]) => { 
-    url: string; 
-    protocols?: string[]; 
+  customAuth?: (
+    url: string,
+    protocols?: string[]
+  ) => {
+    url: string;
+    protocols?: string[];
     headers?: Record<string, string>;
   };
 }
 
 /**
  * WebSocket retry configuration
+ *
+ * @example
  */
 export interface WebSocketRetryConfig extends RetryConfig {
   // Reconnection-specific settings
   reconnectOnClose?: boolean;
   reconnectOnError?: boolean;
-  
+
   // Close codes to retry on
   retryOnCloseCodes?: WebSocketCloseCode[];
-  
+
   // Maximum reconnection interval
   maxReconnectInterval?: number;
-  
+
   // Jitter for reconnection delays
   jitter?: boolean;
   jitterFactor?: number; // 0.0 to 1.0
@@ -119,6 +126,8 @@ export interface WebSocketRetryConfig extends RetryConfig {
 
 /**
  * WebSocket heartbeat configuration
+ *
+ * @example
  */
 export interface WebSocketHeartbeatConfig {
   enabled: boolean;
@@ -130,6 +139,8 @@ export interface WebSocketHeartbeatConfig {
 
 /**
  * WebSocket message queue configuration
+ *
+ * @example
  */
 export interface WebSocketMessageQueueConfig {
   enabled: boolean;
@@ -142,6 +153,8 @@ export interface WebSocketMessageQueueConfig {
 
 /**
  * WebSocket compression configuration
+ *
+ * @example
  */
 export interface WebSocketCompressionConfig {
   enabled: boolean;
@@ -154,15 +167,17 @@ export interface WebSocketCompressionConfig {
 
 /**
  * Complete WebSocket client configuration
+ *
+ * @example
  */
 export interface WebSocketClientConfig extends ClientConfig {
   // Connection settings
   url: string;
   protocols?: string[];
-  
+
   // Authentication
   authentication?: WebSocketAuthenticationConfig;
-  
+
   // Retry and reconnection
   retry?: WebSocketRetryConfig;
   reconnection?: {
@@ -173,46 +188,48 @@ export interface WebSocketClientConfig extends ClientConfig {
     backoff: 'linear' | 'exponential';
     jitter?: boolean;
   };
-  
+
   // Heartbeat/keepalive
   heartbeat?: WebSocketHeartbeatConfig;
-  
+
   // Message queuing
   messageQueue?: WebSocketMessageQueueConfig;
-  
+
   // Performance settings
   compression?: WebSocketCompressionConfig;
   maxPayload?: number;
   maxFrameSize?: number;
-  
+
   // Timeouts
   connectionTimeout?: number;
   handshakeTimeout?: number;
   closeTimeout?: number;
-  
+
   // WebSocket options
   perMessageDeflate?: boolean;
   followRedirects?: boolean;
   maxRedirects?: number;
-  
+
   // Node.js specific options
   agent?: any; // HTTP agent for Node.js
-  
+
   // Binary handling
   binaryType?: 'nodebuffer' | 'arraybuffer' | 'fragments';
-  
+
   // Extensions
   extensions?: string[];
-  
+
   // Origin for browser environments
   origin?: string;
-  
+
   // Custom headers for handshake
   headers?: Record<string, string>;
 }
 
 /**
  * WebSocket request options
+ *
+ * @example
  */
 export interface WebSocketRequestOptions extends RequestOptions {
   messageType?: WebSocketMessageType;
@@ -227,6 +244,8 @@ export interface WebSocketRequestOptions extends RequestOptions {
 
 /**
  * WebSocket response
+ *
+ * @example
  */
 export interface WebSocketResponse<T = any> extends ClientResponse<T> {
   messageType: WebSocketMessageType;
@@ -239,6 +258,8 @@ export interface WebSocketResponse<T = any> extends ClientResponse<T> {
 
 /**
  * WebSocket message structure
+ *
+ * @example
  */
 export interface WebSocketMessage<T = any> {
   id?: string;
@@ -247,7 +268,7 @@ export interface WebSocketMessage<T = any> {
   timestamp?: number;
   priority?: 'high' | 'normal' | 'low';
   metadata?: Record<string, any>;
-  
+
   // Response handling
   expectResponse?: boolean;
   responseTimeout?: number;
@@ -256,6 +277,8 @@ export interface WebSocketMessage<T = any> {
 
 /**
  * WebSocket connection info
+ *
+ * @example
  */
 export interface WebSocketConnectionInfo {
   id: string;
@@ -266,21 +289,21 @@ export interface WebSocketConnectionInfo {
   bufferedAmount: number;
   connectTime: Date;
   lastActivity: Date;
-  
+
   // Statistics
   messagesSent: number;
   messagesReceived: number;
   bytesSent: number;
   bytesReceived: number;
-  
+
   // Connection quality
   latency?: number;
   packetLoss?: number;
-  
+
   // Authentication info
   authenticated: boolean;
   authMethod?: WebSocketAuthMethod;
-  
+
   // Error tracking
   errors: Array<{
     timestamp: Date;
@@ -291,6 +314,8 @@ export interface WebSocketConnectionInfo {
 
 /**
  * WebSocket event types
+ *
+ * @example
  */
 export interface WebSocketEvents {
   // Connection events
@@ -298,38 +323,40 @@ export interface WebSocketEvents {
   connected: () => void;
   disconnected: (code: number, reason: string) => void;
   error: (error: Error) => void;
-  
+
   // Reconnection events
   reconnecting: (attempt: number) => void;
   reconnected: () => void;
   reconnectFailed: (attempts: number) => void;
-  
+
   // Message events
   message: (data: any, metadata?: any) => void;
   binaryMessage: (data: ArrayBuffer, metadata?: any) => void;
-  
+
   // Heartbeat events
   ping: (data?: any) => void;
   pong: (data?: any) => void;
   heartbeat: (data?: any) => void;
-  
+
   // Queue events
   queueFull: (queueSize: number) => void;
   queueDrained: () => void;
-  
+
   // Authentication events
   authenticated: (method: WebSocketAuthMethod) => void;
   authenticationFailed: (error: Error) => void;
-  
+
   // State events
   stateChange: (oldState: WebSocketReadyState, newState: WebSocketReadyState) => void;
-  
+
   // Custom events
   [eventName: string]: (...args: any[]) => void;
 }
 
 /**
  * WebSocket metrics
+ *
+ * @example
  */
 export interface WebSocketMetrics {
   // Connection metrics
@@ -337,59 +364,61 @@ export interface WebSocketMetrics {
   connectionsClosed: number;
   connectionsActive: number;
   connectionDuration: number; // average in ms
-  
+
   // Message metrics
   messagesSent: number;
   messagesReceived: number;
   messagesSentPerSecond: number;
   messagesReceivedPerSecond: number;
-  
+
   // Data metrics
   bytesSent: number;
   bytesReceived: number;
   bytesSentPerSecond: number;
   bytesReceivedPerSecond: number;
-  
+
   // Performance metrics
   averageLatency: number;
   p95Latency: number;
   p99Latency: number;
   packetLoss: number;
-  
+
   // Error metrics
   connectionErrors: number;
   messageErrors: number;
   timeoutErrors: number;
   authenticationErrors: number;
-  
+
   // Queue metrics
   messagesQueued: number;
   queueSize: number;
   queueOverflows: number;
-  
+
   // Compression metrics (if enabled)
   compressionRatio?: number;
   compressedMessages?: number;
-  
+
   timestamp: Date;
 }
 
 /**
  * WebSocket connection pool configuration
+ *
+ * @example
  */
 export interface WebSocketPoolConfig {
   maxConnections: number;
   minConnections?: number;
   connectionTimeout: number;
   idleTimeout: number;
-  
+
   // Load balancing
   loadBalancingStrategy: 'round-robin' | 'least-connections' | 'random' | 'weighted';
-  
+
   // Health checks
   healthCheckInterval: number;
   healthCheckTimeout: number;
-  
+
   // Connection management
   enableConnectionReuse: boolean;
   connectionIdleTime: number;
@@ -398,6 +427,8 @@ export interface WebSocketPoolConfig {
 
 /**
  * WebSocket protocol extensions
+ *
+ * @example
  */
 export interface WebSocketExtension {
   name: string;
@@ -408,6 +439,8 @@ export interface WebSocketExtension {
 
 /**
  * WebSocket security configuration
+ *
+ * @example
  */
 export interface WebSocketSecurityConfig {
   // TLS settings
@@ -418,13 +451,13 @@ export interface WebSocketSecurityConfig {
     key?: string;
     passphrase?: string;
   };
-  
+
   // CORS settings for server-side
   cors?: {
     origin?: string | string[];
     credentials?: boolean;
   };
-  
+
   // Rate limiting
   rateLimit?: {
     enabled: boolean;
@@ -432,7 +465,7 @@ export interface WebSocketSecurityConfig {
     burstSize: number;
     windowSize: number;
   };
-  
+
   // Message validation
   validation?: {
     maxMessageSize: number;
@@ -448,18 +481,18 @@ export const WebSocketTypeGuards = {
   isWebSocketConfig: (config: any): config is WebSocketClientConfig => {
     return config && typeof config.url === 'string';
   },
-  
+
   isWebSocketMessage: (message: any): message is WebSocketMessage => {
     return message && typeof message === 'object' && 'data' in message;
   },
-  
+
   isValidReadyState: (state: any): state is WebSocketReadyState => {
     return typeof state === 'number' && state >= 0 && state <= 3;
   },
-  
+
   isValidCloseCode: (code: any): code is WebSocketCloseCode => {
     return typeof code === 'number' && Object.values(WebSocketCloseCode).includes(code);
-  }
+  },
 };
 
 /**
@@ -472,30 +505,42 @@ export const WebSocketUtils = {
   generateMessageId: (): string => {
     return `ws-msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   },
-  
+
   /**
    * Generate a unique connection ID
    */
   generateConnectionId: (): string => {
     return `ws-conn-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   },
-  
+
   /**
    * Calculate exponential backoff delay
+   *
+   * @param attempt
+   * @param baseDelay
+   * @param maxDelay
+   * @param jitter
    */
-  calculateBackoffDelay: (attempt: number, baseDelay: number, maxDelay: number, jitter = false): number => {
-    let delay = Math.min(baseDelay * Math.pow(2, attempt), maxDelay);
-    
+  calculateBackoffDelay: (
+    attempt: number,
+    baseDelay: number,
+    maxDelay: number,
+    jitter = false
+  ): number => {
+    let delay = Math.min(baseDelay * 2 ** attempt, maxDelay);
+
     if (jitter) {
       // Add jitter to prevent thundering herd
       delay = delay * (0.5 + Math.random() * 0.5);
     }
-    
+
     return Math.floor(delay);
   },
-  
+
   /**
    * Check if URL is a valid WebSocket URL
+   *
+   * @param url
    */
   isValidWebSocketUrl: (url: string): boolean => {
     try {
@@ -505,43 +550,68 @@ export const WebSocketUtils = {
       return false;
     }
   },
-  
+
   /**
    * Get human-readable close code description
+   *
+   * @param code
    */
   getCloseCodeDescription: (code: number): string => {
     switch (code) {
-      case WebSocketCloseCode.NORMAL_CLOSURE: return 'Normal Closure';
-      case WebSocketCloseCode.GOING_AWAY: return 'Going Away';
-      case WebSocketCloseCode.PROTOCOL_ERROR: return 'Protocol Error';
-      case WebSocketCloseCode.UNSUPPORTED_DATA: return 'Unsupported Data';
-      case WebSocketCloseCode.NO_STATUS_RECEIVED: return 'No Status Received';
-      case WebSocketCloseCode.ABNORMAL_CLOSURE: return 'Abnormal Closure';
-      case WebSocketCloseCode.INVALID_FRAME_PAYLOAD_DATA: return 'Invalid Frame Payload Data';
-      case WebSocketCloseCode.POLICY_VIOLATION: return 'Policy Violation';
-      case WebSocketCloseCode.MESSAGE_TOO_BIG: return 'Message Too Big';
-      case WebSocketCloseCode.MANDATORY_EXTENSION: return 'Mandatory Extension';
-      case WebSocketCloseCode.INTERNAL_SERVER_ERROR: return 'Internal Server Error';
-      case WebSocketCloseCode.SERVICE_RESTART: return 'Service Restart';
-      case WebSocketCloseCode.TRY_AGAIN_LATER: return 'Try Again Later';
-      case WebSocketCloseCode.BAD_GATEWAY: return 'Bad Gateway';
-      case WebSocketCloseCode.TLS_HANDSHAKE: return 'TLS Handshake';
-      default: return `Unknown (${code})`;
+      case WebSocketCloseCode.NORMAL_CLOSURE:
+        return 'Normal Closure';
+      case WebSocketCloseCode.GOING_AWAY:
+        return 'Going Away';
+      case WebSocketCloseCode.PROTOCOL_ERROR:
+        return 'Protocol Error';
+      case WebSocketCloseCode.UNSUPPORTED_DATA:
+        return 'Unsupported Data';
+      case WebSocketCloseCode.NO_STATUS_RECEIVED:
+        return 'No Status Received';
+      case WebSocketCloseCode.ABNORMAL_CLOSURE:
+        return 'Abnormal Closure';
+      case WebSocketCloseCode.INVALID_FRAME_PAYLOAD_DATA:
+        return 'Invalid Frame Payload Data';
+      case WebSocketCloseCode.POLICY_VIOLATION:
+        return 'Policy Violation';
+      case WebSocketCloseCode.MESSAGE_TOO_BIG:
+        return 'Message Too Big';
+      case WebSocketCloseCode.MANDATORY_EXTENSION:
+        return 'Mandatory Extension';
+      case WebSocketCloseCode.INTERNAL_SERVER_ERROR:
+        return 'Internal Server Error';
+      case WebSocketCloseCode.SERVICE_RESTART:
+        return 'Service Restart';
+      case WebSocketCloseCode.TRY_AGAIN_LATER:
+        return 'Try Again Later';
+      case WebSocketCloseCode.BAD_GATEWAY:
+        return 'Bad Gateway';
+      case WebSocketCloseCode.TLS_HANDSHAKE:
+        return 'TLS Handshake';
+      default:
+        return `Unknown (${code})`;
     }
   },
-  
+
   /**
    * Get human-readable ready state description
+   *
+   * @param state
    */
   getReadyStateDescription: (state: WebSocketReadyState): string => {
     switch (state) {
-      case WebSocketReadyState.CONNECTING: return 'Connecting';
-      case WebSocketReadyState.OPEN: return 'Open';
-      case WebSocketReadyState.CLOSING: return 'Closing';
-      case WebSocketReadyState.CLOSED: return 'Closed';
-      default: return `Unknown (${state})`;
+      case WebSocketReadyState.CONNECTING:
+        return 'Connecting';
+      case WebSocketReadyState.OPEN:
+        return 'Open';
+      case WebSocketReadyState.CLOSING:
+        return 'Closing';
+      case WebSocketReadyState.CLOSED:
+        return 'Closed';
+      default:
+        return `Unknown (${state})`;
     }
-  }
+  },
 };
 
 export default {
@@ -550,5 +620,5 @@ export default {
   WebSocketCloseCode,
   WebSocketAuthMethod,
   WebSocketTypeGuards,
-  WebSocketUtils
+  WebSocketUtils,
 };

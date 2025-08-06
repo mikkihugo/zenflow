@@ -75,6 +75,15 @@ export interface SwarmDashboardProps {
  * Swarm Dashboard Screen Component
  *
  * Provides real-time monitoring of swarm activities.
+ *
+ * @param root0
+ * @param root0.swarmStatus
+ * @param root0.metrics
+ * @param root0.agents
+ * @param root0.tasks
+ * @param root0.onNavigate
+ * @param root0.onExit
+ * @param root0.showHeader
  */
 export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
   swarmStatus,

@@ -14,6 +14,9 @@ export interface ModeDetectionResult {
 
 /**
  * Detect terminal mode based on commands and flags
+ *
+ * @param commands
+ * @param flags
  */
 export function detectMode(commands: string[], flags: Record<string, any>): TerminalMode {
   // Force interactive mode if --ui or --tui flag is present
@@ -42,6 +45,9 @@ export function detectMode(commands: string[], flags: Record<string, any>): Term
 
 /**
  * Get detailed mode detection result with reasoning
+ *
+ * @param commands
+ * @param flags
  */
 export function detectModeWithReason(
   commands: string[],

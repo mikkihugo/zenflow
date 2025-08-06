@@ -53,6 +53,8 @@ export class TemplateLoader {
 
   /**
    * Load a specific template file
+   *
+   * @param filename
    */
   async loadTemplate(filename: string): Promise<AgentTemplate | null> {
     try {
@@ -77,6 +79,9 @@ export class TemplateLoader {
 
   /**
    * Parse markdown template files
+   *
+   * @param filename
+   * @param content
    */
   private parseMarkdownTemplate(filename: string, content: string): AgentTemplate {
     // Extract agent type from filename
@@ -143,6 +148,9 @@ export class TemplateLoader {
 
   /**
    * Parse YAML template files (future enhancement)
+   *
+   * @param filename
+   * @param _content
    */
   private parseYamlTemplate(filename: string, _content: string): AgentTemplate {
     // TODO: Implement YAML parsing when needed
@@ -152,6 +160,9 @@ export class TemplateLoader {
 
   /**
    * Parse JSON template files
+   *
+   * @param filename
+   * @param content
    */
   private parseJsonTemplate(filename: string, content: string): AgentTemplate {
     try {
@@ -198,6 +209,8 @@ export class TemplateLoader {
 
   /**
    * Extract agent type from filename
+   *
+   * @param filename
    */
   private extractAgentTypeFromFilename(filename: string): string {
     return filename
@@ -208,6 +221,8 @@ export class TemplateLoader {
 
   /**
    * Format agent name from type
+   *
+   * @param type
    */
   private formatAgentName(type: string): string {
     return `${type
@@ -218,6 +233,8 @@ export class TemplateLoader {
 
   /**
    * Create default capabilities based on agent type
+   *
+   * @param type
    */
   private createDefaultCapabilities(type: string): any {
     const capabilityMap: Record<string, any> = {
@@ -301,6 +318,8 @@ export class TemplateLoader {
 
   /**
    * Parse expertise string into object
+   *
+   * @param expertiseStr
    */
   private parseExpertise(expertiseStr: string): Record<string, number> {
     if (!expertiseStr) return {};
@@ -323,6 +342,8 @@ export class TemplateLoader {
 
   /**
    * Parse preferences string into object
+   *
+   * @param preferencesStr
    */
   private parsePreferences(preferencesStr: string): Record<string, any> {
     if (!preferencesStr) return {};
@@ -345,6 +366,8 @@ export class TemplateLoader {
 
   /**
    * Create basic template fallback
+   *
+   * @param type
    */
   private createBasicTemplate(type: string): AgentTemplate {
     return {
@@ -382,6 +405,8 @@ export class TemplateLoader {
 
   /**
    * Get loaded template by type
+   *
+   * @param type
    */
   getTemplate(type: string): AgentTemplate | undefined {
     return this.loadedTemplates.get(type);

@@ -1,17 +1,15 @@
 /**
  * Swarm MCP Tools - Core Swarm Management
- * 
+ *
  * Swarm coordination tools using clean DAL Factory integration.
  * Provides essential swarm functionality for CLI and MCP integration.
  */
 
 import { createLogger } from '../../../core/logger';
-import { DALFactory } from '../../../database/factory';
 
 const logger = createLogger({ prefix: 'SwarmTools' });
 
 export class SwarmTools {
-  private dalFactory: DALFactory | null = null;
   public tools: Record<string, Function>;
 
   constructor() {
@@ -32,33 +30,14 @@ export class SwarmTools {
   }
 
   /**
-   * Initialize DAL Factory (lazy loading)
-   */
-  private async getDalFactory(): Promise<DALFactory> {
-    if (!this.dalFactory) {
-      // Import DAL Factory dependencies
-      const { DIContainer } = await import('../../../di/container/di-container');
-      const { CORE_TOKENS } = await import('../../../di/tokens/core-tokens');
-      
-      // Create basic DI container
-      const container = new DIContainer();
-      
-      // Register basic services
-      container.register(CORE_TOKENS.Logger, () => logger);
-      container.register(CORE_TOKENS.Config, () => ({}));
-      
-      this.dalFactory = container.resolve(DALFactory);
-    }
-    return this.dalFactory;
-  }
-
-  /**
    * Get swarm system status
+   *
+   * @param _params
    */
   async swarmStatus(_params: any = {}): Promise<any> {
     try {
       logger.info('Getting swarm status');
-      
+
       // In the future, this could query actual swarm data from the database
       const status = {
         timestamp: new Date().toISOString(),
@@ -79,7 +58,7 @@ export class SwarmTools {
         },
         version: '2.0.0-alpha.73',
       };
-      
+
       logger.info('Swarm status retrieved successfully');
       return status;
     } catch (error) {
@@ -90,14 +69,16 @@ export class SwarmTools {
 
   /**
    * Initialize new swarm
+   *
+   * @param params
    */
   async swarmInit(params: any = {}): Promise<any> {
     try {
       const { name = 'New Swarm', topology = 'auto', maxAgents = 4 } = params;
       logger.info(`Initializing swarm: ${name}`, { topology, maxAgents });
-      
+
       const swarmId = `swarm-${Date.now()}`;
-      
+
       // In the future, this could create actual swarm records in the database
       const swarm = {
         id: swarmId,
@@ -108,7 +89,7 @@ export class SwarmTools {
         createdAt: new Date().toISOString(),
         agents: [],
       };
-      
+
       logger.info(`Swarm initialized: ${swarmId}`);
       return swarm;
     } catch (error) {
@@ -119,11 +100,13 @@ export class SwarmTools {
 
   /**
    * Monitor swarm activity
+   *
+   * @param _params
    */
   async swarmMonitor(_params: any = {}): Promise<any> {
     try {
       logger.info('Getting swarm monitoring data');
-      
+
       const monitoring = {
         timestamp: new Date().toISOString(),
         activeSwarms: [],
@@ -138,7 +121,7 @@ export class SwarmTools {
           errorRate: 0.0,
         },
       };
-      
+
       return monitoring;
     } catch (error) {
       logger.error('Failed to get swarm monitoring data:', error);
@@ -148,15 +131,17 @@ export class SwarmTools {
 
   /**
    * Spawn new agent
+   *
+   * @param params
    */
   async agentSpawn(params: any = {}): Promise<any> {
     try {
       const { type = 'general', name } = params;
       const agentId = `agent-${type}-${Date.now()}`;
       const agentName = name || `${type}-agent`;
-      
+
       logger.info(`Spawning agent: ${agentName}`, { type, id: agentId });
-      
+
       const agent = {
         id: agentId,
         name: agentName,
@@ -165,7 +150,7 @@ export class SwarmTools {
         spawnedAt: new Date().toISOString(),
         capabilities: [type],
       };
-      
+
       logger.info(`Agent spawned: ${agentId}`);
       return agent;
     } catch (error) {
@@ -176,11 +161,13 @@ export class SwarmTools {
 
   /**
    * List active agents
+   *
+   * @param _params
    */
   async agentList(_params: any = {}): Promise<any> {
     try {
       logger.info('Listing active agents');
-      
+
       // In the future, this could query actual agent data from the database
       const agents = {
         total: 0,
@@ -188,7 +175,7 @@ export class SwarmTools {
         agents: [],
         timestamp: new Date().toISOString(),
       };
-      
+
       return agents;
     } catch (error) {
       logger.error('Failed to list agents:', error);
@@ -198,11 +185,13 @@ export class SwarmTools {
 
   /**
    * Get agent metrics
+   *
+   * @param _params
    */
   async agentMetrics(_params: any = {}): Promise<any> {
     try {
       logger.info('Getting agent metrics');
-      
+
       const metrics = {
         totalAgents: 0,
         activeAgents: 0,
@@ -212,7 +201,7 @@ export class SwarmTools {
         errorRate: 0.0,
         timestamp: new Date().toISOString(),
       };
-      
+
       return metrics;
     } catch (error) {
       logger.error('Failed to get agent metrics:', error);
@@ -222,14 +211,16 @@ export class SwarmTools {
 
   /**
    * Orchestrate task
+   *
+   * @param params
    */
   async taskOrchestrate(params: any = {}): Promise<any> {
     try {
       const { task = 'Generic Task', strategy = 'auto' } = params;
       const taskId = `task-${Date.now()}`;
-      
+
       logger.info(`Orchestrating task: ${task}`, { taskId, strategy });
-      
+
       const orchestration = {
         id: taskId,
         task,
@@ -238,7 +229,7 @@ export class SwarmTools {
         createdAt: new Date().toISOString(),
         assignedAgents: [],
       };
-      
+
       logger.info(`Task orchestrated: ${taskId}`);
       return orchestration;
     } catch (error) {
@@ -249,12 +240,14 @@ export class SwarmTools {
 
   /**
    * Get task status
+   *
+   * @param params
    */
   async taskStatus(params: any = {}): Promise<any> {
     try {
       const { taskId = 'unknown' } = params;
       logger.info(`Getting task status: ${taskId}`);
-      
+
       const status = {
         id: taskId,
         status: 'completed',
@@ -263,7 +256,7 @@ export class SwarmTools {
         completedAt: new Date().toISOString(),
         duration: 0,
       };
-      
+
       return status;
     } catch (error) {
       logger.error('Failed to get task status:', error);
@@ -273,12 +266,14 @@ export class SwarmTools {
 
   /**
    * Get task results
+   *
+   * @param params
    */
   async taskResults(params: any = {}): Promise<any> {
     try {
       const { taskId = 'unknown' } = params;
       logger.info(`Getting task results: ${taskId}`);
-      
+
       const results = {
         id: taskId,
         results: {
@@ -288,7 +283,7 @@ export class SwarmTools {
         },
         timestamp: new Date().toISOString(),
       };
-      
+
       return results;
     } catch (error) {
       logger.error('Failed to get task results:', error);
@@ -298,11 +293,13 @@ export class SwarmTools {
 
   /**
    * Get memory usage
+   *
+   * @param _params
    */
   async memoryUsage(_params: any = {}): Promise<any> {
     try {
       logger.info('Getting memory usage');
-      
+
       const memory = {
         system: process.memoryUsage(),
         swarms: {
@@ -312,7 +309,7 @@ export class SwarmTools {
         },
         timestamp: new Date().toISOString(),
       };
-      
+
       return memory;
     } catch (error) {
       logger.error('Failed to get memory usage:', error);
@@ -322,28 +319,30 @@ export class SwarmTools {
 
   /**
    * Run benchmark
+   *
+   * @param _params
    */
   async benchmarkRun(_params: any = {}): Promise<any> {
     try {
       logger.info('Running benchmark');
-      
+
       const startTime = process.hrtime.bigint();
-      
+
       // Simple benchmark
       for (let i = 0; i < 1000; i++) {
         Math.random();
       }
-      
+
       const endTime = process.hrtime.bigint();
       const duration = Number(endTime - startTime) / 1000000; // Convert to milliseconds
-      
+
       const benchmark = {
         duration,
         operations: 1000,
         operationsPerSecond: 1000 / (duration / 1000),
         timestamp: new Date().toISOString(),
       };
-      
+
       logger.info(`Benchmark completed: ${duration}ms`);
       return benchmark;
     } catch (error) {
@@ -354,11 +353,13 @@ export class SwarmTools {
 
   /**
    * Detect available features
+   *
+   * @param _params
    */
   async featuresDetect(_params: any = {}): Promise<any> {
     try {
       logger.info('Detecting features');
-      
+
       const features = {
         swarmCoordination: true,
         agentSpawning: true,
@@ -370,7 +371,7 @@ export class SwarmTools {
         version: '2.0.0-alpha.73',
         timestamp: new Date().toISOString(),
       };
-      
+
       return features;
     } catch (error) {
       logger.error('Failed to detect features:', error);

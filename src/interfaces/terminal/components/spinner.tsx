@@ -22,6 +22,13 @@ export interface SpinnerProps {
  *
  * Displays animated loading spinner with both standard and swarm-specific animations.
  * Supports customizable text, colors, and animation speed.
+ *
+ * @param root0
+ * @param root0.text
+ * @param root0.type
+ * @param root0.color
+ * @param root0.speed
+ * @param root0.testId
  */
 export const Spinner: React.FC<SpinnerProps> = ({
   text = 'Loading...',

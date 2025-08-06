@@ -3,7 +3,6 @@
  * Real-time resource monitoring and threshold management
  */
 
-import type { ResourceMonitor } from '../interfaces';
 import type { LoadMetrics } from '../types';
 
 export class ResourceMonitor implements ResourceMonitor {

@@ -31,6 +31,10 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Select the best agent using weighted round robin
+   *
+   * @param _task
+   * @param availableAgents
+   * @param metrics
    */
   public async selectAgent(
     _task: Task,
@@ -96,6 +100,8 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Update algorithm configuration
+   *
+   * @param config
    */
   public async updateConfiguration(config: Record<string, any>): Promise<void> {
     this.config = { ...this.config, ...config };
@@ -118,6 +124,9 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Update weights based on current performance metrics
+   *
+   * @param agents
+   * @param metrics
    */
   public async updateWeights(agents: Agent[], metrics: Map<string, LoadMetrics>): Promise<void> {
     await this.updateWeightsFromMetrics(agents, metrics);
@@ -125,6 +134,11 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Handle task completion to adjust weights
+   *
+   * @param agentId
+   * @param _task
+   * @param _duration
+   * @param success
    */
   public async onTaskComplete(
     agentId: string,
@@ -156,6 +170,9 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Handle agent failure
+   *
+   * @param agentId
+   * @param _error
    */
   public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
     const weight = this.getOrCreateWeight(agentId);
@@ -170,6 +187,8 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Get or create weight entry for an agent
+   *
+   * @param agentId
    */
   private getOrCreateWeight(agentId: string): AgentWeight {
     if (!this.weights.has(agentId)) {
@@ -188,6 +207,9 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Update weights based on performance metrics
+   *
+   * @param agents
+   * @param metrics
    */
   private async updateWeightsFromMetrics(
     agents: Agent[],
@@ -220,6 +242,8 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Calculate performance score from metrics
+   *
+   * @param metrics
    */
   private calculatePerformanceScore(metrics: LoadMetrics): number {
     // Normalize metrics to 0-1 range and calculate composite score
@@ -241,6 +265,8 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Update effective weight considering recent performance
+   *
+   * @param weight
    */
   private updateEffectiveWeight(weight: AgentWeight): void {
     const now = new Date();
@@ -263,6 +289,10 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Calculate confidence in the selection
+   *
+   * @param selectedAgent
+   * @param availableAgents
+   * @param _metrics
    */
   private calculateConfidence(
     selectedAgent: Agent,
@@ -288,6 +318,10 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Get alternative agents sorted by preference
+   *
+   * @param selectedAgent
+   * @param availableAgents
+   * @param count
    */
   private getAlternativeAgents(
     selectedAgent: Agent,
@@ -306,6 +340,9 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Estimate latency for an agent
+   *
+   * @param agent
+   * @param metrics
    */
   private estimateLatency(agent: Agent, metrics: Map<string, LoadMetrics>): number {
     const agentMetrics = metrics.get(agent.id);
@@ -316,6 +353,9 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Estimate quality for an agent
+   *
+   * @param agent
+   * @param metrics
    */
   private estimateQuality(agent: Agent, metrics: Map<string, LoadMetrics>): number {
     const agentMetrics = metrics.get(agent.id);
@@ -326,6 +366,8 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Calculate variance in weights
+   *
+   * @param weights
    */
   private calculateWeightVariance(weights: AgentWeight[]): number {
     if (weights.length === 0) return 0;
@@ -338,6 +380,8 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Calculate overall success rate
+   *
+   * @param weights
    */
   private calculateOverallSuccessRate(weights: AgentWeight[]): number {
     const totalSuccess = weights.reduce((sum, w) => sum + w.successCount, 0);

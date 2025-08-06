@@ -24,6 +24,8 @@ export interface IEventBus {
 /**
  * Unified Event Bus implementation
  * Extends Node.js EventEmitter with additional features
+ *
+ * @example
  */
 export class EventBus extends EventEmitter implements IEventBus {
   private static instance: EventBus | null = null;
@@ -59,6 +61,8 @@ export class EventBus extends EventEmitter implements IEventBus {
 
   /**
    * Get singleton instance
+   *
+   * @param config
    */
   static getInstance(config?: Partial<EventBusConfig>): EventBus {
     if (!EventBus.instance) {
@@ -69,6 +73,9 @@ export class EventBus extends EventEmitter implements IEventBus {
 
   /**
    * Type-safe emit with error handling and middleware support
+   *
+   * @param event
+   * @param payload
    */
   emit<T extends keyof EventMap>(event: T, payload: EventMap[T]): boolean {
     const startTime = Date.now();
@@ -104,6 +111,9 @@ export class EventBus extends EventEmitter implements IEventBus {
 
   /**
    * Type-safe event listener registration
+   *
+   * @param event
+   * @param listener
    */
   on<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
     super.on(event as string, listener as EventListenerAny);
@@ -113,6 +123,9 @@ export class EventBus extends EventEmitter implements IEventBus {
 
   /**
    * Type-safe once listener registration
+   *
+   * @param event
+   * @param listener
    */
   once<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
     super.once(event as string, listener as EventListenerAny);
@@ -122,6 +135,9 @@ export class EventBus extends EventEmitter implements IEventBus {
 
   /**
    * Type-safe event listener removal
+   *
+   * @param event
+   * @param listener
    */
   off<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
     super.off(event as string, listener as EventListenerAny);
@@ -131,6 +147,8 @@ export class EventBus extends EventEmitter implements IEventBus {
 
   /**
    * Add middleware for event processing
+   *
+   * @param middleware
    */
   use(middleware: EventMiddleware): void {
     this.middleware.push(middleware);
@@ -138,6 +156,8 @@ export class EventBus extends EventEmitter implements IEventBus {
 
   /**
    * Remove middleware
+   *
+   * @param middleware
    */
   removeMiddleware(middleware: EventMiddleware): void {
     const index = this.middleware.indexOf(middleware);
@@ -168,6 +188,9 @@ export class EventBus extends EventEmitter implements IEventBus {
 
   /**
    * Run middleware chain
+   *
+   * @param event
+   * @param payload
    */
   private runMiddleware<T extends keyof EventMap>(event: T, payload: EventMap[T]): void {
     let index = 0;
@@ -184,6 +207,8 @@ export class EventBus extends EventEmitter implements IEventBus {
 
   /**
    * Update processing time metrics
+   *
+   * @param processingTime
    */
   private updateProcessingTimeMetrics(processingTime: number): void {
     const totalTime =

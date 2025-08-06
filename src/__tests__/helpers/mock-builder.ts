@@ -24,6 +24,9 @@ export class MockBuilder {
 
   /**
    * Create a mock object for a class/interface - London School approach
+   *
+   * @param type
+   * @param config
    */
   create<T>(type: new (...args: any[]) => T, config: MockConfiguration = this.globalConfig): T {
     const mockObj: MockObject = {};
@@ -46,6 +49,9 @@ export class MockBuilder {
 
   /**
    * Create a partial mock with specific overrides
+   *
+   * @param overrides
+   * @param config
    */
   createPartial<T>(overrides: Partial<T>, config: MockConfiguration = this.globalConfig): T {
     const mockObj: MockObject = {};
@@ -68,6 +74,9 @@ export class MockBuilder {
 
   /**
    * Create spies on an existing object - Hybrid approach
+   *
+   * @param obj
+   * @param methods
    */
   createSpy<T extends object>(obj: T, methods?: (keyof T)[]): T {
     const spy = { ...obj };
@@ -157,6 +166,8 @@ export class MockBuilder {
 
   /**
    * Create expectation builders for London School interaction testing
+   *
+   * @param mock
    */
   createExpectations<T>(mock: T) {
     const expectations = {
@@ -203,6 +214,8 @@ export class MockBuilder {
 
   /**
    * Reset all mocks - useful for test isolation
+   *
+   * @param mocks
    */
   resetAllMocks(mocks: Record<string, any>) {
     Object.values(mocks).forEach((mock) => {

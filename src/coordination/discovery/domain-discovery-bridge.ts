@@ -14,7 +14,6 @@
  * - Maps documents to code domains using DomainAnalyzer
  * - Provides AGUI touchpoints for human validation
  * - Stores mappings in memory for continuous learning
- *
  * @example
  * ```typescript
  * const bridge = new DomainDiscoveryBridge(
@@ -51,6 +50,8 @@ const logger = createLogger({ prefix: 'DomainDiscoveryBridge' });
 
 /**
  * Represents a discovered domain with enriched metadata
+ *
+ * @example
  */
 export interface DiscoveredDomain {
   /** Unique domain identifier */
@@ -79,6 +80,8 @@ export interface DiscoveredDomain {
 
 /**
  * Document relevance information for human validation
+ *
+ * @example
  */
 export interface DocumentRelevance {
   /** Document being evaluated */
@@ -95,6 +98,8 @@ export interface DocumentRelevance {
 
 /**
  * Mapping between a document and discovered domains
+ *
+ * @example
  */
 export interface DocumentDomainMapping {
   /** Document path */
@@ -113,6 +118,8 @@ export interface DocumentDomainMapping {
 
 /**
  * AGUI validation request structure
+ *
+ * @example
  */
 export interface AGUIValidationRequest {
   /** Type of validation being requested */
@@ -134,6 +141,8 @@ export interface AGUIValidationRequest {
 
 /**
  * Configuration for the Domain Discovery Bridge
+ *
+ * @example
  */
 export interface DomainDiscoveryBridgeConfig {
   /** Minimum confidence threshold for automatic domain creation */
@@ -154,6 +163,8 @@ export interface DomainDiscoveryBridgeConfig {
  * This class acts as the integration point between the document-driven development
  * workflow and automatic domain discovery. It analyzes documents for concepts,
  * maps them to code domains, and provides human validation touchpoints.
+ *
+ * @example
  */
 export class DomainDiscoveryBridge extends EventEmitter {
   private config: Required<DomainDiscoveryBridgeConfig>;

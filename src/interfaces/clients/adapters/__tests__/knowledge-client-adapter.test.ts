@@ -1,25 +1,23 @@
 /**
  * UACL Knowledge Client Adapter Tests
- * 
+ *
  * Tests for the Knowledge Client Adapter that converts FACT integration
  * to the UACL interface pattern. Uses hybrid TDD approach:
  * - TDD London (70%): Mock external dependencies, test interactions
  * - Classical TDD (30%): Test actual computation and data transformation
  */
 
-import { EventEmitter } from 'node:events';
+import { ProtocolTypes } from '../../types';
 import {
-  KnowledgeClientAdapter,
-  KnowledgeClientFactory,
-  createFACTClient,
   createCustomKnowledgeClient,
-  KnowledgeHelpers,
+  createFACTClient,
+  KnowledgeClientAdapter,
   type KnowledgeClientConfig,
+  KnowledgeClientFactory,
+  KnowledgeHelpers,
   type KnowledgeRequest,
-  type KnowledgeResponse
+  type KnowledgeResponse,
 } from '../knowledge-client-adapter';
-
-import { ClientStatuses, ProtocolTypes } from '../../types';
 
 // Mock the FACT integration
 jest.mock('../../../../knowledge/knowledge-client', () => {
@@ -29,12 +27,12 @@ jest.mock('../../../../knowledge/knowledge-client', () => {
     query: jest.fn(),
     getMetrics: jest.fn(),
     on: jest.fn(),
-    emit: jest.fn()
+    emit: jest.fn(),
   };
 
   return {
     FACTIntegration: jest.fn().mockImplementation(() => mockFACTIntegration),
-    __mockFACTIntegration: mockFACTIntegration
+    __mockFACTIntegration: mockFACTIntegration,
   };
 });
 
@@ -47,7 +45,7 @@ describe('KnowledgeClientAdapter', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     knowledgeConfig = {
       protocol: ProtocolTypes.CUSTOM,
       url: 'fact://test',
@@ -55,16 +53,16 @@ describe('KnowledgeClientAdapter', () => {
       factConfig: {
         factRepoPath: './test-fact',
         anthropicApiKey: 'test-key',
-        pythonPath: 'python3'
+        pythonPath: 'python3',
       },
       caching: {
         enabled: true,
         prefix: 'test-cache',
         ttlSeconds: 1800,
-        minTokens: 300
+        minTokens: 300,
       },
       tools: ['web_scraper', 'documentation_parser'],
-      timeout: 30000
+      timeout: 30000,
     };
 
     knowledgeClient = new KnowledgeClientAdapter(knowledgeConfig);
@@ -77,28 +75,31 @@ describe('KnowledgeClientAdapter', () => {
   });
 
   describe('TDD London Tests (Interaction-based)', () => {
-    
     describe('Client Initialization', () => {
       it('should create FACT integration with converted config', () => {
-        expect(require('../../../../knowledge/knowledge-client').FACTIntegration)
-          .toHaveBeenCalledWith({
-            pythonPath: 'python3',
-            factRepoPath: './test-fact',
-            anthropicApiKey: 'test-key',
-            cacheConfig: {
-              prefix: 'test-cache',
-              minTokens: 300,
-              maxSize: '100MB',
-              ttlSeconds: 1800
-            },
-            enableCache: true,
-            databasePath: './data/knowledge.db'
-          });
+        expect(
+          require('../../../../knowledge/knowledge-client').FACTIntegration
+        ).toHaveBeenCalledWith({
+          pythonPath: 'python3',
+          factRepoPath: './test-fact',
+          anthropicApiKey: 'test-key',
+          cacheConfig: {
+            prefix: 'test-cache',
+            minTokens: 300,
+            maxSize: '100MB',
+            ttlSeconds: 1800,
+          },
+          enableCache: true,
+          databasePath: './data/knowledge.db',
+        });
       });
 
       it('should setup event forwarding from FACT integration', () => {
         expect(__mockFACTIntegration.on).toHaveBeenCalledWith('initialized', expect.any(Function));
-        expect(__mockFACTIntegration.on).toHaveBeenCalledWith('queryCompleted', expect.any(Function));
+        expect(__mockFACTIntegration.on).toHaveBeenCalledWith(
+          'queryCompleted',
+          expect.any(Function)
+        );
         expect(__mockFACTIntegration.on).toHaveBeenCalledWith('queryError', expect.any(Function));
         expect(__mockFACTIntegration.on).toHaveBeenCalledWith('shutdown', expect.any(Function));
       });
@@ -123,7 +124,7 @@ describe('KnowledgeClientAdapter', () => {
       it('should emit connection events', async () => {
         const connectSpy = jest.fn();
         const disconnectSpy = jest.fn();
-        
+
         knowledgeClient.on('connect', connectSpy);
         knowledgeClient.on('disconnect', disconnectSpy);
 
@@ -160,7 +161,7 @@ describe('KnowledgeClientAdapter', () => {
           cacheHit: true,
           toolsUsed: ['web_scraper'],
           cost: 0.05,
-          metadata: { test: true }
+          metadata: { test: true },
         };
 
         __mockFACTIntegration.query.mockResolvedValueOnce(mockFACTResult);
@@ -169,7 +170,7 @@ describe('KnowledgeClientAdapter', () => {
           query: 'Test query',
           type: 'semantic',
           tools: ['web_scraper'],
-          metadata: { category: 'test' }
+          metadata: { category: 'test' },
         };
 
         await knowledgeClient.send(request);
@@ -178,7 +179,7 @@ describe('KnowledgeClientAdapter', () => {
           query: 'Test query',
           tools: ['web_scraper'],
           useCache: true,
-          metadata: { category: 'test' }
+          metadata: { category: 'test' },
         });
       });
 
@@ -188,7 +189,7 @@ describe('KnowledgeClientAdapter', () => {
 
         const request: KnowledgeRequest = {
           query: 'Test query',
-          type: 'semantic'
+          type: 'semantic',
         };
 
         await expect(knowledgeClient.send(request)).rejects.toThrow('Query failed');
@@ -202,7 +203,7 @@ describe('KnowledgeClientAdapter', () => {
     describe('IKnowledgeClient Interface Methods', () => {
       beforeEach(async () => {
         await knowledgeClient.connect();
-        
+
         // Mock FACT query response
         __mockFACTIntegration.query.mockResolvedValue({
           queryId: 'test-123',
@@ -210,7 +211,7 @@ describe('KnowledgeClientAdapter', () => {
           executionTimeMs: 1000,
           cacheHit: false,
           toolsUsed: ['web_scraper'],
-          metadata: {}
+          metadata: {},
         });
       });
 
@@ -222,7 +223,7 @@ describe('KnowledgeClientAdapter', () => {
           tools: ['web_scraper', 'documentation_parser'],
           useCache: true,
           metadata: { queryType: 'knowledge_query' },
-          options: { limit: 5 }
+          options: { limit: 5 },
         });
       });
 
@@ -234,7 +235,7 @@ describe('KnowledgeClientAdapter', () => {
           tools: ['web_scraper', 'documentation_parser'],
           useCache: true,
           metadata: { queryType: 'search' },
-          options: { fuzzy: true }
+          options: { fuzzy: true },
         });
       });
 
@@ -246,7 +247,7 @@ describe('KnowledgeClientAdapter', () => {
           tools: ['vector_search', 'semantic_analyzer'],
           useCache: true,
           metadata: { queryType: 'semantic_search', vectorSearch: true },
-          options: { vectorSearch: true }
+          options: { vectorSearch: true },
         });
       });
     });
@@ -259,31 +260,30 @@ describe('KnowledgeClientAdapter', () => {
 
       it('should perform health check query when connected', async () => {
         await knowledgeClient.connect();
-        
+
         __mockFACTIntegration.query.mockResolvedValueOnce({
           queryId: 'health-check',
           response: 'OK',
           executionTimeMs: 100,
           cacheHit: false,
           toolsUsed: [],
-          metadata: {}
+          metadata: {},
         });
 
         const health = await knowledgeClient.health();
-        
+
         expect(health).toBe(true);
         expect(__mockFACTIntegration.query).toHaveBeenCalledWith({
           query: 'health check',
           tools: [],
           useCache: true,
-          metadata: { type: 'health_check' }
+          metadata: { type: 'health_check' },
         });
       });
     });
   });
 
   describe('Classical TDD Tests (Result-based)', () => {
-    
     describe('Configuration Conversion', () => {
       it('should correctly convert UACL config to FACT config', () => {
         const uaclConfig: KnowledgeClientConfig = {
@@ -293,34 +293,35 @@ describe('KnowledgeClientAdapter', () => {
           factConfig: {
             factRepoPath: '/path/to/fact',
             anthropicApiKey: 'sk-test-key',
-            pythonPath: 'python3.9'
+            pythonPath: 'python3.9',
           },
           caching: {
             enabled: false,
             prefix: 'custom-prefix',
             ttlSeconds: 7200,
-            minTokens: 1000
+            minTokens: 1000,
           },
-          timeout: 45000
+          timeout: 45000,
         };
 
-        const adapter = new KnowledgeClientAdapter(uaclConfig);
-        
+        const _adapter = new KnowledgeClientAdapter(uaclConfig);
+
         // Verify the FACT integration was created with correct config
-        expect(require('../../../../knowledge/knowledge-client').FACTIntegration)
-          .toHaveBeenCalledWith({
-            pythonPath: 'python3.9',
-            factRepoPath: '/path/to/fact',
-            anthropicApiKey: 'sk-test-key',
-            cacheConfig: {
-              prefix: 'custom-prefix',
-              minTokens: 1000,
-              maxSize: '100MB',
-              ttlSeconds: 7200
-            },
-            enableCache: false,
-            databasePath: './data/knowledge.db'
-          });
+        expect(
+          require('../../../../knowledge/knowledge-client').FACTIntegration
+        ).toHaveBeenCalledWith({
+          pythonPath: 'python3.9',
+          factRepoPath: '/path/to/fact',
+          anthropicApiKey: 'sk-test-key',
+          cacheConfig: {
+            prefix: 'custom-prefix',
+            minTokens: 1000,
+            maxSize: '100MB',
+            ttlSeconds: 7200,
+          },
+          enableCache: false,
+          databasePath: './data/knowledge.db',
+        });
       });
 
       it('should use environment variable for API key when not provided', () => {
@@ -332,17 +333,20 @@ describe('KnowledgeClientAdapter', () => {
           url: 'fact://test',
           provider: 'fact',
           factConfig: {
-            factRepoPath: './fact'
+            factRepoPath: './fact',
             // No anthropicApiKey provided
-          }
+          },
         };
 
         new KnowledgeClientAdapter(uaclConfig);
 
-        expect(require('../../../../knowledge/knowledge-client').FACTIntegration)
-          .toHaveBeenCalledWith(expect.objectContaining({
-            anthropicApiKey: 'env-test-key'
-          }));
+        expect(
+          require('../../../../knowledge/knowledge-client').FACTIntegration
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            anthropicApiKey: 'env-test-key',
+          })
+        );
 
         process.env.ANTHROPIC_API_KEY = originalEnv;
       });
@@ -359,14 +363,14 @@ describe('KnowledgeClientAdapter', () => {
           cacheHit: true,
           toolsUsed: ['web_scraper', 'documentation_parser'],
           cost: 0.12,
-          metadata: { source: 'stackoverflow', tags: ['javascript', 'nodejs'] }
+          metadata: { source: 'stackoverflow', tags: ['javascript', 'nodejs'] },
         };
 
         __mockFACTIntegration.query.mockResolvedValueOnce(mockFACTResult);
 
         const request: KnowledgeRequest = {
           query: 'Test transformation',
-          type: 'semantic'
+          type: 'semantic',
         };
 
         const response = await knowledgeClient.send<KnowledgeResponse>(request);
@@ -381,7 +385,7 @@ describe('KnowledgeClientAdapter', () => {
           cost: 0.12,
           confidence: expect.any(Number),
           sources: expect.any(Array),
-          metadata: { source: 'stackoverflow', tags: ['javascript', 'nodejs'] }
+          metadata: { source: 'stackoverflow', tags: ['javascript', 'nodejs'] },
         });
 
         // Verify confidence calculation
@@ -390,15 +394,15 @@ describe('KnowledgeClientAdapter', () => {
 
         // Verify sources extraction
         expect(response.sources).toHaveLength(2);
-        expect(response.sources![0]).toEqual({
+        expect(response.sources?.[0]).toEqual({
           title: 'web_scraper result',
           url: 'fact://tool/web_scraper',
-          relevance: 1.0
+          relevance: 1.0,
         });
-        expect(response.sources![1]).toEqual({
+        expect(response.sources?.[1]).toEqual({
           title: 'documentation_parser result',
           url: 'fact://tool/documentation_parser',
-          relevance: 0.9
+          relevance: 0.9,
         });
       });
     });
@@ -412,7 +416,7 @@ describe('KnowledgeClientAdapter', () => {
           { time: 1000, success: true },
           { time: 2000, success: true },
           { time: 1500, success: false },
-          { time: 800, success: true }
+          { time: 800, success: true },
         ];
 
         for (const [index, req] of requests.entries()) {
@@ -423,7 +427,7 @@ describe('KnowledgeClientAdapter', () => {
               executionTimeMs: req.time,
               cacheHit: false,
               toolsUsed: [],
-              metadata: {}
+              metadata: {},
             });
           } else {
             __mockFACTIntegration.query.mockRejectedValueOnce(new Error('Query failed'));
@@ -431,7 +435,7 @@ describe('KnowledgeClientAdapter', () => {
 
           const request: KnowledgeRequest = {
             query: `Test query ${index}`,
-            type: 'exact'
+            type: 'exact',
           };
 
           try {
@@ -442,15 +446,15 @@ describe('KnowledgeClientAdapter', () => {
         }
 
         const metadata = await knowledgeClient.getMetadata();
-        
+
         // Verify metrics calculations
         expect(metadata.metrics.totalRequests).toBe(4);
         expect(metadata.metrics.successfulRequests).toBe(3);
         expect(metadata.metrics.failedRequests).toBe(1);
-        
+
         // Average response time should be (1000 + 2000 + 1500 + 800) / 4 = 1325
         expect(metadata.metrics.averageResponseTime).toBeCloseTo(1325, 0);
-        
+
         expect(metadata.metrics.lastRequestTime).toBeInstanceOf(Date);
         expect(metadata.metrics.uptime).toBeGreaterThan(0);
       });
@@ -466,7 +470,7 @@ describe('KnowledgeClientAdapter', () => {
           averageLatency: 1250,
           costSavings: 2.75,
           toolExecutions: 300,
-          errorRate: 0.05
+          errorRate: 0.05,
         };
 
         __mockFACTIntegration.getMetrics.mockResolvedValueOnce(mockFACTMetrics);
@@ -479,10 +483,10 @@ describe('KnowledgeClientAdapter', () => {
           lastUpdated: expect.any(Date),
           categories: {
             'fact-queries': 150,
-            'cached-results': Math.floor(150 * 0.65) // 97
+            'cached-results': Math.floor(150 * 0.65), // 97
           },
           averageResponseTime: 1250,
-          indexHealth: 1.0 // Error rate < 0.1, so health = 1.0
+          indexHealth: 1.0, // Error rate < 0.1, so health = 1.0
         });
 
         expect(stats.categories['cached-results']).toBe(97);
@@ -496,20 +500,20 @@ describe('KnowledgeClientAdapter', () => {
         const testCases = [
           {
             result: { cacheHit: true, toolsUsed: ['tool1', 'tool2'], executionTimeMs: 1000 },
-            expectedConfidence: 0.9 // 0.5 + 0.2 (cache) + 0.2 (tools)
+            expectedConfidence: 0.9, // 0.5 + 0.2 (cache) + 0.2 (tools)
           },
           {
             result: { cacheHit: false, toolsUsed: ['tool1'], executionTimeMs: 3000 },
-            expectedConfidence: 0.7 // 0.5 + 0.2 (tools)
+            expectedConfidence: 0.7, // 0.5 + 0.2 (tools)
           },
           {
             result: { cacheHit: true, toolsUsed: [], executionTimeMs: 8000 },
-            expectedConfidence: 0.7 // 0.5 + 0.2 (cache)
+            expectedConfidence: 0.7, // 0.5 + 0.2 (cache)
           },
           {
             result: { cacheHit: false, toolsUsed: [], executionTimeMs: 10000 },
-            expectedConfidence: 0.5 // Base confidence only
-          }
+            expectedConfidence: 0.5, // Base confidence only
+          },
         ];
 
         for (const [index, testCase] of testCases.entries()) {
@@ -517,12 +521,12 @@ describe('KnowledgeClientAdapter', () => {
             queryId: `confidence-test-${index}`,
             response: 'Test response',
             ...testCase.result,
-            metadata: {}
+            metadata: {},
           });
 
           const request: KnowledgeRequest = {
             query: `Confidence test ${index}`,
-            type: 'exact'
+            type: 'exact',
           };
 
           const response = await knowledgeClient.send<KnowledgeResponse>(request);
@@ -550,11 +554,7 @@ describe('KnowledgeClientAdapter', () => {
 
       it('should return correct supported protocols', () => {
         const protocols = factory.getSupportedProtocols();
-        expect(protocols).toEqual([
-          ProtocolTypes.HTTP,
-          ProtocolTypes.HTTPS,
-          ProtocolTypes.CUSTOM
-        ]);
+        expect(protocols).toEqual([ProtocolTypes.HTTP, ProtocolTypes.HTTPS, ProtocolTypes.CUSTOM]);
       });
     });
 
@@ -566,8 +566,8 @@ describe('KnowledgeClientAdapter', () => {
           provider: 'fact',
           factConfig: {
             factRepoPath: './fact',
-            anthropicApiKey: 'test-key'
-          }
+            anthropicApiKey: 'test-key',
+          },
         };
 
         expect(factory.validateConfig(ProtocolTypes.CUSTOM, validConfig)).toBe(true);
@@ -579,21 +579,21 @@ describe('KnowledgeClientAdapter', () => {
           {
             protocol: ProtocolTypes.CUSTOM,
             provider: 'fact',
-            factConfig: { factRepoPath: './fact', anthropicApiKey: 'key' }
+            factConfig: { factRepoPath: './fact', anthropicApiKey: 'key' },
           },
           // Missing FACT config for FACT provider
           {
             protocol: ProtocolTypes.CUSTOM,
             url: 'fact://test',
-            provider: 'fact'
+            provider: 'fact',
           },
           // Missing required FACT fields
           {
             protocol: ProtocolTypes.CUSTOM,
             url: 'fact://test',
             provider: 'fact',
-            factConfig: { anthropicApiKey: 'key' } // Missing factRepoPath
-          }
+            factConfig: { anthropicApiKey: 'key' }, // Missing factRepoPath
+          },
         ];
 
         for (const config of invalidConfigs) {
@@ -608,8 +608,8 @@ describe('KnowledgeClientAdapter', () => {
           provider: 'fact',
           factConfig: {
             factRepoPath: './fact',
-            anthropicApiKey: 'key'
-          }
+            anthropicApiKey: 'key',
+          },
         };
 
         expect(factory.validateConfig(ProtocolTypes.WS, config)).toBe(false);
@@ -624,12 +624,12 @@ describe('KnowledgeClientAdapter', () => {
           provider: 'fact',
           factConfig: {
             factRepoPath: './fact',
-            anthropicApiKey: 'test-key'
-          }
+            anthropicApiKey: 'test-key',
+          },
         };
 
         const client = await factory.create(ProtocolTypes.CUSTOM, config);
-        
+
         expect(client).toBeInstanceOf(KnowledgeClientAdapter);
         expect(client.getConfig()).toEqual(config);
       });
@@ -638,11 +638,12 @@ describe('KnowledgeClientAdapter', () => {
         const invalidConfig = {
           protocol: ProtocolTypes.CUSTOM,
           url: '', // Invalid URL
-          provider: 'fact'
+          provider: 'fact',
         };
 
-        await expect(factory.create(ProtocolTypes.CUSTOM, invalidConfig as any))
-          .rejects.toThrow('Invalid configuration for Knowledge client');
+        await expect(factory.create(ProtocolTypes.CUSTOM, invalidConfig as any)).rejects.toThrow(
+          'Invalid configuration for Knowledge client'
+        );
       });
     });
   });
@@ -650,17 +651,13 @@ describe('KnowledgeClientAdapter', () => {
   describe('Convenience Functions', () => {
     describe('createFACTClient', () => {
       it('should create FACT client with correct configuration', async () => {
-        const client = await createFACTClient(
-          './test-fact',
-          'test-api-key',
-          {
-            timeout: 45000,
-            tools: ['custom_tool']
-          }
-        );
+        const client = await createFACTClient('./test-fact', 'test-api-key', {
+          timeout: 45000,
+          tools: ['custom_tool'],
+        });
 
         expect(client).toBeInstanceOf(KnowledgeClientAdapter);
-        
+
         const config = client.getConfig() as KnowledgeClientConfig;
         expect(config.protocol).toBe(ProtocolTypes.CUSTOM);
         expect(config.url).toBe('fact://local');
@@ -674,13 +671,12 @@ describe('KnowledgeClientAdapter', () => {
 
     describe('createCustomKnowledgeClient', () => {
       it('should create custom knowledge client with correct configuration', async () => {
-        const client = await createCustomKnowledgeClient(
-          'https://knowledge.api.com',
-          { timeout: 20000 }
-        );
+        const client = await createCustomKnowledgeClient('https://knowledge.api.com', {
+          timeout: 20000,
+        });
 
         expect(client).toBeInstanceOf(KnowledgeClientAdapter);
-        
+
         const config = client.getConfig() as KnowledgeClientConfig;
         expect(config.protocol).toBe(ProtocolTypes.HTTPS);
         expect(config.url).toBe('https://knowledge.api.com');
@@ -697,7 +693,7 @@ describe('KnowledgeHelpers', () => {
   beforeEach(() => {
     mockClient = {
       query: jest.fn(),
-      search: jest.fn()
+      search: jest.fn(),
     } as any;
   });
 
@@ -712,7 +708,7 @@ describe('KnowledgeHelpers', () => {
         'Get comprehensive documentation for react version 18',
         {
           includeMetadata: true,
-          filters: { type: 'documentation', framework: 'react', version: '18' }
+          filters: { type: 'documentation', framework: 'react', version: '18' },
         }
       );
       expect(result).toBe(mockResponse);
@@ -730,7 +726,7 @@ describe('KnowledgeHelpers', () => {
         'Get detailed API reference for express endpoint: app.use',
         {
           includeMetadata: true,
-          filters: { type: 'api_reference', api: 'express', endpoint: 'app.use' }
+          filters: { type: 'api_reference', api: 'express', endpoint: 'app.use' },
         }
       );
       expect(result).toBe(mockResponse);
@@ -742,18 +738,21 @@ describe('KnowledgeHelpers', () => {
       const mockResponse = [{ queryId: 'community-123', response: 'Community content' }];
       mockClient.search.mockResolvedValueOnce(mockResponse);
 
-      const result = await KnowledgeHelpers.searchCommunity(
-        mockClient,
-        'docker optimization',
-        ['docker', 'performance']
-      );
+      const result = await KnowledgeHelpers.searchCommunity(mockClient, 'docker optimization', [
+        'docker',
+        'performance',
+      ]);
 
       expect(mockClient.search).toHaveBeenCalledWith(
         'Search developer communities for: docker optimization tags: docker, performance',
         {
           fuzzy: true,
           fields: ['title', 'content', 'tags'],
-          filters: { type: 'community', topic: 'docker optimization', tags: ['docker', 'performance'] }
+          filters: {
+            type: 'community',
+            topic: 'docker optimization',
+            tags: ['docker', 'performance'],
+          },
         }
       );
       expect(result).toBe(mockResponse);

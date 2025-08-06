@@ -27,6 +27,8 @@ const __dirname = dirname(__filename);
  *
  * Coordinates all web dashboard components using composition pattern.
  * Reduced from 728 lines to clean, maintainable architecture.
+ *
+ * @example
  */
 export class WebInterface {
   private logger = createLogger('WebInterface');
@@ -143,6 +145,8 @@ export class WebInterface {
 
   /**
    * Setup fallback routes for HTML generation
+   *
+   * @param app
    */
   private setupFallbackRoutes(app: any): void {
     // Serve inline HTML if no build exists
@@ -213,6 +217,9 @@ export class WebInterface {
 
   /**
    * Broadcast event to all connected WebSocket clients
+   *
+   * @param event
+   * @param data
    */
   broadcast(event: string, data: any): void {
     this.webSocketManager.broadcast(event, data);

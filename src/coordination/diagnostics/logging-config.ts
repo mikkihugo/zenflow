@@ -20,6 +20,8 @@ export interface LogConfiguration {
 
 /**
  * Simple logger implementation for diagnostics
+ *
+ * @example
  */
 class DiagnosticsLogger implements LoggerInterface {
   constructor(
@@ -65,12 +67,18 @@ class DiagnosticsLogger implements LoggerInterface {
 
 /**
  * Logging configuration manager for diagnostics
+ *
+ * @example
  */
 export class DiagnosticsLoggingConfig {
   private loggers = new Map<string, LoggerInterface>();
 
   /**
    * Get or create a logger for a component
+   *
+   * @param component
+   * @param options
+   * @param options.level
    */
   getLogger(component: string, options: { level: string }): LoggerInterface {
     const key = `${component}-${options.level}`;

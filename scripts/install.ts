@@ -3,7 +3,7 @@
 /**
  * Claude-Zen post-install script
  *
- * @fileoverview Post-installation verification with TypeScript standards
+ * @file Post-installation verification with TypeScript standards
  * @author Claude Code Flow Team
  * @version 2.0.0
  */

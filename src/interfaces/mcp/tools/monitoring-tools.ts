@@ -1,5 +1,5 @@
 /**
- * @fileoverview Monitoring MCP Tools
+ * @file Monitoring MCP Tools
  *
  * Real-time monitoring, performance analytics, health assessment,
  * and intelligent alerting systems.

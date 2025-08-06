@@ -1,6 +1,7 @@
 /**
  * Performance Test Suite
- * @fileoverview Comprehensive performance testing utilities for both London and Classical TDD
+ *
+ * @file Comprehensive performance testing utilities for both London and Classical TDD
  */
 
 export interface PerformanceMetrics {
@@ -66,6 +67,9 @@ export class PerformanceProfiler {
 
   /**
    * Record an operation
+   *
+   * @param success
+   * @param duration
    */
   recordOperation(success: boolean, duration: number): void {
     this.operations.push({ success, duration });
@@ -149,6 +153,13 @@ export class PerformanceProfiler {
 export class LoadTestRunner {
   /**
    * Run load test with specified configuration
+   *
+   * @param testFunction
+   * @param config
+   * @param config.duration
+   * @param config.concurrency
+   * @param config.rampUpTime
+   * @param config.targetRPS
    */
   static async runLoadTest(
     testFunction: () => Promise<void>,
@@ -227,6 +238,9 @@ export class LoadTestRunner {
 export class PerformanceValidator {
   /**
    * Validate performance metrics against thresholds
+   *
+   * @param metrics
+   * @param thresholds
    */
   static validateMetrics(
     metrics: PerformanceMetrics,
@@ -275,6 +289,9 @@ export class PerformanceValidator {
 
   /**
    * Generate performance report
+   *
+   * @param metrics
+   * @param testName
    */
   static generateReport(metrics: PerformanceMetrics, testName: string): string {
     return `
@@ -313,6 +330,9 @@ export class BenchmarkSuite {
 
   /**
    * Add a benchmark test
+   *
+   * @param name
+   * @param testFunction
    */
   addBenchmark(name: string, testFunction: () => Promise<void>): this {
     this.benchmarks.set(name, testFunction);
@@ -347,6 +367,9 @@ export class BenchmarkSuite {
 
   /**
    * Compare benchmark results
+   *
+   * @param baselineName
+   * @param testName
    */
   compare(
     baselineName: string,
@@ -396,6 +419,8 @@ ${executionTimeDiff < -5 ? '✅ Performance improved' : executionTimeDiff > 5 ? 
 
   /**
    * Get results for a specific benchmark
+   *
+   * @param name
    */
   getResults(name: string): PerformanceMetrics | undefined {
     return this.results.get(name);
@@ -411,6 +436,8 @@ ${executionTimeDiff < -5 ? '✅ Performance improved' : executionTimeDiff > 5 ? 
 
 /**
  * Domain-specific performance test factories
+ *
+ * @example
  */
 export class DomainPerformanceTests {
   /**

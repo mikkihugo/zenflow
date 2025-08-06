@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for Auto-Swarm Factory
+ * @file Tests for Auto-Swarm Factory
  *
  * Comprehensive test suite for the critical Auto-Swarm Factory component
  * that enables zero-manual-initialization swarm creation.

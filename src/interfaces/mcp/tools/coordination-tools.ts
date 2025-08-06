@@ -1,5 +1,5 @@
 /**
- * @fileoverview Coordination MCP Tools
+ * @file Coordination MCP Tools
  *
  * Coordination tools for swarm management, topology optimization,
  * fault tolerance, and intelligent load balancing.

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Recovery Strategies for Memory System Errors
+ * @file Recovery Strategies for Memory System Errors
  * Advanced error recovery and fault tolerance mechanisms
  */
 
@@ -41,6 +41,8 @@ export interface RecoveryResult {
 
 /**
  * Recovery Strategy Registry and Executor
+ *
+ * @example
  */
 export class RecoveryStrategyManager extends EventEmitter {
   private strategies = new Map<string, RecoveryStrategy>();
@@ -57,6 +59,8 @@ export class RecoveryStrategyManager extends EventEmitter {
 
   /**
    * Register a recovery strategy
+   *
+   * @param strategy
    */
   registerStrategy(strategy: RecoveryStrategy): void {
     this.strategies.set(strategy.name, strategy);
@@ -65,6 +69,9 @@ export class RecoveryStrategyManager extends EventEmitter {
 
   /**
    * Attempt to recover from an error
+   *
+   * @param error
+   * @param context
    */
   async recover(error: MemoryError, context: RecoveryContext): Promise<RecoveryResult> {
     const startTime = Date.now();
@@ -134,6 +141,10 @@ export class RecoveryStrategyManager extends EventEmitter {
 
   /**
    * Execute strategy with timeout
+   *
+   * @param strategy
+   * @param error
+   * @param context
    */
   private async executeWithTimeout(
     strategy: RecoveryStrategy,
@@ -162,6 +173,8 @@ export class RecoveryStrategyManager extends EventEmitter {
 
   /**
    * Find strategies applicable to an error
+   *
+   * @param error
    */
   private findApplicableStrategies(error: MemoryError): RecoveryStrategy[] {
     return Array.from(this.strategies.values()).filter((strategy) =>
@@ -171,6 +184,9 @@ export class RecoveryStrategyManager extends EventEmitter {
 
   /**
    * Record recovery attempt for analysis
+   *
+   * @param error
+   * @param result
    */
   private recordRecovery(error: MemoryError, result: RecoveryResult): void {
     this.recoveryHistory.push({
@@ -553,6 +569,8 @@ export class RecoveryStrategyManager extends EventEmitter {
 
   /**
    * Get recommended strategies for an error
+   *
+   * @param error
    */
   getRecommendedStrategies(error: MemoryError): RecoveryStrategy[] {
     return this.findApplicableStrategies(error).sort((a, b) => b.priority - a.priority);

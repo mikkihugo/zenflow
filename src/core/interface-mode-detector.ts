@@ -33,6 +33,8 @@ export interface ModeDetectionResult {
 export class InterfaceModeDetector {
   /**
    * Detect the appropriate interface mode based on environment
+   *
+   * @param options
    */
   static detect(options: ModeDetectionOptions = {}): ModeDetectionResult {
     const { forceMode, webPort, daemon, preferTui = true } = options;
@@ -138,6 +140,8 @@ export class InterfaceModeDetector {
 
   /**
    * Validate if a mode is supported in the current environment
+   *
+   * @param mode
    */
   static validateMode(mode: InterfaceMode): { valid: boolean; reason?: string } {
     switch (mode) {

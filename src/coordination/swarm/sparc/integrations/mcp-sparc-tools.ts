@@ -309,6 +309,9 @@ export class SPARCMCPTools {
 
   /**
    * Execute MCP tool calls
+   *
+   * @param name
+   * @param args
    */
   async handleOldToolCall(name: string, args: any): Promise<any> {
     switch (name) {
@@ -778,6 +781,8 @@ export class SPARCMCPTools {
 
   /**
    * Handle project management artifacts generation with enhanced infrastructure integration
+   *
+   * @param args
    */
   public async handleGenerateProjectManagementArtifacts(args: any): Promise<any> {
     const project = this.activeProjects.get(args.projectId);
@@ -848,38 +853,40 @@ export class SPARCMCPTools {
 
   /**
    * Handle epic creation from SPARC project
-            adrs: comprehensive.adrs.length,
-            epics: comprehensive.epics.length,
-            features: comprehensive.features.length,
-            prd: 1,
-          },
-        });
-      }
-
-      return {
-        success: true,
-        projectId: args.projectId,
-        projectName: project.name,
-        artifactsGenerated: results,
-        message: `Generated project management artifacts using existing Claude-Zen infrastructure`,
-        integration: {
-          taskAPI: 'Used existing TaskAPI and EnhancedTaskTool',
-          coordination: 'Integrated with TaskDistributionEngine',
-          adrTemplate: 'Used existing ADR template structure',
-          infrastructure: 'Leveraged existing coordination and task management',
-        },
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
-        projectId: args.projectId,
-      };
-    }
-  }
-
-  /**
+   * adrs: comprehensive.adrs.length,
+   * epics: comprehensive.epics.length,
+   * features: comprehensive.features.length,
+   * prd: 1,
+   * },
+   * });
+   * }
+   *
+   * return {
+   * success: true,
+   * projectId: args.projectId,
+   * projectName: project.name,
+   * artifactsGenerated: results,
+   * message: `Generated project management artifacts using existing Claude-Zen infrastructure`,
+   * integration: {
+   * taskAPI: 'Used existing TaskAPI and EnhancedTaskTool',
+   * coordination: 'Integrated with TaskDistributionEngine',
+   * adrTemplate: 'Used existing ADR template structure',
+   * infrastructure: 'Leveraged existing coordination and task management',
+   * },
+   * };
+   * } catch (error) {
+   * return {
+   * success: false,
+   * error: error instanceof Error ? error.message : 'Unknown error occurred',
+   * projectId: args.projectId,
+   * };
+   * }
+   * }
+   *
+   * /**
    * Handle epic creation from project
+   *
+   * @param args
    */
   public async handleCreateEpic(args: any): Promise<any> {
     const project = this.activeProjects.get(args.projectId);
@@ -923,6 +930,8 @@ export class SPARCMCPTools {
 
   /**
    * Handle adding project to roadmap
+   *
+   * @param args
    */
   public async handleAddToRoadmap(args: any): Promise<any> {
     const project = this.activeProjects.get(args.projectId);
@@ -950,6 +959,8 @@ export class SPARCMCPTools {
 
   /**
    * Handle domain roadmap generation
+   *
+   * @param args
    */
   public async handleGenerateDomainRoadmap(args: any): Promise<any> {
     try {
@@ -987,6 +998,9 @@ export class SPARCMCPTools {
 
   /**
    * Handle tool calls with project management integration
+   *
+   * @param toolName
+   * @param args
    */
   public async handleToolCall(toolName: string, args: any): Promise<any> {
     try {

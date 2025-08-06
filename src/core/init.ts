@@ -1,5 +1,5 @@
 /**
- * @fileoverview Core System Initialization
+ * @file Core System Initialization
  * Provides basic initialization for the system.
  */
 
@@ -21,6 +21,8 @@ export const defaultCoreConfig: ClaudeZenCoreConfig = {
 
 /**
  * Initialize the core system
+ *
+ * @param config
  */
 export async function initializeCore(config: Partial<ClaudeZenCoreConfig> = {}): Promise<void> {
   const finalConfig = { ...defaultCoreConfig, ...config };

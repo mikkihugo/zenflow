@@ -59,6 +59,8 @@ class ClaudeDocsGenerator {
 
   /**
    * Generate main claude.md configuration file with protection
+   *
+   * @param options
    */
   async generateClaudeMd(options: GenerateOptions = {}) {
     const {
@@ -1171,6 +1173,8 @@ ${config.details}
 
   /**
    * Check if file exists
+   *
+   * @param filePath
    */
   async fileExists(filePath: string): Promise<boolean> {
     try {
@@ -1183,6 +1187,8 @@ ${config.details}
 
   /**
    * Create backup of existing file
+   *
+   * @param filePath
    */
   async createBackup(filePath) {
     const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
@@ -1199,6 +1205,8 @@ ${config.details}
 
   /**
    * Clean up old backup files (keep last 5)
+   *
+   * @param filePath
    */
   async cleanupOldBackups(filePath) {
     const dir = path.dirname(filePath);
@@ -1228,6 +1236,8 @@ ${config.details}
 
   /**
    * Prompt user for action when CLAUDE.md exists
+   *
+   * @param _filePath
    */
   async promptUserAction(_filePath) {
     // In a CLI environment, we need to use a different approach
@@ -1261,6 +1271,9 @@ ${config.details}
 
   /**
    * Merge ruv-swarm content with existing CLAUDE.md
+   *
+   * @param filePath
+   * @param noBackup
    */
   async mergeClaudeMd(filePath, noBackup = false) {
     try {
@@ -1465,6 +1478,9 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__zen-
 
   /**
    * Intelligently combine ruv-swarm content with existing content
+   *
+   * @param existingContent
+   * @param ruvSwarmContent
    */
   intelligentMerge(existingContent, ruvSwarmContent) {
     const existingLines = existingContent.split('\n');
@@ -1487,6 +1503,8 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__zen-
 
   /**
    * Find existing ruv-swarm section in content
+   *
+   * @param lines
    */
   findZenSwarmSection(lines) {
     for (let i = 0; i < lines.length; i++) {
@@ -1503,6 +1521,9 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__zen-
 
   /**
    * Intelligently insert new content based on context
+   *
+   * @param existingLines
+   * @param newLines
    */
   intelligentInsert(existingLines, newLines) {
     // Look for appropriate insertion points
@@ -1544,6 +1565,9 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__zen-
 
   /**
    * Find the end of a markdown section
+   *
+   * @param lines
+   * @param startIndex
    */
   findSectionEnd(lines, startIndex) {
     // Look for next top-level heading or end of file
@@ -1561,6 +1585,8 @@ Remember: **ruv-swarm coordinates, Claude Code creates!** Start with \`mcp__zen-
 
   /**
    * Generate all documentation files
+   *
+   * @param options
    */
   async generateAll(options: GenerateOptions = {}): Promise<any> {
     try {

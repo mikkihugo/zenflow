@@ -49,6 +49,8 @@ export const NEURAL_PRESETS = {
 
 /**
  * Get preset by ID
+ *
+ * @param presetId
  */
 export function getPreset(presetId) {
   return NEURAL_PRESETS[presetId.toUpperCase()];
@@ -56,6 +58,8 @@ export function getPreset(presetId) {
 
 /**
  * Get recommended preset for use case
+ *
+ * @param useCase
  */
 export function getRecommendedPreset(useCase) {
   const presets = Object.values(NEURAL_PRESETS);
@@ -66,6 +70,8 @@ export function getRecommendedPreset(useCase) {
 
 /**
  * Search presets by use case
+ *
+ * @param useCase
  */
 export function searchPresetsByUseCase(useCase) {
   const presets = Object.values(NEURAL_PRESETS);
@@ -74,6 +80,8 @@ export function searchPresetsByUseCase(useCase) {
 
 /**
  * Get presets by category
+ *
+ * @param category
  */
 export function getCategoryPresets(category) {
   const presets = Object.values(NEURAL_PRESETS);
@@ -82,6 +90,8 @@ export function getCategoryPresets(category) {
 
 /**
  * Validate preset configuration
+ *
+ * @param config
  */
 export function validatePresetConfig(config) {
   const required = ['id', 'architecture', 'layers'];

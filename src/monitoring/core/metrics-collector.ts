@@ -446,6 +446,8 @@ export class MetricsCollector extends EventEmitter {
 
   /**
    * Add metrics to history with size limit
+   *
+   * @param metrics
    */
   private addToHistory(metrics: CompositeMetrics): void {
     this.metricsHistory.push(metrics);
@@ -457,6 +459,10 @@ export class MetricsCollector extends EventEmitter {
 
   /**
    * Get metrics history
+   *
+   * @param timeRange
+   * @param timeRange.start
+   * @param timeRange.end
    */
   public getHistory(timeRange?: { start: number; end: number }): CompositeMetrics[] {
     if (!timeRange) {
@@ -480,6 +486,9 @@ export class MetricsCollector extends EventEmitter {
 
   /**
    * Generate random metric value within range
+   *
+   * @param min
+   * @param max
    */
   private getRandomMetric(min: number, max: number): number {
     return Math.random() * (max - min) + min;
@@ -487,6 +496,9 @@ export class MetricsCollector extends EventEmitter {
 
   /**
    * Export metrics to file
+   *
+   * @param filePath
+   * @param format
    */
   public async exportMetrics(filePath: string, format: 'json' | 'csv' = 'json'): Promise<void> {
     const data = this.getHistory();
@@ -501,6 +513,8 @@ export class MetricsCollector extends EventEmitter {
 
   /**
    * Convert metrics to CSV format
+   *
+   * @param data
    */
   private convertToCsv(data: CompositeMetrics[]): string {
     if (data.length === 0) return '';

@@ -3,6 +3,7 @@
  * Optimizes message routing, caching, latency, and scaling for swarm systems
  */
 
+import { createLogger } from '../../core/logger';
 import type {
   CacheStrategy,
   CoordinationLayer,
@@ -13,7 +14,6 @@ import type {
   SwarmOptimizer,
   SwarmTopology,
 } from '../interfaces/optimization-interfaces';
-import { createLogger } from '../../core/logger';
 
 export interface SwarmOptimizationConfig {
   maxAgents: number;
@@ -59,6 +59,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Optimize message routing for improved latency and efficiency
+   *
+   * @param topology
    */
   public async optimizeMessageRouting(topology: SwarmTopology): Promise<RoutingOptimization> {
     const startTime = Date.now();
@@ -119,6 +121,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Implement intelligent caching for coordination data
+   *
+   * @param coordinationLayer
    */
   public async implementCaching(coordinationLayer: CoordinationLayer): Promise<CacheStrategy> {
     if (!this.config.cacheEnabled) {
@@ -168,6 +172,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Reduce coordination latency through various optimizations
+   *
+   * @param communicationProtocols
    */
   public async reduceLatency(communicationProtocols: Protocol[]): Promise<LatencyReduction> {
     const beforeLatency = await this.measureAverageLatency(communicationProtocols);
@@ -217,6 +223,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Implement horizontal scaling strategies
+   *
+   * @param swarmSize
    */
   public async scaleHorizontally(swarmSize: number): Promise<ScalingStrategy> {
     try {
@@ -262,6 +270,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Analyze topology efficiency
+   *
+   * @param topology
    */
   private async analyzeTopologyEfficiency(topology: SwarmTopology): Promise<{
     efficiency: number;
@@ -283,6 +293,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Optimize routing algorithms for the given topology
+   *
+   * @param topology
    */
   private async optimizeRoutingAlgorithms(topology: SwarmTopology): Promise<{
     algorithm: string;
@@ -317,6 +329,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Implement message compression
+   *
+   * @param topology
    */
   private async implementMessageCompression(topology: SwarmTopology): Promise<number> {
     // Analyze message patterns to determine optimal compression
@@ -334,6 +348,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Optimize network protocols
+   *
+   * @param topology
    */
   private async optimizeNetworkProtocols(topology: SwarmTopology): Promise<{
     efficiency: number;
@@ -374,6 +390,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Calculate optimal cache size based on coordination patterns
+   *
+   * @param patterns
    */
   private calculateOptimalCacheSize(patterns: any): number {
     // Analyze access frequency and data size
@@ -389,6 +407,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Select eviction policy based on access patterns
+   *
+   * @param patterns
    */
   private selectEvictionPolicy(patterns: any): 'LRU' | 'LFU' | 'TTL' | 'adaptive' {
     const temporalLocality = patterns.temporalLocality || 0.5;
@@ -402,6 +422,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Determine optimal load balancing strategy
+   *
+   * @param swarmSize
    */
   private determineOptimalLoadBalancing(
     swarmSize: number
@@ -414,6 +436,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Measure routing performance
+   *
+   * @param _topology
    */
   private async measureRoutingPerformance(_topology: SwarmTopology): Promise<MessageRoutingStats> {
     // Mock implementation - replace with actual measurement
@@ -427,6 +451,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Calculate topology efficiency
+   *
+   * @param topology
    */
   private calculateTopologyEfficiency(topology: SwarmTopology): number {
     // Simple efficiency calculation based on topology type and size
@@ -446,6 +472,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Identify topology bottlenecks
+   *
+   * @param topology
    */
   private identifyTopologyBottlenecks(topology: SwarmTopology): string[] {
     const bottlenecks: string[] = [];
@@ -467,6 +495,8 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
 
   /**
    * Helper methods with mock implementations
+   *
+   * @param _topology
    */
   private async implementAdaptiveRouting(_topology: SwarmTopology): Promise<void> {}
   private async analyzeCoordinationPatterns(_layer: CoordinationLayer): Promise<any> {
