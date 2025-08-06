@@ -1,5 +1,5 @@
 /**
- * @fileoverview A swarm strategy that uses the ZenSwarm implementation.
+ * @file A swarm strategy that uses the ZenSwarm implementation.
  */
 
 import { ZenSwarm } from '../swarm/core';

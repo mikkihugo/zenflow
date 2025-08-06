@@ -1,6 +1,6 @@
 /** Build Configuration for Claude Zen
  *
- * @fileoverview TypeScript build configuration with Google standards
+ * @file TypeScript build configuration with Google standards
  * @author Claude Code Flow Team
  * @version 2.0.0
  */

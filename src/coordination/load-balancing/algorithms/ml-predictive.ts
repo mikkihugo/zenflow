@@ -77,6 +77,10 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Select agent using ML predictions
+   *
+   * @param task
+   * @param availableAgents
+   * @param metrics
    */
   public async selectAgent(
     task: Task,
@@ -129,6 +133,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Update algorithm configuration
+   *
+   * @param config
    */
   public async updateConfiguration(config: Record<string, any>): Promise<void> {
     this.config = { ...this.config, ...config };
@@ -167,6 +173,11 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Handle task completion for ML learning
+   *
+   * @param agentId
+   * @param task
+   * @param duration
+   * @param success
    */
   public async onTaskComplete(
     agentId: string,
@@ -202,6 +213,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Handle agent failure
+   *
+   * @param agentId
+   * @param _error
    */
   public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
     // Record failure data
@@ -249,6 +263,10 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Generate predictions for all available agents
+   *
+   * @param task
+   * @param availableAgents
+   * @param metrics
    */
   private async generatePredictions(
     task: Task,
@@ -275,6 +293,10 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Extract features for ML prediction
+   *
+   * @param task
+   * @param agent
+   * @param metrics
    */
   private extractFeatures(task: Task, agent: Agent, metrics?: LoadMetrics): MLFeatures {
     const now = new Date();
@@ -299,6 +321,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Predict agent performance using ensemble of models
+   *
+   * @param features
    */
   private async predictAgentPerformance(features: MLFeatures): Promise<{
     latency: number;
@@ -357,6 +381,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Calculate composite score for agent selection
+   *
+   * @param prediction
+   * @param task
    */
   private calculateCompositeScore(prediction: PredictionResult, task: Task): number {
     // Weight factors based on task priority
@@ -427,6 +454,10 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   /**
    * Fallback selection when ML predictions are not available
+   *
+   * @param _task
+   * @param availableAgents
+   * @param metrics
    */
   private fallbackSelection(
     _task: Task,
@@ -666,6 +697,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
 /**
  * Default prediction engine implementation
+ *
+ * @example
  */
 class DefaultPredictionEngine implements PredictionEngine {
   async predict(features: Record<string, number>): Promise<number> {

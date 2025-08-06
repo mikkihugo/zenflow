@@ -51,6 +51,8 @@ export interface FACTStorageStats {
 
 /**
  * Backend-agnostic FACT storage interface
+ *
+ * @example
  */
 export interface FACTStorageBackend {
   /**
@@ -133,6 +135,8 @@ export interface FACTStorageBackend {
 
 /**
  * FACT storage configuration
+ *
+ * @example
  */
 export interface FACTStorageConfig {
   backend: 'sqlite' | 'jsonb' | 'file' | 'memory';

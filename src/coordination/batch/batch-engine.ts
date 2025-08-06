@@ -1,5 +1,5 @@
 /**
- * @fileoverview Claude-Zen Batch Execution Engine
+ * @file Claude-Zen Batch Execution Engine
  * Implementation of claude-zen's "1 MESSAGE = ALL OPERATIONS" principle
  * Achieves 2.8-4.4x speed improvements through concurrent execution
  */
@@ -54,6 +54,8 @@ export interface BatchExecutionSummary {
 /**
  * Core batch execution engine implementing claude-zen's concurrent patterns
  * Follows the "1 MESSAGE = ALL OPERATIONS" principle for maximum efficiency
+ *
+ * @example
  */
 export class BatchEngine {
   private readonly config: Required<BatchExecutionConfig>;
@@ -78,6 +80,8 @@ export class BatchEngine {
   /**
    * Execute multiple operations concurrently following the claude-zen pattern
    * This is the core implementation of "1 MESSAGE = ALL OPERATIONS"
+   *
+   * @param operations
    */
   async executeBatch(operations: BatchOperation[]): Promise<BatchExecutionSummary> {
     const startTime = Date.now();
@@ -178,6 +182,8 @@ export class BatchEngine {
 
   /**
    * Execute a single operation with error handling and timeout
+   *
+   * @param operation
    */
   private async executeOperation(operation: BatchOperation): Promise<void> {
     const startTime = Date.now();
@@ -218,6 +224,8 @@ export class BatchEngine {
 
   /**
    * Execute operation based on its type
+   *
+   * @param operation
    */
   private async executeByType(operation: BatchOperation): Promise<unknown> {
     const timeout = operation.timeout ?? this.config.timeoutMs;
@@ -241,6 +249,8 @@ export class BatchEngine {
 
   /**
    * Perform the actual operation (to be extended by specific implementations)
+   *
+   * @param operation
    */
   private async performOperation(operation: BatchOperation): Promise<unknown> {
     switch (operation.type) {
@@ -259,6 +269,8 @@ export class BatchEngine {
 
   /**
    * Execute tool operation (to be implemented by specific tool handlers)
+   *
+   * @param operation
    */
   private async executeTool(operation: BatchOperation): Promise<unknown> {
     // Placeholder for tool execution - will be implemented by MCP integration
@@ -276,6 +288,8 @@ export class BatchEngine {
 
   /**
    * Execute file operation (implemented by file-batch.ts)
+   *
+   * @param operation
    */
   private async executeFileOperation(operation: BatchOperation): Promise<unknown> {
     // Will be delegated to FileBatchOperator
@@ -293,6 +307,8 @@ export class BatchEngine {
 
   /**
    * Execute swarm operation (implemented by swarm-batch.ts)
+   *
+   * @param operation
    */
   private async executeSwarmOperation(operation: BatchOperation): Promise<unknown> {
     // Will be delegated to SwarmBatchCoordinator
@@ -310,6 +326,8 @@ export class BatchEngine {
 
   /**
    * Execute agent operation
+   *
+   * @param operation
    */
   private async executeAgentOperation(operation: BatchOperation): Promise<unknown> {
     logger.debug(`Executing agent operation: ${operation.operation}`, operation.params);
@@ -326,6 +344,9 @@ export class BatchEngine {
 
   /**
    * Calculate performance summary including speed improvements
+   *
+   * @param totalExecutionTime
+   * @param totalOperations
    */
   private calculatePerformanceSummary(
     totalExecutionTime: number,
@@ -368,6 +389,8 @@ export class BatchEngine {
 
   /**
    * Get results for specific operations
+   *
+   * @param operationIds
    */
   getResults(operationIds?: string[]): BatchResult[] {
     if (!operationIds) {
@@ -404,6 +427,12 @@ export class BatchEngine {
 
 /**
  * Factory function to create batch operations
+ *
+ * @param id
+ * @param type
+ * @param operation
+ * @param params
+ * @param options
  */
 export function createBatchOperation(
   id: string,
@@ -433,6 +462,8 @@ export function createBatchOperation(
 
 /**
  * Utility to create multiple tool operations for batch execution
+ *
+ * @param tools
  */
 export function createToolBatch(
   tools: Array<{

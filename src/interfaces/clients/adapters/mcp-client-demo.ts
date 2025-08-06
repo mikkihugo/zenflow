@@ -1,15 +1,15 @@
 /**
  * MCP Client Adapter Demonstration
- * 
+ *
  * Shows how to use the UACL MCP adapter to convert existing MCP clients
  * and provides examples of both stdio and HTTP protocol usage
  */
 
-import { 
-  MCPClientAdapter, 
-  MCPClientFactory, 
+import {
   createMCPConfigFromLegacy,
-  type MCPClientConfig 
+  MCPClientAdapter,
+  type MCPClientConfig,
+  MCPClientFactory,
 } from './mcp-client-adapter.js';
 
 /**
@@ -26,7 +26,7 @@ export async function demonstrateMCPClientConversion() {
     url: 'https://mcp.context7.com/mcp',
     type: 'http',
     timeout: 30000,
-    capabilities: ['research', 'analysis', 'documentation']
+    capabilities: ['research', 'analysis', 'documentation'],
   });
 
   // Example: Local stdio MCP server
@@ -40,33 +40,33 @@ export async function demonstrateMCPClientConversion() {
     tools: {
       timeout: 15000,
       retries: 2,
-      discovery: true
+      discovery: true,
     },
     server: {
       name: 'local-mcp',
       version: '1.0.0',
-      capabilities: ['file-operations', 'git-integration']
+      capabilities: ['file-operations', 'git-integration'],
     },
     monitoring: {
       enabled: true,
       metricsInterval: 30000,
       trackLatency: true,
       trackThroughput: true,
-      trackErrors: true
-    }
+      trackErrors: true,
+    },
   };
 
   try {
     // Create clients using factory
     console.log('📡 Creating HTTP MCP client (Context7)...');
     const httpClient = await factory.create(context7Config);
-    
+
     console.log('🔌 Creating stdio MCP client (Local)...');
     const stdioClient = await factory.create(localStdioConfig);
 
     // Test UACL interface compliance
     console.log('\n✅ Testing UACL Interface Compliance:');
-    
+
     // 1. Connection management
     console.log('  🔗 Connection Management:');
     console.log(`    HTTP Client Connected: ${httpClient.isConnected()}`);
@@ -75,7 +75,7 @@ export async function demonstrateMCPClientConversion() {
     // Connect clients
     await httpClient.connect();
     await stdioClient.connect();
-    
+
     console.log(`    HTTP Client Connected: ${httpClient.isConnected()}`);
     console.log(`    Stdio Client Connected: ${stdioClient.isConnected()}`);
 
@@ -83,7 +83,7 @@ export async function demonstrateMCPClientConversion() {
     console.log('\n  🏥 Health Monitoring:');
     const httpHealth = await httpClient.healthCheck();
     const stdioHealth = await stdioClient.healthCheck();
-    
+
     console.log(`    HTTP Health: ${httpHealth.status} (${httpHealth.responseTime}ms)`);
     console.log(`    Stdio Health: ${stdioHealth.status} (${stdioHealth.responseTime}ms)`);
 
@@ -91,29 +91,37 @@ export async function demonstrateMCPClientConversion() {
     console.log('\n  📊 Performance Metrics:');
     const httpMetrics = await httpClient.getMetrics();
     const stdioMetrics = await stdioClient.getMetrics();
-    
-    console.log(`    HTTP Requests: ${httpMetrics.requestCount} (${httpMetrics.successCount} success)`);
-    console.log(`    Stdio Requests: ${stdioMetrics.requestCount} (${stdioMetrics.successCount} success)`);
+
+    console.log(
+      `    HTTP Requests: ${httpMetrics.requestCount} (${httpMetrics.successCount} success)`
+    );
+    console.log(
+      `    Stdio Requests: ${stdioMetrics.requestCount} (${stdioMetrics.successCount} success)`
+    );
 
     // 4. Tool execution via UACL interface
     console.log('\n  🛠️  Tool Execution:');
-    
+
     // Get available tools (GET request)
     const httpTools = await httpClient.get('/tools');
     const stdioTools = await stdioClient.get('/tools');
-    
-    console.log(`    HTTP Tools Available: ${Array.isArray(httpTools.data) ? httpTools.data.length : 0}`);
-    console.log(`    Stdio Tools Available: ${Array.isArray(stdioTools.data) ? stdioTools.data.length : 0}`);
+
+    console.log(
+      `    HTTP Tools Available: ${Array.isArray(httpTools.data) ? httpTools.data.length : 0}`
+    );
+    console.log(
+      `    Stdio Tools Available: ${Array.isArray(stdioTools.data) ? stdioTools.data.length : 0}`
+    );
 
     // Execute tools (POST request - mapped to tool execution)
     if (Array.isArray(httpTools.data) && httpTools.data.length > 0) {
       const toolName = httpTools.data[0].name;
       console.log(`    Executing HTTP tool: ${toolName}...`);
-      
-      const result = await httpClient.post(toolName, { 
-        query: 'test research query' 
+
+      const result = await httpClient.post(toolName, {
+        query: 'test research query',
       });
-      
+
       console.log(`    HTTP Tool Result: ${result.status} ${result.statusText}`);
       console.log(`    Response Time: ${result.metadata?.responseTime}ms`);
     }
@@ -121,11 +129,11 @@ export async function demonstrateMCPClientConversion() {
     if (Array.isArray(stdioTools.data) && stdioTools.data.length > 0) {
       const toolName = stdioTools.data[0].name;
       console.log(`    Executing stdio tool: ${toolName}...`);
-      
-      const result = await stdioClient.post(toolName, { 
-        path: './test-file.txt' 
+
+      const result = await stdioClient.post(toolName, {
+        path: './test-file.txt',
       });
-      
+
       console.log(`    Stdio Tool Result: ${result.status} ${result.statusText}`);
       console.log(`    Response Time: ${result.metadata?.responseTime}ms`);
     }
@@ -133,12 +141,17 @@ export async function demonstrateMCPClientConversion() {
     // 5. Factory operations
     console.log('\n  🏭 Factory Operations:');
     console.log(`    Total Clients: ${factory.getActiveCount()}`);
-    console.log(`    Client Names: ${factory.list().map(c => c.name).join(', ')}`);
+    console.log(
+      `    Client Names: ${factory
+        .list()
+        .map((c) => c.name)
+        .join(', ')}`
+    );
 
     // Bulk health check
     const allHealth = await factory.healthCheckAll();
     console.log(`    Bulk Health Check: ${allHealth.size} clients checked`);
-    
+
     for (const [name, health] of allHealth) {
       console.log(`      ${name}: ${health.status}`);
     }
@@ -146,9 +159,11 @@ export async function demonstrateMCPClientConversion() {
     // Bulk metrics
     const allMetrics = await factory.getMetricsAll();
     console.log(`    Bulk Metrics: ${allMetrics.size} clients reported`);
-    
+
     for (const [name, metrics] of allMetrics) {
-      console.log(`      ${name}: ${metrics.requestCount} requests, ${metrics.averageLatency.toFixed(2)}ms avg`);
+      console.log(
+        `      ${name}: ${metrics.requestCount} requests, ${metrics.averageLatency.toFixed(2)}ms avg`
+      );
     }
 
     // 6. Configuration updates
@@ -161,7 +176,7 @@ export async function demonstrateMCPClientConversion() {
     httpClient.on('connect', (data) => {
       console.log(`    HTTP Client connected: ${JSON.stringify(data)}`);
     });
-    
+
     stdioClient.on('disconnect', (data) => {
       console.log(`    Stdio Client disconnected: ${JSON.stringify(data)}`);
     });
@@ -171,9 +186,8 @@ export async function demonstrateMCPClientConversion() {
     await httpClient.disconnect();
     await stdioClient.disconnect();
     await factory.shutdown();
-    
-    console.log('✅ MCP Client UACL conversion demonstration completed successfully!');
 
+    console.log('✅ MCP Client UACL conversion demonstration completed successfully!');
   } catch (error) {
     console.error('❌ Error during MCP client demonstration:', error);
     throw error;
@@ -207,8 +221,8 @@ export async function migrateLegacyMCPClient() {
     localMcp: {
       command: ['npx', 'claude-zen', 'mcp', 'start'],
       timeout: 15000,
-      capabilities: ['coordination', 'swarm', 'memory']
-    }
+      capabilities: ['coordination', 'swarm', 'memory'],
+    },
   };
 
   const factory = new MCPClientFactory();
@@ -218,13 +232,13 @@ export async function migrateLegacyMCPClient() {
     // Convert each legacy config to UACL
     for (const [name, legacyConfig] of Object.entries(legacyConfigs)) {
       console.log(`🔄 Converting ${name}...`);
-      
+
       const uaclConfig = createMCPConfigFromLegacy(name, legacyConfig);
-      
+
       // Create client
       const client = await factory.create(uaclConfig);
       clients.push({ name, client });
-      
+
       console.log(`✅ ${name} converted and created`);
       console.log(`   Protocol: ${uaclConfig.protocol}`);
       console.log(`   Base URL: ${uaclConfig.baseURL}`);
@@ -233,7 +247,7 @@ export async function migrateLegacyMCPClient() {
 
     // Test unified interface
     console.log('\n🔗 Testing unified interface...');
-    
+
     for (const { name, client } of clients) {
       try {
         await client.connect();
@@ -252,7 +266,6 @@ export async function migrateLegacyMCPClient() {
     await factory.shutdown();
 
     console.log('✅ Legacy MCP client migration completed!');
-
   } catch (error) {
     console.error('❌ Migration error:', error);
     throw error;
@@ -280,8 +293,8 @@ export async function demonstrateProtocolPatterns() {
     stdio: {
       encoding: 'utf8',
       killSignal: 'SIGTERM',
-      killTimeout: 5000
-    }
+      killTimeout: 5000,
+    },
   };
 
   // Pattern 2: HTTP MCP for remote services
@@ -291,17 +304,17 @@ export async function demonstrateProtocolPatterns() {
     protocol: 'http',
     url: 'https://api.example.com/mcp',
     timeout: 30000,
-    authentication: { 
-      type: 'bearer', 
-      credentials: 'your-api-token' 
+    authentication: {
+      type: 'bearer',
+      credentials: 'your-api-token',
     },
     tools: { timeout: 30000, retries: 3, discovery: true },
-    server: { name: 'remote-service', version: '2.0.0' }
+    server: { name: 'remote-service', version: '2.0.0' },
   };
 
   try {
     console.log('📱 Creating protocol-specific clients...');
-    
+
     const stdioClient = await factory.create(stdioConfig);
     const httpClient = await factory.create(httpConfig);
 
@@ -327,7 +340,6 @@ export async function demonstrateProtocolPatterns() {
     console.log('  - Protocol-agnostic tool execution');
 
     console.log('\n✅ Protocol pattern demonstration completed!');
-
   } catch (error) {
     console.error('❌ Protocol pattern error:', error);
   } finally {
@@ -336,8 +348,4 @@ export async function demonstrateProtocolPatterns() {
 }
 
 // Export for testing
-export {
-  MCPClientAdapter,
-  MCPClientFactory,
-  createMCPConfigFromLegacy
-};
+export { MCPClientAdapter, MCPClientFactory, createMCPConfigFromLegacy };

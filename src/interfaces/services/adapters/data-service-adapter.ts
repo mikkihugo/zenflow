@@ -1,64 +1,56 @@
 /**
  * USL Data Service Adapter
- * 
+ *
  * Unified Service Layer adapter for data-related services, providing
  * a consistent interface to WebDataService and DocumentService while
  * maintaining full backward compatibility and adding enhanced monitoring,
  * caching, retry logic, and performance metrics.
- * 
+ *
  * This adapter follows the exact same patterns as the UACL client adapters,
  * implementing the IService interface and providing unified configuration
  * management for data operations across Claude-Zen.
  */
 
-import type {
-  IService,
-  ServiceConfig,
-  ServiceStatus,
-  ServiceMetrics,
-  ServiceEvent,
-  ServiceEventType,
-  ServiceOperationOptions,
-  ServiceOperationResponse,
-  ServiceLifecycleStatus,
-  ServiceDependencyConfig,
-  ServiceError,
-  ServiceOperationError,
-  ServiceTimeoutError,
-  ServiceDependencyError
-} from '../core/interfaces';
-
-import type {
-  DataServiceConfig,
-  ServiceType,
-  ServicePriority,
-  ServiceEnvironment
-} from '../types';
-
-import { WebDataService } from '../../web/web-data-service';
-import type {
-  SystemStatusData,
-  SwarmData,
-  TaskData,
-  DocumentData,
-  CommandResult
-} from '../../web/web-data-service';
-
-import { DocumentManager } from '../../../database/managers/document-manager';
+import { EventEmitter } from 'events';
+import type { BaseDocumentEntity } from '../../../database/entities/document-entities';
 import type {
   DocumentCreateOptions,
   DocumentQueryOptions,
-  DocumentSearchOptions
+  DocumentSearchOptions,
 } from '../../../database/managers/document-manager';
-
-import type { BaseDocumentEntity } from '../../../database/entities/document-entities';
+import { DocumentManager } from '../../../database/managers/document-manager';
 import type { DocumentType } from '../../../types/workflow-types';
-
 import { createLogger, type Logger } from '../../../utils/logger';
-import { EventEmitter } from 'events';
+import type {
+  CommandResult,
+  DocumentData,
+  SwarmData,
+  SystemStatusData,
+  TaskData,
+} from '../../web/web-data-service';
+import { WebDataService } from '../../web/web-data-service';
+import type {
+  IService,
+  ServiceConfig,
+  ServiceDependencyConfig,
+  ServiceDependencyError,
+  ServiceError,
+  ServiceEvent,
+  ServiceEventType,
+  ServiceLifecycleStatus,
+  ServiceMetrics,
+  ServiceOperationError,
+  ServiceOperationOptions,
+  ServiceOperationResponse,
+  ServiceStatus,
+  ServiceTimeoutError,
+} from '../core/interfaces';
+import type { DataServiceConfig, ServiceEnvironment, ServicePriority, ServiceType } from '../types';
 
 /**
  * Data service adapter configuration extending USL DataServiceConfig
+ *
+ * @example
  */
 export interface DataServiceAdapterConfig extends DataServiceConfig {
   /** WebDataService integration settings */
@@ -68,7 +60,7 @@ export interface DataServiceAdapterConfig extends DataServiceConfig {
     cacheResponses?: boolean;
     cacheTTL?: number;
   };
-  
+
   /** DocumentService integration settings */
   documentData?: {
     enabled: boolean;
@@ -76,7 +68,7 @@ export interface DataServiceAdapterConfig extends DataServiceConfig {
     autoInitialize?: boolean;
     searchIndexing?: boolean;
   };
-  
+
   /** Performance optimization settings */
   performance?: {
     enableRequestDeduplication?: boolean;
@@ -84,7 +76,7 @@ export interface DataServiceAdapterConfig extends DataServiceConfig {
     requestTimeout?: number;
     enableMetricsCollection?: boolean;
   };
-  
+
   /** Retry configuration for failed operations */
   retry?: {
     enabled: boolean;
@@ -92,7 +84,7 @@ export interface DataServiceAdapterConfig extends DataServiceConfig {
     backoffMultiplier: number;
     retryableOperations: string[];
   };
-  
+
   /** Cache configuration for data operations */
   cache?: {
     enabled: boolean;
@@ -105,6 +97,8 @@ export interface DataServiceAdapterConfig extends DataServiceConfig {
 
 /**
  * Data operation metrics for performance monitoring
+ *
+ * @example
  */
 interface DataOperationMetrics {
   operationName: string;
@@ -118,6 +112,8 @@ interface DataOperationMetrics {
 
 /**
  * Cache entry structure for data caching
+ *
+ * @example
  */
 interface CacheEntry<T = any> {
   data: T;
@@ -129,6 +125,8 @@ interface CacheEntry<T = any> {
 
 /**
  * Request deduplication entry
+ *
+ * @example
  */
 interface PendingRequest<T = any> {
   promise: Promise<T>;
@@ -138,18 +136,20 @@ interface PendingRequest<T = any> {
 
 /**
  * Unified Data Service Adapter
- * 
+ *
  * Provides a unified interface to WebDataService and DocumentService
  * while implementing the IService interface for USL compatibility.
- * 
+ *
  * Features:
  * - Unified configuration management
  * - Performance monitoring and metrics
- * - Request caching and deduplication  
+ * - Request caching and deduplication
  * - Retry logic with backoff
  * - Health monitoring
  * - Event forwarding
  * - Error handling and recovery
+ *
+ * @example
  */
 export class DataServiceAdapter implements IService {
   // Core service properties
@@ -180,7 +180,7 @@ export class DataServiceAdapter implements IService {
     lastHealthCheck: new Date(),
     consecutiveFailures: 0,
     totalHealthChecks: 0,
-    healthCheckFailures: 0
+    healthCheckFailures: 0,
   };
 
   constructor(config: DataServiceAdapterConfig) {
@@ -193,31 +193,36 @@ export class DataServiceAdapter implements IService {
         mockData: true,
         cacheResponses: true,
         cacheTTL: 300000, // 5 minutes
-        ...config.webData
+        ...config.webData,
       },
       documentData: {
         enabled: true,
         databaseType: 'postgresql',
         autoInitialize: true,
         searchIndexing: true,
-        ...config.documentData
+        ...config.documentData,
       },
       performance: {
         enableRequestDeduplication: true,
         maxConcurrency: 10,
         requestTimeout: 30000,
         enableMetricsCollection: true,
-        ...config.performance
+        ...config.performance,
       },
       retry: {
         enabled: true,
         maxAttempts: 3,
         backoffMultiplier: 2,
         retryableOperations: [
-          'system-status', 'swarms', 'tasks', 'documents',
-          'document-query', 'document-search', 'document-create'
+          'system-status',
+          'swarms',
+          'tasks',
+          'documents',
+          'document-query',
+          'document-search',
+          'document-create',
         ],
-        ...config.retry
+        ...config.retry,
       },
       cache: {
         enabled: true,
@@ -225,9 +230,9 @@ export class DataServiceAdapter implements IService {
         defaultTTL: 300000, // 5 minutes
         maxSize: 1000,
         keyPrefix: 'data-adapter:',
-        ...config.cache
+        ...config.cache,
       },
-      ...config
+      ...config,
     };
 
     this.logger = createLogger(`DataServiceAdapter:${this.name}`);
@@ -240,6 +245,8 @@ export class DataServiceAdapter implements IService {
 
   /**
    * Initialize the data service adapter and its dependencies
+   *
+   * @param config
    */
   async initialize(config?: Partial<DataServiceAdapterConfig>): Promise<void> {
     this.logger.info(`Initializing data service adapter: ${this.name}`);
@@ -267,7 +274,7 @@ export class DataServiceAdapter implements IService {
           required: true,
           healthCheck: true,
           timeout: 5000,
-          retries: 2
+          retries: 2,
         });
       }
 
@@ -277,7 +284,7 @@ export class DataServiceAdapter implements IService {
         this.documentService = new DocumentService(
           this.config.documentData.databaseType || 'postgresql'
         );
-        
+
         if (this.config.documentData.autoInitialize) {
           await this.documentService.initialize();
         }
@@ -287,7 +294,7 @@ export class DataServiceAdapter implements IService {
           required: true,
           healthCheck: true,
           timeout: 10000,
-          retries: 3
+          retries: 3,
         });
       }
 
@@ -319,7 +326,7 @@ export class DataServiceAdapter implements IService {
    */
   async start(): Promise<void> {
     this.logger.info(`Starting data service adapter: ${this.name}`);
-    
+
     if (this.lifecycleStatus !== 'initialized') {
       throw new Error(`Cannot start service in ${this.lifecycleStatus} state`);
     }
@@ -416,19 +423,21 @@ export class DataServiceAdapter implements IService {
     const errorRate = this.operationCount > 0 ? (this.errorCount / this.operationCount) * 100 : 0;
 
     // Check dependency statuses
-    const dependencyStatuses: { [serviceName: string]: { status: 'healthy' | 'unhealthy' | 'unknown'; lastCheck: Date } } = {};
-    
+    const dependencyStatuses: {
+      [serviceName: string]: { status: 'healthy' | 'unhealthy' | 'unknown'; lastCheck: Date };
+    } = {};
+
     if (this.webDataService && this.config.webData?.enabled) {
       try {
         const stats = this.webDataService.getServiceStats();
         dependencyStatuses['web-data-service'] = {
           status: stats.averageResponseTime < 5000 ? 'healthy' : 'unhealthy',
-          lastCheck: now
+          lastCheck: now,
         };
       } catch {
         dependencyStatuses['web-data-service'] = {
           status: 'unhealthy',
-          lastCheck: now
+          lastCheck: now,
         };
       }
     }
@@ -436,7 +445,7 @@ export class DataServiceAdapter implements IService {
     if (this.documentService && this.config.documentData?.enabled) {
       dependencyStatuses['document-service'] = {
         status: 'healthy', // DocumentService doesn't have health check method
-        lastCheck: now
+        lastCheck: now,
       };
     }
 
@@ -456,8 +465,8 @@ export class DataServiceAdapter implements IService {
         cacheSize: this.cache.size,
         pendingRequests: this.pendingRequests.size,
         webDataEnabled: this.config.webData?.enabled || false,
-        documentDataEnabled: this.config.documentData?.enabled || false
-      }
+        documentDataEnabled: this.config.documentData?.enabled || false,
+      },
     };
   }
 
@@ -467,14 +476,14 @@ export class DataServiceAdapter implements IService {
   async getMetrics(): Promise<ServiceMetrics> {
     const now = new Date();
     const recentMetrics = this.metrics.filter(
-      m => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
     );
 
     const avgLatency = this.operationCount > 0 ? this.totalLatency / this.operationCount : 0;
     const throughput = recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // ops per second
 
     // Calculate percentile latencies from recent metrics
-    const latencies = recentMetrics.map(m => m.executionTime).sort((a, b) => a - b);
+    const latencies = recentMetrics.map((m) => m.executionTime).sort((a, b) => a - b);
     const p95Index = Math.floor(latencies.length * 0.95);
     const p99Index = Math.floor(latencies.length * 0.99);
 
@@ -491,14 +500,14 @@ export class DataServiceAdapter implements IService {
       memoryUsage: {
         used: this.estimateMemoryUsage(),
         total: this.config.cache?.maxSize || 1000,
-        percentage: this.cache.size / (this.config.cache?.maxSize || 1000) * 100
+        percentage: (this.cache.size / (this.config.cache?.maxSize || 1000)) * 100,
       },
       customMetrics: {
         cacheHitRate: this.calculateCacheHitRate(),
         pendingRequestsCount: this.pendingRequests.size,
-        avgRequestDeduplicationRate: this.calculateDeduplicationRate()
+        avgRequestDeduplicationRate: this.calculateDeduplicationRate(),
       },
-      timestamp: now
+      timestamp: now,
     };
   }
 
@@ -529,7 +538,8 @@ export class DataServiceAdapter implements IService {
       if (this.webDataService && this.config.webData?.enabled) {
         try {
           const stats = this.webDataService.getServiceStats();
-          if (stats.averageResponseTime > 10000) { // 10 second threshold
+          if (stats.averageResponseTime > 10000) {
+            // 10 second threshold
             this.healthStats.consecutiveFailures++;
             this.healthStats.healthCheckFailures++;
             return false;
@@ -545,8 +555,11 @@ export class DataServiceAdapter implements IService {
       // Check cache health
       if (this.config.cache?.enabled) {
         const maxSize = this.config.cache.maxSize || 1000;
-        if (this.cache.size > maxSize * 1.2) { // 20% overage threshold
-          this.logger.warn(`Cache size (${this.cache.size}) significantly exceeds limit (${maxSize})`);
+        if (this.cache.size > maxSize * 1.2) {
+          // 20% overage threshold
+          this.logger.warn(
+            `Cache size (${this.cache.size}) significantly exceeds limit (${maxSize})`
+          );
           this.healthStats.consecutiveFailures++;
           this.healthStats.healthCheckFailures++;
           return false;
@@ -566,10 +579,12 @@ export class DataServiceAdapter implements IService {
 
   /**
    * Update service configuration
+   *
+   * @param config
    */
   async updateConfig(config: Partial<DataServiceAdapterConfig>): Promise<void> {
     this.logger.info(`Updating configuration for data service adapter: ${this.name}`);
-    
+
     try {
       // Validate the updated configuration
       const newConfig = { ...this.config, ...config };
@@ -580,7 +595,7 @@ export class DataServiceAdapter implements IService {
 
       // Apply the configuration
       Object.assign(this.config, config);
-      
+
       this.logger.info(`Configuration updated successfully for: ${this.name}`);
     } catch (error) {
       this.logger.error(`Failed to update configuration for ${this.name}:`, error);
@@ -590,6 +605,8 @@ export class DataServiceAdapter implements IService {
 
   /**
    * Validate service configuration
+   *
+   * @param config
    */
   async validateConfig(config: DataServiceAdapterConfig): Promise<boolean> {
     try {
@@ -608,7 +625,10 @@ export class DataServiceAdapter implements IService {
       // Validate document data configuration
       if (config.documentData?.enabled) {
         const validDbTypes = ['postgresql', 'sqlite', 'mysql'];
-        if (config.documentData.databaseType && !validDbTypes.includes(config.documentData.databaseType)) {
+        if (
+          config.documentData.databaseType &&
+          !validDbTypes.includes(config.documentData.databaseType)
+        ) {
           this.logger.error(`Invalid database type: ${config.documentData.databaseType}`);
           return false;
         }
@@ -655,7 +675,7 @@ export class DataServiceAdapter implements IService {
     if (this.config.webData?.enabled) {
       capabilities.push(
         'system-status',
-        'swarm-management', 
+        'swarm-management',
         'task-management',
         'document-listing',
         'command-execution'
@@ -685,6 +705,10 @@ export class DataServiceAdapter implements IService {
 
   /**
    * Execute service operations with unified interface
+   *
+   * @param operation
+   * @param params
+   * @param options
    */
   async execute<T = any>(
     operation: string,
@@ -713,14 +737,14 @@ export class DataServiceAdapter implements IService {
       const result = await Promise.race([operationPromise, timeoutPromise]);
 
       const duration = Date.now() - startTime;
-      
+
       // Record success metrics
       this.recordOperationMetrics({
         operationName: operation,
         executionTime: duration,
         success: true,
         dataSize: this.estimateDataSize(result),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       this.operationCount++;
@@ -735,18 +759,18 @@ export class DataServiceAdapter implements IService {
         metadata: {
           duration,
           timestamp: new Date(),
-          operationId
-        }
+          operationId,
+        },
       };
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       // Record error metrics
       this.recordOperationMetrics({
         operationName: operation,
         executionTime: duration,
         success: false,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       this.operationCount++;
@@ -764,13 +788,13 @@ export class DataServiceAdapter implements IService {
           code: error instanceof ServiceError ? error.code : 'OPERATION_ERROR',
           message: error.message,
           details: params,
-          stack: error.stack
+          stack: error.stack,
         },
         metadata: {
           duration,
           timestamp: new Date(),
-          operationId
-        }
+          operationId,
+        },
       };
     }
   }
@@ -797,7 +821,7 @@ export class DataServiceAdapter implements IService {
       serviceName: this.name,
       timestamp: new Date(),
       data,
-      error
+      error,
     };
     this.eventEmitter.emit(event, serviceEvent);
   }
@@ -822,23 +846,25 @@ export class DataServiceAdapter implements IService {
     }
 
     try {
-      const dependencyChecks = Array.from(this.dependencies.entries()).map(async ([name, config]) => {
-        if (!config.healthCheck) {
-          return true; // Skip health check if not required
-        }
+      const dependencyChecks = Array.from(this.dependencies.entries()).map(
+        async ([name, config]) => {
+          if (!config.healthCheck) {
+            return true; // Skip health check if not required
+          }
 
-        try {
-          // Simulate dependency health check
-          // In a real implementation, this would check the actual dependency
-          return true;
-        } catch (error) {
-          this.logger.warn(`Dependency ${name} health check failed:`, error);
-          return !config.required; // Return false only if dependency is required
+          try {
+            // Simulate dependency health check
+            // In a real implementation, this would check the actual dependency
+            return true;
+          } catch (error) {
+            this.logger.warn(`Dependency ${name} health check failed:`, error);
+            return !config.required; // Return false only if dependency is required
+          }
         }
-      });
+      );
 
       const results = await Promise.all(dependencyChecks);
-      return results.every(result => result === true);
+      return results.every((result) => result === true);
     } catch (error) {
       this.logger.error(`Error checking dependencies for ${this.name}:`, error);
       return false;
@@ -851,6 +877,10 @@ export class DataServiceAdapter implements IService {
 
   /**
    * Internal operation execution with caching, deduplication, and retry logic
+   *
+   * @param operation
+   * @param params
+   * @param options
    */
   private async executeOperationInternal<T = any>(
     operation: string,
@@ -870,7 +900,7 @@ export class DataServiceAdapter implements IService {
           executionTime: 0,
           success: true,
           cacheHit: true,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
         return cached;
       }
@@ -894,7 +924,7 @@ export class DataServiceAdapter implements IService {
       this.pendingRequests.set(cacheKey, {
         promise: executionPromise,
         timestamp: new Date(),
-        requestCount: 1
+        requestCount: 1,
       });
     }
 
@@ -917,6 +947,11 @@ export class DataServiceAdapter implements IService {
 
   /**
    * Execute operation with retry logic
+   *
+   * @param operation
+   * @param params
+   * @param options
+   * @param attempt
    */
   private async executeWithRetry<T = any>(
     operation: string,
@@ -928,30 +963,37 @@ export class DataServiceAdapter implements IService {
       return await this.performOperation<T>(operation, params, options);
     } catch (error) {
       const shouldRetry = this.shouldRetryOperation(operation, error, attempt);
-      
+
       if (shouldRetry && attempt < (this.config.retry?.maxAttempts || 3)) {
-        const delay = Math.pow(this.config.retry?.backoffMultiplier || 2, attempt - 1) * 1000;
-        this.logger.warn(`Operation ${operation} failed (attempt ${attempt}), retrying in ${delay}ms:`, error);
-        
-        await new Promise(resolve => setTimeout(resolve, delay));
-        
+        const delay = (this.config.retry?.backoffMultiplier || 2) ** (attempt - 1) * 1000;
+        this.logger.warn(
+          `Operation ${operation} failed (attempt ${attempt}), retrying in ${delay}ms:`,
+          error
+        );
+
+        await new Promise((resolve) => setTimeout(resolve, delay));
+
         this.recordOperationMetrics({
           operationName: operation,
           executionTime: 0,
           success: false,
           retryCount: attempt,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
-        
+
         return await this.executeWithRetry<T>(operation, params, options, attempt + 1);
       }
-      
+
       throw error;
     }
   }
 
   /**
    * Perform the actual operation based on operation type
+   *
+   * @param operation
+   * @param params
+   * @param options
    */
   private async performOperation<T = any>(
     operation: string,
@@ -961,63 +1003,67 @@ export class DataServiceAdapter implements IService {
     switch (operation) {
       // WebDataService operations
       case 'system-status':
-        return await this.getSystemStatus() as T;
-      
+        return (await this.getSystemStatus()) as T;
+
       case 'swarms':
-        return await this.getSwarms() as T;
-      
+        return (await this.getSwarms()) as T;
+
       case 'create-swarm':
-        return await this.createSwarm(params) as T;
-      
+        return (await this.createSwarm(params)) as T;
+
       case 'tasks':
-        return await this.getTasks() as T;
-      
+        return (await this.getTasks()) as T;
+
       case 'create-task':
-        return await this.createTask(params) as T;
-      
+        return (await this.createTask(params)) as T;
+
       case 'documents':
-        return await this.getDocuments() as T;
-      
+        return (await this.getDocuments()) as T;
+
       case 'execute-command':
-        return await this.executeCommand(params?.command, params?.args) as T;
-      
+        return (await this.executeCommand(params?.command, params?.args)) as T;
+
       // DocumentService operations
       case 'document-create':
-        return await this.createDocument(params?.document, params?.options) as T;
-      
+        return (await this.createDocument(params?.document, params?.options)) as T;
+
       case 'document-get':
-        return await this.getDocument(params?.id, params?.options) as T;
-      
+        return (await this.getDocument(params?.id, params?.options)) as T;
+
       case 'document-update':
-        return await this.updateDocument(params?.id, params?.updates, params?.options) as T;
-      
+        return (await this.updateDocument(params?.id, params?.updates, params?.options)) as T;
+
       case 'document-delete':
-        return await this.deleteDocument(params?.id) as T;
-      
+        return (await this.deleteDocument(params?.id)) as T;
+
       case 'document-query':
-        return await this.queryDocuments(params?.filters, params?.options) as T;
-      
+        return (await this.queryDocuments(params?.filters, params?.options)) as T;
+
       case 'document-search':
-        return await this.searchDocuments(params?.searchOptions) as T;
-      
+        return (await this.searchDocuments(params?.searchOptions)) as T;
+
       case 'project-create':
-        return await this.createProject(params?.project) as T;
-      
+        return (await this.createProject(params?.project)) as T;
+
       case 'project-get':
-        return await this.getProjectWithDocuments(params?.projectId) as T;
-      
+        return (await this.getProjectWithDocuments(params?.projectId)) as T;
+
       // Utility operations
       case 'cache-stats':
         return this.getCacheStats() as T;
-      
+
       case 'clear-cache':
-        return await this.clearCache() as T;
-      
+        return (await this.clearCache()) as T;
+
       case 'service-stats':
-        return await this.getServiceStats() as T;
-      
+        return (await this.getServiceStats()) as T;
+
       default:
-        throw new ServiceOperationError(this.name, operation, new Error(`Unknown operation: ${operation}`));
+        throw new ServiceOperationError(
+          this.name,
+          operation,
+          new Error(`Unknown operation: ${operation}`)
+        );
     }
   }
 
@@ -1186,7 +1232,7 @@ export class DataServiceAdapter implements IService {
       size: this.cache.size,
       maxSize: this.config.cache?.maxSize || 1000,
       hitRate: this.calculateCacheHitRate(),
-      memoryUsage: this.estimateMemoryUsage()
+      memoryUsage: this.estimateMemoryUsage(),
     };
   }
 
@@ -1213,7 +1259,7 @@ export class DataServiceAdapter implements IService {
       avgLatency: this.operationCount > 0 ? this.totalLatency / this.operationCount : 0,
       cacheHitRate: this.calculateCacheHitRate(),
       pendingRequests: this.pendingRequests.size,
-      healthStats: { ...this.healthStats }
+      healthStats: { ...this.healthStats },
     };
   }
 
@@ -1229,9 +1275,14 @@ export class DataServiceAdapter implements IService {
 
   private isCacheableOperation(operation: string): boolean {
     const cacheableOps = [
-      'system-status', 'swarms', 'tasks', 'documents',
-      'document-get', 'document-query', 'document-search',
-      'project-get'
+      'system-status',
+      'swarms',
+      'tasks',
+      'documents',
+      'document-get',
+      'document-query',
+      'document-search',
+      'project-get',
     ];
     return cacheableOps.includes(operation);
   }
@@ -1256,13 +1307,13 @@ export class DataServiceAdapter implements IService {
   private setInCache<T>(key: string, data: T): void {
     const now = new Date();
     const ttl = this.config.cache?.defaultTTL || 300000;
-    
+
     this.cache.set(key, {
       data,
       timestamp: now,
       ttl,
       accessed: now,
-      accessCount: 1
+      accessCount: 1,
     });
 
     // Cleanup cache if it exceeds max size
@@ -1274,15 +1325,15 @@ export class DataServiceAdapter implements IService {
   private cleanupCache(): void {
     const maxSize = this.config.cache?.maxSize || 1000;
     const targetSize = Math.floor(maxSize * 0.8); // Clean to 80% of max size
-    
+
     if (this.cache.size <= targetSize) {
       return;
     }
 
     // Sort by least recently used and lowest access count
     const entries = Array.from(this.cache.entries()).sort(([, a], [, b]) => {
-      const aScore = a.accessed.getTime() + (a.accessCount * 1000);
-      const bScore = b.accessed.getTime() + (b.accessCount * 1000);
+      const aScore = a.accessed.getTime() + a.accessCount * 1000;
+      const bScore = b.accessed.getTime() + b.accessCount * 1000;
       return aScore - bScore;
     });
 
@@ -1324,50 +1375,52 @@ export class DataServiceAdapter implements IService {
 
     // Keep only recent metrics
     const cutoff = new Date(Date.now() - 3600000); // 1 hour
-    this.metrics = this.metrics.filter(m => m.timestamp > cutoff);
+    this.metrics = this.metrics.filter((m) => m.timestamp > cutoff);
   }
 
   private calculateCacheHitRate(): number {
     const recentMetrics = this.metrics.filter(
-      m => Date.now() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => Date.now() - m.timestamp.getTime() < 300000 // Last 5 minutes
     );
 
     if (recentMetrics.length === 0) {
       return 0;
     }
 
-    const cacheHits = recentMetrics.filter(m => m.cacheHit).length;
+    const cacheHits = recentMetrics.filter((m) => m.cacheHit).length;
     return (cacheHits / recentMetrics.length) * 100;
   }
 
   private calculateDeduplicationRate(): number {
-    const deduplicatedRequests = Array.from(this.pendingRequests.values())
-      .reduce((sum, req) => sum + (req.requestCount - 1), 0);
-    
+    const deduplicatedRequests = Array.from(this.pendingRequests.values()).reduce(
+      (sum, req) => sum + (req.requestCount - 1),
+      0
+    );
+
     const totalRequests = this.operationCount + deduplicatedRequests;
     return totalRequests > 0 ? (deduplicatedRequests / totalRequests) * 100 : 0;
   }
 
   private estimateMemoryUsage(): number {
     let size = 0;
-    
+
     // Estimate cache memory usage
     for (const entry of this.cache.values()) {
       size += this.estimateDataSize(entry.data) + 200; // 200 bytes for metadata
     }
-    
+
     // Estimate pending requests memory usage
     size += this.pendingRequests.size * 100;
-    
+
     // Estimate metrics memory usage
     size += this.metrics.length * 150;
-    
+
     return size;
   }
 
   private estimateDataSize(data: any): number {
     if (!data) return 0;
-    
+
     try {
       return JSON.stringify(data).length * 2; // Rough estimate (UTF-16)
     } catch {
@@ -1375,7 +1428,9 @@ export class DataServiceAdapter implements IService {
     }
   }
 
-  private determineHealthStatus(errorRate: number): 'healthy' | 'degraded' | 'unhealthy' | 'unknown' {
+  private determineHealthStatus(
+    errorRate: number
+  ): 'healthy' | 'degraded' | 'unhealthy' | 'unknown' {
     if (this.healthStats.consecutiveFailures > 5) {
       return 'unhealthy';
     } else if (errorRate > 10 || this.healthStats.consecutiveFailures > 2) {
@@ -1390,7 +1445,7 @@ export class DataServiceAdapter implements IService {
   private startCacheCleanupTimer(): void {
     setInterval(() => {
       this.cleanupCache();
-      
+
       // Clean expired entries
       const now = new Date();
       for (const [key, entry] of this.cache.entries()) {
@@ -1404,13 +1459,15 @@ export class DataServiceAdapter implements IService {
   private startMetricsCleanupTimer(): void {
     setInterval(() => {
       const cutoff = new Date(Date.now() - 3600000); // 1 hour
-      this.metrics = this.metrics.filter(m => m.timestamp > cutoff);
+      this.metrics = this.metrics.filter((m) => m.timestamp > cutoff);
     }, 300000); // Run every 5 minutes
   }
 }
 
 /**
  * Factory function for creating DataServiceAdapter instances
+ *
+ * @param config
  */
 export function createDataServiceAdapter(config: DataServiceAdapterConfig): DataServiceAdapter {
   return new DataServiceAdapter(config);
@@ -1418,6 +1475,9 @@ export function createDataServiceAdapter(config: DataServiceAdapterConfig): Data
 
 /**
  * Helper function for creating default configuration
+ *
+ * @param name
+ * @param overrides
  */
 export function createDefaultDataServiceAdapterConfig(
   name: string,
@@ -1435,7 +1495,7 @@ export function createDefaultDataServiceAdapterConfig(
       interval: 30000,
       timeout: 5000,
       failureThreshold: 3,
-      successThreshold: 1
+      successThreshold: 1,
     },
     monitoring: {
       enabled: true,
@@ -1443,43 +1503,48 @@ export function createDefaultDataServiceAdapterConfig(
       trackLatency: true,
       trackThroughput: true,
       trackErrors: true,
-      trackMemoryUsage: true
+      trackMemoryUsage: true,
     },
     webData: {
       enabled: true,
       mockData: true,
       cacheResponses: true,
-      cacheTTL: 300000
+      cacheTTL: 300000,
     },
     documentData: {
       enabled: true,
       databaseType: 'postgresql',
       autoInitialize: true,
-      searchIndexing: true
+      searchIndexing: true,
     },
     performance: {
       enableRequestDeduplication: true,
       maxConcurrency: 10,
       requestTimeout: 30000,
-      enableMetricsCollection: true
+      enableMetricsCollection: true,
     },
     retry: {
       enabled: true,
       maxAttempts: 3,
       backoffMultiplier: 2,
       retryableOperations: [
-        'system-status', 'swarms', 'tasks', 'documents',
-        'document-query', 'document-search', 'document-create'
-      ]
+        'system-status',
+        'swarms',
+        'tasks',
+        'documents',
+        'document-query',
+        'document-search',
+        'document-create',
+      ],
     },
     cache: {
       enabled: true,
       strategy: 'memory',
       defaultTTL: 300000,
       maxSize: 1000,
-      keyPrefix: 'data-adapter:'
+      keyPrefix: 'data-adapter:',
     },
-    ...overrides
+    ...overrides,
   };
 }
 

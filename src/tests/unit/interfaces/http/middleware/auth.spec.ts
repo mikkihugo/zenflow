@@ -15,11 +15,11 @@
  * 5) Time to parse typical headers stays within target budget (baseline micro-benchmark in unit scope).
  */
 
-import { IncomingMessage, ServerResponse } from 'http';
 import type { NextFunction } from 'express'; // adjust if using another framework adapter
+import type { IncomingMessage, ServerResponse } from 'http';
+import { createMock } from 'ts-auto-mock'; // optional; if unavailable, replace with simple stubs
 // Import the actual auth middleware when available. Keep path aligned with your project layout.
 import authMiddleware from '../../../../../../interfaces/api/http/middleware/auth';
-import { createMock } from 'ts-auto-mock'; // optional; if unavailable, replace with simple stubs
 
 // Minimal Request/Response mocks if express types are in use; otherwise adapt to your HTTP adapter
 type Req = IncomingMessage & {

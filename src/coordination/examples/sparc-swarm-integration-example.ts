@@ -27,6 +27,8 @@ const logger = createLogger('SPARCSwarmIntegrationExample');
  * 2. Features/Tasks are assigned to SPARC swarm
  * 3. SPARC methodology is applied by coordinated agents
  * 4. Results are stored back in database
+ *
+ * @example
  */
 export class SPARCSwarmIntegrationExample {
   private databaseSystem: DatabaseDrivenSystem;
@@ -124,6 +126,8 @@ export class SPARCSwarmIntegrationExample {
 
   /**
    * Step 3: Create demo feature using database-driven system
+   *
+   * @param workspaceId
    */
   private async createDemoFeature(workspaceId: string): Promise<FeatureDocumentEntity> {
     logger.info('🎯 Creating demo feature in database-driven system...');
@@ -185,6 +189,8 @@ export class SPARCSwarmIntegrationExample {
 
   /**
    * Step 4: Assign feature to SPARC swarm
+   *
+   * @param feature
    */
   private async assignFeatureToSparc(feature: FeatureDocumentEntity): Promise<string> {
     logger.info('🤖 Assigning feature to SPARC swarm...');
@@ -204,6 +210,8 @@ export class SPARCSwarmIntegrationExample {
 
   /**
    * Step 5: Demonstrate task coordination with SPARC
+   *
+   * @param feature
    */
   private async demonstrateTaskCoordination(feature: FeatureDocumentEntity): Promise<void> {
     logger.info('🔧 Demonstrating task coordination with SPARC methodology...');
@@ -243,6 +251,8 @@ export class SPARCSwarmIntegrationExample {
 
   /**
    * Step 6: Monitor and report results
+   *
+   * @param assignmentId
    */
   private async monitorResults(assignmentId: string): Promise<void> {
     logger.info('📊 Monitoring SPARC-Swarm integration results...');

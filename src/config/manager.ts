@@ -1,5 +1,5 @@
 /**
- * @fileoverview Unified Configuration Manager
+ * @file Unified Configuration Manager
  *
  * Central configuration management with hot-reloading, validation, and event system
  */
@@ -22,6 +22,8 @@ import { ConfigValidator } from './validator';
  * - Event-driven configuration changes
  * - Thread-safe configuration access
  * - Configuration history and rollback
+ *
+ * @example
  */
 export class ConfigurationManager extends EventEmitter {
   private static instance: ConfigurationManager | null = null;
@@ -52,6 +54,8 @@ export class ConfigurationManager extends EventEmitter {
 
   /**
    * Initialize configuration system
+   *
+   * @param configPaths
    */
   async initialize(configPaths?: string[]): Promise<ConfigValidationResult> {
     if (this.isLoading) {
@@ -106,6 +110,8 @@ export class ConfigurationManager extends EventEmitter {
 
   /**
    * Get configuration section
+   *
+   * @param section
    */
   getSection<K extends keyof SystemConfiguration>(section: K): SystemConfiguration[K] {
     return JSON.parse(JSON.stringify(this.config[section]));
@@ -113,6 +119,8 @@ export class ConfigurationManager extends EventEmitter {
 
   /**
    * Get nested configuration value
+   *
+   * @param path
    */
   get<T = any>(path: string): T | undefined {
     return path.split('.').reduce((current: any, key) => current?.[key], this.config);
@@ -120,6 +128,9 @@ export class ConfigurationManager extends EventEmitter {
 
   /**
    * Update configuration (runtime only)
+   *
+   * @param path
+   * @param value
    */
   update(path: string, value: any): ConfigValidationResult {
     const oldValue = this.get(path);
@@ -178,6 +189,8 @@ export class ConfigurationManager extends EventEmitter {
 
   /**
    * Rollback to previous configuration
+   *
+   * @param steps
    */
   rollback(steps = 1): boolean {
     if (this.configHistory.length <= steps) {
@@ -202,6 +215,8 @@ export class ConfigurationManager extends EventEmitter {
 
   /**
    * Export current configuration
+   *
+   * @param format
    */
   export(format: 'json' | 'yaml' = 'json'): string {
     if (format === 'json') {
@@ -290,6 +305,8 @@ export class ConfigurationManager extends EventEmitter {
 
   /**
    * Add configuration to history
+   *
+   * @param config
    */
   private addToHistory(config: SystemConfiguration): void {
     this.configHistory.push(JSON.parse(JSON.stringify(config)));
@@ -302,6 +319,10 @@ export class ConfigurationManager extends EventEmitter {
 
   /**
    * Set nested value using dot notation
+   *
+   * @param obj
+   * @param path
+   * @param value
    */
   private setNestedValue(obj: any, path: string, value: any): void {
     const parts = path.split('.');
@@ -325,6 +346,9 @@ export class ConfigurationManager extends EventEmitter {
 
   /**
    * Simple YAML export (basic implementation)
+   *
+   * @param obj
+   * @param indent
    */
   private toSimpleYaml(obj: any, indent = 0): string {
     const spaces = '  '.repeat(indent);

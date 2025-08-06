@@ -10,6 +10,8 @@ import type { DocumentType } from '../../types/workflow-types';
 
 /**
  * Base document entity - all documents inherit from this
+ *
+ * @example
  */
 export interface BaseDocumentEntity {
   id: string;
@@ -45,6 +47,8 @@ export interface BaseDocumentEntity {
 /**
  * Vision Document Entity
  * Strategic vision and high-level goals
+ *
+ * @example
  */
 export interface VisionDocumentEntity extends BaseDocumentEntity {
   type: 'vision';
@@ -71,6 +75,8 @@ export interface VisionDocumentEntity extends BaseDocumentEntity {
 /**
  * Architecture Decision Record Entity
  * Technical decisions and rationale
+ *
+ * @example
  */
 export interface ADRDocumentEntity extends BaseDocumentEntity {
   type: 'adr';
@@ -92,6 +98,8 @@ export interface ADRDocumentEntity extends BaseDocumentEntity {
 /**
  * Product Requirements Document Entity
  * Detailed feature specifications
+ *
+ * @example
  */
 export interface PRDDocumentEntity extends BaseDocumentEntity {
   type: 'prd';
@@ -128,6 +136,8 @@ export interface PRDDocumentEntity extends BaseDocumentEntity {
 /**
  * Epic Document Entity
  * Large feature groupings
+ *
+ * @example
  */
 export interface EpicDocumentEntity extends BaseDocumentEntity {
   type: 'epic';
@@ -159,6 +169,8 @@ export interface EpicDocumentEntity extends BaseDocumentEntity {
 /**
  * Feature Document Entity
  * Individual implementable features with SPARC methodology integration
+ *
+ * @example
  */
 export interface FeatureDocumentEntity extends BaseDocumentEntity {
   type: 'feature';
@@ -241,6 +253,8 @@ export interface FeatureDocumentEntity extends BaseDocumentEntity {
 /**
  * Task Document Entity
  * Granular implementation tasks with SPARC methodology integration
+ *
+ * @example
  */
 export interface TaskDocumentEntity extends BaseDocumentEntity {
   type: 'task';
@@ -329,6 +343,8 @@ export interface TaskDocumentEntity extends BaseDocumentEntity {
 /**
  * Document Relationships Entity
  * Tracks relationships between documents
+ *
+ * @example
  */
 export interface DocumentRelationshipEntity {
   id: string;
@@ -342,6 +358,8 @@ export interface DocumentRelationshipEntity {
 /**
  * Document Workflow State Entity
  * Tracks document workflow progression
+ *
+ * @example
  */
 export interface DocumentWorkflowStateEntity {
   id: string;
@@ -370,6 +388,8 @@ export interface DocumentWorkflowStateEntity {
 /**
  * Project Entity
  * Groups related documents into projects with comprehensive SPARC integration
+ *
+ * @example
  */
 export interface ProjectEntity {
   id: string;
@@ -454,6 +474,8 @@ export interface ProjectEntity {
 /**
  * Document Search Index Entity
  * Optimized search and discovery
+ *
+ * @example
  */
 export interface DocumentSearchIndexEntity {
   document_id: string;
@@ -707,6 +729,8 @@ export const DATABASE_SCHEMAS = {
 
 /**
  * Type guards for document entities
+ *
+ * @param doc
  */
 export function isVisionDocument(doc: BaseDocumentEntity): doc is VisionDocumentEntity {
   return doc.type === 'vision';

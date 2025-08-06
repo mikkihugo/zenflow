@@ -201,6 +201,10 @@ export class RecoveryIntegration extends EventEmitter {
 
   /**
    * Initialize a single component
+   *
+   * @param name
+   * @param ComponentClass
+   * @param options
    */
   async initializeComponent(name, ComponentClass, options = {}) {
     const startTime = Date.now();
@@ -354,6 +358,8 @@ export class RecoveryIntegration extends EventEmitter {
 
   /**
    * Set up a single integration
+   *
+   * @param integration
    */
   async setupIntegration(integration) {
     const { from, to, method } = integration;
@@ -476,6 +482,8 @@ export class RecoveryIntegration extends EventEmitter {
 
   /**
    * Set external integrations
+   *
+   * @param mcpTools
    */
   setMCPTools(mcpTools) {
     this.mcpTools = mcpTools;
@@ -499,6 +507,9 @@ export class RecoveryIntegration extends EventEmitter {
 
   /**
    * Propagate integration to components
+   *
+   * @param integrationType
+   * @param integration
    */
   async propagateIntegration(integrationType, integration) {
     const methodMap = {
@@ -525,6 +536,9 @@ export class RecoveryIntegration extends EventEmitter {
 
   /**
    * Register swarm for monitoring across all components
+   *
+   * @param swarmId
+   * @param swarmInstance
    */
   async registerSwarm(swarmId, swarmInstance) {
     this.logger.info(`Registering swarm across recovery system: ${swarmId}`);
@@ -551,6 +565,8 @@ export class RecoveryIntegration extends EventEmitter {
 
   /**
    * Unregister swarm from monitoring
+   *
+   * @param swarmId
    */
   async unregisterSwarm(swarmId) {
     this.logger.info(`Unregistering swarm from recovery system: ${swarmId}`);
@@ -810,6 +826,8 @@ export class RecoveryIntegration extends EventEmitter {
 
   /**
    * Emergency shutdown procedure
+   *
+   * @param reason
    */
   async emergencyShutdown(reason = 'Emergency shutdown') {
     this.logger.warn('EMERGENCY SHUTDOWN INITIATED', { reason });

@@ -1,6 +1,7 @@
 /**
  * Hybrid TDD Example: Neural-Coordination Integration
- * @fileoverview Demonstrates hybrid approach - Classical TDD for neural computation + London TDD for coordination
+ *
+ * @file Demonstrates hybrid approach - Classical TDD for neural computation + London TDD for coordination
  */
 
 import {

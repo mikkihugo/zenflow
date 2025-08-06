@@ -74,6 +74,8 @@ const initialSwarmState: SwarmState = {
  * Swarm Status React Hook
  *
  * Provides reactive swarm state management with real-time updates for React components.
+ *
+ * @param options
  */
 export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmStatusReturn => {
   const {

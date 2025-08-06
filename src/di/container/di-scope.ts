@@ -14,6 +14,9 @@ export class DIScope implements IDIScope {
 
   /**
    * Register a service provider in this scope
+   *
+   * @param token
+   * @param provider
    */
   register<T>(token: DIToken<T>, provider: Provider<T>): void {
     this.scopedProviders.set(token.symbol, provider);
@@ -21,6 +24,8 @@ export class DIScope implements IDIScope {
 
   /**
    * Resolve a service, checking scope hierarchy
+   *
+   * @param token
    */
   resolve<T>(token: DIToken<T>): T {
     // First check scoped providers
@@ -77,6 +82,8 @@ export class DIScope implements IDIScope {
 
   /**
    * Check if a service is registered in this scope
+   *
+   * @param token
    */
   isRegisteredInScope<T>(token: DIToken<T>): boolean {
     return this.scopedProviders.has(token.symbol);
@@ -84,6 +91,9 @@ export class DIScope implements IDIScope {
 
   /**
    * Resolve a scoped service with instance caching
+   *
+   * @param token
+   * @param provider
    */
   private resolveScoped<T>(token: DIToken<T>, provider: Provider<T>): T {
     if (this.scopedInstances.has(token.symbol)) {

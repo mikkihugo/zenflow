@@ -3,7 +3,7 @@
  *
  * Handles the first phase of SPARC methodology - gathering and analyzing
  * detailed requirements, constraints, and acceptance criteria.
- * 
+ *
  * TEMPLATE INTEGRATION: Now supports template-based specification generation
  * using the TemplateEngine for domain-specific requirements and patterns.
  */
@@ -42,6 +42,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
   /**
    * Generate specification from project using template-based approach
+   *
+   * @param projectSpec
+   * @param templateId
    */
   async generateSpecificationFromTemplate(
     projectSpec: ProjectSpecification,
@@ -62,22 +65,29 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
         throw new Error(`No suitable template found for domain: ${projectSpec.domain}`);
       }
       template = bestMatch.template;
-      console.log(`📋 Selected template: ${template.name} (compatibility: ${(bestMatch.compatibility.score * 100).toFixed(1)}%)`);
+      console.log(
+        `📋 Selected template: ${template.name} (compatibility: ${(bestMatch.compatibility.score * 100).toFixed(1)}%)`
+      );
     }
 
     // Apply template to project
     const result = await this.templateEngine.applyTemplate(template, projectSpec);
-    
+
     // Generate additional specification details
     const enhancedSpec = await this.enhanceTemplateSpecification(result.specification, projectSpec);
 
-    console.log(`✅ Template-based specification generated with ${result.customizations.length} customizations`);
-    
+    console.log(
+      `✅ Template-based specification generated with ${result.customizations.length} customizations`
+    );
+
     return enhancedSpec;
   }
 
   /**
    * Enhance template-generated specification with additional analysis
+   *
+   * @param templateSpec
+   * @param projectSpec
    */
   private async enhanceTemplateSpecification(
     templateSpec: DetailedSpecification,
@@ -86,7 +96,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     // Add project-specific analysis
     const additionalRisks = await this.analyzeProjectSpecificRisks(projectSpec);
     const additionalDependencies = this.identifyAdditionalDependencies(projectSpec);
-    const enhancedAcceptance = await this.defineAdditionalAcceptanceCriteria(templateSpec.functionalRequirements);
+    const enhancedAcceptance = await this.defineAdditionalAcceptanceCriteria(
+      templateSpec.functionalRequirements
+    );
 
     return {
       ...templateSpec,
@@ -111,7 +123,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     description: string;
     complexity: string;
   }> {
-    return this.templateEngine.getAllTemplates().map(template => ({
+    return this.templateEngine.getAllTemplates().map((template) => ({
       id: template.id,
       name: template.name,
       domain: template.domain,
@@ -122,13 +134,16 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
   /**
    * Validate template compatibility with project
+   *
+   * @param projectSpec
+   * @param templateId
    */
   validateTemplateCompatibility(
     projectSpec: ProjectSpecification,
     templateId: string
-  ): { 
-    compatible: boolean; 
-    warnings: string[]; 
+  ): {
+    compatible: boolean;
+    warnings: string[];
     recommendations: string[];
     score: number;
   } {
@@ -146,6 +161,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
   /**
    * Gather comprehensive requirements from project context
+   *
+   * @param context
    */
   async gatherRequirements(context: ProjectContext): Promise<RequirementSet> {
     const functionalRequirements = await this.extractFunctionalRequirements(context);
@@ -156,6 +173,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
   /**
    * Analyze system constraints and their implications
+   *
+   * @param requirements
    */
   async analyzeConstraints(requirements: RequirementSet): Promise<ConstraintAnalysis> {
     const systemConstraints = this.deriveSystemConstraints(requirements);
@@ -166,6 +185,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
   /**
    * Define comprehensive acceptance criteria for all requirements
+   *
+   * @param requirements
    */
   async defineAcceptanceCriteria(
     requirements: (FunctionalRequirement | NonFunctionalRequirement)[]
@@ -201,6 +222,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
   /**
    * Generate comprehensive specification document
+   *
+   * @param analysis
    */
   async generateSpecificationDocument(
     analysis: ConstraintAnalysis
@@ -239,6 +262,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
   /**
    * Validate specification completeness and quality
+   *
+   * @param spec
    */
   async validateSpecificationCompleteness(spec: SpecificationDocument): Promise<ValidationReport> {
     const validationResults: ValidationResult[] = [
@@ -257,7 +282,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       {
         criterion: 'acceptance-criteria-defined',
         passed: spec.acceptanceCriteria.length > 0,
-        score: spec.acceptanceCriteria?.length ? spec.acceptanceCriteria.length / Math.max(1, spec.functionalRequirements.length) : 0,
+        score: spec.acceptanceCriteria?.length
+          ? spec.acceptanceCriteria.length / Math.max(1, spec.functionalRequirements.length)
+          : 0,
         details: `${spec.acceptanceCriteria.length} acceptance criteria defined`,
       },
       {
@@ -762,7 +789,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
   // Template enhancement methods
 
-  private async analyzeProjectSpecificRisks(projectSpec: ProjectSpecification): Promise<ProjectRisk[]> {
+  private async analyzeProjectSpecificRisks(
+    projectSpec: ProjectSpecification
+  ): Promise<ProjectRisk[]> {
     const risks: ProjectRisk[] = [];
 
     // Analyze complexity-based risks

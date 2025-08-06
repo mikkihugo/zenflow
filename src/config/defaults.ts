@@ -1,5 +1,5 @@
 /**
- * @fileoverview Default Configuration Values
+ * @file Default Configuration Values
  *
  * Central definition of all default configuration values
  */

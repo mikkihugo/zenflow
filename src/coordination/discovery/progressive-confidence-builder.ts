@@ -1,5 +1,5 @@
 /**
- * @fileoverview Progressive Confidence Builder for Domain Discovery
+ * @file Progressive Confidence Builder for Domain Discovery
  * Builds confidence in domain discovery through iterations with human validation.
  * Integrates with HiveFACT for online research and MCP memory for persistence.
  */
@@ -174,6 +174,8 @@ export interface DiscoveryContext {
 /**
  * Progressive Confidence Builder
  * Iteratively builds confidence in domain discovery through human validation and research
+ *
+ * @example
  */
 export class ProgressiveConfidenceBuilder extends EventEmitter {
   private confidence: number = 0.0;
@@ -218,6 +220,8 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
   /**
    * Build confidence through progressive iterations
+   *
+   * @param context
    */
   async buildConfidence(context: DiscoveryContext): Promise<ConfidentDomainMap> {
     logger.info('Starting progressive confidence building', {
@@ -334,6 +338,9 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
   /**
    * Perform validation at a checkpoint
+   *
+   * @param checkpoint
+   * @param requireApproval
    */
   private async performCheckpointValidation(
     checkpoint: number,
@@ -390,6 +397,8 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
   /**
    * Import more documents and extract insights
+   *
+   * @param context
    */
   private async importMoreDocuments(context: DiscoveryContext): Promise<void> {
     logger.info('Importing additional documents for analysis');
@@ -688,6 +697,8 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
   /**
    * Initialize from existing domains
+   *
+   * @param existingDomains
    */
   private async initializeFromExisting(existingDomains: DiscoveredDomain[]): Promise<void> {
     for (const domain of existingDomains) {
@@ -747,6 +758,8 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
   /**
    * Generate research queries for a domain
+   *
+   * @param domain
    */
   private generateResearchQueries(domain: ConfidentDomain): string[] {
     const queries: string[] = [];
@@ -871,6 +884,10 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
   /**
    * Calculate confidence impact based on question type and response
+   *
+   * @param question
+   * @param response
+   * @param domain
    */
   private calculateConfidenceImpact(
     question: ValidationQuestion,
@@ -1195,6 +1212,8 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
   /**
    * Collect validator notes
+   *
+   * @param checkpoint
    */
   private async collectValidatorNotes(checkpoint: number): Promise<void> {
     const notesQuestion: ValidationQuestion = {
@@ -1230,6 +1249,9 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
   /**
    * Check if question is relevant to a domain
+   *
+   * @param question
+   * @param domain
    */
   private isQuestionRelevantToDomain(
     question: ValidationQuestion,
@@ -1256,6 +1278,8 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
   /**
    * Prioritize questions based on confidence and importance
+   *
+   * @param questions
    */
   private prioritizeQuestions(questions: ValidationQuestion[]): ValidationQuestion[] {
     return questions.sort((a, b) => {

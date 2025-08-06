@@ -1,6 +1,7 @@
 /**
  * Classical TDD (Detroit) Test Setup
- * @fileoverview Setup configuration for state-based testing
+ *
+ * @file Setup configuration for state-based testing
  * Focus: Algorithms, computations, mathematical operations, data transformations
  */
 
@@ -37,9 +38,13 @@ function setupPerformanceMonitoring() {
   }
 }
 
+interface ExtendedMath extends Math {
+  seedrandom?: (seed: string) => () => number;
+}
+
 function initializeTestDataGenerators() {
   // Seed random number generator for reproducible tests
-  (Math as any).seedrandom = (seed: string) => {
+  (Math as ExtendedMath).seedrandom = (seed: string) => {
     const seedNum = hashCode(seed);
     let x = Math.sin(seedNum) * 10000;
     return () => {
@@ -80,8 +85,25 @@ function hashCode(str: string): number {
   return hash;
 }
 
+interface ExtendedGlobal extends NodeJS.Global {
+  generateTestMatrix(
+    rows: number,
+    cols: number,
+    fillFn?: (i: number, j: number) => number
+  ): number[][];
+  generateTestVector(size: number, fillFn?: (i: number) => number): number[];
+  generateXORData(): Array<{ input: number[]; output: number[] }>;
+  generateLinearData(samples: number, noise?: number): Array<{ input: number[]; output: number[] }>;
+  expectPerformance(fn: () => void, maxTimeMs: number): number;
+  expectMemoryUsage(fn: () => void, maxMemoryMB: number): number | undefined;
+  expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
+  expectArrayNearlyEqual(actual: number[], expected: number[], tolerance?: number): void;
+  expectMatrixNearlyEqual(actual: number[][], expected: number[][], tolerance?: number): void;
+  gc?: () => void;
+}
+
 // Classical TDD helpers for algorithm testing
-(global as any).generateTestMatrix = (
+(global as ExtendedGlobal).generateTestMatrix = (
   rows: number,
   cols: number,
   fillFn?: (i: number, j: number) => number
@@ -96,7 +118,7 @@ function hashCode(str: string): number {
   return matrix;
 };
 
-(global as any).generateTestVector = (size: number, fillFn?: (i: number) => number) => {
+(global as ExtendedGlobal).generateTestVector = (size: number, fillFn?: (i: number) => number) => {
   const vector: number[] = [];
   for (let i = 0; i < size; i++) {
     vector[i] = fillFn ? fillFn(i) : Math.random();
@@ -105,14 +127,14 @@ function hashCode(str: string): number {
 };
 
 // Neural network test data generators
-(global as any).generateXORData = () => [
+(global as ExtendedGlobal).generateXORData = () => [
   { input: [0, 0], output: [0] },
   { input: [0, 1], output: [1] },
   { input: [1, 0], output: [1] },
   { input: [1, 1], output: [0] },
 ];
 
-(global as any).generateLinearData = (samples: number, noise: number = 0.1) => {
+(global as ExtendedGlobal).generateLinearData = (samples: number, noise: number = 0.1) => {
   const data = [];
   for (let i = 0; i < samples; i++) {
     const x = Math.random() * 10;
@@ -123,7 +145,7 @@ function hashCode(str: string): number {
 };
 
 // Performance assertion helpers
-(global as any).expectPerformance = (fn: () => void, maxTimeMs: number) => {
+(global as ExtendedGlobal).expectPerformance = (fn: () => void, maxTimeMs: number) => {
   const start = Date.now();
   fn();
   const duration = Date.now() - start;
@@ -131,13 +153,13 @@ function hashCode(str: string): number {
   return duration;
 };
 
-(global as any).expectMemoryUsage = (fn: () => void, maxMemoryMB: number) => {
-  if (!(global as any).gc) return; // Skip if garbage collection not available
+(global as ExtendedGlobal).expectMemoryUsage = (fn: () => void, maxMemoryMB: number) => {
+  if (!(global as ExtendedGlobal).gc) return; // Skip if garbage collection not available
 
-  (global as any).gc();
+  (global as ExtendedGlobal).gc();
   const startMemory = process.memoryUsage().heapUsed;
   fn();
-  (global as any).gc();
+  (global as ExtendedGlobal).gc();
   const endMemory = process.memoryUsage().heapUsed;
   const memoryUsedMB = (endMemory - startMemory) / 1024 / 1024;
 
@@ -146,7 +168,7 @@ function hashCode(str: string): number {
 };
 
 // Mathematical precision helpers
-(global as any).expectNearlyEqual = (
+(global as ExtendedGlobal).expectNearlyEqual = (
   actual: number,
   expected: number,
   tolerance: number = 1e-10
@@ -154,25 +176,25 @@ function hashCode(str: string): number {
   expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
 };
 
-(global as any).expectArrayNearlyEqual = (
+(global as ExtendedGlobal).expectArrayNearlyEqual = (
   actual: number[],
   expected: number[],
   tolerance: number = 1e-10
 ) => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
-    (global as any).expectNearlyEqual(actual[i], expected[i], tolerance);
+    (global as ExtendedGlobal).expectNearlyEqual(actual[i], expected[i], tolerance);
   }
 };
 
-(global as any).expectMatrixNearlyEqual = (
+(global as ExtendedGlobal).expectMatrixNearlyEqual = (
   actual: number[][],
   expected: number[][],
   tolerance: number = 1e-10
 ) => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
-    (global as any).expectArrayNearlyEqual(actual[i], expected[i], tolerance);
+    (global as ExtendedGlobal).expectArrayNearlyEqual(actual[i], expected[i], tolerance);
   }
 };
 

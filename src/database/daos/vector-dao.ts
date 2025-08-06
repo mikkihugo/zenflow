@@ -1,39 +1,39 @@
 /**
  * Vector Database DAO Implementation
- * 
+ *
  * Data Access Object for vector databases (LanceDB) with enhanced
  * vector operations, similarity search, and ML integration.
  */
 
+import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
 import { BaseDataAccessObject } from '../base-repository';
-import type { 
-  IVectorRepository, 
+import type {
+  ClusterResult,
+  IVectorRepository,
   TransactionOperation,
   VectorDocument,
   VectorSearchResult,
-  ClusterResult
 } from '../interfaces';
-import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
 
 /**
  * Vector database DAO implementation
+ *
  * @template T The entity type this DAO manages
+ * @example
  */
 export class VectorDAO<T> extends BaseDataAccessObject<T> {
   private get vectorRepository(): IVectorRepository<T> {
     return this.repository as IVectorRepository<T>;
   }
 
-  constructor(
-    repository: IVectorRepository<T>,
-    adapter: DatabaseAdapter,
-    logger: ILogger
-  ) {
+  constructor(repository: IVectorRepository<T>, adapter: DatabaseAdapter, logger: ILogger) {
     super(repository, adapter, logger);
   }
 
   /**
    * Execute vector-specific transaction with batch processing
+   *
+   * @param operations
    */
   async executeVectorTransaction<R>(operations: TransactionOperation[]): Promise<R> {
     this.logger.debug(`Executing vector transaction with ${operations.length} operations`);
@@ -92,12 +92,22 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
       });
     } catch (error) {
       this.logger.error(`Vector transaction failed: ${error}`);
-      throw new Error(`Vector transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Vector transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Semantic search with multiple strategies
+   *
+   * @param queries
+   * @param options
+   * @param options.strategy
+   * @param options.weights
+   * @param options.limit
+   * @param options.threshold
+   * @param options.includeSimilarity
    */
   async semanticSearch(
     queries: Array<{
@@ -117,7 +127,7 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
 
     try {
       const searchResults: VectorSearchResult<T>[][] = [];
-      
+
       // Execute all queries
       for (let i = 0; i < queries.length; i++) {
         const query = queries[i];
@@ -141,25 +151,30 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
 
         const results = await this.vectorRepository.similaritySearch(queryVector, {
           limit: options?.limit || 10,
-          threshold: options?.threshold || 0.0
+          threshold: options?.threshold || 0.0,
         });
-        
+
         searchResults.push(results);
       }
 
       // Combine results based on strategy
       const combined = this.combineSearchResults(searchResults, options);
-      
+
       this.logger.debug(`Semantic search completed: ${combined.length} results`);
       return combined;
     } catch (error) {
       this.logger.error(`Semantic search failed: ${error}`);
-      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Vector analytics and insights
+   *
+   * @param analysisType
+   * @param parameters
    */
   async vectorAnalytics(analysisType: string, parameters?: Record<string, any>): Promise<any> {
     this.logger.debug(`Executing vector analytics: ${analysisType}`, { parameters });
@@ -171,7 +186,7 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
             algorithm: parameters?.algorithm || 'kmeans',
             numClusters: parameters?.numClusters || 5,
             epsilon: parameters?.epsilon || 0.5,
-            minSamples: parameters?.minSamples || 5
+            minSamples: parameters?.minSamples || 5,
           });
 
         case 'outlier_detection':
@@ -191,12 +206,18 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
       }
     } catch (error) {
       this.logger.error(`Vector analytics failed: ${error}`);
-      throw new Error(`Vector analytics failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Vector analytics failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Bulk vector operations with optimization
+   *
+   * @param vectors
+   * @param operation
+   * @param batchSize
    */
   async bulkVectorOperations(
     vectors: VectorDocument<T>[],
@@ -207,12 +228,14 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
     failed: number;
     errors: Array<{ id: string | number; error: string }>;
   }> {
-    this.logger.debug(`Bulk ${operation} for ${vectors.length} vectors with batch size: ${batchSize}`);
+    this.logger.debug(
+      `Bulk ${operation} for ${vectors.length} vectors with batch size: ${batchSize}`
+    );
 
     const results = {
       successful: 0,
       failed: 0,
-      errors: [] as Array<{ id: string | number; error: string }>
+      errors: [] as Array<{ id: string | number; error: string }>,
     };
 
     const batches = this.chunk(vectors, batchSize);
@@ -234,7 +257,7 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
               results.failed++;
               results.errors.push({
                 id: vector.id,
-                error: error instanceof Error ? error.message : 'Unknown error'
+                error: error instanceof Error ? error.message : 'Unknown error',
               });
             }
           }
@@ -253,7 +276,7 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
               results.failed++;
               results.errors.push({
                 id: vector.id,
-                error: error instanceof Error ? error.message : 'Unknown error'
+                error: error instanceof Error ? error.message : 'Unknown error',
               });
             }
           }
@@ -261,21 +284,30 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
       } catch (error) {
         this.logger.error(`Batch ${operation} failed: ${error}`);
         results.failed += batch.length;
-        batch.forEach(vector => {
+        batch.forEach((vector) => {
           results.errors.push({
             id: vector.id,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           });
         });
       }
     }
 
-    this.logger.debug(`Bulk ${operation} completed: ${results.successful} successful, ${results.failed} failed`);
+    this.logger.debug(
+      `Bulk ${operation} completed: ${results.successful} successful, ${results.failed} failed`
+    );
     return results;
   }
 
   /**
    * Vector recommendation system
+   *
+   * @param baseVectors
+   * @param options
+   * @param options.excludeIds
+   * @param options.limit
+   * @param options.diversityFactor
+   * @param options.minSimilarity
    */
   async recommend(
     baseVectors: number[][],
@@ -286,22 +318,24 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
       minSimilarity?: number;
     }
   ): Promise<VectorSearchResult<T>[]> {
-    this.logger.debug(`Generating recommendations from ${baseVectors.length} base vectors`, { options });
+    this.logger.debug(`Generating recommendations from ${baseVectors.length} base vectors`, {
+      options,
+    });
 
     try {
       // Calculate centroid or weighted average of base vectors
       const centroid = this.calculateCentroid(baseVectors);
-      
+
       // Perform similarity search
       const results = await this.vectorRepository.similaritySearch(centroid, {
         limit: (options?.limit || 10) * 2, // Get more to allow for filtering
-        threshold: options?.minSimilarity || 0.0
+        threshold: options?.minSimilarity || 0.0,
       });
 
       // Filter out excluded IDs
       let filtered = results;
       if (options?.excludeIds && options.excludeIds.length > 0) {
-        filtered = results.filter(result => !options.excludeIds!.includes(result.id));
+        filtered = results.filter((result) => !options.excludeIds!.includes(result.id));
       }
 
       // Apply diversity if requested
@@ -316,7 +350,9 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
       return finalResults;
     } catch (error) {
       this.logger.error(`Recommendation generation failed: ${error}`);
-      throw new Error(`Recommendation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Recommendation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -338,7 +374,7 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
       'analytics',
       'outlier_detection',
       'dimension_reduction',
-      'vector_quality_analysis'
+      'vector_quality_analysis',
     ];
   }
 
@@ -348,7 +384,7 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
       supportsTransactions: true,
       supportsAnalytics: true,
       supportsClustering: true,
-      defaultMetric: 'cosine'
+      defaultMetric: 'cosine',
     };
   }
 
@@ -362,8 +398,8 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
         indexEfficiency: 95.2,
         vectorDimensions: 384,
         totalVectors: 50000,
-        clusteringQuality: 0.85
-      }
+        clusteringQuality: 0.85,
+      },
     };
   }
 
@@ -383,13 +419,13 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
     // In a real implementation, this would call an embedding service
     // For now, return a mock vector
     this.logger.debug(`Converting text to vector: ${text.substring(0, 50)}...`);
-    
+
     // Mock implementation - would need actual embedding service
     const hash = this.simpleHash(text);
-    const vector = new Array(384).fill(0).map((_, i) => 
-      Math.sin(hash + i) * Math.cos(hash * i * 0.1)
-    );
-    
+    const vector = new Array(384)
+      .fill(0)
+      .map((_, i) => Math.sin(hash + i) * Math.cos(hash * i * 0.1));
+
     return vector;
   }
 
@@ -399,10 +435,10 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
   ): VectorSearchResult<T>[] {
     const strategy = options?.strategy || 'average';
     const weights = options?.weights || new Array(results.length).fill(1);
-    
+
     // Collect all unique results
     const allResults = new Map<string | number, VectorSearchResult<T>[]>();
-    
+
     for (let i = 0; i < results.length; i++) {
       for (const result of results[i]) {
         if (!allResults.has(result.id)) {
@@ -416,10 +452,10 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
     const combined: VectorSearchResult<T>[] = [];
     for (const [id, resultList] of allResults.entries()) {
       let combinedScore: number;
-      
+
       switch (strategy) {
         case 'max':
-          combinedScore = Math.max(...resultList.map(r => r.score));
+          combinedScore = Math.max(...resultList.map((r) => r.score));
           break;
         case 'weighted':
           combinedScore = resultList.reduce((sum, r) => sum + r.score, 0) / resultList.length;
@@ -432,7 +468,7 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
         id,
         score: combinedScore,
         document: resultList[0].document,
-        vector: resultList[0].vector
+        vector: resultList[0].vector,
       });
     }
 
@@ -442,20 +478,20 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
   private async detectOutliers(threshold: number): Promise<any> {
     // Simplified outlier detection
     const allEntities = await this.repository.findAll({ limit: 1000 });
-    const vectors = allEntities.map(entity => this.extractVectorFromEntity(entity));
-    
+    const vectors = allEntities.map((entity) => this.extractVectorFromEntity(entity));
+
     // Calculate mean vector
     const mean = this.calculateCentroid(vectors);
-    
+
     // Find entities with distance > threshold from mean
     const outliers: Array<{ id: any; distance: number }> = [];
-    
+
     for (let i = 0; i < allEntities.length; i++) {
       const distance = this.euclideanDistance(vectors[i], mean);
       if (distance > threshold) {
         outliers.push({
           id: (allEntities[i] as any).id,
-          distance
+          distance,
         });
       }
     }
@@ -463,23 +499,23 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
     return {
       outliers: outliers.sort((a, b) => b.distance - a.distance),
       threshold,
-      totalAnalyzed: allEntities.length
+      totalAnalyzed: allEntities.length,
     };
   }
 
   private async analyzeSimilarityDistribution(sampleSize: number): Promise<any> {
     const entities = await this.repository.findAll({ limit: sampleSize });
-    const vectors = entities.map(entity => this.extractVectorFromEntity(entity));
-    
+    const vectors = entities.map((entity) => this.extractVectorFromEntity(entity));
+
     const similarities: number[] = [];
-    
+
     // Sample pairs for similarity calculation
-    const samplePairs = Math.min(1000, vectors.length * (vectors.length - 1) / 2);
-    
+    const samplePairs = Math.min(1000, (vectors.length * (vectors.length - 1)) / 2);
+
     for (let i = 0; i < samplePairs; i++) {
       const idx1 = Math.floor(Math.random() * vectors.length);
       const idx2 = Math.floor(Math.random() * vectors.length);
-      
+
       if (idx1 !== idx2) {
         const similarity = this.cosineSimilarity(vectors[idx1], vectors[idx2]);
         similarities.push(similarity);
@@ -491,20 +527,20 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
       min: Math.min(...similarities),
       max: Math.max(...similarities),
       median: similarities.sort((a, b) => a - b)[Math.floor(similarities.length / 2)],
-      sampleSize: similarities.length
+      sampleSize: similarities.length,
     };
   }
 
   private async analyzeVectorQuality(): Promise<any> {
     const stats = await this.vectorRepository.getVectorStats();
-    
+
     return {
       totalVectors: stats.totalVectors,
       dimensions: stats.dimensions,
       indexType: stats.indexType,
       memoryUsage: stats.memoryUsage,
       density: 'medium', // Would need actual calculation
-      distribution: 'normal' // Would need actual analysis
+      distribution: 'normal', // Would need actual analysis
     };
   }
 
@@ -514,33 +550,36 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
       totalDimensions: 384,
       activeDimensions: 350,
       importantDimensions: [1, 5, 12, 25, 67], // Mock data
-      dimensionVariance: 0.15
+      dimensionVariance: 0.15,
     };
   }
 
   private calculateCentroid(vectors: number[][]): number[] {
     if (vectors.length === 0) return [];
-    
+
     const dimensions = vectors[0].length;
     const centroid = new Array(dimensions).fill(0);
-    
+
     for (const vector of vectors) {
       for (let i = 0; i < dimensions; i++) {
         centroid[i] += vector[i];
       }
     }
-    
-    return centroid.map(sum => sum / vectors.length);
+
+    return centroid.map((sum) => sum / vectors.length);
   }
 
-  private applyDiversity(results: VectorSearchResult<T>[], diversityFactor: number): VectorSearchResult<T>[] {
+  private applyDiversity(
+    results: VectorSearchResult<T>[],
+    diversityFactor: number
+  ): VectorSearchResult<T>[] {
     // Simple diversity algorithm - select results that are different from each other
     const diverse: VectorSearchResult<T>[] = [];
     const threshold = 1.0 - diversityFactor; // Higher diversity factor = lower similarity threshold
-    
+
     for (const result of results) {
       let isDiverse = true;
-      
+
       for (const existing of diverse) {
         if (result.vector && existing.vector) {
           const similarity = this.cosineSimilarity(result.vector, existing.vector);
@@ -550,19 +589,19 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
           }
         }
       }
-      
+
       if (isDiverse) {
         diverse.push(result);
       }
     }
-    
+
     return diverse;
   }
 
   private euclideanDistance(a: number[], b: number[]): number {
     let sum = 0;
     for (let i = 0; i < a.length; i++) {
-      sum += Math.pow(a[i] - b[i], 2);
+      sum += (a[i] - b[i]) ** 2;
     }
     return Math.sqrt(sum);
   }
@@ -571,13 +610,13 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
-    
+
     for (let i = 0; i < a.length; i++) {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
     }
-    
+
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   }
 
@@ -585,7 +624,7 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash);

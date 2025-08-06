@@ -1,5 +1,5 @@
 /**
- * @fileoverview Strategy Pattern Implementation for Swarm Coordination
+ * @file Strategy Pattern Implementation for Swarm Coordination
  * Provides flexible coordination strategies for different swarm topologies
  */
 
@@ -12,6 +12,7 @@ export interface CoordinationContext {
   resources: ResourceMetrics;
   constraints: CoordinationConstraints;
   history: CoordinationHistory[];
+  agents: Agent[];
 }
 
 export interface CoordinationResult {
@@ -89,12 +90,12 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
     throughput: 1000,
     reliability: 0.99,
     scalability: 0.85,
-    resourceEfficiency: 0.75
+    resourceEfficiency: 0.75,
   };
 
   async coordinate(agents: Agent[], context: CoordinationContext): Promise<CoordinationResult> {
     const startTime = Date.now();
-    
+
     if (!this.validateContext(context)) {
       throw new Error('Invalid coordination context for mesh strategy');
     }
@@ -110,7 +111,7 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
       connections,
       latency,
       success: true,
-      recommendations: this.generateRecommendations(agents, performance)
+      recommendations: this.generateRecommendations(agents, performance),
     };
   }
 
@@ -123,16 +124,19 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
   }
 
   validateContext(context: CoordinationContext): boolean {
-    return context.resources.network > 0.3 && // Mesh requires good network
-           context.constraints.maxLatency > 100; // Allow for mesh overhead
+    return (
+      context.resources.network > 0.3 && // Mesh requires good network
+      context.constraints.maxLatency > 100
+    ); // Allow for mesh overhead
   }
 
   async optimize(agents: Agent[], history: CoordinationHistory[]): Promise<void> {
     // Analyze historical performance and adjust metrics
-    const avgLatency = history
-      .filter(h => h.metrics.latency)
-      .reduce((sum, h) => sum + (h.metrics.latency || 0), 0) / history.length;
-    
+    const avgLatency =
+      history
+        .filter((h) => h.metrics.latency)
+        .reduce((sum, h) => sum + (h.metrics.latency || 0), 0) / history.length;
+
     if (avgLatency > 0) {
       this.metrics.latency = Math.min(this.metrics.latency * 0.9, avgLatency * 1.1);
     }
@@ -140,32 +144,35 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
 
   private establishMeshConnections(agents: Agent[]): ConnectionMap {
     const connections: ConnectionMap = {};
-    
-    agents.forEach(agent => {
+
+    agents.forEach((agent) => {
       connections[agent.id] = agents
-        .filter(other => other.id !== agent.id)
-        .map(other => other.id);
+        .filter((other) => other.id !== agent.id)
+        .map((other) => other.id);
     });
 
     return connections;
   }
 
   private async calculateMeshPerformance(
-    agents: Agent[], 
+    agents: Agent[],
     connections: ConnectionMap
   ): Promise<PerformanceMetrics> {
-    const connectionCount = Object.values(connections).reduce((sum, conns) => sum + conns.length, 0);
-    
+    const connectionCount = Object.values(connections).reduce(
+      (sum, conns) => sum + conns.length,
+      0
+    );
+
     return {
       executionTime: Date.now(),
       messageCount: connectionCount * 2, // Bidirectional
-      coordinationEfficiency: Math.min(0.95, 1 - (agents.length * 0.02)), // Decreases with scale
+      coordinationEfficiency: Math.min(0.95, 1 - agents.length * 0.02), // Decreases with scale
       resourceUtilization: {
         cpu: agents.length * 0.1,
         memory: agents.length * 0.05,
         network: connectionCount * 0.02,
-        storage: 0.01
-      }
+        storage: 0.01,
+      },
     };
   }
 
@@ -173,21 +180,21 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
     const baseLatency = 50;
     const networkFactor = (1 - context.resources.network) * 100;
     const scaleFactor = Object.keys(connections).length * 2;
-    
+
     return baseLatency + networkFactor + scaleFactor;
   }
 
   private generateRecommendations(agents: Agent[], performance: PerformanceMetrics): string[] {
     const recommendations: string[] = [];
-    
+
     if (agents.length > 20) {
       recommendations.push('Consider hierarchical topology for better scalability');
     }
-    
+
     if (performance.resourceUtilization.network > 0.8) {
       recommendations.push('Network utilization high - consider connection pooling');
     }
-    
+
     return recommendations;
   }
 }
@@ -199,7 +206,7 @@ export class HierarchicalStrategy implements CoordinationStrategy<Agent> {
     throughput: 800,
     reliability: 0.95,
     scalability: 0.95,
-    resourceEfficiency: 0.90
+    resourceEfficiency: 0.9,
   };
 
   async coordinate(agents: Agent[], context: CoordinationContext): Promise<CoordinationResult> {
@@ -217,7 +224,7 @@ export class HierarchicalStrategy implements CoordinationStrategy<Agent> {
       leadership: hierarchy,
       latency,
       success: true,
-      recommendations: this.generateHierarchicalRecommendations(agents, hierarchy)
+      recommendations: this.generateHierarchicalRecommendations(agents, hierarchy),
     };
   }
 
@@ -230,37 +237,42 @@ export class HierarchicalStrategy implements CoordinationStrategy<Agent> {
   }
 
   validateContext(context: CoordinationContext): boolean {
-    return context.resources.cpu > 0.2 && // Need CPU for leader election
-           agents.length > 5; // Hierarchical makes sense with more agents
+    return (
+      context.resources.cpu > 0.2 && // Need CPU for leader election
+      context.agents.length > 5
+    ); // Hierarchical makes sense with more agents
   }
 
   async optimize(agents: Agent[], history: CoordinationHistory[]): Promise<void> {
     // Optimize based on leadership effectiveness
-    const leadershipChanges = history.filter(h => h.action.includes('leader'));
+    const leadershipChanges = history.filter((h) => h.action.includes('leader'));
     if (leadershipChanges.length > agents.length * 0.1) {
       this.metrics.reliability *= 0.95; // Frequent leadership changes reduce reliability
     }
   }
 
-  private async buildHierarchy(agents: Agent[], context: CoordinationContext): Promise<LeadershipInfo> {
+  private async buildHierarchy(
+    agents: Agent[],
+    context: CoordinationContext
+  ): Promise<LeadershipInfo> {
     // Simple hierarchy builder - can be enhanced with agent capabilities
     const leaders: string[] = [];
     const hierarchy: { [level: number]: string[] } = {};
-    
+
     // Select leaders based on agent capabilities and resource availability
     const sortedAgents = agents.sort((a, b) => b.capabilities.length - a.capabilities.length);
     const leaderCount = Math.max(1, Math.floor(agents.length / 5));
-    
-    leaders.push(...sortedAgents.slice(0, leaderCount).map(a => a.id));
-    
+
+    leaders.push(...sortedAgents.slice(0, leaderCount).map((a) => a.id));
+
     // Build hierarchy levels
     hierarchy[0] = leaders;
-    hierarchy[1] = sortedAgents.slice(leaderCount).map(a => a.id);
-    
+    hierarchy[1] = sortedAgents.slice(leaderCount).map((a) => a.id);
+
     return {
       leaders,
       hierarchy,
-      maxDepth: Object.keys(hierarchy).length
+      maxDepth: Object.keys(hierarchy).length,
     };
   }
 
@@ -268,31 +280,34 @@ export class HierarchicalStrategy implements CoordinationStrategy<Agent> {
     return {
       executionTime: Date.now(),
       messageCount: agents.length + hierarchy.leaders.length, // More efficient messaging
-      coordinationEfficiency: 0.90 + (hierarchy.leaders.length * 0.02),
+      coordinationEfficiency: 0.9 + hierarchy.leaders.length * 0.02,
       resourceUtilization: {
         cpu: hierarchy.leaders.length * 0.15 + (agents.length - hierarchy.leaders.length) * 0.05,
         memory: agents.length * 0.03,
         network: hierarchy.leaders.length * 0.1,
-        storage: 0.005
-      }
+        storage: 0.005,
+      },
     };
   }
 
   private calculateHierarchicalLatency(hierarchy: LeadershipInfo): number {
-    return 50 + (hierarchy.maxDepth * 25); // Latency increases with depth
+    return 50 + hierarchy.maxDepth * 25; // Latency increases with depth
   }
 
-  private generateHierarchicalRecommendations(agents: Agent[], hierarchy: LeadershipInfo): string[] {
+  private generateHierarchicalRecommendations(
+    agents: Agent[],
+    hierarchy: LeadershipInfo
+  ): string[] {
     const recommendations: string[] = [];
-    
+
     if (hierarchy.leaders.length / agents.length > 0.3) {
       recommendations.push('Too many leaders - consider fewer leadership levels');
     }
-    
+
     if (hierarchy.maxDepth > 3) {
       recommendations.push('Deep hierarchy detected - consider flatter structure');
     }
-    
+
     return recommendations;
   }
 }
@@ -303,8 +318,8 @@ export class RingStrategy implements CoordinationStrategy<Agent> {
     latency: 100,
     throughput: 600,
     reliability: 0.85,
-    scalability: 0.70,
-    resourceEfficiency: 0.95
+    scalability: 0.7,
+    resourceEfficiency: 0.95,
   };
 
   async coordinate(agents: Agent[], context: CoordinationContext): Promise<CoordinationResult> {
@@ -322,7 +337,7 @@ export class RingStrategy implements CoordinationStrategy<Agent> {
       connections,
       latency,
       success: true,
-      recommendations: this.generateRingRecommendations(agents)
+      recommendations: this.generateRingRecommendations(agents),
     };
   }
 
@@ -335,21 +350,23 @@ export class RingStrategy implements CoordinationStrategy<Agent> {
   }
 
   validateContext(context: CoordinationContext): boolean {
-    return context.resources.network > 0.1 && // Minimal network requirements
-           context.constraints.maxLatency > 200; // Ring can have higher latency
+    return (
+      context.resources.network > 0.1 && // Minimal network requirements
+      context.constraints.maxLatency > 200
+    ); // Ring can have higher latency
   }
 
   async optimize(agents: Agent[], history: CoordinationHistory[]): Promise<void> {
     // Optimize based on ring failures
-    const failures = history.filter(h => h.result === 'failure').length;
+    const failures = history.filter((h) => h.result === 'failure').length;
     if (failures > agents.length * 0.1) {
-      this.metrics.reliability *= 0.90; // Ring is vulnerable to single points of failure
+      this.metrics.reliability *= 0.9; // Ring is vulnerable to single points of failure
     }
   }
 
   private establishRingConnections(agents: Agent[]): ConnectionMap {
     const connections: ConnectionMap = {};
-    
+
     agents.forEach((agent, index) => {
       const nextIndex = (index + 1) % agents.length;
       connections[agent.id] = [agents[nextIndex].id];
@@ -362,29 +379,29 @@ export class RingStrategy implements CoordinationStrategy<Agent> {
     return {
       executionTime: Date.now(),
       messageCount: agents.length, // Each agent connects to one other
-      coordinationEfficiency: 0.70, // Lower due to sequential nature
+      coordinationEfficiency: 0.7, // Lower due to sequential nature
       resourceUtilization: {
         cpu: agents.length * 0.05,
         memory: agents.length * 0.02,
         network: agents.length * 0.01,
-        storage: 0.005
-      }
+        storage: 0.005,
+      },
     };
   }
 
   private calculateRingLatency(agentCount: number): number {
-    return 50 + (agentCount * 10); // Latency increases linearly with ring size
+    return 50 + agentCount * 10; // Latency increases linearly with ring size
   }
 
   private generateRingRecommendations(agents: Agent[]): string[] {
     const recommendations: string[] = [];
-    
+
     if (agents.length > 15) {
       recommendations.push('Large ring detected - consider hierarchical or mesh topology');
     }
-    
+
     recommendations.push('Implement ring failure detection and recovery mechanisms');
-    
+
     return recommendations;
   }
 }
@@ -394,9 +411,9 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
   private metrics: StrategyMetrics = {
     latency: 30,
     throughput: 1200,
-    reliability: 0.80,
-    scalability: 0.60,
-    resourceEfficiency: 0.85
+    reliability: 0.8,
+    scalability: 0.6,
+    resourceEfficiency: 0.85,
   };
 
   async coordinate(agents: Agent[], context: CoordinationContext): Promise<CoordinationResult> {
@@ -413,10 +430,14 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
       topology: 'star',
       performance,
       connections,
-      leadership: { leaders: [hub.id], hierarchy: { 0: [hub.id], 1: agents.filter(a => a.id !== hub.id).map(a => a.id) }, maxDepth: 2 },
+      leadership: {
+        leaders: [hub.id],
+        hierarchy: { 0: [hub.id], 1: agents.filter((a) => a.id !== hub.id).map((a) => a.id) },
+        maxDepth: 2,
+      },
       latency,
       success: true,
-      recommendations: this.generateStarRecommendations(agents, hub)
+      recommendations: this.generateStarRecommendations(agents, hub),
     };
   }
 
@@ -434,7 +455,9 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
 
   async optimize(agents: Agent[], history: CoordinationHistory[]): Promise<void> {
     // Optimize based on hub performance
-    const hubFailures = history.filter(h => h.result === 'failure' && h.action.includes('hub')).length;
+    const hubFailures = history.filter(
+      (h) => h.result === 'failure' && h.action.includes('hub')
+    ).length;
     if (hubFailures > 0) {
       this.metrics.reliability *= 0.85; // Hub failures significantly impact reliability
     }
@@ -442,21 +465,23 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
 
   private selectHub(agents: Agent[]): Agent {
     // Select agent with most capabilities as hub
-    return agents.reduce((best, current) => 
+    return agents.reduce((best, current) =>
       current.capabilities.length > best.capabilities.length ? current : best
     );
   }
 
   private establishStarConnections(agents: Agent[], hub: Agent): ConnectionMap {
     const connections: ConnectionMap = {};
-    
+
     // Hub connects to all others
-    connections[hub.id] = agents.filter(a => a.id !== hub.id).map(a => a.id);
-    
+    connections[hub.id] = agents.filter((a) => a.id !== hub.id).map((a) => a.id);
+
     // Others connect only to hub
-    agents.filter(a => a.id !== hub.id).forEach(agent => {
-      connections[agent.id] = [hub.id];
-    });
+    agents
+      .filter((a) => a.id !== hub.id)
+      .forEach((agent) => {
+        connections[agent.id] = [hub.id];
+      });
 
     return connections;
   }
@@ -470,8 +495,8 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
         cpu: 0.2, // Hub uses more CPU
         memory: agents.length * 0.03,
         network: (agents.length - 1) * 0.02,
-        storage: 0.01
-      }
+        storage: 0.01,
+      },
     };
   }
 
@@ -481,13 +506,13 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
 
   private generateStarRecommendations(agents: Agent[], hub: Agent): string[] {
     const recommendations: string[] = [];
-    
+
     recommendations.push(`Hub agent ${hub.id} is critical - implement failover mechanisms`);
-    
+
     if (agents.length > 25) {
       recommendations.push('Large star topology - consider hierarchical structure');
     }
-    
+
     return recommendations;
   }
 }
@@ -507,17 +532,20 @@ export class SwarmCoordinator<T extends Agent = Agent> {
     this.logStrategyChange(strategy.getTopologyType());
   }
 
-  async executeCoordination(agents: T[], contextData?: Partial<CoordinationContext>): Promise<CoordinationResult> {
+  async executeCoordination(
+    agents: T[],
+    contextData?: Partial<CoordinationContext>
+  ): Promise<CoordinationResult> {
     const context = this.buildContext(agents, contextData);
     const startTime = Date.now();
 
     try {
       const result = await this.strategy.coordinate(agents, context);
-      
+
       // Record successful coordination
       this.recordHistory(agents, 'coordinate', 'success', {
         latency: result.latency,
-        reliability: this.strategy.getMetrics().reliability
+        reliability: this.strategy.getMetrics().reliability,
       });
 
       // Periodic optimization
@@ -529,7 +557,7 @@ export class SwarmCoordinator<T extends Agent = Agent> {
     } catch (error) {
       // Record failed coordination
       this.recordHistory(agents, 'coordinate', 'failure', {
-        latency: Date.now() - startTime
+        latency: Date.now() - startTime,
       });
       throw error;
     }
@@ -548,29 +576,33 @@ export class SwarmCoordinator<T extends Agent = Agent> {
   }
 
   // Auto-select optimal strategy based on context and agent characteristics
-  async autoSelectStrategy(agents: T[], context: CoordinationContext): Promise<CoordinationStrategy<T>> {
+  async autoSelectStrategy(
+    agents: T[],
+    context: CoordinationContext
+  ): Promise<CoordinationStrategy<T>> {
     const strategies = [
       new MeshStrategy(),
       new HierarchicalStrategy(),
       new RingStrategy(),
-      new StarStrategy()
+      new StarStrategy(),
     ] as CoordinationStrategy<T>[];
 
     // Score each strategy based on context
-    const scores = strategies.map(strategy => ({
+    const scores = strategies.map((strategy) => ({
       strategy,
-      score: this.scoreStrategy(strategy, agents, context)
+      score: this.scoreStrategy(strategy, agents, context),
     }));
 
     // Select highest scoring strategy
-    const best = scores.reduce((best, current) => 
-      current.score > best.score ? current : best
-    );
+    const best = scores.reduce((best, current) => (current.score > best.score ? current : best));
 
     return best.strategy;
   }
 
-  private buildContext(agents: T[], contextData?: Partial<CoordinationContext>): CoordinationContext {
+  private buildContext(
+    agents: T[],
+    contextData?: Partial<CoordinationContext>
+  ): CoordinationContext {
     return {
       swarmId: `swarm-${Date.now()}`,
       timestamp: new Date(),
@@ -579,17 +611,18 @@ export class SwarmCoordinator<T extends Agent = Agent> {
         memory: 0.8,
         network: 0.6,
         storage: 0.9,
-        ...contextData?.resources
+        ...contextData?.resources,
       },
       constraints: {
         maxLatency: 500,
         minReliability: 0.9,
         resourceLimits: { cpu: 1.0, memory: 1.0, network: 1.0, storage: 1.0 },
         securityLevel: 'medium',
-        ...contextData?.constraints
+        ...contextData?.constraints,
       },
       history: this.history,
-      ...contextData
+      agents: agents as Agent[],
+      ...contextData,
     };
   }
 
@@ -597,13 +630,18 @@ export class SwarmCoordinator<T extends Agent = Agent> {
     console.log(`SwarmCoordinator: Strategy changed to ${topology}`);
   }
 
-  private recordHistory(agents: T[], action: string, result: 'success' | 'failure', metrics?: Partial<StrategyMetrics>): void {
+  private recordHistory(
+    agents: T[],
+    action: string,
+    result: 'success' | 'failure',
+    metrics?: Partial<StrategyMetrics>
+  ): void {
     this.history.push({
       timestamp: new Date(),
       action,
       agentId: agents[0]?.id || 'unknown',
       result,
-      metrics: metrics || {}
+      metrics: metrics || {},
     });
 
     // Keep history bounded
@@ -612,14 +650,18 @@ export class SwarmCoordinator<T extends Agent = Agent> {
     }
   }
 
-  private scoreStrategy(strategy: CoordinationStrategy<T>, agents: T[], context: CoordinationContext): number {
+  private scoreStrategy(
+    strategy: CoordinationStrategy<T>,
+    agents: T[],
+    context: CoordinationContext
+  ): number {
     const metrics = strategy.getMetrics();
     let score = 0;
 
     // Score based on context requirements
     if (context.constraints.maxLatency > metrics.latency) score += 20;
     if (context.constraints.minReliability <= metrics.reliability) score += 30;
-    
+
     // Score based on agent count (scalability)
     if (agents.length <= 10) {
       score += strategy.getTopologyType() === 'star' ? 20 : 10;
@@ -654,11 +696,6 @@ export class StrategyFactory {
   }
 
   static getAllStrategies(): CoordinationStrategy[] {
-    return [
-      new MeshStrategy(),
-      new HierarchicalStrategy(),
-      new RingStrategy(),
-      new StarStrategy()
-    ];
+    return [new MeshStrategy(), new HierarchicalStrategy(), new RingStrategy(), new StarStrategy()];
   }
 }

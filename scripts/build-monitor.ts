@@ -2,6 +2,7 @@
 
 /**
  * Build Monitor - Continuous build verification for alpha release
+ *
  * @fileoverview Advanced build monitoring with strict TypeScript standards
  * @author Claude Code Flow Team
  * @version 2.0.0
@@ -14,6 +15,8 @@ import { promisify } from 'node:util';
 
 const execAsync = promisify(exec);
 
+*
+@example
 /** TypeScript error information */
 interface TypeScriptError {
   file?: string;
@@ -21,6 +24,8 @@ interface TypeScriptError {
   message: string;
 }
 
+*
+@example
 /** Build result information */
 interface BuildResult {
   timestamp: string;
@@ -29,6 +34,8 @@ interface BuildResult {
   success: boolean;
 }
 
+*
+@example
 /** Error category breakdown */
 interface ErrorCategories {
   type_compatibility: number;
@@ -39,6 +46,8 @@ interface ErrorCategories {
   other: number;
 }
 
+*
+@example
 /** Alpha certification status */
 interface AlphaCertification {
   timestamp: string;
@@ -48,6 +57,8 @@ interface AlphaCertification {
   verifiedBy: string;
 }
 
+*
+@example
 /** Build monitoring report */
 interface BuildReport {
   timestamp: string;
@@ -60,6 +71,7 @@ interface BuildReport {
 /**
  * Build Monitor class for continuous build verification
  * Monitors TypeScript compilation progress toward zero-error alpha release
+ * @example
  */
 class BuildMonitor {
   private errorCount: number;
@@ -86,6 +98,7 @@ class BuildMonitor {
   /**
    * Executes build process and captures results
    * Parses TypeScript errors and categorizes them
+   *
    * @returns Promise resolving to build result
    */
   async runBuild(): Promise<BuildResult> {
@@ -119,6 +132,7 @@ class BuildMonitor {
   /**
    * Parses build output to extract TypeScript errors
    * Categorizes errors by type for analysis
+   *
    * @param buildOutput - Raw build output string
    * @returns Array of parsed TypeScript errors
    */
@@ -145,6 +159,7 @@ class BuildMonitor {
   /**
    * Checks swarm memory for agent activity
    * Monitors for progress updates from other agents
+   *
    * @returns Promise resolving to boolean indicating activity
    */
   async checkSwarmMemory(): Promise<boolean> {
@@ -202,6 +217,7 @@ class BuildMonitor {
   /**
    * Stores build progress in swarm memory
    * Updates other agents on progress status
+   *
    * @param buildResult - Latest build result to store
    */
   private async storeProgress(buildResult: BuildResult): Promise<void> {
@@ -217,6 +233,7 @@ class BuildMonitor {
   /**
    * Alerts swarm of positive build progress
    * Notifies other agents of error reduction
+   *
    * @param buildResult - Build result to report
    */
   private async alertSwarm(buildResult: BuildResult): Promise<void> {
@@ -232,6 +249,7 @@ class BuildMonitor {
   /**
    * Alerts swarm of build regression
    * Warns other agents of new errors introduced
+   *
    * @param buildResult - Build result showing regression
    */
   private async alertRegression(buildResult: BuildResult): Promise<void> {
@@ -270,6 +288,7 @@ class BuildMonitor {
   /**
    * Generates comprehensive build monitoring report
    * Creates status report for external consumption
+   *
    * @returns Build monitoring report
    */
   generateReport(): BuildReport {

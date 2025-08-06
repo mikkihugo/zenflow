@@ -1,5 +1,5 @@
 /**
- * @fileoverview Real-time Memory System Monitor
+ * @file Real-time Memory System Monitor
  * Comprehensive monitoring and analytics for memory operations
  */
 
@@ -84,6 +84,8 @@ export interface MonitoringConfig {
 /**
  * Real-time Memory Monitor
  * Provides comprehensive monitoring and alerting for memory systems
+ *
+ * @example
  */
 export class MemoryMonitor extends EventEmitter {
   private config: MonitoringConfig;
@@ -117,6 +119,9 @@ export class MemoryMonitor extends EventEmitter {
 
   /**
    * Register components for monitoring
+   *
+   * @param id
+   * @param backend
    */
   registerBackend(id: string, backend: BackendInterface): void {
     this.backends.set(id, backend);
@@ -164,6 +169,10 @@ export class MemoryMonitor extends EventEmitter {
 
   /**
    * Record an operation for tracking
+   *
+   * @param operation
+   * @param duration
+   * @param success
    */
   recordOperation(operation: string, duration: number, success: boolean): void {
     const record = {
@@ -311,6 +320,8 @@ export class MemoryMonitor extends EventEmitter {
 
   /**
    * Check metrics against alert thresholds
+   *
+   * @param metrics
    */
   private checkAlerts(metrics: MemoryMetrics): void {
     const { thresholds } = this.config.alerts;
@@ -394,6 +405,8 @@ export class MemoryMonitor extends EventEmitter {
 
   /**
    * Create and emit an alert
+   *
+   * @param alertData
    */
   private createAlert(
     alertData: Omit<MemoryAlert, 'id' | 'timestamp' | 'acknowledged' | 'resolved'>
@@ -418,6 +431,8 @@ export class MemoryMonitor extends EventEmitter {
 
   /**
    * Acknowledge an alert
+   *
+   * @param alertId
    */
   acknowledgeAlert(alertId: string): boolean {
     const alert = this.alerts.find((a) => a.id === alertId);
@@ -431,6 +446,8 @@ export class MemoryMonitor extends EventEmitter {
 
   /**
    * Resolve an alert
+   *
+   * @param alertId
    */
   resolveAlert(alertId: string): boolean {
     const alert = this.alerts.find((a) => a.id === alertId);
@@ -451,6 +468,9 @@ export class MemoryMonitor extends EventEmitter {
 
   /**
    * Get metrics for a time range
+   *
+   * @param startTime
+   * @param endTime
    */
   getMetricsRange(startTime: number, endTime: number): MemoryMetrics[] {
     return this.metrics.filter((m) => m.timestamp >= startTime && m.timestamp <= endTime);
@@ -458,6 +478,8 @@ export class MemoryMonitor extends EventEmitter {
 
   /**
    * Get recent metrics
+   *
+   * @param count
    */
   getRecentMetrics(count: number = 100): MemoryMetrics[] {
     return this.metrics.slice(-count);

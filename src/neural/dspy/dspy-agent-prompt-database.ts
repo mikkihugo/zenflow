@@ -14,6 +14,8 @@ const logger = createLogger({ prefix: 'DSPyAgentPromptDB' });
 
 /**
  * Agent Prompt Record Structure for Vector Database
+ *
+ * @example
  */
 export interface AgentPromptRecord {
   id: string;
@@ -44,6 +46,8 @@ export interface AgentPromptRecord {
 
 /**
  * Agent Instance Record Structure for Vector Database
+ *
+ * @example
  */
 export interface AgentInstanceRecord {
   id: string;
@@ -96,6 +100,8 @@ export interface AgentInstanceRecord {
 
 /**
  * DSPy Agent Prompt Database Manager
+ *
+ * @example
  */
 export class DSPyAgentPromptDatabase {
   private db: any;
@@ -223,6 +229,11 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Store agent prompt with vector embedding
+   *
+   * @param agentType
+   * @param category
+   * @param prompt
+   * @param metadata
    */
   async storeAgentPrompt(
     agentType: AgentType,
@@ -267,6 +278,11 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Find similar prompts using vector similarity search
+   *
+   * @param queryPrompt
+   * @param limit
+   * @param agentType
+   * @param category
    */
   async findSimilarPrompts(
     queryPrompt: string,
@@ -304,6 +320,8 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Get all prompts for a specific agent type
+   *
+   * @param agentType
    */
   async getAgentPrompts(agentType: AgentType): Promise<AgentPromptRecord[]> {
     if (!this.promptTable) {
@@ -317,6 +335,14 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Update prompt with DSPy optimization results
+   *
+   * @param promptId
+   * @param optimizedPrompt
+   * @param optimizationData
+   * @param optimizationData.optimizedBy
+   * @param optimizationData.baselineAccuracy
+   * @param optimizationData.optimizedAccuracy
+   * @param optimizationData.improvements
    */
   async updatePromptWithOptimization(
     promptId: string,
@@ -517,6 +543,8 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Create comprehensive prompts for a specific agent type
+   *
+   * @param agentType
    */
   private async createAgentPrompts(agentType: AgentType): Promise<void> {
     const prompts = this.generateAgentPrompts(agentType);
@@ -536,6 +564,8 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Generate comprehensive prompts for any agent type
+   *
+   * @param agentType
    */
   private generateAgentPrompts(agentType: AgentType): Record<string, string> {
     const agentName = agentType
@@ -571,6 +601,8 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Generate behavior prompt based on agent type
+   *
+   * @param agentType
    */
   private generateBehaviorPrompt(agentType: AgentType): string {
     const behaviorMap: Partial<Record<AgentType, string>> = {
@@ -593,6 +625,8 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Generate expertise prompt based on agent type
+   *
+   * @param agentType
    */
   private generateExpertisePrompt(agentType: AgentType): string {
     const expertiseMap: Partial<Record<AgentType, string>> = {
@@ -613,6 +647,8 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Generate task prompt based on agent type
+   *
+   * @param agentType
    */
   private generateTaskPrompt(agentType: AgentType): string {
     return `When assigned tasks as a ${agentType}:
@@ -625,6 +661,8 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Generate embeddings for prompt text (mock implementation)
+   *
+   * @param text
    */
   private async generateEmbedding(text: string): Promise<number[]> {
     // In a real implementation, this would use OpenAI's embedding API
@@ -643,6 +681,8 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Infer domain from agent type
+   *
+   * @param agentType
    */
   private inferDomain(agentType: AgentType): string {
     if (agentType.includes('test')) return 'testing';
@@ -656,6 +696,9 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Generate tags for categorization
+   *
+   * @param agentType
+   * @param category
    */
   private generateTags(agentType: AgentType, category: string): string[] {
     const tags = [agentType, category, this.inferDomain(agentType)];
@@ -669,6 +712,8 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Increment version string
+   *
+   * @param version
    */
   private incrementVersion(version: string): string {
     const parts = version.split('.');
@@ -682,6 +727,12 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Register an agent instance in the database
+   *
+   * @param agentId
+   * @param agentType
+   * @param swarmId
+   * @param capabilities
+   * @param currentPrompts
    */
   async registerAgentInstance(
     agentId: string,
@@ -736,6 +787,14 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Update agent performance metrics
+   *
+   * @param agentId
+   * @param performanceUpdate
+   * @param performanceUpdate.taskCompleted
+   * @param performanceUpdate.responseTime
+   * @param performanceUpdate.errorOccurred
+   * @param performanceUpdate.taskDescription
+   * @param performanceUpdate.feedback
    */
   async updateAgentPerformance(
     agentId: string,
@@ -811,6 +870,9 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Find agents similar to a given agent (by prompt similarity)
+   *
+   * @param agentId
+   * @param limit
    */
   async findSimilarAgents(agentId: string, limit: number = 5): Promise<AgentInstanceRecord[]> {
     if (!this.agentTable) {
@@ -838,6 +900,8 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Get all agents in a swarm
+   *
+   * @param swarmId
    */
   async getSwarmAgents(swarmId: string): Promise<AgentInstanceRecord[]> {
     if (!this.agentTable) {
@@ -849,6 +913,12 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Optimize agent prompts using DSPy neural enhancement
+   *
+   * @param agentId
+   * @param optimizationData
+   * @param optimizationData.optimizedPrompts
+   * @param optimizationData.performanceImprovement
+   * @param optimizationData.techniques
    */
   async optimizeAgentPrompts(
     agentId: string,
@@ -997,6 +1067,8 @@ export class DSPyAgentPromptDatabase {
 
   /**
    * Helper method to get most frequent optimization techniques
+   *
+   * @param optimizations
    */
   private getMostFrequentTechniques(optimizations: Array<{ techniques: string[] }>): string[] {
     const techniqueCounts = optimizations

@@ -1,39 +1,42 @@
 /**
  * UEL Communication Event Factory
- * 
+ *
  * Factory implementation for creating and managing Communication Event Adapters
  * following the exact same patterns as system and coordination event factories.
- * 
+ *
  * Provides centralized management, health monitoring, and metrics collection
  * for all communication event adapters in the UEL system.
  */
 
-import type {
-  IEventManagerFactory,
-  EventManagerStatus,
-  EventManagerMetrics,
-  IEventManager
-} from '../core/interfaces';
-
-import { 
-  CommunicationEventAdapter, 
-  type CommunicationEventAdapterConfig,
-  createDefaultCommunicationEventAdapterConfig
-} from './communication-event-adapter';
-
-import { createLogger, type Logger } from '../../../core/logger';
 import { EventEmitter } from 'events';
+import { createLogger, type Logger } from '../../../core/logger';
+import type {
+  EventManagerMetrics,
+  EventManagerStatus,
+  IEventManager,
+  IEventManagerFactory,
+} from '../core/interfaces';
+import {
+  CommunicationEventAdapter,
+  type CommunicationEventAdapterConfig,
+  createDefaultCommunicationEventAdapterConfig,
+} from './communication-event-adapter';
 
 /**
  * Communication Event Manager Factory
- * 
+ *
  * Manages the lifecycle of communication event adapters, providing:
  * - Centralized creation and configuration management
  * - Health monitoring and metrics collection
  * - Batch operations for multiple adapters
  * - Resource cleanup and graceful shutdown
+ *
+ * @example
  */
-export class CommunicationEventFactory extends EventEmitter implements IEventManagerFactory<CommunicationEventAdapterConfig> {
+export class CommunicationEventFactory
+  extends EventEmitter
+  implements IEventManagerFactory<CommunicationEventAdapterConfig>
+{
   private adapters = new Map<string, CommunicationEventAdapter>();
   private logger: Logger;
   private startTime: Date;
@@ -49,6 +52,8 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
 
   /**
    * Create new communication event adapter instance
+   *
+   * @param config
    */
   async create(config: CommunicationEventAdapterConfig): Promise<CommunicationEventAdapter> {
     try {
@@ -89,8 +94,12 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
 
   /**
    * Create multiple communication event adapters
+   *
+   * @param configs
    */
-  async createMultiple(configs: CommunicationEventAdapterConfig[]): Promise<CommunicationEventAdapter[]> {
+  async createMultiple(
+    configs: CommunicationEventAdapterConfig[]
+  ): Promise<CommunicationEventAdapter[]> {
     this.logger.info(`Creating ${configs.length} communication event adapters`);
 
     const results: CommunicationEventAdapter[] = [];
@@ -112,15 +121,22 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
 
     if (errors.length > 0) {
       this.logger.warn(`Failed to create ${errors.length} communication event adapters:`, errors);
-      this.emit('multiple-creation-partial-failure', { successes: results.length, failures: errors });
+      this.emit('multiple-creation-partial-failure', {
+        successes: results.length,
+        failures: errors,
+      });
     }
 
-    this.logger.info(`Successfully created ${results.length}/${configs.length} communication event adapters`);
+    this.logger.info(
+      `Successfully created ${results.length}/${configs.length} communication event adapters`
+    );
     return results;
   }
 
   /**
    * Get communication event adapter by name
+   *
+   * @param name
    */
   get(name: string): CommunicationEventAdapter | undefined {
     return this.adapters.get(name);
@@ -135,6 +151,8 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
 
   /**
    * Check if communication event adapter exists
+   *
+   * @param name
    */
   has(name: string): boolean {
     return this.adapters.has(name);
@@ -142,6 +160,8 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
 
   /**
    * Remove communication event adapter by name
+   *
+   * @param name
    */
   async remove(name: string): Promise<boolean> {
     const adapter = this.adapters.get(name);
@@ -198,8 +218,8 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
             errorRate: 1,
             uptime: 0,
             metadata: {
-              error: error instanceof Error ? error.message : 'Unknown error'
-            }
+              error: error instanceof Error ? error.message : 'Unknown error',
+            },
           });
         }
       })();
@@ -228,7 +248,10 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
           const metrics = await adapter.getMetrics();
           results.set(name, metrics);
         } catch (error) {
-          this.logger.warn(`Metrics collection failed for communication event adapter '${name}':`, error);
+          this.logger.warn(
+            `Metrics collection failed for communication event adapter '${name}':`,
+            error
+          );
           // Create default error metrics
           results.set(name, {
             name,
@@ -243,7 +266,7 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
             subscriptionCount: 0,
             queueSize: 0,
             memoryUsage: 0,
-            timestamp: new Date()
+            timestamp: new Date(),
           });
         }
       })();
@@ -288,7 +311,7 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
       this.emit('start-all-partial-failure', { failures: errors });
     }
 
-    const runningCount = this.list().filter(adapter => adapter.isRunning()).length;
+    const runningCount = this.list().filter((adapter) => adapter.isRunning()).length;
     this.logger.info(`Started ${runningCount}/${this.adapters.size} communication event adapters`);
   }
 
@@ -323,7 +346,7 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
       this.emit('stop-all-partial-failure', { failures: errors });
     }
 
-    const stoppedCount = this.list().filter(adapter => !adapter.isRunning()).length;
+    const stoppedCount = this.list().filter((adapter) => !adapter.isRunning()).length;
     this.logger.info(`Stopped ${stoppedCount}/${this.adapters.size} communication event adapters`);
   }
 
@@ -375,13 +398,13 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
    */
   getFactoryMetrics() {
     const uptime = Date.now() - this.startTime.getTime();
-    const runningAdapters = this.list().filter(adapter => adapter.isRunning()).length;
+    const runningAdapters = this.list().filter((adapter) => adapter.isRunning()).length;
 
     return {
       totalManagers: this.adapters.size,
       runningManagers: runningAdapters,
       errorCount: this.totalErrors,
-      uptime
+      uptime,
     };
   }
 
@@ -391,8 +414,14 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
 
   /**
    * Create communication event adapter with WebSocket focus
+   *
+   * @param name
+   * @param config
    */
-  async createWebSocketAdapter(name: string, config?: Partial<CommunicationEventAdapterConfig>): Promise<CommunicationEventAdapter> {
+  async createWebSocketAdapter(
+    name: string,
+    config?: Partial<CommunicationEventAdapterConfig>
+  ): Promise<CommunicationEventAdapter> {
     const adapterConfig = createDefaultCommunicationEventAdapterConfig(name, {
       websocketCommunication: {
         enabled: true,
@@ -400,12 +429,12 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
         wrapMessageEvents: true,
         wrapHealthEvents: true,
         wrapReconnectionEvents: true,
-        clients: ['websocket-client']
+        clients: ['websocket-client'],
       },
       mcpProtocol: { enabled: false },
       httpCommunication: { enabled: false },
       protocolCommunication: { enabled: false },
-      ...config
+      ...config,
     });
 
     return await this.create(adapterConfig);
@@ -413,8 +442,14 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
 
   /**
    * Create communication event adapter with MCP focus
+   *
+   * @param name
+   * @param config
    */
-  async createMCPAdapter(name: string, config?: Partial<CommunicationEventAdapterConfig>): Promise<CommunicationEventAdapter> {
+  async createMCPAdapter(
+    name: string,
+    config?: Partial<CommunicationEventAdapterConfig>
+  ): Promise<CommunicationEventAdapter> {
     const adapterConfig = createDefaultCommunicationEventAdapterConfig(name, {
       mcpProtocol: {
         enabled: true,
@@ -423,12 +458,12 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
         wrapToolEvents: true,
         wrapProtocolEvents: true,
         servers: ['http-mcp-server'],
-        clients: ['mcp-client']
+        clients: ['mcp-client'],
       },
       websocketCommunication: { enabled: false },
       httpCommunication: { enabled: true },
       protocolCommunication: { enabled: false },
-      ...config
+      ...config,
     });
 
     return await this.create(adapterConfig);
@@ -436,20 +471,26 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
 
   /**
    * Create communication event adapter with HTTP focus
+   *
+   * @param name
+   * @param config
    */
-  async createHTTPAdapter(name: string, config?: Partial<CommunicationEventAdapterConfig>): Promise<CommunicationEventAdapter> {
+  async createHTTPAdapter(
+    name: string,
+    config?: Partial<CommunicationEventAdapterConfig>
+  ): Promise<CommunicationEventAdapter> {
     const adapterConfig = createDefaultCommunicationEventAdapterConfig(name, {
       httpCommunication: {
         enabled: true,
         wrapRequestEvents: true,
         wrapResponseEvents: true,
         wrapTimeoutEvents: true,
-        wrapRetryEvents: true
+        wrapRetryEvents: true,
       },
       websocketCommunication: { enabled: false },
       mcpProtocol: { enabled: false },
       protocolCommunication: { enabled: false },
-      ...config
+      ...config,
     });
 
     return await this.create(adapterConfig);
@@ -457,8 +498,14 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
 
   /**
    * Create communication event adapter with protocol management focus
+   *
+   * @param name
+   * @param config
    */
-  async createProtocolAdapter(name: string, config?: Partial<CommunicationEventAdapterConfig>): Promise<CommunicationEventAdapter> {
+  async createProtocolAdapter(
+    name: string,
+    config?: Partial<CommunicationEventAdapterConfig>
+  ): Promise<CommunicationEventAdapter> {
     const adapterConfig = createDefaultCommunicationEventAdapterConfig(name, {
       protocolCommunication: {
         enabled: true,
@@ -466,12 +513,12 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
         wrapOptimizationEvents: true,
         wrapFailoverEvents: true,
         wrapSwitchingEvents: true,
-        protocols: ['http', 'https', 'ws', 'wss', 'stdio']
+        protocols: ['http', 'https', 'ws', 'wss', 'stdio'],
       },
       websocketCommunication: { enabled: false },
       mcpProtocol: { enabled: false },
       httpCommunication: { enabled: false },
-      ...config
+      ...config,
     });
 
     return await this.create(adapterConfig);
@@ -479,14 +526,20 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
 
   /**
    * Create comprehensive communication event adapter (all communication types)
+   *
+   * @param name
+   * @param config
    */
-  async createComprehensiveAdapter(name: string, config?: Partial<CommunicationEventAdapterConfig>): Promise<CommunicationEventAdapter> {
+  async createComprehensiveAdapter(
+    name: string,
+    config?: Partial<CommunicationEventAdapterConfig>
+  ): Promise<CommunicationEventAdapter> {
     const adapterConfig = createDefaultCommunicationEventAdapterConfig(name, {
       websocketCommunication: { enabled: true },
       mcpProtocol: { enabled: true },
       httpCommunication: { enabled: true },
       protocolCommunication: { enabled: true },
-      ...config
+      ...config,
     });
 
     return await this.create(adapterConfig);
@@ -504,7 +557,7 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
     protocolHealth: Record<string, any>;
   }> {
     const healthResults = await this.healthCheckAll();
-    
+
     let healthyCount = 0;
     let degradedCount = 0;
     let unhealthyCount = 0;
@@ -531,7 +584,7 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
       if (status.metadata?.avgCommunicationLatency !== undefined) {
         protocolHealth[name] = {
           avgLatency: status.metadata.avgCommunicationLatency,
-          errorRate: status.errorRate
+          errorRate: status.errorRate,
         };
       }
     }
@@ -542,7 +595,7 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
       degradedAdapters: degradedCount,
       unhealthyAdapters: unhealthyCount,
       connectionHealth,
-      protocolHealth
+      protocolHealth,
     };
   }
 
@@ -559,7 +612,7 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
     protocolMetrics: Record<string, any>;
   }> {
     const metricsResults = await this.getMetricsAll();
-    
+
     let totalEvents = 0;
     let successfulEvents = 0;
     let failedEvents = 0;
@@ -578,14 +631,14 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
       connectionMetrics[name] = {
         eventsProcessed: metrics.eventsProcessed,
         throughput: metrics.throughput,
-        avgLatency: metrics.averageLatency
+        avgLatency: metrics.averageLatency,
       };
 
       protocolMetrics[name] = {
         p95Latency: metrics.p95Latency,
         p99Latency: metrics.p99Latency,
         subscriptions: metrics.subscriptionCount,
-        queueSize: metrics.queueSize
+        queueSize: metrics.queueSize,
       };
     }
 
@@ -598,12 +651,14 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
       avgLatency,
       totalThroughput,
       connectionMetrics,
-      protocolMetrics
+      protocolMetrics,
     };
   }
 
   /**
    * Configure all adapters with new settings
+   *
+   * @param configUpdates
    */
   async reconfigureAll(configUpdates: Partial<CommunicationEventAdapterConfig>): Promise<void> {
     this.logger.info('Reconfiguring all communication event adapters');
@@ -620,11 +675,16 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
     }
 
     if (errors.length > 0) {
-      this.logger.warn(`Failed to reconfigure ${errors.length} communication event adapters:`, errors);
+      this.logger.warn(
+        `Failed to reconfigure ${errors.length} communication event adapters:`,
+        errors
+      );
       this.emit('reconfigure-all-partial-failure', { failures: errors });
     }
 
-    this.logger.info(`Reconfigured ${this.adapters.size - errors.length}/${this.adapters.size} communication event adapters`);
+    this.logger.info(
+      `Reconfigured ${this.adapters.size - errors.length}/${this.adapters.size} communication event adapters`
+    );
   }
 
   // ============================================
@@ -633,6 +693,8 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
 
   /**
    * Validate communication event adapter configuration
+   *
+   * @param config
    */
   private validateConfig(config: CommunicationEventAdapterConfig): void {
     if (!config.name || typeof config.name !== 'string') {
@@ -648,10 +710,10 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
       config.websocketCommunication?.enabled,
       config.mcpProtocol?.enabled,
       config.httpCommunication?.enabled,
-      config.protocolCommunication?.enabled
+      config.protocolCommunication?.enabled,
     ];
 
-    if (!communicationTypes.some(enabled => enabled === true)) {
+    if (!communicationTypes.some((enabled) => enabled === true)) {
       throw new Error('At least one communication type must be enabled');
     }
 
@@ -686,6 +748,8 @@ export class CommunicationEventFactory extends EventEmitter implements IEventMan
 
   /**
    * Set up event forwarding from adapter to factory
+   *
+   * @param adapter
    */
   private setupEventForwarding(adapter: CommunicationEventAdapter): void {
     // Forward important events from adapter to factory
@@ -718,28 +782,47 @@ export const communicationEventFactory = new CommunicationEventFactory();
 
 /**
  * Convenience functions for creating communication event adapters
+ *
+ * @param config
  */
-export async function createCommunicationEventAdapter(config: CommunicationEventAdapterConfig): Promise<CommunicationEventAdapter> {
+export async function createCommunicationEventAdapter(
+  config: CommunicationEventAdapterConfig
+): Promise<CommunicationEventAdapter> {
   return await communicationEventFactory.create(config);
 }
 
-export async function createWebSocketCommunicationAdapter(name: string, config?: Partial<CommunicationEventAdapterConfig>): Promise<CommunicationEventAdapter> {
+export async function createWebSocketCommunicationAdapter(
+  name: string,
+  config?: Partial<CommunicationEventAdapterConfig>
+): Promise<CommunicationEventAdapter> {
   return await communicationEventFactory.createWebSocketAdapter(name, config);
 }
 
-export async function createMCPCommunicationAdapter(name: string, config?: Partial<CommunicationEventAdapterConfig>): Promise<CommunicationEventAdapter> {
+export async function createMCPCommunicationAdapter(
+  name: string,
+  config?: Partial<CommunicationEventAdapterConfig>
+): Promise<CommunicationEventAdapter> {
   return await communicationEventFactory.createMCPAdapter(name, config);
 }
 
-export async function createHTTPCommunicationAdapter(name: string, config?: Partial<CommunicationEventAdapterConfig>): Promise<CommunicationEventAdapter> {
+export async function createHTTPCommunicationAdapter(
+  name: string,
+  config?: Partial<CommunicationEventAdapterConfig>
+): Promise<CommunicationEventAdapter> {
   return await communicationEventFactory.createHTTPAdapter(name, config);
 }
 
-export async function createProtocolCommunicationAdapter(name: string, config?: Partial<CommunicationEventAdapterConfig>): Promise<CommunicationEventAdapter> {
+export async function createProtocolCommunicationAdapter(
+  name: string,
+  config?: Partial<CommunicationEventAdapterConfig>
+): Promise<CommunicationEventAdapter> {
   return await communicationEventFactory.createProtocolAdapter(name, config);
 }
 
-export async function createComprehensiveCommunicationAdapter(name: string, config?: Partial<CommunicationEventAdapterConfig>): Promise<CommunicationEventAdapter> {
+export async function createComprehensiveCommunicationAdapter(
+  name: string,
+  config?: Partial<CommunicationEventAdapterConfig>
+): Promise<CommunicationEventAdapter> {
   return await communicationEventFactory.createComprehensiveAdapter(name, config);
 }
 

@@ -1,31 +1,31 @@
 /**
  * CoordinationEventAdapter Tests
- * 
+ *
  * Comprehensive hybrid TDD test suite for the CoordinationEventAdapter
  * following the 70% London + 30% Classical testing strategy.
- * 
+ *
  * London TDD (Mockist) Tests:
  * - Event subscription and emission patterns
  * - Component interaction verification
  * - Factory integration testing
- * 
- * Classical TDD (Detroit) Tests: 
+ *
+ * Classical TDD (Detroit) Tests:
  * - Event correlation algorithms
  * - Performance metric calculations
  * - Health monitoring computations
  */
 
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import type { CoordinationEvent } from '../../types';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import type { EventListener, EventSubscription } from '../../core/interfaces';
-import { 
+import { EventManagerTypes } from '../../core/interfaces';
+import type { CoordinationEvent } from '../../types';
+import {
   CoordinationEventAdapter,
+  type CoordinationEventAdapterConfig,
+  CoordinationEventHelpers,
   createCoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig,
-  CoordinationEventHelpers,
-  type CoordinationEventAdapterConfig
 } from '../coordination-event-adapter';
-import { EventManagerTypes } from '../../core/interfaces';
 
 describe('CoordinationEventAdapter', () => {
   let adapter: CoordinationEventAdapter;
@@ -92,7 +92,7 @@ describe('CoordinationEventAdapter', () => {
     it('should restart successfully', async () => {
       const startHandler = jest.fn();
       const stopHandler = jest.fn();
-      
+
       adapter.on('start', startHandler);
       adapter.on('stop', stopHandler);
 
@@ -106,7 +106,7 @@ describe('CoordinationEventAdapter', () => {
 
     it('should handle start when already running', async () => {
       await adapter.start();
-      
+
       // Should not throw and remain running
       await adapter.start();
       expect(adapter.isRunning()).toBe(true);
@@ -146,7 +146,7 @@ describe('CoordinationEventAdapter', () => {
     it('should unsubscribe all listeners for event type', () => {
       const listener1 = jest.fn();
       const listener2 = jest.fn();
-      
+
       adapter.subscribe(['coordination:swarm'], listener1);
       adapter.subscribe(['coordination:swarm'], listener2);
       adapter.subscribe(['coordination:agent'], listener1);
@@ -167,7 +167,7 @@ describe('CoordinationEventAdapter', () => {
         source: 'test-source',
         type: 'coordination:swarm',
         operation: 'init',
-        targetId: 'test-swarm'
+        targetId: 'test-swarm',
       };
 
       await adapter.emit(event);
@@ -194,8 +194,8 @@ describe('CoordinationEventAdapter', () => {
         targetId: 'test-swarm',
         details: {
           topology: 'mesh',
-          agentCount: 5
-        }
+          agentCount: 5,
+        },
       };
 
       await adapter.emit(event);
@@ -204,7 +204,7 @@ describe('CoordinationEventAdapter', () => {
         expect.objectContaining({
           event,
           success: true,
-          duration: expect.any(Number)
+          duration: expect.any(Number),
         })
       );
     });
@@ -219,7 +219,7 @@ describe('CoordinationEventAdapter', () => {
         source: 'agent-manager',
         type: 'coordination:agent',
         operation: 'spawn',
-        targetId: 'test-agent'
+        targetId: 'test-agent',
       };
 
       await adapter.emitImmediate(event);
@@ -238,7 +238,7 @@ describe('CoordinationEventAdapter', () => {
           source: 'orchestrator',
           type: 'coordination:task',
           operation: 'distribute',
-          targetId: 'task-1'
+          targetId: 'task-1',
         },
         {
           id: 'batch-2',
@@ -246,15 +246,15 @@ describe('CoordinationEventAdapter', () => {
           source: 'orchestrator',
           type: 'coordination:task',
           operation: 'distribute',
-          targetId: 'task-2'
-        }
+          targetId: 'task-2',
+        },
       ];
 
       const batch = {
         id: 'test-batch',
         events,
         size: events.length,
-        created: new Date()
+        created: new Date(),
       };
 
       await adapter.emitBatch(batch);
@@ -274,7 +274,7 @@ describe('CoordinationEventAdapter', () => {
 
       // Add filter that only allows events from specific source
       const filterId = adapter.addFilter({
-        sources: ['swarm-coordinator']
+        sources: ['swarm-coordinator'],
       });
 
       const allowedEvent: CoordinationEvent = {
@@ -283,7 +283,7 @@ describe('CoordinationEventAdapter', () => {
         source: 'swarm-coordinator',
         type: 'coordination:swarm',
         operation: 'init',
-        targetId: 'test-swarm'
+        targetId: 'test-swarm',
       };
 
       const filteredEvent: CoordinationEvent = {
@@ -292,7 +292,7 @@ describe('CoordinationEventAdapter', () => {
         source: 'other-source',
         type: 'coordination:swarm',
         operation: 'init',
-        targetId: 'test-swarm'
+        targetId: 'test-swarm',
       };
 
       await adapter.emit(allowedEvent);
@@ -300,7 +300,7 @@ describe('CoordinationEventAdapter', () => {
 
       expect(listener).toHaveBeenCalledTimes(1);
       expect(listener).toHaveBeenCalledWith(allowedEvent);
-      
+
       expect(adapter.removeFilter(filterId)).toBe(true);
     });
 
@@ -312,8 +312,8 @@ describe('CoordinationEventAdapter', () => {
       const transformId = adapter.addTransform({
         enricher: async (event) => ({
           ...event,
-          metadata: { ...event.metadata, transformed: true }
-        })
+          metadata: { ...event.metadata, transformed: true },
+        }),
       });
 
       const event: CoordinationEvent = {
@@ -322,7 +322,7 @@ describe('CoordinationEventAdapter', () => {
         source: 'agent-manager',
         type: 'coordination:agent',
         operation: 'spawn',
-        targetId: 'test-agent'
+        targetId: 'test-agent',
       };
 
       await adapter.emit(event);
@@ -330,7 +330,7 @@ describe('CoordinationEventAdapter', () => {
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
           ...event,
-          metadata: { transformed: true }
+          metadata: { transformed: true },
         })
       );
 
@@ -356,7 +356,7 @@ describe('CoordinationEventAdapter', () => {
         queueSize: expect.any(Number),
         errorRate: expect.any(Number),
         uptime: expect.any(Number),
-        metadata: expect.any(Object)
+        metadata: expect.any(Object),
       });
     });
 
@@ -368,7 +368,7 @@ describe('CoordinationEventAdapter', () => {
         source: 'test-source',
         type: 'coordination:swarm',
         operation: 'init',
-        targetId: 'test-swarm'
+        targetId: 'test-swarm',
       };
 
       await adapter.emit(successEvent);
@@ -385,7 +385,7 @@ describe('CoordinationEventAdapter', () => {
           source: '',
           type: 'coordination:swarm',
           operation: 'init',
-          targetId: ''
+          targetId: '',
         } as CoordinationEvent);
       } catch {
         // Expected to fail
@@ -397,11 +397,11 @@ describe('CoordinationEventAdapter', () => {
 
     it('should calculate uptime correctly', async () => {
       const startTime = Date.now();
-      await new Promise(resolve => setTimeout(resolve, 100)); // Wait 100ms
-      
+      await new Promise((resolve) => setTimeout(resolve, 100)); // Wait 100ms
+
       const status = await adapter.healthCheck();
       const uptime = status.uptime;
-      
+
       expect(uptime).toBeGreaterThanOrEqual(90); // Allow some margin
       expect(uptime).toBeLessThan(200);
     });
@@ -420,14 +420,14 @@ describe('CoordinationEventAdapter', () => {
         source: 'test-source',
         type: 'coordination:swarm',
         operation: 'init',
-        targetId: 'test-swarm'
+        targetId: 'test-swarm',
       };
 
       await adapter.emit(event);
       await adapter.emit(event);
 
       const metrics = await adapter.getMetrics();
-      
+
       expect(metrics.eventsProcessed).toBe(2);
       expect(metrics.eventsEmitted).toBe(2);
       expect(metrics.eventsFailed).toBe(0);
@@ -440,13 +440,13 @@ describe('CoordinationEventAdapter', () => {
         source: 'test-source',
         type: 'coordination:swarm',
         operation: 'init',
-        targetId: 'test-swarm'
+        targetId: 'test-swarm',
       };
 
       await adapter.emit(event);
 
       const metrics = await adapter.getMetrics();
-      
+
       expect(metrics.averageLatency).toBeGreaterThan(0);
       expect(metrics.averageLatency).toBeLessThan(1000); // Should be reasonable
     });
@@ -458,14 +458,14 @@ describe('CoordinationEventAdapter', () => {
         source: 'test-source',
         type: 'coordination:swarm' as const,
         operation: 'init' as const,
-        targetId: `test-swarm-${i}`
+        targetId: `test-swarm-${i}`,
       }));
 
       // Emit events quickly
-      await Promise.all(events.map(event => adapter.emit(event)));
+      await Promise.all(events.map((event) => adapter.emit(event)));
 
       const metrics = await adapter.getMetrics();
-      
+
       expect(metrics.throughput).toBeGreaterThan(0);
       expect(metrics.eventsProcessed).toBe(5);
     });
@@ -484,7 +484,7 @@ describe('CoordinationEventAdapter', () => {
           source: 'swarm-coordinator',
           type: 'coordination:swarm',
           operation: 'init',
-          targetId: 'swarm-1'
+          targetId: 'swarm-1',
         },
         {
           id: 'history-2',
@@ -492,8 +492,8 @@ describe('CoordinationEventAdapter', () => {
           source: 'agent-manager',
           type: 'coordination:agent',
           operation: 'spawn',
-          targetId: 'agent-1'
-        }
+          targetId: 'agent-1',
+        },
       ];
 
       for (const event of events) {
@@ -514,7 +514,7 @@ describe('CoordinationEventAdapter', () => {
           type: 'coordination:swarm',
           operation: 'init',
           targetId: 'swarm-1',
-          priority: 'high'
+          priority: 'high',
         },
         {
           id: 'query-2',
@@ -523,8 +523,8 @@ describe('CoordinationEventAdapter', () => {
           type: 'coordination:agent',
           operation: 'spawn',
           targetId: 'agent-1',
-          priority: 'medium'
-        }
+          priority: 'medium',
+        },
       ];
 
       for (const event of events) {
@@ -533,8 +533,8 @@ describe('CoordinationEventAdapter', () => {
 
       const highPriorityEvents = await adapter.query({
         filter: {
-          priorities: ['high']
-        }
+          priorities: ['high'],
+        },
       });
 
       expect(highPriorityEvents).toHaveLength(1);
@@ -544,11 +544,11 @@ describe('CoordinationEventAdapter', () => {
     it('should sort and paginate query results', async () => {
       const events: CoordinationEvent[] = Array.from({ length: 5 }, (_, i) => ({
         id: `sort-${i}`,
-        timestamp: new Date(Date.now() - (i * 1000)), // Spread timestamps
+        timestamp: new Date(Date.now() - i * 1000), // Spread timestamps
         source: 'test-source',
         type: 'coordination:swarm' as const,
         operation: 'init' as const,
-        targetId: `swarm-${i}`
+        targetId: `swarm-${i}`,
       }));
 
       for (const event of events) {
@@ -559,7 +559,7 @@ describe('CoordinationEventAdapter', () => {
         sortBy: 'timestamp',
         sortOrder: 'desc',
         limit: 3,
-        offset: 1
+        offset: 1,
       });
 
       expect(sortedEvents).toHaveLength(3);
@@ -586,8 +586,8 @@ describe('CoordinationEventAdapter', () => {
         targetId: 'test-swarm',
         details: {
           topology: 'hierarchical',
-          agentCount: 10
-        }
+          agentCount: 10,
+        },
       });
 
       expect(listener).toHaveBeenCalledWith(
@@ -595,7 +595,7 @@ describe('CoordinationEventAdapter', () => {
           source: 'swarm-coordinator',
           type: 'coordination:swarm',
           operation: 'init',
-          targetId: 'test-swarm'
+          targetId: 'test-swarm',
         })
       );
     });
@@ -639,11 +639,11 @@ describe('CoordinationEventAdapter', () => {
           performanceThresholds: {
             latency: 100,
             throughput: 50,
-            reliability: 0.9
+            reliability: 0.9,
           },
           autoScaling: false,
-          loadBalancing: false
-        }
+          loadBalancing: false,
+        },
       };
 
       adapter.updateConfig(newConfig);
@@ -669,7 +669,7 @@ describe('CoordinationEventAdapter', () => {
           source: '',
           type: 'coordination:swarm',
           operation: 'init',
-          targetId: ''
+          targetId: '',
         } as CoordinationEvent);
       } catch (error) {
         expect(error).toBeInstanceOf(Error);
@@ -679,7 +679,7 @@ describe('CoordinationEventAdapter', () => {
     it('should handle subscription errors gracefully', async () => {
       const faultyListener = jest.fn().mockRejectedValue(new Error('Listener error'));
       const subscriptionErrorHandler = jest.fn();
-      
+
       adapter.on('subscription-error', subscriptionErrorHandler);
       adapter.subscribe(['coordination:swarm'], faultyListener);
 
@@ -689,7 +689,7 @@ describe('CoordinationEventAdapter', () => {
         source: 'test-source',
         type: 'coordination:swarm',
         operation: 'init',
-        targetId: 'test-swarm'
+        targetId: 'test-swarm',
       };
 
       await adapter.emit(event);
@@ -709,11 +709,11 @@ describe('CoordinationEventAdapter Factory Functions', () => {
           performanceThresholds: {
             latency: 50,
             throughput: 100,
-            reliability: 0.95
+            reliability: 0.95,
           },
           autoScaling: false,
-          loadBalancing: false
-        }
+          loadBalancing: false,
+        },
       });
 
       const adapter = createCoordinationEventAdapter(config);
@@ -733,8 +733,8 @@ describe('CoordinationEventAdapter Factory Functions', () => {
           maxCorrelationDepth: 5,
           correlationPatterns: ['test-pattern'],
           trackAgentCommunication: false,
-          trackSwarmHealth: false
-        }
+          trackSwarmHealth: false,
+        },
       });
 
       expect(config.name).toBe('default-test');
@@ -749,7 +749,7 @@ describe('CoordinationEventHelpers', () => {
   describe('createSwarmInitEvent', () => {
     it('should create swarm initialization event', () => {
       const event = CoordinationEventHelpers.createSwarmInitEvent('test-swarm', 'mesh', {
-        agentCount: 5
+        agentCount: 5,
       });
 
       expect(event).toMatchObject({
@@ -760,8 +760,8 @@ describe('CoordinationEventHelpers', () => {
         priority: 'high',
         details: {
           topology: 'mesh',
-          agentCount: 5
-        }
+          agentCount: 5,
+        },
       });
     });
   });
@@ -769,7 +769,7 @@ describe('CoordinationEventHelpers', () => {
   describe('createAgentSpawnEvent', () => {
     it('should create agent spawn event', () => {
       const event = CoordinationEventHelpers.createAgentSpawnEvent('test-agent', 'test-swarm', {
-        capabilities: ['research']
+        capabilities: ['research'],
       });
 
       expect(event).toMatchObject({
@@ -780,8 +780,8 @@ describe('CoordinationEventHelpers', () => {
         priority: 'high',
         details: {
           swarmId: 'test-swarm',
-          capabilities: ['research']
-        }
+          capabilities: ['research'],
+        },
       });
     });
   });
@@ -802,8 +802,8 @@ describe('CoordinationEventHelpers', () => {
         priority: 'medium',
         details: {
           assignedTo: ['agent-1', 'agent-2'],
-          taskType: 'analysis'
-        }
+          taskType: 'analysis',
+        },
       });
     });
   });
@@ -824,8 +824,8 @@ describe('CoordinationEventHelpers', () => {
         priority: 'medium',
         details: {
           topology: 'hierarchical',
-          nodeCount: 8
-        }
+          nodeCount: 8,
+        },
       });
     });
   });
@@ -849,8 +849,8 @@ describe('CoordinationEventHelpers', () => {
         details: {
           errorCode: 'Error',
           errorMessage: 'Test coordination error',
-          context: 'initialization'
-        }
+          context: 'initialization',
+        },
       });
     });
   });

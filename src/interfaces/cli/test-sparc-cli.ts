@@ -8,10 +8,7 @@ import { createSPARCTemplateCommands } from './sparc-template-commands';
 
 const program = new Command();
 
-program
-  .name('sparc-cli-test')
-  .description('Test SPARC Template CLI Commands')
-  .version('1.0.0');
+program.name('sparc-cli-test').description('Test SPARC Template CLI Commands').version('1.0.0');
 
 // Add the SPARC template commands
 program.addCommand(createSPARCTemplateCommands());

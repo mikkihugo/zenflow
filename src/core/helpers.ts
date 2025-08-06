@@ -13,6 +13,8 @@ export function generateId(): string {
 
 /**
  * Sleep for specified milliseconds
+ *
+ * @param ms
  */
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -20,6 +22,10 @@ export function sleep(ms: number): Promise<void> {
 
 /**
  * Retry an async function with exponential backoff
+ *
+ * @param fn
+ * @param maxRetries
+ * @param baseDelay
  */
 export async function retry<T>(
   fn: () => Promise<T>,
@@ -44,6 +50,8 @@ export async function retry<T>(
 
 /**
  * Deep clone an object
+ *
+ * @param obj
  */
 export function deepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
@@ -51,6 +59,8 @@ export function deepClone<T>(obj: T): T {
 
 /**
  * Check if value is empty
+ *
+ * @param value
  */
 export function isEmpty(value: any): boolean {
   if (value == null) return true;

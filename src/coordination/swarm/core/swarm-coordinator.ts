@@ -58,6 +58,8 @@ export class SwarmCoordinator extends EventEmitter {
 
   /**
    * Initialize the swarm coordinator
+   *
+   * @param config
    */
   async initialize(config?: any): Promise<void> {
     this.state = 'active';
@@ -120,6 +122,8 @@ export class SwarmCoordinator extends EventEmitter {
 
   /**
    * Add an agent to the swarm
+   *
+   * @param agent
    */
   async addAgent(agent: Omit<SwarmAgent, 'performance' | 'connections'>): Promise<void> {
     const fullAgent: SwarmAgent = {
@@ -140,6 +144,8 @@ export class SwarmCoordinator extends EventEmitter {
 
   /**
    * Remove an agent from the swarm
+   *
+   * @param agentId
    */
   async removeAgent(agentId: string): Promise<void> {
     const agent = this.agents.get(agentId);
@@ -160,6 +166,8 @@ export class SwarmCoordinator extends EventEmitter {
 
   /**
    * Get agent by ID
+   *
+   * @param agentId
    */
   getAgent(agentId: string): SwarmAgent | undefined {
     return this.agents.get(agentId);
@@ -167,6 +175,12 @@ export class SwarmCoordinator extends EventEmitter {
 
   /**
    * Assign a task to the best available agent
+   *
+   * @param task
+   * @param task.id
+   * @param task.type
+   * @param task.requirements
+   * @param task.priority
    */
   async assignTask(task: {
     id: string;
@@ -197,6 +211,9 @@ export class SwarmCoordinator extends EventEmitter {
 
   /**
    * Complete a task
+   *
+   * @param taskId
+   * @param result
    */
   async completeTask(taskId: string, result: any): Promise<void> {
     const task = this.tasks.get(taskId);
@@ -229,6 +246,9 @@ export class SwarmCoordinator extends EventEmitter {
 
   /**
    * Coordinate swarm operations
+   *
+   * @param agents
+   * @param topology
    */
   async coordinateSwarm(
     agents: SwarmAgent[],

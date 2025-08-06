@@ -61,6 +61,12 @@ export {
 export class MemorySystemFactory {
   /**
    * Create a complete memory system with all advanced features
+   *
+   * @param config
+   * @param config.coordination
+   * @param config.optimization
+   * @param config.monitoring
+   * @param config.backends
    */
   static async createAdvancedMemorySystem(config: {
     coordination?: MemoryCoordinationConfig;
@@ -146,6 +152,8 @@ export class MemorySystemFactory {
 
   /**
    * Create a basic memory system with essential features
+   *
+   * @param backends
    */
   static async createBasicMemorySystem(backends: Array<{ id: string; type: string; config: any }>) {
     return MemorySystemFactory.createAdvancedMemorySystem({

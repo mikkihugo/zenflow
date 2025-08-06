@@ -5,7 +5,7 @@
  * Features automatic OpenAPI 3 documentation and request validation.
  * Clean separation: REST API layer independent from business domains.
  *
- * @fileoverview Main REST API server with domain endpoints
+ * @file Main REST API server with domain endpoints
  */
 
 import compression from 'compression';
@@ -30,6 +30,8 @@ import { createNeuralRoutes } from './v1/neural';
 /**
  * Main API Server Configuration
  * Following Google's secure by default principles
+ *
+ * @example
  */
 export interface APIServerConfig {
   readonly port: number;
@@ -46,6 +48,8 @@ export interface APIServerConfig {
 /**
  * API Client Configuration
  * Configuration for API client instances
+ *
+ * @example
  */
 export interface APIClientConfig {
   readonly baseURL: string;
@@ -136,6 +140,8 @@ const swaggerOptions = {
 /**
  * Main API Server Class
  * Implements Express server with all domain APIs
+ *
+ * @example
  */
 export class APIServer {
   private app: Application;
@@ -429,6 +435,8 @@ export class APIServer {
 /**
  * Factory function to create and start API server
  * Convenient for simple use cases
+ *
+ * @param config
  */
 export const createAPIServer = async (config?: Partial<APIServerConfig>): Promise<APIServer> => {
   const server = new APIServer(config);

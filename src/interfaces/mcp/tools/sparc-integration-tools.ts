@@ -204,10 +204,10 @@ export function createSPARCIntegrationTools(documentService: DocumentService): M
                     description: 'Register agents in the swarm',
                     type: 'algorithmic',
                     priority: 'HIGH',
-                    testCriteria: ['Agent gets unique ID']
-                  }
-                ]
-              }
+                    testCriteria: ['Agent gets unique ID'],
+                  },
+                ],
+              },
             },
           },
         ],
@@ -220,9 +220,9 @@ export function createSPARCIntegrationTools(documentService: DocumentService): M
             type: 'object',
             properties: {
               id: { type: 'string' },
-              domain: { 
+              domain: {
                 type: 'string',
-                enum: ['swarm-coordination', 'neural-networks', 'memory-systems', 'general']
+                enum: ['swarm-coordination', 'neural-networks', 'memory-systems', 'general'],
               },
               functionalRequirements: {
                 type: 'array',
@@ -234,10 +234,10 @@ export function createSPARCIntegrationTools(documentService: DocumentService): M
                     description: { type: 'string' },
                     type: { type: 'string' },
                     priority: { type: 'string' },
-                    testCriteria: { type: 'array', items: { type: 'string' } }
+                    testCriteria: { type: 'array', items: { type: 'string' } },
                   },
-                  required: ['id', 'title', 'description', 'type', 'priority']
-                }
+                  required: ['id', 'title', 'description', 'type', 'priority'],
+                },
               },
               nonFunctionalRequirements: { type: 'array', default: [] },
               constraints: { type: 'array', default: [] },
@@ -249,32 +249,34 @@ export function createSPARCIntegrationTools(documentService: DocumentService): M
                 properties: {
                   risks: { type: 'array', default: [] },
                   mitigationStrategies: { type: 'array', default: [] },
-                  overallRisk: { type: 'string', default: 'LOW' }
+                  overallRisk: { type: 'string', default: 'LOW' },
                 },
-                default: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' }
+                default: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' },
               },
-              successMetrics: { type: 'array', default: [] }
+              successMetrics: { type: 'array', default: [] },
             },
-            required: ['id', 'domain', 'functionalRequirements']
+            required: ['id', 'domain', 'functionalRequirements'],
           },
           options: {
             type: 'object',
             properties: {
               includeComplexityAnalysis: { type: 'boolean', default: true },
               includeOptimizations: { type: 'boolean', default: true },
-              generateMarkdown: { type: 'boolean', default: false }
+              generateMarkdown: { type: 'boolean', default: false },
             },
-            default: {}
-          }
+            default: {},
+          },
         },
-        required: ['specification']
+        required: ['specification'],
       },
       handler: async (params: any) => {
         try {
           const { specification, options = {} } = params;
 
           // Import the pseudocode engine dynamically
-          const { PseudocodePhaseEngine } = await import('../../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
+          const { PseudocodePhaseEngine } = await import(
+            '../../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+          );
 
           const engine = new PseudocodePhaseEngine();
 
@@ -294,33 +296,35 @@ export function createSPARCIntegrationTools(documentService: DocumentService): M
                 outputs: alg.outputs,
                 steps: alg.steps,
                 complexity: alg.complexity,
-                optimizations: options.includeOptimizations ? alg.optimizations : []
+                optimizations: options.includeOptimizations ? alg.optimizations : [],
               })),
               dataStructures: pseudocodeStructure.dataStructures,
               controlFlows: pseudocodeStructure.controlFlows,
               optimizations: options.includeOptimizations ? pseudocodeStructure.optimizations : [],
-              complexityAnalysis: options.includeComplexityAnalysis ? pseudocodeStructure.complexityAnalysis : undefined,
+              complexityAnalysis: options.includeComplexityAnalysis
+                ? pseudocodeStructure.complexityAnalysis
+                : undefined,
               summary: {
                 algorithmsGenerated: pseudocodeStructure.algorithms.length,
                 dataStructuresGenerated: pseudocodeStructure.dataStructures.length,
                 controlFlowsGenerated: pseudocodeStructure.controlFlows.length,
                 optimizationsIdentified: pseudocodeStructure.optimizations.length,
-                overallComplexity: pseudocodeStructure.complexityAnalysis?.timeComplexity || 'Unknown'
+                overallComplexity:
+                  pseudocodeStructure.complexityAnalysis?.timeComplexity || 'Unknown',
               },
-              generatedAt: new Date().toISOString()
-            }
+              generatedAt: new Date().toISOString(),
+            },
           };
 
           return result;
-
         } catch (error) {
           return {
             success: false,
             error: {
               code: 'PSEUDOCODE_GENERATION_FAILED',
               message: error instanceof Error ? error.message : 'Unknown error',
-              details: 'Failed to generate pseudocode from specification'
-            }
+              details: 'Failed to generate pseudocode from specification',
+            },
           };
         }
       },
@@ -342,8 +346,8 @@ export function createSPARCIntegrationTools(documentService: DocumentService): M
                 id: 'pseudo-001',
                 algorithms: [],
                 dataStructures: [],
-                controlFlows: []
-              }
+                controlFlows: [],
+              },
             },
           },
         ],
@@ -360,19 +364,21 @@ export function createSPARCIntegrationTools(documentService: DocumentService): M
               dataStructures: { type: 'array' },
               controlFlows: { type: 'array' },
               optimizations: { type: 'array', default: [] },
-              complexityAnalysis: { type: 'object' }
+              complexityAnalysis: { type: 'object' },
             },
-            required: ['id', 'algorithms', 'dataStructures', 'controlFlows']
-          }
+            required: ['id', 'algorithms', 'dataStructures', 'controlFlows'],
+          },
         },
-        required: ['pseudocodeStructure']
+        required: ['pseudocodeStructure'],
       },
       handler: async (params: any) => {
         try {
           const { pseudocodeStructure } = params;
 
           // Import the pseudocode engine dynamically
-          const { PseudocodePhaseEngine } = await import('../../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
+          const { PseudocodePhaseEngine } = await import(
+            '../../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+          );
 
           const engine = new PseudocodePhaseEngine();
 
@@ -389,26 +395,25 @@ export function createSPARCIntegrationTools(documentService: DocumentService): M
                 complexityVerification: validation.complexityVerification,
                 logicErrors: validation.logicErrors,
                 optimizationSuggestions: validation.optimizationSuggestions,
-                recommendations: validation.recommendations
+                recommendations: validation.recommendations,
               },
               summary: {
                 status: validation.approved ? 'APPROVED' : 'NEEDS_IMPROVEMENT',
                 scorePercentage: Math.round(validation.overallScore * 100),
                 errorsFound: validation.logicErrors.length,
-                suggestionsProvided: validation.optimizationSuggestions.length
+                suggestionsProvided: validation.optimizationSuggestions.length,
               },
-              validatedAt: new Date().toISOString()
-            }
+              validatedAt: new Date().toISOString(),
+            },
           };
-
         } catch (error) {
           return {
             success: false,
             error: {
               code: 'PSEUDOCODE_VALIDATION_FAILED',
               message: error instanceof Error ? error.message : 'Unknown error',
-              details: 'Failed to validate pseudocode structure'
-            }
+              details: 'Failed to validate pseudocode structure',
+            },
           };
         }
       },
@@ -436,10 +441,10 @@ export function createSPARCIntegrationTools(documentService: DocumentService): M
                     description: 'Neural network forward pass',
                     type: 'algorithmic',
                     priority: 'HIGH',
-                    testCriteria: ['Accurate computation']
-                  }
-                ]
-              }
+                    testCriteria: ['Accurate computation'],
+                  },
+                ],
+              },
             },
           },
         ],
@@ -452,9 +457,9 @@ export function createSPARCIntegrationTools(documentService: DocumentService): M
             type: 'object',
             properties: {
               id: { type: 'string' },
-              domain: { 
+              domain: {
                 type: 'string',
-                enum: ['swarm-coordination', 'neural-networks', 'memory-systems', 'general']
+                enum: ['swarm-coordination', 'neural-networks', 'memory-systems', 'general'],
               },
               functionalRequirements: {
                 type: 'array',
@@ -465,23 +470,25 @@ export function createSPARCIntegrationTools(documentService: DocumentService): M
                     title: { type: 'string' },
                     description: { type: 'string' },
                     type: { type: 'string' },
-                    priority: { type: 'string' }
+                    priority: { type: 'string' },
                   },
-                  required: ['id', 'title', 'description', 'type', 'priority']
-                }
-              }
+                  required: ['id', 'title', 'description', 'type', 'priority'],
+                },
+              },
             },
-            required: ['id', 'domain', 'functionalRequirements']
-          }
+            required: ['id', 'domain', 'functionalRequirements'],
+          },
         },
-        required: ['specification']
+        required: ['specification'],
       },
       handler: async (params: any) => {
         try {
           const { specification } = params;
 
           // Import the pseudocode engine dynamically
-          const { PseudocodePhaseEngine } = await import('../../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
+          const { PseudocodePhaseEngine } = await import(
+            '../../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+          );
 
           const engine = new PseudocodePhaseEngine();
 
@@ -496,33 +503,43 @@ export function createSPARCIntegrationTools(documentService: DocumentService): M
               algorithms: algorithms.map((alg: any) => ({
                 name: alg.name,
                 purpose: alg.purpose,
-                inputs: alg.inputs.map((i: any) => ({ name: i.name, type: i.type, description: i.description })),
-                outputs: alg.outputs.map((o: any) => ({ name: o.name, type: o.type, description: o.description })),
+                inputs: alg.inputs.map((i: any) => ({
+                  name: i.name,
+                  type: i.type,
+                  description: i.description,
+                })),
+                outputs: alg.outputs.map((o: any) => ({
+                  name: o.name,
+                  type: o.type,
+                  description: o.description,
+                })),
                 stepsCount: alg.steps.length,
                 complexity: {
                   time: alg.complexity.timeComplexity,
                   space: alg.complexity.spaceComplexity,
-                  scalability: alg.complexity.scalability
+                  scalability: alg.complexity.scalability,
                 },
-                optimizationsCount: alg.optimizations.length
+                optimizationsCount: alg.optimizations.length,
               })),
               summary: {
                 algorithmsGenerated: algorithms.length,
                 domains: [specification.domain],
-                totalOptimizations: algorithms.reduce((sum: number, alg: any) => sum + alg.optimizations.length, 0)
+                totalOptimizations: algorithms.reduce(
+                  (sum: number, alg: any) => sum + alg.optimizations.length,
+                  0
+                ),
               },
-              generatedAt: new Date().toISOString()
-            }
+              generatedAt: new Date().toISOString(),
+            },
           };
-
         } catch (error) {
           return {
             success: false,
             error: {
               code: 'ALGORITHM_GENERATION_FAILED',
               message: error instanceof Error ? error.message : 'Unknown error',
-              details: 'Failed to generate algorithms from specification'
-            }
+              details: 'Failed to generate algorithms from specification',
+            },
           };
         }
       },

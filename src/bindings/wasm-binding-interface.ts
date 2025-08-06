@@ -17,6 +17,8 @@ import type {
 /**
  * WASM binding interface contract
  * Defines what bindings can expect from WASM modules
+ *
+ * @example
  */
 export interface WasmBindingInterface extends WasmNeuralBinding {
   loadWasm(): Promise<any>;
@@ -28,6 +30,8 @@ export interface WasmBindingInterface extends WasmNeuralBinding {
 /**
  * WASM binding provider
  * Implements the interface by delegating to actual WASM modules
+ *
+ * @example
  */
 class WasmBindingProvider implements WasmBindingInterface {
   private wasmModule: any = null;

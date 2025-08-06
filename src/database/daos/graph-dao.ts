@@ -1,33 +1,33 @@
 /**
  * Graph Database DAO Implementation
- * 
+ *
  * Data Access Object for graph databases (Kuzu) with enhanced
  * graph-specific operations and transaction management.
  */
 
-import { BaseDataAccessObject } from '../base-repository';
-import type { IGraphRepository, TransactionOperation, GraphQueryResult } from '../interfaces';
 import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
+import { BaseDataAccessObject } from '../base-repository';
+import type { GraphQueryResult, IGraphRepository, TransactionOperation } from '../interfaces';
 
 /**
  * Graph database DAO implementation
+ *
  * @template T The entity type this DAO manages
+ * @example
  */
 export class GraphDAO<T> extends BaseDataAccessObject<T> {
   private get graphRepository(): IGraphRepository<T> {
     return this.repository as IGraphRepository<T>;
   }
 
-  constructor(
-    repository: IGraphRepository<T>,
-    adapter: DatabaseAdapter,
-    logger: ILogger
-  ) {
+  constructor(repository: IGraphRepository<T>, adapter: DatabaseAdapter, logger: ILogger) {
     super(repository, adapter, logger);
   }
 
   /**
    * Execute graph-specific transaction with relationship management
+   *
+   * @param operations
    */
   async executeGraphTransaction<R>(operations: TransactionOperation[]): Promise<R> {
     this.logger.debug(`Executing graph transaction with ${operations.length} operations`);
@@ -95,19 +95,26 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
       });
     } catch (error) {
       this.logger.error(`Graph transaction failed: ${error}`);
-      throw new Error(`Graph transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Graph transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Bulk create nodes with relationships
+   *
+   * @param nodes
    */
   async bulkCreateNodesWithRelationships(
-    nodes: Array<{ nodeData: Omit<T, 'id'>; relationships?: Array<{
-      toNodeId: string | number;
-      relationshipType: string;
-      properties?: Record<string, any>;
-    }> }>
+    nodes: Array<{
+      nodeData: Omit<T, 'id'>;
+      relationships?: Array<{
+        toNodeId: string | number;
+        relationshipType: string;
+        properties?: Record<string, any>;
+      }>;
+    }>
   ): Promise<{ nodes: T[]; relationships: any[] }> {
     this.logger.debug(`Bulk creating ${nodes.length} nodes with relationships`);
 
@@ -144,14 +151,22 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
       });
     } catch (error) {
       this.logger.error(`Bulk create nodes with relationships failed: ${error}`);
-      throw new Error(`Bulk create failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Bulk create failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Execute complex graph analytics
+   *
+   * @param analysisType
+   * @param parameters
    */
-  async executeGraphAnalytics(analysisType: string, parameters?: Record<string, any>): Promise<any> {
+  async executeGraphAnalytics(
+    analysisType: string,
+    parameters?: Record<string, any>
+  ): Promise<any> {
     this.logger.debug(`Executing graph analytics: ${analysisType}`, { parameters });
 
     try {
@@ -171,7 +186,7 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
             iterations: parameters?.iterations || 20,
             dampingFactor: parameters?.dampingFactor || 0.85,
             limit: parameters?.limit || 100,
-            ...queryParams
+            ...queryParams,
           };
           break;
 
@@ -209,7 +224,7 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
             startId: parameters?.startId,
             endId: parameters?.endId,
             limit: parameters?.limit || 10,
-            ...queryParams
+            ...queryParams,
           };
           break;
 
@@ -221,12 +236,20 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
       return result;
     } catch (error) {
       this.logger.error(`Graph analytics failed: ${error}`);
-      throw new Error(`Graph analytics failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Graph analytics failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Pattern matching and graph traversal
+   *
+   * @param pattern
+   * @param parameters
+   * @param options
+   * @param options.limit
+   * @param options.timeout
    */
   async findPattern(
     pattern: string,
@@ -237,7 +260,7 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
 
     try {
       let cypher = pattern;
-      
+
       // Add options to query
       if (options?.limit) {
         cypher += ` LIMIT ${options.limit}`;
@@ -247,12 +270,17 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
       return result;
     } catch (error) {
       this.logger.error(`Pattern matching failed: ${error}`);
-      throw new Error(`Pattern matching failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Pattern matching failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Graph schema operations
+   *
+   * @param label
+   * @param properties
    */
   async createNodeLabel(label: string, properties?: Record<string, string>): Promise<void> {
     this.logger.debug(`Creating node label: ${label}`, { properties });
@@ -272,12 +300,17 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
       this.logger.debug(`Node label created: ${label}`);
     } catch (error) {
       this.logger.error(`Create node label failed: ${error}`);
-      throw new Error(`Create node label failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Create node label failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Relationship type operations
+   *
+   * @param relationshipType
+   * @param constraints
    */
   async createRelationshipType(
     relationshipType: string,
@@ -298,7 +331,9 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
       this.logger.debug(`Relationship type noted: ${relationshipType}`);
     } catch (error) {
       this.logger.error(`Create relationship type failed: ${error}`);
-      throw new Error(`Create relationship type failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Create relationship type failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -321,7 +356,7 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
       'community_detection',
       'graph_constraints',
       'node_labels',
-      'relationship_types'
+      'relationship_types',
     ];
   }
 
@@ -331,7 +366,7 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
       queryLanguage: 'cypher',
       supportsTransactions: true,
       supportsAnalytics: true,
-      supportsConstraints: true
+      supportsConstraints: true,
     };
   }
 
@@ -345,8 +380,8 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
         relationshipDensity: 0.15,
         averageNodeDegree: 5.2,
         analyticsEnabled: true,
-        indexingStrategy: 'label_based'
-      }
+        indexingStrategy: 'label_based',
+      },
     };
   }
 
@@ -367,7 +402,7 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
         nodeCount: stats.nodeCount,
         relationshipCount: stats.relationshipCount,
         avgDegree,
-        connected: true
+        connected: true,
       };
     } catch (error) {
       this.logger.error(`Graph health check failed: ${error}`);
@@ -375,7 +410,7 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
         nodeCount: 0,
         relationshipCount: 0,
         avgDegree: 0,
-        connected: false
+        connected: false,
       };
     }
   }

@@ -34,6 +34,8 @@ export interface SystemStatus {
 
 /**
  * Handles RESTful API routes for web interface
+ *
+ * @example
  */
 export class ApiRouteHandler {
   private logger = createLogger('ApiRoutes');
@@ -81,6 +83,9 @@ export class ApiRouteHandler {
 
   /**
    * Health check handler
+   *
+   * @param _req
+   * @param res
    */
   private handleHealth(_req: Request, res: Response): void {
     res.json({
@@ -93,6 +98,9 @@ export class ApiRouteHandler {
 
   /**
    * System status handler
+   *
+   * @param _req
+   * @param res
    */
   private async handleSystemStatus(_req: Request, res: Response): Promise<void> {
     try {
@@ -106,6 +114,9 @@ export class ApiRouteHandler {
 
   /**
    * Get swarms handler
+   *
+   * @param _req
+   * @param res
    */
   private async handleGetSwarms(_req: Request, res: Response): Promise<void> {
     try {
@@ -119,6 +130,9 @@ export class ApiRouteHandler {
 
   /**
    * Create swarm handler
+   *
+   * @param req
+   * @param res
    */
   private async handleCreateSwarm(req: Request, res: Response): Promise<void> {
     try {
@@ -133,6 +147,9 @@ export class ApiRouteHandler {
 
   /**
    * Get tasks handler
+   *
+   * @param _req
+   * @param res
    */
   private async handleGetTasks(_req: Request, res: Response): Promise<void> {
     try {
@@ -146,6 +163,9 @@ export class ApiRouteHandler {
 
   /**
    * Create task handler
+   *
+   * @param req
+   * @param res
    */
   private async handleCreateTask(req: Request, res: Response): Promise<void> {
     try {
@@ -160,6 +180,9 @@ export class ApiRouteHandler {
 
   /**
    * Get documents handler
+   *
+   * @param _req
+   * @param res
    */
   private async handleGetDocuments(_req: Request, res: Response): Promise<void> {
     try {
@@ -173,6 +196,9 @@ export class ApiRouteHandler {
 
   /**
    * Execute command handler
+   *
+   * @param req
+   * @param res
    */
   private async handleExecuteCommand(req: Request, res: Response): Promise<void> {
     try {
@@ -192,6 +218,9 @@ export class ApiRouteHandler {
 
   /**
    * Get settings handler
+   *
+   * @param req
+   * @param res
    */
   private handleGetSettings(req: Request, res: Response): void {
     const sessionId = req.headers['x-session-id'] as string;
@@ -206,6 +235,9 @@ export class ApiRouteHandler {
 
   /**
    * Update settings handler
+   *
+   * @param req
+   * @param res
    */
   private handleUpdateSettings(req: Request, res: Response): void {
     const sessionId = req.headers['x-session-id'] as string;
@@ -269,6 +301,8 @@ export class ApiRouteHandler {
 
   /**
    * Create a new swarm
+   *
+   * @param config
    */
   private async createSwarm(config: any): Promise<any> {
     const swarm = {
@@ -315,6 +349,8 @@ export class ApiRouteHandler {
 
   /**
    * Create a new task
+   *
+   * @param config
    */
   private async createTask(config: any): Promise<any> {
     const task = {
@@ -357,6 +393,9 @@ export class ApiRouteHandler {
 
   /**
    * Execute a command
+   *
+   * @param command
+   * @param args
    */
   private async executeCommand(command: string, args: string[]): Promise<any> {
     this.logger.info(`Executing command: ${command}`, { args });

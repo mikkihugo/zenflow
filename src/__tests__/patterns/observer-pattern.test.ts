@@ -1,20 +1,20 @@
 /**
- * @fileoverview Observer Pattern Tests
+ * @file Observer Pattern Tests
  * Hybrid TDD approach: London TDD for event handling logic, Classical TDD for event algorithms
  */
 
 import {
-  SystemEventManager,
-  SystemObserver,
-  EventBuilder,
-  WebSocketObserver,
+  type AllSystemEvents,
   DatabaseObserver,
+  EventBuilder,
   LoggerObserver,
-  MetricsObserver,
-  AllSystemEvents,
-  SwarmEvent,
   MCPEvent,
-  NeuralEvent
+  MetricsObserver,
+  NeuralEvent,
+  SwarmEvent,
+  SystemEventManager,
+  type SystemObserver,
+  WebSocketObserver,
 } from '../../interfaces/events/observer-system';
 
 // Mock dependencies for testing
@@ -47,7 +47,7 @@ describe('Observer Pattern Implementation', () => {
         info: jest.fn(),
         warn: jest.fn(),
         error: jest.fn(),
-        debug: jest.fn()
+        debug: jest.fn(),
       };
       eventManager = new SystemEventManager(mockLogger);
     });
@@ -59,7 +59,12 @@ describe('Observer Pattern Implementation', () => {
           'init',
           { healthy: true, activeAgents: 5, completedTasks: 0, errors: [] },
           'mesh',
-          { latency: 50, throughput: 100, reliability: 0.99, resourceUsage: { cpu: 0.5, memory: 0.6, network: 0.4 } }
+          {
+            latency: 50,
+            throughput: 100,
+            reliability: 0.99,
+            resourceUsage: { cpu: 0.5, memory: 0.6, network: 0.4 },
+          }
         );
 
         expect(swarmEvent.type).toBe('swarm');
@@ -109,9 +114,19 @@ describe('Observer Pattern Implementation', () => {
         const criticalEvent = EventBuilder.createSwarmEvent(
           'critical-swarm',
           'error',
-          { healthy: false, activeAgents: 0, completedTasks: 5, errors: ['Connection lost', 'Agent timeout'] },
+          {
+            healthy: false,
+            activeAgents: 0,
+            completedTasks: 5,
+            errors: ['Connection lost', 'Agent timeout'],
+          },
           'mesh',
-          { latency: 1000, throughput: 0, reliability: 0.1, resourceUsage: { cpu: 1.0, memory: 0.9, network: 0.1 } }
+          {
+            latency: 1000,
+            throughput: 0,
+            reliability: 0.1,
+            resourceUsage: { cpu: 1.0, memory: 0.9, network: 0.1 },
+          }
         );
 
         const normalEvent = EventBuilder.createSwarmEvent(
@@ -119,14 +134,19 @@ describe('Observer Pattern Implementation', () => {
           'update',
           { healthy: true, activeAgents: 3, completedTasks: 10, errors: [] },
           'hierarchical',
-          { latency: 50, throughput: 200, reliability: 0.98, resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.8 } }
+          {
+            latency: 50,
+            throughput: 200,
+            reliability: 0.98,
+            resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.8 },
+          }
         );
 
         const mockObserver: SystemObserver = {
           update: jest.fn(),
           getInterests: () => ['swarm'],
           getId: () => 'test-observer',
-          getPriority: () => 1
+          getPriority: () => 1,
         };
 
         eventManager.subscribe('swarm', mockObserver);
@@ -142,46 +162,50 @@ describe('Observer Pattern Implementation', () => {
 
       it('should handle event bursts efficiently with priority ordering', async () => {
         const events: AllSystemEvents[] = [];
-        
+
         // Create mix of high and low priority events
         for (let i = 0; i < 10; i++) {
           const isHighPriority = i % 3 === 0;
-          events.push(EventBuilder.createSwarmEvent(
-            `swarm-${i}`,
-            isHighPriority ? 'error' : 'update',
-            { 
-              healthy: !isHighPriority, 
-              activeAgents: isHighPriority ? 0 : 5, 
-              completedTasks: i, 
-              errors: isHighPriority ? ['Error'] : [] 
-            },
-            'mesh',
-            { 
-              latency: isHighPriority ? 500 : 50, 
-              throughput: isHighPriority ? 0 : 100, 
-              reliability: isHighPriority ? 0.5 : 0.95,
-              resourceUsage: { cpu: 0.5, memory: 0.5, network: 0.5 }
-            }
-          ));
+          events.push(
+            EventBuilder.createSwarmEvent(
+              `swarm-${i}`,
+              isHighPriority ? 'error' : 'update',
+              {
+                healthy: !isHighPriority,
+                activeAgents: isHighPriority ? 0 : 5,
+                completedTasks: i,
+                errors: isHighPriority ? ['Error'] : [],
+              },
+              'mesh',
+              {
+                latency: isHighPriority ? 500 : 50,
+                throughput: isHighPriority ? 0 : 100,
+                reliability: isHighPriority ? 0.5 : 0.95,
+                resourceUsage: { cpu: 0.5, memory: 0.5, network: 0.5 },
+              }
+            )
+          );
         }
 
         const processedEvents: AllSystemEvents[] = [];
         const mockObserver: SystemObserver = {
-          update: (event) => { processedEvents.push(event); },
+          update: (event) => {
+            processedEvents.push(event);
+          },
           getInterests: () => ['swarm'],
           getId: () => 'priority-tester',
-          getPriority: () => 1
+          getPriority: () => 1,
         };
 
         eventManager.subscribe('swarm', mockObserver);
 
         // Process all events
-        await Promise.all(events.map(event => eventManager.notify(event)));
+        await Promise.all(events.map((event) => eventManager.notify(event)));
 
         // Verify processing order - errors should come first
-        const errorEvents = processedEvents.filter(e => e.subtype === 'error');
-        const updateEvents = processedEvents.filter(e => e.subtype === 'update');
-        
+        const errorEvents = processedEvents.filter((e) => e.subtype === 'error');
+        const updateEvents = processedEvents.filter((e) => e.subtype === 'update');
+
         expect(errorEvents.length).toBe(4); // Every 3rd event (0,3,6,9)
         expect(updateEvents.length).toBe(6);
       });
@@ -193,21 +217,21 @@ describe('Observer Pattern Implementation', () => {
           update: jest.fn(),
           getInterests: () => ['swarm'],
           getId: () => 'swarm-observer',
-          getPriority: () => 1
+          getPriority: () => 1,
         };
 
         const mcpObserver: SystemObserver = {
           update: jest.fn(),
           getInterests: () => ['mcp'],
           getId: () => 'mcp-observer',
-          getPriority: () => 1
+          getPriority: () => 1,
         };
 
         const universalObserver: SystemObserver = {
           update: jest.fn(),
           getInterests: () => ['swarm', 'mcp', 'neural'],
           getId: () => 'universal-observer',
-          getPriority: () => 1
+          getPriority: () => 1,
         };
 
         eventManager.subscribe('swarm', swarmObserver);
@@ -220,7 +244,12 @@ describe('Observer Pattern Implementation', () => {
           'init',
           { healthy: true, activeAgents: 2, completedTasks: 0, errors: [] },
           'star',
-          { latency: 30, throughput: 150, reliability: 0.97, resourceUsage: { cpu: 0.2, memory: 0.3, network: 0.5 } }
+          {
+            latency: 30,
+            throughput: 150,
+            reliability: 0.97,
+            resourceUsage: { cpu: 0.2, memory: 0.3, network: 0.5 },
+          }
         );
 
         const mcpEvent = EventBuilder.createMCPEvent(
@@ -236,10 +265,10 @@ describe('Observer Pattern Implementation', () => {
         // Verify correct routing
         expect(swarmObserver.update).toHaveBeenCalledWith(swarmEvent);
         expect(swarmObserver.update).not.toHaveBeenCalledWith(mcpEvent);
-        
+
         expect(mcpObserver.update).toHaveBeenCalledWith(mcpEvent);
         expect(mcpObserver.update).not.toHaveBeenCalledWith(swarmEvent);
-        
+
         expect(universalObserver.update).toHaveBeenCalledWith(swarmEvent);
         expect(universalObserver.update).toHaveBeenCalledWith(mcpEvent);
       });
@@ -253,14 +282,14 @@ describe('Observer Pattern Implementation', () => {
           }),
           getInterests: () => ['swarm'],
           getId: () => 'failing-observer',
-          getPriority: () => 1
+          getPriority: () => 1,
         };
 
         const workingObserver: SystemObserver = {
           update: jest.fn(),
           getInterests: () => ['swarm'],
           getId: () => 'working-observer',
-          getPriority: () => 1
+          getPriority: () => 1,
         };
 
         eventManager.subscribe('swarm', failingObserver);
@@ -271,7 +300,12 @@ describe('Observer Pattern Implementation', () => {
           'update',
           { healthy: true, activeAgents: 1, completedTasks: 5, errors: [] },
           'ring',
-          { latency: 80, throughput: 75, reliability: 0.92, resourceUsage: { cpu: 0.4, memory: 0.5, network: 0.6 } }
+          {
+            latency: 80,
+            throughput: 75,
+            reliability: 0.92,
+            resourceUsage: { cpu: 0.4, memory: 0.5, network: 0.6 },
+          }
         );
 
         // Should not throw despite failing observer
@@ -287,7 +321,7 @@ describe('Observer Pattern Implementation', () => {
           update: jest.fn(),
           getInterests: () => ['swarm', 'mcp', 'neural'],
           getId: () => 'high-volume-observer',
-          getPriority: () => 1
+          getPriority: () => 1,
         };
 
         eventManager.subscribe('swarm', highVolumeObserver);
@@ -309,7 +343,12 @@ describe('Observer Pattern Implementation', () => {
                 'update',
                 { healthy: true, activeAgents: i % 5, completedTasks: i, errors: [] },
                 'mesh',
-                { latency: 50, throughput: 100, reliability: 0.95, resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 } }
+                {
+                  latency: 50,
+                  throughput: 100,
+                  reliability: 0.95,
+                  resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 },
+                }
               );
               break;
             case 'mcp':
@@ -357,14 +396,14 @@ describe('Observer Pattern Implementation', () => {
         info: jest.fn(),
         warn: jest.fn(),
         error: jest.fn(),
-        debug: jest.fn()
+        debug: jest.fn(),
       };
-      
+
       mockObserver = {
         update: jest.fn(),
         getInterests: jest.fn().mockReturnValue(['swarm']),
         getId: jest.fn().mockReturnValue('mock-observer'),
-        getPriority: jest.fn().mockReturnValue(1)
+        getPriority: jest.fn().mockReturnValue(1),
       };
 
       eventManager = new SystemEventManager(mockLogger);
@@ -378,7 +417,7 @@ describe('Observer Pattern Implementation', () => {
         expect.objectContaining({
           type: 'swarm',
           observerId: 'mock-observer',
-          priority: 1
+          priority: 1,
         })
       );
     });
@@ -388,7 +427,7 @@ describe('Observer Pattern Implementation', () => {
       eventManager.unsubscribe('swarm', mockObserver);
 
       const stats = eventManager.getObserverStats();
-      expect(stats.find(s => s.observerId === 'mock-observer')).toBeUndefined();
+      expect(stats.find((s) => s.observerId === 'mock-observer')).toBeUndefined();
     });
 
     it('should notify subscribed observers', async () => {
@@ -399,7 +438,12 @@ describe('Observer Pattern Implementation', () => {
         'init',
         { healthy: true, activeAgents: 1, completedTasks: 0, errors: [] },
         'mesh',
-        { latency: 50, throughput: 100, reliability: 0.95, resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 } }
+        {
+          latency: 50,
+          throughput: 100,
+          reliability: 0.95,
+          resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 },
+        }
       );
 
       await eventManager.notify(testEvent);
@@ -417,7 +461,12 @@ describe('Observer Pattern Implementation', () => {
         'update',
         { healthy: true, activeAgents: 2, completedTasks: 1, errors: [] },
         'star',
-        { latency: 30, throughput: 120, reliability: 0.96, resourceUsage: { cpu: 0.2, memory: 0.3, network: 0.4 } }
+        {
+          latency: 30,
+          throughput: 120,
+          reliability: 0.96,
+          resourceUsage: { cpu: 0.2, memory: 0.3, network: 0.4 },
+        }
       );
 
       await eventManager.notify(testEvent);
@@ -430,7 +479,7 @@ describe('Observer Pattern Implementation', () => {
         update: jest.fn(),
         getInterests: jest.fn().mockReturnValue(['swarm']),
         getId: jest.fn().mockReturnValue('second-observer'),
-        getPriority: jest.fn().mockReturnValue(2)
+        getPriority: jest.fn().mockReturnValue(2),
       };
 
       eventManager.subscribe('swarm', mockObserver);
@@ -441,7 +490,12 @@ describe('Observer Pattern Implementation', () => {
         'update',
         { healthy: true, activeAgents: 3, completedTasks: 2, errors: [] },
         'hierarchical',
-        { latency: 75, throughput: 90, reliability: 0.93, resourceUsage: { cpu: 0.5, memory: 0.6, network: 0.7 } }
+        {
+          latency: 75,
+          throughput: 90,
+          reliability: 0.93,
+          resourceUsage: { cpu: 0.5, memory: 0.6, network: 0.7 },
+        }
       );
 
       await eventManager.notify(testEvent);
@@ -455,14 +509,14 @@ describe('Observer Pattern Implementation', () => {
         update: jest.fn(),
         getInterests: jest.fn().mockReturnValue(['swarm']),
         getId: jest.fn().mockReturnValue('high-priority'),
-        getPriority: jest.fn().mockReturnValue(3)
+        getPriority: jest.fn().mockReturnValue(3),
       };
 
       const lowPriorityObserver = {
         update: jest.fn(),
         getInterests: jest.fn().mockReturnValue(['swarm']),
         getId: jest.fn().mockReturnValue('low-priority'),
-        getPriority: jest.fn().mockReturnValue(1)
+        getPriority: jest.fn().mockReturnValue(1),
       };
 
       eventManager.subscribe('swarm', lowPriorityObserver);
@@ -473,7 +527,12 @@ describe('Observer Pattern Implementation', () => {
         'update',
         { healthy: true, activeAgents: 1, completedTasks: 0, errors: [] },
         'ring',
-        { latency: 100, throughput: 60, reliability: 0.90, resourceUsage: { cpu: 0.6, memory: 0.7, network: 0.8 } }
+        {
+          latency: 100,
+          throughput: 60,
+          reliability: 0.9,
+          resourceUsage: { cpu: 0.6, memory: 0.7, network: 0.8 },
+        }
       );
 
       await eventManager.notify(testEvent);
@@ -493,7 +552,7 @@ describe('Observer Pattern Implementation', () => {
           info: jest.fn(),
           warn: jest.fn(),
           error: jest.fn(),
-          debug: jest.fn()
+          debug: jest.fn(),
         };
         loggerObserver = new LoggerObserver(mockLogger);
       });
@@ -504,7 +563,12 @@ describe('Observer Pattern Implementation', () => {
           'update',
           { healthy: true, activeAgents: 2, completedTasks: 5, errors: [] },
           'mesh',
-          { latency: 50, throughput: 100, reliability: 0.95, resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 } }
+          {
+            latency: 50,
+            throughput: 100,
+            reliability: 0.95,
+            resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 },
+          }
         );
 
         const errorEvent = EventBuilder.createSwarmEvent(
@@ -512,7 +576,12 @@ describe('Observer Pattern Implementation', () => {
           'error',
           { healthy: false, activeAgents: 0, completedTasks: 3, errors: ['Connection failed'] },
           'star',
-          { latency: 1000, throughput: 0, reliability: 0.2, resourceUsage: { cpu: 0.9, memory: 0.8, network: 0.1 } }
+          {
+            latency: 1000,
+            throughput: 0,
+            reliability: 0.2,
+            resourceUsage: { cpu: 0.9, memory: 0.8, network: 0.1 },
+          }
         );
 
         loggerObserver.update(normalEvent);
@@ -549,7 +618,12 @@ describe('Observer Pattern Implementation', () => {
           'update',
           { healthy: true, activeAgents: 3, completedTasks: 10, errors: [] },
           'mesh',
-          { latency: 50, throughput: 100, reliability: 0.95, resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 } }
+          {
+            latency: 50,
+            throughput: 100,
+            reliability: 0.95,
+            resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 },
+          }
         );
 
         const event2 = EventBuilder.createMCPEvent(
@@ -596,7 +670,7 @@ describe('Observer Pattern Implementation', () => {
       beforeEach(() => {
         mockWebSocket = {
           send: jest.fn(),
-          readyState: 1 // WebSocket.OPEN
+          readyState: 1, // WebSocket.OPEN
         };
         wsObserver = new WebSocketObserver(mockWebSocket as any);
       });
@@ -607,7 +681,12 @@ describe('Observer Pattern Implementation', () => {
           'init',
           { healthy: true, activeAgents: 1, completedTasks: 0, errors: [] },
           'hierarchical',
-          { latency: 60, throughput: 80, reliability: 0.94, resourceUsage: { cpu: 0.4, memory: 0.5, network: 0.6 } }
+          {
+            latency: 60,
+            throughput: 80,
+            reliability: 0.94,
+            resourceUsage: { cpu: 0.4, memory: 0.5, network: 0.6 },
+          }
         );
 
         wsObserver.update(testEvent);
@@ -616,7 +695,7 @@ describe('Observer Pattern Implementation', () => {
           JSON.stringify({
             type: 'event_notification',
             event: testEvent,
-            timestamp: expect.any(String)
+            timestamp: expect.any(String),
           })
         );
       });
@@ -646,14 +725,14 @@ describe('Observer Pattern Implementation', () => {
         mockDatabase = {
           insert: jest.fn().mockResolvedValue('event-id-123'),
           update: jest.fn().mockResolvedValue(true),
-          query: jest.fn().mockResolvedValue([])
+          query: jest.fn().mockResolvedValue([]),
         };
 
         mockLogger = {
           info: jest.fn(),
           warn: jest.fn(),
           error: jest.fn(),
-          debug: jest.fn()
+          debug: jest.fn(),
         };
 
         dbObserver = new DatabaseObserver(mockDatabase as any, mockLogger);
@@ -675,7 +754,7 @@ describe('Observer Pattern Implementation', () => {
             event_id: testEvent.id,
             event_type: testEvent.type,
             event_subtype: testEvent.subtype,
-            payload: JSON.stringify(testEvent.payload)
+            payload: JSON.stringify(testEvent.payload),
           })
         );
       });
@@ -688,7 +767,12 @@ describe('Observer Pattern Implementation', () => {
           'update',
           { healthy: true, activeAgents: 1, completedTasks: 1, errors: [] },
           'ring',
-          { latency: 70, throughput: 85, reliability: 0.91, resourceUsage: { cpu: 0.5, memory: 0.6, network: 0.7 } }
+          {
+            latency: 70,
+            throughput: 85,
+            reliability: 0.91,
+            resourceUsage: { cpu: 0.5, memory: 0.6, network: 0.7 },
+          }
         );
 
         await expect(dbObserver.update(testEvent)).resolves.not.toThrow();
@@ -710,7 +794,7 @@ describe('Observer Pattern Implementation', () => {
         info: jest.fn(),
         warn: jest.fn(),
         error: jest.fn(),
-        debug: jest.fn()
+        debug: jest.fn(),
       };
       eventManager = new SystemEventManager(mockLogger);
     });
@@ -719,7 +803,7 @@ describe('Observer Pattern Implementation', () => {
       // Setup multiple observer types
       const loggerObserver = new LoggerObserver(mockLogger);
       const metricsObserver = new MetricsObserver();
-      
+
       eventManager.subscribe('swarm', loggerObserver);
       eventManager.subscribe('mcp', loggerObserver);
       eventManager.subscribe('swarm', metricsObserver);
@@ -732,7 +816,12 @@ describe('Observer Pattern Implementation', () => {
           'init',
           { healthy: true, activeAgents: 0, completedTasks: 0, errors: [] },
           'mesh',
-          { latency: 0, throughput: 0, reliability: 1, resourceUsage: { cpu: 0, memory: 0, network: 0 } }
+          {
+            latency: 0,
+            throughput: 0,
+            reliability: 1,
+            resourceUsage: { cpu: 0, memory: 0, network: 0 },
+          }
         ),
         EventBuilder.createMCPEvent(
           'workflow-session',
@@ -745,12 +834,20 @@ describe('Observer Pattern Implementation', () => {
           'update',
           { healthy: true, activeAgents: 3, completedTasks: 0, errors: [] },
           'mesh',
-          { latency: 45, throughput: 150, reliability: 0.98, resourceUsage: { cpu: 0.4, memory: 0.5, network: 0.6 } }
+          {
+            latency: 45,
+            throughput: 150,
+            reliability: 0.98,
+            resourceUsage: { cpu: 0.4, memory: 0.5, network: 0.6 },
+          }
         ),
         EventBuilder.createMCPEvent(
           'workflow-session',
           'tool_call',
-          { tool: 'task_orchestrate', args: { task: 'data_processing', agents: ['agent1', 'agent2', 'agent3'] } },
+          {
+            tool: 'task_orchestrate',
+            args: { task: 'data_processing', agents: ['agent1', 'agent2', 'agent3'] },
+          },
           { latency: 50, success: true, tokenUsage: 300 }
         ),
         EventBuilder.createSwarmEvent(
@@ -758,8 +855,13 @@ describe('Observer Pattern Implementation', () => {
           'update',
           { healthy: true, activeAgents: 3, completedTasks: 1, errors: [] },
           'mesh',
-          { latency: 55, throughput: 180, reliability: 0.97, resourceUsage: { cpu: 0.7, memory: 0.8, network: 0.9 } }
-        )
+          {
+            latency: 55,
+            throughput: 180,
+            reliability: 0.97,
+            resourceUsage: { cpu: 0.7, memory: 0.8, network: 0.9 },
+          }
+        ),
       ];
 
       // Process workflow events
@@ -782,11 +884,11 @@ describe('Observer Pattern Implementation', () => {
       const performanceObserver: SystemObserver = {
         update: jest.fn().mockImplementation(() => {
           // Simulate some processing time
-          return new Promise(resolve => setTimeout(resolve, Math.random() * 10));
+          return new Promise((resolve) => setTimeout(resolve, Math.random() * 10));
         }),
         getInterests: () => ['swarm', 'mcp', 'neural'],
         getId: () => 'performance-observer',
-        getPriority: () => 1
+        getPriority: () => 1,
       };
 
       eventManager.subscribe('swarm', performanceObserver);
@@ -808,7 +910,12 @@ describe('Observer Pattern Implementation', () => {
               'update',
               { healthy: true, activeAgents: i % 5, completedTasks: i, errors: [] },
               'hierarchical',
-              { latency: 50 + (i % 10), throughput: 100 + (i % 20), reliability: 0.9 + (i % 10) / 100, resourceUsage: { cpu: 0.5, memory: 0.5, network: 0.5 } }
+              {
+                latency: 50 + (i % 10),
+                throughput: 100 + (i % 20),
+                reliability: 0.9 + (i % 10) / 100,
+                resourceUsage: { cpu: 0.5, memory: 0.5, network: 0.5 },
+              }
             );
             break;
           case 'mcp':
@@ -824,7 +931,11 @@ describe('Observer Pattern Implementation', () => {
               `concurrent-model-${i}`,
               'prediction',
               { input: `data-${i}`, prediction: i % 2 === 0 ? 'positive' : 'negative' },
-              { confidence: 0.8 + (i % 20) / 100, processingTime: 10 + (i % 5), modelVersion: '1.0.0' }
+              {
+                confidence: 0.8 + (i % 20) / 100,
+                processingTime: 10 + (i % 5),
+                modelVersion: '1.0.0',
+              }
             );
         }
 
@@ -853,7 +964,7 @@ describe('Observer Pattern Implementation', () => {
         info: jest.fn(),
         warn: jest.fn(),
         error: jest.fn(),
-        debug: jest.fn()
+        debug: jest.fn(),
       };
       eventManager = new SystemEventManager(mockLogger);
     });
@@ -863,7 +974,7 @@ describe('Observer Pattern Implementation', () => {
         update: jest.fn(),
         getInterests: () => ['swarm'],
         getId: () => 'cleanup-test',
-        getPriority: () => 1
+        getPriority: () => 1,
       };
 
       eventManager.subscribe('swarm', mockObserver);
@@ -881,12 +992,12 @@ describe('Observer Pattern Implementation', () => {
 
     it('should handle shutdown gracefully even with pending events', async () => {
       const slowObserver: SystemObserver = {
-        update: jest.fn().mockImplementation(() => 
-          new Promise(resolve => setTimeout(resolve, 100))
-        ),
+        update: jest
+          .fn()
+          .mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100))),
         getInterests: () => ['swarm'],
         getId: () => 'slow-observer',
-        getPriority: () => 1
+        getPriority: () => 1,
       };
 
       eventManager.subscribe('swarm', slowObserver);
@@ -899,7 +1010,12 @@ describe('Observer Pattern Implementation', () => {
           'update',
           { healthy: true, activeAgents: 1, completedTasks: i, errors: [] },
           'star',
-          { latency: 40, throughput: 110, reliability: 0.96, resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 } }
+          {
+            latency: 40,
+            throughput: 110,
+            reliability: 0.96,
+            resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 },
+          }
         );
         eventPromises.push(eventManager.notify(event));
       }

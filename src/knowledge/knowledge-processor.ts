@@ -101,6 +101,8 @@ interface WASMPerformanceMetrics {
 /**
  * WASM-Powered FACT Integration
  * Uses Rust/WebAssembly core for high-performance external knowledge processing
+ *
+ * @example
  */
 export class WASMFactIntegration extends EventEmitter {
   private wasmModule?: WASMFact;
@@ -228,6 +230,10 @@ export class WASMFactIntegration extends EventEmitter {
 
   /**
    * Process external knowledge gathering using WASM-powered cognitive templates
+   *
+   * @param template
+   * @param data
+   * @param context
    */
   async processKnowledgeWithTemplate(
     template: string,
@@ -280,6 +286,9 @@ export class WASMFactIntegration extends EventEmitter {
 
   /**
    * Intelligent knowledge gathering based on project context
+   *
+   * @param query
+   * @param context
    */
   async gatherIntelligentKnowledge(query: string, context?: ProjectContext): Promise<any> {
     if (!this.isInitialized) {
@@ -323,6 +332,8 @@ export class WASMFactIntegration extends EventEmitter {
 
   /**
    * Gather knowledge for specific dependencies detected by hive
+   *
+   * @param dependencies
    */
   async gatherDependencyKnowledge(dependencies: string[]): Promise<Map<string, any>> {
     const results = new Map<string, any>();
@@ -351,6 +362,8 @@ export class WASMFactIntegration extends EventEmitter {
 
   /**
    * Execute knowledge gathering missions from hive system
+   *
+   * @param missions
    */
   async executeMissions(missions: KnowledgeGatheringMission[]): Promise<Map<string, any>> {
     const results = new Map<string, any>();
@@ -434,6 +447,8 @@ export class WASMFactIntegration extends EventEmitter {
 
   /**
    * List available cognitive templates
+   *
+   * @param category
    */
   listTemplates(category?: string): CognitiveTemplate[] {
     const templates = Array.from(this.templates.values());
@@ -447,6 +462,10 @@ export class WASMFactIntegration extends EventEmitter {
 
   /**
    * Create a custom cognitive template
+   *
+   * @param name
+   * @param pattern
+   * @param category
    */
   async createTemplate(name: string, pattern: any, category: string = 'custom'): Promise<boolean> {
     if (!this.isInitialized) {
@@ -637,6 +656,9 @@ export class WASMFactIntegration extends EventEmitter {
 
   /**
    * Helper methods
+   *
+   * @param template
+   * @param data
    */
   private generateCacheKey(template: string, data: any): string {
     const dataHash = JSON.stringify(data);

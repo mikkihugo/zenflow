@@ -361,6 +361,8 @@ export class ApplicationCoordinator extends EventEmitter {
 
   /**
    * Process a document through the entire workflow
+   *
+   * @param documentPath
    */
   async processDocument(documentPath: string): Promise<{
     success: boolean;
@@ -394,6 +396,9 @@ export class ApplicationCoordinator extends EventEmitter {
 
   /**
    * Export system data in specified format
+   *
+   * @param format
+   * @param options
    */
   async exportSystemData(
     format: string,
@@ -544,6 +549,8 @@ export class ApplicationCoordinator extends EventEmitter {
 
   /**
    * Static factory method for easy initialization
+   *
+   * @param config
    */
   static async create(config?: ApplicationCoordinatorConfig): Promise<ApplicationCoordinator> {
     const system = new ApplicationCoordinator(config);
@@ -553,6 +560,8 @@ export class ApplicationCoordinator extends EventEmitter {
 
   /**
    * Quick start method that initializes and launches
+   *
+   * @param config
    */
   static async quickStart(config?: ApplicationCoordinatorConfig): Promise<ApplicationCoordinator> {
     const system = await ApplicationCoordinator.create(config);

@@ -1,17 +1,17 @@
 /**
- * @fileoverview Strategy Pattern Tests
+ * @file Strategy Pattern Tests
  * Hybrid TDD approach: London TDD for coordination logic, Classical TDD for algorithms
  */
 
 import {
-  SwarmCoordinator,
-  MeshStrategy,
+  type CoordinationContext,
   HierarchicalStrategy,
+  MeshStrategy,
   RingStrategy,
   StarStrategy,
   StrategyFactory,
-  CoordinationContext,
-  SwarmTopology
+  SwarmCoordinator,
+  type SwarmTopology,
 } from '../../coordination/swarm/core/strategy';
 
 // Mock agent type for testing
@@ -27,7 +27,7 @@ describe('Strategy Pattern Implementation', () => {
     const mockAgents: MockAgent[] = [
       { id: 'agent-1', capabilities: ['task-a', 'task-b'], status: 'idle' },
       { id: 'agent-2', capabilities: ['task-b', 'task-c'], status: 'idle' },
-      { id: 'agent-3', capabilities: ['task-a', 'task-c'], status: 'idle' }
+      { id: 'agent-3', capabilities: ['task-a', 'task-c'], status: 'idle' },
     ];
 
     const mockContext: CoordinationContext = {
@@ -38,9 +38,9 @@ describe('Strategy Pattern Implementation', () => {
         maxLatency: 500,
         minReliability: 0.9,
         resourceLimits: { cpu: 1.0, memory: 1.0, network: 1.0, storage: 1.0 },
-        securityLevel: 'medium'
+        securityLevel: 'medium',
       },
-      history: []
+      history: [],
     };
 
     describe('MeshStrategy', () => {
@@ -56,7 +56,7 @@ describe('Strategy Pattern Implementation', () => {
         expect(result.success).toBe(true);
         expect(result.topology).toBe('mesh');
         expect(result.connections).toBeDefined();
-        
+
         // Verify full connectivity: each agent connects to all others
         Object.entries(result.connections!).forEach(([agentId, connections]) => {
           expect(connections).toHaveLength(mockAgents.length - 1);
@@ -85,7 +85,7 @@ describe('Strategy Pattern Implementation', () => {
         const largeAgentSet = Array.from({ length: 25 }, (_, i) => ({
           id: `agent-${i}`,
           capabilities: ['task-a'],
-          status: 'idle' as const
+          status: 'idle' as const,
         }));
 
         const result = await strategy.coordinate(largeAgentSet, mockContext);
@@ -118,7 +118,7 @@ describe('Strategy Pattern Implementation', () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
         // The agent with most capabilities should be selected as leader
-        const topAgent = mockAgents.reduce((best, current) => 
+        const topAgent = mockAgents.reduce((best, current) =>
           current.capabilities.length > best.capabilities.length ? current : best
         );
 
@@ -128,7 +128,7 @@ describe('Strategy Pattern Implementation', () => {
       it('should have latency proportional to hierarchy depth', async () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
-        const expectedMinLatency = 50 + (result.leadership!.maxDepth * 25);
+        const expectedMinLatency = 50 + result.leadership!.maxDepth * 25;
         expect(result.latency).toBeGreaterThanOrEqual(expectedMinLatency);
       });
     });
@@ -148,26 +148,26 @@ describe('Strategy Pattern Implementation', () => {
         expect(result.connections).toBeDefined();
 
         // Each agent should connect to exactly one other agent
-        Object.values(result.connections!).forEach(connections => {
+        Object.values(result.connections!).forEach((connections) => {
           expect(connections).toHaveLength(1);
         });
 
         // Verify circular nature - should be able to traverse all agents
         const visited = new Set<string>();
         let current = mockAgents[0].id;
-        
+
         while (!visited.has(current)) {
           visited.add(current);
           current = result.connections![current][0];
         }
-        
+
         expect(visited.size).toBe(mockAgents.length);
       });
 
       it('should have latency proportional to ring size', async () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
-        const expectedLatency = 50 + (mockAgents.length * 10);
+        const expectedLatency = 50 + mockAgents.length * 10;
         expect(result.latency).toBe(expectedLatency);
       });
     });
@@ -188,7 +188,7 @@ describe('Strategy Pattern Implementation', () => {
         expect(result.leadership!.leaders).toHaveLength(1);
 
         // Hub should be the agent with most capabilities
-        const expectedHub = mockAgents.reduce((best, current) => 
+        const expectedHub = mockAgents.reduce((best, current) =>
           current.capabilities.length > best.capabilities.length ? current : best
         );
 
@@ -199,13 +199,13 @@ describe('Strategy Pattern Implementation', () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
         const hub = result.leadership!.leaders[0];
-        const nonHubAgents = mockAgents.filter(a => a.id !== hub);
+        const nonHubAgents = mockAgents.filter((a) => a.id !== hub);
 
         // Hub connects to all others
         expect(result.connections![hub]).toHaveLength(nonHubAgents.length);
 
         // Others connect only to hub
-        nonHubAgents.forEach(agent => {
+        nonHubAgents.forEach((agent) => {
           expect(result.connections![agent.id]).toEqual([hub]);
         });
       });
@@ -229,7 +229,7 @@ describe('Strategy Pattern Implementation', () => {
         getMetrics: jest.fn(),
         getTopologyType: jest.fn(),
         validateContext: jest.fn(),
-        optimize: jest.fn()
+        optimize: jest.fn(),
       };
 
       swarmCoordinator = new SwarmCoordinator(mockStrategy);
@@ -239,9 +239,14 @@ describe('Strategy Pattern Implementation', () => {
       const mockAgents: MockAgent[] = [{ id: 'agent-1', capabilities: [], status: 'idle' }];
       const mockResult = {
         topology: 'mesh' as SwarmTopology,
-        performance: { executionTime: 100, messageCount: 2, coordinationEfficiency: 0.9, resourceUtilization: { cpu: 0.1, memory: 0.1, network: 0.1, storage: 0.1 } },
+        performance: {
+          executionTime: 100,
+          messageCount: 2,
+          coordinationEfficiency: 0.9,
+          resourceUtilization: { cpu: 0.1, memory: 0.1, network: 0.1, storage: 0.1 },
+        },
         latency: 50,
-        success: true
+        success: true,
       };
 
       mockStrategy.coordinate.mockResolvedValue(mockResult);
@@ -255,7 +260,7 @@ describe('Strategy Pattern Implementation', () => {
           swarmId: expect.any(String),
           timestamp: expect.any(Date),
           resources: expect.any(Object),
-          constraints: expect.any(Object)
+          constraints: expect.any(Object),
         })
       );
       expect(result).toEqual(mockResult);
@@ -267,7 +272,7 @@ describe('Strategy Pattern Implementation', () => {
         getMetrics: jest.fn(),
         getTopologyType: jest.fn().mockReturnValue('hierarchical'),
         validateContext: jest.fn(),
-        optimize: jest.fn()
+        optimize: jest.fn(),
       };
 
       swarmCoordinator.setStrategy(newMockStrategy);
@@ -279,13 +284,18 @@ describe('Strategy Pattern Implementation', () => {
       const mockAgents: MockAgent[] = [{ id: 'agent-1', capabilities: [], status: 'idle' }];
       mockStrategy.coordinate.mockResolvedValue({
         topology: 'mesh' as SwarmTopology,
-        performance: { executionTime: 100, messageCount: 2, coordinationEfficiency: 0.9, resourceUtilization: { cpu: 0.1, memory: 0.1, network: 0.1, storage: 0.1 } },
+        performance: {
+          executionTime: 100,
+          messageCount: 2,
+          coordinationEfficiency: 0.9,
+          resourceUtilization: { cpu: 0.1, memory: 0.1, network: 0.1, storage: 0.1 },
+        },
         latency: 50,
-        success: true
+        success: true,
       });
 
       await swarmCoordinator.executeCoordination(mockAgents);
-      
+
       const history = swarmCoordinator.getHistory();
       expect(history).toHaveLength(1);
       expect(history[0].action).toBe('coordinate');
@@ -297,7 +307,9 @@ describe('Strategy Pattern Implementation', () => {
       const error = new Error('Coordination failed');
       mockStrategy.coordinate.mockRejectedValue(error);
 
-      await expect(swarmCoordinator.executeCoordination(mockAgents)).rejects.toThrow('Coordination failed');
+      await expect(swarmCoordinator.executeCoordination(mockAgents)).rejects.toThrow(
+        'Coordination failed'
+      );
 
       const history = swarmCoordinator.getHistory();
       expect(history).toHaveLength(1);
@@ -308,9 +320,14 @@ describe('Strategy Pattern Implementation', () => {
       const mockAgents: MockAgent[] = [{ id: 'agent-1', capabilities: [], status: 'idle' }];
       mockStrategy.coordinate.mockResolvedValue({
         topology: 'mesh' as SwarmTopology,
-        performance: { executionTime: 100, messageCount: 2, coordinationEfficiency: 0.9, resourceUtilization: { cpu: 0.1, memory: 0.1, network: 0.1, storage: 0.1 } },
+        performance: {
+          executionTime: 100,
+          messageCount: 2,
+          coordinationEfficiency: 0.9,
+          resourceUtilization: { cpu: 0.1, memory: 0.1, network: 0.1, storage: 0.1 },
+        },
         latency: 50,
-        success: true
+        success: true,
       });
 
       // Execute 10 coordinations to trigger optimization
@@ -345,10 +362,10 @@ describe('Strategy Pattern Implementation', () => {
       const strategies = StrategyFactory.getAllStrategies();
 
       expect(strategies).toHaveLength(4);
-      expect(strategies.some(s => s instanceof MeshStrategy)).toBe(true);
-      expect(strategies.some(s => s instanceof HierarchicalStrategy)).toBe(true);
-      expect(strategies.some(s => s instanceof RingStrategy)).toBe(true);
-      expect(strategies.some(s => s instanceof StarStrategy)).toBe(true);
+      expect(strategies.some((s) => s instanceof MeshStrategy)).toBe(true);
+      expect(strategies.some((s) => s instanceof HierarchicalStrategy)).toBe(true);
+      expect(strategies.some((s) => s instanceof RingStrategy)).toBe(true);
+      expect(strategies.some((s) => s instanceof StarStrategy)).toBe(true);
     });
   });
 
@@ -365,13 +382,13 @@ describe('Strategy Pattern Implementation', () => {
       const smallSwarmAgents = Array.from({ length: 5 }, (_, i) => ({
         id: `agent-${i}`,
         capabilities: ['task-a'],
-        status: 'idle' as const
+        status: 'idle' as const,
       }));
 
       const largeSwarmAgents = Array.from({ length: 60 }, (_, i) => ({
         id: `agent-${i}`,
         capabilities: ['task-a'],
-        status: 'idle' as const
+        status: 'idle' as const,
       }));
 
       const highNetworkContext: CoordinationContext = {
@@ -382,20 +399,29 @@ describe('Strategy Pattern Implementation', () => {
           maxLatency: 100,
           minReliability: 0.95,
           resourceLimits: { cpu: 1.0, memory: 1.0, network: 1.0, storage: 1.0 },
-          securityLevel: 'high'
+          securityLevel: 'high',
         },
-        history: []
+        history: [],
       };
 
       const lowNetworkContext: CoordinationContext = {
         ...highNetworkContext,
-        resources: { cpu: 0.8, memory: 0.8, network: 0.3, storage: 0.8 }
+        resources: { cpu: 0.8, memory: 0.8, network: 0.3, storage: 0.8 },
       };
 
       // Test auto-selection logic
-      const smallSwarmStrategy = await swarmCoordinator.autoSelectStrategy(smallSwarmAgents, highNetworkContext);
-      const largeSwarmStrategy = await swarmCoordinator.autoSelectStrategy(largeSwarmAgents, highNetworkContext);
-      const lowNetworkStrategy = await swarmCoordinator.autoSelectStrategy(smallSwarmAgents, lowNetworkContext);
+      const smallSwarmStrategy = await swarmCoordinator.autoSelectStrategy(
+        smallSwarmAgents,
+        highNetworkContext
+      );
+      const largeSwarmStrategy = await swarmCoordinator.autoSelectStrategy(
+        largeSwarmAgents,
+        highNetworkContext
+      );
+      const lowNetworkStrategy = await swarmCoordinator.autoSelectStrategy(
+        smallSwarmAgents,
+        lowNetworkContext
+      );
 
       // Verify appropriate strategy selection
       expect(smallSwarmStrategy.getTopologyType()).toBe('star'); // Small swarms benefit from star
@@ -408,7 +434,7 @@ describe('Strategy Pattern Implementation', () => {
     it('should validate context before coordination', async () => {
       const strategy = new MeshStrategy();
       const mockAgents: MockAgent[] = [{ id: 'agent-1', capabilities: [], status: 'idle' }];
-      
+
       const invalidContext: CoordinationContext = {
         swarmId: 'test',
         timestamp: new Date(),
@@ -417,13 +443,14 @@ describe('Strategy Pattern Implementation', () => {
           maxLatency: 50, // Too low for mesh
           minReliability: 0.9,
           resourceLimits: { cpu: 1.0, memory: 1.0, network: 1.0, storage: 1.0 },
-          securityLevel: 'medium'
+          securityLevel: 'medium',
         },
-        history: []
+        history: [],
       };
 
-      await expect(strategy.coordinate(mockAgents, invalidContext))
-        .rejects.toThrow('Invalid coordination context for mesh strategy');
+      await expect(strategy.coordinate(mockAgents, invalidContext)).rejects.toThrow(
+        'Invalid coordination context for mesh strategy'
+      );
     });
   });
 
@@ -432,7 +459,7 @@ describe('Strategy Pattern Implementation', () => {
       const agents = Array.from({ length: 10 }, (_, i) => ({
         id: `agent-${i}`,
         capabilities: ['task-a'],
-        status: 'idle' as const
+        status: 'idle' as const,
       }));
 
       const context: CoordinationContext = {
@@ -443,14 +470,14 @@ describe('Strategy Pattern Implementation', () => {
           maxLatency: 1000,
           minReliability: 0.9,
           resourceLimits: { cpu: 1.0, memory: 1.0, network: 1.0, storage: 1.0 },
-          securityLevel: 'medium'
+          securityLevel: 'medium',
         },
-        history: []
+        history: [],
       };
 
       // Test all strategies for performance
       const strategies = StrategyFactory.getAllStrategies();
-      
+
       for (const strategy of strategies) {
         const startTime = Date.now();
         const result = await strategy.coordinate(agents, context);

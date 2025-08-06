@@ -18,6 +18,8 @@ const logger = createLogger({ prefix: 'DSPyWorkflows' });
 
 /**
  * Workflow Configuration Interface
+ *
+ * @example
  */
 export interface WorkflowConfig {
   name: string;
@@ -39,6 +41,8 @@ export interface WorkflowConfig {
 
 /**
  * Workflow Step Interface
+ *
+ * @example
  */
 export interface WorkflowStep {
   id: string;
@@ -52,6 +56,8 @@ export interface WorkflowStep {
 
 /**
  * Workflow Execution Result
+ *
+ * @example
  */
 export interface WorkflowExecutionResult {
   workflowId: string;
@@ -71,6 +77,8 @@ export interface WorkflowExecutionResult {
 
 /**
  * Pre-built Workflow Templates
+ *
+ * @example
  */
 export class DSPyWorkflowTemplates {
   /**
@@ -383,6 +391,8 @@ export class DSPyWorkflowTemplates {
 /**
  * Workflow Executor
  * Executes DSPy optimization workflows with dependency management and error handling
+ *
+ * @example
  */
 export class DSPyWorkflowExecutor extends EventEmitter {
   private memoryStore: SessionMemoryStore;
@@ -395,6 +405,10 @@ export class DSPyWorkflowExecutor extends EventEmitter {
 
   /**
    * Execute a workflow
+   *
+   * @param workflow
+   * @param program
+   * @param dataset
    */
   async executeWorkflow(
     workflow: WorkflowConfig,
@@ -468,6 +482,11 @@ export class DSPyWorkflowExecutor extends EventEmitter {
 
   /**
    * Execute steps in parallel
+   *
+   * @param workflow
+   * @param program
+   * @param dataset
+   * @param result
    */
   private async executeParallelSteps(
     workflow: WorkflowConfig,
@@ -504,6 +523,11 @@ export class DSPyWorkflowExecutor extends EventEmitter {
 
   /**
    * Execute steps sequentially
+   *
+   * @param workflow
+   * @param program
+   * @param dataset
+   * @param result
    */
   private async executeSequentialSteps(
     workflow: WorkflowConfig,
@@ -544,6 +568,11 @@ export class DSPyWorkflowExecutor extends EventEmitter {
 
   /**
    * Execute a single workflow step
+   *
+   * @param step
+   * @param program
+   * @param dataset
+   * @param result
    */
   private async executeStep(
     step: WorkflowStep,
@@ -586,6 +615,10 @@ export class DSPyWorkflowExecutor extends EventEmitter {
 
   /**
    * Step execution methods
+   *
+   * @param step
+   * @param program
+   * @param dataset
    */
   private async executeOptimizationStep(
     step: WorkflowStep,
@@ -654,6 +687,8 @@ export class DSPyWorkflowExecutor extends EventEmitter {
 
   /**
    * Utility methods
+   *
+   * @param steps
    */
   private organizeStepsByDependencies(steps: WorkflowStep[]): WorkflowStep[][] {
     const groups: WorkflowStep[][] = [];

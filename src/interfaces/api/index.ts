@@ -29,6 +29,8 @@ export interface APIInterfaceConfig {
 export const APIUtils = {
   /**
    * Create WebSocket URL from base URL
+   *
+   * @param baseUrl
    */
   createWebSocketUrl: (baseUrl: string): string => {
     return `${baseUrl.replace(/^http/, 'ws').replace(/\/$/, '')}/ws`;
@@ -36,6 +38,8 @@ export const APIUtils = {
 
   /**
    * Validate API configuration
+   *
+   * @param config
    */
   validateConfig: (config: APIInterfaceConfig): boolean => {
     return Boolean(config.baseUrl || config.websocketUrl);
@@ -43,6 +47,8 @@ export const APIUtils = {
 
   /**
    * Parse API response
+   *
+   * @param response
    */
   parseResponse: (response: any): { success: boolean; data?: any; error?: string } => {
     if (response && typeof response === 'object') {
@@ -56,6 +62,9 @@ export const APIUtils = {
 
   /**
    * Format API request
+   *
+   * @param method
+   * @param params
    */
   formatRequest: (method: string, params: any = {}): any => {
     return {
@@ -73,6 +82,9 @@ export class APIClientFactory {
 
   /**
    * Create or get a WebSocket client instance
+   *
+   * @param url
+   * @param instanceKey
    */
   static getWebSocketClient(url: string, instanceKey = 'default'): WebSocketClient {
     const key = `ws:${instanceKey}`;

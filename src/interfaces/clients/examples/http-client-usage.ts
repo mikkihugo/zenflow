@@ -1,20 +1,20 @@
 /**
  * HTTP Client Usage Examples
- * 
+ *
  * Demonstrates how to use the UACL HTTP Client Adapter and Factory
  * for various use cases and scenarios.
  */
 
 import {
-  HTTPClientAdapter,
-  HTTPClientFactory,
   createHTTPClient,
   createHTTPClientWithPreset,
   createLoadBalancedHTTPClients,
-  UACL_PRESETS,
+  HTTPClientAdapter,
+  HTTPClientFactory,
+  isAuthenticationError,
   isClientError,
   isConnectionError,
-  isAuthenticationError,
+  UACL_PRESETS,
 } from '../index';
 
 // ===== BASIC USAGE =====
@@ -50,7 +50,6 @@ async function basicUsage() {
     // Get performance metrics
     const metrics = await client.getMetrics();
     console.log('Client metrics:', metrics);
-
   } catch (error) {
     if (isClientError(error)) {
       console.error(`Client error: ${error.code} - ${error.message}`);
@@ -233,7 +232,7 @@ async function monitoringExample() {
     for (let i = 0; i < 10; i++) {
       try {
         await client.get(`/data/${i}`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (error) {
         console.error(`Request ${i} failed:`, error);
       }
@@ -249,7 +248,6 @@ async function monitoringExample() {
       p95Latency: metrics.p95Latency,
       throughput: metrics.throughput,
     });
-
   } finally {
     await client.destroy();
   }
@@ -305,7 +303,6 @@ async function factoryUsage() {
     for (const [name, metrics] of metricsResults) {
       console.log(`${name}: ${metrics.requestCount} requests, ${metrics.errorCount} errors`);
     }
-
   } finally {
     await factory.shutdown();
   }
@@ -353,13 +350,8 @@ async function presetUsage() {
     const haData = await haClient.get('/critical');
 
     console.log('All preset clients working correctly');
-
   } finally {
-    await Promise.all([
-      devClient.destroy(),
-      prodClient.destroy(),
-      haClient.destroy(),
-    ]);
+    await Promise.all([devClient.destroy(), prodClient.destroy(), haClient.destroy()]);
   }
 }
 
@@ -374,11 +366,7 @@ async function loadBalancingExample() {
   // Create load-balanced clients across multiple endpoints
   const clients = await createLoadBalancedHTTPClients(
     'api-cluster',
-    [
-      'https://api1.example.com',
-      'https://api2.example.com',
-      'https://api3.example.com',
-    ],
+    ['https://api1.example.com', 'https://api2.example.com', 'https://api3.example.com'],
     'production'
   );
 
@@ -395,9 +383,8 @@ async function loadBalancingExample() {
         console.error(`Request ${i} failed on ${client.name}:`, error);
       }
     }
-
   } finally {
-    await Promise.all(clients.map(client => client.destroy()));
+    await Promise.all(clients.map((client) => client.destroy()));
   }
 }
 
@@ -439,7 +426,6 @@ async function backwardCompatibility() {
     // Test connectivity
     const isOnline = await apiClient.ping();
     console.log('API is online:', isOnline);
-
   } finally {
     await apiClient.destroy();
   }

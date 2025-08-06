@@ -87,6 +87,8 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Route a task to the optimal agent
+   *
+   * @param task
    */
   public async route(task: Task): Promise<RoutingResult> {
     const startTime = Date.now();
@@ -135,6 +137,8 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Update routing table with current agents
+   *
+   * @param agents
    */
   public async updateRoutingTable(agents: Agent[]): Promise<void> {
     const updatePromises = agents.map((agent) => this.updateAgentRoute(agent));
@@ -146,6 +150,8 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Handle failover when an agent fails
+   *
+   * @param failedAgentId
    */
   public async handleFailover(failedAgentId: string): Promise<void> {
     this.routingMetrics.failoverActivations++;
@@ -182,6 +188,8 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Set network topology for geographic-aware routing
+   *
+   * @param topology
    */
   public setNetworkTopology(topology: NetworkTopology): void {
     this.networkTopology = topology;
@@ -232,6 +240,8 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Update routing information for a specific agent
+   *
+   * @param agent
    */
   private async updateAgentRoute(agent: Agent): Promise<void> {
     const routes = await this.discoverRoutes(agent);
@@ -249,6 +259,8 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Discover available routes to an agent
+   *
+   * @param agent
    */
   private async discoverRoutes(agent: Agent): Promise<RouteEntry[]> {
     const routes: RouteEntry[] = [];
@@ -274,6 +286,8 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Discover geographic routes using network topology
+   *
+   * @param agent
    */
   private async discoverGeographicRoutes(agent: Agent): Promise<RouteEntry[]> {
     if (!this.networkTopology) return [];
@@ -309,6 +323,9 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Make intelligent routing decision
+   *
+   * @param task
+   * @param candidates
    */
   private async makeRoutingDecision(task: Task, candidates: Agent[]): Promise<RoutingDecision> {
     const routingOptions = [];
@@ -350,6 +367,10 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Calculate routing score for an agent
+   *
+   * @param task
+   * @param agent
+   * @param routingEntry
    */
   private async calculateRoutingScore(
     task: Task,
@@ -385,6 +406,9 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Select the best route from available options
+   *
+   * @param routingEntry
+   * @param task
    */
   private selectBestRoute(routingEntry: RoutingTable, task: Task): RouteEntry {
     if (routingEntry.routes.length === 0) {
@@ -408,6 +432,9 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Score a route based on task requirements
+   *
+   * @param route
+   * @param task
    */
   private scoreRoute(route: RouteEntry, task: Task): number {
     const weights = this.config.qosWeights;
@@ -431,6 +458,9 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Update routing metrics
+   *
+   * @param latency
+   * @param success
    */
   private updateRoutingMetrics(latency: number, success: boolean): void {
     if (success) {
@@ -445,6 +475,8 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
   /**
    * Redistribute routes after agent failure
+   *
+   * @param failedAgentId
    */
   private async redistributeRoutes(failedAgentId: string): Promise<void> {
     // Implement route redistribution logic

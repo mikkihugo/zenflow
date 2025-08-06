@@ -97,6 +97,9 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Register a recovery workflow
+   *
+   * @param name
+   * @param workflowDefinition
    */
   registerWorkflow(name, workflowDefinition) {
     const workflow = {
@@ -129,6 +132,9 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Trigger recovery workflow
+   *
+   * @param triggerSource
+   * @param context
    */
   async triggerRecovery(triggerSource, context = {}) {
     try {
@@ -177,6 +183,9 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Execute a recovery workflow
+   *
+   * @param workflow
+   * @param context
    */
   async executeWorkflow(workflow, context = {}) {
     const executionId = generateId('execution');
@@ -305,6 +314,10 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Execute a single workflow step
+   *
+   * @param step
+   * @param context
+   * @param execution
    */
   async executeStep(step, context, execution) {
     const stepStartTime = Date.now();
@@ -355,6 +368,10 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Run the actual step function
+   *
+   * @param step
+   * @param context
+   * @param execution
    */
   async runStepFunction(step, context, execution) {
     if (typeof step.action === 'function') {
@@ -369,6 +386,10 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Execute rollback steps
+   *
+   * @param workflow
+   * @param execution
+   * @param context
    */
   async executeRollback(workflow, execution, context) {
     this.logger.info(`Executing rollback for workflow: ${workflow.name}`, {
@@ -400,6 +421,11 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Run built-in recovery actions
+   *
+   * @param actionName
+   * @param parameters
+   * @param context
+   * @param _execution
    */
   async runBuiltInAction(actionName, parameters, context, _execution) {
     switch (actionName) {
@@ -439,6 +465,9 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Find workflows that match the trigger
+   *
+   * @param triggerSource
+   * @param context
    */
   findMatchingWorkflows(triggerSource, context) {
     const matchingWorkflows = [];
@@ -466,6 +495,10 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Evaluate complex trigger conditions
+   *
+   * @param trigger
+   * @param triggerSource
+   * @param context
    */
   evaluateTriggerCondition(trigger, triggerSource, context) {
     if (trigger.source && trigger.source !== triggerSource) return false;
@@ -483,6 +516,9 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Cancel an active recovery
+   *
+   * @param executionId
+   * @param reason
    */
   async cancelRecovery(executionId, reason = 'Manual cancellation') {
     const execution = this.activeRecoveries.get(executionId);
@@ -504,6 +540,8 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Get recovery status
+   *
+   * @param executionId
    */
   getRecoveryStatus(executionId = null) {
     if (executionId) {
@@ -537,6 +575,8 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Set integration points
+   *
+   * @param healthMonitor
    */
   setHealthMonitor(healthMonitor) {
     this.healthMonitor = healthMonitor;
@@ -936,6 +976,9 @@ export class RecoveryWorkflows extends EventEmitter {
 
   /**
    * Chaos engineering - inject failures for testing
+   *
+   * @param failureType
+   * @param parameters
    */
   async injectChaosFailure(failureType, parameters = {}) {
     if (!this.options.enableChaosEngineering) {

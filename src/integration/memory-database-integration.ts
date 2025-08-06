@@ -1,14 +1,13 @@
 /**
- * @fileoverview Integration Example: Enhanced Memory and Database Systems
+ * @file Integration Example: Enhanced Memory and Database Systems
  * Demonstrates how to use the advanced Memory and Database domain features together
  */
 
 import type { DatabaseQuery } from '../database/core/database-coordinator';
 import { DALFactory } from '../database/index';
-import { MemorySystemFactory } from '../memory/index';
 import { DIContainer } from '../di/container/di-container';
-import { CORE_TOKENS } from '../di/tokens/core-tokens';
-import { DATABASE_TOKENS } from '../di/tokens/core-tokens';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
+import { MemorySystemFactory } from '../memory/index';
 
 /**
  * Example: Complete system integration with Memory and Database coordination
@@ -58,7 +57,7 @@ export async function createIntegratedSystem() {
   // Initialize advanced database system with multi-engine coordination
   // First, set up dependency injection container
   const container = new DIContainer();
-  
+
   // Register required dependencies
   container.register(CORE_TOKENS.Logger, {
     type: 'singleton',
@@ -66,19 +65,19 @@ export async function createIntegratedSystem() {
       debug: console.debug,
       info: console.info,
       warn: console.warn,
-      error: console.error
-    })
+      error: console.error,
+    }),
   });
-  
+
   container.register(CORE_TOKENS.Config, {
     type: 'singleton',
     create: () => ({
       get: (key: string, defaultValue?: any) => defaultValue,
       set: () => {},
-      has: () => false
-    })
+      has: () => false,
+    }),
   });
-  
+
   // Register database provider factory
   container.register(DATABASE_TOKENS.ProviderFactory, {
     type: 'singleton',
@@ -86,44 +85,45 @@ export async function createIntegratedSystem() {
       createProvider: async (type: string, config: any) => {
         // This would be properly implemented in production
         throw new Error('Provider factory not fully implemented for this example');
-      }
-    })
+      },
+    }),
   });
-  
+
   // Register DALFactory
   container.register(DATABASE_TOKENS.DALFactory, {
     type: 'singleton',
-    create: (c) => new DALFactory(
-      c.resolve(CORE_TOKENS.Logger),
-      c.resolve(CORE_TOKENS.Config),
-      c.resolve(DATABASE_TOKENS.ProviderFactory)
-    )
+    create: (c) =>
+      new DALFactory(
+        c.resolve(CORE_TOKENS.Logger),
+        c.resolve(CORE_TOKENS.Config),
+        c.resolve(DATABASE_TOKENS.ProviderFactory)
+      ),
   });
-  
+
   // Get DALFactory instance
   const dalFactory = container.resolve(DATABASE_TOKENS.DALFactory);
-  
+
   // For the multi-engine system, we'll create individual DAOs
   // Note: The createAdvancedDatabaseSystem method doesn't exist in the new API
   // Instead, we create individual DAOs/repositories as needed
   const vectorDao = await dalFactory.createDao({
     databaseType: 'lancedb',
     entityType: 'VectorDocument',
-    databaseConfig: { dbPath: '/tmp/vector.db', dimensions: 768 }
+    databaseConfig: { dbPath: '/tmp/vector.db', dimensions: 768 },
   });
-  
+
   const graphDao = await dalFactory.createDao({
     databaseType: 'kuzu',
     entityType: 'GraphNode',
-    databaseConfig: { dbPath: '/tmp/graph.db' }
+    databaseConfig: { dbPath: '/tmp/graph.db' },
   });
-  
+
   const documentDao = await dalFactory.createDao({
     databaseType: 'sqlite',
     entityType: 'Document',
-    databaseConfig: { dbPath: '/tmp/documents.db' }
+    databaseConfig: { dbPath: '/tmp/documents.db' },
   });
-  
+
   // Create a composite database system object to match the expected interface
   const databaseSystem = {
     query: async (query: DatabaseQuery) => {
@@ -146,21 +146,21 @@ export async function createIntegratedSystem() {
       engines: {
         vector: { status: 'healthy', score: 100 },
         graph: { status: 'healthy', score: 100 },
-        document: { status: 'healthy', score: 100 }
-      }
+        document: { status: 'healthy', score: 100 },
+      },
     }),
     getStats: () => ({
       coordinator: {
         queries: {
           total: 0,
-          averageLatency: 0
-        }
+          averageLatency: 0,
+        },
       },
-      engines: 3
+      engines: 3,
     }),
     shutdown: async () => {
       // Cleanup would be implemented here
-    }
+    },
   };
 
   return {
@@ -276,7 +276,8 @@ export async function createIntegratedSystem() {
         database: databaseStats,
         integration: {
           totalOperations:
-            (memoryStats.coordinator?.decisions?.total || 0) + (databaseStats.coordinator?.queries?.total || 0),
+            (memoryStats.coordinator?.decisions?.total || 0) +
+            (databaseStats.coordinator?.queries?.total || 0),
           averageLatency:
             ((memoryStats.current?.averageLatency || 0) +
               (databaseStats.coordinator?.queries?.averageLatency || 0)) /

@@ -9,6 +9,8 @@ import { getInjectionTokens, setInjectionTokens } from './injectable';
 
 /**
  * Inject decorator for marking constructor parameters for injection
+ *
+ * @param token
  */
 export function inject<T>(token: DIToken<T>): ParameterDecorator {
   return (target: any, _propertyKey: string | symbol | undefined, parameterIndex: number) => {
@@ -30,6 +32,9 @@ export function inject<T>(token: DIToken<T>): ParameterDecorator {
 
 /**
  * Get the injection token for a specific parameter
+ *
+ * @param constructor
+ * @param parameterIndex
  */
 export function getInjectionToken(
   constructor: any,
@@ -41,6 +46,9 @@ export function getInjectionToken(
 
 /**
  * Check if a parameter has an injection token
+ *
+ * @param constructor
+ * @param parameterIndex
  */
 export function hasInjectionToken(constructor: any, parameterIndex: number): boolean {
   return getInjectionToken(constructor, parameterIndex) !== undefined;

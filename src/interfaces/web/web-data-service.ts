@@ -107,6 +107,8 @@ export class WebDataService {
 
   /**
    * Create new swarm
+   *
+   * @param config
    */
   async createSwarm(config: any): Promise<SwarmData> {
     this.logger.info(`Creating swarm with config:`, config);
@@ -155,6 +157,8 @@ export class WebDataService {
 
   /**
    * Create new task
+   *
+   * @param config
    */
   async createTask(config: any): Promise<TaskData> {
     this.logger.info(`Creating task with config:`, config);
@@ -201,6 +205,9 @@ export class WebDataService {
 
   /**
    * Execute command
+   *
+   * @param command
+   * @param args
    */
   async executeCommand(command: string, args: any[]): Promise<CommandResult> {
     this.logger.info(`Executing command: ${command} with args:`, args);

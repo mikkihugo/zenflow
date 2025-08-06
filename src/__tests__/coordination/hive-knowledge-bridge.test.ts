@@ -1,5 +1,5 @@
 /**
- * @fileoverview Unit Tests for HiveKnowledgeBridge
+ * @file Unit Tests for HiveKnowledgeBridge
  * Focused testing of the bridge component between Hive FACT and swarm coordination
  */
 

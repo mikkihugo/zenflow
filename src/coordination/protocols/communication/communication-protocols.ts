@@ -146,6 +146,8 @@ export interface BroadcastTree {
 
 /**
  * Advanced Communication Protocol Manager
+ *
+ * @example
  */
 export class CommunicationProtocols extends EventEmitter {
   private nodes = new Map<string, CommunicationNode>();
@@ -214,6 +216,8 @@ export class CommunicationProtocols extends EventEmitter {
 
   /**
    * Register a communication node
+   *
+   * @param node
    */
   async registerNode(node: CommunicationNode): Promise<void> {
     this.nodes.set(node.id, node);
@@ -235,6 +239,8 @@ export class CommunicationProtocols extends EventEmitter {
 
   /**
    * Send a message using various protocols
+   *
+   * @param message
    */
   async sendMessage(message: Partial<Message>): Promise<string> {
     const fullMessage: Message = {
@@ -292,6 +298,9 @@ export class CommunicationProtocols extends EventEmitter {
 
   /**
    * Broadcast message to all nodes
+   *
+   * @param payload
+   * @param priority
    */
   async broadcast(payload: MessagePayload, priority: MessagePriority = 'normal'): Promise<string> {
     const allNodes = Array.from(this.nodes.keys()).filter((id) => id !== this.nodeId);
@@ -313,6 +322,10 @@ export class CommunicationProtocols extends EventEmitter {
 
   /**
    * Multicast message to specific group
+   *
+   * @param recipients
+   * @param payload
+   * @param priority
    */
   async multicast(
     recipients: string[],
@@ -336,6 +349,10 @@ export class CommunicationProtocols extends EventEmitter {
 
   /**
    * Send unicast message
+   *
+   * @param recipient
+   * @param payload
+   * @param priority
    */
   async unicast(
     recipient: string,
@@ -359,6 +376,9 @@ export class CommunicationProtocols extends EventEmitter {
 
   /**
    * Start gossip protocol for state synchronization
+   *
+   * @param key
+   * @param data
    */
   async startGossip(key: string, data: any): Promise<void> {
     const state: GossipState = {
@@ -377,6 +397,10 @@ export class CommunicationProtocols extends EventEmitter {
 
   /**
    * Initiate consensus on a proposal
+   *
+   * @param type
+   * @param value
+   * @param participants
    */
   async initiateConsensus(
     type: ConsensusProposal['type'],
@@ -420,6 +444,10 @@ export class CommunicationProtocols extends EventEmitter {
 
   /**
    * Vote on a consensus proposal
+   *
+   * @param proposalId
+   * @param decision
+   * @param reasoning
    */
   async vote(
     proposalId: string,
@@ -462,6 +490,9 @@ export class CommunicationProtocols extends EventEmitter {
 
   /**
    * Register message handler for specific message type
+   *
+   * @param messageType
+   * @param handler
    */
   registerHandler(messageType: MessageType, handler: MessageHandler): void {
     const handlers = this.messageHandlers.get(messageType) || [];
@@ -499,6 +530,8 @@ export class CommunicationProtocols extends EventEmitter {
 
   /**
    * Get node status
+   *
+   * @param nodeId
    */
   getNodeStatus(nodeId: string): CommunicationNode | undefined {
     return this.nodes.get(nodeId);
@@ -1232,6 +1265,9 @@ class ConsensusEngine {
 
   /**
    * Initiate consensus process for a proposal
+   *
+   * @param proposalId
+   * @param proposal
    */
   async initiateConsensus(proposalId: string, proposal: ConsensusProposal): Promise<void> {
     this.activeProposals.set(proposalId, proposal);
@@ -1240,6 +1276,8 @@ class ConsensusEngine {
 
   /**
    * Process an incoming consensus proposal
+   *
+   * @param proposal
    */
   async processProposal(proposal: ConsensusProposal): Promise<void> {
     this.activeProposals.set(proposal.id, proposal);

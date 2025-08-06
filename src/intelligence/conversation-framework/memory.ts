@@ -9,6 +9,8 @@ import type { ConversationMemory, ConversationQuery, ConversationSession } from 
 /**
  * Memory backend adapter interface
  * Adapts claude-code-zen memory backends to conversation framework interface
+ *
+ * @example
  */
 interface BackendAdapter {
   save(key: string, data: any): Promise<void>;
@@ -20,6 +22,8 @@ interface BackendAdapter {
 /**
  * Adapter for claude-code-zen memory backends
  * Converts store/retrieve interface to save/get interface
+ *
+ * @example
  */
 class MemoryBackendAdapter implements BackendAdapter {
   constructor(private backend: any) {}
@@ -67,6 +71,8 @@ class MemoryBackendAdapter implements BackendAdapter {
 
 /**
  * Conversation memory implementation using backend storage
+ *
+ * @example
  */
 export class ConversationMemoryImpl implements ConversationMemory {
   private adapter: BackendAdapter;
@@ -86,6 +92,8 @@ export class ConversationMemoryImpl implements ConversationMemory {
 
   /**
    * Store a conversation session
+   *
+   * @param session
    */
   async storeConversation(session: ConversationSession): Promise<void> {
     const key = `conversation:${session.id}`;
@@ -122,6 +130,8 @@ export class ConversationMemoryImpl implements ConversationMemory {
 
   /**
    * Retrieve a conversation by ID
+   *
+   * @param id
    */
   async getConversation(id: string): Promise<ConversationSession | null> {
     const key = `conversation:${id}`;
@@ -146,6 +156,8 @@ export class ConversationMemoryImpl implements ConversationMemory {
 
   /**
    * Search conversations based on query parameters
+   *
+   * @param query
    */
   async searchConversations(query: ConversationQuery): Promise<ConversationSession[]> {
     const results: ConversationSession[] = [];
@@ -187,6 +199,9 @@ export class ConversationMemoryImpl implements ConversationMemory {
 
   /**
    * Update a conversation
+   *
+   * @param id
+   * @param updates
    */
   async updateConversation(id: string, updates: Partial<ConversationSession>): Promise<void> {
     const existing = await this.getConversation(id);
@@ -200,6 +215,8 @@ export class ConversationMemoryImpl implements ConversationMemory {
 
   /**
    * Delete a conversation
+   *
+   * @param id
    */
   async deleteConversation(id: string): Promise<void> {
     const conversation = await this.getConversation(id);
@@ -228,6 +245,8 @@ export class ConversationMemoryImpl implements ConversationMemory {
 
   /**
    * Get all conversations for a specific agent
+   *
+   * @param agentId
    */
   async getAgentConversationHistory(agentId: string): Promise<ConversationSession[]> {
     return this.searchConversations({ agentId });
@@ -235,6 +254,9 @@ export class ConversationMemoryImpl implements ConversationMemory {
 
   /**
    * Check if conversation matches query criteria
+   *
+   * @param conversation
+   * @param query
    */
   private matchesQuery(conversation: ConversationSession, query: ConversationQuery): boolean {
     if (query.domain && conversation.context.domain !== query.domain) {
@@ -265,10 +287,14 @@ export class ConversationMemoryImpl implements ConversationMemory {
 
 /**
  * Factory for creating conversation memory instances
+ *
+ * @example
  */
 export class ConversationMemoryFactory {
   /**
    * Create conversation memory with SQLite backend
+   *
+   * @param config
    */
   static async createWithSQLite(config: any = {}): Promise<ConversationMemory> {
     const { SQLiteBackend } = await import('../../memory/backends/sqlite.backend.js');
@@ -279,6 +305,8 @@ export class ConversationMemoryFactory {
 
   /**
    * Create conversation memory with JSON backend
+   *
+   * @param config
    */
   static async createWithJSON(config: any = {}): Promise<ConversationMemory> {
     const { JSONBackend } = await import('../../memory/backends/json.backend.js');
@@ -293,6 +321,8 @@ export class ConversationMemoryFactory {
 
   /**
    * Create conversation memory with LanceDB backend for vector search
+   *
+   * @param config
    */
   static async createWithLanceDB(config: any = {}): Promise<ConversationMemory> {
     const { LanceDBBackend } = await import('../../memory/backends/lancedb.backend.js');

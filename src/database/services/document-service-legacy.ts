@@ -8,8 +8,6 @@
 
 import { nanoid } from 'nanoid';
 import type { DocumentType } from '../../types/workflow-types';
-import type { IRepository, IDataAccessObject } from '../interfaces';
-import { createDao, createManager } from '../index';
 import type {
   ADRDocumentEntity,
   BaseDocumentEntity,
@@ -22,6 +20,8 @@ import type {
   TaskDocumentEntity,
   VisionDocumentEntity,
 } from '../entities/document-entities';
+import { createDao, createManager } from '../index';
+import type { IDataAccessObject, IRepository } from '../interfaces';
 
 export interface DocumentCreateOptions {
   autoGenerateRelationships?: boolean;
@@ -57,6 +57,8 @@ export interface DocumentSearchOptions extends DocumentQueryOptions {
 /**
  * Pure Database-Driven Document Service with DAL
  * Replaces file-based operations with database entities using unified DAL
+ *
+ * @example
  */
 export class DocumentService {
   private documentRepository: IRepository<BaseDocumentEntity>;
@@ -74,16 +76,24 @@ export class DocumentService {
     // Initialize repositories using DAL factory
     this.documentRepository = await createDao<BaseDocumentEntity>('Document', this.databaseType);
     this.projectRepository = await createDao<ProjectEntity>('Project', this.databaseType);
-    this.relationshipRepository = await createDao<DocumentRelationshipEntity>('DocumentRelationship', this.databaseType);
-    this.workflowRepository = await createDao<DocumentWorkflowStateEntity>('DocumentWorkflowState', this.databaseType);
+    this.relationshipRepository = await createDao<DocumentRelationshipEntity>(
+      'DocumentRelationship',
+      this.databaseType
+    );
+    this.workflowRepository = await createDao<DocumentWorkflowStateEntity>(
+      'DocumentWorkflowState',
+      this.databaseType
+    );
     this.documentDAO = await createDao<BaseDocumentEntity>('Document', this.databaseType);
   }
-
 
   // ==================== DOCUMENT CRUD OPERATIONS ====================
 
   /**
    * Create a new document with automatic relationship generation using DAL
+   *
+   * @param document
+   * @param options
    */
   async createDocument<T extends BaseDocumentEntity>(
     document: Omit<T, 'id' | 'created_at' | 'updated_at' | 'checksum'>,
@@ -124,6 +134,9 @@ export class DocumentService {
 
   /**
    * Get document by ID with optional relationships
+   *
+   * @param id
+   * @param options
    */
   async getDocument<T extends BaseDocumentEntity>(
     id: string,
@@ -172,6 +185,10 @@ export class DocumentService {
 
   /**
    * Update document with automatic versioning
+   *
+   * @param id
+   * @param updates
+   * @param options
    */
   async updateDocument<T extends BaseDocumentEntity>(
     id: string,
@@ -228,6 +245,8 @@ export class DocumentService {
 
   /**
    * Delete document and cleanup relationships
+   *
+   * @param id
    */
   async deleteDocument(id: string): Promise<void> {
     // Delete relationships first
@@ -266,6 +285,17 @@ export class DocumentService {
 
   /**
    * Query documents with filters and pagination
+   *
+   * @param filters
+   * @param filters.type
+   * @param filters.projectId
+   * @param filters.status
+   * @param filters.priority
+   * @param filters.author
+   * @param filters.tags
+   * @param filters.parentDocumentId
+   * @param filters.workflowStage
+   * @param options
    */
   async queryDocuments<T extends BaseDocumentEntity>(
     filters: {
@@ -324,6 +354,8 @@ export class DocumentService {
 
   /**
    * Advanced document search with full-text and semantic capabilities
+   *
+   * @param searchOptions
    */
   async searchDocuments<T extends BaseDocumentEntity>(
     searchOptions: DocumentSearchOptions
@@ -379,6 +411,8 @@ export class DocumentService {
 
   /**
    * Create a new project with document structure
+   *
+   * @param project
    */
   async createProject(
     project: Omit<ProjectEntity, 'id' | 'created_at' | 'updated_at'>
@@ -418,6 +452,8 @@ export class DocumentService {
 
   /**
    * Get project with all related documents
+   *
+   * @param projectId
    */
   async getProjectWithDocuments(projectId: string): Promise<{
     project: ProjectEntity;
@@ -484,6 +520,10 @@ export class DocumentService {
 
   /**
    * Start workflow for document
+   *
+   * @param documentId
+   * @param workflowName
+   * @param initialStage
    */
   async startDocumentWorkflow(
     documentId: string,
@@ -532,6 +572,10 @@ export class DocumentService {
 
   /**
    * Advance document workflow to next stage
+   *
+   * @param documentId
+   * @param nextStage
+   * @param results
    */
   async advanceDocumentWorkflow(
     documentId: string,

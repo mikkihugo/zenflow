@@ -1,5 +1,5 @@
 /**
- * @fileoverview Advanced Performance Optimizer for Memory Systems
+ * @file Advanced Performance Optimizer for Memory Systems
  * Provides intelligent performance optimization for memory operations
  */
 
@@ -55,6 +55,8 @@ export interface OptimizationAction {
 /**
  * Advanced Performance Optimizer
  * Uses ML-like adaptive algorithms to optimize memory system performance
+ *
+ * @example
  */
 export class PerformanceOptimizer extends EventEmitter {
   private config: OptimizationConfig;
@@ -86,6 +88,9 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Register a backend for optimization
+   *
+   * @param id
+   * @param backend
    */
   registerBackend(id: string, backend: BackendInterface): void {
     this.backends.set(id, backend);
@@ -94,6 +99,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Update performance metrics
+   *
+   * @param newMetrics
    */
   updateMetrics(newMetrics: Partial<PerformanceMetrics>): void {
     this.metrics = {
@@ -139,6 +146,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Suggest optimization based on performance issue
+   *
+   * @param issue
    */
   private suggestOptimization(issue: string): void {
     let action: OptimizationAction;
@@ -198,6 +207,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Execute an optimization action
+   *
+   * @param actionId
    */
   async executeOptimization(actionId: string): Promise<OptimizationAction> {
     const action = this.actions.get(actionId);
@@ -225,6 +236,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Perform the actual optimization
+   *
+   * @param action
    */
   private async performOptimization(action: OptimizationAction): Promise<any> {
     switch (action.type) {
@@ -390,6 +403,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   /**
    * Calculate trend from array of values (positive = increasing)
+   *
+   * @param values
    */
   private calculateTrend(values: number[]): number {
     if (values.length < 2) return 0;

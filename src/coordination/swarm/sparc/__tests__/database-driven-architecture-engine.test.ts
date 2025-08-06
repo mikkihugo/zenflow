@@ -1,14 +1,14 @@
 /**
  * Test for Database-Driven SPARC Architecture Engine
- * 
+ *
  * Tests the enhanced architecture engine with database persistence,
  * ensuring architecture designs can be generated, stored, and retrieved.
  */
 
 import { nanoid } from 'nanoid';
-import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
 import { ArchitectureStorageService } from '../database/architecture-storage';
-import type { PseudocodeStructure, ArchitectureDesign } from '../types/sparc-types';
+import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
+import type { ArchitectureDesign, PseudocodeStructure } from '../types/sparc-types';
 
 // Mock database adapter for testing
 class MockDatabaseAdapter {
@@ -24,7 +24,7 @@ class MockDatabaseAdapter {
       }
       return { affectedRows: 0 };
     }
-    
+
     if (sql.includes('INSERT INTO')) {
       const tableName = sql.match(/INSERT INTO (\w+)/)?.[1];
       if (tableName && this.tables.has(tableName)) {
@@ -34,15 +34,15 @@ class MockDatabaseAdapter {
         return { affectedRows: 1 };
       }
     }
-    
+
     if (sql.includes('UPDATE')) {
       return { affectedRows: 1 };
     }
-    
+
     if (sql.includes('DELETE')) {
       return { affectedRows: 1 };
     }
-    
+
     return { affectedRows: 0 };
   }
 
@@ -51,17 +51,17 @@ class MockDatabaseAdapter {
       const tableName = sql.match(/FROM (\w+)/)?.[1];
       if (tableName && this.tables.has(tableName)) {
         const table = this.tables.get(tableName)!;
-        
+
         if (sql.includes('WHERE') && params.length > 0) {
           // Simple mock for WHERE queries
-          const record = table.find(r => r.architecture_id === params[0] || r.id === params[0]);
+          const record = table.find((r) => r.architecture_id === params[0] || r.id === params[0]);
           return { rows: record ? [record] : [] };
         }
-        
+
         return { rows: table };
       }
     }
-    
+
     // Handle COUNT queries
     if (sql.includes('COUNT(*)')) {
       const tableName = sql.match(/FROM (\w+)/)?.[1];
@@ -71,12 +71,12 @@ class MockDatabaseAdapter {
       }
       return { rows: [{ count: 0 }] };
     }
-    
+
     // Handle aggregate queries
     if (sql.includes('AVG(') || sql.includes('GROUP BY')) {
       return { rows: [{ avg_components: 5, average_score: 0.8, pass_rate: 0.75 }] };
     }
-    
+
     return { rows: [] };
   }
 
@@ -116,7 +116,7 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
   // Setup test environment
   const mockDb = new MockDatabaseAdapter();
   const architectureEngine = new DatabaseDrivenArchitecturePhaseEngine(mockDb, mockLogger);
-  
+
   try {
     // Initialize the engine and database
     console.log('1. Initializing architecture engine with database...');
@@ -139,9 +139,24 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
             { name: 'assignments', type: 'TaskAssignment[]', description: 'Task assignments' },
           ],
           steps: [
-            { stepNumber: 1, description: 'Analyze agent capabilities', pseudocode: 'FOR each agent: analyze(agent.capabilities)', complexity: 'O(n)' },
-            { stepNumber: 2, description: 'Match tasks to agents', pseudocode: 'FOR each task: findBestAgent(task)', complexity: 'O(n*m)' },
-            { stepNumber: 3, description: 'Create assignments', pseudocode: 'assignments = createAssignments(matches)', complexity: 'O(n)' },
+            {
+              stepNumber: 1,
+              description: 'Analyze agent capabilities',
+              pseudocode: 'FOR each agent: analyze(agent.capabilities)',
+              complexity: 'O(n)',
+            },
+            {
+              stepNumber: 2,
+              description: 'Match tasks to agents',
+              pseudocode: 'FOR each task: findBestAgent(task)',
+              complexity: 'O(n*m)',
+            },
+            {
+              stepNumber: 3,
+              description: 'Create assignments',
+              pseudocode: 'assignments = createAssignments(matches)',
+              complexity: 'O(n)',
+            },
           ],
           complexity: {
             timeComplexity: 'O(n*m)',
@@ -150,7 +165,12 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
             worstCase: 'O(n²*m)',
           },
           optimizations: [
-            { type: 'algorithmic', description: 'Use priority queues for task matching', impact: 'high', effort: 'medium' },
+            {
+              type: 'algorithmic',
+              description: 'Use priority queues for task matching',
+              impact: 'high',
+              effort: 'medium',
+            },
           ],
         },
         {
@@ -158,15 +178,33 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
           purpose: 'Schedule tasks based on priority and dependencies',
           inputs: [
             { name: 'tasks', type: 'Task[]', description: 'Tasks to schedule', optional: false },
-            { name: 'dependencies', type: 'Dependency[]', description: 'Task dependencies', optional: true },
+            {
+              name: 'dependencies',
+              type: 'Dependency[]',
+              description: 'Task dependencies',
+              optional: true,
+            },
           ],
-          outputs: [
-            { name: 'schedule', type: 'Schedule', description: 'Execution schedule' },
-          ],
+          outputs: [{ name: 'schedule', type: 'Schedule', description: 'Execution schedule' }],
           steps: [
-            { stepNumber: 1, description: 'Build dependency graph', pseudocode: 'graph = buildGraph(dependencies)', complexity: 'O(d)' },
-            { stepNumber: 2, description: 'Topological sort', pseudocode: 'sorted = topologicalSort(graph)', complexity: 'O(d+e)' },
-            { stepNumber: 3, description: 'Schedule tasks', pseudocode: 'schedule = createSchedule(sorted)', complexity: 'O(n)' },
+            {
+              stepNumber: 1,
+              description: 'Build dependency graph',
+              pseudocode: 'graph = buildGraph(dependencies)',
+              complexity: 'O(d)',
+            },
+            {
+              stepNumber: 2,
+              description: 'Topological sort',
+              pseudocode: 'sorted = topologicalSort(graph)',
+              complexity: 'O(d+e)',
+            },
+            {
+              stepNumber: 3,
+              description: 'Schedule tasks',
+              pseudocode: 'schedule = createSchedule(sorted)',
+              complexity: 'O(n)',
+            },
           ],
           complexity: {
             timeComplexity: 'O(d+e)',
@@ -175,7 +213,12 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
             worstCase: 'O(n²)',
           },
           optimizations: [
-            { type: 'caching', description: 'Cache dependency calculations', impact: 'medium', effort: 'low' },
+            {
+              type: 'caching',
+              description: 'Cache dependency calculations',
+              impact: 'medium',
+              effort: 'low',
+            },
           ],
         },
       ],
@@ -184,27 +227,71 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
           name: 'AgentRegistry',
           type: 'HashMap',
           properties: [
-            { name: 'agents', type: 'Map<string, Agent>', visibility: 'private', description: 'Agent storage' },
-            { name: 'capabilities', type: 'Map<string, Capability[]>', visibility: 'private', description: 'Agent capabilities index' },
+            {
+              name: 'agents',
+              type: 'Map<string, Agent>',
+              visibility: 'private',
+              description: 'Agent storage',
+            },
+            {
+              name: 'capabilities',
+              type: 'Map<string, Capability[]>',
+              visibility: 'private',
+              description: 'Agent capabilities index',
+            },
           ],
           methods: [
-            { name: 'register', parameters: [{ name: 'agent', type: 'Agent', description: 'Agent to register' }], returnType: 'void', visibility: 'public', description: 'Register new agent' },
-            { name: 'findByCapability', parameters: [{ name: 'capability', type: 'string', description: 'Required capability' }], returnType: 'Agent[]', visibility: 'public', description: 'Find agents by capability' },
+            {
+              name: 'register',
+              parameters: [{ name: 'agent', type: 'Agent', description: 'Agent to register' }],
+              returnType: 'void',
+              visibility: 'public',
+              description: 'Register new agent',
+            },
+            {
+              name: 'findByCapability',
+              parameters: [
+                { name: 'capability', type: 'string', description: 'Required capability' },
+              ],
+              returnType: 'Agent[]',
+              visibility: 'public',
+              description: 'Find agents by capability',
+            },
           ],
-          relationships: [
-            { type: 'uses', target: 'Agent', description: 'Stores agent instances' },
-          ],
+          relationships: [{ type: 'uses', target: 'Agent', description: 'Stores agent instances' }],
         },
         {
           name: 'TaskQueue',
           type: 'PriorityQueue',
           properties: [
-            { name: 'tasks', type: 'PriorityQueue<Task>', visibility: 'private', description: 'Task priority queue' },
-            { name: 'priorities', type: 'Map<string, number>', visibility: 'private', description: 'Task priorities' },
+            {
+              name: 'tasks',
+              type: 'PriorityQueue<Task>',
+              visibility: 'private',
+              description: 'Task priority queue',
+            },
+            {
+              name: 'priorities',
+              type: 'Map<string, number>',
+              visibility: 'private',
+              description: 'Task priorities',
+            },
           ],
           methods: [
-            { name: 'enqueue', parameters: [{ name: 'task', type: 'Task', description: 'Task to add' }], returnType: 'void', visibility: 'public', description: 'Add task to queue' },
-            { name: 'dequeue', parameters: [], returnType: 'Task | null', visibility: 'public', description: 'Get highest priority task' },
+            {
+              name: 'enqueue',
+              parameters: [{ name: 'task', type: 'Task', description: 'Task to add' }],
+              returnType: 'void',
+              visibility: 'public',
+              description: 'Add task to queue',
+            },
+            {
+              name: 'dequeue',
+              parameters: [],
+              returnType: 'Task | null',
+              visibility: 'public',
+              description: 'Get highest priority task',
+            },
           ],
           relationships: [
             { type: 'contains', target: 'Task', description: 'Manages task instances' },
@@ -213,8 +300,18 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
       ],
       controlFlows: [],
       optimizations: [
-        { type: 'performance', description: 'Implement WASM for heavy computations', impact: 'high', effort: 'high' },
-        { type: 'memory', description: 'Use object pooling for agents', impact: 'medium', effort: 'medium' },
+        {
+          type: 'performance',
+          description: 'Implement WASM for heavy computations',
+          impact: 'high',
+          effort: 'high',
+        },
+        {
+          type: 'memory',
+          description: 'Use object pooling for agents',
+          impact: 'medium',
+          effort: 'medium',
+        },
       ],
       dependencies: [],
     };
@@ -223,12 +320,18 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
     // Test architecture generation
     console.log('3. Generating architecture from pseudocode...');
     const architecture = await architectureEngine.designArchitecture(testPseudocode);
-    console.log(`✅ Architecture generated with ${architecture.components?.length || 0} components\n`);
+    console.log(
+      `✅ Architecture generated with ${architecture.components?.length || 0} components\n`
+    );
 
     // Test architecture validation
     console.log('4. Validating generated architecture...');
-    const validation = await architectureEngine.validateArchitecturalConsistency(architecture.systemArchitecture);
-    console.log(`✅ Architecture validation completed with score: ${validation.overallScore.toFixed(2)}\n`);
+    const validation = await architectureEngine.validateArchitecturalConsistency(
+      architecture.systemArchitecture
+    );
+    console.log(
+      `✅ Architecture validation completed with score: ${validation.overallScore.toFixed(2)}\n`
+    );
 
     // Test architecture retrieval
     console.log('5. Testing architecture retrieval...');
@@ -248,7 +351,9 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
     // Test architecture statistics
     console.log('7. Testing architecture statistics...');
     const stats = await architectureEngine.getArchitectureStatistics();
-    console.log(`✅ Architecture statistics retrieved: ${stats.totalArchitectures} total architectures\n`);
+    console.log(
+      `✅ Architecture statistics retrieved: ${stats.totalArchitectures} total architectures\n`
+    );
 
     // Display architecture details
     console.log('8. Architecture Details:');
@@ -256,7 +361,9 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
     console.log(`   - Components: ${architecture.components?.length || 0}`);
     console.log(`   - Quality Attributes: ${architecture.qualityAttributes?.length || 0}`);
     console.log(`   - Security Requirements: ${architecture.securityRequirements?.length || 0}`);
-    console.log(`   - Scalability Requirements: ${architecture.scalabilityRequirements?.length || 0}`);
+    console.log(
+      `   - Scalability Requirements: ${architecture.scalabilityRequirements?.length || 0}`
+    );
     console.log(`   - Validation Score: ${validation.overallScore.toFixed(2)}`);
     console.log(`   - Validation Approved: ${validation.approved ? '✅' : '❌'}\n`);
 
@@ -282,7 +389,6 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
     }
 
     console.log('🎉 Database-Driven Architecture Engine test completed successfully!');
-    
   } catch (error) {
     console.error('❌ Test failed:', error);
     throw error;

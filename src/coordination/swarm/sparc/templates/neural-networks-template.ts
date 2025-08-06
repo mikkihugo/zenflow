@@ -1013,6 +1013,8 @@ END
 
   /**
    * Apply this template to a project specification
+   *
+   * @param projectSpec
    */
   async applyTo(projectSpec: ProjectSpecification): Promise<{
     specification: DetailedSpecification;
@@ -1033,6 +1035,8 @@ END
 
   /**
    * Customize specification based on project requirements
+   *
+   * @param projectSpec
    */
   customizeSpecification(projectSpec: ProjectSpecification): DetailedSpecification {
     const customized = { ...this.specification };
@@ -1077,6 +1081,8 @@ END
 
   /**
    * Customize pseudocode based on project requirements
+   *
+   * @param projectSpec
    */
   customizePseudocode(projectSpec: ProjectSpecification): PseudocodeStructure {
     const customized = { ...this.pseudocode };
@@ -1121,6 +1127,8 @@ END
 
   /**
    * Customize architecture based on project requirements
+   *
+   * @param projectSpec
    */
   customizeArchitecture(projectSpec: ProjectSpecification): ArchitectureDesign {
     const customized = { ...this.architecture };
@@ -1142,6 +1150,8 @@ END
 
   /**
    * Validate template compatibility with project
+   *
+   * @param projectSpec
    */
   validateCompatibility(projectSpec: ProjectSpecification): {
     compatible: boolean;

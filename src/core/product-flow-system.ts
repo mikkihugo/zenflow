@@ -20,6 +20,8 @@ const logger = createLogger('ProductFlowSystem');
  *
  * Coordinates the complete Product Flow with SPARC integration:
  * Vision → ADRs → PRDs → Epics → Features (+ SPARC) → Tasks (+ SPARC) → Code
+ *
+ * @example
  */
 export class ProductFlowSystem extends EventEmitter {
   private workflowEngine: ProductWorkflowEngine;
@@ -44,6 +46,9 @@ export class ProductFlowSystem extends EventEmitter {
 
   /**
    * Process a visionary document and trigger complete Product Flow
+   *
+   * @param workspaceId
+   * @param docPath
    */
   async processVisionaryDocument(workspaceId: string, docPath: string): Promise<void> {
     logger.info(`🚀 Processing visionary document: ${docPath}`);
@@ -67,6 +72,8 @@ export class ProductFlowSystem extends EventEmitter {
 
   /**
    * Load workspace for Product Flow operations
+   *
+   * @param workspacePath
    */
   async loadWorkspace(workspacePath: string): Promise<string> {
     const workspaceId = nanoid();
@@ -78,6 +85,8 @@ export class ProductFlowSystem extends EventEmitter {
 
   /**
    * Get workspace status and metrics
+   *
+   * @param workspaceId
    */
   async getWorkspaceStatus(workspaceId: string): Promise<{
     workspaceId: string;

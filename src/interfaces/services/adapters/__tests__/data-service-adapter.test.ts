@@ -1,32 +1,32 @@
 /**
  * Data Service Adapter Test Suite
- * 
+ *
  * Comprehensive test coverage for DataServiceAdapter following hybrid TDD approach:
  * - 70% London TDD (Mockist) for integration boundaries and service interactions
  * - 30% Classical TDD (Detroit) for business logic and data transformations
- * 
+ *
  * Tests cover adapter functionality, service integration, error handling,
  * performance metrics, caching, retry logic, and helper functions.
  */
 
 import { jest } from '@jest/globals';
 import type { MockedFunction } from 'jest-mock';
-
-import { DataServiceAdapter, type DataServiceAdapterConfig, createDefaultDataServiceAdapterConfig } from '../data-service-adapter';
-import { DataServiceFactory } from '../data-service-factory';
-import { DataServiceHelper, DataServiceUtils } from '../data-service-helpers';
-
-import { WebDataService } from '../../../web/web-data-service';
 import { DocumentManager } from '../../../../database/managers/document-manager';
-
+import { WebDataService } from '../../../web/web-data-service';
 import type {
-  ServiceStatus,
+  ServiceLifecycleStatus,
   ServiceMetrics,
   ServiceOperationResponse,
-  ServiceLifecycleStatus
+  ServiceStatus,
 } from '../../core/interfaces';
-
-import { ServiceType, ServicePriority, ServiceEnvironment } from '../../types';
+import { ServiceEnvironment, ServicePriority, ServiceType } from '../../types';
+import {
+  createDefaultDataServiceAdapterConfig,
+  DataServiceAdapter,
+  type DataServiceAdapterConfig,
+} from '../data-service-adapter';
+import { DataServiceFactory } from '../data-service-factory';
+import { DataServiceHelper, DataServiceUtils } from '../data-service-helpers';
 
 // Mock external dependencies
 jest.mock('../../../web/web-data-service');
@@ -36,8 +36,8 @@ jest.mock('../../../../utils/logger', () => ({
     info: jest.fn(),
     debug: jest.fn(),
     warn: jest.fn(),
-    error: jest.fn()
-  }))
+    error: jest.fn(),
+  })),
 }));
 
 const MockedWebDataService = WebDataService as jest.MockedClass<typeof WebDataService>;
@@ -59,25 +59,25 @@ describe('DataServiceAdapter', () => {
         enabled: true,
         mockData: true,
         cacheResponses: true,
-        cacheTTL: 60000
+        cacheTTL: 60000,
       },
       documentData: {
         enabled: true,
         databaseType: 'postgresql',
-        autoInitialize: true
+        autoInitialize: true,
       },
       cache: {
         enabled: true,
         strategy: 'memory',
         defaultTTL: 60000,
-        maxSize: 100
+        maxSize: 100,
       },
       retry: {
         enabled: true,
         maxAttempts: 3,
         backoffMultiplier: 2,
-        retryableOperations: ['system-status', 'document-get']
-      }
+        retryableOperations: ['system-status', 'document-get'],
+      },
     });
 
     // Set up WebDataService mock
@@ -89,7 +89,7 @@ describe('DataServiceAdapter', () => {
       createTask: jest.fn(),
       getDocuments: jest.fn(),
       executeCommand: jest.fn(),
-      getServiceStats: jest.fn()
+      getServiceStats: jest.fn(),
     } as any;
 
     // Set up DocumentService mock
@@ -102,7 +102,7 @@ describe('DataServiceAdapter', () => {
       queryDocuments: jest.fn(),
       searchDocuments: jest.fn(),
       createProject: jest.fn(),
-      getProjectWithDocuments: jest.fn()
+      getProjectWithDocuments: jest.fn(),
     } as any;
 
     MockedWebDataService.mockImplementation(() => mockWebDataService);
@@ -196,7 +196,7 @@ describe('DataServiceAdapter', () => {
         swarms: { active: 2, total: 5 },
         tasks: { pending: 3, active: 1, completed: 12 },
         resources: { cpu: '45%', memory: '67%', disk: '23%' },
-        uptime: '120m'
+        uptime: '120m',
       };
       mockWebDataService.getSystemStatus.mockResolvedValue(mockStatus);
 
@@ -212,7 +212,7 @@ describe('DataServiceAdapter', () => {
     it('should delegate swarm operations to WebDataService', async () => {
       // Arrange
       const mockSwarms = [
-        { id: 'swarm-1', name: 'Test Swarm', status: 'active', agents: 4, tasks: 8, progress: 75 }
+        { id: 'swarm-1', name: 'Test Swarm', status: 'active', agents: 4, tasks: 8, progress: 75 },
       ];
       mockWebDataService.getSwarms.mockResolvedValue(mockSwarms);
 
@@ -266,13 +266,13 @@ describe('DataServiceAdapter', () => {
       const searchOptions = {
         searchType: 'fulltext' as const,
         query: 'test query',
-        limit: 10
+        limit: 10,
       };
       const mockResults = {
         documents: [{ id: 'doc-1', title: 'Found Doc' }],
         total: 1,
         hasMore: false,
-        searchMetadata: { searchType: 'fulltext', query: 'test query', processingTime: 50 }
+        searchMetadata: { searchType: 'fulltext', query: 'test query', processingTime: 50 },
       };
       mockDocumentService.searchDocuments.mockResolvedValue(mockResults as any);
 
@@ -342,7 +342,7 @@ describe('DataServiceAdapter', () => {
       mockWebDataService.getServiceStats.mockReturnValue({
         requestsServed: 100,
         averageResponseTime: 150,
-        cacheHitRate: 0.85
+        cacheHitRate: 0.85,
       });
 
       await adapter.initialize();
@@ -362,7 +362,7 @@ describe('DataServiceAdapter', () => {
       mockWebDataService.getServiceStats.mockReturnValue({
         requestsServed: 100,
         averageResponseTime: 15000, // Exceeds threshold
-        cacheHitRate: 0.85
+        cacheHitRate: 0.85,
       });
 
       await adapter.initialize();
@@ -407,8 +407,8 @@ describe('DataServiceAdapter', () => {
         ...config,
         documentData: {
           ...config.documentData!,
-          databaseType: 'invalid-db' as any
-        }
+          databaseType: 'invalid-db' as any,
+        },
       };
 
       // Act
@@ -424,8 +424,8 @@ describe('DataServiceAdapter', () => {
         ...config,
         performance: {
           ...config.performance!,
-          maxConcurrency: 0 // Invalid value
-        }
+          maxConcurrency: 0, // Invalid value
+        },
       };
 
       // Act
@@ -547,7 +547,7 @@ describe('DataServiceAdapter', () => {
       mockWebDataService.getServiceStats.mockReturnValue({
         requestsServed: 100,
         averageResponseTime: 150,
-        cacheHitRate: 0.85
+        cacheHitRate: 0.85,
       });
       await adapter.initialize();
       await adapter.start();
@@ -673,12 +673,14 @@ describe('DataServiceFactory', () => {
         ...createDefaultDataServiceAdapterConfig('invalid-adapter'),
         documentData: {
           enabled: true,
-          databaseType: 'invalid-db' as any
-        }
+          databaseType: 'invalid-db' as any,
+        },
       };
 
       // Act & Assert
-      await expect(factory.create(invalidConfig)).rejects.toThrow('Invalid data service adapter configuration');
+      await expect(factory.create(invalidConfig)).rejects.toThrow(
+        'Invalid data service adapter configuration'
+      );
     });
   });
 
@@ -787,8 +789,22 @@ describe('DataServiceHelper', () => {
     it('should filter swarms correctly', async () => {
       // Arrange
       const mockSwarms = [
-        { id: 'swarm-1', name: 'Active Swarm', status: 'active', agents: 5, tasks: 10, progress: 75 },
-        { id: 'swarm-2', name: 'Inactive Swarm', status: 'stopped', agents: 3, tasks: 5, progress: 100 }
+        {
+          id: 'swarm-1',
+          name: 'Active Swarm',
+          status: 'active',
+          agents: 5,
+          tasks: 10,
+          progress: 75,
+        },
+        {
+          id: 'swarm-2',
+          name: 'Inactive Swarm',
+          status: 'stopped',
+          agents: 3,
+          tasks: 5,
+          progress: 100,
+        },
       ];
       mockWebDataService.getSwarms.mockResolvedValue(mockSwarms as any);
 
@@ -823,13 +839,16 @@ describe('DataServiceHelper', () => {
       const data = [
         { id: 1, name: 'Item 1', value: 10, active: true },
         { id: 2, name: 'Item 2', value: 20, active: false },
-        { id: 3, name: 'Item 3', value: 30, active: true }
+        { id: 3, name: 'Item 3', value: 30, active: true },
       ];
 
       const pipeline = [
         { type: 'filter' as const, config: { predicate: (item: any) => item.active } },
         { type: 'sort' as const, config: { field: 'value', direction: 'desc' } },
-        { type: 'map' as const, config: { mapper: (item: any) => ({ ...item, doubled: item.value * 2 }) } }
+        {
+          type: 'map' as const,
+          config: { mapper: (item: any) => ({ ...item, doubled: item.value * 2 }) },
+        },
       ];
 
       // Act
@@ -847,7 +866,7 @@ describe('DataServiceHelper', () => {
       // Arrange
       const data = [
         { id: 1, name: 'Item 1', value: 10 },
-        { id: 2, name: 'Item 2', value: 20 }
+        { id: 2, name: 'Item 2', value: 20 },
       ];
 
       // Act
@@ -903,9 +922,9 @@ describe('DataServiceUtils', () => {
         level1: {
           level2: {
             value: 'test',
-            array: [1, 2, 3]
-          }
-        }
+            array: [1, 2, 3],
+          },
+        },
       };
 
       // Act
@@ -953,8 +972,8 @@ describe('DataServiceUtils', () => {
         required: ['name', 'type'],
         properties: {
           name: { type: 'string' },
-          type: { type: 'string' }
-        }
+          type: { type: 'string' },
+        },
       };
 
       const validConfig = { name: 'test', type: 'data' };

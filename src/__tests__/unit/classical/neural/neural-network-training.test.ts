@@ -1,6 +1,7 @@
 /**
  * Neural Network Training Tests - Classical TDD
- * @fileoverview Tests for neural network training using Classical School approach
+ *
+ * @file Tests for neural network training using Classical School approach
  * Focus: Result verification, computational correctness, algorithm validation
  */
 

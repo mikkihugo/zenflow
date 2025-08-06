@@ -57,6 +57,8 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   /**
    * Register a recovery strategy
+   *
+   * @param strategy
    */
   registerStrategy(strategy: RecoveryStrategy): void {
     this.strategies.set(strategy.id, strategy);
@@ -65,6 +67,8 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   /**
    * Attempt error recovery
+   *
+   * @param context
    */
   async attemptRecovery(context: RecoveryContext): Promise<RecoveryResult> {
     const strategy = this.selectRecoveryStrategy(context);
@@ -119,6 +123,9 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   /**
    * Get recovery strategies for a given error type
+   *
+   * @param errorType
+   * @param component
    */
   getStrategiesForError(errorType: string, component: string): RecoveryStrategy[] {
     return Array.from(this.strategies.values())
@@ -132,6 +139,9 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   /**
    * Get recovery history
+   *
+   * @param component
+   * @param since
    */
   getRecoveryHistory(component?: string, since?: Date): Array<RecoveryResult & RecoveryContext> {
     let history = this.recoveryHistory;

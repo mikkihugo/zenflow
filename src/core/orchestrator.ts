@@ -33,6 +33,8 @@ export interface TaskResult {
 
 /**
  * Core orchestrator for system coordination
+ *
+ * @example
  */
 export class Orchestrator extends EventEmitter {
   private config: Required<OrchestratorConfig>;
@@ -121,6 +123,8 @@ export class Orchestrator extends EventEmitter {
 
   /**
    * Execute a task
+   *
+   * @param task
    */
   async executeTask(task: Task): Promise<TaskResult> {
     const startTime = Date.now();

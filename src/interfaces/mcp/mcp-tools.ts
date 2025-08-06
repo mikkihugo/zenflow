@@ -1,5 +1,5 @@
 /**
- * @fileoverview Advanced MCP Tools Infrastructure
+ * @file Advanced MCP Tools Infrastructure
  *
  * Provides the foundation for the 87 advanced MCP tools from claude-zen.
  * Extends the existing MCP infrastructure with enhanced capabilities.

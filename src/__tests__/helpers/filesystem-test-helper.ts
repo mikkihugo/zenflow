@@ -373,6 +373,9 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
 
   /**
    * Simulate file system events
+   *
+   * @param path
+   * @param event
    */
   simulateFileEvent(path: string, event: string): void {
     this.triggerWatchers(path, event);

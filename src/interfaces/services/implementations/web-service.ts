@@ -1,16 +1,18 @@
 /**
  * Web Service Implementation
- * 
+ *
  * Service implementation for web server operations, HTTP/HTTPS handling,
  * middleware management, and web interface coordination.
  */
 
-import { BaseService } from './base-service';
-import type { WebServiceConfig, ServiceOperationOptions } from '../types';
 import type { IService } from '../core/interfaces';
+import type { ServiceOperationOptions, WebServiceConfig } from '../types';
+import { BaseService } from './base-service';
 
 /**
  * Web service implementation
+ *
+ * @example
  */
 export class WebService extends BaseService implements IService {
   private server?: any; // Would be Express server in real implementation
@@ -19,7 +21,7 @@ export class WebService extends BaseService implements IService {
 
   constructor(config: WebServiceConfig) {
     super(config.name, config.type, config);
-    
+
     // Add web service capabilities
     this.addCapability('http-server');
     this.addCapability('middleware-management');
@@ -34,64 +36,66 @@ export class WebService extends BaseService implements IService {
 
   protected async doInitialize(): Promise<void> {
     this.logger.info(`Initializing web service: ${this.name}`);
-    
+
     const config = this.config as WebServiceConfig;
-    
+
     // Initialize server configuration
     const serverConfig = {
       host: config.server?.host || 'localhost',
       port: config.server?.port || 3000,
-      ssl: config.server?.ssl?.enabled || false
+      ssl: config.server?.ssl?.enabled || false,
     };
-    
+
     this.logger.debug(`Web server configuration:`, serverConfig);
-    
+
     // Initialize middleware
     this.initializeMiddleware();
-    
+
     // Initialize default routes
     this.initializeRoutes();
-    
-    this.logger.info(`Web service ${this.name} initialized for ${serverConfig.host}:${serverConfig.port}`);
+
+    this.logger.info(
+      `Web service ${this.name} initialized for ${serverConfig.host}:${serverConfig.port}`
+    );
   }
 
   protected async doStart(): Promise<void> {
     this.logger.info(`Starting web service: ${this.name}`);
-    
+
     const config = this.config as WebServiceConfig;
     const port = config.server?.port || 3000;
     const host = config.server?.host || 'localhost';
-    
+
     // Simulate server startup
     this.server = {
       port,
       host,
       started: true,
-      startTime: new Date()
+      startTime: new Date(),
     };
-    
+
     this.logger.info(`Web service ${this.name} started on ${host}:${port}`);
   }
 
   protected async doStop(): Promise<void> {
     this.logger.info(`Stopping web service: ${this.name}`);
-    
+
     if (this.server) {
       // Simulate graceful server shutdown
       this.server.started = false;
       this.server = undefined;
     }
-    
+
     this.logger.info(`Web service ${this.name} stopped successfully`);
   }
 
   protected async doDestroy(): Promise<void> {
     this.logger.info(`Destroying web service: ${this.name}`);
-    
+
     // Clear middleware and routes
     this.middleware = [];
     this.routes.clear();
-    
+
     this.logger.info(`Web service ${this.name} destroyed successfully`);
   }
 
@@ -101,7 +105,7 @@ export class WebService extends BaseService implements IService {
       if (!this.server || !this.server.started) {
         return false;
       }
-      
+
       // Check if service is responding
       // In real implementation, would make a health check request to the server
       return this.lifecycleStatus === 'running';
@@ -117,32 +121,32 @@ export class WebService extends BaseService implements IService {
     options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing web operation: ${operation}`);
-    
+
     switch (operation) {
       case 'get-server-info':
         return this.getServerInfo() as T;
-        
+
       case 'add-middleware':
-        return await this.addMiddleware(params?.name, params?.handler) as T;
-        
+        return (await this.addMiddleware(params?.name, params?.handler)) as T;
+
       case 'remove-middleware':
-        return await this.removeMiddleware(params?.name) as T;
-        
+        return (await this.removeMiddleware(params?.name)) as T;
+
       case 'add-route':
-        return await this.addRoute(params?.path, params?.method, params?.handler) as T;
-        
+        return (await this.addRoute(params?.path, params?.method, params?.handler)) as T;
+
       case 'remove-route':
-        return await this.removeRoute(params?.path, params?.method) as T;
-        
+        return (await this.removeRoute(params?.path, params?.method)) as T;
+
       case 'get-routes':
         return this.getRoutes() as T;
-        
+
       case 'get-middleware':
         return this.getMiddleware() as T;
-        
+
       case 'get-stats':
         return this.getServerStats() as T;
-        
+
       default:
         throw new Error(`Unknown web operation: ${operation}`);
     }
@@ -162,7 +166,7 @@ export class WebService extends BaseService implements IService {
       cors: config.cors?.enabled || false,
       rateLimit: config.rateLimit?.enabled || false,
       status: this.server?.started ? 'running' : 'stopped',
-      uptime: this.server?.startTime ? Date.now() - this.server.startTime.getTime() : 0
+      uptime: this.server?.startTime ? Date.now() - this.server.startTime.getTime() : 0,
     };
   }
 
@@ -170,26 +174,26 @@ export class WebService extends BaseService implements IService {
     if (!name || !handler) {
       throw new Error('Middleware name and handler are required');
     }
-    
+
     // Remove existing middleware with same name
-    this.middleware = this.middleware.filter(m => m.name !== name);
-    
+    this.middleware = this.middleware.filter((m) => m.name !== name);
+
     // Add new middleware
     this.middleware.push({ name, handler });
-    
+
     this.logger.info(`Added middleware: ${name}`);
     return true;
   }
 
   private async removeMiddleware(name: string): Promise<boolean> {
     const initialLength = this.middleware.length;
-    this.middleware = this.middleware.filter(m => m.name !== name);
-    
+    this.middleware = this.middleware.filter((m) => m.name !== name);
+
     const removed = this.middleware.length < initialLength;
     if (removed) {
       this.logger.info(`Removed middleware: ${name}`);
     }
-    
+
     return removed;
   }
 
@@ -197,10 +201,10 @@ export class WebService extends BaseService implements IService {
     if (!path || !method || !handler) {
       throw new Error('Route path, method, and handler are required');
     }
-    
+
     const routeKey = `${method.toUpperCase()}:${path}`;
     this.routes.set(routeKey, handler);
-    
+
     this.logger.info(`Added route: ${routeKey}`);
     return true;
   }
@@ -208,23 +212,23 @@ export class WebService extends BaseService implements IService {
   private async removeRoute(path: string, method: string): Promise<boolean> {
     const routeKey = `${method.toUpperCase()}:${path}`;
     const removed = this.routes.delete(routeKey);
-    
+
     if (removed) {
       this.logger.info(`Removed route: ${routeKey}`);
     }
-    
+
     return removed;
   }
 
   private getRoutes(): Array<{ path: string; method: string }> {
-    return Array.from(this.routes.keys()).map(key => {
+    return Array.from(this.routes.keys()).map((key) => {
       const [method, path] = key.split(':');
       return { path, method };
     });
   }
 
   private getMiddleware(): Array<{ name: string }> {
-    return this.middleware.map(m => ({ name: m.name }));
+    return this.middleware.map((m) => ({ name: m.name }));
   }
 
   private getServerStats(): any {
@@ -234,51 +238,52 @@ export class WebService extends BaseService implements IService {
       requestCount: this.operationCount,
       errorCount: this.errorCount,
       successRate: this.operationCount > 0 ? (this.successCount / this.operationCount) * 100 : 100,
-      averageResponseTime: this.latencyMetrics.length > 0 
-        ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) / this.latencyMetrics.length 
-        : 0
+      averageResponseTime:
+        this.latencyMetrics.length > 0
+          ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) / this.latencyMetrics.length
+          : 0,
     };
   }
 
   private initializeMiddleware(): void {
     const config = this.config as WebServiceConfig;
-    
+
     // Add default middleware based on configuration
     if (config.middleware?.compression) {
       this.middleware.push({ name: 'compression', handler: () => {} });
     }
-    
+
     if (config.middleware?.helmet) {
       this.middleware.push({ name: 'helmet', handler: () => {} });
     }
-    
+
     if (config.middleware?.morgan) {
       this.middleware.push({ name: 'morgan', handler: () => {} });
     }
-    
+
     // Add CORS middleware if enabled
     if (config.cors?.enabled) {
       this.middleware.push({ name: 'cors', handler: () => {} });
     }
-    
+
     // Add rate limiting middleware if enabled
     if (config.rateLimit?.enabled) {
       this.middleware.push({ name: 'rate-limit', handler: () => {} });
     }
-    
+
     this.logger.debug(`Initialized ${this.middleware.length} middleware components`);
   }
 
   private initializeRoutes(): void {
     // Add default health check route
     this.routes.set('GET:/health', () => ({ status: 'healthy', timestamp: new Date() }));
-    
+
     // Add default status route
     this.routes.set('GET:/status', () => this.getServerInfo());
-    
+
     // Add default metrics route
     this.routes.set('GET:/metrics', () => this.getServerStats());
-    
+
     this.logger.debug(`Initialized ${this.routes.size} default routes`);
   }
 }

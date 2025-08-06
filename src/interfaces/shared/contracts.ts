@@ -18,6 +18,8 @@ import type {
  *
  * Abstract interface for project management operations that can be
  * implemented by different interface layers.
+ *
+ * @example
  */
 export interface ProjectManagerContract {
   createProject(config: ProjectConfig): Promise<CommandResult>;
@@ -39,6 +41,8 @@ export interface ProjectSummary {
  *
  * Abstract interface for command execution that can be implemented
  * by different command engines.
+ *
+ * @example
  */
 export interface CommandExecutorContract {
   executeCommand(context: CommandContext): Promise<CommandResult>;
@@ -52,6 +56,8 @@ export interface CommandExecutorContract {
  *
  * Abstract interface for swarm operations that interfaces can use
  * without depending on specific swarm implementations.
+ *
+ * @example
  */
 export interface SwarmCoordinatorContract {
   initializeSwarm(config: SwarmConfig): Promise<CommandResult>;
@@ -85,6 +91,8 @@ export interface SwarmTask {
  * System Monitoring Contract
  *
  * Abstract interface for system monitoring and health checks.
+ *
+ * @example
  */
 export interface SystemMonitorContract {
   getSystemHealth(): Promise<SystemHealth>;
@@ -113,6 +121,8 @@ export interface PerformanceMetrics {
  * Data Service Contract
  *
  * Abstract interface for data operations that interfaces can use.
+ *
+ * @example
  */
 export interface DataServiceContract {
   getData<T>(key: string): Promise<T | null>;
@@ -125,6 +135,8 @@ export interface DataServiceContract {
  * Configuration Contract
  *
  * Abstract interface for configuration management.
+ *
+ * @example
  */
 export interface ConfigurationContract {
   getConfig<T>(key: string): T | undefined;

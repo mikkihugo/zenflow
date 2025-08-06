@@ -1,22 +1,24 @@
 /**
  * UACL Backward Compatibility Layer
- * 
+ *
  * Provides backward compatibility wrappers and migration utilities for existing client usage.
  * Ensures zero breaking changes when transitioning to UACL architecture.
- * 
- * @fileoverview Backward compatibility layer for UACL migration
+ *
+ * @file Backward compatibility layer for UACL migration
  */
 
-import { uacl, ClientType, type ClientInstance } from './index';
-import { APIClient, createAPIClient } from '../api/http/client';
-import { WebSocketClient } from '../api/websocket/client';
 import { FACTIntegration } from '../../knowledge/knowledge-client';
+import { type APIClient, createAPIClient } from '../api/http/client';
+import { WebSocketClient } from '../api/websocket/client';
 import { ExternalMCPClient } from '../mcp/external-mcp-client';
+import { type ClientInstance, ClientType, uacl } from './index';
 
 /**
  * Legacy HTTP Client Factory (Backward Compatible)
- * 
+ *
  * Provides the same interface as before but uses UACL internally
+ *
+ * @param config
  */
 export const createCompatibleAPIClient = (config: any = {}): APIClient => {
   // Use direct client creation for backward compatibility
@@ -26,8 +28,11 @@ export const createCompatibleAPIClient = (config: any = {}): APIClient => {
 
 /**
  * Enhanced HTTP Client Factory (UACL-Managed)
- * 
+ *
  * Creates HTTP client that's managed by UACL for enhanced monitoring and lifecycle management
+ *
+ * @param id
+ * @param config
  */
 export const createManagedAPIClient = async (
   id: string,
@@ -40,24 +45,34 @@ export const createManagedAPIClient = async (
     apiKey: config.apiKey,
     bearerToken: config.bearerToken,
     headers: config.headers,
-    retryAttempts: config.retryAttempts
+    retryAttempts: config.retryAttempts,
   });
 
   return {
     client: instance.client as APIClient,
-    instance
+    instance,
   };
 };
 
 /**
  * Legacy WebSocket Client Factory (Backward Compatible)
+ *
+ * @param url
+ * @param options
  */
-export const createCompatibleWebSocketClient = (url: string, options: any = {}): WebSocketClient => {
+export const createCompatibleWebSocketClient = (
+  url: string,
+  options: any = {}
+): WebSocketClient => {
   return new WebSocketClient(url, options);
 };
 
 /**
  * Enhanced WebSocket Client Factory (UACL-Managed)
+ *
+ * @param id
+ * @param url
+ * @param options
  */
 export const createManagedWebSocketClient = async (
   id: string,
@@ -70,17 +85,19 @@ export const createManagedWebSocketClient = async (
     timeout: options.timeout,
     reconnect: options.reconnect,
     reconnectInterval: options.reconnectInterval,
-    maxReconnectAttempts: options.maxReconnectAttempts
+    maxReconnectAttempts: options.maxReconnectAttempts,
   });
 
   return {
     client: instance.client as WebSocketClient,
-    instance
+    instance,
   };
 };
 
 /**
  * Legacy Knowledge Client Factory (Backward Compatible)
+ *
+ * @param config
  */
 export const createCompatibleKnowledgeClient = (config: any): FACTIntegration => {
   return new FACTIntegration(config);
@@ -88,22 +105,30 @@ export const createCompatibleKnowledgeClient = (config: any): FACTIntegration =>
 
 /**
  * Enhanced Knowledge Client Factory (UACL-Managed)
+ *
+ * @param id
+ * @param config
  */
 export const createManagedKnowledgeClient = async (
   id: string,
   config: any
 ): Promise<{ client: FACTIntegration; instance: ClientInstance }> => {
-  const instance = await uacl.createKnowledgeClient(id, config.factRepoPath, config.anthropicApiKey, {
-    enabled: true,
-    priority: 5,
-    pythonPath: config.pythonPath,
-    enableCache: config.enableCache,
-    cacheConfig: config.cacheConfig
-  });
+  const instance = await uacl.createKnowledgeClient(
+    id,
+    config.factRepoPath,
+    config.anthropicApiKey,
+    {
+      enabled: true,
+      priority: 5,
+      pythonPath: config.pythonPath,
+      enableCache: config.enableCache,
+      cacheConfig: config.cacheConfig,
+    }
+  );
 
   return {
     client: instance.client as FACTIntegration,
-    instance
+    instance,
   };
 };
 
@@ -116,6 +141,9 @@ export const createCompatibleMCPClient = (): ExternalMCPClient => {
 
 /**
  * Enhanced MCP Client Factory (UACL-Managed)
+ *
+ * @param id
+ * @param servers
  */
 export const createManagedMCPClient = async (
   id: string,
@@ -125,64 +153,79 @@ export const createManagedMCPClient = async (
     enabled: true,
     priority: 5,
     timeout: 30000,
-    retryAttempts: 3
+    retryAttempts: 3,
   });
 
   return {
     client: instance.client as ExternalMCPClient,
-    instance
+    instance,
   };
 };
 
 /**
  * Migration Helper Class
- * 
+ *
  * Provides utilities to gradually migrate existing code to UACL
+ *
+ * @example
  */
 export class UACLMigrationHelper {
-  private static migrationTracking = new Map<string, {
-    lastAccess: Date;
-    accessCount: number;
-    migrated: boolean;
-  }>();
+  private static migrationTracking = new Map<
+    string,
+    {
+      lastAccess: Date;
+      accessCount: number;
+      migrated: boolean;
+    }
+  >();
 
   /**
    * Track usage of legacy client creation
+   *
+   * @param clientType
+   * @param location
    */
   static trackLegacyUsage(clientType: string, location: string): void {
     const key = `${clientType}:${location}`;
-    const current = this.migrationTracking.get(key) || {
+    const current = UACLMigrationHelper.migrationTracking.get(key) || {
       lastAccess: new Date(),
       accessCount: 0,
-      migrated: false
+      migrated: false,
     };
 
     current.lastAccess = new Date();
     current.accessCount++;
-    
-    this.migrationTracking.set(key, current);
+
+    UACLMigrationHelper.migrationTracking.set(key, current);
 
     // Log recommendation for migration
     if (current.accessCount === 1) {
-      console.log(`📊 UACL Migration: Consider migrating ${clientType} client at ${location} to UACL for enhanced monitoring and lifecycle management`);
+      console.log(
+        `📊 UACL Migration: Consider migrating ${clientType} client at ${location} to UACL for enhanced monitoring and lifecycle management`
+      );
     }
   }
 
   /**
    * Mark a client as migrated to UACL
+   *
+   * @param clientType
+   * @param location
    */
   static markAsMigrated(clientType: string, location: string): void {
     const key = `${clientType}:${location}`;
-    const current = this.migrationTracking.get(key) || {
+    const current = UACLMigrationHelper.migrationTracking.get(key) || {
       lastAccess: new Date(),
       accessCount: 0,
-      migrated: false
+      migrated: false,
     };
 
     current.migrated = true;
-    this.migrationTracking.set(key, current);
-    
-    console.log(`✅ UACL Migration: ${clientType} client at ${location} successfully migrated to UACL`);
+    UACLMigrationHelper.migrationTracking.set(key, current);
+
+    console.log(
+      `✅ UACL Migration: ${clientType} client at ${location} successfully migrated to UACL`
+    );
   }
 
   /**
@@ -200,30 +243,36 @@ export class UACLMigrationHelper {
       migrated: boolean;
     }>;
   } {
-    const details = Array.from(this.migrationTracking.entries()).map(([key, data]) => {
-      const [clientType, location] = key.split(':');
-      return {
-        clientType,
-        location,
-        accessCount: data.accessCount,
-        lastAccess: data.lastAccess,
-        migrated: data.migrated
-      };
-    });
+    const details = Array.from(UACLMigrationHelper.migrationTracking.entries()).map(
+      ([key, data]) => {
+        const [clientType, location] = key.split(':');
+        return {
+          clientType,
+          location,
+          accessCount: data.accessCount,
+          lastAccess: data.lastAccess,
+          migrated: data.migrated,
+        };
+      }
+    );
 
-    const migrated = details.filter(d => d.migrated).length;
+    const migrated = details.filter((d) => d.migrated).length;
     const total = details.length;
 
     return {
       total,
       migrated,
       pending: total - migrated,
-      details
+      details,
     };
   }
 
   /**
    * Auto-migrate a client to UACL if conditions are met
+   *
+   * @param clientType
+   * @param id
+   * @param config
    */
   static async autoMigrate(
     clientType: ClientType,
@@ -239,7 +288,12 @@ export class UACLMigrationHelper {
         case ClientType.WEBSOCKET:
           return await uacl.createWebSocketClient(id, config.url, config);
         case ClientType.KNOWLEDGE:
-          return await uacl.createKnowledgeClient(id, config.factRepoPath, config.anthropicApiKey, config);
+          return await uacl.createKnowledgeClient(
+            id,
+            config.factRepoPath,
+            config.anthropicApiKey,
+            config
+          );
         case ClientType.MCP:
           return await uacl.createMCPClient(id, config.servers, config);
         default:
@@ -254,7 +308,7 @@ export class UACLMigrationHelper {
 
 /**
  * Legacy Export Aliases
- * 
+ *
  * Maintains exact same export names for backward compatibility
  */
 
@@ -262,7 +316,7 @@ export class UACLMigrationHelper {
 export const apiClient = createCompatibleAPIClient();
 export { createAPIClient as legacyCreateAPIClient };
 
-// WebSocket Client exports  
+// WebSocket Client exports
 export { WebSocketClient as LegacyWebSocketClient };
 
 // Knowledge Client exports
@@ -273,43 +327,50 @@ export { ExternalMCPClient as LegacyExternalMCPClient };
 
 /**
  * Enhanced Client Creation Functions
- * 
+ *
  * Drop-in replacements that provide UACL benefits with minimal changes
  */
 
 /**
  * Enhanced HTTP client creation with automatic UACL management
- * 
+ *
  * Usage:
  * ```typescript
  * // Before
  * const client = createAPIClient(config);
- * 
+ *
  * // After (enhanced with UACL)
  * const { client } = await createEnhancedAPIClient('my-api', config);
  * ```
+ *
+ * @param id
+ * @param config
  */
 export const createEnhancedAPIClient = async (
-  id: string, 
+  id: string,
   config: any = {}
 ): Promise<{ client: APIClient; instance: ClientInstance }> => {
   UACLMigrationHelper.trackLegacyUsage('HTTP', `createEnhancedAPIClient:${id}`);
-  
+
   try {
     const result = await createManagedAPIClient(id, config);
     UACLMigrationHelper.markAsMigrated('HTTP', `createEnhancedAPIClient:${id}`);
     return result;
   } catch (error) {
     console.warn(`⚠️ Failed to create UACL-managed HTTP client, falling back to legacy:`, error);
-    return { 
-      client: createCompatibleAPIClient(config), 
-      instance: null as any 
+    return {
+      client: createCompatibleAPIClient(config),
+      instance: null as any,
     };
   }
 };
 
 /**
  * Enhanced WebSocket client creation with automatic UACL management
+ *
+ * @param id
+ * @param url
+ * @param options
  */
 export const createEnhancedWebSocketClient = async (
   id: string,
@@ -317,60 +378,72 @@ export const createEnhancedWebSocketClient = async (
   options: any = {}
 ): Promise<{ client: WebSocketClient; instance: ClientInstance }> => {
   UACLMigrationHelper.trackLegacyUsage('WebSocket', `createEnhancedWebSocketClient:${id}`);
-  
+
   try {
     const result = await createManagedWebSocketClient(id, url, options);
     UACLMigrationHelper.markAsMigrated('WebSocket', `createEnhancedWebSocketClient:${id}`);
     return result;
   } catch (error) {
-    console.warn(`⚠️ Failed to create UACL-managed WebSocket client, falling back to legacy:`, error);
-    return { 
-      client: createCompatibleWebSocketClient(url, options), 
-      instance: null as any 
+    console.warn(
+      `⚠️ Failed to create UACL-managed WebSocket client, falling back to legacy:`,
+      error
+    );
+    return {
+      client: createCompatibleWebSocketClient(url, options),
+      instance: null as any,
     };
   }
 };
 
 /**
  * Enhanced knowledge client creation with automatic UACL management
+ *
+ * @param id
+ * @param config
  */
 export const createEnhancedKnowledgeClient = async (
   id: string,
   config: any
 ): Promise<{ client: FACTIntegration; instance: ClientInstance }> => {
   UACLMigrationHelper.trackLegacyUsage('Knowledge', `createEnhancedKnowledgeClient:${id}`);
-  
+
   try {
     const result = await createManagedKnowledgeClient(id, config);
     UACLMigrationHelper.markAsMigrated('Knowledge', `createEnhancedKnowledgeClient:${id}`);
     return result;
   } catch (error) {
-    console.warn(`⚠️ Failed to create UACL-managed Knowledge client, falling back to legacy:`, error);
-    return { 
-      client: createCompatibleKnowledgeClient(config), 
-      instance: null as any 
+    console.warn(
+      `⚠️ Failed to create UACL-managed Knowledge client, falling back to legacy:`,
+      error
+    );
+    return {
+      client: createCompatibleKnowledgeClient(config),
+      instance: null as any,
     };
   }
 };
 
 /**
  * Enhanced MCP client creation with automatic UACL management
+ *
+ * @param id
+ * @param servers
  */
 export const createEnhancedMCPClient = async (
   id: string,
   servers: any
 ): Promise<{ client: ExternalMCPClient; instance: ClientInstance }> => {
   UACLMigrationHelper.trackLegacyUsage('MCP', `createEnhancedMCPClient:${id}`);
-  
+
   try {
     const result = await createManagedMCPClient(id, servers);
     UACLMigrationHelper.markAsMigrated('MCP', `createEnhancedMCPClient:${id}`);
     return result;
   } catch (error) {
     console.warn(`⚠️ Failed to create UACL-managed MCP client, falling back to legacy:`, error);
-    return { 
-      client: createCompatibleMCPClient(), 
-      instance: null as any 
+    return {
+      client: createCompatibleMCPClient(),
+      instance: null as any,
     };
   }
 };
@@ -392,13 +465,13 @@ export const performBatchMigration = async (): Promise<{
   errors: Array<{ client: string; error: string }>;
 }> => {
   const report = UACLMigrationHelper.getMigrationReport();
-  const pending = report.details.filter(d => !d.migrated);
-  
+  const pending = report.details.filter((d) => !d.migrated);
+
   const results = {
     attempted: pending.length,
     successful: 0,
     failed: 0,
-    errors: [] as Array<{ client: string; error: string }>
+    errors: [] as Array<{ client: string; error: string }>,
   };
 
   for (const client of pending) {
@@ -412,7 +485,7 @@ export const performBatchMigration = async (): Promise<{
       results.failed++;
       results.errors.push({
         client: `${client.clientType}:${client.location}`,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
     }
   }
@@ -426,21 +499,21 @@ export default {
   createCompatibleWebSocketClient,
   createCompatibleKnowledgeClient,
   createCompatibleMCPClient,
-  
+
   // UACL-managed versions
   createManagedAPIClient,
-  createManagedWebSocketClient,  
+  createManagedWebSocketClient,
   createManagedKnowledgeClient,
   createManagedMCPClient,
-  
+
   // Enhanced versions with fallback
   createEnhancedAPIClient,
   createEnhancedWebSocketClient,
   createEnhancedKnowledgeClient,
   createEnhancedMCPClient,
-  
+
   // Migration utilities
   UACLMigrationHelper,
   getMigrationStatus,
-  performBatchMigration
+  performBatchMigration,
 };

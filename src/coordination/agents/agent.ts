@@ -301,6 +301,8 @@ export class BaseAgent implements Agent {
 
 /**
  * Specialized agent for research tasks
+ *
+ * @example
  */
 export class ResearcherAgent extends BaseAgent {
   constructor(config: Omit<AgentConfig, 'type'>) {
@@ -334,6 +336,8 @@ export class ResearcherAgent extends BaseAgent {
 
 /**
  * Specialized agent for coding tasks
+ *
+ * @example
  */
 export class CoderAgent extends BaseAgent {
   constructor(config: Omit<AgentConfig, 'type'>) {
@@ -370,6 +374,8 @@ export class CoderAgent extends BaseAgent {
 
 /**
  * Specialized agent for analysis tasks
+ *
+ * @example
  */
 export class AnalystAgent extends BaseAgent {
   constructor(config: Omit<AgentConfig, 'type'>) {
@@ -400,6 +406,8 @@ export class AnalystAgent extends BaseAgent {
 
 /**
  * Factory function to create specialized agents
+ *
+ * @param config
  */
 export function createAgent(config: AgentConfig): Agent {
   switch (config.type) {
@@ -416,6 +424,8 @@ export function createAgent(config: AgentConfig): Agent {
 
 /**
  * Agent pool for managing multiple agents
+ *
+ * @example
  */
 export class AgentPool {
   private agents: Map<string, Agent> = new Map();

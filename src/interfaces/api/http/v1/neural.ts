@@ -5,7 +5,7 @@
  * Moved from neural/api.ts to unified API layer.
  * Following Google API Design Guide standards.
  *
- * @fileoverview Neural network domain API routes
+ * @file Neural network domain API routes
  */
 
 import { type Request, type Response, Router } from 'express';

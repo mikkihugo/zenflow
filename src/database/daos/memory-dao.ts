@@ -1,33 +1,33 @@
 /**
  * Memory DAO Implementation
- * 
+ *
  * Data Access Object for in-memory operations with caching,
  * TTL management, and memory optimization.
  */
 
-import { BaseDataAccessObject } from '../base-repository';
-import type { IMemoryRepository, TransactionOperation, MemoryStats } from '../interfaces';
 import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
+import { BaseDataAccessObject } from '../base-repository';
+import type { IMemoryRepository, MemoryStats, TransactionOperation } from '../interfaces';
 
 /**
  * Memory database DAO implementation
+ *
  * @template T The entity type this DAO manages
+ * @example
  */
 export class MemoryDAO<T> extends BaseDataAccessObject<T> {
   private get memoryRepository(): IMemoryRepository<T> {
     return this.repository as IMemoryRepository<T>;
   }
 
-  constructor(
-    repository: IMemoryRepository<T>,
-    adapter: DatabaseAdapter,
-    logger: ILogger
-  ) {
+  constructor(repository: IMemoryRepository<T>, adapter: DatabaseAdapter, logger: ILogger) {
     super(repository, adapter, logger);
   }
 
   /**
    * Execute memory-optimized transaction
+   *
+   * @param operations
    */
   async executeMemoryTransaction<R>(operations: TransactionOperation[]): Promise<R> {
     this.logger.debug(`Executing memory transaction with ${operations.length} operations`);
@@ -43,7 +43,7 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
           case 'create':
             if (operation.data && operation.entityType) {
               result = await this.repository.create(operation.data);
-              
+
               // Set TTL if specified in metadata
               if (operation.data.ttl) {
                 await this.memoryRepository.setTTL((result as any).id, operation.data.ttl);
@@ -84,12 +84,19 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
       return results as R;
     } catch (error) {
       this.logger.error(`Memory transaction failed: ${error}`);
-      throw new Error(`Memory transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Memory transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Bulk cache operations with optimization
+   *
+   * @param entries
+   * @param options
+   * @param options.strategy
+   * @param options.overwrite
    */
   async bulkCache(
     entries: Array<{
@@ -111,7 +118,7 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
     const results = {
       successful: 0,
       failed: 0,
-      errors: [] as Array<{ key: string; error: string }>
+      errors: [] as Array<{ key: string; error: string }>,
     };
 
     const strategy = options?.strategy || 'immediate';
@@ -122,7 +129,7 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
       return {
         successful: entries.length,
         failed: 0,
-        errors: []
+        errors: [],
       };
     }
 
@@ -135,7 +142,7 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
             results.failed++;
             results.errors.push({
               key: entry.key,
-              error: 'Key already exists and overwrite is disabled'
+              error: 'Key already exists and overwrite is disabled',
             });
             continue;
           }
@@ -147,17 +154,22 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
         results.failed++;
         results.errors.push({
           key: entry.key,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }
 
-    this.logger.debug(`Bulk cache completed: ${results.successful} successful, ${results.failed} failed`);
+    this.logger.debug(
+      `Bulk cache completed: ${results.successful} successful, ${results.failed} failed`
+    );
     return results;
   }
 
   /**
    * Cache warming strategies
+   *
+   * @param strategy
+   * @param parameters
    */
   async warmCache(
     strategy: 'preload' | 'predictive' | 'usage_based',
@@ -198,16 +210,20 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
       return {
         preloaded,
         estimatedHitRate,
-        warmingTime
+        warmingTime,
       };
     } catch (error) {
       this.logger.error(`Cache warming failed: ${error}`);
-      throw new Error(`Cache warming failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Cache warming failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Memory optimization operations
+   *
+   * @param strategy
    */
   async optimizeMemory(
     strategy: 'lru_cleanup' | 'ttl_cleanup' | 'size_optimization' | 'fragmentation_fix'
@@ -249,16 +265,20 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
       const freedMemory = initialStats.usedMemory - finalStats.usedMemory;
       const optimizationTime = Date.now() - startTime;
 
-      this.logger.debug(`Memory optimization completed: ${freedMemory} bytes freed, ${itemsRemoved} items removed`);
+      this.logger.debug(
+        `Memory optimization completed: ${freedMemory} bytes freed, ${itemsRemoved} items removed`
+      );
 
       return {
         freedMemory,
         optimizationTime,
-        itemsRemoved
+        itemsRemoved,
       };
     } catch (error) {
       this.logger.error(`Memory optimization failed: ${error}`);
-      throw new Error(`Memory optimization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Memory optimization failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -279,31 +299,39 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
 
     try {
       const stats = await this.memoryRepository.getMemoryStats();
-      
+
       // In a real implementation, these would be tracked
       const hotKeys = await this.getHotKeys();
       const recommendations = this.generateRecommendations(stats);
-      
+
       const performance = {
         hitRate: stats.hitRate,
         missRate: stats.missRate,
-        avgResponseTime: 2.5 // Mock value
+        avgResponseTime: 2.5, // Mock value
       };
 
       return {
         stats,
         hotKeys,
         recommendations,
-        performance
+        performance,
       };
     } catch (error) {
       this.logger.error(`Cache analytics failed: ${error}`);
-      throw new Error(`Cache analytics failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Cache analytics failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Session-based caching
+   *
+   * @param sessionId
+   * @param options
+   * @param options.ttl
+   * @param options.maxSize
+   * @param options.evictionPolicy
    */
   async createSession(
     sessionId: string,
@@ -327,7 +355,7 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
       maxSize: options?.maxSize || 100,
       evictionPolicy: options?.evictionPolicy || 'lru',
       itemCount: 0,
-      lastAccessed: new Date()
+      lastAccessed: new Date(),
     };
 
     await this.memoryRepository.cache(sessionKey, sessionConfig, options?.ttl);
@@ -335,7 +363,7 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
     return {
       sessionId,
       createdAt: sessionConfig.createdAt,
-      configuration: sessionConfig
+      configuration: sessionConfig,
     };
   }
 
@@ -356,7 +384,7 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
       'session_management',
       'analytics',
       'warming_strategies',
-      'hit_rate_optimization'
+      'hit_rate_optimization',
     ];
   }
 
@@ -366,7 +394,7 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
       supportsTTL: true,
       supportsEviction: true,
       supportsOptimization: true,
-      defaultTTL: 3600
+      defaultTTL: 3600,
     };
   }
 
@@ -380,8 +408,8 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
         evictionRate: 0.05,
         memoryUtilization: 78.5,
         avgTTL: 1800,
-        sessionCount: 45
-      }
+        sessionCount: 45,
+      },
     };
   }
 
@@ -412,7 +440,7 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
   private async preloadCache(parameters?: Record<string, any>): Promise<number> {
     const limit = parameters?.limit || 100;
     const entities = await this.repository.findAll({ limit });
-    
+
     let preloaded = 0;
     for (const entity of entities) {
       try {
@@ -497,7 +525,7 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
     return [
       { key: 'entity:1', accessCount: 150 },
       { key: 'entity:5', accessCount: 120 },
-      { key: 'session:abc123', accessCount: 85 }
+      { key: 'session:abc123', accessCount: 85 },
     ];
   }
 
@@ -509,11 +537,15 @@ export class MemoryDAO<T> extends BaseDataAccessObject<T> {
     }
 
     if (stats.usedMemory / stats.totalMemory > 0.9) {
-      recommendations.push('Memory usage is high, consider increasing memory limit or implementing more aggressive eviction');
+      recommendations.push(
+        'Memory usage is high, consider increasing memory limit or implementing more aggressive eviction'
+      );
     }
 
     if (stats.evictions > 100) {
-      recommendations.push('High eviction rate detected, consider increasing cache size or optimizing TTL values');
+      recommendations.push(
+        'High eviction rate detected, consider increasing cache size or optimizing TTL values'
+      );
     }
 
     return recommendations;

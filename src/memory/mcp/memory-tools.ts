@@ -1,5 +1,5 @@
 /**
- * @fileoverview Memory Management MCP Tools
+ * @file Memory Management MCP Tools
  * Comprehensive MCP tools for advanced memory system coordination and management
  */
 

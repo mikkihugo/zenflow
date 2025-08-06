@@ -1,5 +1,5 @@
 /**
- * @fileoverview Database-specific Error Types and Handling
+ * @file Database-specific Error Types and Handling
  * Comprehensive error classification and recovery for database systems
  */
 
@@ -97,6 +97,8 @@ export class DatabaseError extends Error {
 
   /**
    * Check if an error code is typically recoverable
+   *
+   * @param code
    */
   static isRecoverable(code: DatabaseErrorCode): boolean {
     const recoverableErrors = new Set([
@@ -116,6 +118,8 @@ export class DatabaseError extends Error {
 
   /**
    * Check if an error code is typically retryable
+   *
+   * @param code
    */
   static isRetryable(code: DatabaseErrorCode): boolean {
     const retryableErrors = new Set([
@@ -132,6 +136,8 @@ export class DatabaseError extends Error {
 
   /**
    * Get severity level for an error code
+   *
+   * @param code
    */
   static getSeverity(code: DatabaseErrorCode): 'low' | 'medium' | 'high' | 'critical' {
     const severityMap = {
@@ -188,6 +194,9 @@ export class DatabaseError extends Error {
 
   /**
    * Create a DatabaseError from a generic error
+   *
+   * @param error
+   * @param context
    */
   static fromError(error: Error, context: DatabaseErrorContext): DatabaseError {
     // Try to determine error code from error message or type
@@ -258,10 +267,14 @@ export class DatabaseTransactionError extends DatabaseError {
 
 /**
  * Error classification helper
+ *
+ * @example
  */
 export class DatabaseErrorClassifier {
   /**
    * Classify an error by its characteristics
+   *
+   * @param error
    */
   static classify(error: Error | DatabaseError): {
     category:

@@ -5,9 +5,9 @@
  * Separates business logic from UI rendering concerns following Google standards.
  */
 
-import { createSimpleLogger } from './utils/logger';
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
+import { createSimpleLogger } from './utils/logger';
 
 const logger = createSimpleLogger('CommandEngine');
 
@@ -36,13 +36,15 @@ export interface ExecutionContext {
 /**
  * Pure TypeScript command execution engine
  * No React dependencies - focused on business logic
+ *
+ * @example
  */
 export class CommandExecutionEngine {
   private static readonly SUPPORTED_COMMANDS = [
     'init',
     'status',
     'query',
-    'agents', 
+    'agents',
     'tasks',
     'knowledge',
     'health',
@@ -57,6 +59,11 @@ export class CommandExecutionEngine {
 
   /**
    * Execute command with full context and error handling
+   *
+   * @param command
+   * @param args
+   * @param flags
+   * @param context
    */
   static async executeCommand(
     command: string,
@@ -171,6 +178,8 @@ export class CommandExecutionEngine {
 
   /**
    * Handle init command - project initialization
+   *
+   * @param context
    */
   private static async handleInitCommand(context: ExecutionContext): Promise<CommandResult> {
     const projectName = context.args[0] || 'claude-zen-project';
@@ -198,6 +207,8 @@ export class CommandExecutionEngine {
 
   /**
    * Handle status command - system status
+   *
+   * @param context
    */
   private static async handleStatusCommand(context: ExecutionContext): Promise<CommandResult> {
     logger.debug('Retrieving system status');
@@ -261,13 +272,16 @@ export class CommandExecutionEngine {
 
   /**
    * Handle hive command - high-level Hive coordination
+   *
+   * @param context
    */
   private static async handleHiveCommand(context: ExecutionContext): Promise<CommandResult> {
     const action = context.args[0];
     if (!action) {
       return {
         success: false,
-        error: 'Hive action required. Available actions: status, query, agents, tasks, knowledge, sync, health, contribute',
+        error:
+          'Hive action required. Available actions: status, query, agents, tasks, knowledge, sync, health, contribute',
       };
     }
     logger.debug(`Executing hive action: ${action}`);
@@ -298,6 +312,8 @@ export class CommandExecutionEngine {
 
   /**
    * Handle swarm command - swarm management
+   *
+   * @param context
    */
   private static async handleSwarmCommand(context: ExecutionContext): Promise<CommandResult> {
     const action = context.args[0];
@@ -305,7 +321,8 @@ export class CommandExecutionEngine {
     if (!action) {
       return {
         success: false,
-        error: 'Swarm action required. Available actions: start, stop, list, status, create, init, spawn, monitor, metrics, orchestrate',
+        error:
+          'Swarm action required. Available actions: start, stop, list, status, create, init, spawn, monitor, metrics, orchestrate',
       };
     }
 
@@ -342,6 +359,8 @@ export class CommandExecutionEngine {
 
   /**
    * Handle MCP command - MCP server operations
+   *
+   * @param context
    */
   private static async handleMcpCommand(context: ExecutionContext): Promise<CommandResult> {
     const action = context.args[0];
@@ -440,6 +459,8 @@ export class CommandExecutionEngine {
 
   /**
    * Handle workspace command - document-driven development
+   *
+   * @param context
    */
   private static async handleWorkspaceCommand(context: ExecutionContext): Promise<CommandResult> {
     const action = context.args[0];
@@ -536,6 +557,8 @@ export class CommandExecutionEngine {
 
   /**
    * Handle discover command - neural auto-discovery system
+   *
+   * @param context
    */
   private static async handleDiscoverCommand(context: ExecutionContext): Promise<CommandResult> {
     try {
@@ -623,6 +646,9 @@ export class CommandExecutionEngine {
 
   /**
    * Fallback discover implementation when enhanced version fails
+   *
+   * @param projectPath
+   * @param options
    */
   private static async handleDiscoverFallback(
     projectPath: string,
@@ -739,6 +765,8 @@ export class CommandExecutionEngine {
 
   /**
    * Handle help command
+   *
+   * @param _context
    */
   private static async handleHelpCommand(_context: ExecutionContext): Promise<CommandResult> {
     const helpContent = {
@@ -831,6 +859,8 @@ export class CommandExecutionEngine {
 
   /**
    * Swarm management sub-handlers
+   *
+   * @param context
    */
   private static async handleSwarmStart(context: ExecutionContext): Promise<CommandResult> {
     const agents = parseInt(context.flags.agents) || 4;
@@ -894,8 +924,14 @@ export class CommandExecutionEngine {
 
   /**
    * Call MCP tool via stdio protocol
+   *
+   * @param toolName
+   * @param params
    */
-  private static async callMcpTool(toolName: string, params: any = {}): Promise<{success: boolean, data?: any, error?: string}> {
+  private static async callMcpTool(
+    toolName: string,
+    params: any = {}
+  ): Promise<{ success: boolean; data?: any; error?: string }> {
     return new Promise((resolve) => {
       const mcpProcess = spawn('npx', ['tsx', 'src/coordination/swarm/mcp/mcp-server.ts'], {
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -938,7 +974,7 @@ export class CommandExecutionEngine {
                 isResolved = true;
                 clearTimeout(timeout);
                 mcpProcess.kill();
-                
+
                 if (response.error) {
                   resolve({ success: false, error: response.error.message });
                 } else {
@@ -995,7 +1031,7 @@ export class CommandExecutionEngine {
     try {
       // Call the swarm MCP tool for real status
       const mcpResult = await CommandExecutionEngine.callMcpTool('swarm_status', {});
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1054,20 +1090,22 @@ export class CommandExecutionEngine {
 
   /**
    * Handle swarm init command - initialize new swarm coordination
+   *
+   * @param context
    */
   private static async handleSwarmInit(context: ExecutionContext): Promise<CommandResult> {
     try {
       const topology = context.flags.topology || context.flags.t || 'auto';
       const maxAgents = parseInt(context.flags.agents || context.flags.a) || 4;
       const name = context.args[1] || 'New Swarm';
-      
+
       // Call the swarm MCP tool for real initialization
       const mcpResult = await CommandExecutionEngine.callMcpTool('swarm_init', {
         name,
         topology,
         maxAgents,
       });
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1091,18 +1129,20 @@ export class CommandExecutionEngine {
 
   /**
    * Handle swarm spawn command - spawn new agent
+   *
+   * @param context
    */
   private static async handleSwarmSpawn(context: ExecutionContext): Promise<CommandResult> {
     try {
       const agentType = context.args[1] || 'general';
       const agentName = context.args[2] || `${agentType}-${Date.now()}`;
-      
+
       // Call the swarm MCP tool for real agent spawning
       const mcpResult = await CommandExecutionEngine.callMcpTool('agent_spawn', {
         type: agentType,
         name: agentName,
       });
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1126,12 +1166,14 @@ export class CommandExecutionEngine {
 
   /**
    * Handle swarm monitor command - real-time swarm monitoring
+   *
+   * @param context
    */
   private static async handleSwarmMonitor(context: ExecutionContext): Promise<CommandResult> {
     try {
       // Call the swarm MCP tool for real monitoring data
       const mcpResult = await CommandExecutionEngine.callMcpTool('swarm_monitor', {});
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1155,12 +1197,14 @@ export class CommandExecutionEngine {
 
   /**
    * Handle swarm metrics command - agent metrics
+   *
+   * @param context
    */
   private static async handleSwarmMetrics(context: ExecutionContext): Promise<CommandResult> {
     try {
       // Call the swarm MCP tool for real agent metrics
       const mcpResult = await CommandExecutionEngine.callMcpTool('agent_metrics', {});
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1184,18 +1228,20 @@ export class CommandExecutionEngine {
 
   /**
    * Handle swarm orchestrate command - task orchestration
+   *
+   * @param context
    */
   private static async handleSwarmOrchestrate(context: ExecutionContext): Promise<CommandResult> {
     try {
       const task = context.args[1] || 'Generic Task';
       const strategy = context.flags.strategy || context.flags.s || 'auto';
-      
+
       // Call the swarm MCP tool for real task orchestration
       const mcpResult = await CommandExecutionEngine.callMcpTool('task_orchestrate', {
         task,
         strategy,
       });
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1219,11 +1265,13 @@ export class CommandExecutionEngine {
 
   /**
    * Handle hive status command
+   *
+   * @param _context
    */
   private static async handleHiveStatus(_context: ExecutionContext): Promise<CommandResult> {
     try {
       const mcpResult = await CommandExecutionEngine.callMcpTool('hive_status', {});
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1247,19 +1295,21 @@ export class CommandExecutionEngine {
 
   /**
    * Handle hive query command
+   *
+   * @param context
    */
   private static async handleHiveQuery(context: ExecutionContext): Promise<CommandResult> {
     try {
       const query = context.args[1] || '';
       const domain = context.flags.domain || context.flags.d || 'all';
       const confidence = parseFloat(context.flags.confidence || context.flags.c) || 0.7;
-      
+
       const mcpResult = await CommandExecutionEngine.callMcpTool('hive_query', {
         query,
         domain,
         confidence,
       });
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1283,11 +1333,13 @@ export class CommandExecutionEngine {
 
   /**
    * Handle hive agents command
+   *
+   * @param _context
    */
   private static async handleHiveAgents(_context: ExecutionContext): Promise<CommandResult> {
     try {
       const mcpResult = await CommandExecutionEngine.callMcpTool('hive_agents', {});
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1311,15 +1363,17 @@ export class CommandExecutionEngine {
 
   /**
    * Handle hive tasks command
+   *
+   * @param context
    */
   private static async handleHiveTasks(context: ExecutionContext): Promise<CommandResult> {
     try {
       const status = context.flags.status || context.flags.s || 'all';
-      
+
       const mcpResult = await CommandExecutionEngine.callMcpTool('hive_tasks', {
         status,
       });
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1343,11 +1397,13 @@ export class CommandExecutionEngine {
 
   /**
    * Handle hive knowledge command
+   *
+   * @param _context
    */
   private static async handleHiveKnowledge(_context: ExecutionContext): Promise<CommandResult> {
     try {
       const mcpResult = await CommandExecutionEngine.callMcpTool('hive_knowledge', {});
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1371,15 +1427,17 @@ export class CommandExecutionEngine {
 
   /**
    * Handle hive sync command
+   *
+   * @param context
    */
   private static async handleHiveSync(context: ExecutionContext): Promise<CommandResult> {
     try {
       const sources = context.args.slice(1);
-      
+
       const mcpResult = await CommandExecutionEngine.callMcpTool('hive_sync', {
         sources: sources.length > 0 ? sources : ['all'],
       });
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1403,11 +1461,13 @@ export class CommandExecutionEngine {
 
   /**
    * Handle hive health command
+   *
+   * @param _context
    */
   private static async handleHiveHealth(_context: ExecutionContext): Promise<CommandResult> {
     try {
       const mcpResult = await CommandExecutionEngine.callMcpTool('hive_health', {});
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1431,6 +1491,8 @@ export class CommandExecutionEngine {
 
   /**
    * Handle hive contribute command
+   *
+   * @param context
    */
   private static async handleHiveContribute(context: ExecutionContext): Promise<CommandResult> {
     try {
@@ -1438,21 +1500,22 @@ export class CommandExecutionEngine {
       const type = context.flags.type || context.flags.t || 'general';
       const content = context.flags.content || context.flags.c || '';
       const confidence = parseFloat(context.flags.confidence) || 0.8;
-      
+
       if (!subject || !content) {
         return {
           success: false,
-          error: 'Subject and content are required for Hive contributions. Use: hive contribute <subject> --content "<content>"',
+          error:
+            'Subject and content are required for Hive contributions. Use: hive contribute <subject> --content "<content>"',
         };
       }
-      
+
       const mcpResult = await CommandExecutionEngine.callMcpTool('hive_contribute', {
         type,
         subject,
         content,
         confidence,
       });
-      
+
       if (mcpResult.success) {
         return {
           success: true,
@@ -1476,6 +1539,12 @@ export class CommandExecutionEngine {
 
   /**
    * Utility methods
+   *
+   * @param error
+   * @param command
+   * @param args
+   * @param flags
+   * @param startTime
    */
   private static createErrorResult(
     error: string,

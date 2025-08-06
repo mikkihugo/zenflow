@@ -119,6 +119,10 @@ export { StorageInterface } from './storage-interface';
 
 /**
  * Create a complete cross-agent knowledge sharing system
+ *
+ * @param config
+ * @param logger
+ * @param eventBus
  */
 export async function createKnowledgeSharingSystem(
   config?: Partial<CrossAgentKnowledgeConfig>,
@@ -144,6 +148,9 @@ export async function createKnowledgeSharingSystem(
 
 /**
  * Create a knowledge swarm system
+ *
+ * @param config
+ * @param vectorDb
  */
 export async function createKnowledgeSwarm(config?: any, vectorDb?: any): Promise<any> {
   const { initializeFACTSwarm } = await import('./knowledge-swarm');
@@ -156,6 +163,8 @@ export async function createKnowledgeSwarm(config?: any, vectorDb?: any): Promis
 
 /**
  * Validate cross-agent knowledge configuration
+ *
+ * @param config
  */
 export function validateKnowledgeConfig(config: CrossAgentKnowledgeConfig): {
   isValid: boolean;
@@ -206,6 +215,8 @@ export function validateKnowledgeConfig(config: CrossAgentKnowledgeConfig): {
 
 /**
  * Get system capabilities based on configuration
+ *
+ * @param config
  */
 export function getSystemCapabilities(config: CrossAgentKnowledgeConfig): {
   collectiveIntelligence: boolean;
@@ -257,6 +268,8 @@ export function createTestConfig(): CrossAgentKnowledgeConfig {
 
 /**
  * Check if storage directory exists and create if needed
+ *
+ * @param basePath
  */
 export async function ensureStorageDirectory(basePath: string = process.cwd()): Promise<{
   swarmDir: string;
@@ -288,6 +301,8 @@ export async function ensureStorageDirectory(basePath: string = process.cwd()): 
 
 /**
  * Get storage paths for knowledge systems
+ *
+ * @param basePath
  */
 export function getKnowledgeStoragePaths(basePath: string = process.cwd()): {
   collective: string;

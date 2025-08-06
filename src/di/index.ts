@@ -62,6 +62,8 @@ export function getGlobalContainer(): DIContainer {
 
 /**
  * Set the global DI container (useful for testing)
+ *
+ * @param container
  */
 export function setGlobalContainer(container: DIContainer): void {
   globalContainer = container;
@@ -76,12 +78,17 @@ export function clearGlobalContainer(): void {
 
 /**
  * Quick registration helpers
+ *
+ * @example
  */
 export class DIContainerBuilder {
   private container = new DIContainer();
 
   /**
    * Register a singleton service
+   *
+   * @param token
+   * @param factory
    */
   singleton<T>(
     token: import('./types/di-types').DIToken<T>,
@@ -93,6 +100,9 @@ export class DIContainerBuilder {
 
   /**
    * Register a transient service
+   *
+   * @param token
+   * @param factory
    */
   transient<T>(
     token: import('./types/di-types').DIToken<T>,
@@ -104,6 +114,9 @@ export class DIContainerBuilder {
 
   /**
    * Register a scoped service
+   *
+   * @param token
+   * @param factory
    */
   scoped<T>(
     token: import('./types/di-types').DIToken<T>,

@@ -270,8 +270,10 @@ export function createSPARCSwarmCommands(): Command {
         logger.info('🔧 Generating pseudocode from specification...');
 
         // Import the pseudocode engine dynamically to avoid circular dependencies
-        const { PseudocodePhaseEngine } = await import('../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
-        const fs = await import('fs').then(m => m.promises);
+        const { PseudocodePhaseEngine } = await import(
+          '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+        );
+        const fs = await import('fs').then((m) => m.promises);
 
         const engine = new PseudocodePhaseEngine();
 
@@ -289,7 +291,9 @@ export function createSPARCSwarmCommands(): Command {
         console.log(`📊 Generated ${pseudocodeStructure.algorithms.length} algorithms`);
         console.log(`🏗️ Generated ${pseudocodeStructure.dataStructures.length} data structures`);
         console.log(`🔄 Generated ${pseudocodeStructure.controlFlows.length} control flows`);
-        console.log(`💡 Identified ${pseudocodeStructure.optimizations.length} optimization opportunities`);
+        console.log(
+          `💡 Identified ${pseudocodeStructure.optimizations.length} optimization opportunities`
+        );
 
         // Format output
         let output: string;
@@ -307,9 +311,10 @@ export function createSPARCSwarmCommands(): Command {
         console.log('\n📋 Algorithm Summary:');
         pseudocodeStructure.algorithms.forEach((alg, index) => {
           console.log(`  ${index + 1}. ${alg.name}: ${alg.purpose}`);
-          console.log(`     Complexity: ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space`);
+          console.log(
+            `     Complexity: ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space`
+          );
         });
-
       } catch (error) {
         console.error('❌ Failed to generate pseudocode:', error);
         process.exit(1);
@@ -325,8 +330,10 @@ export function createSPARCSwarmCommands(): Command {
       try {
         logger.info('🔍 Validating pseudocode structure...');
 
-        const { PseudocodePhaseEngine } = await import('../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
-        const fs = await import('fs').then(m => m.promises);
+        const { PseudocodePhaseEngine } = await import(
+          '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+        );
+        const fs = await import('fs').then((m) => m.promises);
 
         const engine = new PseudocodePhaseEngine();
 
@@ -342,7 +349,9 @@ export function createSPARCSwarmCommands(): Command {
         console.log('\n📊 Validation Results:');
         console.log(`Overall Score: ${(validation.overallScore * 100).toFixed(1)}%`);
         console.log(`Status: ${validation.approved ? '✅ APPROVED' : '❌ NEEDS IMPROVEMENT'}`);
-        console.log(`Complexity Verification: ${validation.complexityVerification ? '✅ PASSED' : '❌ FAILED'}`);
+        console.log(
+          `Complexity Verification: ${validation.complexityVerification ? '✅ PASSED' : '❌ FAILED'}`
+        );
 
         if (validation.logicErrors.length > 0) {
           console.log('\n🚨 Logic Errors Found:');
@@ -367,7 +376,6 @@ export function createSPARCSwarmCommands(): Command {
 
         // Exit with appropriate code
         process.exit(validation.approved ? 0 : 1);
-
       } catch (error) {
         console.error('❌ Failed to validate pseudocode:', error);
         process.exit(1);
@@ -379,13 +387,18 @@ export function createSPARCSwarmCommands(): Command {
     .command('algorithms')
     .description('Generate algorithms only from specification')
     .requiredOption('--spec-file <path>', 'Path to specification JSON file')
-    .option('--domain <type>', 'Override domain (swarm-coordination|neural-networks|memory-systems|general)')
+    .option(
+      '--domain <type>',
+      'Override domain (swarm-coordination|neural-networks|memory-systems|general)'
+    )
     .action(async (options) => {
       try {
         logger.info('🧮 Generating algorithms from specification...');
 
-        const { PseudocodePhaseEngine } = await import('../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
-        const fs = await import('fs').then(m => m.promises);
+        const { PseudocodePhaseEngine } = await import(
+          '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+        );
+        const fs = await import('fs').then((m) => m.promises);
 
         const engine = new PseudocodePhaseEngine();
 
@@ -409,13 +422,14 @@ export function createSPARCSwarmCommands(): Command {
         algorithms.forEach((alg, index) => {
           console.log(`\n${index + 1}. 🔧 ${alg.name}`);
           console.log(`   Purpose: ${alg.purpose}`);
-          console.log(`   Inputs: ${alg.inputs.map(i => i.name).join(', ')}`);
-          console.log(`   Outputs: ${alg.outputs.map(o => o.name).join(', ')}`);
+          console.log(`   Inputs: ${alg.inputs.map((i) => i.name).join(', ')}`);
+          console.log(`   Outputs: ${alg.outputs.map((o) => o.name).join(', ')}`);
           console.log(`   Steps: ${alg.steps.length}`);
-          console.log(`   Complexity: ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space`);
+          console.log(
+            `   Complexity: ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space`
+          );
           console.log(`   Optimizations: ${alg.optimizations.length}`);
         });
-
       } catch (error) {
         console.error('❌ Failed to generate algorithms:', error);
         process.exit(1);
@@ -599,28 +613,28 @@ async function formatPseudocodeAsMarkdown(pseudocodeStructure: any): Promise<str
   pseudocodeStructure.algorithms.forEach((alg: any, index: number) => {
     markdown += `### ${index + 1}. ${alg.name}\n\n`;
     markdown += `**Purpose:** ${alg.purpose}\n\n`;
-    
+
     markdown += `**Inputs:**\n`;
     alg.inputs.forEach((input: any) => {
       markdown += `- \`${input.name}\` (${input.type}): ${input.description}\n`;
     });
     markdown += `\n`;
-    
+
     markdown += `**Outputs:**\n`;
     alg.outputs.forEach((output: any) => {
       markdown += `- \`${output.name}\` (${output.type}): ${output.description}\n`;
     });
     markdown += `\n`;
-    
+
     markdown += `**Steps:**\n`;
     alg.steps.forEach((step: any) => {
       markdown += `${step.stepNumber}. ${step.description}\n`;
       markdown += `   \`${step.pseudocode}\`\n`;
     });
     markdown += `\n`;
-    
+
     markdown += `**Complexity:** ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space\n\n`;
-    
+
     if (alg.optimizations.length > 0) {
       markdown += `**Optimizations:**\n`;
       alg.optimizations.forEach((opt: any) => {
@@ -628,7 +642,7 @@ async function formatPseudocodeAsMarkdown(pseudocodeStructure: any): Promise<str
       });
       markdown += `\n`;
     }
-    
+
     markdown += `---\n\n`;
   });
 
@@ -638,7 +652,7 @@ async function formatPseudocodeAsMarkdown(pseudocodeStructure: any): Promise<str
     pseudocodeStructure.dataStructures.forEach((ds: any, index: number) => {
       markdown += `### ${index + 1}. ${ds.name}\n\n`;
       markdown += `**Type:** ${ds.type}\n\n`;
-      
+
       if (ds.properties.length > 0) {
         markdown += `**Properties:**\n`;
         ds.properties.forEach((prop: any) => {
@@ -646,7 +660,7 @@ async function formatPseudocodeAsMarkdown(pseudocodeStructure: any): Promise<str
         });
         markdown += `\n`;
       }
-      
+
       if (ds.methods.length > 0) {
         markdown += `**Methods:**\n`;
         ds.methods.forEach((method: any) => {
@@ -654,7 +668,7 @@ async function formatPseudocodeAsMarkdown(pseudocodeStructure: any): Promise<str
         });
         markdown += `\n`;
       }
-      
+
       markdown += `---\n\n`;
     });
   }
@@ -667,7 +681,7 @@ async function formatPseudocodeAsMarkdown(pseudocodeStructure: any): Promise<str
     markdown += `- **Space Complexity:** ${ca.spaceComplexity}\n`;
     markdown += `- **Scalability:** ${ca.scalability}\n`;
     markdown += `- **Worst Case:** ${ca.worstCase}\n\n`;
-    
+
     if (ca.bottlenecks && ca.bottlenecks.length > 0) {
       markdown += `**Identified Bottlenecks:**\n`;
       ca.bottlenecks.forEach((bottleneck: string) => {
@@ -712,8 +726,10 @@ export function addArchitectureCommands(program: Command): void {
       try {
         console.log('🏗️ Generating system architecture from pseudocode...');
 
-        const { ArchitecturePhaseEngine } = await import('../../coordination/swarm/sparc/phases/architecture/architecture-engine');
-        const fs = await import('fs').then(m => m.promises);
+        const { ArchitecturePhaseEngine } = await import(
+          '../../coordination/swarm/sparc/phases/architecture/architecture-engine'
+        );
+        const fs = await import('fs').then((m) => m.promises);
 
         const engine = new ArchitecturePhaseEngine();
 
@@ -730,7 +746,7 @@ export function addArchitectureCommands(program: Command): void {
             dataStructures: [],
             controlFlows: [],
             optimizations: [],
-            dependencies: []
+            dependencies: [],
           };
         }
 
@@ -744,14 +760,17 @@ export function addArchitectureCommands(program: Command): void {
         // Generate architecture
         let architecture;
         if (specification) {
-          const systemArchitecture = await engine.designSystemArchitecture(specification, pseudocodeData.algorithms);
+          const systemArchitecture = await engine.designSystemArchitecture(
+            specification,
+            pseudocodeData.algorithms
+          );
           architecture = {
             systemArchitecture,
             components: systemArchitecture.components,
             interfaces: systemArchitecture.interfaces,
             dataFlow: systemArchitecture.dataFlow,
             qualityAttributes: systemArchitecture.qualityAttributes,
-            architecturalPatterns: systemArchitecture.architecturalPatterns
+            architecturalPatterns: systemArchitecture.architecturalPatterns,
           };
         } else {
           // Use internal method when only pseudocode is available
@@ -776,9 +795,12 @@ export function addArchitectureCommands(program: Command): void {
         console.log(`  - Components: ${architecture.components?.length || 0}`);
         console.log(`  - Interfaces: ${architecture.systemArchitecture?.interfaces?.length || 0}`);
         console.log(`  - Data Flows: ${architecture.systemArchitecture?.dataFlow?.length || 0}`);
-        console.log(`  - Quality Attributes: ${architecture.systemArchitecture?.qualityAttributes?.length || 0}`);
-        console.log(`  - Architecture Patterns: ${architecture.systemArchitecture?.architecturalPatterns?.length || 0}`);
-
+        console.log(
+          `  - Quality Attributes: ${architecture.systemArchitecture?.qualityAttributes?.length || 0}`
+        );
+        console.log(
+          `  - Architecture Patterns: ${architecture.systemArchitecture?.architecturalPatterns?.length || 0}`
+        );
       } catch (error) {
         console.error('❌ Failed to generate architecture:', error);
         process.exit(1);
@@ -795,8 +817,10 @@ export function addArchitectureCommands(program: Command): void {
       try {
         console.log('🔍 Validating architecture design...');
 
-        const { ArchitecturePhaseEngine } = await import('../../coordination/swarm/sparc/phases/architecture/architecture-engine');
-        const fs = await import('fs').then(m => m.promises);
+        const { ArchitecturePhaseEngine } = await import(
+          '../../coordination/swarm/sparc/phases/architecture/architecture-engine'
+        );
+        const fs = await import('fs').then((m) => m.promises);
 
         const engine = new ArchitecturePhaseEngine();
 
@@ -808,8 +832,10 @@ export function addArchitectureCommands(program: Command): void {
         const validationResults = await engine.validateArchitecture(architecture);
 
         // Calculate overall score
-        const overallScore = validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
-        const passed = validationResults.filter(r => r.passed).length;
+        const overallScore =
+          validationResults.reduce((sum, result) => sum + result.score, 0) /
+          validationResults.length;
+        const passed = validationResults.filter((r) => r.passed).length;
         const total = validationResults.length;
 
         console.log('\n📋 Validation Results:');
@@ -829,7 +855,6 @@ export function addArchitectureCommands(program: Command): void {
 
         // Exit with appropriate code
         process.exit(overallScore >= 0.7 ? 0 : 1);
-
       } catch (error) {
         console.error('❌ Failed to validate architecture:', error);
         process.exit(1);
@@ -841,14 +866,19 @@ export function addArchitectureCommands(program: Command): void {
     .command('plan')
     .description('Generate implementation plan from architecture')
     .requiredOption('--architecture-file <path>', 'Path to architecture JSON file')
-    .option('--output <path>', 'Output file path for implementation plan (default: implementation-plan.json)')
+    .option(
+      '--output <path>',
+      'Output file path for implementation plan (default: implementation-plan.json)'
+    )
     .option('--format <format>', 'Output format (json|markdown)', 'json')
     .action(async (options) => {
       try {
         console.log('📋 Generating implementation plan from architecture...');
 
-        const { ArchitecturePhaseEngine } = await import('../../coordination/swarm/sparc/phases/architecture/architecture-engine');
-        const fs = await import('fs').then(m => m.promises);
+        const { ArchitecturePhaseEngine } = await import(
+          '../../coordination/swarm/sparc/phases/architecture/architecture-engine'
+        );
+        const fs = await import('fs').then((m) => m.promises);
 
         const engine = new ArchitecturePhaseEngine();
 
@@ -874,11 +904,12 @@ export function addArchitectureCommands(program: Command): void {
         // Display summary
         console.log('\n📊 Implementation Plan Summary:');
         console.log(`  - Phases: ${implementationPlan.phases.length}`);
-        console.log(`  - Total Tasks: ${implementationPlan.phases.reduce((sum, phase) => sum + phase.tasks.length, 0)}`);
+        console.log(
+          `  - Total Tasks: ${implementationPlan.phases.reduce((sum, phase) => sum + phase.tasks.length, 0)}`
+        );
         console.log(`  - Timeline: ${implementationPlan.timeline.totalDuration}`);
         console.log(`  - Resource Requirements: ${implementationPlan.resourceRequirements.length}`);
         console.log(`  - Risk Level: ${implementationPlan.riskAssessment.overallRisk}`);
-
       } catch (error) {
         console.error('❌ Failed to generate implementation plan:', error);
         process.exit(1);
@@ -919,12 +950,15 @@ function generateArchitectureMarkdown(architecture: any): string {
   }
 
   // Architecture Patterns
-  if (architecture.systemArchitecture?.architecturalPatterns && architecture.systemArchitecture.architecturalPatterns.length > 0) {
+  if (
+    architecture.systemArchitecture?.architecturalPatterns &&
+    architecture.systemArchitecture.architecturalPatterns.length > 0
+  ) {
     markdown += `## 🎯 Architecture Patterns (${architecture.systemArchitecture.architecturalPatterns.length})\n\n`;
     architecture.systemArchitecture.architecturalPatterns.forEach((pattern: any, index: number) => {
       markdown += `### ${index + 1}. ${pattern.name}\n\n`;
       markdown += `${pattern.description}\n\n`;
-      
+
       markdown += `**Benefits:**\n`;
       pattern.benefits.forEach((benefit: string) => {
         markdown += `- ${benefit}\n`;
@@ -940,14 +974,17 @@ function generateArchitectureMarkdown(architecture: any): string {
   }
 
   // Quality Attributes
-  if (architecture.systemArchitecture?.qualityAttributes && architecture.systemArchitecture.qualityAttributes.length > 0) {
+  if (
+    architecture.systemArchitecture?.qualityAttributes &&
+    architecture.systemArchitecture.qualityAttributes.length > 0
+  ) {
     markdown += `## 📊 Quality Attributes (${architecture.systemArchitecture.qualityAttributes.length})\n\n`;
     architecture.systemArchitecture.qualityAttributes.forEach((qa: any, index: number) => {
       markdown += `### ${index + 1}. ${qa.name}\n\n`;
       markdown += `**Target:** ${qa.target}\n\n`;
       markdown += `**Priority:** ${qa.priority}\n\n`;
       markdown += `**Measurement:** ${qa.measurement}\n\n`;
-      
+
       if (qa.criteria && qa.criteria.length > 0) {
         markdown += `**Criteria:**\n`;
         qa.criteria.forEach((criterion: string) => {
@@ -955,7 +992,7 @@ function generateArchitectureMarkdown(architecture: any): string {
         });
         markdown += `\n`;
       }
-      
+
       markdown += `---\n\n`;
     });
   }
@@ -993,11 +1030,11 @@ function generateImplementationPlanMarkdown(plan: any): string {
           markdown += `   - Type: ${task.type}\n`;
           markdown += `   - Effort: ${task.estimatedEffort}\n`;
           markdown += `   - Description: ${task.description}\n`;
-          
+
           if (task.dependencies && task.dependencies.length > 0) {
             markdown += `   - Dependencies: ${task.dependencies.join(', ')}\n`;
           }
-          
+
           markdown += `\n`;
         });
       }

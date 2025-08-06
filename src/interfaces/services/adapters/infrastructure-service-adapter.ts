@@ -1,70 +1,68 @@
 /**
  * USL Infrastructure Service Adapter
- * 
+ *
  * Unified Service Layer adapter for infrastructure-related services, providing
  * a consistent interface to ClaudeZenFacade, IntegratedPatternSystem, and
  * core infrastructure services while maintaining full backward compatibility
  * and adding enhanced orchestration, resource management, configuration management,
  * and performance metrics.
- * 
+ *
  * This adapter follows the exact same patterns as other USL service adapters,
  * implementing the IService interface and providing unified configuration
  * management for infrastructure operations across Claude-Zen.
  */
 
-import type {
-  IService,
-  ServiceConfig,
-  ServiceStatus,
-  ServiceMetrics,
-  ServiceEvent,
-  ServiceEventType,
-  ServiceOperationOptions,
-  ServiceOperationResponse,
-  ServiceLifecycleStatus,
-  ServiceDependencyConfig,
-  ServiceError,
-  ServiceOperationError,
-  ServiceTimeoutError,
-  ServiceDependencyError
-} from '../core/interfaces';
-
-import type {
-  InfrastructureServiceConfig,
-  ServiceType,
-  ServicePriority,
-  ServiceEnvironment
-} from '../types';
-
-import { 
+import { EventEmitter } from 'events';
+import {
   ClaudeZenFacade,
-  ISwarmService,
-  INeuralService,
-  IMemoryService,
-  IDatabaseService,
-  IInterfaceService,
-  IWorkflowService,
+  DocumentProcessingResult,
+  type IDatabaseService,
+  type IInterfaceService,
+  type IMemoryService,
+  type INeuralService,
+  type ISwarmService,
+  type IWorkflowService,
+  ProcessingOptions,
   ProjectInitConfig,
   ProjectResult,
   SystemStatus,
-  ProcessingOptions,
-  DocumentProcessingResult,
-  WorkflowResult
+  WorkflowResult,
 } from '../../../core/facade';
-
-import { 
-  IntegratedPatternSystem,
-  IntegrationConfig,
-  IntegratedSwarmService,
+import {
   AgentManager,
-  ConfigurationFactory
+  ConfigurationFactory,
+  IntegratedPatternSystem,
+  IntegratedSwarmService,
+  type IntegrationConfig,
 } from '../../../core/pattern-integration';
-
 import { createLogger, type Logger } from '../../../utils/logger';
-import { EventEmitter } from 'events';
+import type {
+  IService,
+  ServiceConfig,
+  ServiceDependencyConfig,
+  ServiceDependencyError,
+  ServiceError,
+  ServiceEvent,
+  ServiceEventType,
+  ServiceLifecycleStatus,
+  ServiceMetrics,
+  ServiceOperationError,
+  ServiceOperationOptions,
+  ServiceOperationResponse,
+  ServiceStatus,
+  ServiceTimeoutError,
+} from '../core/interfaces';
+import type {
+  InfrastructureServiceConfig,
+  ServiceEnvironment,
+  ServicePriority,
+  ServiceType,
+} from '../types';
 
 /**
  * Infrastructure service adapter configuration extending USL InfrastructureServiceConfig
+ *
+ * @example
  */
 export interface InfrastructureServiceAdapterConfig extends InfrastructureServiceConfig {
   /** Claude Zen Facade integration settings */
@@ -78,7 +76,7 @@ export interface InfrastructureServiceAdapterConfig extends InfrastructureServic
     mockServices?: boolean;
     enableBatchOperations?: boolean;
   };
-  
+
   /** Pattern Integration System settings */
   patternIntegration?: {
     enabled: boolean;
@@ -90,7 +88,7 @@ export interface InfrastructureServiceAdapterConfig extends InfrastructureServic
     maxAgents?: number;
     enableAutoOptimization?: boolean;
   };
-  
+
   /** Service orchestration settings */
   orchestration?: {
     enableServiceDiscovery?: boolean;
@@ -101,7 +99,7 @@ export interface InfrastructureServiceAdapterConfig extends InfrastructureServic
     shutdownGracePeriod?: number;
     enableServiceMesh?: boolean;
   };
-  
+
   /** Resource management settings */
   resourceManagement?: {
     enableResourceTracking?: boolean;
@@ -113,7 +111,7 @@ export interface InfrastructureServiceAdapterConfig extends InfrastructureServic
     cleanupInterval?: number;
     enableGarbageCollection?: boolean;
   };
-  
+
   /** Configuration management settings */
   configManagement?: {
     enableHotReload?: boolean;
@@ -124,7 +122,7 @@ export interface InfrastructureServiceAdapterConfig extends InfrastructureServic
     maxConfigHistory?: number;
     configEncryption?: boolean;
   };
-  
+
   /** Event coordination settings */
   eventCoordination?: {
     enableCentralizedEvents?: boolean;
@@ -135,7 +133,7 @@ export interface InfrastructureServiceAdapterConfig extends InfrastructureServic
     enableEventFiltering?: boolean;
     enableEventAggregation?: boolean;
   };
-  
+
   /** Health monitoring settings */
   healthMonitoring?: {
     enableAdvancedChecks?: boolean;
@@ -153,6 +151,8 @@ export interface InfrastructureServiceAdapterConfig extends InfrastructureServic
 
 /**
  * Infrastructure operation metrics for performance monitoring
+ *
+ * @example
  */
 interface InfrastructureOperationMetrics {
   operationName: string;
@@ -172,6 +172,8 @@ interface InfrastructureOperationMetrics {
 
 /**
  * Service orchestration entry
+ *
+ * @example
  */
 interface ServiceOrchestrationEntry {
   serviceId: string;
@@ -190,6 +192,8 @@ interface ServiceOrchestrationEntry {
 
 /**
  * Configuration version entry
+ *
+ * @example
  */
 interface ConfigurationVersion {
   version: string;
@@ -201,6 +205,8 @@ interface ConfigurationVersion {
 
 /**
  * Resource tracking entry
+ *
+ * @example
  */
 interface ResourceTrackingEntry {
   timestamp: Date;
@@ -214,11 +220,11 @@ interface ResourceTrackingEntry {
 
 /**
  * Unified Infrastructure Service Adapter
- * 
+ *
  * Provides a unified interface to ClaudeZenFacade, IntegratedPatternSystem,
  * and core infrastructure services while implementing the IService interface
  * for USL compatibility.
- * 
+ *
  * Features:
  * - Service orchestration and lifecycle management
  * - Resource monitoring and optimization
@@ -229,6 +235,8 @@ interface ResourceTrackingEntry {
  * - Unified configuration management
  * - Performance monitoring and metrics
  * - Error handling and recovery
+ *
+ * @example
  */
 export class InfrastructureServiceAdapter implements IService {
   // Core service properties
@@ -258,7 +266,10 @@ export class InfrastructureServiceAdapter implements IService {
   private resourceTracker: ResourceTrackingEntry[] = [];
   private metrics: InfrastructureOperationMetrics[] = [];
   private eventQueue: Array<{ event: any; timestamp: Date }> = [];
-  private circuitBreakers = new Map<string, { failures: number; lastFailure?: Date; open: boolean }>();
+  private circuitBreakers = new Map<
+    string,
+    { failures: number; lastFailure?: Date; open: boolean }
+  >();
 
   // Performance optimization
   private cache = new Map<string, { data: any; timestamp: Date; ttl: number }>();
@@ -268,7 +279,7 @@ export class InfrastructureServiceAdapter implements IService {
     totalHealthChecks: 0,
     healthCheckFailures: 0,
     avgSystemHealth: 0,
-    resourceUtilization: { cpu: 0, memory: 0, network: 0, storage: 0 }
+    resourceUtilization: { cpu: 0, memory: 0, network: 0, storage: 0 },
   };
 
   constructor(config: InfrastructureServiceAdapterConfig) {
@@ -285,7 +296,7 @@ export class InfrastructureServiceAdapter implements IService {
         systemStatusInterval: 30000,
         mockServices: false,
         enableBatchOperations: true,
-        ...config.facade
+        ...config.facade,
       },
       patternIntegration: {
         enabled: true,
@@ -296,7 +307,7 @@ export class InfrastructureServiceAdapter implements IService {
         enableAgentSystem: true,
         maxAgents: 20,
         enableAutoOptimization: true,
-        ...config.patternIntegration
+        ...config.patternIntegration,
       },
       orchestration: {
         enableServiceDiscovery: true,
@@ -306,7 +317,7 @@ export class InfrastructureServiceAdapter implements IService {
         serviceStartupTimeout: 30000,
         shutdownGracePeriod: 10000,
         enableServiceMesh: true,
-        ...config.orchestration
+        ...config.orchestration,
       },
       resourceManagement: {
         enableResourceTracking: true,
@@ -317,7 +328,7 @@ export class InfrastructureServiceAdapter implements IService {
         networkThreshold: 0.8,
         cleanupInterval: 300000,
         enableGarbageCollection: true,
-        ...config.resourceManagement
+        ...config.resourceManagement,
       },
       configManagement: {
         enableHotReload: true,
@@ -327,7 +338,7 @@ export class InfrastructureServiceAdapter implements IService {
         backupConfigs: true,
         maxConfigHistory: 50,
         configEncryption: false,
-        ...config.configManagement
+        ...config.configManagement,
       },
       eventCoordination: {
         enableCentralizedEvents: true,
@@ -337,7 +348,7 @@ export class InfrastructureServiceAdapter implements IService {
         eventRetentionPeriod: 3600000,
         enableEventFiltering: true,
         enableEventAggregation: true,
-        ...config.eventCoordination
+        ...config.eventCoordination,
       },
       healthMonitoring: {
         enableAdvancedChecks: true,
@@ -347,12 +358,12 @@ export class InfrastructureServiceAdapter implements IService {
         performanceThresholds: {
           responseTime: 1000,
           errorRate: 0.05,
-          resourceUsage: 0.8
+          resourceUsage: 0.8,
         },
         enablePredictiveMonitoring: true,
-        ...config.healthMonitoring
+        ...config.healthMonitoring,
       },
-      ...config
+      ...config,
     };
 
     this.logger = createLogger(`InfrastructureServiceAdapter:${this.name}`);
@@ -365,6 +376,8 @@ export class InfrastructureServiceAdapter implements IService {
 
   /**
    * Initialize the infrastructure service adapter and its dependencies
+   *
+   * @param config
    */
   async initialize(config?: Partial<InfrastructureServiceAdapterConfig>): Promise<void> {
     this.logger.info(`Initializing infrastructure service adapter: ${this.name}`);
@@ -399,7 +412,7 @@ export class InfrastructureServiceAdapter implements IService {
           required: true,
           healthCheck: true,
           timeout: 10000,
-          retries: 3
+          retries: 3,
         });
       }
 
@@ -418,7 +431,7 @@ export class InfrastructureServiceAdapter implements IService {
           required: true,
           healthCheck: true,
           timeout: 10000,
-          retries: 3
+          retries: 3,
         });
       }
 
@@ -473,7 +486,7 @@ export class InfrastructureServiceAdapter implements IService {
    */
   async start(): Promise<void> {
     this.logger.info(`Starting infrastructure service adapter: ${this.name}`);
-    
+
     if (this.lifecycleStatus !== 'initialized') {
       throw new Error(`Cannot start service in ${this.lifecycleStatus} state`);
     }
@@ -512,12 +525,12 @@ export class InfrastructureServiceAdapter implements IService {
       // Graceful shutdown with timeout
       const shutdownTimeout = this.config.orchestration?.shutdownGracePeriod || 10000;
       const shutdownPromise = this.performGracefulShutdown();
-      
+
       await Promise.race([
         shutdownPromise,
-        new Promise((_, reject) => 
+        new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Shutdown timeout')), shutdownTimeout)
-        )
+        ),
       ]);
 
       this.lifecycleStatus = 'stopped';
@@ -587,19 +600,21 @@ export class InfrastructureServiceAdapter implements IService {
     const errorRate = this.operationCount > 0 ? (this.errorCount / this.operationCount) * 100 : 0;
 
     // Check dependency statuses
-    const dependencyStatuses: { [serviceName: string]: { status: 'healthy' | 'unhealthy' | 'unknown'; lastCheck: Date } } = {};
-    
+    const dependencyStatuses: {
+      [serviceName: string]: { status: 'healthy' | 'unhealthy' | 'unknown'; lastCheck: Date };
+    } = {};
+
     if (this.facade && this.config.facade?.enabled) {
       try {
         const systemStatus = await this.facade.getSystemStatus();
         dependencyStatuses['claude-zen-facade'] = {
           status: systemStatus.overall.status === 'healthy' ? 'healthy' : 'unhealthy',
-          lastCheck: now
+          lastCheck: now,
         };
       } catch {
         dependencyStatuses['claude-zen-facade'] = {
           status: 'unhealthy',
-          lastCheck: now
+          lastCheck: now,
         };
       }
     }
@@ -609,12 +624,12 @@ export class InfrastructureServiceAdapter implements IService {
         const patternStatus = this.patternSystem.getIntegratedSystemStatus();
         dependencyStatuses['pattern-integration-system'] = {
           status: patternStatus.integration.healthy ? 'healthy' : 'unhealthy',
-          lastCheck: now
+          lastCheck: now,
         };
       } catch {
         dependencyStatuses['pattern-integration-system'] = {
           status: 'unhealthy',
-          lastCheck: now
+          lastCheck: now,
         };
       }
     }
@@ -640,8 +655,8 @@ export class InfrastructureServiceAdapter implements IService {
         eventQueueSize: this.eventQueue.length,
         circuitBreakersCount: this.circuitBreakers.size,
         avgSystemHealth: this.performanceStats.avgSystemHealth,
-        resourceUtilization: this.performanceStats.resourceUtilization
-      }
+        resourceUtilization: this.performanceStats.resourceUtilization,
+      },
     };
   }
 
@@ -651,14 +666,14 @@ export class InfrastructureServiceAdapter implements IService {
   async getMetrics(): Promise<ServiceMetrics> {
     const now = new Date();
     const recentMetrics = this.metrics.filter(
-      m => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
     );
 
     const avgLatency = this.operationCount > 0 ? this.totalLatency / this.operationCount : 0;
     const throughput = recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // ops per second
 
     // Calculate percentile latencies from recent metrics
-    const latencies = recentMetrics.map(m => m.executionTime).sort((a, b) => a - b);
+    const latencies = recentMetrics.map((m) => m.executionTime).sort((a, b) => a - b);
     const p95Index = Math.floor(latencies.length * 0.95);
     const p99Index = Math.floor(latencies.length * 0.99);
 
@@ -675,7 +690,7 @@ export class InfrastructureServiceAdapter implements IService {
       memoryUsage: {
         used: this.estimateMemoryUsage(),
         total: 1000000, // 1MB estimate
-        percentage: (this.estimateMemoryUsage() / 1000000) * 100
+        percentage: (this.estimateMemoryUsage() / 1000000) * 100,
       },
       customMetrics: {
         serviceOrchestrationEfficiency: this.calculateOrchestrationEfficiency(),
@@ -684,10 +699,10 @@ export class InfrastructureServiceAdapter implements IService {
         systemHealthScore: this.performanceStats.avgSystemHealth,
         resourceUtilization: this.performanceStats.resourceUtilization,
         eventProcessingRate: this.calculateEventProcessingRate(),
-        circuitBreakerActivations: Array.from(this.circuitBreakers.values())
-          .filter(cb => cb.open).length
+        circuitBreakerActivations: Array.from(this.circuitBreakers.values()).filter((cb) => cb.open)
+          .length,
       },
-      timestamp: now
+      timestamp: now,
     };
   }
 
@@ -757,16 +772,18 @@ export class InfrastructureServiceAdapter implements IService {
             cpu: this.config.resourceManagement.cpuThreshold || 0.8,
             memory: this.config.resourceManagement.memoryThreshold || 0.8,
             network: this.config.resourceManagement.networkThreshold || 0.8,
-            storage: this.config.resourceManagement.diskThreshold || 0.9
+            storage: this.config.resourceManagement.diskThreshold || 0.9,
           };
 
-          if (latestResource.cpu > thresholds.cpu ||
-              latestResource.memory > thresholds.memory ||
-              latestResource.network > thresholds.network ||
-              latestResource.storage > thresholds.storage) {
+          if (
+            latestResource.cpu > thresholds.cpu ||
+            latestResource.memory > thresholds.memory ||
+            latestResource.network > thresholds.network ||
+            latestResource.storage > thresholds.storage
+          ) {
             this.logger.warn('Resource utilization exceeds thresholds', {
               current: latestResource,
-              thresholds
+              thresholds,
             });
             this.performanceStats.consecutiveFailures++;
             this.performanceStats.healthCheckFailures++;
@@ -777,7 +794,7 @@ export class InfrastructureServiceAdapter implements IService {
             cpu: latestResource.cpu,
             memory: latestResource.memory,
             network: latestResource.network,
-            storage: latestResource.storage
+            storage: latestResource.storage,
           };
         }
       }
@@ -795,10 +812,12 @@ export class InfrastructureServiceAdapter implements IService {
 
   /**
    * Update service configuration
+   *
+   * @param config
    */
   async updateConfig(config: Partial<InfrastructureServiceAdapterConfig>): Promise<void> {
     this.logger.info(`Updating configuration for infrastructure service adapter: ${this.name}`);
-    
+
     try {
       // Validate the updated configuration
       const newConfig = { ...this.config, ...config };
@@ -814,12 +833,12 @@ export class InfrastructureServiceAdapter implements IService {
 
       // Apply the configuration
       Object.assign(this.config, config);
-      
+
       // Hot reload if enabled
       if (this.config.configManagement?.enableHotReload) {
         await this.performHotReload(config);
       }
-      
+
       this.logger.info(`Configuration updated successfully for: ${this.name}`);
     } catch (error) {
       this.logger.error(`Failed to update configuration for ${this.name}:`, error);
@@ -829,6 +848,8 @@ export class InfrastructureServiceAdapter implements IService {
 
   /**
    * Validate service configuration
+   *
+   * @param config
    */
   async validateConfig(config: InfrastructureServiceAdapterConfig): Promise<boolean> {
     try {
@@ -839,32 +860,49 @@ export class InfrastructureServiceAdapter implements IService {
       }
 
       // Validate facade configuration
-      if (config.facade?.enabled && config.facade.systemStatusInterval && config.facade.systemStatusInterval < 1000) {
+      if (
+        config.facade?.enabled &&
+        config.facade.systemStatusInterval &&
+        config.facade.systemStatusInterval < 1000
+      ) {
         this.logger.error('Facade system status interval must be at least 1000ms');
         return false;
       }
 
       // Validate pattern integration configuration
-      if (config.patternIntegration?.enabled && config.patternIntegration.maxAgents && config.patternIntegration.maxAgents < 1) {
+      if (
+        config.patternIntegration?.enabled &&
+        config.patternIntegration.maxAgents &&
+        config.patternIntegration.maxAgents < 1
+      ) {
         this.logger.error('Pattern integration max agents must be at least 1');
         return false;
       }
 
       // Validate orchestration configuration
-      if (config.orchestration?.maxConcurrentServices && config.orchestration.maxConcurrentServices < 1) {
+      if (
+        config.orchestration?.maxConcurrentServices &&
+        config.orchestration.maxConcurrentServices < 1
+      ) {
         this.logger.error('Max concurrent services must be at least 1');
         return false;
       }
 
       // Validate resource management configuration
-      if (config.resourceManagement?.memoryThreshold && 
-          (config.resourceManagement.memoryThreshold < 0 || config.resourceManagement.memoryThreshold > 1)) {
+      if (
+        config.resourceManagement?.memoryThreshold &&
+        (config.resourceManagement.memoryThreshold < 0 ||
+          config.resourceManagement.memoryThreshold > 1)
+      ) {
         this.logger.error('Memory threshold must be between 0 and 1');
         return false;
       }
 
       // Validate health monitoring configuration
-      if (config.healthMonitoring?.healthCheckTimeout && config.healthMonitoring.healthCheckTimeout < 1000) {
+      if (
+        config.healthMonitoring?.healthCheckTimeout &&
+        config.healthMonitoring.healthCheckTimeout < 1000
+      ) {
         this.logger.error('Health check timeout must be at least 1000ms');
         return false;
       }
@@ -934,6 +972,10 @@ export class InfrastructureServiceAdapter implements IService {
 
   /**
    * Execute service operations with unified interface
+   *
+   * @param operation
+   * @param params
+   * @param options
    */
   async execute<T = any>(
     operation: string,
@@ -967,7 +1009,7 @@ export class InfrastructureServiceAdapter implements IService {
       const result = await Promise.race([operationPromise, timeoutPromise]);
 
       const duration = Date.now() - startTime;
-      
+
       // Record success metrics
       this.recordOperationMetrics({
         operationName: operation,
@@ -975,7 +1017,7 @@ export class InfrastructureServiceAdapter implements IService {
         success: true,
         resourcesUsed: await this.getCurrentResourceUsage(),
         servicesInvolved: this.getServicesInvolvedInOperation(operation),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       this.operationCount++;
@@ -995,12 +1037,12 @@ export class InfrastructureServiceAdapter implements IService {
         metadata: {
           duration,
           timestamp: new Date(),
-          operationId
-        }
+          operationId,
+        },
       };
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       // Record error metrics
       this.recordOperationMetrics({
         operationName: operation,
@@ -1008,7 +1050,7 @@ export class InfrastructureServiceAdapter implements IService {
         success: false,
         resourcesUsed: await this.getCurrentResourceUsage(),
         servicesInvolved: this.getServicesInvolvedInOperation(operation),
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       this.operationCount++;
@@ -1031,13 +1073,13 @@ export class InfrastructureServiceAdapter implements IService {
           code: error instanceof ServiceError ? error.code : 'OPERATION_ERROR',
           message: error.message,
           details: params,
-          stack: error.stack
+          stack: error.stack,
         },
         metadata: {
           duration,
           timestamp: new Date(),
-          operationId
-        }
+          operationId,
+        },
       };
     }
   }
@@ -1064,7 +1106,7 @@ export class InfrastructureServiceAdapter implements IService {
       serviceName: this.name,
       timestamp: new Date(),
       data,
-      error
+      error,
     };
     this.eventEmitter.emit(event, serviceEvent);
 
@@ -1094,39 +1136,41 @@ export class InfrastructureServiceAdapter implements IService {
     }
 
     try {
-      const dependencyChecks = Array.from(this.dependencies.entries()).map(async ([name, config]) => {
-        if (!config.healthCheck) {
-          return true; // Skip health check if not required
-        }
-
-        try {
-          // Perform actual health check based on dependency type
-          switch (name) {
-            case 'claude-zen-facade':
-              if (this.facade) {
-                const status = await this.facade.getSystemStatus();
-                return status.overall.status !== 'unhealthy';
-              }
-              return false;
-            
-            case 'pattern-integration-system':
-              if (this.patternSystem) {
-                const status = this.patternSystem.getIntegratedSystemStatus();
-                return status.integration.healthy;
-              }
-              return false;
-              
-            default:
-              return true; // Unknown dependency, assume healthy
+      const dependencyChecks = Array.from(this.dependencies.entries()).map(
+        async ([name, config]) => {
+          if (!config.healthCheck) {
+            return true; // Skip health check if not required
           }
-        } catch (error) {
-          this.logger.warn(`Dependency ${name} health check failed:`, error);
-          return !config.required; // Return false only if dependency is required
+
+          try {
+            // Perform actual health check based on dependency type
+            switch (name) {
+              case 'claude-zen-facade':
+                if (this.facade) {
+                  const status = await this.facade.getSystemStatus();
+                  return status.overall.status !== 'unhealthy';
+                }
+                return false;
+
+              case 'pattern-integration-system':
+                if (this.patternSystem) {
+                  const status = this.patternSystem.getIntegratedSystemStatus();
+                  return status.integration.healthy;
+                }
+                return false;
+
+              default:
+                return true; // Unknown dependency, assume healthy
+            }
+          } catch (error) {
+            this.logger.warn(`Dependency ${name} health check failed:`, error);
+            return !config.required; // Return false only if dependency is required
+          }
         }
-      });
+      );
 
       const results = await Promise.all(dependencyChecks);
-      return results.every(result => result === true);
+      return results.every((result) => result === true);
     } catch (error) {
       this.logger.error(`Error checking dependencies for ${this.name}:`, error);
       return false;
@@ -1139,6 +1183,10 @@ export class InfrastructureServiceAdapter implements IService {
 
   /**
    * Internal operation execution with infrastructure-specific logic
+   *
+   * @param operation
+   * @param params
+   * @param options
    */
   private async executeOperationInternal<T = any>(
     operation: string,
@@ -1148,106 +1196,110 @@ export class InfrastructureServiceAdapter implements IService {
     switch (operation) {
       // Facade operations
       case 'project-init':
-        return await this.initializeProject(params) as T;
-      
+        return (await this.initializeProject(params)) as T;
+
       case 'project-status':
-        return await this.getProjectStatus(params?.projectId) as T;
-      
+        return (await this.getProjectStatus(params?.projectId)) as T;
+
       case 'document-process':
-        return await this.processDocument(params?.documentPath, params?.options) as T;
-      
+        return (await this.processDocument(params?.documentPath, params?.options)) as T;
+
       case 'system-status':
-        return await this.getSystemStatus() as T;
-      
+        return (await this.getSystemStatus()) as T;
+
       case 'workflow-execute':
-        return await this.executeWorkflow(params?.workflowId, params?.inputs) as T;
-      
+        return (await this.executeWorkflow(params?.workflowId, params?.inputs)) as T;
+
       case 'batch-execute':
-        return await this.executeBatch(params?.operations) as T;
-      
+        return (await this.executeBatch(params?.operations)) as T;
+
       // Pattern integration operations
       case 'swarm-init':
-        return await this.initializeSwarm(params) as T;
-      
+        return (await this.initializeSwarm(params)) as T;
+
       case 'swarm-status':
-        return await this.getSwarmStatus(params?.swarmId) as T;
-      
+        return (await this.getSwarmStatus(params?.swarmId)) as T;
+
       case 'swarm-coordinate':
-        return await this.coordinateSwarm(params?.swarmId, params?.operation) as T;
-      
+        return (await this.coordinateSwarm(params?.swarmId, params?.operation)) as T;
+
       case 'agent-spawn':
-        return await this.spawnAgent(params?.swarmId, params?.agentConfig) as T;
-      
+        return (await this.spawnAgent(params?.swarmId, params?.agentConfig)) as T;
+
       case 'pattern-status':
-        return await this.getPatternSystemStatus() as T;
-      
+        return (await this.getPatternSystemStatus()) as T;
+
       // Service orchestration operations
       case 'service-register':
-        return await this.registerService(params?.serviceId, params?.serviceInfo) as T;
-      
+        return (await this.registerService(params?.serviceId, params?.serviceInfo)) as T;
+
       case 'service-discover':
-        return await this.discoverServices(params?.serviceType) as T;
-      
+        return (await this.discoverServices(params?.serviceType)) as T;
+
       case 'service-health':
-        return await this.checkServiceHealth(params?.serviceId) as T;
-      
+        return (await this.checkServiceHealth(params?.serviceId)) as T;
+
       case 'load-balance':
-        return await this.performLoadBalancing(params?.serviceType, params?.operation) as T;
-      
+        return (await this.performLoadBalancing(params?.serviceType, params?.operation)) as T;
+
       // Resource management operations
       case 'resource-track':
-        return await this.trackResources() as T;
-      
+        return (await this.trackResources()) as T;
+
       case 'resource-optimize':
-        return await this.optimizeResources() as T;
-      
+        return (await this.optimizeResources()) as T;
+
       case 'resource-stats':
-        return await this.getResourceStats() as T;
-      
+        return (await this.getResourceStats()) as T;
+
       case 'resource-cleanup':
-        return await this.performResourceCleanup() as T;
-      
+        return (await this.performResourceCleanup()) as T;
+
       // Configuration management operations
       case 'config-reload':
-        return await this.reloadConfiguration() as T;
-      
+        return (await this.reloadConfiguration()) as T;
+
       case 'config-validate':
-        return await this.validateCurrentConfiguration() as T;
-      
+        return (await this.validateCurrentConfiguration()) as T;
+
       case 'config-version':
-        return await this.getConfigurationVersion(params?.version) as T;
-      
+        return (await this.getConfigurationVersion(params?.version)) as T;
+
       case 'config-rollback':
-        return await this.rollbackConfiguration(params?.version) as T;
-      
+        return (await this.rollbackConfiguration(params?.version)) as T;
+
       // Event coordination operations
       case 'event-publish':
-        return await this.publishEvent(params?.event) as T;
-      
+        return (await this.publishEvent(params?.event)) as T;
+
       case 'event-subscribe':
-        return await this.subscribeToEvents(params?.eventTypes) as T;
-      
+        return (await this.subscribeToEvents(params?.eventTypes)) as T;
+
       case 'event-stats':
-        return await this.getEventStats() as T;
-      
+        return (await this.getEventStats()) as T;
+
       case 'event-clear':
-        return await this.clearEventQueue() as T;
-      
+        return (await this.clearEventQueue()) as T;
+
       // Infrastructure utility operations
       case 'infrastructure-stats':
-        return await this.getInfrastructureStats() as T;
-      
+        return (await this.getInfrastructureStats()) as T;
+
       case 'cache-clear':
-        return await this.clearCache() as T;
-      
+        return (await this.clearCache()) as T;
+
       case 'health-check':
-        return await this.performHealthCheck() as T;
-      
+        return (await this.performHealthCheck()) as T;
+
       case 'performance-report':
-        return await this.generatePerformanceReport() as T;
-      
+        return (await this.generatePerformanceReport()) as T;
+
       default:
-        throw new ServiceOperationError(this.name, operation, new Error(`Unknown operation: ${operation}`));
+        throw new ServiceOperationError(
+          this.name,
+          operation,
+          new Error(`Unknown operation: ${operation}`)
+        );
     }
   }
 
@@ -1273,10 +1325,10 @@ export class InfrastructureServiceAdapter implements IService {
           lastUpdated: new Date(),
           health: systemStatus.overall.status,
           components: systemStatus.components || {},
-          uptime: systemStatus.uptime || 0
+          uptime: systemStatus.uptime || 0,
         };
       }
-      
+
       // Fallback: get status from pattern system
       if (this.patternSystem) {
         const patternStatus = this.patternSystem.getIntegratedSystemStatus();
@@ -1286,17 +1338,17 @@ export class InfrastructureServiceAdapter implements IService {
           lastUpdated: new Date(),
           health: patternStatus.integration.healthy ? 'healthy' : 'unhealthy',
           patterns: patternStatus.patterns,
-          uptime: patternStatus.integration.uptime || 0
+          uptime: patternStatus.integration.uptime || 0,
         };
       }
-      
+
       // Final fallback: basic system info
       return {
         projectId,
         status: this.lifecycleStatus === 'running' ? 'active' : 'inactive',
         lastUpdated: new Date(),
         health: this.lifecycleStatus === 'running' ? 'healthy' : 'unhealthy',
-        uptime: this.startTime ? Date.now() - this.startTime.getTime() : 0
+        uptime: this.startTime ? Date.now() - this.startTime.getTime() : 0,
       };
     } catch (error) {
       this.logger.warn('Failed to get real project status, using minimal data:', error);
@@ -1305,7 +1357,7 @@ export class InfrastructureServiceAdapter implements IService {
         status: 'unknown',
         lastUpdated: new Date(),
         health: 'unknown',
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -1353,14 +1405,14 @@ export class InfrastructureServiceAdapter implements IService {
     if (!this.patternSystem) {
       throw new Error('Pattern system not available');
     }
-    
+
     const swarmService = this.patternSystem.getAgentManager();
     const swarmGroup = swarmService.getSwarmGroup(swarmId);
-    
+
     if (!swarmGroup) {
       throw new Error(`Swarm ${swarmId} not found`);
     }
-    
+
     return swarmGroup.getStatus();
   }
 
@@ -1368,24 +1420,25 @@ export class InfrastructureServiceAdapter implements IService {
     if (!this.patternSystem) {
       throw new Error('Pattern system not available');
     }
-    
+
     const swarmCoordinator = this.patternSystem.getSwarmCoordinator();
     const agentManager = this.patternSystem.getAgentManager();
     const swarmGroup = agentManager.getSwarmGroup(swarmId);
-    
+
     if (!swarmGroup) {
       throw new Error(`Swarm ${swarmId} not found`);
     }
-    
+
     // Create coordination context
-    const agents = swarmGroup.getMembers()
-      .filter(member => member.getType() === 'individual')
-      .map(agent => ({
+    const agents = swarmGroup
+      .getMembers()
+      .filter((member) => member.getType() === 'individual')
+      .map((agent) => ({
         id: agent.getId(),
-        capabilities: agent.getCapabilities().map(cap => cap.name),
-        status: 'idle' as const
+        capabilities: agent.getCapabilities().map((cap) => cap.name),
+        status: 'idle' as const,
       }));
-    
+
     const context = {
       swarmId,
       timestamp: new Date(),
@@ -1394,11 +1447,11 @@ export class InfrastructureServiceAdapter implements IService {
         maxLatency: 500,
         minReliability: 0.9,
         resourceLimits: { cpu: 1.0, memory: 1.0, network: 1.0, storage: 1.0 },
-        securityLevel: 'medium' as const
+        securityLevel: 'medium' as const,
       },
-      history: []
+      history: [],
     };
-    
+
     return await swarmCoordinator.executeCoordination(agents, context);
   }
 
@@ -1406,17 +1459,17 @@ export class InfrastructureServiceAdapter implements IService {
     if (!this.patternSystem) {
       throw new Error('Pattern system not available');
     }
-    
+
     const agentManager = this.patternSystem.getAgentManager();
     const agentId = `${swarmId}-agent-${Date.now()}`;
-    
+
     await agentManager.addAgentToSwarm(swarmId, agentId, agentConfig);
-    
+
     return {
       agentId,
       swarmId,
       status: 'ready',
-      capabilities: agentConfig.capabilities || []
+      capabilities: agentConfig.capabilities || [],
     };
   }
 
@@ -1443,66 +1496,67 @@ export class InfrastructureServiceAdapter implements IService {
         cpu: 0.1,
         memory: 64,
         network: 10,
-        storage: 100
-      }
+        storage: 100,
+      },
     };
-    
+
     this.serviceRegistry.set(serviceId, entry);
-    
+
     this.logger.info(`Service registered: ${serviceId}`, { serviceInfo });
-    
+
     return {
       serviceId,
       registered: true,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
   private async discoverServices(serviceType?: string): Promise<any> {
     const services = Array.from(this.serviceRegistry.values());
-    
+
     if (serviceType) {
-      return services.filter(service => service.serviceType === serviceType);
+      return services.filter((service) => service.serviceType === serviceType);
     }
-    
+
     return services;
   }
 
   private async checkServiceHealth(serviceId: string): Promise<any> {
     const service = this.serviceRegistry.get(serviceId);
-    
+
     if (!service) {
       throw new Error(`Service ${serviceId} not found`);
     }
-    
+
     // Simulate health check
     const isHealthy = service.status === 'running';
-    
+
     return {
       serviceId,
       healthy: isHealthy,
       status: service.status,
       uptime: Date.now() - service.startTime.getTime(),
-      lastCheck: new Date()
+      lastCheck: new Date(),
     };
   }
 
   private async performLoadBalancing(serviceType: string, operation: string): Promise<any> {
-    const services = Array.from(this.serviceRegistry.values())
-      .filter(service => service.serviceType === serviceType && service.status === 'running');
-    
+    const services = Array.from(this.serviceRegistry.values()).filter(
+      (service) => service.serviceType === serviceType && service.status === 'running'
+    );
+
     if (services.length === 0) {
       throw new Error(`No healthy services of type ${serviceType} available`);
     }
-    
+
     // Simple round-robin load balancing
     const selectedService = services[Math.floor(Math.random() * services.length)];
-    
+
     return {
       selectedService: selectedService.serviceId,
       operation,
       timestamp: new Date(),
-      totalServices: services.length
+      totalServices: services.length,
     };
   }
 
@@ -1513,7 +1567,7 @@ export class InfrastructureServiceAdapter implements IService {
   private async trackResources(): Promise<any> {
     // Get real system resource usage
     const memoryUsage = process.memoryUsage();
-    
+
     // Get system load averages (Unix-like systems)
     let systemLoad = [0, 0, 0];
     try {
@@ -1522,7 +1576,7 @@ export class InfrastructureServiceAdapter implements IService {
     } catch {
       // Windows fallback
     }
-    
+
     const resourceEntry: ResourceTrackingEntry = {
       timestamp: new Date(),
       cpu: systemLoad[0] / (await import('node:os')).cpus().length, // Real CPU load
@@ -1530,115 +1584,117 @@ export class InfrastructureServiceAdapter implements IService {
       network: 0.05, // Network monitoring would need external tool
       storage: this.estimateStorageUsage(), // Calculate storage from actual data
       activeServices: this.serviceRegistry.size,
-      activeTasks: this.operationCount
+      activeTasks: this.operationCount,
     };
-    
+
     this.resourceTracker.push(resourceEntry);
-    
+
     // Keep only recent entries
     const maxEntries = 1000;
     if (this.resourceTracker.length > maxEntries) {
       this.resourceTracker.splice(0, this.resourceTracker.length - maxEntries);
     }
-    
+
     return resourceEntry;
   }
 
   private async optimizeResources(): Promise<any> {
     const optimizations: string[] = [];
-    
+
     // Check for optimization opportunities
     if (this.cache.size > 500) {
       this.cache.clear();
       optimizations.push('Cache cleared to free memory');
     }
-    
+
     if (this.metrics.length > 1000) {
       this.metrics.splice(0, this.metrics.length - 500);
       optimizations.push('Metrics history trimmed');
     }
-    
+
     if (this.eventQueue.length > 1000) {
       this.eventQueue.splice(0, this.eventQueue.length - 500);
       optimizations.push('Event queue trimmed');
     }
-    
+
     // Garbage collection if enabled
     if (this.config.resourceManagement?.enableGarbageCollection && global.gc) {
       global.gc();
       optimizations.push('Garbage collection performed');
     }
-    
+
     return {
       optimizations,
       timestamp: new Date(),
-      memoryUsage: this.estimateMemoryUsage()
+      memoryUsage: this.estimateMemoryUsage(),
     };
   }
 
   private async getResourceStats(): Promise<any> {
     const recent = this.resourceTracker.slice(-10);
-    
+
     if (recent.length === 0) {
       return {
         cpu: { avg: 0, max: 0, min: 0 },
         memory: { avg: 0, max: 0, min: 0 },
         network: { avg: 0, max: 0, min: 0 },
         storage: { avg: 0, max: 0, min: 0 },
-        dataPoints: 0
+        dataPoints: 0,
       };
     }
-    
+
     return {
       cpu: {
         avg: recent.reduce((sum, r) => sum + r.cpu, 0) / recent.length,
-        max: Math.max(...recent.map(r => r.cpu)),
-        min: Math.min(...recent.map(r => r.cpu))
+        max: Math.max(...recent.map((r) => r.cpu)),
+        min: Math.min(...recent.map((r) => r.cpu)),
       },
       memory: {
         avg: recent.reduce((sum, r) => sum + r.memory, 0) / recent.length,
-        max: Math.max(...recent.map(r => r.memory)),
-        min: Math.min(...recent.map(r => r.memory))
+        max: Math.max(...recent.map((r) => r.memory)),
+        min: Math.min(...recent.map((r) => r.memory)),
       },
       network: {
         avg: recent.reduce((sum, r) => sum + r.network, 0) / recent.length,
-        max: Math.max(...recent.map(r => r.network)),
-        min: Math.min(...recent.map(r => r.network))
+        max: Math.max(...recent.map((r) => r.network)),
+        min: Math.min(...recent.map((r) => r.network)),
       },
       storage: {
         avg: recent.reduce((sum, r) => sum + r.storage, 0) / recent.length,
-        max: Math.max(...recent.map(r => r.storage)),
-        min: Math.min(...recent.map(r => r.storage))
+        max: Math.max(...recent.map((r) => r.storage)),
+        min: Math.min(...recent.map((r) => r.storage)),
       },
       dataPoints: recent.length,
-      trackingDuration: this.resourceTracker.length > 0 ? 
-        Date.now() - this.resourceTracker[0].timestamp.getTime() : 0
+      trackingDuration:
+        this.resourceTracker.length > 0
+          ? Date.now() - this.resourceTracker[0].timestamp.getTime()
+          : 0,
     };
   }
 
   private async performResourceCleanup(): Promise<any> {
     let cleaned = 0;
-    
+
     // Clean old resource tracking entries
     const cutoff = new Date(Date.now() - 3600000); // 1 hour
     const originalCount = this.resourceTracker.length;
-    this.resourceTracker = this.resourceTracker.filter(entry => entry.timestamp > cutoff);
+    this.resourceTracker = this.resourceTracker.filter((entry) => entry.timestamp > cutoff);
     cleaned += originalCount - this.resourceTracker.length;
-    
+
     // Clean old metrics
     const originalMetricsCount = this.metrics.length;
-    this.metrics = this.metrics.filter(metric => metric.timestamp > cutoff);
+    this.metrics = this.metrics.filter((metric) => metric.timestamp > cutoff);
     cleaned += originalMetricsCount - this.metrics.length;
-    
+
     // Clean old events
     const originalEventsCount = this.eventQueue.length;
-    this.eventQueue = this.eventQueue.filter(event => event.timestamp > cutoff);
+    this.eventQueue = this.eventQueue.filter((event) => event.timestamp > cutoff);
     cleaned += originalEventsCount - this.eventQueue.length;
-    
+
     return {
       cleaned,
       timestamp: new Date(),
-      memoryFreed: this.estimateMemoryUsage()
+      memoryFreed: this.estimateMemoryUsage(),
     };
   }
 
@@ -1649,57 +1705,59 @@ export class InfrastructureServiceAdapter implements IService {
   private async reloadConfiguration(): Promise<any> {
     // Simulate configuration reload
     this.logger.info('Reloading configuration');
-    
+
     return {
       reloaded: true,
       timestamp: new Date(),
-      version: this.configVersions.length > 0 ? 
-        this.configVersions[this.configVersions.length - 1].version : '1.0.0'
+      version:
+        this.configVersions.length > 0
+          ? this.configVersions[this.configVersions.length - 1].version
+          : '1.0.0',
     };
   }
 
   private async validateCurrentConfiguration(): Promise<any> {
     const isValid = await this.validateConfig(this.config);
-    
+
     return {
       valid: isValid,
       timestamp: new Date(),
-      configHash: this.generateConfigHash(this.config)
+      configHash: this.generateConfigHash(this.config),
     };
   }
 
   private async getConfigurationVersion(version?: string): Promise<any> {
     if (version) {
-      const configVersion = this.configVersions.find(cv => cv.version === version);
+      const configVersion = this.configVersions.find((cv) => cv.version === version);
       if (!configVersion) {
         throw new Error(`Configuration version ${version} not found`);
       }
       return configVersion;
     }
-    
-    return this.configVersions.map(cv => ({
+
+    return this.configVersions.map((cv) => ({
       version: cv.version,
       timestamp: cv.timestamp,
-      description: cv.description
+      description: cv.description,
     }));
   }
 
   private async rollbackConfiguration(version: string): Promise<any> {
-    const configVersion = this.configVersions.find(cv => cv.version === version);
+    const configVersion = this.configVersions.find((cv) => cv.version === version);
     if (!configVersion) {
       throw new Error(`Configuration version ${version} not found`);
     }
-    
+
     // Apply the rollback configuration
     Object.assign(this.config, configVersion.config);
-    
+
     // Create new version entry for rollback
     this.createConfigurationVersion(this.config, `Rollback to version ${version}`);
-    
+
     return {
       rolledBack: true,
       version,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
@@ -1709,11 +1767,11 @@ export class InfrastructureServiceAdapter implements IService {
 
   private async publishEvent(event: any): Promise<any> {
     this.addToEventQueue({ event, timestamp: new Date() });
-    
+
     return {
       published: true,
       eventId: `event-${Date.now()}`,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
@@ -1722,31 +1780,31 @@ export class InfrastructureServiceAdapter implements IService {
     return {
       subscribed: true,
       eventTypes,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
   private async getEventStats(): Promise<any> {
     const recentEvents = this.eventQueue.filter(
-      entry => Date.now() - entry.timestamp.getTime() < 300000 // Last 5 minutes
+      (entry) => Date.now() - entry.timestamp.getTime() < 300000 // Last 5 minutes
     );
-    
+
     return {
       totalEvents: this.eventQueue.length,
       recentEvents: recentEvents.length,
       queueCapacity: this.config.eventCoordination?.maxEventQueueSize || 10000,
       processingRate: this.calculateEventProcessingRate(),
-      oldestEvent: this.eventQueue.length > 0 ? this.eventQueue[0].timestamp : null
+      oldestEvent: this.eventQueue.length > 0 ? this.eventQueue[0].timestamp : null,
     };
   }
 
   private async clearEventQueue(): Promise<any> {
     const cleared = this.eventQueue.length;
     this.eventQueue.length = 0;
-    
+
     return {
       cleared,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
@@ -1758,53 +1816,54 @@ export class InfrastructureServiceAdapter implements IService {
     return {
       serviceRegistry: {
         totalServices: this.serviceRegistry.size,
-        runningServices: Array.from(this.serviceRegistry.values())
-          .filter(service => service.status === 'running').length
+        runningServices: Array.from(this.serviceRegistry.values()).filter(
+          (service) => service.status === 'running'
+        ).length,
       },
       resourceTracking: {
         dataPoints: this.resourceTracker.length,
-        currentUtilization: this.performanceStats.resourceUtilization
+        currentUtilization: this.performanceStats.resourceUtilization,
       },
       configurationManagement: {
         versions: this.configVersions.length,
-        hotReloadEnabled: this.config.configManagement?.enableHotReload
+        hotReloadEnabled: this.config.configManagement?.enableHotReload,
       },
       eventCoordination: {
         queueSize: this.eventQueue.length,
-        processingRate: this.calculateEventProcessingRate()
+        processingRate: this.calculateEventProcessingRate(),
       },
       healthMonitoring: {
         avgSystemHealth: this.performanceStats.avgSystemHealth,
-        consecutiveFailures: this.performanceStats.consecutiveFailures
+        consecutiveFailures: this.performanceStats.consecutiveFailures,
       },
       circuitBreakers: {
         total: this.circuitBreakers.size,
-        open: Array.from(this.circuitBreakers.values()).filter(cb => cb.open).length
-      }
+        open: Array.from(this.circuitBreakers.values()).filter((cb) => cb.open).length,
+      },
     };
   }
 
   private async clearCache(): Promise<any> {
     const cleared = this.cache.size;
     this.cache.clear();
-    
+
     return {
       cleared,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
   private async performHealthCheck(): Promise<any> {
     const isHealthy = await this.healthCheck();
-    
+
     return {
       healthy: isHealthy,
       timestamp: new Date(),
       details: {
         lifecycle: this.lifecycleStatus,
         dependencies: this.dependencies.size,
-        consecutiveFailures: this.performanceStats.consecutiveFailures
-      }
+        consecutiveFailures: this.performanceStats.consecutiveFailures,
+      },
     };
   }
 
@@ -1812,18 +1871,18 @@ export class InfrastructureServiceAdapter implements IService {
     const metrics = await this.getMetrics();
     const resourceStats = await this.getResourceStats();
     const infrastructureStats = await this.getInfrastructureStats();
-    
+
     return {
       summary: {
         operationCount: metrics.operationCount,
         successRate: (metrics.successCount / metrics.operationCount) * 100,
         avgLatency: metrics.averageLatency,
-        throughput: metrics.throughput
+        throughput: metrics.throughput,
       },
       resources: resourceStats,
       infrastructure: infrastructureStats,
       recommendations: this.generatePerformanceRecommendations(metrics, resourceStats),
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
@@ -1833,7 +1892,7 @@ export class InfrastructureServiceAdapter implements IService {
 
   private createIntegrationConfig(): IntegrationConfig {
     const profile = this.config.patternIntegration?.configProfile || 'development';
-    
+
     switch (profile) {
       case 'production':
         return ConfigurationFactory.createProductionConfig();
@@ -1860,31 +1919,81 @@ export class InfrastructureServiceAdapter implements IService {
           memory: this.performanceStats.resourceUtilization.memory,
           network: this.performanceStats.resourceUtilization.network,
           storage: this.performanceStats.resourceUtilization.storage,
-          timestamp: new Date()
-        }
+          timestamp: new Date(),
+        },
       }),
-      recordEvent: () => {}
+      recordEvent: () => {},
     };
   }
 
   private createStandaloneFacade(): ClaudeZenFacade {
     // Create mock services for standalone facade
     const mockSwarmService: ISwarmService = {
-      initializeSwarm: async () => ({ swarmId: 'mock', topology: 'hierarchical', agentCount: 1, status: 'ready', estimatedReadyTime: 0 }),
-      getSwarmStatus: async () => ({ healthy: true, activeAgents: 1, completedTasks: 0, errors: [], topology: 'hierarchical', uptime: 0 }),
+      initializeSwarm: async () => ({
+        swarmId: 'mock',
+        topology: 'hierarchical',
+        agentCount: 1,
+        status: 'ready',
+        estimatedReadyTime: 0,
+      }),
+      getSwarmStatus: async () => ({
+        healthy: true,
+        activeAgents: 1,
+        completedTasks: 0,
+        errors: [],
+        topology: 'hierarchical',
+        uptime: 0,
+      }),
       destroySwarm: async () => {},
-      coordinateSwarm: async () => ({ success: true, coordination: { strategy: 'hierarchical', participants: [], result: { success: true, metrics: { latency: 0, throughput: 0, reliability: 1, resourceUsage: { cpu: 0, memory: 0, network: 0, storage: 0 } } } } }),
-      spawnAgent: async () => ({ agentId: 'mock', type: 'worker', capabilities: [], status: 'ready', resourceAllocation: { cpu: 0, memory: 0, network: 0, storage: 0, timestamp: new Date() } }),
-      listSwarms: async () => []
+      coordinateSwarm: async () => ({
+        success: true,
+        coordination: {
+          strategy: 'hierarchical',
+          participants: [],
+          result: {
+            success: true,
+            metrics: {
+              latency: 0,
+              throughput: 0,
+              reliability: 1,
+              resourceUsage: { cpu: 0, memory: 0, network: 0, storage: 0 },
+            },
+          },
+        },
+      }),
+      spawnAgent: async () => ({
+        agentId: 'mock',
+        type: 'worker',
+        capabilities: [],
+        status: 'ready',
+        resourceAllocation: { cpu: 0, memory: 0, network: 0, storage: 0, timestamp: new Date() },
+      }),
+      listSwarms: async () => [],
     };
 
     const mockNeuralService: INeuralService = {
-      trainModel: async () => ({ modelId: 'mock', accuracy: 0.95, loss: 0.05, trainingTime: 1000, status: 'ready' }),
-      predictWithModel: async () => ({ predictions: [], confidence: [], modelId: 'mock', processingTime: 100 }),
+      trainModel: async () => ({
+        modelId: 'mock',
+        accuracy: 0.95,
+        loss: 0.05,
+        trainingTime: 1000,
+        status: 'ready',
+      }),
+      predictWithModel: async () => ({
+        predictions: [],
+        confidence: [],
+        modelId: 'mock',
+        processingTime: 100,
+      }),
       evaluateModel: async () => ({ accuracy: 0.95, precision: 0.95, recall: 0.95, f1Score: 0.95 }),
-      optimizeModel: async () => ({ improvedAccuracy: 0.96, optimizationTime: 500, strategy: { method: 'gradient', maxIterations: 100, targetMetric: 'accuracy' }, iterations: 50 }),
+      optimizeModel: async () => ({
+        improvedAccuracy: 0.96,
+        optimizationTime: 500,
+        strategy: { method: 'gradient', maxIterations: 100, targetMetric: 'accuracy' },
+        iterations: 50,
+      }),
       listModels: async () => [],
-      deleteModel: async () => {}
+      deleteModel: async () => {},
     };
 
     const mockMemoryService: IMemoryService = {
@@ -1893,7 +2002,13 @@ export class InfrastructureServiceAdapter implements IService {
       delete: async () => true,
       list: async () => [],
       clear: async () => 0,
-      getStats: async () => ({ totalKeys: 0, memoryUsage: 0, hitRate: 0.9, missRate: 0.1, avgResponseTime: 10 })
+      getStats: async () => ({
+        totalKeys: 0,
+        memoryUsage: 0,
+        hitRate: 0.9,
+        missRate: 0.1,
+        avgResponseTime: 10,
+      }),
     };
 
     const mockDatabaseService: IDatabaseService = {
@@ -1903,25 +2018,41 @@ export class InfrastructureServiceAdapter implements IService {
       delete: async () => true,
       vectorSearch: async () => [],
       createIndex: async () => {},
-      getHealth: async () => ({ status: 'healthy', connectionCount: 1, queryLatency: 10, diskUsage: 0.5 })
+      getHealth: async () => ({
+        status: 'healthy',
+        connectionCount: 1,
+        queryLatency: 10,
+        diskUsage: 0.5,
+      }),
     };
 
     const mockInterfaceService: IInterfaceService = {
       startHTTPMCP: async () => ({ serverId: 'mock', port: 3000, status: 'running', uptime: 0 }),
-      startWebDashboard: async () => ({ serverId: 'mock', port: 3456, status: 'running', activeConnections: 0 }),
+      startWebDashboard: async () => ({
+        serverId: 'mock',
+        port: 3456,
+        status: 'running',
+        activeConnections: 0,
+      }),
       startTUI: async () => ({ instanceId: 'mock', mode: 'swarm-overview', status: 'running' }),
       startCLI: async () => ({ instanceId: 'mock', status: 'ready' }),
       stopInterface: async () => {},
-      getInterfaceStatus: async () => []
+      getInterfaceStatus: async () => [],
     };
 
     const mockWorkflowService: IWorkflowService = {
-      executeWorkflow: async () => ({ workflowId: 'mock', executionId: 'mock', status: 'completed', startTime: new Date(), results: {} }),
+      executeWorkflow: async () => ({
+        workflowId: 'mock',
+        executionId: 'mock',
+        status: 'completed',
+        startTime: new Date(),
+        results: {},
+      }),
       createWorkflow: async () => 'mock-workflow-id',
       listWorkflows: async () => [],
       pauseWorkflow: async () => {},
       resumeWorkflow: async () => {},
-      cancelWorkflow: async () => {}
+      cancelWorkflow: async () => {},
     };
 
     // Create mock event manager and command queue
@@ -1931,15 +2062,20 @@ export class InfrastructureServiceAdapter implements IService {
       on: () => {},
       shutdown: async () => {},
       getObserverStats: () => [],
-      getQueueStats: () => ({ size: 0, processing: 0 })
+      getQueueStats: () => ({ size: 0, processing: 0 }),
     } as any;
 
     const mockCommandQueue = {
-      execute: async () => ({ success: true, data: {}, executionTime: 100, resourceUsage: { cpu: 0, memory: 0, network: 0, storage: 0 } }),
+      execute: async () => ({
+        success: true,
+        data: {},
+        executionTime: 100,
+        resourceUsage: { cpu: 0, memory: 0, network: 0, storage: 0 },
+      }),
       on: () => {},
       shutdown: async () => {},
       getMetrics: () => ({ executed: 0, failed: 0, avgExecutionTime: 0 }),
-      getHistory: () => []
+      getHistory: () => [],
     } as any;
 
     return new ClaudeZenFacade(
@@ -1972,7 +2108,9 @@ export class InfrastructureServiceAdapter implements IService {
     this.cache.clear();
   }
 
-  private async performHotReload(config: Partial<InfrastructureServiceAdapterConfig>): Promise<void> {
+  private async performHotReload(
+    config: Partial<InfrastructureServiceAdapterConfig>
+  ): Promise<void> {
     this.logger.info('Performing hot reload of configuration');
 
     // Apply configuration changes that can be hot-reloaded
@@ -2002,7 +2140,7 @@ export class InfrastructureServiceAdapter implements IService {
       config: JSON.parse(JSON.stringify(config)), // Deep copy
       timestamp: new Date(),
       hash: this.generateConfigHash(config),
-      description
+      description,
     };
 
     this.configVersions.push(configVersion);
@@ -2019,7 +2157,7 @@ export class InfrastructureServiceAdapter implements IService {
     let hash = 0;
     for (let i = 0; i < configStr.length; i++) {
       const char = configStr.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash.toString(36);
@@ -2035,11 +2173,11 @@ export class InfrastructureServiceAdapter implements IService {
 
   private startResourceTracking(): void {
     const interval = this.config.resourceManagement?.cleanupInterval || 300000;
-    
+
     setInterval(async () => {
       try {
         await this.trackResources();
-        
+
         if (this.config.resourceManagement?.enableResourceOptimization) {
           await this.optimizeResources();
         }
@@ -2051,7 +2189,7 @@ export class InfrastructureServiceAdapter implements IService {
 
   private startConfigurationManagement(): void {
     const interval = this.config.configManagement?.reloadCheckInterval || 30000;
-    
+
     setInterval(() => {
       this.logger.debug('Checking for configuration changes');
       // Configuration change detection logic would go here
@@ -2069,11 +2207,11 @@ export class InfrastructureServiceAdapter implements IService {
 
   private startAdvancedHealthMonitoring(): void {
     const interval = this.config.health?.interval || 30000;
-    
+
     setInterval(async () => {
       try {
         await this.healthCheck();
-        
+
         if (this.config.healthMonitoring?.enablePerformanceAlerts) {
           this.checkPerformanceAlerts();
         }
@@ -2099,20 +2237,24 @@ export class InfrastructureServiceAdapter implements IService {
     if (!thresholds) return;
 
     const avgLatency = this.operationCount > 0 ? this.totalLatency / this.operationCount : 0;
-    const errorRate = this.operationCount > 0 ? (this.errorCount / this.operationCount) : 0;
+    const errorRate = this.operationCount > 0 ? this.errorCount / this.operationCount : 0;
 
     if (thresholds.responseTime && avgLatency > thresholds.responseTime) {
-      this.logger.warn(`Performance alert: Response time ${avgLatency}ms exceeds threshold ${thresholds.responseTime}ms`);
+      this.logger.warn(
+        `Performance alert: Response time ${avgLatency}ms exceeds threshold ${thresholds.responseTime}ms`
+      );
     }
 
     if (thresholds.errorRate && errorRate > thresholds.errorRate) {
-      this.logger.warn(`Performance alert: Error rate ${errorRate} exceeds threshold ${thresholds.errorRate}`);
+      this.logger.warn(
+        `Performance alert: Error rate ${errorRate} exceeds threshold ${thresholds.errorRate}`
+      );
     }
   }
 
   private cleanupMetrics(): void {
     const cutoff = new Date(Date.now() - 3600000); // 1 hour
-    this.metrics = this.metrics.filter(m => m.timestamp > cutoff);
+    this.metrics = this.metrics.filter((m) => m.timestamp > cutoff);
   }
 
   private addToEventQueue(entry: { event: any; timestamp: Date }): void {
@@ -2145,10 +2287,15 @@ export class InfrastructureServiceAdapter implements IService {
     this.circuitBreakers.delete(operation);
   }
 
-  private async getCurrentResourceUsage(): Promise<{ cpu: number; memory: number; network: number; storage: number }> {
+  private async getCurrentResourceUsage(): Promise<{
+    cpu: number;
+    memory: number;
+    network: number;
+    storage: number;
+  }> {
     try {
       const memoryUsage = process.memoryUsage();
-      
+
       // Get system load
       let cpuLoad = 0;
       try {
@@ -2159,12 +2306,12 @@ export class InfrastructureServiceAdapter implements IService {
         // Fallback for systems without loadavg
         cpuLoad = 0.1;
       }
-      
+
       return {
         cpu: Math.min(cpuLoad, 1.0), // Real CPU usage (capped at 100%)
         memory: memoryUsage.heapUsed / memoryUsage.heapTotal, // Real memory usage
         network: 0.05, // Network would need external monitoring
-        storage: this.estimateStorageUsage() // Real storage calculation
+        storage: this.estimateStorageUsage(), // Real storage calculation
       };
     } catch (error) {
       this.logger.warn('Failed to get real resource usage:', error);
@@ -2172,25 +2319,32 @@ export class InfrastructureServiceAdapter implements IService {
         cpu: 0.1,
         memory: 0.1,
         network: 0.05,
-        storage: 0.1
+        storage: 0.1,
       };
     }
   }
 
   private getServicesInvolvedInOperation(operation: string): string[] {
     const services: string[] = [];
-    
-    if (operation.startsWith('project-') || operation.startsWith('document-') || 
-        operation.startsWith('system-') || operation.startsWith('workflow-') || 
-        operation.startsWith('batch-')) {
+
+    if (
+      operation.startsWith('project-') ||
+      operation.startsWith('document-') ||
+      operation.startsWith('system-') ||
+      operation.startsWith('workflow-') ||
+      operation.startsWith('batch-')
+    ) {
       services.push('claude-zen-facade');
     }
-    
-    if (operation.startsWith('swarm-') || operation.startsWith('agent-') || 
-        operation.startsWith('pattern-')) {
+
+    if (
+      operation.startsWith('swarm-') ||
+      operation.startsWith('agent-') ||
+      operation.startsWith('pattern-')
+    ) {
       services.push('pattern-integration-system');
     }
-    
+
     return services;
   }
 
@@ -2199,26 +2353,27 @@ export class InfrastructureServiceAdapter implements IService {
 
     // Keep only recent metrics
     const cutoff = new Date(Date.now() - 3600000); // 1 hour
-    this.metrics = this.metrics.filter(m => m.timestamp > cutoff);
+    this.metrics = this.metrics.filter((m) => m.timestamp > cutoff);
   }
 
   private calculateOrchestrationEfficiency(): number {
-    const runningServices = Array.from(this.serviceRegistry.values())
-      .filter(service => service.status === 'running').length;
+    const runningServices = Array.from(this.serviceRegistry.values()).filter(
+      (service) => service.status === 'running'
+    ).length;
     const totalServices = this.serviceRegistry.size;
-    
+
     return totalServices > 0 ? (runningServices / totalServices) * 100 : 100;
   }
 
   private calculateResourceOptimization(): number {
     if (this.resourceTracker.length < 2) return 100;
-    
+
     const recent = this.resourceTracker[this.resourceTracker.length - 1];
     const previous = this.resourceTracker[this.resourceTracker.length - 2];
-    
+
     const currentTotal = recent.cpu + recent.memory + recent.network + recent.storage;
     const previousTotal = previous.cpu + previous.memory + previous.network + previous.storage;
-    
+
     return previousTotal > 0 ? ((previousTotal - currentTotal) / previousTotal) * 100 : 0;
   }
 
@@ -2229,61 +2384,61 @@ export class InfrastructureServiceAdapter implements IService {
 
   private calculateEventProcessingRate(): number {
     const recentEvents = this.eventQueue.filter(
-      entry => Date.now() - entry.timestamp.getTime() < 60000 // Last minute
+      (entry) => Date.now() - entry.timestamp.getTime() < 60000 // Last minute
     );
-    
+
     return recentEvents.length; // Events per minute
   }
 
   private generatePerformanceRecommendations(metrics: any, resourceStats: any): string[] {
     const recommendations: string[] = [];
-    
+
     if (metrics.averageLatency > 1000) {
       recommendations.push('Consider enabling caching to reduce response times');
     }
-    
+
     if (metrics.throughput < 10) {
       recommendations.push('Consider increasing concurrency limits for better throughput');
     }
-    
+
     if (resourceStats.memory?.avg > 0.8) {
       recommendations.push('Memory usage is high - consider enabling garbage collection');
     }
-    
+
     if (resourceStats.cpu?.avg > 0.8) {
       recommendations.push('CPU usage is high - consider load balancing or resource optimization');
     }
-    
+
     if (this.circuitBreakers.size > 5) {
       recommendations.push('Multiple circuit breakers are active - check service health');
     }
-    
+
     return recommendations;
   }
 
   private estimateMemoryUsage(): number {
     let size = 0;
-    
+
     // Estimate service registry memory usage
     size += this.serviceRegistry.size * 500; // 500 bytes per service entry
-    
+
     // Estimate config versions memory usage
     size += this.configVersions.length * 1000; // 1KB per config version
-    
+
     // Estimate resource tracker memory usage
     size += this.resourceTracker.length * 100; // 100 bytes per resource entry
-    
+
     // Estimate metrics memory usage
     size += this.metrics.length * 200; // 200 bytes per metric entry
-    
+
     // Estimate event queue memory usage
     size += this.eventQueue.length * 150; // 150 bytes per event
-    
+
     // Estimate cache memory usage
     for (const entry of this.cache.values()) {
       size += JSON.stringify(entry.data).length * 2 + 100; // Estimate with metadata
     }
-    
+
     return size;
   }
 
@@ -2291,22 +2446,22 @@ export class InfrastructureServiceAdapter implements IService {
     try {
       // Calculate storage usage based on actual data structures
       let storageBytes = 0;
-      
+
       // Service registry storage
       storageBytes += this.serviceRegistry.size * 500;
-      
+
       // Configuration versions storage
       storageBytes += this.configVersions.length * 1000;
-      
+
       // Metrics storage
       storageBytes += this.metrics.length * 300;
-      
+
       // Event queue storage
       storageBytes += this.eventQueue.length * 200;
-      
+
       // Resource tracker storage
       storageBytes += this.resourceTracker.length * 150;
-      
+
       // Cache storage
       for (const entry of this.cache.values()) {
         try {
@@ -2315,7 +2470,7 @@ export class InfrastructureServiceAdapter implements IService {
           storageBytes += 100; // Fallback estimate
         }
       }
-      
+
       // Convert bytes to percentage (assuming 1GB total storage budget)
       const totalStorageBudget = 1024 * 1024 * 1024; // 1GB
       return Math.min(storageBytes / totalStorageBudget, 0.95);
@@ -2325,7 +2480,9 @@ export class InfrastructureServiceAdapter implements IService {
     }
   }
 
-  private determineHealthStatus(errorRate: number): 'healthy' | 'degraded' | 'unhealthy' | 'unknown' {
+  private determineHealthStatus(
+    errorRate: number
+  ): 'healthy' | 'degraded' | 'unhealthy' | 'unknown' {
     if (this.performanceStats.consecutiveFailures > 5) {
       return 'unhealthy';
     } else if (errorRate > 10 || this.performanceStats.consecutiveFailures > 2) {
@@ -2340,13 +2497,20 @@ export class InfrastructureServiceAdapter implements IService {
 
 /**
  * Factory function for creating InfrastructureServiceAdapter instances
+ *
+ * @param config
  */
-export function createInfrastructureServiceAdapter(config: InfrastructureServiceAdapterConfig): InfrastructureServiceAdapter {
+export function createInfrastructureServiceAdapter(
+  config: InfrastructureServiceAdapterConfig
+): InfrastructureServiceAdapter {
   return new InfrastructureServiceAdapter(config);
 }
 
 /**
  * Helper function for creating default configuration
+ *
+ * @param name
+ * @param overrides
  */
 export function createDefaultInfrastructureServiceAdapterConfig(
   name: string,
@@ -2364,7 +2528,7 @@ export function createDefaultInfrastructureServiceAdapterConfig(
       interval: 30000,
       timeout: 5000,
       failureThreshold: 3,
-      successThreshold: 1
+      successThreshold: 1,
     },
     monitoring: {
       enabled: true,
@@ -2372,7 +2536,7 @@ export function createDefaultInfrastructureServiceAdapterConfig(
       trackLatency: true,
       trackThroughput: true,
       trackErrors: true,
-      trackMemoryUsage: true
+      trackMemoryUsage: true,
     },
     facade: {
       enabled: true,
@@ -2382,7 +2546,7 @@ export function createDefaultInfrastructureServiceAdapterConfig(
       enableHealthChecks: true,
       systemStatusInterval: 30000,
       mockServices: true,
-      enableBatchOperations: true
+      enableBatchOperations: true,
     },
     patternIntegration: {
       enabled: true,
@@ -2392,7 +2556,7 @@ export function createDefaultInfrastructureServiceAdapterConfig(
       enableProtocolSystem: true,
       enableAgentSystem: true,
       maxAgents: 20,
-      enableAutoOptimization: true
+      enableAutoOptimization: true,
     },
     orchestration: {
       enableServiceDiscovery: true,
@@ -2401,7 +2565,7 @@ export function createDefaultInfrastructureServiceAdapterConfig(
       maxConcurrentServices: 20,
       serviceStartupTimeout: 30000,
       shutdownGracePeriod: 10000,
-      enableServiceMesh: true
+      enableServiceMesh: true,
     },
     resourceManagement: {
       enableResourceTracking: true,
@@ -2411,7 +2575,7 @@ export function createDefaultInfrastructureServiceAdapterConfig(
       diskThreshold: 0.9,
       networkThreshold: 0.8,
       cleanupInterval: 300000,
-      enableGarbageCollection: true
+      enableGarbageCollection: true,
     },
     configManagement: {
       enableHotReload: true,
@@ -2420,7 +2584,7 @@ export function createDefaultInfrastructureServiceAdapterConfig(
       reloadCheckInterval: 30000,
       backupConfigs: true,
       maxConfigHistory: 50,
-      configEncryption: false
+      configEncryption: false,
     },
     eventCoordination: {
       enableCentralizedEvents: true,
@@ -2429,7 +2593,7 @@ export function createDefaultInfrastructureServiceAdapterConfig(
       maxEventQueueSize: 10000,
       eventRetentionPeriod: 3600000,
       enableEventFiltering: true,
-      enableEventAggregation: true
+      enableEventAggregation: true,
     },
     healthMonitoring: {
       enableAdvancedChecks: true,
@@ -2439,11 +2603,11 @@ export function createDefaultInfrastructureServiceAdapterConfig(
       performanceThresholds: {
         responseTime: 1000,
         errorRate: 0.05,
-        resourceUsage: 0.8
+        resourceUsage: 0.8,
       },
-      enablePredictiveMonitoring: true
+      enablePredictiveMonitoring: true,
     },
-    ...overrides
+    ...overrides,
   };
 }
 

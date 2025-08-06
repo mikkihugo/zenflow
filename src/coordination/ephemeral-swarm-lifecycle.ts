@@ -87,6 +87,8 @@ export type SwarmStatus =
 
 /**
  * Manages ephemeral swarm lifecycle
+ *
+ * @example
  */
 export class EphemeralSwarmManager extends EventEmitter {
   private activeSwarms = new Map<string, SwarmInstance>();
@@ -106,6 +108,8 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Request a new ephemeral swarm
+   *
+   * @param request
    */
   async requestSwarm(request: SwarmRequest): Promise<string> {
     this.logger?.info('Swarm requested', {
@@ -130,6 +134,8 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Create and provision a new swarm
+   *
+   * @param request
    */
   private async createSwarm(request: SwarmRequest): Promise<string> {
     const swarm: SwarmInstance = {
@@ -182,6 +188,9 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Spawn agents for the swarm
+   *
+   * @param swarm
+   * @param request
    */
   private async spawnAgents(swarm: SwarmInstance, request: SwarmRequest): Promise<void> {
     this.logger?.debug('Spawning agents for swarm', {
@@ -218,6 +227,9 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Spawn a single agent
+   *
+   * @param agent
+   * @param swarmId
    */
   private async spawnSingleAgent(agent: EphemeralAgent, swarmId: string): Promise<void> {
     // This integrates with our enhanced Task tool
@@ -235,6 +247,8 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Initialize swarm coordination
+   *
+   * @param swarm
    */
   private async initializeSwarm(swarm: SwarmInstance): Promise<void> {
     swarm.status = 'initializing';
@@ -256,6 +270,8 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Start swarm task execution
+   *
+   * @param swarm
    */
   private async startSwarmExecution(swarm: SwarmInstance): Promise<void> {
     this.logger?.info('Starting swarm execution', { swarmId: swarm.id });
@@ -282,6 +298,9 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Execute a single task step
+   *
+   * @param swarm
+   * @param step
    */
   private async executeTaskStep(swarm: SwarmInstance, step: TaskStep): Promise<void> {
     step.status = 'running';
@@ -328,6 +347,9 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Select best agent for a task step
+   *
+   * @param swarm
+   * @param _step
    */
   private selectAgentForStep(swarm: SwarmInstance, _step: TaskStep): EphemeralAgent | null {
     const availableAgents = swarm.agents.filter(
@@ -344,6 +366,8 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Generate task steps from swarm request
+   *
+   * @param request
    */
   private generateTaskSteps(request: SwarmRequest): TaskStep[] {
     // This would be more sophisticated in practice
@@ -368,6 +392,9 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Schedule swarm cleanup
+   *
+   * @param swarmId
+   * @param reason
    */
   private scheduleSwarmCleanup(swarmId: string, reason: string): void {
     const swarm = this.activeSwarms.get(swarmId);
@@ -393,6 +420,9 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Terminate a swarm and clean up resources
+   *
+   * @param swarmId
+   * @param reason
    */
   async terminateSwarm(swarmId: string, reason: string): Promise<void> {
     const swarm = this.activeSwarms.get(swarmId);
@@ -485,6 +515,8 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Handle task completion
+   *
+   * @param data
    */
   private handleTaskCompletion(data: any): void {
     const swarm = this.activeSwarms.get(data.swarmId);
@@ -505,6 +537,8 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Handle agent becoming idle
+   *
+   * @param data
    */
   private handleAgentIdle(data: any): void {
     const swarm = this.activeSwarms.get(data.swarmId);
@@ -547,6 +581,8 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   /**
    * Map agent type to Claude Code sub-agent
+   *
+   * @param agentType
    */
   private getClaudeSubAgent(agentType: AgentType): string | undefined {
     const mappings: Record<string, string> = {

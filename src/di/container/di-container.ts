@@ -30,6 +30,9 @@ export class DIContainer implements IDIContainer {
 
   /**
    * Register a service provider with the container
+   *
+   * @param token
+   * @param provider
    */
   register<T>(token: DIToken<T>, provider: Provider<T>): void {
     if (this.providers.has(token.symbol)) {
@@ -41,6 +44,8 @@ export class DIContainer implements IDIContainer {
 
   /**
    * Resolve a service from the container
+   *
+   * @param token
    */
   resolve<T>(token: DIToken<T>): T {
     const startTime = this.options.enablePerformanceMetrics ? Date.now() : 0;
@@ -96,6 +101,8 @@ export class DIContainer implements IDIContainer {
 
   /**
    * Check if a service is registered
+   *
+   * @param token
    */
   isRegistered<T>(token: DIToken<T>): boolean {
     return this.providers.has(token.symbol);
@@ -118,6 +125,8 @@ export class DIContainer implements IDIContainer {
 
   /**
    * Internal resolution with circular dependency detection
+   *
+   * @param token
    */
   private resolveInternal<T>(token: DIToken<T>): T {
     // Check circular dependency
@@ -163,6 +172,9 @@ export class DIContainer implements IDIContainer {
 
   /**
    * Resolve singleton with instance caching
+   *
+   * @param token
+   * @param provider
    */
   private resolveSingleton<T>(token: DIToken<T>, provider: Provider<T>): T {
     if (this.singletonInstances.has(token.symbol)) {

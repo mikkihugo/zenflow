@@ -3,7 +3,7 @@
  * Exposes DAA capabilities through the MCP interface
  */
 
-import { DaaService } from './daa-service';
+import { DaaService } from '../core/daa-service';
 
 const daaService = new DaaService();
 
@@ -26,6 +26,8 @@ export class DAA_MCPTools {
   /**
    * DAA MCP Tool: daa_init
    * Initialize the DAA service with autonomous agent capabilities
+   *
+   * @param params
    */
   async daa_init(params) {
     const startTime = performance.now();
@@ -63,6 +65,8 @@ export class DAA_MCPTools {
   /**
    * DAA MCP Tool: daa_agent_create
    * Create an autonomous agent with DAA capabilities
+   *
+   * @param params
    */
   async daa_agent_create(params) {
     const startTime = performance.now();
@@ -169,6 +173,8 @@ export class DAA_MCPTools {
   /**
    * DAA MCP Tool: daa_agent_adapt
    * Trigger agent adaptation based on feedback
+   *
+   * @param params
    */
   async daa_agent_adapt(params) {
     const startTime = performance.now();
@@ -214,6 +220,8 @@ export class DAA_MCPTools {
   /**
    * DAA MCP Tool: daa_workflow_create
    * Create an autonomous workflow with DAA coordination
+   *
+   * @param params
    */
   async daa_workflow_create(params) {
     const startTime = performance.now();
@@ -253,6 +261,8 @@ export class DAA_MCPTools {
   /**
    * DAA MCP Tool: daa_workflow_execute
    * Execute a DAA workflow with autonomous agents
+   *
+   * @param params
    */
   async daa_workflow_execute(params) {
     const startTime = performance.now();
@@ -299,6 +309,8 @@ export class DAA_MCPTools {
   /**
    * DAA MCP Tool: daa_knowledge_share
    * Share knowledge between autonomous agents
+   *
+   * @param params
    */
   async daa_knowledge_share(params) {
     const startTime = performance.now();
@@ -361,6 +373,8 @@ export class DAA_MCPTools {
   /**
    * DAA MCP Tool: daa_learning_status
    * Get learning progress and status for DAA agents
+   *
+   * @param params
    */
   async daa_learning_status(params) {
     const startTime = performance.now();
@@ -409,6 +423,8 @@ export class DAA_MCPTools {
   /**
    * DAA MCP Tool: daa_cognitive_pattern
    * Analyze or change cognitive patterns for agents
+   *
+   * @param params
    */
   async daa_cognitive_pattern(params) {
     const startTime = performance.now();
@@ -469,6 +485,8 @@ export class DAA_MCPTools {
   /**
    * DAA MCP Tool: daa_meta_learning
    * Enable meta-learning capabilities across domains
+   *
+   * @param params
    */
   async daa_meta_learning(params) {
     const startTime = performance.now();
@@ -511,6 +529,8 @@ export class DAA_MCPTools {
   /**
    * DAA MCP Tool: daa_performance_metrics
    * Get comprehensive DAA performance metrics
+   *
+   * @param params
    */
   async daa_performance_metrics(params) {
     const startTime = performance.now();

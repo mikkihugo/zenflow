@@ -1,37 +1,37 @@
 /**
  * Base Service Implementation
- * 
+ *
  * Abstract base class that provides common functionality for all service implementations.
  * Follows the same patterns established by the DAL and UACL systems.
  */
 
+import { EventEmitter } from 'events';
+import { createLogger, type Logger } from '../../../utils/logger';
 import type {
   IService,
   ServiceConfig,
-  ServiceStatus,
-  ServiceMetrics,
+  ServiceDependencyConfig,
   ServiceEvent,
   ServiceEventType,
   ServiceLifecycleStatus,
+  ServiceMetrics,
   ServiceOperationOptions,
   ServiceOperationResponse,
-  ServiceDependencyConfig
+  ServiceStatus,
 } from '../core/interfaces';
-
 import {
-  ServiceError,
-  ServiceInitializationError,
   ServiceConfigurationError,
   ServiceDependencyError,
+  ServiceError,
+  ServiceInitializationError,
   ServiceOperationError,
-  ServiceTimeoutError
+  ServiceTimeoutError,
 } from '../core/interfaces';
-
-import { createLogger, type Logger } from '../../../utils/logger';
-import { EventEmitter } from 'events';
 
 /**
  * Abstract base service class with common functionality
+ *
+ * @example
  */
 export abstract class BaseService extends EventEmitter implements IService {
   protected logger: Logger;
@@ -51,10 +51,10 @@ export abstract class BaseService extends EventEmitter implements IService {
   ) {
     super();
     this.logger = createLogger(`Service:${name}`);
-    
+
     // Initialize dependencies
     if (config.dependencies) {
-      config.dependencies.forEach(dep => {
+      config.dependencies.forEach((dep) => {
         this.dependencies.set(dep.serviceName, dep);
       });
     }
@@ -149,7 +149,11 @@ export abstract class BaseService extends EventEmitter implements IService {
     }
 
     if (this.lifecycleStatus !== 'initialized' && this.lifecycleStatus !== 'stopped') {
-      throw new ServiceError('Cannot start service that is not initialized', 'INVALID_STATE', this.name);
+      throw new ServiceError(
+        'Cannot start service that is not initialized',
+        'INVALID_STATE',
+        this.name
+      );
     }
 
     this.logger.info(`Starting service: ${this.name}`);
@@ -263,12 +267,12 @@ export abstract class BaseService extends EventEmitter implements IService {
         // For now, we'll simulate it
         dependencies[depName] = {
           status: 'healthy',
-          lastCheck: new Date()
+          lastCheck: new Date(),
         };
       } catch (error) {
         dependencies[depName] = {
           status: 'unhealthy',
-          lastCheck: new Date()
+          lastCheck: new Date(),
         };
       }
     }
@@ -286,25 +290,26 @@ export abstract class BaseService extends EventEmitter implements IService {
       metadata: {
         operationCount: this.operationCount,
         successCount: this.successCount,
-        ...this.config.metadata
-      }
+        ...this.config.metadata,
+      },
     };
   }
 
   async getMetrics(): Promise<ServiceMetrics> {
-    const averageLatency = this.latencyMetrics.length > 0 
-      ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) / this.latencyMetrics.length 
-      : 0;
+    const averageLatency =
+      this.latencyMetrics.length > 0
+        ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) / this.latencyMetrics.length
+        : 0;
 
     const sortedLatencies = [...this.latencyMetrics].sort((a, b) => a - b);
     const p95Index = Math.floor(sortedLatencies.length * 0.95);
     const p99Index = Math.floor(sortedLatencies.length * 0.99);
-    
+
     const p95Latency = sortedLatencies[p95Index] || 0;
     const p99Latency = sortedLatencies[p99Index] || 0;
 
     const uptime = this.startTime ? Date.now() - this.startTime.getTime() : 0;
-    const throughput = uptime > 0 ? (this.operationCount / (uptime / 1000)) : 0;
+    const throughput = uptime > 0 ? this.operationCount / (uptime / 1000) : 0;
 
     return {
       name: this.name,
@@ -316,7 +321,7 @@ export abstract class BaseService extends EventEmitter implements IService {
       p95Latency,
       p99Latency,
       throughput,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
@@ -328,36 +333,39 @@ export abstract class BaseService extends EventEmitter implements IService {
 
       const isHealthy = await this.doHealthCheck();
       this.emit('health-check', this.createEvent('health-check', { healthy: isHealthy }));
-      
+
       return isHealthy;
     } catch (error) {
       this.logger.error(`Health check failed for service ${this.name}:`, error);
-      this.emit('health-check', this.createEvent('health-check', { healthy: false }, error as Error));
+      this.emit(
+        'health-check',
+        this.createEvent('health-check', { healthy: false }, error as Error)
+      );
       return false;
     }
   }
 
   async updateConfig(config: Partial<ServiceConfig>): Promise<void> {
     this.logger.info(`Updating configuration for service: ${this.name}`);
-    
+
     const newConfig = { ...this.config, ...config };
-    
+
     // Validate new configuration
     const isValid = await this.validateConfig(newConfig);
     if (!isValid) {
       throw new ServiceConfigurationError(this.name, 'Invalid configuration update');
     }
-    
+
     this.config = newConfig;
-    
+
     // Update dependencies if changed
     if (config.dependencies) {
       this.dependencies.clear();
-      config.dependencies.forEach(dep => {
+      config.dependencies.forEach((dep) => {
         this.dependencies.set(dep.serviceName, dep);
       });
     }
-    
+
     this.logger.info(`Configuration updated for service: ${this.name}`);
   }
 
@@ -367,12 +375,12 @@ export abstract class BaseService extends EventEmitter implements IService {
       if (!config.name || !config.type) {
         return false;
       }
-      
+
       // Validate timeout
       if (config.timeout && config.timeout < 1000) {
         return false;
       }
-      
+
       // Validate dependencies
       if (config.dependencies) {
         for (const dep of config.dependencies) {
@@ -381,7 +389,7 @@ export abstract class BaseService extends EventEmitter implements IService {
           }
         }
       }
-      
+
       return true;
     } catch (error) {
       this.logger.error(`Configuration validation failed for service ${this.name}:`, error);
@@ -404,7 +412,7 @@ export abstract class BaseService extends EventEmitter implements IService {
   ): Promise<ServiceOperationResponse<T>> {
     const operationId = `${this.name}-${operation}-${Date.now()}`;
     const startTime = Date.now();
-    
+
     this.logger.debug(`Executing operation: ${operation} on service ${this.name}`);
     this.operationCount++;
 
@@ -435,16 +443,19 @@ export abstract class BaseService extends EventEmitter implements IService {
         metadata: {
           duration,
           timestamp: new Date(),
-          operationId
-        }
+          operationId,
+        },
       };
 
-      this.emit('operation', this.createEvent('operation', {
-        operation,
-        success: true,
-        duration,
-        operationId
-      }));
+      this.emit(
+        'operation',
+        this.createEvent('operation', {
+          operation,
+          success: true,
+          duration,
+          operationId,
+        })
+      );
 
       if (options?.trackMetrics !== false) {
         this.emit('metrics-update', this.createEvent('metrics-update'));
@@ -463,22 +474,25 @@ export abstract class BaseService extends EventEmitter implements IService {
           code: error instanceof ServiceError ? error.code : 'OPERATION_ERROR',
           message: error instanceof Error ? error.message : 'Unknown error',
           details: params,
-          stack: error instanceof Error ? error.stack : undefined
+          stack: error instanceof Error ? error.stack : undefined,
         },
         metadata: {
           duration,
           timestamp: new Date(),
-          operationId
-        }
+          operationId,
+        },
       };
 
-      this.emit('operation', this.createEvent('operation', {
-        operation,
-        success: false,
-        duration,
-        operationId,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      }));
+      this.emit(
+        'operation',
+        this.createEvent('operation', {
+          operation,
+          success: false,
+          duration,
+          operationId,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        })
+      );
 
       this.logger.error(`Operation ${operation} failed on service ${this.name}:`, error);
       return response;
@@ -500,22 +514,24 @@ export abstract class BaseService extends EventEmitter implements IService {
       return true;
     }
 
-    const dependencyChecks = Array.from(this.dependencies.entries()).map(async ([depName, depConfig]) => {
-      try {
-        // In a real implementation, this would check the actual dependency service
-        // For now, we'll simulate a dependency check
-        this.logger.debug(`Checking dependency: ${depName}`);
-        
-        // Simulate dependency check with timeout
-        const timeout = depConfig.timeout || 5000;
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 100));
-        
-        return { name: depName, available: true };
-      } catch (error) {
-        this.logger.warn(`Dependency check failed for ${depName}:`, error);
-        return { name: depName, available: false };
+    const dependencyChecks = Array.from(this.dependencies.entries()).map(
+      async ([depName, depConfig]) => {
+        try {
+          // In a real implementation, this would check the actual dependency service
+          // For now, we'll simulate a dependency check
+          this.logger.debug(`Checking dependency: ${depName}`);
+
+          // Simulate dependency check with timeout
+          const timeout = depConfig.timeout || 5000;
+          await new Promise((resolve) => setTimeout(resolve, Math.random() * 100));
+
+          return { name: depName, available: true };
+        } catch (error) {
+          this.logger.warn(`Dependency check failed for ${depName}:`, error);
+          return { name: depName, available: false };
+        }
       }
-    });
+    );
 
     const results = await Promise.allSettled(dependencyChecks);
     const failedDependencies = results
@@ -529,7 +545,7 @@ export abstract class BaseService extends EventEmitter implements IService {
 
     if (failedDependencies.length > 0) {
       // Check if any failed dependencies are required
-      const requiredFailures = failedDependencies.filter(depName => {
+      const requiredFailures = failedDependencies.filter((depName) => {
         const dep = this.dependencies.get(depName);
         return dep?.required === true;
       });
@@ -582,6 +598,10 @@ export abstract class BaseService extends EventEmitter implements IService {
 
   /**
    * Create a service event
+   *
+   * @param type
+   * @param data
+   * @param error
    */
   protected createEvent(type: ServiceEventType, data?: any, error?: Error): ServiceEvent {
     return {
@@ -589,16 +609,18 @@ export abstract class BaseService extends EventEmitter implements IService {
       serviceName: this.name,
       timestamp: new Date(),
       data,
-      error
+      error,
     };
   }
 
   /**
    * Record latency metric
+   *
+   * @param latency
    */
   protected recordLatency(latency: number): void {
     this.latencyMetrics.push(latency);
-    
+
     // Keep only last 1000 measurements for memory efficiency
     if (this.latencyMetrics.length > 1000) {
       this.latencyMetrics = this.latencyMetrics.slice(-1000);
@@ -607,6 +629,8 @@ export abstract class BaseService extends EventEmitter implements IService {
 
   /**
    * Add capability to service
+   *
+   * @param capability
    */
   protected addCapability(capability: string): void {
     if (!this.capabilities.includes(capability)) {
@@ -617,6 +641,8 @@ export abstract class BaseService extends EventEmitter implements IService {
 
   /**
    * Remove capability from service
+   *
+   * @param capability
    */
   protected removeCapability(capability: string): void {
     const index = this.capabilities.indexOf(capability);
@@ -628,6 +654,10 @@ export abstract class BaseService extends EventEmitter implements IService {
 
   /**
    * Execute operation with retries
+   *
+   * @param operation
+   * @param maxRetries
+   * @param delay
    */
   protected async executeWithRetries<T>(
     operation: () => Promise<T>,
@@ -642,9 +672,9 @@ export abstract class BaseService extends EventEmitter implements IService {
       } catch (error) {
         lastError = error as Error;
         this.logger.warn(`Operation attempt ${attempt} failed:`, error);
-        
+
         if (attempt < maxRetries) {
-          await new Promise(resolve => setTimeout(resolve, delay * attempt));
+          await new Promise((resolve) => setTimeout(resolve, delay * attempt));
         }
       }
     }

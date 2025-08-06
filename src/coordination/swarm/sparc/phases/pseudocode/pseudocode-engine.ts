@@ -33,6 +33,8 @@ import type {
 export class PseudocodePhaseEngine implements PseudocodeEngine {
   /**
    * Generate algorithmic pseudocode from detailed specifications
+   *
+   * @param spec
    */
   async generateAlgorithmPseudocode(spec: DetailedSpecification): Promise<AlgorithmPseudocode[]> {
     const algorithms: AlgorithmPseudocode[] = [];
@@ -58,7 +60,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   ): Promise<DataStructureDesign[]> {
     // Convert requirements to proper data structure specs
     const dataStructures: DataStructureDesign[] = [];
-    
+
     for (const requirement of requirements) {
       dataStructures.push({
         name: `${requirement.title}Data`,
@@ -68,8 +70,8 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
             name: 'id',
             type: 'string',
             visibility: 'public',
-            description: 'Unique identifier'
-          }
+            description: 'Unique identifier',
+          },
         ],
         methods: [
           {
@@ -77,10 +79,10 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
             parameters: [],
             returnType: 'void',
             visibility: 'public',
-            description: `Process ${requirement.title}`
-          }
+            description: `Process ${requirement.title}`,
+          },
         ],
-        relationships: []
+        relationships: [],
       });
     }
 
@@ -93,14 +95,14 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
       nodes: [
         { id: 'start', type: 'start', label: 'Start' },
         { id: 'process', type: 'process', label: alg.purpose },
-        { id: 'end', type: 'end', label: 'End' }
+        { id: 'end', type: 'end', label: 'End' },
       ],
       edges: [
         { from: 'start', to: 'process' },
-        { from: 'process', to: 'end' }
+        { from: 'process', to: 'end' },
       ],
       cycles: false,
-      complexity: alg.steps.length
+      complexity: alg.steps.length,
     }));
   }
 
@@ -120,14 +122,15 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
 
   async validatePseudocodeLogic(pseudocode: AlgorithmPseudocode[]): Promise<LogicValidation> {
     const validationResults: ValidationResult[] = [];
-    
+
     for (const algorithm of pseudocode) {
       // Validate algorithm structure
       validationResults.push({
         criterion: `${algorithm.name} completeness`,
         passed: algorithm.steps.length > 0,
         score: algorithm.steps.length > 0 ? 1.0 : 0.0,
-        details: algorithm.steps.length > 0 ? 'Algorithm has valid steps' : 'Algorithm missing steps'
+        details:
+          algorithm.steps.length > 0 ? 'Algorithm has valid steps' : 'Algorithm missing steps',
       });
 
       // Validate input/output consistency
@@ -135,7 +138,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
         criterion: `${algorithm.name} I/O consistency`,
         passed: algorithm.inputs.length > 0 && algorithm.outputs.length > 0,
         score: algorithm.inputs.length > 0 && algorithm.outputs.length > 0 ? 1.0 : 0.5,
-        details: 'Input and output parameters defined'
+        details: 'Input and output parameters defined',
       });
     }
 
@@ -143,6 +146,8 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   }
   /**
    * Generate algorithmic pseudocode from detailed specifications
+   *
+   * @param specification
    */
   async generatePseudocode(specification: DetailedSpecification): Promise<PseudocodeStructure> {
     // Generate algorithms using the interface-compliant method
@@ -165,6 +170,8 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
 
   /**
    * Design core algorithms based on functional requirements (Legacy method for backward compatibility)
+   *
+   * @param specification
    */
   private async designCoreAlgorithms(
     specification: DetailedSpecification
@@ -201,6 +208,9 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
 
   /**
    * Create algorithm for specific requirement (Legacy method)
+   *
+   * @param requirement
+   * @param domain
    */
   private async createAlgorithmForRequirement(
     requirement: any,
@@ -219,6 +229,8 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
 
   /**
    * Generate pseudocode for swarm coordination algorithms
+   *
+   * @param _specification
    */
   private async createSwarmCoordinationAlgorithms(
     _specification: DetailedSpecification
@@ -230,31 +242,39 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
         inputs: [
           { name: 'agent_info', type: 'AgentInfo', description: 'Agent information' },
           { name: 'capabilities', type: 'Capability[]', description: 'Agent capabilities' },
-          { name: 'resource_requirements', type: 'ResourceRequirement[]', description: 'Required resources' }
+          {
+            name: 'resource_requirements',
+            type: 'ResourceRequirement[]',
+            description: 'Required resources',
+          },
         ],
         outputs: [
-          { name: 'registration_result', type: 'RegistrationResult', description: 'Registration outcome' },
-          { name: 'agent_id', type: 'string', description: 'Assigned agent ID' }
+          {
+            name: 'registration_result',
+            type: 'RegistrationResult',
+            description: 'Registration outcome',
+          },
+          { name: 'agent_id', type: 'string', description: 'Assigned agent ID' },
         ],
         steps: [
           {
             stepNumber: 1,
             description: 'VALIDATE agent_info',
             pseudocode: 'VALIDATE agent_info',
-            complexity: 'O(1)'
+            complexity: 'O(1)',
           },
           {
             stepNumber: 2,
             description: 'CHECK resource_availability(resource_requirements)',
             pseudocode: 'CHECK resource_availability(resource_requirements)',
-            complexity: 'O(1)'
+            complexity: 'O(1)',
           },
           {
             stepNumber: 3,
             description: 'Generate unique ID and register agent',
             pseudocode: 'agent_id ← GENERATE_UNIQUE_ID(); registry[agent_id] ← agent_data',
-            complexity: 'O(log n)'
-          }
+            complexity: 'O(log n)',
+          },
         ],
         complexity: {
           timeComplexity: 'O(log n)',
@@ -267,9 +287,9 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
             type: 'performance',
             description: 'Use hash table for faster agent lookup',
             impact: 'medium',
-            effort: 'low'
-          }
-        ]
+            effort: 'low',
+          },
+        ],
       },
       {
         name: 'LoadBalancingAlgorithm',
@@ -277,31 +297,35 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
         inputs: [
           { name: 'task', type: 'Task', description: 'Task to distribute' },
           { name: 'available_agents', type: 'Agent[]', description: 'Available agents' },
-          { name: 'performance_metrics', type: 'PerformanceMetrics', description: 'Performance data' }
+          {
+            name: 'performance_metrics',
+            type: 'PerformanceMetrics',
+            description: 'Performance data',
+          },
         ],
         outputs: [
           { name: 'selected_agent', type: 'Agent', description: 'Selected agent' },
-          { name: 'task_assignment', type: 'TaskAssignment', description: 'Assignment details' }
+          { name: 'task_assignment', type: 'TaskAssignment', description: 'Assignment details' },
         ],
         steps: [
           {
             stepNumber: 1,
             description: 'Filter eligible agents',
             pseudocode: 'eligible_agents ← FILTER agents BY task.requirements',
-            complexity: 'O(n)'
+            complexity: 'O(n)',
           },
           {
             stepNumber: 2,
             description: 'Score and rank agents',
             pseudocode: 'FOR EACH agent: score ← CALCULATE_SCORE(agent, task)',
-            complexity: 'O(n)'
+            complexity: 'O(n)',
           },
           {
             stepNumber: 3,
             description: 'Select best agent',
             pseudocode: 'best_agent ← MAX(scored_agents, BY total_score)',
-            complexity: 'O(n)'
-          }
+            complexity: 'O(n)',
+          },
         ],
         complexity: {
           timeComplexity: 'O(n log n)',
@@ -314,15 +338,17 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
             type: 'caching',
             description: 'Cache agent performance scores',
             impact: 'medium',
-            effort: 'low'
-          }
-        ]
+            effort: 'low',
+          },
+        ],
       },
     ];
   }
 
   /**
    * Generate pseudocode for neural network algorithms
+   *
+   * @param _specification
    */
   private async createNeuralNetworkAlgorithms(
     _specification: DetailedSpecification
@@ -335,31 +361,31 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
           { name: 'input_vector', type: 'number[]', description: 'Input data vector' },
           { name: 'weights', type: 'number[][]', description: 'Network weights' },
           { name: 'biases', type: 'number[][]', description: 'Network biases' },
-          { name: 'layer_configs', type: 'LayerConfig[]', description: 'Layer configurations' }
+          { name: 'layer_configs', type: 'LayerConfig[]', description: 'Layer configurations' },
         ],
         outputs: [
           { name: 'output_vector', type: 'number[]', description: 'Network output' },
-          { name: 'activations', type: 'number[][]', description: 'Layer activations' }
+          { name: 'activations', type: 'number[][]', description: 'Layer activations' },
         ],
         steps: [
           {
             stepNumber: 1,
             description: 'Initialize with input',
             pseudocode: 'activations[0] ← input_vector',
-            complexity: 'O(1)'
+            complexity: 'O(1)',
           },
           {
             stepNumber: 2,
             description: 'Forward propagate through layers',
             pseudocode: 'FOR layer_index FROM 1 TO num_layers DO forward_pass(layer)',
-            complexity: 'O(n * m * k)'
+            complexity: 'O(n * m * k)',
           },
           {
             stepNumber: 3,
             description: 'Apply WASM matrix multiplication',
             pseudocode: 'raw_output ← WASM_MATRIX_MULTIPLY(layer_input, weights_layer)',
-            complexity: 'O(n * m)'
-          }
+            complexity: 'O(n * m)',
+          },
         ],
         complexity: {
           timeComplexity: 'O(n * m * k)',
@@ -372,15 +398,17 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
             type: 'performance',
             description: 'Use WASM for matrix operations',
             impact: 'high',
-            effort: 'medium'
-          }
-        ]
+            effort: 'medium',
+          },
+        ],
       },
     ];
   }
 
   /**
    * Generate pseudocode for memory system algorithms
+   *
+   * @param _specification
    */
   private async createMemorySystemAlgorithms(
     _specification: DetailedSpecification
@@ -393,31 +421,31 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
           { name: 'operation_type', type: 'string', description: 'Type of operation (read/write)' },
           { name: 'key', type: 'string', description: 'Data key' },
           { name: 'value', type: 'any', description: 'Data value' },
-          { name: 'consistency_level', type: 'string', description: 'Consistency requirement' }
+          { name: 'consistency_level', type: 'string', description: 'Consistency requirement' },
         ],
         outputs: [
           { name: 'operation_result', type: 'OperationResult', description: 'Operation outcome' },
-          { name: 'affected_backends', type: 'Backend[]', description: 'Backends affected' }
+          { name: 'affected_backends', type: 'Backend[]', description: 'Backends affected' },
         ],
         steps: [
           {
             stepNumber: 1,
             description: 'Get available backends',
             pseudocode: 'backends ← GET_AVAILABLE_BACKENDS()',
-            complexity: 'O(1)'
+            complexity: 'O(1)',
           },
           {
             stepNumber: 2,
             description: 'Select primary backend',
             pseudocode: 'primary_backend ← SELECT_PRIMARY(backends, key)',
-            complexity: 'O(1)'
+            complexity: 'O(1)',
           },
           {
             stepNumber: 3,
             description: 'Execute operation based on type',
             pseudocode: 'CASE operation_type OF read/write operations',
-            complexity: 'O(b)'
-          }
+            complexity: 'O(b)',
+          },
         ],
         complexity: {
           timeComplexity: 'O(b)',
@@ -430,15 +458,17 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
             type: 'caching',
             description: 'Cache backend selection decisions',
             impact: 'medium',
-            effort: 'low'
-          }
-        ]
+            effort: 'low',
+          },
+        ],
       },
     ];
   }
 
   /**
    * Create general-purpose algorithms
+   *
+   * @param _specification
    */
   private async createGeneralAlgorithms(
     _specification: DetailedSpecification
@@ -449,32 +479,41 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
         purpose: 'General data processing and transformation pipeline',
         inputs: [
           { name: 'data', type: 'any[]', description: 'Input data' },
-          { name: 'transformation_pipeline', type: 'Transformation[]', description: 'Processing steps' },
-          { name: 'validation_rules', type: 'ValidationRule[]', description: 'Validation rules' }
+          {
+            name: 'transformation_pipeline',
+            type: 'Transformation[]',
+            description: 'Processing steps',
+          },
+          { name: 'validation_rules', type: 'ValidationRule[]', description: 'Validation rules' },
         ],
         outputs: [
           { name: 'processed_data', type: 'any[]', description: 'Processed data' },
-          { name: 'validation_report', type: 'ValidationReport', description: 'Validation results' }
+          {
+            name: 'validation_report',
+            type: 'ValidationReport',
+            description: 'Validation results',
+          },
         ],
         steps: [
           {
             stepNumber: 1,
             description: 'Initialize processing',
             pseudocode: 'processed_data ← data; validation_report ← EMPTY_REPORT()',
-            complexity: 'O(1)'
+            complexity: 'O(1)',
           },
           {
             stepNumber: 2,
             description: 'Apply transformations',
             pseudocode: 'FOR EACH transformation: processed_data ← APPLY(transformation)',
-            complexity: 'O(n * t)'
+            complexity: 'O(n * t)',
           },
           {
             stepNumber: 3,
             description: 'Validate results',
-            pseudocode: 'final_validation ← VALIDATE_AGAINST_RULES(processed_data, validation_rules)',
-            complexity: 'O(n)'
-          }
+            pseudocode:
+              'final_validation ← VALIDATE_AGAINST_RULES(processed_data, validation_rules)',
+            complexity: 'O(n)',
+          },
         ],
         complexity: {
           timeComplexity: 'O(n * t)',
@@ -487,15 +526,17 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
             type: 'parallelization',
             description: 'Parallelize transformation steps',
             impact: 'high',
-            effort: 'medium'
-          }
-        ]
+            effort: 'medium',
+          },
+        ],
       },
     ];
   }
 
   /**
    * Specify data structures needed for the algorithms
+   *
+   * @param specification
    */
   private async specifyDataStructures(
     specification: DetailedSpecification
@@ -510,25 +551,59 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
             name: 'AgentRegistry',
             type: 'class',
             properties: [
-              { name: 'agents', type: 'Map<string, AgentInfo>', visibility: 'private', description: 'Agent storage' }
+              {
+                name: 'agents',
+                type: 'Map<string, AgentInfo>',
+                visibility: 'private',
+                description: 'Agent storage',
+              },
             ],
             methods: [
-              { name: 'register', parameters: [], returnType: 'string', visibility: 'public', description: 'Register agent' },
-              { name: 'find', parameters: [], returnType: 'AgentInfo', visibility: 'public', description: 'Find agent' }
+              {
+                name: 'register',
+                parameters: [],
+                returnType: 'string',
+                visibility: 'public',
+                description: 'Register agent',
+              },
+              {
+                name: 'find',
+                parameters: [],
+                returnType: 'AgentInfo',
+                visibility: 'public',
+                description: 'Find agent',
+              },
             ],
-            relationships: []
+            relationships: [],
           },
           {
             name: 'TaskQueue',
             type: 'class',
             properties: [
-              { name: 'tasks', type: 'PriorityQueue<Task>', visibility: 'private', description: 'Task storage' }
+              {
+                name: 'tasks',
+                type: 'PriorityQueue<Task>',
+                visibility: 'private',
+                description: 'Task storage',
+              },
             ],
             methods: [
-              { name: 'enqueue', parameters: [], returnType: 'void', visibility: 'public', description: 'Add task' },
-              { name: 'dequeue', parameters: [], returnType: 'Task', visibility: 'public', description: 'Get task' }
+              {
+                name: 'enqueue',
+                parameters: [],
+                returnType: 'void',
+                visibility: 'public',
+                description: 'Add task',
+              },
+              {
+                name: 'dequeue',
+                parameters: [],
+                returnType: 'Task',
+                visibility: 'public',
+                description: 'Get task',
+              },
             ],
-            relationships: []
+            relationships: [],
           }
         );
         break;
@@ -537,12 +612,23 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
           name: 'WeightMatrix',
           type: 'class',
           properties: [
-            { name: 'weights', type: 'Float64Array', visibility: 'private', description: 'Weight storage' }
+            {
+              name: 'weights',
+              type: 'Float64Array',
+              visibility: 'private',
+              description: 'Weight storage',
+            },
           ],
           methods: [
-            { name: 'multiply', parameters: [], returnType: 'number[]', visibility: 'public', description: 'Matrix multiplication' }
+            {
+              name: 'multiply',
+              parameters: [],
+              returnType: 'number[]',
+              visibility: 'public',
+              description: 'Matrix multiplication',
+            },
           ],
-          relationships: []
+          relationships: [],
         });
         break;
     }
@@ -550,10 +636,10 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
     return structures;
   }
 
-
-
   /**
    * Analyze computational complexity of algorithms
+   *
+   * @param algorithms
    */
   private async analyzeComplexity(algorithms: AlgorithmPseudocode[]): Promise<ComplexityAnalysis> {
     const worstCase = this.calculateWorstCaseComplexity(algorithms);
@@ -615,12 +701,14 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
 
   /**
    * Identify optimization opportunities
+   *
+   * @param algorithms
    */
   private async identifyOptimizations(
     algorithms: AlgorithmPseudocode[]
   ): Promise<OptimizationOpportunity[]> {
     const optimizations: OptimizationOpportunity[] = [];
-    
+
     for (const algorithm of algorithms) {
       // Combine algorithm-specific optimizations
       optimizations.push(...algorithm.optimizations);
@@ -654,10 +742,11 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
     return optimizations;
   }
 
-
-
   /**
    * Generate algorithm-specific pseudocode
+   *
+   * @param requirement
+   * @param _domain
    */
   private async generateAlgorithmPseudocodePrivate(
     requirement: any,
@@ -679,6 +768,8 @@ END
 
   /**
    * Estimate algorithm complexity
+   *
+   * @param _requirement
    */
   private async estimateAlgorithmComplexity(_requirement: any): Promise<ComplexityAnalysis> {
     return {
@@ -691,6 +782,8 @@ END
 
   /**
    * Extract input parameters from requirement as ParameterDefinition[]
+   *
+   * @param requirement
    */
   private async extractInputParameterDefinitions(requirement: any): Promise<ParameterDefinition[]> {
     const inputs = requirement.inputs || ['input'];
@@ -698,55 +791,69 @@ END
       name: input,
       type: 'any',
       description: `Input parameter: ${input}`,
-      optional: false
+      optional: false,
     }));
   }
 
   /**
    * Extract output definitions from requirement as ReturnDefinition[]
+   *
+   * @param requirement
    */
   private async extractOutputDefinitions(requirement: any): Promise<ReturnDefinition[]> {
     const outputs = requirement.outputs || ['result'];
     return outputs.map((output: string) => ({
       name: output,
       type: 'any',
-      description: `Output result: ${output}`
+      description: `Output result: ${output}`,
     }));
   }
 
   /**
    * Generate pseudocode steps from requirement
+   *
+   * @param requirement
+   * @param domain
    */
-  private async generatePseudocodeSteps(requirement: any, domain: string): Promise<PseudocodeStep[]> {
+  private async generatePseudocodeSteps(
+    requirement: any,
+    domain: string
+  ): Promise<PseudocodeStep[]> {
     const pseudocodeText = await this.generateAlgorithmPseudocodePrivate(requirement, domain);
-    const lines = pseudocodeText.split('\n').filter(line => line.trim());
-    
+    const lines = pseudocodeText.split('\n').filter((line) => line.trim());
+
     return lines.map((line, index) => ({
       stepNumber: index + 1,
       description: line.trim(),
       pseudocode: line.trim(),
       complexity: 'O(1)',
-      dependencies: []
+      dependencies: [],
     }));
   }
 
   /**
    * Identify optimization opportunities for specific algorithm
+   *
+   * @param requirement
    */
-  private async identifyAlgorithmOptimizations(requirement: any): Promise<OptimizationOpportunity[]> {
+  private async identifyAlgorithmOptimizations(
+    requirement: any
+  ): Promise<OptimizationOpportunity[]> {
     return [
       {
         type: 'performance',
         description: `Optimize ${requirement.title} for better performance`,
         impact: 'medium',
         effort: 'low',
-        estimatedImprovement: '20% performance gain'
-      }
+        estimatedImprovement: '20% performance gain',
+      },
     ];
   }
 
   /**
    * Validate generated pseudocode
+   *
+   * @param pseudocode
    */
   async validatePseudocode(pseudocode: PseudocodeStructure): Promise<PseudocodeValidation> {
     const validationResults: ValidationResult[] = [];
@@ -790,9 +897,7 @@ END
       id: nanoid(),
       algorithmId: pseudocode.id,
       validationResults,
-      logicErrors: validationResults
-        .filter(r => !r.passed)
-        .map(r => r.details || ''),
+      logicErrors: validationResults.filter((r) => !r.passed).map((r) => r.details || ''),
       optimizationSuggestions: this.generateRecommendations(validationResults),
       complexityVerification: !!pseudocode.complexityAnalysis,
       overallScore,
@@ -803,6 +908,8 @@ END
 
   /**
    * Generate recommendations based on validation results
+   *
+   * @param validationResults
    */
   private generateRecommendations(validationResults: ValidationResult[]): string[] {
     const recommendations: string[] = [];

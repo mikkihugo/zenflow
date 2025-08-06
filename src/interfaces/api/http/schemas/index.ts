@@ -4,12 +4,8 @@
  * Consolidated OpenAPI 3.0 schemas from all domains.
  * Provides single source of truth for API documentation and validation.
  *
- * @fileoverview REST API schemas for all domains
+ * @file REST API schemas for all domains
  */
-
-// Import domain-specific schemas
-export * from './common';
-export * from './neural';
 
 // Re-export coordination types that are actually available
 export type {
@@ -20,6 +16,9 @@ export type {
   SwarmConfig,
   Task,
 } from '../../../../coordination/schemas';
+// Import domain-specific schemas
+export * from './common';
+export * from './neural';
 
 /**
  * Complete OpenAPI 3.0 Schema Definition

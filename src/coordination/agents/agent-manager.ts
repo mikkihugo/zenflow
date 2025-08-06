@@ -121,6 +121,8 @@ export interface HealthIssue {
 
 /**
  * Comprehensive agent lifecycle and resource management
+ *
+ * @example
  */
 export class AgentManager extends EventEmitter {
   private logger: ILogger;

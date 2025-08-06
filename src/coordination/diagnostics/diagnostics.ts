@@ -60,6 +60,8 @@ export interface DiagnosticReport {
 
 /**
  * Connection diagnostics
+ *
+ * @example
  */
 export class ConnectionDiagnostics {
   private logger: LoggerInterface;
@@ -76,6 +78,10 @@ export class ConnectionDiagnostics {
 
   /**
    * Record connection event
+   *
+   * @param connectionId
+   * @param event
+   * @param details
    */
   recordEvent(
     connectionId: string,
@@ -204,6 +210,9 @@ export class ConnectionDiagnostics {
 
   /**
    * Generate recommendations based on patterns
+   *
+   * @param summary
+   * @param patterns
    */
   generateRecommendations(summary: ConnectionSummary, patterns: PatternAnalysis): Recommendation[] {
     const recommendations = [];
@@ -258,6 +267,8 @@ export interface OperationData {
 
 /**
  * Performance diagnostics
+ *
+ * @example
  */
 export class PerformanceDiagnostics {
   private logger: LoggerInterface;
@@ -277,6 +288,9 @@ export class PerformanceDiagnostics {
 
   /**
    * Start tracking an operation
+   *
+   * @param name
+   * @param metadata
    */
   startOperation(name: string, metadata: Record<string, any> = {}): string {
     const id = `${name}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -291,6 +305,9 @@ export class PerformanceDiagnostics {
 
   /**
    * End tracking an operation
+   *
+   * @param id
+   * @param success
    */
   endOperation(id: string, success = true): OperationData | null {
     const operation = this.operations.get(id);
@@ -329,6 +346,8 @@ export class PerformanceDiagnostics {
 
   /**
    * Get slow operations
+   *
+   * @param limit
    */
   getSlowOperations(limit = 10): OperationData[] {
     const completed = [];
@@ -370,6 +389,8 @@ export interface SystemHealth {
 
 /**
  * System diagnostics
+ *
+ * @example
  */
 export class SystemDiagnostics {
   private logger: LoggerInterface;
@@ -407,6 +428,8 @@ export class SystemDiagnostics {
 
   /**
    * Start monitoring
+   *
+   * @param interval
    */
   startMonitoring(interval = 1000): void {
     this.startTime = Date.now();
@@ -523,6 +546,8 @@ export interface DiagnosticTestResults {
 
 /**
  * Main diagnostics manager
+ *
+ * @example
  */
 export class DiagnosticsManager {
   private logger: LoggerInterface;
@@ -555,6 +580,8 @@ export class DiagnosticsManager {
 
   /**
    * Generate full diagnostic report
+   *
+   * @param outputPath
    */
   async generateFullReport(outputPath: string | null = null): Promise<FullDiagnosticReport> {
     const report = {

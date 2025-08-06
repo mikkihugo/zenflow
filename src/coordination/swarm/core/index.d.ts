@@ -137,6 +137,8 @@ export interface RuntimeFeatures {
 
 /**
  * JavaScript Agent interface for swarm orchestration
+ *
+ * @example
  */
 export declare class JsAgent {
   /** Agent ID */
@@ -150,6 +152,7 @@ export declare class JsAgent {
 
   /**
    * Execute a task
+   *
    * @param task Task request configuration
    * @returns Task response with results
    */
@@ -157,12 +160,14 @@ export declare class JsAgent {
 
   /**
    * Get agent metrics
+   *
    * @returns Current agent metrics
    */
   getMetrics(): AgentMetrics;
 
   /**
    * Get agent capabilities
+   *
    * @returns List of agent capabilities
    */
   getCapabilities(): string[];
@@ -175,6 +180,8 @@ export declare class JsAgent {
 
 /**
  * Main ZenSwarm class for neural network swarm orchestration
+ *
+ * @example
  */
 export declare class ZenSwarm {
   /** Swarm name */
@@ -186,12 +193,14 @@ export declare class ZenSwarm {
 
   /**
    * Create a new ZenSwarm instance
+   *
    * @param config Swarm configuration
    */
   constructor(config: SwarmConfig);
 
   /**
    * Initialize ZenSwarm with WASM module
+   *
    * @param options Initialization options
    * @returns Initialized ZenSwarm instance
    */
@@ -199,24 +208,28 @@ export declare class ZenSwarm {
 
   /**
    * Detect SIMD support in the current environment
+   *
    * @returns True if SIMD is supported
    */
   static detectSIMDSupport(): boolean;
 
   /**
    * Get runtime features
+   *
    * @returns Runtime feature detection results
    */
   static getRuntimeFeatures(): RuntimeFeatures;
 
   /**
    * Get library version
+   *
    * @returns Version string
    */
   static getVersion(): string;
 
   /**
    * Spawn a new agent
+   *
    * @param config Agent configuration
    * @returns Spawned agent instance
    */
@@ -224,6 +237,7 @@ export declare class ZenSwarm {
 
   /**
    * Orchestrate a task across the swarm
+   *
    * @param task Task configuration
    * @returns Orchestration results
    */
@@ -231,12 +245,14 @@ export declare class ZenSwarm {
 
   /**
    * Get list of active agents
+   *
    * @returns Array of agent IDs
    */
   getAgents(): string[];
 
   /**
    * Get swarm status
+   *
    * @returns Current swarm status
    */
   getStatus(): {
@@ -250,6 +266,7 @@ export declare class ZenSwarm {
 
   /**
    * Get WASM memory usage
+   *
    * @returns Memory usage in bytes
    */
   static getMemoryUsage(): number;
@@ -257,16 +274,20 @@ export declare class ZenSwarm {
 
 /**
  * Performance timer utility
+ *
+ * @example
  */
 export declare class PerformanceTimer {
   /**
    * Create a new performance timer
+   *
    * @param name Timer name
    */
   constructor(name: string);
 
   /**
    * Get elapsed time in milliseconds
+   *
    * @returns Elapsed time
    */
   elapsed(): number;

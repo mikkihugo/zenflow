@@ -26,6 +26,11 @@ export interface TerminalAppProps {
 /**
  * Main Terminal App - Routes to command execution or interactive terminal interface
  * Enhanced with Advanced CLI capabilities for AI-powered project management
+ *
+ * @param root0
+ * @param root0.commands
+ * @param root0.flags
+ * @param root0.onExit
  */
 export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExit }) => {
   const mode = detectMode(commands, flags);

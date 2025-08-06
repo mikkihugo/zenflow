@@ -69,6 +69,8 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Optimize neural network training speed
+   *
+   * @param network
    */
   public async optimizeTrainingSpeed(network: NeuralNetwork): Promise<OptimizationResult> {
     const startTime = Date.now();
@@ -130,6 +132,8 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Implement optimized batch processing
+   *
+   * @param trainer
    */
   public async implementBatchProcessing(trainer: NetworkTrainer): Promise<BatchConfig> {
     // Analyze current batch configuration
@@ -168,6 +172,8 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Enable GPU acceleration where possible
+   *
+   * @param computeUnits
    */
   public async enableGPUAcceleration(computeUnits: ComputeUnit[]): Promise<AccelerationResult> {
     if (!this.config.enableGPUAcceleration) {
@@ -209,6 +215,8 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Optimize memory usage for neural networks
+   *
+   * @param networks
    */
   public async optimizeMemoryUsage(networks: NeuralNetwork[]): Promise<MemoryOptimization> {
     const beforeMemory = await this.getCurrentMemoryUsage();
@@ -258,6 +266,8 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Optimize network architecture for performance
+   *
+   * @param network
    */
   private async optimizeNetworkArchitecture(
     network: NeuralNetwork
@@ -285,6 +295,8 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Enable mixed precision training
+   *
+   * @param network
    */
   private async enableMixedPrecisionTraining(network: NeuralNetwork): Promise<void> {
     if (!this.supportsMixedPrecision()) {
@@ -304,6 +316,8 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Optimize data loading pipeline
+   *
+   * @param _network
    */
   private async optimizeDataPipeline(_network: NeuralNetwork): Promise<void> {
     // Enable data prefetching
@@ -321,6 +335,8 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Enable gradient accumulation for large effective batch sizes
+   *
+   * @param network
    */
   private async enableGradientAccumulation(network: NeuralNetwork): Promise<void> {
     const complexityScore = this.calculateNetworkComplexity(network);
@@ -334,6 +350,8 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Optimize learning rate schedule
+   *
+   * @param network
    */
   private async optimizeLearningRateSchedule(network: NeuralNetwork): Promise<void> {
     // Implement cosine annealing schedule
@@ -377,6 +395,10 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Calculate optimal batch size based on network complexity and memory
+   *
+   * @param complexity
+   * @param availableMemory
+   * @param currentBatchSize
    */
   private calculateOptimalBatchSize(
     complexity: number,
@@ -401,6 +423,8 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Calculate optimal parallelism level
+   *
+   * @param batchSize
    */
   private calculateOptimalParallelism(batchSize: number): number {
     const availableCores = navigator.hardwareConcurrency || 4;
@@ -413,6 +437,9 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Determine optimal processing mode
+   *
+   * @param batchSize
+   * @param parallelism
    */
   private determineProcessingMode(
     batchSize: number,
@@ -425,6 +452,9 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Measure network performance
+   *
+   * @param _network
+   * @param mode
    */
   private async measureNetworkPerformance(
     _network: NeuralNetwork,
@@ -446,6 +476,9 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Calculate training improvement
+   *
+   * @param before
+   * @param after
    */
   private calculateTrainingImprovement(before: any, after: any): number {
     const latencyImprovement = Math.max(0, (before.latency - after.latency) / before.latency);
@@ -458,6 +491,8 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
 
   /**
    * Helper methods (mock implementations)
+   *
+   * @param network
    */
   private calculateNetworkComplexity(network: NeuralNetwork): number {
     return network.layers.reduce((sum, layer) => sum + layer, 0);

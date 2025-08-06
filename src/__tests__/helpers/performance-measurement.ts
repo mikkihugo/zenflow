@@ -35,6 +35,8 @@ export class PerformanceMeasurement {
 
   /**
    * Start a performance timer
+   *
+   * @param label
    */
   start(label: string): void {
     this.timers.set(label, performance.now());
@@ -42,6 +44,8 @@ export class PerformanceMeasurement {
 
   /**
    * End a performance timer and return duration
+   *
+   * @param label
    */
   end(label: string): number {
     const startTime = this.timers.get(label);
@@ -55,6 +59,8 @@ export class PerformanceMeasurement {
 
   /**
    * Get duration from completed measurement (legacy support)
+   *
+   * @param _label
    */
   getDuration(_label: string): number {
     // This is a simplified implementation for test compatibility
@@ -64,6 +70,10 @@ export class PerformanceMeasurement {
 
   /**
    * Measure performance of a synchronous function
+   *
+   * @param name
+   * @param fn
+   * @param options
    */
   measureSync<T>(
     name: string,
@@ -117,6 +127,10 @@ export class PerformanceMeasurement {
 
   /**
    * Measure performance of an asynchronous function
+   *
+   * @param name
+   * @param fn
+   * @param options
    */
   async measureAsync<T>(
     name: string,
@@ -164,6 +178,10 @@ export class PerformanceMeasurement {
 
   /**
    * Measure throughput (operations per second)
+   *
+   * @param name
+   * @param fn
+   * @param duration
    */
   async measureThroughput<T>(
     name: string,
@@ -203,6 +221,9 @@ export class PerformanceMeasurement {
 
   /**
    * Benchmark comparison between multiple functions
+   *
+   * @param benchmarks
+   * @param options
    */
   async benchmarkComparison<T>(
     benchmarks: Array<{ name: string; fn: () => T | Promise<T> }>,
@@ -233,6 +254,11 @@ export class PerformanceMeasurement {
 
   /**
    * Load testing with concurrent operations
+   *
+   * @param name
+   * @param fn
+   * @param concurrency
+   * @param duration
    */
   async loadTest<T>(
     name: string,
@@ -276,6 +302,10 @@ export class PerformanceMeasurement {
 
   /**
    * Memory leak detection
+   *
+   * @param _name
+   * @param fn
+   * @param iterations
    */
   async detectMemoryLeaks<T>(
     _name: string,

@@ -32,6 +32,15 @@ export interface MainMenuProps {
  * Main Menu Screen Component
  *
  * Provides interactive navigation for TUI mode.
+ *
+ * @param root0
+ * @param root0.title
+ * @param root0.items
+ * @param root0.swarmStatus
+ * @param root0.onSelect
+ * @param root0.onExit
+ * @param root0.showHeader
+ * @param root0.showFooter
  */
 export const MainMenu: React.FC<MainMenuProps> = ({
   title = 'Claude Code Zen',
@@ -177,6 +186,12 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
 /**
  * Create default menu items for common use cases
+ *
+ * @param _handlers
+ * @param _handlers.onStartSwarm
+ * @param _handlers.onViewStatus
+ * @param _handlers.onViewLogs
+ * @param _handlers.onSettings
  */
 export const createDefaultMenuItems = (_handlers: {
   onStartSwarm?: () => void;

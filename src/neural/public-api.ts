@@ -7,6 +7,8 @@
 
 /**
  * Public interface for neural WASM operations
+ *
+ * @example
  */
 export interface NeuralWASM {
   // Initialize WASM module

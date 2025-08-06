@@ -1,5 +1,5 @@
 /**
- * @fileoverview Configuration Validator
+ * @file Configuration Validator
  *
  * Validates configuration against schema and provides detailed error reporting
  */
@@ -9,10 +9,14 @@ import type { ConfigValidationResult, SystemConfiguration } from './types';
 
 /**
  * Configuration validator
+ *
+ * @example
  */
 export class ConfigValidator {
   /**
    * Validate configuration object
+   *
+   * @param config
    */
   validate(config: SystemConfiguration): ConfigValidationResult {
     const errors: string[] = [];
@@ -43,6 +47,9 @@ export class ConfigValidator {
 
   /**
    * Validate basic structure
+   *
+   * @param config
+   * @param errors
    */
   private validateStructure(config: SystemConfiguration, errors: string[]): void {
     const requiredSections = [
@@ -96,6 +103,10 @@ export class ConfigValidator {
 
   /**
    * Validate against specific rules
+   *
+   * @param config
+   * @param errors
+   * @param warnings
    */
   private validateRules(config: SystemConfiguration, errors: string[], warnings: string[]): void {
     for (const [path, rule] of Object.entries(VALIDATION_RULES)) {
@@ -149,6 +160,10 @@ export class ConfigValidator {
 
   /**
    * Validate configuration dependencies
+   *
+   * @param config
+   * @param errors
+   * @param warnings
    */
   private validateDependencies(
     config: SystemConfiguration,
@@ -191,6 +206,10 @@ export class ConfigValidator {
 
   /**
    * Validate constraints and logical consistency
+   *
+   * @param config
+   * @param errors
+   * @param warnings
    */
   private validateConstraints(
     config: SystemConfiguration,
@@ -253,6 +272,9 @@ export class ConfigValidator {
 
   /**
    * Get nested value using dot notation
+   *
+   * @param obj
+   * @param path
    */
   private getNestedValue(obj: any, path: string): any {
     return path.split('.').reduce((current, key) => current?.[key], obj);
@@ -260,6 +282,9 @@ export class ConfigValidator {
 
   /**
    * Validate specific configuration section
+   *
+   * @param _config
+   * @param section
    */
   validateSection(_config: any, section: string): ConfigValidationResult {
     const errors: string[] = [];

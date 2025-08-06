@@ -1,42 +1,41 @@
 /**
  * USL Infrastructure Service Factory
- * 
+ *
  * Factory for creating and managing infrastructure service adapter instances
  * with unified configuration, dependency injection, and lifecycle management.
  * Follows the exact same patterns as other USL service factories.
  */
 
+import { EventEmitter } from 'events';
+import { createLogger, type Logger } from '../../../utils/logger';
 import type {
   IService,
   ServiceConfig,
   ServiceEvent,
-  ServiceLifecycleStatus
+  ServiceLifecycleStatus,
 } from '../core/interfaces';
-
 import type {
   InfrastructureServiceConfig,
-  ServiceType,
+  ServiceEnvironment,
   ServicePriority,
-  ServiceEnvironment
+  ServiceType,
 } from '../types';
-
 import {
-  InfrastructureServiceAdapter,
-  type InfrastructureServiceAdapterConfig,
+  createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
-  createDefaultInfrastructureServiceAdapterConfig
+  type InfrastructureServiceAdapter,
+  type InfrastructureServiceAdapterConfig,
 } from './infrastructure-service-adapter';
-
-import { createLogger, type Logger } from '../../../utils/logger';
-import { EventEmitter } from 'events';
 
 /**
  * Infrastructure service factory configuration
+ *
+ * @example
  */
 export interface InfrastructureServiceFactoryConfig {
   /** Default service configuration template */
   defaultConfig?: Partial<InfrastructureServiceAdapterConfig>;
-  
+
   /** Service naming configuration */
   naming?: {
     prefix?: string;
@@ -44,14 +43,14 @@ export interface InfrastructureServiceFactoryConfig {
     includeTimestamp?: boolean;
     includeEnvironment?: boolean;
   };
-  
+
   /** Factory-level resource limits */
   limits?: {
     maxServices?: number;
     maxMemoryPerService?: number;
     maxConcurrentOperations?: number;
   };
-  
+
   /** Health monitoring configuration */
   healthMonitoring?: {
     enabled?: boolean;
@@ -59,14 +58,14 @@ export interface InfrastructureServiceFactoryConfig {
     failureThreshold?: number;
     autoRestart?: boolean;
   };
-  
+
   /** Service discovery configuration */
   serviceDiscovery?: {
     enabled?: boolean;
     registry?: 'memory' | 'redis' | 'consul';
     heartbeatInterval?: number;
   };
-  
+
   /** Event coordination configuration */
   eventCoordination?: {
     enabled?: boolean;
@@ -77,29 +76,33 @@ export interface InfrastructureServiceFactoryConfig {
 
 /**
  * Service creation options
+ *
+ * @example
  */
 export interface CreateServiceOptions {
   /** Override default configuration */
   config?: Partial<InfrastructureServiceAdapterConfig>;
-  
+
   /** Auto-start the service after creation */
   autoStart?: boolean;
-  
+
   /** Register the service for discovery */
   register?: boolean;
-  
+
   /** Enable health monitoring */
   enableHealthMonitoring?: boolean;
-  
+
   /** Custom service dependencies */
   dependencies?: string[];
-  
+
   /** Service tags for categorization */
   tags?: string[];
 }
 
 /**
  * Factory statistics and metrics
+ *
+ * @example
  */
 interface FactoryMetrics {
   totalServicesCreated: number;
@@ -113,6 +116,8 @@ interface FactoryMetrics {
 
 /**
  * Service registry entry
+ *
+ * @example
  */
 interface ServiceRegistryEntry {
   service: InfrastructureServiceAdapter;
@@ -128,11 +133,11 @@ interface ServiceRegistryEntry {
 
 /**
  * Infrastructure Service Factory
- * 
+ *
  * Provides centralized creation, management, and lifecycle handling for
  * infrastructure service adapter instances. Includes service discovery,
  * health monitoring, resource management, and event coordination.
- * 
+ *
  * Features:
  * - Unified service creation with templates
  * - Service lifecycle management
@@ -142,6 +147,8 @@ interface ServiceRegistryEntry {
  * - Event coordination across services
  * - Configuration management
  * - Dependency injection
+ *
+ * @example
  */
 export class InfrastructureServiceFactory extends EventEmitter {
   private config: InfrastructureServiceFactoryConfig;
@@ -154,7 +161,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
   constructor(config: InfrastructureServiceFactoryConfig = {}) {
     super();
-    
+
     this.config = {
       defaultConfig: {},
       naming: {
@@ -162,38 +169,38 @@ export class InfrastructureServiceFactory extends EventEmitter {
         suffix: 'service',
         includeTimestamp: false,
         includeEnvironment: true,
-        ...config.naming
+        ...config.naming,
       },
       limits: {
         maxServices: 100,
         maxMemoryPerService: 1024 * 1024 * 512, // 512MB
         maxConcurrentOperations: 1000,
-        ...config.limits
+        ...config.limits,
       },
       healthMonitoring: {
         enabled: true,
         checkInterval: 30000, // 30 seconds
         failureThreshold: 3,
         autoRestart: false,
-        ...config.healthMonitoring
+        ...config.healthMonitoring,
       },
       serviceDiscovery: {
         enabled: true,
         registry: 'memory',
         heartbeatInterval: 15000, // 15 seconds
-        ...config.serviceDiscovery
+        ...config.serviceDiscovery,
       },
       eventCoordination: {
         enabled: true,
         crossServiceEvents: true,
         eventPersistence: false,
-        ...config.eventCoordination
+        ...config.eventCoordination,
       },
-      ...config
+      ...config,
     };
 
     this.logger = createLogger('InfrastructureServiceFactory');
-    
+
     this.metrics = {
       totalServicesCreated: 0,
       activeServices: 0,
@@ -201,24 +208,27 @@ export class InfrastructureServiceFactory extends EventEmitter {
       totalOperations: 0,
       avgServiceLifetime: 0,
       memoryUsage: 0,
-      lastActivity: new Date()
+      lastActivity: new Date(),
     };
 
     this.setupEventHandlers();
     this.startPeriodicTasks();
-    
+
     this.logger.info('Infrastructure service factory initialized');
   }
 
   /**
    * Create a new infrastructure service adapter instance
+   *
+   * @param name
+   * @param options
    */
   async createService(
-    name?: string, 
+    name?: string,
     options: CreateServiceOptions = {}
   ): Promise<InfrastructureServiceAdapter> {
     this.logger.info('Creating new infrastructure service', { name, options });
-    
+
     if (this.isShuttingDown) {
       throw new Error('Factory is shutting down, cannot create new services');
     }
@@ -231,7 +241,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
     try {
       // Generate service name if not provided
       const serviceName = name || this.generateServiceName();
-      
+
       // Check for name conflicts
       if (this.serviceRegistry.has(serviceName)) {
         throw new Error(`Service with name '${serviceName}' already exists`);
@@ -239,37 +249,37 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
       // Merge configurations
       const serviceConfig = this.createServiceConfig(serviceName, options.config);
-      
+
       // Create the service adapter
       const service = createInfrastructureServiceAdapter(serviceConfig);
-      
+
       // Set up service event handlers
       this.setupServiceEventHandlers(service, serviceName);
-      
+
       // Register the service
       await this.registerService(serviceName, service, options);
-      
+
       // Initialize the service
       await service.initialize();
-      
+
       // Auto-start if requested
       if (options.autoStart !== false) {
         await service.start();
       }
-      
+
       // Start health monitoring if enabled
       if (options.enableHealthMonitoring !== false && this.config.healthMonitoring?.enabled) {
         this.startHealthMonitoring(serviceName);
       }
-      
+
       // Update metrics
       this.metrics.totalServicesCreated++;
       this.metrics.activeServices++;
       this.metrics.lastActivity = new Date();
-      
+
       this.emit('service-created', { serviceName, service, options });
       this.logger.info(`Infrastructure service created successfully: ${serviceName}`);
-      
+
       return service;
     } catch (error) {
       this.metrics.failedServices++;
@@ -281,6 +291,8 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
   /**
    * Get an existing service by name
+   *
+   * @param name
    */
   getService(name: string): InfrastructureServiceAdapter | undefined {
     const entry = this.serviceRegistry.get(name);
@@ -300,11 +312,13 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
   /**
    * Get services by tag
+   *
+   * @param tag
    */
   getServicesByTag(tag: string): InfrastructureServiceAdapter[] {
     const serviceNames = this.servicesByTag.get(tag);
     if (!serviceNames) return [];
-    
+
     const services: InfrastructureServiceAdapter[] = [];
     for (const name of serviceNames) {
       const entry = this.serviceRegistry.get(name);
@@ -324,10 +338,12 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
   /**
    * Remove and destroy a service
+   *
+   * @param name
    */
   async removeService(name: string): Promise<void> {
     this.logger.info(`Removing infrastructure service: ${name}`);
-    
+
     const entry = this.serviceRegistry.get(name);
     if (!entry) {
       throw new Error(`Service '${name}' not found`);
@@ -340,7 +356,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
         clearInterval(healthTimer);
         this.healthCheckTimers.delete(name);
       }
-      
+
       // Remove from tag indexes
       for (const tag of entry.metadata.tags) {
         const taggedServices = this.servicesByTag.get(tag);
@@ -351,20 +367,20 @@ export class InfrastructureServiceFactory extends EventEmitter {
           }
         }
       }
-      
+
       // Stop and destroy the service
       if (entry.service.isReady()) {
         await entry.service.stop();
       }
       await entry.service.destroy();
-      
+
       // Remove from registry
       this.serviceRegistry.delete(name);
-      
+
       // Update metrics
       this.metrics.activeServices--;
       this.metrics.lastActivity = new Date();
-      
+
       this.emit('service-removed', { serviceName: name });
       this.logger.info(`Infrastructure service removed successfully: ${name}`);
     } catch (error) {
@@ -376,6 +392,8 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
   /**
    * Start a service
+   *
+   * @param name
    */
   async startService(name: string): Promise<void> {
     const entry = this.serviceRegistry.get(name);
@@ -392,6 +410,8 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
   /**
    * Stop a service
+   *
+   * @param name
    */
   async stopService(name: string): Promise<void> {
     const entry = this.serviceRegistry.get(name);
@@ -408,10 +428,12 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
   /**
    * Restart a service
+   *
+   * @param name
    */
   async restartService(name: string): Promise<void> {
     this.logger.info(`Restarting infrastructure service: ${name}`);
-    
+
     const entry = this.serviceRegistry.get(name);
     if (!entry) {
       throw new Error(`Service '${name}' not found`);
@@ -422,7 +444,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
         await entry.service.stop();
       }
       await entry.service.start();
-      
+
       this.emit('service-restarted', { serviceName: name });
       this.logger.info(`Infrastructure service restarted successfully: ${name}`);
     } catch (error) {
@@ -451,17 +473,17 @@ export class InfrastructureServiceFactory extends EventEmitter {
       stopping: 0,
       stopped: 0,
       error: 0,
-      destroyed: 0
+      destroyed: 0,
     };
     const memoryByService: Record<string, number> = {};
 
     for (const [name, entry] of this.serviceRegistry.entries()) {
       // Get service health (simplified)
       serviceHealth[name] = 'unknown'; // Would be determined by actual health checks
-      
+
       // Count services by status (would get from actual service)
       servicesByStatus.running++; // Simplified
-      
+
       // Estimate memory usage per service
       memoryByService[name] = Math.random() * 100; // MB - would be actual measurement
     }
@@ -470,12 +492,14 @@ export class InfrastructureServiceFactory extends EventEmitter {
       ...this.metrics,
       serviceHealth,
       servicesByStatus,
-      memoryByService
+      memoryByService,
     };
   }
 
   /**
    * Get service status summary
+   *
+   * @param name
    */
   async getServiceStatus(name?: string): Promise<any> {
     if (name) {
@@ -483,14 +507,14 @@ export class InfrastructureServiceFactory extends EventEmitter {
       if (!entry) {
         throw new Error(`Service '${name}' not found`);
       }
-      
+
       const status = await entry.service.getStatus();
       return {
         ...status,
         metadata: {
           ...status.metadata,
-          factoryMetadata: entry.metadata
-        }
+          factoryMetadata: entry.metadata,
+        },
       };
     }
 
@@ -505,11 +529,11 @@ export class InfrastructureServiceFactory extends EventEmitter {
           type: entry.service.type,
           lifecycle: 'error',
           health: 'unhealthy',
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         };
       }
     }
-    
+
     return allStatus;
   }
 
@@ -518,19 +542,19 @@ export class InfrastructureServiceFactory extends EventEmitter {
    */
   async performHealthChecks(): Promise<Record<string, boolean>> {
     const results: Record<string, boolean> = {};
-    
+
     for (const [name, entry] of this.serviceRegistry.entries()) {
       try {
         results[name] = await entry.service.healthCheck();
         entry.metadata.lastHealthCheck = new Date();
-        
+
         if (!results[name]) {
           this.emit('service-unhealthy', { serviceName: name });
-          
+
           // Auto-restart if configured
           if (this.config.healthMonitoring?.autoRestart) {
             this.logger.warn(`Auto-restarting unhealthy service: ${name}`);
-            this.restartService(name).catch(error => {
+            this.restartService(name).catch((error) => {
               this.logger.error(`Failed to auto-restart service ${name}:`, error);
             });
           }
@@ -541,7 +565,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
         this.emit('service-health-check-failed', { serviceName: name, error });
       }
     }
-    
+
     return results;
   }
 
@@ -551,34 +575,34 @@ export class InfrastructureServiceFactory extends EventEmitter {
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down infrastructure service factory');
     this.isShuttingDown = true;
-    
+
     try {
       // Stop all health check timers
       for (const timer of this.healthCheckTimers.values()) {
         clearInterval(timer);
       }
       this.healthCheckTimers.clear();
-      
+
       // Stop all services
       const shutdownPromises: Promise<void>[] = [];
       for (const [name, entry] of this.serviceRegistry.entries()) {
         shutdownPromises.push(
-          entry.service.destroy().catch(error => {
+          entry.service.destroy().catch((error) => {
             this.logger.error(`Failed to shutdown service ${name}:`, error);
           })
         );
       }
-      
+
       await Promise.allSettled(shutdownPromises);
-      
+
       // Clear registry
       this.serviceRegistry.clear();
       this.servicesByTag.clear();
-      
+
       // Update metrics
       this.metrics.activeServices = 0;
       this.metrics.lastActivity = new Date();
-      
+
       this.emit('factory-shutdown');
       this.logger.info('Infrastructure service factory shutdown completed');
     } catch (error) {
@@ -593,49 +617,49 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
   private generateServiceName(): string {
     const parts: string[] = [];
-    
+
     if (this.config.naming?.prefix) {
       parts.push(this.config.naming.prefix);
     }
-    
+
     parts.push('service');
-    
+
     if (this.config.naming?.includeEnvironment) {
       parts.push(process.env.NODE_ENV || 'development');
     }
-    
+
     if (this.config.naming?.includeTimestamp) {
       parts.push(Date.now().toString());
     } else {
       // Use a random suffix to ensure uniqueness
       parts.push(Math.random().toString(36).substr(2, 8));
     }
-    
+
     if (this.config.naming?.suffix) {
       parts.push(this.config.naming.suffix);
     }
-    
+
     return parts.join('-');
   }
 
   private createServiceConfig(
-    name: string, 
+    name: string,
     overrides?: Partial<InfrastructureServiceAdapterConfig>
   ): InfrastructureServiceAdapterConfig {
     const baseConfig = createDefaultInfrastructureServiceAdapterConfig(name);
-    
+
     // Apply factory default configuration
     const configWithDefaults = {
       ...baseConfig,
       ...this.config.defaultConfig,
-      name // Ensure name is preserved
+      name, // Ensure name is preserved
     };
-    
+
     // Apply overrides
     return {
       ...configWithDefaults,
       ...overrides,
-      name // Ensure name is preserved
+      name, // Ensure name is preserved
     };
   }
 
@@ -650,11 +674,11 @@ export class InfrastructureServiceFactory extends EventEmitter {
       tags: options.tags || [],
       dependencies: options.dependencies || [],
       operationCount: 0,
-      errorCount: 0
+      errorCount: 0,
     };
-    
+
     this.serviceRegistry.set(name, { service, metadata });
-    
+
     // Index by tags
     for (const tag of metadata.tags) {
       if (!this.servicesByTag.has(tag)) {
@@ -662,7 +686,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
       }
       this.servicesByTag.get(tag)!.add(name);
     }
-    
+
     this.logger.debug(`Service registered: ${name}`, { tags: metadata.tags });
   }
 
@@ -674,30 +698,36 @@ export class InfrastructureServiceFactory extends EventEmitter {
     if (this.config.eventCoordination?.crossServiceEvents) {
       service.on('error', (event) => {
         this.emit('service-error', { serviceName, event });
-        
+
         // Update error count
         const entry = this.serviceRegistry.get(serviceName);
         if (entry) {
           entry.metadata.errorCount++;
         }
       });
-      
+
       service.on('operation', (event) => {
         this.metrics.totalOperations++;
-        
+
         // Update operation count
         const entry = this.serviceRegistry.get(serviceName);
         if (entry) {
           entry.metadata.operationCount++;
         }
       });
-      
+
       // Forward all service events
       const eventTypes: ServiceEventType[] = [
-        'initializing', 'initialized', 'starting', 'started',
-        'stopping', 'stopped', 'error', 'operation'
+        'initializing',
+        'initialized',
+        'starting',
+        'started',
+        'stopping',
+        'stopped',
+        'error',
+        'operation',
       ];
-      
+
       for (const eventType of eventTypes) {
         service.on(eventType, (event) => {
           this.emit('service-event', { serviceName, eventType, event });
@@ -708,23 +738,23 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
   private startHealthMonitoring(serviceName: string): void {
     if (!this.config.healthMonitoring?.enabled) return;
-    
+
     const interval = this.config.healthMonitoring.checkInterval || 30000;
-    
+
     const timer = setInterval(async () => {
       const entry = this.serviceRegistry.get(serviceName);
       if (!entry) {
         clearInterval(timer);
         return;
       }
-      
+
       try {
         const isHealthy = await entry.service.healthCheck();
         entry.metadata.lastHealthCheck = new Date();
-        
+
         if (!isHealthy) {
           this.emit('service-unhealthy', { serviceName });
-          
+
           // Auto-restart if configured
           if (this.config.healthMonitoring?.autoRestart) {
             this.logger.warn(`Auto-restarting unhealthy service: ${serviceName}`);
@@ -736,7 +766,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
         this.emit('service-health-check-failed', { serviceName, error });
       }
     }, interval);
-    
+
     this.healthCheckTimers.set(serviceName, timer);
   }
 
@@ -745,11 +775,11 @@ export class InfrastructureServiceFactory extends EventEmitter {
     this.on('service-created', () => {
       this.logger.debug('Service created event handled');
     });
-    
+
     this.on('service-error', (data) => {
       this.logger.warn(`Service error in ${data.serviceName}:`, data.event);
     });
-    
+
     this.on('service-unhealthy', (data) => {
       this.logger.warn(`Service unhealthy: ${data.serviceName}`);
     });
@@ -760,7 +790,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
     setInterval(() => {
       this.updateMetrics();
     }, 60000); // Every minute
-    
+
     // Periodic cleanup
     setInterval(() => {
       this.performCleanup();
@@ -775,19 +805,19 @@ export class InfrastructureServiceFactory extends EventEmitter {
       totalMemory += Math.random() * 100; // Simplified
     }
     this.metrics.memoryUsage = totalMemory;
-    
+
     // Update average service lifetime
     if (this.serviceRegistry.size > 0) {
       const now = Date.now();
       let totalLifetime = 0;
-      
+
       for (const entry of this.serviceRegistry.values()) {
         totalLifetime += now - entry.metadata.created.getTime();
       }
-      
+
       this.metrics.avgServiceLifetime = totalLifetime / this.serviceRegistry.size;
     }
-    
+
     this.metrics.lastActivity = new Date();
   }
 
@@ -808,6 +838,8 @@ let globalInfrastructureServiceFactory: InfrastructureServiceFactory | undefined
 
 /**
  * Get or create the global infrastructure service factory instance
+ *
+ * @param config
  */
 export function getInfrastructureServiceFactory(
   config?: InfrastructureServiceFactoryConfig
@@ -820,6 +852,8 @@ export function getInfrastructureServiceFactory(
 
 /**
  * Create a new infrastructure service factory instance
+ *
+ * @param config
  */
 export function createInfrastructureServiceFactory(
   config?: InfrastructureServiceFactoryConfig
@@ -829,6 +863,9 @@ export function createInfrastructureServiceFactory(
 
 /**
  * Convenience function to create a service using the global factory
+ *
+ * @param name
+ * @param options
  */
 export async function createInfrastructureService(
   name?: string,
@@ -844,7 +881,7 @@ export default InfrastructureServiceFactory;
 export type {
   InfrastructureServiceFactoryConfig,
   CreateServiceOptions,
-  InfrastructureServiceAdapterConfig
+  InfrastructureServiceAdapterConfig,
 };
 
 // Re-export service type from adapter

@@ -2,7 +2,7 @@
 
 /**
  * Documentation Coverage Reporter for Unified Architecture
- * 
+ *
  * @fileoverview Advanced documentation coverage analysis tool that provides detailed
  *               metrics, trends, and quality assessments across all four unified
  *               architecture layers (UACL, DAL, USL, UEL). Integrates with CI/CD
@@ -18,27 +18,27 @@ const { execSync } = require('child_process');
 
 /**
  * Documentation Coverage Reporter - Comprehensive coverage analysis and reporting
- * 
+ *
  * Provides detailed analysis of documentation coverage including:
  * - Layer-specific coverage metrics (UACL, DAL, USL, UEL)
  * - Historical trend analysis and coverage drift detection
  * - Quality scoring with weighted metrics
  * - Integration with TypeDoc and ESLint for comprehensive analysis
  * - CI/CD pipeline integration with badge generation
- * 
+ *
  * @class DocsCoverageReporter
  */
 class DocsCoverageReporter {
   /**
    * Initialize documentation coverage reporter
-   * 
+   *
    * @param {Object} config - Reporter configuration
    * @param {string} config.rootDir - Root source directory
    * @param {string} config.outputDir - Output directory for reports
    * @param {Object} config.thresholds - Coverage thresholds by layer
    * @param {boolean} [config.generateBadges=true] - Generate coverage badges
    * @param {boolean} [config.trackHistory=true] - Enable historical tracking
-   * 
+   *
    * @example Basic Reporter Setup
    * ```javascript
    * const reporter = new DocsCoverageReporter({
@@ -58,39 +58,39 @@ class DocsCoverageReporter {
     this.outputDir = config.outputDir || './docs/coverage';
     this.generateBadges = config.generateBadges !== false;
     this.trackHistory = config.trackHistory !== false;
-    
+
     // Coverage thresholds by layer
     this.thresholds = config.thresholds || {
       uacl: { minimum: 80, target: 90 },
       dal: { minimum: 85, target: 95 },
       usl: { minimum: 80, target: 90 },
-      uel: { minimum: 75, target: 85 }
+      uel: { minimum: 75, target: 85 },
     };
-    
+
     // Layer mappings
     this.layerMappings = {
-      uacl: { 
+      uacl: {
         path: 'interfaces/clients',
         name: 'Unified API Client Layer',
-        weight: 1.2 // Higher weight for client interfaces
+        weight: 1.2, // Higher weight for client interfaces
       },
-      dal: { 
+      dal: {
         path: 'database',
-        name: 'Data Access Layer', 
-        weight: 1.3 // Highest weight for data layer
+        name: 'Data Access Layer',
+        weight: 1.3, // Highest weight for data layer
       },
-      usl: { 
+      usl: {
         path: 'interfaces/services',
         name: 'Unified Service Layer',
-        weight: 1.1
+        weight: 1.1,
       },
-      uel: { 
+      uel: {
         path: 'interfaces/events',
         name: 'Unified Event Layer',
-        weight: 1.0
-      }
+        weight: 1.0,
+      },
     };
-    
+
     // Coverage analysis results
     this.coverage = {
       overall: { documented: 0, total: 0, percentage: 0, quality: 0 },
@@ -98,32 +98,32 @@ class DocsCoverageReporter {
       files: [],
       trends: {},
       badges: {},
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
   /**
    * Generate comprehensive documentation coverage report
-   * 
+   *
    * @returns {Promise<CoverageResults>} Complete coverage analysis results
-   * 
+   *
    * @throws {CoverageError} When coverage analysis fails
-   * 
+   *
    * @example Generate Complete Coverage Report
    * ```javascript
    * const reporter = new DocsCoverageReporter({ rootDir: './src' });
-   * 
+   *
    * try {
    *   const results = await reporter.generateReport();
-   *   
+   *
    *   console.log('Overall Coverage:', results.overall.percentage);
    *   console.log('Quality Score:', results.overall.quality);
-   *   
+   *
    *   // Check layer performance
    *   Object.entries(results.layers).forEach(([layer, data]) => {
    *     console.log(`${layer}: ${data.percentage}% (${data.status})`);
    *   });
-   *   
+   *
    *   // Generate CI/CD badges
    *   if (results.badges.coverage) {
    *     console.log('Coverage Badge:', results.badges.coverage);
@@ -135,39 +135,38 @@ class DocsCoverageReporter {
    */
   async generateReport() {
     console.log('📊 Generating documentation coverage report...');
-    
+
     try {
       // Initialize output directory
       await this.ensureOutputDirectory();
-      
+
       // Analyze coverage for each layer
       for (const [layerKey, layerConfig] of Object.entries(this.layerMappings)) {
         console.log(`🔍 Analyzing ${layerConfig.name}...`);
         await this.analyzeLayer(layerKey, layerConfig);
       }
-      
+
       // Calculate overall metrics
       this.calculateOverallMetrics();
-      
+
       // Load historical data if tracking is enabled
       if (this.trackHistory) {
         await this.loadHistoricalData();
         this.analyzeTrends();
       }
-      
+
       // Generate badges if enabled
       if (this.generateBadges) {
         await this.generateCoverageBadges();
       }
-      
+
       // Save results and generate reports
       await this.saveResults();
       await this.generateHTMLReport();
       await this.generateMarkdownReport();
-      
+
       console.log('✅ Documentation coverage report generated');
       return this.coverage;
-      
     } catch (error) {
       console.error('❌ Coverage report generation failed:', error.message);
       throw error;
@@ -176,12 +175,12 @@ class DocsCoverageReporter {
 
   /**
    * Analyze documentation coverage for a specific architecture layer
-   * 
+   *
    * @param {string} layerKey - Layer identifier (uacl, dal, usl, uel)
    * @param {Object} layerConfig - Layer configuration object
-   * 
+   *
    * @returns {Promise<LayerCoverage>} Layer coverage analysis results
-   * 
+   *
    * @example Layer Analysis
    * ```javascript
    * const dalResults = await reporter.analyzeLayer('dal', {
@@ -189,7 +188,7 @@ class DocsCoverageReporter {
    *   name: 'Data Access Layer',
    *   weight: 1.3
    * });
-   * 
+   *
    * console.log('DAL Coverage:', dalResults.percentage);
    * console.log('DAL Quality:', dalResults.quality);
    * console.log('DAL Status:', dalResults.status);
@@ -197,7 +196,7 @@ class DocsCoverageReporter {
    */
   async analyzeLayer(layerKey, layerConfig) {
     const layerPath = path.join(this.rootDir, layerConfig.path);
-    
+
     const layerCoverage = {
       name: layerConfig.name,
       path: layerConfig.path,
@@ -208,35 +207,34 @@ class DocsCoverageReporter {
       percentage: 0,
       quality: 0,
       status: 'unknown',
-      issues: []
+      issues: [],
     };
-    
+
     try {
       // Check if layer directory exists
       await fs.access(layerPath);
-      
+
       // Find and analyze TypeScript files
       const files = await this.findTypeScriptFiles(layerPath);
-      
+
       for (const file of files) {
         const fileAnalysis = await this.analyzeFile(file, layerKey);
         layerCoverage.files.push(fileAnalysis);
         layerCoverage.documented += fileAnalysis.documented;
         layerCoverage.total += fileAnalysis.total;
       }
-      
+
       // Calculate layer metrics
-      layerCoverage.percentage = layerCoverage.total > 0 ? 
-        (layerCoverage.documented / layerCoverage.total * 100) : 0;
-      
+      layerCoverage.percentage =
+        layerCoverage.total > 0 ? (layerCoverage.documented / layerCoverage.total) * 100 : 0;
+
       layerCoverage.quality = this.calculateQualityScore(layerCoverage.files);
       layerCoverage.status = this.determineLayerStatus(layerCoverage.percentage, layerKey);
-      
+
       // Identify issues
       layerCoverage.issues = this.identifyLayerIssues(layerCoverage, layerKey);
-      
+
       this.coverage.layers[layerKey] = layerCoverage;
-      
     } catch (error) {
       layerCoverage.status = 'error';
       layerCoverage.issues.push(`Analysis failed: ${error.message}`);
@@ -246,19 +244,19 @@ class DocsCoverageReporter {
 
   /**
    * Analyze documentation coverage for a single file
-   * 
+   *
    * @param {string} filePath - Path to TypeScript file
    * @param {string} layer - Layer identifier
-   * 
+   *
    * @returns {Promise<FileCoverage>} File coverage analysis
-   * 
+   *
    * @example File Analysis
    * ```javascript
    * const fileResults = await reporter.analyzeFile(
-   *   './src/database/factory.ts', 
+   *   './src/database/factory.ts',
    *   'dal'
    * );
-   * 
+   *
    * console.log('File Coverage:', fileResults.percentage);
    * console.log('Constructs Found:', fileResults.constructs);
    * console.log('Documentation Issues:', fileResults.issues);
@@ -267,7 +265,7 @@ class DocsCoverageReporter {
   async analyzeFile(filePath, layer) {
     const fileContent = await fs.readFile(filePath, 'utf8');
     const relativePath = path.relative(this.rootDir, filePath);
-    
+
     const fileAnalysis = {
       path: relativePath,
       layer: layer,
@@ -281,22 +279,22 @@ class DocsCoverageReporter {
         interfaces: 0,
         functions: 0,
         methods: 0,
-        exports: 0
+        exports: 0,
       },
       documentation: {
         fileOverview: false,
         classes: 0,
         interfaces: 0,
         functions: 0,
-        methods: 0
+        methods: 0,
       },
       quality: {
         hasExamples: false,
         hasDetailedParams: false,
         hasReturnDocs: false,
-        hasErrorDocs: false
+        hasErrorDocs: false,
       },
-      issues: []
+      issues: [],
     };
 
     try {
@@ -305,7 +303,6 @@ class DocsCoverageReporter {
       this.analyzeFileDocumentation(fileContent, fileAnalysis);
       this.calculateFileMetrics(fileAnalysis);
       this.identifyFileIssues(fileAnalysis, layer);
-      
     } catch (error) {
       fileAnalysis.issues.push(`Analysis error: ${error.message}`);
     }
@@ -315,15 +312,15 @@ class DocsCoverageReporter {
 
   /**
    * Analyze TypeScript file structure to identify documentable constructs
-   * 
+   *
    * @param {string} content - File content
    * @param {Object} analysis - File analysis object to update
-   * 
+   *
    * @example Structure Analysis
    * ```javascript
    * const analysis = { constructs: {}, total: 0 };
    * reporter.analyzeFileStructure(fileContent, analysis);
-   * 
+   *
    * console.log('Classes found:', analysis.constructs.classes);
    * console.log('Functions found:', analysis.constructs.functions);
    * ```
@@ -337,7 +334,7 @@ class DocsCoverageReporter {
     analysis.constructs.classes = classMatches ? classMatches.length : 0;
     analysis.total += analysis.constructs.classes;
 
-    // Count interfaces  
+    // Count interfaces
     const interfaceMatches = content.match(/export\s+interface\s+\w+/g);
     analysis.constructs.interfaces = interfaceMatches ? interfaceMatches.length : 0;
     analysis.total += analysis.constructs.interfaces;
@@ -348,8 +345,12 @@ class DocsCoverageReporter {
     analysis.total += analysis.constructs.functions;
 
     // Count methods (simplified - methods inside classes)
-    const methodMatches = content.match(/(?:public|private|protected)?\s*(?:async\s+)?\w+\s*\([^)]*\)\s*[:{]/g);
-    analysis.constructs.methods = methodMatches ? Math.max(0, methodMatches.length - analysis.constructs.classes) : 0;
+    const methodMatches = content.match(
+      /(?:public|private|protected)?\s*(?:async\s+)?\w+\s*\([^)]*\)\s*[:{]/g
+    );
+    analysis.constructs.methods = methodMatches
+      ? Math.max(0, methodMatches.length - analysis.constructs.classes)
+      : 0;
     analysis.total += analysis.constructs.methods;
 
     // Count exports
@@ -360,7 +361,7 @@ class DocsCoverageReporter {
 
   /**
    * Analyze JSDoc documentation quality and coverage
-   * 
+   *
    * @param {string} content - File content
    * @param {Object} analysis - File analysis object to update
    */
@@ -379,7 +380,7 @@ class DocsCoverageReporter {
     // Analyze JSDoc quality
     for (const comment of jsDocComments) {
       const jsDocContent = comment[1];
-      
+
       if (jsDocContent.includes('@example')) {
         analysis.quality.hasExamples = true;
       }
@@ -409,7 +410,7 @@ class DocsCoverageReporter {
 
   /**
    * Count documented constructs of a specific type
-   * 
+   *
    * @param {string} content - File content
    * @param {string} type - Construct type (class, interface, function)
    * @returns {number} Number of documented constructs
@@ -423,17 +424,16 @@ class DocsCoverageReporter {
 
   /**
    * Calculate file-level coverage metrics
-   * 
+   *
    * @param {Object} analysis - File analysis object
    */
   calculateFileMetrics(analysis) {
-    analysis.percentage = analysis.total > 0 ? 
-      (analysis.documented / analysis.total * 100) : 0;
+    analysis.percentage = analysis.total > 0 ? (analysis.documented / analysis.total) * 100 : 0;
   }
 
   /**
    * Identify documentation issues in a file
-   * 
+   *
    * @param {Object} analysis - File analysis object
    * @param {string} layer - Layer identifier
    */
@@ -443,7 +443,7 @@ class DocsCoverageReporter {
       uacl: { requireExamples: true, requireReturns: true },
       dal: { requireExamples: true, requireThrows: true },
       usl: { requireExamples: true, requireReturns: true },
-      uel: { requireExamples: true, requireReturns: true }
+      uel: { requireExamples: true, requireReturns: true },
     };
 
     const requirements = layerRequirements[layer] || {};
@@ -471,11 +471,11 @@ class DocsCoverageReporter {
 
   /**
    * Calculate overall documentation metrics across all layers
-   * 
+   *
    * @example Overall Metrics Calculation
    * ```javascript
    * reporter.calculateOverallMetrics();
-   * 
+   *
    * console.log('Overall Coverage:', reporter.coverage.overall.percentage);
    * console.log('Weighted Quality:', reporter.coverage.overall.quality);
    * ```
@@ -490,7 +490,7 @@ class DocsCoverageReporter {
     for (const [layerKey, layerData] of Object.entries(this.coverage.layers)) {
       totalDocumented += layerData.documented;
       totalConstructs += layerData.total;
-      
+
       // Weight quality by layer importance
       const weight = this.layerMappings[layerKey].weight || 1;
       weightedQuality += layerData.quality * weight;
@@ -500,11 +500,10 @@ class DocsCoverageReporter {
     // Calculate overall metrics
     this.coverage.overall.documented = totalDocumented;
     this.coverage.overall.total = totalConstructs;
-    this.coverage.overall.percentage = totalConstructs > 0 ? 
-      (totalDocumented / totalConstructs * 100) : 0;
-    
-    this.coverage.overall.quality = totalWeight > 0 ? 
-      (weightedQuality / totalWeight) : 0;
+    this.coverage.overall.percentage =
+      totalConstructs > 0 ? (totalDocumented / totalConstructs) * 100 : 0;
+
+    this.coverage.overall.quality = totalWeight > 0 ? weightedQuality / totalWeight : 0;
 
     // Determine overall status
     this.coverage.overall.status = this.determineOverallStatus();
@@ -512,7 +511,7 @@ class DocsCoverageReporter {
 
   /**
    * Calculate quality score for a set of files
-   * 
+   *
    * @param {Array} files - Array of file analysis objects
    * @returns {number} Quality score (0-100)
    */
@@ -520,7 +519,7 @@ class DocsCoverageReporter {
     if (files.length === 0) return 0;
 
     let totalScore = 0;
-    let totalFiles = files.length;
+    const totalFiles = files.length;
 
     for (const file of files) {
       let fileScore = 0;
@@ -545,28 +544,28 @@ class DocsCoverageReporter {
 
   /**
    * Determine layer status based on coverage percentage and thresholds
-   * 
+   *
    * @param {number} percentage - Coverage percentage
    * @param {string} layerKey - Layer identifier
    * @returns {string} Status string (excellent, good, needs-improvement, poor)
    */
   determineLayerStatus(percentage, layerKey) {
     const thresholds = this.thresholds[layerKey];
-    
+
     if (percentage >= thresholds.target) return 'excellent';
     if (percentage >= thresholds.minimum) return 'good';
-    if (percentage >= (thresholds.minimum * 0.7)) return 'needs-improvement';
+    if (percentage >= thresholds.minimum * 0.7) return 'needs-improvement';
     return 'poor';
   }
 
   /**
    * Determine overall documentation status
-   * 
+   *
    * @returns {string} Overall status assessment
    */
   determineOverallStatus() {
     const percentage = this.coverage.overall.percentage;
-    
+
     if (percentage >= 90) return 'excellent';
     if (percentage >= 80) return 'good';
     if (percentage >= 60) return 'needs-improvement';
@@ -575,7 +574,7 @@ class DocsCoverageReporter {
 
   /**
    * Identify layer-specific issues and recommendations
-   * 
+   *
    * @param {Object} layerCoverage - Layer coverage data
    * @param {string} layerKey - Layer identifier
    * @returns {Array} Array of issue descriptions
@@ -592,7 +591,7 @@ class DocsCoverageReporter {
       issues.push('Documentation quality below acceptable level');
     }
 
-    const filesWithIssues = layerCoverage.files.filter(f => f.issues.length > 0);
+    const filesWithIssues = layerCoverage.files.filter((f) => f.issues.length > 0);
     if (filesWithIssues.length > 0) {
       issues.push(`${filesWithIssues.length} files have documentation issues`);
     }
@@ -602,32 +601,36 @@ class DocsCoverageReporter {
 
   /**
    * Find all TypeScript files in a directory recursively
-   * 
+   *
    * @param {string} dir - Directory to search
    * @returns {Promise<string[]>} Array of TypeScript file paths
    */
   async findTypeScriptFiles(dir) {
     const files = [];
-    
+
     async function traverse(currentDir) {
       try {
         const entries = await fs.readdir(currentDir, { withFileTypes: true });
-        
+
         for (const entry of entries) {
           const fullPath = path.join(currentDir, entry.name);
-          
+
           if (entry.isDirectory()) {
-            if (!entry.name.startsWith('.') && 
-                entry.name !== 'node_modules' && 
-                entry.name !== '__tests__' &&
-                entry.name !== 'tests') {
+            if (
+              !entry.name.startsWith('.') &&
+              entry.name !== 'node_modules' &&
+              entry.name !== '__tests__' &&
+              entry.name !== 'tests'
+            ) {
               await traverse(fullPath);
             }
-          } else if (entry.isFile() && 
-                     (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx')) &&
-                     !entry.name.endsWith('.test.ts') &&
-                     !entry.name.endsWith('.spec.ts') &&
-                     !entry.name.endsWith('.d.ts')) {
+          } else if (
+            entry.isFile() &&
+            (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx')) &&
+            !entry.name.endsWith('.test.ts') &&
+            !entry.name.endsWith('.spec.ts') &&
+            !entry.name.endsWith('.d.ts')
+          ) {
             files.push(fullPath);
           }
         }
@@ -635,20 +638,20 @@ class DocsCoverageReporter {
         // Skip directories that can't be read
       }
     }
-    
+
     await traverse(dir);
     return files;
   }
 
   /**
    * Generate coverage badges for README and documentation
-   * 
+   *
    * @returns {Promise<void>} Badge generation completion
-   * 
+   *
    * @example Generate Badges
    * ```javascript
    * await reporter.generateCoverageBadges();
-   * 
+   *
    * console.log('Coverage Badge URL:', reporter.coverage.badges.coverage);
    * console.log('Quality Badge URL:', reporter.coverage.badges.quality);
    * ```
@@ -656,24 +659,25 @@ class DocsCoverageReporter {
   async generateCoverageBadges() {
     const percentage = Math.round(this.coverage.overall.percentage);
     const quality = Math.round(this.coverage.overall.quality);
-    
+
     // Generate shields.io badge URLs
     this.coverage.badges = {
       coverage: `https://img.shields.io/badge/docs%20coverage-${percentage}%25-${this.getBadgeColor(percentage)}`,
       quality: `https://img.shields.io/badge/docs%20quality-${quality}%25-${this.getBadgeColor(quality)}`,
-      status: `https://img.shields.io/badge/docs%20status-${this.coverage.overall.status}-${this.getStatusColor(this.coverage.overall.status)}`
+      status: `https://img.shields.io/badge/docs%20status-${this.coverage.overall.status}-${this.getStatusColor(this.coverage.overall.status)}`,
     };
-    
+
     // Generate layer-specific badges
     for (const [layerKey, layerData] of Object.entries(this.coverage.layers)) {
       const layerPercentage = Math.round(layerData.percentage);
-      this.coverage.badges[layerKey] = `https://img.shields.io/badge/${layerKey}-${layerPercentage}%25-${this.getBadgeColor(layerPercentage)}`;
+      this.coverage.badges[layerKey] =
+        `https://img.shields.io/badge/${layerKey}-${layerPercentage}%25-${this.getBadgeColor(layerPercentage)}`;
     }
   }
 
   /**
    * Get badge color based on percentage
-   * 
+   *
    * @param {number} percentage - Coverage/quality percentage
    * @returns {string} Color code for badge
    */
@@ -688,29 +692,29 @@ class DocsCoverageReporter {
 
   /**
    * Get badge color based on status
-   * 
+   *
    * @param {string} status - Status string
    * @returns {string} Color code for badge
    */
   getStatusColor(status) {
     const colors = {
       excellent: 'brightgreen',
-      good: 'green', 
+      good: 'green',
       'needs-improvement': 'yellow',
       poor: 'red',
-      error: 'critical'
+      error: 'critical',
     };
     return colors[status] || 'lightgrey';
   }
 
   /**
    * Load historical coverage data for trend analysis
-   * 
+   *
    * @returns {Promise<void>} Historical data loading completion
    */
   async loadHistoricalData() {
     const historyFile = path.join(this.outputDir, 'coverage-history.json');
-    
+
     try {
       const historyContent = await fs.readFile(historyFile, 'utf8');
       this.coverage.history = JSON.parse(historyContent);
@@ -729,23 +733,27 @@ class DocsCoverageReporter {
     }
 
     const recent = this.coverage.history.slice(-5); // Last 5 reports
-    
+
     if (recent.length >= 2) {
       const latest = recent[recent.length - 1];
       const previous = recent[recent.length - 2];
-      
+
       this.coverage.trends = {
         coverage: latest.overall.percentage - previous.overall.percentage,
         quality: latest.overall.quality - previous.overall.quality,
-        direction: latest.overall.percentage > previous.overall.percentage ? 'up' : 
-                  latest.overall.percentage < previous.overall.percentage ? 'down' : 'stable'
+        direction:
+          latest.overall.percentage > previous.overall.percentage
+            ? 'up'
+            : latest.overall.percentage < previous.overall.percentage
+              ? 'down'
+              : 'stable',
       };
     }
   }
 
   /**
    * Ensure output directory exists
-   * 
+   *
    * @returns {Promise<void>} Directory creation completion
    */
   async ensureOutputDirectory() {
@@ -754,17 +762,17 @@ class DocsCoverageReporter {
 
   /**
    * Save coverage results to JSON file
-   * 
+   *
    * @returns {Promise<void>} Results saving completion
    */
   async saveResults() {
     const resultsPath = path.join(this.outputDir, 'coverage-results.json');
     await fs.writeFile(resultsPath, JSON.stringify(this.coverage, null, 2));
-    
+
     // Update history if tracking is enabled
     if (this.trackHistory) {
       const historyPath = path.join(this.outputDir, 'coverage-history.json');
-      
+
       // Load existing history
       let history = [];
       try {
@@ -773,35 +781,35 @@ class DocsCoverageReporter {
       } catch (error) {
         // No history file exists
       }
-      
+
       // Add current results to history
       history.push({
         timestamp: this.coverage.timestamp,
         overall: this.coverage.overall,
         layers: Object.fromEntries(
           Object.entries(this.coverage.layers).map(([key, data]) => [
-            key, 
-            { 
-              percentage: data.percentage, 
-              quality: data.quality, 
-              status: data.status 
-            }
+            key,
+            {
+              percentage: data.percentage,
+              quality: data.quality,
+              status: data.status,
+            },
           ])
-        )
+        ),
       });
-      
+
       // Keep last 30 entries
       if (history.length > 30) {
         history = history.slice(-30);
       }
-      
+
       await fs.writeFile(historyPath, JSON.stringify(history, null, 2));
     }
   }
 
   /**
    * Generate HTML coverage report
-   * 
+   *
    * @returns {Promise<void>} HTML report generation completion
    */
   async generateHTMLReport() {
@@ -813,7 +821,7 @@ class DocsCoverageReporter {
 
   /**
    * Generate Markdown coverage report
-   * 
+   *
    * @returns {Promise<void>} Markdown report generation completion
    */
   async generateMarkdownReport() {
@@ -825,7 +833,7 @@ class DocsCoverageReporter {
 
   /**
    * Build HTML coverage report
-   * 
+   *
    * @returns {string} HTML report content
    */
   buildHTMLReport() {
@@ -885,7 +893,9 @@ class DocsCoverageReporter {
 
     <h2>Layer Breakdown</h2>
     <div class="layer-grid">
-        ${Object.entries(this.coverage.layers).map(([key, layer]) => `
+        ${Object.entries(this.coverage.layers)
+          .map(
+            ([key, layer]) => `
         <div class="layer-card">
             <div class="layer-header">${layer.name}</div>
             <div class="progress-bar">
@@ -897,10 +907,14 @@ class DocsCoverageReporter {
             <p><strong>Files:</strong> ${layer.files.length}</p>
             ${layer.issues.length > 0 ? `<p><strong>Issues:</strong> ${layer.issues.length}</p>` : ''}
         </div>
-        `).join('')}
+        `
+          )
+          .join('')}
     </div>
 
-    ${this.coverage.trends ? `
+    ${
+      this.coverage.trends
+        ? `
     <h2>Trends</h2>
     <div class="metrics">
         <div class="metric-card">
@@ -916,7 +930,9 @@ class DocsCoverageReporter {
             <div>Quality Change</div>
         </div>
     </div>
-    ` : ''}
+    `
+        : ''
+    }
 
     <h2>File Details</h2>
     <table>
@@ -930,7 +946,9 @@ class DocsCoverageReporter {
             </tr>
         </thead>
         <tbody>
-            ${this.coverage.files.map(file => `
+            ${this.coverage.files
+              .map(
+                (file) => `
             <tr>
                 <td>${file.path}</td>
                 <td>${file.layer.toUpperCase()}</td>
@@ -938,7 +956,9 @@ class DocsCoverageReporter {
                 <td>${file.quality.hasExamples ? '📝' : ''} ${file.quality.hasDetailedParams ? '📋' : ''} ${file.quality.hasReturnDocs ? '↩️' : ''} ${file.quality.hasErrorDocs ? '⚠️' : ''}</td>
                 <td>${file.issues.length}</td>
             </tr>
-            `).join('')}
+            `
+              )
+              .join('')}
         </tbody>
     </table>
 
@@ -951,7 +971,7 @@ class DocsCoverageReporter {
 
   /**
    * Build Markdown coverage report
-   * 
+   *
    * @returns {string} Markdown report content
    */
   buildMarkdownReport() {
@@ -971,7 +991,9 @@ class DocsCoverageReporter {
 
 ## Layer Performance
 
-${Object.entries(this.coverage.layers).map(([key, layer]) => `
+${Object.entries(this.coverage.layers)
+  .map(
+    ([key, layer]) => `
 ### ${layer.name} (${key.toUpperCase()})
 
 ![${key} Badge](${this.coverage.badges?.[key] || ''})
@@ -982,24 +1004,37 @@ ${Object.entries(this.coverage.layers).map(([key, layer]) => `
 - **Files:** ${layer.files.length}
 - **Issues:** ${layer.issues.length}
 
-${layer.issues.length > 0 ? `**Issues Found:**
-${layer.issues.map(issue => `- ❌ ${issue}`).join('\n')}` : '✅ No issues found'}
-`).join('')}
+${
+  layer.issues.length > 0
+    ? `**Issues Found:**
+${layer.issues.map((issue) => `- ❌ ${issue}`).join('\n')}`
+    : '✅ No issues found'
+}
+`
+  )
+  .join('')}
 
-${this.coverage.trends ? `## Trends
+${
+  this.coverage.trends
+    ? `## Trends
 
 - **Coverage Change:** ${this.coverage.trends.coverage > 0 ? '📈' : this.coverage.trends.coverage < 0 ? '📉' : '➡️'} ${this.coverage.trends.coverage > 0 ? '+' : ''}${this.coverage.trends.coverage.toFixed(1)}%
 - **Quality Change:** ${this.coverage.trends.quality > 0 ? '📈' : this.coverage.trends.quality < 0 ? '📉' : '➡️'} ${this.coverage.trends.quality > 0 ? '+' : ''}${this.coverage.trends.quality.toFixed(1)}%
 - **Direction:** ${this.coverage.trends.direction === 'up' ? '⬆️ Improving' : this.coverage.trends.direction === 'down' ? '⬇️ Declining' : '➡️ Stable'}
-` : ''}
+`
+    : ''
+}
 
 ## Detailed File Analysis
 
 | File | Layer | Coverage | Documented | Total | Issues |
 |------|-------|----------|------------|-------|--------|
-${this.coverage.files.map(file => 
-  `| ${file.path} | ${file.layer.toUpperCase()} | ${file.percentage.toFixed(1)}% | ${file.documented} | ${file.total} | ${file.issues.length} |`
-).join('\n')}
+${this.coverage.files
+  .map(
+    (file) =>
+      `| ${file.path} | ${file.layer.toUpperCase()} | ${file.percentage.toFixed(1)}% | ${file.documented} | ${file.total} | ${file.issues.length} |`
+  )
+  .join('\n')}
 
 ## Recommendations
 
@@ -1012,65 +1047,79 @@ ${this.generateRecommendations()}
 
   /**
    * Generate improvement recommendations based on coverage analysis
-   * 
+   *
    * @returns {string} Markdown formatted recommendations
    */
   generateRecommendations() {
     const recommendations = [];
-    
+
     // Overall recommendations
     if (this.coverage.overall.percentage < 80) {
-      recommendations.push('📈 **Increase Overall Coverage**: Current coverage is below 80%. Focus on adding documentation to undocumented constructs.');
+      recommendations.push(
+        '📈 **Increase Overall Coverage**: Current coverage is below 80%. Focus on adding documentation to undocumented constructs.'
+      );
     }
-    
+
     if (this.coverage.overall.quality < 70) {
-      recommendations.push('🎯 **Improve Documentation Quality**: Add more examples, detailed parameter descriptions, and return value documentation.');
+      recommendations.push(
+        '🎯 **Improve Documentation Quality**: Add more examples, detailed parameter descriptions, and return value documentation.'
+      );
     }
-    
+
     // Layer-specific recommendations
     for (const [layerKey, layerData] of Object.entries(this.coverage.layers)) {
       const threshold = this.thresholds[layerKey];
-      
+
       if (layerData.percentage < threshold.minimum) {
-        recommendations.push(`🔧 **${layerData.name}**: Coverage (${layerData.percentage.toFixed(1)}%) is below minimum threshold (${threshold.minimum}%). Priority focus area.`);
+        recommendations.push(
+          `🔧 **${layerData.name}**: Coverage (${layerData.percentage.toFixed(1)}%) is below minimum threshold (${threshold.minimum}%). Priority focus area.`
+        );
       }
-      
+
       if (layerData.quality < 60) {
-        recommendations.push(`📝 **${layerData.name}**: Quality score is low. Add more comprehensive JSDoc comments with examples and detailed descriptions.`);
+        recommendations.push(
+          `📝 **${layerData.name}**: Quality score is low. Add more comprehensive JSDoc comments with examples and detailed descriptions.`
+        );
       }
-      
+
       if (layerData.issues.length > 0) {
-        recommendations.push(`⚠️ **${layerData.name}**: ${layerData.issues.length} issues need attention. Review layer-specific documentation requirements.`);
+        recommendations.push(
+          `⚠️ **${layerData.name}**: ${layerData.issues.length} issues need attention. Review layer-specific documentation requirements.`
+        );
       }
     }
-    
+
     // Trending recommendations
     if (this.coverage.trends?.direction === 'down') {
-      recommendations.push('📉 **Declining Trend**: Coverage has decreased recently. Review recent changes and ensure new code is properly documented.');
+      recommendations.push(
+        '📉 **Declining Trend**: Coverage has decreased recently. Review recent changes and ensure new code is properly documented.'
+      );
     }
-    
+
     if (recommendations.length === 0) {
-      recommendations.push('✅ **Excellent Documentation**: All metrics are within acceptable ranges. Maintain current documentation standards.');
+      recommendations.push(
+        '✅ **Excellent Documentation**: All metrics are within acceptable ranges. Maintain current documentation standards.'
+      );
     }
-    
+
     return recommendations.join('\n\n');
   }
 }
 
 /**
  * Command-line interface for documentation coverage reporter
- * 
+ *
  * @example CLI Usage
  * ```bash
  * # Generate complete coverage report
  * node scripts/docs-coverage.js
- * 
+ *
  * # Custom output directory
  * node scripts/docs-coverage.js --output ./custom/coverage
- * 
+ *
  * # Disable badge generation
  * node scripts/docs-coverage.js --no-badges
- * 
+ *
  * # Set custom thresholds
  * node scripts/docs-coverage.js --threshold dal:90 --threshold uacl:85
  * ```
@@ -1081,7 +1130,7 @@ async function main() {
     rootDir: './src',
     outputDir: './docs/coverage',
     generateBadges: !args.includes('--no-badges'),
-    trackHistory: !args.includes('--no-history')
+    trackHistory: !args.includes('--no-history'),
   };
 
   // Parse command line arguments
@@ -1105,7 +1154,7 @@ async function main() {
     console.log(`   Quality Score: ${results.overall.quality.toFixed(1)}%`);
     console.log(`   Status: ${results.overall.status.toUpperCase()}`);
     console.log(`   Files Analyzed: ${results.files.length}`);
-    
+
     if (results.badges?.coverage) {
       console.log('\n🏷️ Coverage Badges:');
       console.log(`   Coverage: ${results.badges.coverage}`);
@@ -1116,7 +1165,6 @@ async function main() {
     // Exit with error if coverage is critically low
     const exitCode = results.overall.percentage < 50 ? 1 : 0;
     process.exit(exitCode);
-
   } catch (error) {
     console.error('💥 Coverage report generation failed:', error.message);
     process.exit(1);

@@ -24,7 +24,10 @@ class MockCoordinationDao implements ICoordinationDao {
     return [];
   }
 
-  async execute(sql: string, params?: any[]): Promise<{ lastInsertId?: number; affectedRows?: number }> {
+  async execute(
+    sql: string,
+    params?: any[]
+  ): Promise<{ lastInsertId?: number; affectedRows?: number }> {
     if (sql.includes('INSERT INTO sessions')) {
       const [
         id,
@@ -621,7 +624,7 @@ describe('Session Management Integration', () => {
         maxAgents: 5,
         requiredCapabilities: [],
         createdAt: new Date(),
-        metadata: {}
+        metadata: {},
       });
 
       // Create checkpoint

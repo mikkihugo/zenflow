@@ -4,7 +4,7 @@
  * Implements intelligent rate limiting with different limits for different operation types.
  * Database operations are resource-intensive and require careful throttling.
  *
- * @fileoverview Database-specific rate limiting middleware
+ * @file Database-specific rate limiting middleware
  */
 
 import type { NextFunction, Request, Response } from 'express';
@@ -14,6 +14,8 @@ import { LogLevel, log } from './logging';
 
 /**
  * Rate limit configuration for different operation types
+ *
+ * @example
  */
 export interface RateLimitConfig {
   /** Window size in milliseconds */
@@ -73,6 +75,9 @@ export const DATABASE_RATE_LIMITS = {
 
 /**
  * Create rate limiter with custom configuration
+ *
+ * @param config
+ * @param operationType
  */
 function createRateLimiter(
   config: RateLimitConfig,
@@ -163,6 +168,10 @@ export const adminOperationsLimiter = createRateLimiter(DATABASE_RATE_LIMITS.adm
 /**
  * Dynamic rate limiter based on operation type
  * Automatically selects appropriate rate limit based on request
+ *
+ * @param req
+ * @param res
+ * @param next
  */
 export const dynamicDatabaseRateLimiter = (
   req: Request,
@@ -200,6 +209,9 @@ export const dynamicDatabaseRateLimiter = (
 /**
  * Custom rate limiter for specific endpoints
  * Allows fine-tuning rate limits for specific operations
+ *
+ * @param config
+ * @param operationType
  */
 export const createCustomDatabaseRateLimiter = (
   config: Partial<RateLimitConfig>,
@@ -216,6 +228,10 @@ export const createCustomDatabaseRateLimiter = (
 /**
  * Rate limiting middleware that considers user authentication level
  * Authenticated users get higher limits than anonymous users
+ *
+ * @param req
+ * @param res
+ * @param next
  */
 export const authAwareDatabaseRateLimiter = (
   req: Request,
@@ -262,6 +278,8 @@ export const authAwareDatabaseRateLimiter = (
 /**
  * Get current rate limit status for a request
  * Useful for monitoring and debugging
+ *
+ * @param req
  */
 export const getRateLimitStatus = (
   req: Request
@@ -285,6 +303,10 @@ export const getRateLimitStatus = (
 /**
  * Rate limit information middleware
  * Adds rate limit info to response headers for debugging
+ *
+ * @param req
+ * @param res
+ * @param next
  */
 export const rateLimitInfoMiddleware = (req: Request, res: Response, next: NextFunction): void => {
   const status = getRateLimitStatus(req);
@@ -307,6 +329,9 @@ export const RATE_LIMIT_CONFIGS = DATABASE_RATE_LIMITS;
 /**
  * Helper to check if a request would be rate limited without actually limiting it
  * Useful for monitoring and alerts
+ *
+ * @param req
+ * @param operationType
  */
 export const wouldBeRateLimited = async (
   req: Request,

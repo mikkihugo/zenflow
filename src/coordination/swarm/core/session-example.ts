@@ -69,7 +69,7 @@ async function basicSessionExample() {
       maxAgents: 5,
       requiredCapabilities: [],
       createdAt: new Date(),
-      metadata: {}
+      metadata: {},
     });
 
     const trainingTask = await swarm.submitTask({
@@ -84,7 +84,7 @@ async function basicSessionExample() {
       maxAgents: 5,
       requiredCapabilities: [],
       createdAt: new Date(),
-      metadata: {}
+      metadata: {},
     });
 
     const _evaluationTask = await swarm.submitTask({
@@ -99,7 +99,7 @@ async function basicSessionExample() {
       maxAgents: 5,
       requiredCapabilities: [],
       createdAt: new Date(),
-      metadata: {}
+      metadata: {},
     });
 
     // Create a manual checkpoint
@@ -119,6 +119,8 @@ async function basicSessionExample() {
 
 /**
  * Example 2: Session Recovery and Restoration
+ *
+ * @param existingSessionId
  */
 async function sessionRecoveryExample(existingSessionId: string) {
   const swarm = new SessionEnabledSwarm({
@@ -151,7 +153,7 @@ async function sessionRecoveryExample(existingSessionId: string) {
         maxAgents: 5,
         requiredCapabilities: [],
         createdAt: new Date(),
-        metadata: {}
+        metadata: {},
       });
 
       // Create another checkpoint
@@ -179,7 +181,7 @@ async function sessionLifecycleExample() {
     query: async (_sql: string, _params?: any[]) => [],
     execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
     initialize: async () => {},
-    close: async () => {}
+    close: async () => {},
   } as any;
   await persistence.initialize();
 
@@ -257,7 +259,7 @@ async function sessionHealthExample() {
     query: async (_sql: string, _params?: any[]) => [],
     execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
     initialize: async () => {},
-    close: async () => {}
+    close: async () => {},
   } as any;
   await persistence.initialize();
 
@@ -344,7 +346,11 @@ async function advancedSessionExample() {
         type: 'architect' as const,
         capabilities: ['feature-selection', 'dimensionality-reduction'],
       },
-      { id: 'model-builder', type: 'coder' as const, capabilities: ['deep-learning', 'ensemble-methods'] },
+      {
+        id: 'model-builder',
+        type: 'coder' as const,
+        capabilities: ['deep-learning', 'ensemble-methods'],
+      },
       {
         id: 'model-validator',
         type: 'reviewer' as const,
@@ -377,7 +383,7 @@ async function advancedSessionExample() {
         maxAgents: 5,
         requiredCapabilities: [] as string[],
         createdAt: new Date(),
-        metadata: {}
+        metadata: {},
       },
       {
         description: 'Clean and validate collected data',
@@ -391,7 +397,7 @@ async function advancedSessionExample() {
         maxAgents: 5,
         requiredCapabilities: [] as string[],
         createdAt: new Date(),
-        metadata: {}
+        metadata: {},
       },
       {
         description: 'Engineer features from cleaned data',
@@ -405,7 +411,7 @@ async function advancedSessionExample() {
         maxAgents: 5,
         requiredCapabilities: [] as string[],
         createdAt: new Date(),
-        metadata: {}
+        metadata: {},
       },
       {
         description: 'Build and train multiple models',
@@ -419,7 +425,7 @@ async function advancedSessionExample() {
         maxAgents: 5,
         requiredCapabilities: [] as string[],
         createdAt: new Date(),
-        metadata: {}
+        metadata: {},
       },
       {
         description: 'Validate model performance',
@@ -433,7 +439,7 @@ async function advancedSessionExample() {
         maxAgents: 5,
         requiredCapabilities: [] as string[],
         createdAt: new Date(),
-        metadata: {}
+        metadata: {},
       },
       {
         description: 'Deploy best performing model',
@@ -447,7 +453,7 @@ async function advancedSessionExample() {
         maxAgents: 5,
         requiredCapabilities: [] as string[],
         createdAt: new Date(),
-        metadata: {}
+        metadata: {},
       },
     ];
 

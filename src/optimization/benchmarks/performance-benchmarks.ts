@@ -519,6 +519,10 @@ export class PerformanceBenchmarkSuite {
 
   /**
    * Run a suite of benchmarks
+   *
+   * @param domain
+   * @param benchmarks
+   * @param optimizer
    */
   private async runBenchmarkSuite(
     domain: string,
@@ -551,6 +555,8 @@ export class PerformanceBenchmarkSuite {
 
   /**
    * Calculate overall benchmark results
+   *
+   * @param results
    */
   private calculateOverallResults(results: SystemBenchmarkResults): void {
     const allResults = [
@@ -573,6 +579,9 @@ export class PerformanceBenchmarkSuite {
 
   /**
    * Calculate improvement between before and after metrics
+   *
+   * @param before
+   * @param after
    */
   private calculateImprovement(before: PerformanceMetrics, after: PerformanceMetrics): number {
     const latencyImprovement = Math.max(0, (before.latency - after.latency) / before.latency);
@@ -705,6 +714,9 @@ export class PerformanceBenchmarkSuite {
 
   /**
    * Mock measurement methods
+   *
+   * @param _network
+   * @param mode
    */
   private async measureNeuralPerformance(_network: any, mode: string): Promise<PerformanceMetrics> {
     const baseLatency = mode === 'training' ? 100 : 10;

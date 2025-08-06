@@ -16,6 +16,8 @@ import type {
 
 /**
  * Request interface for memory operations
+ *
+ * @example
  */
 export interface MemoryRequest {
   /** Key for the memory entry */
@@ -35,6 +37,8 @@ export interface MemoryRequest {
 
 /**
  * Response interface for memory operations
+ *
+ * @example
  */
 export interface MemoryResponse {
   /** Whether the operation was successful */
@@ -58,6 +62,8 @@ export interface MemoryResponse {
 
 /**
  * Batch operation request
+ *
+ * @example
  */
 export interface MemoryBatchRequest {
   /** Array of operations to perform */
@@ -77,6 +83,8 @@ export interface MemoryBatchRequest {
 
 /**
  * Memory analytics response
+ *
+ * @example
  */
 export interface MemoryAnalytics {
   /** Total number of keys stored */
@@ -117,6 +125,8 @@ export interface MemoryAnalytics {
 /**
  * Memory REST API Controller
  * Provides comprehensive memory management through REST endpoints
+ *
+ * @example
  */
 @injectable()
 export class MemoryController {
@@ -193,6 +203,8 @@ export class MemoryController {
   /**
    * POST /api/memory/store
    * Store data in memory with optional TTL and compression
+   *
+   * @param request
    */
   async storeMemory(request: MemoryRequest): Promise<MemoryResponse> {
     const startTime = Date.now();
@@ -255,6 +267,8 @@ export class MemoryController {
   /**
    * GET /api/memory/retrieve/:key
    * Retrieve data from memory by key
+   *
+   * @param key
    */
   async retrieveMemory(key: string): Promise<MemoryResponse> {
     const startTime = Date.now();
@@ -312,6 +326,8 @@ export class MemoryController {
   /**
    * DELETE /api/memory/delete/:key
    * Delete data from memory by key
+   *
+   * @param key
    */
   async deleteMemory(key: string): Promise<MemoryResponse> {
     const startTime = Date.now();
@@ -413,6 +429,8 @@ export class MemoryController {
   /**
    * POST /api/memory/batch
    * Perform multiple memory operations in a single request
+   *
+   * @param request
    */
   async batchOperations(request: MemoryBatchRequest): Promise<MemoryResponse> {
     const startTime = Date.now();
@@ -606,6 +624,9 @@ export class MemoryController {
 
   /**
    * Process value for storage (add metadata, compression, etc.)
+   *
+   * @param value
+   * @param options
    */
   private processValueForStorage(value: any, options?: MemoryRequest['options']): any {
     const processed = {
@@ -630,6 +651,8 @@ export class MemoryController {
 
   /**
    * Process value from storage (decompress, check TTL, etc.)
+   *
+   * @param rawValue
    */
   private processValueFromStorage(rawValue: any): any {
     if (!rawValue || typeof rawValue !== 'object') {
@@ -655,6 +678,9 @@ export class MemoryController {
 
   /**
    * Update performance metrics
+   *
+   * @param responseTime
+   * @param success
    */
   private updateMetrics(responseTime: number, success: boolean): void {
     this.performanceMetrics.operationCount++;

@@ -24,6 +24,8 @@ import {
 
 /**
  * ❌ BEFORE: Unsafe memory service - potential runtime errors
+ *
+ * @example
  */
 class UnsafeMemoryService {
   constructor(private store: SessionMemoryStore) {}
@@ -60,12 +62,16 @@ class UnsafeMemoryService {
 
 /**
  * ✅ AFTER: Type-safe memory service with proper error handling
+ *
+ * @example
  */
 class SafeMemoryService {
   constructor(private store: SessionMemoryStore) {}
 
   /**
    * ✅ Safe: Proper type guards and error handling
+   *
+   * @param userId
    */
   async getUserProfile(userId: string): Promise<MemoryResult<UserProfile>> {
     try {
@@ -98,6 +104,9 @@ class SafeMemoryService {
 
   /**
    * ✅ Safe: Comprehensive error handling and logging
+   *
+   * @param userId
+   * @param sessionData
    */
   async cacheUserSession(userId: string, sessionData: UserSession): Promise<MemoryResult<void>> {
     try {
@@ -128,6 +137,8 @@ class SafeMemoryService {
 
   /**
    * ✅ Safe: Proper null checking and default values
+   *
+   * @param userId
    */
   async getUserPreferences(userId: string): Promise<{
     preferences: UserPreferences | null;
@@ -170,6 +181,8 @@ class SafeMemoryService {
 
   /**
    * ✅ Safe: Complex operation with multiple fallbacks
+   *
+   * @param userId
    */
   async getUserData(userId: string): Promise<{
     profile: UserProfile | null;
@@ -212,6 +225,8 @@ class SafeMemoryService {
 
   /**
    * ✅ Safe: Batch operations with individual error handling
+   *
+   * @param userIds
    */
   async getUsersData(userIds: string[]): Promise<
     Map<
@@ -265,6 +280,9 @@ class SafeMemoryService {
 
   /**
    * Enhanced retrieve method that returns MemoryResult
+   *
+   * @param namespace
+   * @param key
    */
   private async retrieveWithResult<T>(namespace: string, key: string): Promise<MemoryResult<T>> {
     try {
@@ -299,6 +317,10 @@ class SafeMemoryService {
 
   /**
    * Enhanced store method that returns MemoryResult
+   *
+   * @param namespace
+   * @param key
+   * @param data
    */
   private async storeWithResult<T>(
     namespace: string,

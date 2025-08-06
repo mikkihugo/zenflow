@@ -13,6 +13,8 @@ import type {
 
 /**
  * Mock memory backend for demo purposes
+ *
+ * @example
  */
 class MockConversationMemory {
   private conversations = new Map<string, any>();
@@ -48,6 +50,8 @@ class MockConversationMemory {
 
 /**
  * Simplified conversation orchestrator for demo
+ *
+ * @example
  */
 class DemoConversationOrchestrator {
   private memory = new MockConversationMemory();

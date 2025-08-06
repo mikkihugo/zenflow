@@ -1,5 +1,5 @@
 /**
- * @fileoverview Adapter Pattern Implementation for Multi-Protocol Support
+ * @file Adapter Pattern Implementation for Multi-Protocol Support
  * Provides protocol adaptation and legacy system integration
  */
 
@@ -86,7 +86,7 @@ export class MCPAdapter implements ProtocolAdapter {
       } else {
         await this.connectStdio(config);
       }
-      
+
       this.connected = true;
     } catch (error) {
       throw new Error(`Failed to connect via ${this.protocol}: ${(error as Error).message}`);
@@ -104,7 +104,7 @@ export class MCPAdapter implements ProtocolAdapter {
         // Terminate stdio process
         this.stdioProcess.kill();
       }
-      
+
       this.connected = false;
       this.eventHandlers.clear();
     } catch (error) {
@@ -136,8 +136,8 @@ export class MCPAdapter implements ProtocolAdapter {
         data: response,
         metadata: {
           protocol: this.protocol,
-          responseTime: Date.now() - startTime
-        }
+          responseTime: Date.now() - startTime,
+        },
       };
     } catch (error) {
       return {
@@ -148,8 +148,8 @@ export class MCPAdapter implements ProtocolAdapter {
         error: (error as Error).message,
         metadata: {
           protocol: this.protocol,
-          responseTime: Date.now() - startTime
-        }
+          responseTime: Date.now() - startTime,
+        },
       };
     }
   }
@@ -183,12 +183,7 @@ export class MCPAdapter implements ProtocolAdapter {
   }
 
   getCapabilities(): string[] {
-    return [
-      'tool-execution',
-      'resource-access',
-      'prompt-templates',
-      'completion-args'
-    ];
+    return ['tool-execution', 'resource-access', 'prompt-templates', 'completion-args'];
   }
 
   async healthCheck(): Promise<boolean> {
@@ -200,7 +195,7 @@ export class MCPAdapter implements ProtocolAdapter {
         timestamp: new Date(),
         source: 'adapter',
         type: 'ping',
-        payload: {}
+        payload: {},
       };
 
       const response = await this.send(healthMessage);
@@ -213,15 +208,15 @@ export class MCPAdapter implements ProtocolAdapter {
   private async connectHTTP(config: ConnectionConfig): Promise<void> {
     // HTTP MCP connection implementation
     const url = `${config.ssl ? 'https' : 'http'}://${config.host}:${config.port || 3000}${config.path || '/mcp'}`;
-    
+
     // This would use actual HTTP client library
     this.httpClient = {
       baseURL: url,
       timeout: config.timeout || 30000,
       headers: {
         'Content-Type': 'application/json',
-        ...config.headers
-      }
+        ...config.headers,
+      },
     };
 
     // Test connection
@@ -234,9 +229,9 @@ export class MCPAdapter implements ProtocolAdapter {
   private async connectStdio(config: ConnectionConfig): Promise<void> {
     // Stdio MCP connection implementation
     const { spawn } = require('child_process');
-    
+
     this.stdioProcess = spawn('npx', ['claude-zen', 'swarm', 'mcp', 'start'], {
-      stdio: ['pipe', 'pipe', 'pipe']
+      stdio: ['pipe', 'pipe', 'pipe'],
     });
 
     return new Promise((resolve, reject) => {
@@ -269,7 +264,7 @@ export class MCPAdapter implements ProtocolAdapter {
         jsonrpc: '2.0',
         id: message.id,
         method: message.type,
-        params: message.payload
+        params: message.payload,
       };
 
       this.stdioProcess.stdin.write(JSON.stringify(jsonRpcMessage) + '\n');
@@ -302,11 +297,11 @@ export class MCPAdapter implements ProtocolAdapter {
 
   private mapMessageTypeToEndpoint(messageType: string): string {
     const endpointMap: Record<string, string> = {
-      'swarm_init': '/tools/swarm_init',
-      'agent_spawn': '/tools/agent_spawn',
-      'task_orchestrate': '/tools/task_orchestrate',
-      'ping': '/health',
-      'capabilities': '/capabilities'
+      swarm_init: '/tools/swarm_init',
+      agent_spawn: '/tools/agent_spawn',
+      task_orchestrate: '/tools/task_orchestrate',
+      ping: '/health',
+      capabilities: '/capabilities',
     };
 
     return endpointMap[messageType] || '/tools/unknown';
@@ -314,11 +309,11 @@ export class MCPAdapter implements ProtocolAdapter {
 
   private handleStdioMessage(data: string): void {
     try {
-      const lines = data.split('\n').filter(line => line.trim());
-      
+      const lines = data.split('\n').filter((line) => line.trim());
+
       for (const line of lines) {
         const parsed = JSON.parse(line);
-        
+
         if (parsed.method) {
           // Incoming notification/request
           const message: ProtocolMessage = {
@@ -326,7 +321,7 @@ export class MCPAdapter implements ProtocolAdapter {
             timestamp: new Date(),
             source: 'mcp-server',
             type: parsed.method,
-            payload: parsed.params
+            payload: parsed.params,
           };
 
           this.emitToHandlers(message.type, message);
@@ -339,7 +334,7 @@ export class MCPAdapter implements ProtocolAdapter {
 
   private emitToHandlers(eventType: string, message: ProtocolMessage): void {
     const handlers = this.eventHandlers.get(eventType) || [];
-    handlers.forEach(handler => {
+    handlers.forEach((handler) => {
       try {
         handler(message);
       } catch (error) {
@@ -393,7 +388,6 @@ export class WebSocketAdapter implements ProtocolAdapter {
             reject(new Error('WebSocket connection timeout'));
           }
         }, config.timeout || 10000);
-
       } catch (error) {
         reject(error);
       }
@@ -421,7 +415,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
           requestId: message.id,
           timestamp: new Date(),
           success: false,
-          error: 'Request timeout'
+          error: 'Request timeout',
         });
       }, 30000);
 
@@ -438,17 +432,19 @@ export class WebSocketAdapter implements ProtocolAdapter {
             error: response.error,
             metadata: {
               protocol: 'websocket',
-              responseTime: Date.now() - startTime
-            }
+              responseTime: Date.now() - startTime,
+            },
           });
         }
       };
 
       // Send message
-      this.connection!.send(JSON.stringify({
-        ...message,
-        expectResponse: true
-      }));
+      this.connection!.send(
+        JSON.stringify({
+          ...message,
+          expectResponse: true,
+        })
+      );
 
       // This would be properly implemented with response tracking
       this.connection!.addEventListener('message', responseHandler, { once: true });
@@ -487,7 +483,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
       'real-time-events',
       'bidirectional-communication',
       'connection-persistence',
-      'auto-reconnection'
+      'auto-reconnection',
     ];
   }
 
@@ -500,7 +496,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
         timestamp: new Date(),
         source: 'adapter',
         type: 'ping',
-        payload: { timestamp: Date.now() }
+        payload: { timestamp: Date.now() },
       };
 
       const response = await this.send(pingMessage);
@@ -513,7 +509,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
   private handleMessage(data: string): void {
     try {
       const parsed = JSON.parse(data);
-      
+
       const message: ProtocolMessage = {
         id: parsed.id || `msg-${Date.now()}`,
         timestamp: new Date(parsed.timestamp) || new Date(),
@@ -521,7 +517,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
         destination: parsed.destination,
         type: parsed.type,
         payload: parsed.payload,
-        metadata: parsed.metadata
+        metadata: parsed.metadata,
       };
 
       this.emitToHandlers(message.type, message);
@@ -532,17 +528,22 @@ export class WebSocketAdapter implements ProtocolAdapter {
 
   private handleDisconnection(): void {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
-      setTimeout(() => {
-        this.reconnectAttempts++;
-        // This would trigger reconnection with stored config
-        console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
-      }, this.reconnectDelay * Math.pow(2, this.reconnectAttempts));
+      setTimeout(
+        () => {
+          this.reconnectAttempts++;
+          // This would trigger reconnection with stored config
+          console.log(
+            `Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+          );
+        },
+        this.reconnectDelay * 2 ** this.reconnectAttempts
+      );
     }
   }
 
   private emitToHandlers(eventType: string, message: ProtocolMessage): void {
     const handlers = this.eventHandlers.get(eventType) || [];
-    handlers.forEach(handler => {
+    handlers.forEach((handler) => {
       try {
         handler(message);
       } catch (error) {
@@ -561,7 +562,7 @@ export class RESTAdapter implements ProtocolAdapter {
 
   async connect(config: ConnectionConfig): Promise<void> {
     this.baseUrl = `${config.ssl ? 'https' : 'http'}://${config.host}:${config.port || 80}${config.path || '/api'}`;
-    
+
     // Setup authentication
     if (config.authentication) {
       this.setupAuthentication(config.authentication);
@@ -606,8 +607,8 @@ export class RESTAdapter implements ProtocolAdapter {
         metadata: {
           protocol: 'rest',
           responseTime: Date.now() - startTime,
-          statusCode: response.status
-        }
+          statusCode: response.status,
+        },
       };
     } catch (error) {
       return {
@@ -618,8 +619,8 @@ export class RESTAdapter implements ProtocolAdapter {
         error: (error as Error).message,
         metadata: {
           protocol: 'rest',
-          responseTime: Date.now() - startTime
-        }
+          responseTime: Date.now() - startTime,
+        },
       };
     }
   }
@@ -653,12 +654,7 @@ export class RESTAdapter implements ProtocolAdapter {
   }
 
   getCapabilities(): string[] {
-    return [
-      'http-requests',
-      'json-payloads',
-      'authentication',
-      'request-response'
-    ];
+    return ['http-requests', 'json-payloads', 'authentication', 'request-response'];
   }
 
   async healthCheck(): Promise<boolean> {
@@ -697,12 +693,12 @@ export class RESTAdapter implements ProtocolAdapter {
     const url = `${this.baseUrl}${endpoint}`;
     const headers = {
       'Content-Type': 'application/json',
-      ...this.authHeaders
+      ...this.authHeaders,
     };
 
     const options: RequestInit = {
       method,
-      headers
+      headers,
     };
 
     if (body && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
@@ -714,11 +710,11 @@ export class RESTAdapter implements ProtocolAdapter {
 
   private mapMessageTypeToEndpoint(messageType: string): string {
     const endpointMap: Record<string, string> = {
-      'swarm_init': '/swarms',
-      'agent_spawn': '/agents',
-      'task_orchestrate': '/tasks',
-      'system_status': '/status',
-      'document_process': '/documents/process'
+      swarm_init: '/swarms',
+      agent_spawn: '/agents',
+      task_orchestrate: '/tasks',
+      system_status: '/status',
+      document_process: '/documents/process',
     };
 
     return endpointMap[messageType] || '/unknown';
@@ -734,7 +730,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
   async connect(config: ConnectionConfig): Promise<void> {
     // This would implement connection to legacy systems
     // Could support protocols like FTP, SOAP, proprietary TCP protocols, etc.
-    
+
     try {
       switch (config.protocol.toLowerCase()) {
         case 'soap':
@@ -749,7 +745,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
         default:
           throw new Error(`Unsupported legacy protocol: ${config.protocol}`);
       }
-      
+
       this.connected = true;
     } catch (error) {
       throw new Error(`Legacy system connection failed: ${(error as Error).message}`);
@@ -786,8 +782,8 @@ export class LegacySystemAdapter implements ProtocolAdapter {
         data: modernFormat,
         metadata: {
           protocol: 'legacy',
-          responseTime: Date.now() - startTime
-        }
+          responseTime: Date.now() - startTime,
+        },
       };
     } catch (error) {
       return {
@@ -798,8 +794,8 @@ export class LegacySystemAdapter implements ProtocolAdapter {
         error: (error as Error).message,
         metadata: {
           protocol: 'legacy',
-          responseTime: Date.now() - startTime
-        }
+          responseTime: Date.now() - startTime,
+        },
       };
     }
   }
@@ -832,11 +828,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
   }
 
   getCapabilities(): string[] {
-    return [
-      'legacy-protocol-support',
-      'format-transformation',
-      'backward-compatibility'
-    ];
+    return ['legacy-protocol-support', 'format-transformation', 'backward-compatibility'];
   }
 
   async healthCheck(): Promise<boolean> {
@@ -864,7 +856,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
       action: message.type,
       data: message.payload,
       timestamp: message.timestamp.toISOString(),
-      id: message.id
+      id: message.id,
     };
   }
 
@@ -873,7 +865,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
     return {
       result: response.result || response.data,
       status: response.status || 'success',
-      timestamp: new Date(response.timestamp || Date.now())
+      timestamp: new Date(response.timestamp || Date.now()),
     };
   }
 
@@ -884,7 +876,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
         resolve({
           result: 'Legacy operation completed',
           status: 'success',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       }, 100);
     });
@@ -897,19 +889,19 @@ export class AdapterFactory {
 
   static {
     // Register built-in adapters
-    this.registerAdapter('mcp-http', () => new MCPAdapter('http'));
-    this.registerAdapter('mcp-stdio', () => new MCPAdapter('stdio'));
-    this.registerAdapter('websocket', () => new WebSocketAdapter());
-    this.registerAdapter('rest', () => new RESTAdapter());
-    this.registerAdapter('legacy', () => new LegacySystemAdapter());
+    AdapterFactory.registerAdapter('mcp-http', () => new MCPAdapter('http'));
+    AdapterFactory.registerAdapter('mcp-stdio', () => new MCPAdapter('stdio'));
+    AdapterFactory.registerAdapter('websocket', () => new WebSocketAdapter());
+    AdapterFactory.registerAdapter('rest', () => new RESTAdapter());
+    AdapterFactory.registerAdapter('legacy', () => new LegacySystemAdapter());
   }
 
   static registerAdapter(protocol: string, adapterFactory: () => ProtocolAdapter): void {
-    this.adapterRegistry.set(protocol.toLowerCase(), adapterFactory);
+    AdapterFactory.adapterRegistry.set(protocol.toLowerCase(), adapterFactory);
   }
 
   static createAdapter(protocol: string): ProtocolAdapter {
-    const factory = this.adapterRegistry.get(protocol.toLowerCase());
+    const factory = AdapterFactory.adapterRegistry.get(protocol.toLowerCase());
     if (!factory) {
       throw new Error(`Unknown protocol: ${protocol}`);
     }
@@ -917,11 +909,11 @@ export class AdapterFactory {
   }
 
   static getAvailableProtocols(): string[] {
-    return Array.from(this.adapterRegistry.keys());
+    return Array.from(AdapterFactory.adapterRegistry.keys());
   }
 
   static hasAdapter(protocol: string): boolean {
-    return this.adapterRegistry.has(protocol.toLowerCase());
+    return AdapterFactory.adapterRegistry.has(protocol.toLowerCase());
   }
 }
 
@@ -939,7 +931,7 @@ export class ProtocolManager extends EventEmitter {
 
     const adapter = AdapterFactory.createAdapter(protocol);
     await adapter.connect(config);
-    
+
     this.adapters.set(name, adapter);
     this.emit('protocol:added', { name, protocol, capabilities: adapter.getCapabilities() });
   }
@@ -970,7 +962,10 @@ export class ProtocolManager extends EventEmitter {
     return adapter.send(message);
   }
 
-  async broadcast(message: ProtocolMessage, excludeProtocols?: string[]): Promise<ProtocolResponse[]> {
+  async broadcast(
+    message: ProtocolMessage,
+    excludeProtocols?: string[]
+  ): Promise<ProtocolResponse[]> {
     const results: ProtocolResponse[] = [];
     const exclude = new Set(excludeProtocols || []);
 
@@ -989,7 +984,7 @@ export class ProtocolManager extends EventEmitter {
           timestamp: new Date(),
           success: false,
           error: (error as Error).message,
-          metadata: { protocol: name }
+          metadata: { protocol: name },
         });
       }
     }
@@ -1005,15 +1000,21 @@ export class ProtocolManager extends EventEmitter {
     this.routingTable.delete(messageType);
   }
 
-  getProtocolStatus(): Array<{ name: string; protocol: string; connected: boolean; healthy: boolean }> {
-    const status: Array<{ name: string; protocol: string; connected: boolean; healthy: boolean }> = [];
+  getProtocolStatus(): Array<{
+    name: string;
+    protocol: string;
+    connected: boolean;
+    healthy: boolean;
+  }> {
+    const status: Array<{ name: string; protocol: string; connected: boolean; healthy: boolean }> =
+      [];
 
     for (const [name, adapter] of this.adapters) {
       status.push({
         name,
         protocol: adapter.getProtocolName(),
         connected: adapter.isConnected(),
-        healthy: false // Would be set by health check
+        healthy: false, // Would be set by health check
       });
     }
 
@@ -1038,10 +1039,8 @@ export class ProtocolManager extends EventEmitter {
   async shutdown(): Promise<void> {
     this.processing = false;
 
-    const disconnections = Array.from(this.adapters.values()).map(adapter => 
-      adapter.disconnect().catch(error => 
-        console.error('Error disconnecting adapter:', error)
-      )
+    const disconnections = Array.from(this.adapters.values()).map((adapter) =>
+      adapter.disconnect().catch((error) => console.error('Error disconnecting adapter:', error))
     );
 
     await Promise.all(disconnections);

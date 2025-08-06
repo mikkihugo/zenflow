@@ -89,6 +89,10 @@ export class RealTimePerformanceMonitor extends EventEmitter {
 
   /**
    * Record a performance metric
+   *
+   * @param name
+   * @param value
+   * @param tags
    */
   record(name: string, value: number, tags?: Record<string, string>): void {
     const metric: PerformanceMetric = {
@@ -111,6 +115,10 @@ export class RealTimePerformanceMonitor extends EventEmitter {
 
   /**
    * Measure execution time of a function
+   *
+   * @param name
+   * @param fn
+   * @param tags
    */
   measure<T>(name: string, fn: () => T, tags?: Record<string, string>): T {
     const start = performance.now();
@@ -129,6 +137,10 @@ export class RealTimePerformanceMonitor extends EventEmitter {
 
   /**
    * Measure async function execution time
+   *
+   * @param name
+   * @param fn
+   * @param tags
    */
   async measureAsync<T>(
     name: string,
@@ -151,6 +163,8 @@ export class RealTimePerformanceMonitor extends EventEmitter {
 
   /**
    * Get performance metrics for a specific metric name
+   *
+   * @param name
    */
   getMetrics(name: string): PerformanceMetric[] {
     return this.metrics.get(name) || [];
@@ -158,6 +172,8 @@ export class RealTimePerformanceMonitor extends EventEmitter {
 
   /**
    * Get aggregated statistics for a metric
+   *
+   * @param name
    */
   getStats(name: string): PerformanceBounds & { count: number } {
     const metrics = this.getMetrics(name);
@@ -225,6 +241,8 @@ export class RealTimePerformanceMonitor extends EventEmitter {
 
   /**
    * Add performance alert
+   *
+   * @param alert
    */
   addAlert(alert: AlertConfig): void {
     this.alerts.push(alert);
@@ -232,6 +250,8 @@ export class RealTimePerformanceMonitor extends EventEmitter {
 
   /**
    * Remove performance alert
+   *
+   * @param metric
    */
   removeAlert(metric: string): void {
     this.alerts = this.alerts.filter((alert) => alert.metric !== metric);

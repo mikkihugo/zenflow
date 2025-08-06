@@ -1,6 +1,6 @@
 /**
  * Unified API Client Layer (UACL) - Type Definitions
- * 
+ *
  * Core type definitions for client types, protocol types, and enums
  * used throughout the UACL system for type-safe client operations.
  */
@@ -8,17 +8,12 @@
 /**
  * Supported client types
  */
-export type ClientType = 
-  | 'http'
-  | 'websocket' 
-  | 'knowledge'
-  | 'mcp'
-  | 'generic';
+export type ClientType = 'http' | 'websocket' | 'knowledge' | 'mcp' | 'generic';
 
 /**
  * Supported protocol types
  */
-export type ProtocolType = 
+export type ProtocolType =
   | 'http'
   | 'https'
   | 'ws'
@@ -32,31 +27,17 @@ export type ProtocolType =
 /**
  * Authentication types
  */
-export type AuthType = 
-  | 'none'
-  | 'bearer'
-  | 'basic'
-  | 'api-key'
-  | 'oauth'
-  | 'jwt'
-  | 'custom';
+export type AuthType = 'none' | 'bearer' | 'basic' | 'api-key' | 'oauth' | 'jwt' | 'custom';
 
 /**
  * HTTP methods
  */
-export type HttpMethod = 
-  | 'GET'
-  | 'POST'
-  | 'PUT'
-  | 'DELETE'
-  | 'PATCH'
-  | 'HEAD'
-  | 'OPTIONS';
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD' | 'OPTIONS';
 
 /**
  * WebSocket event types
  */
-export type WebSocketEventType = 
+export type WebSocketEventType =
   | 'connect'
   | 'disconnect'
   | 'message'
@@ -67,26 +48,17 @@ export type WebSocketEventType =
 /**
  * Knowledge query types
  */
-export type KnowledgeQueryType = 
-  | 'exact'
-  | 'fuzzy'
-  | 'semantic'
-  | 'vector'
-  | 'hybrid';
+export type KnowledgeQueryType = 'exact' | 'fuzzy' | 'semantic' | 'vector' | 'hybrid';
 
 /**
  * MCP message types
  */
-export type McpMessageType = 
-  | 'request'
-  | 'response'
-  | 'notification'
-  | 'error';
+export type McpMessageType = 'request' | 'response' | 'notification' | 'error';
 
 /**
  * Client status types
  */
-export type ClientStatus = 
+export type ClientStatus =
   | 'disconnected'
   | 'connecting'
   | 'connected'
@@ -97,48 +69,27 @@ export type ClientStatus =
 /**
  * Response format types
  */
-export type ResponseFormat = 
-  | 'json'
-  | 'xml'
-  | 'text'
-  | 'binary'
-  | 'stream'
-  | 'auto';
+export type ResponseFormat = 'json' | 'xml' | 'text' | 'binary' | 'stream' | 'auto';
 
 /**
  * Compression types
  */
-export type CompressionType = 
-  | 'none'
-  | 'gzip'
-  | 'deflate'
-  | 'brotli'
-  | 'lz4';
+export type CompressionType = 'none' | 'gzip' | 'deflate' | 'brotli' | 'lz4';
 
 /**
  * Client configuration presets
  */
-export type ClientPreset = 
-  | 'default'
-  | 'fast'
-  | 'reliable'
-  | 'minimal'
-  | 'secure'
-  | 'debug';
+export type ClientPreset = 'default' | 'fast' | 'reliable' | 'minimal' | 'secure' | 'debug';
 
 /**
  * Error severity levels
  */
-export type ErrorSeverity = 
-  | 'low'
-  | 'medium'
-  | 'high'
-  | 'critical';
+export type ErrorSeverity = 'low' | 'medium' | 'high' | 'critical';
 
 /**
  * Load balancing strategies
  */
-export type LoadBalancingStrategy = 
+export type LoadBalancingStrategy =
   | 'round-robin'
   | 'least-connections'
   | 'random'
@@ -148,20 +99,12 @@ export type LoadBalancingStrategy =
 /**
  * Circuit breaker states
  */
-export type CircuitBreakerState = 
-  | 'closed'
-  | 'open'
-  | 'half-open';
+export type CircuitBreakerState = 'closed' | 'open' | 'half-open';
 
 /**
  * Serialization formats
  */
-export type SerializationFormat = 
-  | 'json'
-  | 'msgpack'
-  | 'protobuf'
-  | 'avro'
-  | 'custom';
+export type SerializationFormat = 'json' | 'msgpack' | 'protobuf' | 'avro' | 'custom';
 
 /**
  * Client type enum for runtime usage
@@ -171,7 +114,7 @@ export const ClientTypes = {
   WEBSOCKET: 'websocket' as const,
   KNOWLEDGE: 'knowledge' as const,
   MCP: 'mcp' as const,
-  GENERIC: 'generic' as const
+  GENERIC: 'generic' as const,
 } as const;
 
 /**
@@ -186,7 +129,7 @@ export const ProtocolTypes = {
   UDP: 'udp' as const,
   STDIO: 'stdio' as const,
   IPC: 'ipc' as const,
-  CUSTOM: 'custom' as const
+  CUSTOM: 'custom' as const,
 } as const;
 
 /**
@@ -199,7 +142,7 @@ export const AuthTypes = {
   API_KEY: 'api-key' as const,
   OAUTH: 'oauth' as const,
   JWT: 'jwt' as const,
-  CUSTOM: 'custom' as const
+  CUSTOM: 'custom' as const,
 } as const;
 
 /**
@@ -212,7 +155,7 @@ export const HttpMethods = {
   DELETE: 'DELETE' as const,
   PATCH: 'PATCH' as const,
   HEAD: 'HEAD' as const,
-  OPTIONS: 'OPTIONS' as const
+  OPTIONS: 'OPTIONS' as const,
 } as const;
 
 /**
@@ -224,7 +167,7 @@ export const ClientStatuses = {
   CONNECTED: 'connected' as const,
   RECONNECTING: 'reconnecting' as const,
   ERROR: 'error' as const,
-  SUSPENDED: 'suspended' as const
+  SUSPENDED: 'suspended' as const,
 } as const;
 
 /**
@@ -237,80 +180,80 @@ export const DefaultClientConfigs = {
       maxRetries: 3,
       initialDelay: 1000,
       backoffMultiplier: 2,
-      maxDelay: 10000
+      maxDelay: 10000,
     },
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    }
+      Accept: 'application/json',
+    },
   },
-  
+
   [ClientTypes.WEBSOCKET]: {
     timeout: 5000,
     retry: {
       maxRetries: 5,
       initialDelay: 1000,
       backoffMultiplier: 1.5,
-      maxDelay: 30000
+      maxDelay: 30000,
     },
     options: {
       heartbeatInterval: 30000,
-      enableReconnect: true
-    }
+      enableReconnect: true,
+    },
   },
-  
+
   [ClientTypes.KNOWLEDGE]: {
     timeout: 15000,
     retry: {
       maxRetries: 2,
       initialDelay: 2000,
       backoffMultiplier: 2,
-      maxDelay: 8000
+      maxDelay: 8000,
     },
     options: {
       cacheResults: true,
-      vectorSearch: true
-    }
+      vectorSearch: true,
+    },
   },
-  
+
   [ClientTypes.MCP]: {
     timeout: 10000,
     retry: {
       maxRetries: 3,
       initialDelay: 1000,
       backoffMultiplier: 2,
-      maxDelay: 5000
+      maxDelay: 5000,
     },
     options: {
       protocolVersion: '2024-11-05',
-      capabilities: {}
-    }
+      capabilities: {},
+    },
   },
-  
+
   [ClientTypes.GENERIC]: {
     timeout: 30000,
     retry: {
       maxRetries: 3,
       initialDelay: 1000,
       backoffMultiplier: 2,
-      maxDelay: 10000
-    }
-  }
+      maxDelay: 10000,
+    },
+  },
 } as const;
 
 /**
  * Protocol to client type mapping
  */
 export const ProtocolToClientTypeMap: Record<ProtocolType, ClientType> = {
-  'http': ClientTypes.HTTP,
-  'https': ClientTypes.HTTP,
-  'ws': ClientTypes.WEBSOCKET,
-  'wss': ClientTypes.WEBSOCKET,
-  'tcp': ClientTypes.GENERIC,
-  'udp': ClientTypes.GENERIC,
-  'stdio': ClientTypes.MCP,
-  'ipc': ClientTypes.GENERIC,
-  'custom': ClientTypes.GENERIC
+  http: ClientTypes.HTTP,
+  https: ClientTypes.HTTP,
+  ws: ClientTypes.WEBSOCKET,
+  wss: ClientTypes.WEBSOCKET,
+  tcp: ClientTypes.GENERIC,
+  udp: ClientTypes.GENERIC,
+  stdio: ClientTypes.MCP,
+  ipc: ClientTypes.GENERIC,
+  custom: ClientTypes.GENERIC,
 } as const;
 
 /**
@@ -322,12 +265,12 @@ export const HttpStatusCodes = {
   CREATED: 201,
   ACCEPTED: 202,
   NO_CONTENT: 204,
-  
+
   // Redirection
   MOVED_PERMANENTLY: 301,
   FOUND: 302,
   NOT_MODIFIED: 304,
-  
+
   // Client Error
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
@@ -337,13 +280,13 @@ export const HttpStatusCodes = {
   CONFLICT: 409,
   UNPROCESSABLE_ENTITY: 422,
   TOO_MANY_REQUESTS: 429,
-  
+
   // Server Error
   INTERNAL_SERVER_ERROR: 500,
   NOT_IMPLEMENTED: 501,
   BAD_GATEWAY: 502,
   SERVICE_UNAVAILABLE: 503,
-  GATEWAY_TIMEOUT: 504
+  GATEWAY_TIMEOUT: 504,
 } as const;
 
 /**
@@ -364,7 +307,7 @@ export const WebSocketCloseCodes = {
   SERVICE_RESTART: 1012,
   TRY_AGAIN_LATER: 1013,
   BAD_GATEWAY: 1014,
-  TLS_HANDSHAKE: 1015
+  TLS_HANDSHAKE: 1015,
 } as const;
 
 /**
@@ -382,7 +325,7 @@ export const ClientErrorCodes = {
   RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
   CONFIGURATION_ERROR: 'CONFIGURATION_ERROR',
-  UNKNOWN_ERROR: 'UNKNOWN_ERROR'
+  UNKNOWN_ERROR: 'UNKNOWN_ERROR',
 } as const;
 
 /**
@@ -392,7 +335,7 @@ export const McpConstants = {
   PROTOCOL_VERSION: '2024-11-05',
   DEFAULT_TIMEOUT: 30000,
   JSONRPC_VERSION: '2.0',
-  
+
   // Standard methods
   METHODS: {
     INITIALIZE: 'initialize',
@@ -401,17 +344,17 @@ export const McpConstants = {
     LIST_RESOURCES: 'resources/list',
     READ_RESOURCE: 'resources/read',
     SUBSCRIBE: 'resources/subscribe',
-    UNSUBSCRIBE: 'resources/unsubscribe'
+    UNSUBSCRIBE: 'resources/unsubscribe',
   },
-  
+
   // Standard notifications
   NOTIFICATIONS: {
     INITIALIZED: 'notifications/initialized',
     TOOLS_LIST_CHANGED: 'notifications/tools/list_changed',
     RESOURCES_LIST_CHANGED: 'notifications/resources/list_changed',
     PROGRESS: 'notifications/progress',
-    LOG_MESSAGE: 'notifications/message'
-  }
+    LOG_MESSAGE: 'notifications/message',
+  },
 } as const;
 
 /**
@@ -422,22 +365,22 @@ export const KnowledgeConstants = {
   MAX_LIMIT: 1000,
   DEFAULT_SIMILARITY_THRESHOLD: 0.8,
   DEFAULT_VECTOR_DIMENSIONS: 384,
-  
+
   // Query types
   QUERY_TYPES: {
     EXACT: 'exact',
     FUZZY: 'fuzzy',
     SEMANTIC: 'semantic',
     VECTOR: 'vector',
-    HYBRID: 'hybrid'
+    HYBRID: 'hybrid',
   },
-  
+
   // Similarity metrics
   SIMILARITY_METRICS: {
     COSINE: 'cosine',
     EUCLIDEAN: 'euclidean',
-    DOT_PRODUCT: 'dot'
-  }
+    DOT_PRODUCT: 'dot',
+  },
 } as const;
 
 /**
@@ -447,22 +390,22 @@ export const TypeGuards = {
   isClientType: (value: any): value is ClientType => {
     return Object.values(ClientTypes).includes(value);
   },
-  
+
   isProtocolType: (value: any): value is ProtocolType => {
     return Object.values(ProtocolTypes).includes(value);
   },
-  
+
   isAuthType: (value: any): value is AuthType => {
     return Object.values(AuthTypes).includes(value);
   },
-  
+
   isHttpMethod: (value: any): value is HttpMethod => {
     return Object.values(HttpMethods).includes(value);
   },
-  
+
   isClientStatus: (value: any): value is ClientStatus => {
     return Object.values(ClientStatuses).includes(value);
-  }
+  },
 } as const;
 
 export default {
@@ -478,5 +421,5 @@ export default {
   ClientErrorCodes,
   McpConstants,
   KnowledgeConstants,
-  TypeGuards
+  TypeGuards,
 } as const;

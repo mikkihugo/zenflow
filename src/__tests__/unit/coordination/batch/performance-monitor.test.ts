@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for BatchPerformanceMonitor
+ * @file Tests for BatchPerformanceMonitor
  * Validates performance monitoring and comparison capabilities
  */
 

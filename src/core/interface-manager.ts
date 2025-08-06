@@ -29,6 +29,8 @@ export type InterfaceMode = 'auto' | 'cli' | 'tui' | 'web';
 
 /**
  * Interface manager configuration
+ *
+ * @example
  */
 export interface InterfaceManagerConfig {
   /** Default interface mode */
@@ -45,6 +47,8 @@ export interface InterfaceManagerConfig {
 
 /**
  * Interface statistics
+ *
+ * @example
  */
 export interface InterfaceStats {
   /** Current active mode */
@@ -57,6 +61,8 @@ export interface InterfaceStats {
 
 /**
  * Clean interface manager for user interface handling
+ *
+ * @example
  */
 export class InterfaceManager extends EventEmitter {
   private config: Required<InterfaceManagerConfig>;

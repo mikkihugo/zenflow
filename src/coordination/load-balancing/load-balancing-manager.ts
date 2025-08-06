@@ -31,7 +31,6 @@
  *
  * console.log(`Task assigned to agent: ${assignment.agent.id}`);
  * ```
- *
  * @features
  * - **ML-Predictive Routing**: Uses machine learning to predict optimal agent assignments
  * - **Real-time Health Monitoring**: Continuous agent health checks with automatic failover
@@ -39,20 +38,17 @@
  * - **Auto-scaling**: Dynamic agent scaling based on demand and performance metrics
  * - **QoS Enforcement**: Guarantees quality of service through intelligent routing
  * - **Emergency Protocols**: Handles system failures and overload conditions
- *
  * @performance
  * - **Routing Latency**: <5ms for standard assignments, <20ms for ML predictions
  * - **Throughput**: 10,000+ task assignments per second
  * - **Accuracy**: 95%+ optimal agent selection with ML algorithms
  * - **Availability**: 99.9% uptime with automatic failover
- *
  * @algorithms
  * - **ML-Predictive**: Machine learning-based prediction using historical patterns
  * - **Weighted Round Robin**: Performance-weighted circular assignment
  * - **Least Connections**: Assigns to agents with fewest active connections
  * - **Resource Aware**: Considers CPU, memory, and specialization requirements
  * - **Adaptive Learning**: Learns from assignment outcomes and adjusts strategy
- *
  * @since 2.0.0-alpha.73
  * @author Claude Zen Flow Team
  */
@@ -215,6 +211,8 @@ export class LoadBalancingManager extends EventEmitter {
 
   /**
    * Add an agent to the load balancing pool
+   *
+   * @param agent
    */
   public async addAgent(agent: Agent): Promise<void> {
     this.agents.set(agent.id, agent);
@@ -240,6 +238,8 @@ export class LoadBalancingManager extends EventEmitter {
 
   /**
    * Remove an agent from the load balancing pool
+   *
+   * @param agentId
    */
   public async removeAgent(agentId: string): Promise<void> {
     const agent = this.agents.get(agentId);
@@ -269,6 +269,8 @@ export class LoadBalancingManager extends EventEmitter {
 
   /**
    * Route a task to the best available agent
+   *
+   * @param task
    */
   public async routeTask(task: Task): Promise<RoutingResult> {
     const availableAgents = Array.from(this.agents.values()).filter(
@@ -308,6 +310,11 @@ export class LoadBalancingManager extends EventEmitter {
 
   /**
    * Handle task completion notification
+   *
+   * @param taskId
+   * @param agentId
+   * @param duration
+   * @param success
    */
   public async handleTaskCompletion(
     taskId: string,
@@ -342,6 +349,8 @@ export class LoadBalancingManager extends EventEmitter {
 
   /**
    * Switch to a different load balancing algorithm
+   *
+   * @param algorithm
    */
   public async switchAlgorithm(algorithm: LoadBalancingAlgorithm): Promise<void> {
     const newAlgorithm = this.algorithms.get(algorithm);
@@ -395,6 +404,8 @@ export class LoadBalancingManager extends EventEmitter {
 
   /**
    * Update load balancing configuration
+   *
+   * @param newConfig
    */
   public async updateConfiguration(newConfig: Partial<LoadBalancingConfig>): Promise<void> {
     this.config = { ...this.config, ...newConfig };
@@ -415,6 +426,8 @@ export class LoadBalancingManager extends EventEmitter {
 
   /**
    * Register an observer for load balancing events
+   *
+   * @param observer
    */
   public addObserver(observer: LoadBalancingObserver): void {
     this.observers.push(observer);
@@ -422,6 +435,8 @@ export class LoadBalancingManager extends EventEmitter {
 
   /**
    * Remove an observer
+   *
+   * @param observer
    */
   public removeObserver(observer: LoadBalancingObserver): void {
     const index = this.observers.indexOf(observer);
@@ -432,6 +447,9 @@ export class LoadBalancingManager extends EventEmitter {
 
   /**
    * Handle agent failure
+   *
+   * @param agentId
+   * @param error
    */
   private async handleAgentFailure(agentId: string, error: Error): Promise<void> {
     const agent = this.agents.get(agentId);
@@ -460,6 +478,8 @@ export class LoadBalancingManager extends EventEmitter {
 
   /**
    * Handle agent recovery
+   *
+   * @param agentId
    */
   private async handleAgentRecovery(agentId: string): Promise<void> {
     const agent = this.agents.get(agentId);
@@ -476,6 +496,8 @@ export class LoadBalancingManager extends EventEmitter {
 
   /**
    * Handle scale up event
+   *
+   * @param count
    */
   private async handleScaleUp(count: number): Promise<void> {
     // This would trigger actual agent spawning
@@ -485,6 +507,8 @@ export class LoadBalancingManager extends EventEmitter {
 
   /**
    * Handle scale down event
+   *
+   * @param agentIds
    */
   private async handleScaleDown(agentIds: string[]): Promise<void> {
     // Remove agents from pool

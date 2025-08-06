@@ -5,7 +5,7 @@
  */
 
 import { Command } from 'commander';
-import { writeFile, readFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 
 const program = new Command();
 
@@ -26,7 +26,9 @@ program
       console.log('🔧 Generating pseudocode from specification...');
 
       // Import the pseudocode engine dynamically
-      const { PseudocodePhaseEngine } = await import('./coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
+      const { PseudocodePhaseEngine } = await import(
+        './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+      );
 
       const engine = new PseudocodePhaseEngine();
 
@@ -44,7 +46,9 @@ program
       console.log(`📊 Generated ${pseudocodeStructure.algorithms.length} algorithms`);
       console.log(`🏗️ Generated ${pseudocodeStructure.dataStructures.length} data structures`);
       console.log(`🔄 Generated ${pseudocodeStructure.controlFlows.length} control flows`);
-      console.log(`💡 Identified ${pseudocodeStructure.optimizations.length} optimization opportunities`);
+      console.log(
+        `💡 Identified ${pseudocodeStructure.optimizations.length} optimization opportunities`
+      );
 
       // Format output
       let output: string;
@@ -62,9 +66,10 @@ program
       console.log('\n📋 Algorithm Summary:');
       pseudocodeStructure.algorithms.forEach((alg: any, index: number) => {
         console.log(`  ${index + 1}. ${alg.name}: ${alg.purpose}`);
-        console.log(`     Complexity: ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space`);
+        console.log(
+          `     Complexity: ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space`
+        );
       });
-
     } catch (error) {
       console.error('❌ Failed to generate pseudocode:', error);
       process.exit(1);
@@ -80,7 +85,9 @@ program
     try {
       console.log('🔍 Validating pseudocode structure...');
 
-      const { PseudocodePhaseEngine } = await import('./coordination/swarm/sparc/phases/pseudocode/pseudocode-engine');
+      const { PseudocodePhaseEngine } = await import(
+        './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+      );
 
       const engine = new PseudocodePhaseEngine();
 
@@ -96,7 +103,9 @@ program
       console.log('\n📊 Validation Results:');
       console.log(`Overall Score: ${(validation.overallScore * 100).toFixed(1)}%`);
       console.log(`Status: ${validation.approved ? '✅ APPROVED' : '❌ NEEDS IMPROVEMENT'}`);
-      console.log(`Complexity Verification: ${validation.complexityVerification ? '✅ PASSED' : '❌ FAILED'}`);
+      console.log(
+        `Complexity Verification: ${validation.complexityVerification ? '✅ PASSED' : '❌ FAILED'}`
+      );
 
       if (validation.logicErrors.length > 0) {
         console.log('\n🚨 Logic Errors Found:');
@@ -121,7 +130,6 @@ program
 
       // Exit with appropriate code
       process.exit(validation.approved ? 0 : 1);
-
     } catch (error) {
       console.error('❌ Failed to validate pseudocode:', error);
       process.exit(1);
@@ -132,7 +140,11 @@ program
 program
   .command('create-example')
   .description('Create example specification for testing')
-  .option('--domain <type>', 'Domain type (swarm-coordination|neural-networks|memory-systems|general)', 'swarm-coordination')
+  .option(
+    '--domain <type>',
+    'Domain type (swarm-coordination|neural-networks|memory-systems|general)',
+    'swarm-coordination'
+  )
   .option('--output <path>', 'Output file for example specification', 'example-spec.json')
   .action(async (options) => {
     try {
@@ -148,7 +160,7 @@ program
             description: `Primary algorithm for ${options.domain} functionality`,
             type: 'algorithmic',
             priority: 'HIGH',
-            testCriteria: ['Algorithm executes correctly', 'Performance meets requirements']
+            testCriteria: ['Algorithm executes correctly', 'Performance meets requirements'],
           },
           {
             id: 'req-002',
@@ -156,8 +168,8 @@ program
             description: 'Process and validate input data',
             type: 'algorithmic',
             priority: 'MEDIUM',
-            testCriteria: ['Data validation complete', 'Error handling robust']
-          }
+            testCriteria: ['Data validation complete', 'Error handling robust'],
+          },
         ],
         nonFunctionalRequirements: [
           {
@@ -165,16 +177,16 @@ program
             title: 'Performance',
             description: 'System must meet performance targets',
             metrics: { latency: '<100ms', throughput: '>1000/sec' },
-            priority: 'HIGH'
-          }
+            priority: 'HIGH',
+          },
         ],
         constraints: [
           {
             id: 'const-001',
             type: 'performance',
             description: 'Must operate within resource constraints',
-            impact: 'high'
-          }
+            impact: 'high',
+          },
         ],
         assumptions: [],
         dependencies: [],
@@ -182,7 +194,7 @@ program
         riskAssessment: {
           risks: [],
           mitigationStrategies: [],
-          overallRisk: 'LOW'
+          overallRisk: 'LOW',
         },
         successMetrics: [
           {
@@ -190,16 +202,17 @@ program
             name: 'Execution Speed',
             description: 'Algorithm execution performance',
             target: 'Sub-100ms execution',
-            measurement: 'Performance testing'
-          }
-        ]
+            measurement: 'Performance testing',
+          },
+        ],
       };
 
       await writeFile(options.output, JSON.stringify(exampleSpec, null, 2), 'utf8');
       console.log(`✅ Example specification created: ${options.output}`);
       console.log(`🏷️ Domain: ${options.domain}`);
-      console.log(`📋 Requirements: ${exampleSpec.functionalRequirements.length} functional, ${exampleSpec.nonFunctionalRequirements.length} non-functional`);
-
+      console.log(
+        `📋 Requirements: ${exampleSpec.functionalRequirements.length} functional, ${exampleSpec.nonFunctionalRequirements.length} non-functional`
+      );
     } catch (error) {
       console.error('❌ Failed to create example specification:', error);
       process.exit(1);
@@ -217,28 +230,28 @@ function formatPseudocodeAsMarkdown(pseudocodeStructure: any): string {
   pseudocodeStructure.algorithms.forEach((alg: any, index: number) => {
     markdown += `### ${index + 1}. ${alg.name}\n\n`;
     markdown += `**Purpose:** ${alg.purpose}\n\n`;
-    
+
     markdown += `**Inputs:**\n`;
     alg.inputs.forEach((input: any) => {
       markdown += `- \`${input.name}\` (${input.type}): ${input.description}\n`;
     });
     markdown += `\n`;
-    
+
     markdown += `**Outputs:**\n`;
     alg.outputs.forEach((output: any) => {
       markdown += `- \`${output.name}\` (${output.type}): ${output.description}\n`;
     });
     markdown += `\n`;
-    
+
     markdown += `**Steps:**\n`;
     alg.steps.forEach((step: any) => {
       markdown += `${step.stepNumber}. ${step.description}\n`;
       markdown += `   \`${step.pseudocode}\`\n`;
     });
     markdown += `\n`;
-    
+
     markdown += `**Complexity:** ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space\n\n`;
-    
+
     if (alg.optimizations.length > 0) {
       markdown += `**Optimizations:**\n`;
       alg.optimizations.forEach((opt: any) => {
@@ -246,7 +259,7 @@ function formatPseudocodeAsMarkdown(pseudocodeStructure: any): string {
       });
       markdown += `\n`;
     }
-    
+
     markdown += `---\n\n`;
   });
 

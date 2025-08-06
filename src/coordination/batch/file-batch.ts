@@ -1,5 +1,5 @@
 /**
- * @fileoverview File Batch Operations
+ * @file File Batch Operations
  * Implements concurrent file operations following claude-zen patterns
  * Achieves significant performance improvements for file-heavy workflows
  */
@@ -32,6 +32,8 @@ export interface FileOperationResult {
 /**
  * Handles concurrent file operations with intelligent batching
  * Implements claude-zen's file operation optimization patterns
+ *
+ * @example
  */
 export class FileBatchOperator {
   private readonly maxConcurrentFiles: number;
@@ -45,6 +47,8 @@ export class FileBatchOperator {
   /**
    * Execute multiple file operations concurrently
    * Follows claude-zen's "1 MESSAGE = ALL OPERATIONS" principle for files
+   *
+   * @param operations
    */
   async executeBatch(operations: FileOperation[]): Promise<FileOperationResult[]> {
     logger.info(`Starting batch file operations: ${operations.length} files`);
@@ -97,6 +101,8 @@ export class FileBatchOperator {
 
   /**
    * Group operations by type for intelligent execution order
+   *
+   * @param operations
    */
   private groupOperationsByType(
     operations: FileOperation[]
@@ -121,6 +127,9 @@ export class FileBatchOperator {
 
   /**
    * Execute operations concurrently with controlled concurrency
+   *
+   * @param operations
+   * @param executor
    */
   private async executeConcurrentOperations<T>(
     operations: T[],
@@ -156,6 +165,8 @@ export class FileBatchOperator {
 
   /**
    * Execute a single file operation
+   *
+   * @param operation
    */
   private async executeFileOperation(operation: FileOperation): Promise<FileOperationResult> {
     const startTime = Date.now();
@@ -192,6 +203,9 @@ export class FileBatchOperator {
 
   /**
    * Execute read operation
+   *
+   * @param operation
+   * @param startTime
    */
   private async executeRead(
     operation: FileOperation,
@@ -212,6 +226,9 @@ export class FileBatchOperator {
 
   /**
    * Execute write operation
+   *
+   * @param operation
+   * @param startTime
    */
   private async executeWrite(
     operation: FileOperation,
@@ -240,6 +257,9 @@ export class FileBatchOperator {
 
   /**
    * Execute create operation (write with exclusive flag)
+   *
+   * @param operation
+   * @param startTime
    */
   private async executeCreate(
     operation: FileOperation,
@@ -268,6 +288,9 @@ export class FileBatchOperator {
 
   /**
    * Execute delete operation
+   *
+   * @param operation
+   * @param startTime
    */
   private async executeDelete(
     operation: FileOperation,
@@ -285,6 +308,9 @@ export class FileBatchOperator {
 
   /**
    * Execute copy operation
+   *
+   * @param operation
+   * @param startTime
    */
   private async executeCopy(
     operation: FileOperation,
@@ -312,6 +338,9 @@ export class FileBatchOperator {
 
   /**
    * Execute move operation
+   *
+   * @param operation
+   * @param startTime
    */
   private async executeMove(
     operation: FileOperation,
@@ -339,6 +368,8 @@ export class FileBatchOperator {
 
   /**
    * Execute mkdir operation
+   *
+   * @param operation
    */
   private async executeMkdir(operation: FileOperation): Promise<FileOperationResult> {
     const startTime = Date.now();
@@ -371,6 +402,9 @@ export class FileBatchOperator {
 
   /**
    * Execute rmdir operation
+   *
+   * @param operation
+   * @param startTime
    */
   private async executeRmdir(
     operation: FileOperation,
@@ -388,6 +422,8 @@ export class FileBatchOperator {
 
   /**
    * Ensure directory exists (create if necessary)
+   *
+   * @param dirPath
    */
   private async ensureDirectoryExists(dirPath: string): Promise<void> {
     try {
@@ -399,6 +435,8 @@ export class FileBatchOperator {
 
   /**
    * Convert FileOperation to BatchOperation for use with BatchEngine
+   *
+   * @param fileOps
    */
   static createBatchOperations(fileOps: FileOperation[]): BatchOperation[] {
     return fileOps.map((fileOp, index) => ({
@@ -418,6 +456,8 @@ export class FileBatchOperator {
   /**
    * Create multiple file write operations for batch execution
    * Implements claude-zen's "BatchWrite" pattern
+   *
+   * @param files
    */
   static createWriteBatch(
     files: Array<{
@@ -444,6 +484,9 @@ export class FileBatchOperator {
   /**
    * Create project structure batch operations
    * Implements claude-zen's project initialization pattern
+   *
+   * @param basePath
+   * @param structure
    */
   static createProjectStructure(
     basePath: string,
@@ -489,6 +532,8 @@ export class FileBatchOperator {
 
   /**
    * Validate file operations before execution
+   *
+   * @param operations
    */
   static validateOperations(operations: FileOperation[]): string[] {
     const errors: string[] = [];

@@ -1,6 +1,7 @@
 /**
  * Hybrid TDD Test Utilities
- * @fileoverview Utilities that support both London and Classical TDD approaches
+ *
+ * @file Utilities that support both London and Classical TDD approaches
  */
 
 export interface HybridTestConfig {
@@ -38,6 +39,8 @@ export class HybridTestUtility {
 
   /**
    * Creates appropriate mocks based on domain and approach
+   *
+   * @param dependencies
    */
   createDomainMocks(dependencies: string[]): Record<string, jest.Mock> {
     const approach = this.getRecommendedApproach();
@@ -107,6 +110,10 @@ export class HybridTestUtility {
 
   /**
    * Validates test performance against domain thresholds
+   *
+   * @param metrics
+   * @param metrics.execution
+   * @param metrics.memory
    */
   validatePerformance(metrics: { execution: number; memory: number }): boolean {
     return (
@@ -119,6 +126,10 @@ export class HybridTestUtility {
 export class LondonAssertions {
   /**
    * Verify interaction patterns
+   *
+   * @param mock
+   * @param pattern
+   * @param {...any} args
    */
   verifyInteractionPattern(
     mock: jest.Mock,
@@ -143,6 +154,9 @@ export class LondonAssertions {
 
   /**
    * Verify protocol compliance
+   *
+   * @param interactions
+   * @param protocol
    */
   verifyProtocolCompliance(interactions: any[], protocol: string) {
     switch (protocol) {
@@ -164,6 +178,9 @@ export class LondonAssertions {
 
   /**
    * Verify coordination patterns
+   *
+   * @param mock
+   * @param expectedPattern
    */
   verifyCoordinationPattern(
     mock: jest.Mock,
@@ -188,6 +205,10 @@ export class LondonAssertions {
 export class ClassicalAssertions {
   /**
    * Verify computational results
+   *
+   * @param actual
+   * @param expected
+   * @param tolerance
    */
   verifyComputation(
     actual: number | number[],
@@ -208,6 +229,10 @@ export class ClassicalAssertions {
 
   /**
    * Verify algorithm convergence
+   *
+   * @param values
+   * @param targetValue
+   * @param tolerance
    */
   verifyConvergence(values: number[], targetValue: number, tolerance: number = 1e-6) {
     const lastValue = values[values.length - 1];
@@ -224,6 +249,10 @@ export class ClassicalAssertions {
 
   /**
    * Verify data transformation correctness
+   *
+   * @param input
+   * @param output
+   * @param transformationRules
    */
   verifyTransformation(
     input: any,
@@ -238,6 +267,9 @@ export class ClassicalAssertions {
 
   /**
    * Verify state consistency
+   *
+   * @param state
+   * @param invariants
    */
   verifyStateConsistency(state: any, invariants: Array<(state: any) => boolean>) {
     invariants.forEach((invariant, _index) => {
@@ -248,6 +280,9 @@ export class ClassicalAssertions {
 
 /**
  * Factory functions for hybrid testing
+ *
+ * @param domain
+ * @param config
  */
 export function createHybridTestSetup(
   domain: string,
@@ -301,6 +336,8 @@ export function createInterfaceTestSetup(): HybridTestUtility {
 
 /**
  * Test scenario builders
+ *
+ * @example
  */
 export class TestScenarioBuilder {
   private scenarios: Array<{

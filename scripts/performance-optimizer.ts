@@ -301,6 +301,8 @@ echo "✅ Production WASM build complete"
 
   /**
    * Generate comprehensive performance report
+   *
+   * @param metrics
    */
   private async generatePerformanceReport(metrics: PerformanceMetrics): Promise<void> {
     const report = `# 🚀 Claude-Zen Performance Report
@@ -339,6 +341,8 @@ Generated: ${new Date().toISOString()}
 
   /**
    * Helper methods
+   *
+   * @param command
    */
   private async runCommand(command: string): Promise<void> {
     return new Promise((resolve, reject) => {

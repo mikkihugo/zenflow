@@ -4,7 +4,7 @@
  * Comprehensive request/response logging following Google standards.
  * Provides structured logging with performance metrics and tracing.
  *
- * @fileoverview Express logging middleware with performance monitoring
+ * @file Express logging middleware with performance monitoring
  */
 
 import type { NextFunction, Request, Response } from 'express';
@@ -26,6 +26,8 @@ export enum LogLevel {
 /**
  * Structured log entry format
  * Following Google Cloud Logging JSON format
+ *
+ * @example
  */
 export interface LogEntry {
   readonly timestamp: string;
@@ -56,6 +58,8 @@ export interface LogEntry {
 
 /**
  * Request metadata for logging context
+ *
+ * @example
  */
 interface RequestMetadata {
   readonly requestId: string;
@@ -75,6 +79,8 @@ const generateRequestId = (): string => {
 /**
  * Get client IP address from request
  * Handles various proxy headers
+ *
+ * @param req
  */
 const getClientIp = (req: Request): string => {
   return (
@@ -88,6 +94,8 @@ const getClientIp = (req: Request): string => {
 
 /**
  * Calculate request body size
+ *
+ * @param req
  */
 const getRequestSize = (req: Request): number => {
   const contentLength = req.headers['content-length'];
@@ -109,6 +117,8 @@ const getRequestSize = (req: Request): number => {
 
 /**
  * Calculate response body size
+ *
+ * @param res
  */
 const getResponseSize = (res: Response): number => {
   const contentLength = res.get('content-length');
@@ -120,6 +130,8 @@ const getResponseSize = (res: Response): number => {
 
 /**
  * Format duration in human-readable format
+ *
+ * @param milliseconds
  */
 const formatDuration = (milliseconds: number): string => {
   if (milliseconds < 1000) {
@@ -130,6 +142,8 @@ const formatDuration = (milliseconds: number): string => {
 
 /**
  * Determine log level based on HTTP status code
+ *
+ * @param statusCode
  */
 const getLogLevelFromStatus = (statusCode: number): LogLevel => {
   if (statusCode >= 500) return LogLevel.ERROR;
@@ -141,6 +155,9 @@ const getLogLevelFromStatus = (statusCode: number): LogLevel => {
 /**
  * Check if route should be logged
  * Excludes health checks and internal routes from verbose logging
+ *
+ * @param path
+ * @param _method
  */
 const shouldLog = (path: string, _method: string): boolean => {
   // Skip logging for health checks in production
@@ -159,6 +176,8 @@ const shouldLog = (path: string, _method: string): boolean => {
 /**
  * Sanitize sensitive data from request/response
  * Removes or masks sensitive information
+ *
+ * @param data
  */
 const sanitizeData = (data: any): any => {
   if (!data || typeof data !== 'object') {
@@ -192,6 +211,12 @@ const sanitizeData = (data: any): any => {
 
 /**
  * Create structured log entry
+ *
+ * @param level
+ * @param message
+ * @param req
+ * @param res
+ * @param metadata
  */
 const createLogEntry = (
   level: LogLevel,
@@ -235,6 +260,8 @@ const createLogEntry = (
 /**
  * Output log entry to console
  * In production, this would typically send to a logging service
+ *
+ * @param logEntry
  */
 const outputLog = (logEntry: LogEntry): void => {
   if (process.env.NODE_ENV === 'development') {
@@ -256,6 +283,10 @@ const outputLog = (logEntry: LogEntry): void => {
 /**
  * Request Start Logging Middleware
  * Logs incoming requests and sets up metadata
+ *
+ * @param req
+ * @param res
+ * @param next
  */
 export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {
   const requestId = generateRequestId();
@@ -318,6 +349,10 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
 /**
  * Error Logging Function
  * Logs errors with full context
+ *
+ * @param error
+ * @param req
+ * @param additionalContext
  */
 export const logError = (
   error: Error,
@@ -339,6 +374,11 @@ export const logError = (
 /**
  * Performance Logging Function
  * Logs performance metrics for critical operations
+ *
+ * @param operation
+ * @param duration
+ * @param req
+ * @param metadata
  */
 export const logPerformance = (
   operation: string,
@@ -366,6 +406,11 @@ export const logPerformance = (
 /**
  * Custom Log Function
  * Allows custom structured logging throughout the application
+ *
+ * @param level
+ * @param message
+ * @param req
+ * @param metadata
  */
 export const log = (
   level: LogLevel,

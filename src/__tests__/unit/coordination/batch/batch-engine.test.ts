@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for BatchEngine - Claude-zen Concurrent Execution
+ * @file Tests for BatchEngine - Claude-zen Concurrent Execution
  * Validates the "1 MESSAGE = ALL OPERATIONS" principle and performance improvements
  */
 

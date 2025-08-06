@@ -134,6 +134,8 @@ const AGENT_COGNITIVE_PROFILES: Record<string, CognitiveProfile> = {
 
 /**
  * Neural Network wrapper for agent cognitive processing
+ *
+ * @example
  */
 class NeuralNetwork {
   private config: NeuralNetworkConfig;
@@ -346,6 +348,8 @@ class NeuralNetwork {
 
 /**
  * Neural Agent class that enhances base agents with neural network capabilities
+ *
+ * @example
  */
 class NeuralAgent extends EventEmitter {
   private agent: any;
@@ -406,6 +410,8 @@ class NeuralAgent extends EventEmitter {
 
   /**
    * Process task through neural network for intelligent routing
+   *
+   * @param task
    */
   async analyzeTask(task: Task): Promise<any> {
     // Convert task to neural input vector
@@ -432,6 +438,8 @@ class NeuralAgent extends EventEmitter {
 
   /**
    * Execute task with neural enhancement
+   *
+   * @param task
    */
   async executeTask(task: Task): Promise<TaskResult> {
     const startTime = Date.now();
@@ -469,6 +477,8 @@ class NeuralAgent extends EventEmitter {
 
   /**
    * Convert task to neural network input vector
+   *
+   * @param task
    */
   private _taskToVector(task: Task): number[] {
     const vector: number[] = [];
@@ -517,6 +527,8 @@ class NeuralAgent extends EventEmitter {
 
   /**
    * Apply cognitive pattern to analysis
+   *
+   * @param analysis
    */
   private _applyCognitivePattern(analysis: any): void {
     const primary = this.cognitiveProfile.primary;
@@ -560,6 +572,8 @@ class NeuralAgent extends EventEmitter {
 
   /**
    * Update cognitive state based on task execution
+   *
+   * @param analysis
    */
   private _updateCognitiveState(analysis: any): void {
     // Fatigue increases with complexity
@@ -585,6 +599,10 @@ class NeuralAgent extends EventEmitter {
 
   /**
    * Calculate performance metrics
+   *
+   * @param _task
+   * @param result
+   * @param executionTime
    */
   private _calculatePerformance(_task: Task, result: TaskResult, executionTime: number): any {
     const performance = {
@@ -617,6 +635,10 @@ class NeuralAgent extends EventEmitter {
 
   /**
    * Learn from task execution
+   *
+   * @param task
+   * @param result
+   * @param performance
    */
   private async _learnFromExecution(
     task: Task,
@@ -664,6 +686,8 @@ class NeuralAgent extends EventEmitter {
 
   /**
    * Update overall performance metrics
+   *
+   * @param performance
    */
   private _updatePerformanceMetrics(performance: any): void {
     const alpha = 0.1; // Learning rate for exponential moving average
@@ -687,6 +711,9 @@ class NeuralAgent extends EventEmitter {
 
   /**
    * Find similar tasks from history
+   *
+   * @param task
+   * @param limit
    */
   private _findSimilarTasks(task: Task, limit: number = 5): TaskHistoryEntry[] {
     if (this.taskHistory.length === 0) {
@@ -729,6 +756,9 @@ class NeuralAgent extends EventEmitter {
 
   /**
    * Apply secondary cognitive pattern
+   *
+   * @param analysis
+   * @param pattern
    */
   private _applySecondaryPattern(analysis: any, pattern: CognitivePattern): void {
     const influence = 0.5; // Secondary patterns have less influence
@@ -763,6 +793,8 @@ class NeuralAgent extends EventEmitter {
 
   /**
    * Rest the agent to reduce fatigue
+   *
+   * @param duration
    */
   rest(duration: number = 1000): Promise<void> {
     return new Promise((resolve) => {
@@ -867,6 +899,8 @@ class NeuralAgent extends EventEmitter {
 
   /**
    * Load neural state from saved data
+   *
+   * @param data
    */
   loadNeuralState(data: any): void {
     if (data.neuralNetwork) {
@@ -889,6 +923,8 @@ class NeuralAgent extends EventEmitter {
 
 /**
  * Neural Agent Factory
+ *
+ * @example
  */
 class NeuralAgentFactory {
   private static memoryOptimizer: any = null;

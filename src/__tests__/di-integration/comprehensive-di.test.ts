@@ -1,6 +1,7 @@
 /**
  * DI Integration Tests - Comprehensive Coverage
- * @fileoverview Tests full dependency injection implementation across all domains
+ *
+ * @file Tests full dependency injection implementation across all domains
  */
 
 import { jest } from '@jest/globals';

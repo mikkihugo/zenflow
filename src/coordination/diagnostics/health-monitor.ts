@@ -77,6 +77,8 @@ export interface HealthAlert {
 /**
  * HealthMonitor provides comprehensive system health monitoring
  * with configurable checks and automatic alerting
+ *
+ * @example
  */
 export class HealthMonitor extends EventEmitter {
   private options: HealthMonitorOptions;
@@ -160,6 +162,10 @@ export class HealthMonitor extends EventEmitter {
 
   /**
    * Register a custom health check
+   *
+   * @param name
+   * @param checkFunction
+   * @param options
    */
   registerHealthCheck(
     name: string,
@@ -188,6 +194,8 @@ export class HealthMonitor extends EventEmitter {
 
   /**
    * Remove a health check
+   *
+   * @param name
    */
   unregisterHealthCheck(name: string): boolean {
     const removed = this.healthChecks.delete(name);
@@ -298,6 +306,9 @@ export class HealthMonitor extends EventEmitter {
 
   /**
    * Run a single health check
+   *
+   * @param name
+   * @param check
    */
   async runSingleHealthCheck(name: string, check: HealthCheck): Promise<HealthCheckResult> {
     if (!check.enabled) {
@@ -361,6 +372,8 @@ export class HealthMonitor extends EventEmitter {
 
   /**
    * Get health history
+   *
+   * @param limit
    */
   getHealthHistory(limit = 100): HealthReport[] {
     return this.healthHistory.slice(-limit);
@@ -611,6 +624,8 @@ export class HealthMonitor extends EventEmitter {
 
   /**
    * Set persistence checker function
+   *
+   * @param checkerFunction
    */
   setPersistenceChecker(checkerFunction: () => Promise<void>): void {
     this.persistenceChecker = checkerFunction;

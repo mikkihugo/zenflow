@@ -1,6 +1,6 @@
 /**
  * TypeDoc Configuration for Claude-Zen Unified Architecture Documentation
- * 
+ *
  * @fileoverview Comprehensive TypeDoc configuration for generating unified architecture
  *               API documentation across all four layers: UACL, DAL, USL, and UEL.
  *               Includes advanced features for cross-layer integration documentation.
@@ -14,38 +14,38 @@ module.exports = {
   entryPoints: [
     // Core System Entry
     'src/index.ts',
-    
+
     // UACL - Unified API Client Layer
     'src/interfaces/clients/index.ts',
     'src/interfaces/clients/factories.ts',
     'src/interfaces/clients/manager.ts',
     'src/interfaces/clients/registry.ts',
-    
+
     // DAL - Data Access Layer
     'src/database/index.ts',
     'src/database/factory.ts',
     'src/database/providers/database-providers.ts',
     'src/database/dao/index.ts',
-    
+
     // USL - Unified Service Layer
     'src/interfaces/services/index.ts',
     'src/interfaces/services/manager.ts',
     'src/interfaces/services/registry.ts',
     'src/interfaces/services/factories.ts',
-    
+
     // UEL - Unified Event Layer
     'src/interfaces/events/index.ts',
     'src/interfaces/events/manager.ts',
     'src/interfaces/events/registry.ts',
     'src/interfaces/events/observer-system.ts',
-    
+
     // Additional Core Components
     'src/core/index.ts',
     'src/coordination/index.ts',
     'src/neural/index.ts',
     'src/memory/index.ts',
     'src/types/index.ts',
-    
+
     // Interface Components
     'src/interfaces/mcp/index.ts',
     'src/interfaces/terminal/index.ts',
@@ -56,7 +56,7 @@ module.exports = {
   // Output configuration
   out: 'docs/api',
   name: 'Claude-Zen Unified Architecture API',
-  
+
   // Documentation Features
   readme: './UNIFIED-ARCHITECTURE-DOCUMENTATION.md',
   includeVersion: true,
@@ -88,13 +88,13 @@ module.exports = {
   excludeProtected: false,
   excludeInternal: false,
 
-  // Output formatting  
+  // Output formatting
   theme: 'default',
   defaultCategory: 'Other',
   categorizeByGroup: true,
   categoryOrder: [
     'UACL - Unified API Client Layer',
-    'DAL - Data Access Layer', 
+    'DAL - Data Access Layer',
     'USL - Unified Service Layer',
     'UEL - Unified Event Layer',
     'Core System',
@@ -102,21 +102,21 @@ module.exports = {
     'Neural Networks',
     'Memory Management',
     'Types & Interfaces',
-    'Other'
+    'Other',
   ],
   sort: ['source-order', 'alphabetical'],
   kindSortOrder: [
     'Module',
     'Namespace',
     'Enum',
-    'Class', 
+    'Class',
     'Interface',
     'TypeAlias',
     'Constructor',
     'Property',
     'Method',
     'Function',
-    'Variable'
+    'Variable',
   ],
 
   // Plugin configuration
@@ -134,40 +134,40 @@ module.exports = {
   validation: {
     notExported: true,
     invalidLink: true,
-    notDocumented: false
+    notDocumented: false,
   },
-  
+
   // JSON Output for CI/CD Integration
   json: 'docs/api/typedoc-data.json',
-  
+
   // Custom Styling
   customCss: './docs/assets/typedoc-custom.css',
-  
+
   // Search and Navigation
   navigation: {
     includeCategories: true,
     includeGroups: true,
-    includeFolders: true
+    includeFolders: true,
   },
-  
+
   // Custom Groups for Unified Architecture
   groups: [
     {
       title: 'UACL - Unified API Client Layer',
-      children: ['IClient', 'ClientManager', 'ClientRegistry', 'ClientFactories']
+      children: ['IClient', 'ClientManager', 'ClientRegistry', 'ClientFactories'],
     },
     {
       title: 'DAL - Data Access Layer',
-      children: ['IDao', 'BaseDao', 'DatabaseFactory', 'DatabaseProviders']
+      children: ['IDao', 'BaseDao', 'DatabaseFactory', 'DatabaseProviders'],
     },
     {
-      title: 'USL - Unified Service Layer', 
-      children: ['IService', 'ServiceManager', 'ServiceRegistry', 'ServiceFactories']
+      title: 'USL - Unified Service Layer',
+      children: ['IService', 'ServiceManager', 'ServiceRegistry', 'ServiceFactories'],
     },
     {
       title: 'UEL - Unified Event Layer',
-      children: ['IEventAdapter', 'EventManager', 'EventRegistry', 'ObserverSystem']
-    }
+      children: ['IEventAdapter', 'EventManager', 'EventRegistry', 'ObserverSystem'],
+    },
   ],
 
   // Markdown output (when using markdown plugin)

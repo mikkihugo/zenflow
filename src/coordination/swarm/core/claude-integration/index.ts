@@ -109,6 +109,8 @@ class ClaudeIntegrationOrchestrator {
 
   /**
    * Invoke Claude with a prompt using the core module
+   *
+   * @param prompt
    */
   async invokeClaudeWithPrompt(prompt: string): Promise<any> {
     return await this.core.invokeClaudeWithPrompt(prompt);

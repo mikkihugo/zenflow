@@ -4,7 +4,7 @@
  * This file provides standardized base interfaces that all domain-specific
  * implementations must conform to, eliminating interface contract mismatches.
  *
- * @fileoverview Core base interfaces for cross-domain compatibility
+ * @file Core base interfaces for cross-domain compatibility
  */
 
 // Re-export core token interfaces for consistency
@@ -12,6 +12,8 @@ export { IConfig, IDatabase, IEventBus, ILogger } from '../../di/tokens/core-tok
 
 /**
  * Base database adapter interface that all database implementations must follow
+ *
+ * @example
  */
 export interface DatabaseAdapter {
   /** Establish database connection */
@@ -34,6 +36,8 @@ export interface DatabaseAdapter {
 
 /**
  * Standardized query result interface
+ *
+ * @example
  */
 export interface QueryResult {
   /** Result rows */
@@ -52,6 +56,8 @@ export interface QueryResult {
 
 /**
  * Standardized execute result interface
+ *
+ * @example
  */
 export interface ExecuteResult {
   /** Number of affected rows */
@@ -64,6 +70,8 @@ export interface ExecuteResult {
 
 /**
  * Standardized transaction context interface
+ *
+ * @example
  */
 export interface TransactionContext {
   /** Execute a query within the transaction */
@@ -78,6 +86,8 @@ export interface TransactionContext {
 
 /**
  * Standardized schema information interface
+ *
+ * @example
  */
 export interface SchemaInfo {
   /** Database tables */
@@ -108,6 +118,8 @@ export interface SchemaInfo {
 
 /**
  * Standardized connection statistics interface
+ *
+ * @example
  */
 export interface ConnectionStats {
   /** Total number of connections */
@@ -124,6 +136,8 @@ export interface ConnectionStats {
 
 /**
  * Base memory store interface that all memory implementations must follow
+ *
+ * @example
  */
 export interface IMemoryStore {
   /** Initialize the memory store */
@@ -144,6 +158,8 @@ export interface IMemoryStore {
 
 /**
  * Memory store options interface
+ *
+ * @example
  */
 export interface StoreOptions {
   /** Time to live in milliseconds */
@@ -158,6 +174,8 @@ export interface StoreOptions {
 
 /**
  * Memory store statistics interface
+ *
+ * @example
  */
 export interface MemoryStats {
   /** Number of entries */
@@ -172,6 +190,8 @@ export interface MemoryStats {
 
 /**
  * Base neural network interface for WASM compatibility
+ *
+ * @example
  */
 export interface NeuralNetworkInterface {
   /** Initialize the neural network */
@@ -190,6 +210,8 @@ export interface NeuralNetworkInterface {
 
 /**
  * Neural network configuration interface
+ *
+ * @example
  */
 export interface NeuralConfig {
   /** Network architecture layers */
@@ -204,6 +226,8 @@ export interface NeuralConfig {
 
 /**
  * Training data interface
+ *
+ * @example
  */
 export interface TrainingData {
   /** Input vectors */
@@ -214,6 +238,8 @@ export interface TrainingData {
 
 /**
  * Training options interface
+ *
+ * @example
  */
 export interface TrainingOptions {
   /** Number of epochs */
@@ -226,6 +252,8 @@ export interface TrainingOptions {
 
 /**
  * Training result interface
+ *
+ * @example
  */
 export interface TrainingResult {
   /** Final training error */
@@ -240,6 +268,8 @@ export interface TrainingResult {
 
 /**
  * Model state interface for serialization
+ *
+ * @example
  */
 export interface ModelState {
   /** Model weights */
@@ -254,6 +284,8 @@ export interface ModelState {
 
 /**
  * Network performance metrics interface
+ *
+ * @example
  */
 export interface NetworkMetrics {
   /** Training accuracy */
@@ -268,6 +300,8 @@ export interface NetworkMetrics {
 
 /**
  * WASM neural binding interface for type safety
+ *
+ * @example
  */
 export interface WasmNeuralBinding {
   /** Load WASM module */

@@ -50,6 +50,8 @@ export interface AgentSelectionCriteria {
 
 /**
  * Centralized agent registry for discovery and management
+ *
+ * @example
  */
 export class AgentRegistry extends EventEmitter {
   private memory: MemoryCoordinator;
@@ -95,6 +97,14 @@ export class AgentRegistry extends EventEmitter {
 
   /**
    * Register an agent in the registry
+   *
+   * @param agent
+   * @param agent.id
+   * @param agent.name
+   * @param agent.type
+   * @param agent.status
+   * @param agent.capabilities
+   * @param agent.metrics
    */
   async registerAgent(agent: {
     id: AgentId;
@@ -142,6 +152,8 @@ export class AgentRegistry extends EventEmitter {
 
   /**
    * Unregister an agent from the registry
+   *
+   * @param agentId
    */
   async unregisterAgent(agentId: AgentId): Promise<void> {
     const agent = this.agents.get(agentId);
@@ -158,6 +170,12 @@ export class AgentRegistry extends EventEmitter {
 
   /**
    * Update agent status and metrics
+   *
+   * @param agentId
+   * @param updates
+   * @param updates.status
+   * @param updates.metrics
+   * @param updates.capabilities
    */
   async updateAgent(
     agentId: AgentId,
@@ -201,6 +219,8 @@ export class AgentRegistry extends EventEmitter {
 
   /**
    * Query agents matching criteria
+   *
+   * @param query
    */
   async queryAgents(query: AgentRegistryQuery = {}): Promise<RegisteredAgent[]> {
     const agents = Array.from(this.agents.values());
@@ -254,6 +274,8 @@ export class AgentRegistry extends EventEmitter {
 
   /**
    * Select best agents for a task based on criteria
+   *
+   * @param criteria
    */
   async selectAgents(criteria: AgentSelectionCriteria): Promise<RegisteredAgent[]> {
     let candidates = await this.queryAgents({
@@ -299,6 +321,8 @@ export class AgentRegistry extends EventEmitter {
 
   /**
    * Get specific agent by ID
+   *
+   * @param agentId
    */
   getAgent(agentId: AgentId): RegisteredAgent | undefined {
     return this.agents.get(agentId);
@@ -313,6 +337,8 @@ export class AgentRegistry extends EventEmitter {
 
   /**
    * Get agents by type
+   *
+   * @param type
    */
   getAgentsByType(type: AgentType): RegisteredAgent[] {
     return Array.from(this.agents.values()).filter((agent) => agent.type === type);

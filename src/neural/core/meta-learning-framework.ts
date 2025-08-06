@@ -33,6 +33,9 @@ export class MetaLearningFramework {
 
   /**
    * Register a learning strategy
+   *
+   * @param id
+   * @param strategy
    */
   registerStrategy(id: string, strategy: any): void {
     this.learningStrategies.set(id, {
@@ -45,6 +48,9 @@ export class MetaLearningFramework {
 
   /**
    * Select best strategy for given task
+   *
+   * @param taskType
+   * @param _context
    */
   selectStrategy(taskType, _context = {}) {
     const strategies = Array.from(this.learningStrategies.values())
@@ -56,6 +62,9 @@ export class MetaLearningFramework {
 
   /**
    * Update strategy performance
+   *
+   * @param strategyId
+   * @param performance
    */
   updatePerformance(strategyId, performance) {
     const strategy = this.learningStrategies.get(strategyId);

@@ -1,27 +1,27 @@
 /**
  * Enhanced WebSocket Client with UACL Integration
- * 
+ *
  * Extends the original WebSocket client to implement UACL interface
  * while maintaining 100% backward compatibility with existing code.
  */
 
 import { EventEmitter } from 'node:events';
 import type {
-  IClient,
   ClientConfig,
-  RequestOptions,
+  ClientMetrics,
   ClientResponse,
   ClientStatus,
-  ClientMetrics
+  IClient,
+  RequestOptions,
 } from '../core/interfaces';
 
 import type {
   WebSocketClientConfig,
+  WebSocketConnectionInfo,
+  WebSocketMessage,
+  WebSocketMetrics,
   WebSocketRequestOptions,
   WebSocketResponse,
-  WebSocketMessage,
-  WebSocketConnectionInfo,
-  WebSocketMetrics
 } from './websocket-types';
 
 // Legacy interface for backward compatibility
@@ -34,19 +34,21 @@ interface WebSocketClientOptions {
 
 /**
  * Enhanced WebSocket Client implementing both legacy interface and UACL
- * 
+ *
  * Maintains 100% backward compatibility with the original WebSocketClient
  * while adding UACL interface support for unified client management.
+ *
+ * @example
  */
 export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   // UACL interface properties
   public readonly config: WebSocketClientConfig;
   public readonly name: string;
-  
+
   // Legacy properties (maintained for backward compatibility)
   private url: string;
   private options: WebSocketClientOptions;
-  
+
   // Internal state
   private ws: WebSocket | null = null;
   private messageQueue: string[] = [];
@@ -61,10 +63,13 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
   /**
    * Constructor supporting both legacy and UACL patterns
+   *
+   * @param urlOrConfig
+   * @param legacyOptions
    */
   constructor(urlOrConfig: string | WebSocketClientConfig, legacyOptions?: WebSocketClientOptions) {
     super();
-    
+
     // Handle both legacy and new construction patterns
     if (typeof urlOrConfig === 'string') {
       // Legacy constructor: new EnhancedWebSocketClient(url, options)
@@ -76,7 +81,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
         timeout: 30000,
         ...legacyOptions,
       };
-      
+
       // Convert legacy options to UACL config
       this.config = this.convertLegacyToUACL(urlOrConfig, this.options);
       this.name = `ws-client-${Date.now()}`;
@@ -89,27 +94,27 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
           maxAttempts: 10,
           initialDelay: 1000,
           maxDelay: 30000,
-          backoff: 'exponential'
+          backoff: 'exponential',
         },
         heartbeat: {
           enabled: true,
           interval: 30000,
-          message: { type: 'ping' }
+          message: { type: 'ping' },
         },
         messageQueue: {
           enabled: true,
-          maxSize: 1000
+          maxSize: 1000,
         },
-        ...urlOrConfig
+        ...urlOrConfig,
       };
-      
+
       this.url = this.config.url;
       this.name = this.config.name || `ws-client-${Date.now()}`;
-      
+
       // Convert UACL config to legacy options for compatibility
       this.options = this.convertUACLToLegacy(this.config);
     }
-    
+
     this.connectionId = this.generateConnectionId();
     this.startTime = Date.now();
     this.metrics = this.initializeMetrics();
@@ -140,11 +145,11 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
           this.connectionId = this.generateConnectionId();
           this.connectionInfo.connectTime = new Date();
           this.connectionInfo.readyState = this.ws!.readyState;
-          
+
           // Emit both legacy and UACL events
           this.emit('connected'); // Legacy
-          this.emit('connect');   // UACL
-          
+          this.emit('connect'); // UACL
+
           this.startHeartbeat();
           this.flushMessageQueue();
           resolve();
@@ -159,10 +164,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
           this.isConnected = false;
           this.connectionInfo.readyState = this.ws!.readyState;
           this.stopHeartbeat();
-          
+
           // Emit both legacy and UACL events
           this.emit('disconnected', event.code, event.reason); // Legacy
-          this.emit('disconnect', event.code, event.reason);   // UACL
+          this.emit('disconnect', event.code, event.reason); // UACL
 
           if (
             this.options.reconnect &&
@@ -177,7 +182,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
           this.connectionInfo.errors.push({
             timestamp: new Date(),
             error: error.toString(),
-            code: 'CONNECTION_ERROR'
+            code: 'CONNECTION_ERROR',
           });
           this.emit('error', error);
           reject(error);
@@ -198,7 +203,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
         this.reconnectTimer = null;
       }
       this.stopHeartbeat();
-      
+
       if (this.ws && this.isConnected) {
         this.ws.onclose = () => {
           this.isConnected = false;
@@ -225,7 +230,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   async healthCheck(): Promise<ClientStatus> {
     const responseTime = await this.measurePingTime();
-    
+
     return {
       name: this.name,
       status: this.isConnected ? 'healthy' : 'disconnected',
@@ -239,8 +244,8 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
         queuedMessages: this.messageQueue.length,
         reconnectAttempts: this.reconnectAttempts,
         url: this.url,
-        protocol: this.ws?.protocol
-      }
+        protocol: this.ws?.protocol,
+      },
     };
   }
 
@@ -250,12 +255,15 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   async getMetrics(): Promise<ClientMetrics> {
     return {
       ...this.metrics,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
   /**
    * Generic GET request (UACL interface)
+   *
+   * @param endpoint
+   * @param options
    */
   async get<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>> {
     return this.sendRequest('GET', endpoint, undefined, options);
@@ -263,20 +271,39 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
   /**
    * Generic POST request (UACL interface)
+   *
+   * @param endpoint
+   * @param data
+   * @param options
    */
-  async post<T = any>(endpoint: string, data?: any, options?: RequestOptions): Promise<ClientResponse<T>> {
+  async post<T = any>(
+    endpoint: string,
+    data?: any,
+    options?: RequestOptions
+  ): Promise<ClientResponse<T>> {
     return this.sendRequest('POST', endpoint, data, options);
   }
 
   /**
    * Generic PUT request (UACL interface)
+   *
+   * @param endpoint
+   * @param data
+   * @param options
    */
-  async put<T = any>(endpoint: string, data?: any, options?: RequestOptions): Promise<ClientResponse<T>> {
+  async put<T = any>(
+    endpoint: string,
+    data?: any,
+    options?: RequestOptions
+  ): Promise<ClientResponse<T>> {
     return this.sendRequest('PUT', endpoint, data, options);
   }
 
   /**
    * Generic DELETE request (UACL interface)
+   *
+   * @param endpoint
+   * @param options
    */
   async delete<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>> {
     return this.sendRequest('DELETE', endpoint, undefined, options);
@@ -284,25 +311,36 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
   /**
    * Update client configuration (UACL interface)
+   *
+   * @param config
    */
   updateConfig(config: Partial<WebSocketClientConfig>): void {
     Object.assign(this.config, config);
-    
+
     // Update legacy options for compatibility
     this.options = this.convertUACLToLegacy(this.config);
-    
+
     this.emit('config-updated', this.config);
   }
 
   /**
    * Event handler registration (UACL interface)
+   *
+   * @param event
+   * @param handler
    */
-  on(event: 'connect' | 'disconnect' | 'error' | 'retry' | string, handler: (...args: any[]) => void): void {
+  on(
+    event: 'connect' | 'disconnect' | 'error' | 'retry' | string,
+    handler: (...args: any[]) => void
+  ): void {
     super.on(event, handler);
   }
 
   /**
    * Event handler removal (UACL interface)
+   *
+   * @param event
+   * @param handler
    */
   off(event: string, handler?: (...args: any[]) => void): void {
     if (handler) {
@@ -328,6 +366,8 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
   /**
    * Send message (legacy method - exact same signature as original)
+   *
+   * @param data
    */
   send(data: any): void {
     const message = typeof data === 'string' ? data : JSON.stringify(data);
@@ -374,16 +414,22 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
   /**
    * Send typed message with enhanced features
+   *
+   * @param message
+   * @param options
    */
-  async sendMessage<T = any>(message: WebSocketMessage<T>, options?: WebSocketRequestOptions): Promise<void> {
+  async sendMessage<T = any>(
+    message: WebSocketMessage<T>,
+    options?: WebSocketRequestOptions
+  ): Promise<void> {
     const messageWithId = {
       id: this.generateMessageId(),
       timestamp: Date.now(),
-      ...message
+      ...message,
     };
 
     const serialized = JSON.stringify(messageWithId);
-    
+
     if (this.isConnected && this.ws) {
       try {
         this.ws.send(serialized);
@@ -415,7 +461,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       ...this.connectionInfo,
       readyState: this.ws?.readyState || -1,
       bufferedAmount: this.ws?.bufferedAmount || 0,
-      lastActivity: new Date()
+      lastActivity: new Date(),
     };
   }
 
@@ -428,32 +474,35 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       connectionsClosed: 0,
       connectionsActive: this.isConnected ? 1 : 0,
       connectionDuration: Date.now() - this.startTime,
-      
+
       messagesSent: this.connectionInfo.messagesSent,
       messagesReceived: this.connectionInfo.messagesReceived,
-      messagesSentPerSecond: this.connectionInfo.messagesSent / ((Date.now() - this.startTime) / 1000),
-      messagesReceivedPerSecond: this.connectionInfo.messagesReceived / ((Date.now() - this.startTime) / 1000),
-      
+      messagesSentPerSecond:
+        this.connectionInfo.messagesSent / ((Date.now() - this.startTime) / 1000),
+      messagesReceivedPerSecond:
+        this.connectionInfo.messagesReceived / ((Date.now() - this.startTime) / 1000),
+
       bytesSent: this.connectionInfo.bytesSent,
       bytesReceived: this.connectionInfo.bytesReceived,
       bytesSentPerSecond: this.connectionInfo.bytesSent / ((Date.now() - this.startTime) / 1000),
-      bytesReceivedPerSecond: this.connectionInfo.bytesReceived / ((Date.now() - this.startTime) / 1000),
-      
+      bytesReceivedPerSecond:
+        this.connectionInfo.bytesReceived / ((Date.now() - this.startTime) / 1000),
+
       averageLatency: this.connectionInfo.latency || 0,
       p95Latency: this.connectionInfo.latency || 0,
       p99Latency: this.connectionInfo.latency || 0,
       packetLoss: this.connectionInfo.packetLoss || 0,
-      
+
       connectionErrors: this.connectionInfo.errors.length,
       messageErrors: 0,
       timeoutErrors: 0,
       authenticationErrors: 0,
-      
+
       messagesQueued: this.messageQueue.length,
       queueSize: this.messageQueue.length,
       queueOverflows: 0,
-      
-      timestamp: new Date()
+
+      timestamp: new Date(),
     };
   }
 
@@ -471,7 +520,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   private handleMessage(event: MessageEvent): void {
     try {
       let data: any;
-      
+
       // Handle different message types
       if (typeof event.data === 'string') {
         try {
@@ -504,21 +553,20 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
       // Emit message event
       this.emit('message', data);
-
     } catch (error) {
       this.emit('error', error);
     }
   }
 
   private async sendRequest<T = any>(
-    method: string, 
-    endpoint: string, 
-    data?: any, 
+    method: string,
+    endpoint: string,
+    data?: any,
     options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     const requestId = this.generateMessageId();
     const startTime = Date.now();
-    
+
     const requestMessage: WebSocketMessage = {
       id: requestId,
       type: 'request',
@@ -526,21 +574,24 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
         method,
         endpoint,
         body: data,
-        headers: options?.headers
+        headers: options?.headers,
       },
-      timestamp: startTime
+      timestamp: startTime,
     };
 
     return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        this.off(`response:${requestId}`, responseHandler);
-        reject(new Error('Request timeout'));
-      }, options?.timeout || this.config.timeout || 30000);
+      const timeout = setTimeout(
+        () => {
+          this.off(`response:${requestId}`, responseHandler);
+          reject(new Error('Request timeout'));
+        },
+        options?.timeout || this.config.timeout || 30000
+      );
 
       const responseHandler = (responseData: any) => {
         clearTimeout(timeout);
         const duration = Date.now() - startTime;
-        
+
         resolve({
           data: responseData.data,
           status: responseData.status || 200,
@@ -551,20 +602,20 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
             requestId,
             duration,
             connectionId: this.connectionId,
-            messageType: 'response'
-          }
+            messageType: 'response',
+          },
         });
       };
 
       this.once(`response:${requestId}`, responseHandler);
-      
+
       this.sendMessage(requestMessage).catch(reject);
     });
   }
 
   private queueMessage(message: string): void {
     this.messageQueue.push(message);
-    
+
     // Limit queue size to prevent memory issues
     const maxSize = this.options.maxReconnectAttempts || 1000;
     if (this.messageQueue.length > maxSize) {
@@ -593,7 +644,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       this.reconnectAttempts++;
       this.emit('reconnecting', this.reconnectAttempts);
       this.emit('retry', this.reconnectAttempts); // UACL event
-      
+
       try {
         await this.connect();
       } catch (error) {
@@ -610,7 +661,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   private startHeartbeat(): void {
     const interval = this.config.heartbeat?.interval || 30000;
     const message = this.config.heartbeat?.message || { type: 'ping' };
-    
+
     this.heartbeatTimer = setInterval(() => {
       if (this.isConnected && this.ws) {
         try {
@@ -630,20 +681,16 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   private isHeartbeatResponse(data: any): boolean {
-    return data && (
-      data.type === 'pong' || 
-      data.type === 'heartbeat' ||
-      data.type === 'ping'
-    );
+    return data && (data.type === 'pong' || data.type === 'heartbeat' || data.type === 'ping');
   }
 
   private async measurePingTime(): Promise<number> {
     if (!this.isConnected) return -1;
-    
+
     return new Promise((resolve) => {
       const startTime = Date.now();
       const pingId = this.generateMessageId();
-      
+
       const pongHandler = (data: any) => {
         if (data.id === pingId) {
           const responseTime = Date.now() - startTime;
@@ -652,10 +699,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
           resolve(responseTime);
         }
       };
-      
+
       this.on('message', pongHandler);
       this.send({ type: 'ping', id: pingId });
-      
+
       setTimeout(() => {
         this.off('message', pongHandler);
         resolve(-1);
@@ -686,7 +733,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       p95Latency: 0,
       p99Latency: 0,
       throughput: 0,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
@@ -703,24 +750,24 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       bytesSent: 0,
       bytesReceived: 0,
       authenticated: false,
-      errors: []
+      errors: [],
     };
   }
 
   private updateMetrics(success: boolean, duration: number): void {
     this.metrics.requestCount++;
-    
+
     if (success) {
       this.metrics.successCount++;
     } else {
       this.metrics.errorCount++;
     }
-    
+
     if (duration > 0) {
       const totalLatency = this.metrics.averageLatency * (this.metrics.requestCount - 1);
       this.metrics.averageLatency = (totalLatency + duration) / this.metrics.requestCount;
     }
-    
+
     const uptime = (Date.now() - this.startTime) / 1000;
     this.metrics.throughput = this.metrics.requestCount / Math.max(uptime, 1);
   }
@@ -736,17 +783,17 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
         maxAttempts: options.maxReconnectAttempts || 10,
         initialDelay: options.reconnectInterval || 1000,
         maxDelay: 30000,
-        backoff: 'exponential'
+        backoff: 'exponential',
       },
       heartbeat: {
         enabled: true,
         interval: 30000,
-        message: { type: 'ping' }
+        message: { type: 'ping' },
       },
       messageQueue: {
         enabled: true,
-        maxSize: 1000
-      }
+        maxSize: 1000,
+      },
     };
   }
 
@@ -755,7 +802,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       reconnect: config.reconnection?.enabled || true,
       reconnectInterval: config.reconnection?.initialDelay || 1000,
       maxReconnectAttempts: config.reconnection?.maxAttempts || 10,
-      timeout: config.timeout || 30000
+      timeout: config.timeout || 30000,
     };
   }
 }

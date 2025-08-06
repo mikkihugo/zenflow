@@ -11,10 +11,14 @@ import type { SwarmOptions, SwarmState } from './types';
 
 /**
  * Session validation utilities
+ *
+ * @example
  */
 export class SessionValidator {
   /**
    * Validate session state integrity
+   *
+   * @param state
    */
   static validateSessionState(state: SessionState): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
@@ -72,6 +76,8 @@ export class SessionValidator {
 
   /**
    * Validate swarm state structure
+   *
+   * @param state
    */
   static validateSwarmState(state: SwarmState): string[] {
     const errors: string[] = [];
@@ -101,6 +107,8 @@ export class SessionValidator {
 
   /**
    * Validate swarm options
+   *
+   * @param options
    */
   static validateSwarmOptions(options: SwarmOptions): string[] {
     const errors: string[] = [];
@@ -133,6 +141,8 @@ export class SessionValidator {
 
   /**
    * Validate checkpoint integrity
+   *
+   * @param checkpoint
    */
   static validateCheckpoint(checkpoint: SessionCheckpoint): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
@@ -166,10 +176,14 @@ export class SessionValidator {
 
 /**
  * Session serialization utilities
+ *
+ * @example
  */
 export class SessionSerializer {
   /**
    * Serialize a SwarmState to a portable format
+   *
+   * @param state
    */
   static serializeSwarmState(state: SwarmState): string {
     // Convert Maps to objects for JSON serialization
@@ -189,6 +203,8 @@ export class SessionSerializer {
 
   /**
    * Deserialize a SwarmState from portable format
+   *
+   * @param serialized
    */
   static deserializeSwarmState(serialized: string): SwarmState {
     const data = JSON.parse(serialized);
@@ -207,6 +223,8 @@ export class SessionSerializer {
 
   /**
    * Export session to a portable format
+   *
+   * @param session
    */
   static exportSession(session: SessionState): string {
     const exportData = {
@@ -237,6 +255,8 @@ export class SessionSerializer {
 
   /**
    * Import session from portable format
+   *
+   * @param exported
    */
   static importSession(exported: string): SessionState {
     const data = JSON.parse(exported);
@@ -267,10 +287,16 @@ export class SessionSerializer {
 
 /**
  * Session migration utilities
+ *
+ * @example
  */
 export class SessionMigrator {
   /**
    * Migrate session from older version
+   *
+   * @param session
+   * @param fromVersion
+   * @param toVersion
    */
   static migrateSession(session: any, fromVersion: string, toVersion: string): SessionState {
     const migrations = SessionMigrator.getMigrationPath(fromVersion, toVersion);
@@ -285,6 +311,9 @@ export class SessionMigrator {
 
   /**
    * Get migration path between versions
+   *
+   * @param fromVersion
+   * @param toVersion
    */
   private static getMigrationPath(
     fromVersion: string,
@@ -302,6 +331,8 @@ export class SessionMigrator {
 
   /**
    * Example migration from 0.9.0 to 1.0.0
+   *
+   * @param session
    */
   private static migrate_0_9_0_to_1_0_0(session: any): any {
     // Add version field if missing
@@ -329,6 +360,9 @@ export class SessionMigrator {
 
   /**
    * Check if migration is needed
+   *
+   * @param session
+   * @param targetVersion
    */
   static needsMigration(session: any, targetVersion: string): boolean {
     return !session.version || session.version !== targetVersion;
@@ -337,10 +371,15 @@ export class SessionMigrator {
 
 /**
  * Session recovery utilities
+ *
+ * @example
  */
 export class SessionRecovery {
   /**
    * Attempt to recover a corrupted session
+   *
+   * @param corruptedSession
+   * @param checkpoints
    */
   static async recoverSession(
     corruptedSession: any,
@@ -387,6 +426,8 @@ export class SessionRecovery {
 
   /**
    * Validate checkpoint integrity
+   *
+   * @param checkpoint
    */
   private static validateCheckpointIntegrity(checkpoint: SessionCheckpoint): boolean {
     try {
@@ -422,6 +463,8 @@ export class SessionRecovery {
 
   /**
    * Repair session state inconsistencies
+   *
+   * @param session
    */
   static repairSessionState(session: SessionState): SessionState {
     const repairedSession = { ...session };
@@ -475,10 +518,14 @@ export class SessionRecovery {
 
 /**
  * Session statistics utilities
+ *
+ * @example
  */
 export class SessionStats {
   /**
    * Calculate session health score
+   *
+   * @param session
    */
   static calculateHealthScore(session: SessionState): number {
     let score = 100;
@@ -511,6 +558,8 @@ export class SessionStats {
 
   /**
    * Generate session summary
+   *
+   * @param session
    */
   static generateSummary(session: SessionState): Record<string, any> {
     const metrics = session.swarmState.metrics;

@@ -58,6 +58,8 @@ export interface PerformanceRequirements {
 
 /**
  * Command Execution Types (Shared)
+ *
+ * @example
  */
 export interface CommandResult {
   readonly success: boolean;
@@ -76,6 +78,8 @@ export interface CommandContext {
 
 /**
  * Configuration Types (Shared)
+ *
+ * @example
  */
 export interface InterfaceConfig {
   readonly theme: 'dark' | 'light' | 'auto';
@@ -86,6 +90,8 @@ export interface InterfaceConfig {
 
 /**
  * Status and Health Types (Shared)
+ *
+ * @example
  */
 export interface ComponentStatus {
   readonly component: string;

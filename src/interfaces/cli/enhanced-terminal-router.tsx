@@ -1,5 +1,5 @@
 /**
- * @fileoverview Enhanced Terminal Interface Router
+ * @file Enhanced Terminal Interface Router
  *
  * Integrates the Advanced CLI Engine with the existing terminal interface system.
  * Provides intelligent command routing, AI-assisted operations, and real-time monitoring.
@@ -34,6 +34,11 @@ interface TerminalState {
  *
  * Provides intelligent command routing between command execution and interactive modes.
  * Integrates advanced CLI capabilities with AI assistance and real-time monitoring.
+ *
+ * @param root0
+ * @param root0.commands
+ * @param root0.flags
+ * @param root0.onExit
  */
 export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExit }) => {
   const [state, setState] = useState<TerminalState>({

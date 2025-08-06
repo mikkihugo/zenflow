@@ -5,7 +5,7 @@
  * Features authentication, rate limiting, and complete dependency injection.
  * Following Google API Design Guide standards.
  *
- * @fileoverview Enhanced Database REST API routes with full DI integration
+ * @file Enhanced Database REST API routes with full DI integration
  */
 
 import { type Request, type Response, Router } from 'express';
@@ -43,6 +43,8 @@ function getDatabaseControllerInstance() {
 
 /**
  * Input validation middleware
+ *
+ * @param req
  */
 function validateQueryRequest(req: Request): QueryRequest {
   const { sql, params, options } = req.body;
@@ -134,6 +136,9 @@ function validateMigrationRequest(req: Request): MigrationRequest {
 
 /**
  * Permission check for database operations
+ *
+ * @param req
+ * @param operation
  */
 function checkDatabasePermission(req: Request, operation: 'read' | 'write' | 'admin'): void {
   const permissionMap = {

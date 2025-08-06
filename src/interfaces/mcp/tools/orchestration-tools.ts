@@ -1,5 +1,5 @@
 /**
- * @fileoverview Orchestration MCP Tools
+ * @file Orchestration MCP Tools
  *
  * Workflow configuration, deployment automation, and service coordination.
  */

@@ -47,6 +47,8 @@ export const COMPLETE_NEURAL_PRESETS = {
 /**
  * Cognitive Pattern Selector
  * Selects optimal neural patterns based on task requirements
+ *
+ * @example
  */
 export class CognitivePatternSelector {
   constructor() {
@@ -56,6 +58,9 @@ export class CognitivePatternSelector {
 
   /**
    * Select pattern based on task type and requirements
+   *
+   * @param taskType
+   * @param requirements
    */
   selectPattern(taskType, requirements = {}) {
     const candidates = this.getCandidatePatterns(taskType, requirements);
@@ -73,6 +78,8 @@ export class CognitivePatternSelector {
 
   /**
    * Register a custom pattern
+   *
+   * @param pattern
    */
   registerPattern(pattern) {
     this.patterns.set(pattern.id, pattern);
@@ -125,6 +132,8 @@ export class CognitivePatternSelector {
 /**
  * Neural Adaptation Engine
  * Adapts neural networks based on performance feedback
+ *
+ * @example
  */
 export class NeuralAdaptationEngine {
   constructor() {
@@ -134,6 +143,9 @@ export class NeuralAdaptationEngine {
 
   /**
    * Adapt network based on performance feedback
+   *
+   * @param networkConfig
+   * @param performanceData
    */
   adapt(networkConfig, performanceData) {
     const adaptation = this.generateAdaptation(networkConfig, performanceData);
@@ -154,6 +166,8 @@ export class NeuralAdaptationEngine {
 
   /**
    * Get adaptation recommendations
+   *
+   * @param _networkConfig
    */
   getRecommendations(_networkConfig) {
     const recentPerformance = this.performanceHistory.slice(-10);

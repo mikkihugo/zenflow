@@ -75,7 +75,7 @@ export * as Integration from './integration/index';
 // =============================================================================
 
 /**
- * @fileoverview Claude-Zen Integrated System
+ * @file Claude-Zen Integrated System
  * Unified entry point for all claude-zen components
  */
 
@@ -125,6 +125,8 @@ export * from './types/index';
 
 /**
  * Claude-Zen integrated system configuration
+ *
+ * @example
  */
 export interface ClaudeZenConfig {
   // MCP Server settings
@@ -216,6 +218,8 @@ export const defaultConfig: ClaudeZenConfig = {
 
 /**
  * Initialize Claude-Zen integrated system
+ *
+ * @param config
  */
 export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {}): Promise<void> {
   const finalConfig = { ...defaultConfig, ...config };
@@ -277,6 +281,7 @@ export async function shutdownClaudeZen(): Promise<void> {
 
 /**
  * System health check
+ *
  * @returns Promise resolving to system health status
  */
 export async function healthCheck() {
@@ -297,6 +302,7 @@ export async function healthCheck() {
 
 /**
  * Get system version and build info
+ *
  * @returns System version information
  */
 export function getVersion() {

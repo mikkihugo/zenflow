@@ -35,6 +35,8 @@ export interface AGUIInterface {
 /**
  * Terminal-based AGUI implementation
  * Since @ag-ui/core is a protocol definition, we implement our own UI
+ *
+ * @example
  */
 export class TerminalAGUI extends EventEmitter implements AGUIInterface {
   private rl: readline.Interface | null = null;
@@ -134,6 +136,8 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
 
 /**
  * Mock AGUI for testing - provides automatic responses
+ *
+ * @example
  */
 export class MockAGUI implements AGUIInterface {
   private responses: Map<string, string> = new Map();
@@ -172,6 +176,8 @@ export class MockAGUI implements AGUIInterface {
 
 /**
  * Factory function to create appropriate AGUI instance
+ *
+ * @param type
  */
 export function createAGUI(type: 'terminal' | 'mock' = 'terminal'): AGUIInterface {
   switch (type) {

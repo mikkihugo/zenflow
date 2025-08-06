@@ -1,5 +1,5 @@
 /**
- * @fileoverview Memory & Neural MCP Tools
+ * @file Memory & Neural MCP Tools
  *
  * Memory management, neural network operations, and cognitive enhancements.
  */

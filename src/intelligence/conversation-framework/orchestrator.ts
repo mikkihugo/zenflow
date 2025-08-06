@@ -20,6 +20,8 @@ import type {
 /**
  * Implementation of the conversation orchestrator
  * Manages multi-agent conversations with patterns and learning
+ *
+ * @example
  */
 export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   private activeSessions = new Map<string, ConversationSession>();
@@ -32,6 +34,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Create a new conversation session
+   *
+   * @param config
    */
   async createConversation(config: ConversationConfig): Promise<ConversationSession> {
     const pattern = this.patterns.get(config.pattern);
@@ -76,6 +80,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Add an agent to an active conversation
+   *
+   * @param conversationId
+   * @param agent
    */
   async joinConversation(conversationId: string, agent: AgentId): Promise<void> {
     const session = this.activeSessions.get(conversationId);
@@ -99,6 +106,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Remove an agent from a conversation
+   *
+   * @param conversationId
+   * @param agent
    */
   async leaveConversation(conversationId: string, agent: AgentId): Promise<void> {
     const session = this.activeSessions.get(conversationId);
@@ -115,6 +125,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Send a message in a conversation
+   *
+   * @param message
    */
   async sendMessage(message: ConversationMessage): Promise<void> {
     const session = this.activeSessions.get(message.conversationId);
@@ -159,6 +171,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Moderate a conversation (mute, warn, etc.)
+   *
+   * @param conversationId
+   * @param action
    */
   async moderateConversation(conversationId: string, action: ModerationAction): Promise<void> {
     const session = this.activeSessions.get(conversationId);
@@ -188,6 +203,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Get conversation message history
+   *
+   * @param conversationId
    */
   async getConversationHistory(conversationId: string): Promise<ConversationMessage[]> {
     const session =
@@ -203,6 +220,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Terminate a conversation and return outcomes
+   *
+   * @param conversationId
+   * @param reason
    */
   async terminateConversation(
     conversationId: string,
@@ -396,6 +416,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Start pattern workflow for a session
+   *
+   * @param session
+   * @param pattern
    */
   private async startPatternWorkflow(
     session: ConversationSession,
@@ -419,6 +442,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Process message for workflow progression
+   *
+   * @param session
+   * @param message
    */
   private async processMessageForWorkflow(
     session: ConversationSession,
@@ -437,6 +463,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Check if a workflow step should be triggered
+   *
+   * @param step
+   * @param message
+   * @param session
    */
   private shouldTriggerStep(
     step: any,
@@ -454,6 +484,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Execute a workflow step
+   *
+   * @param session
+   * @param _pattern
+   * @param step
    */
   private async executeWorkflowStep(
     session: ConversationSession,
@@ -467,6 +501,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Check consensus among participants
+   *
+   * @param session
+   * @param threshold
    */
   private checkConsensus(session: ConversationSession, threshold: number): boolean {
     // Simple consensus check based on agreement messages
@@ -478,6 +515,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Send system message
+   *
+   * @param session
+   * @param text
    */
   private async sendSystemMessage(session: ConversationSession, text: string): Promise<void> {
     const systemMessage: ConversationMessage = {
@@ -501,6 +541,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Generate conversation outcomes
+   *
+   * @param session
    */
   private async generateConversationOutcomes(
     session: ConversationSession
@@ -536,6 +578,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Update final conversation metrics
+   *
+   * @param session
    */
   private async updateFinalMetrics(session: ConversationSession): Promise<void> {
     const duration = session.endTime?.getTime() - session.startTime.getTime();
@@ -553,6 +597,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Calculate consensus score
+   *
+   * @param session
    */
   private calculateConsensusScore(session: ConversationSession): number {
     const agreements = session.messages.filter((m) => m.messageType === 'agreement').length;
@@ -564,6 +610,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Calculate quality rating
+   *
+   * @param session
    */
   private calculateQualityRating(session: ConversationSession): number {
     // Simple quality rating based on message diversity and participation
@@ -575,6 +623,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Calculate participation balance
+   *
+   * @param session
    */
   private calculateParticipationBalance(session: ConversationSession): number {
     const participationCounts = Object.values(session.metrics.participationByAgent);
@@ -589,6 +639,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Calculate average response time
+   *
+   * @param session
    */
   private calculateAverageResponseTime(session: ConversationSession): number {
     const messages = session.messages.filter((m) => m.messageType !== 'system_notification');
@@ -604,6 +656,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Event system for conversation events
+   *
+   * @param event
+   * @param data
    */
   private async emit(event: string, data: any): Promise<void> {
     const handlers = this.eventHandlers.get(event) || [];
@@ -612,6 +667,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
   /**
    * Register event handler
+   *
+   * @param event
+   * @param handler
    */
   public on(event: string, handler: Function): void {
     if (!this.eventHandlers.has(event)) {

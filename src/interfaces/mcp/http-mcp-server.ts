@@ -31,6 +31,8 @@ export interface MCPServerConfig {
 
 /**
  * HTTP MCP Server using Official SDK for Claude Desktop integration
+ *
+ * @example
  */
 export class HTTPMCPServer {
   private server: McpServer;

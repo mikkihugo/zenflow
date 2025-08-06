@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for Progressive Confidence Builder
+ * @file Tests for Progressive Confidence Builder
  */
 
 import type { DomainDiscoveryBridge } from '@coordination/discovery/domain-discovery-bridge';

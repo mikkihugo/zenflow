@@ -170,6 +170,8 @@ export interface CostBenefit {
 
 /**
  * Intelligent Caching System
+ *
+ * @example
  */
 export interface IntelligentCachingSystem {
   cacheTypes: Map<string, CacheManager>;
@@ -273,6 +275,8 @@ export type ConsistencyLevel =
 
 /**
  * Bandwidth Optimization System
+ *
+ * @example
  */
 export interface BandwidthOptimizationSystem {
   compressionEngine: CompressionEngine;
@@ -355,6 +359,8 @@ export type StreamingProtocol =
 
 /**
  * Priority Management System
+ *
+ * @example
  */
 export interface PriorityManagementSystem {
   priorityCalculation: PriorityCalculationEngine;
@@ -415,6 +421,8 @@ export type AllocationStrategy =
 
 /**
  * Load Balancing System
+ *
+ * @example
  */
 export interface LoadBalancingSystem {
   loadBalancers: Map<string, LoadBalancer>;
@@ -475,6 +483,8 @@ export type LoadBalancingAlgorithm =
 
 /**
  * Real-time Monitoring System
+ *
+ * @example
  */
 export interface RealTimeMonitoringSystem {
   metricsCollection: MetricsCollectionEngine;
@@ -535,6 +545,8 @@ export type AnomalyDetectionAlgorithm =
 
 /**
  * Main Performance Optimization System
+ *
+ * @example
  */
 export class PerformanceOptimizationSystem extends EventEmitter {
   private logger: ILogger;
@@ -638,6 +650,8 @@ export class PerformanceOptimizationSystem extends EventEmitter {
 
   /**
    * Optimize knowledge request processing
+   *
+   * @param request
    */
   async optimizeKnowledgeRequest(request: KnowledgeRequest): Promise<OptimizedKnowledgeResponse> {
     const startTime = Date.now();
@@ -710,6 +724,8 @@ export class PerformanceOptimizationSystem extends EventEmitter {
 
   /**
    * Optimize knowledge sharing between agents
+   *
+   * @param sharingRequest
    */
   async optimizeKnowledgeSharing(
     sharingRequest: KnowledgeSharingRequest
@@ -951,6 +967,8 @@ export class PerformanceOptimizationSystem extends EventEmitter {
 
 /**
  * Configuration and result interfaces
+ *
+ * @example
  */
 export interface PerformanceOptimizationConfig {
   caching: CachingConfig;

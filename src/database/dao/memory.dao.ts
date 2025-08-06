@@ -1,20 +1,18 @@
 /**
  * Memory Repository Implementation
- * 
+ *
  * In-memory repository with TTL support, caching capabilities,
  * and memory management for fast data access.
  */
 
-import { BaseDao } from '../base.dao';
-import type {
-  IMemoryDao,
-  MemoryStats,
-  CustomQuery
-} from '../interfaces';
 import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
+import { BaseDao } from '../base.dao';
+import type { CustomQuery, IMemoryDao, MemoryStats } from '../interfaces';
 
 /**
  * In-memory cache entry
+ *
+ * @example
  */
 interface CacheEntry<T> {
   value: T;
@@ -26,7 +24,9 @@ interface CacheEntry<T> {
 
 /**
  * Memory repository implementation with caching and TTL support
+ *
  * @template T The entity type this repository manages
+ * @example
  */
 export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
   private memoryStore = new Map<string, CacheEntry<T>>();
@@ -64,6 +64,9 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
 
   /**
    * Set TTL (time to live) for an entity
+   *
+   * @param id
+   * @param ttlSeconds
    */
   async setTTL(id: string | number, ttlSeconds: number): Promise<void> {
     this.logger.debug(`Setting TTL for entity ${id}: ${ttlSeconds} seconds`);
@@ -94,6 +97,8 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
 
   /**
    * Get TTL for an entity
+   *
+   * @param id
    */
   async getTTL(id: string | number): Promise<number | null> {
     const key = this.getEntityKey(id);
@@ -109,6 +114,10 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
 
   /**
    * Cache entity with optional TTL
+   *
+   * @param key
+   * @param value
+   * @param ttlSeconds
    */
   async cache(key: string, value: T, ttlSeconds?: number): Promise<void> {
     this.logger.debug(`Caching value with key: ${key}`, { ttlSeconds });
@@ -121,7 +130,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
       createdAt: new Date(),
       accessedAt: new Date(),
       ttl: ttlSeconds,
-      expiresAt: ttlSeconds ? new Date(Date.now() + ttlSeconds * 1000) : undefined
+      expiresAt: ttlSeconds ? new Date(Date.now() + ttlSeconds * 1000) : undefined,
     };
 
     this.keyStore.set(key, entry);
@@ -140,12 +149,14 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
 
   /**
    * Get cached entity
+   *
+   * @param key
    */
   async getCached(key: string): Promise<T | null> {
     this.accessCount++;
-    
+
     const entry = this.keyStore.get(key);
-    
+
     if (!entry) {
       this.missCount++;
       return null;
@@ -168,6 +179,8 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
 
   /**
    * Clear cache
+   *
+   * @param pattern
    */
   async clearCache(pattern?: string): Promise<number> {
     let clearedCount = 0;
@@ -176,13 +189,13 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
       // Clear all cache entries
       clearedCount = this.keyStore.size;
       this.keyStore.clear();
-      
+
       // Clear all TTL timers
       for (const timer of this.ttlTimers.values()) {
         clearTimeout(timer);
       }
       this.ttlTimers.clear();
-      
+
       this.logger.debug(`Cleared entire cache: ${clearedCount} entries`);
     } else {
       // Clear entries matching pattern
@@ -217,14 +230,14 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
   async getMemoryStats(): Promise<MemoryStats> {
     const totalEntries = this.memoryStore.size + this.keyStore.size;
     const estimatedMemoryUsage = this.estimateMemoryUsage();
-    
+
     return {
       totalMemory: estimatedMemoryUsage,
       usedMemory: estimatedMemoryUsage,
       freeMemory: Math.max(0, this.maxSize - totalEntries) * 1024, // Rough estimate
       hitRate: this.accessCount > 0 ? (this.hitCount / this.accessCount) * 100 : 0,
       missRate: this.accessCount > 0 ? (this.missCount / this.accessCount) * 100 : 0,
-      evictions: this.evictionCount
+      evictions: this.evictionCount,
     };
   }
 
@@ -234,7 +247,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
 
   async findById(id: string | number): Promise<T | null> {
     this.accessCount++;
-    
+
     const key = this.getEntityKey(id);
     const entry = this.memoryStore.get(key);
 
@@ -271,39 +284,39 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
   async create(entity: Omit<T, 'id'>): Promise<T> {
     // Create in underlying storage first
     const created = await super.create(entity);
-    
+
     // Store in memory with default TTL
     await this.storeInMemory((created as any).id, created, this.defaultTTL);
-    
+
     return created;
   }
 
   async update(id: string | number, updates: Partial<T>): Promise<T> {
     // Update in underlying storage first
     const updated = await super.update(id, updates);
-    
+
     // Update memory cache
     await this.storeInMemory(id, updated, this.defaultTTL);
-    
+
     return updated;
   }
 
   async delete(id: string | number): Promise<boolean> {
     // Delete from underlying storage first
     const deleted = await super.delete(id);
-    
+
     if (deleted) {
       // Remove from memory
       const key = this.getEntityKey(id);
       this.memoryStore.delete(key);
-      
+
       const timer = this.ttlTimers.get(key);
       if (timer) {
         clearTimeout(timer);
         this.ttlTimers.delete(key);
       }
     }
-    
+
     return deleted;
   }
 
@@ -317,21 +330,23 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
 
   /**
    * Execute custom query - override to handle memory-specific queries
+   *
+   * @param customQuery
    */
   async executeCustomQuery<R = any>(customQuery: CustomQuery): Promise<R> {
     if (customQuery.type === 'memory') {
       const query = customQuery.query as any;
-      
+
       if (query.operation === 'get_stats') {
         const stats = await this.getMemoryStats();
         return stats as R;
       }
-      
+
       if (query.operation === 'clear_cache') {
         const cleared = await this.clearCache(query.pattern);
         return { cleared } as R;
       }
-      
+
       if (query.operation === 'set_ttl') {
         await this.setTTL(query.id, query.ttl);
         return { success: true } as R;
@@ -354,13 +369,13 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
 
     const key = this.getEntityKey(id);
     const ttl = ttlSeconds || this.defaultTTL;
-    
+
     const entry: CacheEntry<T> = {
       value: entity,
       createdAt: new Date(),
       accessedAt: new Date(),
       ttl,
-      expiresAt: new Date(Date.now() + ttl * 1000)
+      expiresAt: new Date(Date.now() + ttl * 1000),
     };
 
     this.memoryStore.set(key, entry);
@@ -375,7 +390,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
 
   private async ensureSpace(): Promise<void> {
     const totalEntries = this.memoryStore.size + this.keyStore.size;
-    
+
     if (totalEntries >= this.maxSize) {
       // Evict least recently used entries
       await this.evictLRU();
@@ -402,7 +417,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
 
     for (let i = 0; i < evictCount && i < allEntries.length; i++) {
       const { key, store } = allEntries[i];
-      
+
       if (store === 'memory') {
         this.memoryStore.delete(key);
       } else {
@@ -469,7 +484,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
     for (const key of expiredKeys) {
       this.memoryStore.delete(key);
       this.keyStore.delete(key);
-      
+
       const timer = this.ttlTimers.get(key);
       if (timer) {
         clearTimeout(timer);

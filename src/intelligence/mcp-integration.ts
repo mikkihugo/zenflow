@@ -10,6 +10,8 @@ import { ConversationMCPToolsFactory } from './conversation-framework/mcp-tools'
 
 /**
  * Enhanced Intelligence MCP Tools with ag2.ai integration
+ *
+ * @example
  */
 export class IntelligenceMCPTools {
   private conversationTools: any;
@@ -128,6 +130,9 @@ export class IntelligenceMCPTools {
 
   /**
    * Handle intelligence MCP tool calls
+   *
+   * @param name
+   * @param args
    */
   async handleToolCall(name: string, args: any): Promise<any> {
     // Handle conversation framework tools
@@ -519,6 +524,8 @@ export class IntelligenceMCPTools {
 
 /**
  * Factory for creating intelligence MCP tools
+ *
+ * @example
  */
 export class IntelligenceMCPToolsFactory {
   static async create(): Promise<IntelligenceMCPTools> {

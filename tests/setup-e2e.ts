@@ -1,6 +1,7 @@
 /**
  * End-to-End Test Setup
- * @fileoverview Setup configuration for E2E testing
+ *
+ * @file Setup configuration for E2E testing
  * Focus: Full system workflows, user scenarios, performance validation
  */
 
@@ -355,20 +356,84 @@ async function generateE2EReport() {
   };
 }
 
+/**
+ * HTTP request data type for E2E test operations
+ *
+ * @example
+ */
+interface HttpRequestData {
+  [key: string]: unknown;
+}
+
+/**
+ * HTTP client interface for E2E service interaction
+ *
+ * @example
+ */
+interface E2EHttpClient {
+  get: (path: string) => Promise<Response>;
+  post: (path: string, data?: HttpRequestData) => Promise<Response>;
+  put: (path: string, data?: HttpRequestData) => Promise<Response>;
+  delete: (path: string) => Promise<Response>;
+}
+
+/**
+ * Workflow step configuration for E2E testing
+ *
+ * @example
+ */
+interface WorkflowStep {
+  name: string;
+  type: 'http' | 'delay' | 'custom';
+  service?: string;
+  method?: 'get' | 'post' | 'put' | 'delete';
+  path?: string;
+  data?: HttpRequestData;
+  duration?: number;
+  execute?: () => Promise<unknown>;
+}
+
+/**
+ * Workflow execution result
+ *
+ * @example
+ */
+interface WorkflowResult {
+  step: string;
+  success: boolean;
+  result?: unknown;
+  error?: string;
+  duration: number;
+}
+
+/**
+ * E2E performance measurement result
+ *
+ * @example
+ */
+interface PerformanceMeasurement {
+  result: unknown;
+  duration: number;
+  performance: {
+    withinExpected: boolean;
+    efficiency: number;
+  };
+}
+
 // E2E test helpers
-global.createE2EClient = (serviceName: string) => {
+global.createE2EClient = (serviceName: string): E2EHttpClient => {
   const service = global.e2eConfig.services[serviceName];
   const baseURL = `http://localhost:${service.port}`;
 
   return {
     get: (path: string) => fetch(`${baseURL}${path}`),
-    post: (path: string, data?: any) =>
+    post: (path: string, data?: HttpRequestData) =>
       fetch(`${baseURL}${path}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: data ? JSON.stringify(data) : undefined,
       }),
-    put: (path: string, data?: any) =>
+    put: (path: string, data?: HttpRequestData) =>
       fetch(`${baseURL}${path}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -378,8 +443,8 @@ global.createE2EClient = (serviceName: string) => {
   };
 };
 
-global.runE2EWorkflow = async (workflow: any[]) => {
-  const results = [];
+global.runE2EWorkflow = async (workflow: WorkflowStep[]): Promise<WorkflowResult[]> => {
+  const results: WorkflowResult[] = [];
   for (const step of workflow) {
     const start = Date.now();
     try {
@@ -394,7 +459,7 @@ global.runE2EWorkflow = async (workflow: any[]) => {
       results.push({
         step: step.name,
         success: false,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         duration: Date.now() - start,
       });
       throw error; // Stop workflow on error
@@ -403,23 +468,35 @@ global.runE2EWorkflow = async (workflow: any[]) => {
   return results;
 };
 
-async function executeWorkflowStep(step: any) {
+async function executeWorkflowStep(step: WorkflowStep): Promise<unknown> {
   switch (step.type) {
     case 'http': {
+      if (!step.service || !step.method || !step.path) {
+        throw new Error('HTTP step requires service, method, and path');
+      }
       const client = global.createE2EClient(step.service);
       return await client[step.method](step.path, step.data);
     }
     case 'delay':
+      if (typeof step.duration !== 'number') {
+        throw new Error('Delay step requires duration');
+      }
       await new Promise((resolve) => setTimeout(resolve, step.duration));
       return { delayed: step.duration };
     case 'custom':
+      if (!step.execute) {
+        throw new Error('Custom step requires execute function');
+      }
       return await step.execute();
     default:
       throw new Error(`Unknown workflow step type: ${step.type}`);
   }
 }
 
-global.measureE2EPerformance = async (operation: () => Promise<any>, expectedMaxTime: number) => {
+global.measureE2EPerformance = async (
+  operation: () => Promise<unknown>,
+  expectedMaxTime: number
+): Promise<PerformanceMeasurement> => {
   const start = Date.now();
   const result = await operation();
   const duration = Date.now() - start;
@@ -439,38 +516,85 @@ global.measureE2EPerformance = async (operation: () => Promise<any>, expectedMax
 // Extended timeout for E2E tests
 jest.setTimeout(300000); // 5 minutes
 
-declare global {
-  var e2eConfig: {
-    services: {
-      [key: string]: { port: number; process: any };
-    };
-    timeout: {
-      startup: number;
-      operation: number;
-      shutdown: number;
-    };
-    paths: {
-      root: string;
-      bin: string;
-      dist: string;
-    };
-  };
-  var testProcesses: Map<string, ChildProcess>;
-  var testMetrics: {
-    startTime: number;
-    operations: any[];
-    performance: any;
-  };
-  var e2eTestData: {
-    users: any[];
-    swarms: any[];
-    tasks: any[];
-  };
+/**
+ * E2E service configuration
+ *
+ * @example
+ */
+interface E2EServiceConfig {
+  port: number;
+  process: ChildProcess | null;
+}
 
-  function createE2EClient(serviceName: string): any;
-  function runE2EWorkflow(workflow: any[]): Promise<any[]>;
+/**
+ * E2E test configuration
+ *
+ * @example
+ */
+interface E2EConfig {
+  services: {
+    [key: string]: E2EServiceConfig;
+  };
+  timeout: {
+    startup: number;
+    operation: number;
+    shutdown: number;
+  };
+  paths: {
+    root: string;
+    bin: string;
+    dist: string;
+  };
+}
+
+/**
+ * E2E test metrics tracking
+ *
+ * @example
+ */
+interface E2ETestMetrics {
+  startTime: number;
+  operations: Array<{
+    timestamp: number;
+    duration: number;
+    memory: NodeJS.MemoryUsage;
+  }>;
+  performance: Record<string, unknown>;
+}
+
+/**
+ * E2E test data structure
+ *
+ * @example
+ */
+interface E2ETestData {
+  users: Array<{
+    id: string;
+    name: string;
+    role: string;
+  }>;
+  swarms: Array<{
+    id: string;
+    name: string;
+    agents: number;
+  }>;
+  tasks: Array<{
+    id: string;
+    type: string;
+    priority: string;
+  }>;
+}
+
+declare global {
+  var e2eConfig: E2EConfig;
+  var testProcesses: Map<string, ChildProcess>;
+  var testMetrics: E2ETestMetrics;
+  var e2eTestData: E2ETestData;
+
+  function createE2EClient(serviceName: string): E2EHttpClient;
+  function runE2EWorkflow(workflow: WorkflowStep[]): Promise<WorkflowResult[]>;
   function measureE2EPerformance(
-    operation: () => Promise<any>,
+    operation: () => Promise<unknown>,
     expectedMaxTime: number
-  ): Promise<any>;
+  ): Promise<PerformanceMeasurement>;
 }

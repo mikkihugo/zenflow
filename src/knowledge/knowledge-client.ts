@@ -59,6 +59,8 @@ interface FACTMetrics {
 /**
  * FACT Integration class that bridges to the Python FACT system
  * Provides external knowledge gathering through MCP tools and intelligent caching
+ *
+ * @example
  */
 export class FACTIntegration extends EventEmitter {
   private config: FACTConfig;
@@ -117,6 +119,8 @@ export class FACTIntegration extends EventEmitter {
 
   /**
    * Query external knowledge using FACT system
+   *
+   * @param factQuery
    */
   async query(factQuery: FACTQuery): Promise<FACTResult> {
     if (!this.isInitialized) {
@@ -160,6 +164,9 @@ export class FACTIntegration extends EventEmitter {
 
   /**
    * Get real-time documentation for frameworks/libraries
+   *
+   * @param framework
+   * @param version
    */
   async getDocumentation(framework: string, version?: string): Promise<FACTResult> {
     const queries = {
@@ -183,6 +190,9 @@ export class FACTIntegration extends EventEmitter {
 
   /**
    * Get specific API reference information
+   *
+   * @param api
+   * @param endpoint
    */
   async getAPIReference(api: string, endpoint?: string): Promise<FACTResult> {
     const query = endpoint
@@ -198,6 +208,9 @@ export class FACTIntegration extends EventEmitter {
 
   /**
    * Get changelog and release information
+   *
+   * @param project
+   * @param version
    */
   async getChangelog(project: string, version?: string): Promise<FACTResult> {
     const query = version
@@ -213,6 +226,9 @@ export class FACTIntegration extends EventEmitter {
 
   /**
    * Search Stack Overflow and developer communities
+   *
+   * @param topic
+   * @param tags
    */
   async searchCommunityKnowledge(topic: string, tags?: string[]): Promise<FACTResult> {
     const tagStr = tags ? ` with tags: ${tags.join(', ')}` : '';
@@ -332,6 +348,9 @@ export class FACTIntegration extends EventEmitter {
 
   /**
    * Execute a FACT query through Python interface
+   *
+   * @param queryId
+   * @param factQuery
    */
   private async executeFACTQuery(queryId: string, factQuery: FACTQuery): Promise<any> {
     const command = {
@@ -348,6 +367,8 @@ export class FACTIntegration extends EventEmitter {
 
   /**
    * Execute Python command in FACT repository
+   *
+   * @param command
    */
   private async executePythonCommand(command: string): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -408,6 +429,8 @@ let globalFACTInstance: FACTIntegration | null = null;
 
 /**
  * Initialize global FACT integration
+ *
+ * @param config
  */
 export async function initializeFACT(config: FACTConfig): Promise<FACTIntegration> {
   if (globalFACTInstance) {
@@ -443,6 +466,8 @@ export async function shutdownFACT(): Promise<void> {
 export const FACTHelpers = {
   /**
    * Get React documentation
+   *
+   * @param version
    */
   async getReactDocs(version?: string): Promise<string> {
     const fact = getFACT();
@@ -454,6 +479,8 @@ export const FACTHelpers = {
 
   /**
    * Get TypeScript documentation
+   *
+   * @param version
    */
   async getTypeScriptDocs(version?: string): Promise<string> {
     const fact = getFACT();
@@ -465,6 +492,9 @@ export const FACTHelpers = {
 
   /**
    * Search for solutions to coding problems
+   *
+   * @param problem
+   * @param tags
    */
   async searchSolutions(problem: string, tags?: string[]): Promise<string> {
     const fact = getFACT();
@@ -476,6 +506,9 @@ export const FACTHelpers = {
 
   /**
    * Get API documentation
+   *
+   * @param api
+   * @param endpoint
    */
   async getAPIDocs(api: string, endpoint?: string): Promise<string> {
     const fact = getFACT();

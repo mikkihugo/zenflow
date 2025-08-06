@@ -1,20 +1,21 @@
 /**
  * Data Service Implementation
- * 
+ *
  * Service implementation for data management operations, including
  * data processing, validation, caching, and persistence operations.
  * Integrates with existing WebDataService and DocumentService patterns.
  */
 
-import { BaseService } from './base-service';
-import type { DataServiceConfig, ServiceOperationOptions } from '../types';
-import type { IService } from '../core/interfaces';
-
 // Import existing data services for integration
 import { WebDataService } from '../../web/web-data-service';
+import type { IService } from '../core/interfaces';
+import type { DataServiceConfig, ServiceOperationOptions } from '../types';
+import { BaseService } from './base-service';
 
 /**
  * Data service configuration interface
+ *
+ * @example
  */
 export interface DataServiceOptions {
   enableCaching?: boolean;
@@ -28,6 +29,8 @@ export interface DataServiceOptions {
 
 /**
  * Data service implementation
+ *
+ * @example
  */
 export class DataService extends BaseService implements IService {
   private webDataService?: WebDataService;
@@ -37,7 +40,7 @@ export class DataService extends BaseService implements IService {
 
   constructor(config: DataServiceConfig) {
     super(config.name, config.type, config);
-    
+
     // Add data service capabilities
     this.addCapability('data-processing');
     this.addCapability('data-validation');
@@ -52,40 +55,40 @@ export class DataService extends BaseService implements IService {
 
   protected async doInitialize(): Promise<void> {
     this.logger.info(`Initializing data service: ${this.name}`);
-    
+
     const config = this.config as DataServiceConfig;
-    
+
     // Initialize WebDataService integration
     if (config.options?.enableWebData !== false) {
       this.webDataService = new WebDataService();
       this.logger.debug('WebDataService integration enabled');
     }
-    
+
     // Initialize caching if enabled
     if (config.caching?.enabled) {
       this.logger.debug(`Caching enabled with TTL: ${config.caching.ttl || 3600}s`);
     }
-    
+
     // Initialize validation if enabled
     if (config.validation?.enabled) {
       this.initializeValidators();
       this.logger.debug('Data validation enabled');
     }
-    
+
     // Initialize persistence if enabled
     if (config.options?.enablePersistence) {
       this.initializePersistence();
       this.logger.debug('Data persistence enabled');
     }
-    
+
     this.logger.info(`Data service ${this.name} initialized successfully`);
   }
 
   protected async doStart(): Promise<void> {
     this.logger.info(`Starting data service: ${this.name}`);
-    
+
     const config = this.config as DataServiceConfig;
-    
+
     // Start persistence timer if enabled
     if (config.options?.enablePersistence && config.options?.persistenceInterval) {
       this.persistenceTimer = setInterval(
@@ -94,38 +97,38 @@ export class DataService extends BaseService implements IService {
       );
       this.logger.debug('Persistence timer started');
     }
-    
+
     this.logger.info(`Data service ${this.name} started successfully`);
   }
 
   protected async doStop(): Promise<void> {
     this.logger.info(`Stopping data service: ${this.name}`);
-    
+
     // Stop persistence timer
     if (this.persistenceTimer) {
       clearInterval(this.persistenceTimer);
       this.persistenceTimer = undefined;
       this.logger.debug('Persistence timer stopped');
     }
-    
+
     // Persist any remaining data
     await this.persistData();
-    
+
     this.logger.info(`Data service ${this.name} stopped successfully`);
   }
 
   protected async doDestroy(): Promise<void> {
     this.logger.info(`Destroying data service: ${this.name}`);
-    
+
     // Clear cache
     this.cache.clear();
-    
+
     // Clear validators
     this.validators.clear();
-    
+
     // Clear web data service
     this.webDataService = undefined;
-    
+
     this.logger.info(`Data service ${this.name} destroyed successfully`);
   }
 
@@ -135,27 +138,31 @@ export class DataService extends BaseService implements IService {
       if (this.lifecycleStatus !== 'running') {
         return false;
       }
-      
+
       // Check cache health (if enabled)
       const config = this.config as DataServiceConfig;
       if (config.caching?.enabled) {
         // Clean expired cache entries
         this.cleanExpiredCache();
-        
+
         // Check cache size limits
         const maxSize = config.caching.maxSize || 1000;
-        if (this.cache.size > maxSize * 1.1) { // Allow 10% overage
+        if (this.cache.size > maxSize * 1.1) {
+          // Allow 10% overage
           this.logger.warn(`Cache size (${this.cache.size}) exceeds limit (${maxSize})`);
           return false;
         }
       }
-      
+
       // Check web data service health
       if (this.webDataService) {
         try {
           const stats = this.webDataService.getServiceStats();
-          if (stats.averageResponseTime > 5000) { // 5 second threshold
-            this.logger.warn(`Web data service response time too high: ${stats.averageResponseTime}ms`);
+          if (stats.averageResponseTime > 5000) {
+            // 5 second threshold
+            this.logger.warn(
+              `Web data service response time too high: ${stats.averageResponseTime}ms`
+            );
             return false;
           }
         } catch (error) {
@@ -163,7 +170,7 @@ export class DataService extends BaseService implements IService {
           return false;
         }
       }
-      
+
       return true;
     } catch (error) {
       this.logger.error(`Health check failed for data service ${this.name}:`, error);
@@ -177,51 +184,51 @@ export class DataService extends BaseService implements IService {
     options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing data operation: ${operation}`);
-    
+
     switch (operation) {
       case 'get':
-        return await this.getData(params?.key, params?.useCache) as T;
-        
+        return (await this.getData(params?.key, params?.useCache)) as T;
+
       case 'set':
-        return await this.setData(params?.key, params?.value, params?.ttl) as T;
-        
+        return (await this.setData(params?.key, params?.value, params?.ttl)) as T;
+
       case 'delete':
-        return await this.deleteData(params?.key) as T;
-        
+        return (await this.deleteData(params?.key)) as T;
+
       case 'validate':
-        return await this.validateData(params?.type, params?.data) as T;
-        
+        return (await this.validateData(params?.type, params?.data)) as T;
+
       case 'process':
-        return await this.processData(params?.data, params?.processingType) as T;
-        
+        return (await this.processData(params?.data, params?.processingType)) as T;
+
       case 'cache-stats':
         return this.getCacheStats() as T;
-        
+
       case 'clear-cache':
-        return await this.clearCache() as T;
-        
+        return (await this.clearCache()) as T;
+
       // Web data service operations
       case 'system-status':
-        return await this.getSystemStatus() as T;
-        
+        return (await this.getSystemStatus()) as T;
+
       case 'swarms':
-        return await this.getSwarms() as T;
-        
+        return (await this.getSwarms()) as T;
+
       case 'create-swarm':
-        return await this.createSwarm(params) as T;
-        
+        return (await this.createSwarm(params)) as T;
+
       case 'tasks':
-        return await this.getTasks() as T;
-        
+        return (await this.getTasks()) as T;
+
       case 'create-task':
-        return await this.createTask(params) as T;
-        
+        return (await this.createTask(params)) as T;
+
       case 'documents':
-        return await this.getDocuments() as T;
-        
+        return (await this.getDocuments()) as T;
+
       case 'execute-command':
-        return await this.executeCommand(params?.command, params?.args) as T;
-        
+        return (await this.executeCommand(params?.command, params?.args)) as T;
+
       default:
         throw new Error(`Unknown data operation: ${operation}`);
     }
@@ -233,14 +240,17 @@ export class DataService extends BaseService implements IService {
 
   /**
    * Get data with optional caching
+   *
+   * @param key
+   * @param useCache
    */
   private async getData(key: string, useCache: boolean = true): Promise<any> {
     if (!key) {
       throw new Error('Data key is required');
     }
-    
+
     const config = this.config as DataServiceConfig;
-    
+
     // Check cache first if enabled and requested
     if (useCache && config.caching?.enabled) {
       const cached = this.cache.get(key);
@@ -249,35 +259,39 @@ export class DataService extends BaseService implements IService {
         return cached.data;
       }
     }
-    
+
     // Simulate data retrieval (in real implementation, this would query a database)
     this.logger.debug(`Retrieving data for key: ${key}`);
     const data = await this.retrieveDataFromSource(key);
-    
+
     // Cache the result if caching is enabled
     if (config.caching?.enabled) {
       const ttl = config.caching.ttl || 3600;
       this.cache.set(key, {
         data,
         timestamp: Date.now(),
-        ttl: ttl * 1000 // Convert to milliseconds
+        ttl: ttl * 1000, // Convert to milliseconds
       });
       this.logger.debug(`Cached data for key: ${key}`);
     }
-    
+
     return data;
   }
 
   /**
    * Set data with optional caching
+   *
+   * @param key
+   * @param value
+   * @param ttl
    */
   private async setData(key: string, value: any, ttl?: number): Promise<boolean> {
     if (!key) {
       throw new Error('Data key is required');
     }
-    
+
     const config = this.config as DataServiceConfig;
-    
+
     // Validate data if validation is enabled
     if (config.validation?.enabled) {
       const isValid = await this.validateData('generic', value);
@@ -285,46 +299,51 @@ export class DataService extends BaseService implements IService {
         throw new Error(`Data validation failed for key: ${key}`);
       }
     }
-    
+
     // Store data (simulate data storage)
     this.logger.debug(`Storing data for key: ${key}`);
     await this.storeDataToSource(key, value);
-    
+
     // Update cache if enabled
     if (config.caching?.enabled) {
       const cacheTTL = ttl || config.caching.ttl || 3600;
       this.cache.set(key, {
         data: value,
         timestamp: Date.now(),
-        ttl: cacheTTL * 1000 // Convert to milliseconds
+        ttl: cacheTTL * 1000, // Convert to milliseconds
       });
       this.logger.debug(`Updated cache for key: ${key}`);
     }
-    
+
     return true;
   }
 
   /**
    * Delete data and remove from cache
+   *
+   * @param key
    */
   private async deleteData(key: string): Promise<boolean> {
     if (!key) {
       throw new Error('Data key is required');
     }
-    
+
     this.logger.debug(`Deleting data for key: ${key}`);
-    
+
     // Remove from cache
     this.cache.delete(key);
-    
+
     // Remove from data source (simulate)
     await this.deleteDataFromSource(key);
-    
+
     return true;
   }
 
   /**
    * Validate data using registered validators
+   *
+   * @param type
+   * @param data
    */
   private async validateData(type: string, data: any): Promise<boolean> {
     const validator = this.validators.get(type);
@@ -332,7 +351,7 @@ export class DataService extends BaseService implements IService {
       this.logger.warn(`No validator found for type: ${type}`);
       return true; // Allow if no validator
     }
-    
+
     try {
       return validator(data);
     } catch (error) {
@@ -343,20 +362,26 @@ export class DataService extends BaseService implements IService {
 
   /**
    * Process data with different processing types
+   *
+   * @param data
+   * @param processingType
    */
-  private async processData(data: any, processingType: 'transform' | 'aggregate' | 'filter' = 'transform'): Promise<any> {
+  private async processData(
+    data: any,
+    processingType: 'transform' | 'aggregate' | 'filter' = 'transform'
+  ): Promise<any> {
     this.logger.debug(`Processing data with type: ${processingType}`);
-    
+
     switch (processingType) {
       case 'transform':
         return this.transformData(data);
-        
+
       case 'aggregate':
         return this.aggregateData(data);
-        
+
       case 'filter':
         return this.filterData(data);
-        
+
       default:
         throw new Error(`Unknown processing type: ${processingType}`);
     }
@@ -373,12 +398,12 @@ export class DataService extends BaseService implements IService {
   } {
     const config = this.config as DataServiceConfig;
     const maxSize = config.caching?.maxSize || 1000;
-    
+
     return {
       size: this.cache.size,
       maxSize,
       hitRate: 0.85, // Simulate hit rate
-      memoryUsage: this.estimateCacheMemoryUsage()
+      memoryUsage: this.estimateCacheMemoryUsage(),
     };
   }
 
@@ -479,22 +504,22 @@ export class DataService extends BaseService implements IService {
   private cleanExpiredCache(): void {
     const now = Date.now();
     const expired: string[] = [];
-    
+
     for (const [key, cached] of this.cache.entries()) {
       if (now - cached.timestamp > cached.ttl) {
         expired.push(key);
       }
     }
-    
-    expired.forEach(key => this.cache.delete(key));
-    
+
+    expired.forEach((key) => this.cache.delete(key));
+
     if (expired.length > 0) {
       this.logger.debug(`Cleaned ${expired.length} expired cache entries`);
     }
   }
 
   private isCacheValid(cached: { data: any; timestamp: number; ttl: number }): boolean {
-    return (Date.now() - cached.timestamp) < cached.ttl;
+    return Date.now() - cached.timestamp < cached.ttl;
   }
 
   private estimateCacheMemoryUsage(): number {
@@ -504,8 +529,8 @@ export class DataService extends BaseService implements IService {
 
   private async retrieveDataFromSource(key: string): Promise<any> {
     // Simulate data retrieval from database/API
-    await new Promise(resolve => setTimeout(resolve, Math.random() * 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, Math.random() * 100));
+
     // Return mock data
     return {
       key,
@@ -513,36 +538,36 @@ export class DataService extends BaseService implements IService {
       timestamp: new Date().toISOString(),
       metadata: {
         source: 'data-service',
-        version: '1.0.0'
-      }
+        version: '1.0.0',
+      },
     };
   }
 
   private async storeDataToSource(key: string, value: any): Promise<void> {
     // Simulate data storage to database
-    await new Promise(resolve => setTimeout(resolve, Math.random() * 50));
+    await new Promise((resolve) => setTimeout(resolve, Math.random() * 50));
     this.logger.debug(`Stored data for key ${key} to data source`);
   }
 
   private async deleteDataFromSource(key: string): Promise<void> {
     // Simulate data deletion from database
-    await new Promise(resolve => setTimeout(resolve, Math.random() * 50));
+    await new Promise((resolve) => setTimeout(resolve, Math.random() * 50));
     this.logger.debug(`Deleted data for key ${key} from data source`);
   }
 
   private transformData(data: any): any {
     // Simple data transformation
     if (Array.isArray(data)) {
-      return data.map(item => ({
+      return data.map((item) => ({
         ...item,
         transformed: true,
-        transformedAt: new Date().toISOString()
+        transformedAt: new Date().toISOString(),
       }));
     } else if (typeof data === 'object' && data !== null) {
       return {
         ...data,
         transformed: true,
-        transformedAt: new Date().toISOString()
+        transformedAt: new Date().toISOString(),
       };
     }
     return data;
@@ -552,8 +577,8 @@ export class DataService extends BaseService implements IService {
     if (Array.isArray(data)) {
       return {
         count: data.length,
-        types: [...new Set(data.map(item => typeof item))],
-        aggregatedAt: new Date().toISOString()
+        types: [...new Set(data.map((item) => typeof item))],
+        aggregatedAt: new Date().toISOString(),
       };
     }
     return { count: 1, type: typeof data, aggregatedAt: new Date().toISOString() };
@@ -561,7 +586,7 @@ export class DataService extends BaseService implements IService {
 
   private filterData(data: any): any {
     if (Array.isArray(data)) {
-      return data.filter(item => item !== null && item !== undefined);
+      return data.filter((item) => item !== null && item !== undefined);
     }
     return data !== null && data !== undefined ? data : null;
   }

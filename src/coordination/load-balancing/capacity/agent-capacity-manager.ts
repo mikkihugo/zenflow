@@ -85,6 +85,8 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Get current capacity metrics for an agent
+   *
+   * @param agentId
    */
   public async getCapacity(agentId: string): Promise<CapacityMetrics> {
     const profile = this.getOrCreateProfile(agentId);
@@ -104,6 +106,9 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Predict capacity for a future time horizon
+   *
+   * @param agentId
+   * @param timeHorizon
    */
   public async predictCapacity(agentId: string, timeHorizon: number): Promise<number> {
     const profile = this.getOrCreateProfile(agentId);
@@ -116,6 +121,9 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Update capacity based on new metrics
+   *
+   * @param agentId
+   * @param metrics
    */
   public async updateCapacity(agentId: string, metrics: LoadMetrics): Promise<void> {
     const profile = this.getOrCreateProfile(agentId);
@@ -154,6 +162,9 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Check if capacity is available for required resources
+   *
+   * @param agentId
+   * @param requiredResources
    */
   public async isCapacityAvailable(
     agentId: string,
@@ -183,6 +194,8 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Get or create capacity profile for an agent
+   *
+   * @param agentId
    */
   private getOrCreateProfile(agentId: string): AgentCapacityProfile {
     if (!this.capacityProfiles.has(agentId)) {
@@ -218,6 +231,8 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Update capacity profile with latest information
+   *
+   * @param profile
    */
   private async updateProfile(profile: AgentCapacityProfile): Promise<void> {
     // Get latest resource metrics
@@ -234,6 +249,9 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Calculate optimal capacity based on current performance
+   *
+   * @param profile
+   * @param metrics
    */
   private async calculateOptimalCapacity(
     profile: AgentCapacityProfile,
@@ -280,6 +298,8 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Calculate resource utilization score
+   *
+   * @param metrics
    */
   private calculateResourceScore(metrics: LoadMetrics): number {
     const weights = this.config.constraintWeights;
@@ -300,6 +320,8 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Calculate performance score
+   *
+   * @param performance
    */
   private calculatePerformanceScore(performance: PerformanceMetrics): number {
     const errorScore = Math.max(0, 1 - performance.errorRate);
@@ -311,6 +333,8 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Calculate utilization pattern score
+   *
+   * @param profile
    */
   private calculateUtilizationScore(profile: AgentCapacityProfile): number {
     const history = profile.utilizationHistory;
@@ -333,6 +357,8 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Calculate demand prediction score
+   *
+   * @param profile
    */
   private async calculateDemandScore(profile: AgentCapacityProfile): Promise<number> {
     const predictedDemand = await this.capacityPredictor.predictDemand(
@@ -357,6 +383,10 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Apply constraints to capacity calculation
+   *
+   * @param profile
+   * @param proposedCapacity
+   * @param metrics
    */
   private applyConstraints(
     profile: AgentCapacityProfile,
@@ -396,6 +426,9 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Evaluate resource constraints
+   *
+   * @param profile
+   * @param metrics
    */
   private evaluateResourceConstraints(
     profile: AgentCapacityProfile,
@@ -457,6 +490,9 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Calculate constraint severity based on threshold violation
+   *
+   * @param currentValue
+   * @param threshold
    */
   private calculateConstraintSeverity(
     currentValue: number,
@@ -472,6 +508,9 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Update performance metrics
+   *
+   * @param profile
+   * @param metrics
    */
   private updatePerformanceMetrics(profile: AgentCapacityProfile, metrics: LoadMetrics): void {
     const perf = profile.performanceMetrics;
@@ -500,6 +539,9 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Update adaptive thresholds based on performance
+   *
+   * @param profile
+   * @param metrics
    */
   private updateAdaptiveThresholds(profile: AgentCapacityProfile, metrics: LoadMetrics): void {
     const thresholds = profile.adaptiveThresholds;
@@ -519,6 +561,8 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Calculate current utilization percentage
+   *
+   * @param profile
    */
   private calculateCurrentUtilization(profile: AgentCapacityProfile): number {
     const history = profile.utilizationHistory;
@@ -530,6 +574,8 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Calculate available capacity
+   *
+   * @param profile
    */
   private calculateAvailableCapacity(profile: AgentCapacityProfile): number {
     const buffer = profile.currentCapacity * this.config.capacityBufferRatio;
@@ -541,6 +587,8 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Calculate capacity trend
+   *
+   * @param profile
    */
   private calculateCapacityTrend(
     profile: AgentCapacityProfile
@@ -563,6 +611,10 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Adjust agent capacity
+   *
+   * @param profile
+   * @param newCapacity
+   * @param reason
    */
   private async adjustCapacity(
     profile: AgentCapacityProfile,
@@ -592,6 +644,8 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Calculate confidence in capacity adjustment
+   *
+   * @param profile
    */
   private calculateAdjustmentConfidence(profile: AgentCapacityProfile): number {
     const historyLength = profile.utilizationHistory.length;
@@ -604,6 +658,8 @@ export class AgentCapacityManager implements CapacityManager {
 
   /**
    * Calculate performance consistency
+   *
+   * @param profile
    */
   private calculatePerformanceConsistency(profile: AgentCapacityProfile): number {
     const perf = profile.performanceMetrics;

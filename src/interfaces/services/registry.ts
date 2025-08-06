@@ -1,38 +1,26 @@
 /**
  * USL Service Registry - Complete Service Management System
- * 
+ *
  * Advanced service registry providing comprehensive service management,
  * health monitoring, lifecycle orchestration, and service discovery
  * following the same patterns as UACL Agent 6.
  */
 
+import { EventEmitter } from 'events';
+import { createLogger, type Logger } from '../../utils/logger';
 import type {
   IService,
   IServiceFactory,
   IServiceRegistry,
   ServiceConfig,
-  ServiceStatus,
-  ServiceMetrics,
-  ServiceLifecycleStatus,
   ServiceEvent,
-  ServiceEventType
+  ServiceEventType,
+  ServiceLifecycleStatus,
+  ServiceMetrics,
+  ServiceStatus,
 } from './core/interfaces';
-
-import {
-  ServiceType,
-  ServicePriority,
-  ServiceEnvironment,
-  type AnyServiceConfig
-} from './types';
-
-import {
-  ServiceError,
-  ServiceInitializationError,
-  ServiceOperationError
-} from './core/interfaces';
-
-import { createLogger, type Logger } from '../../utils/logger';
-import { EventEmitter } from 'events';
+import { ServiceError, ServiceInitializationError, ServiceOperationError } from './core/interfaces';
+import { type AnyServiceConfig, ServiceEnvironment, ServicePriority, ServiceType } from './types';
 
 export interface ServiceRegistryConfig {
   /** Health monitoring configuration */
@@ -46,7 +34,7 @@ export interface ServiceRegistryConfig {
       resourceUsage: number; // percentage
     };
   };
-  
+
   /** Metrics collection configuration */
   metricsCollection: {
     enabled: boolean;
@@ -54,7 +42,7 @@ export interface ServiceRegistryConfig {
     retention: number; // ms
     aggregationWindow: number; // ms
   };
-  
+
   /** Service discovery configuration */
   discovery: {
     enabled: boolean;
@@ -62,7 +50,7 @@ export interface ServiceRegistryConfig {
     advertisementInterval: number; // ms
     timeoutThreshold: number; // ms
   };
-  
+
   /** Auto-recovery configuration */
   autoRecovery: {
     enabled: boolean;
@@ -70,7 +58,7 @@ export interface ServiceRegistryConfig {
     backoffMultiplier: number;
     recoveryTimeout: number; // ms
   };
-  
+
   /** Service dependency management */
   dependencyManagement: {
     enabled: boolean;
@@ -78,7 +66,7 @@ export interface ServiceRegistryConfig {
     circularDependencyCheck: boolean;
     dependencyHealthCheck: boolean;
   };
-  
+
   /** Performance optimization */
   performance: {
     enableCaching: boolean;
@@ -101,16 +89,19 @@ export interface ServiceDiscoveryInfo {
 }
 
 export interface ServiceDependencyGraph {
-  nodes: Map<string, {
-    service: IService;
-    dependencies: Set<string>;
-    dependents: Set<string>;
-    level: number;
-  }>;
-  
+  nodes: Map<
+    string,
+    {
+      service: IService;
+      dependencies: Set<string>;
+      dependents: Set<string>;
+      level: number;
+    }
+  >;
+
   // Circular dependency detection
   cycles: string[][];
-  
+
   // Topological ordering for startup/shutdown
   startupOrder: string[];
   shutdownOrder: string[];
@@ -118,6 +109,8 @@ export interface ServiceDependencyGraph {
 
 /**
  * Enhanced Service Registry with comprehensive service management capabilities
+ *
+ * @example
  */
 export class EnhancedServiceRegistry extends EventEmitter implements IServiceRegistry {
   private factories = new Map<string, IServiceFactory>();
@@ -128,24 +121,27 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
   private metricsHistory = new Map<string, ServiceMetrics[]>();
   private config: ServiceRegistryConfig;
   private logger: Logger;
-  
+
   // Monitoring intervals
   private healthMonitoringInterval?: NodeJS.Timeout;
   private metricsCollectionInterval?: NodeJS.Timeout;
   private discoveryInterval?: NodeJS.Timeout;
-  
+
   // Performance tracking
-  private operationMetrics = new Map<string, {
-    totalOperations: number;
-    successfulOperations: number;
-    averageLatency: number;
-    lastOperation: Date;
-  }>();
+  private operationMetrics = new Map<
+    string,
+    {
+      totalOperations: number;
+      successfulOperations: number;
+      averageLatency: number;
+      lastOperation: Date;
+    }
+  >();
 
   constructor(config?: Partial<ServiceRegistryConfig>) {
     super();
     this.logger = createLogger('EnhancedServiceRegistry');
-    
+
     this.config = {
       healthMonitoring: {
         enabled: config?.healthMonitoring?.enabled ?? true,
@@ -154,39 +150,39 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
         alertThresholds: {
           errorRate: config?.healthMonitoring?.alertThresholds?.errorRate ?? 5,
           responseTime: config?.healthMonitoring?.alertThresholds?.responseTime ?? 1000,
-          resourceUsage: config?.healthMonitoring?.alertThresholds?.resourceUsage ?? 80
-        }
+          resourceUsage: config?.healthMonitoring?.alertThresholds?.resourceUsage ?? 80,
+        },
       },
       metricsCollection: {
         enabled: config?.metricsCollection?.enabled ?? true,
         interval: config?.metricsCollection?.interval ?? 10000,
         retention: config?.metricsCollection?.retention ?? 86400000, // 24 hours
-        aggregationWindow: config?.metricsCollection?.aggregationWindow ?? 300000 // 5 minutes
+        aggregationWindow: config?.metricsCollection?.aggregationWindow ?? 300000, // 5 minutes
       },
       discovery: {
         enabled: config?.discovery?.enabled ?? true,
         heartbeatInterval: config?.discovery?.heartbeatInterval ?? 10000,
         advertisementInterval: config?.discovery?.advertisementInterval ?? 30000,
-        timeoutThreshold: config?.discovery?.timeoutThreshold ?? 60000
+        timeoutThreshold: config?.discovery?.timeoutThreshold ?? 60000,
       },
       autoRecovery: {
         enabled: config?.autoRecovery?.enabled ?? true,
         maxRetries: config?.autoRecovery?.maxRetries ?? 3,
         backoffMultiplier: config?.autoRecovery?.backoffMultiplier ?? 2,
-        recoveryTimeout: config?.autoRecovery?.recoveryTimeout ?? 30000
+        recoveryTimeout: config?.autoRecovery?.recoveryTimeout ?? 30000,
       },
       dependencyManagement: {
         enabled: config?.dependencyManagement?.enabled ?? true,
         resolutionTimeout: config?.dependencyManagement?.resolutionTimeout ?? 30000,
         circularDependencyCheck: config?.dependencyManagement?.circularDependencyCheck ?? true,
-        dependencyHealthCheck: config?.dependencyManagement?.dependencyHealthCheck ?? true
+        dependencyHealthCheck: config?.dependencyManagement?.dependencyHealthCheck ?? true,
       },
       performance: {
         enableCaching: config?.performance?.enableCaching ?? true,
         enableConnectionPooling: config?.performance?.enableConnectionPooling ?? true,
         enableServiceMemoization: config?.performance?.enableServiceMemoization ?? true,
-        maxConcurrentOperations: config?.performance?.maxConcurrentOperations ?? 50
-      }
+        maxConcurrentOperations: config?.performance?.maxConcurrentOperations ?? 50,
+      },
     };
 
     this.initializeMonitoring();
@@ -198,12 +194,12 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
   registerFactory<T extends ServiceConfig>(type: string, factory: IServiceFactory<T>): void {
     this.logger.info(`Registering factory for service type: ${type}`);
-    
+
     this.factories.set(type, factory);
-    
+
     // Set up factory event handling
     this.setupFactoryEventHandling(type, factory);
-    
+
     this.emit('factory-registered', type, factory);
     this.logger.debug(`Factory registered successfully: ${type}`);
   }
@@ -218,14 +214,14 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
   unregisterFactory(type: string): void {
     this.logger.info(`Unregistering factory for service type: ${type}`);
-    
+
     const factory = this.factories.get(type);
     if (factory) {
       // Stop all services from this factory
-      factory.list().forEach(service => {
+      factory.list().forEach((service) => {
         this.removeServiceFromRegistry(service.name);
       });
-      
+
       this.factories.delete(type);
       this.emit('factory-unregistered', type);
       this.logger.debug(`Factory unregistered successfully: ${type}`);
@@ -238,19 +234,19 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
   getAllServices(): Map<string, IService> {
     const allServices = new Map<string, IService>();
-    
+
     // Collect services from all factories
     for (const factory of this.factories.values()) {
-      factory.list().forEach(service => {
+      factory.list().forEach((service) => {
         allServices.set(service.name, service);
       });
     }
-    
+
     // Include directly registered services
     this.services.forEach((service, name) => {
       allServices.set(name, service);
     });
-    
+
     return allServices;
   }
 
@@ -259,7 +255,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     if (this.services.has(name)) {
       return this.services.get(name);
     }
-    
+
     // Search in all factories
     for (const factory of this.factories.values()) {
       const service = factory.get(name);
@@ -271,7 +267,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
         return service;
       }
     }
-    
+
     return undefined;
   }
 
@@ -280,23 +276,22 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     if (factory) {
       return factory.list();
     }
-    
+
     // Fallback: search all services
-    return Array.from(this.getAllServices().values())
-      .filter(service => service.type === type);
+    return Array.from(this.getAllServices().values()).filter((service) => service.type === type);
   }
 
   getServicesByStatus(status: ServiceLifecycleStatus): IService[] {
     const matchingServices: IService[] = [];
     const allServices = this.getAllServices();
-    
+
     for (const service of allServices.values()) {
       const serviceStatus = this.healthStatuses.get(service.name);
       if (serviceStatus && serviceStatus.lifecycle === status) {
         matchingServices.push(service);
       }
     }
-    
+
     return matchingServices;
   }
 
@@ -306,60 +301,58 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
   async startAllServices(): Promise<void> {
     this.logger.info('Starting all services with dependency resolution...');
-    
+
     if (this.config.dependencyManagement.enabled) {
       await this.buildDependencyGraph();
       await this.startServicesInOrder();
     } else {
       await this.startServicesParallel();
     }
-    
+
     this.logger.info('All services started successfully');
   }
 
   async stopAllServices(): Promise<void> {
     this.logger.info('Stopping all services in reverse dependency order...');
-    
+
     if (this.dependencyGraph) {
       await this.stopServicesInOrder();
     } else {
       await this.stopServicesParallel();
     }
-    
+
     this.logger.info('All services stopped successfully');
   }
 
   async healthCheckAll(): Promise<Map<string, ServiceStatus>> {
     const results = new Map<string, ServiceStatus>();
     const allServices = this.getAllServices();
-    
-    const healthCheckPromises = Array.from(allServices.entries()).map(
-      async ([name, service]) => {
-        try {
-          const status = await this.performServiceHealthCheck(service);
-          results.set(name, status);
-          this.healthStatuses.set(name, status);
-        } catch (error) {
-          this.logger.error(`Health check failed for service ${name}:`, error);
-          
-          const errorStatus: ServiceStatus = {
-            name,
-            type: service.type,
-            lifecycle: 'error',
-            health: 'unhealthy',
-            lastCheck: new Date(),
-            uptime: 0,
-            errorCount: 1,
-            errorRate: 100,
-            metadata: { error: error instanceof Error ? error.message : String(error) }
-          };
-          
-          results.set(name, errorStatus);
-          this.healthStatuses.set(name, errorStatus);
-        }
+
+    const healthCheckPromises = Array.from(allServices.entries()).map(async ([name, service]) => {
+      try {
+        const status = await this.performServiceHealthCheck(service);
+        results.set(name, status);
+        this.healthStatuses.set(name, status);
+      } catch (error) {
+        this.logger.error(`Health check failed for service ${name}:`, error);
+
+        const errorStatus: ServiceStatus = {
+          name,
+          type: service.type,
+          lifecycle: 'error',
+          health: 'unhealthy',
+          lastCheck: new Date(),
+          uptime: 0,
+          errorCount: 1,
+          errorRate: 100,
+          metadata: { error: error instanceof Error ? error.message : String(error) },
+        };
+
+        results.set(name, errorStatus);
+        this.healthStatuses.set(name, errorStatus);
       }
-    );
-    
+    });
+
     await Promise.allSettled(healthCheckPromises);
     return results;
   }
@@ -373,54 +366,56 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
   }> {
     const allServices = this.getAllServices();
     const healthStatuses = await this.healthCheckAll();
-    
+
     const totalServices = allServices.size;
-    const runningServices = Array.from(healthStatuses.values())
-      .filter(status => status.lifecycle === 'running').length;
-    const healthyServices = Array.from(healthStatuses.values())
-      .filter(status => status.health === 'healthy').length;
-    const errorServices = Array.from(healthStatuses.values())
-      .filter(status => status.lifecycle === 'error' || status.health === 'unhealthy').length;
-    
+    const runningServices = Array.from(healthStatuses.values()).filter(
+      (status) => status.lifecycle === 'running'
+    ).length;
+    const healthyServices = Array.from(healthStatuses.values()).filter(
+      (status) => status.health === 'healthy'
+    ).length;
+    const errorServices = Array.from(healthStatuses.values()).filter(
+      (status) => status.lifecycle === 'error' || status.health === 'unhealthy'
+    ).length;
+
     // Collect metrics from all services
     const aggregatedMetrics: ServiceMetrics[] = [];
-    const metricsPromises = Array.from(allServices.values()).map(
-      async (service) => {
-        try {
-          const metrics = await service.getMetrics();
-          aggregatedMetrics.push(metrics);
-        } catch (error) {
-          this.logger.error(`Failed to get metrics for service ${service.name}:`, error);
-        }
+    const metricsPromises = Array.from(allServices.values()).map(async (service) => {
+      try {
+        const metrics = await service.getMetrics();
+        aggregatedMetrics.push(metrics);
+      } catch (error) {
+        this.logger.error(`Failed to get metrics for service ${service.name}:`, error);
       }
-    );
-    
+    });
+
     await Promise.allSettled(metricsPromises);
-    
+
     return {
       totalServices,
       runningServices,
       healthyServices,
       errorServices,
-      aggregatedMetrics
+      aggregatedMetrics,
     };
   }
 
   async shutdownAll(): Promise<void> {
     this.logger.info('Shutting down service registry...');
-    
+
     try {
       // Stop monitoring
       this.stopMonitoring();
-      
+
       // Stop all services
       await this.stopAllServices();
-      
+
       // Shutdown all factories
-      const shutdownPromises = Array.from(this.factories.values())
-        .map(factory => factory.shutdown());
+      const shutdownPromises = Array.from(this.factories.values()).map((factory) =>
+        factory.shutdown()
+      );
       await Promise.allSettled(shutdownPromises);
-      
+
       // Clear all registries
       this.factories.clear();
       this.services.clear();
@@ -428,10 +423,10 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
       this.healthStatuses.clear();
       this.metricsHistory.clear();
       this.operationMetrics.clear();
-      
+
       // Remove all listeners
       this.removeAllListeners();
-      
+
       this.logger.info('Service registry shutdown completed');
     } catch (error) {
       this.logger.error('Error during service registry shutdown:', error);
@@ -450,47 +445,45 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     tags?: string[];
   }): IService[] {
     const allServices = Array.from(this.getAllServices().values());
-    
+
     if (!criteria) {
       return allServices;
     }
-    
-    return allServices.filter(service => {
+
+    return allServices.filter((service) => {
       const discoveryInfo = this.serviceDiscovery.get(service.name);
-      
+
       // Filter by type
       if (criteria.type && service.type !== criteria.type) {
         return false;
       }
-      
+
       // Filter by capabilities
       if (criteria.capabilities) {
         const serviceCapabilities = service.getCapabilities();
-        const hasAllCapabilities = criteria.capabilities.every(cap => 
+        const hasAllCapabilities = criteria.capabilities.every((cap) =>
           serviceCapabilities.includes(cap)
         );
         if (!hasAllCapabilities) {
           return false;
         }
       }
-      
+
       // Filter by health
       if (criteria.health && discoveryInfo) {
         if (discoveryInfo.health !== criteria.health) {
           return false;
         }
       }
-      
+
       // Filter by tags
       if (criteria.tags && discoveryInfo) {
-        const hasAllTags = criteria.tags.every(tag => 
-          discoveryInfo.tags.includes(tag)
-        );
+        const hasAllTags = criteria.tags.every((tag) => discoveryInfo.tags.includes(tag));
         if (!hasAllTags) {
           return false;
         }
       }
-      
+
       return true;
     });
   }
@@ -504,6 +497,9 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
   /**
    * Register service for discovery
+   *
+   * @param service
+   * @param metadata
    */
   registerServiceForDiscovery(service: IService, metadata?: Record<string, any>): void {
     const discoveryInfo: ServiceDiscoveryInfo = {
@@ -514,15 +510,17 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
       tags: (service.config as any).tags || [],
       metadata: { ...service.config.metadata, ...metadata },
       lastHeartbeat: new Date(),
-      health: 'healthy'
+      health: 'healthy',
     };
-    
+
     this.serviceDiscovery.set(service.name, discoveryInfo);
     this.emit('service-discovered', service.name, discoveryInfo);
   }
 
   /**
    * Update service heartbeat
+   *
+   * @param serviceName
    */
   updateServiceHeartbeat(serviceName: string): void {
     const discoveryInfo = this.serviceDiscovery.get(serviceName);
@@ -536,8 +534,10 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
   // Event Handling
   // ============================================
 
-  on(event: 'service-registered' | 'service-unregistered' | 'service-status-changed' | string, 
-     handler: (serviceName: string, service?: IService) => void): void {
+  on(
+    event: 'service-registered' | 'service-unregistered' | 'service-status-changed' | string,
+    handler: (serviceName: string, service?: IService) => void
+  ): void {
     super.on(event, handler);
   }
 
@@ -557,11 +557,11 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     if (this.config.healthMonitoring.enabled) {
       this.startHealthMonitoring();
     }
-    
+
     if (this.config.metricsCollection.enabled) {
       this.startMetricsCollection();
     }
-    
+
     if (this.config.discovery.enabled) {
       this.startServiceDiscovery();
     }
@@ -575,7 +575,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
         this.logger.error('System health check failed:', error);
       }
     }, this.config.healthMonitoring.interval);
-    
+
     this.logger.debug('Health monitoring started');
   }
 
@@ -587,7 +587,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
         this.logger.error('Metrics collection failed:', error);
       }
     }, this.config.metricsCollection.interval);
-    
+
     this.logger.debug('Metrics collection started');
   }
 
@@ -599,7 +599,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
         this.logger.error('Service discovery maintenance failed:', error);
       }
     }, this.config.discovery.advertisementInterval);
-    
+
     this.logger.debug('Service discovery started');
   }
 
@@ -608,22 +608,22 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
       clearInterval(this.healthMonitoringInterval);
       this.healthMonitoringInterval = undefined;
     }
-    
+
     if (this.metricsCollectionInterval) {
       clearInterval(this.metricsCollectionInterval);
       this.metricsCollectionInterval = undefined;
     }
-    
+
     if (this.discoveryInterval) {
       clearInterval(this.discoveryInterval);
       this.discoveryInterval = undefined;
     }
-    
+
     this.logger.debug('Monitoring stopped');
   }
 
   private setupFactoryEventHandling<T extends ServiceConfig>(
-    type: string, 
+    type: string,
     factory: IServiceFactory<T>
   ): void {
     // Handle service creation events from factory
@@ -631,7 +631,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
       factory.on('service-created', (serviceName: string, service: IService) => {
         this.handleServiceRegistration(service);
       });
-      
+
       factory.on('service-removed', (serviceName: string) => {
         this.removeServiceFromRegistry(serviceName);
       });
@@ -640,34 +640,46 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
   private handleServiceRegistration(service: IService): void {
     this.logger.debug(`Handling service registration: ${service.name}`);
-    
+
     // Register for discovery
     this.registerServiceForDiscovery(service);
-    
+
     // Set up service event handling
     this.setupServiceEventHandling(service);
-    
+
     // Emit registration event
     this.emit('service-registered', service.name, service);
   }
 
   private setupServiceEventHandling(service: IService): void {
     const eventTypes: ServiceEventType[] = [
-      'initializing', 'initialized', 'starting', 'started',
-      'stopping', 'stopped', 'error', 'operation', 'health-check', 'metrics-update'
+      'initializing',
+      'initialized',
+      'starting',
+      'started',
+      'stopping',
+      'stopped',
+      'error',
+      'operation',
+      'health-check',
+      'metrics-update',
     ];
-    
-    eventTypes.forEach(eventType => {
+
+    eventTypes.forEach((eventType) => {
       service.on(eventType, (event: ServiceEvent) => {
         this.handleServiceEvent(service, eventType, event);
       });
     });
   }
 
-  private handleServiceEvent(service: IService, eventType: ServiceEventType, event: ServiceEvent): void {
+  private handleServiceEvent(
+    service: IService,
+    eventType: ServiceEventType,
+    event: ServiceEvent
+  ): void {
     // Update discovery info
     this.updateServiceHeartbeat(service.name);
-    
+
     // Handle specific event types
     switch (eventType) {
       case 'error':
@@ -675,16 +687,16 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
           this.scheduleServiceRecovery(service);
         }
         break;
-        
+
       case 'health-check':
         this.updateServiceHealth(service.name, event.data);
         break;
-        
+
       case 'metrics-update':
         this.updateServiceMetrics(service.name, event.data);
         break;
     }
-    
+
     // Emit to registry listeners
     this.emit(`service-${eventType}`, service.name, event);
     this.emit('service-status-changed', service.name, service);
@@ -696,31 +708,33 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     this.healthStatuses.delete(serviceName);
     this.metricsHistory.delete(serviceName);
     this.operationMetrics.delete(serviceName);
-    
+
     this.emit('service-unregistered', serviceName);
   }
 
   private async performServiceHealthCheck(service: IService): Promise<ServiceStatus> {
     const startTime = Date.now();
-    
+
     try {
       const status = await Promise.race([
         service.getStatus(),
-        new Promise<never>((_, reject) => 
-          setTimeout(() => reject(new Error('Health check timeout')), 
-                   this.config.healthMonitoring.timeout)
-        )
+        new Promise<never>((_, reject) =>
+          setTimeout(
+            () => reject(new Error('Health check timeout')),
+            this.config.healthMonitoring.timeout
+          )
+        ),
       ]);
-      
+
       const responseTime = Date.now() - startTime;
-      
+
       // Update discovery info health
       const discoveryInfo = this.serviceDiscovery.get(service.name);
       if (discoveryInfo) {
         discoveryInfo.health = status.health;
         discoveryInfo.lastHeartbeat = new Date();
       }
-      
+
       return status;
     } catch (error) {
       throw new ServiceOperationError(service.name, 'health-check', error as Error);
@@ -729,17 +743,17 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
   private async performSystemHealthCheck(): Promise<void> {
     const healthResults = await this.healthCheckAll();
-    
+
     // Check for alerts
     const unhealthyServices = Array.from(healthResults.entries())
       .filter(([_, status]) => status.health !== 'healthy')
       .map(([name, _]) => name);
-    
+
     if (unhealthyServices.length > 0) {
       this.logger.warn(`Unhealthy services detected: ${unhealthyServices.join(', ')}`);
       this.emit('health-alert', unhealthyServices);
     }
-    
+
     // Check alert thresholds
     this.checkAlertThresholds(healthResults);
   }
@@ -747,71 +761,72 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
   private checkAlertThresholds(healthResults: Map<string, ServiceStatus>): void {
     const totalServices = healthResults.size;
     if (totalServices === 0) return;
-    
-    const unhealthyCount = Array.from(healthResults.values())
-      .filter(status => status.health !== 'healthy').length;
-    
+
+    const unhealthyCount = Array.from(healthResults.values()).filter(
+      (status) => status.health !== 'healthy'
+    ).length;
+
     const errorRate = (unhealthyCount / totalServices) * 100;
-    
+
     if (errorRate > this.config.healthMonitoring.alertThresholds.errorRate) {
       this.emit('system-alert', {
         type: 'high-error-rate',
         value: errorRate,
         threshold: this.config.healthMonitoring.alertThresholds.errorRate,
-        affectedServices: unhealthyCount
+        affectedServices: unhealthyCount,
       });
     }
   }
 
   private async collectSystemMetrics(): Promise<void> {
     const metrics = await this.getSystemMetrics();
-    
+
     // Store metrics history
-    metrics.aggregatedMetrics.forEach(metric => {
+    metrics.aggregatedMetrics.forEach((metric) => {
       if (!this.metricsHistory.has(metric.name)) {
         this.metricsHistory.set(metric.name, []);
       }
-      
+
       const history = this.metricsHistory.get(metric.name)!;
       history.push(metric);
-      
+
       // Keep only recent metrics within retention period
       const cutoffTime = new Date(Date.now() - this.config.metricsCollection.retention);
-      const filteredHistory = history.filter(m => m.timestamp > cutoffTime);
+      const filteredHistory = history.filter((m) => m.timestamp > cutoffTime);
       this.metricsHistory.set(metric.name, filteredHistory);
     });
-    
+
     this.emit('metrics-collected', metrics);
   }
 
   private performServiceDiscoveryMaintenance(): void {
     const currentTime = new Date();
     const timeoutThreshold = this.config.discovery.timeoutThreshold;
-    
+
     // Check for stale services
     const staleServices: string[] = [];
-    
+
     this.serviceDiscovery.forEach((info, serviceName) => {
       const timeSinceHeartbeat = currentTime.getTime() - info.lastHeartbeat.getTime();
-      
+
       if (timeSinceHeartbeat > timeoutThreshold) {
         staleServices.push(serviceName);
       }
     });
-    
+
     // Remove stale services
-    staleServices.forEach(serviceName => {
+    staleServices.forEach((serviceName) => {
       this.logger.warn(`Removing stale service from discovery: ${serviceName}`);
       this.serviceDiscovery.delete(serviceName);
       this.emit('service-timeout', serviceName);
     });
-    
+
     // Emit discovery heartbeat
     this.emit('discovery-heartbeat', {
       totalServices: this.serviceDiscovery.size,
       activeServices: this.serviceDiscovery.size - staleServices.length,
       staleServices: staleServices.length,
-      timestamp: currentTime
+      timestamp: currentTime,
     });
   }
 
@@ -829,10 +844,10 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
         totalOperations: 0,
         successfulOperations: 0,
         averageLatency: 0,
-        lastOperation: new Date()
+        lastOperation: new Date(),
       });
     }
-    
+
     const metrics = this.operationMetrics.get(serviceName)!;
     if (metricsData) {
       metrics.totalOperations += 1;
@@ -848,22 +863,20 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     // Implementation for dependency graph building
     // This would analyze service dependencies and create a proper graph
     this.logger.debug('Building service dependency graph...');
-    
+
     const allServices = this.getAllServices();
     const nodes = new Map();
-    
+
     // Build dependency nodes
     for (const [name, service] of allServices) {
       nodes.set(name, {
         service,
-        dependencies: new Set(
-          service.config.dependencies?.map(dep => dep.serviceName) || []
-        ),
+        dependencies: new Set(service.config.dependencies?.map((dep) => dep.serviceName) || []),
         dependents: new Set<string>(),
-        level: 0
+        level: 0,
       });
     }
-    
+
     // Calculate dependents and levels
     for (const [nodeName, node] of nodes) {
       for (const depName of node.dependencies) {
@@ -873,45 +886,45 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
         }
       }
     }
-    
+
     // Create startup/shutdown order
     const startupOrder = this.calculateStartupOrder(nodes);
     const shutdownOrder = [...startupOrder].reverse();
-    
+
     this.dependencyGraph = {
       nodes,
       cycles: [], // TODO: Implement cycle detection
       startupOrder,
-      shutdownOrder
+      shutdownOrder,
     };
-    
+
     this.logger.debug(`Dependency graph built with ${nodes.size} services`);
   }
 
   private calculateStartupOrder(nodes: Map<string, any>): string[] {
     const order: string[] = [];
     const visited = new Set<string>();
-    
+
     const visit = (nodeName: string) => {
       if (visited.has(nodeName)) return;
-      
+
       const node = nodes.get(nodeName);
       if (!node) return;
-      
+
       // Visit dependencies first
       for (const depName of node.dependencies) {
         visit(depName);
       }
-      
+
       visited.add(nodeName);
       order.push(nodeName);
     };
-    
+
     // Visit all nodes
     for (const nodeName of nodes.keys()) {
       visit(nodeName);
     }
-    
+
     return order;
   }
 
@@ -919,7 +932,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     if (!this.dependencyGraph) {
       throw new Error('Dependency graph not built');
     }
-    
+
     for (const serviceName of this.dependencyGraph.startupOrder) {
       const service = this.findService(serviceName);
       if (service) {
@@ -940,7 +953,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     if (!this.dependencyGraph) {
       throw new Error('Dependency graph not built');
     }
-    
+
     for (const serviceName of this.dependencyGraph.shutdownOrder) {
       const service = this.findService(serviceName);
       if (service) {
@@ -966,7 +979,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
         }
       }
     });
-    
+
     await Promise.allSettled(startPromises);
   }
 
@@ -979,14 +992,14 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
         this.logger.error(`Failed to stop service ${service.name}:`, error);
       }
     });
-    
+
     await Promise.allSettled(stopPromises);
   }
 
   private scheduleServiceRecovery(service: IService): void {
     // Implementation for auto-recovery scheduling
     this.logger.info(`Scheduling recovery for service: ${service.name}`);
-    
+
     setTimeout(async () => {
       try {
         await this.performServiceRecovery(service);
@@ -999,15 +1012,15 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
   private async performServiceRecovery(service: IService): Promise<void> {
     const maxRetries = this.config.autoRecovery.maxRetries;
     const backoffMultiplier = this.config.autoRecovery.backoffMultiplier;
-    
+
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         this.logger.info(`Recovery attempt ${attempt}/${maxRetries} for service: ${service.name}`);
-        
+
         // Stop and restart the service
         await service.stop();
         await service.start();
-        
+
         // Verify health
         const isHealthy = await service.healthCheck();
         if (isHealthy) {
@@ -1017,14 +1030,14 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
         }
       } catch (error) {
         this.logger.warn(`Recovery attempt ${attempt} failed for ${service.name}:`, error);
-        
+
         if (attempt < maxRetries) {
-          const delay = Math.pow(backoffMultiplier, attempt) * 1000;
-          await new Promise(resolve => setTimeout(resolve, delay));
+          const delay = backoffMultiplier ** attempt * 1000;
+          await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
-    
+
     this.logger.error(`Service recovery failed after ${maxRetries} attempts: ${service.name}`);
     this.emit('service-recovery-failed', service.name);
   }

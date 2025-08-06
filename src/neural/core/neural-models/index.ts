@@ -41,6 +41,8 @@ export const MODEL_PRESETS = {
 
 /**
  * Create a neural model from preset or custom configuration
+ *
+ * @param config
  */
 export function createNeuralModel(config) {
   const preset = typeof config === 'string' ? MODEL_PRESETS[config.toUpperCase()] : null;
@@ -70,6 +72,8 @@ export function getAvailablePresets() {
 
 /**
  * Validate model configuration
+ *
+ * @param config
  */
 export function validateModelConfig(config) {
   const required = ['architecture', 'layers'];

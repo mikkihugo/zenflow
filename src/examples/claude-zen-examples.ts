@@ -1,5 +1,5 @@
 /**
- * @fileoverview Claude-Zen Batch Operations Example
+ * @file Claude-Zen Batch Operations Example
  * Demonstrates the "1 MESSAGE = ALL OPERATIONS" principle with practical examples
  */
 

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Swarm Batch Coordination
+ * @file Swarm Batch Coordination
  * Implements concurrent swarm operations following claude-zen patterns
  * Enables batch agent spawning, task distribution, and coordination
  */
@@ -56,6 +56,8 @@ export interface SwarmBatchConfig {
 /**
  * Coordinates multiple swarm operations concurrently
  * Implements claude-zen's swarm batch optimization patterns
+ *
+ * @example
  */
 export class SwarmBatchCoordinator {
   private readonly config: Required<SwarmBatchConfig>;
@@ -75,6 +77,8 @@ export class SwarmBatchCoordinator {
   /**
    * Execute multiple swarm operations concurrently
    * Implements claude-zen's batch swarm coordination
+   *
+   * @param operations
    */
   async executeBatch(operations: SwarmOperation[]): Promise<SwarmOperationResult[]> {
     logger.info(`Starting batch swarm operations: ${operations.length} operations`);
@@ -118,6 +122,8 @@ export class SwarmBatchCoordinator {
 
   /**
    * Group operations by type for intelligent execution order
+   *
+   * @param operations
    */
   private groupOperationsByType(
     operations: SwarmOperation[]
@@ -140,6 +146,8 @@ export class SwarmBatchCoordinator {
 
   /**
    * Execute swarm initialization operations concurrently
+   *
+   * @param operations
    */
   private async executeSwarmInits(operations: SwarmOperation[]): Promise<SwarmOperationResult[]> {
     const results: SwarmOperationResult[] = [];
@@ -168,6 +176,8 @@ export class SwarmBatchCoordinator {
 
   /**
    * Execute agent spawning operations with batch optimization
+   *
+   * @param operations
    */
   private async executeAgentSpawning(
     operations: SwarmOperation[]
@@ -206,6 +216,8 @@ export class SwarmBatchCoordinator {
 
   /**
    * Execute coordination operations with adaptive strategies
+   *
+   * @param operations
    */
   private async executeCoordinationOperations(
     operations: SwarmOperation[]
@@ -246,6 +258,8 @@ export class SwarmBatchCoordinator {
 
   /**
    * Execute management operations (status, terminate)
+   *
+   * @param operations
    */
   private async executeManagementOperations(
     operations: SwarmOperation[]
@@ -276,6 +290,8 @@ export class SwarmBatchCoordinator {
 
   /**
    * Execute individual swarm initialization
+   *
+   * @param operation
    */
   private async executeSwarmInit(operation: SwarmOperation): Promise<SwarmOperationResult> {
     const startTime = Date.now();
@@ -321,6 +337,9 @@ export class SwarmBatchCoordinator {
 
   /**
    * Execute agent spawning for a specific swarm
+   *
+   * @param swarmId
+   * @param operations
    */
   private async executeSwarmAgentSpawning(
     swarmId: string,
@@ -384,6 +403,8 @@ export class SwarmBatchCoordinator {
 
   /**
    * Execute coordination operation
+   *
+   * @param operation
    */
   private async executeCoordinationOperation(
     operation: SwarmOperation
@@ -427,6 +448,8 @@ export class SwarmBatchCoordinator {
 
   /**
    * Execute management operation (status, terminate)
+   *
+   * @param operation
    */
   private async executeManagementOperation(
     operation: SwarmOperation
@@ -449,6 +472,8 @@ export class SwarmBatchCoordinator {
 
   /**
    * Optimize coordination order based on priorities and dependencies
+   *
+   * @param operations
    */
   private optimizeCoordinationOrder(operations: SwarmOperation[]): SwarmOperation[] {
     // Sort by priority (critical first) and estimated duration
@@ -470,6 +495,9 @@ export class SwarmBatchCoordinator {
 
   /**
    * Coordinate task execution within a swarm
+   *
+   * @param swarmState
+   * @param operation
    */
   private async coordinateTask(
     swarmState: SwarmState,
@@ -534,6 +562,9 @@ export class SwarmBatchCoordinator {
 
   /**
    * Batch spawn agents efficiently
+   *
+   * @param swarmId
+   * @param agentTypes
    */
   private async batchSpawnAgents(swarmId: string, agentTypes: AgentType[]): Promise<Agent[]> {
     const agents: Agent[] = [];
@@ -556,6 +587,9 @@ export class SwarmBatchCoordinator {
 
   /**
    * Get swarm status
+   *
+   * @param operation
+   * @param startTime
    */
   private async getSwarmStatus(
     operation: SwarmOperation,
@@ -585,6 +619,9 @@ export class SwarmBatchCoordinator {
 
   /**
    * Terminate swarm
+   *
+   * @param operation
+   * @param startTime
    */
   private async terminateSwarm(
     operation: SwarmOperation,
@@ -615,6 +652,9 @@ export class SwarmBatchCoordinator {
 
   /**
    * Utility methods
+   *
+   * @param operations
+   * @param chunkSize
    */
   private chunkOperations<T>(operations: T[], chunkSize: number): T[][] {
     const chunks: T[][] = [];
@@ -652,6 +692,9 @@ export class SwarmBatchCoordinator {
 
   /**
    * Execute task on a specific agent
+   *
+   * @param agentId
+   * @param operation
    */
   private async executeTaskOnAgent(agentId: string, operation: SwarmOperation): Promise<unknown> {
     // Simulate task execution on agent
@@ -667,6 +710,8 @@ export class SwarmBatchCoordinator {
 
   /**
    * Convert SwarmOperation to BatchOperation for use with BatchEngine
+   *
+   * @param swarmOps
    */
   static createBatchOperations(swarmOps: SwarmOperation[]): BatchOperation[] {
     return swarmOps.map((swarmOp, index) => ({

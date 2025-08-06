@@ -1,5 +1,5 @@
 /**
- * @fileoverview The primary orchestrator for the AI swarm, with full strategic capabilities and persistence.
+ * @file The primary orchestrator for the AI swarm, with full strategic capabilities and persistence.
  */
 
 import { EventEmitter } from 'node:events';

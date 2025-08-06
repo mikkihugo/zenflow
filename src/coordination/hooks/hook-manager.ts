@@ -24,6 +24,8 @@ export interface HookExecutionResult {
 
 /**
  * Default Hook Manager Implementation
+ *
+ * @example
  */
 export class DefaultHookManager extends EventEmitter {
   private hookSystem: HookSystem;

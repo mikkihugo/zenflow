@@ -1,5 +1,5 @@
 /**
- * @fileoverview Integration test for Auto-Swarm Factory dependency resolution
+ * @file Integration test for Auto-Swarm Factory dependency resolution
  *
  * Tests the integration between discover.ts and auto-swarm factory components
  */

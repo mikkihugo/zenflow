@@ -40,6 +40,8 @@ export interface HookSystemConfig {
 
 /**
  * Default Hook System Implementation
+ *
+ * @example
  */
 export class DefaultHookSystem extends EventEmitter implements HookSystem {
   private config: HookSystemConfig;

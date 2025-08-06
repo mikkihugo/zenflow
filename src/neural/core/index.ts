@@ -68,6 +68,8 @@ export const NeuralCoreUtils = {
 
   /**
    * Validate network configuration
+   *
+   * @param config
    */
   validateNetworkConfig: (config: any): boolean => {
     return Boolean(config?.layers && Array.isArray(config.layers));
@@ -75,6 +77,8 @@ export const NeuralCoreUtils = {
 
   /**
    * Generate network ID
+   *
+   * @param type
    */
   generateNetworkId: (type: string): string => {
     return `neural-${type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -82,6 +86,8 @@ export const NeuralCoreUtils = {
 
   /**
    * Calculate network complexity
+   *
+   * @param layers
    */
   calculateComplexity: (layers: number[]): number => {
     return layers.reduce((sum, neurons, index) => {
@@ -92,6 +98,10 @@ export const NeuralCoreUtils = {
 
   /**
    * Estimate training time
+   *
+   * @param complexity
+   * @param dataSize
+   * @param epochs
    */
   estimateTrainingTime: (complexity: number, dataSize: number, epochs: number): number => {
     // Simple heuristic: complexity * dataSize * epochs / processing_factor

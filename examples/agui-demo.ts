@@ -9,6 +9,8 @@
 
 // import { AGUIAdapter } from '@ag-ui/core'; // Module not available
 
+*
+@example
 /** Demo class showcasing AG-UI integration */
 export class AGUIDemoIntegration {
   /**

@@ -1,6 +1,7 @@
 /**
  * Comprehensive Neural Benchmarking Suite - Classical TDD
- * @fileoverview 25+ neural network performance benchmarks covering training, inference, and optimization
+ *
+ * @file 25+ neural network performance benchmarks covering training, inference, and optimization
  * Focus: Performance measurement, scalability testing, comparative analysis
  */
 

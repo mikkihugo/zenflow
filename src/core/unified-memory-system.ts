@@ -1,6 +1,6 @@
 /**
  * Unified Memory System Stub
- * 
+ *
  * Simple stub implementation for compatibility with existing test files
  */
 

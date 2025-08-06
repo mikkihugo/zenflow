@@ -4,12 +4,14 @@
  * Shared schemas used across multiple API domains.
  * Following OpenAPI 3.0 standards for consistency.
  *
- * @fileoverview Common schemas for API responses and requests
+ * @file Common schemas for API responses and requests
  */
 
 /**
  * Common pagination parameters
  * Standard across all list endpoints
+ *
+ * @example
  */
 export interface PaginationParams {
   readonly limit?: number; // Maximum items to return (1-100, default 20)
@@ -19,6 +21,8 @@ export interface PaginationParams {
 /**
  * Standard pagination response
  * Consistent pagination metadata across all endpoints
+ *
+ * @example
  */
 export interface PaginationResponse {
   readonly total: number; // Total number of items available
@@ -30,6 +34,8 @@ export interface PaginationResponse {
 /**
  * Standard list response wrapper
  * Generic container for paginated list responses
+ *
+ * @example
  */
 export interface ListResponse<T> extends PaginationResponse {
   readonly items: readonly T[];
@@ -39,6 +45,8 @@ export interface ListResponse<T> extends PaginationResponse {
 /**
  * Standard API error response
  * Following Google API Design Guide error format
+ *
+ * @example
  */
 export interface APIError {
   readonly error: {
@@ -55,6 +63,8 @@ export interface APIError {
 /**
  * Standard success response wrapper
  * Generic container for successful API responses
+ *
+ * @example
  */
 export interface SuccessResponse<T = unknown> {
   readonly success: true;
@@ -66,6 +76,8 @@ export interface SuccessResponse<T = unknown> {
 /**
  * Standard health check response
  * Consistent health check format across all services
+ *
+ * @example
  */
 export interface HealthResponse {
   readonly status: 'healthy' | 'unhealthy' | 'degraded';
@@ -85,6 +97,8 @@ export interface HealthResponse {
 /**
  * Standard metrics response
  * Performance and operational metrics
+ *
+ * @example
  */
 export interface MetricsResponse {
   readonly timestamp: string;
@@ -112,6 +126,8 @@ export interface MetricsResponse {
 /**
  * Standard sort parameters
  * Consistent sorting across list endpoints
+ *
+ * @example
  */
 export interface SortParams {
   readonly sortBy?: string; // Field to sort by
@@ -121,6 +137,8 @@ export interface SortParams {
 /**
  * Standard filter parameters
  * Common filtering patterns
+ *
+ * @example
  */
 export interface FilterParams {
   readonly search?: string; // Text search query
@@ -133,6 +151,8 @@ export interface FilterParams {
 /**
  * Standard timestamp fields
  * Common timestamp properties for entities
+ *
+ * @example
  */
 export interface TimestampFields {
   readonly created: Date;
@@ -142,6 +162,8 @@ export interface TimestampFields {
 /**
  * Standard identification fields
  * Common ID and metadata for entities
+ *
+ * @example
  */
 export interface EntityFields {
   readonly id: string;
@@ -152,6 +174,8 @@ export interface EntityFields {
 /**
  * Standard audit fields
  * Audit trail information
+ *
+ * @example
  */
 export interface AuditFields extends TimestampFields {
   readonly createdBy?: string;
@@ -163,6 +187,8 @@ export interface AuditFields extends TimestampFields {
 /**
  * Standard resource state
  * Common state management for resources
+ *
+ * @example
  */
 export interface ResourceState {
   readonly status: 'active' | 'inactive' | 'pending' | 'error' | 'deleted';
@@ -173,6 +199,8 @@ export interface ResourceState {
 /**
  * Standard configuration fields
  * Common configuration properties
+ *
+ * @example
  */
 export interface ConfigurationFields {
   readonly enabled: boolean;
@@ -184,6 +212,8 @@ export interface ConfigurationFields {
 /**
  * Standard validation error detail
  * Detailed validation error information
+ *
+ * @example
  */
 export interface ValidationError {
   readonly field: string;
@@ -196,6 +226,8 @@ export interface ValidationError {
 /**
  * Batch operation request
  * Standard format for batch operations
+ *
+ * @example
  */
 export interface BatchRequest<T> {
   readonly items: readonly T[];
@@ -209,6 +241,8 @@ export interface BatchRequest<T> {
 /**
  * Batch operation response
  * Standard format for batch operation results
+ *
+ * @example
  */
 export interface BatchResponse<T> {
   readonly results: readonly {
@@ -229,6 +263,8 @@ export interface BatchResponse<T> {
 /**
  * Standard async operation response
  * For long-running operations
+ *
+ * @example
  */
 export interface AsyncOperationResponse {
   readonly operationId: string;
@@ -245,6 +281,8 @@ export interface AsyncOperationResponse {
 /**
  * Standard file upload response
  * For file upload operations
+ *
+ * @example
  */
 export interface FileUploadResponse {
   readonly fileId: string;
@@ -260,6 +298,8 @@ export interface FileUploadResponse {
 /**
  * Standard rate limit information
  * Rate limiting metadata in response headers
+ *
+ * @example
  */
 export interface RateLimitInfo {
   readonly limit: number;

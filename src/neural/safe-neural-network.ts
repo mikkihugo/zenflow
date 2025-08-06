@@ -47,6 +47,8 @@ export interface TrainingOptions {
 
 /**
  * Type-safe neural network implementation with union type results
+ *
+ * @example
  */
 export class SafeNeuralNetwork {
   private config: NeuralNetworkConfig;
@@ -113,6 +115,9 @@ export class SafeNeuralNetwork {
 
   /**
    * Train the neural network with type-safe result handling
+   *
+   * @param data
+   * @param options
    */
   async train(data: TrainingData, options: TrainingOptions): Promise<NeuralResult> {
     if (!this.isInitialized) {
@@ -212,6 +217,8 @@ export class SafeNeuralNetwork {
 
   /**
    * Make predictions with type-safe result handling
+   *
+   * @param inputs
    */
   async predict(inputs: number[]): Promise<NeuralResult> {
     if (!this.isInitialized) {

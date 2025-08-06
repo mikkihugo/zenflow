@@ -37,6 +37,8 @@ export interface MemoryMetadata {
 
 /**
  * Type-safe memory store with union type results
+ *
+ * @example
  */
 export class SafeMemoryStore extends EventEmitter {
   private store = new Map<string, any>();
@@ -73,6 +75,10 @@ export class SafeMemoryStore extends EventEmitter {
 
   /**
    * Store data with type-safe error handling
+   *
+   * @param key
+   * @param data
+   * @param ttl
    */
   async store<T>(key: string, data: T, ttl?: number): Promise<MemoryResult<void>> {
     try {
@@ -132,6 +138,8 @@ export class SafeMemoryStore extends EventEmitter {
 
   /**
    * Retrieve data with type-safe result discrimination
+   *
+   * @param key
    */
   async retrieve<T>(key: string): Promise<MemoryResult<T>> {
     try {
@@ -185,6 +193,8 @@ export class SafeMemoryStore extends EventEmitter {
 
   /**
    * Delete data with type-safe result
+   *
+   * @param key
    */
   async delete(key: string): Promise<MemoryResult<boolean>> {
     try {
@@ -230,6 +240,8 @@ export class SafeMemoryStore extends EventEmitter {
 
   /**
    * Check if key exists with type-safe result
+   *
+   * @param key
    */
   async exists(key: string): Promise<MemoryResult<boolean>> {
     try {

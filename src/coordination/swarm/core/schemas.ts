@@ -7,6 +7,8 @@ import { ValidationError } from './errors';
 
 /**
  * Base validator class
+ *
+ * @example
  */
 class BaseValidator {
   static validate(value, schema, fieldName = 'value') {
@@ -738,10 +740,15 @@ const MCPSchemas = {
 
 /**
  * Validation utilities
+ *
+ * @example
  */
 class ValidationUtils {
   /**
    * Validate parameters against a schema
+   *
+   * @param params
+   * @param toolName
    */
   static validateParams(params, toolName) {
     const schema = MCPSchemas[toolName];
@@ -791,6 +798,8 @@ class ValidationUtils {
 
   /**
    * Get schema documentation for a tool
+   *
+   * @param toolName
    */
   static getSchemaDoc(toolName) {
     const schema = MCPSchemas[toolName];
@@ -834,6 +843,9 @@ class ValidationUtils {
 
   /**
    * Generate human-readable description for a field
+   *
+   * @param fieldName
+   * @param schema
    */
   static generateFieldDescription(fieldName, schema) {
     let desc = `${fieldName} (${schema.type})`;
@@ -871,6 +883,8 @@ class ValidationUtils {
 
   /**
    * Validate a UUID string
+   *
+   * @param str
    */
   static isValidUUID(str) {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -879,6 +893,8 @@ class ValidationUtils {
 
   /**
    * Sanitize input to prevent injection attacks
+   *
+   * @param input
    */
   static sanitizeInput(input) {
     if (typeof input === 'string') {

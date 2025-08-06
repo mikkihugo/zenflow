@@ -96,6 +96,9 @@ class ClaudeIntegrationCore {
 
   /**
    * Invoke Claude with a prompt (supports both secure and legacy modes)
+   *
+   * @param prompt
+   * @param options
    */
   async invokeClaudeWithPrompt(prompt: string, options: ClaudeInvokeOptions = {}) {
     if (!prompt || !prompt.trim()) {

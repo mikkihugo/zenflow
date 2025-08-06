@@ -49,6 +49,8 @@ export class WebSessionManager {
 
   /**
    * Get session by ID
+   *
+   * @param sessionId
    */
   getSession(sessionId: string): WebSession | undefined {
     return this.sessions.get(sessionId);
@@ -56,6 +58,9 @@ export class WebSessionManager {
 
   /**
    * Update session preferences
+   *
+   * @param sessionId
+   * @param preferences
    */
   updateSessionPreferences(
     sessionId: string,
@@ -79,6 +84,8 @@ export class WebSessionManager {
 
   /**
    * Clean up expired sessions
+   *
+   * @param maxAgeMs
    */
   cleanupExpiredSessions(maxAgeMs: number = 24 * 60 * 60 * 1000): number {
     const now = new Date();

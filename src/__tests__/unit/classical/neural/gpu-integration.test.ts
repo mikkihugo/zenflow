@@ -1,6 +1,7 @@
 /**
  * GPU Integration Testing Suite - Classical TDD
- * @fileoverview Tests for GPU acceleration, WebGL integration, and CPU fallback mechanisms
+ *
+ * @file Tests for GPU acceleration, WebGL integration, and CPU fallback mechanisms
  * Focus: GPU performance validation, memory management, fallback behavior
  */
 

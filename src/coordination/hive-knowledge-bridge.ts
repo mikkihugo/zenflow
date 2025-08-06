@@ -1,5 +1,5 @@
 /**
- * @fileoverview Hive Knowledge Bridge - Production Integration
+ * @file Hive Knowledge Bridge - Production Integration
  * Bridges the Hive FACT system with swarm coordination for real-time knowledge sharing
  *
  * Architecture:
@@ -74,6 +74,8 @@ export interface KnowledgeDistributionUpdate {
 /**
  * Bridges Hive FACT system with swarm coordination
  * Enables real-time knowledge sharing and bidirectional learning
+ *
+ * @example
  */
 export class HiveKnowledgeBridge extends EventEmitter {
   private hiveFact?: HiveFACTSystem;
@@ -126,6 +128,9 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Register a swarm with the knowledge bridge
+   *
+   * @param swarmId
+   * @param interests
    */
   async registerSwarm(swarmId: string, interests: string[] = []): Promise<void> {
     logger.info(`Registering swarm ${swarmId} with knowledge bridge`);
@@ -151,6 +156,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Process knowledge request from swarm
+   *
+   * @param request
    */
   async processKnowledgeRequest(request: KnowledgeRequest): Promise<KnowledgeResponse> {
     const startTime = Date.now();
@@ -212,6 +219,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Handle knowledge query request
+   *
+   * @param request
    */
   private async handleKnowledgeQuery(request: KnowledgeRequest): Promise<KnowledgeResponse> {
     const { query, domain, filters = {} } = request.payload;
@@ -256,6 +265,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Handle knowledge contribution from swarm
+   *
+   * @param request
    */
   private async handleKnowledgeContribution(request: KnowledgeRequest): Promise<KnowledgeResponse> {
     const contribution = request.payload.knowledge as SwarmContribution;
@@ -305,6 +316,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Handle knowledge update request
+   *
+   * @param request
    */
   private async handleKnowledgeUpdate(request: KnowledgeRequest): Promise<KnowledgeResponse> {
     const updateData = request.payload.knowledge;
@@ -341,6 +354,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Handle knowledge subscription request
+   *
+   * @param request
    */
   private async handleKnowledgeSubscription(request: KnowledgeRequest): Promise<KnowledgeResponse> {
     const { domain } = request.payload;
@@ -371,6 +386,10 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Enhance search results with swarm-specific context
+   *
+   * @param results
+   * @param swarmId
+   * @param agentId
    */
   private async enhanceResultsWithSwarmContext(
     results: UniversalFact[],
@@ -399,6 +418,9 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Calculate relevance of fact to specific swarm
+   *
+   * @param fact
+   * @param swarmId
    */
   private calculateSwarmRelevance(fact: UniversalFact, swarmId: string): number {
     let relevance = fact.metadata.confidence;
@@ -420,6 +442,9 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Calculate compatibility of fact with specific agent
+   *
+   * @param _fact
+   * @param _agentId
    */
   private calculateAgentCompatibility(_fact: UniversalFact, _agentId: string): number {
     // This would analyze agent capabilities vs fact requirements
@@ -429,6 +454,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Find swarms related to the given swarm
+   *
+   * @param _swarmId
    */
   private findRelatedSwarms(_swarmId: string): string[] {
     // This would analyze swarm domains and find related ones
@@ -438,6 +465,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Calculate average confidence of search results
+   *
+   * @param results
    */
   private calculateAverageConfidence(results: UniversalFact[]): number {
     if (results.length === 0) return 0;
@@ -525,6 +554,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Process individual swarm contribution
+   *
+   * @param contribution
    */
   private async processSwarmContribution(contribution: SwarmContribution): Promise<void> {
     // Validate contribution quality
@@ -581,6 +612,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Distribute knowledge update to relevant swarms
+   *
+   * @param update
    */
   private async distributeKnowledgeUpdate(update: KnowledgeDistributionUpdate): Promise<void> {
     const relevantSwarms = this.findSwarmsInterestedInDomain(update.domain);
@@ -622,6 +655,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   /**
    * Find swarms interested in a specific domain
+   *
+   * @param domain
    */
   private findSwarmsInterestedInDomain(domain: string): Set<string> {
     const interestedSwarms = new Set<string>();

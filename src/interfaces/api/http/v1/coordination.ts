@@ -5,7 +5,7 @@
  * Moved from coordination/api.ts to unified API layer.
  * Following Google API Design Guide standards.
  *
- * @fileoverview Coordination domain API routes
+ * @file Coordination domain API routes
  */
 
 import { type Request, type Response, Router } from 'express';

@@ -1,14 +1,16 @@
 /**
  * Unified Event Layer (UEL) - Type Definitions
- * 
+ *
  * Core type definitions for event types, manager types, and enums
  * used throughout the UEL system for type-safe event operations.
  */
 
-import type { SystemEvent, EventPriority, EventManagerType } from './core/interfaces';
+import type { EventManagerType, EventPriority, SystemEvent } from './core/interfaces';
 
 /**
  * System Events - Core system lifecycle and health
+ *
+ * @example
  */
 export interface SystemLifecycleEvent extends SystemEvent {
   type: 'system:startup' | 'system:shutdown' | 'system:restart' | 'system:error' | 'system:health';
@@ -25,7 +27,9 @@ export interface SystemLifecycleEvent extends SystemEvent {
 }
 
 /**
- * Coordination Events - Swarm coordination and agent management  
+ * Coordination Events - Swarm coordination and agent management
+ *
+ * @example
  */
 export interface CoordinationEvent extends SystemEvent {
   type: 'coordination:swarm' | 'coordination:agent' | 'coordination:task' | 'coordination:topology';
@@ -52,9 +56,15 @@ export interface CoordinationEvent extends SystemEvent {
 
 /**
  * Communication Events - WebSocket, MCP, protocol communication
+ *
+ * @example
  */
 export interface CommunicationEvent extends SystemEvent {
-  type: 'communication:websocket' | 'communication:mcp' | 'communication:http' | 'communication:protocol';
+  type:
+    | 'communication:websocket'
+    | 'communication:mcp'
+    | 'communication:http'
+    | 'communication:protocol';
   operation: 'connect' | 'disconnect' | 'send' | 'receive' | 'error' | 'timeout' | 'retry';
   protocol: 'http' | 'https' | 'ws' | 'wss' | 'stdio' | 'tcp' | 'udp' | 'custom';
   endpoint?: string;
@@ -72,6 +82,8 @@ export interface CommunicationEvent extends SystemEvent {
 
 /**
  * Monitoring Events - Metrics, health checks, performance monitoring
+ *
+ * @example
  */
 export interface MonitoringEvent extends SystemEvent {
   type: 'monitoring:metrics' | 'monitoring:health' | 'monitoring:performance' | 'monitoring:alert';
@@ -98,6 +110,8 @@ export interface MonitoringEvent extends SystemEvent {
 
 /**
  * Interface Events - CLI, web, terminal interface interactions
+ *
+ * @example
  */
 export interface InterfaceEvent extends SystemEvent {
   type: 'interface:cli' | 'interface:web' | 'interface:tui' | 'interface:api';
@@ -119,6 +133,8 @@ export interface InterfaceEvent extends SystemEvent {
 
 /**
  * Neural Events - Neural network and AI operations
+ *
+ * @example
  */
 export interface NeuralEvent extends SystemEvent {
   type: 'neural:training' | 'neural:inference' | 'neural:optimization' | 'neural:evaluation';
@@ -143,10 +159,21 @@ export interface NeuralEvent extends SystemEvent {
 
 /**
  * Database Events - Database operations and queries
+ *
+ * @example
  */
 export interface DatabaseEvent extends SystemEvent {
   type: 'database:query' | 'database:transaction' | 'database:migration' | 'database:backup';
-  operation: 'select' | 'insert' | 'update' | 'delete' | 'create' | 'drop' | 'index' | 'backup' | 'restore';
+  operation:
+    | 'select'
+    | 'insert'
+    | 'update'
+    | 'delete'
+    | 'create'
+    | 'drop'
+    | 'index'
+    | 'backup'
+    | 'restore';
   details?: {
     tableName?: string;
     queryType?: 'read' | 'write' | 'ddl' | 'dcl';
@@ -163,6 +190,8 @@ export interface DatabaseEvent extends SystemEvent {
 
 /**
  * Memory Events - Memory operations and caching
+ *
+ * @example
  */
 export interface MemoryEvent extends SystemEvent {
   type: 'memory:cache' | 'memory:store' | 'memory:gc' | 'memory:pool';
@@ -183,6 +212,8 @@ export interface MemoryEvent extends SystemEvent {
 
 /**
  * Workflow Events - Workflow execution and orchestration
+ *
+ * @example
  */
 export interface WorkflowEvent extends SystemEvent {
   type: 'workflow:execution' | 'workflow:task' | 'workflow:condition' | 'workflow:trigger';
@@ -208,7 +239,7 @@ export interface WorkflowEvent extends SystemEvent {
 /**
  * Union type for all UEL events
  */
-export type UELEvent = 
+export type UELEvent =
   | SystemLifecycleEvent
   | CoordinationEvent
   | CommunicationEvent
@@ -231,7 +262,7 @@ export const EventCategories = {
   NEURAL: 'neural' as const,
   DATABASE: 'database' as const,
   MEMORY: 'memory' as const,
-  WORKFLOW: 'workflow' as const
+  WORKFLOW: 'workflow' as const,
 } as const;
 
 /**
@@ -241,50 +272,50 @@ export const EventTypePatterns = {
   // System events
   SYSTEM_ALL: 'system:*',
   SYSTEM_LIFECYCLE: 'system:startup|system:shutdown|system:restart|system:error|system:health',
-  
+
   // Coordination events
   COORDINATION_ALL: 'coordination:*',
   COORDINATION_SWARM: 'coordination:swarm',
   COORDINATION_AGENTS: 'coordination:agent',
   COORDINATION_TASKS: 'coordination:task',
-  
+
   // Communication events
   COMMUNICATION_ALL: 'communication:*',
   COMMUNICATION_WEBSOCKET: 'communication:websocket',
   COMMUNICATION_MCP: 'communication:mcp',
   COMMUNICATION_HTTP: 'communication:http',
-  
+
   // Monitoring events
   MONITORING_ALL: 'monitoring:*',
   MONITORING_METRICS: 'monitoring:metrics',
   MONITORING_HEALTH: 'monitoring:health',
   MONITORING_ALERTS: 'monitoring:alert',
-  
+
   // Interface events
   INTERFACE_ALL: 'interface:*',
   INTERFACE_CLI: 'interface:cli',
   INTERFACE_WEB: 'interface:web',
   INTERFACE_API: 'interface:api',
-  
+
   // Neural events
   NEURAL_ALL: 'neural:*',
   NEURAL_TRAINING: 'neural:training',
   NEURAL_INFERENCE: 'neural:inference',
-  
+
   // Database events
   DATABASE_ALL: 'database:*',
   DATABASE_QUERIES: 'database:query',
   DATABASE_TRANSACTIONS: 'database:transaction',
-  
+
   // Memory events
   MEMORY_ALL: 'memory:*',
   MEMORY_CACHE: 'memory:cache',
   MEMORY_GC: 'memory:gc',
-  
+
   // Workflow events
   WORKFLOW_ALL: 'workflow:*',
   WORKFLOW_EXECUTION: 'workflow:execution',
-  WORKFLOW_TASKS: 'workflow:task'
+  WORKFLOW_TASKS: 'workflow:task',
 } as const;
 
 /**
@@ -295,20 +326,20 @@ export const DefaultEventManagerConfigs = {
     maxListeners: 100,
     processing: {
       strategy: 'immediate' as const,
-      queueSize: 1000
+      queueSize: 1000,
     },
     retry: {
       attempts: 3,
       delay: 1000,
       backoff: 'exponential' as const,
-      maxDelay: 5000
+      maxDelay: 5000,
     },
     health: {
       checkInterval: 30000,
       timeout: 5000,
       failureThreshold: 3,
       successThreshold: 2,
-      enableAutoRecovery: true
+      enableAutoRecovery: true,
     },
     monitoring: {
       enabled: true,
@@ -316,21 +347,21 @@ export const DefaultEventManagerConfigs = {
       trackLatency: true,
       trackThroughput: true,
       trackErrors: true,
-      enableProfiling: false
-    }
+      enableProfiling: false,
+    },
   },
-  
+
   [EventCategories.COORDINATION]: {
     maxListeners: 1000,
     processing: {
       strategy: 'queued' as const,
-      queueSize: 10000
+      queueSize: 10000,
     },
     retry: {
       attempts: 5,
       delay: 500,
       backoff: 'exponential' as const,
-      maxDelay: 10000
+      maxDelay: 10000,
     },
     monitoring: {
       enabled: true,
@@ -338,21 +369,21 @@ export const DefaultEventManagerConfigs = {
       trackLatency: true,
       trackThroughput: true,
       trackErrors: true,
-      enableProfiling: true
-    }
+      enableProfiling: true,
+    },
   },
-  
+
   [EventCategories.COMMUNICATION]: {
     maxListeners: 500,
     processing: {
       strategy: 'immediate' as const,
-      queueSize: 5000
+      queueSize: 5000,
     },
     retry: {
       attempts: 3,
       delay: 1000,
       backoff: 'linear' as const,
-      maxDelay: 5000
+      maxDelay: 5000,
     },
     monitoring: {
       enabled: true,
@@ -360,16 +391,16 @@ export const DefaultEventManagerConfigs = {
       trackLatency: true,
       trackThroughput: true,
       trackErrors: true,
-      enableProfiling: false
-    }
+      enableProfiling: false,
+    },
   },
-  
+
   [EventCategories.MONITORING]: {
     maxListeners: 200,
     processing: {
       strategy: 'batched' as const,
       batchSize: 50,
-      queueSize: 2000
+      queueSize: 2000,
     },
     monitoring: {
       enabled: true,
@@ -377,15 +408,15 @@ export const DefaultEventManagerConfigs = {
       trackLatency: false,
       trackThroughput: true,
       trackErrors: true,
-      enableProfiling: false
-    }
+      enableProfiling: false,
+    },
   },
-  
+
   [EventCategories.INTERFACE]: {
     maxListeners: 100,
     processing: {
       strategy: 'immediate' as const,
-      queueSize: 1000
+      queueSize: 1000,
     },
     monitoring: {
       enabled: true,
@@ -393,20 +424,20 @@ export const DefaultEventManagerConfigs = {
       trackLatency: true,
       trackThroughput: false,
       trackErrors: true,
-      enableProfiling: false
-    }
+      enableProfiling: false,
+    },
   },
-  
+
   [EventCategories.NEURAL]: {
     maxListeners: 50,
     processing: {
       strategy: 'queued' as const,
-      queueSize: 500
+      queueSize: 500,
     },
     retry: {
       attempts: 2,
       delay: 2000,
-      backoff: 'fixed' as const
+      backoff: 'fixed' as const,
     },
     monitoring: {
       enabled: true,
@@ -414,16 +445,16 @@ export const DefaultEventManagerConfigs = {
       trackLatency: true,
       trackThroughput: false,
       trackErrors: true,
-      enableProfiling: true
-    }
+      enableProfiling: true,
+    },
   },
-  
+
   [EventCategories.DATABASE]: {
     maxListeners: 200,
     processing: {
       strategy: 'batched' as const,
       batchSize: 100,
-      queueSize: 5000
+      queueSize: 5000,
     },
     monitoring: {
       enabled: true,
@@ -431,16 +462,16 @@ export const DefaultEventManagerConfigs = {
       trackLatency: true,
       trackThroughput: true,
       trackErrors: true,
-      enableProfiling: false
-    }
+      enableProfiling: false,
+    },
   },
-  
+
   [EventCategories.MEMORY]: {
     maxListeners: 100,
     processing: {
       strategy: 'throttled' as const,
       throttleMs: 100,
-      queueSize: 2000
+      queueSize: 2000,
     },
     monitoring: {
       enabled: true,
@@ -448,21 +479,21 @@ export const DefaultEventManagerConfigs = {
       trackLatency: false,
       trackThroughput: true,
       trackErrors: true,
-      enableProfiling: false
-    }
+      enableProfiling: false,
+    },
   },
-  
+
   [EventCategories.WORKFLOW]: {
     maxListeners: 300,
     processing: {
       strategy: 'queued' as const,
-      queueSize: 3000
+      queueSize: 3000,
     },
     retry: {
       attempts: 3,
       delay: 1000,
       backoff: 'exponential' as const,
-      maxDelay: 8000
+      maxDelay: 8000,
     },
     monitoring: {
       enabled: true,
@@ -470,9 +501,9 @@ export const DefaultEventManagerConfigs = {
       trackLatency: true,
       trackThroughput: true,
       trackErrors: true,
-      enableProfiling: true
-    }
-  }
+      enableProfiling: true,
+    },
+  },
 } as const;
 
 /**
@@ -484,54 +515,54 @@ export const EventPriorityMap: Record<string, EventPriority> = {
   'system:shutdown': 'critical',
   'system:startup': 'high',
   'system:health': 'medium',
-  
+
   // Coordination events - high priority for critical operations
   'coordination:swarm': 'high',
   'coordination:agent': 'high',
   'coordination:task': 'medium',
   'coordination:topology': 'medium',
-  
+
   // Communication events - medium to high priority
   'communication:websocket': 'high',
   'communication:mcp': 'high',
   'communication:http': 'medium',
   'communication:protocol': 'medium',
-  
+
   // Monitoring events - medium priority with critical alerts
   'monitoring:alert': 'high',
   'monitoring:health': 'medium',
   'monitoring:metrics': 'low',
   'monitoring:performance': 'low',
-  
+
   // Interface events - lower priority
   'interface:cli': 'medium',
   'interface:web': 'medium',
   'interface:tui': 'low',
   'interface:api': 'medium',
-  
+
   // Neural events - lower priority due to longer processing
   'neural:training': 'low',
   'neural:inference': 'medium',
   'neural:optimization': 'low',
   'neural:evaluation': 'low',
-  
+
   // Database events - medium priority
   'database:query': 'medium',
   'database:transaction': 'high',
   'database:migration': 'high',
   'database:backup': 'low',
-  
+
   // Memory events - lower priority
   'memory:cache': 'low',
   'memory:store': 'medium',
   'memory:gc': 'low',
   'memory:pool': 'low',
-  
+
   // Workflow events - medium priority
   'workflow:execution': 'medium',
   'workflow:task': 'medium',
   'workflow:condition': 'low',
-  'workflow:trigger': 'high'
+  'workflow:trigger': 'high',
 } as const;
 
 /**
@@ -542,54 +573,54 @@ export const EventSources = {
   SYSTEM_CORE: 'system:core',
   SYSTEM_SCHEDULER: 'system:scheduler',
   SYSTEM_HEALTH: 'system:health',
-  
+
   // Coordination sources
   COORDINATION_SWARM: 'coordination:swarm',
   COORDINATION_AGENT: 'coordination:agent',
   COORDINATION_MAESTRO: 'coordination:maestro',
   COORDINATION_ORCHESTRATOR: 'coordination:orchestrator',
-  
+
   // Communication sources
   COMMUNICATION_WEBSOCKET: 'communication:websocket',
   COMMUNICATION_MCP_HTTP: 'communication:mcp-http',
   COMMUNICATION_MCP_STDIO: 'communication:mcp-stdio',
   COMMUNICATION_HTTP_CLIENT: 'communication:http-client',
-  
+
   // Monitoring sources
   MONITORING_METRICS: 'monitoring:metrics',
   MONITORING_HEALTH: 'monitoring:health',
   MONITORING_PERFORMANCE: 'monitoring:performance',
   MONITORING_ALERTS: 'monitoring:alerts',
-  
+
   // Interface sources
   INTERFACE_CLI: 'interface:cli',
   INTERFACE_WEB: 'interface:web',
   INTERFACE_TUI: 'interface:tui',
   INTERFACE_API: 'interface:api',
-  
+
   // Neural sources
   NEURAL_TRAINER: 'neural:trainer',
   NEURAL_INFERENCE: 'neural:inference',
   NEURAL_OPTIMIZER: 'neural:optimizer',
   NEURAL_EVALUATOR: 'neural:evaluator',
-  
+
   // Database sources
   DATABASE_QUERY_ENGINE: 'database:query-engine',
   DATABASE_TRANSACTION_MANAGER: 'database:transaction-manager',
   DATABASE_MIGRATION_RUNNER: 'database:migration-runner',
   DATABASE_BACKUP_SERVICE: 'database:backup-service',
-  
+
   // Memory sources
   MEMORY_CACHE_MANAGER: 'memory:cache-manager',
   MEMORY_STORE_MANAGER: 'memory:store-manager',
   MEMORY_GC_SERVICE: 'memory:gc-service',
   MEMORY_POOL_MANAGER: 'memory:pool-manager',
-  
+
   // Workflow sources
   WORKFLOW_ENGINE: 'workflow:engine',
   WORKFLOW_SCHEDULER: 'workflow:scheduler',
   WORKFLOW_EXECUTOR: 'workflow:executor',
-  WORKFLOW_MONITOR: 'workflow:monitor'
+  WORKFLOW_MONITOR: 'workflow:monitor',
 } as const;
 
 /**
@@ -599,43 +630,43 @@ export const UELTypeGuards = {
   isSystemLifecycleEvent: (event: SystemEvent): event is SystemLifecycleEvent => {
     return event.type.startsWith('system:');
   },
-  
+
   isCoordinationEvent: (event: SystemEvent): event is CoordinationEvent => {
     return event.type.startsWith('coordination:');
   },
-  
+
   isCommunicationEvent: (event: SystemEvent): event is CommunicationEvent => {
     return event.type.startsWith('communication:');
   },
-  
+
   isMonitoringEvent: (event: SystemEvent): event is MonitoringEvent => {
     return event.type.startsWith('monitoring:');
   },
-  
+
   isInterfaceEvent: (event: SystemEvent): event is InterfaceEvent => {
     return event.type.startsWith('interface:');
   },
-  
+
   isNeuralEvent: (event: SystemEvent): event is NeuralEvent => {
     return event.type.startsWith('neural:');
   },
-  
+
   isDatabaseEvent: (event: SystemEvent): event is DatabaseEvent => {
     return event.type.startsWith('database:');
   },
-  
+
   isMemoryEvent: (event: SystemEvent): event is MemoryEvent => {
     return event.type.startsWith('memory:');
   },
-  
+
   isWorkflowEvent: (event: SystemEvent): event is WorkflowEvent => {
     return event.type.startsWith('workflow:');
   },
-  
+
   isUELEvent: (event: SystemEvent): event is UELEvent => {
     const category = event.type.split(':')[0];
     return Object.values(EventCategories).includes(category as any);
-  }
+  },
 } as const;
 
 /**
@@ -650,29 +681,29 @@ export const EventConstants = {
   DEFAULT_TIMEOUT: 30000,
   DEFAULT_RETRY_ATTEMPTS: 3,
   DEFAULT_RETRY_DELAY: 1000,
-  
+
   // Limits
   MAX_EVENT_SIZE: 1024 * 1024, // 1MB
   MAX_BATCH_SIZE: 1000,
   MAX_QUEUE_SIZE: 100000,
   MAX_LISTENERS: 10000,
   MAX_METADATA_SIZE: 64 * 1024, // 64KB
-  
+
   // Timeouts
   HEALTH_CHECK_TIMEOUT: 5000,
   METRICS_COLLECTION_TIMEOUT: 10000,
   EVENT_EMISSION_TIMEOUT: 30000,
   SUBSCRIPTION_TIMEOUT: 15000,
-  
+
   // Intervals
   DEFAULT_HEALTH_CHECK_INTERVAL: 30000,
   DEFAULT_METRICS_INTERVAL: 10000,
   DEFAULT_CLEANUP_INTERVAL: 300000, // 5 minutes
-  
+
   // Patterns
   EVENT_ID_PATTERN: /^[a-zA-Z0-9-_]+$/,
   EVENT_TYPE_PATTERN: /^[a-zA-Z0-9]+:[a-zA-Z0-9-_]+$/,
-  SOURCE_PATTERN: /^[a-zA-Z0-9-_]+:[a-zA-Z0-9-_]+$/
+  SOURCE_PATTERN: /^[a-zA-Z0-9-_]+:[a-zA-Z0-9-_]+$/,
 } as const;
 
 export default {
@@ -682,5 +713,5 @@ export default {
   EventPriorityMap,
   EventSources,
   UELTypeGuards,
-  EventConstants
+  EventConstants,
 } as const;

@@ -25,6 +25,9 @@ export class TestLogger {
 
   /**
    * Log a debug message
+   *
+   * @param message
+   * @param context
    */
   debug(message: string, context?: Record<string, any>): void {
     this.log('debug', message, context);
@@ -32,6 +35,9 @@ export class TestLogger {
 
   /**
    * Log an info message
+   *
+   * @param message
+   * @param context
    */
   info(message: string, context?: Record<string, any>): void {
     this.log('info', message, context);
@@ -39,6 +45,9 @@ export class TestLogger {
 
   /**
    * Log a warning message
+   *
+   * @param message
+   * @param context
    */
   warn(message: string, context?: Record<string, any>): void {
     this.log('warn', message, context);
@@ -46,6 +55,9 @@ export class TestLogger {
 
   /**
    * Log an error message
+   *
+   * @param message
+   * @param context
    */
   error(message: string, context?: Record<string, any>): void {
     this.log('error', message, context);
@@ -53,6 +65,11 @@ export class TestLogger {
 
   /**
    * Log test interactions (London School)
+   *
+   * @param component
+   * @param method
+   * @param args
+   * @param result
    */
   logInteraction(component: string, method: string, args?: any[], result?: any): void {
     this.log('debug', `Interaction: ${component}.${method}`, {
@@ -66,6 +83,11 @@ export class TestLogger {
 
   /**
    * Log state changes (Classical School)
+   *
+   * @param component
+   * @param before
+   * @param after
+   * @param operation
    */
   logStateChange(component: string, before: any, after: any, operation?: string): void {
     this.log('debug', `State change in ${component}`, {
@@ -79,6 +101,10 @@ export class TestLogger {
 
   /**
    * Log performance metrics
+   *
+   * @param operation
+   * @param duration
+   * @param context
    */
   logPerformance(operation: string, duration: number, context?: Record<string, any>): void {
     this.log('info', `Performance: ${operation} took ${duration}ms`, {
@@ -91,6 +117,11 @@ export class TestLogger {
 
   /**
    * Log assertion results
+   *
+   * @param description
+   * @param passed
+   * @param expected
+   * @param actual
    */
   logAssertion(description: string, passed: boolean, expected?: any, actual?: any): void {
     const level = passed ? 'info' : 'error';
@@ -112,6 +143,8 @@ export class TestLogger {
 
   /**
    * Get logs by level
+   *
+   * @param level
    */
   getLogsByLevel(level: LogEntry['level']): LogEntry[] {
     return this.logs.filter((log) => log.level === level);
@@ -119,6 +152,8 @@ export class TestLogger {
 
   /**
    * Get logs by category
+   *
+   * @param category
    */
   getLogsByCategory(category: string): LogEntry[] {
     return this.logs.filter((log) => log.context?.category === category);
@@ -133,6 +168,8 @@ export class TestLogger {
 
   /**
    * Export logs as string
+   *
+   * @param format
    */
   exportLogs(format: 'text' | 'json' = 'text'): string {
     if (format === 'json') {
@@ -150,6 +187,8 @@ export class TestLogger {
 
   /**
    * Create a child logger for a specific component/test
+   *
+   * @param name
    */
   createChild(name: string): TestLogger {
     const child = new TestLogger(`${this.testName ? `${this.testName}.` : ''}${name}`, this.silent);

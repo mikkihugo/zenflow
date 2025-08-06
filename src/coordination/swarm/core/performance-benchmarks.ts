@@ -7,7 +7,7 @@
 
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
 // import { getClaudeFlow } from './claude-flow-enhanced';
-import { ZenSwarm } from './index-complete';
+import { ZenSwarm } from './index';
 
 class PerformanceBenchmarks {
   public results: Map<string, any>;
@@ -664,6 +664,8 @@ class PerformanceBenchmarks {
 
   /**
    * Calculate overall performance score
+   *
+   * @param benchmarks
    */
   calculateOverallScore(benchmarks) {
     const weights = {
@@ -691,6 +693,9 @@ class PerformanceBenchmarks {
 
   /**
    * Simulate neural network inference
+   *
+   * @param input
+   * @param layers
    */
   simulateNeuralInference(input, layers) {
     let current = input;
@@ -715,6 +720,9 @@ class PerformanceBenchmarks {
 
   /**
    * Simulate activation function
+   *
+   * @param vector
+   * @param activation
    */
   simulateActivation(vector, activation) {
     return vector.map((x) => {
@@ -735,6 +743,9 @@ class PerformanceBenchmarks {
 
   /**
    * Simulate async task for parallel testing
+   *
+   * @param duration
+   * @param taskId
    */
   async simulateAsyncTask(duration, taskId) {
     const startTime = performance.now();
@@ -751,6 +762,8 @@ class PerformanceBenchmarks {
 
   /**
    * Generate comprehensive performance report
+   *
+   * @param results
    */
   generatePerformanceReport(results) {
     const report = {
@@ -774,6 +787,8 @@ class PerformanceBenchmarks {
 
   /**
    * Get performance grade
+   *
+   * @param score
    */
   getPerformanceGrade(score) {
     if (score >= 90) {
@@ -796,6 +811,8 @@ class PerformanceBenchmarks {
 
   /**
    * Generate performance recommendations
+   *
+   * @param benchmarks
    */
   generateRecommendations(benchmarks) {
     const recommendations = [];
@@ -845,6 +862,8 @@ class PerformanceBenchmarks {
 
   /**
    * Compare with baseline performance
+   *
+   * @param _results
    */
   compareWithBaseline(_results) {
     // Would compare with stored baseline results
@@ -856,6 +875,8 @@ class PerformanceBenchmarks {
 
   /**
    * Generate CSV data for export
+   *
+   * @param results
    */
   generateCSVData(results: any) {
     const rows = [['Category', 'Metric', 'Value', 'Score']];

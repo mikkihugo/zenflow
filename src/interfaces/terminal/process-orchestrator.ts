@@ -38,6 +38,8 @@ export interface TerminalSession {
 
 /**
  * Terminal Manager for process and session management
+ *
+ * @example
  */
 export class TerminalManager extends EventEmitter {
   private config: Required<TerminalConfig>;
@@ -70,6 +72,13 @@ export class TerminalManager extends EventEmitter {
 
   /**
    * Execute a command in a new process
+   *
+   * @param command
+   * @param options
+   * @param options.cwd
+   * @param options.env
+   * @param options.timeout
+   * @param options.shell
    */
   async executeCommand(
     command: string,
@@ -195,6 +204,8 @@ export class TerminalManager extends EventEmitter {
 
   /**
    * Create a persistent terminal session
+   *
+   * @param sessionId
    */
   async createSession(sessionId?: string): Promise<string> {
     const id = sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -222,6 +233,9 @@ export class TerminalManager extends EventEmitter {
 
   /**
    * Execute command in a session
+   *
+   * @param sessionId
+   * @param command
    */
   async executeInSession(sessionId: string, command: string): Promise<ProcessResult> {
     const session = this.sessions.get(sessionId);
@@ -239,6 +253,8 @@ export class TerminalManager extends EventEmitter {
 
   /**
    * Close a terminal session
+   *
+   * @param sessionId
    */
   async closeSession(sessionId: string): Promise<void> {
     const session = this.sessions.get(sessionId);
@@ -272,6 +288,8 @@ export class TerminalManager extends EventEmitter {
 
   /**
    * Kill a specific process
+   *
+   * @param processId
    */
   async killProcess(processId: string): Promise<boolean> {
     const process = this.activeProcesses.get(processId);

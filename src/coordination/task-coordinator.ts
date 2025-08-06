@@ -44,6 +44,8 @@ export interface TaskResult {
 
 /**
  * SPARC-Enhanced Task Coordinator
+ *
+ * @example
  */
 export class TaskCoordinator {
   private static instance: TaskCoordinator;
@@ -61,6 +63,9 @@ export class TaskCoordinator {
 
   /**
    * Initialize with SPARC integration
+   *
+   * @param sparcBridge
+   * @param sparcSwarm
    */
   async initializeSPARCIntegration(
     sparcBridge: DatabaseSPARCBridge,
@@ -72,6 +77,8 @@ export class TaskCoordinator {
 
   /**
    * Execute task with optimal agent selection and methodology
+   *
+   * @param config
    */
   async executeTask(config: TaskConfig): Promise<TaskResult> {
     const startTime = Date.now();
@@ -102,6 +109,10 @@ export class TaskCoordinator {
 
   /**
    * NEW: Execute task using SPARC methodology
+   *
+   * @param config
+   * @param startTime
+   * @param taskId
    */
   private async executeWithSPARC(
     config: TaskConfig,
@@ -152,6 +163,10 @@ export class TaskCoordinator {
 
   /**
    * Execute task directly (original logic)
+   *
+   * @param config
+   * @param startTime
+   * @param taskId
    */
   private async executeDirectly(
     config: TaskConfig,
@@ -183,6 +198,8 @@ export class TaskCoordinator {
 
   /**
    * NEW: Determine if SPARC methodology should be used
+   *
+   * @param config
    */
   private shouldUseSPARC(config: TaskConfig): boolean {
     // Use SPARC for complex, high-priority tasks or when explicitly requested
@@ -197,6 +214,8 @@ export class TaskCoordinator {
 
   /**
    * NEW: Check if document represents complex work
+   *
+   * @param document
    */
   private isComplexDocument(document: FeatureDocumentEntity | TaskDocumentEntity): boolean {
     return (
@@ -209,6 +228,8 @@ export class TaskCoordinator {
 
   /**
    * NEW: Create temporary task document for SPARC processing
+   *
+   * @param config
    */
   private createTempTaskDocument(config: TaskConfig): TaskDocumentEntity {
     return {
@@ -253,6 +274,8 @@ export class TaskCoordinator {
 
   /**
    * NEW: Wait for SPARC completion (simplified implementation)
+   *
+   * @param assignmentId
    */
   private async waitForSPARCCompletion(assignmentId: string): Promise<any> {
     // In a real implementation, this would use events/promises
@@ -282,6 +305,8 @@ export class TaskCoordinator {
 
   /**
    * Select optimal agent strategy based on task requirements
+   *
+   * @param config
    */
   private selectAgentStrategy(config: TaskConfig): AgentStrategy {
     const claudeSubAgent = mapToClaudeSubAgent(config.subagent_type);
@@ -303,6 +328,8 @@ export class TaskCoordinator {
 
   /**
    * Determine if Claude Code sub-agent is optimal for this task
+   *
+   * @param config
    */
   private isClaudeSubAgentOptimal(config: TaskConfig): boolean {
     // High-priority tasks benefit from specialized sub-agents
@@ -330,6 +357,9 @@ export class TaskCoordinator {
 
   /**
    * Prepare execution context for agent
+   *
+   * @param config
+   * @param strategy
    */
   private prepareExecutionContext(config: TaskConfig, strategy: AgentStrategy): ExecutionContext {
     let enhancedPrompt = config.prompt;
@@ -364,6 +394,8 @@ export class TaskCoordinator {
 
   /**
    * Execute task with selected agent
+   *
+   * @param context
    */
   private async executeWithAgent(context: ExecutionContext): Promise<{ output: string }> {
     // Track active sub-agent
@@ -381,6 +413,8 @@ export class TaskCoordinator {
 
   /**
    * Generate unique task ID
+   *
+   * @param config
    */
   private generateTaskId(config: TaskConfig): string {
     const timestamp = Date.now();
@@ -390,6 +424,8 @@ export class TaskCoordinator {
 
   /**
    * Simple hash function for task IDs
+   *
+   * @param str
    */
   private simpleHash(str: string): string {
     let hash = 0;
@@ -487,6 +523,8 @@ interface TaskPerformanceMetrics {
 
 /**
  * Convenience function for quick task execution
+ *
+ * @param config
  */
 export async function executeTask(config: TaskConfig): Promise<TaskResult> {
   const taskCoordinator = TaskCoordinator.getInstance();
@@ -495,6 +533,8 @@ export async function executeTask(config: TaskConfig): Promise<TaskResult> {
 
 /**
  * Batch task execution with parallel processing
+ *
+ * @param configs
  */
 export async function executeBatchTasks(configs: TaskConfig[]): Promise<TaskResult[]> {
   const taskCoordinator = TaskCoordinator.getInstance();

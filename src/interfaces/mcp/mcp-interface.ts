@@ -75,6 +75,9 @@ export class MCPInterface extends EventEmitter {
 
   /**
    * Send tool call to Claude Code via MCP
+   *
+   * @param name
+   * @param args
    */
   async callTool(name: string, args: any): Promise<any> {
     const toolName = `${this.config.toolPrefix}${name}`;
@@ -160,6 +163,8 @@ export class MCPInterface extends EventEmitter {
 
 /**
  * Create and configure MCP interface instance
+ *
+ * @param config
  */
 export function createMCPInterface(config?: MCPInterfaceConfig): MCPInterface {
   return new MCPInterface(config);

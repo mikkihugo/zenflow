@@ -1,5 +1,7 @@
 /**
  * Registration options for singleton container
+ *
+ * @example
  */
 interface RegistrationOptions {
   lazy?: boolean;
@@ -10,6 +12,8 @@ interface RegistrationOptions {
 /**
  * Singleton Container - Dependency Injection Pattern
  * Replaces global state management with proper IoC container
+ *
+ * @example
  */
 class SingletonContainer {
   public instances: Map<string, any>;
@@ -24,6 +28,7 @@ class SingletonContainer {
 
   /**
    * Register a singleton factory
+   *
    * @param {string} key - Service identifier
    * @param {Function} factory - Factory function to create instance
    * @param {Object} options - Configuration options
@@ -43,6 +48,7 @@ class SingletonContainer {
 
   /**
    * Get or create singleton instance
+   *
    * @param {string} key - Service identifier
    * @returns {*} Singleton instance
    */
@@ -82,6 +88,7 @@ class SingletonContainer {
 
   /**
    * Check if service is registered
+   *
    * @param {string} key - Service identifier
    * @returns {boolean} True if registered
    */
@@ -91,6 +98,7 @@ class SingletonContainer {
 
   /**
    * Clear specific instance (force recreation)
+   *
    * @param {string} key - Service identifier
    */
   clear(key: string): void {
@@ -137,6 +145,7 @@ class SingletonContainer {
 
   /**
    * Get container statistics
+   *
    * @returns {Object} Container stats
    */
   getStats(): any {
@@ -154,6 +163,7 @@ let globalContainer: SingletonContainer | null = null;
 
 /**
  * Get or create global container
+ *
  * @returns {SingletonContainer} Global container instance
  */
 export function getContainer(): SingletonContainer {

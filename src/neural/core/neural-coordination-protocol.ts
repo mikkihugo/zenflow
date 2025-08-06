@@ -17,6 +17,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Register a neural node
+   *
+   * @param nodeId
+   * @param nodeInfo
    */
   registerNode(nodeId, nodeInfo) {
     this.nodes.set(nodeId, {
@@ -29,6 +32,11 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Send coordination message
+   *
+   * @param fromNode
+   * @param toNode
+   * @param messageType
+   * @param payload
    */
   async sendMessage(fromNode, toNode, messageType, payload) {
     const message = {
@@ -59,6 +67,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Synchronize neural states
+   *
+   * @param nodeId
+   * @param neuralState
    */
   async synchronize(nodeId, neuralState) {
     const node = this.nodes.get(nodeId);
@@ -105,6 +116,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Get recent messages
+   *
+   * @param limit
    */
   getRecentMessages(limit = 10) {
     return this.messages

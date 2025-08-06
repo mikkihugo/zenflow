@@ -9,6 +9,8 @@
  * This replaces separate coordination/mcp and swarm/mcp servers with one unified server.
  */
 
+import { createLogger } from '../../../interfaces/mcp/mcp-logger';
+import { ZenSwarm } from '../index';
 // Removed SwarmPersistencePooled - using DAL Factory approach instead
 import {
   AgentError,
@@ -20,13 +22,11 @@ import {
   SwarmError,
   TaskError,
   ValidationError,
+  MCPParameterValidator as ValidationUtils,
   WasmError,
   ZenSwarmError,
-} from './errors';
-import { ZenSwarm } from './index';
-import { Logger } from './logger';
+} from './error-handler';
 import { DAA_MCPTools } from './mcp-daa-tools';
-import { ValidationUtils } from './schemas';
 
 /**
  * Enhanced MCP Tools with comprehensive error handling and logging
@@ -64,19 +64,12 @@ class EnhancedMCPTools {
 
     // Initialize persistence asynchronously
     this.initializePersistence();
-    this.errorContext = new ErrorContext();
+    this.errorContext = new ErrorContext('mcp-tools-initialization');
     this.errorLog = [];
     this.maxErrorLogSize = 1000;
 
     // Initialize logger
-    this.logger = new Logger({
-      name: 'mcp-tools',
-      enableStderr: process.env.MCP_MODE === 'stdio',
-      level: process.env.LOG_LEVEL || 'INFO',
-      metadata: {
-        component: 'mcp-tools-enhanced',
-      },
-    });
+    this.logger = createLogger('mcp-tools');
 
     // Initialize DAA tools integration
     this.daaTools = new DAA_MCPTools(this);
@@ -155,6 +148,11 @@ class EnhancedMCPTools {
 
   /**
    * Enhanced error handler with context and logging
+   *
+   * @param error
+   * @param toolName
+   * @param operation
+   * @param params
    */
   handleError(error, toolName, operation, params = null) {
     // Create detailed error context
@@ -209,6 +207,8 @@ class EnhancedMCPTools {
 
   /**
    * Determine error severity based on type and message
+   *
+   * @param error
    */
   determineSeverity(error) {
     if (error instanceof ValidationError) {
@@ -231,6 +231,8 @@ class EnhancedMCPTools {
 
   /**
    * Determine if error is recoverable
+   *
+   * @param error
    */
   isRecoverable(error) {
     if (error instanceof ValidationError) {
@@ -249,6 +251,9 @@ class EnhancedMCPTools {
 
   /**
    * Validate and sanitize input parameters for a tool
+   *
+   * @param params
+   * @param toolName
    */
   validateToolParams(params, toolName) {
     try {
@@ -281,6 +286,8 @@ class EnhancedMCPTools {
 
   /**
    * Get recent error logs for debugging
+   *
+   * @param limit
    */
   getErrorLogs(limit = 50) {
     return this.errorLog.slice(-limit);
@@ -311,6 +318,8 @@ class EnhancedMCPTools {
 
   /**
    * 🔧 CRITICAL FIX: Integrate hook notifications with MCP memory system
+   *
+   * @param hookInstance
    */
   async integrateHookNotifications(hookInstance) {
     if (!hookInstance || !this.persistence) {
@@ -346,6 +355,10 @@ class EnhancedMCPTools {
 
   /**
    * 🔧 CRITICAL FIX: Retrieve cross-agent notifications for coordinated decision making
+   *
+   * @param agentId
+   * @param type
+   * @param since
    */
   async getCrossAgentNotifications(agentId = null, type = null, since = null) {
     if (!this.persistence) {
@@ -1934,9 +1947,9 @@ class EnhancedMCPTools {
       this.recordToolMetrics('neural_train', startTime, 'error', error.message);
       if (error instanceof ValidationError) {
         // Re-throw with MCP error format
-        const mcpError = new Error(error.message);
-        mcpError.code = error.code || 'VALIDATION_ERROR';
-        mcpError.data = { parameter: error.context?.parameter || 'unknown' };
+        const mcpError = new Error(error.message) as any;
+        mcpError.code = 'VALIDATION_ERROR';
+        mcpError.data = { parameter: error.field || 'unknown' };
         throw mcpError;
       }
       throw error;

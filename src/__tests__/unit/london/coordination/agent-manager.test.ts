@@ -1,6 +1,7 @@
 /**
  * Simple Agent Manager Tests - London TDD
- * @fileoverview Basic tests for agent management coordination using London School approach
+ *
+ * @file Basic tests for agent management coordination using London School approach
  */
 
 import { createCoordinationTestSuite } from '../../../helpers';

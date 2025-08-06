@@ -1,257 +1,245 @@
 /**
  * UEL (Unified Event Layer) - Main Exports
- * 
+ *
  * Central export point for all UEL functionality including:
  * - Event manager registry and factory
  * - Event type definitions and configurations
  * - Helper functions and utilities
  * - Global instances and initialization
- * 
- * @fileoverview Main UEL exports
+ *
+ * @file Main UEL exports
  */
-
-// Core UEL components
-export { 
-  UELFactory,
-  UELRegistry,
-  type EventManagerFactoryConfig,
-  type EventManagerTypeMap,
-  type EventManagerRegistry,
-  type EventManagerTransaction,
-  type ISystemEventManager,
-  type ICoordinationEventManager,
-  type ICommunicationEventManager,
-  type IMonitoringEventManager,
-  type IInterfaceEventManager,
-  type INeuralEventManager,
-  type IDatabaseEventManager,
-  type IMemoryEventManager,
-  type IWorkflowEventManager
-} from './factories';
-
-// Core interfaces for UEL
-export type { 
-  IEventManager,
-  IEventManagerFactory,
-  IEventManagerRegistry,
-  EventManagerConfig,
-  EventManagerStatus,
-  EventManagerMetrics,
-  EventManagerType,
-  SystemEvent,
-  EventSubscription,
-  EventFilter,
-  EventTransform,
-  EventRetryConfig,
-  EventHealthConfig,
-  EventMonitoringConfig,
-  EventListener,
-  EventBatch,
-  EventEmissionOptions,
-  EventQueryOptions,
-  EventPriority,
-  EventProcessingStrategy
-} from './core/interfaces';
-
-export {
-  EventManagerTypes,
-  EventTypeGuards,
-  EventManagerPresets,
-  EventError,
-  EventSubscriptionError,
-  EventEmissionError,
-  EventFilterError,
-  EventTimeoutError,
-  EventRetryExhaustedError
-} from './core/interfaces';
-
-// Event type definitions
-export type {
-  UELEvent,
-  SystemLifecycleEvent,
-  CoordinationEvent,
-  CommunicationEvent,
-  MonitoringEvent,
-  InterfaceEvent,
-  NeuralEvent,
-  DatabaseEvent,
-  MemoryEvent,
-  WorkflowEvent
-} from './types';
-
-export {
-  EventCategories,
-  EventTypePatterns,
-  DefaultEventManagerConfigs,
-  EventPriorityMap,
-  EventSources,
-  UELTypeGuards,
-  EventConstants
-} from './types';
 
 // UEL Event Adapters - Unified Event Adapter Integration
 export {
-  // System Event Adapters
-  SystemEventAdapter,
-  SystemEventManagerFactory,
-  createSystemEventAdapter,
-  createDefaultSystemEventAdapterConfig,
-  createSystemEventManager,
-  createCoreSystemEventManager,
-  createApplicationCoordinatorEventManager,
-  createErrorRecoveryEventManager,
-  createComprehensiveSystemEventManager,
-  SystemEventHelpers,
-  
-  // Coordination Event Adapters
-  CoordinationEventAdapter,
-  CoordinationEventManagerFactory,
-  createCoordinationEventAdapter,
-  createDefaultCoordinationEventAdapterConfig,
-  createCoordinationEventManager,
-  createSwarmCoordinationEventManager,
-  createAgentManagementEventManager,
-  createTaskOrchestrationEventManager,
-  createProtocolManagementEventManager,
-  createComprehensiveCoordinationEventManager,
-  createHighPerformanceCoordinationEventManager,
-  createDevelopmentCoordinationEventManager,
-  CoordinationEventHelpers,
-
   // Communication Event Adapters
   CommunicationEventAdapter,
+  type CommunicationEventAdapterConfig,
   CommunicationEventFactory,
-  createCommunicationEventAdapter,
-  createDefaultCommunicationEventAdapterConfig,
-  createWebSocketCommunicationAdapter,
-  createMCPCommunicationAdapter,
-  createHTTPCommunicationAdapter,
-  createProtocolCommunicationAdapter,
-  createComprehensiveCommunicationAdapter,
   CommunicationEventHelpers,
-  
-  // Monitoring Event Adapters
-  MonitoringEventAdapter,
-  MonitoringEventManagerFactory,
-  createMonitoringEventAdapter,
+  // Coordination Event Adapters
+  CoordinationEventAdapter,
+  type CoordinationEventAdapterConfig,
+  CoordinationEventHelpers,
+  CoordinationEventManagerFactory,
+  createAgentManagementEventManager,
+  createApplicationCoordinatorEventManager,
+  createCommunicationEventAdapter,
+  createComprehensiveCommunicationAdapter,
+  createComprehensiveCoordinationEventManager,
+  createComprehensiveSystemEventManager,
+  createCoordinationEventAdapter,
+  createCoordinationEventManager,
+  createCoreSystemEventManager,
+  createDefaultCommunicationEventAdapterConfig,
+  createDefaultCoordinationEventAdapterConfig,
   createDefaultMonitoringEventAdapterConfig,
-  MonitoringEventHelpers,
-  
+  createDefaultSystemEventAdapterConfig,
+  createDevelopmentCoordinationEventManager,
+  createErrorRecoveryEventManager,
+  createHighPerformanceCoordinationEventManager,
+  createHTTPCommunicationAdapter,
+  createMCPCommunicationAdapter,
+  createMonitoringEventAdapter,
+  createProtocolCommunicationAdapter,
+  createProtocolManagementEventManager,
+  createSwarmCoordinationEventManager,
+  createSystemEventAdapter,
+  createSystemEventManager,
+  createTaskOrchestrationEventManager,
+  createWebSocketCommunicationAdapter,
+  EventAdapterFactories,
+  type EventAdapterType,
   // Adapter Framework
   EventAdapterTypes,
-  EventAdapterFactories,
   EventAdapterUtils,
-  
+  // Monitoring Event Adapters
+  MonitoringEventAdapter,
+  type MonitoringEventAdapterConfig,
+  MonitoringEventHelpers,
+  MonitoringEventManagerFactory,
+  // System Event Adapters
+  SystemEventAdapter,
   // Types
   type SystemEventAdapterConfig,
-  type CoordinationEventAdapterConfig,
-  type CommunicationEventAdapterConfig,
-  type MonitoringEventAdapterConfig,
-  type EventAdapterType
+  SystemEventHelpers,
+  SystemEventManagerFactory,
 } from './adapters';
+
+// Core interfaces for UEL
+export type {
+  EventBatch,
+  EventEmissionOptions,
+  EventFilter,
+  EventHealthConfig,
+  EventListener,
+  EventManagerConfig,
+  EventManagerMetrics,
+  EventManagerStatus,
+  EventManagerType,
+  EventMonitoringConfig,
+  EventPriority,
+  EventProcessingStrategy,
+  EventQueryOptions,
+  EventRetryConfig,
+  EventSubscription,
+  EventTransform,
+  IEventManager,
+  IEventManagerFactory,
+  IEventManagerRegistry,
+  SystemEvent,
+} from './core/interfaces';
+
+export {
+  EventEmissionError,
+  EventError,
+  EventFilterError,
+  EventManagerPresets,
+  EventManagerTypes,
+  EventRetryExhaustedError,
+  EventSubscriptionError,
+  EventTimeoutError,
+  EventTypeGuards,
+} from './core/interfaces';
+// Core UEL components
+export {
+  type EventManagerFactoryConfig,
+  type EventManagerRegistry,
+  type EventManagerTransaction,
+  type EventManagerTypeMap,
+  type ICommunicationEventManager,
+  type ICoordinationEventManager,
+  type IDatabaseEventManager,
+  type IInterfaceEventManager,
+  type IMemoryEventManager,
+  type IMonitoringEventManager,
+  type INeuralEventManager,
+  type ISystemEventManager,
+  type IWorkflowEventManager,
+  UELFactory,
+  UELRegistry,
+} from './factories';
+// Event type definitions
+export type {
+  CommunicationEvent,
+  CoordinationEvent,
+  DatabaseEvent,
+  InterfaceEvent,
+  MemoryEvent,
+  MonitoringEvent,
+  NeuralEvent,
+  SystemLifecycleEvent,
+  UELEvent,
+  WorkflowEvent,
+} from './types';
+export {
+  DefaultEventManagerConfigs,
+  EventCategories,
+  EventConstants,
+  EventPriorityMap,
+  EventSources,
+  EventTypePatterns,
+  UELTypeGuards,
+} from './types';
 
 // Import types for internal use
-import type { 
-  SystemEventAdapter, 
-  SystemEventAdapterConfig,
+import type {
+  CommunicationEventAdapter,
+  CommunicationEventAdapterConfig,
   CoordinationEventAdapter,
   CoordinationEventAdapterConfig,
-  CommunicationEventAdapter,
-  CommunicationEventAdapterConfig
+  SystemEventAdapter,
+  SystemEventAdapterConfig,
 } from './adapters';
 
+export {
+  CompatibilityFactory,
+  CompatibleEventEmitter,
+  createCompatibleEventEmitter,
+  EventEmitterMigrationHelper,
+  MigrationHelper,
+  // Backward Compatibility Layer
+  UELCompatibleEventEmitter,
+  wrapWithUEL,
+} from './compatibility';
+// Factory convenience functions
+export {
+  createCommunicationEventBus,
+  createCoordinationEventBus,
+  createEventManager,
+  createMonitoringEventBus,
+  createSystemEventBus,
+} from './factories';
+
+export {
+  type ConnectionManager,
+  type CoordinationSettings,
+  // Event Manager System
+  EventManager,
+  type EventManagerCreationOptions,
+  type ManagerStatistics,
+} from './manager';
 // Legacy compatibility - re-export from observer system
 export {
-  SystemEventManager,
-  WebSocketObserver,
-  DatabaseObserver,
-  LoggerObserver,
-  MetricsObserver,
-  EventBuilder,
-  type SwarmEvent,
-  type MCPEvent,
-  type NeuralEvent as LegacyNeuralEvent,
-  type DatabaseEvent as LegacyDatabaseEvent,
-  type MemoryEvent as LegacyMemoryEvent,
-  type InterfaceEvent as LegacyInterfaceEvent,
   type AllSystemEvents,
-  type SystemObserver,
+  type DatabaseEvent as LegacyDatabaseEvent,
+  DatabaseObserver,
+  EventBuilder,
+  type InterfaceEvent as LegacyInterfaceEvent,
+  LoggerObserver,
+  type MCPEvent,
+  type MemoryEvent as LegacyMemoryEvent,
+  MetricsObserver,
+  type NeuralEvent as LegacyNeuralEvent,
   type ObserverType,
-  type SwarmStatus,
+  type SwarmEvent,
   type SwarmMetrics,
+  type SwarmStatus,
+  type SwarmTopology,
+  SystemEventManager,
+  type SystemObserver,
   type ToolResult,
-  type SwarmTopology
+  WebSocketObserver,
 } from './observer-system';
-
 // UEL Integration Layer - Complete System Components
 export {
+  type EventDiscoveryConfig,
   // Event Registry System
   EventRegistry,
   type EventRegistryEntry,
   type EventTypeRegistry,
   type FactoryRegistry,
   type HealthMonitoringConfig,
-  type EventDiscoveryConfig
 } from './registry';
 
 export {
-  // Event Manager System
-  EventManager,
-  type EventManagerCreationOptions,
-  type ConnectionManager,
-  type CoordinationSettings,
-  type ManagerStatistics
-} from './manager';
-
-export {
-  // Backward Compatibility Layer
-  UELCompatibleEventEmitter,
-  CompatibleEventEmitter,
-  EventEmitterMigrationHelper,
-  MigrationHelper,
-  CompatibilityFactory,
-  createCompatibleEventEmitter,
-  wrapWithUEL
-} from './compatibility';
-
-export {
-  // Validation Framework
-  UELValidationFramework,
-  type ValidationResult,
-  type ValidationError,
-  type ValidationWarning,
-  type ValidationRecommendation,
-  type EventTypeSchema,
-  type HealthValidationConfig,
-  type IntegrationValidationConfig
-} from './validation';
-
-export {
+  analyzeSystemEventEmitterUsage,
+  enhanceWithUEL,
+  SystemIntegrationFactory,
+  UELEnhancedApplicationCoordinator,
   // System Integration Layer - Enhanced Versions of Core Systems
   UELEnhancedEventBus,
-  UELEnhancedApplicationCoordinator,
   UELEnhancedObserverSystem,
-  SystemIntegrationFactory,
   UELSystemIntegration,
-  enhanceWithUEL,
-  analyzeSystemEventEmitterUsage
 } from './system-integrations';
-
-// Factory convenience functions
 export {
-  createEventManager,
-  createSystemEventBus,
-  createCoordinationEventBus,
-  createCommunicationEventBus,
-  createMonitoringEventBus
-} from './factories';
+  type EventTypeSchema,
+  type HealthValidationConfig,
+  type IntegrationValidationConfig,
+  // Validation Framework
+  UELValidationFramework,
+  type ValidationError,
+  type ValidationRecommendation,
+  type ValidationResult,
+  type ValidationWarning,
+} from './validation';
 
 /**
  * UEL Main Interface - Primary entry point for the Unified Event Layer
- * 
+ *
  * Provides high-level methods for event manager creation, operations, and system management.
  * Implements the singleton pattern to ensure system-wide consistency.
- * 
+ *
  * @class UEL
  * @example
  * ```typescript
@@ -262,11 +250,11 @@ export {
  *   enableCompatibility: true,
  *   healthMonitoring: true
  * });
- * 
+ *
  * // Create event managers
  * const systemManager = await uel.createSystemEventManager('main-system');
  * const coordManager = await uel.createCoordinationEventManager('swarm-coord');
- * 
+ *
  * // Broadcast events globally
  * await uel.broadcast({
  *   id: 'global-event',
@@ -290,7 +278,7 @@ export class UEL {
 
   /**
    * Get the singleton UEL instance
-   * 
+   *
    * @returns The global UEL instance
    * @example
    * ```typescript
@@ -309,10 +297,10 @@ export class UEL {
 
   /**
    * Initialize UEL system with complete integration
-   * 
+   *
    * Sets up all UEL components including factories, registries, event managers,
    * validation framework, and compatibility layer.
-   * 
+   *
    * @param config - Configuration options for UEL initialization
    * @param config.logger - Custom logger instance (defaults to console)
    * @param config.config - Configuration object for dependency injection
@@ -321,7 +309,6 @@ export class UEL {
    * @param config.enableCompatibility - Whether to enable compatibility layer (default: true)
    * @param config.healthMonitoring - Whether to enable health monitoring (default: true)
    * @throws {Error} If initialization fails
-   * 
    * @example
    * ```typescript
    * await uel.initialize({
@@ -353,55 +340,55 @@ export class UEL {
     const { CompatibilityFactory } = await import('./compatibility');
     const { DIContainer } = await import('../../di/container/di-container');
     const { CORE_TOKENS } = await import('../../di/tokens/core-tokens');
-    
+
     const container = new DIContainer();
-    
+
     // Register dependencies
     const logger = config?.logger || {
       debug: console.debug,
       info: console.info,
       warn: console.warn,
-      error: console.error
+      error: console.error,
     };
-    
+
     container.register(CORE_TOKENS.Logger, () => logger);
     container.register(CORE_TOKENS.Config, () => config?.config || {});
-    
+
     // Initialize legacy components
     this.factory = container.resolve(UELFactory);
     this.registry = container.resolve(UELRegistry);
-    
+
     // Initialize new integration components
     this.eventManager = container.resolve(EventManager);
     this.eventRegistry = container.resolve(EventRegistry);
-    
+
     // Initialize validation framework if enabled
     if (config?.enableValidation !== false) {
       this.validationFramework = new UELValidationFramework(logger);
     }
-    
+
     // Initialize compatibility factory if enabled
     if (config?.enableCompatibility !== false) {
       this.compatibilityFactory = CompatibilityFactory.getInstance();
       await this.compatibilityFactory.initialize(this.eventManager, logger);
     }
-    
+
     // Initialize all systems
     await Promise.all([
       this.eventManager.initialize({
         autoRegisterFactories: config?.autoRegisterFactories !== false,
-        healthMonitoring: config?.healthMonitoring !== false
+        healthMonitoring: config?.healthMonitoring !== false,
       }),
       this.eventRegistry.initialize({
-        autoRegisterDefaults: config?.autoRegisterFactories !== false
-      })
+        autoRegisterDefaults: config?.autoRegisterFactories !== false,
+      }),
     ]);
-    
+
     // Auto-register factories if requested (legacy)
     if (config?.autoRegisterFactories !== false) {
       await this.registerDefaultFactories();
     }
-    
+
     this.initialized = true;
     logger.info('🚀 UEL System fully initialized with complete integration layer');
   }
@@ -468,28 +455,29 @@ export class UEL {
    */
   getCompatibilityFactory(): CompatibilityFactory {
     if (!this.compatibilityFactory) {
-      throw new Error('Compatibility factory not enabled. Initialize with enableCompatibility: true');
+      throw new Error(
+        'Compatibility factory not enabled. Initialize with enableCompatibility: true'
+      );
     }
     return this.compatibilityFactory;
   }
 
   /**
    * Create and register a system event manager
-   * 
+   *
    * Creates an event manager optimized for system lifecycle events with real-time processing.
-   * 
+   *
    * @param name - Unique name for the event manager (default: 'default-system')
    * @param config - Optional configuration overrides
    * @returns Promise resolving to the created system event manager
    * @throws {Error} If manager creation fails
-   * 
    * @example
    * ```typescript
    * const systemManager = await uel.createSystemEventManager('core-system', {
    *   processing: { strategy: 'immediate' },
    *   maxListeners: 1000
    * });
-   * 
+   *
    * await systemManager.emitSystemEvent({
    *   id: 'sys-001',
    *   timestamp: new Date(),
@@ -512,42 +500,58 @@ export class UEL {
 
   /**
    * Create system event adapter with UEL integration
+   *
+   * @param name
+   * @param config
    */
   async createSystemEventAdapter(
     name: string,
     config?: Partial<SystemEventAdapterConfig>
   ): Promise<SystemEventAdapter> {
-    const { createSystemEventAdapter, createDefaultSystemEventAdapterConfig } = await import('./adapters');
+    const { createSystemEventAdapter, createDefaultSystemEventAdapterConfig } = await import(
+      './adapters'
+    );
     const adapterConfig = createDefaultSystemEventAdapterConfig(name, config);
     return createSystemEventAdapter(adapterConfig);
   }
 
   /**
    * Create coordination event adapter with UEL integration
+   *
+   * @param name
+   * @param config
    */
   async createCoordinationEventAdapter(
     name: string,
     config?: Partial<CoordinationEventAdapterConfig>
   ): Promise<CoordinationEventAdapter> {
-    const { createCoordinationEventAdapter, createDefaultCoordinationEventAdapterConfig } = await import('./adapters');
+    const { createCoordinationEventAdapter, createDefaultCoordinationEventAdapterConfig } =
+      await import('./adapters');
     const adapterConfig = createDefaultCoordinationEventAdapterConfig(name, config);
     return createCoordinationEventAdapter(adapterConfig);
   }
 
   /**
    * Create communication event adapter with UEL integration
+   *
+   * @param name
+   * @param config
    */
   async createCommunicationEventAdapter(
     name: string,
     config?: Partial<CommunicationEventAdapterConfig>
   ): Promise<CommunicationEventAdapter> {
-    const { createCommunicationEventAdapter, createDefaultCommunicationEventAdapterConfig } = await import('./adapters');
+    const { createCommunicationEventAdapter, createDefaultCommunicationEventAdapterConfig } =
+      await import('./adapters');
     const adapterConfig = createDefaultCommunicationEventAdapterConfig(name, config);
     return createCommunicationEventAdapter(adapterConfig);
   }
 
   /**
    * Create and register coordination event manager
+   *
+   * @param name
+   * @param config
    */
   async createCoordinationEventManager(
     name: string = 'default-coordination',
@@ -561,6 +565,9 @@ export class UEL {
 
   /**
    * Create and register communication event manager
+   *
+   * @param name
+   * @param config
    */
   async createCommunicationEventManager(
     name: string = 'default-communication',
@@ -574,6 +581,9 @@ export class UEL {
 
   /**
    * Create and register monitoring event manager
+   *
+   * @param name
+   * @param config
    */
   async createMonitoringEventManager(
     name: string = 'default-monitoring',
@@ -587,6 +597,9 @@ export class UEL {
 
   /**
    * Create and register interface event manager
+   *
+   * @param name
+   * @param config
    */
   async createInterfaceEventManager(
     name: string = 'default-interface',
@@ -600,6 +613,9 @@ export class UEL {
 
   /**
    * Create and register neural event manager
+   *
+   * @param name
+   * @param config
    */
   async createNeuralEventManager(
     name: string = 'default-neural',
@@ -613,6 +629,9 @@ export class UEL {
 
   /**
    * Create and register database event manager
+   *
+   * @param name
+   * @param config
    */
   async createDatabaseEventManager(
     name: string = 'default-database',
@@ -626,6 +645,9 @@ export class UEL {
 
   /**
    * Create and register memory event manager
+   *
+   * @param name
+   * @param config
    */
   async createMemoryEventManager(
     name: string = 'default-memory',
@@ -639,6 +661,9 @@ export class UEL {
 
   /**
    * Create and register workflow event manager
+   *
+   * @param name
+   * @param config
    */
   async createWorkflowEventManager(
     name: string = 'default-workflow',
@@ -652,6 +677,8 @@ export class UEL {
 
   /**
    * Get event manager by name
+   *
+   * @param name
    */
   getEventManager(name: string): IEventManager | null {
     if (!this.factory) return null;
@@ -660,6 +687,8 @@ export class UEL {
 
   /**
    * Get all event managers by type
+   *
+   * @param type
    */
   getEventManagersByType(type: EventManagerType): IEventManager[] {
     if (!this.registry) return [];
@@ -690,7 +719,7 @@ export class UEL {
         totalEvents: 0,
         totalSubscriptions: 0,
         averageLatency: 0,
-        errorRate: 0
+        errorRate: 0,
       };
     }
     return this.registry.getGlobalMetrics();
@@ -724,20 +753,24 @@ export class UEL {
       managersByType: {} as any,
       managersByStatus: {},
       cacheSize: 0,
-      transactions: 0
+      transactions: 0,
     };
-    
+
     const globalMetrics = await this.getGlobalMetrics();
     const healthStatus = await this.getHealthStatus();
-    
+
     // Get integration component stats if available
-    const integrationStats = this.eventManager ? await this.eventManager.getSystemStatus() : undefined;
+    const integrationStats = this.eventManager
+      ? await this.eventManager.getSystemStatus()
+      : undefined;
     const registryStats = this.eventRegistry ? this.eventRegistry.getRegistryStats() : undefined;
-    const validationStatus = this.validationFramework ? {
-      enabled: true,
-      historyCount: this.validationFramework.getValidationHistory().length
-    } : { enabled: false, historyCount: 0 };
-    
+    const validationStatus = this.validationFramework
+      ? {
+          enabled: true,
+          historyCount: this.validationFramework.getValidationHistory().length,
+        }
+      : { enabled: false, historyCount: 0 };
+
     return {
       initialized: this.initialized,
       components: {
@@ -746,19 +779,24 @@ export class UEL {
         eventManager: !!this.eventManager,
         eventRegistry: !!this.eventRegistry,
         validation: !!this.validationFramework,
-        compatibility: !!this.compatibilityFactory
+        compatibility: !!this.compatibilityFactory,
       },
       factoryStats,
       globalMetrics,
       healthStatus,
       integrationStats,
       registryStats,
-      validationStatus
+      validationStatus,
     };
   }
 
   /**
    * Perform comprehensive validation of the entire UEL system
+   *
+   * @param options
+   * @param options.includeHealthCheck
+   * @param options.includeIntegrationCheck
+   * @param options.sampleEvents
    */
   async validateSystem(options?: {
     includeHealthCheck?: boolean;
@@ -768,7 +806,7 @@ export class UEL {
     if (!this.validationFramework || !this.eventManager || !this.eventRegistry) {
       return null;
     }
-    
+
     return await this.validationFramework.validateComplete(
       this.eventManager,
       this.eventRegistry,
@@ -778,6 +816,12 @@ export class UEL {
 
   /**
    * Create backward-compatible EventEmitter with UEL integration
+   *
+   * @param name
+   * @param type
+   * @param options
+   * @param options.enableUEL
+   * @param options.migrationMode
    */
   async createCompatibleEventEmitter(
     name: string,
@@ -790,12 +834,18 @@ export class UEL {
     if (!this.compatibilityFactory) {
       return null;
     }
-    
+
     return await this.compatibilityFactory.createEnhancedEventEmitter(name, type, options);
   }
 
   /**
    * Create enhanced event bus with UEL integration
+   *
+   * @param options
+   * @param options.enableUEL
+   * @param options.managerType
+   * @param options.managerName
+   * @param options.maxListeners
    */
   async createEnhancedEventBus(options?: {
     enableUEL?: boolean;
@@ -809,17 +859,24 @@ export class UEL {
 
     const { UELSystemIntegration } = await import('./system-integrations');
     await UELSystemIntegration.initialize(this.eventManager, this.logger);
-    
+
     return UELSystemIntegration.factory.createEnhancedEventBus({
       enableUEL: options?.enableUEL !== false,
       managerType: options?.managerType,
       managerName: options?.managerName || 'uel-enhanced-bus',
-      maxListeners: options?.maxListeners
+      maxListeners: options?.maxListeners,
     });
   }
 
   /**
    * Create enhanced application coordinator with UEL integration
+   *
+   * @param options
+   * @param options.enableUEL
+   * @param options.uelConfig
+   * @param options.uelConfig.enableValidation
+   * @param options.uelConfig.enableCompatibility
+   * @param options.uelConfig.healthMonitoring
    */
   async createEnhancedApplicationCoordinator(options?: {
     enableUEL?: boolean;
@@ -835,15 +892,18 @@ export class UEL {
 
     const { UELSystemIntegration } = await import('./system-integrations');
     await UELSystemIntegration.initialize(this.eventManager!, this.logger);
-    
+
     return UELSystemIntegration.factory.createEnhancedApplicationCoordinator({
       enableUEL: options?.enableUEL !== false,
-      uelConfig: options?.uelConfig
+      uelConfig: options?.uelConfig,
     });
   }
 
   /**
    * Create enhanced observer system with UEL integration
+   *
+   * @param options
+   * @param options.enableUEL
    */
   async createEnhancedObserverSystem(options?: {
     enableUEL?: boolean;
@@ -854,9 +914,9 @@ export class UEL {
 
     const { UELSystemIntegration } = await import('./system-integrations');
     await UELSystemIntegration.initialize(this.eventManager, this.logger);
-    
+
     return UELSystemIntegration.factory.createEnhancedObserverSystem({
-      enableUEL: options?.enableUEL !== false
+      enableUEL: options?.enableUEL !== false,
     });
   }
 
@@ -875,8 +935,12 @@ export class UEL {
 
   /**
    * Enhance existing EventEmitter with UEL capabilities
+   *
+   * @param originalInstance
+   * @param name
+   * @param managerType
    */
-  async enhanceExistingSystem<T extends any>(
+  async enhanceExistingSystem<T>(
     originalInstance: T,
     name: string,
     managerType: EventManagerType = EventManagerTypes.SYSTEM
@@ -886,11 +950,21 @@ export class UEL {
     }
 
     const { enhanceWithUEL } = await import('./system-integrations');
-    return await enhanceWithUEL(originalInstance, name, this.eventManager, managerType, this.logger);
+    return await enhanceWithUEL(
+      originalInstance,
+      name,
+      this.eventManager,
+      managerType,
+      this.logger
+    );
   }
 
   /**
    * Migrate existing EventEmitter to UEL
+   *
+   * @param emitter
+   * @param name
+   * @param type
    */
   async migrateEventEmitter(
     emitter: any, // EventEmitter
@@ -900,29 +974,34 @@ export class UEL {
     if (!this.compatibilityFactory) {
       return null;
     }
-    
+
     return await this.compatibilityFactory.wrapExistingEmitter(emitter, name, type);
   }
 
   /**
    * Register event type for validation
+   *
+   * @param eventType
+   * @param schema
    */
   registerEventTypeSchema(eventType: string, schema: any): void {
     if (this.validationFramework) {
       this.validationFramework.registerEventTypeSchema(eventType, schema);
     }
-    
+
     if (this.eventRegistry) {
       this.eventRegistry.registerEventType(eventType, {
         category: 'custom',
         managerTypes: [EventManagerTypes.SYSTEM],
-        schema
+        schema,
       });
     }
   }
 
   /**
    * Broadcast event to all event managers
+   *
+   * @param event
    */
   async broadcast<T extends SystemEvent>(event: T): Promise<void> {
     if (!this.registry) {
@@ -933,6 +1012,9 @@ export class UEL {
 
   /**
    * Broadcast event to specific event manager type
+   *
+   * @param type
+   * @param event
    */
   async broadcastToType<T extends SystemEvent>(type: EventManagerType, event: T): Promise<void> {
     if (!this.registry) {
@@ -951,30 +1033,30 @@ export class UEL {
 
     // Shutdown all components in proper order
     const shutdownPromises = [];
-    
+
     if (this.eventManager) {
       shutdownPromises.push(this.eventManager.shutdown());
     }
-    
+
     if (this.eventRegistry) {
       shutdownPromises.push(this.eventRegistry.shutdownAll());
     }
-    
+
     if (this.factory) {
       shutdownPromises.push(this.factory.shutdownAll());
     }
-    
+
     if (this.registry) {
       shutdownPromises.push(this.registry.shutdownAll());
     }
-    
+
     await Promise.allSettled(shutdownPromises);
-    
+
     // Clear validation history
     if (this.validationFramework) {
       this.validationFramework.clearValidationHistory();
     }
-    
+
     // Reset all components
     this.factory = null;
     this.registry = null;
@@ -990,10 +1072,10 @@ export class UEL {
    */
   private async registerDefaultFactories(): Promise<void> {
     if (!this.registry) return;
-    
+
     // Note: In a real implementation, these would import actual factory classes
     // For now, we'll register placeholder factories
-    
+
     // The actual factories would be loaded dynamically based on available implementations
     try {
       const factories = await Promise.allSettled([
@@ -1005,9 +1087,9 @@ export class UEL {
         import('./implementations/neural-event-manager-factory').catch(() => null),
         import('./implementations/database-event-manager-factory').catch(() => null),
         import('./implementations/memory-event-manager-factory').catch(() => null),
-        import('./implementations/workflow-event-manager-factory').catch(() => null)
+        import('./implementations/workflow-event-manager-factory').catch(() => null),
       ]);
-      
+
       // Register factories that were successfully loaded
       factories.forEach((result, index) => {
         if (result.status === 'fulfilled' && result.value) {
@@ -1032,6 +1114,8 @@ export const uel = UEL.getInstance();
 
 /**
  * Initialize UEL with default configuration
+ *
+ * @param config
  */
 export const initializeUEL = async (config?: Parameters<UEL['initialize']>[0]): Promise<void> => {
   await uel.initialize(config);
@@ -1043,37 +1127,57 @@ export const initializeUEL = async (config?: Parameters<UEL['initialize']>[0]): 
 export const UELHelpers = {
   /**
    * Initialize complete UEL system with all components
+   *
+   * @param config
+   * @param config.enableValidation
+   * @param config.enableCompatibility
+   * @param config.healthMonitoring
+   * @param config.autoRegisterFactories
+   * @param config.logger
    */
-  async initializeCompleteSystem(config: {
-    enableValidation?: boolean;
-    enableCompatibility?: boolean;
-    healthMonitoring?: boolean;
-    autoRegisterFactories?: boolean;
-    logger?: any;
-  } = {}): Promise<UEL> {
+  async initializeCompleteSystem(
+    config: {
+      enableValidation?: boolean;
+      enableCompatibility?: boolean;
+      healthMonitoring?: boolean;
+      autoRegisterFactories?: boolean;
+      logger?: any;
+    } = {}
+  ): Promise<UEL> {
     await uel.initialize({
       enableValidation: config.enableValidation !== false,
       enableCompatibility: config.enableCompatibility !== false,
       healthMonitoring: config.healthMonitoring !== false,
       autoRegisterFactories: config.autoRegisterFactories !== false,
-      logger: config.logger
+      logger: config.logger,
     });
-    
+
     return uel;
   },
 
   /**
    * Initialize and create common event managers for a typical setup
+   *
+   * @param config
+   * @param config.systemEvents
+   * @param config.coordinationEvents
+   * @param config.communicationEvents
+   * @param config.monitoringEvents
+   * @param config.interfaceEvents
+   * @param config.customConfig
+   * @param config.useIntegratedManager
    */
-  async setupCommonEventManagers(config: {
-    systemEvents?: boolean;
-    coordinationEvents?: boolean;
-    communicationEvents?: boolean;
-    monitoringEvents?: boolean;
-    interfaceEvents?: boolean;
-    customConfig?: Record<string, Partial<EventManagerConfig>>;
-    useIntegratedManager?: boolean;
-  } = {}): Promise<{
+  async setupCommonEventManagers(
+    config: {
+      systemEvents?: boolean;
+      coordinationEvents?: boolean;
+      communicationEvents?: boolean;
+      monitoringEvents?: boolean;
+      interfaceEvents?: boolean;
+      customConfig?: Record<string, Partial<EventManagerConfig>>;
+      useIntegratedManager?: boolean;
+    } = {}
+  ): Promise<{
     system?: ISystemEventManager;
     coordination?: ICoordinationEventManager;
     communication?: ICommunicationEventManager;
@@ -1093,35 +1197,62 @@ export const UELHelpers = {
     try {
       // Use integrated event manager if available and requested
       const eventManager = config.useIntegratedManager ? uel.getEventManager() : null;
-      
+
       if (config.systemEvents !== false) {
-        managers.system = eventManager 
-          ? await eventManager.createSystemEventManager('common-system', config.customConfig?.system)
+        managers.system = eventManager
+          ? await eventManager.createSystemEventManager(
+              'common-system',
+              config.customConfig?.system
+            )
           : await uel.createSystemEventManager('common-system', config.customConfig?.system);
       }
 
       if (config.coordinationEvents !== false) {
         managers.coordination = eventManager
-          ? await eventManager.createCoordinationEventManager('common-coordination', config.customConfig?.coordination)
-          : await uel.createCoordinationEventManager('common-coordination', config.customConfig?.coordination);
+          ? await eventManager.createCoordinationEventManager(
+              'common-coordination',
+              config.customConfig?.coordination
+            )
+          : await uel.createCoordinationEventManager(
+              'common-coordination',
+              config.customConfig?.coordination
+            );
       }
 
       if (config.communicationEvents !== false) {
         managers.communication = eventManager
-          ? await eventManager.createCommunicationEventManager('common-communication', config.customConfig?.communication)
-          : await uel.createCommunicationEventManager('common-communication', config.customConfig?.communication);
+          ? await eventManager.createCommunicationEventManager(
+              'common-communication',
+              config.customConfig?.communication
+            )
+          : await uel.createCommunicationEventManager(
+              'common-communication',
+              config.customConfig?.communication
+            );
       }
 
       if (config.monitoringEvents !== false) {
         managers.monitoring = eventManager
-          ? await eventManager.createMonitoringEventManager('common-monitoring', config.customConfig?.monitoring)
-          : await uel.createMonitoringEventManager('common-monitoring', config.customConfig?.monitoring);
+          ? await eventManager.createMonitoringEventManager(
+              'common-monitoring',
+              config.customConfig?.monitoring
+            )
+          : await uel.createMonitoringEventManager(
+              'common-monitoring',
+              config.customConfig?.monitoring
+            );
       }
 
       if (config.interfaceEvents !== false) {
         managers.interface = eventManager
-          ? await eventManager.createInterfaceEventManager('common-interface', config.customConfig?.interface)
-          : await uel.createInterfaceEventManager('common-interface', config.customConfig?.interface);
+          ? await eventManager.createInterfaceEventManager(
+              'common-interface',
+              config.customConfig?.interface
+            )
+          : await uel.createInterfaceEventManager(
+              'common-interface',
+              config.customConfig?.interface
+            );
       }
 
       return managers;
@@ -1133,6 +1264,8 @@ export const UELHelpers = {
 
   /**
    * Migrate existing observer system to UEL
+   *
+   * @param observerSystem
    */
   async migrateObserverSystem(observerSystem: any): Promise<{
     success: boolean;
@@ -1144,37 +1277,45 @@ export const UELHelpers = {
       success: true,
       migratedManagers: [] as string[],
       errors: [] as string[],
-      recommendations: [] as string[]
+      recommendations: [] as string[],
     };
 
     try {
       // Initialize UEL with compatibility enabled
       await uel.initialize({ enableCompatibility: true });
-      
+
       // Migrate EventEmitter if it exists
       if (observerSystem && typeof observerSystem.emit === 'function') {
-        const compatible = await uel.migrateEventEmitter(observerSystem, 'migrated-observer', EventManagerTypes.SYSTEM);
+        const compatible = await uel.migrateEventEmitter(
+          observerSystem,
+          'migrated-observer',
+          EventManagerTypes.SYSTEM
+        );
         if (compatible) {
           results.migratedManagers.push('migrated-observer');
         } else {
           results.errors.push('Failed to migrate main observer system');
         }
       }
-      
+
       // Analyze and provide recommendations
       if (observerSystem) {
-        const analysis = uel.getCompatibilityFactory()?.getMigrationHelper()?.analyzeEventEmitter(observerSystem);
+        const analysis = uel
+          .getCompatibilityFactory()
+          ?.getMigrationHelper()
+          ?.analyzeEventEmitter(observerSystem);
         if (analysis) {
           results.recommendations.push(...analysis.recommendations);
         }
       }
-      
+
       results.success = results.errors.length === 0;
       return results;
-      
     } catch (error) {
       results.success = false;
-      results.errors.push(`Migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      results.errors.push(
+        `Migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
       return results;
     }
   },
@@ -1195,25 +1336,24 @@ export const UELHelpers = {
         totalManagers: 0,
         healthyManagers: 0,
         healthPercentage: 0,
-        status: 'critical'
+        status: 'critical',
       };
     }
 
     const healthStatus = await uel.getHealthStatus();
-    const healthyManagers = healthStatus.filter(status => status.status === 'healthy').length;
+    const healthyManagers = healthStatus.filter((status) => status.status === 'healthy').length;
     const totalManagers = healthStatus.length;
     const healthPercentage = totalManagers > 0 ? (healthyManagers / totalManagers) * 100 : 100;
-    
-    const status = healthPercentage >= 80 ? 'healthy' 
-      : healthPercentage >= 50 ? 'warning' 
-      : 'critical';
+
+    const status =
+      healthPercentage >= 80 ? 'healthy' : healthPercentage >= 50 ? 'warning' : 'critical';
 
     return {
       initialized: true,
       totalManagers,
       healthyManagers,
       healthPercentage,
-      status
+      status,
     };
   },
 
@@ -1222,26 +1362,34 @@ export const UELHelpers = {
    */
   async performHealthCheck(): Promise<Record<string, { healthy: boolean; details?: any }>> {
     const healthStatus = await uel.getHealthStatus();
-    
-    return healthStatus.reduce((acc, status) => {
-      acc[status.name] = {
-        healthy: status.status === 'healthy',
-        details: {
-          status: status.status,
-          subscriptions: status.subscriptions,
-          queueSize: status.queueSize,
-          errorRate: status.errorRate,
-          uptime: status.uptime,
-          lastCheck: status.lastCheck,
-          metadata: status.metadata
-        }
-      };
-      return acc;
-    }, {} as Record<string, { healthy: boolean; details?: any }>);
+
+    return healthStatus.reduce(
+      (acc, status) => {
+        acc[status.name] = {
+          healthy: status.status === 'healthy',
+          details: {
+            status: status.status,
+            subscriptions: status.subscriptions,
+            queueSize: status.queueSize,
+            errorRate: status.errorRate,
+            uptime: status.uptime,
+            lastCheck: status.lastCheck,
+            metadata: status.metadata,
+          },
+        };
+        return acc;
+      },
+      {} as Record<string, { healthy: boolean; details?: any }>
+    );
   },
 
   /**
    * Migrate entire system to UEL with enhanced capabilities
+   *
+   * @param systems
+   * @param systems.eventBus
+   * @param systems.applicationCoordinator
+   * @param systems.observerSystem
    */
   async migrateSystemToUEL(systems: {
     eventBus?: any;
@@ -1262,14 +1410,14 @@ export const UELHelpers = {
     await uel.initialize({
       enableValidation: true,
       enableCompatibility: true,
-      healthMonitoring: true
+      healthMonitoring: true,
     });
 
     const migrationReport = {
       success: true,
       migratedSystems: [] as string[],
       errors: [] as string[],
-      recommendations: [] as string[]
+      recommendations: [] as string[],
     };
 
     const result: any = {};
@@ -1280,11 +1428,13 @@ export const UELHelpers = {
         try {
           result.eventBus = await uel.createEnhancedEventBus({
             enableUEL: true,
-            managerName: 'migrated-event-bus'
+            managerName: 'migrated-event-bus',
           });
           migrationReport.migratedSystems.push('eventBus');
         } catch (error) {
-          migrationReport.errors.push(`Event Bus migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          migrationReport.errors.push(
+            `Event Bus migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
@@ -1296,12 +1446,14 @@ export const UELHelpers = {
             uelConfig: {
               enableValidation: true,
               enableCompatibility: true,
-              healthMonitoring: true
-            }
+              healthMonitoring: true,
+            },
           });
           migrationReport.migratedSystems.push('applicationCoordinator');
         } catch (error) {
-          migrationReport.errors.push(`Application Coordinator migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          migrationReport.errors.push(
+            `Application Coordinator migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
@@ -1309,11 +1461,13 @@ export const UELHelpers = {
       if (systems.observerSystem) {
         try {
           result.observerSystem = await uel.createEnhancedObserverSystem({
-            enableUEL: true
+            enableUEL: true,
           });
           migrationReport.migratedSystems.push('observerSystem');
         } catch (error) {
-          migrationReport.errors.push(`Observer System migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          migrationReport.errors.push(
+            `Observer System migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
@@ -1334,18 +1488,34 @@ export const UELHelpers = {
 
       return {
         ...result,
-        migrationReport
+        migrationReport,
       };
-
     } catch (error) {
       migrationReport.success = false;
-      migrationReport.errors.push(`System migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      migrationReport.errors.push(
+        `System migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
       return { migrationReport };
     }
   },
 
   /**
    * Create comprehensive UEL system setup
+   *
+   * @param options
+   * @param options.systemComponents
+   * @param options.systemComponents.eventBus
+   * @param options.systemComponents.applicationCoordinator
+   * @param options.systemComponents.observerSystem
+   * @param options.eventManagers
+   * @param options.eventManagers.system
+   * @param options.eventManagers.coordination
+   * @param options.eventManagers.communication
+   * @param options.eventManagers.monitoring
+   * @param options.eventManagers.interface
+   * @param options.validation
+   * @param options.compatibility
+   * @param options.healthMonitoring
    */
   async setupCompleteUELSystem(options?: {
     systemComponents?: {
@@ -1386,7 +1556,7 @@ export const UELHelpers = {
     const status = {
       initialized: false,
       componentsCreated: 0,
-      errors: [] as string[]
+      errors: [] as string[],
     };
 
     try {
@@ -1395,7 +1565,7 @@ export const UELHelpers = {
         enableValidation: options?.validation !== false,
         enableCompatibility: options?.compatibility !== false,
         healthMonitoring: options?.healthMonitoring !== false,
-        autoRegisterFactories: true
+        autoRegisterFactories: true,
       });
 
       status.initialized = true;
@@ -1410,7 +1580,9 @@ export const UELHelpers = {
           systems.eventBus = await uel.createEnhancedEventBus();
           status.componentsCreated++;
         } catch (error) {
-          status.errors.push(`Event Bus creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          status.errors.push(
+            `Event Bus creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
@@ -1419,7 +1591,9 @@ export const UELHelpers = {
           systems.applicationCoordinator = await uel.createEnhancedApplicationCoordinator();
           status.componentsCreated++;
         } catch (error) {
-          status.errors.push(`Application Coordinator creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          status.errors.push(
+            `Application Coordinator creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
@@ -1428,7 +1602,9 @@ export const UELHelpers = {
           systems.observerSystem = await uel.createEnhancedObserverSystem();
           status.componentsCreated++;
         } catch (error) {
-          status.errors.push(`Observer System creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          status.errors.push(
+            `Observer System creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
@@ -1440,25 +1616,33 @@ export const UELHelpers = {
           eventManagers.system = await uel.createSystemEventManager('complete-system');
           status.componentsCreated++;
         } catch (error) {
-          status.errors.push(`System Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          status.errors.push(
+            `System Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
       if (managerOptions.coordination !== false) {
         try {
-          eventManagers.coordination = await uel.createCoordinationEventManager('complete-coordination');
+          eventManagers.coordination =
+            await uel.createCoordinationEventManager('complete-coordination');
           status.componentsCreated++;
         } catch (error) {
-          status.errors.push(`Coordination Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          status.errors.push(
+            `Coordination Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
       if (managerOptions.communication !== false) {
         try {
-          eventManagers.communication = await uel.createCommunicationEventManager('complete-communication');
+          eventManagers.communication =
+            await uel.createCommunicationEventManager('complete-communication');
           status.componentsCreated++;
         } catch (error) {
-          status.errors.push(`Communication Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          status.errors.push(
+            `Communication Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
@@ -1467,7 +1651,9 @@ export const UELHelpers = {
           eventManagers.monitoring = await uel.createMonitoringEventManager('complete-monitoring');
           status.componentsCreated++;
         } catch (error) {
-          status.errors.push(`Monitoring Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          status.errors.push(
+            `Monitoring Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
@@ -1476,7 +1662,9 @@ export const UELHelpers = {
           eventManagers.interface = await uel.createInterfaceEventManager('complete-interface');
           status.componentsCreated++;
         } catch (error) {
-          status.errors.push(`Interface Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          status.errors.push(
+            `Interface Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
         }
       }
 
@@ -1484,22 +1672,29 @@ export const UELHelpers = {
         uel,
         systems,
         eventManagers,
-        status
+        status,
       };
-
     } catch (error) {
-      status.errors.push(`Complete UEL setup failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      status.errors.push(
+        `Complete UEL setup failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
       return {
         uel,
         systems: {},
         eventManagers: {},
-        status
+        status,
       };
     }
   },
 
   /**
    * Perform comprehensive system validation
+   *
+   * @param options
+   * @param options.includeHealthCheck
+   * @param options.includeIntegrationCheck
+   * @param options.includeSampleEvents
+   * @param options.exportReport
    */
   async performCompleteValidation(options?: {
     includeHealthCheck?: boolean;
@@ -1520,7 +1715,7 @@ export const UELHelpers = {
       if (!uel.isInitialized()) {
         await uel.initialize({
           enableValidation: true,
-          enableCompatibility: true
+          enableCompatibility: true,
         });
       }
 
@@ -1529,24 +1724,26 @@ export const UELHelpers = {
       const eventRegistry = uel.getEventRegistry();
 
       // Sample events for testing
-      const sampleEvents = options?.includeSampleEvents ? [
-        {
-          id: 'test-1',
-          timestamp: new Date(),
-          source: 'validation-test',
-          type: 'system:lifecycle',
-          operation: 'test',
-          status: 'success'
-        } as any,
-        {
-          id: 'test-2',
-          timestamp: new Date(),
-          source: 'validation-test',
-          type: 'coordination:swarm',
-          operation: 'test',
-          targetId: 'test-target'
-        } as any
-      ] : undefined;
+      const sampleEvents = options?.includeSampleEvents
+        ? [
+            {
+              id: 'test-1',
+              timestamp: new Date(),
+              source: 'validation-test',
+              type: 'system:lifecycle',
+              operation: 'test',
+              status: 'success',
+            } as any,
+            {
+              id: 'test-2',
+              timestamp: new Date(),
+              source: 'validation-test',
+              type: 'coordination:swarm',
+              operation: 'test',
+              targetId: 'test-target',
+            } as any,
+          ]
+        : undefined;
 
       const validationResult = await validationFramework.validateComplete(
         eventManager,
@@ -1558,7 +1755,7 @@ export const UELHelpers = {
         passed: validationResult.overall.valid,
         score: validationResult.summary.totalScore,
         criticalIssues: validationResult.summary.criticalIssues,
-        recommendations: validationResult.summary.recommendations
+        recommendations: validationResult.summary.recommendations,
       };
 
       let reportPath: string | undefined;
@@ -1571,9 +1768,8 @@ export const UELHelpers = {
       return {
         validationResult,
         reportPath,
-        summary
+        summary,
       };
-
     } catch (error) {
       return {
         validationResult: null,
@@ -1581,8 +1777,8 @@ export const UELHelpers = {
           passed: false,
           score: 0,
           criticalIssues: 1,
-          recommendations: 0
-        }
+          recommendations: 0,
+        },
       };
     }
   },
@@ -1605,9 +1801,9 @@ export const UELHelpers = {
         type: `system:${operation}` as any,
         operation: operation as any,
         status: status as any,
-        details
+        details,
       }),
-      
+
       coordination: (operation: string, targetId: string, details?: any): CoordinationEvent => ({
         id: `coord-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         timestamp: new Date(),
@@ -1615,9 +1811,9 @@ export const UELHelpers = {
         type: `coordination:${operation}` as any,
         operation: operation as any,
         targetId,
-        details
+        details,
       }),
-      
+
       communication: (operation: string, protocol: string, details?: any): CommunicationEvent => ({
         id: `comm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         timestamp: new Date(),
@@ -1625,9 +1821,9 @@ export const UELHelpers = {
         type: `communication:${operation}` as any,
         operation: operation as any,
         protocol: protocol as any,
-        details
+        details,
       }),
-      
+
       monitoring: (operation: string, component: string, details?: any): MonitoringEvent => ({
         id: `mon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         timestamp: new Date(),
@@ -1635,9 +1831,9 @@ export const UELHelpers = {
         type: `monitoring:${operation}` as any,
         operation: operation as any,
         component,
-        details
+        details,
       }),
-      
+
       interface: (operation: string, interfaceType: string, details?: any): InterfaceEvent => ({
         id: `int-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         timestamp: new Date(),
@@ -1645,10 +1841,10 @@ export const UELHelpers = {
         type: `interface:${operation}` as any,
         operation: operation as any,
         interface: interfaceType as any,
-        details
-      })
+        details,
+      }),
     };
-  }
+  },
 };
 
 /**

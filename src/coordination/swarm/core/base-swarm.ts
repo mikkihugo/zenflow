@@ -32,6 +32,8 @@ interface ExtendedSwarmOptions extends SwarmOptions {
 
 /**
  * Core ZenSwarm implementation with all base functionality
+ *
+ * @example
  */
 export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
   private swarmId: string;
@@ -76,7 +78,8 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
     } as ExtendedSwarmOptions;
 
     this.swarmId = generateId('swarm');
-    this.wasmLoader = getContainer().get<WasmModuleLoader>('WasmModuleLoader') || new WasmModuleLoader();
+    this.wasmLoader =
+      getContainer().get<WasmModuleLoader>('WasmModuleLoader') || new WasmModuleLoader();
     this.isRunning = false;
 
     this.metrics = {
@@ -104,7 +107,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
       // TODO: Implement proper DALFactory integration with DI
       this.coordinationDao = {
         query: async (_sql: string, _params?: any[]) => [],
-        execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 })
+        execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
       } as any;
     }
 

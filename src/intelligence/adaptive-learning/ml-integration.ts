@@ -55,6 +55,9 @@ export class ReinforcementLearningEngine
 
   /**
    * Select action using epsilon-greedy policy
+   *
+   * @param state
+   * @param availableActions
    */
   selectAction(state: string, availableActions: string[]): string {
     // Epsilon-greedy action selection
@@ -90,6 +93,11 @@ export class ReinforcementLearningEngine
 
   /**
    * Update Q-value using Q-learning algorithm
+   *
+   * @param state
+   * @param action
+   * @param reward
+   * @param nextState
    */
   updateQValue(state: string, action: string, reward: number, nextState: string): void {
     const currentQ = this.getQValue(state, action);
@@ -121,6 +129,9 @@ export class ReinforcementLearningEngine
 
   /**
    * Get Q-value for state-action pair
+   *
+   * @param state
+   * @param action
    */
   getQValue(state: string, action: string): number {
     return this.qTable.get(state)?.get(action) ?? 0;
@@ -153,6 +164,8 @@ export class ReinforcementLearningEngine
 
   /**
    * Train on batch of experiences
+   *
+   * @param experiences
    */
   trainBatch(
     experiences: Array<{
@@ -280,6 +293,8 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
 
   /**
    * Predict patterns from execution data
+   *
+   * @param data
    */
   async predict(data: ExecutionData[]): Promise<Pattern[]> {
     if (!this.model) {
@@ -307,6 +322,9 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
 
   /**
    * Train the neural network
+   *
+   * @param data
+   * @param labels
    */
   async train(data: ExecutionData[], labels: any[]): Promise<TrainingResult> {
     if (this.isTraining) {
@@ -341,6 +359,8 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
 
   /**
    * Evaluate model performance
+   *
+   * @param testData
    */
   async evaluate(testData: ExecutionData[]): Promise<EvaluationMetrics> {
     if (!this.model) {
@@ -536,6 +556,9 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
 
   /**
    * Add a model to the ensemble
+   *
+   * @param model
+   * @param weight
    */
   addModel(model: any, weight: number): void {
     const modelId = `model_${Date.now()}_${Math.random()}`;
@@ -553,6 +576,8 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
 
   /**
    * Make ensemble prediction
+   *
+   * @param data
    */
   async predict(data: ExecutionData[]): Promise<EnsemblePrediction> {
     if (this.models.size === 0) {
@@ -610,6 +635,8 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
 
   /**
    * Update model weights based on performance
+   *
+   * @param performance
    */
   updateWeights(performance: any[]): void {
     if (performance.length !== this.models.size) {
@@ -638,6 +665,8 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
 
   /**
    * Remove model from ensemble
+   *
+   * @param modelId
    */
   removeModel(modelId: string): boolean {
     const modelData = this.models.get(modelId);
@@ -747,6 +776,8 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
 
   /**
    * Process streaming data
+   *
+   * @param data
    */
   async processStream(data: ExecutionData): Promise<void> {
     // Add to recent data window
@@ -789,6 +820,8 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
 
   /**
    * Adapt to new data distribution
+   *
+   * @param newData
    */
   async adaptToDistribution(newData: ExecutionData[]): Promise<void> {
     // Detect distribution shift

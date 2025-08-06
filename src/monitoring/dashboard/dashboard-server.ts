@@ -227,6 +227,8 @@ export class DashboardServer extends EventEmitter {
 
   /**
    * Update dashboard with new metrics
+   *
+   * @param metrics
    */
   public updateMetrics(metrics: CompositeMetrics): void {
     this.dashboardData.metrics = metrics;
@@ -236,6 +238,8 @@ export class DashboardServer extends EventEmitter {
 
   /**
    * Update dashboard with new insights
+   *
+   * @param insights
    */
   public updateInsights(insights: PerformanceInsights): void {
     this.dashboardData.insights = insights;
@@ -267,6 +271,8 @@ export class DashboardServer extends EventEmitter {
 
   /**
    * Update dashboard with optimization results
+   *
+   * @param optimizations
    */
   public updateOptimizations(optimizations: OptimizationResult[]): void {
     this.dashboardData.optimizations = optimizations.slice(-50); // Keep last 50 results
@@ -285,6 +291,9 @@ export class DashboardServer extends EventEmitter {
 
   /**
    * Add alert to dashboard
+   *
+   * @param type
+   * @param message
    */
   public addAlert(type: 'warning' | 'error' | 'info', message: string): void {
     const alert = {
@@ -359,6 +368,9 @@ export class DashboardServer extends EventEmitter {
 
   /**
    * Handle export request via socket
+   *
+   * @param socket
+   * @param format
    */
   private async handleExportRequest(socket: any, format: 'json' | 'csv'): Promise<void> {
     try {
@@ -377,6 +389,9 @@ export class DashboardServer extends EventEmitter {
 
   /**
    * Handle export response via HTTP
+   *
+   * @param res
+   * @param format
    */
   private handleExportResponse(res: express.Response, format: 'json' | 'csv'): void {
     try {
@@ -396,6 +411,8 @@ export class DashboardServer extends EventEmitter {
 
   /**
    * Generate export data
+   *
+   * @param format
    */
   private generateExportData(format: 'json' | 'csv'): string {
     const exportData = {
@@ -416,6 +433,8 @@ export class DashboardServer extends EventEmitter {
 
   /**
    * Convert data to CSV format
+   *
+   * @param data
    */
   private convertToCsv(data: any): string {
     const lines: string[] = [];

@@ -1,60 +1,52 @@
 /**
  * UEL (Unified Event Layer) - Event Registry System
- * 
+ *
  * Central registry for managing all event types, factories, and lifecycle management.
  * Provides type-safe event registration, discovery, and health monitoring.
- * 
- * @fileoverview Event Registry Implementation following UACL/USL patterns
+ *
+ * @file Event Registry Implementation following UACL/USL patterns
  */
 
+import type { ILogger } from '../../core/interfaces/base-interfaces';
+import { inject, injectable } from '../../di/decorators/injectable';
+import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 import type {
+  EventManagerConfig,
+  EventManagerMetrics,
+  EventManagerStatus,
+  EventManagerType,
+  EventSubscription,
   IEventManager,
   IEventManagerFactory,
   IEventManagerRegistry,
-  EventManagerConfig,
-  EventManagerStatus,
-  EventManagerMetrics,
-  EventManagerType,
   SystemEvent,
-  EventSubscription
 } from './core/interfaces';
-
+import { EventManagerPresets, EventManagerTypes, EventTypeGuards } from './core/interfaces';
 import type {
-  UELEvent,
-  SystemLifecycleEvent,
-  CoordinationEvent,
   CommunicationEvent,
-  MonitoringEvent,
-  InterfaceEvent,
-  NeuralEvent,
+  CoordinationEvent,
   DatabaseEvent,
+  InterfaceEvent,
   MemoryEvent,
-  WorkflowEvent
+  MonitoringEvent,
+  NeuralEvent,
+  SystemLifecycleEvent,
+  UELEvent,
+  WorkflowEvent,
 } from './types';
-
 import {
-  EventManagerTypes,
-  EventTypeGuards,
-  EventManagerPresets
-} from './core/interfaces';
-
-import {
-  EventCategories,
   DefaultEventManagerConfigs,
-  EventPriorityMap,
+  EventCategories,
   EventConstants,
-  UELTypeGuards
+  EventPriorityMap,
+  UELTypeGuards,
 } from './types';
-
-import type { ILogger } from '../../core/interfaces/base-interfaces';
-import { injectable, inject } from '../../di/decorators/injectable';
-import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 
 /**
  * Registry entry for managing event manager instances and their lifecycle
- * 
+ *
  * Tracks the complete lifecycle and usage statistics of registered event managers.
- * 
+ *
  * @interface EventRegistryEntry
  * @example
  * ```typescript
@@ -82,31 +74,31 @@ import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 export interface EventRegistryEntry {
   /** The registered event manager instance */
   manager: IEventManager;
-  
+
   /** Factory that created this manager */
   factory: IEventManagerFactory;
-  
+
   /** Configuration used to create the manager */
   config: EventManagerConfig;
-  
+
   /** Timestamp when the manager was created */
   created: Date;
-  
+
   /** Timestamp when the manager was last accessed */
   lastAccessed: Date;
-  
+
   /** Timestamp of the last health check */
   lastHealthCheck: Date;
-  
+
   /** Current operational status of the manager */
   status: 'healthy' | 'unhealthy' | 'stopped' | 'error';
-  
+
   /** Latest health check results */
   healthStatus?: EventManagerStatus;
-  
+
   /** Latest performance metrics */
   metrics?: EventManagerMetrics;
-  
+
   /** Usage statistics for monitoring and optimization */
   usage: {
     /** Number of times this manager has been accessed */
@@ -118,37 +110,39 @@ export interface EventRegistryEntry {
     /** Total number of errors encountered */
     errorCount: number;
   };
-  
+
   /** Additional metadata and tags for categorization */
   metadata: Record<string, any>;
 }
 
 /**
  * Event type registry for managing event type configurations
+ *
+ * @example
  */
 export interface EventTypeRegistry {
   [eventType: string]: {
     /** Event type identifier */
     type: string;
-    
+
     /** Event category */
     category: string;
-    
+
     /** Default priority */
     priority: number;
-    
+
     /** Schema for validation */
     schema?: any;
-    
+
     /** Associated manager types */
     managerTypes: EventManagerType[];
-    
+
     /** Configuration options */
     config: Record<string, any>;
-    
+
     /** Registration timestamp */
     registered: Date;
-    
+
     /** Usage statistics */
     usage: {
       totalEmissions: number;
@@ -160,12 +154,14 @@ export interface EventTypeRegistry {
 
 /**
  * Factory registry for managing event manager factories
+ *
+ * @example
  */
 export interface FactoryRegistry {
   [managerType in EventManagerType]?: {
     /** Factory instance */
     factory: IEventManagerFactory;
-    
+
     /** Factory metadata */
     metadata: {
       name: string;
@@ -173,10 +169,10 @@ export interface FactoryRegistry {
       capabilities: string[];
       supported: EventManagerType[];
     };
-    
+
     /** Registration timestamp */
     registered: Date;
-    
+
     /** Usage statistics */
     usage: {
       managersCreated: number;
@@ -188,50 +184,54 @@ export interface FactoryRegistry {
 
 /**
  * Health monitoring configuration
+ *
+ * @example
  */
 export interface HealthMonitoringConfig {
   /** Health check interval in milliseconds */
   checkInterval: number;
-  
+
   /** Health check timeout */
   timeout: number;
-  
+
   /** Number of failed checks before marking unhealthy */
   failureThreshold: number;
-  
+
   /** Auto-recovery attempts */
   autoRecovery: boolean;
-  
+
   /** Recovery retry count */
   maxRecoveryAttempts: number;
-  
+
   /** Notifications on health changes */
   notifyOnStatusChange: boolean;
 }
 
 /**
  * Event discovery configuration
+ *
+ * @example
  */
 export interface EventDiscoveryConfig {
   /** Auto-discover event types */
   autoDiscover: boolean;
-  
+
   /** Event type patterns to match */
   patterns: string[];
-  
+
   /** Directories to scan for events */
   scanPaths: string[];
-  
+
   /** File extensions to include */
   fileExtensions: string[];
 }
 
 /**
  * Main event registry implementation for centralized event manager management
- * 
+ *
  * Provides centralized registration, discovery, and lifecycle management of event managers
  * and their factories. Includes health monitoring, metrics collection, and event broadcasting.
- * 
+ *
  * @class EventRegistry
  * @implements IEventManagerRegistry
  * @example
@@ -242,15 +242,15 @@ export interface EventDiscoveryConfig {
  *   healthMonitoring: { checkInterval: 30000, timeout: 5000 },
  *   discovery: { autoDiscover: true, patterns: ['*Event'] }
  * });
- * 
+ *
  * // Register factory and managers
  * registry.registerFactory(EventManagerTypes.SYSTEM, systemFactory);
  * registry.registerManager('system-1', manager, factory, config);
- * 
+ *
  * // Health monitoring and metrics
  * const healthStatus = await registry.healthCheckAll();
  * const metrics = await registry.getGlobalMetrics();
- * 
+ *
  * // Event broadcasting
  * await registry.broadcast(globalEvent);
  * await registry.broadcastToType(EventManagerTypes.SYSTEM, systemEvent);
@@ -289,15 +289,14 @@ export class EventRegistry implements IEventManagerRegistry {
 
   /**
    * Initialize the registry system
-   * 
+   *
    * Sets up health monitoring, event discovery, and registers default event types.
-   * 
+   *
    * @param config - Initialization configuration options
    * @param config.healthMonitoring - Health monitoring settings overrides
    * @param config.discovery - Event discovery settings overrides
    * @param config.autoRegisterDefaults - Whether to register default event types (default: true)
    * @throws {Error} If initialization fails
-   * 
    * @example
    * ```typescript
    * await registry.initialize({
@@ -329,7 +328,7 @@ export class EventRegistry implements IEventManagerRegistry {
     if (config?.healthMonitoring) {
       this.healthMonitoring = { ...this.healthMonitoring, ...config.healthMonitoring };
     }
-    
+
     if (config?.discovery) {
       this.discoveryConfig = { ...this.discoveryConfig, ...config.discovery };
     }
@@ -353,15 +352,14 @@ export class EventRegistry implements IEventManagerRegistry {
 
   /**
    * Register an event manager factory for a specific type
-   * 
+   *
    * Registers a factory that can create event managers of the specified type.
    * Updates the factory registry with metadata and usage tracking.
-   * 
+   *
    * @template T - Configuration type extending EventManagerConfig
    * @param type - Event manager type this factory creates
    * @param factory - Factory instance to register
    * @throws {Error} If factory registration fails
-   * 
    * @example
    * ```typescript
    * const systemFactory = new SystemEventManagerFactory();
@@ -369,11 +367,11 @@ export class EventRegistry implements IEventManagerRegistry {
    * ```
    */
   registerFactory<T extends EventManagerConfig>(
-    type: EventManagerType, 
+    type: EventManagerType,
     factory: IEventManagerFactory<T>
   ): void {
     this.factories.set(type, factory as IEventManagerFactory);
-    
+
     // Update factory registry
     this.factoryRegistry[type] = {
       factory: factory as IEventManagerFactory,
@@ -381,29 +379,31 @@ export class EventRegistry implements IEventManagerRegistry {
         name: factory.constructor.name,
         version: '1.0.0',
         capabilities: factory.getSupportedEventTypes?.() || [],
-        supported: [type]
+        supported: [type],
       },
       registered: new Date(),
       usage: {
         managersCreated: 0,
         totalRequests: 0,
-        successRate: 1.0
-      }
+        successRate: 1.0,
+      },
     };
-    
+
     this.logger.debug(`📋 Registered event manager factory: ${type}`);
   }
 
   /**
    * Get factory for event manager type
    */
-  getFactory<T extends EventManagerConfig>(type: EventManagerType): IEventManagerFactory<T> | undefined {
+  getFactory<T extends EventManagerConfig>(
+    type: EventManagerType
+  ): IEventManagerFactory<T> | undefined {
     const factory = this.factories.get(type);
-    
+
     if (factory && this.factoryRegistry[type]) {
       this.factoryRegistry[type]!.usage.totalRequests++;
     }
-    
+
     return factory as IEventManagerFactory<T>;
   }
 
@@ -416,20 +416,19 @@ export class EventRegistry implements IEventManagerRegistry {
 
   /**
    * Register an event manager instance with the registry
-   * 
+   *
    * Creates a registry entry to track the manager's lifecycle, usage, and health.
-   * 
+   *
    * @param name - Unique name for the event manager
    * @param manager - Event manager instance to register
    * @param factory - Factory that created this manager
    * @param config - Configuration used to create the manager
-   * 
    * @example
    * ```typescript
    * registry.registerManager(
-   *   'system-core', 
-   *   systemManager, 
-   *   systemFactory, 
+   *   'system-core',
+   *   systemManager,
+   *   systemFactory,
    *   managerConfig
    * );
    * ```
@@ -452,21 +451,21 @@ export class EventRegistry implements IEventManagerRegistry {
         accessCount: 0,
         totalEvents: 0,
         totalSubscriptions: 0,
-        errorCount: 0
+        errorCount: 0,
       },
       metadata: {
         registryVersion: '1.0.0',
-        autoRegistered: false
-      }
+        autoRegistered: false,
+      },
     };
 
     this.eventManagers.set(name, entry);
-    
+
     // Update factory usage statistics
     if (this.factoryRegistry[config.type]) {
       this.factoryRegistry[config.type]!.usage.managersCreated++;
     }
-    
+
     this.logger.info(`📝 Registered event manager: ${name} (${config.type})`);
   }
 
@@ -475,13 +474,13 @@ export class EventRegistry implements IEventManagerRegistry {
    */
   findEventManager(name: string): IEventManager | undefined {
     const entry = this.eventManagers.get(name);
-    
+
     if (entry) {
       entry.lastAccessed = new Date();
       entry.usage.accessCount++;
       return entry.manager;
     }
-    
+
     return undefined;
   }
 
@@ -490,13 +489,13 @@ export class EventRegistry implements IEventManagerRegistry {
    */
   getAllEventManagers(): Map<string, IEventManager> {
     const managers = new Map<string, IEventManager>();
-    
+
     for (const [name, entry] of this.eventManagers) {
       managers.set(name, entry.manager);
       entry.lastAccessed = new Date();
       entry.usage.accessCount++;
     }
-    
+
     return managers;
   }
 
@@ -505,7 +504,7 @@ export class EventRegistry implements IEventManagerRegistry {
    */
   getEventManagersByType(type: EventManagerType): IEventManager[] {
     const managers: IEventManager[] = [];
-    
+
     for (const [, entry] of this.eventManagers) {
       if (entry.config.type === type) {
         managers.push(entry.manager);
@@ -513,7 +512,7 @@ export class EventRegistry implements IEventManagerRegistry {
         entry.usage.accessCount++;
       }
     }
-    
+
     return managers;
   }
 
@@ -522,13 +521,13 @@ export class EventRegistry implements IEventManagerRegistry {
    */
   getEventManagersByStatus(status: EventRegistryEntry['status']): IEventManager[] {
     const managers: IEventManager[] = [];
-    
+
     for (const [, entry] of this.eventManagers) {
       if (entry.status === status) {
         managers.push(entry.manager);
       }
     }
-    
+
     return managers;
   }
 
@@ -556,10 +555,10 @@ export class EventRegistry implements IEventManagerRegistry {
       usage: {
         totalEmissions: 0,
         totalSubscriptions: 0,
-        averageLatency: 0
-      }
+        averageLatency: 0,
+      },
     };
-    
+
     this.logger.debug(`🏷️ Registered event type: ${eventType}`);
   }
 
@@ -583,13 +582,13 @@ export class EventRegistry implements IEventManagerRegistry {
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
     const results = new Map<string, EventManagerStatus>();
     const healthPromises: Promise<void>[] = [];
-    
+
     for (const [name, entry] of this.eventManagers) {
       const healthPromise = this.performHealthCheck(name, entry)
-        .then(status => {
+        .then((status) => {
           results.set(name, status);
         })
-        .catch(error => {
+        .catch((error) => {
           this.logger.error(`❌ Health check failed for ${name}:`, error);
           results.set(name, {
             name: entry.manager.name,
@@ -600,13 +599,13 @@ export class EventRegistry implements IEventManagerRegistry {
             queueSize: 0,
             errorRate: 1.0,
             uptime: 0,
-            metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
+            metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
           });
         });
-      
+
       healthPromises.push(healthPromise);
     }
-    
+
     await Promise.allSettled(healthPromises);
     return results;
   }
@@ -625,7 +624,7 @@ export class EventRegistry implements IEventManagerRegistry {
     factoryUsage: Record<EventManagerType, number>;
   }> {
     const managers = Array.from(this.eventManagers.values());
-    
+
     // Collect metrics from all managers
     const metricsPromises = managers.map(async (entry) => {
       try {
@@ -638,40 +637,45 @@ export class EventRegistry implements IEventManagerRegistry {
         return null;
       }
     });
-    
+
     const allMetrics = (await Promise.allSettled(metricsPromises))
-      .filter(result => result.status === 'fulfilled' && result.value !== null)
-      .map(result => (result as PromiseFulfilledResult<EventManagerMetrics>).value);
-    
+      .filter((result) => result.status === 'fulfilled' && result.value !== null)
+      .map((result) => (result as PromiseFulfilledResult<EventManagerMetrics>).value);
+
     // Calculate aggregate metrics
     const totalEvents = allMetrics.reduce((sum, metrics) => sum + metrics.eventsProcessed, 0);
-    const totalSubscriptions = allMetrics.reduce((sum, metrics) => sum + metrics.subscriptionCount, 0);
-    const averageLatency = allMetrics.length > 0 
-      ? allMetrics.reduce((sum, metrics) => sum + metrics.averageLatency, 0) / allMetrics.length 
-      : 0;
-    const errorRate = totalEvents > 0 
-      ? allMetrics.reduce((sum, metrics) => sum + metrics.eventsFailed, 0) / totalEvents 
-      : 0;
-    
+    const totalSubscriptions = allMetrics.reduce(
+      (sum, metrics) => sum + metrics.subscriptionCount,
+      0
+    );
+    const averageLatency =
+      allMetrics.length > 0
+        ? allMetrics.reduce((sum, metrics) => sum + metrics.averageLatency, 0) / allMetrics.length
+        : 0;
+    const errorRate =
+      totalEvents > 0
+        ? allMetrics.reduce((sum, metrics) => sum + metrics.eventsFailed, 0) / totalEvents
+        : 0;
+
     // Count managers by type and status
     const managersByType: Record<EventManagerType, number> = {} as any;
     const managersByStatus: Record<string, number> = {};
-    
-    Object.values(EventManagerTypes).forEach(type => {
+
+    Object.values(EventManagerTypes).forEach((type) => {
       managersByType[type] = 0;
     });
-    
-    managers.forEach(entry => {
+
+    managers.forEach((entry) => {
       managersByType[entry.config.type] = (managersByType[entry.config.type] || 0) + 1;
       managersByStatus[entry.status] = (managersByStatus[entry.status] || 0) + 1;
     });
-    
+
     // Factory usage statistics
     const factoryUsage: Record<EventManagerType, number> = {} as any;
-    Object.values(EventManagerTypes).forEach(type => {
+    Object.values(EventManagerTypes).forEach((type) => {
       factoryUsage[type] = this.factoryRegistry[type]?.usage.managersCreated || 0;
     });
-    
+
     return {
       totalManagers: managers.length,
       totalEvents,
@@ -680,7 +684,7 @@ export class EventRegistry implements IEventManagerRegistry {
       errorRate,
       managersByType,
       managersByStatus,
-      factoryUsage
+      factoryUsage,
     };
   }
 
@@ -689,22 +693,23 @@ export class EventRegistry implements IEventManagerRegistry {
    */
   async broadcast<T extends SystemEvent>(event: T): Promise<void> {
     const broadcastPromises: Promise<void>[] = [];
-    
+
     for (const [name, entry] of this.eventManagers) {
       if (entry.status === 'healthy') {
-        const broadcastPromise = entry.manager.emit(event)
+        const broadcastPromise = entry.manager
+          .emit(event)
           .then(() => {
             entry.usage.totalEvents++;
           })
-          .catch(error => {
+          .catch((error) => {
             this.logger.error(`❌ Broadcast failed for ${name}:`, error);
             entry.usage.errorCount++;
           });
-        
+
         broadcastPromises.push(broadcastPromise);
       }
     }
-    
+
     await Promise.allSettled(broadcastPromises);
   }
 
@@ -713,12 +718,12 @@ export class EventRegistry implements IEventManagerRegistry {
    */
   async broadcastToType<T extends SystemEvent>(type: EventManagerType, event: T): Promise<void> {
     const managers = this.getEventManagersByType(type);
-    const broadcastPromises = managers.map(manager => 
-      manager.emit(event).catch(error => {
+    const broadcastPromises = managers.map((manager) =>
+      manager.emit(event).catch((error) => {
         this.logger.error(`❌ Type broadcast failed for ${manager.name}:`, error);
       })
     );
-    
+
     await Promise.allSettled(broadcastPromises);
   }
 
@@ -727,10 +732,10 @@ export class EventRegistry implements IEventManagerRegistry {
    */
   async shutdownAll(): Promise<void> {
     this.logger.info('🔄 Shutting down all event managers...');
-    
+
     // Stop health monitoring
     this.stopHealthMonitoring();
-    
+
     // Shutdown all managers
     const shutdownPromises = Array.from(this.eventManagers.values()).map(async (entry) => {
       try {
@@ -741,16 +746,16 @@ export class EventRegistry implements IEventManagerRegistry {
         entry.status = 'error';
       }
     });
-    
+
     await Promise.allSettled(shutdownPromises);
-    
+
     // Clear registries
     this.eventManagers.clear();
     this.factories.clear();
     this.eventTypes = {};
     this.factoryRegistry = {} as FactoryRegistry;
     this.initialized = false;
-    
+
     this.logger.info('✅ All event managers shut down');
   }
 
@@ -767,18 +772,18 @@ export class EventRegistry implements IEventManagerRegistry {
     uptime: number;
   } {
     const managers = Array.from(this.eventManagers.values());
-    const healthyManagers = managers.filter(entry => entry.status === 'healthy').length;
-    
+    const healthyManagers = managers.filter((entry) => entry.status === 'healthy').length;
+
     const managersByType: Record<EventManagerType, number> = {} as any;
-    Object.values(EventManagerTypes).forEach(type => {
-      managersByType[type] = managers.filter(entry => entry.config.type === type).length;
+    Object.values(EventManagerTypes).forEach((type) => {
+      managersByType[type] = managers.filter((entry) => entry.config.type === type).length;
     });
-    
+
     const factoryUsage: Record<EventManagerType, number> = {} as any;
-    Object.values(EventManagerTypes).forEach(type => {
+    Object.values(EventManagerTypes).forEach((type) => {
       factoryUsage[type] = this.factoryRegistry[type]?.usage.managersCreated || 0;
     });
-    
+
     return {
       totalManagers: managers.length,
       totalFactories: this.factories.size,
@@ -786,7 +791,7 @@ export class EventRegistry implements IEventManagerRegistry {
       healthyManagers,
       managersByType,
       factoryUsage,
-      uptime: this.initialized ? Date.now() - (managers[0]?.created.getTime() || Date.now()) : 0
+      uptime: this.initialized ? Date.now() - (managers[0]?.created.getTime() || Date.now()) : 0,
     };
   }
 
@@ -810,49 +815,56 @@ export class EventRegistry implements IEventManagerRegistry {
       type: entry.config.type,
       config: entry.config,
       status: entry.status,
-      usage: entry.usage
+      usage: entry.usage,
     }));
-    
+
     return {
       eventTypes: this.eventTypes,
       healthMonitoring: this.healthMonitoring,
       discovery: this.discoveryConfig,
-      managers
+      managers,
     };
   }
 
   /**
    * Private methods for internal operations
    */
-  
-  private async performHealthCheck(name: string, entry: EventRegistryEntry): Promise<EventManagerStatus> {
+
+  private async performHealthCheck(
+    name: string,
+    entry: EventRegistryEntry
+  ): Promise<EventManagerStatus> {
     const startTime = Date.now();
-    
+
     try {
       const status = await Promise.race([
         entry.manager.healthCheck(),
-        new Promise<never>((_, reject) => 
+        new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('Health check timeout')), this.healthMonitoring.timeout)
-        )
+        ),
       ]);
-      
+
       entry.lastHealthCheck = new Date();
       entry.healthStatus = status;
-      
+
       // Update status based on health check
       const wasUnhealthy = entry.status !== 'healthy';
       entry.status = status.status === 'healthy' ? 'healthy' : 'unhealthy';
-      
+
       // Notify on status change if configured
-      if (wasUnhealthy && entry.status === 'healthy' && this.healthMonitoring.notifyOnStatusChange) {
+      if (
+        wasUnhealthy &&
+        entry.status === 'healthy' &&
+        this.healthMonitoring.notifyOnStatusChange
+      ) {
         this.logger.info(`✅ Event manager ${name} recovered to healthy status`);
       }
-      
+
       return status;
     } catch (error) {
       entry.status = 'unhealthy';
       entry.usage.errorCount++;
-      
+
       const errorStatus: EventManagerStatus = {
         name: entry.manager.name,
         type: entry.manager.type,
@@ -862,12 +874,12 @@ export class EventRegistry implements IEventManagerRegistry {
         queueSize: 0,
         errorRate: 1.0,
         uptime: Date.now() - entry.created.getTime(),
-        metadata: { 
+        metadata: {
           error: error instanceof Error ? error.message : 'Unknown error',
-          checkDuration: Date.now() - startTime
-        }
+          checkDuration: Date.now() - startTime,
+        },
       };
-      
+
       entry.healthStatus = errorStatus;
       return errorStatus;
     }
@@ -877,7 +889,7 @@ export class EventRegistry implements IEventManagerRegistry {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
     }
-    
+
     this.healthCheckInterval = setInterval(async () => {
       try {
         await this.healthCheckAll();
@@ -885,8 +897,10 @@ export class EventRegistry implements IEventManagerRegistry {
         this.logger.error('❌ Health monitoring cycle failed:', error);
       }
     }, this.healthMonitoring.checkInterval);
-    
-    this.logger.debug(`💓 Health monitoring started (interval: ${this.healthMonitoring.checkInterval}ms)`);
+
+    this.logger.debug(
+      `💓 Health monitoring started (interval: ${this.healthMonitoring.checkInterval}ms)`
+    );
   }
 
   private stopHealthMonitoring(): void {
@@ -894,7 +908,7 @@ export class EventRegistry implements IEventManagerRegistry {
       clearInterval(this.healthCheckInterval);
       this.healthCheckInterval = undefined;
     }
-    
+
     this.logger.debug('💓 Health monitoring stopped');
   }
 
@@ -904,66 +918,66 @@ export class EventRegistry implements IEventManagerRegistry {
         type: 'system:lifecycle',
         category: EventCategories.SYSTEM,
         managerTypes: [EventManagerTypes.SYSTEM],
-        priority: 3
+        priority: 3,
       },
       {
         type: 'coordination:swarm',
         category: EventCategories.COORDINATION,
         managerTypes: [EventManagerTypes.COORDINATION],
-        priority: 3
+        priority: 3,
       },
       {
         type: 'communication:websocket',
         category: EventCategories.COMMUNICATION,
         managerTypes: [EventManagerTypes.COMMUNICATION],
-        priority: 2
+        priority: 2,
       },
       {
         type: 'monitoring:metrics',
         category: EventCategories.MONITORING,
         managerTypes: [EventManagerTypes.MONITORING],
-        priority: 2
+        priority: 2,
       },
       {
         type: 'interface:user',
         category: EventCategories.INTERFACE,
         managerTypes: [EventManagerTypes.INTERFACE],
-        priority: 2
+        priority: 2,
       },
       {
         type: 'neural:training',
         category: EventCategories.NEURAL,
         managerTypes: [EventManagerTypes.NEURAL],
-        priority: 2
+        priority: 2,
       },
       {
         type: 'database:query',
         category: EventCategories.DATABASE,
         managerTypes: [EventManagerTypes.DATABASE],
-        priority: 1
+        priority: 1,
       },
       {
         type: 'memory:cache',
         category: EventCategories.MEMORY,
         managerTypes: [EventManagerTypes.MEMORY],
-        priority: 1
+        priority: 1,
       },
       {
         type: 'workflow:execution',
         category: EventCategories.WORKFLOW,
         managerTypes: [EventManagerTypes.WORKFLOW],
-        priority: 2
-      }
+        priority: 2,
+      },
     ];
-    
+
     for (const eventType of defaultEventTypes) {
       this.registerEventType(eventType.type, {
         category: eventType.category,
         priority: eventType.priority,
-        managerTypes: eventType.managerTypes
+        managerTypes: eventType.managerTypes,
       });
     }
-    
+
     this.logger.debug(`🏷️ Registered ${defaultEventTypes.length} default event types`);
   }
 

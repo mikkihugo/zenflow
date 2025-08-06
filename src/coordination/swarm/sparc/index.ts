@@ -38,6 +38,11 @@ export class SPARC {
 
   /**
    * Quick project initialization with SPARC methodology
+   *
+   * @param name
+   * @param domain
+   * @param requirements
+   * @param complexity
    */
   static async createProject(
     name: string,
@@ -63,6 +68,8 @@ export class SPARC {
 
   /**
    * Execute complete SPARC workflow
+   *
+   * @param projectId
    */
   static async executeFullWorkflow(projectId: string) {
     const engine = SPARC.getEngine();
@@ -86,6 +93,8 @@ export class SPARC {
 
   /**
    * Get project by ID (mock implementation)
+   *
+   * @param projectId
    */
   private static async getProject(projectId: string) {
     // In a real implementation, this would retrieve from storage

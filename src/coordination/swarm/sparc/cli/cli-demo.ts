@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * SPARC Architecture CLI Demo
- * 
+ *
  * Demonstrates the CLI functionality for architecture management
  */
 
@@ -27,7 +27,7 @@ async function runCLIDemo() {
     };
 
     // Find the generate command and simulate its action
-    const generateCommand = architectureCmd.commands.find(cmd => cmd.name() === 'generate');
+    const generateCommand = architectureCmd.commands.find((cmd) => cmd.name() === 'generate');
     if (generateCommand && generateCommand._actionHandler) {
       await generateCommand._actionHandler(mockOptions);
     }
@@ -38,7 +38,7 @@ async function runCLIDemo() {
     console.log('📊 Demo: Getting architecture statistics...');
     console.log('Command: claude-zen sparc architecture stats\n');
 
-    const statsCommand = architectureCmd.commands.find(cmd => cmd.name() === 'stats');
+    const statsCommand = architectureCmd.commands.find((cmd) => cmd.name() === 'stats');
     if (statsCommand && statsCommand._actionHandler) {
       await statsCommand._actionHandler({ json: false });
     }
@@ -50,7 +50,6 @@ async function runCLIDemo() {
     console.log('   claude-zen sparc architecture search [options]');
     console.log('   claude-zen sparc architecture export <id> [options]');
     console.log('   claude-zen sparc architecture stats [options]');
-
   } catch (error) {
     console.error('❌ CLI Demo failed:', error);
     process.exit(1);

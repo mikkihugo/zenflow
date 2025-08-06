@@ -1,5 +1,5 @@
 /**
- * @fileoverview End-to-end test for CLI discover command with auto-swarms
+ * @file End-to-end test for CLI discover command with auto-swarms
  *
  * Tests the complete integration pipeline from discover.ts
  */

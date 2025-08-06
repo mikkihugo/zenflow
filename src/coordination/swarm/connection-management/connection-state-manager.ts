@@ -156,6 +156,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Register a new MCP connection
+   *
+   * @param connectionConfig
    */
   async registerConnection(connectionConfig) {
     if (!this.isInitialized) {
@@ -244,6 +246,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Establish connection to MCP server
+   *
+   * @param connectionId
    */
   async establishConnection(connectionId) {
     const connection = this.connections.get(connectionId);
@@ -313,6 +317,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Establish stdio-based MCP connection
+   *
+   * @param connection
    */
   async establishStdioConnection(connection) {
     const { spawn } = await import('node:child_process');
@@ -366,6 +372,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Establish WebSocket-based MCP connection
+   *
+   * @param connection
    */
   async establishWebSocketConnection(connection) {
     const WebSocket = await import('ws').then((m) => m.default);
@@ -412,6 +420,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Establish HTTP-based MCP connection
+   *
+   * @param connection
    */
   async establishHttpConnection(connection) {
     const config = connection.config;
@@ -458,6 +468,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Set up message handling for stdio connections
+   *
+   * @param connection
    */
   setupMessageHandling(connection) {
     let buffer = '';
@@ -489,6 +501,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Set up WebSocket message handling
+   *
+   * @param connection
    */
   setupWebSocketHandling(connection) {
     connection.websocket.on('message', (data) => {
@@ -506,6 +520,9 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Handle incoming message from MCP connection
+   *
+   * @param connectionId
+   * @param message
    */
   handleMessage(connectionId, message) {
     this.logger.debug(`Received message from ${connectionId}`, { message });
@@ -522,6 +539,9 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Send message to MCP connection
+   *
+   * @param connectionId
+   * @param message
    */
   async sendMessage(connectionId, message) {
     const connection = this.connections.get(connectionId);
@@ -582,6 +602,10 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Handle connection closure
+   *
+   * @param connectionId
+   * @param code
+   * @param reason
    */
   handleConnectionClosed(connectionId, code, reason) {
     const connection = this.connections.get(connectionId);
@@ -608,6 +632,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Schedule reconnection attempt
+   *
+   * @param connectionId
    */
   scheduleReconnection(connectionId) {
     const connection = this.connections.get(connectionId);
@@ -688,6 +714,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Get connection status
+   *
+   * @param connectionId
    */
   getConnectionStatus(connectionId = null) {
     if (connectionId) {
@@ -739,6 +767,9 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Disconnect a connection
+   *
+   * @param connectionId
+   * @param reason
    */
   async disconnectConnection(connectionId, reason = 'Manual disconnect') {
     const connection = this.connections.get(connectionId);
@@ -793,6 +824,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Remove a connection completely
+   *
+   * @param connectionId
    */
   async removeConnection(connectionId) {
     // First disconnect if still connected
@@ -851,6 +884,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Perform health check on a specific connection
+   *
+   * @param connectionId
    */
   async performConnectionHealthCheck(connectionId) {
     const connection = this.connections.get(connectionId);
@@ -913,6 +948,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Persist connection state
+   *
+   * @param connection
    */
   async persistConnectionState(connection) {
     if (!this.persistence) return;
@@ -1017,6 +1054,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Remove persisted connection
+   *
+   * @param connectionId
    */
   async removePersistedConnection(connectionId) {
     if (!this.persistence) return;
@@ -1033,6 +1072,8 @@ export class ConnectionStateManager extends EventEmitter {
 
   /**
    * Set integration points
+   *
+   * @param persistence
    */
   setPersistence(persistence) {
     this.persistence = persistence;

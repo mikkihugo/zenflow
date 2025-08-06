@@ -14,6 +14,8 @@ interface IntegratedOptions {
 
 /**
  * Simplified application class with CLI support (avoiding DI decorators for now)
+ *
+ * @example
  */
 export class ClaudeZenIntegrated {
   private options: IntegratedOptions;
@@ -31,6 +33,8 @@ export class ClaudeZenIntegrated {
 
   /**
    * Parse command line arguments
+   *
+   * @param args
    */
   static parseArgs(args: string[]): IntegratedOptions {
     const options: IntegratedOptions = {};

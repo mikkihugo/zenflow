@@ -24,6 +24,8 @@ export class TestDataFactory {
 
   /**
    * Create user test data
+   *
+   * @param overrides
    */
   createUser(overrides: Partial<UserTestData> = {}): UserTestData {
     const id = this.generateId();
@@ -50,6 +52,9 @@ export class TestDataFactory {
 
   /**
    * Create multiple users
+   *
+   * @param count
+   * @param baseData
    */
   createUsers(count: number, baseData: Partial<UserTestData> = {}): UserTestData[] {
     return Array.from({ length: count }, (_, index) =>
@@ -59,6 +64,8 @@ export class TestDataFactory {
 
   /**
    * Create project test data
+   *
+   * @param overrides
    */
   createProject(overrides: Partial<ProjectTestData> = {}): ProjectTestData {
     const name = this.generateProjectName();
@@ -76,6 +83,8 @@ export class TestDataFactory {
 
   /**
    * Create swarm test data
+   *
+   * @param overrides
    */
   createSwarm(overrides: Partial<SwarmTestData> = {}): SwarmTestData {
     const id = this.generateId();
@@ -97,6 +106,8 @@ export class TestDataFactory {
 
   /**
    * Create agent test data
+   *
+   * @param overrides
    */
   createAgent(overrides: Partial<AgentTestData> = {}): AgentTestData {
     const type = this.randomChoice([
@@ -118,6 +129,9 @@ export class TestDataFactory {
 
   /**
    * Create multiple agents
+   *
+   * @param count
+   * @param baseData
    */
   createAgents(count: number, baseData: Partial<AgentTestData> = {}): AgentTestData[] {
     return Array.from({ length: count }, (_, index) =>
@@ -127,6 +141,9 @@ export class TestDataFactory {
 
   /**
    * Create MCP message test data
+   *
+   * @param method
+   * @param params
    */
   createMCPMessage(method: string = 'tools/call', params: any = {}) {
     return {
@@ -146,6 +163,8 @@ export class TestDataFactory {
 
   /**
    * Create neural network test data
+   *
+   * @param size
    */
   createNeuralTrainingData(size: number = 100) {
     return Array.from({ length: size }, () => ({
@@ -156,6 +175,8 @@ export class TestDataFactory {
 
   /**
    * Create performance test data
+   *
+   * @param operations
    */
   createPerformanceData(operations: number = 1000) {
     return {
@@ -218,6 +239,8 @@ export class TestDataFactory {
 
   /**
    * Reset the random seed for reproducible tests
+   *
+   * @param newSeed
    */
   resetSeed(newSeed?: number) {
     this.seed = newSeed ?? this.options.seed ?? Date.now();

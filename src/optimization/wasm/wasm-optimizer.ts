@@ -3,6 +3,7 @@
  * Optimizes WASM module loading, compilation, memory sharing, and SIMD acceleration
  */
 
+import { createLogger } from '../../core/logger';
 import type {
   Bridge,
   Kernel,
@@ -14,7 +15,6 @@ import type {
   WasmModule,
   WasmOptimizer,
 } from '../interfaces/optimization-interfaces';
-import { createLogger } from '../../core/logger';
 
 export interface WasmOptimizationConfig {
   enableStreaming: boolean;
@@ -67,6 +67,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Optimize WASM module loading performance
+   *
+   * @param modules
    */
   public async optimizeWasmModuleLoading(modules: WasmModule[]): Promise<LoadingOptimization> {
     const startTime = Date.now();
@@ -121,6 +123,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Implement streaming compilation for faster startup
+   *
+   * @param wasmFiles
    */
   public async implementStreamingCompilation(wasmFiles: WasmFile[]): Promise<StreamingResult> {
     if (!this.config.enableStreaming || !this.capabilities.streamingSupport) {
@@ -163,6 +167,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Optimize memory sharing between JS and WASM
+   *
+   * @param jsWasmBridge
    */
   public async optimizeMemorySharing(jsWasmBridge: Bridge): Promise<MemoryOptimization> {
     if (!this.config.enableMemorySharing) {
@@ -208,6 +214,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Enable SIMD acceleration for compute kernels
+   *
+   * @param computeKernels
    */
   public async enableSIMDAcceleration(computeKernels: Kernel[]): Promise<SIMDResult> {
     if (!this.config.enableSIMD || !this.capabilities.simdSupport) {
@@ -344,6 +352,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Implement module caching strategy
+   *
+   * @param modules
    */
   private async implementModuleCaching(modules: WasmModule[]): Promise<void> {
     for (const module of modules) {
@@ -363,6 +373,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Enable module preloading based on strategy
+   *
+   * @param modules
    */
   private async enableModulePreloading(modules: WasmModule[]): Promise<void> {
     switch (this.config.preloadStrategy) {
@@ -380,6 +392,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Implement streaming compilation for a single file
+   *
+   * @param wasmFile
    */
   private async implementStreamingForFile(wasmFile: WasmFile): Promise<{
     compilationTime: number;
@@ -410,6 +424,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Optimize compute kernel with SIMD instructions
+   *
+   * @param kernel
    */
   private async optimizeKernelWithSIMD(kernel: Kernel): Promise<{
     optimizations: string[];
@@ -435,6 +451,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Check if kernel is capable of SIMD optimization
+   *
+   * @param kernel
    */
   private isKernelSIMDCapable(kernel: Kernel): boolean {
     // Check if kernel has operations that can benefit from SIMD
@@ -444,6 +462,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Check if operation can be vectorized
+   *
+   * @param operation
    */
   private canVectorizeOperation(operation: string): boolean {
     const vectorizableOps = ['add', 'multiply', 'subtract', 'divide', 'dot_product'];
@@ -452,6 +472,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Vectorize a specific operation
+   *
+   * @param operation
    */
   private async vectorizeOperation(operation: string): Promise<{
     speedup: number;
@@ -470,6 +492,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Measure module loading performance
+   *
+   * @param modules
    */
   private async measureModuleLoadingPerformance(modules: WasmModule[]): Promise<{
     averageLoadTime: number;
@@ -503,6 +527,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   /**
    * Helper methods with mock implementations
+   *
+   * @param _module
    */
   private async compileModule(_module: WasmModule): Promise<WebAssembly.Module> {
     // Mock compilation - return empty module

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Batch Operations Module
+ * @file Batch Operations Module
  * Exports all batch operation components following claude-zen patterns
  */
 
@@ -29,6 +29,11 @@ export { SwarmBatchCoordinator } from './swarm-batch';
 
 /**
  * Factory function to create a complete batch system with all components
+ *
+ * @param options
+ * @param options.batchConfig
+ * @param options.swarmConfig
+ * @param options.maxConcurrentFiles
  */
 export function createBatchSystem(options?: {
   batchConfig?: import('./batch-engine').BatchExecutionConfig;
@@ -48,6 +53,8 @@ export function createBatchSystem(options?: {
 
     /**
      * Execute a complete batch workflow with performance monitoring
+     *
+     * @param operations
      */
     async executeBatchWorkflow(operations: import('./batch-engine').BatchOperation[]) {
       // Execute batch operations

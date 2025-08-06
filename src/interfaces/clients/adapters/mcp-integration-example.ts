@@ -1,23 +1,25 @@
 /**
  * MCP Integration Example
- * 
+ *
  * Shows how to integrate the UACL MCP adapter with existing MCP infrastructure
  * and provides a migration path from the legacy external MCP client
  */
 
 import { EventEmitter } from 'node:events';
-import { 
-  MCPClientAdapter, 
-  MCPClientFactory, 
-  createMCPConfigFromLegacy,
-  type MCPClientConfig 
-} from './mcp-client-adapter.js';
 import { ExternalMCPClient } from '../../mcp/external-mcp-client.js';
 import type { IClient, IClientFactory } from '../core/interfaces.js';
+import {
+  createMCPConfigFromLegacy,
+  MCPClientAdapter,
+  type MCPClientConfig,
+  MCPClientFactory,
+} from './mcp-client-adapter.js';
 
 /**
  * MCP Integration Manager
  * Bridges legacy MCP clients with new UACL architecture
+ *
+ * @example
  */
 export class MCPIntegrationManager {
   private legacyClient: ExternalMCPClient;
@@ -41,8 +43,10 @@ export class MCPIntegrationManager {
       // 1. Start legacy system for existing functionality
       console.log('📡 Connecting legacy MCP clients...');
       const legacyResults = await this.legacyClient.connectAll();
-      
-      console.log(`✅ Legacy connections: ${legacyResults.filter(r => r.success).length}/${legacyResults.length}`);
+
+      console.log(
+        `✅ Legacy connections: ${legacyResults.filter((r) => r.success).length}/${legacyResults.length}`
+      );
 
       // 2. Convert legacy configurations to UACL
       console.log('🔄 Converting to UACL architecture...');
@@ -54,7 +58,6 @@ export class MCPIntegrationManager {
 
       console.log('✅ MCP Integration Manager initialized successfully!');
       this.eventEmitter.emit('initialized');
-
     } catch (error) {
       console.error('❌ Failed to initialize MCP Integration Manager:', error);
       throw error;
@@ -71,7 +74,7 @@ export class MCPIntegrationManager {
       try {
         // Create UACL configuration from legacy server
         const uaclConfig = this.createUACLConfigFromLegacyServer(serverName, serverStatus);
-        
+
         // Create UACL client
         const uaclClient = await this.uaclFactory.create(uaclConfig);
         this.uaclClients.set(serverName, uaclClient);
@@ -85,37 +88,37 @@ export class MCPIntegrationManager {
 
   /**
    * Create UACL config from legacy server status
+   *
+   * @param serverName
+   * @param serverStatus
    */
-  private createUACLConfigFromLegacyServer(
-    serverName: string, 
-    serverStatus: any
-  ): MCPClientConfig {
+  private createUACLConfigFromLegacyServer(serverName: string, serverStatus: any): MCPClientConfig {
     // Determine protocol based on server type
     const protocol = serverStatus.type === 'http' ? 'http' : 'stdio';
-    
+
     const baseConfig = {
       url: serverStatus.url,
       type: serverStatus.type,
       timeout: 30000,
-      capabilities: serverStatus.capabilities || []
+      capabilities: serverStatus.capabilities || [],
     };
 
     // Use helper to convert legacy format
     const uaclConfig = createMCPConfigFromLegacy(serverName, baseConfig);
-    
+
     // Enhance with additional UACL features
     uaclConfig.monitoring = {
       enabled: true,
       metricsInterval: 60000,
       trackLatency: true,
       trackThroughput: true,
-      trackErrors: true
+      trackErrors: true,
     };
 
     uaclConfig.tools = {
       timeout: 30000,
       retries: 3,
-      discovery: true
+      discovery: true,
     };
 
     return uaclConfig;
@@ -131,12 +134,12 @@ export class MCPIntegrationManager {
 
       try {
         let result;
-        
+
         if (useUACL && this.uaclClients.has(serverName)) {
           // Use UACL client
           const client = this.uaclClients.get(serverName)!;
           result = await client.post(toolName, parameters);
-          
+
           this.eventEmitter.emit('tool-executed', {
             serverName,
             toolName,
@@ -145,20 +148,20 @@ export class MCPIntegrationManager {
             result: result.data,
             metrics: {
               responseTime: result.metadata?.responseTime,
-              status: result.status
-            }
+              status: result.status,
+            },
           });
         } else {
           // Use legacy client
           result = await this.legacyClient.executeTool(serverName, toolName, parameters);
-          
+
           this.eventEmitter.emit('tool-executed', {
             serverName,
             toolName,
             success: result.success,
             source: 'Legacy',
             result: result.result,
-            error: result.error
+            error: result.error,
           });
         }
       } catch (error) {
@@ -166,7 +169,7 @@ export class MCPIntegrationManager {
           serverName,
           toolName,
           error: (error as Error).message,
-          source: useUACL ? 'UACL' : 'Legacy'
+          source: useUACL ? 'UACL' : 'Legacy',
         });
       }
     });
@@ -184,12 +187,18 @@ export class MCPIntegrationManager {
     });
 
     this.eventEmitter.on('tool-error', (data) => {
-      console.error(`❌ Tool error: ${data.toolName} on ${data.serverName} (${data.source}): ${data.error}`);
+      console.error(
+        `❌ Tool error: ${data.toolName} on ${data.serverName} (${data.source}): ${data.error}`
+      );
     });
   }
 
   /**
    * Execute tool with automatic failover between UACL and Legacy
+   *
+   * @param serverName
+   * @param toolName
+   * @param parameters
    */
   async executeToolWithFailover(
     serverName: string,
@@ -205,7 +214,7 @@ export class MCPIntegrationManager {
           success: true,
           source: 'UACL',
           data: result.data,
-          metadata: result.metadata
+          metadata: result.metadata,
         };
       } catch (error) {
         console.warn(`⚠️  UACL execution failed for ${toolName}, falling back to legacy...`);
@@ -219,7 +228,7 @@ export class MCPIntegrationManager {
         success: result.success,
         source: 'Legacy',
         data: result.result,
-        error: result.error
+        error: result.error,
       };
     } catch (error) {
       throw new Error(`Both UACL and Legacy execution failed: ${(error as Error).message}`);
@@ -246,27 +255,35 @@ export class MCPIntegrationManager {
     const comparison = {
       totalServers: {
         legacy: Object.keys(legacyStatus).length,
-        uacl: this.uaclClients.size
+        uacl: this.uaclClients.size,
       },
       healthyServers: {
         legacy: Object.values(legacyStatus).filter((s: any) => s.connected).length,
-        uacl: Array.from(uaclHealth.values()).filter(h => h.status === 'healthy').length
+        uacl: Array.from(uaclHealth.values()).filter((h) => h.status === 'healthy').length,
       },
       totalTools: {
-        legacy: Object.values(legacyTools).reduce((sum: number, tools: any) => sum + tools.length, 0),
-        uacl: this.uaclClients.size * 2 // Estimate based on typical tool count
-      }
+        legacy: Object.values(legacyTools).reduce(
+          (sum: number, tools: any) => sum + tools.length,
+          0
+        ),
+        uacl: this.uaclClients.size * 2, // Estimate based on typical tool count
+      },
     };
 
     return {
       legacy: { status: legacyStatus, tools: legacyTools },
       uacl: { health: Object.fromEntries(uaclHealth), metrics: Object.fromEntries(uaclMetrics) },
-      comparison
+      comparison,
     };
   }
 
   /**
    * Performance comparison between Legacy and UACL
+   *
+   * @param serverName
+   * @param toolName
+   * @param parameters
+   * @param iterations
    */
   async performanceComparison(
     serverName: string,
@@ -278,7 +295,9 @@ export class MCPIntegrationManager {
     uacl: { averageTime: number; successRate: number };
     winner: 'legacy' | 'uacl' | 'tie';
   }> {
-    console.log(`🏁 Starting performance comparison: ${toolName} on ${serverName} (${iterations} iterations)`);
+    console.log(
+      `🏁 Starting performance comparison: ${toolName} on ${serverName} (${iterations} iterations)`
+    );
 
     const legacyTimes: number[] = [];
     const uaclTimes: number[] = [];
@@ -335,37 +354,41 @@ export class MCPIntegrationManager {
     return {
       legacy: { averageTime: legacyAvg, successRate: legacySuccessRate },
       uacl: { averageTime: uaclAvg, successRate: uaclSuccessRate },
-      winner
+      winner,
     };
   }
 
   /**
    * Gradual migration strategy
+   *
+   * @param migrationConfig
+   * @param migrationConfig.servers
+   * @param migrationConfig.batchSize
+   * @param migrationConfig.delayBetweenBatches
+   * @param migrationConfig.rollbackOnFailure
    */
-  async startGradualMigration(
-    migrationConfig: {
-      servers: string[];
-      batchSize: number;
-      delayBetweenBatches: number;
-      rollbackOnFailure: boolean;
-    }
-  ): Promise<void> {
+  async startGradualMigration(migrationConfig: {
+    servers: string[];
+    batchSize: number;
+    delayBetweenBatches: number;
+    rollbackOnFailure: boolean;
+  }): Promise<void> {
     console.log('📦 Starting gradual migration to UACL...');
-    
+
     const { servers, batchSize, delayBetweenBatches, rollbackOnFailure } = migrationConfig;
     const batches = [];
-    
+
     // Create batches
     for (let i = 0; i < servers.length; i += batchSize) {
       batches.push(servers.slice(i, i + batchSize));
     }
 
     const migratedServers: string[] = [];
-    
+
     try {
       for (const [batchIndex, batch] of batches.entries()) {
         console.log(`🔄 Migrating batch ${batchIndex + 1}/${batches.length}: ${batch.join(', ')}`);
-        
+
         for (const serverName of batch) {
           try {
             // Create UACL client
@@ -377,11 +400,11 @@ export class MCPIntegrationManager {
 
             const uaclConfig = this.createUACLConfigFromLegacyServer(serverName, legacyStatus);
             const uaclClient = await this.uaclFactory.create(uaclConfig);
-            
+
             // Test the new client
             await uaclClient.connect();
             const health = await uaclClient.healthCheck();
-            
+
             if (health.status === 'healthy') {
               this.uaclClients.set(serverName, uaclClient);
               migratedServers.push(serverName);
@@ -391,7 +414,7 @@ export class MCPIntegrationManager {
             }
           } catch (error) {
             console.error(`❌ Failed to migrate ${serverName}:`, error);
-            
+
             if (rollbackOnFailure) {
               // Rollback this batch
               console.log('🔙 Rolling back batch due to failure...');
@@ -403,15 +426,17 @@ export class MCPIntegrationManager {
             }
           }
         }
-        
+
         // Delay between batches
         if (batchIndex < batches.length - 1) {
           console.log(`⏱️  Waiting ${delayBetweenBatches}ms before next batch...`);
-          await new Promise(resolve => setTimeout(resolve, delayBetweenBatches));
+          await new Promise((resolve) => setTimeout(resolve, delayBetweenBatches));
         }
       }
-      
-      console.log(`🎉 Migration completed successfully! Migrated ${migratedServers.length}/${servers.length} servers`);
+
+      console.log(
+        `🎉 Migration completed successfully! Migrated ${migratedServers.length}/${servers.length} servers`
+      );
     } catch (error) {
       console.error('💥 Migration failed:', error);
       throw error;
@@ -423,18 +448,18 @@ export class MCPIntegrationManager {
    */
   async shutdown(): Promise<void> {
     console.log('🛑 Shutting down MCP Integration Manager...');
-    
+
     try {
       // Shutdown UACL factory and clients
       await this.uaclFactory.shutdown();
       this.uaclClients.clear();
-      
+
       // Shutdown legacy client
       await this.legacyClient.disconnectAll();
-      
+
       // Clean up event emitter
       this.eventEmitter.removeAllListeners();
-      
+
       console.log('✅ MCP Integration Manager shutdown complete');
     } catch (error) {
       console.error('❌ Error during shutdown:', error);
@@ -467,11 +492,9 @@ export async function demonstrateMCPIntegration(): Promise<void> {
     console.log('📊 System Status:', JSON.stringify(status, null, 2));
 
     // Execute tool with failover
-    const result = await manager.executeToolWithFailover(
-      'context7',
-      'research_analysis',
-      { query: 'UACL architecture benefits' }
-    );
+    const result = await manager.executeToolWithFailover('context7', 'research_analysis', {
+      query: 'UACL architecture benefits',
+    });
     console.log('🛠️  Tool execution result:', result);
 
     // Performance comparison
@@ -488,9 +511,8 @@ export async function demonstrateMCPIntegration(): Promise<void> {
       servers: ['context7', 'deepwiki'],
       batchSize: 1,
       delayBetweenBatches: 1000,
-      rollbackOnFailure: false
+      rollbackOnFailure: false,
     });
-
   } catch (error) {
     console.error('💥 Integration demonstration failed:', error);
   } finally {

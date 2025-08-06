@@ -1,5 +1,5 @@
 /**
- * @fileoverview Memory-specific Error Types and Handling
+ * @file Memory-specific Error Types and Handling
  * Comprehensive error classification and recovery for memory systems
  */
 
@@ -80,6 +80,8 @@ export class MemoryError extends Error {
 
   /**
    * Check if an error code is typically recoverable
+   *
+   * @param code
    */
   static isRecoverable(code: MemoryErrorCode): boolean {
     const recoverableErrors = new Set([
@@ -96,6 +98,8 @@ export class MemoryError extends Error {
 
   /**
    * Get severity level for an error code
+   *
+   * @param code
    */
   static getSeverity(code: MemoryErrorCode): 'low' | 'medium' | 'high' | 'critical' {
     const severityMap = {
@@ -141,6 +145,9 @@ export class MemoryError extends Error {
 
   /**
    * Create a MemoryError from a generic error
+   *
+   * @param error
+   * @param context
    */
   static fromError(error: Error, context: MemoryErrorContext): MemoryError {
     // Try to determine error code from error message or type
@@ -207,10 +214,14 @@ export class MemoryPerformanceError extends MemoryError {
 
 /**
  * Error classification helper
+ *
+ * @example
  */
 export class MemoryErrorClassifier {
   /**
    * Classify an error by its characteristics
+   *
+   * @param error
    */
   static classify(error: Error | MemoryError): {
     category: 'coordination' | 'backend' | 'data' | 'performance' | 'system';

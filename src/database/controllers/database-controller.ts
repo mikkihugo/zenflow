@@ -23,6 +23,8 @@ import type {
 
 /**
  * Request interface for database query operations
+ *
+ * @example
  */
 export interface QueryRequest {
   /** SQL query to execute */
@@ -44,6 +46,8 @@ export interface QueryRequest {
 
 /**
  * Request interface for database command operations
+ *
+ * @example
  */
 export interface CommandRequest {
   /** SQL command to execute */
@@ -63,6 +67,8 @@ export interface CommandRequest {
 
 /**
  * Request interface for batch operations
+ *
+ * @example
  */
 export interface BatchRequest {
   /** Array of operations to execute */
@@ -82,6 +88,8 @@ export interface BatchRequest {
 
 /**
  * Response interface for database operations
+ *
+ * @example
  */
 export interface DatabaseResponse {
   /** Whether the operation was successful */
@@ -107,6 +115,8 @@ export interface DatabaseResponse {
 
 /**
  * Database health status interface
+ *
+ * @example
  */
 export interface DatabaseHealthStatus {
   /** Overall health status */
@@ -129,6 +139,8 @@ export interface DatabaseHealthStatus {
 
 /**
  * Migration operation interface
+ *
+ * @example
  */
 export interface MigrationRequest {
   /** Migration SQL statements */
@@ -143,6 +155,8 @@ export interface MigrationRequest {
 
 /**
  * Request interface for graph query operations
+ *
+ * @example
  */
 export interface GraphQueryRequest {
   /** Cypher query to execute */
@@ -164,6 +178,8 @@ export interface GraphQueryRequest {
 
 /**
  * Request interface for graph batch operations
+ *
+ * @example
  */
 export interface GraphBatchRequest {
   /** Array of graph operations to execute */
@@ -181,6 +197,8 @@ export interface GraphBatchRequest {
 
 /**
  * Request interface for vector search operations
+ *
+ * @example
  */
 export interface VectorSearchRequest {
   /** Query vector for similarity search */
@@ -195,6 +213,8 @@ export interface VectorSearchRequest {
 
 /**
  * Request interface for adding vectors
+ *
+ * @example
  */
 export interface VectorAddRequest {
   /** Vectors to add to the database */
@@ -209,6 +229,8 @@ export interface VectorAddRequest {
 
 /**
  * Request interface for vector index creation
+ *
+ * @example
  */
 export interface VectorIndexRequest {
   /** Index name */
@@ -224,6 +246,8 @@ export interface VectorIndexRequest {
 /**
  * Database REST API Controller
  * Provides comprehensive database management through REST endpoints
+ *
+ * @example
  */
 @injectable
 export class DatabaseController {
@@ -305,6 +329,8 @@ export class DatabaseController {
    * POST /api/database/query
    * Execute database SELECT queries with parameters
    * Automatically detects and routes Cypher queries to graph adapter
+   *
+   * @param request
    */
   async executeQuery(request: QueryRequest): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -384,6 +410,8 @@ export class DatabaseController {
   /**
    * POST /api/database/execute
    * Execute database commands (INSERT, UPDATE, DELETE, DDL)
+   *
+   * @param request
    */
   async executeCommand(request: CommandRequest): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -451,6 +479,8 @@ export class DatabaseController {
   /**
    * POST /api/database/transaction
    * Execute multiple commands within a transaction
+   *
+   * @param request
    */
   async executeTransaction(request: BatchRequest): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -563,6 +593,8 @@ export class DatabaseController {
   /**
    * POST /api/database/batch
    * Execute multiple operations (with optional transaction)
+   *
+   * @param request
    */
   async executeBatch(request: BatchRequest): Promise<DatabaseResponse> {
     if (request.useTransaction) {
@@ -751,6 +783,8 @@ export class DatabaseController {
   /**
    * POST /api/database/migrate
    * Execute database migration operations
+   *
+   * @param request
    */
   async executeMigration(request: MigrationRequest): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -975,6 +1009,8 @@ export class DatabaseController {
 
   /**
    * Check if SQL statement is a query (SELECT)
+   *
+   * @param sql
    */
   private isQueryStatement(sql: string): boolean {
     const trimmedSql = sql.trim().toLowerCase();
@@ -989,6 +1025,8 @@ export class DatabaseController {
 
   /**
    * Get statement type from SQL
+   *
+   * @param sql
    */
   private getStatementType(sql: string): string {
     const trimmedSql = sql.trim().toLowerCase();
@@ -1004,6 +1042,8 @@ export class DatabaseController {
 
   /**
    * Get execution plan for a query (adapter-specific)
+   *
+   * @param sql
    */
   private async getExecutionPlan(sql: string): Promise<any> {
     try {
@@ -1039,6 +1079,9 @@ export class DatabaseController {
 
   /**
    * Update performance metrics
+   *
+   * @param responseTime
+   * @param success
    */
   private updateMetrics(responseTime: number, success: boolean): void {
     this.performanceMetrics.operationCount++;
@@ -1060,6 +1103,8 @@ export class DatabaseController {
   /**
    * POST /api/database/graph/query
    * Execute graph-specific queries (Cypher-like syntax)
+   *
+   * @param request
    */
   async executeGraphQuery(request: GraphQueryRequest): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -1295,6 +1340,8 @@ export class DatabaseController {
   /**
    * POST /api/database/graph/batch
    * Execute batch graph operations
+   *
+   * @param request
    */
   async executeGraphBatch(request: GraphBatchRequest): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -1405,6 +1452,8 @@ export class DatabaseController {
 
   /**
    * Check if SQL statement is a Cypher query
+   *
+   * @param sql
    */
   private isCypherQuery(sql: string): boolean {
     const trimmedSql = sql.trim().toLowerCase();
@@ -1424,6 +1473,8 @@ export class DatabaseController {
 
   /**
    * Route query to graph adapter
+   *
+   * @param request
    */
   private async routeToGraphQuery(request: GraphQueryRequest): Promise<DatabaseResponse> {
     try {
@@ -1459,6 +1510,8 @@ export class DatabaseController {
 
   /**
    * Extract node types from schema (graph-specific)
+   *
+   * @param schema
    */
   private extractNodeTypes(schema: any): string[] {
     // This would be implemented based on the actual schema structure
@@ -1468,6 +1521,8 @@ export class DatabaseController {
 
   /**
    * Extract relationship types from schema (graph-specific)
+   *
+   * @param schema
    */
   private extractRelationshipTypes(schema: any): string[] {
     // This would be implemented based on the actual schema structure
@@ -1478,6 +1533,8 @@ export class DatabaseController {
   /**
    * POST /api/database/vector/search
    * Perform vector similarity search
+   *
+   * @param request
    */
   async vectorSearch(request: VectorSearchRequest): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -1539,6 +1596,8 @@ export class DatabaseController {
   /**
    * POST /api/database/vector/add
    * Add vectors to the database
+   *
+   * @param request
    */
   async addVectors(request: VectorAddRequest): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -1670,6 +1729,8 @@ export class DatabaseController {
   /**
    * POST /api/database/vector/index
    * Create or optimize vector index
+   *
+   * @param request
    */
   async createVectorIndex(request: VectorIndexRequest): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -1735,6 +1796,8 @@ export class DatabaseController {
 
   /**
    * Check if adapter supports vector operations
+   *
+   * @param adapter
    */
   private isVectorAdapter(adapter: DatabaseAdapter): adapter is VectorDatabaseAdapter {
     return 'vectorSearch' in adapter && 'addVectors' in adapter && 'createIndex' in adapter;

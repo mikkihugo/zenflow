@@ -34,6 +34,8 @@ export interface SPARCSwarmTask {
 
 /**
  * Coordinates SPARC development using existing swarm intelligence
+ *
+ * @example
  */
 export class SPARCSwarmCoordinator {
   private taskCoordinator: TaskCoordinator;
@@ -48,6 +50,8 @@ export class SPARCSwarmCoordinator {
 
   /**
    * Create a swarm for SPARC project development
+   *
+   * @param project
    */
   async initializeSPARCSwarm(project: SPARCProject): Promise<string> {
     const swarmId = `sparc-${project.id}`;
@@ -87,6 +91,9 @@ export class SPARCSwarmCoordinator {
 
   /**
    * Execute SPARC phase using coordinated swarm
+   *
+   * @param projectId
+   * @param phase
    */
   async executeSPARCPhase(
     projectId: string,
@@ -134,6 +141,8 @@ export class SPARCSwarmCoordinator {
 
   /**
    * Get appropriate agents for each SPARC phase
+   *
+   * @param phase
    */
   private getPhaseAgents(phase: SPARCPhase): AgentType[] {
     const phaseAgentMap: Record<SPARCPhase, AgentType[]> = {
@@ -164,6 +173,10 @@ export class SPARCSwarmCoordinator {
 
   /**
    * Generate phase-specific prompts for agents
+   *
+   * @param project
+   * @param phase
+   * @param agentType
    */
   private generatePhasePrompt(
     project: SPARCProject,
@@ -208,6 +221,9 @@ export class SPARCSwarmCoordinator {
 
   /**
    * Get expected output for each phase and agent combination
+   *
+   * @param phase
+   * @param agentType
    */
   private getPhaseExpectedOutput(phase: SPARCPhase, agentType: AgentType): string {
     const outputMap: Record<string, string> = {
@@ -224,6 +240,9 @@ export class SPARCSwarmCoordinator {
 
   /**
    * Get required tools for each phase and agent
+   *
+   * @param _phase
+   * @param agentType
    */
   private getRequiredTools(_phase: SPARCPhase, agentType: AgentType): string[] {
     const baseTools = ['file_operations', 'code_analysis', 'documentation'];
@@ -244,6 +263,8 @@ export class SPARCSwarmCoordinator {
 
   /**
    * Get timeout for each phase in minutes
+   *
+   * @param phase
    */
   private getPhaseTimeout(phase: SPARCPhase): number {
     const timeouts: Record<SPARCPhase, number> = {
@@ -259,6 +280,8 @@ export class SPARCSwarmCoordinator {
 
   /**
    * Monitor SPARC swarm progress
+   *
+   * @param projectId
    */
   async getSPARCSwarmStatus(projectId: string): Promise<{
     swarmId: string;
@@ -295,6 +318,8 @@ export class SPARCSwarmCoordinator {
 
   /**
    * Terminate SPARC swarm and cleanup resources
+   *
+   * @param projectId
    */
   async terminateSPARCSwarm(projectId: string): Promise<void> {
     const swarmId = `sparc-${projectId}`;
@@ -317,6 +342,8 @@ export class SPARCSwarmCoordinator {
 
   /**
    * Get status of a specific task
+   *
+   * @param _taskId
    */
   private async getTaskStatus(
     _taskId: string
@@ -328,6 +355,8 @@ export class SPARCSwarmCoordinator {
 
   /**
    * Cancel a specific task
+   *
+   * @param taskId
    */
   private async cancelTask(taskId: string): Promise<void> {
     // In a real implementation, this would call the TaskAPI to cancel the task

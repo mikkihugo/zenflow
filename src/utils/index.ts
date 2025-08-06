@@ -1,5 +1,6 @@
 /**
  * Utilities Module - System utility functions and helpers
+ *
  * @module Utils
  */
 

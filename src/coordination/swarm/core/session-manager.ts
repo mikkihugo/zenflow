@@ -15,7 +15,7 @@
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import type { ICoordinationDao } from '../../../database';
-import { createDao, EntityTypes, DatabaseTypes } from '../../../database';
+import { createDao, DatabaseTypes, EntityTypes } from '../../../database';
 import type { SwarmOptions, SwarmState } from './types';
 import { generateId } from './utils';
 
@@ -62,6 +62,8 @@ export interface SessionRecoveryOptions {
 
 /**
  * Core Session Manager class
+ *
+ * @example
  */
 export class SessionManager extends EventEmitter {
   private coordinationDao: ICoordinationDao;
@@ -135,6 +137,10 @@ export class SessionManager extends EventEmitter {
 
   /**
    * Create a new session
+   *
+   * @param name
+   * @param swarmOptions
+   * @param initialState
    */
   async createSession(
     name: string,
@@ -208,6 +214,8 @@ export class SessionManager extends EventEmitter {
 
   /**
    * Load an existing session
+   *
+   * @param sessionId
    */
   async loadSession(sessionId: string): Promise<SessionState> {
     await this.ensureInitialized();
@@ -262,6 +270,9 @@ export class SessionManager extends EventEmitter {
 
   /**
    * Save session state
+   *
+   * @param sessionId
+   * @param state
    */
   async saveSession(sessionId: string, state?: Partial<SwarmState>): Promise<void> {
     await this.ensureInitialized();
@@ -293,6 +304,10 @@ export class SessionManager extends EventEmitter {
 
   /**
    * Create a checkpoint of the current session state
+   *
+   * @param sessionId
+   * @param description
+   * @param metadata
    */
   async createCheckpoint(
     sessionId: string,
@@ -363,6 +378,10 @@ export class SessionManager extends EventEmitter {
 
   /**
    * Restore session from a checkpoint
+   *
+   * @param sessionId
+   * @param checkpointId
+   * @param options
    */
   async restoreFromCheckpoint(
     sessionId: string,
@@ -417,6 +436,8 @@ export class SessionManager extends EventEmitter {
 
   /**
    * Pause a session (stop processing but keep in memory)
+   *
+   * @param sessionId
    */
   async pauseSession(sessionId: string): Promise<void> {
     await this.ensureInitialized();
@@ -434,16 +455,19 @@ export class SessionManager extends EventEmitter {
 
     // Update in database
     const dao = await this.getDao();
-    await dao.execute(
-      'UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?',
-      ['paused', session.lastAccessedAt.toISOString(), sessionId]
-    );
+    await dao.execute('UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?', [
+      'paused',
+      session.lastAccessedAt.toISOString(),
+      sessionId,
+    ]);
 
     this.emit('session:paused', { sessionId });
   }
 
   /**
    * Resume a paused session
+   *
+   * @param sessionId
    */
   async resumeSession(sessionId: string): Promise<void> {
     await this.ensureInitialized();
@@ -463,16 +487,19 @@ export class SessionManager extends EventEmitter {
 
     // Update in database
     const dao = await this.getDao();
-    await dao.execute(
-      'UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?',
-      ['active', session.lastAccessedAt.toISOString(), sessionId]
-    );
+    await dao.execute('UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?', [
+      'active',
+      session.lastAccessedAt.toISOString(),
+      sessionId,
+    ]);
 
     this.emit('session:resumed', { sessionId });
   }
 
   /**
    * Hibernate a session (save to disk and remove from memory)
+   *
+   * @param sessionId
    */
   async hibernateSession(sessionId: string): Promise<void> {
     await this.ensureInitialized();
@@ -493,10 +520,11 @@ export class SessionManager extends EventEmitter {
 
     // Update in database
     const dao = await this.getDao();
-    await dao.execute(
-      'UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?',
-      ['hibernated', session.lastAccessedAt.toISOString(), sessionId]
-    );
+    await dao.execute('UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?', [
+      'hibernated',
+      session.lastAccessedAt.toISOString(),
+      sessionId,
+    ]);
 
     // Remove from active sessions
     this.activeSessions.delete(sessionId);
@@ -506,6 +534,9 @@ export class SessionManager extends EventEmitter {
 
   /**
    * Terminate a session permanently
+   *
+   * @param sessionId
+   * @param cleanup
    */
   async terminateSession(sessionId: string, cleanup: boolean = false): Promise<void> {
     await this.ensureInitialized();
@@ -519,16 +550,15 @@ export class SessionManager extends EventEmitter {
 
     // Update in database
     const dao = await this.getDao();
-    await dao.execute(
-      'UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?',
-      ['terminated', new Date().toISOString(), sessionId]
-    );
+    await dao.execute('UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?', [
+      'terminated',
+      new Date().toISOString(),
+      sessionId,
+    ]);
 
     if (cleanup) {
       // Delete all checkpoints
-      await dao.execute('DELETE FROM session_checkpoints WHERE session_id = ?', [
-        sessionId,
-      ]);
+      await dao.execute('DELETE FROM session_checkpoints WHERE session_id = ?', [sessionId]);
 
       // Delete session record
       await dao.execute('DELETE FROM sessions WHERE id = ?', [sessionId]);
@@ -539,6 +569,12 @@ export class SessionManager extends EventEmitter {
 
   /**
    * List all sessions with optional filtering
+   *
+   * @param filter
+   * @param filter.status
+   * @param filter.namePattern
+   * @param filter.createdAfter
+   * @param filter.createdBefore
    */
   async listSessions(filter?: {
     status?: SessionStatus;
@@ -602,6 +638,8 @@ export class SessionManager extends EventEmitter {
 
   /**
    * Get session statistics
+   *
+   * @param sessionId
    */
   async getSessionStats(sessionId?: string): Promise<Record<string, any>> {
     await this.ensureInitialized();
@@ -635,12 +673,8 @@ export class SessionManager extends EventEmitter {
         GROUP BY status
       `);
 
-      const totalSessions = await dao.query(
-        'SELECT COUNT(*) as total FROM sessions'
-      );
-      const totalCheckpoints = await dao.query(
-        'SELECT COUNT(*) as total FROM session_checkpoints'
-      );
+      const totalSessions = await dao.query('SELECT COUNT(*) as total FROM sessions');
+      const totalCheckpoints = await dao.query('SELECT COUNT(*) as total FROM session_checkpoints');
 
       return {
         totalSessions: totalSessions[0].total,
@@ -694,9 +728,7 @@ export class SessionManager extends EventEmitter {
     `);
 
     // Create indexes
-    await dao.execute(
-      'CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions(status)'
-    );
+    await dao.execute('CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions(status)');
     await dao.execute(
       'CREATE INDEX IF NOT EXISTS idx_sessions_last_accessed ON sessions(last_accessed_at)'
     );
@@ -768,9 +800,7 @@ export class SessionManager extends EventEmitter {
 
   private async deleteCheckpoint(checkpointId: string): Promise<void> {
     const dao = await this.getDao();
-    await dao.execute('DELETE FROM session_checkpoints WHERE id = ?', [
-      checkpointId,
-    ]);
+    await dao.execute('DELETE FROM session_checkpoints WHERE id = ?', [checkpointId]);
   }
 
   private startAutoCheckpoint(sessionId: string): void {

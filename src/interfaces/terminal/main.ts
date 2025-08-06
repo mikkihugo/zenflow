@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * @fileoverview Main Terminal Interface Entry Point
+ * @file Main Terminal Interface Entry Point
  *
  * This is the main entry point for the Claude-Zen terminal interface.
  * It gets called by the CLI binary and launches the appropriate terminal interface.
@@ -45,6 +45,8 @@ async function main() {
 
 /**
  * Terminal interface flag values
+ *
+ * @example
  */
 interface TerminalFlags {
   // Mode flags
@@ -77,6 +79,8 @@ interface TerminalFlags {
 
 /**
  * Parse command line flags into typed object
+ *
+ * @param args
  */
 function parseFlags(args: string[]): TerminalFlags {
   const flags: TerminalFlags = {};

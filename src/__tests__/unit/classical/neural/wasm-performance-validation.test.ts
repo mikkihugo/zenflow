@@ -1,6 +1,7 @@
 /**
  * WASM Neural Performance Validation Tests - Classical TDD
- * @fileoverview Tests for WASM neural computation acceleration and performance validation
+ *
+ * @file Tests for WASM neural computation acceleration and performance validation
  * Focus: Performance benchmarks, memory efficiency, SIMD optimization validation
  */
 

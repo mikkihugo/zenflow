@@ -1,5 +1,5 @@
 /**
- * @fileoverview System MCP Tools
+ * @file System MCP Tools
  *
  * Performance benchmarking, system diagnostics, configuration management,
  * and infrastructure optimization.

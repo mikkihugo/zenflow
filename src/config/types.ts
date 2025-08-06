@@ -1,11 +1,13 @@
 /**
- * @fileoverview Unified Configuration Types
+ * @file Unified Configuration Types
  *
  * Central type definitions for all configuration across Claude-Zen
  */
 
 /**
  * Core system configuration
+ *
+ * @example
  */
 export interface CoreConfig {
   logger: {
@@ -28,6 +30,8 @@ export interface CoreConfig {
 
 /**
  * Interface-specific configuration
+ *
+ * @example
  */
 export interface InterfaceConfig {
   theme: 'dark' | 'light' | 'auto';
@@ -41,6 +45,8 @@ export interface InterfaceConfig {
 
 /**
  * Terminal interface configuration
+ *
+ * @example
  */
 export interface TerminalConfig {
   shell?: string;
@@ -52,6 +58,8 @@ export interface TerminalConfig {
 
 /**
  * Web interface configuration
+ *
+ * @example
  */
 export interface WebConfig {
   port: number;
@@ -64,6 +72,8 @@ export interface WebConfig {
 
 /**
  * MCP server configuration
+ *
+ * @example
  */
 export interface MCPConfig {
   http: {
@@ -86,6 +96,8 @@ export interface MCPConfig {
 
 /**
  * Memory system configuration
+ *
+ * @example
  */
 export interface MemoryConfig {
   backend: 'sqlite' | 'lancedb' | 'json';
@@ -100,6 +112,8 @@ export interface MemoryConfig {
 
 /**
  * Database configuration
+ *
+ * @example
  */
 export interface DatabaseConfig {
   sqlite: {
@@ -125,6 +139,8 @@ export interface DatabaseConfig {
 
 /**
  * Coordination/Swarm configuration
+ *
+ * @example
  */
 export interface CoordinationConfig {
   maxAgents: number;
@@ -138,6 +154,8 @@ export interface CoordinationConfig {
 
 /**
  * Neural network configuration
+ *
+ * @example
  */
 export interface NeuralConfig {
   enableWASM: boolean;
@@ -152,6 +170,8 @@ export interface NeuralConfig {
 
 /**
  * Optimization configuration
+ *
+ * @example
  */
 export interface OptimizationConfig {
   enablePerformanceMonitoring: boolean;
@@ -163,6 +183,8 @@ export interface OptimizationConfig {
 
 /**
  * Unified system configuration
+ *
+ * @example
  */
 export interface SystemConfiguration {
   core: CoreConfig;
@@ -183,6 +205,8 @@ export interface SystemConfiguration {
 
 /**
  * Configuration source types
+ *
+ * @example
  */
 export interface ConfigurationSource {
   type: 'file' | 'env' | 'cli' | 'defaults';
@@ -192,6 +216,8 @@ export interface ConfigurationSource {
 
 /**
  * Configuration validation result
+ *
+ * @example
  */
 export interface ConfigValidationResult {
   valid: boolean;
@@ -201,6 +227,8 @@ export interface ConfigValidationResult {
 
 /**
  * Configuration change event
+ *
+ * @example
  */
 export interface ConfigChangeEvent {
   path: string;
@@ -212,6 +240,8 @@ export interface ConfigChangeEvent {
 
 /**
  * Environment variable mappings
+ *
+ * @example
  */
 export interface EnvironmentMappings {
   [key: string]: {

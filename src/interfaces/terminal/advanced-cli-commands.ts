@@ -1,5 +1,5 @@
 /**
- * @fileoverview Advanced CLI Commands Integration
+ * @file Advanced CLI Commands Integration
  *
  * Provides advanced CLI command implementations that integrate with the existing
  * command execution system. Uses shared abstractions to avoid cross-interface dependencies.
@@ -14,6 +14,8 @@ import { CliCommandAdapter } from './adapters/cli-command-adapter';
  * Implements the advanced CLI commands while maintaining compatibility
  * with the existing terminal interface system. Uses adapter pattern
  * to avoid cross-interface dependencies.
+ *
+ * @example
  */
 export class AdvancedCLICommands {
   private commandAdapter: CliCommandAdapter;
@@ -24,6 +26,10 @@ export class AdvancedCLICommands {
 
   /**
    * Execute advanced CLI command
+   *
+   * @param commandName
+   * @param args
+   * @param options
    */
   async executeCommand(commandName: string, args: string[], options: any): Promise<CommandResult> {
     const context: CommandContext = {
@@ -38,6 +44,8 @@ export class AdvancedCLICommands {
 
   /**
    * Check if command is an advanced CLI command
+   *
+   * @param commandName
    */
   isAdvancedCommand(commandName: string): boolean {
     return this.commandAdapter.isValidCommand(commandName);
@@ -52,6 +60,8 @@ export class AdvancedCLICommands {
 
   /**
    * Get help for advanced commands
+   *
+   * @param command
    */
   getAdvancedCommandHelp(command?: string): string {
     return this.commandAdapter.getCommandHelp(command);

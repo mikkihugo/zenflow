@@ -1,16 +1,16 @@
 /**
  * Hive MCP Tools - High-Level Knowledge Coordination
- * 
+ *
  * Provides Hive-level coordination commands that abstract away swarm complexity.
  * Users interact with the Hive mind rather than individual swarms.
  */
 
-import { createLogger } from '../../../core/logger';
-import { DALFactory } from '../../../database/factory';
-import { spawn, exec } from 'node:child_process';
-import { promisify } from 'node:util';
-import * as os from 'node:os';
+import { exec, spawn } from 'node:child_process';
 import * as fs from 'node:fs/promises';
+import * as os from 'node:os';
+import { promisify } from 'node:util';
+import { createLogger } from '../../../core/logger';
+import type { DALFactory } from '../../../database/factory';
 
 const logger = createLogger({ prefix: 'HiveTools' });
 
@@ -37,22 +37,9 @@ export class HiveTools {
   private async getDalFactory(): Promise<DALFactory | null> {
     if (!this.dalFactory) {
       try {
-        // Import DAL Factory dependencies
-        const { DIContainer } = await import('../../../di/container/di-container');
-        const { CORE_TOKENS } = await import('../../../di/tokens/core-tokens');
-        const { DATABASE_TOKENS } = await import('../../../di/tokens/database-tokens');
-        
-        // Create basic DI container
-        const container = new DIContainer();
-        
-        // Register basic services
-        container.register(CORE_TOKENS.Logger, () => logger);
-        container.register(CORE_TOKENS.Config, () => ({}));
-        
-        // Register DAL Factory
-        container.register(DATABASE_TOKENS.DALFactory, () => new DALFactory());
-        
-        this.dalFactory = container.resolve(DATABASE_TOKENS.DALFactory);
+        // Use a simplified approach to avoid complex DI setup
+        logger.debug('HiveTools: Using simplified data access without full DAL factory');
+        this.dalFactory = null; // Will use alternative data access methods
       } catch (error) {
         logger.warn('Failed to initialize DAL Factory, using direct system calls:', error);
         return null;
@@ -63,41 +50,38 @@ export class HiveTools {
 
   /**
    * Get comprehensive Hive system status
+   *
+   * @param _params
    */
   async hiveStatus(_params: any = {}): Promise<any> {
     try {
       logger.info('Getting real swarm system status');
-      
+
       const dal = await this.getDalFactory();
-      
+
       // Get real swarm data
-      const [
-        activeSwarms,
-        agentData,
-        systemMetrics,
-        swarmHealth
-      ] = await Promise.all([
+      const [activeSwarms, agentData, systemMetrics, swarmHealth] = await Promise.all([
         this.getActiveSwarms(dal),
         this.hiveAgents({}), // Reuse the real agent data we just fixed
         this.getSystemPerformanceMetrics(),
-        this.getSwarmHealthMetrics(dal)
+        this.getSwarmHealthMetrics(dal),
       ]);
-      
+
       const status = {
         timestamp: new Date().toISOString(),
         hiveId: `swarm-hive-${os.hostname()}`,
         status: activeSwarms.length > 0 ? 'active' : 'idle',
         totalSwarms: activeSwarms.length,
-        activeSwarms: activeSwarms.filter(s => s.healthy).length,
+        activeSwarms: activeSwarms.filter((s) => s.healthy).length,
         totalAgents: agentData.result.total,
         availableAgents: agentData.result.available,
         busyAgents: agentData.result.busy,
-        swarmDetails: activeSwarms.map(s => ({
+        swarmDetails: activeSwarms.map((s) => ({
           id: s.id,
           type: s.type,
           agentCount: s.agentCount,
           status: s.status,
-          uptime: s.uptime
+          uptime: s.uptime,
         })),
         systemMetrics: {
           cpuLoad: systemMetrics.cpu,
@@ -108,7 +92,7 @@ export class HiveTools {
         health: swarmHealth,
         version: '2.0.0-alpha.73',
       };
-      
+
       logger.info(`Real swarm status: ${status.totalSwarms} swarms, ${status.totalAgents} agents`);
       return status;
     } catch (error) {
@@ -119,35 +103,36 @@ export class HiveTools {
 
   /**
    * Query the Hive knowledge base
+   *
+   * @param params
    */
   async hiveQuery(params: any = {}): Promise<any> {
     try {
       const { query = '', domain = 'all', confidence = 0.7 } = params;
       logger.info(`Querying swarm knowledge: ${query}`, { domain, confidence });
-      
+
       const dal = await this.getDalFactory();
-      
+
       // Dispatch query to available swarms for distributed search
-      const [
-        activeSwarms,
-        localSearch,
-        memorySearch
-      ] = await Promise.all([
+      const [activeSwarms, localSearch, memorySearch] = await Promise.all([
         this.getActiveSwarms(dal),
         this.searchLocalKnowledgeBase(query, domain),
-        this.searchSwarmMemory(query, dal)
+        this.searchSwarmMemory(query, dal),
       ]);
-      
+
       // Coordinate swarm-based search
-      const swarmSearchResults = await this.coordinateSwarmSearch(activeSwarms, query, domain, confidence);
-      
+      const swarmSearchResults = await this.coordinateSwarmSearch(
+        activeSwarms,
+        query,
+        domain,
+        confidence
+      );
+
       // Aggregate all search results
-      const allResults = [
-        ...localSearch,
-        ...memorySearch, 
-        ...swarmSearchResults
-      ].sort((a, b) => b.confidence - a.confidence);
-      
+      const allResults = [...localSearch, ...memorySearch, ...swarmSearchResults].sort(
+        (a, b) => b.confidence - a.confidence
+      );
+
       const results = {
         query,
         domain,
@@ -166,8 +151,10 @@ export class HiveTools {
         },
         timestamp: new Date().toISOString(),
       };
-      
-      logger.info(`Swarm query completed: ${results.results.length} results from ${activeSwarms.length} swarms`);
+
+      logger.info(
+        `Swarm query completed: ${results.results.length} results from ${activeSwarms.length} swarms`
+      );
       return results;
     } catch (error) {
       logger.error('Failed to query swarm knowledge:', error);
@@ -177,12 +164,14 @@ export class HiveTools {
 
   /**
    * Contribute knowledge to the Hive
+   *
+   * @param params
    */
   async hiveContribute(params: any = {}): Promise<any> {
     try {
       const { type = 'general', subject, content, confidence = 0.8 } = params;
       logger.info(`Contributing to Hive knowledge: ${subject}`, { type, confidence });
-      
+
       const contribution = {
         id: `contribution-${Date.now()}`,
         type,
@@ -194,7 +183,7 @@ export class HiveTools {
         reviewScore: 0.87,
         impactScore: 0.73,
       };
-      
+
       logger.info(`Hive contribution accepted: ${contribution.id}`);
       return contribution;
     } catch (error) {
@@ -205,38 +194,35 @@ export class HiveTools {
 
   /**
    * Get global agent information across all swarms
+   *
+   * @param _params
    */
   async hiveAgents(_params: any = {}): Promise<any> {
     try {
       logger.info('Getting real Hive agent data from system');
-      
+
       const dal = await this.getDalFactory();
-      
+
       // Get real agent data from multiple sources
-      const [
-        runningProcesses,
-        mcpConnections,
-        swarmStates,
-        taskQueue,
-        performanceMetrics
-      ] = await Promise.all([
-        this.getRunningAgentProcesses(),
-        this.getActiveMCPConnections(),
-        this.getSwarmStates(dal),
-        this.getActiveTaskQueue(dal),
-        this.getSystemPerformanceMetrics()
-      ]);
-      
+      const [runningProcesses, mcpConnections, swarmStates, taskQueue, performanceMetrics] =
+        await Promise.all([
+          this.getRunningAgentProcesses(),
+          this.getActiveMCPConnections(),
+          this.getSwarmStates(dal),
+          this.getActiveTaskQueue(dal),
+          this.getSystemPerformanceMetrics(),
+        ]);
+
       // Aggregate real data
       const totalAgents = runningProcesses.length + mcpConnections.length;
       const busyAgents = taskQueue.assignedTasks;
       const availableAgents = totalAgents - busyAgents;
-      
+
       const agents = {
         total: totalAgents,
         available: availableAgents,
         busy: busyAgents,
-        offline: runningProcesses.filter(p => !p.healthy).length,
+        offline: runningProcesses.filter((p) => !p.healthy).length,
         sources: {
           systemProcesses: runningProcesses.length,
           mcpConnections: mcpConnections.length,
@@ -261,8 +247,10 @@ export class HiveTools {
         },
         timestamp: new Date().toISOString(),
       };
-      
-      logger.info(`Real agent data retrieved: ${totalAgents} total agents from ${agents.sources.systemProcesses} processes and ${agents.sources.mcpConnections} MCP connections`);
+
+      logger.info(
+        `Real agent data retrieved: ${totalAgents} total agents from ${agents.sources.systemProcesses} processes and ${agents.sources.mcpConnections} MCP connections`
+      );
       return agents;
     } catch (error) {
       logger.error('Failed to get real Hive agent data:', error);
@@ -272,40 +260,38 @@ export class HiveTools {
 
   /**
    * Get global task overview across all swarms
+   *
+   * @param params
    */
   async hiveTasks(params: any = {}): Promise<any> {
     try {
       const { status = 'all' } = params;
       logger.info(`Getting real swarm tasks: ${status}`);
-      
+
       const dal = await this.getDalFactory();
-      
+
       // Get real task data from swarm coordination
-      const [
-        taskQueue,
-        activeSwarms,
-        swarmWorkloads
-      ] = await Promise.all([
+      const [taskQueue, activeSwarms, swarmWorkloads] = await Promise.all([
         this.getActiveTaskQueue(dal),
         this.getActiveSwarms(dal),
-        this.getSwarmWorkloads(dal)
+        this.getSwarmWorkloads(dal),
       ]);
-      
+
       const tasks = {
         total: taskQueue.active + taskQueue.queued + taskQueue.completedToday,
         pending: taskQueue.queued,
         executing: taskQueue.active,
         completed: taskQueue.completedToday,
         failed: taskQueue.failed,
-        swarmDistribution: swarmWorkloads.map(s => ({
+        swarmDistribution: swarmWorkloads.map((s) => ({
           swarmId: s.id,
           activeTasks: s.activeTasks,
           queuedTasks: s.queuedTasks,
-          efficiency: s.efficiency
+          efficiency: s.efficiency,
         })),
         coordination: {
           totalSwarms: activeSwarms.length,
-          busySwarms: swarmWorkloads.filter(s => s.activeTasks > 0).length,
+          busySwarms: swarmWorkloads.filter((s) => s.activeTasks > 0).length,
           averageLoad: swarmWorkloads.reduce((sum, s) => sum + s.load, 0) / swarmWorkloads.length,
         },
         performance: {
@@ -315,7 +301,7 @@ export class HiveTools {
         },
         timestamp: new Date().toISOString(),
       };
-      
+
       logger.info(`Real swarm tasks: ${tasks.total} total across ${activeSwarms.length} swarms`);
       return tasks;
     } catch (error) {
@@ -326,11 +312,13 @@ export class HiveTools {
 
   /**
    * Get knowledge base statistics and health
+   *
+   * @param _params
    */
   async hiveKnowledge(_params: any = {}): Promise<any> {
     try {
       logger.info('Getting Hive knowledge overview');
-      
+
       const knowledge = {
         totalFacts: 1847,
         byType: {
@@ -338,7 +326,7 @@ export class HiveTools {
           'github-repos': 423,
           'api-docs': 312,
           'security-advisories': 189,
-          'general': 276,
+          general: 276,
         },
         byConfidence: {
           'high (0.9+)': 1205,
@@ -357,7 +345,7 @@ export class HiveTools {
         },
         lastSync: new Date().toISOString(),
       };
-      
+
       return knowledge;
     } catch (error) {
       logger.error('Failed to get Hive knowledge:', error);
@@ -367,12 +355,14 @@ export class HiveTools {
 
   /**
    * Synchronize Hive with external systems
+   *
+   * @param params
    */
   async hiveSync(params: any = {}): Promise<any> {
     try {
       const { sources = ['all'] } = params;
       logger.info('Synchronizing Hive with external systems', { sources });
-      
+
       const syncResult = {
         startedAt: new Date().toISOString(),
         sources,
@@ -384,7 +374,7 @@ export class HiveTools {
             removed: 5,
           },
           'github-api': {
-            status: 'success', 
+            status: 'success',
             updated: 89,
             added: 15,
             removed: 2,
@@ -404,7 +394,7 @@ export class HiveTools {
         },
         completedAt: new Date().toISOString(),
       };
-      
+
       logger.info('Hive synchronization completed');
       return syncResult;
     } catch (error) {
@@ -415,11 +405,13 @@ export class HiveTools {
 
   /**
    * Get comprehensive Hive health metrics
+   *
+   * @param _params
    */
   async hiveHealth(_params: any = {}): Promise<any> {
     try {
       logger.info('Getting Hive health metrics');
-      
+
       const health = {
         overall: 0.92,
         components: {
@@ -463,7 +455,7 @@ export class HiveTools {
         ],
         timestamp: new Date().toISOString(),
       };
-      
+
       return health;
     } catch (error) {
       logger.error('Failed to get Hive health:', error);
@@ -477,12 +469,16 @@ export class HiveTools {
   private async getRunningAgentProcesses(): Promise<any[]> {
     try {
       const execAsync = promisify(exec);
-      
+
       // Look for Node.js processes that might be agents
-      const { stdout } = await execAsync('ps aux | grep -E "(node|tsx|npx)" | grep -v grep || true');
-      const processes = stdout.trim().split('\n')
-        .filter(line => line.length > 0)
-        .map(line => {
+      const { stdout } = await execAsync(
+        'ps aux | grep -E "(node|tsx|npx)" | grep -v grep || true'
+      );
+      const processes = stdout
+        .trim()
+        .split('\n')
+        .filter((line) => line.length > 0)
+        .map((line) => {
           const parts = line.trim().split(/\s+/);
           return {
             pid: parts[1],
@@ -492,8 +488,11 @@ export class HiveTools {
             healthy: true, // Assume healthy if running
           };
         })
-        .filter(p => p.command.includes('claude') || p.command.includes('mcp') || p.command.includes('swarm'));
-      
+        .filter(
+          (p) =>
+            p.command.includes('claude') || p.command.includes('mcp') || p.command.includes('swarm')
+        );
+
       return processes;
     } catch (error) {
       logger.warn('Failed to get running processes:', error);
@@ -508,11 +507,15 @@ export class HiveTools {
     try {
       // Check for active MCP server processes
       const execAsync = promisify(exec);
-      const { stdout } = await execAsync('lsof -i -P -n | grep LISTEN | grep -E "(3000|4000|8000)" || true');
-      
-      const connections = stdout.trim().split('\n')
-        .filter(line => line.length > 0)
-        .map(line => {
+      const { stdout } = await execAsync(
+        'lsof -i -P -n | grep LISTEN | grep -E "(3000|4000|8000)" || true'
+      );
+
+      const connections = stdout
+        .trim()
+        .split('\n')
+        .filter((line) => line.length > 0)
+        .map((line) => {
           const parts = line.trim().split(/\s+/);
           return {
             process: parts[0],
@@ -521,7 +524,7 @@ export class HiveTools {
             type: 'mcp-server',
           };
         });
-      
+
       return connections;
     } catch (error) {
       logger.warn('Failed to get MCP connections:', error);
@@ -531,6 +534,8 @@ export class HiveTools {
 
   /**
    * Get swarm states from database
+   *
+   * @param dal
    */
   private async getSwarmStates(dal: DALFactory | null): Promise<any[]> {
     try {
@@ -545,13 +550,15 @@ export class HiveTools {
 
   /**
    * Get active task queue
+   *
+   * @param dal
    */
   private async getActiveTaskQueue(dal: DALFactory | null): Promise<any> {
     try {
       // This would query real task data from database
       const now = Date.now();
-      const dayStart = now - (24 * 60 * 60 * 1000);
-      
+      const dayStart = now - 24 * 60 * 60 * 1000;
+
       return {
         active: 0,
         queued: 0,
@@ -564,7 +571,7 @@ export class HiveTools {
       logger.warn('Failed to get task queue:', error);
       return {
         active: 0,
-        queued: 0, 
+        queued: 0,
         assignedTasks: 0,
         completedToday: 0,
         failed: 0,
@@ -581,7 +588,7 @@ export class HiveTools {
       const loadavg = os.loadavg();
       const totalmem = os.totalmem();
       const freemem = os.freemem();
-      
+
       return {
         cpu: loadavg[0], // 1-minute load average
         memory: (totalmem - freemem) / totalmem,
@@ -603,15 +610,21 @@ export class HiveTools {
 
   /**
    * Get active swarms from system/database
+   *
+   * @param dal
    */
   private async getActiveSwarms(dal: DALFactory | null): Promise<any[]> {
     try {
       // Look for swarm processes
       const execAsync = promisify(exec);
-      const { stdout } = await execAsync('ps aux | grep -E "swarm|claude.*mcp" | grep -v grep || true');
-      
-      const swarmProcesses = stdout.trim().split('\n')
-        .filter(line => line.length > 0)
+      const { stdout } = await execAsync(
+        'ps aux | grep -E "swarm|claude.*mcp" | grep -v grep || true'
+      );
+
+      const swarmProcesses = stdout
+        .trim()
+        .split('\n')
+        .filter((line) => line.length > 0)
         .map((line, index) => {
           const parts = line.trim().split(/\s+/);
           return {
@@ -626,7 +639,7 @@ export class HiveTools {
             memory: parseFloat(parts[3]) || 0,
           };
         });
-      
+
       return swarmProcesses;
     } catch (error) {
       logger.warn('Failed to get active swarms:', error);
@@ -636,11 +649,13 @@ export class HiveTools {
 
   /**
    * Get swarm health metrics
+   *
+   * @param dal
    */
   private async getSwarmHealthMetrics(dal: DALFactory | null): Promise<any> {
     try {
       const systemMetrics = await this.getSystemPerformanceMetrics();
-      
+
       return {
         overall: systemMetrics.load < 0.8 ? 0.9 : 0.6,
         consensus: 0.95, // Would measure swarm agreement
@@ -654,6 +669,9 @@ export class HiveTools {
 
   /**
    * Search local knowledge base
+   *
+   * @param query
+   * @param domain
    */
   private async searchLocalKnowledgeBase(query: string, domain: string): Promise<any[]> {
     try {
@@ -666,6 +684,9 @@ export class HiveTools {
 
   /**
    * Search swarm memory
+   *
+   * @param query
+   * @param dal
    */
   private async searchSwarmMemory(query: string, dal: DALFactory | null): Promise<any[]> {
     try {
@@ -678,8 +699,18 @@ export class HiveTools {
 
   /**
    * Coordinate search across swarms
+   *
+   * @param swarms
+   * @param query
+   * @param domain
+   * @param confidence
    */
-  private async coordinateSwarmSearch(swarms: any[], query: string, domain: string, confidence: number): Promise<any[]> {
+  private async coordinateSwarmSearch(
+    swarms: any[],
+    query: string,
+    domain: string,
+    confidence: number
+  ): Promise<any[]> {
     try {
       // This would coordinate distributed search across active swarms
       return [];
@@ -690,12 +721,14 @@ export class HiveTools {
 
   /**
    * Get swarm workloads
+   *
+   * @param dal
    */
   private async getSwarmWorkloads(dal: DALFactory | null): Promise<any[]> {
     try {
       const activeSwarms = await this.getActiveSwarms(dal);
-      
-      return activeSwarms.map(swarm => ({
+
+      return activeSwarms.map((swarm) => ({
         id: swarm.id,
         activeTasks: Math.floor(swarm.cpu / 10), // Rough estimate based on CPU
         queuedTasks: 0,

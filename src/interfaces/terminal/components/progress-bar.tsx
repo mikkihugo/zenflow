@@ -27,6 +27,19 @@ export interface ProgressBarProps {
  *
  * Displays progress with customizable styling and information.
  * Supports different visual variants for different contexts.
+ *
+ * @param root0
+ * @param root0.progress
+ * @param root0.total
+ * @param root0.current
+ * @param root0.label
+ * @param root0.showPercentage
+ * @param root0.showNumbers
+ * @param root0.width
+ * @param root0.color
+ * @param root0.backgroundColor
+ * @param root0.variant
+ * @param root0.testId
  */
 export const ProgressBar: React.FC<ProgressBarProps> = ({
   progress,

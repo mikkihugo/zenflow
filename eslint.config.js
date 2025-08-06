@@ -48,7 +48,7 @@ export default [
     },
     plugins: {
       '@typescript-eslint': typescriptEslint,
-      'jsdoc': jsdocPlugin,
+      jsdoc: jsdocPlugin,
     },
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
@@ -56,42 +56,69 @@ export default [
       'prefer-const': 'warn',
       'no-var': 'error',
       // JSDoc rules for unified architecture documentation
-      'jsdoc/require-description': ['error', {
-        contexts: ['ClassDeclaration', 'FunctionDeclaration', 'MethodDefinition', 'TSInterfaceDeclaration']
-      }],
+      'jsdoc/require-description': [
+        'error',
+        {
+          contexts: [
+            'ClassDeclaration',
+            'FunctionDeclaration',
+            'MethodDefinition',
+            'TSInterfaceDeclaration',
+          ],
+        },
+      ],
       'jsdoc/require-param': 'error',
       'jsdoc/require-param-description': 'error',
       'jsdoc/require-param-type': 'off', // TypeScript provides types
-      'jsdoc/require-returns': ['error', {
-        contexts: ['FunctionDeclaration', 'MethodDefinition'],
-        exemptedBy: ['constructor', 'void']
-      }],
+      'jsdoc/require-returns': [
+        'error',
+        {
+          contexts: ['FunctionDeclaration', 'MethodDefinition'],
+          exemptedBy: ['constructor', 'void'],
+        },
+      ],
       'jsdoc/require-returns-description': 'error',
       'jsdoc/require-returns-type': 'off', // TypeScript provides types
       'jsdoc/require-throws': 'error',
-      'jsdoc/require-example': ['warn', {
-        contexts: ['ClassDeclaration', 'TSInterfaceDeclaration']
-      }],
-      'jsdoc/check-examples': ['warn', {
-        exampleCodeRegex: '```(?:typescript|ts|javascript|js)\\n([\\s\\S]*?)```',
-      }],
+      'jsdoc/require-example': [
+        'warn',
+        {
+          contexts: ['ClassDeclaration', 'TSInterfaceDeclaration'],
+        },
+      ],
+      'jsdoc/check-examples': [
+        'warn',
+        {
+          exampleCodeRegex: '```(?:typescript|ts|javascript|js)\\n([\\s\\S]*?)```',
+        },
+      ],
       'jsdoc/check-syntax': 'error',
-      'jsdoc/check-tag-names': ['error', {
-        definedTags: ['fileoverview', 'since', 'version', 'author', 'template', 'emits']
-      }],
+      'jsdoc/check-tag-names': [
+        'error',
+        {
+          definedTags: ['fileoverview', 'since', 'version', 'author', 'template', 'emits'],
+        },
+      ],
       'jsdoc/check-types': 'off', // TypeScript handles this
       'jsdoc/check-values': 'error',
-      'jsdoc/require-file-overview': ['error', {
-        tags: {
-          'fileoverview': {
-            initialCommentsOnly: true,
-            mustExist: true
-          }
-        }
-      }],
-      'jsdoc/tag-lines': ['error', 'never', {
-        startLines: 1
-      }],
+      'jsdoc/require-file-overview': [
+        'error',
+        {
+          tags: {
+            fileoverview: {
+              initialCommentsOnly: true,
+              mustExist: true,
+            },
+          },
+        },
+      ],
+      'jsdoc/tag-lines': [
+        'error',
+        'never',
+        {
+          startLines: 1,
+        },
+      ],
       'jsdoc/valid-types': 'off', // TypeScript handles this
     },
   },

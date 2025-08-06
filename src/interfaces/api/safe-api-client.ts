@@ -32,6 +32,8 @@ export interface APIMetadata {
 
 /**
  * Type-safe API client with union type responses
+ *
+ * @example
  */
 export class SafeAPIClient {
   private baseURL: string;
@@ -54,6 +56,9 @@ export class SafeAPIClient {
 
   /**
    * Make a GET request with type-safe response handling
+   *
+   * @param endpoint
+   * @param options
    */
   async get<T = any>(
     endpoint: string,
@@ -64,6 +69,10 @@ export class SafeAPIClient {
 
   /**
    * Make a POST request with type-safe response handling
+   *
+   * @param endpoint
+   * @param data
+   * @param options
    */
   async post<T = any>(
     endpoint: string,
@@ -75,6 +84,10 @@ export class SafeAPIClient {
 
   /**
    * Make a PUT request with type-safe response handling
+   *
+   * @param endpoint
+   * @param data
+   * @param options
    */
   async put<T = any>(
     endpoint: string,
@@ -86,6 +99,9 @@ export class SafeAPIClient {
 
   /**
    * Make a DELETE request with type-safe response handling
+   *
+   * @param endpoint
+   * @param options
    */
   async delete<T = any>(
     endpoint: string,
@@ -96,6 +112,9 @@ export class SafeAPIClient {
 
   /**
    * Core request method with comprehensive error handling and type safety
+   *
+   * @param endpoint
+   * @param options
    */
   private async request<T = any>(
     endpoint: string,
@@ -283,6 +302,8 @@ export class SafeAPIClient {
 
 /**
  * Service for handling specific API operations with type-safe responses
+ *
+ * @example
  */
 export class SafeAPIService {
   private client: SafeAPIClient;
@@ -294,6 +315,9 @@ export class SafeAPIService {
 
   /**
    * Create a resource with type-safe response
+   *
+   * @param endpoint
+   * @param data
    */
   async createResource<TResource, TCreateData>(
     endpoint: string,
@@ -304,6 +328,9 @@ export class SafeAPIService {
 
   /**
    * Get a resource by ID with type-safe response
+   *
+   * @param endpoint
+   * @param id
    */
   async getResource<TResource>(
     endpoint: string,
@@ -314,6 +341,9 @@ export class SafeAPIService {
 
   /**
    * List resources with pagination support
+   *
+   * @param endpoint
+   * @param params
    */
   async listResources<TResource>(
     endpoint: string,
@@ -325,6 +355,10 @@ export class SafeAPIService {
 
   /**
    * Update a resource with type-safe response
+   *
+   * @param endpoint
+   * @param id
+   * @param data
    */
   async updateResource<TResource, TUpdateData>(
     endpoint: string,
@@ -336,6 +370,9 @@ export class SafeAPIService {
 
   /**
    * Delete a resource with type-safe response
+   *
+   * @param endpoint
+   * @param id
    */
   async deleteResource(
     endpoint: string,
@@ -351,6 +388,8 @@ export class SafeAPIService {
 
 /**
  * Example interfaces for demonstration
+ *
+ * @example
  */
 interface User {
   id: number;

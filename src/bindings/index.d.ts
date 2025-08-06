@@ -7,6 +7,8 @@ export interface TrainingConfig {
   algorithm?: string;
 }
 
+*
+@example
 /** Neural Network class for creating and managing feedforward neural networks */
 export class NeuralNetwork {
   /** Create a new neural network with specified layer sizes
@@ -44,6 +46,8 @@ export class NeuralNetwork {
   static load(filename: string): NeuralNetwork;
 }
 
+*
+@example
 /** Advanced trainer for neural networks */
 export class NetworkTrainer {
   /** Create a new trainer for a network
@@ -79,6 +83,8 @@ export function isGpuAvailable(): boolean;
  */
 export function getActivationFunctions(): string[];
 
+*
+@example
 /** WASM fallback interface (when native bindings are not available) */
 export interface WasmFallback {
   /** Initialize WASM module */

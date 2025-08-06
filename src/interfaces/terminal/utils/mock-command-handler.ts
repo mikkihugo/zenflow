@@ -27,10 +27,15 @@ export interface CommandContext {
 
 /**
  * Execute terminal commands with unified result handling
+ *
+ * @example
  */
 export class MockCommandHandler {
   /**
    * Execute init command
+   *
+   * @param args
+   * @param flags
    */
   static async executeInit(args: string[], flags: Record<string, any>): Promise<CommandResult> {
     try {
@@ -66,6 +71,9 @@ export class MockCommandHandler {
 
   /**
    * Execute status command
+   *
+   * @param _args
+   * @param flags
    */
   static async executeStatus(_args: string[], flags: Record<string, any>): Promise<CommandResult> {
     try {
@@ -122,6 +130,9 @@ export class MockCommandHandler {
 
   /**
    * Execute swarm command
+   *
+   * @param args
+   * @param flags
    */
   static async executeSwarm(args: string[], flags: Record<string, any>): Promise<CommandResult> {
     try {
@@ -209,6 +220,9 @@ export class MockCommandHandler {
 
   /**
    * Execute MCP command
+   *
+   * @param args
+   * @param flags
    */
   static async executeMCP(args: string[], flags: Record<string, any>): Promise<CommandResult> {
     try {
@@ -277,6 +291,9 @@ export class MockCommandHandler {
 
   /**
    * Execute workspace command
+   *
+   * @param args
+   * @param _flags
    */
   static async executeWorkspace(
     args: string[],
@@ -367,6 +384,10 @@ export class MockCommandHandler {
 
   /**
    * Execute any command - delegates to CommandExecutionEngine
+   *
+   * @param command
+   * @param args
+   * @param flags
    */
   static async executeCommand(
     command: string,

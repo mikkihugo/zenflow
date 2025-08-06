@@ -47,6 +47,8 @@ export interface MCPServerInfo {
 
 /**
  * Handles MCP protocol requests
+ *
+ * @example
  */
 export class MCPRequestHandler {
   private toolRegistry: MCPToolRegistry;
@@ -77,6 +79,8 @@ export class MCPRequestHandler {
 
   /**
    * Handle incoming MCP request
+   *
+   * @param request
    */
   async handleRequest(request: MCPRequest): Promise<MCPResponse> {
     const response: MCPResponse = {
@@ -153,6 +157,8 @@ export class MCPRequestHandler {
 
   /**
    * Handle initialization request
+   *
+   * @param params
    */
   private async handleInitialize(params: any): Promise<any> {
     logger.info('MCP server initialization requested', {
@@ -171,6 +177,8 @@ export class MCPRequestHandler {
 
   /**
    * Handle initialization notification
+   *
+   * @param params
    */
   private async handleInitialized(params: any): Promise<any> {
     logger.info('MCP client initialization completed', { params });
@@ -194,6 +202,8 @@ export class MCPRequestHandler {
 
   /**
    * Handle tool call request
+   *
+   * @param params
    */
   private async handleToolCall(params: any): Promise<any> {
     if (!params || !params.name) {
@@ -272,6 +282,8 @@ export class MCPRequestHandler {
 
   /**
    * Handle resource read request
+   *
+   * @param params
    */
   private async handleResourceRead(params: any): Promise<any> {
     if (!params || !params.uri) {

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Knowledge-Aware Domain Discovery
+ * @file Knowledge-Aware Domain Discovery
  * Uses Hive Knowledge System to improve domain discovery accuracy and efficiency
  *
  * Features:
@@ -78,6 +78,8 @@ export interface KnowledgeDiscoveryContext {
 
 /**
  * Improves domain discovery with knowledge from Hive FACT and swarm learning
+ *
+ * @example
  */
 export class KnowledgeAwareDiscovery extends EventEmitter {
   private config: KnowledgeAwareConfig;
@@ -108,6 +110,9 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   /**
    * Apply knowledge insights to domain discovery
+   *
+   * @param originalDomains
+   * @param context
    */
   async applyKnowledgeInsights(
     originalDomains: DiscoveredDomain[],
@@ -152,6 +157,8 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   /**
    * Load relevant knowledge for project context
+   *
+   * @param context
    */
   private async loadProjectKnowledge(
     context: KnowledgeDiscoveryContext
@@ -224,6 +231,9 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   /**
    * Query Hive FACT for domain-specific knowledge
+   *
+   * @param domain
+   * @param context
    */
   private async queryHiveFACTForDomain(
     domain: string,
@@ -247,6 +257,9 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   /**
    * Query swarm knowledge for domain patterns
+   *
+   * @param domain
+   * @param context
    */
   private async querySwarmKnowledgeForDomain(
     domain: string,
@@ -267,6 +280,9 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   /**
    * Query technology-specific patterns
+   *
+   * @param technology
+   * @param _context
    */
   private async queryTechnologyPatterns(
     technology: string,
@@ -308,6 +324,10 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   /**
    * Apply knowledge to individual domain
+   *
+   * @param domain
+   * @param projectKnowledge
+   * @param _context
    */
   private async applyDomainKnowledge(
     domain: DiscoveredDomain,
@@ -379,6 +399,9 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   /**
    * Apply cross-domain knowledge and relationships
+   *
+   * @param domains
+   * @param projectKnowledge
    */
   private async applyCrossDomainKnowledge(
     domains: KnowledgeAwareDomain[],
@@ -410,6 +433,10 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   /**
    * Convert Hive FACT results to domain knowledge
+   *
+   * @param domain
+   * @param facts
+   * @param source
    */
   private convertFactsToDomainKnowledge(
     domain: string,
@@ -461,6 +488,10 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   /**
    * Convert swarm knowledge to domain knowledge
+   *
+   * @param domain
+   * @param swarmData
+   * @param source
    */
   private convertSwarmKnowledgeToDomainKnowledge(
     domain: string,
@@ -487,6 +518,9 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   /**
    * Find best matching knowledge for domain
+   *
+   * @param domain
+   * @param projectKnowledge
    */
   private findBestMatchingKnowledge(
     domain: DiscoveredDomain,

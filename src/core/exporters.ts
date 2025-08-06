@@ -277,11 +277,15 @@ export class ExportSystem {
 export const ExportUtils = {
   /**
    * Quick JSON export
+   *
+   * @param data
    */
   toJSON: (data: any): string => JSON.stringify(data, null, 2),
 
   /**
    * Quick CSV export for arrays
+   *
+   * @param data
    */
   toCSV: (data: any[]): string => {
     const system = new ExportSystem();
@@ -290,6 +294,8 @@ export const ExportUtils = {
 
   /**
    * Quick YAML export
+   *
+   * @param data
    */
   toYAML: (data: any): string => {
     const system = new ExportSystem();
@@ -298,6 +304,8 @@ export const ExportUtils = {
 
   /**
    * Quick XML export
+   *
+   * @param data
    */
   toXML: (data: any): string => {
     const system = new ExportSystem();
@@ -306,6 +314,8 @@ export const ExportUtils = {
 
   /**
    * Quick Markdown export
+   *
+   * @param data
    */
   toMarkdown: (data: any): string => {
     const system = new ExportSystem();

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Integration Test for Batch MCP Tools
+ * @file Integration Test for Batch MCP Tools
  * Tests the complete claude-zen implementation from MCP tools to batch execution
  */
 

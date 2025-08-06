@@ -22,6 +22,9 @@ export {
 export const StateHookUtils = {
   /**
    * Debounce function for React hooks
+   *
+   * @param func
+   * @param delay
    */
   debounce: <T extends (...args: any[]) => any>(func: T, delay: number): T => {
     let timeoutId: NodeJS.Timeout;
@@ -34,6 +37,9 @@ export const StateHookUtils = {
 
   /**
    * Throttle function for React hooks
+   *
+   * @param func
+   * @param delay
    */
   throttle: <T extends (...args: any[]) => any>(func: T, delay: number): T => {
     let lastCall = 0;

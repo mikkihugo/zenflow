@@ -19,7 +19,8 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
   id: 'swarm-coordination-template',
   name: 'Swarm Coordination System',
   domain: 'swarm-coordination',
-  description: 'Comprehensive template for swarm coordination and multi-agent orchestration systems',
+  description:
+    'Comprehensive template for swarm coordination and multi-agent orchestration systems',
   version: '1.0.0',
   metadata: {
     author: 'SPARC Swarm Coordination Template Generator',
@@ -90,7 +91,7 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
         metrics: {
           'max-agents': '1000+',
           'concurrent-tasks': '10000+',
-          'throughput': '1000 tasks/second',
+          throughput: '1000 tasks/second',
         },
         priority: 'HIGH',
       },
@@ -175,12 +176,28 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
           { name: 'capabilities', type: 'Capability[]', description: 'Agent capabilities' },
         ],
         outputs: [
-          { name: 'registrationResult', type: 'RegistrationResult', description: 'Registration outcome' },
+          {
+            name: 'registrationResult',
+            type: 'RegistrationResult',
+            description: 'Registration outcome',
+          },
         ],
         steps: [
-          { stepNumber: 1, description: 'Validate agent ID uniqueness', pseudocode: 'IF registry.contains(agentId) THEN RETURN ERROR' },
-          { stepNumber: 2, description: 'Store agent capabilities', pseudocode: 'registry.store(agentId, capabilities)' },
-          { stepNumber: 3, description: 'Initialize health monitoring', pseudocode: 'healthMonitor.start(agentId)' },
+          {
+            stepNumber: 1,
+            description: 'Validate agent ID uniqueness',
+            pseudocode: 'IF registry.contains(agentId) THEN RETURN ERROR',
+          },
+          {
+            stepNumber: 2,
+            description: 'Store agent capabilities',
+            pseudocode: 'registry.store(agentId, capabilities)',
+          },
+          {
+            stepNumber: 3,
+            description: 'Initialize health monitoring',
+            pseudocode: 'healthMonitor.start(agentId)',
+          },
         ],
         complexity: {
           timeComplexity: 'O(1)',
@@ -313,7 +330,7 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
   customizeSpecification(projectSpec: ProjectSpecification): DetailedSpecification {
     const customized = { ...this.specification };
     customized.domain = projectSpec.domain;
-    
+
     // Add project-specific requirements
     if (projectSpec.requirements) {
       for (const requirement of projectSpec.requirements) {
@@ -333,7 +350,7 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
 
   customizePseudocode(projectSpec: ProjectSpecification): PseudocodeStructure {
     const customized = { ...this.pseudocode };
-    
+
     // Adjust complexity based on project requirements
     if (projectSpec.complexity === 'simple') {
       customized.algorithms = customized.algorithms.slice(0, 2); // Simplify for simple projects
@@ -344,7 +361,7 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
 
   customizeArchitecture(projectSpec: ProjectSpecification): ArchitectureDesign {
     const customized = { ...this.architecture };
-    
+
     // Adjust components based on complexity
     if (projectSpec.complexity === 'enterprise') {
       customized.components.push({

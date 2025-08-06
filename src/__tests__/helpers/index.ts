@@ -1,7 +1,7 @@
 /**
  * Enhanced Test Helper Utilities - Hybrid TDD Support
  *
- * @fileoverview Comprehensive test utilities for Claude-Zen
+ * @file Comprehensive test utilities for Claude-Zen
  * Supports both London School (mock-heavy, interaction-focused)
  * and Classical School (real object, state-focused) testing approaches
  * Enhanced with domain-specific helpers for coordination, neural, and interface testing

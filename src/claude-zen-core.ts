@@ -151,6 +151,8 @@ class MockDatabase implements IDatabase {
 
 /**
  * Main Application class with full DI integration
+ *
+ * @example
  */
 export class ClaudeZenCore {
   private container: DIContainer;

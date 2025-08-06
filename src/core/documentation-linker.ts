@@ -475,6 +475,8 @@ export class UnifiedDocumentationLinker extends EventEmitter {
 
   /**
    * Utility methods
+   *
+   * @param text
    */
   private findRelatedDocumentation(text: string): Array<{
     documentId: string;

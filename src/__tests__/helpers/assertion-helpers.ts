@@ -26,6 +26,10 @@ export class AssertionHelpers {
 
   /**
    * Assert that a value is approximately equal (for floating point comparisons)
+   *
+   * @param actual
+   * @param expected
+   * @param precision
    */
   toBeApproximately(actual: number, expected: number, precision?: number): void {
     const actualPrecision = precision ?? this.options.precision!;
@@ -38,6 +42,9 @@ export class AssertionHelpers {
 
   /**
    * Assert performance characteristics
+   *
+   * @param metrics
+   * @param thresholds
    */
   toMeetPerformanceThreshold(
     metrics: PerformanceMetrics,
@@ -66,6 +73,9 @@ export class AssertionHelpers {
 
   /**
    * Assert that a promise resolves within a time limit
+   *
+   * @param promise
+   * @param timeoutMs
    */
   async toResolveWithin<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
     const timeout = new Promise<never>((_, reject) => {
@@ -80,6 +90,11 @@ export class AssertionHelpers {
 
   /**
    * Assert that a function eventually becomes true (with retries)
+   *
+   * @param predicate
+   * @param options
+   * @param options.timeout
+   * @param options.interval
    */
   async toEventuallyBeTrue(
     predicate: () => boolean | Promise<boolean>,
@@ -107,6 +122,9 @@ export class AssertionHelpers {
 
   /**
    * Assert array contains elements in any order
+   *
+   * @param actual
+   * @param expected
    */
   toContainElementsInAnyOrder<T>(actual: T[], expected: T[]): void {
     expect(actual).toHaveLength(expected.length);
@@ -118,6 +136,10 @@ export class AssertionHelpers {
 
   /**
    * Assert deep equality with custom comparison
+   *
+   * @param actual
+   * @param expected
+   * @param customComparator
    */
   toDeepEqualWith<T>(
     actual: T,
@@ -134,6 +156,9 @@ export class AssertionHelpers {
 
   /**
    * Assert that an object matches a partial structure
+   *
+   * @param actual
+   * @param expected
    */
   toMatchPartialStructure<T>(actual: T, expected: Partial<T>): void {
     expect(actual).toMatchObject(expected);
@@ -141,6 +166,10 @@ export class AssertionHelpers {
 
   /**
    * Assert that a string matches a pattern (with custom error message)
+   *
+   * @param actual
+   * @param pattern
+   * @param customMessage
    */
   toMatchPattern(actual: string, pattern: RegExp, customMessage?: string): void {
     const _message = customMessage || `Expected "${actual}" to match pattern ${pattern}`;
@@ -149,6 +178,12 @@ export class AssertionHelpers {
 
   /**
    * Assert that an error has specific properties
+   *
+   * @param actual
+   * @param expectedProperties
+   * @param expectedProperties.message
+   * @param expectedProperties.code
+   * @param expectedProperties.type
    */
   toBeErrorWithProperties(
     actual: Error,
@@ -171,6 +206,9 @@ export class AssertionHelpers {
 
   /**
    * Assert that an async operation throws with specific error
+   *
+   * @param operation
+   * @param expectedError
    */
   async toThrowAsyncError<T>(
     operation: () => Promise<T>,
@@ -194,6 +232,10 @@ export class AssertionHelpers {
 
   /**
    * Assert HTTP response characteristics
+   *
+   * @param response
+   * @param expectedStatus
+   * @param expectedHeaders
    */
   toBeHttpResponse(
     response: any,
@@ -211,6 +253,10 @@ export class AssertionHelpers {
 
   /**
    * Assert neural network training convergence
+   *
+   * @param trainingResults
+   * @param targetError
+   * @param maxEpochs
    */
   toConvergeToTarget(
     trainingResults: { epoch: number; error: number }[],
@@ -236,6 +282,13 @@ export class AssertionHelpers {
 
   /**
    * Assert swarm coordination patterns
+   *
+   * @param swarmMetrics
+   * @param expectedPatterns
+   * @param expectedPatterns.agentCount
+   * @param expectedPatterns.topology
+   * @param expectedPatterns.efficiency
+   * @param expectedPatterns.completion
    */
   toHaveSwarmCoordination(
     swarmMetrics: any,
@@ -265,6 +318,9 @@ export class AssertionHelpers {
 
   /**
    * London School: Assert interaction sequence
+   *
+   * @param mock
+   * @param expectedSequence
    */
   toHaveInteractionSequence(mock: any, expectedSequence: { method: string; args?: any[] }[]): void {
     const interactions = mock.__interactions || [];
@@ -283,6 +339,9 @@ export class AssertionHelpers {
 
   /**
    * Classical School: Assert mathematical properties
+   *
+   * @param values
+   * @param property
    */
   toSatisfyMathematicalProperty(
     values: number[],

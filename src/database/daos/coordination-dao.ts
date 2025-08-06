@@ -1,39 +1,44 @@
 /**
  * Coordination DAO Implementation
- * 
+ *
  * Data Access Object for coordination operations including
  * distributed locking, messaging, and multi-node synchronization.
  */
 
-import { BaseDataAccessObject } from '../base-repository';
-import type { 
-  ICoordinationRepository, 
-  TransactionOperation,
-  CoordinationLock,
-  CoordinationEvent,
-  CoordinationStats
-} from '../interfaces';
 import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
+import { BaseDataAccessObject } from '../base-repository';
+import type {
+  CoordinationEvent,
+  CoordinationLock,
+  CoordinationStats,
+  ICoordinationRepository,
+  TransactionOperation,
+} from '../interfaces';
 
 /**
  * Coordination database DAO implementation
+ *
  * @template T The entity type this DAO manages
+ * @example
  */
 export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
   private get coordinationRepository(): ICoordinationRepository<T> {
     return this.repository as ICoordinationRepository<T>;
   }
 
-  constructor(
-    repository: ICoordinationRepository<T>,
-    adapter: DatabaseAdapter,
-    logger: ILogger
-  ) {
+  constructor(repository: ICoordinationRepository<T>, adapter: DatabaseAdapter, logger: ILogger) {
     super(repository, adapter, logger);
   }
 
   /**
    * Execute coordinated transaction across multiple nodes
+   *
+   * @param operations
+   * @param coordinationOptions
+   * @param coordinationOptions.lockTimeout
+   * @param coordinationOptions.retryAttempts
+   * @param coordinationOptions.nodeCount
+   * @param coordinationOptions.consensusRequired
    */
   async executeCoordinatedTransaction<R>(
     operations: TransactionOperation[],
@@ -44,13 +49,15 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
       consensusRequired?: boolean;
     }
   ): Promise<R> {
-    this.logger.debug(`Executing coordinated transaction with ${operations.length} operations`, { coordinationOptions });
+    this.logger.debug(`Executing coordinated transaction with ${operations.length} operations`, {
+      coordinationOptions,
+    });
 
     const options = {
       lockTimeout: coordinationOptions?.lockTimeout || 30000,
       retryAttempts: coordinationOptions?.retryAttempts || 3,
       nodeCount: coordinationOptions?.nodeCount || 1,
-      consensusRequired: coordinationOptions?.consensusRequired || false
+      consensusRequired: coordinationOptions?.consensusRequired || false,
     };
 
     try {
@@ -60,7 +67,10 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
 
       try {
         for (const resourceId of resourceIds) {
-          const lock = await this.coordinationRepository.acquireLock(resourceId, options.lockTimeout);
+          const lock = await this.coordinationRepository.acquireLock(
+            resourceId,
+            options.lockTimeout
+          );
           locks.push(lock);
         }
 
@@ -85,12 +95,22 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
       }
     } catch (error) {
       this.logger.error(`Coordinated transaction failed: ${error}`);
-      throw new Error(`Coordinated transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Coordinated transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Distributed messaging and event coordination
+   *
+   * @param eventType
+   * @param data
+   * @param options
+   * @param options.channel
+   * @param options.waitForAcknowledgment
+   * @param options.timeout
+   * @param options.targetNodes
    */
   async coordinateEvent(
     eventType: string,
@@ -112,7 +132,7 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
       channel: options?.channel || 'default',
       waitForAcknowledgment: options?.waitForAcknowledgment || false,
       timeout: options?.timeout || 5000,
-      targetNodes: options?.targetNodes || []
+      targetNodes: options?.targetNodes || [],
     };
 
     try {
@@ -124,8 +144,8 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
         metadata: {
           targetNodes: eventOptions.targetNodes,
           waitForAck: eventOptions.waitForAcknowledgment,
-          timeout: eventOptions.timeout
-        }
+          timeout: eventOptions.timeout,
+        },
       };
 
       // Publish the event
@@ -148,20 +168,27 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
       return {
         published: true,
         acknowledgments,
-        errors
+        errors,
       };
     } catch (error) {
       this.logger.error(`Event coordination failed: ${error}`);
       return {
         published: false,
         acknowledgments: 0,
-        errors: [error instanceof Error ? error.message : 'Unknown error']
+        errors: [error instanceof Error ? error.message : 'Unknown error'],
       };
     }
   }
 
   /**
    * Leader election and consensus management
+   *
+   * @param electionId
+   * @param candidateId
+   * @param options
+   * @param options.timeout
+   * @param options.termDuration
+   * @param options.voteWeight
    */
   async electLeader(
     electionId: string,
@@ -182,7 +209,7 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
     const electionOptions = {
       timeout: options?.timeout || 30000,
       termDuration: options?.termDuration || 300000, // 5 minutes
-      voteWeight: options?.voteWeight || 1
+      voteWeight: options?.voteWeight || 1,
     };
 
     try {
@@ -201,17 +228,13 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
           isLeader: result.leaderId === candidateId,
           leaderId: result.leaderId,
           term: result.term,
-          votes: 0
+          votes: 0,
         };
       }
 
       try {
         // Conduct the election
-        const electionResult = await this.conductElection(
-          electionId,
-          candidateId,
-          electionOptions
-        );
+        const electionResult = await this.conductElection(electionId, candidateId, electionOptions);
 
         return electionResult;
       } finally {
@@ -219,12 +242,21 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
       }
     } catch (error) {
       this.logger.error(`Leader election failed: ${error}`);
-      throw new Error(`Leader election failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Leader election failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Distributed workflow coordination
+   *
+   * @param workflowId
+   * @param steps
+   * @param options
+   * @param options.parallelExecution
+   * @param options.failureHandling
+   * @param options.maxRetries
    */
   async coordinateWorkflow(
     workflowId: string,
@@ -246,13 +278,15 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
     errors: Record<string, string>;
     executionTime: number;
   }> {
-    this.logger.debug(`Coordinating workflow: ${workflowId} with ${steps.length} steps`, { options });
+    this.logger.debug(`Coordinating workflow: ${workflowId} with ${steps.length} steps`, {
+      options,
+    });
 
     const startTime = Date.now();
     const workflowOptions = {
       parallelExecution: options?.parallelExecution || false,
       failureHandling: options?.failureHandling || 'abort',
-      maxRetries: options?.maxRetries || 3
+      maxRetries: options?.maxRetries || 3,
     };
 
     const results: Record<string, any> = {};
@@ -283,10 +317,10 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
             completed,
             results,
             errors,
-            executionTime
+            executionTime,
           },
           timestamp: new Date(),
-          source: this.generateNodeIdentifier()
+          source: this.generateNodeIdentifier(),
         });
 
         return {
@@ -294,7 +328,7 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
           completed,
           results,
           errors,
-          executionTime
+          executionTime,
         };
       } finally {
         await this.coordinationRepository.releaseLock(workflowLock.id);
@@ -307,7 +341,7 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
         completed: false,
         results,
         errors: { workflow: error instanceof Error ? error.message : 'Unknown error' },
-        executionTime
+        executionTime,
       };
     }
   }
@@ -343,22 +377,24 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
         lockHealth: {
           activeLocks: activeLocks.length,
           averageLockDuration: this.calculateAverageLockDuration(activeLocks),
-          lockContention: 0.15 // Mock value
+          lockContention: 0.15, // Mock value
         },
         messagingHealth: {
           publishRate: stats.messagesPublished / (stats.uptime / 1000),
           subscriptionCount: subscriptions.length,
-          messageLatency: 25.5 // Mock value
+          messageLatency: 25.5, // Mock value
         },
         consensus: {
           leaderElections: 3, // Mock value
           consensusFailures: 0, // Mock value
-          networkPartitions: 0 // Mock value
-        }
+          networkPartitions: 0, // Mock value
+        },
       };
     } catch (error) {
       this.logger.error(`Coordination health check failed: ${error}`);
-      throw new Error(`Coordination health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Coordination health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -379,7 +415,7 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
       'pub_sub_messaging',
       'change_notifications',
       'distributed_transactions',
-      'node_synchronization'
+      'node_synchronization',
     ];
   }
 
@@ -389,7 +425,7 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
       supportsDistributedLocks: true,
       supportsMessaging: true,
       supportsConsensus: true,
-      defaultLockTimeout: 30000
+      defaultLockTimeout: 30000,
     };
   }
 
@@ -403,8 +439,8 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
         messageDeliveryRate: 99.7,
         consensusLatency: 45.2,
         nodeHealthScore: 95.8,
-        coordinationOverhead: 'low'
-      }
+        coordinationOverhead: 'low',
+      },
     };
   }
 
@@ -434,12 +470,12 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
   ): Promise<void> {
     // Mock consensus verification
     const consensusThreshold = Math.floor(nodeCount / 2) + 1;
-    
+
     // In a real implementation, this would:
     // 1. Send results to other nodes
     // 2. Wait for their validation
     // 3. Ensure consensus threshold is met
-    
+
     this.logger.debug(`Consensus verified with ${consensusThreshold}/${nodeCount} nodes`);
   }
 
@@ -450,12 +486,15 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
   ): Promise<{ count: number; errors: string[] }> {
     // Mock acknowledgment waiting
     return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          count: Math.min(expectedCount, Math.floor(Math.random() * expectedCount) + 1),
-          errors: []
-        });
-      }, Math.min(timeout, 1000));
+      setTimeout(
+        () => {
+          resolve({
+            count: Math.min(expectedCount, Math.floor(Math.random() * expectedCount) + 1),
+            errors: [],
+          });
+        },
+        Math.min(timeout, 1000)
+      );
     });
   }
 
@@ -465,12 +504,15 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
   ): Promise<{ leaderId: string; term: number }> {
     // Mock election result waiting
     return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          leaderId: `node_${Math.floor(Math.random() * 5) + 1}`,
-          term: 1
-        });
-      }, Math.min(timeout, 2000));
+      setTimeout(
+        () => {
+          resolve({
+            leaderId: `node_${Math.floor(Math.random() * 5) + 1}`,
+            term: 1,
+          });
+        },
+        Math.min(timeout, 2000)
+      );
     });
   }
 
@@ -481,12 +523,12 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
   ): Promise<{ isLeader: boolean; leaderId: string; term: number; votes: number }> {
     // Mock election conduction
     const isWinner = Math.random() > 0.5;
-    
+
     return {
       isLeader: isWinner,
       leaderId: isWinner ? candidateId : `node_${Math.floor(Math.random() * 5) + 1}`,
       term: 1,
-      votes: Math.floor(Math.random() * 10) + 1
+      votes: Math.floor(Math.random() * 10) + 1,
     };
   }
 

@@ -24,6 +24,8 @@ const logger = createLogger('DocumentationManager');
 
 /**
  * Documentation manager configuration
+ *
+ * @example
  */
 export interface DocumentationManagerConfig {
   /** Enable automatic linking */
@@ -36,6 +38,8 @@ export interface DocumentationManagerConfig {
 
 /**
  * Documentation statistics
+ *
+ * @example
  */
 export interface DocumentationStats {
   /** Number of indexed documents */
@@ -48,6 +52,8 @@ export interface DocumentationStats {
 
 /**
  * Clean documentation manager for indexing and linking
+ *
+ * @example
  */
 export class DocumentationManager extends EventEmitter {
   private memory: MemorySystem;

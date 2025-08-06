@@ -38,6 +38,8 @@ export interface Task {
 
 /**
  * Coordination Manager for agent and task management
+ *
+ * @example
  */
 @injectable
 export class CoordinationManager extends EventEmitter {
@@ -106,6 +108,11 @@ export class CoordinationManager extends EventEmitter {
 
   /**
    * Register an agent
+   *
+   * @param agentConfig
+   * @param agentConfig.id
+   * @param agentConfig.type
+   * @param agentConfig.capabilities
    */
   async registerAgent(agentConfig: {
     id: string;
@@ -133,6 +140,8 @@ export class CoordinationManager extends EventEmitter {
 
   /**
    * Unregister an agent
+   *
+   * @param agentId
    */
   async unregisterAgent(agentId: string): Promise<void> {
     const agent = this.agents.get(agentId);
@@ -147,6 +156,13 @@ export class CoordinationManager extends EventEmitter {
 
   /**
    * Submit a task for execution
+   *
+   * @param taskConfig
+   * @param taskConfig.id
+   * @param taskConfig.type
+   * @param taskConfig.priority
+   * @param taskConfig.requiredCapabilities
+   * @param taskConfig.metadata
    */
   async submitTask(taskConfig: {
     id: string;
@@ -182,6 +198,8 @@ export class CoordinationManager extends EventEmitter {
 
   /**
    * Get agents by capability
+   *
+   * @param capability
    */
   getAgentsByCapability(capability: string): Agent[] {
     return Array.from(this.agents.values()).filter((agent) =>
@@ -198,6 +216,8 @@ export class CoordinationManager extends EventEmitter {
 
   /**
    * Update agent heartbeat
+   *
+   * @param agentId
    */
   updateAgentHeartbeat(agentId: string): void {
     const agent = this.agents.get(agentId);
@@ -212,6 +232,9 @@ export class CoordinationManager extends EventEmitter {
 
   /**
    * Update task status
+   *
+   * @param taskId
+   * @param status
    */
   updateTaskStatus(taskId: string, status: Task['status']): void {
     const task = this.tasks.get(taskId);

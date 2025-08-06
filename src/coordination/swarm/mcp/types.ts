@@ -13,9 +13,16 @@ export interface MCPTool {
 }
 
 export interface MCPToolResult {
-  success: boolean;
+  success?: boolean;
   data?: any;
   error?: string;
+  content?: Array<{
+    type: 'text' | 'image' | 'resource';
+    text?: string;
+    data?: string;
+    mimeType?: string;
+  }>;
+  isError?: boolean;
   metadata?: {
     executionTime?: number;
     toolVersion?: string;

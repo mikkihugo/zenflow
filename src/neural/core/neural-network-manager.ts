@@ -1,8 +1,11 @@
 /**
- * Neural Network Manager
- * Manages per-agent neural networks with WASM integration
+ * @file Neural Network Manager for Per-Agent Neural Networks
+ *
+ * Manages neural networks for individual agents with WASM integration,
+ * cognitive pattern evolution, and collaborative learning capabilities.
  */
 
+// Internal neural modules
 import { CognitivePatternEvolution } from './cognitive-pattern-evolution';
 import { DAACognition } from './daa-cognition';
 import { MetaLearningFramework } from './meta-learning-framework';
@@ -22,25 +25,107 @@ import {
   validatePresetConfig,
 } from './neural-models/presets/index';
 
+/**
+ * Neural network instance interface
+ *
+ * @example
+ */
+interface NeuralNetworkInstance {
+  /** Unique identifier for the network */
+  id: string;
+  /** Network configuration */
+  config: unknown;
+  /** Training state */
+  trainingState: unknown;
+  /** Performance metrics */
+  metrics: unknown;
+}
+
+/**
+ * Neural model configuration
+ *
+ * @example
+ */
+interface NeuralModelConfig {
+  /** Model architecture type */
+  architecture: string;
+  /** Input layer size */
+  inputSize: number;
+  /** Hidden layers configuration */
+  hiddenLayers: number[];
+  /** Output layer size */
+  outputSize: number;
+  /** Additional parameters */
+  parameters?: Record<string, unknown>;
+}
+
+/**
+ * Performance metrics for neural networks
+ *
+ * @example
+ */
+interface PerformanceMetrics {
+  /** Training accuracy */
+  accuracy: number;
+  /** Training loss */
+  loss: number;
+  /** Training time in milliseconds */
+  trainingTime: number;
+  /** Inference time in milliseconds */
+  inferenceTime: number;
+  /** Memory usage in bytes */
+  memoryUsage: number;
+}
+
+/**
+ * Neural Network Manager
+ *
+ * Centralized management system for per-agent neural networks with advanced
+ * capabilities including cognitive pattern evolution, federated learning,
+ * and WASM-accelerated computation.
+ *
+ * @example
+ * ```typescript
+ * const manager = new NeuralNetworkManager(wasmLoader)
+ * await manager.initialize()
+ *
+ * const network = await manager.createNetwork('agent-001', {
+ *   architecture: 'feedforward',
+ *   inputSize: 10,
+ *   hiddenLayers: [20, 15],
+ *   outputSize: 3
+ * })
+ * ```
+ */
 class NeuralNetworkManager {
-  private wasmLoader: any;
-  private neuralNetworks: Map<string, any>;
-  private neuralModels: Map<string, any>;
+  private wasmLoader: unknown;
+  private neuralNetworks: Map<string, NeuralNetworkInstance>;
+  private neuralModels: Map<string, NeuralModelConfig>;
   private cognitiveEvolution: CognitivePatternEvolution;
   private metaLearning: MetaLearningFramework;
   private coordinationProtocol: NeuralCoordinationProtocol;
   private daaCognition: DAACognition;
   private cognitivePatternSelector: CognitivePatternSelector;
   private neuralAdaptationEngine: NeuralAdaptationEngine;
-  private sharedKnowledge: Map<string, any>;
-  private agentInteractions: Map<string, any>;
-  private collaborativeMemory: Map<string, any>;
-  private performanceMetrics: Map<string, any>;
+  private sharedKnowledge: Map<string, unknown>;
+  private agentInteractions: Map<string, unknown>;
+  private collaborativeMemory: Map<string, unknown>;
+  private performanceMetrics: Map<string, PerformanceMetrics>;
   private adaptiveOptimization: boolean;
   private federatedLearningEnabled: boolean;
-  private templates: any;
+  private templates: unknown;
 
-  constructor(wasmLoader: any) {
+  /**
+   * Creates a new Neural Network Manager instance
+   *
+   * @param wasmLoader - WebAssembly loader for neural computation acceleration
+   * @example
+   * ```typescript
+   * const wasmLoader = await import('./neural-wasm-loader')
+   * const manager = new NeuralNetworkManager(wasmLoader)
+   * ```
+   */
+  constructor(wasmLoader: unknown) {
     this.wasmLoader = wasmLoader;
     this.neuralNetworks = new Map();
     this.neuralModels = new Map(); // Add missing property
@@ -711,6 +796,7 @@ class NeuralNetworkManager {
 
   /**
    * Create a neural network from a production preset
+   *
    * @param {string} agentId - Agent identifier
    * @param {string} category - Preset category (nlp, vision, timeseries, graph)
    * @param {string} presetName - Name of the preset
@@ -750,6 +836,7 @@ class NeuralNetworkManager {
 
   /**
    * Create a neural network from complete preset (27+ models)
+   *
    * @param {string} agentId - Agent identifier
    * @param {string} modelType - Model type (transformer, cnn, lstm, etc.)
    * @param {string} presetName - Name of the preset
@@ -833,6 +920,7 @@ class NeuralNetworkManager {
 
   /**
    * Create a neural network from a recommended preset based on use case
+   *
    * @param {string} agentId - Agent identifier
    * @param {string} useCase - Use case description
    * @param {object} customConfig - Optional custom configuration overrides
@@ -867,6 +955,7 @@ class NeuralNetworkManager {
 
   /**
    * Get all available presets for a category
+   *
    * @param {string} category - Preset category
    */
   getAvailablePresets(category = null) {
@@ -878,6 +967,7 @@ class NeuralNetworkManager {
 
   /**
    * Search presets by use case or description
+   *
    * @param {string} searchTerm - Search term
    */
   searchPresets(searchTerm) {
@@ -886,6 +976,7 @@ class NeuralNetworkManager {
 
   /**
    * Get performance information for a preset
+   *
    * @param {string} category - Preset category
    * @param {string} presetName - Preset name
    */
@@ -910,6 +1001,7 @@ class NeuralNetworkManager {
 
   /**
    * Get detailed information about agent's preset (if created from preset)
+   *
    * @param {string} agentId - Agent identifier
    */
   getAgentPresetInfo(agentId) {
@@ -922,6 +1014,7 @@ class NeuralNetworkManager {
 
   /**
    * Update existing agent with preset configuration
+   *
    * @param {string} agentId - Agent identifier
    * @param {string} category - Preset category
    * @param {string} presetName - Preset name
@@ -957,6 +1050,7 @@ class NeuralNetworkManager {
 
   /**
    * Batch create agents from presets
+   *
    * @param {Array} agentConfigs - Array of {agentId, category, presetName, customConfig}
    */
   async batchCreateAgentsFromPresets(agentConfigs) {
@@ -986,6 +1080,7 @@ class NeuralNetworkManager {
 
   /**
    * Enable knowledge sharing between agents
+   *
    * @param {Array} agentIds - List of agent IDs
    * @param {Object} session - Collaborative session object
    */
@@ -1013,6 +1108,7 @@ class NeuralNetworkManager {
 
   /**
    * Extract knowledge from a neural network agent
+   *
    * @param {string} agentId - Agent identifier
    */
   async extractAgentKnowledge(agentId) {
@@ -1037,6 +1133,7 @@ class NeuralNetworkManager {
 
   /**
    * Extract important weights from a neural network
+   *
    * @param {Object} network - Neural network instance
    */
   async extractImportantWeights(network) {
@@ -1059,6 +1156,7 @@ class NeuralNetworkManager {
 
   /**
    * Calculate importance threshold for weight selection
+   *
    * @param {Array} importance - Array of importance scores
    */
   calculateImportanceThreshold(importance) {
@@ -1070,6 +1168,7 @@ class NeuralNetworkManager {
 
   /**
    * Identify agent specializations based on performance patterns
+   *
    * @param {string} agentId - Agent identifier
    */
   async identifySpecializations(agentId) {
@@ -1096,6 +1195,7 @@ class NeuralNetworkManager {
 
   /**
    * Infer domain from training patterns
+   *
    * @param {Object} adaptation - Adaptation record
    */
   inferDomainFromTraining(adaptation) {
@@ -1117,6 +1217,7 @@ class NeuralNetworkManager {
 
   /**
    * Create knowledge sharing matrix between agents
+   *
    * @param {Array} agentIds - List of agent IDs
    */
   async createKnowledgeSharingMatrix(agentIds) {
@@ -1144,6 +1245,7 @@ class NeuralNetworkManager {
 
   /**
    * Calculate similarity between two agents
+   *
    * @param {string} agentA - First agent ID
    * @param {string} agentB - Second agent ID
    */
@@ -1168,6 +1270,7 @@ class NeuralNetworkManager {
 
   /**
    * Calculate structural similarity between agents
+   *
    * @param {Object} knowledgeA - Knowledge from agent A
    * @param {Object} knowledgeB - Knowledge from agent B
    */
@@ -1201,6 +1304,7 @@ class NeuralNetworkManager {
 
   /**
    * Calculate performance similarity between agents
+   *
    * @param {Object} knowledgeA - Knowledge from agent A
    * @param {Object} knowledgeB - Knowledge from agent B
    */
@@ -1220,6 +1324,7 @@ class NeuralNetworkManager {
 
   /**
    * Calculate specialization similarity between agents
+   *
    * @param {Object} knowledgeA - Knowledge from agent A
    * @param {Object} knowledgeB - Knowledge from agent B
    */
@@ -1235,6 +1340,7 @@ class NeuralNetworkManager {
 
   /**
    * Start knowledge distillation learning
+   *
    * @param {Object} session - Collaborative session
    */
   startKnowledgeDistillation(session) {
@@ -1268,6 +1374,7 @@ class NeuralNetworkManager {
 
   /**
    * Identify teacher agents based on performance
+   *
    * @param {Array} agentIds - List of agent IDs
    */
   async identifyTeacherAgents(agentIds) {
@@ -1293,6 +1400,7 @@ class NeuralNetworkManager {
 
   /**
    * Perform knowledge distillation between teacher and student
+   *
    * @param {string} teacherAgentId - Teacher agent ID
    * @param {string} studentAgentId - Student agent ID
    * @param {Object} session - Collaborative session
@@ -1339,6 +1447,7 @@ class NeuralNetworkManager {
 
   /**
    * Apply knowledge distillation to student network
+   *
    * @param {Object} student - Student network
    * @param {Object} teacherKnowledge - Teacher's knowledge
    * @param {Object} options - Distillation options
@@ -1363,6 +1472,7 @@ class NeuralNetworkManager {
 
   /**
    * Start neural coordination protocol
+   *
    * @param {Object} session - Collaborative session
    */
   startNeuralCoordination(session) {
@@ -1394,6 +1504,7 @@ class NeuralNetworkManager {
 
   /**
    * Update coordination matrix based on agent interactions
+   *
    * @param {Object} session - Collaborative session
    */
   async updateCoordinationMatrix(session) {
@@ -1415,6 +1526,7 @@ class NeuralNetworkManager {
 
   /**
    * Calculate interaction strength between two agents
+   *
    * @param {string} agentA - First agent ID
    * @param {string} agentB - Second agent ID
    */
@@ -1443,6 +1555,7 @@ class NeuralNetworkManager {
 
   /**
    * Apply coordination results to agents
+   *
    * @param {Object} session - Collaborative session
    */
   async applyCoordinationResults(session) {
@@ -1478,6 +1591,7 @@ class NeuralNetworkManager {
 
   /**
    * Apply weight adjustments to a neural network
+   *
    * @param {Object} agent - Neural network agent
    * @param {Object} adjustments - Weight adjustments
    */
@@ -1505,6 +1619,7 @@ class NeuralNetworkManager {
 
   /**
    * Record agent interaction for coordination tracking
+   *
    * @param {string} agentA - First agent ID
    * @param {string} agentB - Second agent ID
    * @param {number} strength - Interaction strength (0-1)
@@ -1541,6 +1656,7 @@ class NeuralNetworkManager {
 
   /**
    * Get preset recommendations based on requirements
+   *
    * @param {string} useCase - Use case description
    * @param {Object} requirements - Performance and other requirements
    */
@@ -1550,6 +1666,7 @@ class NeuralNetworkManager {
 
   /**
    * Get adaptation recommendations for an agent
+   *
    * @param {string} agentId - Agent identifier
    */
   async getAdaptationRecommendations(agentId) {

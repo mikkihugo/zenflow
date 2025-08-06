@@ -1,20 +1,20 @@
 /**
- * @fileoverview Facade Pattern Tests
+ * @file Facade Pattern Tests
  * Hybrid TDD approach: London TDD for service orchestration, Classical TDD for integration results
  */
 
 import {
   ClaudeZenFacade,
-  ISwarmService,
-  INeuralService,
-  IMemoryService,
-  IDatabaseService,
-  IInterfaceService,
-  IWorkflowService,
-  ProjectInitConfig,
+  type IDatabaseService,
+  type IInterfaceService,
+  type IMemoryService,
+  type INeuralService,
+  type ISwarmService,
+  type IWorkflowService,
+  PerformanceMetrics,
+  type ProjectInitConfig,
   ProjectResult,
   SystemStatus,
-  PerformanceMetrics
 } from '../../core/facade';
 
 import { SystemEventManager } from '../../interfaces/events/observer-system';
@@ -59,14 +59,14 @@ describe('Facade Pattern Implementation', () => {
         info: jest.fn(),
         warn: jest.fn(),
         error: jest.fn(),
-        debug: jest.fn()
+        debug: jest.fn(),
       };
 
       mockMetrics = {
         record: jest.fn(),
         increment: jest.fn(),
         gauge: jest.fn(),
-        histogram: jest.fn()
+        histogram: jest.fn(),
       };
 
       mockServices = {
@@ -76,7 +76,7 @@ describe('Facade Pattern Implementation', () => {
           destroySwarm: jest.fn(),
           coordinateSwarm: jest.fn(),
           spawnAgent: jest.fn(),
-          listSwarms: jest.fn()
+          listSwarms: jest.fn(),
         },
         neuralService: {
           trainModel: jest.fn(),
@@ -84,7 +84,7 @@ describe('Facade Pattern Implementation', () => {
           evaluateModel: jest.fn(),
           optimizeModel: jest.fn(),
           listModels: jest.fn(),
-          deleteModel: jest.fn()
+          deleteModel: jest.fn(),
         },
         memoryService: {
           store: jest.fn(),
@@ -92,7 +92,7 @@ describe('Facade Pattern Implementation', () => {
           delete: jest.fn(),
           list: jest.fn(),
           clear: jest.fn(),
-          getStats: jest.fn()
+          getStats: jest.fn(),
         },
         databaseService: {
           query: jest.fn(),
@@ -101,7 +101,7 @@ describe('Facade Pattern Implementation', () => {
           delete: jest.fn(),
           vectorSearch: jest.fn(),
           createIndex: jest.fn(),
-          getHealth: jest.fn()
+          getHealth: jest.fn(),
         },
         interfaceService: {
           startHTTPMCP: jest.fn(),
@@ -109,7 +109,7 @@ describe('Facade Pattern Implementation', () => {
           startTUI: jest.fn(),
           startCLI: jest.fn(),
           stopInterface: jest.fn(),
-          getInterfaceStatus: jest.fn()
+          getInterfaceStatus: jest.fn(),
         },
         workflowService: {
           executeWorkflow: jest.fn(),
@@ -117,8 +117,8 @@ describe('Facade Pattern Implementation', () => {
           listWorkflows: jest.fn(),
           pauseWorkflow: jest.fn(),
           resumeWorkflow: jest.fn(),
-          cancelWorkflow: jest.fn()
-        }
+          cancelWorkflow: jest.fn(),
+        },
       };
 
       eventManager = new SystemEventManager(mockLogger);
@@ -146,22 +146,22 @@ describe('Facade Pattern Implementation', () => {
           swarm: {
             topology: 'mesh',
             agentCount: 5,
-            capabilities: ['data-processing', 'analysis', 'coordination']
+            capabilities: ['data-processing', 'analysis', 'coordination'],
           },
           neural: {
             models: ['classification', 'regression'],
             trainingData: '/data/training',
-            targetAccuracy: 0.95
+            targetAccuracy: 0.95,
           },
           memory: {
             cacheSize: 1024,
             persistenceLevel: 'session',
-            strategy: 'lru'
+            strategy: 'lru',
           },
           database: {
             indexes: ['projects', 'swarms', 'models'],
             vectorDimensions: 1536,
-            backupEnabled: true
+            backupEnabled: true,
           },
           interfaces: {
             http: {
@@ -170,18 +170,18 @@ describe('Facade Pattern Implementation', () => {
               cors: true,
               timeout: 30000,
               maxRequestSize: '10mb',
-              logLevel: 'info'
+              logLevel: 'info',
             },
             web: {
               port: 3456,
               theme: 'dark',
-              realTimeUpdates: true
+              realTimeUpdates: true,
             },
             tui: {
               mode: 'swarm-overview',
-              keyBindings: 'vim'
-            }
-          }
+              keyBindings: 'vim',
+            },
+          },
         };
 
         // Mock service responses
@@ -190,7 +190,7 @@ describe('Facade Pattern Implementation', () => {
           topology: 'mesh',
           agentCount: 5,
           status: 'initialized',
-          agents: ['agent-1', 'agent-2', 'agent-3', 'agent-4', 'agent-5']
+          agents: ['agent-1', 'agent-2', 'agent-3', 'agent-4', 'agent-5'],
         });
 
         mockServices.neuralService.trainModel.mockResolvedValue({
@@ -198,7 +198,7 @@ describe('Facade Pattern Implementation', () => {
           accuracy: 0.96,
           loss: 0.04,
           trainingTime: 3600,
-          status: 'ready'
+          status: 'ready',
         });
 
         mockServices.memoryService.store.mockResolvedValue();
@@ -207,7 +207,7 @@ describe('Facade Pattern Implementation', () => {
           serverId: 'http-mcp-001',
           port: 3000,
           status: 'running',
-          uptime: 0
+          uptime: 0,
         });
 
         const result = await facade.initializeProject(projectConfig);
@@ -219,7 +219,7 @@ describe('Facade Pattern Implementation', () => {
           expect.objectContaining({
             swarm: expect.objectContaining({ swarmId: 'integration-swarm-001' }),
             neural: expect.objectContaining({ modelId: 'classification-model-001' }),
-            interfaces: expect.objectContaining({ http: expect.objectContaining({ port: 3000 }) })
+            interfaces: expect.objectContaining({ http: expect.objectContaining({ port: 3000 }) }),
           })
         );
 
@@ -237,11 +237,18 @@ describe('Facade Pattern Implementation', () => {
           swarm: {
             topology: 'star',
             agentCount: 3,
-            capabilities: ['basic-tasks']
+            capabilities: ['basic-tasks'],
           },
           interfaces: {
-            http: { port: 3000, host: 'localhost', cors: true, timeout: 30000, maxRequestSize: '10mb', logLevel: 'info' }
-          }
+            http: {
+              port: 3000,
+              host: 'localhost',
+              cors: true,
+              timeout: 30000,
+              maxRequestSize: '10mb',
+              logLevel: 'info',
+            },
+          },
         };
 
         // Swarm service succeeds
@@ -250,7 +257,7 @@ describe('Facade Pattern Implementation', () => {
           topology: 'star',
           agentCount: 3,
           status: 'initialized',
-          agents: ['agent-1', 'agent-2', 'agent-3']
+          agents: ['agent-1', 'agent-2', 'agent-3'],
         });
 
         // Interface service fails
@@ -270,7 +277,7 @@ describe('Facade Pattern Implementation', () => {
         expect(result.warnings).toContainEqual(
           expect.objectContaining({
             service: 'interface',
-            message: expect.stringContaining('Port 3000 already in use')
+            message: expect.stringContaining('Port 3000 already in use'),
           })
         );
 
@@ -286,13 +293,13 @@ describe('Facade Pattern Implementation', () => {
           swarm: {
             topology: 'invalid-topology' as any, // Invalid topology
             agentCount: -1, // Invalid: negative count
-            capabilities: []
+            capabilities: [],
           },
           neural: {
             models: [],
             trainingData: '/nonexistent/path',
-            targetAccuracy: 1.5 // Invalid: > 1.0
-          }
+            targetAccuracy: 1.5, // Invalid: > 1.0
+          },
         };
 
         const result = await facade.initializeProject(invalidConfig);
@@ -302,19 +309,19 @@ describe('Facade Pattern Implementation', () => {
         expect(result.errors).toContainEqual(
           expect.objectContaining({
             field: 'name',
-            message: 'Project name is required'
+            message: 'Project name is required',
           })
         );
         expect(result.errors).toContainEqual(
           expect.objectContaining({
             field: 'swarm.topology',
-            message: expect.stringContaining('Invalid topology')
+            message: expect.stringContaining('Invalid topology'),
           })
         );
         expect(result.errors).toContainEqual(
           expect.objectContaining({
             field: 'swarm.agentCount',
-            message: 'Agent count must be positive'
+            message: 'Agent count must be positive',
           })
         );
 
@@ -330,19 +337,19 @@ describe('Facade Pattern Implementation', () => {
           swarm: {
             topology: 'ring',
             agentCount: 10,
-            capabilities: ['resource-intensive']
+            capabilities: ['resource-intensive'],
           },
           neural: {
             models: ['large-transformer'],
             trainingData: '/data/large-dataset',
-            targetAccuracy: 0.99
+            targetAccuracy: 0.99,
           },
           resourceConstraints: {
             maxCpu: 2.0,
             maxMemory: 4096,
             maxNetwork: 1000,
-            maxStorage: 10000
-          }
+            maxStorage: 10000,
+          },
         };
 
         mockServices.swarmService.initializeSwarm.mockResolvedValue({
@@ -353,8 +360,8 @@ describe('Facade Pattern Implementation', () => {
           optimizations: {
             agentCountAdjusted: true,
             resourceAllocation: 'dynamic',
-            loadBalancing: 'enabled'
-          }
+            loadBalancing: 'enabled',
+          },
         });
 
         mockServices.neuralService.trainModel.mockResolvedValue({
@@ -366,8 +373,8 @@ describe('Facade Pattern Implementation', () => {
           optimizations: {
             modelSizeReduced: true,
             batchSizeAdjusted: true,
-            learningRateOptimized: true
-          }
+            learningRateOptimized: true,
+          },
         });
 
         const result = await facade.initializeProject(resourceConstrainedConfig);
@@ -375,7 +382,9 @@ describe('Facade Pattern Implementation', () => {
         expect(result.success).toBe(true);
         expect(result.resourceOptimization).toBeDefined();
         expect(result.resourceOptimization.appliedOptimizations).toContain('agent-count-reduction');
-        expect(result.resourceOptimization.appliedOptimizations).toContain('model-size-optimization');
+        expect(result.resourceOptimization.appliedOptimizations).toContain(
+          'model-size-optimization'
+        );
         expect(result.resourceOptimization.resourceUsage.cpu).toBeLessThanOrEqual(2.0);
         expect(result.resourceOptimization.resourceUsage.memory).toBeLessThanOrEqual(4096);
       });
@@ -386,12 +395,12 @@ describe('Facade Pattern Implementation', () => {
         // Mock healthy services
         mockServices.swarmService.listSwarms.mockResolvedValue([
           { swarmId: 'swarm-1', status: 'healthy', agentCount: 5, uptime: 3600 },
-          { swarmId: 'swarm-2', status: 'healthy', agentCount: 3, uptime: 1800 }
+          { swarmId: 'swarm-2', status: 'healthy', agentCount: 3, uptime: 1800 },
         ]);
 
         mockServices.neuralService.listModels.mockResolvedValue([
           { modelId: 'model-1', status: 'ready', accuracy: 0.95, lastUsed: new Date() },
-          { modelId: 'model-2', status: 'training', progress: 0.75, eta: 900 }
+          { modelId: 'model-2', status: 'training', progress: 0.75, eta: 900 },
         ]);
 
         mockServices.memoryService.getStats.mockResolvedValue({
@@ -399,27 +408,27 @@ describe('Facade Pattern Implementation', () => {
           memoryUsage: 2048,
           hitRate: 0.92,
           missRate: 0.08,
-          avgResponseTime: 5
+          avgResponseTime: 5,
         });
 
         mockServices.databaseService.getHealth.mockResolvedValue({
           status: 'healthy',
           connectionCount: 15,
           queryLatency: 12,
-          diskUsage: 0.65
+          diskUsage: 0.65,
         });
 
         mockServices.interfaceService.getInterfaceStatus.mockResolvedValue([
           { type: 'http-mcp', status: 'running', port: 3000, uptime: 7200 },
           { type: 'web-dashboard', status: 'running', port: 3456, uptime: 7200 },
-          { type: 'tui', status: 'active', uptime: 7200 }
+          { type: 'tui', status: 'active', uptime: 7200 },
         ]);
 
         const systemStatus = await facade.getSystemStatus();
 
         expect(systemStatus.overall.healthy).toBe(true);
         expect(systemStatus.overall.score).toBeGreaterThan(0.9);
-        
+
         expect(systemStatus.services.swarm.healthy).toBe(true);
         expect(systemStatus.services.swarm.activeSwarms).toBe(2);
         expect(systemStatus.services.swarm.totalAgents).toBe(8);
@@ -441,23 +450,35 @@ describe('Facade Pattern Implementation', () => {
       it('should detect and report service degradation', async () => {
         // Mock degraded services
         mockServices.swarmService.listSwarms.mockResolvedValue([
-          { swarmId: 'swarm-1', status: 'degraded', agentCount: 3, uptime: 3600, errors: ['Agent timeout'] },
-          { swarmId: 'swarm-2', status: 'failing', agentCount: 0, uptime: 1800, errors: ['Connection lost', 'Resource exhausted'] }
+          {
+            swarmId: 'swarm-1',
+            status: 'degraded',
+            agentCount: 3,
+            uptime: 3600,
+            errors: ['Agent timeout'],
+          },
+          {
+            swarmId: 'swarm-2',
+            status: 'failing',
+            agentCount: 0,
+            uptime: 1800,
+            errors: ['Connection lost', 'Resource exhausted'],
+          },
         ]);
 
         mockServices.memoryService.getStats.mockResolvedValue({
           totalKeys: 5000,
           memoryUsage: 8192, // High memory usage
-          hitRate: 0.45,     // Low hit rate
+          hitRate: 0.45, // Low hit rate
           missRate: 0.55,
-          avgResponseTime: 150 // High response time
+          avgResponseTime: 150, // High response time
         });
 
         mockServices.databaseService.getHealth.mockResolvedValue({
           status: 'degraded',
           connectionCount: 2, // Low connection count
-          queryLatency: 500,  // High latency
-          diskUsage: 0.95     // High disk usage
+          queryLatency: 500, // High latency
+          diskUsage: 0.95, // High disk usage
         });
 
         const systemStatus = await facade.getSystemStatus();
@@ -482,7 +503,7 @@ describe('Facade Pattern Implementation', () => {
           expect.objectContaining({
             severity: 'critical',
             service: 'swarm',
-            message: expect.stringContaining('swarm-2')
+            message: expect.stringContaining('swarm-2'),
           })
         );
       });
@@ -497,24 +518,24 @@ describe('Facade Pattern Implementation', () => {
             throughput: expect.objectContaining({
               requestsPerSecond: expect.any(Number),
               tasksPerMinute: expect.any(Number),
-              operationsPerHour: expect.any(Number)
+              operationsPerHour: expect.any(Number),
             }),
             latency: expect.objectContaining({
               p50: expect.any(Number),
               p95: expect.any(Number),
               p99: expect.any(Number),
-              average: expect.any(Number)
+              average: expect.any(Number),
             }),
             resourceUsage: expect.objectContaining({
               cpu: expect.any(Number),
               memory: expect.any(Number),
               network: expect.any(Number),
-              storage: expect.any(Number)
+              storage: expect.any(Number),
             }),
             errorRates: expect.objectContaining({
               total: expect.any(Number),
-              byService: expect.any(Object)
-            })
+              byService: expect.any(Object),
+            }),
           })
         );
 
@@ -531,18 +552,30 @@ describe('Facade Pattern Implementation', () => {
           name: 'ai-data-pipeline',
           description: 'Complete AI-driven data processing pipeline',
           steps: [
-            { service: 'swarm', action: 'initialize', config: { topology: 'hierarchical', agentCount: 8 } },
+            {
+              service: 'swarm',
+              action: 'initialize',
+              config: { topology: 'hierarchical', agentCount: 8 },
+            },
             { service: 'database', action: 'prepare', config: { indexes: ['data', 'results'] } },
-            { service: 'memory', action: 'configure', config: { cacheSize: 2048, strategy: 'lfu' } },
-            { service: 'neural', action: 'train', config: { models: ['processor', 'classifier'], epochs: 100 } },
+            {
+              service: 'memory',
+              action: 'configure',
+              config: { cacheSize: 2048, strategy: 'lfu' },
+            },
+            {
+              service: 'neural',
+              action: 'train',
+              config: { models: ['processor', 'classifier'], epochs: 100 },
+            },
             { service: 'swarm', action: 'deploy', config: { models: ['processor', 'classifier'] } },
-            { service: 'interfaces', action: 'expose', config: { apis: ['processing', 'status'] } }
+            { service: 'interfaces', action: 'expose', config: { apis: ['processing', 'status'] } },
           ],
           dependencies: {
             'neural.train': ['swarm.initialize', 'database.prepare'],
             'swarm.deploy': ['neural.train'],
-            'interfaces.expose': ['swarm.deploy']
-          }
+            'interfaces.expose': ['swarm.deploy'],
+          },
         };
 
         // Mock service responses for workflow steps
@@ -550,7 +583,7 @@ describe('Facade Pattern Implementation', () => {
           swarmId: 'workflow-swarm-001',
           topology: 'hierarchical',
           agentCount: 8,
-          status: 'initialized'
+          status: 'initialized',
         });
 
         mockServices.databaseService.createIndex.mockResolvedValue();
@@ -563,28 +596,28 @@ describe('Facade Pattern Implementation', () => {
             accuracy: 0.93,
             loss: 0.07,
             trainingTime: 3600,
-            status: 'ready'
+            status: 'ready',
           })
           .mockResolvedValueOnce({
             modelId: 'classifier-model-001',
             accuracy: 0.96,
             loss: 0.04,
             trainingTime: 2400,
-            status: 'ready'
+            status: 'ready',
           });
 
         mockServices.swarmService.coordinateSwarm.mockResolvedValue({
           coordinationId: 'deploy-coord-001',
           status: 'success',
           deployedModels: ['processor-model-001', 'classifier-model-001'],
-          readyAgents: 8
+          readyAgents: 8,
         });
 
         mockServices.interfaceService.startHTTPMCP.mockResolvedValue({
           serverId: 'workflow-api-001',
           port: 3000,
           status: 'running',
-          uptime: 0
+          uptime: 0,
         });
 
         const workflowResult = await facade.executeWorkflow(workflowConfig);
@@ -597,7 +630,7 @@ describe('Facade Pattern Implementation', () => {
           expect.objectContaining({
             swarmId: 'workflow-swarm-001',
             trainedModels: ['processor-model-001', 'classifier-model-001'],
-            deployedServices: expect.arrayContaining(['workflow-api-001'])
+            deployedServices: expect.arrayContaining(['workflow-api-001']),
           })
         );
 
@@ -608,7 +641,7 @@ describe('Facade Pattern Implementation', () => {
           'memory.configure',
           'neural.train',
           'swarm.deploy',
-          'interfaces.expose'
+          'interfaces.expose',
         ]);
       });
 
@@ -617,10 +650,14 @@ describe('Facade Pattern Implementation', () => {
           name: 'failing-workflow',
           steps: [
             { service: 'swarm', action: 'initialize', config: { topology: 'mesh', agentCount: 5 } },
-            { service: 'neural', action: 'train', config: { models: ['failing-model'], epochs: 50 } },
-            { service: 'swarm', action: 'deploy', config: { models: ['failing-model'] } }
+            {
+              service: 'neural',
+              action: 'train',
+              config: { models: ['failing-model'], epochs: 50 },
+            },
+            { service: 'swarm', action: 'deploy', config: { models: ['failing-model'] } },
           ],
-          rollbackOnFailure: true
+          rollbackOnFailure: true,
         };
 
         // First step succeeds
@@ -628,7 +665,7 @@ describe('Facade Pattern Implementation', () => {
           swarmId: 'failing-workflow-swarm',
           topology: 'mesh',
           agentCount: 5,
-          status: 'initialized'
+          status: 'initialized',
         });
 
         // Second step fails
@@ -647,23 +684,33 @@ describe('Facade Pattern Implementation', () => {
         expect(workflowResult.rollbackExecuted).toBe(true);
         expect(workflowResult.rollbackResults).toEqual(
           expect.objectContaining({
-            'swarm.initialize': { success: true, action: 'destroyed' }
+            'swarm.initialize': { success: true, action: 'destroyed' },
           })
         );
 
         // Verify rollback was executed
-        expect(mockServices.swarmService.destroySwarm).toHaveBeenCalledWith('failing-workflow-swarm');
+        expect(mockServices.swarmService.destroySwarm).toHaveBeenCalledWith(
+          'failing-workflow-swarm'
+        );
       });
 
       it('should support workflow pause, resume, and cancellation', async () => {
         const longRunningWorkflowConfig = {
           name: 'long-running-workflow',
           steps: [
-            { service: 'swarm', action: 'initialize', config: { topology: 'ring', agentCount: 10 } },
-            { service: 'neural', action: 'train', config: { models: ['large-model'], epochs: 1000 } },
-            { service: 'swarm', action: 'deploy', config: { models: ['large-model'] } }
+            {
+              service: 'swarm',
+              action: 'initialize',
+              config: { topology: 'ring', agentCount: 10 },
+            },
+            {
+              service: 'neural',
+              action: 'train',
+              config: { models: ['large-model'], epochs: 1000 },
+            },
+            { service: 'swarm', action: 'deploy', config: { models: ['large-model'] } },
           ],
-          pausable: true
+          pausable: true,
         };
 
         // Start workflow execution
@@ -674,22 +721,29 @@ describe('Facade Pattern Implementation', () => {
           swarmId: 'pausable-swarm-001',
           topology: 'ring',
           agentCount: 10,
-          status: 'initialized'
+          status: 'initialized',
         });
 
         // Simulate long-running training
-        mockServices.neuralService.trainModel.mockImplementation(() => 
-          new Promise(resolve => setTimeout(() => resolve({
-            modelId: 'large-model-001',
-            accuracy: 0.94,
-            loss: 0.06,
-            trainingTime: 36000,
-            status: 'ready'
-          }), 5000))
+        mockServices.neuralService.trainModel.mockImplementation(
+          () =>
+            new Promise((resolve) =>
+              setTimeout(
+                () =>
+                  resolve({
+                    modelId: 'large-model-001',
+                    accuracy: 0.94,
+                    loss: 0.06,
+                    trainingTime: 36000,
+                    status: 'ready',
+                  }),
+                5000
+              )
+            )
         );
 
         // Wait briefly then pause
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         const pauseResult = await facade.pauseWorkflow('long-running-workflow');
         expect(pauseResult.success).toBe(true);
         expect(pauseResult.pausedAt).toBeDefined();
@@ -718,7 +772,7 @@ describe('Facade Pattern Implementation', () => {
             facade.trainNeuralModel({
               modelType: 'test',
               trainingData: '/data/test',
-              targetAccuracy: 0.9
+              targetAccuracy: 0.9,
             })
           );
         }
@@ -727,8 +781,8 @@ describe('Facade Pattern Implementation', () => {
 
         // After threshold failures, circuit should be open
         const laterResults = results.slice(-3);
-        expect(laterResults.every(r => !r.success)).toBe(true);
-        expect(laterResults.some(r => r.error?.type === 'CIRCUIT_BREAKER_OPEN')).toBe(true);
+        expect(laterResults.every((r) => !r.success)).toBe(true);
+        expect(laterResults.some((r) => r.error?.type === 'CIRCUIT_BREAKER_OPEN')).toBe(true);
 
         // Verify circuit breaker status
         const systemStatus = await facade.getSystemStatus();
@@ -769,20 +823,20 @@ describe('Facade Pattern Implementation', () => {
           swarm: {
             topology: 'star',
             agentCount: 3,
-            capabilities: ['basic-tasks']
+            capabilities: ['basic-tasks'],
           },
           neural: {
             models: ['classifier'],
             trainingData: '/data/test',
-            targetAccuracy: 0.9
-          }
+            targetAccuracy: 0.9,
+          },
         };
 
         mockServices.swarmService.initializeSwarm.mockResolvedValue({
           swarmId: 'degraded-swarm-001',
           topology: 'star',
           agentCount: 3,
-          status: 'initialized'
+          status: 'initialized',
         });
 
         const result = await facade.initializeProject(projectConfig);
@@ -794,7 +848,7 @@ describe('Facade Pattern Implementation', () => {
         expect(result.warnings).toContainEqual(
           expect.objectContaining({
             service: 'neural',
-            message: expect.stringContaining('offline')
+            message: expect.stringContaining('offline'),
           })
         );
       });
@@ -805,28 +859,28 @@ describe('Facade Pattern Implementation', () => {
         // Mock multiple similar requests
         const requests = Array.from({ length: 10 }, (_, i) => ({
           swarmId: `batch-swarm-${i}`,
-          query: 'SELECT status FROM swarms WHERE active = true'
+          query: 'SELECT status FROM swarms WHERE active = true',
         }));
 
         mockServices.databaseService.query.mockImplementation((query) => {
           return Promise.resolve([
             { swarmId: 'batch-swarm-0', status: 'active' },
-            { swarmId: 'batch-swarm-1', status: 'active' }
+            { swarmId: 'batch-swarm-1', status: 'active' },
           ]);
         });
 
         const results = await Promise.all(
-          requests.map(req => facade.queryDatabase(req.query, []))
+          requests.map((req) => facade.queryDatabase(req.query, []))
         );
 
-        expect(results.every(r => r.success)).toBe(true);
+        expect(results.every((r) => r.success)).toBe(true);
 
         // Due to batching and caching, database should be called fewer times
         expect(mockServices.databaseService.query).toHaveBeenCalledTimes(1);
 
         // Results should indicate cache hits
         const cachedResults = results.slice(1);
-        expect(cachedResults.every(r => r.cached)).toBe(true);
+        expect(cachedResults.every((r) => r.cached)).toBe(true);
       });
 
       it('should load balance requests across service instances', async () => {
@@ -834,16 +888,16 @@ describe('Facade Pattern Implementation', () => {
         const swarmInstances = [
           { instance: 1, initializeSwarm: jest.fn() },
           { instance: 2, initializeSwarm: jest.fn() },
-          { instance: 3, initializeSwarm: jest.fn() }
+          { instance: 3, initializeSwarm: jest.fn() },
         ];
 
-        swarmInstances.forEach(instance => {
+        swarmInstances.forEach((instance) => {
           instance.initializeSwarm.mockResolvedValue({
             swarmId: `lb-swarm-${instance.instance}`,
             topology: 'mesh',
             agentCount: 2,
             status: 'initialized',
-            handledBy: `instance-${instance.instance}`
+            handledBy: `instance-${instance.instance}`,
           });
         });
 
@@ -854,16 +908,16 @@ describe('Facade Pattern Implementation', () => {
           facade.initializeSwarm({
             topology: 'mesh',
             agentCount: 2,
-            capabilities: ['load-balance-test']
+            capabilities: ['load-balance-test'],
           })
         );
 
         const results = await Promise.all(requestPromises);
 
-        expect(results.every(r => r.success)).toBe(true);
+        expect(results.every((r) => r.success)).toBe(true);
 
         // Verify load balancing - each instance should handle 3 requests
-        swarmInstances.forEach(instance => {
+        swarmInstances.forEach((instance) => {
           expect(instance.initializeSwarm).toHaveBeenCalledTimes(3);
         });
       });
@@ -875,8 +929,8 @@ describe('Facade Pattern Implementation', () => {
             modelType: 'transformer',
             size: 'large',
             trainingData: `/data/batch-${i}`,
-            epochs: 100
-          }
+            epochs: 100,
+          },
         }));
 
         // Mock resource pool with limited capacity
@@ -889,7 +943,7 @@ describe('Facade Pattern Implementation', () => {
           }
 
           activeOperations++;
-          await new Promise(resolve => setTimeout(resolve, 100)); // Simulate work
+          await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate work
           activeOperations--;
 
           return {
@@ -898,7 +952,7 @@ describe('Facade Pattern Implementation', () => {
             loss: 0.05,
             trainingTime: 6000,
             status: 'ready',
-            pooledExecution: true
+            pooledExecution: true,
           };
         });
 
@@ -927,14 +981,14 @@ describe('Facade Pattern Implementation', () => {
         info: jest.fn(),
         warn: jest.fn(),
         error: jest.fn(),
-        debug: jest.fn()
+        debug: jest.fn(),
       };
 
       mockMetrics = {
         record: jest.fn(),
         increment: jest.fn(),
         gauge: jest.fn(),
-        histogram: jest.fn()
+        histogram: jest.fn(),
       };
 
       mockEventManager = {
@@ -943,7 +997,9 @@ describe('Facade Pattern Implementation', () => {
         unsubscribe: jest.fn(),
         shutdown: jest.fn(),
         getObserverStats: jest.fn().mockReturnValue([]),
-        getQueueStats: jest.fn().mockReturnValue({ queueSize: 0, processedCount: 0, averageProcessingTime: 0 })
+        getQueueStats: jest
+          .fn()
+          .mockReturnValue({ queueSize: 0, processedCount: 0, averageProcessingTime: 0 }),
       } as any;
 
       mockCommandQueue = {
@@ -951,8 +1007,10 @@ describe('Facade Pattern Implementation', () => {
         executeTransaction: jest.fn(),
         undo: jest.fn(),
         getHistory: jest.fn().mockReturnValue([]),
-        getMetrics: jest.fn().mockReturnValue({ totalCommands: 0, successfulCommands: 0, failedCommands: 0 }),
-        shutdown: jest.fn()
+        getMetrics: jest
+          .fn()
+          .mockReturnValue({ totalCommands: 0, successfulCommands: 0, failedCommands: 0 }),
+        shutdown: jest.fn(),
       } as any;
 
       mockServices = {
@@ -962,7 +1020,7 @@ describe('Facade Pattern Implementation', () => {
           destroySwarm: jest.fn(),
           coordinateSwarm: jest.fn(),
           spawnAgent: jest.fn(),
-          listSwarms: jest.fn()
+          listSwarms: jest.fn(),
         },
         neuralService: {
           trainModel: jest.fn(),
@@ -970,7 +1028,7 @@ describe('Facade Pattern Implementation', () => {
           evaluateModel: jest.fn(),
           optimizeModel: jest.fn(),
           listModels: jest.fn(),
-          deleteModel: jest.fn()
+          deleteModel: jest.fn(),
         },
         memoryService: {
           store: jest.fn(),
@@ -978,7 +1036,7 @@ describe('Facade Pattern Implementation', () => {
           delete: jest.fn(),
           list: jest.fn(),
           clear: jest.fn(),
-          getStats: jest.fn()
+          getStats: jest.fn(),
         },
         databaseService: {
           query: jest.fn(),
@@ -987,7 +1045,7 @@ describe('Facade Pattern Implementation', () => {
           delete: jest.fn(),
           vectorSearch: jest.fn(),
           createIndex: jest.fn(),
-          getHealth: jest.fn()
+          getHealth: jest.fn(),
         },
         interfaceService: {
           startHTTPMCP: jest.fn(),
@@ -995,7 +1053,7 @@ describe('Facade Pattern Implementation', () => {
           startTUI: jest.fn(),
           startCLI: jest.fn(),
           stopInterface: jest.fn(),
-          getInterfaceStatus: jest.fn()
+          getInterfaceStatus: jest.fn(),
         },
         workflowService: {
           executeWorkflow: jest.fn(),
@@ -1003,8 +1061,8 @@ describe('Facade Pattern Implementation', () => {
           listWorkflows: jest.fn(),
           pauseWorkflow: jest.fn(),
           resumeWorkflow: jest.fn(),
-          cancelWorkflow: jest.fn()
-        }
+          cancelWorkflow: jest.fn(),
+        },
       };
 
       facade = new ClaudeZenFacade(
@@ -1025,14 +1083,14 @@ describe('Facade Pattern Implementation', () => {
       const swarmConfig = {
         topology: 'mesh' as const,
         agentCount: 5,
-        capabilities: ['test-capability']
+        capabilities: ['test-capability'],
       };
 
       const expectedResult = {
         swarmId: 'test-swarm-123',
         topology: 'mesh' as const,
         agentCount: 5,
-        status: 'initialized' as const
+        status: 'initialized' as const,
       };
 
       mockServices.swarmService.initializeSwarm.mockResolvedValue(expectedResult);
@@ -1049,7 +1107,7 @@ describe('Facade Pattern Implementation', () => {
         modelType: 'classification',
         trainingData: '/data/training',
         targetAccuracy: 0.95,
-        epochs: 100
+        epochs: 100,
       };
 
       const expectedResult = {
@@ -1057,7 +1115,7 @@ describe('Facade Pattern Implementation', () => {
         accuracy: 0.96,
         loss: 0.04,
         trainingTime: 3600,
-        status: 'ready' as const
+        status: 'ready' as const,
       };
 
       mockServices.neuralService.trainModel.mockResolvedValue(expectedResult);
@@ -1076,15 +1134,15 @@ describe('Facade Pattern Implementation', () => {
         swarm: {
           topology: 'star',
           agentCount: 3,
-          capabilities: ['coordination-test']
-        }
+          capabilities: ['coordination-test'],
+        },
       };
 
       mockServices.swarmService.initializeSwarm.mockResolvedValue({
         swarmId: 'coord-swarm-001',
         topology: 'star',
         agentCount: 3,
-        status: 'initialized'
+        status: 'initialized',
       });
 
       await facade.initializeProject(projectConfig);
@@ -1093,14 +1151,14 @@ describe('Facade Pattern Implementation', () => {
       expect(mockEventManager.notify).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'project',
-          subtype: 'initialization_started'
+          subtype: 'initialization_started',
         })
       );
 
       expect(mockEventManager.notify).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'project',
-          subtype: 'swarm_initialized'
+          subtype: 'swarm_initialized',
         })
       );
     });
@@ -1111,7 +1169,7 @@ describe('Facade Pattern Implementation', () => {
         commandId: 'test-command-789',
         executionTime: 150,
         timestamp: new Date(),
-        resourceUsage: { cpu: 0.2, memory: 0.3, network: 0.1, storage: 0.1 }
+        resourceUsage: { cpu: 0.2, memory: 0.3, network: 0.1, storage: 0.1 },
       };
 
       mockCommandQueue.execute.mockResolvedValue(commandResult);
@@ -1119,13 +1177,13 @@ describe('Facade Pattern Implementation', () => {
       await facade.initializeSwarm({
         topology: 'ring',
         agentCount: 4,
-        capabilities: ['command-test']
+        capabilities: ['command-test'],
       });
 
       expect(mockCommandQueue.execute).toHaveBeenCalledTimes(1);
       expect(mockCommandQueue.execute).toHaveBeenCalledWith(
         expect.objectContaining({
-          getType: expect.any(Function)
+          getType: expect.any(Function),
         })
       );
     });
@@ -1137,13 +1195,13 @@ describe('Facade Pattern Implementation', () => {
         swarm: {
           topology: 'hierarchical',
           agentCount: 6,
-          capabilities: ['data-processing']
+          capabilities: ['data-processing'],
         },
         neural: {
           models: ['preprocessor'],
           trainingData: '/data/complex',
-          targetAccuracy: 0.92
-        }
+          targetAccuracy: 0.92,
+        },
       };
 
       // Swarm depends on memory configuration
@@ -1152,7 +1210,7 @@ describe('Facade Pattern Implementation', () => {
         swarmId: 'dep-swarm-001',
         topology: 'hierarchical',
         agentCount: 6,
-        status: 'initialized'
+        status: 'initialized',
       });
 
       // Neural depends on both swarm and database
@@ -1162,7 +1220,7 @@ describe('Facade Pattern Implementation', () => {
         accuracy: 0.93,
         loss: 0.07,
         trainingTime: 2400,
-        status: 'ready'
+        status: 'ready',
       });
 
       await facade.initializeProject(complexConfig);
@@ -1183,7 +1241,7 @@ describe('Facade Pattern Implementation', () => {
           swarmId: 'dep-swarm-002',
           topology: 'hierarchical',
           agentCount: 6,
-          status: 'initialized'
+          status: 'initialized',
         });
       });
       mockServices.neuralService.trainModel.mockImplementation(() => {
@@ -1193,13 +1251,13 @@ describe('Facade Pattern Implementation', () => {
           accuracy: 0.93,
           loss: 0.07,
           trainingTime: 2400,
-          status: 'ready'
+          status: 'ready',
         });
       });
 
       await facade.initializeProject({
         ...complexConfig,
-        name: 'dependency-test-2'
+        name: 'dependency-test-2',
       });
 
       expect(callOrder).toEqual(['memory', 'database', 'swarm', 'neural']);
@@ -1209,7 +1267,7 @@ describe('Facade Pattern Implementation', () => {
       await facade.initializeSwarm({
         topology: 'mesh',
         agentCount: 2,
-        capabilities: ['metrics-test']
+        capabilities: ['metrics-test'],
       });
 
       expect(mockMetrics.increment).toHaveBeenCalledWith(
@@ -1228,14 +1286,14 @@ describe('Facade Pattern Implementation', () => {
       const config = {
         topology: 'star' as const,
         agentCount: 1,
-        capabilities: ['logging-test']
+        capabilities: ['logging-test'],
       };
 
       mockServices.swarmService.initializeSwarm.mockResolvedValue({
         swarmId: 'logging-swarm-001',
         topology: 'star',
         agentCount: 1,
-        status: 'initialized'
+        status: 'initialized',
       });
 
       await facade.initializeSwarm(config);
@@ -1259,12 +1317,12 @@ describe('Facade Pattern Implementation', () => {
       const result = await facade.trainNeuralModel({
         modelType: 'test',
         trainingData: '/data/test',
-        targetAccuracy: 0.9
+        targetAccuracy: 0.9,
       });
 
       expect(result.success).toBe(false);
       expect(result.error?.message).toBe('Neural service unavailable');
-      
+
       expect(mockLogger.error).toHaveBeenCalledWith(
         'Neural model training failed:',
         expect.any(Error)
@@ -1285,7 +1343,12 @@ describe('Facade Pattern Implementation', () => {
 
     beforeEach(() => {
       const mockLogger = { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() };
-      const mockMetrics = { record: jest.fn(), increment: jest.fn(), gauge: jest.fn(), histogram: jest.fn() };
+      const mockMetrics = {
+        record: jest.fn(),
+        increment: jest.fn(),
+        gauge: jest.fn(),
+        histogram: jest.fn(),
+      };
 
       mockEventManager = {
         shutdown: jest.fn().mockResolvedValue(undefined),
@@ -1293,7 +1356,9 @@ describe('Facade Pattern Implementation', () => {
         subscribe: jest.fn(),
         unsubscribe: jest.fn(),
         getObserverStats: jest.fn().mockReturnValue([]),
-        getQueueStats: jest.fn().mockReturnValue({ queueSize: 0, processedCount: 0, averageProcessingTime: 0 })
+        getQueueStats: jest
+          .fn()
+          .mockReturnValue({ queueSize: 0, processedCount: 0, averageProcessingTime: 0 }),
       } as any;
 
       mockCommandQueue = {
@@ -1302,16 +1367,61 @@ describe('Facade Pattern Implementation', () => {
         executeTransaction: jest.fn(),
         undo: jest.fn(),
         getHistory: jest.fn().mockReturnValue([]),
-        getMetrics: jest.fn().mockReturnValue({ totalCommands: 0, successfulCommands: 0, failedCommands: 0 })
+        getMetrics: jest
+          .fn()
+          .mockReturnValue({ totalCommands: 0, successfulCommands: 0, failedCommands: 0 }),
       } as any;
 
       mockServices = {
-        swarmService: { initializeSwarm: jest.fn(), getSwarmStatus: jest.fn(), destroySwarm: jest.fn(), coordinateSwarm: jest.fn(), spawnAgent: jest.fn(), listSwarms: jest.fn() },
-        neuralService: { trainModel: jest.fn(), predictWithModel: jest.fn(), evaluateModel: jest.fn(), optimizeModel: jest.fn(), listModels: jest.fn(), deleteModel: jest.fn() },
-        memoryService: { store: jest.fn(), retrieve: jest.fn(), delete: jest.fn(), list: jest.fn(), clear: jest.fn(), getStats: jest.fn() },
-        databaseService: { query: jest.fn(), insert: jest.fn(), update: jest.fn(), delete: jest.fn(), vectorSearch: jest.fn(), createIndex: jest.fn(), getHealth: jest.fn() },
-        interfaceService: { startHTTPMCP: jest.fn(), startWebDashboard: jest.fn(), startTUI: jest.fn(), startCLI: jest.fn(), stopInterface: jest.fn(), getInterfaceStatus: jest.fn() },
-        workflowService: { executeWorkflow: jest.fn(), createWorkflow: jest.fn(), listWorkflows: jest.fn(), pauseWorkflow: jest.fn(), resumeWorkflow: jest.fn(), cancelWorkflow: jest.fn() }
+        swarmService: {
+          initializeSwarm: jest.fn(),
+          getSwarmStatus: jest.fn(),
+          destroySwarm: jest.fn(),
+          coordinateSwarm: jest.fn(),
+          spawnAgent: jest.fn(),
+          listSwarms: jest.fn(),
+        },
+        neuralService: {
+          trainModel: jest.fn(),
+          predictWithModel: jest.fn(),
+          evaluateModel: jest.fn(),
+          optimizeModel: jest.fn(),
+          listModels: jest.fn(),
+          deleteModel: jest.fn(),
+        },
+        memoryService: {
+          store: jest.fn(),
+          retrieve: jest.fn(),
+          delete: jest.fn(),
+          list: jest.fn(),
+          clear: jest.fn(),
+          getStats: jest.fn(),
+        },
+        databaseService: {
+          query: jest.fn(),
+          insert: jest.fn(),
+          update: jest.fn(),
+          delete: jest.fn(),
+          vectorSearch: jest.fn(),
+          createIndex: jest.fn(),
+          getHealth: jest.fn(),
+        },
+        interfaceService: {
+          startHTTPMCP: jest.fn(),
+          startWebDashboard: jest.fn(),
+          startTUI: jest.fn(),
+          startCLI: jest.fn(),
+          stopInterface: jest.fn(),
+          getInterfaceStatus: jest.fn(),
+        },
+        workflowService: {
+          executeWorkflow: jest.fn(),
+          createWorkflow: jest.fn(),
+          listWorkflows: jest.fn(),
+          pauseWorkflow: jest.fn(),
+          resumeWorkflow: jest.fn(),
+          cancelWorkflow: jest.fn(),
+        },
       };
 
       facade = new ClaudeZenFacade(

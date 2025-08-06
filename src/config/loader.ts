@@ -1,5 +1,5 @@
 /**
- * @fileoverview Configuration Loader
+ * @file Configuration Loader
  *
  * Handles loading configuration from multiple sources with proper priority
  */
@@ -12,6 +12,8 @@ import { ConfigValidator } from './validator';
 
 /**
  * Configuration loader with multi-source support
+ *
+ * @example
  */
 export class ConfigurationLoader {
   private sources: ConfigurationSource[] = [];
@@ -19,6 +21,8 @@ export class ConfigurationLoader {
 
   /**
    * Load configuration from all sources
+   *
+   * @param configPaths
    */
   async loadConfiguration(configPaths?: string[]): Promise<{
     config: SystemConfiguration;
@@ -67,6 +71,8 @@ export class ConfigurationLoader {
 
   /**
    * Add a configuration source
+   *
+   * @param source
    */
   private addSource(source: ConfigurationSource): void {
     this.sources.push(source);
@@ -76,6 +82,8 @@ export class ConfigurationLoader {
 
   /**
    * Load configuration from file
+   *
+   * @param filePath
    */
   private async loadFromFile(filePath: string): Promise<void> {
     try {
@@ -218,6 +226,9 @@ export class ConfigurationLoader {
 
   /**
    * Deep merge two objects
+   *
+   * @param target
+   * @param source
    */
   private deepMerge(target: any, source: any): any {
     const result = { ...target };
@@ -235,6 +246,10 @@ export class ConfigurationLoader {
 
   /**
    * Set nested property using dot notation
+   *
+   * @param obj
+   * @param path
+   * @param value
    */
   private setNestedProperty(obj: any, path: string, value: any): void {
     const parts = path.split('.');

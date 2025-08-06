@@ -22,6 +22,9 @@ import { WorkflowEngine } from './engine';
 export const WorkflowUtils = {
   /**
    * Create a simple workflow definition
+   *
+   * @param name
+   * @param steps
    */
   createWorkflow: (name: string, steps: any[]): any => ({
     name,
@@ -32,6 +35,9 @@ export const WorkflowUtils = {
 
   /**
    * Create a delay step
+   *
+   * @param duration
+   * @param name
    */
   createDelayStep: (duration: number, name?: string) => ({
     type: 'delay',
@@ -41,6 +47,11 @@ export const WorkflowUtils = {
 
   /**
    * Create a transform step
+   *
+   * @param input
+   * @param transformation
+   * @param output
+   * @param name
    */
   createTransformStep: (input: string, transformation: any, output?: string, name?: string) => ({
     type: 'transform',
@@ -51,6 +62,11 @@ export const WorkflowUtils = {
 
   /**
    * Create a conditional step
+   *
+   * @param condition
+   * @param thenStep
+   * @param elseStep
+   * @param name
    */
   createConditionStep: (condition: string, thenStep: any, elseStep?: any, name?: string) => ({
     type: 'condition',
@@ -60,6 +76,9 @@ export const WorkflowUtils = {
 
   /**
    * Create a parallel execution step
+   *
+   * @param tasks
+   * @param name
    */
   createParallelStep: (tasks: any[], name?: string) => ({
     type: 'parallel',
@@ -69,6 +88,10 @@ export const WorkflowUtils = {
 
   /**
    * Create a loop step
+   *
+   * @param items
+   * @param step
+   * @param name
    */
   createLoopStep: (items: string, step: any, name?: string) => ({
     type: 'loop',
@@ -78,6 +101,8 @@ export const WorkflowUtils = {
 
   /**
    * Validate workflow definition
+   *
+   * @param workflow
    */
   validateWorkflow: (workflow: any): boolean => {
     if (!workflow.name || !workflow.steps || !Array.isArray(workflow.steps)) {
@@ -89,6 +114,9 @@ export const WorkflowUtils = {
 
   /**
    * Get workflow progress percentage
+   *
+   * @param currentStep
+   * @param totalSteps
    */
   calculateProgress: (currentStep: number, totalSteps: number): number => {
     if (totalSteps === 0) return 0;
@@ -102,6 +130,9 @@ export class WorkflowFactory {
 
   /**
    * Create or get a workflow engine instance
+   *
+   * @param config
+   * @param instanceKey
    */
   static getInstance(config: any = {}, instanceKey = 'default'): WorkflowEngine {
     if (!WorkflowFactory.instances.has(instanceKey)) {
