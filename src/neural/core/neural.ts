@@ -4,8 +4,28 @@
  */
 
 import { promises as fs } from 'node:fs';
-import path from 'node:path';
-import { ZenSwarm } from './index-complete';
+import * as path from 'node:path';
+
+// Import placeholder for missing module
+interface ZenSwarm {
+  initialize(options: any): Promise<any>;
+}
+
+// Placeholder implementation since ./index-complete doesn't exist
+const ZenSwarm: ZenSwarm = {
+  async initialize(_options: any) {
+    return {
+      wasmLoader: {
+        modules: new Map([
+          ['core', {
+            neural_status: () => 'Neural networks simulated - WASM not available',
+            neural_train: (_modelType: string, _iteration: number, _totalIterations: number) => {},
+          }]
+        ])
+      }
+    };
+  }
+};
 
 // Pattern memory configuration for different cognitive patterns
 // Optimized to use 250-300 MB range with minimal variance
@@ -25,6 +45,9 @@ const PATTERN_MEMORY_CONFIG = {
 };
 
 class NeuralCLI {
+  private ruvSwarm: any;
+  private activePatterns: Set<string>;
+
   constructor() {
     this.ruvSwarm = null;
     this.activePatterns = new Set();
@@ -175,7 +198,7 @@ class NeuralCLI {
 
     try {
       // Generate pattern analysis (in real implementation, this would come from WASM)
-      const patterns = {
+      const patterns: Record<string, any> = {
         attention: {
           'Focus Patterns': ['Sequential attention', 'Parallel processing', 'Context switching'],
           'Learned Behaviors': ['Code completion', 'Error detection', 'Pattern recognition'],
@@ -246,13 +269,19 @@ class NeuralCLI {
         ];
         const neuralModels = ['attention', 'lstm', 'transformer'];
         for (const pattern of cognitivePatterns) {
-          for (const [_category, items] of Object.entries(patterns[pattern])) {
-            items.forEach((_item) => {});
+          if (patterns[pattern]) {
+            for (const [_category, items] of Object.entries(patterns[pattern])) {
+              if (Array.isArray(items)) {
+                items.forEach((_item) => {});
+              }
+            }
           }
         }
         for (const model of neuralModels) {
           for (const [_category, items] of Object.entries(patterns[model])) {
-            items.forEach((_item) => {});
+            if (Array.isArray(items)) {
+              items.forEach((_item) => {});
+            }
           }
         }
       } else {
@@ -264,7 +293,9 @@ class NeuralCLI {
         }
 
         for (const [_category, items] of Object.entries(patternData)) {
-          items.forEach((_item) => {});
+          if (Array.isArray(items)) {
+            items.forEach((_item) => {});
+          }
         }
       }
       const activationTypes = ['ReLU', 'Sigmoid', 'Tanh', 'GELU', 'Swish'];
@@ -322,7 +353,7 @@ class NeuralCLI {
 
       // Show summary
       const _totalParams = Object.values(weights.models).reduce(
-        (sum, model) => sum + model.parameters,
+        (sum, model: any) => sum + model.parameters,
         0
       );
     } catch (error) {
@@ -424,7 +455,7 @@ class NeuralCLI {
                 accuracyCount++;
 
                 if (accuracy > bestModel.accuracy) {
-                  bestModel = { name: modelType, accuracy: accuracy.toFixed(1) };
+                  bestModel = { name: modelType, accuracy: parseFloat(accuracy.toFixed(1)) };
                 }
               }
             }

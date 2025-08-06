@@ -51,6 +51,14 @@ export const COMPLETE_NEURAL_PRESETS = {
  * @example
  */
 export class CognitivePatternSelector {
+  private patterns: Map<string, any>;
+  private selectionHistory: Array<{
+    taskType: string;
+    requirements: any;
+    selected?: string;
+    timestamp: Date;
+  }>;
+
   constructor() {
     this.patterns = new Map();
     this.selectionHistory = [];
@@ -127,6 +135,78 @@ export class CognitivePatternSelector {
 
     return score;
   }
+
+  /**
+   * Select patterns for a specific preset
+   * 
+   * @param modelType 
+   * @param presetName 
+   * @param taskContext 
+   */
+  selectPatternsForPreset(modelType: string, presetName: string, taskContext: any = {}) {
+    // Return appropriate cognitive patterns based on model type and context
+    const patterns = [];
+    
+    if (modelType === 'transformer' || modelType === 'attention') {
+      patterns.push('attention', 'abstract');
+    } else if (modelType === 'lstm' || modelType === 'gru') {
+      patterns.push('systems', 'convergent');
+    } else if (modelType === 'cnn') {
+      patterns.push('lateral', 'critical');
+    } else {
+      patterns.push('convergent');
+    }
+
+    // Add creativity-based patterns
+    if (taskContext.requiresCreativity) {
+      patterns.push('divergent', 'lateral');
+    }
+    
+    if (taskContext.requiresPrecision) {
+      patterns.push('convergent', 'critical');
+    }
+
+    return patterns;
+  }
+
+  /**
+   * Get preset recommendations based on use case
+   * 
+   * @param useCase 
+   * @param requirements 
+   */
+  getPresetRecommendations(useCase: string, requirements: any = {}) {
+    const recommendations = [];
+    
+    // Basic matching logic
+    if (useCase.toLowerCase().includes('text') || useCase.toLowerCase().includes('nlp')) {
+      recommendations.push({
+        preset: 'transformer',
+        score: 0.9,
+        reason: 'Text processing use case'
+      });
+    } else if (useCase.toLowerCase().includes('image') || useCase.toLowerCase().includes('vision')) {
+      recommendations.push({
+        preset: 'cnn',
+        score: 0.85,
+        reason: 'Image processing use case'
+      });
+    } else if (useCase.toLowerCase().includes('time') || useCase.toLowerCase().includes('sequence')) {
+      recommendations.push({
+        preset: 'lstm',
+        score: 0.8,
+        reason: 'Sequential data use case'
+      });
+    } else {
+      recommendations.push({
+        preset: 'feedforward',
+        score: 0.7,
+        reason: 'General purpose neural network'
+      });
+    }
+
+    return recommendations;
+  }
 }
 
 /**
@@ -136,6 +216,16 @@ export class CognitivePatternSelector {
  * @example
  */
 export class NeuralAdaptationEngine {
+  private adaptations: Array<{
+    timestamp: Date;
+    originalConfig: any;
+    [key: string]: any;
+  }>;
+  private performanceHistory: Array<{
+    performance: any;
+    timestamp: Date;
+  }>;
+
   constructor() {
     this.adaptations = [];
     this.performanceHistory = [];
@@ -236,6 +326,128 @@ export class NeuralAdaptationEngine {
   private estimateImprovement(adaptations) {
     // Simple heuristic for improvement estimation
     return adaptations.length * 0.05; // 5% improvement per adaptation
+  }
+
+  /**
+   * Initialize adaptation for an agent
+   * 
+   * @param agentId 
+   * @param modelType 
+   * @param template 
+   */
+  async initializeAdaptation(agentId: string, modelType: string, template: string) {
+    const initialization = {
+      agentId,
+      modelType,
+      template,
+      timestamp: new Date(),
+      adaptationState: 'initialized'
+    };
+
+    this.adaptations.push({
+      ...initialization,
+      timestamp: new Date(),
+      originalConfig: { modelType, template }
+    });
+
+    return initialization;
+  }
+
+  /**
+   * Record an adaptation result
+   * 
+   * @param agentId 
+   * @param adaptationResult 
+   */
+  async recordAdaptation(agentId: string, adaptationResult: any) {
+    this.adaptations.push({
+      agentId,
+      adaptationResult,
+      timestamp: new Date(),
+      originalConfig: {}
+    });
+
+    this.performanceHistory.push({
+      performance: adaptationResult.performance || adaptationResult,
+      timestamp: new Date()
+    });
+
+    return { success: true };
+  }
+
+  /**
+   * Get adaptation recommendations for an agent
+   * 
+   * @param agentId 
+   */
+  async getAdaptationRecommendations(agentId: string) {
+    const agentAdaptations = this.adaptations.filter(a => a.agentId === agentId);
+    
+    if (agentAdaptations.length === 0) {
+      return {
+        action: 'monitor',
+        reason: 'No adaptation history available',
+        recommendations: []
+      };
+    }
+
+    const recent = agentAdaptations.slice(-5);
+    const recommendations = [];
+
+    // Analyze recent adaptations for patterns
+    const avgImprovement = recent.reduce((sum, a) => {
+      return sum + (a.adaptationResult?.accuracy || 0);
+    }, 0) / recent.length;
+
+    if (avgImprovement < 0.7) {
+      recommendations.push({
+        type: 'architecture',
+        action: 'increase_complexity',
+        reason: 'Low performance trend detected'
+      });
+    }
+
+    return {
+      action: 'adapt',
+      reason: 'Based on performance history',
+      recommendations
+    };
+  }
+
+  /**
+   * Export adaptation insights
+   */
+  exportAdaptationInsights() {
+    const insights = {
+      totalAdaptations: this.adaptations.length,
+      averageImprovement: 0,
+      commonPatterns: [],
+      recommendations: []
+    };
+
+    if (this.adaptations.length > 0) {
+      const improvements = this.adaptations
+        .map(a => a.adaptationResult?.accuracy || 0)
+        .filter(acc => acc > 0);
+      
+      if (improvements.length > 0) {
+        insights.averageImprovement = improvements.reduce((sum, imp) => sum + imp, 0) / improvements.length;
+      }
+
+      // Find common adaptation patterns
+      const adaptationTypes = this.adaptations
+        .map(a => a.adaptationResult?.type || 'unknown')
+        .reduce((counts, type) => {
+          counts[type] = (counts[type] || 0) + 1;
+          return counts;
+        }, {});
+
+      insights.commonPatterns = Object.entries(adaptationTypes)
+        .map(([type, count]) => ({ type, count }))
+        .sort((a, b) => (b.count as number) - (a.count as number));
+    }
+
+    return insights;
   }
 }
 

@@ -48,12 +48,23 @@ export const NEURAL_PRESETS = {
 };
 
 /**
- * Get preset by ID
+ * Get preset by category and name
  *
- * @param presetId
+ * @param category
+ * @param presetName
  */
-export function getPreset(presetId) {
-  return NEURAL_PRESETS[presetId.toUpperCase()];
+export function getPreset(category, presetName) {
+  if (presetName) {
+    // Two-argument version - look by category and preset name
+    const presets = Object.values(NEURAL_PRESETS);
+    return presets.find(preset => 
+      preset.type === category && 
+      (preset.id === presetName || preset.name.toLowerCase().includes(presetName.toLowerCase()))
+    );
+  } else {
+    // Single-argument version (legacy) - category is actually presetId
+    return NEURAL_PRESETS[category.toUpperCase()];
+  }
 }
 
 /**

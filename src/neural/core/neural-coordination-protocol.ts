@@ -6,6 +6,8 @@
 export class NeuralCoordinationProtocol {
   public nodes: Map<string, any>;
   public messages: any[];
+  private sessions?: Map<string, any>;
+  private coordinationResults?: Map<string, any>;
   public options: {
     syncInterval: number;
     maxMessages: number;
@@ -98,7 +100,7 @@ export class NeuralCoordinationProtocol {
       timestamp: new Date(),
     };
 
-    for (const [otherId] of this.nodes) {
+    for (const otherId of Array.from(this.nodes.keys())) {
       if (otherId !== nodeId) {
         await this.sendMessage(nodeId, otherId, 'sync', syncMessage);
       }
@@ -132,6 +134,148 @@ export class NeuralCoordinationProtocol {
     return this.messages
       .slice(-limit)
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }
+
+  /**
+   * Register an agent with the coordination protocol
+   */
+  async registerAgent(agentId: string, agent: any) {
+    const nodeInfo = {
+      id: agentId,
+      agent,
+      status: 'active',
+      messageCount: 0,
+      lastSeen: new Date(),
+      capabilities: agent.modelType || 'unknown'
+    };
+
+    this.nodes.set(agentId, nodeInfo);
+    
+    // Send registration message to other nodes
+    for (const otherId of Array.from(this.nodes.keys())) {
+      if (otherId !== agentId) {
+        await this.sendMessage(agentId, otherId, 'register', {
+          type: 'agent_registration',
+          agentId,
+          capabilities: nodeInfo.capabilities,
+          timestamp: new Date()
+        });
+      }
+    }
+
+    return { success: true, registeredNodes: this.nodes.size };
+  }
+
+  /**
+   * Initialize a coordination session
+   */
+  async initializeSession(session: any) {
+    const sessionInfo = {
+      id: session.id,
+      agentIds: session.agentIds || [],
+      strategy: session.strategy || 'federated',
+      startTime: new Date(),
+      status: 'active'
+    };
+
+    // Register all agents in the session
+    for (const agentId of sessionInfo.agentIds) {
+      if (!this.nodes.has(agentId)) {
+        this.nodes.set(agentId, {
+          id: agentId,
+          status: 'active',
+          messageCount: 0,
+          lastSeen: new Date(),
+          capabilities: 'unknown'
+        });
+      }
+    }
+
+    // Store session for later reference
+    if (!this.sessions) {
+      this.sessions = new Map();
+    }
+    this.sessions.set(session.id, sessionInfo);
+
+    return { success: true, session: sessionInfo };
+  }
+
+  /**
+   * Coordinate agents in a session
+   */
+  async coordinate(session: any) {
+    const sessionInfo = this.sessions?.get(session.id);
+    if (!sessionInfo) {
+      throw new Error(`Session ${session.id} not found`);
+    }
+
+    // Perform coordination based on strategy
+    const coordinationResults = new Map();
+
+    for (const agentId of sessionInfo.agentIds) {
+      const node = this.nodes.get(agentId);
+      if (node) {
+        const coordination = {
+          agentId,
+          weightAdjustments: this.generateWeightAdjustments(),
+          patternUpdates: this.generatePatternUpdates(),
+          collaborationScore: Math.random() * 100,
+          newPatterns: [],
+          timestamp: new Date()
+        };
+
+        coordinationResults.set(agentId, coordination);
+      }
+    }
+
+    // Store results for later retrieval
+    if (!this.coordinationResults) {
+      this.coordinationResults = new Map();
+    }
+    this.coordinationResults.set(session.id, coordinationResults);
+
+    return { success: true, coordinated: coordinationResults.size };
+  }
+
+  /**
+   * Get coordination results for a session
+   */
+  async getResults(sessionId: string) {
+    return this.coordinationResults?.get(sessionId) || null;
+  }
+
+  /**
+   * Get coordination statistics
+   */
+  getStatistics() {
+    return {
+      totalNodes: this.nodes.size,
+      totalMessages: this.messages.length,
+      activeSessions: this.sessions?.size || 0,
+      averageMessageCount: this.calculateAverageMessageCount()
+    };
+  }
+
+  private generateWeightAdjustments() {
+    return {
+      layer_0: Array.from({ length: 10 }, () => (Math.random() - 0.5) * 0.1),
+      layer_1: Array.from({ length: 10 }, () => (Math.random() - 0.5) * 0.1)
+    };
+  }
+
+  private generatePatternUpdates() {
+    return {
+      pattern_1: { type: 'enhancement', factor: 1.1 },
+      pattern_2: { type: 'refinement', factor: 0.95 }
+    };
+  }
+
+  private calculateAverageMessageCount() {
+    const nodes = Array.from(this.nodes.values());
+    if (nodes.length === 0) return 0;
+    
+    const total = nodes.reduce((sum, node) => sum + (node.messageCount || 0), 0);
+    return total / nodes.length;
   }
 }
 

@@ -42,24 +42,30 @@ export const MODEL_PRESETS = {
 /**
  * Create a neural model from preset or custom configuration
  *
+ * @param modelType
  * @param config
  */
-export function createNeuralModel(config) {
-  const preset = typeof config === 'string' ? MODEL_PRESETS[config.toUpperCase()] : null;
-
-  if (preset) {
-    return {
-      ...preset,
-      created: new Date(),
-      id: `${preset.id}_${Date.now()}`,
-    };
+export function createNeuralModel(modelType, config = {}) {
+  // If modelType is string, look for preset
+  if (typeof modelType === 'string') {
+    const preset = MODEL_PRESETS[modelType.toUpperCase()];
+    if (preset) {
+      return {
+        ...preset,
+        ...config, // Allow config overrides
+        created: new Date(),
+        id: `${preset.id}_${Date.now()}`,
+      };
+    }
   }
 
-  // Custom configuration
+  // If modelType is actually config object (legacy usage)
+  const actualConfig = typeof modelType === 'object' ? modelType : config;
+  
   return {
-    ...config,
+    ...actualConfig,
     created: new Date(),
-    id: config.id || `custom_${Date.now()}`,
+    id: actualConfig.id || `custom_${Date.now()}`,
   };
 }
 
