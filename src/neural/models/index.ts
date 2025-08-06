@@ -2,4 +2,4 @@
 export * from './presets/neural-presets-complete';
 
 // Model configuration exports
-export { NEURAL_PRESETS } from './presets/neural-presets-complete';
+export { COMPLETE_NEURAL_PRESETS as NEURAL_PRESETS } from './presets/neural-presets-complete';

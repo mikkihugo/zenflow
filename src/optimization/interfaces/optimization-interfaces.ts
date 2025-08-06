@@ -101,6 +101,7 @@ export interface ScalingStrategy {
   loadBalancing: 'round-robin' | 'least-connections' | 'weighted' | 'adaptive';
   autoScaling: boolean;
   resourceAllocation: string;
+  utilizationAnalysis?: any; // Resource utilization analysis
 }
 
 export interface QueryOptimization {

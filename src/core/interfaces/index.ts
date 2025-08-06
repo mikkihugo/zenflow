@@ -36,7 +36,7 @@ export {
   BackendStats,
   JSONValue,
   StorageResult,
-} from '../../memory/backends/base.backend';
+} from '../memory-system';
 // Memory interfaces
 export { CacheEntry, SessionState } from '../../memory/memory';
 // Agent interfaces - unified types

@@ -969,8 +969,8 @@ ${spec.title} for ${feature.title}
 
 // Export singleton instance factory
 export function createDatabaseDrivenSystem(
-  documentService: DocumentService,
-  workflowEngine: UnifiedWorkflowEngine
+  documentService: DocumentManager,
+  workflowEngine: WorkflowEngine
 ): DatabaseDrivenSystem {
   return new DatabaseDrivenSystem(documentService, workflowEngine);
 }

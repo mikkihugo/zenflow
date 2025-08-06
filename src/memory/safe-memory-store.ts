@@ -80,7 +80,7 @@ export class SafeMemoryStore extends EventEmitter {
    * @param data
    * @param ttl
    */
-  async store<T>(key: string, data: T, ttl?: number): Promise<MemoryResult<void>> {
+  async storeData<T>(key: string, data: T, ttl?: number): Promise<MemoryResult<void>> {
     try {
       if (!this.initialized) {
         return this.createMemoryError(key, 'STORE_NOT_INITIALIZED', 'Memory store not initialized');

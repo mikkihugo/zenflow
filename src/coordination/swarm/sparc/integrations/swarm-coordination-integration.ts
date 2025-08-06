@@ -6,20 +6,20 @@
  */
 
 import { TaskAPI } from '../../../api';
-import { type TaskConfig, TaskCoordinator } from '../../coordination/task-coordinator';
-import type { AgentType } from '../../types/agent-types';
+import { type TaskConfig, TaskCoordinator } from '../../../task-coordinator';
+import type { AgentType } from '../../../../types/agent-types';
 import type { SPARCPhase, SPARCProject } from '../types/sparc-types';
 
 // SPARC-specific agent types from existing 147+ agent types
 export const SPARC_AGENT_TYPES: AgentType[] = [
-  'sparc-coordinator',
-  'implementer-sparc-coder',
-  'requirements-analyst',
+  'coordinator',
+  'coder',
+  'requirements-engineer',
   'system-architect',
-  'performance-engineer',
-  'test-engineer',
-  'security-engineer',
-  'documentation-specialist',
+  'performance-tester',
+  'unit-tester',
+  'security-architect',
+  'documenter',
 ];
 
 export interface SPARCSwarmTask {
@@ -41,11 +41,13 @@ export class SPARCSwarmCoordinator {
   private taskCoordinator: TaskCoordinator;
   private taskAPI: TaskAPI;
   private activeSPARCSwarms: Map<string, Set<string>>;
+  private logger?: any;
 
-  constructor() {
+  constructor(logger?: any) {
     this.taskCoordinator = TaskCoordinator.getInstance();
     this.taskAPI = new TaskAPI();
     this.activeSPARCSwarms = new Map();
+    this.logger = logger;
   }
 
   /**
@@ -74,15 +76,13 @@ export class SPARCSwarmCoordinator {
         timeout_minutes: this.getPhaseTimeout(project.currentPhase),
       };
 
-      const taskId = await this.taskAPI.createTask({
-        title: `${agentType} - ${project.currentPhase}`,
+      const taskId = await TaskAPI.createTask({
+        type: `${agentType}-${project.currentPhase}`,
         description: taskConfig.description,
-        component: `sparc-${project.domain}`,
         priority: 3,
-        estimated_hours: taskConfig.timeout_minutes! / 60,
       });
 
-      agentTasks.add(taskId);
+      agentTasks.add(taskId.id || taskId.toString());
     }
 
     this.activeSPARCSwarms.set(swarmId, agentTasks);
@@ -146,29 +146,29 @@ export class SPARCSwarmCoordinator {
    */
   private getPhaseAgents(phase: SPARCPhase): AgentType[] {
     const phaseAgentMap: Record<SPARCPhase, AgentType[]> = {
-      specification: ['requirements-analyst', 'sparc-coordinator', 'documentation-specialist'],
-      pseudocode: ['implementer-sparc-coder', 'system-architect', 'sparc-coordinator'],
+      specification: ['requirements-engineer', 'coordinator', 'documenter'],
+      pseudocode: ['coder', 'system-architect', 'coordinator'],
       architecture: [
         'system-architect',
-        'performance-engineer',
-        'security-engineer',
-        'sparc-coordinator',
+        'performance-tester',
+        'security-architect',
+        'coordinator',
       ],
       refinement: [
-        'performance-engineer',
-        'security-engineer',
-        'test-engineer',
-        'implementer-sparc-coder',
+        'performance-tester',
+        'security-architect',
+        'unit-tester',
+        'coder',
       ],
       completion: [
-        'implementer-sparc-coder',
-        'test-engineer',
-        'documentation-specialist',
-        'sparc-coordinator',
+        'coder',
+        'unit-tester',
+        'documenter',
+        'coordinator',
       ],
     };
 
-    return phaseAgentMap[phase] || ['sparc-coordinator'];
+    return phaseAgentMap[phase] || ['coordinator'];
   }
 
   /**
@@ -247,15 +247,15 @@ export class SPARCSwarmCoordinator {
   private getRequiredTools(_phase: SPARCPhase, agentType: AgentType): string[] {
     const baseTools = ['file_operations', 'code_analysis', 'documentation'];
 
-    const agentTools: Record<AgentType, string[]> = {
-      'implementer-sparc-coder': [...baseTools, 'code_generation', 'testing'],
+    const agentTools: Partial<Record<AgentType, string[]>> = {
+      'coder': [...baseTools, 'code_generation', 'testing'],
       'system-architect': [...baseTools, 'design_tools', 'modeling'],
-      'performance-engineer': [...baseTools, 'profiling', 'benchmarking'],
-      'security-engineer': [...baseTools, 'security_analysis', 'threat_modeling'],
-      'test-engineer': [...baseTools, 'testing_frameworks', 'test_automation'],
-      'requirements-analyst': [...baseTools, 'requirements_analysis'],
-      'documentation-specialist': [...baseTools, 'documentation_generators'],
-      'sparc-coordinator': [...baseTools, 'project_management', 'coordination'],
+      'performance-tester': [...baseTools, 'profiling', 'benchmarking'],
+      'security-architect': [...baseTools, 'security_analysis', 'threat_modeling'],
+      'unit-tester': [...baseTools, 'testing_frameworks', 'test_automation'],
+      'requirements-engineer': [...baseTools, 'requirements_analysis'],
+      'documenter': [...baseTools, 'documentation_generators'],
+      'coordinator': [...baseTools, 'project_management', 'coordination'],
     };
 
     return agentTools[agentType] || baseTools;

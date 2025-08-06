@@ -1787,13 +1787,17 @@ class NeuralNetworkManager {
 
 // Neural Network wrapper class
 class NeuralNetwork {
-  public networkId: any;
+  public networkId: string;
   public agentId: string;
   public config: any;
   public wasmModule: any;
   public trainingHistory: any[];
-  public metrics: any;
-
+  public metrics: {
+    accuracy: number;
+    loss: number;
+    epochs_trained: number;
+    total_samples: number;
+  };
   constructor(networkId, agentId, config, wasmModule) {
     this.networkId = networkId;
     this.agentId = agentId;
@@ -1924,10 +1928,14 @@ class NeuralNetwork {
 class SimulatedNeuralNetwork {
   public agentId: string;
   public config: any;
-  public weights: any;
+  public weights: number[];
   public trainingHistory: any[];
-  public metrics: any;
-
+  public metrics: {
+    accuracy: number;
+    loss: number;
+    epochs_trained: number;
+    total_samples: number;
+  };
   constructor(agentId, config) {
     this.agentId = agentId;
     this.config = config;

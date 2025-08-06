@@ -20,6 +20,7 @@ import type {
   NonFunctionalRequirement,
   ProjectAssumption,
   ProjectContext,
+  ProjectDomain,
   ProjectRisk,
   ProjectSpecification,
   RequirementSet,
@@ -839,7 +840,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       dependencies.push({
         id: nanoid(),
         name: 'WASM Runtime',
-        type: 'runtime',
+        type: 'infrastructure',
         version: 'Latest',
         critical: true,
       });

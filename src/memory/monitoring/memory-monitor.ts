@@ -4,7 +4,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { BackendInterface } from '../backends/base.backend';
+import type { BackendInterface } from '../../core/memory-system';
 import type { MemoryCoordinator } from '../core/memory-coordinator';
 import type { PerformanceOptimizer } from '../optimization/performance-optimizer';
 

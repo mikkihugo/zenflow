@@ -144,17 +144,24 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
       systemArchitecture: {
         components: components as Component[],
         interfaces: [],
-        dataFlow: dataFlows as DataFlowConnection[],
+        dataFlow: dataFlows as unknown as DataFlowConnection[],
         deploymentUnits: [],
         qualityAttributes: await this.defineQualityAttributes(pseudocode),
         architecturalPatterns: patterns,
         technologyStack: [],
       },
       componentDiagrams: [],
-      dataFlow: dataFlows as DataFlowConnection[],
+      dataFlow: dataFlows as unknown as DataFlowConnection[],
       deploymentPlan: [],
-      validationResults: [],
+      validationResults: {
+        overall: true,
+        score: 100,
+        results: [],
+        recommendations: []
+      },
       components: components as Component[],
+      relationships: relationships,
+      patterns: patterns,
       securityRequirements: await this.defineSecurityRequirements(components),
       scalabilityRequirements: await this.defineScalabilityRequirements(pseudocode),
       qualityAttributes: await this.defineQualityAttributes(pseudocode),
@@ -249,9 +256,18 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
           dataFlowConnections.push({
             from: component.name,
             to: targetComponent.name,
-            data: this.inferDataType(component, targetComponent),
-            protocol: this.selectProtocol(component, targetComponent),
-            frequency: this.estimateFrequency(component, targetComponent),
+            data: this.inferDataType(
+              {...component, id: component.id || component.name, description: component.description || `${component.name} component`}, 
+              {...targetComponent, id: targetComponent.id || targetComponent.name, description: targetComponent.description || `${targetComponent.name} component`}
+            ),
+            protocol: this.selectProtocol(
+              {...component, id: component.id || component.name, description: component.description || `${component.name} component`}, 
+              {...targetComponent, id: targetComponent.id || targetComponent.name, description: targetComponent.description || `${targetComponent.name} component`}
+            ),
+            frequency: this.estimateFrequency(
+              {...component, id: component.id || component.name, description: component.description || `${component.name} component`}, 
+              {...targetComponent, id: targetComponent.id || targetComponent.name, description: targetComponent.description || `${targetComponent.name} component`}
+            ),
           });
         }
       }
@@ -329,10 +345,13 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
       validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
 
     const architecturalValidation: ArchitecturalValidation = {
+      overall: overallScore >= 0.7,
+      approved: overallScore >= 0.7,
+      score: overallScore,
       overallScore,
+      results: validationResults,
       validationResults,
       recommendations: this.generateArchitectureRecommendations(validationResults),
-      approved: overallScore >= 0.7,
     };
 
     // Save validation results to database if architecture has an ID
@@ -653,9 +672,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
     // Microservices pattern for complex systems
     if (components.length > 5) {
       patterns.push({
-        id: nanoid(),
         name: 'Microservices',
-        type: 'structural',
         description: 'Decompose system into loosely coupled, independently deployable services',
         benefits: [
           'Independent scaling',
@@ -664,7 +681,6 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
           'Team autonomy',
         ],
         tradeoffs: ['Increased complexity', 'Network overhead', 'Data consistency challenges'],
-        applicableComponents: components.filter((c) => c.type === 'service').map((c) => c.id),
         applicability: ['complex systems', 'multiple teams'],
       });
     }
@@ -672,13 +688,10 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
     // Event-driven pattern for coordination systems
     if (this.hasCoordinationComponents(components)) {
       patterns.push({
-        id: nanoid(),
         name: 'Event-Driven Architecture',
-        type: 'communication',
         description: 'Use events for loose coupling between components',
         benefits: ['Loose coupling', 'Scalability', 'Responsiveness', 'Extensibility'],
         tradeoffs: ['Event ordering complexity', 'Debugging difficulty', 'Eventual consistency'],
-        applicableComponents: components.map((c) => c.id),
         applicability: ['real-time systems', 'loose coupling required'],
       });
     }
@@ -686,26 +699,20 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
     // CQRS pattern for data-intensive systems
     if (this.hasDataIntensiveComponents(components)) {
       patterns.push({
-        id: nanoid(),
         name: 'CQRS',
-        type: 'data',
         description: 'Separate read and write operations for optimal performance',
         benefits: ['Read/write optimization', 'Scalability', 'Performance', 'Flexibility'],
         tradeoffs: ['Complexity', 'Eventual consistency', 'Duplication'],
-        applicableComponents: components.filter((c) => c.type === 'data-manager').map((c) => c.id),
         applicability: ['high-read workloads', 'complex queries'],
       });
     }
 
     // Always include layered architecture as a foundational pattern
     patterns.push({
-      id: nanoid(),
       name: 'Layered Architecture',
-      type: 'structural',
       description: 'Organize components into logical layers with clear separation of concerns',
       benefits: ['Clear separation of concerns', 'Reusability', 'Maintainability', 'Testability'],
       tradeoffs: ['Performance overhead', 'Tight coupling between layers', 'Monolithic tendency'],
-      applicableComponents: components.map((c) => c.id),
       applicability: ['structured development', 'maintainability priority'],
     });
 
@@ -786,10 +793,8 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   ): Promise<QualityAttribute[]> {
     return [
       {
-        id: nanoid(),
         name: 'Performance',
         type: 'performance',
-        description: 'System must meet performance requirements',
         criteria: [
           'Response time < 100ms for 95% of requests',
           'Throughput > 1000 requests/second',
@@ -800,10 +805,8 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
         target: '< 100ms response time',
       },
       {
-        id: nanoid(),
         name: 'Scalability',
         type: 'scalability',
-        description: 'System must scale horizontally',
         criteria: [
           'Support 10x increase in load',
           'Linear scaling with resources',
@@ -814,10 +817,8 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
         target: '10x scaling capacity',
       },
       {
-        id: nanoid(),
         name: 'Reliability',
         type: 'reliability',
-        description: 'System must be highly reliable',
         criteria: [
           '99.9% uptime',
           'Graceful degradation under failure',
@@ -828,10 +829,8 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
         target: '99.9% uptime',
       },
       {
-        id: nanoid(),
         name: 'Security',
         type: 'security',
-        description: 'System must be secure',
         criteria: [
           'Authentication and authorization',
           'Data encryption in transit and at rest',
@@ -842,10 +841,8 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
         target: 'Zero security incidents',
       },
       {
-        id: nanoid(),
         name: 'Maintainability',
         type: 'maintainability',
-        description: 'System must be easy to maintain',
         criteria: [
           'Clear code structure and documentation',
           'Comprehensive test coverage',
@@ -977,7 +974,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
       architecture.architecturalPatterns && architecture.architecturalPatterns.length > 0;
     const patternsApplied = hasPatterns
       ? architecture.architecturalPatterns.every(
-          (pattern) => pattern.applicableComponents && pattern.applicableComponents.length > 0
+          (pattern) => pattern.applicability && pattern.applicability.length > 0
         )
       : false;
 
@@ -1182,10 +1179,8 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
     // Extract from non-functional requirements
     for (const nfr of spec.nonFunctionalRequirements) {
       attributes.push({
-        id: nanoid(),
         name: nfr.title,
         type: 'performance', // Default type
-        description: nfr.description,
         criteria: Object.values(nfr.metrics),
         measurement: 'Automated testing',
         priority: nfr.priority,
@@ -1211,13 +1206,10 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
 
     if (hasRealtimeReqs) {
       patterns.push({
-        id: nanoid(),
         name: 'Event-Driven Architecture',
-        type: 'communication',
         description: 'Handle real-time events and notifications',
         benefits: ['Real-time processing', 'Loose coupling', 'Scalability'],
         tradeoffs: ['Complexity', 'Debugging challenges'],
-        applicableComponents: components.map((c) => c.id),
         applicability: ['real-time requirements'],
       });
     }

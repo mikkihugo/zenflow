@@ -60,10 +60,11 @@ async function testCLIFunctionality() {
         optimizations: [],
       },
     ],
+    coreAlgorithms: [],
     dataStructures: [
       {
         name: 'TaskQueue',
-        type: 'Queue',
+        type: 'class',
         properties: [
           { name: 'items', type: 'Task[]', visibility: 'private', description: 'Queue items' },
         ],

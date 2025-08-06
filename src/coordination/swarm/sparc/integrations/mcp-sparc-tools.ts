@@ -813,7 +813,7 @@ export class SPARCMCPTools {
         artifacts: {
           tasks: {
             count: results.tasks.length,
-            status: 'integrated with TaskAPI and EnhancedTaskTool',
+            status: 'integrated with TaskAPI and TaskCoordinator',
           },
           adrs: {
             count: results.adrs.length,
@@ -868,7 +868,7 @@ export class SPARCMCPTools {
    * artifactsGenerated: results,
    * message: `Generated project management artifacts using existing Claude-Zen infrastructure`,
    * integration: {
-   * taskAPI: 'Used existing TaskAPI and EnhancedTaskTool',
+   * taskAPI: 'Used existing TaskAPI and TaskCoordinator',
    * coordination: 'Integrated with TaskDistributionEngine',
    * adrTemplate: 'Used existing ADR template structure',
    * infrastructure: 'Leveraged existing coordination and task management',

@@ -4,7 +4,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { BackendInterface } from '../backends/base.backend';
+import type { BackendInterface } from '../../core/memory-system';
 
 export interface PerformanceMetrics {
   operationsPerSecond: number;

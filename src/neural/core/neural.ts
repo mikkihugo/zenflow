@@ -269,19 +269,13 @@ class NeuralCLI {
         ];
         const neuralModels = ['attention', 'lstm', 'transformer'];
         for (const pattern of cognitivePatterns) {
-          if (patterns[pattern]) {
-            for (const [_category, items] of Object.entries(patterns[pattern])) {
-              if (Array.isArray(items)) {
-                items.forEach((_item) => {});
-              }
-            }
+          for (const [_category, items] of Object.entries(patterns[pattern])) {
+            (items as any[]).forEach((_item) => {});
           }
         }
         for (const model of neuralModels) {
           for (const [_category, items] of Object.entries(patterns[model])) {
-            if (Array.isArray(items)) {
-              items.forEach((_item) => {});
-            }
+            (items as any[]).forEach((_item) => {});
           }
         }
       } else {
@@ -455,7 +449,7 @@ class NeuralCLI {
                 accuracyCount++;
 
                 if (accuracy > bestModel.accuracy) {
-                  bestModel = { name: modelType, accuracy: parseFloat(accuracy.toFixed(1)) };
+                  bestModel = { name: modelType, accuracy: Number(accuracy.toFixed(1)) };
                 }
               }
             }

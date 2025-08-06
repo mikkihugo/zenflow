@@ -212,10 +212,11 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
           ],
         },
       ],
+      coreAlgorithms: [],
       dataStructures: [
         {
           name: 'AgentRegistry',
-          type: 'HashMap',
+          type: 'class',
           properties: [
             {
               name: 'agents',
@@ -252,7 +253,7 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
         },
         {
           name: 'TaskQueue',
-          type: 'PriorityQueue',
+          type: 'class',
           properties: [
             {
               name: 'tasks',

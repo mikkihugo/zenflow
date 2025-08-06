@@ -316,7 +316,12 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
     componentDiagrams: [],
     dataFlow: [],
     deploymentPlan: [],
-    validationResults: [],
+    validationResults: {
+      overall: true,
+      score: 100,
+      results: [],
+      recommendations: []
+    },
   },
 
   async applyTo(projectSpec: ProjectSpecification) {

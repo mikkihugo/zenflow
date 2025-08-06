@@ -817,8 +817,8 @@ END
     relationships: [
       {
         id: nanoid(),
-        sourceId: 'api-gateway',
-        targetId: 'authentication-service',
+        source: 'api-gateway',
+        target: 'authentication-service',
         type: 'uses',
         description: 'Gateway uses auth service for request authentication',
         strength: 'strong',
@@ -826,8 +826,8 @@ END
       },
       {
         id: nanoid(),
-        sourceId: 'api-gateway',
-        targetId: 'validation-service',
+        source: 'api-gateway',
+        target: 'validation-service',
         type: 'uses',
         description: 'Gateway uses validation service for request validation',
         strength: 'strong',
@@ -835,8 +835,8 @@ END
       },
       {
         id: nanoid(),
-        sourceId: 'api-gateway',
-        targetId: 'rate-limiting-service',
+        source: 'api-gateway',
+        target: 'rate-limiting-service',
         type: 'uses',
         description: 'Gateway enforces rate limits through rate limiting service',
         strength: 'medium',
@@ -844,8 +844,8 @@ END
       },
       {
         id: nanoid(),
-        sourceId: 'api-gateway',
-        targetId: 'response-cache-service',
+        source: 'api-gateway',
+        target: 'response-cache-service',
         type: 'uses',
         description: 'Gateway uses cache service for response optimization',
         strength: 'medium',

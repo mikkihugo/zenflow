@@ -21,6 +21,7 @@ export interface SPARCRoadmapPlanning {
 }
 
 export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
+  private readonly projectRoot: string;
   private readonly roadmapFile: string;
   private readonly epicsFile: string;
   private readonly featuresFile: string;

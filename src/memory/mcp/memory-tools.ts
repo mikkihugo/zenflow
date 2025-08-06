@@ -3,8 +3,8 @@
  * Comprehensive MCP tools for advanced memory system coordination and management
  */
 
-import type { BackendInterface } from '../backends/base.backend';
-import { BackendFactory } from '../backends/factory';
+import type { BackendInterface } from '../../core/memory-system';
+// TODO: Update BackendFactory import path
 import { type MemoryCoordinationConfig, MemoryCoordinator } from '../core/memory-coordinator';
 import {
   type OptimizationConfig,

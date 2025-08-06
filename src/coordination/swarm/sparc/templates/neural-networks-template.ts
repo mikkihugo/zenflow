@@ -709,8 +709,8 @@ END
     relationships: [
       {
         id: nanoid(),
-        sourceId: 'wasm-neural-engine',
-        targetId: 'tensor-storage-manager',
+        source: 'wasm-neural-engine',
+        target: 'tensor-storage-manager',
         type: 'uses',
         description: 'Neural engine uses tensor storage for data management',
         strength: 'strong',
@@ -718,8 +718,8 @@ END
       },
       {
         id: nanoid(),
-        sourceId: 'distributed-training-coordinator',
-        targetId: 'wasm-neural-engine',
+        source: 'distributed-training-coordinator',
+        target: 'wasm-neural-engine',
         type: 'orchestrates',
         description: 'Training coordinator orchestrates neural engine instances',
         strength: 'medium',
@@ -727,8 +727,8 @@ END
       },
       {
         id: nanoid(),
-        sourceId: 'model-registry-service',
-        targetId: 'wasm-neural-engine',
+        source: 'model-registry-service',
+        target: 'wasm-neural-engine',
         type: 'provides-models',
         description: 'Registry provides trained models to engine',
         strength: 'medium',

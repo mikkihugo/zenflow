@@ -8,7 +8,7 @@
 
 import type { DALFactory } from '../../database/factory.js';
 import type { ICoordinationRepository, IVectorRepository } from '../../database/interfaces.js';
-import { Inject, Injectable } from '../../di/decorators/injectable';
+import { inject, injectable } from '../../di/decorators/injectable';
 import {
   CORE_TOKENS,
   DATABASE_TOKENS,
@@ -61,12 +61,12 @@ export interface MemoryConfig {
  *
  * @example
  */
-@Injectable()
+@injectable
 export class MemoryProviderFactory {
   constructor(
-    @Inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @Inject(CORE_TOKENS.Config) private config: IConfig,
-    @Inject(DATABASE_TOKENS.DALFactory) private dalFactory: DALFactory
+    @inject(CORE_TOKENS.Logger) private logger: ILogger,
+    @inject(CORE_TOKENS.Config) private config: IConfig,
+    @inject(DATABASE_TOKENS.DALFactory) private dalFactory: DALFactory
   ) {}
 
   /**
@@ -104,7 +104,7 @@ export class MemoryProviderFactory {
  *
  * @example
  */
-@Injectable()
+@injectable
 export class SqliteMemoryBackend implements MemoryBackend {
   private repository: ICoordinationRepository<any>;
   private initialized = false;
@@ -138,8 +138,9 @@ export class SqliteMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      const results = await this.repository.findByCriteria({ id: key });
-      return results.length > 0 ? results[0].data : null;
+      const results = await this.repository.findAll({});
+      const filtered = results.filter((r: any) => r.id === key);
+      return filtered.length > 0 ? filtered[0].data : null;
     } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;
@@ -164,7 +165,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      const allEntries = await this.repository.findByCriteria({});
+      const allEntries = await this.repository.findAll({});
       for (const entry of allEntries) {
         await this.repository.delete(entry.id);
       }
@@ -179,7 +180,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      const allEntries = await this.repository.findByCriteria({});
+      const allEntries = await this.repository.findAll({});
       return allEntries.length;
     } catch (error) {
       this.logger.error(`Failed to get size: ${error}`);
@@ -191,7 +192,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
     try {
       await this.ensureInitialized();
       // Test basic operation
-      await this.repository.findByCriteria({ limit: 1 });
+      await this.repository.findAll({ limit: 1 });
       return true;
     } catch (error) {
       this.logger.error(`Health check failed: ${error}`);
@@ -219,7 +220,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
  *
  * @example
  */
-@Injectable()
+@injectable
 export class LanceDBMemoryBackend implements MemoryBackend {
   private repository: IVectorRepository<any>;
   private initialized = false;
@@ -238,7 +239,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
       // Generate a simple vector representation for the key-value pair
       const vector = this.generateVectorFromValue(value);
 
-      await this.repository.addVector({
+      await this.repository.addVectors([{
         id: key,
         vector,
         metadata: {
@@ -246,7 +247,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
           storageType: 'memory',
           createdAt: new Date().toISOString(),
         },
-      });
+      }]);
       this.logger.debug(`Successfully stored key: ${key}`);
     } catch (error) {
       this.logger.error(`Failed to store key ${key}: ${error}`);
@@ -259,7 +260,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      const results = await this.repository.searchSimilar([0], { limit: 1000 });
+      const results = await this.repository.similaritySearch([0], { limit: 1000 });
       const match = results.find((r) => r.id === key);
       return match?.metadata?.originalValue || null;
     } catch (error) {
@@ -273,7 +274,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      await this.repository.deleteVector(key);
+      await this.repository.delete(key);
       this.logger.debug(`Successfully deleted key: ${key}`);
     } catch (error) {
       this.logger.error(`Failed to delete key ${key}: ${error}`);
@@ -287,9 +288,9 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
     try {
       // Get all vectors and delete them
-      const allVectors = await this.repository.searchSimilar([0], { limit: 10000 });
+      const allVectors = await this.repository.similaritySearch([0], { limit: 10000 });
       for (const vector of allVectors) {
-        await this.repository.deleteVector(vector.id);
+        await this.repository.delete(vector.id);
       }
       this.logger.info('Successfully cleared all data');
     } catch (error) {
@@ -302,7 +303,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     await this.ensureInitialized();
 
     try {
-      const allVectors = await this.repository.searchSimilar([0], { limit: 10000 });
+      const allVectors = await this.repository.similaritySearch([0], { limit: 10000 });
       return allVectors.length;
     } catch (error) {
       this.logger.error(`Failed to get size: ${error}`);
@@ -314,7 +315,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     try {
       await this.ensureInitialized();
       // Test basic operation
-      await this.repository.searchSimilar([0], { limit: 1 });
+      await this.repository.similaritySearch([0], { limit: 1 });
       return true;
     } catch (error) {
       this.logger.error(`Health check failed: ${error}`);
@@ -358,7 +359,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
  *
  * @example
  */
-@Injectable()
+@injectable
 export class JsonMemoryBackend implements MemoryBackend {
   private data = new Map<string, any>();
   private initialized = false;
@@ -468,7 +469,7 @@ export class JsonMemoryBackend implements MemoryBackend {
  *
  * @example
  */
-@Injectable()
+@injectable
 export class InMemoryBackend implements MemoryBackend {
   private data = new Map<string, any>();
   private readonly maxSize: number;

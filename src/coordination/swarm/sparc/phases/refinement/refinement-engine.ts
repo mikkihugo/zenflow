@@ -93,7 +93,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
       technicalDebtAnalysis: await this.analyzeTechnicalDebt(refinedArchitecture),
       recommendedNextSteps: await this.generateNextStepsRecommendations(improvementMetrics),
       // Additional metrics for MCP tools
-      performanceGain: improvementMetrics.reduce((sum, m) => sum + m.value, 0),
+      performanceGain: improvementMetrics.reduce((sum, m) => sum + m.improvementPercentage, 0),
       resourceReduction: performanceOptimizations.length * 10, // Estimate based on optimizations
       scalabilityIncrease: scalabilityOptimizations.length * 15, // Estimate based on optimizations
       maintainabilityImprovement: codeQualityOptimizations.length * 5, // Estimate based on optimizations

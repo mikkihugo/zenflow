@@ -9,7 +9,7 @@ import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 import { ProductWorkflowEngine } from '../../coordination/orchestration/product-workflow-engine';
 import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine';
 import { ProductFlowSystem } from '../../core/product-flow-system';
-import { UnifiedMemorySystem } from '../../core/unified-memory-system';
+import { MemorySystem } from '../../core/memory-system';
 import { DatabaseCoordinator } from '../../database/core/database-coordinator';
 
 describe('E2E: Complete Product Flow → SPARC Integration', () => {
@@ -20,7 +20,10 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
 
   beforeAll(async () => {
     // Initialize complete system stack
-    const memorySystem = new UnifiedMemorySystem();
+    const memorySystem = new MemorySystem({
+      backend: 'json',
+      path: './e2e-test-memory'
+    });
     const databaseCoordinator = new DatabaseCoordinator();
     const documentService = new DocumentService(databaseCoordinator);
 

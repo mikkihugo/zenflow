@@ -427,9 +427,9 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
    */
   private determineOptimalLoadBalancing(
     swarmSize: number
-  ): 'round_robin' | 'least_connections' | 'weighted' | 'adaptive' {
-    if (swarmSize < 100) return 'round_robin';
-    if (swarmSize < 1000) return 'least_connections';
+  ): 'round-robin' | 'least-connections' | 'weighted' | 'adaptive' {
+    if (swarmSize < 100) return 'round-robin';
+    if (swarmSize < 1000) return 'least-connections';
     if (swarmSize < 5000) return 'weighted';
     return 'adaptive';
   }

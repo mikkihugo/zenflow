@@ -1128,7 +1128,12 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
       }
     }
 
-    return validationResults;
+    return {
+      overall: validationResults.every(r => r.passed),
+      score: validationResults.reduce((sum, r) => sum + r.score, 0) / validationResults.length * 100,
+      results: validationResults,
+      recommendations: validationResults.filter(r => !r.passed).map(r => r.feedback || ''),
+    };
   }
 
   /**

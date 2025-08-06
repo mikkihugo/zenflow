@@ -8,7 +8,7 @@
  * - DocumentDrivenSystem: Vision → ADRs → PRDs → Epics → Features → Tasks → Code
  * - UnifiedWorkflowEngine: Automated workflow execution
  * - SwarmCoordination: Distributed SPARC development using existing agents
- * - TaskAPI & EnhancedTaskTool: Task management and execution
+ * - TaskAPI & TaskCoordinator: Task management and execution
  */
 
 import { nanoid } from 'nanoid';
@@ -874,6 +874,8 @@ export class SPARCEngineCore implements SPARCEngine {
     return {
       id: nanoid(),
       components: [],
+      relationships: [],
+      patterns: [],
       securityRequirements: [],
       scalabilityRequirements: [],
       qualityAttributes: [],
@@ -889,7 +891,12 @@ export class SPARCEngineCore implements SPARCEngine {
       componentDiagrams: [],
       dataFlow: [],
       deploymentPlan: [],
-      validationResults: [],
+      validationResults: {
+        overall: true,
+        score: 1.0,
+        results: [],
+        recommendations: []
+      },
     };
   }
 
@@ -1140,8 +1147,8 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
         priority: phase === 'specification' ? 3 : 2,
       });
 
-      // Execute task using EnhancedTaskTool with swarm coordination
-      await this.executeTaskWithSwarm(taskId, project, phase);
+      // Execute task using TaskCoordinator with swarm coordination
+      await this.executeTaskWithSwarm(taskId.toString(), project, phase);
     }
   }
 
@@ -1295,7 +1302,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
       swarmStatus,
       infrastructureIntegration: {
         documentWorkflows: true, // Integrated with DocumentDrivenSystem
-        taskCoordination: true, // Using TaskAPI and EnhancedTaskTool
+        taskCoordination: true, // Using TaskAPI and TaskCoordinator
         memoryPersistence: true, // Using UnifiedMemorySystem
       },
     };

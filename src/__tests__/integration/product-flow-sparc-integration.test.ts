@@ -13,7 +13,7 @@ import { ProductWorkflowEngine } from '../../coordination/orchestration/product-
 import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine';
 import type { SPARCPhase, SPARCProject } from '../../coordination/swarm/sparc/types/sparc-types';
 import { ProductFlowSystem } from '../../core/product-flow-system';
-import { UnifiedMemorySystem } from '../../core/unified-memory-system';
+import { MemorySystem } from '../../core/memory-system';
 import { DatabaseCoordinator } from '../../database/core/database-coordinator';
 import type {
   FeatureDocumentEntity,
@@ -24,15 +24,14 @@ describe('Product Flow + SPARC Integration', () => {
   let productWorkflowEngine: ProductWorkflowEngine;
   let productFlowSystem: ProductFlowSystem;
   let sparcEngine: SPARCEngineCore;
-  let memorySystem: UnifiedMemorySystem;
+  let memorySystem: MemorySystem;
   let documentService: DocumentService;
 
   beforeEach(async () => {
     // Initialize test dependencies with proper configuration
-    memorySystem = new UnifiedMemorySystem({
-      backend: 'memory',
-      persistPath: './test-memory',
-      maxMemoryMB: 512,
+    memorySystem = new MemorySystem({
+      backend: 'json',
+      path: './test-memory',
     });
     const databaseCoordinator = new DatabaseCoordinator();
     documentService = new DocumentService(databaseCoordinator);

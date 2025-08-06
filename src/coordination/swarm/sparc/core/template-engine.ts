@@ -521,6 +521,8 @@ export class TemplateEngine {
     return {
       id: nanoid(),
       components: [],
+      relationships: [],
+      patterns: [],
       securityRequirements: [],
       scalabilityRequirements: [],
       qualityAttributes: [],
@@ -536,7 +538,12 @@ export class TemplateEngine {
       componentDiagrams: [],
       dataFlow: [],
       deploymentPlan: [],
-      validationResults: [],
+      validationResults: {
+        overall: true,
+        score: 100,
+        results: [],
+        recommendations: []
+      },
     };
   }
 }

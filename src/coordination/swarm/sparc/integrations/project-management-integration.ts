@@ -3,7 +3,7 @@
  *
  * Integrates SPARC methodology with existing sophisticated infrastructure:
  * - DocumentDrivenSystem (core document workflow)
- * - UnifiedWorkflowEngine (Vision → ADRs → PRDs → Epics → Features → Tasks → Code)
+ * - WorkflowEngine (Vision → ADRs → PRDs → Epics → Features → Tasks → Code)
  * - TaskAPI & EnhancedTaskTool (coordination)
  * - Existing ADR templates and project management systems
  */
@@ -11,7 +11,10 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { TaskAPI } from '../../../api';
+import { TaskCoordinator, type TaskConfig } from '../../../task-coordinator';
 import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
+import { WorkflowEngine } from '../../../../core/workflow-engine';
+import { MemorySystem } from '../../../../core/memory-system';
 import type { DetailedSpecification, SPARCProject } from '../types/sparc-types';
 
 // Task Management Integration Types
@@ -142,14 +145,23 @@ export class ProjectManagementIntegration {
   private readonly prdDir: string;
   private readonly featuresFile: string;
   private readonly epicsFile: string;
-  private readonly taskTool: EnhancedTaskTool;
+  private readonly roadmapFile: string;
+  private readonly taskTool: TaskCoordinator;
+  private readonly taskDistributor: any;
+  private readonly logger?: any;
 
   // Enhanced infrastructure integration
   private documentDrivenSystem: DocumentDrivenSystem;
-  private workflowEngine: UnifiedWorkflowEngine;
-  private memorySystem: UnifiedMemorySystem;
+  private workflowEngine?: WorkflowEngine;
+  private memorySystem: MemorySystem;
 
-  constructor(projectRoot: string = process.cwd()) {
+  constructor(
+    projectRoot: string = process.cwd(),
+    workflowEngine?: WorkflowEngine,
+    memorySystem?: MemorySystem,
+    logger?: any
+  ) {
+    this.logger = logger;
     this.projectRoot = projectRoot;
     this.tasksFile = path.join(projectRoot, 'tasks.json');
     this.adrDir = path.join(projectRoot, 'docs', 'adrs');
@@ -159,14 +171,17 @@ export class ProjectManagementIntegration {
     this.roadmapFile = path.join(projectRoot, 'docs', 'roadmap.json');
 
     // Use existing Claude-Zen infrastructure (with minimal setup to avoid dependency issues)
-    this.taskTool = EnhancedTaskTool.getInstance();
+    this.taskTool = TaskCoordinator.getInstance();
     // Note: TaskDistributionEngine requires complex setup, will use TaskAPI instead
     this.taskDistributor = null;
 
     // Initialize sophisticated document-driven infrastructure
-    this.memorySystem = new UnifiedMemorySystem();
+    this.memorySystem = memorySystem || new MemorySystem({
+      backend: 'json',
+      path: path.join(projectRoot, '.memory')
+    });
     this.documentDrivenSystem = new DocumentDrivenSystem();
-    this.workflowEngine = new UnifiedWorkflowEngine(this.memorySystem);
+    this.workflowEngine = workflowEngine; // Optional - can be provided externally
   }
 
   /**
@@ -175,7 +190,9 @@ export class ProjectManagementIntegration {
   async initialize(): Promise<void> {
     await this.memorySystem.initialize();
     await this.documentDrivenSystem.initialize();
-    await this.workflowEngine.initialize();
+    if (this.workflowEngine) {
+      await this.workflowEngine.initialize();
+    }
   }
 
   /**
@@ -229,12 +246,12 @@ export class ProjectManagementIntegration {
 
     if (artifactTypes.includes('all') || artifactTypes.includes('adrs')) {
       results.adrs = await this.generateADRFromSPARC(project);
-      await this.createADRFiles(results.adrs);
+      await this.createADRFiles(project);
     }
 
     if (artifactTypes.includes('all') || artifactTypes.includes('prd')) {
       results.prd = await this.generatePRDFromSPARC(project);
-      await this.createPRDFile(results.prd);
+      await this.createPRDFile(project);
     }
 
     if (artifactTypes.includes('all') || artifactTypes.includes('epics')) {
@@ -283,7 +300,7 @@ ${project.specification.acceptanceCriteria
 ${project.specification.constraints.map((constraint) => `- ${constraint.description}`).join('\n')}
 
 ## Dependencies
-${project.specification.dependencies.map((dep) => `- ${dep.name}: ${dep.description}`).join('\n')}
+${project.specification.dependencies.map((dep) => `- ${dep.name} (${dep.type}): ${dep.version || 'latest'}${dep.critical ? ' [CRITICAL]' : ''}`).join('\n')}
 
 ---
 Author: SPARC Engine
@@ -325,15 +342,28 @@ Related: SPARC-${project.id}
 
     for (const workflowName of workflows) {
       try {
-        const result = await this.workflowEngine.startWorkflow(workflowName, {
-          workspaceId,
-          currentDocument: {
-            type: 'vision',
-            content: visionDocument.content,
-            metadata: { source: 'sparc', projectId: workspaceId },
-          },
-          workspace: this.projectRoot,
-        });
+        const result = this.workflowEngine 
+          ? await this.workflowEngine.startWorkflow(workflowName, {
+              currentDocument: {
+                id: `vision-${workspaceId}-${Date.now()}`,
+                type: 'vision',
+                title: 'Vision Document',
+                content: visionDocument.content,
+                metadata: { 
+                  author: 'SPARC Engine', 
+                  tags: [workspaceId], 
+                  status: 'draft' as const, 
+                  priority: 'medium' as const, 
+                  dependencies: [], 
+                  relatedDocuments: [] 
+                },
+                created: new Date(),
+                updated: new Date(),
+                version: '1.0.0',
+              },
+              workspaceId: this.projectRoot,
+            })
+          : { success: false, error: 'WorkflowEngine not available' };
 
         if (result.success && result.workflowId) {
           results[workflowName] = result.workflowId;
@@ -363,7 +393,7 @@ Related: SPARC-${project.id}
       const taskId = `SPARC-${project.id.toUpperCase()}-${taskCounter.toString().padStart(3, '0')}`;
 
       // Create enhanced task configuration for existing infrastructure
-      const enhancedTaskConfig: EnhancedTaskConfig = {
+      const enhancedTaskConfig: TaskConfig = {
         description: `${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase - ${project.name}`,
         prompt: this.generatePhasePrompt(phase, project),
         subagent_type: this.getOptimalAgentForPhase(phase),
@@ -463,7 +493,7 @@ Related: SPARC-${project.id}
       const sparcTasks = await this.generateTasksFromSPARC(project);
 
       for (const task of sparcTasks) {
-        const enhancedTaskConfig: EnhancedTaskConfig = {
+        const enhancedTaskConfig: TaskConfig = {
           description: task.description,
           prompt: this.generatePhasePrompt(task.component.replace('sparc-', ''), project),
           subagent_type: this.getOptimalAgentForPhase(task.component.replace('sparc-', '')),
@@ -924,37 +954,7 @@ Related: SPARC-${project.id}
    *
    * @param project
    */
-  async createAllProjectManagementArtifacts(project: SPARCProject): Promise<{
-    tasks: Task[];
-    adrs: ADR[];
-    prd: PRD;
-    epics: Epic[];
-    features: Feature[];
-  }> {
-    try {
-      // Create tasks using existing infrastructure
-      await this.updateTasksWithSPARC(project);
-      await this.distributeTasksWithCoordination(project);
-      const tasks = await this.generateTasksFromSPARC(project);
-
-      // Create ADRs using existing template
-      await this.createADRFiles(project);
-      const adrs = await this.generateADRFromSPARC(project);
-
-      // Create PRD
-      await this.createPRDFile(project);
-      const prd = await this.generatePRDFromSPARC(project);
-
-      // Create epics and features
-      const epics = await this.createEpicsFromSPARC(project);
-      const features = await this.createFeaturesFromSPARC(project);
-
-      return { tasks, adrs, prd, epics, features };
-    } catch (error) {
-      console.error('Failed to create project management artifacts:', error);
-      throw error;
-    }
-  }
+  // Duplicate method createAllProjectManagementArtifacts removed
 
   // Helper methods
   private getPhaseDescription(phase: string): string {

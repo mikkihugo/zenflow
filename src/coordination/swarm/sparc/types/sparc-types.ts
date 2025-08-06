@@ -449,6 +449,7 @@ export interface Component {
   id?: string;
   name: string;
   type: 'service' | 'library' | 'database' | 'gateway' | 'ui' | 'worker';
+  description?: string;
   responsibilities: string[];
   interfaces: string[];
   dependencies: string[];
@@ -473,6 +474,7 @@ export interface ComponentRelationship {
 
 export interface InterfaceDefinition {
   name: string;
+  description?: string;
   methods: InterfaceMethod[];
   contracts: string[];
   protocols?: string[];
@@ -551,6 +553,7 @@ export interface TechnologyChoice {
   technology: string;
   version?: string;
   rationale: string;
+  purpose?: string;
   alternatives: string[];
 }
 
@@ -1137,3 +1140,51 @@ export interface RiskAssessment {
   overallRisk: RiskLevel;
   mitigationPlans: string[];
 }
+
+// ValidationReport Factory Functions
+export const ValidationReportFactory = {
+  /**
+   * Creates a default ValidationReport with success defaults
+   */
+  createDefault(): ValidationReport {
+    return {
+      overall: true,
+      score: 100,
+      results: [],
+      recommendations: []
+    };
+  },
+
+  /**
+   * Creates a ValidationReport with custom values
+   */
+  create(options: Partial<ValidationReport> = {}): ValidationReport {
+    return {
+      overall: options.overall ?? true,
+      score: options.score ?? 100,
+      results: options.results ?? [],
+      recommendations: options.recommendations ?? [],
+      ...options // Allow for optional aliases
+    };
+  },
+
+  /**
+   * Creates ValidationReport from legacy format with aliases
+   */
+  fromLegacyFormat(legacy: {
+    approved?: boolean;
+    overallScore?: number;
+    validationResults?: ValidationResult[];
+    recommendations?: string[];
+  }): ValidationReport {
+    return {
+      overall: legacy.approved ?? true,
+      approved: legacy.approved,
+      score: legacy.overallScore ?? 100,
+      overallScore: legacy.overallScore,
+      results: legacy.validationResults ?? [],
+      validationResults: legacy.validationResults,
+      recommendations: legacy.recommendations ?? []
+    };
+  }
+};

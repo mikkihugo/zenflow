@@ -4,8 +4,8 @@
 
 import { EventEmitter } from 'node:events';
 import type { IMemoryStore, MemoryStats, StoreOptions } from '../core/interfaces/base-interfaces';
-import type { BackendConfig, BackendInterface, JSONValue } from './backends/base.backend';
-import { BackendFactory } from './backends/factory';
+import type { BackendInterface, JSONValue } from '../core/memory-system';
+// import { BackendFactory } from './backends/factory'; // TODO: Update factory import path
 
 interface SessionMemoryStoreOptions {
   backendConfig: BackendConfig;
@@ -305,7 +305,7 @@ export class MemoryManager {
     await this.store.initialize();
   }
 
-  async store(key: string, data: any): Promise<void> {
+  async storeData(key: string, data: any): Promise<void> {
     return this.store.store('default', key, data);
   }
 

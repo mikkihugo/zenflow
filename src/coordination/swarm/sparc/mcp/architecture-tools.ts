@@ -11,7 +11,7 @@ import type {
   ArchitectureDesign,
   DetailedSpecification,
   PseudocodeStructure,
-} from '../../types/sparc-types';
+} from '../types/sparc-types';
 import { ArchitectureStorageService } from '../database/architecture-storage';
 import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
 
@@ -461,6 +461,8 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
         validationResults:
           await this.architectureEngine.validateArchitecturalConsistency(systemArchitecture),
         components: systemArchitecture.components,
+        relationships: [], // Component relationships
+        patterns: [], // Architectural patterns
         securityRequirements: [], // Will be populated by the engine
         scalabilityRequirements: [], // Will be populated by the engine
         qualityAttributes: systemArchitecture.qualityAttributes,
@@ -536,10 +538,13 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
       return {
         success: false,
         validation: {
+          overall: false,
+          approved: false,
+          score: 0,
           overallScore: 0,
+          results: [],
           validationResults: [],
           recommendations: [],
-          approved: false,
         },
         recommendations: [],
         message: `Architecture validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
