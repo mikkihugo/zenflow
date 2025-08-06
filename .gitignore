@@ -64,6 +64,7 @@ node_modules
 *.sqlite3
 claude-zen-memory.db
 tasks.db
+qdrant_storage/
 
 # Coverage and test reports
 coverage/
