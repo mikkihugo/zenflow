@@ -65,13 +65,21 @@ export interface EpisodicMemory {
   importance: number;
 }
 
-export interface Task extends Omit<BaseTask, 'dependencies' | 'assignedAgents'> {
+export interface Task {
   id: string;
+  swarmId: string;
   description: string;
   priority: TaskPriority;
+  strategy: string;
+  status: TaskStatus;
+  progress: number;
   dependencies?: string[];
   assignedAgents?: string[];
-  status: TaskStatus;
+  requireConsensus: boolean;
+  maxAgents: number;
+  requiredCapabilities: string[];
+  createdAt: Date;
+  metadata: Record<string, any>;
   result?: any;
   error?: Error;
 }
