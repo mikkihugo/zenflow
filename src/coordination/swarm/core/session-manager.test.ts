@@ -320,7 +320,7 @@ describe('SessionEnabledSwarm', () => {
       persistence
     );
 
-    await swarm.init();
+    await swarm.initialize();
   });
 
   afterEach(async () => {
@@ -596,7 +596,7 @@ describe('Session Management Integration', () => {
       persistence
     );
 
-    await swarm.init();
+    await swarm.initialize();
 
     try {
       // Create session
@@ -604,7 +604,7 @@ describe('Session Management Integration', () => {
       expect(sessionId).toBeDefined();
 
       // Add agents and tasks
-      const _agentId = swarm.addAgent({
+      const _agentId = await swarm.addAgent({
         id: 'test-agent',
         type: 'researcher',
       });
@@ -612,6 +612,16 @@ describe('Session Management Integration', () => {
       const _taskId = await swarm.submitTask({
         description: 'Test task',
         priority: 'medium',
+        dependencies: [],
+        assignedAgents: [],
+        swarmId: 'default',
+        strategy: 'balanced',
+        progress: 0,
+        requireConsensus: false,
+        maxAgents: 5,
+        requiredCapabilities: [],
+        createdAt: new Date(),
+        metadata: {}
       });
 
       // Create checkpoint

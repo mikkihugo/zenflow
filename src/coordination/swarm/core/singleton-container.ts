@@ -1,8 +1,16 @@
 /**
+ * Registration options for singleton container
+ */
+interface RegistrationOptions {
+  lazy?: boolean;
+  singleton?: boolean;
+  dependencies?: string[];
+}
+
+/**
  * Singleton Container - Dependency Injection Pattern
  * Replaces global state management with proper IoC container
  */
-
 class SingletonContainer {
   public instances: Map<string, any>;
   public factories: Map<string, any>;
@@ -20,7 +28,7 @@ class SingletonContainer {
    * @param {Function} factory - Factory function to create instance
    * @param {Object} options - Configuration options
    */
-  register(key, factory, options = {}) {
+  register(key: string, factory: (...args: any[]) => any, options: RegistrationOptions = {}) {
     if (typeof factory !== 'function') {
       throw new Error(`Factory for '${key}' must be a function`);
     }
@@ -38,7 +46,7 @@ class SingletonContainer {
    * @param {string} key - Service identifier
    * @returns {*} Singleton instance
    */
-  get(key) {
+  get<T = any>(key: string): T {
     if (this.isDestroying) {
       throw new Error(`Cannot get instance '${key}' during container destruction`);
     }
@@ -77,7 +85,7 @@ class SingletonContainer {
    * @param {string} key - Service identifier
    * @returns {boolean} True if registered
    */
-  has(key) {
+  has(key: string): boolean {
     return this.factories.has(key) || this.instances.has(key);
   }
 
@@ -85,7 +93,7 @@ class SingletonContainer {
    * Clear specific instance (force recreation)
    * @param {string} key - Service identifier
    */
-  clear(key) {
+  clear(key: string): void {
     const instance = this.instances.get(key);
     if (instance && typeof instance.destroy === 'function') {
       instance.destroy();
@@ -96,7 +104,7 @@ class SingletonContainer {
   /**
    * Destroy all instances and clear container
    */
-  destroy() {
+  destroy(): void {
     this.isDestroying = true;
 
     // Destroy instances in reverse order of creation
@@ -122,7 +130,7 @@ class SingletonContainer {
   /**
    * Reset container state (for testing)
    */
-  reset() {
+  reset(): void {
     this.destroy();
     this.isDestroying = false;
   }
@@ -131,7 +139,7 @@ class SingletonContainer {
    * Get container statistics
    * @returns {Object} Container stats
    */
-  getStats() {
+  getStats(): any {
     return {
       registeredServices: this.factories.size,
       activeInstances: this.instances.size,
@@ -142,13 +150,13 @@ class SingletonContainer {
 }
 
 // Global container instance (properly managed)
-let globalContainer = null;
+let globalContainer: SingletonContainer | null = null;
 
 /**
  * Get or create global container
  * @returns {SingletonContainer} Global container instance
  */
-export function getContainer() {
+export function getContainer(): SingletonContainer {
   if (!globalContainer) {
     globalContainer = new SingletonContainer();
 
@@ -177,7 +185,7 @@ export function getContainer() {
 /**
  * Reset global container (for testing)
  */
-export function resetContainer() {
+export function resetContainer(): void {
   if (globalContainer) {
     globalContainer.destroy();
   }

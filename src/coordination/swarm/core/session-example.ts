@@ -32,25 +32,25 @@ async function basicSessionExample() {
 
   try {
     // Initialize the swarm
-    await swarm.init();
+    await swarm.initialize();
 
     // Create a new session
     const sessionId = await swarm.createSession('ML Training Pipeline');
 
     // Add agents with different capabilities
-    const dataAgent = swarm.addAgent({
+    const dataAgent = await swarm.addAgent({
       id: 'data-processor',
       type: 'analyst',
       capabilities: ['data-preprocessing', 'feature-extraction'],
     });
 
-    const modelAgent = swarm.addAgent({
+    const modelAgent = await swarm.addAgent({
       id: 'model-trainer',
       type: 'researcher',
       capabilities: ['neural-networks', 'optimization'],
     });
 
-    const evaluatorAgent = swarm.addAgent({
+    const evaluatorAgent = await swarm.addAgent({
       id: 'model-evaluator',
       type: 'tester',
       capabilities: ['validation', 'metrics-calculation'],
@@ -61,6 +61,15 @@ async function basicSessionExample() {
       description: 'Preprocess training dataset',
       priority: 'high',
       assignedAgents: [dataAgent],
+      dependencies: [],
+      swarmId: 'default',
+      strategy: 'balanced',
+      progress: 0,
+      requireConsensus: false,
+      maxAgents: 5,
+      requiredCapabilities: [],
+      createdAt: new Date(),
+      metadata: {}
     });
 
     const trainingTask = await swarm.submitTask({
@@ -68,6 +77,14 @@ async function basicSessionExample() {
       priority: 'high',
       dependencies: [dataTask],
       assignedAgents: [modelAgent],
+      swarmId: 'default',
+      strategy: 'balanced',
+      progress: 0,
+      requireConsensus: false,
+      maxAgents: 5,
+      requiredCapabilities: [],
+      createdAt: new Date(),
+      metadata: {}
     });
 
     const _evaluationTask = await swarm.submitTask({
@@ -75,6 +92,14 @@ async function basicSessionExample() {
       priority: 'medium',
       dependencies: [trainingTask],
       assignedAgents: [evaluatorAgent],
+      swarmId: 'default',
+      strategy: 'balanced',
+      progress: 0,
+      requireConsensus: false,
+      maxAgents: 5,
+      requiredCapabilities: [],
+      createdAt: new Date(),
+      metadata: {}
     });
 
     // Create a manual checkpoint
@@ -102,13 +127,13 @@ async function sessionRecoveryExample(existingSessionId: string) {
   });
 
   try {
-    await swarm.init();
+    await swarm.initialize();
     await swarm.loadSession(existingSessionId);
 
     const currentSession = await swarm.getCurrentSession();
     if (currentSession) {
       // Add more work to the restored session
-      const optimizerAgent = swarm.addAgent({
+      const optimizerAgent = await swarm.addAgent({
         id: 'hyperparameter-optimizer',
         type: 'optimizer',
         capabilities: ['grid-search', 'bayesian-optimization'],
@@ -118,6 +143,15 @@ async function sessionRecoveryExample(existingSessionId: string) {
         description: 'Optimize hyperparameters',
         priority: 'medium',
         assignedAgents: [optimizerAgent],
+        dependencies: [],
+        swarmId: 'default',
+        strategy: 'balanced',
+        progress: 0,
+        requireConsensus: false,
+        maxAgents: 5,
+        requiredCapabilities: [],
+        createdAt: new Date(),
+        metadata: {}
       });
 
       // Create another checkpoint
@@ -280,7 +314,7 @@ async function advancedSessionExample() {
   );
 
   try {
-    await swarm.init();
+    await swarm.initialize();
 
     // Create session with event monitoring
     swarm.on('session:created', (_data: any) => {});
@@ -297,33 +331,37 @@ async function advancedSessionExample() {
     const agents = [
       {
         id: 'data-collector',
-        type: 'researcher',
+        type: 'researcher' as const,
         capabilities: ['web-scraping', 'api-integration'],
       },
       {
         id: 'data-cleaner',
-        type: 'analyst',
+        type: 'analyst' as const,
         capabilities: ['data-validation', 'outlier-detection'],
       },
       {
         id: 'feature-engineer',
-        type: 'architect',
+        type: 'architect' as const,
         capabilities: ['feature-selection', 'dimensionality-reduction'],
       },
-      { id: 'model-builder', type: 'coder', capabilities: ['deep-learning', 'ensemble-methods'] },
+      { id: 'model-builder', type: 'coder' as const, capabilities: ['deep-learning', 'ensemble-methods'] },
       {
         id: 'model-validator',
-        type: 'reviewer',
+        type: 'reviewer' as const,
         capabilities: ['cross-validation', 'performance-metrics'],
       },
       {
         id: 'deployment-manager',
-        type: 'architect',
+        type: 'architect' as const,
         capabilities: ['containerization', 'monitoring'],
       },
     ];
 
-    const agentIds = agents.map((agent) => swarm.addAgent(agent));
+    const agentIds = [];
+    for (const agent of agents) {
+      const agentId = await swarm.addAgent(agent);
+      agentIds.push(agentId);
+    }
 
     // Create complex task dependencies
     const tasks = [
@@ -332,36 +370,84 @@ async function advancedSessionExample() {
         priority: 'critical' as const,
         assignedAgents: [agentIds[0]],
         dependencies: [] as string[],
+        swarmId: 'advanced-pipeline',
+        strategy: 'balanced',
+        progress: 0,
+        requireConsensus: false,
+        maxAgents: 5,
+        requiredCapabilities: [] as string[],
+        createdAt: new Date(),
+        metadata: {}
       },
       {
         description: 'Clean and validate collected data',
         priority: 'high' as const,
         assignedAgents: [agentIds[1]],
         dependencies: [] as string[],
+        swarmId: 'advanced-pipeline',
+        strategy: 'balanced',
+        progress: 0,
+        requireConsensus: false,
+        maxAgents: 5,
+        requiredCapabilities: [] as string[],
+        createdAt: new Date(),
+        metadata: {}
       },
       {
         description: 'Engineer features from cleaned data',
         priority: 'high' as const,
         assignedAgents: [agentIds[2]],
         dependencies: [] as string[],
+        swarmId: 'advanced-pipeline',
+        strategy: 'balanced',
+        progress: 0,
+        requireConsensus: false,
+        maxAgents: 5,
+        requiredCapabilities: [] as string[],
+        createdAt: new Date(),
+        metadata: {}
       },
       {
         description: 'Build and train multiple models',
         priority: 'high' as const,
         assignedAgents: [agentIds[3]],
         dependencies: [] as string[],
+        swarmId: 'advanced-pipeline',
+        strategy: 'balanced',
+        progress: 0,
+        requireConsensus: false,
+        maxAgents: 5,
+        requiredCapabilities: [] as string[],
+        createdAt: new Date(),
+        metadata: {}
       },
       {
         description: 'Validate model performance',
         priority: 'medium' as const,
         assignedAgents: [agentIds[4]],
         dependencies: [] as string[],
+        swarmId: 'advanced-pipeline',
+        strategy: 'balanced',
+        progress: 0,
+        requireConsensus: false,
+        maxAgents: 5,
+        requiredCapabilities: [] as string[],
+        createdAt: new Date(),
+        metadata: {}
       },
       {
         description: 'Deploy best performing model',
         priority: 'medium' as const,
         assignedAgents: [agentIds[5]],
         dependencies: [] as string[],
+        swarmId: 'advanced-pipeline',
+        strategy: 'balanced',
+        progress: 0,
+        requireConsensus: false,
+        maxAgents: 5,
+        requiredCapabilities: [] as string[],
+        createdAt: new Date(),
+        metadata: {}
       },
     ];
 

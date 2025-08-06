@@ -40,7 +40,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
   private coordinationDao?: ICoordinationDao;
   private agentPool?: AgentPool;
   private wasmLoader: WasmModuleLoader;
-  private options: ExtendedSwarmOptions;
+  protected options: ExtendedSwarmOptions;
   private metrics: any;
   private neuralProcessor: any;
   private isRunning: boolean = false;
@@ -76,7 +76,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
     } as ExtendedSwarmOptions;
 
     this.swarmId = generateId('swarm');
-    this.wasmLoader = getContainer().get(WasmModuleLoader) || new WasmModuleLoader();
+    this.wasmLoader = getContainer().get<WasmModuleLoader>('WasmModuleLoader') || new WasmModuleLoader();
     this.isRunning = false;
 
     this.metrics = {
