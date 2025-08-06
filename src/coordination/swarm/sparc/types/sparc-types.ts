@@ -639,14 +639,20 @@ export interface ImplementationArtifacts {
   securityConfigurations: SecurityConfiguration[];
   documentationGeneration: DocumentationGeneration;
   productionReadinessChecks: ProductionReadinessCheck[];
+  codeGeneration: CodeGeneration;
+  testGeneration: TestGeneration;
 }
 
 export interface SourceCodeArtifact {
+  id?: string;
+  name?: string;
   path: string;
   content: string;
   language: string;
   type: 'implementation' | 'test' | 'configuration' | 'documentation';
   dependencies: string[];
+  estimatedLines?: number;
+  tests?: string[];
 }
 
 export interface TestSuite {
@@ -883,6 +889,33 @@ export type ConfigurationArtifact = ArtifactReference;
 export type DeploymentScript = ArtifactReference;
 export type MonitoringDashboard = ArtifactReference;
 export type SecurityConfiguration = ArtifactReference;
+export type DeploymentArtifact = ArtifactReference;
+export type TestArtifact = TestCase;
+export type DeploymentArtifacts = DeploymentScript[];
+
+// Additional completion engine types
+export interface CodeGeneration {
+  artifacts: SourceCodeArtifact[];
+  quality: number;
+  coverage: number;
+  estimatedMaintainability: number;
+}
+
+export interface TestGeneration {
+  testSuites: TestSuite[];
+  coverage: CoverageReport;
+  automationLevel: number;
+  estimatedReliability: number;
+}
+
+export interface ComplianceCheck {
+  name: string;
+  type: 'security' | 'performance' | 'accessibility' | 'regulatory';
+  passed: boolean;
+  score: number;
+  details: string;
+  recommendations: string[];
+}
 export type OptimizationSuggestion = OptimizationOpportunity;
 export type ArchitecturalRefinement = RefinementChange;
 

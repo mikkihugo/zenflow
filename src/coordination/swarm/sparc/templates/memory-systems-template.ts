@@ -33,10 +33,7 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
 
   specification: {
     id: nanoid(),
-    name: 'Multi-Backend Memory System',
     domain: 'memory-systems',
-    description:
-      'High-performance memory system supporting multiple storage backends with intelligent caching and consistency guarantees',
     functionalRequirements: [
       {
         id: nanoid(),
@@ -251,7 +248,6 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
     specificationId: 'memory-systems-spec',
     coreAlgorithms: [
       {
-        id: nanoid(),
         name: 'MultiBackendRead',
         description: 'Read data from multiple backends with intelligent fallback',
         pseudocode: `
@@ -295,9 +291,10 @@ BEGIN
 END
         `.trim(),
         complexity: {
-          time: 'O(b)' as const,
-          space: 'O(1)' as const,
-          explanation: 'Linear in number of backends, constant space for operation',
+          timeComplexity: 'O(b)',
+          spaceComplexity: 'O(1)',
+          scalability: 'Linear in backends',
+          worstCase: 'O(b)',
         },
         inputParameters: ['key', 'consistency_level', 'timeout'],
         outputFormat: 'ValueWithMetadata',
@@ -306,7 +303,6 @@ END
         invariants: ['Backend availability maintained', 'Cache consistency preserved'],
       },
       {
-        id: nanoid(),
         name: 'IntelligentCaching',
         description: 'Multi-layer caching with adaptive eviction policies',
         pseudocode: `
@@ -354,9 +350,10 @@ BEGIN
 END
         `.trim(),
         complexity: {
-          time: 'O(log n)' as const,
-          space: 'O(1)' as const,
-          explanation: 'Logarithmic time for cache operations, constant space per operation',
+          timeComplexity: 'O(log n)',
+          spaceComplexity: 'O(1)',
+          scalability: 'Good for large datasets',
+          worstCase: 'O(n)',
         },
         inputParameters: ['key', 'value', 'access_pattern', 'priority'],
         outputFormat: 'CacheResult',
@@ -365,7 +362,6 @@ END
         invariants: ['Cache hierarchy maintained', 'Eviction policies respected'],
       },
       {
-        id: nanoid(),
         name: 'ConsistencyManager',
         description: 'Manage data consistency across distributed storage nodes',
         pseudocode: `
@@ -433,9 +429,10 @@ BEGIN
 END
         `.trim(),
         complexity: {
-          time: 'O(n)' as const,
-          space: 'O(n)' as const,
-          explanation: 'Linear in number of nodes for consensus operations',
+          timeComplexity: 'O(n)',
+          spaceComplexity: 'O(n)',
+          scalability: 'Depends on node count',
+          worstCase: 'O(n²)',
         },
         inputParameters: ['operation', 'data', 'consistency_level', 'nodes'],
         outputFormat: 'ConsistencyResult',
@@ -446,9 +443,8 @@ END
     ],
     dataStructures: [
       {
-        id: nanoid(),
         name: 'MultiLayerCache',
-        type: 'Cache',
+        type: 'class',
         description: 'Hierarchical cache with L1, L2, and L3 layers',
         keyType: 'string',
         valueType: 'CacheEntry',
@@ -463,7 +459,7 @@ END
       {
         id: nanoid(),
         name: 'BackendRegistry',
-        type: 'HashMap',
+        type: 'class',
         description: 'Registry of available storage backends with health status',
         keyType: 'string',
         valueType: 'BackendInfo',
@@ -478,7 +474,7 @@ END
       {
         id: nanoid(),
         name: 'VectorClockMap',
-        type: 'HashMap',
+        type: 'class',
         description: 'Vector clocks for tracking causal relationships',
         keyType: 'string',
         valueType: 'VectorClock',

@@ -915,6 +915,23 @@ export class SPARCEngineCore implements SPARCEngine {
         quality: 0,
       },
       productionReadinessChecks: [],
+      codeGeneration: {
+        artifacts: [],
+        quality: 0,
+        coverage: 0,
+        estimatedMaintainability: 0
+      },
+      testGeneration: {
+        testSuites: [],
+        coverage: {
+          lines: 0,
+          functions: 0,
+          branches: 0,
+          statements: 0
+        },
+        automationLevel: 0,
+        estimatedReliability: 0
+      }
     };
   }
 
