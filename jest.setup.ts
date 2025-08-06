@@ -76,7 +76,7 @@ function setupJestConfiguration() {
   // Configure global test utilities if needed
   if (typeof globalThis !== 'undefined') {
     // Add any global test utilities here
-    (globalThis as unknown as { testUtils?: any }).testUtils = {
+    (globalThis as unknown as { testUtils?: unknown }).testUtils = {
       // Add shared test utilities
     };
   }

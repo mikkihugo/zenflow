@@ -116,15 +116,11 @@ async function sessionManagementExample() {
   const adapter = new CoordinationServiceAdapter(config);
   await adapter.initialize();
   await adapter.start();
-  const { sessionId, monitoringId } = await createManagedSession(
-    adapter,
-    'example-workflow-session',
-    {
-      autoCheckpoint: true,
-      checkpointInterval: 120000, // 2 minutes
-      maxDuration: 1800000, // 30 minutes
-    }
-  );
+  const { sessionId } = await createManagedSession(adapter, 'example-workflow-session', {
+    autoCheckpoint: true,
+    checkpointInterval: 120000, // 2 minutes
+    maxDuration: 1800000, // 30 minutes
+  });
 
   // Perform some session operations
   const _saveResult = await adapter.execute('session-save', { sessionId });

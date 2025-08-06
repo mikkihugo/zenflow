@@ -86,6 +86,7 @@ pub mod math {
         
         let mut result = vec![vec![T::zero(); cols_b]; rows_a];
         
+        #[allow(clippy::needless_range_loop)]
         for i in 0..rows_a {
             for j in 0..cols_b {
                 for k in 0..cols_a {

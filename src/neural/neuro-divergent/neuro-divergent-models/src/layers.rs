@@ -60,6 +60,7 @@ impl Dense {
 
 /// Activation layer wrapper
 pub struct Activation<A> {
+    #[allow(dead_code)]
     activation: A,
 }
 
@@ -74,7 +75,9 @@ pub struct LayerNorm {
     gamma: Array1<f64>,
     beta: Array1<f64>,
     eps: f64,
+    #[allow(dead_code)]
     grad_gamma: Option<Array1<f64>>,
+    #[allow(dead_code)]
     grad_beta: Option<Array1<f64>>,
 }
 

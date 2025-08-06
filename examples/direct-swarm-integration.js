@@ -38,7 +38,9 @@ async function demonstrateDirectSwarmIntegration() {
     const status = await orchestrator.getSwarmStatus();
 
     if (status.agentsByType.length > 0) {
-      status.agentsByType.forEach(({ type, count }) => {});
+      status.agentsByType.forEach(({ type, count }) => {
+        console.log(`Agent type: ${type}, count: ${count}`);
+      });
     }
 
     const _monitorResult = await orchestrator.startMonitoring(5);

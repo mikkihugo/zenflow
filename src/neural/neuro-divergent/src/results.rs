@@ -650,6 +650,7 @@ impl<T: Float> AccuracyMetrics<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[allow(unused_imports)]
     use polars::prelude::*;
     
     #[test]

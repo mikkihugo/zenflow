@@ -15,18 +15,18 @@ import { promisify } from 'node:util';
 
 const execAsync = promisify(exec);
 
-*
-@example
-/** TypeScript error information */
+/**
+ * TypeScript error information
+ */
 interface TypeScriptError {
   file?: string;
   code?: string;
   message: string;
 }
 
-*
-@example
-/** Build result information */
+/**
+ * Build result information
+ */
 interface BuildResult {
   timestamp: string;
   errorCount: number;
@@ -34,9 +34,9 @@ interface BuildResult {
   success: boolean;
 }
 
-*
-@example
-/** Error category breakdown */
+/**
+ * Error category breakdown
+ */
 interface ErrorCategories {
   type_compatibility: number;
   missing_properties: number;
@@ -46,9 +46,9 @@ interface ErrorCategories {
   other: number;
 }
 
-*
-@example
-/** Alpha certification status */
+/**
+ * Alpha certification status
+ */
 interface AlphaCertification {
   timestamp: string;
   status: 'ALPHA_READY' | 'IN_PROGRESS';
@@ -57,9 +57,9 @@ interface AlphaCertification {
   verifiedBy: string;
 }
 
-*
-@example
-/** Build monitoring report */
+/**
+ * Build monitoring report
+ */
 interface BuildReport {
   timestamp: string;
   currentErrorCount: number;

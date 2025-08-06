@@ -87,6 +87,10 @@ arbitrary = { version = "1.3", features = ["derive"] }
 crossbeam = "0.8"
 plotly = "0.13"
 csv = "1.3"
+tokio-test = "0.4"
+futures = "0.3"
+thiserror = "2.0"
+toml = "0.8"
 
 # For benchmarking - minimal for security
 pprof = { version = "0.15", features = ["flamegraph"] }
@@ -148,6 +152,30 @@ path = "examples/advanced_features.rs"
 [[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
+
+[[test]]
+name = "model_registry_integration"
+path = "tests/integration/model_registry.rs"
+
+[[test]]
+name = "cross_crate_communication"
+path = "tests/integration/cross_crate_communication.rs"
+
+[[test]]
+name = "error_propagation"
+path = "tests/integration/error_propagation.rs"
+
+[[test]]
+name = "performance_integration"
+path = "tests/integration/performance_integration.rs"
+
+[[test]]
+name = "cli_integration"
+path = "tests/integration/cli_integration.rs"
+
+[[test]]
+name = "real_world_scenarios"
+path = "tests/integration/real_world_scenarios.rs"
 
 [package.metadata.docs.rs]
 all-features = true

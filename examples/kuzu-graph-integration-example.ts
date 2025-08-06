@@ -18,7 +18,7 @@ const logger = {
 // Mock config
 const config = {
   get: (_key: string) => undefined,
-  set: (_key: string, _value: any) => {},
+  set: (_key: string, _value: unknown) => {},
   has: (_key: string) => false,
 };
 

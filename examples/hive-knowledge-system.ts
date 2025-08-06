@@ -455,7 +455,7 @@ export class HiveKnowledgeSystem {
    * @param updateType
    * @param data
    */
-  async distributeKnowledgeUpdate(updateType: string, data: any) {
+  async distributeKnowledgeUpdate(updateType: string, data: unknown) {
     await this.commProtocol.broadcast({
       type: 'knowledge-update',
       sender: 'hive-system',
@@ -505,7 +505,9 @@ export async function ragKnowledgeRetrievalExample() {
     'database performance optimization',
     'technical-patterns'
   );
-  knowledge.forEach((_fact: any, _index: number) => {});
+  knowledge.forEach((_fact: unknown, _index: number) => {
+    // Process knowledge fact
+  });
 }
 
 /**
@@ -528,8 +530,11 @@ export async function taskTemplateExample() {
   const apiTemplate = await hive.getTaskTemplate('api-development');
 
   // Instantiate tasks from template
-  apiTemplate.phases.forEach((phase: any, _phaseIndex: number) => {
-    phase.tasks.forEach((_task: any, _taskIndex: number) => {});
+  apiTemplate.phases.forEach((phase: unknown, _phaseIndex: number) => {
+    const phaseObj = phase as { tasks: unknown[] };
+    phaseObj.tasks.forEach((_task: unknown, _taskIndex: number) => {
+      // Process task
+    });
   });
 }
 

@@ -23,7 +23,12 @@ pub struct NeuralForecast<T: Float + Send + Sync + std::fmt::Debug + std::iter::
 
 impl<T: Float + Send + Sync + std::fmt::Debug + std::iter::Sum + 'static> NeuralForecast<T> {
     /// Create new NeuralForecast instance builder
-    pub fn new() -> NeuralForecastBuilder<T> {
+    ///
+    /// # Returns
+    ///
+    /// A new `NeuralForecastBuilder` instance for constructing a NeuralForecast
+    #[must_use]
+    pub fn builder() -> NeuralForecastBuilder<T> {
         NeuralForecastBuilder::new()
     }
     

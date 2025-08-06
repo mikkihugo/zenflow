@@ -58,7 +58,7 @@
 //! - **Foundation Layer**: Integration with ruv-FANN neural networks
 
 #![cfg_attr(docsrs, feature(doc_cfg))]
-#![warn(missing_docs)]
+#![allow(missing_docs)] // Temporarily disabled for development
 #![warn(rust_2018_idioms)]
 #![allow(clippy::new_without_default)]
 

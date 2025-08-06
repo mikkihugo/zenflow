@@ -99,7 +99,7 @@ async function runOptimizationDemo() {
   });
 
   const mockTopology = {
-    type: 'mesh' as const,
+    type: 'mesh',
     nodes: 5000,
     connections: 25000,
   };

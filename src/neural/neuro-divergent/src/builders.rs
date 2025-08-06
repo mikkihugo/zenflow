@@ -26,6 +26,7 @@ pub trait ModelBuilder<T: Float, M> {
 /// Generic model configuration builder
 #[derive(Debug, Clone)]
 pub struct GenericModelBuilder<T: Float> {
+    #[allow(dead_code)]
     model_type: String,
     horizon: Option<usize>,
     input_size: Option<usize>,

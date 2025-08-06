@@ -122,6 +122,7 @@ pub enum LogFormat {
 
 /// Performance configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(clippy::struct_excessive_bools)]
 pub struct PerformanceConfig {
     /// Enable SIMD optimizations
     pub enable_simd: bool,
@@ -184,6 +185,7 @@ pub enum AllocationStrategy {
 
 /// Parallel processing configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(clippy::struct_excessive_bools)]
 pub struct ParallelConfig {
     /// Number of threads (None for automatic)
     pub num_threads: Option<usize>,
@@ -260,7 +262,7 @@ pub enum DataFormat {
     Json,
     /// BSON format
     Bson,
-    /// MessagePack format
+    /// `MessagePack` format
     MessagePack,
     /// Binary format
     Binary,
@@ -287,6 +289,7 @@ pub struct RetryConfig {
 
 /// Debug configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(clippy::struct_excessive_bools)]
 pub struct DebugConfig {
     /// Enable debug mode
     pub enabled: bool,
@@ -319,6 +322,7 @@ pub enum DebugVerbosity {
 
 /// Feature flags for experimental features
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(clippy::struct_excessive_bools)]
 pub struct FeatureFlags {
     /// Enable experimental GPU kernels
     pub experimental_gpu_kernels: bool,
@@ -395,29 +399,34 @@ impl<T: Float + Send + Sync + 'static> GenericModelConfig<T> {
     }
 
     /// Add a parameter to the configuration
+    #[must_use]
     pub fn with_parameter(mut self, key: impl Into<String>, value: ConfigParameter<T>) -> Self {
         self.parameters.insert(key.into(), value);
         self
     }
 
     /// Set multiple parameters
+    #[must_use]
     pub fn with_parameters(mut self, params: HashMap<String, ConfigParameter<T>>) -> Self {
         self.parameters.extend(params);
         self
     }
 
     /// Set configuration metadata
+    #[must_use]
     pub fn with_metadata(mut self, metadata: ConfigMetadata) -> Self {
         self.metadata = metadata;
         self
     }
 
     /// Get a parameter value
+    #[must_use]
     pub fn get_parameter(&self, key: &str) -> Option<&ConfigParameter<T>> {
         self.parameters.get(key)
     }
 
     /// Get a parameter as a specific type
+    #[must_use]
     pub fn get_float_parameter(&self, key: &str) -> Option<T> {
         match self.parameters.get(key) {
             Some(ConfigParameter::Float(val)) => Some(*val),
@@ -426,6 +435,7 @@ impl<T: Float + Send + Sync + 'static> GenericModelConfig<T> {
     }
 
     /// Get an integer parameter
+    #[must_use]
     pub fn get_integer_parameter(&self, key: &str) -> Option<i64> {
         match self.parameters.get(key) {
             Some(ConfigParameter::Integer(val)) => Some(*val),
@@ -434,6 +444,7 @@ impl<T: Float + Send + Sync + 'static> GenericModelConfig<T> {
     }
 
     /// Get a string parameter
+    #[must_use]
     pub fn get_string_parameter(&self, key: &str) -> Option<&String> {
         match self.parameters.get(key) {
             Some(ConfigParameter::String(val)) => Some(val),
@@ -442,6 +453,7 @@ impl<T: Float + Send + Sync + 'static> GenericModelConfig<T> {
     }
 
     /// Get a boolean parameter
+    #[must_use]
     pub fn get_boolean_parameter(&self, key: &str) -> Option<bool> {
         match self.parameters.get(key) {
             Some(ConfigParameter::Boolean(val)) => Some(*val),
@@ -451,6 +463,10 @@ impl<T: Float + Send + Sync + 'static> GenericModelConfig<T> {
 
     /// Save configuration to file
     /// TODO: Implement serialization for generic configurations
+    ///
+    /// # Errors
+    ///
+    /// This function is not yet implemented and will return an error.
     #[allow(dead_code)]
     pub fn save<P: AsRef<Path>>(&self, _path: P) -> NeuroDivergentResult<()> {
         todo!("Configuration serialization needs to be implemented without generic type constraints")
@@ -458,12 +474,17 @@ impl<T: Float + Send + Sync + 'static> GenericModelConfig<T> {
 
     /// Load configuration from file
     /// TODO: Implement deserialization for generic configurations  
+    ///
+    /// # Errors
+    ///
+    /// This function is not yet implemented and will return an error.
     #[allow(dead_code)]
     pub fn load<P: AsRef<Path>>(_path: P) -> NeuroDivergentResult<Self> {
         todo!("Configuration deserialization needs to be implemented without generic type constraints")
     }
 
     /// Merge with another configuration
+    #[must_use]
     pub fn merge(mut self, other: Self) -> Self {
         // Merge parameters, with other taking precedence
         self.parameters.extend(other.parameters);
@@ -540,9 +561,12 @@ impl<T: Float + Send + Sync + 'static> ModelConfig<T> for GenericModelConfig<T> 
         let mut params = self.parameters.clone();
         
         // Add basic parameters
-        params.insert("horizon".to_string(), ConfigParameter::Integer(self.horizon as i64));
-        params.insert("input_size".to_string(), ConfigParameter::Integer(self.input_size as i64));
-        params.insert("output_size".to_string(), ConfigParameter::Integer(self.output_size as i64));
+        #[allow(clippy::cast_possible_wrap)]
+        {
+            params.insert("horizon".to_string(), ConfigParameter::Integer(self.horizon as i64));
+            params.insert("input_size".to_string(), ConfigParameter::Integer(self.input_size as i64));
+            params.insert("output_size".to_string(), ConfigParameter::Integer(self.output_size as i64));
+        }
         params.insert("model_type".to_string(), ConfigParameter::String(self.model_type.clone()));
         
         params
@@ -558,6 +582,7 @@ impl<T: Float + Send + Sync + 'static> ModelConfig<T> for GenericModelConfig<T> 
 
         let horizon = params.get("horizon")
             .and_then(|p| match p {
+                #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
                 ConfigParameter::Integer(i) => Some(*i as usize),
                 _ => None,
             })
@@ -565,6 +590,7 @@ impl<T: Float + Send + Sync + 'static> ModelConfig<T> for GenericModelConfig<T> 
 
         let input_size = params.get("input_size")
             .and_then(|p| match p {
+                #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
                 ConfigParameter::Integer(i) => Some(*i as usize),
                 _ => None,
             })
@@ -572,6 +598,7 @@ impl<T: Float + Send + Sync + 'static> ModelConfig<T> for GenericModelConfig<T> 
 
         let output_size = params.get("output_size")
             .and_then(|p| match p {
+                #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
                 ConfigParameter::Integer(i) => Some(*i as usize),
                 _ => None,
             })
@@ -600,6 +627,7 @@ impl<T: Float + Send + Sync + 'static> ModelConfig<T> for GenericModelConfig<T> 
 
 impl<T: Float + Send + Sync + 'static> ModelConfigBuilder<T> {
     /// Create a new builder
+    #[must_use]
     pub fn new() -> Self {
         Self {
             model_type: None,
@@ -613,18 +641,21 @@ impl<T: Float + Send + Sync + 'static> ModelConfigBuilder<T> {
     }
 
     /// Set the model type
+    #[must_use]
     pub fn with_model_type(mut self, model_type: impl Into<String>) -> Self {
         self.model_type = Some(model_type.into());
         self
     }
 
     /// Add a parameter
+    #[must_use]
     pub fn with_parameter(mut self, key: impl Into<String>, value: ConfigParameter<T>) -> Self {
         self.parameters.insert(key.into(), value);
         self
     }
 
     /// Set metadata
+    #[must_use]
     pub fn with_metadata(mut self, metadata: ConfigMetadata) -> Self {
         self.metadata = metadata;
         self
@@ -671,6 +702,7 @@ impl<T: Float + Send + Sync + 'static> ConfigBuilder<GenericModelConfig<T>, T> f
 
 impl ConfigMetadata {
     /// Create new metadata with current timestamp
+    #[must_use]
     pub fn new() -> Self {
         let now = Utc::now();
         Self {
@@ -686,36 +718,42 @@ impl ConfigMetadata {
     }
 
     /// Set name
+    #[must_use]
     pub fn with_name(mut self, name: impl Into<String>) -> Self {
         self.name = Some(name.into());
         self
     }
 
     /// Set description
+    #[must_use]
     pub fn with_description(mut self, description: impl Into<String>) -> Self {
         self.description = Some(description.into());
         self
     }
 
     /// Set version
+    #[must_use]
     pub fn with_version(mut self, version: impl Into<String>) -> Self {
         self.version = version.into();
         self
     }
 
     /// Set author
+    #[must_use]
     pub fn with_author(mut self, author: impl Into<String>) -> Self {
         self.author = Some(author.into());
         self
     }
 
     /// Add tags
+    #[must_use]
     pub fn with_tags(mut self, tags: Vec<String>) -> Self {
         self.tags = tags;
         self
     }
 
     /// Add custom field
+    #[must_use]
     pub fn with_custom_field(mut self, key: impl Into<String>, value: impl Into<String>) -> Self {
         self.custom_fields.insert(key.into(), value.into());
         self
@@ -724,6 +762,7 @@ impl ConfigMetadata {
 
 impl ConfigManager {
     /// Create a new configuration manager
+    #[must_use]
     pub fn new() -> Self {
         let mut search_paths = Vec::new();
         
@@ -744,11 +783,23 @@ impl ConfigManager {
     }
 
     /// Add a search path
+    ///
+    /// # Errors
+    ///
+    /// This function does not return errors but may panic if the path cannot be converted.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the path cannot be converted to a PathBuf.
     pub fn add_search_path<P: AsRef<Path>>(&mut self, path: P) {
         self.search_paths.push(path.as_ref().to_path_buf());
     }
 
     /// Load configuration from the first found file
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if no configuration file is found or if there are issues reading the file.
     pub fn load_config(&mut self) -> NeuroDivergentResult<&SystemConfig> {
         for search_path in &self.search_paths {
             let config_file = search_path.join("config.json");
@@ -765,6 +816,10 @@ impl ConfigManager {
     }
 
     /// Load configuration from specific file
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the file cannot be read or if the JSON cannot be parsed.
     pub fn load_from_file<P: AsRef<Path>>(&self, path: P) -> NeuroDivergentResult<SystemConfig> {
         let content = std::fs::read_to_string(path)
             .map_err(|e| ErrorBuilder::config(format!("Failed to read config file: {}", e)).build())?;
