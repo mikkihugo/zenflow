@@ -378,13 +378,12 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
    * @param message
    * @param meta
    */
-  protected log(level: 'debug' | 'info' | 'warn' | 'error', message: string, meta?: any): void {
+  protected log(level: 'debug' | 'info' | 'warn' | 'error', _message: string, _meta?: any): void {
     if (this.config.logging?.enabled) {
-      const prefix = this.config.logging.prefix || this.type;
+      const _prefix = this.config.logging.prefix || this.type;
       const shouldLog = this.shouldLog(level);
 
       if (shouldLog) {
-        console[level](`[${prefix}] ${message}`, meta || '');
       }
     }
   }

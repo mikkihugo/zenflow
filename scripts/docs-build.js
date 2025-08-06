@@ -12,9 +12,9 @@
  * @author Claude-Zen Documentation Team
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require('node:fs').promises;
+const path = require('node:path');
+const { execSync } = require('node:child_process');
 const { JSDocValidator } = require('./jsdoc-validator');
 const { DocsCoverageReporter } = require('./docs-coverage');
 
@@ -124,11 +124,6 @@ class DocsBuilder {
    * ```
    */
   async build() {
-    console.log('🚀 Starting documentation build pipeline...');
-    console.log(`📁 Source: ${this.rootDir}`);
-    console.log(`📄 Output: ${this.outputDir}`);
-    console.log(`🎨 Theme: ${this.theme.name}`);
-
     try {
       // Step 1: Initialize build environment
       await this.executeStep('initialize', () => this.initializeBuildEnvironment());
@@ -161,7 +156,6 @@ class DocsBuilder {
       await this.executeStep('report', () => this.generateBuildReport());
 
       this.results.success = true;
-      console.log('✅ Documentation build pipeline completed successfully');
 
       return this.results;
     } catch (error) {
@@ -191,7 +185,6 @@ class DocsBuilder {
    */
   async executeStep(stepName, stepFunction) {
     const startTime = Date.now();
-    console.log(`📋 Executing step: ${stepName}...`);
 
     try {
       const result = await stepFunction();
@@ -202,8 +195,6 @@ class DocsBuilder {
         duration,
         result,
       };
-
-      console.log(`✅ Step ${stepName} completed in ${duration}ms`);
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
@@ -258,11 +249,9 @@ class DocsBuilder {
     // Validate source directory
     try {
       await fs.access(this.rootDir);
-    } catch (error) {
+    } catch (_error) {
       throw new Error(`Source directory not found: ${this.rootDir}`);
     }
-
-    console.log('📂 Build environment initialized');
   }
 
   /**
@@ -285,8 +274,6 @@ class DocsBuilder {
    * ```
    */
   async runJSDocValidation() {
-    console.log('🔍 Running JSDoc validation...');
-
     const validator = new JSDocValidator({
       rootDir: this.rootDir,
       layers: ['uacl', 'dal', 'usl', 'uel'],
@@ -302,8 +289,6 @@ class DocsBuilder {
         `JSDoc validation failed: ${validationResults.quality.failed} files have errors`
       );
     }
-
-    console.log(`📊 Validation completed: ${validationResults.coverage.percentage}% coverage`);
     return validationResults;
   }
 
@@ -324,8 +309,6 @@ class DocsBuilder {
    * ```
    */
   async generateTypeDocAPI() {
-    console.log('📚 Generating TypeDoc API documentation...');
-
     const outputPath = path.join(this.outputDir, 'api');
 
     try {
@@ -335,10 +318,6 @@ class DocsBuilder {
 
       // Parse TypeDoc output for statistics
       const stats = this.parseTypeDocOutput(output);
-
-      console.log(
-        `📖 TypeDoc generated: ${stats.modules} modules, ${stats.classes} classes, ${stats.interfaces} interfaces`
-      );
 
       return {
         success: true,
@@ -366,8 +345,6 @@ class DocsBuilder {
    * ```
    */
   async generateCoverageReport() {
-    console.log('📊 Generating coverage report...');
-
     const reporter = new DocsCoverageReporter({
       rootDir: this.rootDir,
       outputDir: path.join(this.outputDir, 'coverage'),
@@ -378,10 +355,6 @@ class DocsBuilder {
 
     const coverageResults = await reporter.generateReport();
     this.results.coverage = coverageResults;
-
-    console.log(
-      `📈 Coverage report generated: ${coverageResults.overall.percentage.toFixed(1)}% overall coverage`
-    );
     return coverageResults;
   }
 
@@ -400,8 +373,6 @@ class DocsBuilder {
    * ```
    */
   async buildStaticSite() {
-    console.log('🌐 Building static documentation site...');
-
     const siteDir = path.join(this.outputDir, 'site');
 
     // Generate site structure
@@ -419,8 +390,6 @@ class DocsBuilder {
 
     // Copy and process assets
     await this.processSiteAssets(siteDir);
-
-    console.log('🏠 Static site generated successfully');
 
     return {
       outputPath: siteDir,
@@ -444,8 +413,6 @@ class DocsBuilder {
    * ```
    */
   async generateAdditionalFormats() {
-    console.log('📄 Generating additional formats...');
-
     const formatResults = {
       formats: this.formats,
       generated: [],
@@ -471,8 +438,6 @@ class DocsBuilder {
         console.warn(`⚠️ Failed to generate ${format} format: ${error.message}`);
       }
     }
-
-    console.log(`📑 Generated ${formatResults.generated.length} additional formats`);
     return formatResults;
   }
 
@@ -491,8 +456,6 @@ class DocsBuilder {
    * ```
    */
   async prepareDeploymentArtifacts() {
-    console.log('📦 Preparing deployment artifacts...');
-
     const deploymentDir = path.join(this.outputDir, 'deploy');
     await fs.mkdir(deploymentDir, { recursive: true });
 
@@ -510,8 +473,6 @@ class DocsBuilder {
       path: packageInfo.path,
       size: packageInfo.size,
     });
-
-    console.log('🚀 Deployment artifacts prepared');
 
     return {
       package: packageInfo,
@@ -536,8 +497,6 @@ class DocsBuilder {
    * ```
    */
   async generateBuildReport() {
-    console.log('📋 Generating build report...');
-
     // HTML Report
     const htmlReport = this.buildHTMLReport();
     await fs.writeFile(path.join(this.outputDir, 'build-report.html'), htmlReport);
@@ -551,8 +510,6 @@ class DocsBuilder {
       path.join(this.outputDir, 'build-results.json'),
       JSON.stringify(this.results, null, 2)
     );
-
-    console.log('📊 Build report generated');
   }
 
   /**
@@ -629,11 +586,7 @@ class DocsBuilder {
    *
    * @returns {Promise<void>} Asset copying completion
    */
-  async copyThemeAssets() {
-    // Implementation would copy theme-specific assets
-    // This is a placeholder for theme asset management
-    console.log('🎨 Theme assets copied');
-  }
+  async copyThemeAssets() {}
 
   /**
    * Generate site structure for navigation
@@ -963,7 +916,7 @@ document.addEventListener('DOMContentLoaded', function() {
    * @param {string} siteDir - Site directory
    * @returns {Promise<string[]>} Array of page paths
    */
-  async getSitePages(siteDir) {
+  async getSitePages(_siteDir) {
     const pages = [];
 
     // This would recursively find all HTML pages
@@ -978,7 +931,6 @@ document.addEventListener('DOMContentLoaded', function() {
    * @returns {Promise<void>} PDF generation completion
    */
   async generatePDFDocumentation() {
-    console.log('📄 PDF generation would be implemented here');
     // Implementation would use puppeteer or similar to generate PDF from HTML
   }
 
@@ -988,7 +940,6 @@ document.addEventListener('DOMContentLoaded', function() {
    * @returns {Promise<void>} JSON schema generation completion
    */
   async generateJSONSchema() {
-    console.log('📄 JSON schema generation would be implemented here');
     // Implementation would extract TypeScript interfaces to JSON Schema
   }
 
@@ -998,7 +949,6 @@ document.addEventListener('DOMContentLoaded', function() {
    * @returns {Promise<void>} Markdown generation completion
    */
   async generateMarkdownDocs() {
-    console.log('📄 Markdown documentation generation would be implemented here');
     // Implementation would convert HTML docs to Markdown
   }
 
@@ -1009,8 +959,6 @@ document.addEventListener('DOMContentLoaded', function() {
    * @returns {Promise<Object>} Package information
    */
   async createDeploymentPackage(deployDir) {
-    console.log('📦 Creating deployment package...');
-
     // This would create a compressed package of all documentation
     return {
       path: path.join(deployDir, 'docs-package.tar.gz'),
@@ -1024,8 +972,6 @@ document.addEventListener('DOMContentLoaded', function() {
    * @returns {Promise<Object>} Optimization results
    */
   async optimizeAssets() {
-    console.log('⚡ Optimizing assets...');
-
     // This would minify CSS, JS, optimize images, etc.
     return {
       cssMinified: true,
@@ -1257,17 +1203,10 @@ async function main() {
     const builder = new DocsBuilder(config);
     const results = await builder.build();
 
-    console.log('\n🎉 Build Summary:');
-    console.log(`   Status: ${results.success ? '✅ SUCCESS' : '❌ FAILURE'}`);
-    console.log(`   Duration: ${builder.getTotalDuration()}ms`);
-    console.log(`   Steps: ${Object.keys(results.steps).length}`);
-
     if (results.validation) {
-      console.log(`   Validation: ${results.validation.coverage.percentage}% coverage`);
     }
 
     if (results.coverage) {
-      console.log(`   Coverage: ${results.coverage.overall.percentage.toFixed(1)}%`);
     }
 
     const exitCode = results.success ? 0 : 1;

@@ -1730,7 +1730,6 @@ export interface ConsensusProcess {
 
 // Placeholder system classes
 export class ProblemDecompositionSystem {
-  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
   on(_event: string, _handler: Function) {}
   shutdown() {
     return Promise.resolve();
@@ -1738,7 +1737,6 @@ export class ProblemDecompositionSystem {
 }
 
 export class DistributedReasoningSystem {
-  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
   on(_event: string, _handler: Function) {}
   assignReasoningTasks(_subproblems: SubProblem[]) {
     return Promise.resolve();
@@ -1749,7 +1747,6 @@ export class DistributedReasoningSystem {
 }
 
 export class ConsensusBuilderSystem {
-  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
   on(_event: string, _handler: Function) {}
   initiateConsensus(_results: any) {
     return Promise.resolve();
@@ -1760,7 +1757,6 @@ export class ConsensusBuilderSystem {
 }
 
 export class SolutionSynthesisSystem {
-  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
   on(_event: string, _handler: Function) {}
   synthesizeSolution(_consensus: any) {
     return Promise.resolve();
@@ -1771,7 +1767,6 @@ export class SolutionSynthesisSystem {
 }
 
 export class ContextSharingSystem {
-  constructor(_config: any, _logger: ILogger, _eventBus: IEventBus) {}
   on(_event: string, _handler: Function) {}
   updateSharedContext(_solution: any) {
     return Promise.resolve();

@@ -578,7 +578,7 @@ export class MCPCommandQueue extends EventEmitter {
 
   async undo(): Promise<void> {
     const command = this.undoStack.pop();
-    if (command && command.undo) {
+    if (command?.undo) {
       try {
         await command.undo();
         this.metrics.commandTypeStats.get(command.getCommandType())?.count || 0;

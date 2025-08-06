@@ -11,10 +11,10 @@
 
 import { EventEmitter } from 'node:events';
 import { createDAO, createRepository, DatabaseTypes, EntityTypes } from '../database/index';
-import type { IDataAccessObject, IRepository } from '../database/interfaces';
+import type { IRepository } from '../database/interfaces';
 // Import UACL for unified client management
 import { type ClientInstance, ClientType, uacl } from '../interfaces/clients/index';
-import type { KnowledgeClient, KnowledgeClientConfig, KnowledgeResult } from './knowledge-client';
+import type { KnowledgeClientConfig, KnowledgeResult } from './knowledge-client';
 import { FACTIntegration } from './knowledge-client';
 
 export interface KnowledgeSwarmConfig extends KnowledgeClientConfig {
@@ -82,7 +82,6 @@ export class KnowledgeSwarm extends EventEmitter {
   private isProcessing = false;
   private queryCounter = 0;
   private vectorRepository?: IRepository<any>;
-  private vectorDAO?: IDataAccessObject<any>;
 
   // Pre-defined agent specializations
   private static readonly DEFAULT_SPECIALIZATIONS: KnowledgeAgentSpecialization[] = [
@@ -379,17 +378,11 @@ export class KnowledgeSwarm extends EventEmitter {
           };
 
           this.agents.set(agentId, agent);
-
-          // Log successful UACL integration
-          console.log(
-            `✅ UACL Knowledge client created for agent ${agentId} with priority ${spec.priority}`
-          );
         } catch (error) {
           console.error(`❌ Failed to create UACL-managed agent ${agentId}:`, error);
 
           // Fallback to direct FACT integration
           try {
-            console.log(`🔄 Falling back to direct FACT integration for agent ${agentId}`);
             const factInstance = new FACTIntegration({
               factRepoPath: this.config.factRepoPath,
               anthropicApiKey: this.config.anthropicApiKey,
@@ -414,7 +407,6 @@ export class KnowledgeSwarm extends EventEmitter {
             };
 
             this.agents.set(agentId, agent);
-            console.log(`⚠️ Agent ${agentId} created without UACL management`);
           } catch (fallbackError) {
             console.error(
               `❌ Both UACL and direct FACT creation failed for ${agentId}:`,
@@ -782,9 +774,6 @@ export class KnowledgeSwarm extends EventEmitter {
    */
   private async setupKnowledgeStorage(): Promise<void> {
     try {
-      // Knowledge storage setup is handled by DAL repositories
-      // Vector repository automatically handles schema creation
-      console.log('✅ Knowledge storage initialized via DAL');
     } catch (error) {
       console.error('Failed to setup knowledge storage:', error);
     }

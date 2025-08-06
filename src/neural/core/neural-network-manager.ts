@@ -104,15 +104,11 @@ class NeuralNetworkManager {
   private cognitiveEvolution: CognitivePatternEvolution;
   private metaLearning: MetaLearningFramework;
   private coordinationProtocol: NeuralCoordinationProtocol;
-  private daaCognition: DAACognition;
   private cognitivePatternSelector: CognitivePatternSelector;
   private neuralAdaptationEngine: NeuralAdaptationEngine;
   private sharedKnowledge: Map<string, unknown>;
   private agentInteractions: Map<string, unknown>;
-  private collaborativeMemory: Map<string, unknown>;
   private performanceMetrics: Map<string, PerformanceMetrics>;
-  private adaptiveOptimization: boolean;
-  private federatedLearningEnabled: boolean;
   private templates: unknown;
 
   /**

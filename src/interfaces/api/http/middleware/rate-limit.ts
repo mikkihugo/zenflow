@@ -339,7 +339,7 @@ export const wouldBeRateLimited = async (
 ): Promise<boolean> => {
   // This is a simplified check - in a real implementation,
   // you would check against the actual rate limit store
-  const config = DATABASE_RATE_LIMITS[operationType];
+  const _config = DATABASE_RATE_LIMITS[operationType];
   const status = getRateLimitStatus(req);
 
   return status.remaining <= 0;

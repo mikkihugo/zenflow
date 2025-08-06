@@ -4,7 +4,7 @@
  */
 
 // Import UACL for unified client monitoring and MCP client management
-import { ClientType, UACLHelpers, uacl } from '../../interfaces/clients/index';
+import { ClientType, uacl } from '../../interfaces/clients/index';
 import type { DatabaseEngine, DatabaseQuery } from '../core/database-coordinator';
 import { DatabaseCoordinator } from '../core/database-coordinator';
 import { QueryOptimizer } from '../optimization/query-optimizer';
@@ -127,14 +127,12 @@ export const databaseInitTool: MCPTool = {
           },
         };
 
-        const mcpClientInstance = await uacl.createMCPClient('database-mcp-client', mcpServers, {
+        const _mcpClientInstance = await uacl.createMCPClient('database-mcp-client', mcpServers, {
           enabled: true,
           priority: 9, // High priority for database operations
           timeout: coordination.defaultTimeout || 30000,
           retryAttempts: 3,
         });
-
-        console.log('✅ UACL MCP client initialized for database coordination');
       } catch (error) {
         console.warn('⚠️ Could not initialize UACL MCP client for database coordination:', error);
         // Continue without UACL MCP client - database tools will still work
@@ -1051,7 +1049,7 @@ export const databaseTools: MCPTool[] = [
 ];
 
 // Helper methods for DAL integration
-function mapEngineTypeToEntity(engineType: string): string {
+function _mapEngineTypeToEntity(engineType: string): string {
   switch (engineType) {
     case 'vector':
       return EntityTypes.VectorDocument;
@@ -1068,7 +1066,7 @@ function mapEngineTypeToEntity(engineType: string): string {
   }
 }
 
-function mapEngineTypeToDB(engineType: string): string {
+function _mapEngineTypeToDB(engineType: string): string {
   switch (engineType) {
     case 'vector':
       return DatabaseTypes.LanceDB;
@@ -1085,7 +1083,7 @@ function mapEngineTypeToDB(engineType: string): string {
   }
 }
 
-async function executeQueryWithDAL(
+async function _executeQueryWithDAL(
   query: DatabaseQuery,
   engines: Map<string, DatabaseEngine>,
   repositories: Map<string, IRepository<any>>,

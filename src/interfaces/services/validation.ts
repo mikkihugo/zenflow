@@ -8,16 +8,10 @@
 
 import { createLogger, type Logger } from '../../utils/logger';
 import { USLCompatibilityLayer } from './compatibility';
-import type {
-  IService,
-  ServiceConfig,
-  ServiceLifecycleStatus,
-  ServiceMetrics,
-  ServiceStatus,
-} from './core/interfaces';
+import type { IService, ServiceLifecycleStatus } from './core/interfaces';
 import type { ServiceManager } from './manager';
 import type { EnhancedServiceRegistry } from './registry';
-import { type AnyServiceConfig, ServiceEnvironment, ServicePriority, ServiceType } from './types';
+import { ServiceType } from './types';
 
 export interface ValidationConfig {
   /** Validation strictness level */
@@ -477,7 +471,7 @@ export class USLValidationFramework {
   // ============================================
 
   private async validateConfiguration(): Promise<ValidationSectionResult> {
-    const startTime = Date.now();
+    const _startTime = Date.now();
     const checks: ValidationSectionResult['checks'] = [];
     const warnings: string[] = [];
     const errors: string[] = [];
@@ -506,7 +500,7 @@ export class USLValidationFramework {
       const configCheckStart = Date.now();
 
       let validConfigs = 0;
-      for (const [serviceName, service] of allServices) {
+      for (const [serviceName, _service] of allServices) {
         const validation = await this.validateServiceConfig(serviceName);
         if (validation.valid) {
           validConfigs++;
@@ -647,7 +641,7 @@ export class USLValidationFramework {
 
       const systemLatency = performanceMetrics.system.averageLatency;
       const systemErrorRate = performanceMetrics.system.errorRate;
-      const systemThroughput = performanceMetrics.system.throughput;
+      const _systemThroughput = performanceMetrics.system.throughput;
 
       // Check system-wide performance
       checks.push({
@@ -1243,10 +1237,10 @@ export class USLValidationFramework {
   }
 
   private async validateServiceTypeSpecific(
-    service: IService,
-    issues: string[],
-    warnings: string[],
-    recommendations: string[]
+    _service: IService,
+    _issues: string[],
+    _warnings: string[],
+    _recommendations: string[]
   ): Promise<void> {
     // Type-specific validation logic would go here
     // This is a placeholder for service type-specific checks

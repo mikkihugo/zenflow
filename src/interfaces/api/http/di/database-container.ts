@@ -143,15 +143,12 @@ export interface DatabaseHealthStatus {
  * @example
  */
 class ConsoleLogger {
-  debug(message: string, meta?: any): void {
+  debug(_message: string, _meta?: any): void {
     if (process.env.NODE_ENV === 'development') {
-      console.debug(`[DEBUG] ${message}`, meta || '');
     }
   }
 
-  info(message: string, meta?: any): void {
-    console.info(`[INFO] ${message}`, meta || '');
-  }
+  info(_message: string, _meta?: any): void {}
 
   warn(message: string, meta?: any): void {
     console.warn(`[WARN] ${message}`, meta || '');
@@ -235,7 +232,7 @@ class MockDatabaseAdapter {
 
   async query(
     sql: string,
-    params?: any[]
+    _params?: any[]
   ): Promise<{
     rows: any[];
     fields: Array<{ name: string; type: string }>;
@@ -268,8 +265,8 @@ class MockDatabaseAdapter {
   }
 
   async execute(
-    sql: string,
-    params?: any[]
+    _sql: string,
+    _params?: any[]
   ): Promise<{
     affectedRows: number;
     insertId?: any;

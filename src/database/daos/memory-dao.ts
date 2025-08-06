@@ -5,7 +5,6 @@
  * TTL management, and memory optimization.
  */
 
-import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
 import { BaseDataAccessObject } from '../base-repository';
 import type { IMemoryRepository, MemoryStats, TransactionOperation } from '../interfaces';
 
@@ -18,10 +17,6 @@ import type { IMemoryRepository, MemoryStats, TransactionOperation } from '../in
 export class MemoryDAO<T> extends BaseDataAccessObject<T> {
   private get memoryRepository(): IMemoryRepository<T> {
     return this.repository as IMemoryRepository<T>;
-  }
-
-  constructor(repository: IMemoryRepository<T>, adapter: DatabaseAdapter, logger: ILogger) {
-    super(repository, adapter, logger);
   }
 
   /**

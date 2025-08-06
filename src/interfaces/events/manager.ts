@@ -12,16 +12,13 @@ import { inject, injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 import type {
   EventManagerConfig,
-  EventManagerMetrics,
   EventManagerStatus,
   EventManagerType,
-  EventSubscription,
   IEventManager,
   IEventManagerFactory,
-  IEventManagerRegistry,
   SystemEvent,
 } from './core/interfaces';
-import { EventManagerPresets, EventManagerTypes, EventTypeGuards } from './core/interfaces';
+import { EventManagerPresets, EventManagerTypes } from './core/interfaces';
 import type {
   ICommunicationEventManager,
   ICoordinationEventManager,
@@ -34,25 +31,7 @@ import type {
   IWorkflowEventManager,
 } from './factories';
 import { EventRegistry } from './registry';
-import type {
-  CommunicationEvent,
-  CoordinationEvent,
-  DatabaseEvent,
-  InterfaceEvent,
-  MemoryEvent,
-  MonitoringEvent,
-  NeuralEvent,
-  SystemLifecycleEvent,
-  UELEvent,
-  WorkflowEvent,
-} from './types';
-import {
-  DefaultEventManagerConfigs,
-  EventCategories,
-  EventConstants,
-  EventPriorityMap,
-  UELTypeGuards,
-} from './types';
+import { DefaultEventManagerConfigs, EventCategories } from './types';
 
 /**
  * Configuration options for creating new event managers
@@ -236,8 +215,8 @@ export class EventManager {
   private recoveryAttempts = new Map<string, number>();
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @inject(CORE_TOKENS.Config) private config: IConfig
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.Config) private _config: IConfig
   ) {
     this.registry = new EventRegistry(this.logger);
     
@@ -940,8 +919,6 @@ export class EventManager {
     const presetConfig = options.preset ? EventManagerPresets[options.preset] : {};
 
     return {
-      name: options.name,
-      type: options.type,
       ...defaults,
       ...presetConfig,
       ...options.config,

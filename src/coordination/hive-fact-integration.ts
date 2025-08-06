@@ -238,7 +238,7 @@ export class HiveFACTSystem extends EventEmitter {
   ): Promise<UniversalFact | null> {
     try {
       // Determine query based on fact type
-      const query = this.buildQueryForFactType(type, subject);
+      const _query = this.buildQueryForFactType(type, subject);
 
       // Use FACT orchestrator to gather from external MCPs
       // const result = await this.factOrchestrator.gatherKnowledge(query, {
@@ -309,26 +309,6 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Get appropriate sources for fact type
-   *
-   * @param type
-   */
-  private getSourcesForFactType(type: UniversalFact['type']): string[] {
-    switch (type) {
-      case 'npm-package':
-        return ['context7', 'deepwiki']; // Documentation sources
-      case 'github-repo':
-        return ['gitmcp', 'context7']; // Git and documentation
-      case 'api-docs':
-        return ['context7', 'deepwiki']; // API documentation
-      case 'security-advisory':
-        return ['semgrep', 'deepwiki']; // Security sources
-      default:
-        return this.config.knowledgeSources || [];
-    }
-  }
-
-  /**
    * Get TTL (time to live) for fact type
    *
    * @param type
@@ -366,7 +346,7 @@ export class HiveFACTSystem extends EventEmitter {
   private calculateConfidence(result: any): number {
     const sourceCount = Array.isArray(result.sources) ? result.sources.length : 0;
     const hasErrors = Array.isArray(result.sources)
-      ? result.sources.some((s: any) => s && s.error)
+      ? result.sources.some((s: any) => s?.error)
       : false;
 
     let confidence = 0.5; // Base confidence
@@ -401,7 +381,7 @@ export class HiveFACTSystem extends EventEmitter {
     //   sources: this.config.knowledgeSources,
     //   maxResults: query.limit,
     // });
-    const result = { knowledge: [] }; // TODO: Implement with unified MCP
+    const _result = { knowledge: [] }; // TODO: Implement with unified MCP
 
     // Convert to universal facts
     const facts: UniversalFact[] = [];

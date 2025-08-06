@@ -38,7 +38,7 @@ export function injectable<T extends Constructor>(constructor: T): T {
  * @param token
  */
 export function inject<T>(token: DIToken<T>) {
-  return (target: any, propertyKey: string | symbol | undefined, parameterIndex: number) => {
+  return (target: any, _propertyKey: string | symbol | undefined, parameterIndex: number) => {
     const existingTokens = Reflect.getMetadata(INJECTION_TOKENS_KEY, target) || [];
     existingTokens[parameterIndex] = token;
     Reflect.defineMetadata(INJECTION_TOKENS_KEY, existingTokens, target);

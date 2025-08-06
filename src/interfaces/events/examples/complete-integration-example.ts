@@ -15,7 +15,6 @@ import {
   UEL,
   UELHelpers,
   UELSystemIntegration,
-  type ValidationResult,
 } from '../index';
 
 /**
@@ -26,18 +25,16 @@ import {
  */
 export class CompleteUELIntegrationExample {
   private logger = {
-    info: (msg: string, ...args: any[]) => console.log(`ℹ️  ${msg}`, ...args),
+    info: (_msg: string, ..._args: any[]) => {},
     warn: (msg: string, ...args: any[]) => console.warn(`⚠️  ${msg}`, ...args),
     error: (msg: string, ...args: any[]) => console.error(`❌ ${msg}`, ...args),
-    debug: (msg: string, ...args: any[]) => console.log(`🐛 ${msg}`, ...args),
+    debug: (_msg: string, ..._args: any[]) => {},
   };
 
   /**
    * Example 1: Basic UEL Setup and Usage
    */
   async exampleBasicSetup(): Promise<void> {
-    console.log('\n🚀 Example 1: Basic UEL Setup and Usage\n');
-
     // Initialize UEL with full features
     const uel = UEL.getInstance();
     await uel.initialize({
@@ -124,8 +121,6 @@ export class CompleteUELIntegrationExample {
    * Example 2: System Migration from EventEmitter to UEL
    */
   async exampleSystemMigration(): Promise<void> {
-    console.log('\n🔄 Example 2: System Migration from EventEmitter to UEL\n');
-
     // Create legacy EventEmitter-based systems
     const legacyEventBus = new EventEmitter();
     legacyEventBus.setMaxListeners(100);
@@ -207,7 +202,7 @@ export class CompleteUELIntegrationExample {
       }
 
       if (applicationCoordinator) {
-        const coordStatus = await applicationCoordinator.getSystemStatus();
+        const _coordStatus = await applicationCoordinator.getSystemStatus();
         this.logger.info('Enhanced application coordinator initialized');
       }
 
@@ -226,8 +221,6 @@ export class CompleteUELIntegrationExample {
    * Example 3: Complete System Setup with All Components
    */
   async exampleCompleteSystemSetup(): Promise<void> {
-    console.log('\n🏗️  Example 3: Complete System Setup with All Components\n');
-
     // One-command complete system setup
     const completeSystem = await UELHelpers.setupCompleteUELSystem({
       systemComponents: {
@@ -318,8 +311,6 @@ export class CompleteUELIntegrationExample {
    * Example 4: Validation and Monitoring
    */
   async exampleValidationAndMonitoring(): Promise<void> {
-    console.log('\n🔍 Example 4: Validation and Monitoring\n');
-
     const uel = UEL.getInstance();
     if (!uel.isInitialized()) {
       await uel.initialize({
@@ -402,8 +393,6 @@ export class CompleteUELIntegrationExample {
    * Example 5: Advanced Integration Patterns
    */
   async exampleAdvancedIntegrationPatterns(): Promise<void> {
-    console.log('\n⚡ Example 5: Advanced Integration Patterns\n');
-
     const uel = UEL.getInstance();
     if (!uel.isInitialized()) {
       await uel.initialize({
@@ -524,24 +513,12 @@ export class CompleteUELIntegrationExample {
    * Run all examples
    */
   async runAllExamples(): Promise<void> {
-    console.log('🎯 UEL Complete Integration Examples\n');
-    console.log('====================================\n');
-
     try {
       await this.exampleBasicSetup();
       await this.exampleSystemMigration();
       await this.exampleCompleteSystemSetup();
       await this.exampleValidationAndMonitoring();
       await this.exampleAdvancedIntegrationPatterns();
-
-      console.log('\n✅ All UEL integration examples completed successfully!');
-      console.log('\nKey takeaways:');
-      console.log('- UEL provides backward compatibility with EventEmitter');
-      console.log('- Migration can be done gradually without breaking existing code');
-      console.log('- Enhanced systems provide both EventEmitter API and UEL features');
-      console.log('- Comprehensive validation and monitoring are built-in');
-      console.log('- Factory patterns enable type-safe event management');
-      console.log('- System integration utilities make adoption easy');
     } catch (error) {
       console.error('\n❌ Example execution failed:', error);
       throw error;
@@ -550,7 +527,6 @@ export class CompleteUELIntegrationExample {
       const uel = UEL.getInstance();
       if (uel.isInitialized()) {
         await uel.shutdown();
-        console.log('\n🧹 UEL system shut down cleanly');
       }
     }
   }

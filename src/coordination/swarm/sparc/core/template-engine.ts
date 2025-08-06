@@ -100,7 +100,6 @@ export class TemplateEngine {
     };
 
     this.templateRegistry.set(template.id, entry);
-    console.log(`📋 Registered SPARC template: ${template.name} (${template.id})`);
   }
 
   /**
@@ -234,8 +233,6 @@ export class TemplateEngine {
     template: SPARCTemplate,
     projectSpec: ProjectSpecification
   ): Promise<TemplateApplicationResult> {
-    console.log(`🔧 Applying template: ${template.name} to project: ${projectSpec.name}`);
-
     // Update usage statistics
     const entry = this.templateRegistry.get(template.id);
     if (entry) {
@@ -272,8 +269,6 @@ export class TemplateEngine {
     // Validate the applied template
     const validation = this.validateTemplateCompatibility(template, projectSpec);
 
-    console.log(`✅ Template application completed with ${customizations.length} customizations`);
-
     return {
       specification: customizedSpec,
       pseudocode: customizedPseudocode,
@@ -294,8 +289,6 @@ export class TemplateEngine {
     projectSpec: ProjectSpecification,
     baseTemplateId?: string
   ): Promise<SPARCTemplate> {
-    console.log(`🎨 Creating custom template for project: ${projectSpec.name}`);
-
     let baseTemplate: SPARCTemplate | null = null;
     if (baseTemplateId) {
       baseTemplate = this.getTemplate(baseTemplateId);
@@ -345,7 +338,7 @@ export class TemplateEngine {
 
       validateCompatibility:
         baseTemplate?.validateCompatibility ||
-        ((spec) => ({
+        ((_spec) => ({
           compatible: true,
           warnings: [],
           recommendations: [],
@@ -354,8 +347,6 @@ export class TemplateEngine {
 
     // Register the custom template
     this.registerTemplate(customTemplate);
-
-    console.log(`✅ Custom template created: ${customTemplate.id}`);
     return customTemplate;
   }
 
@@ -389,7 +380,7 @@ export class TemplateEngine {
     // Get recently used templates
     const entriesByRecent = Array.from(this.templateRegistry.entries())
       .filter(([_, entry]) => entry.metadata.lastUsed)
-      .sort((a, b) => b[1].metadata.lastUsed!.getTime() - a[1].metadata.lastUsed!.getTime());
+      .sort((a, b) => b[1].metadata.lastUsed?.getTime() - a[1].metadata.lastUsed?.getTime());
     stats.recentlyUsed = entriesByRecent.slice(0, 5).map(([id, _]) => id);
 
     return stats;
@@ -526,7 +517,7 @@ export class TemplateEngine {
     };
   }
 
-  private createMinimalArchitecture(projectSpec: ProjectSpecification): ArchitectureDesign {
+  private createMinimalArchitecture(_projectSpec: ProjectSpecification): ArchitectureDesign {
     return {
       id: nanoid(),
       components: [],

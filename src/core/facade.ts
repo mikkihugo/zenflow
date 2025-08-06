@@ -4,13 +4,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type {
-  CoordinationResult,
-  SwarmCoordinator,
-  SwarmTopology,
-} from '../coordination/swarm/core/strategy';
+import type { CoordinationResult, SwarmTopology } from '../coordination/swarm/core/strategy';
 import type { AllSystemEvents, SystemEventManager } from '../interfaces/events/observer-system';
-import type { CommandResult, MCPCommandQueue } from '../interfaces/mcp/command-system';
+import type { MCPCommandQueue } from '../interfaces/mcp/command-system';
 
 // Service interface definitions for dependency injection
 export interface ISwarmService {
@@ -1095,7 +1091,7 @@ export class ClaudeZenFacade extends EventEmitter {
     };
   }
 
-  private async analyzeSentiment(content: string): Promise<SentimentAnalysis | null> {
+  private async analyzeSentiment(_content: string): Promise<SentimentAnalysis | null> {
     // This would integrate with actual sentiment analysis service
     return {
       overall: 'neutral',
@@ -1104,16 +1100,16 @@ export class ClaudeZenFacade extends EventEmitter {
     };
   }
 
-  private async analyzeTopics(content: string): Promise<TopicAnalysis[]> {
+  private async analyzeTopics(_content: string): Promise<TopicAnalysis[]> {
     // This would integrate with actual topic analysis service
     return [{ topic: 'technology', relevance: 0.8, keywords: ['code', 'system', 'development'] }];
   }
 
   private async generateRecommendations(
-    textAnalysis: any,
+    _textAnalysis: any,
     structureAnalysis: any,
-    sentimentAnalysis: any,
-    topicAnalysis: any
+    _sentimentAnalysis: any,
+    _topicAnalysis: any
   ): Promise<Recommendation[]> {
     const recommendations: Recommendation[] = [];
 

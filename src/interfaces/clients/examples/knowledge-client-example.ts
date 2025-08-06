@@ -12,26 +12,19 @@
  */
 
 import {
-  createCustomKnowledgeClient,
   createFACTClient,
   type KnowledgeClientAdapter,
-  type KnowledgeClientConfig,
-  KnowledgeClientFactory,
   KnowledgeHelpers,
   type KnowledgeRequest,
   type KnowledgeResponse,
 } from '../adapters/knowledge-client-adapter';
 
-import { createClient, UACLFactory } from '../factories';
-
-import { ClientTypes, ProtocolTypes } from '../types';
+import { UACLFactory } from '../factories';
 
 /**
  * Example 1: Create FACT-based Knowledge Client using convenience function
  */
 export async function example1_CreateFACTClient(): Promise<void> {
-  console.log('🚀 Example 1: Creating FACT-based Knowledge Client');
-
   try {
     // Create FACT client with minimal configuration
     const knowledgeClient = await createFACTClient(
@@ -55,24 +48,15 @@ export async function example1_CreateFACTClient(): Promise<void> {
 
     // Connect to the service
     await knowledgeClient.connect();
-    console.log('✅ Connected to FACT knowledge service');
 
     // Check health
-    const isHealthy = await knowledgeClient.health();
-    console.log(`📊 Health Status: ${isHealthy ? 'Healthy' : 'Unhealthy'}`);
+    const _isHealthy = await knowledgeClient.health();
 
     // Get metadata
-    const metadata = await knowledgeClient.getMetadata();
-    console.log('📋 Client Metadata:', {
-      protocol: metadata.protocol,
-      version: metadata.version,
-      features: metadata.features,
-      connected: metadata.connection.connected,
-    });
+    const _metadata = await knowledgeClient.getMetadata();
 
     // Cleanup
     await knowledgeClient.disconnect();
-    console.log('✅ Example 1 completed successfully\n');
   } catch (error) {
     console.error('❌ Example 1 failed:', error);
   }
@@ -82,8 +66,6 @@ export async function example1_CreateFACTClient(): Promise<void> {
  * Example 2: Create Knowledge Client using UACL Factory
  */
 export async function example2_CreateWithFactory(): Promise<void> {
-  console.log('🏭 Example 2: Creating Knowledge Client with UACL Factory');
-
   try {
     // Create factory
     const factory = new UACLFactory(
@@ -108,22 +90,13 @@ export async function example2_CreateWithFactory(): Promise<void> {
       timeout: 30000,
     })) as KnowledgeClientAdapter;
 
-    console.log('✅ Knowledge client created via factory');
-
     // Connect and test
     await knowledgeClient.connect();
 
     // Get knowledge statistics
-    const stats = await knowledgeClient.getKnowledgeStats();
-    console.log('📊 Knowledge Stats:', {
-      totalEntries: stats.totalEntries,
-      categories: Object.keys(stats.categories),
-      averageResponseTime: stats.averageResponseTime,
-      indexHealth: stats.indexHealth,
-    });
+    const _stats = await knowledgeClient.getKnowledgeStats();
 
     await knowledgeClient.disconnect();
-    console.log('✅ Example 2 completed successfully\n');
   } catch (error) {
     console.error('❌ Example 2 failed:', error);
   }
@@ -133,17 +106,12 @@ export async function example2_CreateWithFactory(): Promise<void> {
  * Example 3: Perform Knowledge Queries
  */
 export async function example3_PerformQueries(): Promise<void> {
-  console.log('🔍 Example 3: Performing Knowledge Queries');
-
   try {
     const knowledgeClient = await createFACTClient(
       './FACT',
       process.env.ANTHROPIC_API_KEY || 'test'
     );
     await knowledgeClient.connect();
-
-    // 1. Basic knowledge query
-    console.log('📚 Performing basic knowledge query...');
     const basicQuery: KnowledgeRequest = {
       query: 'How to implement JWT authentication in Node.js Express?',
       type: 'semantic',
@@ -151,19 +119,8 @@ export async function example3_PerformQueries(): Promise<void> {
       metadata: { category: 'authentication' },
     };
 
-    const basicResponse = await knowledgeClient.send<KnowledgeResponse>(basicQuery);
-    console.log('✅ Basic Query Result:', {
-      queryId: basicResponse.queryId,
-      executionTime: basicResponse.executionTimeMs,
-      cacheHit: basicResponse.cacheHit,
-      toolsUsed: basicResponse.toolsUsed,
-      confidence: basicResponse.confidence,
-      responseLength: basicResponse.response.length,
-    });
-
-    // 2. Documentation query using IKnowledgeClient interface
-    console.log('📖 Querying React documentation...');
-    const docResponse = await knowledgeClient.query(
+    const _basicResponse = await knowledgeClient.send<KnowledgeResponse>(basicQuery);
+    const _docResponse = await knowledgeClient.query(
       'Get React 18 hooks documentation with examples',
       {
         limit: 5,
@@ -171,15 +128,7 @@ export async function example3_PerformQueries(): Promise<void> {
         filters: { framework: 'react', version: '18' },
       }
     );
-    console.log('✅ Documentation Query Result:', {
-      queryId: docResponse.queryId,
-      toolsUsed: docResponse.toolsUsed,
-      confidence: docResponse.confidence,
-    });
-
-    // 3. Semantic search
-    console.log('🔬 Performing semantic search...');
-    const semanticResults = await knowledgeClient.semanticSearch(
+    const _semanticResults = await knowledgeClient.semanticSearch(
       'best practices for API error handling',
       {
         vectorSearch: true,
@@ -188,20 +137,14 @@ export async function example3_PerformQueries(): Promise<void> {
         limit: 3,
       }
     );
-    console.log('✅ Semantic Search Results:', semanticResults.length, 'results found');
-
-    // 4. Search with fuzzy matching
-    console.log('🔎 Performing fuzzy search...');
-    const searchResults = await knowledgeClient.search('typescript generics', {
+    const _searchResults = await knowledgeClient.search('typescript generics', {
       fuzzy: true,
       threshold: 0.8,
       fields: ['title', 'content'],
       limit: 5,
     });
-    console.log('✅ Fuzzy Search Results:', searchResults.length, 'results found');
 
     await knowledgeClient.disconnect();
-    console.log('✅ Example 3 completed successfully\n');
   } catch (error) {
     console.error('❌ Example 3 failed:', error);
   }
@@ -211,48 +154,25 @@ export async function example3_PerformQueries(): Promise<void> {
  * Example 4: Using Knowledge Helper Functions
  */
 export async function example4_UseHelpers(): Promise<void> {
-  console.log('🛠️ Example 4: Using Knowledge Helper Functions');
-
   try {
     const knowledgeClient = await createFACTClient(
       './FACT',
       process.env.ANTHROPIC_API_KEY || 'test'
     );
     await knowledgeClient.connect();
-
-    // 1. Get documentation using helper
-    console.log('📚 Getting React documentation...');
-    const reactDocs = await KnowledgeHelpers.getDocumentation(knowledgeClient, 'react', '18');
-    console.log('✅ React Documentation Retrieved:', {
-      queryId: reactDocs.queryId,
-      executionTime: reactDocs.executionTimeMs,
-      cacheHit: reactDocs.cacheHit,
-    });
-
-    // 2. Get API reference using helper
-    console.log('🔗 Getting Express.js API reference...');
-    const expressAPI = await KnowledgeHelpers.getAPIReference(
+    const _reactDocs = await KnowledgeHelpers.getDocumentation(knowledgeClient, 'react', '18');
+    const _expressAPI = await KnowledgeHelpers.getAPIReference(
       knowledgeClient,
       'express',
       'app.use'
     );
-    console.log('✅ Express API Reference Retrieved:', {
-      queryId: expressAPI.queryId,
-      toolsUsed: expressAPI.toolsUsed,
-      confidence: expressAPI.confidence,
-    });
-
-    // 3. Search community knowledge using helper
-    console.log('👥 Searching community knowledge...');
-    const communityResults = await KnowledgeHelpers.searchCommunity(
+    const _communityResults = await KnowledgeHelpers.searchCommunity(
       knowledgeClient,
       'docker container optimization',
       ['docker', 'performance', 'optimization']
     );
-    console.log('✅ Community Search Results:', communityResults.length, 'results found');
 
     await knowledgeClient.disconnect();
-    console.log('✅ Example 4 completed successfully\n');
   } catch (error) {
     console.error('❌ Example 4 failed:', error);
   }
@@ -262,8 +182,6 @@ export async function example4_UseHelpers(): Promise<void> {
  * Example 5: Monitor Client Performance and Health
  */
 export async function example5_MonitorPerformance(): Promise<void> {
-  console.log('📊 Example 5: Monitoring Client Performance and Health');
-
   try {
     const knowledgeClient = await createFACTClient(
       './FACT',
@@ -280,47 +198,19 @@ export async function example5_MonitorPerformance(): Promise<void> {
       'API rate limiting strategies',
     ];
 
-    console.log('🔄 Performing multiple queries to generate metrics...');
-
-    for (const [index, query] of queries.entries()) {
-      console.log(`   Query ${index + 1}: ${query.substring(0, 30)}...`);
-
-      const response = await knowledgeClient.query(query, {
+    for (const [_index, query] of queries.entries()) {
+      const _response = await knowledgeClient.query(query, {
         includeMetadata: true,
       });
-
-      console.log(`   ✅ Completed in ${response.executionTimeMs}ms (Cache: ${response.cacheHit})`);
     }
 
     // Get comprehensive metadata with metrics
-    const metadata = await knowledgeClient.getMetadata();
-    console.log('📈 Performance Metrics:', {
-      totalRequests: metadata.metrics.totalRequests,
-      successfulRequests: metadata.metrics.successfulRequests,
-      failedRequests: metadata.metrics.failedRequests,
-      averageResponseTime: metadata.metrics.averageResponseTime,
-      uptime: metadata.metrics.uptime,
-      connectionDuration: metadata.connection.connectionDuration,
-    });
-
-    console.log('🎯 Custom Metrics:', {
-      provider: metadata.custom?.provider,
-      factMetrics: {
-        totalQueries: metadata.custom?.factMetrics?.totalQueries,
-        cacheHitRate: metadata.custom?.factMetrics?.cacheHitRate,
-        averageLatency: metadata.custom?.factMetrics?.averageLatency,
-        errorRate: metadata.custom?.factMetrics?.errorRate,
-      },
-      cacheConfig: metadata.custom?.cacheConfig,
-      availableTools: metadata.custom?.tools?.length,
-    });
+    const _metadata = await knowledgeClient.getMetadata();
 
     // Health check
-    const isHealthy = await knowledgeClient.health();
-    console.log(`🏥 Final Health Status: ${isHealthy ? '✅ Healthy' : '❌ Unhealthy'}`);
+    const _isHealthy = await knowledgeClient.health();
 
     await knowledgeClient.disconnect();
-    console.log('✅ Example 5 completed successfully\n');
   } catch (error) {
     console.error('❌ Example 5 failed:', error);
   }
@@ -330,8 +220,6 @@ export async function example5_MonitorPerformance(): Promise<void> {
  * Example 6: Error Handling and Resilience
  */
 export async function example6_ErrorHandling(): Promise<void> {
-  console.log('🛡️ Example 6: Error Handling and Resilience Testing');
-
   try {
     // Create client with invalid configuration to test error handling
     const knowledgeClient = await createFACTClient(
@@ -343,47 +231,24 @@ export async function example6_ErrorHandling(): Promise<void> {
       }
     );
 
-    console.log('⚠️ Testing with invalid configuration...');
-
     try {
       await knowledgeClient.connect();
-      console.log('⚠️ Unexpected: Connection succeeded with invalid config');
-    } catch (error) {
-      console.log('✅ Expected: Connection failed with invalid config');
-      console.log(`   Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
+    } catch (_error) {}
 
     // Test health check with disconnected client
-    const isHealthy = await knowledgeClient.health();
-    console.log(
-      `🏥 Health check with invalid config: ${isHealthy ? 'Healthy' : 'Unhealthy (Expected)'}`
-    );
+    const _isHealthy = await knowledgeClient.health();
 
     // Test query with disconnected client
     try {
       await knowledgeClient.query('test query');
-      console.log('⚠️ Unexpected: Query succeeded with disconnected client');
-    } catch (error) {
-      console.log('✅ Expected: Query failed with disconnected client');
-    }
-
-    console.log('✅ Example 6 completed successfully\n');
-  } catch (error) {
-    console.log(
-      '✅ Expected error during client creation:',
-      error instanceof Error ? error.message : 'Unknown error'
-    );
-    console.log('✅ Example 6 completed successfully\n');
-  }
+    } catch (_error) {}
+  } catch (_error) {}
 }
 
 /**
  * Run all examples
  */
 export async function runAllExamples(): Promise<void> {
-  console.log('🚀 Running UACL Knowledge Client Examples\n');
-  console.log('='.repeat(60));
-
   const examples = [
     example1_CreateFACTClient,
     example2_CreateWithFactory,
@@ -399,10 +264,7 @@ export async function runAllExamples(): Promise<void> {
     } catch (error) {
       console.error(`❌ Example failed:`, error);
     }
-    console.log('-'.repeat(60));
   }
-
-  console.log('🎉 All UACL Knowledge Client Examples Completed!');
 }
 
 /**

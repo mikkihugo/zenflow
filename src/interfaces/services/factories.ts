@@ -35,7 +35,7 @@
  * ```
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { createLogger, type Logger } from '../../utils/logger';
 import type {
   IService,
@@ -53,28 +53,17 @@ import type {
 } from './core/interfaces';
 import {
   ServiceConfigurationError,
-  ServiceDependencyError,
-  ServiceError,
   ServiceInitializationError,
   ServiceOperationError,
-  ServiceTimeoutError,
 } from './core/interfaces';
 import {
-  type AnyServiceConfig,
-  type BaseServiceConfig,
   type CoordinationServiceConfig,
   type DatabaseServiceConfig,
-  type DataServiceConfig,
   isCoordinationServiceConfig,
-  isDatabaseServiceConfig,
   isDataServiceConfig,
-  isMemoryServiceConfig,
-  isNeuralServiceConfig,
   isWebServiceConfig,
   type MemoryServiceConfig,
   type NeuralServiceConfig,
-  ServiceConfigFactory,
-  ServiceEnvironment,
   ServicePriority,
   ServiceType,
   type WebServiceConfig,
@@ -824,7 +813,7 @@ export class USLFactory implements IServiceFactory {
       if (!groups.has(priority)) {
         groups.set(priority, []);
       }
-      groups.get(priority)!.push(service);
+      groups.get(priority)?.push(service);
     });
 
     return groups;
@@ -1266,7 +1255,7 @@ export class ServiceConfigValidator implements IServiceConfigValidator {
     }
   }
 
-  async validateType(type: string, config: ServiceConfig): Promise<boolean> {
+  async validateType(type: string, _config: ServiceConfig): Promise<boolean> {
     const schema = this.schemas.get(type);
     if (!schema) {
       this.logger.warn(`No schema found for service type: ${type}`);

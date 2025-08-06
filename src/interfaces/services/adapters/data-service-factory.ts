@@ -9,15 +9,9 @@
  * with the global service registry for unified service management.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { createLogger, type Logger } from '../../../utils/logger';
-import type {
-  IService,
-  IServiceFactory,
-  ServiceConfig,
-  ServiceMetrics,
-  ServiceStatus,
-} from '../core/interfaces';
+import type { IService, IServiceFactory, ServiceMetrics, ServiceStatus } from '../core/interfaces';
 
 import {
   ServiceConfigurationError,
@@ -25,7 +19,6 @@ import {
   ServiceInitializationError,
   ServiceOperationError,
 } from '../core/interfaces';
-import type { DataServiceConfig, ServiceEnvironment, ServicePriority, ServiceType } from '../types';
 import {
   createDataServiceAdapter,
   createDefaultDataServiceAdapterConfig,

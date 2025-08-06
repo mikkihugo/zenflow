@@ -126,7 +126,7 @@ export class MonitoringService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing monitoring operation: ${operation}`);
 
@@ -565,7 +565,6 @@ export class MonitoringService extends BaseService implements IService {
 
     switch (channel) {
       case 'console':
-        console.log(`🚨 ${message}`);
         return { channel: 'console', success: true, message };
 
       case 'email':

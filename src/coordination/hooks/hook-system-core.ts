@@ -4,7 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { AgentType } from '../../types/agent-types';
 
 // Aliases for backward compatibility
 export type {
@@ -77,7 +76,7 @@ export class DefaultHookSystem extends EventEmitter implements HookSystem {
     };
   }
 
-  async validateSafety(context: any): Promise<any> {
+  async validateSafety(_context: any): Promise<any> {
     if (!this.config.safetyValidation.enabled) {
       return { safe: true, warnings: [] };
     }
@@ -100,7 +99,7 @@ export class DefaultHookSystem extends EventEmitter implements HookSystem {
     }
   }
 
-  async assignAgents(context: any): Promise<any> {
+  async assignAgents(_context: any): Promise<any> {
     if (!this.config.agentAssignment.enabled) {
       return { assignments: [] };
     }
@@ -122,7 +121,7 @@ export class DefaultHookSystem extends EventEmitter implements HookSystem {
     }
   }
 
-  async trackPerformance(context: any): Promise<any> {
+  async trackPerformance(_context: any): Promise<any> {
     if (!this.config.performanceTracking.enabled) {
       return { tracked: false };
     }

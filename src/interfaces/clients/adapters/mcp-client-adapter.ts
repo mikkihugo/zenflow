@@ -107,7 +107,6 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   private _isConnected = false;
   private _process?: ChildProcess;
   private _tools: Map<string, MCPTool> = new Map();
-  private _messageId = 0;
   private _pendingRequests: Map<
     string | number,
     {
@@ -257,7 +256,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
 
     try {
       // Clean up pending requests
-      for (const [id, pending] of this._pendingRequests) {
+      for (const [_id, pending] of this._pendingRequests) {
         clearTimeout(pending.timeout);
         pending.reject(new Error('Client disconnecting'));
       }
@@ -327,7 +326,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
       }
 
       responseTime = Date.now() - startTime;
-    } catch (error) {
+    } catch (_error) {
       status = 'unhealthy';
       responseTime = Date.now() - startTime;
     }
@@ -545,7 +544,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
         return;
       }
 
-      const messageStr = JSON.stringify(message) + '\n';
+      const messageStr = `${JSON.stringify(message)}\n`;
 
       if (message.id !== undefined) {
         // Setup response handler
@@ -652,12 +651,12 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
       switch (this.config.authentication.type) {
         case 'bearer':
           if (this.config.authentication.credentials) {
-            headers['Authorization'] = `Bearer ${this.config.authentication.credentials}`;
+            headers.Authorization = `Bearer ${this.config.authentication.credentials}`;
           }
           break;
         case 'basic':
           if (this.config.authentication.credentials) {
-            headers['Authorization'] = `Basic ${this.config.authentication.credentials}`;
+            headers.Authorization = `Basic ${this.config.authentication.credentials}`;
           }
           break;
       }

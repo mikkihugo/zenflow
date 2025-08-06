@@ -67,7 +67,7 @@
  * ```
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { createLogger, type Logger } from '../../utils/logger';
 import {
   type CoordinationServiceAdapterConfig,
@@ -90,23 +90,15 @@ import {
   type IntegrationServiceFactory,
   integrationServiceFactory,
 } from './adapters/integration-service-factory';
-import type {
-  IService,
-  IServiceFactory,
-  ServiceConfig,
-  ServiceLifecycleStatus,
-  ServiceMetrics,
-  ServiceStatus,
-} from './core/interfaces';
+import type { IService, IServiceFactory, ServiceMetrics, ServiceStatus } from './core/interfaces';
 import {
   ServiceDependencyError,
-  ServiceError,
   ServiceInitializationError,
   ServiceOperationError,
 } from './core/interfaces';
 import { USLFactory, type USLFactoryConfig } from './factories';
 import { EnhancedServiceRegistry, type ServiceRegistryConfig } from './registry';
-import { type AnyServiceConfig, ServiceEnvironment, ServicePriority, ServiceType } from './types';
+import { type AnyServiceConfig, ServicePriority, ServiceType } from './types';
 
 /**
  * Service Manager Configuration
@@ -305,15 +297,6 @@ export class ServiceManager extends EventEmitter {
   private metricsCollectionInterval?: NodeJS.Timeout;
   private systemStatusInterval?: NodeJS.Timeout;
 
-  // Performance tracking
-  private systemMetrics = {
-    totalOperations: 0,
-    successfulOperations: 0,
-    totalErrors: 0,
-    averageLatency: 0,
-    lastUpdate: new Date(),
-  };
-
   constructor(config?: Partial<ServiceManagerConfig>) {
     super();
     this.logger = createLogger('ServiceManager');
@@ -387,7 +370,7 @@ export class ServiceManager extends EventEmitter {
     const systemMetrics = await this.registry.getSystemMetrics();
     const healthResults = await this.registry.healthCheckAll();
 
-    const healthyCount = Array.from(healthResults.values()).filter(
+    const _healthyCount = Array.from(healthResults.values()).filter(
       (status) => status.health === 'healthy'
     ).length;
 
@@ -852,7 +835,7 @@ export class ServiceManager extends EventEmitter {
       const health = healthResults.get(metric.name);
       if (!health) return;
 
-      const successRate =
+      const _successRate =
         metric.operationCount > 0
           ? ((metric.operationCount - metric.errorCount) / metric.operationCount) * 100
           : 100;
@@ -1198,7 +1181,7 @@ export class ServiceManager extends EventEmitter {
     this.logger.info('Initializing service discovery...');
 
     // Set up discovery event handlers
-    this.registry.on('service-registered', (serviceName: string, service?: IService) => {
+    this.registry.on('service-registered', (_serviceName: string, service?: IService) => {
       if (service) {
         this.announceServiceDiscovery(service);
       }
@@ -1479,7 +1462,6 @@ export class ServiceManager extends EventEmitter {
         return attempt * 1000 * multiplier;
       case 'exponential':
         return multiplier ** attempt * 1000;
-      case 'fixed':
       default:
         return 5000; // 5 seconds
     }

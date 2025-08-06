@@ -103,7 +103,7 @@ interface ExtendedGlobal extends NodeJS.Global {
 }
 
 // Classical TDD helpers for algorithm testing
-(global as ExtendedGlobal).generateTestMatrix = (
+(global as unknown as ExtendedGlobal).generateTestMatrix = (
   rows: number,
   cols: number,
   fillFn?: (i: number, j: number) => number
@@ -118,7 +118,10 @@ interface ExtendedGlobal extends NodeJS.Global {
   return matrix;
 };
 
-(global as ExtendedGlobal).generateTestVector = (size: number, fillFn?: (i: number) => number) => {
+(global as unknown as ExtendedGlobal).generateTestVector = (
+  size: number,
+  fillFn?: (i: number) => number
+) => {
   const vector: number[] = [];
   for (let i = 0; i < size; i++) {
     vector[i] = fillFn ? fillFn(i) : Math.random();
@@ -127,14 +130,17 @@ interface ExtendedGlobal extends NodeJS.Global {
 };
 
 // Neural network test data generators
-(global as ExtendedGlobal).generateXORData = () => [
+(global as unknown as ExtendedGlobal).generateXORData = () => [
   { input: [0, 0], output: [0] },
   { input: [0, 1], output: [1] },
   { input: [1, 0], output: [1] },
   { input: [1, 1], output: [0] },
 ];
 
-(global as ExtendedGlobal).generateLinearData = (samples: number, noise: number = 0.1) => {
+(global as unknown as ExtendedGlobal).generateLinearData = (
+  samples: number,
+  noise: number = 0.1
+) => {
   const data = [];
   for (let i = 0; i < samples; i++) {
     const x = Math.random() * 10;
@@ -145,7 +151,7 @@ interface ExtendedGlobal extends NodeJS.Global {
 };
 
 // Performance assertion helpers
-(global as ExtendedGlobal).expectPerformance = (fn: () => void, maxTimeMs: number) => {
+(global as unknown as ExtendedGlobal).expectPerformance = (fn: () => void, maxTimeMs: number) => {
   const start = Date.now();
   fn();
   const duration = Date.now() - start;
@@ -153,13 +159,13 @@ interface ExtendedGlobal extends NodeJS.Global {
   return duration;
 };
 
-(global as ExtendedGlobal).expectMemoryUsage = (fn: () => void, maxMemoryMB: number) => {
-  if (!(global as ExtendedGlobal).gc) return; // Skip if garbage collection not available
+(global as unknown as ExtendedGlobal).expectMemoryUsage = (fn: () => void, maxMemoryMB: number) => {
+  if (!(global as unknown as ExtendedGlobal).gc) return; // Skip if garbage collection not available
 
-  (global as ExtendedGlobal).gc();
+  (global as unknown as ExtendedGlobal).gc();
   const startMemory = process.memoryUsage().heapUsed;
   fn();
-  (global as ExtendedGlobal).gc();
+  (global as unknown as ExtendedGlobal).gc();
   const endMemory = process.memoryUsage().heapUsed;
   const memoryUsedMB = (endMemory - startMemory) / 1024 / 1024;
 
@@ -168,7 +174,7 @@ interface ExtendedGlobal extends NodeJS.Global {
 };
 
 // Mathematical precision helpers
-(global as ExtendedGlobal).expectNearlyEqual = (
+(global as unknown as ExtendedGlobal).expectNearlyEqual = (
   actual: number,
   expected: number,
   tolerance: number = 1e-10
@@ -176,25 +182,25 @@ interface ExtendedGlobal extends NodeJS.Global {
   expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
 };
 
-(global as ExtendedGlobal).expectArrayNearlyEqual = (
+(global as unknown as ExtendedGlobal).expectArrayNearlyEqual = (
   actual: number[],
   expected: number[],
   tolerance: number = 1e-10
 ) => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
-    (global as ExtendedGlobal).expectNearlyEqual(actual[i], expected[i], tolerance);
+    (global as unknown as ExtendedGlobal).expectNearlyEqual(actual[i], expected[i], tolerance);
   }
 };
 
-(global as ExtendedGlobal).expectMatrixNearlyEqual = (
+(global as unknown as ExtendedGlobal).expectMatrixNearlyEqual = (
   actual: number[][],
   expected: number[][],
   tolerance: number = 1e-10
 ) => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
-    (global as ExtendedGlobal).expectArrayNearlyEqual(actual[i], expected[i], tolerance);
+    (global as unknown as ExtendedGlobal).expectArrayNearlyEqual(actual[i], expected[i], tolerance);
   }
 };
 

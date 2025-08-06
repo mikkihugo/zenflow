@@ -62,7 +62,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
    * @param pseudocode
    */
   async designSystemArchitecture(
-    spec: DetailedSpecification,
+    _spec: DetailedSpecification,
     pseudocode: AlgorithmPseudocode[]
   ): Promise<SystemArchitecture> {
     const pseudocodeStructure: PseudocodeStructure = {
@@ -786,17 +786,17 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     // Extract dependencies from input parameters if they exist
     if (algorithm.inputs && Array.isArray(algorithm.inputs)) {
       for (const param of algorithm.inputs) {
-        if (param.type && param.type.includes('Agent')) dependencies.push('AgentRegistryManager');
-        if (param.type && param.type.includes('Task')) dependencies.push('TaskQueueManager');
-        if (param.type && param.type.includes('Memory')) dependencies.push('MemoryManager');
+        if (param.type?.includes('Agent')) dependencies.push('AgentRegistryManager');
+        if (param.type?.includes('Task')) dependencies.push('TaskQueueManager');
+        if (param.type?.includes('Memory')) dependencies.push('MemoryManager');
       }
     }
 
     // Extract dependencies from algorithm name/purpose
-    if (algorithm.name && algorithm.name.includes('Agent')) {
+    if (algorithm.name?.includes('Agent')) {
       dependencies.push('AgentRegistryManager');
     }
-    if (algorithm.purpose && algorithm.purpose.includes('store')) {
+    if (algorithm.purpose?.includes('store')) {
       dependencies.push('MemoryManager');
     }
 
@@ -806,7 +806,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   private async selectTechnologiesForAlgorithm(algorithm: any): Promise<string[]> {
     const technologies = ['TypeScript', 'Node.js'];
 
-    if (algorithm.complexity && algorithm.complexity.timeComplexity) {
+    if (algorithm.complexity?.timeComplexity) {
       if (
         algorithm.complexity.timeComplexity.includes('O(n^2)') ||
         algorithm.complexity.timeComplexity.includes('O(n^3)')
@@ -815,7 +815,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
       }
     }
 
-    if (algorithm.name && algorithm.name.includes('Neural')) {
+    if (algorithm.name?.includes('Neural')) {
       technologies.push('TensorFlow.js', 'WASM');
     }
 
@@ -823,7 +823,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   private async assessComponentScalability(algorithm: any): Promise<string> {
-    if (algorithm.complexity && algorithm.complexity.timeComplexity) {
+    if (algorithm.complexity?.timeComplexity) {
       if (
         algorithm.complexity.timeComplexity.includes('O(1)') ||
         algorithm.complexity.timeComplexity.includes('O(log n)')
@@ -874,14 +874,6 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     return accessTime === 'O(1)' ? '<1ms' : '<10ms';
   }
 
-  private estimateMemoryUsage(dataStructure: any): string {
-    const size = dataStructure.expectedSize;
-    if (size > 1000000) return '1GB';
-    if (size > 100000) return '100MB';
-    if (size > 10000) return '10MB';
-    return '1MB';
-  }
-
   private areComponentsRelated(component1: SystemComponent, component2: SystemComponent): boolean {
     // Check if components share similar naming or responsibilities
     const name1 = component1.name.toLowerCase();
@@ -907,43 +899,6 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     return components.some((c) => c.type === 'data-manager');
   }
 
-  private inferDataType(source: SystemComponent, target: SystemComponent): string {
-    if (source.name.includes('Agent') && target.name.includes('Registry')) return 'AgentInfo';
-    if (source.name.includes('Task') && target.name.includes('Queue')) return 'Task';
-    if (source.name.includes('Neural')) return 'Matrix';
-    return 'JSON';
-  }
-
-  private estimateDataVolume(source: SystemComponent, target: SystemComponent): string {
-    if (source.type === 'service' && target.type === 'data-manager') return 'Medium';
-    if (source.name.includes('Neural')) return 'High';
-    return 'Low';
-  }
-
-  private estimateDataFrequency(relationship: ComponentRelationship): string {
-    if (relationship.type === 'depends-on') return 'High';
-    if (relationship.type === 'uses') return 'Medium';
-    return 'Low';
-  }
-
-  private determineSecurityRequirements(source: SystemComponent, target: SystemComponent): string {
-    if (source.type === 'gateway' || target.type === 'gateway') return 'High';
-    if (source.type === 'data-manager' || target.type === 'data-manager') return 'Medium';
-    return 'Low';
-  }
-
-  private identifyDataTransformation(source: SystemComponent, target: SystemComponent): string {
-    if (source.type !== target.type) return 'Format conversion required';
-    return 'Direct mapping';
-  }
-
-  private determineInterfaceType(component: SystemComponent): string {
-    if (component.type === 'gateway') return 'REST';
-    if (component.type === 'service') return 'REST';
-    if (component.type === 'data-manager') return 'Repository';
-    return 'Internal';
-  }
-
   private async generateInterfaceMethods(component: SystemComponent): Promise<any[]> {
     const methods = [];
 
@@ -963,34 +918,6 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     }
 
     return methods;
-  }
-
-  private selectProtocol(component: SystemComponent): string {
-    if (component.type === 'gateway') return 'HTTP/REST';
-    if (component.type === 'service') return 'HTTP/REST';
-    return 'Internal';
-  }
-
-  private determineAuthentication(component: SystemComponent): string {
-    if (component.type === 'gateway') return 'JWT + API Key';
-    if (component.type === 'service') return 'JWT';
-    return 'Internal';
-  }
-
-  private calculateRateLimit(component: SystemComponent): string {
-    if (component.type === 'gateway') return '1000/hour';
-    if (component.type === 'service') return '10000/hour';
-    return 'unlimited';
-  }
-
-  /**
-   * Extract performance requirements (simplified)
-   *
-   * @param _pseudocode
-   */
-  private async extractPerformanceRequirements(_pseudocode: PseudocodeStructure): Promise<any[]> {
-    // Simplified implementation - return empty array for now
-    return [];
   }
 
   private async defineSecurityRequirements(
@@ -1311,41 +1238,9 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
           : 'Need more quality attribute definitions',
     });
 
-    const overallScore =
+    const _overallScore =
       validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
 
     return validationResults;
-  }
-
-  /**
-   * Generate architecture recommendations
-   *
-   * @param validationResults
-   */
-  private generateArchitectureRecommendations(validationResults: ValidationResult[]): string[] {
-    const recommendations: string[] = [];
-
-    for (const result of validationResults) {
-      if (!result.passed) {
-        switch (result.criterion) {
-          case 'Component design':
-            recommendations.push('Define clear system components with specific responsibilities');
-            break;
-          case 'Component relationships':
-            recommendations.push('Specify how components interact and depend on each other');
-            break;
-          case 'Architecture patterns':
-            recommendations.push('Select appropriate architecture patterns for the system');
-            break;
-          case 'Quality attributes':
-            recommendations.push(
-              'Define comprehensive quality attributes including performance, security, and scalability'
-            );
-            break;
-        }
-      }
-    }
-
-    return recommendations;
   }
 }

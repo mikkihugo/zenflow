@@ -11,10 +11,7 @@ import {
   type INeuralService,
   type ISwarmService,
   type IWorkflowService,
-  PerformanceMetrics,
   type ProjectInitConfig,
-  ProjectResult,
-  SystemStatus,
 } from '../../core/facade';
 
 import { SystemEventManager } from '../../interfaces/events/observer-system';
@@ -714,7 +711,7 @@ describe('Facade Pattern Implementation', () => {
         };
 
         // Start workflow execution
-        const workflowPromise = facade.executeWorkflow(longRunningWorkflowConfig);
+        const _workflowPromise = facade.executeWorkflow(longRunningWorkflowConfig);
 
         // Allow first step to complete
         mockServices.swarmService.initializeSwarm.mockResolvedValue({
@@ -862,7 +859,7 @@ describe('Facade Pattern Implementation', () => {
           query: 'SELECT status FROM swarms WHERE active = true',
         }));
 
-        mockServices.databaseService.query.mockImplementation((query) => {
+        mockServices.databaseService.query.mockImplementation((_query) => {
           return Promise.resolve([
             { swarmId: 'batch-swarm-0', status: 'active' },
             { swarmId: 'batch-swarm-1', status: 'active' },
@@ -904,7 +901,7 @@ describe('Facade Pattern Implementation', () => {
         // Mock the facade to use load balanced instances
         facade.setServiceInstances('swarm', swarmInstances as any);
 
-        const requestPromises = Array.from({ length: 9 }, (_, i) =>
+        const requestPromises = Array.from({ length: 9 }, (_, _i) =>
           facade.initializeSwarm({
             topology: 'mesh',
             agentCount: 2,
@@ -937,7 +934,7 @@ describe('Facade Pattern Implementation', () => {
         let activeOperations = 0;
         const maxConcurrentOperations = 2;
 
-        mockServices.neuralService.trainModel.mockImplementation(async (config) => {
+        mockServices.neuralService.trainModel.mockImplementation(async (_config) => {
           if (activeOperations >= maxConcurrentOperations) {
             throw new Error('Resource pool exhausted');
           }

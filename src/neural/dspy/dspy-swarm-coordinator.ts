@@ -104,7 +104,6 @@ export class DSPySwarmCoordinator extends EventEmitter {
   private agents: Map<string, DSPyAgent> = new Map();
   private activeTasks: Map<string, SwarmOptimizationTask> = new Map();
   private memoryStore: SessionMemoryStore;
-  private swarmCoordinator?: SwarmCoordinator;
   private agentQueens: Map<DSPyAgentType, string[]> = new Map();
 
   constructor(memoryStore: SessionMemoryStore, swarmCoordinator?: SwarmCoordinator) {
@@ -289,7 +288,6 @@ export class DSPySwarmCoordinator extends EventEmitter {
         case 'sequential':
           agentResults = await this.executeSequentialOptimization(task, program);
           break;
-        case 'collaborative':
         default:
           agentResults = await this.executeCollaborativeOptimization(task, program);
           break;
@@ -603,9 +601,9 @@ export class DSPySwarmCoordinator extends EventEmitter {
    * @param context
    */
   private async executePromptOptimization(
-    agent: DSPyAgent,
+    _agent: DSPyAgent,
     program: DSPyProgram,
-    context?: any
+    _context?: any
   ): Promise<any> {
     // Simulate prompt optimization
     const optimizedPrompts = [
@@ -623,12 +621,12 @@ export class DSPySwarmCoordinator extends EventEmitter {
   }
 
   private async executeExampleGeneration(
-    agent: DSPyAgent,
+    _agent: DSPyAgent,
     program: DSPyProgram,
-    context?: any
+    _context?: any
   ): Promise<any> {
     // Simulate example generation
-    const generatedExamples = program.examples.slice(0, 3).map((example, i) => ({
+    const generatedExamples = program.examples.slice(0, 3).map((example, _i) => ({
       ...example,
       synthetic: true,
       quality: Math.random() * 0.4 + 0.6,
@@ -644,9 +642,9 @@ export class DSPySwarmCoordinator extends EventEmitter {
   }
 
   private async executeMetricAnalysis(
-    agent: DSPyAgent,
-    program: DSPyProgram,
-    context?: any
+    _agent: DSPyAgent,
+    _program: DSPyProgram,
+    _context?: any
   ): Promise<any> {
     // Simulate metric analysis
     return {
@@ -663,9 +661,9 @@ export class DSPySwarmCoordinator extends EventEmitter {
   }
 
   private async executePipelineTuning(
-    agent: DSPyAgent,
-    program: DSPyProgram,
-    context?: any
+    _agent: DSPyAgent,
+    _program: DSPyProgram,
+    _context?: any
   ): Promise<any> {
     // Simulate pipeline tuning
     return {
@@ -890,7 +888,7 @@ export class DSPySwarmCoordinator extends EventEmitter {
   }
 
   private async buildInterRoundConsensus(
-    agentResults: Map<DSPyAgentType, any>,
+    _agentResults: Map<DSPyAgentType, any>,
     task: SwarmOptimizationTask
   ): Promise<void> {
     // Simulate inter-round consensus building
@@ -978,7 +976,7 @@ export class DSPySwarmCoordinator extends EventEmitter {
    */
   private async analyzeCognitivePatterns(
     program: DSPyProgram,
-    context?: any
+    _context?: any
   ): Promise<{
     patterns: string[];
     complexity: number;
@@ -1013,7 +1011,7 @@ export class DSPySwarmCoordinator extends EventEmitter {
    */
   private async applyAdaptiveLearning(
     program: DSPyProgram,
-    context?: any
+    _context?: any
   ): Promise<{
     adaptations: string[];
     adaptability: number;
@@ -1038,7 +1036,7 @@ export class DSPySwarmCoordinator extends EventEmitter {
    *
    * @param program
    */
-  private async optimizeNeuralArchitecture(program: DSPyProgram): Promise<{
+  private async optimizeNeuralArchitecture(_program: DSPyProgram): Promise<{
     optimizations: string[];
     efficiency: number;
     architectureScore: number;
@@ -1064,8 +1062,8 @@ export class DSPySwarmCoordinator extends EventEmitter {
    * @param context
    */
   private async enhanceCrossModalLearning(
-    program: DSPyProgram,
-    context?: any
+    _program: DSPyProgram,
+    _context?: any
   ): Promise<{
     enhancements: string[];
     coherence: number;
@@ -1094,7 +1092,7 @@ export class DSPySwarmCoordinator extends EventEmitter {
    */
   private async enhanceWorkflowAutomatically(
     program: DSPyProgram,
-    context?: any
+    _context?: any
   ): Promise<{
     automationLevel: number;
     workflowImprovements: string[];

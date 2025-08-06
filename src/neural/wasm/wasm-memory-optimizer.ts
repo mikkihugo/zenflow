@@ -6,8 +6,6 @@
 export class WasmMemoryOptimizer {
   private optimized = false;
 
-  constructor() {}
-
   async optimize(): Promise<void> {
     if (this.optimized) return;
 

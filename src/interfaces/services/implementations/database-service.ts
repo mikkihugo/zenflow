@@ -123,7 +123,7 @@ export class DatabaseService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing database operation: ${operation}`);
 
@@ -433,7 +433,7 @@ export class DatabaseService extends BaseService implements IService {
     }
   }
 
-  private async simulateQuery(sql: string, parameters?: any[]): Promise<any> {
+  private async simulateQuery(sql: string, _parameters?: any[]): Promise<any> {
     // Simulate query execution time
     const queryTime = Math.random() * 50 + 10; // 10-60ms
     await new Promise((resolve) => setTimeout(resolve, queryTime));

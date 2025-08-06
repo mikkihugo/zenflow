@@ -178,7 +178,7 @@ export class NeuralCLI {
    *
    * @param config
    */
-  async initialize(config: NeuralConfig = {}): Promise<any> {
+  async initialize(_config: NeuralConfig = {}): Promise<any> {
     if (!this.ruvSwarm) {
       // TODO: Replace with proper ZenSwarm import after coordination restructure
       // const { ZenSwarm } = await import('../../coordination/swarm/core/index-complete.js');

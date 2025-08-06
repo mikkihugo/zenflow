@@ -69,7 +69,7 @@ export const useConfig = (): UseConfigReturn => {
   // Load configuration on mount
   useEffect(() => {
     loadConfig();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loadConfig]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadConfig = async () => {
     try {

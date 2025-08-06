@@ -10,16 +10,8 @@
  */
 
 import { jest } from '@jest/globals';
-import type { MockedFunction } from 'jest-mock';
-import { DocumentManager } from '../../../../database/managers/document-manager';
 import { WebDataService } from '../../../web/web-data-service';
-import type {
-  ServiceLifecycleStatus,
-  ServiceMetrics,
-  ServiceOperationResponse,
-  ServiceStatus,
-} from '../../core/interfaces';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '../../types';
+import { ServiceType } from '../../types';
 import {
   createDefaultDataServiceAdapterConfig,
   DataServiceAdapter,
@@ -112,7 +104,7 @@ describe('DataServiceAdapter', () => {
   });
 
   afterEach(async () => {
-    if (adapter && adapter.isReady()) {
+    if (adapter?.isReady()) {
       await adapter.stop();
       await adapter.destroy();
     }
@@ -573,7 +565,7 @@ describe('DataServiceAdapter', () => {
       // Assert
       expect(status.dependencies).toHaveProperty('web-data-service');
       expect(status.dependencies).toHaveProperty('document-service');
-      expect(status.dependencies!['web-data-service'].status).toMatch(/healthy|unhealthy|unknown/);
+      expect(status.dependencies?.['web-data-service'].status).toMatch(/healthy|unhealthy|unknown/);
     });
 
     it('should report metadata in service status', async () => {
@@ -814,7 +806,7 @@ describe('DataServiceHelper', () => {
       // Assert
       expect(result.success).toBe(true);
       expect(result.data).toHaveLength(1);
-      expect(result.data![0].id).toBe('swarm-1');
+      expect(result.data?.[0].id).toBe('swarm-1');
     });
 
     it('should validate swarm configuration correctly', async () => {

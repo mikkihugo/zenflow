@@ -162,8 +162,8 @@ export function createSwarmContainer(
   container.register(CORE_TOKENS.Logger, {
     type: 'singleton',
     create: () => ({
-      debug: (msg: string) => console.debug(`[DEBUG] ${msg}`),
-      info: (msg: string) => console.info(`[INFO] ${msg}`),
+      debug: (_msg: string) => {},
+      info: (_msg: string) => {},
       warn: (msg: string) => console.warn(`[WARN] ${msg}`),
       error: (msg: string) => console.error(`[ERROR] ${msg}`),
     }),
@@ -172,9 +172,9 @@ export function createSwarmContainer(
   container.register(CORE_TOKENS.Config, {
     type: 'singleton',
     create: () => ({
-      get: (key: string, defaultValue?: any) => defaultValue,
-      set: (key: string, value: any) => {},
-      has: (key: string) => false,
+      get: (_key: string, defaultValue?: any) => defaultValue,
+      set: (_key: string, _value: any) => {},
+      has: (_key: string) => false,
     }),
   });
 

@@ -14,10 +14,8 @@ import type {
   FeatureDocumentEntity,
   PRDDocumentEntity,
   ProjectEntity,
-  TaskDocumentEntity,
 } from '../../database/entities/document-entities';
 import { DocumentManager } from '../../database/managers/document-manager';
-import type { DocumentType } from '../../types/workflow-types';
 
 describe('DocumentManager Integration Tests', () => {
   let documentManager: DocumentManager;
@@ -220,11 +218,11 @@ describe('DocumentManager Integration Tests', () => {
   });
 
   describe('Advanced Document Search', () => {
-    let searchDocuments: BaseDocumentEntity[];
+    let _searchDocuments: BaseDocumentEntity[];
 
     beforeEach(async () => {
       // Create test documents for search
-      searchDocuments = await Promise.all([
+      _searchDocuments = await Promise.all([
         documentManager.createDocument(
           {
             type: 'prd',
@@ -607,7 +605,7 @@ describe('DocumentManager Integration Tests', () => {
   describe('Complex Integration Scenarios', () => {
     test('should handle complete document lifecycle with relationships and workflows', async () => {
       // 1. Create vision document
-      const vision = await documentManager.createDocument(
+      const _vision = await documentManager.createDocument(
         {
           type: 'vision',
           title: 'Product Vision 2024',
@@ -727,9 +725,9 @@ describe('DocumentManager Integration Tests', () => {
       // 8. Verify project overview shows complete document hierarchy
       const projectOverview = await documentManager.getProjectWithDocuments(testProject.id);
       expect(projectOverview).not.toBeNull();
-      expect(projectOverview!.documents.prds.length).toBe(1);
-      expect(projectOverview!.documents.epics.length).toBeGreaterThanOrEqual(1);
-      expect(projectOverview!.documents.features.length).toBe(1);
+      expect(projectOverview?.documents.prds.length).toBe(1);
+      expect(projectOverview?.documents.epics.length).toBeGreaterThanOrEqual(1);
+      expect(projectOverview?.documents.features.length).toBe(1);
     });
 
     test('should handle workflow automation with complex conditions', async () => {

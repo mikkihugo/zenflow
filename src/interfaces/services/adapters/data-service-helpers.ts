@@ -11,21 +11,11 @@
  */
 
 import type { BaseDocumentEntity } from '../../../database/entities/document-entities';
-import type {
-  DocumentCreateOptions,
-  DocumentQueryOptions,
-  DocumentSearchOptions,
-} from '../../../database/managers/document-manager';
+import type { DocumentSearchOptions } from '../../../database/managers/document-manager';
 import type { DocumentType } from '../../../types/workflow-types';
 import { createLogger, type Logger } from '../../../utils/logger';
-import type {
-  CommandResult,
-  DocumentData,
-  SwarmData,
-  SystemStatusData,
-  TaskData,
-} from '../../web/web-data-service';
-import type { DataServiceAdapter, DataServiceAdapterConfig } from './data-service-adapter';
+import type { SwarmData, SystemStatusData, TaskData } from '../../web/web-data-service';
+import type { DataServiceAdapter } from './data-service-adapter';
 
 /**
  * Data operation result with standardized metadata
@@ -825,7 +815,7 @@ export class DataServiceHelper {
     };
   }
 
-  private validateItem(item: any, schema: any): boolean {
+  private validateItem(item: any, _schema: any): boolean {
     // Simple validation - in production, use a proper schema validator like Joi or Yup
     try {
       return typeof item === 'object' && item !== null;

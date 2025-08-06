@@ -124,7 +124,7 @@ export class SafeMemoryStore extends EventEmitter {
 
       return {
         found: true,
-        data: undefined as void,
+        data: undefined as undefined,
         key: fullKey,
         timestamp: now,
         ttl: newMetadata.ttl,
@@ -433,7 +433,6 @@ export async function safeMemoryUsageExample(): Promise<void> {
 
   // Safe property access using type guards
   if (isMemorySuccess(storeResult)) {
-    console.log('✅ Data stored successfully');
   } else if (isMemoryError(storeResult)) {
     console.error('❌ Storage failed:', storeResult.error.message);
   }
@@ -442,12 +441,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
   const retrieveResult = await store.retrieve<{ name: string; age: number }>('user:123');
 
   if (isMemorySuccess(retrieveResult)) {
-    // TypeScript knows this is MemorySuccess<T> here
-    console.log('User name:', retrieveResult.data.name);
-    console.log('User age:', retrieveResult.data.age);
-    console.log('Last accessed:', retrieveResult.timestamp);
   } else if (isMemoryNotFound(retrieveResult)) {
-    console.log('User not found, reason:', retrieveResult.reason);
   } else if (isMemoryError(retrieveResult)) {
     console.error('Error retrieving user:', retrieveResult.error.message);
   }
@@ -456,9 +450,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
   const existsResult = await store.exists('user:456');
 
   if (isMemorySuccess(existsResult)) {
-    console.log('User 456 exists:', existsResult.data);
   } else if (isMemoryNotFound(existsResult)) {
-    console.log('User 456 does not exist');
   }
 
   await store.shutdown();

@@ -65,7 +65,7 @@ export class NeuralService extends BaseService implements IService {
     this.logger.info(`Stopping neural service: ${this.name}`);
 
     // Stop all training jobs
-    for (const [jobId, job] of this.trainingJobs) {
+    for (const [jobId, _job] of this.trainingJobs) {
       try {
         await this.stopTraining(jobId);
       } catch (error) {
@@ -119,7 +119,7 @@ export class NeuralService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing neural operation: ${operation}`);
 
@@ -211,7 +211,7 @@ export class NeuralService extends BaseService implements IService {
     return Array.from(this.models.values());
   }
 
-  private async predict(modelId: string, input: any, options?: any): Promise<any> {
+  private async predict(modelId: string, input: any, _options?: any): Promise<any> {
     const model = this.models.get(modelId);
     if (!model) {
       throw new Error(`Model not found: ${modelId}`);
@@ -383,7 +383,7 @@ export class NeuralService extends BaseService implements IService {
     }, 60000); // Clean every minute
   }
 
-  private simulatePrediction(model: any, input: any): any {
+  private simulatePrediction(model: any, _input: any): any {
     // Simulate different types of model outputs
     switch (model.type) {
       case 'classification':
@@ -413,7 +413,7 @@ export class NeuralService extends BaseService implements IService {
     const updateProgress = () => {
       if (job.status !== 'running') return;
 
-      const epoch = Math.floor((job.progress / 100) * job.config.epochs);
+      const _epoch = Math.floor((job.progress / 100) * job.config.epochs);
       job.progress = Math.min(job.progress + Math.random() * 5, 100);
 
       // Update metrics

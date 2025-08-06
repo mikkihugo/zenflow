@@ -1000,7 +1000,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   // Missing RefinementEngine interface methods
   async analyzeImplementationGaps(
     architecture: SystemArchitecture,
-    currentImpl: Implementation
+    _currentImpl: Implementation
   ): Promise<GapAnalysis> {
     // Implementation gap analysis
     const gaps: RefinementChange[] = [];
@@ -1093,9 +1093,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     };
 
     // Apply refinements to architecture
-    for (const refinement of refinements) {
-      // Update components based on refinement
-      console.log(`Applying refinement to ${refinement.component}`);
+    for (const _refinement of refinements) {
     }
 
     return updatedArchitecture;

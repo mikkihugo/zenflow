@@ -59,14 +59,14 @@ class WasmBindingProvider implements WasmBindingInterface {
   }
 
   async createNeuralNetwork(config: NeuralConfig): Promise<NeuralNetworkInterface> {
-    const wasmModule = await this.loadWasm();
+    const _wasmModule = await this.loadWasm();
 
     // Create a wrapper that implements NeuralNetworkInterface
     return {
-      async initialize(config: NeuralConfig): Promise<void> {
+      async initialize(_config: NeuralConfig): Promise<void> {
         // Initialize neural network with WASM
       },
-      async train(data, options) {
+      async train(_data, options) {
         // Training implementation
         return {
           finalError: 0.01,
@@ -75,7 +75,7 @@ class WasmBindingProvider implements WasmBindingInterface {
           converged: true,
         };
       },
-      async predict(input: number[]): Promise<number[]> {
+      async predict(_input: number[]): Promise<number[]> {
         // Prediction implementation
         return [0.5]; // Mock result
       },
@@ -87,7 +87,7 @@ class WasmBindingProvider implements WasmBindingInterface {
           metadata: {},
         };
       },
-      async import(state) {
+      async import(_state) {
         // Import implementation
       },
       async getMetrics() {

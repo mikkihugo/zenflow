@@ -54,10 +54,7 @@ export class SPARCEngineCore implements SPARCEngine {
   // Deep infrastructure integration
   private readonly documentDrivenSystem: DocumentDrivenSystem;
   private readonly workflowEngine: WorkflowEngine;
-  private readonly memorySystem: MemorySystem;
   private readonly swarmCoordinator: SPARCSwarmCoordinator;
-  private readonly taskCoordinator: TaskCoordinator;
-  private readonly taskAPI: TaskAPI;
 
   constructor() {
     this.phaseDefinitions = this.initializePhaseDefinitions();
@@ -1258,22 +1255,6 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
         sparc_project_id: project.id,
       },
     ];
-  }
-
-  /**
-   * Get estimated hours for each SPARC phase
-   *
-   * @param phase
-   */
-  private getPhaseEstimatedHours(phase: SPARCPhase): number {
-    const estimates: Record<SPARCPhase, number> = {
-      specification: 8, // 1 day
-      pseudocode: 12, // 1.5 days
-      architecture: 16, // 2 days
-      refinement: 12, // 1.5 days
-      completion: 24, // 3 days
-    };
-    return estimates[phase] || 8;
   }
 
   /**

@@ -5,7 +5,7 @@
  * used throughout the UEL system for type-safe event operations.
  */
 
-import type { EventManagerType, EventPriority, SystemEvent } from './core/interfaces';
+import type { EventPriority, SystemEvent } from './core/interfaces';
 
 /**
  * System Events - Core system lifecycle and health

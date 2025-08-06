@@ -119,8 +119,8 @@ export class DSPyAgentPromptDatabase {
    * Ensure .claude directory structure exists for Claude Code integration
    */
   private ensureClaudeDirectoryStructure(): void {
-    const fs = require('fs');
-    const path = require('path');
+    const fs = require('node:fs');
+    const path = require('node:path');
 
     const baseDir = './.claude';
     const subdirs = [
@@ -200,7 +200,7 @@ export class DSPyAgentPromptDatabase {
       try {
         this.promptTable = await this.db.openTable('agent_prompts');
         logger.info('Opened existing agent prompts table');
-      } catch (error) {
+      } catch (_error) {
         this.promptTable = await this.db.createTable('agent_prompts', []);
         logger.info('Created new agent prompts table');
       }
@@ -209,7 +209,7 @@ export class DSPyAgentPromptDatabase {
       try {
         this.agentTable = await this.db.openTable('agent_instances');
         logger.info('Opened existing agent instances table');
-      } catch (error) {
+      } catch (_error) {
         this.agentTable = await this.db.createTable('agent_instances', []);
         logger.info('Created new agent instances table');
       }

@@ -196,7 +196,6 @@ YOUR GOAL: Make workflows self-improving and continuously optimized!`,
  */
 export class DSPyAgentIntegration {
   private swarmCoordinator: SwarmCoordinator;
-  private memoryStore: SessionMemoryStore;
   private dspyIntegration: DSPyIntegration;
   private dspyAgents: Map<string, SwarmAgent> = new Map();
 
@@ -343,7 +342,7 @@ export class DSPyAgentIntegration {
     if (options.agentTypes) {
       // Filter agents by requested types
       const filteredAgents = availableAgents.filter((agent) =>
-        options.agentTypes!.includes(agent.type as DSPyAgentType)
+        options.agentTypes?.includes(agent.type as DSPyAgentType)
       );
 
       if (filteredAgents.length === 0) {
@@ -448,7 +447,7 @@ export class DSPyAgentIntegration {
    * Cleanup DSPy agents from coordination system
    */
   async cleanup(): Promise<void> {
-    for (const [agentId, agent] of this.dspyAgents) {
+    for (const [agentId, _agent] of this.dspyAgents) {
       await this.swarmCoordinator.removeAgent(agentId);
     }
 

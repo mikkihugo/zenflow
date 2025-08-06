@@ -7,10 +7,9 @@
  */
 
 import { createLogger, type Logger } from '../../utils/logger';
-import type { IService, ServiceConfig, ServiceMetrics, ServiceStatus } from './core/interfaces';
-import { initializeUSL, USL, usl } from './index';
+import type { IService } from './core/interfaces';
+import { usl } from './index';
 import { ServiceManager } from './manager';
-import { EnhancedServiceRegistry } from './registry';
 import { type AnyServiceConfig, ServicePriority, ServiceType } from './types';
 
 // Legacy service patterns that need compatibility support

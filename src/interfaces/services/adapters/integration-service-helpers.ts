@@ -6,14 +6,10 @@
  * and specialized integration patterns.
  */
 
-import type {
-  ArchitecturalValidation,
-  ArchitectureDesign,
-  Component,
-} from '../../../coordination/swarm/sparc/database/architecture-storage';
+import type { ArchitectureDesign } from '../../../coordination/swarm/sparc/database/architecture-storage';
 
-import type { APIRequestOptions, APIResult } from '../../../interfaces/api/safe-api-client';
-import { createLogger, type Logger } from '../../../utils/logger';
+import type { APIResult } from '../../../interfaces/api/safe-api-client';
+import { createLogger } from '../../../utils/logger';
 import type {
   IntegrationServiceAdapter,
   IntegrationServiceAdapterConfig,
@@ -131,8 +127,6 @@ export interface ProtocolOperationConfig {
  * @example
  */
 export class IntegrationServiceHelper {
-  private logger: Logger;
-
   constructor(private adapter: IntegrationServiceAdapter) {
     this.logger = createLogger(`IntegrationServiceHelper:${adapter.name}`);
   }
@@ -483,7 +477,7 @@ export class IntegrationServiceHelper {
       resourceData?: any;
       queryParams?: Record<string, any>;
     },
-    config: APIOperationConfig = {}
+    _config: APIOperationConfig = {}
   ): Promise<IntegrationOperationResult<T>> {
     try {
       let operationName: string;
@@ -632,7 +626,7 @@ export class IntegrationServiceHelper {
             lastCheck: new Date(),
             errorCount: healthResult.success ? 0 : 1,
           };
-        } catch (error) {
+        } catch (_error) {
           healthResults[protocol] = {
             status: 'unhealthy',
             latency: -1,
@@ -964,7 +958,7 @@ export class IntegrationServiceUtils {
    */
   static formatError(error: any): string {
     if (error instanceof Error) {
-      return `${error.name}: ${error.message}${error.stack ? '\n' + error.stack : ''}`;
+      return `${error.name}: ${error.message}${error.stack ? `\n${error.stack}` : ''}`;
     }
     return JSON.stringify(error, null, 2);
   }
@@ -1045,7 +1039,7 @@ export class IntegrationServiceUtils {
     const successCount = results.filter((r) => r.success).length;
     const errorCount = totalOperations - successCount;
 
-    const latencies = results.filter((r) => r.metadata?.duration).map((r) => r.metadata!.duration);
+    const latencies = results.filter((r) => r.metadata?.duration).map((r) => r.metadata?.duration);
 
     const averageLatency =
       latencies.length > 0 ? latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length : 0;

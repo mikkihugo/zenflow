@@ -8,27 +8,11 @@
  */
 
 import type { ILogger } from '../../core/interfaces/base-interfaces';
-import type {
-  EventManagerConfig,
-  EventManagerStatus,
-  EventManagerType,
-  IEventManager,
-  IEventManagerFactory,
-  SystemEvent,
-} from './core/interfaces';
+import type { EventManagerConfig, EventManagerType, SystemEvent } from './core/interfaces';
 
 import { EventManagerTypes, EventTypeGuards } from './core/interfaces';
 import type { EventManager } from './manager';
 import type { EventRegistry } from './registry';
-import type {
-  CommunicationEvent,
-  CoordinationEvent,
-  InterfaceEvent,
-  MonitoringEvent,
-  SystemLifecycleEvent,
-  UELEvent,
-} from './types';
-import { EventCategories, UELTypeGuards } from './types';
 
 /**
  * Validation result interface
@@ -988,7 +972,7 @@ export class UELValidationFramework {
       case 'string':
         return typeof value === 'string';
       case 'number':
-        return typeof value === 'number' && !isNaN(value);
+        return typeof value === 'number' && !Number.isNaN(value);
       case 'boolean':
         return typeof value === 'boolean';
       case 'object':

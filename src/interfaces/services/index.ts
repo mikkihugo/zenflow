@@ -232,7 +232,7 @@ export class USL {
    * });
    * ```
    */
-  async initialize(config?: USLFactoryConfig): Promise<void> {
+  async initialize(_config?: USLFactoryConfig): Promise<void> {
     if (this.initialized) {
       return;
     }

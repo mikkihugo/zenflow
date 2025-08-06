@@ -8,12 +8,11 @@
  * for all communication event adapters in the UEL system.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { createLogger, type Logger } from '../../../core/logger';
 import type {
   EventManagerMetrics,
   EventManagerStatus,
-  IEventManager,
   IEventManagerFactory,
 } from '../core/interfaces';
 import {
@@ -40,7 +39,6 @@ export class CommunicationEventFactory
   private adapters = new Map<string, CommunicationEventAdapter>();
   private logger: Logger;
   private startTime: Date;
-  private totalCreated = 0;
   private totalErrors = 0;
 
   constructor() {

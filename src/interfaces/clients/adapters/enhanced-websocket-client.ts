@@ -7,7 +7,6 @@
 
 import { EventEmitter } from 'node:events';
 import type {
-  ClientConfig,
   ClientMetrics,
   ClientResponse,
   ClientStatus,
@@ -21,7 +20,6 @@ import type {
   WebSocketMessage,
   WebSocketMetrics,
   WebSocketRequestOptions,
-  WebSocketResponse,
 } from './websocket-types';
 
 // Legacy interface for backward compatibility
@@ -144,7 +142,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
           this.reconnectAttempts = 0;
           this.connectionId = this.generateConnectionId();
           this.connectionInfo.connectTime = new Date();
-          this.connectionInfo.readyState = this.ws!.readyState;
+          this.connectionInfo.readyState = this.ws?.readyState;
 
           // Emit both legacy and UACL events
           this.emit('connected'); // Legacy
@@ -162,7 +160,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
         this.ws.onclose = (event) => {
           clearTimeout(timeout);
           this.isConnected = false;
-          this.connectionInfo.readyState = this.ws!.readyState;
+          this.connectionInfo.readyState = this.ws?.readyState;
           this.stopHeartbeat();
 
           // Emit both legacy and UACL events
@@ -420,7 +418,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   async sendMessage<T = any>(
     message: WebSocketMessage<T>,
-    options?: WebSocketRequestOptions
+    _options?: WebSocketRequestOptions
   ): Promise<void> {
     const messageWithId = {
       id: this.generateMessageId(),
@@ -546,7 +544,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       }
 
       // Check for response correlation
-      if (data && data.id && data.type === 'response') {
+      if (data?.id && data.type === 'response') {
         this.emit(`response:${data.correlationId || data.id}`, data);
         return;
       }

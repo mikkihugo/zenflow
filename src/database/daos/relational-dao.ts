@@ -5,9 +5,8 @@
  * with enhanced transaction support and relational-specific operations.
  */
 
-import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
 import { BaseDataAccessObject } from '../base-repository';
-import type { IRepository, TransactionOperation } from '../interfaces';
+import type { TransactionOperation } from '../interfaces';
 
 /**
  * Relational database DAO implementation
@@ -16,10 +15,6 @@ import type { IRepository, TransactionOperation } from '../interfaces';
  * @example
  */
 export class RelationalDAO<T> extends BaseDataAccessObject<T> {
-  constructor(repository: IRepository<T>, adapter: DatabaseAdapter, logger: ILogger) {
-    super(repository, adapter, logger);
-  }
-
   /**
    * Execute complex multi-table transaction
    *
@@ -104,7 +99,7 @@ export class RelationalDAO<T> extends BaseDataAccessObject<T> {
 
     for (const batch of batches) {
       try {
-        const batchResults = await this.adapter.transaction(async (tx) => {
+        const batchResults = await this.adapter.transaction(async (_tx) => {
           const promises = batch.map((entity) => this.repository.create(entity));
           return await Promise.all(promises);
         });
@@ -131,7 +126,7 @@ export class RelationalDAO<T> extends BaseDataAccessObject<T> {
     this.logger.debug(`Bulk updating ${updates.length} entities`);
 
     try {
-      return await this.adapter.transaction(async (tx) => {
+      return await this.adapter.transaction(async (_tx) => {
         const results: T[] = [];
 
         for (const update of updates) {

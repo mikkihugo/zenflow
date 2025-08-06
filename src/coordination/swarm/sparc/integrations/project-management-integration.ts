@@ -11,10 +11,7 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { TaskAPI } from '../../coordination/api';
-import { TaskCoordinator } from '../../coordination/task-coordinator';
 import { DocumentDrivenSystem } from '../../core/document-driven-system';
-import { MemorySystem } from '../../core/memory-system';
-import { WorkflowEngine } from '../../core/workflow-engine';
 import type { DetailedSpecification, SPARCProject } from '../types/sparc-types';
 
 // Task Management Integration Types

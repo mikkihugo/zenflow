@@ -6,7 +6,6 @@
  * following the exact same patterns as other UEL adapter factories.
  */
 
-import { EventManagerTypes } from '../core/interfaces';
 import {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,

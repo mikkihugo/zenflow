@@ -7,10 +7,9 @@
 
 import { EventEmitter } from 'node:events';
 import { ExternalMCPClient } from '../../mcp/external-mcp-client.js';
-import type { IClient, IClientFactory } from '../core/interfaces.js';
+import type { IClient } from '../core/interfaces.js';
 import {
   createMCPConfigFromLegacy,
-  MCPClientAdapter,
   type MCPClientConfig,
   MCPClientFactory,
 } from './mcp-client-adapter.js';
@@ -37,26 +36,10 @@ export class MCPIntegrationManager {
    * Initialize both legacy and UACL MCP systems
    */
   async initialize(): Promise<void> {
-    console.log('🚀 Initializing MCP Integration Manager...');
-
     try {
-      // 1. Start legacy system for existing functionality
-      console.log('📡 Connecting legacy MCP clients...');
-      const legacyResults = await this.legacyClient.connectAll();
-
-      console.log(
-        `✅ Legacy connections: ${legacyResults.filter((r) => r.success).length}/${legacyResults.length}`
-      );
-
-      // 2. Convert legacy configurations to UACL
-      console.log('🔄 Converting to UACL architecture...');
+      const _legacyResults = await this.legacyClient.connectAll();
       await this.migrateLegacyToUACL();
-
-      // 3. Setup unified interface
-      console.log('🤝 Setting up unified interface...');
       this.setupUnifiedInterface();
-
-      console.log('✅ MCP Integration Manager initialized successfully!');
       this.eventEmitter.emit('initialized');
     } catch (error) {
       console.error('❌ Failed to initialize MCP Integration Manager:', error);
@@ -78,8 +61,6 @@ export class MCPIntegrationManager {
         // Create UACL client
         const uaclClient = await this.uaclFactory.create(uaclConfig);
         this.uaclClients.set(serverName, uaclClient);
-
-        console.log(`✅ Migrated ${serverName} to UACL`);
       } catch (error) {
         console.warn(`⚠️  Failed to migrate ${serverName}:`, error);
       }
@@ -94,7 +75,7 @@ export class MCPIntegrationManager {
    */
   private createUACLConfigFromLegacyServer(serverName: string, serverStatus: any): MCPClientConfig {
     // Determine protocol based on server type
-    const protocol = serverStatus.type === 'http' ? 'http' : 'stdio';
+    const _protocol = serverStatus.type === 'http' ? 'http' : 'stdio';
 
     const baseConfig = {
       url: serverStatus.url,
@@ -180,9 +161,7 @@ export class MCPIntegrationManager {
    */
   private setupEventHandlers(): void {
     this.eventEmitter.on('tool-executed', (data) => {
-      console.log(`🛠️  Tool executed: ${data.toolName} on ${data.serverName} (${data.source})`);
       if (data.metrics) {
-        console.log(`   Response time: ${data.metrics.responseTime}ms`);
       }
     });
 
@@ -216,7 +195,7 @@ export class MCPIntegrationManager {
           data: result.data,
           metadata: result.metadata,
         };
-      } catch (error) {
+      } catch (_error) {
         console.warn(`⚠️  UACL execution failed for ${toolName}, falling back to legacy...`);
       }
     }
@@ -295,30 +274,20 @@ export class MCPIntegrationManager {
     uacl: { averageTime: number; successRate: number };
     winner: 'legacy' | 'uacl' | 'tie';
   }> {
-    console.log(
-      `🏁 Starting performance comparison: ${toolName} on ${serverName} (${iterations} iterations)`
-    );
-
     const legacyTimes: number[] = [];
     const uaclTimes: number[] = [];
     let legacySuccesses = 0;
     let uaclSuccesses = 0;
-
-    // Test Legacy system
-    console.log('📊 Testing Legacy system...');
     for (let i = 0; i < iterations; i++) {
       const startTime = Date.now();
       try {
         await this.legacyClient.executeTool(serverName, toolName, parameters);
         legacyTimes.push(Date.now() - startTime);
         legacySuccesses++;
-      } catch (error) {
+      } catch (_error) {
         legacyTimes.push(Date.now() - startTime);
       }
     }
-
-    // Test UACL system
-    console.log('📊 Testing UACL system...');
     const uaclClient = this.uaclClients.get(serverName);
     if (uaclClient) {
       for (let i = 0; i < iterations; i++) {
@@ -327,7 +296,7 @@ export class MCPIntegrationManager {
           await uaclClient.post(toolName, parameters);
           uaclTimes.push(Date.now() - startTime);
           uaclSuccesses++;
-        } catch (error) {
+        } catch (_error) {
           uaclTimes.push(Date.now() - startTime);
         }
       }
@@ -345,11 +314,6 @@ export class MCPIntegrationManager {
     } else if (legacyAvg < uaclAvg && legacySuccessRate >= uaclSuccessRate) {
       winner = 'legacy';
     }
-
-    console.log(`📈 Performance Results:
-      Legacy: ${legacyAvg.toFixed(2)}ms avg, ${(legacySuccessRate * 100).toFixed(1)}% success
-      UACL: ${uaclAvg.toFixed(2)}ms avg, ${(uaclSuccessRate * 100).toFixed(1)}% success
-      Winner: ${winner.toUpperCase()}`);
 
     return {
       legacy: { averageTime: legacyAvg, successRate: legacySuccessRate },
@@ -373,8 +337,6 @@ export class MCPIntegrationManager {
     delayBetweenBatches: number;
     rollbackOnFailure: boolean;
   }): Promise<void> {
-    console.log('📦 Starting gradual migration to UACL...');
-
     const { servers, batchSize, delayBetweenBatches, rollbackOnFailure } = migrationConfig;
     const batches = [];
 
@@ -387,8 +349,6 @@ export class MCPIntegrationManager {
 
     try {
       for (const [batchIndex, batch] of batches.entries()) {
-        console.log(`🔄 Migrating batch ${batchIndex + 1}/${batches.length}: ${batch.join(', ')}`);
-
         for (const serverName of batch) {
           try {
             // Create UACL client
@@ -408,7 +368,6 @@ export class MCPIntegrationManager {
             if (health.status === 'healthy') {
               this.uaclClients.set(serverName, uaclClient);
               migratedServers.push(serverName);
-              console.log(`✅ Successfully migrated ${serverName}`);
             } else {
               throw new Error(`Health check failed: ${health.status}`);
             }
@@ -416,8 +375,6 @@ export class MCPIntegrationManager {
             console.error(`❌ Failed to migrate ${serverName}:`, error);
 
             if (rollbackOnFailure) {
-              // Rollback this batch
-              console.log('🔙 Rolling back batch due to failure...');
               for (const rolledBackServer of migratedServers.slice(-batch.length)) {
                 await this.uaclFactory.remove(rolledBackServer);
                 this.uaclClients.delete(rolledBackServer);
@@ -429,14 +386,9 @@ export class MCPIntegrationManager {
 
         // Delay between batches
         if (batchIndex < batches.length - 1) {
-          console.log(`⏱️  Waiting ${delayBetweenBatches}ms before next batch...`);
           await new Promise((resolve) => setTimeout(resolve, delayBetweenBatches));
         }
       }
-
-      console.log(
-        `🎉 Migration completed successfully! Migrated ${migratedServers.length}/${servers.length} servers`
-      );
     } catch (error) {
       console.error('💥 Migration failed:', error);
       throw error;
@@ -447,8 +399,6 @@ export class MCPIntegrationManager {
    * Cleanup and shutdown
    */
   async shutdown(): Promise<void> {
-    console.log('🛑 Shutting down MCP Integration Manager...');
-
     try {
       // Shutdown UACL factory and clients
       await this.uaclFactory.shutdown();
@@ -459,8 +409,6 @@ export class MCPIntegrationManager {
 
       // Clean up event emitter
       this.eventEmitter.removeAllListeners();
-
-      console.log('✅ MCP Integration Manager shutdown complete');
     } catch (error) {
       console.error('❌ Error during shutdown:', error);
       throw error;
@@ -488,23 +436,20 @@ export async function demonstrateMCPIntegration(): Promise<void> {
     await manager.initialize();
 
     // Get system status
-    const status = await manager.getSystemStatus();
-    console.log('📊 System Status:', JSON.stringify(status, null, 2));
+    const _status = await manager.getSystemStatus();
 
     // Execute tool with failover
-    const result = await manager.executeToolWithFailover('context7', 'research_analysis', {
+    const _result = await manager.executeToolWithFailover('context7', 'research_analysis', {
       query: 'UACL architecture benefits',
     });
-    console.log('🛠️  Tool execution result:', result);
 
     // Performance comparison
-    const comparison = await manager.performanceComparison(
+    const _comparison = await manager.performanceComparison(
       'context7',
       'research_analysis',
       { query: 'performance test' },
       3
     );
-    console.log('🏁 Performance comparison:', comparison);
 
     // Gradual migration example
     await manager.startGradualMigration({

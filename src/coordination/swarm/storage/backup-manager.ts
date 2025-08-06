@@ -5,11 +5,11 @@
  * for hundreds of swarms with simple tar-based storage.
  */
 
-import { spawn } from 'child_process';
-import { createHash } from 'crypto';
-import { EventEmitter } from 'events';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { EventEmitter } from 'node:events';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
 
 export interface BackupConfig {
   // Backup frequency
@@ -225,7 +225,7 @@ export class SwarmBackupManager extends EventEmitter {
 
   private async calculateChecksum(filePath: string): Promise<string> {
     const hash = createHash('sha256');
-    const stream = require('fs').createReadStream(filePath);
+    const stream = require('node:fs').createReadStream(filePath);
 
     return new Promise((resolve, reject) => {
       stream.on('data', (data: Buffer) => hash.update(data));

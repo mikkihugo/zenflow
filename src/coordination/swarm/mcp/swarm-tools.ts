@@ -6,12 +6,10 @@
  */
 
 import { createLogger } from '../../../core/logger';
-import { DALFactory } from '../../../database/factory';
 
 const logger = createLogger({ prefix: 'SwarmTools' });
 
 export class SwarmTools {
-  private dalFactory: DALFactory | null = null;
   public tools: Record<string, Function>;
 
   constructor() {
@@ -29,27 +27,6 @@ export class SwarmTools {
       benchmark_run: this.benchmarkRun.bind(this),
       features_detect: this.featuresDetect.bind(this),
     };
-  }
-
-  /**
-   * Initialize DAL Factory (lazy loading)
-   */
-  private async getDalFactory(): Promise<DALFactory> {
-    if (!this.dalFactory) {
-      // Import DAL Factory dependencies
-      const { DIContainer } = await import('../../../di/container/di-container');
-      const { CORE_TOKENS } = await import('../../../di/tokens/core-tokens');
-
-      // Create basic DI container
-      const container = new DIContainer();
-
-      // Register basic services
-      container.register(CORE_TOKENS.Logger, () => logger);
-      container.register(CORE_TOKENS.Config, () => ({}));
-
-      this.dalFactory = container.resolve(DALFactory);
-    }
-    return this.dalFactory;
   }
 
   /**

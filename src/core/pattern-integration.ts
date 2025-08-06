@@ -6,10 +6,7 @@
 import { EventEmitter } from 'node:events';
 import {
   type Agent,
-  AgentCapability,
-  AgentComponent,
   AgentFactory,
-  AgentGroup,
   type HierarchicalAgentGroup,
   type TaskDefinition,
 } from '../coordination/agents/composite-system';
@@ -17,7 +14,6 @@ import {
 import {
   type CoordinationContext,
   type CoordinationResult,
-  CoordinationStrategy,
   StrategyFactory,
   SwarmCoordinator,
   type SwarmTopology,
@@ -40,24 +36,15 @@ import {
   WebSocketAdapter,
 } from '../integration/adapter-system';
 import {
-  AllSystemEvents,
-  DatabaseObserver,
   EventBuilder,
   LoggerObserver,
   MetricsObserver,
   SystemEventManager,
-  SystemObserver,
-  WebSocketObserver,
 } from '../interfaces/events/observer-system';
 import {
-  AgentSpawnCommand,
   type CommandContext,
   CommandFactory,
-  CommandResult,
-  MCPCommand,
   MCPCommandQueue,
-  SwarmInitCommand,
-  TaskOrchestrationCommand,
 } from '../interfaces/mcp/command-system';
 
 // Integration configuration
@@ -172,7 +159,7 @@ export class IntegratedSwarmService implements ISwarmService {
     await this.eventManager.notify(swarmEvent);
   }
 
-  async coordinateSwarm(swarmId: string, operation: string): Promise<CoordinationResult> {
+  async coordinateSwarm(swarmId: string, _operation: string): Promise<CoordinationResult> {
     const agentGroup = this.agentManager.getSwarmGroup(swarmId);
     if (!agentGroup) {
       throw new Error(`Swarm ${swarmId} not found`);
@@ -772,7 +759,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           await neuralManager.deleteModel(modelId);
         },
       };
-    } catch (error) {
+    } catch (_error) {
       // Fallback to minimal implementation if neural system not available
       return {
         trainModel: async () => ({
@@ -840,7 +827,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           };
         },
       };
-    } catch (error) {
+    } catch (_error) {
       // Fallback to minimal implementation
       return {
         store: async () => {},
@@ -874,30 +861,30 @@ export class IntegratedPatternSystem extends EventEmitter {
       container.register(CORE_TOKENS.Config, () => ({}));
       container.register(DATABASE_TOKENS.DALFactory, () => new DALFactory());
 
-      const dalFactory = container.resolve(DATABASE_TOKENS.DALFactory);
+      const _dalFactory = container.resolve(DATABASE_TOKENS.DALFactory);
 
       return {
-        query: async (sql: string, params?: any[]) => {
+        query: async (_sql: string, _params?: any[]) => {
           // Would use DAL to execute query
           return [];
         },
-        insert: async (table: string, data: any) => {
+        insert: async (_table: string, _data: any) => {
           // Would use DAL to insert
           return `real-id-${Date.now()}`;
         },
-        update: async (table: string, id: string, data: any) => {
+        update: async (_table: string, _id: string, _data: any) => {
           // Would use DAL to update
           return true;
         },
-        delete: async (table: string, id: string) => {
+        delete: async (_table: string, _id: string) => {
           // Would use DAL to delete
           return true;
         },
-        vectorSearch: async (query: any) => {
+        vectorSearch: async (_query: any) => {
           // Would use vector repository
           return [];
         },
-        createIndex: async (table: string, fields: string[]) => {
+        createIndex: async (_table: string, _fields: string[]) => {
           // Would create database index
         },
         getHealth: async () => {
@@ -909,7 +896,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           };
         },
       };
-    } catch (error) {
+    } catch (_error) {
       return {
         query: async () => [],
         insert: async () => '',
@@ -964,7 +951,7 @@ export class IntegratedPatternSystem extends EventEmitter {
             status: 'running',
           };
         },
-        startCLI: async (config?: any) => {
+        startCLI: async (_config?: any) => {
           // Would start real CLI instance
           const instanceId = `cli-${Date.now()}`;
           return {
@@ -972,7 +959,7 @@ export class IntegratedPatternSystem extends EventEmitter {
             status: 'ready',
           };
         },
-        stopInterface: async (id: string) => {
+        stopInterface: async (_id: string) => {
           // Would stop the specified interface process
         },
         getInterfaceStatus: async () => {
@@ -980,7 +967,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           return [];
         },
       };
-    } catch (error) {
+    } catch (_error) {
       return {
         startHTTPMCP: async () => ({ serverId: '', port: 0, status: 'failed', uptime: 0 }),
         startWebDashboard: async () => ({
@@ -1003,7 +990,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   private async createRealWorkflowService(): Promise<IWorkflowService> {
     try {
       return {
-        executeWorkflow: async (workflowId: string, inputs?: any) => {
+        executeWorkflow: async (workflowId: string, _inputs?: any) => {
           const executionId = `exec-${Date.now()}`;
           const startTime = new Date();
 
@@ -1016,23 +1003,23 @@ export class IntegratedPatternSystem extends EventEmitter {
             results: {},
           };
         },
-        createWorkflow: async (definition: any) => {
+        createWorkflow: async (_definition: any) => {
           return `workflow-${Date.now()}`;
         },
         listWorkflows: async () => {
           return []; // Would return real workflows from database
         },
-        pauseWorkflow: async (workflowId: string) => {
+        pauseWorkflow: async (_workflowId: string) => {
           // Would pause real workflow execution
         },
-        resumeWorkflow: async (workflowId: string) => {
+        resumeWorkflow: async (_workflowId: string) => {
           // Would resume real workflow execution
         },
-        cancelWorkflow: async (workflowId: string) => {
+        cancelWorkflow: async (_workflowId: string) => {
           // Would cancel real workflow execution
         },
       };
-    } catch (error) {
+    } catch (_error) {
       return {
         executeWorkflow: async () => ({
           workflowId: '',

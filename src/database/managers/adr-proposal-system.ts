@@ -6,7 +6,6 @@
  */
 
 import type { ADRDocumentEntity } from '../entities/document-entities';
-import type { ADRCreateOptions } from './adr-manager';
 import { adrManager } from './adr-manager';
 
 export interface ADRProposal {
@@ -56,11 +55,6 @@ export class ADRProposalSystem {
    * @param proposal
    */
   async proposeADR(proposal: ADRProposal): Promise<ADRDocumentEntity> {
-    console.log(`📋 Proposing new ADR: ${proposal.title}`);
-    console.log(`👤 Proposer: ${proposal.proposer}`);
-    console.log(`🔥 Urgency: ${proposal.urgency}`);
-    console.log(`👥 Stakeholders: ${proposal.stakeholders.join(', ')}`);
-
     // Create ADR in proposed status
     const adr = await adrManager.createADR({
       title: proposal.title,
@@ -102,11 +96,6 @@ export class ADRProposalSystem {
     if (!adr) {
       throw new Error(`ADR ${adrNumber} not found`);
     }
-
-    console.log(`💬 Recording discussion for ADR-${adrNumber.toString().padStart(3, '0')}`);
-    console.log(`👥 Participants: ${discussion.participants.join(', ')}`);
-    console.log(`📊 Consensus: ${discussion.consensus_level}`);
-    console.log(`✅ Status: ${discussion.decision_status}`);
 
     // Update ADR with discussion results
     const updated = await adrManager.updateADRStatus(
@@ -171,11 +160,6 @@ export class ADRProposalSystem {
       throw new Error(`ADR ${adrNumber} not found`);
     }
 
-    console.log(`⚖️  Making final decision on ADR-${adrNumber.toString().padStart(3, '0')}`);
-    console.log(`✅ Approved: ${decision.approved}`);
-    console.log(`👤 Decision Maker: ${decision.decision_maker}`);
-    console.log(`✍️  Signoffs: ${decision.stakeholder_signoffs.join(', ')}`);
-
     const newStatus = decision.approved ? 'decided' : 'rejected';
 
     // Update ADR with final decision
@@ -205,9 +189,7 @@ export class ADRProposalSystem {
     });
 
     if (decision.approved) {
-      console.log(`🚀 ADR-${adrNumber.toString().padStart(3, '0')} approved for implementation`);
     } else {
-      console.log(`❌ ADR-${adrNumber.toString().padStart(3, '0')} rejected`);
     }
 
     return updated;
@@ -365,7 +347,7 @@ export class ADRProposalSystem {
    * @param proposal
    */
   private formatContext(proposal: ADRProposal): string {
-    let context = proposal.context + '\n\n';
+    let context = `${proposal.context}\n\n`;
 
     if (proposal.impact_areas.length > 0) {
       context += `**Impact Areas:** ${proposal.impact_areas.join(', ')}\n\n`;
@@ -396,7 +378,7 @@ export class ADRProposalSystem {
    * @param proposal
    */
   private formatConsequences(proposal: ADRProposal): string {
-    let consequences = proposal.expected_consequences + '\n\n';
+    let consequences = `${proposal.expected_consequences}\n\n`;
 
     if (proposal.implementation_effort) {
       consequences += `**Implementation Effort:** ${proposal.implementation_effort}\n\n`;
@@ -435,26 +417,8 @@ export class ADRProposalSystem {
     adr: ADRDocumentEntity,
     proposal: ADRProposal
   ): Promise<void> {
-    const adrId = adr.metadata?.adr_id || `ADR-${adr.metadata?.adr_number}`;
-
-    console.log(`\n🔔 NEW ADR PROPOSAL REQUIRES HUMAN REVIEW`);
-    console.log(`═══════════════════════════════════════`);
-    console.log(`📋 ${adrId}: ${proposal.title}`);
-    console.log(`👤 Proposer: ${proposal.proposer}`);
-    console.log(`🔥 Urgency: ${proposal.urgency}`);
-    console.log(`👥 Stakeholders: ${proposal.stakeholders.join(', ')}`);
-    console.log(`🎯 Impact Areas: ${proposal.impact_areas.join(', ')}`);
-    console.log(`\n💭 Key Discussion Points:`);
-    proposal.discussion_points.forEach((point) => {
-      console.log(`   • ${point}`);
-    });
-    console.log(`\n📍 Next Steps:`);
-    console.log(`   1. Review the proposal details in the database`);
-    console.log(`   2. Schedule discussion with stakeholders`);
-    console.log(`   3. Record discussion using recordDiscussion()`);
-    console.log(`   4. Make final decision using makeDecision()`);
-    console.log(`\n🔍 View: adrManager.getADRByNumber(${adr.metadata?.adr_number})`);
-    console.log(`═══════════════════════════════════════\n`);
+    const _adrId = adr.metadata?.adr_id || `ADR-${adr.metadata?.adr_number}`;
+    proposal.discussion_points.forEach((_point) => {});
   }
 
   /**

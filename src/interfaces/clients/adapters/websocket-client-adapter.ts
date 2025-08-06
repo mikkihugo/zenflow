@@ -748,7 +748,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    */
   async sendMessage<T = any>(
     message: WebSocketMessage<T>,
-    options?: WebSocketRequestOptions
+    _options?: WebSocketRequestOptions
   ): Promise<void> {
     const messageWithId = {
       id: this.generateMessageId(),
@@ -1193,7 +1193,7 @@ export class WebSocketClientFactory {
       try {
         const metrics = await client.getMetrics();
         results.set(name, metrics);
-      } catch (error) {
+      } catch (_error) {
         // Create error metrics
         results.set(name, {
           name,

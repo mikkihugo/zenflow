@@ -4,8 +4,6 @@
  */
 
 async function testSPARCMCPTools() {
-  console.log('🧪 Testing SPARC MCP Tools Integration...');
-
   try {
     // Import MCP tools
     const createSPARCTools = (await import('./interfaces/mcp/tools/sparc-integration-tools'))
@@ -17,8 +15,6 @@ async function testSPARCMCPTools() {
     // Get the MCP tools
     const tools = createSPARCTools(mockDocumentService);
 
-    console.log(`✅ Created ${tools.length} MCP tools`);
-
     // Find our pseudocode-specific tools
     const pseudocodeTools = tools.filter(
       (tool) =>
@@ -26,17 +22,11 @@ async function testSPARCMCPTools() {
         tool.name.startsWith('sparc_validate_pseudocode') ||
         tool.name.startsWith('sparc_generate_algorithms_only')
     );
-
-    console.log(`🔧 Found ${pseudocodeTools.length} pseudocode-specific tools:`);
-    pseudocodeTools.forEach((tool) => {
-      console.log(`  - ${tool.name}: ${tool.description}`);
-    });
+    pseudocodeTools.forEach((_tool) => {});
 
     // Test pseudocode generation tool
     const generateTool = tools.find((tool) => tool.name === 'sparc_generate_pseudocode');
     if (generateTool) {
-      console.log('\n🧮 Testing pseudocode generation tool...');
-
       const testSpec = {
         id: 'mcp-test-spec',
         domain: 'swarm-coordination',
@@ -72,16 +62,9 @@ async function testSPARCMCPTools() {
       });
 
       if (result.success) {
-        console.log('✅ Pseudocode generation via MCP successful!');
-        console.log(`📊 Generated ${result.data.summary.algorithmsGenerated} algorithms`);
-        console.log(`🏗️ Generated ${result.data.summary.dataStructuresGenerated} data structures`);
-        console.log(`💡 Identified ${result.data.summary.optimizationsIdentified} optimizations`);
-
         // Test validation tool with the generated result
         const validateTool = tools.find((tool) => tool.name === 'sparc_validate_pseudocode');
         if (validateTool) {
-          console.log('\n🔍 Testing pseudocode validation tool...');
-
           const validationResult = await validateTool.handler({
             pseudocodeStructure: {
               id: result.data.pseudocodeId,
@@ -94,23 +77,16 @@ async function testSPARCMCPTools() {
           });
 
           if (validationResult.success) {
-            console.log('✅ Pseudocode validation via MCP successful!');
-            console.log(`📊 Validation score: ${validationResult.data.summary.scorePercentage}%`);
-            console.log(`✅ Status: ${validationResult.data.summary.status}`);
           } else {
-            console.log('❌ Validation failed:', validationResult.error);
           }
         }
       } else {
-        console.log('❌ Generation failed:', result.error);
       }
     }
 
     // Test lightweight algorithms tool
     const algorithmsOnlyTool = tools.find((tool) => tool.name === 'sparc_generate_algorithms_only');
     if (algorithmsOnlyTool) {
-      console.log('\n⚡ Testing lightweight algorithms tool...');
-
       const testSpec = {
         id: 'mcp-algorithms-test',
         domain: 'neural-networks',
@@ -128,15 +104,9 @@ async function testSPARCMCPTools() {
       const result = await algorithmsOnlyTool.handler({ specification: testSpec });
 
       if (result.success) {
-        console.log('✅ Lightweight algorithms generation via MCP successful!');
-        console.log(`🧮 Generated ${result.data.summary.algorithmsGenerated} algorithms`);
-        console.log(`🎯 Domain: ${result.data.domain}`);
       } else {
-        console.log('❌ Lightweight generation failed:', result.error);
       }
     }
-
-    console.log('\n🎉 All MCP tools integration tests passed!');
 
     return {
       success: true,
@@ -157,7 +127,6 @@ async function testSPARCMCPTools() {
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   testSPARCMCPTools().then((result) => {
     if (result.success) {
-      console.log('🎯 MCP tools integration test completed successfully!');
       process.exit(0);
     } else {
       console.error('💥 MCP tools integration test failed:', result.error);

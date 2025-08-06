@@ -4,8 +4,8 @@
  * CLI interface for SPARC template engine integration and specification generation
  */
 
+import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
-import { readFile, writeFile } from 'fs/promises';
 import { TemplateEngine } from '../../coordination/swarm/sparc/core/template-engine';
 import { SpecificationPhaseEngine } from '../../coordination/swarm/sparc/phases/specification/specification-engine';
 import type { ProjectSpecification } from '../../coordination/swarm/sparc/types/sparc-types';
@@ -22,18 +22,8 @@ export function createSPARCTemplateCommands(): Command {
     .command('templates')
     .description('List available SPARC templates')
     .action(async () => {
-      console.log('📋 Available SPARC Templates:\n');
-
       const templates = specEngine.getAvailableTemplates();
-      templates.forEach((template, index) => {
-        console.log(`${index + 1}. ${template.name}`);
-        console.log(`   Domain: ${template.domain}`);
-        console.log(`   Complexity: ${template.complexity}`);
-        console.log(`   Description: ${template.description}`);
-        console.log('');
-      });
-
-      console.log(`Total templates: ${templates.length}`);
+      templates.forEach((_template, _index) => {});
     });
 
   // Generate specification from template
@@ -57,8 +47,6 @@ export function createSPARCTemplateCommands(): Command {
     .option('--format <format>', 'Output format (json|markdown)', 'json')
     .action(async (options) => {
       try {
-        console.log(`🔧 Generating SPARC specification for: ${options.name}`);
-
         // Create project specification
         const projectSpec: ProjectSpecification = {
           name: options.name,
@@ -68,10 +56,6 @@ export function createSPARCTemplateCommands(): Command {
           constraints: options.constraints || [],
         };
 
-        console.log(`📋 Project domain: ${projectSpec.domain}`);
-        console.log(`🎯 Complexity: ${projectSpec.complexity}`);
-        console.log(`📝 Requirements: ${projectSpec.requirements.length}`);
-
         let specification;
         if (options.template) {
           // Validate template compatibility first
@@ -79,13 +63,9 @@ export function createSPARCTemplateCommands(): Command {
             projectSpec,
             options.template
           );
-          console.log(`🔍 Template compatibility: ${(compatibility.score * 100).toFixed(1)}%`);
 
           if (compatibility.warnings.length > 0) {
-            console.log('⚠️ Warnings:');
-            compatibility.warnings.forEach((warning) => {
-              console.log(`   • ${warning}`);
-            });
+            compatibility.warnings.forEach((_warning) => {});
           }
 
           if (!compatibility.compatible) {
@@ -113,15 +93,6 @@ export function createSPARCTemplateCommands(): Command {
 
         // Write output
         await writeFile(options.output, output, 'utf8');
-
-        console.log('✅ Specification generated successfully!');
-        console.log(`📄 Output saved to: ${options.output}`);
-        console.log(`📊 Functional Requirements: ${specification.functionalRequirements.length}`);
-        console.log(
-          `⚡ Non-Functional Requirements: ${specification.nonFunctionalRequirements.length}`
-        );
-        console.log(`🔒 Constraints: ${specification.constraints?.length || 0}`);
-        console.log(`✔️ Acceptance Criteria: ${specification.acceptanceCriteria?.length || 0}`);
       } catch (error) {
         console.error('❌ Failed to generate specification:', error);
         process.exit(1);
@@ -133,21 +104,8 @@ export function createSPARCTemplateCommands(): Command {
     .command('interactive')
     .description('Interactive specification generation with template selection')
     .option('--output <path>', 'Output file path', 'specification.json')
-    .action(async (options) => {
+    .action(async (_options) => {
       try {
-        console.log('🎯 Interactive SPARC Specification Generation\n');
-
-        // This would use inquirer for interactive prompts in a full implementation
-        console.log('📋 This would launch an interactive wizard to:');
-        console.log('   1. Collect project details (name, domain, complexity)');
-        console.log('   2. Gather requirements and constraints');
-        console.log('   3. Show compatible templates with scores');
-        console.log('   4. Allow template selection and customization');
-        console.log('   5. Generate and save specification');
-        console.log('');
-        console.log(
-          '💡 For now, use: claude-zen sparc spec generate --name "My Project" --domain memory-systems'
-        );
       } catch (error) {
         console.error('❌ Interactive mode failed:', error);
         process.exit(1);
@@ -161,30 +119,19 @@ export function createSPARCTemplateCommands(): Command {
     .requiredOption('--file <path>', 'Path to specification file')
     .action(async (options) => {
       try {
-        console.log(`🔍 Validating specification: ${options.file}`);
-
         const content = await readFile(options.file, 'utf8');
         const specification = JSON.parse(content);
 
         const validation = await specEngine.validateSpecificationCompleteness(specification);
 
-        console.log(`\n📊 Validation Results:`);
-        console.log(`Overall Score: ${(validation.score * 100).toFixed(1)}%`);
-        console.log(`Status: ${validation.overall ? '✅ PASSED' : '❌ NEEDS IMPROVEMENT'}`);
-
         if (validation.results.length > 0) {
-          console.log('\n📋 Detailed Results:');
           validation.results.forEach((result) => {
-            const status = result.passed ? '✅' : '❌';
-            console.log(`   ${status} ${result.criterion}: ${result.details}`);
+            const _status = result.passed ? '✅' : '❌';
           });
         }
 
         if (validation.recommendations.length > 0) {
-          console.log('\n💡 Recommendations:');
-          validation.recommendations.forEach((rec) => {
-            console.log(`   • ${rec}`);
-          });
+          validation.recommendations.forEach((_rec) => {});
         }
 
         process.exit(validation.overall ? 0 : 1);
@@ -199,13 +146,7 @@ export function createSPARCTemplateCommands(): Command {
     .command('stats')
     .description('Show template engine statistics and usage')
     .action(async () => {
-      console.log('📊 SPARC Template Engine Statistics:\n');
-
-      const stats = templateEngine.getTemplateStats();
-      console.log(`Total Templates: ${stats.totalTemplates}`);
-      console.log(`Domain Coverage:`, stats.domainCoverage);
-      console.log(`Most Used: ${stats.mostUsed.join(', ') || 'None yet'}`);
-      console.log(`Recently Used: ${stats.recentlyUsed.join(', ') || 'None yet'}`);
+      const _stats = templateEngine.getTemplateStats();
     });
 
   return sparcTemplateCmd;

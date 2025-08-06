@@ -118,7 +118,7 @@ export class WebService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing web operation: ${operation}`);
 

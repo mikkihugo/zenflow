@@ -6,7 +6,6 @@ import type {
   AgentType,
   Agent as BaseAgent,
   AgentConfig as BaseAgentConfig,
-  Task as BaseTask,
 } from '../../../types/agent-types';
 
 export interface SwarmOptions {

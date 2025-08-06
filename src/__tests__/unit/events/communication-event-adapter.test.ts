@@ -9,7 +9,7 @@
  * and protocol management scenarios with full event correlation and performance tracking.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import {
   CommunicationEventAdapter,
   createDefaultCommunicationEventAdapterConfig,
@@ -134,7 +134,7 @@ describe('CommunicationEventAdapter', () => {
     });
 
     it('should handle start errors gracefully', async () => {
-      const mockInitializeCommunicationIntegrations = jest
+      const _mockInitializeCommunicationIntegrations = jest
         .spyOn(adapter as any, 'initializeCommunicationIntegrations')
         .mockRejectedValue(new Error('Initialization failed'));
 
@@ -177,7 +177,7 @@ describe('CommunicationEventAdapter', () => {
       });
 
       // Mock WebSocket client wrapping
-      const mockWrapWebSocketClients = jest
+      const _mockWrapWebSocketClients = jest
         .spyOn(adapter as any, 'wrapWebSocketClients')
         .mockImplementation(async () => {
           const wrappedComponent = {
@@ -327,7 +327,7 @@ describe('CommunicationEventAdapter', () => {
       });
 
       // Mock MCP server wrapping
-      const mockWrapMCPServers = jest
+      const _mockWrapMCPServers = jest
         .spyOn(adapter as any, 'wrapMCPServers')
         .mockImplementation(async () => {
           const wrappedComponent = {
@@ -474,7 +474,7 @@ describe('CommunicationEventAdapter', () => {
       adapter = new CommunicationEventAdapter(config);
 
       // Mock HTTP communication wrapping
-      const mockWrapHTTPCommunication = jest
+      const _mockWrapHTTPCommunication = jest
         .spyOn(adapter as any, 'wrapHTTPCommunication')
         .mockImplementation(async () => {
           const wrappedComponent = {
@@ -586,7 +586,7 @@ describe('CommunicationEventAdapter', () => {
       adapter = new CommunicationEventAdapter(config);
 
       // Mock protocol communication wrapping
-      const mockWrapProtocolCommunication = jest
+      const _mockWrapProtocolCommunication = jest
         .spyOn(adapter as any, 'wrapProtocolCommunication')
         .mockImplementation(async () => {
           ['http', 'https', 'ws', 'wss', 'stdio'].forEach((protocolType) => {

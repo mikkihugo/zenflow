@@ -6,7 +6,7 @@
  * @description Enhanced database controller with DI integration for Issue #63
  */
 
-import type { ConnectionStats, IConfig, ILogger } from '../../core/interfaces/base-interfaces';
+import type { ConnectionStats, ILogger } from '../../core/interfaces/base-interfaces';
 import { inject } from '../../di/decorators/inject';
 import { injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
@@ -18,7 +18,6 @@ import type {
   IndexConfig,
   VectorData,
   VectorDatabaseAdapter,
-  VectorResult,
 } from '../providers/database-providers';
 
 /**
@@ -1477,35 +1476,31 @@ export class DatabaseController {
    * @param request
    */
   private async routeToGraphQuery(request: GraphQueryRequest): Promise<DatabaseResponse> {
-    try {
-      const graphResponse = await this.executeGraphQuery(request);
+    const graphResponse = await this.executeGraphQuery(request);
 
-      // Convert graph response format to standard query response format
-      if (graphResponse.success && graphResponse.data) {
-        return {
-          ...graphResponse,
-          data: {
-            query: request.cypher,
-            parameters: request.params,
-            results: [
-              ...graphResponse.data.nodes.map((node) => ({ type: 'node', ...node })),
-              ...graphResponse.data.relationships.map((rel) => ({ type: 'relationship', ...rel })),
-            ],
-            fields: [
-              { name: 'type', type: 'string', nullable: false },
-              { name: 'id', type: 'string', nullable: false },
-              { name: 'data', type: 'object', nullable: true },
-            ],
-            nodeCount: graphResponse.data.nodeCount,
-            relationshipCount: graphResponse.data.relationshipCount,
-          },
-        };
-      }
-
-      return graphResponse;
-    } catch (error) {
-      throw error;
+    // Convert graph response format to standard query response format
+    if (graphResponse.success && graphResponse.data) {
+      return {
+        ...graphResponse,
+        data: {
+          query: request.cypher,
+          parameters: request.params,
+          results: [
+            ...graphResponse.data.nodes.map((node) => ({ type: 'node', ...node })),
+            ...graphResponse.data.relationships.map((rel) => ({ type: 'relationship', ...rel })),
+          ],
+          fields: [
+            { name: 'type', type: 'string', nullable: false },
+            { name: 'id', type: 'string', nullable: false },
+            { name: 'data', type: 'object', nullable: true },
+          ],
+          nodeCount: graphResponse.data.nodeCount,
+          relationshipCount: graphResponse.data.relationshipCount,
+        },
+      };
     }
+
+    return graphResponse;
   }
 
   /**
@@ -1513,7 +1508,7 @@ export class DatabaseController {
    *
    * @param schema
    */
-  private extractNodeTypes(schema: any): string[] {
+  private extractNodeTypes(_schema: any): string[] {
     // This would be implemented based on the actual schema structure
     // For now, return a default set for Kuzu
     return ['Person', 'Organization', 'Location', 'Event'];
@@ -1524,7 +1519,7 @@ export class DatabaseController {
    *
    * @param schema
    */
-  private extractRelationshipTypes(schema: any): string[] {
+  private extractRelationshipTypes(_schema: any): string[] {
     // This would be implemented based on the actual schema structure
     // For now, return a default set for Kuzu
     return ['KNOWS', 'WORKS_FOR', 'LOCATED_IN', 'PARTICIPATED_IN'];

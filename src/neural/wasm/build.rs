@@ -13,7 +13,7 @@ fn main() {
     let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
     let target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap_or_default();
     let profile = env::var("PROFILE").unwrap_or_default();
-    let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
+    let _out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
     
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=src/");
@@ -143,7 +143,7 @@ fn configure_native_build(target_os: &str, target_arch: &str, profile: &str) {
     }
 }
 
-fn configure_gpu_backends(target_os: &str, target_arch: &str) {
+fn configure_gpu_backends(_target_os: &str, _target_arch: &str) {
     // CUDA backend configuration
     #[cfg(feature = "cuda-backend")]
     {
@@ -219,6 +219,7 @@ fn configure_build_optimizations(profile: &str, target_arch: &str) {
 
 // Helper functions for GPU backend detection
 
+#[allow(dead_code)]
 fn find_cuda_installation() -> Option<PathBuf> {
     // Check environment variable first
     if let Ok(cuda_path) = env::var("CUDA_PATH") {
@@ -260,6 +261,7 @@ fn find_cuda_installation() -> Option<PathBuf> {
     None
 }
 
+#[allow(dead_code)]
 fn detect_cuda_version(cuda_path: &Path) -> Option<f32> {
     let nvcc_path = cuda_path.join("bin").join("nvcc");
     if let Ok(output) = Command::new(nvcc_path).args(["--version"]).output() {
@@ -279,6 +281,7 @@ fn detect_cuda_version(cuda_path: &Path) -> Option<f32> {
     None
 }
 
+#[allow(dead_code)]
 fn find_opencl_installation() -> Option<PathBuf> {
     // Check environment variable
     if let Ok(opencl_root) = env::var("OPENCL_ROOT") {
@@ -333,6 +336,7 @@ fn find_opencl_installation() -> Option<PathBuf> {
     None
 }
 
+#[allow(dead_code)]
 fn find_vulkan_installation() -> Option<PathBuf> {
     // Check environment variable
     if let Ok(vulkan_sdk) = env::var("VULKAN_SDK") {

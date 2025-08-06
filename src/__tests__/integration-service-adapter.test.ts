@@ -18,7 +18,6 @@
 import type {
   ArchitecturalValidation,
   ArchitectureDesign,
-  Component,
 } from '../coordination/swarm/sparc/database/architecture-storage';
 import {
   createDefaultIntegrationServiceAdapterConfig,
@@ -29,7 +28,6 @@ import {
   IntegrationServiceHelper,
   IntegrationServiceUtils,
 } from '../interfaces/services/adapters/integration-service-adapter';
-import type { ServiceMetrics, ServiceStatus } from '../interfaces/services/core/interfaces';
 
 // ============================================
 // Test Data and Mocks
@@ -106,10 +104,10 @@ function createMockLogger() {
 
 describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
   let adapter: IntegrationServiceAdapter;
-  let mockLogger: any;
+  let _mockLogger: any;
 
   beforeEach(() => {
-    mockLogger = createMockLogger();
+    _mockLogger = createMockLogger();
     adapter = createTestAdapter({
       architectureStorage: { enabled: true },
       safeAPI: { enabled: true, baseURL: 'http://test-api.com' },

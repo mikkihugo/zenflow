@@ -5,7 +5,6 @@
  * distributed locking, messaging, and multi-node synchronization.
  */
 
-import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
 import { BaseDataAccessObject } from '../base-repository';
 import type {
   CoordinationEvent,
@@ -24,10 +23,6 @@ import type {
 export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
   private get coordinationRepository(): ICoordinationRepository<T> {
     return this.repository as ICoordinationRepository<T>;
-  }
-
-  constructor(repository: ICoordinationRepository<T>, adapter: DatabaseAdapter, logger: ILogger) {
-    super(repository, adapter, logger);
   }
 
   /**
@@ -464,8 +459,8 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
   }
 
   private async verifyConsensus(
-    operations: TransactionOperation[],
-    results: any,
+    _operations: TransactionOperation[],
+    _results: any,
     nodeCount: number
   ): Promise<void> {
     // Mock consensus verification
@@ -480,7 +475,7 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
   }
 
   private async waitForAcknowledgments(
-    event: CoordinationEvent<any>,
+    _event: CoordinationEvent<any>,
     expectedCount: number,
     timeout: number
   ): Promise<{ count: number; errors: string[] }> {
@@ -499,7 +494,7 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
   }
 
   private async waitForElectionResult(
-    electionId: string,
+    _electionId: string,
     timeout: number
   ): Promise<{ leaderId: string; term: number }> {
     // Mock election result waiting
@@ -517,9 +512,9 @@ export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
   }
 
   private async conductElection(
-    electionId: string,
+    _electionId: string,
     candidateId: string,
-    options: any
+    _options: any
   ): Promise<{ isLeader: boolean; leaderId: string; term: number; votes: number }> {
     // Mock election conduction
     const isWinner = Math.random() > 0.5;

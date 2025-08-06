@@ -15,32 +15,13 @@ import type {
   EventManagerMetrics,
   EventManagerStatus,
   EventManagerType,
-  EventSubscription,
   IEventManager,
   IEventManagerFactory,
   IEventManagerRegistry,
   SystemEvent,
 } from './core/interfaces';
-import { EventManagerPresets, EventManagerTypes, EventTypeGuards } from './core/interfaces';
-import type {
-  CommunicationEvent,
-  CoordinationEvent,
-  DatabaseEvent,
-  InterfaceEvent,
-  MemoryEvent,
-  MonitoringEvent,
-  NeuralEvent,
-  SystemLifecycleEvent,
-  UELEvent,
-  WorkflowEvent,
-} from './types';
-import {
-  DefaultEventManagerConfigs,
-  EventCategories,
-  EventConstants,
-  EventPriorityMap,
-  UELTypeGuards,
-} from './types';
+import { EventManagerTypes } from './core/interfaces';
+import { EventCategories, EventPriorityMap } from './types';
 
 /**
  * Registry entry for managing event manager instances and their lifecycle
@@ -268,7 +249,7 @@ export class EventRegistry implements IEventManagerRegistry {
   private initialized = false;
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger
   ) {
     this.healthMonitoring = {
       checkInterval: 30000, // 30 seconds
@@ -401,7 +382,7 @@ export class EventRegistry implements IEventManagerRegistry {
     const factory = this.factories.get(type);
 
     if (factory && this.factoryRegistry[type]) {
-      this.factoryRegistry[type]!.usage.totalRequests++;
+      this.factoryRegistry[type]?.usage.totalRequests++;
     }
 
     return factory as IEventManagerFactory<T>;
@@ -463,7 +444,7 @@ export class EventRegistry implements IEventManagerRegistry {
 
     // Update factory usage statistics
     if (this.factoryRegistry[config.type]) {
-      this.factoryRegistry[config.type]!.usage.managersCreated++;
+      this.factoryRegistry[config.type]?.usage.managersCreated++;
     }
 
     this.logger.info(`📝 Registered event manager: ${name} (${config.type})`);

@@ -104,8 +104,8 @@ export class IntegrationFactory {
 
       // Create a simple logger for the coordinator
       const logger = {
-        debug: (msg: string, meta?: any) => console.debug(`[MultiSystemCoordinator] ${msg}`, meta),
-        info: (msg: string, meta?: any) => console.info(`[MultiSystemCoordinator] ${msg}`, meta),
+        debug: (_msg: string, _meta?: any) => {},
+        info: (_msg: string, _meta?: any) => {},
         warn: (msg: string, meta?: any) => console.warn(`[MultiSystemCoordinator] ${msg}`, meta),
         error: (msg: string, meta?: any) => console.error(`[MultiSystemCoordinator] ${msg}`, meta),
       };

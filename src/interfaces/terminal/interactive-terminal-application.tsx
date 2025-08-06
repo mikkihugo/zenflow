@@ -228,7 +228,7 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
     const refreshInterval = setInterval(updateState, 3000);
 
     return () => clearInterval(refreshInterval);
-  }, []);
+  }, [initializeTUI, updateState]);
 
   // Global keyboard shortcuts
   useInput((_input, key) => {

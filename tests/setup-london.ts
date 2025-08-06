@@ -6,7 +6,6 @@
  */
 
 import 'jest-extended';
-import '@types/jest';
 
 /**
  * Expected call structure for interaction verification

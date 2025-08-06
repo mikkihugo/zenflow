@@ -83,33 +83,21 @@
  * ```
  */
 
+import { EventEmitter } from 'node:events';
 import axios, {
   type AxiosError,
   type AxiosInstance,
   type AxiosRequestConfig,
   type AxiosResponse,
 } from 'axios';
-import { EventEmitter } from 'events';
 import type {
-  AuthenticationError,
-  ClientConfig,
   ClientMetrics,
   ClientResponse,
   ClientStatus,
-  ConnectionError,
   IClient,
   RequestOptions,
-  RetryExhaustedError,
-  TimeoutError,
 } from '../core/interfaces';
-import type {
-  HTTPClientCapabilities,
-  HTTPClientConfig,
-  HTTPErrorDetails,
-  HTTPRequestOptions,
-  HTTPResponse,
-  OAuthCredentials,
-} from './http-types';
+import type { HTTPClientCapabilities, HTTPClientConfig, OAuthCredentials } from './http-types';
 
 /**
  * HTTP Client Adapter implementing UACL IClient interface
@@ -501,7 +489,6 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
       case 'linear':
         delay = baseDelay * attempt;
         break;
-      case 'fixed':
       default:
         delay = baseDelay;
         break;

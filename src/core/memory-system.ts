@@ -266,7 +266,6 @@ class JSONBackend implements BackendInterface {
 class SQLiteBackend implements BackendInterface {
   private db?: any;
   private dbPath: string;
-  private config: MemoryConfig;
 
   constructor(config: MemoryConfig) {
     this.config = config;
@@ -459,8 +458,6 @@ class SQLiteBackend implements BackendInterface {
  * @example
  */
 class LanceDBBackend implements BackendInterface {
-  private config: MemoryConfig;
-
   constructor(config: MemoryConfig) {
     this.config = config;
   }

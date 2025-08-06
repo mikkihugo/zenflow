@@ -11,50 +11,28 @@
  * management for coordination events across Claude-Zen.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type { AgentManager } from '../../../coordination/agents/agent-manager';
 import type { Orchestrator } from '../../../coordination/orchestrator';
-import { CommunicationProtocols } from '../../../coordination/protocols/communication/communication-protocols';
-import { TaskDistributionEngine } from '../../../coordination/protocols/distribution/task-distribution-engine';
-import { AgentLifecycleManager } from '../../../coordination/protocols/lifecycle/agent-lifecycle-manager';
-import { TopologyManager } from '../../../coordination/protocols/topology/topology-manager';
-import { SessionManager } from '../../../coordination/swarm/core/session-manager';
-import { SPARCSwarmCoordinator } from '../../../coordination/swarm/core/sparc-swarm-coordinator';
 // Import coordination system classes to wrap their EventEmitter usage
 import type { SwarmCoordinator } from '../../../coordination/swarm/core/swarm-coordinator';
 import { createLogger, type Logger } from '../../../core/logger';
 import type {
   EventBatch,
-  EventEmissionError,
   EventEmissionOptions,
-  EventError,
   EventFilter,
   EventListener,
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
   EventQueryOptions,
-  EventRetryExhaustedError,
   EventSubscription,
-  EventSubscriptionError,
-  EventTimeoutError,
   EventTransform,
   IEventManager,
-  SystemEvent,
 } from '../core/interfaces';
-import {
-  EventEmissionError,
-  EventManagerTypes,
-  EventTimeoutError,
-  EventTypeGuards,
-} from '../core/interfaces';
-import type { CoordinationEvent, EventPriority, EventProcessingStrategy } from '../types';
-import {
-  DefaultEventManagerConfigs,
-  EventCategories,
-  EventPriorityMap,
-  UELTypeGuards,
-} from '../types';
+import { EventEmissionError, EventManagerTypes, EventTimeoutError } from '../core/interfaces';
+import type { CoordinationEvent, EventPriority } from '../types';
+import { EventPriorityMap } from '../types';
 
 /**
  * Coordination event adapter configuration extending UEL EventManagerConfig
@@ -1483,7 +1461,7 @@ export class CoordinationEventAdapter implements IEventManager {
       try {
         // Restore original methods if they were wrapped
         wrapped.originalMethods.forEach((originalMethod, methodName) => {
-          if (wrapped.component && wrapped.component[methodName]) {
+          if (wrapped.component?.[methodName]) {
             wrapped.component[methodName] = originalMethod;
           }
         });
@@ -1509,7 +1487,7 @@ export class CoordinationEventAdapter implements IEventManager {
    */
   private async processCoordinationEventEmission<T extends CoordinationEvent>(
     event: T,
-    options?: EventEmissionOptions
+    _options?: EventEmissionOptions
   ): Promise<void> {
     // Add to event history
     this.eventHistory.push(event);
@@ -1875,7 +1853,7 @@ export class CoordinationEventAdapter implements IEventManager {
 
   private async processCoordinationBatchQueued<T extends CoordinationEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    _options?: EventEmissionOptions
   ): Promise<void> {
     this.eventQueue.push(...(batch.events as CoordinationEvent[]));
   }
@@ -2093,12 +2071,12 @@ export class CoordinationEventAdapter implements IEventManager {
     }
   }
 
-  private getActiveAgentCount(componentName: string): number {
+  private getActiveAgentCount(_componentName: string): number {
     // Would query actual component for agent count
     return this.agentMetrics.size;
   }
 
-  private getActiveTaskCount(componentName: string): number {
+  private getActiveTaskCount(_componentName: string): number {
     // Would query actual component for active task count
     return this.taskMetrics.size;
   }

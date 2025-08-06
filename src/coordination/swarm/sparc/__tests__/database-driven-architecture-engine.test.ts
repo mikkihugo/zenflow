@@ -6,14 +6,12 @@
  */
 
 import { nanoid } from 'nanoid';
-import { ArchitectureStorageService } from '../database/architecture-storage';
 import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
-import type { ArchitectureDesign, PseudocodeStructure } from '../types/sparc-types';
+import type { PseudocodeStructure } from '../types/sparc-types';
 
 // Mock database adapter for testing
 class MockDatabaseAdapter {
   private tables: Map<string, any[]> = new Map();
-  private queryResults: Map<string, any> = new Map();
 
   async execute(sql: string, params?: any[]): Promise<any> {
     // Simple mock for table creation and data manipulation
@@ -66,7 +64,7 @@ class MockDatabaseAdapter {
     if (sql.includes('COUNT(*)')) {
       const tableName = sql.match(/FROM (\w+)/)?.[1];
       if (tableName && this.tables.has(tableName)) {
-        const count = this.tables.get(tableName)!.length;
+        const count = this.tables.get(tableName)?.length;
         return { rows: [{ count }] };
       }
       return { rows: [{ count: 0 }] };
@@ -101,9 +99,9 @@ class MockDatabaseAdapter {
 
 // Mock logger
 const mockLogger = {
-  info: (msg: string, ...args: any[]) => console.log(`[INFO] ${msg}`, ...args),
+  info: (_msg: string, ..._args: any[]) => {},
   error: (msg: string, ...args: any[]) => console.error(`[ERROR] ${msg}`, ...args),
-  debug: (msg: string, ...args: any[]) => console.log(`[DEBUG] ${msg}`, ...args),
+  debug: (_msg: string, ..._args: any[]) => {},
   warn: (msg: string, ...args: any[]) => console.warn(`[WARN] ${msg}`, ...args),
 };
 
@@ -111,20 +109,12 @@ const mockLogger = {
  * Test the database-driven architecture engine functionality
  */
 async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
-  console.log('🏗️  Testing Database-Driven SPARC Architecture Engine...\n');
-
   // Setup test environment
   const mockDb = new MockDatabaseAdapter();
   const architectureEngine = new DatabaseDrivenArchitecturePhaseEngine(mockDb, mockLogger);
 
   try {
-    // Initialize the engine and database
-    console.log('1. Initializing architecture engine with database...');
     await architectureEngine.initialize();
-    console.log('✅ Architecture engine initialized successfully\n');
-
-    // Create test pseudocode structure
-    console.log('2. Creating test pseudocode structure...');
     const testPseudocode: PseudocodeStructure = {
       id: nanoid(),
       algorithms: [
@@ -315,80 +305,28 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
       ],
       dependencies: [],
     };
-    console.log('✅ Test pseudocode structure created\n');
-
-    // Test architecture generation
-    console.log('3. Generating architecture from pseudocode...');
     const architecture = await architectureEngine.designArchitecture(testPseudocode);
-    console.log(
-      `✅ Architecture generated with ${architecture.components?.length || 0} components\n`
-    );
-
-    // Test architecture validation
-    console.log('4. Validating generated architecture...');
     const validation = await architectureEngine.validateArchitecturalConsistency(
       architecture.systemArchitecture
     );
-    console.log(
-      `✅ Architecture validation completed with score: ${validation.overallScore.toFixed(2)}\n`
-    );
-
-    // Test architecture retrieval
-    console.log('5. Testing architecture retrieval...');
     if (architecture.id) {
-      const retrievedArchitecture = await architectureEngine.getArchitectureById(architecture.id);
-      console.log(`✅ Architecture retrieved: ${retrievedArchitecture ? 'Found' : 'Not found'}\n`);
+      const _retrievedArchitecture = await architectureEngine.getArchitectureById(architecture.id);
     }
-
-    // Test architecture search
-    console.log('6. Testing architecture search...');
-    const searchResults = await architectureEngine.searchArchitectures({
+    const _searchResults = await architectureEngine.searchArchitectures({
       domain: 'swarm-coordination',
       limit: 10,
     });
-    console.log(`✅ Architecture search completed: ${searchResults.length} results found\n`);
-
-    // Test architecture statistics
-    console.log('7. Testing architecture statistics...');
-    const stats = await architectureEngine.getArchitectureStatistics();
-    console.log(
-      `✅ Architecture statistics retrieved: ${stats.totalArchitectures} total architectures\n`
-    );
-
-    // Display architecture details
-    console.log('8. Architecture Details:');
-    console.log(`   - ID: ${architecture.id}`);
-    console.log(`   - Components: ${architecture.components?.length || 0}`);
-    console.log(`   - Quality Attributes: ${architecture.qualityAttributes?.length || 0}`);
-    console.log(`   - Security Requirements: ${architecture.securityRequirements?.length || 0}`);
-    console.log(
-      `   - Scalability Requirements: ${architecture.scalabilityRequirements?.length || 0}`
-    );
-    console.log(`   - Validation Score: ${validation.overallScore.toFixed(2)}`);
-    console.log(`   - Validation Approved: ${validation.approved ? '✅' : '❌'}\n`);
+    const _stats = await architectureEngine.getArchitectureStatistics();
 
     // Display component details
     if (architecture.components && architecture.components.length > 0) {
-      console.log('9. Component Details:');
-      architecture.components.forEach((component, index) => {
-        console.log(`   ${index + 1}. ${component.name} (${component.type})`);
-        console.log(`      - Responsibilities: ${component.responsibilities?.length || 0}`);
-        console.log(`      - Dependencies: ${component.dependencies?.length || 0}`);
-        console.log(`      - Interfaces: ${component.interfaces?.length || 0}`);
-      });
-      console.log('');
+      architecture.components.forEach((_component, _index) => {});
     }
 
     // Display recommendations if any
     if (validation.recommendations && validation.recommendations.length > 0) {
-      console.log('10. Architecture Recommendations:');
-      validation.recommendations.forEach((rec, index) => {
-        console.log(`    ${index + 1}. ${rec}`);
-      });
-      console.log('');
+      validation.recommendations.forEach((_rec, _index) => {});
     }
-
-    console.log('🎉 Database-Driven Architecture Engine test completed successfully!');
   } catch (error) {
     console.error('❌ Test failed:', error);
     throw error;
@@ -401,7 +339,6 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
 async function runTest() {
   try {
     await testDatabaseDrivenArchitectureEngine();
-    console.log('\n✅ All tests passed!');
     process.exit(0);
   } catch (error) {
     console.error('\n❌ Test suite failed:', error);

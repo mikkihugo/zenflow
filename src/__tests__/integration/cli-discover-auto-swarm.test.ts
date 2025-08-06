@@ -5,7 +5,6 @@
  */
 
 import { jest } from '@jest/globals';
-import path from 'path';
 
 describe('CLI Discover Auto-Swarm Integration', () => {
   let mockMemoryStore: any;

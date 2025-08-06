@@ -14,12 +14,8 @@
 import type { ICoordinationDao } from '../../../database';
 // import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
-import { AgentPool, BaseAgent, createAgent } from '../../agents/agent';
-import {
-  adaptAgentForCoordination,
-  createAgentPoolEntry,
-  executeTaskWithAgent,
-} from './agent-adapter';
+import { AgentPool, createAgent } from '../../agents/agent';
+import { executeTaskWithAgent } from './agent-adapter';
 import { getContainer } from './singleton-container';
 import type {
   AgentConfig,
@@ -895,7 +891,6 @@ export class ZenSwarm implements SwarmEventEmitter {
  */
 export class SwarmWrapper {
   public id: string;
-  private wasmSwarm: any; // Add missing property declaration
   private ruvSwarm: ZenSwarm;
   public agents: Map<string, Agent>;
   private tasks: Map<string, TaskWrapper>;

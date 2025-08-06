@@ -5,10 +5,8 @@
  * vector operations, similarity search, and ML integration.
  */
 
-import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
 import { BaseDataAccessObject } from '../base-repository';
 import type {
-  ClusterResult,
   IVectorRepository,
   TransactionOperation,
   VectorDocument,
@@ -26,10 +24,6 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
     return this.repository as IVectorRepository<T>;
   }
 
-  constructor(repository: IVectorRepository<T>, adapter: DatabaseAdapter, logger: ILogger) {
-    super(repository, adapter, logger);
-  }
-
   /**
    * Execute vector-specific transaction with batch processing
    *
@@ -39,7 +33,7 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
     this.logger.debug(`Executing vector transaction with ${operations.length} operations`);
 
     try {
-      return await this.adapter.transaction(async (tx) => {
+      return await this.adapter.transaction(async (_tx) => {
         const results: any[] = [];
 
         for (const operation of operations) {
@@ -335,7 +329,7 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
       // Filter out excluded IDs
       let filtered = results;
       if (options?.excludeIds && options.excludeIds.length > 0) {
-        filtered = results.filter((result) => !options.excludeIds!.includes(result.id));
+        filtered = results.filter((result) => !options.excludeIds?.includes(result.id));
       }
 
       // Apply diversity if requested
@@ -444,7 +438,7 @@ export class VectorDAO<T> extends BaseDataAccessObject<T> {
         if (!allResults.has(result.id)) {
           allResults.set(result.id, []);
         }
-        allResults.get(result.id)!.push({ ...result, score: result.score * weights[i] });
+        allResults.get(result.id)?.push({ ...result, score: result.score * weights[i] });
       }
     }
 

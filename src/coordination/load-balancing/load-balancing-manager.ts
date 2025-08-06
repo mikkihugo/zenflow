@@ -64,8 +64,6 @@ import type {
   AutoScaler,
   CapacityManager,
   EmergencyHandler,
-  HealthChecker,
-  LoadBalancingAlgorithm,
   LoadBalancingObserver,
   RoutingEngine,
 } from './interfaces';

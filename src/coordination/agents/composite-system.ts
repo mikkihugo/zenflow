@@ -4,7 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { SwarmTopology } from '../swarm/core/strategy';
 
 // Core agent interfaces
 export interface AgentCapability {
@@ -124,7 +123,6 @@ export class Agent extends EventEmitter implements AgentComponent {
   private taskHistory: TaskResult[] = [];
   private maxConcurrentTasks = 1;
   private resourceLimits: ResourceRequirements;
-  private config: any;
 
   constructor(
     id: string,
@@ -191,7 +189,7 @@ export class Agent extends EventEmitter implements AgentComponent {
       this.taskHistory.length > 0
         ? this.taskHistory
             .filter((t) => t.metrics?.executionTime)
-            .reduce((sum, t) => sum + t.metrics!.executionTime, 0) / this.taskHistory.length
+            .reduce((sum, t) => sum + t.metrics?.executionTime, 0) / this.taskHistory.length
         : 0;
 
     return {
@@ -1043,7 +1041,6 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
 // Hierarchical agent group for complex organizational structures
 export class HierarchicalAgentGroup extends AgentGroup {
   private subGroups: Map<string, AgentGroup> = new Map();
-  private topology: SwarmTopology = 'hierarchical';
   private maxDepth: number = 3;
   private currentDepth: number = 0;
 

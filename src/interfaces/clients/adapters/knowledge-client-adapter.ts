@@ -25,18 +25,16 @@ import type {
   ClientConfig,
   ClientMetadata,
   ClientMetrics,
-  ClientResponse,
   IClient,
   IClientFactory,
   IKnowledgeClient,
   KnowledgeQueryOptions,
   KnowledgeSearchOptions,
   KnowledgeStats,
-  RequestOptions,
   SemanticSearchOptions,
 } from '../interfaces';
-import type { ClientStatus, ClientType, ProtocolType } from '../types';
-import { ClientErrorCodes, ClientStatuses, ClientTypes, ProtocolTypes } from '../types';
+import type { ProtocolType } from '../types';
+import { ClientStatuses, ProtocolTypes } from '../types';
 
 /**
  * Extended client configuration for Knowledge clients
@@ -115,7 +113,6 @@ export class KnowledgeClientAdapter
 {
   private factIntegration: FACTIntegration;
   private _connected = false;
-  private _status: ClientStatus = ClientStatuses.DISCONNECTED;
   private metrics: ClientMetrics;
   private startTime: Date;
 
@@ -264,7 +261,7 @@ export class KnowledgeClientAdapter
 
       await this.send(healthQuery);
       return true;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }
@@ -358,7 +355,7 @@ export class KnowledgeClientAdapter
       };
 
       return await this.send<R>(request);
-    } catch (error) {
+    } catch (_error) {
       // Return null if entry not found
       return null;
     }
@@ -398,7 +395,7 @@ export class KnowledgeClientAdapter
 
       await this.send(request);
       return true;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }
@@ -419,7 +416,7 @@ export class KnowledgeClientAdapter
 
       await this.send(request);
       return true;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }
@@ -588,8 +585,7 @@ export class KnowledgeClientAdapter
  */
 export class KnowledgeClientFactory implements IClientFactory {
   constructor(
-    private logger?: { debug: Function; info: Function; warn: Function; error: Function },
-    private config?: any
+    private logger?: { debug: Function; info: Function; warn: Function; error: Function }
   ) {}
 
   /**

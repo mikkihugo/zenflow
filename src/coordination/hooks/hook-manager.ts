@@ -31,7 +31,6 @@ export class DefaultHookManager extends EventEmitter {
   private hookSystem: HookSystem;
   private config: HookManagerConfig;
   private activeHooks = new Set<string>();
-  private performanceOptimizer: any;
   private logger: any;
 
   constructor(hookSystem?: HookSystem, config?: Partial<HookManagerConfig>) {
@@ -55,7 +54,7 @@ export class DefaultHookManager extends EventEmitter {
   async executeHook(
     hookName: string,
     context: any,
-    timeout?: number
+    _timeout?: number
   ): Promise<HookExecutionResult> {
     const startTime = Date.now();
     const hookId = `${hookName}-${startTime}`;

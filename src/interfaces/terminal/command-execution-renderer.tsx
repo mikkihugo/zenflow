@@ -12,7 +12,6 @@ import { useEffect, useState } from 'react';
 import AdvancedCLICommands from './advanced-cli-commands';
 import { CommandExecutionEngine, type CommandResult } from './command-execution-engine';
 import { ErrorMessage, Header, LoadingSpinner, StatusBadge } from './components/index';
-import { MockCommandHandler } from './utils/mock-command-handler';
 
 export interface CommandExecutionProps {
   commands: string[];

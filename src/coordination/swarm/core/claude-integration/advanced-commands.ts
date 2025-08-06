@@ -4,21 +4,13 @@
  */
 
 export class AdvancedCommandsGenerator {
-  private options: any;
-
   constructor(options: any = {}) {
     this.options = options;
   }
 
-  async generateCommand(name: string, config: any): Promise<void> {
-    // TODO: Implement command generation
-    console.log(`Generated command: ${name}`, config);
-  }
+  async generateCommand(_name: string, _config: any): Promise<void> {}
 
-  async generateAllCommands(): Promise<void> {
-    // TODO: Implement all commands generation
-    console.log('Generated all commands');
-  }
+  async generateAllCommands(): Promise<void> {}
 }
 
 export default AdvancedCommandsGenerator;

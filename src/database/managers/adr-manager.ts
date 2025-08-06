@@ -60,8 +60,6 @@ export interface ADRStats {
 export class ADRManager {
   private architectureProject?: ProjectEntity;
 
-  constructor() {}
-
   /**
    * Initialize ADR manager and ensure architecture project exists
    */
@@ -114,7 +112,7 @@ export class ADRManager {
         content: this.formatADRContent(adrId, options),
         summary: `Architecture decision ${adrId} regarding ${options.title}`,
         author: options.author || 'architecture-team',
-        project_id: this.architectureProject!.id,
+        project_id: this.architectureProject?.id,
         status: 'proposed',
         priority: options.priority || 'medium',
         keywords,
@@ -156,7 +154,7 @@ export class ADRManager {
     // Query all existing ADRs to find the highest number
     const { documents } = await documentManager.queryDocuments({
       type: 'adr',
-      projectId: this.architectureProject!.id,
+      projectId: this.architectureProject?.id,
     });
 
     let maxNumber = 0;
@@ -182,7 +180,7 @@ export class ADRManager {
   }> {
     const filters: any = {
       type: 'adr',
-      projectId: this.architectureProject!.id,
+      projectId: this.architectureProject?.id,
     };
 
     if (options.status) filters.status = options.status;
@@ -207,13 +205,13 @@ export class ADRManager {
     if (options.date_range) {
       filteredADRs = filteredADRs.filter((adr) => {
         const created = new Date(adr.created_at);
-        return created >= options.date_range!.start && created <= options.date_range!.end;
+        return created >= options.date_range?.start && created <= options.date_range?.end;
       });
     }
 
     if (options.tags) {
       filteredADRs = filteredADRs.filter((adr) =>
-        options.tags!.some((tag) => adr.keywords.includes(tag))
+        options.tags?.some((tag) => adr.keywords.includes(tag))
       );
     }
 
@@ -248,7 +246,7 @@ export class ADRManager {
     const searchOptions: any = {
       searchType: options.searchType || 'combined',
       query,
-      projectId: this.architectureProject!.id,
+      projectId: this.architectureProject?.id,
       documentTypes: ['adr'],
       limit: options.limit || 20,
     };
@@ -353,7 +351,7 @@ export class ADRManager {
       status: 'superseded',
       metadata: {
         ...oldADR.metadata,
-        superseded_by: newADR.metadata!.adr_id,
+        superseded_by: newADR.metadata?.adr_id,
         superseded_at: new Date().toISOString(),
         superseded_reason: reason,
       },
@@ -363,12 +361,12 @@ export class ADRManager {
     await documentManager.updateDocument(newADR.id, {
       metadata: {
         ...newADR.metadata,
-        supersedes: [...(newADR.metadata!.supersedes || []), oldADR.metadata!.adr_id],
+        supersedes: [...(newADR.metadata?.supersedes || []), oldADR.metadata?.adr_id],
       },
     });
 
     // Create explicit relationship
-    await documentManager['relationshipRepository'].create({
+    await documentManager.relationshipRepository.create({
       id: nanoid(),
       source_document_id: newADR.id,
       target_document_id: oldADR.id,

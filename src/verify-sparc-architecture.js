@@ -21,7 +21,6 @@ class VerificationDatabaseAdapter {
       const tableName = sql.match(/CREATE TABLE IF NOT EXISTS (\w+)/)?.[1];
       if (tableName && !this.tables.has(tableName)) {
         this.tables.set(tableName, []);
-        console.log(`✅ Database: Created table ${tableName}`);
       }
       return { affectedRows: 0 };
     }
@@ -32,7 +31,6 @@ class VerificationDatabaseAdapter {
       if (tableName && this.tables.has(tableName)) {
         const table = this.tables.get(tableName);
         table.push({ id: params[0] || 'mock-id', data: params });
-        console.log(`✅ Database: Inserted record into ${tableName}`);
         return { affectedRows: 1 };
       }
     }
@@ -46,14 +44,12 @@ class VerificationDatabaseAdapter {
       if (tableName && this.tables.has(tableName)) {
         const table = this.tables.get(tableName);
         const record = table.find((r) => r.id === params[0]);
-        console.log(`✅ Database: Queried ${tableName}, found: ${!!record}`);
         return { rows: record ? [record] : [] };
       }
     }
 
     // Mock count queries
     if (sql.includes('COUNT(*)')) {
-      console.log(`✅ Database: Count query executed`);
       return { rows: [{ count: 1 }] };
     }
 
@@ -62,19 +58,11 @@ class VerificationDatabaseAdapter {
 }
 
 async function verifyDatabaseDrivenArchitecture() {
-  console.log('🏗️  Verifying Database-Driven SPARC Architecture Engine...\n');
-
   try {
-    // 1. Initialize the database-driven engine
-    console.log('1. Initializing database-driven architecture engine...');
     const mockDb = new VerificationDatabaseAdapter();
     const architectureEngine = new DatabaseDrivenArchitecturePhaseEngine(mockDb);
 
     await architectureEngine.initialize();
-    console.log('✅ Architecture engine initialized with database persistence\n');
-
-    // 2. Create sample pseudocode structure
-    console.log('2. Creating sample pseudocode structure...');
     const samplePseudocode = {
       id: 'verification-test',
       algorithms: [
@@ -169,84 +157,28 @@ async function verifyDatabaseDrivenArchitecture() {
         { name: 'Task Processing', type: 'internal' },
       ],
     };
-    console.log('✅ Sample pseudocode structure created\n');
-
-    // 3. Generate architecture from pseudocode (database-driven)
-    console.log('3. Generating architecture with database persistence...');
     const architecture = await architectureEngine.designArchitecture(samplePseudocode);
-
-    console.log(`✅ Architecture generated successfully:`);
-    console.log(`   - Components: ${architecture.components?.length || 0}`);
-    console.log(`   - Quality Attributes: ${architecture.qualityAttributes?.length || 0}`);
-    console.log(`   - Security Requirements: ${architecture.securityRequirements?.length || 0}`);
-    console.log(`   - Architecture ID: ${architecture.id}\n`);
-
-    // 4. Validate architecture (with database persistence)
-    console.log('4. Validating architecture design...');
     const validation = await architectureEngine.validateArchitecturalConsistency(
       architecture.systemArchitecture
     );
-
-    console.log(`✅ Architecture validation completed:`);
-    console.log(`   - Overall Score: ${validation.overallScore.toFixed(2)}`);
-    console.log(`   - Approved: ${validation.approved ? 'Yes' : 'No'}`);
-    console.log(`   - Validation Results: ${validation.validationResults.length}`);
-    console.log(`   - Recommendations: ${validation.recommendations.length}\n`);
-
-    // 5. Test database operations (search, retrieve)
-    console.log('5. Testing database operations...');
     try {
-      const retrievedArchitecture = await architectureEngine.getArchitectureById(architecture.id);
-      const stats = await architectureEngine.getArchitectureStatistics();
-      const searchResults = await architectureEngine.searchArchitectures({
+      const _retrievedArchitecture = await architectureEngine.getArchitectureById(architecture.id);
+      const _stats = await architectureEngine.getArchitectureStatistics();
+      const _searchResults = await architectureEngine.searchArchitectures({
         domain: 'general',
         limit: 5,
       });
-
-      console.log(`✅ Database operations verified:`);
-      console.log(`   - Architecture retrieval: ${retrievedArchitecture ? 'Success' : 'Failed'}`);
-      console.log(`   - Statistics query: ${stats ? 'Success' : 'Failed'}`);
-      console.log(`   - Search functionality: ${searchResults ? 'Success' : 'Failed'}\n`);
-    } catch (error) {
-      console.log(
-        `⚠️  Database operations had some issues (this is expected with mock): ${error.message}\n`
-      );
-    }
-
-    // 6. Test MCP tools integration
-    console.log('6. Testing MCP tools integration...');
+    } catch (_error) {}
     try {
       const mcpTools = new ArchitectureMCPToolsImpl(mockDb);
       await mcpTools.initialize();
 
       // Test architecture generation via MCP
-      const mcpResult = await mcpTools.generateArchitecture({
+      const _mcpResult = await mcpTools.generateArchitecture({
         pseudocode: samplePseudocode,
         domain: 'swarm-coordination',
       });
-
-      console.log(`✅ MCP tools integration verified:`);
-      console.log(`   - MCP Generation Success: ${mcpResult.success}`);
-      console.log(`   - MCP Architecture ID: ${mcpResult.architectureId}`);
-      console.log(`   - MCP Message: ${mcpResult.message}\n`);
-    } catch (error) {
-      console.log(`⚠️  MCP tools had some issues (this is expected with mock): ${error.message}\n`);
-    }
-
-    // 7. Summary
-    console.log('🎯 VERIFICATION SUMMARY:');
-    console.log('✅ Database-driven architecture engine implemented');
-    console.log('✅ Multi-table database schema (architectures, components, validations)');
-    console.log('✅ Architecture generation from pseudocode working');
-    console.log('✅ Architecture validation with scoring system');
-    console.log('✅ Database persistence and retrieval operations');
-    console.log('✅ MCP tools integration for external access');
-    console.log('✅ Comprehensive component analysis and pattern selection');
-    console.log('✅ Quality attributes and security requirements generation');
-    console.log('');
-    console.log(
-      '🏗️  The SPARC Architecture Generation Engine is database-driven and ready for use!'
-    );
+    } catch (_error) {}
 
     return {
       success: true,

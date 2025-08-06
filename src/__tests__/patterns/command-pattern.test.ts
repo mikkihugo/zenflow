@@ -4,15 +4,11 @@
  */
 
 import {
-  AgentSpawnCommand,
   type CommandContext,
   CommandFactory,
-  CommandHistory,
   type CommandResult,
   type MCPCommand,
   MCPCommandQueue,
-  SwarmInitCommand,
-  TaskOrchestrationCommand,
 } from '../../interfaces/mcp/command-system';
 
 // Mock service interfaces for testing
@@ -35,7 +31,7 @@ describe('Command Pattern Implementation', () => {
   describe('Command Execution Algorithms (Classical TDD)', () => {
     let mockSwarmService: MockSwarmService;
     let mockLogger: MockLogger;
-    let commandQueue: MCPCommandQueue;
+    let _commandQueue: MCPCommandQueue;
     let commandContext: CommandContext;
 
     beforeEach(() => {
@@ -53,7 +49,7 @@ describe('Command Pattern Implementation', () => {
         debug: jest.fn(),
       };
 
-      commandQueue = new MCPCommandQueue(mockLogger);
+      _commandQueue = new MCPCommandQueue(mockLogger);
 
       commandContext = {
         sessionId: 'test-session-123',

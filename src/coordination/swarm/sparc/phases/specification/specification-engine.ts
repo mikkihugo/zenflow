@@ -50,8 +50,6 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     projectSpec: ProjectSpecification,
     templateId?: string
   ): Promise<DetailedSpecification> {
-    console.log(`🔧 Generating specification for ${projectSpec.name} using template approach`);
-
     let template;
     if (templateId) {
       template = this.templateEngine.getTemplate(templateId);
@@ -65,9 +63,6 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
         throw new Error(`No suitable template found for domain: ${projectSpec.domain}`);
       }
       template = bestMatch.template;
-      console.log(
-        `📋 Selected template: ${template.name} (compatibility: ${(bestMatch.compatibility.score * 100).toFixed(1)}%)`
-      );
     }
 
     // Apply template to project
@@ -75,10 +70,6 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
     // Generate additional specification details
     const enhancedSpec = await this.enhanceTemplateSpecification(result.specification, projectSpec);
-
-    console.log(
-      `✅ Template-based specification generated with ${result.customizations.length} customizations`
-    );
 
     return enhancedSpec;
   }

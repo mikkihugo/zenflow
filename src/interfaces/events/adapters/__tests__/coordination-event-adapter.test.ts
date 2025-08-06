@@ -16,7 +16,6 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import type { EventListener, EventSubscription } from '../../core/interfaces';
 import { EventManagerTypes } from '../../core/interfaces';
 import type { CoordinationEvent } from '../../types';
 import {
@@ -37,7 +36,7 @@ describe('CoordinationEventAdapter', () => {
   });
 
   afterEach(async () => {
-    if (adapter && adapter.isRunning()) {
+    if (adapter?.isRunning()) {
       await adapter.stop();
     }
     if (adapter) {
@@ -396,7 +395,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should calculate uptime correctly', async () => {
-      const startTime = Date.now();
+      const _startTime = Date.now();
       await new Promise((resolve) => setTimeout(resolve, 100)); // Wait 100ms
 
       const status = await adapter.healthCheck();

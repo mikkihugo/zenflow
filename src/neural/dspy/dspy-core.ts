@@ -7,7 +7,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { ChainOfThought, DSPy, GenerateAnswer, Module, Signature } from 'dspy.ts';
 import type { SwarmCoordinator } from '../../coordination/swarm/core/swarm-coordinator';
 import { createLogger } from '../../core/logger';
 import type { SessionMemoryStore } from '../../memory/memory';
@@ -230,7 +229,7 @@ export class DSPyIntegration extends EventEmitter {
    */
   private async optimizeWithSwarm(
     program: DSPyProgram,
-    optimizationConfig?: Partial<DSPyConfig['optimization']>
+    _optimizationConfig?: Partial<DSPyConfig['optimization']>
   ): Promise<OptimizationResult> {
     logger.info(`Starting swarm-based optimization for program: ${program.id}`);
 
@@ -284,7 +283,7 @@ export class DSPyIntegration extends EventEmitter {
     logger.info(`Starting direct optimization for program: ${program.id}`);
 
     const startTime = Date.now();
-    const config = { ...this.config.optimization, ...optimizationConfig };
+    const _config = { ...this.config.optimization, ...optimizationConfig };
 
     // Simulate DSPy optimization process
     // In a real implementation, this would call actual DSPy methods
@@ -363,7 +362,7 @@ export class DSPyIntegration extends EventEmitter {
     };
   }
 
-  private async analyzeMetrics(program: DSPyProgram, agent: any): Promise<any> {
+  private async analyzeMetrics(_program: DSPyProgram, agent: any): Promise<any> {
     // Simulate metric analysis
     return {
       agent: agent.id,
@@ -375,7 +374,7 @@ export class DSPyIntegration extends EventEmitter {
     };
   }
 
-  private async tunePipeline(program: DSPyProgram, agent: any): Promise<any> {
+  private async tunePipeline(_program: DSPyProgram, agent: any): Promise<any> {
     // Simulate pipeline tuning
     return {
       agent: agent.id,
@@ -387,7 +386,7 @@ export class DSPyIntegration extends EventEmitter {
     };
   }
 
-  private async enhanceWithNeural(program: DSPyProgram, agent: any): Promise<any> {
+  private async enhanceWithNeural(_program: DSPyProgram, agent: any): Promise<any> {
     // Simulate neural enhancement
     return {
       agent: agent.id,

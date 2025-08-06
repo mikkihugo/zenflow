@@ -15,7 +15,6 @@ import type {
   SwarmConfig,
   Task,
 } from '../../../coordination/schemas';
-import type { APIError } from '../../api/http/schemas/common';
 import type {
   NeuralNetwork,
   PredictionRequest,

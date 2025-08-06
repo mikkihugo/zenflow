@@ -7,7 +7,7 @@
  */
 
 import { createLogger } from '../../../utils/logger';
-import type { ServiceOperationOptions, ServiceOperationResponse } from '../core/interfaces';
+import type { ServiceOperationOptions } from '../core/interfaces';
 import type {
   InfrastructureServiceAdapter,
   InfrastructureServiceAdapterConfig,
@@ -16,15 +16,8 @@ import {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
 } from './infrastructure-service-adapter';
-import type {
-  CreateServiceOptions,
-  InfrastructureServiceFactory,
-} from './infrastructure-service-factory';
-import {
-  createInfrastructureService,
-  createInfrastructureServiceFactory,
-  getInfrastructureServiceFactory,
-} from './infrastructure-service-factory';
+import type { CreateServiceOptions } from './infrastructure-service-factory';
+import { getInfrastructureServiceFactory } from './infrastructure-service-factory';
 
 const logger = createLogger('InfrastructureServiceHelpers');
 
@@ -406,7 +399,7 @@ export async function getSystemStatusCached(
   service: InfrastructureServiceAdapter,
   cacheTTL: number = 30000 // 30 seconds
 ): Promise<any> {
-  const cacheKey = `system-status-${service.name}`;
+  const _cacheKey = `system-status-${service.name}`;
 
   // This would use a proper cache in a real implementation
   // For now, we'll just execute the operation
@@ -574,7 +567,7 @@ export async function optimizeResourcesComprehensive(
   try {
     // Get current resource stats
     const statsResult = await service.execute('resource-stats');
-    const currentStats = statsResult.success ? statsResult.data : {};
+    const _currentStats = statsResult.success ? statsResult.data : {};
 
     // Perform optimization
     const optimizeResult = await service.execute('resource-optimize');

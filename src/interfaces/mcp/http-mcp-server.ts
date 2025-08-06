@@ -18,7 +18,6 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import express from 'express';
 import { z } from 'zod';
 import { createLogger } from './mcp-logger';
-import { mcpToolsManager } from './tool-registry';
 
 const logger = createLogger('SDK-HTTP-MCP-Server');
 

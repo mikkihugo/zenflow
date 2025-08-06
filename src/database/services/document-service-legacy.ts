@@ -20,8 +20,8 @@ import type {
   TaskDocumentEntity,
   VisionDocumentEntity,
 } from '../entities/document-entities';
-import { createDao, createManager } from '../index';
-import type { IDataAccessObject, IRepository } from '../interfaces';
+import { createDao } from '../index';
+import type { IRepository } from '../interfaces';
 
 export interface DocumentCreateOptions {
   autoGenerateRelationships?: boolean;
@@ -62,10 +62,6 @@ export interface DocumentSearchOptions extends DocumentQueryOptions {
  */
 export class DocumentService {
   private documentRepository: IRepository<BaseDocumentEntity>;
-  private projectRepository: IRepository<ProjectEntity>;
-  private relationshipRepository: IRepository<DocumentRelationshipEntity>;
-  private workflowRepository: IRepository<DocumentWorkflowStateEntity>;
-  private documentDAO: IDataAccessObject<BaseDocumentEntity>;
 
   constructor(private databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql') {}
 
@@ -619,72 +615,6 @@ export class DocumentService {
 
     await this.coordinator.executeQuery(updateQuery);
     return updatedState;
-  }
-
-  // ==================== PRIVATE HELPER METHODS ====================
-
-  private createSchemaQuery(tableName: string): DatabaseQuery {
-    return {
-      id: `create_schema_${tableName}`,
-      type: 'write',
-      operation: 'schema_create',
-      parameters: {
-        sql: this.getTableSchema(tableName),
-      },
-      requirements: {
-        consistency: 'strong',
-        timeout: 60000,
-        priority: 'critical',
-      },
-      routing: {
-        loadBalancing: 'capability_based',
-      },
-      timestamp: Date.now(),
-    };
-  }
-
-  private getTableSchema(tableName: string): string {
-    const schemas: Record<string, string> = {
-      documents: `
-        CREATE TABLE IF NOT EXISTS documents (
-          id TEXT PRIMARY KEY,
-          type TEXT NOT NULL,
-          title TEXT NOT NULL,
-          content TEXT NOT NULL,
-          status TEXT DEFAULT 'draft',
-          priority TEXT DEFAULT 'medium',
-          author TEXT,
-          tags TEXT,
-          project_id TEXT,
-          parent_document_id TEXT,
-          dependencies TEXT,
-          related_documents TEXT,
-          version TEXT DEFAULT '1.0.0',
-          checksum TEXT,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          searchable_content TEXT,
-          keywords TEXT,
-          workflow_stage TEXT,
-          completion_percentage INTEGER DEFAULT 0,
-          type_specific_data TEXT
-        );
-      `,
-      // Add other schemas as needed
-      document_relationships: `
-        CREATE TABLE IF NOT EXISTS document_relationships (
-          id TEXT PRIMARY KEY,
-          source_document_id TEXT NOT NULL,
-          target_document_id TEXT NOT NULL,
-          relationship_type TEXT NOT NULL,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          metadata TEXT
-        );
-      `,
-      // Add more schemas...
-    };
-
-    return schemas[tableName] || '';
   }
 
   private serializeDocument(document: BaseDocumentEntity): any {

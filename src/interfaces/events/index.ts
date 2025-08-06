@@ -1096,8 +1096,6 @@ export class UEL {
           const eventTypes = Object.values(EventManagerTypes);
           const eventType = eventTypes[index];
           if (eventType && result.value) {
-            // Factory registration would happen here
-            console.debug(`Would register factory for ${eventType}`);
           }
         }
       });
@@ -1770,7 +1768,7 @@ export const UELHelpers = {
         reportPath,
         summary,
       };
-    } catch (error) {
+    } catch (_error) {
       return {
         validationResult: null,
         summary: {

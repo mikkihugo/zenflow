@@ -35,7 +35,6 @@ import type {
   WorkflowError,
   WorkflowExecutionOptions,
   WorkflowMetrics,
-  WorkflowState,
   WorkflowStatus,
   WorkflowStepResults,
   WorkflowStepState,

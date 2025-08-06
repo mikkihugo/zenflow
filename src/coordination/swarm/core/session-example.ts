@@ -5,7 +5,6 @@
  * for persistent swarm orchestration across multiple executions.
  */
 
-import type { ICoordinationDao } from '../../../database';
 // import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
 import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
 import { SessionManager } from './session-manager';

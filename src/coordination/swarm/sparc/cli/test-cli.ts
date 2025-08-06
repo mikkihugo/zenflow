@@ -17,8 +17,6 @@ class MockDB {
 }
 
 async function testCLIFunctionality() {
-  console.log('🚀 Testing SPARC Architecture CLI Functionality\n');
-
   const db = new MockDB();
   const engine = new DatabaseDrivenArchitecturePhaseEngine(db, {
     info: console.log,
@@ -85,28 +83,14 @@ async function testCLIFunctionality() {
     optimizations: [],
     dependencies: [],
   };
-
-  console.log('📋 Generating architecture from sample pseudocode...');
   const architecture = await engine.designArchitecture(samplePseudocode);
 
-  console.log(`✅ Architecture generated successfully!`);
-  console.log(`   - ID: ${architecture.id}`);
-  console.log(`   - Components: ${architecture.components?.length || 0}`);
-  console.log(`   - Quality Attributes: ${architecture.qualityAttributes?.length || 0}`);
-
   if (architecture.components) {
-    console.log('\n🔧 Generated Components:');
-    architecture.components.forEach((comp, i) => {
-      console.log(`   ${i + 1}. ${comp.name} (${comp.type})`);
-    });
+    architecture.components.forEach((_comp, _i) => {});
   }
-
-  console.log('\n🔍 Validating architecture...');
-  const validation = await engine.validateArchitecturalConsistency(architecture.systemArchitecture);
-  console.log(`✅ Validation score: ${validation.overallScore.toFixed(2)}`);
-  console.log(`   Status: ${validation.approved ? '✅ Approved' : '❌ Needs improvement'}`);
-
-  console.log('\n🎉 CLI functionality test completed!');
+  const _validation = await engine.validateArchitecturalConsistency(
+    architecture.systemArchitecture
+  );
 }
 
 testCLIFunctionality().catch(console.error);

@@ -13,8 +13,6 @@ import { type Request, type Response, Router } from 'express';
 import type {
   BatchRequest,
   CommandRequest,
-  DatabaseHealthStatus,
-  DatabaseResponse,
   MigrationRequest,
   QueryRequest,
 } from '../di/database-container';

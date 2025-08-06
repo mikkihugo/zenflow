@@ -18,10 +18,14 @@ const config: Config = {
   },
 
   moduleNameMapper: {
-    // Map TypeScript path aliases
-    ...pathsToModuleNameMapper(compilerOptions.paths, {
-      prefix: '<rootDir>/src/',
-    }),
+    // Map TypeScript path aliases (excluding @types/* which should resolve to node_modules)
+    ...Object.fromEntries(
+      Object.entries(
+        pathsToModuleNameMapper(compilerOptions.paths, {
+          prefix: '<rootDir>/src/',
+        })
+      ).filter(([key]) => !key.startsWith('^@types/'))
+    ),
   },
 
   // Use custom resolver approach

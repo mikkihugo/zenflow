@@ -5,12 +5,10 @@
  * in various scenarios within the Claude-Zen system.
  */
 
-import type { CoordinationEvent } from '../types';
 import {
   CoordinationEventAdapter,
   type CoordinationEventAdapterConfig,
   CoordinationEventHelpers,
-  CoordinationEventManagerFactory,
   createComprehensiveCoordinationEventManager,
   createCoordinationEventManager,
   createHighPerformanceCoordinationEventManager,
@@ -23,34 +21,25 @@ import {
  * for swarm, agent, and task events.
  */
 export async function basicCoordinationExample(): Promise<void> {
-  console.log('=== Basic Coordination Event Management ===');
-
   // Create coordination event manager
   const coordinator = await createCoordinationEventManager('main-coordinator');
   await coordinator.start();
 
   // Subscribe to different types of coordination events
   coordinator.subscribeSwarmLifecycleEvents((event) => {
-    console.log(`🐝 Swarm ${event.operation}: ${event.targetId}`);
     if (event.details?.topology) {
-      console.log(`   Topology: ${event.details.topology}`);
     }
     if (event.details?.agentCount) {
-      console.log(`   Agent Count: ${event.details.agentCount}`);
     }
   });
 
   coordinator.subscribeAgentManagementEvents((event) => {
-    console.log(`🤖 Agent ${event.operation}: ${event.targetId}`);
     if (event.details?.swarmId) {
-      console.log(`   Swarm: ${event.details.swarmId}`);
     }
   });
 
   coordinator.subscribeTaskOrchestrationEvents((event) => {
-    console.log(`📋 Task ${event.operation}: ${event.targetId}`);
     if (event.details?.assignedTo) {
-      console.log(`   Assigned to: ${event.details.assignedTo.join(', ')}`);
     }
   });
 
@@ -58,9 +47,7 @@ export async function basicCoordinationExample(): Promise<void> {
   await simulateSwarmLifecycle(coordinator);
 
   // Check final status
-  const status = await coordinator.healthCheck();
-  console.log(`Final Health Status: ${status.status}`);
-  console.log(`Events Processed: ${status.metadata?.eventCount || 0}`);
+  const _status = await coordinator.healthCheck();
 
   await coordinator.stop();
   await coordinator.destroy();
@@ -73,8 +60,6 @@ export async function basicCoordinationExample(): Promise<void> {
  * performance metrics, and event correlation.
  */
 export async function advancedCoordinationExample(): Promise<void> {
-  console.log('\n=== Advanced Coordination Monitoring ===');
-
   // Create comprehensive coordination manager
   const coordinator = await createComprehensiveCoordinationEventManager('advanced-coordinator');
   await coordinator.start();
@@ -83,18 +68,10 @@ export async function advancedCoordinationExample(): Promise<void> {
   coordinator.subscribe(
     ['coordination:swarm', 'coordination:agent', 'coordination:task'],
     async (event) => {
-      console.log(
-        `📊 Event: ${event.type} | Operation: ${event.operation} | Target: ${event.targetId}`
-      );
-
       // Check if this is part of a correlation
       if (event.correlationId) {
         const correlation = coordinator.getCoordinationCorrelatedEvents(event.correlationId);
         if (correlation) {
-          console.log(`   🔗 Correlation: ${correlation.events.length} related events`);
-          console.log(
-            `   ⚡ Efficiency: ${(correlation.performance.coordinationEfficiency * 100).toFixed(1)}%`
-          );
         }
       }
     }
@@ -108,12 +85,7 @@ export async function advancedCoordinationExample(): Promise<void> {
     );
 
     if (unhealthyComponents.length > 0) {
-      console.log('⚠️  Unhealthy Components:');
-      unhealthyComponents.forEach(([component, health]) => {
-        console.log(
-          `   ${component}: ${health.status} (${(health.reliability * 100).toFixed(1)}% reliable)`
-        );
-      });
+      unhealthyComponents.forEach(([_component, _health]) => {});
     }
   }, 30000); // Check every 30 seconds
 
@@ -121,14 +93,7 @@ export async function advancedCoordinationExample(): Promise<void> {
   await simulateComplexCoordinationWorkflow(coordinator);
 
   // Get final metrics
-  const metrics = await coordinator.getMetrics();
-  console.log('\n📈 Final Metrics:');
-  console.log(`   Events Processed: ${metrics.eventsProcessed}`);
-  console.log(`   Average Latency: ${metrics.averageLatency.toFixed(2)}ms`);
-  console.log(`   Throughput: ${metrics.throughput.toFixed(2)} events/sec`);
-  console.log(
-    `   Error Rate: ${((metrics.eventsFailed / metrics.eventsProcessed) * 100).toFixed(2)}%`
-  );
+  const _metrics = await coordinator.getMetrics();
 
   await coordinator.stop();
   await coordinator.destroy();
@@ -141,8 +106,6 @@ export async function advancedCoordinationExample(): Promise<void> {
  * for production workloads with minimal overhead.
  */
 export async function highPerformanceCoordinationExample(): Promise<void> {
-  console.log('\n=== High-Performance Coordination ===');
-
   // Create high-performance coordinator
   const coordinator = await createHighPerformanceCoordinationEventManager('perf-coordinator');
   await coordinator.start();
@@ -158,13 +121,9 @@ export async function highPerformanceCoordinationExample(): Promise<void> {
 
       // Only log critical events to minimize overhead
       if (event.priority === 'high' || event.operation === 'fail') {
-        console.log(`🚨 Critical: ${event.type} ${event.operation} - ${event.targetId}`);
       }
     }
   );
-
-  // Simulate high-volume coordination events
-  console.log('Simulating high-volume coordination events...');
   const promises: Promise<void>[] = [];
 
   for (let i = 0; i < 1000; i++) {
@@ -184,15 +143,9 @@ export async function highPerformanceCoordinationExample(): Promise<void> {
   await Promise.all(promises);
 
   const duration = Date.now() - startTime;
-  const throughput = eventCount / (duration / 1000);
+  const _throughput = eventCount / (duration / 1000);
 
-  console.log(`✅ Performance Test Complete:`);
-  console.log(`   Events: ${eventCount}`);
-  console.log(`   Duration: ${duration}ms`);
-  console.log(`   Throughput: ${throughput.toFixed(2)} events/sec`);
-
-  const finalMetrics = await coordinator.getMetrics();
-  console.log(`   Average Latency: ${finalMetrics.averageLatency.toFixed(2)}ms`);
+  const _finalMetrics = await coordinator.getMetrics();
 
   await coordinator.stop();
   await coordinator.destroy();
@@ -205,8 +158,6 @@ export async function highPerformanceCoordinationExample(): Promise<void> {
  * with specific configuration for particular use cases.
  */
 export async function customCoordinationExample(): Promise<void> {
-  console.log('\n=== Custom Coordination Configuration ===');
-
   // Create custom configuration for research-focused coordination
   const customConfig: CoordinationEventAdapterConfig = {
     name: 'research-coordinator',
@@ -271,34 +222,19 @@ export async function customCoordinationExample(): Promise<void> {
 
   // Set up research-specific monitoring
   coordinator.subscribeSwarmLifecycleEvents((event) => {
-    console.log(`🔬 Research Swarm: ${event.operation} - ${event.targetId}`);
     if (event.details?.topology) {
-      console.log(`   Research Topology: ${event.details.topology}`);
     }
   });
 
-  coordinator.subscribeAgentManagementEvents((event) => {
-    console.log(`🧬 Research Agent: ${event.operation} - ${event.targetId}`);
-  });
+  coordinator.subscribeAgentManagementEvents((_event) => {});
 
   // Simulate research coordination
   await simulateResearchCoordination(coordinator);
 
   // Get research-specific insights
   const correlations = coordinator.getActiveCoordinationCorrelations();
-  console.log(`\n🔍 Research Insights:`);
-  console.log(`   Active Research Sessions: ${correlations.length}`);
 
-  correlations.forEach((correlation) => {
-    console.log(`   Session ${correlation.correlationId}:`);
-    console.log(`     Events: ${correlation.events.length}`);
-    console.log(
-      `     Duration: ${correlation.lastUpdate.getTime() - correlation.startTime.getTime()}ms`
-    );
-    console.log(
-      `     Efficiency: ${(correlation.performance.coordinationEfficiency * 100).toFixed(1)}%`
-    );
-  });
+  correlations.forEach((_correlation) => {});
 
   await coordinator.stop();
   await coordinator.destroy();
@@ -310,8 +246,6 @@ export async function customCoordinationExample(): Promise<void> {
  * @param coordinator
  */
 async function simulateSwarmLifecycle(coordinator: CoordinationEventAdapter): Promise<void> {
-  console.log('\n🎭 Simulating Swarm Lifecycle...');
-
   // Initialize swarm
   await coordinator.emitSwarmCoordinationEvent(
     CoordinationEventHelpers.createSwarmInitEvent('demo-swarm', 'mesh', {
@@ -345,8 +279,6 @@ async function simulateSwarmLifecycle(coordinator: CoordinationEventAdapter): Pr
       nodeCount: 3,
     })
   );
-
-  console.log('✅ Swarm lifecycle simulation complete');
 }
 
 /**
@@ -357,8 +289,6 @@ async function simulateSwarmLifecycle(coordinator: CoordinationEventAdapter): Pr
 async function simulateComplexCoordinationWorkflow(
   coordinator: CoordinationEventAdapter
 ): Promise<void> {
-  console.log('\n🎭 Simulating Complex Coordination Workflow...');
-
   const correlationId = `workflow-${Date.now()}`;
 
   // Initialize multiple swarms
@@ -404,8 +334,6 @@ async function simulateComplexCoordinationWorkflow(
       complexity: 'high',
     },
   });
-
-  console.log('✅ Complex coordination workflow simulation complete');
 }
 
 /**
@@ -414,8 +342,6 @@ async function simulateComplexCoordinationWorkflow(
  * @param coordinator
  */
 async function simulateResearchCoordination(coordinator: CoordinationEventAdapter): Promise<void> {
-  console.log('\n🎭 Simulating Research Coordination...');
-
   const researchSession = `research-${Date.now()}`;
 
   // Initialize research swarm
@@ -449,23 +375,17 @@ async function simulateResearchCoordination(coordinator: CoordinationEventAdapte
       },
     });
   }
-
-  console.log('✅ Research coordination simulation complete');
 }
 
 /**
  * Main function to run all examples
  */
 export async function runCoordinationExamples(): Promise<void> {
-  console.log('🚀 Starting Coordination Event Adapter Examples\n');
-
   try {
     await basicCoordinationExample();
     await advancedCoordinationExample();
     await highPerformanceCoordinationExample();
     await customCoordinationExample();
-
-    console.log('\n✅ All coordination examples completed successfully!');
   } catch (error) {
     console.error('❌ Error running coordination examples:', error);
   }

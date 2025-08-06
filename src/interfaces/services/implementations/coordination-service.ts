@@ -84,7 +84,7 @@ export class CoordinationService extends BaseService implements IService {
     this.logger.info(`Stopping coordination service: ${this.name}`);
 
     // Stop all active workflows
-    for (const [workflowId, workflow] of this.activeWorkflows) {
+    for (const [workflowId, _workflow] of this.activeWorkflows) {
       try {
         await this.stopWorkflow(workflowId);
       } catch (error) {
@@ -93,7 +93,7 @@ export class CoordinationService extends BaseService implements IService {
     }
 
     // Disconnect all agents
-    for (const [agentId, agent] of this.agents) {
+    for (const [agentId, _agent] of this.agents) {
       try {
         await this.disconnectAgent(agentId);
       } catch (error) {
@@ -154,7 +154,7 @@ export class CoordinationService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing coordination operation: ${operation}`);
 

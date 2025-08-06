@@ -5,7 +5,7 @@
  * Follows the same patterns established by the DAL and UACL systems.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { createLogger, type Logger } from '../../../utils/logger';
 import type {
   IService,
@@ -261,7 +261,7 @@ export abstract class BaseService extends EventEmitter implements IService {
 
     // Check dependency status
     const dependencies: ServiceStatus['dependencies'] = {};
-    for (const [depName, depConfig] of this.dependencies) {
+    for (const [depName, _depConfig] of this.dependencies) {
       try {
         // In a real implementation, this would check the actual dependency service
         // For now, we'll simulate it
@@ -269,7 +269,7 @@ export abstract class BaseService extends EventEmitter implements IService {
           status: 'healthy',
           lastCheck: new Date(),
         };
-      } catch (error) {
+      } catch (_error) {
         dependencies[depName] = {
           status: 'unhealthy',
           lastCheck: new Date(),
@@ -522,7 +522,7 @@ export abstract class BaseService extends EventEmitter implements IService {
           this.logger.debug(`Checking dependency: ${depName}`);
 
           // Simulate dependency check with timeout
-          const timeout = depConfig.timeout || 5000;
+          const _timeout = depConfig.timeout || 5000;
           await new Promise((resolve) => setTimeout(resolve, Math.random() * 100));
 
           return { name: depName, available: true };
@@ -535,7 +535,7 @@ export abstract class BaseService extends EventEmitter implements IService {
 
     const results = await Promise.allSettled(dependencyChecks);
     const failedDependencies = results
-      .filter((result, index) => {
+      .filter((result, _index) => {
         if (result.status === 'fulfilled') {
           return !result.value.available;
         }

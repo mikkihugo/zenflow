@@ -204,10 +204,10 @@ describe('Adapter Pattern Implementation', () => {
     });
 
     describe('WebSocket Message Handling', () => {
-      let wsAdapter: WebSocketAdapter;
+      let _wsAdapter: WebSocketAdapter;
 
       beforeEach(() => {
-        wsAdapter = new WebSocketAdapter();
+        _wsAdapter = new WebSocketAdapter();
         mockWebSocketConstructor.mockClear();
       });
 
@@ -1094,7 +1094,7 @@ describe('Adapter Pattern Implementation', () => {
           };
 
           expect(mockProcess.stdin.write).toHaveBeenCalledWith(
-            JSON.stringify(expectedMessage) + '\n'
+            `${JSON.stringify(expectedMessage)}\n`
           );
 
           await responsePromise;
@@ -1323,7 +1323,7 @@ describe('Adapter Pattern Implementation', () => {
       for (let i = 0; i < 5; i++) {
         try {
           await protocolManager.sendMessage(testMessage, 'circuit-breaker-test');
-        } catch (error) {
+        } catch (_error) {
           // Expected failures
         }
       }

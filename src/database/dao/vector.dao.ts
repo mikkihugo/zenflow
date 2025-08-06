@@ -5,7 +5,6 @@
  * similarity search, vector insertion, indexing, and clustering.
  */
 
-import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
 import type { VectorDatabaseAdapter } from '../../providers/database-providers';
 import { BaseDao } from '../base.dao';
 import type {
@@ -30,15 +29,6 @@ import type {
 export class VectorDao<T> extends BaseDao<T> implements IVectorDao<T> {
   private get vectorAdapter(): VectorDatabaseAdapter {
     return this.adapter as VectorDatabaseAdapter;
-  }
-
-  constructor(
-    adapter: DatabaseAdapter,
-    logger: ILogger,
-    tableName: string,
-    entitySchema?: Record<string, any>
-  ) {
-    super(adapter, logger, tableName, entitySchema);
   }
 
   /**
@@ -400,7 +390,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorDao<T> {
       throw new Error('Vector cannot be empty');
     }
 
-    if (!vector.every((v) => typeof v === 'number' && !isNaN(v))) {
+    if (!vector.every((v) => typeof v === 'number' && !Number.isNaN(v))) {
       throw new Error('Vector must contain only valid numbers');
     }
 

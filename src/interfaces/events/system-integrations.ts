@@ -22,13 +22,7 @@ import type {
 import { EventManagerTypes } from './core/interfaces';
 import { UEL } from './index';
 import type { EventManager } from './manager';
-import { EventRegistry } from './registry';
-import type {
-  CommunicationEvent,
-  CoordinationEvent,
-  MonitoringEvent,
-  SystemLifecycleEvent,
-} from './types';
+import type { MonitoringEvent, SystemLifecycleEvent } from './types';
 
 /**
  * Enhanced Event Bus with UEL integration
@@ -38,7 +32,6 @@ import type {
  */
 export class UELEnhancedEventBus extends EventEmitter {
   private uelManager?: IEventManager;
-  private migrationHelper?: EventEmitterMigrationHelper;
   private uelEnabled = false;
   private eventMappings = new Map<string, string>();
   private logger?: any;
@@ -254,7 +247,7 @@ export class UELEnhancedEventBus extends EventEmitter {
 
   private async trackUELSubscription(
     eventName: string,
-    listener: (...args: any[]) => void
+    _listener: (...args: any[]) => void
   ): Promise<void> {
     if (!this.uelManager) return;
 
@@ -264,7 +257,7 @@ export class UELEnhancedEventBus extends EventEmitter {
       // Create UEL-compatible listener wrapper
       const uelListener = (event: SystemEvent) => {
         // Extract original args from UEL event if available
-        const args =
+        const _args =
           event.details?.originalEvent === eventName && event.details?.args
             ? new Array(event.details.args).fill(undefined)
             : [event];
@@ -562,7 +555,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
           issues.push(`UEL system health degraded: ${uelStatus.healthPercentage}%`);
           score -= 15;
         }
-      } catch (error) {
+      } catch (_error) {
         issues.push('Failed to check UEL system status');
         score -= 10;
       }

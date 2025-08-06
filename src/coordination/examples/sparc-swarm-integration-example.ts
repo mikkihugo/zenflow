@@ -8,10 +8,7 @@
 import { DatabaseDrivenSystem } from '../../core/database-driven-system';
 import { createLogger } from '../../core/logger';
 import { WorkflowEngine } from '../../core/workflow-engine';
-import type {
-  FeatureDocumentEntity,
-  TaskDocumentEntity,
-} from '../../database/entities/product-entities';
+import type { FeatureDocumentEntity } from '../../database/entities/product-entities';
 import { DocumentManager } from '../../database/managers/document-manager';
 import { DatabaseSPARCBridge } from '../database-sparc-bridge';
 import { SPARCSwarmCoordinator } from '../swarm/core/sparc-swarm-coordinator';
@@ -254,7 +251,7 @@ export class SPARCSwarmIntegrationExample {
    *
    * @param assignmentId
    */
-  private async monitorResults(assignmentId: string): Promise<void> {
+  private async monitorResults(_assignmentId: string): Promise<void> {
     logger.info('📊 Monitoring SPARC-Swarm integration results...');
 
     // Get bridge status
@@ -307,7 +304,7 @@ export class SPARCSwarmIntegrationExample {
     taskCoordination: boolean;
   }> {
     return {
-      databaseSystem: this.databaseSystem ? true : false,
+      databaseSystem: !!this.databaseSystem,
       sparcSwarm: this.sparcSwarm.getState() === 'active',
       bridge: this.bridge.getStatus().bridgeStatus === 'active',
       taskCoordination: true, // TaskCoordinator is singleton, always available

@@ -137,7 +137,7 @@ export class MemoryService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing memory operation: ${operation}`);
 
@@ -414,7 +414,7 @@ export class MemoryService extends BaseService implements IService {
   }
 
   private startEvictionProcess(): void {
-    const config = this.config as MemoryServiceConfig;
+    const _config = this.config as MemoryServiceConfig;
 
     this.evictionTimer = setInterval(() => {
       this.performEviction();

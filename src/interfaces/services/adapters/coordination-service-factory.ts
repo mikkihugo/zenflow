@@ -8,8 +8,7 @@
 
 import { createLogger, type Logger } from '../../../utils/logger';
 import type { IServiceFactory } from '../core/interfaces';
-import type { CoordinationServiceConfig } from '../types';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
+import { ServicePriority, ServiceType } from '../types';
 import {
   type CoordinationServiceAdapter,
   type CoordinationServiceAdapterConfig,

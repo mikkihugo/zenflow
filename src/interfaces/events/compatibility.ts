@@ -9,21 +9,9 @@
 
 import { EventEmitter } from 'node:events';
 import type { ILogger } from '../../core/interfaces/base-interfaces';
-import type {
-  EventManagerConfig,
-  EventManagerType,
-  IEventManager,
-  SystemEvent,
-} from './core/interfaces';
+import type { EventManagerType, IEventManager, SystemEvent } from './core/interfaces';
 import { EventManagerTypes } from './core/interfaces';
 import type { EventManager } from './manager';
-import type {
-  CommunicationEvent,
-  CoordinationEvent,
-  InterfaceEvent,
-  MonitoringEvent,
-  SystemLifecycleEvent,
-} from './types';
 
 /**
  * Enhanced EventEmitter that provides UEL integration while maintaining compatibility
@@ -575,7 +563,6 @@ export class EventEmitterMigrationHelper {
  */
 export class CompatibilityFactory {
   private static instance: CompatibilityFactory;
-  private eventManager?: EventManager;
   private migrationHelper?: EventEmitterMigrationHelper;
 
   private constructor() {}
@@ -667,7 +654,7 @@ export async function createCompatibleEventEmitter(
 ): Promise<UELCompatibleEventEmitter> {
   const factory = CompatibilityFactory.getInstance();
 
-  if (eventManager && !factory['eventManager']) {
+  if (eventManager && !factory.eventManager) {
     await factory.initialize(eventManager);
   }
 
@@ -693,7 +680,7 @@ export async function wrapWithUEL(
 ): Promise<UELCompatibleEventEmitter> {
   const factory = CompatibilityFactory.getInstance();
 
-  if (eventManager && !factory['eventManager']) {
+  if (eventManager && !factory.eventManager) {
     await factory.initialize(eventManager);
   }
 

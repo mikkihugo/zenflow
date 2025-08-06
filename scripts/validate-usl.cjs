@@ -7,12 +7,12 @@
  * system health, configuration correctness, and migration readiness.
  */
 
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+const { execSync } = require('node:child_process');
+const fs = require('node:fs');
+const path = require('node:path');
 
 // ANSI color codes for output formatting
-const colors = {
+const _colors = {
   reset: '\x1b[0m',
   red: '\x1b[31m',
   green: '\x1b[32m',
@@ -47,9 +47,7 @@ class USLValidator {
   // Logging and Output Methods
   // ============================================
 
-  log(message, color = 'white') {
-    console.log(`${colors[color]}${message}${colors.reset}`);
-  }
+  log(_message, _color = 'white') {}
 
   logSection(title) {
     this.log(`\n${'='.repeat(60)}`, 'cyan');
@@ -786,7 +784,7 @@ class USLValidator {
       this.logInfo('Running TypeScript compilation check...');
 
       // Check if we can compile the USL services without errors
-      const result = execSync('npx tsc --noEmit --skipLibCheck src/interfaces/services/index.ts', {
+      const _result = execSync('npx tsc --noEmit --skipLibCheck src/interfaces/services/index.ts', {
         encoding: 'utf8',
         stdio: 'pipe',
       });
@@ -934,28 +932,7 @@ class USLValidator {
 // Command Line Interface
 // ============================================
 
-function showHelp() {
-  console.log(`
-🔍 USL Integration Validation Tool
-
-Usage: node validate-usl.js [options]
-
-Options:
-  --help, -h          Show this help message
-  --verbose, -v       Enable verbose output
-  --json              Output results in JSON format
-  --quiet, -q         Suppress all output except errors
-  --section <name>    Run validation for specific section only
-                      (structure, types, implementation, integration, compatibility, documentation)
-
-Examples:
-  node validate-usl.js                    # Run full validation
-  node validate-usl.js --verbose          # Run with detailed output
-  node validate-usl.js --json             # Output JSON results
-  node validate-usl.js --section types    # Validate only type definitions
-  node validate-usl.js --quiet            # Minimal output
-`);
-}
+function showHelp() {}
 
 async function main() {
   const args = process.argv.slice(2);
@@ -1020,10 +997,9 @@ async function main() {
       }
     } else {
       // Run full validation
-      const results = await validator.runValidation();
+      const _results = await validator.runValidation();
 
       if (options.json) {
-        console.log(JSON.stringify(results, null, 2));
       }
     }
   } catch (error) {

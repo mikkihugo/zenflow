@@ -317,7 +317,7 @@ export class DatabaseObserver implements SystemObserver<SystemEvent> {
 
   private updateMetrics(event: SystemEvent): void {
     // Update real-time metrics based on event type
-    const metricsKey = `events:${event.type}:count`;
+    const _metricsKey = `events:${event.type}:count`;
     // This would integrate with actual metrics service
   }
 }
@@ -575,7 +575,7 @@ export class SystemEventManager extends EventEmitter {
     this.clearQueue();
 
     // Notify all observers of shutdown
-    const shutdownEvent: SystemEvent = {
+    const _shutdownEvent: SystemEvent = {
       id: `shutdown-${Date.now()}`,
       timestamp: new Date(),
       source: 'system',

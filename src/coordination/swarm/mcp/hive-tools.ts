@@ -5,8 +5,7 @@
  * Users interact with the Hive mind rather than individual swarms.
  */
 
-import { exec, spawn } from 'node:child_process';
-import * as fs from 'node:fs/promises';
+import { exec } from 'node:child_process';
 import * as os from 'node:os';
 import { promisify } from 'node:util';
 import { createLogger } from '../../../core/logger';
@@ -537,7 +536,7 @@ export class HiveTools {
    *
    * @param dal
    */
-  private async getSwarmStates(dal: DALFactory | null): Promise<any[]> {
+  private async getSwarmStates(_dal: DALFactory | null): Promise<any[]> {
     try {
       // This would query real swarm data from database
       // For now, return empty array until we have real swarm persistence
@@ -553,11 +552,11 @@ export class HiveTools {
    *
    * @param dal
    */
-  private async getActiveTaskQueue(dal: DALFactory | null): Promise<any> {
+  private async getActiveTaskQueue(_dal: DALFactory | null): Promise<any> {
     try {
       // This would query real task data from database
       const now = Date.now();
-      const dayStart = now - 24 * 60 * 60 * 1000;
+      const _dayStart = now - 24 * 60 * 60 * 1000;
 
       return {
         active: 0,
@@ -613,7 +612,7 @@ export class HiveTools {
    *
    * @param dal
    */
-  private async getActiveSwarms(dal: DALFactory | null): Promise<any[]> {
+  private async getActiveSwarms(_dal: DALFactory | null): Promise<any[]> {
     try {
       // Look for swarm processes
       const execAsync = promisify(exec);
@@ -652,7 +651,7 @@ export class HiveTools {
    *
    * @param dal
    */
-  private async getSwarmHealthMetrics(dal: DALFactory | null): Promise<any> {
+  private async getSwarmHealthMetrics(_dal: DALFactory | null): Promise<any> {
     try {
       const systemMetrics = await this.getSystemPerformanceMetrics();
 
@@ -662,7 +661,7 @@ export class HiveTools {
         synchronization: systemMetrics.network < 0.1 ? 0.9 : 0.7,
         faultTolerance: 0.85, // Would measure redundancy
       };
-    } catch (error) {
+    } catch (_error) {
       return { overall: 0, consensus: 0, synchronization: 0, faultTolerance: 0 };
     }
   }
@@ -673,11 +672,11 @@ export class HiveTools {
    * @param query
    * @param domain
    */
-  private async searchLocalKnowledgeBase(query: string, domain: string): Promise<any[]> {
+  private async searchLocalKnowledgeBase(_query: string, _domain: string): Promise<any[]> {
     try {
       // This would search local files, caches, databases
       return [];
-    } catch (error) {
+    } catch (_error) {
       return [];
     }
   }
@@ -688,11 +687,11 @@ export class HiveTools {
    * @param query
    * @param dal
    */
-  private async searchSwarmMemory(query: string, dal: DALFactory | null): Promise<any[]> {
+  private async searchSwarmMemory(_query: string, _dal: DALFactory | null): Promise<any[]> {
     try {
       // This would search swarm memory stores
       return [];
-    } catch (error) {
+    } catch (_error) {
       return [];
     }
   }
@@ -706,15 +705,15 @@ export class HiveTools {
    * @param confidence
    */
   private async coordinateSwarmSearch(
-    swarms: any[],
-    query: string,
-    domain: string,
-    confidence: number
+    _swarms: any[],
+    _query: string,
+    _domain: string,
+    _confidence: number
   ): Promise<any[]> {
     try {
       // This would coordinate distributed search across active swarms
       return [];
-    } catch (error) {
+    } catch (_error) {
       return [];
     }
   }
@@ -735,7 +734,7 @@ export class HiveTools {
         efficiency: Math.max(0.1, 1 - swarm.cpu / 100),
         load: swarm.cpu / 100,
       }));
-    } catch (error) {
+    } catch (_error) {
       return [];
     }
   }

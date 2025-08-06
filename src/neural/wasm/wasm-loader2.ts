@@ -6,8 +6,6 @@
 export class WasmLoader2 {
   private initialized = false;
 
-  constructor() {}
-
   async initialize(): Promise<void> {
     if (this.initialized) return;
 

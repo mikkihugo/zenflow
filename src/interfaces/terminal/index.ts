@@ -86,7 +86,7 @@ export class TerminalInterface {
     const { TerminalApp } = await import('./terminal-interface-router');
 
     // Determine mode
-    const mode =
+    const _mode =
       this.config.mode === 'auto'
         ? detectMode(process.argv.slice(2), {})
         : (this.config.mode as TerminalMode);

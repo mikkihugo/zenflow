@@ -94,7 +94,7 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
   };
 
   async coordinate(agents: Agent[], context: CoordinationContext): Promise<CoordinationResult> {
-    const startTime = Date.now();
+    const _startTime = Date.now();
 
     if (!this.validateContext(context)) {
       throw new Error('Invalid coordination context for mesh strategy');
@@ -130,7 +130,7 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
     ); // Allow for mesh overhead
   }
 
-  async optimize(agents: Agent[], history: CoordinationHistory[]): Promise<void> {
+  async optimize(_agents: Agent[], history: CoordinationHistory[]): Promise<void> {
     // Analyze historical performance and adjust metrics
     const avgLatency =
       history
@@ -253,7 +253,7 @@ export class HierarchicalStrategy implements CoordinationStrategy<Agent> {
 
   private async buildHierarchy(
     agents: Agent[],
-    context: CoordinationContext
+    _context: CoordinationContext
   ): Promise<LeadershipInfo> {
     // Simple hierarchy builder - can be enhanced with agent capabilities
     const leaders: string[] = [];
@@ -453,7 +453,7 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
     return context.resources.cpu > 0.3; // Hub needs good CPU resources
   }
 
-  async optimize(agents: Agent[], history: CoordinationHistory[]): Promise<void> {
+  async optimize(_agents: Agent[], history: CoordinationHistory[]): Promise<void> {
     // Optimize based on hub performance
     const hubFailures = history.filter(
       (h) => h.result === 'failure' && h.action.includes('hub')
@@ -486,7 +486,7 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
     return connections;
   }
 
-  private calculateStarPerformance(agents: Agent[], hub: Agent): PerformanceMetrics {
+  private calculateStarPerformance(agents: Agent[], _hub: Agent): PerformanceMetrics {
     return {
       executionTime: Date.now(),
       messageCount: (agents.length - 1) * 2, // Hub communicates with all others
@@ -626,9 +626,7 @@ export class SwarmCoordinator<T extends Agent = Agent> {
     };
   }
 
-  private logStrategyChange(topology: SwarmTopology): void {
-    console.log(`SwarmCoordinator: Strategy changed to ${topology}`);
-  }
+  private logStrategyChange(_topology: SwarmTopology): void {}
 
   private recordHistory(
     agents: T[],

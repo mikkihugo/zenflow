@@ -181,7 +181,7 @@ export class DataService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing data operation: ${operation}`);
 
@@ -478,7 +478,7 @@ export class DataService extends BaseService implements IService {
     // Register default validators
     this.validators.set('generic', (data: any) => data !== null && data !== undefined);
     this.validators.set('string', (data: any) => typeof data === 'string');
-    this.validators.set('number', (data: any) => typeof data === 'number' && !isNaN(data));
+    this.validators.set('number', (data: any) => typeof data === 'number' && !Number.isNaN(data));
     this.validators.set('object', (data: any) => typeof data === 'object' && data !== null);
     this.validators.set('array', (data: any) => Array.isArray(data));
   }
@@ -543,7 +543,7 @@ export class DataService extends BaseService implements IService {
     };
   }
 
-  private async storeDataToSource(key: string, value: any): Promise<void> {
+  private async storeDataToSource(key: string, _value: any): Promise<void> {
     // Simulate data storage to database
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 50));
     this.logger.debug(`Stored data for key ${key} to data source`);

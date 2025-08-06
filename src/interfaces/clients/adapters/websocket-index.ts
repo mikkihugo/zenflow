@@ -351,7 +351,6 @@ export class WebSocketHealthMonitor {
     const interval = setInterval(async () => {
       try {
         const status = await client.healthCheck();
-        console.log(`WebSocket Health [${name}]:`, status.status, `(${status.responseTime}ms)`);
 
         if (status.status === 'unhealthy') {
           console.warn(`WebSocket client ${name} is unhealthy:`, status.metadata);

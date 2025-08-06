@@ -68,7 +68,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     });
 
     // Wait for all creations to complete or fail
-    const results = await Promise.allSettled(promises);
+    const _results = await Promise.allSettled(promises);
 
     // If any failed, cleanup successful ones and throw aggregated error
     if (errors.length > 0) {
@@ -161,7 +161,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       try {
         const metrics = await client.getMetrics();
         results.set(name, metrics);
-      } catch (error) {
+      } catch (_error) {
         // Return empty metrics on error
         results.set(name, {
           name,
@@ -448,17 +448,11 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       console.error(`Client ${client.name} error:`, error);
     });
 
-    client.on('connect', () => {
-      console.log(`Client ${client.name} connected`);
-    });
+    client.on('connect', () => {});
 
-    client.on('disconnect', () => {
-      console.log(`Client ${client.name} disconnected`);
-    });
+    client.on('disconnect', () => {});
 
-    client.on('retry', (info) => {
-      console.log(`Client ${client.name} retry attempt ${info.attempt}:`, info);
-    });
+    client.on('retry', (_info) => {});
   }
 }
 

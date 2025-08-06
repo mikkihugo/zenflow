@@ -6,7 +6,7 @@
  * following the same patterns as UACL Agent 6.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { createLogger, type Logger } from '../../utils/logger';
 import type {
   IService,
@@ -19,8 +19,7 @@ import type {
   ServiceMetrics,
   ServiceStatus,
 } from './core/interfaces';
-import { ServiceError, ServiceInitializationError, ServiceOperationError } from './core/interfaces';
-import { type AnyServiceConfig, ServiceEnvironment, ServicePriority, ServiceType } from './types';
+import { ServiceOperationError } from './core/interfaces';
 
 export interface ServiceRegistryConfig {
   /** Health monitoring configuration */
@@ -623,12 +622,12 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
   }
 
   private setupFactoryEventHandling<T extends ServiceConfig>(
-    type: string,
+    _type: string,
     factory: IServiceFactory<T>
   ): void {
     // Handle service creation events from factory
     if ('on' in factory && typeof factory.on === 'function') {
-      factory.on('service-created', (serviceName: string, service: IService) => {
+      factory.on('service-created', (_serviceName: string, service: IService) => {
         this.handleServiceRegistration(service);
       });
 
@@ -726,7 +725,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
         ),
       ]);
 
-      const responseTime = Date.now() - startTime;
+      const _responseTime = Date.now() - startTime;
 
       // Update discovery info health
       const discoveryInfo = this.serviceDiscovery.get(service.name);

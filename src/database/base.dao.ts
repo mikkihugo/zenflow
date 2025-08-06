@@ -10,7 +10,6 @@ import type {
   CustomQuery,
   DatabaseMetadata,
   HealthStatus,
-  IDataAccessObject,
   IRepository,
   PerformanceMetrics,
   QueryOptions,
@@ -387,7 +386,7 @@ export abstract class BaseDao<T> implements IDao<T> {
    *
    * @param customQuery
    */
-  protected async executeObjectQuery(customQuery: CustomQuery): Promise<any> {
+  protected async executeObjectQuery(_customQuery: CustomQuery): Promise<any> {
     // Default implementation - subclasses can override for NoSQL support
     throw new Error('Object-based queries not supported by this repository type');
   }
@@ -429,7 +428,7 @@ export abstract class BaseManager<T> implements IManager<T> {
     this.logger.debug(`Executing transaction with ${operations.length} operations`);
 
     try {
-      return await this.adapter.transaction(async (tx) => {
+      return await this.adapter.transaction(async (_tx) => {
         const results: any[] = [];
 
         for (const operation of operations) {

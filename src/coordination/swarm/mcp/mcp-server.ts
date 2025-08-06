@@ -16,7 +16,6 @@ const logger = createLogger({ prefix: 'UnifiedMCPServer' });
 export class StdioMcpServer {
   private server: McpServer;
   private transport: StdioServerTransport;
-  private config: MCPServerConfig;
   private toolRegistry: SwarmTools;
   private hiveRegistry: HiveTools;
 

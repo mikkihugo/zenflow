@@ -6,14 +6,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import type {
-  ArchitecturalValidation,
-  ArchitectureDesign,
-  Component,
-  QualityAttribute,
-  ScalabilityRequirement,
-  SecurityRequirement,
-} from '../types/sparc-types';
+import type { ArchitecturalValidation, ArchitectureDesign, Component } from '../types/sparc-types';
 
 // Database interfaces
 export interface ArchitectureRecord {

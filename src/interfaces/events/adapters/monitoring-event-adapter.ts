@@ -17,9 +17,7 @@ import type { MetricsCollector } from '../../../monitoring/core/metrics-collecto
 import type { RealTimePerformanceMonitor } from '../../../monitoring/performance/real-time-monitor';
 import type {
   EventBatch,
-  EventEmissionError,
   EventEmissionOptions,
-  EventError,
   EventFilter,
   EventListener,
   EventManagerConfig,
@@ -28,22 +26,14 @@ import type {
   EventMonitoringConfig,
   EventPriority,
   EventQueryOptions,
-  EventRetryExhaustedError,
   EventSubscription,
-  EventSubscriptionError,
-  EventTimeoutError,
   EventTransform,
   IEventManager,
   SystemEvent,
 } from '../core/interfaces';
-import { type EventManagerType, EventManagerTypes, EventTypeGuards } from '../core/interfaces';
+import { type EventManagerType, EventManagerTypes } from '../core/interfaces';
 import type { MonitoringEvent } from '../types';
-import {
-  DefaultEventManagerConfigs,
-  EventCategories,
-  EventPriorityMap,
-  UELTypeGuards,
-} from '../types';
+import { EventPriorityMap } from '../types';
 
 // Note: Additional monitoring imports would be here in production
 
@@ -56,14 +46,14 @@ interface Logger {
 }
 
 const createLogger = (name: string): Logger => ({
-  info: (message: string, meta?: any) => console.log(`[INFO] ${name}: ${message}`, meta),
-  debug: (message: string, meta?: any) => console.log(`[DEBUG] ${name}: ${message}`, meta),
+  info: (_message: string, _meta?: any) => {},
+  debug: (_message: string, _meta?: any) => {},
   warn: (message: string, meta?: any) => console.warn(`[WARN] ${name}: ${message}`, meta),
   error: (message: string, meta?: any, error?: any) =>
     console.error(`[ERROR] ${name}: ${message}`, meta, error),
 });
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 
 /**
  * Monitoring event adapter configuration extending UEL EventManagerConfig
@@ -554,7 +544,7 @@ export class MonitoringEventAdapter implements IEventManager {
    */
   async emit<T extends SystemEvent>(event: T, options?: EventEmissionOptions): Promise<void> {
     const startTime = Date.now();
-    const eventId = event.id || this.generateEventId();
+    const _eventId = event.id || this.generateEventId();
 
     try {
       // Validate event (assume valid for SystemEvent - would check MonitoringEvent fields in real implementation)
@@ -1691,7 +1681,7 @@ export class MonitoringEventAdapter implements IEventManager {
       try {
         // Restore original methods if they were wrapped
         wrapped.originalMethods.forEach((originalMethod, methodName) => {
-          if (wrapped.component && wrapped.component[methodName]) {
+          if (wrapped.component?.[methodName]) {
             wrapped.component[methodName] = originalMethod;
           }
         });
@@ -1717,7 +1707,7 @@ export class MonitoringEventAdapter implements IEventManager {
    */
   private async processMonitoringEventEmission<T extends SystemEvent>(
     event: T,
-    options?: EventEmissionOptions
+    _options?: EventEmissionOptions
   ): Promise<void> {
     // Add to event history if it's a monitoring event
     if (event.type.startsWith('monitoring:')) {
@@ -2113,7 +2103,7 @@ export class MonitoringEventAdapter implements IEventManager {
 
   private async processMonitoringBatchQueued<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    _options?: EventEmissionOptions
   ): Promise<void> {
     // Only queue monitoring events
     const monitoringEvents = batch.events.filter((e) =>
@@ -2144,15 +2134,6 @@ export class MonitoringEventAdapter implements IEventManager {
       await this.emit(event, options);
       await new Promise((resolve) => setTimeout(resolve, throttleMs));
     }
-  }
-
-  /**
-   * Utility methods for monitoring event processing
-   *
-   * @param event
-   */
-  private validateMonitoringEvent(event: SystemEvent): boolean {
-    return !!(event.id && event.timestamp && event.source && event.type);
   }
 
   private applyFilter(event: SystemEvent, filter: EventFilter): boolean {
@@ -2351,11 +2332,11 @@ export class MonitoringEventAdapter implements IEventManager {
     }
   }
 
-  private getActiveMetricsCount(componentName: string): number {
+  private getActiveMetricsCount(_componentName: string): number {
     return this.metricsData.size;
   }
 
-  private getActiveAlertsCount(componentName: string): number {
+  private getActiveAlertsCount(_componentName: string): number {
     return this.alertData.size;
   }
 
@@ -2702,7 +2683,7 @@ export const MonitoringEventHelpers = {
   createMonitoringErrorEvent(
     component: string,
     error: Error,
-    operation: string,
+    _operation: string,
     details?: any
   ): Omit<MonitoringEvent, 'id' | 'timestamp'> {
     return {

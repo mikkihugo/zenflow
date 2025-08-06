@@ -8,9 +8,7 @@
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { performance } from 'node:perf_hooks';
-import { render } from 'ink';
 import meow from 'meow';
-import React from 'react';
 import { createLogger } from '../../../core/logger';
 
 const logger = createLogger({ prefix: 'SwarmCommand' });
@@ -145,7 +143,7 @@ async function callMcpTool(
               }
               return;
             }
-          } catch (e) {
+          } catch (_e) {
             // Ignore parsing errors, continue looking
           }
         }
@@ -178,7 +176,7 @@ async function callMcpTool(
 
     // Send the request
     try {
-      mcpProcess.stdin?.write(JSON.stringify(request) + '\n');
+      mcpProcess.stdin?.write(`${JSON.stringify(request)}\n`);
       mcpProcess.stdin?.end();
     } catch (error) {
       if (!isResolved) {
@@ -196,13 +194,12 @@ async function callMcpTool(
  * @param data
  * @param format
  */
-function formatOutput(data: any, format: string): string {
+function _formatOutput(data: any, format: string): string {
   switch (format) {
     case 'json':
       return JSON.stringify(data, null, 2);
     case 'compact':
       return JSON.stringify(data);
-    case 'table':
     default:
       if (typeof data === 'object' && data !== null) {
         return Object.entries(data)
@@ -275,7 +272,6 @@ export async function executeSwarmCommand(): Promise<void> {
 
       default:
         console.error(`❌ Unknown swarm command: ${command}`);
-        console.log('Available commands: status, init, list, monitor, create, spawn');
         process.exit(1);
     }
 
@@ -283,17 +279,10 @@ export async function executeSwarmCommand(): Promise<void> {
     const duration = endTime - startTime;
 
     if (result.success) {
-      console.log(`✅ Swarm ${command} completed successfully (${duration.toFixed(2)}ms)`);
-
       if (result.data) {
-        console.log('');
-        console.log(formatOutput(result.data, options.format || 'table'));
       }
 
       if (options.verbose) {
-        console.log('');
-        console.log(`📊 Command executed in ${duration.toFixed(2)}ms`);
-        console.log(`🔧 Used MCP tool: ${getMcpToolName(command)}`);
       }
     } else {
       console.error(`❌ Swarm ${command} failed: ${result.error}`);
@@ -331,7 +320,7 @@ export async function executeSwarmCommand(): Promise<void> {
  *
  * @param command
  */
-function getMcpToolName(command: string): string {
+function _getMcpToolName(command: string): string {
   const toolMap: Record<string, string> = {
     status: 'swarm_status',
     init: 'swarm_init',

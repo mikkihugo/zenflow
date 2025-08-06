@@ -7,7 +7,7 @@
 
 import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces';
 import { createLogger } from '../../../utils/logger';
-import type { EventManagerConfig, IEventManager, IEventManagerFactory } from '../core/interfaces';
+import type { IEventManager, IEventManagerFactory } from '../core/interfaces';
 import { EventManagerTypes } from '../core/interfaces';
 import type { SystemEventAdapterConfig } from './system-event-adapter';
 import { createDefaultSystemEventAdapterConfig, SystemEventAdapter } from './system-event-adapter';
@@ -22,7 +22,6 @@ import { createDefaultSystemEventAdapterConfig, SystemEventAdapter } from './sys
  */
 export class SystemEventManagerFactory implements IEventManagerFactory<SystemEventAdapterConfig> {
   private logger: ILogger;
-  private config: IConfig;
   private instances = new Map<string, SystemEventAdapter>();
 
   constructor(logger?: ILogger, config?: IConfig) {

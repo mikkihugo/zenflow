@@ -12,52 +12,34 @@
  * management for infrastructure operations across Claude-Zen.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import {
   ClaudeZenFacade,
-  DocumentProcessingResult,
   type IDatabaseService,
   type IInterfaceService,
   type IMemoryService,
   type INeuralService,
   type ISwarmService,
   type IWorkflowService,
-  ProcessingOptions,
-  ProjectInitConfig,
-  ProjectResult,
-  SystemStatus,
-  WorkflowResult,
 } from '../../../core/facade';
 import {
-  AgentManager,
   ConfigurationFactory,
   IntegratedPatternSystem,
-  IntegratedSwarmService,
   type IntegrationConfig,
 } from '../../../core/pattern-integration';
 import { createLogger, type Logger } from '../../../utils/logger';
 import type {
   IService,
-  ServiceConfig,
   ServiceDependencyConfig,
-  ServiceDependencyError,
-  ServiceError,
   ServiceEvent,
   ServiceEventType,
   ServiceLifecycleStatus,
   ServiceMetrics,
-  ServiceOperationError,
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-  ServiceTimeoutError,
 } from '../core/interfaces';
-import type {
-  InfrastructureServiceConfig,
-  ServiceEnvironment,
-  ServicePriority,
-  ServiceType,
-} from '../types';
+import type { InfrastructureServiceConfig } from '../types';
 
 /**
  * Infrastructure service adapter configuration extending USL InfrastructureServiceConfig
@@ -1191,7 +1173,7 @@ export class InfrastructureServiceAdapter implements IService {
   private async executeOperationInternal<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     switch (operation) {
       // Facade operations
@@ -1416,7 +1398,7 @@ export class InfrastructureServiceAdapter implements IService {
     return swarmGroup.getStatus();
   }
 
-  private async coordinateSwarm(swarmId: string, operation: string): Promise<any> {
+  private async coordinateSwarm(swarmId: string, _operation: string): Promise<any> {
     if (!this.patternSystem) {
       throw new Error('Pattern system not available');
     }

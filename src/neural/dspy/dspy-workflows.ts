@@ -9,10 +9,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { DSPy, Module, Signature } from 'dspy.ts';
 import { createLogger } from '../../core/logger';
 import type { SessionMemoryStore } from '../../memory/memory';
-import type { DSPyConfig, DSPyProgram, OptimizationResult } from './dspy-core';
+import type { DSPyProgram, OptimizationResult } from './dspy-core';
 
 const logger = createLogger({ prefix: 'DSPyWorkflows' });
 
@@ -578,7 +577,7 @@ export class DSPyWorkflowExecutor extends EventEmitter {
     step: WorkflowStep,
     program: DSPyProgram,
     dataset: Array<{ input: any; output: any }> | undefined,
-    result: WorkflowExecutionResult
+    _result: WorkflowExecutionResult
   ): Promise<any> {
     logger.debug(`Executing workflow step: ${step.name}`, { stepId: step.id });
 
@@ -622,8 +621,8 @@ export class DSPyWorkflowExecutor extends EventEmitter {
    */
   private async executeOptimizationStep(
     step: WorkflowStep,
-    program: DSPyProgram,
-    dataset?: Array<{ input: any; output: any }>
+    _program: DSPyProgram,
+    _dataset?: Array<{ input: any; output: any }>
   ): Promise<any> {
     // Simulate optimization step
     const accuracy = Math.min(0.95, Math.random() * 0.3 + 0.7);
@@ -637,8 +636,8 @@ export class DSPyWorkflowExecutor extends EventEmitter {
 
   private async executeValidationStep(
     step: WorkflowStep,
-    program: DSPyProgram,
-    dataset?: Array<{ input: any; output: any }>
+    _program: DSPyProgram,
+    _dataset?: Array<{ input: any; output: any }>
   ): Promise<any> {
     // Simulate validation step
     const testSize = step.parameters.testSize || 10;
@@ -655,9 +654,9 @@ export class DSPyWorkflowExecutor extends EventEmitter {
   }
 
   private async executeTuningStep(
-    step: WorkflowStep,
-    program: DSPyProgram,
-    dataset?: Array<{ input: any; output: any }>
+    _step: WorkflowStep,
+    _program: DSPyProgram,
+    _dataset?: Array<{ input: any; output: any }>
   ): Promise<any> {
     // Simulate tuning step
     return {
@@ -672,9 +671,9 @@ export class DSPyWorkflowExecutor extends EventEmitter {
   }
 
   private async executeAnalysisStep(
-    step: WorkflowStep,
-    program: DSPyProgram,
-    dataset?: Array<{ input: any; output: any }>
+    _step: WorkflowStep,
+    _program: DSPyProgram,
+    _dataset?: Array<{ input: any; output: any }>
   ): Promise<any> {
     // Simulate analysis step
     return {

@@ -7,8 +7,6 @@ import { PseudocodePhaseEngine } from './coordination/swarm/sparc/phases/pseudoc
 import type { DetailedSpecification } from './coordination/swarm/sparc/types/sparc-types';
 
 async function testPseudocodeEngine() {
-  console.log('🧪 Testing SPARC Pseudocode Engine...');
-
   const engine = new PseudocodePhaseEngine();
 
   // Test specification
@@ -47,42 +45,11 @@ async function testPseudocodeEngine() {
   };
 
   try {
-    console.log('📝 Testing algorithm generation...');
     const algorithms = await engine.generateAlgorithmPseudocode(specification);
-    console.log(`✅ Generated ${algorithms.length} algorithms`);
-    console.log(
-      'Algorithm names:',
-      algorithms.map((a) => a.name)
-    );
-
-    console.log('🏗️ Testing data structure design...');
     const dataStructures = await engine.designDataStructures(specification.functionalRequirements);
-    console.log(`✅ Generated ${dataStructures.length} data structures`);
-    console.log(
-      'Data structure names:',
-      dataStructures.map((ds) => ds.name)
-    );
-
-    console.log('🔄 Testing control flow mapping...');
     const controlFlows = await engine.mapControlFlows(algorithms);
-    console.log(`✅ Generated ${controlFlows.length} control flows`);
-
-    console.log('✅ Testing algorithm validation...');
     const validation = await engine.validatePseudocodeLogic(algorithms);
-    console.log(`✅ Validated ${validation.length} criteria`);
-
-    console.log('🎯 Testing complete pseudocode generation...');
-    const pseudocodeStructure = await engine.generatePseudocode(specification);
-    console.log('✅ Generated complete pseudocode structure');
-    console.log('Structure overview:', {
-      algorithms: pseudocodeStructure.algorithms.length,
-      dataStructures: pseudocodeStructure.dataStructures.length,
-      controlFlows: pseudocodeStructure.controlFlows.length,
-      optimizations: pseudocodeStructure.optimizations.length,
-      hasComplexityAnalysis: !!pseudocodeStructure.complexityAnalysis,
-    });
-
-    console.log('🎉 All tests passed! SPARC Pseudocode Engine is working correctly.');
+    const _pseudocodeStructure = await engine.generatePseudocode(specification);
 
     return {
       success: true,
@@ -107,7 +74,6 @@ async function testPseudocodeEngine() {
 if (require.main === module) {
   testPseudocodeEngine().then((result) => {
     if (result.success) {
-      console.log('🎯 Manual test completed successfully!');
       process.exit(0);
     } else {
       console.error('💥 Manual test failed:', result.error);

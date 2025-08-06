@@ -11,14 +11,13 @@
  * management for data operations across Claude-Zen.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type { BaseDocumentEntity } from '../../../database/entities/document-entities';
 import type {
   DocumentCreateOptions,
   DocumentQueryOptions,
   DocumentSearchOptions,
 } from '../../../database/managers/document-manager';
-import { DocumentManager } from '../../../database/managers/document-manager';
 import type { DocumentType } from '../../../types/workflow-types';
 import { createLogger, type Logger } from '../../../utils/logger';
 import type {
@@ -31,21 +30,16 @@ import type {
 import { WebDataService } from '../../web/web-data-service';
 import type {
   IService,
-  ServiceConfig,
   ServiceDependencyConfig,
-  ServiceDependencyError,
-  ServiceError,
   ServiceEvent,
   ServiceEventType,
   ServiceLifecycleStatus,
   ServiceMetrics,
-  ServiceOperationError,
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-  ServiceTimeoutError,
 } from '../core/interfaces';
-import type { DataServiceConfig, ServiceEnvironment, ServicePriority, ServiceType } from '../types';
+import type { DataServiceConfig } from '../types';
 
 /**
  * Data service adapter configuration extending USL DataServiceConfig
@@ -998,7 +992,7 @@ export class DataServiceAdapter implements IService {
   private async performOperation<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     switch (operation) {
       // WebDataService operations

@@ -7,10 +7,10 @@
  */
 
 import type { SessionState } from '../../../coordination/swarm/core/session-manager';
-import type { SwarmAgent, SwarmMetrics } from '../../../coordination/swarm/core/swarm-coordinator';
+import type { SwarmAgent } from '../../../coordination/swarm/core/swarm-coordinator';
 import type { AgentType } from '../../../types/agent-types';
 import type { SwarmTopology } from '../../../types/shared-types';
-import { createLogger, type Logger } from '../../../utils/logger';
+import { createLogger } from '../../../utils/logger';
 import type { CoordinationServiceAdapter } from './coordination-service-adapter';
 
 // ============================================
@@ -653,7 +653,7 @@ export async function distributeSwarmTasks(
  */
 export async function analyzeCoordinationPerformance(
   adapter: CoordinationServiceAdapter,
-  timeWindow?: number // milliseconds
+  _timeWindow?: number // milliseconds
 ): Promise<{
   overall: {
     score: number;

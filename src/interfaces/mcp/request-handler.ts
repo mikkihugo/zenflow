@@ -6,7 +6,6 @@
  */
 
 import { createLogger } from './mcp-logger';
-import type { SimpleToolRegistry } from './tool-registry';
 
 const logger = createLogger('MCP-RequestHandler');
 

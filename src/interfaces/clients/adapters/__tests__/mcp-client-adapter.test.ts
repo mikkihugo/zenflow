@@ -6,7 +6,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ClientMetrics, ClientStatus, IClient } from '../../core/interfaces.js';
 import {
   createMCPConfigFromLegacy,
   MCPClientAdapter,
@@ -33,7 +32,7 @@ describe('MCPClientAdapter', () => {
     // Mock process
     mockProcess = new EventEmitter();
     mockProcess.stdin = {
-      write: jest.fn((data, callback) => {
+      write: jest.fn((_data, callback) => {
         if (callback) callback();
       }),
     };
@@ -119,11 +118,11 @@ describe('MCPClientAdapter', () => {
       setTimeout(() => {
         mockProcess.stdout.emit(
           'data',
-          JSON.stringify({
+          `${JSON.stringify({
             jsonrpc: '2.0',
             id: 1,
             result: { protocolVersion: '2024-11-05' },
-          }) + '\n'
+          })}\n`
         );
       }, 10);
 
@@ -152,7 +151,7 @@ describe('MCPClientAdapter', () => {
       };
 
       setTimeout(() => {
-        mockProcess.stdout.emit('data', JSON.stringify(toolsResponse) + '\n');
+        mockProcess.stdout.emit('data', `${JSON.stringify(toolsResponse)}\n`);
       }, 10);
 
       const result = await adapter.get('/tools');
@@ -167,13 +166,13 @@ describe('MCPClientAdapter', () => {
       setTimeout(() => {
         mockProcess.stdout.emit(
           'data',
-          JSON.stringify({
+          `${JSON.stringify({
             jsonrpc: '2.0',
             id: 2,
             result: {
               tools: [{ name: 'test-tool', description: 'A test tool' }],
             },
-          }) + '\n'
+          })}\n`
         );
       }, 10);
 
@@ -186,13 +185,13 @@ describe('MCPClientAdapter', () => {
       setTimeout(() => {
         mockProcess.stdout.emit(
           'data',
-          JSON.stringify({
+          `${JSON.stringify({
             jsonrpc: '2.0',
             id: 3,
             result: {
               content: [{ type: 'text', text: 'Tool executed successfully' }],
             },
-          }) + '\n'
+          })}\n`
         );
       }, 10);
 
@@ -338,11 +337,11 @@ describe('MCPClientAdapter', () => {
       setTimeout(() => {
         mockProcess.stdout.emit(
           'data',
-          JSON.stringify({
+          `${JSON.stringify({
             jsonrpc: '2.0',
             id: expect.any(Number),
             result: {},
-          }) + '\n'
+          })}\n`
         );
       }, 10);
 

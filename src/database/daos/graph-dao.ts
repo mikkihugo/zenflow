@@ -5,7 +5,6 @@
  * graph-specific operations and transaction management.
  */
 
-import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
 import { BaseDataAccessObject } from '../base-repository';
 import type { GraphQueryResult, IGraphRepository, TransactionOperation } from '../interfaces';
 
@@ -20,10 +19,6 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
     return this.repository as IGraphRepository<T>;
   }
 
-  constructor(repository: IGraphRepository<T>, adapter: DatabaseAdapter, logger: ILogger) {
-    super(repository, adapter, logger);
-  }
-
   /**
    * Execute graph-specific transaction with relationship management
    *
@@ -33,7 +28,7 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
     this.logger.debug(`Executing graph transaction with ${operations.length} operations`);
 
     try {
-      return await this.adapter.transaction(async (tx) => {
+      return await this.adapter.transaction(async (_tx) => {
         const results: any[] = [];
 
         for (const operation of operations) {
@@ -119,7 +114,7 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
     this.logger.debug(`Bulk creating ${nodes.length} nodes with relationships`);
 
     try {
-      return await this.adapter.transaction(async (tx) => {
+      return await this.adapter.transaction(async (_tx) => {
         const createdNodes: T[] = [];
         const createdRelationships: any[] = [];
 
@@ -291,7 +286,7 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
 
       // Add property constraints if specified
       if (properties) {
-        for (const [prop, type] of Object.entries(properties)) {
+        for (const [prop, _type] of Object.entries(properties)) {
           cypher = `CREATE CONSTRAINT ON (n:${label}) ASSERT exists(n.${prop})`;
           await this.graphRepository.executeCypher(cypher);
         }
@@ -321,7 +316,7 @@ export class GraphDAO<T> extends BaseDataAccessObject<T> {
     try {
       // Kuzu doesn't have explicit relationship type creation, but we can add constraints
       if (constraints) {
-        for (const [prop, constraint] of Object.entries(constraints)) {
+        for (const [prop, _constraint] of Object.entries(constraints)) {
           // This would vary based on actual Kuzu constraint syntax
           const cypher = `// Relationship constraint would go here for ${relationshipType}.${prop}`;
           this.logger.debug(`Would create constraint: ${cypher}`);

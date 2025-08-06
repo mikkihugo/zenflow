@@ -12,9 +12,9 @@
  * @author Claude-Zen Documentation Team
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require('node:fs').promises;
+const path = require('node:path');
+const { execSync } = require('node:child_process');
 
 /**
  * Documentation Coverage Reporter - Comprehensive coverage analysis and reporting
@@ -134,15 +134,12 @@ class DocsCoverageReporter {
    * ```
    */
   async generateReport() {
-    console.log('📊 Generating documentation coverage report...');
-
     try {
       // Initialize output directory
       await this.ensureOutputDirectory();
 
       // Analyze coverage for each layer
       for (const [layerKey, layerConfig] of Object.entries(this.layerMappings)) {
-        console.log(`🔍 Analyzing ${layerConfig.name}...`);
         await this.analyzeLayer(layerKey, layerConfig);
       }
 
@@ -164,8 +161,6 @@ class DocsCoverageReporter {
       await this.saveResults();
       await this.generateHTMLReport();
       await this.generateMarkdownReport();
-
-      console.log('✅ Documentation coverage report generated');
       return this.coverage;
     } catch (error) {
       console.error('❌ Coverage report generation failed:', error.message);
@@ -634,7 +629,7 @@ class DocsCoverageReporter {
             files.push(fullPath);
           }
         }
-      } catch (error) {
+      } catch (_error) {
         // Skip directories that can't be read
       }
     }
@@ -718,7 +713,7 @@ class DocsCoverageReporter {
     try {
       const historyContent = await fs.readFile(historyFile, 'utf8');
       this.coverage.history = JSON.parse(historyContent);
-    } catch (error) {
+    } catch (_error) {
       // No history file exists yet
       this.coverage.history = [];
     }
@@ -778,7 +773,7 @@ class DocsCoverageReporter {
       try {
         const historyContent = await fs.readFile(historyPath, 'utf8');
         history = JSON.parse(historyContent);
-      } catch (error) {
+      } catch (_error) {
         // No history file exists
       }
 
@@ -816,7 +811,6 @@ class DocsCoverageReporter {
     const htmlContent = this.buildHTMLReport();
     const htmlPath = path.join(this.outputDir, 'coverage-report.html');
     await fs.writeFile(htmlPath, htmlContent);
-    console.log(`📄 HTML report generated: ${htmlPath}`);
   }
 
   /**
@@ -828,7 +822,6 @@ class DocsCoverageReporter {
     const markdownContent = this.buildMarkdownReport();
     const markdownPath = path.join(this.outputDir, 'coverage-report.md');
     await fs.writeFile(markdownPath, markdownContent);
-    console.log(`📝 Markdown report generated: ${markdownPath}`);
   }
 
   /**
@@ -895,7 +888,7 @@ class DocsCoverageReporter {
     <div class="layer-grid">
         ${Object.entries(this.coverage.layers)
           .map(
-            ([key, layer]) => `
+            ([_key, layer]) => `
         <div class="layer-card">
             <div class="layer-header">${layer.name}</div>
             <div class="progress-bar">
@@ -1148,18 +1141,7 @@ async function main() {
     const reporter = new DocsCoverageReporter(config);
     const results = await reporter.generateReport();
 
-    // Summary output
-    console.log('\n📊 Coverage Report Summary:');
-    console.log(`   Overall Coverage: ${results.overall.percentage.toFixed(1)}%`);
-    console.log(`   Quality Score: ${results.overall.quality.toFixed(1)}%`);
-    console.log(`   Status: ${results.overall.status.toUpperCase()}`);
-    console.log(`   Files Analyzed: ${results.files.length}`);
-
     if (results.badges?.coverage) {
-      console.log('\n🏷️ Coverage Badges:');
-      console.log(`   Coverage: ${results.badges.coverage}`);
-      console.log(`   Quality: ${results.badges.quality}`);
-      console.log(`   Status: ${results.badges.status}`);
     }
 
     // Exit with error if coverage is critically low

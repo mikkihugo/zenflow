@@ -200,9 +200,6 @@ export class UACLMigrationHelper {
 
     // Log recommendation for migration
     if (current.accessCount === 1) {
-      console.log(
-        `📊 UACL Migration: Consider migrating ${clientType} client at ${location} to UACL for enhanced monitoring and lifecycle management`
-      );
     }
   }
 
@@ -222,10 +219,6 @@ export class UACLMigrationHelper {
 
     current.migrated = true;
     UACLMigrationHelper.migrationTracking.set(key, current);
-
-    console.log(
-      `✅ UACL Migration: ${clientType} client at ${location} successfully migrated to UACL`
-    );
   }
 
   /**
@@ -476,8 +469,6 @@ export const performBatchMigration = async (): Promise<{
 
   for (const client of pending) {
     try {
-      // This would need actual client configuration data in a real migration
-      console.log(`🔄 Attempting to migrate ${client.clientType} client at ${client.location}`);
       // Placeholder for actual migration logic
       UACLMigrationHelper.markAsMigrated(client.clientType, client.location);
       results.successful++;

@@ -116,7 +116,7 @@ export class TaskCoordinator {
    */
   private async executeWithSPARC(
     config: TaskConfig,
-    startTime: number,
+    _startTime: number,
     taskId: string
   ): Promise<TaskResult> {
     if (!this.sparcBridge || !this.sparcSwarm) {

@@ -11,9 +11,9 @@
  * @author Claude-Zen Documentation Team
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require('node:fs').promises;
+const path = require('node:path');
+const { execSync } = require('node:child_process');
 
 /**
  * JSDoc Quality Validator - Validates documentation standards across unified architecture
@@ -156,8 +156,6 @@ class JSDocValidator {
    * ```
    */
   async validate() {
-    console.log('🔍 Starting JSDoc validation for unified architecture...');
-
     try {
       // Initialize layer results
       for (const layer of this.layers) {
@@ -171,7 +169,6 @@ class JSDocValidator {
 
       // Validate each layer
       for (const layer of this.layers) {
-        console.log(`📋 Validating ${layer.toUpperCase()} layer...`);
         await this.validateLayer(layer);
       }
 
@@ -180,8 +177,6 @@ class JSDocValidator {
 
       // Generate report
       await this.generateReport();
-
-      console.log('✅ JSDoc validation completed');
       return this.results;
     } catch (error) {
       console.error('❌ JSDoc validation failed:', error.message);
@@ -603,12 +598,10 @@ class JSDocValidator {
     await fs.mkdir(path.dirname(reportPath), { recursive: true });
 
     await fs.writeFile(reportPath, report);
-    console.log(`📊 Validation report generated: ${reportPath}`);
 
     // Also generate JSON report for CI/CD
     const jsonReportPath = path.join('./docs/generated', 'jsdoc-validation-report.json');
     await fs.writeFile(jsonReportPath, JSON.stringify(this.results, null, 2));
-    console.log(`📊 JSON report generated: ${jsonReportPath}`);
   }
 
   /**
@@ -779,12 +772,9 @@ async function main() {
 
     // Exit with error code if validation fails
     const exitCode = results.quality.failed > 0 ? 1 : 0;
-    console.log(`\n🏁 Validation completed with exit code: ${exitCode}`);
 
     if (exitCode === 0) {
-      console.log('✅ All JSDoc validation checks passed!');
     } else {
-      console.log(`❌ ${results.quality.failed} files failed validation`);
     }
 
     process.exit(exitCode);

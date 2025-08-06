@@ -38,7 +38,7 @@ export class MCPToolWrapper {
 }
 
 export class MCPParameterValidator {
-  static validate(params: any, schema: any): boolean {
+  static validate(_params: any, _schema: any): boolean {
     // Basic validation - could be enhanced with proper schema validation
     return true;
   }

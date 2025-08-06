@@ -11,7 +11,7 @@ import {
   createCompatibleMCPClient,
   createCompatibleWebSocketClient,
 } from './compatibility';
-import { type ClientInstance, ClientType, UACLHelpers, uacl } from './index';
+import { ClientType, UACLHelpers, uacl } from './index';
 
 export interface ValidationResult {
   component: string;
@@ -276,7 +276,7 @@ export class UACLValidator {
 
     // Test compatible client creation functions
     try {
-      const apiClient = createCompatibleAPIClient({ baseURL: 'http://test.local' });
+      const _apiClient = createCompatibleAPIClient({ baseURL: 'http://test.local' });
       results.push({
         component: 'HTTP Compatibility',
         status: 'pass',
@@ -292,7 +292,7 @@ export class UACLValidator {
     }
 
     try {
-      const wsClient = createCompatibleWebSocketClient('ws://test.local');
+      const _wsClient = createCompatibleWebSocketClient('ws://test.local');
       results.push({
         component: 'WebSocket Compatibility',
         status: 'pass',
@@ -308,7 +308,7 @@ export class UACLValidator {
     }
 
     try {
-      const knowledgeClient = createCompatibleKnowledgeClient({
+      const _knowledgeClient = createCompatibleKnowledgeClient({
         factRepoPath: '/fake/path',
         anthropicApiKey: 'fake-key',
       });
@@ -327,7 +327,7 @@ export class UACLValidator {
     }
 
     try {
-      const mcpClient = createCompatibleMCPClient();
+      const _mcpClient = createCompatibleMCPClient();
       results.push({
         component: 'MCP Compatibility',
         status: 'pass',
@@ -420,7 +420,7 @@ export class UACLValidator {
       if (!byComponent.has(result.component)) {
         byComponent.set(result.component, []);
       }
-      byComponent.get(result.component)!.push(result);
+      byComponent.get(result.component)?.push(result);
     }
 
     for (const [component, componentResults] of byComponent) {
@@ -463,15 +463,12 @@ export async function printValidationReport(): Promise<void> {
   const validator = new UACLValidator();
   const report = await validator.validateComplete();
 
-  console.log('\n' + validator.generateReport(report));
-
   if (report.overall === 'fail') {
     console.error('❌ UACL validation failed');
     process.exit(1);
   } else if (report.overall === 'warning') {
     console.warn('⚠️ UACL validation completed with warnings');
   } else {
-    console.log('✅ UACL validation passed successfully');
   }
 }
 

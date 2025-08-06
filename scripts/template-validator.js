@@ -12,8 +12,8 @@
  * @author Claude-Zen Documentation Team
  */
 
-const fs = require('fs').promises;
-const path = require('path');
+const fs = require('node:fs').promises;
+const path = require('node:path');
 
 /**
  * JSDoc Template Validator - Enforces documentation template standards
@@ -156,12 +156,9 @@ class TemplateValidator {
    * ```
    */
   async validateTemplates() {
-    console.log('🔍 Starting JSDoc template validation...');
-
     try {
       // Find all TypeScript files
       const files = await this.findTypeScriptFiles(this.rootDir);
-      console.log(`📁 Found ${files.length} TypeScript files to validate`);
 
       // Validate each file
       for (const file of files) {
@@ -171,12 +168,7 @@ class TemplateValidator {
       // Generate validation report
       await this.generateValidationReport();
 
-      console.log(
-        `✅ Template validation completed: ${this.results.templates.valid}/${files.length} files valid`
-      );
-
       if (this.autoFix && this.results.templates.fixed > 0) {
-        console.log(`🔧 Auto-fixed ${this.results.templates.fixed} template issues`);
       }
 
       return this.results;
@@ -304,7 +296,7 @@ class TemplateValidator {
         };
       } else if (inComment && line.includes('*/')) {
         if (currentComment) {
-          currentComment.content += '\n' + line;
+          currentComment.content += `\n${line}`;
           currentComment.endLine = i + 1;
 
           // Determine comment type based on following code
@@ -315,7 +307,7 @@ class TemplateValidator {
         inComment = false;
         currentComment = null;
       } else if (inComment && currentComment) {
-        currentComment.content += '\n' + line;
+        currentComment.content += `\n${line}`;
       }
     }
 
@@ -383,7 +375,7 @@ class TemplateValidator {
       fileResult.valid = false;
 
       if (this.autoFix) {
-        const fixedComment = this.addMissingTag(comment, requiredTag);
+        const _fixedComment = this.addMissingTag(comment, requiredTag);
         fileResult.fixed.push(`Added ${requiredTag} tag at line ${comment.startLine}`);
       }
     }
@@ -497,7 +489,7 @@ isValidTypeScript(code);
 
     // Check if all brackets are balanced
     return Object.values(brackets).every(count => count === 0);
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }
@@ -566,7 +558,7 @@ addMissingTag(comment, tag);
  */
 addFileOverview(content, filePath);
 {
-  const relativePath = path.relative(this.rootDir, filePath);
+  const _relativePath = path.relative(this.rootDir, filePath);
   const layer = this.determineLayer(filePath);
   const layerName = this.getLayerName(layer);
 
@@ -661,7 +653,7 @@ findTypeScriptFiles(dir);
           files.push(fullPath);
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // Skip directories that can't be read
     }
   }
@@ -691,7 +683,6 @@ generateValidationReport();
   await fs.mkdir(path.dirname(reportPath), { recursive: true });
 
   await fs.writeFile(reportPath, report);
-  console.log(`📊 Template validation report generated: ${reportPath}`);
 
   // Also generate JSON report
   const jsonReportPath = path.join('./docs/generated', 'template-validation-report.json');
@@ -980,24 +971,11 @@ function main() {
     const validator = new TemplateValidator(config);
     const results = await validator.validateTemplates();
 
-    // Summary output
-    console.log('\n📊 Template Validation Summary:');
-    console.log(`   Valid Files: ${results.templates.valid}`);
-    console.log(`   Invalid Files: ${results.templates.invalid}`);
-    console.log(`   Auto-fixes Applied: ${results.templates.fixed}`);
-    console.log(`   Examples Validated: ${results.examples.validated}`);
-    console.log(
-      `   Example Success Rate: ${results.examples.validated > 0 ? ((results.examples.passed / results.examples.validated) * 100).toFixed(1) : 0}%`
-    );
-
     // Exit with error if there are unfixed template issues
     const exitCode = results.templates.invalid > 0 ? 1 : 0;
-    console.log(`\n🏁 Template validation completed with exit code: ${exitCode}`);
 
     if (exitCode === 0) {
-      console.log('✅ All JSDoc templates are valid!');
     } else {
-      console.log(`❌ ${results.templates.invalid} files have template issues`);
     }
 
     process.exit(exitCode);

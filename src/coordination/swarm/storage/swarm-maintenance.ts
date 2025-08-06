@@ -8,9 +8,9 @@
  * - Health monitoring and repair
  */
 
-import { EventEmitter } from 'events';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { EventEmitter } from 'node:events';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
 
 export interface SwarmMeta {
   id: string;
@@ -42,7 +42,6 @@ export class SwarmMaintenanceManager extends EventEmitter {
   private config: MaintenanceConfig;
   private claudeZenPath: string;
   private swarmsPath: string;
-  private registryPath: string;
   private maintenanceTimer?: NodeJS.Timeout;
 
   constructor(claudeZenPath: string, config: Partial<MaintenanceConfig> = {}) {
@@ -145,7 +144,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
     const archivePath = path.join(archiveDir, `${swarmId}.tar.gz`);
 
     // Use tar compression
-    const { spawn } = require('child_process');
+    const { spawn } = require('node:child_process');
     await new Promise((resolve, reject) => {
       const tar = spawn('tar', ['-czf', archivePath, '-C', path.dirname(activeDir), swarmId]);
       tar.on('close', (code) =>
@@ -213,12 +212,12 @@ export class SwarmMaintenanceManager extends EventEmitter {
         const archives = await fs.readdir(path.join(archivedDir, monthDir));
         archivedCount += archives.length;
       }
-    } catch (error) {
+    } catch (_error) {
       // Archived dir might not exist
     }
 
     // Calculate total size (simplified)
-    const { spawn } = require('child_process');
+    const { spawn } = require('node:child_process');
     const sizeResult = await new Promise<string>((resolve, reject) => {
       const du = spawn('du', ['-sb', this.swarmsPath]);
       let output = '';

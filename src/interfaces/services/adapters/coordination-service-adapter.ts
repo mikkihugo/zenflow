@@ -11,45 +11,28 @@
  * management for coordination operations across Claude-Zen.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { DaaService } from '../../../coordination/swarm/core/daa-service';
-import {
-  SessionEnabledSwarm,
-  type SessionRecoveryService,
-} from '../../../coordination/swarm/core/session-integration';
+import { SessionEnabledSwarm } from '../../../coordination/swarm/core/session-integration';
 import type { SessionConfig, SessionState } from '../../../coordination/swarm/core/session-manager';
-import type {
-  SwarmAgent,
-  SwarmCoordinationEvent,
-  SwarmMetrics,
-} from '../../../coordination/swarm/core/swarm-coordinator';
+import type { SwarmAgent, SwarmMetrics } from '../../../coordination/swarm/core/swarm-coordinator';
 import { SwarmCoordinator } from '../../../coordination/swarm/core/swarm-coordinator';
-import type { AgentConfig, SwarmOptions, Task } from '../../../coordination/swarm/core/types';
+import type { SwarmOptions } from '../../../coordination/swarm/core/types';
 import type { AgentType } from '../../../types/agent-types';
 import type { SwarmTopology } from '../../../types/shared-types';
 import { createLogger, type Logger } from '../../../utils/logger';
 import type {
   IService,
-  ServiceConfig,
   ServiceDependencyConfig,
-  ServiceDependencyError,
-  ServiceError,
   ServiceEvent,
   ServiceEventType,
   ServiceLifecycleStatus,
   ServiceMetrics,
-  ServiceOperationError,
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-  ServiceTimeoutError,
 } from '../core/interfaces';
-import type {
-  CoordinationServiceConfig,
-  ServiceEnvironment,
-  ServicePriority,
-  ServiceType,
-} from '../types';
+import type { CoordinationServiceConfig } from '../types';
 
 /**
  * Coordination service adapter configuration extending USL CoordinationServiceConfig
@@ -238,7 +221,6 @@ export class CoordinationServiceAdapter implements IService {
   // Integrated services
   private daaService?: DaaService;
   private sessionEnabledSwarm?: SessionEnabledSwarm;
-  private sessionRecoveryService?: SessionRecoveryService;
   private swarmCoordinator?: SwarmCoordinator;
 
   // Performance optimization
@@ -1214,7 +1196,7 @@ export class CoordinationServiceAdapter implements IService {
   private async performOperation<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     switch (operation) {
       // DaaService operations

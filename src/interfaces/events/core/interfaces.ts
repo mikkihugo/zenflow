@@ -8,8 +8,6 @@
  * - Health checks and performance monitoring
  */
 
-import { EventEmitter } from 'node:events';
-
 /**
  * Event priority levels for processing order
  */

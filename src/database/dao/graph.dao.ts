@@ -5,7 +5,6 @@
  * node and relationship management, traversals, and Cypher queries.
  */
 
-import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
 import type { GraphDatabaseAdapter } from '../../providers/database-providers';
 import { BaseDao } from '../base.dao';
 import type {
@@ -26,15 +25,6 @@ import type {
 export class GraphDao<T> extends BaseDao<T> implements IGraphDao<T> {
   private get graphAdapter(): GraphDatabaseAdapter {
     return this.adapter as GraphDatabaseAdapter;
-  }
-
-  constructor(
-    adapter: DatabaseAdapter,
-    logger: ILogger,
-    tableName: string,
-    entitySchema?: Record<string, any>
-  ) {
-    super(adapter, logger, tableName, entitySchema);
   }
 
   /**
@@ -428,7 +418,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphDao<T> {
    *
    * @param result
    */
-  private extractPathsFromResult(result: any): any[] {
+  private extractPathsFromResult(_result: any): any[] {
     // Extract path information from Kuzu result
     // This would need to be implemented based on actual Kuzu response format
     return [];

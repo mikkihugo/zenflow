@@ -6,20 +6,9 @@
  * Follows the exact same patterns as other USL service factories.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import { createLogger, type Logger } from '../../../utils/logger';
-import type {
-  IService,
-  ServiceConfig,
-  ServiceEvent,
-  ServiceLifecycleStatus,
-} from '../core/interfaces';
-import type {
-  InfrastructureServiceConfig,
-  ServiceEnvironment,
-  ServicePriority,
-  ServiceType,
-} from '../types';
+import type { ServiceLifecycleStatus } from '../core/interfaces';
 import {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
@@ -477,7 +466,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
     };
     const memoryByService: Record<string, number> = {};
 
-    for (const [name, entry] of this.serviceRegistry.entries()) {
+    for (const [name, _entry] of this.serviceRegistry.entries()) {
       // Get service health (simplified)
       serviceHealth[name] = 'unknown'; // Would be determined by actual health checks
 
@@ -684,7 +673,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
       if (!this.servicesByTag.has(tag)) {
         this.servicesByTag.set(tag, new Set());
       }
-      this.servicesByTag.get(tag)!.add(name);
+      this.servicesByTag.get(tag)?.add(name);
     }
 
     this.logger.debug(`Service registered: ${name}`, { tags: metadata.tags });
@@ -706,7 +695,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
         }
       });
 
-      service.on('operation', (event) => {
+      service.on('operation', (_event) => {
         this.metrics.totalOperations++;
 
         // Update operation count
@@ -800,7 +789,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
   private updateMetrics(): void {
     // Update memory usage estimate
     let totalMemory = 0;
-    for (const entry of this.serviceRegistry.values()) {
+    for (const _entry of this.serviceRegistry.values()) {
       // Estimate memory usage per service (would be actual measurement)
       totalMemory += Math.random() * 100; // Simplified
     }
@@ -823,7 +812,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
   private performCleanup(): void {
     // Clean up destroyed services from registry
-    for (const [name, entry] of this.serviceRegistry.entries()) {
+    for (const [name, _entry] of this.serviceRegistry.entries()) {
       // This would check actual service state
       // For now, we'll just log
       this.logger.debug(`Service ${name} status check during cleanup`);

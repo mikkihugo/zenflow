@@ -48,7 +48,7 @@
 
 import type { DatabaseAdapter, IConfig, ILogger } from '../../core/interfaces/base-interfaces';
 import { inject, injectable } from '../di/decorators/injectable';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
+import { CORE_TOKENS } from '../di/tokens/core-tokens';
 import type { DatabaseConfig, DatabaseProviderFactory } from '../providers/database-providers';
 import type {
   ICoordinationRepository,
@@ -288,8 +288,8 @@ export class DALFactory {
   private entityRegistry: EntityTypeRegistry = {};
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @inject(CORE_TOKENS.Config) private config: IConfig,
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.Config) private _config: IConfig,
     private databaseProviderFactory: DatabaseProviderFactory
   ) {
     this.initializeEntityRegistry();
@@ -1195,10 +1195,6 @@ export class DALFactory {
 
       case 'coordination':
         return new CoordinationRepository<T>(adapter, this.logger, tableName, entitySchema);
-
-      case 'postgresql':
-      case 'sqlite':
-      case 'mysql':
       default:
         return new RelationalRepository<T>(adapter, this.logger, tableName, entitySchema);
     }
@@ -1231,10 +1227,6 @@ export class DALFactory {
           adapter,
           this.logger
         );
-
-      case 'postgresql':
-      case 'sqlite':
-      case 'mysql':
       default:
         return new RelationalDAO<T>(repository, adapter, this.logger);
     }
@@ -1253,7 +1245,7 @@ export class DALFactory {
 
   private generateAdapterCacheKey(config: RepositoryConfig): string {
     if (config.existingAdapter) {
-      return 'existing:' + Date.now();
+      return `existing:${Date.now()}`;
     }
 
     return [

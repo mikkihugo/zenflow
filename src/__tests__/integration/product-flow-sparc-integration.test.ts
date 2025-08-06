@@ -19,7 +19,6 @@ import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
 } from '../../database/entities/product-entities';
-import { DocumentManager } from '../../database/managers/document-manager';
 
 describe('Product Flow + SPARC Integration', () => {
   let productWorkflowEngine: ProductWorkflowEngine;

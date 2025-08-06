@@ -11,48 +11,28 @@
  * management for system events across Claude-Zen.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type { ApplicationCoordinator } from '../../../core/application-coordinator';
 // Import core system classes to wrap their EventEmitter usage
 import type { CoreSystem } from '../../../core/core-system';
-import { DocumentProcessor } from '../../../core/document-processor';
-import { InterfaceManager } from '../../../core/interface-manager';
-import { MemorySystem } from '../../../core/memory-system';
-import { WorkflowEngine } from '../../../core/workflow-engine';
-import type { ErrorRecoverySystem } from '../../../utils/error-recovery';
 import { createLogger, type Logger } from '../../../utils/logger';
 import type {
   EventBatch,
-  EventEmissionError,
   EventEmissionOptions,
-  EventError,
   EventFilter,
   EventListener,
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
   EventQueryOptions,
-  EventRetryExhaustedError,
   EventSubscription,
-  EventSubscriptionError,
-  EventTimeoutError,
   EventTransform,
   IEventManager,
   SystemEvent,
 } from '../core/interfaces';
-import {
-  EventEmissionError,
-  EventManagerTypes,
-  EventTimeoutError,
-  EventTypeGuards,
-} from '../core/interfaces';
-import type { EventPriority, EventProcessingStrategy, SystemLifecycleEvent } from '../types';
-import {
-  DefaultEventManagerConfigs,
-  EventCategories,
-  EventPriorityMap,
-  UELTypeGuards,
-} from '../types';
+import { EventEmissionError, EventManagerTypes, EventTimeoutError } from '../core/interfaces';
+import type { SystemLifecycleEvent } from '../types';
+import { EventPriorityMap } from '../types';
 
 /**
  * System event adapter configuration extending UEL EventManagerConfig
@@ -219,7 +199,6 @@ export class SystemEventAdapter implements IEventManager {
   private wrappedComponents = new Map<string, WrappedSystemComponent>();
   private coreSystem?: CoreSystem;
   private applicationCoordinator?: ApplicationCoordinator;
-  private errorRecoverySystem?: ErrorRecoverySystem;
 
   // Event correlation and tracking
   private eventCorrelations = new Map<string, EventCorrelation>();
@@ -1172,7 +1151,7 @@ export class SystemEventAdapter implements IEventManager {
       try {
         // Restore original methods if they were wrapped
         wrapped.originalMethods.forEach((originalMethod, methodName) => {
-          if (wrapped.component && wrapped.component[methodName]) {
+          if (wrapped.component?.[methodName]) {
             wrapped.component[methodName] = originalMethod;
           }
         });
@@ -1198,7 +1177,7 @@ export class SystemEventAdapter implements IEventManager {
    */
   private async processEventEmission<T extends SystemEvent>(
     event: T,
-    options?: EventEmissionOptions
+    _options?: EventEmissionOptions
   ): Promise<void> {
     // Add to event history
     this.eventHistory.push(event);
@@ -1477,7 +1456,7 @@ export class SystemEventAdapter implements IEventManager {
 
   private async processBatchQueued<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    _options?: EventEmissionOptions
   ): Promise<void> {
     this.eventQueue.push(...batch.events);
   }

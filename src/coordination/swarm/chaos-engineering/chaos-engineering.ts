@@ -14,12 +14,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import {
-  BaseClaudeZenError,
-  ConfigurationError,
-  SystemError,
-  ValidationError,
-} from '../../../core/errors';
+import { ConfigurationError, SystemError, ValidationError } from '../../../core/errors';
 import { createLogger } from '../../../core/logger';
 import { generateId } from '../core/utils';
 
@@ -90,7 +85,6 @@ export class ChaosEngineering extends EventEmitter {
   private healthMonitor: any;
   private recoveryWorkflows: any;
   private connectionManager: any;
-  private mcpTools: any;
 
   constructor(options: any = {}) {
     super();

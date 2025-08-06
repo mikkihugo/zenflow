@@ -9,12 +9,10 @@ import {
   createHTTPClient,
   createHTTPClientWithPreset,
   createLoadBalancedHTTPClients,
-  HTTPClientAdapter,
   HTTPClientFactory,
   isAuthenticationError,
   isClientError,
   isConnectionError,
-  UACL_PRESETS,
 } from '../index';
 
 // ===== BASIC USAGE =====
@@ -23,8 +21,6 @@ import {
  * Example 1: Basic HTTP client creation
  */
 async function basicUsage() {
-  console.log('=== Basic HTTP Client Usage ===');
-
   // Create a simple HTTP client
   const client = await createHTTPClient({
     name: 'api-client',
@@ -34,22 +30,18 @@ async function basicUsage() {
 
   try {
     // Make requests
-    const users = await client.get('/users');
-    console.log('Users:', users.data);
+    const _users = await client.get('/users');
 
-    const newUser = await client.post('/users', {
+    const _newUser = await client.post('/users', {
       name: 'John Doe',
       email: 'john@example.com',
     });
-    console.log('Created user:', newUser.data);
 
     // Check client status
-    const status = await client.healthCheck();
-    console.log('Client status:', status);
+    const _status = await client.healthCheck();
 
     // Get performance metrics
-    const metrics = await client.getMetrics();
-    console.log('Client metrics:', metrics);
+    const _metrics = await client.getMetrics();
   } catch (error) {
     if (isClientError(error)) {
       console.error(`Client error: ${error.code} - ${error.message}`);
@@ -67,8 +59,6 @@ async function basicUsage() {
  * Example 2: Bearer token authentication
  */
 async function bearerTokenAuth() {
-  console.log('=== Bearer Token Authentication ===');
-
   const client = await createHTTPClient({
     name: 'auth-api-client',
     baseURL: 'https://api.example.com',
@@ -79,8 +69,7 @@ async function bearerTokenAuth() {
   });
 
   try {
-    const profile = await client.get('/profile');
-    console.log('User profile:', profile.data);
+    const _profile = await client.get('/profile');
   } catch (error) {
     if (isAuthenticationError(error)) {
       console.error('Authentication failed - token may be expired');
@@ -94,8 +83,6 @@ async function bearerTokenAuth() {
  * Example 3: API key authentication
  */
 async function apiKeyAuth() {
-  console.log('=== API Key Authentication ===');
-
   const client = await createHTTPClient({
     name: 'api-key-client',
     baseURL: 'https://api.example.com',
@@ -107,8 +94,7 @@ async function apiKeyAuth() {
   });
 
   try {
-    const data = await client.get('/protected-endpoint');
-    console.log('Protected data:', data.data);
+    const _data = await client.get('/protected-endpoint');
   } finally {
     await client.destroy();
   }
@@ -118,8 +104,6 @@ async function apiKeyAuth() {
  * Example 4: OAuth authentication with token refresh
  */
 async function oauthAuth() {
-  console.log('=== OAuth Authentication ===');
-
   const client = await createHTTPClient({
     name: 'oauth-client',
     baseURL: 'https://api.example.com',
@@ -139,8 +123,7 @@ async function oauthAuth() {
 
   try {
     // The client will automatically refresh the token if it's expired
-    const data = await client.get('/protected-resource');
-    console.log('OAuth protected data:', data.data);
+    const _data = await client.get('/protected-resource');
   } finally {
     await client.destroy();
   }
@@ -152,8 +135,6 @@ async function oauthAuth() {
  * Example 5: Advanced retry configuration
  */
 async function retryConfiguration() {
-  console.log('=== Advanced Retry Configuration ===');
-
   const client = await createHTTPClient({
     name: 'resilient-client',
     baseURL: 'https://api.example.com',
@@ -172,13 +153,10 @@ async function retryConfiguration() {
   });
 
   // Listen for retry events
-  client.on('retry', (info) => {
-    console.log(`Retry attempt ${info.attempt} after ${info.delay}ms: ${info.error}`);
-  });
+  client.on('retry', (_info) => {});
 
   try {
-    const data = await client.get('/unreliable-endpoint');
-    console.log('Data received after retries:', data.data);
+    const _data = await client.get('/unreliable-endpoint');
   } finally {
     await client.destroy();
   }
@@ -190,8 +168,6 @@ async function retryConfiguration() {
  * Example 6: Monitoring and health checks
  */
 async function monitoringExample() {
-  console.log('=== Monitoring and Health Checks ===');
-
   const client = await createHTTPClient({
     name: 'monitored-client',
     baseURL: 'https://api.example.com',
@@ -212,13 +188,9 @@ async function monitoringExample() {
   });
 
   // Listen for health status changes
-  client.on('connect', () => {
-    console.log('Client connected and healthy');
-  });
+  client.on('connect', () => {});
 
-  client.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
+  client.on('disconnect', () => {});
 
   client.on('error', (error) => {
     console.error('Client error:', error);
@@ -239,15 +211,7 @@ async function monitoringExample() {
     }
 
     // Get final metrics
-    const metrics = await client.getMetrics();
-    console.log('Final metrics:', {
-      requests: metrics.requestCount,
-      success: metrics.successCount,
-      errors: metrics.errorCount,
-      avgLatency: metrics.averageLatency,
-      p95Latency: metrics.p95Latency,
-      throughput: metrics.throughput,
-    });
+    const _metrics = await client.getMetrics();
   } finally {
     await client.destroy();
   }
@@ -259,13 +223,11 @@ async function monitoringExample() {
  * Example 7: Using the HTTP Client Factory
  */
 async function factoryUsage() {
-  console.log('=== HTTP Client Factory Usage ===');
-
   const factory = new HTTPClientFactory();
 
   try {
     // Create multiple clients
-    const clients = await factory.createMultiple([
+    const _clients = await factory.createMultiple([
       {
         name: 'users-api',
         baseURL: 'https://users.example.com',
@@ -283,25 +245,20 @@ async function factoryUsage() {
       },
     ]);
 
-    console.log(`Created ${clients.length} clients`);
-
     // Get a specific client
     const usersClient = factory.get('users-api');
     if (usersClient) {
-      const users = await usersClient.get('/users');
-      console.log('Users from factory client:', users.data);
+      const _users = await usersClient.get('/users');
     }
 
     // Health check all clients
     const healthResults = await factory.healthCheckAll();
-    for (const [name, status] of healthResults) {
-      console.log(`${name}: ${status.status} (${status.responseTime}ms)`);
+    for (const [_name, _status] of healthResults) {
     }
 
     // Get metrics for all clients
     const metricsResults = await factory.getMetricsAll();
-    for (const [name, metrics] of metricsResults) {
-      console.log(`${name}: ${metrics.requestCount} requests, ${metrics.errorCount} errors`);
+    for (const [_name, _metrics] of metricsResults) {
     }
   } finally {
     await factory.shutdown();
@@ -314,8 +271,6 @@ async function factoryUsage() {
  * Example 8: Using configuration presets
  */
 async function presetUsage() {
-  console.log('=== Configuration Presets ===');
-
   // Development preset with relaxed timeouts
   const devClient = await createHTTPClientWithPreset(
     'dev-client',
@@ -345,11 +300,9 @@ async function presetUsage() {
 
   try {
     // Use the clients...
-    const devData = await devClient.get('/test');
-    const prodData = await prodClient.get('/data');
-    const haData = await haClient.get('/critical');
-
-    console.log('All preset clients working correctly');
+    const _devData = await devClient.get('/test');
+    const _prodData = await prodClient.get('/data');
+    const _haData = await haClient.get('/critical');
   } finally {
     await Promise.all([devClient.destroy(), prodClient.destroy(), haClient.destroy()]);
   }
@@ -361,8 +314,6 @@ async function presetUsage() {
  * Example 9: Load-balanced HTTP clients
  */
 async function loadBalancingExample() {
-  console.log('=== Load-Balanced HTTP Clients ===');
-
   // Create load-balanced clients across multiple endpoints
   const clients = await createLoadBalancedHTTPClients(
     'api-cluster',
@@ -370,15 +321,12 @@ async function loadBalancingExample() {
     'production'
   );
 
-  console.log(`Created ${clients.length} load-balanced clients`);
-
   try {
     // Simple round-robin usage
     for (let i = 0; i < 10; i++) {
       const client = clients[i % clients.length];
       try {
-        const response = await client.get('/data');
-        console.log(`Request ${i} handled by ${client.name}: ${response.status}`);
+        const _response = await client.get('/data');
       } catch (error) {
         console.error(`Request ${i} failed on ${client.name}:`, error);
       }
@@ -394,8 +342,6 @@ async function loadBalancingExample() {
  * Example 10: Backward compatibility with existing APIClient
  */
 async function backwardCompatibility() {
-  console.log('=== Backward Compatibility ===');
-
   // Import the compatible API client
   const { APIClient, createAPIClient } = await import('../wrappers/api-client-wrapper');
 
@@ -410,22 +356,17 @@ async function backwardCompatibility() {
 
   try {
     // Use the old interface methods (all still work)
-    const agents = await apiClient.coordination.listAgents();
-    console.log('Agents:', agents);
+    const _agents = await apiClient.coordination.listAgents();
 
-    const networks = await apiClient.neural.listNetworks();
-    console.log('Networks:', networks);
+    const _networks = await apiClient.neural.listNetworks();
 
     // Use new UACL features
-    const status = await apiClient.getClientStatus();
-    console.log('UACL Status:', status);
+    const _status = await apiClient.getClientStatus();
 
-    const metrics = await apiClient.getClientMetrics();
-    console.log('UACL Metrics:', metrics);
+    const _metrics = await apiClient.getClientMetrics();
 
     // Test connectivity
-    const isOnline = await apiClient.ping();
-    console.log('API is online:', isOnline);
+    const _isOnline = await apiClient.ping();
   } finally {
     await apiClient.destroy();
   }
@@ -437,8 +378,6 @@ async function backwardCompatibility() {
  * Example 11: Comprehensive error handling
  */
 async function errorHandlingExample() {
-  console.log('=== Error Handling ===');
-
   const client = await createHTTPClient({
     name: 'error-demo-client',
     baseURL: 'https://httpstat.us', // Service that returns specific status codes
@@ -459,9 +398,7 @@ async function errorHandlingExample() {
 
   for (const testCase of testCases) {
     try {
-      console.log(`Testing ${testCase.description}...`);
-      const response = await client.get(testCase.endpoint);
-      console.log(`✅ ${testCase.description}: ${response.status}`);
+      const _response = await client.get(testCase.endpoint);
     } catch (error) {
       if (isConnectionError(error)) {
         console.error(`❌ Connection Error: ${error.message}`);
@@ -501,14 +438,10 @@ async function runAllExamples() {
   for (const example of examples) {
     try {
       await example();
-      console.log(''); // Add spacing between examples
     } catch (error) {
       console.error(`Example ${example.name} failed:`, error);
-      console.log(''); // Add spacing between examples
     }
   }
-
-  console.log('All examples completed!');
 }
 
 // Export for use in other modules

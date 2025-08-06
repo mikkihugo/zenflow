@@ -9,9 +9,7 @@
 import { existsSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
-import { render } from 'ink';
 import meow from 'meow';
-import React from 'react';
 import { configManager } from '../../../config/config-manager';
 import { DomainDiscoveryBridge } from '../../../coordination/discovery/domain-discovery-bridge';
 import { ProgressiveConfidenceBuilder } from '../../../coordination/discovery/progressive-confidence-builder';
@@ -227,8 +225,8 @@ export class DiscoverCommand {
       );
 
       // Override defaults with options
-      const topology = options.topology || defaults.DEFAULT_TOPOLOGY;
-      const skipValidation = options.skipValidation ?? defaults.SKIP_VALIDATION;
+      const _topology = options.topology || defaults.DEFAULT_TOPOLOGY;
+      const _skipValidation = options.skipValidation ?? defaults.SKIP_VALIDATION;
       const researchThreshold = defaults.RESEARCH_THRESHOLD;
 
       // Validate confidence range
@@ -1025,7 +1023,7 @@ ${results.configurations
           }
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // Ignore directory access errors
     }
 

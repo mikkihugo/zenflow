@@ -11,53 +11,35 @@
  * management for integration operations across Claude-Zen.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type {
   ArchitecturalValidation,
   ArchitectureDesign,
-  ArchitectureRecord,
-  Component,
 } from '../../../coordination/swarm/sparc/database/architecture-storage';
 
 import { ArchitectureStorageService } from '../../../coordination/swarm/sparc/database/architecture-storage';
 import {
-  AdapterFactory,
-  type IntegratedPatternSystem,
   MCPAdapter,
   ProtocolManager,
   RESTAdapter,
   WebSocketAdapter,
 } from '../../../core/pattern-integration';
 import type { ConnectionConfig } from '../../../integration/adapter-system';
-import type {
-  APIMetadata,
-  APIRequestOptions,
-  APIResult,
-} from '../../../interfaces/api/safe-api-client';
+import type { APIResult } from '../../../interfaces/api/safe-api-client';
 import { SafeAPIClient, SafeAPIService } from '../../../interfaces/api/safe-api-client';
 import { createLogger, type Logger } from '../../../utils/logger';
 import type {
   IService,
-  ServiceConfig,
   ServiceDependencyConfig,
-  ServiceDependencyError,
-  ServiceError,
   ServiceEvent,
   ServiceEventType,
   ServiceLifecycleStatus,
   ServiceMetrics,
-  ServiceOperationError,
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-  ServiceTimeoutError,
 } from '../core/interfaces';
-import type {
-  IntegrationServiceConfig,
-  ServiceEnvironment,
-  ServicePriority,
-  ServiceType,
-} from '../types';
+import type { IntegrationServiceConfig } from '../types';
 
 /**
  * Integration service adapter configuration extending USL IntegrationServiceConfig
@@ -293,7 +275,6 @@ export class IntegrationServiceAdapter implements IService {
   private safeAPIService?: SafeAPIService;
   private safeAPIClient?: SafeAPIClient;
   private protocolManager?: ProtocolManager;
-  private integratedPatternSystem?: IntegratedPatternSystem;
 
   // Performance optimization
   private cache = new Map<string, CacheEntry>();
@@ -475,7 +456,7 @@ export class IntegrationServiceAdapter implements IService {
           container.register(CORE_TOKENS.Config, () => ({}));
           container.register(DATABASE_TOKENS.DALFactory, () => new DALFactory());
 
-          const dalFactory = container.resolve(DATABASE_TOKENS.DALFactory);
+          const _dalFactory = container.resolve(DATABASE_TOKENS.DALFactory);
 
           // Create real database adapter from DAL Factory
           realDatabaseAdapter = {
@@ -927,7 +908,7 @@ export class IntegrationServiceAdapter implements IService {
       // Check connection pool health
       if (this.config.performance?.connectionPooling) {
         const unhealthyPools = Array.from(this.connectionPool.entries()).filter(
-          ([protocol, pool]) => !this.isConnectionPoolHealthy(pool)
+          ([_protocol, pool]) => !this.isConnectionPoolHealthy(pool)
         );
 
         if (unhealthyPools.length > 0) {
@@ -1426,7 +1407,7 @@ export class IntegrationServiceAdapter implements IService {
   private async performOperation<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     switch (operation) {
       // Architecture Storage Service operations
@@ -2086,9 +2067,9 @@ export class IntegrationServiceAdapter implements IService {
     }
 
     // Simplified rate limiting check
-    const key = `${endpoint}:${clientId}`;
-    const now = Date.now();
-    const windowSize = 60000; // 1 minute
+    const _key = `${endpoint}:${clientId}`;
+    const _now = Date.now();
+    const _windowSize = 60000; // 1 minute
     const maxRequests = this.config.safeAPI?.rateLimiting?.requestsPerSecond || 100;
 
     // In a real implementation, this would use Redis or similar

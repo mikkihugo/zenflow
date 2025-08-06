@@ -1,11 +1,12 @@
 #!/usr/bin/env node
+
 /**
  * Simple standalone CLI test for SPARC Pseudocode Engine
  * Tests the pseudocode generation commands without broader system dependencies
  */
 
+import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
-import { readFile, writeFile } from 'fs/promises';
 
 const program = new Command();
 
@@ -23,8 +24,6 @@ program
   .option('--format <type>', 'Output format (json|markdown)', 'json')
   .action(async (options) => {
     try {
-      console.log('🔧 Generating pseudocode from specification...');
-
       // Import the pseudocode engine dynamically
       const { PseudocodePhaseEngine } = await import(
         './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
@@ -36,19 +35,8 @@ program
       const specContent = await readFile(options.specFile, 'utf8');
       const specification = JSON.parse(specContent);
 
-      console.log(`📖 Processing specification: ${specification.id || 'Unknown'}`);
-      console.log(`🏷️ Domain: ${specification.domain}`);
-
       // Generate pseudocode structure
       const pseudocodeStructure = await engine.generatePseudocode(specification);
-
-      console.log('✅ Pseudocode generation completed!');
-      console.log(`📊 Generated ${pseudocodeStructure.algorithms.length} algorithms`);
-      console.log(`🏗️ Generated ${pseudocodeStructure.dataStructures.length} data structures`);
-      console.log(`🔄 Generated ${pseudocodeStructure.controlFlows.length} control flows`);
-      console.log(
-        `💡 Identified ${pseudocodeStructure.optimizations.length} optimization opportunities`
-      );
 
       // Format output
       let output: string;
@@ -60,16 +48,7 @@ program
 
       // Write output
       await writeFile(options.output, output, 'utf8');
-      console.log(`💾 Output saved to: ${options.output}`);
-
-      // Display summary
-      console.log('\n📋 Algorithm Summary:');
-      pseudocodeStructure.algorithms.forEach((alg: any, index: number) => {
-        console.log(`  ${index + 1}. ${alg.name}: ${alg.purpose}`);
-        console.log(
-          `     Complexity: ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space`
-        );
-      });
+      pseudocodeStructure.algorithms.forEach((_alg: any, _index: number) => {});
     } catch (error) {
       console.error('❌ Failed to generate pseudocode:', error);
       process.exit(1);
@@ -83,8 +62,6 @@ program
   .requiredOption('--pseudocode-file <path>', 'Path to pseudocode JSON file')
   .action(async (options) => {
     try {
-      console.log('🔍 Validating pseudocode structure...');
-
       const { PseudocodePhaseEngine } = await import(
         './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
       );
@@ -95,37 +72,19 @@ program
       const pseudocodeContent = await readFile(options.pseudocodeFile, 'utf8');
       const pseudocodeStructure = JSON.parse(pseudocodeContent);
 
-      console.log(`📖 Validating pseudocode: ${pseudocodeStructure.id || 'Unknown'}`);
-
       // Validate the pseudocode structure
       const validation = await engine.validatePseudocode(pseudocodeStructure);
 
-      console.log('\n📊 Validation Results:');
-      console.log(`Overall Score: ${(validation.overallScore * 100).toFixed(1)}%`);
-      console.log(`Status: ${validation.approved ? '✅ APPROVED' : '❌ NEEDS IMPROVEMENT'}`);
-      console.log(
-        `Complexity Verification: ${validation.complexityVerification ? '✅ PASSED' : '❌ FAILED'}`
-      );
-
       if (validation.logicErrors.length > 0) {
-        console.log('\n🚨 Logic Errors Found:');
-        validation.logicErrors.forEach((error, index) => {
-          console.log(`  ${index + 1}. ${error}`);
-        });
+        validation.logicErrors.forEach((_error, _index) => {});
       }
 
       if (validation.optimizationSuggestions.length > 0) {
-        console.log('\n💡 Optimization Suggestions:');
-        validation.optimizationSuggestions.forEach((suggestion, index) => {
-          console.log(`  ${index + 1}. ${suggestion}`);
-        });
+        validation.optimizationSuggestions.forEach((_suggestion, _index) => {});
       }
 
       if (validation.recommendations.length > 0) {
-        console.log('\n📋 Recommendations:');
-        validation.recommendations.forEach((rec, index) => {
-          console.log(`  ${index + 1}. ${rec}`);
-        });
+        validation.recommendations.forEach((_rec, _index) => {});
       }
 
       // Exit with appropriate code
@@ -148,8 +107,6 @@ program
   .option('--output <path>', 'Output file for example specification', 'example-spec.json')
   .action(async (options) => {
     try {
-      console.log('📝 Creating example specification...');
-
       const exampleSpec = {
         id: `example-${options.domain}-spec`,
         domain: options.domain,
@@ -208,11 +165,6 @@ program
       };
 
       await writeFile(options.output, JSON.stringify(exampleSpec, null, 2), 'utf8');
-      console.log(`✅ Example specification created: ${options.output}`);
-      console.log(`🏷️ Domain: ${options.domain}`);
-      console.log(
-        `📋 Requirements: ${exampleSpec.functionalRequirements.length} functional, ${exampleSpec.nonFunctionalRequirements.length} non-functional`
-      );
     } catch (error) {
       console.error('❌ Failed to create example specification:', error);
       process.exit(1);

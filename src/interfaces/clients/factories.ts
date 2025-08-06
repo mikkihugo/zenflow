@@ -100,8 +100,8 @@ export class UACLFactory {
   private transactionLog = new Map<string, ClientTransaction>();
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @inject(CORE_TOKENS.Config) private config: IConfig
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.Config) private _config: IConfig
   ) {
     this.initializeFactories();
   }
@@ -280,7 +280,7 @@ export class UACLFactory {
   async healthCheckAll(): Promise<ClientHealthStatus[]> {
     const results: ClientHealthStatus[] = [];
 
-    for (const [clientId, entry] of Object.entries(this.clientRegistry)) {
+    for (const [_clientId, entry] of Object.entries(this.clientRegistry)) {
       try {
         const startTime = Date.now();
         const healthy = await entry.client.health();
@@ -491,8 +491,6 @@ export class UACLFactory {
         FactoryClass = McpClientFactory;
         break;
       }
-
-      case ClientTypes.GENERIC:
       default: {
         const { GenericClientFactory } = await import('./implementations/generic-client-factory');
         FactoryClass = GenericClientFactory;
@@ -509,7 +507,7 @@ export class UACLFactory {
   private validateClientConfig(
     clientType: ClientType,
     protocol: ProtocolType,
-    config?: Partial<ClientConfig>
+    _config?: Partial<ClientConfig>
   ): void {
     if (!TypeGuards.isClientType(clientType)) {
       throw new Error(`Invalid client type: ${clientType}`);
@@ -531,8 +529,6 @@ export class UACLFactory {
     const defaults = DefaultClientConfigs[clientType] || DefaultClientConfigs[ClientTypes.GENERIC];
 
     return {
-      protocol,
-      url,
       ...defaults,
       ...config,
       // Ensure required fields are not overwritten
@@ -695,7 +691,6 @@ export class MultiClientCoordinator {
  */
 export class LoadBalancedClient<T = any> implements IClient<T> {
   private currentIndex = 0;
-  private requestCount = 0;
 
   constructor(
     private clients: Array<{
@@ -703,8 +698,7 @@ export class LoadBalancedClient<T = any> implements IClient<T> {
       weight: number;
       url: string;
     }>,
-    private strategy: 'round-robin' | 'weighted' | 'random',
-    private logger: ILogger
+    private strategy: 'round-robin' | 'weighted' | 'random'
   ) {}
 
   async connect(): Promise<void> {

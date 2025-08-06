@@ -12,9 +12,9 @@
  * @author Claude-Zen Documentation Team
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require('node:fs').promises;
+const path = require('node:path');
+const { execSync } = require('node:child_process');
 const { DocsBuilder } = require('./docs-build');
 
 /**
@@ -139,14 +139,6 @@ class DocsDeploymentPipeline {
    * ```
    */
   async deploy() {
-    console.log('🚀 Starting documentation deployment pipeline...');
-    console.log(`📁 Build Dir: ${this.buildDir}`);
-    console.log(
-      `🎯 Targets: ${Object.keys(this.targets)
-        .filter((t) => this.targets[t].enabled)
-        .join(', ')}`
-    );
-
     try {
       // Stage 1: Build documentation
       await this.executeStage('build', () => this.buildDocumentation());
@@ -177,7 +169,6 @@ class DocsDeploymentPipeline {
       await this.executeStage('cleanup', () => this.cleanupAndReport());
 
       this.results.success = true;
-      console.log('✅ Documentation deployment pipeline completed successfully');
 
       return this.results;
     } catch (error) {
@@ -213,7 +204,6 @@ class DocsDeploymentPipeline {
    */
   async executeStage(stageName, stageFunction) {
     const startTime = Date.now();
-    console.log(`📋 Executing stage: ${stageName}...`);
 
     try {
       const result = await stageFunction();
@@ -224,8 +214,6 @@ class DocsDeploymentPipeline {
         duration,
         result,
       };
-
-      console.log(`✅ Stage ${stageName} completed in ${duration}ms`);
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
@@ -256,8 +244,6 @@ class DocsDeploymentPipeline {
    * ```
    */
   async buildDocumentation() {
-    console.log('🏗️ Building documentation...');
-
     const builder = new DocsBuilder({
       rootDir: this.rootDir,
       outputDir: this.buildDir,
@@ -272,10 +258,6 @@ class DocsDeploymentPipeline {
     if (!buildResults.success) {
       throw new Error('Documentation build failed');
     }
-
-    console.log(
-      `📚 Documentation built successfully: ${buildResults.artifacts?.length || 0} artifacts`
-    );
     return buildResults;
   }
 
@@ -294,8 +276,6 @@ class DocsDeploymentPipeline {
    * ```
    */
   async validateBuild() {
-    console.log('🔍 Validating build output...');
-
     const validation = {
       passed: true,
       files: [],
@@ -319,7 +299,7 @@ class DocsDeploymentPipeline {
         try {
           await fs.access(filePath);
           validation.files.push(file);
-        } catch (error) {
+        } catch (_error) {
           validation.issues.push(`Missing required file: ${file}`);
           validation.passed = false;
         }
@@ -336,8 +316,6 @@ class DocsDeploymentPipeline {
       if (!validation.passed) {
         throw new Error(`Build validation failed: ${validation.issues.length} issues found`);
       }
-
-      console.log(`✅ Build validation passed: ${validation.files.length} files validated`);
       return validation;
     } catch (error) {
       validation.passed = false;
@@ -415,7 +393,7 @@ class DocsDeploymentPipeline {
             `${file}: Large file size (${(stats.size / 1024 / 1024).toFixed(1)}MB)`
           );
         }
-      } catch (error) {
+      } catch (_error) {
         // File size check failed, not critical
       }
     }
@@ -437,8 +415,6 @@ class DocsDeploymentPipeline {
    * ```
    */
   async optimizeAssets() {
-    console.log('⚡ Optimizing assets for production...');
-
     const optimization = {
       css: { files: 0, minified: 0, savings: 0 },
       js: { files: 0, minified: 0, savings: 0 },
@@ -470,10 +446,6 @@ class DocsDeploymentPipeline {
         optimization.images.savings;
 
       this.results.optimizations = optimization;
-
-      console.log(
-        `⚡ Optimization completed: ${(optimization.totalSavings / 1024).toFixed(1)}KB saved`
-      );
       return optimization;
     } catch (error) {
       throw new Error(`Asset optimization failed: ${error.message}`);
@@ -607,7 +579,6 @@ class DocsDeploymentPipeline {
     // Image optimization would be implemented here with tools like imagemin
     // For now, this is a placeholder
     optimization.images.optimized = imageFiles.length;
-    console.log(`📸 Image optimization placeholder: ${imageFiles.length} images found`);
   }
 
   /**
@@ -616,18 +587,14 @@ class DocsDeploymentPipeline {
    * @returns {Promise<void>} Compression completion
    */
   async createCompressedVersions() {
-    console.log('📦 Creating compressed asset versions...');
-
     // This would create .gz and .br versions of text files
     // Implementation would use zlib for gzip compression
-    const textFiles = [
+    const _textFiles = [
       ...(await this.findFiles(this.buildDir, '.html')),
       ...(await this.findFiles(this.buildDir, '.css')),
       ...(await this.findFiles(this.buildDir, '.js')),
       ...(await this.findFiles(this.buildDir, '.json')),
     ];
-
-    console.log(`📦 Compression placeholder: ${textFiles.length} files would be compressed`);
   }
 
   /**
@@ -645,8 +612,6 @@ class DocsDeploymentPipeline {
    * ```
    */
   async prepareDeployment() {
-    console.log('📦 Preparing deployment...');
-
     // Ensure deployment directory exists
     await fs.mkdir(this.deployDir, { recursive: true });
 
@@ -662,8 +627,6 @@ class DocsDeploymentPipeline {
     // Generate deployment metadata
     const metadata = await this.generateDeploymentMetadata();
 
-    console.log('📦 Deployment preparation completed');
-
     return {
       stagingDir: this.deployDir,
       configs,
@@ -678,8 +641,6 @@ class DocsDeploymentPipeline {
    * @returns {Promise<void>} File copying completion
    */
   async copyBuildToStaging() {
-    console.log('📁 Copying build files to staging...');
-
     // This would recursively copy files from build to deploy directory
     // For now, this is a simplified placeholder
     try {
@@ -946,27 +907,17 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
    * ```
    */
   async deployToTargets() {
-    console.log('🚀 Deploying to targets...');
-
     const deployments = {};
 
     for (const [targetName, targetConfig] of Object.entries(this.targets)) {
       if (!targetConfig.enabled) {
-        console.log(`⏭️ Skipping disabled target: ${targetName}`);
         continue;
       }
-
-      console.log(`🎯 Deploying to ${targetName}...`);
 
       try {
         const deployResult = await this.deployToTarget(targetName, targetConfig);
         deployments[targetName] = deployResult;
-
-        console.log(
-          `✅ ${targetName} deployment ${deployResult.success ? 'successful' : 'failed'}`
-        );
         if (deployResult.url) {
-          console.log(`   URL: ${deployResult.url}`);
         }
       } catch (error) {
         deployments[targetName] = {
@@ -1012,8 +963,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
    * @returns {Promise<DeploymentResult>} Deployment result
    */
   async deployToGitHubPages(targetConfig) {
-    console.log('📄 Deploying to GitHub Pages...');
-
     try {
       // This would implement actual GitHub Pages deployment
       // For now, this is a simulation
@@ -1025,8 +974,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
         target: 'github-pages',
         branch: targetConfig.branch || 'gh-pages',
       };
-
-      console.log('📄 GitHub Pages deployment simulated successfully');
       return deploymentResult;
     } catch (error) {
       throw new Error(`GitHub Pages deployment failed: ${error.message}`);
@@ -1040,8 +987,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
    * @returns {Promise<DeploymentResult>} Deployment result
    */
   async deployToNetlify(targetConfig) {
-    console.log('🌐 Deploying to Netlify...');
-
     try {
       // This would implement actual Netlify deployment using their API
       // For now, this is a simulation
@@ -1053,8 +998,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
         target: 'netlify',
         siteId: targetConfig.siteId,
       };
-
-      console.log('🌐 Netlify deployment simulated successfully');
       return deploymentResult;
     } catch (error) {
       throw new Error(`Netlify deployment failed: ${error.message}`);
@@ -1068,8 +1011,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
    * @returns {Promise<DeploymentResult>} Deployment result
    */
   async deployToS3(targetConfig) {
-    console.log('☁️ Deploying to AWS S3...');
-
     try {
       // This would implement actual S3 deployment using AWS SDK
       // For now, this is a simulation
@@ -1081,8 +1022,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
         target: 'aws-s3',
         bucket: targetConfig.bucket,
       };
-
-      console.log('☁️ AWS S3 deployment simulated successfully');
       return deploymentResult;
     } catch (error) {
       throw new Error(`AWS S3 deployment failed: ${error.message}`);
@@ -1096,8 +1035,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
    * @returns {Promise<DeploymentResult>} Deployment result
    */
   async deployToVercel(targetConfig) {
-    console.log('▲ Deploying to Vercel...');
-
     try {
       // This would implement actual Vercel deployment using their API
       // For now, this is a simulation
@@ -1109,8 +1046,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
         target: 'vercel',
         projectId: targetConfig.projectId,
       };
-
-      console.log('▲ Vercel deployment simulated successfully');
       return deploymentResult;
     } catch (error) {
       throw new Error(`Vercel deployment failed: ${error.message}`);
@@ -1134,8 +1069,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
    * ```
    */
   async verifyDeployments() {
-    console.log('🔍 Verifying deployments...');
-
     const verifications = {};
 
     for (const [targetName, deployResult] of Object.entries(this.results.deployments)) {
@@ -1150,10 +1083,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
       try {
         const verification = await this.verifyDeployment(deployResult.url);
         verifications[targetName] = verification;
-
-        console.log(
-          `${targetName}: ${verification.accessible ? '✅' : '❌'} (${verification.responseTime}ms)`
-        );
       } catch (error) {
         verifications[targetName] = {
           accessible: false,
@@ -1206,8 +1135,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
    * ```
    */
   async performanceTest() {
-    console.log('📊 Running performance tests...');
-
     const performanceResults = {};
 
     for (const [targetName, deployResult] of Object.entries(this.results.deployments)) {
@@ -1216,8 +1143,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
       try {
         const metrics = await this.runPerformanceTest(deployResult.url);
         performanceResults[targetName] = metrics;
-
-        console.log(`📊 ${targetName}: ${metrics.loadTime}ms load time, ${metrics.pageSize}KB`);
       } catch (error) {
         console.warn(`⚠️ Performance test failed for ${targetName}: ${error.message}`);
         performanceResults[targetName] = { error: error.message };
@@ -1253,8 +1178,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
    * @returns {Promise<void>} Cleanup and reporting completion
    */
   async cleanupAndReport() {
-    console.log('🧹 Cleaning up and generating report...');
-
     // Generate final deployment report
     const report = await this.generateFinalReport();
 
@@ -1262,8 +1185,6 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
     await fs.writeFile(path.join(this.deployDir, 'deployment-report.html'), report.html);
 
     await fs.writeFile(path.join(this.deployDir, 'deployment-report.md'), report.markdown);
-
-    console.log('📋 Final deployment report generated');
   }
 
   /**
@@ -1403,8 +1324,6 @@ ${Object.entries(this.results.performance)
    * @returns {Promise<void>} Rollback completion
    */
   async executeRollback(error) {
-    console.log('🔄 Executing rollback procedure...');
-
     // This would implement actual rollback logic
     // For now, this is a placeholder
 
@@ -1413,8 +1332,6 @@ ${Object.entries(this.results.performance)
       reason: error.message,
       success: true, // Would be determined by actual rollback result
     });
-
-    console.log('🔄 Rollback procedure completed');
   }
 
   /**
@@ -1430,7 +1347,7 @@ ${Object.entries(this.results.performance)
         stdio: 'ignore',
       }).trim();
       if (gitTag) return gitTag;
-    } catch (error) {
+    } catch (_error) {
       // Git tag not available
     }
 
@@ -1438,7 +1355,7 @@ ${Object.entries(this.results.performance)
       // Try to get version from package.json
       const packageJson = require(path.join(process.cwd(), 'package.json'));
       if (packageJson.version) return packageJson.version;
-    } catch (error) {
+    } catch (_error) {
       // package.json not available
     }
 
@@ -1458,7 +1375,7 @@ ${Object.entries(this.results.performance)
         stdio: 'ignore',
       }).trim();
       return gitCommit.substring(0, 8);
-    } catch (error) {
+    } catch (_error) {
       return 'unknown';
     }
   }
@@ -1492,7 +1409,7 @@ ${Object.entries(this.results.performance)
             }
           }
         }
-      } catch (error) {
+      } catch (_error) {
         // Skip directories that can't be read
       }
     }
@@ -1583,20 +1500,9 @@ async function main() {
     const pipeline = new DocsDeploymentPipeline(config);
     const results = await pipeline.deploy();
 
-    // Summary output
-    console.log('\n🎉 Deployment Summary:');
-    console.log(`   Status: ${results.success ? '✅ SUCCESS' : '❌ FAILURE'}`);
-    console.log(
-      `   Successful Deployments: ${Object.values(results.deployments).filter((d) => d.success).length}`
-    );
-    console.log(
-      `   Failed Deployments: ${Object.values(results.deployments).filter((d) => !d.success).length}`
-    );
-
     // Display URLs
-    Object.entries(results.deployments).forEach(([target, result]) => {
+    Object.entries(results.deployments).forEach(([_target, result]) => {
       if (result.success && result.url) {
-        console.log(`   ${target}: ${result.url}`);
       }
     });
 

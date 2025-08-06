@@ -6,8 +6,6 @@
 export class DaaService {
   private initialized = false;
 
-  constructor() {}
-
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
@@ -103,7 +101,7 @@ export class DaaService {
     };
   }
 
-  async analyzeCognitivePatterns(agentId?: string): Promise<any> {
+  async analyzeCognitivePatterns(_agentId?: string): Promise<any> {
     // TODO: Implement cognitive pattern analysis
     return {
       patterns: ['problem-solving', 'pattern-recognition'],

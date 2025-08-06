@@ -5,8 +5,7 @@
  * the hybrid TDD approach (70% London + 30% Classical).
  */
 
-import type { ServiceLifecycleStatus, ServiceOperationResponse } from '../../core/interfaces';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '../../types';
+import { ServicePriority, ServiceType } from '../../types';
 import {
   CoordinationServiceAdapter,
   createCoordinationServiceAdapter,
@@ -126,7 +125,7 @@ describe('CoordinationServiceAdapter', () => {
     if (adapter) {
       try {
         await adapter.destroy();
-      } catch (error) {
+      } catch (_error) {
         // Ignore cleanup errors in tests
       }
     }
@@ -583,10 +582,10 @@ describe('CoordinationServiceAdapter', () => {
 
       // Assert
       expect(metrics.memoryUsage).toBeDefined();
-      expect(metrics.memoryUsage!.used).toBeGreaterThan(0);
-      expect(metrics.memoryUsage!.total).toBeGreaterThan(0);
-      expect(metrics.memoryUsage!.percentage).toBeGreaterThanOrEqual(0);
-      expect(metrics.memoryUsage!.percentage).toBeLessThanOrEqual(100);
+      expect(metrics.memoryUsage?.used).toBeGreaterThan(0);
+      expect(metrics.memoryUsage?.total).toBeGreaterThan(0);
+      expect(metrics.memoryUsage?.percentage).toBeGreaterThanOrEqual(0);
+      expect(metrics.memoryUsage?.percentage).toBeLessThanOrEqual(100);
     });
 
     it('should clean up memory on destroy', async () => {
@@ -595,7 +594,7 @@ describe('CoordinationServiceAdapter', () => {
       await adapter.execute('session-create', { name: 'test' });
 
       const initialMetrics = await adapter.getMetrics();
-      const initialMemory = initialMetrics.memoryUsage!.used;
+      const _initialMemory = initialMetrics.memoryUsage?.used;
 
       // Act
       await adapter.destroy();

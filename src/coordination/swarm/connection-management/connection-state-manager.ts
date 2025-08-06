@@ -13,7 +13,6 @@
  * - Real-time connection status monitoring
  */
 
-import { spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 
 // Helper functions and classes moved inline to avoid missing imports
@@ -26,18 +25,14 @@ class Logger {
     this.name = options.name;
   }
   name: string;
-  info(msg: string, ...args: any[]) {
-    console.log(`[INFO] ${this.name}:`, msg, ...args);
-  }
+  info(_msg: string, ..._args: any[]) {}
   error(msg: string, ...args: any[]) {
     console.error(`[ERROR] ${this.name}:`, msg, ...args);
   }
   warn(msg: string, ...args: any[]) {
     console.warn(`[WARN] ${this.name}:`, msg, ...args);
   }
-  debug(msg: string, ...args: any[]) {
-    console.debug(`[DEBUG] ${this.name}:`, msg, ...args);
-  }
+  debug(_msg: string, ..._args: any[]) {}
 }
 
 // Simple error factory

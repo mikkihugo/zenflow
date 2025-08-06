@@ -54,7 +54,6 @@
  * ```
  */
 
-import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
 import { BaseDao } from '../base.dao';
 import type { IDao } from '../interfaces';
 
@@ -109,15 +108,6 @@ import type { IDao } from '../interfaces';
  * ```
  */
 export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
-  constructor(
-    adapter: DatabaseAdapter,
-    logger: ILogger,
-    tableName: string,
-    entitySchema?: Record<string, any>
-  ) {
-    super(adapter, logger, tableName, entitySchema);
-  }
-
   /**
    * Map Database Row to Entity Object
    *
@@ -198,7 +188,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       // Handle number columns
       if (this.isNumberColumn(key) && typeof value === 'string') {
         const numValue = Number(value);
-        entity[key] = isNaN(numValue) ? value : numValue;
+        entity[key] = Number.isNaN(numValue) ? value : numValue;
         continue;
       }
 
@@ -808,7 +798,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
    * });
    * ```
    */
-  async search(field: string, searchTerm: string, options?: any): Promise<T[]> {
+  async search(field: string, searchTerm: string, _options?: any): Promise<T[]> {
     this.logger.debug(`Searching in ${this.tableName}.${field} for: ${searchTerm}`);
 
     try {

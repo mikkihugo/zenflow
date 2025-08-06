@@ -19,8 +19,8 @@ import type {
   TaskDocumentEntity,
   VisionDocumentEntity,
 } from '../entities/document-entities';
-import { createDao, createManager, DatabaseTypes, EntityTypes } from '../index';
-import type { IDataAccessObject, IRepository } from '../interfaces';
+import { createDao, EntityTypes } from '../index';
+import type { IRepository } from '../interfaces';
 
 export interface DocumentCreateOptions {
   autoGenerateRelationships?: boolean;
@@ -64,8 +64,6 @@ export class DocumentManager {
   private projectRepository!: IRepository<ProjectEntity>;
   private relationshipRepository!: IRepository<DocumentRelationshipEntity>;
   private workflowRepository!: IRepository<DocumentWorkflowStateEntity>;
-  private documentDAO!: IDataAccessObject<BaseDocumentEntity>;
-  private projectDAO!: IDataAccessObject<ProjectEntity>;
 
   constructor(private databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql') {}
 
@@ -992,23 +990,14 @@ export class DocumentManager {
    * @param notificationConfig.urgency
    */
   private async sendWorkflowNotification(
-    document: BaseDocumentEntity,
-    notificationConfig: {
+    _document: BaseDocumentEntity,
+    _notificationConfig: {
       recipients: string[];
       template: string;
       channel: 'email' | 'slack' | 'teams';
       urgency: 'low' | 'medium' | 'high';
     }
-  ): Promise<void> {
-    // In production, this would integrate with notification services
-    console.log(`Sending workflow notification for document ${document.id}:`, {
-      document: document.title,
-      recipients: notificationConfig.recipients,
-      template: notificationConfig.template,
-      channel: notificationConfig.channel,
-      urgency: notificationConfig.urgency,
-    });
-  }
+  ): Promise<void> {}
 
   /**
    * Get workflow definition for a workflow type
@@ -1026,7 +1015,7 @@ export class DocumentManager {
       default_workflow: new DefaultWorkflowDefinition(),
     };
 
-    return definitions[workflowName] || definitions['default_workflow'];
+    return definitions[workflowName] || definitions.default_workflow;
   }
 
   /**
@@ -1584,7 +1573,7 @@ class FeatureWorkflowDefinition extends WorkflowDefinition {
   }
 
   getAutomationRules(stage: string): WorkflowAutomationRule[] {
-    return this.rules.filter((rule) => stage === 'approved');
+    return this.rules.filter((_rule) => stage === 'approved');
   }
 }
 
@@ -1687,7 +1676,7 @@ class EpicWorkflowDefinition extends WorkflowDefinition {
   }
 
   getAutomationRules(stage: string): WorkflowAutomationRule[] {
-    return this.rules.filter((rule) => stage === 'groomed');
+    return this.rules.filter((_rule) => stage === 'groomed');
   }
 }
 

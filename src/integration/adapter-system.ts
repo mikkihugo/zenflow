@@ -228,7 +228,7 @@ export class MCPAdapter implements ProtocolAdapter {
 
   private async connectStdio(config: ConnectionConfig): Promise<void> {
     // Stdio MCP connection implementation
-    const { spawn } = require('child_process');
+    const { spawn } = require('node:child_process');
 
     this.stdioProcess = spawn('npx', ['claude-zen', 'swarm', 'mcp', 'start'], {
       stdio: ['pipe', 'pipe', 'pipe'],
@@ -267,7 +267,7 @@ export class MCPAdapter implements ProtocolAdapter {
         params: message.payload,
       };
 
-      this.stdioProcess.stdin.write(JSON.stringify(jsonRpcMessage) + '\n');
+      this.stdioProcess.stdin.write(`${JSON.stringify(jsonRpcMessage)}\n`);
 
       // Set up response handler with timeout
       const timeout = setTimeout(() => {
@@ -290,7 +290,7 @@ export class MCPAdapter implements ProtocolAdapter {
     });
   }
 
-  private async makeHTTPRequest(endpoint: string, method: string, body?: any): Promise<any> {
+  private async makeHTTPRequest(_endpoint: string, _method: string, body?: any): Promise<any> {
     // HTTP request implementation placeholder
     return { success: true, data: body };
   }
@@ -439,7 +439,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
       };
 
       // Send message
-      this.connection!.send(
+      this.connection?.send(
         JSON.stringify({
           ...message,
           expectResponse: true,
@@ -447,7 +447,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
       );
 
       // This would be properly implemented with response tracking
-      this.connection!.addEventListener('message', responseHandler, { once: true });
+      this.connection?.addEventListener('message', responseHandler, { once: true });
     });
   }
 
@@ -531,10 +531,6 @@ export class WebSocketAdapter implements ProtocolAdapter {
       setTimeout(
         () => {
           this.reconnectAttempts++;
-          // This would trigger reconnection with stored config
-          console.log(
-            `Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})`
-          );
         },
         this.reconnectDelay * 2 ** this.reconnectAttempts
       );
@@ -672,7 +668,7 @@ export class RESTAdapter implements ProtocolAdapter {
     switch (auth.type) {
       case 'bearer':
         if (auth.credentials?.token) {
-          this.authHeaders['Authorization'] = `Bearer ${auth.credentials.token}`;
+          this.authHeaders.Authorization = `Bearer ${auth.credentials.token}`;
         }
         break;
       case 'api-key':
@@ -683,7 +679,7 @@ export class RESTAdapter implements ProtocolAdapter {
       case 'basic':
         if (auth.credentials?.username && auth.credentials?.password) {
           const encoded = btoa(`${auth.credentials.username}:${auth.credentials.password}`);
-          this.authHeaders['Authorization'] = `Basic ${encoded}`;
+          this.authHeaders.Authorization = `Basic ${encoded}`;
         }
         break;
     }
@@ -869,7 +865,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
     };
   }
 
-  private async sendLegacyMessage(message: any): Promise<any> {
+  private async sendLegacyMessage(_message: any): Promise<any> {
     // Send message using legacy protocol
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -921,8 +917,6 @@ export class AdapterFactory {
 export class ProtocolManager extends EventEmitter {
   private adapters: Map<string, ProtocolAdapter> = new Map();
   private routingTable: Map<string, string> = new Map();
-  private messageQueue: Array<{ message: ProtocolMessage; protocol: string }> = [];
-  private processing = false;
 
   async addProtocol(name: string, protocol: string, config: ConnectionConfig): Promise<void> {
     if (this.adapters.has(name)) {

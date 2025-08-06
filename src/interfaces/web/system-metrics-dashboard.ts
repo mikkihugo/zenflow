@@ -3,9 +3,9 @@
 
 import { EventEmitter } from 'node:events';
 import { createDAO, createRepository, DatabaseTypes, EntityTypes } from '../../database/index';
-import type { IDataAccessObject, IRepository } from '../../database/interfaces';
+import type { IRepository } from '../../database/interfaces';
 // Import UACL for unified client management
-import { type ClientInstance, ClientType, UACLHelpers, uacl } from '../clients/index';
+import { UACLHelpers, uacl } from '../clients/index';
 import type MCPPerformanceMetrics from '../mcp/performance-metrics';
 import type EnhancedMemory from '../memory/memory';
 
@@ -41,7 +41,6 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   private mcpMetrics: MCPPerformanceMetrics;
   private enhancedMemory: EnhancedMemory;
   private vectorRepository?: IRepository<any>;
-  private vectorDAO?: IDataAccessObject<any>;
   private config: Required<DashboardConfig>;
   private refreshTimer?: NodeJS.Timeout;
   private isRunning = false;

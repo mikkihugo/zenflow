@@ -11,7 +11,7 @@ import { EventEmitter } from 'node:events';
 import { FACTIntegration } from '../../knowledge/knowledge-client';
 
 // Import actual client implementations
-import { APIClient, createAPIClient } from '../api/http/client';
+import { createAPIClient } from '../api/http/client';
 import { WebSocketClient } from '../api/websocket/client';
 import { ExternalMCPClient } from '../mcp/external-mcp-client';
 import {
@@ -285,7 +285,7 @@ class MCPClientFactory implements ClientFactory {
       throw new Error('Invalid client type for MCP factory');
     }
 
-    const mcpConfig = config as MCPClientConfig;
+    const _mcpConfig = config as MCPClientConfig;
     const mcpClient = new ExternalMCPClient();
 
     return {
@@ -387,7 +387,6 @@ export class ClientManager extends EventEmitter {
     this.emit('initialized');
 
     if (this.config.enableLogging) {
-      console.log('✅ UACL Client Manager initialized successfully');
     }
   }
 
@@ -445,7 +444,6 @@ export class ClientManager extends EventEmitter {
       this.emit('client:connected', clientId);
 
       if (this.config.enableLogging) {
-        console.log(`✅ Client ${clientId} connected successfully`);
       }
 
       return true;
@@ -506,7 +504,6 @@ export class ClientManager extends EventEmitter {
       this.emit('client:disconnected', clientId);
 
       if (this.config.enableLogging) {
-        console.log(`📡 Client ${clientId} disconnected`);
       }
 
       return true;
@@ -674,7 +671,6 @@ export class ClientManager extends EventEmitter {
     const attempts = metrics.connections.failed;
     if (attempts >= this.config.maxRetryAttempts) {
       if (this.config.enableLogging) {
-        console.log(`❌ Max reconnection attempts reached for client ${clientId}`);
       }
       return;
     }
@@ -689,9 +685,6 @@ export class ClientManager extends EventEmitter {
     this.reconnectTimers.set(clientId, timer);
 
     if (this.config.enableLogging) {
-      console.log(
-        `🔄 Scheduling reconnect for client ${clientId} in ${delay}ms (attempt ${attempts + 1})`
-      );
     }
   }
 
@@ -755,7 +748,6 @@ export class ClientManager extends EventEmitter {
    */
   async shutdown(): Promise<void> {
     if (this.config.enableLogging) {
-      console.log('🛑 Shutting down UACL Client Manager...');
     }
 
     // Clear all reconnect timers
@@ -774,7 +766,6 @@ export class ClientManager extends EventEmitter {
     this.emit('shutdown');
 
     if (this.config.enableLogging) {
-      console.log('✅ UACL Client Manager shutdown complete');
     }
   }
 }

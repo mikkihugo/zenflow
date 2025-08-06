@@ -72,7 +72,7 @@ export async function createIntegratedSystem() {
   container.register(CORE_TOKENS.Config, {
     type: 'singleton',
     create: () => ({
-      get: (key: string, defaultValue?: any) => defaultValue,
+      get: (_key: string, defaultValue?: any) => defaultValue,
       set: () => {},
       has: () => false,
     }),
@@ -82,7 +82,7 @@ export async function createIntegratedSystem() {
   container.register(DATABASE_TOKENS.ProviderFactory, {
     type: 'singleton',
     create: () => ({
-      createProvider: async (type: string, config: any) => {
+      createProvider: async (_type: string, _config: any) => {
         // This would be properly implemented in production
         throw new Error('Provider factory not fully implemented for this example');
       },

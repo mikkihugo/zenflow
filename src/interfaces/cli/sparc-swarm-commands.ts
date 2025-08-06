@@ -15,7 +15,6 @@ import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
 } from '../../database/entities/product-entities';
-import { DocumentManager } from '../../database/managers/document-manager';
 
 const logger = createLogger('SPARCSwarmCLI');
 
@@ -44,12 +43,7 @@ export function createSPARCSwarmCommands(): Command {
 
         await bridge.initialize();
 
-        console.log('✅ SPARC-Swarm integration initialized');
-        console.log(`📊 Swarm size: ${options.swarmSize} agents`);
-        console.log('🔗 Connected to database-driven product flow');
-
         if (options.projectId) {
-          console.log(`📁 Project context: ${options.projectId}`);
         }
       } catch (error) {
         console.error('❌ Failed to initialize SPARC-Swarm integration:', error);
@@ -85,18 +79,7 @@ export function createSPARCSwarmCommands(): Command {
         }
 
         // Assign to SPARC swarm
-        const assignmentId = await bridge.assignFeatureToSparcs(feature as FeatureDocumentEntity);
-
-        console.log('🔄 Feature assigned to SPARC swarm');
-        console.log(`📋 Assignment ID: ${assignmentId}`);
-        console.log(`🎯 Feature: ${feature.title}`);
-        console.log(`⚡ Priority: ${feature.priority}`);
-        console.log('\n🔍 SPARC phases will be executed:');
-        console.log('  1. 📝 Specification - Requirements analysis');
-        console.log('  2. 📐 Pseudocode - Algorithm design');
-        console.log('  3. 🏗️ Architecture - System design');
-        console.log('  4. 🔍 Refinement - Code review & optimization');
-        console.log('  5. 🎯 Completion - Testing & deployment');
+        const _assignmentId = await bridge.assignFeatureToSparcs(feature as FeatureDocumentEntity);
       } catch (error) {
         console.error('❌ Failed to assign feature to SPARC swarm:', error);
         process.exit(1);
@@ -131,13 +114,7 @@ export function createSPARCSwarmCommands(): Command {
         }
 
         // Assign to SPARC swarm
-        const assignmentId = await bridge.assignTaskToSparcs(task as TaskDocumentEntity);
-
-        console.log('🔄 Task assigned to SPARC swarm');
-        console.log(`📋 Assignment ID: ${assignmentId}`);
-        console.log(`🔧 Task: ${task.title}`);
-        console.log(`⚡ Priority: ${task.priority}`);
-        console.log('\n🔍 SPARC methodology will be applied for implementation');
+        const _assignmentId = await bridge.assignTaskToSparcs(task as TaskDocumentEntity);
       } catch (error) {
         console.error('❌ Failed to assign task to SPARC swarm:', error);
         process.exit(1);
@@ -157,40 +134,16 @@ export function createSPARCSwarmCommands(): Command {
         const { bridge, sparcSwarm } = await initializeSystems();
 
         // Get status
-        const bridgeStatus = bridge.getStatus();
-        const workStatus = await bridge.getWorkStatus();
-        const sparcMetrics = sparcSwarm.getSPARCMetrics();
+        const _bridgeStatus = bridge.getStatus();
+        const _workStatus = await bridge.getWorkStatus();
+        const _sparcMetrics = sparcSwarm.getSPARCMetrics();
         const activeTasks = sparcSwarm.getActiveSPARCTasks();
-
-        console.log('\n🌉 Database-SPARC Bridge Status');
-        console.log(`  Status: ${bridgeStatus.bridgeStatus}`);
-        console.log(`  Active assignments: ${bridgeStatus.activeAssignments}`);
-        console.log(`  Completed work: ${bridgeStatus.completedWork}`);
-        console.log(`  Database connection: ${bridgeStatus.databaseConnection ? '✅' : '❌'}`);
-
-        console.log('\n🤖 SPARC Swarm Metrics');
-        console.log(`  Agent count: ${sparcMetrics.agentCount}`);
-        console.log(`  Active agents: ${sparcMetrics.activeAgents}`);
-        console.log(`  SPARC tasks total: ${sparcMetrics.sparcTasksTotal}`);
-        console.log(`  SPARC tasks completed: ${sparcMetrics.sparcTasksCompleted}`);
-        console.log(
-          `  Average cycle time: ${Math.round(sparcMetrics.averageSparcCycleTime / 1000)}s`
-        );
-
-        console.log('\n📋 Active SPARC Tasks');
         if (activeTasks.length === 0) {
-          console.log('  No active tasks');
         } else {
           activeTasks.forEach((task) => {
-            console.log(`  🔄 ${task.id} (${task.type})`);
-            console.log(`     Current phase: ${task.currentPhase}`);
-            console.log(`     Priority: ${task.priority}`);
-            console.log(`     Source: ${task.sourceDocument.title}`);
-
             if (options.detailed) {
-              console.log('     Phase progress:');
-              Object.entries(task.phaseProgress).forEach(([phase, progress]) => {
-                const status =
+              Object.entries(task.phaseProgress).forEach(([_phase, progress]) => {
+                const _status =
                   progress.status === 'completed'
                     ? '✅'
                     : progress.status === 'in_progress'
@@ -198,20 +151,10 @@ export function createSPARCSwarmCommands(): Command {
                       : progress.status === 'failed'
                         ? '❌'
                         : '⏳';
-                console.log(`       ${status} ${phase}: ${progress.status}`);
               });
             }
-            console.log('');
           });
         }
-
-        console.log('\n📊 Work Assignment Metrics');
-        console.log(`  Total assignments: ${workStatus.metrics.totalAssignments}`);
-        console.log(`  Completed: ${workStatus.metrics.completedAssignments}`);
-        console.log(`  Success rate: ${(workStatus.metrics.successRate * 100).toFixed(1)}%`);
-        console.log(
-          `  Avg completion time: ${Math.round(workStatus.metrics.averageCompletionTime / 1000)}s`
-        );
       } catch (error) {
         console.error('❌ Failed to get SPARC swarm status:', error);
         process.exit(1);
@@ -222,14 +165,12 @@ export function createSPARCSwarmCommands(): Command {
   sparcSwarmCmd
     .command('phases')
     .description('Show SPARC phase metrics and performance')
-    .action(async (options) => {
+    .action(async (_options) => {
       try {
         logger.info('📊 Getting SPARC phase metrics');
 
         const { sparcSwarm } = await initializeSystems();
         const metrics = sparcSwarm.getSPARCMetrics();
-
-        console.log('\n🔍 SPARC Phase Performance');
 
         const phases = [
           'specification',
@@ -239,13 +180,7 @@ export function createSPARCSwarmCommands(): Command {
           'completion',
         ] as const;
         phases.forEach((phase) => {
-          const phaseMetrics = metrics.phaseMetrics[phase];
-          console.log(`\n📋 ${phase.toUpperCase()} Phase:`);
-          console.log(`  Tasks processed: ${phaseMetrics.tasksProcessed}`);
-          console.log(`  Success rate: ${(phaseMetrics.successRate * 100).toFixed(1)}%`);
-          console.log(
-            `  Avg completion time: ${Math.round(phaseMetrics.averageCompletionTime / 1000)}s`
-          );
+          const _phaseMetrics = metrics.phaseMetrics[phase];
         });
       } catch (error) {
         console.error('❌ Failed to get SPARC phase metrics:', error);
@@ -273,7 +208,7 @@ export function createSPARCSwarmCommands(): Command {
         const { PseudocodePhaseEngine } = await import(
           '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
         );
-        const fs = await import('fs').then((m) => m.promises);
+        const fs = await import('node:fs').then((m) => m.promises);
 
         const engine = new PseudocodePhaseEngine();
 
@@ -281,19 +216,8 @@ export function createSPARCSwarmCommands(): Command {
         const specContent = await fs.readFile(options.specFile, 'utf8');
         const specification = JSON.parse(specContent);
 
-        console.log(`📖 Processing specification: ${specification.id || 'Unknown'}`);
-        console.log(`🏷️ Domain: ${specification.domain}`);
-
         // Generate pseudocode structure
         const pseudocodeStructure = await engine.generatePseudocode(specification);
-
-        console.log('✅ Pseudocode generation completed!');
-        console.log(`📊 Generated ${pseudocodeStructure.algorithms.length} algorithms`);
-        console.log(`🏗️ Generated ${pseudocodeStructure.dataStructures.length} data structures`);
-        console.log(`🔄 Generated ${pseudocodeStructure.controlFlows.length} control flows`);
-        console.log(
-          `💡 Identified ${pseudocodeStructure.optimizations.length} optimization opportunities`
-        );
 
         // Format output
         let output: string;
@@ -305,16 +229,7 @@ export function createSPARCSwarmCommands(): Command {
 
         // Write output
         await fs.writeFile(options.output, output, 'utf8');
-        console.log(`💾 Output saved to: ${options.output}`);
-
-        // Display summary
-        console.log('\n📋 Algorithm Summary:');
-        pseudocodeStructure.algorithms.forEach((alg, index) => {
-          console.log(`  ${index + 1}. ${alg.name}: ${alg.purpose}`);
-          console.log(
-            `     Complexity: ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space`
-          );
-        });
+        pseudocodeStructure.algorithms.forEach((_alg, _index) => {});
       } catch (error) {
         console.error('❌ Failed to generate pseudocode:', error);
         process.exit(1);
@@ -333,7 +248,7 @@ export function createSPARCSwarmCommands(): Command {
         const { PseudocodePhaseEngine } = await import(
           '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
         );
-        const fs = await import('fs').then((m) => m.promises);
+        const fs = await import('node:fs').then((m) => m.promises);
 
         const engine = new PseudocodePhaseEngine();
 
@@ -341,37 +256,19 @@ export function createSPARCSwarmCommands(): Command {
         const pseudocodeContent = await fs.readFile(options.pseudocodeFile, 'utf8');
         const pseudocodeStructure = JSON.parse(pseudocodeContent);
 
-        console.log(`📖 Validating pseudocode: ${pseudocodeStructure.id || 'Unknown'}`);
-
         // Validate the pseudocode structure
         const validation = await engine.validatePseudocode(pseudocodeStructure);
 
-        console.log('\n📊 Validation Results:');
-        console.log(`Overall Score: ${(validation.overallScore * 100).toFixed(1)}%`);
-        console.log(`Status: ${validation.approved ? '✅ APPROVED' : '❌ NEEDS IMPROVEMENT'}`);
-        console.log(
-          `Complexity Verification: ${validation.complexityVerification ? '✅ PASSED' : '❌ FAILED'}`
-        );
-
         if (validation.logicErrors.length > 0) {
-          console.log('\n🚨 Logic Errors Found:');
-          validation.logicErrors.forEach((error, index) => {
-            console.log(`  ${index + 1}. ${error}`);
-          });
+          validation.logicErrors.forEach((_error, _index) => {});
         }
 
         if (validation.optimizationSuggestions.length > 0) {
-          console.log('\n💡 Optimization Suggestions:');
-          validation.optimizationSuggestions.forEach((suggestion, index) => {
-            console.log(`  ${index + 1}. ${suggestion}`);
-          });
+          validation.optimizationSuggestions.forEach((_suggestion, _index) => {});
         }
 
         if (validation.recommendations.length > 0) {
-          console.log('\n📋 Recommendations:');
-          validation.recommendations.forEach((rec, index) => {
-            console.log(`  ${index + 1}. ${rec}`);
-          });
+          validation.recommendations.forEach((_rec, _index) => {});
         }
 
         // Exit with appropriate code
@@ -398,7 +295,7 @@ export function createSPARCSwarmCommands(): Command {
         const { PseudocodePhaseEngine } = await import(
           '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
         );
-        const fs = await import('fs').then((m) => m.promises);
+        const fs = await import('node:fs').then((m) => m.promises);
 
         const engine = new PseudocodePhaseEngine();
 
@@ -411,25 +308,11 @@ export function createSPARCSwarmCommands(): Command {
           specification.domain = options.domain;
         }
 
-        console.log(`📖 Processing specification for: ${specification.domain}`);
-
         // Generate algorithms only
         const algorithms = await engine.generateAlgorithmPseudocode(specification);
 
-        console.log(`✅ Generated ${algorithms.length} algorithms`);
-
         // Display algorithms
-        algorithms.forEach((alg, index) => {
-          console.log(`\n${index + 1}. 🔧 ${alg.name}`);
-          console.log(`   Purpose: ${alg.purpose}`);
-          console.log(`   Inputs: ${alg.inputs.map((i) => i.name).join(', ')}`);
-          console.log(`   Outputs: ${alg.outputs.map((o) => o.name).join(', ')}`);
-          console.log(`   Steps: ${alg.steps.length}`);
-          console.log(
-            `   Complexity: ${alg.complexity.timeComplexity} time, ${alg.complexity.spaceComplexity} space`
-          );
-          console.log(`   Optimizations: ${alg.optimizations.length}`);
-        });
+        algorithms.forEach((_alg, _index) => {});
       } catch (error) {
         console.error('❌ Failed to generate algorithms:', error);
         process.exit(1);
@@ -486,12 +369,6 @@ export function createSPARCSwarmCommands(): Command {
 
         const example = complexityExamples[options.complexity as keyof typeof complexityExamples];
 
-        console.log('\n🎯 Demo Task Configuration');
-        console.log(`  Complexity: ${options.complexity}`);
-        console.log(`  Title: ${example.title}`);
-        console.log(`  Description: ${example.description}`);
-        console.log(`  Acceptance Criteria: ${example.acceptance_criteria.length} items`);
-
         // Create demo task document
         const demoTask: TaskDocumentEntity = {
           id: `demo-task-${Date.now()}`,
@@ -534,44 +411,16 @@ export function createSPARCSwarmCommands(): Command {
           acceptance_criteria: example.acceptance_criteria,
         };
 
-        console.log('\n🚀 Starting SPARC demonstration...');
-
         // Assign to SPARC swarm
-        const assignmentId = await bridge.assignTaskToSparcs(demoTask);
-
-        console.log(`✅ Demo task assigned: ${assignmentId}`);
-        console.log('\n🔄 SPARC phases will execute:');
-        console.log('  1. 📝 Specification phase starting...');
+        const _assignmentId = await bridge.assignTaskToSparcs(demoTask);
 
         // In a real implementation, we would wait for actual completion
         // For demo, show what would happen
         setTimeout(() => {
-          console.log('  ✅ Specification completed');
-          console.log('  2. 📐 Pseudocode phase starting...');
-
           setTimeout(() => {
-            console.log('  ✅ Pseudocode completed');
-            console.log('  3. 🏗️ Architecture phase starting...');
-
             setTimeout(() => {
-              console.log('  ✅ Architecture completed');
-              console.log('  4. 🔍 Refinement phase starting...');
-
               setTimeout(() => {
-                console.log('  ✅ Refinement completed');
-                console.log('  5. 🎯 Completion phase starting...');
-
-                setTimeout(() => {
-                  console.log('  ✅ Completion phase finished');
-                  console.log('\n🎉 SPARC demonstration completed successfully!');
-                  console.log('\n📊 Demo Results:');
-                  console.log('  ✅ All 5 SPARC phases executed');
-                  console.log('  🤖 Multiple specialized agents coordinated');
-                  console.log('  📋 Implementation artifacts generated');
-                  console.log('  🔗 Results stored in database-driven system');
-                  console.log('\nThe SPARC methodology provides systematic implementation');
-                  console.log('of Features and Tasks from the database-driven product flow.');
-                }, 500);
+                setTimeout(() => {}, 500);
               }, 500);
             }, 500);
           }, 500);
@@ -724,12 +573,10 @@ export function addArchitectureCommands(program: Command): void {
     .option('--format <format>', 'Output format (json|markdown)', 'json')
     .action(async (options) => {
       try {
-        console.log('🏗️ Generating system architecture from pseudocode...');
-
         const { ArchitecturePhaseEngine } = await import(
           '../../coordination/swarm/sparc/phases/architecture/architecture-engine'
         );
-        const fs = await import('fs').then((m) => m.promises);
+        const fs = await import('node:fs').then((m) => m.promises);
 
         const engine = new ArchitecturePhaseEngine();
 
@@ -740,7 +587,7 @@ export function addArchitectureCommands(program: Command): void {
         // Convert to expected format if needed
         if (Array.isArray(pseudocodeData)) {
           pseudocodeData = {
-            id: 'generated-' + Date.now(),
+            id: `generated-${Date.now()}`,
             algorithms: pseudocodeData,
             coreAlgorithms: pseudocodeData,
             dataStructures: [],
@@ -773,8 +620,6 @@ export function addArchitectureCommands(program: Command): void {
             architecturalPatterns: systemArchitecture.architecturalPatterns,
           };
         } else {
-          // Use internal method when only pseudocode is available
-          console.log('⚠️ No specification provided - using pseudocode-only generation');
           architecture = await (engine as any).designArchitecture(pseudocodeData);
         }
 
@@ -784,23 +629,9 @@ export function addArchitectureCommands(program: Command): void {
           const markdownContent = generateArchitectureMarkdown(architecture);
           const mdPath = outputPath.replace(/\.json$/, '.md');
           await fs.writeFile(mdPath, markdownContent, 'utf8');
-          console.log(`✅ Architecture documentation written to: ${mdPath}`);
         } else {
           await fs.writeFile(outputPath, JSON.stringify(architecture, null, 2), 'utf8');
-          console.log(`✅ Architecture written to: ${outputPath}`);
         }
-
-        // Display summary
-        console.log('\n📊 Architecture Summary:');
-        console.log(`  - Components: ${architecture.components?.length || 0}`);
-        console.log(`  - Interfaces: ${architecture.systemArchitecture?.interfaces?.length || 0}`);
-        console.log(`  - Data Flows: ${architecture.systemArchitecture?.dataFlow?.length || 0}`);
-        console.log(
-          `  - Quality Attributes: ${architecture.systemArchitecture?.qualityAttributes?.length || 0}`
-        );
-        console.log(
-          `  - Architecture Patterns: ${architecture.systemArchitecture?.architecturalPatterns?.length || 0}`
-        );
       } catch (error) {
         console.error('❌ Failed to generate architecture:', error);
         process.exit(1);
@@ -815,12 +646,10 @@ export function addArchitectureCommands(program: Command): void {
     .option('--detailed', 'Show detailed validation results')
     .action(async (options) => {
       try {
-        console.log('🔍 Validating architecture design...');
-
         const { ArchitecturePhaseEngine } = await import(
           '../../coordination/swarm/sparc/phases/architecture/architecture-engine'
         );
-        const fs = await import('fs').then((m) => m.promises);
+        const fs = await import('node:fs').then((m) => m.promises);
 
         const engine = new ArchitecturePhaseEngine();
 
@@ -835,21 +664,12 @@ export function addArchitectureCommands(program: Command): void {
         const overallScore =
           validationResults.reduce((sum, result) => sum + result.score, 0) /
           validationResults.length;
-        const passed = validationResults.filter((r) => r.passed).length;
-        const total = validationResults.length;
-
-        console.log('\n📋 Validation Results:');
-        console.log(`  Overall Score: ${(overallScore * 100).toFixed(1)}%`);
-        console.log(`  Tests Passed: ${passed}/${total}`);
-        console.log(`  Status: ${overallScore >= 0.7 ? '✅ APPROVED' : '❌ NEEDS IMPROVEMENT'}`);
+        const _passed = validationResults.filter((r) => r.passed).length;
+        const _total = validationResults.length;
 
         if (options.detailed) {
-          console.log('\n📝 Detailed Results:');
-          validationResults.forEach((result, index) => {
-            const status = result.passed ? '✅' : '❌';
-            console.log(`  ${index + 1}. ${status} ${result.criterion}`);
-            console.log(`     Score: ${(result.score * 100).toFixed(1)}%`);
-            console.log(`     Feedback: ${result.feedback}`);
+          validationResults.forEach((result, _index) => {
+            const _status = result.passed ? '✅' : '❌';
           });
         }
 
@@ -873,12 +693,10 @@ export function addArchitectureCommands(program: Command): void {
     .option('--format <format>', 'Output format (json|markdown)', 'json')
     .action(async (options) => {
       try {
-        console.log('📋 Generating implementation plan from architecture...');
-
         const { ArchitecturePhaseEngine } = await import(
           '../../coordination/swarm/sparc/phases/architecture/architecture-engine'
         );
-        const fs = await import('fs').then((m) => m.promises);
+        const fs = await import('node:fs').then((m) => m.promises);
 
         const engine = new ArchitecturePhaseEngine();
 
@@ -895,21 +713,9 @@ export function addArchitectureCommands(program: Command): void {
           const markdownContent = generateImplementationPlanMarkdown(implementationPlan);
           const mdPath = outputPath.replace(/\.json$/, '.md');
           await fs.writeFile(mdPath, markdownContent, 'utf8');
-          console.log(`✅ Implementation plan written to: ${mdPath}`);
         } else {
           await fs.writeFile(outputPath, JSON.stringify(implementationPlan, null, 2), 'utf8');
-          console.log(`✅ Implementation plan written to: ${outputPath}`);
         }
-
-        // Display summary
-        console.log('\n📊 Implementation Plan Summary:');
-        console.log(`  - Phases: ${implementationPlan.phases.length}`);
-        console.log(
-          `  - Total Tasks: ${implementationPlan.phases.reduce((sum, phase) => sum + phase.tasks.length, 0)}`
-        );
-        console.log(`  - Timeline: ${implementationPlan.timeline.totalDuration}`);
-        console.log(`  - Resource Requirements: ${implementationPlan.resourceRequirements.length}`);
-        console.log(`  - Risk Level: ${implementationPlan.riskAssessment.overallRisk}`);
       } catch (error) {
         console.error('❌ Failed to generate implementation plan:', error);
         process.exit(1);

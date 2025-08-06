@@ -11,7 +11,6 @@ import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engin
 import { ProductFlowSystem } from '../../core/product-flow-system';
 import { UnifiedMemorySystem } from '../../core/unified-memory-system';
 import { DatabaseCoordinator } from '../../database/core/database-coordinator';
-import { DocumentManager } from '../../database/managers/document-manager';
 
 describe('E2E: Complete Product Flow → SPARC Integration', () => {
   let productFlowSystem: ProductFlowSystem;

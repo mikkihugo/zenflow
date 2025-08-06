@@ -6,10 +6,9 @@
  * - Classical TDD (30%): For event correlation algorithms, health calculations, and performance metrics
  */
 
-import { EventEmitter } from 'events';
-import { afterEach, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { EventManagerTypes } from '../../core/interfaces';
-import type { EventPriority, SystemLifecycleEvent } from '../../types';
+import type { SystemLifecycleEvent } from '../../types';
 import {
   createDefaultSystemEventAdapterConfig,
   createSystemEventAdapter,
@@ -166,8 +165,8 @@ describe('SystemEventAdapter', () => {
       };
 
       // Mock a slow emission
-      const originalEmit = adapter['processEventEmission'];
-      adapter['processEventEmission'] = vi.fn(
+      const _originalEmit = adapter.processEventEmission;
+      adapter.processEventEmission = vi.fn(
         () => new Promise((resolve) => setTimeout(resolve, 100))
       );
 
@@ -550,7 +549,7 @@ describe('SystemEventAdapter', () => {
       for (let i = 0; i < 2; i++) {
         try {
           await adapter.emit({} as any); // Invalid event to trigger error
-        } catch (error) {
+        } catch (_error) {
           // Expected error
         }
       }
@@ -581,7 +580,7 @@ describe('SystemEventAdapter', () => {
       for (let i = 0; i < 5; i++) {
         try {
           await adapter.emit({} as any); // Invalid event
-        } catch (error) {
+        } catch (_error) {
           // Expected error
         }
       }
@@ -596,7 +595,7 @@ describe('SystemEventAdapter', () => {
       for (let i = 0; i < 25; i++) {
         try {
           await adapter.emit({} as any); // Invalid event
-        } catch (error) {
+        } catch (_error) {
           // Expected error
         }
       }
@@ -624,7 +623,7 @@ describe('SystemEventAdapter', () => {
 
       // Emit events with controlled timing
       for (const eventConfig of events) {
-        const startTime = Date.now();
+        const _startTime = Date.now();
         const event: SystemLifecycleEvent = {
           id: `perf-event-${eventConfig.delay}`,
           timestamp: new Date(),

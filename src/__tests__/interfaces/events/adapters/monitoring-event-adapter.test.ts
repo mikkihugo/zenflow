@@ -6,9 +6,7 @@
  * - Classical TDD (30%): For metrics calculations, performance analytics, data aggregation
  */
 
-import { EventEmitter } from 'events';
 import { EventManagerTypes } from '../../core/interfaces';
-import type { MonitoringEvent } from '../../types';
 import {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
@@ -40,7 +38,7 @@ describe('MonitoringEventAdapter', () => {
   describe('TDD London: Monitoring Component Integration', () => {
     it('should wrap performance monitors and forward events to UEL', async () => {
       // Mock performance monitor
-      const mockPerformanceMonitor = {
+      const _mockPerformanceMonitor = {
         start: jest.fn(),
         stop: jest.fn(),
         record: jest.fn(),
@@ -74,7 +72,7 @@ describe('MonitoringEventAdapter', () => {
     });
 
     it('should wrap health components and correlate health events', async () => {
-      const mockHealthComponent = {
+      const _mockHealthComponent = {
         checkHealth: jest.fn().mockResolvedValue({ status: 'healthy', score: 0.95 }),
         getStatus: jest.fn().mockReturnValue('healthy'),
       };
@@ -99,7 +97,7 @@ describe('MonitoringEventAdapter', () => {
     });
 
     it('should wrap analytics components and process insights', async () => {
-      const mockAnalyticsComponent = {
+      const _mockAnalyticsComponent = {
         analyze: jest.fn().mockResolvedValue({ insights: ['trend-detected'] }),
         getInsights: jest.fn().mockReturnValue({ anomalies: [] }),
       };
@@ -130,7 +128,7 @@ describe('MonitoringEventAdapter', () => {
     });
 
     it('should wrap alert management and handle escalation', async () => {
-      const mockAlertManager = {
+      const _mockAlertManager = {
         createAlert: jest.fn(),
         escalateAlert: jest.fn(),
         resolveAlert: jest.fn(),
@@ -158,7 +156,7 @@ describe('MonitoringEventAdapter', () => {
     });
 
     it('should wrap dashboard integration and handle real-time updates', async () => {
-      const mockDashboard = {
+      const _mockDashboard = {
         update: jest.fn(),
         render: jest.fn(),
         streamData: jest.fn(),
@@ -218,8 +216,8 @@ describe('MonitoringEventAdapter', () => {
       // Verify correlation was created and updated
       const correlation = adapter.getMonitoringCorrelatedEvents(correlationId);
       expect(correlation).toBeDefined();
-      expect(correlation!.events).toHaveLength(2);
-      expect(correlation!.status).toBe('active');
+      expect(correlation?.events).toHaveLength(2);
+      expect(correlation?.status).toBe('active');
     });
 
     it('should perform health checks on wrapped components', async () => {
@@ -701,8 +699,8 @@ describe('MonitoringEventAdapter', () => {
 
       const correlation = adapter.getMonitoringCorrelatedEvents(correlationId);
       expect(correlation).toBeDefined();
-      expect(correlation!.events).toHaveLength(3);
-      expect(correlation!.status).toBe('completed'); // Should be marked complete
+      expect(correlation?.events).toHaveLength(3);
+      expect(correlation?.status).toBe('completed'); // Should be marked complete
     });
 
     it('should handle high-throughput monitoring scenarios', async () => {

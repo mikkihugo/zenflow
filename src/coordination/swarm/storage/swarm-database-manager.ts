@@ -7,9 +7,9 @@
  * - Leverages existing repository and DAO patterns
  */
 
-import { EventEmitter } from 'events';
-import path from 'path';
-import type { DALFactory, RepositoryConfig } from '../../../database/factory.js';
+import { EventEmitter } from 'node:events';
+import path from 'node:path';
+import type { DALFactory } from '../../../database/factory.js';
 import type {
   ICoordinationRepository,
   IGraphRepository,
@@ -51,9 +51,9 @@ export class SwarmDatabaseManager extends EventEmitter {
   private swarmClusters: Map<string, SwarmRepositories> = new Map();
 
   constructor(
-    @Inject(SWARM_TOKENS.Config) private config: SwarmDatabaseConfig,
-    @Inject(DATABASE_TOKENS.DALFactory) private dalFactory: DALFactory,
-    @Inject(CORE_TOKENS.Logger) private logger: ILogger
+    @Inject(SWARM_TOKENS.Config) private _config: SwarmDatabaseConfig,
+    @Inject(DATABASE_TOKENS.DALFactory) private _dalFactory: DALFactory,
+    @Inject(CORE_TOKENS.Logger) private _logger: ILogger
   ) {
     super();
     this.logger.info('SwarmDatabaseManager initialized with DI');
@@ -464,7 +464,7 @@ export class SwarmDatabaseManager extends EventEmitter {
     });
   }
 
-  private async initializeSwarmSchemas(cluster: SwarmRepositories): Promise<void> {
+  private async initializeSwarmSchemas(_cluster: SwarmRepositories): Promise<void> {
     // Register swarm-specific entity types
     this.dalFactory.registerEntityType('SwarmGraph', {
       schema: {

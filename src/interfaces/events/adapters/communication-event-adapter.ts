@@ -16,31 +16,21 @@ import type { WebSocketClientAdapter } from '../../clients/adapters/websocket-cl
 import type { HTTPMCPServer } from '../../mcp/http-mcp-server';
 import type {
   EventBatch,
-  EventEmissionError,
   EventEmissionOptions,
-  EventError,
   EventFilter,
   EventListener,
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
   EventQueryOptions,
-  EventRetryExhaustedError,
   EventSubscription,
-  EventSubscriptionError,
-  EventTimeoutError,
   EventTransform,
   IEventManager,
   SystemEvent,
 } from '../core/interfaces';
-import { EventManagerTypes, EventTypeGuards } from '../core/interfaces';
+import { EventManagerTypes } from '../core/interfaces';
 import type { CommunicationEvent } from '../types';
-import {
-  DefaultEventManagerConfigs,
-  EventCategories,
-  EventPriorityMap,
-  UELTypeGuards,
-} from '../types';
+import { EventPriorityMap } from '../types';
 
 // Note: MCP SDK imports commented out for tests - would be real imports in production
 // import { McpServer } from '@modelcontextprotocol/sdk/server/mcp';
@@ -55,14 +45,14 @@ interface Logger {
 }
 
 const createLogger = (name: string): Logger => ({
-  info: (message: string, meta?: any) => console.log(`[INFO] ${name}: ${message}`, meta),
-  debug: (message: string, meta?: any) => console.log(`[DEBUG] ${name}: ${message}`, meta),
+  info: (_message: string, _meta?: any) => {},
+  debug: (_message: string, _meta?: any) => {},
   warn: (message: string, meta?: any) => console.warn(`[WARN] ${name}: ${message}`, meta),
   error: (message: string, meta?: any, error?: any) =>
     console.error(`[ERROR] ${name}: ${message}`, meta, error),
 });
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 
 /**
  * Communication event adapter configuration extending UEL EventManagerConfig
@@ -519,7 +509,7 @@ export class CommunicationEventAdapter implements IEventManager {
    */
   async emit<T extends SystemEvent>(event: T, options?: EventEmissionOptions): Promise<void> {
     const startTime = Date.now();
-    const eventId = event.id || this.generateEventId();
+    const _eventId = event.id || this.generateEventId();
 
     try {
       // Validate event (assume valid for SystemEvent - would check CommunicationEvent fields in real implementation)
@@ -1598,7 +1588,7 @@ export class CommunicationEventAdapter implements IEventManager {
       try {
         // Restore original methods if they were wrapped
         wrapped.originalMethods.forEach((originalMethod, methodName) => {
-          if (wrapped.component && wrapped.component[methodName]) {
+          if (wrapped.component?.[methodName]) {
             wrapped.component[methodName] = originalMethod;
           }
         });
@@ -1624,7 +1614,7 @@ export class CommunicationEventAdapter implements IEventManager {
    */
   private async processCommunicationEventEmission<T extends SystemEvent>(
     event: T,
-    options?: EventEmissionOptions
+    _options?: EventEmissionOptions
   ): Promise<void> {
     // Add to event history
     this.eventHistory.push(event);
@@ -1989,7 +1979,7 @@ export class CommunicationEventAdapter implements IEventManager {
 
   private async processCommunicationBatchQueued<T extends CommunicationEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    _options?: EventEmissionOptions
   ): Promise<void> {
     this.eventQueue.push(...(batch.events as CommunicationEvent[]));
   }
@@ -2016,15 +2006,6 @@ export class CommunicationEventAdapter implements IEventManager {
       await this.emit(event, options);
       await new Promise((resolve) => setTimeout(resolve, throttleMs));
     }
-  }
-
-  /**
-   * Utility methods for communication event processing
-   *
-   * @param event
-   */
-  private validateCommunicationEvent(event: SystemEvent): boolean {
-    return !!(event.id && event.timestamp && event.source && event.type);
   }
 
   private applyFilter(event: CommunicationEvent, filter: EventFilter): boolean {
@@ -2203,12 +2184,12 @@ export class CommunicationEventAdapter implements IEventManager {
     }
   }
 
-  private getActiveConnectionCount(componentName: string): number {
+  private getActiveConnectionCount(_componentName: string): number {
     // Would query actual component for connection count
     return this.connectionMetrics.size;
   }
 
-  private getActiveMessageCount(componentName: string): number {
+  private getActiveMessageCount(_componentName: string): number {
     // Would query actual component for active message count
     return this.messageMetrics.size;
   }

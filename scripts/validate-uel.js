@@ -22,9 +22,9 @@
  * @fileoverview UEL System Validation CLI Tool
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require('node:fs').promises;
+const path = require('node:path');
+const { execSync } = require('node:child_process');
 
 class UELValidationCLI {
   constructor() {
@@ -80,9 +80,8 @@ class UELValidationCLI {
 
   createLogger() {
     return {
-      info: (msg, ...args) => {
+      info: (_msg, ..._args) => {
         if (this.options.verbose || this.options.format !== 'json') {
-          console.log(`ℹ️  ${msg}`, ...args);
         }
       },
       warn: (msg, ...args) => {
@@ -91,63 +90,18 @@ class UELValidationCLI {
       error: (msg, ...args) => {
         console.error(`❌ ${msg}`, ...args);
       },
-      success: (msg, ...args) => {
+      success: (_msg, ..._args) => {
         if (this.options.format !== 'json') {
-          console.log(`✅ ${msg}`, ...args);
         }
       },
-      debug: (msg, ...args) => {
+      debug: (_msg, ..._args) => {
         if (this.options.verbose) {
-          console.log(`🐛 ${msg}`, ...args);
         }
       },
     };
   }
 
-  showHelp() {
-    console.log(`
-🔍 UEL (Unified Event Layer) System Validation Tool
-
-USAGE:
-  node scripts/validate-uel.js [options]
-  npm run validate:uel [-- options]
-
-OPTIONS:
-  --verbose, -v         Show detailed validation output
-  --health             Perform system health validation only
-  --integration        Perform integration validation only
-  --events             Validate event types and schemas
-  --compatibility      Test EventEmitter compatibility
-  --export-report      Export detailed validation report
-  --fix-issues         Attempt to fix detected issues
-  --format=FORMAT      Output format (json, table, summary)
-  --help, -h           Show this help message
-
-EXAMPLES:
-  # Full validation with detailed output
-  node scripts/validate-uel.js --verbose
-  
-  # Health check only
-  node scripts/validate-uel.js --health
-  
-  # Export JSON report
-  node scripts/validate-uel.js --format=json --export-report
-  
-  # Fix issues automatically
-  node scripts/validate-uel.js --fix-issues
-
-FORMATS:
-  json     - JSON output for programmatic use
-  table    - Formatted table output (default)
-  summary  - Brief summary only
-
-EXIT CODES:
-  0 - All validations passed
-  1 - Validation warnings found
-  2 - Validation errors found
-  3 - Critical system issues found
-    `);
-  }
+  showHelp() {}
 
   async run() {
     try {
@@ -759,7 +713,7 @@ EXIT CODES:
 
       // Test event manager creation performance
       const createStartTime = Date.now();
-      const systemManager = await uel.createSystemEventManager('perf-test');
+      const _systemManager = await uel.createSystemEventManager('perf-test');
       const createTime = Date.now() - createStartTime;
 
       if (createTime > 1000) {
@@ -846,7 +800,6 @@ EXIT CODES:
   outputResults(report) {
     switch (this.options.format) {
       case 'json':
-        console.log(JSON.stringify(report, null, 2));
         break;
 
       case 'summary':
@@ -862,79 +815,43 @@ EXIT CODES:
   outputSummary(report) {
     const { summary } = report;
 
-    console.log('\n🔍 UEL Validation Summary');
-    console.log('─'.repeat(50));
-    console.log(`Status: ${this.getStatusEmoji(summary.status)} ${summary.status.toUpperCase()}`);
-    console.log(`Tests: ${summary.passedTests}/${summary.totalTests} passed`);
-    console.log(`Score: ${summary.overallScore}/100`);
-    console.log(`Time: ${summary.totalTime}ms`);
-
     if (report.details.errors.length > 0) {
-      console.log(`\n❌ ${report.details.errors.length} error(s) found`);
     }
 
     if (report.details.warnings.length > 0) {
-      console.log(`⚠️  ${report.details.warnings.length} warning(s) found`);
     }
 
     if (report.details.recommendations.length > 0) {
-      console.log(`💡 ${report.details.recommendations.length} recommendation(s) available`);
     }
   }
 
   outputTable(report) {
-    console.log('\n🔍 UEL Validation Results');
-    console.log('─'.repeat(80));
-
     // Results table
     for (const result of report.results) {
-      const status = result.success ? '✅' : '❌';
-      const score = result.score.toString().padStart(3);
-      const name = result.name.padEnd(30);
-
-      console.log(`${status} ${name} Score: ${score}/100`);
+      const _status = result.success ? '✅' : '❌';
+      const _score = result.score.toString().padStart(3);
+      const _name = result.name.padEnd(30);
 
       if (this.options.verbose) {
         if (result.errors && result.errors.length > 0) {
-          result.errors.forEach((error) => {
-            console.log(`    ❌ ${error.message}`);
-          });
+          result.errors.forEach((_error) => {});
         }
 
         if (result.warnings && result.warnings.length > 0) {
-          result.warnings.forEach((warning) => {
-            console.log(`    ⚠️  ${warning.message}`);
-          });
+          result.warnings.forEach((_warning) => {});
         }
       }
     }
 
-    // Summary
-    console.log('\n📊 Overall Summary');
-    console.log('─'.repeat(50));
-    console.log(
-      `Status: ${this.getStatusEmoji(report.summary.status)} ${report.summary.status.toUpperCase()}`
-    );
-    console.log(`Tests: ${report.summary.passedTests}/${report.summary.totalTests} passed`);
-    console.log(`Score: ${report.summary.overallScore}/100`);
-    console.log(`Time: ${report.summary.totalTime}ms`);
-
     // Issues summary
     if (report.details.errors.length > 0) {
-      console.log(`\n❌ Issues Found (${report.details.errors.length}):`);
-      report.details.errors.slice(0, 5).forEach((error) => {
-        console.log(`   • ${error.message}`);
-      });
+      report.details.errors.slice(0, 5).forEach((_error) => {});
       if (report.details.errors.length > 5) {
-        console.log(`   ... and ${report.details.errors.length - 5} more`);
       }
     }
 
     if (report.details.recommendations.length > 0 && this.options.verbose) {
-      console.log(`\n💡 Recommendations (${report.details.recommendations.length}):`);
-      report.details.recommendations.slice(0, 3).forEach((rec) => {
-        console.log(`   • ${rec.message}`);
-      });
+      report.details.recommendations.slice(0, 3).forEach((_rec) => {});
     }
   }
 

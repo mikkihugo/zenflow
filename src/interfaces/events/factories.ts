@@ -14,7 +14,6 @@ import type {
   EventManagerMetrics,
   EventManagerStatus,
   EventManagerType,
-  EventSubscription,
   IEventManager,
   IEventManagerFactory,
   IEventManagerRegistry,
@@ -30,16 +29,9 @@ import type {
   MonitoringEvent,
   NeuralEvent,
   SystemLifecycleEvent,
-  UELEvent,
   WorkflowEvent,
 } from './types';
-import {
-  DefaultEventManagerConfigs,
-  EventCategories,
-  EventConstants,
-  EventPriorityMap,
-  UELTypeGuards,
-} from './types';
+import { DefaultEventManagerConfigs, EventCategories } from './types';
 
 /**
  * Configuration for event manager creation through factories
@@ -320,8 +312,8 @@ export class UELFactory {
   private transactionLog = new Map<string, EventManagerTransaction>();
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @inject(CORE_TOKENS.Config) private config: IConfig
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.Config) private _config: IConfig
   ) {
     this.initializeFactories();
   }
@@ -576,7 +568,7 @@ export class UELFactory {
   async healthCheckAll(): Promise<EventManagerStatus[]> {
     const results: EventManagerStatus[] = [];
 
-    for (const [managerId, entry] of Object.entries(this.managerRegistry)) {
+    for (const [_managerId, entry] of Object.entries(this.managerRegistry)) {
       try {
         const status = await entry.manager.healthCheck();
         results.push(status);
@@ -847,8 +839,6 @@ export class UELFactory {
         FactoryClass = WorkflowEventManagerFactory;
         break;
       }
-
-      case EventManagerTypes.CUSTOM:
       default: {
         const { CustomEventManagerFactory } = await import(
           './implementations/custom-event-manager-factory'
@@ -867,7 +857,7 @@ export class UELFactory {
   private validateManagerConfig(
     managerType: EventManagerType,
     name: string,
-    config?: Partial<EventManagerConfig>
+    _config?: Partial<EventManagerConfig>
   ): void {
     if (!EventTypeGuards.isEventManagerType(managerType)) {
       throw new Error(`Invalid event manager type: ${managerType}`);
@@ -891,8 +881,6 @@ export class UELFactory {
     const presetConfig = preset ? EventManagerPresets[preset] : {};
 
     return {
-      name,
-      type: managerType,
       ...defaults,
       ...presetConfig,
       ...config,
@@ -958,7 +946,7 @@ export class UELRegistry implements IEventManagerRegistry {
   private globalEventManagers = new Map<string, IEventManager>();
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger
   ) {}
 
   registerFactory<T extends EventManagerConfig>(

@@ -11,7 +11,6 @@
  * 4. Returns completed implementation artifacts
  */
 
-import { EventEmitter } from 'node:events';
 import { createLogger } from '../../../core/logger';
 import type {
   FeatureDocumentEntity,
@@ -81,7 +80,6 @@ export interface SPARCSwarmMetrics extends SwarmMetrics {
  */
 export class SPARCSwarmCoordinator extends SwarmCoordinator {
   private sparcTasks = new Map<string, SPARCTask>();
-  private phaseAgents = new Map<SPARCPhase, string[]>();
   private sparcMetrics: SPARCSwarmMetrics;
 
   constructor() {
@@ -400,7 +398,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    * @param phase
    * @param sparcTask
    */
-  private selectPhaseAgents(phase: SPARCPhase, sparcTask: SPARCTask): SwarmAgent[] {
+  private selectPhaseAgents(phase: SPARCPhase, _sparcTask: SPARCTask): SwarmAgent[] {
     const allAgents = this.getAgents();
     const phaseSpecialists = this.getPhaseSpecialists(phase);
 

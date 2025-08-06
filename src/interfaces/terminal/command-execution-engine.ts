@@ -271,46 +271,6 @@ export class CommandExecutionEngine {
   }
 
   /**
-   * Handle hive command - high-level Hive coordination
-   *
-   * @param context
-   */
-  private static async handleHiveCommand(context: ExecutionContext): Promise<CommandResult> {
-    const action = context.args[0];
-    if (!action) {
-      return {
-        success: false,
-        error:
-          'Hive action required. Available actions: status, query, agents, tasks, knowledge, sync, health, contribute',
-      };
-    }
-    logger.debug(`Executing hive action: ${action}`);
-    switch (action) {
-      case 'status':
-        return CommandExecutionEngine.handleHiveStatus(context);
-      case 'query':
-        return CommandExecutionEngine.handleHiveQuery(context);
-      case 'agents':
-        return CommandExecutionEngine.handleHiveAgents(context);
-      case 'tasks':
-        return CommandExecutionEngine.handleHiveTasks(context);
-      case 'knowledge':
-        return CommandExecutionEngine.handleHiveKnowledge(context);
-      case 'sync':
-        return CommandExecutionEngine.handleHiveSync(context);
-      case 'health':
-        return CommandExecutionEngine.handleHiveHealth(context);
-      case 'contribute':
-        return CommandExecutionEngine.handleHiveContribute(context);
-      default:
-        return {
-          success: false,
-          error: `Unknown hive action: ${action}. Available: status, query, agents, tasks, knowledge, sync, health, contribute`,
-        };
-    }
-  }
-
-  /**
    * Handle swarm command - swarm management
    *
    * @param context
@@ -982,7 +942,7 @@ export class CommandExecutionEngine {
                 }
                 return;
               }
-            } catch (e) {
+            } catch (_e) {
               // Ignore parsing errors, continue looking
             }
           }
@@ -1015,7 +975,7 @@ export class CommandExecutionEngine {
 
       // Send the request
       try {
-        mcpProcess.stdin?.write(JSON.stringify(request) + '\n');
+        mcpProcess.stdin?.write(`${JSON.stringify(request)}\n`);
         mcpProcess.stdin?.end();
       } catch (error) {
         if (!isResolved) {
@@ -1169,7 +1129,7 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleSwarmMonitor(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmMonitor(_context: ExecutionContext): Promise<CommandResult> {
     try {
       // Call the swarm MCP tool for real monitoring data
       const mcpResult = await CommandExecutionEngine.callMcpTool('swarm_monitor', {});
@@ -1200,7 +1160,7 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleSwarmMetrics(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmMetrics(_context: ExecutionContext): Promise<CommandResult> {
     try {
       // Call the swarm MCP tool for real agent metrics
       const mcpResult = await CommandExecutionEngine.callMcpTool('agent_metrics', {});
@@ -1259,36 +1219,6 @@ export class CommandExecutionEngine {
       return {
         success: false,
         error: `Failed to orchestrate task: ${error.message}`,
-      };
-    }
-  }
-
-  /**
-   * Handle hive status command
-   *
-   * @param _context
-   */
-  private static async handleHiveStatus(_context: ExecutionContext): Promise<CommandResult> {
-    try {
-      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_status', {});
-
-      if (mcpResult.success) {
-        return {
-          success: true,
-          message: 'Hive system status retrieved successfully',
-          data: mcpResult.data,
-        };
-      } else {
-        return {
-          success: false,
-          error: `Failed to get Hive status: ${mcpResult.error}`,
-        };
-      }
-    } catch (error) {
-      logger.error('Error calling hive_status MCP tool:', error);
-      return {
-        success: false,
-        error: `Failed to get Hive status: ${error.message}`,
       };
     }
   }

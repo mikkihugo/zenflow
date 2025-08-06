@@ -9,13 +9,10 @@
  * - End-to-end specification → pseudocode flow
  */
 
-import { writeFile } from 'fs/promises';
+import { writeFile } from 'node:fs/promises';
 import type { Priority, RiskLevel } from './coordination/swarm/sparc/types/sparc-types';
 
 async function runComprehensiveTest() {
-  console.log('🎯 SPARC Pseudocode Engine - Comprehensive End-to-End Test');
-  console.log('='.repeat(60));
-
   const results = {
     coreEngine: false,
     cliIntegration: false,
@@ -25,54 +22,22 @@ async function runComprehensiveTest() {
   };
 
   try {
-    // 1. Test Core Engine
-    console.log('\n📍 Phase 1: Testing Core Pseudocode Engine...');
     const coreTest = await testCoreEngine();
     results.coreEngine = coreTest.success;
-    console.log(`   Result: ${coreTest.success ? '✅ PASSED' : '❌ FAILED'}`);
-
-    // 2. Test CLI Integration
-    console.log('\n📍 Phase 2: Testing CLI Integration...');
     const cliTest = await testCLIIntegration();
     results.cliIntegration = cliTest.success;
-    console.log(`   Result: ${cliTest.success ? '✅ PASSED' : '❌ FAILED'}`);
-
-    // 3. Test MCP Integration
-    console.log('\n📍 Phase 3: Testing MCP Tools Integration...');
     const mcpTest = await testMCPIntegration();
     results.mcpIntegration = mcpTest.success;
-    console.log(`   Result: ${mcpTest.success ? '✅ PASSED' : '❌ FAILED'}`);
-
-    // 4. Test End-to-End Flow
-    console.log('\n📍 Phase 4: Testing End-to-End Flow...');
     const e2eTest = await testEndToEndFlow();
     results.endToEndFlow = e2eTest.success;
-    console.log(`   Result: ${e2eTest.success ? '✅ PASSED' : '❌ FAILED'}`);
 
     // Overall assessment
     results.overallSuccess = Object.values(results)
       .slice(0, -1)
       .every((r) => r);
 
-    // Final report
-    console.log('\n' + '='.repeat(60));
-    console.log('📊 COMPREHENSIVE TEST RESULTS');
-    console.log('='.repeat(60));
-    console.log(`🔧 Core Engine:           ${results.coreEngine ? '✅ PASSED' : '❌ FAILED'}`);
-    console.log(`🖥️  CLI Integration:       ${results.cliIntegration ? '✅ PASSED' : '❌ FAILED'}`);
-    console.log(`🔌 MCP Integration:       ${results.mcpIntegration ? '✅ PASSED' : '❌ FAILED'}`);
-    console.log(`🔄 End-to-End Flow:       ${results.endToEndFlow ? '✅ PASSED' : '❌ FAILED'}`);
-    console.log('─'.repeat(60));
-    console.log(`🎯 OVERALL STATUS:        ${results.overallSuccess ? '✅ SUCCESS' : '❌ FAILED'}`);
-
     if (results.overallSuccess) {
-      console.log('\n🎉 SPARC Pseudocode Engine (Sub-task 4.2) - IMPLEMENTATION COMPLETE!');
-      console.log('✅ All integration requirements satisfied');
-      console.log('✅ Phase 2 ready for production use');
-      console.log('✅ CLI and MCP tools functional');
-      console.log('✅ End-to-end specification → pseudocode flow working');
     } else {
-      console.log('\n⚠️  Some tests failed - review implementation');
     }
 
     return results;
@@ -168,8 +133,8 @@ async function testCLIIntegration() {
     await writeFile('/tmp/cli-test-spec.json', JSON.stringify(testSpec, null, 2));
 
     // Import CLI command functions (simulate CLI usage)
-    const { exec } = await import('child_process');
-    const { promisify } = await import('util');
+    const { exec } = await import('node:child_process');
+    const { promisify } = await import('node:util');
     const execAsync = promisify(exec);
 
     // Test CLI commands (simulate via direct execution)
@@ -273,9 +238,6 @@ async function testMCPIntegration() {
 
 async function testEndToEndFlow() {
   try {
-    // Simulate complete Phase 1 → Phase 2 flow
-    console.log('   🔄 Simulating Phase 1 → Phase 2 integration...');
-
     // Phase 1 Output (Specification)
     const phase1Output = {
       id: 'e2e-test-phase1-output',

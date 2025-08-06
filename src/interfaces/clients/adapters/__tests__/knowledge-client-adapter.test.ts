@@ -7,8 +7,7 @@
  * - Classical TDD (30%): Test actual computation and data transformation
  */
 
-import { EventEmitter } from 'node:events';
-import { ClientStatuses, ProtocolTypes } from '../../types';
+import { ProtocolTypes } from '../../types';
 import {
   createCustomKnowledgeClient,
   createFACTClient,
@@ -305,7 +304,7 @@ describe('KnowledgeClientAdapter', () => {
           timeout: 45000,
         };
 
-        const adapter = new KnowledgeClientAdapter(uaclConfig);
+        const _adapter = new KnowledgeClientAdapter(uaclConfig);
 
         // Verify the FACT integration was created with correct config
         expect(
@@ -395,12 +394,12 @@ describe('KnowledgeClientAdapter', () => {
 
         // Verify sources extraction
         expect(response.sources).toHaveLength(2);
-        expect(response.sources![0]).toEqual({
+        expect(response.sources?.[0]).toEqual({
           title: 'web_scraper result',
           url: 'fact://tool/web_scraper',
           relevance: 1.0,
         });
-        expect(response.sources![1]).toEqual({
+        expect(response.sources?.[1]).toEqual({
           title: 'documentation_parser result',
           url: 'fact://tool/documentation_parser',
           relevance: 0.9,
