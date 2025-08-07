@@ -83,7 +83,7 @@ export class ConnectionStateManager extends EventEmitter {
 
     this.logger = new Logger({
       name: 'connection-state-manager',
-      level: process.env.LOG_LEVEL || 'INFO',
+      level: process.env['LOG_LEVEL'] || 'INFO',
       metadata: { component: 'connection-state-manager' },
     });
 

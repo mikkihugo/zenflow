@@ -1174,13 +1174,13 @@ class ConsensusEngine extends EventEmitter {
   }
 
   private async sendAppendEntries(
-    followerId: string,
+    _followerId: string,
     entries: LogEntry[]
   ): Promise<AppendEntriesResponse> {
     const prevLogIndex = this.state.log.length - entries.length - 1;
     const prevLogTerm = prevLogIndex >= 0 ? this.state.log[prevLogIndex].term : 0;
 
-    const request: AppendEntriesRequest = {
+    const _request: AppendEntriesRequest = {
       term: this.state.currentTerm,
       leaderId: this.nodeId,
       prevLogIndex,

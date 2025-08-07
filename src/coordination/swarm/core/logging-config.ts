@@ -98,10 +98,10 @@ export class LoggingConfig {
     const logger = new Logger({
       name: component,
       level,
-      enableStderr: process.env.MCP_MODE === 'stdio' || options.enableStderr,
-      enableFile: process.env.LOG_TO_FILE === 'true' || options.enableFile,
-      formatJson: process.env.LOG_FORMAT === 'json' || options.formatJson,
-      logDir: process.env.LOG_DIR || options.logDir || './logs',
+      enableStderr: process.env['MCP_MODE'] === 'stdio' || options.enableStderr,
+      enableFile: process.env['LOG_TO_FILE'] === 'true' || options.enableFile,
+      formatJson: process.env['LOG_FORMAT'] === 'json' || options.formatJson,
+      logDir: process.env['LOG_DIR'] || options.logDir || './logs',
       ...options,
     });
 
@@ -174,14 +174,14 @@ export class LoggingConfig {
       globalLevel: this.globalLevel || 'Not set (using component defaults)',
       componentLevels: this.componentLevels,
       enabledFeatures: {
-        fileLogging: process.env.LOG_TO_FILE === 'true',
-        jsonFormat: process.env.LOG_FORMAT === 'json',
-        stderrOutput: process.env.MCP_MODE === 'stdio',
-        logDirectory: process.env.LOG_DIR || './logs',
+        fileLogging: process.env['LOG_TO_FILE'] === 'true',
+        jsonFormat: process.env['LOG_FORMAT'] === 'json',
+        stderrOutput: process.env['MCP_MODE'] === 'stdio',
+        logDirectory: process.env['LOG_DIR'] || './logs',
       },
       environment: {
-        MCP_MODE: process.env.MCP_MODE,
-        NODE_ENV: process.env.NODE_ENV,
+        MCP_MODE: process.env['MCP_MODE'],
+        NODE_ENV: process.env['NODE_ENV'],
       },
     };
 

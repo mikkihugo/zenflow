@@ -394,12 +394,15 @@ export class TopologyManager extends EventEmitter {
 
     // Initialize distances
     for (let i = 0; i < n; i++) {
-      dist[i][i] = 0;
+      const distI = dist[i];
+      if (!distI) continue;
+      distI[i] = 0;
       const node = nodes[i];
+      if (!node) continue;
       for (const [targetId] of node.connections) {
         const j = nodeIds.indexOf(targetId);
         if (j !== -1) {
-          dist[i][j] = 1; // Unweighted for simplicity
+          distI[j] = 1; // Unweighted for simplicity
         }
       }
     }
@@ -407,9 +410,13 @@ export class TopologyManager extends EventEmitter {
     // Floyd-Warshall
     for (let k = 0; k < n; k++) {
       for (let i = 0; i < n; i++) {
+        const distI = dist[i];
+        if (!distI) continue;
         for (let j = 0; j < n; j++) {
-          if (dist[i][k] + dist[k][j] < dist[i][j]) {
-            dist[i][j] = dist[i][k] + dist[k][j];
+          const distK = dist[k];
+          if (!distK) continue;
+          if (distI[k] + distK[j] < distI[j]) {
+            distI[j] = distI[k] + distK[j];
           }
         }
       }
@@ -418,9 +425,11 @@ export class TopologyManager extends EventEmitter {
     // Find maximum finite distance
     let maxDist = 0;
     for (let i = 0; i < n; i++) {
+      const distI = dist[i];
+      if (!distI) continue;
       for (let j = 0; j < n; j++) {
-        if (dist[i][j] !== Infinity && dist[i][j] > maxDist) {
-          maxDist = dist[i][j];
+        if (distI[j] !== Infinity && distI[j] > maxDist) {
+          maxDist = distI[j];
         }
       }
     }
@@ -437,12 +446,15 @@ export class TopologyManager extends EventEmitter {
     const nodeIds = nodes.map((n) => n.id);
 
     for (let i = 0; i < n; i++) {
-      dist[i][i] = 0;
+      const distI = dist[i];
+      if (!distI) continue;
+      distI[i] = 0;
       const node = nodes[i];
+      if (!node) continue;
       for (const [targetId] of node.connections) {
         const j = nodeIds.indexOf(targetId);
         if (j !== -1) {
-          dist[i][j] = 1;
+          distI[j] = 1;
         }
       }
     }
