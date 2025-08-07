@@ -6,10 +6,12 @@
  * and automated development workflows.
  */
 
-// Core CLI Engine
-export { AdvancedCLIEngine, AdvancedCommandRegistry } from './advanced-cli-engine';
+// Import for internal use
+import { AdvancedCLIEngine, AdvancedCommandRegistry } from './advanced-cli-engine';
+import EnhancedTerminalRouter from './enhanced-terminal-router';
 
-// Enhanced Terminal Router
+// Re-export for external use
+export { AdvancedCLIEngine, AdvancedCommandRegistry } from './advanced-cli-engine';
 export { default as EnhancedTerminalRouter } from './enhanced-terminal-router';
 
 // SPARC Swarm Commands

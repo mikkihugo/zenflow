@@ -7,7 +7,7 @@ import { createBatchSystem } from '../coordination/batch';
 import {
   createClaudeZenPattern,
   projectInitBatchTool,
-} from '../coordination/mcp/tools/batch-tools';
+} from '../coordination/swarm/mcp/batch-tools';
 
 /**
  * Example 1: Basic Claude-Zen Pattern

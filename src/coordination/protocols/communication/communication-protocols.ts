@@ -463,7 +463,7 @@ export class CommunicationProtocols extends EventEmitter {
       proposalId,
       voter: this.nodeId,
       decision,
-      reasoning,
+      ...(reasoning && { reasoning }),
       timestamp: new Date(),
       signature: this.signVote(proposalId, decision),
     };
