@@ -7,6 +7,7 @@
 
 import type { ADRDocumentEntity } from '../entities/document-entities';
 import { adrManager } from './adr-manager';
+import { documentManager } from './document-manager';
 
 export interface ADRProposal {
   title: string;

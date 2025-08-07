@@ -331,7 +331,10 @@ export class DomainDiscoveryBridge extends EventEmitter {
     // In a real implementation, this would call AGUI
     // For now, we'll simulate by selecting documents with high relevance
     const selected = documents.filter(
-      (_, index) => (relevanceAnalysis[index]?.suggestedRelevance ?? 0) > 0.6
+      (_, index) => {
+        const analysis = relevanceAnalysis[index];
+        return analysis ? (analysis.suggestedRelevance ?? 0) > 0.6 : false;
+      }
     );
 
     logger.info(`Selected ${selected.length} relevant documents for domain discovery`);

@@ -193,7 +193,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   private checkpointsReached: Set<number> = new Set();
 
   constructor(
-    private discoveryBridge: DomainDiscoveryBridge,
+    private _discoveryBridge: DomainDiscoveryBridge,
     private memoryStore: SessionMemoryStore,
     private agui: AGUIInterface,
     private config: ProgressiveConfidenceConfig = {}
@@ -405,7 +405,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
    *
    * @param _context
    */
-  private async importMoreDocuments(context: DiscoveryContext): Promise<void> {
+  private async importMoreDocuments(_context: DiscoveryContext): Promise<void> {
     logger.info('Importing additional documents for analysis');
 
     // Ask user for more documents to import
@@ -1000,7 +1000,10 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
     for (let i = 0; i < domains.length; i++) {
       for (let j = i + 1; j < domains.length; j++) {
-        const relationship = this.detectRelationship(domains[i], domains[j]);
+        const domain1 = domains[i];
+        const domain2 = domains[j];
+        if (!domain1 || !domain2) continue;
+        const relationship = this.detectRelationship(domain1, domain2);
         if (relationship) {
           this.relationships.push(relationship);
         }
@@ -1367,7 +1370,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
       questionsAsked: this.totalQuestionsAsked,
       questionsAnswered: this.totalQuestionsAnswered,
       significantChanges,
-      validatorId: this.validatorId,
+      ...(this.validatorId !== undefined ? { validatorId: this.validatorId } : {}),
     };
 
     this.validationAuditTrail.push(auditEntry);

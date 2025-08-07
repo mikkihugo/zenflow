@@ -61,7 +61,12 @@ export interface DocumentSearchOptions extends DocumentQueryOptions {
  * @example
  */
 export class DocumentService {
-  private documentRepository: IRepository<BaseDocumentEntity>;
+  private documentRepository!: IRepository<BaseDocumentEntity>;
+  private projectRepository!: IRepository<ProjectEntity>;
+  private relationshipRepository!: IRepository<DocumentRelationshipEntity>;
+  private workflowRepository!: IRepository<DocumentWorkflowStateEntity>;
+  private documentDAO!: IRepository<BaseDocumentEntity>;
+  private coordinator: any; // xxx NEEDS_HUMAN: Define proper coordinator type or import from a module
 
   constructor(private databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql') {}
 
@@ -164,7 +169,7 @@ export class DocumentService {
       return null;
     }
 
-    const document = this.deserializeDocument<T>(result.result.documents[0]);
+    const document: any = this.deserializeDocument<T>(result.result.documents[0]);
 
     // Load relationships if requested
     if (options.includeRelationships) {
@@ -176,7 +181,7 @@ export class DocumentService {
       document.workflowState = await this.getDocumentWorkflowState(id);
     }
 
-    return document;
+    return document as T;
   }
 
   /**

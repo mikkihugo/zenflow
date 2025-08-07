@@ -274,7 +274,7 @@ export class AgentLifecycleManager extends EventEmitter {
   private terminationQueue: TerminationRequest[] = [];
   private healthMonitor: HealthMonitor;
   private performanceTracker: PerformanceTracker;
-  private resourceMonitor: ResourceMonitor;
+  // private resourceMonitor: ResourceMonitor;
   private capabilityDiscovery: CapabilityDiscovery;
   private scalingEngine: ScalingEngine;
   private recoveryEngine: RecoveryEngine;
@@ -292,7 +292,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
     this.healthMonitor = new HealthMonitor(this.config, this.logger);
     this.performanceTracker = new PerformanceTracker(this.config, this.logger);
-    this.resourceMonitor = new ResourceMonitor(this.config, this.logger);
+    // this.resourceMonitor = new ResourceMonitor(this.config, this.logger);
     this.capabilityDiscovery = new CapabilityDiscovery(this.logger);
     this.scalingEngine = new ScalingEngine(this.config, this.logger);
     this.recoveryEngine = new RecoveryEngine(this.config, this.logger);
