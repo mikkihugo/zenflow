@@ -83,9 +83,9 @@ export interface KnowledgeDiscoveryContext {
  */
 export class KnowledgeAwareDiscovery extends EventEmitter {
   private config: KnowledgeAwareConfig;
-  private hiveFact?: HiveFACTSystem;
-  private swarmKnowledge?: SwarmKnowledgeSync;
-  private memoryStore?: SessionMemoryStore;
+  private hiveFact: HiveFACTSystem | undefined;
+  private swarmKnowledge: SwarmKnowledgeSync | undefined;
+  private memoryStore: SessionMemoryStore | undefined;
   private appliedPatterns = new Map<string, DomainPattern[]>();
 
   constructor(

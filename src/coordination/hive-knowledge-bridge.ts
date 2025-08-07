@@ -233,13 +233,13 @@ export class HiveKnowledgeBridge extends EventEmitter {
     const searchResults = await this.hiveFact?.searchFacts({
       query,
       domains: domain ? [domain] : undefined,
-      limit: filters.limit || 10,
-      sortBy: filters.sortBy || 'relevance',
-    });
+      limit: filters['limit'] || 10,
+      sortBy: filters['sortBy'] || 'relevance',
+    }) ?? [];
 
     // Enhance results with swarm-specific context
     const enhancedResults = await this.enhanceResultsWithSwarmContext(
-      searchResults,
+      searchResults ?? [],
       request.swarmId,
       request.agentId
     );
@@ -250,15 +250,15 @@ export class HiveKnowledgeBridge extends EventEmitter {
       success: true,
       data: {
         results: enhancedResults,
-        total: searchResults.length,
+        total: searchResults?.length ?? 0,
         query,
         domain,
       },
       metadata: {
         source: 'hive-fact',
         timestamp: Date.now(),
-        confidence: this.calculateAverageConfidence(searchResults),
-        cacheHit: searchResults.some((r) => r.accessCount > 1),
+        confidence: this.calculateAverageConfidence(searchResults ?? []),
+        cacheHit: searchResults?.some((r) => (r.accessCount ?? 0) > 1) ?? false,
       },
     };
   }

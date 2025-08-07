@@ -49,10 +49,10 @@ export class HiveSwarmCoordinator extends EventEmitter {
   private syncInterval: number = 3000; // 3 seconds
   private heartbeatInterval: number = 1000; // 1 second
 
-  private syncTimer?: NodeJS.Timeout;
-  private heartbeatTimer?: NodeJS.Timeout;
+  private syncTimer: NodeJS.Timeout | undefined;
+  private heartbeatTimer: NodeJS.Timeout | undefined;
   private connectionHealth = new Map<string, number>(); // swarmId -> health score
-  private hiveFact?: HiveFACTSystem;
+  private hiveFact: HiveFACTSystem | undefined;
 
   constructor(
     private eventBus: IEventBus,
@@ -119,18 +119,18 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
     if (this.syncTimer) {
       clearInterval(this.syncTimer);
-      this.syncTimer = undefined;
+      delete this.syncTimer;
     }
 
     if (this.heartbeatTimer) {
       clearInterval(this.heartbeatTimer);
-      this.heartbeatTimer = undefined;
+      delete this.heartbeatTimer;
     }
 
     // Shutdown HiveFACT
     if (this.hiveFact) {
       await this.hiveFact.shutdown();
-      this.hiveFact = undefined;
+      delete this.hiveFact;
     }
 
     this.emit('hive:coordination:stopped');
