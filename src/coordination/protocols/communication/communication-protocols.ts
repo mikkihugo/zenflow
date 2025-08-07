@@ -823,10 +823,13 @@ export class CommunicationProtocols extends EventEmitter {
     for (let i = 0; i < nodeIds.length; i++) {
       const parentIndex = Math.floor((i - 1) / 2);
       const parentId = i === 0 ? this.nodeId : nodeIds[parentIndex];
-
-      const children = tree.children.get(parentId) || [];
-      children.push(nodeIds[i]);
-      tree.children.set(parentId, children);
+      const nodeId = nodeIds[i];
+      
+      if (parentId && nodeId) {
+        const children = tree.children.get(parentId) || [];
+        children.push(nodeId);
+        tree.children.set(parentId, children);
+      }
     }
 
     this.broadcastTrees.set('default', tree);

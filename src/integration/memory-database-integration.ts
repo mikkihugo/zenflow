@@ -3,7 +3,7 @@
  * Demonstrates how to use the advanced Memory and Database domain features together
  */
 
-import type { DatabaseQuery } from '../database/core/database-coordinator';
+import type { DatabaseQuery } from '../database/interfaces';
 import { DALFactory } from '../database/index';
 import { DIContainer } from '../di/container/di-container';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';

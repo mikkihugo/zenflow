@@ -211,18 +211,13 @@ export class BashSafetyValidator implements SafetyValidator {
       };
     }
 
-    const result: ValidationResult = {
+    return {
       allowed: true,
       riskLevel,
       risks,
       reason: riskLevel === 'LOW' ? 'File operation appears safe' : 'File operation has some risks',
+      ...(risks.length > 0 && { mitigations: this.generateMitigations(risks) }),
     };
-    
-    if (risks.length > 0) {
-      result.mitigations = this.generateMitigations(risks);
-    }
-    
-    return result;
   }
 
   async suggestSaferAlternative(command: string): Promise<string[]> {
@@ -296,16 +291,13 @@ export class BashSafetyValidator implements SafetyValidator {
     // Check against dangerous patterns
     for (const { pattern, type, severity, description, mitigation } of this.DANGEROUS_PATTERNS) {
       if (pattern.test(command)) {
-        const risk: SecurityRisk = {
+        risks.push({
           type,
           pattern: pattern.source,
           severity,
           description,
-        };
-        if (mitigation) {
-          risk.mitigation = mitigation;
-        }
-        risks.push(risk);
+          ...(mitigation && { mitigation }),
+        });
       }
     }
 

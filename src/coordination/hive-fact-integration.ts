@@ -289,10 +289,12 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Build query based on fact type
+   * xxx NEEDS_HUMAN: Currently unused - will be used when FACT orchestrator is implemented
    *
    * @param type
    * @param subject
    */
+  // @ts-expect-error - Unused method for future implementation
   private buildQueryForFactType(type: UniversalFact['type'], subject: string): string {
     switch (type) {
       case 'npm-package':

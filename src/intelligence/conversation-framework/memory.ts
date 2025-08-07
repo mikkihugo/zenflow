@@ -297,6 +297,7 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithSQLite(config: any = {}): Promise<ConversationMemory> {
+    // xxx NEEDS_HUMAN: SQLite backend implementation missing - ../../memory/backends/sqlite.backend.js does not exist
     const { SQLiteBackend } = await import('../../memory/backends/sqlite.backend.js');
     const backend = new SQLiteBackend({ type: 'sqlite', path: config.path || './data', ...config });
     await backend.initialize();
@@ -309,6 +310,7 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithJSON(config: any = {}): Promise<ConversationMemory> {
+    // xxx NEEDS_HUMAN: JSON backend implementation missing - ../../memory/backends/json.backend.js does not exist
     const { JSONBackend } = await import('../../memory/backends/json.backend.js');
     const backend = new JSONBackend({
       type: 'json',
