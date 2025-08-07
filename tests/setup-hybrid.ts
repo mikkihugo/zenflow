@@ -312,6 +312,8 @@ interface SPARCTestScenario {
 declare global {
   /**
    * Neural test data configuration
+   *
+   * @example
    */
   interface NeuralTestConfig {
     /** Type of test data to generate */
@@ -324,6 +326,8 @@ declare global {
 
   /**
    * Neural test data point
+   *
+   * @example
    */
   interface NeuralTestData {
     /** Input values */

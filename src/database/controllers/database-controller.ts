@@ -1507,6 +1507,7 @@ export class DatabaseController {
    * Extract node types from schema (graph-specific)
    *
    * @param schema
+   * @param _schema
    */
   private extractNodeTypes(_schema: any): string[] {
     // This would be implemented based on the actual schema structure
@@ -1518,6 +1519,7 @@ export class DatabaseController {
    * Extract relationship types from schema (graph-specific)
    *
    * @param schema
+   * @param _schema
    */
   private extractRelationshipTypes(_schema: any): string[] {
     // This would be implemented based on the actual schema structure

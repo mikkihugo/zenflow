@@ -650,6 +650,7 @@ export async function distributeSwarmTasks(
  *
  * @param adapter
  * @param timeWindow
+ * @param _timeWindow
  */
 export async function analyzeCoordinationPerformance(
   adapter: CoordinationServiceAdapter,

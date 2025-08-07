@@ -39,17 +39,17 @@ import { EventPriorityMap } from '../types';
 
 // Mock logger for tests - would be real logger in production
 interface Logger {
-  info: (message: string, meta?: any) => void;
-  debug: (message: string, meta?: any) => void;
-  warn: (message: string, meta?: any) => void;
-  error: (message: string, meta?: any, error?: any) => void;
+  info: (message: string, meta?: Record<string, unknown>) => void;
+  debug: (message: string, meta?: Record<string, unknown>) => void;
+  warn: (message: string, meta?: Record<string, unknown>) => void;
+  error: (message: string, meta?: Record<string, unknown>, error?: Error | unknown) => void;
 }
 
 const createLogger = (name: string): Logger => ({
-  info: (_message: string, _meta?: any) => {},
-  debug: (_message: string, _meta?: any) => {},
-  warn: (message: string, meta?: any) => console.warn(`[WARN] ${name}: ${message}`, meta),
-  error: (message: string, meta?: any, error?: any) =>
+  info: (_message: string, _meta?: Record<string, unknown>) => {},
+  debug: (_message: string, _meta?: Record<string, unknown>) => {},
+  warn: (message: string, meta?: Record<string, unknown>) => console.warn(`[WARN] ${name}: ${message}`, meta),
+  error: (message: string, meta?: Record<string, unknown>, error?: Error | unknown) =>
     console.error(`[ERROR] ${name}: ${message}`, meta, error),
 });
 
@@ -244,11 +244,11 @@ interface MonitoringHealthEntry {
  * @example
  */
 interface WrappedMonitoringComponent {
-  component: any;
+  component: RealTimePerformanceMonitor | PerformanceAnalyzer | MetricsCollector | { [key: string]: unknown };
   componentType: 'performance' | 'analytics' | 'health' | 'dashboard' | 'alert';
   wrapper: EventEmitter;
   originalMethods: Map<string, Function>;
-  eventMappings: Map<string, string>;
+  eventMappings: Map<string, MonitoringEvent['type']>;
   isActive: boolean;
   healthMetrics: {
     lastSeen: Date;
@@ -568,7 +568,7 @@ export class MonitoringEventAdapter implements IEventManager {
       this.recordMonitoringEventMetrics({
         eventType: event.type,
         component: event.source,
-        operation: (event as any).operation || 'unknown',
+        operation: event.operation || 'unknown',
         executionTime: duration,
         success: true,
         correlationId: event.correlationId,
@@ -592,7 +592,7 @@ export class MonitoringEventAdapter implements IEventManager {
       this.recordMonitoringEventMetrics({
         eventType: event.type,
         component: event.source,
-        operation: (event as any).operation || 'unknown',
+        operation: event.operation || 'unknown',
         executionTime: duration,
         success: false,
         correlationId: event.correlationId,
@@ -954,12 +954,12 @@ export class MonitoringEventAdapter implements IEventManager {
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
-    handler: (...args: any[]) => void
+    handler: (...args: unknown[]) => void
   ): void {
     this.eventEmitter.on(event, handler);
   }
 
-  off(event: string, handler?: (...args: any[]) => void): void {
+  off(event: string, handler?: (...args: unknown[]) => void): void {
     if (handler) {
       this.eventEmitter.off(event, handler);
     } else {
@@ -967,7 +967,7 @@ export class MonitoringEventAdapter implements IEventManager {
     }
   }
 
-  once(event: string, handler: (...args: any[]) => void): void {
+  once(event: string, handler: (...args: unknown[]) => void): void {
     this.eventEmitter.once(event, handler);
   }
 
@@ -1704,6 +1704,7 @@ export class MonitoringEventAdapter implements IEventManager {
    *
    * @param event
    * @param options
+   * @param _options
    */
   private async processMonitoringEventEmission<T extends SystemEvent>(
     event: T,
@@ -2678,6 +2679,7 @@ export const MonitoringEventHelpers = {
    * @param component
    * @param error
    * @param operation
+   * @param _operation
    * @param details
    */
   createMonitoringErrorEvent(

@@ -95,6 +95,8 @@ export class DSPyEnhancedMCPTools {
 
   /**
    * Enhanced project analysis tool
+   *
+   * @param request
    */
   async analyzeProject(request: MCPToolRequest): Promise<MCPToolResponse> {
     const program = this.programs.get('project_analysis');
@@ -134,6 +136,8 @@ export class DSPyEnhancedMCPTools {
 
   /**
    * Enhanced code generation tool
+   *
+   * @param request
    */
   async generateCode(request: MCPToolRequest): Promise<MCPToolResponse> {
     const program = this.programs.get('code_generation');
@@ -176,6 +180,8 @@ export class DSPyEnhancedMCPTools {
 
   /**
    * Enhanced error resolution tool
+   *
+   * @param request
    */
   async resolveError(request: MCPToolRequest): Promise<MCPToolResponse> {
     const program = this.programs.get('error_resolution');
@@ -220,6 +226,8 @@ export class DSPyEnhancedMCPTools {
 
   /**
    * Enhanced workflow optimization tool
+   *
+   * @param request
    */
   async optimizeWorkflow(request: MCPToolRequest): Promise<MCPToolResponse> {
     const program = this.programs.get('workflow_optimization');
@@ -259,6 +267,8 @@ export class DSPyEnhancedMCPTools {
 
   /**
    * Enhanced task orchestration tool
+   *
+   * @param request
    */
   async orchestrateTask(request: MCPToolRequest): Promise<MCPToolResponse> {
     const program = this.programs.get('task_orchestration');
@@ -333,6 +343,11 @@ export class DSPyEnhancedMCPTools {
 
   /**
    * Learn from tool usage outcomes
+   *
+   * @param toolName
+   * @param parameters
+   * @param success
+   * @param actualResult
    */
   updateToolOutcome(toolName: string, parameters: any, success: boolean, actualResult?: any) {
     const usage = this.toolUsageHistory.find(

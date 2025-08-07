@@ -113,6 +113,9 @@ export class CognitivePatternEvolution {
 
   /**
    * Initialize agent for cognitive pattern evolution
+   *
+   * @param agentId
+   * @param config
    */
   async initializeAgent(agentId: string, config: any) {
     const agentPattern = {
@@ -131,6 +134,8 @@ export class CognitivePatternEvolution {
 
   /**
    * Assess cognitive growth for an agent
+   *
+   * @param agentId
    */
   async assessGrowth(agentId: string) {
     const agentPatterns = Array.from(this.patterns.values()).filter((p) => p.agentId === agentId);
@@ -149,6 +154,9 @@ export class CognitivePatternEvolution {
 
   /**
    * Enable cross-agent evolution
+   *
+   * @param agentIds
+   * @param session
    */
   async enableCrossAgentEvolution(agentIds: string[], _session: any) {
     for (const agentId of agentIds) {
@@ -176,6 +184,8 @@ export class CognitivePatternEvolution {
 
   /**
    * Calculate aggregation weights for gradients
+   *
+   * @param gradients
    */
   calculateAggregationWeights(gradients: any[]) {
     return gradients.map((_, _index) => {
@@ -186,6 +196,8 @@ export class CognitivePatternEvolution {
 
   /**
    * Preserve cognitive history for an agent
+   *
+   * @param agentId
    */
   async preserveHistory(agentId: string) {
     const agentPatterns = Array.from(this.patterns.values()).filter((p) => p.agentId === agentId);
@@ -200,6 +212,9 @@ export class CognitivePatternEvolution {
 
   /**
    * Restore cognitive history for an agent
+   *
+   * @param agentId
+   * @param history
    */
   async restoreHistory(_agentId: string, history: any) {
     if (history?.patterns) {
@@ -212,6 +227,8 @@ export class CognitivePatternEvolution {
 
   /**
    * Extract patterns for an agent
+   *
+   * @param agentId
    */
   async extractPatterns(agentId: string) {
     return Array.from(this.patterns.values())
@@ -226,6 +243,9 @@ export class CognitivePatternEvolution {
 
   /**
    * Transfer patterns to another agent
+   *
+   * @param agentId
+   * @param patterns
    */
   async transferPatterns(agentId: string, patterns: any[]) {
     for (const pattern of patterns) {
@@ -243,6 +263,9 @@ export class CognitivePatternEvolution {
 
   /**
    * Apply pattern updates to an agent
+   *
+   * @param agentId
+   * @param patternUpdates
    */
   async applyPatternUpdates(agentId: string, patternUpdates: any) {
     const agentPatterns = Array.from(this.patterns.values()).filter((p) => p.agentId === agentId);

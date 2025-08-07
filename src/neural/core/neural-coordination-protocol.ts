@@ -138,6 +138,9 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Register an agent with the coordination protocol
+   *
+   * @param agentId
+   * @param agent
    */
   async registerAgent(agentId: string, agent: any) {
     const nodeInfo = {
@@ -168,6 +171,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Initialize a coordination session
+   *
+   * @param session
    */
   async initializeSession(session: any) {
     const sessionInfo = {
@@ -202,6 +207,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Coordinate agents in a session
+   *
+   * @param session
    */
   async coordinate(session: any) {
     const sessionInfo = this.sessions?.get(session.id);
@@ -239,6 +246,8 @@ export class NeuralCoordinationProtocol {
 
   /**
    * Get coordination results for a session
+   *
+   * @param sessionId
    */
   async getResults(sessionId: string) {
     return this.coordinationResults?.get(sessionId) || null;

@@ -387,7 +387,7 @@ class NeuralAgent {
         layers: this.network.layers,
         totalWeights: this.network.weights.reduce(
           (sum, layer) => sum + layer.reduce((layerSum, neuron) => layerSum + neuron.length, 0),
-          0
+          0,
         ),
       },
       recentDecisions: this.experience.slice(-5).map((e) => ({
@@ -423,7 +423,7 @@ class SwarmIntelligence {
           ...e,
           agentId: agent.id,
           agentType: agent.type,
-        }))
+        })),
       );
     }
 
@@ -499,7 +499,7 @@ class SwarmIntelligence {
 
     const targets = patterns.map((p) => {
       const target = new Array(this.swarmNetwork.layers[this.swarmNetwork.layers.length - 1]).fill(
-        0.1
+        0.1,
       );
       target[p.recommendation === 'preferred' ? 0 : 1] = 0.9;
       return target;
@@ -526,7 +526,7 @@ class SwarmIntelligence {
 
     // Historical performance
     const relevantPattern = Array.from(this.sharedKnowledge.values()).find((p) =>
-      p.id.includes(task.type)
+      p.id.includes(task.type),
     );
 
     if (relevantPattern) {
@@ -654,7 +654,7 @@ async function runNeuralIntegrationTests() {
     // More realistic assertion - improvement should be positive OR final error should be low
     assert(
       improvement > 0 || finalError < 0.5,
-      `Training should show improvement or converge: improvement=${improvement.toFixed(4)}, finalError=${finalError.toFixed(4)}`
+      `Training should show improvement or converge: improvement=${improvement.toFixed(4)}, finalError=${finalError.toFixed(4)}`,
     );
   });
 
@@ -710,7 +710,7 @@ async function runNeuralIntegrationTests() {
     assert(typeof learningResult.improvement === 'number');
     assert(
       learningResult.improvement >= 0,
-      `Improvement should be non-negative: ${learningResult.improvement}`
+      `Improvement should be non-negative: ${learningResult.improvement}`,
     );
   });
 
@@ -899,7 +899,7 @@ async function runNeuralIntegrationTests() {
     const agents = [];
     for (let i = 0; i < 10; i++) {
       agents.push(
-        new NeuralAgent(uuidv4(), ['researcher', 'coder', 'analyst', 'optimizer'][i % 4], {})
+        new NeuralAgent(uuidv4(), ['researcher', 'coder', 'analyst', 'optimizer'][i % 4], {}),
       );
     }
 
@@ -910,7 +910,7 @@ async function runNeuralIntegrationTests() {
         id: uuidv4(),
         type: 'analysis',
         priority: 'high',
-      })
+      }),
     );
 
     const results = await Promise.all(promises);

@@ -1174,6 +1174,7 @@ export class SystemEventAdapter implements IEventManager {
    *
    * @param event
    * @param options
+   * @param _options
    */
   private async processEventEmission<T extends SystemEvent>(
     event: T,

@@ -1612,6 +1612,7 @@ export class CommunicationEventAdapter implements IEventManager {
    *
    * @param event
    * @param options
+   * @param _options
    */
   private async processCommunicationEventEmission<T extends SystemEvent>(
     event: T,

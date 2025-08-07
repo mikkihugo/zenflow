@@ -341,7 +341,7 @@ class DocsCoverageReporter {
 
     // Count methods (simplified - methods inside classes)
     const methodMatches = content.match(
-      /(?:public|private|protected)?\s*(?:async\s+)?\w+\s*\([^)]*\)\s*[:{]/g
+      /(?:public|private|protected)?\s*(?:async\s+)?\w+\s*\([^)]*\)\s*[:{]/g,
     );
     analysis.constructs.methods = methodMatches
       ? Math.max(0, methodMatches.length - analysis.constructs.classes)
@@ -789,7 +789,7 @@ class DocsCoverageReporter {
               quality: data.quality,
               status: data.status,
             },
-          ])
+          ]),
         ),
       });
 
@@ -887,8 +887,8 @@ class DocsCoverageReporter {
     <h2>Layer Breakdown</h2>
     <div class="layer-grid">
         ${Object.entries(this.coverage.layers)
-          .map(
-            ([_key, layer]) => `
+    .map(
+      ([_key, layer]) => `
         <div class="layer-card">
             <div class="layer-header">${layer.name}</div>
             <div class="progress-bar">
@@ -900,14 +900,14 @@ class DocsCoverageReporter {
             <p><strong>Files:</strong> ${layer.files.length}</p>
             ${layer.issues.length > 0 ? `<p><strong>Issues:</strong> ${layer.issues.length}</p>` : ''}
         </div>
-        `
-          )
-          .join('')}
+        `,
+    )
+    .join('')}
     </div>
 
     ${
-      this.coverage.trends
-        ? `
+  this.coverage.trends
+    ? `
     <h2>Trends</h2>
     <div class="metrics">
         <div class="metric-card">
@@ -924,8 +924,8 @@ class DocsCoverageReporter {
         </div>
     </div>
     `
-        : ''
-    }
+    : ''
+}
 
     <h2>File Details</h2>
     <table>
@@ -940,8 +940,8 @@ class DocsCoverageReporter {
         </thead>
         <tbody>
             ${this.coverage.files
-              .map(
-                (file) => `
+    .map(
+      (file) => `
             <tr>
                 <td>${file.path}</td>
                 <td>${file.layer.toUpperCase()}</td>
@@ -949,9 +949,9 @@ class DocsCoverageReporter {
                 <td>${file.quality.hasExamples ? '📝' : ''} ${file.quality.hasDetailedParams ? '📋' : ''} ${file.quality.hasReturnDocs ? '↩️' : ''} ${file.quality.hasErrorDocs ? '⚠️' : ''}</td>
                 <td>${file.issues.length}</td>
             </tr>
-            `
-              )
-              .join('')}
+            `,
+    )
+    .join('')}
         </tbody>
     </table>
 
@@ -985,8 +985,8 @@ class DocsCoverageReporter {
 ## Layer Performance
 
 ${Object.entries(this.coverage.layers)
-  .map(
-    ([key, layer]) => `
+    .map(
+      ([key, layer]) => `
 ### ${layer.name} (${key.toUpperCase()})
 
 ![${key} Badge](${this.coverage.badges?.[key] || ''})
@@ -1003,9 +1003,9 @@ ${
 ${layer.issues.map((issue) => `- ❌ ${issue}`).join('\n')}`
     : '✅ No issues found'
 }
-`
-  )
-  .join('')}
+`,
+    )
+    .join('')}
 
 ${
   this.coverage.trends
@@ -1023,11 +1023,11 @@ ${
 | File | Layer | Coverage | Documented | Total | Issues |
 |------|-------|----------|------------|-------|--------|
 ${this.coverage.files
-  .map(
-    (file) =>
-      `| ${file.path} | ${file.layer.toUpperCase()} | ${file.percentage.toFixed(1)}% | ${file.documented} | ${file.total} | ${file.issues.length} |`
-  )
-  .join('\n')}
+    .map(
+      (file) =>
+        `| ${file.path} | ${file.layer.toUpperCase()} | ${file.percentage.toFixed(1)}% | ${file.documented} | ${file.total} | ${file.issues.length} |`,
+    )
+    .join('\n')}
 
 ## Recommendations
 
@@ -1049,13 +1049,13 @@ ${this.generateRecommendations()}
     // Overall recommendations
     if (this.coverage.overall.percentage < 80) {
       recommendations.push(
-        '📈 **Increase Overall Coverage**: Current coverage is below 80%. Focus on adding documentation to undocumented constructs.'
+        '📈 **Increase Overall Coverage**: Current coverage is below 80%. Focus on adding documentation to undocumented constructs.',
       );
     }
 
     if (this.coverage.overall.quality < 70) {
       recommendations.push(
-        '🎯 **Improve Documentation Quality**: Add more examples, detailed parameter descriptions, and return value documentation.'
+        '🎯 **Improve Documentation Quality**: Add more examples, detailed parameter descriptions, and return value documentation.',
       );
     }
 
@@ -1065,19 +1065,19 @@ ${this.generateRecommendations()}
 
       if (layerData.percentage < threshold.minimum) {
         recommendations.push(
-          `🔧 **${layerData.name}**: Coverage (${layerData.percentage.toFixed(1)}%) is below minimum threshold (${threshold.minimum}%). Priority focus area.`
+          `🔧 **${layerData.name}**: Coverage (${layerData.percentage.toFixed(1)}%) is below minimum threshold (${threshold.minimum}%). Priority focus area.`,
         );
       }
 
       if (layerData.quality < 60) {
         recommendations.push(
-          `📝 **${layerData.name}**: Quality score is low. Add more comprehensive JSDoc comments with examples and detailed descriptions.`
+          `📝 **${layerData.name}**: Quality score is low. Add more comprehensive JSDoc comments with examples and detailed descriptions.`,
         );
       }
 
       if (layerData.issues.length > 0) {
         recommendations.push(
-          `⚠️ **${layerData.name}**: ${layerData.issues.length} issues need attention. Review layer-specific documentation requirements.`
+          `⚠️ **${layerData.name}**: ${layerData.issues.length} issues need attention. Review layer-specific documentation requirements.`,
         );
       }
     }
@@ -1085,13 +1085,13 @@ ${this.generateRecommendations()}
     // Trending recommendations
     if (this.coverage.trends?.direction === 'down') {
       recommendations.push(
-        '📉 **Declining Trend**: Coverage has decreased recently. Review recent changes and ensure new code is properly documented.'
+        '📉 **Declining Trend**: Coverage has decreased recently. Review recent changes and ensure new code is properly documented.',
       );
     }
 
     if (recommendations.length === 0) {
       recommendations.push(
-        '✅ **Excellent Documentation**: All metrics are within acceptable ranges. Maintain current documentation standards.'
+        '✅ **Excellent Documentation**: All metrics are within acceptable ranges. Maintain current documentation standards.',
       );
     }
 

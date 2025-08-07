@@ -385,7 +385,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
             topology: 'mesh',
             connections: [],
             metrics: { totalTasks: 0, completedTasks: 0, failedTasks: 0 },
-          }
+          },
         );
 
         sessionIds.push(sessionId);
@@ -457,7 +457,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
                 status: 'active',
                 metadata: { performance: 'benchmark', index: i },
               },
-            ])
+            ]),
           ),
           tasks: new Map(
             Array.from({ length: 100 }, (_, i) => [
@@ -468,7 +468,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
                 status: 'running',
                 data: Array.from({ length: 100 }, () => Math.random()),
               },
-            ])
+            ]),
           ),
           topology: 'hierarchical',
           connections: Array.from({ length: 49 }, (_, i) => `agent-${i}:agent-${i + 1}`),
@@ -478,11 +478,11 @@ describe('Performance Benchmarks - Session Persistence', () => {
             failedTasks: 5,
             averageCompletionTime: 1500,
             agentUtilization: new Map(
-              Array.from({ length: 50 }, (_, i) => [`agent-${i}`, Math.random()])
+              Array.from({ length: 50 }, (_, i) => [`agent-${i}`, Math.random()]),
             ),
             throughput: 85.5,
           },
-        }
+        },
       );
 
       const checkpointCount = 100;
@@ -495,7 +495,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
         const checkpointId = await sessionManager.createCheckpoint(
           sessionId,
           `Benchmark checkpoint ${i}`,
-          { benchmarkIndex: i, timestamp: Date.now() }
+          { benchmarkIndex: i, timestamp: Date.now() },
         );
 
         checkpointIds.push(checkpointId);
@@ -530,7 +530,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
                 })),
               },
             },
-          ])
+          ]),
         ),
         tasks: new Map(
           Array.from({ length: 1000 }, (_, i) => [
@@ -546,7 +546,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
                 tags: Array.from({ length: 5 }, (_, j) => `tag-${j}`),
               },
             },
-          ])
+          ]),
         ),
         topology: 'mesh',
         connections: Array.from({ length: 999 }, (_, i) => `agent-${i}:agent-${i + 1}`),
@@ -556,7 +556,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
           failedTasks: Math.floor(Math.random() * 50),
           averageCompletionTime: 2500,
           agentUtilization: new Map(
-            Array.from({ length: 500 }, (_, i) => [`agent-${i}`, Math.random()])
+            Array.from({ length: 500 }, (_, i) => [`agent-${i}`, Math.random()]),
           ),
           throughput: 125.7,
           detailedMetrics: Array.from({ length: 100 }, (_, i) => ({
@@ -569,7 +569,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       const sessionId = await sessionManager.createSession(
         'large-state-benchmark',
         { topology: 'mesh', maxAgents: 500 },
-        largeState
+        largeState,
       );
 
       // Benchmark loading
@@ -601,7 +601,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       const concurrentTest = async (workerId, iteration) => {
         const sessionId = await sessionManager.createSession(
           `concurrent-${workerId}-${iteration}`,
-          { topology: 'ring', maxAgents: 8 }
+          { topology: 'ring', maxAgents: 8 },
         );
 
         // Perform mixed operations
@@ -611,7 +611,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
 
         const checkpointId = await sessionManager.createCheckpoint(
           sessionId,
-          `Concurrent checkpoint ${workerId}-${iteration}`
+          `Concurrent checkpoint ${workerId}-${iteration}`,
         );
 
         const loadedSession = await sessionManager.loadSession(sessionId);
@@ -626,7 +626,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       const results = await loadTester.runConcurrentLoad(
         concurrentTest,
         concurrency,
-        operationsPerWorker
+        operationsPerWorker,
       );
       benchmark.endMeasurement('concurrent-operations');
 
@@ -661,7 +661,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
           {
             priority: i % 4 === 0 ? 'high' : 'normal',
             category: `category-${i % 5}`,
-          }
+          },
         );
       }
 
@@ -698,7 +698,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
           {
             interval: 100, // Very frequent
             priority: 'low',
-          }
+          },
         );
       }
 
@@ -840,8 +840,8 @@ describe('Performance Benchmarks - Session Persistence', () => {
         // Execute all workflows
         const executions = await Promise.all(
           Array.from({ length: workflowCount }, (_, i) =>
-            recoveryWorkflows.triggerRecovery(`scale-${scale}-trigger-${i}`)
-          )
+            recoveryWorkflows.triggerRecovery(`scale-${scale}-trigger-${i}`),
+          ),
         );
 
         return {
@@ -856,7 +856,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       const scalabilityResults = await scalabilityTester.testScalability(
         scalabilityTest,
         scales,
-        25 // base workflow count
+        25, // base workflow count
       );
 
       expect(scalabilityResults.overallEfficiency).toBeGreaterThan(0.5); // Reasonable scaling
@@ -912,7 +912,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
             }
 
             return sessionId;
-          })()
+          })(),
         );
       }
 
@@ -956,13 +956,13 @@ describe('Performance Benchmarks - Session Persistence', () => {
                   id: `agent-${j}`,
                   data: Array.from({ length: 1000 }, () => Math.random()),
                 },
-              ])
+              ]),
             ),
             tasks: new Map(),
             topology: 'ring',
             connections: [],
             metrics: {},
-          }
+          },
         );
 
         await sessionManager.createCheckpoint(sessionId, `Memory test checkpoint ${i}`);
@@ -1037,7 +1037,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
                 Array.from({ length: 100 }, (_, i) => [
                   `agent-${i}`,
                   { id: `agent-${i}`, data: Array.from({ length: 500 }, () => Math.random()) },
-                ])
+                ]),
               ),
               tasks: new Map(),
               topology: 'hierarchical',

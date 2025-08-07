@@ -177,6 +177,7 @@ export class NeuralCLI {
    * Initialize the neural system
    *
    * @param config
+   * @param _config
    */
   async initialize(_config: NeuralConfig = {}): Promise<any> {
     if (!this.ruvSwarm) {

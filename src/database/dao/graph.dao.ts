@@ -417,6 +417,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
    * Helper methods
    *
    * @param result
+   * @param _result
    */
   private extractPathsFromResult(_result: any): any[] {
     // Extract path information from Kuzu result

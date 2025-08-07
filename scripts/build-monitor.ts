@@ -3,7 +3,7 @@
 /**
  * Build Monitor - Continuous build verification for alpha release
  *
- * @fileoverview Advanced build monitoring with strict TypeScript standards
+ * @file Advanced build monitoring with strict TypeScript standards
  * @author Claude Code Flow Team
  * @version 2.0.0
  */
@@ -17,6 +17,8 @@ const execAsync = promisify(exec);
 
 /**
  * TypeScript error information
+ *
+ * @example
  */
 interface TypeScriptError {
   file?: string;
@@ -26,6 +28,8 @@ interface TypeScriptError {
 
 /**
  * Build result information
+ *
+ * @example
  */
 interface BuildResult {
   timestamp: string;
@@ -36,6 +40,8 @@ interface BuildResult {
 
 /**
  * Error category breakdown
+ *
+ * @example
  */
 interface ErrorCategories {
   type_compatibility: number;
@@ -48,6 +54,8 @@ interface ErrorCategories {
 
 /**
  * Alpha certification status
+ *
+ * @example
  */
 interface AlphaCertification {
   timestamp: string;
@@ -59,6 +67,8 @@ interface AlphaCertification {
 
 /**
  * Build monitoring report
+ *
+ * @example
  */
 interface BuildReport {
   timestamp: string;
@@ -71,6 +81,7 @@ interface BuildReport {
 /**
  * Build Monitor class for continuous build verification
  * Monitors TypeScript compilation progress toward zero-error alpha release
+ *
  * @example
  */
 class BuildMonitor {

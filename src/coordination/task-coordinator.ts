@@ -112,6 +112,7 @@ export class TaskCoordinator {
    *
    * @param config
    * @param startTime
+   * @param _startTime
    * @param taskId
    */
   private async executeWithSPARC(

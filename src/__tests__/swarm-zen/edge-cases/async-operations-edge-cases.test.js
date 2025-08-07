@@ -188,19 +188,19 @@ describe('Async Operations Edge Cases', () => {
           setTimeout(() => {
             results.push(1);
             resolve(1);
-          }, 100)
+          }, 100),
         ),
         new Promise((resolve) =>
           setTimeout(() => {
             results.push(2);
             resolve(2);
-          }, 50)
+          }, 50),
         ),
         new Promise((resolve) =>
           setTimeout(() => {
             results.push(3);
             resolve(3);
-          }, 75)
+          }, 75),
         ),
       ];
 

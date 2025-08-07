@@ -92,7 +92,7 @@ class LoadTestingSuite extends EventEmitter {
       // Update peak values
       this.testResults.performance.memoryPeak = Math.max(
         this.testResults.performance.memoryPeak,
-        memUsage.heapUsed
+        memUsage.heapUsed,
       );
     }, 1000);
   }
@@ -197,7 +197,7 @@ class LoadTestingSuite extends EventEmitter {
       scenario.passed = scenario.agents.length >= 50 && scenario.metrics.errors.length < 5;
       this.testResults.performance.maxConcurrentAgents = Math.max(
         this.testResults.performance.maxConcurrentAgents,
-        scenario.agents.length
+        scenario.agents.length,
       );
     } catch (error) {
       scenario.error = error.message;
@@ -248,7 +248,7 @@ class LoadTestingSuite extends EventEmitter {
               error: error.message,
             });
             return null;
-          })
+          }),
       );
 
       const spawnedAgents = await Promise.all(spawnPromises);
@@ -329,7 +329,7 @@ class LoadTestingSuite extends EventEmitter {
         swarm.spawn({
           type: ['coder', 'researcher', 'analyst'][i % 3],
           name: `sustained-agent-${i}`,
-        })
+        }),
       );
 
       scenario.agents = await Promise.all(spawnPromises);
@@ -438,7 +438,7 @@ class LoadTestingSuite extends EventEmitter {
       ];
       for (const { type, count } of agentTypes) {
         const typePromises = Array.from({ length: count }, (_, i) =>
-          swarm.spawn({ type, name: `${type}-${i}` })
+          swarm.spawn({ type, name: `${type}-${i}` }),
         );
 
         const typeAgents = await Promise.all(typePromises);
@@ -475,7 +475,7 @@ class LoadTestingSuite extends EventEmitter {
                 });
               }
             }
-          })
+          }),
         );
       });
 
@@ -557,7 +557,7 @@ class LoadTestingSuite extends EventEmitter {
                     error: error.message,
                   });
                   return null;
-                })
+                }),
             );
           }
 
@@ -670,18 +670,18 @@ class LoadTestingSuite extends EventEmitter {
     this.testResults.performance.avgResponseTime =
       this.metrics.responseTimes.length > 0
         ? Math.round(
-            this.metrics.responseTimes.reduce((a, b) => a + b, 0) /
-              this.metrics.responseTimes.length
-          )
+          this.metrics.responseTimes.reduce((a, b) => a + b, 0) /
+              this.metrics.responseTimes.length,
+        )
         : 0;
 
     this.testResults.performance.errorRate =
       this.metrics.errors.length > 0
         ? (
-            (this.metrics.errors.length /
+          (this.metrics.errors.length /
               (this.metrics.responseTimes.length + this.metrics.errors.length)) *
             100
-          ).toFixed(2)
+        ).toFixed(2)
         : 0;
 
     this.testResults.performance.memoryPeak = this.testResults.performance.memoryPeak / 1024 / 1024; // Convert to MB

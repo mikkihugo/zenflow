@@ -224,8 +224,8 @@ class MCPServerTester {
             } catch (parseError) {
               reject(
                 new Error(
-                  `JSON parse error: ${parseError.message}. Line: ${line.substring(0, 100)}`
-                )
+                  `JSON parse error: ${parseError.message}. Line: ${line.substring(0, 100)}`,
+                ),
               );
               return;
             }
@@ -345,8 +345,8 @@ class MCPServerTester {
                 if (responseCount < 5) {
                   reject(
                     new Error(
-                      `Expected 5 responses, got ${responseCount} - server may have timed out`
-                    )
+                      `Expected 5 responses, got ${responseCount} - server may have timed out`,
+                    ),
                   );
                 } else {
                   resolve();
@@ -434,8 +434,8 @@ class MCPServerTester {
             ) {
               reject(
                 new Error(
-                  'Error response should include helpful information about supported methods'
-                )
+                  'Error response should include helpful information about supported methods',
+                ),
               );
               return;
             }
@@ -540,7 +540,7 @@ class MCPServerTester {
   async runAllTests() {
     await this.runTest('Server Startup Without ANSI Codes', () => this.testServerStartup());
     await this.runTest('notifications/initialized Handling', () =>
-      this.testNotificationsInitialized()
+      this.testNotificationsInitialized(),
     );
     await this.runTest('JSON Parsing with stderr Output', () => this.testJsonParsingWithStderr());
     await this.runTest('Connection Stability', () => this.testConnectionStability());

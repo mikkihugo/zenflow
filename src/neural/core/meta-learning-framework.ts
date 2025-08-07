@@ -118,6 +118,9 @@ export class MetaLearningFramework {
 
   /**
    * Adapt configuration for an agent
+   *
+   * @param agentId
+   * @param config
    */
   async adaptConfiguration(agentId: string, config: any) {
     const agentHistory = this.taskHistory.get(agentId) || [];
@@ -143,6 +146,9 @@ export class MetaLearningFramework {
 
   /**
    * Optimize training options for an agent
+   *
+   * @param agentId
+   * @param options
    */
   async optimizeTraining(agentId: string, options: any) {
     const agentHistory = this.taskHistory.get(agentId) || [];
@@ -170,6 +176,8 @@ export class MetaLearningFramework {
 
   /**
    * Preserve learning state for an agent
+   *
+   * @param agentId
    */
   async preserveState(agentId: string) {
     return {
@@ -182,6 +190,9 @@ export class MetaLearningFramework {
 
   /**
    * Restore learning state for an agent
+   *
+   * @param agentId
+   * @param state
    */
   async restoreState(agentId: string, state: any) {
     if (state?.taskHistory) {
@@ -192,6 +203,8 @@ export class MetaLearningFramework {
 
   /**
    * Extract experiences for an agent
+   *
+   * @param agentId
    */
   async extractExperiences(agentId: string) {
     const history = this.taskHistory.get(agentId) || [];

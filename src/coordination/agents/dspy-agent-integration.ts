@@ -5,6 +5,8 @@
  * system, with specialized prompts defining each agent's behavior and expertise.
  */
 
+// Using the official dspy.ts npm package instead of custom implementation
+import { configureLM, default as DSPy, getLM } from 'dspy.ts';
 import { createLogger } from '../../core/logger';
 import type { SessionMemoryStore } from '../../memory/memory';
 import type { DSPyProgram, DSPyWrapper } from '../../neural/dspy-wrapper';

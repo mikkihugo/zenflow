@@ -1484,6 +1484,7 @@ export class CoordinationEventAdapter implements IEventManager {
    *
    * @param event
    * @param options
+   * @param _options
    */
   private async processCoordinationEventEmission<T extends CoordinationEvent>(
     event: T,

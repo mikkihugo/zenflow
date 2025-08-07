@@ -250,6 +250,7 @@ export class SPARCSwarmIntegrationExample {
    * Step 6: Monitor and report results
    *
    * @param assignmentId
+   * @param _assignmentId
    */
   private async monitorResults(_assignmentId: string): Promise<void> {
     logger.info('📊 Monitoring SPARC-Swarm integration results...');
