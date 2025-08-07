@@ -292,7 +292,7 @@ export class TaskDistributionEngine extends EventEmitter {
   private assignments = new Map<string, TaskAssignment>();
   private agentCapabilities = new Map<string, AgentCapability>();
   private queue: TaskQueue;
-  private scheduler: TaskScheduler;
+  private _scheduler: TaskScheduler; // xxx NEEDS_HUMAN: scheduler not used - confirm if needed for task scheduling
   private decomposer: TaskDecomposer;
   private assignmentOptimizer: AssignmentOptimizer;
   private workloadBalancer: WorkloadBalancer;
