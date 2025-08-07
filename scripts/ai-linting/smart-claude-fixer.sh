@@ -119,7 +119,16 @@ CRITICAL RULES FOR UNSURE ISSUES:
 - DO NOT ask for human input or clarification
 - Search widely for moved/renamed files before giving up
 
-Your goal: Reduce the 5000+ error count by fixing all SOLVABLE issues and marking unsolvable ones with xxx comments."
+Your goal: Reduce the 5000+ error count by fixing all SOLVABLE issues and marking unsolvable ones with xxx comments.
+
+VERIFICATION STEPS:
+After making fixes, if possible:
+1. Run 'npm run build' to verify TypeScript compilation
+2. Run 'npm run test' or 'vitest' to ensure tests still pass
+3. Only commit changes if build succeeds or improves error count
+4. If build fails worse than before, revert changes
+
+Focus on INCREMENTAL PROGRESS - even fixing 10 errors per run helps!"
 
         # Use local project Claude Code 1.0.70 with Node.js path
         export PATH="/home/mhugo/.local/share/mise/installs/node/22.17.1/bin:$PATH"
