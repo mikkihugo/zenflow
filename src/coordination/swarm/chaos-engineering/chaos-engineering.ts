@@ -478,13 +478,13 @@ export class ChaosEngineering extends EventEmitter {
     const phaseStartTime = Date.now();
     execution.currentPhase = phaseName;
 
-    const phase = {
+    const phase: ExperimentPhase = {
       name: phaseName,
-      status: 'running',
+      status: 'running' as 'running' | 'completed' | 'failed',
       startTime: new Date(phaseStartTime),
-      endTime: null as Date | null,
+      endTime: null,
       duration: 0,
-      error: null as string | null,
+      error: null,
     };
 
     try {
