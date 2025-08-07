@@ -19,7 +19,7 @@ import { createLogger } from '../../../core/logger';
 import { generateId } from '../core/utils';
 import { HealthMonitor } from '../../diagnostics/health-monitor';
 import { RecoveryWorkflows } from '../core/recovery-workflows';
-import ConnectionManager from '../connection-management/connection-state-manager';
+import { ConnectionStateManager as ConnectionManager } from '../connection-management/connection-state-manager';
 import { MCPToolsManager } from '../../../interfaces/mcp/tool-registry';
 
 // Type definitions for chaos engineering
@@ -98,10 +98,10 @@ interface ChaosExperiment {
   description: string;
   type: string;
   category: string;
-  failureType?: string;
+  failureType?: string | undefined;
   parameters: ExperimentParameters;
   duration: number;
-  cooldown?: number;
+  cooldown?: number | undefined;
   blastRadius: number;
   safetyChecks: string[];
   metadata: Record<string, unknown>;
@@ -155,7 +155,7 @@ export class ChaosEngineering extends EventEmitter {
   private healthMonitor: HealthMonitor | null;
   private recoveryWorkflows: RecoveryWorkflows | null;
   private connectionManager: ConnectionManager | null;
-  private mcpTools: MCPTools | null;
+  // private mcpTools: MCPToolsManager | null; // xxx NEEDS_HUMAN: Unused but may be for future integration
 
   constructor(options: ChaosEngineeringOptions = {}) {
     super();
@@ -200,7 +200,7 @@ export class ChaosEngineering extends EventEmitter {
     this.healthMonitor = null;
     this.recoveryWorkflows = null;
     this.connectionManager = null;
-    this.mcpTools = null;
+    // this.mcpTools = null; // xxx NEEDS_HUMAN: Unused but may be for future integration
 
     this.initialize();
   }
@@ -257,7 +257,7 @@ export class ChaosEngineering extends EventEmitter {
       description: experimentDefinition.description || '',
       type: experimentDefinition.type || 'custom',
       category: experimentDefinition.category || 'custom',
-      failureType: experimentDefinition.failureType,
+      failureType: experimentDefinition.failureType || '',
       parameters: experimentDefinition.parameters || {},
       expectedRecovery: experimentDefinition.expectedRecovery || [],
       blastRadius: experimentDefinition.blastRadius || 0.1, // 10% default

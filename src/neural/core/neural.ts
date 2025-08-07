@@ -350,12 +350,6 @@ class NeuralCLI {
 
       // Save weights
       await fs.writeFile(outputPath, JSON.stringify(weights, null, 2));
-
-      // Show summary
-      const _totalParams = Object.values(weights.models).reduce(
-        (sum, model: any) => sum + model.parameters,
-        0
-      );
     } catch (error) {
       console.error('❌ Export failed:', (error as Error).message);
       process.exit(1);
@@ -398,6 +392,9 @@ class NeuralCLI {
     }
     const first = values[0];
     const last = values[values.length - 1];
+    if (first === undefined || last === undefined) {
+      return 0;
+    }
     return last - first;
   }
 
