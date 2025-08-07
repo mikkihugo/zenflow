@@ -199,7 +199,7 @@ export class ErrorRecoverySystem extends EventEmitter {
       return severityMatch && retryLimit;
     });
 
-    return viable.length > 0 ? viable[0] : null;
+    return viable.length > 0 ? viable[0] : undefined;
   }
 
   private async executeRecoveryStrategy(

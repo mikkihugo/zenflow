@@ -774,7 +774,7 @@ export class TaskDistributionEngine extends EventEmitter {
 
   private calculateResourceAllocation(
     task: TaskDefinition,
-    agent: AgentCapability
+    _agent: AgentCapability
   ): ResourceAllocation {
     const allocation: ResourceAllocation = {
       cpu: Math.min(task.requirements.resourceRequirements.cpu, 1.0),
