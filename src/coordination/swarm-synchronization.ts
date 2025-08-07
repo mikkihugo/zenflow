@@ -65,8 +65,8 @@ export class SwarmSynchronizer extends EventEmitter {
   private syncHistory: SyncCheckpoint[] = [];
   private distributedLocks = new Map<string, DistributedLock>();
   private consensusProtocol: ConsensusProtocol;
-  private syncTimer?: NodeJS.Timeout;
-  private heartbeatTimer?: NodeJS.Timeout;
+  private syncTimer: NodeJS.Timeout | undefined;
+  private heartbeatTimer: NodeJS.Timeout | undefined;
 
   constructor(
     swarmId: string,
@@ -448,10 +448,10 @@ export class SwarmSynchronizer extends EventEmitter {
    * @param agentId
    * @param newState
    */
-  private updateAgentState(agentId: string, newState: Partial<AgentState>): void {
+  private updateAgentState(agentId: string, newState: unknown): void {
     const currentState = this.agentStates.get(agentId);
-    if (currentState) {
-      const updatedState = { ...currentState, ...newState };
+    if (currentState && typeof newState === 'object' && newState !== null) {
+      const updatedState = { ...currentState, ...(newState as Partial<AgentState>) };
       this.agentStates.set(agentId, updatedState);
 
       // Increment vector clock for this update
@@ -463,16 +463,22 @@ export class SwarmSynchronizer extends EventEmitter {
    * Get current synchronization status
    */
   getSyncStatus(): SwarmSyncStatus {
-    return {
+    const lastSync = this.syncHistory[this.syncHistory.length - 1];
+    const result: SwarmSyncStatus = {
       swarmId: this.swarmId,
       isActive: !!this.syncTimer,
-      lastSyncTime: this.syncHistory[this.syncHistory.length - 1]?.timestamp,
       agentCount: this.agentStates.size,
       activeAgents: Array.from(this.agentStates.values()).filter((a) => a.status !== 'offline')
         .length,
       vectorClock: { ...this.vectorClock },
       syncHistory: this.syncHistory.length,
     };
+    
+    if (lastSync) {
+      result.lastSyncTime = lastSync.timestamp;
+    }
+    
+    return result;
   }
 
   // Utility methods
@@ -499,7 +505,8 @@ export class SwarmSynchronizer extends EventEmitter {
       try {
         await this.applyStateChange(change);
       } catch (error) {
-        this.logger?.error('Failed to apply state change', { change, error: error.message });
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        this.logger?.error('Failed to apply state change', { change, error: errorMessage });
       }
     }
   }
