@@ -186,7 +186,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     private docProcessor: DocumentProcessor,
     private domainAnalyzer: DomainAnalysisEngine,
     private projectAnalyzer: ProjectContextAnalyzer,
-    private _intelligenceCoordinator: IntelligenceCoordinationSystem,
+    private intelligenceCoordinator: IntelligenceCoordinationSystem,
     config: DomainDiscoveryBridgeConfig = {}
   ) {
     super();
@@ -777,7 +777,8 @@ export class DomainDiscoveryBridge extends EventEmitter {
     const domainCoupling = analysis.coupling.tightlyCoupledGroups.filter((group) =>
       group.files.some((file) => (analysis.categories as any)[domainId]?.includes(file))
     );
-    if (domainCoupling.length > 0 && domainCoupling[0].couplingScore > 0.7) {
+    const firstCoupling = domainCoupling[0];
+    if (domainCoupling.length > 0 && firstCoupling && firstCoupling.couplingScore > 0.7) {
       return 'mesh';
     }
 

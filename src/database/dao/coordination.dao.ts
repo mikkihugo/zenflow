@@ -6,7 +6,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
+import type { DatabaseAdapter, ILogger } from '../../core/interfaces/base-interfaces';
 import { BaseDao } from '../base.dao';
 import type {
   CoordinationChange,

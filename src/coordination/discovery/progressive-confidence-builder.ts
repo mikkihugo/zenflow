@@ -403,7 +403,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   /**
    * Import more documents and extract insights
    *
-   * @param context
+   * @param _context
    */
   private async importMoreDocuments(context: DiscoveryContext): Promise<void> {
     logger.info('Importing additional documents for analysis');
@@ -485,7 +485,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
         this.totalQuestionsAsked++;
 
-        if (response) {
+        if (response && question) {
           this.totalQuestionsAnswered++;
           await this.processValidationResponse(question, response, duration / batch.length);
         }
@@ -711,7 +711,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
         ...domain,
         confidence: domain.confidence || 0.5, // Use existing confidence or default
         detailedConfidence: this.initializeMetrics(),
-        path: domain.codeFiles.length > 0 ? (domain.codeFiles[0] ?? '') : '', // Use first code file as path
+        path: domain.codeFiles.length > 0 && domain.codeFiles[0] ? domain.codeFiles[0] : '', // Use first code file as path
         files: domain.codeFiles, // Same as codeFiles
         suggestedConcepts: domain.concepts, // Use existing concepts
         technologies: [], // Initialize empty, can be populated later
@@ -819,6 +819,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
   private async analyzeDocument(path: string): Promise<any> {
     // Simulate document analysis - in real implementation would use document processor
+    // xxx NEEDS_HUMAN: Implement actual document analysis using path parameter
     return {
       concepts: ['concept1', 'concept2'],
       domains: ['domain1'],
@@ -859,7 +860,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
           validationType: question.type,
           confidenceBefore,
           confidenceAfter: confidenceBefore, // Will be updated
-          validationDuration: responseTime,
+          ...(responseTime !== undefined && { validationDuration: responseTime }),
         };
 
         // Calculate confidence impact based on response and question type
@@ -1244,7 +1245,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
         questionsAsked: this.totalQuestionsAsked,
         questionsAnswered: this.totalQuestionsAnswered,
         significantChanges: [],
-        validatorId: this.validatorId,
+        ...(this.validatorId !== undefined && { validatorId: this.validatorId }),
         notes,
       };
 

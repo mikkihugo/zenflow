@@ -178,8 +178,8 @@ export async function createDao<T>(
   config?: any
 ): Promise<IDao<T>> {
   const { DALFactory } = await import('./factory');
-  const { DIContainer } = await import('../../di/container/di-container');
-  const { CORE_TOKENS } = await import('../../di/tokens/core-tokens');
+  const { DIContainer } = await import('../di/container/di-container');
+  const { CORE_TOKENS } = await import('../di/tokens/core-tokens');
 
   // Create basic DI container for factory dependencies
   const container = new DIContainer();
@@ -256,8 +256,8 @@ export async function createManager<T>(
   config?: any
 ): Promise<IManager<T>> {
   const { DALFactory } = await import('./factory');
-  const { DIContainer } = await import('../../di/container/di-container');
-  const { CORE_TOKENS } = await import('../../di/tokens/core-tokens');
+  const { DIContainer } = await import('../di/container/di-container');
+  const { CORE_TOKENS } = await import('../di/tokens/core-tokens');
 
   const container = new DIContainer();
 
@@ -376,8 +376,8 @@ export async function createMultiDatabaseSetup<T>(
   }>
 ): Promise<MultiDatabaseDAO<T>> {
   const { DALFactory } = await import('./factory');
-  const { DIContainer } = await import('../../di/container/di-container');
-  const { CORE_TOKENS } = await import('../../di/tokens/core-tokens');
+  const { DIContainer } = await import('../di/container/di-container');
+  const { CORE_TOKENS } = await import('../di/tokens/core-tokens');
 
   const container = new DIContainer();
 
