@@ -410,22 +410,26 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
     // Identify related domains based on knowledge
     for (let i = 0; i < domains.length; i++) {
       for (let j = i + 1; j < domains.length; j++) {
+        const domain1 = domains[i];
+        const domain2 = domains[j];
+        if (!domain1 || !domain2) continue;
+        
         const relationshipStrength = this.calculateDomainRelationshipStrength(
-          domains[i],
-          domains[j],
+          domain1,
+          domain2,
           projectKnowledge
         );
 
         if (relationshipStrength > 0.6) {
           // Add relationship information
-          if (!domains[i].relatedDomains) domains[i].relatedDomains = [];
-          if (!domains[j].relatedDomains) domains[j].relatedDomains = [];
+          if (!domain1.relatedDomains) domain1.relatedDomains = [];
+          if (!domain2.relatedDomains) domain2.relatedDomains = [];
 
-          domains[i].relatedDomains?.push(domains[j].name);
-          domains[j].relatedDomains?.push(domains[i].name);
+          domain1.relatedDomains?.push(domain2.name);
+          domain2.relatedDomains?.push(domain1.name);
 
           // Apply cross-domain optimizations
-          this.applyCrossDomainOptimizations(domains[i], domains[j], relationshipStrength);
+          this.applyCrossDomainOptimizations(domain1, domain2, relationshipStrength);
         }
       }
     }

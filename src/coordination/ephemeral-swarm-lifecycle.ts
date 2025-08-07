@@ -178,7 +178,7 @@ export class EphemeralSwarmManager extends EventEmitter {
     } catch (error) {
       this.logger?.error('Failed to create swarm', {
         swarmId: request.id,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       });
 
       await this.terminateSwarm(request.id, 'creation_failed');
@@ -340,7 +340,7 @@ export class EphemeralSwarmManager extends EventEmitter {
       this.logger?.error('Task step failed', {
         swarmId: swarm.id,
         stepId: step.id,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       });
     }
   }
@@ -458,7 +458,7 @@ export class EphemeralSwarmManager extends EventEmitter {
     } catch (error) {
       this.logger?.error('Error during swarm termination', {
         swarmId,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       });
     }
   }

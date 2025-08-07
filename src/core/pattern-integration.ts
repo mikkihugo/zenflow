@@ -836,7 +836,7 @@ export class IntegratedPatternSystem extends EventEmitter {
     try {
       const { DALFactory } = await import('../database/factory');
       const { DIContainer } = await import('../di/container/di-container');
-      const { DATABASE_TOKENS } = await import('../di/tokens/database-tokens');
+      const { DATABASE_TOKENS } = await import('../di/tokens/core-tokens');
       const { CORE_TOKENS } = await import('../di/tokens/core-tokens');
 
       const container = new DIContainer();
