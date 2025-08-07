@@ -427,7 +427,7 @@ export class PersistentLearningSystem extends EventEmitter {
         domain,
         expertise: agentResult.outcome.quality / 2, // Start with half the quality score
         keyPatterns: [agentResult.actions.map((a) => a.action).join(' -> ')],
-        tools: agentResult.actions.map((a) => a.parameters.tool).filter(Boolean),
+        tools: agentResult.actions.map((a) => a.parameters['tool']).filter(Boolean),
         bestPractices: agentResult.lessonsLearned,
       };
       knowledge.capabilities.specializations.push(specialization);
