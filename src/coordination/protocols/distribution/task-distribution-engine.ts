@@ -806,7 +806,7 @@ export class TaskDistributionEngine extends EventEmitter {
     };
   }
 
-  private createMonitoringPlan(task: TaskDefinition, agent: AgentCapability): AssignmentMonitoring {
+  private createMonitoringPlan(task: TaskDefinition, _agent: AgentCapability): AssignmentMonitoring {
     return {
       checkInterval: Math.min(task.estimatedDuration / 10, 30000), // Check every 10% of duration or 30s max
       progressTracking: true,
