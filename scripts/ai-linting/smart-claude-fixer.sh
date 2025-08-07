@@ -121,8 +121,8 @@ CRITICAL RULES FOR UNSURE ISSUES:
 
 Your goal: Reduce the 5000+ error count by fixing all SOLVABLE issues and marking unsolvable ones with xxx comments."
 
-        # Run claude with timeout and capture exit code
-        if timeout 300s claude -p "$prompt" 2>/dev/null; then
+        # Run claude with timeout and dangerous permissions + continue mode  
+        if timeout 300s claude -p --dangerously-skip-permissions --permission-mode bypassPermissions --continue "$prompt" 2>&1; then
             log "Claude run completed successfully"
         else
             log "Claude run failed or timed out, but checking for changes..."
