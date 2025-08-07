@@ -172,16 +172,17 @@ export class SwarmSynchronizer extends EventEmitter {
         agentCount: consensusState.agentStates.size,
       });
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       this.logger?.error('Sync cycle failed', {
         swarmId: this.swarmId,
         syncId,
-        error: error.message,
+        error: errorMessage,
       });
 
       this.emit('sync:failed', {
         swarmId: this.swarmId,
         syncId,
-        error: error.message,
+        error: errorMessage,
       });
     }
   }
