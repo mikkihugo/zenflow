@@ -119,7 +119,7 @@ class DatabaseSPARCBridge extends EventEmitter {
       requirements: feature.acceptance_criteria || [],
       context: {
         projectId: feature.project_id ?? generateId(),
-        parentDocumentId: feature.parent_document_id,
+        ...(feature.parent_document_id !== undefined && { parentDocumentId: feature.parent_document_id }),
         relatedDocuments: feature.related_documents || [],
       },
     };
@@ -150,7 +150,7 @@ class DatabaseSPARCBridge extends EventEmitter {
       requirements: task.implementation_details?.files_to_create || [],
       context: {
         projectId: task.project_id ?? generateId(),
-        parentDocumentId: task.parent_document_id,
+        ...(task.parent_document_id !== undefined && { parentDocumentId: task.parent_document_id }),
         relatedDocuments: task.related_documents || [],
       },
     };

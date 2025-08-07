@@ -229,6 +229,7 @@ export class HealthMonitor extends EventEmitter {
 
     checkResults.forEach((result, index) => {
       const checkName = Array.from(this.healthChecks.keys())[index];
+      if (!checkName) return; // Guard against undefined
       const check = this.healthChecks.get(checkName);
 
       // Skip if check is undefined
@@ -237,7 +238,7 @@ export class HealthMonitor extends EventEmitter {
         return;
       }
 
-      if (result.status === 'fulfilled') {
+      if (result.status === 'fulfilled' && checkName) {
         const { score, status, details, metrics } = result.value;
 
         results[checkName] = {
@@ -259,7 +260,7 @@ export class HealthMonitor extends EventEmitter {
         check.lastResult = result.value;
         check.lastRun = new Date().toISOString();
         check.runCount++;
-      } else {
+      } else if (checkName) {
         results[checkName] = {
           score: 0,
           status: 'error',
@@ -356,7 +357,7 @@ export class HealthMonitor extends EventEmitter {
       return {
         score: 0,
         status: 'error',
-        details: error.message,
+        details: error instanceof Error ? error.message : 'Unknown error',
         metrics: {},
         duration,
       };
@@ -565,9 +566,9 @@ export class HealthMonitor extends EventEmitter {
           return {
             score: 0,
             status: 'critical',
-            details: `Persistence check failed: ${error.message}`,
+            details: `Persistence check failed: ${error instanceof Error ? error.message : String(error)}`,
             metrics: {
-              error: error.message,
+              error: error instanceof Error ? error.message : String(error),
               status: 'disconnected',
             },
           };

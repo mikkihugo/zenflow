@@ -398,7 +398,7 @@ export class SystemDiagnostics {
   private samples: SystemSample[];
   private maxSamples: number;
   private monitorInterval?: NodeJS.Timeout | null;
-  private startTime?: number;
+  // private startTime?: number; // xxx NEEDS_HUMAN: Decide if startTime should be used for monitoring duration
 
   constructor(logger?: LoggerInterface | null) {
     this.logger = logger || loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });
@@ -433,7 +433,7 @@ export class SystemDiagnostics {
    * @param interval
    */
   startMonitoring(interval = 1000): void {
-    this.startTime = Date.now();
+    // this.startTime = Date.now(); // xxx NEEDS_HUMAN: Decide if startTime should be used for monitoring duration
     if (this.monitorInterval) {
       this.stopMonitoring();
     }
@@ -616,7 +616,7 @@ export class DiagnosticsManager {
     // For now, return a placeholder
     return {
       message: 'Log collection would read from log files',
-      logsEnabled: process.env.LOG_TO_FILE === 'true',
+      logsEnabled: process.env['LOG_TO_FILE'] === 'true',
     };
   }
 
