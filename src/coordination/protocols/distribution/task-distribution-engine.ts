@@ -776,14 +776,19 @@ export class TaskDistributionEngine extends EventEmitter {
     task: TaskDefinition,
     agent: AgentCapability
   ): ResourceAllocation {
-    return {
+    const allocation: ResourceAllocation = {
       cpu: Math.min(task.requirements.resourceRequirements.cpu, 1.0),
       memory: Math.min(task.requirements.resourceRequirements.memory, 1.0),
       network: Math.min(task.requirements.resourceRequirements.network, 1.0),
       storage: Math.min(task.requirements.resourceRequirements.storage, 1.0),
-      gpu: task.requirements.resourceRequirements.gpu,
       priority: this.getPriorityWeight(task.priority),
     };
+    
+    if (task.requirements.resourceRequirements.gpu !== undefined) {
+      allocation.gpu = task.requirements.resourceRequirements.gpu;
+    }
+    
+    return allocation;
   }
 
   private calculateQualityExpectation(
