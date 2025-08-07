@@ -231,7 +231,9 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     });
 
     // Store validator information
-    this.validatorId = context.validatorId;
+    if (context.validatorId !== undefined) {
+      this.validatorId = context.validatorId;
+    }
 
     // Initialize with existing domains if provided
     if (context.existingDomains) {
@@ -245,7 +247,10 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     }
 
     // Initialize HiveFACT for research
-    this.hiveFact = getHiveFACT();
+    const hiveFact = getHiveFACT();
+    if (hiveFact !== null) {
+      this.hiveFact = hiveFact;
+    }
 
     // Main confidence building loop
     while (

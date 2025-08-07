@@ -3526,6 +3526,187 @@ export interface KnowledgeQuery {
   requirements: QueryRequirements;
 }
 
+// Missing type definitions for SLA and reporting
+export interface SLAReport {
+  reportId: string;
+  period: ReportPeriod;
+  metrics: SLAMetricReport[];
+  violations: ViolationReport[];
+  recommendations: string[];
+  timestamp: number;
+}
+
+export interface ReportPeriod {
+  startDate: number;
+  endDate: number;
+}
+
+export interface SLAMetricReport {
+  metricId: string;
+  achieved: number;
+  target: number;
+  compliance: boolean;
+}
+
+export interface ViolationReport {
+  violationId: string;
+  metric: string;
+  severity: string;
+  impact: string;
+}
+
+export interface ReportDistribution {
+  recipients: string[];
+  format: string;
+  delivery: string;
+}
+
+export interface IntegrationMonitoring {
+  monitorId: string;
+  integrationId: string;
+  status: string;
+  metrics: any;
+  alerts: any[];
+}
+
+export interface OptimizationAlgorithm {
+  algorithmId: string;
+  name: string;
+  type: string;
+  parameters: any;
+  performance: any;
+}
+
+export interface MeasurementDefinition {
+  method: string;
+  frequency: number;
+  source: string;
+  calculation: string;
+}
+
+export interface SLAPenaltyRule {
+  threshold: number;
+  penalty: number;
+  escalation: string;
+}
+
+export interface RenewalTerms {
+  automatic: boolean;
+  period: number;
+  conditions: string[];
+}
+
+export interface TerminationClause {
+  condition: string;
+  notice: number;
+  penalties: any;
+}
+
+export interface ModificationPolicy {
+  allowed: boolean;
+  approval: string;
+  notification: number;
+}
+
+export interface ComplianceRequirement {
+  standard: string;
+  certification: string;
+  audit: string;
+}
+
+export interface ValidityCondition {
+  condition: string;
+  impact: string;
+}
+
+export interface ExtensionRule {
+  condition: string;
+  period: number;
+  approval: string;
+}
+
+export interface ResolutionStatus {
+  status: string;
+  progress: number;
+  blockers: string[];
+}
+
+export interface ResolutionAction {
+  action: string;
+  responsible: string;
+  deadline: number;
+  status: string;
+}
+
+export interface ResolutionTimeline {
+  start: number;
+  expected: number;
+  actual?: number;
+}
+
+export interface ResolutionOutcome {
+  success: boolean;
+  impact: string;
+  followUp: string[];
+}
+
+export interface ScheduleFrequency {
+  unit: 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
+  value: number;
+}
+
+export interface ScheduleTime {
+  hour: number;
+  minute: number;
+  dayOfWeek?: number;
+  dayOfMonth?: number;
+}
+
+export interface ScheduleException {
+  date: number;
+  reason: string;
+}
+
+export interface PreprocessingOperation {
+  operation: string;
+  description: string;
+}
+
+export interface OperationParameter {
+  name: string;
+  value: any;
+  type: string;
+}
+
+export interface StepValidation {
+  required: boolean;
+  criteria: string[];
+}
+
+export interface ValidationRule {
+  rule: string;
+  severity: string;
+  action: string;
+}
+
+export interface QualityCheck {
+  check: string;
+  threshold: number;
+  action: string;
+}
+
+export interface CompletenessCheck {
+  required: string[];
+  optional: string[];
+  coverage: number;
+}
+
+export interface ConsistencyCheck {
+  rules: string[];
+  conflicts: string[];
+  resolution: string;
+}
+
 export interface RoutingOptions {
   strategy?: string;
   constraints?: RoutingConstraint[];
