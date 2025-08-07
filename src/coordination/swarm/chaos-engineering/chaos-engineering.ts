@@ -687,7 +687,7 @@ export class ChaosEngineering extends EventEmitter {
    *
    * @param execution
    */
-  async triggerRecovery(execution) {
+  async triggerRecovery(execution: ExperimentExecution) {
     if (!this.recoveryWorkflows) {
       throw new Error('Recovery Workflows not available');
     }
