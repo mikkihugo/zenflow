@@ -1111,7 +1111,7 @@ class IntelligentCache extends EventEmitter {
     this.cache = new LRUCache({
       max: config.maxSize,
       ttl: config.ttl,
-      dispose: (value, key) => {
+      dispose: (value: any, key: string) => {
         this.handleEviction(key, value);
       },
     });
@@ -1138,7 +1138,7 @@ class IntelligentCache extends EventEmitter {
       accessCount: 0,
       lastAccessed: new Date(),
       ttl: options?.ttl || this.config.ttl,
-      compressed: options?.compress && this.config.compressionEnabled,
+      compressed: options?.compress && this.config.compressionEnabled ? true : undefined,
     };
 
     if (entry.compressed) {

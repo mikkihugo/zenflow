@@ -534,7 +534,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
       logger.debug(`Processing ${contributions.length} contributions from swarm ${swarmId}`);
 
-      const processedContributions = [];
+      const processedContributions: SwarmContribution[] = [];
 
       for (const contribution of contributions) {
         try {
