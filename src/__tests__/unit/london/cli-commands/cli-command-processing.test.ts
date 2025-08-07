@@ -5,7 +5,7 @@
  * Tests focus on interactions and behavior verification rather than state testing.
  */
 
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, type jest } from '@jest/globals';
 
 // Mock types for testing CLI command processing
 interface MockCommandRegistry {

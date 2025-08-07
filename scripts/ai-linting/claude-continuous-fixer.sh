@@ -9,7 +9,7 @@ set -euo pipefail
 LOCK_FILE="/tmp/claude-fixer.lock"
 LOG_FILE="/tmp/claude-fixer-continuous.log"
 MAX_RUNTIME=3600  # 60 minutes in seconds
-MAX_FIXES_PER_RUN=10  # Increased for aggressive mode
+MAX_FIXES_PER_RUN=20  # SUPER AGGRESSIVE for 5000+ errors
 CHECK_INTERVAL=300    # 5 minutes
 PID_FILE="/tmp/claude-fixer.pid"
 
@@ -56,19 +56,19 @@ acquire_lock() {
     # Acquire lock
     echo $$ > "$LOCK_FILE"
     echo $$ > "$PID_FILE"
-    log "🔒 Lock acquired (PID: $$)"
+    log "[LOCK] Lock acquired (PID: $$)"
     return 0
 }
 
 release_lock() {
     rm -f "$LOCK_FILE" "$PID_FILE"
-    log "🔓 Lock released"
+    log "[UNLOCK] Lock released"
 }
 
 # Cleanup on exit
 cleanup() {
     local exit_code=$?
-    log "🧹 Cleaning up (exit code: $exit_code)..."
+    log "[CLEAN] Cleaning up (exit code: $exit_code)..."
     release_lock
     exit $exit_code
 }
@@ -107,29 +107,29 @@ kill_timeout() {
 
 # Enhanced file finder for 5000+ errors
 find_files_with_errors() {
-    log "🔍 Scanning for files with errors (aggressive mode)..."
+    log "[SCAN] Scanning for files with errors (aggressive mode)..."
     
     local files_with_issues=()
     
     # Strategy 1: Recently modified files (likely to have new issues)
-    mapfile -t recent_files < <(find src -name "*.ts" -mtime -1 -type f 2>/dev/null | head -5 || true)
+    mapfile -t recent_files < <(find src -name "*.ts" -mtime -1 -type f 2>/dev/null | head -10 || true)
     
     # Strategy 2: Large files (often have more issues)
-    mapfile -t large_files < <(find src -name "*.ts" -size +1k -type f 2>/dev/null | head -5 || true)
+    mapfile -t large_files < <(find src -name "*.ts" -size +1k -type f 2>/dev/null | head -10 || true)
     
     # Strategy 3: Random sample for comprehensive coverage
-    mapfile -t random_files < <(find src -name "*.ts" -type f 2>/dev/null | shuf | head -10 || true)
+    mapfile -t random_files < <(find src -name "*.ts" -type f 2>/dev/null | shuf | head -20 || true)
     
     # Combine and deduplicate
     local all_files=("${recent_files[@]}" "${large_files[@]}" "${random_files[@]}")
-    local unique_files=($(printf '%s\n' "${all_files[@]}" | sort -u | head -20))
+    local unique_files=($(printf '%s\n' "${all_files[@]}" | sort -u | head -40))
     
     if [ ${#unique_files[@]} -eq 0 ]; then
         warn "No TypeScript files found"
         return 1
     fi
     
-    log "📁 Found ${#unique_files[@]} files to analyze"
+    log "[FILES] Found ${#unique_files[@]} files to analyze"
     printf '%s\n' "${unique_files[@]}"
 }
 
@@ -156,11 +156,11 @@ fix_file_aggressively() {
     local backup_file="${file}.backup-$(date +%s)"
     local fixed_file="/tmp/claude-fix-aggressive-$$.ts"
     
-    log "🔧 Aggressively fixing: $(basename "$file")"
+    log "[FIX] Aggressively fixing: $(basename "$file")"
     
     # Quick pre-check
     if ! has_obvious_errors "$file"; then
-        info "✨ $(basename "$file") appears clean, skipping"
+        info "[CLEAN] $(basename "$file") appears clean, skipping"
         return 1
     fi
     
@@ -172,11 +172,11 @@ fix_file_aggressively() {
     original_lines=$(wc -l < "$file")
     
     # Use Claude Code for aggressive fixing
-    timeout 180s claude code > "$fixed_file" 2>/dev/null <<EOF || {
+    if ! timeout 180s claude code > "$fixed_file" 2>/dev/null <<EOF; then
         warn "Claude Code analysis timed out for $(basename "$file")"
         rm -f "$backup_file" "$fixed_file"
         return 1
-    }
+    fi
 URGENT: Fix ALL issues in this TypeScript file. This is part of fixing 5000+ errors.
 
 \`\`\`typescript
@@ -234,7 +234,7 @@ EOF
     
     # Success
     rm -f "$backup_file" "$fixed_file"
-    log "✅ Aggressively fixed: $(basename "$file")"
+    log "[OK] Aggressively fixed: $(basename \"$file\")"
     return 0
 }
 
@@ -250,13 +250,13 @@ prepare_direct_commit() {
     current_branch=$(git branch --show-current 2>/dev/null || echo "main")
     
     if [ "$current_branch" != "main" ]; then
-        log "🔄 Switching to main branch from $current_branch"
+        log "[SWITCH] Switching to main branch from $current_branch"
         git checkout main >/dev/null 2>&1 || {
             warn "Could not switch to main, staying on $current_branch"
         }
     fi
     
-    log "⚡ Ready for direct commits to main"
+    log "[READY] Ready for direct commits to main"
     echo "main"
     return 0
 }
@@ -283,20 +283,20 @@ commit_aggressive_fixes() {
     fi
     
     # Direct commit message for aggressive fixing on main
-    local commit_msg="🤖 Auto-fix: ${#fixed_files[@]} files improved
+    local commit_msg="[AUTO] Auto-fix: ${#fixed_files[@]} files improved
 
 Continuous fixes applied directly to main:
-$(printf '• %s\n' "${fixed_files[@]}" | sed 's/.*\///g')
+$(printf '* %s\n' "${fixed_files[@]}" | sed 's/.*\///g')
 
 5000+ error reduction - $(date '+%H:%M:%S')"
     
     if git commit -m "$commit_msg" >/dev/null 2>&1; then
-        log "💾 Direct commit: ${#fixed_files[@]} fixes to main"
+        log "[SAVE] Direct commit: ${#fixed_files[@]} fixes to main"
         
         # Auto-push to main if remote exists  
         if git remote get-url origin >/dev/null 2>&1; then
             if git push origin main >/dev/null 2>&1; then
-                log "🚀 Pushed fixes to remote main"
+                log "[START] Pushed fixes to remote main"
             fi
         fi
         return 0
@@ -309,8 +309,8 @@ $(printf '• %s\n' "${fixed_files[@]}" | sed 's/.*\///g')
 # Main aggressive fixing loop
 main_continuous_fixer() {
     local start_time=$(date +%s)
-    log "🚀 Starting AGGRESSIVE continuous fixer (PID: $$)"
-    log "📊 Target: 5000+ errors | Max runtime: ${MAX_RUNTIME}s | Max fixes: $MAX_FIXES_PER_RUN"
+    log "[START] Starting SUPER AGGRESSIVE continuous fixer (PID: $$)"
+    log "[STATS] Target: 5000+ errors | Max runtime: ${MAX_RUNTIME}s | Max fixes: $MAX_FIXES_PER_RUN | Files per run: 40"
     
     # Setup timeout protection
     setup_timeout
@@ -342,7 +342,7 @@ main_continuous_fixer() {
         
         # Check fix limit
         if [ $fixes_applied -ge $MAX_FIXES_PER_RUN ]; then
-            log "🎯 Reached max fixes per run ($MAX_FIXES_PER_RUN)"
+            log "[MAX] Reached max fixes per run ($MAX_FIXES_PER_RUN)"
             break
         fi
         
@@ -355,7 +355,7 @@ main_continuous_fixer() {
         if fix_file_aggressively "$file"; then
             fixed_files+=("$file")
             ((fixes_applied++))
-            log "⚡ Fixed ($fixes_applied/$MAX_FIXES_PER_RUN): $(basename "$file")"
+            log "[READY] Fixed ($fixes_applied/$MAX_FIXES_PER_RUN): $(basename "$file")"
         else
             ((errors_encountered++))
             if [ $errors_encountered -gt 5 ]; then
@@ -376,21 +376,21 @@ main_continuous_fixer() {
     local total_runtime=$(( $(date +%s) - start_time ))
     
     # Summary
-    log "📊 Continuous fix session complete!"
-    log "⏱️  Runtime: ${total_runtime}s / ${MAX_RUNTIME}s"
-    log "🔍 Files analyzed: ${#files_to_fix[@]}"
-    log "✅ Files fixed: $fixes_applied"
-    log "❌ Errors encountered: $errors_encountered"
+    log "[STATS] Continuous fix session complete!"
+    log "[TIME]  Runtime: ${total_runtime}s / ${MAX_RUNTIME}s"
+    log "[SCAN] Files analyzed: ${#files_to_fix[@]}"
+    log "[OK] Files fixed: $fixes_applied"
+    log "[ERR] Errors encountered: $errors_encountered"
     
     # Commit fixes directly to main if we have them
     if [ $fixes_applied -gt 0 ] && [ -n "$branch_name" ]; then
         if commit_aggressive_fixes "$branch_name" "${fixed_files[@]}"; then
-            log "🎉 Direct commit: $fixes_applied fixes pushed to main!"
+            log "[SUCCESS] Direct commit: $fixes_applied fixes pushed to main!"
         fi
     elif [ $fixes_applied -gt 0 ]; then
-        log "🎉 Applied $fixes_applied fixes (no git available)"
+        log "[SUCCESS] Applied $fixes_applied fixes (no git available)"
     else
-        log "✨ No fixes needed this round"
+        log "[CLEAN] No fixes needed this round"
     fi
     
     # Progress tracking
@@ -402,7 +402,7 @@ main_continuous_fixer() {
 
 # Main execution
 main() {
-    log "🚀 Claude Continuous Fixer starting..."
+    log "[START] Claude Continuous Fixer starting..."
     
     # Check if Claude Code is available
     if ! command -v claude >/dev/null 2>&1; then
@@ -429,14 +429,14 @@ case "${1:-continuous}" in
             local pid
             pid=$(cat "$LOCK_FILE")
             if kill -0 "$pid" 2>/dev/null; then
-                echo "🟢 Continuous fixer running (PID: $pid)"
-                echo "📊 Progress:"
+                echo "[RUNNING] Continuous fixer running (PID: $pid)"
+                echo "[STATS] Progress:"
                 tail -5 "/tmp/claude-continuous-progress.txt" 2>/dev/null || echo "No progress data yet"
             else
-                echo "🔴 Continuous fixer not running (stale lock file)"
+                echo "[ERROR] Continuous fixer not running (stale lock file)"
             fi
         else
-            echo "⚫ Continuous fixer not running"
+            echo "[STOPPED] Continuous fixer not running"
         fi
         ;;
     "stop")
@@ -444,29 +444,29 @@ case "${1:-continuous}" in
             local pid
             pid=$(cat "$LOCK_FILE")
             if kill -0 "$pid" 2>/dev/null; then
-                echo "🛑 Stopping continuous fixer (PID: $pid)..."
+                echo "[STOP] Stopping continuous fixer (PID: $pid)..."
                 kill -TERM "$pid"
                 sleep 5
                 if kill -0 "$pid" 2>/dev/null; then
-                    echo "💥 Force killing..."
+                    echo "[KILL] Force killing..."
                     kill -KILL "$pid"
                 fi
                 rm -f "$LOCK_FILE" "$PID_FILE"
-                echo "✅ Stopped"
+                echo "[OK] Stopped"
             else
-                echo "⚫ Process not running"
+                echo "[STOPPED] Process not running"
                 rm -f "$LOCK_FILE" "$PID_FILE"
             fi
         else
-            echo "⚫ Continuous fixer not running"
+            echo "[STOPPED] Continuous fixer not running"
         fi
         ;;
     "logs")
-        echo "📄 Continuous fixer logs:"
+        echo "[LOGS] Continuous fixer logs:"
         tail -50 "$LOG_FILE" 2>/dev/null || echo "No logs yet"
         ;;
     "progress")
-        echo "📊 Continuous fixer progress:"
+        echo "[STATS] Continuous fixer progress:"
         tail -20 "/tmp/claude-continuous-progress.txt" 2>/dev/null || echo "No progress data yet"
         ;;
     *)

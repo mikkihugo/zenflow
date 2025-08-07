@@ -3,7 +3,7 @@
  * Tests for the enhanced hooks system using London (mockist) TDD approach
  */
 
-import { jest } from '@jest/globals';
+import type { jest } from '@jest/globals';
 import type {
   HookContext,
   HookTrigger,

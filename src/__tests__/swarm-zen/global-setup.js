@@ -34,7 +34,7 @@ export default async function globalSetup() {
   const requiredDeps = ['vitest', 'playwright', 'better-sqlite3', 'ws'];
 
   const packageJson = JSON.parse(
-    await fs.readFile(path.join(__dirname, '../package.json'), 'utf-8'),
+    await fs.readFile(path.join(__dirname, '../package.json'), 'utf-8')
   );
 
   const allDeps = {
@@ -81,7 +81,7 @@ export default async function globalSetup() {
 
   await fs.writeFile(
     path.join(__dirname, '../coverage/coverage-run.json'),
-    JSON.stringify(coverageData, null, 2),
+    JSON.stringify(coverageData, null, 2)
   );
 
   // Return cleanup function

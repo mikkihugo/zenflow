@@ -9,7 +9,7 @@ import { AutoSwarmFactory } from '@coordination/discovery/auto-swarm-factory';
 import type { HiveSwarmCoordinator } from '@coordination/hive-swarm-sync';
 import type { SwarmCoordinator } from '@coordination/swarm/core/swarm-coordinator';
 import type { AGUIInterface } from '@interfaces/agui/agui-adapter';
-import { jest } from '@jest/globals';
+import type { jest } from '@jest/globals';
 import type { SessionMemoryStore } from '@memory/memory';
 
 describe('AutoSwarmFactory', () => {

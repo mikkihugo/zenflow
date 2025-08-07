@@ -87,7 +87,7 @@ async function benchmarkSwarmCreation() {
       const swarm = new ZenSwarm({ maxAgents: 64 });
       return swarm;
     },
-    100,
+    100
   );
 }
 
@@ -130,7 +130,7 @@ async function benchmarkNeuralOperations() {
       const target = new Float32Array(64).fill(0.8);
       await agent.neuralNetwork.train(input, target);
     },
-    100,
+    100
   );
 
   await benchmark('Pattern Recognition', async () => {
@@ -178,7 +178,7 @@ async function benchmarkTaskOrchestration() {
         priority: 'high',
       });
     },
-    100,
+    100
   );
 
   await benchmark(
@@ -191,7 +191,7 @@ async function benchmarkTaskOrchestration() {
         priority: 'critical',
       });
     },
-    10,
+    10
   );
 }
 

@@ -1358,7 +1358,9 @@ export const UELHelpers = {
   /**
    * Perform comprehensive health check on all event managers
    */
-  async performHealthCheck(): Promise<Record<string, { healthy: boolean; details?: Record<string, unknown> }>> {
+  async performHealthCheck(): Promise<
+    Record<string, { healthy: boolean; details?: Record<string, unknown> }>
+  > {
     const healthStatus = await uel.getHealthStatus();
 
     return healthStatus.reduce(

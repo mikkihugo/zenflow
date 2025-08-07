@@ -7,7 +7,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { jest } from '@jest/globals';
+import type { jest } from '@jest/globals';
 
 // Import the components we're testing
 import type {

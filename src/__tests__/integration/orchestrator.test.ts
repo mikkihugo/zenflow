@@ -3,7 +3,7 @@
  * This test adapts the London School TDD approach from the original test suite.
  */
 
-import { describe, expect, it, jest } from '@jest/globals';
+import { describe, expect, it, type jest } from '@jest/globals';
 import { Orchestrator } from 'coordination/orchestrator';
 import { ZenSwarmStrategy } from 'coordination/strategies/ruv-swarm.strategy';
 import type { ILogger } from 'core/interfaces/base-interfaces';

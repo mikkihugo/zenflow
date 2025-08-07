@@ -223,7 +223,8 @@ export class TaskCoordinator {
       ('acceptance_criteria' in document && (document as any).acceptance_criteria?.length > 3) ||
       document.tags?.includes('complex') ||
       document.tags?.includes('architecture') ||
-      ('technical_approach' in document && (document as any).technical_approach?.includes('architecture'))
+      ('technical_approach' in document &&
+        (document as any).technical_approach?.includes('architecture'))
     );
   }
 

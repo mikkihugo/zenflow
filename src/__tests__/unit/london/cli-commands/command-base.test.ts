@@ -6,7 +6,7 @@
  * validation behavior, and hook interactions.
  */
 
-import { jest } from '@jest/globals';
+import type { jest } from '@jest/globals';
 import { BaseCommand, type CommandHooks } from '../../../../cli/core/base-command';
 import type {
   CommandConfig,

@@ -6,7 +6,7 @@
  * with other components rather than testing implementation details.
  */
 
-import { jest } from '@jest/globals';
+import type { jest } from '@jest/globals';
 
 // Mock argument parser interface for testing interactions
 interface ArgumentParser {

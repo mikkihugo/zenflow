@@ -61,7 +61,7 @@ async function runOptimizationDemo() {
       swarm: swarmOptimizer,
       data: dataOptimizer,
       wasm: wasmOptimizer,
-    },
+    }
   );
 
   // Initialize monitoring
@@ -85,7 +85,7 @@ async function runOptimizationDemo() {
       .map(() =>
         Array(100)
           .fill(0)
-          .map(() => Math.random()),
+          .map(() => Math.random())
       ),
     activationFunction: 'relu',
   };

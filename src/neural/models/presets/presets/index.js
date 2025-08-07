@@ -42,7 +42,7 @@ export const getPreset = (category, presetName) => {
 
   if (!categoryMap[category]) {
     throw new Error(
-      `Unknown preset category: ${category}. Available categories: ${Object.keys(categoryMap).join(', ')}`,
+      `Unknown preset category: ${category}. Available categories: ${Object.keys(categoryMap).join(', ')}`
     );
   }
 
@@ -60,7 +60,7 @@ export const getCategoryPresets = (category) => {
 
   if (!categoryMap[category]) {
     throw new Error(
-      `Unknown preset category: ${category}. Available categories: ${Object.keys(categoryMap).join(', ')}`,
+      `Unknown preset category: ${category}. Available categories: ${Object.keys(categoryMap).join(', ')}`
     );
   }
 
@@ -267,7 +267,7 @@ export const validatePresetConfig = (preset) => {
 
   if (missingPerfFields.length > 0) {
     throw new Error(
-      `Preset performance validation failed. Missing fields: ${missingPerfFields.join(', ')}`,
+      `Preset performance validation failed. Missing fields: ${missingPerfFields.join(', ')}`
     );
   }
 

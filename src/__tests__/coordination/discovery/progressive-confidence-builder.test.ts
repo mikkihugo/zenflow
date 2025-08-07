@@ -5,7 +5,7 @@
 import type { DomainDiscoveryBridge } from '@coordination/discovery/domain-discovery-bridge';
 import { ProgressiveConfidenceBuilder } from '@coordination/discovery/progressive-confidence-builder';
 import type { AGUIInterface } from '@interfaces/agui/agui-adapter';
-import { jest } from '@jest/globals';
+import type { jest } from '@jest/globals';
 import type { SessionMemoryStore } from '@memory/memory';
 
 // Mock HiveFACT

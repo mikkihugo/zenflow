@@ -254,13 +254,6 @@ case "${1:-analyze}" in
     "analyze")
         main
         ;;
-    "quick")
-        log "🚀 Quick AI Analysis (5 files)"
-        mapfile -t quick_files < <(find src -name "*.ts" -not -path "*/__tests__/*" | head -5)
-        for file in "${quick_files[@]}"; do
-            analyze_typescript_patterns "$file"
-        done
-        ;;
     "patterns")
         shift
         for file in "$@"; do
@@ -286,11 +279,10 @@ case "${1:-analyze}" in
         done
         ;;
     *)
-        echo "Usage: $0 [analyze|quick|patterns|smells|performance|tests] [files...]"
+        echo "Usage: $0 [analyze|patterns|smells|performance|tests] [files...]"
         echo ""
         echo "Commands:"
         echo "  analyze     - Full AI analysis of codebase (default)"
-        echo "  quick       - Quick analysis of 5 files"
         echo "  patterns    - Analyze specific files for patterns"
         echo "  smells      - Detect code smells in specific files"
         echo "  performance - Performance analysis of specific files"

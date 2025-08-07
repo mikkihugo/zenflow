@@ -48,7 +48,8 @@ interface Logger {
 const createLogger = (name: string): Logger => ({
   info: (_message: string, _meta?: Record<string, unknown>) => {},
   debug: (_message: string, _meta?: Record<string, unknown>) => {},
-  warn: (message: string, meta?: Record<string, unknown>) => console.warn(`[WARN] ${name}: ${message}`, meta),
+  warn: (message: string, meta?: Record<string, unknown>) =>
+    console.warn(`[WARN] ${name}: ${message}`, meta),
   error: (message: string, meta?: Record<string, unknown>, error?: Error | unknown) =>
     console.error(`[ERROR] ${name}: ${message}`, meta, error),
 });
@@ -244,7 +245,11 @@ interface MonitoringHealthEntry {
  * @example
  */
 interface WrappedMonitoringComponent {
-  component: RealTimePerformanceMonitor | PerformanceAnalyzer | MetricsCollector | { [key: string]: unknown };
+  component:
+    | RealTimePerformanceMonitor
+    | PerformanceAnalyzer
+    | MetricsCollector
+    | { [key: string]: unknown };
   componentType: 'performance' | 'analytics' | 'health' | 'dashboard' | 'alert';
   wrapper: EventEmitter;
   originalMethods: Map<string, Function>;

@@ -5,8 +5,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
+import type { IEventBus } from '../di/index';
+import type { ILogger } from '../di/index';
 import { CORE_TOKENS, inject, injectable } from '../di/index';
 
 export interface CoordinationConfig {

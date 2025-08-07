@@ -21,21 +21,22 @@ Automated intelligent code analysis using Claude Code CLI for **AI-powered code 
 
 ### **Quick Start**
 ```bash
-# Quick AI analysis (5 files)
-npm run lint:ai:quick
+# Full codebase AI analysis (recommended)
+npm run lint:ai
 
 # Get development insights  
 npm run lint:ai:insights
 
-# Full codebase analysis
-npm run lint:ai
+# Continuous real-time monitoring
+npm run lint:ai:watch
 ```
 
 ### **AI Linting**
 ```bash
-# Full analysis with report generation
-npm run lint:ai                    # Analyze entire codebase
-npm run lint:ai:quick              # Quick 5-file analysis
+# Full analysis with comprehensive report generation
+npm run lint:ai                    # Analyze entire codebase (up to 50 files)
+
+# Targeted analysis commands
 scripts/ai-linting/claude-code-analyzer.sh patterns file1.ts  # Pattern analysis
 scripts/ai-linting/claude-code-analyzer.sh smells file2.ts    # Code smell detection
 scripts/ai-linting/claude-code-analyzer.sh performance file3.ts  # Performance analysis

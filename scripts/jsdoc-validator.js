@@ -533,11 +533,11 @@ class JSDocValidator {
     // Calculate overall coverage
     this.results.coverage.documented = this.results.files.reduce(
       (sum, file) => sum + file.coverage.documented,
-      0,
+      0
     );
     this.results.coverage.total = this.results.files.reduce(
       (sum, file) => sum + file.coverage.total,
-      0,
+      0
     );
     this.results.coverage.percentage =
       this.results.coverage.total > 0
@@ -558,11 +558,11 @@ class JSDocValidator {
       const layerData = this.results.layers[layer];
       layerData.coverage.documented = layerData.files.reduce(
         (sum, file) => sum + file.coverage.documented,
-        0,
+        0
       );
       layerData.coverage.total = layerData.files.reduce(
         (sum, file) => sum + file.coverage.total,
-        0,
+        0
       );
       layerData.coverage.percentage =
         layerData.coverage.total > 0
@@ -626,22 +626,22 @@ class JSDocValidator {
 ## Layer Breakdown
 
 ${this.layers
-    .map((layer) => {
-      const layerData = this.results.layers[layer];
-      return `### ${layer.toUpperCase()} - ${this.getLayerName(layer)}
+  .map((layer) => {
+    const layerData = this.results.layers[layer];
+    return `### ${layer.toUpperCase()} - ${this.getLayerName(layer)}
 
 - **Coverage:** ${layerData.coverage.percentage}% (${layerData.coverage.documented}/${layerData.coverage.total})
 - **Quality:** ${layerData.quality.score}% (${layerData.quality.passed}/${layerData.files.length} files)
 - **Files:** ${layerData.files.length}
 - **Errors:** ${layerData.errors.length}`;
-    })
-    .join('\n\n')}
+  })
+  .join('\n\n')}
 
 ## Detailed Results
 
 ${this.results.files
-    .map((file) => {
-      return `### ${path.relative(this.rootDir, file.path)}
+  .map((file) => {
+    return `### ${path.relative(this.rootDir, file.path)}
 
 - **Layer:** ${file.layer.toUpperCase()}
 - **Coverage:** ${file.coverage.percentage}%
@@ -661,8 +661,8 @@ ${
 ${file.warnings.map((warning) => `- ⚠️ ${warning}`).join('\n')}`
     : ''
 }`;
-    })
-    .join('\n\n')}
+  })
+  .join('\n\n')}
 
 ## Recommendations
 
@@ -699,13 +699,13 @@ ${this.generateRecommendations()}
 
     if (parseFloat(this.results.coverage.percentage) < 80) {
       recommendations.push(
-        '📈 **Improve Documentation Coverage**: Current coverage is below 80%. Focus on adding JSDoc to undocumented classes, interfaces, and functions.',
+        '📈 **Improve Documentation Coverage**: Current coverage is below 80%. Focus on adding JSDoc to undocumented classes, interfaces, and functions.'
       );
     }
 
     if (this.results.quality.failed > 0) {
       recommendations.push(
-        '🔧 **Fix Quality Issues**: Address JSDoc validation errors to improve overall quality score.',
+        '🔧 **Fix Quality Issues**: Address JSDoc validation errors to improve overall quality score.'
       );
     }
 
@@ -714,14 +714,14 @@ ${this.generateRecommendations()}
       const layerData = this.results.layers[layer];
       if (parseFloat(layerData.coverage.percentage) < 70) {
         recommendations.push(
-          `🎯 **${layer.toUpperCase()} Focus**: ${this.getLayerName(layer)} has low coverage (${layerData.coverage.percentage}%). Prioritize documentation in this layer.`,
+          `🎯 **${layer.toUpperCase()} Focus**: ${this.getLayerName(layer)} has low coverage (${layerData.coverage.percentage}%). Prioritize documentation in this layer.`
         );
       }
     }
 
     if (recommendations.length === 0) {
       recommendations.push(
-        '✅ **Excellent Documentation**: All validation metrics are within acceptable ranges. Continue maintaining high documentation standards.',
+        '✅ **Excellent Documentation**: All validation metrics are within acceptable ranges. Continue maintaining high documentation standards.'
       );
     }
 

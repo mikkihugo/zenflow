@@ -12,8 +12,8 @@
 
 import { EventEmitter } from 'node:events';
 import type { DatabaseDrivenSystem } from '../core/database-driven-system';
-import { createLogger } from '../core/logger';
 import { generateId } from '../core/helpers';
+import { createLogger } from '../core/logger';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,

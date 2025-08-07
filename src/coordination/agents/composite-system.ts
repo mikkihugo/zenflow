@@ -980,7 +980,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     if (eligibleMembers.length === 0) {
       return null;
     }
-    
+
     const selected = eligibleMembers[this.currentRoundRobinIndex % eligibleMembers.length];
     this.currentRoundRobinIndex++;
     return selected;
@@ -990,7 +990,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     if (eligibleMembers.length === 0) {
       return null;
     }
-    
+
     return eligibleMembers.reduce((least, current) => {
       const leastStatus = least.getStatus();
       const currentStatus = current.getStatus();
@@ -1009,7 +1009,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     if (eligibleMembers.length === 0) {
       return null;
     }
-    
+
     // Select member with the most matching capabilities
     return eligibleMembers.reduce((best, current) => {
       const bestCapabilities = best.getCapabilities();

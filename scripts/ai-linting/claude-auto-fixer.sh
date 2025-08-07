@@ -17,8 +17,8 @@ info() { echo -e "${BLUE}[INFO]${NC} $1" | tee -a /tmp/claude-fixer.log; }
 warn() { echo -e "${YELLOW}[WARNING]${NC} $1" | tee -a /tmp/claude-fixer.log; }
 error() { echo -e "${RED}[ERROR]${NC} $1" | tee -a /tmp/claude-fixer.log; }
 
-# Configuration
-MAX_FIXES_PER_RUN=5
+# Configuration  
+MAX_FIXES_PER_RUN=15  # INCREASED for 5000+ error codebases
 BRANCH_PREFIX="claude-auto-fix"
 ANALYSIS_DIR="auto-fix-analysis"
 TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
@@ -56,11 +56,11 @@ find_files_to_fix() {
     
     # Find recently modified files first (most likely to have issues)
     local recent_files
-    mapfile -t recent_files < <(find src -name "*.ts" -mtime -7 -type f 2>/dev/null | head -10 || true)
+    mapfile -t recent_files < <(find src -name "*.ts" -mtime -7 -type f 2>/dev/null | head -25 || true)
     
     # If no recent files, get random sample
     if [ ${#recent_files[@]} -eq 0 ]; then
-        mapfile -t recent_files < <(find src -name "*.ts" -type f 2>/dev/null | shuf | head -10 || true)
+        mapfile -t recent_files < <(find src -name "*.ts" -type f 2>/dev/null | shuf | head -25 || true)
     fi
     
     if [ ${#recent_files[@]} -eq 0 ]; then
