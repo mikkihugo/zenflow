@@ -145,6 +145,7 @@
   ],
   "dependencies": {
     "@ag-ui/core": "^0.0.35",
+    "@anthropic-ai/claude-code": "^1.0.70",
     "@genkit-ai/mcp": "^1.15.5",
     "@google/generative-ai": "^0.24.1",
     "@lancedb/lancedb": "^0.21.1",
