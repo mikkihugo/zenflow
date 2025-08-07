@@ -364,7 +364,7 @@ export class HiveFACTSystem extends EventEmitter {
    */
   private matchesQuery(fact: UniversalFact, query: FACTSearchQuery): boolean {
     // Simple text matching for now
-    const searchText = query.query.toLowerCase();
+    const searchText = (query.query ?? '').toLowerCase();
     const factText =
       `${fact.type} ${fact.subject || ''} ${JSON.stringify(fact.content)}`.toLowerCase();
 
@@ -393,9 +393,9 @@ export class HiveFACTSystem extends EventEmitter {
         id: `general:search:${Date.now()}_${Math.random()}`,
         type: 'general',
         category: 'search', // Add required category field
-        subject: query.query,
+        subject: query.query ?? 'search',
         content: {
-          insight: `Search result for: ${query.query}`,
+          insight: `Search result for: ${query.query ?? 'search'}`,
           source: 'external_search',
         },
         source: 'external_search',

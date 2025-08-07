@@ -178,7 +178,7 @@ export class ChaosEngineering extends EventEmitter {
    * @param name
    * @param experimentDefinition
    */
-  registerExperiment(name, experimentDefinition) {
+  registerExperiment(name: string, experimentDefinition: Partial<ChaosExperiment>) {
     const experiment: ChaosExperiment = {
       id: generateId('experiment'),
       name,
@@ -225,7 +225,7 @@ export class ChaosEngineering extends EventEmitter {
    * @param experimentName
    * @param overrideParams
    */
-  async runExperiment(experimentName, overrideParams = {}) {
+  async runExperiment(experimentName: string, overrideParams: Record<string, any> = {}) {
     if (!this.options.enableChaos) {
       throw new ConfigurationError('Chaos Engineering is disabled', 'enableChaos', false);
     }

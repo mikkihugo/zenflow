@@ -164,8 +164,8 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
       this.emit('hive:sync:completed', this.getHiveStatus());
     } catch (error) {
-      this.logger?.error('Hive sync cycle failed', { error: error.message });
-      this.emit('hive:sync:failed', { error: error.message });
+      this.logger?.error('Hive sync cycle failed', { error: error instanceof Error ? error.message : String(error) });
+      this.emit('hive:sync:failed', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -190,9 +190,9 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
     this.hiveRegistry.globalResources = {
       totalCPU: agents.reduce((sum, _agent) => sum + 100, 0), // Assume 100% per agent
-      usedCPU: agents.reduce((sum, agent) => sum + agent.metrics.cpuUsage, 0),
+      usedCPU: agents.reduce((sum, agent) => sum + (agent.metrics?.cpuUsage ?? 0), 0),
       totalMemory: agents.reduce((sum, _agent) => sum + 1000, 0), // Assume 1GB per agent
-      usedMemory: agents.reduce((sum, agent) => sum + agent.metrics.memoryUsage, 0),
+      usedMemory: agents.reduce((sum, agent) => sum + (agent.metrics?.memoryUsage ?? 0), 0),
       totalAgents: agents.length,
       availableAgents: agents.filter((a) => a.availability.status === 'available').length,
       busyAgents: agents.filter((a) => a.availability.status === 'busy').length,

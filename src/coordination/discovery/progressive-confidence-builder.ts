@@ -1002,10 +1002,11 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
       for (let j = i + 1; j < domains.length; j++) {
         const domain1 = domains[i];
         const domain2 = domains[j];
-        if (!domain1 || !domain2) continue;
-        const relationship = this.detectRelationship(domain1, domain2);
-        if (relationship) {
-          this.relationships.push(relationship);
+        if (domain1 && domain2) {
+          const relationship = this.detectRelationship(domain1, domain2);
+          if (relationship) {
+            this.relationships.push(relationship);
+          }
         }
       }
     }
@@ -1370,7 +1371,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
       questionsAsked: this.totalQuestionsAsked,
       questionsAnswered: this.totalQuestionsAnswered,
       significantChanges,
-      ...(this.validatorId !== undefined ? { validatorId: this.validatorId } : {}),
+      validatorId: this.validatorId || '',
     };
 
     this.validationAuditTrail.push(auditEntry);

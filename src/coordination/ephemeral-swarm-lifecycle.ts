@@ -199,6 +199,7 @@ export class EphemeralSwarmManager extends EventEmitter {
     });
 
     const spawnPromises = request.requiredAgents.map(async (agentType) => {
+      const claudeSubAgent = this.getClaudeSubAgent(agentType);
       const agent: EphemeralAgent = {
         id: `${swarm.id}_${agentType}_${Date.now()}`,
         type: agentType,
@@ -206,7 +207,7 @@ export class EphemeralSwarmManager extends EventEmitter {
         spawnedAt: new Date(),
         lastActivity: new Date(),
         taskCount: 0,
-        claudeSubAgent: this.getClaudeSubAgent(agentType),
+        claudeSubAgent: claudeSubAgent || '',
       };
 
       // Spawn the agent (this would integrate with Claude Code Task tool)
@@ -279,6 +280,7 @@ export class EphemeralSwarmManager extends EventEmitter {
     // Execute task steps
     for (let i = 0; i < swarm.task.steps.length; i++) {
       const step = swarm.task.steps[i];
+      if (!step) continue;
       swarm.task.currentStep = i;
 
       await this.executeTaskStep(swarm, step);
