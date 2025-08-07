@@ -5,7 +5,7 @@
  * similarity search, vector insertion, indexing, and clustering.
  */
 
-import type { VectorDatabaseAdapter } from '../../providers/database-providers';
+import type { VectorDatabaseAdapter } from '../providers/database-providers';
 import { BaseDao } from '../base.dao';
 import type {
   ClusteringOptions,

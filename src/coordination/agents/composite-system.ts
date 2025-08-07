@@ -130,7 +130,7 @@ export class Agent extends EventEmitter implements AgentComponent {
   private taskHistory: TaskResult[] = [];
   private maxConcurrentTasks = 1;
   private resourceLimits: ResourceRequirements;
-  private config?: AgentConfig;
+  // private config?: AgentConfig; // xxx REMOVED: config not stored, only used in initialize()
 
   constructor(
     id: string,

@@ -98,7 +98,7 @@ export class CoordinationManager extends EventEmitter {
 
     if (this.heartbeatTimer) {
       clearInterval(this.heartbeatTimer);
-      this.heartbeatTimer = undefined;
+      delete (this as any).heartbeatTimer;
     }
 
     this.isRunning = false;
@@ -177,7 +177,7 @@ export class CoordinationManager extends EventEmitter {
       priority: taskConfig.priority,
       status: 'pending',
       created: new Date(),
-      metadata: taskConfig.metadata,
+      ...(taskConfig.metadata && { metadata: taskConfig.metadata }),
     };
 
     this.tasks.set(task.id, task);

@@ -5,7 +5,7 @@
  * node and relationship management, traversals, and Cypher queries.
  */
 
-import type { GraphDatabaseAdapter } from '../../providers/database-providers';
+import type { GraphDatabaseAdapter } from '../providers/database-providers';
 import { BaseDao } from '../base.dao';
 import type {
   CustomQuery,
