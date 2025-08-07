@@ -214,9 +214,8 @@ function showLoggingConfig(logger: LoggerInterface): void {
   logger.info('Logging configuration displayed successfully');
 }
 
-// TODO: Use this function when implementing console output
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function _formatReportForConsole(report: any): string {
+// Function to format report for console output
+function formatReportForConsole(report: any): string {
   const output: string[] = [];
 
   // Connection section
