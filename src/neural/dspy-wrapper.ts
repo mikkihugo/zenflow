@@ -245,15 +245,20 @@ export class DSPyWrapperImpl implements DSPyWrapper {
         error: error instanceof Error ? error.message : String(error),
       });
 
+      const metadata: any = {
+        executionTime,
+        timestamp: new Date(),
+        confidence: 0.0, // Low confidence for failed executions
+      };
+      
+      if (this.currentConfig?.model) {
+        metadata.model = this.currentConfig.model;
+      }
+
       return {
         success: false,
         result: {},
-        metadata: {
-          executionTime,
-          timestamp: new Date(),
-          model: this.currentConfig?.model ?? undefined,
-          confidence: 0.0, // Low confidence for failed executions
-        },
+        metadata,
         error: error instanceof Error ? error : new Error(String(error)),
       };
     }
@@ -490,7 +495,7 @@ class DSPyProgramWrapper implements DSPyProgram {
     this.signature = signature;
     this.description = description;
     this.rawProgram = rawProgram;
-    this.wrapper = wrapper;
+    // wrapper parameter is unused - removed assignment to non-existent property
 
     this.metadata = {
       signature,
