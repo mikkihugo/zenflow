@@ -220,7 +220,7 @@ export class ProductWorkflowEngine extends EventEmitter {
       workspaceId: context.workspaceId || 'default',
       sessionId: workflowId,
       documents: context.documents || {},
-      currentDocument: context.currentDocument,
+      ...(context.currentDocument !== undefined && { currentDocument: context.currentDocument }),
       variables: context.variables || {},
       environment: {
         type: 'development',

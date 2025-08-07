@@ -71,22 +71,49 @@ interface ChaosExperiment {
   createdAt: Date;
 }
 
+interface ChaosEngineeringOptions {
+  enableChaos?: boolean;
+  safetyEnabled?: boolean;
+  maxConcurrentExperiments?: number;
+  experimentTimeout?: number;
+  recoveryTimeout?: number;
+  blastRadiusLimit?: number;
+}
+
+interface ResourceUsage {
+  memory: number;
+  cpu: number;
+  connections: number;
+}
+
+interface ChaosStats {
+  totalExperiments: number;
+  successfulExperiments: number;
+  failedExperiments: number;
+  averageRecoveryTime: number;
+  totalRecoveryTime: number;
+}
+
+type FailureInjector = (params: Record<string, unknown>) => Promise<{ success: boolean; cleanup?: () => Promise<void> }>;
+type SafetyCheck = () => boolean;
+
 export class ChaosEngineering extends EventEmitter {
-  private options: any;
-  private logger: any;
+  private options: ChaosEngineeringOptions;
+  private logger: ReturnType<typeof createLogger>;
   private experiments: Map<string, ChaosExperiment>;
   private activeExperiments: Map<string, ExperimentExecution>;
   private experimentHistory: Map<string, ExperimentExecution[]>;
-  private failureInjectors: Map<string, any>;
-  private safetyChecks: Map<string, any>;
+  private failureInjectors: Map<string, FailureInjector>;
+  private safetyChecks: Map<string, SafetyCheck>;
   private emergencyStop: boolean;
-  private resourceUsage: any;
-  private stats: any;
-  private healthMonitor: any;
-  private recoveryWorkflows: any;
-  private connectionManager: any;
+  private resourceUsage: ResourceUsage;
+  private stats: ChaosStats;
+  private healthMonitor: any | null;
+  private recoveryWorkflows: any | null;
+  private connectionManager: any | null;
+  private mcpTools: any | null;
 
-  constructor(options: any = {}) {
+  constructor(options: ChaosEngineeringOptions = {}) {
     super();
 
     this.options = {
@@ -158,13 +185,14 @@ export class ChaosEngineering extends EventEmitter {
       this.logger.info('Chaos Engineering Framework initialized successfully');
       this.emit('chaos:initialized');
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       const chaosError = new SystemError(
-        `Failed to initialize chaos engineering: ${error.message}`,
+        `Failed to initialize chaos engineering: ${errorMessage}`,
         'CHAOS_INIT_FAILED',
         'critical',
         {
           component: 'chaos-engineering',
-          metadata: { originalError: error.message },
+          metadata: { originalError: errorMessage },
         }
       );
       this.logger.error('Chaos Engineering initialization failed', chaosError);
