@@ -336,6 +336,12 @@ export class CoordinationManager extends EventEmitter {
     // Sort by task count (load balancing)
     suitableAgents.sort((a, b) => a.taskCount - b.taskCount);
     const selectedAgent = suitableAgents[0];
+    
+    if (!selectedAgent) {
+      // This should never happen due to the check above, but TypeScript needs this
+      this._logger?.error(`Unexpected: No agent found after filtering`);
+      return;
+    }
 
     // Assign task
     task.assignedAgent = selectedAgent.id;

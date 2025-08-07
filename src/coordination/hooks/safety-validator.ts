@@ -296,7 +296,7 @@ export class BashSafetyValidator implements SafetyValidator {
           pattern: pattern.source,
           severity,
           description,
-          mitigation,
+          mitigation: mitigation || '',
         });
       }
     }

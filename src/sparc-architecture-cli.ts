@@ -117,12 +117,15 @@ program
       // Calculate overall score
       const overallScore =
         validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
-      const _passed = validationResults.filter((r) => r.passed).length;
-      const _total = validationResults.length;
+      // xxx NEEDS_HUMAN: These variables appear to be for logging/display but are unused
+      // const passed = validationResults.filter((r) => r.passed).length;
+      // const total = validationResults.length;
 
       if (options.detailed) {
         validationResults.forEach((result, _index) => {
-          const _status = result.passed ? '✅' : '❌';
+          // xxx NEEDS_HUMAN: Status display logic appears incomplete
+          // const status = result.passed ? '✅' : '❌';
+          // Consider adding console output here
         });
       }
 

@@ -238,7 +238,7 @@ export class HiveFACTSystem extends EventEmitter {
   ): Promise<UniversalFact | null> {
     try {
       // Determine query based on fact type
-      const _query = this.buildQueryForFactType(type, subject);
+      // const query = this.buildQueryForFactType(type, subject);
 
       // Use FACT orchestrator to gather from external MCPs
       // const result = await this.factOrchestrator.gatherKnowledge(query, {
@@ -381,7 +381,7 @@ export class HiveFACTSystem extends EventEmitter {
     //   sources: this.config.knowledgeSources,
     //   maxResults: query.limit,
     // });
-    const _result = { knowledge: [] }; // TODO: Implement with unified MCP
+    // const _result = { knowledge: [] }; // TODO: Implement with unified MCP
 
     // Convert to universal facts
     const facts: UniversalFact[] = [];
@@ -393,7 +393,7 @@ export class HiveFACTSystem extends EventEmitter {
         id: `general:search:${Date.now()}_${Math.random()}`,
         type: 'general',
         category: 'search', // Add required category field
-        subject: query.query || 'search',
+        subject: query.query ?? 'search',
         content: {
           insight: `Search result for: ${query.query || 'search'}`,
           source: 'external_search',

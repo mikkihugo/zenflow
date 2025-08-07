@@ -480,7 +480,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
     level: number;
   }> {
     // Simulate SIMD optimization results
-    const simdSpeedups = {
+    const simdSpeedups: Record<string, { speedup: number; level: number }> = {
       add: { speedup: 4.0, level: 128 },
       multiply: { speedup: 4.0, level: 128 },
       dot_product: { speedup: 8.0, level: 256 },
