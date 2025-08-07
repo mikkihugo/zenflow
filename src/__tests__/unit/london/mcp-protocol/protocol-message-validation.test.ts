@@ -14,24 +14,24 @@ import type { MCPError, MCPNotification, MCPRequest, MCPResponse } from '../../.
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
 const mockSchemaValidator = {
-  validateJsonRpc: jest.fn(),
-  validateMethod: jest.fn(),
-  validateParams: jest.fn(),
-  validateVersion: jest.fn(),
-  getSchemaForMethod: jest.fn(),
+  validateJsonRpc: vi.fn(),
+  validateMethod: vi.fn(),
+  validateParams: vi.fn(),
+  validateVersion: vi.fn(),
+  getSchemaForMethod: vi.fn(),
 };
 
 const mockLogger = {
-  debug: jest.fn(),
-  info: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
+  debug: vi.fn(),
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
 };
 
 const mockMetricsCollector = {
-  recordValidation: jest.fn(),
-  recordValidationError: jest.fn(),
-  incrementCounter: jest.fn(),
+  recordValidation: vi.fn(),
+  recordValidationError: vi.fn(),
+  incrementCounter: vi.fn(),
 };
 
 // === CONTRACT INTERFACES ===
@@ -570,10 +570,10 @@ describe('MCP Protocol Message Validation - London TDD', () => {
 
   // Clean test isolation - London School principle
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });

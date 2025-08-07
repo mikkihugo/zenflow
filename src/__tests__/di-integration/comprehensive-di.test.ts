@@ -104,7 +104,7 @@ describe('DI System Comprehensive Integration', () => {
       }
 
       const LOGGER_TOKEN = createToken<ITestLogger>('TestLogger');
-      const mockLogger = { log: jest.fn() };
+      const mockLogger = { log: vi.fn() };
 
       @injectable
       class TestService {
@@ -131,10 +131,10 @@ describe('DI System Comprehensive Integration', () => {
   });
 
   describe('Builder Pattern Integration', () => {
-    it('should configure container using builder pattern', () => {
+    it('should configure container using builder pattern', async () => {
       // Arrange & Act
       const builtContainer = createContainerBuilder()
-        .singleton(CORE_TOKENS.Logger, () => ({ log: jest.fn() }))
+        .singleton(CORE_TOKENS.Logger, () => ({ log: vi.fn() }))
         .transient(createToken<string>('TestString'), () => 'test-value')
         .build();
 
@@ -155,13 +155,13 @@ describe('DI System Comprehensive Integration', () => {
     it('should support core domain tokens', () => {
       // Arrange
       const mockLogger = {
-        log: jest.fn(),
-        error: jest.fn(),
-        warn: jest.fn(),
-        info: jest.fn(),
-        debug: jest.fn(),
+        log: vi.fn(),
+        error: vi.fn(),
+        warn: vi.fn(),
+        info: vi.fn(),
+        debug: vi.fn(),
       };
-      const mockConfig = { get: jest.fn() };
+      const mockConfig = { get: vi.fn() };
 
       // Act
       container.register(CORE_TOKENS.Logger, new SingletonProvider(() => mockLogger));
@@ -178,14 +178,14 @@ describe('DI System Comprehensive Integration', () => {
     it('should support swarm domain tokens', () => {
       // Arrange
       const mockSwarmCoordinator = {
-        initializeSwarm: jest.fn(),
-        addAgent: jest.fn(),
-        removeAgent: jest.fn(),
+        initializeSwarm: vi.fn(),
+        addAgent: vi.fn(),
+        removeAgent: vi.fn(),
       };
       const mockAgentRegistry = {
-        register: jest.fn(),
-        find: jest.fn(),
-        list: jest.fn(),
+        register: vi.fn(),
+        find: vi.fn(),
+        list: vi.fn(),
       };
 
       // Act
@@ -209,14 +209,14 @@ describe('DI System Comprehensive Integration', () => {
     it('should support neural domain tokens', () => {
       // Arrange
       const mockTrainer = {
-        train: jest.fn(),
-        evaluate: jest.fn(),
-        save: jest.fn(),
+        train: vi.fn(),
+        evaluate: vi.fn(),
+        save: vi.fn(),
       };
       const mockDataLoader = {
-        load: jest.fn(),
-        preprocess: jest.fn(),
-        batch: jest.fn(),
+        load: vi.fn(),
+        preprocess: vi.fn(),
+        batch: vi.fn(),
       };
 
       // Act
@@ -255,7 +255,7 @@ describe('DI System Comprehensive Integration', () => {
 
     it('should handle disposal of services', async () => {
       // Arrange
-      const disposalSpy = jest.fn();
+      const disposalSpy = vi.fn();
       const service = {
         dispose: disposalSpy,
         value: 'test',
@@ -322,11 +322,11 @@ describe('DI System Comprehensive Integration', () => {
     it('should integrate with SPARC swarm coordination', () => {
       // Arrange
       const mockSPARCCoordinator = {
-        processSpecification: jest.fn(),
-        generatePseudocode: jest.fn(),
-        createArchitecture: jest.fn(),
-        refineImplementation: jest.fn(),
-        completeTask: jest.fn(),
+        processSpecification: vi.fn(),
+        generatePseudocode: vi.fn(),
+        createArchitecture: vi.fn(),
+        refineImplementation: vi.fn(),
+        completeTask: vi.fn(),
       };
 
       const SPARC_TOKEN = createToken<typeof mockSPARCCoordinator>('SPARCCoordinator');
@@ -343,10 +343,10 @@ describe('DI System Comprehensive Integration', () => {
     it('should integrate with memory systems', () => {
       // Arrange
       const mockMemoryStore = {
-        save: jest.fn(),
-        get: jest.fn(),
-        delete: jest.fn(),
-        list: jest.fn(),
+        save: vi.fn(),
+        get: vi.fn(),
+        delete: vi.fn(),
+        list: vi.fn(),
       };
 
       const MEMORY_TOKEN = createToken<typeof mockMemoryStore>('MemoryStore');

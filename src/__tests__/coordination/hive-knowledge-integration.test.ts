@@ -372,7 +372,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
     });
 
     test('should handle knowledge updates', async () => {
-      const updateReceived = jest.fn();
+      const updateReceived = vi.fn();
       swarmKnowledge1.on('knowledge:updated', updateReceived);
 
       const mockUpdate = {

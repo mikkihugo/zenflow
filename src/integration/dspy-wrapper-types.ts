@@ -1,6 +1,6 @@
 /**
  * DSPy Wrapper Type Definitions
- * 
+ *
  * Comprehensive TypeScript interfaces for the DSPy wrapper system.
  * These types ensure full compatibility between Claude-Zen's expected DSPy interface
  * and the actual dspy.ts v0.1.3 API through the wrapper layer.
@@ -10,10 +10,10 @@
 // RE-EXPORT ACTUAL DSPY.TS TYPES
 // ============================================================================
 
-export { 
-  LMDriver, 
-  GenerationOptions, 
-  LMError 
+export {
+  GenerationOptions,
+  LMDriver,
+  LMError,
 } from 'dspy.ts';
 
 // ============================================================================
@@ -88,7 +88,7 @@ export interface DSPyProgramPerformance {
 export interface DSPyExecutionResult {
   // Dynamic fields based on program signature
   [key: string]: any;
-  
+
   // Standard metadata fields
   confidence?: number;
   reasoning?: string;
@@ -136,7 +136,7 @@ export interface DSPyConfig {
   retryAttempts?: number;
   timeoutMs?: number;
   rateLimitRpm?: number;
-  
+
   // Custom LM Driver
   customLMDriver?: 'claude' | 'openai' | 'dummy' | 'custom';
   lmDriverConfig?: Record<string, any>;
@@ -159,13 +159,13 @@ export interface DSPyOptimizationOptions {
 /**
  * Available optimization strategies
  */
-export type DSPyOptimizationStrategy = 
-  | 'auto'           // Automatic strategy selection
-  | 'bootstrap'      // Bootstrap few-shot examples
-  | 'teleprompter'   // Teleprompter-style optimization
-  | 'manual'         // Manual example curation
-  | 'gradient'       // Gradient-based optimization (future)
-  | 'evolutionary';  // Evolutionary optimization (future)
+export type DSPyOptimizationStrategy =
+  | 'auto' // Automatic strategy selection
+  | 'bootstrap' // Bootstrap few-shot examples
+  | 'teleprompter' // Teleprompter-style optimization
+  | 'manual' // Manual example curation
+  | 'gradient' // Gradient-based optimization (future)
+  | 'evolutionary'; // Evolutionary optimization (future)
 
 // ============================================================================
 // SYSTEM STATISTICS AND MONITORING
@@ -182,7 +182,7 @@ export interface DSPySystemStats {
     active: number;
     averagePerformance: number;
   };
-  
+
   // Execution Statistics
   executions: {
     total: number;
@@ -191,21 +191,21 @@ export interface DSPySystemStats {
     averageLatency: number;
     totalTokensUsed?: number;
   };
-  
+
   // Time-based Statistics
   timeWindows: {
     lastHour: DSPyExecutionStats;
     lastDay: DSPyExecutionStats;
     lastWeek: DSPyExecutionStats;
   };
-  
+
   // Resource Usage
   resources: {
     memoryUsage: number;
     cacheSize: number;
     activeSessions: number;
   };
-  
+
   // System Health
   health: {
     overall: 'excellent' | 'good' | 'fair' | 'poor';
@@ -245,7 +245,7 @@ export class DSPyWrapperError extends Error {
   }
 }
 
-export type DSPyErrorCode = 
+export type DSPyErrorCode =
   | 'PROGRAM_NOT_FOUND'
   | 'SIGNATURE_PARSE_ERROR'
   | 'EXECUTION_FAILED'
@@ -294,7 +294,7 @@ export interface DSPyProgramTemplate {
   estimatedLatency?: number;
 }
 
-export type DSPyProgramCategory = 
+export type DSPyProgramCategory =
   | 'code_analysis'
   | 'code_generation'
   | 'error_diagnosis'
@@ -365,16 +365,16 @@ export interface ClaudeZenDSPyIntegration {
   codeAnalysis: DSPyProgramTemplate;
   codeGeneration: DSPyProgramTemplate;
   errorDiagnosis: DSPyProgramTemplate;
-  
+
   // Swarm Integration
   agentSelection: DSPyProgramTemplate;
   topologyOptimization: DSPyProgramTemplate;
   taskOrchestration: DSPyProgramTemplate;
-  
+
   // MCP Tools Integration
   projectAnalysis: DSPyProgramTemplate;
   workflowOptimization: DSPyProgramTemplate;
-  
+
   // System Configuration
   config: DSPyConfig;
   monitoring: boolean;
@@ -392,14 +392,14 @@ export interface DSPySystemIntegration {
     warn: (message: string, metadata?: any) => void;
     error: (message: string, metadata?: any) => void;
   };
-  
+
   // Metrics Integration
   metrics?: {
     recordExecution: (programId: string, latency: number, success: boolean) => void;
     recordOptimization: (programId: string, improvement: number) => void;
     recordError: (error: Error, context: Record<string, any>) => void;
   };
-  
+
   // Storage Integration
   storage?: {
     saveProgram: (program: DSPyProgram) => Promise<void>;
@@ -421,33 +421,27 @@ export type {
   DSPyProgramPerformance,
   DSPyExecutionResult,
   DSPyExecutionMetadata,
-  
   // Configuration Types
   DSPyConfig,
   DSPyOptimizationOptions,
   DSPyOptimizationStrategy,
-  
   // Statistics Types
   DSPySystemStats,
   DSPyExecutionStats,
-  
   // Error Types
   DSPyErrorCode,
-  
   // Factory Types
   DSPyFactoryOptions,
   LMDriverFactory,
   DSPyProgramTemplate,
   DSPyProgramCategory,
-  
   // Advanced Types
   DSPyCompositionOptions,
   DSPyPipeline,
   DSPyCacheOptions,
-  
   // Integration Types
   ClaudeZenDSPyIntegration,
-  DSPySystemIntegration
+  DSPySystemIntegration,
 };
 
 // Default export for convenience

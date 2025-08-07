@@ -22,49 +22,49 @@ import type {
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
 const mockRequestRouter = {
-  route: jest.fn(),
-  addHandler: jest.fn(),
-  removeHandler: jest.fn(),
-  getHandler: jest.fn(),
+  route: vi.fn(),
+  addHandler: vi.fn(),
+  removeHandler: vi.fn(),
+  getHandler: vi.fn(),
 };
 
 const mockResponseBuilder = {
-  buildSuccessResponse: jest.fn(),
-  buildErrorResponse: jest.fn(),
-  buildNotificationResponse: jest.fn(),
+  buildSuccessResponse: vi.fn(),
+  buildErrorResponse: vi.fn(),
+  buildNotificationResponse: vi.fn(),
 };
 
 const mockRequestValidator = {
-  validate: jest.fn(),
-  validateParams: jest.fn(),
-  validateMethod: jest.fn(),
+  validate: vi.fn(),
+  validateParams: vi.fn(),
+  validateMethod: vi.fn(),
 };
 
 const mockToolExecutor = {
-  execute: jest.fn(),
-  getExecutionContext: jest.fn(),
-  setExecutionTimeout: jest.fn(),
+  execute: vi.fn(),
+  getExecutionContext: vi.fn(),
+  setExecutionTimeout: vi.fn(),
 };
 
 const mockLogger = {
-  debug: jest.fn(),
-  info: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
+  debug: vi.fn(),
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
 };
 
 const mockMetricsCollector = {
-  recordRequest: jest.fn(),
-  recordResponse: jest.fn(),
-  recordLatency: jest.fn(),
-  recordError: jest.fn(),
+  recordRequest: vi.fn(),
+  recordResponse: vi.fn(),
+  recordLatency: vi.fn(),
+  recordError: vi.fn(),
 };
 
 const mockSessionManager = {
-  getSession: jest.fn(),
-  createSession: jest.fn(),
-  updateActivity: jest.fn(),
-  isSessionActive: jest.fn(),
+  getSession: vi.fn(),
+  createSession: vi.fn(),
+  updateActivity: vi.fn(),
+  isSessionActive: vi.fn(),
 };
 
 // === CONTRACT INTERFACES ===
@@ -741,10 +741,10 @@ describe('MCP Request/Response Handling - London TDD', () => {
 
   // Clean test isolation - London School principle
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });

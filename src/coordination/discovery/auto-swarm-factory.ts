@@ -261,7 +261,7 @@ export class AutoSwarmFactory extends EventEmitter {
     const performance = this.calculatePerformanceExpectations(characteristics, topology, agents);
 
     // 7. Generate unique ID
-    const swarmId = `swarm-${domain.name}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const swarmId = `swarm-${domain.name}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
     const config: SwarmConfig = {
       id: swarmId,

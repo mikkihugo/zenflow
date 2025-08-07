@@ -1793,7 +1793,7 @@ export const UELHelpers = {
   } {
     return {
       system: (operation: string, status: string, details?: any): SystemLifecycleEvent => ({
-        id: `system-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `system-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date(),
         source: 'uel-system',
         type: `system:${operation}` as any,
@@ -1803,7 +1803,7 @@ export const UELHelpers = {
       }),
 
       coordination: (operation: string, targetId: string, details?: any): CoordinationEvent => ({
-        id: `coord-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `coord-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date(),
         source: 'uel-coordination',
         type: `coordination:${operation}` as any,
@@ -1813,7 +1813,7 @@ export const UELHelpers = {
       }),
 
       communication: (operation: string, protocol: string, details?: any): CommunicationEvent => ({
-        id: `comm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `comm-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date(),
         source: 'uel-communication',
         type: `communication:${operation}` as any,
@@ -1823,7 +1823,7 @@ export const UELHelpers = {
       }),
 
       monitoring: (operation: string, component: string, details?: any): MonitoringEvent => ({
-        id: `mon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `mon-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date(),
         source: 'uel-monitoring',
         type: `monitoring:${operation}` as any,
@@ -1833,7 +1833,7 @@ export const UELHelpers = {
       }),
 
       interface: (operation: string, interfaceType: string, details?: any): InterfaceEvent => ({
-        id: `int-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `int-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date(),
         source: 'uel-interface',
         type: `interface:${operation}` as any,

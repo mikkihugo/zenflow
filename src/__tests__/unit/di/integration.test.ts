@@ -175,7 +175,7 @@ describe('DI System Integration Tests', () => {
       const replacementLogger = new MockLogger();
 
       // Spy on console.warn to capture overwrite warning
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation();
 
       container.register(CORE_TOKENS.Logger, {
         type: 'singleton',

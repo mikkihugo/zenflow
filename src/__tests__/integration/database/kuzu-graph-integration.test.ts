@@ -12,17 +12,17 @@ import {
 
 // Mock logger
 const mockLogger = {
-  info: jest.fn(),
-  error: jest.fn(),
-  warn: jest.fn(),
-  debug: jest.fn(),
+  info: vi.fn(),
+  error: vi.fn(),
+  warn: vi.fn(),
+  debug: vi.fn(),
 };
 
 // Mock config
 const _mockConfig = {
-  get: jest.fn(),
-  set: jest.fn(),
-  has: jest.fn(),
+  get: vi.fn(),
+  set: vi.fn(),
+  has: vi.fn(),
 };
 
 describe('Kuzu Graph Database Integration', () => {
@@ -32,7 +32,7 @@ describe('Kuzu Graph Database Integration', () => {
 
   beforeEach(() => {
     // Reset mocks
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // Setup Kuzu configuration
     kuzuConfig = {
@@ -46,15 +46,15 @@ describe('Kuzu Graph Database Integration', () => {
 
     // Create mock factory
     mockFactory = {
-      createAdapter: jest.fn(),
-      createGraphAdapter: jest.fn(),
-      createVectorAdapter: jest.fn(),
+      createAdapter: vi.fn(),
+      createGraphAdapter: vi.fn(),
+      createVectorAdapter: vi.fn(),
     } as any;
 
     // Setup KuzuAdapter mock
     const mockKuzuAdapter = new KuzuAdapter(kuzuConfig, mockLogger);
-    mockFactory.createAdapter = jest.fn().mockReturnValue(mockKuzuAdapter);
-    mockFactory.createGraphAdapter = jest.fn().mockReturnValue(mockKuzuAdapter);
+    mockFactory.createAdapter = vi.fn().mockReturnValue(mockKuzuAdapter);
+    mockFactory.createGraphAdapter = vi.fn().mockReturnValue(mockKuzuAdapter);
 
     // Create database controller
     databaseController = new DatabaseController(mockFactory, kuzuConfig, mockLogger);

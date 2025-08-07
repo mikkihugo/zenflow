@@ -18,62 +18,62 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 // Mock Claude-Zen Hive Mind - The central coordination system
 const mockHiveMind = {
-  initialize: jest.fn(),
-  spawnQueen: jest.fn(),
-  coordinateQueens: jest.fn(),
-  processTask: jest.fn(),
-  getQueenStatus: jest.fn(),
+  initialize: vi.fn(),
+  spawnQueen: vi.fn(),
+  coordinateQueens: vi.fn(),
+  processTask: vi.fn(),
+  getQueenStatus: vi.fn(),
 };
 
 // Mock Queen Agents - Specialized AI agents
 const mockQueens = {
   architectQueen: {
-    analyze: jest.fn(),
-    design: jest.fn(),
-    coordinate: jest.fn(),
+    analyze: vi.fn(),
+    design: vi.fn(),
+    coordinate: vi.fn(),
   },
   codeQueen: {
-    generate: jest.fn(),
-    refactor: jest.fn(),
-    optimize: jest.fn(),
+    generate: vi.fn(),
+    refactor: vi.fn(),
+    optimize: vi.fn(),
   },
   debugQueen: {
-    diagnose: jest.fn(),
-    fix: jest.fn(),
-    validate: jest.fn(),
+    diagnose: vi.fn(),
+    fix: vi.fn(),
+    validate: vi.fn(),
   },
 };
 
 // Mock ruv-FANN Neural Integration (should be ruv-FANN-zen)
 const mockNeuralFramework = {
-  initializeNetwork: jest.fn(),
-  trainModel: jest.fn(),
-  predict: jest.fn(),
-  optimizeWeights: jest.fn(),
+  initializeNetwork: vi.fn(),
+  trainModel: vi.fn(),
+  predict: vi.fn(),
+  optimizeWeights: vi.fn(),
 };
 
 // Mock Web API Layer - REST endpoints for Claude-Zen
 const mockClaudeZenApi = {
-  startServer: jest.fn(),
-  registerQueenEndpoints: jest.fn(),
-  handleTaskRequest: jest.fn(),
-  streamResults: jest.fn(),
+  startServer: vi.fn(),
+  registerQueenEndpoints: vi.fn(),
+  handleTaskRequest: vi.fn(),
+  streamResults: vi.fn(),
 };
 
 // Mock MCP Server - Model Context Protocol integration
 const mockMcpServer = {
-  initialize: jest.fn(),
-  registerTools: jest.fn(),
-  handleToolCall: jest.fn(),
-  bridgeToQueens: jest.fn(),
+  initialize: vi.fn(),
+  registerTools: vi.fn(),
+  handleToolCall: vi.fn(),
+  bridgeToQueens: vi.fn(),
 };
 
 // Mock WebSocket Manager - Real-time Queen coordination
 const mockWebSocketManager = {
-  createQueenChannels: jest.fn(),
-  broadcastQueenStatus: jest.fn(),
-  handleQueenCommunication: jest.fn(),
-  streamTaskProgress: jest.fn(),
+  createQueenChannels: vi.fn(),
+  broadcastQueenStatus: vi.fn(),
+  handleQueenCommunication: vi.fn(),
+  streamTaskProgress: vi.fn(),
 };
 
 // === CONTRACT INTERFACES ===
@@ -282,9 +282,9 @@ describe('Claude-Zen TDD London School Architecture', () => {
     it('should demonstrate Queen collaboration through interaction testing', () => {
       // London School: Test HOW Queens collaborate, not WHAT they contain
       const mockTaskCoordinator = {
-        assignTask: jest.fn(),
-        trackProgress: jest.fn(),
-        synthesizeResults: jest.fn(),
+        assignTask: vi.fn(),
+        trackProgress: vi.fn(),
+        synthesizeResults: vi.fn(),
       };
 
       const claudeZenOrchestrator = {
@@ -323,14 +323,14 @@ describe('Claude-Zen TDD London School Architecture', () => {
     it('should use mocks to drive Claude-Zen interface discovery', () => {
       // London School: Mocks help discover optimal Queen interfaces
       const mockQueenRegistry = {
-        register: jest.fn(),
-        lookup: jest.fn(),
-        invoke: jest.fn(),
+        register: vi.fn(),
+        lookup: vi.fn(),
+        invoke: vi.fn(),
       };
 
       const mockCapabilityMatcher = {
-        findBestQueen: jest.fn(),
-        assessCompatibility: jest.fn(),
+        findBestQueen: vi.fn(),
+        assessCompatibility: vi.fn(),
       };
 
       // This test drives the design of dynamic Queen discovery
@@ -361,11 +361,11 @@ describe('Claude-Zen TDD London School Architecture', () => {
 
   // Clean test isolation - London School principle
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });
 

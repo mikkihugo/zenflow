@@ -590,9 +590,12 @@ export class OptimizationEngine extends EventEmitter {
 
       const executionTime = Date.now() - startTime;
       const optimizationResult: OptimizationResult = {
-        ...result,
         actionId: action.id,
+        success: result.success ?? true,
         executionTime,
+        beforeMetrics: result.beforeMetrics ?? ({} as CompositeMetrics),
+        afterMetrics: result.afterMetrics,
+        impact: result.impact ?? { performance: 0, efficiency: 0, cost: 0 },
       };
 
       this.actionHistory.push(optimizationResult);

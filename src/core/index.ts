@@ -47,7 +47,7 @@ export { WorkflowEngine } from './workflow-engine';
 export { ApplicationCoordinator } from './application-coordinator'; // Legacy - use CoreSystem
 // Keep these for backward compatibility during transition
 export { DocumentDrivenSystem } from './document-driven-system'; // Legacy - use DocumentProcessor
-export { MemoryCoordinator } from './memory-coordinator'; // Legacy - use MemorySystem
+// export { MemoryCoordinator } from './memory-coordinator'; // Module not found - use MemorySystem
 
 // ==================== SHARED UTILITIES ====================
 
@@ -58,7 +58,7 @@ export type {
   DocumentationIndex as DocumentIndex,
 } from './documentation-linker';
 // Legacy unified systems (still exported but deprecated)
-export { DocumentationLinker } from './documentation-linker';
+export { DocumentationIndex as DocumentationLinker } from './documentation-linker';
 // Error handling
 export {
   BaseClaudeZenError,

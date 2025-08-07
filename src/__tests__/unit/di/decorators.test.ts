@@ -123,10 +123,10 @@ describe('DI Decorators', () => {
     it('should resolve services with automatic dependency injection', () => {
       // Mock implementations
       class MockLogger implements ILogger {
-        debug = jest.fn();
-        info = jest.fn();
-        warn = jest.fn();
-        error = jest.fn();
+        debug = vi.fn();
+        info = vi.fn();
+        warn = vi.fn();
+        error = vi.fn();
       }
 
       class MockConfig implements IConfig {
@@ -184,10 +184,10 @@ describe('DI Decorators', () => {
 
     it('should work with complex dependency graphs', () => {
       class MockLogger implements ILogger {
-        debug = jest.fn();
-        info = jest.fn();
-        warn = jest.fn();
-        error = jest.fn();
+        debug = vi.fn();
+        info = vi.fn();
+        warn = vi.fn();
+        error = vi.fn();
       }
 
       @injectable

@@ -3,6 +3,7 @@
  * Provides flexible coordination strategies for different swarm topologies
  */
 
+import { EventEmitter } from 'node:events';
 import type { Agent } from '../../types';
 
 // Core strategy interfaces with strong typing
@@ -518,12 +519,13 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
 }
 
 // Context with runtime strategy switching and optimization
-export class SwarmCoordinator<T extends Agent = Agent> {
+export class SwarmCoordinator<T extends Agent = Agent> extends EventEmitter {
   private strategy: CoordinationStrategy<T>;
   private history: CoordinationHistory[] = [];
   private optimizationInterval: number = 10; // Optimize every 10 coordinations
 
   constructor(strategy: CoordinationStrategy<T>) {
+    super();
     this.strategy = strategy;
   }
 
@@ -552,6 +554,14 @@ export class SwarmCoordinator<T extends Agent = Agent> {
       if (this.history.length % this.optimizationInterval === 0) {
         await this.strategy.optimize(agents, this.history);
       }
+
+      // Emit coordination completed event
+      this.emit('coordination:completed', {
+        context,
+        result,
+        agents: agents.length,
+        latency: result.latency,
+      });
 
       return result;
     } catch (error) {

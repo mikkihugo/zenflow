@@ -184,7 +184,13 @@ export class CoreSystem extends EventEmitter {
     // Workflow engine - depends on memory
     this.workflowEngine = new WorkflowEngine(this.memorySystem, {
       maxConcurrentWorkflows: this.config.workflow?.maxConcurrentWorkflows || 10,
-      persistWorkflows: this.config.workflow?.persistWorkflows !== false,
+      workspaceRoot: './',
+      templatesPath: './templates',
+      outputPath: './output',
+      defaultTimeout: 300000,
+      enableMetrics: true,
+      enablePersistence: true,
+      storageBackend: { type: 'database', config: {} },
     });
 
     // Document processor - depends on memory and workflow
@@ -194,10 +200,7 @@ export class CoreSystem extends EventEmitter {
     });
 
     // Export manager - standalone
-    this.exportManager = new ExportManager({
-      defaultFormat: this.config.export?.defaultFormat || 'json',
-      outputPath: this.config.export?.outputPath || './exports',
-    });
+    this.exportManager = new ExportManager();
 
     // Documentation manager - depends on memory
     this.documentationManager = new DocumentationManager(this.memorySystem, {
@@ -313,7 +316,7 @@ export class CoreSystem extends EventEmitter {
     const memoryStats = await this.memorySystem.getStats();
     const workflowMetrics = await this.workflowEngine.getMetrics();
     const documentStats = await this.documentProcessor.getStats();
-    const exportStats = await this.exportManager.getStats();
+    const _exportStats = this.exportManager.getExportStats();
     const docStats = await this.documentationManager.getStats();
     const interfaceStats = await this.interfaceManager.getStats();
 
@@ -335,7 +338,7 @@ export class CoreSystem extends EventEmitter {
         },
         export: {
           status: 'ready',
-          formats: exportStats.availableFormats || 0,
+          formats: this.exportManager.getAvailableFormats().length,
         },
         documentation: {
           status: 'ready',

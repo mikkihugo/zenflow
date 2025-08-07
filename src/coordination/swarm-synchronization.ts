@@ -213,7 +213,7 @@ export class SwarmSynchronizer extends EventEmitter {
     if (!this.eventBus) return;
 
     this.eventBus.emit('swarm:sync:broadcast', {
-      id: `swarm-sync-broadcast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `swarm-sync-broadcast-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       version: '1.0.0',
       timestamp: new Date(),
       source: this.swarmId,
@@ -426,7 +426,7 @@ export class SwarmSynchronizer extends EventEmitter {
     // Respond with our current state
     if (this.eventBus) {
       this.eventBus.emit('swarm:sync:response', {
-        id: `swarm-sync-response-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `swarm-sync-response-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         version: '1.0.0',
         timestamp: new Date(),
         source: this.swarmId,

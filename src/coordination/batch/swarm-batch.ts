@@ -679,11 +679,11 @@ export class SwarmBatchCoordinator {
   }
 
   private generateSwarmId(): string {
-    return `swarm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `swarm-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateAgentId(): string {
-    return `agent-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `agent-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private async simulateOperation(duration: number): Promise<void> {

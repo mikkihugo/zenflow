@@ -14,7 +14,7 @@ import {
   type MemoryNotFound,
   type MemoryResult,
   type MemorySuccess,
-} from '../../utils/type-guards';
+} from '../utils/type-guards';
 
 export interface SafeMemoryStoreOptions {
   namespace?: string;
@@ -429,7 +429,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
   await store.initialize();
 
   // Store some data
-  const storeResult = await store.store('user:123', { name: 'Alice', age: 30 });
+  const storeResult = await store.storeData('user:123', { name: 'Alice', age: 30 });
 
   // Safe property access using type guards
   if (isMemorySuccess(storeResult)) {

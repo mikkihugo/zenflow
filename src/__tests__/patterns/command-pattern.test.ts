@@ -36,17 +36,17 @@ describe('Command Pattern Implementation', () => {
 
     beforeEach(() => {
       mockSwarmService = {
-        initializeSwarm: jest.fn(),
-        spawnAgent: jest.fn(),
-        orchestrateTask: jest.fn(),
-        getSwarmStatus: jest.fn(),
+        initializeSwarm: vi.fn(),
+        spawnAgent: vi.fn(),
+        orchestrateTask: vi.fn(),
+        getSwarmStatus: vi.fn(),
       };
 
       mockLogger = {
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+        debug: vi.fn(),
       };
 
       _commandQueue = new MCPCommandQueue(mockLogger);
@@ -610,19 +610,19 @@ describe('Command Pattern Implementation', () => {
 
     beforeEach(() => {
       mockLogger = {
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+        debug: vi.fn(),
       };
 
       mockCommand = {
-        execute: jest.fn(),
-        undo: jest.fn(),
-        getId: jest.fn().mockReturnValue('mock-command-123'),
-        getType: jest.fn().mockReturnValue('mock_command'),
-        getMetadata: jest.fn().mockReturnValue({ test: true }),
-        validate: jest.fn().mockReturnValue(true),
+        execute: vi.fn(),
+        undo: vi.fn(),
+        getId: vi.fn().mockReturnValue('mock-command-123'),
+        getType: vi.fn().mockReturnValue('mock_command'),
+        getMetadata: vi.fn().mockReturnValue({ test: true }),
+        validate: vi.fn().mockReturnValue(true),
       };
 
       commandQueue = new MCPCommandQueue(mockLogger);
@@ -738,18 +738,18 @@ describe('Command Pattern Implementation', () => {
 
     it('should handle concurrent command execution', async () => {
       const commands = Array.from({ length: 5 }, (_, i) => ({
-        execute: jest.fn().mockResolvedValue({
+        execute: vi.fn().mockResolvedValue({
           success: true,
           commandId: `concurrent-cmd-${i}`,
           executionTime: 50 + i * 10,
           timestamp: new Date(),
           resourceUsage: { cpu: 0.1, memory: 0.1, network: 0.1, storage: 0.1 },
         }),
-        undo: jest.fn(),
-        getId: jest.fn().mockReturnValue(`concurrent-cmd-${i}`),
-        getType: jest.fn().mockReturnValue('concurrent_test'),
-        getMetadata: jest.fn().mockReturnValue({}),
-        validate: jest.fn().mockReturnValue(true),
+        undo: vi.fn(),
+        getId: vi.fn().mockReturnValue(`concurrent-cmd-${i}`),
+        getType: vi.fn().mockReturnValue('concurrent_test'),
+        getMetadata: vi.fn().mockReturnValue({}),
+        validate: vi.fn().mockReturnValue(true),
       }));
 
       const results = await Promise.all(commands.map((cmd) => commandQueue.execute(cmd)));
@@ -764,18 +764,18 @@ describe('Command Pattern Implementation', () => {
     it('should provide command queue metrics', async () => {
       // Execute several commands to generate metrics
       const commands = Array.from({ length: 3 }, (_, i) => ({
-        execute: jest.fn().mockResolvedValue({
+        execute: vi.fn().mockResolvedValue({
           success: i < 2, // First two succeed, third fails
           commandId: `metrics-cmd-${i}`,
           executionTime: 100 + i * 50,
           timestamp: new Date(),
           resourceUsage: { cpu: 0.2, memory: 0.2, network: 0.2, storage: 0.2 },
         }),
-        undo: jest.fn(),
-        getId: jest.fn().mockReturnValue(`metrics-cmd-${i}`),
-        getType: jest.fn().mockReturnValue('metrics_test'),
-        getMetadata: jest.fn().mockReturnValue({}),
-        validate: jest.fn().mockReturnValue(true),
+        undo: vi.fn(),
+        getId: vi.fn().mockReturnValue(`metrics-cmd-${i}`),
+        getType: vi.fn().mockReturnValue('metrics_test'),
+        getMetadata: vi.fn().mockReturnValue({}),
+        validate: vi.fn().mockReturnValue(true),
       }));
 
       // Make third command fail
@@ -819,17 +819,17 @@ describe('Command Pattern Implementation', () => {
 
     beforeEach(() => {
       mockLogger = {
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+        debug: vi.fn(),
       };
 
       mockSwarmService = {
-        initializeSwarm: jest.fn(),
-        spawnAgent: jest.fn(),
-        orchestrateTask: jest.fn(),
-        getSwarmStatus: jest.fn(),
+        initializeSwarm: vi.fn(),
+        spawnAgent: vi.fn(),
+        orchestrateTask: vi.fn(),
+        getSwarmStatus: vi.fn(),
       };
 
       commandQueue = new MCPCommandQueue(mockLogger);
@@ -927,7 +927,7 @@ describe('Command Pattern Implementation', () => {
       );
 
       // Mock undo for swarm command
-      jest.spyOn(mockSwarmCommand, 'undo').mockResolvedValue({
+      vi.spyOn(mockSwarmCommand, 'undo').mockResolvedValue({
         success: true,
         commandId: mockSwarmCommand.getId(),
         executionTime: 50,
@@ -1033,10 +1033,10 @@ describe('Command Pattern Implementation', () => {
       };
 
       mockSwarmService = {
-        initializeSwarm: jest.fn(),
-        spawnAgent: jest.fn(),
-        orchestrateTask: jest.fn(),
-        getSwarmStatus: jest.fn(),
+        initializeSwarm: vi.fn(),
+        spawnAgent: vi.fn(),
+        orchestrateTask: vi.fn(),
+        getSwarmStatus: vi.fn(),
       };
     });
 

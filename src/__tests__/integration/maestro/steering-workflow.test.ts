@@ -40,27 +40,27 @@ describe('Maestro Steering Workflow Integration', () => {
     // Setup mocks
     mockConfig = { environment: 'test' };
     mockEventBus = {
-      emit: jest.fn(),
-      on: jest.fn(),
+      emit: vi.fn(),
+      on: vi.fn(),
     };
     mockLogger = {
-      info: jest.fn(),
-      warn: jest.fn(),
-      error: jest.fn(),
-      debug: jest.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
     };
     mockMemoryManager = {
-      get: jest.fn(),
-      set: jest.fn(),
-      delete: jest.fn(),
+      get: vi.fn(),
+      set: vi.fn(),
+      delete: vi.fn(),
     };
     mockAgentManager = {
-      createAgent: jest.fn().mockResolvedValue('agent-123'),
-      startAgent: jest.fn(),
-      stopAgent: jest.fn(),
+      createAgent: vi.fn().mockResolvedValue('agent-123'),
+      startAgent: vi.fn(),
+      stopAgent: vi.fn(),
     };
     mockMainOrchestrator = {
-      assignTask: jest.fn().mockResolvedValue({ success: true }),
+      assignTask: vi.fn().mockResolvedValue({ success: true }),
     };
 
     // Create orchestrator instance with test directory

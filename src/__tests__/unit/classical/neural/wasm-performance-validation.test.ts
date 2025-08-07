@@ -16,16 +16,16 @@ import {
 
 // Mock WASM module for testing (in real implementation, this would be the actual WASM import)
 const mockWasmModule = {
-  initialize: jest.fn().mockResolvedValue(true),
-  matrixMultiply: jest.fn(),
-  neuralForwardPass: jest.fn(),
-  simdVectorAdd: jest.fn(),
-  simdVectorMultiply: jest.fn(),
-  allocateMemory: jest.fn(),
-  freeMemory: jest.fn(),
-  getMemoryUsage: jest.fn(),
-  enableSIMD: jest.fn(),
-  isSIMDSupported: jest.fn().mockReturnValue(true),
+  initialize: vi.fn().mockResolvedValue(true),
+  matrixMultiply: vi.fn(),
+  neuralForwardPass: vi.fn(),
+  simdVectorAdd: vi.fn(),
+  simdVectorMultiply: vi.fn(),
+  allocateMemory: vi.fn(),
+  freeMemory: vi.fn(),
+  getMemoryUsage: vi.fn(),
+  enableSIMD: vi.fn(),
+  isSIMDSupported: vi.fn().mockReturnValue(true),
 };
 
 describe('WASM Neural Performance Validation - Classical TDD', () => {

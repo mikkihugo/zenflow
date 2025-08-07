@@ -272,7 +272,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   }
 
   async addAgent(config: any): Promise<string> {
-    const agentId = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const agentId = `agent_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     this._logger.info(`Adding agent with config`, { agentId, config });
 
     // Create agent record in database
@@ -296,7 +296,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   }
 
   async assignTask(task: any): Promise<string> {
-    const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const taskId = `task_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     this._logger.info(`Assigning task`, { taskId, task });
 
     // Submit task through existing method

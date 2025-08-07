@@ -955,7 +955,7 @@ class LeaderElection extends EventEmitter {
   private sendHeartbeat(nodeId: string): void {
     // Simulate sending heartbeat
     this.eventBus.emit('heartbeat:sent', {
-      id: `heartbeat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `heartbeat-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       version: '1.0.0',
       timestamp: new Date(),
       source: this.nodeId,

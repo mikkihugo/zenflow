@@ -30,13 +30,6 @@ export {
 } from '../../coordination/swarm/core/types';
 // Database interfaces
 export { DatabaseConfig } from '../../database/providers/database-providers';
-export {
-  BackendConfig,
-  BackendInterface,
-  BackendStats,
-  JSONValue,
-  StorageResult,
-} from '../memory-system';
 // Memory interfaces
 export { CacheEntry, SessionState } from '../../memory/memory';
 // Agent interfaces - unified types
@@ -53,5 +46,19 @@ export {
 } from '../../types/agent-types';
 // Event interfaces
 export * from '../../types/event-types';
+export {
+  BackendInterface,
+  BackendStats,
+  JSONValue,
+  StorageResult,
+} from '../memory-system';
+
+export interface BackendConfig {
+  backend: 'lancedb' | 'sqlite' | 'json';
+  path: string;
+  maxSize?: number;
+  compression?: boolean;
+  backendConfig?: Record<string, any>;
+}
 // Base interfaces - core contracts
 export * from './base-interfaces';

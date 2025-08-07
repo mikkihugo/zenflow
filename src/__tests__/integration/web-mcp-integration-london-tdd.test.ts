@@ -14,52 +14,52 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 // Mock Web API Server - HTTP request handling contract
 const mockWebApiServer = {
-  get: jest.fn(),
-  post: jest.fn(),
-  put: jest.fn(),
-  delete: jest.fn(),
-  use: jest.fn(),
-  listen: jest.fn(),
-  close: jest.fn(),
+  get: vi.fn(),
+  post: vi.fn(),
+  put: vi.fn(),
+  delete: vi.fn(),
+  use: vi.fn(),
+  listen: vi.fn(),
+  close: vi.fn(),
 };
 
 // Mock MCP Server - Protocol communication contract
 const mockMcpServer = {
-  call: jest.fn(),
-  listTools: jest.fn(),
-  getCapabilities: jest.fn(),
-  notify: jest.fn(),
+  call: vi.fn(),
+  listTools: vi.fn(),
+  getCapabilities: vi.fn(),
+  notify: vi.fn(),
 };
 
 // Mock Request Transformer - HTTP to MCP transformation contract
 const mockRequestTransformer = {
-  httpToMcp: jest.fn(),
-  mcpToHttp: jest.fn(),
-  validateHttpRequest: jest.fn(),
-  validateMcpResponse: jest.fn(),
+  httpToMcp: vi.fn(),
+  mcpToHttp: vi.fn(),
+  validateHttpRequest: vi.fn(),
+  validateMcpResponse: vi.fn(),
 };
 
 // Mock Response Formatter - Response standardization contract
 const mockResponseFormatter = {
-  formatSuccess: jest.fn(),
-  formatError: jest.fn(),
-  formatStream: jest.fn(),
-  addMetadata: jest.fn(),
+  formatSuccess: vi.fn(),
+  formatError: vi.fn(),
+  formatStream: vi.fn(),
+  addMetadata: vi.fn(),
 };
 
 // Mock Error Handler - Error transformation contract
 const mockErrorHandler = {
-  handleMcpError: jest.fn(),
-  handleHttpError: jest.fn(),
-  createErrorResponse: jest.fn(),
-  logError: jest.fn(),
+  handleMcpError: vi.fn(),
+  handleHttpError: vi.fn(),
+  createErrorResponse: vi.fn(),
+  logError: vi.fn(),
 };
 
 // Mock Authentication - Security contract
 const mockAuthHandler = {
-  validateApiKey: jest.fn(),
-  checkPermissions: jest.fn(),
-  createAuthContext: jest.fn(),
+  validateApiKey: vi.fn(),
+  checkPermissions: vi.fn(),
+  createAuthContext: vi.fn(),
 };
 
 // === CONTRACT INTERFACES ===
@@ -502,9 +502,9 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
     it('should demonstrate protocol bridging through interaction testing', () => {
       // London School: Test HOW protocols communicate, not implementation details
       const mockProtocolBridge = {
-        translateRequest: jest.fn(),
-        translateResponse: jest.fn(),
-        validateTranslation: jest.fn(),
+        translateRequest: vi.fn(),
+        translateResponse: vi.fn(),
+        validateTranslation: vi.fn(),
       };
 
       const protocolIntegrator = {
@@ -537,10 +537,10 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
 
   // Clean test isolation - London School principle
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });

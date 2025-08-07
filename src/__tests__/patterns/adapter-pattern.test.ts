@@ -18,35 +18,35 @@ import {
 
 // Mock implementations for testing
 const createMockWebSocket = () => ({
-  send: jest.fn(),
-  close: jest.fn(),
-  addEventListener: jest.fn(),
-  removeEventListener: jest.fn(),
+  send: vi.fn(),
+  close: vi.fn(),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
   readyState: 1, // WebSocket.OPEN
-  onopen: jest.fn(),
-  onclose: jest.fn(),
-  onmessage: jest.fn(),
-  onerror: jest.fn(),
+  onopen: vi.fn(),
+  onclose: vi.fn(),
+  onmessage: vi.fn(),
+  onerror: vi.fn(),
 });
 
 const createMockHttpResponse = (data: any, ok: boolean = true, status: number = 200) => ({
   ok,
   status,
-  json: jest.fn().mockResolvedValue(data),
-  text: jest.fn().mockResolvedValue(JSON.stringify(data)),
+  json: vi.fn().mockResolvedValue(data),
+  text: vi.fn().mockResolvedValue(JSON.stringify(data)),
 });
 
 // Mock fetch globally
-const mockFetch = jest.fn();
+const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
 // Mock WebSocket globally
-const mockWebSocketConstructor = jest.fn();
+const mockWebSocketConstructor = vi.fn();
 global.WebSocket = mockWebSocketConstructor as any;
 
 // Mock child_process for stdio testing
-const mockSpawn = jest.fn();
-jest.mock('child_process', () => ({
+const mockSpawn = vi.fn();
+vi.mock('child_process', () => ({
   spawn: mockSpawn,
 }));
 
@@ -646,15 +646,15 @@ describe('Adapter Pattern Implementation', () => {
     describe('ProtocolManager', () => {
       it('should add protocols correctly', async () => {
         const mockAdapter = {
-          connect: jest.fn().mockResolvedValue(undefined),
-          disconnect: jest.fn(),
-          send: jest.fn(),
-          subscribe: jest.fn(),
-          unsubscribe: jest.fn(),
-          isConnected: jest.fn().mockReturnValue(true),
-          getProtocolName: jest.fn().mockReturnValue('mock-protocol'),
-          getCapabilities: jest.fn().mockReturnValue(['mock-capability']),
-          healthCheck: jest.fn(),
+          connect: vi.fn().mockResolvedValue(undefined),
+          disconnect: vi.fn(),
+          send: vi.fn(),
+          subscribe: vi.fn(),
+          unsubscribe: vi.fn(),
+          isConnected: vi.fn().mockReturnValue(true),
+          getProtocolName: vi.fn().mockReturnValue('mock-protocol'),
+          getCapabilities: vi.fn().mockReturnValue(['mock-capability']),
+          healthCheck: vi.fn(),
         };
 
         AdapterFactory.registerAdapter('mock', () => mockAdapter);
@@ -672,21 +672,21 @@ describe('Adapter Pattern Implementation', () => {
 
       it('should send messages through correct adapter', async () => {
         const mockAdapter = {
-          connect: jest.fn().mockResolvedValue(undefined),
-          disconnect: jest.fn(),
-          send: jest.fn().mockResolvedValue({
+          connect: vi.fn().mockResolvedValue(undefined),
+          disconnect: vi.fn(),
+          send: vi.fn().mockResolvedValue({
             id: 'resp-001',
             requestId: 'msg-001',
             timestamp: new Date(),
             success: true,
             data: { result: 'success' },
           }),
-          subscribe: jest.fn(),
-          unsubscribe: jest.fn(),
-          isConnected: jest.fn().mockReturnValue(true),
-          getProtocolName: jest.fn().mockReturnValue('mock-send'),
-          getCapabilities: jest.fn().mockReturnValue([]),
-          healthCheck: jest.fn(),
+          subscribe: vi.fn(),
+          unsubscribe: vi.fn(),
+          isConnected: vi.fn().mockReturnValue(true),
+          getProtocolName: vi.fn().mockReturnValue('mock-send'),
+          getCapabilities: vi.fn().mockReturnValue([]),
+          healthCheck: vi.fn(),
         };
 
         AdapterFactory.registerAdapter('mock-send', () => mockAdapter);
@@ -715,21 +715,21 @@ describe('Adapter Pattern Implementation', () => {
         const adapters = ['broadcast-1', 'broadcast-2', 'broadcast-3'].map((name, index) => ({
           name,
           mock: {
-            connect: jest.fn().mockResolvedValue(undefined),
-            disconnect: jest.fn(),
-            send: jest.fn().mockResolvedValue({
+            connect: vi.fn().mockResolvedValue(undefined),
+            disconnect: vi.fn(),
+            send: vi.fn().mockResolvedValue({
               id: `resp-${index}`,
               requestId: 'broadcast-msg',
               timestamp: new Date(),
               success: true,
               data: { handler: name },
             }),
-            subscribe: jest.fn(),
-            unsubscribe: jest.fn(),
-            isConnected: jest.fn().mockReturnValue(true),
-            getProtocolName: jest.fn().mockReturnValue(name),
-            getCapabilities: jest.fn().mockReturnValue([]),
-            healthCheck: jest.fn(),
+            subscribe: vi.fn(),
+            unsubscribe: vi.fn(),
+            isConnected: vi.fn().mockReturnValue(true),
+            getProtocolName: vi.fn().mockReturnValue(name),
+            getCapabilities: vi.fn().mockReturnValue([]),
+            healthCheck: vi.fn(),
           },
         }));
 
@@ -765,33 +765,33 @@ describe('Adapter Pattern Implementation', () => {
 
       it('should handle adapter failures gracefully', async () => {
         const workingAdapter = {
-          connect: jest.fn().mockResolvedValue(undefined),
-          disconnect: jest.fn(),
-          send: jest.fn().mockResolvedValue({
+          connect: vi.fn().mockResolvedValue(undefined),
+          disconnect: vi.fn(),
+          send: vi.fn().mockResolvedValue({
             id: 'resp-working',
             requestId: 'failure-test',
             timestamp: new Date(),
             success: true,
             data: { status: 'working' },
           }),
-          subscribe: jest.fn(),
-          unsubscribe: jest.fn(),
-          isConnected: jest.fn().mockReturnValue(true),
-          getProtocolName: jest.fn().mockReturnValue('working'),
-          getCapabilities: jest.fn().mockReturnValue([]),
-          healthCheck: jest.fn(),
+          subscribe: vi.fn(),
+          unsubscribe: vi.fn(),
+          isConnected: vi.fn().mockReturnValue(true),
+          getProtocolName: vi.fn().mockReturnValue('working'),
+          getCapabilities: vi.fn().mockReturnValue([]),
+          healthCheck: vi.fn(),
         };
 
         const failingAdapter = {
-          connect: jest.fn().mockResolvedValue(undefined),
-          disconnect: jest.fn(),
-          send: jest.fn().mockRejectedValue(new Error('Adapter failure')),
-          subscribe: jest.fn(),
-          unsubscribe: jest.fn(),
-          isConnected: jest.fn().mockReturnValue(true),
-          getProtocolName: jest.fn().mockReturnValue('failing'),
-          getCapabilities: jest.fn().mockReturnValue([]),
-          healthCheck: jest.fn(),
+          connect: vi.fn().mockResolvedValue(undefined),
+          disconnect: vi.fn(),
+          send: vi.fn().mockRejectedValue(new Error('Adapter failure')),
+          subscribe: vi.fn(),
+          unsubscribe: vi.fn(),
+          isConnected: vi.fn().mockReturnValue(true),
+          getProtocolName: vi.fn().mockReturnValue('failing'),
+          getCapabilities: vi.fn().mockReturnValue([]),
+          healthCheck: vi.fn(),
         };
 
         AdapterFactory.registerAdapter('working', () => workingAdapter);
@@ -828,21 +828,21 @@ describe('Adapter Pattern Implementation', () => {
 
       it('should implement message routing', async () => {
         const routedAdapter = {
-          connect: jest.fn().mockResolvedValue(undefined),
-          disconnect: jest.fn(),
-          send: jest.fn().mockResolvedValue({
+          connect: vi.fn().mockResolvedValue(undefined),
+          disconnect: vi.fn(),
+          send: vi.fn().mockResolvedValue({
             id: 'routed-resp',
             requestId: 'routing-test',
             timestamp: new Date(),
             success: true,
             data: { routed: true },
           }),
-          subscribe: jest.fn(),
-          unsubscribe: jest.fn(),
-          isConnected: jest.fn().mockReturnValue(true),
-          getProtocolName: jest.fn().mockReturnValue('routed'),
-          getCapabilities: jest.fn().mockReturnValue([]),
-          healthCheck: jest.fn(),
+          subscribe: vi.fn(),
+          unsubscribe: vi.fn(),
+          isConnected: vi.fn().mockReturnValue(true),
+          getProtocolName: vi.fn().mockReturnValue('routed'),
+          getCapabilities: vi.fn().mockReturnValue([]),
+          healthCheck: vi.fn(),
         };
 
         AdapterFactory.registerAdapter('routed', () => routedAdapter);
@@ -872,27 +872,27 @@ describe('Adapter Pattern Implementation', () => {
 
       it('should perform health checks on all adapters', async () => {
         const healthyAdapter = {
-          connect: jest.fn().mockResolvedValue(undefined),
-          disconnect: jest.fn(),
-          send: jest.fn(),
-          subscribe: jest.fn(),
-          unsubscribe: jest.fn(),
-          isConnected: jest.fn().mockReturnValue(true),
-          getProtocolName: jest.fn().mockReturnValue('healthy'),
-          getCapabilities: jest.fn().mockReturnValue([]),
-          healthCheck: jest.fn().mockResolvedValue(true),
+          connect: vi.fn().mockResolvedValue(undefined),
+          disconnect: vi.fn(),
+          send: vi.fn(),
+          subscribe: vi.fn(),
+          unsubscribe: vi.fn(),
+          isConnected: vi.fn().mockReturnValue(true),
+          getProtocolName: vi.fn().mockReturnValue('healthy'),
+          getCapabilities: vi.fn().mockReturnValue([]),
+          healthCheck: vi.fn().mockResolvedValue(true),
         };
 
         const unhealthyAdapter = {
-          connect: jest.fn().mockResolvedValue(undefined),
-          disconnect: jest.fn(),
-          send: jest.fn(),
-          subscribe: jest.fn(),
-          unsubscribe: jest.fn(),
-          isConnected: jest.fn().mockReturnValue(true),
-          getProtocolName: jest.fn().mockReturnValue('unhealthy'),
-          getCapabilities: jest.fn().mockReturnValue([]),
-          healthCheck: jest.fn().mockResolvedValue(false),
+          connect: vi.fn().mockResolvedValue(undefined),
+          disconnect: vi.fn(),
+          send: vi.fn(),
+          subscribe: vi.fn(),
+          unsubscribe: vi.fn(),
+          isConnected: vi.fn().mockReturnValue(true),
+          getProtocolName: vi.fn().mockReturnValue('unhealthy'),
+          getCapabilities: vi.fn().mockReturnValue([]),
+          healthCheck: vi.fn().mockResolvedValue(false),
         };
 
         AdapterFactory.registerAdapter('healthy', () => healthyAdapter);
@@ -927,15 +927,15 @@ describe('Adapter Pattern Implementation', () => {
         const adapters = ['shutdown-1', 'shutdown-2'].map((name) => ({
           name,
           mock: {
-            connect: jest.fn().mockResolvedValue(undefined),
-            disconnect: jest.fn().mockResolvedValue(undefined),
-            send: jest.fn(),
-            subscribe: jest.fn(),
-            unsubscribe: jest.fn(),
-            isConnected: jest.fn().mockReturnValue(true),
-            getProtocolName: jest.fn().mockReturnValue(name),
-            getCapabilities: jest.fn().mockReturnValue([]),
-            healthCheck: jest.fn(),
+            connect: vi.fn().mockResolvedValue(undefined),
+            disconnect: vi.fn().mockResolvedValue(undefined),
+            send: vi.fn(),
+            subscribe: vi.fn(),
+            unsubscribe: vi.fn(),
+            isConnected: vi.fn().mockReturnValue(true),
+            getProtocolName: vi.fn().mockReturnValue(name),
+            getCapabilities: vi.fn().mockReturnValue([]),
+            healthCheck: vi.fn(),
           },
         }));
 
@@ -1016,14 +1016,14 @@ describe('Adapter Pattern Implementation', () => {
           mcpAdapter = new MCPAdapter('stdio');
 
           mockProcess = {
-            stdin: { write: jest.fn() },
+            stdin: { write: vi.fn() },
             stdout: {
-              on: jest.fn(),
-              once: jest.fn(),
+              on: vi.fn(),
+              once: vi.fn(),
             },
-            stderr: { on: jest.fn() },
-            on: jest.fn(),
-            kill: jest.fn(),
+            stderr: { on: vi.fn() },
+            on: vi.fn(),
+            kill: vi.fn(),
           };
 
           mockSpawn.mockReturnValue(mockProcess);
@@ -1293,15 +1293,15 @@ describe('Adapter Pattern Implementation', () => {
       const protocolManager = new ProtocolManager();
 
       const failingAdapter = {
-        connect: jest.fn().mockResolvedValue(undefined),
-        disconnect: jest.fn(),
-        send: jest.fn().mockRejectedValue(new Error('Service unavailable')),
-        subscribe: jest.fn(),
-        unsubscribe: jest.fn(),
-        isConnected: jest.fn().mockReturnValue(true),
-        getProtocolName: jest.fn().mockReturnValue('failing'),
-        getCapabilities: jest.fn().mockReturnValue([]),
-        healthCheck: jest.fn().mockResolvedValue(false),
+        connect: vi.fn().mockResolvedValue(undefined),
+        disconnect: vi.fn(),
+        send: vi.fn().mockRejectedValue(new Error('Service unavailable')),
+        subscribe: vi.fn(),
+        unsubscribe: vi.fn(),
+        isConnected: vi.fn().mockReturnValue(true),
+        getProtocolName: vi.fn().mockReturnValue('failing'),
+        getCapabilities: vi.fn().mockReturnValue([]),
+        healthCheck: vi.fn().mockResolvedValue(false),
       };
 
       AdapterFactory.registerAdapter('circuit-test', () => failingAdapter);

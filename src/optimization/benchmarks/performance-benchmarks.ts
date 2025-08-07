@@ -11,9 +11,9 @@ import type {
   WasmOptimizer,
 } from '../interfaces/optimization-interfaces';
 import {
+  DATA_PERFORMANCE_TARGETS,
   NEURAL_PERFORMANCE_TARGETS,
   SWARM_PERFORMANCE_TARGETS,
-  DATA_PERFORMANCE_TARGETS,
   WASM_PERFORMANCE_TARGETS,
 } from '../interfaces/optimization-interfaces';
 

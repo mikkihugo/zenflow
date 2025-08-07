@@ -27,13 +27,13 @@ class MockCommand extends BaseCommand {
 }
 
 // Mock fs/promises
-jest.mock('fs/promises', () => ({
-  readdir: jest.fn(),
-  stat: jest.fn(),
+vi.mock('fs/promises', () => ({
+  readdir: vi.fn(),
+  stat: vi.fn(),
 }));
 
 // Mock path
-jest.mock('path', () => ({
+vi.mock('path', () => ({
   join: jest.fn((...args: string[]) => args.join('/')),
   extname: jest.fn((path: string) => {
     const parts = (path as string).split('.');
@@ -47,7 +47,7 @@ describe('CommandRegistry - TDD London', () => {
 
   beforeEach(() => {
     registry = new CommandRegistry();
-    mockEventHandler = jest.fn();
+    mockEventHandler = vi.fn();
 
     // Listen to all events for behavior verification
     registry.on('command-registered', mockEventHandler);
@@ -70,7 +70,7 @@ describe('CommandRegistry - TDD London', () => {
           description: 'Test command',
           category: 'core',
         },
-        handler: jest.fn() as any,
+        handler: vi.fn() as any,
         registeredAt: new Date(),
         available: true,
       };
@@ -98,7 +98,7 @@ describe('CommandRegistry - TDD London', () => {
           aliases: ['st', 'stat'],
           category: 'core',
         },
-        handler: jest.fn() as any,
+        handler: vi.fn() as any,
         registeredAt: new Date(),
         available: true,
       };
@@ -117,13 +117,13 @@ describe('CommandRegistry - TDD London', () => {
       // Arrange
       const metadata1: CommandMetadata = {
         config: { name: 'duplicate', description: 'First' },
-        handler: jest.fn() as any,
+        handler: vi.fn() as any,
         registeredAt: new Date(),
         available: true,
       };
       const metadata2: CommandMetadata = {
         config: { name: 'duplicate', description: 'Second' },
-        handler: jest.fn() as any,
+        handler: vi.fn() as any,
         registeredAt: new Date(),
         available: true,
       };
@@ -140,13 +140,13 @@ describe('CommandRegistry - TDD London', () => {
       // Arrange
       const metadata1: CommandMetadata = {
         config: { name: 'cmd1', description: 'First', aliases: ['c'] },
-        handler: jest.fn() as any,
+        handler: vi.fn() as any,
         registeredAt: new Date(),
         available: true,
       };
       const metadata2: CommandMetadata = {
         config: { name: 'cmd2', description: 'Second', aliases: ['c'] },
-        handler: jest.fn() as any,
+        handler: vi.fn() as any,
         registeredAt: new Date(),
         available: true,
       };
@@ -175,7 +175,7 @@ describe('CommandRegistry - TDD London', () => {
       commands.forEach((config) => {
         registry.register({
           config,
-          handler: jest.fn() as any,
+          handler: vi.fn() as any,
           registeredAt: new Date(),
           available: true,
         });
@@ -229,7 +229,7 @@ describe('CommandRegistry - TDD London', () => {
     let mockContext: CommandContext;
 
     beforeEach(() => {
-      mockHandler = jest.fn().mockResolvedValue({
+      mockHandler = vi.fn().mockResolvedValue({
         success: true,
         exitCode: 0,
         message: 'Handler executed',
@@ -363,8 +363,8 @@ describe('CommandRegistry - TDD London', () => {
       });
 
       // Spy on command methods
-      jest.spyOn(mockCommand, 'execute');
-      jest.spyOn(mockCommand, 'dispose');
+      vi.spyOn(mockCommand, 'execute');
+      vi.spyOn(mockCommand, 'dispose');
     });
 
     it('should register BaseCommand instance and use its execute method', async () => {
@@ -415,7 +415,7 @@ describe('CommandRegistry - TDD London', () => {
     let mockHandler: jest.Mock;
 
     beforeEach(() => {
-      mockHandler = jest.fn().mockResolvedValue({
+      mockHandler = vi.fn().mockResolvedValue({
         success: true,
         exitCode: 0,
       });
@@ -464,7 +464,7 @@ describe('CommandRegistry - TDD London', () => {
         description: 'Cleanup test command',
       });
 
-      jest.spyOn(mockCommand, 'dispose');
+      vi.spyOn(mockCommand, 'dispose');
       registry.registerCommand(mockCommand);
     });
 

@@ -5,7 +5,7 @@
  * Includes retry patterns, circuit breakers, fallback strategies, and graceful degradation
  */
 
-import { BaseClaudeZenError, type ErrorRecoveryOptions, isRecoverableError } from './errors';
+import { type ErrorRecoveryOptions, isRecoverableError } from './errors';
 import { createLogger } from './logger';
 
 const logger = createLogger({ prefix: 'ErrorRecovery' });
@@ -49,6 +49,8 @@ export class CircuitBreaker {
   private totalFailures: number = 0;
   private responseTimes: number[] = [];
   private nextAttemptTime: number = 0;
+  private failureHistory: number[] = [];
+  private callHistory: number[] = [];
 
   constructor(
     private readonly name: string,
@@ -69,13 +71,7 @@ export class CircuitBreaker {
           return await fallback();
         }
 
-        throw new BaseClaudeZenError(
-          `Circuit breaker [${this.name}] is open`,
-          'CircuitBreaker',
-          'high',
-          { metadata: { circuitBreakerName: this.name, state: this.state } },
-          false
-        );
+        throw new Error(`Circuit breaker [${this.name}] is open`);
       } else {
         // Transition to half-open for testing
         this.state = CircuitBreakerState.HALF_OPEN;

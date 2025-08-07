@@ -17,14 +17,14 @@ describe('Agent Communication Protocols (London TDD)', () => {
 
   beforeEach(() => {
     mockMessageBroker = {
-      broadcast: jest.fn(),
-      sendDirectMessage: jest.fn(),
-      subscribe: jest.fn(),
-      unsubscribe: jest.fn(),
-      createChannel: jest.fn(),
-      destroyChannel: jest.fn(),
-      getChannelHealth: jest.fn(),
-      routeMessage: jest.fn(),
+      broadcast: vi.fn(),
+      sendDirectMessage: vi.fn(),
+      subscribe: vi.fn(),
+      unsubscribe: vi.fn(),
+      createChannel: vi.fn(),
+      destroyChannel: vi.fn(),
+      getChannelHealth: vi.fn(),
+      routeMessage: vi.fn(),
     } as jest.Mocked<MessageBroker>;
 
     mockAgents = Array.from(
@@ -35,12 +35,12 @@ describe('Agent Communication Protocols (London TDD)', () => {
           type: i < 2 ? 'coordinator' : 'worker',
           status: 'active',
           capabilities: i < 2 ? ['coordination', 'supervision'] : ['execution', 'analysis'],
-          sendMessage: jest.fn(),
-          receiveMessage: jest.fn(),
-          subscribeToChannel: jest.fn(),
-          unsubscribeFromChannel: jest.fn(),
-          getMessageQueue: jest.fn(),
-          processMessage: jest.fn(),
+          sendMessage: vi.fn(),
+          receiveMessage: vi.fn(),
+          subscribeToChannel: vi.fn(),
+          unsubscribeFromChannel: vi.fn(),
+          getMessageQueue: vi.fn(),
+          processMessage: vi.fn(),
         }) as jest.Mocked<Agent>
     );
 
@@ -386,9 +386,9 @@ describe('Agent Communication Protocols (London TDD)', () => {
       agent.getMessageQueue.mockReturnValue({
         pending: [],
         processing: [],
-        enqueue: jest.fn(),
-        dequeue: jest.fn(),
-        prioritySort: jest.fn(),
+        enqueue: vi.fn(),
+        dequeue: vi.fn(),
+        prioritySort: vi.fn(),
       });
 
       for (const message of messages) {

@@ -4,7 +4,18 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { BackendInterface } from '../backends/base.backend';
+
+// BackendInterface type for compatibility - matches core memory-system.ts
+export interface BackendInterface {
+  initialize(): Promise<void>;
+  store(key: string, value: any, namespace?: string): Promise<any>;
+  retrieve(key: string, namespace?: string): Promise<any | null>;
+  search(pattern: string, namespace?: string): Promise<Record<string, any>>;
+  delete(key: string, namespace?: string): Promise<boolean>;
+  listNamespaces(): Promise<string[]>;
+  getStats(): Promise<any>;
+  close?(): Promise<void>;
+}
 
 export interface MemoryCoordinationConfig {
   enabled: boolean;
@@ -189,7 +200,7 @@ export class MemoryCoordinator extends EventEmitter {
       throw new Error(`Node not found: ${decision.participants[0]}`);
     }
 
-    return await node.backend.get(decision.target);
+    return await node.backend.retrieve(decision.target);
   }
 
   /**
@@ -204,7 +215,7 @@ export class MemoryCoordinator extends EventEmitter {
         throw new Error(`Node not found: ${nodeId}`);
       }
 
-      return await node.backend.set(decision.target, decision.metadata?.data);
+      return await node.backend.store(decision.target, decision.metadata?.data);
     });
 
     if (this.config.distributed.consistency === 'strong') {
@@ -258,9 +269,9 @@ export class MemoryCoordinator extends EventEmitter {
         continue;
       }
 
-      const data = await sourceNode.backend.get(decision.target);
+      const data = await sourceNode.backend.retrieve(decision.target);
       if (data) {
-        await targetNode.backend.set(decision.target, data);
+        await targetNode.backend.store(decision.target, data);
       }
     }
   }
@@ -278,7 +289,7 @@ export class MemoryCoordinator extends EventEmitter {
         if (!node) return null;
 
         try {
-          return await node.backend.get(decision.target);
+          return await node.backend.retrieve(decision.target);
         } catch {
           return null;
         }
@@ -304,7 +315,7 @@ export class MemoryCoordinator extends EventEmitter {
       const node = this.nodes.get(nodeId);
       if (!node) return;
 
-      await node.backend.set(decision.target, correctValue);
+      await node.backend.store(decision.target, correctValue);
     });
 
     await Promise.all(repairPromises);
@@ -412,7 +423,7 @@ export class MemoryCoordinator extends EventEmitter {
 
           for (const key of matchingKeys) {
             try {
-              const value = await node.backend.get(key);
+              const value = await node.backend.retrieve(key);
               results.push({ key, value });
             } catch (_error) {}
           }

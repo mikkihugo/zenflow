@@ -14,7 +14,7 @@ import { BaseZenSwarm as ZenSwarm } from '../index';
 // Removed SwarmPersistencePooled - using DAL Factory approach instead
 import {
   AgentError,
-  ErrorContext,
+  ErrorContextFactory,
   ErrorFactory,
   NeuralError,
   PersistenceError,
@@ -64,7 +64,7 @@ class EnhancedMCPTools {
 
     // Initialize persistence asynchronously
     this.initializePersistence();
-    this.errorContext = new ErrorContext('mcp-tools-initialization');
+    this.errorContext = ErrorContextFactory.create('mcp-tools-initialization');
     this.errorLog = [];
     this.maxErrorLogSize = 1000;
 
@@ -1816,7 +1816,7 @@ class EnhancedMCPTools {
         } catch (_error) {
           // If storage fails, create a temporary ID
           neuralNetwork = {
-            id: `temp_nn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            id: `temp_nn_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
           };
         }
       }
@@ -2750,7 +2750,7 @@ class EnhancedMCPTools {
 
       const monitoringData: any = {
         timestamp: new Date().toISOString(),
-        monitoring_session_id: `monitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        monitoring_session_id: `monitor_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
         swarms: [],
       };
 

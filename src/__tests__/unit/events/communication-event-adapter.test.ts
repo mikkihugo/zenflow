@@ -78,10 +78,10 @@ describe('CommunicationEventAdapter', () => {
 
     beforeEach(() => {
       mockLogger = {
-        info: jest.fn(),
-        debug: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
+        info: vi.fn(),
+        debug: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
       };
 
       const config = createDefaultCommunicationEventAdapterConfig('lifecycle-test');
@@ -150,8 +150,8 @@ describe('CommunicationEventAdapter', () => {
       await adapter.start();
       expect(adapter.isRunning()).toBe(true);
 
-      const mockStop = jest.spyOn(adapter, 'stop');
-      const mockStart = jest.spyOn(adapter, 'start');
+      const mockStop = vi.spyOn(adapter, 'stop');
+      const mockStart = vi.spyOn(adapter, 'start');
 
       await adapter.restart();
 
@@ -170,7 +170,7 @@ describe('CommunicationEventAdapter', () => {
       adapter = new CommunicationEventAdapter(config);
 
       mockWebSocketClient = new EventEmitter();
-      mockWebSocketClient.healthCheck = jest.fn().mockResolvedValue({
+      mockWebSocketClient.healthCheck = vi.fn().mockResolvedValue({
         status: 'healthy',
         responseTime: 50,
         errorRate: 0.02,
@@ -223,7 +223,7 @@ describe('CommunicationEventAdapter', () => {
         },
       };
 
-      const eventListener = jest.fn();
+      const eventListener = vi.fn();
       adapter.subscribeWebSocketCommunicationEvents(eventListener);
 
       await adapter.emitWebSocketCommunicationEvent(connectionEvent);
@@ -294,7 +294,7 @@ describe('CommunicationEventAdapter', () => {
         },
       };
 
-      const eventListener = jest.fn();
+      const eventListener = vi.fn();
       adapter.subscribe(['communication:websocket'], eventListener);
 
       await adapter.emitWebSocketCommunicationEvent(errorEvent);
@@ -320,7 +320,7 @@ describe('CommunicationEventAdapter', () => {
       adapter = new CommunicationEventAdapter(config);
 
       mockMCPServer = new EventEmitter();
-      mockMCPServer.healthCheck = jest.fn().mockResolvedValue({
+      mockMCPServer.healthCheck = vi.fn().mockResolvedValue({
         status: 'healthy',
         responseTime: 25,
         errorRate: 0.01,
@@ -375,7 +375,7 @@ describe('CommunicationEventAdapter', () => {
         },
       };
 
-      const eventListener = jest.fn();
+      const eventListener = vi.fn();
       adapter.subscribeMCPProtocolEvents(eventListener);
 
       await adapter.emitMCPProtocolEvent(toolEvent);
@@ -449,7 +449,7 @@ describe('CommunicationEventAdapter', () => {
         },
       };
 
-      const eventListener = jest.fn();
+      const eventListener = vi.fn();
       adapter.subscribeMCPProtocolEvents(eventListener);
 
       await adapter.emitMCPProtocolEvent(timeoutEvent);
@@ -524,7 +524,7 @@ describe('CommunicationEventAdapter', () => {
         },
       };
 
-      const eventListener = jest.fn();
+      const eventListener = vi.fn();
       adapter.subscribeHTTPCommunicationEvents(eventListener);
 
       await adapter.emit(requestEvent);
@@ -638,7 +638,7 @@ describe('CommunicationEventAdapter', () => {
         },
       };
 
-      const eventListener = jest.fn();
+      const eventListener = vi.fn();
       adapter.subscribeProtocolCommunicationEvents(eventListener);
 
       await adapter.emit(switchEvent);
@@ -848,7 +848,7 @@ describe('CommunicationEventAdapter', () => {
       // Mock wrapped components for health testing
       (adapter as any).wrappedComponents.set('websocket-client-test', {
         component: {
-          healthCheck: jest.fn().mockResolvedValue({ responseTime: 50, errorRate: 0.05 }),
+          healthCheck: vi.fn().mockResolvedValue({ responseTime: 50, errorRate: 0.05 }),
         },
         componentType: 'websocket',
         wrapper: new EventEmitter(),
@@ -865,7 +865,7 @@ describe('CommunicationEventAdapter', () => {
 
       (adapter as any).wrappedComponents.set('mcp-server-test', {
         component: {
-          getMetrics: jest.fn().mockResolvedValue({
+          getMetrics: vi.fn().mockResolvedValue({
             averageLatency: 75,
             throughput: 500,
             requestCount: 200,
@@ -1219,7 +1219,7 @@ describe('CommunicationEventAdapter', () => {
     });
 
     it('should handle subscription listener errors without crashing', async () => {
-      const errorListener = jest.fn().mockImplementation(() => {
+      const errorListener = vi.fn().mockImplementation(() => {
         throw new Error('Listener error');
       });
 

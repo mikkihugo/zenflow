@@ -3,6 +3,7 @@
  * Provides simple logging functionality for the application
  */
 
+// Local Logger interface - matches ILogger from core/logger for compatibility
 export interface Logger {
   debug(message: string, meta?: any): void;
   info(message: string, meta?: any): void;

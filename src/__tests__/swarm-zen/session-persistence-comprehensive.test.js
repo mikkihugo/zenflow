@@ -139,7 +139,11 @@ class TestUtils {
   }
 
   static createTempDir() {
-    return join(__dirname, 'temp', `test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
+    return join(
+      __dirname,
+      'temp',
+      `test-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
+    );
   }
 
   static async cleanup(path) {

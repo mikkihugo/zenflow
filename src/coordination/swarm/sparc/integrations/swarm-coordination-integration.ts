@@ -5,9 +5,9 @@
  * Enables distributed SPARC development using existing agent types and coordination protocols.
  */
 
+import type { AgentType } from '../../../../types/agent-types';
 import { TaskAPI } from '../../../api';
 import { type TaskConfig, TaskCoordinator } from '../../../task-coordinator';
-import type { AgentType } from '../../../../types/agent-types';
 import type { SPARCPhase, SPARCProject } from '../types/sparc-types';
 
 // SPARC-specific agent types from existing 147+ agent types
@@ -148,24 +148,9 @@ export class SPARCSwarmCoordinator {
     const phaseAgentMap: Record<SPARCPhase, AgentType[]> = {
       specification: ['requirements-engineer', 'coordinator', 'documenter'],
       pseudocode: ['coder', 'system-architect', 'coordinator'],
-      architecture: [
-        'system-architect',
-        'performance-tester',
-        'security-architect',
-        'coordinator',
-      ],
-      refinement: [
-        'performance-tester',
-        'security-architect',
-        'unit-tester',
-        'coder',
-      ],
-      completion: [
-        'coder',
-        'unit-tester',
-        'documenter',
-        'coordinator',
-      ],
+      architecture: ['system-architect', 'performance-tester', 'security-architect', 'coordinator'],
+      refinement: ['performance-tester', 'security-architect', 'unit-tester', 'coder'],
+      completion: ['coder', 'unit-tester', 'documenter', 'coordinator'],
     };
 
     return phaseAgentMap[phase] || ['coordinator'];
@@ -248,14 +233,14 @@ export class SPARCSwarmCoordinator {
     const baseTools = ['file_operations', 'code_analysis', 'documentation'];
 
     const agentTools: Partial<Record<AgentType, string[]>> = {
-      'coder': [...baseTools, 'code_generation', 'testing'],
+      coder: [...baseTools, 'code_generation', 'testing'],
       'system-architect': [...baseTools, 'design_tools', 'modeling'],
       'performance-tester': [...baseTools, 'profiling', 'benchmarking'],
       'security-architect': [...baseTools, 'security_analysis', 'threat_modeling'],
       'unit-tester': [...baseTools, 'testing_frameworks', 'test_automation'],
       'requirements-engineer': [...baseTools, 'requirements_analysis'],
-      'documenter': [...baseTools, 'documentation_generators'],
-      'coordinator': [...baseTools, 'project_management', 'coordination'],
+      documenter: [...baseTools, 'documentation_generators'],
+      coordinator: [...baseTools, 'project_management', 'coordination'],
     };
 
     return agentTools[agentType] || baseTools;

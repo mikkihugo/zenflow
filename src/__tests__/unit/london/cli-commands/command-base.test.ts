@@ -23,7 +23,7 @@ class TestCommand extends BaseCommand {
     super(config);
     this.mockRun =
       mockRun ||
-      jest.fn().mockResolvedValue({
+      vi.fn().mockResolvedValue({
         success: true,
         exitCode: 0,
         message: 'Test command executed',
@@ -89,7 +89,7 @@ describe('BaseCommand - TDD London', () => {
     };
 
     command = new TestCommand(config);
-    mockEventHandler = jest.fn();
+    mockEventHandler = vi.fn();
 
     // Listen to command events
     command.on('start', mockEventHandler);
@@ -143,7 +143,7 @@ describe('BaseCommand - TDD London', () => {
       // Arrange
       const slowCommand = new TestCommand(
         { name: 'slow', description: 'Slow command' },
-        jest.fn().mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)))
+        vi.fn().mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)))
       );
 
       // Act
@@ -166,7 +166,7 @@ describe('BaseCommand - TDD London', () => {
       let executingDuringRun = false;
       const trackingCommand = new TestCommand(
         { name: 'tracking', description: 'Tracking command' },
-        jest.fn().mockImplementation(() => {
+        vi.fn().mockImplementation(() => {
           executingDuringRun = trackingCommand.executing;
           return Promise.resolve({ success: true, exitCode: 0 });
         })
@@ -259,7 +259,7 @@ describe('BaseCommand - TDD London', () => {
 
     it('should call custom validation and include its results', async () => {
       // Arrange
-      const customValidation = jest.fn().mockResolvedValue({
+      const customValidation = vi.fn().mockResolvedValue({
         valid: false,
         errors: ['Custom validation failed'],
         warnings: ['Custom warning'],
@@ -279,7 +279,7 @@ describe('BaseCommand - TDD London', () => {
 
     it('should handle validation exceptions gracefully', async () => {
       // Arrange
-      const throwingValidation = jest.fn().mockRejectedValue(new Error('Validation exploded'));
+      const throwingValidation = vi.fn().mockRejectedValue(new Error('Validation exploded'));
       command.setCustomValidation(throwingValidation);
 
       // Act
@@ -296,11 +296,11 @@ describe('BaseCommand - TDD London', () => {
 
     beforeEach(() => {
       mockHooks = {
-        beforeValidation: jest.fn(),
-        afterValidation: jest.fn(),
-        beforeExecution: jest.fn(),
-        afterExecution: jest.fn(),
-        onError: jest.fn(),
+        beforeValidation: vi.fn(),
+        afterValidation: vi.fn(),
+        beforeExecution: vi.fn(),
+        afterExecution: vi.fn(),
+        onError: vi.fn(),
       };
 
       command.registerHooks(mockHooks);
@@ -329,7 +329,7 @@ describe('BaseCommand - TDD London', () => {
       const error = new Error('Command failed');
       const failingCommand = new TestCommand(
         { name: 'failing', description: 'Failing command' },
-        jest.fn().mockRejectedValue(error)
+        vi.fn().mockRejectedValue(error)
       );
       failingCommand.registerHooks(mockHooks);
 
@@ -357,7 +357,7 @@ describe('BaseCommand - TDD London', () => {
     it('should allow hooks to be registered partially', async () => {
       // Arrange
       const partialHooks = {
-        beforeExecution: jest.fn(),
+        beforeExecution: vi.fn(),
       };
 
       const partialCommand = new TestCommand({
@@ -380,10 +380,10 @@ describe('BaseCommand - TDD London', () => {
       const error = new Error('Run method failed');
       const errorCommand = new TestCommand(
         { name: 'error', description: 'Error command' },
-        jest.fn().mockRejectedValue(error)
+        vi.fn().mockRejectedValue(error)
       );
 
-      const errorEventHandler = jest.fn();
+      const errorEventHandler = vi.fn();
       errorCommand.on('error', errorEventHandler);
 
       // Act
@@ -404,7 +404,7 @@ describe('BaseCommand - TDD London', () => {
       const stringError = 'String error';
       const errorCommand = new TestCommand(
         { name: 'string-error', description: 'String error command' },
-        jest.fn().mockRejectedValue(stringError)
+        vi.fn().mockRejectedValue(stringError)
       );
 
       // Act

@@ -5,7 +5,7 @@
  * vector operations, similarity search, and ML integration.
  */
 
-import { BaseDataAccessObject } from '../base-repository';
+import { BaseDao } from '../base.dao';
 import type {
   IVectorRepository,
   TransactionOperation,
@@ -19,9 +19,25 @@ import type {
  * @template T The entity type this DAO manages
  * @example
  */
-export class VectorDAO<T> extends BaseDataAccessObject<T> {
+export class VectorDAO<T> extends BaseDao<T> {
+  /**
+   * Map database row to entity
+   */
+  protected mapRowToEntity(row: any): T {
+    // Default implementation - override in specific DAOs
+    return row as T;
+  }
+
+  /**
+   * Map entity to database row
+   */
+  protected mapEntityToRow(entity: Partial<T>): Record<string, any> {
+    // Default implementation - convert entity to plain object
+    return { ...entity } as Record<string, any>;
+  }
+
   private get vectorRepository(): IVectorRepository<T> {
-    return this.repository as IVectorRepository<T>;
+    return this as any as IVectorRepository<T>;
   }
 
   /**

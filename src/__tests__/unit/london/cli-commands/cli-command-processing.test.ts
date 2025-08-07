@@ -53,26 +53,26 @@ describe('CLI Command Processing - TDD London', () => {
   beforeEach(() => {
     // Setup mocks for all CLI components
     mockRegistry = {
-      register: jest.fn(),
-      unregister: jest.fn(),
-      execute: jest.fn(),
-      has: jest.fn(),
-      list: jest.fn(),
+      register: vi.fn(),
+      unregister: vi.fn(),
+      execute: vi.fn(),
+      has: vi.fn(),
+      list: vi.fn(),
     };
 
     mockParser = {
-      parse: jest.fn(),
-      validate: jest.fn(),
+      parse: vi.fn(),
+      validate: vi.fn(),
     };
 
     mockFormatter = {
-      format: jest.fn(),
-      setDefaults: jest.fn(),
+      format: vi.fn(),
+      setDefaults: vi.fn(),
     };
 
     mockErrorHandler = {
-      handle: jest.fn(),
-      register: jest.fn(),
+      handle: vi.fn(),
+      register: vi.fn(),
     };
   });
 
@@ -82,7 +82,7 @@ describe('CLI Command Processing - TDD London', () => {
       const commandConfig = {
         name: 'test-command',
         description: 'Test command',
-        handler: jest.fn(),
+        handler: vi.fn(),
       };
 
       // Act
@@ -342,7 +342,7 @@ describe('CLI Command Processing - TDD London', () => {
     it('should register error handlers for specific error types', () => {
       // Arrange
       const errorType = 'ValidationError';
-      const handler = jest.fn();
+      const handler = vi.fn();
 
       // Act
       mockErrorHandler.register(errorType, handler);
@@ -489,8 +489,8 @@ describe('CLI Command Processing - TDD London', () => {
   describe('command lifecycle behavior', () => {
     it('should handle command initialization and cleanup', async () => {
       // Arrange
-      const initFunction = jest.fn().mockResolvedValue(undefined);
-      const cleanupFunction = jest.fn().mockResolvedValue(undefined);
+      const initFunction = vi.fn().mockResolvedValue(undefined);
+      const cleanupFunction = vi.fn().mockResolvedValue(undefined);
 
       // Act - Simulate lifecycle
       await initFunction();
@@ -505,9 +505,9 @@ describe('CLI Command Processing - TDD London', () => {
     it('should track command execution metrics', async () => {
       // Arrange
       const metricsTracker = {
-        recordExecution: jest.fn(),
-        recordSuccess: jest.fn(),
-        recordFailure: jest.fn(),
+        recordExecution: vi.fn(),
+        recordSuccess: vi.fn(),
+        recordFailure: vi.fn(),
       };
 
       const context: MockCommandContext = {

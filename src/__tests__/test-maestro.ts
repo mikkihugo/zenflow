@@ -58,7 +58,7 @@ class MockAgentManager {
   private agents = new Map<string, { type: string; profile: AgentProfile; status: string }>();
 
   async createAgent(type: string, profile: AgentProfile): Promise<string> {
-    const agentId = `${type}-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+    const agentId = `${type}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     this.agents.set(agentId, { type, profile, status: 'created' });
     return agentId;
   }

@@ -63,7 +63,7 @@ export interface MemoryEntry {
 export interface StorageProvider {
   get(key: string): Promise<any>;
   set(key: string, value: any, ttl?: number): Promise<void>;
-  delete(key: string): Promise<void>;
+  delete(key: string): Promise<boolean>;
   clear(): Promise<void>;
   keys(): Promise<string[]>;
 }
@@ -222,7 +222,7 @@ export interface CoordinationProvider {
 export interface MemoryProvider {
   store(key: string, value: any, ttl?: number): Promise<void>;
   retrieve(key: string): Promise<any>;
-  delete(key: string): Promise<void>;
+  delete(key: string): Promise<boolean>;
   clear(): Promise<void>;
 }
 

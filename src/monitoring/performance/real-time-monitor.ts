@@ -400,5 +400,4 @@ export function monitoredAsync(metricName?: string) {
   };
 }
 
-// Export types and utilities
-export type { PerformanceMetric, PerformanceBounds, AlertConfig };
+// Types are already exported above through interface declarations

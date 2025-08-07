@@ -28,6 +28,7 @@ export interface BaseEventPayload {
 export interface SystemEvents {
   'system:started': SystemStartedPayload;
   'system:stopped': SystemStoppedPayload;
+  'system:shutdown': SystemStoppedPayload;
   'system:error': SystemErrorPayload;
   'system:health:changed': SystemHealthChangedPayload;
   'system:resource-pressure': SystemResourcePressurePayload;

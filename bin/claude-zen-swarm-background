@@ -23,7 +23,7 @@ if (!flags.includes('--background')) {
 const claudeZenPath = path.join(__dirname, 'claude-zen');
 
 // Create swarm run directory
-const swarmId = `swarm_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+const swarmId = `swarm_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 const swarmRunDir = path.join(process.cwd(), 'swarm-runs', swarmId);
 fs.mkdirSync(swarmRunDir, { recursive: true });
 

@@ -13,6 +13,7 @@
 import { EventEmitter } from 'node:events';
 import type { DatabaseDrivenSystem } from '../core/database-driven-system';
 import { createLogger } from '../core/logger';
+import { generateId } from '../core/helpers';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
@@ -117,7 +118,7 @@ class DatabaseSPARCBridge extends EventEmitter {
       priority: this.mapPriority(feature.priority),
       requirements: feature.acceptance_criteria || [],
       context: {
-        projectId: feature.project_id,
+        projectId: feature.project_id ?? generateId(),
         parentDocumentId: feature.parent_document_id,
         relatedDocuments: feature.related_documents || [],
       },
@@ -148,7 +149,7 @@ class DatabaseSPARCBridge extends EventEmitter {
       priority: this.mapPriority(task.priority),
       requirements: task.implementation_details?.files_to_create || [],
       context: {
-        projectId: task.project_id,
+        projectId: task.project_id ?? generateId(),
         parentDocumentId: task.parent_document_id,
         relatedDocuments: task.related_documents || [],
       },

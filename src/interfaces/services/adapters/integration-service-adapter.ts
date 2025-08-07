@@ -1122,7 +1122,7 @@ export class IntegrationServiceAdapter implements IService {
     params?: any,
     options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>> {
-    const operationId = `${operation}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const operationId = `${operation}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const startTime = Date.now();
 
     this.logger.debug(`Executing operation: ${operation}`, { operationId, params });

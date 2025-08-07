@@ -5,7 +5,7 @@
  * TTL management, and memory optimization.
  */
 
-import { BaseDataAccessObject } from '../base-repository';
+import { BaseDao } from '../base.dao';
 import type { IMemoryRepository, MemoryStats, TransactionOperation } from '../interfaces';
 
 /**
@@ -14,9 +14,25 @@ import type { IMemoryRepository, MemoryStats, TransactionOperation } from '../in
  * @template T The entity type this DAO manages
  * @example
  */
-export class MemoryDAO<T> extends BaseDataAccessObject<T> {
+export class MemoryDAO<T> extends BaseDao<T> {
+  /**
+   * Map database row to entity
+   */
+  protected mapRowToEntity(row: any): T {
+    // Default implementation - override in specific DAOs
+    return row as T;
+  }
+
+  /**
+   * Map entity to database row
+   */
+  protected mapEntityToRow(entity: Partial<T>): Record<string, any> {
+    // Default implementation - convert entity to plain object
+    return { ...entity } as Record<string, any>;
+  }
+
   private get memoryRepository(): IMemoryRepository<T> {
-    return this.repository as IMemoryRepository<T>;
+    return this as any as IMemoryRepository<T>;
   }
 
   /**

@@ -13,18 +13,18 @@ describe('CLI Discover Auto-Swarm Integration', () => {
   beforeEach(() => {
     // Mock dependencies used by discover command
     mockMemoryStore = {
-      store: jest.fn().mockResolvedValue(undefined),
-      retrieve: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      search: jest.fn(),
+      store: vi.fn().mockResolvedValue(undefined),
+      retrieve: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      search: vi.fn(),
     };
 
     mockAgui = {
-      askQuestion: jest.fn().mockResolvedValue('1'),
-      askBatchQuestions: jest.fn(),
-      showProgress: jest.fn(),
-      showMessage: jest.fn(),
+      askQuestion: vi.fn().mockResolvedValue('1'),
+      askBatchQuestions: vi.fn(),
+      showProgress: vi.fn(),
+      showMessage: vi.fn(),
     };
   });
 

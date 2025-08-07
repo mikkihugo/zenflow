@@ -52,7 +52,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   private messageQueue: string[] = [];
   private reconnectTimer: NodeJS.Timeout | null = null;
   private heartbeatTimer: NodeJS.Timeout | null = null;
-  private isConnected = false;
+  private _isConnected = false;
   private reconnectAttempts = 0;
   private connectionId: string;
   private metrics: ClientMetrics;
@@ -138,7 +138,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
         this.ws.onopen = () => {
           clearTimeout(timeout);
-          this.isConnected = true;
+          this._isConnected = true;
           this.reconnectAttempts = 0;
           this.connectionId = this.generateConnectionId();
           this.connectionInfo.connectTime = new Date();
@@ -159,7 +159,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
         this.ws.onclose = (event) => {
           clearTimeout(timeout);
-          this.isConnected = false;
+          this._isConnected = false;
           this.connectionInfo.readyState = this.ws?.readyState;
           this.stopHeartbeat();
 
@@ -202,15 +202,15 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       }
       this.stopHeartbeat();
 
-      if (this.ws && this.isConnected) {
+      if (this.ws && this._isConnected) {
         this.ws.onclose = () => {
-          this.isConnected = false;
+          this._isConnected = false;
           this.emit('disconnect');
           resolve();
         };
         this.ws.close();
       } else {
-        this.isConnected = false;
+        this._isConnected = false;
         resolve();
       }
     });
@@ -220,7 +220,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    * Check if client is connected (UACL interface)
    */
   isConnected(): boolean {
-    return this.isConnected && this.ws?.readyState === WebSocket.OPEN;
+    return this._isConnected && this.ws?.readyState === WebSocket.OPEN;
   }
 
   /**
@@ -231,7 +231,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
     return {
       name: this.name,
-      status: this.isConnected ? 'healthy' : 'disconnected',
+      status: this._isConnected ? 'healthy' : 'disconnected',
       lastCheck: new Date(),
       responseTime,
       errorRate: this.calculateErrorRate(),
@@ -369,7 +369,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   send(data: any): void {
     const message = typeof data === 'string' ? data : JSON.stringify(data);
-    if (this.isConnected && this.ws) {
+    if (this._isConnected && this.ws) {
       try {
         this.ws.send(message);
         this.connectionInfo.messagesSent++;
@@ -389,7 +389,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    * Get connection status (legacy property)
    */
   get connected(): boolean {
-    return this.isConnected;
+    return this._isConnected;
   }
 
   /**
@@ -428,7 +428,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
     const serialized = JSON.stringify(messageWithId);
 
-    if (this.isConnected && this.ws) {
+    if (this._isConnected && this.ws) {
       try {
         this.ws.send(serialized);
         this.connectionInfo.messagesSent++;
@@ -470,7 +470,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
     return {
       connectionsOpened: 1,
       connectionsClosed: 0,
-      connectionsActive: this.isConnected ? 1 : 0,
+      connectionsActive: this._isConnected ? 1 : 0,
       connectionDuration: Date.now() - this.startTime,
 
       messagesSent: this.connectionInfo.messagesSent,
@@ -622,7 +622,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   private flushMessageQueue(): void {
-    while (this.messageQueue.length > 0 && this.isConnected) {
+    while (this.messageQueue.length > 0 && this._isConnected) {
       const message = this.messageQueue.shift();
       if (message) {
         try {
@@ -661,7 +661,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
     const message = this.config.heartbeat?.message || { type: 'ping' };
 
     this.heartbeatTimer = setInterval(() => {
-      if (this.isConnected && this.ws) {
+      if (this._isConnected && this.ws) {
         try {
           this.ws.send(JSON.stringify(message));
         } catch (error) {
@@ -714,11 +714,11 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   private generateConnectionId(): string {
-    return `ws-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `ws-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateMessageId(): string {
-    return `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `msg-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private initializeMetrics(): ClientMetrics {

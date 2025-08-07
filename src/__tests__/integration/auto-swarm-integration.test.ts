@@ -26,18 +26,18 @@ describe('Auto-Swarm Integration', () => {
 
     // Mock required dependencies
     const mockMemoryStore = {
-      store: jest.fn().mockResolvedValue(undefined),
-      retrieve: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      search: jest.fn(),
+      store: vi.fn().mockResolvedValue(undefined),
+      retrieve: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      search: vi.fn(),
     } as any;
 
     const mockAgui = {
-      askQuestion: jest.fn().mockResolvedValue('1'),
-      askBatchQuestions: jest.fn(),
-      showProgress: jest.fn(),
-      showMessage: jest.fn(),
+      askQuestion: vi.fn().mockResolvedValue('1'),
+      askBatchQuestions: vi.fn(),
+      showProgress: vi.fn(),
+      showMessage: vi.fn(),
     } as any;
 
     // Create all required infrastructure

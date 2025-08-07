@@ -39,15 +39,15 @@ describe('MonitoringEventAdapter', () => {
     it('should wrap performance monitors and forward events to UEL', async () => {
       // Mock performance monitor
       const _mockPerformanceMonitor = {
-        start: jest.fn(),
-        stop: jest.fn(),
-        record: jest.fn(),
-        getMetrics: jest.fn().mockResolvedValue({ averageLatency: 50 }),
-        healthCheck: jest.fn().mockResolvedValue({ responseTime: 10, errorRate: 0 }),
+        start: vi.fn(),
+        stop: vi.fn(),
+        record: vi.fn(),
+        getMetrics: vi.fn().mockResolvedValue({ averageLatency: 50 }),
+        healthCheck: vi.fn().mockResolvedValue({ responseTime: 10, errorRate: 0 }),
       };
 
       // Mock event emission
-      const emitSpy = jest.spyOn(adapter, 'emit');
+      const emitSpy = vi.spyOn(adapter, 'emit');
 
       await adapter.start();
 
@@ -73,11 +73,11 @@ describe('MonitoringEventAdapter', () => {
 
     it('should wrap health components and correlate health events', async () => {
       const _mockHealthComponent = {
-        checkHealth: jest.fn().mockResolvedValue({ status: 'healthy', score: 0.95 }),
-        getStatus: jest.fn().mockReturnValue('healthy'),
+        checkHealth: vi.fn().mockResolvedValue({ status: 'healthy', score: 0.95 }),
+        getStatus: vi.fn().mockReturnValue('healthy'),
       };
 
-      const correlationSpy = jest.spyOn(adapter as any, 'startMonitoringEventCorrelation');
+      const correlationSpy = vi.spyOn(adapter as any, 'startMonitoringEventCorrelation');
 
       await adapter.start();
 
@@ -98,12 +98,12 @@ describe('MonitoringEventAdapter', () => {
 
     it('should wrap analytics components and process insights', async () => {
       const _mockAnalyticsComponent = {
-        analyze: jest.fn().mockResolvedValue({ insights: ['trend-detected'] }),
-        getInsights: jest.fn().mockReturnValue({ anomalies: [] }),
+        analyze: vi.fn().mockResolvedValue({ insights: ['trend-detected'] }),
+        getInsights: vi.fn().mockReturnValue({ anomalies: [] }),
       };
 
-      const subscriptionSpy = jest.fn();
-      adapter.subscribeAnalyticsInsightEvents = jest.fn().mockReturnValue('sub-123');
+      const subscriptionSpy = vi.fn();
+      adapter.subscribeAnalyticsInsightEvents = vi.fn().mockReturnValue('sub-123');
 
       await adapter.start();
 
@@ -129,12 +129,12 @@ describe('MonitoringEventAdapter', () => {
 
     it('should wrap alert management and handle escalation', async () => {
       const _mockAlertManager = {
-        createAlert: jest.fn(),
-        escalateAlert: jest.fn(),
-        resolveAlert: jest.fn(),
+        createAlert: vi.fn(),
+        escalateAlert: vi.fn(),
+        resolveAlert: vi.fn(),
       };
 
-      const alertSpy = jest.fn();
+      const alertSpy = vi.fn();
 
       await adapter.start();
       adapter.subscribeAlertEvents(alertSpy);
@@ -157,12 +157,12 @@ describe('MonitoringEventAdapter', () => {
 
     it('should wrap dashboard integration and handle real-time updates', async () => {
       const _mockDashboard = {
-        update: jest.fn(),
-        render: jest.fn(),
-        streamData: jest.fn(),
+        update: vi.fn(),
+        render: vi.fn(),
+        streamData: vi.fn(),
       };
 
-      const updateSpy = jest.fn();
+      const updateSpy = vi.fn();
 
       await adapter.start();
 
@@ -224,7 +224,7 @@ describe('MonitoringEventAdapter', () => {
       await adapter.start();
 
       // Mock some component activity
-      const healthCheckSpy = jest.spyOn(adapter as any, 'performMonitoringHealthCheck');
+      const healthCheckSpy = vi.spyOn(adapter as any, 'performMonitoringHealthCheck');
 
       // Trigger health check
       const healthStatus = await adapter.performMonitoringHealthCheck();
@@ -239,7 +239,7 @@ describe('MonitoringEventAdapter', () => {
 
       // Simulate successful monitoring operations
       const componentName = 'performance-monitor-test';
-      const updateSpy = jest.spyOn(adapter as any, 'updateComponentHealthMetrics');
+      const updateSpy = vi.spyOn(adapter as any, 'updateComponentHealthMetrics');
 
       // Trigger health metric updates
       (adapter as any).updateComponentHealthMetrics(componentName, true);
@@ -256,10 +256,10 @@ describe('MonitoringEventAdapter', () => {
     it('should handle multiple subscription types correctly', async () => {
       await adapter.start();
 
-      const performanceListener = jest.fn();
-      const healthListener = jest.fn();
-      const metricsListener = jest.fn();
-      const alertListener = jest.fn();
+      const performanceListener = vi.fn();
+      const healthListener = vi.fn();
+      const metricsListener = vi.fn();
+      const alertListener = vi.fn();
 
       // Create multiple subscriptions
       const perfSub = adapter.subscribePerformanceMonitoringEvents(performanceListener);
@@ -281,7 +281,7 @@ describe('MonitoringEventAdapter', () => {
     it('should apply filters correctly to monitoring events', async () => {
       await adapter.start();
 
-      const listener = jest.fn();
+      const listener = vi.fn();
 
       // Add filter for critical events only
       const filterId = adapter.addFilter({
@@ -321,7 +321,7 @@ describe('MonitoringEventAdapter', () => {
     it('should apply transforms to monitoring events', async () => {
       await adapter.start();
 
-      const listener = jest.fn();
+      const listener = vi.fn();
 
       // Add transform to enrich events
       const transformId = adapter.addTransform({

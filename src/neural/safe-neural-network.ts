@@ -51,7 +51,7 @@ export interface TrainingOptions {
  */
 export class SafeNeuralNetwork {
   private config: NeuralNetworkConfig;
-  private weights: number[][];
+  private weights: number[][][];
   private biases: number[][];
   private isInitialized = false;
   private isTrained = false;

@@ -107,114 +107,170 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
         id: nanoid(),
         title: 'Access Performance',
         description: 'Ultra-fast data access with minimal latency',
-        metrics: { 'response_time': '<10ms', 'cache_hit_rate': '>90%' },
+        metrics: { response_time: '<10ms', cache_hit_rate: '>90%' },
         priority: 'HIGH',
       },
       {
         id: nanoid(),
         title: 'Throughput Capacity',
         description: 'High-throughput data operations',
-        metrics: { 'operations_per_second': '>100000', 'concurrent_users': '>1000' },
+        metrics: { operations_per_second: '>100000', concurrent_users: '>1000' },
         priority: 'HIGH',
       },
       {
         id: nanoid(),
         title: 'Availability Guarantee',
         description: 'High availability with minimal downtime',
-        metrics: { 'uptime': '>99.9%', 'recovery_time': '<30s' },
+        metrics: { uptime: '>99.9%', recovery_time: '<30s' },
         priority: 'HIGH',
       },
     ],
-    systemConstraints: [
+    constraints: [
       {
         id: nanoid(),
         type: 'performance',
         description: 'Memory usage must not exceed 80% of available system memory',
-        impact: 'HIGH',
+        impact: 'high',
       },
       {
         id: nanoid(),
-        type: 'compatibility',
+        type: 'technical',
         description: 'Support for multiple storage engines (SQLite, LanceDB, JSON)',
-        impact: 'MEDIUM',
+        impact: 'medium',
       },
       {
         id: nanoid(),
-        type: 'security',
+        type: 'technical',
         description: 'All data must be encrypted at rest and in transit',
-        impact: 'HIGH',
+        impact: 'high',
       },
     ],
-    projectAssumptions: [
-      'Sufficient storage capacity for data and backups',
-      'Network connectivity for distributed operations',
-      'Compatible storage backend drivers available',
-      'Proper security credentials and access controls',
+    assumptions: [
+      {
+        id: nanoid(),
+        description: 'Sufficient storage capacity for data and backups',
+        confidence: 'high',
+        riskIfIncorrect: 'HIGH',
+      },
+      {
+        id: nanoid(),
+        description: 'Network connectivity for distributed operations',
+        confidence: 'high',
+        riskIfIncorrect: 'MEDIUM',
+      },
+      {
+        id: nanoid(),
+        description: 'Compatible storage backend drivers available',
+        confidence: 'medium',
+        riskIfIncorrect: 'MEDIUM',
+      },
+      {
+        id: nanoid(),
+        description: 'Proper security credentials and access controls',
+        confidence: 'medium',
+        riskIfIncorrect: 'HIGH',
+      },
     ],
-    externalDependencies: [
+    dependencies: [
       {
         id: nanoid(),
         name: 'SQLite',
         type: 'database',
-        description: 'Embedded SQL database for structured data',
         version: '3.40+',
-        criticality: 'HIGH',
+        critical: true,
       },
       {
         id: nanoid(),
         name: 'LanceDB',
-        type: 'vector-database',
-        description: 'Vector database for embeddings and similarity search',
+        type: 'service',
         version: '0.3+',
-        criticality: 'MEDIUM',
+        critical: false,
       },
       {
         id: nanoid(),
         name: 'Redis',
-        type: 'cache',
-        description: 'In-memory cache for high-speed data access',
+        type: 'service',
         version: '7.0+',
-        criticality: 'MEDIUM',
+        critical: false,
       },
     ],
-    riskAnalysis: {
-      identifiedRisks: [
+    acceptanceCriteria: [
+      {
+        id: nanoid(),
+        requirement: 'All cache operations complete within 10ms',
+        testMethod: 'automated',
+        criteria: [
+          'P95 response time < 10ms',
+          'Performance benchmarking results available',
+          'Load testing completed',
+        ],
+      },
+      {
+        id: nanoid(),
+        requirement: 'Data consistency maintained across all backends',
+        testMethod: 'automated',
+        criteria: [
+          '100% consistency validation passes',
+          'Cross-backend verification tests',
+          'ACID transaction compliance',
+        ],
+      },
+      {
+        id: nanoid(),
+        requirement: 'System availability exceeds 99.9%',
+        testMethod: 'automated',
+        criteria: [
+          'Monthly uptime > 99.9%',
+          'Failover mechanisms tested',
+          'Health monitoring active',
+        ],
+      },
+    ],
+    riskAssessment: {
+      risks: [
         {
           id: nanoid(),
           description: 'Data inconsistency during network partitions',
-          probability: 'MEDIUM',
-          impact: 'HIGH',
+          probability: 'medium',
+          impact: 'high',
+          category: 'technical',
         },
         {
           id: nanoid(),
           description: 'Memory leaks in long-running processes',
-          probability: 'LOW',
-          impact: 'MEDIUM',
+          probability: 'low',
+          impact: 'medium',
+          category: 'technical',
         },
         {
           id: nanoid(),
           description: 'Backend storage capacity exhaustion',
-          probability: 'MEDIUM',
-          impact: 'HIGH',
+          probability: 'medium',
+          impact: 'high',
+          category: 'operational',
         },
       ],
       mitigationStrategies: [
         {
           riskId: 'data-inconsistency',
           strategy: 'Implement conflict-free replicated data types (CRDTs) and vector clocks',
-          effectiveness: 'HIGH',
+          priority: 'HIGH',
+          effort: 'high',
         },
         {
           riskId: 'memory-leaks',
           strategy: 'Comprehensive memory monitoring and automatic cleanup routines',
-          effectiveness: 'MEDIUM',
+          priority: 'MEDIUM',
+          effort: 'medium',
         },
         {
           riskId: 'capacity-exhaustion',
           strategy: 'Proactive monitoring with automated scaling and data archival',
-          effectiveness: 'HIGH',
+          priority: 'HIGH',
+          effort: 'medium',
         },
       ],
+      overallRisk: 'MEDIUM',
     },
     successMetrics: [
       {
@@ -239,305 +295,409 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
         measurement: 'Successful backup operations',
       },
     ],
-    createdAt: new Date(),
-    updatedAt: new Date(),
   },
 
   pseudocode: {
     id: nanoid(),
-    specificationId: 'memory-systems-spec',
+    algorithms: [],
     coreAlgorithms: [
       {
         name: 'MultiBackendRead',
-        description: 'Read data from multiple backends with intelligent fallback',
-        pseudocode: `
-ALGORITHM MultiBackendRead
-INPUT: key, consistency_level, timeout
-OUTPUT: value, metadata
-
-BEGIN
-  primary_backend ← SELECT_PRIMARY_BACKEND(key)
-  
-  // Try primary backend first
-  TRY
-    value ← primary_backend.READ(key, timeout)
-    IF value.IS_VALID() THEN
-      UPDATE_CACHE(key, value)
-      RETURN value, metadata
-    END IF
-  CATCH backend_error
-    LOG_WARNING("Primary backend failed", backend_error)
-  END TRY
-  
-  // Fallback to secondary backends
-  secondary_backends ← GET_SECONDARY_BACKENDS(key)
-  FOR EACH backend IN secondary_backends DO
-    TRY
-      value ← backend.READ(key, timeout)
-      IF value.IS_VALID() THEN
-        // Repair primary backend asynchronously
-        ASYNC_REPAIR(primary_backend, key, value)
-        UPDATE_CACHE(key, value)
-        RETURN value, metadata
-      END IF
-    CATCH backend_error
-      LOG_WARNING("Secondary backend failed", backend_error)
-      CONTINUE
-    END TRY
-  END FOR
-  
-  // No backends available
-  THROW NOT_FOUND_ERROR(key)
-END
-        `.trim(),
+        purpose: 'Read data from multiple backends with intelligent fallback',
+        inputs: [
+          { name: 'key', type: 'string', description: 'Data key to retrieve' },
+          { name: 'consistency_level', type: 'string', description: 'Required consistency level' },
+          { name: 'timeout', type: 'number', description: 'Operation timeout in ms' },
+        ],
+        outputs: [
+          { name: 'value', type: 'any', description: 'Retrieved data value' },
+          { name: 'metadata', type: 'object', description: 'Operation metadata' },
+        ],
+        steps: [
+          {
+            stepNumber: 1,
+            description: 'Select primary backend based on key',
+            pseudocode: 'primary_backend ← SELECT_PRIMARY_BACKEND(key)',
+            complexity: 'O(1)',
+          },
+          {
+            stepNumber: 2,
+            description: 'Attempt read from primary backend',
+            pseudocode: 'value ← primary_backend.READ(key, timeout)',
+            complexity: 'O(1)',
+          },
+          {
+            stepNumber: 3,
+            description: 'If successful, update cache and return',
+            pseudocode: 'IF value.IS_VALID() THEN UPDATE_CACHE(key, value)',
+            complexity: 'O(1)',
+          },
+          {
+            stepNumber: 4,
+            description: 'On failure, try secondary backends in order',
+            pseudocode: 'FOR EACH backend IN secondary_backends DO',
+            complexity: 'O(b)',
+            dependencies: ['Secondary Backend Registry'],
+          },
+          {
+            stepNumber: 5,
+            description: 'Repair primary backend asynchronously if needed',
+            pseudocode: 'ASYNC_REPAIR(primary_backend, key, value)',
+            complexity: 'O(1)',
+          },
+          {
+            stepNumber: 6,
+            description: 'Return value from successful backend or throw error',
+            pseudocode: 'RETURN value, metadata OR THROW NOT_FOUND_ERROR(key)',
+            complexity: 'O(1)',
+          },
+        ],
         complexity: {
           timeComplexity: 'O(b)',
           spaceComplexity: 'O(1)',
           scalability: 'Linear in backends',
           worstCase: 'O(b)',
         },
-        inputParameters: ['key', 'consistency_level', 'timeout'],
-        outputFormat: 'ValueWithMetadata',
-        preconditions: ['At least one backend available', 'Key is valid'],
-        postconditions: ['Value retrieved or error thrown'],
-        invariants: ['Backend availability maintained', 'Cache consistency preserved'],
+        optimizations: [],
       },
       {
         name: 'IntelligentCaching',
-        description: 'Multi-layer caching with adaptive eviction policies',
-        pseudocode: `
-ALGORITHM IntelligentCaching
-INPUT: key, value, access_pattern, priority
-OUTPUT: cache_result, eviction_info
-
-BEGIN
-  cache_layer ← DETERMINE_CACHE_LAYER(key, value.size, access_pattern)
-  
-  CASE cache_layer OF
-    'L1': // In-memory, ultra-fast
-      IF L1_CACHE.HAS_SPACE(value.size) THEN
-        L1_CACHE.PUT(key, value, priority)
-      ELSE
-        evicted_items ← L1_CACHE.EVICT_LRU(value.size)
-        L1_CACHE.PUT(key, value, priority)
-        // Demote evicted items to L2
-        FOR EACH item IN evicted_items DO
-          L2_CACHE.PUT(item.key, item.value, item.priority - 1)
-        END FOR
-      END IF
-      
-    'L2': // Redis, network cache
-      IF L2_CACHE.HAS_SPACE(value.size) THEN
-        L2_CACHE.PUT(key, value, priority)
-      ELSE
-        evicted_items ← L2_CACHE.EVICT_LFU(value.size)
-        L2_CACHE.PUT(key, value, priority)
-        // Archive evicted items to L3
-        FOR EACH item IN evicted_items DO
-          L3_CACHE.PUT(item.key, item.value, item.priority - 1)
-        END FOR
-      END IF
-      
-    'L3': // Persistent cache
-      L3_CACHE.PUT(key, value, priority)
-      
-  END CASE
-  
-  // Update access statistics for adaptive policies
-  UPDATE_ACCESS_STATISTICS(key, access_pattern, CURRENT_TIME())
-  
-  RETURN cache_result, eviction_info
-END
-        `.trim(),
+        purpose: 'Multi-layer caching with adaptive eviction policies',
+        inputs: [
+          { name: 'key', type: 'string', description: 'Cache key' },
+          { name: 'value', type: 'any', description: 'Value to cache' },
+          { name: 'access_pattern', type: 'string', description: 'Access frequency pattern' },
+          { name: 'priority', type: 'number', description: 'Cache priority level' },
+        ],
+        outputs: [
+          { name: 'cache_result', type: 'object', description: 'Cache operation result' },
+          { name: 'eviction_info', type: 'object', description: 'Information about evicted items' },
+        ],
+        steps: [
+          {
+            stepNumber: 1,
+            description: 'Determine appropriate cache layer based on size and access pattern',
+            pseudocode: 'cache_layer ← DETERMINE_CACHE_LAYER(key, value.size, access_pattern)',
+            complexity: 'O(1)',
+          },
+          {
+            stepNumber: 2,
+            description: 'Check available space in target cache layer',
+            pseudocode: 'IF cache_layer.HAS_SPACE(value.size) THEN',
+            complexity: 'O(1)',
+          },
+          {
+            stepNumber: 3,
+            description: 'If space available, store directly',
+            pseudocode: 'cache_layer.PUT(key, value, priority)',
+            complexity: 'O(1)',
+          },
+          {
+            stepNumber: 4,
+            description: 'If space unavailable, evict items using appropriate policy (LRU/LFU)',
+            pseudocode: 'evicted_items ← cache_layer.EVICT_POLICY(value.size)',
+            complexity: 'O(log n)',
+          },
+          {
+            stepNumber: 5,
+            description: 'Demote evicted items to lower cache layers',
+            pseudocode: 'FOR EACH item IN evicted_items DO lower_layer.PUT(item)',
+            complexity: 'O(k)',
+            dependencies: ['Lower Cache Layers'],
+          },
+          {
+            stepNumber: 6,
+            description: 'Update access statistics for adaptive policies',
+            pseudocode: 'UPDATE_ACCESS_STATISTICS(key, access_pattern, CURRENT_TIME())',
+            complexity: 'O(1)',
+          },
+        ],
         complexity: {
           timeComplexity: 'O(log n)',
           spaceComplexity: 'O(1)',
           scalability: 'Good for large datasets',
           worstCase: 'O(n)',
         },
-        inputParameters: ['key', 'value', 'access_pattern', 'priority'],
-        outputFormat: 'CacheResult',
-        preconditions: ['Cache layers initialized', 'Value is cacheable'],
-        postconditions: ['Value cached in appropriate layer'],
-        invariants: ['Cache hierarchy maintained', 'Eviction policies respected'],
+        optimizations: [],
       },
       {
         name: 'ConsistencyManager',
-        description: 'Manage data consistency across distributed storage nodes',
-        pseudocode: `
-ALGORITHM ConsistencyManager
-INPUT: operation, data, consistency_level, nodes[]
-OUTPUT: operation_result, consistency_proof
-
-BEGIN
-  vector_clock ← GENERATE_VECTOR_CLOCK(operation, nodes)
-  
-  CASE consistency_level OF
-    'STRONG':
-      // Require consensus from majority of nodes
-      quorum_size ← CEILING(nodes.length / 2) + 1
-      committed_nodes ← []
-      
-      FOR EACH node IN nodes DO
-        TRY
-          node_result ← node.EXECUTE_OPERATION(operation, data, vector_clock)
-          IF node_result.SUCCESS THEN
-            committed_nodes.ADD(node)
-            IF committed_nodes.length >= quorum_size THEN
-              // Commit to all nodes
-              FOR EACH committed_node IN committed_nodes DO
-                committed_node.COMMIT(operation.id)
-              END FOR
-              RETURN SUCCESS, vector_clock
-            END IF
-          END IF
-        CATCH node_error
-          LOG_ERROR("Node operation failed", node, node_error)
-        END TRY
-      END FOR
-      
-      // Rollback if quorum not achieved
-      FOR EACH node IN committed_nodes DO
-        node.ROLLBACK(operation.id)
-      END FOR
-      THROW CONSISTENCY_ERROR("Quorum not achieved")
-      
-    'EVENTUAL':
-      // Best-effort replication
-      successful_nodes ← []
-      FOR EACH node IN nodes DO
-        ASYNC_EXECUTE(node.EXECUTE_OPERATION(operation, data, vector_clock))
-        successful_nodes.ADD(node)
-      END FOR
-      
-      // Monitor convergence asynchronously
-      ASYNC_MONITOR_CONVERGENCE(operation.id, nodes, vector_clock)
-      RETURN SUCCESS, vector_clock
-      
-    'WEAK':
-      // Single node write with async replication
-      primary_node ← SELECT_PRIMARY_NODE(data.key)
-      result ← primary_node.EXECUTE_OPERATION(operation, data, vector_clock)
-      
-      // Async replication to other nodes
-      FOR EACH node IN nodes WHERE node != primary_node DO
-        ASYNC_REPLICATE(node, operation, data, vector_clock)
-      END FOR
-      
-      RETURN result, vector_clock
-  END CASE
-END
-        `.trim(),
+        purpose: 'Manage data consistency across distributed storage nodes',
+        inputs: [
+          { name: 'operation', type: 'object', description: 'Operation to execute' },
+          { name: 'data', type: 'any', description: 'Data for operation' },
+          { name: 'consistency_level', type: 'string', description: 'Required consistency level' },
+          { name: 'nodes', type: 'array', description: 'Available nodes' },
+        ],
+        outputs: [
+          { name: 'operation_result', type: 'object', description: 'Operation execution result' },
+          { name: 'consistency_proof', type: 'object', description: 'Proof of consistency' },
+        ],
+        steps: [
+          {
+            stepNumber: 1,
+            description: 'Generate vector clock for operation',
+            pseudocode: 'vector_clock ← GENERATE_VECTOR_CLOCK(operation, nodes)',
+            complexity: 'O(n)',
+          },
+          {
+            stepNumber: 2,
+            description: 'Determine required consensus based on consistency level',
+            pseudocode: 'quorum_size ← CEILING(nodes.length / 2) + 1',
+            complexity: 'O(1)',
+          },
+          {
+            stepNumber: 3,
+            description: 'Execute operation on required nodes',
+            pseudocode: 'FOR EACH node IN nodes DO node.EXECUTE_OPERATION(operation)',
+            complexity: 'O(n)',
+          },
+          {
+            stepNumber: 4,
+            description: 'Verify quorum achievement',
+            pseudocode: 'IF committed_nodes.length >= quorum_size THEN',
+            complexity: 'O(1)',
+          },
+          {
+            stepNumber: 5,
+            description: 'Commit or rollback based on success',
+            pseudocode: 'FOR EACH node IN committed_nodes DO node.COMMIT(operation.id)',
+            complexity: 'O(n)',
+          },
+          {
+            stepNumber: 6,
+            description: 'Return result with consistency proof',
+            pseudocode: 'RETURN SUCCESS, vector_clock',
+            complexity: 'O(1)',
+          },
+        ],
         complexity: {
           timeComplexity: 'O(n)',
           spaceComplexity: 'O(n)',
           scalability: 'Depends on node count',
           worstCase: 'O(n²)',
         },
-        inputParameters: ['operation', 'data', 'consistency_level', 'nodes'],
-        outputFormat: 'ConsistencyResult',
-        preconditions: ['Nodes available', 'Operation is valid'],
-        postconditions: ['Consistency level maintained'],
-        invariants: ['Vector clock monotonicity', 'Node consensus preserved'],
+        optimizations: [],
       },
     ],
     dataStructures: [
       {
         name: 'MultiLayerCache',
         type: 'class',
-        description: 'Hierarchical cache with L1, L2, and L3 layers',
-        keyType: 'string',
-        valueType: 'CacheEntry',
-        expectedSize: 1000000,
-        accessPatterns: ['get', 'put', 'evict', 'promote'],
-        performance: {
-          get: 'O(1)' as const,
-          put: 'O(log n)' as const,
-          evict: 'O(1)' as const,
-        },
-      },
-      {
-        id: nanoid(),
-        name: 'BackendRegistry',
-        type: 'class',
-        description: 'Registry of available storage backends with health status',
-        keyType: 'string',
-        valueType: 'BackendInfo',
-        expectedSize: 100,
-        accessPatterns: ['lookup', 'register', 'update_health', 'failover'],
-        performance: {
-          lookup: 'O(1)' as const,
-          register: 'O(1)' as const,
-          update_health: 'O(1)' as const,
-        },
-      },
-      {
-        id: nanoid(),
-        name: 'VectorClockMap',
-        type: 'class',
-        description: 'Vector clocks for tracking causal relationships',
-        keyType: 'string',
-        valueType: 'VectorClock',
-        expectedSize: 10000,
-        accessPatterns: ['get', 'update', 'compare', 'merge'],
-        performance: {
-          get: 'O(1)' as const,
-          update: 'O(n)' as const,
-          compare: 'O(n)' as const,
-        },
-      },
-    ],
-    processFlows: [
-      {
-        id: nanoid(),
-        name: 'DataAccessPipeline',
-        description: 'Complete data access and caching pipeline',
-        steps: [
+        properties: [
           {
-            id: nanoid(),
-            name: 'CacheCheck',
-            description: 'Check all cache layers for requested data',
-            algorithm: 'IntelligentCaching',
-            inputs: ['key', 'access_pattern'],
-            outputs: ['cached_value', 'cache_level'],
-            duration: 1,
+            name: 'l1Cache',
+            type: 'Map<string, CacheEntry>',
+            visibility: 'private',
+            description: 'Level 1 in-memory cache',
           },
           {
-            id: nanoid(),
-            name: 'BackendQuery',
-            description: 'Query storage backends if cache miss',
-            algorithm: 'MultiBackendRead',
-            inputs: ['key', 'consistency_level'],
-            outputs: ['value', 'metadata'],
-            duration: 50,
+            name: 'l2Cache',
+            type: 'Map<string, CacheEntry>',
+            visibility: 'private',
+            description: 'Level 2 Redis cache',
           },
           {
-            id: nanoid(),
-            name: 'CacheUpdate',
-            description: 'Update cache with retrieved value',
-            algorithm: 'IntelligentCaching',
-            inputs: ['key', 'value', 'access_pattern'],
-            outputs: ['cache_result'],
-            duration: 5,
+            name: 'l3Cache',
+            type: 'Map<string, CacheEntry>',
+            visibility: 'private',
+            description: 'Level 3 persistent cache',
           },
         ],
-        parallelizable: false,
-        criticalPath: ['CacheCheck', 'BackendQuery', 'CacheUpdate'],
+        methods: [
+          {
+            name: 'get',
+            parameters: [{ name: 'key', type: 'string', description: 'Cache key to retrieve' }],
+            returnType: 'CacheEntry | null',
+            visibility: 'public',
+            description: 'Retrieve entry from cache',
+          },
+          {
+            name: 'put',
+            parameters: [
+              { name: 'key', type: 'string', description: 'Cache key' },
+              { name: 'value', type: 'CacheEntry', description: 'Value to cache' },
+            ],
+            returnType: 'void',
+            visibility: 'public',
+            description: 'Store entry in cache',
+          },
+          {
+            name: 'evict',
+            parameters: [{ name: 'key', type: 'string', description: 'Key to evict' }],
+            returnType: 'boolean',
+            visibility: 'public',
+            description: 'Remove entry from cache',
+          },
+          {
+            name: 'promote',
+            parameters: [
+              { name: 'key', type: 'string', description: 'Key to promote to higher cache layer' },
+            ],
+            returnType: 'void',
+            visibility: 'public',
+            description: 'Promote entry to higher cache layer',
+          },
+        ],
+        relationships: [
+          { type: 'uses', target: 'CacheEntry', description: 'Stores cache entries with metadata' },
+          {
+            type: 'contains',
+            target: 'EvictionPolicy',
+            description: 'Implements cache eviction strategies',
+          },
+        ],
+      },
+      {
+        name: 'BackendRegistry',
+        type: 'class',
+        properties: [
+          {
+            name: 'backends',
+            type: 'Map<string, BackendInfo>',
+            visibility: 'private',
+            description: 'Registry of backend instances',
+          },
+          {
+            name: 'healthStatus',
+            type: 'Map<string, boolean>',
+            visibility: 'private',
+            description: 'Health status cache',
+          },
+        ],
+        methods: [
+          {
+            name: 'register',
+            parameters: [
+              { name: 'id', type: 'string', description: 'Backend identifier' },
+              { name: 'backend', type: 'BackendInfo', description: 'Backend configuration' },
+            ],
+            returnType: 'void',
+            visibility: 'public',
+            description: 'Register a new backend',
+          },
+          {
+            name: 'lookup',
+            parameters: [{ name: 'id', type: 'string', description: 'Backend ID to lookup' }],
+            returnType: 'BackendInfo | null',
+            visibility: 'public',
+            description: 'Find backend by ID',
+          },
+          {
+            name: 'updateHealth',
+            parameters: [
+              { name: 'id', type: 'string', description: 'Backend ID' },
+              { name: 'healthy', type: 'boolean', description: 'Health status' },
+            ],
+            returnType: 'void',
+            visibility: 'public',
+            description: 'Update backend health status',
+          },
+          {
+            name: 'getHealthyBackends',
+            parameters: [],
+            returnType: 'BackendInfo[]',
+            visibility: 'public',
+            description: 'Get all healthy backends',
+          },
+        ],
+        relationships: [
+          {
+            type: 'uses',
+            target: 'BackendInfo',
+            description: 'Manages backend configuration objects',
+          },
+          {
+            type: 'contains',
+            target: 'HealthMonitor',
+            description: 'Tracks backend health status',
+          },
+        ],
+      },
+      {
+        name: 'VectorClockMap',
+        type: 'class',
+        properties: [
+          {
+            name: 'clocks',
+            type: 'Map<string, VectorClock>',
+            visibility: 'private',
+            description: 'Vector clock storage',
+          },
+          {
+            name: 'nodeId',
+            type: 'string',
+            visibility: 'private',
+            description: 'Current node identifier',
+          },
+        ],
+        methods: [
+          {
+            name: 'get',
+            parameters: [{ name: 'key', type: 'string', description: 'Clock key' }],
+            returnType: 'VectorClock | null',
+            visibility: 'public',
+            description: 'Get vector clock by key',
+          },
+          {
+            name: 'update',
+            parameters: [
+              { name: 'key', type: 'string', description: 'Clock key' },
+              { name: 'clock', type: 'VectorClock', description: 'Updated vector clock' },
+            ],
+            returnType: 'void',
+            visibility: 'public',
+            description: 'Update vector clock',
+          },
+          {
+            name: 'compare',
+            parameters: [
+              { name: 'clock1', type: 'VectorClock', description: 'First clock to compare' },
+              { name: 'clock2', type: 'VectorClock', description: 'Second clock to compare' },
+            ],
+            returnType: 'number',
+            visibility: 'public',
+            description: 'Compare two vector clocks',
+          },
+          {
+            name: 'merge',
+            parameters: [
+              { name: 'clock1', type: 'VectorClock', description: 'First clock to merge' },
+              { name: 'clock2', type: 'VectorClock', description: 'Second clock to merge' },
+            ],
+            returnType: 'VectorClock',
+            visibility: 'public',
+            description: 'Merge two vector clocks',
+          },
+        ],
+        relationships: [
+          {
+            type: 'uses',
+            target: 'VectorClock',
+            description: 'Manages vector clock objects for distributed consensus',
+          },
+          {
+            type: 'contains',
+            target: 'ClockComparator',
+            description: 'Implements clock comparison logic',
+          },
+        ],
       },
     ],
     complexityAnalysis: {
+      timeComplexity: 'O(n * b)' as const,
+      spaceComplexity: 'O(n)' as const,
+      scalability: 'System scales with cache size and number of backends',
       worstCase: 'O(n * b)' as const,
       averageCase: 'O(1)' as const,
       bestCase: 'O(1)' as const,
-      spaceComplexity: 'O(n)' as const,
-      scalabilityAnalysis: 'System scales with cache size and number of backends',
       bottlenecks: [
         'Network latency for distributed operations',
         'Disk I/O for persistent backends',
         'Memory bandwidth for large cached objects',
       ],
     },
-    optimizationOpportunities: [
+    optimizations: [
       {
         id: nanoid(),
         type: 'caching',
@@ -548,7 +708,7 @@ END
       },
       {
         id: nanoid(),
-        type: 'compression',
+        type: 'performance',
         description: 'Add data compression for large cached objects',
         impact: 'medium',
         effort: 'low',
@@ -556,28 +716,36 @@ END
       },
       {
         id: nanoid(),
-        type: 'batching',
+        type: 'performance',
         description: 'Batch multiple operations for better backend utilization',
         impact: 'high',
         effort: 'medium',
         estimatedImprovement: '200% increase in throughput',
       },
     ],
-    estimatedPerformance: [
-      {
-      },
-      {
-      },
-      {
-      },
-    ],
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    controlFlows: [],
+    dependencies: [],
   },
 
   architecture: {
     id: nanoid(),
-    pseudocodeId: 'memory-systems-pseudocode',
+    systemArchitecture: {
+      components: [],
+      interfaces: [],
+      dataFlow: [],
+      deploymentUnits: [],
+      qualityAttributes: [],
+      architecturalPatterns: [],
+      technologyStack: [],
+    },
+    componentDiagrams: [],
+    deploymentPlan: [],
+    validationResults: {
+      overall: true,
+      score: 0.95,
+      results: [],
+      recommendations: [],
+    },
     components: [
       {
         id: nanoid(),
@@ -592,12 +760,10 @@ END
         ],
         interfaces: ['IMemoryCoordinator'],
         dependencies: ['BackendRegistry', 'CacheManager', 'ConsistencyManager'],
-        technologies: ['TypeScript', 'Node.js', 'EventEmitter'],
-        scalability: 'horizontal',
+        qualityAttributes: { coordination: 'high', performance: 'high', scalability: 'horizontal' },
         performance: {
-          expectedThroughput: '100000 operations/second',
           expectedLatency: '<5ms',
-          memoryUsage: '256MB',
+          optimizations: ['100000 operations/second', '256MB memory usage'],
         },
       },
       {
@@ -613,12 +779,10 @@ END
         ],
         interfaces: ['ICacheManager'],
         dependencies: ['L1Cache', 'L2Cache', 'L3Cache', 'EvictionPolicyEngine'],
-        technologies: ['TypeScript', 'Redis', 'In-Memory Cache'],
-        scalability: 'vertical',
+        qualityAttributes: { performance: 'high', efficiency: 'high', scalability: 'vertical' },
         performance: {
-          expectedThroughput: '1000000 cache operations/second',
           expectedLatency: '<1ms',
-          memoryUsage: '2GB',
+          optimizations: ['1000000 cache operations/second', '2GB memory usage'],
         },
       },
       {
@@ -634,12 +798,10 @@ END
         ],
         interfaces: ['IBackendManager'],
         dependencies: ['SQLiteBackend', 'LanceDBBackend', 'JSONBackend'],
-        technologies: ['TypeScript', 'SQLite', 'LanceDB'],
-        scalability: 'horizontal',
+        qualityAttributes: { reliability: 'high', performance: 'high', scalability: 'horizontal' },
         performance: {
-          expectedThroughput: '50000 backend operations/second',
           expectedLatency: '<50ms',
-          memoryUsage: '512MB',
+          optimizations: ['50000 backend operations/second', '512MB memory usage'],
         },
       },
       {
@@ -655,12 +817,10 @@ END
         ],
         interfaces: ['IConsistencyEngine'],
         dependencies: ['VectorClockManager', 'ConflictResolver'],
-        technologies: ['TypeScript', 'CRDT', 'Raft'],
-        scalability: 'horizontal',
+        qualityAttributes: { consistency: 'high', performance: 'high', reliability: 'high' },
         performance: {
-          expectedThroughput: '10000 consensus operations/second',
           expectedLatency: '<20ms',
-          memoryUsage: '128MB',
+          optimizations: ['10000 consensus operations/second', '128MB memory usage'],
         },
       },
       {
@@ -676,12 +836,10 @@ END
         ],
         interfaces: ['IBackupManager'],
         dependencies: ['BackupStorage', 'CompressionEngine'],
-        technologies: ['TypeScript', 'S3', 'Compression'],
-        scalability: 'horizontal',
+        qualityAttributes: { reliability: 'high', availability: 'high', durability: 'high' },
         performance: {
-          expectedThroughput: '1000 backup operations/hour',
           expectedLatency: '<5 minutes',
-          memoryUsage: '256MB',
+          optimizations: ['1000 backup operations/hour', '256MB memory usage'],
         },
       },
     ],
@@ -689,6 +847,8 @@ END
       {
         id: nanoid(),
         type: 'uses',
+        source: 'memory-coordinator',
+        target: 'multi-layer-cache-manager',
         description: 'Coordinator uses cache manager for fast data access',
         strength: 'strong',
         protocol: 'synchronous',
@@ -696,6 +856,8 @@ END
       {
         id: nanoid(),
         type: 'uses',
+        source: 'memory-coordinator',
+        target: 'backend-manager',
         description: 'Coordinator uses backend manager for persistent storage',
         strength: 'strong',
         protocol: 'synchronous',
@@ -703,6 +865,8 @@ END
       {
         id: nanoid(),
         type: 'coordinates',
+        source: 'memory-coordinator',
+        target: 'consistency-engine',
         description: 'Coordinator ensures consistency through consistency engine',
         strength: 'medium',
         protocol: 'asynchronous',
@@ -710,9 +874,7 @@ END
     ],
     patterns: [
       {
-        id: nanoid(),
         name: 'Multi-Backend Pattern',
-        type: 'reliability',
         description: 'Use multiple storage backends for redundancy and performance',
         benefits: [
           'High availability',
@@ -721,12 +883,14 @@ END
           'Risk distribution',
         ],
         tradeoffs: ['Increased complexity', 'Consistency challenges', 'Resource overhead'],
-        applicableComponents: ['memory-coordinator', 'backend-manager'],
+        applicability: [
+          'High availability systems',
+          'Performance optimization',
+          'Risk distribution',
+        ],
       },
       {
-        id: nanoid(),
         name: 'Cache-Aside Pattern',
-        type: 'performance',
         description: 'Application manages cache explicitly with backend fallback',
         benefits: [
           'Fine-grained control',
@@ -735,12 +899,14 @@ END
           'Performance optimization',
         ],
         tradeoffs: ['Code complexity', 'Cache management overhead', 'Potential inconsistency'],
-        applicableComponents: ['multi-layer-cache-manager'],
+        applicability: [
+          'Fine-grained cache control',
+          'Explicit consistency management',
+          'Application-managed caching',
+        ],
       },
       {
-        id: nanoid(),
         name: 'Vector Clock Pattern',
-        type: 'consistency',
         description: 'Track causal relationships in distributed system',
         benefits: [
           'Conflict detection',
@@ -749,74 +915,32 @@ END
           'Causality tracking',
         ],
         tradeoffs: ['Storage overhead', 'Complexity scaling', 'Clock synchronization'],
-        applicableComponents: ['consistency-engine'],
+        applicability: [
+          'Distributed systems',
+          'Conflict detection requirements',
+          'Causal consistency maintenance',
+        ],
       },
     ],
-    interfaces: [
+    dataFlow: [
       {
-        id: nanoid(),
-        name: 'IMemoryCoordinator',
-        componentId: 'memory-coordinator',
-        type: 'REST',
-        methods: [
-          { name: 'get', parameters: ['key', 'options'], returns: 'Promise<Value>' },
-          { name: 'set', parameters: ['key', 'value', 'options'], returns: 'Promise<void>' },
-          { name: 'delete', parameters: ['key'], returns: 'Promise<boolean>' },
-          { name: 'exists', parameters: ['key'], returns: 'Promise<boolean>' },
-          { name: 'getMetrics', parameters: [], returns: 'MemoryMetrics' },
-        ],
-        protocol: 'HTTP/REST',
-        authentication: 'API Key',
-        rateLimit: '100000/hour',
-        documentation: 'Memory system coordination and management API',
+        from: 'memory-coordinator',
+        to: 'multi-layer-cache-manager',
+        data: 'ReadRequest',
+        protocol: 'JSON',
       },
       {
-        id: nanoid(),
-        name: 'ICacheManager',
-        componentId: 'multi-layer-cache-manager',
-        type: 'Internal',
-        methods: [
-          { name: 'getFromCache', parameters: ['key', 'layer'], returns: 'Promise<CacheEntry>' },
-          { name: 'putInCache', parameters: ['key', 'value', 'layer'], returns: 'Promise<void>' },
-          { name: 'evict', parameters: ['key', 'layer'], returns: 'Promise<void>' },
-          { name: 'getCacheStats', parameters: ['layer'], returns: 'CacheStatistics' },
-        ],
-        protocol: 'Internal',
-        authentication: 'Internal',
-        rateLimit: 'unlimited',
-        documentation: 'Internal cache management interface',
-      },
-    ],
-    dataFlows: [
-      {
-        id: nanoid(),
-        name: 'ReadFlow',
-        sourceComponentId: 'memory-coordinator',
-        targetComponentId: 'multi-layer-cache-manager',
-        dataType: 'ReadRequest',
-        format: 'JSON',
-        volume: 'High',
-        security: 'Medium',
-        transformation: 'Request validation and key normalization',
-      },
-      {
-        id: nanoid(),
-        name: 'WriteFlow',
-        sourceComponentId: 'memory-coordinator',
-        targetComponentId: 'backend-manager',
-        dataType: 'WriteRequest',
-        format: 'Binary',
-        volume: 'Medium',
-        security: 'High',
-        transformation: 'Data serialization and encryption',
+        from: 'memory-coordinator',
+        to: 'backend-manager',
+        data: 'WriteRequest',
+        protocol: 'Binary',
       },
     ],
     qualityAttributes: [
       {
-        id: nanoid(),
         name: 'High Performance',
-        type: 'performance',
-        description: 'Ultra-fast data access and high throughput',
+        target: 'P95 access latency < 10ms, Throughput > 100k ops/sec',
+        measurement: 'Automated performance testing',
         criteria: [
           'P95 access latency < 10ms',
           'Throughput > 100,000 operations/second',
@@ -825,69 +949,14 @@ END
         priority: 'HIGH',
       },
       {
-        id: nanoid(),
         name: 'High Availability',
-        type: 'reliability',
-        description: 'System remains available despite failures',
+        target: 'System uptime > 99.9%',
+        measurement: 'Uptime monitoring and failover testing',
         criteria: [
           '99.9% uptime guarantee',
           'Automatic failover in < 30 seconds',
           'Zero data loss for critical operations',
         ],
-        priority: 'HIGH',
-      },
-    ],
-    deploymentStrategy: {
-      id: nanoid(),
-      name: 'Distributed Memory Cluster',
-      type: 'distributed',
-      description: 'Deploy as distributed cluster with redundancy',
-      environments: [
-        {
-          name: 'development',
-          configuration: {
-            replicas: 1,
-            resources: { cpu: '1', memory: '2Gi' },
-            storage: 'local',
-            backends: ['sqlite', 'json'],
-          },
-        },
-        {
-          name: 'production',
-          configuration: {
-            replicas: 3,
-            resources: { cpu: '4', memory: '8Gi' },
-            storage: 'distributed',
-            backends: ['sqlite', 'lancedb', 'json', 'redis'],
-          },
-        },
-      ],
-      infrastructure: ['Kubernetes', 'Docker', 'Redis Cluster', 'Distributed Storage'],
-      cicd: {
-        buildPipeline: ['Test', 'Build', 'Performance Test', 'Deploy'],
-        testStrategy: ['Unit Tests', 'Integration Tests', 'Performance Tests'],
-        deploymentStrategy: 'Rolling Deployment',
-      },
-    },
-    integrationPoints: [
-      {
-        id: nanoid(),
-        name: 'Storage Backend Integration',
-        type: 'database',
-        description: 'Integration with multiple storage backends',
-        protocol: 'Native drivers',
-        security: 'Connection encryption',
-        errorHandling: 'Automatic failover and retry',
-        monitoring: 'Health checks and performance metrics',
-      },
-    ],
-    performanceRequirements: [
-      {
-        id: nanoid(),
-        priority: 'HIGH',
-      },
-      {
-        id: nanoid(),
         priority: 'HIGH',
       },
     ],
@@ -905,6 +974,7 @@ END
         id: nanoid(),
         type: 'horizontal',
         description: 'Scale by adding more nodes to the cluster',
+        target: 'Linear scaling up to 100 nodes',
         implementation: 'Consistent hashing and data sharding',
         priority: 'HIGH',
       },

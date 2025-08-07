@@ -12,18 +12,18 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
 
   beforeEach(() => {
     mockMemoryStore = {
-      store: jest.fn().mockResolvedValue(undefined),
-      retrieve: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      search: jest.fn(),
+      store: vi.fn().mockResolvedValue(undefined),
+      retrieve: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      search: vi.fn(),
     };
 
     mockAgui = {
-      askQuestion: jest.fn().mockResolvedValue('1'),
-      askBatchQuestions: jest.fn(),
-      showProgress: jest.fn(),
-      showMessage: jest.fn(),
+      askQuestion: vi.fn().mockResolvedValue('1'),
+      askBatchQuestions: vi.fn(),
+      showProgress: vi.fn(),
+      showMessage: vi.fn(),
     };
   });
 
@@ -159,7 +159,7 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
 
     // Mock coordinator to fail for one domain
     const originalInitialize = swarmCoordinator.initialize;
-    swarmCoordinator.initialize = jest.fn().mockImplementation(async (config) => {
+    swarmCoordinator.initialize = vi.fn().mockImplementation(async (config) => {
       if (config.domain === 'failing-domain') {
         throw new Error('Initialization failed');
       }

@@ -19,20 +19,20 @@ describe('Swarm Topology Management (London TDD)', () => {
   beforeEach(() => {
     // Create mocks for all dependencies
     mockMessageBroker = {
-      broadcast: jest.fn(),
-      sendDirectMessage: jest.fn(),
-      subscribe: jest.fn(),
-      unsubscribe: jest.fn(),
-      getConnectionHealth: jest.fn(),
-      optimizeRouting: jest.fn(),
+      broadcast: vi.fn(),
+      sendDirectMessage: vi.fn(),
+      subscribe: vi.fn(),
+      unsubscribe: vi.fn(),
+      getConnectionHealth: vi.fn(),
+      optimizeRouting: vi.fn(),
     } as jest.Mocked<MessageBroker>;
 
     mockTopologyOptimizer = {
-      analyzeCurrentTopology: jest.fn(),
-      recommendOptimizations: jest.fn(),
-      calculateOptimalConnections: jest.fn(),
-      assessPerformanceMetrics: jest.fn(),
-      generateTopologyReport: jest.fn(),
+      analyzeCurrentTopology: vi.fn(),
+      recommendOptimizations: vi.fn(),
+      calculateOptimalConnections: vi.fn(),
+      assessPerformanceMetrics: vi.fn(),
+      generateTopologyReport: vi.fn(),
     } as jest.Mocked<TopologyOptimizer>;
 
     mockAgents = Array.from(
@@ -43,12 +43,12 @@ describe('Swarm Topology Management (London TDD)', () => {
           type: 'coordinator',
           status: 'active',
           capabilities: ['coordination', 'analysis'],
-          connect: jest.fn(),
-          disconnect: jest.fn(),
-          sendMessage: jest.fn(),
-          receiveMessage: jest.fn(),
-          getMetrics: jest.fn(),
-          updateStatus: jest.fn(),
+          connect: vi.fn(),
+          disconnect: vi.fn(),
+          sendMessage: vi.fn(),
+          receiveMessage: vi.fn(),
+          getMetrics: vi.fn(),
+          updateStatus: vi.fn(),
         }) as jest.Mocked<Agent>
     );
 

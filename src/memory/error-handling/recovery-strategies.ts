@@ -4,7 +4,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { BackendInterface } from '../backends/base.backend';
+import type { BaseMemoryBackend } from '../backends/base-backend';
+import type { BackendInterface } from '../core/memory-system';
 import { type MemoryError, MemoryErrorCode } from './memory-errors';
 
 export interface RecoveryStrategy {
@@ -18,7 +19,7 @@ export interface RecoveryStrategy {
 }
 
 export interface RecoveryContext {
-  backends: Map<string, BackendInterface>;
+  backends: Map<string, BackendInterface | BaseMemoryBackend>;
   coordinator?: any;
   optimizer?: any;
   sessionId?: string;
@@ -233,8 +234,14 @@ export class RecoveryStrategyManager extends EventEmitter {
           // Attempt to reinitialize the backend
           await backend.initialize?.();
 
-          // Test connectivity
-          await backend.get('__health_check__');
+          // Test connectivity with method compatibility
+          if ('get' in backend && typeof backend.get === 'function') {
+            await backend.get('__health_check__');
+          } else if ('retrieve' in backend && typeof backend.retrieve === 'function') {
+            await backend.retrieve('__health_check__');
+          } else {
+            throw new Error('Backend lacks required methods');
+          }
 
           return {
             success: true,
@@ -284,7 +291,15 @@ export class RecoveryStrategyManager extends EventEmitter {
 
           for (const [id, backend] of context.backends) {
             try {
-              const data = await backend.get(key);
+              let data;
+              if ('get' in backend && typeof backend.get === 'function') {
+                data = await backend.get(key);
+              } else if ('retrieve' in backend && typeof backend.retrieve === 'function') {
+                data = await backend.retrieve(key);
+              } else {
+                continue; // Skip backends without compatible methods
+              }
+
               if (data !== null) {
                 const dataKey = JSON.stringify(data);
                 dataVersions.set(dataKey, (dataVersions.get(dataKey) || 0) + 1);
@@ -320,10 +335,16 @@ export class RecoveryStrategyManager extends EventEmitter {
           const repairPromises = Array.from(context.backends.entries()).map(
             async ([id, backend]) => {
               try {
-                await backend.set(key, consensusData);
+                if ('set' in backend && typeof backend.set === 'function') {
+                  await backend.set(key, consensusData);
+                } else if ('store' in backend && typeof backend.store === 'function') {
+                  await backend.store(key, consensusData);
+                } else {
+                  throw new Error('Backend lacks required set/store method');
+                }
                 return { id, status: 'repaired' };
               } catch (repairError) {
-                return { id, status: 'failed', error: repairError.message };
+                return { id, status: 'failed', error: (repairError as Error).message };
               }
             }
           );
@@ -433,7 +454,14 @@ export class RecoveryStrategyManager extends EventEmitter {
 
               switch (context.operation) {
                 case 'read': {
-                  const data = await backend.get(context.key);
+                  let data;
+                  if ('get' in backend && typeof backend.get === 'function') {
+                    data = await backend.get(context.key);
+                  } else if ('retrieve' in backend && typeof backend.retrieve === 'function') {
+                    data = await backend.retrieve(context.key);
+                  } else {
+                    throw new Error('Backend lacks required get/retrieve method');
+                  }
                   return {
                     success: true,
                     strategy: 'retry_with_backoff',
@@ -445,7 +473,13 @@ export class RecoveryStrategyManager extends EventEmitter {
                 }
 
                 case 'write':
-                  await backend.set(context.key, context.originalValue);
+                  if ('set' in backend && typeof backend.set === 'function') {
+                    await backend.set(context.key, context.originalValue);
+                  } else if ('store' in backend && typeof backend.store === 'function') {
+                    await backend.store(context.key, context.originalValue);
+                  } else {
+                    throw new Error('Backend lacks required set/store method');
+                  }
                   return {
                     success: true,
                     strategy: 'retry_with_backoff',

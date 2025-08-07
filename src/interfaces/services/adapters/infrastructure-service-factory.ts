@@ -621,7 +621,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
       parts.push(Date.now().toString());
     } else {
       // Use a random suffix to ensure uniqueness
-      parts.push(Math.random().toString(36).substr(2, 8));
+      parts.push(Math.random().toString(36).substring(2, 10));
     }
 
     if (this.config.naming?.suffix) {

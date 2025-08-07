@@ -89,12 +89,12 @@ class MockErrorHandler implements ErrorHandler {
   private handleFunction: jest.Mock;
 
   constructor(handleFunction?: jest.Mock, logger?: MockLogger) {
-    this.handleFunction = handleFunction || jest.fn();
+    this.handleFunction = handleFunction || vi.fn();
     this.logger = logger || {
-      error: jest.fn(),
-      warn: jest.fn(),
-      info: jest.fn(),
-      debug: jest.fn(),
+      error: vi.fn(),
+      warn: vi.fn(),
+      info: vi.fn(),
+      debug: vi.fn(),
     };
   }
 
@@ -198,12 +198,12 @@ describe('ErrorHandler - TDD London', () => {
   let mockLogger: MockLogger;
 
   beforeEach(() => {
-    mockHandleFunction = jest.fn();
+    mockHandleFunction = vi.fn();
     mockLogger = {
-      error: jest.fn(),
-      warn: jest.fn(),
-      info: jest.fn(),
-      debug: jest.fn(),
+      error: vi.fn(),
+      warn: vi.fn(),
+      info: vi.fn(),
+      debug: vi.fn(),
     };
     errorHandler = new MockErrorHandler(mockHandleFunction, mockLogger);
   });
@@ -303,7 +303,7 @@ describe('ErrorHandler - TDD London', () => {
   describe('error handler registration behavior', () => {
     it('should register custom error handlers for specific types', () => {
       // Arrange
-      const validationHandler: ErrorHandlerFunction = jest.fn().mockReturnValue({
+      const validationHandler: ErrorHandlerFunction = vi.fn().mockReturnValue({
         handled: true,
         recovered: true,
         exitCode: 0,
@@ -321,9 +321,9 @@ describe('ErrorHandler - TDD London', () => {
 
     it('should allow multiple handlers for different error types', () => {
       // Arrange
-      const validationHandler = jest.fn();
-      const networkHandler = jest.fn();
-      const genericHandler = jest.fn();
+      const validationHandler = vi.fn();
+      const networkHandler = vi.fn();
+      const genericHandler = vi.fn();
 
       // Act
       errorHandler.register('ValidationError', validationHandler);
@@ -378,21 +378,21 @@ describe('ErrorHandler - TDD London', () => {
       const lowPriorityStrategy: RecoveryStrategy = {
         name: 'low-priority',
         canRecover: jest.fn(() => true),
-        recover: jest.fn().mockResolvedValue(true),
+        recover: vi.fn().mockResolvedValue(true),
         priority: 1,
       };
 
       const highPriorityStrategy: RecoveryStrategy = {
         name: 'high-priority',
         canRecover: jest.fn(() => true),
-        recover: jest.fn().mockResolvedValue(true),
+        recover: vi.fn().mockResolvedValue(true),
         priority: 10,
       };
 
       const mediumPriorityStrategy: RecoveryStrategy = {
         name: 'medium-priority',
         canRecover: jest.fn(() => true),
-        recover: jest.fn().mockResolvedValue(true),
+        recover: vi.fn().mockResolvedValue(true),
         priority: 5,
       };
 
@@ -415,14 +415,14 @@ describe('ErrorHandler - TDD London', () => {
       const retryStrategy: RecoveryStrategy = {
         name: 'retry',
         canRecover: jest.fn(() => true),
-        recover: jest.fn().mockResolvedValue(false), // Fails to recover
+        recover: vi.fn().mockResolvedValue(false), // Fails to recover
         priority: 5,
       };
 
       const fallbackStrategy: RecoveryStrategy = {
         name: 'fallback',
         canRecover: jest.fn(() => true),
-        recover: jest.fn().mockResolvedValue(true), // Successfully recovers
+        recover: vi.fn().mockResolvedValue(true), // Successfully recovers
         priority: 1,
       };
 

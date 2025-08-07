@@ -276,7 +276,7 @@ export class WorkflowEngine extends EventEmitter {
       );
     }
 
-    const workflowId = `workflow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const workflowId = `workflow-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const workflow: WorkflowState = {
       id: workflowId,
       definition,

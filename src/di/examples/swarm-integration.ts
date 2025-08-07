@@ -57,7 +57,7 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
       throw new Error('Swarm must be initialized before adding agents');
     }
 
-    const agentId = `agent-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const agentId = `agent-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
     this.logger.info('Adding agent', { agentId, config });
 
@@ -102,7 +102,7 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
   }
 
   async assignTask(task: any): Promise<string> {
-    const taskId = `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const taskId = `task-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
     this.logger.info('Assigning task', { taskId, task });
 

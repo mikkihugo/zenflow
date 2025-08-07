@@ -667,7 +667,7 @@ export class KnowledgeEvolution extends EventEmitter {
       if (visited.has(pattern.id)) continue;
 
       const group: PracticeGroup = {
-        id: `practice_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+        id: `practice_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
         patterns: [pattern],
         commonCharacteristics: this.extractCharacteristics(pattern),
         effectiveness: pattern.confidence,
@@ -698,7 +698,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private async codifyBestPractice(group: PracticeGroup): Promise<BestPractice> {
     const practice: BestPractice = {
-      id: `bp_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+      id: `bp_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
       name: this.generatePracticeName(group),
       description: this.generatePracticeDescription(group),
       applicableContexts: this.extractApplicableContexts(group),
@@ -726,7 +726,7 @@ export class KnowledgeEvolution extends EventEmitter {
       if (visited.has(pattern.id)) continue;
 
       const group: FailureGroup = {
-        id: `failure_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+        id: `failure_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
         patterns: [pattern],
         commonCauses: this.extractFailureCauses(pattern),
         frequency: 1,
@@ -755,7 +755,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private async identifyAntiPattern(group: FailureGroup): Promise<AntiPattern> {
     const antiPattern: AntiPattern = {
-      id: `ap_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+      id: `ap_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
       name: this.generateAntiPatternName(group),
       description: this.generateAntiPatternDescription(group),
       harmfulEffects: this.extractHarmfulEffects(group),
@@ -782,7 +782,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
       for (const issue of commonIssues) {
         antiPatterns.push({
-          id: `behavioral_ap_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+          id: `behavioral_ap_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
           name: issue.name,
           description: issue.description,
           harmfulEffects: issue.effects,
@@ -991,7 +991,7 @@ export class KnowledgeEvolution extends EventEmitter {
   }
 
   private generateEvolutionId(): string {
-    return `evolution_${Date.now()}_${Math.random().toString(36).substr(2, 8)}`;
+    return `evolution_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
   }
 
   private determineEvolutionType(

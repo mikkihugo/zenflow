@@ -63,7 +63,7 @@ export class CompleteUELIntegrationExample {
 
     // Create and emit events
     const systemEvent: SystemLifecycleEvent = {
-      id: `sys-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `sys-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       timestamp: new Date(),
       source: 'integration-example',
       type: 'system:startup',
@@ -77,7 +77,7 @@ export class CompleteUELIntegrationExample {
     };
 
     const coordEvent: CoordinationEvent = {
-      id: `coord-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `coord-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       timestamp: new Date(),
       source: 'integration-example',
       type: 'coordination:agent',

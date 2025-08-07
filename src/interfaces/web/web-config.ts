@@ -18,6 +18,7 @@ export interface WebConfig {
   };
   theme?: 'dark' | 'light';
   realTime?: boolean;
+  coreSystem?: any; // Reference to core system/orchestrator
 }
 
 export interface WebSession {
@@ -35,7 +36,10 @@ export interface WebSession {
 /**
  * Default web configuration
  */
-export const DEFAULT_WEB_CONFIG: Required<Omit<WebConfig, 'auth'>> & { auth: WebConfig['auth'] } = {
+export const DEFAULT_WEB_CONFIG: Required<Omit<WebConfig, 'auth' | 'coreSystem'>> & {
+  auth: WebConfig['auth'];
+  coreSystem?: any;
+} = {
   port: 3456,
   host: '0.0.0.0',
   daemon: false,
@@ -45,6 +49,7 @@ export const DEFAULT_WEB_CONFIG: Required<Omit<WebConfig, 'auth'>> & { auth: Web
   auth: { enabled: false },
   theme: 'dark',
   realTime: true,
+  coreSystem: undefined,
 };
 
 /**
@@ -52,9 +57,12 @@ export const DEFAULT_WEB_CONFIG: Required<Omit<WebConfig, 'auth'>> & { auth: Web
  *
  * @param config
  */
-export function createWebConfig(
-  config: WebConfig = {}
-): Required<Omit<WebConfig, 'auth'>> & { auth: WebConfig['auth'] } {
+export function createWebConfig(config: WebConfig = {}): Required<
+  Omit<WebConfig, 'auth' | 'coreSystem'>
+> & {
+  auth: WebConfig['auth'];
+  coreSystem?: any;
+} {
   return {
     ...DEFAULT_WEB_CONFIG,
     ...config,

@@ -1,6 +1,4 @@
 import type { Config } from 'jest';
-import { pathsToModuleNameMapper } from 'ts-jest';
-import { compilerOptions } from './tsconfig.json';
 
 const config: Config = {
   preset: 'ts-jest/presets/default-esm',
@@ -18,14 +16,15 @@ const config: Config = {
   },
 
   moduleNameMapper: {
-    // Map TypeScript path aliases (excluding @types/* which should resolve to node_modules)
-    ...Object.fromEntries(
-      Object.entries(
-        pathsToModuleNameMapper(compilerOptions.paths, {
-          prefix: '<rootDir>/src/',
-        })
-      ).filter(([key]) => !key.startsWith('^@types/'))
-    ),
+    // Map TypeScript path aliases directly
+    '^@core/(.*)$': '<rootDir>/src/core/$1',
+    '^@coordination/(.*)$': '<rootDir>/src/coordination/$1',
+    '^@neural/(.*)$': '<rootDir>/src/neural/$1',
+    '^@memory/(.*)$': '<rootDir>/src/memory/$1',
+    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
+    '^@interfaces/(.*)$': '<rootDir>/src/interfaces/$1',
+    '^@config/(.*)$': '<rootDir>/src/config/$1',
+    '^@database/(.*)$': '<rootDir>/src/database/$1',
   },
 
   // Use custom resolver approach

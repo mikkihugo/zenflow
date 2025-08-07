@@ -47,7 +47,7 @@ describe('Performance Optimization System', () => {
     });
 
     it('should start and stop optimization', async () => {
-      const startSpy = jest.spyOn(performanceOptimizer, 'emit');
+      const startSpy = vi.spyOn(performanceOptimizer, 'emit');
 
       await performanceOptimizer.startOptimization();
       expect(startSpy).toHaveBeenCalledWith('optimization:started');
@@ -76,7 +76,7 @@ describe('Performance Optimization System', () => {
 
     it('should register domain optimizers', () => {
       const customOptimizer = new NeuralNetworkOptimizer();
-      const spy = jest.spyOn(performanceOptimizer, 'emit');
+      const spy = vi.spyOn(performanceOptimizer, 'emit');
 
       performanceOptimizer.registerOptimizer('custom', customOptimizer);
 
@@ -373,7 +373,7 @@ describe('Performance Optimization System', () => {
     });
 
     it('should emit optimization events', async () => {
-      const eventSpy = jest.spyOn(performanceOptimizer, 'emit');
+      const eventSpy = vi.spyOn(performanceOptimizer, 'emit');
 
       await performanceOptimizer.optimizeNow();
 
@@ -383,7 +383,7 @@ describe('Performance Optimization System', () => {
     it('should handle optimization failures gracefully', async () => {
       // Create optimizer with failing domain optimizer
       const failingOptimizer = {
-        optimizeTrainingSpeed: jest.fn().mockRejectedValue(new Error('Test failure')),
+        optimizeTrainingSpeed: vi.fn().mockRejectedValue(new Error('Test failure')),
       };
 
       const testOptimizer = new PerformanceOptimizer(

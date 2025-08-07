@@ -424,6 +424,7 @@ export interface ArchitectureDesign {
   componentDiagrams: ComponentDiagram[];
   dataFlow: DataFlowDiagram;
   deploymentPlan: DeploymentPlan;
+  deploymentStrategy?: string;
   validationResults: ArchitecturalValidation;
   components: Component[];
   relationships: ComponentRelationship[];
@@ -544,6 +545,7 @@ export interface ArchitecturalPattern {
   name: string;
   description: string;
   applicability: string[];
+  applicableComponents?: string[];
   benefits: string[];
   tradeoffs: string[];
 }
@@ -1038,6 +1040,7 @@ export interface ImprovementMetric {
   category: string;
   beforeValue: string;
   afterValue: string;
+  value?: string;
   improvementPercentage: number;
   confidenceLevel: number;
   measurementAccuracy: string;
@@ -1184,7 +1187,7 @@ export const ValidationReportFactory = {
       overall: true,
       score: 100,
       results: [],
-      recommendations: []
+      recommendations: [],
     };
   },
 
@@ -1197,7 +1200,7 @@ export const ValidationReportFactory = {
       score: options.score ?? 100,
       results: options.results ?? [],
       recommendations: options.recommendations ?? [],
-      ...options // Allow for optional aliases
+      ...options, // Allow for optional aliases
     };
   },
 
@@ -1217,7 +1220,7 @@ export const ValidationReportFactory = {
       overallScore: legacy.overallScore,
       results: legacy.validationResults ?? [],
       validationResults: legacy.validationResults,
-      recommendations: legacy.recommendations ?? []
+      recommendations: legacy.recommendations ?? [],
     };
-  }
+  },
 };

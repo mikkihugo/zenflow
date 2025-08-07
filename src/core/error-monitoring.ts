@@ -58,6 +58,7 @@ export interface SystemHealthMetrics {
   uptime: number; // percentage
   mttr: number; // mean time to recovery in ms
   mtbf: number; // mean time between failures in ms
+  averageResponseTime: number; // average response time in ms
 }
 
 export interface AlertConfig {
@@ -586,7 +587,7 @@ export class ErrorMonitor {
   }
 
   private generateErrorId(): string {
-    return `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `err_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private assessUserImpact(error: Error): 'none' | 'minimal' | 'moderate' | 'severe' {

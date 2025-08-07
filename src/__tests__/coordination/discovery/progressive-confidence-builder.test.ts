@@ -9,8 +9,8 @@ import { jest } from '@jest/globals';
 import type { SessionMemoryStore } from '@memory/memory';
 
 // Mock HiveFACT
-jest.mock('@coordination/hive-fact-integration', () => ({
-  getHiveFACT: jest.fn(),
+vi.mock('@coordination/hive-fact-integration', () => ({
+  getHiveFACT: vi.fn(),
 }));
 
 import { getHiveFACT } from '@coordination/hive-fact-integration';
@@ -25,28 +25,28 @@ describe('ProgressiveConfidenceBuilder', () => {
   beforeEach(() => {
     // Create mocks
     mockDiscoveryBridge = {
-      discoverDomains: jest.fn(),
-      on: jest.fn(),
-      emit: jest.fn(),
+      discoverDomains: vi.fn(),
+      on: vi.fn(),
+      emit: vi.fn(),
     } as any;
 
     mockMemoryStore = {
-      store: jest.fn(),
-      retrieve: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      search: jest.fn(),
+      store: vi.fn(),
+      retrieve: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      search: vi.fn(),
     } as any;
 
     mockAgui = {
-      askQuestion: jest.fn(),
-      askBatchQuestions: jest.fn(),
-      showProgress: jest.fn(),
-      showMessage: jest.fn(),
+      askQuestion: vi.fn(),
+      askBatchQuestions: vi.fn(),
+      showProgress: vi.fn(),
+      showMessage: vi.fn(),
     } as any;
 
     mockHiveFact = {
-      searchFacts: jest.fn().mockResolvedValue([]),
+      searchFacts: vi.fn().mockResolvedValue([]),
     };
 
     (getHiveFACT as jest.Mock).mockReturnValue(mockHiveFact);
@@ -60,7 +60,7 @@ describe('ProgressiveConfidenceBuilder', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('buildConfidence', () => {

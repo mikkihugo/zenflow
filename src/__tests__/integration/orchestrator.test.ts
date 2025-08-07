@@ -10,8 +10,8 @@ import type { ILogger } from 'core/interfaces/base-interfaces';
 import { SwarmDatabase } from '../../src/database/swarm-database';
 
 // Mock dependencies
-jest.mock('../../src/database/swarm-database');
-jest.mock('coordination/strategies/ruv-swarm.strategy');
+vi.mock('../../src/database/swarm-database');
+vi.mock('coordination/strategies/ruv-swarm.strategy');
 
 const MockedSwarmDatabase = SwarmDatabase as jest.MockedClass<typeof SwarmDatabase>;
 const MockedZenSwarmStrategy = ZenSwarmStrategy as jest.MockedClass<typeof ZenSwarmStrategy>;
@@ -26,7 +26,7 @@ describe('Orchestrator Integration Test', () => {
     // Instantiate the mocks
     mockStrategy = new MockedZenSwarmStrategy() as jest.Mocked<ZenSwarmStrategy>;
     mockDb = new MockedSwarmDatabase() as jest.Mocked<SwarmDatabase>;
-    mockLogger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() };
+    mockLogger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
 
     // Mock the database constructor to return our mock instance
     (SwarmDatabase as jest.Mock).mockImplementation(() => mockDb);

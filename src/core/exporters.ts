@@ -122,7 +122,7 @@ export class ExportSystem {
     }
   }
 
-  private convertToCSV(data: any[]): string {
+  public convertToCSV(data: any[]): string {
     if (!Array.isArray(data) || data.length === 0) {
       return '';
     }
@@ -145,7 +145,7 @@ export class ExportSystem {
     return csvRows.join('\n');
   }
 
-  private convertToYAML(data: any): string {
+  public convertToYAML(data: any): string {
     // Simple YAML conversion - in production, use a proper YAML library
     const yamlify = (obj: any, indent = 0): string => {
       const spaces = '  '.repeat(indent);
@@ -182,7 +182,7 @@ export class ExportSystem {
     return yamlify(data);
   }
 
-  private convertToXML(data: any): string {
+  public convertToXML(data: any): string {
     const xmlify = (obj: any, name = 'root'): string => {
       if (obj === null || obj === undefined) {
         return `<${name}></${name}>`;
@@ -210,7 +210,7 @@ export class ExportSystem {
       ${xmlify(data)}`;
   }
 
-  private convertToMarkdown(data: any): string {
+  public convertToMarkdown(data: any): string {
     const mdify = (obj: any, level = 1): string => {
       if (obj === null || obj === undefined) {
         return '';

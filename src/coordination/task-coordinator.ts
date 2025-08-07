@@ -153,7 +153,7 @@ export class TaskCoordinator {
       execution_time_ms: result.metrics.totalTimeMs,
       tools_used: ['sparc-methodology'],
       sparc_task_id: result.sparcTaskId,
-      implementation_artifacts: Object.values(result.artifacts).flat(),
+      implementation_artifacts: Object.values(result.artifacts).flat() as string[],
       methodology_applied: 'sparc',
     };
 
@@ -219,10 +219,10 @@ export class TaskCoordinator {
    */
   private isComplexDocument(document: FeatureDocumentEntity | TaskDocumentEntity): boolean {
     return (
-      document.acceptance_criteria?.length > 3 ||
+      ('acceptance_criteria' in document && (document as any).acceptance_criteria?.length > 3) ||
       document.tags?.includes('complex') ||
       document.tags?.includes('architecture') ||
-      ('technical_approach' in document && document.technical_approach.includes('architecture'))
+      ('technical_approach' in document && (document as any).technical_approach?.includes('architecture'))
     );
   }
 
@@ -253,7 +253,7 @@ export class TaskCoordinator {
       created_at: new Date(),
       updated_at: new Date(),
       checksum: 'temp-checksum',
-      task_type: 'implementation',
+      task_type: 'development',
       estimated_hours: config.timeout_minutes ? config.timeout_minutes / 60 : 8,
       implementation_details: {
         files_to_create: [],

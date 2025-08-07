@@ -399,8 +399,8 @@ describe('Cache Performance Integration Tests', () => {
     it('should handle cache strategy mocking', () => {
       const mockStrategy = {
         name: 'Mock',
-        shouldEvict: jest.fn().mockReturnValue('evict-key'),
-        onAccess: jest.fn(),
+        shouldEvict: vi.fn().mockReturnValue('evict-key'),
+        onAccess: vi.fn(),
       };
 
       const entries = new Map([

@@ -162,12 +162,12 @@ describe('SQLite Persistence Integration Tests', () => {
     // Create mock connection for London-style tests
     mockConnection = {
       isOpen: true,
-      query: jest.fn(),
-      run: jest.fn(),
-      close: jest.fn(),
-      beginTransaction: jest.fn(),
-      commit: jest.fn(),
-      rollback: jest.fn(),
+      query: vi.fn(),
+      run: vi.fn(),
+      close: vi.fn(),
+      beginTransaction: vi.fn(),
+      commit: vi.fn(),
+      rollback: vi.fn(),
     };
   });
 
@@ -188,8 +188,8 @@ describe('SQLite Persistence Integration Tests', () => {
   describe('Connection Management (London School)', () => {
     it('should handle connection initialization gracefully', async () => {
       const mockDb = {
-        connect: jest.fn().mockResolvedValue(mockConnection),
-        close: jest.fn().mockResolvedValue(undefined),
+        connect: vi.fn().mockResolvedValue(mockConnection),
+        close: vi.fn().mockResolvedValue(undefined),
       };
 
       mockConnection.run.mockResolvedValue({ changes: 0 });
@@ -203,7 +203,7 @@ describe('SQLite Persistence Integration Tests', () => {
 
     it('should handle connection failures appropriately', async () => {
       const mockDb = {
-        connect: jest.fn().mockRejectedValue(new Error('Connection failed')),
+        connect: vi.fn().mockRejectedValue(new Error('Connection failed')),
       };
 
       await expect(mockDb.connect()).rejects.toThrow('Connection failed');

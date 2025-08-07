@@ -11,5 +11,8 @@ export { createLogger, Logger, logger } from '../core/logger';
 export * from './error-monitoring';
 export * from './error-recovery';
 
+// Type guards and utilities
+export * from './type-guards';
+
 // Agent analysis utilities (excluded from build due to tsconfig exclude)
 // export * from './agent-gap-analysis';

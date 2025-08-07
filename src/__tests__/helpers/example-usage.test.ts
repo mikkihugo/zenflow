@@ -72,9 +72,9 @@ describe('Test Helper Utilities - Example Usage', () => {
 
       it('should verify interaction sequences', async () => {
         const mockDatabase = {
-          connect: jest.fn(),
-          query: jest.fn(),
-          disconnect: jest.fn(),
+          connect: vi.fn(),
+          query: vi.fn(),
+          disconnect: vi.fn(),
         };
 
         // Simulate a service that uses the database
@@ -146,12 +146,12 @@ describe('Test Helper Utilities - Example Usage', () => {
 
         // Create mocks
         const mockEmailProvider = mockBuilder.createPartial<EmailProvider>({
-          sendEmail: jest.fn().mockResolvedValue(true),
+          sendEmail: vi.fn().mockResolvedValue(true),
         });
 
         const mockUserRepo = mockBuilder.createPartial<UserRepository>({
-          findByEmail: jest.fn().mockResolvedValue(null),
-          save: jest.fn().mockResolvedValue({ id: 1, email: 'test@example.com', name: 'Test' }),
+          findByEmail: vi.fn().mockResolvedValue(null),
+          save: vi.fn().mockResolvedValue({ id: 1, email: 'test@example.com', name: 'Test' }),
         });
 
         const emailService = new EmailService(mockEmailProvider);

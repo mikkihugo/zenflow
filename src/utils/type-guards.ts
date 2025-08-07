@@ -481,7 +481,7 @@ export function extractErrorMessage(
   if ('coordinated' in result && !result.coordinated && 'error' in result) {
     return result.error.message;
   }
-  if ('ok' in result && !result.ok) {
+  if ('ok' in result && !result.ok && 'error' in result) {
     return result.error instanceof Error ? result.error.message : String(result.error);
   }
   return null;
@@ -514,4 +514,95 @@ export function safePropertyAccess<T, K extends keyof T>(
     return obj[prop];
   }
   return undefined;
+}
+
+// ============================================
+// Additional Type Guards for System Safety
+// ============================================
+
+/**
+ * Type guard to check if an object is a valid neural network config
+ *
+ * @param obj
+ */
+export function isNeuralNetworkConfig(obj: any): obj is {
+  layers: number[];
+  activationFunctions: string[];
+  learningRate: number;
+} {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    Array.isArray(obj.layers) &&
+    obj.layers.every((layer: any) => typeof layer === 'number') &&
+    Array.isArray(obj.activationFunctions) &&
+    obj.activationFunctions.every((fn: any) => typeof fn === 'string') &&
+    typeof obj.learningRate === 'number'
+  );
+}
+
+/**
+ * Type guard to check if a value is a valid activation function
+ *
+ * @param value
+ */
+export function isActivationFunction(value: any): value is string {
+  const validFunctions = [
+    'sigmoid',
+    'tanh',
+    'relu',
+    'leaky_relu',
+    'elu',
+    'swish',
+    'gelu',
+    'softmax',
+  ];
+  return typeof value === 'string' && validFunctions.includes(value);
+}
+
+/**
+ * Type guard for checking array of objects with required properties
+ *
+ * @param arr
+ * @param requiredProps
+ */
+export function isObjectArrayWithProps<T>(arr: any, requiredProps: string[]): arr is T[] {
+  if (!Array.isArray(arr)) {
+    return false;
+  }
+
+  return arr.every((item) => {
+    if (typeof item !== 'object' || item === null) {
+      return false;
+    }
+
+    return requiredProps.every((prop) => prop in item);
+  });
+}
+
+/**
+ * Type guard for checking if value is a non-empty string
+ *
+ * @param value
+ */
+export function isNonEmptyString(value: any): value is string {
+  return typeof value === 'string' && value.length > 0;
+}
+
+/**
+ * Type guard for checking if value is a valid number (not NaN or Infinity)
+ *
+ * @param value
+ */
+export function isValidNumber(value: any): value is number {
+  return typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value);
+}
+
+/**
+ * Type guard for checking if value is a valid positive number
+ *
+ * @param value
+ */
+export function isPositiveNumber(value: any): value is number {
+  return isValidNumber(value) && value > 0;
 }

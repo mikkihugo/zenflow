@@ -229,7 +229,7 @@ class SessionManager extends EventEmitter {
   }
 
   private generateSessionId(): string {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private startCleanupInterval(): void {
@@ -370,7 +370,7 @@ describe('Session Management Integration Tests', () => {
 
     it('should handle storage failures gracefully', async () => {
       const failingStorage = new MockSessionStorage();
-      failingStorage.createSession = jest.fn().mockRejectedValue(new Error('Storage error'));
+      failingStorage.createSession = vi.fn().mockRejectedValue(new Error('Storage error'));
 
       const failingManager = new SessionManager(failingStorage);
       await failingManager.initialize();

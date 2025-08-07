@@ -7,12 +7,12 @@ import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { MaestroOrchestrator } from '../../../maestro/maestro-orchestrator';
 
 // Mock dependencies
-jest.mock('fs/promises');
-jest.mock('../../../core/event-bus.js');
-jest.mock('../../../core/logger.js');
-jest.mock('../../../memory/manager.js');
-jest.mock('../../../agents/agent-manager.js');
-jest.mock('../../../core/orchestrator.js');
+vi.mock('fs/promises');
+vi.mock('../../../core/event-bus.js');
+vi.mock('../../../core/logger.js');
+vi.mock('../../../memory/manager.js');
+vi.mock('../../../agents/agent-manager.js');
+vi.mock('../../../core/orchestrator.js');
 
 const mockReadFile = readFile as jest.MockedFunction<typeof readFile>;
 const mockWriteFile = writeFile as jest.MockedFunction<typeof writeFile>;
@@ -32,31 +32,31 @@ describe('Maestro Steering Document Generation', () => {
     // Setup mocks
     mockConfig = { environment: 'test' };
     mockEventBus = {
-      emit: jest.fn(),
-      on: jest.fn(),
+      emit: vi.fn(),
+      on: vi.fn(),
     };
     mockLogger = {
-      info: jest.fn(),
-      warn: jest.fn(),
-      error: jest.fn(),
-      debug: jest.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
     };
     mockMemoryManager = {
-      get: jest.fn(),
-      set: jest.fn(),
-      delete: jest.fn(),
+      get: vi.fn(),
+      set: vi.fn(),
+      delete: vi.fn(),
     };
     mockAgentManager = {
-      createAgent: jest.fn().mockResolvedValue('agent-123'),
-      startAgent: jest.fn(),
-      stopAgent: jest.fn(),
+      createAgent: vi.fn().mockResolvedValue('agent-123'),
+      startAgent: vi.fn(),
+      stopAgent: vi.fn(),
     };
     mockMainOrchestrator = {
-      assignTask: jest.fn().mockResolvedValue({ success: true }),
+      assignTask: vi.fn().mockResolvedValue({ success: true }),
     };
 
     // Clear all mocks
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // Create orchestrator instance
     maestroOrchestrator = new MaestroOrchestrator(
@@ -128,7 +128,7 @@ describe('Maestro Steering Document Generation', () => {
       ];
 
       for (const testCase of testCases) {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
 
         await maestroOrchestrator.createSteeringDocument(testCase.domain, 'Test content');
 

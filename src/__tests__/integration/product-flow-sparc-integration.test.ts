@@ -12,8 +12,8 @@ import { nanoid } from 'nanoid';
 import { ProductWorkflowEngine } from '../../coordination/orchestration/product-workflow-engine';
 import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine';
 import type { SPARCPhase, SPARCProject } from '../../coordination/swarm/sparc/types/sparc-types';
-import { ProductFlowSystem } from '../../core/product-flow-system';
 import { MemorySystem } from '../../core/memory-system';
+import { ProductFlowSystem } from '../../core/product-flow-system';
 import { DatabaseCoordinator } from '../../database/core/database-coordinator';
 import type {
   FeatureDocumentEntity,

@@ -128,7 +128,7 @@ export interface MemoryAnalytics {
  *
  * @example
  */
-@injectable()
+@injectable
 export class MemoryController {
   private backend: MemoryBackend;
   private performanceMetrics = {
@@ -141,7 +141,7 @@ export class MemoryController {
   constructor(
     @inject(MEMORY_TOKENS.ProviderFactory) private _factory: MemoryProviderFactory,
     @inject(MEMORY_TOKENS.Config) private _config: MemoryConfig,
-    @inject(CORE_TOKENS.Logger) private _logger: any,
+    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
   ) {
     this.initializeBackend();
   }
@@ -612,7 +612,7 @@ export class MemoryController {
   /**
    * Initialize the memory backend
    */
-  private async initializeBackend(): Promise<void> {
+  private initializeBackend(): void {
     try {
       this.backend = this._factory.createProvider(this._config);
       this._logger.info(`Memory controller initialized with ${this._config.type} backend`);

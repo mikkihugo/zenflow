@@ -274,13 +274,13 @@ class SQLiteBackend implements BackendInterface {
 
   async initialize(): Promise<void> {
     try {
-      const Database = await import('better-sqlite3');
+      const { default: Database } = await import('better-sqlite3');
       const fs = await import('node:fs/promises');
       const path = await import('node:path');
 
       await fs.mkdir(path.dirname(this.dbPath), { recursive: true });
 
-      this.db = new (Database.default || Database)(this.dbPath);
+      this.db = new (Database as any)(this.dbPath);
 
       // Configure SQLite options
       this.db.pragma('journal_mode = WAL');

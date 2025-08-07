@@ -232,7 +232,7 @@ export class UELCompatibleEventEmitter extends EventEmitter {
 
   private createUELEvent(uelEventType: string, originalEvent: string, args: any[]): SystemEvent {
     return {
-      id: `compat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `compat-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       timestamp: new Date(),
       source: 'eventEmitter-compatibility',
       type: uelEventType,

@@ -98,7 +98,7 @@ jest.mock(
 jest.mock(
   'uuid',
   () => ({
-    v4: jest.fn(() => `mock-uuid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`),
+    v4: jest.fn(() => `mock-uuid-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`),
   }),
   { virtual: true }
 );

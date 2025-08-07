@@ -74,12 +74,12 @@ describe('LanceDB Vector Operations Integration Tests', () => {
     mockConnection = {
       isConnected: false,
       tables: new Map(),
-      connect: jest.fn(),
-      createTable: jest.fn(),
-      openTable: jest.fn(),
+      connect: vi.fn(),
+      createTable: vi.fn(),
+      openTable: vi.fn(),
       insertVectors: jest.Mock,
-      searchSimilar: jest.fn(),
-      close: jest.fn(),
+      searchSimilar: vi.fn(),
+      close: vi.fn(),
     };
   });
 
@@ -112,16 +112,16 @@ describe('LanceDB Vector Operations Integration Tests', () => {
     it('should mock table operations properly', async () => {
       const mockTable = {
         name: 'test_embeddings',
-        add: jest.fn().mockResolvedValue({ inserted: 5 }),
-        search: jest.fn().mockReturnValue({
-          limit: jest.fn().mockReturnValue({
-            toArray: jest.fn().mockResolvedValue([
+        add: vi.fn().mockResolvedValue({ inserted: 5 }),
+        search: vi.fn().mockReturnValue({
+          limit: vi.fn().mockReturnValue({
+            toArray: vi.fn().mockResolvedValue([
               { id: '1', _distance: 0.1, vector: [1, 0, 0] },
               { id: '2', _distance: 0.3, vector: [0, 1, 0] },
             ]),
           }),
         }),
-        countRows: jest.fn().mockResolvedValue(100),
+        countRows: vi.fn().mockResolvedValue(100),
       };
 
       mockConnection.openTable.mockResolvedValue(mockTable);

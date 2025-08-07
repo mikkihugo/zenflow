@@ -204,7 +204,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
     options: CollectiveProcessingOptions = {}
   ): Promise<KnowledgeProcessingResult> {
     const startTime = Date.now();
-    const processingId = `collective-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const processingId = `collective-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
     if (!this.isInitialized) {
       throw new Error('Cross-Agent Knowledge Integration System not initialized');

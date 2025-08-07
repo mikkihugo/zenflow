@@ -1,6 +1,6 @@
 /**
  * DSPy-Powered Swarm Intelligence
- * 
+ *
  * Integrates DSPy into swarm coordination for:
  * - Intelligent agent selection and task assignment
  * - Dynamic topology optimization
@@ -9,11 +9,11 @@
  */
 
 import { createLogger } from '../../core/logger';
-import type { AgentType } from '../../types/agent-types';
+import type { DSPyWrapper } from '../../neural/dspy-wrapper';
 // Using the new wrapper architecture instead of direct dspy.ts imports
 import { createDSPyWrapper } from '../../neural/dspy-wrapper';
-import type { DSPyWrapper } from '../../neural/dspy-wrapper';
-import type { DSPyConfig } from '../../types/dspy-types';
+import type { DSPyConfig } from '../../neural/types/dspy-types';
+import type { AgentType } from '../../types/agent-types';
 
 const logger = createLogger({ prefix: 'DSPySwarmIntelligence' });
 
@@ -45,7 +45,8 @@ export interface TaskRequirements {
 export class DSPySwarmIntelligence {
   private dspyWrapper: DSPyWrapper | null = null;
   private config: SwarmIntelligenceConfig;
-  private learningHistory: Array<{ input: any; output: any; success: boolean; timestamp: Date }> = [];
+  private learningHistory: Array<{ input: any; output: any; success: boolean; timestamp: Date }> =
+    [];
 
   constructor(config: SwarmIntelligenceConfig = {}) {
     this.config = {
@@ -53,19 +54,21 @@ export class DSPySwarmIntelligence {
       temperature: 0.2, // Lower for more deterministic swarm decisions
       enableContinuousLearning: true,
       optimizationInterval: 300000, // 5 minutes
-      ...config
+      ...config,
     };
 
     logger.info('DSPy swarm intelligence initialized', { model: this.config.model });
 
     // Initialize wrapper and start continuous learning
-    this.initializeWrapper().then(() => {
-      if (this.config.enableContinuousLearning) {
-        this.startContinuousLearning();
-      }
-    }).catch(error => {
-      logger.error('Failed to initialize DSPy wrapper:', error);
-    });
+    this.initializeWrapper()
+      .then(() => {
+        if (this.config.enableContinuousLearning) {
+          this.startContinuousLearning();
+        }
+      })
+      .catch((error) => {
+        logger.error('Failed to initialize DSPy wrapper:', error);
+      });
   }
 
   /**
@@ -117,7 +120,7 @@ export class DSPySwarmIntelligence {
         input,
         output: executionResult.result,
         success: true,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       return executionResult.result;
@@ -126,7 +129,6 @@ export class DSPySwarmIntelligence {
       return fallbackResult;
     }
   }
-
 
   /**
    * Intelligently select agents for a task using DSPy wrapper
@@ -156,7 +158,7 @@ export class DSPySwarmIntelligence {
 
       const input = {
         task_requirements: taskRequirements,
-        available_agents: availableAgents
+        available_agents: availableAgents,
       };
 
       const executionResult = await this.dspyWrapper.execute(program, input);
@@ -173,18 +175,18 @@ export class DSPySwarmIntelligence {
         input: { taskRequirements, availableAgents },
         output: result,
         success: true, // Will be updated based on actual task outcomes
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       logger.debug(`Agent selection completed in ${executionTime}ms`, {
         selectedAgents: result.selectedAgents,
-        confidence: result.confidence
+        confidence: result.confidence,
       });
 
       return result;
     } catch (error) {
       logger.error('Agent selection failed:', error);
-      
+
       // Fallback to simple selection
       return this.fallbackAgentSelection(taskRequirements, availableAgents);
     }
@@ -208,14 +210,14 @@ export class DSPySwarmIntelligence {
       current_topology: currentTopology,
       task_load: taskLoad,
       agent_performance: agentPerformance,
-      communication_patterns: communicationPatterns
+      communication_patterns: communicationPatterns,
     };
 
     const fallbackResult = {
       optimalTopology: currentTopology,
       restructurePlan: {},
       performanceGain: 0,
-      implementationSteps: ['No optimization needed - system error']
+      implementationSteps: ['No optimization needed - system error'],
     };
 
     const result = await this.executeDSPyProgram(
@@ -230,7 +232,9 @@ export class DSPySwarmIntelligence {
       optimalTopology: result.optimal_topology || result.optimalTopology || currentTopology,
       restructurePlan: result.restructure_plan || result.restructurePlan || {},
       performanceGain: result.performance_gain || result.performanceGain || 0,
-      implementationSteps: this.generateImplementationSteps(result.restructure_plan || result.restructurePlan)
+      implementationSteps: this.generateImplementationSteps(
+        result.restructure_plan || result.restructurePlan
+      ),
     };
   }
 
@@ -250,14 +254,14 @@ export class DSPySwarmIntelligence {
     const input = {
       agent_loads: agentLoads,
       task_queue: taskQueue,
-      performance_metrics: performanceMetrics
+      performance_metrics: performanceMetrics,
     };
 
     const fallbackResult = {
       loadDistribution: this.createBalancedDistribution(agentLoads, taskQueue),
       rebalancingActions: [],
       efficiencyScore: 0.7, // Conservative estimate
-      urgentActions: []
+      urgentActions: [],
     };
 
     const result = await this.executeDSPyProgram(
@@ -269,10 +273,15 @@ export class DSPySwarmIntelligence {
     );
 
     return {
-      loadDistribution: result.load_distribution || result.loadDistribution || this.createBalancedDistribution(agentLoads, taskQueue),
+      loadDistribution:
+        result.load_distribution ||
+        result.loadDistribution ||
+        this.createBalancedDistribution(agentLoads, taskQueue),
       rebalancingActions: result.rebalancing_actions || result.rebalancingActions || [],
       efficiencyScore: result.efficiency_score || result.efficiencyScore || 0.7,
-      urgentActions: this.identifyUrgentActions(result.rebalancing_actions || result.rebalancingActions || [])
+      urgentActions: this.identifyUrgentActions(
+        result.rebalancing_actions || result.rebalancingActions || []
+      ),
     };
   }
 
@@ -292,14 +301,14 @@ export class DSPySwarmIntelligence {
     const input = {
       historical_performance: historicalPerformance,
       current_state: currentState,
-      upcoming_tasks: upcomingTasks
+      upcoming_tasks: upcomingTasks,
     };
 
     const fallbackResult = {
       performancePrediction: { status: 'uncertain', trend: 'stable' },
       bottleneckWarnings: ['Unable to predict - system error'],
       optimizationSuggestions: ['Monitor system closely'],
-      confidence: 0.3
+      confidence: 0.3,
     };
 
     const result = await this.executeDSPyProgram(
@@ -314,10 +323,19 @@ export class DSPySwarmIntelligence {
     const confidence = this.assessPredictionConfidence(result);
 
     return {
-      performancePrediction: result.performance_prediction || result.performancePrediction || fallbackResult.performancePrediction,
-      bottleneckWarnings: result.bottleneck_warnings || result.bottleneckWarnings || fallbackResult.bottleneckWarnings,
-      optimizationSuggestions: result.optimization_suggestions || result.optimizationSuggestions || fallbackResult.optimizationSuggestions,
-      confidence
+      performancePrediction:
+        result.performance_prediction ||
+        result.performancePrediction ||
+        fallbackResult.performancePrediction,
+      bottleneckWarnings:
+        result.bottleneck_warnings ||
+        result.bottleneckWarnings ||
+        fallbackResult.bottleneckWarnings,
+      optimizationSuggestions:
+        result.optimization_suggestions ||
+        result.optimizationSuggestions ||
+        fallbackResult.optimizationSuggestions,
+      confidence,
     };
   }
 
@@ -337,14 +355,14 @@ export class DSPySwarmIntelligence {
     const input = {
       failure_context: failureContext,
       available_agents: availableAgents,
-      task_state: taskState
+      task_state: taskState,
     };
 
     const fallbackResult = {
       recoveryStrategy: { type: 'restart', approach: 'conservative' },
       agentReassignments: [],
       riskMitigation: ['Monitor system closely', 'Use backup agents if available'],
-      estimatedRecoveryTime: 300 // 5 minutes default
+      estimatedRecoveryTime: 300, // 5 minutes default
     };
 
     const result = await this.executeDSPyProgram(
@@ -356,10 +374,17 @@ export class DSPySwarmIntelligence {
     );
 
     return {
-      recoveryStrategy: result.recovery_strategy || result.recoveryStrategy || fallbackResult.recoveryStrategy,
-      agentReassignments: result.agent_reassignments || result.agentReassignments || fallbackResult.agentReassignments,
-      riskMitigation: result.risk_mitigation || result.riskMitigation || fallbackResult.riskMitigation,
-      estimatedRecoveryTime: this.estimateRecoveryTime(result.recovery_strategy || result.recoveryStrategy || fallbackResult.recoveryStrategy)
+      recoveryStrategy:
+        result.recovery_strategy || result.recoveryStrategy || fallbackResult.recoveryStrategy,
+      agentReassignments:
+        result.agent_reassignments ||
+        result.agentReassignments ||
+        fallbackResult.agentReassignments,
+      riskMitigation:
+        result.risk_mitigation || result.riskMitigation || fallbackResult.riskMitigation,
+      estimatedRecoveryTime: this.estimateRecoveryTime(
+        result.recovery_strategy || result.recoveryStrategy || fallbackResult.recoveryStrategy
+      ),
     };
   }
 
@@ -367,15 +392,14 @@ export class DSPySwarmIntelligence {
    * Update success/failure of previous decisions for learning
    */
   updateDecisionOutcome(decisionId: string, success: boolean, metrics: object) {
-    const example = this.learningHistory.find(ex => 
-      ex.output.decision_id === decisionId || 
-      ex.output.id === decisionId
+    const example = this.learningHistory.find(
+      (ex) => ex.output.decision_id === decisionId || ex.output.id === decisionId
     );
 
     if (example) {
       example.success = success;
       example.output.actual_metrics = metrics;
-      
+
       logger.debug(`Updated decision outcome: ${decisionId} -> ${success ? 'success' : 'failure'}`);
     }
   }
@@ -385,21 +409,28 @@ export class DSPySwarmIntelligence {
    */
   getIntelligenceStats() {
     const recentDecisions = this.learningHistory.filter(
-      ex => Date.now() - ex.timestamp.getTime() < 3600000 // Last hour
+      (ex) => Date.now() - ex.timestamp.getTime() < 3600000 // Last hour
     );
 
-    const successRate = recentDecisions.length > 0 
-      ? recentDecisions.filter(ex => ex.success).length / recentDecisions.length 
-      : 0;
+    const successRate =
+      recentDecisions.length > 0
+        ? recentDecisions.filter((ex) => ex.success).length / recentDecisions.length
+        : 0;
 
     return {
       totalPrograms: 5, // Fixed number: agent_selection, topology_optimization, etc.
-      programTypes: ['agent_selection', 'topology_optimization', 'load_balancing', 'performance_prediction', 'failure_recovery'],
+      programTypes: [
+        'agent_selection',
+        'topology_optimization',
+        'load_balancing',
+        'performance_prediction',
+        'failure_recovery',
+      ],
       learningHistorySize: this.learningHistory.length,
       recentDecisions: recentDecisions.length,
       successRate: Math.round(successRate * 100),
       continuousLearningEnabled: this.config.enableContinuousLearning,
-      lmDriver: 'DSPy LM Driver'
+      lmDriver: 'DSPy LM Driver',
     };
   }
 
@@ -407,19 +438,13 @@ export class DSPySwarmIntelligence {
     this.learningHistory.push({
       ...example,
       programType,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     // Keep only last 1000 examples
     if (this.learningHistory.length > 1000) {
       this.learningHistory = this.learningHistory.slice(-1000);
     }
-  }
-
-  private getRecentPerformanceHistory() {
-    return this.learningHistory
-      .filter(ex => Date.now() - ex.timestamp.getTime() < 3600000) // Last hour
-      .slice(-50); // Last 50 examples
   }
 
   private startContinuousLearning() {
@@ -432,32 +457,37 @@ export class DSPySwarmIntelligence {
 
   private async performContinuousLearning() {
     const recentExamples = this.learningHistory.filter(
-      ex => Date.now() - ex.timestamp.getTime() < this.config.optimizationInterval!
+      (ex) => Date.now() - ex.timestamp.getTime() < this.config.optimizationInterval!
     );
 
     if (recentExamples.length < 5) return; // Need minimum examples
 
     // Group by program type
-    const examplesByProgram = recentExamples.reduce((acc, ex) => {
-      const programType = (ex as any).programType;
-      if (!acc[programType]) acc[programType] = [];
-      acc[programType].push(ex);
-      return acc;
-    }, {} as Record<string, any[]>);
+    const examplesByProgram = recentExamples.reduce(
+      (acc, ex) => {
+        const programType = (ex as any).programType;
+        if (!acc[programType]) acc[programType] = [];
+        acc[programType].push(ex);
+        return acc;
+      },
+      {} as Record<string, any[]>
+    );
 
     // Analyze patterns in examples for continuous learning (simplified approach)
     for (const [programType, examples] of Object.entries(examplesByProgram)) {
       if (examples.length >= 3) {
         try {
-          const successfulExamples = examples.filter(ex => ex.success);
+          const successfulExamples = examples.filter((ex) => ex.success);
           if (successfulExamples.length > 0) {
             // In a real implementation, we could:
             // 1. Adjust prompt templates based on successful patterns
             // 2. Update generation parameters based on success rates
             // 3. Cache successful examples for few-shot prompting
-            
-            logger.debug(`Continuous learning analysis for ${programType}: ${successfulExamples.length} successful examples analyzed`);
-            
+
+            logger.debug(
+              `Continuous learning analysis for ${programType}: ${successfulExamples.length} successful examples analyzed`
+            );
+
             // Simple learning: adjust temperature based on success rate
             const successRate = successfulExamples.length / examples.length;
             if (successRate > 0.8 && this.config.temperature! > 0.1) {
@@ -479,18 +509,16 @@ export class DSPySwarmIntelligence {
   ) {
     // Simple fallback: select agents with highest success rate and required capabilities
     const suitableAgents = availableAgents
-      .filter(agent => 
-        taskRequirements.requiredCapabilities.some(cap => 
-          agent.capabilities.includes(cap)
-        )
+      .filter((agent) =>
+        taskRequirements.requiredCapabilities.some((cap) => agent.capabilities.includes(cap))
       )
       .sort((a, b) => b.successRate - a.successRate)
       .slice(0, Math.min(3, Math.ceil(taskRequirements.complexity / 30)));
 
     return {
-      selectedAgents: suitableAgents.map(a => a.agentId),
+      selectedAgents: suitableAgents.map((a) => a.agentId),
       reasoning: 'Fallback selection based on success rate and capabilities',
-      confidence: 0.6
+      confidence: 0.6,
     };
   }
 
@@ -512,14 +540,14 @@ export class DSPySwarmIntelligence {
     if (!Array.isArray(rebalancingActions)) return [];
 
     return rebalancingActions
-      .filter(action => action.priority === 'urgent' || action.severity === 'high')
-      .map(action => action.description || action.action || 'Urgent rebalancing action');
+      .filter((action) => action.priority === 'urgent' || action.severity === 'high')
+      .map((action) => action.description || action.action || 'Urgent rebalancing action');
   }
 
   private assessPredictionConfidence(result: any): number {
     // Base confidence on the quality and completeness of the prediction
     let confidence = 0.5;
-    
+
     if (result.performance_prediction) confidence += 0.2;
     if (result.bottleneck_warnings?.length > 0) confidence += 0.1;
     if (result.optimization_suggestions?.length > 0) confidence += 0.1;
@@ -539,40 +567,6 @@ export class DSPySwarmIntelligence {
     return baseTime;
   }
 
-  // Helper methods for prompt building and response parsing
-
-  private buildAgentSelectionPrompt(
-    taskRequirements: TaskRequirements,
-    availableAgents: AgentPerformanceData[]
-  ): string {
-    return `You are an intelligent swarm coordinator. Select the optimal agents for this task.
-
-TASK REQUIREMENTS:
-- Type: ${taskRequirements.taskType}
-- Complexity: ${taskRequirements.complexity}/100
-- Required Capabilities: ${taskRequirements.requiredCapabilities.join(', ')}
-- Priority: ${taskRequirements.priority}
-- Estimated Duration: ${taskRequirements.estimatedDuration} minutes
-
-AVAILABLE AGENTS:
-${availableAgents.map(agent => 
-  `- Agent ${agent.agentId} (${agent.agentType}): 
-    Success Rate: ${agent.successRate}%, 
-    Avg Response: ${agent.averageResponseTime}ms, 
-    Load: ${agent.currentLoad}%, 
-    Capabilities: ${agent.capabilities.join(', ')}`
-).join('\n')}
-
-Provide your selection in this JSON format:
-{
-  "selectedAgents": ["agent1", "agent2"],
-  "reasoning": "explanation of selection",
-  "confidence": 0.85,
-  "alternativeOptions": ["alt1", "alt2"]
-}
----END---`;
-  }
-
   private parseAgentSelectionResponse(response: string): any {
     try {
       const jsonMatch = response.match(/\{[\s\S]*\}/);
@@ -582,205 +576,33 @@ Provide your selection in this JSON format:
           selectedAgents: result.selectedAgents || [],
           reasoning: result.reasoning || 'Agent selection completed',
           confidence: result.confidence || 0.7,
-          alternativeOptions: result.alternativeOptions
+          alternativeOptions: result.alternativeOptions,
         };
       }
     } catch (error) {
       logger.warn('Failed to parse agent selection response:', error);
     }
-    
+
     return {
       selectedAgents: [],
       reasoning: 'Failed to parse response',
-      confidence: 0.3
+      confidence: 0.3,
     };
   }
 
-  private buildTopologyOptimizationPrompt(
-    currentTopology: string,
-    taskLoad: object,
-    agentPerformance: AgentPerformanceData[],
-    communicationPatterns: object
-  ): string {
-    return `You are an intelligent swarm topology optimizer. Analyze the current setup and recommend optimal topology.
-
-CURRENT TOPOLOGY: ${currentTopology}
-TASK LOAD: ${JSON.stringify(taskLoad, null, 2)}
-AGENT PERFORMANCE: ${agentPerformance.length} agents with avg success rate ${
-  Math.round(agentPerformance.reduce((sum, a) => sum + a.successRate, 0) / agentPerformance.length)
-}%
-COMMUNICATION PATTERNS: ${JSON.stringify(communicationPatterns, null, 2)}
-
-Recommend optimal topology in this JSON format:
-{
-  "optimalTopology": "mesh|hierarchical|ring|star",
-  "restructurePlan": {
-    "changes": ["change1", "change2"],
-    "complexity": "low|medium|high"
-  },
-  "performanceGain": 15,
-  "reasoning": "explanation"
-}
----END---`;
-  }
-
-  private parseTopologyOptimizationResponse(response: string): any {
-    try {
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
-    } catch (error) {
-      logger.warn('Failed to parse topology optimization response:', error);
-    }
-    
-    return {
-      optimalTopology: 'mesh',
-      restructurePlan: {},
-      performanceGain: 0
-    };
-  }
-
-  private buildLoadBalancingPrompt(
+  private createBalancedDistribution(
     agentLoads: AgentPerformanceData[],
-    taskQueue: any[],
-    performanceMetrics: object
-  ): string {
-    return `You are an intelligent load balancer for a swarm system. Optimize task distribution.
-
-CURRENT AGENT LOADS:
-${agentLoads.map(agent => 
-  `- Agent ${agent.agentId}: ${agent.currentLoad}% load, ${agent.tasksCompleted} completed, ${agent.successRate}% success`
-).join('\n')}
-
-TASK QUEUE: ${taskQueue.length} pending tasks
-PERFORMANCE METRICS: ${JSON.stringify(performanceMetrics, null, 2)}
-
-Provide load balancing recommendations in this JSON format:
-{
-  "loadDistribution": {
-    "agent1": 45,
-    "agent2": 55
-  },
-  "rebalancingActions": [
-    {"action": "redistribute", "from": "agent1", "to": "agent2", "tasks": 3}
-  ],
-  "efficiencyScore": 85
-}
----END---`;
-  }
-
-  private parseLoadBalancingResponse(response: string): any {
-    try {
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
-    } catch (error) {
-      logger.warn('Failed to parse load balancing response:', error);
-    }
-    
-    return {
-      loadDistribution: {},
-      rebalancingActions: [],
-      efficiencyScore: 70
-    };
-  }
-
-  private buildPerformancePredictionPrompt(
-    historicalPerformance: object[],
-    currentState: object,
-    upcomingTasks: any[]
-  ): string {
-    return `You are an intelligent performance predictor for a swarm system. Predict future performance and identify issues.
-
-HISTORICAL PERFORMANCE: ${historicalPerformance.length} data points
-CURRENT STATE: ${JSON.stringify(currentState, null, 2)}
-UPCOMING TASKS: ${upcomingTasks.length} tasks scheduled
-
-Provide performance prediction in this JSON format:
-{
-  "performancePrediction": {
-    "trend": "improving|stable|declining",
-    "expectedThroughput": 85,
-    "estimatedCompletionTime": "2 hours"
-  },
-  "bottleneckWarnings": ["warning1", "warning2"],
-  "optimizationSuggestions": ["suggestion1", "suggestion2"]
-}
----END---`;
-  }
-
-  private parsePerformancePredictionResponse(response: string): any {
-    try {
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
-    } catch (error) {
-      logger.warn('Failed to parse performance prediction response:', error);
-    }
-    
-    return {
-      performancePrediction: { trend: 'stable' },
-      bottleneckWarnings: [],
-      optimizationSuggestions: []
-    };
-  }
-
-  private buildFailureRecoveryPrompt(
-    failureContext: object,
-    availableAgents: AgentPerformanceData[],
-    taskState: object
-  ): string {
-    return `You are an intelligent failure recovery system for a swarm. Plan recovery from the failure.
-
-FAILURE CONTEXT: ${JSON.stringify(failureContext, null, 2)}
-AVAILABLE AGENTS: ${availableAgents.length} agents available
-TASK STATE: ${JSON.stringify(taskState, null, 2)}
-
-Provide recovery plan in this JSON format:
-{
-  "recoveryStrategy": {
-    "type": "restart|reassign|rollback",
-    "approach": "aggressive|conservative|balanced",
-    "priority": "high|medium|low"
-  },
-  "agentReassignments": [
-    {"from": "failed-agent", "to": "backup-agent", "tasks": ["task1", "task2"]}
-  ],
-  "riskMitigation": ["mitigation1", "mitigation2"]
-}
----END---`;
-  }
-
-  private parseFailureRecoveryResponse(response: string): any {
-    try {
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
-    } catch (error) {
-      logger.warn('Failed to parse failure recovery response:', error);
-    }
-    
-    return {
-      recoveryStrategy: { type: 'restart', approach: 'conservative' },
-      agentReassignments: [],
-      riskMitigation: []
-    };
-  }
-
-  private createBalancedDistribution(agentLoads: AgentPerformanceData[], taskQueue: any[]): object {
+    _taskQueue: any[]
+  ): object {
     const distribution: any = {};
     const totalCapacity = agentLoads.reduce((sum, agent) => sum + (100 - agent.currentLoad), 0);
-    
-    agentLoads.forEach(agent => {
+
+    agentLoads.forEach((agent) => {
       const capacity = 100 - agent.currentLoad;
       const share = Math.round((capacity / totalCapacity) * 100);
       distribution[agent.agentId] = Math.max(10, Math.min(90, share)); // Between 10-90%
     });
-    
+
     return distribution;
   }
 }

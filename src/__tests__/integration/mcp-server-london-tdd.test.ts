@@ -14,46 +14,46 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 // Mock SqliteMemoryStore - Data persistence contract
 const mockSqliteMemoryStore = {
-  initialize: jest.fn(),
-  store: jest.fn(),
-  retrieve: jest.fn(),
-  delete: jest.fn(),
-  query: jest.fn(),
-  close: jest.fn(),
+  initialize: vi.fn(),
+  store: vi.fn(),
+  retrieve: vi.fn(),
+  delete: vi.fn(),
+  query: vi.fn(),
+  close: vi.fn(),
 };
 
 // Mock ZenSwarm (soon to be ruv-FANN-zen) - Neural intelligence contract
 const mockZenSwarm = {
-  initialize: jest.fn(),
-  spawnAgent: jest.fn(),
-  orchestrateTask: jest.fn(),
-  getAgentStatus: jest.fn(),
-  terminateAgent: jest.fn(),
+  initialize: vi.fn(),
+  spawnAgent: vi.fn(),
+  orchestrateTask: vi.fn(),
+  getAgentStatus: vi.fn(),
+  terminateAgent: vi.fn(),
 };
 
 // Mock Neural Engine - Neural processing contract
 const mockNeuralEngine = {
-  initialize: jest.fn(),
-  processInput: jest.fn(),
-  trainModel: jest.fn(),
-  predict: jest.fn(),
-  optimize: jest.fn(),
+  initialize: vi.fn(),
+  processInput: vi.fn(),
+  trainModel: vi.fn(),
+  predict: vi.fn(),
+  optimize: vi.fn(),
 };
 
 // Mock MCP Message Handler - Protocol handling contract
 const mockMCPMessageHandler = {
-  handleMessage: jest.fn(),
-  validateMessage: jest.fn(),
-  createResponse: jest.fn(),
-  createError: jest.fn(),
+  handleMessage: vi.fn(),
+  validateMessage: vi.fn(),
+  createResponse: vi.fn(),
+  createError: vi.fn(),
 };
 
 // Mock MCP Tool Executor - Tool execution contract
 const mockMCPToolExecutor = {
-  executeTool: jest.fn(),
-  registerTool: jest.fn(),
-  listTools: jest.fn(),
-  validateToolCall: jest.fn(),
+  executeTool: vi.fn(),
+  registerTool: vi.fn(),
+  listTools: vi.fn(),
+  validateToolCall: vi.fn(),
 };
 
 // === CONTRACT INTERFACES ===
@@ -354,9 +354,9 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
     it('should demonstrate interaction testing for protocol compliance', () => {
       // London School: Test HOW components interact with MCP protocol
       const mockProtocolValidator = {
-        validateJsonRpc: jest.fn(),
-        checkMethodExists: jest.fn(),
-        validateParams: jest.fn(),
+        validateJsonRpc: vi.fn(),
+        checkMethodExists: vi.fn(),
+        validateParams: vi.fn(),
       };
 
       const protocolHandler = {
@@ -397,10 +397,10 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
 
   // Clean test isolation - London School principle
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });

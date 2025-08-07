@@ -14,8 +14,6 @@
 import { nanoid } from 'nanoid';
 // Using mock implementations for missing modules - TODO: Implement proper modules
 import { TaskAPI } from '../../../api';
-import { TaskCoordinator } from '../../../task-coordinator';
-import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
 // import { MemorySystem } from '../../../../core/memory-system';
 // import { WorkflowEngine } from '../../../../core/workflow-engine';
 import { ProjectManagementIntegration } from '../integrations/project-management-integration';
@@ -55,9 +53,6 @@ export class SPARCEngineCore implements SPARCEngine {
   // Deep infrastructure integration
   private readonly documentDrivenSystem: any; // DocumentDrivenSystem - using mock
   private readonly workflowEngine: any; // WorkflowEngine - using mock
-  private readonly memorySystem: any; // MemorySystem - using mock
-  private readonly taskCoordinator: any; // TaskCoordinator - using mock
-  private readonly taskAPI: any; // TaskAPI - using mock
   private readonly swarmCoordinator: SPARCSwarmCoordinator;
 
   constructor() {
@@ -895,7 +890,7 @@ export class SPARCEngineCore implements SPARCEngine {
         overall: true,
         score: 1.0,
         results: [],
-        recommendations: []
+        recommendations: [],
       },
     };
   }
@@ -919,7 +914,7 @@ export class SPARCEngineCore implements SPARCEngine {
         artifacts: [],
         quality: 0,
         coverage: 0,
-        estimatedMaintainability: 0
+        estimatedMaintainability: 0,
       },
       testGeneration: {
         testSuites: [],
@@ -927,11 +922,11 @@ export class SPARCEngineCore implements SPARCEngine {
           lines: 0,
           functions: 0,
           branches: 0,
-          statements: 0
+          statements: 0,
         },
         automationLevel: 0,
-        estimatedReliability: 0
-      }
+        estimatedReliability: 0,
+      },
     };
   }
 

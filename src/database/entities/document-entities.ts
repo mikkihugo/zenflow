@@ -32,6 +32,8 @@ export interface BaseDocumentEntity {
   // Metadata
   version: string;
   checksum: string;
+  metadata: Record<string, any>; // Generic metadata for extensibility
+  name?: string; // Optional name property for compatibility
   created_at: Date;
   updated_at: Date;
 

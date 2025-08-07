@@ -6,8 +6,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createDAO, createRepository, DatabaseTypes, EntityTypes } from '../database/index';
-import type { IDataAccessObject, IRepository } from '../database/interfaces';
+import { createDao, DatabaseTypes, EntityTypes } from '../database/index';
+import type { IRepository, IVectorRepository } from '../database/interfaces';
 import { createLogger } from './logger';
 
 const logger = createLogger('UnifiedMemory');
@@ -75,7 +75,7 @@ interface BackendInterface {
  */
 class LanceDBBackend implements BackendInterface {
   private vectorRepository: IRepository<any>;
-  private vectorDAO: IDataAccessObject<any>;
+  private vectorDAO: IVectorRepository<any>;
   private config: MemoryConfig;
 
   constructor(config: MemoryConfig) {
@@ -83,19 +83,15 @@ class LanceDBBackend implements BackendInterface {
   }
 
   async initialize(): Promise<void> {
-    this.vectorRepository = await createRepository(
-      EntityTypes.VectorDocument,
-      DatabaseTypes.LanceDB,
-      {
-        database: `${this.config.path}/lancedb`,
-        options: {
-          vectorSize: this.config.lancedb?.vectorDimension || 384,
-          metricType: 'cosine',
-        },
-      }
-    );
+    this.vectorRepository = await createDao(EntityTypes.VectorDocument, DatabaseTypes.LanceDB, {
+      database: `${this.config.path}/lancedb`,
+      options: {
+        vectorSize: this.config.lancedb?.vectorDimension || 384,
+        metricType: 'cosine',
+      },
+    });
 
-    this.vectorDAO = await createDAO(EntityTypes.VectorDocument, DatabaseTypes.LanceDB, {
+    this.vectorDAO = await createDao(EntityTypes.VectorDocument, DatabaseTypes.LanceDB, {
       database: `${this.config.path}/lancedb`,
       options: this.config.lancedb,
     });
@@ -147,19 +143,10 @@ class LanceDBBackend implements BackendInterface {
 
   async retrieve(key: string, namespace: string = 'default'): Promise<JSONValue | null> {
     try {
-      const searchResult = await this.vectorDAO.bulkVectorOperations(
-        [
-          {
-            id: `${namespace}:${key}`,
-            vector: new Array(this.config.lancedb?.vectorDimension || 384).fill(0),
-          },
-        ],
-        'upsert'
-      );
+      // Use findById instead of bulk vector operations for retrieval
+      const result = await this.vectorDAO.findById(`${namespace}:${key}`);
 
-      if (!searchResult || searchResult.length === 0) return null;
-
-      const result = searchResult[0];
+      if (!result) return null;
       if (result.metadata?.serialized_data) {
         return JSON.parse(result.metadata.serialized_data);
       }
@@ -224,7 +211,7 @@ class LanceDBBackend implements BackendInterface {
     };
     return {
       entries: stats.totalVectors || 0,
-      size: stats.indexedVectors || 0,
+      size: stats.totalVectors || 0,
       lastModified: Date.now(),
     };
   }

@@ -745,7 +745,7 @@ export class EventBuilder {
     source = 'swarm-coordinator'
   ): SwarmEvent {
     return {
-      id: `swarm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `swarm-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       timestamp: new Date(),
       source,
       type: 'swarm',
@@ -768,7 +768,7 @@ export class EventBuilder {
     source = 'mcp-server'
   ): MCPEvent {
     return {
-      id: `mcp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `mcp-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       timestamp: new Date(),
       source,
       type: 'mcp',
@@ -793,7 +793,7 @@ export class EventBuilder {
     } = {}
   ): NeuralEvent {
     return {
-      id: `neural-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `neural-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       timestamp: new Date(),
       source: options.source || 'neural-service',
       type: 'neural',

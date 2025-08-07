@@ -14,39 +14,39 @@ import type { MCPRequest, MCPResponse, MCPTool } from '../../../../utils/types';
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
 const mockToolRegistry = {
-  register: jest.fn(),
-  unregister: jest.fn(),
-  get: jest.fn(),
-  list: jest.fn(),
-  exists: jest.fn(),
-  validateTool: jest.fn(),
-  getSchema: jest.fn(),
+  register: vi.fn(),
+  unregister: vi.fn(),
+  get: vi.fn(),
+  list: vi.fn(),
+  exists: vi.fn(),
+  validateTool: vi.fn(),
+  getSchema: vi.fn(),
 };
 
 const mockSchemaValidator = {
-  validateToolDefinition: jest.fn(),
-  validateInputSchema: jest.fn(),
-  validateToolCall: jest.fn(),
+  validateToolDefinition: vi.fn(),
+  validateInputSchema: vi.fn(),
+  validateToolCall: vi.fn(),
 };
 
 const mockLogger = {
-  debug: jest.fn(),
-  info: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
+  debug: vi.fn(),
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
 };
 
 const mockMetricsCollector = {
-  recordToolRegistration: jest.fn(),
-  recordToolDiscovery: jest.fn(),
-  recordToolCall: jest.fn(),
-  incrementCounter: jest.fn(),
+  recordToolRegistration: vi.fn(),
+  recordToolDiscovery: vi.fn(),
+  recordToolCall: vi.fn(),
+  incrementCounter: vi.fn(),
 };
 
 const mockEventBus = {
-  emit: jest.fn(),
-  on: jest.fn(),
-  off: jest.fn(),
+  emit: vi.fn(),
+  on: vi.fn(),
+  off: vi.fn(),
 };
 
 // === CONTRACT INTERFACES ===
@@ -237,7 +237,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
               includeTests: { type: 'boolean', default: false },
             },
           },
-          handler: jest.fn(),
+          handler: vi.fn(),
         };
 
         // Act - Register the tool
@@ -281,7 +281,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
           name: '', // Invalid: empty name
           description: '', // Invalid: empty description
           inputSchema: { type: 'object' },
-          handler: jest.fn(),
+          handler: vi.fn(),
         };
 
         // Act - Attempt to register invalid tool
@@ -321,7 +321,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
               newFeature: { type: 'boolean' },
             },
           },
-          handler: jest.fn(),
+          handler: vi.fn(),
         };
 
         // Act - Re-register existing tool
@@ -391,19 +391,19 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
             name: 'analyze_code',
             description: 'Code analysis tool',
             inputSchema: { type: 'object' },
-            handler: jest.fn(),
+            handler: vi.fn(),
           },
           {
             name: 'format_code',
             description: 'Code formatting tool',
             inputSchema: { type: 'object' },
-            handler: jest.fn(),
+            handler: vi.fn(),
           },
           {
             name: 'test_runner',
             description: 'Test execution tool',
             inputSchema: { type: 'object' },
-            handler: jest.fn(),
+            handler: vi.fn(),
           },
         ];
 
@@ -435,7 +435,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
                 input: { type: 'string' },
               },
             },
-            handler: jest.fn(),
+            handler: vi.fn(),
           },
         ];
 
@@ -482,19 +482,19 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
             name: 'code_analyzer',
             description: 'Analyzes code quality and complexity',
             inputSchema: { type: 'object' },
-            handler: jest.fn(),
+            handler: vi.fn(),
           },
           {
             name: 'test_generator',
             description: 'Generates unit tests automatically',
             inputSchema: { type: 'object' },
-            handler: jest.fn(),
+            handler: vi.fn(),
           },
           {
             name: 'doc_writer',
             description: 'Creates documentation from code',
             inputSchema: { type: 'object' },
-            handler: jest.fn(),
+            handler: vi.fn(),
           },
         ];
 
@@ -529,7 +529,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
           name: 'specific_tool',
           description: 'A specific tool for testing',
           inputSchema: { type: 'object' },
-          handler: jest.fn(),
+          handler: vi.fn(),
         };
 
         mockToolRegistry.get.mockReturnValue(specificTool);
@@ -584,7 +584,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
         name: 'lifecycle_tool',
         description: 'Tool for testing lifecycle events',
         inputSchema: { type: 'object' },
-        handler: jest.fn(),
+        handler: vi.fn(),
       };
 
       // Act - Register tool
@@ -614,10 +614,10 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
 
   // Clean test isolation - London School principle
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });

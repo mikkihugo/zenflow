@@ -56,7 +56,7 @@ class MockOutputFormatter implements OutputFormatter {
   private formatFunction: jest.Mock;
 
   constructor(formatFunction?: jest.Mock) {
-    this.formatFunction = formatFunction || jest.fn();
+    this.formatFunction = formatFunction || vi.fn();
 
     // Setup default renderers
     this.setupDefaultRenderers();
@@ -114,13 +114,13 @@ class MockOutputWriter {
 
   constructor() {
     this.console = {
-      log: jest.fn(),
-      error: jest.fn(),
-      warn: jest.fn(),
-      info: jest.fn(),
-      table: jest.fn(),
+      log: vi.fn(),
+      error: vi.fn(),
+      warn: vi.fn(),
+      info: vi.fn(),
+      table: vi.fn(),
     };
-    this.formatFunction = jest.fn();
+    this.formatFunction = vi.fn();
   }
 
   write(data: unknown, options?: FormatOptions & { target?: 'stdout' | 'stderr' }): void {
@@ -153,7 +153,7 @@ describe('OutputFormatter - TDD London', () => {
   let mockFormatFunction: jest.Mock;
 
   beforeEach(() => {
-    mockFormatFunction = jest.fn();
+    mockFormatFunction = vi.fn();
     formatter = new MockOutputFormatter(mockFormatFunction);
     writer = new MockOutputWriter();
     writer.setFormatter(mockFormatFunction);
@@ -226,8 +226,8 @@ describe('OutputFormatter - TDD London', () => {
 
     it('should list all supported formats', () => {
       // Arrange
-      formatter.addRenderer('xml', { render: jest.fn() });
-      formatter.addRenderer('csv', { render: jest.fn() });
+      formatter.addRenderer('xml', { render: vi.fn() });
+      formatter.addRenderer('csv', { render: vi.fn() });
 
       // Act
       const formats = formatter.getSupportedFormats();
@@ -317,7 +317,7 @@ describe('OutputFormatter - TDD London', () => {
       circularData.self = circularData;
 
       const safeJsonRenderer: FormatRenderer = {
-        render: jest.fn().mockImplementation((data) => {
+        render: vi.fn().mockImplementation((data) => {
           try {
             return JSON.stringify(data, null, 2);
           } catch (_error) {
@@ -345,7 +345,7 @@ describe('OutputFormatter - TDD London', () => {
       ];
 
       const tableRenderer: FormatRenderer = {
-        render: jest.fn().mockImplementation((data) => {
+        render: vi.fn().mockImplementation((data) => {
           if (Array.isArray(data)) {
             return `Mock table with ${data.length} rows`;
           }
@@ -379,7 +379,7 @@ describe('OutputFormatter - TDD London', () => {
     it('should apply colors when enabled', () => {
       // Arrange
       const colorRenderer: FormatRenderer = {
-        render: jest.fn().mockImplementation((data, options) => {
+        render: vi.fn().mockImplementation((data, options) => {
           const baseOutput = JSON.stringify(data);
           return options.colors ? `\x1b[32m${baseOutput}\x1b[0m` : baseOutput;
         }),
@@ -406,7 +406,7 @@ describe('OutputFormatter - TDD London', () => {
     it('should apply theme-specific formatting', () => {
       // Arrange
       const themedRenderer: FormatRenderer = {
-        render: jest.fn().mockImplementation((data, options) => {
+        render: vi.fn().mockImplementation((data, options) => {
           const theme = options.theme || 'light';
           return `[${theme}] ${JSON.stringify(data)}`;
         }),
@@ -436,13 +436,13 @@ describe('OutputFormatter - TDD London', () => {
       // Arrange
       const invalidData = undefined;
       const robustRenderer: FormatRenderer = {
-        render: jest.fn().mockImplementation((data) => {
+        render: vi.fn().mockImplementation((data) => {
           if (data === undefined || data === null) {
             return 'No data available';
           }
           return JSON.stringify(data);
         }),
-        validate: jest.fn().mockImplementation((data) => data !== undefined),
+        validate: vi.fn().mockImplementation((data) => data !== undefined),
       };
 
       formatter.addRenderer('robust', robustRenderer);
@@ -458,7 +458,7 @@ describe('OutputFormatter - TDD London', () => {
       // Arrange
       const validatingRenderer: FormatRenderer = {
         render: jest.fn(() => 'Valid data rendered'),
-        validate: jest.fn().mockReturnValue(false),
+        validate: vi.fn().mockReturnValue(false),
       };
 
       formatter.addRenderer('validating', validatingRenderer);
@@ -478,7 +478,7 @@ describe('OutputFormatter - TDD London', () => {
       // Arrange
       const longData = { message: 'This is a very long message that should be truncated' };
       const widthConstrainedRenderer: FormatRenderer = {
-        render: jest.fn().mockImplementation((data, options) => {
+        render: vi.fn().mockImplementation((data, options) => {
           let output = JSON.stringify(data);
           if (options.maxWidth && output.length > options.maxWidth) {
             output = `${output.substring(0, options.maxWidth - 3)}...`;

@@ -556,7 +556,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
       const emergentInsights = await this.detectEmergentIntelligence(knowledgeGraph);
 
       const result: AggregatedKnowledge = {
-        id: `agg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `agg-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         originalContributions: contributions.length,
         synthesizedKnowledge: validated,
         knowledgeGraph,

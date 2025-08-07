@@ -6,6 +6,7 @@
  */
 
 import { EventEmitter } from 'node:events';
+import type { WebConfig as WebInterfaceConfig } from '../interfaces/web/web-config';
 import {
   type InterfaceMode,
   InterfaceModeDetector,
@@ -24,6 +25,8 @@ export interface LaunchOptions extends ModeDetectionOptions {
     coreSystem?: any; // Reference to ApplicationCoordinator
   };
 }
+
+// Remove local WebConfig interface since we import it from web-config.ts
 
 export interface LaunchResult {
   mode: InterfaceMode;
@@ -238,15 +241,18 @@ export class InterfaceLauncher extends EventEmitter {
       // Dynamic import of Web interface
       const { WebInterface } = await import('../interfaces/web/web-interface');
 
-      const web = new WebInterface({
+      const webConfig: WebInterfaceConfig = {
         port: webPort,
         theme: options.config?.theme || 'dark',
         realTime: options.config?.realTime !== false,
         coreSystem: options.config?.coreSystem,
-      });
+      };
 
-      await web.initialize();
-      const server = await web.start();
+      const web = new WebInterface(webConfig);
+
+      // Web interface auto-initializes on construction
+      await web.run();
+      const server = web as any; // Use the web interface instance as server
 
       const url = `http://localhost:${webPort}`;
 
@@ -405,8 +411,8 @@ export class InterfaceLauncher extends EventEmitter {
       process.exit(1);
     });
 
-    process.on('unhandledRejection', async (reason, promise) => {
-      logger.error('Unhandled rejection at:', promise, 'reason:', reason);
+    process.on('unhandledRejection', async (reason: any) => {
+      logger.error('Unhandled rejection:', reason);
       try {
         await this.shutdown();
       } catch (shutdownError) {

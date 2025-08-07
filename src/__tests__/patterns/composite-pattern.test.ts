@@ -19,7 +19,7 @@ import {
 
 // Mock task executor for testing
 const createMockTaskExecutor = (delay: number = 50, shouldSucceed: boolean = true) =>
-  jest.fn().mockImplementation(async (task: TaskDefinition) => {
+  vi.fn().mockImplementation(async (task: TaskDefinition) => {
     await new Promise((resolve) => setTimeout(resolve, delay));
 
     if (!shouldSucceed) {
@@ -189,7 +189,7 @@ describe('Composite Pattern Implementation', () => {
         const executionTimes = [50, 100, 150, 200, 250];
         let callCount = 0;
 
-        const variableTaskExecutor = jest.fn().mockImplementation(async (task: TaskDefinition) => {
+        const variableTaskExecutor = vi.fn().mockImplementation(async (task: TaskDefinition) => {
           const delay = executionTimes[callCount++];
           await new Promise((resolve) => setTimeout(resolve, delay));
 
@@ -828,37 +828,37 @@ describe('Composite Pattern Implementation', () => {
 
     beforeEach(() => {
       mockAgent = {
-        executeTask: jest.fn(),
-        canHandleTask: jest.fn(),
-        getCapabilities: jest.fn(),
-        getStatus: jest.fn(),
-        getId: jest.fn().mockReturnValue('mock-agent'),
-        getName: jest.fn().mockReturnValue('Mock Agent'),
-        getType: jest.fn().mockReturnValue('individual'),
-        initialize: jest.fn(),
-        shutdown: jest.fn(),
-        pause: jest.fn(),
-        resume: jest.fn(),
-        updateCapabilities: jest.fn(),
-        getResourceUsage: jest.fn(),
+        executeTask: vi.fn(),
+        canHandleTask: vi.fn(),
+        getCapabilities: vi.fn(),
+        getStatus: vi.fn(),
+        getId: vi.fn().mockReturnValue('mock-agent'),
+        getName: vi.fn().mockReturnValue('Mock Agent'),
+        getType: vi.fn().mockReturnValue('individual'),
+        initialize: vi.fn(),
+        shutdown: vi.fn(),
+        pause: vi.fn(),
+        resume: vi.fn(),
+        updateCapabilities: vi.fn(),
+        getResourceUsage: vi.fn(),
       };
 
       mockGroup = {
-        executeTask: jest.fn(),
-        canHandleTask: jest.fn(),
-        getCapabilities: jest.fn(),
-        getStatus: jest.fn(),
-        getId: jest.fn().mockReturnValue('mock-group'),
-        getName: jest.fn().mockReturnValue('Mock Group'),
-        getType: jest.fn().mockReturnValue('composite'),
-        initialize: jest.fn(),
-        shutdown: jest.fn(),
-        addMember: jest.fn(),
-        removeMember: jest.fn(),
-        getMembers: jest.fn().mockReturnValue([mockAgent]),
-        setLoadBalancingStrategy: jest.fn(),
-        getLoadBalancingStrategy: jest.fn().mockReturnValue('round-robin'),
-        getTotalAgentCount: jest.fn().mockReturnValue(1),
+        executeTask: vi.fn(),
+        canHandleTask: vi.fn(),
+        getCapabilities: vi.fn(),
+        getStatus: vi.fn(),
+        getId: vi.fn().mockReturnValue('mock-group'),
+        getName: vi.fn().mockReturnValue('Mock Group'),
+        getType: vi.fn().mockReturnValue('composite'),
+        initialize: vi.fn(),
+        shutdown: vi.fn(),
+        addMember: vi.fn(),
+        removeMember: vi.fn(),
+        getMembers: vi.fn().mockReturnValue([mockAgent]),
+        setLoadBalancingStrategy: vi.fn(),
+        getLoadBalancingStrategy: vi.fn().mockReturnValue('round-robin'),
+        getTotalAgentCount: vi.fn().mockReturnValue(1),
       };
     });
 

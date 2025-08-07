@@ -5,7 +5,7 @@
  * with enhanced transaction support and relational-specific operations.
  */
 
-import { BaseDataAccessObject } from '../base-repository';
+import { BaseDao } from '../base.dao';
 import type { TransactionOperation } from '../interfaces';
 
 /**
@@ -14,7 +14,23 @@ import type { TransactionOperation } from '../interfaces';
  * @template T The entity type this DAO manages
  * @example
  */
-export class RelationalDAO<T> extends BaseDataAccessObject<T> {
+export class RelationalDAO<T> extends BaseDao<T> {
+  /**
+   * Map database row to entity
+   */
+  protected mapRowToEntity(row: any): T {
+    // Default implementation - override in specific DAOs
+    return row as T;
+  }
+
+  /**
+   * Map entity to database row
+   */
+  protected mapEntityToRow(entity: Partial<T>): Record<string, any> {
+    // Default implementation - convert entity to plain object
+    return { ...entity } as Record<string, any>;
+  }
+
   /**
    * Execute complex multi-table transaction
    *

@@ -28,25 +28,20 @@ export const defaultSwarmConfig: SwarmDatabaseConfig = {
  */
 export const defaultMaintenanceConfig: MaintenanceConfig = {
   archiveAfterDays: 30,
-  deleteArchivedAfterDays: 90,
-  maxActiveSwarms: 0, // No limit
-  compressionLevel: 6,
-  enabled: true,
+  deleteAfterDays: 90,
+  compressAfterMB: 100,
+  maintenanceIntervalHours: 24,
 };
 
 /**
  * Default backup configuration
  */
 export const defaultBackupConfig: BackupConfig = {
-  enabled: true,
-  backupsPath: './.claude-zen/backups',
-  retentionDays: 7,
+  dailyBackupHour: 2,
+  keepDailyBackups: 7,
   compressionLevel: 6,
-  schedule: {
-    daily: true,
-    hourly: false,
-    incremental: false, // SQLite doesn't support true incrementals
-  },
+  useEncryption: false,
+  enableRemoteSync: false,
 };
 
 /**
@@ -76,8 +71,8 @@ export function registerSwarmProviders(
   container.register(SWARM_TOKENS.StoragePath, {
     type: 'singleton',
     create: (container) => {
-      const config = container.resolve(SWARM_TOKENS.Config);
-      return config.basePath;
+      const config = container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig;
+      return (config as any).basePath;
     },
   });
 
@@ -86,8 +81,8 @@ export function registerSwarmProviders(
     type: 'singleton',
     create: (container) =>
       new SwarmDatabaseManager(
-        container.resolve(SWARM_TOKENS.Config),
-        container.resolve(DATABASE_TOKENS.DALFactory),
+        container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig,
+        container.resolve(DATABASE_TOKENS.DALFactory) as any,
         container.resolve(CORE_TOKENS.Logger)
       ),
   });
@@ -95,29 +90,25 @@ export function registerSwarmProviders(
   // Register maintenance manager
   container.register(SWARM_TOKENS.MaintenanceManager, {
     type: 'singleton',
-    create: (container) =>
-      new SwarmMaintenanceManager(
-        {
-          ...defaultMaintenanceConfig,
-          ...customConfig?.maintenance,
-        },
-        container.resolve(SWARM_TOKENS.DatabaseManager),
-        container.resolve(CORE_TOKENS.Logger)
-      ),
+    create: (container) => {
+      const config = container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig;
+      return new SwarmMaintenanceManager(config.basePath, {
+        ...defaultMaintenanceConfig,
+        ...customConfig?.maintenance,
+      });
+    },
   });
 
   // Register backup manager
   container.register(SWARM_TOKENS.BackupManager, {
     type: 'singleton',
-    create: (container) =>
-      new SwarmBackupManager(
-        {
-          ...defaultBackupConfig,
-          ...customConfig?.backup,
-        },
-        container.resolve(SWARM_TOKENS.DatabaseManager),
-        container.resolve(CORE_TOKENS.Logger)
-      ),
+    create: (container) => {
+      const config = container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig;
+      return new SwarmBackupManager(config.basePath, {
+        ...defaultBackupConfig,
+        ...customConfig?.backup,
+      });
+    },
   });
 }
 
@@ -132,9 +123,11 @@ export async function initializeSwarmStorage(container: DIContainer): Promise<{
   backupManager: SwarmBackupManager;
 }> {
   // Resolve all swarm services
-  const databaseManager = container.resolve(SWARM_TOKENS.DatabaseManager);
-  const maintenanceManager = container.resolve(SWARM_TOKENS.MaintenanceManager);
-  const backupManager = container.resolve(SWARM_TOKENS.BackupManager);
+  const databaseManager = container.resolve(SWARM_TOKENS.DatabaseManager) as SwarmDatabaseManager;
+  const maintenanceManager = container.resolve(
+    SWARM_TOKENS.MaintenanceManager
+  ) as SwarmMaintenanceManager;
+  const backupManager = container.resolve(SWARM_TOKENS.BackupManager) as SwarmBackupManager;
 
   // Initialize in order
   await databaseManager.initialize();

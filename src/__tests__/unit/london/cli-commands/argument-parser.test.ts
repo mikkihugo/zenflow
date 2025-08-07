@@ -72,8 +72,8 @@ class MockArgumentParser implements ArgumentParser {
   private validateFunction: jest.Mock;
 
   constructor(parseFunction?: jest.Mock, validateFunction?: jest.Mock) {
-    this.parseFunction = parseFunction || jest.fn();
-    this.validateFunction = validateFunction || jest.fn();
+    this.parseFunction = parseFunction || vi.fn();
+    this.validateFunction = validateFunction || vi.fn();
   }
 
   parse(args: string[]): ParseResult {
@@ -119,8 +119,8 @@ describe('ArgumentParser - TDD London', () => {
   let mockValidateFunction: jest.Mock;
 
   beforeEach(() => {
-    mockParseFunction = jest.fn();
-    mockValidateFunction = jest.fn();
+    mockParseFunction = vi.fn();
+    mockValidateFunction = vi.fn();
     parser = new MockArgumentParser(mockParseFunction, mockValidateFunction);
   });
 

@@ -407,7 +407,7 @@ export class IntegratedErrorHandler {
   private classifyError(error: Error, context: Partial<ErrorContext>): BaseClaudeZenError {
     // Use MCP error classifier if this is from an MCP operation
     if (context.component === 'MCP' || context.operation?.includes('mcp')) {
-      return mcpErrorHandler.MCPErrorClassifier.classifyError(error, {
+      return mcpErrorHandler.classifyError(error, {
         toolName: context.operation || 'unknown',
         startTime: context.timestamp || Date.now(),
         parameters: context.metadata || {},

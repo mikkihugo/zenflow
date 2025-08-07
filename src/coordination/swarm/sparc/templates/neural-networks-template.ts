@@ -32,10 +32,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
 
   specification: {
     id: nanoid(),
-    name: 'Neural Networks System',
     domain: 'neural-networks',
-    description:
-      'High-performance neural network system with WASM acceleration and distributed training',
     functionalRequirements: [
       {
         id: nanoid(),
@@ -43,12 +40,9 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         description: 'Define, create, and manage various neural network architectures',
         type: 'core',
         priority: 'HIGH',
-        category: 'architecture',
-        source: 'system',
-        validation: 'Supports feedforward, CNN, RNN, and transformer architectures',
         dependencies: ['Model Registry', 'Configuration Manager'],
-        acceptanceCriteria: [
-          'Support for multiple network types',
+        testCriteria: [
+          'Supports feedforward, CNN, RNN, and transformer architectures',
           'Dynamic architecture configuration',
           'Architecture validation and optimization',
         ],
@@ -59,14 +53,11 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         description: 'Perform high-speed neural network inference using WASM acceleration',
         type: 'performance',
         priority: 'HIGH',
-        category: 'computation',
-        source: 'performance',
-        validation: 'Sub-millisecond inference for standard models',
         dependencies: ['WASM Runtime', 'Model Loader'],
-        acceptanceCriteria: [
+        testCriteria: [
+          'Sub-millisecond inference for standard models',
           'WASM compilation for critical operations',
           'Memory-efficient tensor operations',
-          'Batch processing support',
         ],
       },
       {
@@ -75,13 +66,10 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         description: 'Coordinate distributed training across multiple nodes and GPUs',
         type: 'distributed',
         priority: 'HIGH',
-        category: 'training',
-        source: 'scalability',
-        validation: 'Linear scaling with number of training nodes',
         dependencies: ['Communication Layer', 'Gradient Synchronization'],
-        acceptanceCriteria: [
+        testCriteria: [
+          'Linear scaling with number of training nodes',
           'Parameter server architecture',
-          'Asynchronous gradient updates',
           'Fault tolerance and recovery',
         ],
       },
@@ -91,14 +79,11 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         description: 'Track, version, and manage trained neural network models',
         type: 'management',
         priority: 'MEDIUM',
-        category: 'lifecycle',
-        source: 'operational',
-        validation: 'Complete model lifecycle tracking',
         dependencies: ['Storage Backend', 'Metadata Database'],
-        acceptanceCriteria: [
+        testCriteria: [
+          'Complete model lifecycle tracking',
           'Model versioning with metadata',
           'Performance tracking and comparison',
-          'Model deployment automation',
         ],
       },
       {
@@ -107,14 +92,11 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         description: 'Monitor neural network performance, accuracy, and resource usage',
         type: 'monitoring',
         priority: 'MEDIUM',
-        category: 'observability',
-        source: 'operational',
-        validation: 'Real-time metrics and alerting',
         dependencies: ['Metrics Collector', 'Alerting System'],
-        acceptanceCriteria: [
+        testCriteria: [
+          'Real-time metrics and alerting',
           'Inference latency monitoring',
           'Model accuracy tracking',
-          'Resource utilization alerts',
         ],
       },
     ],
@@ -123,482 +105,529 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         id: nanoid(),
         title: 'Inference Performance',
         description: 'Ultra-fast inference with sub-millisecond latency',
-        type: 'performance',
         priority: 'HIGH',
-        category: 'latency',
-        metric: 'response_time',
-        target: '<1ms for standard models',
-        measurement: 'P95 inference latency',
-        rationale: 'Real-time applications require immediate responses',
+        metrics: {
+          response_time: '<1ms for standard models',
+          measurement: 'P95 inference latency',
+        },
       },
       {
         id: nanoid(),
         title: 'Training Scalability',
         description: 'Linear scaling with computational resources',
-        type: 'scalability',
         priority: 'HIGH',
-        category: 'horizontal',
-        metric: 'throughput',
-        target: 'Linear scaling up to 100 nodes',
-        measurement: 'Training throughput per node',
-        rationale: 'Efficient utilization of distributed resources',
+        metrics: {
+          throughput: 'Linear scaling up to 100 nodes',
+          measurement: 'Training throughput per node',
+        },
       },
       {
         id: nanoid(),
         title: 'Memory Efficiency',
         description: 'Optimized memory usage for large models',
-        type: 'performance',
         priority: 'HIGH',
-        category: 'memory',
-        metric: 'memory_usage',
-        target: '<50% of available memory',
-        measurement: 'Peak memory consumption',
-        rationale: 'Support for large models on limited hardware',
+        metrics: {
+          memory_usage: '<50% of available memory',
+          measurement: 'Peak memory consumption',
+        },
       },
     ],
-    systemConstraints: [
+    constraints: [
       {
         id: nanoid(),
         type: 'performance',
         description: 'WASM must be used for all performance-critical operations',
-        rationale: 'Achieve native-level performance in browser environments',
-        impact: 'HIGH',
+        impact: 'high',
       },
       {
         id: nanoid(),
-        type: 'compatibility',
+        type: 'technical',
         description: 'Support for multiple hardware accelerators (CPU, GPU, TPU)',
-        rationale: 'Flexibility in deployment environments',
-        impact: 'MEDIUM',
+        impact: 'medium',
       },
       {
         id: nanoid(),
-        type: 'security',
+        type: 'regulatory',
         description: 'Model and training data must be encrypted',
-        rationale: 'Protect intellectual property and sensitive data',
-        impact: 'HIGH',
+        impact: 'high',
       },
     ],
-    projectAssumptions: [
-      'WASM runtime available in target environment',
-      'Access to GPU resources for training',
-      'Sufficient network bandwidth for distributed training',
-      'Compatible data formats and preprocessing pipelines',
+    assumptions: [
+      {
+        id: nanoid(),
+        description: 'WASM runtime available in target environment',
+        confidence: 'high',
+        riskIfIncorrect: 'HIGH',
+      },
+      {
+        id: nanoid(),
+        description: 'Access to GPU resources for training',
+        confidence: 'medium',
+        riskIfIncorrect: 'HIGH',
+      },
+      {
+        id: nanoid(),
+        description: 'Sufficient network bandwidth for distributed training',
+        confidence: 'medium',
+        riskIfIncorrect: 'MEDIUM',
+      },
+      {
+        id: nanoid(),
+        description: 'Compatible data formats and preprocessing pipelines',
+        confidence: 'high',
+        riskIfIncorrect: 'LOW',
+      },
     ],
-    externalDependencies: [
+    dependencies: [
       {
         id: nanoid(),
         name: 'WASM Runtime',
-        type: 'runtime',
-        description: 'WebAssembly runtime for high-performance computations',
+        type: 'infrastructure',
         version: 'Latest',
-        criticality: 'HIGH',
+        critical: true,
       },
       {
         id: nanoid(),
         name: 'GPU Drivers',
-        type: 'hardware',
-        description: 'CUDA or OpenCL drivers for GPU acceleration',
+        type: 'infrastructure',
         version: '11.0+',
-        criticality: 'MEDIUM',
+        critical: true,
       },
       {
         id: nanoid(),
         name: 'Training Datasets',
-        type: 'data',
-        description: 'Preprocessed training and validation datasets',
+        type: 'database',
         version: 'Current',
-        criticality: 'HIGH',
+        critical: true,
       },
     ],
-    riskAnalysis: {
-      identifiedRisks: [
+    riskAssessment: {
+      risks: [
         {
           id: nanoid(),
           description: 'WASM performance bottlenecks in complex operations',
-          probability: 'MEDIUM',
-          impact: 'HIGH',
+          probability: 'medium',
+          impact: 'high',
           category: 'technical',
         },
         {
           id: nanoid(),
           description: 'Memory limitations for very large models',
-          probability: 'MEDIUM',
-          impact: 'MEDIUM',
-          category: 'resource',
+          probability: 'medium',
+          impact: 'medium',
+          category: 'technical',
         },
         {
           id: nanoid(),
           description: 'Network partitions affecting distributed training',
-          probability: 'LOW',
-          impact: 'HIGH',
-          category: 'infrastructure',
+          probability: 'low',
+          impact: 'high',
+          category: 'operational',
         },
       ],
       mitigationStrategies: [
         {
           riskId: 'wasm-performance',
           strategy: 'Implement hybrid WASM/JavaScript execution with performance monitoring',
-          effectiveness: 'HIGH',
+          priority: 'HIGH',
+          effort: 'medium',
         },
         {
           riskId: 'memory-limitations',
           strategy: 'Model sharding and streaming techniques for large models',
-          effectiveness: 'MEDIUM',
+          priority: 'MEDIUM',
+          effort: 'high',
         },
         {
           riskId: 'network-partitions',
           strategy: 'Checkpoint-based recovery and elastic training protocols',
-          effectiveness: 'HIGH',
+          priority: 'HIGH',
+          effort: 'medium',
         },
       ],
+      overallRisk: 'MEDIUM',
     },
     successMetrics: [
       {
         id: nanoid(),
-        metric: 'inference_latency',
+        name: 'Inference Latency',
+        description: 'Sub-millisecond inference performance',
         target: '<1ms P95',
         measurement: 'Automated performance testing',
-        frequency: 'Continuous',
       },
       {
         id: nanoid(),
-        metric: 'training_efficiency',
+        name: 'Training Efficiency',
+        description: 'Optimal resource utilization during training',
         target: '>80% GPU utilization',
         measurement: 'Resource monitoring',
-        frequency: 'During training',
       },
       {
         id: nanoid(),
-        metric: 'model_accuracy',
+        name: 'Model Accuracy',
+        description: 'High-quality model predictions',
         target: '>95% on validation set',
         measurement: 'Automated evaluation',
-        frequency: 'Per training run',
       },
     ],
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    acceptanceCriteria: [],
   },
 
   pseudocode: {
     id: nanoid(),
-    specificationId: 'neural-networks-spec',
+    algorithms: [],
     coreAlgorithms: [
       {
-        id: nanoid(),
         name: 'WASMMatrixMultiplication',
-        description: 'WASM-accelerated matrix multiplication for neural network operations',
-        pseudocode: `
-ALGORITHM WASMMatrixMultiplication
-INPUT: matrixA[m][k], matrixB[k][n], wasmModule
-OUTPUT: resultMatrix[m][n]
-
-BEGIN
-  // Allocate WASM memory
-  wasmMemory ← ALLOCATE_WASM_MEMORY(sizeof(matrixA) + sizeof(matrixB) + sizeof(result))
-  
-  // Copy matrices to WASM memory
-  COPY_TO_WASM(wasmMemory.matrixA_ptr, matrixA)
-  COPY_TO_WASM(wasmMemory.matrixB_ptr, matrixB)
-  
-  // Call WASM matrix multiplication function
-  wasmModule.matrix_multiply(
-    wasmMemory.matrixA_ptr, m, k,
-    wasmMemory.matrixB_ptr, k, n,
-    wasmMemory.result_ptr
-  )
-  
-  // Copy result back to JavaScript
-  resultMatrix ← COPY_FROM_WASM(wasmMemory.result_ptr, m * n)
-  
-  // Free WASM memory
-  FREE_WASM_MEMORY(wasmMemory)
-  
-  RETURN resultMatrix
-END
-        `.trim(),
+        purpose: 'WASM-accelerated matrix multiplication for neural network operations',
+        inputs: [
+          { name: 'matrixA', type: 'Matrix', description: 'First input matrix [m][k]' },
+          { name: 'matrixB', type: 'Matrix', description: 'Second input matrix [k][n]' },
+          { name: 'wasmModule', type: 'WASMModule', description: 'WASM module for computations' },
+        ],
+        outputs: [{ name: 'resultMatrix', type: 'Matrix', description: 'Result matrix [m][n]' }],
+        steps: [
+          {
+            stepNumber: 1,
+            description: 'Allocate WASM memory',
+            pseudocode:
+              'wasmMemory ← ALLOCATE_WASM_MEMORY(sizeof(matrixA) + sizeof(matrixB) + sizeof(result))',
+          },
+          {
+            stepNumber: 2,
+            description: 'Copy matrices to WASM memory',
+            pseudocode:
+              'COPY_TO_WASM(wasmMemory.matrixA_ptr, matrixA); COPY_TO_WASM(wasmMemory.matrixB_ptr, matrixB)',
+          },
+          {
+            stepNumber: 3,
+            description: 'Call WASM matrix multiplication',
+            pseudocode:
+              'wasmModule.matrix_multiply(wasmMemory.matrixA_ptr, m, k, wasmMemory.matrixB_ptr, k, n, wasmMemory.result_ptr)',
+          },
+          {
+            stepNumber: 4,
+            description: 'Copy result back to JavaScript',
+            pseudocode: 'resultMatrix ← COPY_FROM_WASM(wasmMemory.result_ptr, m * n)',
+          },
+          {
+            stepNumber: 5,
+            description: 'Free WASM memory',
+            pseudocode: 'FREE_WASM_MEMORY(wasmMemory)',
+          },
+        ],
         complexity: {
-          time: 'O(n^3)' as const,
-          space: 'O(n^2)' as const,
-          explanation: 'Cubic time for matrix multiplication, quadratic space for matrices',
+          timeComplexity: 'O(n^3)',
+          spaceComplexity: 'O(n^2)',
+          scalability: 'Cubic time for matrix multiplication, quadratic space for matrices',
+          worstCase: 'O(n^3)',
         },
-        inputParameters: ['matrixA', 'matrixB', 'wasmModule'],
-        outputFormat: 'Matrix',
-        preconditions: ['Matrices have compatible dimensions', 'WASM module loaded'],
-        postconditions: ['Result matrix computed correctly'],
-        invariants: ['Matrix dimensions preserved', 'WASM memory properly managed'],
-      },
-      {
-        id: nanoid(),
-        name: 'DistributedBackpropagation',
-        description: 'Distributed backpropagation with gradient synchronization',
-        pseudocode: `
-ALGORITHM DistributedBackpropagation
-INPUT: network, trainingBatch, nodeId, clusterNodes[]
-OUTPUT: updatedWeights, synchronizedGradients
-
-BEGIN
-  // Forward pass on local batch
-  activations ← FORWARD_PASS(network, trainingBatch)
-  loss ← CALCULATE_LOSS(activations, trainingBatch.labels)
-  
-  // Backward pass to compute local gradients
-  localGradients ← BACKWARD_PASS(network, activations, loss)
-  
-  // Synchronize gradients across cluster
-  IF PARAMETER_SERVER_MODE THEN
-    SEND_GRADIENTS_TO_SERVER(localGradients, nodeId)
-    synchronizedGradients ← RECEIVE_AVERAGED_GRADIENTS()
-  ELSE
-    // All-reduce gradient synchronization
-    synchronizedGradients ← ALL_REDUCE(localGradients, clusterNodes)
-  END IF
-  
-  // Update local network weights
-  learningRate ← GET_LEARNING_RATE(currentEpoch)
-  FOR EACH layer IN network.layers DO
-    layer.weights ← layer.weights - learningRate * synchronizedGradients[layer.id]
-    layer.biases ← layer.biases - learningRate * synchronizedGradients[layer.id].biases
-  END FOR
-  
-  updatedWeights ← EXTRACT_WEIGHTS(network)
-  
-  RETURN updatedWeights, synchronizedGradients
-END
-        `.trim(),
-        complexity: {
-          time: 'O(n * p + c)' as const,
-          space: 'O(p)' as const,
-          explanation:
-            'Linear in network parameters and training samples, plus communication overhead',
-        },
-        inputParameters: ['network', 'trainingBatch', 'nodeId', 'clusterNodes'],
-        outputFormat: 'NetworkWeights',
-        preconditions: ['Network initialized', 'Training batch valid', 'Cluster connectivity'],
-        postconditions: ['Weights updated with synchronized gradients'],
-        invariants: [
-          'Network structure unchanged',
-          'Gradient synchronization maintains consistency',
+        optimizations: [
+          {
+            type: 'performance',
+            description: 'WASM-accelerated computation',
+            impact: 'high',
+            effort: 'medium',
+          },
         ],
       },
       {
-        id: nanoid(),
-        name: 'AdaptiveModelSharding',
-        description: 'Dynamically shard large models across available memory and compute resources',
-        pseudocode: `
-ALGORITHM AdaptiveModelSharding
-INPUT: model, availableMemory, computeNodes[], targetLatency
-OUTPUT: shardingPlan, deploymentConfig
-
-BEGIN
-  totalModelSize ← CALCULATE_MODEL_SIZE(model)
-  
-  IF totalModelSize <= availableMemory THEN
-    // Model fits in single node
-    shardingPlan ← SINGLE_NODE_DEPLOYMENT(model)
-  ELSE
-    // Model requires sharding
-    layers ← ANALYZE_LAYER_DEPENDENCIES(model)
-    memoryRequirements ← ESTIMATE_LAYER_MEMORY(layers)
-    
-    // Greedy sharding algorithm
-    shardingPlan ← []
-    currentShard ← EMPTY_SHARD()
-    
-    FOR EACH layer IN layers DO
-      IF currentShard.memoryUsage + memoryRequirements[layer] <= availableMemory THEN
-        currentShard.ADD_LAYER(layer)
-      ELSE
-        shardingPlan.ADD_SHARD(currentShard)
-        currentShard ← NEW_SHARD(layer)
-      END IF
-    END FOR
-    
-    // Add final shard
-    IF NOT currentShard.IS_EMPTY() THEN
-      shardingPlan.ADD_SHARD(currentShard)
-    END IF
-  END IF
-  
-  // Optimize for target latency
-  deploymentConfig ← OPTIMIZE_DEPLOYMENT(shardingPlan, computeNodes, targetLatency)
-  
-  RETURN shardingPlan, deploymentConfig
-END
-        `.trim(),
+        name: 'DistributedBackpropagation',
+        purpose: 'Distributed backpropagation with gradient synchronization',
+        inputs: [
+          { name: 'network', type: 'NeuralNetwork', description: 'Neural network instance' },
+          { name: 'trainingBatch', type: 'TrainingBatch', description: 'Batch of training data' },
+          { name: 'nodeId', type: 'string', description: 'Current node identifier' },
+          { name: 'clusterNodes', type: 'string[]', description: 'List of cluster node IDs' },
+        ],
+        outputs: [
+          { name: 'updatedWeights', type: 'WeightMatrix', description: 'Updated network weights' },
+          {
+            name: 'synchronizedGradients',
+            type: 'GradientVector',
+            description: 'Synchronized gradients',
+          },
+        ],
+        steps: [
+          {
+            stepNumber: 1,
+            description: 'Forward pass on local batch',
+            pseudocode: 'activations ← FORWARD_PASS(network, trainingBatch)',
+          },
+          {
+            stepNumber: 2,
+            description: 'Backward pass to compute gradients',
+            pseudocode: 'localGradients ← BACKWARD_PASS(network, activations, loss)',
+          },
+          {
+            stepNumber: 3,
+            description: 'Synchronize gradients across cluster',
+            pseudocode: 'synchronizedGradients ← ALL_REDUCE(localGradients, clusterNodes)',
+          },
+          {
+            stepNumber: 4,
+            description: 'Update network weights',
+            pseudocode:
+              'updatedWeights ← UPDATE_WEIGHTS(network, synchronizedGradients, learningRate)',
+          },
+        ],
         complexity: {
-          time: 'O(l * n)' as const,
-          space: 'O(l)' as const,
-          explanation: 'Linear in layers and nodes, space linear in layer count',
+          timeComplexity: 'O(n * p + c)',
+          spaceComplexity: 'O(p)',
+          scalability: 'Linear in network parameters and training samples',
+          worstCase: 'O(n * p + c)',
         },
-        inputParameters: ['model', 'availableMemory', 'computeNodes', 'targetLatency'],
-        outputFormat: 'ShardingPlan',
-        preconditions: ['Model structure analyzed', 'Resource availability known'],
-        postconditions: ['Optimal sharding plan generated'],
-        invariants: ['Model functionality preserved across shards'],
+        optimizations: [
+          {
+            type: 'parallelization',
+            description: 'Gradient synchronization',
+            impact: 'high',
+            effort: 'high',
+          },
+        ],
+      },
+      {
+        name: 'AdaptiveModelSharding',
+        purpose: 'Dynamically shard large models across available memory and compute resources',
+        inputs: [
+          {
+            name: 'model',
+            type: 'NeuralNetworkModel',
+            description: 'Neural network model to shard',
+          },
+          {
+            name: 'availableMemory',
+            type: 'number',
+            description: 'Available memory per node in bytes',
+          },
+          { name: 'computeNodes', type: 'ComputeNode[]', description: 'Available compute nodes' },
+          { name: 'targetLatency', type: 'number', description: 'Target inference latency in ms' },
+        ],
+        outputs: [
+          {
+            name: 'shardingPlan',
+            type: 'ShardingPlan',
+            description: 'Optimized model sharding plan',
+          },
+          {
+            name: 'deploymentConfig',
+            type: 'DeploymentConfig',
+            description: 'Deployment configuration',
+          },
+        ],
+        steps: [
+          {
+            stepNumber: 1,
+            description: 'Calculate model size',
+            pseudocode: 'totalModelSize ← CALCULATE_MODEL_SIZE(model)',
+          },
+          {
+            stepNumber: 2,
+            description: 'Analyze layer dependencies',
+            pseudocode: 'layers ← ANALYZE_LAYER_DEPENDENCIES(model)',
+          },
+          {
+            stepNumber: 3,
+            description: 'Generate sharding plan',
+            pseudocode: 'shardingPlan ← GREEDY_SHARDING(layers, availableMemory)',
+          },
+          {
+            stepNumber: 4,
+            description: 'Optimize deployment',
+            pseudocode:
+              'deploymentConfig ← OPTIMIZE_DEPLOYMENT(shardingPlan, computeNodes, targetLatency)',
+          },
+        ],
+        complexity: {
+          timeComplexity: 'O(l * n)',
+          spaceComplexity: 'O(l)',
+          scalability: 'Linear in layers and nodes',
+          worstCase: 'O(l * n)',
+        },
+        optimizations: [
+          {
+            type: 'algorithmic',
+            description: 'Greedy sharding algorithm',
+            impact: 'medium',
+            effort: 'low',
+          },
+        ],
       },
     ],
     dataStructures: [
       {
-        id: nanoid(),
         name: 'NeuralTensor',
-        type: 'Tensor',
-        description: 'WASM-backed multi-dimensional tensor for neural network operations',
-        keyType: 'number[]',
-        valueType: 'float32',
-        expectedSize: 10000000,
-        accessPatterns: ['random_access', 'sequential_scan', 'batch_operations'],
-        performance: {
-          access: 'O(1)' as const,
-          multiply: 'O(n^3)' as const,
-          update: 'O(1)' as const,
-        },
+        type: 'class',
+        properties: [
+          {
+            name: 'data',
+            type: 'Float32Array',
+            visibility: 'private',
+            description: 'Tensor data storage',
+          },
+          {
+            name: 'shape',
+            type: 'number[]',
+            visibility: 'public',
+            description: 'Tensor dimensions',
+          },
+          {
+            name: 'wasmPtr',
+            type: 'number',
+            visibility: 'private',
+            description: 'WASM memory pointer',
+          },
+        ],
+        methods: [
+          {
+            name: 'multiply',
+            parameters: [{ name: 'other', type: 'NeuralTensor', description: 'Other tensor' }],
+            returnType: 'NeuralTensor',
+            visibility: 'public',
+            description: 'Matrix multiplication',
+          },
+          {
+            name: 'add',
+            parameters: [{ name: 'other', type: 'NeuralTensor', description: 'Other tensor' }],
+            returnType: 'NeuralTensor',
+            visibility: 'public',
+            description: 'Element-wise addition',
+          },
+        ],
+        relationships: [
+          { type: 'uses', target: 'WASMModule', description: 'Uses WASM for acceleration' },
+        ],
       },
       {
-        id: nanoid(),
         name: 'LayerRegistry',
-        type: 'HashMap',
-        description: 'Registry of neural network layers with metadata and connections',
-        keyType: 'string',
-        valueType: 'LayerDefinition',
-        expectedSize: 1000,
-        accessPatterns: ['lookup', 'insert', 'update', 'traverse'],
-        performance: {
-          lookup: 'O(1)' as const,
-          insert: 'O(1)' as const,
-          update: 'O(1)' as const,
-        },
+        type: 'class',
+        properties: [
+          {
+            name: 'layers',
+            type: 'Map<string, LayerDefinition>',
+            visibility: 'private',
+            description: 'Layer storage',
+          },
+          {
+            name: 'connections',
+            type: 'LayerConnection[]',
+            visibility: 'private',
+            description: 'Layer connections',
+          },
+        ],
+        methods: [
+          {
+            name: 'registerLayer',
+            parameters: [
+              { name: 'layer', type: 'LayerDefinition', description: 'Layer to register' },
+            ],
+            returnType: 'void',
+            visibility: 'public',
+            description: 'Register a layer',
+          },
+          {
+            name: 'getLayer',
+            parameters: [{ name: 'id', type: 'string', description: 'Layer ID' }],
+            returnType: 'LayerDefinition',
+            visibility: 'public',
+            description: 'Get layer by ID',
+          },
+        ],
+        relationships: [
+          {
+            type: 'contains',
+            target: 'LayerDefinition',
+            description: 'Contains layer definitions',
+          },
+        ],
       },
       {
-        id: nanoid(),
         name: 'GradientBuffer',
-        type: 'CircularBuffer',
-        description: 'Circular buffer for gradient accumulation and averaging',
-        keyType: 'number',
-        valueType: 'GradientVector',
-        expectedSize: 1000,
-        accessPatterns: ['append', 'average', 'clear'],
-        performance: {
-          append: 'O(1)' as const,
-          average: 'O(n)' as const,
-          clear: 'O(1)' as const,
-        },
+        type: 'class',
+        properties: [
+          {
+            name: 'buffer',
+            type: 'GradientVector[]',
+            visibility: 'private',
+            description: 'Gradient buffer storage',
+          },
+          {
+            name: 'capacity',
+            type: 'number',
+            visibility: 'private',
+            description: 'Buffer capacity',
+          },
+          {
+            name: 'size',
+            type: 'number',
+            visibility: 'public',
+            description: 'Current buffer size',
+          },
+        ],
+        methods: [
+          {
+            name: 'append',
+            parameters: [
+              { name: 'gradient', type: 'GradientVector', description: 'Gradient to append' },
+            ],
+            returnType: 'void',
+            visibility: 'public',
+            description: 'Append gradient to buffer',
+          },
+          {
+            name: 'average',
+            parameters: [],
+            returnType: 'GradientVector',
+            visibility: 'public',
+            description: 'Calculate average gradient',
+          },
+        ],
+        relationships: [
+          { type: 'uses', target: 'GradientVector', description: 'Stores gradient vectors' },
+        ],
       },
     ],
-    processFlows: [
+    controlFlows: [
       {
-        id: nanoid(),
         name: 'TrainingPipeline',
-        description: 'Complete neural network training pipeline',
-        steps: [
-          {
-            id: nanoid(),
-            name: 'DataPreprocessing',
-            description: 'Load and preprocess training data',
-            algorithm: 'DataPreprocessingAlgorithm',
-            inputs: ['rawData', 'preprocessingConfig'],
-            outputs: ['preprocessedData'],
-            duration: 5000,
-          },
-          {
-            id: nanoid(),
-            name: 'ModelInitialization',
-            description: 'Initialize neural network with random weights',
-            algorithm: 'ModelInitializationAlgorithm',
-            inputs: ['networkArchitecture', 'initializationStrategy'],
-            outputs: ['initializedModel'],
-            duration: 1000,
-          },
-          {
-            id: nanoid(),
-            name: 'DistributedTraining',
-            description: 'Execute distributed training across cluster',
-            algorithm: 'DistributedBackpropagation',
-            inputs: ['initializedModel', 'preprocessedData', 'clusterConfig'],
-            outputs: ['trainedModel'],
-            duration: 3600000,
-          },
-          {
-            id: nanoid(),
-            name: 'ModelValidation',
-            description: 'Validate trained model on test dataset',
-            algorithm: 'ModelValidationAlgorithm',
-            inputs: ['trainedModel', 'validationData'],
-            outputs: ['validationResults'],
-            duration: 30000,
-          },
+        nodes: [
+          { id: 'start', type: 'start', label: 'Start Training' },
+          { id: 'preprocess', type: 'process', label: 'Data Preprocessing' },
+          { id: 'init', type: 'process', label: 'Model Initialization' },
+          { id: 'train', type: 'process', label: 'Distributed Training' },
+          { id: 'validate', type: 'process', label: 'Model Validation' },
+          { id: 'end', type: 'end', label: 'End Training' },
         ],
-        parallelizable: true,
-        criticalPath: [
-          'DataPreprocessing',
-          'ModelInitialization',
-          'DistributedTraining',
-          'ModelValidation',
+        edges: [
+          { from: 'start', to: 'preprocess' },
+          { from: 'preprocess', to: 'init' },
+          { from: 'init', to: 'train' },
+          { from: 'train', to: 'validate' },
+          { from: 'validate', to: 'end' },
         ],
+        cycles: false,
+        complexity: 5,
       },
     ],
+    optimizations: [],
+    dependencies: [],
     complexityAnalysis: {
-      worstCase: 'O(n^3)' as const,
-      averageCase: 'O(n^2)' as const,
-      bestCase: 'O(n log n)' as const,
-      spaceComplexity: 'O(n^2)' as const,
-      scalabilityAnalysis: 'System scales with GPU/TPU resources and network bandwidth',
+      timeComplexity: 'O(n^3)',
+      spaceComplexity: 'O(n^2)',
+      scalability: 'System scales with GPU/TPU resources and network bandwidth',
+      worstCase: 'O(n^3)',
+      averageCase: 'O(n^2)',
+      bestCase: 'O(n log n)',
       bottlenecks: [
         'Matrix multiplication operations (mitigated by WASM)',
         'Network communication for gradient synchronization',
         'Memory bandwidth for large tensor operations',
       ],
     },
-    optimizationOpportunities: [
-      {
-        id: nanoid(),
-        type: 'algorithmic',
-        description: 'Implement sparse matrix operations for networks with dropout',
-        impact: 'high',
-        effort: 'medium',
-        estimatedImprovement: '400% speedup for sparse networks',
-      },
-      {
-        id: nanoid(),
-        type: 'caching',
-        description: 'Cache compiled WASM modules for repeated inference',
-        impact: 'medium',
-        effort: 'low',
-        estimatedImprovement: '50% reduction in initialization time',
-      },
-      {
-        id: nanoid(),
-        type: 'parallelization',
-        description: 'Pipeline parallelism for sequential model layers',
-        impact: 'high',
-        effort: 'high',
-        estimatedImprovement: '300% throughput increase for large models',
-      },
-    ],
-    estimatedPerformance: [
-      {
-        metric: 'inference_latency',
-        target: '<1ms for models up to 100M parameters',
-        measurement: 'milliseconds',
-      },
-      {
-        metric: 'training_throughput',
-        target: '1000 samples/second per GPU',
-        measurement: 'samples/sec',
-      },
-      {
-        metric: 'memory_efficiency',
-        target: '<2GB memory for 100M parameter model',
-        measurement: 'bytes',
-      },
-    ],
-    createdAt: new Date(),
-    updatedAt: new Date(),
   },
 
   architecture: {
     id: nanoid(),
-    pseudocodeId: 'neural-networks-pseudocode',
     components: [
       {
         id: nanoid(),
@@ -613,12 +642,10 @@ END
         ],
         interfaces: ['INeuralEngine'],
         dependencies: ['WASMModule', 'TensorStorage'],
-        technologies: ['TypeScript', 'WASM', 'Rust'],
-        scalability: 'vertical',
+        qualityAttributes: { performance: 'high', reliability: 'critical' },
         performance: {
-          expectedThroughput: '10000 inferences/second',
           expectedLatency: '<1ms',
-          memoryUsage: '512MB',
+          optimizations: ['10000 inferences/second', '512MB memory usage'],
         },
       },
       {
@@ -634,12 +661,10 @@ END
         ],
         interfaces: ['ITrainingCoordinator'],
         dependencies: ['ClusterManager', 'GradientSynchronizer'],
-        technologies: ['TypeScript', 'gRPC', 'Redis'],
-        scalability: 'horizontal',
+        qualityAttributes: { scalability: 'high', 'fault-tolerance': 'critical' },
         performance: {
-          expectedThroughput: '1000 training steps/second',
           expectedLatency: '<100ms',
-          memoryUsage: '1GB',
+          optimizations: ['1000 training steps/second', '1GB memory usage'],
         },
       },
       {
@@ -655,18 +680,16 @@ END
         ],
         interfaces: ['IModelRegistry'],
         dependencies: ['ModelStorage', 'MetadataDB'],
-        technologies: ['TypeScript', 'MongoDB', 'S3'],
-        scalability: 'horizontal',
+        qualityAttributes: { consistency: 'high', availability: 'critical' },
         performance: {
-          expectedThroughput: '100 model operations/second',
           expectedLatency: '<50ms',
-          memoryUsage: '256MB',
+          optimizations: ['100 model operations/second', '256MB memory usage'],
         },
       },
       {
         id: nanoid(),
         name: 'TensorStorageManager',
-        type: 'data-manager',
+        type: 'service',
         description: 'Manages tensor data storage and memory optimization',
         responsibilities: [
           'Tensor allocation and deallocation',
@@ -676,18 +699,16 @@ END
         ],
         interfaces: ['ITensorStorage'],
         dependencies: ['MemoryPool', 'CompressionEngine'],
-        technologies: ['TypeScript', 'WASM', 'LZ4'],
-        scalability: 'vertical',
+        qualityAttributes: { 'memory-efficiency': 'high', throughput: 'critical' },
         performance: {
-          expectedThroughput: '1GB/second data transfer',
           expectedLatency: '<10ms',
-          memoryUsage: '2GB',
+          optimizations: ['1GB/second data transfer', '2GB memory usage'],
         },
       },
       {
         id: nanoid(),
         name: 'PerformanceMonitor',
-        type: 'monitoring',
+        type: 'service',
         description: 'Real-time monitoring of neural network performance',
         responsibilities: [
           'Latency tracking',
@@ -697,12 +718,10 @@ END
         ],
         interfaces: ['IPerformanceMonitor'],
         dependencies: ['MetricsCollector', 'AlertManager'],
-        technologies: ['TypeScript', 'Prometheus', 'Grafana'],
-        scalability: 'horizontal',
+        qualityAttributes: { 'real-time': 'critical', accuracy: 'high' },
         performance: {
-          expectedThroughput: '100000 metrics/second',
           expectedLatency: '<5ms',
-          memoryUsage: '128MB',
+          optimizations: ['100000 metrics/second', '128MB memory usage'],
         },
       },
     ],
@@ -737,9 +756,7 @@ END
     ],
     patterns: [
       {
-        id: nanoid(),
         name: 'WASM Acceleration Pattern',
-        type: 'performance',
         description: 'Use WASM for performance-critical mathematical operations',
         benefits: [
           'Near-native performance',
@@ -752,12 +769,10 @@ END
           'Limited debugging tools',
           'Memory management complexity',
         ],
-        applicableComponents: ['wasm-neural-engine', 'tensor-storage-manager'],
+        applicability: ['wasm-neural-engine', 'tensor-storage-manager'],
       },
       {
-        id: nanoid(),
         name: 'Parameter Server Pattern',
-        type: 'distributed',
         description: 'Centralized parameter management for distributed training',
         benefits: [
           'Simplified synchronization',
@@ -770,12 +785,10 @@ END
           'Network bottleneck',
           'Complexity in implementation',
         ],
-        applicableComponents: ['distributed-training-coordinator'],
+        applicability: ['distributed-training-coordinator'],
       },
       {
-        id: nanoid(),
         name: 'Model Registry Pattern',
-        type: 'lifecycle',
         description: 'Centralized model lifecycle management and versioning',
         benefits: [
           'Version control',
@@ -788,223 +801,122 @@ END
           'Complexity in large deployments',
           'Consistency challenges',
         ],
-        applicableComponents: ['model-registry-service'],
+        applicability: ['model-registry-service'],
       },
     ],
-    interfaces: [
+    systemArchitecture: {
+      components: [],
+      interfaces: [
+        {
+          name: 'INeuralEngine',
+          description: 'Neural network inference and model management API',
+          methods: [
+            {
+              name: 'inference',
+              signature: 'inference(input_tensor: Tensor): Promise<Tensor>',
+              description: 'Perform neural network inference',
+            },
+            {
+              name: 'loadModel',
+              signature: 'loadModel(model_id: string): Promise<void>',
+              description: 'Load neural network model',
+            },
+            {
+              name: 'getPerformanceMetrics',
+              signature: 'getPerformanceMetrics(): PerformanceMetrics',
+              description: 'Get performance metrics',
+            },
+          ],
+          contracts: [],
+          protocols: ['HTTP/REST'],
+        },
+        {
+          name: 'ITrainingCoordinator',
+          description: 'Distributed training coordination and management',
+          methods: [
+            {
+              name: 'startTraining',
+              signature: 'startTraining(training_config: TrainingConfig): Promise<TrainingJob>',
+              description: 'Start distributed training job',
+            },
+            {
+              name: 'stopTraining',
+              signature: 'stopTraining(job_id: string): Promise<void>',
+              description: 'Stop training job',
+            },
+            {
+              name: 'getTrainingStatus',
+              signature: 'getTrainingStatus(job_id: string): TrainingStatus',
+              description: 'Get training status',
+            },
+          ],
+          contracts: [],
+          protocols: ['gRPC'],
+        },
+      ],
+      dataFlow: [],
+      deploymentUnits: [],
+      qualityAttributes: [],
+      architecturalPatterns: [],
+      technologyStack: [],
+    },
+    componentDiagrams: [],
+    dataFlow: [
       {
-        id: nanoid(),
-        name: 'INeuralEngine',
-        componentId: 'wasm-neural-engine',
-        type: 'REST',
-        methods: [
-          { name: 'inference', parameters: ['input_tensor'], returns: 'Promise<Tensor>' },
-          { name: 'loadModel', parameters: ['model_id'], returns: 'Promise<void>' },
-          { name: 'getPerformanceMetrics', parameters: [], returns: 'PerformanceMetrics' },
-        ],
-        protocol: 'HTTP/REST',
-        authentication: 'API Key',
-        rateLimit: '10000/hour',
-        documentation: 'Neural network inference and model management API',
-      },
-      {
-        id: nanoid(),
-        name: 'ITrainingCoordinator',
-        componentId: 'distributed-training-coordinator',
-        type: 'gRPC',
-        methods: [
-          {
-            name: 'startTraining',
-            parameters: ['training_config'],
-            returns: 'Promise<TrainingJob>',
-          },
-          { name: 'stopTraining', parameters: ['job_id'], returns: 'Promise<void>' },
-          { name: 'getTrainingStatus', parameters: ['job_id'], returns: 'TrainingStatus' },
-        ],
+        from: 'distributed-training-coordinator',
+        to: 'wasm-neural-engine',
+        data: 'TrainingBatch',
         protocol: 'gRPC',
-        authentication: 'mTLS',
-        rateLimit: '1000/hour',
-        documentation: 'Distributed training coordination and management',
-      },
-    ],
-    dataFlows: [
-      {
-        id: nanoid(),
-        name: 'TrainingDataFlow',
-        sourceComponentId: 'distributed-training-coordinator',
-        targetComponentId: 'wasm-neural-engine',
-        dataType: 'TrainingBatch',
-        format: 'Tensor',
-        volume: 'High',
-        frequency: 'High',
-        security: 'Medium',
-        transformation: 'Batch preprocessing and augmentation',
       },
       {
-        id: nanoid(),
-        name: 'ModelFlow',
-        sourceComponentId: 'model-registry-service',
-        targetComponentId: 'wasm-neural-engine',
-        dataType: 'NeuralNetworkModel',
-        format: 'Binary',
-        volume: 'Medium',
-        frequency: 'Low',
-        security: 'High',
-        transformation: 'Model deserialization and optimization',
+        from: 'model-registry-service',
+        to: 'wasm-neural-engine',
+        data: 'NeuralNetworkModel',
+        protocol: 'HTTP',
       },
     ],
+    deploymentPlan: [],
+    validationResults: {
+      overall: true,
+      score: 1.0,
+      results: [],
+      recommendations: [],
+    },
+    securityRequirements: [],
+    scalabilityRequirements: [],
     qualityAttributes: [
       {
-        id: nanoid(),
         name: 'Ultra-High Performance',
-        type: 'performance',
-        description: 'Sub-millisecond inference latency',
+        target: 'P95 inference latency < 1ms, >10000 inferences/second',
+        measurement: 'Automated performance testing with synthetic workloads',
+        priority: 'HIGH',
         criteria: [
           'P95 inference latency < 1ms',
           'Throughput > 10000 inferences/second',
           'Memory usage < 512MB per engine instance',
         ],
-        measurement: 'Automated performance testing with synthetic workloads',
-        priority: 'HIGH',
       },
       {
-        id: nanoid(),
         name: 'Distributed Scalability',
-        type: 'scalability',
-        description: 'Linear scaling for distributed training',
+        target: 'Linear scaling up to 100 nodes with fault tolerance',
+        measurement: 'Distributed training benchmarks',
+        priority: 'HIGH',
         criteria: [
           'Training throughput scales linearly with nodes up to 100',
           'No degradation in model convergence',
           'Fault tolerance for node failures',
         ],
-        measurement: 'Distributed training benchmarks',
-        priority: 'HIGH',
       },
       {
-        id: nanoid(),
         name: 'Model Accuracy',
-        type: 'functional',
-        description: 'Maintain high model accuracy',
+        target: 'No accuracy loss, >99.9% reproducibility',
+        measurement: 'Automated accuracy testing and comparison',
+        priority: 'HIGH',
         criteria: [
           'No accuracy loss in WASM vs native implementation',
           'Distributed training achieves same accuracy as single-node',
           'Model versioning preserves reproducibility',
         ],
-        measurement: 'Automated accuracy testing and comparison',
-        priority: 'HIGH',
-      },
-    ],
-    deploymentStrategy: {
-      id: nanoid(),
-      name: 'Hybrid Cloud-Edge Deployment',
-      type: 'hybrid',
-      description: 'Deploy training in cloud, inference at edge with WASM',
-      environments: [
-        {
-          name: 'development',
-          configuration: {
-            replicas: 1,
-            resources: { cpu: '2', memory: '4Gi', gpu: '1' },
-            storage: 'local-ssd',
-            monitoring: 'basic',
-          },
-        },
-        {
-          name: 'training-cluster',
-          configuration: {
-            replicas: 10,
-            resources: { cpu: '16', memory: '64Gi', gpu: '8' },
-            storage: 'distributed-ssd',
-            monitoring: 'full',
-          },
-        },
-        {
-          name: 'edge-inference',
-          configuration: {
-            replicas: 'auto',
-            resources: { cpu: '1', memory: '1Gi' },
-            storage: 'local',
-            monitoring: 'basic',
-          },
-        },
-      ],
-      infrastructure: ['Kubernetes', 'Docker', 'WASM Runtime', 'GPU Operator'],
-      cicd: {
-        buildPipeline: ['Test', 'WASM Build', 'Performance Test', 'Deploy'],
-        testStrategy: ['Unit Tests', 'Integration Tests', 'Performance Tests'],
-        deploymentStrategy: 'Blue-Green with A/B Testing',
-      },
-    },
-    integrationPoints: [
-      {
-        id: nanoid(),
-        name: 'WASM Runtime Integration',
-        type: 'runtime',
-        description: 'Integration with WebAssembly runtime for acceleration',
-        protocol: 'WebAssembly',
-        security: 'Sandboxed execution',
-        errorHandling: 'Fallback to JavaScript implementation',
-        monitoring: 'Performance profiling and resource usage',
-      },
-      {
-        id: nanoid(),
-        name: 'GPU Acceleration Integration',
-        type: 'hardware',
-        description: 'Integration with GPU drivers for training acceleration',
-        protocol: 'CUDA/OpenCL',
-        security: 'Secure GPU context isolation',
-        errorHandling: 'Graceful fallback to CPU training',
-        monitoring: 'GPU utilization and thermal monitoring',
-      },
-    ],
-    performanceRequirements: [
-      {
-        id: nanoid(),
-        metric: 'inference_latency',
-        target: '<1ms P95',
-        measurement: 'milliseconds',
-        priority: 'HIGH',
-      },
-      {
-        id: nanoid(),
-        metric: 'training_throughput',
-        target: '1000 samples/second per GPU',
-        measurement: 'samples/sec',
-        priority: 'HIGH',
-      },
-    ],
-    securityRequirements: [
-      {
-        id: nanoid(),
-        type: 'model-protection',
-        description: 'Protect neural network models from extraction',
-        implementation: 'Model encryption and obfuscation in WASM',
-        priority: 'HIGH',
-      },
-      {
-        id: nanoid(),
-        type: 'data-privacy',
-        description: 'Ensure training data privacy in distributed settings',
-        implementation: 'Differential privacy and federated learning',
-        priority: 'HIGH',
-      },
-    ],
-    scalabilityRequirements: [
-      {
-        id: nanoid(),
-        type: 'horizontal',
-        description: 'Scale training across multiple GPU clusters',
-        target: 'Linear scaling up to 100 nodes',
-        implementation: 'Parameter server with gradient compression',
-        priority: 'HIGH',
-      },
-      {
-        id: nanoid(),
-        type: 'model-size',
-        description: 'Support models with billions of parameters',
-        target: 'Models up to 100B parameters',
-        implementation: 'Model parallelism and sharding',
-        priority: 'MEDIUM',
       },
     ],
     createdAt: new Date(),

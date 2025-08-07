@@ -139,28 +139,30 @@ export interface EventTypeRegistry {
  * @example
  */
 export interface FactoryRegistry {
-  [managerType in EventManagerType]?: {
-    /** Factory instance */
-    factory: IEventManagerFactory;
+  [key: string]:
+    | {
+        /** Factory instance */
+        factory: IEventManagerFactory;
 
-    /** Factory metadata */
-    metadata: {
-      name: string;
-      version: string;
-      capabilities: string[];
-      supported: EventManagerType[];
-    };
+        /** Factory metadata */
+        metadata: {
+          name: string;
+          version: string;
+          capabilities: string[];
+          supported: EventManagerType[];
+        };
 
-    /** Registration timestamp */
-    registered: Date;
+        /** Registration timestamp */
+        registered: Date;
 
-    /** Usage statistics */
-    usage: {
-      managersCreated: number;
-      totalRequests: number;
-      successRate: number;
-    };
-  };
+        /** Usage statistics */
+        usage: {
+          managersCreated: number;
+          totalRequests: number;
+          successRate: number;
+        };
+      }
+    | undefined;
 }
 
 /**
@@ -382,7 +384,10 @@ export class EventRegistry implements IEventManagerRegistry {
     const factory = this.factories.get(type);
 
     if (factory && this.factoryRegistry[type]) {
-      this.factoryRegistry[type]?.usage.totalRequests++;
+      const registry = this.factoryRegistry[type];
+      if (registry) {
+        registry.usage.totalRequests++;
+      }
     }
 
     return factory as IEventManagerFactory<T>;
@@ -444,7 +449,10 @@ export class EventRegistry implements IEventManagerRegistry {
 
     // Update factory usage statistics
     if (this.factoryRegistry[config.type]) {
-      this.factoryRegistry[config.type]?.usage.managersCreated++;
+      const registry = this.factoryRegistry[config.type];
+      if (registry) {
+        registry.usage.managersCreated++;
+      }
     }
 
     this.logger.info(`📝 Registered event manager: ${name} (${config.type})`);

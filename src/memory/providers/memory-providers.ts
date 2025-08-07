@@ -6,8 +6,8 @@
  * @description Enhanced memory providers with DI integration for Issue #63
  */
 
-import type { DALFactory } from '../../database/factory.js';
-import type { ICoordinationRepository, IVectorRepository } from '../../database/interfaces.js';
+import type { DALFactory } from '../../database/factory';
+import type { ICoordinationRepository, IVectorRepository } from '../../database/interfaces';
 import { inject, injectable } from '../../di/decorators/injectable';
 import {
   CORE_TOKENS,
@@ -19,6 +19,7 @@ import {
 
 /**
  * Interface for memory backend implementations
+ * Updated to be compatible with BaseMemoryBackend
  *
  * @example
  */
@@ -27,8 +28,8 @@ export interface MemoryBackend {
   store(key: string, value: any): Promise<void>;
   /** Retrieve a value by key */
   retrieve(key: string): Promise<any>;
-  /** Delete a value by key */
-  delete(key: string): Promise<void>;
+  /** Delete a value by key - returns true if key existed and was deleted, false otherwise */
+  delete(key: string): Promise<boolean>;
   /** Clear all stored data */
   clear(): Promise<void>;
   /** Get the number of stored items */
@@ -147,13 +148,21 @@ export class SqliteMemoryBackend implements MemoryBackend {
     }
   }
 
-  async delete(key: string): Promise<void> {
+  async delete(key: string): Promise<boolean> {
     this.logger.debug(`Deleting key: ${key} from SQLite backend`);
     await this.ensureInitialized();
 
     try {
+      // First check if the key exists
+      const existing = await this.retrieve(key);
+      if (existing === null) {
+        this.logger.debug(`Key ${key} does not exist, nothing to delete`);
+        return false;
+      }
+
       await this.repository.delete(key);
       this.logger.debug(`Successfully deleted key: ${key}`);
+      return true;
     } catch (error) {
       this.logger.error(`Failed to delete key ${key}: ${error}`);
       throw error;
@@ -239,15 +248,17 @@ export class LanceDBMemoryBackend implements MemoryBackend {
       // Generate a simple vector representation for the key-value pair
       const vector = this.generateVectorFromValue(value);
 
-      await this.repository.addVectors([{
-        id: key,
-        vector,
-        metadata: {
-          originalValue: value,
-          storageType: 'memory',
-          createdAt: new Date().toISOString(),
+      await this.repository.addVectors([
+        {
+          id: key,
+          vector,
+          metadata: {
+            originalValue: value,
+            storageType: 'memory',
+            createdAt: new Date().toISOString(),
+          },
         },
-      }]);
+      ]);
       this.logger.debug(`Successfully stored key: ${key}`);
     } catch (error) {
       this.logger.error(`Failed to store key ${key}: ${error}`);
@@ -262,20 +273,39 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     try {
       const results = await this.repository.similaritySearch([0], { limit: 1000 });
       const match = results.find((r) => r.id === key);
-      return match?.metadata?.originalValue || null;
+      // Ensure metadata exists on VectorSearchResult and access originalValue safely
+      if (
+        match &&
+        'metadata' in match &&
+        match.metadata &&
+        typeof match.metadata === 'object' &&
+        match.metadata !== null &&
+        'originalValue' in match.metadata
+      ) {
+        return (match.metadata as any).originalValue;
+      }
+      return null;
     } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;
     }
   }
 
-  async delete(key: string): Promise<void> {
+  async delete(key: string): Promise<boolean> {
     this.logger.debug(`Deleting key: ${key} from LanceDB backend`);
     await this.ensureInitialized();
 
     try {
+      // First check if the key exists
+      const existing = await this.retrieve(key);
+      if (existing === null) {
+        this.logger.debug(`Key ${key} does not exist, nothing to delete`);
+        return false;
+      }
+
       await this.repository.delete(key);
       this.logger.debug(`Successfully deleted key: ${key}`);
+      return true;
     } catch (error) {
       this.logger.error(`Failed to delete key ${key}: ${error}`);
       throw error;
@@ -290,7 +320,9 @@ export class LanceDBMemoryBackend implements MemoryBackend {
       // Get all vectors and delete them
       const allVectors = await this.repository.similaritySearch([0], { limit: 10000 });
       for (const vector of allVectors) {
-        await this.repository.delete(vector.id);
+        if (vector && 'id' in vector && vector.id) {
+          await this.repository.delete(vector.id);
+        }
       }
       this.logger.info('Successfully cleared all data');
     } catch (error) {
@@ -304,7 +336,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
     try {
       const allVectors = await this.repository.similaritySearch([0], { limit: 10000 });
-      return allVectors.length;
+      return allVectors ? allVectors.length : 0;
     } catch (error) {
       this.logger.error(`Failed to get size: ${error}`);
       throw error;
@@ -395,14 +427,20 @@ export class JsonMemoryBackend implements MemoryBackend {
     }
   }
 
-  async delete(key: string): Promise<void> {
+  async delete(key: string): Promise<boolean> {
     this.logger.debug(`Deleting key: ${key} from JSON backend`);
     await this.ensureInitialized();
 
     try {
-      this.data.delete(key);
-      await this.persistToFile();
-      this.logger.debug(`Successfully deleted key: ${key}`);
+      const existed = this.data.has(key);
+      const deleted = this.data.delete(key);
+      if (deleted) {
+        await this.persistToFile();
+        this.logger.debug(`Successfully deleted key: ${key}`);
+      } else {
+        this.logger.debug(`Key ${key} does not exist, nothing to delete`);
+      }
+      return existed;
     } catch (error) {
       this.logger.error(`Failed to delete key ${key}: ${error}`);
       throw error;
@@ -510,7 +548,7 @@ export class InMemoryBackend implements MemoryBackend {
     }
   }
 
-  async delete(key: string): Promise<void> {
+  async delete(key: string): Promise<boolean> {
     this.logger.debug(`Deleting key: ${key} from memory backend`);
 
     try {
@@ -520,6 +558,7 @@ export class InMemoryBackend implements MemoryBackend {
       } else {
         this.logger.debug(`Key not found for deletion: ${key}`);
       }
+      return deleted;
     } catch (error) {
       this.logger.error(`Failed to delete key ${key}: ${error}`);
       throw error;

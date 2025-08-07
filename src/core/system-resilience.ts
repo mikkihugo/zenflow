@@ -68,7 +68,7 @@ export class ResourceManager {
     // Check limits before allocation
     await this.enforceResourceLimits(type, size);
 
-    const resourceId = `${type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const resourceId = `${type}_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 
     const resource: ResourceHandle = {
       id: resourceId,
@@ -508,7 +508,7 @@ export class TimeoutManager {
     timeoutMs: number,
     operationName: string = 'unknown'
   ): Promise<T> {
-    const timeoutId = `timeout_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const timeoutId = `timeout_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 
     const timeoutPromise = new Promise<never>((_, reject) => {
       const timeout = setTimeout(() => {
@@ -747,7 +747,7 @@ export class SystemResilienceOrchestrator {
   private resourceManager: ResourceManager;
   private bulkheads: Map<string, Bulkhead> = new Map();
   private errorBoundaries: Map<string, ErrorBoundary> = new Map();
-  private emergencyShutdown: EmergencyShutdownSystem;
+  public emergencyShutdown: EmergencyShutdownSystem;
 
   constructor(resourceLimits?: Partial<ResourceLimits>) {
     this.resourceManager = new ResourceManager(resourceLimits);

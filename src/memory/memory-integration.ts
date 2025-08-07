@@ -5,6 +5,7 @@
  * with proper DAL Factory integration.
  */
 
+import type { DALFactory } from '../database/factory.js';
 import { DIContainer } from '../di/container/di-container.js';
 import { CORE_TOKENS, DATABASE_TOKENS, MEMORY_TOKENS } from '../di/tokens/core-tokens.js';
 import { MemoryController } from './controllers/memory-controller.js';
@@ -96,7 +97,7 @@ export function registerMemoryProviders(
       new MemoryProviderFactory(
         container.resolve(CORE_TOKENS.Logger),
         container.resolve(CORE_TOKENS.Config),
-        container.resolve(DATABASE_TOKENS.DALFactory)
+        container.resolve(DATABASE_TOKENS.DALFactory) as DALFactory
       ),
   });
 
@@ -118,7 +119,8 @@ export function registerMemoryProviders(
     type: 'singleton',
     create: (container) =>
       new MemoryController(
-        container.resolve(MEMORY_TOKENS.ProviderFactory),
+        container.resolve(MEMORY_TOKENS.ProviderFactory) as MemoryProviderFactory,
+        container.resolve(MEMORY_TOKENS.Config) as MemoryConfig,
         container.resolve(CORE_TOKENS.Logger)
       ),
   });
@@ -135,7 +137,7 @@ export async function createMemoryBackends(container: DIContainer): Promise<{
   semantic: any;
   debug: any;
 }> {
-  const factory = container.resolve(MEMORY_TOKENS.ProviderFactory);
+  const factory = container.resolve(MEMORY_TOKENS.ProviderFactory) as MemoryProviderFactory;
 
   return {
     cache: factory.createProvider(defaultMemoryConfigurations.cache),
@@ -188,30 +190,30 @@ export async function initializeMemorySystem(
   const enabledBackends: string[] = [];
 
   if (options.enableCache) {
-    backends.cache = container
-      .resolve(MEMORY_TOKENS.ProviderFactory)
-      .createProvider(defaultMemoryConfigurations.cache);
+    backends.cache = (
+      container.resolve(MEMORY_TOKENS.ProviderFactory) as MemoryProviderFactory
+    ).createProvider(defaultMemoryConfigurations.cache);
     enabledBackends.push('cache');
   }
 
   if (options.enableSessions) {
-    backends.session = container
-      .resolve(MEMORY_TOKENS.ProviderFactory)
-      .createProvider(defaultMemoryConfigurations.session);
+    backends.session = (
+      container.resolve(MEMORY_TOKENS.ProviderFactory) as MemoryProviderFactory
+    ).createProvider(defaultMemoryConfigurations.session);
     enabledBackends.push('session');
   }
 
   if (options.enableSemantic) {
-    backends.semantic = container
-      .resolve(MEMORY_TOKENS.ProviderFactory)
-      .createProvider(defaultMemoryConfigurations.semantic);
+    backends.semantic = (
+      container.resolve(MEMORY_TOKENS.ProviderFactory) as MemoryProviderFactory
+    ).createProvider(defaultMemoryConfigurations.semantic);
     enabledBackends.push('semantic');
   }
 
   if (options.enableDebug) {
-    backends.debug = container
-      .resolve(MEMORY_TOKENS.ProviderFactory)
-      .createProvider(defaultMemoryConfigurations.debug);
+    backends.debug = (
+      container.resolve(MEMORY_TOKENS.ProviderFactory) as MemoryProviderFactory
+    ).createProvider(defaultMemoryConfigurations.debug);
     enabledBackends.push('debug');
   }
 

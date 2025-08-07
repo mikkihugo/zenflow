@@ -12,16 +12,16 @@ import {
 
 // Mock dependencies
 const mockHiveFACT = {
-  searchFacts: jest.fn(),
-  getFact: jest.fn(),
-  on: jest.fn(),
-  emit: jest.fn(),
+  searchFacts: vi.fn(),
+  getFact: vi.fn(),
+  on: vi.fn(),
+  emit: vi.fn(),
 };
 
 const mockHiveCoordinator = new EventEmitter();
 const mockMemoryStore = {
-  store: jest.fn(),
-  retrieve: jest.fn(),
+  store: vi.fn(),
+  retrieve: vi.fn(),
 };
 
 describe('HiveKnowledgeBridge Unit Tests', () => {
@@ -29,7 +29,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
   beforeEach(async () => {
     // Reset mocks
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     bridge = new HiveKnowledgeBridge(mockHiveCoordinator as any, mockMemoryStore as any);
     (bridge as any).hiveFact = mockHiveFACT;

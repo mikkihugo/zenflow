@@ -123,7 +123,7 @@ export class Agent extends EventEmitter implements AgentComponent {
   private taskHistory: TaskResult[] = [];
   private maxConcurrentTasks = 1;
   private resourceLimits: ResourceRequirements;
-  private config: any = {}; // Configuration object for agent settings
+  private config?: any;
 
   constructor(
     id: string,
@@ -158,6 +158,7 @@ export class Agent extends EventEmitter implements AgentComponent {
         efficiency: 1.0,
       },
     };
+    // currentTask is intentionally omitted as it's optional and undefined initially
   }
 
   getId(): string {
@@ -177,7 +178,11 @@ export class Agent extends EventEmitter implements AgentComponent {
   }
 
   getStatus(): AgentStatus {
-    return { ...this.status };
+    const status: AgentStatus = { ...this.status };
+    if (this.currentTask) {
+      status.currentTask = this.currentTask.id;
+    }
+    return status;
   }
 
   getMetrics(): AgentMetrics {
@@ -190,7 +195,7 @@ export class Agent extends EventEmitter implements AgentComponent {
       this.taskHistory.length > 0
         ? this.taskHistory
             .filter((t) => t.metrics?.executionTime)
-            .reduce((sum, t) => sum + t.metrics?.executionTime, 0) / this.taskHistory.length
+            .reduce((sum, t) => sum + (t.metrics?.executionTime || 0), 0) / this.taskHistory.length
         : 0;
 
     return {
@@ -214,12 +219,14 @@ export class Agent extends EventEmitter implements AgentComponent {
       this.taskQueue.push(task);
       this.status.queuedTasks = this.taskQueue.length;
 
-      return {
+      const queuedTaskResult: TaskResult = {
         taskId: task.id,
         agentId: this.id,
         status: 'pending',
         startTime: new Date(),
       };
+
+      return queuedTaskResult;
     }
 
     return this.executeTaskImmediately(task);
@@ -402,7 +409,7 @@ export class Agent extends EventEmitter implements AgentComponent {
       this.updateHealth(false);
     } finally {
       this.releaseResources(requiredResources);
-      this.currentTask = undefined;
+      delete this.currentTask;
       this.status.state = 'idle';
       this.taskHistory.push(result);
 
@@ -965,17 +972,25 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
         return this.selectByCapability(eligibleMembers, task);
 
       default:
-        return eligibleMembers[0];
+        return eligibleMembers.length > 0 ? eligibleMembers[0] : null;
     }
   }
 
-  private selectRoundRobin(eligibleMembers: AgentComponent[]): AgentComponent {
+  private selectRoundRobin(eligibleMembers: AgentComponent[]): AgentComponent | null {
+    if (eligibleMembers.length === 0) {
+      return null;
+    }
+    
     const selected = eligibleMembers[this.currentRoundRobinIndex % eligibleMembers.length];
     this.currentRoundRobinIndex++;
     return selected;
   }
 
-  private selectLeastLoaded(eligibleMembers: AgentComponent[]): AgentComponent {
+  private selectLeastLoaded(eligibleMembers: AgentComponent[]): AgentComponent | null {
+    if (eligibleMembers.length === 0) {
+      return null;
+    }
+    
     return eligibleMembers.reduce((least, current) => {
       const leastStatus = least.getStatus();
       const currentStatus = current.getStatus();
@@ -990,7 +1005,11 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
   protected selectByCapability(
     eligibleMembers: AgentComponent[],
     task: TaskDefinition
-  ): AgentComponent {
+  ): AgentComponent | null {
+    if (eligibleMembers.length === 0) {
+      return null;
+    }
+    
     // Select member with the most matching capabilities
     return eligibleMembers.reduce((best, current) => {
       const bestCapabilities = best.getCapabilities();
@@ -1119,7 +1138,7 @@ export class HierarchicalAgentGroup extends AgentGroup {
   }
 
   // Override task execution to support hierarchical delegation
-  async executeTask(task: TaskDefinition): Promise<TaskResult> {
+  override async executeTask(task: TaskDefinition): Promise<TaskResult> {
     // Try to delegate to most appropriate level in hierarchy
     const bestHandler = this.findBestHandlerInHierarchy(task);
 
@@ -1182,12 +1201,20 @@ export class AgentFactory {
     parameters?: Record<string, any>,
     requiredResources?: ResourceRequirements
   ): AgentCapability {
-    return {
+    const capability: AgentCapability = {
       name,
       version,
       description,
-      parameters,
-      requiredResources,
     };
+
+    if (parameters !== undefined) {
+      capability.parameters = parameters;
+    }
+
+    if (requiredResources !== undefined) {
+      capability.requiredResources = requiredResources;
+    }
+
+    return capability;
   }
 }

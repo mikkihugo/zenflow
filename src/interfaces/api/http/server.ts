@@ -8,14 +8,37 @@
  * @file Main REST API server with domain endpoints
  */
 
-import compression from 'compression';
+// Core dependencies
 import cors from 'cors';
 import express, { type Application, type Request, type Response } from 'express';
-import { OpenApiValidator } from 'express-openapi-validator';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
-import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
+
+// Optional dependencies - handle missing gracefully
+let compression: any = null;
+let OpenApiValidator: any = null;
+let swaggerJsdoc: any = null;
+let swaggerUi: any = null;
+
+try {
+  compression = require('compression');
+} catch (_e) {
+  console.warn('compression package not available - performance middleware disabled');
+}
+
+try {
+  ({ OpenApiValidator } = require('express-openapi-validator'));
+} catch (_e) {
+  console.warn('express-openapi-validator package not available - request validation disabled');
+}
+
+try {
+  swaggerJsdoc = require('swagger-jsdoc');
+  swaggerUi = require('swagger-ui-express');
+} catch (_e) {
+  console.warn('swagger packages not available - API documentation disabled');
+}
+
 import { authMiddleware } from './middleware/auth';
 // Import middleware
 import { errorHandler } from './middleware/errors';
@@ -42,7 +65,7 @@ export interface APIServerConfig {
   readonly enableRateLimit: boolean;
   readonly rateLimitWindowMs: number;
   readonly rateLimitMaxRequests: number;
-  readonly corsOrigins: readonly string[];
+  readonly corsOrigins: string[];
 }
 
 /**
@@ -186,7 +209,9 @@ export class APIServer {
     );
 
     // Performance middleware
-    this.app.use(compression());
+    if (compression) {
+      this.app.use(compression());
+    }
 
     // Rate limiting
     if (this.config.enableRateLimit) {
@@ -248,7 +273,7 @@ export class APIServer {
     });
 
     // Setup Swagger documentation
-    if (this.config.enableSwagger) {
+    if (this.config.enableSwagger && swaggerJsdoc && swaggerUi) {
       const specs = swaggerJsdoc(swaggerOptions);
       this.app.use(
         '/docs',
@@ -267,7 +292,7 @@ export class APIServer {
     }
 
     // Setup OpenAPI validation
-    if (this.config.enableValidation) {
+    if (this.config.enableValidation && OpenApiValidator && swaggerJsdoc) {
       const validator = new OpenApiValidator({
         apiSpec: swaggerJsdoc(swaggerOptions),
         validateRequests: true,

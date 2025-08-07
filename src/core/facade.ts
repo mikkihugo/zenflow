@@ -1044,7 +1044,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   private generateOperationId(): string {
-    return `op-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `op-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateProjectId(name: string): string {
@@ -1344,7 +1344,7 @@ export class ClaudeZenFacade extends EventEmitter {
       if (status.errors?.length) {
         status.errors.forEach((error) => {
           alerts.push({
-            id: `error-${component}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+            id: `error-${component}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
             level: 'error',
             message: error,
             component,

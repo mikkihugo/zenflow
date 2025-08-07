@@ -225,11 +225,11 @@ describe('Strategy Pattern Implementation', () => {
 
     beforeEach(() => {
       mockStrategy = {
-        coordinate: jest.fn(),
-        getMetrics: jest.fn(),
-        getTopologyType: jest.fn(),
-        validateContext: jest.fn(),
-        optimize: jest.fn(),
+        coordinate: vi.fn(),
+        getMetrics: vi.fn(),
+        getTopologyType: vi.fn(),
+        validateContext: vi.fn(),
+        optimize: vi.fn(),
       };
 
       swarmCoordinator = new SwarmCoordinator(mockStrategy);
@@ -268,11 +268,11 @@ describe('Strategy Pattern Implementation', () => {
 
     it('should switch strategies correctly', () => {
       const newMockStrategy = {
-        coordinate: jest.fn(),
-        getMetrics: jest.fn(),
-        getTopologyType: jest.fn().mockReturnValue('hierarchical'),
-        validateContext: jest.fn(),
-        optimize: jest.fn(),
+        coordinate: vi.fn(),
+        getMetrics: vi.fn(),
+        getTopologyType: vi.fn().mockReturnValue('hierarchical'),
+        validateContext: vi.fn(),
+        optimize: vi.fn(),
       };
 
       swarmCoordinator.setStrategy(newMockStrategy);

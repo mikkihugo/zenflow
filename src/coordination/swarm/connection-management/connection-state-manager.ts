@@ -17,7 +17,7 @@ import { EventEmitter } from 'node:events';
 
 // Helper functions and classes moved inline to avoid missing imports
 const generateId = (prefix: string) =>
-  `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
 // Simple logger implementation
 class Logger {

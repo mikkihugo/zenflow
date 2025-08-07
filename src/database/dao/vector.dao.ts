@@ -11,7 +11,7 @@ import type {
   ClusteringOptions,
   ClusterResult,
   CustomQuery,
-  IVectorDao,
+  IVectorRepository,
   VectorDocument,
   VectorIndexConfig,
   VectorInsertResult,
@@ -26,7 +26,7 @@ import type {
  * @template T The entity type this repository manages
  * @example
  */
-export class VectorDao<T> extends BaseDao<T> implements IVectorDao<T> {
+export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
   private get vectorAdapter(): VectorDatabaseAdapter {
     return this.adapter as VectorDatabaseAdapter;
   }

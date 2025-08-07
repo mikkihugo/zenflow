@@ -90,7 +90,7 @@ export class TerminalManager extends EventEmitter {
     } = {}
   ): Promise<ProcessResult> {
     const startTime = Date.now();
-    const processId = `proc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const processId = `proc_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 
     if (this.activeProcesses.size >= this.config.maxConcurrentProcesses) {
       throw new Error('Maximum concurrent processes limit reached');
@@ -208,7 +208,7 @@ export class TerminalManager extends EventEmitter {
    * @param sessionId
    */
   async createSession(sessionId?: string): Promise<string> {
-    const id = sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const id = sessionId || `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 
     if (this.sessions.has(id)) {
       throw new Error(`Session ${id} already exists`);

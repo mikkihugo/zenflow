@@ -110,6 +110,24 @@ export class DatabaseDrivenSystem extends EventEmitter {
       tags: [projectSpec.domain, projectSpec.complexity || 'moderate'],
       stakeholders: [],
       author: projectSpec.author,
+      sparc_integration: {
+        enabled: true,
+        sparc_project_mappings: [],
+        sparc_project_ids: [],
+        document_sparc_workflow: {
+          vision_generates_sparc_specs: true,
+          features_trigger_sparc_projects: true,
+          tasks_map_to_sparc_phases: true,
+          auto_create_sparc_from_features: true,
+          sparc_completion_updates_tasks: true,
+        },
+        integration_health: {
+          document_sparc_sync_status: 'synced',
+          last_sync_date: new Date(),
+          sync_errors: [],
+          sparc_coverage_percentage: 100,
+        },
+      },
     });
 
     // Create workspace context
@@ -208,7 +226,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
       const workflowIds = await this.workflowEngine.processDocumentEvent(
         'document:created',
         document,
-        { workspaceId, projectId: context.projectId }
+        { workspaceId }
       );
 
       if (workflowIds.length > 0) {
@@ -276,6 +294,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
       dependencies: [],
       related_documents: [],
       version: '1.0.0',
+      metadata: { source: 'database-driven-system', auto_generated: true },
       searchable_content: '',
       keywords: [],
       workflow_stage: 'created',
@@ -611,6 +630,11 @@ ${decision.decision}
         dependencies: [],
         related_documents: [vision.id],
         version: '1.0.0',
+        metadata: {
+          source: 'database-driven-system',
+          auto_generated: true,
+          generated_from_vision: vision.id,
+        },
         searchable_content: '',
         keywords: [],
         workflow_stage: 'generated',
@@ -668,6 +692,11 @@ ${vision.business_objectives.map((obj, _i) => `- As a user, I want ${obj.toLower
       dependencies: [],
       related_documents: [vision.id],
       version: '1.0.0',
+      metadata: {
+        source: 'database-driven-system',
+        auto_generated: true,
+        generated_from_vision: vision.id,
+      },
       searchable_content: '',
       keywords: [],
       workflow_stage: 'generated',
@@ -767,6 +796,11 @@ This epic will enable users to ${epicSpec.businessValue.toLowerCase()}.
         dependencies: [],
         related_documents: [prd.id],
         version: '1.0.0',
+        metadata: {
+          source: 'database-driven-system',
+          auto_generated: true,
+          generated_from_prd: prd.id,
+        },
         searchable_content: '',
         keywords: [],
         workflow_stage: 'generated',
@@ -845,6 +879,11 @@ Ready for development
         dependencies: [],
         related_documents: [epic.id],
         version: '1.0.0',
+        metadata: {
+          source: 'database-driven-system',
+          auto_generated: true,
+          generated_from_epic: epic.id,
+        },
         searchable_content: '',
         keywords: [],
         workflow_stage: 'generated',
@@ -912,6 +951,11 @@ ${spec.title} for ${feature.title}
         dependencies: [],
         related_documents: [feature.id],
         version: '1.0.0',
+        metadata: {
+          source: 'database-driven-system',
+          auto_generated: true,
+          generated_from_feature: feature.id,
+        },
         searchable_content: '',
         keywords: [],
         workflow_stage: 'generated',

@@ -228,8 +228,8 @@ describe('Native Hive Mind Integration Tests', () => {
       const hiveMind = (swarmCoordinator as any).hiveMind;
       const consensusEngine = hiveMind.consensus;
 
-      jest.spyOn(consensusEngine, 'createProposal').mockResolvedValue('test-proposal-id');
-      jest.spyOn(consensusEngine, 'getProposalStatus').mockResolvedValue({
+      vi.spyOn(consensusEngine, 'createProposal').mockResolvedValue('test-proposal-id');
+      vi.spyOn(consensusEngine, 'getProposalStatus').mockResolvedValue({
         status: 'achieved',
         currentRatio: 0.75,
       });
@@ -249,8 +249,8 @@ describe('Native Hive Mind Integration Tests', () => {
       const hiveMind = (swarmCoordinator as any).hiveMind;
       const consensusEngine = hiveMind.consensus;
 
-      jest.spyOn(consensusEngine, 'createProposal').mockResolvedValue('test-proposal-id');
-      jest.spyOn(consensusEngine, 'getProposalStatus').mockResolvedValue({
+      vi.spyOn(consensusEngine, 'createProposal').mockResolvedValue('test-proposal-id');
+      vi.spyOn(consensusEngine, 'getProposalStatus').mockResolvedValue({
         status: 'failed',
         currentRatio: 0.4,
       });
@@ -286,7 +286,7 @@ describe('Native Hive Mind Integration Tests', () => {
       const content = 'Test broadcast content';
 
       const hiveMind = (swarmCoordinator as any).hiveMind;
-      const broadcastSpy = jest.spyOn(hiveMind.communication, 'broadcast');
+      const broadcastSpy = vi.spyOn(hiveMind.communication, 'broadcast');
 
       await swarmCoordinator.createSteeringDocument(domain, content);
 
@@ -336,7 +336,7 @@ describe('Native Hive Mind Integration Tests', () => {
 
       // Mock task that never completes
       const hiveMind = (swarmCoordinator as any).hiveMind;
-      jest.spyOn(hiveMind, 'getTask').mockResolvedValue({
+      vi.spyOn(hiveMind, 'getTask').mockResolvedValue({
         id: 'test-task',
         status: 'in_progress',
         result: null,
@@ -349,7 +349,7 @@ describe('Native Hive Mind Integration Tests', () => {
 
     it('should handle swarm shutdown gracefully', async () => {
       const hiveMind = (swarmCoordinator as any).hiveMind;
-      const shutdownSpy = jest.spyOn(hiveMind, 'shutdown');
+      const shutdownSpy = vi.spyOn(hiveMind, 'shutdown');
 
       await swarmCoordinator.shutdown();
 
@@ -363,7 +363,7 @@ describe('Native Hive Mind Integration Tests', () => {
     });
 
     it('should emit maestro events through event bus', async () => {
-      const specCreatedSpy = jest.fn();
+      const specCreatedSpy = vi.fn();
       eventBus.on('maestro:spec_created', specCreatedSpy);
 
       await swarmCoordinator.createSpec('event-test', 'Test event emission');
@@ -374,7 +374,7 @@ describe('Native Hive Mind Integration Tests', () => {
     });
 
     it('should handle event-driven workflow progression', async () => {
-      const phaseApprovedSpy = jest.fn();
+      const phaseApprovedSpy = vi.fn();
       eventBus.on('maestro:phase_approved', phaseApprovedSpy);
 
       const featureName = 'workflow-events';
@@ -383,8 +383,8 @@ describe('Native Hive Mind Integration Tests', () => {
       // Mock consensus for approval
       const hiveMind = (swarmCoordinator as any).hiveMind;
       const consensusEngine = hiveMind.consensus;
-      jest.spyOn(consensusEngine, 'createProposal').mockResolvedValue('test-proposal');
-      jest.spyOn(consensusEngine, 'getProposalStatus').mockResolvedValue({
+      vi.spyOn(consensusEngine, 'createProposal').mockResolvedValue('test-proposal');
+      vi.spyOn(consensusEngine, 'getProposalStatus').mockResolvedValue({
         status: 'achieved',
         currentRatio: 0.8,
       });

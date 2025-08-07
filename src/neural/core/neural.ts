@@ -17,14 +17,21 @@ const ZenSwarm: ZenSwarm = {
     return {
       wasmLoader: {
         modules: new Map([
-          ['core', {
-            neural_status: () => 'Neural networks simulated - WASM not available',
-            neural_train: (_modelType: string, _iteration: number, _totalIterations: number) => {},
-          }]
-        ])
-      }
+          [
+            'core',
+            {
+              neural_status: () => 'Neural networks simulated - WASM not available',
+              neural_train: (
+                _modelType: string,
+                _iteration: number,
+                _totalIterations: number
+              ) => {},
+            },
+          ],
+        ]),
+      },
     };
-  }
+  },
 };
 
 // Pattern memory configuration for different cognitive patterns
@@ -46,7 +53,6 @@ const PATTERN_MEMORY_CONFIG = {
 
 class NeuralCLI {
   private ruvSwarm: any;
-  private activePatterns: Set<string>;
 
   constructor() {
     this.ruvSwarm = null;

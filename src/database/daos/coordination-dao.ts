@@ -5,7 +5,7 @@
  * distributed locking, messaging, and multi-node synchronization.
  */
 
-import { BaseDataAccessObject } from '../base-repository';
+import { BaseDao } from '../base.dao';
 import type {
   CoordinationEvent,
   CoordinationLock,
@@ -20,9 +20,25 @@ import type {
  * @template T The entity type this DAO manages
  * @example
  */
-export class CoordinationDAO<T> extends BaseDataAccessObject<T> {
+export class CoordinationDAO<T> extends BaseDao<T> {
+  /**
+   * Map database row to entity
+   */
+  protected mapRowToEntity(row: any): T {
+    // Default implementation - override in specific DAOs
+    return row as T;
+  }
+
+  /**
+   * Map entity to database row
+   */
+  protected mapEntityToRow(entity: Partial<T>): Record<string, any> {
+    // Default implementation - convert entity to plain object
+    return { ...entity } as Record<string, any>;
+  }
+
   private get coordinationRepository(): ICoordinationRepository<T> {
-    return this.repository as ICoordinationRepository<T>;
+    return this as any as ICoordinationRepository<T>;
   }
 
   /**

@@ -1084,7 +1084,7 @@ class AdvancedConnectionPool extends EventEmitter implements ConnectionPool {
   }
 
   private generateConnectionId(): string {
-    return `conn-${Date.now()}-${Math.random().toString(36).substr(2, 8)}`;
+    return `conn-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
   }
 
   async shutdown(): Promise<void> {

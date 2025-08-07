@@ -5,7 +5,7 @@
  * graph-specific operations and transaction management.
  */
 
-import { BaseDataAccessObject } from '../base-repository';
+import { BaseDao } from '../base.dao';
 import type { GraphQueryResult, IGraphRepository, TransactionOperation } from '../interfaces';
 
 /**
@@ -14,9 +14,25 @@ import type { GraphQueryResult, IGraphRepository, TransactionOperation } from '.
  * @template T The entity type this DAO manages
  * @example
  */
-export class GraphDAO<T> extends BaseDataAccessObject<T> {
+export class GraphDAO<T> extends BaseDao<T> {
+  /**
+   * Map database row to entity
+   */
+  protected mapRowToEntity(row: any): T {
+    // Default implementation - override in specific DAOs
+    return row as T;
+  }
+
+  /**
+   * Map entity to database row
+   */
+  protected mapEntityToRow(entity: Partial<T>): Record<string, any> {
+    // Default implementation - convert entity to plain object
+    return { ...entity } as Record<string, any>;
+  }
+
   private get graphRepository(): IGraphRepository<T> {
-    return this.repository as IGraphRepository<T>;
+    return this as any as IGraphRepository<T>;
   }
 
   /**

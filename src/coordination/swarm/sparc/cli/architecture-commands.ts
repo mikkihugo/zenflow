@@ -8,7 +8,7 @@ import chalk from 'chalk';
 import { Command } from 'commander';
 import { ArchitectureMCPToolsImpl } from '../mcp/architecture-tools';
 import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
-import type { PseudocodeStructure, ArchitectureDesign } from '../types/sparc-types';
+import type { ArchitectureDesign, PseudocodeStructure } from '../types/sparc-types';
 
 // Mock database for CLI (in production, this would use the actual database)
 class CLIDatabaseAdapter {
@@ -254,26 +254,38 @@ function createSamplePseudocode(): PseudocodeStructure {
         name: 'sampleAlgorithm',
         purpose: 'Sample algorithm for demonstrating SPARC architecture generation',
         steps: [
-          { stepNumber: 1, description: 'Initialize data structures', pseudocode: 'CREATE data_structures' },
-          { stepNumber: 2, description: 'Process input parameters', pseudocode: 'VALIDATE and PROCESS inputs' },
-          { stepNumber: 3, description: 'Execute core logic', pseudocode: 'EXECUTE main_algorithm()' },
-          { stepNumber: 4, description: 'Return processed results', pseudocode: 'RETURN formatted_results' }
+          {
+            stepNumber: 1,
+            description: 'Initialize data structures',
+            pseudocode: 'CREATE data_structures',
+          },
+          {
+            stepNumber: 2,
+            description: 'Process input parameters',
+            pseudocode: 'VALIDATE and PROCESS inputs',
+          },
+          {
+            stepNumber: 3,
+            description: 'Execute core logic',
+            pseudocode: 'EXECUTE main_algorithm()',
+          },
+          {
+            stepNumber: 4,
+            description: 'Return processed results',
+            pseudocode: 'RETURN formatted_results',
+          },
         ],
         complexity: {
           timeComplexity: 'O(n)',
           spaceComplexity: 'O(1)',
           scalability: 'Linear',
           worstCase: 'O(n)',
-          bottlenecks: []
+          bottlenecks: [],
         },
-        inputs: [
-          { name: 'data', type: 'Array<any>', description: 'Input data array' }
-        ],
-        outputs: [
-          { name: 'result', type: 'ProcessedResult', description: 'Processed output' }
-        ],
-        optimizations: []
-      }
+        inputs: [{ name: 'data', type: 'Array<any>', description: 'Input data array' }],
+        outputs: [{ name: 'result', type: 'ProcessedResult', description: 'Processed output' }],
+        optimizations: [],
+      },
     ],
     coreAlgorithms: [
       {
@@ -282,20 +294,24 @@ function createSamplePseudocode(): PseudocodeStructure {
         inputs: [{ name: 'data', type: 'Array<any>', description: 'Input data to process' }],
         outputs: [{ name: 'results', type: 'Array<any>', description: 'Processed results' }],
         steps: [
-          { stepNumber: 1, description: 'Iterate through data', pseudocode: 'FOR each item IN data' },
+          {
+            stepNumber: 1,
+            description: 'Iterate through data',
+            pseudocode: 'FOR each item IN data',
+          },
           { stepNumber: 2, description: 'Process item', pseudocode: 'PROCESS item' },
           { stepNumber: 3, description: 'Add to results', pseudocode: 'ADD to results' },
-          { stepNumber: 4, description: 'Return results', pseudocode: 'RETURN results' }
+          { stepNumber: 4, description: 'Return results', pseudocode: 'RETURN results' },
         ],
         complexity: {
           timeComplexity: 'O(n)',
           spaceComplexity: 'O(n)',
           scalability: 'Linear',
           worstCase: 'O(n)',
-          bottlenecks: ['Memory allocation for results']
+          bottlenecks: ['Memory allocation for results'],
         },
-        optimizations: []
-      }
+        optimizations: [],
+      },
     ],
     dataStructures: [
       {
@@ -303,16 +319,40 @@ function createSamplePseudocode(): PseudocodeStructure {
         type: 'class',
         properties: [
           { name: 'ordering', type: 'FIFO', visibility: 'public', description: 'FIFO ordering' },
-          { name: 'sizing', type: 'Dynamic', visibility: 'public', description: 'Dynamic sizing' }
+          { name: 'sizing', type: 'Dynamic', visibility: 'public', description: 'Dynamic sizing' },
         ],
         methods: [
-          { name: 'enqueue', parameters: [], returnType: 'void', visibility: 'public', description: 'Add item to queue' },
-          { name: 'dequeue', parameters: [], returnType: 'T', visibility: 'public', description: 'Remove item from queue' },
-          { name: 'peek', parameters: [], returnType: 'T', visibility: 'public', description: 'View front item' },
-          { name: 'isEmpty', parameters: [], returnType: 'boolean', visibility: 'public', description: 'Check if empty' }
+          {
+            name: 'enqueue',
+            parameters: [],
+            returnType: 'void',
+            visibility: 'public',
+            description: 'Add item to queue',
+          },
+          {
+            name: 'dequeue',
+            parameters: [],
+            returnType: 'T',
+            visibility: 'public',
+            description: 'Remove item from queue',
+          },
+          {
+            name: 'peek',
+            parameters: [],
+            returnType: 'T',
+            visibility: 'public',
+            description: 'View front item',
+          },
+          {
+            name: 'isEmpty',
+            parameters: [],
+            returnType: 'boolean',
+            visibility: 'public',
+            description: 'Check if empty',
+          },
         ],
-        relationships: []
-      }
+        relationships: [],
+      },
     ],
     controlFlows: [
       {
@@ -320,27 +360,39 @@ function createSamplePseudocode(): PseudocodeStructure {
         nodes: [],
         edges: [],
         cycles: false,
-        complexity: 1
-      }
+        complexity: 1,
+      },
     ],
     optimizations: [
-      { type: 'performance', description: 'Use batch processing for large datasets', impact: 'high', effort: 'medium' },
-      { type: 'caching', description: 'Implement caching for repeated operations', impact: 'medium', effort: 'low' },
-      { type: 'parallelization', description: 'Consider parallel processing for independent items', impact: 'high', effort: 'high' }
+      {
+        type: 'performance',
+        description: 'Use batch processing for large datasets',
+        impact: 'high',
+        effort: 'medium',
+      },
+      {
+        type: 'caching',
+        description: 'Implement caching for repeated operations',
+        impact: 'medium',
+        effort: 'low',
+      },
+      {
+        type: 'parallelization',
+        description: 'Consider parallel processing for independent items',
+        impact: 'high',
+        effort: 'high',
+      },
     ],
     dependencies: [
-      { type: 'uses', target: 'lodash', description: 'Utility functions for data processing' }
+      { type: 'uses', target: 'lodash', description: 'Utility functions for data processing' },
     ],
     complexityAnalysis: {
       timeComplexity: 'O(n)',
       spaceComplexity: 'O(n)',
       scalability: 'Linear',
       worstCase: 'O(n²)',
-      bottlenecks: [
-        'Memory allocation',
-        'I/O operations'
-      ]
-    }
+      bottlenecks: ['Memory allocation', 'I/O operations'],
+    },
   };
 }
 
@@ -348,39 +400,22 @@ function createSamplePseudocode(): PseudocodeStructure {
  * Display architecture summary in a formatted way
  */
 function displayArchitectureSummary(architecture: ArchitectureDesign): void {
-  console.log('\n📐 Architecture Summary');
-  console.log('=====================');
-  
   if (architecture.systemArchitecture?.components) {
-    console.log(`\n🏗️  Components (${architecture.systemArchitecture.components.length}):`);
-    architecture.systemArchitecture.components.forEach((component, index) => {
-      console.log(`   ${index + 1}. ${component.name} (${component.type})`);
+    architecture.systemArchitecture.components.forEach((component, _index) => {
       if (component.description) {
-        console.log(`      Description: ${component.description}`);
       }
     });
   }
 
   if (architecture.systemArchitecture?.interfaces?.length) {
-    console.log(`\n🔌 Interfaces (${architecture.systemArchitecture.interfaces.length}):`);
-    architecture.systemArchitecture.interfaces.forEach((iface, index) => {
-      console.log(`   ${index + 1}. ${iface.name}: ${iface.description || 'No description'}`);
-    });
+    architecture.systemArchitecture.interfaces.forEach((_iface, _index) => {});
   }
 
   if (architecture.systemArchitecture?.technologyStack?.length) {
-    console.log(`\n⚡ Technology Stack:`);
-    architecture.systemArchitecture.technologyStack.forEach((tech, index) => {
-      console.log(`   ${index + 1}. ${tech.technology} - ${tech.purpose}`);
-    });
+    architecture.systemArchitecture.technologyStack.forEach((_tech, _index) => {});
   }
 
   if (architecture.systemArchitecture?.architecturalPatterns?.length) {
-    console.log(`\n🎨 Architectural Patterns:`);
-    architecture.systemArchitecture.architecturalPatterns.forEach((pattern, index) => {
-      console.log(`   ${index + 1}. ${pattern.name}: ${pattern.description}`);
-    });
+    architecture.systemArchitecture.architecturalPatterns.forEach((_pattern, _index) => {});
   }
-
-  console.log('\n✅ Architecture generation completed successfully!');
 }

@@ -14,7 +14,7 @@ import type {
   CoordinationLock,
   CoordinationStats,
   CustomQuery,
-  ICoordinationDao,
+  ICoordinationRepository,
 } from '../interfaces';
 
 /**
@@ -46,7 +46,7 @@ interface LockInfo extends CoordinationLock {
  * @template T The entity type this repository manages
  * @example
  */
-export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationDao<T> {
+export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepository<T> {
   private eventEmitter = new EventEmitter();
   private locks = new Map<string, LockInfo>();
   private subscriptions = new Map<string, Subscription>();
@@ -489,11 +489,11 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationDao<T
   }
 
   private generateLockId(resourceId: string): string {
-    return `lock_${resourceId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `lock_${resourceId}_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateSubscriptionId(): string {
-    return `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `sub_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateOwnerIdentifier(): string {

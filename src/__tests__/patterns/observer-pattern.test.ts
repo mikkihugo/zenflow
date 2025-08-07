@@ -41,10 +41,10 @@ describe('Observer Pattern Implementation', () => {
 
     beforeEach(() => {
       mockLogger = {
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+        debug: vi.fn(),
       };
       eventManager = new SystemEventManager(mockLogger);
     });
@@ -140,7 +140,7 @@ describe('Observer Pattern Implementation', () => {
         );
 
         const mockObserver: SystemObserver = {
-          update: jest.fn(),
+          update: vi.fn(),
           getInterests: () => ['swarm'],
           getId: () => 'test-observer',
           getPriority: () => 1,
@@ -211,21 +211,21 @@ describe('Observer Pattern Implementation', () => {
     describe('Event Filtering and Routing', () => {
       it('should route events to interested observers only', async () => {
         const swarmObserver: SystemObserver = {
-          update: jest.fn(),
+          update: vi.fn(),
           getInterests: () => ['swarm'],
           getId: () => 'swarm-observer',
           getPriority: () => 1,
         };
 
         const mcpObserver: SystemObserver = {
-          update: jest.fn(),
+          update: vi.fn(),
           getInterests: () => ['mcp'],
           getId: () => 'mcp-observer',
           getPriority: () => 1,
         };
 
         const universalObserver: SystemObserver = {
-          update: jest.fn(),
+          update: vi.fn(),
           getInterests: () => ['swarm', 'mcp', 'neural'],
           getId: () => 'universal-observer',
           getPriority: () => 1,
@@ -274,7 +274,7 @@ describe('Observer Pattern Implementation', () => {
     describe('Error Recovery and Resilience', () => {
       it('should handle observer failures gracefully', async () => {
         const failingObserver: SystemObserver = {
-          update: jest.fn().mockImplementation(() => {
+          update: vi.fn().mockImplementation(() => {
             throw new Error('Observer processing failed');
           }),
           getInterests: () => ['swarm'],
@@ -283,7 +283,7 @@ describe('Observer Pattern Implementation', () => {
         };
 
         const workingObserver: SystemObserver = {
-          update: jest.fn(),
+          update: vi.fn(),
           getInterests: () => ['swarm'],
           getId: () => 'working-observer',
           getPriority: () => 1,
@@ -315,7 +315,7 @@ describe('Observer Pattern Implementation', () => {
 
       it('should maintain performance under load', async () => {
         const highVolumeObserver: SystemObserver = {
-          update: jest.fn(),
+          update: vi.fn(),
           getInterests: () => ['swarm', 'mcp', 'neural'],
           getId: () => 'high-volume-observer',
           getPriority: () => 1,
@@ -390,17 +390,17 @@ describe('Observer Pattern Implementation', () => {
 
     beforeEach(() => {
       mockLogger = {
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+        debug: vi.fn(),
       };
 
       mockObserver = {
-        update: jest.fn(),
-        getInterests: jest.fn().mockReturnValue(['swarm']),
-        getId: jest.fn().mockReturnValue('mock-observer'),
-        getPriority: jest.fn().mockReturnValue(1),
+        update: vi.fn(),
+        getInterests: vi.fn().mockReturnValue(['swarm']),
+        getId: vi.fn().mockReturnValue('mock-observer'),
+        getPriority: vi.fn().mockReturnValue(1),
       };
 
       eventManager = new SystemEventManager(mockLogger);
@@ -473,10 +473,10 @@ describe('Observer Pattern Implementation', () => {
 
     it('should handle multiple observers for same event type', async () => {
       const secondObserver = {
-        update: jest.fn(),
-        getInterests: jest.fn().mockReturnValue(['swarm']),
-        getId: jest.fn().mockReturnValue('second-observer'),
-        getPriority: jest.fn().mockReturnValue(2),
+        update: vi.fn(),
+        getInterests: vi.fn().mockReturnValue(['swarm']),
+        getId: vi.fn().mockReturnValue('second-observer'),
+        getPriority: vi.fn().mockReturnValue(2),
       };
 
       eventManager.subscribe('swarm', mockObserver);
@@ -503,17 +503,17 @@ describe('Observer Pattern Implementation', () => {
 
     it('should respect observer priorities in processing order', async () => {
       const highPriorityObserver = {
-        update: jest.fn(),
-        getInterests: jest.fn().mockReturnValue(['swarm']),
-        getId: jest.fn().mockReturnValue('high-priority'),
-        getPriority: jest.fn().mockReturnValue(3),
+        update: vi.fn(),
+        getInterests: vi.fn().mockReturnValue(['swarm']),
+        getId: vi.fn().mockReturnValue('high-priority'),
+        getPriority: vi.fn().mockReturnValue(3),
       };
 
       const lowPriorityObserver = {
-        update: jest.fn(),
-        getInterests: jest.fn().mockReturnValue(['swarm']),
-        getId: jest.fn().mockReturnValue('low-priority'),
-        getPriority: jest.fn().mockReturnValue(1),
+        update: vi.fn(),
+        getInterests: vi.fn().mockReturnValue(['swarm']),
+        getId: vi.fn().mockReturnValue('low-priority'),
+        getPriority: vi.fn().mockReturnValue(1),
       };
 
       eventManager.subscribe('swarm', lowPriorityObserver);
@@ -546,10 +546,10 @@ describe('Observer Pattern Implementation', () => {
 
       beforeEach(() => {
         mockLogger = {
-          info: jest.fn(),
-          warn: jest.fn(),
-          error: jest.fn(),
-          debug: jest.fn(),
+          info: vi.fn(),
+          warn: vi.fn(),
+          error: vi.fn(),
+          debug: vi.fn(),
         };
         loggerObserver = new LoggerObserver(mockLogger);
       });
@@ -666,7 +666,7 @@ describe('Observer Pattern Implementation', () => {
 
       beforeEach(() => {
         mockWebSocket = {
-          send: jest.fn(),
+          send: vi.fn(),
           readyState: 1, // WebSocket.OPEN
         };
         wsObserver = new WebSocketObserver(mockWebSocket as any);
@@ -720,16 +720,16 @@ describe('Observer Pattern Implementation', () => {
 
       beforeEach(() => {
         mockDatabase = {
-          insert: jest.fn().mockResolvedValue('event-id-123'),
-          update: jest.fn().mockResolvedValue(true),
-          query: jest.fn().mockResolvedValue([]),
+          insert: vi.fn().mockResolvedValue('event-id-123'),
+          update: vi.fn().mockResolvedValue(true),
+          query: vi.fn().mockResolvedValue([]),
         };
 
         mockLogger = {
-          info: jest.fn(),
-          warn: jest.fn(),
-          error: jest.fn(),
-          debug: jest.fn(),
+          info: vi.fn(),
+          warn: vi.fn(),
+          error: vi.fn(),
+          debug: vi.fn(),
         };
 
         dbObserver = new DatabaseObserver(mockDatabase as any, mockLogger);
@@ -788,10 +788,10 @@ describe('Observer Pattern Implementation', () => {
 
     beforeEach(() => {
       mockLogger = {
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+        debug: vi.fn(),
       };
       eventManager = new SystemEventManager(mockLogger);
     });
@@ -879,7 +879,7 @@ describe('Observer Pattern Implementation', () => {
 
     it('should maintain system performance under concurrent load', async () => {
       const performanceObserver: SystemObserver = {
-        update: jest.fn().mockImplementation(() => {
+        update: vi.fn().mockImplementation(() => {
           // Simulate some processing time
           return new Promise((resolve) => setTimeout(resolve, Math.random() * 10));
         }),
@@ -958,17 +958,17 @@ describe('Observer Pattern Implementation', () => {
 
     beforeEach(() => {
       mockLogger = {
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+        debug: vi.fn(),
       };
       eventManager = new SystemEventManager(mockLogger);
     });
 
     it('should cleanup resources on shutdown', async () => {
       const mockObserver: SystemObserver = {
-        update: jest.fn(),
+        update: vi.fn(),
         getInterests: () => ['swarm'],
         getId: () => 'cleanup-test',
         getPriority: () => 1,

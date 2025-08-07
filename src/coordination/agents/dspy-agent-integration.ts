@@ -7,10 +7,15 @@
 
 import { createLogger } from '../../core/logger';
 import type { SessionMemoryStore } from '../../memory/memory';
+import type { DSPyProgram, DSPyWrapper } from '../../neural/dspy-wrapper';
 // Using the new wrapper architecture instead of direct dspy.ts imports
 import { createDSPyWrapper } from '../../neural/dspy-wrapper';
-import type { DSPyWrapper, DSPyProgram } from '../../neural/dspy-wrapper';
-import type { DSPyConfig, DSPyExample, DSPyOptimizationConfig, DSPyOptimizationResult } from '../../types/dspy-types';
+import type {
+  DSPyConfig,
+  DSPyExample,
+  DSPyOptimizationConfig,
+  DSPyOptimizationResult,
+} from '../../neural/types/dspy-types';
 import type { AgentType } from '../../types/agent-types';
 import type { SwarmAgent, SwarmCoordinator } from '../swarm/core/swarm-coordinator';
 
@@ -195,7 +200,6 @@ YOUR GOAL: Make workflows self-improving and continuously optimized!`,
  */
 export class DSPyAgentIntegration {
   private swarmCoordinator: SwarmCoordinator;
-  private memoryStore: SessionMemoryStore;
   private dspyWrapper: DSPyWrapper | null = null;
   private dspyAgents: Map<string, SwarmAgent> = new Map();
 
@@ -211,11 +215,13 @@ export class DSPyAgentIntegration {
    */
   async initialize(config?: DSPyConfig): Promise<void> {
     try {
-      this.dspyWrapper = await createDSPyWrapper(config || {
-        model: 'claude-3-5-sonnet-20241022',
-        temperature: 0.1,
-        maxTokens: 2000
-      });
+      this.dspyWrapper = await createDSPyWrapper(
+        config || {
+          model: 'claude-3-5-sonnet-20241022',
+          temperature: 0.1,
+          maxTokens: 2000,
+        }
+      );
 
       logger.info('DSPy wrapper initialized successfully');
     } catch (error) {
@@ -369,7 +375,7 @@ export class DSPyAgentIntegration {
 
     // Create and optimize DSPy program with swarm coordination using ruvnet dspy.ts
     const program = await this.createDSPyProgram(signature, description);
-    
+
     // Use examples for few-shot learning if provided
     const result = await this.optimizeProgram(program, examples);
 
@@ -466,9 +472,9 @@ export class DSPyAgentIntegration {
     }
 
     this.dspyAgents.clear();
-    
+
     // Cleanup DSPy wrapper if it exists
-    if (this.dspyWrapper && this.dspyWrapper.cleanup) {
+    if (this.dspyWrapper?.cleanup) {
       await this.dspyWrapper.cleanup();
     }
 
@@ -496,7 +502,7 @@ export class DSPyAgentIntegration {
    * @private
    */
   private async optimizeProgram(
-    program: DSPyProgram, 
+    program: DSPyProgram,
     examples: Array<{ input: any; output: any }>
   ): Promise<{ performance: any; optimizedProgram?: DSPyProgram }> {
     if (!this.dspyWrapper) {
@@ -510,14 +516,14 @@ export class DSPyAgentIntegration {
 
     try {
       // Convert examples to DSPyExample format
-      const dspyExamples: DSPyExample[] = examples.map(ex => ({
+      const dspyExamples: DSPyExample[] = examples.map((ex) => ({
         input: ex.input,
         output: ex.output,
-        metadata: { 
+        metadata: {
           quality: 1.0,
           timestamp: new Date(),
-          source: 'agent-integration'
-        }
+          source: 'agent-integration',
+        },
       }));
 
       // Add examples to program
@@ -528,16 +534,19 @@ export class DSPyAgentIntegration {
         strategy: 'bootstrap',
         maxIterations: 5,
         minExamples: Math.min(examples.length, 3),
-        targetMetric: 'accuracy',
-        timeout: 60000 // 1 minute
+        evaluationMetric: 'accuracy',
+        // timeout: 60000, // 1 minute - timeout not part of DSPyOptimizationConfig
       };
 
-      const optimizationResult: DSPyOptimizationResult = await this.dspyWrapper.optimize(program, optimizationConfig);
-      
+      const optimizationResult: DSPyOptimizationResult = await this.dspyWrapper.optimize(
+        program,
+        optimizationConfig
+      );
+
       logger.info('DSPy program optimization completed', {
         examplesUsed: examples.length,
         success: optimizationResult.success,
-        improvement: optimizationResult.metrics.improvementPercent
+        improvement: optimizationResult.metrics.improvementPercent,
       });
 
       return {
@@ -545,22 +554,23 @@ export class DSPyAgentIntegration {
           accuracy: optimizationResult.metrics.finalAccuracy || 0.95,
           optimizerType: 'wrapper-bootstrap',
           examplesUsed: examples.length,
-          improvement: optimizationResult.metrics.improvementPercent
+          improvement: optimizationResult.metrics.improvementPercent,
         },
-        optimizedProgram: optimizationResult.program
+        optimizedProgram: optimizationResult.program,
       };
     } catch (error) {
-      logger.error('DSPy optimization failed', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('DSPy optimization failed', {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return {
         performance: {
           accuracy: 0.0,
           error: error instanceof Error ? error.message : String(error),
-          message: 'Optimization failed, using unoptimized program'
-        }
+          message: 'Optimization failed, using unoptimized program',
+        },
       };
     }
   }
-
 }
 
 export default DSPyAgentIntegration;

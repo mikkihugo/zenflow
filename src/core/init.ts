@@ -27,7 +27,7 @@ export const defaultCoreConfig: ClaudeZenCoreConfig = {
 export async function initializeCore(config: Partial<ClaudeZenCoreConfig> = {}): Promise<void> {
   const finalConfig = { ...defaultCoreConfig, ...config };
 
-  const { createLogger } = await import('../utils/logger');
+  const { createLogger } = await import('./logger');
   const logger = createLogger({ prefix: 'claude-zen-core' });
   logger.info('🚀 Claude-Zen Core System initializing...');
   if (finalConfig.port) logger.info(`   Port: ${finalConfig.port}`);

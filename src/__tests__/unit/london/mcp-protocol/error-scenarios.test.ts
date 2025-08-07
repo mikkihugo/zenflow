@@ -14,45 +14,45 @@ import type { MCPRequest, MCPResponse } from '../../../../utils/types';
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
 const mockErrorHandler = {
-  classifyError: jest.fn(),
-  createErrorResponse: jest.fn(),
-  logError: jest.fn(),
-  shouldRetry: jest.fn(),
-  handleRecovery: jest.fn(),
+  classifyError: vi.fn(),
+  createErrorResponse: vi.fn(),
+  logError: vi.fn(),
+  shouldRetry: vi.fn(),
+  handleRecovery: vi.fn(),
 };
 
 const mockCircuitBreaker = {
-  isOpen: jest.fn(),
-  recordSuccess: jest.fn(),
-  recordFailure: jest.fn(),
-  getState: jest.fn(),
+  isOpen: vi.fn(),
+  recordSuccess: vi.fn(),
+  recordFailure: vi.fn(),
+  getState: vi.fn(),
 };
 
 const mockRetryManager = {
-  shouldRetry: jest.fn(),
-  getRetryDelay: jest.fn(),
-  recordAttempt: jest.fn(),
-  resetRetries: jest.fn(),
+  shouldRetry: vi.fn(),
+  getRetryDelay: vi.fn(),
+  recordAttempt: vi.fn(),
+  resetRetries: vi.fn(),
 };
 
 const mockLogger = {
-  debug: jest.fn(),
-  info: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
+  debug: vi.fn(),
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
 };
 
 const mockMetricsCollector = {
-  recordError: jest.fn(),
-  recordRetry: jest.fn(),
-  recordCircuitBreakerTrip: jest.fn(),
-  incrementErrorCounter: jest.fn(),
+  recordError: vi.fn(),
+  recordRetry: vi.fn(),
+  recordCircuitBreakerTrip: vi.fn(),
+  incrementErrorCounter: vi.fn(),
 };
 
 const mockAlertManager = {
-  sendAlert: jest.fn(),
-  isAlertThresholdReached: jest.fn(),
-  recordErrorOccurrence: jest.fn(),
+  sendAlert: vi.fn(),
+  isAlertThresholdReached: vi.fn(),
+  recordErrorOccurrence: vi.fn(),
 };
 
 // === CONTRACT INTERFACES ===
@@ -787,10 +787,10 @@ describe('MCP Error Scenarios - London TDD', () => {
 
   // Clean test isolation - London School principle
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });

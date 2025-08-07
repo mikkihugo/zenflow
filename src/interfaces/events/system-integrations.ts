@@ -225,7 +225,7 @@ export class UELEnhancedEventBus extends EventEmitter {
       const uelEventType = this.eventMappings.get(eventName) || `eventbus:${eventName}`;
 
       const uelEvent: SystemLifecycleEvent = {
-        id: `bus-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `bus-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date(),
         source: 'enhanced-event-bus',
         type: uelEventType as any,
@@ -695,7 +695,7 @@ export class UELEnhancedObserverSystem extends EventEmitter {
       // Emit to UEL system
       if (this.uelEventManager && typeof eventName === 'string') {
         const uelEvent: MonitoringEvent = {
-          id: `obs-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          id: `obs-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
           timestamp: new Date(),
           source: `observer-${name}`,
           type: `monitoring:observer` as any,

@@ -964,7 +964,7 @@ export class InfrastructureServiceAdapter implements IService {
     params?: any,
     options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>> {
-    const operationId = `${operation}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const operationId = `${operation}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const startTime = Date.now();
 
     this.logger.debug(`Executing operation: ${operation}`, { operationId, params });
@@ -2116,7 +2116,7 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   private createConfigurationVersion(config: any, description?: string): void {
-    const version = `${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
+    const version = `${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const configVersion: ConfigurationVersion = {
       version,
       config: JSON.parse(JSON.stringify(config)), // Deep copy

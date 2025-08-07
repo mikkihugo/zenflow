@@ -1228,7 +1228,7 @@ export class BehavioralOptimization extends EventEmitter {
     if (!behavior) return;
 
     const adaptation: Adaptation = {
-      id: `adaptation_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+      id: `adaptation_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
       timestamp: Date.now(),
       ...adaptationData,
     };
@@ -1442,7 +1442,7 @@ export class BehavioralOptimization extends EventEmitter {
     const stability = this.calculateClusterStability(clusterBehaviors);
 
     return {
-      id: `cluster_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+      id: `cluster_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
       behaviors: clusterBehaviors,
       centroid,
       characteristics: this.extractClusterCharacteristics(clusterBehaviors),

@@ -15,30 +15,30 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 // Mock Dependencies - Contract Definition Phase
 const mockWebApiServer = {
-  start: jest.fn(),
-  stop: jest.fn(),
-  registerRoute: jest.fn(),
-  getRoutes: jest.fn(),
+  start: vi.fn(),
+  stop: vi.fn(),
+  registerRoute: vi.fn(),
+  getRoutes: vi.fn(),
 };
 
 const mockMcpServer = {
-  initialize: jest.fn(),
-  handleStdioMessage: jest.fn(),
-  sendResponse: jest.fn(),
-  registerTool: jest.fn(),
+  initialize: vi.fn(),
+  handleStdioMessage: vi.fn(),
+  sendResponse: vi.fn(),
+  registerTool: vi.fn(),
 };
 
 const mockWebSocketManager = {
-  createServer: jest.fn(),
-  broadcast: jest.fn(),
-  onConnection: jest.fn(),
-  onMessage: jest.fn(),
+  createServer: vi.fn(),
+  broadcast: vi.fn(),
+  onConnection: vi.fn(),
+  onMessage: vi.fn(),
 };
 
 const mockIntegrationLayer = {
-  bridgeWebToMcp: jest.fn(),
-  bridgeMcpToWeb: jest.fn(),
-  coordinateComponents: jest.fn(),
+  bridgeWebToMcp: vi.fn(),
+  bridgeMcpToWeb: vi.fn(),
+  coordinateComponents: vi.fn(),
 };
 
 // Contract Interfaces - Define Expected Behaviors
@@ -135,8 +135,8 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
     describe('User Story: WebSocket Real-time Communication', () => {
       it('should handle real-time events and broadcast to connected clients', async () => {
         // Arrange - Mock WebSocket contract
-        const mockConnectionHandler = jest.fn();
-        const _mockMessageHandler = jest.fn();
+        const mockConnectionHandler = vi.fn();
+        const _mockMessageHandler = vi.fn();
 
         mockWebSocketManager.createServer.mockResolvedValue(undefined);
         mockWebSocketManager.onConnection.mockImplementation(mockConnectionHandler);
@@ -220,8 +220,8 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
     it('should demonstrate interaction testing over state testing', () => {
       // London School: Focus on HOW components collaborate
       const mockCollaborator = {
-        process: jest.fn().mockReturnValue('result'),
-        validate: jest.fn().mockReturnValue(true),
+        process: vi.fn().mockReturnValue('result'),
+        validate: vi.fn().mockReturnValue(true),
       };
 
       // System under test that coordinates with collaborators
@@ -246,12 +246,12 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
     it('should use mocks to drive interface design', () => {
       // London School: Mocks help discover and define interfaces
       const mockEventBus = {
-        publish: jest.fn(),
-        subscribe: jest.fn(),
+        publish: vi.fn(),
+        subscribe: vi.fn(),
       };
 
       const mockTaskProcessor = {
-        process: jest.fn().mockResolvedValue({ success: true }),
+        process: vi.fn().mockResolvedValue({ success: true }),
       };
 
       // This test drives the design of how components should interact
@@ -273,10 +273,10 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
 
   // Cleanup - London School emphasizes clean test isolation
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });

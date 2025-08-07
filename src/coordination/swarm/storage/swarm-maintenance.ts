@@ -42,6 +42,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
   private config: MaintenanceConfig;
   private claudeZenPath: string;
   private swarmsPath: string;
+  private registryPath: string;
   private maintenanceTimer?: NodeJS.Timeout;
 
   constructor(claudeZenPath: string, config: Partial<MaintenanceConfig> = {}) {

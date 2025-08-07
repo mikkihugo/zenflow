@@ -581,7 +581,7 @@ export class UACLFactory {
   }
 
   private generateTransactionId(): string {
-    return `tx:${Date.now()}:${Math.random().toString(36).substr(2, 9)}`;
+    return `tx:${Date.now()}:${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private getClientTypeFromConfig(config: ClientConfig): ClientType | null {

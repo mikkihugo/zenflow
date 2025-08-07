@@ -213,7 +213,7 @@ function showLoggingConfig(logger: LoggerInterface): void {
 }
 
 function _formatReportForConsole(report: any): string {
-  const output = [];
+  const output: string[] = [];
 
   // Connection section
   output.push('🔌 Connection Diagnostics:');

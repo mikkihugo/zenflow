@@ -1,33 +1,33 @@
 /**
  * @file TypeScript Wrapper for DSPy Integration
- * 
+ *
  * Provides a type-safe, unified interface to the ruvnet dspy.ts package
  * with proper error handling, validation, and consistent API patterns.
- * 
+ *
  * Created by: Type-System-Analyst agent
  * Purpose: Centralize all DSPy API access with full TypeScript support
  */
 
 import { createLogger } from '../core/logger';
 import {
-  type DSPyConfig,
-  type DSPyWrapper,
-  type DSPyProgram,
-  type DSPyExample,
-  type DSPyOptimizationConfig,
-  type DSPyOptimizationResult,
-  type DSPyExecutionResult,
-  type DSPyProgramMetadata,
-  DSPyConfigurationError,
-  DSPyExecutionError,
-  DSPyOptimizationError,
-  DSPyAPIError,
-  isDSPyConfig,
-  isDSPyProgram,
   DEFAULT_DSPY_CONFIG,
   DEFAULT_OPTIMIZATION_CONFIG,
-  DSPY_LIMITS
-} from '../types/dspy-types';
+  DSPY_LIMITS,
+  DSPyAPIError,
+  type DSPyConfig,
+  DSPyConfigurationError,
+  type DSPyExample,
+  DSPyExecutionError,
+  type DSPyExecutionResult,
+  type DSPyOptimizationConfig,
+  DSPyOptimizationError,
+  type DSPyOptimizationResult,
+  type DSPyProgram,
+  type DSPyProgramMetadata,
+  type DSPyWrapper,
+  isDSPyConfig,
+  isDSPyProgram,
+} from './types/index';
 
 const logger = createLogger({ prefix: 'DSPyWrapper' });
 
@@ -43,7 +43,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 
   constructor(initialConfig?: DSPyConfig) {
     if (initialConfig && !isDSPyConfig(initialConfig)) {
-      throw new DSPyConfigurationError('Invalid DSPy configuration provided', { config: initialConfig });
+      throw new DSPyConfigurationError('Invalid DSPy configuration provided', {
+        config: initialConfig,
+      });
     }
 
     if (initialConfig) {
@@ -64,12 +66,12 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       let DSPy: any, configureLM: any;
       try {
         const dspyModule = await import('dspy.ts');
-// Note: dspy.ts doesn't export DSPy class, using available exports
-        DSPy = dspyModule.default;
-        configureLM = dspyModule.configureLM;
+        // Handle different export patterns - use type assertion for external package
+        DSPy = (dspyModule as any).default || (dspyModule as any).DSPy || dspyModule;
+        configureLM = (dspyModule as any).configureLM || (dspyModule as any).configure;
       } catch (error) {
-        throw new DSPyAPIError('Failed to import dspy.ts package', { 
-          error: error instanceof Error ? error.message : String(error) 
+        throw new DSPyAPIError('Failed to import dspy.ts package', {
+          error: error instanceof Error ? error.message : String(error),
         });
       }
 
@@ -85,12 +87,12 @@ export class DSPyWrapperImpl implements DSPyWrapper {
             maxTokens: finalConfig.maxTokens,
             ...(finalConfig.apiKey && { apiKey: finalConfig.apiKey }),
             ...(finalConfig.baseURL && { baseURL: finalConfig.baseURL }),
-            ...finalConfig.modelParams
+            ...finalConfig.modelParams,
           });
         } catch (error) {
-          throw new DSPyConfigurationError('Failed to configure language model', { 
+          throw new DSPyConfigurationError('Failed to configure language model', {
             error: error instanceof Error ? error.message : String(error),
-            config: finalConfig
+            config: finalConfig,
           });
         }
       }
@@ -115,15 +117,15 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       logger.info('DSPy configured successfully', {
         model: finalConfig.model,
         temperature: finalConfig.temperature,
-        maxTokens: finalConfig.maxTokens
+        maxTokens: finalConfig.maxTokens,
       });
     } catch (error) {
       this.isInitialized = false;
       if (error instanceof DSPyConfigurationError || error instanceof DSPyAPIError) {
         throw error;
       }
-      throw new DSPyConfigurationError('Unexpected error during configuration', { 
-        error: error instanceof Error ? error.message : String(error) 
+      throw new DSPyConfigurationError('Unexpected error during configuration', {
+        error: error instanceof Error ? error.message : String(error),
       });
     }
   }
@@ -143,12 +145,14 @@ export class DSPyWrapperImpl implements DSPyWrapper {
     }
 
     if (this.programs.size >= DSPY_LIMITS.MAX_PROGRAMS_PER_WRAPPER) {
-      throw new DSPyAPIError(`Maximum programs limit reached: ${DSPY_LIMITS.MAX_PROGRAMS_PER_WRAPPER}`);
+      throw new DSPyAPIError(
+        `Maximum programs limit reached: ${DSPY_LIMITS.MAX_PROGRAMS_PER_WRAPPER}`
+      );
     }
 
     try {
       let rawProgram: any;
-      
+
       // Try different API patterns to create program
       if (this.dspyInstance.createProgram) {
         rawProgram = await this.dspyInstance.createProgram(signature, description);
@@ -160,9 +164,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
         rawProgram = {
           signature,
           description,
-          forward: async (input: any) => {
+          forward: async (_input: any) => {
             throw new DSPyAPIError('Program forward method not implemented by dspy.ts');
-          }
+          },
         };
       }
 
@@ -172,7 +176,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       logger.debug('DSPy program created successfully', {
         id: program.id,
         signature,
-        description: description.substring(0, 100)
+        description: description.substring(0, 100),
       });
 
       return program;
@@ -180,7 +184,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       throw new DSPyAPIError('Failed to create DSPy program', {
         signature,
         description,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
     }
   }
@@ -200,7 +204,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
     }
 
     const startTime = Date.now();
-    
+
     try {
       const rawResult = await program.forward(input);
       const executionTime = Date.now() - startTime;
@@ -219,25 +223,26 @@ export class DSPyWrapperImpl implements DSPyWrapper {
           model: this.currentConfig?.model,
           // Add token usage if available in result
           ...(rawResult?.tokensUsed && { tokensUsed: rawResult.tokensUsed }),
-          ...(rawResult?.confidence && { confidence: rawResult.confidence })
-        }
+          // Ensure confidence is always present, even if undefined
+          confidence: rawResult?.confidence || undefined,
+        },
       };
 
       logger.debug('DSPy program executed successfully', {
         programId: (program as any).id,
         executionTime,
         inputKeys: Object.keys(input),
-        outputKeys: Object.keys(rawResult || {})
+        outputKeys: Object.keys(rawResult || {}),
       });
 
       return result;
     } catch (error) {
       const executionTime = Date.now() - startTime;
-      
+
       logger.error('DSPy program execution failed', {
         programId: (program as any).id,
         executionTime,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
 
       return {
@@ -246,9 +251,10 @@ export class DSPyWrapperImpl implements DSPyWrapper {
         metadata: {
           executionTime,
           timestamp: new Date(),
-          model: this.currentConfig?.model
+          model: this.currentConfig?.model,
+          confidence: 0.0, // Low confidence for failed executions
         },
-        error: error instanceof Error ? error : new Error(String(error))
+        error: error instanceof Error ? error : new Error(String(error)),
       };
     }
   }
@@ -269,13 +275,18 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 
     if (examples.length > DSPY_LIMITS.MAX_EXAMPLES) {
       throw new DSPyAPIError(`Too many examples provided. Maximum: ${DSPY_LIMITS.MAX_EXAMPLES}`, {
-        provided: examples.length
+        provided: examples.length,
       });
     }
 
     // Validate examples structure
     for (const example of examples) {
-      if (!example.input || !example.output || typeof example.input !== 'object' || typeof example.output !== 'object') {
+      if (
+        !example.input ||
+        !example.output ||
+        typeof example.input !== 'object' ||
+        typeof example.output !== 'object'
+      ) {
         throw new DSPyAPIError('Invalid example structure', { example });
       }
     }
@@ -283,7 +294,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
     try {
       // Try different API patterns for adding examples
       const rawProgram = (program as any).rawProgram;
-      
+
       if (this.dspyInstance.addExamples) {
         await this.dspyInstance.addExamples(rawProgram, examples);
       } else if (rawProgram.addExamples) {
@@ -298,13 +309,13 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 
       logger.debug('Examples added to DSPy program', {
         programId: (program as any).id,
-        exampleCount: examples.length
+        exampleCount: examples.length,
       });
     } catch (error) {
       throw new DSPyAPIError('Failed to add examples to program', {
         programId: (program as any).id,
         exampleCount: examples.length,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
     }
   }
@@ -312,7 +323,10 @@ export class DSPyWrapperImpl implements DSPyWrapper {
   /**
    * Optimize a program with comprehensive configuration and result handling
    */
-  async optimize(program: DSPyProgram, config?: DSPyOptimizationConfig): Promise<DSPyOptimizationResult> {
+  async optimize(
+    program: DSPyProgram,
+    config?: DSPyOptimizationConfig
+  ): Promise<DSPyOptimizationResult> {
     this.ensureInitialized();
 
     if (!isDSPyProgram(program)) {
@@ -331,7 +345,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
         optimizationResult = await this.dspyInstance.optimize(rawProgram, {
           strategy: optimizationConfig.strategy,
           maxIterations: optimizationConfig.maxIterations,
-          ...optimizationConfig.strategyParams
+          ...optimizationConfig.strategyParams,
         });
       } else if (rawProgram.optimize) {
         optimizationResult = await rawProgram.optimize(optimizationConfig);
@@ -343,41 +357,46 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       const executionTime = Date.now() - startTime;
       const result: DSPyOptimizationResult = {
         success: true,
-        program: optimizationResult.program ? 
-          new DSPyProgramWrapper(optimizationResult.program, program.signature, program.description, this) :
-          program,
+        program: optimizationResult.program
+          ? new DSPyProgramWrapper(
+              optimizationResult.program,
+              program.signature,
+              program.description,
+              this
+            )
+          : program,
         metrics: {
           iterationsCompleted: optimizationResult.iterations || 0,
           executionTime,
           initialAccuracy: optimizationResult.initialAccuracy,
           finalAccuracy: optimizationResult.finalAccuracy,
-          improvementPercent: optimizationResult.improvementPercent || 0
+          improvementPercent: optimizationResult.improvementPercent || 0,
         },
-        issues: optimizationResult.warnings || []
+        issues: optimizationResult.warnings || [],
       };
 
       logger.info('DSPy program optimization completed', {
         programId: (program as any).id,
         strategy: optimizationConfig.strategy,
         executionTime,
-        improvement: result.metrics.improvementPercent
+        improvement: result.metrics.improvementPercent,
       });
 
       return result;
     } catch (error) {
       const executionTime = Date.now() - startTime;
-      
+
       logger.error('DSPy program optimization failed', {
         programId: (program as any).id,
         strategy: optimizationConfig.strategy,
         executionTime,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
 
       throw new DSPyOptimizationError('Program optimization failed', {
         programId: (program as any).id,
         config: optimizationConfig,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
     }
   }
@@ -405,14 +424,14 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       );
 
       const result = await this.execute(testProgram, { test: 'health_check' });
-      
+
       // Clean up test program
       this.programs.delete((testProgram as any).id);
 
       return result.success;
     } catch (error) {
-      logger.warn('DSPy health check failed', { 
-        error: error instanceof Error ? error.message : String(error) 
+      logger.warn('DSPy health check failed', {
+        error: error instanceof Error ? error.message : String(error),
       });
       return false;
     }
@@ -426,13 +445,13 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       isInitialized: this.isInitialized,
       currentConfig: this.currentConfig,
       programCount: this.programs.size,
-      programs: Array.from(this.programs.values()).map(p => ({
+      programs: Array.from(this.programs.values()).map((p) => ({
         id: p.id,
         signature: p.signature,
         description: p.description,
         executionCount: p.getMetadata()?.executionCount || 0,
-        averageExecutionTime: p.getMetadata()?.averageExecutionTime || 0
-      }))
+        averageExecutionTime: p.getMetadata()?.averageExecutionTime || 0,
+      })),
     };
   }
 
@@ -444,7 +463,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
     this.dspyInstance = null;
     this.currentConfig = null;
     this.isInitialized = false;
-    
+
     logger.info('DSPy wrapper cleaned up');
   }
 
@@ -463,24 +482,23 @@ class DSPyProgramWrapper implements DSPyProgram {
   public readonly signature: string;
   public readonly description: string;
   private rawProgram: any;
-  private wrapper: DSPyWrapperImpl;
   private metadata: DSPyProgramMetadata;
   private examples: DSPyExample[] = [];
 
   constructor(rawProgram: any, signature: string, description: string, wrapper: DSPyWrapperImpl) {
-    this.id = `dspy-program-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    this.id = `dspy-program-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     this.signature = signature;
     this.description = description;
     this.rawProgram = rawProgram;
     this.wrapper = wrapper;
-    
+
     this.metadata = {
       signature,
       description,
       createdAt: new Date(),
       executionCount: 0,
       averageExecutionTime: 0,
-      examples: []
+      examples: [],
     };
   }
 
@@ -492,7 +510,7 @@ class DSPyProgramWrapper implements DSPyProgram {
     } else {
       throw new DSPyExecutionError('Program forward method not available', {
         programId: this.id,
-        rawProgramType: typeof this.rawProgram
+        rawProgramType: typeof this.rawProgram,
       });
     }
   }
@@ -504,13 +522,13 @@ class DSPyProgramWrapper implements DSPyProgram {
   updateExecutionStats(executionTime: number): void {
     this.metadata.executionCount++;
     this.metadata.lastExecuted = new Date();
-    
+
     // Update rolling average
     if (this.metadata.executionCount === 1) {
       this.metadata.averageExecutionTime = executionTime;
     } else {
-      this.metadata.averageExecutionTime = 
-        (this.metadata.averageExecutionTime * (this.metadata.executionCount - 1) + executionTime) / 
+      this.metadata.averageExecutionTime =
+        (this.metadata.averageExecutionTime * (this.metadata.executionCount - 1) + executionTime) /
         this.metadata.executionCount;
     }
   }

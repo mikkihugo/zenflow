@@ -2382,23 +2382,23 @@ export class MonitoringEventAdapter implements IEventManager {
    * ID generation methods
    */
   private generateEventId(): string {
-    return `mon-evt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `mon-evt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateSubscriptionId(): string {
-    return `mon-sub-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `mon-sub-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateFilterId(): string {
-    return `mon-flt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `mon-flt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateTransformId(): string {
-    return `mon-txf-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `mon-txf-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateCorrelationId(): string {
-    return `mon-cor-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `mon-cor-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   /**

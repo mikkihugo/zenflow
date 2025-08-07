@@ -13,7 +13,7 @@ import type {
   GraphQueryResult,
   GraphRelationship,
   GraphTraversalResult,
-  IGraphDao,
+  IGraphRepository,
 } from '../interfaces';
 
 /**
@@ -22,7 +22,7 @@ import type {
  * @template T The entity type this repository manages
  * @example
  */
-export class GraphDao<T> extends BaseDao<T> implements IGraphDao<T> {
+export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
   private get graphAdapter(): GraphDatabaseAdapter {
     return this.adapter as GraphDatabaseAdapter;
   }

@@ -106,7 +106,7 @@ export async function initializeNeuralWasm() {
       // Use require-style dynamic import to avoid TypeScript resolution issues
       const wasmModulePath = '../wasm/ruv_swarm_wasm.js';
       const importedWasmModule = await eval(`import('${wasmModulePath}')`).catch(() => null);
-      
+
       if (importedWasmModule) {
         const { default: init, ...exports } = importedWasmModule;
         await init();
@@ -121,7 +121,7 @@ export async function initializeNeuralWasm() {
         create_neural_network: () => 'simulated_network_id',
         forward_pass: () => new Float32Array([0.5]),
         train_network: () => 0.1,
-        get_metrics: () => ({ accuracy: 0.5, loss: 0.5 })
+        get_metrics: () => ({ accuracy: 0.5, loss: 0.5 }),
       };
       return wasmModule;
     }

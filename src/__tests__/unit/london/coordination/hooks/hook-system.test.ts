@@ -25,24 +25,24 @@ describe('Enhanced Hook System - London TDD', () => {
   beforeEach(() => {
     // Mock dependencies
     mockSafetyValidator = {
-      validateCommand: jest.fn(),
-      validateFileOperation: jest.fn(),
-      suggestSaferAlternative: jest.fn(),
-      assessRiskLevel: jest.fn(),
+      validateCommand: vi.fn(),
+      validateFileOperation: vi.fn(),
+      suggestSaferAlternative: vi.fn(),
+      assessRiskLevel: vi.fn(),
     } as any;
 
     mockAgentAssignor = {
-      assignOptimalAgent: jest.fn(),
-      loadAgentContext: jest.fn(),
-      updateAgentWorkload: jest.fn(),
-      balanceWorkload: jest.fn(),
+      assignOptimalAgent: vi.fn(),
+      loadAgentContext: vi.fn(),
+      updateAgentWorkload: vi.fn(),
+      balanceWorkload: vi.fn(),
     } as any;
 
     _mockPerformanceTracker = {
-      trackOperation: jest.fn(),
-      generatePerformanceReport: jest.fn(),
-      getMetrics: jest.fn(),
-      analyzePerformanceTrends: jest.fn(),
+      trackOperation: vi.fn(),
+      generatePerformanceReport: vi.fn(),
+      getMetrics: vi.fn(),
+      analyzePerformanceTrends: vi.fn(),
     } as any;
 
     hookManager = new DefaultEnhancedHookManager();
@@ -400,7 +400,7 @@ describe('Enhanced Hook System - London TDD', () => {
       trigger,
       enabled: true,
       priority: 50,
-      execute: jest.fn().mockResolvedValue({
+      execute: vi.fn().mockResolvedValue({
         success: true,
         allowed: true,
         modified: false,

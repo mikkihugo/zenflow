@@ -213,7 +213,6 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
       {
         name: 'AgentRegistry',
         type: 'class',
-        description: 'Registry of active agents and their capabilities',
         properties: [
           {
             name: 'agents',
@@ -320,8 +319,10 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
       overall: true,
       score: 100,
       results: [],
-      recommendations: []
+      recommendations: [],
     },
+    relationships: [],
+    patterns: [],
   },
 
   async applyTo(projectSpec: ProjectSpecification) {

@@ -7,7 +7,7 @@
 
 import type { DatabaseAdapter, ILogger } from '../../../core/interfaces/base-interfaces';
 import { BaseDao } from '../base.dao';
-import type { CustomQuery, IMemoryDao, MemoryStats } from '../interfaces';
+import type { CustomQuery, IMemoryRepository, MemoryStats } from '../interfaces';
 
 /**
  * In-memory cache entry
@@ -28,7 +28,7 @@ interface CacheEntry<T> {
  * @template T The entity type this repository manages
  * @example
  */
-export class MemoryDao<T> extends BaseDao<T> implements IMemoryDao<T> {
+export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   private memoryStore = new Map<string, CacheEntry<T>>();
   private keyStore = new Map<string, CacheEntry<any>>();
   private ttlTimers = new Map<string, NodeJS.Timeout>();

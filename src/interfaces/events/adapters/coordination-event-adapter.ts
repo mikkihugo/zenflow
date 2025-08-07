@@ -2122,23 +2122,23 @@ export class CoordinationEventAdapter implements IEventManager {
    * ID generation methods
    */
   private generateEventId(): string {
-    return `coord-evt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `coord-evt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateSubscriptionId(): string {
-    return `coord-sub-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `coord-sub-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateFilterId(): string {
-    return `coord-flt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `coord-flt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateTransformId(): string {
-    return `coord-txf-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `coord-txf-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateCorrelationId(): string {
-    return `coord-cor-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `coord-cor-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   /**

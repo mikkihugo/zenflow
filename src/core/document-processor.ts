@@ -20,6 +20,7 @@ import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
+import type { BaseDocumentEntity } from '../database/entities/document-entities';
 import { createLogger } from './logger';
 import type { MemorySystem } from './memory-system';
 import type { WorkflowEngine } from './workflow-engine';
@@ -231,7 +232,7 @@ export class DocumentProcessor extends EventEmitter {
    * @returns Workspace ID
    */
   async loadWorkspace(workspacePath: string): Promise<string> {
-    const workspaceId = `workspace-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const workspaceId = `workspace-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
     // Create workspace structure
     const workspace: DocumentWorkspace = {
@@ -327,10 +328,13 @@ export class DocumentProcessor extends EventEmitter {
 
       // Trigger workflows if enabled
       if (this.config.enableWorkflows) {
-        await this.workflowEngine.processDocumentEvent('document:created', document, {
-          workspaceId,
-          documentType: docType,
-        });
+        await this.workflowEngine.processDocumentEvent(
+          'document:created',
+          document as unknown as BaseDocumentEntity,
+          {
+            workspaceId,
+          } as any
+        );
       }
 
       this.emit('document:processed', {

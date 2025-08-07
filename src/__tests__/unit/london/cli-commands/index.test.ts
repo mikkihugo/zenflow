@@ -82,7 +82,7 @@ class MockCLICommandSystem extends EventEmitter implements CLICommandSystem {
     this.parser = parser;
     this.formatter = formatter;
     this.errorHandler = errorHandler;
-    this.mockExecute = mockExecute || jest.fn();
+    this.mockExecute = mockExecute || vi.fn();
   }
 
   async initialize(): Promise<void> {
@@ -149,30 +149,30 @@ describe('CLI Commands Integration - TDD London', () => {
   beforeEach(() => {
     // Create mock components
     mockRegistry = {
-      register: jest.fn(),
-      unregister: jest.fn(),
-      get: jest.fn(),
-      has: jest.fn(),
-      list: jest.fn(),
-      findByCategory: jest.fn(),
-      execute: jest.fn(),
-      initialize: jest.fn(),
-      dispose: jest.fn(),
+      register: vi.fn(),
+      unregister: vi.fn(),
+      get: vi.fn(),
+      has: vi.fn(),
+      list: vi.fn(),
+      findByCategory: vi.fn(),
+      execute: vi.fn(),
+      initialize: vi.fn(),
+      dispose: vi.fn(),
     } as any;
 
     mockParser = {
-      parse: jest.fn(),
+      parse: vi.fn(),
     };
 
     mockFormatter = {
-      format: jest.fn(),
+      format: vi.fn(),
     };
 
     mockErrorHandler = {
-      handle: jest.fn(),
+      handle: vi.fn(),
     };
 
-    mockExecute = jest.fn();
+    mockExecute = vi.fn();
 
     // Create integrated system
     cliSystem = new MockCLICommandSystem(
@@ -191,7 +191,7 @@ describe('CLI Commands Integration - TDD London', () => {
   describe('system initialization behavior', () => {
     it('should initialize all components in correct order', async () => {
       // Arrange
-      const initializeHandler = jest.fn();
+      const initializeHandler = vi.fn();
       cliSystem.on('initializing', initializeHandler);
       cliSystem.on('initialized', initializeHandler);
 
@@ -218,7 +218,7 @@ describe('CLI Commands Integration - TDD London', () => {
 
     it('should emit initialization events', async () => {
       // Arrange
-      const eventHandler = jest.fn();
+      const eventHandler = vi.fn();
       cliSystem.on('initializing', eventHandler);
       cliSystem.on('initialized', eventHandler);
 
@@ -291,7 +291,7 @@ describe('CLI Commands Integration - TDD London', () => {
 
     it('should emit execution events', async () => {
       // Arrange
-      const eventHandler = jest.fn();
+      const eventHandler = vi.fn();
       cliSystem.on('execute-start', eventHandler);
       cliSystem.on('execute-complete', eventHandler);
 
@@ -456,7 +456,7 @@ describe('CLI Commands Integration - TDD London', () => {
 
       const commandMetadata: CommandMetadata = {
         config: commandConfig,
-        handler: jest.fn().mockResolvedValue({
+        handler: vi.fn().mockResolvedValue({
           success: true,
           exitCode: 0,
           message: 'Test executed',
@@ -540,7 +540,7 @@ describe('CLI Commands Integration - TDD London', () => {
   describe('lifecycle and cleanup behavior', () => {
     it('should dispose all components in correct order', async () => {
       // Arrange
-      const disposeHandler = jest.fn();
+      const disposeHandler = vi.fn();
       cliSystem.on('disposing', disposeHandler);
       cliSystem.on('disposed', disposeHandler);
 
@@ -557,7 +557,7 @@ describe('CLI Commands Integration - TDD London', () => {
 
     it('should remove all event listeners on disposal', async () => {
       // Arrange
-      const eventHandler = jest.fn();
+      const eventHandler = vi.fn();
       cliSystem.on('test-event', eventHandler);
 
       await cliSystem.initialize();
@@ -578,7 +578,7 @@ describe('CLI Commands Integration - TDD London', () => {
 
     it('should emit error events during execution failures', async () => {
       // Arrange
-      const errorHandler = jest.fn();
+      const errorHandler = vi.fn();
       cliSystem.on('execute-error', errorHandler);
 
       const input = ['error-command'];

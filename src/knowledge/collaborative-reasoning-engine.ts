@@ -951,7 +951,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
     participants: CollaborativeParticipant[]
   ): Promise<CollaborativeSolution> {
     const startTime = Date.now();
-    const problemId = `prob-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const problemId = `prob-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
     try {
       this.logger.info('Starting collaborative problem solving', {
@@ -1729,14 +1729,62 @@ export interface ConsensusProcess {
 }
 
 // Placeholder system classes
-export class ProblemDecompositionSystem {
+export class ProblemDecompositionSystem implements ProblemDecomposer {
+  decompositionStrategies: DecompositionStrategy[] = [];
+  complexityAnalyzer: ComplexityAnalyzer = {
+    complexityMetrics: [],
+    analysisAlgorithms: [],
+    scalabilityPredictor: {} as ScalabilityPredictor,
+    resourceEstimator: {} as ResourceEstimator,
+  };
+  dependencyMapper: DependencyMapper = {
+    mapDependencies: (_problem: Problem) => [],
+  };
+  parallelizationEngine: ParallelizationEngine = {
+    identifyParallelizable: (_subproblems: SubProblem[]) => [],
+  };
+  workloadBalancer: WorkloadBalancer = {
+    balanceWorkload: (_agents: string[], _subproblems: SubProblem[]) => new Map(),
+  };
+
+  constructor(
+    private config: any,
+    private logger: ILogger,
+    private eventBus: IEventBus
+  ) {}
+
   on(_event: string, _handler: Function) {}
   shutdown() {
     return Promise.resolve();
   }
 }
 
-export class DistributedReasoningSystem {
+export class DistributedReasoningSystem implements DistributedReasoningEngine {
+  reasoningCoordinator: ReasoningCoordinator = {
+    activeReasoningTasks: new Map(),
+    agentSpecializations: new Map(),
+    coordinationProtocols: [],
+    loadBalancing: {} as ReasoningLoadBalancer,
+    qualityControl: {} as ReasoningQualityController,
+  };
+  argumentationFramework: ArgumentationFramework = {
+    arguments: new Map(),
+    attacks: [],
+    supports: [],
+    extensions: [],
+    evaluationCriteria: {} as EvaluationCriteria,
+    dialecticalTree: {} as DialecticalTree,
+  };
+  logicalInference: LogicalInferenceEngine = {} as LogicalInferenceEngine;
+  probabilisticReasoning: ProbabilisticReasoningEngine = {} as ProbabilisticReasoningEngine;
+  contextManager: ReasoningContextManager = {} as ReasoningContextManager;
+
+  constructor(
+    private config: any,
+    private logger: ILogger,
+    private eventBus: IEventBus
+  ) {}
+
   on(_event: string, _handler: Function) {}
   assignReasoningTasks(_subproblems: SubProblem[]) {
     return Promise.resolve();
@@ -1746,7 +1794,22 @@ export class DistributedReasoningSystem {
   }
 }
 
-export class ConsensusBuilderSystem {
+export class ConsensusBuilderSystem implements ConsensusBuilder {
+  consensusProtocols: ConsensusProtocol[] = [];
+  votingMechanisms: VotingMechanism[] = [];
+  dialogueManager: DialogueManager = {
+    activeDialogues: new Map(),
+    protocol: {} as DialogueProtocol,
+  };
+  conflictResolver: ConflictResolver = {} as ConflictResolver;
+  agreementTracker: AgreementTracker = {} as AgreementTracker;
+
+  constructor(
+    private config: any,
+    private logger: ILogger,
+    private eventBus: IEventBus
+  ) {}
+
   on(_event: string, _handler: Function) {}
   initiateConsensus(_results: any) {
     return Promise.resolve();
@@ -1756,7 +1819,31 @@ export class ConsensusBuilderSystem {
   }
 }
 
-export class SolutionSynthesisSystem {
+export class SolutionSynthesisSystem implements SolutionSynthesizer {
+  synthesisStrategies: SynthesisStrategy[] = [];
+  integrationEngine: IntegrationEngine = {
+    partialSolutions: new Map(),
+    integrationPatterns: [],
+    dependencyResolver: {} as IntegrationDependencyResolver,
+    consistencyMaintainer: {} as ConsistencyMaintainer,
+    emergenceDetector: {} as EmergenceDetector,
+  };
+  qualityAssurance: SolutionQualityAssurance = {} as SolutionQualityAssurance;
+  validationFramework: ValidationFramework = {
+    validationCriteria: [],
+    testingSuite: [],
+    performanceEvaluation: {} as PerformanceEvaluator,
+    robustnessAnalysis: {} as RobustnessAnalyzer,
+    usabilityAssessment: {} as UsabilityAssessor,
+  };
+  optimizationEngine: SolutionOptimizationEngine = {} as SolutionOptimizationEngine;
+
+  constructor(
+    private config: any,
+    private logger: ILogger,
+    private eventBus: IEventBus
+  ) {}
+
   on(_event: string, _handler: Function) {}
   synthesizeSolution(_consensus: any) {
     return Promise.resolve();
@@ -1766,7 +1853,28 @@ export class SolutionSynthesisSystem {
   }
 }
 
-export class ContextSharingSystem {
+export class ContextSharingSystem implements ContextSharingManager {
+  sharedContext: SharedReasoningContext = {
+    contextId: '',
+    problem: {} as Problem,
+    participants: [],
+    sharedKnowledge: {} as SharedKnowledge,
+    assumptions: [],
+    constraints: [],
+    goals: [],
+    progress: {} as ContextProgress,
+  };
+  contextSynchronization: ContextSynchronizer = {} as ContextSynchronizer;
+  contextEvolution: ContextEvolutionTracker = {} as ContextEvolutionTracker;
+  contextAccess: ContextAccessController = {} as ContextAccessController;
+  contextPersistence: ContextPersistenceManager = {} as ContextPersistenceManager;
+
+  constructor(
+    private config: any,
+    private logger: ILogger,
+    private eventBus: IEventBus
+  ) {}
+
   on(_event: string, _handler: Function) {}
   updateSharedContext(_solution: any) {
     return Promise.resolve();

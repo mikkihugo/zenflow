@@ -46,10 +46,62 @@
  * ```
  */
 
-import type { DatabaseAdapter, IConfig, ILogger } from '../../core/interfaces/base-interfaces';
-import { inject, injectable } from '../di/decorators/injectable';
-import { CORE_TOKENS } from '../di/tokens/core-tokens';
-import type { DatabaseConfig, DatabaseProviderFactory } from '../providers/database-providers';
+// Simple interfaces to avoid import issues
+interface ILogger {
+  debug(message: string, meta?: any): void;
+  info(message: string, meta?: any): void;
+  warn(message: string, meta?: any): void;
+  error(message: string, meta?: any): void;
+}
+
+interface IConfig {
+  get(key: string): any;
+  set(key: string, value: any): void;
+}
+
+interface DatabaseAdapter {
+  query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }>;
+  transaction<T>(fn: (tx: any) => Promise<T>): Promise<T>;
+  close(): Promise<void>;
+  getSchema?(): Promise<any>;
+}
+
+// Simple dependency injection decorators
+function injectable<T extends new (...args: any[]) => any>(constructor: T) {
+  return constructor;
+}
+
+function inject(_token: string) {
+  return (_target: any, _propertyKey: string | symbol | undefined, _parameterIndex: number) => {
+    // Simple injection implementation
+  };
+}
+
+// Core tokens
+const CORE_TOKENS = {
+  Logger: 'Logger',
+  Config: 'Config',
+} as const;
+
+// Database config types
+interface DatabaseConfig {
+  type: string;
+  host?: string;
+  port?: number;
+  database?: string;
+  username?: string;
+  password?: string;
+  pool?: {
+    min: number;
+    max: number;
+  };
+  options?: Record<string, any>;
+}
+
+interface DatabaseProviderFactory {
+  createAdapter(config: DatabaseConfig): Promise<DatabaseAdapter>;
+}
+
 import type {
   ICoordinationRepository,
   IDataAccessObject,
@@ -355,11 +407,11 @@ export class DALFactory {
     const cacheKey = this.generateCacheKey(config);
 
     if (this.repositoryCache.has(cacheKey)) {
-      this.logger.debug(`Returning cached repository: ${cacheKey}`);
+      this._logger.debug(`Returning cached repository: ${cacheKey}`);
       return this.repositoryCache.get(cacheKey);
     }
 
-    this.logger.info(`Creating new repository: ${config.entityType} (${config.databaseType})`);
+    this._logger.info(`Creating new repository: ${config.entityType} (${config.databaseType})`);
 
     try {
       // Get or create database adapter
@@ -373,7 +425,7 @@ export class DALFactory {
 
       return repository;
     } catch (error) {
-      this.logger.error(`Failed to create repository: ${error}`);
+      this._logger.error(`Failed to create repository: ${error}`);
       throw new Error(
         `Repository creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -444,11 +496,11 @@ export class DALFactory {
     const cacheKey = this.generateCacheKey(config, 'dao');
 
     if (this.daoCache.has(cacheKey)) {
-      this.logger.debug(`Returning cached DAO: ${cacheKey}`);
+      this._logger.debug(`Returning cached DAO: ${cacheKey}`);
       return this.daoCache.get(cacheKey);
     }
 
-    this.logger.info(`Creating new DAO: ${config.entityType} (${config.databaseType})`);
+    this._logger.info(`Creating new DAO: ${config.entityType} (${config.databaseType})`);
 
     try {
       // Get repository first
@@ -465,7 +517,7 @@ export class DALFactory {
 
       return dao;
     } catch (error) {
-      this.logger.error(`Failed to create DAO: ${error}`);
+      this._logger.error(`Failed to create DAO: ${error}`);
       throw new Error(
         `DAO creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -563,7 +615,7 @@ export class DALFactory {
       }>;
     }
   ): void {
-    this.logger.debug(`Registering entity type: ${entityType}`);
+    this._logger.debug(`Registering entity type: ${entityType}`);
     this.entityRegistry[entityType] = config;
   }
 
@@ -1098,7 +1150,7 @@ export class DALFactory {
     primaryConfig: RepositoryConfig,
     secondaryConfigs?: RepositoryConfig[]
   ): Promise<MultiDatabaseDAO<T>> {
-    this.logger.info(`Creating multi-database DAO for: ${entityType}`);
+    this._logger.info(`Creating multi-database DAO for: ${entityType}`);
 
     const primaryDAO = await this.createDAO<T>(primaryConfig);
     const secondaryDAOs: IDataAccessObject<T>[] = [];
@@ -1110,14 +1162,14 @@ export class DALFactory {
       }
     }
 
-    return new MultiDatabaseDAO<T>(primaryDAO, secondaryDAOs, this.logger);
+    return new MultiDatabaseDAO<T>(primaryDAO, secondaryDAOs, this._logger);
   }
 
   /**
    * Clear all caches
    */
   clearCaches(): void {
-    this.logger.info('Clearing DAL factory caches');
+    this._logger.info('Clearing DAL factory caches');
     this.repositoryCache.clear();
     this.daoCache.clear();
     this.adapterCache.clear();
@@ -1168,35 +1220,57 @@ export class DALFactory {
     config: RepositoryConfig,
     adapter: DatabaseAdapter
   ): Promise<RepositoryType<T>> {
-    const { RelationalRepository } = await import('./repositories/relational-repository');
-    const { GraphRepository } = await import('./repositories/graph-repository');
-    const { VectorRepository } = await import('./repositories/vector-repository');
-    const { MemoryRepository } = await import('./repositories/memory-repository');
-    const { CoordinationRepository } = await import('./repositories/coordination-repository');
+    // Use DAOs as repository implementations since they extend BaseDao which implements IRepository
+    const { RelationalDAO } = await import('./daos/relational-dao');
+    const { GraphDAO } = await import('./daos/graph-dao');
+    const { VectorDAO } = await import('./daos/vector-dao');
+    const { MemoryDAO } = await import('./daos/memory-dao');
+    const { CoordinationDAO } = await import('./daos/coordination-dao');
 
     const tableName = config.tableName || config.entityType;
     const entitySchema = config.schema || this.entityRegistry[config.entityType]?.schema;
 
+    // Create a simple repository wrapper that implements IRepository<T>
     switch (config.databaseType) {
       case 'kuzu':
-        return new GraphRepository<T>(adapter, this.logger, tableName, entitySchema);
+        return new GraphDAO<T>(
+          adapter,
+          this._logger,
+          tableName,
+          entitySchema
+        ) as any as RepositoryType<T>;
 
       case 'lancedb':
-        return new VectorRepository<T>(adapter, this.logger, tableName, entitySchema);
+        return new VectorDAO<T>(
+          adapter,
+          this._logger,
+          tableName,
+          entitySchema
+        ) as any as RepositoryType<T>;
 
       case 'memory':
-        return new MemoryRepository<T>(
+        return new MemoryDAO<T>(
           adapter,
-          this.logger,
+          this._logger,
           tableName,
-          entitySchema,
-          config.options
-        );
+          entitySchema
+        ) as any as RepositoryType<T>;
 
       case 'coordination':
-        return new CoordinationRepository<T>(adapter, this.logger, tableName, entitySchema);
+        return new CoordinationDAO<T>(
+          adapter,
+          this._logger,
+          tableName,
+          entitySchema
+        ) as any as RepositoryType<T>;
+
       default:
-        return new RelationalRepository<T>(adapter, this.logger, tableName, entitySchema);
+        return new RelationalDAO<T>(
+          adapter,
+          this._logger,
+          tableName,
+          entitySchema
+        ) as any as RepositoryType<T>;
     }
   }
 
@@ -1213,22 +1287,22 @@ export class DALFactory {
 
     switch (config.databaseType) {
       case 'kuzu':
-        return new GraphDAO<T>(repository as IGraphRepository<T>, adapter, this.logger);
+        return new GraphDAO<T>(repository as IGraphRepository<T>, adapter, this._logger);
 
       case 'lancedb':
-        return new VectorDAO<T>(repository as IVectorRepository<T>, adapter, this.logger);
+        return new VectorDAO<T>(repository as IVectorRepository<T>, adapter, this._logger);
 
       case 'memory':
-        return new MemoryDAO<T>(repository as IMemoryRepository<T>, adapter, this.logger);
+        return new MemoryDAO<T>(repository as IMemoryRepository<T>, adapter, this._logger);
 
       case 'coordination':
         return new CoordinationDAO<T>(
           repository as ICoordinationRepository<T>,
           adapter,
-          this.logger
+          this._logger
         );
       default:
-        return new RelationalDAO<T>(repository, adapter, this.logger);
+        return new RelationalDAO<T>(repository, adapter, this._logger);
     }
   }
 

@@ -215,7 +215,7 @@ export class ConnectionDiagnostics {
    * @param patterns
    */
   generateRecommendations(summary: ConnectionSummary, patterns: PatternAnalysis): Recommendation[] {
-    const recommendations = [];
+    const recommendations: Recommendation[] = [];
 
     // High failure rate
     if (summary.failureRate > 0.1) {
@@ -293,7 +293,7 @@ export class PerformanceDiagnostics {
    * @param metadata
    */
   startOperation(name: string, metadata: Record<string, any> = {}): string {
-    const id = `${name}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = `${name}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     this.operations.set(id, {
       name,
       startTime: performance.now(),
@@ -350,7 +350,7 @@ export class PerformanceDiagnostics {
    * @param limit
    */
   getSlowOperations(limit = 10): OperationData[] {
-    const completed = [];
+    const completed: OperationData[] = [];
 
     // Get completed operations from logger's performance tracker
     // This would need to be implemented to store historical data
@@ -397,7 +397,6 @@ export class SystemDiagnostics {
   private samples: SystemSample[];
   private maxSamples: number;
   private monitorInterval?: NodeJS.Timeout | null;
-  private startTime: number = 0;
 
   constructor(logger?: LoggerInterface | null) {
     this.logger = logger || loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });
@@ -478,18 +477,22 @@ export class SystemDiagnostics {
     }
 
     const latest = this.samples[this.samples.length - 1];
+    if (!latest) {
+      return { status: 'unknown', message: 'No latest sample', issues: [] };
+    }
+
     const avgMemory =
       this.samples.reduce((sum, s) => sum + s.memory.heapUsed, 0) / this.samples.length;
 
     let status: 'healthy' | 'warning' | 'critical' | 'unknown' = 'healthy';
-    const issues = [];
+    const issues: string[] = [];
 
     if (latest.memory.heapUsed > 400 * 1024 * 1024) {
       status = 'warning';
       issues.push('High memory usage');
     }
 
-    if (latest.handles > 50) {
+    if (latest && latest.handles > 50) {
       status = 'warning';
       issues.push('Many active handles');
     }
@@ -619,7 +622,7 @@ export class DiagnosticsManager {
    * Run diagnostic tests
    */
   async runDiagnosticTests(): Promise<DiagnosticTestResults> {
-    const tests = [];
+    const tests: DiagnosticTest[] = [];
 
     // Test 1: Memory allocation
     tests.push(await this.testMemoryAllocation());
@@ -656,7 +659,7 @@ export class DiagnosticsManager {
       return {
         name: 'Memory Allocation',
         success: false,
-        error: error.message,
+        error: (error as Error).message,
       };
     }
   }
@@ -677,7 +680,7 @@ export class DiagnosticsManager {
       return {
         name: 'File System Access',
         success: false,
-        error: error.message,
+        error: (error as Error).message,
       };
     }
   }
@@ -698,7 +701,7 @@ export class DiagnosticsManager {
       return {
         name: 'WASM Module Check',
         success: false,
-        error: error.message,
+        error: (error as Error).message,
       };
     }
   }

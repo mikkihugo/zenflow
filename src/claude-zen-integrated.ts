@@ -43,7 +43,10 @@ export class ClaudeZenIntegrated {
       const arg = args[i];
 
       if (arg === '--port' && i + 1 < args.length) {
-        options.port = parseInt(args[i + 1], 10);
+        const nextArg = args[i + 1];
+        if (nextArg !== undefined) {
+          options.port = parseInt(nextArg, 10);
+        }
         i++; // Skip next argument
       } else if (arg === '--daemon') {
         options.daemon = true;

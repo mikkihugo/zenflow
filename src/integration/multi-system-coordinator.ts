@@ -49,7 +49,7 @@ export class MultiSystemCoordinator extends EventEmitter {
       throw new Error('MultiSystemCoordinator not initialized');
     }
 
-    const operationId = `op_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const operationId = `op_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     this.activeOperations.set(operationId, { operation, data, startTime: Date.now() });
 
     try {

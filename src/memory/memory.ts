@@ -5,7 +5,14 @@
 import { EventEmitter } from 'node:events';
 import type { IMemoryStore, MemoryStats, StoreOptions } from '../core/interfaces/base-interfaces';
 import type { BackendInterface, JSONValue } from '../core/memory-system';
-// import { BackendFactory } from './backends/factory'; // TODO: Update factory import path
+import { MemoryBackendFactory as BackendFactory } from './backends/factory';
+
+interface BackendConfig {
+  type: 'sqlite' | 'json' | 'lancedb' | 'memory';
+  path?: string;
+  maxSize?: number;
+  ttl?: number;
+}
 
 interface SessionMemoryStoreOptions {
   backendConfig: BackendConfig;
@@ -38,7 +45,7 @@ export interface CacheEntry {
 }
 
 export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
-  private backend: BackendInterface;
+  private backend: BackendInterface | null = null;
   private initialized = false;
   private sessions = new Map<string, SessionState>();
   private options: Required<SessionMemoryStoreOptions>;
@@ -65,14 +72,19 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
       vectorDimensions: options.vectorDimensions ?? 512,
     };
 
-    // TODO: Replace with injected backend instance
-    this.backend = BackendFactory.create(this.options.backendConfig);
+    // Backend will be created during initialization
   }
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
     try {
+      // Create backend instance
+      this.backend = await BackendFactory.createBackend(
+        this.options.backendConfig.type as any,
+        this.options.backendConfig
+      );
+
       await this.backend.initialize();
       await this.loadFromBackend();
       this.initialized = true;
@@ -140,7 +152,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
       session.vectors?.set(key, storeOptions.vector);
     }
 
-    await this.backend.store(sessionId, session as unknown as JSONValue, 'session');
+    await this.backend?.store(sessionId, session as unknown as JSONValue, 'session');
 
     if (this.options.enableCache) {
       this.updateCache(sessionId, key, data);
@@ -174,7 +186,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
       return this.sessions.get(sessionId)!;
     }
 
-    const sessionData = await this.backend.retrieve(sessionId, 'session');
+    const sessionData = await this.backend?.retrieve(sessionId, 'session');
     if (sessionData) {
       const session = sessionData as unknown as SessionState;
       this.sessions.set(sessionId, session);
@@ -203,7 +215,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     session.metadata.updated = Date.now();
 
     // Update backend
-    await this.backend.store(actualSessionId, session as unknown as JSONValue, 'session');
+    await this.backend?.store(actualSessionId, session as unknown as JSONValue, 'session');
 
     // Remove from cache
     const cacheKey = `${actualSessionId}:${actualKey}`;
@@ -242,12 +254,12 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
   }
 
   private async loadFromBackend(): Promise<void> {
-    const namespaces = await this.backend.listNamespaces();
+    const namespaces = await this.backend?.listNamespaces();
     for (const namespace of namespaces) {
       if (namespace === 'session') {
-        const sessionKeys = await this.backend.search('*', 'session');
+        const sessionKeys = await this.backend?.search('*', 'session');
         for (const key in sessionKeys) {
-          const sessionData = await this.backend.retrieve(key, 'session');
+          const sessionData = await this.backend?.retrieve(key, 'session');
           if (sessionData) {
             this.sessions.set(key, sessionData as unknown as SessionState);
           }
@@ -258,7 +270,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
 
   private async saveToBackend(): Promise<void> {
     for (const [sessionId, session] of this.sessions.entries()) {
-      await this.backend.store(sessionId, session as unknown as JSONValue, 'session');
+      await this.backend?.store(sessionId, session as unknown as JSONValue, 'session');
     }
   }
 
@@ -288,7 +300,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
   }
 
   private ensureInitialized(): void {
-    if (!this.initialized) {
+    if (!this.initialized || !this.backend) {
       throw new Error('Session memory store not initialized. Call initialize() first.');
     }
   }

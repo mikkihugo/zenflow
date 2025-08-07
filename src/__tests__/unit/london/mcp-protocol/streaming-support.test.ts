@@ -14,50 +14,50 @@ import type { MCPContext, MCPRequest, MCPResponse } from '../../../../utils/type
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
 const mockStreamManager = {
-  createStream: jest.fn(),
-  closeStream: jest.fn(),
-  writeToStream: jest.fn(),
-  readFromStream: jest.fn(),
-  getStreamState: jest.fn(),
-  handleBackpressure: jest.fn(),
+  createStream: vi.fn(),
+  closeStream: vi.fn(),
+  writeToStream: vi.fn(),
+  readFromStream: vi.fn(),
+  getStreamState: vi.fn(),
+  handleBackpressure: vi.fn(),
 };
 
 const mockBufferManager = {
-  allocateBuffer: jest.fn(),
-  releaseBuffer: jest.fn(),
-  getBufferUsage: jest.fn(),
-  flushBuffer: jest.fn(),
-  resizeBuffer: jest.fn(),
+  allocateBuffer: vi.fn(),
+  releaseBuffer: vi.fn(),
+  getBufferUsage: vi.fn(),
+  flushBuffer: vi.fn(),
+  resizeBuffer: vi.fn(),
 };
 
 const mockFlowController = {
-  checkBackpressure: jest.fn(),
-  pauseStream: jest.fn(),
-  resumeStream: jest.fn(),
-  adjustBufferSize: jest.fn(),
-  getFlowMetrics: jest.fn(),
+  checkBackpressure: vi.fn(),
+  pauseStream: vi.fn(),
+  resumeStream: vi.fn(),
+  adjustBufferSize: vi.fn(),
+  getFlowMetrics: vi.fn(),
 };
 
 const mockLogger = {
-  debug: jest.fn(),
-  info: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
+  debug: vi.fn(),
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
 };
 
 const mockMetricsCollector = {
-  recordStreamCreated: jest.fn(),
-  recordStreamClosed: jest.fn(),
-  recordDataTransfer: jest.fn(),
-  recordBackpressureEvent: jest.fn(),
-  recordStreamError: jest.fn(),
+  recordStreamCreated: vi.fn(),
+  recordStreamClosed: vi.fn(),
+  recordDataTransfer: vi.fn(),
+  recordBackpressureEvent: vi.fn(),
+  recordStreamError: vi.fn(),
 };
 
 const mockEventEmitter = {
-  emit: jest.fn(),
-  on: jest.fn(),
-  off: jest.fn(),
-  once: jest.fn(),
+  emit: vi.fn(),
+  on: vi.fn(),
+  off: vi.fn(),
+  once: vi.fn(),
 };
 
 // === CONTRACT INTERFACES ===
@@ -145,7 +145,7 @@ class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolCon
   ) {}
 
   async createStreamingSession(request: MCPRequest, context: MCPContext): Promise<StreamSession> {
-    const streamId = `stream-${Date.now()}-${Math.random().toString(36).substr(2, 8)}`;
+    const streamId = `stream-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
 
     this.logger.info('Creating streaming session', {
       streamId,
@@ -983,10 +983,10 @@ describe('MCP Streaming Support - London TDD', () => {
 
   // Clean test isolation - London School principle
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });

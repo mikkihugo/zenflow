@@ -15,10 +15,10 @@ import { MemoryProviderFactory } from '../../memory/providers/memory-providers';
 
 // Mock implementations for testing
 class MockLogger {
-  debug = jest.fn();
-  info = jest.fn();
-  warn = jest.fn();
-  error = jest.fn();
+  debug = vi.fn();
+  info = vi.fn();
+  warn = vi.fn();
+  error = vi.fn();
 }
 
 class MockConfig {

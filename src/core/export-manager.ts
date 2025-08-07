@@ -45,10 +45,23 @@ export interface ExporterDefinition {
 export class UnifiedExportSystem extends EventEmitter {
   private exporters = new Map<string, ExporterDefinition>();
   private exportHistory: ExportResult[] = [];
+  private initialized = false;
 
   constructor() {
     super();
     this.registerBuiltInExporters();
+  }
+
+  /**
+   * Initialize the export system
+   */
+  async initialize(): Promise<void> {
+    if (this.initialized) return;
+
+    logger.info('Initializing unified export system');
+    this.initialized = true;
+    this.emit('initialized');
+    logger.info('Unified export system ready');
   }
 
   /**
@@ -597,7 +610,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   private generateId(): string {
-    return `export-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `export-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   /**
@@ -658,5 +671,30 @@ export class UnifiedExportSystem extends EventEmitter {
   clearHistory(): void {
     this.exportHistory = [];
     this.emit('history:cleared');
+  }
+
+  /**
+   * Get export metrics (alias for getExportStats)
+   */
+  getMetrics(): {
+    totalExports: number;
+    successfulExports: number;
+    failedExports: number;
+    formatBreakdown: Record<string, number>;
+    totalSize: number;
+    averageSize: number;
+  } {
+    return this.getExportStats();
+  }
+
+  /**
+   * Shutdown the export system gracefully
+   */
+  async shutdown(): Promise<void> {
+    logger.info('Shutting down unified export system...');
+    this.removeAllListeners();
+    this.initialized = false;
+    this.emit('shutdown');
+    logger.info('Unified export system shutdown complete');
   }
 }

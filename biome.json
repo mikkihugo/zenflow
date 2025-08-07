@@ -49,7 +49,8 @@
         "**/dist/**",
         "**/coverage/**",
         "**/ruv-FANN/**",
-        "**/bin/**"
+        "**/bin/**",
+        "**/qdrant_storage/**"
       ],
       "linter": {
         "enabled": false

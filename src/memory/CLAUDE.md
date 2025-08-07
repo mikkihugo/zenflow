@@ -64,7 +64,7 @@ export class MemoryProviderFactory {
 export interface MemoryBackend {
   store(key: string, value: any): Promise<void>;
   retrieve(key: string): Promise<any>;
-  delete(key: string): Promise<void>;
+  delete(key: string): Promise<boolean>;
   clear(): Promise<void>;
   size(): Promise<number>;
   health(): Promise<boolean>;

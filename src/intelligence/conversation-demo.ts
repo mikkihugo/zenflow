@@ -95,7 +95,7 @@ class DemoConversationOrchestrator {
     }
 
     if (!message.id) {
-      message.id = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      message.id = `msg-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     }
     if (!message.timestamp) {
       message.timestamp = new Date();

@@ -1620,23 +1620,23 @@ export class SystemEventAdapter implements IEventManager {
    * ID generation methods
    */
   private generateEventId(): string {
-    return `sys-evt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `sys-evt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateSubscriptionId(): string {
-    return `sys-sub-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `sys-sub-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateFilterId(): string {
-    return `sys-flt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `sys-flt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateTransformId(): string {
-    return `sys-txf-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `sys-txf-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateCorrelationId(): string {
-    return `sys-cor-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `sys-cor-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   /**

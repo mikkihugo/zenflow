@@ -459,7 +459,7 @@ export class DistributedLearningSystem extends EventEmitter {
     participants: FederatedParticipant[],
     globalModel: ModelSnapshot
   ): Promise<FederatedLearningRound> {
-    const roundId = `fed-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const roundId = `fed-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const startTime = Date.now();
 
     try {

@@ -7,9 +7,9 @@
 
 // Core Engine
 export { SPARCEngineCore } from './core/sparc-engine';
-import type { SPARCProject } from './types/sparc-types';
 
 import { SPARCEngineCore } from './core/sparc-engine';
+import type { SPARCProject } from './types/sparc-types';
 
 // MCP Integration
 export { SPARCMCPTools, sparcMCPTools } from './integrations/mcp-sparc-tools';
@@ -90,8 +90,6 @@ export class SPARC {
         results.push(result);
       } catch (error) {
         console.error(`Failed to execute phase ${phase} for project ${projectId}:`, error);
-        // Skip this phase and continue with the next one
-        continue;
       }
     }
 
@@ -117,7 +115,7 @@ export class SPARC {
       implementation: {} as any,
       currentPhase: 'specification',
       progress: {} as any,
-      metadata: {} as any
+      metadata: {} as any,
     } as SPARCProject;
   }
 }

@@ -3,18 +3,19 @@
  * Comprehensive MCP tools for advanced memory system coordination and management
  */
 
-import type { BackendInterface } from '../../core/memory-system';
-// TODO: Update BackendFactory import path
+import type { BaseMemoryBackend } from '../backends/base-backend';
+import { MemoryBackendFactory } from '../backends/factory';
 import { type MemoryCoordinationConfig, MemoryCoordinator } from '../core/memory-coordinator';
 import {
   type OptimizationConfig,
   PerformanceOptimizer,
 } from '../optimization/performance-optimizer';
+import type { MemoryBackend } from '../providers/memory-providers';
 
 // Global memory system instances
 let memoryCoordinator: MemoryCoordinator | null = null;
 let performanceOptimizer: PerformanceOptimizer | null = null;
-const registeredBackends = new Map<string, BackendInterface>();
+const registeredBackends = new Map<string, MemoryBackend | BaseMemoryBackend>();
 
 export interface MCPTool {
   name: string;
@@ -168,7 +169,10 @@ export const memoryInitTool: MCPTool = {
       const initializedBackends = [];
       for (const backendConfig of backends) {
         try {
-          const backend = BackendFactory.createBackend(backendConfig.type, backendConfig.config);
+          const backend = await MemoryBackendFactory.createBackend(
+            backendConfig.type as any,
+            backendConfig.config
+          );
           await backend.initialize();
 
           registeredBackends.set(backendConfig.id, backend);
@@ -359,13 +363,13 @@ export const memoryMonitorTool: MCPTool = {
       // Get coordinator stats if available
       if (memoryCoordinator) {
         const coordinatorHealth = await memoryCoordinator.healthCheck();
-        monitoringData.systems.coordinator = coordinatorHealth;
+        (monitoringData.systems as any).coordinator = coordinatorHealth;
       }
 
       // Get optimizer stats if available
       if (performanceOptimizer) {
         const optimizerStats = performanceOptimizer.getStats();
-        monitoringData.systems.optimizer = optimizerStats;
+        (monitoringData.systems as any).optimizer = optimizerStats;
 
         // Check alerts
         const currentMetrics = optimizerStats.metrics;
@@ -429,15 +433,21 @@ export const memoryMonitorTool: MCPTool = {
       const backendStatus = [];
       for (const [id, backend] of registeredBackends) {
         try {
-          // Check if backend is responsive
-          await backend.get('__health_check__');
+          // Check if backend is responsive with method compatibility
+          if ('retrieve' in backend && typeof backend.retrieve === 'function') {
+            await backend.retrieve('__health_check__');
+          } else if ('get' in backend && typeof backend.get === 'function') {
+            await backend.get('__health_check__');
+          } else {
+            throw new Error('Backend lacks required methods');
+          }
           backendStatus.push({ id, status: 'healthy', type: backend.constructor.name });
         } catch {
           backendStatus.push({ id, status: 'degraded', type: backend.constructor.name });
         }
       }
 
-      monitoringData.systems.backends = backendStatus;
+      (monitoringData.systems as any).backends = backendStatus;
 
       return {
         success: true,
@@ -579,7 +589,7 @@ export const memoryHealthCheckTool: MCPTool = {
       if (shouldCheck('coordinator')) {
         if (memoryCoordinator) {
           const coordinatorHealth = await memoryCoordinator.healthCheck();
-          healthReport.components.coordinator = {
+          (healthReport.components as any).coordinator = {
             status: coordinatorHealth.status,
             details: detailed ? coordinatorHealth.details : undefined,
           };
@@ -589,7 +599,7 @@ export const memoryHealthCheckTool: MCPTool = {
             healthReport.issues.push(`Coordinator is ${coordinatorHealth.status}`);
           }
         } else {
-          healthReport.components.coordinator = { status: 'not_initialized' };
+          (healthReport.components as any).coordinator = { status: 'not_initialized' };
           healthReport.issues.push('Memory coordinator not initialized');
         }
       }
@@ -600,7 +610,7 @@ export const memoryHealthCheckTool: MCPTool = {
           const optimizerStats = performanceOptimizer.getStats();
           const recommendations = performanceOptimizer.getRecommendations();
 
-          healthReport.components.optimizer = {
+          (healthReport.components as any).optimizer = {
             status: 'healthy',
             metrics: optimizerStats.metrics,
             details: detailed ? optimizerStats : undefined,
@@ -608,7 +618,7 @@ export const memoryHealthCheckTool: MCPTool = {
 
           healthReport.recommendations.push(...recommendations);
         } else {
-          healthReport.components.optimizer = { status: 'not_initialized' };
+          (healthReport.components as any).optimizer = { status: 'not_initialized' };
           healthReport.issues.push('Performance optimizer not initialized');
         }
       }
@@ -620,20 +630,27 @@ export const memoryHealthCheckTool: MCPTool = {
 
         for (const [id, backend] of registeredBackends) {
           try {
-            await backend.get('__health_check__');
+            // Check if backend is responsive with method compatibility
+            if ('retrieve' in backend && typeof backend.retrieve === 'function') {
+              await backend.retrieve('__health_check__');
+            } else if ('get' in backend && typeof backend.get === 'function') {
+              await backend.get('__health_check__');
+            } else {
+              throw new Error('Backend lacks required methods');
+            }
             backendHealth[id] = { status: 'healthy', type: backend.constructor.name };
             healthyBackends++;
           } catch (error) {
             backendHealth[id] = {
               status: 'unhealthy',
               type: backend.constructor.name,
-              error: error.message,
+              error: (error as Error).message,
             };
-            healthReport.issues.push(`Backend ${id} is unhealthy: ${error.message}`);
+            healthReport.issues.push(`Backend ${id} is unhealthy: ${(error as Error).message}`);
           }
         }
 
-        healthReport.components.backends = {
+        (healthReport.components as any).backends = {
           total: registeredBackends.size,
           healthy: healthyBackends,
           details: detailed ? backendHealth : undefined,

@@ -899,7 +899,7 @@ export class IntegrationServiceUtils {
    * Generate unique operation ID
    */
   static generateOperationId(): string {
-    return `op_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `op_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
   }
 
   /**
@@ -935,7 +935,7 @@ export class IntegrationServiceUtils {
 
     // Ensure required fields are present
     if (!sanitized.id) {
-      sanitized.id = `arch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      sanitized.id = `arch_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     }
 
     return sanitized;

@@ -17,12 +17,12 @@ import { SessionEnabledSwarm } from '../../../coordination/swarm/core/session-in
 import type { SessionConfig, SessionState } from '../../../coordination/swarm/core/session-manager';
 import type { SwarmAgent, SwarmMetrics } from '../../../coordination/swarm/core/swarm-coordinator';
 import { SwarmCoordinator } from '../../../coordination/swarm/core/swarm-coordinator';
-import type { SwarmOptions } from '../../../coordination/swarm/core/types';
+import type { SwarmOptions, SwarmTopology } from '../../../coordination/swarm/core/types';
 import type { AgentType } from '../../../types/agent-types';
-import type { SwarmTopology } from '../../../types/shared-types';
 import { createLogger, type Logger } from '../../../utils/logger';
 import type {
   IService,
+  ServiceConfig,
   ServiceDependencyConfig,
   ServiceEvent,
   ServiceEventType,
@@ -32,6 +32,7 @@ import type {
   ServiceOperationResponse,
   ServiceStatus,
 } from '../core/interfaces';
+import { ServiceDependencyError } from '../core/interfaces';
 import type { CoordinationServiceConfig } from '../types';
 
 /**
@@ -39,7 +40,9 @@ import type { CoordinationServiceConfig } from '../types';
  *
  * @example
  */
-export interface CoordinationServiceAdapterConfig extends CoordinationServiceConfig {
+export interface CoordinationServiceAdapterConfig {
+  /** Base service configuration */
+  service: CoordinationServiceConfig;
   /** DaaService integration settings */
   daaService?: {
     enabled: boolean;
@@ -205,7 +208,7 @@ export class CoordinationServiceAdapter implements IService {
   // Core service properties
   public readonly name: string;
   public readonly type: string;
-  public readonly config: CoordinationServiceAdapterConfig;
+  public readonly config: ServiceConfig;
 
   // Service state
   private lifecycleStatus: ServiceLifecycleStatus = 'uninitialized';
@@ -237,9 +240,11 @@ export class CoordinationServiceAdapter implements IService {
   };
 
   constructor(config: CoordinationServiceAdapterConfig) {
-    this.name = config.name;
-    this.type = config.type;
-    this.config = {
+    this.name = config.service.name;
+    this.type = config.service.type;
+    this.config = config.service;
+    this.adapterConfig = {
+      service: config.service,
       // Default configuration values
       daaService: {
         enabled: true,
@@ -329,7 +334,7 @@ export class CoordinationServiceAdapter implements IService {
    *
    * @param config
    */
-  async initialize(config?: Partial<CoordinationServiceAdapterConfig>): Promise<void> {
+  async initialize(config?: Partial<ServiceConfig>): Promise<void> {
     this.logger.info(`Initializing coordination service adapter: ${this.name}`);
     this.lifecycleStatus = 'initializing';
     this.emit('initializing');
@@ -373,9 +378,9 @@ export class CoordinationServiceAdapter implements IService {
         };
 
         const sessionConfig: SessionConfig = {
-          autoSave: true,
+          autoCheckpoint: true,
           checkpointInterval: this.config.sessionService.checkpointInterval || 300000,
-          maxSessions: this.config.sessionService.maxSessions || 100,
+          maxCheckpoints: this.config.sessionService.maxSessions || 100,
         };
 
         this.sessionEnabledSwarm = new SessionEnabledSwarm(swarmOptions, sessionConfig);
@@ -911,7 +916,7 @@ export class CoordinationServiceAdapter implements IService {
     params?: any,
     options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>> {
-    const operationId = `${operation}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const operationId = `${operation}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const startTime = Date.now();
 
     this.logger.debug(`Executing operation: ${operation}`, { operationId, params });

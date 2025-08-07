@@ -249,10 +249,10 @@ describe('DI Container - Integration with Core Tokens', () => {
   it('should work with core system tokens', () => {
     // Mock logger implementation
     class MockLogger implements ILogger {
-      debug = jest.fn();
-      info = jest.fn();
-      warn = jest.fn();
-      error = jest.fn();
+      debug = vi.fn();
+      info = vi.fn();
+      warn = vi.fn();
+      error = vi.fn();
     }
 
     // Mock config implementation

@@ -542,7 +542,7 @@ export class TemplateEngine {
         overall: true,
         score: 100,
         results: [],
-        recommendations: []
+        recommendations: [],
       },
     };
   }

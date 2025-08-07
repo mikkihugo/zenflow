@@ -246,7 +246,7 @@ const DOCUMENT_WORKFLOWS: WorkflowDefinition[] = [
 
 export class WorkflowEngine extends EventEmitter {
   private memory: MemorySystem;
-  private documentService: DocumentManager;
+  private documentService?: DocumentManager;
   private activeWorkflows = new Map<string, WorkflowState>();
   private workflowDefinitions = new Map<string, WorkflowDefinition>();
   private stepHandlers = new Map<
@@ -263,12 +263,26 @@ export class WorkflowEngine extends EventEmitter {
 
   constructor(
     memory: MemorySystem,
-    documentService: DocumentManager,
+    documentService?: DocumentManager,
+    config?: Partial<WorkflowEngineConfig>
+  );
+  constructor(memory: MemorySystem, config?: Partial<WorkflowEngineConfig>);
+  constructor(
+    memory: MemorySystem,
+    documentServiceOrConfig?: DocumentManager | Partial<WorkflowEngineConfig>,
     config: Partial<WorkflowEngineConfig> = {}
   ) {
     super();
     this.memory = memory;
-    this.documentService = documentService;
+
+    // Handle overloaded constructor
+    if (documentServiceOrConfig && 'initialize' in documentServiceOrConfig) {
+      // First overload: (memory, documentService, config)
+      this.documentService = documentServiceOrConfig as DocumentManager;
+    } else {
+      // Second overload: (memory, config)
+      config = (documentServiceOrConfig as Partial<WorkflowEngineConfig>) || {};
+    }
     this.config = {
       maxConcurrentWorkflows: 10,
       persistWorkflows: true,
@@ -292,8 +306,10 @@ export class WorkflowEngine extends EventEmitter {
   async initialize(): Promise<void> {
     logger.info('Initializing database-driven workflow engine');
 
-    // Initialize document service if not already done
-    await this.documentService.initialize();
+    // Initialize document service if available
+    if (this.documentService) {
+      await this.documentService.initialize();
+    }
 
     // Load persisted workflows from database
     if (this.config.persistWorkflows) {
@@ -406,7 +422,7 @@ export class WorkflowEngine extends EventEmitter {
       );
     }
 
-    const workflowId = `workflow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const workflowId = `workflow-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     // Create properly typed context
     const fullContext: WorkflowContext = {
       workspaceId: context.workspaceId || 'default',
@@ -837,12 +853,24 @@ export class WorkflowEngine extends EventEmitter {
         completion_percentage: 100,
       };
 
-      // Save to database using DocumentService
-      const savedDoc = await this.documentService.createDocument(documentEntity, {
-        autoGenerateRelationships: true,
-        generateSearchIndex: true,
-        notifyListeners: true,
-      });
+      // Save to database using DocumentService if available
+      let savedDoc: BaseDocumentEntity;
+      if (this.documentService) {
+        savedDoc = await this.documentService.createDocument(documentEntity, {
+          autoGenerateRelationships: true,
+          generateSearchIndex: true,
+          notifyListeners: true,
+        });
+      } else {
+        // Fallback: create a minimal document entity
+        savedDoc = {
+          ...documentEntity,
+          id: `doc-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+          created_at: new Date(),
+          updated_at: new Date(),
+          checksum: this.generateChecksum(documentEntity.content),
+        };
+      }
 
       // Store in memory system for legacy compatibility
       await this.memory.store(`document:${savedDoc.id}`, savedDoc, 'documents');
@@ -1086,6 +1114,13 @@ export class WorkflowEngine extends EventEmitter {
     return metrics;
   }
 
+  /**
+   * Get workflow metrics (alias for getWorkflowMetrics)
+   */
+  async getMetrics(): Promise<any> {
+    return this.getWorkflowMetrics();
+  }
+
   async pauseWorkflow(workflowId: string): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'running') {
@@ -1157,6 +1192,42 @@ export class WorkflowEngine extends EventEmitter {
     const uniqueWords = [...new Set(words)].filter((word) => !stopWords.has(word));
 
     return uniqueWords.slice(0, 20); // Limit to 20 keywords
+  }
+
+  /**
+   * Shutdown the workflow engine gracefully
+   */
+  async shutdown(): Promise<void> {
+    logger.info('Shutting down workflow engine...');
+
+    // Pause all running workflows
+    for (const [id, workflow] of this.activeWorkflows) {
+      if (workflow.status === 'running') {
+        workflow.status = 'paused';
+        workflow.pausedAt = new Date().toISOString();
+        await this.saveWorkflow(workflow);
+        logger.info(`Paused workflow ${id} for shutdown`);
+      }
+    }
+
+    this.removeAllListeners();
+    this.emit('shutdown');
+    logger.info('Workflow engine shutdown complete');
+  }
+
+  /**
+   * Generate a simple checksum for content
+   *
+   * @param content
+   */
+  private generateChecksum(content: string): string {
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) {
+      const char = content.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return hash.toString(16);
   }
 }
 

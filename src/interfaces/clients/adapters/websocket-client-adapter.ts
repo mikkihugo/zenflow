@@ -1047,11 +1047,11 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   private generateConnectionId(): string {
-    return `ws-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `ws-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateMessageId(): string {
-    return `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `msg-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private initializeMetrics(): ClientMetrics {

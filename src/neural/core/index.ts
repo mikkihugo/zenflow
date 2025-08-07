@@ -81,7 +81,7 @@ export const NeuralCoreUtils = {
    * @param type
    */
   generateNetworkId: (type: string): string => {
-    return `neural-${type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `neural-${type}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   },
 
   /**

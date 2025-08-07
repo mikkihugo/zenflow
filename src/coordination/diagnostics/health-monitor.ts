@@ -231,6 +231,12 @@ export class HealthMonitor extends EventEmitter {
       const checkName = Array.from(this.healthChecks.keys())[index];
       const check = this.healthChecks.get(checkName);
 
+      // Skip if check is undefined
+      if (!check) {
+        console.error(`⚠️ Health check not found: ${checkName}`);
+        return;
+      }
+
       if (result.status === 'fulfilled') {
         const { score, status, details, metrics } = result.value;
 
@@ -246,7 +252,7 @@ export class HealthMonitor extends EventEmitter {
         totalScore += score * check.weight;
         totalWeight += check.weight;
 
-        if (check.critical && score < this.options.criticalThreshold) {
+        if (check.critical && score < (this.options.criticalThreshold ?? 50)) {
           criticalFailures++;
         }
 
@@ -257,7 +263,7 @@ export class HealthMonitor extends EventEmitter {
         results[checkName] = {
           score: 0,
           status: 'error',
-          details: result.reason.message,
+          details: result.reason?.message ?? 'Unknown error',
           metrics: {},
           timestamp: new Date().toISOString(),
           duration: 0,
@@ -291,7 +297,7 @@ export class HealthMonitor extends EventEmitter {
 
     // Add to history
     this.healthHistory.push(healthReport);
-    if (this.healthHistory.length > this.options.maxHistorySize) {
+    if (this.healthHistory.length > (this.options.maxHistorySize ?? 1000)) {
       this.healthHistory.shift();
     }
 
@@ -399,10 +405,12 @@ export class HealthMonitor extends EventEmitter {
     const first = scores[0];
     const last = scores[scores.length - 1];
 
-    if (last > first + 5) {
-      trend = 'improving';
-    } else if (last < first - 5) {
-      trend = 'degrading';
+    if (first !== undefined && last !== undefined) {
+      if (last > first + 5) {
+        trend = 'improving';
+      } else if (last < first - 5) {
+        trend = 'degrading';
+      }
     }
 
     return {
@@ -573,9 +581,9 @@ export class HealthMonitor extends EventEmitter {
     score: number,
     criticalFailures: number
   ): 'healthy' | 'warning' | 'critical' {
-    if (criticalFailures > 0 || score < this.options.criticalThreshold) {
+    if (criticalFailures > 0 || score < (this.options.criticalThreshold ?? 50)) {
       return 'critical';
-    } else if (score < this.options.alertThreshold) {
+    } else if (score < (this.options.alertThreshold ?? 70)) {
       return 'warning';
     } else {
       return 'healthy';

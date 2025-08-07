@@ -14,11 +14,11 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 // Mock Node.js WebSocket - Native WebSocket contract
 const mockWebSocket = {
-  connect: jest.fn(),
-  send: jest.fn(),
-  close: jest.fn(),
-  on: jest.fn(),
-  off: jest.fn(),
+  connect: vi.fn(),
+  send: vi.fn(),
+  close: vi.fn(),
+  on: vi.fn(),
+  off: vi.fn(),
   readyState: 1, // OPEN
   CONNECTING: 0,
   OPEN: 1,
@@ -28,37 +28,37 @@ const mockWebSocket = {
 
 // Mock EventEmitter - Event handling contract
 const mockEventEmitter = {
-  emit: jest.fn(),
-  on: jest.fn(),
-  off: jest.fn(),
-  removeAllListeners: jest.fn(),
+  emit: vi.fn(),
+  on: vi.fn(),
+  off: vi.fn(),
+  removeAllListeners: vi.fn(),
 };
 
 // Mock Reconnection Manager - Connection resilience contract
 const mockReconnectionManager = {
-  shouldReconnect: jest.fn(),
-  getReconnectDelay: jest.fn(),
-  incrementAttempts: jest.fn(),
-  resetAttempts: jest.fn(),
-  isMaxAttemptsReached: jest.fn(),
+  shouldReconnect: vi.fn(),
+  getReconnectDelay: vi.fn(),
+  incrementAttempts: vi.fn(),
+  resetAttempts: vi.fn(),
+  isMaxAttemptsReached: vi.fn(),
 };
 
 // Mock Message Queue - Message buffering contract
 const mockMessageQueue = {
-  enqueue: jest.fn(),
-  dequeue: jest.fn(),
-  flush: jest.fn(),
-  clear: jest.fn(),
-  size: jest.fn(),
+  enqueue: vi.fn(),
+  dequeue: vi.fn(),
+  flush: vi.fn(),
+  clear: vi.fn(),
+  size: vi.fn(),
 };
 
 // Mock Heartbeat Manager - Connection health contract
 const mockHeartbeatManager = {
-  start: jest.fn(),
-  stop: jest.fn(),
-  ping: jest.fn(),
-  onPong: jest.fn(),
-  isHealthy: jest.fn(),
+  start: vi.fn(),
+  stop: vi.fn(),
+  ping: vi.fn(),
+  onPong: vi.fn(),
+  isHealthy: vi.fn(),
 };
 
 // === CONTRACT INTERFACES ===
@@ -189,7 +189,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
         mockHeartbeatManager.start.mockImplementation(() => {});
 
         const client = new MockWebSocketClient();
-        const connectionHandler = jest.fn();
+        const connectionHandler = vi.fn();
         client.on('connected', connectionHandler);
 
         // Act - Connect to WebSocket server
@@ -336,9 +336,9 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
     it('should demonstrate event-driven interaction testing', () => {
       // London School: Test HOW events flow through the system
       const mockEventBus = {
-        subscribe: jest.fn(),
-        publish: jest.fn(),
-        unsubscribe: jest.fn(),
+        subscribe: vi.fn(),
+        publish: vi.fn(),
+        unsubscribe: vi.fn(),
       };
 
       const eventDrivenClient = {
@@ -375,9 +375,9 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
     it('should use mocks to drive connection resilience design', () => {
       // London School: Mocks help discover optimal resilience patterns
       const mockResilienceStrategy = {
-        evaluateConnectionHealth: jest.fn(),
-        determineReconnectionStrategy: jest.fn(),
-        executeRecoveryPlan: jest.fn(),
+        evaluateConnectionHealth: vi.fn(),
+        determineReconnectionStrategy: vi.fn(),
+        executeRecoveryPlan: vi.fn(),
       };
 
       const resilientClient = {
@@ -412,12 +412,12 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
 
   // Clean test isolation - London School principle
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // Reset WebSocket state
     mockWebSocket.readyState = mockWebSocket.CLOSED;
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });

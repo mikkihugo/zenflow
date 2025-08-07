@@ -12,23 +12,23 @@ describe('Simple Agent Manager - London TDD', () => {
 
   beforeEach(() => {
     // Create interaction-focused mocks (London TDD)
-    mockEventEmitter = jest.fn();
+    mockEventEmitter = vi.fn();
 
     // Mock AgentManager with focus on interactions
     mockAgentManager = {
       agents: new Map(),
 
-      registerAgent: jest.fn().mockImplementation((agent) => {
+      registerAgent: vi.fn().mockImplementation((agent) => {
         mockEventEmitter('emit', { type: 'agent_registered', agentId: agent.id });
         return { success: true, agentId: agent.id };
       }),
 
-      assignTask: jest.fn().mockImplementation((agentId, task) => {
+      assignTask: vi.fn().mockImplementation((agentId, task) => {
         mockEventEmitter('emit', { type: 'task_assigned', agentId, taskId: task.id });
         return { success: true, taskId: task.id, assignedTo: agentId };
       }),
 
-      broadcastMessage: jest.fn().mockImplementation((message) => {
+      broadcastMessage: vi.fn().mockImplementation((message) => {
         mockEventEmitter('emit', { type: 'message_broadcast', message });
         return { success: true, recipients: ['agent-1', 'agent-2'] };
       }),

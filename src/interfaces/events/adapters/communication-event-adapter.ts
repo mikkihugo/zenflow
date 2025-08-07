@@ -22,6 +22,7 @@ import type {
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
+  EventManagerType,
   EventQueryOptions,
   EventSubscription,
   EventTransform,
@@ -2235,23 +2236,23 @@ export class CommunicationEventAdapter implements IEventManager {
    * ID generation methods
    */
   private generateEventId(): string {
-    return `comm-evt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `comm-evt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateSubscriptionId(): string {
-    return `comm-sub-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `comm-sub-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateFilterId(): string {
-    return `comm-flt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `comm-flt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateTransformId(): string {
-    return `comm-txf-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `comm-txf-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   private generateCorrelationId(): string {
-    return `comm-cor-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `comm-cor-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   /**

@@ -157,7 +157,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
         overall: true,
         score: 100,
         results: [],
-        recommendations: []
+        recommendations: [],
       },
       components: components as Component[],
       relationships: relationships,
@@ -257,16 +257,40 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
             from: component.name,
             to: targetComponent.name,
             data: this.inferDataType(
-              {...component, id: component.id || component.name, description: component.description || `${component.name} component`}, 
-              {...targetComponent, id: targetComponent.id || targetComponent.name, description: targetComponent.description || `${targetComponent.name} component`}
+              {
+                ...component,
+                id: component.id || component.name,
+                description: component.description || `${component.name} component`,
+              },
+              {
+                ...targetComponent,
+                id: targetComponent.id || targetComponent.name,
+                description: targetComponent.description || `${targetComponent.name} component`,
+              }
             ),
             protocol: this.selectProtocol(
-              {...component, id: component.id || component.name, description: component.description || `${component.name} component`}, 
-              {...targetComponent, id: targetComponent.id || targetComponent.name, description: targetComponent.description || `${targetComponent.name} component`}
+              {
+                ...component,
+                id: component.id || component.name,
+                description: component.description || `${component.name} component`,
+              },
+              {
+                ...targetComponent,
+                id: targetComponent.id || targetComponent.name,
+                description: targetComponent.description || `${targetComponent.name} component`,
+              }
             ),
             frequency: this.estimateFrequency(
-              {...component, id: component.id || component.name, description: component.description || `${component.name} component`}, 
-              {...targetComponent, id: targetComponent.id || targetComponent.name, description: targetComponent.description || `${targetComponent.name} component`}
+              {
+                ...component,
+                id: component.id || component.name,
+                description: component.description || `${component.name} component`,
+              },
+              {
+                ...targetComponent,
+                id: targetComponent.id || targetComponent.name,
+                description: targetComponent.description || `${targetComponent.name} component`,
+              }
             ),
           });
         }

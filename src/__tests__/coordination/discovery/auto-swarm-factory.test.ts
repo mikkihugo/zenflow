@@ -22,30 +22,30 @@ describe('AutoSwarmFactory', () => {
   beforeEach(() => {
     // Create mocks
     mockSwarmCoordinator = {
-      initialize: jest.fn().mockResolvedValue(undefined),
-      on: jest.fn(),
-      emit: jest.fn(),
+      initialize: vi.fn().mockResolvedValue(undefined),
+      on: vi.fn(),
+      emit: vi.fn(),
     } as any;
 
     mockHiveSync = {
-      registerSwarm: jest.fn().mockResolvedValue(undefined),
-      on: jest.fn(),
-      emit: jest.fn(),
+      registerSwarm: vi.fn().mockResolvedValue(undefined),
+      on: vi.fn(),
+      emit: vi.fn(),
     } as any;
 
     mockMemoryStore = {
-      store: jest.fn().mockResolvedValue(undefined),
-      retrieve: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      search: jest.fn(),
+      store: vi.fn().mockResolvedValue(undefined),
+      retrieve: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      search: vi.fn(),
     } as any;
 
     mockAgui = {
-      askQuestion: jest.fn().mockResolvedValue('1'), // Default approval
-      askBatchQuestions: jest.fn(),
-      showProgress: jest.fn(),
-      showMessage: jest.fn(),
+      askQuestion: vi.fn().mockResolvedValue('1'), // Default approval
+      askBatchQuestions: vi.fn(),
+      showProgress: vi.fn(),
+      showMessage: vi.fn(),
     } as any;
 
     // Create factory instance
@@ -63,7 +63,7 @@ describe('AutoSwarmFactory', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('createSwarmsForDomains', () => {

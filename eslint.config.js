@@ -2,6 +2,7 @@
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
+import securityPlugin from 'eslint-plugin-security';
 
 export default [
   // TypeScript files configuration
@@ -49,12 +50,28 @@ export default [
     plugins: {
       '@typescript-eslint': typescriptEslint,
       jsdoc: jsdocPlugin,
+      security: securityPlugin,
     },
     rules: {
+      // Performance rules
+      '@typescript-eslint/prefer-for-of': 'error',
+      '@typescript-eslint/prefer-includes': 'error',
+      '@typescript-eslint/prefer-string-starts-ends-with': 'error',
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'prefer-template': 'error',
+
+      // Security rules
+      'security/detect-object-injection': 'warn',
+      'security/detect-non-literal-regexp': 'warn',
+      'security/detect-unsafe-regex': 'error',
+      'security/detect-buffer-noassert': 'error',
+      'security/detect-child-process': 'warn',
+
+      // TypeScript specific
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      'prefer-const': 'warn',
-      'no-var': 'error',
+
       // JSDoc rules for unified architecture documentation
       'jsdoc/require-description': [
         'error',

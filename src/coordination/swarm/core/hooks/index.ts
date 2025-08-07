@@ -1818,7 +1818,7 @@ ${this.sessionData.learnings
    */
   getSessionId() {
     if (!this._sessionId) {
-      this._sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      this._sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     }
     return this._sessionId;
   }

@@ -91,10 +91,10 @@ function createTestAdapter(
 
 function createMockLogger() {
   return {
-    debug: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
   };
 }
 
@@ -150,10 +150,10 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should emit proper events during lifecycle transitions', async () => {
       // TDD London: Test event emission interactions
-      const initializingHandler = jest.fn();
-      const initializedHandler = jest.fn();
-      const startingHandler = jest.fn();
-      const startedHandler = jest.fn();
+      const initializingHandler = vi.fn();
+      const initializedHandler = vi.fn();
+      const startingHandler = vi.fn();
+      const startedHandler = vi.fn();
 
       adapter.on('initializing', initializingHandler);
       adapter.on('initialized', initializedHandler);
@@ -178,7 +178,7 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should save architecture with proper parameter mapping', async () => {
       // TDD London: Mock the execution and verify interaction
-      const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
+      const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: 'arch-001',
         metadata: { duration: 100, timestamp: new Date(), operationId: 'op-001' },
@@ -234,7 +234,7 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should handle architecture search with filtering', async () => {
       // TDD London: Test search parameter handling
-      const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
+      const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: [mockArchitectureDesign],
         metadata: { duration: 200, timestamp: new Date(), operationId: 'op-004' },
@@ -258,7 +258,7 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should save validation results with proper associations', async () => {
       // TDD London: Test validation saving interaction
-      const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
+      const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: undefined,
         metadata: { duration: 80, timestamp: new Date(), operationId: 'op-005' },
@@ -327,7 +327,7 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should handle POST requests with data validation', async () => {
       // TDD London: Test POST request interaction
-      const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
+      const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: { ...mockAPIResponse, data: { id: 2, name: 'New Resource' } },
         metadata: { duration: 200, timestamp: new Date(), operationId: 'op-008' },
@@ -352,7 +352,7 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should manage resources with CRUD operations', async () => {
       // TDD London: Test resource management interactions
-      const executeSpy = jest.spyOn(adapter, 'execute');
+      const executeSpy = vi.spyOn(adapter, 'execute');
 
       // Create resource
       executeSpy.mockResolvedValueOnce({
@@ -416,7 +416,7 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should connect to protocols with proper configuration', async () => {
       // TDD London: Test protocol connection interaction
-      const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
+      const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: undefined,
         metadata: { duration: 100, timestamp: new Date(), operationId: 'op-013' },
@@ -437,7 +437,7 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should send messages through protocols', async () => {
       // TDD London: Test message sending interaction
-      const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
+      const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: { messageId: 'msg-001', acknowledged: true },
         metadata: { duration: 50, timestamp: new Date(), operationId: 'op-014' },
@@ -460,7 +460,7 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should broadcast messages to multiple protocols', async () => {
       // TDD London: Test broadcast interaction
-      const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
+      const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: [
           { protocol: 'http', success: true, result: { sent: true } },
@@ -578,7 +578,7 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should provide cache statistics', async () => {
       // TDD London: Test cache metrics interaction
-      const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
+      const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: {
           size: 10,
@@ -1002,7 +1002,7 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       // Classical TDD: Test comprehensive validation logic
 
       // Mock adapter state and responses
-      jest.spyOn(adapter, 'isReady').mockReturnValue(true);
+      vi.spyOn(adapter, 'isReady').mockReturnValue(true);
       jest
         .spyOn(adapter, 'execute')
         .mockResolvedValueOnce({
@@ -1066,7 +1066,7 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     await adapter.start();
 
     // Mock the internal execute method to simulate real operations
-    const executeSpy = jest.spyOn(adapter, 'execute');
+    const executeSpy = vi.spyOn(adapter, 'execute');
 
     // Step 1: Save architecture
     executeSpy.mockResolvedValueOnce({
@@ -1135,7 +1135,7 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     await adapter.initialize();
     await adapter.start();
 
-    const executeSpy = jest.spyOn(adapter, 'execute');
+    const executeSpy = vi.spyOn(adapter, 'execute');
 
     // Simulate API operation that fails first, then succeeds
     executeSpy
@@ -1168,7 +1168,7 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     await adapter.initialize();
     await adapter.start();
 
-    const executeSpy = jest.spyOn(adapter, 'execute');
+    const executeSpy = vi.spyOn(adapter, 'execute');
 
     // Step 1: Connect to primary protocol
     executeSpy.mockResolvedValueOnce({
@@ -1232,7 +1232,7 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     await adapter.initialize();
     await adapter.start();
 
-    const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
+    const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
       success: true,
       data: 'concurrent-result',
       metadata: { duration: 50, timestamp: new Date(), operationId: 'concurrent' },
@@ -1263,7 +1263,7 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     await adapter.initialize();
     await adapter.start();
 
-    const executeSpy = jest.spyOn(adapter, 'execute').mockResolvedValue({
+    const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
       success: true,
       data: mockArchitectureDesign,
       metadata: { duration: 5, timestamp: new Date(), operationId: 'cache-test', cacheHit: true },

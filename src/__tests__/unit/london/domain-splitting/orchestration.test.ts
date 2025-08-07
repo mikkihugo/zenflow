@@ -9,9 +9,9 @@ import { SafeDomainSplitter } from '../../../../tools/domain-splitting/splitters
 import { DependencyValidator } from '../../../../tools/domain-splitting/validators/dependency-validator';
 
 // Mock implementations
-jest.mock('../../../../tools/domain-splitting/analyzers/domain-analyzer.js');
-jest.mock('../../../../tools/domain-splitting/splitters/domain-splitter.js');
-jest.mock('../../../../tools/domain-splitting/validators/dependency-validator.js');
+vi.mock('../../../../tools/domain-splitting/analyzers/domain-analyzer.js');
+vi.mock('../../../../tools/domain-splitting/splitters/domain-splitter.js');
+vi.mock('../../../../tools/domain-splitting/validators/dependency-validator.js');
 
 describe('Domain Splitting Orchestration - London TDD', () => {
   let orchestrator: DomainSplittingOrchestrator;

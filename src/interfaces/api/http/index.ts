@@ -114,6 +114,7 @@ export const DEFAULT_API_LAYER_CONFIG: APILayerConfig = {
     timeout: 30000,
     retryAttempts: 3,
     retryDelay: 1000,
+    enableAuth: false,
   },
   enableSwagger: true,
   enableValidation: true,

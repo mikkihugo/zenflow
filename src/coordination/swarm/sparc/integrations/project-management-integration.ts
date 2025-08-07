@@ -10,11 +10,11 @@
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { TaskAPI } from '../../../api';
-import { TaskCoordinator, type TaskConfig } from '../../../task-coordinator';
 import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
-import { WorkflowEngine } from '../../../../core/workflow-engine';
 import { MemorySystem } from '../../../../core/memory-system';
+import type { WorkflowEngine } from '../../../../core/workflow-engine';
+import { TaskAPI } from '../../../api';
+import { type TaskConfig, TaskCoordinator } from '../../../task-coordinator';
 import type { DetailedSpecification, SPARCProject } from '../types/sparc-types';
 
 // Task Management Integration Types
@@ -176,10 +176,12 @@ export class ProjectManagementIntegration {
     this.taskDistributor = null;
 
     // Initialize sophisticated document-driven infrastructure
-    this.memorySystem = memorySystem || new MemorySystem({
-      backend: 'json',
-      path: path.join(projectRoot, '.memory')
-    });
+    this.memorySystem =
+      memorySystem ||
+      new MemorySystem({
+        backend: 'json',
+        path: path.join(projectRoot, '.memory'),
+      });
     this.documentDrivenSystem = new DocumentDrivenSystem();
     this.workflowEngine = workflowEngine; // Optional - can be provided externally
   }
@@ -342,20 +344,20 @@ Related: SPARC-${project.id}
 
     for (const workflowName of workflows) {
       try {
-        const result = this.workflowEngine 
+        const result = this.workflowEngine
           ? await this.workflowEngine.startWorkflow(workflowName, {
               currentDocument: {
                 id: `vision-${workspaceId}-${Date.now()}`,
                 type: 'vision',
                 title: 'Vision Document',
                 content: visionDocument.content,
-                metadata: { 
-                  author: 'SPARC Engine', 
-                  tags: [workspaceId], 
-                  status: 'draft' as const, 
-                  priority: 'medium' as const, 
-                  dependencies: [], 
-                  relatedDocuments: [] 
+                metadata: {
+                  author: 'SPARC Engine',
+                  tags: [workspaceId],
+                  status: 'draft' as const,
+                  priority: 'medium' as const,
+                  dependencies: [],
+                  relatedDocuments: [],
                 },
                 created: new Date(),
                 updated: new Date(),

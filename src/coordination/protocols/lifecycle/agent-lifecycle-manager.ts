@@ -1199,7 +1199,7 @@ export class AgentLifecycleManager extends EventEmitter {
   }
 
   private generateAgentId(type: string): string {
-    return `${type}-${Date.now()}-${Math.random().toString(36).substr(2, 8)}`;
+    return `${type}-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
   }
 
   private initializeHealth(): HealthStatus {

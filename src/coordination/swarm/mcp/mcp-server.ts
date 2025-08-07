@@ -7,6 +7,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import { createLogger } from '../../../core/logger';
+import { dspySwarmMCPTools } from '../../mcp/dspy-swarm-mcp-tools';
 import { HiveTools } from './hive-tools';
 import { SwarmTools } from './swarm-tools';
 import type { MCPServerConfig } from './types';
@@ -14,7 +15,6 @@ import type { MCPServerConfig } from './types';
 const logger = createLogger({ prefix: 'UnifiedMCPServer' });
 
 export class StdioMcpServer {
-  private config: MCPServerConfig;
   private server: McpServer;
   private transport: StdioServerTransport;
   private toolRegistry: SwarmTools;
@@ -60,12 +60,12 @@ export class StdioMcpServer {
   }
 
   private async registerTools(): Promise<void> {
-    logger.info('Registering swarm and hive MCP tools...');
+    logger.info('Registering swarm, hive, and DSPy MCP tools...');
 
-    // Get all tools from both registries
+    // Get all tools from registries
     const swarmTools = this.toolRegistry.tools;
     const hiveTools = this.hiveRegistry.tools;
-    const tools = { ...swarmTools, ...hiveTools };
+    const tools = { ...swarmTools, ...hiveTools, ...dspySwarmMCPTools };
 
     // Register each tool with the MCP server using the official SDK pattern
     for (const [toolName, toolFunction] of Object.entries(tools)) {
@@ -80,7 +80,7 @@ export class StdioMcpServer {
           async (args) => {
             try {
               logger.debug(`Executing tool: ${toolName}`, { args });
-              const result = await toolFunction(args?.params || {});
+              const result = await toolFunction(args?.params || ({} as any));
               return { result };
             } catch (error) {
               logger.error(`Tool execution failed: ${toolName}`, error);
@@ -96,7 +96,7 @@ export class StdioMcpServer {
     }
 
     logger.info(
-      `Registered ${Object.keys(swarmTools).length} swarm tools and ${Object.keys(hiveTools).length} hive tools`
+      `Registered ${Object.keys(swarmTools).length} swarm tools, ${Object.keys(hiveTools).length} hive tools, and ${Object.keys(dspySwarmMCPTools).length} DSPy swarm tools`
     );
   }
 

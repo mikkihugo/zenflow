@@ -297,7 +297,7 @@ export class DashboardServer extends EventEmitter {
    */
   public addAlert(type: 'warning' | 'error' | 'info', message: string): void {
     const alert = {
-      id: `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `alert_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
       type,
       message,
       timestamp: Date.now(),

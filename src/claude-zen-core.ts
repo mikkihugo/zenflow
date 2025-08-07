@@ -120,7 +120,7 @@ class MockDatabase implements IDatabase {
   }
 
   async getSwarmTasks(swarmId: string, status?: string): Promise<any[]> {
-    const tasks = [];
+    const tasks: any[] = [];
     for (const [key, value] of this.data.entries()) {
       if (key.startsWith('task_') && value.swarm_id === swarmId) {
         if (!status || value.status === status) {
@@ -139,13 +139,13 @@ class MockDatabase implements IDatabase {
 
   // Metrics methods
   async getMetrics(entityId: string, metricType: string): Promise<any[]> {
-    const metrics = [];
+    const metrics: any[] = [];
     for (const [key, value] of this.data.entries()) {
       if (key.startsWith(`metrics_${entityId}_${metricType}`)) {
         metrics.push(value);
       }
     }
-    return metrics.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    return metrics.sort((a: any, b: any) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
   }
 }
 

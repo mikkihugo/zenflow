@@ -7,28 +7,29 @@
 
 import { nanoid } from 'nanoid';
 import type {
-  SourceCodeArtifact,
-  DocumentationSet,
+  CodeArtifacts,
   CompletionEngine,
   CompletionValidation,
+  DeploymentArtifact,
+  DeploymentConfig,
   DeploymentPlan,
+  DeploymentResult,
   DeploymentScript,
   DocumentationArtifact,
   DocumentationGeneration,
+  DocumentationSet,
   ImplementationArtifacts,
+  ProductionReadinessCheck,
   ProductionReadinessReport,
   RefinementResult,
+  RefinementStrategy,
+  SourceCodeArtifact,
   SPARCProject,
-  TestSuite,
+  // Method signature types
+  SystemArchitecture,
   TestCase,
+  TestSuite,
   ValidationResult,
-  // Missing types
-  CodeGeneration,
-  TestGeneration,
-  ComplianceCheck,
-  DeploymentArtifact,
-  DeploymentArtifacts,
-  TestArtifact,
 } from '../../types/sparc-types';
 
 export class CompletionPhaseEngine implements CompletionEngine {
@@ -51,16 +52,16 @@ export class CompletionPhaseEngine implements CompletionEngine {
       implementation: {} as any,
       currentPhase: 'completion',
       progress: {} as any,
-      metadata: {} as any
+      metadata: {} as any,
     });
     const documentationGeneration = {
       artifacts: documentationArtifacts,
       coverage: 80,
-      quality: 85
+      quality: 85,
     };
     const deploymentArtifacts = await this.generateDeploymentArtifacts(refinement);
 
-    const qualityGates = await this.establishQualityGates(refinement);
+    const _qualityGates = await this.establishQualityGates(refinement);
     const productionChecks = await this.performProductionReadinessChecks(
       codeGeneration,
       testGeneration,
@@ -74,7 +75,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
       documentation: [], // DocumentationArtifact[] - empty for now
       configurationFiles: [], // ConfigurationArtifact[] - empty for now
       deploymentScripts: [], // ArtifactReference[] - empty for now
-      monitoringDashboards: [], // MonitoringDashboard[] - empty for now 
+      monitoringDashboards: [], // MonitoringDashboard[] - empty for now
       securityConfigurations: [], // SecurityConfiguration[] - empty for now
       documentationGeneration,
       productionReadinessChecks: this.convertToProductionReadinessChecks(productionChecks),
@@ -83,7 +84,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
         artifacts: codeGeneration,
         quality: 85,
         coverage: 90,
-        estimatedMaintainability: 80
+        estimatedMaintainability: 80,
       },
       testGeneration: {
         testSuites: testGeneration,
@@ -91,11 +92,11 @@ export class CompletionPhaseEngine implements CompletionEngine {
           lines: 90,
           functions: 85,
           branches: 80,
-          statements: 88
+          statements: 88,
         },
         automationLevel: 95,
-        estimatedReliability: 90
-      }
+        estimatedReliability: 90,
+      },
     };
   }
 
@@ -177,9 +178,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
    *
    * @param refinement
    */
-  async generateDocumentation(
-    project: SPARCProject
-  ): Promise<DocumentationSet> {
+  async generateDocumentation(project: SPARCProject): Promise<DocumentationSet> {
     const artifacts: DocumentationArtifact[] = [];
 
     // Generate API documentation
@@ -201,7 +200,9 @@ export class CompletionPhaseEngine implements CompletionEngine {
     artifacts.push(await this.generateTroubleshootingGuide(project));
 
     // Generate security documentation
-    artifacts.push(await this.generateSecurityDocumentation(project.architecture.securityRequirements));
+    artifacts.push(
+      await this.generateSecurityDocumentation(project.architecture.securityRequirements)
+    );
 
     return artifacts;
   }
@@ -211,9 +212,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
    *
    * @param refinement
    */
-  private async generateDeploymentArtifacts(
-    refinement: RefinementResult
-  ): Promise<DeploymentPlan> {
+  private async generateDeploymentArtifacts(refinement: RefinementResult): Promise<DeploymentPlan> {
     const artifacts: DeploymentScript[] = [];
 
     // Generate containerization artifacts
@@ -238,7 +237,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     artifacts.push(await this.generateGrafanaDashboards(refinement.refinedArchitecture));
     artifacts.push(await this.generateAlertingRules(refinement.refinedArchitecture));
 
-    return artifacts.map(script => ({
+    return artifacts.map((script) => ({
       id: script.id || nanoid(),
       name: script.name,
       components: [],
@@ -246,8 +245,8 @@ export class CompletionPhaseEngine implements CompletionEngine {
       scaling: {
         type: 'horizontal',
         triggers: ['cpu-usage'],
-        limits: { minReplicas: 1, maxReplicas: 3 }
-      }
+        limits: { minReplicas: 1, maxReplicas: 3 },
+      },
     }));
   }
 
@@ -274,13 +273,15 @@ export class CompletionPhaseEngine implements CompletionEngine {
         criterion: 'Security Gate',
         passed: true,
         score: 100,
-        details: 'No high/critical vulnerabilities, All dependencies scanned, Security headers configured',
+        details:
+          'No high/critical vulnerabilities, All dependencies scanned, Security headers configured',
       },
       {
         criterion: 'Documentation Gate',
         passed: true,
         score: 85,
-        details: 'API documentation complete, Architecture docs updated, Deployment guide available',
+        details:
+          'API documentation complete, Architecture docs updated, Deployment guide available',
       },
     ];
   }
@@ -317,7 +318,12 @@ export class CompletionPhaseEngine implements CompletionEngine {
             score: 1.0,
             details: 'Comprehensive error handling implemented',
           },
-          { criterion: 'Logging', passed: true, score: 1.0, details: 'Structured logging with appropriate levels' },
+          {
+            criterion: 'Logging',
+            passed: true,
+            score: 1.0,
+            details: 'Structured logging with appropriate levels',
+          },
           {
             criterion: 'Configuration management',
             passed: true,
@@ -343,9 +349,24 @@ export class CompletionPhaseEngine implements CompletionEngine {
             score: 1.0,
             details: `${testGen.length > 0 ? testGen[0].coverage.lines : 90}% coverage achieved`,
           },
-          { criterion: 'Integration tests', passed: true, score: 1.0, details: 'All integration scenarios covered' },
-          { criterion: 'Performance tests', passed: true, score: 1.0, details: 'Load and stress tests defined' },
-          { criterion: 'Security tests', passed: true, score: 1.0, details: 'Security test suite comprehensive' },
+          {
+            criterion: 'Integration tests',
+            passed: true,
+            score: 1.0,
+            details: 'All integration scenarios covered',
+          },
+          {
+            criterion: 'Performance tests',
+            passed: true,
+            score: 1.0,
+            details: 'Load and stress tests defined',
+          },
+          {
+            criterion: 'Security tests',
+            passed: true,
+            score: 1.0,
+            details: 'Security test suite comprehensive',
+          },
         ],
         validationResults: [],
         blockers: [],
@@ -359,9 +380,24 @@ export class CompletionPhaseEngine implements CompletionEngine {
         score: 88,
         overallScore: 88,
         validations: [
-          { criterion: 'Containerization', passed: true, score: 1.0, details: 'All services containerized' },
-          { criterion: 'Orchestration', passed: true, score: 1.0, details: 'Kubernetes manifests ready' },
-          { criterion: 'Monitoring', passed: true, score: 1.0, details: 'Comprehensive monitoring setup' },
+          {
+            criterion: 'Containerization',
+            passed: true,
+            score: 1.0,
+            details: 'All services containerized',
+          },
+          {
+            criterion: 'Orchestration',
+            passed: true,
+            score: 1.0,
+            details: 'Kubernetes manifests ready',
+          },
+          {
+            criterion: 'Monitoring',
+            passed: true,
+            score: 1.0,
+            details: 'Comprehensive monitoring setup',
+          },
           { criterion: 'Alerting', passed: true, score: 1.0, details: 'Alert rules configured' },
         ],
         validationResults: [],
@@ -382,9 +418,24 @@ export class CompletionPhaseEngine implements CompletionEngine {
             score: 1.0,
             details: 'No critical vulnerabilities found',
           },
-          { criterion: 'Authentication', passed: true, score: 1.0, details: 'Robust authentication implemented' },
-          { criterion: 'Authorization', passed: true, score: 1.0, details: 'Fine-grained access control' },
-          { criterion: 'Data encryption', passed: true, score: 1.0, details: 'End-to-end encryption configured' },
+          {
+            criterion: 'Authentication',
+            passed: true,
+            score: 1.0,
+            details: 'Robust authentication implemented',
+          },
+          {
+            criterion: 'Authorization',
+            passed: true,
+            score: 1.0,
+            details: 'Fine-grained access control',
+          },
+          {
+            criterion: 'Data encryption',
+            passed: true,
+            score: 1.0,
+            details: 'End-to-end encryption configured',
+          },
         ],
         validationResults: [],
         blockers: [],
@@ -398,10 +449,30 @@ export class CompletionPhaseEngine implements CompletionEngine {
         score: 82,
         overallScore: 82,
         validations: [
-          { criterion: 'Documentation', passed: true, score: 1.0, details: 'Complete documentation available' },
-          { criterion: 'Runbooks', passed: false, score: 0.0, details: 'Some operational runbooks missing' },
-          { criterion: 'Backup strategy', passed: true, score: 1.0, details: 'Automated backup configured' },
-          { criterion: 'Disaster recovery', passed: true, score: 1.0, details: 'DR procedures documented' },
+          {
+            criterion: 'Documentation',
+            passed: true,
+            score: 1.0,
+            details: 'Complete documentation available',
+          },
+          {
+            criterion: 'Runbooks',
+            passed: false,
+            score: 0.0,
+            details: 'Some operational runbooks missing',
+          },
+          {
+            criterion: 'Backup strategy',
+            passed: true,
+            score: 1.0,
+            details: 'Automated backup configured',
+          },
+          {
+            criterion: 'Disaster recovery',
+            passed: true,
+            score: 1.0,
+            details: 'DR procedures documented',
+          },
         ],
         validationResults: [],
         blockers: ['Some operational runbooks missing'],
@@ -553,17 +624,21 @@ export class CompletionPhaseEngine implements CompletionEngine {
     return {
       name: `${component.name} Unit Tests`,
       description: `Unit tests for ${component.name} component`,
-      steps: [{
-        action: 'Execute unit tests',
-        parameters: { component: component.name },
-        expectedResult: 'All unit tests pass'
-      }],
-      assertions: [{
-        description: 'Component functions work correctly',
-        assertion: 'All public methods return expected results',
-        critical: true
-      }],
-      requirements: [component.name]
+      steps: [
+        {
+          action: 'Execute unit tests',
+          parameters: { component: component.name },
+          expectedResult: 'All unit tests pass',
+        },
+      ],
+      assertions: [
+        {
+          description: 'Component functions work correctly',
+          assertion: 'All public methods return expected results',
+          critical: true,
+        },
+      ],
+      requirements: [component.name],
     };
   }
 
@@ -571,35 +646,43 @@ export class CompletionPhaseEngine implements CompletionEngine {
     return {
       name: 'Integration tests',
       description: `Integration tests for ${architecture.id}`,
-      steps: [{
-        action: 'Execute integration tests',
-        parameters: { components: architecture.components?.length || 0 },
-        expectedResult: 'All components integrate successfully'
-      }],
-      assertions: [{
-        description: 'Components communicate correctly',
-        assertion: 'All components communicate as expected',
-        critical: true
-      }],
-      requirements: ['Component integration']
+      steps: [
+        {
+          action: 'Execute integration tests',
+          parameters: { components: architecture.components?.length || 0 },
+          expectedResult: 'All components integrate successfully',
+        },
+      ],
+      assertions: [
+        {
+          description: 'Components communicate correctly',
+          assertion: 'All components communicate as expected',
+          critical: true,
+        },
+      ],
+      requirements: ['Component integration'],
     };
   }
 
-  private async generateE2ETests(architecture: any): Promise<TestCase> {
+  private async generateE2ETests(_architecture: any): Promise<TestCase> {
     return {
       name: 'End-to-end tests',
       description: 'Complete user workflow testing',
-      steps: [{
-        action: 'Execute E2E workflows',
-        parameters: { workflows: 'all' },
-        expectedResult: 'All workflows complete successfully'
-      }],
-      assertions: [{
-        description: 'User workflows work end-to-end',
-        assertion: 'All user workflows complete successfully',
-        critical: true
-      }],
-      requirements: ['End-to-end functionality']
+      steps: [
+        {
+          action: 'Execute E2E workflows',
+          parameters: { workflows: 'all' },
+          expectedResult: 'All workflows complete successfully',
+        },
+      ],
+      assertions: [
+        {
+          description: 'User workflows work end-to-end',
+          assertion: 'All user workflows complete successfully',
+          critical: true,
+        },
+      ],
+      requirements: ['End-to-end functionality'],
     };
   }
 
@@ -607,17 +690,21 @@ export class CompletionPhaseEngine implements CompletionEngine {
     return {
       name: 'Performance tests',
       description: 'Performance and load testing',
-      steps: [{
-        action: 'Execute performance tests',
-        parameters: { optimizations: performanceOpts.length },
-        expectedResult: 'Performance targets met'
-      }],
-      assertions: [{
-        description: 'System meets performance requirements',
-        assertion: 'performance.meetsTargets() === true',
-        critical: true
-      }],
-      requirements: performanceOpts.map((opt: any) => opt.description || 'Performance requirement')
+      steps: [
+        {
+          action: 'Execute performance tests',
+          parameters: { optimizations: performanceOpts.length },
+          expectedResult: 'Performance targets met',
+        },
+      ],
+      assertions: [
+        {
+          description: 'System meets performance requirements',
+          assertion: 'performance.meetsTargets() === true',
+          critical: true,
+        },
+      ],
+      requirements: performanceOpts.map((opt: any) => opt.description || 'Performance requirement'),
     };
   }
 
@@ -625,17 +712,21 @@ export class CompletionPhaseEngine implements CompletionEngine {
     return {
       name: 'Security tests',
       description: 'Security vulnerability testing',
-      steps: [{
-        action: 'Execute security tests',
-        parameters: { securityChecks: securityOpts.length },
-        expectedResult: 'No security vulnerabilities found'
-      }],
-      assertions: [{
-        description: 'System passes security checks',
-        assertion: 'All security tests pass without vulnerabilities',
-        critical: true
-      }],
-      requirements: securityOpts.map((opt: any) => opt.description || 'Security requirement')
+      steps: [
+        {
+          action: 'Execute security tests',
+          parameters: { securityChecks: securityOpts.length },
+          expectedResult: 'No security vulnerabilities found',
+        },
+      ],
+      assertions: [
+        {
+          description: 'System passes security checks',
+          assertion: 'All security tests pass without vulnerabilities',
+          critical: true,
+        },
+      ],
+      requirements: securityOpts.map((opt: any) => opt.description || 'Security requirement'),
     };
   }
 
@@ -643,22 +734,26 @@ export class CompletionPhaseEngine implements CompletionEngine {
     return {
       name: 'Load tests',
       description: 'Load and scalability testing',
-      steps: [{
-        action: 'Execute load tests',
-        parameters: { scalabilityTargets: scalabilityOpts.length },
-        expectedResult: 'System handles expected load'
-      }],
-      assertions: [{
-        description: 'System scales under load',
-        assertion: 'System maintains performance under expected load',
-        critical: true
-      }],
-      requirements: scalabilityOpts.map((opt: any) => opt.description || 'Scalability requirement')
+      steps: [
+        {
+          action: 'Execute load tests',
+          parameters: { scalabilityTargets: scalabilityOpts.length },
+          expectedResult: 'System handles expected load',
+        },
+      ],
+      assertions: [
+        {
+          description: 'System scales under load',
+          assertion: 'System maintains performance under expected load',
+          critical: true,
+        },
+      ],
+      requirements: scalabilityOpts.map((opt: any) => opt.description || 'Scalability requirement'),
     };
   }
 
   // Documentation generation helper methods
-  private async generateAPIDocumentation(architecture: any): Promise<DocumentationArtifact> {
+  private async generateAPIDocumentation(_architecture: any): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
       name: 'API Documentation',
@@ -670,7 +765,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateArchitectureDocumentation(
-    architecture: any
+    _architecture: any
   ): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
@@ -682,7 +777,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateUserDocumentation(architecture: any): Promise<DocumentationArtifact> {
+  private async generateUserDocumentation(_architecture: any): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
       name: 'User Documentation',
@@ -693,7 +788,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateDeveloperDocumentation(refinement: any): Promise<DocumentationArtifact> {
+  private async generateDeveloperDocumentation(_refinement: any): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
       name: 'Developer Documentation',
@@ -704,7 +799,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateDeploymentDocumentation(refinement: any): Promise<DocumentationArtifact> {
+  private async generateDeploymentDocumentation(_refinement: any): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
       name: 'Deployment Guide',
@@ -715,7 +810,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateTroubleshootingGuide(refinement: any): Promise<DocumentationArtifact> {
+  private async generateTroubleshootingGuide(_refinement: any): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
       name: 'Troubleshooting Guide',
@@ -726,7 +821,9 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateSecurityDocumentation(securityOpts: any[]): Promise<DocumentationArtifact> {
+  private async generateSecurityDocumentation(
+    _securityOpts: any[]
+  ): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
       name: 'Security Documentation',
@@ -738,7 +835,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   // Deployment artifact generation helper methods
-  private async generateDockerfiles(architecture: any): Promise<DeploymentArtifact> {
+  private async generateDockerfiles(_architecture: any): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'Dockerfiles',
@@ -749,7 +846,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateDockerCompose(architecture: any): Promise<DeploymentArtifact> {
+  private async generateDockerCompose(_architecture: any): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'docker-compose.yml',
@@ -760,7 +857,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateKubernetesManifests(architecture: any): Promise<DeploymentArtifact> {
+  private async generateKubernetesManifests(_architecture: any): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'Kubernetes Manifests',
@@ -771,7 +868,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateKubernetesConfigMaps(architecture: any): Promise<DeploymentArtifact> {
+  private async generateKubernetesConfigMaps(_architecture: any): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'ConfigMaps',
@@ -782,7 +879,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateKubernetesSecrets(securityOpts: any[]): Promise<DeploymentArtifact> {
+  private async generateKubernetesSecrets(_securityOpts: any[]): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'Secrets',
@@ -793,7 +890,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateCIPipeline(refinement: any): Promise<DeploymentArtifact> {
+  private async generateCIPipeline(_refinement: any): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'CI Pipeline',
@@ -804,7 +901,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateCDPipeline(refinement: any): Promise<DeploymentArtifact> {
+  private async generateCDPipeline(_refinement: any): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'CD Pipeline',
@@ -815,7 +912,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateTerraformModules(architecture: any): Promise<DeploymentArtifact> {
+  private async generateTerraformModules(_architecture: any): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'Terraform Modules',
@@ -826,7 +923,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateAnsiblePlaybooks(architecture: any): Promise<DeploymentArtifact> {
+  private async generateAnsiblePlaybooks(_architecture: any): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'Ansible Playbooks',
@@ -837,7 +934,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generatePrometheusConfig(architecture: any): Promise<DeploymentArtifact> {
+  private async generatePrometheusConfig(_architecture: any): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'Prometheus Configuration',
@@ -848,7 +945,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateGrafanaDashboards(architecture: any): Promise<DeploymentArtifact> {
+  private async generateGrafanaDashboards(_architecture: any): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'Grafana Dashboards',
@@ -859,7 +956,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     };
   }
 
-  private async generateAlertingRules(architecture: any): Promise<DeploymentArtifact> {
+  private async generateAlertingRules(_architecture: any): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
       name: 'Alerting Rules',
@@ -1014,414 +1111,6 @@ export class SecurityFramework {
     `.trim();
   }
 
-  // Test content generation methods
-  private generateUnitTestContent(component: any): string {
-    return `
-describe('${component.name}', () => {
-  // Unit tests for ${component.description}
-  // Test coverage for all responsibilities: ${component.responsibilities.join(', ')}
-});
-    `.trim();
-  }
-
-  private generateIntegrationTestContent(architecture: any): string {
-    return `
-describe('Integration Tests', () => {
-  // Integration tests for ${architecture.id}
-  // Test component interactions and data flows
-});
-    `.trim();
-  }
-
-  private generateE2ETestContent(_architecture: any): string {
-    return `
-describe('End-to-End Tests', () => {
-  // E2E tests for complete user workflows
-});
-    `.trim();
-  }
-
-  private generatePerformanceTestContent(performanceOpts: any[]): string {
-    return `
-// Performance tests based on optimization targets
-// ${performanceOpts.map((opt) => opt.description).join('\n// ')}
-    `.trim();
-  }
-
-  private generateSecurityTestContent(securityOpts: any[]): string {
-    return `
-describe('Security Tests', () => {
-  // Security tests for vulnerabilities and compliance
-  // ${securityOpts.map((opt) => opt.description).join('\n  // ')}
-});
-    `.trim();
-  }
-
-  private generateLoadTestContent(scalabilityOpts: any[]): string {
-    return `
-// Load tests based on scalability requirements
-// ${scalabilityOpts.map((opt) => opt.description).join('\n// ')}
-    `.trim();
-  }
-
-  // Documentation content generation methods
-  private generateOpenAPISpec(architecture: any): string {
-    return `
-openapi: 3.0.0
-info:
-  title: ${architecture.id} API
-  version: 1.0.0
-  description: Generated API documentation
-paths:
-  # API paths based on architecture interfaces
-    `.trim();
-  }
-
-  private generateArchitectureDoc(architecture: any): string {
-    return `
-# Architecture Documentation
-
-## Overview
-${architecture.patterns.map((p: any) => p.description).join('\n')}
-
-## Components
-${architecture.components.map((c: any) => `- ${c.name}: ${c.description}`).join('\n')}
-    `.trim();
-  }
-
-  private generateUserDoc(architecture: any): string {
-    return `
-# User Documentation
-
-## Getting Started
-Instructions for using the ${architecture.id} system.
-    `.trim();
-  }
-
-  private generateDeveloperDoc(refinement: any): string {
-    return `
-# Developer Documentation
-
-## Development Setup
-Instructions for setting up the development environment.
-
-## Architecture Overview
-${refinement.refinedArchitecture.patterns.map((p: any) => p.description).join('\n')}
-    `.trim();
-  }
-
-  private generateDeploymentDoc(_refinement: any): string {
-    return `
-# Deployment Guide
-
-## Prerequisites
-- Docker
-- Kubernetes cluster
-- Required dependencies
-
-## Deployment Steps
-1. Build containers
-2. Deploy to cluster
-3. Configure monitoring
-    `.trim();
-  }
-
-  private generateTroubleshootingDoc(_refinement: any): string {
-    return `
-# Troubleshooting Guide
-
-## Common Issues
-Solutions for frequent problems and error scenarios.
-    `.trim();
-  }
-
-  private generateSecurityDoc(securityOpts: any[]): string {
-    return `
-# Security Documentation
-
-## Security Measures
-${securityOpts.map((opt) => `- ${opt.description}`).join('\n')}
-    `.trim();
-  }
-
-  // Deployment content generation methods
-  private generateDockerfileContent(_architecture: any): string {
-    return `
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-EXPOSE 3000
-CMD ["npm", "start"]
-    `.trim();
-  }
-
-  private generateDockerComposeContent(_architecture: any): string {
-    return `
-version: '3.8'
-services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
-    `.trim();
-  }
-
-  private generateK8sManifests(architecture: any): string {
-    return `
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ${architecture.id}
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: ${architecture.id}
-  template:
-    metadata:
-      labels:
-        app: ${architecture.id}
-    spec:
-      containers:
-      - name: app
-        image: ${architecture.id}:latest
-        ports:
-        - containerPort: 3000
-    `.trim();
-  }
-
-  private generateK8sConfigMaps(architecture: any): string {
-    return `
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ${architecture.id}-config
-data:
-  # Configuration data based on architecture requirements
-    `.trim();
-  }
-
-  private generateK8sSecrets(_securityOpts: any[]): string {
-    return `
-apiVersion: v1
-kind: Secret
-metadata:
-  name: app-secrets
-type: Opaque
-data:
-  # Base64 encoded secrets based on security requirements
-    `.trim();
-  }
-
-  private generateCIPipelineContent(_refinement: any): string {
-    return `
-name: CI Pipeline
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - run: npm ci
-      - run: npm test
-      - run: npm run lint
-    `.trim();
-  }
-
-  private generateCDPipelineContent(_refinement: any): string {
-    return `
-name: CD Pipeline
-on:
-  push:
-    branches: [main]
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Deploy to production
-        run: |
-          # Deployment steps based on architecture requirements
-    `.trim();
-  }
-
-  private generateTerraformContent(architecture: any): string {
-    return `
-# Terraform configuration for ${architecture.id}
-provider "aws" {
-  region = var.aws_region
-}
-
-# Infrastructure resources based on architecture requirements
-    `.trim();
-  }
-
-  private generateAnsibleContent(architecture: any): string {
-    return `
-# Ansible playbook for ${architecture.id}
-- hosts: all
-  tasks:
-    - name: Deploy application
-      # Deployment tasks based on architecture requirements
-    `.trim();
-  }
-
-  private generatePrometheusContent(architecture: any): string {
-    return `
-# Prometheus configuration
-global:
-  scrape_interval: 15s
-
-scrape_configs:
-  - job_name: '${architecture.id}'
-    static_configs:
-      - targets: ['localhost:3000']
-    `.trim();
-  }
-
-  private generateGrafanaContent(architecture: any): string {
-    return `
-{
-  "dashboard": {
-    "title": "${architecture.id} Dashboard",
-    "panels": [
-      {
-        "title": "Performance Metrics",
-        "type": "graph"
-      }
-    ]
-  }
-}
-    `.trim();
-  }
-
-  private generateAlertingContent(architecture: any): string {
-    return `
-groups:
-  - name: ${architecture.id}
-    rules:
-      - alert: HighResponseTime
-        expr: http_request_duration_seconds > 1
-        for: 5m
-        labels:
-          severity: warning
-    `.trim();
-  }
-
-  // Helper methods for metrics and validation
-  private async calculateCodeQualityMetrics(artifacts: SourceCodeArtifact[]): Promise<any> {
-    return {
-      totalLines: artifacts.reduce((sum, artifact) => sum + artifact.estimatedLines, 0),
-      complexity: 'Low',
-      maintainabilityIndex: 85,
-      testCoverage: 90,
-      codeSmells: 2,
-    };
-  }
-
-  private extractTechnologies(architecture: any): string[] {
-    const technologies = new Set<string>();
-
-    for (const component of architecture.components) {
-      if (component.technologies) {
-        component.technologies.forEach((tech: string) => technologies.add(tech));
-      }
-    }
-
-    return Array.from(technologies);
-  }
-
-  private async defineTestStrategy(_refinement: any): Promise<any> {
-    return {
-      approach: 'Hybrid TDD (70% London, 30% Classical)',
-      coverage: 90,
-      testLevels: ['unit', 'integration', 'e2e', 'performance', 'security'],
-      automation: 95,
-    };
-  }
-
-  private async calculateTestCoverage(artifacts: TestArtifact[]): Promise<number> {
-    // TestArtifact is TestCase, so we estimate coverage based on test completeness
-    if (artifacts.length === 0) return 0;
-    const avgCoverage = artifacts.reduce((sum, artifact) => {
-      // Estimate coverage based on test steps and assertions
-      const stepCoverage = (artifact.steps?.length || 0) * 10;
-      const assertionCoverage = (artifact.assertions?.length || 0) * 15;
-      return sum + Math.min(100, stepCoverage + assertionCoverage);
-    }, 0);
-    return avgCoverage / artifacts.length;
-  }
-
-  private async performComplianceChecks(
-    _codeGen: CodeGeneration,
-    _testGen: TestGeneration
-  ): Promise<ComplianceCheck[]> {
-    return [
-      {
-        name: 'OWASP Top 10 Compliance',
-        type: 'security',
-        passed: true,
-        score: 95,
-        details: 'All security vulnerabilities addressed',
-        recommendations: ['Continue regular security audits']
-      },
-      {
-        name: 'GDPR Compliance',
-        type: 'regulatory',
-        passed: true,
-        score: 92,
-        details: 'Data protection measures implemented',
-        recommendations: ['Review data retention policies']
-      },
-      {
-        name: 'SOC 2 Compliance',
-        type: 'security',
-        passed: true,
-        score: 88,
-        details: 'Security and availability controls in place',
-        recommendations: ['Enhance monitoring capabilities']
-      },
-    ];
-  }
-
-  private async generateMonitoringArtifacts(_refinement: any): Promise<any> {
-    return {
-      metrics: ['response_time', 'throughput', 'error_rate', 'resource_usage'],
-      alerts: ['high_response_time', 'service_down', 'high_error_rate'],
-      dashboards: ['system_overview', 'performance_metrics', 'security_metrics'],
-    };
-  }
-
-  private async generateDeploymentInstructions(
-    _deploymentArtifacts: DeploymentArtifacts
-  ): Promise<string[]> {
-    return [
-      'Build and tag container images',
-      'Push images to container registry',
-      'Apply Kubernetes manifests',
-      'Configure monitoring and alerting',
-      'Verify deployment health',
-      'Run smoke tests',
-    ];
-  }
-
-  private async generateMaintenanceGuide(_refinement: any): Promise<any> {
-    return {
-      updateProcedures: 'Rolling updates with zero downtime',
-      backupStrategy: 'Automated daily backups with point-in-time recovery',
-      monitoringProcedures: 'Continuous monitoring with automated alerting',
-      troubleshootingSteps: 'Comprehensive runbooks for common issues',
-    };
-  }
-
   /**
    * Validate completion results
    *
@@ -1484,8 +1173,10 @@ groups:
       readyForProduction: readinessScore >= 85,
       score: overallScore,
       validations: validationResults,
-      blockers: validationResults.filter(v => !v.passed && v.score < 0.5).map(v => v.criterion),
-      warnings: validationResults.filter(v => !v.passed && v.score >= 0.5).map(v => v.criterion),
+      blockers: validationResults.filter((v) => !v.passed && v.score < 0.5).map((v) => v.criterion),
+      warnings: validationResults
+        .filter((v) => !v.passed && v.score >= 0.5)
+        .map((v) => v.criterion),
       overallScore,
       validationResults,
       recommendations: this.generateCompletionRecommendations(validationResults),
@@ -1530,29 +1221,48 @@ groups:
   }
 
   // Helper methods for type conversions
-  private convertToProductionReadinessChecks(reports: ProductionReadinessReport[]): ProductionReadinessCheck[] {
-    return reports.flatMap(report => 
-      report.validations.map(validation => ({
+  private convertToProductionReadinessChecks(
+    reports: ProductionReadinessReport[]
+  ): ProductionReadinessCheck[] {
+    return reports.flatMap((report) =>
+      report.validations.map((validation) => ({
         name: validation.criterion,
         type: 'security' as const,
         passed: validation.passed,
         score: validation.score,
         details: validation.details || '',
-        recommendations: []
+        recommendations: [],
       }))
     );
   }
 
   private convertToTestSuites(testCases: TestCase[]): TestSuite[] {
-    // Group test cases into test suites by type
+    // Group test cases into test suites based on test name patterns
     const suitesByType = new Map<string, TestCase[]>();
-    
-    testCases.forEach(testCase => {
-      const type = testCase.type || 'unit';
+
+    testCases.forEach((testCase) => {
+      // Infer type from test name patterns
+      let type = 'unit';
+      if (testCase.name.toLowerCase().includes('integration')) {
+        type = 'integration';
+      } else if (
+        testCase.name.toLowerCase().includes('e2e') ||
+        testCase.name.toLowerCase().includes('end-to-end')
+      ) {
+        type = 'e2e';
+      } else if (
+        testCase.name.toLowerCase().includes('performance') ||
+        testCase.name.toLowerCase().includes('load')
+      ) {
+        type = 'performance';
+      } else if (testCase.name.toLowerCase().includes('security')) {
+        type = 'security';
+      }
+
       if (!suitesByType.has(type)) {
         suitesByType.set(type, []);
       }
-      suitesByType.get(type)!.push(testCase);
+      suitesByType.get(type)?.push(testCase);
     });
 
     return Array.from(suitesByType.entries()).map(([type, tests]) => ({
@@ -1563,50 +1273,55 @@ groups:
         lines: 90,
         functions: 85,
         branches: 80,
-        statements: 88
-      }
+        statements: 88,
+      },
     }));
   }
 
   // Additional interface methods required by CompletionEngine
   async generateProductionCode(
-    architecture: any,
-    refinements: any[]
-  ): Promise<SourceCodeArtifact> {
+    _architecture: SystemArchitecture,
+    _refinements: RefinementStrategy[]
+  ): Promise<CodeArtifacts> {
     const artifacts: SourceCodeArtifact[] = [];
     // Implementation similar to generateCode but using architecture directly
     return artifacts;
   }
 
-  async createTestSuites(requirements: any): Promise<TestSuite[]> {
+  async createTestSuites(_requirements: any): Promise<TestSuite[]> {
     // Create test suites from requirements
-    return [{
-      name: 'Generated Test Suite',
-      type: 'unit',
-      tests: [],
-      coverage: {
-        lines: 90,
-        functions: 85,
-        branches: 80,
-        statements: 88
-      }
-    }];
+    return [
+      {
+        name: 'Generated Test Suite',
+        type: 'unit',
+        tests: [],
+        coverage: {
+          lines: 90,
+          functions: 85,
+          branches: 80,
+          statements: 88,
+        },
+      },
+    ];
   }
 
-  async validateProductionReadiness(implementation: any): Promise<any> {
+  async validateProductionReadiness(_implementation: any): Promise<any> {
     return {
       readyForProduction: true,
       score: 95,
       validations: [],
       blockers: [],
-      warnings: []
+      warnings: [],
     };
   }
 
-  async deployToProduction(artifacts: SourceCodeArtifact, config: any): Promise<any> {
+  async deployToProduction(
+    _artifacts: CodeArtifacts,
+    _config: DeploymentConfig
+  ): Promise<DeploymentResult> {
     return {
       success: true,
-      details: 'Deployment completed successfully'
+      details: 'Deployment completed successfully',
     };
   }
 }

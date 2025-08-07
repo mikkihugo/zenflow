@@ -534,7 +534,7 @@ export class MCPCommandQueue extends EventEmitter {
 
   // Transaction support for atomic operations
   async executeTransaction(commands: MCPCommand[]): Promise<CommandResult[]> {
-    const transactionId = `tx-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const transactionId = `tx-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const transaction: Transaction = {
       id: transactionId,
       commands,

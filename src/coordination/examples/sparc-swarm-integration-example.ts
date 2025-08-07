@@ -178,7 +178,7 @@ export class SPARCSwarmIntegrationExample {
       throw new Error('No features generated from vision document');
     }
 
-    const demoFeature = generatedFeatures[0] as FeatureDocumentEntity;
+    const demoFeature = generatedFeatures[0] as unknown as FeatureDocumentEntity;
     logger.info(`  ✅ Demo feature created: ${demoFeature.title}`);
 
     return demoFeature;

@@ -503,14 +503,14 @@ export const WebSocketUtils = {
    * Generate a unique message ID
    */
   generateMessageId: (): string => {
-    return `ws-msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `ws-msg-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   },
 
   /**
    * Generate a unique connection ID
    */
   generateConnectionId: (): string => {
-    return `ws-conn-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `ws-conn-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   },
 
   /**

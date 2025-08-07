@@ -4,6 +4,17 @@
  * Central export point for all shared types across the system
  */
 
+// Neural WASM types export for system-wide availability
+export type {
+  ActivationFunction,
+  NetworkConfig,
+  OptimizerType,
+  TrainingData,
+  TrainingResult,
+  WASMNeuralAccelerator,
+  WASMNeuralConfig,
+  WASMPerformanceMetrics,
+} from '../neural/types/wasm-types';
 // Export specific types from agent-types with unique names to avoid conflicts
 export type {
   Agent as AgentBase,
@@ -22,14 +33,12 @@ export type {
   MessageType,
   Task as DetailedTask,
 } from './agent-types';
-
 // Primary exports from shared-types (these are the main Agent interface)
 export type {
   SwarmAgent as Agent,
   SwarmConfig as SwarmConfiguration,
   ZenSwarm as SwarmType,
 } from './shared-types';
-
 // Re-export shared types (these will be the primary exports)
 export * from './shared-types';
 
@@ -60,3 +69,13 @@ export function isSystemEvent(obj: any): obj is import('./shared-types').SystemE
     typeof obj.source === 'string'
   );
 }
+
+// Export additional type guards from utils for system-wide availability
+export {
+  isActivationFunction,
+  isNeuralNetworkConfig,
+  isNonEmptyString,
+  isObjectArrayWithProps,
+  isPositiveNumber,
+  isValidNumber,
+} from '../utils/type-guards';

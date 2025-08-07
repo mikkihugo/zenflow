@@ -7,9 +7,9 @@
 
 import { existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
+import type { DatabaseAdapter, DatabaseConfig } from '../../database/providers/database-providers';
 // Use DAL instead of direct database access
 import { DatabaseProviderFactory } from '../../database/providers/database-providers';
-import type { DatabaseAdapter, DatabaseConfig } from '../../database/providers/database-providers';
 import type {
   FACTKnowledgeEntry,
   FACTSearchQuery,
@@ -40,12 +40,14 @@ export class SQLiteBackend implements FACTStorageBackend {
       enablePerformanceIndexes: true,
       ...config,
     };
-    
+
     // Use provided factory or create a minimal one
-    this.dalFactory = dalFactory || new DatabaseProviderFactory(
-      console, // Simple logger for now
-      {} // Minimal config
-    );
+    this.dalFactory =
+      dalFactory ||
+      new DatabaseProviderFactory(
+        console, // Simple logger for now
+        {} // Minimal config
+      );
   }
 
   async initialize(): Promise<void> {
@@ -67,8 +69,8 @@ export class SQLiteBackend implements FACTStorageBackend {
         readonly: false,
         fileMustExist: false,
         timeout: 5000,
-        wal: this.config.enableWAL
-      }
+        wal: this.config.enableWAL,
+      },
     };
 
     // Create DAL adapter
@@ -105,7 +107,7 @@ export class SQLiteBackend implements FACTStorageBackend {
           entry.ttl,
           entry.accessCount,
           entry.lastAccessed,
-          entry.timestamp + entry.ttl
+          entry.timestamp + entry.ttl,
         ]
       );
 
@@ -119,7 +121,7 @@ export class SQLiteBackend implements FACTStorageBackend {
             entry.query,
             entry.response,
             entry.metadata.domains?.join(' ') || '',
-            entry.metadata.type
+            entry.metadata.type,
           ]
         );
       }
@@ -263,10 +265,9 @@ export class SQLiteBackend implements FACTStorageBackend {
 
       // Delete from FTS table if enabled
       if (this.config.enableFullTextSearch) {
-        await this.dalAdapter.execute(
-          `DELETE FROM ${this.config.tableName}_fts WHERE id = ?`,
-          [id]
-        );
+        await this.dalAdapter.execute(`DELETE FROM ${this.config.tableName}_fts WHERE id = ?`, [
+          id,
+        ]);
       }
 
       return (result.rowsAffected || 0) > 0;
@@ -342,7 +343,9 @@ export class SQLiteBackend implements FACTStorageBackend {
       }
 
       // Reset auto-increment
-      await this.dalAdapter.execute(`DELETE FROM sqlite_sequence WHERE name = ?`, [this.config.tableName]);
+      await this.dalAdapter.execute(`DELETE FROM sqlite_sequence WHERE name = ?`, [
+        this.config.tableName,
+      ]);
     } catch (error) {
       console.error('Failed to clear FACT storage:', error);
       throw error;
@@ -409,7 +412,6 @@ export class SQLiteBackend implements FACTStorageBackend {
       }
     }
   }
-
 }
 
 export default SQLiteBackend;
