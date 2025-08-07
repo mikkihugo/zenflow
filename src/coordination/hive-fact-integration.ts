@@ -26,7 +26,7 @@ export class HiveFACTSystem extends EventEmitter {
   // private factOrchestrator: FACTExternalOrchestrator; // TODO: Migrate to unified MCP
   private universalFacts: Map<string, UniversalFact> = new Map();
   private refreshTimers: Map<string, NodeJS.Timeout> = new Map();
-  private hiveCoordinator?: HiveSwarmCoordinator;
+  private hiveCoordinator: HiveSwarmCoordinator | undefined;
   private config: HiveFACTConfig;
 
   constructor(config: HiveFACTConfig = {}) {

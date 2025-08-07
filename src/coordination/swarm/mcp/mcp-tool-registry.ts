@@ -50,14 +50,15 @@ class EnhancedMCPTools {
     this.activeSwarms = new Map();
     this.toolMetrics = new Map();
     // Initialize pooled persistence with production-optimized settings
-    const _poolOptions = {
-      maxReaders: process.env.POOL_MAX_READERS ? parseInt(process.env.POOL_MAX_READERS) : 6,
-      maxWorkers: process.env.POOL_MAX_WORKERS ? parseInt(process.env.POOL_MAX_WORKERS) : 3,
-      mmapSize: process.env.POOL_MMAP_SIZE ? parseInt(process.env.POOL_MMAP_SIZE) : 268435456, // 256MB
-      cacheSize: process.env.POOL_CACHE_SIZE ? parseInt(process.env.POOL_CACHE_SIZE) : -64000, // 64MB
-      enableBackup: process.env.POOL_ENABLE_BACKUP === 'true',
-      healthCheckInterval: 60000, // 1 minute
-    };
+    // xxx NEEDS_HUMAN: Determine if pool options should be used or removed
+    // const poolOptions = {
+    //   maxReaders: process.env['POOL_MAX_READERS'] ? parseInt(process.env['POOL_MAX_READERS']) : 6,
+    //   maxWorkers: process.env['POOL_MAX_WORKERS'] ? parseInt(process.env['POOL_MAX_WORKERS']) : 3,
+    //   mmapSize: process.env['POOL_MMAP_SIZE'] ? parseInt(process.env['POOL_MMAP_SIZE']) : 268435456, // 256MB
+    //   cacheSize: process.env['POOL_CACHE_SIZE'] ? parseInt(process.env['POOL_CACHE_SIZE']) : -64000, // 64MB
+    //   enableBackup: process.env['POOL_ENABLE_BACKUP'] === 'true',
+    //   healthCheckInterval: 60000, // 1 minute
+    // };
     // Using DAL Factory instead of legacy persistence
     this.persistence = null;
     this.persistenceReady = true; // Always ready for now

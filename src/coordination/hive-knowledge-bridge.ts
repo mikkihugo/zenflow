@@ -88,8 +88,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   constructor(hiveCoordinator?: HiveSwarmCoordinator, memoryStore?: SessionMemoryStore) {
     super();
-    this.hiveCoordinator = hiveCoordinator;
-    this.memoryStore = memoryStore;
+    this.hiveCoordinator = hiveCoordinator || undefined;
+    this.memoryStore = memoryStore || undefined;
   }
 
   /**
@@ -102,10 +102,11 @@ export class HiveKnowledgeBridge extends EventEmitter {
       logger.info('Initializing Hive Knowledge Bridge...');
 
       // Get or wait for HiveFACT system
-      this.hiveFact = getHiveFACT();
-      if (!this.hiveFact) {
+      const fact = getHiveFACT();
+      if (!fact) {
         throw new Error('HiveFACT system not available. Initialize HiveSwarmCoordinator first.');
       }
+      this.hiveFact = fact;
 
       // Set up event handlers
       this.setupEventHandlers();
