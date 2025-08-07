@@ -316,7 +316,7 @@ export class TaskDistributionEngine extends EventEmitter {
     super();
 
     this.queue = new TaskQueue(this.logger);
-    this.scheduler = new TaskScheduler(this.config, this.logger);
+    this._scheduler = new TaskScheduler(this.config, this.logger);
     this.decomposer = new TaskDecomposer(this.logger);
     this.assignmentOptimizer = new AssignmentOptimizer(this.config, this.logger);
     this.workloadBalancer = new WorkloadBalancer(this.config, this.logger);
