@@ -121,7 +121,8 @@ CRITICAL RULES FOR UNSURE ISSUES:
 
 Your goal: Reduce the 5000+ error count by fixing all SOLVABLE issues and marking unsolvable ones with xxx comments."
 
-        # Run claude with direct binary path (avoid mise shim issues) + continue context + dangerous permissions  
+        # Set Node.js path for cron environment and run claude
+        export PATH="/home/mhugo/.local/share/mise/installs/node/22.17.1/bin:$PATH"
         if timeout 300s /home/mhugo/.local/share/pnpm/global/5/.pnpm/@anthropic-ai+claude-code@0.2.35/node_modules/@anthropic-ai/claude-code/node_modules/.bin/claude -p --continue --dangerously-skip-permissions --permission-mode bypassPermissions "$prompt" 2>&1; then
             log "Claude run completed successfully"
         else
