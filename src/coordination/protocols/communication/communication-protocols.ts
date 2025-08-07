@@ -1102,7 +1102,7 @@ class CompressionEngine {
   }
 
   async decompress(payload: MessagePayload, config: CompressionConfig): Promise<MessagePayload> {
-    if (!config.enabled || !payload.metadata.compressed) return payload;
+    if (!config.enabled || !payload.metadata['compressed']) return payload;
 
     try {
       const compressedData = Buffer.from(payload.data as string, 'base64');
@@ -1147,7 +1147,7 @@ class EncryptionEngine {
   }
 
   async decrypt(payload: MessagePayload, config: EncryptionConfig): Promise<MessagePayload> {
-    if (!this.enabled || !config.enabled || !payload.metadata.encrypted) return payload;
+    if (!this.enabled || !config.enabled || !payload.metadata['encrypted']) return payload;
 
     // Placeholder for decryption implementation
     return {
