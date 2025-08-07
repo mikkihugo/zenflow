@@ -133,7 +133,7 @@ Focus on INCREMENTAL PROGRESS - even fixing 10 errors per run helps!"
 
         # Use local project Claude Code 1.0.70 with Node.js path
         export PATH="/home/mhugo/.local/share/mise/installs/node/22.17.1/bin:$PATH"
-        if timeout 300s /home/mhugo/code/claude-code-zen/node_modules/.bin/claude -p --continue --dangerously-skip-permissions --permission-mode bypassPermissions "$prompt" 2>&1; then
+        if timeout 300s /home/mhugo/code/claude-code-zen/node_modules/.bin/claude -p --dangerously-skip-permissions "$prompt" 2>&1; then
             log "Claude run completed successfully"
         else
             log "Claude run failed or timed out, but checking for changes..."
