@@ -207,8 +207,13 @@ export class EphemeralSwarmManager extends EventEmitter {
         spawnedAt: new Date(),
         lastActivity: new Date(),
         taskCount: 0,
-        claudeSubAgent: claudeSubAgent || '',
+        claudeSubAgent: claudeSubAgent || undefined,
       };
+      
+      // Only add claudeSubAgent if it exists
+      if (claudeSubAgent) {
+        agent.claudeSubAgent = claudeSubAgent;
+      }
 
       // Spawn the agent (this would integrate with Claude Code Task tool)
       await this.spawnSingleAgent(agent, swarm.id);

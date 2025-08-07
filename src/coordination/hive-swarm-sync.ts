@@ -119,18 +119,18 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
     if (this.syncTimer) {
       clearInterval(this.syncTimer);
-      delete this.syncTimer;
+      this.syncTimer = undefined;
     }
 
     if (this.heartbeatTimer) {
       clearInterval(this.heartbeatTimer);
-      delete this.heartbeatTimer;
+      this.heartbeatTimer = undefined;
     }
 
     // Shutdown HiveFACT
     if (this.hiveFact) {
       await this.hiveFact.shutdown();
-      delete this.hiveFact;
+      this.hiveFact = undefined;
     }
 
     this.emit('hive:coordination:stopped');
@@ -735,16 +735,6 @@ export class HiveSwarmCoordinator extends EventEmitter {
 }
 
 // Supporting interfaces
-interface LocalTask {
-  id: string;
-  type: string;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  assignedAgent?: string;
-  requiredCapabilities?: string[];
-  estimatedDuration?: number;
-  deadline?: Date;
-}
-
 interface HiveStatus {
   totalSwarms: number;
   totalAgents: number;

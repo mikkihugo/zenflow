@@ -235,12 +235,17 @@ export class HiveKnowledgeBridge extends EventEmitter {
     }
 
     // Query HiveFACT system
-    const searchResults = await this.hiveFact?.searchFacts({
+    const searchQuery: any = {
       query,
-      domains: domain ? [domain] : undefined,
       limit: filters['limit'] || 10,
       sortBy: filters['sortBy'] || 'relevance',
-    }) ?? [];
+    };
+    
+    if (domain) {
+      searchQuery.domains = [domain];
+    }
+    
+    const searchResults = await this.hiveFact?.searchFacts(searchQuery) ?? [];
 
     // Enhance results with swarm-specific context
     const enhancedResults = await this.enhanceResultsWithSwarmContext(

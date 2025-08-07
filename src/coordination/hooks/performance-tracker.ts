@@ -566,7 +566,7 @@ export class HookPerformanceTracker implements MetricsTracker {
       default: 10000,
     };
 
-    return expectedDurations[operationType] || expectedDurations.default;
+    return expectedDurations[operationType] || expectedDurations['default'];
   }
 }
 
@@ -722,8 +722,8 @@ export class OperationPerformanceOptimizer implements PerformanceOptimizer {
           break;
         case 'CACHING':
           // Add caching parameters
-          optimizedParams.enableCaching = true;
-          optimizedParams.cacheTimeout = 3600;
+          optimizedParams['enableCaching'] = true;
+          optimizedParams['cacheTimeout'] = 3600;
           break;
       }
     }

@@ -14,7 +14,9 @@ export * from './http/index';
 
 // WebSocket API (real-time communication)
 export * from './websocket/index';
-export { default as WebSocketClient } from './websocket/index';
+// Import WebSocketClient for internal use in this file
+import { WebSocketClient } from './websocket/client';
+export { WebSocketClient };
 
 // API interface configuration
 export interface APIInterfaceConfig {

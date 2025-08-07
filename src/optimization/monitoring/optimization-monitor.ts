@@ -461,8 +461,9 @@ export class OptimizationMonitor extends EventEmitter {
         continue;
       }
 
-      // Use current metrics if available, otherwise fall back to latest historical
-      const current = currentMetrics[domain] || metrics[metrics.length - 1];
+      // Use latest historical metrics for this domain
+      const lastMetric = metrics[metrics.length - 1];
+      const current = lastMetric || currentMetrics;
       let domainHealth: 'healthy' | 'warning' | 'critical' = 'healthy';
 
       if (
