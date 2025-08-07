@@ -3707,6 +3707,300 @@ export interface ConsistencyCheck {
   resolution: string;
 }
 
+// Additional missing type definitions for augmentation and benchmarking
+export interface AugmentationTechnique {
+  technique: string;
+  parameters: any;
+  probability: number;
+}
+
+export interface AugmentationValidation {
+  validate: boolean;
+  criteria: string[];
+}
+
+export interface AugmentationQuality {
+  threshold: number;
+  metrics: string[];
+}
+
+export interface BenchmarkDataset {
+  datasetId: string;
+  name: string;
+  size: number;
+  description: string;
+}
+
+export interface BenchmarkMetric {
+  metric: string;
+  value: number;
+  unit: string;
+}
+
+export interface BenchmarkBaseline {
+  baseline: number;
+  source: string;
+  date: number;
+}
+
+export interface CollectionValidation {
+  validate: boolean;
+  rules: string[];
+}
+
+export interface StorageRepository {
+  type: string;
+  location: string;
+  capacity: number;
+}
+
+export interface RetentionPolicy {
+  duration: number;
+  unit: string;
+  archive: boolean;
+}
+
+export interface CompressionPolicy {
+  enabled: boolean;
+  algorithm: string;
+  level: number;
+}
+
+export interface BackupPolicy {
+  frequency: number;
+  retention: number;
+  location: string;
+}
+
+export interface QualityThreshold {
+  metric: string;
+  threshold: number;
+  action: string;
+}
+
+export interface QualityAction {
+  action: string;
+  trigger: string;
+  severity: string;
+}
+
+export interface QualityReporting {
+  frequency: number;
+  format: string;
+  recipients: string[];
+}
+
+export interface ProcessingOperation {
+  operation: string;
+  type: string;
+  parameters: any;
+}
+
+export interface ProcessingInput {
+  source: string;
+  format: string;
+  validation: any;
+}
+
+export interface ProcessingOutput {
+  destination: string;
+  format: string;
+  transformation: any;
+}
+
+export interface ProcessingValidation {
+  validate: boolean;
+  criteria: string[];
+  action: string;
+}
+
+export interface AggregationMethod {
+  method: string;
+  parameters: any;
+}
+
+export interface AggregationWeight {
+  factor: string;
+  weight: number;
+}
+
+export interface AggregationFilter {
+  field: string;
+  operator: string;
+  value: any;
+}
+
+export interface AggregationValidation {
+  validate: boolean;
+  rules: string[];
+}
+
+export interface AnalysisTechnique {
+  technique: string;
+  algorithms: string[];
+  parameters: any;
+}
+
+export interface AnalysisModel {
+  model: string;
+  version: string;
+  accuracy: number;
+}
+
+export interface InsightType {
+  type: string;
+  category: string;
+  priority: number;
+}
+
+export interface AnalysisReporting {
+  format: string;
+  frequency: number;
+  distribution: string[];
+}
+
+export interface ExtractionAlgorithm {
+  algorithm: string;
+  complexity: string;
+  accuracy: number;
+}
+
+export interface InsightPattern {
+  pattern: string;
+  frequency: number;
+  significance: number;
+}
+
+export interface InsightValidation {
+  validated: boolean;
+  confidence: number;
+  evidence: string[];
+}
+
+export interface InsightRanking {
+  criteria: string[];
+  weights: number[];
+  method: string;
+}
+
+export interface IntegrationInterface {
+  type: string;
+  protocol: string;
+  version: string;
+}
+
+export interface DataMapping {
+  source: string;
+  target: string;
+  transformation: any;
+}
+
+export interface TargetValidation {
+  validate: boolean;
+  criteria: string[];
+}
+
+export interface IntegrationProtocol {
+  protocol: string;
+  version: string;
+  parameters: any;
+}
+
+export interface IntegrationSecurity {
+  authentication: string;
+  encryption: string;
+  authorization: string;
+}
+
+export interface IntegrationRule {
+  rule: string;
+  condition: string;
+  action: string;
+}
+
+export interface IntegrationTest {
+  test: string;
+  expected: any;
+  actual: any;
+  passed: boolean;
+}
+
+export interface ValidationMonitoring {
+  metrics: string[];
+  alerts: any[];
+  reporting: any;
+}
+
+export interface ValidationReporting {
+  frequency: number;
+  format: string;
+  recipients: string[];
+}
+
+export interface InsightEvidence {
+  source: string;
+  confidence: number;
+  timestamp: number;
+}
+
+export interface ImpactTimeframe {
+  immediate: number;
+  shortTerm: number;
+  longTerm: number;
+}
+
+export interface MitigationStrategy {
+  strategy: string;
+  effectiveness: number;
+  cost: number;
+}
+
+export interface ContingencyPlan {
+  trigger: string;
+  actions: string[];
+  responsible: string[];
+}
+
+export interface RiskMonitoring {
+  indicators: string[];
+  thresholds: number[];
+  frequency: number;
+}
+
+export interface RiskResponse {
+  response: string;
+  trigger: string;
+  actions: string[];
+}
+
+export interface SearchParameter {
+  parameter: string;
+  value: any;
+  type: string;
+}
+
+export interface SearchConstraint {
+  constraint: string;
+  value: any;
+}
+
+export interface SearchBoundary {
+  type: string;
+  limits: any;
+}
+
+export interface SamplingStrategy {
+  strategy: string;
+  sampleSize: number;
+  method: string;
+}
+
+export interface ValidationMetric {
+  metric: string;
+  value: number;
+  threshold: number;
+}
+
 export interface RoutingOptions {
   strategy?: string;
   constraints?: RoutingConstraint[];

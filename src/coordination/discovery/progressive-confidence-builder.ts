@@ -711,7 +711,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
         ...domain,
         confidence: domain.confidence || 0.5, // Use existing confidence or default
         detailedConfidence: this.initializeMetrics(),
-        path: domain.codeFiles.length > 0 ? domain.codeFiles[0] : '', // Use first code file as path
+        path: domain.codeFiles.length > 0 ? (domain.codeFiles[0] ?? '') : '', // Use first code file as path
         files: domain.codeFiles, // Same as codeFiles
         suggestedConcepts: domain.concepts, // Use existing concepts
         technologies: [], // Initialize empty, can be populated later

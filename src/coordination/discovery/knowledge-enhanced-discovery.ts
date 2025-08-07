@@ -103,9 +103,9 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       maxKnowledgeQueries: 10,
       ...config,
     };
-    if (hiveFact !== undefined) this.hiveFact = hiveFact;
-    if (swarmKnowledge !== undefined) this.swarmKnowledge = swarmKnowledge;
-    if (memoryStore !== undefined) this.memoryStore = memoryStore;
+    this.hiveFact = hiveFact;
+    this.swarmKnowledge = swarmKnowledge;
+    this.memoryStore = memoryStore;
   }
 
   /**

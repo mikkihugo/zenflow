@@ -186,7 +186,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     private docProcessor: DocumentProcessor,
     private domainAnalyzer: DomainAnalysisEngine,
     private projectAnalyzer: ProjectContextAnalyzer,
-    private intelligenceCoordinator: IntelligenceCoordinationSystem,
+    private _intelligenceCoordinator: IntelligenceCoordinationSystem,
     config: DomainDiscoveryBridgeConfig = {}
   ) {
     super();
@@ -303,8 +303,8 @@ export class DomainDiscoveryBridge extends EventEmitter {
       documents.map((doc) => this.analyzeDocumentRelevance(doc))
     );
 
-    // Create AGUI validation request
-    const validationRequest: AGUIValidationRequest = {
+    // Create AGUI validation request (for future implementation)
+    const _validationRequest: AGUIValidationRequest = {
       type: 'document-relevance',
       question: `Found ${documents.length} documents. Which are relevant for domain discovery?`,
       context: {
@@ -317,9 +317,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
         totalDocuments: documents.length,
       },
       options: relevanceAnalysis.map((analysis, index) => ({
-        id: documents[index].path,
-        label: `${documents[index].type.toUpperCase()}: ${basename(documents[index].path)}`,
-        preview: documents[index].content?.substring(0, 200) + '...',
+        id: documents[index]?.path || '',
+        label: `${documents[index]?.type?.toUpperCase() || 'UNKNOWN'}: ${basename(documents[index]?.path || '')}`,
+        preview: (documents[index]?.content?.substring(0, 200) ?? '') + '...',
         metadata: {
           suggestedRelevance: analysis.suggestedRelevance,
           concepts: analysis.concepts.slice(0, 5),
@@ -331,7 +331,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     // In a real implementation, this would call AGUI
     // For now, we'll simulate by selecting documents with high relevance
     const selected = documents.filter(
-      (_, index) => relevanceAnalysis[index].suggestedRelevance > 0.6
+      (_, index) => relevanceAnalysis[index]?.suggestedRelevance > 0.6
     );
 
     logger.info(`Selected ${selected.length} relevant documents for domain discovery`);
@@ -352,8 +352,8 @@ export class DomainDiscoveryBridge extends EventEmitter {
     // Group mappings by domain for easier validation
     const domainGroups = this.groupMappingsByDomain(mappings);
 
-    // Create validation request
-    const validationRequest: AGUIValidationRequest = {
+    // Create validation request (for future implementation)
+    const _validationRequest: AGUIValidationRequest = {
       type: 'domain-mapping',
       question: `Please validate ${mappings.length} document-domain mappings`,
       context: {
