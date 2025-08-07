@@ -327,6 +327,7 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithLanceDB(config: any = {}): Promise<ConversationMemory> {
+    // xxx NEEDS_HUMAN: LanceDB backend implementation missing - ../../memory/backends/lancedb.backend.js does not exist
     const { LanceDBBackend } = await import('../../memory/backends/lancedb.backend.js');
     const backend = new LanceDBBackend({
       type: 'lancedb',
