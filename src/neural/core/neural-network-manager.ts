@@ -1788,19 +1788,40 @@ class NeuralNetworkManager {
 }
 
 // Neural Network wrapper class
+interface NeuralNetworkConfig {
+  layers: number[];
+  [key: string]: any;
+}
+
+interface TrainingHistoryEntry {
+  epoch: number;
+  loss: number;
+}
+
+interface WasmModule {
+  exports: {
+    forward_pass: (networkId: string, input: any) => Float32Array;
+    train_batch: (networkId: string, batch: string, learningRate: number, freezeLayers: string) => number;
+    get_gradients: (networkId: string) => string;
+    apply_gradients: (networkId: string, gradients: string) => void;
+    serialize_network: (networkId: string) => any;
+    deserialize_network: (networkId: string, state: any) => void;
+  };
+}
+
 class NeuralNetwork {
   public networkId: string;
   public agentId: string;
-  public config: any;
-  public wasmModule: any;
-  public trainingHistory: any[];
+  public config: NeuralNetworkConfig;
+  public wasmModule: WasmModule;
+  public trainingHistory: TrainingHistoryEntry[];
   public metrics: {
     accuracy: number;
     loss: number;
     epochs_trained: number;
     total_samples: number;
   };
-  constructor(networkId, agentId, config, wasmModule) {
+  constructor(networkId: string, agentId: string, config: NeuralNetworkConfig, wasmModule: WasmModule) {
     this.networkId = networkId;
     this.agentId = agentId;
     this.config = config;
@@ -1814,7 +1835,7 @@ class NeuralNetwork {
     };
   }
 
-  async forward(input) {
+  async forward(input: any): Promise<Float32Array> {
     try {
       const result = this.wasmModule.exports.forward_pass(this.networkId, input);
       return result;
@@ -1824,7 +1845,7 @@ class NeuralNetwork {
     }
   }
 
-  async train(trainingData, options) {
+  async train(trainingData: { samples: any[] }, options: { epochs: number; batchSize: number; learningRate: number; freezeLayers?: any }): Promise<typeof this.metrics> {
     const { epochs, batchSize, learningRate, freezeLayers } = options;
 
     for (let epoch = 0; epoch < epochs; epoch++) {
@@ -1870,7 +1891,7 @@ class NeuralNetwork {
     }
   }
 
-  applyGradients(gradients) {
+  applyGradients(gradients: any): void {
     // Apply gradients to network
     try {
       this.wasmModule.exports.apply_gradients(this.networkId, JSON.stringify(gradients));
@@ -1885,7 +1906,7 @@ class NeuralNetwork {
       training_history: this.trainingHistory,
       network_info: {
         layers: this.config.layers,
-        parameters: this.config.layers.reduce((acc, size, i) => {
+        parameters: this.config.layers.reduce((acc: number, size: number, i: number) => {
           if (i > 0) {
             return acc + this.config.layers[i - 1] * size;
           }
@@ -1895,7 +1916,7 @@ class NeuralNetwork {
     };
   }
 
-  async save(filePath) {
+  async save(filePath: string): Promise<boolean> {
     try {
       const state = this.wasmModule.exports.serialize_network(this.networkId);
 
@@ -1909,7 +1930,7 @@ class NeuralNetwork {
     }
   }
 
-  async load(filePath) {
+  async load(filePath: string): Promise<boolean> {
     try {
       // Read the serialized state from file
       const fs = await import('node:fs/promises');

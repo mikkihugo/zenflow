@@ -181,11 +181,17 @@ export class ErrorMonitoring extends EventEmitter {
           const hourIndex = Math.floor((now - errorTime) / (1000 * 60 * 60));
           const dayIndex = Math.floor((now - errorTime) / (1000 * 60 * 60 * 24));
 
-          if (hourIndex >= 0 && hourIndex < 24 && hourly[23 - hourIndex] !== undefined) {
-            hourly[23 - hourIndex]++;
+          if (hourIndex >= 0 && hourIndex < 24) {
+            const hourlyIdx = 23 - hourIndex;
+            if (hourly[hourlyIdx] !== undefined) {
+              hourly[hourlyIdx]++;
+            }
           }
-          if (dayIndex >= 0 && dayIndex < 7 && daily[6 - dayIndex] !== undefined) {
-            daily[6 - dayIndex]++;
+          if (dayIndex >= 0 && dayIndex < 7) {
+            const dailyIdx = 6 - dayIndex;
+            if (daily[dailyIdx] !== undefined) {
+              daily[dailyIdx]++;
+            }
           }
         }
       }

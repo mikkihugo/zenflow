@@ -5,8 +5,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '@core/event-bus';
-import type { ILogger } from '@core/logger';
+import type { IEventBus } from '../../../core/event-bus';
+import type { ILogger } from '../../../core/logger';
 
 // Core types for task distribution
 export interface TaskDefinition {
@@ -1107,7 +1107,7 @@ export class TaskDistributionEngine extends EventEmitter {
 class TaskQueue {
   private queue: TaskDefinition[] = [];
 
-  constructor(private logger: ILogger) {}
+  constructor(private _logger: ILogger) {}
 
   async enqueue(task: TaskDefinition): Promise<void> {
     this.queue.push(task);
@@ -1143,15 +1143,15 @@ class TaskQueue {
 
 class TaskScheduler {
   constructor(
-    private config: any,
-    private logger: ILogger
+    private _config: any,
+    private _logger: ILogger
   ) {}
 
   // Scheduling algorithms would be implemented here
 }
 
 class TaskDecomposer {
-  constructor(private logger: ILogger) {}
+  constructor(private _logger: ILogger) {}
 
   async decompose(task: TaskDefinition): Promise<DecomposedTask> {
     // Task decomposition logic
@@ -1177,15 +1177,15 @@ class TaskDecomposer {
 
 class AssignmentOptimizer {
   constructor(
-    private config: any,
-    private logger: ILogger
+    private _config: any,
+    private _logger: ILogger
   ) {}
 
   async findOptimalAssignment(
     task: TaskDefinition,
     agents: AgentCapability[],
-    assignments: Map<string, TaskAssignment>,
-    metrics: DistributionMetrics
+    _assignments: Map<string, TaskAssignment>,
+    _metrics: DistributionMetrics
   ): Promise<AgentCapability | null> {
     // ML-based assignment optimization
     if (agents.length === 0) return null;
@@ -1193,7 +1193,7 @@ class AssignmentOptimizer {
     // Simple scoring for now
     const scored = agents.map((agent) => ({
       agent,
-      score: this.calculateAssignmentScore(task, agent, assignments),
+      score: this.calculateAssignmentScore(task, agent, _assignments),
     }));
 
     scored.sort((a, b) => b.score - a.score);
@@ -1203,7 +1203,7 @@ class AssignmentOptimizer {
   private calculateAssignmentScore(
     task: TaskDefinition,
     agent: AgentCapability,
-    assignments: Map<string, TaskAssignment>
+    _assignments: Map<string, TaskAssignment>
   ): number {
     // Simplified scoring
     const capabilityMatch = task.requirements.capabilities.every((cap) =>
@@ -1221,22 +1221,22 @@ class AssignmentOptimizer {
 
 class WorkloadBalancer {
   constructor(
-    private config: any,
-    private logger: ILogger
+    private _config: any,
+    private _logger: ILogger
   ) {}
 
   async rebalance(
-    agents: Map<string, AgentCapability>,
-    assignments: Map<string, TaskAssignment>,
+    _agents: Map<string, AgentCapability>,
+    _assignments: Map<string, TaskAssignment>,
     imbalance: { severity: number; overloaded: string[]; underloaded: string[] }
   ): Promise<void> {
     // Workload rebalancing logic
-    this.logger.info('Rebalancing workload', { imbalance });
+    this._logger.info('Rebalancing workload', { imbalance });
   }
 }
 
 class PerformancePredictor {
-  constructor(private logger: ILogger) {}
+  constructor(private _logger: ILogger) {}
 
   async predictSuccess(task: TaskDefinition, agent: AgentCapability): Promise<number> {
     // ML-based success prediction

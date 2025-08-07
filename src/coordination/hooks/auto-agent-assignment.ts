@@ -22,10 +22,17 @@ import type {
   WorkloadRecommendation,
 } from './hook-system-core';
 
+// Interface defined before class usage
+interface AgentCapabilityProfile {
+  skills: string[];
+  specialties: string[];
+  complexity: ComplexityLevel;
+}
+
 export class IntelligentAgentAssignor implements AgentCoordinator {
   private readonly agentCapabilityMap: Map<AgentType, AgentCapabilityProfile>;
   private readonly fileTypeAgentMap: Map<FileType, AgentType[]>;
-  private readonly _agentPerformanceHistory: Map<string, PerformanceHistory[]>; // xxx NEEDS_HUMAN: unused - check if needed for future features
+  // Removed unused variable _agentPerformanceHistory - was not used anywhere in the class
   private readonly workloadTracker: Map<string, number>;
 
   constructor() {
@@ -627,12 +634,6 @@ type OperationType =
   | 'backend'
   | 'machine-learning'
   | 'general';
-
-interface AgentCapabilityProfile {
-  skills: string[];
-  specialties: string[];
-  complexity: ComplexityLevel;
-}
 
 interface ScoredAgent {
   agent: AgentInfo;

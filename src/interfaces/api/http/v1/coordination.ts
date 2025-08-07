@@ -9,7 +9,7 @@
  */
 
 import { type Request, type Response, Router } from 'express';
-import { CoordinationAPI } from '../../coordination/api';
+import { CoordinationAPI } from '../../../../coordination/api';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log } from '../middleware/logging';
 

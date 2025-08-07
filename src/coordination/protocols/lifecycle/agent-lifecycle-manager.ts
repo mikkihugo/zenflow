@@ -768,12 +768,12 @@ export class AgentLifecycleManager extends EventEmitter {
     });
   }
 
-  private startAgentMonitoring(agent: AgentInstance): void {
+  private startAgentMonitoring(_agent: AgentInstance): void {
     // Individual agent monitoring would be implemented here
     // For now, rely on global monitoring intervals
   }
 
-  private stopAgentMonitoring(agent: AgentInstance): void {
+  private stopAgentMonitoring(_agent: AgentInstance): void {
     // Stop individual agent monitoring
   }
 
@@ -1315,8 +1315,8 @@ export class AgentLifecycleManager extends EventEmitter {
 // Supporting classes
 class HealthMonitor {
   constructor(
-    private config: AgentLifecycleConfig,
-    private logger: ILogger
+    private _config: AgentLifecycleConfig,
+    private _logger: ILogger
   ) {}
 
   async checkHealth(agent: AgentInstance): Promise<HealthStatus> {
@@ -1372,8 +1372,8 @@ class HealthMonitor {
 
 class PerformanceTracker {
   constructor(
-    private config: AgentLifecycleConfig,
-    private logger: ILogger
+    private _config: AgentLifecycleConfig,
+    private _logger: ILogger
   ) {}
 
   updateMetrics(agent: AgentInstance, data: any): void {

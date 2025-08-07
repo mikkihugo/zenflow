@@ -8,7 +8,7 @@
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../core/logger';
-import type { AgentState, AgentType } from '../types/agent-types';
+import type { AgentState } from '../types/agent-types';
 
 export interface SwarmSyncConfig {
   syncInterval: number; // Milliseconds between sync cycles

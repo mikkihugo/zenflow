@@ -28,6 +28,41 @@ interface ExperimentPhase {
   error: string | null;
 }
 
+interface InjectionResult {
+  type: string;
+  arrays?: Array<unknown[]>;
+  workers?: Array<{ terminate: () => void }>;
+  size?: number;
+  duration: number;
+  cleanupTimer?: NodeJS.Timeout;
+  affectedConnections?: Array<{ id: string; action: string }>;
+}
+
+interface ImpactMetrics {
+  memoryUsage?: number;
+  cpuUsage?: number;
+  connectionStatus?: Record<string, unknown>;
+  errorRate?: number;
+  responseTime?: number;
+}
+
+interface RecoveryExecution {
+  workflowId: string;
+  startTime: Date;
+  endTime?: Date;
+  status: 'running' | 'completed' | 'failed';
+  steps: Array<{ name: string; status: string }>;
+}
+
+interface ExperimentParameters {
+  size?: number;
+  duration?: number;
+  intensity?: number;
+  connections?: string | string[];
+  failureType?: string;
+  [key: string]: unknown;
+}
+
 interface ExperimentExecution {
   id: string;
   experimentName: string;
@@ -37,19 +72,19 @@ interface ExperimentExecution {
   endTime: Date | null;
   duration: number;
   error: string | null;
-  parameters: any;
+  parameters: ExperimentParameters;
   phases: ExperimentPhase[];
   currentPhase: string;
   failureInjected: boolean;
   recoveryTriggered: boolean;
   recoveryCompleted: boolean;
   blastRadius: number;
-  metadata: any;
-  injectionResult?: any;
+  metadata: Record<string, unknown>;
+  injectionResult?: InjectionResult;
   cancellationReason?: string;
   completedAt?: Date;
-  impactMetrics?: any;
-  recoveryExecution?: any;
+  impactMetrics?: ImpactMetrics;
+  recoveryExecution?: RecoveryExecution;
   recoveryTime?: number;
 }
 
@@ -60,12 +95,12 @@ interface ChaosExperiment {
   type: string;
   category: string;
   failureType?: string;
-  parameters: any;
+  parameters: ExperimentParameters;
   duration: number;
   cooldown?: number;
   blastRadius: number;
   safetyChecks: string[];
-  metadata: any;
+  metadata: Record<string, unknown>;
   enabled: boolean;
   expectedRecovery: string[];
   createdAt: Date;
@@ -94,8 +129,13 @@ interface ChaosStats {
   totalRecoveryTime: number;
 }
 
-type FailureInjector = (params: Record<string, unknown>) => Promise<{ success: boolean; cleanup?: () => Promise<void> }>;
-type SafetyCheck = () => boolean;
+interface FailureInjectorCallbacks {
+  inject: (params: ExperimentParameters) => Promise<InjectionResult>;
+  cleanup?: (injectionResult: InjectionResult) => Promise<void>;
+}
+
+type FailureInjector = FailureInjectorCallbacks;
+type SafetyCheck = () => Promise<{ safe: boolean; reason?: string }> | { safe: boolean; reason?: string };
 
 export class ChaosEngineering extends EventEmitter {
   private options: ChaosEngineeringOptions;
@@ -108,10 +148,10 @@ export class ChaosEngineering extends EventEmitter {
   private emergencyStop: boolean;
   private resourceUsage: ResourceUsage;
   private stats: ChaosStats;
-  private healthMonitor: any | null;
-  private recoveryWorkflows: any | null;
-  private connectionManager: any | null;
-  private mcpTools: any | null;
+  private healthMonitor: HealthMonitor | null;
+  private recoveryWorkflows: RecoveryWorkflows | null;
+  private connectionManager: ConnectionManager | null;
+  private mcpTools: MCPTools | null;
 
   constructor(options: ChaosEngineeringOptions = {}) {
     super();

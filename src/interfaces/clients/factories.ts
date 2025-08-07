@@ -465,14 +465,14 @@ export class UACLFactory {
 
     switch (clientType) {
       case ClientTypes.HTTP: {
-        const { HttpClientFactory } = await import('./implementations/http-client-factory');
+        const { HttpClientFactory } = await import('./factories/http-client-factory');
         FactoryClass = HttpClientFactory;
         break;
       }
 
       case ClientTypes.WEBSOCKET: {
         const { WebSocketClientFactory } = await import(
-          './implementations/websocket-client-factory'
+          './adapters/websocket-client-factory'
         );
         FactoryClass = WebSocketClientFactory;
         break;
@@ -487,12 +487,16 @@ export class UACLFactory {
       }
 
       case ClientTypes.MCP: {
-        const { McpClientFactory } = await import('./implementations/mcp-client-factory');
+        // xxx NEEDS_HUMAN: MCP client factory not found - needs implementation
+        throw new Error('MCP client factory not yet implemented');
+        // const { McpClientFactory } = await import('./implementations/mcp-client-factory');
         FactoryClass = McpClientFactory;
         break;
       }
       default: {
-        const { GenericClientFactory } = await import('./implementations/generic-client-factory');
+        // xxx NEEDS_HUMAN: Generic client factory not found - needs implementation
+        throw new Error('Generic client factory not yet implemented');
+        // const { GenericClientFactory } = await import('./implementations/generic-client-factory');
         FactoryClass = GenericClientFactory;
         break;
       }
