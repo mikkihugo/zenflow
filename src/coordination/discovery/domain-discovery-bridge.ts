@@ -710,9 +710,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
   private async createDomain(
     domainId: string,
     domainAnalysis: DomainAnalysis,
-    monorepoInfo: MonorepoInfo | null
+    _monorepoInfo: MonorepoInfo | null
   ): Promise<DiscoveredDomain> {
-    const category = domainAnalysis.categories[domainId] || [];
+    const category = (domainAnalysis.categories as any)[domainId] || [];
     const description = this.generateDomainDescription(domainId, category.length);
     const topology = this.suggestTopology(domainId, category.length, domainAnalysis);
 
@@ -772,7 +772,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Highly coupled domains benefit from mesh
     const domainCoupling = analysis.coupling.tightlyCoupledGroups.filter((group) =>
-      group.files.some((file) => analysis.categories[domainId]?.includes(file))
+      group.files.some((file) => (analysis.categories as any)[domainId]?.includes(file))
     );
     if (domainCoupling.length > 0 && domainCoupling[0].couplingScore > 0.7) {
       return 'mesh';

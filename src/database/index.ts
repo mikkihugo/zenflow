@@ -70,6 +70,7 @@ export type {
   CoordinationStats,
   CustomQuery,
   DatabaseMetadata,
+  DatabaseQuery,
   // Graph database types
   GraphNode,
   GraphPath,
@@ -97,6 +98,9 @@ export type {
   VectorSearchResult,
   VectorStats,
 } from './interfaces';
+
+// Export enums
+export { EntityTypes, DatabaseTypes } from './interfaces';
 // Manager implementations
 export { DocumentManager } from './managers/document-manager';
 

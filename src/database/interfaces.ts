@@ -150,6 +150,69 @@ export interface IMemoryRepository<T> extends IRepository<T> {
 }
 
 /**
+ * Legacy aliases for backward compatibility
+ */
+export interface IDao<T> extends IRepository<T> {}
+export interface IManager<T> extends IDataAccessObject<T> {}
+
+// Specialized DAOs
+export interface IGraphDao<T> extends IGraphRepository<T> {}
+export interface IVectorDao<T> extends IVectorRepository<T> {}
+export interface IMemoryDao<T> extends IMemoryRepository<T> {}
+export interface ICoordinationDao<T> extends ICoordinationRepository<T> {}
+
+/**
+ * Entity type enums for strongly typed entity management
+ */
+export enum EntityTypes {
+  User = 'User',
+  Product = 'Product', 
+  Order = 'Order',
+  Document = 'Document',
+  Task = 'Task',
+  Agent = 'Agent',
+  Swarm = 'Swarm',
+  Memory = 'Memory',
+  Vector = 'Vector',
+  Graph = 'Graph'
+}
+
+/**
+ * Database type enums for database selection
+ */
+export enum DatabaseTypes {
+  PostgreSQL = 'postgresql',
+  MySQL = 'mysql',
+  SQLite = 'sqlite',
+  MongoDB = 'mongodb',
+  Redis = 'redis',
+  Memory = 'memory',
+  Kuzu = 'kuzu',
+  LanceDB = 'lancedb',
+  Coordination = 'coordination'
+}
+
+/**
+ * Database query types for query building
+ */
+export interface DatabaseQuery {
+  type: 'select' | 'insert' | 'update' | 'delete' | 'aggregate';
+  table?: string;
+  columns?: string[];
+  conditions?: Record<string, any>;
+  joins?: Array<{
+    type: 'inner' | 'left' | 'right' | 'full';
+    table: string;
+    on: string;
+  }>;
+  orderBy?: SortCriteria[];
+  limit?: number;
+  offset?: number;
+  groupBy?: string[];
+  having?: Record<string, any>;
+}
+
+/**
  * Specialized interface for coordination databases
  *
  * @example
