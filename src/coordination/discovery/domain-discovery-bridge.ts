@@ -186,7 +186,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     private docProcessor: DocumentProcessor,
     private domainAnalyzer: DomainAnalysisEngine,
     private projectAnalyzer: ProjectContextAnalyzer,
-    private _intelligenceCoordinator: IntelligenceCoordinationSystem,
+    private _intelligenceCoordinator: IntelligenceCoordinationSystem, // xxx NEEDS_HUMAN: Parameter not used - confirm if needed for future features
     config: DomainDiscoveryBridgeConfig = {}
   ) {
     super();
@@ -304,7 +304,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
     );
 
     // Create AGUI validation request (for future implementation)
-    const _validationRequest: AGUIValidationRequest = { // Unused: Placeholder for future AGUI implementation
+    // xxx NEEDS_HUMAN: Placeholder for future AGUI implementation
+    // @ts-expect-error - Unused variable for future implementation
+    const _validationRequest: AGUIValidationRequest = {
       type: 'document-relevance',
       question: `Found ${documents.length} documents. Which are relevant for domain discovery?`,
       context: {
@@ -356,7 +358,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
     const domainGroups = this.groupMappingsByDomain(mappings);
 
     // Create validation request (for future implementation)
-    const _validationRequest: AGUIValidationRequest = { // Unused: Placeholder for future AGUI implementation
+    // xxx NEEDS_HUMAN: Placeholder for future AGUI implementation
+    // @ts-expect-error - Unused variable for future implementation
+    const _validationRequest: AGUIValidationRequest = {
       type: 'domain-mapping',
       question: `Please validate ${mappings.length} document-domain mappings`,
       context: {

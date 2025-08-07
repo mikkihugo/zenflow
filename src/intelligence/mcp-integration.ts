@@ -6,7 +6,7 @@
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { ConversationFramework } from './conversation-framework/index';
-import { ConversationMCPToolsFactory } from './conversation-framework/mcp-tools';
+import { ConversationMCPToolsFactory, ConversationMCPTools } from './conversation-framework/mcp-tools';
 
 /**
  * Enhanced Intelligence MCP Tools with ag2.ai integration
@@ -14,7 +14,8 @@ import { ConversationMCPToolsFactory } from './conversation-framework/mcp-tools'
  * @example
  */
 export class IntelligenceMCPTools {
-  private conversationTools: any;
+  private conversationTools: ConversationMCPTools | null = null;
+  private static conversationToolsCache: Tool[] = [];
 
   constructor() {
     this.initializeConversationTools();
@@ -27,7 +28,13 @@ export class IntelligenceMCPTools {
   /**
    * Get all intelligence MCP tools including conversation capabilities
    */
-  static getTools(): Tool[] {
+  static async getTools(): Promise<Tool[]> {
+    // Initialize conversation tools once to get their definitions
+    if (IntelligenceMCPTools.conversationToolsCache.length === 0) {
+      const tempInstance = await ConversationMCPToolsFactory.create();
+      IntelligenceMCPTools.conversationToolsCache = tempInstance.getTools();
+    }
+
     return [
       // Existing intelligence tools
       {
@@ -124,7 +131,7 @@ export class IntelligenceMCPTools {
         },
       },
       // Include all conversation framework tools
-      ...ConversationMCPTools.getTools(),
+      ...IntelligenceMCPTools.conversationToolsCache,
     ];
   }
 
@@ -196,7 +203,7 @@ export class IntelligenceMCPTools {
       mcpIntegration: {
         httpPort: 3000,
         stdioSupport: true,
-        toolCount: IntelligenceMCPTools.getTools().length,
+        toolCount: IntelligenceMCPTools.conversationToolsCache.length + 5, // 5 intelligence tools + conversation tools
       },
     };
   }

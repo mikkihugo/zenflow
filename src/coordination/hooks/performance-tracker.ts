@@ -50,11 +50,11 @@ export class HookPerformanceTracker implements MetricsTracker {
       endTime: result.endTime,
       duration: result.endTime.getTime() - result.startTime.getTime(),
       success: result.success,
-      errorType: result.error?.type,
       resourceUsage: result.resourceUsage,
-      agentPerformance: result.agentMetrics,
       qualityScore: await this.calculateQualityScore(operation, result),
       userSatisfaction: await this.estimateUserSatisfaction(operation, result),
+      ...(result.error?.type && { errorType: result.error.type }),
+      ...(result.agentMetrics && { agentPerformance: result.agentMetrics }),
     };
 
     // Store metrics
@@ -119,9 +119,9 @@ export class HookPerformanceTracker implements MetricsTracker {
       metrics = metrics.filter((m) => m.agentPerformance?.agentId.includes(filter.agentType!));
     }
 
-    if (filter.timeframe) {
+    if (filter.timeframe && filter.timeframe.start && filter.timeframe.end) {
       metrics = metrics.filter(
-        (m) => m.startTime >= filter.timeframe?.start && m.endTime <= filter.timeframe?.end
+        (m) => m.startTime >= filter.timeframe!.start && m.endTime <= filter.timeframe!.end
       );
     }
 
@@ -566,7 +566,7 @@ export class HookPerformanceTracker implements MetricsTracker {
       default: 10000,
     };
 
-    return expectedDurations[operationType] || expectedDurations['default'];
+    return expectedDurations[operationType] ?? expectedDurations['default'] ?? 10000;
   }
 }
 
