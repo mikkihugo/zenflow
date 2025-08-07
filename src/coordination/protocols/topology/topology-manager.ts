@@ -462,8 +462,11 @@ export class TopologyManager extends EventEmitter {
     for (let k = 0; k < n; k++) {
       for (let i = 0; i < n; i++) {
         for (let j = 0; j < n; j++) {
-          if (dist[i][k] + dist[k][j] < dist[i][j]) {
-            dist[i][j] = dist[i][k] + dist[k][j];
+          const distIK = dist[i]?.[k] ?? Infinity;
+          const distKJ = dist[k]?.[j] ?? Infinity;
+          const distIJ = dist[i]?.[j] ?? Infinity;
+          if (distIK + distKJ < distIJ && dist[i] && dist[i][j] !== undefined) {
+            dist[i][j] = distIK + distKJ;
           }
         }
       }

@@ -602,7 +602,7 @@ export class AgentLifecycleManager extends EventEmitter {
       // Spawn process
       const process = await this.createAgentProcess(agent, template);
       agent.process = process;
-      agent.pid = process.pid;
+      agent.pid = process.pid ?? 0; // Default to 0 if pid is undefined
       agent.status = 'initializing';
 
       // Wait for initialization

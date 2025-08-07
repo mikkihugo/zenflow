@@ -1581,9 +1581,9 @@ class PerformancePredictor {
       confidence,
       horizon,
       factors: {
-        current_load: features[0],
-        trend: features[1],
-        time_of_day: features[2],
+        current_load: features[0] ?? 0,
+        trend: features[1] ?? 0,
+        time_of_day: features[2] ?? 0,
       },
     };
   }
@@ -1649,7 +1649,7 @@ class SimpleLinearRegression implements PredictionModel {
 
     let prediction = 0;
     for (let i = 0; i < Math.min(features.length, this.weights.length); i++) {
-      prediction += features[i] * this.weights[i];
+      prediction += (features[i] ?? 0) * (this.weights[i] ?? 0);
     }
 
     return Math.max(0, prediction);
@@ -1659,14 +1659,16 @@ class SimpleLinearRegression implements PredictionModel {
     if (features.length === 0 || labels.length === 0) return;
 
     // Simple least squares implementation
-    const numFeatures = features[0].length;
+    const numFeatures = features[0]?.length ?? 0;
     this.weights = new Array(numFeatures).fill(0);
 
     // Simplified training - just use correlation
     for (let f = 0; f < numFeatures; f++) {
       let correlation = 0;
       for (let i = 0; i < features.length; i++) {
-        correlation += features[i][f] * labels[i];
+        const featureValue = features[i]?.[f] ?? 0;
+        const labelValue = labels[i] ?? 0;
+        correlation += featureValue * labelValue;
       }
       this.weights[f] = correlation / features.length / 1000; // Normalize
     }
@@ -1674,8 +1676,8 @@ class SimpleLinearRegression implements PredictionModel {
     // Calculate accuracy (simplified)
     let totalError = 0;
     for (let i = 0; i < features.length; i++) {
-      const predicted = this.predict(features[i]);
-      const error = Math.abs(predicted - labels[i]);
+      const predicted = this.predict(features[i] ?? []);
+      const error = Math.abs(predicted - (labels[i] ?? 0));
       totalError += error;
     }
 
