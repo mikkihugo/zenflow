@@ -430,8 +430,8 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
     const relevantHistory = historicalData.filter(
       (record) =>
-        record.context.fileType === analysis.fileType ||
-        record.context.operationType === analysis.operationType
+        record.context['fileType'] === analysis['fileType'] ||
+        record.context['operationType'] === analysis['operationType']
     );
 
     if (relevantHistory.length === 0) return 0.5; // Neutral score

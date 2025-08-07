@@ -497,23 +497,23 @@ export class PerformanceOptimizer extends EventEmitter {
   private async applyOptimization(action: OptimizationAction): Promise<void> {
     switch (action.type) {
       case 'batch_size':
-        await this.batchProcessor.setBatchSize(action.parameters.size);
+        await this.batchProcessor.setBatchSize(action.parameters['size']);
         break;
 
       case 'connection_pool_size':
-        await this.connectionPool.resize(action.parameters.size);
+        await this.connectionPool.resize(action.parameters['size']);
         break;
 
       case 'cache_size':
-        await this.cache.resize(action.parameters.size);
+        await this.cache.resize(action.parameters['size']);
         break;
 
       case 'cache_ttl':
-        await this.cache.setDefaultTTL(action.parameters.ttl);
+        await this.cache.setDefaultTTL(action.parameters['ttl']);
         break;
 
       case 'prefetch_strategy':
-        await this.cache.setPrefetchStrategy(action.parameters.strategy);
+        await this.cache.setPrefetchStrategy(action.parameters['strategy']);
         break;
 
       default:

@@ -186,7 +186,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     private docProcessor: DocumentProcessor,
     private domainAnalyzer: DomainAnalysisEngine,
     private projectAnalyzer: ProjectContextAnalyzer,
-    private intelligenceCoordinator: IntelligenceCoordinationSystem,
+    private _intelligenceCoordinator: IntelligenceCoordinationSystem,
     config: DomainDiscoveryBridgeConfig = {}
   ) {
     super();
@@ -304,7 +304,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     );
 
     // Create AGUI validation request (for future implementation)
-    const _validationRequest: AGUIValidationRequest = {
+    const _validationRequest: AGUIValidationRequest = { // Unused: Placeholder for future AGUI implementation
       type: 'document-relevance',
       question: `Found ${documents.length} documents. Which are relevant for domain discovery?`,
       context: {
@@ -331,7 +331,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     // In a real implementation, this would call AGUI
     // For now, we'll simulate by selecting documents with high relevance
     const selected = documents.filter(
-      (_, index) => relevanceAnalysis[index]?.suggestedRelevance > 0.6
+      (_, index) => (relevanceAnalysis[index]?.suggestedRelevance ?? 0) > 0.6
     );
 
     logger.info(`Selected ${selected.length} relevant documents for domain discovery`);
@@ -353,7 +353,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     const domainGroups = this.groupMappingsByDomain(mappings);
 
     // Create validation request (for future implementation)
-    const _validationRequest: AGUIValidationRequest = {
+    const _validationRequest: AGUIValidationRequest = { // Unused: Placeholder for future AGUI implementation
       type: 'domain-mapping',
       question: `Please validate ${mappings.length} document-domain mappings`,
       context: {
@@ -866,11 +866,12 @@ export class DomainDiscoveryBridge extends EventEmitter {
       memory: ['storage', 'cache', 'persistence', 'database'],
     };
 
-    if (categoryBonuses[category]) {
+    const bonusCategory = categoryBonuses[category];
+    if (bonusCategory) {
       const bonusMatches = concepts.filter((c) =>
-        categoryBonuses[category].some((bonus) => c.includes(bonus))
+        bonusCategory.some((bonus) => c.includes(bonus))
       ).length;
-      score += Math.min(0.3, (bonusMatches / categoryBonuses[category].length) * 0.3);
+      score += Math.min(0.3, (bonusMatches / bonusCategory.length) * 0.3);
     }
 
     return Math.min(1, score);

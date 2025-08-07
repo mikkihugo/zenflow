@@ -40,7 +40,7 @@ class SimpleLogger implements Logger {
   constructor(private prefix: string = '') {}
 
   debug(_message: string, _meta?: any): void {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
     }
   }
 

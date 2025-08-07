@@ -400,7 +400,7 @@ export class CoordinationPatterns extends EventEmitter {
    */
   getCoordinationStatus(): {
     pattern: string;
-    leader?: string;
+    leader: string | undefined;
     consensusState: any;
     workQueues: number;
     hierarchyDepth: number;
@@ -408,7 +408,7 @@ export class CoordinationPatterns extends EventEmitter {
   } {
     return {
       pattern: this.currentPattern,
-      leader: this.leaderElection.getCurrentLeader(),
+      leader: this.leaderElection.getCurrentLeader() || undefined,
       consensusState: this.consensusEngine.getState(),
       workQueues: this.workStealingSystem.getQueueCount(),
       hierarchyDepth: this.hierarchicalCoordinator.getDepth(),
@@ -503,10 +503,11 @@ export class CoordinationPatterns extends EventEmitter {
 
   private calculateThroughput(): number {
     // Aggregate throughput from all subsystems
-    return;
-    this.consensusEngine.getThroughput() +
+    return (
+      this.consensusEngine.getThroughput() +
       this.workStealingSystem.getThroughput() +
-      this.hierarchicalCoordinator.getThroughput();
+      this.hierarchicalCoordinator.getThroughput()
+    );
   }
 
   private calculateFailureRate(): number {

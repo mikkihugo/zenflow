@@ -59,6 +59,10 @@ export {
   type EntityTypeRegistry,
   MultiDatabaseDAO,
 } from './factory';
+
+// Import interfaces for use in functions below
+import type { IDao, IManager } from './interfaces';
+import type { MultiDatabaseDAO as MultiDatabaseDAOType } from './factory';
 // Core interfaces
 export type {
   ClusteringOptions,
@@ -374,7 +378,7 @@ export async function createMultiDatabaseSetup<T>(
       | 'coordination';
     config?: any;
   }>
-): Promise<MultiDatabaseDAO<T>> {
+): Promise<MultiDatabaseDAOType<T>> {
   const { DALFactory } = await import('./factory');
   const { DIContainer } = await import('../di/container/di-container');
   const { CORE_TOKENS } = await import('../di/tokens/core-tokens');
