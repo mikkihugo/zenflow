@@ -242,12 +242,8 @@ export class ProductWorkflowEngine extends EventEmitter {
         canAccessResources: ['*'],
       },
       ...context,
+      ...(context.currentDocument !== undefined && { currentDocument: context.currentDocument }),
     };
-    
-    // Add currentDocument if it exists
-    if (context.currentDocument !== undefined) {
-      fullContext.currentDocument = context.currentDocument;
-    }
 
     // Create enhanced workflow state with Product Flow + SPARC integration
     const workflow: ProductWorkflowState = {
