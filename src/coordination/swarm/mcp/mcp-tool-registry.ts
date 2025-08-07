@@ -155,7 +155,7 @@ class EnhancedMCPTools {
    * @param operation
    * @param params
    */
-  handleError(error, toolName, operation, params = null) {
+  handleError(error: any, toolName: string, operation: string, params: any = null) {
     // Create detailed error context
     this.errorContext.set('tool', toolName);
     this.errorContext.set('operation', operation);
@@ -211,7 +211,7 @@ class EnhancedMCPTools {
    *
    * @param error
    */
-  determineSeverity(error) {
+  determineSeverity(error: any): string {
     if (error instanceof ValidationError) {
       return 'medium';
     } else if (error instanceof WasmError || error instanceof ResourceError) {
@@ -235,7 +235,7 @@ class EnhancedMCPTools {
    *
    * @param error
    */
-  isRecoverable(error) {
+  isRecoverable(error: any): boolean {
     if (error instanceof ValidationError) {
       return true; // User can fix parameters
     } else if (error instanceof ResourceError) {
@@ -256,7 +256,7 @@ class EnhancedMCPTools {
    * @param params
    * @param toolName
    */
-  validateToolParams(params, toolName) {
+  validateToolParams(params: any, toolName: string): any {
     try {
       // Add operation context
       this.errorContext.set('validating', toolName);
@@ -322,7 +322,7 @@ class EnhancedMCPTools {
    *
    * @param hookInstance
    */
-  async integrateHookNotifications(hookInstance) {
+  async integrateHookNotifications(hookInstance: any): Promise<boolean> {
     if (!hookInstance || !this.persistence) {
       console.warn('⚠️ Cannot integrate hook notifications - missing components');
       return false;
