@@ -476,8 +476,9 @@ export class TopologyManager extends EventEmitter {
     let pathCount = 0;
     for (let i = 0; i < n; i++) {
       for (let j = i + 1; j < n; j++) {
-        if (dist[i][j] !== Infinity) {
-          totalDistance += dist[i][j];
+        const distance = dist[i]?.[j];
+        if (distance !== undefined && distance !== Infinity) {
+          totalDistance += distance;
           pathCount++;
         }
       }
@@ -500,9 +501,13 @@ export class TopologyManager extends EventEmitter {
       let actualEdges = 0;
       for (let i = 0; i < neighbors.length; i++) {
         for (let j = i + 1; j < neighbors.length; j++) {
-          const neighborNode = this.nodes.get(neighbors[i]);
-          if (neighborNode?.connections.has(neighbors[j])) {
-            actualEdges++;
+          const neighbor1 = neighbors[i];
+          const neighbor2 = neighbors[j];
+          if (neighbor1 && neighbor2) {
+            const neighborNode = this.nodes.get(neighbor1);
+            if (neighborNode?.connections.has(neighbor2)) {
+              actualEdges++;
+            }
           }
         }
       }
@@ -571,6 +576,7 @@ export class TopologyManager extends EventEmitter {
 
     for (let i = 0; i < sampleSize; i++) {
       const nodeToRemove = nodes[i];
+      if (!nodeToRemove) continue;
       const remainingNodes = nodes.filter((n) => n.id !== nodeToRemove.id);
       const connectivity = this.calculateConnectivity(remainingNodes);
       totalTolerance += connectivity;
