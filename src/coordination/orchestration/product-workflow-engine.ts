@@ -518,7 +518,7 @@ export class ProductWorkflowEngine extends EventEmitter {
       feature.sparc_implementation = {
         sparc_project_id: sparcProject.id,
         sparc_phases: {
-          specification: { status: 'not_started', deliverables: [], completion_date: undefined },
+          specification: { status: 'not_started', deliverables: [] },
           pseudocode: { status: 'not_started', deliverables: [], algorithms: [] },
           architecture: { status: 'not_started', deliverables: [], components: [] },
           refinement: { status: 'not_started', deliverables: [], optimizations: [] },

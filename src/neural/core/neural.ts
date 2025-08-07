@@ -223,7 +223,7 @@ class NeuralCLI {
       };
 
       // Add cognitive patterns to the patterns object
-      patterns.convergent = {
+      patterns['convergent'] = {
         'Cognitive Patterns': [
           'Focused problem-solving',
           'Analytical thinking',
@@ -232,12 +232,12 @@ class NeuralCLI {
         'Learned Behaviors': ['Optimization', 'Error reduction', 'Goal achievement'],
         Strengths: ['Efficiency', 'Precision', 'Consistency'],
       };
-      patterns.divergent = {
+      patterns['divergent'] = {
         'Cognitive Patterns': ['Creative exploration', 'Idea generation', 'Lateral connections'],
         'Learned Behaviors': ['Innovation', 'Pattern breaking', 'Novel solutions'],
         Strengths: ['Creativity', 'Flexibility', 'Discovery'],
       };
-      patterns.lateral = {
+      patterns['lateral'] = {
         'Cognitive Patterns': [
           'Non-linear thinking',
           'Cross-domain connections',
@@ -246,17 +246,17 @@ class NeuralCLI {
         'Learned Behaviors': ['Problem reframing', 'Alternative paths', 'Unexpected insights'],
         Strengths: ['Innovation', 'Adaptability', 'Breakthrough thinking'],
       };
-      patterns.systems = {
+      patterns['systems'] = {
         'Cognitive Patterns': ['Holistic thinking', 'System dynamics', 'Interconnection mapping'],
         'Learned Behaviors': ['Dependency analysis', 'Feedback loops', 'Emergent properties'],
         Strengths: ['Big picture view', 'Complex relationships', 'System optimization'],
       };
-      patterns.critical = {
+      patterns['critical'] = {
         'Cognitive Patterns': ['Critical evaluation', 'Judgment formation', 'Validation processes'],
         'Learned Behaviors': ['Quality assessment', 'Risk analysis', 'Decision validation'],
         Strengths: ['Error detection', 'Quality control', 'Rational judgment'],
       };
-      patterns.abstract = {
+      patterns['abstract'] = {
         'Cognitive Patterns': ['Conceptual thinking', 'Generalization', 'Abstract reasoning'],
         'Learned Behaviors': ['Pattern extraction', 'Concept formation', 'Theory building'],
         Strengths: ['High-level thinking', 'Knowledge transfer', 'Model building'],
@@ -308,12 +308,12 @@ class NeuralCLI {
         patternType === 'all' ? 'convergent' : patternType
       );
     } catch (error) {
-      console.error('❌ Error analyzing patterns:', error.message);
+      console.error('❌ Error analyzing patterns:', (error as Error).message);
       process.exit(1);
     }
   }
 
-  async export(args) {
+  async export(args: string[]) {
     const _rs = await this.initialize();
 
     const modelType = this.getArg(args, '--model') || 'all';
@@ -336,7 +336,7 @@ class NeuralCLI {
         modelType === 'all' ? ['attention', 'lstm', 'transformer', 'feedforward'] : [modelType];
 
       for (const model of modelTypes) {
-        weights.models[model] = {
+        (weights.models as Record<string, any>)[model] = {
           layers: Math.floor(Math.random() * 8) + 4,
           parameters: Math.floor(Math.random() * 1000000) + 100000,
           weights: Array.from({ length: 100 }, () => Math.random() - 0.5),
@@ -357,20 +357,20 @@ class NeuralCLI {
         0
       );
     } catch (error) {
-      console.error('❌ Export failed:', error.message);
+      console.error('❌ Export failed:', (error as Error).message);
       process.exit(1);
     }
   }
 
   // Helper method to calculate convergence rate
-  calculateConvergenceRate(trainingResults) {
+  calculateConvergenceRate(trainingResults: Array<{loss: number, accuracy: number}>) {
     if (trainingResults.length < 3) {
       return 'insufficient_data';
     }
 
     const recentResults = trainingResults.slice(-5); // Last 5 iterations
-    const lossVariance = this.calculateVariance(recentResults.map((r) => r.loss));
-    const accuracyTrend = this.calculateTrend(recentResults.map((r) => r.accuracy));
+    const lossVariance = this.calculateVariance(recentResults.map((r: {loss: number}) => r.loss));
+    const accuracyTrend = this.calculateTrend(recentResults.map((r: {accuracy: number}) => r.accuracy));
 
     if (lossVariance < 0.001 && accuracyTrend > 0) {
       return 'converged';
@@ -383,16 +383,16 @@ class NeuralCLI {
   }
 
   // Helper method to calculate variance
-  calculateVariance(values) {
+  calculateVariance(values: number[]) {
     if (values.length === 0) {
       return 0;
     }
-    const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-    return values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length;
+    const mean = values.reduce((sum: number, val: number) => sum + val, 0) / values.length;
+    return values.reduce((sum: number, val: number) => sum + (val - mean) ** 2, 0) / values.length;
   }
 
   // Helper method to calculate trend (positive = improving)
-  calculateTrend(values) {
+  calculateTrend(values: number[]) {
     if (values.length < 2) {
       return 0;
     }
@@ -430,21 +430,21 @@ class NeuralCLI {
             // Extract model type from filename
             const modelMatch = file.match(/training-([^-]+)-/);
             if (modelMatch) {
-              const modelType = modelMatch[1];
+              const modelType = modelMatch[1] as string;
 
               // Update model details
-              if (!modelDetails[modelType]) {
-                modelDetails[modelType] = {};
+              if (!(modelDetails as Record<string, any>)[modelType]) {
+                (modelDetails as Record<string, any>)[modelType] = {};
               }
 
               if (
-                !modelDetails[modelType].lastTrained ||
-                new Date(data.timestamp) > new Date(modelDetails[modelType].lastTrained)
+                !(modelDetails as Record<string, any>)[modelType].lastTrained ||
+                new Date(data.timestamp) > new Date((modelDetails as Record<string, any>)[modelType].lastTrained)
               ) {
-                modelDetails[modelType].lastTrained = data.timestamp;
-                modelDetails[modelType].lastAccuracy = data.finalAccuracy;
-                modelDetails[modelType].iterations = data.iterations;
-                modelDetails[modelType].learningRate = data.learningRate;
+                (modelDetails as Record<string, any>)[modelType].lastTrained = data.timestamp;
+                (modelDetails as Record<string, any>)[modelType].lastAccuracy = data.finalAccuracy;
+                (modelDetails as Record<string, any>)[modelType].iterations = data.iterations;
+                (modelDetails as Record<string, any>)[modelType].learningRate = data.learningRate;
               }
 
               // Update totals
@@ -455,7 +455,7 @@ class NeuralCLI {
                 accuracyCount++;
 
                 if (accuracy > bestModel.accuracy) {
-                  bestModel = { name: modelType, accuracy: Number(accuracy.toFixed(1)) };
+                  bestModel = { name: modelType as string, accuracy: Number(accuracy.toFixed(1)) };
                 }
               }
             }
@@ -468,11 +468,11 @@ class NeuralCLI {
           // Mark model as having saved weights
           const modelMatch = file.match(/^([^-]+)-weights-/);
           if (modelMatch) {
-            const modelType = modelMatch[1];
-            if (!modelDetails[modelType]) {
-              modelDetails[modelType] = {};
+            const modelType = modelMatch[1] as string;
+            if (!(modelDetails as Record<string, any>)[modelType]) {
+              (modelDetails as Record<string, any>)[modelType] = {};
             }
-            modelDetails[modelType].hasSavedWeights = true;
+            (modelDetails as Record<string, any>)[modelType].hasSavedWeights = true;
           }
         }
       }
@@ -482,7 +482,7 @@ class NeuralCLI {
         accuracyCount > 0 ? (totalAccuracy / accuracyCount).toFixed(1) : '0.0';
 
       // Format training time
-      const formatTime = (ms) => {
+      const formatTime = (ms: number) => {
         if (ms < 1000) {
           return `${ms}ms`;
         }
@@ -499,7 +499,7 @@ class NeuralCLI {
       const sessionContinuity =
         totalSessions > 0
           ? {
-              loadedModels: Object.keys(modelDetails).filter((m) => modelDetails[m].hasSavedWeights)
+              loadedModels: Object.keys(modelDetails).filter((m) => (modelDetails as Record<string, any>)[m].hasSavedWeights)
                 .length,
               sessionStart: new Date().toLocaleString(),
               memorySize: `${(Math.random() * 50 + 10).toFixed(1)} MB`,
@@ -529,8 +529,8 @@ class NeuralCLI {
     }
   }
 
-  async getPatternMemoryUsage(patternType) {
-    const config = PATTERN_MEMORY_CONFIG[patternType] || PATTERN_MEMORY_CONFIG.convergent;
+  async getPatternMemoryUsage(patternType: string) {
+    const config = (PATTERN_MEMORY_CONFIG as Record<string, any>)[patternType] || PATTERN_MEMORY_CONFIG.convergent;
 
     // Calculate memory usage based on pattern type
     const baseMemory = config.baseMemory;
@@ -540,7 +540,7 @@ class NeuralCLI {
     return baseMemory * (1 + variance);
   }
 
-  getArg(args, flag) {
+  getArg(args: string[], flag: string) {
     const index = args.indexOf(flag);
     return index !== -1 && index + 1 < args.length ? args[index + 1] : null;
   }

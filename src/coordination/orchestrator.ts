@@ -30,7 +30,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   }
 
   async initialize(): Promise<void> {
-    await this.db.initialize();
+    await this.db.initialize?.();
     this.startTaskDistributor();
     this.startProgressMonitor();
     this.startLoadBalancer();
@@ -97,7 +97,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     for (let i = 0; i < plan.phases.length; i++) {
       const phase = plan.phases[i];
       execution.currentPhase = i;
-      const result = await this.executePhase(task, phase, plan, execution);
+      const result = await this.executePhase(task, phase ?? '', plan, execution);
       execution.phaseResults.push(result);
       await this.db.updateTask(task.id, {
         progress: Math.round(((i + 1) / plan.phases.length) * 100),
@@ -181,7 +181,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
 
     // Return the agent with the highest score
     scoredAgents.sort((a, b) => b.score - a.score);
-    return scoredAgents[0].agent;
+    return scoredAgents[0]?.agent ?? null;
   }
 
   private async createExecutionPlan(task: Task): Promise<ExecutionPlan> {
@@ -259,7 +259,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
           const taskToRebalance = tasksToRebalance[0];
           const agentToReassign = idleAgents[0];
           // This is a simplified reassignment. A real implementation would be more robust.
-          await this.db.updateTask(taskToRebalance.id, { assigned_agents: [agentToReassign.id] });
+          await this.db.updateTask(taskToRebalance.id, { assigned_agents: [agentToReassign?.id ?? ''] });
         }
       }
     }, 30000);
@@ -317,7 +317,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
 
   async shutdown(): Promise<void> {
     this.isActive = false;
-    await this.db.shutdown();
+    await this.db.shutdown?.();
     this.emit('shutdown');
   }
 }

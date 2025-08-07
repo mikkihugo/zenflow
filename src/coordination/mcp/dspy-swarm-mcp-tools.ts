@@ -136,8 +136,8 @@ export async function dspy_swarm_execute_task(params: {
     return {
       success: completedTask.success || false,
       taskId: completedTask.id,
-      assignedAgent: completedTask.assignedAgent,
-      result: completedTask.result,
+      ...(completedTask.assignedAgent && { assignedAgent: completedTask.assignedAgent }),
+      ...(completedTask.result !== undefined && { result: completedTask.result }),
       executionTime,
       learningApplied: true,
       message: `Task executed successfully by DSPy agent with continuous learning applied`,

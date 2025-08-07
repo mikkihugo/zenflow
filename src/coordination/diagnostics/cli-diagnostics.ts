@@ -214,7 +214,9 @@ function showLoggingConfig(logger: LoggerInterface): void {
   logger.info('Logging configuration displayed successfully');
 }
 
-// Function to format report for console output
+// xxx NEEDS_HUMAN: This function was unused but might be needed for future console output formatting
+// Keeping it commented out for reference
+/*
 function formatReportForConsole(report: any): string {
   const output: string[] = [];
 
@@ -243,6 +245,7 @@ function formatReportForConsole(report: any): string {
 
   return output.join('\n');
 }
+*/
 
 function formatReportAsMarkdown(report: any): string {
   const lines = [

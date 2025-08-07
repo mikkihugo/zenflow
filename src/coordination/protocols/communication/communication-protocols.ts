@@ -1168,7 +1168,7 @@ class RoutingEngine {
     // Generic routing implementation
     for (const recipient of message.recipients) {
       const route = routingTable.get(recipient);
-      if (route && route.length > 0) {
+      if (route && route.length > 0 && route[0]) {
         await this.forwardMessage(message, route[0], nodes);
       }
     }
@@ -1203,9 +1203,12 @@ class RoutingEngine {
     }
 
     const recipient = message.recipients[0];
+    if (!recipient) {
+      throw new Error('No recipient found');
+    }
     const route = routingTable.get(recipient);
 
-    if (route && route.length > 0) {
+    if (route && route.length > 0 && route[0]) {
       await this.forwardMessage(message, route[0], nodes);
     }
   }

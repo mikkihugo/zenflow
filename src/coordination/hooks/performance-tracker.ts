@@ -50,9 +50,9 @@ export class HookPerformanceTracker implements MetricsTracker {
       endTime: result.endTime,
       duration: result.endTime.getTime() - result.startTime.getTime(),
       success: result.success,
-      errorType: result.error?.type ?? '',
       resourceUsage: result.resourceUsage,
-      agentPerformance: result.agentMetrics ?? undefined,
+      ...(result.error?.type !== undefined && { errorType: result.error.type }),
+      ...(result.agentMetrics !== undefined && { agentPerformance: result.agentMetrics }),
       qualityScore: await this.calculateQualityScore(operation, result),
       userSatisfaction: await this.estimateUserSatisfaction(operation, result),
     };

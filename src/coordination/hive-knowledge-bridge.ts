@@ -88,8 +88,12 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   constructor(hiveCoordinator?: HiveSwarmCoordinator, memoryStore?: SessionMemoryStore) {
     super();
-    this.hiveCoordinator = hiveCoordinator;
-    this.memoryStore = memoryStore;
+    if (hiveCoordinator !== undefined) {
+      this.hiveCoordinator = hiveCoordinator;
+    }
+    if (memoryStore !== undefined) {
+      this.memoryStore = memoryStore;
+    }
   }
 
   /**
@@ -238,7 +242,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
       domains?: string[];
     } = {
       query,
-      limit: filters['limit'] || 10,
+      limit: filters['limit'] as number || 10,
       sortBy: (filters['sortBy'] as 'relevance' | 'timestamp' | 'access_count') || 'relevance',
     };
     
