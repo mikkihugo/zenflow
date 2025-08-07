@@ -222,9 +222,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
           timestamp: new Date(),
           model: this.currentConfig?.model,
           // Add token usage if available in result
-          ...(rawResult?.tokensUsed && { tokensUsed: rawResult.tokensUsed }),
+          ...(rawResult?.['tokensUsed'] && { tokensUsed: rawResult['tokensUsed'] }),
           // Ensure confidence is always present, even if undefined
-          confidence: rawResult?.confidence || undefined,
+          confidence: rawResult?.['confidence'] || undefined,
         },
       };
 
@@ -251,7 +251,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
         metadata: {
           executionTime,
           timestamp: new Date(),
-          model: this.currentConfig?.model,
+          model: this.currentConfig?.model ?? undefined,
           confidence: 0.0, // Low confidence for failed executions
         },
         error: error instanceof Error ? error : new Error(String(error)),
