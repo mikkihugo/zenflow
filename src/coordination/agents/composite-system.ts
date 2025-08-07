@@ -304,7 +304,7 @@ export class Agent extends EventEmitter implements AgentComponent {
   }
 
   async initialize(config: AgentConfig): Promise<void> {
-    this.config = config;
+    // Config is applied to individual settings, not stored as a whole
     this.status.state = 'idle';
     this.status.lastActivity = new Date();
 

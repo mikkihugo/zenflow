@@ -166,7 +166,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     }
 
     if (suitableAgents.length === 1) {
-      return suitableAgents[0];
+      return suitableAgents[0] ?? null;
     }
 
     // Score agents based on performance from the database

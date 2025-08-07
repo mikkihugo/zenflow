@@ -207,7 +207,7 @@ export class EphemeralSwarmManager extends EventEmitter {
         spawnedAt: new Date(),
         lastActivity: new Date(),
         taskCount: 0,
-        claudeSubAgent: claudeSubAgent || undefined,
+        ...(claudeSubAgent ? { claudeSubAgent } : {}),
       };
       
       // Only add claudeSubAgent if it exists

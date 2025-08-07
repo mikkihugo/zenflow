@@ -88,12 +88,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
 
   constructor(hiveCoordinator?: HiveSwarmCoordinator, memoryStore?: SessionMemoryStore) {
     super();
-    if (hiveCoordinator) {
-      this.hiveCoordinator = hiveCoordinator;
-    }
-    if (memoryStore) {
-      this.memoryStore = memoryStore;
-    }
+    this.hiveCoordinator = hiveCoordinator;
+    this.memoryStore = memoryStore;
   }
 
   /**

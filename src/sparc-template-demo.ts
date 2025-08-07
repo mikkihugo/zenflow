@@ -81,15 +81,20 @@ async function demonstrateSPARCTemplateEngine() {
 
   // Generate a test specification
   const testProject = testProjects[0];
-  const bestMatch = templateEngine.findBestTemplate(testProject);
-  if (bestMatch) {
-    const result = await templateEngine.applyTemplate(bestMatch.template, testProject);
-    const validation = await specEngine.validateSpecificationCompleteness(result.specification);
+  if (testProject) {
+    const bestMatch = templateEngine.findBestTemplate(testProject);
+    if (bestMatch && bestMatch.template) {
+      const result = await templateEngine.applyTemplate(bestMatch.template, testProject);
+      const validation = await specEngine.validateSpecificationCompleteness(result.specification);
 
-    const _passed = validation.results.filter((r) => r.passed).length;
+      // xxx NEEDS_HUMAN: This variable appears to be for logging but is unused
+      // const passed = validation.results.filter((r) => r.passed).length;
 
-    if (validation.recommendations.length > 0) {
-      validation.recommendations.slice(0, 2).forEach((_rec) => {});
+      if (validation.recommendations.length > 0) {
+        validation.recommendations.slice(0, 2).forEach((_rec) => {
+          // xxx NEEDS_HUMAN: Recommendation processing appears incomplete
+        });
+      }
     }
   }
 }
