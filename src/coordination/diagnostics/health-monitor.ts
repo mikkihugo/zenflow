@@ -211,7 +211,14 @@ export class HealthMonitor extends EventEmitter {
   async runHealthChecks(): Promise<HealthReport> {
     const startTime = performance.now();
     const checkId = randomUUID();
-    const results = {};
+    const results: Record<string, {
+      score: number;
+      status: string;
+      details: string;
+      metrics: Record<string, unknown>;
+      timestamp: string;
+      duration: number;
+    }> = {};
 
     console.error('🔍 Running health checks...');
 
@@ -238,7 +245,7 @@ export class HealthMonitor extends EventEmitter {
         return;
       }
 
-      if (result.status === 'fulfilled' && checkName) {
+      if (result.status === 'fulfilled') {
         const { score, status, details, metrics } = result.value;
 
         results[checkName] = {
@@ -260,11 +267,11 @@ export class HealthMonitor extends EventEmitter {
         check.lastResult = result.value;
         check.lastRun = new Date().toISOString();
         check.runCount++;
-      } else if (checkName) {
+      } else {
         results[checkName] = {
           score: 0,
           status: 'error',
-          details: result.reason?.message ?? 'Unknown error',
+          details: (result as PromiseRejectedResult).reason?.message ?? 'Unknown error',
           metrics: {},
           timestamp: new Date().toISOString(),
           duration: 0,
@@ -357,7 +364,7 @@ export class HealthMonitor extends EventEmitter {
       return {
         score: 0,
         status: 'error',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message : String(error),
         metrics: {},
         duration,
       };

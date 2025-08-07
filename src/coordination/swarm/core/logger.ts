@@ -84,13 +84,13 @@ export class Logger {
   }
 
   debug(message: string, data: Record<string, any> = {}) {
-    if (this.level === 'DEBUG' || process.env.DEBUG) {
+    if (this.level === 'DEBUG' || process.env['DEBUG']) {
       this._log('DEBUG', message, data);
     }
   }
 
   trace(message: string, data: Record<string, any> = {}) {
-    if (this.level === 'TRACE' || process.env.DEBUG) {
+    if (this.level === 'TRACE' || process.env['DEBUG']) {
       this._log('TRACE', message, data);
     }
   }

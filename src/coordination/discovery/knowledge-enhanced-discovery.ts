@@ -103,9 +103,9 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       maxKnowledgeQueries: 10,
       ...config,
     };
-    this.hiveFact = hiveFact;
-    this.swarmKnowledge = swarmKnowledge;
-    this.memoryStore = memoryStore;
+    if (hiveFact !== undefined) this.hiveFact = hiveFact;
+    if (swarmKnowledge !== undefined) this.swarmKnowledge = swarmKnowledge;
+    if (memoryStore !== undefined) this.memoryStore = memoryStore;
   }
 
   /**
@@ -246,7 +246,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
         limit: 5,
       });
 
-      if (facts.length === 0) return null;
+      if (!facts || facts.length === 0) return null;
 
       return this.convertFactsToDomainKnowledge(domain, facts, 'hive-fact');
     } catch (error) {
