@@ -193,7 +193,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   private checkpointsReached: Set<number> = new Set();
 
   constructor(
-    private _discoveryBridge: DomainDiscoveryBridge,
+    private _discoveryBridge: DomainDiscoveryBridge, // xxx NEEDS_HUMAN: Parameter not used - confirm if needed for future features
     private memoryStore: SessionMemoryStore,
     private agui: AGUIInterface,
     private config: ProgressiveConfidenceConfig = {}
