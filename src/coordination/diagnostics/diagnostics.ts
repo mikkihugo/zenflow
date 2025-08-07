@@ -649,7 +649,10 @@ export class DiagnosticsManager {
   async testMemoryAllocation(): Promise<DiagnosticTest> {
     try {
       const start = process.memoryUsage().heapUsed;
+      // Creating array to test memory allocation - the allocation itself is the test
       const _testArray = new Array(1000000).fill(0);
+      // Use it to prevent optimization
+      void _testArray.length;
       const end = process.memoryUsage().heapUsed;
 
       return {

@@ -101,10 +101,11 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     // In a real implementation, this would run more sophisticated analysis
 
     const totalSubDomains = plans.reduce((sum, plan) => sum + plan.targetSubDomains.length, 0);
+    const firstPlan = plans[0];
     const averageFilesPerSubDomain =
-      plans.length > 0
-        ? plans[0].targetSubDomains.reduce((sum, sub) => sum + sub.estimatedFiles, 0) /
-          plans[0].targetSubDomains.length
+      firstPlan && firstPlan.targetSubDomains.length > 0
+        ? firstPlan.targetSubDomains.reduce((sum, sub) => sum + sub.estimatedFiles, 0) /
+          firstPlan.targetSubDomains.length
         : 0;
 
     return {

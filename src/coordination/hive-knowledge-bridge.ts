@@ -231,7 +231,12 @@ export class HiveKnowledgeBridge extends EventEmitter {
     }
 
     // Query HiveFACT system
-    const searchQuery: any = {
+    const searchQuery: {
+      query: string;
+      limit: number;
+      sortBy: string;
+      domains?: string[];
+    } = {
       query,
       limit: filters['limit'] || 10,
       sortBy: filters['sortBy'] || 'relevance',
