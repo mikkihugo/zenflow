@@ -17,6 +17,10 @@ import { EventEmitter } from 'node:events';
 import { ConfigurationError, SystemError, ValidationError } from '../../../core/errors';
 import { createLogger } from '../../../core/logger';
 import { generateId } from '../core/utils';
+import { HealthMonitor } from '../../diagnostics/health-monitor';
+import { RecoveryWorkflows } from '../core/recovery-workflows';
+import ConnectionManager from '../connection-management/connection-state-manager';
+import { MCPToolsManager } from '../../../interfaces/mcp/tool-registry';
 
 // Type definitions for chaos engineering
 interface ExperimentPhase {

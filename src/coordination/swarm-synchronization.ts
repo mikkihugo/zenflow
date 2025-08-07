@@ -65,8 +65,8 @@ export class SwarmSynchronizer extends EventEmitter {
   private syncHistory: SyncCheckpoint[] = [];
   private distributedLocks = new Map<string, DistributedLock>();
   private consensusProtocol: ConsensusProtocol;
-  private syncTimer: NodeJS.Timeout | undefined;
-  private heartbeatTimer: NodeJS.Timeout | undefined;
+  private syncTimer?: NodeJS.Timeout;
+  private heartbeatTimer?: NodeJS.Timeout;
 
   constructor(
     swarmId: string,
@@ -124,12 +124,12 @@ export class SwarmSynchronizer extends EventEmitter {
 
     if (this.syncTimer) {
       clearInterval(this.syncTimer);
-      this.syncTimer = undefined;
+      delete (this as any).syncTimer;
     }
 
     if (this.heartbeatTimer) {
       clearInterval(this.heartbeatTimer);
-      this.heartbeatTimer = undefined;
+      delete (this as any).heartbeatTimer;
     }
 
     this.emit('sync:stopped', { swarmId: this.swarmId });

@@ -1197,7 +1197,7 @@ class AssignmentOptimizer {
     }));
 
     scored.sort((a, b) => b.score - a.score);
-    return scored[0]?.agent || agents[0];
+    return scored[0]?.agent ?? agents[0] ?? null;
   }
 
   private calculateAssignmentScore(
