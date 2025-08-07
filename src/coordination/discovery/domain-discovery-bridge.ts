@@ -665,6 +665,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
       for (let i = 0; i < mapping.domainIds.length; i++) {
         const domainId = mapping.domainIds[i];
         const confidence = mapping.confidenceScores[i];
+        
+        if (!domainId) continue; // Skip if domainId is undefined
+        if (confidence === undefined) continue; // Skip if confidence is undefined
 
         if (!domains.has(domainId)) {
           const domain = await this.createDomain(domainId, domainAnalysis, monorepoInfo);
@@ -686,7 +689,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
         // Update confidence (weighted average)
         const docCount = domain.documents.length;
-        domain.confidence = (domain.confidence * (docCount - 1) + confidence) / docCount;
+        domain.confidence = (domain.confidence * (docCount - 1) + (confidence ?? 0)) / docCount;
       }
     }
 
