@@ -123,10 +123,11 @@ Your goal: Reduce the 5000+ error count by fixing all SOLVABLE issues and markin
 
 VERIFICATION STEPS:
 After making fixes, if possible:
-1. Run 'npm run build' to verify TypeScript compilation
-2. Run 'npm run test' or 'vitest' to ensure tests still pass
-3. Only commit changes if build succeeds or improves error count
-4. If build fails worse than before, revert changes
+1. Run 'npm run build:check' to quickly verify TypeScript compilation (no emit)
+2. Run 'npm run test:quick' for fast test validation
+3. If errors reduced, run full 'npm run build' to ensure everything compiles
+4. Only commit changes if build succeeds or error count improves
+5. If build fails worse than before, revert changes
 
 Focus on INCREMENTAL PROGRESS - even fixing 10 errors per run helps!"
 
