@@ -97,6 +97,12 @@ import type {
   IClient,
   RequestOptions,
 } from '../core/interfaces';
+import {
+  ConnectionError,
+  AuthenticationError,
+  TimeoutError,
+  RetryExhaustedError,
+} from '../core/interfaces';
 import type { HTTPClientCapabilities, HTTPClientConfig, OAuthCredentials } from './http-types';
 
 /**
