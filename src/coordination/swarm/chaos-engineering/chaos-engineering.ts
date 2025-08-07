@@ -499,7 +499,7 @@ export class ChaosEngineering extends EventEmitter {
    * @param experiment
    * @param execution
    */
-  async injectFailure(experiment, execution) {
+  async injectFailure(experiment: ChaosExperiment, execution: ExperimentExecution) {
     const injector = this.failureInjectors.get(experiment.failureType);
     if (!injector) {
       throw new Error(`Failure injector not found: ${experiment.failureType}`);

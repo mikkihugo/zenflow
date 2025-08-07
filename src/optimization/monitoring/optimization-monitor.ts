@@ -65,7 +65,7 @@ export class OptimizationMonitor extends EventEmitter {
   private alerts: OptimizationAlert[] = [];
   private optimizationHistory: OptimizationResult[] = [];
   private isMonitoring = false;
-  private monitoringInterval?: NodeJS.Timeout;
+  private monitoringInterval: NodeJS.Timeout | undefined;
 
   constructor(config: Partial<OptimizationMonitorConfig> = {}) {
     super();
@@ -385,7 +385,10 @@ export class OptimizationMonitor extends EventEmitter {
 
     for (const domainMetrics of this.metricsHistory.values()) {
       if (domainMetrics.length > 0) {
-        allMetrics.push(domainMetrics[domainMetrics.length - 1]);
+        const lastMetric = domainMetrics[domainMetrics.length - 1];
+        if (lastMetric) {
+          allMetrics.push(lastMetric);
+        }
       }
     }
 

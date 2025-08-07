@@ -393,9 +393,9 @@ export class HiveFACTSystem extends EventEmitter {
         id: `general:search:${Date.now()}_${Math.random()}`,
         type: 'general',
         category: 'search', // Add required category field
-        subject: query.query ?? 'search',
+        subject: query.query || 'search',
         content: {
-          insight: `Search result for: ${query.query ?? 'search'}`,
+          insight: `Search result for: ${query.query || 'search'}`,
           source: 'external_search',
         },
         source: 'external_search',
