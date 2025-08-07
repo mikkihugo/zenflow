@@ -59,7 +59,8 @@ class WasmBindingProvider implements WasmBindingInterface {
   }
 
   async createNeuralNetwork(config: NeuralConfig): Promise<NeuralNetworkInterface> {
-    const _wasmModule = await this.loadWasm();
+    // TODO: Use WASM module when implementation is ready
+    // const wasmModule = await this.loadWasm();
 
     // Create a wrapper that implements NeuralNetworkInterface
     return {

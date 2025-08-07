@@ -125,7 +125,7 @@ export class ConnectionDiagnostics {
    * Get connection summary
    */
   getConnectionSummary(): ConnectionSummary {
-    const events = this.connectionHistory.reduce((acc, event) => {
+    const events = this.connectionHistory.reduce((acc: Record<string, number>, event) => {
       acc[event.event] = (acc[event.event] || 0) + 1;
       return acc;
     }, {});
@@ -149,8 +149,9 @@ export class ConnectionDiagnostics {
     const failures = this.connectionHistory.filter((e) => e.event === 'failed');
 
     // Group failures by error type
-    const errorTypes = failures.reduce((acc, failure) => {
-      const error = failure.details.error?.message || 'Unknown';
+    const errorTypes = failures.reduce((acc: Record<string, number>, failure) => {
+      const errorObj = failure.details?.['error'] as { message?: string } | undefined;
+      const error = errorObj?.message || 'Unknown';
       acc[error] = (acc[error] || 0) + 1;
       return acc;
     }, {});
@@ -357,7 +358,7 @@ export class PerformanceDiagnostics {
 
     return completed
       .filter((op) => op.aboveThreshold)
-      .sort((a, b) => b.duration - a.duration)
+      .sort((a, b) => (b.duration ?? 0) - (a.duration ?? 0))
       .slice(0, limit);
   }
 }
@@ -397,6 +398,7 @@ export class SystemDiagnostics {
   private samples: SystemSample[];
   private maxSamples: number;
   private monitorInterval?: NodeJS.Timeout | null;
+  private startTime?: number;
 
   constructor(logger?: LoggerInterface | null) {
     this.logger = logger || loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });
@@ -473,33 +475,33 @@ export class SystemDiagnostics {
    */
   getSystemHealth(): SystemHealth {
     if (this.samples.length === 0) {
-      return { status: 'unknown', message: 'No samples collected', issues: [] };
+      return { status: 'unknown', issues: [{ component: 'system', message: 'No samples collected' }] };
     }
 
     const latest = this.samples[this.samples.length - 1];
     if (!latest) {
-      return { status: 'unknown', message: 'No latest sample', issues: [] };
+      return { status: 'unknown', issues: [{ component: 'system', message: 'No latest sample' }] };
     }
 
     const avgMemory =
       this.samples.reduce((sum, s) => sum + s.memory.heapUsed, 0) / this.samples.length;
 
     let status: 'healthy' | 'warning' | 'critical' | 'unknown' = 'healthy';
-    const issues: string[] = [];
+    const issues: SystemHealthIssue[] = [];
 
     if (latest.memory.heapUsed > 400 * 1024 * 1024) {
       status = 'warning';
-      issues.push('High memory usage');
+      issues.push({ component: 'memory', message: 'High memory usage' });
     }
 
     if (latest && latest.handles > 50) {
       status = 'warning';
-      issues.push('Many active handles');
+      issues.push({ component: 'handles', message: 'Many active handles' });
     }
 
     if (avgMemory > 300 * 1024 * 1024) {
       status = 'warning';
-      issues.push('Sustained high memory usage');
+      issues.push({ component: 'memory', message: 'Sustained high memory usage' });
     }
 
     return {

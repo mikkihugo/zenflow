@@ -85,6 +85,13 @@ export interface AgentMetrics {
   capabilities: AgentCapability[];
 }
 
+// Configuration for agent initialization
+export interface AgentConfig {
+  maxConcurrentTasks?: number;
+  capabilities?: AgentCapability[];
+  [key: string]: unknown;
+}
+
 // Composite pattern base interface
 export interface AgentComponent extends EventEmitter {
   getId(): string;
@@ -106,7 +113,7 @@ export interface AgentComponent extends EventEmitter {
   getAvailableResources(): ResourceRequirements;
 
   // Lifecycle management
-  initialize(config: any): Promise<void>;
+  initialize(config: AgentConfig): Promise<void>;
   shutdown(): Promise<void>;
   pause(): Promise<void>;
   resume(): Promise<void>;
@@ -123,7 +130,7 @@ export class Agent extends EventEmitter implements AgentComponent {
   private taskHistory: TaskResult[] = [];
   private maxConcurrentTasks = 1;
   private resourceLimits: ResourceRequirements;
-  private config?: any;
+  // private config?: AgentConfig; // Removed: unused variable
 
   constructor(
     id: string,
@@ -296,7 +303,7 @@ export class Agent extends EventEmitter implements AgentComponent {
     return { ...this.status.resources.available };
   }
 
-  async initialize(config: any): Promise<void> {
+  async initialize(config: AgentConfig): Promise<void> {
     this.config = config;
     this.status.state = 'idle';
     this.status.lastActivity = new Date();
@@ -833,7 +840,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     return this.aggregateResources(allResources);
   }
 
-  async initialize(config: any): Promise<void> {
+  async initialize(config: AgentConfig): Promise<void> {
     // Initialize all members
     const initPromises = Array.from(this.members.values()).map((member) =>
       member
@@ -941,9 +948,10 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
       if (result.status === 'fulfilled') {
         return result.value;
       } else {
+        const agent = eligibleMembers[index];
         return {
           taskId: `${task.id}-${index}`,
-          agentId: eligibleMembers[index].getId(),
+          agentId: agent ? agent.getId() : `unknown-${index}`,
           status: 'failed' as const,
           startTime: new Date(),
           endTime: new Date(),
@@ -972,7 +980,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
         return this.selectByCapability(eligibleMembers, task);
 
       default:
-        return eligibleMembers.length > 0 ? eligibleMembers[0] : null;
+        return eligibleMembers.length > 0 ? (eligibleMembers[0] ?? null) : null;
     }
   }
 
@@ -983,7 +991,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
 
     const selected = eligibleMembers[this.currentRoundRobinIndex % eligibleMembers.length];
     this.currentRoundRobinIndex++;
-    return selected;
+    return selected ?? null;
   }
 
   private selectLeastLoaded(eligibleMembers: AgentComponent[]): AgentComponent | null {

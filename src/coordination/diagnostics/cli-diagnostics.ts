@@ -19,7 +19,7 @@ const cliLoggingConfig = {
     debug: (..._args: unknown[]) => {},
   }),
   logConfiguration: (): LogConfiguration => ({
-    logLevel: process.env.LOG_LEVEL || 'INFO',
+    logLevel: process.env['LOG_LEVEL'] || 'INFO',
     enableConsole: true,
     enableFile: false,
     timestamp: true,
@@ -71,7 +71,7 @@ async function runDiagnosticTests(logger: LoggerInterface): Promise<void> {
   const results = await diagnostics.runDiagnosticTests();
 
   results.tests.forEach((test) => {
-    const _icon = test.success ? '✅' : '❌';
+    // const _icon = test.success ? '✅' : '❌'; // TODO: Use when implementing display
     if (!test.success) {
       if ('error' in test) {
       }
@@ -133,13 +133,15 @@ async function startMonitoring(args: string[], logger: LoggerInterface): Promise
   // Update display periodically
   const displayInterval = setInterval(() => {
     const health = diagnostics.system.getSystemHealth();
-    const _connection = diagnostics.connection.getConnectionSummary();
+    // const _connection = diagnostics.connection.getConnectionSummary(); // TODO: Use when implementing display
 
     if (health.issues.length > 0) {
       health.issues.forEach((_issue) => {});
     }
 
-    Object.entries(health.metrics).forEach(([_key, _value]) => {});
+    if (health.metrics) {
+      Object.entries(health.metrics).forEach(([_key, _value]) => {});
+    }
   }, 2000);
 
   // Set up timeout
@@ -207,11 +209,13 @@ async function analyzeLogs(args: string[], logger: LoggerInterface): Promise<voi
 }
 
 function showLoggingConfig(logger: LoggerInterface): void {
-  const _config = cliLoggingConfig.logConfiguration();
+  // const config = cliLoggingConfig.logConfiguration(); // TODO: Use when implementing display
 
   logger.info('Logging configuration displayed successfully');
 }
 
+// TODO: Use this function when implementing console output
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function _formatReportForConsole(report: any): string {
   const output: string[] = [];
 
@@ -223,7 +227,7 @@ function _formatReportForConsole(report: any): string {
 
   if (report.connection.patterns.recommendations.length > 0) {
     output.push('\n⚠️  Recommendations:');
-    report.connection.patterns.recommendations.forEach((rec) => {
+    report.connection.patterns.recommendations.forEach((rec: any) => {
       output.push(`   [${rec.severity.toUpperCase()}] ${rec.issue}`);
       output.push(`   → ${rec.suggestion}`);
     });
@@ -258,7 +262,7 @@ function formatReportAsMarkdown(report: any): string {
   if (report.connection.patterns.recommendations.length > 0) {
     lines.push('### Recommendations');
     lines.push('');
-    report.connection.patterns.recommendations.forEach((rec) => {
+    report.connection.patterns.recommendations.forEach((rec: any) => {
       lines.push(`- **${rec.severity.toUpperCase()}**: ${rec.issue}`);
       lines.push(`  - ${rec.suggestion}`);
     });

@@ -6,7 +6,7 @@
  */
 
 // Using the official dspy.ts npm package instead of custom implementation
-import { configureLM, default as DSPy, getLM } from 'dspy.ts';
+// import { configureLM, default as DSPy, getLM } from 'dspy.ts'; // Not used, using wrapper instead
 import { createLogger } from '../../core/logger';
 import type { SessionMemoryStore } from '../../memory/memory';
 import type { DSPyProgram, DSPyWrapper } from '../../neural/dspy-wrapper';
@@ -202,12 +202,13 @@ YOUR GOAL: Make workflows self-improving and continuously optimized!`,
  */
 export class DSPyAgentIntegration {
   private swarmCoordinator: SwarmCoordinator;
+  // private memoryStore: SessionMemoryStore; // Removed: unused variable
   private dspyWrapper: DSPyWrapper | null = null;
   private dspyAgents: Map<string, SwarmAgent> = new Map();
 
-  constructor(swarmCoordinator: SwarmCoordinator, memoryStore: SessionMemoryStore) {
+  constructor(swarmCoordinator: SwarmCoordinator, _memoryStore: SessionMemoryStore) {
     this.swarmCoordinator = swarmCoordinator;
-    this.memoryStore = memoryStore;
+    // this.memoryStore = memoryStore; // Removed: unused variable
 
     logger.info('DSPy Agent Integration initialized with wrapper architecture');
   }

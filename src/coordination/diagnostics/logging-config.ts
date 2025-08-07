@@ -30,7 +30,7 @@ class DiagnosticsLogger implements LoggerInterface {
   ) {}
 
   private shouldLog(level: string): boolean {
-    const levels = { DEBUG: 0, INFO: 1, WARN: 2, ERROR: 3 };
+    const levels: Record<string, number> = { DEBUG: 0, INFO: 1, WARN: 2, ERROR: 3 };
     const currentLevel = levels[this.options.level.toUpperCase()] ?? 1;
     const messageLevel = levels[level.toUpperCase()] ?? 1;
     return messageLevel >= currentLevel;
@@ -97,9 +97,9 @@ export class DiagnosticsLoggingConfig {
    */
   logConfiguration(): LogConfiguration {
     return {
-      logLevel: process.env.LOG_LEVEL || 'INFO',
+      logLevel: process.env['LOG_LEVEL'] || 'INFO',
       enableConsole: true,
-      enableFile: process.env.LOG_TO_FILE === 'true',
+      enableFile: process.env['LOG_TO_FILE'] === 'true',
       timestamp: true,
       component: 'diagnostics',
     };
