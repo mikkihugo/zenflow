@@ -3,7 +3,15 @@
  * Provides a comprehensive, type-safe DI container for Claude Code Zen
  */
 
-// Container implementations
+// Container implementations - Import for internal use and export
+import { DIContainer } from './container/di-container';
+import { DIScope } from './container/di-scope';
+import { SingletonProvider } from './providers/singleton-provider';
+import { TransientProvider } from './providers/transient-provider';
+import { ScopedProvider } from './providers/scoped-provider';
+import { FactoryProvider } from './providers/factory-provider';
+
+// Re-export for external use
 export { DIContainer } from './container/di-container';
 export { DIScope } from './container/di-scope';
 export { getInjectionToken, hasInjectionToken, inject } from './decorators/inject';

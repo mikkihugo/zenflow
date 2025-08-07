@@ -325,18 +325,18 @@ export class HiveSwarmCoordinator extends EventEmitter {
       if (swarmAgents.length > 0) {
         swarmInfo.performance = {
           averageResponseTime:
-            swarmAgents.reduce((sum, a) => sum + a.metrics.responseTime, 0) / swarmAgents.length,
+            swarmAgents.reduce((sum, a) => sum + (a.metrics?.responseTime ?? 0), 0) / swarmAgents.length,
           tasksCompletedPerMinute: swarmAgents.reduce(
-            (sum, a) => sum + a.metrics.tasksCompleted,
+            (sum, a) => sum + (a.metrics?.tasksCompleted ?? 0),
             0
           ),
           successRate:
-            swarmAgents.reduce((sum, a) => sum + a.metrics.successRate, 0) / swarmAgents.length,
+            swarmAgents.reduce((sum, a) => sum + (a.metrics?.successRate ?? 0), 0) / swarmAgents.length,
           resourceEfficiency:
             1 -
-            swarmAgents.reduce((sum, a) => sum + a.metrics.cpuUsage, 0) / swarmAgents.length / 100,
+            swarmAgents.reduce((sum, a) => sum + (a.metrics?.cpuUsage ?? 0), 0) / swarmAgents.length / 100,
           qualityScore:
-            swarmAgents.reduce((sum, a) => sum + a.metrics.codeQuality || 0, 0) /
+            swarmAgents.reduce((sum, a) => sum + (a.metrics?.codeQuality ?? 0), 0) /
             swarmAgents.length,
         };
       }

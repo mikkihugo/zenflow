@@ -280,13 +280,14 @@ export class EphemeralSwarmManager extends EventEmitter {
     // Execute task steps
     for (let i = 0; i < swarm.task.steps.length; i++) {
       const step = swarm.task.steps[i];
-      if (!step) continue;
-      swarm.task.currentStep = i;
+      if (step) {
+        swarm.task.currentStep = i;
 
-      await this.executeTaskStep(swarm, step);
+        await this.executeTaskStep(swarm, step);
 
-      // Update progress
-      swarm.task.progress = ((i + 1) / swarm.task.steps.length) * 100;
+        // Update progress
+        swarm.task.progress = ((i + 1) / swarm.task.steps.length) * 100;
+      }
       swarm.lastActivity = new Date();
     }
 
