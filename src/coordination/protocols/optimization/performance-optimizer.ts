@@ -1109,6 +1109,7 @@ class IntelligentCache extends EventEmitter {
   ) {
     super();
 
+    // Logger is available for future use
     this.cache = new LRUCache({
       max: config.maxSize,
       ttl: config.ttl,
@@ -1139,7 +1140,7 @@ class IntelligentCache extends EventEmitter {
       accessCount: 0,
       lastAccessed: new Date(),
       ttl: options?.ttl || this.config.ttl,
-      compressed: options?.compress && this.config.compressionEnabled ? true : undefined,
+      ...(options?.compress && this.config.compressionEnabled ? { compressed: true } : {}),
     };
 
     if (entry.compressed) {
@@ -1282,7 +1283,7 @@ class IntelligentCache extends EventEmitter {
     return this.cache.size * 1024; // Rough estimate: 1KB per entry
   }
 
-  private handleEviction(key: string, value: CacheEntry<any>): void {
+  private handleEviction(_key: string, _value: CacheEntry<any>): void {
     this.stats.evictionRate = Math.min(1, this.stats.evictionRate + 0.001);
   }
 
@@ -1312,6 +1313,7 @@ class IntelligentCache extends EventEmitter {
 
   private startPrefetching(): void {
     // Implement prefetching based on strategy
+    this.logger.debug('Prefetching started', { strategy: this.prefetchStrategy });
     if (this.prefetchStrategy === 'lru') {
       // Prefetch most recently used items
     } else if (this.prefetchStrategy === 'predictive') {

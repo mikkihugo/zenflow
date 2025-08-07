@@ -193,7 +193,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   private checkpointsReached: Set<number> = new Set();
 
   constructor(
-    private _discoveryBridge: DomainDiscoveryBridge, // xxx NEEDS_HUMAN: Parameter not used - confirm if needed for future features
+    _discoveryBridge: DomainDiscoveryBridge, // xxx NEEDS_HUMAN: Parameter not used - confirm if needed for future features
     private memoryStore: SessionMemoryStore,
     private agui: AGUIInterface,
     private config: ProgressiveConfidenceConfig = {}
@@ -817,9 +817,9 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     this.confidence = event.confidenceAfter;
   }
 
-  private async analyzeDocument(path: string): Promise<any> {
+  private async analyzeDocument(_path: string): Promise<any> {
     // Simulate document analysis - in real implementation would use document processor
-    // xxx NEEDS_HUMAN: Implement actual document analysis using path parameter
+    // xxx NEEDS_HUMAN: Implement actual document analysis using _path parameter
     return {
       concepts: ['concept1', 'concept2'],
       domains: ['domain1'],

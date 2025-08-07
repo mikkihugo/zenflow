@@ -32,10 +32,11 @@ export class DefaultHookManager extends EventEmitter {
   private config: HookManagerConfig;
   private activeHooks = new Set<string>();
   private logger: any;
-  private performanceOptimizer: {
-    optimize: (context: any) => Promise<{ optimized: boolean; context: any }>;
-    getMetrics: () => { hooks: number };
-  };
+  // xxx NEEDS_HUMAN: performanceOptimizer declared but not used - verify if needed for future features
+  // private performanceOptimizer: {
+  //   optimize: (context: any) => Promise<{ optimized: boolean; context: any }>;
+  //   getMetrics: () => { hooks: number };
+  // };
 
   constructor(hookSystem?: HookSystem, config?: Partial<HookManagerConfig>) {
     super();
@@ -49,10 +50,11 @@ export class DefaultHookManager extends EventEmitter {
     };
 
     this.logger = logger;
-    this.performanceOptimizer = {
-      optimize: async (context: any) => ({ optimized: true, context }),
-      getMetrics: () => ({ hooks: this.activeHooks.size }),
-    };
+    // xxx NEEDS_HUMAN: performanceOptimizer initialization removed - was not being used
+    // this.performanceOptimizer = {
+    //   optimize: async (context: any) => ({ optimized: true, context }),
+    //   getMetrics: () => ({ hooks: this.activeHooks.size }),
+    // };
   }
 
   async executeHook(

@@ -186,7 +186,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     private docProcessor: DocumentProcessor,
     private domainAnalyzer: DomainAnalysisEngine,
     private projectAnalyzer: ProjectContextAnalyzer,
-    private _intelligenceCoordinator: IntelligenceCoordinationSystem, // xxx NEEDS_HUMAN: Parameter not used - confirm if needed for future features
+    _intelligenceCoordinator: IntelligenceCoordinationSystem, // xxx NEEDS_HUMAN: Parameter not used - confirm if needed for future features
     config: DomainDiscoveryBridgeConfig = {}
   ) {
     super();

@@ -188,7 +188,7 @@ class CognitivePatternEvolution {
    * @param {string} agentId - Agent identifier
    * @param {Object} config - Agent configuration
    */
-  async initializeAgent(agentId, config) {
+  async initializeAgent(agentId: string, config: any) {
     const initialPatterns = this.selectInitialPatterns(config);
 
     this.agentPatterns.set(agentId, {
@@ -216,7 +216,7 @@ class CognitivePatternEvolution {
    *
    * @param {Object} config - Agent configuration
    */
-  selectInitialPatterns(config) {
+  selectInitialPatterns(config: any): string[] {
     const patterns = [];
 
     // Select patterns based on model type and use case
@@ -278,7 +278,7 @@ class CognitivePatternEvolution {
    * @param {string} agentId - Agent identifier
    * @param {Object} trainingData - Training data context
    */
-  async evolvePatterns(agentId, trainingData) {
+  async evolvePatterns(agentId: string, trainingData: any) {
     const agentData = this.agentPatterns.get(agentId);
     if (!agentData) {
       return;
@@ -315,7 +315,7 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  analyzeTrainingContext(trainingData) {
+  analyzeTrainingContext(trainingData: any) {
     const context = {
       dataComplexity: this.calculateDataComplexity(trainingData),
       taskType: this.inferTaskType(trainingData),
@@ -335,7 +335,7 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  calculateDataComplexity(trainingData) {
+  calculateDataComplexity(trainingData: any) {
     if (!trainingData.samples || trainingData.samples.length === 0) {
       return 0.5;
     }
@@ -357,7 +357,7 @@ class CognitivePatternEvolution {
    *
    * @param {Array} samples - Training samples
    */
-  calculateFeatureVariance(samples) {
+  calculateFeatureVariance(samples: any[]) {
     if (samples.length < 2) {
       return 0;
     }
@@ -369,14 +369,14 @@ class CognitivePatternEvolution {
 
     for (let f = 0; f < numFeatures; f++) {
       const values = samples
-        .map((s) => (Array.isArray(s) ? s[f] : s))
-        .filter((v) => typeof v === 'number');
+        .map((s: any) => (Array.isArray(s) ? s[f] : s))
+        .filter((v: any) => typeof v === 'number');
       if (values.length < 2) {
         continue;
       }
 
-      const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
-      const variance = values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
+      const mean = values.reduce((sum: number, v: number) => sum + v, 0) / values.length;
+      const variance = values.reduce((sum: number, v: number) => sum + (v - mean) ** 2, 0) / values.length;
       totalVariance += variance;
     }
 
@@ -388,10 +388,10 @@ class CognitivePatternEvolution {
    *
    * @param {Array} samples - Training samples
    */
-  calculateLabelDistribution(samples) {
+  calculateLabelDistribution(samples: any[]) {
     const labelCounts = new Map();
 
-    samples.forEach((sample) => {
+    samples.forEach((sample: any) => {
       const label = sample.label || sample.target || 'unknown';
       labelCounts.set(label, (labelCounts.get(label) || 0) + 1);
     });
@@ -414,7 +414,7 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  inferTaskType(trainingData) {
+  inferTaskType(trainingData: any) {
     if (!trainingData.samples) {
       return 'unknown';
     }
@@ -445,13 +445,13 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  estimateNoiseLevel(trainingData) {
+  estimateNoiseLevel(trainingData: any) {
     if (!trainingData.samples || trainingData.samples.length < 10) {
       return 0.5;
     }
 
     // Simple heuristic: calculate coefficient of variation
-    const values = trainingData.samples.map((s) => {
+    const values = trainingData.samples.map((s: any) => {
       if (typeof s === 'number') {
         return s;
       }
@@ -461,8 +461,8 @@ class CognitivePatternEvolution {
       return 0;
     });
 
-    const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
-    const variance = values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
+    const mean = values.reduce((sum: number, v: number) => sum + v, 0) / values.length;
+    const variance = values.reduce((sum: number, v: number) => sum + (v - mean) ** 2, 0) / values.length;
     const stdDev = Math.sqrt(variance);
 
     return mean !== 0 ? Math.min(1, stdDev / Math.abs(mean)) : 0.5;
@@ -473,14 +473,14 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  assessPatternRegularity(trainingData) {
+  assessPatternRegularity(trainingData: any) {
     // Simplified regularity assessment
     if (!trainingData.samples || trainingData.samples.length < 5) {
       return 0.5;
     }
 
     // Check for periodic patterns or consistent structures
-    const labelSequence = trainingData.samples.map((s) => s.label || s.target || 0);
+    const labelSequence = trainingData.samples.map((s: any) => s.label || s.target || 0);
     const uniqueLabels = new Set(labelSequence);
 
     // More unique labels = less regular

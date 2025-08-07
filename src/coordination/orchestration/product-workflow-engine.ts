@@ -220,7 +220,6 @@ export class ProductWorkflowEngine extends EventEmitter {
       workspaceId: context.workspaceId || 'default',
       sessionId: workflowId,
       documents: context.documents || {},
-      ...(context.currentDocument !== undefined && { currentDocument: context.currentDocument }),
       variables: context.variables || {},
       environment: {
         type: 'development',
@@ -244,6 +243,11 @@ export class ProductWorkflowEngine extends EventEmitter {
       },
       ...context,
     };
+    
+    // Add currentDocument if it exists
+    if (context.currentDocument !== undefined) {
+      fullContext.currentDocument = context.currentDocument;
+    }
 
     // Create enhanced workflow state with Product Flow + SPARC integration
     const workflow: ProductWorkflowState = {

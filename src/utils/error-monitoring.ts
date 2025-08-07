@@ -181,8 +181,12 @@ export class ErrorMonitoring extends EventEmitter {
           const hourIndex = Math.floor((now - errorTime) / (1000 * 60 * 60));
           const dayIndex = Math.floor((now - errorTime) / (1000 * 60 * 60 * 24));
 
-          if (hourIndex < 24) hourly[23 - hourIndex]++;
-          if (dayIndex < 7) daily[6 - dayIndex]++;
+          if (hourIndex >= 0 && hourIndex < 24 && hourly[23 - hourIndex] !== undefined) {
+            hourly[23 - hourIndex]++;
+          }
+          if (dayIndex >= 0 && dayIndex < 7 && daily[6 - dayIndex] !== undefined) {
+            daily[6 - dayIndex]++;
+          }
         }
       }
     }
@@ -236,7 +240,7 @@ export class ErrorMonitoring extends EventEmitter {
       const [component, _errorType] = key.split(':');
       const recentErrors = errors.filter((e) => Date.now() - e.timestamp.getTime() <= timeWindow);
 
-      if (recentErrors.length > 0) {
+      if (recentErrors.length > 0 && component) {
         errorCounts.set(key, { count: recentErrors.length, component });
       }
     }
@@ -246,7 +250,7 @@ export class ErrorMonitoring extends EventEmitter {
       .slice(0, 10);
 
     for (const [key, data] of sortedErrors) {
-      const errorType = key.split(':')[1];
+      const errorType = key.split(':')[1] || 'unknown';
       topErrors.push({
         error: errorType,
         count: data.count,

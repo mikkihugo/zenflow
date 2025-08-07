@@ -430,7 +430,7 @@ export class ChaosEngineering extends EventEmitter {
    * @param phaseName
    * @param phaseFunction
    */
-  async runExperimentPhase(execution, phaseName, phaseFunction) {
+  async runExperimentPhase(execution: ExperimentExecution, phaseName: string, phaseFunction: () => Promise<void>) {
     const phaseStartTime = Date.now();
     execution.currentPhase = phaseName;
 
@@ -440,7 +440,7 @@ export class ChaosEngineering extends EventEmitter {
       startTime: new Date(phaseStartTime),
       endTime: null as Date | null,
       duration: 0,
-      error: null as Error | null,
+      error: null as string | null,
     };
 
     try {
@@ -460,13 +460,13 @@ export class ChaosEngineering extends EventEmitter {
       });
     } catch (error) {
       phase.status = 'failed';
-      phase.error = error.message;
+      phase.error = error instanceof Error ? error.message : String(error);
       phase.endTime = new Date();
       phase.duration = Date.now() - phaseStartTime;
 
       this.logger.error(`Experiment phase failed: ${phaseName}`, {
         executionId: execution.id,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       });
 
       throw error;
@@ -480,7 +480,7 @@ export class ChaosEngineering extends EventEmitter {
    *
    * @param experiment
    */
-  async performSafetyChecks(experiment) {
+  async performSafetyChecks(experiment: ChaosExperiment) {
     if (!this.options.safetyEnabled) {
       this.logger.warn('Safety checks are DISABLED');
       return;
@@ -528,9 +528,9 @@ export class ChaosEngineering extends EventEmitter {
    * @param execution
    */
   async injectFailure(experiment: ChaosExperiment, execution: ExperimentExecution) {
-    const injector = this.failureInjectors.get(experiment.failureType);
+    const injector = this.failureInjectors.get(experiment.failureType || '');
     if (!injector) {
-      throw new Error(`Failure injector not found: ${experiment.failureType}`);
+      throw new Error(`Failure injector not found: ${experiment.failureType || 'unknown'}`);
     }
 
     this.logger.info(`Injecting failure: ${experiment.failureType}`, {
@@ -556,7 +556,7 @@ export class ChaosEngineering extends EventEmitter {
    * @param execution
    * @param duration
    */
-  async monitorFailureImpact(execution, duration) {
+  async monitorFailureImpact(execution: ExperimentExecution, duration: number) {
     const monitoringStartTime = Date.now();
     const monitoringEndTime = monitoringStartTime + duration;
 
@@ -584,7 +584,7 @@ export class ChaosEngineering extends EventEmitter {
 
         // Collect metrics
         const metrics = await this.collectImpactMetrics();
-        impactMetrics.metrics.push({
+        (impactMetrics.metrics as any[]).push({
           timestamp: new Date(now),
           ...metrics,
         });
@@ -593,7 +593,7 @@ export class ChaosEngineering extends EventEmitter {
         if (this.healthMonitor) {
           const healthStatus = this.healthMonitor.getHealthStatus();
           if (healthStatus.overallStatus !== 'healthy') {
-            impactMetrics.alerts.push({
+            (impactMetrics.alerts as any[]).push({
               timestamp: new Date(now),
               status: healthStatus.overallStatus,
               details: healthStatus,
@@ -605,7 +605,7 @@ export class ChaosEngineering extends EventEmitter {
         if (this.recoveryWorkflows) {
           const activeRecoveries = this.recoveryWorkflows.getRecoveryStatus();
           if (activeRecoveries.length > 0) {
-            impactMetrics.recoveryAttempts.push({
+            (impactMetrics.recoveryAttempts as any[]).push({
               timestamp: new Date(now),
               recoveries: activeRecoveries,
             });

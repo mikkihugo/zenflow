@@ -993,7 +993,7 @@ export class CommunicationProtocols extends EventEmitter {
     return createHash('sha256').update(data).digest('hex');
   }
 
-  private async evaluateProposal(proposal: ConsensusProposal): Promise<ConsensusVote['decision']> {
+  private async evaluateProposal(_proposal: ConsensusProposal): Promise<ConsensusVote['decision']> {
     // Simplified evaluation logic
     // In practice, this would involve complex decision-making algorithms
     return Math.random() > 0.3 ? 'accept' : 'reject';
@@ -1132,7 +1132,7 @@ class CompressionEngine {
 class EncryptionEngine {
   constructor(
     private enabled: boolean,
-    private logger: ILogger
+    private _logger: ILogger // xxx NEEDS_HUMAN: Logger not used - confirm if needed for error logging
   ) {}
 
   async encrypt(payload: MessagePayload, config: EncryptionConfig): Promise<MessagePayload> {
@@ -1265,7 +1265,7 @@ class ConsensusEngine {
   private activeProposals = new Map<string, ConsensusProposal>();
 
   constructor(
-    private nodeId: string,
+    private _nodeId: string, // xxx NEEDS_HUMAN: nodeId not used - confirm if needed for consensus voting
     private logger: ILogger
   ) {}
 
@@ -1306,20 +1306,20 @@ class ConsensusEngine {
 
 class GossipEngine {
   constructor(
-    private nodeId: string,
+    private _nodeId: string, // xxx NEEDS_HUMAN: nodeId not used - confirm if needed for gossip origin tracking
     private logger: ILogger
   ) {}
 
   async propagate(
     key: string,
     state: GossipState,
-    nodes: Map<string, CommunicationNode>
+    _nodes: Map<string, CommunicationNode>
   ): Promise<void> {
     // Gossip propagation logic
     this.logger.debug('Gossip state propagated', { key, version: state.version });
   }
 
-  async route(message: Message, nodes: Map<string, CommunicationNode>): Promise<void> {
+  async route(_message: Message, _nodes: Map<string, CommunicationNode>): Promise<void> {
     // Gossip routing logic
   }
 
