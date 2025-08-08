@@ -1196,14 +1196,14 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   getRecoveryTrigger(failureType: string | undefined) {
-    const triggerMap = {
+    const triggerMap: Record<string, string> = {
       memory_pressure: 'system.memory',
       cpu_stress: 'system.cpu',
       network_failure: 'mcp.connection.failed',
       process_crash: 'system.process.crashed',
     };
 
-    return triggerMap[failureType] || 'chaos.experiment.failure';
+    return (failureType && triggerMap[failureType]) || 'chaos.experiment.failure';
   }
 
   /**

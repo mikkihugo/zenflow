@@ -3,6 +3,8 @@
  * Enables autonomous learning and adaptation of cognitive patterns
  */
 
+import type { TrainingData } from '../../../neural/types/wasm-types';
+
 // Type definitions for cognitive patterns
 interface PatternCharacteristics {
   searchStrategy: 'directed' | 'undirected' | 'systematic' | 'conceptual';
