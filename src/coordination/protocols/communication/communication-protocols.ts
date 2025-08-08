@@ -222,7 +222,7 @@ export class CommunicationProtocols extends EventEmitter {
   async registerNode(node: CommunicationNode): Promise<void> {
     this.nodes.set(node.id, node);
 
-    this.logger.info('Communication node registered', {
+    this._logger.info('Communication node registered', {
       nodeId: node.id,
       address: node.address,
       capabilities: node.capabilities,
