@@ -473,12 +473,12 @@ export class SwarmSynchronizer extends EventEmitter {
       vectorClock: { ...this.vectorClock },
       syncHistory: this.syncHistory.length,
     };
-    
+
     // Only add lastSyncTime if it exists
     if (lastSync?.timestamp) {
       status.lastSyncTime = lastSync.timestamp;
     }
-    
+
     return status;
   }
 
@@ -563,10 +563,7 @@ interface Task {
  * @example
  */
 class ConsensusProtocol {
-  constructor(
-    _config: SwarmSyncConfig,
-    _logger?: ILogger
-  ) {
+  constructor(_config: SwarmSyncConfig, _logger?: ILogger) {
     // xxx NEEDS_HUMAN: config and logger not used - verify if needed for consensus algorithms
   }
 

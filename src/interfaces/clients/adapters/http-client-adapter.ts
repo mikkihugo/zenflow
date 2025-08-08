@@ -98,10 +98,10 @@ import type {
   RequestOptions,
 } from '../core/interfaces';
 import {
-  ConnectionError,
   AuthenticationError,
-  TimeoutError,
+  ConnectionError,
   RetryExhaustedError,
+  TimeoutError,
 } from '../core/interfaces';
 import type { HTTPClientCapabilities, HTTPClientConfig, OAuthCredentials } from './http-types';
 

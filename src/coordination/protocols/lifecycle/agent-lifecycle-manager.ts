@@ -1315,8 +1315,8 @@ export class AgentLifecycleManager extends EventEmitter {
 // Supporting classes
 class HealthMonitor {
   constructor(
-    private readonly _config: AgentLifecycleConfig, // For future health check configuration
-    private readonly _logger: ILogger // For health monitoring logs
+    /* private readonly _config: AgentLifecycleConfig, */ // For future health check configuration
+    /* private readonly _logger: ILogger */ // For health monitoring logs
   ) {
     // xxx NEEDS_HUMAN: Properties kept for future health monitoring configuration and logging
   }
@@ -1374,8 +1374,8 @@ class HealthMonitor {
 
 class PerformanceTracker {
   constructor(
-    private readonly _config: AgentLifecycleConfig, // For future performance thresholds
-    private readonly _logger: ILogger // For performance tracking logs
+    /* private readonly _config: AgentLifecycleConfig, */ // For future performance thresholds
+    /* private readonly _logger: ILogger */ // For performance tracking logs
   ) {
     // xxx NEEDS_HUMAN: Properties kept for future performance threshold configuration and logging
   }
@@ -1418,12 +1418,13 @@ class PerformanceTracker {
 //     private readonly _logger: ILogger // For resource monitoring logs
 //   ) {
 //   }
-// 
+//
 //   // Resource monitoring implementation
 // }
 
 class CapabilityDiscovery {
-  constructor(private readonly _logger: ILogger) { // For capability discovery logs
+  constructor(/* private readonly _logger: ILogger */) {
+    // For capability discovery logs
     // xxx NEEDS_HUMAN: Property kept for future capability discovery logging
   }
 
@@ -1434,10 +1435,7 @@ class CapabilityDiscovery {
 }
 
 class ScalingEngine {
-  constructor(
-    private readonly config: AgentLifecycleConfig,
-    private readonly logger: ILogger
-  ) {}
+  constructor(private readonly config: AgentLifecycleConfig, private readonly logger: ILogger) {}
 
   async analyze(
     agents: Map<string, AgentInstance>,
@@ -1492,10 +1490,7 @@ class ScalingEngine {
 }
 
 class RecoveryEngine {
-  constructor(
-    private readonly config: AgentLifecycleConfig, // For recovery strategy configuration
-    private readonly logger: ILogger
-  ) {}
+  constructor(private readonly config: AgentLifecycleConfig, private readonly logger: ILogger) {}
 
   async recoverAgent(agent: AgentInstance, _template: AgentTemplate): Promise<void> {
     // Implement agent recovery strategies

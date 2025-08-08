@@ -16,10 +16,11 @@
 import { EventEmitter } from 'node:events';
 import { ConfigurationError, SystemError, ValidationError } from '../../../core/errors';
 import { createLogger } from '../../../core/logger';
+import type { HealthMonitor } from '../../diagnostics/health-monitor';
+import type { ConnectionStateManager as ConnectionManager } from '../connection-management/connection-state-manager';
+import type { RecoveryWorkflows } from '../core/recovery-workflows';
 import { generateId } from '../core/utils';
-import { HealthMonitor } from '../../diagnostics/health-monitor';
-import { RecoveryWorkflows } from '../core/recovery-workflows';
-import { ConnectionStateManager as ConnectionManager } from '../connection-management/connection-state-manager';
+
 // import { MCPToolsManager } from '../../../interfaces/mcp/tool-registry'; // xxx NEEDS_HUMAN: Unused import - verify if needed for future integration
 
 // Type definitions for chaos engineering
@@ -147,7 +148,9 @@ interface FailureInjectorCallbacks {
 }
 
 type FailureInjector = FailureInjectorCallbacks;
-type SafetyCheck = (experiment: ChaosExperiment) => Promise<{ safe: boolean; reason?: string }> | { safe: boolean; reason?: string };
+type SafetyCheck = (
+  experiment: ChaosExperiment
+) => Promise<{ safe: boolean; reason?: string }> | { safe: boolean; reason?: string };
 
 export class ChaosEngineering extends EventEmitter {
   private options: Required<ChaosEngineeringOptions>;
@@ -460,8 +463,8 @@ export class ChaosEngineering extends EventEmitter {
       const history = this.experimentHistory.get(experimentName);
       if (history) {
         history.push({
-        ...execution,
-        completedAt: new Date(),
+          ...execution,
+          completedAt: new Date(),
         });
 
         // Keep only last 50 executions per experiment
@@ -483,7 +486,11 @@ export class ChaosEngineering extends EventEmitter {
    * @param phaseName
    * @param phaseFunction
    */
-  async runExperimentPhase(execution: ExperimentExecution, phaseName: string, phaseFunction: () => Promise<void>) {
+  async runExperimentPhase(
+    execution: ExperimentExecution,
+    phaseName: string,
+    phaseFunction: () => Promise<void>
+  ) {
     const phaseStartTime = Date.now();
     execution.currentPhase = phaseName;
 
@@ -592,7 +599,7 @@ export class ChaosEngineering extends EventEmitter {
       parameters: execution.parameters,
     });
 
-    const injectionResult = await injector.inject(execution.parameters) as InjectionResult;
+    const injectionResult = (await injector.inject(execution.parameters)) as InjectionResult;
 
     execution.injectionResult = injectionResult;
     execution.failureInjected = true;

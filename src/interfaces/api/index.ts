@@ -14,6 +14,7 @@ export * from './http/index';
 
 // WebSocket API (real-time communication)
 export * from './websocket/index';
+
 // Import WebSocketClient for internal use in this file
 import { WebSocketClient } from './websocket/client';
 export { WebSocketClient };

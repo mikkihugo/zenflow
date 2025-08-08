@@ -804,8 +804,12 @@ export class UELFactory {
         // xxx NEEDS_HUMAN: InterfaceEventManagerFactory not implemented yet
         // Using a stub factory for now
         const InterfaceEventManagerFactory = class {
-          createManager() { return null; }
-          async initialize() { return this; }
+          createManager() {
+            return null;
+          }
+          async initialize() {
+            return this;
+          }
         };
         FactoryClass = InterfaceEventManagerFactory;
         break;
@@ -815,8 +819,12 @@ export class UELFactory {
         // xxx NEEDS_HUMAN: NeuralEventManagerFactory not implemented yet
         // Using a stub factory for now
         const NeuralEventManagerFactory = class {
-          createManager() { return null; }
-          async initialize() { return this; }
+          createManager() {
+            return null;
+          }
+          async initialize() {
+            return this;
+          }
         };
         FactoryClass = NeuralEventManagerFactory;
         break;
@@ -826,8 +834,12 @@ export class UELFactory {
         // xxx NEEDS_HUMAN: DatabaseEventManagerFactory not implemented yet
         // Using a stub factory for now
         const DatabaseEventManagerFactory = class {
-          createManager() { return null; }
-          async initialize() { return this; }
+          createManager() {
+            return null;
+          }
+          async initialize() {
+            return this;
+          }
         };
         FactoryClass = DatabaseEventManagerFactory;
         break;
@@ -837,8 +849,12 @@ export class UELFactory {
         // xxx NEEDS_HUMAN: MemoryEventManagerFactory not implemented yet
         // Using a stub factory for now
         const MemoryEventManagerFactory = class {
-          createManager() { return null; }
-          async initialize() { return this; }
+          createManager() {
+            return null;
+          }
+          async initialize() {
+            return this;
+          }
         };
         FactoryClass = MemoryEventManagerFactory;
         break;
@@ -848,8 +864,12 @@ export class UELFactory {
         // xxx NEEDS_HUMAN: WorkflowEventManagerFactory not implemented yet
         // Using a stub factory for now
         const WorkflowEventManagerFactory = class {
-          createManager() { return null; }
-          async initialize() { return this; }
+          createManager() {
+            return null;
+          }
+          async initialize() {
+            return this;
+          }
         };
         FactoryClass = WorkflowEventManagerFactory;
         break;
@@ -858,8 +878,12 @@ export class UELFactory {
         // xxx NEEDS_HUMAN: CustomEventManagerFactory not implemented yet
         // Using a stub factory for now
         const CustomEventManagerFactory = class {
-          createManager() { return null; }
-          async initialize() { return this; }
+          createManager() {
+            return null;
+          }
+          async initialize() {
+            return this;
+          }
         };
         FactoryClass = CustomEventManagerFactory;
         break;

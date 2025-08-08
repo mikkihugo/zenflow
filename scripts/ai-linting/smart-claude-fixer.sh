@@ -10,7 +10,7 @@ export PATH="/home/mhugo/.local/share/mise/installs/node/22.17.1/bin:$PATH"
 LOCK_FILE="/tmp/smart-claude-fixer.lock"
 PID_FILE="/tmp/smart-claude-fixer.pid" 
 MAX_RUNTIME=3600  # 60 minutes
-CHECK_INTERVAL=60 # 1 minute
+CHECK_INTERVAL=300 # 5 minute
 
 log() { echo "[$(date '+%H:%M:%S')] $1"; }
 
@@ -19,10 +19,10 @@ check_if_running() {
     if [ -f "$LOCK_FILE" ]; then
         local old_pid
         old_pid=$(cat "$LOCK_FILE" 2>/dev/null || echo "")
-        
+
         if [ -n "$old_pid" ] && kill -0 "$old_pid" 2>/dev/null; then
             local runtime=$(( $(date +%s) - $(stat -c %Y "$LOCK_FILE" 2>/dev/null || echo 0) ))
-            
+
             if [ $runtime -gt $MAX_RUNTIME ]; then
                 log "Old process exceeded 60min, killing it"
                 kill -TERM "$old_pid" 2>/dev/null || true
@@ -50,7 +50,7 @@ acquire_lock() {
     log "Lock acquired (PID: $$)"
 }
 
-# Release lock  
+# Release loc
 release_lock() {
     rm -f "$LOCK_FILE" "$PID_FILE"
     log "Lock released"
@@ -70,7 +70,7 @@ run_smart_fixer() {
         log "Failed to change to project directory"
         return 1
     }
-    
+
     local start_time=$(date +%s)
     log "Starting 60-minute smart fixing session in $(pwd)"
     

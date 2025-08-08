@@ -5,8 +5,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../di/index';
-import type { ILogger } from '../di/index';
+import type { IEventBus, ILogger } from '../di/index';
 import { CORE_TOKENS, inject, injectable } from '../di/index';
 
 export interface CoordinationConfig {
@@ -336,7 +335,7 @@ export class CoordinationManager extends EventEmitter {
     // Sort by task count (load balancing)
     suitableAgents.sort((a, b) => a.taskCount - b.taskCount);
     const selectedAgent = suitableAgents[0];
-    
+
     if (!selectedAgent) {
       // This should never happen due to the check above, but TypeScript needs this
       this._logger?.error(`Unexpected: No agent found after filtering`);

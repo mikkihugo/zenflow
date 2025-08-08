@@ -242,15 +242,15 @@ export class HiveKnowledgeBridge extends EventEmitter {
       domains?: string[];
     } = {
       query,
-      limit: filters['limit'] as number || 10,
+      limit: (filters['limit'] as number) || 10,
       sortBy: (filters['sortBy'] as 'relevance' | 'timestamp' | 'access_count') || 'relevance',
     };
-    
+
     if (domain) {
       searchQuery.domains = [domain];
     }
-    
-    const searchResults = await this.hiveFact?.searchFacts(searchQuery) ?? [];
+
+    const searchResults = (await this.hiveFact?.searchFacts(searchQuery)) ?? [];
 
     // Enhance results with swarm-specific context
     const enhancedResults = await this.enhanceResultsWithSwarmContext(

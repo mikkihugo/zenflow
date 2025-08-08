@@ -78,11 +78,14 @@ export interface ElectionState {
 
 // Consensus types
 // Command type for consensus operations
-export type ConsensusCommand = string | Record<string, unknown> | {
-  type: string;
-  payload: unknown;
-  metadata?: Record<string, unknown>;
-};
+export type ConsensusCommand =
+  | string
+  | Record<string, unknown>
+  | {
+      type: string;
+      payload: unknown;
+      metadata?: Record<string, unknown>;
+    };
 
 export interface LogEntry {
   term: number;
@@ -1188,7 +1191,7 @@ class ConsensusEngine extends EventEmitter {
     entries: LogEntry[]
   ): Promise<AppendEntriesResponse> {
     const prevLogIndex = this.state.log.length - entries.length - 1;
-    const prevLogTerm = prevLogIndex >= 0 ? this.state.log[prevLogIndex]?.term ?? 0 : 0;
+    const prevLogTerm = prevLogIndex >= 0 ? (this.state.log[prevLogIndex]?.term ?? 0) : 0;
 
     // Request object created for documentation purposes - actual network implementation simulated below
     // xxx NEEDS_HUMAN: Determine if actual network implementation is needed
@@ -1260,7 +1263,7 @@ class ConsensusEngine extends EventEmitter {
 
   private async sendVoteRequest(_nodeId: string): Promise<VoteResponse> {
     const lastLogIndex = this.state.log.length - 1;
-    const lastLogTerm = lastLogIndex >= 0 ? this.state.log[lastLogIndex]?.term ?? 0 : 0;
+    const lastLogTerm = lastLogIndex >= 0 ? (this.state.log[lastLogIndex]?.term ?? 0) : 0;
 
     // xxx NEEDS_HUMAN: request variable unused - determine if actual network implementation is needed
     // Commented out unused variable to avoid warning

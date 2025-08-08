@@ -117,8 +117,8 @@ class ErrorFactory {
 export class ConnectionStateManager extends EventEmitter {
   options: ManagerOptions;
   connections: Map<string, Connection>;
-  connectionStats!: Map<string, Record<string, unknown>>;  // Initialized in constructor
-  healthChecks!: Map<string, NodeJS.Timeout>;     // Initialized in constructor
+  connectionStats!: Map<string, Record<string, unknown>>; // Initialized in constructor
+  healthChecks!: Map<string, NodeJS.Timeout>; // Initialized in constructor
   persistenceManager: unknown;
   fallbackManager: unknown;
   logger: Logger;

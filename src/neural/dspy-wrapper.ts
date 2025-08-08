@@ -250,7 +250,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
         timestamp: new Date(),
         confidence: 0.0, // Low confidence for failed executions
       };
-      
+
       if (this.currentConfig?.model) {
         metadata.model = this.currentConfig.model;
       }

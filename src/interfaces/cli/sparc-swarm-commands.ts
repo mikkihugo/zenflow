@@ -11,11 +11,11 @@ import { SPARCSwarmCoordinator } from '../../coordination/swarm/core/sparc-swarm
 import { DatabaseDrivenSystem } from '../../core/database-driven-system';
 import { createLogger } from '../../core/logger';
 import { WorkflowEngine } from '../../core/workflow-engine';
-import { DocumentService } from '../../database/services/document-service-legacy';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
 } from '../../database/entities/product-entities';
+import { DocumentService } from '../../database/services/document-service-legacy';
 
 const logger = createLogger('SPARCSwarmCLI');
 

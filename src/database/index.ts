@@ -60,9 +60,10 @@ export {
   MultiDatabaseDAO,
 } from './factory';
 
+import type { MultiDatabaseDAO as MultiDatabaseDAOType } from './factory';
 // Import interfaces for use in functions below
 import type { IDao, IManager } from './interfaces';
-import type { MultiDatabaseDAO as MultiDatabaseDAOType } from './factory';
+
 // Core interfaces
 export type {
   ClusteringOptions,
@@ -104,7 +105,7 @@ export type {
 } from './interfaces';
 
 // Export enums
-export { EntityTypes, DatabaseTypes } from './interfaces';
+export { DatabaseTypes, EntityTypes } from './interfaces';
 // Manager implementations
 export { DocumentManager } from './managers/document-manager';
 

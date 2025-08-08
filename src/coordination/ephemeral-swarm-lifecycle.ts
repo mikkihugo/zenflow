@@ -209,7 +209,7 @@ export class EphemeralSwarmManager extends EventEmitter {
         taskCount: 0,
         ...(claudeSubAgent ? { claudeSubAgent } : {}),
       };
-      
+
       // Only add claudeSubAgent if it exists
       if (claudeSubAgent) {
         agent.claudeSubAgent = claudeSubAgent;

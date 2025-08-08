@@ -475,7 +475,10 @@ export class SystemDiagnostics {
    */
   getSystemHealth(): SystemHealth {
     if (this.samples.length === 0) {
-      return { status: 'unknown', issues: [{ component: 'system', message: 'No samples collected' }] };
+      return {
+        status: 'unknown',
+        issues: [{ component: 'system', message: 'No samples collected' }],
+      };
     }
 
     const latest = this.samples[this.samples.length - 1];

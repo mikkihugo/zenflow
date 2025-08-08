@@ -413,7 +413,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
         const domain1 = domains[i];
         const domain2 = domains[j];
         if (!domain1 || !domain2) continue;
-        
+
         const relationshipStrength = this.calculateDomainRelationshipStrength(
           domain1,
           domain2,

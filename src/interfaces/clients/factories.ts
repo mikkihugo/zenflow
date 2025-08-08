@@ -471,9 +471,7 @@ export class UACLFactory {
       }
 
       case ClientTypes.WEBSOCKET: {
-        const { WebSocketClientFactory } = await import(
-          './adapters/websocket-client-factory'
-        );
+        const { WebSocketClientFactory } = await import('./adapters/websocket-client-factory');
         FactoryClass = WebSocketClientFactory;
         break;
       }

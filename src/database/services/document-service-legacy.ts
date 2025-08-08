@@ -21,7 +21,7 @@ import type {
   VisionDocumentEntity,
 } from '../entities/document-entities';
 import { createDao } from '../index';
-import type { IRepository, DatabaseQuery } from '../interfaces';
+import type { DatabaseQuery, IRepository } from '../interfaces';
 
 export interface DocumentCreateOptions {
   autoGenerateRelationships?: boolean;

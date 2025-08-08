@@ -122,7 +122,7 @@ class NeuralCLI {
         if (modelInfo && modelInfo.hasSavedWeights) {
           _statusLine += ' | 📁 Weights saved';
         }
-        
+
         // xxx NEEDS_HUMAN: _statusLine is built but never output - confirm if display logic is incomplete
       }
 
@@ -132,7 +132,10 @@ class NeuralCLI {
       if (typeof status === 'object') {
       }
     } catch (error) {
-      console.error('❌ Error getting neural status:', error instanceof Error ? error.message : String(error));
+      console.error(
+        '❌ Error getting neural status:',
+        error instanceof Error ? error.message : String(error)
+      );
       process.exit(1);
     }
   }
@@ -181,7 +184,10 @@ class NeuralCLI {
       const outputFile = path.join(outputDir, `training-${modelType}-${Date.now()}.json`);
       await fs.writeFile(outputFile, JSON.stringify(results, null, 2));
     } catch (error) {
-      console.error('\n❌ Training failed:', error instanceof Error ? error.message : String(error));
+      console.error(
+        '\n❌ Training failed:',
+        error instanceof Error ? error.message : String(error)
+      );
       process.exit(1);
     }
   }
@@ -362,14 +368,16 @@ class NeuralCLI {
   }
 
   // Helper method to calculate convergence rate
-  calculateConvergenceRate(trainingResults: Array<{loss: number, accuracy: number}>) {
+  calculateConvergenceRate(trainingResults: Array<{ loss: number; accuracy: number }>) {
     if (trainingResults.length < 3) {
       return 'insufficient_data';
     }
 
     const recentResults = trainingResults.slice(-5); // Last 5 iterations
-    const lossVariance = this.calculateVariance(recentResults.map((r: {loss: number}) => r.loss));
-    const accuracyTrend = this.calculateTrend(recentResults.map((r: {accuracy: number}) => r.accuracy));
+    const lossVariance = this.calculateVariance(recentResults.map((r: { loss: number }) => r.loss));
+    const accuracyTrend = this.calculateTrend(
+      recentResults.map((r: { accuracy: number }) => r.accuracy)
+    );
 
     if (lossVariance < 0.001 && accuracyTrend > 0) {
       return 'converged';
@@ -441,7 +449,8 @@ class NeuralCLI {
 
               if (
                 !(modelDetails as Record<string, any>)[modelType].lastTrained ||
-                new Date(data.timestamp) > new Date((modelDetails as Record<string, any>)[modelType].lastTrained)
+                new Date(data.timestamp) >
+                  new Date((modelDetails as Record<string, any>)[modelType].lastTrained)
               ) {
                 (modelDetails as Record<string, any>)[modelType].lastTrained = data.timestamp;
                 (modelDetails as Record<string, any>)[modelType].lastAccuracy = data.finalAccuracy;
@@ -501,8 +510,9 @@ class NeuralCLI {
       const sessionContinuity =
         totalSessions > 0
           ? {
-              loadedModels: Object.keys(modelDetails).filter((m) => (modelDetails as Record<string, any>)[m].hasSavedWeights)
-                .length,
+              loadedModels: Object.keys(modelDetails).filter(
+                (m) => (modelDetails as Record<string, any>)[m].hasSavedWeights
+              ).length,
               sessionStart: new Date().toLocaleString(),
               memorySize: `${(Math.random() * 50 + 10).toFixed(1)} MB`,
             }
@@ -532,7 +542,9 @@ class NeuralCLI {
   }
 
   async getPatternMemoryUsage(patternType: string) {
-    const config = (PATTERN_MEMORY_CONFIG as Record<string, any>)[patternType] || PATTERN_MEMORY_CONFIG.convergent;
+    const config =
+      (PATTERN_MEMORY_CONFIG as Record<string, any>)[patternType] ||
+      PATTERN_MEMORY_CONFIG.convergent;
 
     // Calculate memory usage based on pattern type
     const baseMemory = config.baseMemory;

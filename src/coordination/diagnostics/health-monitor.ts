@@ -211,14 +211,17 @@ export class HealthMonitor extends EventEmitter {
   async runHealthChecks(): Promise<HealthReport> {
     const startTime = performance.now();
     const checkId = randomUUID();
-    const results: Record<string, {
-      score: number;
-      status: string;
-      details: string;
-      metrics: Record<string, unknown>;
-      timestamp: string;
-      duration: number;
-    }> = {};
+    const results: Record<
+      string,
+      {
+        score: number;
+        status: string;
+        details: string;
+        metrics: Record<string, unknown>;
+        timestamp: string;
+        duration: number;
+      }
+    > = {};
 
     console.error('🔍 Running health checks...');
 

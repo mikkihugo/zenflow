@@ -72,13 +72,7 @@ declare module 'escomplex' {
     ignoreErrors?: boolean;
   }
 
-  export function analyze(
-    code: string,
-    options?: AnalyzeOptions
-  ): ComplexityReport;
+  export function analyze(code: string, options?: AnalyzeOptions): ComplexityReport;
 
-  export function analyzeModule(
-    ast: any,
-    options?: AnalyzeOptions
-  ): ComplexityReport;
+  export function analyzeModule(ast: any, options?: AnalyzeOptions): ComplexityReport;
 }

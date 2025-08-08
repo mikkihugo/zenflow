@@ -133,10 +133,7 @@ export async function initializeNeuralWasm() {
 export class NeuralNetwork {
   private network: any;
 
-  constructor(
-    wasm: any,
-    config: NetworkConfig
-  ) {
+  constructor(wasm: any, config: NetworkConfig) {
     this.network = new wasm.WasmNeuralNetwork(config);
   }
 
@@ -169,10 +166,7 @@ export class NeuralNetwork {
 export class NeuralTrainer {
   private trainer: any;
 
-  constructor(
-    wasm: any,
-    config: TrainingConfig
-  ) {
+  constructor(wasm: any, config: TrainingConfig) {
     this.trainer = new wasm.WasmTrainer(config);
   }
 

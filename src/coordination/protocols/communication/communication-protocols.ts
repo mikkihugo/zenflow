@@ -824,7 +824,7 @@ export class CommunicationProtocols extends EventEmitter {
       const parentIndex = Math.floor((i - 1) / 2);
       const parentId = i === 0 ? this._nodeId : nodeIds[parentIndex];
       const nodeId = nodeIds[i];
-      
+
       if (parentId && nodeId) {
         const children = tree.children.get(parentId) || [];
         children.push(nodeId);
@@ -1281,7 +1281,11 @@ class ConsensusEngine {
    */
   async initiateConsensus(proposalId: string, proposal: ConsensusProposal): Promise<void> {
     this.activeProposals.set(proposalId, proposal);
-    this.logger.debug('Consensus initiated', { proposalId, type: proposal.type, nodeId: this.nodeId });
+    this.logger.debug('Consensus initiated', {
+      proposalId,
+      type: proposal.type,
+      nodeId: this.nodeId,
+    });
   }
 
   /**
@@ -1320,7 +1324,11 @@ class GossipEngine {
     _nodes: Map<string, CommunicationNode>
   ): Promise<void> {
     // Gossip propagation logic
-    this.logger.debug('Gossip state propagated', { key, version: state.version, nodeId: this.nodeId });
+    this.logger.debug('Gossip state propagated', {
+      key,
+      version: state.version,
+      nodeId: this.nodeId,
+    });
   }
 
   async route(_message: Message, _nodes: Map<string, CommunicationNode>): Promise<void> {
@@ -1334,7 +1342,11 @@ class GossipEngine {
 
     if (!currentState || state.version > currentState.version) {
       gossipState.set(key, state);
-      this.logger.debug('Gossip state updated', { key, version: state.version, nodeId: this.nodeId });
+      this.logger.debug('Gossip state updated', {
+        key,
+        version: state.version,
+        nodeId: this.nodeId,
+      });
     }
   }
 }

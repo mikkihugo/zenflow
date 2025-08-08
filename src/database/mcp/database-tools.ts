@@ -5,9 +5,10 @@
 
 // Import UACL for unified client monitoring and MCP client management
 import { ClientType, uacl } from '../../interfaces/clients/index';
+import type { DatabaseQuery, IDataAccessObject, IRepository } from '../interfaces';
 // Import database types
-import { EntityTypes, DatabaseTypes } from '../interfaces';
-import type { DatabaseQuery, IRepository, IDataAccessObject } from '../interfaces';
+import { DatabaseTypes, EntityTypes } from '../interfaces';
+
 // xxx NEEDS_HUMAN: Missing database-coordinator and query-optimizer modules - files may have been moved/deleted
 // import type { DatabaseEngine } from '../core/database-coordinator';
 // import { DatabaseCoordinator } from '../core/database-coordinator';

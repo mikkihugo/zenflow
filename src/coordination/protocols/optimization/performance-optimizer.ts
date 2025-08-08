@@ -394,9 +394,7 @@ export class PerformanceOptimizer extends EventEmitter {
   } {
     const lastItem = this.optimizationHistory[this.optimizationHistory.length - 1];
     const lastOptimization =
-      this.optimizationHistory.length > 0 && lastItem
-        ? lastItem.timestamp
-        : new Date(0);
+      this.optimizationHistory.length > 0 && lastItem ? lastItem.timestamp : new Date(0);
 
     const improvements = this.optimizationHistory
       .filter((action) => action.impact > 0)

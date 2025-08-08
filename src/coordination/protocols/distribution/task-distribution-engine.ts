@@ -292,7 +292,7 @@ export class TaskDistributionEngine extends EventEmitter {
   private assignments = new Map<string, TaskAssignment>();
   private agentCapabilities = new Map<string, AgentCapability>();
   private queue: TaskQueue;
-  private _scheduler: TaskScheduler; // xxx NEEDS_HUMAN: Verify if scheduler is needed for task scheduling
+  // private _scheduler: TaskScheduler; // xxx NEEDS_HUMAN: Verify if scheduler is needed for task scheduling
   private decomposer: TaskDecomposer;
   private assignmentOptimizer: AssignmentOptimizer;
   private workloadBalancer: WorkloadBalancer;
@@ -316,7 +316,7 @@ export class TaskDistributionEngine extends EventEmitter {
     super();
 
     this.queue = new TaskQueue(this.logger);
-    this._scheduler = new TaskScheduler(this.config, this.logger);
+    // this._scheduler = new TaskScheduler(this.config, this.logger);
     this.decomposer = new TaskDecomposer(this.logger);
     this.assignmentOptimizer = new AssignmentOptimizer(this.config, this.logger);
     this.workloadBalancer = new WorkloadBalancer(this.config, this.logger);
@@ -783,11 +783,11 @@ export class TaskDistributionEngine extends EventEmitter {
       storage: Math.min(task.requirements.resourceRequirements.storage, 1.0),
       priority: this.getPriorityWeight(task.priority),
     };
-    
+
     if (task.requirements.resourceRequirements.gpu !== undefined) {
       allocation.gpu = task.requirements.resourceRequirements.gpu;
     }
-    
+
     return allocation;
   }
 
@@ -806,7 +806,10 @@ export class TaskDistributionEngine extends EventEmitter {
     };
   }
 
-  private createMonitoringPlan(task: TaskDefinition, _agent: AgentCapability): AssignmentMonitoring {
+  private createMonitoringPlan(
+    task: TaskDefinition,
+    _agent: AgentCapability
+  ): AssignmentMonitoring {
     return {
       checkInterval: Math.min(task.estimatedDuration / 10, 30000), // Check every 10% of duration or 30s max
       progressTracking: true,

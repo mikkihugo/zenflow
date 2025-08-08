@@ -6,10 +6,10 @@
 // Container implementations - Import for internal use and export
 import { DIContainer } from './container/di-container';
 import { DIScope } from './container/di-scope';
+import { FactoryProvider } from './providers/factory-provider';
+import { ScopedProvider } from './providers/scoped-provider';
 import { SingletonProvider } from './providers/singleton-provider';
 import { TransientProvider } from './providers/transient-provider';
-import { ScopedProvider } from './providers/scoped-provider';
-import { FactoryProvider } from './providers/factory-provider';
 
 // Re-export for external use
 export { DIContainer } from './container/di-container';

@@ -1435,7 +1435,9 @@ class EnhancedMCPTools {
             node_version: process.version,
             platform: process.platform,
             arch: process.arch,
-            memory_limit: process.env['NODE_OPTIONS']?.includes('--max-old-space-size') ? 'configured' : 'default',
+            memory_limit: process.env['NODE_OPTIONS']?.includes('--max-old-space-size')
+              ? 'configured'
+              : 'default',
           },
         },
         performance: {
@@ -1466,7 +1468,9 @@ class EnhancedMCPTools {
           node_version: process.version,
           platform: process.platform,
           arch: process.arch,
-          memory_limit: process.env['NODE_OPTIONS']?.includes('--max-old-space-size') ? 'configured' : 'default',
+          memory_limit: process.env['NODE_OPTIONS']?.includes('--max-old-space-size')
+            ? 'configured'
+            : 'default',
         },
         wasm: {
           modules_loaded: this.ruvSwarm.wasmLoader.getModuleStatus(),

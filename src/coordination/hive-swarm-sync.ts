@@ -164,8 +164,12 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
       this.emit('hive:sync:completed', this.getHiveStatus());
     } catch (error) {
-      this.logger?.error('Hive sync cycle failed', { error: error instanceof Error ? error.message : String(error) });
-      this.emit('hive:sync:failed', { error: error instanceof Error ? error.message : String(error) });
+      this.logger?.error('Hive sync cycle failed', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      this.emit('hive:sync:failed', {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }
 
@@ -325,16 +329,20 @@ export class HiveSwarmCoordinator extends EventEmitter {
       if (swarmAgents.length > 0) {
         swarmInfo.performance = {
           averageResponseTime:
-            swarmAgents.reduce((sum, a) => sum + (a.metrics?.responseTime ?? 0), 0) / swarmAgents.length,
+            swarmAgents.reduce((sum, a) => sum + (a.metrics?.responseTime ?? 0), 0) /
+            swarmAgents.length,
           tasksCompletedPerMinute: swarmAgents.reduce(
             (sum, a) => sum + (a.metrics?.tasksCompleted ?? 0),
             0
           ),
           successRate:
-            swarmAgents.reduce((sum, a) => sum + (a.metrics?.successRate ?? 0), 0) / swarmAgents.length,
+            swarmAgents.reduce((sum, a) => sum + (a.metrics?.successRate ?? 0), 0) /
+            swarmAgents.length,
           resourceEfficiency:
             1 -
-            swarmAgents.reduce((sum, a) => sum + (a.metrics?.cpuUsage ?? 0), 0) / swarmAgents.length / 100,
+            swarmAgents.reduce((sum, a) => sum + (a.metrics?.cpuUsage ?? 0), 0) /
+              swarmAgents.length /
+              100,
           qualityScore:
             swarmAgents.reduce((sum, a) => sum + (a.metrics?.codeQuality ?? 0), 0) /
             swarmAgents.length,

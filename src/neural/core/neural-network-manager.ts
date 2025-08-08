@@ -1117,7 +1117,12 @@ class NeuralNetworkManager {
    * @param {string} presetName - Preset name
    * @param {object} customConfig - Optional custom configuration overrides
    */
-  async updateAgentWithPreset(agentId: string, category: string, presetName: string, customConfig: any = {}) {
+  async updateAgentWithPreset(
+    agentId: string,
+    category: string,
+    presetName: string,
+    customConfig: any = {}
+  ) {
     const existingNetwork = this.neuralNetworks.get(agentId);
     if (existingNetwork) {
     }
@@ -1150,7 +1155,14 @@ class NeuralNetworkManager {
    *
    * @param {Array} agentConfigs - Array of {agentId, category, presetName, customConfig}
    */
-  async batchCreateAgentsFromPresets(agentConfigs: Array<{ agentId: string; category: string; presetName: string; customConfig?: any }>) {
+  async batchCreateAgentsFromPresets(
+    agentConfigs: Array<{
+      agentId: string;
+      category: string;
+      presetName: string;
+      customConfig?: any;
+    }>
+  ) {
     const results = [];
     const errors = [];
 
@@ -1164,7 +1176,10 @@ class NeuralNetworkManager {
         );
         results.push({ agentId: config.agentId, success: true, agent });
       } catch (error) {
-        errors.push({ agentId: config.agentId, error: error instanceof Error ? error.message : String(error) });
+        errors.push({
+          agentId: config.agentId,
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     }
 
@@ -1244,7 +1259,9 @@ class NeuralNetworkManager {
         const importance = weight.map((w: any) => Math.abs(w));
         const threshold = this.calculateImportanceThreshold(importance);
 
-        importantWeights[layer] = weight.filter((_w: any, idx: number) => importance[idx] > threshold);
+        importantWeights[layer] = weight.filter(
+          (_w: any, idx: number) => importance[idx] > threshold
+        );
       }
     });
 
@@ -1442,7 +1459,11 @@ class NeuralNetworkManager {
    *
    * @param {Object} session - Collaborative session
    */
-  startKnowledgeDistillation(session: { active: boolean; agentIds: string[]; syncInterval: number }) {
+  startKnowledgeDistillation(session: {
+    active: boolean;
+    agentIds: string[];
+    syncInterval: number;
+  }) {
     const distillationFunction = async () => {
       if (!session.active) {
         return;
@@ -1504,7 +1525,11 @@ class NeuralNetworkManager {
    * @param {string} studentAgentId - Student agent ID
    * @param {Object} session - Collaborative session
    */
-  async performKnowledgeDistillation(teacherAgentId: string, studentAgentId: string, session: { agentIds: string[]; coordinationMatrix: number[][] }): Promise<void> {
+  async performKnowledgeDistillation(
+    teacherAgentId: string,
+    studentAgentId: string,
+    session: { agentIds: string[]; coordinationMatrix: number[][] }
+  ): Promise<void> {
     const teacher = this.neuralNetworks.get(teacherAgentId);
     const student = this.neuralNetworks.get(studentAgentId);
 
@@ -1551,7 +1576,11 @@ class NeuralNetworkManager {
    * @param {Object} teacherKnowledge - Teacher's knowledge
    * @param {Object} options - Distillation options
    */
-  async applyKnowledgeDistillation(student: any, teacherKnowledge: any, options: { temperature: number; alpha: number }): Promise<{ improvement: number; beforeMetrics: any; afterMetrics: any }> {
+  async applyKnowledgeDistillation(
+    student: any,
+    teacherKnowledge: any,
+    options: { temperature: number; alpha: number }
+  ): Promise<{ improvement: number; beforeMetrics: any; afterMetrics: any }> {
     const { temperature, alpha } = options;
 
     // Simulate knowledge transfer (in practice, would involve actual training)
@@ -1606,7 +1635,10 @@ class NeuralNetworkManager {
    *
    * @param {Object} session - Collaborative session
    */
-  async updateCoordinationMatrix(session: { agentIds: string[]; coordinationMatrix: number[][] }): Promise<void> {
+  async updateCoordinationMatrix(session: {
+    agentIds: string[];
+    coordinationMatrix: number[][];
+  }): Promise<void> {
     for (let i = 0; i < session.agentIds.length; i++) {
       for (let j = 0; j < session.agentIds.length; j++) {
         if (i === j) {
@@ -1724,7 +1756,12 @@ class NeuralNetworkManager {
    * @param {number} strength - Interaction strength (0-1)
    * @param {string} type - Interaction type
    */
-  recordAgentInteraction(agentA: string, agentB: string, strength: number, type: string = 'general'): void {
+  recordAgentInteraction(
+    agentA: string,
+    agentB: string,
+    strength: number,
+    type: string = 'general'
+  ): void {
     const interactionKey = `${agentA}-${agentB}`;
 
     if (!this.agentInteractions.has(interactionKey)) {
@@ -1869,7 +1906,12 @@ interface TrainingHistoryEntry {
 interface WasmModule {
   exports: {
     forward_pass: (networkId: string, input: any) => Float32Array;
-    train_batch: (networkId: string, batch: string, learningRate: number, freezeLayers: string) => number;
+    train_batch: (
+      networkId: string,
+      batch: string,
+      learningRate: number,
+      freezeLayers: string
+    ) => number;
     get_gradients: (networkId: string) => string;
     apply_gradients: (networkId: string, gradients: string) => void;
     serialize_network: (networkId: string) => any;
@@ -1889,7 +1931,12 @@ class NeuralNetwork {
     epochs_trained: number;
     total_samples: number;
   };
-  constructor(networkId: string, agentId: string, config: NeuralNetworkConfig, wasmModule: WasmModule) {
+  constructor(
+    networkId: string,
+    agentId: string,
+    config: NeuralNetworkConfig,
+    wasmModule: WasmModule
+  ) {
     this.networkId = networkId;
     this.agentId = agentId;
     this.config = config;
@@ -1914,7 +1961,10 @@ class NeuralNetwork {
     }
   }
 
-  async train(trainingData: { samples: any[] }, options: { epochs: number; batchSize: number; learningRate: number; freezeLayers?: any }): Promise<typeof this.metrics> {
+  async train(
+    trainingData: { samples: any[] },
+    options: { epochs: number; batchSize: number; learningRate: number; freezeLayers?: any }
+  ): Promise<typeof this.metrics> {
     const { epochs, batchSize, learningRate, freezeLayers } = options;
 
     for (let epoch = 0; epoch < epochs; epoch++) {
@@ -2058,7 +2108,10 @@ class SimulatedNeuralNetwork {
     return output;
   }
 
-  async train(_trainingData: any, options: { epochs: number; batchSize?: number; learningRate?: number }): Promise<typeof this.metrics> {
+  async train(
+    _trainingData: any,
+    options: { epochs: number; batchSize?: number; learningRate?: number }
+  ): Promise<typeof this.metrics> {
     const { epochs } = options;
 
     for (let epoch = 0; epoch < epochs; epoch++) {

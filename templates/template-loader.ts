@@ -19,7 +19,7 @@ export interface TemplateManifest {
   author: string;
   capabilities: string[];
   dependencies: string[];
-  config: Record<string, any>;
+  config: Record<string, unknown>;
 }
 
 export class TemplateLoader {
@@ -89,7 +89,7 @@ export class TemplateLoader {
 
     // Parse frontmatter if exists
     const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-    const metadata: any = {};
+    const metadata: Record<string, string> = {};
 
     if (frontmatterMatch) {
       try {
@@ -236,8 +236,36 @@ export class TemplateLoader {
    *
    * @param type
    */
-  private createDefaultCapabilities(type: string): any {
-    const capabilityMap: Record<string, any> = {
+  interface Capability {
+  codeGeneration: boolean;
+  codeReview: boolean;
+  testing: boolean;
+  documentation: boolean;
+  research: boolean;
+  analysis: boolean;
+  webSearch: boolean;
+  apiIntegration: boolean;
+  fileSystem: boolean;
+  terminalAccess: boolean;
+  languages: string[];
+  frameworks: string[];
+  domains: string[];
+  tools: string[];
+  maxConcurrentTasks: number;
+  maxMemoryUsage: number;
+  maxExecutionTime: number;
+  reliability: number;
+  speed: number;
+  quality: number;
+}
+
+   /**
+   * Create default capabilities based on agent type
+   *
+   * @param type
+   */
+  private createDefaultCapabilities(type: string): Capability {
+    const capabilityMap: Record<string, Capability> = {
       'automation-smart-agent': {
         codeGeneration: true,
         codeReview: false,

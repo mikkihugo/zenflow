@@ -166,7 +166,7 @@ export interface ICoordinationDao<T> extends ICoordinationRepository<T> {}
  */
 export enum EntityTypes {
   User = 'User',
-  Product = 'Product', 
+  Product = 'Product',
   Order = 'Order',
   Document = 'Document',
   Task = 'Task',
@@ -174,7 +174,7 @@ export enum EntityTypes {
   Swarm = 'Swarm',
   Memory = 'Memory',
   Vector = 'Vector',
-  Graph = 'Graph'
+  Graph = 'Graph',
 }
 
 /**
@@ -189,7 +189,7 @@ export enum DatabaseTypes {
   Memory = 'memory',
   Kuzu = 'kuzu',
   LanceDB = 'lancedb',
-  Coordination = 'coordination'
+  Coordination = 'coordination',
 }
 
 /**

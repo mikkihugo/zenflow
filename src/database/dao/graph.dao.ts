@@ -5,7 +5,6 @@
  * node and relationship management, traversals, and Cypher queries.
  */
 
-import type { GraphDatabaseAdapter } from '../providers/database-providers';
 import { BaseDao } from '../base.dao';
 import type {
   CustomQuery,
@@ -15,6 +14,7 @@ import type {
   GraphTraversalResult,
   IGraphRepository,
 } from '../interfaces';
+import type { GraphDatabaseAdapter } from '../providers/database-providers';
 
 /**
  * Graph database repository implementation for Kuzu

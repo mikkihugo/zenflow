@@ -259,7 +259,9 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
           const taskToRebalance = tasksToRebalance[0];
           const agentToReassign = idleAgents[0];
           // This is a simplified reassignment. A real implementation would be more robust.
-          await this.db.updateTask(taskToRebalance.id, { assigned_agents: [agentToReassign?.id ?? ''] });
+          await this.db.updateTask(taskToRebalance.id, {
+            assigned_agents: [agentToReassign?.id ?? ''],
+          });
         }
       }
     }, 30000);

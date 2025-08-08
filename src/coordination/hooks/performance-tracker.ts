@@ -121,9 +121,7 @@ export class HookPerformanceTracker implements MetricsTracker {
 
     if (filter.timeframe && filter.timeframe.start && filter.timeframe.end) {
       const { start, end } = filter.timeframe;
-      metrics = metrics.filter(
-        (m) => m.startTime >= start && m.endTime <= end
-      );
+      metrics = metrics.filter((m) => m.startTime >= start && m.endTime <= end);
     }
 
     if (filter.successOnly) {
