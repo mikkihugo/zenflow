@@ -1,8 +1,5 @@
 /**
- * Interface Mode Detector
- *
- * Automatically detects the appropriate interface mode (CLI/TUI/Web)
- * based on environment conditions and user preferences.
+ * Interface mode detection utilities
  */
 
 export type InterfaceMode = 'cli' | 'tui' | 'web';

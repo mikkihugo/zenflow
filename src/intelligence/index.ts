@@ -144,13 +144,19 @@ export const IntelligenceUtils = {
       performanceOptimizerModule,
       mlRegistryModule,
       behavioralOptimizationModule,
-      knowledgeEvolutionModule
+      knowledgeEvolutionModule,
     ] = systems;
 
     return {
-      patternRecognition: patternRecognitionModule && new patternRecognitionModule.PatternRecognitionEngine(defaultConfig, systemContext),
-      learningCoordinator: learningCoordinatorModule && new learningCoordinatorModule.LearningCoordinator(defaultConfig, systemContext),
-      performanceOptimizer: performanceOptimizerModule && new performanceOptimizerModule.PerformanceOptimizer(defaultConfig, systemContext),
+      patternRecognition:
+        patternRecognitionModule &&
+        new patternRecognitionModule.PatternRecognitionEngine(defaultConfig, systemContext),
+      learningCoordinator:
+        learningCoordinatorModule &&
+        new learningCoordinatorModule.LearningCoordinator(defaultConfig, systemContext),
+      performanceOptimizer:
+        performanceOptimizerModule &&
+        new performanceOptimizerModule.PerformanceOptimizer(defaultConfig, systemContext),
       mlRegistry: mlRegistryModule && new mlRegistryModule.MLModelRegistry(defaultConfig),
       behavioralOptimization: behavioralOptimizationModule,
       knowledgeEvolution: knowledgeEvolutionModule,

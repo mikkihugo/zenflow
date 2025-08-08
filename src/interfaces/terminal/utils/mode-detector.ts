@@ -97,7 +97,10 @@ export function detectModeWithReason(
  */
 export function isInteractiveSupported(): boolean {
   return (
-    process.stdin.isTTY && process.stdout.isTTY && !process.env['CI'] && process.env['TERM'] !== 'dumb'
+    process.stdin.isTTY &&
+    process.stdout.isTTY &&
+    !process.env['CI'] &&
+    process.env['TERM'] !== 'dumb'
   );
 }
 

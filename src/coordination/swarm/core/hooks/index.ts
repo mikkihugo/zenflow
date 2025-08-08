@@ -970,7 +970,9 @@ class ZenSwarmHooks {
     return patterns[agentType] || 'balanced';
   }
 
-  async autoFormatFile(filePath: string): Promise<{success: boolean; reason?: string; details?: any}> {
+  async autoFormatFile(
+    filePath: string
+  ): Promise<{ success: boolean; reason?: string; details?: any }> {
     const ext = path.extname(filePath);
     const formatters = {
       '.js': 'prettier --write',
@@ -1018,7 +1020,7 @@ class ZenSwarmHooks {
     };
   }
 
-  validateCommandSafety(command: string): {safe: boolean; reason?: string; riskLevel?: string} {
+  validateCommandSafety(command: string): { safe: boolean; reason?: string; riskLevel?: string } {
     const dangerousPatterns = [
       /rm\s+-rf\s+\//,
       /curl.*\|\s*bash/,
@@ -1352,8 +1354,11 @@ ${this.sessionData.learnings
     return bottlenecks;
   }
 
-  suggestImprovements(performance): Array<{area: string; suggestion: string; expectedImprovement: string}> {
-    const improvements: Array<{area: string; suggestion: string; expectedImprovement: string}> = [];
+  suggestImprovements(
+    performance
+  ): Array<{ area: string; suggestion: string; expectedImprovement: string }> {
+    const improvements: Array<{ area: string; suggestion: string; expectedImprovement: string }> =
+      [];
     const efficiency = this.calculateEfficiency(performance);
 
     // Time improvements
@@ -1754,7 +1759,10 @@ ${this.sessionData.learnings
    * @param agentId
    * @param type
    */
-  async getNotificationsFromDatabase(agentId: string | null = null, type: string | null = null): Promise<any[]> {
+  async getNotificationsFromDatabase(
+    agentId: string | null = null,
+    type: string | null = null
+  ): Promise<any[]> {
     if (!this.persistence) {
       return [];
     }
@@ -1882,6 +1890,7 @@ ${this.sessionData.learnings
 // Export singleton instance and its methods
 const hooksInstance = new ZenSwarmHooks();
 
-export const handleHook = (hookType: string, options: any[]) => hooksInstance.handleHook(hookType, options);
+export const handleHook = (hookType: string, options: any[]) =>
+  hooksInstance.handleHook(hookType, options);
 
 export default hooksInstance;

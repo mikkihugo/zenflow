@@ -384,7 +384,7 @@ export class SafeDomainSplitter implements DomainSplitter {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       if (!line) continue;
-      
+
       const importMatch = line.match(/from\s+['"`]([^'"`]+)['"`]/);
 
       if (importMatch) {

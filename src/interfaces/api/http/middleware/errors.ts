@@ -206,7 +206,8 @@ export const errorHandler: ErrorRequestHandler = (
     // Generic error - treat as internal server error
     statusCode = 500;
     code = ErrorCodes.INTERNAL_SERVER_ERROR;
-    message = process.env['NODE_ENV'] === 'production' ? 'An internal error occurred' : error.message;
+    message =
+      process.env['NODE_ENV'] === 'production' ? 'An internal error occurred' : error.message;
 
     if (process.env['NODE_ENV'] !== 'production') {
       details = {

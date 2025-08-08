@@ -42,7 +42,6 @@ export function createOrchestratorInstance(
 
   // Use injected coordination provider or fall back to lazy loading
   const coordinationManagerProvider = customCoordinationProvider || coordinationProvider;
-;
   const mcpServer = new MCPServer(mcpConfig);
 
   // Create orchestrator with proper coordination configuration
