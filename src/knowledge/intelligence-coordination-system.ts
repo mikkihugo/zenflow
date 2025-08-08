@@ -564,7 +564,7 @@ export interface AvailabilitySlot {
   type: SlotType;
 }
 
-export interface DevelopmentStage {
+export interface BasicDevelopmentStage {
   stageId: string;
   name: string;
   duration: number;
@@ -2535,6 +2535,206 @@ export type MetricType = 'counter' | 'gauge' | 'histogram' | 'timer' | 'rate';
 export type RecommendationAction = 'develop' | 'enhance' | 'maintain' | 'redirect' | 'discontinue';
 export type AlertType = 'threshold' | 'anomaly' | 'trend' | 'pattern' | 'system';
 export type VerificationMethod = 'peer-review' | 'automated' | 'expert-assessment' | 'benchmark';
+
+// Missing type definitions for validation and testing
+export interface TestCriteria {
+  criteriaId: string;
+  name: string;
+  condition: string;
+  expectedValue: any;
+  tolerance?: number;
+}
+
+export interface TestAutomation {
+  automated: boolean;
+  framework?: string;
+  schedule?: string;
+  retryPolicy?: RetryPolicy;
+}
+
+export interface CriteriaRule {
+  ruleId: string;
+  type: 'required' | 'optional' | 'conditional';
+  condition: string;
+  priority: number;
+}
+
+export interface CriteriaThreshold {
+  metric: string;
+  minValue?: number;
+  maxValue?: number;
+  targetValue?: number;
+}
+
+export interface CriteriaScoring {
+  method: 'weighted' | 'average' | 'maximum' | 'minimum';
+  scale: number;
+  normalization?: boolean;
+}
+
+export interface CriteriaWeight {
+  criteriaId: string;
+  weight: number;
+  rationale?: string;
+}
+
+export interface ConstraintBounds {
+  lower?: number;
+  upper?: number;
+  step?: number;
+  allowedValues?: any[];
+}
+
+export interface MetricCalculation {
+  formula: string;
+  aggregation: 'sum' | 'avg' | 'min' | 'max' | 'count';
+  window?: number;
+  unit?: string;
+}
+
+export interface StorageRepository {
+  type: 'database' | 'file' | 'memory' | 'cloud';
+  location: string;
+  credentials?: any;
+}
+
+export interface StorageSchema {
+  version: string;
+  fields: SchemaField[];
+  indices?: string[];
+  constraints?: string[];
+}
+
+export interface IndexingStrategy {
+  type: 'btree' | 'hash' | 'fulltext' | 'spatial';
+  fields: string[];
+  options?: Record<string, any>;
+}
+
+export interface AnalysisAutomation {
+  enabled: boolean;
+  schedule?: string;
+  triggers?: string[];
+  pipeline?: string[];
+}
+
+export interface AnalysisInsight {
+  insightId: string;
+  type: 'trend' | 'anomaly' | 'pattern' | 'correlation';
+  significance: number;
+  description: string;
+}
+
+export interface PatternIndicator {
+  indicatorId: string;
+  name: string;
+  threshold: number;
+  weight: number;
+}
+
+export interface ExpectedOutcome {
+  metric: string;
+  improvement: number;
+  timeframe: number;
+  confidence: number;
+}
+
+export type ReportType = 'summary' | 'detailed' | 'executive' | 'technical' | 'operational';
+
+export interface SpecializationWidget {
+  widgetId: string;
+  type: string;
+  data: any;
+  position: WidgetPosition;
+}
+
+export interface DashboardLayout {
+  grid: GridConfig;
+  responsive: boolean;
+  theme?: string;
+}
+
+export interface AlertCondition {
+  metric: string;
+  operator: 'gt' | 'lt' | 'eq' | 'ne' | 'contains';
+  value: any;
+  duration?: number;
+}
+
+export interface AlertAction {
+  type: AlertActionType;
+  target: string;
+  template?: string;
+  escalation?: EscalationPolicy;
+}
+
+export interface StageObjective {
+  objectiveId: string;
+  description: string;
+  metrics: string[];
+  target: any;
+}
+
+// Supporting type definitions
+export interface RetryPolicy {
+  maxRetries: number;
+  backoff: 'linear' | 'exponential';
+  delay: number;
+}
+
+export interface SchemaField {
+  name: string;
+  type: string;
+  nullable: boolean;
+  indexed?: boolean;
+}
+
+export interface WidgetPosition {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface GridConfig {
+  columns: number;
+  rows: number;
+  gap: number;
+}
+
+export interface EscalationPolicy {
+  levels: EscalationLevel[];
+  timeout: number;
+}
+
+export interface EscalationLevel {
+  level: number;
+  recipients: string[];
+  delay: number;
+}
+
+export interface AccessControl {
+  public: boolean;
+  roles?: string[];
+  users?: string[];
+}
+
+export interface ReportContent {
+  sections: ReportSection[];
+  format: 'markdown' | 'html' | 'pdf' | 'json';
+}
+
+export interface ReportSection {
+  title: string;
+  content: any;
+  type: 'text' | 'chart' | 'table' | 'metric';
+}
+
+export interface ReportDistribution {
+  recipients: string[];
+  channels: string[];
+  schedule?: string;
+}
 
 // Final supporting interfaces with basic implementations
 export interface Recipient {

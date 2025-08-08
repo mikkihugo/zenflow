@@ -607,7 +607,7 @@ class CognitivePatternEvolution {
       const historicalPerformance = this.getHistoricalPerformance(agentId, patternType);
       const adaptationSuccess = this.getAdaptationSuccess(agentId, patternType);
 
-      effectiveness[patternType] = {
+      (effectiveness as any)[patternType] = {
         contextMatch,
         historicalPerformance,
         adaptationSuccess,
@@ -630,13 +630,13 @@ class CognitivePatternEvolution {
     let weightSum = 0;
 
     // Match exploration vs exploitation preference
-    const explorationNeed = context.creativity_required + context.noiseLevel;
+    const explorationNeed = (context.creativity_required || 0) + (context.noiseLevel || 0);
     const explorationMatch = Math.abs(characteristics.explorationRate - explorationNeed);
     totalMatch += (1 - explorationMatch) * 0.3;
     weightSum += 0.3;
 
     // Match decision making style
-    const systematicNeed = context.dataComplexity + context.patternRegularity;
+    const systematicNeed = (context.dataComplexity || 0) + (context.patternRegularity || 0);
     const systematicMatch = this.matchDecisionStyle(characteristics.decisionMaking, systematicNeed);
     totalMatch += systematicMatch * 0.25;
     weightSum += 0.25;
@@ -673,7 +673,7 @@ class CognitivePatternEvolution {
       innovative: 0.2,
     };
 
-    const styleScore = styleScores[style] || 0.5;
+    const styleScore = (styleScores as any)[style] || 0.5;
     return 1 - Math.abs(styleScore - systematicNeed);
   }
 
@@ -685,15 +685,15 @@ class CognitivePatternEvolution {
    */
   matchPatternRecognition(approach: string, context: PatternContext): number {
     const approachScores = {
-      exact_match: context.patternRegularity,
-      flexible_match: 1 - context.patternRegularity,
-      analogical: context.abstractionLevel,
-      pattern_networks: context.dataComplexity,
-      evidence_based: 1 - context.noiseLevel,
-      abstraction_layers: context.abstractionLevel,
+      exact_match: context.patternRegularity || 0,
+      flexible_match: 1 - (context.patternRegularity || 0),
+      analogical: context.abstractionLevel || 0,
+      pattern_networks: context.dataComplexity || 0,
+      evidence_based: 1 - (context.noiseLevel || 0),
+      abstraction_layers: context.abstractionLevel || 0,
     };
 
-    return approachScores[approach] || 0.5;
+    return (approachScores as any)[approach] || 0.5;
   }
 
   /**
@@ -704,9 +704,9 @@ class CognitivePatternEvolution {
    */
   matchSearchStrategy(strategy: string, context: PatternContext): number {
     const strategyScores = {
-      directed: 1 - context.creativity_required,
-      random: context.creativity_required,
-      lateral: context.noiseLevel + context.creativity_required,
+      directed: 1 - (context.creativity_required || 0),
+      random: context.creativity_required || 0,
+      lateral: (context.noiseLevel || 0) + (context.creativity_required || 0),
       holistic: context.dataComplexity,
       systematic: context.patternRegularity,
       conceptual: context.abstractionLevel,

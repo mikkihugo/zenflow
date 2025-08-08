@@ -1343,6 +1343,8 @@ class RealTimeMonitor extends EventEmitter {
     super();
     // xxx NEEDS_HUMAN: eventBus parameter kept for future event propagation implementation
     void eventBus;
+    // xxx NEEDS_HUMAN: logger kept for future debug logging implementation
+    void this.logger;
   }
 
   start(): void {
@@ -1704,6 +1706,9 @@ class AdaptationEngine {
     private logger: ILogger
   ) {
     // Learning history will be used for ML-based optimization in future
+    void this.learningHistory; // xxx NEEDS_HUMAN: Will be used for ML-based optimization
+    void this.config; // xxx NEEDS_HUMAN: Will be used for configuration-based adaptation
+    void this.logger; // xxx NEEDS_HUMAN: Will be used for adaptation logging
   }
 
   async getRecommendations(

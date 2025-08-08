@@ -1030,8 +1030,9 @@ class ConsensusEngine extends EventEmitter {
     private nodeId: string,
     private config: ConsensusConfig,
     private logger: ILogger,
-    private eventBus: IEventBus
+    eventBus: IEventBus
   ) {
+    // xxx NEEDS_HUMAN: eventBus passed but not used - confirm if needed for future features
     super();
 
     this.state = {
@@ -1182,7 +1183,9 @@ class ConsensusEngine extends EventEmitter {
     const prevLogIndex = this.state.log.length - entries.length - 1;
     const prevLogTerm = prevLogIndex >= 0 ? this.state.log[prevLogIndex]?.term ?? 0 : 0;
 
-    const _request: AppendEntriesRequest = {
+    // Request object created for documentation purposes - actual network implementation simulated below
+    // xxx NEEDS_HUMAN: Determine if actual network implementation is needed
+    const request: AppendEntriesRequest = {
       term: this.state.currentTerm,
       leaderId: this.nodeId,
       prevLogIndex,
@@ -1190,6 +1193,7 @@ class ConsensusEngine extends EventEmitter {
       entries,
       leaderCommit: this.state.commitIndex,
     };
+    void request; // Mark as intentionally unused
 
     // Simulate network request
     return new Promise((resolve) => {
@@ -1247,11 +1251,12 @@ class ConsensusEngine extends EventEmitter {
     }
   }
 
-  private async sendVoteRequest(nodeId: string): Promise<VoteResponse> {
+  private async sendVoteRequest(_nodeId: string): Promise<VoteResponse> {
     const lastLogIndex = this.state.log.length - 1;
     const lastLogTerm = lastLogIndex >= 0 ? this.state.log[lastLogIndex]?.term ?? 0 : 0;
 
-    const request: VoteRequest = {
+    // xxx NEEDS_HUMAN: request variable unused - determine if actual network implementation is needed
+    const _request: VoteRequest = {
       term: this.state.currentTerm,
       candidateId: this.nodeId,
       lastLogIndex,
@@ -1325,9 +1330,11 @@ class WorkStealingSystem extends EventEmitter {
     private nodeId: string,
     private config: WorkStealingConfig,
     private logger: ILogger,
-    private eventBus: IEventBus
+    eventBus: IEventBus
   ) {
     super();
+    // xxx NEEDS_HUMAN: eventBus passed but not used - confirm if needed for future event propagation
+    void eventBus;
 
     // Initialize own work queue
     this.workQueues.set(nodeId, {
@@ -1716,9 +1723,11 @@ class HierarchicalCoordinator extends EventEmitter {
     private nodeId: string,
     private config: HierarchicalConfig,
     private logger: ILogger,
-    private eventBus: IEventBus
+    eventBus: IEventBus
   ) {
     super();
+    // xxx NEEDS_HUMAN: eventBus passed but not used - confirm if needed for future event propagation
+    void eventBus;
 
     // Initialize as root node
     this.hierarchy.set(nodeId, {
