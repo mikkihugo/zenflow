@@ -41,6 +41,10 @@ import {
   LoadBalancedWebSocketClient,
   WebSocketClientFactory,
 } from './websocket-client-factory';
+
+// Import types for internal use
+import type { WebSocketClientConfig } from './websocket-types';
+
 // WebSocket types and utilities
 export {
   type WebSocketAuthenticationConfig,

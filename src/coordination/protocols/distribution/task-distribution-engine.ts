@@ -292,7 +292,7 @@ export class TaskDistributionEngine extends EventEmitter {
   private assignments = new Map<string, TaskAssignment>();
   private agentCapabilities = new Map<string, AgentCapability>();
   private queue: TaskQueue;
-  private scheduler: TaskScheduler; // xxx NEEDS_HUMAN: Verify if scheduler is needed for task scheduling
+  private _scheduler: TaskScheduler; // xxx NEEDS_HUMAN: Verify if scheduler is needed for task scheduling
   private decomposer: TaskDecomposer;
   private assignmentOptimizer: AssignmentOptimizer;
   private workloadBalancer: WorkloadBalancer;
@@ -316,7 +316,7 @@ export class TaskDistributionEngine extends EventEmitter {
     super();
 
     this.queue = new TaskQueue(this.logger);
-    this.scheduler = new TaskScheduler(this.config, this.logger);
+    this._scheduler = new TaskScheduler(this.config, this.logger);
     this.decomposer = new TaskDecomposer(this.logger);
     this.assignmentOptimizer = new AssignmentOptimizer(this.config, this.logger);
     this.workloadBalancer = new WorkloadBalancer(this.config, this.logger);
