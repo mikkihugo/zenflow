@@ -53,11 +53,11 @@ const PATTERN_MEMORY_CONFIG = {
 
 class NeuralCLI {
   private ruvSwarm: any;
-  private activePatterns: Set<string>;
+  // private activePatterns: Set<string>; // xxx NEEDS_HUMAN: Unused property - confirm if can be removed
 
   constructor() {
     this.ruvSwarm = null;
-    this.activePatterns = new Set();
+    // this.activePatterns = new Set(); // xxx NEEDS_HUMAN: Unused property - confirm if can be removed
   }
 
   async initialize() {
@@ -94,11 +94,11 @@ class NeuralCLI {
       for (let i = 0; i < models.length; i++) {
         const model = models[i];
         if (!model) continue;
-        const modelInfo = persistenceInfo.modelDetails[model] || {};
+        const modelInfo = (persistenceInfo.modelDetails as any)[model] || {};
         const isActive = Math.random() > 0.5; // Simulate active status
         const isLast = i === models.length - 1;
 
-        let _statusLine = isLast ? `└── ${model.padEnd(12)}` : `├── ${model.padEnd(12)}`;
+        // let _statusLine = isLast ? `└── ${model.padEnd(12)}` : `├── ${model.padEnd(12)}`; // xxx NEEDS_HUMAN: Unused variable - confirm if display logic is incomplete
 
         // Add accuracy if available
         if (modelInfo && modelInfo.lastAccuracy) {
@@ -302,13 +302,13 @@ class NeuralCLI {
       }
       const activationTypes = ['ReLU', 'Sigmoid', 'Tanh', 'GELU', 'Swish'];
       activationTypes.forEach((_activation) => {
-        const _usage = (Math.random() * 100).toFixed(1);
+        // const _usage = (Math.random() * 100).toFixed(1); // xxx NEEDS_HUMAN: Unused calculation - confirm if display logic is incomplete
       });
 
       // Use pattern-specific memory configuration
-      const _memoryUsage = await this.getPatternMemoryUsage(
-        patternType === 'all' ? 'convergent' : patternType
-      );
+      // const _memoryUsage = await this.getPatternMemoryUsage(
+      //   patternType === 'all' ? 'convergent' : patternType
+      // ); // xxx NEEDS_HUMAN: Unused variable - confirm if display logic is incomplete
     } catch (error) {
       console.error('❌ Error analyzing patterns:', (error as Error).message);
       process.exit(1);
@@ -316,7 +316,8 @@ class NeuralCLI {
   }
 
   async export(args: string[]) {
-    const _rs = await this.initialize();
+    // const _rs = await this.initialize(); // xxx NEEDS_HUMAN: Result not used - confirm if WASM operations needed
+    await this.initialize();
 
     const modelType = this.getArg(args, '--model') || 'all';
     const outputPath = this.getArg(args, '--output') || './neural-weights.json';

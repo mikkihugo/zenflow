@@ -826,7 +826,7 @@ export class ChaosEngineering extends EventEmitter {
    *
    * @param _execution
    */
-  async checkSystemRecovery(_execution) {
+  async checkSystemRecovery(_execution: ExperimentExecution) {
     // Check health monitor status
     if (this.healthMonitor) {
       const healthStatus = this.healthMonitor.getCurrentHealth();
@@ -1052,7 +1052,7 @@ export class ChaosEngineering extends EventEmitter {
    * @param name
    * @param injector
    */
-  registerFailureInjector(name, injector) {
+  registerFailureInjector(name: string, injector: FailureInjector) {
     this.failureInjectors.set(name, injector);
     this.logger.debug(`Registered failure injector: ${name}`);
   }
@@ -1191,7 +1191,7 @@ export class ChaosEngineering extends EventEmitter {
     };
   }
 
-  getRecoveryTrigger(failureType) {
+  getRecoveryTrigger(failureType: string | undefined) {
     const triggerMap = {
       memory_pressure: 'system.memory',
       cpu_stress: 'system.cpu',
@@ -1227,7 +1227,7 @@ export class ChaosEngineering extends EventEmitter {
    * @param executionId
    * @param reason
    */
-  async cancelExperiment(executionId, reason = 'Manual cancellation') {
+  async cancelExperiment(executionId: string, reason = 'Manual cancellation') {
     const execution = this.activeExperiments.get(executionId);
     if (!execution) {
       throw new ValidationError(
@@ -1311,22 +1311,22 @@ export class ChaosEngineering extends EventEmitter {
    *
    * @param healthMonitor
    */
-  setHealthMonitor(healthMonitor) {
+  setHealthMonitor(healthMonitor: HealthMonitor) {
     this.healthMonitor = healthMonitor;
     this.logger.info('Health Monitor integration configured');
   }
 
-  setRecoveryWorkflows(recoveryWorkflows) {
+  setRecoveryWorkflows(recoveryWorkflows: RecoveryWorkflows) {
     this.recoveryWorkflows = recoveryWorkflows;
     this.logger.info('Recovery Workflows integration configured');
   }
 
-  setConnectionManager(connectionManager) {
+  setConnectionManager(connectionManager: ConnectionManager) {
     this.connectionManager = connectionManager;
     this.logger.info('Connection Manager integration configured');
   }
 
-  setMCPTools(mcpTools) {
+  setMCPTools(mcpTools: any) {
     this.mcpTools = mcpTools;
     this.logger.info('MCP Tools integration configured');
   }

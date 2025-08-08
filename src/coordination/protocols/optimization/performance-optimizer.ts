@@ -524,7 +524,7 @@ export class PerformanceOptimizer extends EventEmitter {
     this.emit('optimization:applied', action);
   }
 
-  private async measureOptimizationImpact(action: OptimizationAction): Promise<number> {
+  private async measureOptimizationImpact(_action: OptimizationAction): Promise<number> {
     // Measure performance improvement after optimization
     const currentMetrics = this.metrics;
     const baselineMetrics = this.getHistoricalBaseline();
@@ -823,7 +823,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
     }
   }
 
-  private async adaptBatchSize(processingTime: number): Promise<void> {
+  private async adaptBatchSize(_processingTime: number): Promise<void> {
     const avgProcessingTime =
       this.processingTimes.reduce((sum, time) => sum + time, 0) / this.processingTimes.length;
 
@@ -1013,7 +1013,8 @@ class AdvancedConnectionPool extends EventEmitter implements ConnectionPool {
         /* actual connection object */
       };
 
-      const connectionTime = Date.now() - startTime;
+      // Connection creation time tracking - could be used for metrics
+      // const connectionTime = Date.now() - startTime;
 
       return {
         id: this.generateConnectionId(),
@@ -1050,7 +1051,7 @@ class AdvancedConnectionPool extends EventEmitter implements ConnectionPool {
     });
   }
 
-  private async checkConnectionHealth(connection: PooledConnection): Promise<number> {
+  private async checkConnectionHealth(_connection: PooledConnection): Promise<number> {
     // Simulate health check
     return Math.random() > 0.1 ? 1.0 : 0.0; // 90% healthy
   }
@@ -1302,7 +1303,7 @@ class IntelligentCache extends EventEmitter {
   }
 
   private compress(value: any): any {
-    // Simulate compression
+    // Simulate compression - not used currently but kept for future implementation
     return value;
   }
 
@@ -1338,6 +1339,7 @@ class RealTimeMonitor extends EventEmitter {
     private eventBus: IEventBus
   ) {
     super();
+    // Event bus will be used for event propagation in the future
   }
 
   start(): void {
@@ -1525,7 +1527,7 @@ class RealTimeMonitor extends EventEmitter {
   }
 
   private getAlertSeverity(
-    alertName: string,
+    _alertName: string,
     value: number
   ): 'low' | 'medium' | 'high' | 'critical' {
     // Simplified severity calculation
@@ -1697,11 +1699,13 @@ class AdaptationEngine {
   constructor(
     private config: AdaptationConfig,
     private logger: ILogger
-  ) {}
+  ) {
+    // Learning history will be used for ML-based optimization in future
+  }
 
   async getRecommendations(
     metrics: PerformanceMetrics,
-    history: OptimizationAction[]
+    _history: OptimizationAction[]
   ): Promise<OptimizationRecommendation[]> {
     const recommendations: OptimizationRecommendation[] = [];
 
