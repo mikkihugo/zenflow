@@ -1147,25 +1147,7 @@ class TaskQueue {
   }
 }
 
-class TaskScheduler {
-  constructor(
-    private config: {
-      maxConcurrentTasks: number;
-      defaultTimeout: number;
-      qualityThreshold: number;
-      loadBalanceTarget: number;
-      enablePredictiveAssignment: boolean;
-      enableDynamicRebalancing: boolean;
-    },
-    private logger: ILogger
-  ) {
-    // Scheduler initialization
-    void this.config; // Mark as intentionally unused
-    void this.logger; // Mark as intentionally unused
-  }
 
-  // Scheduling algorithms would be implemented here
-}
 
 class TaskDecomposer {
   constructor(private logger: ILogger) {

@@ -1263,7 +1263,8 @@ class ConsensusEngine extends EventEmitter {
 
   private async sendVoteRequest(_nodeId: string): Promise<VoteResponse> {
     const lastLogIndex = this.state.log.length - 1;
-    const lastLogTerm = lastLogIndex >= 0 ? (this.state.log[lastLogIndex]?.term ?? 0) : 0;
+    // xxx NEEDS_HUMAN: lastLogTerm is unused, but may be needed for a more complete Raft implementation
+    // const lastLogTerm = lastLogIndex >= 0 ? (this.state.log[lastLogIndex]?.term ?? 0) : 0;
 
     // xxx NEEDS_HUMAN: request variable unused - determine if actual network implementation is needed
     // Commented out unused variable to avoid warning

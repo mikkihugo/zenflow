@@ -853,6 +853,7 @@ export class ChaosEngineering extends EventEmitter {
     // Check connections if relevant
     if (this.connectionManager) {
       const connectionStatus = this.connectionManager.getConnectionStatus();
+      if (!connectionStatus || !connectionStatus.connections) return false;
       const failedConnections = Object.values(connectionStatus.connections).filter(
         (conn: any) => conn && conn.status === 'failed'
       ).length;
@@ -950,6 +951,7 @@ export class ChaosEngineering extends EventEmitter {
 
         if (this.connectionManager) {
           const connections = this.connectionManager.getConnectionStatus();
+          if (!connections || !connections.connections) return { type: 'network_failure', failureType, affectedConnections, duration: params.duration || 0 };
 
           for (const [id, _connection] of Object.entries(connections.connections)) {
             if (targetConnections === 'all' || targetConnections.includes(id)) {

@@ -273,9 +273,6 @@ export class ConnectionStateManager extends EventEmitter {
 
       connection.status = 'connected';
       connection.lastConnected = new Date();
-      this.activeConnections++;
-      this.stats.activeConnections++;
-      this.stats.totalConnections++;
 
       const connectionTime = Date.now() - startTime;
       this.stats.totalConnectionTime += connectionTime;
@@ -295,7 +292,7 @@ export class ConnectionStateManager extends EventEmitter {
       this.emit('connection:established', { connectionId, connection });
     } catch (error) {
       connection.status = 'failed';
-      connection.error = error.message;
+      connection.error = error as Error;
       this.stats.failedConnections++;
 
       this.logger.error(`Failed to establish MCP connection: ${connectionId}`, {
@@ -316,7 +313,7 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connectionId
    */
-  async establishConnection(connectionId) {
+  async establishConnection(connectionId: string) {
     const connection = this.connections.get(connectionId);
     if (!connection) {
       throw new Error(`Connection ${connectionId} not found`);
@@ -387,7 +384,7 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connection
    */
-  async establishStdioConnection(connection) {
+  async establishStdioConnection(connection: Connection) {
     const { spawn } = await import('node:child_process');
 
     const config = connection.config;
@@ -442,7 +439,7 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connection
    */
-  async establishWebSocketConnection(connection) {
+  async establishWebSocketConnection(connection: Connection) {
     const WebSocket = await import('ws').then((m) => m.default);
 
     const config = connection.config;
@@ -490,7 +487,7 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connection
    */
-  async establishHttpConnection(connection) {
+  async establishHttpConnection(connection: Connection) {
     const config = connection.config;
     const baseUrl = config.baseUrl;
 
@@ -538,7 +535,7 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connection
    */
-  setupMessageHandling(connection) {
+  setupMessageHandling(connection: Connection) {
     let buffer = '';
 
     connection.stdout.on('data', (data) => {
@@ -554,7 +551,7 @@ export class ConnectionStateManager extends EventEmitter {
           } catch (error) {
             this.logger.warn(`Invalid JSON message from ${connection.id}`, {
               line,
-              error: error.message,
+              error: (error as Error).message,
             });
           }
         }
@@ -571,7 +568,7 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connection
    */
-  setupWebSocketHandling(connection) {
+  setupWebSocketHandling(connection: Connection) {
     connection.websocket.on('message', (data) => {
       try {
         const message = JSON.parse(data.toString());
@@ -591,7 +588,7 @@ export class ConnectionStateManager extends EventEmitter {
    * @param connectionId
    * @param message
    */
-  handleMessage(connectionId, message) {
+  handleMessage(connectionId: string, message: any) {
     this.logger.debug(`Received message from ${connectionId}`, { message });
 
     // Update connection health
@@ -610,7 +607,7 @@ export class ConnectionStateManager extends EventEmitter {
    * @param connectionId
    * @param message
    */
-  async sendMessage(connectionId, message) {
+  async sendMessage(connectionId: string, message: any) {
     const connection = this.connections.get(connectionId);
     if (!connection) {
       throw new Error(`Connection ${connectionId} not found`);
@@ -625,17 +622,17 @@ export class ConnectionStateManager extends EventEmitter {
     try {
       switch (connection.type) {
         case 'stdio':
-          if (!connection.stdin || connection.stdin.destroyed) {
+          if (!(connection as any).stdin || (connection as any).stdin.destroyed) {
             throw new Error('stdin is not available');
           }
-          connection.stdin.write(`${messageStr}\n`);
+          (connection as any).stdin.write(`${messageStr}\n`);
           break;
 
         case 'websocket':
-          if (!connection.websocket || connection.websocket.readyState !== 1) {
+          if (!(connection as any).websocket || (connection as any).websocket.readyState !== 1) {
             throw new Error('WebSocket is not open');
           }
-          connection.websocket.send(messageStr);
+          (connection as any).websocket.send(messageStr);
           break;
 
         case 'http':
@@ -651,7 +648,7 @@ export class ConnectionStateManager extends EventEmitter {
       this.emit('message:sent', { connectionId, message });
     } catch (error) {
       this.logger.error(`Failed to send message to ${connectionId}`, {
-        error: error.message,
+        error: (error as Error).message,
         message,
       });
 
@@ -674,7 +671,7 @@ export class ConnectionStateManager extends EventEmitter {
    * @param code
    * @param reason
    */
-  handleConnectionClosed(connectionId, code, reason) {
+  handleConnectionClosed(connectionId: string, code: number | null, reason: any) {
     const connection = this.connections.get(connectionId);
     if (!connection) return;
 
@@ -692,7 +689,7 @@ export class ConnectionStateManager extends EventEmitter {
     this.emit('connection:closed', { connectionId, connection, code, reason });
 
     // Schedule reconnection if not shutting down
-    if (!this.isShuttingDown && connection.config.autoReconnect !== false) {
+    if (!this.isShuttingDown && connection.config['autoReconnect'] !== false) {
       this.scheduleReconnection(connectionId);
     }
   }
@@ -702,7 +699,7 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connectionId
    */
-  scheduleReconnection(connectionId) {
+  scheduleReconnection(connectionId: string) {
     const connection = this.connections.get(connectionId);
     if (!connection) return;
 
@@ -717,7 +714,7 @@ export class ConnectionStateManager extends EventEmitter {
 
       // Trigger recovery workflow if available
       if (this.recoveryWorkflows) {
-        this.recoveryWorkflows.triggerRecovery('mcp.connection.exhausted', {
+        (this.recoveryWorkflows as any).triggerRecovery('mcp.connection.exhausted', {
           connectionId,
           connection,
         });
@@ -727,10 +724,10 @@ export class ConnectionStateManager extends EventEmitter {
     }
 
     // Calculate delay with exponential backoff
-    const delay = Math.min(
-      this.options.reconnectDelay * 2 ** connection.reconnectAttempts,
-      this.options.maxReconnectDelay
-    );
+          const delay = Math.min(
+        (this.options.reconnectDelay || 1000) * 2 ** connection.reconnectAttempts,
+        this.options.maxReconnectDelay || 30000
+      );
 
     this.logger.info(`Scheduling reconnection for ${connectionId}`, {
       attempt: connection.reconnectAttempts + 1,
@@ -764,7 +761,7 @@ export class ConnectionStateManager extends EventEmitter {
         }
       } catch (error) {
         this.logger.error(`Reconnection failed for ${connectionId}`, {
-          error: error.message,
+          error: (error as Error).message,
           attempt: connection.reconnectAttempts,
         });
 
@@ -784,7 +781,7 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connectionId
    */
-  getConnectionStatus(connectionId = null) {
+  getConnectionStatus(connectionId: string | null = null) {
     if (connectionId) {
       const connection = this.connections.get(connectionId);
       if (!connection) return null;
@@ -796,7 +793,7 @@ export class ConnectionStateManager extends EventEmitter {
     }
 
     // Return all connections status
-    const connections = {};
+    const connections: Record<string, any> = {};
     for (const [id, connection] of this.connections) {
       connections[id] = {
         ...connection,
@@ -838,7 +835,7 @@ export class ConnectionStateManager extends EventEmitter {
    * @param connectionId
    * @param reason
    */
-  async disconnectConnection(connectionId, reason = 'Manual disconnect') {
+  async disconnectConnection(connectionId: string, reason = 'Manual disconnect') {
     const connection = this.connections.get(connectionId);
     if (!connection) {
       throw new Error(`Connection ${connectionId} not found`);
@@ -857,14 +854,14 @@ export class ConnectionStateManager extends EventEmitter {
     try {
       switch (connection.type) {
         case 'stdio':
-          if (connection.process && !connection.process.killed) {
-            connection.process.kill();
+          if ((connection as any).process && !(connection as any).process.killed) {
+            (connection as any).process.kill();
           }
           break;
 
         case 'websocket':
-          if (connection.websocket && connection.websocket.readyState === 1) {
-            connection.websocket.close();
+          if ((connection as any).websocket && (connection as any).websocket.readyState === 1) {
+            (connection as any).websocket.close();
           }
           break;
 
@@ -894,7 +891,7 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connectionId
    */
-  async removeConnection(connectionId) {
+  async removeConnection(connectionId: string) {
     // First disconnect if still connected
     if (this.connections.has(connectionId)) {
       try {
@@ -954,7 +951,7 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connectionId
    */
-  async performConnectionHealthCheck(connectionId) {
+  async performConnectionHealthCheck(connectionId: string) {
     const connection = this.connections.get(connectionId);
     if (!connection || connection.status !== 'connected') return;
 
@@ -1003,7 +1000,7 @@ export class ConnectionStateManager extends EventEmitter {
         });
 
         if (this.recoveryWorkflows) {
-          await this.recoveryWorkflows.triggerRecovery('mcp.connection.unhealthy', {
+          await (this.recoveryWorkflows as any).triggerRecovery('mcp.connection.unhealthy', {
             connectionId,
             connection,
             consecutiveFailures: health.consecutive_failures,
@@ -1018,11 +1015,11 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connection
    */
-  async persistConnectionState(connection) {
+  async persistConnectionState(connection: Connection) {
     if (!this.persistence) return;
 
     try {
-      await this.persistence.pool.write(
+      await (this.persistence as any).pool.write(
         `
         INSERT OR REPLACE INTO mcp_connections 
         (id, type, config, status, created_at, last_connected, last_disconnected, reconnect_attempts, metadata)
@@ -1056,7 +1053,7 @@ export class ConnectionStateManager extends EventEmitter {
 
     try {
       // Create table if it doesn't exist
-      await this.persistence.pool.write(`
+      await (this.persistence as any).pool.write(`
         CREATE TABLE IF NOT EXISTS mcp_connections (
           id TEXT PRIMARY KEY,
           type TEXT NOT NULL,
@@ -1070,7 +1067,7 @@ export class ConnectionStateManager extends EventEmitter {
         )
       `);
 
-      const connections = await this.persistence.pool.read(
+      const connections = await (this.persistence as any).pool.read(
         'SELECT * FROM mcp_connections WHERE status IN (?, ?)',
         ['connected', 'reconnecting']
       );
@@ -1124,11 +1121,11 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connectionId
    */
-  async removePersistedConnection(connectionId) {
+  async removePersistedConnection(connectionId: string) {
     if (!this.persistence) return;
 
     try {
-      await this.persistence.pool.write('DELETE FROM mcp_connections WHERE id = ?', [connectionId]);
+      await (this.persistence as any).pool.write('DELETE FROM mcp_connections WHERE id = ?', [connectionId]);
     } catch (error) {
       this.logger.error('Failed to remove persisted connection', {
         connectionId,
@@ -1142,17 +1139,17 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param persistence
    */
-  setPersistence(persistence) {
+  setPersistence(persistence: any) {
     this.persistence = persistence;
     this.logger.info('Persistence integration configured');
   }
 
-  setHealthMonitor(healthMonitor) {
+  setHealthMonitor(healthMonitor: any) {
     this.healthMonitor = healthMonitor;
     this.logger.info('Health Monitor integration configured');
   }
 
-  setRecoveryWorkflows(recoveryWorkflows) {
+  setRecoveryWorkflows(recoveryWorkflows: any) {
     this.recoveryWorkflows = recoveryWorkflows;
     this.logger.info('Recovery Workflows integration configured');
   }

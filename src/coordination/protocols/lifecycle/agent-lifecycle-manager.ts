@@ -315,17 +315,11 @@ export class AgentLifecycleManager extends EventEmitter {
       this.handleTaskFailure(data);
     });
 
-    this.eventBus.on('agent:error', (data: any) => {
-      this.handleAgentError(data);
-    });
+    this.eventBus.on('agent:error', this.handleAgentError.bind(this));
 
-    this.eventBus.on('system:resource-pressure', (data: any) => {
-      this.handleResourcePressure(data);
-    });
+    this.eventBus.on('system:resource-pressure', this.handleResourcePressure.bind(this));
 
-    this.eventBus.on('workload:demand-change', (data: any) => {
-      this.handleDemandChange(data);
-    });
+    this.eventBus.on('workload:demand-change', this.handleDemandChange.bind(this));
   }
 
   /**
@@ -1315,8 +1309,8 @@ export class AgentLifecycleManager extends EventEmitter {
 // Supporting classes
 class HealthMonitor {
   constructor(
-    /* private readonly _config: AgentLifecycleConfig, */ // For future health check configuration
-    /* private readonly _logger: ILogger */ // For health monitoring logs
+    private readonly _config: AgentLifecycleConfig, // For future health check configuration
+    private readonly _logger: ILogger // For health monitoring logs
   ) {
     // xxx NEEDS_HUMAN: Properties kept for future health monitoring configuration and logging
   }
@@ -1374,8 +1368,8 @@ class HealthMonitor {
 
 class PerformanceTracker {
   constructor(
-    /* private readonly _config: AgentLifecycleConfig, */ // For future performance thresholds
-    /* private readonly _logger: ILogger */ // For performance tracking logs
+    private readonly _config: AgentLifecycleConfig, // For future performance thresholds
+    private readonly _logger: ILogger // For performance tracking logs
   ) {
     // xxx NEEDS_HUMAN: Properties kept for future performance threshold configuration and logging
   }

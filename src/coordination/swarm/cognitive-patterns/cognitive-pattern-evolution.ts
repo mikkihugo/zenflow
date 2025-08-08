@@ -78,19 +78,7 @@ interface ExtendedTrainingData extends TrainingData {
   samples?: Array<{ input: number[]; output: number[] }>;
 }
 
-// Evolution need assessment type
-interface EvolutionNeed {
-  required: boolean;
-  reason: string;
-  urgency: 'none' | 'low' | 'medium' | 'high';
-}
 
-// Evolution strategy type
-interface EvolutionStrategy {
-  type: string;
-  description: string;
-  priority: number;
-}
 
 interface EvolutionMetric {
   totalEvolutions: number;
@@ -680,8 +668,8 @@ class CognitivePatternEvolution {
     let weightSum = 0;
 
     // Match exploration vs exploitation preference
-    const explorationNeed = (context.creativity_required || 0) + (context.noiseLevel || 0);
-    const explorationMatch = Math.abs(characteristics.explorationRate - explorationNeed);
+        const explorationNeed = (context.creativity_required || 0) + (context.noiseLevel || 0);
+    const explorationMatch = Math.abs(characteristics.explorationRate - (explorationNeed || 0));
     totalMatch += (1 - explorationMatch) * 0.3;
     weightSum += 0.3;
 
@@ -1180,10 +1168,10 @@ class CognitivePatternEvolution {
 
     hybrid.characteristics = {
       searchStrategy:
-        context.creativity_required > 0.5 ? chars2.searchStrategy : chars1.searchStrategy,
+        (context.creativity_required || 0) > 0.5 ? chars2.searchStrategy : chars1.searchStrategy,
       explorationRate: (chars1.explorationRate + chars2.explorationRate) / 2,
       exploitationRate: (chars1.exploitationRate + chars2.exploitationRate) / 2,
-      decisionMaking: context.dataComplexity > 0.6 ? chars1.decisionMaking : chars2.decisionMaking,
+      decisionMaking: (context.dataComplexity || 0) > 0.6 ? chars1.decisionMaking : chars2.decisionMaking,
       patternRecognition: chars1.patternRecognition, // Use first template's approach
     };
 
