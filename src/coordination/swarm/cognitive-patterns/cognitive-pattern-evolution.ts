@@ -7,11 +7,11 @@ import type { TrainingData } from '../../../neural/types/wasm-types';
 
 // Type definitions for cognitive patterns
 interface PatternCharacteristics {
-  searchStrategy: 'directed' | 'undirected' | 'systematic' | 'conceptual';
+  searchStrategy: 'directed' | 'undirected' | 'systematic' | 'conceptual' | 'random' | 'lateral' | 'holistic';
   explorationRate: number;
   exploitationRate: number;
-  decisionMaking: 'decisive' | 'exploratory' | 'analytical' | 'principled';
-  patternRecognition: 'exact_match' | 'fuzzy_match' | 'evidence_based' | 'abstraction_layers';
+  decisionMaking: 'decisive' | 'exploratory' | 'analytical' | 'principled' | 'systematic' | 'innovative';
+  patternRecognition: 'exact_match' | 'fuzzy_match' | 'evidence_based' | 'abstraction_layers' | 'flexible_match' | 'analogical' | 'pattern_networks';
 }
 
 interface AdaptationRules {
@@ -58,6 +58,20 @@ interface ExtendedTrainingData extends TrainingData {
   samples?: Array<{ input: number[]; output: number[] }>;
 }
 
+// Evolution need assessment type
+interface EvolutionNeed {
+  required: boolean;
+  reason: string;
+  urgency: 'none' | 'low' | 'medium' | 'high';
+}
+
+// Evolution strategy type
+interface EvolutionStrategy {
+  type: string;
+  description: string;
+  priority: number;
+}
+
 interface EvolutionMetric {
   totalEvolutions: number;
   successfulAdaptations: number;
@@ -73,14 +87,19 @@ interface EvolutionRecord {
   oldPatterns: string[];
   newPatterns: string[];
   context: Record<string, unknown>;
-  effectiveness: any;
+  effectiveness: Record<string, {
+    contextMatch: number;
+    historicalPerformance: number;
+    adaptationSuccess: number;
+    overall: number;
+  }>;
 }
 
 class CognitivePatternEvolution {
   agentPatterns: Map<string, AgentPattern>;
   evolutionHistory: Map<string, EvolutionRecord[]>;
   patternTemplates: Map<string, PatternTemplate>;
-  crossAgentPatterns: Map<string, any>;
+  crossAgentPatterns: Map<string, Record<string, unknown>>;
   evolutionMetrics: Map<string, EvolutionMetric>;
 
   constructor() {

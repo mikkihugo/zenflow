@@ -150,7 +150,7 @@ type FailureInjector = FailureInjectorCallbacks;
 type SafetyCheck = (experiment: ChaosExperiment) => Promise<{ safe: boolean; reason?: string }> | { safe: boolean; reason?: string };
 
 export class ChaosEngineering extends EventEmitter {
-  private options: ChaosEngineeringOptions;
+  private options: Required<ChaosEngineeringOptions>;
   private logger: ReturnType<typeof createLogger>;
   private experiments: Map<string, ChaosExperiment>;
   private activeExperiments: Map<string, ExperimentExecution>;
@@ -175,7 +175,7 @@ export class ChaosEngineering extends EventEmitter {
       experimentTimeout: options.experimentTimeout || 300000, // 5 minutes
       recoveryTimeout: options.recoveryTimeout || 600000, // 10 minutes
       blastRadiusLimit: options.blastRadiusLimit || 0.3, // 30% of resources
-    };
+    } as Required<ChaosEngineeringOptions>;
 
     this.logger = createLogger({ prefix: 'ChaosEngineering' });
 
@@ -1347,8 +1347,8 @@ export class ChaosEngineering extends EventEmitter {
       timestamp: new Date(),
       stats: this.getChaosStats(),
       experiments: Array.from(this.experiments.entries()).map(([experimentName, experiment]) => ({
-        experimentName, // Renamed from 'name' to avoid overwriting experiment.name
         ...experiment,
+        experimentName, // Place after spread to properly override 'name' property
         history: this.experimentHistory.get(experimentName) || [],
       })),
       activeExperiments: Array.from(this.activeExperiments.values()),

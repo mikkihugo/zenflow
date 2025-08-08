@@ -89,6 +89,8 @@ export class ConnectionStateManager extends EventEmitter {
 
     // Connection state
     this.connections = new Map();
+    this.connectionStats = new Map();
+    this.healthChecks = new Map();
     this.connectionHealth = new Map();
     this.reconnectTimers = new Map();
     this.fallbackConnections = new Map();
