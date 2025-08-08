@@ -53,6 +53,7 @@ const PATTERN_MEMORY_CONFIG = {
 
 class NeuralCLI {
   private ruvSwarm: any;
+  private activePatterns: Set<string>;
 
   constructor() {
     this.ruvSwarm = null;
@@ -69,7 +70,7 @@ class NeuralCLI {
     return this.ruvSwarm;
   }
 
-  async status(_args) {
+  async status(_args: string[]) {
     const rs = await this.initialize();
 
     try {
@@ -92,6 +93,7 @@ class NeuralCLI {
 
       for (let i = 0; i < models.length; i++) {
         const model = models[i];
+        if (!model) continue;
         const modelInfo = persistenceInfo.modelDetails[model] || {};
         const isActive = Math.random() > 0.5; // Simulate active status
         const isLast = i === models.length - 1;
@@ -99,25 +101,25 @@ class NeuralCLI {
         let _statusLine = isLast ? `└── ${model.padEnd(12)}` : `├── ${model.padEnd(12)}`;
 
         // Add accuracy if available
-        if (modelInfo.lastAccuracy) {
+        if (modelInfo && modelInfo.lastAccuracy) {
           _statusLine += ` [${modelInfo.lastAccuracy}% accuracy]`;
         } else {
           _statusLine += ` [${isActive ? 'Active' : 'Idle'}]`.padEnd(18);
         }
 
         // Add training status
-        if (modelInfo.lastTrained) {
+        if (modelInfo && modelInfo.lastTrained) {
           const trainedDate = new Date(modelInfo.lastTrained);
           const dateStr = `${trainedDate.toLocaleDateString()} ${trainedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
           _statusLine += ` ✅ Trained ${dateStr}`;
-        } else if (modelInfo.hasSavedWeights) {
+        } else if (modelInfo && modelInfo.hasSavedWeights) {
           _statusLine += ' 🔄 Loaded from session';
         } else {
           _statusLine += ' ⏸️  Not trained yet';
         }
 
         // Add saved weights indicator
-        if (modelInfo.hasSavedWeights) {
+        if (modelInfo && modelInfo.hasSavedWeights) {
           _statusLine += ' | 📁 Weights saved';
         }
       }
@@ -128,18 +130,18 @@ class NeuralCLI {
       if (typeof status === 'object') {
       }
     } catch (error) {
-      console.error('❌ Error getting neural status:', error.message);
+      console.error('❌ Error getting neural status:', error instanceof Error ? error.message : String(error));
       process.exit(1);
     }
   }
 
-  async train(args) {
+  async train(args: string[]) {
     const rs = await this.initialize();
 
     // Parse arguments
     const modelType = this.getArg(args, '--model') || 'attention';
-    const iterations = parseInt(this.getArg(args, '--iterations'), 10) || 10;
-    const learningRate = parseFloat(this.getArg(args, '--learning-rate')) || 0.001;
+    const iterations = parseInt(this.getArg(args, '--iterations') || '10', 10) || 10;
+    const learningRate = parseFloat(this.getArg(args, '--learning-rate') || '0.001') || 0.001;
 
     try {
       for (let i = 1; i <= iterations; i++) {
@@ -177,13 +179,13 @@ class NeuralCLI {
       const outputFile = path.join(outputDir, `training-${modelType}-${Date.now()}.json`);
       await fs.writeFile(outputFile, JSON.stringify(results, null, 2));
     } catch (error) {
-      console.error('\n❌ Training failed:', error.message);
+      console.error('\n❌ Training failed:', error instanceof Error ? error.message : String(error));
       process.exit(1);
     }
   }
 
-  async patterns(args) {
-    const _rs = await this.initialize();
+  async patterns(args: string[]) {
+    await this.initialize();
 
     // Parse --pattern or --model argument correctly
     let patternType = this.getArg(args, '--pattern') || this.getArg(args, '--model');
@@ -199,7 +201,7 @@ class NeuralCLI {
     // Display header based on pattern type
     if (patternType === 'all') {
     } else {
-      const _displayName = patternType.charAt(0).toUpperCase() + patternType.slice(1);
+      // const _displayName = patternType.charAt(0).toUpperCase() + patternType.slice(1);
     }
 
     try {

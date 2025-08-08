@@ -246,7 +246,7 @@ export class CommunicationProtocols extends EventEmitter {
     const fullMessage: Message = {
       id: message.id || this.generateMessageId(),
       type: message.type || 'unicast',
-      sender: message.sender || this.nodeId,
+      sender: message.sender || this._nodeId,
       recipients: message.recipients || [],
       payload: message.payload || {
         data: null,
@@ -303,7 +303,7 @@ export class CommunicationProtocols extends EventEmitter {
    * @param priority
    */
   async broadcast(payload: MessagePayload, priority: MessagePriority = 'normal'): Promise<string> {
-    const allNodes = Array.from(this.nodes.keys()).filter((id) => id !== this.nodeId);
+    const allNodes = Array.from(this.nodes.keys()).filter((id) => id !== this._nodeId);
 
     return await this.sendMessage({
       type: 'broadcast',
@@ -410,7 +410,7 @@ export class CommunicationProtocols extends EventEmitter {
     const proposal: ConsensusProposal = {
       id: this.generateProposalId(),
       type,
-      proposer: this.nodeId,
+      proposer: this._nodeId,
       value,
       round: 1,
       timestamp: new Date(),
@@ -424,7 +424,7 @@ export class CommunicationProtocols extends EventEmitter {
     await this.consensusEngine.initiateConsensus(proposal.id, proposal);
 
     const targetNodes =
-      participants || Array.from(this.nodes.keys()).filter((id) => id !== this.nodeId);
+      participants || Array.from(this.nodes.keys()).filter((id) => id !== this._nodeId);
 
     await this.multicast(
       targetNodes,
@@ -461,7 +461,7 @@ export class CommunicationProtocols extends EventEmitter {
 
     const vote: ConsensusVote = {
       proposalId,
-      voter: this.nodeId,
+      voter: this._nodeId,
       decision,
       ...(reasoning && { reasoning }),
       timestamp: new Date(),
@@ -485,7 +485,7 @@ export class CommunicationProtocols extends EventEmitter {
       'high'
     );
 
-    this.emit('vote:cast', { proposalId, decision, voter: this.nodeId });
+    this.emit('vote:cast', { proposalId, decision, voter: this._nodeId });
   }
 
   /**
@@ -602,7 +602,7 @@ export class CommunicationProtocols extends EventEmitter {
     queue.push(message);
     this.messageQueue.set(message.priority, queue);
 
-    this.logger.debug('Message queued for processing', {
+    this._logger.debug('Message queued for processing', {
       messageId: message.id,
       type: message.type,
       priority: message.priority,
@@ -625,7 +625,7 @@ export class CommunicationProtocols extends EventEmitter {
         try {
           await this.routeMessage(message);
         } catch (error) {
-          this.logger.error('Failed to route message', {
+          this._logger.error('Failed to route message', {
             messageId: message.id,
             error: error instanceof Error ? error.message : String(error),
           });
@@ -665,13 +665,13 @@ export class CommunicationProtocols extends EventEmitter {
 
       // Verify checksum
       if (!this.verifyChecksum(message)) {
-        this.logger.warn('Message checksum verification failed', { messageId: message.id });
+        this._logger.warn('Message checksum verification failed', { messageId: message.id });
         return;
       }
 
       // Check TTL
       if (this.isMessageExpired(message)) {
-        this.logger.debug('Expired message received', { messageId: message.id });
+        this._logger.debug('Expired message received', { messageId: message.id });
         return;
       }
 
@@ -697,7 +697,7 @@ export class CommunicationProtocols extends EventEmitter {
         sender: message.sender,
       });
     } catch (error) {
-      this.logger.error('Failed to handle incoming message', { error });
+      this._logger.error('Failed to handle incoming message', { error });
     }
   }
 
@@ -793,7 +793,7 @@ export class CommunicationProtocols extends EventEmitter {
 
   private async handleElectionMessage(message: Message): Promise<void> {
     // Leader election logic would be implemented here
-    this.logger.debug('Election message received', { sender: message.sender });
+    this._logger.debug('Election message received', { sender: message.sender });
   }
 
   private async updateRoutingTable(): Promise<void> {
@@ -813,7 +813,7 @@ export class CommunicationProtocols extends EventEmitter {
 
     // Create spanning tree for efficient broadcast
     const tree: BroadcastTree = {
-      root: this.nodeId,
+      root: this._nodeId,
       children: new Map(),
       depth: 0,
       redundancy: 1,
@@ -822,7 +822,7 @@ export class CommunicationProtocols extends EventEmitter {
     // Simple binary tree construction
     for (let i = 0; i < nodeIds.length; i++) {
       const parentIndex = Math.floor((i - 1) / 2);
-      const parentId = i === 0 ? this.nodeId : nodeIds[parentIndex];
+      const parentId = i === 0 ? this._nodeId : nodeIds[parentIndex];
       const nodeId = nodeIds[i];
       
       if (parentId && nodeId) {
@@ -839,7 +839,7 @@ export class CommunicationProtocols extends EventEmitter {
     if (this.gossipState.size === 0 || this.nodes.size === 0) return;
 
     // Select random subset of nodes for gossip
-    const nodeIds = Array.from(this.nodes.keys()).filter((id) => id !== this.nodeId);
+    const nodeIds = Array.from(this.nodes.keys()).filter((id) => id !== this._nodeId);
     const gossipTargets = this.selectRandomNodes(nodeIds, Math.min(3, nodeIds.length));
 
     for (const [key, state] of this.gossipState) {
@@ -861,7 +861,7 @@ export class CommunicationProtocols extends EventEmitter {
 
   private async sendHeartbeats(): Promise<void> {
     const heartbeatPayload: MessagePayload = {
-      data: { timestamp: Date.now(), nodeId: this.nodeId },
+      data: { timestamp: Date.now(), nodeId: this._nodeId },
       metadata: { type: 'heartbeat' },
       contentType: 'application/json',
       encoding: 'utf8',
@@ -914,7 +914,7 @@ export class CommunicationProtocols extends EventEmitter {
 
       if (timeSinceLastSeen > this.config.heartbeatInterval * 3) {
         node.status = 'offline';
-        this.logger.warn(`Node ${nodeId} marked as offline due to heartbeat timeout`);
+        this._logger.warn(`Node ${nodeId} marked as offline due to heartbeat timeout`);
       } else if (timeSinceLastSeen > this.config.heartbeatInterval * 2) {
         node.status = 'degraded';
       } else {
@@ -989,7 +989,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   private signVote(proposalId: string, decision: ConsensusVote['decision']): string {
-    const data = `${proposalId}:${decision}:${this.nodeId}:${Date.now()}`;
+    const data = `${proposalId}:${decision}:${this._nodeId}:${Date.now()}`;
     return createHash('sha256').update(data).digest('hex');
   }
 
@@ -1018,7 +1018,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   private async handleMessageFailure(message: Message, error: Error): Promise<void> {
-    this.logger.error('Message routing failed', {
+    this._logger.error('Message routing failed', {
       messageId: message.id,
       type: message.type,
       error: error.message,
@@ -1029,13 +1029,13 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   private handleNodeConnected(data: any): void {
-    this.logger.info('Node connected', { nodeId: data.nodeId });
+    this._logger.info('Node connected', { nodeId: data.nodeId });
     this.updateRoutingTable();
     this.updateBroadcastTrees();
   }
 
   private handleNodeDisconnected(data: any): void {
-    this.logger.info('Node disconnected', { nodeId: data.nodeId });
+    this._logger.info('Node disconnected', { nodeId: data.nodeId });
     const node = this.nodes.get(data.nodeId);
     if (node) {
       node.status = 'offline';
@@ -1045,7 +1045,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   private handleNetworkPartition(data: any): void {
-    this.logger.warn('Network partition detected', data);
+    this._logger.warn('Network partition detected', data);
     // Implement partition handling logic
   }
 
@@ -1062,7 +1062,7 @@ export class CommunicationProtocols extends EventEmitter {
     if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
 
     this.emit('shutdown');
-    this.logger.info('Communication protocols shutdown');
+    this._logger.info('Communication protocols shutdown');
   }
 }
 
@@ -1096,7 +1096,7 @@ class CompressionEngine {
         metadata: { ...payload.metadata, compressed: true, originalSize: data.length },
       };
     } catch (error) {
-      this.logger.error('Compression failed', { error });
+      this._logger.error('Compression failed', { error });
       return payload;
     }
   }
@@ -1123,7 +1123,7 @@ class CompressionEngine {
         metadata: { ...payload.metadata, compressed: false },
       };
     } catch (error) {
-      this.logger.error('Decompression failed', { error });
+      this._logger.error('Decompression failed', { error });
       return payload;
     }
   }
@@ -1224,7 +1224,7 @@ class RoutingEngine {
     }
 
     // Simulate message forwarding
-    this.logger.debug('Message forwarded', {
+    this._logger.debug('Message forwarded', {
       messageId: message.id,
       target: targetId,
       address: targetNode.address,
@@ -1277,7 +1277,7 @@ class ConsensusEngine {
    */
   async initiateConsensus(proposalId: string, proposal: ConsensusProposal): Promise<void> {
     this.activeProposals.set(proposalId, proposal);
-    this.logger.debug('Consensus initiated', { proposalId, type: proposal.type });
+    this._logger.debug('Consensus initiated', { proposalId, type: proposal.type });
   }
 
   /**
@@ -1287,7 +1287,7 @@ class ConsensusEngine {
    */
   async processProposal(proposal: ConsensusProposal): Promise<void> {
     this.activeProposals.set(proposal.id, proposal);
-    this.logger.debug('Processing consensus proposal', {
+    this._logger.debug('Processing consensus proposal', {
       proposalId: proposal.id,
       type: proposal.type,
     });
@@ -1316,7 +1316,7 @@ class GossipEngine {
     _nodes: Map<string, CommunicationNode>
   ): Promise<void> {
     // Gossip propagation logic
-    this.logger.debug('Gossip state propagated', { key, version: state.version });
+    this._logger.debug('Gossip state propagated', { key, version: state.version });
   }
 
   async route(_message: Message, _nodes: Map<string, CommunicationNode>): Promise<void> {
@@ -1330,7 +1330,7 @@ class GossipEngine {
 
     if (!currentState || state.version > currentState.version) {
       gossipState.set(key, state);
-      this.logger.debug('Gossip state updated', { key, version: state.version });
+      this._logger.debug('Gossip state updated', { key, version: state.version });
     }
   }
 }
