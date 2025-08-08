@@ -77,10 +77,17 @@ export interface ElectionState {
 }
 
 // Consensus types
+// Command type for consensus operations
+export type ConsensusCommand = string | Record<string, unknown> | {
+  type: string;
+  payload: unknown;
+  metadata?: Record<string, unknown>;
+};
+
 export interface LogEntry {
   term: number;
   index: number;
-  command: any;
+  command: ConsensusCommand;
   timestamp: Date;
   committed: boolean;
   checksum: string;
@@ -1030,7 +1037,7 @@ class ConsensusEngine extends EventEmitter {
     private nodeId: string,
     private config: ConsensusConfig,
     private logger: ILogger,
-    eventBus: IEventBus
+    _eventBus: IEventBus // Prefixed with _ to indicate intentionally unused
   ) {
     // xxx NEEDS_HUMAN: eventBus passed but not used - confirm if needed for future features
     super();
@@ -1066,7 +1073,7 @@ class ConsensusEngine extends EventEmitter {
     this.state.matchIndex.delete(nodeId);
   }
 
-  async propose(command: any): Promise<boolean> {
+  async propose(command: ConsensusCommand): Promise<boolean> {
     if (!this.enabled) return false;
     if (this.state.state !== 'leader') return false;
 
@@ -1256,12 +1263,13 @@ class ConsensusEngine extends EventEmitter {
     const lastLogTerm = lastLogIndex >= 0 ? this.state.log[lastLogIndex]?.term ?? 0 : 0;
 
     // xxx NEEDS_HUMAN: request variable unused - determine if actual network implementation is needed
-    const _request: VoteRequest = {
-      term: this.state.currentTerm,
-      candidateId: this.nodeId,
-      lastLogIndex,
-      lastLogTerm,
-    };
+    // Commented out unused variable to avoid warning
+    // const _request: VoteRequest = {
+    //   term: this.state.currentTerm,
+    //   candidateId: this.nodeId,
+    //   lastLogIndex,
+    //   lastLogTerm,
+    // };
 
     // Simulate vote request
     return new Promise((resolve) => {
@@ -1302,7 +1310,7 @@ class ConsensusEngine extends EventEmitter {
     });
   }
 
-  private calculateChecksum(command: any): string {
+  private calculateChecksum(command: ConsensusCommand): string {
     return createHash('sha256').update(JSON.stringify(command)).digest('hex');
   }
 
@@ -1330,11 +1338,10 @@ class WorkStealingSystem extends EventEmitter {
     private nodeId: string,
     private config: WorkStealingConfig,
     private logger: ILogger,
-    eventBus: IEventBus
+    _eventBus: IEventBus // Prefixed with _ to indicate intentionally unused
   ) {
     super();
     // xxx NEEDS_HUMAN: eventBus passed but not used - confirm if needed for future event propagation
-    void eventBus;
 
     // Initialize own work queue
     this.workQueues.set(nodeId, {
