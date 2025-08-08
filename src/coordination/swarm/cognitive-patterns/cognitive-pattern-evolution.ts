@@ -518,7 +518,7 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  calculateDimensionality(trainingData: TrainingData): number {
+  calculateDimensionality(trainingData: ExtendedTrainingData): number {
     if (!trainingData.samples || trainingData.samples.length === 0) {
       return 0;
     }

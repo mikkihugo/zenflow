@@ -1005,7 +1005,8 @@ class AdvancedConnectionPool extends EventEmitter implements ConnectionPool {
   }
 
   private async createConnection(): Promise<PooledConnection> {
-    const startTime = Date.now();
+    // xxx NEEDS_HUMAN: startTime was unused - removed, but may be needed for actual connection timing metrics
+    // const startTime = Date.now();
 
     try {
       // Simulate connection creation
@@ -1302,10 +1303,11 @@ class IntelligentCache extends EventEmitter {
     }
   }
 
-  private compress(value: any): any {
-    // Simulate compression - not used currently but kept for future implementation
-    return value;
-  }
+  // xxx NEEDS_HUMAN: compress method currently unused - may be needed for future compression implementation
+  // private compress(value: any): any {
+  //   // Simulate compression - not used currently but kept for future implementation
+  //   return value;
+  // }
 
   private decompress(value: any): any {
     // Simulate decompression
@@ -1336,10 +1338,11 @@ class RealTimeMonitor extends EventEmitter {
   constructor(
     private config: MonitoringConfig,
     private logger: ILogger,
-    private eventBus: IEventBus
+    eventBus: IEventBus
   ) {
     super();
-    // Event bus will be used for event propagation in the future
+    // xxx NEEDS_HUMAN: eventBus parameter kept for future event propagation implementation
+    void eventBus;
   }
 
   start(): void {

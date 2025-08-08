@@ -231,8 +231,8 @@ export class CoordinationPatterns extends EventEmitter {
   private patternMetrics: PatternMetrics;
 
   constructor(
-    private readonly nodeId: string,
-    private readonly config: {
+    nodeId: string,
+    config: {
       election: LeaderElectionConfig;
       consensus: ConsensusConfig;
       workStealing: WorkStealingConfig;
@@ -887,8 +887,9 @@ class LeaderElection extends EventEmitter {
     });
   }
 
-  private async sendVoteRequest(nodeId: string): Promise<boolean> {
+  private async sendVoteRequest(_nodeId: string): Promise<boolean> {
     // Simulate sending vote request
+    // xxx NEEDS_HUMAN: nodeId parameter unused - may be needed for actual vote request logic
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(Math.random() > 0.3); // 70% chance of vote
@@ -907,8 +908,9 @@ class LeaderElection extends EventEmitter {
     await Promise.allSettled(announcements);
   }
 
-  private async sendCoordinatorMessage(nodeId: string): Promise<void> {
+  private async sendCoordinatorMessage(_nodeId: string): Promise<void> {
     // Simulate sending coordinator message
+    // xxx NEEDS_HUMAN: nodeId parameter unused - may be needed for actual coordinator message logic
     return new Promise((resolve) => {
       setTimeout(resolve, 10);
     });

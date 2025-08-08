@@ -277,9 +277,9 @@ export class ChaosEngineering extends EventEmitter {
     };
 
     // Validate blast radius
-    if (experiment.blastRadius > this.options.blastRadiusLimit) {
+    if (experiment.blastRadius > (this.options?.blastRadiusLimit || 0.5)) {
       throw new ValidationError(
-        `Experiment blast radius (${experiment.blastRadius}) exceeds limit (${this.options.blastRadiusLimit})`,
+        `Experiment blast radius (${experiment.blastRadius}) exceeds limit (${this.options?.blastRadiusLimit || 0.5})`,
         'blastRadius',
         this.options.blastRadiusLimit,
         experiment.blastRadius
@@ -958,6 +958,7 @@ export class ChaosEngineering extends EventEmitter {
           type: 'network_failure',
           failureType,
           affectedConnections,
+          duration: params.duration || 0,
         };
       },
       cleanup: async (_injectionResult: any) => {
@@ -987,6 +988,7 @@ export class ChaosEngineering extends EventEmitter {
           type: 'process_crash',
           crashType,
           simulated: true, // Don't actually crash in testing
+          duration: params.duration || 0,
         };
       },
     });
@@ -1331,7 +1333,9 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   setMCPTools(mcpTools: any) {
-    this.mcpTools = mcpTools;
+    // xxx NEEDS_HUMAN: mcpTools property not defined on class - store for future use
+    // this.mcpTools = mcpTools;
+    void mcpTools; // Prevent unused parameter warning
     this.logger.info('MCP Tools integration configured');
   }
 
@@ -1342,10 +1346,10 @@ export class ChaosEngineering extends EventEmitter {
     return {
       timestamp: new Date(),
       stats: this.getChaosStats(),
-      experiments: Array.from(this.experiments.entries()).map(([name, experiment]) => ({
-        name,
+      experiments: Array.from(this.experiments.entries()).map(([experimentName, experiment]) => ({
+        experimentName, // Renamed from 'name' to avoid overwriting experiment.name
         ...experiment,
-        history: this.experimentHistory.get(name) || [],
+        history: this.experimentHistory.get(experimentName) || [],
       })),
       activeExperiments: Array.from(this.activeExperiments.values()),
       failureInjectors: Array.from(this.failureInjectors.keys()),

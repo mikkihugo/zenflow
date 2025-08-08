@@ -79,7 +79,7 @@ export class ErrorMonitoring extends EventEmitter {
       ...(context.userId !== undefined && { userId: context.userId }),
       ...(context.sessionId !== undefined && { sessionId: context.sessionId }),
       metadata: context.metadata || {},
-      stackTrace: error.stack,
+      stackTrace: error.stack || '',
       timestamp: new Date(),
     };
 
