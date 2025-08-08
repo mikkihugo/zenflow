@@ -467,7 +467,7 @@ export class SwarmSynchronizer extends EventEmitter {
     return {
       swarmId: this.swarmId,
       isActive: !!this.syncTimer,
-      lastSyncTime: lastSync?.timestamp,
+      lastSyncTime: lastSync?.timestamp || undefined,
       agentCount: this.agentStates.size,
       activeAgents: Array.from(this.agentStates.values()).filter((a) => a.status !== 'offline')
         .length,

@@ -169,7 +169,7 @@ export class CommunicationProtocols extends EventEmitter {
   private heartbeatInterval?: NodeJS.Timeout;
 
   constructor(
-    private nodeId: string,
+    private _nodeId: string,
     private config: {
       maxMessageHistory: number;
       messageTimeout: number;
@@ -180,17 +180,17 @@ export class CommunicationProtocols extends EventEmitter {
       consensusTimeout: number;
       maxHops: number;
     },
-    private logger: ILogger,
+    private _logger: ILogger,
     private eventBus: IEventBus
   ) {
     super();
 
     this.initializeMessageQueues();
-    this.compressionEngine = new CompressionEngine(this.logger);
-    this.encryptionEngine = new EncryptionEngine(this.config.encryptionEnabled, this.logger);
-    this.routingEngine = new RoutingEngine(this.logger);
-    this.consensusEngine = new ConsensusEngine(this.nodeId, this.logger);
-    this.gossipEngine = new GossipEngine(this.nodeId, this.logger);
+    this.compressionEngine = new CompressionEngine(this._logger);
+    this.encryptionEngine = new EncryptionEngine(this.config.encryptionEnabled, this._logger);
+    this.routingEngine = new RoutingEngine(this._logger);
+    this.consensusEngine = new ConsensusEngine(this._nodeId, this._logger);
+    this.gossipEngine = new GossipEngine(this._nodeId, this._logger);
 
     this.setupEventHandlers();
     this.startProcessing();
@@ -1132,7 +1132,7 @@ class CompressionEngine {
 class EncryptionEngine {
   constructor(
     private enabled: boolean,
-    private logger: ILogger
+    private _logger: ILogger // Prefixed with _ to indicate intentionally unused
   ) {}
 
   async encrypt(payload: MessagePayload, config: EncryptionConfig): Promise<MessagePayload> {
@@ -1265,7 +1265,7 @@ class ConsensusEngine {
   private activeProposals = new Map<string, ConsensusProposal>();
 
   constructor(
-    private nodeId: string,
+    private _nodeId: string,
     private logger: ILogger
   ) {}
 
@@ -1306,7 +1306,7 @@ class ConsensusEngine {
 
 class GossipEngine {
   constructor(
-    private nodeId: string,
+    private _nodeId: string,
     private logger: ILogger
   ) {}
 

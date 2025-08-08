@@ -1107,7 +1107,7 @@ export class TaskDistributionEngine extends EventEmitter {
 class TaskQueue {
   private queue: TaskDefinition[] = [];
 
-  constructor(private _logger: ILogger) {}
+  constructor(private logger: ILogger) {}
 
   async enqueue(task: TaskDefinition): Promise<void> {
     this.queue.push(task);
@@ -1143,15 +1143,15 @@ class TaskQueue {
 
 class TaskScheduler {
   constructor(
-    private _config: any,
-    private _logger: ILogger
+    private config: any,
+    private logger: ILogger
   ) {}
 
   // Scheduling algorithms would be implemented here
 }
 
 class TaskDecomposer {
-  constructor(private _logger: ILogger) {}
+  constructor(private logger: ILogger) {}
 
   async decompose(task: TaskDefinition): Promise<DecomposedTask> {
     // Task decomposition logic
@@ -1177,8 +1177,8 @@ class TaskDecomposer {
 
 class AssignmentOptimizer {
   constructor(
-    private _config: any,
-    private _logger: ILogger
+    private config: any,
+    private logger: ILogger
   ) {}
 
   async findOptimalAssignment(
@@ -1221,8 +1221,8 @@ class AssignmentOptimizer {
 
 class WorkloadBalancer {
   constructor(
-    private _config: any,
-    private _logger: ILogger
+    private config: any,
+    private logger: ILogger
   ) {}
 
   async rebalance(
@@ -1231,12 +1231,12 @@ class WorkloadBalancer {
     imbalance: { severity: number; overloaded: string[]; underloaded: string[] }
   ): Promise<void> {
     // Workload rebalancing logic
-    this._logger.info('Rebalancing workload', { imbalance });
+    this.logger.info('Rebalancing workload', { imbalance });
   }
 }
 
 class PerformancePredictor {
-  constructor(private _logger: ILogger) {}
+  constructor(private logger: ILogger) {}
 
   async predictSuccess(task: TaskDefinition, agent: AgentCapability): Promise<number> {
     // ML-based success prediction
