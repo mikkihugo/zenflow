@@ -1407,19 +1407,20 @@ class PerformanceTracker {
   }
 }
 
+// xxx NEEDS_HUMAN: ResourceMonitor class not used - verify if needed for future resource monitoring
 class ResourceMonitor {
   constructor(
-    private config: AgentLifecycleConfig,
-    private logger: ILogger
+    private _config: AgentLifecycleConfig,
+    private _logger: ILogger
   ) {}
 
   // Resource monitoring implementation
 }
 
 class CapabilityDiscovery {
-  constructor(private logger: ILogger) {}
+  constructor(private _logger: ILogger) {}
 
-  processOutput(agent: AgentInstance, data: string, stream: 'stdout' | 'stderr'): void {
+  processOutput(_agent: AgentInstance, _data: string, _stream: 'stdout' | 'stderr'): void {
     // Process agent output for capability discovery
     // This could parse structured output indicating capabilities
   }
@@ -1433,7 +1434,7 @@ class ScalingEngine {
 
   async analyze(
     agents: Map<string, AgentInstance>,
-    templates: Map<string, AgentTemplate>,
+    _templates: Map<string, AgentTemplate>,
     metrics: LifecycleMetrics
   ): Promise<ScalingDecision> {
     // Simplified scaling analysis
@@ -1485,11 +1486,11 @@ class ScalingEngine {
 
 class RecoveryEngine {
   constructor(
-    private config: AgentLifecycleConfig,
+    private _config: AgentLifecycleConfig,
     private logger: ILogger
   ) {}
 
-  async recoverAgent(agent: AgentInstance, template: AgentTemplate): Promise<void> {
+  async recoverAgent(agent: AgentInstance, _template: AgentTemplate): Promise<void> {
     // Implement agent recovery strategies
     this.logger.info('Attempting agent recovery', { agentId: agent.id });
 
