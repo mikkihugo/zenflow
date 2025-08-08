@@ -1079,15 +1079,16 @@ export class UEL {
     // The actual factories would be loaded dynamically based on available implementations
     try {
       const factories = await Promise.allSettled([
-        import('./implementations/system-event-manager-factory').catch(() => null),
-        import('./implementations/coordination-event-manager-factory').catch(() => null),
-        import('./implementations/communication-event-manager-factory').catch(() => null),
-        import('./implementations/monitoring-event-manager-factory').catch(() => null),
-        import('./implementations/interface-event-manager-factory').catch(() => null),
-        import('./implementations/neural-event-manager-factory').catch(() => null),
-        import('./implementations/database-event-manager-factory').catch(() => null),
-        import('./implementations/memory-event-manager-factory').catch(() => null),
-        import('./implementations/workflow-event-manager-factory').catch(() => null),
+        import('./adapters/system-event-factory').catch(() => null),
+        import('./adapters/coordination-event-factory').catch(() => null),
+        import('./adapters/communication-event-factory').catch(() => null),
+        import('./adapters/monitoring-event-factory').catch(() => null),
+        // xxx NEEDS_HUMAN: Missing factories below - returning null for now
+        Promise.resolve(null), // interface-event-manager-factory
+        Promise.resolve(null), // neural-event-manager-factory
+        Promise.resolve(null), // database-event-manager-factory
+        Promise.resolve(null), // memory-event-manager-factory
+        Promise.resolve(null), // workflow-event-manager-factory
       ]);
 
       // Register factories that were successfully loaded

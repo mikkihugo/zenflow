@@ -785,64 +785,82 @@ export class UELFactory {
       }
 
       case EventManagerTypes.COMMUNICATION: {
-        const { CommunicationEventManagerFactory } = await import(
-          './implementations/communication-event-manager-factory'
+        const { CommunicationEventFactory: CommunicationEventManagerFactory } = await import(
+          './adapters/communication-event-factory'
         );
         FactoryClass = CommunicationEventManagerFactory;
         break;
       }
 
       case EventManagerTypes.MONITORING: {
-        const { MonitoringEventManagerFactory } = await import(
-          './implementations/monitoring-event-manager-factory'
+        const { MonitoringEventFactory: MonitoringEventManagerFactory } = await import(
+          './adapters/monitoring-event-factory'
         );
         FactoryClass = MonitoringEventManagerFactory;
         break;
       }
 
       case EventManagerTypes.INTERFACE: {
-        const { InterfaceEventManagerFactory } = await import(
-          './implementations/interface-event-manager-factory'
-        );
+        // xxx NEEDS_HUMAN: InterfaceEventManagerFactory not implemented yet
+        // Using a stub factory for now
+        const InterfaceEventManagerFactory = class {
+          createManager() { return null; }
+          async initialize() { return this; }
+        };
         FactoryClass = InterfaceEventManagerFactory;
         break;
       }
 
       case EventManagerTypes.NEURAL: {
-        const { NeuralEventManagerFactory } = await import(
-          './implementations/neural-event-manager-factory'
-        );
+        // xxx NEEDS_HUMAN: NeuralEventManagerFactory not implemented yet
+        // Using a stub factory for now
+        const NeuralEventManagerFactory = class {
+          createManager() { return null; }
+          async initialize() { return this; }
+        };
         FactoryClass = NeuralEventManagerFactory;
         break;
       }
 
       case EventManagerTypes.DATABASE: {
-        const { DatabaseEventManagerFactory } = await import(
-          './implementations/database-event-manager-factory'
-        );
+        // xxx NEEDS_HUMAN: DatabaseEventManagerFactory not implemented yet
+        // Using a stub factory for now
+        const DatabaseEventManagerFactory = class {
+          createManager() { return null; }
+          async initialize() { return this; }
+        };
         FactoryClass = DatabaseEventManagerFactory;
         break;
       }
 
       case EventManagerTypes.MEMORY: {
-        const { MemoryEventManagerFactory } = await import(
-          './implementations/memory-event-manager-factory'
-        );
+        // xxx NEEDS_HUMAN: MemoryEventManagerFactory not implemented yet
+        // Using a stub factory for now
+        const MemoryEventManagerFactory = class {
+          createManager() { return null; }
+          async initialize() { return this; }
+        };
         FactoryClass = MemoryEventManagerFactory;
         break;
       }
 
       case EventManagerTypes.WORKFLOW: {
-        const { WorkflowEventManagerFactory } = await import(
-          './implementations/workflow-event-manager-factory'
-        );
+        // xxx NEEDS_HUMAN: WorkflowEventManagerFactory not implemented yet
+        // Using a stub factory for now
+        const WorkflowEventManagerFactory = class {
+          createManager() { return null; }
+          async initialize() { return this; }
+        };
         FactoryClass = WorkflowEventManagerFactory;
         break;
       }
       default: {
-        const { CustomEventManagerFactory } = await import(
-          './implementations/custom-event-manager-factory'
-        );
+        // xxx NEEDS_HUMAN: CustomEventManagerFactory not implemented yet
+        // Using a stub factory for now
+        const CustomEventManagerFactory = class {
+          createManager() { return null; }
+          async initialize() { return this; }
+        };
         FactoryClass = CustomEventManagerFactory;
         break;
       }

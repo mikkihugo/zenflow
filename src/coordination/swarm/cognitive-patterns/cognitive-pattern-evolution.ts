@@ -990,7 +990,7 @@ class CognitivePatternEvolution {
    * @param {Array} currentPatterns - Current patterns
    * @param {Object} context - Current context
    */
-  async modifyPatterns(_agentId, currentPatterns, context) {
+  async modifyPatterns(_agentId: string, currentPatterns: string[], context: PatternContext): Promise<string[]> {
     // Create modified versions of existing patterns
     const modifiedPatterns = [];
 
@@ -1017,7 +1017,7 @@ class CognitivePatternEvolution {
    * @param {Object} template - Original template
    * @param {Object} context - Current context
    */
-  createAdaptiveVariant(template, context) {
+  createAdaptiveVariant(template: PatternTemplate, context: PatternContext): PatternTemplate {
     const adaptiveTemplate = JSON.parse(JSON.stringify(template)); // Deep copy
 
     // Adapt characteristics based on context
@@ -1055,7 +1055,7 @@ class CognitivePatternEvolution {
    * @param {Array} currentPatterns - Current patterns
    * @param {Object} context - Current context
    */
-  async rebalancePatterns(_agentId, currentPatterns, context) {
+  async rebalancePatterns(_agentId: string, currentPatterns: string[], context: PatternContext): Promise<string[]> {
     // Rebalancing keeps the same patterns but changes their relative importance
     // This would typically involve adjusting weights in the neural network
     // For now, we reorder patterns by effectiveness
@@ -1082,7 +1082,7 @@ class CognitivePatternEvolution {
    * @param {Array} currentPatterns - Current patterns
    * @param {Object} context - Current context
    */
-  async hybridizePatterns(_agentId, currentPatterns, context) {
+  async hybridizePatterns(_agentId: string, currentPatterns: string[], context: PatternContext): Promise<string[]> {
     if (currentPatterns.length < 2) {
       return currentPatterns;
     }
@@ -1109,7 +1109,7 @@ class CognitivePatternEvolution {
    * @param {Object} template2 - Second parent template
    * @param {Object} context - Current context
    */
-  createHybridTemplate(template1, template2, context) {
+  createHybridTemplate(template1: PatternTemplate, template2: PatternTemplate, context: PatternContext): PatternTemplate {
     const hybrid = {
       name: `Hybrid: ${template1.name} + ${template2.name}`,
       description: `Combination of ${template1.name.toLowerCase()} and ${template2.name.toLowerCase()}`,
@@ -1145,7 +1145,7 @@ class CognitivePatternEvolution {
    * @param {Array} patterns - Active patterns
    * @param {Object} context - Current context
    */
-  selectDominantPattern(patterns, context) {
+  selectDominantPattern(patterns: string[], context: PatternContext): string {
     if (patterns.length === 0) {
       return 'convergent';
     }
@@ -1179,7 +1179,7 @@ class CognitivePatternEvolution {
    * @param {string} agentId - Agent identifier
    * @param {Object} evolution - Evolution details
    */
-  recordEvolution(agentId, evolution) {
+  recordEvolution(agentId: string, evolution: EvolutionRecord): void {
     const history = this.evolutionHistory.get(agentId) || [];
     history.push(evolution);
 
@@ -1197,7 +1197,7 @@ class CognitivePatternEvolution {
    * @param {Array} agentIds - List of agent IDs
    * @param {Object} session - Collaborative session
    */
-  async enableCrossAgentEvolution(agentIds, session) {
+  async enableCrossAgentEvolution(agentIds: string[], session: { id: string }): Promise<void> {
     // Create cross-agent pattern exchange matrix
     const exchangeMatrix = {};
 
@@ -1226,7 +1226,7 @@ class CognitivePatternEvolution {
    * @param {string} targetAgentId - Target agent ID
    * @param {Array} patterns - Patterns to transfer
    */
-  async transferPatterns(targetAgentId, patterns) {
+  async transferPatterns(targetAgentId: string, patterns: any[]): Promise<void> {
     const targetData = this.agentPatterns.get(targetAgentId);
     if (!targetData) {
       return;
@@ -1263,7 +1263,7 @@ class CognitivePatternEvolution {
    * @param {string} agentId - Target agent ID
    * @param {Object} pattern - Pattern to evaluate
    */
-  async evaluatePatternCompatibility(agentId, pattern) {
+  async evaluatePatternCompatibility(agentId: string, pattern: any): Promise<number> {
     const agentData = this.agentPatterns.get(agentId);
     if (!agentData) {
       return 0;
@@ -1299,7 +1299,7 @@ class CognitivePatternEvolution {
    *
    * @param {string} agentId - Agent identifier
    */
-  async extractPatterns(agentId) {
+  async extractPatterns(agentId: string): Promise<any[]> {
     const agentData = this.agentPatterns.get(agentId);
     if (!agentData) {
       return [];
@@ -1331,7 +1331,7 @@ class CognitivePatternEvolution {
    * @param {string} agentId - Agent identifier
    * @param {Array} patternUpdates - Pattern updates
    */
-  async applyPatternUpdates(agentId, patternUpdates) {
+  async applyPatternUpdates(agentId: string, patternUpdates: any[]): Promise<void> {
     const agentData = this.agentPatterns.get(agentId);
     if (!agentData) {
       return;
@@ -1367,7 +1367,7 @@ class CognitivePatternEvolution {
    *
    * @param {Array} gradients - Array of gradient sets
    */
-  calculateAggregationWeights(gradients) {
+  calculateAggregationWeights(gradients: any[]): number[] {
     // Weight gradients based on cognitive pattern effectiveness
     const weights = new Array(gradients.length).fill(1 / gradients.length);
 
@@ -1381,7 +1381,7 @@ class CognitivePatternEvolution {
    *
    * @param {string} agentId - Agent identifier
    */
-  async assessGrowth(agentId) {
+  async assessGrowth(agentId: string): Promise<number> {
     const agentData = this.agentPatterns.get(agentId);
     const metrics = this.evolutionMetrics.get(agentId);
 
@@ -1453,7 +1453,7 @@ class CognitivePatternEvolution {
    *
    * @param {string} agentId - Agent identifier
    */
-  async preserveHistory(agentId) {
+  async preserveHistory(agentId: string): Promise<any> {
     const agentData = this.agentPatterns.get(agentId);
     const history = this.evolutionHistory.get(agentId);
     const metrics = this.evolutionMetrics.get(agentId);
@@ -1471,7 +1471,7 @@ class CognitivePatternEvolution {
    * @param {string} agentId - Agent identifier
    * @param {Object} preservedHistory - Preserved history
    */
-  async restoreHistory(agentId, preservedHistory) {
+  async restoreHistory(agentId: string, preservedHistory: any): Promise<void> {
     if (preservedHistory.patterns) {
       this.agentPatterns.set(agentId, preservedHistory.patterns);
     }
