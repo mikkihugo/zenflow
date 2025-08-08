@@ -933,6 +933,7 @@ class CognitivePatternEvolution {
 
     for (const pattern of unusedPatterns) {
       const template = this.patternTemplates.get(pattern);
+      if (!template) continue;
       const score = this.calculateContextMatch(template, context);
 
       if (score > bestScore) {
@@ -967,6 +968,7 @@ class CognitivePatternEvolution {
 
     for (const pattern of currentPatterns) {
       const template = this.patternTemplates.get(pattern);
+      if (!template) continue;
       const score = this.calculateContextMatch(template, context);
 
       if (score < worstScore) {
@@ -1021,7 +1023,7 @@ class CognitivePatternEvolution {
     const adaptiveTemplate = JSON.parse(JSON.stringify(template)); // Deep copy
 
     // Adapt characteristics based on context
-    if (context.creativity_required > 0.7) {
+    if (context.creativity_required !== undefined && context.creativity_required > 0.7) {
       adaptiveTemplate.characteristics.explorationRate = Math.min(
         1,
         adaptiveTemplate.characteristics.explorationRate + 0.2
@@ -1032,12 +1034,12 @@ class CognitivePatternEvolution {
       );
     }
 
-    if (context.dataComplexity > 0.8) {
+    if (context.dataComplexity !== undefined && context.dataComplexity > 0.8) {
       adaptiveTemplate.characteristics.patternRecognition = 'pattern_networks';
       adaptiveTemplate.characteristics.searchStrategy = 'systematic';
     }
 
-    if (context.noiseLevel > 0.6) {
+    if (context.noiseLevel !== undefined && context.noiseLevel > 0.6) {
       adaptiveTemplate.characteristics.decisionMaking = 'exploratory';
     }
 
@@ -1064,6 +1066,7 @@ class CognitivePatternEvolution {
 
     for (const pattern of currentPatterns) {
       const template = this.patternTemplates.get(pattern);
+      if (!template) continue;
       const score = this.calculateContextMatch(template, context);
       patternScores.push({ pattern, score });
     }
