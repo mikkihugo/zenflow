@@ -701,6 +701,9 @@ export class ChaosEngineering extends EventEmitter {
 
     // Determine appropriate recovery trigger based on failure type
     const experiment = this.experiments.get(execution.experimentName);
+    if (!experiment) {
+      throw new Error(`Experiment ${execution.experimentName} not found`);
+    }
     const recoveryTrigger = this.getRecoveryTrigger(experiment.failureType);
 
     const recoveryExecution = await this.recoveryWorkflows.triggerRecovery(recoveryTrigger, {
