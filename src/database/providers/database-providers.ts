@@ -387,7 +387,7 @@ export interface VectorDatabaseAdapter extends DatabaseAdapter {
  *   port: 5432,
  *   database: 'application_db',
  *   username: 'app_user',
- *   password: process.env.DB_PASSWORD,
+ *   password: process.env['DB_PASSWORD'],
  *   pool: {
  *     min: 5,
  *     max: 50,

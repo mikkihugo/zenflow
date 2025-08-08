@@ -97,7 +97,7 @@ export function detectModeWithReason(
  */
 export function isInteractiveSupported(): boolean {
   return (
-    process.stdin.isTTY && process.stdout.isTTY && !process.env.CI && process.env.TERM !== 'dumb'
+    process.stdin.isTTY && process.stdout.isTTY && !process.env['CI'] && process.env['TERM'] !== 'dumb'
   );
 }
 
@@ -115,8 +115,8 @@ export function isCommandExecutionSupported(): boolean {
 export function getEnvironmentInfo() {
   return {
     isTTY: process.stdin.isTTY,
-    isCI: !!process.env.CI,
-    term: process.env.TERM,
+    isCI: !!process.env['CI'],
+    term: process.env['TERM'],
     platform: process.platform,
     nodeVersion: process.version,
     interactiveSupported: isInteractiveSupported(),

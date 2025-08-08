@@ -19,7 +19,7 @@
  * // API Key authentication
  * const apiKeyAuth: ServiceAuthConfig = {
  *   type: 'apikey',
- *   apiKey: process.env.API_KEY,
+ *   apiKey: process.env['API_KEY'],
  *   apiKeyHeader: 'X-Custom-API-Key'
  * };
  *
@@ -27,7 +27,7 @@
  * const jwtAuth: ServiceAuthConfig = {
  *   type: 'jwt',
  *   jwt: {
- *     secret: process.env.JWT_SECRET,
+ *     secret: process.env['JWT_SECRET'],
  *     expiresIn: '24h',
  *     algorithm: 'HS256'
  *   }
@@ -37,8 +37,8 @@
  * const oauthAuth: ServiceAuthConfig = {
  *   type: 'oauth',
  *   credentials: {
- *     clientId: process.env.OAUTH_CLIENT_ID,
- *     clientSecret: process.env.OAUTH_CLIENT_SECRET,
+ *     clientId: process.env['OAUTH_CLIENT_ID'],
+ *     clientSecret: process.env['OAUTH_CLIENT_SECRET'],
  *     tokenUrl: 'https://auth.example.com/token',
  *     scope: 'read:data write:data'
  *   }

@@ -161,7 +161,7 @@ const getLogLevelFromStatus = (statusCode: number): LogLevel => {
  */
 const shouldLog = (path: string, _method: string): boolean => {
   // Skip logging for health checks in production
-  if (process.env.NODE_ENV === 'production' && path === '/health') {
+  if (process.env['NODE_ENV'] === 'production' && path === '/health') {
     return false;
   }
 
@@ -264,7 +264,7 @@ const createLogEntry = (
  * @param logEntry
  */
 const outputLog = (logEntry: LogEntry): void => {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env['NODE_ENV'] === 'development') {
     // Pretty print for development
     const { httpRequest, timestamp, level, message } = logEntry;
     const _duration = httpRequest?.latency || '';

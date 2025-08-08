@@ -473,7 +473,7 @@ export class KnowledgeClientAdapter
     return {
       pythonPath: config.factConfig?.pythonPath,
       factRepoPath: config.factConfig?.factRepoPath || './FACT',
-      anthropicApiKey: config.factConfig?.anthropicApiKey || process.env.ANTHROPIC_API_KEY || '',
+      anthropicApiKey: config.factConfig?.anthropicApiKey || process.env['ANTHROPIC_API_KEY'] || '',
       cacheConfig: config.caching
         ? {
             prefix: config.caching.prefix,
@@ -655,7 +655,7 @@ export class KnowledgeClientFactory implements IClientFactory {
       if (!knowledgeConfig.factConfig?.factRepoPath) {
         return false;
       }
-      if (!knowledgeConfig.factConfig?.anthropicApiKey && !process.env.ANTHROPIC_API_KEY) {
+      if (!knowledgeConfig.factConfig?.anthropicApiKey && !process.env['ANTHROPIC_API_KEY']) {
         return false;
       }
     }
@@ -686,7 +686,7 @@ export async function createFACTClient(
     provider: 'fact',
     factConfig: {
       factRepoPath,
-      anthropicApiKey: anthropicApiKey || process.env.ANTHROPIC_API_KEY || '',
+      anthropicApiKey: anthropicApiKey || process.env['ANTHROPIC_API_KEY'] || '',
       pythonPath: 'python3',
     },
     caching: {

@@ -62,7 +62,7 @@ export class RecoveryIntegration extends EventEmitter {
 
     this.logger = new Logger({
       name: 'recovery-integration',
-      level: process.env.LOG_LEVEL || 'INFO',
+      level: process.env['LOG_LEVEL'] || 'INFO',
       metadata: { component: 'recovery-integration' },
     });
 

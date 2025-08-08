@@ -91,7 +91,7 @@ export interface APIClientConfig {
 export const DEFAULT_API_CONFIG: APIServerConfig = {
   port: 3000,
   host: 'localhost',
-  environment: (process.env.NODE_ENV as any) || 'development',
+  environment: (process.env['NODE_ENV'] as any) || 'development',
   enableSwagger: true,
   enableValidation: true,
   enableRateLimit: true,

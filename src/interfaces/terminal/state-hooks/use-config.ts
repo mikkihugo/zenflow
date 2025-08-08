@@ -101,7 +101,7 @@ export const useConfig = (): UseConfigReturn => {
       const configPaths = [
         './.claude/terminal-config.json',
         './config/terminal.json',
-        `${process.env.HOME}/.claude-zen/terminal-config.json`,
+        `${process.env['HOME']}/.claude-zen/terminal-config.json`,
       ];
 
       for (const configPath of configPaths) {

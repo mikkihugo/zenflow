@@ -130,7 +130,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async preSearchHook(args) {
+  async preSearchHook(args: any) {
     const { pattern } = args;
 
     // Initialize search cache
@@ -162,7 +162,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async preMcpHook(args) {
+  async preMcpHook(args: any) {
     const { tool, params } = args;
 
     // Parse params if string
@@ -200,7 +200,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async preEditHook(args) {
+  async preEditHook(args: any) {
     const { file } = args;
 
     // Determine file type and assign appropriate agent
@@ -245,7 +245,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async preTaskHook(args) {
+  async preTaskHook(args: any) {
     const { description, autoSpawnAgents, optimizeTopology } = args;
 
     // Analyze task complexity
@@ -279,7 +279,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async postEditHook(args) {
+  async postEditHook(args: any) {
     const { file, autoFormat, trainPatterns, updateGraph } = args;
     const result: any = {
       continue: true,
@@ -317,7 +317,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async postTaskHook(args) {
+  async postTaskHook(args: any) {
     const { taskId, analyzePerformance, updateCoordination } = args;
 
     const performance: any = {
@@ -355,7 +355,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async postWebSearchHook(args) {
+  async postWebSearchHook(args: any) {
     const { query, updateKnowledge } = args;
 
     // Track search patterns
@@ -390,7 +390,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async postWebFetchHook(args) {
+  async postWebFetchHook(args: any) {
     const { url, extractPatterns, cacheContent } = args;
 
     const result = {
@@ -424,7 +424,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async notificationHook(args) {
+  async notificationHook(args: any) {
     const { message, level, withSwarmStatus, sendTelemetry, type, context, agentId } = args;
 
     const notification: any = {
@@ -472,7 +472,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async preBashHook(args) {
+  async preBashHook(args: any) {
     const { command } = args;
 
     // Safety checks
@@ -506,7 +506,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async mcpSwarmInitializedHook(args) {
+  async mcpSwarmInitializedHook(args: any) {
     const { swarmId, topology, persistConfig, enableMonitoring } = args;
 
     // Store swarm configuration
@@ -548,7 +548,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async mcpAgentSpawnedHook(args) {
+  async mcpAgentSpawnedHook(args: any) {
     const { agentId, type, updateRoster, trainSpecialization } = args;
 
     // Update agent roster
@@ -594,7 +594,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async mcpTaskOrchestratedHook(args) {
+  async mcpTaskOrchestratedHook(args: any) {
     const { taskId, monitorProgress, optimizeDistribution } = args;
 
     // Initialize task tracking
@@ -645,7 +645,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async mcpNeuralTrainedHook(args) {
+  async mcpNeuralTrainedHook(args: any) {
     const { improvement, saveWeights, updatePatterns } = args;
 
     const result = {
@@ -726,7 +726,7 @@ class ZenSwarmHooks {
    *
    * @param output
    */
-  extractBulletPoints(output) {
+  extractBulletPoints(output: string): string {
     if (!output) {
       return '- No specific achievements captured';
     }
@@ -742,7 +742,7 @@ class ZenSwarmHooks {
   /**
    * Get count of modified files
    */
-  getModifiedFilesCount() {
+  getModifiedFilesCount(): number {
     const fileOps = this.sessionData.operations.filter((op) =>
       ['edit', 'write', 'create'].includes(op.type)
     );
@@ -754,7 +754,7 @@ class ZenSwarmHooks {
   /**
    * Get list of modified files
    */
-  getModifiedFilesList() {
+  getModifiedFilesList(): string {
     const fileOps = this.sessionData.operations.filter((op) =>
       ['edit', 'write', 'create'].includes(op.type)
     );
@@ -783,7 +783,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async sessionRestoreHook(args) {
+  async sessionRestoreHook(args: any) {
     const { loadMemory, loadAgents } = args;
 
     const result = {
@@ -854,7 +854,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async sessionEndHook(args) {
+  async sessionEndHook(args: any) {
     const { generateSummary, saveMemory, exportMetrics } = args;
     const sessionDir = path.join(process.cwd(), '.claude', 'sessions');
     await fs.mkdir(sessionDir, { recursive: true });
@@ -899,7 +899,7 @@ class ZenSwarmHooks {
 
   // Helper methods
 
-  getAgentTypeForFile(extension) {
+  getAgentTypeForFile(extension: string): string {
     const mapping = {
       '.js': 'coder',
       '.ts': 'coder',
@@ -940,7 +940,7 @@ class ZenSwarmHooks {
     }
   }
 
-  async ensureAgent(type) {
+  async ensureAgent(type: string): Promise<any> {
     let agent = this.sessionData.agents.get(type);
 
     if (!agent) {
@@ -958,7 +958,7 @@ class ZenSwarmHooks {
     return agent;
   }
 
-  getCognitivePattern(agentType) {
+  getCognitivePattern(agentType: string): string {
     const patterns = {
       coder: 'convergent',
       researcher: 'divergent',
@@ -970,7 +970,7 @@ class ZenSwarmHooks {
     return patterns[agentType] || 'balanced';
   }
 
-  async autoFormatFile(filePath) {
+  async autoFormatFile(filePath: string): Promise<{success: boolean; reason?: string; details?: any}> {
     const ext = path.extname(filePath);
     const formatters = {
       '.js': 'prettier --write',
@@ -997,7 +997,7 @@ class ZenSwarmHooks {
     }
   }
 
-  async trainPatternsFromEdit(filePath) {
+  async trainPatternsFromEdit(filePath: string): Promise<any> {
     // Simulate neural pattern training
     const improvement = Math.random() * 0.05; // 0-5% improvement
     const confidence = 0.85 + Math.random() * 0.1; // 85-95% confidence
@@ -1018,7 +1018,7 @@ class ZenSwarmHooks {
     };
   }
 
-  validateCommandSafety(command) {
+  validateCommandSafety(command: string): {safe: boolean; reason?: string; riskLevel?: string} {
     const dangerousPatterns = [
       /rm\s+-rf\s+\//,
       /curl.*\|\s*bash/,
@@ -1057,7 +1057,7 @@ class ZenSwarmHooks {
     return { duration: 5000, requiresAgent: false, agentType: null };
   }
 
-  generateSessionSummary() {
+  generateSessionSummary(): string {
     const duration = Date.now() - this.sessionData.startTime;
     const agentList = Array.from(this.sessionData.agents.values());
 
@@ -1097,7 +1097,7 @@ ${this.sessionData.learnings
 `;
   }
 
-  captureSwarmState() {
+  captureSwarmState(): any {
     return {
       session_id: `sess-${Date.now()}`,
       agents: Object.fromEntries(this.sessionData.agents),
@@ -1108,7 +1108,7 @@ ${this.sessionData.learnings
     };
   }
 
-  calculateSessionMetrics() {
+  calculateSessionMetrics(): any {
     const duration = Date.now() - this.sessionData.startTime;
     return {
       performance: {
@@ -1142,7 +1142,7 @@ ${this.sessionData.learnings
     };
   }
 
-  formatDuration(ms) {
+  formatDuration(ms: number): string {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
@@ -1157,7 +1157,7 @@ ${this.sessionData.learnings
 
   // Additional helper methods for optimization
 
-  analyzeTaskComplexity(description) {
+  analyzeTaskComplexity(description: string): any {
     const keywords = {
       simple: ['fix', 'update', 'change', 'modify', 'rename'],
       medium: ['implement', 'create', 'add', 'integrate', 'refactor'],
@@ -1196,7 +1196,7 @@ ${this.sessionData.learnings
     };
   }
 
-  selectOptimalTopology(complexity) {
+  selectOptimalTopology(complexity: any): string {
     const topologyMap = {
       simple: 'star', // Centralized for simple tasks
       medium: 'mesh', // Flexible for medium complexity
@@ -1206,7 +1206,7 @@ ${this.sessionData.learnings
     return topologyMap[complexity.level] || 'mesh';
   }
 
-  determineRequiredAgents(description, complexity) {
+  determineRequiredAgents(description, complexity): string[] {
     const agents = new Set(['coordinator']); // Always need a coordinator
 
     const desc = description.toLowerCase();
@@ -1236,7 +1236,7 @@ ${this.sessionData.learnings
     return Array.from(agents);
   }
 
-  async updateKnowledgeGraph(file, operation) {
+  async updateKnowledgeGraph(file: string, operation: string): Promise<void> {
     if (!this.sessionData.knowledgeGraph) {
       this.sessionData.knowledgeGraph = {
         nodes: new Map(),
@@ -1283,7 +1283,7 @@ ${this.sessionData.learnings
     });
   }
 
-  calculateEfficiency(performance) {
+  calculateEfficiency(performance: any): any {
     const baselineTime = 60000; // 1 minute baseline
     const efficiencyScore = Math.max(0, Math.min(1, baselineTime / performance.completionTime));
 
@@ -1352,8 +1352,8 @@ ${this.sessionData.learnings
     return bottlenecks;
   }
 
-  suggestImprovements(performance) {
-    const improvements = [];
+  suggestImprovements(performance): Array<{area: string; suggestion: string; expectedImprovement: string}> {
+    const improvements: Array<{area: string; suggestion: string; expectedImprovement: string}> = [];
     const efficiency = this.calculateEfficiency(performance);
 
     // Time improvements
@@ -1386,7 +1386,7 @@ ${this.sessionData.learnings
     return improvements;
   }
 
-  updateCoordinationStrategy(performance) {
+  updateCoordinationStrategy(performance: any): void {
     const efficiency = this.calculateEfficiency(performance);
 
     // Update strategy based on performance
@@ -1415,8 +1415,8 @@ ${this.sessionData.learnings
     }
   }
 
-  extractSearchPatterns(query) {
-    const patterns = [];
+  extractSearchPatterns(query): string[] {
+    const patterns: string[] = [];
 
     // Extract file type patterns
     const fileTypes = query.match(/\.(js|ts|py|go|rs|md|json|yaml)\b/gi);
@@ -1439,7 +1439,7 @@ ${this.sessionData.learnings
     return patterns;
   }
 
-  async updateKnowledgeBase(type, data) {
+  async updateKnowledgeBase(type: string, data: any): Promise<void> {
     const kbPath = path.join(process.cwd(), '.ruv-swarm', 'knowledge-base.json');
 
     // Load existing knowledge base
@@ -1487,8 +1487,8 @@ ${this.sessionData.learnings
     await fs.writeFile(kbPath, JSON.stringify(kb, null, 2));
   }
 
-  extractUrlPatterns(url) {
-    const patterns = [];
+  extractUrlPatterns(url): string[] {
+    const patterns: string[] = [];
 
     try {
       const urlObj = new URL(url);
@@ -1527,7 +1527,7 @@ ${this.sessionData.learnings
     return patterns;
   }
 
-  async getSwarmStatus() {
+  async getSwarmStatus(): Promise<any> {
     try {
       const statusPath = path.join(process.cwd(), '.ruv-swarm', 'status.json');
       if (
@@ -1551,7 +1551,7 @@ ${this.sessionData.learnings
     };
   }
 
-  sendTelemetry(event, data) {
+  sendTelemetry(event: string, data: any): void {
     // In production, this would send to telemetry service
     // For now, just log to telemetry file
     const telemetryPath = path.join(process.cwd(), '.ruv-swarm', 'telemetry.jsonl');
@@ -1572,8 +1572,8 @@ ${this.sessionData.learnings
 
   // Helper methods for other functionality
 
-  getSpecializationForType(type) {
-    const specializations = {
+  getSpecializationForType(type: string): string[] {
+    const specializations: Record<string, string[]> = {
       researcher: ['literature-review', 'data-analysis', 'trend-identification'],
       coder: ['implementation', 'refactoring', 'optimization'],
       analyst: ['metrics', 'performance', 'data-visualization'],
@@ -1584,8 +1584,8 @@ ${this.sessionData.learnings
     return specializations[type] || ['general'];
   }
 
-  generateSpecializationPatterns(type) {
-    const patterns = {
+  generateSpecializationPatterns(type: string): string[] {
+    const patterns: Record<string, string[]> = {
       researcher: ['depth-first-search', 'breadth-first-search', 'citation-tracking'],
       coder: ['modular-design', 'error-handling', 'code-reuse'],
       analyst: ['statistical-analysis', 'trend-detection', 'anomaly-detection'],
@@ -1596,7 +1596,7 @@ ${this.sessionData.learnings
     return patterns[type] || ['adaptive-learning'];
   }
 
-  generateMockWeights() {
+  generateMockWeights(): any {
     // Generate mock neural network weights for demonstration
     return {
       layers: [
@@ -1625,7 +1625,7 @@ ${this.sessionData.learnings
     };
   }
 
-  optimizeAgentAllocation(_taskId) {
+  optimizeAgentAllocation(_taskId: string): any {
     // Simple load balancing algorithm
     const agents = Array.from(this.sessionData.agents.values());
     const allocation = {};
@@ -1648,7 +1648,7 @@ ${this.sessionData.learnings
     return allocation;
   }
 
-  calculateParallelization(_taskId) {
+  calculateParallelization(_taskId: string): any {
     // Determine parallelization factor based on task and resources
     const agentCount = this.sessionData.agents.size;
     const complexity = this.sessionData.taskComplexity || { score: 2 };
@@ -1660,7 +1660,7 @@ ${this.sessionData.learnings
     };
   }
 
-  getFileType(filePath) {
+  getFileType(filePath: string): string {
     const ext = path.extname(filePath);
     const typeMap = {
       '.js': 'javascript',
@@ -1677,7 +1677,7 @@ ${this.sessionData.learnings
     return typeMap[ext] || 'unknown';
   }
 
-  getCurrentAgent() {
+  getCurrentAgent(): string {
     // Get the most recently active agent
     const recentOps = this.sessionData.operations.slice(-10);
     const agentCounts = {};
@@ -1692,8 +1692,8 @@ ${this.sessionData.learnings
     return sorted.length > 0 ? sorted[0][0] : 'coordinator';
   }
 
-  async findRelatedFiles(filePath) {
-    const related = [];
+  async findRelatedFiles(filePath): Promise<string[]> {
+    const related: string[] = [];
     const _baseName = path.basename(filePath, path.extname(filePath));
     // const dirName = path.dirname(filePath);
 
@@ -1724,7 +1724,7 @@ ${this.sessionData.learnings
    *
    * @param notification
    */
-  async storeNotificationInDatabase(notification) {
+  async storeNotificationInDatabase(notification: any): Promise<void> {
     if (!this.persistence) {
       console.warn('⚠️ No persistence layer - notification stored in memory only');
       return;
@@ -1754,7 +1754,7 @@ ${this.sessionData.learnings
    * @param agentId
    * @param type
    */
-  async getNotificationsFromDatabase(agentId = null, type = null) {
+  async getNotificationsFromDatabase(agentId: string | null = null, type: string | null = null): Promise<any[]> {
     if (!this.persistence) {
       return [];
     }
@@ -1779,7 +1779,7 @@ ${this.sessionData.learnings
    *
    * @param args
    */
-  async agentCompleteHook(args) {
+  async agentCompleteHook(args: any) {
     const { agentId, taskId, results, learnings } = args;
 
     // Store completion in database for other agents to see
@@ -1822,7 +1822,7 @@ ${this.sessionData.learnings
   /**
    * Get current session ID for coordination
    */
-  getSessionId() {
+  getSessionId(): string {
     if (!this._sessionId) {
       this._sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     }
@@ -1835,7 +1835,7 @@ ${this.sessionData.learnings
    * @param key
    * @param agentId
    */
-  async getSharedMemory(key, agentId = null) {
+  async getSharedMemory(key: string, agentId: string | null = null): Promise<any> {
     // Check runtime memory first
     const runtimeValue = this.sessionData[key];
 
@@ -1863,7 +1863,7 @@ ${this.sessionData.learnings
    * @param value
    * @param agentId
    */
-  async setSharedMemory(key, value, agentId = null) {
+  async setSharedMemory(key: string, value: any, agentId: string | null = null): Promise<void> {
     // Store in runtime memory
     this.sessionData[key] = value;
 
@@ -1882,6 +1882,6 @@ ${this.sessionData.learnings
 // Export singleton instance and its methods
 const hooksInstance = new ZenSwarmHooks();
 
-export const handleHook = (hookType, options) => hooksInstance.handleHook(hookType, options);
+export const handleHook = (hookType: string, options: any[]) => hooksInstance.handleHook(hookType, options);
 
 export default hooksInstance;

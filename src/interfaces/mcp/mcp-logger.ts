@@ -15,7 +15,7 @@ export function createLogger(name: string): MCPLogger {
 
   return {
     debug(message: string, meta?: any): void {
-      if (process.env.DEBUG || process.env.MCP_DEBUG) {
+      if (process.env['DEBUG'] || process.env['MCP_DEBUG']) {
         console.error(`${prefix} DEBUG: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
       }
     },

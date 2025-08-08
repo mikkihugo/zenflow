@@ -167,10 +167,10 @@ async function main(): Promise<void> {
 
     // Create and configure server
     const server = new HTTPMCPServer({
-      port: config.port || parseInt(process.env.MCP_PORT || '3000', 10),
-      host: config.host || process.env.MCP_HOST || 'localhost',
-      logLevel: config.logLevel || (process.env.MCP_LOG_LEVEL as any) || 'info',
-      timeout: config.timeout || parseInt(process.env.MCP_TIMEOUT || '30000', 10),
+      port: config.port || parseInt(process.env['MCP_PORT'] || '3000', 10),
+      host: config.host || process.env['MCP_HOST'] || 'localhost',
+      logLevel: config.logLevel || (process.env['MCP_LOG_LEVEL'] as any) || 'info',
+      timeout: config.timeout || parseInt(process.env['MCP_TIMEOUT'] || '30000', 10),
     });
 
     // Setup graceful shutdown

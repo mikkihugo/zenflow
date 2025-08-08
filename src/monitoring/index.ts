@@ -199,9 +199,9 @@ export const examples = {
    */
   productionSetup: async () => {
     const { system, hooks } = await setupClaudeZenMonitoring({
-      dashboardPort: process.env.DASHBOARD_PORT ? parseInt(process.env.DASHBOARD_PORT) : 3001,
-      enableOptimization: process.env.NODE_ENV === 'production',
-      metricsInterval: process.env.NODE_ENV === 'production' ? 5000 : 1000,
+      dashboardPort: process.env['DASHBOARD_PORT'] ? parseInt(process.env['DASHBOARD_PORT']) : 3001,
+      enableOptimization: process.env['NODE_ENV'] === 'production',
+      metricsInterval: process.env['NODE_ENV'] === 'production' ? 5000 : 1000,
     });
 
     // Production-specific monitoring

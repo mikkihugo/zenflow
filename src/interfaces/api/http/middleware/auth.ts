@@ -66,7 +66,7 @@ export const authMiddleware = (req: Request, _res: Response, next: NextFunction)
   req.auth = authContext;
 
   // Log authentication status (only in development)
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env['NODE_ENV'] === 'development') {
     log(LogLevel.DEBUG, 'Authentication: No auth required - allowing request', req, {
       authStatus: 'no_auth_required',
       userType: 'anonymous',
@@ -110,7 +110,7 @@ export const optionalAuthMiddleware = (req: Request, _res: Response, next: NextF
       isAuthenticated: false,
     };
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       log(LogLevel.DEBUG, 'Optional auth: Token provided but not validated', req, {
         hasAuthHeader: !!authHeader,
         hasApiKey: !!apiKey,

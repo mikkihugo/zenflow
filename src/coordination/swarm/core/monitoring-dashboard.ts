@@ -55,7 +55,7 @@ export class MonitoringDashboard extends EventEmitter {
 
     this.logger = new Logger({
       name: 'monitoring-dashboard',
-      level: process.env.LOG_LEVEL || 'INFO',
+      level: process.env['LOG_LEVEL'] || 'INFO',
       metadata: { component: 'monitoring-dashboard' },
     });
 

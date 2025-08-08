@@ -133,13 +133,27 @@ export const IntelligenceUtils = {
       import('./adaptive-learning/knowledge-evolution'),
     ]);
 
+    // Validate all systems loaded successfully
+    if (systems.length < 6) {
+      throw new Error('Failed to load all intelligence system modules');
+    }
+
+    const [
+      patternRecognitionModule,
+      learningCoordinatorModule,
+      performanceOptimizerModule,
+      mlRegistryModule,
+      behavioralOptimizationModule,
+      knowledgeEvolutionModule
+    ] = systems;
+
     return {
-      patternRecognition: new systems[0].PatternRecognitionEngine(defaultConfig, systemContext),
-      learningCoordinator: new systems[1].LearningCoordinator(defaultConfig, systemContext),
-      performanceOptimizer: new systems[2].PerformanceOptimizer(defaultConfig, systemContext),
-      mlRegistry: new systems[3].MLModelRegistry(defaultConfig),
-      behavioralOptimization: systems[4],
-      knowledgeEvolution: systems[5],
+      patternRecognition: patternRecognitionModule && new patternRecognitionModule.PatternRecognitionEngine(defaultConfig, systemContext),
+      learningCoordinator: learningCoordinatorModule && new learningCoordinatorModule.LearningCoordinator(defaultConfig, systemContext),
+      performanceOptimizer: performanceOptimizerModule && new performanceOptimizerModule.PerformanceOptimizer(defaultConfig, systemContext),
+      mlRegistry: mlRegistryModule && new mlRegistryModule.MLModelRegistry(defaultConfig),
+      behavioralOptimization: behavioralOptimizationModule,
+      knowledgeEvolution: knowledgeEvolutionModule,
       config: defaultConfig,
       context: systemContext,
     };

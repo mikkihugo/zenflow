@@ -144,7 +144,7 @@ export interface DatabaseHealthStatus {
  */
 class ConsoleLogger {
   debug(_message: string, _meta?: any): void {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
     }
   }
 

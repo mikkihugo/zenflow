@@ -42,10 +42,10 @@ export class HTTPMCPServer {
 
   constructor(config: Partial<MCPServerConfig> = {}) {
     this.config = {
-      port: parseInt(process.env.MCP_PORT || '3000', 10),
-      host: process.env.MCP_HOST || 'localhost',
-      timeout: parseInt(process.env.MCP_TIMEOUT || '30000', 10),
-      logLevel: (process.env.MCP_LOG_LEVEL as any) || 'info',
+      port: parseInt(process.env['MCP_PORT'] || '3000', 10),
+      host: process.env['MCP_HOST'] || 'localhost',
+      timeout: parseInt(process.env['MCP_TIMEOUT'] || '30000', 10),
+      logLevel: (process.env['MCP_LOG_LEVEL'] as any) || 'info',
       ...config,
     };
 

@@ -41,11 +41,11 @@ export class InterfaceModeDetector {
 
     // Environment analysis
     const isCI = !!(
-      process.env.CI ||
-      process.env.GITHUB_ACTIONS ||
-      process.env.TRAVIS ||
-      process.env.JENKINS ||
-      process.env.GITLAB_CI
+      process.env['CI'] ||
+      process.env['GITHUB_ACTIONS'] ||
+      process.env['TRAVIS'] ||
+      process.env['JENKINS'] ||
+      process.env['GITLAB_CI']
     );
 
     const hasTerminal = !!process.stdin?.isTTY;
@@ -127,11 +127,11 @@ export class InterfaceModeDetector {
         stderr: !!process.stderr?.isTTY,
       },
       environment: {
-        ci: !!process.env.CI,
-        github: !!process.env.GITHUB_ACTIONS,
-        term: process.env.TERM,
-        termProgram: process.env.TERM_PROGRAM,
-        colorTerm: process.env.COLORTERM,
+        ci: !!process.env['CI'],
+        github: !!process.env['GITHUB_ACTIONS'],
+        term: process.env['TERM'],
+        termProgram: process.env['TERM_PROGRAM'],
+        colorTerm: process.env['COLORTERM'],
       },
       argv: process.argv,
       cwd: process.cwd(),

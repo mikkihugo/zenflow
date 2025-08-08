@@ -148,12 +148,12 @@ export class InterfaceManager extends EventEmitter {
 
   private detectInterfaceMode(): InterfaceMode {
     // Simple detection logic
-    if (process.env.CI || !process.stdout.isTTY) {
+    if (process.env['CI'] || !process.stdout.isTTY) {
       return 'cli';
     }
 
     // Check if we're in a terminal that supports TUI
-    if (process.env.TERM && process.env.TERM !== 'dumb') {
+    if (process.env['TERM'] && process.env['TERM'] !== 'dumb') {
       return 'tui';
     }
 

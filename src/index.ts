@@ -307,8 +307,8 @@ export async function healthCheck() {
  */
 export function getVersion() {
   return {
-    version: process.env.npm_package_version || '2.0.0',
-    build: process.env.BUILD_ID || 'development',
+    version: process.env['npm_package_version'] || '2.0.0',
+    build: process.env['BUILD_ID'] || 'development',
     timestamp: new Date().toISOString(),
   };
 }

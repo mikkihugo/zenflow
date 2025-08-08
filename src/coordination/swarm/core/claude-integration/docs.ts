@@ -1508,12 +1508,15 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
    */
   findClaudeZenSection(lines: string[]) {
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].toLowerCase();
-      if (
-        (line.includes('claude-zen') || line.includes('claude zen')) &&
-        (line.startsWith('#') || line.includes('claude code configuration'))
-      ) {
-        return i;
+      const lineElement = lines[i];
+      if (lineElement) {
+        const line = lineElement.toLowerCase();
+        if (
+          (line.includes('claude-zen') || line.includes('claude zen')) &&
+          (line.startsWith('#') || line.includes('claude code configuration'))
+        ) {
+          return i;
+        }
       }
     }
     return -1;
@@ -1531,7 +1534,8 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
 
     // 1. After main title but before first major section
     for (let i = 0; i < existingLines.length; i++) {
-      if (existingLines[i].startsWith('# ') && i > 0) {
+      const lineElement = existingLines[i];
+      if (lineElement && lineElement.startsWith('# ') && i > 0) {
         // Found first major heading after title
         insertIndex = i;
         break;
@@ -1541,7 +1545,8 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
     // 2. If no major headings, look for end of introductory content
     if (insertIndex === -1) {
       for (let i = 0; i < existingLines.length; i++) {
-        if (existingLines[i].startsWith('## ') && i > 5) {
+        const lineElement = existingLines[i];
+        if (lineElement && lineElement.startsWith('## ') && i > 5) {
           insertIndex = i;
           break;
         }
@@ -1572,16 +1577,19 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
   findSectionEnd(lines: string[], startIndex: number) {
     // Look for next top-level heading or end of file
     for (let i = startIndex + 1; i < lines.length; i++) {
-      if (
-        lines[i].startsWith('# ') &&
-        !lines[i].includes('claude-zen') &&
-        !lines[i].includes('claude zen')
-      ) {
-        return i;
-      }
-      // Also check for horizontal rules that might separate sections
-      if (lines[i].trim() === '---' && i > startIndex + 10) {
-        return i;
+      const lineElement = lines[i];
+      if (lineElement) {
+        if (
+          lineElement.startsWith('# ') &&
+          !lineElement.includes('claude-zen') &&
+          !lineElement.includes('claude zen')
+        ) {
+          return i;
+        }
+        // Also check for horizontal rules that might separate sections
+        if (lineElement.trim() === '---' && i > startIndex + 10) {
+          return i;
+        }
       }
     }
     return lines.length;

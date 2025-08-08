@@ -189,8 +189,8 @@ class CommandSanitizer {
 
     // Validate the environment values
     try {
-      CommandSanitizer.validateRepoIdentifier(process.env.GITHUB_OWNER);
-      CommandSanitizer.validateRepoIdentifier(process.env.GITHUB_REPO);
+      CommandSanitizer.validateRepoIdentifier(process.env['GITHUB_OWNER']);
+      CommandSanitizer.validateRepoIdentifier(process.env['GITHUB_REPO']);
     } catch (error) {
       throw new Error(`Invalid environment variable: ${error.message}`);
     }

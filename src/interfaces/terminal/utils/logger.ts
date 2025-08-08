@@ -18,7 +18,7 @@ export const createSimpleLogger = (component?: string): SimpleLogger => {
 
   return {
     debug: (_message: string, ..._args: any[]) => {
-      if (process.env.DEBUG || process.env.VERBOSE) {
+      if (process.env['DEBUG'] || process.env['VERBOSE']) {
       }
     },
 

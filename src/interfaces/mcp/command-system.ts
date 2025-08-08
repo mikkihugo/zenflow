@@ -794,7 +794,8 @@ export class MCPCommandQueue extends EventEmitter {
     // Rollback commands in reverse order
     for (let i = results.length - 1; i >= 0; i--) {
       const command = transaction.commands[i];
-      if (results[i].success && command.canUndo() && command.undo) {
+      const result = results[i];
+      if (command && result && result.success && command.canUndo() && command.undo) {
         try {
           await command.undo();
         } catch (error) {

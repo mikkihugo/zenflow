@@ -527,10 +527,8 @@ class JSONBackend implements BackendInterface {
     const namespaces = new Set<string>();
 
     for (const key of this.data.keys()) {
-      const parts = key.split(':');
-      if (parts.length > 0 && parts[0]) {
-        namespaces.add(parts[0]);
-      }
+      const namespace = key.split(':')[0];
+      namespaces.add(namespace);
     }
 
     return Array.from(namespaces);

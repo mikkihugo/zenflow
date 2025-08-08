@@ -38,7 +38,7 @@
  *   timeout: 60000,
  *   authentication: {
  *     type: 'bearer',
- *     token: process.env.API_TOKEN
+ *     token: process.env['API_TOKEN']
  *   },
  *   retry: {
  *     attempts: 5,
@@ -134,8 +134,8 @@ import type { HTTPClientCapabilities, HTTPClientConfig, OAuthCredentials } from 
  *   authentication: {
  *     type: 'oauth',
  *     credentials: {
- *       clientId: process.env.CLIENT_ID,
- *       clientSecret: process.env.CLIENT_SECRET,
+ *       clientId: process.env['CLIENT_ID'],
+ *       clientSecret: process.env['CLIENT_SECRET'],
  *       tokenUrl: 'https://auth.service.com/oauth/token',
  *       scope: 'read:users write:users'
  *     }

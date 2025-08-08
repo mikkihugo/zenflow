@@ -3,6 +3,10 @@ import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
 import securityPlugin from 'eslint-plugin-security';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default [
   // TypeScript files configuration
@@ -14,7 +18,8 @@ export default [
       ecmaVersion: 2024,
       sourceType: 'module',
       parserOptions: {
-        // Remove project requirement to avoid path issues
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
         ecmaFeatures: {
           modules: true,
         },

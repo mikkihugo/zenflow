@@ -355,7 +355,7 @@ export class USL {
    *   document: {
    *     enabled: true,
    *     databaseType: 'postgresql',
-   *     connectionString: process.env.DATABASE_URL,
+   *     connectionString: process.env['DATABASE_URL'],
    *     pooling: { min: 2, max: 10 },
    *     migrations: { autoRun: true }
    *   }
@@ -402,12 +402,12 @@ export class USL {
    *   web: {
    *     enabled: true,
    *     apiEndpoint: 'https://api.example.com',
-   *     authentication: { type: 'apikey', key: process.env.API_KEY }
+   *     authentication: { type: 'apikey', key: process.env['API_KEY'] }
    *   },
    *   document: {
    *     enabled: true,
    *     databaseType: 'postgresql',
-   *     connectionString: process.env.DATABASE_URL,
+   *     connectionString: process.env['DATABASE_URL'],
    *     caching: { enabled: true, ttl: 300 }
    *   }
    * });
@@ -1242,7 +1242,7 @@ export const USLHelpers = {
    *   enableCoordination: true,
    *   enableNeural: false,
    *   databaseConfig: {
-   *     connectionString: process.env.DATABASE_URL,
+   *     connectionString: process.env['DATABASE_URL'],
    *     pooling: { min: 2, max: 20 }
    *   },
    *   memoryConfig: {
@@ -1892,7 +1892,7 @@ export const createMemoryService = usl.createMemoryService.bind(usl);
  * @param {string} name Service name identifier
  * @param {Partial<DatabaseServiceConfig>} options Database configuration options
  * @returns {Promise<IService>} Promise resolving to created database service
- * @example createDatabaseService('db', { connectionString: process.env.DATABASE_URL })
+ * @example createDatabaseService('db', { connectionString: process.env['DATABASE_URL'] })
  */
 export const createDatabaseService = usl.createDatabaseService.bind(usl);
 

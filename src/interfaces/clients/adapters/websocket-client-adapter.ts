@@ -40,9 +40,9 @@
  *   protocols: ['trading-v2', 'fallback-v1'],
  *   authentication: {
  *     type: 'query',
- *     token: process.env.WS_TOKEN,
+ *     token: process.env['WS_TOKEN'],
  *     headers: {
- *       'Authorization': `Bearer ${process.env.API_KEY}`
+ *       'Authorization': `Bearer ${process.env['API_KEY']}`
  *     }
  *   },
  *   reconnection: {

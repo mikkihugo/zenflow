@@ -263,8 +263,8 @@ export class DiscoverCommand {
           maxAgents: 5,
           agentSpecializations: ['dependency', 'framework', 'api'],
           factConfig: {
-            factRepoPath: process.env.FACT_REPO_PATH || '/tmp/fact',
-            anthropicApiKey: process.env.ANTHROPIC_API_KEY || 'dummy',
+            factRepoPath: process.env['FACT_REPO_PATH'] || '/tmp/fact',
+            anthropicApiKey: process.env['ANTHROPIC_API_KEY'] || 'dummy',
           },
         },
         analysisDepth: 'medium',

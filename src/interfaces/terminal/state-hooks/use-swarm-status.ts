@@ -81,7 +81,7 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
   const {
     autoRefresh = true,
     refreshInterval = 3000,
-    enableMockData = process.env.NODE_ENV === 'development',
+    enableMockData = process.env['NODE_ENV'] === 'development',
   } = options;
 
   const [swarmState, setSwarmState] = useState<SwarmState>(initialSwarmState);

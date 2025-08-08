@@ -365,7 +365,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
 export const globalMonitor = new RealTimePerformanceMonitor();
 
 // Auto-start monitoring in production
-if (process.env.NODE_ENV === 'production') {
+if (process.env['NODE_ENV'] === 'production') {
   globalMonitor.start();
 
   // Handle graceful shutdown

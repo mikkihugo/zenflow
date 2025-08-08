@@ -614,7 +614,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
     parts.push('service');
 
     if (this.config.naming?.includeEnvironment) {
-      parts.push(process.env.NODE_ENV || 'development');
+      parts.push(process.env['NODE_ENV'] || 'development');
     }
 
     if (this.config.naming?.includeTimestamp) {

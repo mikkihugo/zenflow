@@ -235,7 +235,7 @@ export class UACL {
    *   {
    *     authentication: {
    *       type: 'bearer',
-   *       token: process.env.API_TOKEN
+   *       token: process.env['API_TOKEN']
    *     },
    *     retry: {
    *       attempts: 3,
@@ -299,7 +299,7 @@ export class UACL {
    *     protocols: ['trading-v1', 'fallback'],
    *     authentication: {
    *       type: 'query',
-   *       token: process.env.WS_TOKEN
+   *       token: process.env['WS_TOKEN']
    *     },
    *     reconnection: {
    *       enabled: true,
@@ -361,14 +361,14 @@ export class UACL {
    * const kbClient = await uacl.createKnowledgeClient(
    *   'main-kb',
    *   './knowledge-repo',
-   *   process.env.ANTHROPIC_API_KEY
+   *   process.env['ANTHROPIC_API_KEY']
    * );
    *
    * // Advanced Knowledge client with full configuration
    * const advancedKB = await uacl.createKnowledgeClient(
    *   'technical-kb',
    *   './technical-knowledge',
-   *   process.env.ANTHROPIC_API_KEY,
+   *   process.env['ANTHROPIC_API_KEY'],
    *   {
    *     provider: 'fact',
    *     caching: {
@@ -453,13 +453,13 @@ export class UACL {
    *       name: 'web-search',
    *       command: 'python',
    *       args: ['mcp_server_web.py'],
-   *       env: { SEARCH_API_KEY: process.env.SEARCH_KEY }
+   *       env: { SEARCH_API_KEY: process.env['SEARCH_KEY'] }
    *     },
    *     {
    *       name: 'database',
    *       command: 'node',
    *       args: ['database-mcp-server.js'],
-   *       env: { DB_URL: process.env.DATABASE_URL }
+   *       env: { DB_URL: process.env['DATABASE_URL'] }
    *     }
    *   ],
    *   {
@@ -863,9 +863,9 @@ export const uacl = UACL.getInstance();
  * async function startApplication() {
  *   try {
  *     await initializeUACL({
- *       enableHealthChecks: process.env.NODE_ENV === 'production',
- *       metricsInterval: parseInt(process.env.METRICS_INTERVAL) || 60000,
- *       maxClients: parseInt(process.env.MAX_CLIENTS) || 100
+ *       enableHealthChecks: process.env['NODE_ENV'] === 'production',
+ *       metricsInterval: parseInt(process.env['METRICS_INTERVAL']) || 60000,
+ *       maxClients: parseInt(process.env['MAX_CLIENTS']) || 100
  *     });
  *     console.log('UACL system initialized successfully');
  *   } catch (error) {
@@ -927,10 +927,10 @@ export const UACLHelpers = {
    *
    * // Complete setup with all client types
    * const fullSetup = await UACLHelpers.setupCommonClients({
-   *   httpBaseURL: process.env.API_BASE_URL,
-   *   websocketURL: process.env.WS_URL,
+   *   httpBaseURL: process.env['API_BASE_URL'],
+   *   websocketURL: process.env['WS_URL'],
    *   factRepoPath: './knowledge',
-   *   anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+   *   anthropicApiKey: process.env['ANTHROPIC_API_KEY'],
    *   mcpServers: [
    *     {
    *       name: 'filesystem',
