@@ -188,7 +188,7 @@ const DSPY_LIMITS = {
  */
 class DSPyBaseError extends Error {
   public readonly code: string;
-  public readonly context?: Record<string, any>;
+  public readonly context: Record<string, any> | undefined;
   public readonly timestamp: Date;
 
   constructor(message: string, code: string, context?: Record<string, any>) {
