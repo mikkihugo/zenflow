@@ -93,9 +93,9 @@ class CognitivePatternEvolution {
         patternRecognition: 'exact_match',
       },
       adaptationRules: {
-        increasePrecision: (context) => context.accuracy > 0.8,
-        reduceExploration: (context) => context.confidence > 0.7,
-        focusAttention: (context) => context.taskComplexity < 0.5,
+        increasePrecision: (context) => (context['accuracy'] as number) > 0.8,
+        reduceExploration: (context) => (context['confidence'] as number) > 0.7,
+        focusAttention: (context) => (context['taskComplexity'] as number) < 0.5,
       },
     });
 
@@ -111,9 +111,9 @@ class CognitivePatternEvolution {
         patternRecognition: 'fuzzy_match',
       },
       adaptationRules: {
-        increaseCreativity: (context) => context.noveltyScore > 0.6,
-        expandSearch: (context) => context.solutionDiversity < 0.5,
-        encourageRisk: (context) => context.safetyMargin > 0.8,
+        increaseCreativity: (context) => (context['noveltyScore'] as number) > 0.6,
+        expandSearch: (context) => (context['solutionDiversity'] as number) < 0.5,
+        encourageRisk: (context) => (context['safetyMargin'] as number) > 0.8,
       },
     });
 
@@ -129,9 +129,9 @@ class CognitivePatternEvolution {
         patternRecognition: 'fuzzy_match',
       },
       adaptationRules: {
-        seekAlternatives: (context) => context.standardSolutionFailed,
-        useAnalogies: (context) => context.domainKnowledge > 0.5,
-        breakAssumptions: (context) => context.progressStalled,
+        seekAlternatives: (context) => context['standardSolutionFailed'] as boolean,
+        useAnalogies: (context) => (context['domainKnowledge'] as number) > 0.5,
+        breakAssumptions: (context) => context['progressStalled'] as boolean,
       },
     });
 
@@ -147,8 +147,8 @@ class CognitivePatternEvolution {
         patternRecognition: 'abstraction_layers',
       },
       adaptationRules: {
-        mapConnections: (context) => context.systemComplexity > 0.7,
-        identifyFeedback: (context) => context.iterationCount > 5,
+        mapConnections: (context) => (context['systemComplexity'] as number) > 0.7,
+        identifyFeedback: (context) => (context['iterationCount'] as number) > 5,
         emergentProperties: (context) => context.componentInteractions > 0.6,
       },
     });
