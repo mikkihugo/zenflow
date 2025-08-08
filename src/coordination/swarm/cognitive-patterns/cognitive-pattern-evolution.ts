@@ -555,10 +555,11 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  assessTemporalDependency(trainingData: TrainingData): number {
+  assessTemporalDependency(trainingData: TrainingData | ExtendedTrainingData): number {
     // Check if data has temporal structure
-    const hasTimestamps = trainingData.samples?.some((s) => s.timestamp || s.time);
-    const hasSequence = trainingData.samples?.some((s) => s.sequence || Array.isArray(s.input));
+    const extendedData = trainingData as ExtendedTrainingData;
+    const hasTimestamps = extendedData.samples?.some((s: any) => s.timestamp || s.time);
+    const hasSequence = extendedData.samples?.some((s: any) => s.sequence || Array.isArray(s.input));
 
     if (hasTimestamps) {
       return 0.8;
@@ -574,10 +575,10 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  estimateAbstractionLevel(trainingData: TrainingData): number {
+  estimateAbstractionLevel(trainingData: TrainingData | ExtendedTrainingData): number {
     // Higher abstraction for complex, structured data
     const complexity = this.calculateDataComplexity(trainingData);
-    const dimensionality = this.calculateDimensionality(trainingData);
+    const dimensionality = this.calculateDimensionality(trainingData as ExtendedTrainingData);
 
     return (complexity + dimensionality) / 2;
   }
@@ -587,7 +588,7 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  assessCreativityRequirement(trainingData: TrainingData): number {
+  assessCreativityRequirement(trainingData: TrainingData | ExtendedTrainingData): number {
     // Check for generation tasks or high variability
     const taskType = this.inferTaskType(trainingData);
     const noiseLevel = this.estimateNoiseLevel(trainingData);
