@@ -284,7 +284,7 @@ export class NeuralBridge {
     await new Promise((resolve) => setTimeout(resolve, 5));
 
     // Generate mock outputs based on network configuration
-    const outputSize = network.layers[network.layers.length - 1];
+    const outputSize = network.layers[network.layers.length - 1] || 1;
     const outputs: number[] = [];
 
     for (let i = 0; i < outputSize; i++) {

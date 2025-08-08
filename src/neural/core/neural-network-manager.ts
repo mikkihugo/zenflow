@@ -100,6 +100,72 @@ interface PerformanceMetrics {
 }
 
 /**
+ * Knowledge structure for agents
+ */
+interface AgentKnowledge {
+  agentId?: string;
+  timestamp?: number;
+  modelType?: string;
+  weights?: Record<string, any>;
+  patterns?: any[];
+  experiences?: any;
+  performance?: any;
+  specializations?: Array<{ domain: string; confidence?: number; timestamp?: number }>;
+  data?: any;
+}
+
+/**
+ * Collaborative session interface
+ */
+interface CollaborativeSession {
+  id?: string;
+  active: boolean;
+  agentIds: string[];
+  syncInterval: number;
+  coordinationMatrix?: number[][];
+  knowledgeGraph?: Map<string, unknown>;
+  evolutionTracker?: Map<string, unknown>;
+  privacyLevel?: string;
+}
+
+/**
+ * Agent interaction record
+ */
+interface AgentInteraction {
+  timestamp: number;
+  strength: number;
+  type: string;
+  agentA: string;
+  agentB: string;
+}
+
+/**
+ * Coordination result interface
+ */
+interface CoordinationResult {
+  weightAdjustments?: Record<string, any>;
+  patternUpdates?: any;
+  collaborationScore?: number;
+  newPatterns?: any[];
+}
+
+/**
+ * Training data interface
+ */
+interface TrainingDataItem {
+  input: number[];
+  output: number[];
+}
+
+/**
+ * Enhanced neural network instance interface
+ */
+interface EnhancedNeuralNetworkInstance extends NeuralNetworkInstance {
+  getWeights?: () => Record<string, any>;
+  setWeights?: (weights: Record<string, any>) => void;
+}
+
+/**
  * Neural Network Manager
  *
  * Centralized management system for per-agent neural networks with advanced

@@ -864,7 +864,7 @@ export class ChaosEngineering extends EventEmitter {
   registerBuiltInInjectors() {
     // Memory pressure injector
     this.registerFailureInjector('memory_pressure', {
-      inject: async (params) => {
+      inject: async (params: any) => {
         const size = params.size || 100 * 1024 * 1024; // 100MB default
         const duration = params.duration || 60000; // 1 minute
 
@@ -883,7 +883,7 @@ export class ChaosEngineering extends EventEmitter {
           }, duration),
         };
       },
-      cleanup: async (injectionResult) => {
+      cleanup: async (injectionResult: any) => {
         if (injectionResult.cleanupTimer) {
           clearTimeout(injectionResult.cleanupTimer);
         }
@@ -895,11 +895,11 @@ export class ChaosEngineering extends EventEmitter {
 
     // CPU stress injector
     this.registerFailureInjector('cpu_stress', {
-      inject: async (params) => {
+      inject: async (params: any) => {
         const duration = params.duration || 60000; // 1 minute
         const intensity = params.intensity || 0.5; // 50% CPU usage
 
-        const workers = [];
+        const workers: any[] = [];
         const cpuCount = require('node:os').cpus().length;
         const targetWorkers = Math.ceil(cpuCount * intensity);
 
@@ -917,12 +917,12 @@ export class ChaosEngineering extends EventEmitter {
           }, duration),
         };
       },
-      cleanup: async (injectionResult) => {
+      cleanup: async (injectionResult: any) => {
         if (injectionResult.cleanupTimer) {
           clearTimeout(injectionResult.cleanupTimer);
         }
         if (injectionResult.workers) {
-          injectionResult.workers.forEach((worker) => {
+          injectionResult.workers.forEach((worker: any) => {
             try {
               worker.terminate();
             } catch (_error) {
@@ -935,7 +935,7 @@ export class ChaosEngineering extends EventEmitter {
 
     // Network failure injector
     this.registerFailureInjector('network_failure', {
-      inject: async (params) => {
+      inject: async (params: any) => {
         const targetConnections = params.connections || 'all';
         const failureType = params.failureType || 'disconnect'; // disconnect, slow, drop
 
@@ -960,7 +960,7 @@ export class ChaosEngineering extends EventEmitter {
           affectedConnections,
         };
       },
-      cleanup: async (_injectionResult) => {
+      cleanup: async (_injectionResult: any) => {
         // Network failures are typically handled by recovery workflows
         // Cleanup may involve re-establishing connections
       },
@@ -968,7 +968,7 @@ export class ChaosEngineering extends EventEmitter {
 
     // Process crash injector
     this.registerFailureInjector('process_crash', {
-      inject: async (params) => {
+      inject: async (params: any) => {
         const crashType = params.crashType || 'graceful'; // graceful, force, oom
 
         if (crashType === 'oom') {

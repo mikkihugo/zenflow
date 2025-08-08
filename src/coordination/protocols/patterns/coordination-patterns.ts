@@ -231,15 +231,15 @@ export class CoordinationPatterns extends EventEmitter {
   private patternMetrics: PatternMetrics;
 
   constructor(
-    private nodeId: string,
-    private config: {
+    private readonly nodeId: string,
+    private readonly config: {
       election: LeaderElectionConfig;
       consensus: ConsensusConfig;
       workStealing: WorkStealingConfig;
       hierarchical: HierarchicalConfig;
     },
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private readonly logger: ILogger,
+    private readonly eventBus: IEventBus
   ) {
     super();
 
