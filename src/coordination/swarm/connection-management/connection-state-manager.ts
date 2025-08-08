@@ -48,8 +48,8 @@ class ErrorFactory {
 export class ConnectionStateManager extends EventEmitter {
   options: any;
   connections: Map<string, any>;
-  connectionStats: Map<string, any>;
-  healthChecks: Map<string, any>;
+  connectionStats!: Map<string, any>;  // Initialized in constructor
+  healthChecks!: Map<string, any>;     // Initialized in constructor
   persistenceManager: any;
   fallbackManager: any;
   logger: Logger;
