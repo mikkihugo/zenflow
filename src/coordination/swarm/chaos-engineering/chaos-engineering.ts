@@ -973,7 +973,11 @@ export class ChaosEngineering extends EventEmitter {
 
         if (crashType === 'oom') {
           // Trigger out-of-memory condition
-          return await this.failureInjectors.get('memory_pressure').inject({
+          const memoryInjector = this.failureInjectors.get('memory_pressure');
+          if (!memoryInjector) {
+            throw new Error('Memory pressure injector not found');
+          }
+          return await memoryInjector.inject({
             size: 1024 * 1024 * 1024, // 1GB
             duration: params.duration || 30000,
           });
