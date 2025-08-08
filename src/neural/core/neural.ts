@@ -96,9 +96,9 @@ class NeuralCLI {
         if (!model) continue;
         const modelInfo = (persistenceInfo.modelDetails as any)[model] || {};
         const isActive = Math.random() > 0.5; // Simulate active status
-        const isLast = i === models.length - 1;
+        // const isLast = i === models.length - 1; // xxx NEEDS_HUMAN: Unused variable - confirm if display logic is incomplete
 
-        // let _statusLine = isLast ? `└── ${model.padEnd(12)}` : `├── ${model.padEnd(12)}`; // xxx NEEDS_HUMAN: Unused variable - confirm if display logic is incomplete
+        let _statusLine = ''; // xxx NEEDS_HUMAN: Original line creation logic commented out - using empty string for now
 
         // Add accuracy if available
         if (modelInfo && modelInfo.lastAccuracy) {
@@ -122,6 +122,8 @@ class NeuralCLI {
         if (modelInfo && modelInfo.hasSavedWeights) {
           _statusLine += ' | 📁 Weights saved';
         }
+        
+        // xxx NEEDS_HUMAN: _statusLine is built but never output - confirm if display logic is incomplete
       }
 
       if (persistenceInfo.sessionContinuity) {
