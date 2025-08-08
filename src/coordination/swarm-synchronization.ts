@@ -464,16 +464,22 @@ export class SwarmSynchronizer extends EventEmitter {
    */
   getSyncStatus(): SwarmSyncStatus {
     const lastSync = this.syncHistory[this.syncHistory.length - 1];
-    return {
+    const status: SwarmSyncStatus = {
       swarmId: this.swarmId,
       isActive: !!this.syncTimer,
-      lastSyncTime: lastSync?.timestamp,
       agentCount: this.agentStates.size,
       activeAgents: Array.from(this.agentStates.values()).filter((a) => a.status !== 'offline')
         .length,
       vectorClock: { ...this.vectorClock },
       syncHistory: this.syncHistory.length,
     };
+    
+    // Only add lastSyncTime if it exists
+    if (lastSync?.timestamp) {
+      status.lastSyncTime = lastSync.timestamp;
+    }
+    
+    return status;
   }
 
   // Utility methods

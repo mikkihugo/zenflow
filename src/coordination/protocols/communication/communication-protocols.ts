@@ -1096,7 +1096,7 @@ class CompressionEngine {
         metadata: { ...payload.metadata, compressed: true, originalSize: data.length },
       };
     } catch (error) {
-      this._logger.error('Compression failed', { error });
+      this.logger.error('Compression failed', { error });
       return payload;
     }
   }
@@ -1123,7 +1123,7 @@ class CompressionEngine {
         metadata: { ...payload.metadata, compressed: false },
       };
     } catch (error) {
-      this._logger.error('Decompression failed', { error });
+      this.logger.error('Decompression failed', { error });
       return payload;
     }
   }
@@ -1132,7 +1132,7 @@ class CompressionEngine {
 class EncryptionEngine {
   constructor(
     private enabled: boolean,
-    private _logger: ILogger // Prefixed with _ to indicate intentionally unused
+    private logger: ILogger
   ) {}
 
   async encrypt(payload: MessagePayload, config: EncryptionConfig): Promise<MessagePayload> {
@@ -1224,7 +1224,7 @@ class RoutingEngine {
     }
 
     // Simulate message forwarding
-    this._logger.debug('Message forwarded', {
+    this.logger.debug('Message forwarded', {
       messageId: message.id,
       target: targetId,
       address: targetNode.address,
@@ -1265,7 +1265,7 @@ class ConsensusEngine {
   private activeProposals = new Map<string, ConsensusProposal>();
 
   constructor(
-    private _nodeId: string,
+    private nodeId: string,
     private logger: ILogger
   ) {}
 
@@ -1277,7 +1277,7 @@ class ConsensusEngine {
    */
   async initiateConsensus(proposalId: string, proposal: ConsensusProposal): Promise<void> {
     this.activeProposals.set(proposalId, proposal);
-    this._logger.debug('Consensus initiated', { proposalId, type: proposal.type });
+    this.logger.debug('Consensus initiated', { proposalId, type: proposal.type, nodeId: this.nodeId });
   }
 
   /**
@@ -1287,7 +1287,7 @@ class ConsensusEngine {
    */
   async processProposal(proposal: ConsensusProposal): Promise<void> {
     this.activeProposals.set(proposal.id, proposal);
-    this._logger.debug('Processing consensus proposal', {
+    this.logger.debug('Processing consensus proposal', {
       proposalId: proposal.id,
       type: proposal.type,
     });
@@ -1306,7 +1306,7 @@ class ConsensusEngine {
 
 class GossipEngine {
   constructor(
-    private _nodeId: string,
+    private nodeId: string,
     private logger: ILogger
   ) {}
 
@@ -1316,7 +1316,7 @@ class GossipEngine {
     _nodes: Map<string, CommunicationNode>
   ): Promise<void> {
     // Gossip propagation logic
-    this._logger.debug('Gossip state propagated', { key, version: state.version });
+    this.logger.debug('Gossip state propagated', { key, version: state.version, nodeId: this.nodeId });
   }
 
   async route(_message: Message, _nodes: Map<string, CommunicationNode>): Promise<void> {
@@ -1330,7 +1330,7 @@ class GossipEngine {
 
     if (!currentState || state.version > currentState.version) {
       gossipState.set(key, state);
-      this._logger.debug('Gossip state updated', { key, version: state.version });
+      this.logger.debug('Gossip state updated', { key, version: state.version, nodeId: this.nodeId });
     }
   }
 }

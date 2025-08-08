@@ -50,6 +50,14 @@ interface ImpactMetrics {
   responseTime?: number;
 }
 
+interface DetailedImpactMetrics {
+  startTime: Date;
+  endTime: Date | null;
+  metrics: Array<ImpactMetrics & { timestamp: Date }>;
+  alerts: Array<{ timestamp: Date; status: string; details: unknown }>;
+  recoveryAttempts: Array<{ timestamp: Date; recoveries: unknown }>;
+}
+
 interface RecoveryExecution {
   workflowId: string;
   startTime: Date;
@@ -87,7 +95,7 @@ interface ExperimentExecution {
   injectionResult?: InjectionResult;
   cancellationReason?: string;
   completedAt?: Date;
-  impactMetrics?: ImpactMetrics;
+  impactMetrics?: DetailedImpactMetrics;
   recoveryExecution?: RecoveryExecution;
   recoveryTime?: number;
 }
@@ -584,7 +592,7 @@ export class ChaosEngineering extends EventEmitter {
       parameters: execution.parameters,
     });
 
-    const injectionResult = await injector.inject(execution.parameters, execution);
+    const injectionResult = await injector.inject(execution.parameters);
 
     execution.injectionResult = injectionResult;
     execution.failureInjected = true;
@@ -793,7 +801,7 @@ export class ChaosEngineering extends EventEmitter {
 
       if (injector?.cleanup) {
         try {
-          await injector.cleanup(execution.injectionResult, execution);
+          await injector.cleanup(execution.injectionResult);
         } catch (error) {
           this.logger.error('Error during injector cleanup', {
             executionId: execution.id,
