@@ -167,7 +167,6 @@ export class ChaosEngineering extends EventEmitter {
       experimentTimeout: options.experimentTimeout || 300000, // 5 minutes
       recoveryTimeout: options.recoveryTimeout || 600000, // 10 minutes
       blastRadiusLimit: options.blastRadiusLimit || 0.3, // 30% of resources
-      ...options,
     };
 
     this.logger = createLogger({ prefix: 'ChaosEngineering' });
