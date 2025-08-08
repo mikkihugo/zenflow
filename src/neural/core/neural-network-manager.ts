@@ -1765,16 +1765,18 @@ class NeuralNetworkManager {
         }
 
         const perf = stats.performance[modelType];
-        perf.count++;
-        perf.avgAccuracy += network.getMetrics().accuracy || 0;
-        perf.avgCollaborationScore += metrics.collaborationScore;
-        perf.totalAdaptations += metrics.adaptationHistory.length;
+        if (perf) {
+          perf.count++;
+          perf.avgAccuracy += network.getMetrics?.()?.accuracy || 0;
+          perf.avgCollaborationScore += metrics.collaborationScore;
+          perf.totalAdaptations += metrics.adaptationHistory?.length || 0;
+        }
       }
     }
 
     // Calculate averages
-    Object.values(stats.performance).forEach((perf: any) => {
-      if (perf.count > 0) {
+    Object.values(stats.performance).forEach((perf) => {
+      if (perf && perf.count > 0) {
         perf.avgAccuracy /= perf.count;
         perf.avgCollaborationScore /= perf.count;
       }
@@ -1841,7 +1843,8 @@ class NeuralNetwork {
       return result;
     } catch (error) {
       console.error('Forward pass failed:', error);
-      return new Float32Array(this.config.layers[this.config.layers.length - 1]).fill(0.5);
+      const outputSize = this.config.layers?.[this.config.layers.length - 1] ?? 1;
+      return new Float32Array(outputSize).fill(0.5);
     }
   }
 
@@ -1950,16 +1953,16 @@ class NeuralNetwork {
 // Simulated Neural Network for when WASM is not available
 class SimulatedNeuralNetwork {
   public agentId: string;
-  public config: any;
+  public config: NeuralNetworkConfig;
   public weights: number[];
-  public trainingHistory: any[];
+  public trainingHistory: TrainingHistoryEntry[];
   public metrics: {
     accuracy: number;
     loss: number;
     epochs_trained: number;
     total_samples: number;
   };
-  constructor(agentId, config) {
+  constructor(agentId: string, config: NeuralNetworkConfig) {
     this.agentId = agentId;
     this.config = config;
     this.weights = this.initializeWeights();
@@ -1977,7 +1980,7 @@ class SimulatedNeuralNetwork {
     return this.config.layers?.map(() => Math.random() * 2 - 1) || [0];
   }
 
-  async forward(_input) {
+  async forward(_input: any): Promise<Float32Array> {
     // Simple forward pass simulation
     const outputSize = this.config.layers?.[this.config.layers.length - 1] || 1;
     const output = new Float32Array(outputSize);
@@ -1989,7 +1992,7 @@ class SimulatedNeuralNetwork {
     return output;
   }
 
-  async train(_trainingData, options) {
+  async train(_trainingData: any, options: { epochs: number; batchSize?: number; learningRate?: number }): Promise<typeof this.metrics> {
     const { epochs } = options;
 
     for (let epoch = 0; epoch < epochs; epoch++) {
@@ -2011,7 +2014,7 @@ class SimulatedNeuralNetwork {
     };
   }
 
-  applyGradients(_gradients) {}
+  applyGradients(_gradients: any): void {}
 
   getMetrics() {
     return {
@@ -2024,18 +2027,18 @@ class SimulatedNeuralNetwork {
     };
   }
 
-  async save(_filePath) {
+  async save(_filePath: string): Promise<boolean> {
     return true;
   }
 
-  async load(_filePath) {
+  async load(_filePath: string): Promise<boolean> {
     return true;
   }
 }
 
 // Neural Network Templates for quick configuration
 const NeuralNetworkTemplates = {
-  getTemplate: (templateName) => {
+  getTemplate: (templateName: string) => {
     const templates = {
       deep_analyzer: {
         layers: [128, 256, 512, 256, 128],
@@ -2057,7 +2060,7 @@ const NeuralNetworkTemplates = {
       },
     };
 
-    return templates[templateName] || templates.deep_analyzer;
+    return (templates as any)[templateName] || templates.deep_analyzer;
   },
 };
 
@@ -2069,7 +2072,7 @@ class AdvancedNeuralNetwork {
   public modelType: string;
   public isAdvanced: boolean;
 
-  constructor(agentId, model, config) {
+  constructor(agentId: string, model: any, config: any) {
     this.agentId = agentId;
     this.model = model;
     this.config = config;
@@ -2077,7 +2080,7 @@ class AdvancedNeuralNetwork {
     this.isAdvanced = true;
   }
 
-  async forward(input) {
+  async forward(input: any): Promise<Float32Array> {
     try {
       // Handle different input formats
       let formattedInput = input;
@@ -2117,7 +2120,7 @@ class AdvancedNeuralNetwork {
     }
   }
 
-  async train(trainingData, options) {
+  async train(trainingData: any, options: any) {
     return this.model.train(trainingData, options);
   }
 
@@ -2126,22 +2129,22 @@ class AdvancedNeuralNetwork {
     return {};
   }
 
-  applyGradients(_gradients) {}
+  applyGradients(_gradients: any): void {}
 
   getMetrics() {
     return this.model.getMetrics();
   }
 
-  async save(filePath) {
+  async save(filePath: string) {
     return this.model.save(filePath);
   }
 
-  async load(filePath) {
+  async load(filePath: string) {
     return this.model.load(filePath);
   }
 
   // Special methods for specific model types
-  async encode(input) {
+  async encode(input: any) {
     if (this.modelType === 'autoencoder') {
       const encoder = await this.model.getEncoder();
       return encoder.encode(input);
@@ -2149,7 +2152,7 @@ class AdvancedNeuralNetwork {
     throw new Error(`Encode not supported for ${this.modelType}`);
   }
 
-  async decode(latent) {
+  async decode(latent: any) {
     if (this.modelType === 'autoencoder') {
       const decoder = await this.model.getDecoder();
       return decoder.decode(latent);
@@ -2157,7 +2160,7 @@ class AdvancedNeuralNetwork {
     throw new Error(`Decode not supported for ${this.modelType}`);
   }
 
-  async generate(numSamples) {
+  async generate(numSamples: number) {
     if (this.modelType === 'autoencoder' && this.config.variational) {
       return this.model.generate(numSamples);
     }

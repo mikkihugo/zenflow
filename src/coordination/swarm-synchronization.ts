@@ -144,7 +144,7 @@ export class SwarmSynchronizer extends EventEmitter {
 
     try {
       // 1. Increment local vector clock
-      this.vectorClock[this.swarmId]++;
+      this.vectorClock[this.swarmId] = (this.vectorClock[this.swarmId] || 0) + 1;
 
       // 2. Gather local state
       const localState = await this.gatherLocalState();
@@ -455,7 +455,7 @@ export class SwarmSynchronizer extends EventEmitter {
       this.agentStates.set(agentId, updatedState);
 
       // Increment vector clock for this update
-      this.vectorClock[this.swarmId]++;
+      this.vectorClock[this.swarmId] = (this.vectorClock[this.swarmId] || 0) + 1;
     }
   }
 
@@ -467,7 +467,7 @@ export class SwarmSynchronizer extends EventEmitter {
     return {
       swarmId: this.swarmId,
       isActive: !!this.syncTimer,
-      lastSyncTime: lastSync?.timestamp || undefined,
+      lastSyncTime: lastSync?.timestamp,
       agentCount: this.agentStates.size,
       activeAgents: Array.from(this.agentStates.values()).filter((a) => a.status !== 'offline')
         .length,
@@ -558,9 +558,11 @@ interface Task {
  */
 class ConsensusProtocol {
   constructor(
-    private config: SwarmSyncConfig,
-    private logger?: ILogger
-  ) {}
+    _config: SwarmSyncConfig,
+    _logger?: ILogger
+  ) {
+    // xxx NEEDS_HUMAN: config and logger not used - verify if needed for consensus algorithms
+  }
 
   async byzantineConsensus(
     localState: SwarmLocalState,

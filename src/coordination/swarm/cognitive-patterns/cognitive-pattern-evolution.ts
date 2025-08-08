@@ -13,7 +13,7 @@ interface PatternCharacteristics {
 }
 
 interface AdaptationRules {
-  [key: string]: (context: any) => boolean;
+  [key: string]: (context: Record<string, unknown>) => boolean;
 }
 
 interface PatternTemplate {
@@ -26,11 +26,17 @@ interface PatternTemplate {
 interface AgentPattern {
   activePatterns: string[];
   dominantPattern: string;
-  adaptationHistory: any[];
+  adaptationHistory: AdaptationRecord[];
   evolutionScore: number;
   lastEvolution: number;
-  crossAgentLearning: Map<string, any>;
+  crossAgentLearning: Map<string, unknown>;
   specializations: Set<string>;
+}
+
+interface AdaptationRecord {
+  timestamp: number;
+  type: string;
+  details: Record<string, unknown>;
 }
 
 interface EvolutionMetric {
@@ -44,10 +50,10 @@ interface EvolutionMetric {
 interface EvolutionRecord {
   timestamp: number;
   trigger: string;
-  strategy: any;
+  strategy: string | Record<string, unknown>;
   oldPatterns: string[];
   newPatterns: string[];
-  context: any;
+  context: Record<string, unknown>;
   effectiveness: any;
 }
 
@@ -493,7 +499,7 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  calculateDimensionality(trainingData) {
+  calculateDimensionality(trainingData: TrainingData): number {
     if (!trainingData.samples || trainingData.samples.length === 0) {
       return 0;
     }
@@ -511,7 +517,7 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  assessTemporalDependency(trainingData) {
+  assessTemporalDependency(trainingData: TrainingData): number {
     // Check if data has temporal structure
     const hasTimestamps = trainingData.samples?.some((s) => s.timestamp || s.time);
     const hasSequence = trainingData.samples?.some((s) => s.sequence || Array.isArray(s.input));
@@ -530,7 +536,7 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  estimateAbstractionLevel(trainingData) {
+  estimateAbstractionLevel(trainingData: TrainingData): number {
     // Higher abstraction for complex, structured data
     const complexity = this.calculateDataComplexity(trainingData);
     const dimensionality = this.calculateDimensionality(trainingData);
@@ -543,7 +549,7 @@ class CognitivePatternEvolution {
    *
    * @param {Object} trainingData - Training data
    */
-  assessCreativityRequirement(trainingData) {
+  assessCreativityRequirement(trainingData: TrainingData): number {
     // Check for generation tasks or high variability
     const taskType = this.inferTaskType(trainingData);
     const noiseLevel = this.estimateNoiseLevel(trainingData);

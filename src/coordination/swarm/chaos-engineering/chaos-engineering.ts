@@ -661,7 +661,7 @@ export class ChaosEngineering extends EventEmitter {
       } catch (error) {
         this.logger.error('Error during impact monitoring', {
           executionId: execution.id,
-          error: error.message,
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }, monitoringInterval);
@@ -795,7 +795,7 @@ export class ChaosEngineering extends EventEmitter {
         } catch (error) {
           this.logger.error('Error during injector cleanup', {
             executionId: execution.id,
-            error: error.message,
+            error: error instanceof Error ? error.message : String(error),
           });
         }
       }
@@ -1243,7 +1243,7 @@ export class ChaosEngineering extends EventEmitter {
     } catch (error) {
       this.logger.error('Error during experiment cleanup', {
         executionId,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       });
     }
 

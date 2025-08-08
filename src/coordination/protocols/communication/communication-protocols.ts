@@ -187,7 +187,7 @@ export class CommunicationProtocols extends EventEmitter {
 
     this.initializeMessageQueues();
     this.compressionEngine = new CompressionEngine(this._logger);
-    this.encryptionEngine = new EncryptionEngine(this.config.encryptionEnabled, this._logger);
+    this.encryptionEngine = new EncryptionEngine(this.config.encryptionEnabled, this.logger);
     this.routingEngine = new RoutingEngine(this._logger);
     this.consensusEngine = new ConsensusEngine(this._nodeId, this._logger);
     this.gossipEngine = new GossipEngine(this._nodeId, this._logger);
