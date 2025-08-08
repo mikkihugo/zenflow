@@ -1202,7 +1202,12 @@ class CognitivePatternEvolution {
    */
   async enableCrossAgentEvolution(agentIds: string[], session: { id: string }): Promise<void> {
     // Create cross-agent pattern exchange matrix
-    const exchangeMatrix = {};
+    const exchangeMatrix: Record<string, Map<string, {
+      lastExchange: number;
+      exchangeCount: number;
+      successRate: number;
+      patternCompatibility: number;
+    }>> = {};
 
     for (const agentId of agentIds) {
       exchangeMatrix[agentId] = new Map();
@@ -1229,7 +1234,7 @@ class CognitivePatternEvolution {
    * @param {string} targetAgentId - Target agent ID
    * @param {Array} patterns - Patterns to transfer
    */
-  async transferPatterns(targetAgentId: string, patterns: any[]): Promise<void> {
+  async transferPatterns(targetAgentId: string, patterns: Array<{ type?: string; [key: string]: unknown }>): Promise<void> {
     const targetData = this.agentPatterns.get(targetAgentId);
     if (!targetData) {
       return;
@@ -1282,7 +1287,7 @@ class CognitivePatternEvolution {
     const patternType = pattern.type?.split('_')[0] || 'unknown';
 
     // Check for complementary patterns
-    const complementaryPatterns = {
+    const complementaryPatterns: Record<string, string[]> = {
       convergent: ['divergent', 'lateral'],
       divergent: ['convergent', 'critical'],
       lateral: ['systems', 'convergent'],
@@ -1302,7 +1307,7 @@ class CognitivePatternEvolution {
    *
    * @param {string} agentId - Agent identifier
    */
-  async extractPatterns(agentId: string): Promise<any[]> {
+  async extractPatterns(agentId: string): Promise<Array<{ type?: string; [key: string]: unknown }>> {
     const agentData = this.agentPatterns.get(agentId);
     if (!agentData) {
       return [];

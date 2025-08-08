@@ -19,54 +19,123 @@ import { EventEmitter } from 'node:events';
 const generateId = (prefix: string) =>
   `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
+// Type definitions
+interface LoggerOptions {
+  name: string;
+  level?: string;
+  metadata?: Record<string, unknown>;
+}
+
+interface ErrorWithMetadata extends Error {
+  type?: string;
+  context?: unknown;
+}
+
+interface ConnectionConfig {
+  id?: string;
+  type?: string;
+  metadata?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+interface ConnectionHealth {
+  status: string;
+  lastCheck: Date | null;
+  latency: number | null;
+  errors: Error[];
+}
+
+interface Connection {
+  id: string;
+  type: string;
+  config: ConnectionConfig;
+  status: string;
+  createdAt: Date;
+  lastConnected: Date | null;
+  lastDisconnected: Date | null;
+  reconnectAttempts: number;
+  error: Error | null;
+  health: ConnectionHealth;
+  metadata: Record<string, unknown>;
+}
+
+interface ConnectionHealthStats {
+  consecutive_failures: number;
+  last_success: Date | null;
+  last_failure: Date | null;
+  total_attempts: number;
+  success_rate: number;
+}
+
+interface ManagerOptions {
+  maxConnections?: number;
+  connectionTimeout?: number;
+  reconnectDelay?: number;
+  maxReconnectDelay?: number;
+  maxReconnectAttempts?: number;
+  healthCheckInterval?: number;
+  persistenceEnabled?: boolean;
+  enableFallback?: boolean;
+  [key: string]: unknown;
+}
+
+interface ManagerStats {
+  totalConnections: number;
+  activeConnections: number;
+  failedConnections: number;
+  reconnectAttempts: number;
+  averageConnectionTime: number;
+  totalConnectionTime: number;
+}
+
 // Simple logger implementation
 class Logger {
-  constructor(options: any) {
+  constructor(options: LoggerOptions) {
     this.name = options.name;
   }
   name: string;
-  info(_msg: string, ..._args: any[]) {}
-  error(msg: string, ...args: any[]) {
+  info(_msg: string, ..._args: unknown[]): void {}
+  error(msg: string, ...args: unknown[]): void {
     console.error(`[ERROR] ${this.name}:`, msg, ...args);
   }
-  warn(msg: string, ...args: any[]) {
+  warn(msg: string, ...args: unknown[]): void {
     console.warn(`[WARN] ${this.name}:`, msg, ...args);
   }
-  debug(_msg: string, ..._args: any[]) {}
+  debug(_msg: string, ..._args: unknown[]): void {}
 }
 
 // Simple error factory
 class ErrorFactory {
-  static createError(type: string, message: string, context?: any): Error {
+  static createError(type: string, message: string, context?: unknown): Error {
     const error = new Error(message);
-    (error as any).type = type;
-    (error as any).context = context;
+    (error as ErrorWithMetadata).type = type;
+    (error as ErrorWithMetadata).context = context;
     return error;
   }
 }
 
 export class ConnectionStateManager extends EventEmitter {
-  options: any;
-  connections: Map<string, any>;
-  connectionStats!: Map<string, any>;  // Initialized in constructor
-  healthChecks!: Map<string, any>;     // Initialized in constructor
-  persistenceManager: any;
-  fallbackManager: any;
+  options: ManagerOptions;
+  connections: Map<string, Connection>;
+  connectionStats!: Map<string, Record<string, unknown>>;  // Initialized in constructor
+  healthChecks!: Map<string, NodeJS.Timeout>;     // Initialized in constructor
+  persistenceManager: unknown;
+  fallbackManager: unknown;
   logger: Logger;
-  connectionHealth: Map<string, any>;
-  reconnectTimers: Map<string, any>;
-  fallbackConnections: Map<string, any>;
+  connectionHealth: Map<string, ConnectionHealthStats>;
+  reconnectTimers: Map<string, NodeJS.Timeout>;
+  fallbackConnections: Map<string, Connection>;
   isInitialized: boolean;
   isShuttingDown: boolean;
-  connectionPool: any[];
+  connectionPool: Connection[];
   activeConnections: number;
-  stats: any;
-  persistence: any;
-  healthMonitor: any;
-  recoveryWorkflows: any;
-  healthMonitorInterval: any;
+  stats: ManagerStats;
+  persistence: unknown;
+  healthMonitor: unknown;
+  recoveryWorkflows: unknown;
+  healthMonitorInterval: NodeJS.Timeout | null;
 
-  constructor(options: any = {}) {
+  constructor(options: ManagerOptions = {}) {
     super();
 
     this.options = {
@@ -115,6 +184,7 @@ export class ConnectionStateManager extends EventEmitter {
     this.persistence = null;
     this.healthMonitor = null;
     this.recoveryWorkflows = null;
+    this.healthMonitorInterval = null;
 
     this.initialize();
   }
@@ -142,7 +212,7 @@ export class ConnectionStateManager extends EventEmitter {
         'resource',
         'Failed to initialize connection state manager',
         {
-          error: error.message,
+          error: error instanceof Error ? error.message : String(error),
           component: 'connection-state-manager',
         }
       );
@@ -156,7 +226,7 @@ export class ConnectionStateManager extends EventEmitter {
    *
    * @param connectionConfig
    */
-  async registerConnection(connectionConfig) {
+  async registerConnection(connectionConfig: ConnectionConfig): Promise<string> {
     if (!this.isInitialized) {
       await this.initialize();
     }
