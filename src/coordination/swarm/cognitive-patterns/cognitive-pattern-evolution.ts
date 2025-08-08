@@ -707,12 +707,12 @@ class CognitivePatternEvolution {
       directed: 1 - (context.creativity_required || 0),
       random: context.creativity_required || 0,
       lateral: (context.noiseLevel || 0) + (context.creativity_required || 0),
-      holistic: context.dataComplexity,
-      systematic: context.patternRegularity,
-      conceptual: context.abstractionLevel,
+      holistic: context.dataComplexity || 0,
+      systematic: context.patternRegularity || 0,
+      conceptual: context.abstractionLevel || 0,
     };
 
-    return Math.min(1, strategyScores[strategy] || 0.5);
+    return Math.min(1, (strategyScores as any)[strategy] || 0.5);
   }
 
   /**
@@ -786,7 +786,7 @@ class CognitivePatternEvolution {
     }
 
     // Evolution for exploration if effectiveness is moderate
-    if (avgEffectiveness < 0.7 && context.creativity_required > 0.6) {
+    if (avgEffectiveness < 0.7 && (context.creativity_required || 0) > 0.6) {
       return { required: true, reason: 'creativity_required', urgency: 'low' };
     }
 
@@ -804,7 +804,7 @@ class CognitivePatternEvolution {
       pattern_addition: {
         type: 'pattern_addition',
         description: 'Add new cognitive patterns',
-        priority: context.creativity_required > 0.6 ? 0.8 : 0.4,
+        priority: (context.creativity_required || 0) > 0.6 ? 0.8 : 0.4,
       },
       pattern_removal: {
         type: 'pattern_removal',
@@ -824,7 +824,7 @@ class CognitivePatternEvolution {
       pattern_hybridization: {
         type: 'pattern_hybridization',
         description: 'Create hybrid patterns',
-        priority: context.dataComplexity > 0.7 ? 0.8 : 0.3,
+        priority: (context.dataComplexity || 0) > 0.7 ? 0.8 : 0.3,
       },
     };
 
