@@ -1062,7 +1062,7 @@ export class CommunicationProtocols extends EventEmitter {
     if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
 
     this.emit('shutdown');
-    this._logger.info('Communication protocols shutdown');
+    this.logger.info('Communication protocols shutdown');
   }
 }
 
@@ -1133,7 +1133,9 @@ class EncryptionEngine {
   constructor(
     private enabled: boolean,
     private logger: ILogger
-  ) {}
+  ) {
+    void this.logger; // Mark as intentionally unused for now
+  }
 
   async encrypt(payload: MessagePayload, config: EncryptionConfig): Promise<MessagePayload> {
     if (!this.enabled || !config.enabled) return payload;
@@ -1158,7 +1160,9 @@ class EncryptionEngine {
 }
 
 class RoutingEngine {
-  constructor(private logger: ILogger) {}
+  constructor(private logger: ILogger) {
+    void this.logger; // Mark as intentionally unused for now
+  }
 
   async route(
     message: Message,

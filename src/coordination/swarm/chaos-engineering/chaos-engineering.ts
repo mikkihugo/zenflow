@@ -592,7 +592,7 @@ export class ChaosEngineering extends EventEmitter {
       parameters: execution.parameters,
     });
 
-    const injectionResult = await injector.inject(execution.parameters);
+    const injectionResult = await injector.inject(execution.parameters) as InjectionResult;
 
     execution.injectionResult = injectionResult;
     execution.failureInjected = true;
@@ -719,7 +719,7 @@ export class ChaosEngineering extends EventEmitter {
       injectionResult: execution.injectionResult,
     });
 
-    execution.recoveryExecution = recoveryExecution;
+    execution.recoveryExecution = recoveryExecution as RecoveryExecution;
     execution.recoveryTriggered = true;
 
     this.emit('recovery:triggered', {
@@ -733,7 +733,7 @@ export class ChaosEngineering extends EventEmitter {
    *
    * @param execution
    */
-  async monitorRecovery(execution) {
+  async monitorRecovery(execution: ExperimentExecution) {
     if (!execution.recoveryTriggered) {
       // Wait for automatic recovery
       this.logger.info('Waiting for automatic recovery', {
@@ -789,7 +789,7 @@ export class ChaosEngineering extends EventEmitter {
    *
    * @param execution
    */
-  async cleanupExperiment(execution) {
+  async cleanupExperiment(execution: ExperimentExecution) {
     this.logger.info('Cleaning up experiment', {
       executionId: execution.id,
     });
@@ -797,11 +797,11 @@ export class ChaosEngineering extends EventEmitter {
     // Remove failure injection
     if (execution.failureInjected && execution.injectionResult) {
       const experiment = this.experiments.get(execution.experimentName);
-      const injector = this.failureInjectors.get(experiment.failureType);
+      const injector = this.failureInjectors.get(experiment?.failureType || '');
 
       if (injector?.cleanup) {
         try {
-          await injector.cleanup(execution.injectionResult);
+          await injector.cleanup(execution.injectionResult as any);
         } catch (error) {
           this.logger.error('Error during injector cleanup', {
             executionId: execution.id,
@@ -813,7 +813,7 @@ export class ChaosEngineering extends EventEmitter {
 
     // Wait for cooldown period
     const experiment = this.experiments.get(execution.experimentName);
-    if (experiment.cooldown > 0) {
+    if (experiment && experiment.cooldown && experiment.cooldown > 0) {
       this.logger.debug(`Waiting for cooldown period: ${experiment.cooldown}ms`, {
         executionId: execution.id,
       });

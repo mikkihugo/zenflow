@@ -1315,8 +1315,8 @@ export class AgentLifecycleManager extends EventEmitter {
 // Supporting classes
 class HealthMonitor {
   constructor(
-    private _config: AgentLifecycleConfig,
-    private _logger: ILogger
+    private readonly config: AgentLifecycleConfig, // For future health check configuration
+    private readonly logger: ILogger // For health monitoring logs
   ) {}
 
   async checkHealth(agent: AgentInstance): Promise<HealthStatus> {
@@ -1372,8 +1372,8 @@ class HealthMonitor {
 
 class PerformanceTracker {
   constructor(
-    private _config: AgentLifecycleConfig,
-    private _logger: ILogger
+    private readonly config: AgentLifecycleConfig, // For future performance thresholds
+    private readonly logger: ILogger // For performance tracking logs
   ) {}
 
   updateMetrics(agent: AgentInstance, data: any): void {
@@ -1410,15 +1410,16 @@ class PerformanceTracker {
 // xxx NEEDS_HUMAN: ResourceMonitor class not used - verify if needed for future resource monitoring
 class ResourceMonitor {
   constructor(
-    private _config: AgentLifecycleConfig,
-    private _logger: ILogger
+    private readonly config: AgentLifecycleConfig, // For resource limit configuration
+    private readonly logger: ILogger // For resource monitoring logs
   ) {}
 
   // Resource monitoring implementation
 }
 
 class CapabilityDiscovery {
-  constructor(private _logger: ILogger) {}
+  constructor(private readonly logger: ILogger) { // For capability discovery logs
+  }
 
   processOutput(_agent: AgentInstance, _data: string, _stream: 'stdout' | 'stderr'): void {
     // Process agent output for capability discovery
@@ -1486,8 +1487,8 @@ class ScalingEngine {
 
 class RecoveryEngine {
   constructor(
-    private _config: AgentLifecycleConfig,
-    private logger: ILogger
+    private readonly config: AgentLifecycleConfig, // For recovery strategy configuration
+    private readonly logger: ILogger
   ) {}
 
   async recoverAgent(agent: AgentInstance, _template: AgentTemplate): Promise<void> {

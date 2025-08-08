@@ -1107,7 +1107,10 @@ export class TaskDistributionEngine extends EventEmitter {
 class TaskQueue {
   private queue: TaskDefinition[] = [];
 
-  constructor(private logger: ILogger) {}
+  constructor(private logger: ILogger) {
+    // Logger for debugging queue operations if needed
+    void this.logger; // Mark as intentionally unused
+  }
 
   async enqueue(task: TaskDefinition): Promise<void> {
     this.queue.push(task);
@@ -1143,15 +1146,29 @@ class TaskQueue {
 
 class TaskScheduler {
   constructor(
-    private config: any,
+    private config: {
+      maxConcurrentTasks: number;
+      defaultTimeout: number;
+      qualityThreshold: number;
+      loadBalanceTarget: number;
+      enablePredictiveAssignment: boolean;
+      enableDynamicRebalancing: boolean;
+    },
     private logger: ILogger
-  ) {}
+  ) {
+    // Scheduler initialization
+    void this.config; // Mark as intentionally unused
+    void this.logger; // Mark as intentionally unused
+  }
 
   // Scheduling algorithms would be implemented here
 }
 
 class TaskDecomposer {
-  constructor(private logger: ILogger) {}
+  constructor(private logger: ILogger) {
+    // Logger for tracking decomposition operations
+    void this.logger; // Mark as intentionally unused
+  }
 
   async decompose(task: TaskDefinition): Promise<DecomposedTask> {
     // Task decomposition logic
@@ -1177,9 +1194,20 @@ class TaskDecomposer {
 
 class AssignmentOptimizer {
   constructor(
-    private config: any,
+    private config: {
+      maxConcurrentTasks: number;
+      defaultTimeout: number;
+      qualityThreshold: number;
+      loadBalanceTarget: number;
+      enablePredictiveAssignment: boolean;
+      enableDynamicRebalancing: boolean;
+    },
     private logger: ILogger
-  ) {}
+  ) {
+    // Optimizer initialization
+    void this.config; // Mark as intentionally unused
+    void this.logger; // Mark as intentionally unused
+  }
 
   async findOptimalAssignment(
     task: TaskDefinition,
@@ -1221,9 +1249,19 @@ class AssignmentOptimizer {
 
 class WorkloadBalancer {
   constructor(
-    private config: any,
+    private config: {
+      maxConcurrentTasks: number;
+      defaultTimeout: number;
+      qualityThreshold: number;
+      loadBalanceTarget: number;
+      enablePredictiveAssignment: boolean;
+      enableDynamicRebalancing: boolean;
+    },
     private logger: ILogger
-  ) {}
+  ) {
+    // Balancer initialization
+    void this.config; // Mark as intentionally unused for now
+  }
 
   async rebalance(
     _agents: Map<string, AgentCapability>,
@@ -1236,7 +1274,10 @@ class WorkloadBalancer {
 }
 
 class PerformancePredictor {
-  constructor(private logger: ILogger) {}
+  constructor(private logger: ILogger) {
+    // Logger for prediction tracking
+    void this.logger; // Mark as intentionally unused
+  }
 
   async predictSuccess(task: TaskDefinition, agent: AgentCapability): Promise<number> {
     // ML-based success prediction

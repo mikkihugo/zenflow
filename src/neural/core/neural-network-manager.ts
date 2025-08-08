@@ -1361,9 +1361,9 @@ class NeuralNetworkManager {
    * @param {Object} knowledgeA - Knowledge from agent A
    * @param {Object} knowledgeB - Knowledge from agent B
    */
-  calculateSpecializationSimilarity(knowledgeA, knowledgeB) {
-    const specsA = new Set(knowledgeA.specializations.map((s) => s.domain));
-    const specsB = new Set(knowledgeB.specializations.map((s) => s.domain));
+  calculateSpecializationSimilarity(knowledgeA: any, knowledgeB: any): number {
+    const specsA = new Set(knowledgeA.specializations.map((s: { domain: string }) => s.domain));
+    const specsB = new Set(knowledgeB.specializations.map((s: { domain: string }) => s.domain));
 
     const intersection = new Set(Array.from(specsA).filter((x) => specsB.has(x)));
     const union = new Set([...Array.from(specsA), ...Array.from(specsB)]);
@@ -1376,7 +1376,7 @@ class NeuralNetworkManager {
    *
    * @param {Object} session - Collaborative session
    */
-  startKnowledgeDistillation(session) {
+  startKnowledgeDistillation(session: { active: boolean; agentIds: string[]; syncInterval: number }) {
     const distillationFunction = async () => {
       if (!session.active) {
         return;
@@ -1385,7 +1385,7 @@ class NeuralNetworkManager {
       try {
         // Identify teacher and student agents
         const teachers = await this.identifyTeacherAgents(session.agentIds);
-        const students = session.agentIds.filter((id) => !teachers.includes(id));
+        const students = session.agentIds.filter((id: string) => !teachers.includes(id));
 
         // Perform knowledge distillation
         for (const teacher of teachers) {
@@ -1410,7 +1410,7 @@ class NeuralNetworkManager {
    *
    * @param {Array} agentIds - List of agent IDs
    */
-  async identifyTeacherAgents(agentIds) {
+  async identifyTeacherAgents(agentIds: string[]): Promise<string[]> {
     const agentPerformances = [];
 
     for (const agentId of agentIds) {
@@ -1438,7 +1438,7 @@ class NeuralNetworkManager {
    * @param {string} studentAgentId - Student agent ID
    * @param {Object} session - Collaborative session
    */
-  async performKnowledgeDistillation(teacherAgentId, studentAgentId, session) {
+  async performKnowledgeDistillation(teacherAgentId: string, studentAgentId: string, session: { agentIds: string[]; coordinationMatrix: number[][] }): Promise<void> {
     const teacher = this.neuralNetworks.get(teacherAgentId);
     const student = this.neuralNetworks.get(studentAgentId);
 
@@ -1485,7 +1485,7 @@ class NeuralNetworkManager {
    * @param {Object} teacherKnowledge - Teacher's knowledge
    * @param {Object} options - Distillation options
    */
-  async applyKnowledgeDistillation(student, teacherKnowledge, options) {
+  async applyKnowledgeDistillation(student: any, teacherKnowledge: any, options: { temperature: number; alpha: number }): Promise<{ improvement: number; beforeMetrics: any; afterMetrics: any }> {
     const { temperature, alpha } = options;
 
     // Simulate knowledge transfer (in practice, would involve actual training)
@@ -1508,7 +1508,7 @@ class NeuralNetworkManager {
    *
    * @param {Object} session - Collaborative session
    */
-  startNeuralCoordination(session) {
+  startNeuralCoordination(session: { active: boolean; syncInterval: number }): void {
     const coordinationFunction = async () => {
       if (!session.active) {
         return;
@@ -1540,7 +1540,7 @@ class NeuralNetworkManager {
    *
    * @param {Object} session - Collaborative session
    */
-  async updateCoordinationMatrix(session) {
+  async updateCoordinationMatrix(session: { agentIds: string[]; coordinationMatrix: number[][] }): Promise<void> {
     for (let i = 0; i < session.agentIds.length; i++) {
       for (let j = 0; j < session.agentIds.length; j++) {
         if (i === j) {
@@ -1563,7 +1563,7 @@ class NeuralNetworkManager {
    * @param {string} agentA - First agent ID
    * @param {string} agentB - Second agent ID
    */
-  async calculateInteractionStrength(agentA, agentB) {
+  async calculateInteractionStrength(agentA: string, agentB: string): Promise<number> {
     const interactions = this.agentInteractions.get(`${agentA}-${agentB}`) || [];
 
     if (!Array.isArray(interactions) || interactions.length === 0) {
@@ -1591,7 +1591,7 @@ class NeuralNetworkManager {
    *
    * @param {Object} session - Collaborative session
    */
-  async applyCoordinationResults(session) {
+  async applyCoordinationResults(session: { id: string }): Promise<void> {
     const coordinationResults = await this.coordinationProtocol.getResults(session.id);
     if (!coordinationResults) {
       return;
@@ -1628,19 +1628,19 @@ class NeuralNetworkManager {
    * @param {Object} agent - Neural network agent
    * @param {Object} adjustments - Weight adjustments
    */
-  async applyWeightAdjustments(agent, adjustments) {
+  async applyWeightAdjustments(agent: any, adjustments: Record<string, any>): Promise<void> {
     try {
       const currentWeights = agent.getWeights();
       const adjustedWeights = {};
 
       Object.entries(currentWeights).forEach(([layer, weights]) => {
         if (adjustments[layer] && Array.isArray(weights)) {
-          adjustedWeights[layer] = weights.map((w, idx) => {
+          (adjustedWeights as any)[layer] = weights.map((w: number, idx: number) => {
             const adjustment = adjustments[layer][idx] || 0;
             return w + adjustment * 0.1; // Scale adjustment factor
           });
         } else {
-          adjustedWeights[layer] = weights;
+          (adjustedWeights as any)[layer] = weights;
         }
       });
 
@@ -1658,7 +1658,7 @@ class NeuralNetworkManager {
    * @param {number} strength - Interaction strength (0-1)
    * @param {string} type - Interaction type
    */
-  recordAgentInteraction(agentA, agentB, strength, type = 'general') {
+  recordAgentInteraction(agentA: string, agentB: string, strength: number, type: string = 'general'): void {
     const interactionKey = `${agentA}-${agentB}`;
 
     if (!this.agentInteractions.has(interactionKey)) {
@@ -1695,7 +1695,7 @@ class NeuralNetworkManager {
    * @param {string} useCase - Use case description
    * @param {Object} requirements - Performance and other requirements
    */
-  getPresetRecommendations(useCase, requirements = {}) {
+  getPresetRecommendations(useCase: string, requirements: Record<string, any> = {}): any {
     return this.cognitivePatternSelector.getPresetRecommendations(useCase, requirements);
   }
 
@@ -1704,7 +1704,7 @@ class NeuralNetworkManager {
    *
    * @param {string} agentId - Agent identifier
    */
-  async getAdaptationRecommendations(agentId) {
+  async getAdaptationRecommendations(agentId: string): Promise<any> {
     return this.neuralAdaptationEngine.getAdaptationRecommendations(agentId);
   }
 
@@ -1723,7 +1723,7 @@ class NeuralNetworkManager {
 
     // Count presets from complete neural presets
     Object.entries(COMPLETE_NEURAL_PRESETS).forEach(([modelType, presets]) => {
-      modelTypes[modelType] = {
+      (modelTypes as any)[modelType] = {
         count: Object.keys(presets).length,
         presets: Object.keys(presets),
         description: (Object.values(presets)[0] as any)?.description || 'Neural model type',
@@ -1750,13 +1750,13 @@ class NeuralNetworkManager {
     // Count model types
     for (const [agentId, network] of Array.from(this.neuralNetworks.entries())) {
       const modelType = network.modelType || 'unknown';
-      stats.modelTypes[modelType] = (stats.modelTypes[modelType] || 0) + 1;
+      (stats.modelTypes as any)[modelType] = ((stats.modelTypes as any)[modelType] || 0) + 1;
 
       // Performance statistics
       const metrics = this.performanceMetrics.get(agentId);
       if (metrics) {
-        if (!stats.performance[modelType]) {
-          stats.performance[modelType] = {
+        if (!(stats.performance as any)[modelType]) {
+          (stats.performance as any)[modelType] = {
             count: 0,
             avgAccuracy: 0,
             avgCollaborationScore: 0,
@@ -1764,7 +1764,7 @@ class NeuralNetworkManager {
           };
         }
 
-        const perf = stats.performance[modelType];
+        const perf = (stats.performance as any)[modelType];
         if (perf) {
           perf.count++;
           perf.avgAccuracy += network.getMetrics?.()?.accuracy || 0;
@@ -1775,7 +1775,7 @@ class NeuralNetworkManager {
     }
 
     // Calculate averages
-    Object.values(stats.performance).forEach((perf) => {
+    Object.values(stats.performance).forEach((perf: any) => {
       if (perf && perf.count > 0) {
         perf.avgAccuracy /= perf.count;
         perf.avgCollaborationScore /= perf.count;
