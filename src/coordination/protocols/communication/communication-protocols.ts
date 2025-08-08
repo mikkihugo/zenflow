@@ -1132,7 +1132,7 @@ class CompressionEngine {
 class EncryptionEngine {
   constructor(
     private enabled: boolean,
-    private _logger: ILogger // xxx NEEDS_HUMAN: Logger not used - confirm if needed for error logging
+    private logger: ILogger
   ) {}
 
   async encrypt(payload: MessagePayload, config: EncryptionConfig): Promise<MessagePayload> {
@@ -1265,7 +1265,7 @@ class ConsensusEngine {
   private activeProposals = new Map<string, ConsensusProposal>();
 
   constructor(
-    private _nodeId: string, // xxx NEEDS_HUMAN: nodeId not used - confirm if needed for consensus voting
+    private nodeId: string,
     private logger: ILogger
   ) {}
 
@@ -1306,7 +1306,7 @@ class ConsensusEngine {
 
 class GossipEngine {
   constructor(
-    private _nodeId: string, // xxx NEEDS_HUMAN: nodeId not used - confirm if needed for gossip origin tracking
+    private nodeId: string,
     private logger: ILogger
   ) {}
 
