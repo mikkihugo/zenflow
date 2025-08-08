@@ -134,7 +134,7 @@ export class NeuralNetwork {
   private network: any;
 
   constructor(
-    private wasm: any,
+    wasm: any,
     config: NetworkConfig
   ) {
     this.network = new wasm.WasmNeuralNetwork(config);
@@ -170,7 +170,7 @@ export class NeuralTrainer {
   private trainer: any;
 
   constructor(
-    private wasm: any,
+    wasm: any,
     config: TrainingConfig
   ) {
     this.trainer = new wasm.WasmTrainer(config);
@@ -206,7 +206,7 @@ export class NeuralTrainer {
 export class AgentNeuralManager {
   private manager: any;
 
-  constructor(private wasm: any) {
+  constructor(wasm: any) {
     this.manager = new wasm.AgentNeuralNetworkManager();
   }
 
