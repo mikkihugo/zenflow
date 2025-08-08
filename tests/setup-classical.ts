@@ -6,6 +6,8 @@
  */
 
 import 'jest-extended';
+// Explicit import for ESM environment to ensure jest global is available
+import { jest } from '@jest/globals';
 
 // Classical TDD focuses on real implementations and state verification
 beforeEach(() => {
@@ -29,12 +31,16 @@ afterEach(() => {
 
 function setupPerformanceMonitoring() {
   // Track execution time for algorithm tests
-  global.testStartTime = Date.now();
+  (globalThis as any).testStartTime = Date.now();
 
   // Setup memory usage monitoring
-  if (global.gc) {
-    global.gc();
-    global.testStartMemory = process.memoryUsage();
+  if (typeof (globalThis as any).gc === 'function') {
+    try {
+      (globalThis as any).gc();
+    } catch {
+      /* ignore */
+    }
+    (globalThis as any).testStartMemory = process.memoryUsage();
   }
 }
 
@@ -56,20 +62,26 @@ function initializeTestDataGenerators() {
 
 function cleanupTestState() {
   // Clean up any global state or resources
-  if (global.testStartTime) {
-    const executionTime = Date.now() - global.testStartTime;
-    global.lastTestExecutionTime = executionTime;
+  const start = (globalThis as any).testStartTime as number | undefined;
+  if (typeof start === 'number') {
+    const executionTime = Date.now() - start;
+    (globalThis as any).lastTestExecutionTime = executionTime;
   }
 }
 
 function collectPerformanceMetrics() {
-  if (global.gc && global.testStartMemory) {
-    global.gc();
+  const startMem = (globalThis as any).testStartMemory as NodeJS.MemoryUsage | undefined;
+  if (typeof (globalThis as any).gc === 'function' && startMem) {
+    try {
+      (globalThis as any).gc();
+    } catch {
+      /* ignore */
+    }
     const endMemory = process.memoryUsage();
-    global.lastTestMemoryDelta = {
-      rss: endMemory.rss - global.testStartMemory.rss,
-      heapUsed: endMemory.heapUsed - global.testStartMemory.heapUsed,
-      heapTotal: endMemory.heapTotal - global.testStartMemory.heapTotal,
+    (globalThis as any).lastTestMemoryDelta = {
+      rss: endMemory.rss - startMem.rss,
+      heapUsed: endMemory.heapUsed - startMem.heapUsed,
+      heapTotal: endMemory.heapTotal - startMem.heapTotal,
     };
   }
 }
@@ -103,22 +115,23 @@ interface ExtendedGlobal extends NodeJS.Global {
 }
 
 // Classical TDD helpers for algorithm testing
-(global as unknown as ExtendedGlobal).generateTestMatrix = (
+(globalThis as any as ExtendedGlobal).generateTestMatrix = (
   rows: number,
   cols: number,
   fillFn?: (i: number, j: number) => number
 ) => {
-  const matrix: number[][] = [];
+  const matrix: number[][] = new Array(rows);
   for (let i = 0; i < rows; i++) {
-    matrix[i] = [];
+    const row: number[] = new Array(cols);
     for (let j = 0; j < cols; j++) {
-      matrix[i][j] = fillFn ? fillFn(i, j) : Math.random();
+      row[j] = fillFn ? fillFn(i, j) : Math.random();
     }
+    matrix[i] = row;
   }
   return matrix;
 };
 
-(global as unknown as ExtendedGlobal).generateTestVector = (
+(globalThis as any as ExtendedGlobal).generateTestVector = (
   size: number,
   fillFn?: (i: number) => number
 ) => {
@@ -130,14 +143,14 @@ interface ExtendedGlobal extends NodeJS.Global {
 };
 
 // Neural network test data generators
-(global as unknown as ExtendedGlobal).generateXORData = () => [
+(globalThis as any as ExtendedGlobal).generateXORData = () => [
   { input: [0, 0], output: [0] },
   { input: [0, 1], output: [1] },
   { input: [1, 0], output: [1] },
   { input: [1, 1], output: [0] },
 ];
 
-(global as unknown as ExtendedGlobal).generateLinearData = (
+(globalThis as any as ExtendedGlobal).generateLinearData = (
   samples: number,
   noise: number = 0.1
 ) => {
@@ -151,7 +164,7 @@ interface ExtendedGlobal extends NodeJS.Global {
 };
 
 // Performance assertion helpers
-(global as unknown as ExtendedGlobal).expectPerformance = (fn: () => void, maxTimeMs: number) => {
+(globalThis as any as ExtendedGlobal).expectPerformance = (fn: () => void, maxTimeMs: number) => {
   const start = Date.now();
   fn();
   const duration = Date.now() - start;
@@ -159,13 +172,22 @@ interface ExtendedGlobal extends NodeJS.Global {
   return duration;
 };
 
-(global as unknown as ExtendedGlobal).expectMemoryUsage = (fn: () => void, maxMemoryMB: number) => {
-  if (!(global as unknown as ExtendedGlobal).gc) return; // Skip if garbage collection not available
+(globalThis as any as ExtendedGlobal).expectMemoryUsage = (fn: () => void, maxMemoryMB: number) => {
+  const g = (globalThis as any as ExtendedGlobal).gc;
+  if (typeof g !== 'function') return; // Skip if garbage collection not available
 
-  (global as unknown as ExtendedGlobal).gc();
+  try {
+    g();
+  } catch {
+    /* ignore */
+  }
   const startMemory = process.memoryUsage().heapUsed;
   fn();
-  (global as unknown as ExtendedGlobal).gc();
+  try {
+    g();
+  } catch {
+    /* ignore */
+  }
   const endMemory = process.memoryUsage().heapUsed;
   const memoryUsedMB = (endMemory - startMemory) / 1024 / 1024;
 
@@ -174,7 +196,7 @@ interface ExtendedGlobal extends NodeJS.Global {
 };
 
 // Mathematical precision helpers
-(global as unknown as ExtendedGlobal).expectNearlyEqual = (
+(globalThis as any as ExtendedGlobal).expectNearlyEqual = (
   actual: number,
   expected: number,
   tolerance: number = 1e-10
@@ -182,25 +204,29 @@ interface ExtendedGlobal extends NodeJS.Global {
   expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
 };
 
-(global as unknown as ExtendedGlobal).expectArrayNearlyEqual = (
+(globalThis as any as ExtendedGlobal).expectArrayNearlyEqual = (
   actual: number[],
   expected: number[],
   tolerance: number = 1e-10
 ) => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
-    (global as unknown as ExtendedGlobal).expectNearlyEqual(actual[i], expected[i], tolerance);
+    (globalThis as any as ExtendedGlobal).expectNearlyEqual(actual[i]!, expected[i]!, tolerance);
   }
 };
 
-(global as unknown as ExtendedGlobal).expectMatrixNearlyEqual = (
+(globalThis as any as ExtendedGlobal).expectMatrixNearlyEqual = (
   actual: number[][],
   expected: number[][],
   tolerance: number = 1e-10
 ) => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
-    (global as unknown as ExtendedGlobal).expectArrayNearlyEqual(actual[i], expected[i], tolerance);
+    (globalThis as any as ExtendedGlobal).expectArrayNearlyEqual(
+      actual[i]!,
+      expected[i]!,
+      tolerance
+    );
   }
 };
 

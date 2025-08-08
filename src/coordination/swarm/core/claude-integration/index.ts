@@ -67,11 +67,11 @@ class ClaudeIntegrationOrchestrator {
         modules: {},
       };
       results.modules.docs = await this.docs.generateAll({
-        force: this.options.forceSetup,
-        merge: this.options.mergeSetup,
-        backup: this.options.backupSetup,
-        noBackup: this.options.noBackup,
-        interactive: this.options.interactive,
+        force: this.options.forceSetup ?? false,
+        merge: this.options.mergeSetup ?? false,
+        backup: this.options.backupSetup ?? false,
+        noBackup: this.options.noBackup ?? false,
+        interactive: this.options.interactive ?? true,
       });
       results.modules.remote = await this.remote.createAll();
 
@@ -124,7 +124,7 @@ class ClaudeIntegrationOrchestrator {
       const status = {
         claudeAvailable: await this.core.isClaudeAvailable(),
         filesExist: await this.core.checkExistingFiles(),
-        workingDir: this.options.workingDir,
+        workingDir: this.options.workingDir ?? process.cwd(),
         timestamp: new Date().toISOString(),
       };
 
@@ -143,23 +143,32 @@ class ClaudeIntegrationOrchestrator {
     const path = await import('node:path');
 
     try {
+      // Ensure packageName is properly typed as string
+      const packageName: string = this.options.packageName ?? 'ruv-swarm';
+
       const filesToRemove = [
         'claude.md',
         '.claude',
-        this.options.packageName,
-        `${this.options.packageName}.bat`,
-        `${this.options.packageName}.ps1`,
+        packageName,
+        `${packageName}.bat`,
+        `${packageName}.ps1`,
         'claude-swarm.sh',
         'claude-swarm.bat',
       ];
 
-      const removedFiles = [];
+      const removedFiles: string[] = [];
 
       for (const file of filesToRemove) {
         try {
-          const filePath = path.join(this.options.workingDir, file);
-          await fs.rm(filePath, { recursive: true, force: true });
-          removedFiles.push(file);
+          // Ensure workingDir is defined with fallback and proper typing
+          const workingDir: string = this.options.workingDir ?? process.cwd();
+          // Ensure file is a string (filter out any undefined values)
+          const fileName: string = typeof file === 'string' ? file : String(file || '');
+          if (fileName) {
+            const filePath = path.join(workingDir, fileName);
+            await fs.rm(filePath, { recursive: true, force: true });
+            removedFiles.push(fileName);
+          }
         } catch {
           // File doesn't exist, continue
         }

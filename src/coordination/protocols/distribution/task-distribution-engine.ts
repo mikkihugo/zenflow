@@ -1147,8 +1147,6 @@ class TaskQueue {
   }
 }
 
-
-
 class TaskDecomposer {
   constructor(private logger: ILogger) {
     // Logger for tracking decomposition operations

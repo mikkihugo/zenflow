@@ -14,6 +14,12 @@ import type { SessionMemoryStore } from '../memory';
 import { getHiveFACT, type HiveFACTSystem, type UniversalFact } from './hive-fact-integration';
 import type { HiveSwarmCoordinator } from './hive-swarm-sync';
 
+interface SwarmContext {
+  relevanceScore: number;
+  usageHistory: 'previously-used' | 'new';
+  agentCompatibility?: number | undefined;
+}
+
 const logger = createLogger({ prefix: 'Hive-Knowledge-Bridge' });
 
 export interface KnowledgeRequest {
@@ -410,15 +416,17 @@ export class HiveKnowledgeBridge extends EventEmitter {
     results: UniversalFact[],
     swarmId: string,
     agentId?: string
-  ): Promise<any[]> {
-    const enhancedResults = [];
+  ): Promise<Array<UniversalFact & { swarmContext: SwarmContext }>> {
+    const enhancedResults: Array<UniversalFact & { swarmContext: SwarmContext }> = [];
 
     for (const fact of results) {
       const enhanced = {
         ...fact,
         swarmContext: {
           relevanceScore: this.calculateSwarmRelevance(fact, swarmId),
-          usageHistory: fact.swarmAccess.has(swarmId) ? 'previously-used' : 'new',
+          usageHistory: fact.swarmAccess.has(swarmId)
+            ? ('previously-used' as const)
+            : ('new' as const),
           agentCompatibility: agentId ? this.calculateAgentCompatibility(fact, agentId) : undefined,
         },
       };

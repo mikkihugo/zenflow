@@ -123,6 +123,18 @@ module.exports = {
       },
     },
     {
+      name: 'no-direct-wasm-internals',
+      comment:
+        'All external access to WASM internals must go through neural/wasm/index.ts (gateway facade)',
+      severity: 'error',
+      from: {
+        pathNot: '^src/neural/wasm/',
+      },
+      to: {
+        path: '^src/neural/wasm/(src|binaries|fact-core)/',
+      },
+    },
+    {
       name: 'coordination-layer-access',
       comment: 'Only coordination layer should access swarm internals',
       severity: 'warn',

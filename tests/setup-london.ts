@@ -6,6 +6,8 @@
  */
 
 import 'jest-extended';
+// Explicit import for ESM environment to ensure jest global is bound
+import { jest } from '@jest/globals';
 
 /**
  * Expected call structure for interaction verification
@@ -42,6 +44,12 @@ interface ProtocolResponse {
   /** Response data */
   data?: unknown;
 }
+
+// Dummy usage to satisfy noUnusedLocals in strict TS for documentation-only interfaces
+// Use a const with a generic identity to ensure usage
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const __protocolTypesIdentity = <T>(v: T) => v;
+__protocolTypesIdentity<ProtocolMessage | ProtocolResponse | ExpectedCall | undefined>(undefined);
 
 // Enhanced mock configuration for London TDD
 beforeEach(() => {
@@ -80,7 +88,7 @@ function setupDefaultMocks(): void {
  * @param name - Name for the spy function
  * @returns Jest mock function
  */
-global.createInteractionSpy = (name: string): jest.Mock => {
+(globalThis as any).createInteractionSpy = (name: string): jest.Mock => {
   return jest.fn().mockName(name);
 };
 
@@ -91,7 +99,7 @@ global.createInteractionSpy = (name: string): jest.Mock => {
  * @param spy - Jest mock to verify
  * @param expectedCalls - Array of expected call arguments
  */
-global.verifyInteractions = (spy: jest.Mock, expectedCalls: ExpectedCall[]): void => {
+(globalThis as any).verifyInteractions = (spy: jest.Mock, expectedCalls: ExpectedCall[]): void => {
   expect(spy).toHaveBeenCalledTimes(expectedCalls.length);
   expectedCalls.forEach((call, index) => {
     expect(spy).toHaveBeenNthCalledWith(index + 1, ...call.args);
@@ -105,7 +113,7 @@ global.verifyInteractions = (spy: jest.Mock, expectedCalls: ExpectedCall[]): voi
  * @param defaults - Default values for the mock object
  * @returns Function that creates mock objects with overrides
  */
-global.createMockFactory = <T>(defaults: Partial<T> = {}) => {
+(globalThis as any).createMockFactory = <T>(defaults: Partial<T> = {}) => {
   return (overrides: Partial<T> = {}): T =>
     ({
       ...defaults,
@@ -121,7 +129,7 @@ global.createMockFactory = <T>(defaults: Partial<T> = {}) => {
  * @param timeout - Maximum time to wait in milliseconds
  * @throws Error if interaction doesn't occur within timeout
  */
-global.waitForInteraction = async (spy: jest.Mock, timeout = 1000): Promise<void> => {
+(globalThis as any).waitForInteraction = async (spy: jest.Mock, timeout = 1000): Promise<void> => {
   const start = Date.now();
   while (spy.mock.calls.length === 0 && Date.now() - start < timeout) {
     await new Promise((resolve) => setTimeout(resolve, 10));
@@ -137,9 +145,10 @@ global.waitForInteraction = async (spy: jest.Mock, timeout = 1000): Promise<void
  *
  * @param mockProtocol - Mock protocol function to configure
  */
-global.simulateProtocolHandshake = (mockProtocol: jest.Mock): void => {
-  mockProtocol.mockImplementation((message: ProtocolMessage): Promise<ProtocolResponse> => {
-    if (message.type === 'handshake') {
+(globalThis as any).simulateProtocolHandshake = (mockProtocol: jest.Mock): void => {
+  // Relax typing because jest v30 mockImplementation expects (...args: unknown[]) => unknown
+  mockProtocol.mockImplementation((message: any): Promise<ProtocolResponse> => {
+    if (message && message.type === 'handshake') {
       return Promise.resolve({ type: 'handshake_ack', success: true });
     }
     return Promise.resolve({ type: 'response', data: 'mock_response' });
@@ -155,5 +164,13 @@ declare global {
       waitForInteraction(spy: jest.Mock, timeout?: number): Promise<void>;
       simulateProtocolHandshake(mockProtocol: jest.Mock): void;
     }
+  }
+  // Modern typing for globalThis augmentation to avoid TS7017
+  interface GlobalThis {
+    createInteractionSpy(name: string): jest.Mock;
+    verifyInteractions(spy: jest.Mock, expectedCalls: ExpectedCall[]): void;
+    createMockFactory<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
+    waitForInteraction(spy: jest.Mock, timeout?: number): Promise<void>;
+    simulateProtocolHandshake(mockProtocol: jest.Mock): void;
   }
 }

@@ -9,7 +9,7 @@
 import { EventEmitter } from 'node:events';
 
 // External dependencies
-import type { ICoordinationDao } from '../../../database';
+import type { SessionCoordinationDao } from '../../../database';
 
 // Internal modules - absolute paths
 import { ZenSwarm } from './base-swarm';
@@ -50,12 +50,12 @@ export class SessionEnabledSwarm extends ZenSwarm {
   constructor(
     options: SwarmOptions = {},
     sessionConfig: SessionConfig = {},
-    persistence?: ICoordinationDao
+    persistence?: SessionCoordinationDao
   ) {
     super(options);
 
     // Initialize session manager with existing or new persistence DAO
-    let persistenceLayer: ICoordinationDao;
+    let persistenceLayer: SessionCoordinationDao;
     if (persistence) {
       persistenceLayer = persistence;
     } else {
@@ -64,7 +64,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
       persistenceLayer = {
         query: async (_sql: string, _params?: unknown[]) => [],
         execute: async (_sql: string, _params?: unknown[]) => ({ affectedRows: 1 }),
-      } as ICoordinationDao;
+      } as SessionCoordinationDao;
     }
     this.sessionManager = new SessionManager(persistenceLayer, sessionConfig);
 

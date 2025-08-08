@@ -8,6 +8,7 @@
 import type {
   WASMNeuralAccelerator as IWASMNeuralAccelerator,
   WASMBenchmarkResult,
+  WASMExports,
   WASMModelDefinition,
   WASMNeuralConfig,
   WASMNeuralInstance,
@@ -64,10 +65,21 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
     const startTime = performance.now();
 
     try {
-      // TODO: Load and compile WASM module
-      // const wasmModule = await this.loadWasmModule();
-      // this.wasmInstance = await this.instantiateWasm(wasmModule);
-      // this.detectCapabilities();
+      // TODO: Load and compile WASM module with proper type guards
+      // Example of proper WASM module initialization with type safety:
+      // try {
+      //   const wasmBinary = await this.loadWasmBinary();
+      //   if (wasmBinary && wasmBinary.buffer instanceof ArrayBuffer) {
+      //     await this.initializeWasmWithBuffer(wasmBinary.buffer);
+      //   }
+      //
+      //   const wasmModule = await this.loadWasmModule(); // Implementation needed
+      //   this.wasmInstance = await this.instantiateWasm(wasmModule);
+      //   this.detectCapabilities(); // Implementation needed
+      // } catch (wasmError) {
+      //   console.warn('WASM initialization failed, using fallback:', wasmError);
+      //   // Fallback to JavaScript implementation
+      // }
 
       this.metrics.initializationTime = performance.now() - startTime;
       this.metrics.compilationTime = this.metrics.initializationTime * 0.7; // Stub estimate
@@ -84,16 +96,27 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
     await this.ensureInitialized();
 
     try {
-      // TODO: Create model in WASM memory
-      // const modelPtr = this.wasmInstance!.exports.create_model(
-      //   definition.layers.length,
-      //   new Int32Array(definition.layers),
-      //   definition.activationFunction,
-      //   definition.lossFunction
-      // );
+      // TODO: Create model in WASM memory with proper type safety
+      // Example using safe helper methods:
+      // try {
+      //   const layersArray = new Int32Array(definition.architecture.layers);
+      //   const layersBuffer = this.ensureArrayBuffer(layersArray);
       //
-      // if (!modelPtr) {
-      //   throw new Error('Failed to create model in WASM memory');
+      //   if (layersBuffer instanceof ArrayBuffer) {
+      //     const modelPtr = this.safeWasmCall(
+      //       'create_model',
+      //       definition.architecture.layers.length,
+      //       layersArray, // Properly typed as ArrayLike<number>
+      //       definition.architecture.activationFunctions[0] || 'relu',
+      //       'mse' // Default loss function
+      //     );
+      //
+      //     if (!modelPtr) {
+      //       throw new Error('Failed to create model in WASM memory');
+      //     }
+      //   }
+      // } catch (wasmError) {
+      //   console.warn('WASM model creation failed, using fallback:', wasmError);
       // }
 
       this.models.set(modelId, definition);
@@ -126,22 +149,41 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
     const startTime = performance.now();
 
     try {
-      // TODO: Execute training in WASM
-      // const trainingPtr = this.wasmInstance!.exports.prepare_training_data(
-      //   trainingData.inputs.buffer,
-      //   trainingData.outputs.buffer,
-      //   trainingData.inputs.length / model.layers[0],
-      //   model.layers[0],
-      //   model.layers[model.layers.length - 1]
-      // );
+      // TODO: Execute training in WASM with proper type safety
+      // Example using safe helper methods:
+      // try {
+      //   const inputsFlat = trainingData.inputs.flat();
+      //   const outputsFlat = trainingData.outputs.flat();
+      //   const inputsArray = new Float32Array(inputsFlat);
+      //   const outputsArray = new Float32Array(outputsFlat);
       //
-      // const result = this.wasmInstance!.exports.train_model(
-      //   modelPtr,
-      //   trainingPtr,
-      //   options.epochs || 100,
-      //   options.learningRate || 0.01,
-      //   options.batchSize || 32
-      // );
+      //   const inputsBuffer = this.ensureArrayBuffer(inputsArray);
+      //   const outputsBuffer = this.ensureArrayBuffer(outputsArray);
+      //
+      //   if (inputsBuffer instanceof ArrayBuffer && outputsBuffer instanceof ArrayBuffer) {
+      //     const trainingPtr = this.safeWasmCall(
+      //       'prepare_training_data',
+      //       inputsBuffer, // Properly typed as ArrayBuffer
+      //       outputsBuffer, // Properly typed as ArrayBuffer
+      //       trainingData.inputs.length,
+      //       model.architecture.layers[0],
+      //       model.architecture.layers[model.architecture.layers.length - 1]
+      //     );
+      //
+      //     if (trainingPtr) {
+      //       const result = this.safeWasmCall(
+      //         'train_model',
+      //         trainingPtr,
+      //         trainingPtr,
+      //         trainingData.epochs || 100,
+      //         model.architecture.learningRate || 0.01,
+      //         trainingData.batchSize || 32
+      //       );
+      //     }
+      //   }
+      // } catch (wasmError) {
+      //   console.warn('WASM training failed, using fallback:', wasmError);
+      // }
 
       const executionTime = performance.now() - startTime;
 
@@ -174,15 +216,32 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
     const startTime = performance.now();
 
     try {
-      // TODO: Execute prediction in WASM
-      // const inputPtr = this.wasmInstance!.exports.prepare_input(
-      //   input.data.buffer,
-      //   input.data.length
-      // );
+      // TODO: Execute prediction in WASM with proper type safety
+      // Example using safe helper methods:
+      // try {
+      //   const inputBuffer = this.ensureArrayBuffer(input.data);
       //
-      // const outputPtr = this.wasmInstance!.exports.predict(modelPtr, inputPtr);
-      // const outputSize = model.layers[model.layers.length - 1];
-      // const output = new Float32Array(this.wasmInstance!.memory.buffer, outputPtr, outputSize);
+      //   if (inputBuffer instanceof ArrayBuffer) {
+      //     const inputPtr = this.safeWasmCall(
+      //       'prepare_input',
+      //       inputBuffer, // Properly typed as ArrayBuffer
+      //       input.data.length
+      //     );
+      //
+      //     if (inputPtr) {
+      //       const outputPtr = this.safeWasmCall('predict', inputPtr, inputPtr);
+      //       const outputSize = model.architecture.layers[model.architecture.layers.length - 1];
+      //
+      //       // Safe memory access with type guards
+      //       if (this.wasmInstance?.memory?.buffer instanceof ArrayBuffer && outputPtr && outputSize) {
+      //         const output = new Float32Array(this.wasmInstance.memory.buffer, outputPtr, outputSize);
+      //         // Use output for actual predictions
+      //       }
+      //     }
+      //   }
+      // } catch (wasmError) {
+      //   console.warn('WASM prediction failed, using fallback:', wasmError);
+      // }
 
       const executionTime = performance.now() - startTime;
 
@@ -447,6 +506,113 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   private async ensureInitialized(): Promise<void> {
     if (!this.isInitialized) {
       await this.initialize();
+    }
+  }
+
+  /**
+   * Type-safe WASM module loading with proper ArrayBuffer handling
+   */
+  private async loadWasmBinary(): Promise<{ buffer: ArrayBuffer } | null> {
+    // xxx NEEDS_HUMAN: WASM module typing requires systems expertise
+    // This method should load the actual WASM binary and return proper typed buffer
+    return null;
+  }
+
+  /**
+   * Type-safe WASM module instantiation with proper exports access
+   */
+  private async instantiateWasm(wasmModule: any): Promise<WASMNeuralInstance | null> {
+    // xxx NEEDS_HUMAN: WASM module typing requires systems expertise
+    // This method should properly instantiate WASM with type-safe exports access
+    if (!wasmModule || typeof wasmModule !== 'object') {
+      return null;
+    }
+
+    // Use bracket notation for all dynamic WASM module property access
+    const instance: WASMNeuralInstance = {
+      exports: {} as WASMExports,
+      memory: null,
+    };
+
+    // Safe property access with type guards
+    if ('memory' in wasmModule && wasmModule['memory']) {
+      instance.memory = wasmModule['memory'];
+    }
+
+    // Copy exports with proper type checking
+    if (
+      'exports' in wasmModule &&
+      wasmModule['exports'] &&
+      typeof wasmModule['exports'] === 'object'
+    ) {
+      const exports = wasmModule['exports'];
+
+      // Use bracket notation for all export access to avoid index signature issues
+      for (const key of Object.keys(exports)) {
+        if (typeof exports[key] === 'function') {
+          instance.exports[key] = exports[key];
+        }
+      }
+    }
+
+    return instance;
+  }
+
+  /**
+   * Type-safe WASM buffer initialization
+   */
+  private async initializeWasmWithBuffer(buffer: ArrayBuffer): Promise<void> {
+    // xxx NEEDS_HUMAN: WASM module typing requires systems expertise
+    // This method should handle proper WASM instantiation with ArrayBuffer
+    if (!(buffer instanceof ArrayBuffer)) {
+      throw new Error('Invalid buffer type: expected ArrayBuffer');
+    }
+
+    // Implementation would use WebAssembly.instantiate(buffer, imports)
+    // with proper type-safe import object
+  }
+
+  /**
+   * Convert input data to proper ArrayBuffer format for WASM
+   */
+  private ensureArrayBuffer(data: any): ArrayBuffer | null {
+    if (!data) return null;
+
+    if (data instanceof ArrayBuffer) {
+      return data;
+    }
+
+    if (data.buffer && data.buffer instanceof ArrayBuffer) {
+      return data.buffer;
+    }
+
+    if (Array.isArray(data)) {
+      return new Float32Array(data).buffer;
+    }
+
+    return null;
+  }
+
+  /**
+   * Safe WASM function call with bracket notation and type guards
+   */
+  private safeWasmCall(functionName: string, ...args: any[]): any {
+    if (!this.wasmInstance || !this.wasmInstance.exports) {
+      return null;
+    }
+
+    // Use bracket notation to access WASM exports to avoid index signature issues
+    const wasmFunction = this.wasmInstance.exports[functionName];
+
+    if (typeof wasmFunction !== 'function') {
+      return null;
+    }
+
+    try {
+      return wasmFunction(...args);
+    } catch (error) {
+      console.error(`WASM function ${functionName} failed:`, error);
+      return null;
     }
   }
 

@@ -10,6 +10,7 @@
  */
 
 import { createLogger } from '../../../interfaces/mcp/mcp-logger';
+import type { McpToolRegistryMap } from '../../../interfaces/mcp/mcp-types';
 import { BaseZenSwarm as ZenSwarm } from '../index';
 // Removed SwarmPersistencePooled - using DAL Factory approach instead
 import {
@@ -43,7 +44,7 @@ class EnhancedMCPTools {
   private maxErrorLogSize: number;
   private logger: any;
   private daaTools: any;
-  public tools: Record<string, Function>;
+  public tools: McpToolRegistryMap;
 
   constructor(ruvSwarmInstance: any = null) {
     this.ruvSwarm = ruvSwarmInstance;
@@ -76,41 +77,165 @@ class EnhancedMCPTools {
     this.daaTools = new DAA_MCPTools(this);
 
     // Bind DAA tool methods to this instance
-    this.tools = {
-      // Core MCP tools (already implemented in this class)
-      swarm_init: this.swarm_init.bind(this),
-      swarm_status: this.swarm_status.bind(this),
-      swarm_monitor: this.swarm_monitor.bind(this),
-      agent_spawn: this.agent_spawn.bind(this),
-      agent_list: this.agent_list.bind(this),
-      agent_metrics: this.agent_metrics.bind(this),
-      task_orchestrate: this.task_orchestrate.bind(this),
-      task_status: this.task_status.bind(this),
-      task_results: this.task_results.bind(this),
-      benchmark_run: this.benchmark_run.bind(this),
-      features_detect: this.features_detect.bind(this),
-      memory_usage: this.memory_usage.bind(this),
-      neural_status: this.neural_status.bind(this),
-      neural_train: this.neural_train.bind(this),
-      neural_patterns: this.neural_patterns.bind(this),
-
-      // Connection Pool Health and Statistics
-      pool_health: this.pool_health.bind(this),
-      pool_stats: this.pool_stats.bind(this),
-      persistence_stats: this.persistence_stats.bind(this),
-
-      // DAA tools (delegated to DAA_MCPTools)
-      daa_init: this.daaTools.daa_init.bind(this.daaTools),
-      daa_agent_create: this.daaTools.daa_agent_create.bind(this.daaTools),
-      daa_agent_adapt: this.daaTools.daa_agent_adapt.bind(this.daaTools),
-      daa_workflow_create: this.daaTools.daa_workflow_create.bind(this.daaTools),
-      daa_workflow_execute: this.daaTools.daa_workflow_execute.bind(this.daaTools),
-      daa_knowledge_share: this.daaTools.daa_knowledge_share.bind(this.daaTools),
-      daa_learning_status: this.daaTools.daa_learning_status.bind(this.daaTools),
-      daa_cognitive_pattern: this.daaTools.daa_cognitive_pattern.bind(this.daaTools),
-      daa_meta_learning: this.daaTools.daa_meta_learning.bind(this.daaTools),
-      daa_performance_metrics: this.daaTools.daa_performance_metrics.bind(this.daaTools),
+    this.tools = Object.create(null);
+    const register = (spec: {
+      id: string;
+      description: string;
+      handler: Function;
+      category?: string;
+    }) => {
+      this.tools[spec.id] = {
+        id: spec.id,
+        name: spec.id,
+        description: spec.description,
+        category: spec.category || 'core',
+        handler: spec.handler as any,
+      };
     };
+    // Core tool registrations
+    register({
+      id: 'swarm_init',
+      description: 'Initialize a new swarm',
+      handler: this.swarm_init.bind(this),
+    });
+    register({
+      id: 'swarm_status',
+      description: 'Get swarm status',
+      handler: this.swarm_status.bind(this),
+    });
+    register({
+      id: 'swarm_monitor',
+      description: 'Monitor swarm',
+      handler: this.swarm_monitor.bind(this),
+    });
+    register({
+      id: 'agent_spawn',
+      description: 'Spawn agent',
+      handler: this.agent_spawn.bind(this),
+    });
+    register({ id: 'agent_list', description: 'List agents', handler: this.agent_list.bind(this) });
+    register({
+      id: 'agent_metrics',
+      description: 'Agent metrics',
+      handler: this.agent_metrics.bind(this),
+    });
+    register({
+      id: 'task_orchestrate',
+      description: 'Orchestrate task',
+      handler: this.task_orchestrate.bind(this),
+    });
+    register({
+      id: 'task_status',
+      description: 'Task status',
+      handler: this.task_status.bind(this),
+    });
+    register({
+      id: 'task_results',
+      description: 'Task results',
+      handler: this.task_results.bind(this),
+    });
+    register({
+      id: 'benchmark_run',
+      description: 'Run benchmark',
+      handler: this.benchmark_run.bind(this),
+    });
+    register({
+      id: 'features_detect',
+      description: 'Detect features',
+      handler: this.features_detect.bind(this),
+    });
+    register({
+      id: 'memory_usage',
+      description: 'Memory usage',
+      handler: this.memory_usage.bind(this),
+    });
+    register({
+      id: 'neural_status',
+      description: 'Neural status',
+      handler: this.neural_status.bind(this),
+    });
+    register({
+      id: 'neural_train',
+      description: 'Neural train',
+      handler: this.neural_train.bind(this),
+    });
+    register({
+      id: 'neural_patterns',
+      description: 'Neural patterns',
+      handler: this.neural_patterns.bind(this),
+    });
+    register({
+      id: 'pool_health',
+      description: 'Pool health',
+      handler: this.pool_health.bind(this),
+    });
+    register({ id: 'pool_stats', description: 'Pool stats', handler: this.pool_stats.bind(this) });
+    register({
+      id: 'persistence_stats',
+      description: 'Persistence stats',
+      handler: this.persistence_stats.bind(this),
+    });
+    // DAA tool registrations
+    register({
+      id: 'daa_init',
+      description: 'DAA init',
+      handler: this.daaTools.daa_init.bind(this.daaTools),
+      category: 'daa',
+    });
+    register({
+      id: 'daa_agent_create',
+      description: 'DAA agent create',
+      handler: this.daaTools.daa_agent_create.bind(this.daaTools),
+      category: 'daa',
+    });
+    register({
+      id: 'daa_agent_adapt',
+      description: 'DAA agent adapt',
+      handler: this.daaTools.daa_agent_adapt.bind(this.daaTools),
+      category: 'daa',
+    });
+    register({
+      id: 'daa_workflow_create',
+      description: 'DAA workflow create',
+      handler: this.daaTools.daa_workflow_create.bind(this.daaTools),
+      category: 'daa',
+    });
+    register({
+      id: 'daa_workflow_execute',
+      description: 'DAA workflow execute',
+      handler: this.daaTools.daa_workflow_execute.bind(this.daaTools),
+      category: 'daa',
+    });
+    register({
+      id: 'daa_knowledge_share',
+      description: 'DAA knowledge share',
+      handler: this.daaTools.daa_knowledge_share.bind(this.daaTools),
+      category: 'daa',
+    });
+    register({
+      id: 'daa_learning_status',
+      description: 'DAA learning status',
+      handler: this.daaTools.daa_learning_status.bind(this.daaTools),
+      category: 'daa',
+    });
+    register({
+      id: 'daa_cognitive_pattern',
+      description: 'DAA cognitive pattern',
+      handler: this.daaTools.daa_cognitive_pattern.bind(this.daaTools),
+      category: 'daa',
+    });
+    register({
+      id: 'daa_meta_learning',
+      description: 'DAA meta learning',
+      handler: this.daaTools.daa_meta_learning.bind(this.daaTools),
+      category: 'daa',
+    });
+    register({
+      id: 'daa_performance_metrics',
+      description: 'DAA performance metrics',
+      handler: this.daaTools.daa_performance_metrics.bind(this.daaTools),
+      category: 'daa',
+    });
   }
 
   /**
@@ -1608,7 +1733,13 @@ class EnhancedMCPTools {
       } else if (detail === 'by-agent') {
         const byAgent = {
           ...summary,
-          agents: [],
+          agents: [] as Array<{
+            agent_id: any;
+            agent_name: any;
+            agent_type: any;
+            memory_mb: any;
+            neural_network: boolean;
+          }>,
         };
 
         // Get memory usage per agent
@@ -2132,9 +2263,9 @@ class EnhancedMCPTools {
 
   async runNeuralBenchmarks(iterations) {
     const benchmarks = {
-      network_creation: [],
-      forward_pass: [],
-      training_epoch: [],
+      network_creation: [] as number[],
+      forward_pass: [] as number[],
+      training_epoch: [] as number[],
     };
 
     for (let i = 0; i < iterations; i++) {
@@ -2179,9 +2310,9 @@ class EnhancedMCPTools {
 
   async runSwarmBenchmarks(iterations) {
     const benchmarks = {
-      swarm_creation: [],
-      agent_spawning: [],
-      task_orchestration: [],
+      swarm_creation: [] as number[],
+      agent_spawning: [] as number[],
+      task_orchestration: [] as number[],
     };
 
     for (let i = 0; i < iterations; i++) {
@@ -2335,9 +2466,9 @@ class EnhancedMCPTools {
 
   async runAgentBenchmarks(iterations) {
     const benchmarks = {
-      cognitive_processing: [],
-      capability_matching: [],
-      status_updates: [],
+      cognitive_processing: [] as number[],
+      capability_matching: [] as number[],
+      status_updates: [] as number[],
     };
 
     for (let i = 0; i < iterations; i++) {
@@ -2410,9 +2541,9 @@ class EnhancedMCPTools {
 
   async runTaskBenchmarks(iterations) {
     const benchmarks = {
-      task_distribution: [],
-      result_aggregation: [],
-      dependency_resolution: [],
+      task_distribution: [] as number[],
+      result_aggregation: [] as number[],
+      dependency_resolution: [] as number[],
     };
 
     for (let i = 0; i < iterations; i++) {
@@ -2427,7 +2558,7 @@ class EnhancedMCPTools {
         };
 
         // Simulate task breakdown and distribution logic
-        const subtasks = [];
+        const subtasks: any[] = [];
         for (let j = 0; j < 5; j++) {
           subtasks.push({
             id: `${mainTask.id}-sub-${j}`,
@@ -2507,7 +2638,7 @@ class EnhancedMCPTools {
         };
 
         // Simulate topological sort for dependency resolution
-        const resolved = [];
+        const resolved: string[] = [];
         const visiting = new Set();
         const visited = new Set();
 
@@ -2889,7 +3020,12 @@ class EnhancedMCPTools {
     }
   }
 
-  recordToolMetrics(toolName, startTime, status, error = null) {
+  recordToolMetrics(
+    toolName: string,
+    startTime: number,
+    status: 'success' | 'error',
+    error: string | null = null
+  ) {
     if (!this.toolMetrics.has(toolName)) {
       this.toolMetrics.set(toolName, {
         total_calls: 0,

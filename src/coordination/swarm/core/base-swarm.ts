@@ -38,13 +38,13 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
   private swarmId: string;
   private agents: Map<string, BaseAgent> = new Map();
   private state: SwarmLifecycleState = 'initializing';
-  private agentPool?: AgentPool;
+  private agentPool: AgentPool | null;
   private wasmLoader: WasmModuleLoader;
   protected options: ExtendedSwarmOptions;
 
   // Properties referenced in the class methods
   protected isRunning: boolean = false;
-  protected coordinationDao?: any; // ICoordinationDao when persistence is enabled
+  protected coordinationDao?: any; // SessionCoordinationDao when persistence is enabled
   protected neuralProcessor?: any; // WASM neural processor when available
   protected metrics: {
     tasksCreated: number;
@@ -92,6 +92,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
     this.wasmLoader =
       getContainer().get<WasmModuleLoader>('WasmModuleLoader') || new WasmModuleLoader();
     this.isRunning = false;
+    this.agentPool = null;
 
     this.metrics = {
       tasksCreated: 0,
@@ -133,6 +134,8 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
     // Initialize agent pool
     if (this.options.pooling?.enabled) {
       this.agentPool = new AgentPool();
+    } else {
+      this.agentPool = null;
     }
 
     this.state = 'active';
@@ -162,14 +165,14 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
     // Clean up agent pool
     if (this.agentPool) {
       // AgentPool doesn't have a shutdown method yet
-      this.agentPool = undefined;
+      this.agentPool = null;
     }
 
     this.emit('swarm:shutdown', { swarmId: this.swarmId });
   }
 
   // Type guard to satisfy TypeScript's event typing
-  emit(eventName: string | symbol, ...args: any[]): boolean {
+  override emit(eventName: string | symbol, ...args: any[]): boolean {
     return super.emit(eventName, ...args);
   }
 }

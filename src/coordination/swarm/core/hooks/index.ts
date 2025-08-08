@@ -8,14 +8,13 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import type { ICoordinationDao } from '../../../../database';
+import type { AgentMemoryCoordinationDao } from '../../../../database';
 
 // import { DALFactory } from '../../../../database'; // TODO: Implement proper DI integration
 
-type SwarmPersistence = ICoordinationDao;
+type SwarmPersistence = AgentMemoryCoordinationDao;
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 class ZenSwarmHooks {
   public sessionData: any;
@@ -52,7 +51,7 @@ class ZenSwarmHooks {
         execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
       } as any;
     } catch (error) {
-      console.warn('⚠️ Failed to initialize persistence layer:', error.message);
+      console.warn('⚠️ Failed to initialize persistence layer:', (error as Error).message);
       console.warn('⚠️ Operating in memory-only mode');
       this.persistence = null;
     }
@@ -64,7 +63,7 @@ class ZenSwarmHooks {
    * @param hookType
    * @param args
    */
-  async handleHook(hookType, args) {
+  async handleHook(hookType: string, args: any[]) {
     try {
       switch (hookType) {
         // Pre-operation hooks
@@ -448,7 +447,7 @@ class ZenSwarmHooks {
     }
 
     // Send telemetry if enabled
-    if (sendTelemetry && process.env.RUV_SWARM_TELEMETRY_ENABLED === 'true') {
+    if (sendTelemetry && process.env['RUV_SWARM_TELEMETRY_ENABLED'] === 'true') {
       this.sendTelemetry('notification', notification);
     }
 
@@ -703,9 +702,9 @@ class ZenSwarmHooks {
    *
    * @param output
    */
-  extractKeyPoints(output) {
+  extractKeyPoints(output: string): string {
     const lines = output.split('\n').filter((l) => l.trim());
-    const keyPoints = [];
+    const keyPoints: string[] = [];
 
     // Look for bullet points or numbered items
     lines.forEach((line) => {
@@ -1309,8 +1308,15 @@ ${this.sessionData.learnings
     };
   }
 
-  identifyBottlenecks(performance) {
-    const bottlenecks = [];
+  identifyBottlenecks(
+    performance: any
+  ): Array<{ type: string; severity: string; description: string; recommendation: string }> {
+    const bottlenecks: Array<{
+      type: string;
+      severity: string;
+      description: string;
+      recommendation: string;
+    }> = [];
 
     // Time-based bottlenecks
     if (performance.completionTime > 300000) {

@@ -78,8 +78,6 @@ interface ExtendedTrainingData extends TrainingData {
   samples?: Array<{ input: number[]; output: number[] }>;
 }
 
-
-
 interface EvolutionMetric {
   totalEvolutions: number;
   successfulAdaptations: number;
@@ -272,7 +270,7 @@ class CognitivePatternEvolution {
    * @param {Object} config - Agent configuration
    */
   selectInitialPatterns(config: any): string[] {
-    const patterns = [];
+    const patterns: string[] = [];
 
     // Select patterns based on model type and use case
     if (config.modelType) {
@@ -668,7 +666,7 @@ class CognitivePatternEvolution {
     let weightSum = 0;
 
     // Match exploration vs exploitation preference
-        const explorationNeed = (context.creativity_required || 0) + (context.noiseLevel || 0);
+    const explorationNeed = (context.creativity_required || 0) + (context.noiseLevel || 0);
     const explorationMatch = Math.abs(characteristics.explorationRate - (explorationNeed || 0));
     totalMatch += (1 - explorationMatch) * 0.3;
     weightSum += 0.3;
@@ -805,13 +803,19 @@ class CognitivePatternEvolution {
    * @param {Object} effectiveness - Pattern effectiveness scores
    * @param {Object} context - Current context
    */
-  assessEvolutionNeed(effectiveness: any, context: any): any {
-    const values = Object.values(effectiveness) as any[];
+  assessEvolutionNeed(
+    effectiveness: Record<string, { overall?: number }>,
+    context: PatternContext
+  ): { required: boolean; reason: string; urgency: string } {
+    const values = Object.values(effectiveness);
+    const validValues = values.filter((e) => e && typeof e.overall === 'number');
+
+    if (validValues.length === 0) {
+      return { required: true, reason: 'no_valid_effectiveness_data', urgency: 'high' };
+    }
+
     const avgEffectiveness =
-      values.reduce((sum: number, e: any): number => {
-        const effectivenessValue = e?.overall || 0;
-        return sum + (typeof effectivenessValue === 'number' ? effectivenessValue : 0);
-      }, 0) / Object.keys(effectiveness).length;
+      validValues.reduce((sum, e) => sum + (e.overall || 0), 0) / validValues.length;
 
     // Evolution needed if effectiveness is low
     if (avgEffectiveness < 0.4) {
@@ -819,7 +823,7 @@ class CognitivePatternEvolution {
     }
 
     // Evolution needed if context has changed significantly
-    if (context.dataComplexity > 0.8 && avgEffectiveness < 0.6) {
+    if ((context.dataComplexity || 0) > 0.8 && avgEffectiveness < 0.6) {
       return { required: true, reason: 'high_complexity', urgency: 'medium' };
     }
 
@@ -837,7 +841,10 @@ class CognitivePatternEvolution {
    * @param {Object} evolutionNeed - Evolution need assessment
    * @param {Object} context - Current context
    */
-  selectEvolutionStrategy(evolutionNeed: any, context: PatternContext): any {
+  selectEvolutionStrategy(
+    evolutionNeed: { urgency: string },
+    context: PatternContext
+  ): { type: string; description: string; priority: number } {
     const strategies = {
       pattern_addition: {
         type: 'pattern_addition',
@@ -881,7 +888,11 @@ class CognitivePatternEvolution {
    * @param {Object} strategy - Evolution strategy
    * @param {Object} context - Current context
    */
-  async applyEvolution(agentId: string, strategy: any, context: PatternContext): Promise<string[]> {
+  async applyEvolution(
+    agentId: string,
+    strategy: { type: string },
+    context: PatternContext
+  ): Promise<string[]> {
     const agentData = this.agentPatterns.get(agentId);
     if (!agentData) {
       return [];
@@ -908,6 +919,10 @@ class CognitivePatternEvolution {
 
       case 'pattern_hybridization':
         newPatterns = await this.hybridizePatterns(agentId, newPatterns, context);
+        break;
+
+      default:
+        // If strategy type is unknown, keep current patterns
         break;
     }
 
@@ -950,7 +965,7 @@ class CognitivePatternEvolution {
     }
 
     // Select best pattern to add based on context
-    let bestPattern = null;
+    let bestPattern: string | null = null;
     let bestScore = 0;
 
     for (const pattern of unusedPatterns) {
@@ -989,7 +1004,7 @@ class CognitivePatternEvolution {
     } // Keep at least one pattern
 
     // Find least effective pattern
-    let worstPattern = null;
+    let worstPattern: string | null = null;
     let worstScore = 1;
 
     for (const pattern of currentPatterns) {
@@ -1024,7 +1039,7 @@ class CognitivePatternEvolution {
     context: PatternContext
   ): Promise<string[]> {
     // Create modified versions of existing patterns
-    const modifiedPatterns = [];
+    const modifiedPatterns: string[] = [];
 
     for (const pattern of currentPatterns) {
       const template = this.patternTemplates.get(pattern);
@@ -1096,7 +1111,7 @@ class CognitivePatternEvolution {
     // This would typically involve adjusting weights in the neural network
     // For now, we reorder patterns by effectiveness
 
-    const patternScores = [];
+    const patternScores: Array<{ pattern: string; score: number }> = [];
 
     for (const pattern of currentPatterns) {
       const template = this.patternTemplates.get(pattern);
@@ -1129,9 +1144,15 @@ class CognitivePatternEvolution {
     }
 
     // Create hybrid of two best patterns
-    const hybridPattern = `hybrid_${currentPatterns[0]}_${currentPatterns[1]}_${Date.now()}`;
-    const template1 = this.patternTemplates.get(currentPatterns[0]);
-    const template2 = this.patternTemplates.get(currentPatterns[1]);
+    const pattern1 = currentPatterns[0];
+    const pattern2 = currentPatterns[1];
+    if (!pattern1 || !pattern2) {
+      return currentPatterns;
+    }
+
+    const hybridPattern = `hybrid_${pattern1}_${pattern2}_${Date.now()}`;
+    const template1 = this.patternTemplates.get(pattern1);
+    const template2 = this.patternTemplates.get(pattern2);
 
     if (!template1 || !template2) {
       return currentPatterns;
@@ -1171,7 +1192,8 @@ class CognitivePatternEvolution {
         (context.creativity_required || 0) > 0.5 ? chars2.searchStrategy : chars1.searchStrategy,
       explorationRate: (chars1.explorationRate + chars2.explorationRate) / 2,
       exploitationRate: (chars1.exploitationRate + chars2.exploitationRate) / 2,
-      decisionMaking: (context.dataComplexity || 0) > 0.6 ? chars1.decisionMaking : chars2.decisionMaking,
+      decisionMaking:
+        (context.dataComplexity || 0) > 0.6 ? chars1.decisionMaking : chars2.decisionMaking,
       patternRecognition: chars1.patternRecognition, // Use first template's approach
     };
 
@@ -1195,11 +1217,19 @@ class CognitivePatternEvolution {
       return 'convergent';
     }
     if (patterns.length === 1) {
-      return patterns[0];
+      const firstPattern = patterns[0];
+      if (!firstPattern) {
+        return 'convergent';
+      }
+      return firstPattern;
     }
 
     // Select pattern that best matches current context
-    let bestPattern = patterns[0];
+    const firstPattern = patterns[0];
+    if (!firstPattern) {
+      return 'convergent';
+    }
+    let bestPattern = firstPattern;
     let bestScore = 0;
 
     for (const pattern of patterns) {
@@ -1292,7 +1322,7 @@ class CognitivePatternEvolution {
     }
 
     // Evaluate pattern compatibility
-    const compatiblePatterns = [];
+    const compatiblePatterns: Array<{ type?: string; [key: string]: unknown }> = [];
 
     for (const pattern of patterns) {
       const compatibility = await this.evaluatePatternCompatibility(targetAgentId, pattern);
@@ -1302,11 +1332,13 @@ class CognitivePatternEvolution {
       }
     }
 
-    // Transfer compatible patterns
+    // Transfer compatible patterns - only add pattern types (strings) to activePatterns
     if (compatiblePatterns.length > 0) {
-      targetData.activePatterns = [
-        ...new Set([...targetData.activePatterns, ...compatiblePatterns]),
-      ];
+      const patternTypes = compatiblePatterns
+        .map((pattern) => pattern.type)
+        .filter((type): type is string => typeof type === 'string');
+
+      targetData.activePatterns = [...new Set([...targetData.activePatterns, ...patternTypes])];
 
       // Update metrics
       const metrics = this.evolutionMetrics.get(targetAgentId);
@@ -1322,19 +1354,24 @@ class CognitivePatternEvolution {
    * @param {string} agentId - Target agent ID
    * @param {Object} pattern - Pattern to evaluate
    */
-  async evaluatePatternCompatibility(agentId: string, pattern: any): Promise<number> {
+  async evaluatePatternCompatibility(
+    agentId: string,
+    pattern: { type?: string; [key: string]: unknown }
+  ): Promise<number> {
     const agentData = this.agentPatterns.get(agentId);
     if (!agentData) {
       return 0;
     }
 
     // Check if pattern type is already present
-    if (agentData.activePatterns.includes(pattern.type)) {
+    if (pattern.type && agentData.activePatterns.includes(pattern.type)) {
       return 0.3; // Low compatibility if already present
     }
 
     // Evaluate based on agent's current pattern mix
-    const currentPatternTypes = agentData.activePatterns.map((p) => p.split('_')[0]);
+    const currentPatternTypes = agentData.activePatterns
+      .map((p) => p.split('_')[0])
+      .filter((type): type is string => typeof type === 'string');
     const patternType = pattern.type?.split('_')[0] || 'unknown';
 
     // Check for complementary patterns
@@ -1348,7 +1385,7 @@ class CognitivePatternEvolution {
     };
 
     const complements = complementaryPatterns[patternType] || [];
-    const hasComplement = currentPatternTypes.some((ct) => complements.includes(ct));
+    const hasComplement = currentPatternTypes.some((ct) => ct && complements.includes(ct));
 
     return hasComplement ? 0.8 : 0.5;
   }
@@ -1366,7 +1403,7 @@ class CognitivePatternEvolution {
       return [];
     }
 
-    const extractedPatterns = [];
+    const extractedPatterns: Array<{ type?: string; [key: string]: unknown }> = [];
 
     for (const patternType of agentData.activePatterns) {
       const template = this.patternTemplates.get(patternType);

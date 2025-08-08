@@ -63,7 +63,7 @@ export class SwarmSynchronizer extends EventEmitter {
   private agentStates = new Map<string, AgentState>();
   private vectorClock: VectorClock = {};
   private syncHistory: SyncCheckpoint[] = [];
-  
+
   private consensusProtocol: ConsensusProtocol;
   private syncTimer?: NodeJS.Timeout | undefined;
   private heartbeatTimer?: NodeJS.Timeout | undefined;

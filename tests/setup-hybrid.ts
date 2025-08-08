@@ -11,6 +11,8 @@
  */
 
 import 'jest-extended';
+// Explicit import for ESM environment to ensure jest global is available
+import { jest } from '@jest/globals';
 
 /**
  * Hybrid TDD Configuration
@@ -80,12 +82,12 @@ function setupLondonTDD() {
   jest.useFakeTimers();
 
   // Setup interaction spies
-  global.createInteractionSpy = (name: string) => {
+  (globalThis as any).createInteractionSpy = (name: string) => {
     return jest.fn().mockName(name);
   };
 
   // Mock factory for complex coordination objects
-  global.createCoordinationMock = <T>(defaults: Partial<T> = {}) => {
+  (globalThis as any).createCoordinationMock = <T>(defaults: Partial<T> = {}) => {
     return (overrides: Partial<T> = {}): T =>
       ({
         ...defaults,
@@ -100,11 +102,15 @@ function setupLondonTDD() {
  */
 function setupClassicalTDD() {
   // Performance monitoring for neural computations
-  global.testStartTime = Date.now();
+  (globalThis as any).testStartTime = Date.now();
 
-  if (global.gc) {
-    global.gc();
-    global.testStartMemory = process.memoryUsage();
+  if (typeof (globalThis as any).gc === 'function') {
+    try {
+      (globalThis as any).gc();
+    } catch {
+      /* ignore */
+    }
+    (globalThis as any).testStartMemory = process.memoryUsage();
   }
 
   // Neural-specific test data generators
@@ -114,7 +120,7 @@ function setupClassicalTDD() {
    * @param config - Configuration for data generation
    * @returns Array of training data points
    */
-  global.generateNeuralTestData = (config: NeuralTestConfig): NeuralTestData[] => {
+  (globalThis as any).generateNeuralTestData = (config: NeuralTestConfig): NeuralTestData[] => {
     switch (config.type) {
       case 'xor':
         return [
@@ -142,7 +148,11 @@ function setupClassicalTDD() {
    * @param expected - Expected value
    * @param tolerance - Allowed difference (default: 1e-10)
    */
-  global.expectNearlyEqual = (actual: number, expected: number, tolerance: number = 1e-10) => {
+  (globalThis as any).expectNearlyEqual = (
+    actual: number,
+    expected: number,
+    tolerance: number = 1e-10
+  ) => {
     expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
   };
 }
@@ -157,7 +167,7 @@ function setupHybridTDD() {
   setupClassicalTDD();
 
   // Hybrid-specific utilities
-  global.testWithApproach = (
+  (globalThis as any).testWithApproach = (
     approach: 'london' | 'classical',
     testFn: () => void | Promise<void>
   ) => {
@@ -171,7 +181,7 @@ function setupHybridTDD() {
   };
 
   // Memory-specific test utilities
-  global.createMemoryTestScenario = (type: 'sqlite' | 'lancedb' | 'json') => {
+  (globalThis as any).createMemoryTestScenario = (type: 'sqlite' | 'lancedb' | 'json') => {
     switch (type) {
       case 'sqlite':
         return {
@@ -201,24 +211,29 @@ function setupHybridTDD() {
  * Cleanup resources for Classical TDD tests
  */
 function cleanupClassicalResources() {
-  if (global.gc && global.testStartMemory) {
-    global.gc();
+  const g = (globalThis as any).gc;
+  const startMem = (globalThis as any).testStartMemory as NodeJS.MemoryUsage | undefined;
+  if (typeof g === 'function' && startMem) {
+    try {
+      g();
+    } catch {
+      /* ignore */
+    }
     const endMemory = process.memoryUsage();
-    global.lastTestMemoryDelta = {
-      rss: endMemory.rss - global.testStartMemory.rss,
-      heapUsed: endMemory.heapUsed - global.testStartMemory.heapUsed,
-      heapTotal: endMemory.heapTotal - global.testStartMemory.heapTotal,
+    (globalThis as any).lastTestMemoryDelta = {
+      rss: endMemory.rss - startMem.rss,
+      heapUsed: endMemory.heapUsed - startMem.heapUsed,
+      heapTotal: endMemory.heapTotal - startMem.heapTotal,
     };
   }
 }
-
 /**
  * Performance assertion helpers for hybrid testing
  *
  * @param operation
  * @param actualTime
  */
-global.expectPerformanceWithinThreshold = (
+(globalThis as any).expectPerformanceWithinThreshold = (
   operation: 'coordination' | 'neural' | 'memory',
   actualTime: number
 ) => {
@@ -233,11 +248,10 @@ global.expectPerformanceWithinThreshold = (
 
   expect(actualTime).toBeLessThanOrEqual(threshold);
 };
-
 /**
  * DI Container test utilities
  */
-global.createTestContainer = () => {
+(globalThis as any).createTestContainer = () => {
   const mockContainer = {
     register: jest.fn(),
     resolve: jest.fn(),
@@ -247,13 +261,12 @@ global.createTestContainer = () => {
 
   return mockContainer;
 };
-
 /**
  * SPARC methodology test utilities
  *
  * @param phase
  */
-global.createSPARCTestScenario = (
+(globalThis as any).createSPARCTestScenario = (
   phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion'
 ) => {
   return {

@@ -438,9 +438,9 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   private messageQueue: string[] = [];
   private reconnectTimer: NodeJS.Timeout | null = null;
   private heartbeatTimer: NodeJS.Timeout | null = null;
-  private isConnected = false;
+  private _isConnected = false;
   private reconnectAttempts = 0;
-  private connectionId: string;
+  private _connectionId: string;
   private metrics: ClientMetrics;
   private startTime: number;
 
@@ -504,7 +504,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
     };
 
     this.name = config.name || `ws-client-${Date.now()}`;
-    this.connectionId = this.generateConnectionId();
+    this._connectionId = this.generateConnectionId();
     this.startTime = Date.now();
     this.metrics = this.initializeMetrics();
   }
@@ -535,9 +535,9 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
         this.ws.onopen = () => {
           clearTimeout(timeout);
-          this.isConnected = true;
+          this._isConnected = true;
           this.reconnectAttempts = 0;
-          this.connectionId = this.generateConnectionId();
+          this._connectionId = this.generateConnectionId();
 
           this.emit('connect');
           this.emit('connected'); // Legacy event
@@ -555,7 +555,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
         this.ws.onclose = (event) => {
           clearTimeout(timeout);
-          this.isConnected = false;
+          this._isConnected = false;
           this.stopHeartbeat();
 
           this.emit('disconnect', event.code, event.reason);
@@ -590,15 +590,15 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
       this.stopHeartbeat();
 
-      if (this.ws && this.isConnected) {
+      if (this.ws && this._isConnected) {
         this.ws.onclose = () => {
-          this.isConnected = false;
+          this._isConnected = false;
           this.emit('disconnect');
           resolve();
         };
         this.ws.close();
       } else {
-        this.isConnected = false;
+        this._isConnected = false;
         resolve();
       }
     });
@@ -608,7 +608,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    * Check if client is connected (UACL interface)
    */
   isConnected(): boolean {
-    return this.isConnected && this.ws?.readyState === WebSocket.OPEN;
+    return this._isConnected && this.ws?.readyState === WebSocket.OPEN;
   }
 
   /**
@@ -619,13 +619,13 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
     return {
       name: this.name,
-      status: this.isConnected ? 'healthy' : 'disconnected',
+      status: this._isConnected ? 'healthy' : 'disconnected',
       lastCheck: new Date(),
       responseTime,
       errorRate: this.calculateErrorRate(),
       uptime: Date.now() - this.startTime,
       metadata: {
-        connectionId: this.connectionId,
+        connectionId: this._connectionId,
         readyState: this.ws?.readyState || -1,
         queuedMessages: this.messageQueue.length,
         reconnectAttempts: this.reconnectAttempts,
@@ -729,7 +729,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   send(data: any): void {
     const message = typeof data === 'string' ? data : JSON.stringify(data);
 
-    if (this.isConnected && this.ws) {
+    if (this._isConnected && this.ws) {
       try {
         this.ws.send(message);
         this.updateMetrics(true, 0);
@@ -758,7 +758,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
     const serialized = JSON.stringify(messageWithId);
 
-    if (this.isConnected && this.ws) {
+    if (this._isConnected && this.ws) {
       try {
         this.ws.send(serialized);
         this.updateMetrics(true, 0);
@@ -804,7 +804,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    * Get connection ID
    */
   get connectionId(): string {
-    return this.connectionId;
+    return this._connectionId;
   }
 
   // =============================================================================
@@ -855,7 +855,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
       this.emit('message', data, {
         messageType: typeof event.data === 'string' ? 'text' : 'binary',
         timestamp: Date.now(),
-        connectionId: this.connectionId,
+        connectionId: this._connectionId,
       });
     } catch (error) {
       this.emit('error', error);
@@ -905,7 +905,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
           metadata: {
             requestId,
             duration,
-            connectionId: this.connectionId,
+            connectionId: this._connectionId,
             messageType: 'response',
           },
         });
@@ -932,7 +932,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   private flushMessageQueue(): void {
     if (!this.config.messageQueue?.enabled) return;
 
-    while (this.messageQueue.length > 0 && this.isConnected) {
+    while (this.messageQueue.length > 0 && this._isConnected) {
       const message = this.messageQueue.shift();
       if (message) {
         try {
@@ -992,7 +992,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
     const message = this.config.heartbeat.message || { type: 'ping' };
 
     this.heartbeatTimer = setInterval(() => {
-      if (this.isConnected && this.ws) {
+      if (this._isConnected && this.ws) {
         try {
           this.ws.send(JSON.stringify(message));
         } catch (error) {
@@ -1014,7 +1014,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   private async measurePingTime(): Promise<number> {
-    if (!this.isConnected) return -1;
+    if (!this._isConnected) return -1;
 
     return new Promise((resolve) => {
       const startTime = Date.now();

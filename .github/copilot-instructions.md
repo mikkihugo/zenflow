@@ -6,223 +6,78 @@ Advanced AI development platform with sophisticated agent coordination, neural n
 **Mission**: Enable autonomous AI-driven development through comprehensive agent coordination and intelligent tooling
 
 ## 📋 Document-Driven Development System
-**IMPORTANT**: This project uses a **dynamic document-driven system**, not static file structures.
+# claude-code-zen · AI Coding Agent Guide
 
-### Document Management
-- **System**: `src/core/document-driven-system.ts` - TypeScript-based document processor
-- **Storage**: Documents stored in memory/database backends (SQLite, LanceDB, JSON)
-- **Templates**: Dynamic template generation, not static template files
-- **Workflow**: Vision → ADRs → PRDs → Epics → Features → Tasks → Code
+Concise operational context so an autonomous agent can contribute safely & productively.
 
-### Document Types & Storage
+## 1. Core Purpose & Architecture
+- Mission: transform product vision → production code via document-driven workflow + multi-agent swarms.
+- Domains (keep boundaries): coordination · neural · interfaces · memory · database · core · intelligence · workflows.
+- Orchestration: 147+ specialized agent types (DO NOT invent new generic agent types; reuse existing unions).
+- Neural stack: Rust/WASM (fact-core) – ALWAYS route heavy compute through WASM (no JS re‑impls).
+- Access WASM only through `src/neural/wasm/gateway.ts` (facade). Legacy loaders (`wasm-loader`, shims) are being removed.
+
+## 2. Document-Driven Flow (Dynamic, Not Static Files)
+Vision → ADR → PRD → Epic → Feature → Task → Code.
+All persisted via `DocumentDrivenSystem` (`src/core/document-driven-system.ts`) into DB backends (SQLite / LanceDB / JSON). Never add static markdown outside dynamic processing unless explicitly under `docs/` for reference.
+
+CLI examples:
 ```
-DYNAMIC STRUCTURE (managed by TypeScript system):
-docs/01-vision/     ← Strategic vision documents (database-backed)
-docs/02-adrs/       ← Architecture Decision Records (database-backed)
-docs/03-prds/       ← Product Requirements Documents (database-backed)
-docs/04-epics/      ← Epic-level feature sets (database-backed)
-docs/05-features/   ← Individual features (database-backed)
-docs/06-tasks/      ← Implementation tasks (database-backed)
-docs/07-specs/      ← Technical specifications (database-backed)
-```
-
-### Document Processing
-- **Processor**: `DocumentDrivenSystem` class handles all document operations
-- **Metadata**: Extracted and stored in memory/database systems
-- **Workflow**: Automatic progression through document types
-- **Integration**: Seamless integration with agent coordination and swarm systems
-
-## Architecture
-- **Pattern**: domain-driven
-- **Principles**: SOLID, 
-Clean Architecture, 
-Domain Boundaries, 
-Performance Optimization, 
-
-## Key Technologies
-
-- **Backend**: TypeScript with Node.js 20+
-- **Package Manager**: npm
-
-
-
-- **Frontend**: React with TypeScript
-
-
-
-- **Neural Acceleration**: Rust/WASM with fact-core
-- **Performance Rule**: always_use_wasm_for_heavy_computation
-
-
-## Agent System
-- **Total Agent Types**: 147+ across 16 categories
-- **Specialization**: fine-grained task assignment
-- **Coordination**: Advanced swarm intelligence patterns
-
-## Domain Structure
-```
-src/
-├── coordination/
-
-├── neural/
-
-├── interfaces/
-
-├── memory/
-
-├── database/
-
-├── core/
-
-├── intelligence/
-
-├── workflows/
-
+claude-zen document create vision "Unified Memory Tier"
+claude-zen document create adr "Neural Gateway Unification"
+claude-zen workflow status
 ```
 
-## Testing Strategy
-- **Approach**: hybrid-tdd
-- **London TDD**: 70% (interactions, protocols, coordination)
-- **Classical TDD**: 30% (algorithms, neural networks, computations)
-- **Coverage Target**: 85%
+## 3. Key Conventions
+- Strict domain isolation (dependency-cruiser rules enforce). Don’t import deep neural internals from coordination; go through façades/interfaces.
+- Performance targets (must respect): coordination_latency <100ms, api_response <50ms, mcp_tool_execution <10ms, concurrent_agents >1000.
+- Hybrid TDD: 70% London (interaction/mocks) via `tests/setup-london.ts`; 30% Classical (state/algorithms) via `tests/setup-classical.ts`; hybrid dispatcher in `tests/setup-hybrid.ts`.
+- Use existing path aliases (`@core/`, `@coordination/`, etc.) per `jest.config.ts` & tsconfig paths.
+- For new neural features: create Rust → wasm-pack build (see `build-wasm.sh`) then expose through gateway; do NOT bypass optimizer/memory management.
 
-## MCP Integration
-- **External MCP Tools**: Integration with research and development tools
+## 4. Testing & Quality Gates
+- Jest (ESM) for existing suites + Vitest for fast domain/unit runs (`npm run test:jest`, `npm run test:unit`).
+- Setup files auto-augment globals—import `{ jest }` from `@jest/globals` in any new ESM test utilities.
+- Add London interaction helpers instead of manual spy plumbing.
+- Coverage target 85%; prefer adding focused tests beside feature entry point under `src/__tests__/...`.
 
-- **Protocol Support**: HTTP and SSE endpoints for external services
+## 5. MCP & External Tooling
+- MCP servers integrate research & analysis: Context7, DeepWiki, GitMCP, Semgrep. Access orchestrated via coordination domain. Do not hardcode HTTP fetches where an MCP tool abstraction exists.
 
+## 6. Memory & Persistence
+- Multi-backend abstraction (sqlite | lancedb | json) – select via backend factory; avoid coupling feature code to a concrete backend. Use pooling & caching utilities already in `src/memory/`.
 
-## Performance Requirements
+## 7. Adding / Modifying WASM Logic
+1. Implement/adjust Rust in fact-core subdir (or appropriate wasm module directory).
+2. Run `npm run build:wasm` (or optimized variant) – artifacts flow into `src/neural/wasm/...`.
+3. Expose ONLY through `NeuralWasmGateway.execute()`; update task routing there.
+4. Add metrics updates (modulesLoaded, timings) when expanding gateway responsibilities.
 
-- coordination_latency < 100ms
+## 8. Agent System Integration
+- When extending coordination workflows, locate existing agent specialization; compose or configure—don’t subclass ad hoc.
+- Respect existing topology strategies (hierarchical / mesh / ring / star) declared in config.
 
+## 9. Performance & Safety Patterns
+- Use lazy initialization (gateway initialize/optimize) – no eager WASM spins in module scope.
+- Guard optional `globalThis.gc()` calls (already patterned in setups) if creating performance tests.
+- Prefer streaming / incremental processing for large doc workflows.
 
-- neural_computation_uses_wasm
+## 10. Anti-Patterns (Avoid)
+- Direct import of `src/neural/wasm/(binaries|fact-core|src)` internals.
+- Creating new generic “Agent” types instead of reusing existing unions.
+- Duplicating document workflow logic outside `DocumentDrivenSystem`.
+- Heavy compute in JS when a WASM pathway exists.
 
-
-- api_response < 50ms
-
-
-- concurrent_agents > 1000
-
-
-- mcp_tool_execution < 10ms
-
-
-## Development Guidelines
-
-### Architectural Constraints
-
-- Use existing 147 agent types, don't create generic implementations
-
-- Follow domain-driven structure in src/
-
-- Use WASM for performance-critical neural computations
-
-- Maintain hybrid TDD approach (70% London, 30% Classical)
-
-- Respect MCP protocol patterns for tool integration
-
-### Document-Driven Development Rules
-
-- **NO static docs folders**: Documents are managed dynamically by `DocumentDrivenSystem`
-
-- **Database-first**: All documents stored in memory/database backends (Issue #63 implementation)
-
-- **Template system**: Use `src/core/document-driven-system.ts` for document generation
-
-- **Workflow automation**: Vision → ADRs → PRDs → Epics → Features → Tasks → Code progression
-
-- **Integration patterns**: Documents integrate with swarm coordination and agent systems
-
-
-### Performance Requirements
-
-- Sub-100ms coordination overhead
-
-
-- WASM acceleration for neural operations
-
-
-- Efficient resource utilization through pooling
-
-
-- Real-time updates via WebSocket connections
-
-
-## Build Commands
-```bash
-npm ci
-npm run build
-npm test
-npm run lint
-npm run mcp:start
+## 11. Quick Commands
+```
+npm ci && npm run build
+npm run test:jest   # full jest suites
+npm run test:unit   # vitest unit focus
+npm run deps:circular
+npm run build:wasm
 ```
 
-## Document System Commands
-```bash
-# Document-driven development (dynamic system)
-claude-zen workspace init <project>           # Initialize document workspace
-claude-zen workspace process <doc.md>         # Process vision/ADR/PRD documents  
-claude-zen document create vision <title>     # Create vision document in database
-claude-zen document create adr <title>        # Create ADR in database
-claude-zen document create prd <title>        # Create PRD in database
-claude-zen workflow status                    # Check document workflow progress
-```
+## 12. When Unsure
+Trace from the domain facade (coordination/neural) inward; if an API isn’t exposed at a facade layer, add it there instead of reaching deeper.
 
-## Memory System
-- **Backends**: sqlite, 
-lancedb, 
-json, 
-- **Features**: Connection pooling, multi-backend abstraction, caching
-
-
-## WASM Integration
-- **Rust Core**: fact-core
-- **Performance**: Always use WASM for heavy neural computations
-- **Bindings**: JavaScript/WASM bridge with proper memory management
-
-
-## Validation Rules
-
-- **domain_boundaries**: Ensure coordination code doesn't mix with neural code
-
-- **agent_type_usage**: Use existing AgentType union, don't create generic types
-
-- **wasm_performance**: Use WASM for computational tasks in neural domain
-
-- **testing_strategy**: Follow hybrid TDD approach
-
-- **document_system**: Use `DocumentDrivenSystem` class, not static file structure
-
-- **database_first**: Store documents in memory/database backends from Issue #63
-
-- **workflow_integration**: Documents must integrate with swarm coordination
-
-
-This is a sophisticated, production-grade AI platform. Maintain high standards and leverage the comprehensive systems already in place.
-
-## MCP Integration for Research and Development
-
-### External MCP Servers for Research
-The project is configured with several external MCP servers for enhanced research capabilities:
-
-- **Context7** (`https://mcp.context7.com/mcp`): Research and analysis tools
-- **DeepWiki** (`https://mcp.deepwiki.com/sse`): Knowledge base and research tools  
-- **GitMCP** (`https://gitmcp.io/docs`): Git operations and repository management
-- **Semgrep** (`https://mcp.semgrep.ai/sse`): Code analysis and security scanning
-
-### Using MCP Tools for Research
-When working on code analysis, research, or development tasks:
-1. Use **Context7** tools for in-depth research and analysis
-2. Leverage **DeepWiki** for knowledge base queries and documentation research
-3. Utilize **GitMCP** for repository analysis and git-related operations
-4. Apply **Semgrep** tools for security analysis and code quality checks
-
-### GitHub Copilot Optimization
-This setup follows GitHub's recommendations for optimal copilot coding agent configuration:
-- Reference: https://github.blog/ai-and-ml/github-copilot/onboarding-your-ai-peer-programmer-setting-up-github-copilot-coding-agent-for-success/
-- Comprehensive project context through domain-specific instructions
-- Performance benchmarks and quality gates
-- Clear architectural constraints and patterns
-- Integrated MCP tools for enhanced capabilities
+Feedback welcome—ask for clarifications where domain boundaries or gateway usage feel ambiguous.

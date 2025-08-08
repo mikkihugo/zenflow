@@ -289,7 +289,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
     _context: KnowledgeDiscoveryContext
   ): Promise<DomainKnowledge | null> {
     try {
-      let knowledge = null;
+      let knowledge: DomainKnowledge | null = null;
 
       // Try Hive FACT first
       if (this.hiveFact) {

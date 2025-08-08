@@ -456,9 +456,19 @@ export const databaseOptimizeTool: MCPTool = {
       const results = {
         target,
         strategy,
-        optimizations: [],
+        optimizations: [] as Array<{
+          type: string;
+          action: string;
+          description: string;
+          impact: string;
+          current?: any;
+          recommended?: string;
+          engineId?: any;
+          utilization?: any;
+          errorRate?: any;
+        }>,
         analysis: null,
-        recommendations: [],
+        recommendations: [] as string[],
         metrics: {},
       };
 
@@ -630,7 +640,14 @@ export const databaseMonitorTool: MCPTool = {
         startTime: Date.now(),
         duration,
         metrics: {},
-        alerts: [],
+        alerts: [] as Array<{
+          type: string;
+          severity: string;
+          message: string;
+          engineId?: string;
+          value?: any;
+          threshold?: any;
+        }>,
         engines: {},
         system: {
           coordinator: undefined as any,
@@ -796,9 +813,13 @@ export const databaseHealthCheckTool: MCPTool = {
           cache: undefined as any,
           clients: undefined as any, // Added UACL client health
         },
-        issues: [],
-        recommendations: [],
-        repairs: [],
+        issues: [] as string[],
+        recommendations: [] as string[],
+        repairs: [] as Array<{
+          issue: any;
+          action: string;
+          success: boolean;
+        }>,
       };
 
       const shouldCheck = (component: string) =>

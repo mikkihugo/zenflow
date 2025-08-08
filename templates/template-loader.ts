@@ -236,7 +236,9 @@ export class TemplateLoader {
    *
    * @param type
    */
-  interface Capability {
+  interface;
+  Capability;
+  {
   codeGeneration: boolean;
   codeReview: boolean;
   testing: boolean;
@@ -259,68 +261,74 @@ export class TemplateLoader {
   quality: number;
 }
 
-   /**
-   * Create default capabilities based on agent type
-   *
-   * @param type
-   */
-  private createDefaultCapabilities(type: string): Capability {
-    const capabilityMap: Record<string, Capability> = {
-      'automation-smart-agent': {
-        codeGeneration: true,
-        codeReview: false,
-        testing: false,
-        documentation: true,
-        research: false,
-        analysis: true,
-        webSearch: false,
-        apiIntegration: true,
-        fileSystem: true,
-        terminalAccess: true,
-        languages: ['typescript', 'javascript'],
-        frameworks: ['deno', 'node'],
-        domains: ['automation', 'smart-systems', 'workflow'],
-        tools: ['automation-tools', 'smart-scheduler'],
-        maxConcurrentTasks: 5,
-        maxMemoryUsage: 512 * 1024 * 1024,
-        maxExecutionTime: 600000,
-        reliability: 0.9,
-        speed: 0.85,
-        quality: 0.9,
-      },
-      'coordinator-swarm-init': {
-        codeGeneration: false,
-        codeReview: false,
-        testing: false,
-        documentation: true,
-        research: false,
-        analysis: true,
-        webSearch: false,
-        apiIntegration: true,
-        fileSystem: true,
-        terminalAccess: false,
-        languages: [],
-        frameworks: ['swarm-coordination'],
-        domains: ['coordination', 'swarm-management', 'initialization'],
-        tools: ['swarm-coordinator', 'topology-manager'],
-        maxConcurrentTasks: 10,
-        maxMemoryUsage: 256 * 1024 * 1024,
-        maxExecutionTime: 300000,
-        reliability: 0.95,
-        speed: 0.9,
-        quality: 0.9,
-      },
-      // Add more specific capabilities as needed
-    };
+/**
+ * Create default capabilities based on agent type
+ *
+ * @param type
+ */
+private
+createDefaultCapabilities(type: string)
+: Capability
+{
+  const capabilityMap: Record<string, Capability> = {
+    'automation-smart-agent': {
+      codeGeneration: true,
+      codeReview: false,
+      testing: false,
+      documentation: true,
+      research: false,
+      analysis: true,
+      webSearch: false,
+      apiIntegration: true,
+      fileSystem: true,
+      terminalAccess: true,
+      languages: ['typescript', 'javascript'],
+      frameworks: ['deno', 'node'],
+      domains: ['automation', 'smart-systems', 'workflow'],
+      tools: ['automation-tools', 'smart-scheduler'],
+      maxConcurrentTasks: 5,
+      maxMemoryUsage: 512 * 1024 * 1024,
+      maxExecutionTime: 600000,
+      reliability: 0.9,
+      speed: 0.85,
+      quality: 0.9,
+    },
+    'coordinator-swarm-init': {
+      codeGeneration: false,
+      codeReview: false,
+      testing: false,
+      documentation: true,
+      research: false,
+      analysis: true,
+      webSearch: false,
+      apiIntegration: true,
+      fileSystem: true,
+      terminalAccess: false,
+      languages: [],
+      frameworks: ['swarm-coordination'],
+      domains: ['coordination', 'swarm-management', 'initialization'],
+      tools: ['swarm-coordinator', 'topology-manager'],
+      maxConcurrentTasks: 10,
+      maxMemoryUsage: 256 * 1024 * 1024,
+      maxExecutionTime: 300000,
+      reliability: 0.95,
+      speed: 0.9,
+      quality: 0.9,
+    },
+    // Add more specific capabilities as needed
+  };
 
-    return capabilityMap[type] || this.createGenericCapabilities();
-  }
+  return capabilityMap[type] || this.createGenericCapabilities();
+}
 
-  /**
-   * Create generic capabilities
-   */
-  private createGenericCapabilities(): any {
-    return {
+/**
+ * Create generic capabilities
+ */
+private
+createGenericCapabilities();
+: any
+{
+  return {
       codeGeneration: false,
       codeReview: true,
       testing: false,
@@ -342,63 +350,72 @@ export class TemplateLoader {
       speed: 0.7,
       quality: 0.8,
     };
-  }
+}
 
-  /**
-   * Parse expertise string into object
-   *
-   * @param expertiseStr
-   */
-  private parseExpertise(expertiseStr: string): Record<string, number> {
-    if (!expertiseStr) return {};
+/**
+ * Parse expertise string into object
+ *
+ * @param expertiseStr
+ */
+private
+parseExpertise(expertiseStr: string)
+: Record<string, number>
+{
+  if (!expertiseStr) return {};
 
-    try {
-      // Handle formats like "coordination:0.9,management:0.8"
-      const expertise: Record<string, number> = {};
-      const pairs = expertiseStr.split(',');
-      for (const pair of pairs) {
-        const [skill, level] = pair.split(':');
-        if (skill && level) {
-          expertise[skill.trim()] = parseFloat(level.trim()) || 0.5;
-        }
+  try {
+    // Handle formats like "coordination:0.9,management:0.8"
+    const expertise: Record<string, number> = {};
+    const pairs = expertiseStr.split(',');
+    for (const pair of pairs) {
+      const [skill, level] = pair.split(':');
+      if (skill && level) {
+        expertise[skill.trim()] = parseFloat(level.trim()) || 0.5;
       }
-      return expertise;
-    } catch (_error) {
-      return {};
     }
+    return expertise;
+  } catch (_error) {
+    return {};
   }
+}
 
-  /**
-   * Parse preferences string into object
-   *
-   * @param preferencesStr
-   */
-  private parsePreferences(preferencesStr: string): Record<string, any> {
-    if (!preferencesStr) return {};
+/**
+ * Parse preferences string into object
+ *
+ * @param preferencesStr
+ */
+private
+parsePreferences(preferencesStr: string)
+: Record<string, any>
+{
+  if (!preferencesStr) return {};
 
-    try {
-      // Handle simple key:value pairs
-      const preferences: Record<string, any> = {};
-      const pairs = preferencesStr.split(',');
-      for (const pair of pairs) {
-        const [key, value] = pair.split(':');
-        if (key && value) {
-          preferences[key.trim()] = value.trim();
-        }
+  try {
+    // Handle simple key:value pairs
+    const preferences: Record<string, any> = {};
+    const pairs = preferencesStr.split(',');
+    for (const pair of pairs) {
+      const [key, value] = pair.split(':');
+      if (key && value) {
+        preferences[key.trim()] = value.trim();
       }
-      return preferences;
-    } catch (_error) {
-      return {};
     }
+    return preferences;
+  } catch (_error) {
+    return {};
   }
+}
 
-  /**
-   * Create basic template fallback
-   *
-   * @param type
-   */
-  private createBasicTemplate(type: string): AgentTemplate {
-    return {
+/**
+ * Create basic template fallback
+ *
+ * @param type
+ */
+private
+createBasicTemplate(type: string)
+: AgentTemplate
+{
+  return {
       name: this.formatAgentName(type),
       type: type as AgentType,
       capabilities: this.createGenericCapabilities(),
@@ -429,21 +446,25 @@ export class TemplateLoader {
       },
       startupScript: `./scripts/start-${type}.ts`,
     };
-  }
+}
 
-  /**
-   * Get loaded template by type
-   *
-   * @param type
-   */
-  getTemplate(type: string): AgentTemplate | undefined {
-    return this.loadedTemplates.get(type);
-  }
+/**
+ * Get loaded template by type
+ *
+ * @param type
+ */
+getTemplate(type: string)
+: AgentTemplate | undefined
+{
+  return this.loadedTemplates.get(type);
+}
 
-  /**
-   * Get all loaded templates
-   */
-  getAllTemplates(): Map<string, AgentTemplate> {
-    return new Map(this.loadedTemplates);
-  }
+/**
+ * Get all loaded templates
+ */
+getAllTemplates();
+: Map<string, AgentTemplate>
+{
+  return new Map(this.loadedTemplates);
+}
 }

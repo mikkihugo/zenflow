@@ -4,7 +4,7 @@
  */
 
 import { promises as fs } from 'node:fs';
-import path from 'node:path';
+import * as path from 'node:path';
 
 interface RemoteWrapperOptions {
   workingDir?: string;
@@ -330,7 +330,7 @@ if "%1"=="research" (
         },
       ];
 
-      const createdFiles = [];
+      const createdFiles: string[] = [];
 
       for (const script of scripts) {
         const filePath = path.join(this.workingDir, script.name);
@@ -364,7 +364,7 @@ if "%1"=="research" (
         },
       ];
 
-      const createdFiles = [];
+      const createdFiles: string[] = [];
 
       for (const script of scripts) {
         const filePath = path.join(this.workingDir, script.name);

@@ -8,8 +8,9 @@
  * @file Main REST API server with domain endpoints
  */
 
-// Core dependencies
 import cors from 'cors';
+// Core dependencies
+import { randomBytes } from 'crypto';
 import express, { type Application, type Request, type Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
@@ -153,10 +154,12 @@ const swaggerOptions = {
     ],
   },
   apis: [
+    // Domain API surface files (coordination + neural) - keep explicit
     './src/coordination/api.ts',
     './src/neural/api.ts',
-    './src/api/v1/*.ts',
-    './src/api/schemas/*.ts',
+    // New canonical interface routes & schemas (replaces legacy ./src/api/* globs)
+    './src/interfaces/api/http/v1/*.ts',
+    './src/interfaces/api/http/schemas/*.ts',
   ],
 };
 
@@ -184,6 +187,12 @@ export class APIServer {
    * Following Google security and performance best practices
    */
   private setupMiddleware(): void {
+    // Security middleware
+    this.app.use((_req, res, next) => {
+      res.locals.nonce = randomBytes(16).toString('hex');
+      next();
+    });
+
     // Security middleware
     this.app.use(
       helmet({
@@ -282,6 +291,14 @@ export class APIServer {
           explorer: true,
           customCss: '.swagger-ui .topbar { display: none }',
           customSiteTitle: 'Claude Code Flow API Documentation',
+          swaggerOptions: {
+            requestInterceptor: (req: any) => {
+              req.headers['X-Content-Security-Policy-Nonce'] = document
+                .querySelector('meta[name="csp-nonce"]')
+                ?.getAttribute('content');
+              return req;
+            },
+          },
         })
       );
 

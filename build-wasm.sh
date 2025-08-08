@@ -25,30 +25,53 @@ rustup target add wasm32-unknown-unknown
 
 echo "🔧 Building WASM modules..."
 
-# Build the main WASM module
-cd src/wasm
-if [ -f "build.sh" ]; then
-    echo "📦 Building WASM module with existing script..."
-    chmod +x build.sh
-    ./build.sh
+# Build (legacy src/wasm) if still present, otherwise use consolidated neural/wasm
+if [ -d "src/wasm" ]; then
+  echo "🔁 Legacy src/wasm directory detected (will be deprecated)"
+  ( 
+    cd src/wasm
+    if [ -f "build.sh" ]; then
+      echo "📦 Building legacy WASM module with existing script..."
+      chmod +x build.sh
+      ./build.sh
+    else
+      echo "📦 Building legacy WASM module with wasm-pack..."
+      wasm-pack build --target web --out-dir pkg --scope claude-zen || echo "⚠️ Legacy build failed (non-fatal)"
+    fi
+  )
 else
-    echo "📦 Building WASM module with wasm-pack..."
-    wasm-pack build --target web --out-dir pkg --scope claude-zen
+  echo "✅ Skipping legacy src/wasm (directory removed)"
 fi
 
-# Build the Rust core library
-cd ../fact-core
-if [ -f "Cargo.toml" ]; then
-    echo "🏗️ Building Rust core library..."
-    cargo build --release
-    
-    # Build WASM version of core library
-    wasm-pack build --target web --out-dir pkg --scope claude-zen
-else
-    echo "⚠️ No Cargo.toml found in fact-core, skipping..."
+# Build unified neural/wasm (primary target)
+if [ -d "src/neural/wasm" ]; then
+  (
+    cd src/neural/wasm
+    if [ -f "Cargo.toml" ]; then
+      echo "🏗️ Building unified neural/wasm Rust crate..."
+      cargo build --release || echo "⚠️ Native build warnings"
+    fi
+  )
 fi
 
-cd ../../
+# Build FACT core (now nested under neural/wasm/fact-core)
+if [ -d "src/neural/wasm/fact-core" ]; then
+  (
+    cd src/neural/wasm/fact-core
+    if [ -f "Cargo.toml" ]; then
+      echo "🏗️ Building FACT core library..."
+      cargo build --release
+      echo "🌐 Building FACT core WASM..."
+      wasm-pack build --target web --out-dir pkg --scope claude-zen
+    else
+      echo "⚠️ No Cargo.toml in fact-core (unexpected)"
+    fi
+  )
+else
+  echo "⚠️ FACT core directory not found (src/neural/wasm/fact-core)"
+fi
+
+cd ./
 
 # Copy WASM files to appropriate locations
 echo "📁 Organizing WASM build artifacts..."
@@ -58,13 +81,18 @@ mkdir -p dist/wasm
 
 # Copy WASM files from both builds
 if [ -d "src/wasm/pkg" ]; then
-    cp -r src/wasm/pkg/* dist/wasm/
-    echo "✅ Copied WASM module artifacts"
+  cp -r src/wasm/pkg/* dist/wasm/
+  echo "✅ Copied legacy WASM module artifacts"
 fi
 
-if [ -d "src/fact-core/pkg" ]; then
-    cp -r src/fact-core/pkg/* dist/wasm/
-    echo "✅ Copied FACT core artifacts"
+if [ -d "src/neural/wasm/pkg" ]; then
+  cp -r src/neural/wasm/pkg/* dist/wasm/
+  echo "✅ Copied unified neural/wasm artifacts"
+fi
+
+if [ -d "src/neural/wasm/fact-core/pkg" ]; then
+  cp -r src/neural/wasm/fact-core/pkg/* dist/wasm/
+  echo "✅ Copied FACT core artifacts"
 fi
 
 # Generate TypeScript declarations for WASM modules

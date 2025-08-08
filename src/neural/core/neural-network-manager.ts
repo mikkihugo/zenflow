@@ -198,6 +198,11 @@ class NeuralNetworkManager {
   private agentInteractions: Map<string, unknown>;
   private performanceMetrics: Map<string, PerformanceMetrics>;
   private templates: unknown;
+  // Previously undeclared fields referenced throughout implementation
+  private daaCognition: DAACognition;
+  private collaborativeMemory: Map<string, unknown>;
+  private adaptiveOptimization: boolean;
+  private federatedLearningEnabled: boolean;
 
   /**
    * Creates a new Neural Network Manager instance

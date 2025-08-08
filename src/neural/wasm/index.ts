@@ -9,11 +9,11 @@
 
 // CUDA-Rust WASM (main neural WASM implementation)
 export * from './binaries/wasm-bindings-loader.mjs';
-export * from './wasm-loader';
-export { default as WasmLoader } from './wasm-loader';
-export * from './wasm-loader2';
-export { default as WasmLoader2 } from './wasm-loader2';
-export * from './wasm-memory-optimizer';
+// Compatibility exports
+export * from './wasm-compat';
+// Export legacy loader only via named default (avoid duplicate symbol collisions)
+export { default as WasmLoader } from './wasm-loader'; // TODO: remove after migration
+export * from './wasm-memory-optimizer'; // TODO: remove after migration
 export { default as WasmMemoryOptimizer } from './wasm-memory-optimizer';
 export * from './wasm-types';
 
@@ -24,3 +24,7 @@ export * from './wasm-types';
 // Additional WASM components
 export * from './wasm-neural-accelerator';
 // JS loaders are imported dynamically when needed to avoid circular dependencies
+
+// Gateway facade (single sanctioned external entry point)
+export * from './gateway';
+export { default as NeuralWasmGateway } from './gateway';

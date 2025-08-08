@@ -294,7 +294,6 @@ export class HiveFACTSystem extends EventEmitter {
    * @param type
    * @param subject
    */
-  // @ts-expect-error - Unused method for future implementation
   private buildQueryForFactType(type: UniversalFact['type'], subject: string): string {
     switch (type) {
       case 'npm-package':

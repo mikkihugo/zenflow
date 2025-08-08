@@ -28,9 +28,9 @@ export class Logger {
   constructor(options: LoggerOptions = {}) {
     this.name = options.name || 'ruv-swarm';
     this.level = options.level || 'INFO';
-    this.enableStderr = options.enableStderr !== false;
-    this.enableFile = options.enableFile || false;
-    this.formatJson = options.formatJson || false;
+    this.enableStderr = options.enableStderr === undefined ? true : options.enableStderr;
+    this.enableFile = options.enableFile === undefined ? false : options.enableFile;
+    this.formatJson = options.formatJson === undefined ? false : options.formatJson;
     this.logDir = options.logDir || './logs';
     this.metadata = options.metadata || {};
     this.correlationId = null;

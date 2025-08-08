@@ -66,6 +66,9 @@ import type { IDao, IManager } from './interfaces';
 
 // Core interfaces
 export type {
+  AgentMemoryCoordinationDao,
+  CheckpointCoordinationDao,
+  CheckpointEntity,
   ClusteringOptions,
   ClusterResult,
   CoordinationChange,
@@ -76,6 +79,8 @@ export type {
   CustomQuery,
   DatabaseMetadata,
   DatabaseQuery,
+  EventCoordinationDao,
+  GenericCoordinationDao,
   // Graph database types
   GraphNode,
   GraphPath,
@@ -83,6 +88,7 @@ export type {
   GraphRelationship,
   GraphTraversalResult,
   HealthStatus,
+  IAgentMemoryDao,
   ICoordinationDao,
   IDao,
   IGraphDao,
@@ -93,6 +99,8 @@ export type {
   MemoryStats,
   PerformanceMetrics,
   QueryOptions,
+  SessionCoordinationDao,
+  SessionEntity,
   SortCriteria,
   TransactionOperation,
   // Vector database types

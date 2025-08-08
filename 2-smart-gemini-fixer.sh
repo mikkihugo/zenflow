@@ -66,7 +66,11 @@ handle_stale_lock() {
 
     # Check if the running process has exceeded its max runtime.
     local start_time
-    start_time=$(stat -c %Y "$LOCK_FILE")
+    if [[ "$(uname)" == "Darwin" ]]; then # macOS
+        start_time=$(stat -f %m "$LOCK_FILE")
+    else # Linux
+        start_time=$(stat -c %Y "$LOCK_FILE")
+    fi
     local runtime=$(( $(date +%s) - start_time ))
 
     if [ "$runtime" -gt "$MAX_SESSION_RUNTIME" ]; then
@@ -130,7 +134,11 @@ check_status() {
     fi
 
     local start_time
-    start_time=$(stat -c %Y "$LOCK_FILE")
+    if [[ "$(uname)" == "Darwin" ]]; then # macOS
+        start_time=$(stat -f %m "$LOCK_FILE")
+    else # Linux
+        start_time=$(stat -c %Y "$LOCK_FILE")
+    fi
     local runtime=$(( $(date +%s) - start_time ))
     log "Smart fixer is RUNNING (PID: $pid, Runtime: ${runtime}s)."
 }

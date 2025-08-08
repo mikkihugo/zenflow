@@ -3,14 +3,14 @@
  */
 
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import type { ICoordinationDao } from '../../../database';
+import type { SessionCoordinationDao } from '../../../database';
 import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
 import { SessionManager, type SessionState } from './session-manager';
 import { SessionSerializer, SessionStats, SessionValidator } from './session-utils';
 import type { SwarmOptions, SwarmState } from './types';
 
 // Mock DAO implementation
-class MockCoordinationDao implements ICoordinationDao {
+class MockCoordinationDao implements SessionCoordinationDao {
   private mockData: Map<string, any> = new Map();
   public initialized: boolean = false;
 

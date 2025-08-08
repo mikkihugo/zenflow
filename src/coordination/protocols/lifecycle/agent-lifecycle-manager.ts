@@ -293,7 +293,7 @@ export class AgentLifecycleManager extends EventEmitter {
     this.healthMonitor = new HealthMonitor(this.config, this.logger);
     this.performanceTracker = new PerformanceTracker(this.config, this.logger);
     // this.resourceMonitor = new ResourceMonitor(this.config, this.logger);
-    this.capabilityDiscovery = new CapabilityDiscovery(this.logger);
+    this.capabilityDiscovery = new CapabilityDiscovery();
     this.scalingEngine = new ScalingEngine(this.config, this.logger);
     this.recoveryEngine = new RecoveryEngine(this.config, this.logger);
 
@@ -1429,7 +1429,10 @@ class CapabilityDiscovery {
 }
 
 class ScalingEngine {
-  constructor(private readonly config: AgentLifecycleConfig, private readonly logger: ILogger) {}
+  constructor(
+    private readonly config: AgentLifecycleConfig,
+    private readonly logger: ILogger
+  ) {}
 
   async analyze(
     agents: Map<string, AgentInstance>,
@@ -1484,7 +1487,10 @@ class ScalingEngine {
 }
 
 class RecoveryEngine {
-  constructor(private readonly config: AgentLifecycleConfig, private readonly logger: ILogger) {}
+  constructor(
+    private readonly config: AgentLifecycleConfig,
+    private readonly logger: ILogger
+  ) {}
 
   async recoverAgent(agent: AgentInstance, _template: AgentTemplate): Promise<void> {
     // Implement agent recovery strategies

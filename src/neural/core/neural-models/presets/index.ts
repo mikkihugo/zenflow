@@ -3,7 +3,23 @@
  * Collection of predefined neural network configurations
  */
 
-export const NEURAL_PRESETS = {
+export interface NeuralPreset {
+  id: string;
+  name: string;
+  type: string; // classification | regression | deep | etc.
+  architecture: string;
+  layers: number[];
+  activation: string;
+  outputActivation: string;
+  learningRate: number;
+  batchSize: number;
+  useCase: string[];
+  dropout?: number;
+}
+
+export type NeuralPresetMap = Record<string, NeuralPreset>;
+
+export const NEURAL_PRESETS: NeuralPresetMap = {
   // Basic presets
   BASIC_CLASSIFIER: {
     id: 'basic_classifier',
@@ -53,7 +69,7 @@ export const NEURAL_PRESETS = {
  * @param category
  * @param presetName
  */
-export function getPreset(category, presetName) {
+export function getPreset(category: string, presetName?: string): NeuralPreset | undefined {
   if (presetName) {
     // Two-argument version - look by category and preset name
     const presets = Object.values(NEURAL_PRESETS);
@@ -73,11 +89,11 @@ export function getPreset(category, presetName) {
  *
  * @param useCase
  */
-export function getRecommendedPreset(useCase) {
+export function getRecommendedPreset(useCase: string): NeuralPreset {
   const presets = Object.values(NEURAL_PRESETS);
-  return (
-    presets.find((preset) => preset.useCase.includes(useCase)) || NEURAL_PRESETS.BASIC_CLASSIFIER
-  );
+  const found = presets.find((preset) => preset.useCase.includes(useCase));
+  // Fallback to a known safe baseline preset
+  return (found ?? NEURAL_PRESETS['BASIC_CLASSIFIER']) as NeuralPreset;
 }
 
 /**
@@ -85,7 +101,7 @@ export function getRecommendedPreset(useCase) {
  *
  * @param useCase
  */
-export function searchPresetsByUseCase(useCase) {
+export function searchPresetsByUseCase(useCase: string): NeuralPreset[] {
   const presets = Object.values(NEURAL_PRESETS);
   return presets.filter((preset) => preset.useCase.includes(useCase));
 }
@@ -95,7 +111,7 @@ export function searchPresetsByUseCase(useCase) {
  *
  * @param category
  */
-export function getCategoryPresets(category) {
+export function getCategoryPresets(category: string): NeuralPreset[] {
   const presets = Object.values(NEURAL_PRESETS);
   return presets.filter((preset) => preset.type === category);
 }
@@ -105,9 +121,9 @@ export function getCategoryPresets(category) {
  *
  * @param config
  */
-export function validatePresetConfig(config) {
-  const required = ['id', 'architecture', 'layers'];
-  const missing = required.filter((field) => !config[field]);
+export function validatePresetConfig(config: Partial<NeuralPreset>): boolean {
+  const required: Array<keyof NeuralPreset> = ['id', 'architecture', 'layers'];
+  const missing = required.filter((field) => !(field in config) || (config as any)[field] == null);
 
   if (missing.length > 0) {
     throw new Error(`Invalid preset configuration. Missing: ${missing.join(', ')}`);

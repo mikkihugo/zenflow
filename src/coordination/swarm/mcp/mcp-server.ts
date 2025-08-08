@@ -19,6 +19,7 @@ export class StdioMcpServer {
   private transport: StdioServerTransport;
   private toolRegistry: SwarmTools;
   private hiveRegistry: HiveTools;
+  private config: MCPServerConfig;
 
   constructor(config: MCPServerConfig = {}) {
     this.config = {
@@ -77,14 +78,48 @@ export class StdioMcpServer {
             // Basic parameters that all tools can accept
             params: z.record(z.any()).optional().describe('Tool parameters'),
           },
-          async (args) => {
+          async (args, _extra) => {
             try {
               logger.debug(`Executing tool: ${toolName}`, { args });
               const result = await toolFunction(args?.params || ({} as any));
-              return { result };
+
+              // Convert result to MCP format with required content array
+              return {
+                content: [
+                  {
+                    type: 'text' as const,
+                    text: JSON.stringify(result, null, 2),
+                  },
+                ],
+                _meta: {
+                  tool: toolName,
+                  executionTime: Date.now(),
+                },
+              };
             } catch (error) {
               logger.error(`Tool execution failed: ${toolName}`, error);
-              throw error;
+
+              // Return error in MCP format
+              return {
+                content: [
+                  {
+                    type: 'text' as const,
+                    text: JSON.stringify(
+                      {
+                        success: false,
+                        error: error instanceof Error ? error.message : String(error),
+                        tool: toolName,
+                      },
+                      null,
+                      2
+                    ),
+                  },
+                ],
+                _meta: {
+                  tool: toolName,
+                  error: true,
+                },
+              };
             }
           }
         );

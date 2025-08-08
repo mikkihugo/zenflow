@@ -876,7 +876,7 @@ export class ChaosEngineering extends EventEmitter {
         const size = params.size || 100 * 1024 * 1024; // 100MB default
         const duration = params.duration || 60000; // 1 minute
 
-        const arrays = [];
+        const arrays: Array<unknown[]> = [];
         for (let i = 0; i < 10; i++) {
           arrays.push(new Array(size / 10).fill(Math.random()));
         }
@@ -947,11 +947,17 @@ export class ChaosEngineering extends EventEmitter {
         const targetConnections = params.connections || 'all';
         const failureType = params.failureType || 'disconnect'; // disconnect, slow, drop
 
-        const affectedConnections = [];
+        const affectedConnections: Array<{ id: string; action: string }> = [];
 
         if (this.connectionManager) {
           const connections = this.connectionManager.getConnectionStatus();
-          if (!connections || !connections.connections) return { type: 'network_failure', failureType, affectedConnections, duration: params.duration || 0 };
+          if (!connections || !connections.connections)
+            return {
+              type: 'network_failure',
+              failureType,
+              affectedConnections,
+              duration: params.duration || 0,
+            };
 
           for (const [id, _connection] of Object.entries(connections.connections)) {
             if (targetConnections === 'all' || targetConnections.includes(id)) {

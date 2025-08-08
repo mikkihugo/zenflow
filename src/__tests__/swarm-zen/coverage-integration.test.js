@@ -7,11 +7,12 @@ import { BenchmarkCLI } from '../src/benchmark.js';
 import { ZenSwarm } from '../src/index.js';
 import { ZenSwarmEnhanced } from '../src/index-enhanced.js';
 import { getMemoryConfig } from '../src/memory-config.js';
+// Migrated to unified neural WASM gateway (replacing legacy WasmLoader)
+import { NeuralWasmGateway } from '../src/neural/wasm/gateway.ts';
 import { NeuralCLI } from '../src/neural.js';
 import { NeuralAgent } from '../src/neural-agent.js';
 import { NeuralNetworkManager } from '../src/neural-network-manager.js';
 import { SwarmPersistence } from '../src/persistence.js';
-import { WasmLoader } from '../src/wasm-loader.js';
 
 const require = createRequire(import.meta.url);
 const { PerformanceCLI } = require('../src/performance.js');

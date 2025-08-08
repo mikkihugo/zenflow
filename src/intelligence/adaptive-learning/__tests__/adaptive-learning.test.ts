@@ -101,9 +101,9 @@ const createTestConfig = (): AdaptiveLearningConfig => ({
 
 const createTestContext = (): SystemContext => ({
   environment: 'test',
-  resources: [],
-  constraints: [],
-  objectives: [],
+  resources: [] as any[],
+  constraints: [] as any[],
+  objectives: [] as any[],
 });
 
 // ============================================
@@ -287,7 +287,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
             predictability: 0.8,
             stability: 0.9,
             anomalyScore: 0.1,
-            correlations: [],
+            correlations: [] as any[],
             quality: 0.9,
             relevance: 0.8,
           },
@@ -369,7 +369,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
             predictability: 0.8,
             stability: 0.9,
             anomalyScore: 0.1,
-            correlations: [],
+            correlations: [] as any[],
             quality: 0.9,
             relevance: 0.8,
           },
@@ -400,9 +400,9 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           priority: 0.8,
           complexity: 0.6,
           requirements: ['cpu'],
-          constraints: [],
+          constraints: [] as any[],
           estimatedDuration: 1000,
-          dependencies: [],
+          dependencies: [] as any[],
         },
       ];
 

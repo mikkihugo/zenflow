@@ -768,7 +768,7 @@ export class RecoveryIntegration extends EventEmitter {
     const healthResults = {
       overall: 'healthy',
       components: {},
-      issues: [],
+      issues: [] as string[],
     };
 
     // Check component health

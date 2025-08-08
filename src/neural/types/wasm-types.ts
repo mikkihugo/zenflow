@@ -14,16 +14,14 @@ export interface WASMNeuralConfig {
 }
 
 export interface WASMNeuralInstance {
-  id: string;
-  module: WebAssembly.Module;
-  instance: WebAssembly.Instance;
-  memory: WebAssembly.Memory;
   exports: WASMExports;
-  isReady: boolean;
-  lastUsed: number;
+  memory: WebAssembly.Memory | null;
 }
 
 export interface WASMExports {
+  // Index signature to allow dynamic property access (fixes bracket notation TypeScript error)
+  [key: string]: any;
+
   // Core neural operations
   create_network: (layers: number[], activations: number[]) => number;
   destroy_network: (networkId: number) => void;
@@ -49,6 +47,12 @@ export interface WASMExports {
   get_network_error: (networkId: number) => number;
   save_network: (networkId: number, ptr: number) => number;
   load_network: (ptr: number, size: number) => number;
+
+  // Additional WASM functions that might be dynamically loaded
+  create_model?: (...args: any[]) => any;
+  prepare_training_data?: (...args: any[]) => any;
+  train_model?: (...args: any[]) => any;
+  prepare_input?: (...args: any[]) => any;
 }
 
 export interface WASMNeuralAccelerator {

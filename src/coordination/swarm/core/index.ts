@@ -11,7 +11,7 @@
  * - Chaos engineering and fault tolerance
  */
 
-import type { ICoordinationDao } from '../../../database';
+import type { SessionCoordinationDao } from '../../../database';
 // import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
 import { AgentPool, createAgent } from '../../agents/agent';
@@ -161,7 +161,7 @@ export class ZenSwarm implements SwarmEventEmitter {
   // Enhanced WASM and Neural capabilities
   private wasmModule?: any;
   public wasmLoader: WasmModuleLoader;
-  public persistence: ICoordinationDao | null = null;
+  public persistence: SessionCoordinationDao | null = null;
   public activeSwarms: Map<string, SwarmWrapper> = new Map();
   private globalAgents: Map<string, any> = new Map();
 

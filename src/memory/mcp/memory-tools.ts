@@ -356,7 +356,13 @@ export const memoryMonitorTool: MCPTool = {
         startTime: Date.now(),
         duration,
         metrics: {},
-        alerts: [],
+        alerts: [] as Array<{
+          type: string;
+          severity: string;
+          value: number;
+          threshold: any;
+          message: string;
+        }>,
         systems: {},
       };
 
@@ -578,8 +584,12 @@ export const memoryHealthCheckTool: MCPTool = {
         overall: 'healthy',
         timestamp: Date.now(),
         components: {},
-        issues: [],
-        recommendations: [],
+        issues: [] as string[],
+        recommendations: [] as Array<{
+          type: string;
+          description: string;
+          priority: 'low' | 'medium' | 'high';
+        }>,
       };
 
       const shouldCheck = (component: string) =>

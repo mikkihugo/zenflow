@@ -160,10 +160,18 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
       imports = this.extractImports(ast);
       exports = this.extractExports(ast);
 
-      // Calculate complexity using escomplex
+      // Calculate complexity using escomplex (library exports 'analyze')
       try {
-        const complexityResult = escomplex.analyse(content);
-        complexity = complexityResult.aggregate?.complexity?.cyclomatic || 1;
+        const complexityResult = (escomplex as any).analyze
+          ? (escomplex as any).analyze(content)
+          : (escomplex as any).analyse
+            ? (escomplex as any).analyse(content)
+            : null;
+        if (complexityResult) {
+          complexity = complexityResult.aggregate?.complexity?.cyclomatic || 1;
+        } else {
+          complexity = this.calculateSimpleComplexity(content);
+        }
       } catch (_e) {
         // Fallback to simple complexity calculation
         complexity = this.calculateSimpleComplexity(content);

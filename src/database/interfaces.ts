@@ -162,6 +162,56 @@ export interface IMemoryDao<T> extends IMemoryRepository<T> {}
 export interface ICoordinationDao<T> extends ICoordinationRepository<T> {}
 
 /**
+ * Common entity types for coordination DAOs - provides type safety
+ * and reduces repetition across the codebase
+ */
+export interface SessionEntity {
+  id: string;
+  name: string;
+  createdAt: Date;
+  lastAccessedAt: Date;
+  status: string;
+  metadata?: Record<string, any>;
+}
+
+export interface CheckpointEntity {
+  id: string;
+  sessionId: string;
+  timestamp: Date;
+  checksum: string;
+  description: string;
+  metadata?: Record<string, any>;
+}
+
+/**
+ * Specialized interface for agent memory management
+ * Used by hooks system and other agent coordination features
+ */
+export interface IAgentMemoryDao<T> extends ICoordinationDao<T> {
+  /** Store memory for a specific agent */
+  storeAgentMemory(agentId: string, key: string, value: any): Promise<void>;
+
+  /** Retrieve specific memory for an agent */
+  getAgentMemory(agentId: string, key: string): Promise<{ key: string; value: any } | null>;
+
+  /** Get all memory for an agent */
+  getAllMemory(agentId: string): Promise<Array<{ key: string; value: any }>>;
+
+  /** Update agent status */
+  updateAgentStatus(agentId: string, status: string): Promise<void>;
+
+  /** Clear agent memory */
+  clearAgentMemory(agentId: string, pattern?: string): Promise<number>;
+}
+
+// Utility type aliases for common coordination DAO patterns
+export type SessionCoordinationDao = ICoordinationDao<SessionEntity>;
+export type CheckpointCoordinationDao = ICoordinationDao<CheckpointEntity>;
+export type EventCoordinationDao<T = any> = ICoordinationDao<CoordinationEvent<T>>;
+export type AgentMemoryCoordinationDao<T = any> = IAgentMemoryDao<CoordinationEvent<T>>;
+export type GenericCoordinationDao<T = any> = ICoordinationDao<T>;
+
+/**
  * Entity type enums for strongly typed entity management
  */
 export enum EntityTypes {
@@ -235,6 +285,12 @@ export interface ICoordinationRepository<T> extends IRepository<T> {
 
   /** Get coordination statistics */
   getCoordinationStats(): Promise<CoordinationStats>;
+
+  /** Execute raw SQL/query - legacy compatibility */
+  execute(sql: string, params?: unknown[]): Promise<{ affectedRows?: number; insertId?: number }>;
+
+  /** Query database directly - legacy compatibility */
+  query(sql: string, params?: unknown[]): Promise<any[]>;
 }
 
 /**

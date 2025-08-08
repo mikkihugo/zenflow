@@ -305,7 +305,6 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Create AGUI validation request (for future implementation)
     // xxx NEEDS_HUMAN: Placeholder for future AGUI implementation
-    // @ts-expect-error - Unused variable for future implementation
     const _validationRequest: AGUIValidationRequest = {
       type: 'document-relevance',
       question: `Found ${documents.length} documents. Which are relevant for domain discovery?`,
@@ -357,7 +356,6 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Create validation request (for future implementation)
     // xxx NEEDS_HUMAN: Placeholder for future AGUI implementation
-    // @ts-expect-error - Unused variable for future implementation
     const _validationRequest: AGUIValidationRequest = {
       type: 'domain-mapping',
       question: `Please validate ${mappings.length} document-domain mappings`,

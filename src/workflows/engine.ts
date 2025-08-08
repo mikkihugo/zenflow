@@ -71,12 +71,15 @@ export class WorkflowEngine extends EventEmitter {
     super();
 
     this.config = {
-      maxConcurrentWorkflows: config.maxConcurrentWorkflows ?? 10,
-      persistWorkflows: config.persistWorkflows ?? false,
-      persistencePath: config.persistencePath ?? './workflows',
-      stepTimeout: config.stepTimeout ?? 30000,
-      retryDelay: config.retryDelay ?? 1000,
-      enableVisualization: config.enableVisualization ?? false,
+      maxConcurrentWorkflows:
+        config.maxConcurrentWorkflows === undefined ? 10 : config.maxConcurrentWorkflows,
+      persistWorkflows: config.persistWorkflows === undefined ? false : config.persistWorkflows,
+      persistencePath:
+        config.persistencePath === undefined ? './workflows' : config.persistencePath,
+      stepTimeout: config.stepTimeout === undefined ? 30000 : config.stepTimeout,
+      retryDelay: config.retryDelay === undefined ? 1000 : config.retryDelay,
+      enableVisualization:
+        config.enableVisualization === undefined ? false : config.enableVisualization,
     };
   }
 

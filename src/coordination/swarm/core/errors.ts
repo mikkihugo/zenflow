@@ -19,7 +19,7 @@ class ZenSwarmError extends Error {
     this.code = code;
     this.details = details;
     this.timestamp = new Date().toISOString();
-    this.stack = this.stack || new Error().stack;
+    this.stack = this.stack || new Error().stack || '';
   }
 
   toJSON() {
@@ -74,7 +74,7 @@ class ValidationError extends ZenSwarmError {
     this.expectedType = expectedType;
   }
 
-  getSuggestions() {
+  override getSuggestions() {
     const suggestions = [
       `Check the '${this.field}' parameter`,
       `Expected type: ${this.expectedType}, got: ${this.details.actualType}`,
@@ -107,15 +107,15 @@ class SwarmError extends ZenSwarmError {
   public swarmId: string | null;
   public operation: string | null;
 
-  constructor(message, swarmId = null, operation = null) {
+  constructor(message: string, swarmId: string | null = null, operation: string | null = null) {
     const details = { swarmId, operation };
     super(message, 'SWARM_ERROR', details);
     this.swarmId = swarmId;
     this.operation = operation;
   }
 
-  getSuggestions() {
-    const suggestions = [];
+  override getSuggestions() {
+    const suggestions: string[] = [];
 
     if (this.message.includes('not found')) {
       suggestions.push('Verify the swarm ID is correct');
@@ -146,7 +146,12 @@ class AgentError extends ZenSwarmError {
   agentType: string | null;
   operation: string | null;
 
-  constructor(message, agentId = null, agentType = null, operation = null) {
+  constructor(
+    message: string,
+    agentId: string | null = null,
+    agentType: string | null = null,
+    operation: string | null = null
+  ) {
     const details = { agentId, agentType, operation };
     super(message, 'AGENT_ERROR', details);
     this.agentId = agentId;
@@ -154,8 +159,8 @@ class AgentError extends ZenSwarmError {
     this.operation = operation;
   }
 
-  getSuggestions() {
-    const suggestions = [];
+  override getSuggestions() {
+    const suggestions: string[] = [];
 
     if (this.message.includes('not found')) {
       suggestions.push('Verify the agent ID is correct');
@@ -190,7 +195,12 @@ class TaskError extends ZenSwarmError {
   public taskType: string | null;
   public operation: string | null;
 
-  constructor(message, taskId = null, taskType = null, operation = null) {
+  constructor(
+    message: string,
+    taskId: string | null = null,
+    taskType: string | null = null,
+    operation: string | null = null
+  ) {
     const details = { taskId, taskType, operation };
     super(message, 'TASK_ERROR', details);
     this.taskId = taskId;
@@ -198,8 +208,8 @@ class TaskError extends ZenSwarmError {
     this.operation = operation;
   }
 
-  getSuggestions() {
-    const suggestions = [];
+  override getSuggestions() {
+    const suggestions: string[] = [];
 
     if (this.message.includes('not found')) {
       suggestions.push('Verify the task ID is correct');
@@ -234,7 +244,12 @@ class NeuralError extends ZenSwarmError {
   public operation: string | null;
   public modelType: string | null;
 
-  constructor(message, networkId = null, operation = null, modelType = null) {
+  constructor(
+    message: string,
+    networkId: string | null = null,
+    operation: string | null = null,
+    modelType: string | null = null
+  ) {
     const details = { networkId, operation, modelType };
     super(message, 'NEURAL_ERROR', details);
     this.networkId = networkId;
@@ -242,8 +257,8 @@ class NeuralError extends ZenSwarmError {
     this.modelType = modelType;
   }
 
-  getSuggestions() {
-    const suggestions = [];
+  override getSuggestions() {
+    const suggestions: string[] = [];
 
     if (this.message.includes('not available') || this.message.includes('not loaded')) {
       suggestions.push('Ensure neural network features are enabled');
@@ -277,15 +292,15 @@ class WasmError extends ZenSwarmError {
   public module: string | null;
   public operation: string | null;
 
-  constructor(message, module = null, operation = null) {
+  constructor(message: string, module: string | null = null, operation: string | null = null) {
     const details = { module, operation };
     super(message, 'WASM_ERROR', details);
     this.module = module;
     this.operation = operation;
   }
 
-  getSuggestions() {
-    const suggestions = [];
+  override getSuggestions() {
+    const suggestions: string[] = [];
 
     if (this.message.includes('not loaded') || this.message.includes('not found')) {
       suggestions.push('Check WASM module availability');
@@ -319,14 +334,14 @@ class ConfigurationError extends ZenSwarmError {
   public configKey: string | null;
   public configValue: any;
 
-  constructor(message, configKey = null, configValue = null) {
+  constructor(message: string, configKey: string | null = null, configValue: any = null) {
     const details = { configKey, configValue };
     super(message, 'CONFIGURATION_ERROR', details);
     this.configKey = configKey;
     this.configValue = configValue;
   }
 
-  getSuggestions() {
+  override getSuggestions() {
     return [
       `Check the '${this.configKey}' configuration`,
       'Review configuration documentation',
@@ -346,15 +361,15 @@ class NetworkError extends ZenSwarmError {
   public endpoint: string | null;
   public statusCode: number | null;
 
-  constructor(message, endpoint = null, statusCode = null) {
+  constructor(message: string, endpoint: string | null = null, statusCode: number | null = null) {
     const details = { endpoint, statusCode };
     super(message, 'NETWORK_ERROR', details);
     this.endpoint = endpoint;
     this.statusCode = statusCode;
   }
 
-  getSuggestions() {
-    const suggestions = [];
+  override getSuggestions() {
+    const suggestions: string[] = [];
 
     if (this.statusCode === 404) {
       suggestions.push('Verify the endpoint URL is correct');
@@ -385,15 +400,15 @@ class PersistenceError extends ZenSwarmError {
   public operation: string | null;
   public table: string | null;
 
-  constructor(message, operation = null, table = null) {
+  constructor(message: string, operation: string | null = null, table: string | null = null) {
     const details = { operation, table };
     super(message, 'PERSISTENCE_ERROR', details);
     this.operation = operation;
     this.table = table;
   }
 
-  getSuggestions() {
-    const suggestions = [];
+  override getSuggestions() {
+    const suggestions: string[] = [];
 
     if (this.message.includes('constraint') || this.message.includes('unique')) {
       suggestions.push('Check for duplicate entries');
@@ -425,7 +440,12 @@ class ResourceError extends ZenSwarmError {
   public currentUsage: number | null;
   public limit: number | null;
 
-  constructor(message, resourceType = null, currentUsage = null, limit = null) {
+  constructor(
+    message: string,
+    resourceType: string | null = null,
+    currentUsage: number | null = null,
+    limit: number | null = null
+  ) {
     const details = { resourceType, currentUsage, limit };
     super(message, 'RESOURCE_ERROR', details);
     this.resourceType = resourceType;
@@ -433,8 +453,8 @@ class ResourceError extends ZenSwarmError {
     this.limit = limit;
   }
 
-  getSuggestions() {
-    const suggestions = [];
+  override getSuggestions() {
+    const suggestions: string[] = [];
 
     if (this.resourceType === 'memory') {
       suggestions.push('Reduce memory usage in operations');
@@ -466,14 +486,18 @@ class ConcurrencyError extends ZenSwarmError {
   operation: string | null;
   conflictType: string | null;
 
-  constructor(message, operation = null, conflictType = null) {
+  constructor(
+    message: string,
+    operation: string | null = null,
+    conflictType: string | null = null
+  ) {
     const details = { operation, conflictType };
     super(message, 'CONCURRENCY_ERROR', details);
     this.operation = operation;
     this.conflictType = conflictType;
   }
 
-  getSuggestions() {
+  override getSuggestions() {
     return [
       'Implement proper locking mechanisms',
       'Use atomic operations where possible',
@@ -539,7 +563,7 @@ class ErrorFactory {
    * @param type
    * @param additionalContext
    */
-  static wrapError(originalError, type, additionalContext = {}) {
+  static wrapError(originalError: Error, type: string, additionalContext: any = {}) {
     const message = `${type.toUpperCase()}: ${originalError.message}`;
     const details = {
       ...additionalContext,

@@ -132,8 +132,11 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     return { phase, results };
   }
 
-  private async assignAgentsToPhase(task: Task, assignments: any[]): Promise<any[]> {
-    const agentAssignments = [];
+  private async assignAgentsToPhase(
+    task: Task,
+    assignments: any[]
+  ): Promise<Array<{ agent: any; assignment: any }>> {
+    const agentAssignments: Array<{ agent: any; assignment: any }> = [];
     for (const assignment of assignments) {
       const agent = await this.findSuitableAgent(assignment.requiredCapabilities);
       if (agent) {

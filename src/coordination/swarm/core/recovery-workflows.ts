@@ -201,7 +201,16 @@ export class RecoveryWorkflows extends EventEmitter {
       duration: 0,
       error: null as string | null,
       context,
-      steps: [],
+      steps: [] as Array<{
+        name: any;
+        status: string;
+        startTime: Date;
+        endTime: Date | null;
+        duration: number;
+        error: string | null;
+        result: any;
+        context: any;
+      }>,
       currentStep: 0,
       retryCount: 0,
       rollbackRequired: false,
@@ -398,7 +407,16 @@ export class RecoveryWorkflows extends EventEmitter {
     });
 
     execution.status = 'rolling_back';
-    const rollbackSteps = [];
+    const rollbackSteps: Array<{
+      name: any;
+      status: string;
+      startTime: Date;
+      endTime: Date | null;
+      duration: number;
+      error: string | null;
+      result: any;
+      context: any;
+    }> = [];
 
     for (const step of workflow.rollbackSteps.reverse()) {
       try {

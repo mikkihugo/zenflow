@@ -28,11 +28,14 @@ async function main() {
       process.exit(0); // Success
     }
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : undefined;
+
     console.error(
       JSON.stringify({
         continue: true,
-        error: error.message,
-        stack: process.env.DEBUG ? error.stack : undefined,
+        error: errorMessage,
+        stack: process.env['DEBUG'] ? errorStack : undefined,
       })
     );
     process.exit(1); // Non-blocking error
@@ -45,13 +48,16 @@ function parseArgs(args: string[]): any {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
 
+    if (!arg) continue; // Skip undefined/null args
+
     if (arg.startsWith('--')) {
       const key = arg.substring(2);
 
       // Check if next arg is a value or another flag
-      if (i + 1 < args.length && !args[i + 1].startsWith('--')) {
+      const nextArg = args[i + 1];
+      if (nextArg != null && !nextArg.startsWith('--')) {
         // Next arg is the value
-        options[toCamelCase(key)] = args[i + 1];
+        options[toCamelCase(key)] = nextArg;
         i++; // Skip the value in next iteration
       } else {
         // Boolean flag
@@ -69,8 +75,8 @@ function parseArgs(args: string[]): any {
   return options;
 }
 
-function toCamelCase(str) {
-  return str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+function toCamelCase(str: string): string {
+  return str.replace(/-([a-z])/g, (g) => g[1]?.toUpperCase() ?? '');
 }
 
 // Run if called directly

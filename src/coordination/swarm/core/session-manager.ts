@@ -14,7 +14,7 @@
 
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import type { ICoordinationDao } from '../../../database';
+import type { SessionCoordinationDao, SessionEntity } from '../../../database';
 import { createDao, DatabaseTypes, EntityTypes } from '../../../database';
 import type { SwarmOptions, SwarmState } from './types';
 import { generateId } from './utils';
@@ -66,13 +66,13 @@ export interface SessionRecoveryOptions {
  * @example
  */
 export class SessionManager extends EventEmitter {
-  private coordinationDao: ICoordinationDao;
+  private coordinationDao: SessionCoordinationDao;
   private activeSessions: Map<string, SessionState>;
   private config: Required<SessionConfig>;
   private checkpointTimers: Map<string, NodeJS.Timeout>;
   private initialized: boolean = false;
 
-  constructor(coordinationDao: ICoordinationDao, config: SessionConfig = {}) {
+  constructor(coordinationDao: SessionCoordinationDao, config: SessionConfig = {}) {
     super();
 
     this.coordinationDao = coordinationDao;
@@ -80,12 +80,15 @@ export class SessionManager extends EventEmitter {
     this.checkpointTimers = new Map();
 
     this.config = {
-      autoCheckpoint: config.autoCheckpoint ?? true,
-      checkpointInterval: config.checkpointInterval ?? 300000, // 5 minutes
-      maxCheckpoints: config.maxCheckpoints ?? 10,
-      compressionEnabled: config.compressionEnabled ?? true,
-      encryptionEnabled: config.encryptionEnabled ?? false,
-      encryptionKey: config.encryptionKey ?? this.generateEncryptionKey(),
+      autoCheckpoint: config.autoCheckpoint === undefined ? true : config.autoCheckpoint,
+      checkpointInterval:
+        config.checkpointInterval === undefined ? 300000 : config.checkpointInterval, // 5 minutes
+      maxCheckpoints: config.maxCheckpoints === undefined ? 10 : config.maxCheckpoints,
+      compressionEnabled:
+        config.compressionEnabled === undefined ? true : config.compressionEnabled,
+      encryptionEnabled: config.encryptionEnabled === undefined ? false : config.encryptionEnabled,
+      encryptionKey:
+        config.encryptionKey === undefined ? this.generateEncryptionKey() : config.encryptionKey,
     };
   }
 
@@ -95,7 +98,7 @@ export class SessionManager extends EventEmitter {
   private async ensureInitialized(): Promise<void> {
     if (!this.coordinationDao) {
       // Use the convenience function that handles DI setup internally
-      this.coordinationDao = await createDao<ICoordinationDao>(
+      this.coordinationDao = await createDao<SessionCoordinationDao>(
         EntityTypes.CoordinationEvent,
         DatabaseTypes.Coordination
       );

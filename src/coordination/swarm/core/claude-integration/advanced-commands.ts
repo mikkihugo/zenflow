@@ -3,12 +3,20 @@
  * TODO: Implement advanced command generation functionality
  */
 
+interface CommandConfig {
+  [key: string]: unknown;
+}
+
+interface GeneratorOptions {
+  [key: string]: unknown;
+}
+
 export class AdvancedCommandsGenerator {
-  constructor(options: any = {}) {
-    this.options = options;
+  constructor(_options: GeneratorOptions = {}) {
+    // Options stored for future implementation
   }
 
-  async generateCommand(_name: string, _config: any): Promise<void> {}
+  async generateCommand(_name: string, _config: CommandConfig): Promise<void> {}
 
   async generateAllCommands(): Promise<void> {}
 }

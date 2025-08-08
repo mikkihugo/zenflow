@@ -77,10 +77,10 @@ export class PerformanceBenchmarkSuite {
       wasm?: WasmOptimizer;
     } = {}
   ) {
-    this.neuralOptimizer = optimizers.neural;
-    this.swarmOptimizer = optimizers.swarm;
-    this.dataOptimizer = optimizers.data;
-    this.wasmOptimizer = optimizers.wasm;
+    this.neuralOptimizer = optimizers.neural === undefined ? undefined : optimizers.neural;
+    this.swarmOptimizer = optimizers.swarm === undefined ? undefined : optimizers.swarm;
+    this.dataOptimizer = optimizers.data === undefined ? undefined : optimizers.data;
+    this.wasmOptimizer = optimizers.wasm === undefined ? undefined : optimizers.wasm;
   }
 
   /**

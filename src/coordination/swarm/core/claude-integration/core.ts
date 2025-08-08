@@ -5,7 +5,7 @@
 
 import { execSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
-import path from 'node:path';
+import * as path from 'node:path';
 
 interface ClaudeInvokeOptions {
   secure?: boolean;
@@ -18,12 +18,12 @@ interface ClaudeIntegrationOptions {
 }
 
 class ClaudeIntegrationCore {
-  private autoSetup: boolean;
+  private _autoSetup: boolean;
   private forceSetup: boolean;
   private workingDir: string;
 
   constructor(options: ClaudeIntegrationOptions = {}) {
-    this.autoSetup = options.autoSetup || false;
+    this._autoSetup = options.autoSetup || false;
     this.forceSetup = options.forceSetup || false;
     this.workingDir = options.workingDir || process.cwd();
   }
@@ -56,7 +56,7 @@ class ClaudeIntegrationCore {
       execSync(mcpCommand, { stdio: 'inherit', cwd: this.workingDir });
       return { success: true, message: 'Added ruv-swarm MCP server to Claude Code (stdio)' };
     } catch (error) {
-      throw new Error(`Failed to add MCP server: ${error.message}`);
+      throw new Error(`Failed to add MCP server: ${(error as Error).message}`);
     }
   }
 
@@ -89,7 +89,7 @@ class ClaudeIntegrationCore {
       };
       return results;
     } catch (error) {
-      console.error('❌ Failed to initialize Claude integration:', error.message);
+      console.error('❌ Failed to initialize Claude integration:', (error as Error).message);
       throw error;
     }
   }
@@ -118,7 +118,7 @@ class ClaudeIntegrationCore {
       execSync(claudeCommand, { stdio: 'inherit', cwd: this.workingDir });
       return { success: true, message: 'Claude invocation completed' };
     } catch (error) {
-      throw new Error(`Claude invocation failed: ${error.message}`);
+      throw new Error(`Claude invocation failed: ${(error as Error).message}`);
     }
   }
 }
