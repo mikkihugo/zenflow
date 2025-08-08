@@ -1067,7 +1067,7 @@ class NeuralNetworkManager {
    *
    * @param {string} searchTerm - Search term
    */
-  searchPresets(searchTerm) {
+  searchPresets(searchTerm: string) {
     return searchPresetsByUseCase(searchTerm);
   }
 
@@ -1077,7 +1077,7 @@ class NeuralNetworkManager {
    * @param {string} category - Preset category
    * @param {string} presetName - Preset name
    */
-  getPresetPerformance(category, presetName) {
+  getPresetPerformance(category: string, presetName: string) {
     const preset = getPreset(category, presetName);
     return preset.performance;
   }
@@ -1086,7 +1086,7 @@ class NeuralNetworkManager {
    * List all available preset categories and their counts
    */
   getPresetSummary() {
-    const summary = {};
+    const summary: Record<string, { count: number; presets: string[] }> = {};
     Object.entries(NEURAL_PRESETS).forEach(([category, presets]) => {
       summary[category] = {
         count: Object.keys(presets).length,
@@ -1101,7 +1101,7 @@ class NeuralNetworkManager {
    *
    * @param {string} agentId - Agent identifier
    */
-  getAgentPresetInfo(agentId) {
+  getAgentPresetInfo(agentId: string) {
     const network = this.neuralNetworks.get(agentId);
     if (!network || !network.config || !(network.config as any).presetInfo) {
       return null;
@@ -1117,7 +1117,7 @@ class NeuralNetworkManager {
    * @param {string} presetName - Preset name
    * @param {object} customConfig - Optional custom configuration overrides
    */
-  async updateAgentWithPreset(agentId, category, presetName, customConfig = {}) {
+  async updateAgentWithPreset(agentId: string, category: string, presetName: string, customConfig: any = {}) {
     const existingNetwork = this.neuralNetworks.get(agentId);
     if (existingNetwork) {
     }
@@ -1150,7 +1150,7 @@ class NeuralNetworkManager {
    *
    * @param {Array} agentConfigs - Array of {agentId, category, presetName, customConfig}
    */
-  async batchCreateAgentsFromPresets(agentConfigs) {
+  async batchCreateAgentsFromPresets(agentConfigs: Array<{ agentId: string; category: string; presetName: string; customConfig?: any }>) {
     const results = [];
     const errors = [];
 
@@ -1164,7 +1164,7 @@ class NeuralNetworkManager {
         );
         results.push({ agentId: config.agentId, success: true, agent });
       } catch (error) {
-        errors.push({ agentId: config.agentId, error: error.message });
+        errors.push({ agentId: config.agentId, error: error instanceof Error ? error.message : String(error) });
       }
     }
 
@@ -1181,7 +1181,7 @@ class NeuralNetworkManager {
    * @param {Array} agentIds - List of agent IDs
    * @param {Object} session - Collaborative session object
    */
-  async enableKnowledgeSharing(agentIds, session) {
+  async enableKnowledgeSharing(agentIds: string[], session: any) {
     const knowledgeGraph = session.knowledgeGraph;
 
     for (const agentId of agentIds) {
@@ -1208,7 +1208,7 @@ class NeuralNetworkManager {
    *
    * @param {string} agentId - Agent identifier
    */
-  async extractAgentKnowledge(agentId) {
+  async extractAgentKnowledge(agentId: string) {
     const network = this.neuralNetworks.get(agentId);
     if (!network) {
       return null;
@@ -1221,7 +1221,7 @@ class NeuralNetworkManager {
       weights: await this.extractImportantWeights(network),
       patterns: await this.cognitiveEvolution.extractPatterns(agentId),
       experiences: await this.metaLearning.extractExperiences(agentId),
-      performance: network.getMetrics(),
+      performance: network.getMetrics ? network.getMetrics() : undefined,
       specializations: await this.identifySpecializations(agentId),
     };
 
@@ -1233,7 +1233,7 @@ class NeuralNetworkManager {
    *
    * @param {Object} network - Neural network instance
    */
-  async extractImportantWeights(network) {
+  async extractImportantWeights(network: any) {
     // Use magnitude-based importance scoring
     const weights = network.getWeights();
     const importantWeights = {};
@@ -1241,10 +1241,10 @@ class NeuralNetworkManager {
     Object.entries(weights).forEach(([layer, weight]) => {
       if (weight && Array.isArray(weight) && weight.length > 0) {
         // Calculate importance scores (magnitude-based)
-        const importance = weight.map((w) => Math.abs(w));
+        const importance = weight.map((w: any) => Math.abs(w));
         const threshold = this.calculateImportanceThreshold(importance);
 
-        importantWeights[layer] = weight.filter((_w, idx) => importance[idx] > threshold);
+        importantWeights[layer] = weight.filter((_w: any, idx: number) => importance[idx] > threshold);
       }
     });
 
@@ -1256,8 +1256,8 @@ class NeuralNetworkManager {
    *
    * @param {Array} importance - Array of importance scores
    */
-  calculateImportanceThreshold(importance) {
-    const sorted = importance.slice().sort((a, b) => b - a);
+  calculateImportanceThreshold(importance: number[]) {
+    const sorted = importance.slice().sort((a: number, b: number) => b - a);
     // Take top 20% of weights
     const topPercentile = Math.floor(sorted.length * 0.2);
     return sorted[topPercentile] || 0;
@@ -1268,7 +1268,7 @@ class NeuralNetworkManager {
    *
    * @param {string} agentId - Agent identifier
    */
-  async identifySpecializations(agentId) {
+  async identifySpecializations(agentId: string) {
     const metrics = this.performanceMetrics.get(agentId);
     if (!metrics) {
       return [];
@@ -1277,7 +1277,7 @@ class NeuralNetworkManager {
     const specializations = [];
 
     // Analyze adaptation history for specialization patterns
-    for (const adaptation of metrics.adaptationHistory) {
+    for (const adaptation of metrics.adaptationHistory || []) {
       if (adaptation.trainingResult && adaptation.trainingResult.accuracy > 0.8) {
         specializations.push({
           domain: this.inferDomainFromTraining(adaptation),
@@ -1295,7 +1295,7 @@ class NeuralNetworkManager {
    *
    * @param {Object} adaptation - Adaptation record
    */
-  inferDomainFromTraining(adaptation) {
+  inferDomainFromTraining(adaptation: any) {
     // Simple heuristic - in practice, would use more sophisticated analysis
     const accuracy = adaptation.trainingResult.accuracy;
     const loss = adaptation.trainingResult.loss;
@@ -1317,8 +1317,8 @@ class NeuralNetworkManager {
    *
    * @param {Array} agentIds - List of agent IDs
    */
-  async createKnowledgeSharingMatrix(agentIds) {
-    const matrix = {};
+  async createKnowledgeSharingMatrix(agentIds: string[]) {
+    const matrix: Record<string, Record<string, number>> = {};
 
     for (let i = 0; i < agentIds.length; i++) {
       const agentA = agentIds[i];
@@ -1346,7 +1346,7 @@ class NeuralNetworkManager {
    * @param {string} agentA - First agent ID
    * @param {string} agentB - Second agent ID
    */
-  async calculateAgentSimilarity(agentA, agentB) {
+  async calculateAgentSimilarity(agentA: string, agentB: string) {
     const knowledgeA = this.sharedKnowledge.get(agentA);
     const knowledgeB = this.sharedKnowledge.get(agentB);
 
@@ -1371,7 +1371,7 @@ class NeuralNetworkManager {
    * @param {Object} knowledgeA - Knowledge from agent A
    * @param {Object} knowledgeB - Knowledge from agent B
    */
-  calculateStructuralSimilarity(knowledgeA, knowledgeB) {
+  calculateStructuralSimilarity(knowledgeA: any, knowledgeB: any) {
     if (knowledgeA.modelType !== knowledgeB.modelType) {
       return 0.1;
     }
@@ -1407,7 +1407,7 @@ class NeuralNetworkManager {
    * @param {Object} knowledgeA - Knowledge from agent A
    * @param {Object} knowledgeB - Knowledge from agent B
    */
-  calculatePerformanceSimilarity(knowledgeA, knowledgeB) {
+  calculatePerformanceSimilarity(knowledgeA: any, knowledgeB: any) {
     const perfA = knowledgeA.performance;
     const perfB = knowledgeB.performance;
 
