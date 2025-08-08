@@ -1315,9 +1315,13 @@ export class AgentLifecycleManager extends EventEmitter {
 // Supporting classes
 class HealthMonitor {
   constructor(
-    private readonly _config: AgentLifecycleConfig, // For future health check configuration
-    private readonly _logger: ILogger // For health monitoring logs
-  ) {}
+    private readonly config: AgentLifecycleConfig, // For future health check configuration
+    private readonly logger: ILogger // For health monitoring logs
+  ) {
+    // xxx NEEDS_HUMAN: Properties kept for future health monitoring configuration and logging
+    void this.config;
+    void this.logger;
+  }
 
   async checkHealth(agent: AgentInstance): Promise<HealthStatus> {
     // Implement comprehensive health checking
@@ -1372,9 +1376,13 @@ class HealthMonitor {
 
 class PerformanceTracker {
   constructor(
-    private readonly _config: AgentLifecycleConfig, // For future performance thresholds
-    private readonly _logger: ILogger // For performance tracking logs
-  ) {}
+    private readonly config: AgentLifecycleConfig, // For future performance thresholds
+    private readonly logger: ILogger // For performance tracking logs
+  ) {
+    // xxx NEEDS_HUMAN: Properties kept for future performance threshold configuration and logging
+    void this.config;
+    void this.logger;
+  }
 
   updateMetrics(agent: AgentInstance, data: any): void {
     // Update performance metrics based on task completion data
@@ -1410,15 +1418,20 @@ class PerformanceTracker {
 // xxx NEEDS_HUMAN: ResourceMonitor class not used - verify if needed for future resource monitoring
 class ResourceMonitor {
   constructor(
-    private readonly _config: AgentLifecycleConfig, // For resource limit configuration
-    private readonly _logger: ILogger // For resource monitoring logs
-  ) {}
+    private readonly config: AgentLifecycleConfig, // For resource limit configuration
+    private readonly logger: ILogger // For resource monitoring logs
+  ) {
+    void this.config;
+    void this.logger;
+  }
 
   // Resource monitoring implementation
 }
 
 class CapabilityDiscovery {
-  constructor(private readonly _logger: ILogger) { // For capability discovery logs
+  constructor(private readonly logger: ILogger) { // For capability discovery logs
+    // xxx NEEDS_HUMAN: Property kept for future capability discovery logging
+    void this.logger;
   }
 
   processOutput(_agent: AgentInstance, _data: string, _stream: 'stdout' | 'stderr'): void {

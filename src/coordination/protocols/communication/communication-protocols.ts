@@ -1062,7 +1062,7 @@ export class CommunicationProtocols extends EventEmitter {
     if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
 
     this.emit('shutdown');
-    this.logger.info('Communication protocols shutdown');
+    this._logger.info('Communication protocols shutdown');
   }
 }
 

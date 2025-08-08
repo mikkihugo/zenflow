@@ -39,6 +39,23 @@ interface AdaptationRecord {
   timestamp: number;
   type: string;
   details: Record<string, unknown>;
+  patternType?: string;
+  success?: boolean;
+}
+
+// Context type for pattern matching
+interface PatternContext {
+  creativity_required?: number;
+  noiseLevel?: number;
+  dataComplexity?: number;
+  patternRegularity?: number;
+  abstractionLevel?: number;
+  [key: string]: unknown;
+}
+
+// Extended TrainingData for samples
+interface ExtendedTrainingData extends TrainingData {
+  samples?: Array<{ input: number[]; output: number[] }>;
 }
 
 interface EvolutionMetric {
@@ -149,7 +166,7 @@ class CognitivePatternEvolution {
       adaptationRules: {
         mapConnections: (context) => (context['systemComplexity'] as number) > 0.7,
         identifyFeedback: (context) => (context['iterationCount'] as number) > 5,
-        emergentProperties: (context) => context.componentInteractions > 0.6,
+        emergentProperties: (context) => (context['componentInteractions'] as number) > 0.6,
       },
     });
 
@@ -165,9 +182,9 @@ class CognitivePatternEvolution {
         patternRecognition: 'evidence_based',
       },
       adaptationRules: {
-        validateEvidence: (context) => context.informationQuality < 0.8,
-        checkBias: (context) => context.subjectivity > 0.5,
-        logicalConsistency: (context) => context.contradictions > 0.2,
+        validateEvidence: (context) => (context['informationQuality'] as number) < 0.8,
+        checkBias: (context) => (context['subjectivity'] as number) > 0.5,
+        logicalConsistency: (context) => (context['contradictions'] as number) > 0.2,
       },
     });
 
@@ -183,9 +200,9 @@ class CognitivePatternEvolution {
         patternRecognition: 'abstraction_layers',
       },
       adaptationRules: {
-        generalizePatterns: (context) => context.specificExamples > 3,
-        identifyPrinciples: (context) => context.abstraction_level < 0.6,
-        conceptualMapping: (context) => context.domainTransfer > 0.4,
+        generalizePatterns: (context) => (context['specificExamples'] as number) > 3,
+        identifyPrinciples: (context) => (context['abstraction_level'] as number) < 0.6,
+        conceptualMapping: (context) => (context['domainTransfer'] as number) > 0.4,
       },
     });
   }
@@ -571,7 +588,7 @@ class CognitivePatternEvolution {
    * @param {string} agentId - Agent identifier
    * @param {Object} context - Training context
    */
-  async evaluatePatternEffectiveness(agentId, context) {
+  async evaluatePatternEffectiveness(agentId: string, context: PatternContext): Promise<Record<string, any>> {
     const agentData = this.agentPatterns.get(agentId);
     if (!agentData) {
       return {};
@@ -607,7 +624,7 @@ class CognitivePatternEvolution {
    * @param {Object} template - Pattern template
    * @param {Object} context - Current context
    */
-  calculateContextMatch(template, context) {
+  calculateContextMatch(template: PatternTemplate, context: PatternContext): number {
     const { characteristics } = template;
     let totalMatch = 0;
     let weightSum = 0;
@@ -646,7 +663,7 @@ class CognitivePatternEvolution {
    * @param {string} style - Decision making style
    * @param {number} systematicNeed - Need for systematic approach (0-1)
    */
-  matchDecisionStyle(style, systematicNeed) {
+  matchDecisionStyle(style: string, systematicNeed: number): number {
     const styleScores = {
       decisive: 0.9,
       analytical: 0.8,
@@ -666,7 +683,7 @@ class CognitivePatternEvolution {
    * @param {string} approach - Pattern recognition approach
    * @param {Object} context - Context object
    */
-  matchPatternRecognition(approach, context) {
+  matchPatternRecognition(approach: string, context: PatternContext): number {
     const approachScores = {
       exact_match: context.patternRegularity,
       flexible_match: 1 - context.patternRegularity,
@@ -685,7 +702,7 @@ class CognitivePatternEvolution {
    * @param {string} strategy - Search strategy
    * @param {Object} context - Context object
    */
-  matchSearchStrategy(strategy, context) {
+  matchSearchStrategy(strategy: string, context: PatternContext): number {
     const strategyScores = {
       directed: 1 - context.creativity_required,
       random: context.creativity_required,
@@ -704,7 +721,7 @@ class CognitivePatternEvolution {
    * @param {string} agentId - Agent identifier
    * @param {string} patternType - Pattern type
    */
-  getHistoricalPerformance(agentId, patternType) {
+  getHistoricalPerformance(agentId: string, patternType: string): number {
     const history = this.evolutionHistory.get(agentId) || [];
     const patternHistory = history.filter(
       (h) => h.oldPatterns.includes(patternType) || h.newPatterns.includes(patternType)
@@ -729,7 +746,7 @@ class CognitivePatternEvolution {
    * @param {string} agentId - Agent identifier
    * @param {string} patternType - Pattern type
    */
-  getAdaptationSuccess(agentId, patternType) {
+  getAdaptationSuccess(agentId: string, patternType: string): number {
     const agentData = this.agentPatterns.get(agentId);
     if (!agentData) {
       return 0.5;
@@ -782,7 +799,7 @@ class CognitivePatternEvolution {
    * @param {Object} evolutionNeed - Evolution need assessment
    * @param {Object} context - Current context
    */
-  selectEvolutionStrategy(evolutionNeed, context) {
+  selectEvolutionStrategy(evolutionNeed: any, context: PatternContext): any {
     const strategies = {
       pattern_addition: {
         type: 'pattern_addition',
@@ -826,7 +843,7 @@ class CognitivePatternEvolution {
    * @param {Object} strategy - Evolution strategy
    * @param {Object} context - Current context
    */
-  async applyEvolution(agentId, strategy, context) {
+  async applyEvolution(agentId: string, strategy: any, context: PatternContext): Promise<string[]> {
     const agentData = this.agentPatterns.get(agentId);
     if (!agentData) {
       return [];
@@ -882,7 +899,7 @@ class CognitivePatternEvolution {
    * @param {Array} currentPatterns - Current patterns
    * @param {Object} context - Current context
    */
-  async addPatterns(_agentId, currentPatterns, context) {
+  async addPatterns(_agentId: string, currentPatterns: string[], context: PatternContext): Promise<string[]> {
     const availablePatterns = Array.from(this.patternTemplates.keys());
     const unusedPatterns = availablePatterns.filter((p) => !currentPatterns.includes(p));
 
@@ -919,7 +936,7 @@ class CognitivePatternEvolution {
    * @param {Array} currentPatterns - Current patterns
    * @param {Object} context - Current context
    */
-  async removePatterns(_agentId, currentPatterns, context) {
+  async removePatterns(_agentId: string, currentPatterns: string[], context: PatternContext): Promise<string[]> {
     if (currentPatterns.length <= 1) {
       return currentPatterns;
     } // Keep at least one pattern
