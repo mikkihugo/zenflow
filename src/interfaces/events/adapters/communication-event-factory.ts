@@ -2,13 +2,13 @@
  * UEL Communication Event Factory.
  *
  * Factory implementation for creating and managing Communication Event Adapters.
- * following the exact same patterns as system and coordination event factories.
+ * Following the exact same patterns as system and coordination event factories.
  *
  * Provides centralized management, health monitoring, and metrics collection.
- * for all communication event adapters in the UEL system.
+ * For all communication event adapters in the UEL system.
  */
 /**
- * @file Interface implementation: communication-event-factory
+ * @file Interface implementation: communication-event-factory.
  */
 
 
@@ -33,7 +33,7 @@ import {
  * - Centralized creation and configuration management
  * - Health monitoring and metrics collection
  * - Batch operations for multiple adapters
- * - Resource cleanup and graceful shutdown
+ * - Resource cleanup and graceful shutdown.
  *
  * @example
  */
@@ -45,6 +45,7 @@ export class CommunicationEventFactory
   private logger: Logger;
   private startTime: Date;
   private totalErrors = 0;
+  private totalCreated = 0;
 
   constructor() {
     super();
@@ -528,10 +529,11 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Create comprehensive communication event adapter (all communication types)
+   * Create comprehensive communication event adapter (all communication types).
    *
    * @param name
    * @param config.
+   * @param config
    */
   async createComprehensiveAdapter(
     name: string,
@@ -787,6 +789,7 @@ export const communicationEventFactory = new CommunicationEventFactory();
  * Convenience functions for creating communication event adapters.
  *
  * @param config
+ * @example
  */
 export async function createCommunicationEventAdapter(
   config: CommunicationEventAdapterConfig

@@ -53,22 +53,22 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
     switch (variant) {
       case 'critical':
         return {
-          color: 'redBright',
-          borderColor: 'red',
+          color: 'redBright' as const,
+          borderColor: 'red' as const,
           icon: '🚨',
           prefix: 'CRITICAL ERROR',
         };
       case 'warning':
         return {
-          color: 'yellow',
-          borderColor: 'yellow',
+          color: 'yellow' as const,
+          borderColor: 'yellow' as const,
           icon: '⚠️',
           prefix: 'WARNING',
         };
       default:
         return {
-          color: 'red',
-          borderColor: 'red',
+          color: 'red' as const,
+          borderColor: 'red' as const,
           icon: '❌',
           prefix: 'ERROR',
         };
@@ -76,27 +76,28 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
   };
 
   const config = getVariantConfig();
-  const displayTitle = title === 'Error' ? config?.prefix : title;
+  const displayTitle = title === 'Error' ? config.prefix : title;
 
   return (
     <Box flexDirection="column">
       {/* Error header */}
       <Box
         borderStyle={showBorder ? 'single' : undefined}
-        borderColor={config?.borderColor}
+        borderColor={showBorder ? config.borderColor : undefined}
         padding={showBorder ? 1 : 0}
         marginBottom={showBorder ? 0 : 1}
       >
         <Box flexDirection="column">
-          <Text bold color={config?.color}>
-            {config?.icon} {displayTitle}
+          <Text bold color={config.color}>
+            {config.icon} {displayTitle}
           </Text>
 
           <Box marginTop={1}>
-            <Text color={config?.color}>{errorMessage}</Text>
+            <Text color={config.color}>{errorMessage}</Text>
           </Box>
         </Box>
       </Box>
+
       {/* Stack trace */}
       {showStack && errorStack && (
         <Box borderStyle="single" borderColor="gray" padding={1} marginTop={1}>
@@ -110,6 +111,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
           </Box>
         </Box>
       )}
+
       {/* Available actions */}
       {actions && actions.length > 0 && (
         <Box marginTop={1}>

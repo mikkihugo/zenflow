@@ -363,16 +363,16 @@ export class DiscoverCommand extends BaseCommand {
 
 ---
 
-### 🔄 Step 8: Learning Loop with MCP Memory [PENDING]
-**Files to modify**:
-- `src/coordination/mcp/tools/memory-tools.ts`
+### 🔄 Step 8: Learning Loop with MCP Memory [IN PROGRESS]
+**Files modified**:
+- `src/interfaces/mcp/mcp-tools.ts`
 
 **Tasks:**
-1. [ ] Store discovery patterns in memory
-2. [ ] Create retrieval system for past discoveries
-3. [ ] Implement pattern matching for similar projects
-4. [ ] Add continuous learning from swarm operations
-5. [ ] Export learned patterns for reuse
+1. [x] Store discovery patterns in memory (`memory_store_discovery_pattern` tool)
+2. [x] Create retrieval system for past discoveries (`memory_retrieve_discovery_pattern` tool)
+3. [x] Implement pattern matching for similar projects (`memory_find_similar_discovery_patterns` tool)
+4. [x] Add continuous learning from swarm operations (`memory_log_swarm_operation` and `memory_update_discovery_pattern_from_swarm_operation` tools)
+5. [x] Export learned patterns for reuse (`memory_export_discovery_patterns` tool)
 
 ---
 
