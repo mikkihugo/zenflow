@@ -1,8 +1,5 @@
 /**
- * Enhanced Database-Driven SPARC Architecture Phase Engine
- *
- * Handles the third phase of SPARC methodology - designing system architecture,
- * component relationships, and deployment strategies with database persistence.
+ * @file Enhanced Database-Driven SPARC Architecture Phase Engine - Handles the third phase of SPARC methodology for designing system architecture, component relationships, and deployment strategies with database persistence.
  */
 
 import { nanoid } from 'nanoid';

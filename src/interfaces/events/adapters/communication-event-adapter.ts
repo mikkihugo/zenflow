@@ -1,5 +1,5 @@
 /**
- * UEL Communication Event Adapter
+ * @file UEL Communication Event Adapter providing unified event management for communication-related events.
  *
  * Unified Event Layer adapter for communication-related events, providing
  * a consistent interface to scattered EventEmitter patterns across the communication system

@@ -1,11 +1,9 @@
 /**
- * UEL Monitoring Event Adapter
- *
- * Unified Event Layer adapter for monitoring-related events, providing
+ * @file UEL Monitoring Event Adapter - Unified Event Layer adapter for monitoring-related events.
+ * @fileoverview UEL Monitoring Event Adapter - Unified Event Layer adapter for monitoring-related events, providing
  * a consistent interface to scattered EventEmitter patterns across the monitoring system
  * while maintaining full backward compatibility and adding enhanced real-time metrics,
  * health correlation, performance tracking, and unified monitoring functionality.
- *
  * This adapter follows the exact same patterns as the system, coordination, and communication
  * event adapters, implementing the IEventManager interface and providing unified configuration
  * management for monitoring events across Claude-Zen.

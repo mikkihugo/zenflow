@@ -32,8 +32,8 @@ const coordinator = spawn('npx', ['tsx', 'src/eslint-swarm-coordinator.ts'], {
     ...process.env,
     NODE_ENV: 'development',
     ESLINT_SWARM_VERBOSE: isVerbose ? 'true' : 'false',
-    ESLINT_SWARM_DRY_RUN: isDryRun ? 'true' : 'false'
-  }
+    ESLINT_SWARM_DRY_RUN: isDryRun ? 'true' : 'false',
+  },
 });
 
 coordinator.on('close', (code) => {

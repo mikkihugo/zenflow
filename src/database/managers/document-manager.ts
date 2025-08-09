@@ -1,5 +1,5 @@
 /**
- * Document Manager - Pure DAL Implementation
+ * @fileoverview Document Manager - Pure DAL Implementation
  *
  * Complete rewrite using unified DAL patterns only
  * Replaces file-based operations with database entities

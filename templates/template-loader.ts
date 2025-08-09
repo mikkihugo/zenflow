@@ -232,9 +232,7 @@ export class TemplateLoader {
   }
 
   /**
-   * Create default capabilities based on agent type
-   *
-   * @param type
+   * Capability interface defining agent capabilities and limitations
    */
   interface;
   Capability;
@@ -264,7 +262,8 @@ export class TemplateLoader {
 /**
  * Create default capabilities based on agent type
  *
- * @param type
+ * @param type - The agent type to create capabilities for
+ * @returns Capability configuration for the agent type
  */
 private
 createDefaultCapabilities(type: string)
@@ -322,11 +321,13 @@ createDefaultCapabilities(type: string)
 }
 
 /**
- * Create generic capabilities
+ * Create generic capabilities for agents without specific capability definitions
+ *
+ * @returns Generic capability configuration
  */
 private
 createGenericCapabilities();
-: any
+: Capability
 {
   return {
       codeGeneration: false,
@@ -355,7 +356,8 @@ createGenericCapabilities();
 /**
  * Parse expertise string into object
  *
- * @param expertiseStr
+ * @param expertiseStr - String containing expertise data in format "skill:level,skill:level"
+ * @returns Record mapping skills to their expertise levels (0-1)
  */
 private
 parseExpertise(expertiseStr: string)
@@ -382,7 +384,8 @@ parseExpertise(expertiseStr: string)
 /**
  * Parse preferences string into object
  *
- * @param preferencesStr
+ * @param preferencesStr - String containing preferences in format "key:value,key:value"
+ * @returns Record mapping preference keys to their values
  */
 private
 parsePreferences(preferencesStr: string)
@@ -407,9 +410,10 @@ parsePreferences(preferencesStr: string)
 }
 
 /**
- * Create basic template fallback
+ * Create basic template fallback for unknown agent types
  *
- * @param type
+ * @param type - The agent type to create a basic template for
+ * @returns Basic agent template configuration
  */
 private
 createBasicTemplate(type: string)
@@ -451,7 +455,8 @@ createBasicTemplate(type: string)
 /**
  * Get loaded template by type
  *
- * @param type
+ * @param type - The agent type to retrieve template for
+ * @returns The agent template if found, undefined otherwise
  */
 getTemplate(type: string)
 : AgentTemplate | undefined
@@ -461,6 +466,8 @@ getTemplate(type: string)
 
 /**
  * Get all loaded templates
+ *
+ * @returns A copy of the map containing all loaded agent templates
  */
 getAllTemplates();
 : Map<string, AgentTemplate>

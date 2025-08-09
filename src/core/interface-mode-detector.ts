@@ -1,6 +1,4 @@
-/**
- * Interface mode detection utilities
- */
+// Interface mode detection utilities
 
 export type InterfaceMode = 'cli' | 'tui' | 'web';
 

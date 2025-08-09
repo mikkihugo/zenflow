@@ -1,6 +1,5 @@
 /**
- * Claude Code Hooks Implementation for ruv-swarm
- * Provides automated coordination, formatting, and learning capabilities
+ * @file Claude Code Hooks Implementation for ruv-swarm - provides automated coordination, formatting, and learning capabilities.
  */
 
 import { execSync } from 'node:child_process';

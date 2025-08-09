@@ -1221,11 +1221,12 @@ export class DALFactory {
     adapter: DatabaseAdapter
   ): Promise<RepositoryType<T>> {
     // Use DAOs as repository implementations since they extend BaseDao which implements IRepository
-    const { RelationalDAO } = await import('./daos/relational-dao');
-    const { GraphDAO } = await import('./daos/graph-dao');
-    const { VectorDAO } = await import('./daos/vector-dao');
-    const { MemoryDAO } = await import('./daos/memory-dao');
-    const { CoordinationDAO } = await import('./daos/coordination-dao');
+    // Canonical DAO implementations (lowercase 'Dao')
+    const { RelationalDao } = await import('./dao/relational.dao');
+    const { GraphDao } = await import('./dao/graph.dao');
+    const { VectorDao } = await import('./dao/vector.dao');
+    const { MemoryDao } = await import('./dao/memory.dao');
+    const { CoordinationDao } = await import('./dao/coordination.dao');
 
     const tableName = config.tableName || config.entityType;
     const entitySchema = config.schema || this.entityRegistry[config.entityType]?.schema;
@@ -1233,7 +1234,7 @@ export class DALFactory {
     // Create a simple repository wrapper that implements IRepository<T>
     switch (config.databaseType) {
       case 'kuzu':
-        return new GraphDAO<T>(
+        return new GraphDao<T>(
           adapter,
           this._logger,
           tableName,
@@ -1241,7 +1242,7 @@ export class DALFactory {
         ) as any as RepositoryType<T>;
 
       case 'lancedb':
-        return new VectorDAO<T>(
+        return new VectorDao<T>(
           adapter,
           this._logger,
           tableName,
@@ -1249,7 +1250,7 @@ export class DALFactory {
         ) as any as RepositoryType<T>;
 
       case 'memory':
-        return new MemoryDAO<T>(
+        return new MemoryDao<T>(
           adapter,
           this._logger,
           tableName,
@@ -1257,7 +1258,7 @@ export class DALFactory {
         ) as any as RepositoryType<T>;
 
       case 'coordination':
-        return new CoordinationDAO<T>(
+        return new CoordinationDao<T>(
           adapter,
           this._logger,
           tableName,
@@ -1265,7 +1266,7 @@ export class DALFactory {
         ) as any as RepositoryType<T>;
 
       default:
-        return new RelationalDAO<T>(
+        return new RelationalDao<T>(
           adapter,
           this._logger,
           tableName,
@@ -1279,30 +1280,30 @@ export class DALFactory {
     repository: RepositoryType<T>,
     adapter: DatabaseAdapter
   ): Promise<IDataAccessObject<T>> {
-    const { RelationalDAO } = await import('./daos/relational-dao');
-    const { GraphDAO } = await import('./daos/graph-dao');
-    const { VectorDAO } = await import('./daos/vector-dao');
-    const { MemoryDAO } = await import('./daos/memory-dao');
-    const { CoordinationDAO } = await import('./daos/coordination-dao');
+    const { RelationalDao } = await import('./dao/relational.dao');
+    const { GraphDao } = await import('./dao/graph.dao');
+    const { VectorDao } = await import('./dao/vector.dao');
+    const { MemoryDao } = await import('./dao/memory.dao');
+    const { CoordinationDao } = await import('./dao/coordination.dao');
 
     switch (config.databaseType) {
       case 'kuzu':
-        return new GraphDAO<T>(repository as IGraphRepository<T>, adapter, this._logger);
+        return new GraphDao<T>(repository as IGraphRepository<T>, adapter, this._logger);
 
       case 'lancedb':
-        return new VectorDAO<T>(repository as IVectorRepository<T>, adapter, this._logger);
+        return new VectorDao<T>(repository as IVectorRepository<T>, adapter, this._logger);
 
       case 'memory':
-        return new MemoryDAO<T>(repository as IMemoryRepository<T>, adapter, this._logger);
+        return new MemoryDao<T>(repository as IMemoryRepository<T>, adapter, this._logger);
 
       case 'coordination':
-        return new CoordinationDAO<T>(
+        return new CoordinationDao<T>(
           repository as ICoordinationRepository<T>,
           adapter,
           this._logger
         );
       default:
-        return new RelationalDAO<T>(repository, adapter, this._logger);
+        return new RelationalDao<T>(repository, adapter, this._logger);
     }
   }
 

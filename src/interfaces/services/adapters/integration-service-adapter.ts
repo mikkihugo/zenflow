@@ -1,5 +1,5 @@
 /**
- * USL Integration Service Adapter
+ * @file USL Integration Service Adapter for unified service layer integration.
  *
  * Unified Service Layer adapter for integration-related services, providing
  * a consistent interface to ArchitectureStorageService, SafeAPIService, and

@@ -1,5 +1,6 @@
 /**
- * Unified Workflow Engine - Database-Driven Architecture
+ * @file Unified Workflow Engine - Database-Driven Architecture.
+ * @fileoverview Unified Workflow Engine - Database-Driven Architecture.
  *
  * PURE DATABASE-DRIVEN workflow engine - NO FILE OPERATIONS
  * Handles Vision → ADRs → PRDs → Epics → Features → Tasks → Code

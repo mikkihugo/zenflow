@@ -4,8 +4,8 @@
  * Inspect current prompts being used by zen-ai-fixer
  */
 
-import fs from 'fs';
 import { execSync } from 'child_process';
+import fs from 'fs';
 
 console.log('🔍 Checking Current ESLint Fixer Prompts');
 console.log('=======================================');
@@ -28,54 +28,55 @@ console.log('\n📋 Analyzing prompt generation in zen-ai-fixer.js...\n');
 // Read the zen-ai-fixer file and find prompt generation
 try {
   const fixerCode = fs.readFileSync('scripts/ai-eslint/zen-ai-fixer.js', 'utf8');
-  
+
   // Extract the buildContextAwarePrompt function
-  const promptMatch = fixerCode.match(/buildContextAwarePrompt\(violation\)\s*{[\s\S]*?return\s*`([\s\S]*?)`;/);
-  
+  const promptMatch = fixerCode.match(
+    /buildContextAwarePrompt\(violation\)\s*{[\s\S]*?return\s*`([\s\S]*?)`;/
+  );
+
   if (promptMatch) {
     console.log('🎯 Current Prompt Template:');
     console.log('-'.repeat(60));
     console.log(promptMatch[1]);
     console.log('-'.repeat(60));
-    
+
     // Check for potential issues
     const issues = [];
-    
+
     if (promptMatch[1].includes('${relativeFilePath}')) {
       console.log('✅ Uses relative file path correctly');
     } else {
       issues.push('❌ Missing relative file path variable');
     }
-    
+
     if (promptMatch[1].includes('Edit tool')) {
       console.log('✅ References Edit tool correctly');
     } else {
       issues.push('❌ Missing Edit tool reference');
     }
-    
+
     if (promptMatch[1].includes('Line ${violation.line}')) {
       console.log('✅ Includes line number');
     } else {
       issues.push('❌ Missing line number');
     }
-    
+
     if (promptMatch[1].includes('**🎯 CRITICAL:')) {
       console.log('✅ Has critical instruction emphasis');
     } else {
       issues.push('⚠️ Missing critical instruction emphasis');
     }
-    
+
     if (issues.length > 0) {
       console.log('\n🚨 Potential Issues Found:');
-      issues.forEach(issue => console.log(issue));
+      issues.forEach((issue) => console.log(issue));
     } else {
       console.log('\n✅ Prompt template looks good structurally');
     }
-    
   } else {
     console.log('❌ Could not find buildContextAwarePrompt function');
   }
-  
+
   // Check for timeout configuration
   const timeoutMatch = fixerCode.match(/INACTIVITY_TIMEOUT\s*=\s*(\d+)/);
   if (timeoutMatch) {
@@ -85,13 +86,12 @@ try {
       console.log('⚠️ Timeout may be too short for complex violations');
     }
   }
-  
+
   // Check for batch size
   const batchMatch = fixerCode.match(/BATCH_SIZE\s*=\s*(\d+)/);
   if (batchMatch) {
     console.log(`📦 Current batch size: ${batchMatch[1]} violations`);
   }
-  
 } catch (error) {
   console.error('❌ Error analyzing zen-ai-fixer.js:', error.message);
 }

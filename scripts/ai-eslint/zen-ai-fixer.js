@@ -250,9 +250,9 @@ class ViolationAnalyzer {
           'npx eslint src/core/orchestrator-provider.ts --format json',
         ]
       : [
-          // Full mode: Start with focused analysis, then expand
-          'npx eslint "src/core/*.ts" "src/interfaces/*.ts" --format json',
-          'npx eslint "src/**/*.ts" --format json --max-warnings 200',
+          // Production mode: Analyze ALL lintable files (TS, JS, TSX, JSX)
+          'npx eslint "src/**/*.{ts,js,tsx,jsx}" --format json --max-warnings 2000',
+          'npx eslint "src/**/*.{ts,js,tsx,jsx}" --format json',
           'npx eslint src --format json',
         ];
 
@@ -260,9 +260,9 @@ class ViolationAnalyzer {
       const strategyDesc = isQuickMode
         ? 'Single file analysis'
         : index === 0
-          ? 'Core & Interface files'
+          ? 'All codebase files (TS, JS, TSX, JSX)'
           : index === 1
-            ? 'All TypeScript files (limited)'
+            ? 'All lintable files'
             : 'Full source directory';
 
       console.log(`  Trying strategy ${index + 1}/3: ${strategyDesc}`);
@@ -620,8 +620,21 @@ class AIViolationFixer {
   async fixGroup2Violations(violations) {
     const results = { attempted: 0, fixed: 0, failed: 0 };
 
+    // Smart prioritization: Simple rules first (cheaper, cleaner codebase for complex fixes)
+    const prioritizedViolations = violations.sort((a, b) => {
+      const aSimple = this.isSimpleEslintRule(a.rule);
+      const bSimple = this.isSimpleEslintRule(b.rule);
+      if (aSimple && !bSimple) return -1; // Simple rules first
+      if (!aSimple && bSimple) return 1;
+      return 0; // Keep original order within same complexity
+    });
+
+    console.log(
+      `    📊 Prioritized: ${prioritizedViolations.filter((v) => this.isSimpleEslintRule(v.rule)).length} simple rules first, then complex ones`
+    );
+
     // Process in batches
-    const batches = this.createBatches(violations.slice(0, 30), BATCH_SIZE);
+    const batches = this.createBatches(prioritizedViolations.slice(0, 30), BATCH_SIZE);
 
     for (const batch of batches) {
       console.log(`  Processing batch of ${batch.length} Group 2 violations...`);
@@ -718,9 +731,10 @@ class AIViolationFixer {
   /**
    * Apply context-aware fixes using Claude Code
    */
-  async applyContextAwareFix(violation) {
+  async applyContextAwareFix(violation, retryCount = 0) {
     if (!violation.context) return false;
 
+    const maxRetries = 3;
     const prompt = this.buildContextAwarePrompt(violation);
     const isVerbose = process.argv.includes('--verbose');
 
@@ -730,8 +744,12 @@ class AIViolationFixer {
       console.log(`    📝 Prompt length: ${prompt.length} chars`);
       console.log(`    📋 Prompt preview: ${prompt.slice(0, 200)}...`);
     } else {
-      // Always show basic prompt info
-      console.log(`    📝 File: ${path.basename(violation.file)}:${violation.line} | Prompt: ${prompt.length} chars`);
+      // Always show basic prompt info with model selection
+      const isSimpleRule = this.isSimpleEslintRule(violation.rule);
+      const modelName = isSimpleRule ? 'Sonnet' : 'Opus';
+      console.log(
+        `    📝 File: ${path.basename(violation.file)}:${violation.line} | Model: ${modelName} | Prompt: ${prompt.length} chars`
+      );
     }
 
     try {
@@ -741,18 +759,22 @@ class AIViolationFixer {
         const startTime = Date.now();
         const INACTIVITY_TIMEOUT = 1200000; // 20 minutes of no output = timeout
         const MAX_TOTAL_TIMEOUT = 1800000; // 30 minutes absolute maximum
+
+        // First, fix the ENOBUFS error by increasing buffer size
+        const maxBuffer = 1024 * 1024 * 50; // 50MB buffer (vs default ~1MB)
         let lastActivityTime = Date.now();
         let inactivityTimeoutHandle = null;
         let maxTimeoutHandle = null;
 
+        // Smart model selection for cost/quality optimization
+        const isSimpleRule = this.isSimpleEslintRule(violation.rule);
+        const modelArgs = isSimpleRule
+          ? ['--model', 'sonnet'] // Cheaper Sonnet for simple fixes
+          : ['--model', 'opus']; // More powerful Opus for complex violations
+
         const claude = spawn(
           'claude',
-          [
-            '--debug',
-            '--verbose',
-            '-p',
-            '--dangerously-skip-permissions'
-          ],
+          ['--debug', '--verbose', '-p', '--dangerously-skip-permissions', ...modelArgs],
           {
             stdio: ['pipe', 'pipe', 'pipe'],
             cwd: path.resolve(__dirname, '../..'), // Ensure Claude CLI runs from repo root directory
@@ -763,14 +785,12 @@ class AIViolationFixer {
         if (isVerbose) {
           console.log(`    ⏳ Claude CLI started (PID: ${claude.pid})`);
           console.log(`    📁 Claude working directory: ${path.resolve(__dirname, '../..')}`);
-          console.log(
-            `    🏴 Flags: --debug --verbose -p --dangerously-skip-permissions`
-          );
+          console.log(`    🏴 Flags: --debug --verbose -p --dangerously-skip-permissions`);
           console.log(
             `    ⏰ Inactivity timeout: ${INACTIVITY_TIMEOUT / 1000}s | Max total: ${MAX_TOTAL_TIMEOUT / 60000}min`
           );
         }
-        
+
         // Send prompt via stdin (more reliable than command argument)
         claude.stdin.write(prompt);
         claude.stdin.end();
@@ -831,10 +851,10 @@ class AIViolationFixer {
         claude.stderr.on('data', (data) => {
           stderr += data.toString();
           resetInactivityTimeout(); // Reset timeout on any output (including debug)
-          
+
           const output = data.toString();
           const lines = output.split('\n');
-          
+
           lines.forEach((line) => {
             if (line.trim()) {
               if (isVerbose) {
@@ -846,8 +866,10 @@ class AIViolationFixer {
                 }
               } else {
                 // Non-verbose: Show only key activities (tool usage)
-                if (line.includes('executePreToolHooks called for tool:') || 
-                    line.includes('File') && line.includes('written atomically')) {
+                if (
+                  line.includes('executePreToolHooks called for tool:') ||
+                  (line.includes('File') && line.includes('written atomically'))
+                ) {
                   const toolMatch = line.match(/executePreToolHooks called for tool: (\w+)/);
                   if (toolMatch) {
                     console.log(`    🔧 Claude using ${toolMatch[1]} tool...`);
@@ -954,6 +976,48 @@ Use the Edit tool now to fix this specific violation in ${relativeFilePath}.`;
 
   // parseAndApplyClaudeFix method removed - now using direct Claude file editing via Edit tool
 
+  /**
+   * Determine if an ESLint rule is simple enough for Sonnet (cost optimization)
+   */
+  isSimpleEslintRule(rule) {
+    const simpleRules = [
+      // Formatting and style rules (very simple)
+      'semi',
+      'quotes',
+      'comma-dangle',
+      'no-trailing-spaces',
+      'eol-last',
+      'indent',
+      'space-before-blocks',
+      'keyword-spacing',
+      'space-infix-ops',
+      'brace-style',
+      'object-curly-spacing',
+      'array-bracket-spacing',
+
+      // Simple code quality rules
+      'no-unused-vars',
+      'no-console',
+      'no-debugger',
+      'no-alert',
+      'prefer-const',
+      'no-var',
+      'no-duplicate-imports',
+
+      // Simple JSDoc rules
+      'jsdoc/require-description',
+      'jsdoc/require-example',
+      'jsdoc/require-returns',
+      'jsdoc/require-param',
+
+      // Simple TypeScript rules
+      '@typescript-eslint/no-unused-vars',
+      '@typescript-eslint/prefer-const',
+    ];
+
+    return simpleRules.includes(rule);
+  }
+
   async generateAnalysisReport(violations) {
     const timestamp = new Date().toISOString();
 
@@ -1042,17 +1106,18 @@ async function main() {
     if (isQuickMode && violations.length > 20) {
       console.log(`⚡ Quick mode: Limiting to 20 violations (found ${violations.length})`);
       violations = violations.slice(0, 20);
-    } else if (!isQuickMode && !isFullMode && violations.length > 50) {
+    } else if (!isQuickMode && !isFullMode && violations.length > 200) {
       console.log(
-        `🎯 Production mode: Limiting to 50 violations for efficient processing (found ${violations.length})`
+        `🎯 Production mode: Limiting to 200 violations for efficient processing (found ${violations.length})`
       );
       console.log(
         `   Use --full to process all violations or --analyze-only to see all without fixing`
       );
-      violations = violations.slice(0, 50);
+      violations = violations.slice(0, 200);
     } else if (isFullMode) {
+      console.log(`🚀 Full mode: Processing all ${violations.length} violations in batches of 50`);
       console.log(
-        `🚀 Full mode: Processing all ${violations.length} violations (this may take several minutes)`
+        `   📊 Estimated time: ${Math.ceil(violations.length / 50)} batches × ~45min = ~${Math.ceil((violations.length / 50) * 0.75)}hrs`
       );
     }
 

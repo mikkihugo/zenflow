@@ -78,7 +78,7 @@ export default [
       '@typescript-eslint/no-explicit-any': 'warn',
       'prefer-const': 'warn',
       'no-var': 'error',
-      // JSDoc rules for unified architecture documentation
+      // JSDoc rules for unified architecture documentation - STRICT ENFORCEMENT
       'jsdoc/require-description': [
         'error',
         {
@@ -87,9 +87,14 @@ export default [
             'FunctionDeclaration',
             'MethodDefinition',
             'TSInterfaceDeclaration',
+            'TSMethodSignature',
+            'TSPropertySignature',
+            'TSTypeAliasDeclaration',
+            'ExportNamedDeclaration',
           ],
         },
       ],
+      'jsdoc/require-description-complete-sentence': 'error',
       'jsdoc/require-param': 'error',
       'jsdoc/require-param-description': 'error',
       'jsdoc/require-param-type': 'off', // TypeScript provides types
@@ -103,18 +108,15 @@ export default [
       'jsdoc/require-returns-description': 'error',
       'jsdoc/require-returns-type': 'off', // TypeScript provides types
       'jsdoc/require-throws': 'error',
+      'jsdoc/require-yields': 'error',
       'jsdoc/require-example': [
-        'warn',
+        'error',
         {
-          contexts: ['ClassDeclaration', 'TSInterfaceDeclaration'],
+          contexts: ['ClassDeclaration', 'TSInterfaceDeclaration', 'FunctionDeclaration'],
         },
       ],
-      'jsdoc/check-examples': [
-        'warn',
-        {
-          exampleCodeRegex: '```(?:typescript|ts|javascript|js)\\n([\\s\\S]*?)```',
-        },
-      ],
+      // Disabled: jsdoc/check-examples doesn't work with ESLint 8+
+      // 'jsdoc/check-examples': 'off',
       'jsdoc/check-syntax': 'error',
       'jsdoc/check-tag-names': [
         'error',
@@ -123,6 +125,7 @@ export default [
         },
       ],
       'jsdoc/check-types': 'off', // TypeScript handles this
+      // JSDoc strictness: Keep documentation complete and high quality
       'jsdoc/check-values': 'error',
       'jsdoc/require-file-overview': [
         'error',

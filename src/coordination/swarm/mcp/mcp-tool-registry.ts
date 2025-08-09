@@ -1,10 +1,11 @@
 /**
- * Unified MCP Tools for Claude Code CLI Integration
+ * @file This module provides unified MCP Tools for Claude Code CLI Integration with comprehensive coordination and swarm functionality.
  *
- * Single stdio MCP server providing ALL coordination and swarm functionality:
- * - Coordination: Task orchestration, resource management, workflow execution
- * - Swarm: Agent management, swarm coordination, performance monitoring
- * - Combined: Intelligent task distribution, coordinated swarm execution
+ * This module implements a single stdio MCP server that provides ALL coordination and swarm functionality.
+ * 
+ * - Coordination: Task orchestration, resource management, workflow execution.
+ * - Swarm: Agent management, swarm coordination, performance monitoring.
+ * - Combined: Intelligent task distribution, coordinated swarm execution.
  *
  * This replaces separate coordination/mcp and swarm/mcp servers with one unified server.
  */
@@ -30,7 +31,7 @@ import {
 import { DAA_MCPTools } from './mcp-daa-tools';
 
 /**
- * Enhanced MCP Tools with comprehensive error handling and logging
+ * Enhanced MCP Tools with comprehensive error handling and logging.
  */
 
 class EnhancedMCPTools {
@@ -239,7 +240,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Initialize persistence layer asynchronously
+   * Initialize persistence layer asynchronously.
    */
   async initializePersistence() {
     // No-op for now, using DAL Factory approach
@@ -248,7 +249,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Ensure persistence is ready before operations
+   * Ensure persistence is ready before operations.
    */
   async ensurePersistenceReady() {
     if (!this.persistenceReady && this.persistence) {
@@ -273,7 +274,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Enhanced error handler with context and logging
+   * Enhanced error handler with context and logging.
    *
    * @param error
    * @param toolName
@@ -332,7 +333,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Determine error severity based on type and message
+   * Determine error severity based on type and message.
    *
    * @param error
    */
@@ -356,7 +357,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Determine if error is recoverable
+   * Determine if error is recoverable.
    *
    * @param error
    */
@@ -376,7 +377,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Validate and sanitize input parameters for a tool
+   * Validate and sanitize input parameters for a tool.
    *
    * @param params
    * @param toolName
@@ -411,7 +412,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Get recent error logs for debugging
+   * Get recent error logs for debugging.
    *
    * @param limit
    */
@@ -420,7 +421,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Get error statistics
+   * Get error statistics.
    */
   getErrorStats() {
     const stats = {
@@ -528,7 +529,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Get list of active agent IDs from database
+   * Get list of active agent IDs from database.
    */
   async getActiveAgentIds() {
     try {
@@ -3054,7 +3055,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Get connection pool health status
+   * Get connection pool health status.
    */
   async pool_health() {
     try {
@@ -3091,7 +3092,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Get detailed connection pool statistics
+   * Get detailed connection pool statistics.
    */
   async pool_stats() {
     try {
@@ -3145,7 +3146,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Get persistence layer statistics
+   * Get persistence layer statistics.
    */
   async persistence_stats() {
     try {
@@ -3193,7 +3194,7 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Get all tool definitions (both core MCP and DAA tools)
+   * Get all tool definitions (both core MCP and DAA tools).
    */
   getAllToolDefinitions() {
     const coreTools = [

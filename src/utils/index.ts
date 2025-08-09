@@ -1,8 +1,5 @@
 /**
- * Utilities Module - System utility functions and helpers
- *
- * @module Utils
- */
+ * @fileoverview Main utilities module that re-exports system utility functions including logging, error handling, type guards, and various helper utilities.
 
 export type { ILogger, LoggerConfig, LogLevel, LogMeta } from '../core/logger';
 // Re-export core logger to avoid conflicts
