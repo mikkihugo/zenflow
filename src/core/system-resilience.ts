@@ -1,9 +1,14 @@
 /**
  * System Resilience Patterns for Claude-Zen.
  *
- * Implements advanced resilience patterns for distributed swarm systems
+ * Implements advanced resilience patterns for distributed swarm systems.
  * including bulkheads, timeouts, resource cleanup, and emergency procedures.
  */
+/**
+ * @file system-resilience implementation
+ */
+
+
 
 import { errorMonitor } from './error-monitoring';
 import { AgentError, SystemError, TimeoutError, WASMMemoryError } from './errors';

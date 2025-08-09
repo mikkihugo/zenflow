@@ -1,12 +1,17 @@
 /**
- * API Client Wrapper
+ * API Client Wrapper.
  *
- * Backward compatibility wrapper that maintains the existing APIClient interface
- * while using the new UACL HTTP Client Adapter internally.
+ * Backward compatibility wrapper that maintains the existing APIClient interface.
+ * While using the new UACL HTTP Client Adapter internally.
  *
- * This allows existing code to continue working without changes while gaining
+ * This allows existing code to continue working without changes while gaining.
  * UACL benefits (unified auth, retry, monitoring, health checks).
  */
+/**
+ * @file Interface implementation: api-client-wrapper.
+ */
+
+
 
 import type {
   Agent,
@@ -14,20 +19,21 @@ import type {
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '../../../coordination/schemas';
+} from '../coordination/schemas';
 import type {
   NeuralNetwork,
   PredictionRequest,
   PredictionResponse,
   TrainingRequest,
-} from '../../api/http/schemas/neural';
+} from '../api/http/schemas/neural';
+import { getMCPServerURL } from '../config/url-builder';
 import { HTTPClientAdapter } from '../adapters/http-client-adapter';
 import type { HTTPClientConfig } from '../adapters/http-types';
-import { getMCPServerURL } from '../../config/url-builder';
 
 /**
- * Legacy API Client Configuration (maintained for compatibility)
+ * Legacy API Client Configuration (maintained for compatibility).
  *
+ * @example.
  * @example
  */
 export interface APIClientConfig {
@@ -41,7 +47,7 @@ export interface APIClientConfig {
 }
 
 /**
- * Default client configuration
+ * Default client configuration.
  */
 export const DEFAULT_CLIENT_CONFIG: APIClientConfig = {
   baseURL: getMCPServerURL(),
@@ -51,7 +57,7 @@ export const DEFAULT_CLIENT_CONFIG: APIClientConfig = {
 } as const;
 
 /**
- * Request options for API calls
+ * Request options for API calls.
  *
  * @example
  */
@@ -62,7 +68,7 @@ export interface RequestOptions {
 }
 
 /**
- * Pagination parameters for list operations
+ * Pagination parameters for list operations.
  *
  * @example
  */
@@ -72,7 +78,7 @@ export interface PaginationOptions {
 }
 
 /**
- * API Client Wrapper maintaining backward compatibility
+ * API Client Wrapper maintaining backward compatibility.
  *
  * @example
  */
@@ -86,7 +92,7 @@ export class APIClient {
   }
 
   /**
-   * Create UACL HTTP client from legacy configuration
+   * Create UACL HTTP client from legacy configuration.
    */
   private createHTTPClient(): HTTPClientAdapter {
     // Convert legacy config to UACL config
@@ -130,7 +136,7 @@ export class APIClient {
   }
 
   /**
-   * Create authentication configuration from legacy settings
+   * Create authentication configuration from legacy settings.
    */
   private createAuthConfig(): HTTPClientConfig['authentication'] {
     if (this.config.bearerToken) {
@@ -152,7 +158,7 @@ export class APIClient {
   }
 
   /**
-   * Generic HTTP method wrapper with type safety (maintained interface)
+   * Generic HTTP method wrapper with type safety (maintained interface).
    *
    * @param method
    * @param endpoint
@@ -190,17 +196,17 @@ export class APIClient {
         throw new Error(`Unsupported HTTP method: ${method}`);
     }
 
-    return response.data;
+    return response?.data;
   }
 
   // ===== COORDINATION API METHODS (maintained interface) =====
 
   /**
-   * Coordination API client
+   * Coordination API client.
    */
   public readonly coordination = {
     /**
-     * List agents with filtering and pagination
+     * List agents with filtering and pagination.
      *
      * @param params
      * @param params.status
@@ -219,10 +225,10 @@ export class APIClient {
       options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
-      if (params?.status) queryParams.set('status', params.status);
-      if (params?.type) queryParams.set('type', params.type);
-      if (params?.limit) queryParams.set('limit', params.limit.toString());
-      if (params?.offset) queryParams.set('offset', params.offset.toString());
+      if (params?.status) queryParams?.set('status', params?.status);
+      if (params?.type) queryParams?.set('type', params?.type);
+      if (params?.limit) queryParams?.set('limit', params?.limit.toString());
+      if (params?.offset) queryParams?.set('offset', params?.offset.toString());
 
       return this.request<{
         agents: Agent[];
@@ -233,7 +239,7 @@ export class APIClient {
     },
 
     /**
-     * Create new agent
+     * Create new agent.
      *
      * @param data
      * @param data.type
@@ -251,7 +257,7 @@ export class APIClient {
     },
 
     /**
-     * Get agent by ID
+     * Get agent by ID.
      *
      * @param agentId
      * @param options
@@ -266,7 +272,7 @@ export class APIClient {
     },
 
     /**
-     * Remove agent
+     * Remove agent.
      *
      * @param agentId
      * @param options
@@ -281,7 +287,7 @@ export class APIClient {
     },
 
     /**
-     * Create new task
+     * Create new task.
      *
      * @param data
      * @param data.type
@@ -303,7 +309,7 @@ export class APIClient {
     },
 
     /**
-     * Get task by ID
+     * Get task by ID.
      *
      * @param taskId
      * @param options
@@ -313,7 +319,7 @@ export class APIClient {
     },
 
     /**
-     * Get swarm configuration
+     * Get swarm configuration.
      *
      * @param options
      */
@@ -327,7 +333,7 @@ export class APIClient {
     },
 
     /**
-     * Update swarm configuration
+     * Update swarm configuration.
      *
      * @param config
      * @param options
@@ -337,7 +343,7 @@ export class APIClient {
     },
 
     /**
-     * Get coordination system health
+     * Get coordination system health.
      *
      * @param options
      */
@@ -346,7 +352,7 @@ export class APIClient {
     },
 
     /**
-     * Get performance metrics
+     * Get performance metrics.
      *
      * @param timeRange
      * @param options
@@ -365,11 +371,11 @@ export class APIClient {
   // ===== NEURAL NETWORK API METHODS (maintained interface) =====
 
   /**
-   * Neural Network API client
+   * Neural Network API client.
    */
   public readonly neural = {
     /**
-     * List neural networks
+     * List neural networks.
      *
      * @param params
      * @param params.type
@@ -384,8 +390,8 @@ export class APIClient {
       options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
-      if (params?.type) queryParams.set('type', params.type);
-      if (params?.status) queryParams.set('status', params.status);
+      if (params?.type) queryParams?.set('type', params?.type);
+      if (params?.status) queryParams?.set('status', params?.status);
 
       return this.request<{
         networks: NeuralNetwork[];
@@ -393,7 +399,7 @@ export class APIClient {
     },
 
     /**
-     * Create neural network
+     * Create neural network.
      *
      * @param data
      * @param data.type
@@ -411,7 +417,7 @@ export class APIClient {
     },
 
     /**
-     * Get neural network by ID
+     * Get neural network by ID.
      *
      * @param networkId
      * @param options
@@ -426,7 +432,7 @@ export class APIClient {
     },
 
     /**
-     * Start training
+     * Start training.
      *
      * @param networkId
      * @param data
@@ -440,7 +446,7 @@ export class APIClient {
     },
 
     /**
-     * Make prediction
+     * Make prediction.
      *
      * @param networkId
      * @param data
@@ -456,7 +462,7 @@ export class APIClient {
     },
 
     /**
-     * Get training job status
+     * Get training job status.
      *
      * @param networkId
      * @param trainingId
@@ -474,7 +480,7 @@ export class APIClient {
     },
 
     /**
-     * Cancel training job
+     * Cancel training job.
      *
      * @param networkId
      * @param trainingId
@@ -493,11 +499,11 @@ export class APIClient {
   // ===== MEMORY API METHODS (maintained interface) =====
 
   /**
-   * Memory API client
+   * Memory API client.
    */
   public readonly memory = {
     /**
-     * List memory stores
+     * List memory stores.
      *
      * @param options
      */
@@ -516,7 +522,7 @@ export class APIClient {
     },
 
     /**
-     * Get value by key
+     * Get value by key.
      *
      * @param storeId
      * @param key
@@ -534,7 +540,7 @@ export class APIClient {
     },
 
     /**
-     * Set value by key
+     * Set value by key.
      *
      * @param storeId
      * @param key
@@ -564,7 +570,7 @@ export class APIClient {
     },
 
     /**
-     * Delete key
+     * Delete key.
      *
      * @param storeId
      * @param key
@@ -580,7 +586,7 @@ export class APIClient {
     },
 
     /**
-     * Get memory health
+     * Get memory health.
      *
      * @param options
      */
@@ -600,11 +606,11 @@ export class APIClient {
   // ===== DATABASE API METHODS (maintained interface) =====
 
   /**
-   * Database API client
+   * Database API client.
    */
   public readonly database = {
     /**
-     * List database connections
+     * List database connections.
      *
      * @param options
      */
@@ -623,7 +629,7 @@ export class APIClient {
     },
 
     /**
-     * Vector similarity search
+     * Vector similarity search.
      *
      * @param collection
      * @param data
@@ -652,7 +658,7 @@ export class APIClient {
     },
 
     /**
-     * Execute graph query
+     * Execute graph query.
      *
      * @param data
      * @param data.query
@@ -673,7 +679,7 @@ export class APIClient {
     },
 
     /**
-     * Execute SQL query
+     * Execute SQL query.
      *
      * @param data
      * @param data.query
@@ -695,7 +701,7 @@ export class APIClient {
     },
 
     /**
-     * Get database health
+     * Get database health.
      *
      * @param options
      */
@@ -716,11 +722,11 @@ export class APIClient {
   // ===== SYSTEM API METHODS (maintained interface) =====
 
   /**
-   * System API client
+   * System API client.
    */
   public readonly system = {
     /**
-     * Get system health
+     * Get system health.
      *
      * @param options
      */
@@ -740,7 +746,7 @@ export class APIClient {
     },
 
     /**
-     * Get system metrics
+     * Get system metrics.
      *
      * @param options
      */
@@ -764,7 +770,7 @@ export class APIClient {
   // ===== UTILITY METHODS (maintained interface) =====
 
   /**
-   * Update client configuration
+   * Update client configuration.
    *
    * @param newConfig
    */
@@ -774,14 +780,14 @@ export class APIClient {
   }
 
   /**
-   * Get current configuration
+   * Get current configuration.
    */
   public getConfig(): APIClientConfig {
     return { ...this.config };
   }
 
   /**
-   * Test API connectivity
+   * Test API connectivity.
    *
    * @param options
    */
@@ -797,49 +803,49 @@ export class APIClient {
   // ===== UACL ENHANCEMENTS (new methods) =====
 
   /**
-   * Get UACL client status
+   * Get UACL client status.
    */
   public async getClientStatus() {
     return this.httpClient.healthCheck();
   }
 
   /**
-   * Get UACL client metrics
+   * Get UACL client metrics.
    */
   public async getClientMetrics() {
     return this.httpClient.getMetrics();
   }
 
   /**
-   * Connect to the API (UACL method)
+   * Connect to the API (UACL method).
    */
   public async connect(): Promise<void> {
     return this.httpClient.connect();
   }
 
   /**
-   * Disconnect from the API (UACL method)
+   * Disconnect from the API (UACL method).
    */
   public async disconnect(): Promise<void> {
     return this.httpClient.disconnect();
   }
 
   /**
-   * Check if client is connected (UACL method)
+   * Check if client is connected (UACL method).
    */
   public isConnected(): boolean {
     return this.httpClient.isConnected();
   }
 
   /**
-   * Get underlying UACL HTTP client (for advanced use cases)
+   * Get underlying UACL HTTP client (for advanced use cases).
    */
   public getUACLClient(): HTTPClientAdapter {
     return this.httpClient;
   }
 
   /**
-   * Destroy the client and cleanup resources
+   * Destroy the client and cleanup resources.
    */
   public async destroy(): Promise<void> {
     return this.httpClient.destroy();
@@ -847,8 +853,9 @@ export class APIClient {
 }
 
 /**
- * Factory function to create API client (maintained interface)
+ * Factory function to create API client (maintained interface).
  *
+ * @param config.
  * @param config
  */
 export const createAPIClient = (config?: Partial<APIClientConfig>): APIClient => {
@@ -856,6 +863,6 @@ export const createAPIClient = (config?: Partial<APIClientConfig>): APIClient =>
 };
 
 /**
- * Default API client instance (maintained interface)
+ * Default API client instance (maintained interface).
  */
 export const apiClient = createAPIClient();

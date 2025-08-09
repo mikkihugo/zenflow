@@ -100,8 +100,8 @@ export class AssertionHelpers {
     predicate: () => boolean | Promise<boolean>,
     options: { timeout?: number; interval?: number } = {}
   ): Promise<void> {
-    const timeout = options.timeout || 5000;
-    const interval = options.interval || 100;
+    const timeout = options?.timeout || 5000;
+    const interval = options?.interval || 100;
     const startTime = Date.now();
 
     while (Date.now() - startTime < timeout) {
@@ -242,11 +242,11 @@ export class AssertionHelpers {
     expectedStatus: number,
     expectedHeaders?: Record<string, string>
   ): void {
-    expect(response.status).toBe(expectedStatus);
+    expect(response?.status).toBe(expectedStatus);
 
     if (expectedHeaders) {
       Object.entries(expectedHeaders).forEach(([header, value]) => {
-        expect(response.headers[header.toLowerCase()]).toBe(value);
+        expect(response?.headers?.[header.toLowerCase()]).toBe(value);
       });
     }
   }
@@ -263,18 +263,18 @@ export class AssertionHelpers {
     targetError: number,
     maxEpochs?: number
   ): void {
-    const finalResult = trainingResults[trainingResults.length - 1];
+    const finalResult = trainingResults?.[trainingResults.length - 1];
 
     if (maxEpochs) {
-      expect(finalResult.epoch).toBeLessThanOrEqual(maxEpochs);
+      expect(finalResult?.epoch).toBeLessThanOrEqual(maxEpochs);
     }
 
-    expect(finalResult.error).toBeLessThan(targetError);
+    expect(finalResult?.error).toBeLessThan(targetError);
 
     // Check that error generally decreases over time
     const errorReductions = trainingResults
-      .slice(1)
-      .filter((result, index) => result.error < trainingResults[index].error);
+      ?.slice(1)
+      .filter((result, index) => result?.error < trainingResults?.[index]?.error);
 
     const reductionRatio = errorReductions.length / (trainingResults.length - 1);
     expect(reductionRatio).toBeGreaterThan(0.7); // 70% of epochs should show improvement

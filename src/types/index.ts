@@ -1,10 +1,15 @@
 /**
- * Types Module - Barrel Export
+ * Types Module - Barrel Export.
  *
- * Central export point for all shared types across the system
+ * Central export point for all shared types across the system.
  */
 
 // Neural WASM types export for system-wide availability
+/**
+ * @file types module exports
+ */
+
+
 export type {
   ActivationFunction,
   NetworkConfig,
@@ -79,3 +84,15 @@ export {
   isPositiveNumber,
   isValidNumber,
 } from '../utils/type-guards';
+
+export * from './workflow-types';
+export * from './mcp-types';
+export * from './neural-types';
+export * from './knowledge-types';
+export * from './client-types';
+export * from './events-types';
+export * from './services-types';
+export * from './protocol-types';
+export * from './conversation-types';
+export * from './agent-types';
+export * from './singletons';

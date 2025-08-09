@@ -5,12 +5,12 @@
  */
 
 import {
+  type ConfigHealthReport,
   config,
   configHealthChecker,
-  runStartupValidation,
   createConfigHealthEndpoint,
   createDeploymentReadinessEndpoint,
-  type ConfigHealthReport,
+  runStartupValidation,
   type StartupValidationResult,
 } from '../src/config';
 
@@ -43,9 +43,8 @@ async function basicHealthCheck() {
     // Show recommendations
     if (healthReport.recommendations.length > 0) {
       console.log('\n💡 Recommendations:');
-      healthReport.recommendations.forEach(rec => console.log(`  • ${rec}`));
+      healthReport.recommendations.forEach((rec) => console.log(`  • ${rec}`));
     }
-
   } catch (error) {
     console.error('❌ Health check failed:', error);
   }
@@ -67,19 +66,21 @@ async function productionDeploymentValidation() {
     const portCheck = await config.checkPorts();
     if (portCheck.conflicts.length > 0) {
       console.log('\n⚠️  Port Conflicts Detected:');
-      portCheck.conflicts.forEach(conflict => {
-        console.log(`  ${conflict.severity === 'error' ? '❌' : '⚠️'} Port ${conflict.port}: ${conflict.services.join(', ')}`);
+      portCheck.conflicts.forEach((conflict) => {
+        console.log(
+          `  ${conflict.severity === 'error' ? '❌' : '⚠️'} Port ${conflict.port}: ${conflict.services.join(', ')}`
+        );
       });
 
       console.log('\n💡 Port Recommendations:');
-      portCheck.recommendations.forEach(rec => console.log(`  • ${rec}`));
+      portCheck.recommendations.forEach((rec) => console.log(`  • ${rec}`));
     } else {
       console.log('🌐 Ports: ✅ No conflicts detected');
     }
 
     // Run comprehensive validation
     const validation = await configHealthChecker.validateForProduction();
-    
+
     console.log('\n📋 Production Validation Results:');
     console.log('  Deployment Ready:', validation.deploymentReady ? '✅' : '❌');
     console.log('  Blockers:', validation.blockers.length);
@@ -87,9 +88,8 @@ async function productionDeploymentValidation() {
 
     if (validation.blockers.length > 0) {
       console.log('\n🚫 Deployment Blockers:');
-      validation.blockers.forEach(blocker => console.log(`  ❌ ${blocker}`));
+      validation.blockers.forEach((blocker) => console.log(`  ❌ ${blocker}`));
     }
-
   } catch (error) {
     console.error('❌ Production validation failed:', error);
   }
@@ -120,15 +120,17 @@ async function startupValidationExample() {
     console.log('  Exit Code:', strictValidation.exitCode);
 
     // Show production readiness
-    console.log('  Production Ready:', strictValidation.validationDetails.productionReady ? '✅' : '❌');
+    console.log(
+      '  Production Ready:',
+      strictValidation.validationDetails.productionReady ? '✅' : '❌'
+    );
 
     if (strictValidation.validationDetails.failsafeApplied.length > 0) {
       console.log('\n🛡️  Failsafe Defaults Applied:');
-      strictValidation.validationDetails.failsafeApplied.forEach(applied => {
+      strictValidation.validationDetails.failsafeApplied.forEach((applied) => {
         console.log(`  🛡️  ${applied}`);
       });
     }
-
   } catch (error) {
     console.error('❌ Startup validation failed:', error);
   }
@@ -173,7 +175,6 @@ async function healthMonitoringExample() {
       configHealthChecker.stopMonitoring();
       console.log('📡 Health monitoring stopped');
     }, 30000);
-
   } catch (error) {
     console.error('❌ Health monitoring setup failed:', error);
   }
@@ -332,7 +333,6 @@ async function main() {
     console.log('  npm run validate-config                    # Basic validation');
     console.log('  npm run validate-config -- --strict        # Strict validation');
     console.log('  node scripts/validate-config.js --help     # Show all options');
-
   } catch (error) {
     console.error('❌ Examples failed:', error);
     process.exit(1);
@@ -341,7 +341,7 @@ async function main() {
 
 // Run examples if this file is executed directly
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('❌ Example execution failed:', error);
     process.exit(1);
   });

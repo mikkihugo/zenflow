@@ -1,5 +1,5 @@
 /**
- * UACL Client Registry
+ * UACL Client Registry.
  *
  * Central registry for all client types in the Unified Adaptive Client Layer.
  * Provides type-safe registration, discovery, and configuration management.
@@ -8,13 +8,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { FACTIntegration } from '../../knowledge/knowledge-client';
+import type { FACTIntegration } from '../knowledge/knowledge-client';
 import type { APIClient } from '../api/http/client';
 import type { WebSocketClient } from '../api/websocket/client';
 import type { ExternalMCPClient } from '../mcp/external-mcp-client';
 
 /**
- * Client type enumeration for type safety
+ * Client type enumeration for type safety.
  */
 export enum ClientType {
   HTTP = 'http',
@@ -24,7 +24,7 @@ export enum ClientType {
 }
 
 /**
- * Base client configuration interface
+ * Base client configuration interface.
  *
  * @example
  */
@@ -39,7 +39,7 @@ export interface BaseClientConfig {
 }
 
 /**
- * HTTP client specific configuration
+ * HTTP client specific configuration.
  *
  * @example
  */
@@ -52,7 +52,7 @@ export interface HTTPClientConfig extends BaseClientConfig {
 }
 
 /**
- * WebSocket client specific configuration
+ * WebSocket client specific configuration.
  *
  * @example
  */
@@ -65,7 +65,7 @@ export interface WebSocketClientConfig extends BaseClientConfig {
 }
 
 /**
- * Knowledge (FACT) client specific configuration
+ * Knowledge (FACT) client specific configuration.
  *
  * @example
  */
@@ -84,7 +84,7 @@ export interface KnowledgeClientConfig extends BaseClientConfig {
 }
 
 /**
- * MCP client specific configuration
+ * MCP client specific configuration.
  *
  * @example
  */
@@ -101,7 +101,7 @@ export interface MCPClientConfig extends BaseClientConfig {
 }
 
 /**
- * Union type for all client configurations
+ * Union type for all client configurations.
  */
 export type ClientConfig =
   | HTTPClientConfig
@@ -110,7 +110,7 @@ export type ClientConfig =
   | MCPClientConfig;
 
 /**
- * Client instance interface for type safety
+ * Client instance interface for type safety.
  *
  * @example
  */
@@ -130,7 +130,7 @@ export interface ClientInstance {
 }
 
 /**
- * Client factory interface for creating client instances
+ * Client factory interface for creating client instances.
  *
  * @example
  */
@@ -141,7 +141,7 @@ export interface ClientFactory {
 }
 
 /**
- * Registry events interface
+ * Registry events interface.
  *
  * @example
  */
@@ -154,7 +154,7 @@ export interface RegistryEvents {
 }
 
 /**
- * Main client registry class
+ * Main client registry class.
  *
  * Provides centralized management of all client types with:
  * - Type-safe registration and discovery
@@ -162,7 +162,7 @@ export interface RegistryEvents {
  * - Configuration validation
  * - Event-driven status updates
  *
- * @example
+ * @example.
  */
 export class ClientRegistry extends EventEmitter {
   private clients = new Map<string, ClientInstance>();
@@ -177,25 +177,25 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Register a client instance
+   * Register a client instance.
    *
    * @param config
    */
   async register(config: ClientConfig): Promise<ClientInstance> {
     // Validate configuration
     if (!this.validateConfig(config)) {
-      throw new Error(`Invalid configuration for client ${config.id}`);
+      throw new Error(`Invalid configuration for client ${config?.id}`);
     }
 
     // Check if client already exists
-    if (this.clients.has(config.id)) {
-      throw new Error(`Client with id ${config.id} already registered`);
+    if (this.clients.has(config?.id)) {
+      throw new Error(`Client with id ${config?.id} already registered`);
     }
 
     // Get appropriate factory
-    const factory = this.factories.get(config.type);
+    const factory = this.factories.get(config?.type);
     if (!factory) {
-      throw new Error(`No factory available for client type ${config.type}`);
+      throw new Error(`No factory available for client type ${config?.type}`);
     }
 
     try {
@@ -203,7 +203,7 @@ export class ClientRegistry extends EventEmitter {
       const instance = await factory.create(config);
 
       // Store in registry
-      this.clients.set(config.id, instance);
+      this.clients.set(config?.id, instance);
 
       // Emit registration event
       this.emit('client:registered', instance);
@@ -216,7 +216,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Unregister a client instance
+   * Unregister a client instance.
    *
    * @param clientId
    */
@@ -249,7 +249,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Get client instance by ID
+   * Get client instance by ID.
    *
    * @param clientId
    */
@@ -258,7 +258,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Get all clients of a specific type
+   * Get all clients of a specific type.
    *
    * @param type
    */
@@ -267,7 +267,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Get all clients matching a filter
+   * Get all clients matching a filter.
    *
    * @param filter
    */
@@ -277,7 +277,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Get healthy clients of a specific type
+   * Get healthy clients of a specific type.
    *
    * @param type
    */
@@ -292,7 +292,7 @@ export class ClientRegistry extends EventEmitter {
   /**
    * Get client by priority (highest priority first)
    *
-   * @param type
+   * @param type.
    */
   getByPriority(type?: ClientType): ClientInstance[] {
     return this.getAll((client) => !type || client.type === type).sort(
@@ -301,7 +301,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Check if a client is registered and healthy
+   * Check if a client is registered and healthy.
    *
    * @param clientId
    */
@@ -311,7 +311,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Get registry statistics
+   * Get registry statistics.
    */
   getStats(): {
     total: number;
@@ -352,7 +352,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Start health monitoring
+   * Start health monitoring.
    */
   startHealthMonitoring(): void {
     if (this.healthCheckTimer) {
@@ -365,7 +365,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Stop health monitoring
+   * Stop health monitoring.
    */
   stopHealthMonitoring(): void {
     if (this.healthCheckTimer) {
@@ -375,7 +375,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Perform health checks on all clients
+   * Perform health checks on all clients.
    */
   private async performHealthChecks(): Promise<void> {
     const clients = this.getAll();
@@ -403,7 +403,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Check health of individual client
+   * Check health of individual client.
    *
    * @param instance
    */
@@ -427,17 +427,17 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Validate client configuration
+   * Validate client configuration.
    *
    * @param config
    */
   private validateConfig(config: ClientConfig): boolean {
-    const factory = this.factories.get(config.type);
+    const factory = this.factories.get(config?.type);
     return factory ? factory.validate(config) : false;
   }
 
   /**
-   * Setup client factories for each type
+   * Setup client factories for each type.
    */
   private setupFactories(): void {
     // This would be implemented with actual factory classes
@@ -449,7 +449,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Register a client factory
+   * Register a client factory.
    *
    * @param type
    * @param factory
@@ -459,7 +459,7 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Clean shutdown of registry
+   * Clean shutdown of registry.
    */
   async shutdown(): Promise<void> {
     this.stopHealthMonitoring();
@@ -476,16 +476,16 @@ export class ClientRegistry extends EventEmitter {
 }
 
 /**
- * Global registry instance
+ * Global registry instance.
  */
 export const globalClientRegistry = new ClientRegistry();
 
 /**
- * Helper functions for common registry operations
+ * Helper functions for common registry operations.
  */
 export const ClientRegistryHelpers = {
   /**
-   * Register HTTP client with common configuration
+   * Register HTTP client with common configuration.
    *
    * @param config
    */
@@ -494,7 +494,7 @@ export const ClientRegistryHelpers = {
   },
 
   /**
-   * Register WebSocket client with common configuration
+   * Register WebSocket client with common configuration.
    *
    * @param config
    */
@@ -505,7 +505,7 @@ export const ClientRegistryHelpers = {
   },
 
   /**
-   * Register Knowledge client with common configuration
+   * Register Knowledge client with common configuration.
    *
    * @param config
    */
@@ -516,7 +516,7 @@ export const ClientRegistryHelpers = {
   },
 
   /**
-   * Register MCP client with common configuration
+   * Register MCP client with common configuration.
    *
    * @param config
    */
@@ -527,7 +527,7 @@ export const ClientRegistryHelpers = {
   /**
    * Get the best available client for a type (highest priority, healthy)
    *
-   * @param type
+   * @param type.
    */
   getBestClient(type: ClientType): ClientInstance | undefined {
     const clients = globalClientRegistry.getByPriority(type);
@@ -537,7 +537,7 @@ export const ClientRegistryHelpers = {
   /**
    * Get load-balanced client (round-robin among healthy clients)
    *
-   * @param type
+   * @param type.
    */
   getLoadBalancedClient(type: ClientType): ClientInstance | undefined {
     const healthy = globalClientRegistry.getHealthy(type);

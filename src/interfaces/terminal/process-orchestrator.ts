@@ -1,12 +1,17 @@
 /**
- * Terminal Manager - Terminal operations and process management
- * Handles terminal sessions, command execution, and process lifecycle
+ * Terminal Manager - Terminal operations and process management.
+ * Handles terminal sessions, command execution, and process lifecycle.
  */
+/**
+ * @file Interface implementation: process-orchestrator
+ */
+
+
 
 import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../../core/event-bus';
-import type { ILogger } from '../../core/logger';
+import type { IEventBus } from '../core/event-bus';
+import type { ILogger } from '../core/logger';
 
 export interface TerminalConfig {
   shell?: string;
@@ -37,7 +42,7 @@ export interface TerminalSession {
 }
 
 /**
- * Terminal Manager for process and session management
+ * Terminal Manager for process and session management.
  *
  * @example
  */
@@ -54,16 +59,16 @@ export class TerminalManager extends EventEmitter {
     super();
 
     this.config = {
-      shell: config.shell || (process.platform === 'win32' ? 'cmd.exe' : '/bin/bash'),
-      cwd: config.cwd || process.cwd(),
+      shell: config?.shell || (process.platform === 'win32' ? 'cmd.exe' : '/bin/bash'),
+      cwd: config?.cwd || process.cwd(),
       env: {
         ...(Object.fromEntries(
           Object.entries(process.env).filter(([_, value]) => value !== undefined)
         ) as Record<string, string>),
-        ...config.env,
+        ...config?.env,
       },
-      timeout: config.timeout || 30000,
-      maxConcurrentProcesses: config.maxConcurrentProcesses || 10,
+      timeout: config?.timeout || 30000,
+      maxConcurrentProcesses: config?.maxConcurrentProcesses || 10,
     };
 
     this.setupEventHandlers();
@@ -71,7 +76,7 @@ export class TerminalManager extends EventEmitter {
   }
 
   /**
-   * Execute a command in a new process
+   * Execute a command in a new process.
    *
    * @param command
    * @param options
@@ -97,10 +102,10 @@ export class TerminalManager extends EventEmitter {
     }
 
     const execOptions = {
-      cwd: options.cwd || this.config.cwd,
-      env: { ...this.config.env, ...options.env },
-      shell: options.shell !== false,
-      timeout: options.timeout || this.config.timeout,
+      cwd: options?.cwd || this.config.cwd,
+      env: { ...this.config.env, ...options?.env },
+      shell: options?.shell !== false,
+      timeout: options?.timeout || this.config.timeout,
     };
 
     this.logger?.info(`Executing command: ${command}`, { processId, options: execOptions });
@@ -122,7 +127,7 @@ export class TerminalManager extends EventEmitter {
       const timeoutHandle = setTimeout(() => {
         if (!completed) {
           completed = true;
-          childProcess.kill('SIGTERM');
+          childProcess?.kill('SIGTERM');
           this.cleanupProcess(processId);
 
           resolve({
@@ -131,25 +136,25 @@ export class TerminalManager extends EventEmitter {
             stderr: `${stderr}\nProcess killed due to timeout`,
             exitCode: -1,
             duration: Date.now() - startTime,
-            error: new Error(`Command timeout after ${execOptions.timeout}ms`),
+            error: new Error(`Command timeout after ${execOptions?.timeout}ms`),
           });
         }
-      }, execOptions.timeout);
+      }, execOptions?.timeout);
 
       // Handle stdout
-      childProcess.stdout?.on('data', (data) => {
+      childProcess?.stdout?.on('data', (data) => {
         stdout += data.toString();
         this.emit('processOutput', { processId, type: 'stdout', data: data.toString() });
       });
 
       // Handle stderr
-      childProcess.stderr?.on('data', (data) => {
+      childProcess?.stderr?.on('data', (data) => {
         stderr += data.toString();
         this.emit('processOutput', { processId, type: 'stderr', data: data.toString() });
       });
 
       // Handle process completion
-      childProcess.on('close', (code) => {
+      childProcess?.on('close', (code) => {
         if (!completed) {
           completed = true;
           clearTimeout(timeoutHandle);
@@ -176,7 +181,7 @@ export class TerminalManager extends EventEmitter {
       });
 
       // Handle process errors
-      childProcess.on('error', (error) => {
+      childProcess?.on('error', (error) => {
         if (!completed) {
           completed = true;
           clearTimeout(timeoutHandle);
@@ -203,7 +208,7 @@ export class TerminalManager extends EventEmitter {
   }
 
   /**
-   * Create a persistent terminal session
+   * Create a persistent terminal session.
    *
    * @param sessionId
    */
@@ -232,7 +237,7 @@ export class TerminalManager extends EventEmitter {
   }
 
   /**
-   * Execute command in a session
+   * Execute command in a session.
    *
    * @param sessionId
    * @param command
@@ -252,7 +257,7 @@ export class TerminalManager extends EventEmitter {
   }
 
   /**
-   * Close a terminal session
+   * Close a terminal session.
    *
    * @param sessionId
    */
@@ -273,21 +278,21 @@ export class TerminalManager extends EventEmitter {
   }
 
   /**
-   * Get active sessions
+   * Get active sessions.
    */
   getSessions(): TerminalSession[] {
     return Array.from(this.sessions.values());
   }
 
   /**
-   * Get active processes count
+   * Get active processes count.
    */
   getActiveProcessCount(): number {
     return this.activeProcesses.size;
   }
 
   /**
-   * Kill a specific process
+   * Kill a specific process.
    *
    * @param processId
    */
@@ -304,7 +309,7 @@ export class TerminalManager extends EventEmitter {
   }
 
   /**
-   * Clean up all resources
+   * Clean up all resources.
    */
   async cleanup(): Promise<void> {
     this.logger?.info('Cleaning up TerminalManager...');

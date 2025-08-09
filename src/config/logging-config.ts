@@ -7,7 +7,7 @@ import { Logger as CoreLogger } from '../core/logger';
 
 export enum LoggingLevel {
   DEBUG = 'debug',
-  INFO = 'info', 
+  INFO = 'info',
   WARN = 'warn',
   ERROR = 'error',
 }
@@ -50,7 +50,7 @@ class LoggingConfigurationManager {
     // Load from environment variables with sensible defaults
     const nodeEnv = process.env['NODE_ENV'] || 'development';
     const defaultLevel = nodeEnv === 'development' ? LoggingLevel.DEBUG : LoggingLevel.INFO;
-    
+
     return {
       level: (process.env['LOG_LEVEL'] as LoggingLevel) || defaultLevel,
       enableConsole: process.env['LOG_DISABLE_CONSOLE'] !== 'true',
@@ -62,8 +62,8 @@ class LoggingConfigurationManager {
         'swarm-coordinator': (process.env['LOG_LEVEL_SWARM'] as LoggingLevel) || defaultLevel,
         'neural-network': (process.env['LOG_LEVEL_NEURAL'] as LoggingLevel) || defaultLevel,
         'mcp-server': (process.env['LOG_LEVEL_MCP'] as LoggingLevel) || defaultLevel,
-        'database': (process.env['LOG_LEVEL_DB'] as LoggingLevel) || defaultLevel,
-      }
+        database: (process.env['LOG_LEVEL_DB'] as LoggingLevel) || defaultLevel,
+      },
     };
   }
 
@@ -103,7 +103,7 @@ class LoggingConfigurationManager {
   private createLoggerForComponent(component: string): Logger {
     // Use component-specific log level if configured
     const componentLevel = this.config.components[component] || this.config.level;
-    
+
     // Set environment variable for the component so existing loggers pick it up
     const originalLevel = process.env['LOG_LEVEL'];
     process.env['LOG_LEVEL'] = componentLevel;
@@ -111,7 +111,7 @@ class LoggingConfigurationManager {
     try {
       // Create logger using existing infrastructure
       const coreLogger = new CoreLogger(component);
-      
+
       // Enhance with additional methods if they exist
       const enhancedLogger: Logger = {
         debug: (message: string, meta?: any) => coreLogger.debug(message, meta),
@@ -124,9 +124,10 @@ class LoggingConfigurationManager {
       if ('success' in coreLogger && typeof coreLogger.success === 'function') {
         enhancedLogger.success = (message: string, meta?: any) => coreLogger.success(message, meta);
       }
-      
+
       if ('progress' in coreLogger && typeof coreLogger.progress === 'function') {
-        enhancedLogger.progress = (message: string, meta?: any) => coreLogger.progress(message, meta);
+        enhancedLogger.progress = (message: string, meta?: any) =>
+          coreLogger.progress(message, meta);
       }
 
       return enhancedLogger;
@@ -148,7 +149,7 @@ class LoggingConfigurationManager {
    */
   createConsoleReplacementLogger(component: string): Logger {
     const logger = this.getLogger(component);
-    
+
     return {
       debug: (message: string, meta?: any) => logger.debug(message, meta),
       // For console.log replacement, use info level
@@ -167,8 +168,8 @@ class LoggingConfigurationManager {
     this.updateConfig({
       level: LoggingLevel.DEBUG,
       components: Object.fromEntries(
-        Object.keys(this.config.components).map(key => [key, LoggingLevel.DEBUG])
-      )
+        Object.keys(this.config.components).map((key) => [key, LoggingLevel.DEBUG])
+      ),
     });
   }
 
@@ -179,8 +180,8 @@ class LoggingConfigurationManager {
     this.updateConfig({
       level: LoggingLevel.INFO,
       components: Object.fromEntries(
-        Object.keys(this.config.components).map(key => [key, LoggingLevel.INFO])
-      )
+        Object.keys(this.config.components).map((key) => [key, LoggingLevel.INFO])
+      ),
     });
   }
 
@@ -191,8 +192,8 @@ class LoggingConfigurationManager {
     this.updateConfig({
       level: LoggingLevel.ERROR,
       components: Object.fromEntries(
-        Object.keys(this.config.components).map(key => [key, LoggingLevel.ERROR])
-      )
+        Object.keys(this.config.components).map((key) => [key, LoggingLevel.ERROR])
+      ),
     });
   }
 }

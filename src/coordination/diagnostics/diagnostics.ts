@@ -1,7 +1,12 @@
 /**
- * Diagnostic utilities for ruv-swarm
- * Helps debug connection issues and performance problems
+ * Diagnostic utilities for ruv-swarm.
+ * Helps debug connection issues and performance problems.
  */
+/**
+ * @file Coordination system: diagnostics
+ */
+
+
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -59,7 +64,7 @@ export interface DiagnosticReport {
 }
 
 /**
- * Connection diagnostics
+ * Connection diagnostics.
  *
  * @example
  */
@@ -70,14 +75,14 @@ export class ConnectionDiagnostics {
   private activeConnections: Map<string, { startTime: number; [key: string]: any }>;
 
   constructor(logger?: LoggerInterface | null) {
-    this.logger = logger || loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });
+    this.logger = logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
     this.connectionHistory = [];
     this.maxHistorySize = 100;
     this.activeConnections = new Map();
   }
 
   /**
-   * Record connection event
+   * Record connection event.
    *
    * @param connectionId
    * @param event
@@ -122,7 +127,7 @@ export class ConnectionDiagnostics {
   }
 
   /**
-   * Get connection summary
+   * Get connection summary.
    */
   getConnectionSummary(): ConnectionSummary {
     const events = this.connectionHistory.reduce((acc: Record<string, number>, event) => {
@@ -143,7 +148,7 @@ export class ConnectionDiagnostics {
   }
 
   /**
-   * Analyze connection patterns
+   * Analyze connection patterns.
    */
   analyzePatterns(): PatternAnalysis {
     const failures = this.connectionHistory.filter((e) => e.event === 'failed');
@@ -180,7 +185,7 @@ export class ConnectionDiagnostics {
   }
 
   /**
-   * Generate diagnostic report
+   * Generate diagnostic report.
    */
   generateReport(): DiagnosticReport {
     const summary = this.getConnectionSummary();
@@ -210,7 +215,7 @@ export class ConnectionDiagnostics {
   }
 
   /**
-   * Generate recommendations based on patterns
+   * Generate recommendations based on patterns.
    *
    * @param summary
    * @param patterns
@@ -267,7 +272,7 @@ export interface OperationData {
 }
 
 /**
- * Performance diagnostics
+ * Performance diagnostics.
  *
  * @example
  */
@@ -277,7 +282,7 @@ export class PerformanceDiagnostics {
   private thresholds: Record<string, number>;
 
   constructor(logger?: LoggerInterface | null) {
-    this.logger = logger || loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });
+    this.logger = logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
     this.operations = new Map();
     this.thresholds = {
       swarm_init: 1000, // 1 second
@@ -288,7 +293,7 @@ export class PerformanceDiagnostics {
   }
 
   /**
-   * Start tracking an operation
+   * Start tracking an operation.
    *
    * @param name
    * @param metadata
@@ -305,7 +310,7 @@ export class PerformanceDiagnostics {
   }
 
   /**
-   * End tracking an operation
+   * End tracking an operation.
    *
    * @param id
    * @param success
@@ -334,7 +339,7 @@ export class PerformanceDiagnostics {
 
     this.operations.delete(id);
 
-    if (result.aboveThreshold) {
+    if (result?.aboveThreshold) {
       this.logger.warn('Operation exceeded threshold', {
         operation: operation.name,
         duration,
@@ -346,7 +351,7 @@ export class PerformanceDiagnostics {
   }
 
   /**
-   * Get slow operations
+   * Get slow operations.
    *
    * @param limit
    */
@@ -389,7 +394,7 @@ export interface SystemHealth {
 }
 
 /**
- * System diagnostics
+ * System diagnostics.
  *
  * @example
  */
@@ -401,14 +406,14 @@ export class SystemDiagnostics {
   // private startTime?: number; // xxx NEEDS_HUMAN: Decide if startTime should be used for monitoring duration
 
   constructor(logger?: LoggerInterface | null) {
-    this.logger = logger || loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });
+    this.logger = logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
     this.samples = [];
     this.maxSamples = 60; // 1 minute of samples at 1Hz
     this.monitorInterval = null;
   }
 
   /**
-   * Collect system sample
+   * Collect system sample.
    */
   collectSample(): SystemSample {
     const sample = {
@@ -428,7 +433,7 @@ export class SystemDiagnostics {
   }
 
   /**
-   * Start monitoring
+   * Start monitoring.
    *
    * @param interval
    */
@@ -460,7 +465,7 @@ export class SystemDiagnostics {
   }
 
   /**
-   * Stop monitoring
+   * Stop monitoring.
    */
   stopMonitoring(): void {
     if (this.monitorInterval) {
@@ -471,7 +476,7 @@ export class SystemDiagnostics {
   }
 
   /**
-   * Get system health
+   * Get system health.
    */
   getSystemHealth(): SystemHealth {
     if (this.samples.length === 0) {
@@ -553,7 +558,7 @@ export interface DiagnosticTestResults {
 }
 
 /**
- * Main diagnostics manager
+ * Main diagnostics manager.
  *
  * @example
  */
@@ -564,14 +569,14 @@ export class DiagnosticsManager {
   public system: SystemDiagnostics;
 
   constructor() {
-    this.logger = loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });
+    this.logger = loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
     this.connection = new ConnectionDiagnostics(this.logger);
     this.performance = new PerformanceDiagnostics(this.logger);
     this.system = new SystemDiagnostics(this.logger);
   }
 
   /**
-   * Enable all diagnostics
+   * Enable all diagnostics.
    */
   enableAll(): void {
     this.system.startMonitoring();
@@ -579,7 +584,7 @@ export class DiagnosticsManager {
   }
 
   /**
-   * Disable all diagnostics
+   * Disable all diagnostics.
    */
   disableAll(): void {
     this.system.stopMonitoring();
@@ -587,7 +592,7 @@ export class DiagnosticsManager {
   }
 
   /**
-   * Generate full diagnostic report
+   * Generate full diagnostic report.
    *
    * @param outputPath
    */
@@ -612,7 +617,7 @@ export class DiagnosticsManager {
   }
 
   /**
-   * Collect recent logs
+   * Collect recent logs.
    */
   async collectRecentLogs(): Promise<{ message: string; logsEnabled: boolean }> {
     // This would read from log files if file logging is enabled
@@ -624,7 +629,7 @@ export class DiagnosticsManager {
   }
 
   /**
-   * Run diagnostic tests
+   * Run diagnostic tests.
    */
   async runDiagnosticTests(): Promise<DiagnosticTestResults> {
     const tests: DiagnosticTest[] = [];

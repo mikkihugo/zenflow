@@ -1,8 +1,15 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-load-balancing-algorithms-ml-predictive");
 /**
- * Machine Learning Predictive Load Balancing Algorithm
- * Uses ML models to predict optimal agent selection and performance
+ * @file Coordination system: ml-predictive
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-load-balancing-algorithms-ml-predictive');
+
+/**
+ * Machine Learning Predictive Load Balancing Algorithm.
+ * Uses ML models to predict optimal agent selection and performance.
  */
 
 import type { LoadBalancingAlgorithm, PredictionEngine } from '../interfaces';
@@ -78,7 +85,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Select agent using ML predictions
+   * Select agent using ML predictions.
    *
    * @param task
    * @param availableAgents
@@ -134,7 +141,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update algorithm configuration
+   * Update algorithm configuration.
    *
    * @param config
    */
@@ -142,13 +149,13 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     this.config = { ...this.config, ...config };
 
     // Retrain models if configuration changed significantly
-    if (config.modelEnsembleWeights || config.adaptiveLearningRate) {
+    if (config?.modelEnsembleWeights || config?.adaptiveLearningRate) {
       await this.retrainModels();
     }
   }
 
   /**
-   * Get performance metrics
+   * Get performance metrics.
    */
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
     const performances = Array.from(this.modelPerformance.values());
@@ -174,7 +181,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Handle task completion for ML learning
+   * Handle task completion for ML learning.
    *
    * @param agentId
    * @param task
@@ -214,7 +221,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Handle agent failure
+   * Handle agent failure.
    *
    * @param agentId
    * @param _error
@@ -237,7 +244,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Initialize ML models
+   * Initialize ML models.
    */
   private async initializeModels(): Promise<void> {
     for (const modelType of this.config.modelTypes) {
@@ -264,7 +271,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Generate predictions for all available agents
+   * Generate predictions for all available agents.
    *
    * @param task
    * @param availableAgents
@@ -294,7 +301,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Extract features for ML prediction
+   * Extract features for ML prediction.
    *
    * @param task
    * @param agent
@@ -322,7 +329,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Predict agent performance using ensemble of models
+   * Predict agent performance using ensemble of models.
    *
    * @param features
    */
@@ -382,7 +389,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Calculate composite score for agent selection
+   * Calculate composite score for agent selection.
    *
    * @param prediction
    * @param task
@@ -404,7 +411,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Retrain all models with current historical data
+   * Retrain all models with current historical data.
    */
   private async retrainModels(): Promise<void> {
     if (this.historicalData.length < this.config.minTrainingData) {
@@ -430,7 +437,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Prepare training data from historical records
+   * Prepare training data from historical records.
    */
   private prepareTrainingData(): any[] {
     return this.historicalData.map((entry) => ({
@@ -443,7 +450,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Check if models should be retrained
+   * Check if models should be retrained.
    */
   private shouldRetrain(): boolean {
     const lastRetraining = this.getLastRetrainingTime();
@@ -451,12 +458,12 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
     return (
       // Retrain every 500 new data points
-      (timeSinceRetraining > this.config.retrainingInterval || this.historicalData.length % 500 === 0)
+      timeSinceRetraining > this.config.retrainingInterval || this.historicalData.length % 500 === 0
     );
   }
 
   /**
-   * Fallback selection when ML predictions are not available
+   * Fallback selection when ML predictions are not available.
    *
    * @param _task
    * @param availableAgents
@@ -521,7 +528,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
     if (relevantData.length === 0) return 0.8; // Default
 
-    const successes = relevantData.filter((entry) => entry.success).length;
+    const successes = relevantData?.filter((entry) => entry.success).length;
     return successes / relevantData.length;
   }
 
@@ -687,7 +694,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   private generateModelVersion(currentVersion: string): string {
-    const parts = currentVersion.split('.');
+    const parts = currentVersion?.split('.');
     const patch = parseInt(parts[2]) + 1;
     return `${parts[0]}.${parts[1]}.${patch}`;
   }
@@ -699,7 +706,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 }
 
 /**
- * Default prediction engine implementation
+ * Default prediction engine implementation.
  *
  * @example
  */

@@ -3,32 +3,32 @@
  *
  * Unified Service Layer adapter for integration-related services, providing
  * a consistent interface to ArchitectureStorageService, SafeAPIService, and
- * Integration Protocols while maintaining full backward compatibility and adding
+ * Integration Protocols while maintaining full backward compatibility and adding.
  * enhanced monitoring, caching, retry logic, and performance metrics.
  *
  * This adapter follows the exact same patterns as the UACL client adapters,
- * implementing the IService interface and providing unified configuration
+ * implementing the IService interface and providing unified configuration.
  * management for integration operations across Claude-Zen.
  */
 
 import { EventEmitter } from 'node:events';
+import { getConfig } from '../config';
 import type {
   ArchitecturalValidation,
   ArchitectureDesign,
-} from '../../../coordination/swarm/sparc/database/architecture-storage';
-
-import { ArchitectureStorageService } from '../../../coordination/swarm/sparc/database/architecture-storage';
+} from '../coordination/swarm/sparc/database/architecture-storage';
+import { ArchitectureStorageService } from '../coordination/swarm/sparc/database/architecture-storage';
 import {
   MCPAdapter,
   ProtocolManager,
   RESTAdapter,
   WebSocketAdapter,
-} from '../../../core/pattern-integration';
-import type { ConnectionConfig } from '../../../integration/adapter-system';
-import type { APIResult } from '../../../interfaces/api/safe-api-client';
-import { SafeAPIClient, SafeAPIService } from '../../../interfaces/api/safe-api-client';
-import { createLogger, type Logger } from '../../../utils/logger';
-import { getMCPServerURL } from '../../config/url-builder';
+} from '../core/pattern-integration';
+import type { ConnectionConfig } from '../integration/adapter-system';
+import type { APIResult } from '../interfaces/api/safe-api-client';
+import { SafeAPIClient, SafeAPIService } from '../interfaces/api/safe-api-client';
+import { createLogger, type Logger } from '../utils/logger';
+import { getMCPServerURL } from '../config/url-builder';
 import type {
   IService,
   ServiceDependencyConfig,
@@ -40,11 +40,16 @@ import type {
   ServiceOperationResponse,
   ServiceStatus,
 } from '../core/interfaces';
+import type {
+  ServiceEnvironment,
+  ServiceError,
+  ServicePriority,
+  ServiceType,
+} from '../interfaces/services/types';
 import type { IntegrationServiceConfig } from '../types';
-import { getConfig } from '../../../config';
 
 /**
- * Integration service adapter configuration extending USL IntegrationServiceConfig
+ * Integration service adapter configuration extending USL IntegrationServiceConfig.
  *
  * @example
  */
@@ -149,7 +154,7 @@ export interface IntegrationServiceAdapterConfig extends IntegrationServiceConfi
 }
 
 /**
- * Integration operation metrics for performance monitoring
+ * Integration operation metrics for performance monitoring.
  *
  * @example
  */
@@ -167,7 +172,7 @@ interface IntegrationOperationMetrics {
 }
 
 /**
- * Protocol performance tracking
+ * Protocol performance tracking.
  *
  * @example
  */
@@ -182,7 +187,7 @@ interface ProtocolPerformanceMetrics {
 }
 
 /**
- * API endpoint performance tracking
+ * API endpoint performance tracking.
  *
  * @example
  */
@@ -196,7 +201,7 @@ interface APIEndpointMetrics {
 }
 
 /**
- * Architecture storage operation tracking
+ * Architecture storage operation tracking.
  *
  * @example
  */
@@ -210,7 +215,7 @@ interface ArchitectureOperationMetrics {
 }
 
 /**
- * Cache entry structure for integration caching
+ * Cache entry structure for integration caching.
  *
  * @example
  */
@@ -223,7 +228,7 @@ interface CacheEntry<T = any> {
 }
 
 /**
- * Request deduplication entry
+ * Request deduplication entry.
  *
  * @example
  */
@@ -234,7 +239,7 @@ interface PendingRequest<T = any> {
 }
 
 /**
- * Unified Integration Service Adapter
+ * Unified Integration Service Adapter.
  *
  * Provides a unified interface to ArchitectureStorageService, SafeAPIService,
  * and Protocol Management while implementing the IService interface for USL compatibility.
@@ -292,7 +297,7 @@ export class IntegrationServiceAdapter implements IService {
     healthCheckFailures: 0,
   };
 
-  // Connection and protocol management
+  // Connection and protocol management.
   private connectionPool = new Map<string, any>();
   private protocolAdapters = new Map<string, any>();
   private circuitBreakers = new Map<
@@ -305,8 +310,8 @@ export class IntegrationServiceAdapter implements IService {
   >();
 
   constructor(config: IntegrationServiceAdapterConfig) {
-    this.name = config.name;
-    this.type = config.type;
+    this.name = config?.name;
+    this.type = config?.type;
     this.config = {
       // Default configuration values
       architectureStorage: {
@@ -316,17 +321,17 @@ export class IntegrationServiceAdapter implements IService {
         enableVersioning: true,
         enableValidationTracking: true,
         cachingEnabled: true,
-        ...config.architectureStorage,
+        ...config?.architectureStorage,
       },
       safeAPI: {
         enabled: true,
         baseURL: (() => {
           const centralConfig = getConfig();
-          return `http://${centralConfig.interfaces.web.host}:${centralConfig.interfaces.web.port}`;
+          return `http://${centralConfig?.interfaces?.web?.host}:${centralConfig?.interfaces?.web?.port}`;
         })(),
         timeout: (() => {
           const centralConfig = getConfig();
-          return centralConfig.network.defaultTimeout;
+          return centralConfig?.network?.defaultTimeout;
         })(),
         retries: 3,
         rateLimiting: {
@@ -343,7 +348,7 @@ export class IntegrationServiceAdapter implements IService {
           strictMode: false,
           sanitization: true,
         },
-        ...config.safeAPI,
+        ...config?.safeAPI,
       },
       protocolManagement: {
         enabled: true,
@@ -364,7 +369,7 @@ export class IntegrationServiceAdapter implements IService {
           interval: 30000, // 30 seconds
           timeout: 5000,
         },
-        ...config.protocolManagement,
+        ...config?.protocolManagement,
       },
       performance: {
         enableRequestDeduplication: true,
@@ -373,7 +378,7 @@ export class IntegrationServiceAdapter implements IService {
         enableMetricsCollection: true,
         connectionPooling: true,
         compressionEnabled: true,
-        ...config.performance,
+        ...config?.performance,
       },
       retry: {
         enabled: true,
@@ -389,7 +394,7 @@ export class IntegrationServiceAdapter implements IService {
           'validation-check',
           'health-check',
         ],
-        ...config.retry,
+        ...config?.retry,
       },
       cache: {
         enabled: true,
@@ -397,7 +402,7 @@ export class IntegrationServiceAdapter implements IService {
         defaultTTL: 600000, // 10 minutes
         maxSize: 1000,
         keyPrefix: 'integration-adapter:',
-        ...config.cache,
+        ...config?.cache,
       },
       security: {
         enableRequestValidation: true,
@@ -405,14 +410,14 @@ export class IntegrationServiceAdapter implements IService {
         enableRateLimiting: true,
         enableAuditLogging: true,
         enableEncryption: false,
-        ...config.security,
+        ...config?.security,
       },
       multiProtocol: {
         enableProtocolSwitching: true,
         protocolPriorityOrder: ['http', 'websocket', 'mcp-http'],
         enableLoadBalancing: true,
         enableCircuitBreaker: true,
-        ...config.multiProtocol,
+        ...config?.multiProtocol,
       },
       ...config,
     };
@@ -426,7 +431,7 @@ export class IntegrationServiceAdapter implements IService {
   // ============================================
 
   /**
-   * Initialize the integration service adapter and its dependencies
+   * Initialize the integration service adapter and its dependencies.
    *
    * @param config
    */
@@ -462,9 +467,9 @@ export class IntegrationServiceAdapter implements IService {
           const container = new DIContainer();
           container.register(CORE_TOKENS.Logger, () => this.logger);
           container.register(CORE_TOKENS.Config, () => ({}));
-          container.register(DATABASE_TOKENS.DALFactory, () => new DALFactory());
+          container.register(DATABASE_TOKENS?.DALFactory, () => new DALFactory());
 
-          const _dalFactory = container.resolve(DATABASE_TOKENS.DALFactory);
+          const _dalFactory = container.resolve(DATABASE_TOKENS?.DALFactory);
 
           // Create real database adapter from DAL Factory
           realDatabaseAdapter = {
@@ -522,18 +527,18 @@ export class IntegrationServiceAdapter implements IService {
 
         const apiConfig = this.config.safeAPI;
         this.safeAPIClient = new SafeAPIClient(
-          apiConfig.baseURL || getMCPServerURL(),
-          apiConfig.authentication?.credentials
+          apiConfig?.baseURL || getMCPServerURL(),
+          apiConfig?.authentication?.credentials
             ? {
-                Authorization: `Bearer ${apiConfig.authentication.credentials}`,
+                Authorization: `Bearer ${apiConfig?.authentication?.credentials}`,
               }
             : {},
-          apiConfig.timeout || 30000
+          apiConfig?.timeout || 30000
         );
 
         this.safeAPIService = new SafeAPIService(
-          apiConfig.baseURL || getMCPServerURL(),
-          apiConfig.authentication?.credentials
+          apiConfig?.baseURL || getMCPServerURL(),
+          apiConfig?.authentication?.credentials
         );
 
         await this.addDependency({
@@ -624,7 +629,7 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   /**
-   * Start the integration service adapter
+   * Start the integration service adapter.
    */
   async start(): Promise<void> {
     this.logger.info(`Starting integration service adapter: ${this.name}`);
@@ -661,7 +666,7 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   /**
-   * Stop the integration service adapter
+   * Stop the integration service adapter.
    */
   async stop(): Promise<void> {
     this.logger.info(`Stopping integration service adapter: ${this.name}`);
@@ -706,7 +711,7 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   /**
-   * Destroy the integration service adapter and clean up resources
+   * Destroy the integration service adapter and clean up resources.
    */
   async destroy(): Promise<void> {
     this.logger.info(`Destroying integration service adapter: ${this.name}`);
@@ -747,7 +752,7 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   /**
-   * Get service status information
+   * Get service status information.
    */
   async getStatus(): Promise<ServiceStatus> {
     const now = new Date();
@@ -811,7 +816,7 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   /**
-   * Get service performance metrics
+   * Get service performance metrics.
    */
   async getMetrics(): Promise<ServiceMetrics> {
     const now = new Date();
@@ -867,7 +872,7 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   /**
-   * Perform health check on the service
+   * Perform health check on the service.
    */
   async healthCheck(): Promise<boolean> {
     this.healthStats.totalHealthChecks++;
@@ -941,7 +946,7 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   /**
-   * Update service configuration
+   * Update service configuration.
    *
    * @param config
    */
@@ -967,43 +972,43 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   /**
-   * Validate service configuration
+   * Validate service configuration.
    *
    * @param config
    */
   async validateConfig(config: IntegrationServiceAdapterConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config.name || !config.type) {
+      if (!config?.name || !config?.type) {
         this.logger.error('Configuration missing required fields: name or type');
         return false;
       }
 
       // Validate architecture storage configuration
-      if (config.architectureStorage?.enabled) {
+      if (config?.architectureStorage?.enabled) {
         const validDbTypes = ['postgresql', 'sqlite', 'mysql'];
         if (
-          config.architectureStorage.databaseType &&
-          !validDbTypes.includes(config.architectureStorage.databaseType)
+          config?.architectureStorage?.databaseType &&
+          !validDbTypes.includes(config?.architectureStorage?.databaseType)
         ) {
-          this.logger.error(`Invalid database type: ${config.architectureStorage.databaseType}`);
+          this.logger.error(`Invalid database type: ${config?.architectureStorage?.databaseType}`);
           return false;
         }
       }
 
       // Validate safe API configuration
-      if (config.safeAPI?.enabled) {
-        if (config.safeAPI.timeout && config.safeAPI.timeout < 1000) {
+      if (config?.safeAPI?.enabled) {
+        if (config?.safeAPI?.timeout && config?.safeAPI?.timeout < 1000) {
           this.logger.error('API timeout must be at least 1000ms');
           return false;
         }
-        if (config.safeAPI.retries && config.safeAPI.retries < 0) {
+        if (config?.safeAPI?.retries && config?.safeAPI?.retries < 0) {
           this.logger.error('API retries must be non-negative');
           return false;
         }
         if (
-          config.safeAPI.rateLimiting?.enabled &&
-          config.safeAPI.rateLimiting.requestsPerSecond < 1
+          config?.safeAPI?.rateLimiting?.enabled &&
+          config?.safeAPI?.rateLimiting?.requestsPerSecond < 1
         ) {
           this.logger.error('Rate limiting requests per second must be at least 1');
           return false;
@@ -1011,16 +1016,16 @@ export class IntegrationServiceAdapter implements IService {
       }
 
       // Validate protocol management configuration
-      if (config.protocolManagement?.enabled) {
+      if (config?.protocolManagement?.enabled) {
         if (
-          !config.protocolManagement.supportedProtocols ||
-          config.protocolManagement.supportedProtocols.length === 0
+          !config?.protocolManagement?.supportedProtocols ||
+          config?.protocolManagement?.supportedProtocols.length === 0
         ) {
           this.logger.error('Protocol management requires at least one supported protocol');
           return false;
         }
-        if (config.protocolManagement.connectionPooling?.enabled) {
-          if (config.protocolManagement.connectionPooling.maxConnections < 1) {
+        if (config?.protocolManagement?.connectionPooling?.enabled) {
+          if (config?.protocolManagement?.connectionPooling?.maxConnections < 1) {
             this.logger.error('Max connections must be at least 1');
             return false;
           }
@@ -1028,19 +1033,19 @@ export class IntegrationServiceAdapter implements IService {
       }
 
       // Validate performance configuration
-      if (config.performance?.maxConcurrency && config.performance.maxConcurrency < 1) {
+      if (config?.performance?.maxConcurrency && config?.performance?.maxConcurrency < 1) {
         this.logger.error('Max concurrency must be at least 1');
         return false;
       }
 
       // Validate retry configuration
-      if (config.retry?.enabled && config.retry.maxAttempts && config.retry.maxAttempts < 1) {
+      if (config?.retry?.enabled && config?.retry?.maxAttempts && config?.retry?.maxAttempts < 1) {
         this.logger.error('Retry max attempts must be at least 1');
         return false;
       }
 
       // Validate cache configuration
-      if (config.cache?.enabled && config.cache.maxSize && config.cache.maxSize < 1) {
+      if (config?.cache?.enabled && config?.cache?.maxSize && config?.cache?.maxSize < 1) {
         this.logger.error('Cache max size must be at least 1');
         return false;
       }
@@ -1053,14 +1058,14 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   /**
-   * Check if service is ready to handle operations
+   * Check if service is ready to handle operations.
    */
   isReady(): boolean {
     return this.lifecycleStatus === 'running';
   }
 
   /**
-   * Get service capabilities
+   * Get service capabilities.
    */
   getCapabilities(): string[] {
     const capabilities = ['integration-operations'];
@@ -1119,7 +1124,7 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   /**
-   * Execute service operations with unified interface
+   * Execute service operations with unified interface.
    *
    * @param operation
    * @param params
@@ -1265,7 +1270,7 @@ export class IntegrationServiceAdapter implements IService {
     try {
       const dependencyChecks = Array.from(this.dependencies.entries()).map(
         async ([name, config]) => {
-          if (!config.healthCheck) {
+          if (!config?.healthCheck) {
             return true; // Skip health check if not required
           }
 
@@ -1275,7 +1280,7 @@ export class IntegrationServiceAdapter implements IService {
             return true;
           } catch (error) {
             this.logger.warn(`Dependency ${name} health check failed:`, error);
-            return !config.required; // Return false only if dependency is required
+            return !config?.required; // Return false only if dependency is required
           }
         }
       );
@@ -1293,7 +1298,7 @@ export class IntegrationServiceAdapter implements IService {
   // ============================================
 
   /**
-   * Internal operation execution with caching, deduplication, and retry logic
+   * Internal operation execution with caching, deduplication, and retry logic.
    *
    * @param operation
    * @param params
@@ -1363,7 +1368,7 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   /**
-   * Execute operation with retry logic
+   * Execute operation with retry logic.
    *
    * @param operation
    * @param params
@@ -1406,7 +1411,7 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   /**
-   * Perform the actual operation based on operation type
+   * Perform the actual operation based on operation type.
    *
    * @param operation
    * @param params
@@ -1758,7 +1763,7 @@ export class IntegrationServiceAdapter implements IService {
     }
 
     const result = await this.safeAPIClient.get<T>(endpoint, options);
-    this.updateAPIEndpointMetrics(endpoint, Date.now(), result.success);
+    this.updateAPIEndpointMetrics(endpoint, Date.now(), result?.success);
     return result;
   }
 
@@ -1768,7 +1773,7 @@ export class IntegrationServiceAdapter implements IService {
     }
 
     const result = await this.safeAPIClient.post<T>(endpoint, data, options);
-    this.updateAPIEndpointMetrics(endpoint, Date.now(), result.success);
+    this.updateAPIEndpointMetrics(endpoint, Date.now(), result?.success);
     return result;
   }
 
@@ -1778,7 +1783,7 @@ export class IntegrationServiceAdapter implements IService {
     }
 
     const result = await this.safeAPIClient.put<T>(endpoint, data, options);
-    this.updateAPIEndpointMetrics(endpoint, Date.now(), result.success);
+    this.updateAPIEndpointMetrics(endpoint, Date.now(), result?.success);
     return result;
   }
 
@@ -1788,7 +1793,7 @@ export class IntegrationServiceAdapter implements IService {
     }
 
     const result = await this.safeAPIClient.delete<T>(endpoint, options);
-    this.updateAPIEndpointMetrics(endpoint, Date.now(), result.success);
+    this.updateAPIEndpointMetrics(endpoint, Date.now(), result?.success);
     return result;
   }
 
@@ -2011,7 +2016,7 @@ export class IntegrationServiceAdapter implements IService {
       try {
         if (pool && typeof pool.cleanup === 'function') {
           const result = await pool.cleanup();
-          cleaned += result.closed || 0;
+          cleaned += result?.closed || 0;
         }
       } catch (error) {
         this.logger.warn(`Failed to cleanup connection pool for ${protocol}:`, error);
@@ -2222,7 +2227,7 @@ export class IntegrationServiceAdapter implements IService {
 
     const toRemove = this.cache.size - targetSize;
     for (let i = 0; i < toRemove; i++) {
-      this.cache.delete(entries[i][0]);
+      this.cache.delete(entries[i]?.[0]);
     }
 
     this.logger.debug(`Cache cleanup: removed ${toRemove} entries`);
@@ -2572,7 +2577,7 @@ export class IntegrationServiceAdapter implements IService {
 }
 
 /**
- * Factory function for creating IntegrationServiceAdapter instances
+ * Factory function for creating IntegrationServiceAdapter instances.
  *
  * @param config
  */
@@ -2583,7 +2588,7 @@ export function createIntegrationServiceAdapter(
 }
 
 /**
- * Helper function for creating default configuration
+ * Helper function for creating default configuration.
  *
  * @param name
  * @param overrides

@@ -68,10 +68,14 @@ const config = {
     jwtSecret: (() => {
       const secret = process.env.JWT_SECRET;
       if (!secret && process.env.NODE_ENV === 'production') {
-        throw new Error('SECURITY ERROR: JWT_SECRET environment variable is required in production. Set JWT_SECRET with a strong, randomly generated secret.');
+        throw new Error(
+          'SECURITY ERROR: JWT_SECRET environment variable is required in production. Set JWT_SECRET with a strong, randomly generated secret.'
+        );
       }
       if (!secret && process.env.NODE_ENV !== 'test') {
-        console.warn('⚠️  WARNING: Using development JWT secret. Set JWT_SECRET environment variable for production.');
+        console.warn(
+          '⚠️  WARNING: Using development JWT secret. Set JWT_SECRET environment variable for production.'
+        );
         return 'claude-zen-development-secret-DO-NOT-USE-IN-PRODUCTION';
       }
       return secret || 'test-secret-for-testing-only';

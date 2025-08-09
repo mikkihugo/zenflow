@@ -1,11 +1,14 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-memory-memory");
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-memory-memory');
+
 /**
  * @file Session-based memory storage with pluggable backends.
  */
 
 import { EventEmitter } from 'node:events';
 import type { IMemoryStore } from '../core/interfaces/base-interfaces';
+import type { BackendInterface, JSONValue, MemoryStats, StoreOptions } from '../memory/interfaces';
 import { MemoryBackendFactory as BackendFactory } from './backends/factory';
 
 interface BackendConfig {

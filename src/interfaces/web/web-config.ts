@@ -1,9 +1,14 @@
 /**
- * Web Configuration - Centralized web interface configuration
+ * Web Configuration - Centralized web interface configuration.
  *
  * Type definitions and configuration management for the web dashboard.
  * Follows Google TypeScript standards for clear interface design.
  */
+/**
+ * @file Interface implementation: web-config
+ */
+
+
 
 export interface WebConfig {
   port?: number;
@@ -34,7 +39,7 @@ export interface WebSession {
 }
 
 /**
- * Default web configuration
+ * Default web configuration.
  */
 export const DEFAULT_WEB_CONFIG: Required<Omit<WebConfig, 'auth' | 'coreSystem'>> & {
   auth: WebConfig['auth'];
@@ -53,7 +58,7 @@ export const DEFAULT_WEB_CONFIG: Required<Omit<WebConfig, 'auth' | 'coreSystem'>
 };
 
 /**
- * Create web configuration with defaults
+ * Create web configuration with defaults.
  *
  * @param config
  */
@@ -66,6 +71,6 @@ export function createWebConfig(config: WebConfig = {}): Required<
   return {
     ...DEFAULT_WEB_CONFIG,
     ...config,
-    auth: { ...DEFAULT_WEB_CONFIG.auth, ...config.auth },
+    auth: { ...DEFAULT_WEB_CONFIG?.auth, ...config?.auth },
   };
 }

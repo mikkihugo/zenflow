@@ -1,16 +1,21 @@
 /**
- * Monitoring Service Implementation
+ * Monitoring Service Implementation.
  *
  * Service implementation for system monitoring, metrics collection,
  * alerting, and performance tracking.
  */
+/**
+ * @file monitoring service implementation
+ */
+
+
 
 import type { IService } from '../core/interfaces';
 import type { MonitoringServiceConfig, ServiceOperationOptions } from '../types';
 import { BaseService } from './base-service';
 
 /**
- * Monitoring service implementation
+ * Monitoring service implementation.
  *
  * @example
  */
@@ -22,7 +27,7 @@ export class MonitoringService extends BaseService implements IService {
   private alertsTimer?: NodeJS.Timeout;
 
   constructor(config: MonitoringServiceConfig) {
-    super(config.name, config.type, config);
+    super(config?.name, config?.type, config);
 
     // Add monitoring service capabilities
     this.addCapability('metrics-collection');
@@ -54,12 +59,12 @@ export class MonitoringService extends BaseService implements IService {
     const config = this.config as MonitoringServiceConfig;
 
     // Start metrics collection
-    if (config.metrics?.enabled) {
+    if (config?.metrics?.enabled) {
       this.startMetricsCollection();
     }
 
     // Start alert monitoring
-    if (config.alerts?.enabled) {
+    if (config?.alerts?.enabled) {
       this.startAlertMonitoring();
     }
 
@@ -103,7 +108,7 @@ export class MonitoringService extends BaseService implements IService {
 
       // Check if metrics are being collected
       const config = this.config as MonitoringServiceConfig;
-      if (config.metrics?.enabled && this.metrics.size === 0) {
+      if (config?.metrics?.enabled && this.metrics.size === 0) {
         this.logger.warn('Metrics collection is enabled but no metrics found');
         return false;
       }
@@ -210,7 +215,7 @@ export class MonitoringService extends BaseService implements IService {
       const metricData = this.metrics.get(metricName) || [];
 
       if (timeRange) {
-        return metricData.filter(
+        return metricData?.filter(
           (m) => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end
         );
       }
@@ -222,7 +227,7 @@ export class MonitoringService extends BaseService implements IService {
     const allMetrics: any = {};
     for (const [name, data] of this.metrics.entries()) {
       if (timeRange) {
-        allMetrics[name] = data.filter(
+        allMetrics[name] = data?.filter(
           (m) => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end
         );
       } else {
@@ -255,7 +260,7 @@ export class MonitoringService extends BaseService implements IService {
 
     // Limit metric history
     const config = this.config as MonitoringServiceConfig;
-    const retention = config.metrics?.retention || 86400000; // 24 hours
+    const retention = config?.metrics?.retention || 86400000; // 24 hours
     const cutoff = ts - retention;
 
     // Remove old metrics
@@ -275,15 +280,15 @@ export class MonitoringService extends BaseService implements IService {
     const alertId = `alert-${Date.now()}`;
     const alert = {
       id: alertId,
-      name: alertConfig.name || `Alert ${alertId}`,
-      condition: alertConfig.condition,
-      threshold: alertConfig.threshold,
-      metric: alertConfig.metric,
+      name: alertConfig?.name || `Alert ${alertId}`,
+      condition: alertConfig?.condition,
+      threshold: alertConfig?.threshold,
+      metric: alertConfig?.metric,
       status: 'active',
       triggered: false,
       createdAt: new Date(),
-      channels: alertConfig.channels || ['console'],
-      metadata: alertConfig.metadata || {},
+      channels: alertConfig?.channels || ['console'],
+      metadata: alertConfig?.metadata || {},
     };
 
     this.alerts.set(alertId, alert);
@@ -357,8 +362,8 @@ export class MonitoringService extends BaseService implements IService {
       triggeredAlerts: this.getAlerts('triggered').length,
       memoryUsage: this.estimateMemoryUsage(),
       isCollecting: !!this.metricsTimer,
-      collectionInterval: config.metrics?.interval || 0,
-      retentionPeriod: config.metrics?.retention || 0,
+      collectionInterval: config?.metrics?.interval || 0,
+      retentionPeriod: config?.metrics?.retention || 0,
     };
   }
 
@@ -446,15 +451,15 @@ export class MonitoringService extends BaseService implements IService {
   private initializeAlertSystem(): void {
     const config = this.config as MonitoringServiceConfig;
 
-    if (config.alerts?.enabled && config.alerts.thresholds) {
+    if (config?.alerts?.enabled && config?.alerts?.thresholds) {
       // Create default alerts based on thresholds
-      Object.entries(config.alerts.thresholds).forEach(([metric, threshold]) => {
+      Object.entries(config?.alerts?.thresholds).forEach(([metric, threshold]) => {
         this.createAlert({
           name: `High ${metric}`,
           metric,
           condition: 'greater_than',
           threshold,
-          channels: config.alerts?.channels?.map((c) => c.type) || ['console'],
+          channels: config?.alerts?.channels?.map((c) => c.type) || ['console'],
         });
       });
     }
@@ -462,7 +467,7 @@ export class MonitoringService extends BaseService implements IService {
 
   private startMetricsCollection(): void {
     const config = this.config as MonitoringServiceConfig;
-    const interval = config.metrics?.interval || 10000; // Default: 10 seconds
+    const interval = config?.metrics?.interval || 10000; // Default: 10 seconds
 
     this.metricsTimer = setInterval(async () => {
       try {
@@ -502,7 +507,7 @@ export class MonitoringService extends BaseService implements IService {
     }
 
     // Get latest metric value
-    const latest = metricData[metricData.length - 1];
+    const latest = metricData?.[metricData.length - 1];
     let value = latest.value;
 
     // Handle nested values (e.g., system.cpu.usage)

@@ -1,7 +1,7 @@
 /**
- * Shared Interface Abstractions
+ * Shared Interface Abstractions.
  *
- * This module provides shared types, contracts, and configurations
+ * This module provides shared types, contracts, and configurations.
  * that interfaces can depend on without creating cross-interface dependencies.
  *
  * Usage:
@@ -11,6 +11,11 @@
  */
 
 // Export configuration utilities
+/**
+ * @file shared module exports.
+ */
+
+
 export * from './config';
 export type {
   CommandExecutorContract,

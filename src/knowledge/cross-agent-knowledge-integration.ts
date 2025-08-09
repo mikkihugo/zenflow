@@ -1,6 +1,6 @@
 /**
- * Cross-Agent Knowledge Integration Layer
- * Main integration system that connects all collective intelligence components
+ * Cross-Agent Knowledge Integration Layer.
+ * Main integration system that connects all collective intelligence components.
  *
  * Architecture: Unified integration layer with FACT/RAG system compatibility
  * - System Integration: Connect all cross-agent knowledge sharing components
@@ -9,8 +9,14 @@
  * - Error Handling: Robust error handling and recovery mechanisms
  * - Configuration Management: Centralized configuration and system management
  */
+/**
+ * @file cross-agent-knowledge-integration implementation.
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 import { CollaborativeReasoningEngine } from './collaborative-reasoning-engine';
 // Import all cross-agent knowledge systems
 import { CollectiveIntelligenceCoordinator } from './collective-intelligence-coordinator';
@@ -20,7 +26,7 @@ import { KnowledgeQualityManagementSystem } from './knowledge-quality-management
 import { PerformanceOptimizationSystem } from './performance-optimization-system';
 
 /**
- * Main Integration Configuration
+ * Main Integration Configuration.
  *
  * @example
  */
@@ -61,7 +67,7 @@ export interface RAGIntegrationConfig {
 }
 
 /**
- * Integration Result Types
+ * Integration Result Types.
  *
  * @example
  */
@@ -118,7 +124,7 @@ export interface CollectiveKnowledgeResponse {
 }
 
 /**
- * Main Cross-Agent Knowledge Integration System
+ * Main Cross-Agent Knowledge Integration System.
  *
  * @example
  */
@@ -149,7 +155,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   /**
-   * Initialize the complete cross-agent knowledge integration system
+   * Initialize the complete cross-agent knowledge integration system.
    */
   async initialize(): Promise<void> {
     const startTime = Date.now();
@@ -192,7 +198,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   /**
-   * Process knowledge query using collective intelligence
+   * Process knowledge query using collective intelligence.
    *
    * @param query
    * @param options
@@ -268,7 +274,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   /**
-   * Coordinate distributed learning across agents
+   * Coordinate distributed learning across agents.
    *
    * @param learningRequest
    */
@@ -327,7 +333,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   /**
-   * Facilitate cross-domain knowledge transfer
+   * Facilitate cross-domain knowledge transfer.
    *
    * @param transferRequest
    */
@@ -390,7 +396,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   /**
-   * Get comprehensive integration metrics
+   * Get comprehensive integration metrics.
    */
   async getIntegrationMetrics(): Promise<IntegrationMetrics> {
     return {
@@ -403,7 +409,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   /**
-   * Get current system status
+   * Get current system status.
    */
   async getSystemStatus(): Promise<IntegrationStatus> {
     const systemHealth = await this.getSystemHealth();
@@ -429,7 +435,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   /**
-   * Shutdown the integration system gracefully
+   * Shutdown the integration system gracefully.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down Cross-Agent Knowledge Integration System...');
@@ -604,7 +610,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 }
 
 /**
- * Configuration and result type definitions
+ * Configuration and result type definitions.
  *
  * @example
  */
@@ -738,7 +744,7 @@ export interface OptimizationSummary {
 }
 
 /**
- * Factory function to create and initialize the integration system
+ * Factory function to create and initialize the integration system.
  *
  * @param config
  * @param logger
@@ -755,7 +761,7 @@ export async function createCrossAgentKnowledgeIntegration(
 }
 
 /**
- * Default configuration for cross-agent knowledge integration
+ * Default configuration for cross-agent knowledge integration.
  */
 export function getDefaultConfig(): CrossAgentKnowledgeConfig {
   return {

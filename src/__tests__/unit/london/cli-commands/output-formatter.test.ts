@@ -381,7 +381,7 @@ describe('OutputFormatter - TDD London', () => {
       const colorRenderer: FormatRenderer = {
         render: vi.fn().mockImplementation((data, options) => {
           const baseOutput = JSON.stringify(data);
-          return options.colors ? `\x1b[32m${baseOutput}\x1b[0m` : baseOutput;
+          return options?.colors ? `\x1b[32m${baseOutput}\x1b[0m` : baseOutput;
         }),
       };
 
@@ -407,7 +407,7 @@ describe('OutputFormatter - TDD London', () => {
       // Arrange
       const themedRenderer: FormatRenderer = {
         render: vi.fn().mockImplementation((data, options) => {
-          const theme = options.theme || 'light';
+          const theme = options?.theme || 'light';
           return `[${theme}] ${JSON.stringify(data)}`;
         }),
       };
@@ -480,8 +480,8 @@ describe('OutputFormatter - TDD London', () => {
       const widthConstrainedRenderer: FormatRenderer = {
         render: vi.fn().mockImplementation((data, options) => {
           let output = JSON.stringify(data);
-          if (options.maxWidth && output.length > options.maxWidth) {
-            output = `${output.substring(0, options.maxWidth - 3)}...`;
+          if (options?.maxWidth && output.length > options?.maxWidth) {
+            output = `${output.substring(0, options?.maxWidth - 3)}...`;
           }
           return output;
         }),

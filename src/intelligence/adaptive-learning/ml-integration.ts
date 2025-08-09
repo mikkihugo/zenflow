@@ -1,5 +1,12 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("intelligence-adaptive-learning-ml-integration");
+/**
+ * @file ml-integration implementation
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('intelligence-adaptive-learning-ml-integration');
+
 /**
  * Machine Learning Integration.
  *
@@ -48,11 +55,11 @@ export class ReinforcementLearningEngine
     } = {}
   ) {
     super();
-    this.learningRate = config.learningRate || 0.1;
-    this.discountFactor = config.discountFactor || 0.95;
-    this.explorationRate = config.explorationRate || 0.1;
-    this.minExplorationRate = config.minExplorationRate || 0.01;
-    this.explorationDecay = config.explorationDecay || 0.995;
+    this.learningRate = config?.learningRate || 0.1;
+    this.discountFactor = config?.discountFactor || 0.95;
+    this.explorationRate = config?.explorationRate || 0.1;
+    this.minExplorationRate = config?.minExplorationRate || 0.01;
+    this.explorationDecay = config?.explorationDecay || 0.995;
   }
 
   /**
@@ -297,9 +304,9 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
 
   constructor(config: { inputSize: number; outputSize: number; architecture?: string }) {
     super();
-    this.inputSize = config.inputSize;
-    this.outputSize = config.outputSize;
-    this.architecture = config.architecture || 'feedforward';
+    this.inputSize = config?.inputSize;
+    this.outputSize = config?.outputSize;
+    this.architecture = config?.architecture || 'feedforward';
     this.initializeModel();
   }
 
@@ -356,10 +363,10 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
       this.trainingHistory.push(result);
 
       this.emit('trainingCompleted', {
-        accuracy: result.accuracy,
-        loss: result.loss,
-        epochs: result.epochs,
-        trainingTime: result.trainingTime,
+        accuracy: result?.accuracy,
+        loss: result?.loss,
+        epochs: result?.epochs,
+        trainingTime: result?.trainingTime,
         timestamp: Date.now(),
       });
 
@@ -405,7 +412,7 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
       trainedOn: this.trainingHistory.length > 0 ? 'execution_data' : 'untrained',
       lastUpdated:
         this.trainingHistory.length > 0
-          ? this.trainingHistory[this.trainingHistory.length - 1]?.trainingTime ?? Date.now()
+          ? (this.trainingHistory[this.trainingHistory.length - 1]?.trainingTime ?? Date.now())
           : Date.now(),
     };
   }
@@ -442,13 +449,13 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
 
   private extractFeatures(data: ExecutionData[]): number[][] {
     return data.map((item) => [
-      item.duration / 1000, // Normalize duration
-      item.resourceUsage.cpu,
-      item.resourceUsage.memory,
-      item.resourceUsage.network,
-      item.resourceUsage.diskIO,
-      item.success ? 1 : 0,
-      Object.keys(item.context).length / 10, // Normalize context complexity
+      item?.duration / 1000, // Normalize duration
+      item?.resourceUsage?.cpu,
+      item?.resourceUsage?.memory,
+      item?.resourceUsage?.network,
+      item?.resourceUsage?.diskIO,
+      item?.success ? 1 : 0,
+      Object.keys(item?.context).length / 10, // Normalize context complexity
     ]);
   }
 
@@ -495,7 +502,8 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
         complexity: prediction && prediction.length > 0 ? prediction.length / this.outputSize : 0.5,
         predictability: prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
         stability: prediction && prediction.length > 0 ? 1 - this.calculateStd(prediction) : 0.5,
-        anomalyScore: prediction && prediction.length > 0 && Math.max(...prediction) > 0.9 ? 0.8 : 0.2,
+        anomalyScore:
+          prediction && prediction.length > 0 && Math.max(...prediction) > 0.9 ? 0.8 : 0.2,
         correlations: [],
         quality: prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
         relevance: prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
@@ -686,7 +694,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
   removeModel(modelId: string): boolean {
     const modelData = this.models.get(modelId);
     if (modelData) {
-      this.totalWeight -= modelData.weight;
+      this.totalWeight -= modelData?.weight;
       this.models.delete(modelId);
 
       this.emit('modelRemoved', {
@@ -784,8 +792,8 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
     } = {}
   ) {
     super();
-    this.adaptationThreshold = config.adaptationThreshold || 0.1;
-    this.windowSize = config.windowSize || 1000;
+    this.adaptationThreshold = config?.adaptationThreshold || 0.1;
+    this.windowSize = config?.windowSize || 1000;
     this.initializeModel();
   }
 
@@ -883,7 +891,7 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
   private async incrementalUpdate(data: ExecutionData): Promise<void> {
     // Simulate incremental learning update
     const features = this.extractFeatures(data);
-    const target = data.success ? 1 : 0;
+    const target = data?.success ? 1 : 0;
 
     // Simple gradient descent update
     const prediction = this.predict(features);
@@ -947,12 +955,12 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
         if (!currentFeatures) continue;
 
         const prediction = this.predict(currentFeatures);
-        const error = targets[i]! - prediction;
+        const error = targets?.[i]! - prediction;
 
         // Safe access to model weights
         if (this.model && this.model.weights && Array.isArray(this.model.weights)) {
           for (let j = 0; j < this.model.weights.length && j < currentFeatures.length; j++) {
-            this.model.weights[j] += this.model.learningRate * error * (currentFeatures[j] || 0);
+            this.model.weights[j] += this.model.learningRate * error * (currentFeatures?.[j] || 0);
           }
           this.model.bias += this.model.learningRate * error;
         }
@@ -965,12 +973,12 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
 
   private extractFeatures(data: ExecutionData): number[] {
     return [
-      data.duration / 1000,
-      data.resourceUsage.cpu,
-      data.resourceUsage.memory,
-      data.resourceUsage.network,
-      data.resourceUsage.diskIO,
-      Object.keys(data.context).length / 10,
+      data?.duration / 1000,
+      data?.resourceUsage?.cpu,
+      data?.resourceUsage?.memory,
+      data?.resourceUsage?.network,
+      data?.resourceUsage?.diskIO,
+      Object.keys(data?.context).length / 10,
     ];
   }
 
@@ -1006,7 +1014,7 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
 
       const prediction = this.predict(currentFeatures);
       const predicted = prediction > 0.5 ? 1 : 0;
-      if (predicted === targets[i]) {
+      if (predicted === targets?.[i]) {
         correct++;
       }
     }
@@ -1049,7 +1057,7 @@ export class MLModelRegistry implements MLModelRegistry {
     });
 
     this.reinforcementLearning = new ReinforcementLearningEngine({
-      learningRate: config.learning.learningRate,
+      learningRate: config?.learning?.learningRate,
       discountFactor: 0.95,
       explorationRate: 0.1,
     });
@@ -1057,7 +1065,7 @@ export class MLModelRegistry implements MLModelRegistry {
     this.ensemble = new EnsembleModels();
 
     this.onlineLearning = new OnlineLearningSystem({
-      adaptationThreshold: config.learning.adaptationRate,
+      adaptationThreshold: config?.learning?.adaptationRate,
       windowSize: 1000,
     });
 

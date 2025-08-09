@@ -40,7 +40,7 @@ export class MockBuilder {
     }
 
     // Add interaction tracking for London School
-    if (config.trackInteractions) {
+    if (config?.trackInteractions) {
       this.addInteractionTracking(mockObj);
     }
 
@@ -65,7 +65,7 @@ export class MockBuilder {
       }
     });
 
-    if (config.trackInteractions) {
+    if (config?.trackInteractions) {
       this.addInteractionTracking(mockObj);
     }
 
@@ -240,7 +240,7 @@ export class MockBuilder {
 
     while (current && current !== Object.prototype) {
       Object.getOwnPropertyNames(current).forEach((name) => {
-        if (name !== 'constructor' && typeof current[name] === 'function') {
+        if (name !== 'constructor' && typeof current?.[name] === 'function') {
           if (!methods.includes(name)) {
             methods.push(name);
           }
@@ -255,7 +255,7 @@ export class MockBuilder {
   private createMethodMock(methodName: string, config: MockConfiguration): jest.Mock {
     const mock = jest.fn();
 
-    if (config.autoGenerate) {
+    if (config?.autoGenerate) {
       // Auto-generate reasonable return values based on method name
       if (methodName.startsWith('get') || methodName.startsWith('find')) {
         mock.mockResolvedValue({});

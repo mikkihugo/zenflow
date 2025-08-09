@@ -1,10 +1,10 @@
 /**
  * @file Batch Performance Monitor
- * Tracks and compares batch vs sequential execution performance
- * Implements claude-zen's performance monitoring patterns
+ * Tracks and compares batch vs sequential execution performance.
+ * Implements claude-zen's performance monitoring patterns.
  */
 
-import { createLogger } from '../../core/logger';
+import { createLogger } from '../core/logger';
 import type { BatchExecutionSummary } from './batch-engine';
 
 const logger = createLogger({ prefix: 'BatchPerformanceMonitor' });
@@ -40,8 +40,8 @@ export interface PerformanceTrend {
 }
 
 /**
- * Monitors and tracks performance of batch operations vs sequential execution
- * Provides insights and recommendations for optimization
+ * Monitors and tracks performance of batch operations vs sequential execution.
+ * Provides insights and recommendations for optimization.
  *
  * @example
  */
@@ -57,7 +57,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Record performance metrics for a batch execution
+   * Record performance metrics for a batch execution.
    *
    * @param summary
    * @param resourceUsage
@@ -102,7 +102,7 @@ export class BatchPerformanceMonitor {
    * @param operationCount
    * @param executionTime
    * @param successfulOperations
-   * @param resourceUsage
+   * @param resourceUsage.
    * @param resourceUsage.memory
    * @param resourceUsage.cpu
    */
@@ -137,7 +137,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Compare batch vs sequential performance
+   * Compare batch vs sequential performance.
    *
    * @param batchMetrics
    * @param sequentialMetrics
@@ -190,7 +190,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Generate performance improvement recommendations
+   * Generate performance improvement recommendations.
    *
    * @param speedImprovement
    * @param throughputImprovement
@@ -252,7 +252,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Get performance trends over time
+   * Get performance trends over time.
    *
    * @param metric
    * @param hours
@@ -288,7 +288,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Calculate trend direction using simple linear regression
+   * Calculate trend direction using simple linear regression.
    *
    * @param values
    * @param timestamps
@@ -312,7 +312,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Calculate percentage change rate per hour
+   * Calculate percentage change rate per hour.
    *
    * @param values
    * @param hours
@@ -331,7 +331,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Get summary of recent performance
+   * Get summary of recent performance.
    *
    * @param hours
    */
@@ -359,7 +359,7 @@ export class BatchPerformanceMonitor {
       batchMetrics.forEach((batchMetric) => {
         // Find closest sequential metric for comparison
         const closestSequential = sequentialMetrics.reduce((closest, current) => {
-          const currentDiff = Math.abs(current.timestamp - batchMetric.timestamp);
+          const currentDiff = Math.abs(current?.timestamp - batchMetric.timestamp);
           const closestDiff = Math.abs(closest.timestamp - batchMetric.timestamp);
           return currentDiff < closestDiff ? current : closest;
         });
@@ -393,7 +393,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Generate summary recommendations
+   * Generate summary recommendations.
    *
    * @param batchCount
    * @param sequentialCount
@@ -436,7 +436,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Set performance baseline for comparison
+   * Set performance baseline for comparison.
    *
    * @param metrics
    */
@@ -450,7 +450,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Compare current metrics against baseline
+   * Compare current metrics against baseline.
    *
    * @param currentMetrics
    */
@@ -462,7 +462,7 @@ export class BatchPerformanceMonitor {
 
     const improvement =
       this.performanceBaseline.throughput > 0
-        ? currentMetrics.throughput / this.performanceBaseline.throughput
+        ? currentMetrics?.throughput / this.performanceBaseline.throughput
         : 1;
 
     let recommendation: string;
@@ -481,7 +481,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Add metrics to history with size management
+   * Add metrics to history with size management.
    *
    * @param metrics
    */
@@ -495,14 +495,14 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Get all metrics history
+   * Get all metrics history.
    */
   getMetricsHistory(): readonly PerformanceMetrics[] {
     return [...this.metricsHistory];
   }
 
   /**
-   * Clear metrics history
+   * Clear metrics history.
    */
   clearHistory(): void {
     this.metricsHistory.length = 0;
@@ -511,7 +511,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Export performance data for analysis
+   * Export performance data for analysis.
    */
   exportPerformanceData(): {
     metrics: PerformanceMetrics[];

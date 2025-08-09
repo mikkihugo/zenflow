@@ -1,5 +1,5 @@
 /**
- * Memory API v1 Routes
+ * Memory API v1 Routes.
  *
  * REST API routes for memory management domain.
  * Following Google API Design Guide standards.
@@ -12,8 +12,8 @@ import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log, logPerformance } from '../middleware/logging';
 
 /**
- * Create memory management routes
- * All memory endpoints under /api/v1/memory
+ * Create memory management routes.
+ * All memory endpoints under /api/v1/memory.
  */
 export const createMemoryRoutes = (): Router => {
   const router = Router();
@@ -21,8 +21,8 @@ export const createMemoryRoutes = (): Router => {
   // ===== MEMORY STORE OPERATIONS =====
 
   /**
-   * GET /api/v1/memory/stores
-   * List all memory stores
+   * GET /api/v1/memory/stores.
+   * List all memory stores.
    */
   router.get(
     '/stores',
@@ -57,8 +57,8 @@ export const createMemoryRoutes = (): Router => {
   );
 
   /**
-   * POST /api/v1/memory/stores
-   * Create new memory store
+   * POST /api/v1/memory/stores.
+   * Create new memory store.
    */
   router.post(
     '/stores',
@@ -77,8 +77,8 @@ export const createMemoryRoutes = (): Router => {
       };
 
       log(LogLevel.INFO, 'Memory store created', req, {
-        storeId: result.id,
-        type: result.type,
+        storeId: result?.id,
+        type: result?.type,
       });
 
       res.status(201).json(result);
@@ -88,8 +88,8 @@ export const createMemoryRoutes = (): Router => {
   // ===== KEY-VALUE OPERATIONS =====
 
   /**
-   * GET /api/v1/memory/stores/:storeId/keys
-   * List keys in memory store
+   * GET /api/v1/memory/stores/:storeId/keys.
+   * List keys in memory store.
    */
   router.get(
     '/stores/:storeId/keys',
@@ -124,8 +124,8 @@ export const createMemoryRoutes = (): Router => {
   );
 
   /**
-   * GET /api/v1/memory/stores/:storeId/keys/:key
-   * Get value by key
+   * GET /api/v1/memory/stores/:storeId/keys/:key.
+   * Get value by key.
    */
   router.get(
     '/stores/:storeId/keys/:key',
@@ -157,7 +157,7 @@ export const createMemoryRoutes = (): Router => {
       logPerformance('memory_get', duration, req, {
         storeId,
         key,
-        valueSize: JSON.stringify(result.value).length,
+        valueSize: JSON.stringify(result?.value).length,
       });
 
       res.json(result);
@@ -165,8 +165,8 @@ export const createMemoryRoutes = (): Router => {
   );
 
   /**
-   * PUT /api/v1/memory/stores/:storeId/keys/:key
-   * Set value by key
+   * PUT /api/v1/memory/stores/:storeId/keys/:key.
+   * Set value by key.
    */
   router.put(
     '/stores/:storeId/keys/:key',
@@ -206,8 +206,8 @@ export const createMemoryRoutes = (): Router => {
   );
 
   /**
-   * DELETE /api/v1/memory/stores/:storeId/keys/:key
-   * Delete key from store
+   * DELETE /api/v1/memory/stores/:storeId/keys/:key.
+   * Delete key from store.
    */
   router.delete(
     '/stores/:storeId/keys/:key',
@@ -232,8 +232,8 @@ export const createMemoryRoutes = (): Router => {
   // ===== BATCH OPERATIONS =====
 
   /**
-   * POST /api/v1/memory/stores/:storeId/batch/get
-   * Get multiple keys in batch
+   * POST /api/v1/memory/stores/:storeId/batch/get.
+   * Get multiple keys in batch.
    */
   router.post(
     '/stores/:storeId/batch/get',
@@ -261,7 +261,7 @@ export const createMemoryRoutes = (): Router => {
       logPerformance('memory_batch_get', duration, req, {
         storeId,
         keyCount: results.length,
-        foundCount: results.filter((r: any) => r.exists).length,
+        foundCount: results?.filter((r: any) => r.exists).length,
       });
 
       res.json({
@@ -277,8 +277,8 @@ export const createMemoryRoutes = (): Router => {
   );
 
   /**
-   * POST /api/v1/memory/stores/:storeId/batch/set
-   * Set multiple keys in batch
+   * POST /api/v1/memory/stores/:storeId/batch/set.
+   * Set multiple keys in batch.
    */
   router.post(
     '/stores/:storeId/batch/set',
@@ -296,7 +296,7 @@ export const createMemoryRoutes = (): Router => {
       // Placeholder - would batch store in actual memory store
       const results =
         items?.map((item: any) => ({
-          key: item.key,
+          key: item?.key,
           success: true,
           version: 1,
           stored: new Date().toISOString(),
@@ -306,7 +306,7 @@ export const createMemoryRoutes = (): Router => {
       logPerformance('memory_batch_set', duration, req, {
         storeId,
         itemCount: results.length,
-        successCount: results.filter((r: any) => r.success).length,
+        successCount: results?.filter((r: any) => r.success).length,
       });
 
       res.json({
@@ -324,8 +324,8 @@ export const createMemoryRoutes = (): Router => {
   // ===== MEMORY STATISTICS =====
 
   /**
-   * GET /api/v1/memory/stores/:storeId/stats
-   * Get memory store statistics
+   * GET /api/v1/memory/stores/:storeId/stats.
+   * Get memory store statistics.
    */
   router.get(
     '/stores/:storeId/stats',
@@ -368,8 +368,8 @@ export const createMemoryRoutes = (): Router => {
   // ===== DISTRIBUTED MEMORY OPERATIONS =====
 
   /**
-   * POST /api/v1/memory/stores/:storeId/sync
-   * Synchronize distributed memory store
+   * POST /api/v1/memory/stores/:storeId/sync.
+   * Synchronize distributed memory store.
    */
   router.post(
     '/stores/:storeId/sync',
@@ -399,10 +399,10 @@ export const createMemoryRoutes = (): Router => {
         timestamp: new Date().toISOString(),
       };
 
-      logPerformance('memory_sync', result.duration, req, {
+      logPerformance('memory_sync', result?.duration, req, {
         storeId,
-        syncType: result.type,
-        totalChanges: result.changes.added + result.changes.updated + result.changes.removed,
+        syncType: result?.type,
+        totalChanges: result?.changes?.added + result?.changes?.updated + result?.changes?.removed,
       });
 
       res.status(202).json(result);
@@ -412,8 +412,8 @@ export const createMemoryRoutes = (): Router => {
   // ===== MEMORY HEALTH =====
 
   /**
-   * GET /api/v1/memory/health
-   * Get memory system health
+   * GET /api/v1/memory/health.
+   * Get memory system health.
    */
   router.get(
     '/health',
@@ -439,7 +439,7 @@ export const createMemoryRoutes = (): Router => {
         timestamp: new Date().toISOString(),
       };
 
-      const statusCode = result.status === 'healthy' ? 200 : 503;
+      const statusCode = result?.status === 'healthy' ? 200 : 503;
       res.status(statusCode).json(result);
     })
   );
@@ -448,6 +448,6 @@ export const createMemoryRoutes = (): Router => {
 };
 
 /**
- * Default export for the memory routes
+ * Default export for the memory routes.
  */
 export default createMemoryRoutes;

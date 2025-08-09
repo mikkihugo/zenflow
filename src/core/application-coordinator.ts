@@ -6,11 +6,16 @@
  * - Memory System (existing)
  * - Workflow Engine
  * - Export Manager
- * - Documentation Linker
+ * - Documentation Linker.
  * - Document-Driven System.
  *
  * Supports the hive document workflow: Vision → ADRs → PRDs → Epics → Features → Tasks → Code.
  */
+/**
+ * @file application coordination system
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { MemoryManager } from '../memory/index';
@@ -203,10 +208,16 @@ export class ApplicationCoordinator extends EventEmitter {
           const workflowData = await this.memorySystem.retrieve(`workflow:${event.workflowId}`);
           if (workflowData) {
             const exportOptions = {
-              ...(this.config.export.outputPath !== undefined && { outputPath: this.config.export.outputPath }),
+              ...(this.config.export.outputPath !== undefined && {
+                outputPath: this.config.export.outputPath,
+              }),
               filename: `workflow_${event.workflowId}_result`,
             };
-            await this.exportSystem.exportData(workflowData, this.config.export.defaultFormat, exportOptions);
+            await this.exportSystem.exportData(
+              workflowData,
+              this.config.export.defaultFormat,
+              exportOptions
+            );
           }
         } catch (error) {
           logger.warn('Failed to auto-export workflow result:', error);
@@ -297,15 +308,20 @@ export class ApplicationCoordinator extends EventEmitter {
     logger.info('Launching unified interface...');
 
     const launchOptions = {
-      ...(this.config.interface?.defaultMode !== 'auto' && 
-          this.config.interface?.defaultMode !== undefined && 
-          { forceMode: this.config.interface.defaultMode }),
-      ...(this.config.interface?.webPort !== undefined && { webPort: this.config.interface.webPort }),
+      ...(this.config.interface?.defaultMode !== 'auto' &&
+        this.config.interface?.defaultMode !== undefined && {
+          forceMode: this.config.interface.defaultMode,
+        }),
+      ...(this.config.interface?.webPort !== undefined && {
+        webPort: this.config.interface.webPort,
+      }),
       verbose: false,
       silent: false,
       config: {
         ...(this.config.interface?.theme !== undefined && { theme: this.config.interface.theme }),
-        ...(this.config.interface?.enableRealTime !== undefined && { realTime: this.config.interface.enableRealTime }),
+        ...(this.config.interface?.enableRealTime !== undefined && {
+          realTime: this.config.interface.enableRealTime,
+        }),
         coreSystem: this, // Pass reference to access all systems
       },
     };

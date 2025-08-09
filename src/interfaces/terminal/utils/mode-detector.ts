@@ -1,9 +1,14 @@
 /**
- * Terminal Mode Detector
+ * Terminal Mode Detector.
  *
- * Determines whether to launch command execution mode or interactive terminal interface
+ * Determines whether to launch command execution mode or interactive terminal interface.
  * based on command line arguments and environment.
  */
+/**
+ * @file Interface implementation: mode-detector
+ */
+
+
 
 export type TerminalMode = 'command' | 'interactive';
 
@@ -13,7 +18,7 @@ export interface ModeDetectionResult {
 }
 
 /**
- * Detect terminal mode based on commands and flags
+ * Detect terminal mode based on commands and flags.
  *
  * @param commands
  * @param flags
@@ -44,7 +49,7 @@ export function detectMode(commands: string[], flags: Record<string, any>): Term
 }
 
 /**
- * Get detailed mode detection result with reasoning
+ * Get detailed mode detection result with reasoning.
  *
  * @param commands
  * @param flags
@@ -93,7 +98,7 @@ export function detectModeWithReason(
 }
 
 /**
- * Check if current environment supports interactive terminal interface
+ * Check if current environment supports interactive terminal interface.
  */
 export function isInteractiveSupported(): boolean {
   return (
@@ -105,7 +110,7 @@ export function isInteractiveSupported(): boolean {
 }
 
 /**
- * Check if current environment supports command execution mode
+ * Check if current environment supports command execution mode.
  */
 export function isCommandExecutionSupported(): boolean {
   // Command execution mode is supported in all environments
@@ -113,7 +118,7 @@ export function isCommandExecutionSupported(): boolean {
 }
 
 /**
- * Get environment information for debugging
+ * Get environment information for debugging.
  */
 export function getEnvironmentInfo() {
   return {

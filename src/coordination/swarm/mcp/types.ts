@@ -1,7 +1,12 @@
 /**
- * Unified MCP Types for Coordination and Swarm Integration
- * Consolidates all MCP-related types into single source of truth
+ * Unified MCP Types for Coordination and Swarm Integration.
+ * Consolidates all MCP-related types into single source of truth.
  */
+/**
+ * @file TypeScript type definitions for coordination
+ */
+
+
 
 export interface MCPTool {
   name: string;

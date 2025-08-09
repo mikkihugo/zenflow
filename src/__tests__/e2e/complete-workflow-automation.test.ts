@@ -124,8 +124,8 @@ Build a modern task management system with real-time collaboration, AI-powered i
           visionProcessRequest
         );
 
-        expect(visionResponse.status).toBe(200);
-        expect(visionResponse.data.result.content[0].text).toContain('Project initialized');
+        expect(visionResponse?.status).toBe(200);
+        expect(visionResponse?.data?.result?.content?.[0]?.text).toContain('Project initialized');
 
         // Phase 4: Generate ADRs through swarm coordination
         const adrGenerationResult = await swarmCoordinator.orchestrateTask({
@@ -139,8 +139,8 @@ Build a modern task management system with real-time collaboration, AI-powered i
           agents: ['architect', 'analyst', 'coordinator'],
         });
 
-        expect(adrGenerationResult.success).toBe(true);
-        expect(adrGenerationResult.generatedDocuments.length).toBe(3);
+        expect(adrGenerationResult?.success).toBe(true);
+        expect(adrGenerationResult?.generatedDocuments.length).toBe(3);
 
         // Verify ADR files were created
         const adrFiles = await fsHelper.listFiles(`${TEST_PROJECT_PATH}/docs/02-adrs`);
@@ -167,8 +167,8 @@ Build a modern task management system with real-time collaboration, AI-powered i
         const prdResponse = await stdioMcpServer.processMessage(prdGenerationRequest);
         const parsedPrdResponse = JSON.parse(prdResponse);
 
-        expect(parsedPrdResponse.result.isError).toBe(false);
-        expect(parsedPrdResponse.result.content[0].text).toContain('PRDs generated');
+        expect(parsedPrdResponse?.result?.isError).toBe(false);
+        expect(parsedPrdResponse?.result?.content?.[0]?.text).toContain('PRDs generated');
 
         // Verify PRD files
         const prdFiles = await fsHelper.listFiles(`${TEST_PROJECT_PATH}/docs/03-prds`);
@@ -187,8 +187,8 @@ Build a modern task management system with real-time collaboration, AI-powered i
           agents: ['coder', 'architect', 'reviewer'],
         });
 
-        expect(codeGenerationResult.success).toBe(true);
-        expect(codeGenerationResult.generatedFiles.length).toBeGreaterThan(10);
+        expect(codeGenerationResult?.success).toBe(true);
+        expect(codeGenerationResult?.generatedFiles.length).toBeGreaterThan(10);
 
         // Verify code structure
         const srcFiles = await fsHelper.listFilesRecursive(`${TEST_PROJECT_PATH}/src`);
@@ -207,9 +207,9 @@ Build a modern task management system with real-time collaboration, AI-powered i
           `http://localhost:${WEB_SERVER_PORT}/api/status`
         );
 
-        expect(webStatusResponse.status).toBe(200);
-        expect(webStatusResponse.data.projectStatus).toBe('active');
-        expect(webStatusResponse.data.workflowStage).toBe('implementation');
+        expect(webStatusResponse?.status).toBe(200);
+        expect(webStatusResponse?.data?.projectStatus).toBe('active');
+        expect(webStatusResponse?.data?.workflowStage).toBe('implementation');
 
         // Phase 8: Verify complete project structure
         const projectStructure = await fsHelper.getDirectoryStructure(TEST_PROJECT_PATH);
@@ -278,9 +278,9 @@ This vision document is intentionally malformed to test error handling.
       });
 
       // Should fail gracefully
-      expect(failureResult.success).toBe(false);
-      expect(failureResult.errors.length).toBeGreaterThan(0);
-      expect(failureResult.recoveryAttempts).toBeGreaterThan(0);
+      expect(failureResult?.success).toBe(false);
+      expect(failureResult?.errors.length).toBeGreaterThan(0);
+      expect(failureResult?.recoveryAttempts).toBeGreaterThan(0);
 
       // System should remain healthy
       const systemHealth = await swarmCoordinator.getHealthMetrics();
@@ -318,8 +318,8 @@ A simple task tracker application.
         strategy: 'standard',
       });
 
-      expect(recoveryResult.success).toBe(true);
-      expect(recoveryResult.generatedDocuments.length).toBeGreaterThan(0);
+      expect(recoveryResult?.success).toBe(true);
+      expect(recoveryResult?.generatedDocuments.length).toBeGreaterThan(0);
 
       await swarmCoordinator.shutdown();
     });
@@ -357,8 +357,8 @@ A simple task tracker application.
         httpInitRequest
       );
 
-      expect(httpResponse.status).toBe(200);
-      expect(httpResponse.data.result.content[0].text).toContain('Project initialized');
+      expect(httpResponse?.status).toBe(200);
+      expect(httpResponse?.data?.result?.content?.[0]?.text).toContain('Project initialized');
 
       // Phase 2: Continue workflow via Stdio MCP (Claude Code simulation)
       const stdioWorkflowRequest = JSON.stringify({
@@ -378,17 +378,17 @@ A simple task tracker application.
       const stdioResponse = await stdioMcpServer.processMessage(stdioWorkflowRequest);
       const parsedStdioResponse = JSON.parse(stdioResponse);
 
-      expect(parsedStdioResponse.result.isError).toBe(false);
+      expect(parsedStdioResponse?.result?.isError).toBe(false);
 
       // Phase 3: Monitor via Web interface
       const webStatusResponse = await networkHelper.httpGet(
         `http://localhost:${WEB_SERVER_PORT}/api/status?sessionId=${sessionId}`
       );
 
-      expect(webStatusResponse.status).toBe(200);
-      expect(webStatusResponse.data.sessionId).toBe(sessionId);
-      expect(webStatusResponse.data.interfaces.http).toBe(true);
-      expect(webStatusResponse.data.interfaces.stdio).toBe(true);
+      expect(webStatusResponse?.status).toBe(200);
+      expect(webStatusResponse?.data?.sessionId).toBe(sessionId);
+      expect(webStatusResponse?.data?.interfaces?.http).toBe(true);
+      expect(webStatusResponse?.data?.interfaces?.stdio).toBe(true);
 
       // Phase 4: Execute coordinated task via Web API
       const webTaskRequest = {
@@ -407,8 +407,8 @@ A simple task tracker application.
         webTaskRequest
       );
 
-      expect(webTaskResponse.status).toBe(200);
-      expect(webTaskResponse.data.taskId).toBeDefined();
+      expect(webTaskResponse?.status).toBe(200);
+      expect(webTaskResponse?.data?.taskId).toBeDefined();
 
       // Phase 5: Verify coordination across interfaces
       const coordinationStatus = await networkHelper.httpGet(
@@ -457,7 +457,7 @@ A simple task tracker application.
         stateCreateRequest
       );
 
-      expect(createResponse.status).toBe(200);
+      expect(createResponse?.status).toBe(200);
 
       // Retrieve session state via Stdio MCP
       const stateRetrieveRequest = JSON.stringify({
@@ -476,11 +476,11 @@ A simple task tracker application.
       const retrieveResponse = await stdioMcpServer.processMessage(stateRetrieveRequest);
       const parsedRetrieveResponse = JSON.parse(retrieveResponse);
 
-      expect(parsedRetrieveResponse.result.isError).toBe(false);
+      expect(parsedRetrieveResponse?.result?.isError).toBe(false);
 
-      const retrievedData = JSON.parse(parsedRetrieveResponse.result.content[0].text);
-      expect(retrievedData.name).toBe('Test Project');
-      expect(retrievedData.settings.enableAI).toBe(true);
+      const retrievedData = JSON.parse(parsedRetrieveResponse?.result?.content?.[0]?.text);
+      expect(retrievedData?.name).toBe('Test Project');
+      expect(retrievedData?.settings?.enableAI).toBe(true);
 
       // Modify state via Stdio MCP
       const stateUpdateRequest = JSON.stringify({
@@ -522,9 +522,9 @@ A simple task tracker application.
         verifyRequest
       );
 
-      expect(verifyResponse.status).toBe(200);
-      expect(verifyResponse.data.result.content[0].text).toContain('modifiedBy');
-      expect(verifyResponse.data.result.content[0].text).toContain('stdio-mcp');
+      expect(verifyResponse?.status).toBe(200);
+      expect(verifyResponse?.data?.result?.content?.[0]?.text).toContain('modifiedBy');
+      expect(verifyResponse?.data?.result?.content?.[0]?.text).toContain('stdio-mcp');
 
       await Promise.all([httpMcpServer.stop(), stdioMcpServer.shutdown()]);
     });
@@ -590,9 +590,9 @@ Test workflow ${i} for concurrent execution testing.
       const totalTime = Date.now() - startTime;
 
       // All workflows should complete successfully
-      results.forEach((result, index) => {
-        expect(result.success).toBe(true);
-        expect(result.workflowId).toBe(`concurrent-workflow-${index}`);
+      results?.forEach((result, index) => {
+        expect(result?.success).toBe(true);
+        expect(result?.workflowId).toBe(`concurrent-workflow-${index}`);
       });
 
       // Should complete within reasonable time (< 60 seconds)
@@ -646,7 +646,7 @@ Test workflow ${i} for concurrent execution testing.
             }
           );
 
-          if (httpResponse.status === 200) {
+          if (httpResponse?.status === 200) {
             performanceMetrics.httpRequests++;
             performanceMetrics.httpLatencies.push(Date.now() - httpStartTime);
           } else {
@@ -757,8 +757,8 @@ Test workflow ${i} for concurrent execution testing.
 
       // Workflow should complete despite failures
       const workflowResult = await workflowPromise;
-      expect(workflowResult.success).toBe(true);
-      expect(workflowResult.recoveryEvents.length).toBeGreaterThan(0);
+      expect(workflowResult?.success).toBe(true);
+      expect(workflowResult?.recoveryEvents.length).toBeGreaterThan(0);
 
       await swarmCoordinator.shutdown();
     });
@@ -800,7 +800,7 @@ Test workflow ${i} for concurrent execution testing.
 
       // At least some workflows should complete
       const results = await Promise.allSettled(workflowPromises);
-      const successfulWorkflows = results.filter(
+      const successfulWorkflows = results?.filter(
         (r) => r.status === 'fulfilled' && r.value.success
       ).length;
 

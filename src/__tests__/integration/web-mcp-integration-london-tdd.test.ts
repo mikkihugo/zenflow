@@ -135,7 +135,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
         const httpResponse = mockRequestTransformer.mcpToHttp(mcpResponse);
 
         // Format response
-        return mockResponseFormatter.formatSuccess(httpResponse);
+        return mockResponseFormatter?.formatSuccess(httpResponse);
       } catch (error) {
         return mockErrorHandler.handleHttpError(error);
       }
@@ -163,10 +163,10 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
         // Transform back to HTTP
         const httpResponse = mockRequestTransformer.mcpToHttp(mcpResponse);
 
-        return mockResponseFormatter.formatSuccess(httpResponse);
+        return mockResponseFormatter?.formatSuccess(httpResponse);
       } catch (error) {
         const transformedError = mockErrorHandler.handleMcpError(error);
-        return mockResponseFormatter.formatError(transformedError);
+        return mockResponseFormatter?.formatError(transformedError);
       }
     }
 
@@ -193,11 +193,11 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
 
         // Format Queen response
         const queenResponse = mockRequestTransformer.mcpToHttp(mcpResponse);
-        return mockResponseFormatter.formatSuccess({
+        return mockResponseFormatter?.formatSuccess({
           queenType,
-          taskId: queenResponse.taskId,
-          status: queenResponse.status,
-          result: queenResponse.result,
+          taskId: queenResponse?.taskId,
+          status: queenResponse?.status,
+          result: queenResponse?.result,
         });
       } catch (error) {
         return mockErrorHandler.handleQueenError(error, req.params.queenType);
@@ -228,7 +228,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
           ],
         });
 
-        mockResponseFormatter.formatSuccess.mockReturnValue({
+        mockResponseFormatter?.formatSuccess?.mockReturnValue({
           status: 'success',
           data: {
             tools: [
@@ -258,11 +258,11 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
             }),
           })
         );
-        expect(mockResponseFormatter.formatSuccess).toHaveBeenCalled();
+        expect(mockResponseFormatter?.formatSuccess).toHaveBeenCalled();
 
-        expect(response.status).toBe('success');
-        expect(response.data.tools).toHaveLength(2);
-        expect(response.data.tools[0].name).toBe('claude-zen-analyze');
+        expect(response?.status).toBe('success');
+        expect(response?.data?.tools).toHaveLength(2);
+        expect(response?.data?.tools?.[0]?.name).toBe('claude-zen-analyze');
       });
     });
 
@@ -305,7 +305,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
           confidence: 0.91,
         });
 
-        mockResponseFormatter.formatSuccess.mockReturnValue({
+        mockResponseFormatter?.formatSuccess?.mockReturnValue({
           status: 'success',
           data: {
             analysis: 'clean-architecture-detected',
@@ -333,11 +333,11 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
         });
         expect(mockMcpServer.call).toHaveBeenCalled();
         expect(mockRequestTransformer.mcpToHttp).toHaveBeenCalled();
-        expect(mockResponseFormatter.formatSuccess).toHaveBeenCalled();
+        expect(mockResponseFormatter?.formatSuccess).toHaveBeenCalled();
 
-        expect(response.status).toBe('success');
-        expect(response.data.analysis).toBe('clean-architecture-detected');
-        expect(response.data.confidence).toBe(0.91);
+        expect(response?.status).toBe('success');
+        expect(response?.data?.analysis).toBe('clean-architecture-detected');
+        expect(response?.data?.confidence).toBe(0.91);
       });
     });
 
@@ -392,7 +392,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
           },
         });
 
-        mockResponseFormatter.formatSuccess.mockReturnValue({
+        mockResponseFormatter?.formatSuccess?.mockReturnValue({
           status: 'success',
           data: {
             queenType: 'architect',
@@ -423,16 +423,16 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
           },
         });
         expect(mockMcpServer.call).toHaveBeenCalled();
-        expect(mockResponseFormatter.formatSuccess).toHaveBeenCalledWith({
+        expect(mockResponseFormatter?.formatSuccess).toHaveBeenCalledWith({
           queenType: 'architect',
           taskId: 'queen-arch-task-001',
           status: 'in-progress',
           result: expect.any(Object),
         });
 
-        expect(response.data.queenType).toBe('architect');
-        expect(response.data.taskId).toBe('queen-arch-task-001');
-        expect(response.data.result.design).toBe('api-gateway-blueprint');
+        expect(response?.data?.queenType).toBe('architect');
+        expect(response?.data?.taskId).toBe('queen-arch-task-001');
+        expect(response?.data?.result?.design).toBe('api-gateway-blueprint');
       });
     });
   });
@@ -466,7 +466,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
           code: 400,
         });
 
-        mockResponseFormatter.formatError.mockReturnValue({
+        mockResponseFormatter?.formatError?.mockReturnValue({
           status: 'error',
           error: {
             type: 'validation_error',
@@ -489,11 +489,11 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
         // Assert - Verify error transformation chain
         expect(mockMcpServer.call).toHaveBeenCalled();
         expect(mockErrorHandler.handleMcpError).toHaveBeenCalledWith(mcpError);
-        expect(mockResponseFormatter.formatError).toHaveBeenCalled();
+        expect(mockResponseFormatter?.formatError).toHaveBeenCalled();
 
-        expect(response.status).toBe('error');
-        expect(response.error.type).toBe('validation_error');
-        expect(response.error.code).toBe(400);
+        expect(response?.status).toBe('error');
+        expect(response?.error?.type).toBe('validation_error');
+        expect(response?.error?.code).toBe(400);
       });
     });
   });
@@ -531,7 +531,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       // Assert - Verify protocol interaction
       expect(mockProtocolBridge.translateRequest).toHaveBeenCalledWith(httpRequest, 'MCP');
       expect(mockProtocolBridge.validateTranslation).toHaveBeenCalledWith(httpRequest, result);
-      expect(result.method).toBe('translated');
+      expect(result?.method).toBe('translated');
     });
   });
 

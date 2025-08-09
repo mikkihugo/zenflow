@@ -1,5 +1,5 @@
 /**
- * Interfaces Module - Enhanced with Advanced CLI
+ * Interfaces Module - Enhanced with Advanced CLI.
  *
  * Unified export for all interface types:
  * - Terminal: Unified CLI/TUI interface (React/Ink based)
@@ -10,6 +10,11 @@
  */
 
 // All Interface Exports
+/**
+ * @file interfaces module exports.
+ */
+
+
 export * from './api';
 // Advanced CLI System (Revolutionary AI-powered capabilities)
 export * from './cli';

@@ -1,9 +1,14 @@
 /**
  * Error Recovery Strategies and Circuit Breaker Patterns.
  *
- * Implements sophisticated error recovery mechanisms for Claude-Zen distributed systems
+ * Implements sophisticated error recovery mechanisms for Claude-Zen distributed systems.
  * Includes retry patterns, circuit breakers, fallback strategies, and graceful degradation.
  */
+/**
+ * @file error-recovery implementation
+ */
+
+
 
 import { isRecoverableError } from './errors';
 import { createLogger } from './logger';

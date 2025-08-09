@@ -1,9 +1,16 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-knowledge-knowledge-storage");
 /**
- * Independent FACT Storage System
+ * @file knowledge-storage implementation
+ */
+
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-knowledge-knowledge-storage');
+
+/**
+ * Independent FACT Storage System.
  *
- * Completely separate from RAG/LanceDB - provides pluggable backend storage
+ * Completely separate from RAG/LanceDB - provides pluggable backend storage.
  * for FACT (Fast Augmented Context Tools) external knowledge gathering results.
  *
  * Key Principles:
@@ -15,7 +22,7 @@ const logger = getLogger("src-knowledge-knowledge-storage");
  * - Memory cache for fast access (TTL-based)
  * - Pluggable backend storage (SQLite, JSONB, File, Memory)
  * - No vector embeddings (that's RAG's job)
- * - Backend-agnostic design for flexibility
+ * - Backend-agnostic design for flexibility.
  */
 
 import crypto from 'node:crypto';
@@ -23,7 +30,7 @@ import { EventEmitter } from 'node:events';
 import SQLiteBackend from './knowledge-cache-backends/sqlite-backend';
 
 /**
- * Independent FACT Storage System with pluggable backends
+ * Independent FACT Storage System with pluggable backends.
  *
  * @example
  */
@@ -58,7 +65,7 @@ export class FACTStorageSystem extends EventEmitter {
   }
 
   /**
-   * Initialize the FACT storage system
+   * Initialize the FACT storage system.
    */
   async initialize(): Promise<void> {
     try {
@@ -79,7 +86,7 @@ export class FACTStorageSystem extends EventEmitter {
   }
 
   /**
-   * Store FACT knowledge entry
+   * Store FACT knowledge entry.
    *
    * @param entry
    */
@@ -115,7 +122,7 @@ export class FACTStorageSystem extends EventEmitter {
   }
 
   /**
-   * Retrieve FACT knowledge by ID
+   * Retrieve FACT knowledge by ID.
    *
    * @param id
    */
@@ -154,7 +161,7 @@ export class FACTStorageSystem extends EventEmitter {
   }
 
   /**
-   * Search FACT knowledge entries
+   * Search FACT knowledge entries.
    *
    * @param query
    */
@@ -178,7 +185,7 @@ export class FACTStorageSystem extends EventEmitter {
   }
 
   /**
-   * Get comprehensive storage statistics
+   * Get comprehensive storage statistics.
    */
   async getStorageStats(): Promise<FACTStorageStats> {
     const memoryEntries = this.memoryCache.size;
@@ -226,7 +233,7 @@ export class FACTStorageSystem extends EventEmitter {
   }
 
   /**
-   * Clean up expired entries from both memory and backend
+   * Clean up expired entries from both memory and backend.
    */
   async cleanup(): Promise<void> {
     const now = Date.now();
@@ -252,7 +259,7 @@ export class FACTStorageSystem extends EventEmitter {
    * Clear all storage (memory and backend)
    */
   async clearAll(): Promise<void> {
-    // Clear memory
+    // Clear memory.
     this.memoryCache.clear();
 
     // Clear backend
@@ -270,7 +277,7 @@ export class FACTStorageSystem extends EventEmitter {
   }
 
   /**
-   * Delete specific knowledge entry
+   * Delete specific knowledge entry.
    *
    * @param id
    */
@@ -291,7 +298,7 @@ export class FACTStorageSystem extends EventEmitter {
   }
 
   /**
-   * Private helper methods
+   * Private helper methods.
    */
 
   private createBackend(): FACTStorageBackend {
@@ -361,7 +368,7 @@ export class FACTStorageSystem extends EventEmitter {
   }
 
   /**
-   * Shutdown storage system
+   * Shutdown storage system.
    */
   async shutdown(): Promise<void> {
     if (this.cleanupTimer) {

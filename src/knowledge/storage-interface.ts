@@ -1,9 +1,14 @@
 /**
- * FACT Storage Interface
+ * FACT Storage Interface.
  *
  * Backend-agnostic storage interface for FACT external knowledge system.
  * Allows pluggable storage backends (SQLite, JSONB, File-based, etc.)
  */
+/**
+ * @file storage-interface implementation
+ */
+
+
 
 export interface FACTKnowledgeEntry {
   id: string;
@@ -51,91 +56,91 @@ export interface FACTStorageStats {
 }
 
 /**
- * Backend-agnostic FACT storage interface
+ * Backend-agnostic FACT storage interface.
  *
  * @example
  */
 export interface FACTStorageBackend {
   /**
-   * Initialize the storage backend
+   * Initialize the storage backend.
    */
   initialize(): Promise<void>;
 
   /**
-   * Store a knowledge entry
+   * Store a knowledge entry.
    */
   store(entry: FACTKnowledgeEntry): Promise<void>;
 
   /**
-   * Retrieve a knowledge entry by ID
+   * Retrieve a knowledge entry by ID.
    */
   get(id: string): Promise<FACTKnowledgeEntry | null>;
 
   /**
-   * Search knowledge entries
+   * Search knowledge entries.
    */
   search(query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]>;
 
   /**
-   * Delete a knowledge entry
+   * Delete a knowledge entry.
    */
   delete(id: string): Promise<boolean>;
 
   /**
-   * Clean up expired entries
+   * Clean up expired entries.
    */
   cleanup(maxAge: number): Promise<number>; // Returns count of deleted entries
 
   /**
-   * Get storage statistics
+   * Get storage statistics.
    */
   getStats(): Promise<Partial<FACTStorageStats>>;
 
   /**
-   * Clear all storage
+   * Clear all storage.
    */
   clear(): Promise<void>;
 
   /**
-   * Shutdown the storage backend
+   * Shutdown the storage backend.
    */
   shutdown(): Promise<void>;
 
   /**
-   * Clear entries by quality threshold
+   * Clear entries by quality threshold.
    */
   clearByQuality(minQuality: number): Promise<number>;
 
   /**
-   * Clear entries older than specified age
+   * Clear entries older than specified age.
    */
   clearByAge(maxAgeMs: number): Promise<number>;
 
   /**
-   * Clear memory cache only
+   * Clear memory cache only.
    */
   clearMemoryCache(): Promise<number>;
 
   /**
-   * Clear all entries
+   * Clear all entries.
    */
   clearAll(): Promise<number>;
 
   /**
-   * Optimize storage performance
+   * Optimize storage performance.
    */
   optimize(
     strategy?: 'aggressive' | 'balanced' | 'conservative'
   ): Promise<{ optimized: boolean; details: string }>;
 
   /**
-   * Get storage statistics
+   * Get storage statistics.
    */
   getStorageStats(): Promise<FACTStorageStats>;
 }
 
 /**
- * FACT storage configuration
+ * FACT storage configuration.
  *
  * @example
  */

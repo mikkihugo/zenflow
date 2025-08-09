@@ -1,4 +1,5 @@
 /**
+/// <reference types="./global-types" />
  * Claude-Zen MCP Server - London School TDD Tests
  *
  * Testing the actual MCP server implementation using London School principles:
@@ -60,7 +61,7 @@ const mockMCPToolExecutor = {
 
 interface MCPServerContract {
   initialize(options: { stdio: boolean; port?: number }): Promise<void>;
-  handleStdioMessage(message: any): Promise<any>;
+  handleStdioMessage(message: unknown): Promise<any>;
   registerTool(name: string, handler: Function): Promise<void>;
   shutdown(): Promise<void>;
 }
@@ -102,7 +103,7 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
       return Promise.resolve();
     }
 
-    async handleStdioMessage(message: any) {
+    async handleStdioMessage(message: unknown) {
       const validated = await this.messageHandler.validateMessage(message);
       if (!validated.valid) {
         return this.messageHandler.createError(message.id, validated.error);
@@ -124,7 +125,7 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
     describe('User Story: MCP Server Initialization', () => {
       it('should initialize all dependencies in correct order for stdio mode', async () => {
         // Arrange - Mock the initialization sequence
-        mockSqliteMemoryStore.initialize.mockResolvedValue(undefined);
+        mockSqliteMemoryStore?.initialize?.mockResolvedValue(undefined);
         mockNeuralEngine.initialize.mockResolvedValue(undefined);
         mockZenSwarm.initialize.mockResolvedValue(undefined);
 
@@ -134,13 +135,13 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
         await mcpServer.initialize({ stdio: true });
 
         // Assert - Verify initialization contract (London School: test the conversation)
-        expect(mockSqliteMemoryStore.initialize).toHaveBeenCalledWith(':memory:');
+        expect(mockSqliteMemoryStore?.initialize).toHaveBeenCalledWith(':memory:');
         expect(mockNeuralEngine.initialize).toHaveBeenCalledWith({ model: 'claude-zen-v1' });
         expect(mockZenSwarm.initialize).toHaveBeenCalledWith({ topology: 'hive-mind' });
 
         // Verify initialization order (important for dependencies)
         const initCalls = [
-          mockSqliteMemoryStore.initialize.mock.invocationCallOrder[0],
+          mockSqliteMemoryStore?.initialize?.mock?.invocationCallOrder?.[0],
           mockNeuralEngine.initialize.mock.invocationCallOrder[0],
           mockZenSwarm.initialize.mock.invocationCallOrder[0],
         ];
@@ -189,8 +190,8 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
           focus: 'architecture',
         });
 
-        expect(response.result.analysis).toBe('clean-architecture-detected');
-        expect(response.result.confidence).toBe(0.89);
+        expect(response?.result?.analysis).toBe('clean-architecture-detected');
+        expect(response?.result?.confidence).toBe(0.89);
       });
 
       it('should handle invalid messages with proper error responses', async () => {
@@ -227,7 +228,7 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
           2,
           'Unknown method: invalid/method'
         );
-        expect(response.error.code).toBe(-32601);
+        expect(response?.error?.code).toBe(-32601);
       });
     });
   });
@@ -236,19 +237,19 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
     describe('Memory Store Integration', () => {
       it('should coordinate memory operations with tool execution', async () => {
         // Arrange - Mock memory-enhanced tool execution
-        mockSqliteMemoryStore.retrieve.mockResolvedValue({
+        mockSqliteMemoryStore?.retrieve?.mockResolvedValue({
           previous_analysis: 'microservices-pattern',
           context: 'e-commerce-platform',
         });
 
-        mockSqliteMemoryStore.store.mockResolvedValue(undefined);
+        mockSqliteMemoryStore?.store?.mockResolvedValue(undefined);
 
         mockMCPToolExecutor.executeTool.mockImplementation(async (name, args) => {
           // Simulate tool accessing memory
-          const context = await mockSqliteMemoryStore.retrieve('project-context');
+          const context = await mockSqliteMemoryStore?.retrieve('project-context');
 
           // Store analysis results
-          await mockSqliteMemoryStore.store('latest-analysis', {
+          await mockSqliteMemoryStore?.store('latest-analysis', {
             tool: name,
             args,
             result: 'analysis-complete',
@@ -277,8 +278,8 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
         const response = await mcpServer.handleStdioMessage(toolMessage);
 
         // Assert - Verify memory integration conversation
-        expect(mockSqliteMemoryStore.retrieve).toHaveBeenCalledWith('project-context');
-        expect(mockSqliteMemoryStore.store).toHaveBeenCalledWith(
+        expect(mockSqliteMemoryStore?.retrieve).toHaveBeenCalledWith('project-context');
+        expect(mockSqliteMemoryStore?.store).toHaveBeenCalledWith(
           'latest-analysis',
           expect.objectContaining({
             tool: 'analyze-with-context',
@@ -286,8 +287,8 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
           })
         );
 
-        expect(response.result.analysis).toBe('context-aware-result');
-        expect(response.result.context.previous_analysis).toBe('microservices-pattern');
+        expect(response?.result?.analysis).toBe('context-aware-result');
+        expect(response?.result?.context?.previous_analysis).toBe('microservices-pattern');
       });
     });
 
@@ -314,7 +315,7 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
             result: {
               basic_analysis: 'completed',
               neural_enhancement: neuralResult,
-              recommendation: neuralResult.prediction,
+              recommendation: neuralResult?.prediction,
             },
           };
         });
@@ -343,9 +344,9 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
           model: 'code-analysis-v1',
         });
 
-        expect(response.result.neural_enhancement.prediction).toBe('refactor-recommended');
-        expect(response.result.neural_enhancement.confidence).toBe(0.94);
-        expect(response.result.recommendation).toBe('refactor-recommended');
+        expect(response?.result?.neural_enhancement?.prediction).toBe('refactor-recommended');
+        expect(response?.result?.neural_enhancement?.confidence).toBe(0.94);
+        expect(response?.result?.recommendation).toBe('refactor-recommended');
       });
     });
   });
@@ -360,7 +361,7 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
       };
 
       const protocolHandler = {
-        processMessage: (message: any) => {
+        processMessage: (message: unknown) => {
           const isValidRpc = mockProtocolValidator.validateJsonRpc(message);
           const methodExists = mockProtocolValidator.checkMethodExists(message.method);
           const paramsValid = mockProtocolValidator.validateParams(message.params);
@@ -389,9 +390,9 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
       expect(mockProtocolValidator.checkMethodExists).toHaveBeenCalledWith('tools/list');
       expect(mockProtocolValidator.validateParams).toHaveBeenCalledWith({});
 
-      expect(result.isValidRpc).toBe(true);
-      expect(result.methodExists).toBe(true);
-      expect(result.paramsValid).toBe(true);
+      expect(result?.isValidRpc).toBe(true);
+      expect(result?.methodExists).toBe(true);
+      expect(result?.paramsValid).toBe(true);
     });
   });
 

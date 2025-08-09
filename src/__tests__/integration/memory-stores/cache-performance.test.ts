@@ -714,7 +714,7 @@ describe('Cache Performance Integration Tests', () => {
 
       const evictionEvents = events.filter((e) => e.type === 'evicted');
       expect(evictionEvents).toHaveLength(1);
-      expect(evictionEvents[0].data.strategy).toBe('LRU');
+      expect(evictionEvents[0]?.data?.strategy).toBe('LRU');
     });
 
     it('should emit expiration events', async () => {
@@ -730,7 +730,7 @@ describe('Cache Performance Integration Tests', () => {
       await ttlCache.get('expire-test');
 
       expect(expiredEvents).toHaveLength(1);
-      expect(expiredEvents[0].key).toBe('expire-test');
+      expect(expiredEvents[0]?.key).toBe('expire-test');
     });
   });
 
@@ -776,7 +776,7 @@ describe('Cache Performance Integration Tests', () => {
       const results = await Promise.all(readPromises);
 
       // All reads should return the same value
-      results.forEach((result) => {
+      results?.forEach((result) => {
         expect(result).toEqual(initialValue);
       });
 
@@ -824,14 +824,14 @@ describe('Cache Performance Integration Tests', () => {
       }
 
       // Verify different strategies behave differently
-      expect(results.LRU).toBeDefined();
-      expect(results.LFU).toBeDefined();
-      expect(results.TTL).toBeDefined();
+      expect(results?.LRU).toBeDefined();
+      expect(results?.LFU).toBeDefined();
+      expect(results?.TTL).toBeDefined();
 
       // All should maintain cache size limit
-      expect(results.LRU.size).toBeLessThanOrEqual(cacheSize);
-      expect(results.LFU.size).toBeLessThanOrEqual(cacheSize);
-      expect(results.TTL.size).toBeLessThanOrEqual(cacheSize);
+      expect(results?.LRU.size).toBeLessThanOrEqual(cacheSize);
+      expect(results?.LFU.size).toBeLessThanOrEqual(cacheSize);
+      expect(results?.TTL.size).toBeLessThanOrEqual(cacheSize);
     });
   });
 });

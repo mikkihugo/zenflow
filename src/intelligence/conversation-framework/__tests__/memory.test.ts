@@ -575,8 +575,8 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       expect(retrieved2?.metrics.messageCount).toBe(5);
       expect(retrieved2?.title).toBe(conversation.title); // Unchanged
 
-      expect(searchResults.some((c) => c.id === 'conv-consistency-test')).toBe(true);
-      const foundConv = searchResults.find((c) => c.id === 'conv-consistency-test');
+      expect(searchResults?.some((c) => c.id === 'conv-consistency-test')).toBe(true);
+      const foundConv = searchResults?.find((c) => c.id === 'conv-consistency-test');
       expect(foundConv?.status).toBe('paused');
       expect(foundConv?.metrics.messageCount).toBe(5);
     });

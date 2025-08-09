@@ -1,10 +1,10 @@
 /**
  * @file Claude-Zen Batch Execution Engine
- * Implementation of claude-zen's "1 MESSAGE = ALL OPERATIONS" principle
+ * Implementation of claude-zen's "1 MESSAGE = ALL OPERATIONS" principle.
  * Achieves 2.8-4.4x speed improvements through concurrent execution
  */
 
-import { createLogger } from '../../core/logger';
+import { createLogger } from '../core/logger';
 
 // TODO: Use dependency injection for logger
 // Should inject ILogger from DI container instead of creating directly
@@ -52,8 +52,8 @@ export interface BatchExecutionSummary {
 }
 
 /**
- * Core batch execution engine implementing claude-zen's concurrent patterns
- * Follows the "1 MESSAGE = ALL OPERATIONS" principle for maximum efficiency
+ * Core batch execution engine implementing claude-zen's concurrent patterns.
+ * Follows the "1 MESSAGE = ALL OPERATIONS" principle for maximum efficiency.
  *
  * @example
  */
@@ -65,11 +65,11 @@ export class BatchEngine {
 
   constructor(config: BatchExecutionConfig = {}) {
     this.config = {
-      maxConcurrency: config.maxConcurrency ?? 6, // claude-zen default
-      timeoutMs: config.timeoutMs ?? 30000,
-      retryAttempts: config.retryAttempts ?? 2,
-      enableDependencyResolution: config.enableDependencyResolution ?? true,
-      trackPerformance: config.trackPerformance ?? true,
+      maxConcurrency: config?.maxConcurrency ?? 6, // claude-zen default
+      timeoutMs: config?.timeoutMs ?? 30000,
+      retryAttempts: config?.retryAttempts ?? 2,
+      enableDependencyResolution: config?.enableDependencyResolution ?? true,
+      trackPerformance: config?.trackPerformance ?? true,
     };
 
     this.executionQueue = new Map();
@@ -81,7 +81,7 @@ export class BatchEngine {
    * Execute multiple operations concurrently following the claude-zen pattern
    * This is the core implementation of "1 MESSAGE = ALL OPERATIONS"
    *
-   * @param operations
+   * @param operations.
    */
   async executeBatch(operations: BatchOperation[]): Promise<BatchExecutionSummary> {
     const startTime = Date.now();
@@ -121,7 +121,7 @@ export class BatchEngine {
   }
 
   /**
-   * Execute operations with smart concurrency control and dependency resolution
+   * Execute operations with smart concurrency control and dependency resolution.
    */
   private async executeWithConcurrencyControl(): Promise<void> {
     while (this.executionQueue.size > 0 || this.activeOperations.size > 0) {
@@ -160,7 +160,7 @@ export class BatchEngine {
   }
 
   /**
-   * Find operations that have all dependencies resolved
+   * Find operations that have all dependencies resolved.
    */
   private findReadyOperations(): BatchOperation[] {
     if (!this.config.enableDependencyResolution) {
@@ -181,7 +181,7 @@ export class BatchEngine {
   }
 
   /**
-   * Execute a single operation with error handling and timeout
+   * Execute a single operation with error handling and timeout.
    *
    * @param operation
    */
@@ -223,7 +223,7 @@ export class BatchEngine {
   }
 
   /**
-   * Execute operation based on its type
+   * Execute operation based on its type.
    *
    * @param operation
    */
@@ -250,7 +250,7 @@ export class BatchEngine {
   /**
    * Perform the actual operation (to be extended by specific implementations)
    *
-   * @param operation
+   * @param operation.
    */
   private async performOperation(operation: BatchOperation): Promise<unknown> {
     switch (operation.type) {
@@ -273,7 +273,7 @@ export class BatchEngine {
    * @param operation
    */
   private async executeTool(operation: BatchOperation): Promise<unknown> {
-    // Placeholder for tool execution - will be implemented by MCP integration
+    // Placeholder for tool execution - will be implemented by MCP integration.
     logger.debug(`Executing tool: ${operation.operation}`, operation.params);
 
     // Simulate operation for now
@@ -325,7 +325,7 @@ export class BatchEngine {
   }
 
   /**
-   * Execute agent operation
+   * Execute agent operation.
    *
    * @param operation
    */
@@ -343,7 +343,7 @@ export class BatchEngine {
   }
 
   /**
-   * Calculate performance summary including speed improvements
+   * Calculate performance summary including speed improvements.
    *
    * @param totalExecutionTime
    * @param totalOperations
@@ -353,16 +353,16 @@ export class BatchEngine {
     totalOperations: number
   ): BatchExecutionSummary {
     const results = Array.from(this.results.values());
-    const successfulOperations = results.filter((r) => r.success).length;
-    const failedOperations = results.filter((r) => !r.success).length;
+    const successfulOperations = results?.filter((r) => r.success).length;
+    const failedOperations = results?.filter((r) => !r.success).length;
 
     const averageExecutionTime =
       results.length > 0
-        ? results.reduce((sum, r) => sum + r.executionTime, 0) / results.length
+        ? results?.reduce((sum, r) => sum + r.executionTime, 0) / results.length
         : 0;
 
     // Calculate theoretical sequential execution time
-    const sequentialTime = results.reduce((sum, r) => sum + r.executionTime, 0);
+    const sequentialTime = results?.reduce((sum, r) => sum + r.executionTime, 0);
 
     // Calculate speed improvement (claude-zen claims 2.8-4.4x)
     const speedImprovement = sequentialTime > 0 ? sequentialTime / totalExecutionTime : 1;
@@ -388,7 +388,7 @@ export class BatchEngine {
   }
 
   /**
-   * Get results for specific operations
+   * Get results for specific operations.
    *
    * @param operationIds
    */
@@ -403,14 +403,14 @@ export class BatchEngine {
   }
 
   /**
-   * Check if batch execution is currently running
+   * Check if batch execution is currently running.
    */
   isExecuting(): boolean {
     return this.activeOperations.size > 0 || this.executionQueue.size > 0;
   }
 
   /**
-   * Get current execution status
+   * Get current execution status.
    */
   getExecutionStatus(): {
     queuedOperations: number;
@@ -426,7 +426,7 @@ export class BatchEngine {
 }
 
 /**
- * Factory function to create batch operations
+ * Factory function to create batch operations.
  *
  * @param id
  * @param type
@@ -450,18 +450,18 @@ export function createBatchOperation(
   };
 
   if (options?.dependencies !== undefined) {
-    batchOp.dependencies = options.dependencies;
+    batchOp.dependencies = options?.dependencies;
   }
 
   if (options?.timeout !== undefined) {
-    batchOp.timeout = options.timeout;
+    batchOp.timeout = options?.timeout;
   }
 
   return batchOp;
 }
 
 /**
- * Utility to create multiple tool operations for batch execution
+ * Utility to create multiple tool operations for batch execution.
  *
  * @param tools
  */

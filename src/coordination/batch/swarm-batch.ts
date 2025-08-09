@@ -1,11 +1,11 @@
 /**
  * @file Swarm Batch Coordination
- * Implements concurrent swarm operations following claude-zen patterns
- * Enables batch agent spawning, task distribution, and coordination
+ * Implements concurrent swarm operations following claude-zen patterns.
+ * Enables batch agent spawning, task distribution, and coordination.
  */
 
-import { createLogger } from '../../core/logger';
-import type { AgentType } from '../../types/agent-types';
+import { createLogger } from '../core/logger';
+import type { AgentType } from '../types/agent-types';
 import type { BatchOperation } from './batch-engine';
 
 const logger = createLogger({ prefix: 'SwarmBatch' });
@@ -54,8 +54,8 @@ export interface SwarmBatchConfig {
 }
 
 /**
- * Coordinates multiple swarm operations concurrently
- * Implements claude-zen's swarm batch optimization patterns
+ * Coordinates multiple swarm operations concurrently.
+ * Implements claude-zen's swarm batch optimization patterns.
  *
  * @example
  */
@@ -65,18 +65,18 @@ export class SwarmBatchCoordinator {
 
   constructor(config: SwarmBatchConfig = {}) {
     this.config = {
-      maxConcurrentSwarms: config.maxConcurrentSwarms ?? 5,
-      maxAgentsPerSwarm: config.maxAgentsPerSwarm ?? 10,
-      defaultTimeout: config.defaultTimeout ?? 30000,
-      enableCoordinationOptimization: config.enableCoordinationOptimization ?? true,
+      maxConcurrentSwarms: config?.maxConcurrentSwarms ?? 5,
+      maxAgentsPerSwarm: config?.maxAgentsPerSwarm ?? 10,
+      defaultTimeout: config?.defaultTimeout ?? 30000,
+      enableCoordinationOptimization: config?.enableCoordinationOptimization ?? true,
     };
 
     this.activeSwarms = new Map();
   }
 
   /**
-   * Execute multiple swarm operations concurrently
-   * Implements claude-zen's batch swarm coordination
+   * Execute multiple swarm operations concurrently.
+   * Implements claude-zen's batch swarm coordination.
    *
    * @param operations
    */
@@ -121,7 +121,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Group operations by type for intelligent execution order
+   * Group operations by type for intelligent execution order.
    *
    * @param operations
    */
@@ -138,14 +138,14 @@ export class SwarmBatchCoordinator {
     };
 
     for (const operation of operations) {
-      groups[operation.type].push(operation);
+      groups[operation.type]?.push(operation);
     }
 
     return groups;
   }
 
   /**
-   * Execute swarm initialization operations concurrently
+   * Execute swarm initialization operations concurrently.
    *
    * @param operations
    */
@@ -159,13 +159,13 @@ export class SwarmBatchCoordinator {
       const chunkPromises = chunk.map((op) => this.executeSwarmInit(op));
       const chunkResults = await Promise.allSettled(chunkPromises);
 
-      chunkResults.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-          results.push(result.value);
+      chunkResults?.forEach((result, index) => {
+        if (result?.status === 'fulfilled') {
+          results.push(result?.value);
         } else {
           const operation = chunk[index];
           if (operation) {
-            results.push(this.createErrorResult(operation, result.reason));
+            results.push(this.createErrorResult(operation, result?.reason));
           }
         }
       });
@@ -175,7 +175,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Execute agent spawning operations with batch optimization
+   * Execute agent spawning operations with batch optimization.
    *
    * @param operations
    */
@@ -202,12 +202,12 @@ export class SwarmBatchCoordinator {
 
     const swarmResults = await Promise.allSettled(swarmPromises);
 
-    swarmResults.forEach((result) => {
-      if (result.status === 'fulfilled') {
-        results.push(...result.value);
+    swarmResults?.forEach((result) => {
+      if (result?.status === 'fulfilled') {
+        results.push(...result?.value);
       } else {
         // Create error results for failed swarm spawning
-        logger.warn('Swarm agent spawning failed:', result.reason);
+        logger.warn('Swarm agent spawning failed:', result?.reason);
       }
     });
 
@@ -215,7 +215,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Execute coordination operations with adaptive strategies
+   * Execute coordination operations with adaptive strategies.
    *
    * @param operations
    */
@@ -240,13 +240,13 @@ export class SwarmBatchCoordinator {
         const chunkPromises = chunk.map((op) => this.executeCoordinationOperation(op));
         const chunkResults = await Promise.allSettled(chunkPromises);
 
-        chunkResults.forEach((result, index) => {
-          if (result.status === 'fulfilled') {
-            results.push(result.value);
+        chunkResults?.forEach((result, index) => {
+          if (result?.status === 'fulfilled') {
+            results.push(result?.value);
           } else {
             const operation = chunk[index];
             if (operation) {
-              results.push(this.createErrorResult(operation, result.reason));
+              results.push(this.createErrorResult(operation, result?.reason));
             }
           }
         });
@@ -257,8 +257,9 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Execute management operations (status, terminate)
+   * Execute management operations (status, terminate).
    *
+   * @param operations.
    * @param operations
    */
   private async executeManagementOperations(
@@ -273,13 +274,13 @@ export class SwarmBatchCoordinator {
       const chunkPromises = chunk.map((op) => this.executeManagementOperation(op));
       const chunkResults = await Promise.allSettled(chunkPromises);
 
-      chunkResults.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-          results.push(result.value);
+      chunkResults?.forEach((result, index) => {
+        if (result?.status === 'fulfilled') {
+          results.push(result?.value);
         } else {
           const operation = chunk[index];
           if (operation) {
-            results.push(this.createErrorResult(operation, result.reason));
+            results.push(this.createErrorResult(operation, result?.reason));
           }
         }
       });
@@ -289,7 +290,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Execute individual swarm initialization
+   * Execute individual swarm initialization.
    *
    * @param operation
    */
@@ -336,7 +337,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Execute agent spawning for a specific swarm
+   * Execute agent spawning for a specific swarm.
    *
    * @param swarmId
    * @param operations
@@ -402,7 +403,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Execute coordination operation
+   * Execute coordination operation.
    *
    * @param operation
    */
@@ -434,7 +435,7 @@ export class SwarmBatchCoordinator {
             executionTime: Date.now() - startTime,
             successRate:
               taskResults.length > 0
-                ? taskResults.filter((r) => r.status === 'completed').length / taskResults.length
+                ? taskResults?.filter((r) => r.status === 'completed').length / taskResults.length
                 : 0,
             resourceUtilization: swarmState.agents.length * 0.2,
           },
@@ -447,7 +448,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Execute management operation (status, terminate)
+   * Execute management operation (status, terminate).
    *
    * @param operation
    */
@@ -471,7 +472,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Optimize coordination order based on priorities and dependencies
+   * Optimize coordination order based on priorities and dependencies.
    *
    * @param operations
    */
@@ -494,7 +495,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Coordinate task execution within a swarm
+   * Coordinate task execution within a swarm.
    *
    * @param swarmState
    * @param operation
@@ -528,7 +529,7 @@ export class SwarmBatchCoordinator {
       });
 
       const results = await Promise.allSettled(promises);
-      taskResults.push(
+      taskResults?.push(
         ...results.map((r) =>
           r.status === 'fulfilled'
             ? r.value
@@ -540,9 +541,9 @@ export class SwarmBatchCoordinator {
       for (const agent of swarmState.agents) {
         try {
           const result = await this.executeTaskOnAgent(agent.id, operation);
-          taskResults.push({ agentId: agent.id, result, status: 'completed' });
+          taskResults?.push({ agentId: agent.id, result, status: 'completed' });
         } catch (error) {
-          taskResults.push({ agentId: agent.id, result: error, status: 'failed' });
+          taskResults?.push({ agentId: agent.id, result: error, status: 'failed' });
         }
       }
     }
@@ -550,7 +551,7 @@ export class SwarmBatchCoordinator {
     for (const agent of swarmState.agents) {
       await this.simulateOperation(Math.random() * 200);
 
-      taskResults.push({
+      taskResults?.push({
         agentId: agent.id,
         result: { taskId: operation.task?.id, completed: true },
         status: Math.random() > 0.1 ? 'completed' : 'failed', // 90% success rate
@@ -561,7 +562,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Batch spawn agents efficiently
+   * Batch spawn agents efficiently.
    *
    * @param swarmId
    * @param agentTypes
@@ -586,7 +587,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Get swarm status
+   * Get swarm status.
    *
    * @param operation
    * @param startTime
@@ -618,7 +619,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Terminate swarm
+   * Terminate swarm.
    *
    * @param operation
    * @param startTime
@@ -651,7 +652,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Utility methods
+   * Utility methods.
    *
    * @param operations
    * @param chunkSize
@@ -691,7 +692,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Execute task on a specific agent
+   * Execute task on a specific agent.
    *
    * @param agentId
    * @param operation
@@ -709,7 +710,7 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Convert SwarmOperation to BatchOperation for use with BatchEngine
+   * Convert SwarmOperation to BatchOperation for use with BatchEngine.
    *
    * @param swarmOps
    */
@@ -730,14 +731,14 @@ export class SwarmBatchCoordinator {
   }
 
   /**
-   * Get active swarms count
+   * Get active swarms count.
    */
   getActiveSwarms(): number {
     return this.activeSwarms.size;
   }
 
   /**
-   * Get total active agents across all swarms
+   * Get total active agents across all swarms.
    */
   getTotalActiveAgents(): number {
     let total = 0;

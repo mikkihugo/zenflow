@@ -1,7 +1,12 @@
 /**
- * Factory provider implementation
- * Uses a factory function to create instances
+ * Factory provider implementation.
+ * Uses a factory function to create instances.
  */
+/**
+ * @file factory-provider implementation
+ */
+
+
 
 import type { DIContainer, FactoryProvider as IFactoryProvider } from '../types/di-types';
 

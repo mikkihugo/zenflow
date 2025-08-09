@@ -1,22 +1,27 @@
 /**
- * UEL Coordination Event Adapter
+ * UEL Coordination Event Adapter.
  *
  * Unified Event Layer adapter for coordination-related events, providing
- * a consistent interface to scattered EventEmitter patterns across the coordination system
+ * a consistent interface to scattered EventEmitter patterns across the coordination system.
  * while maintaining full backward compatibility and adding enhanced monitoring,
  * event correlation, performance tracking, and unified coordination functionality.
  *
  * This adapter follows the exact same patterns as the system event adapter,
- * implementing the IEventManager interface and providing unified configuration
+ * implementing the IEventManager interface and providing unified configuration.
  * management for coordination events across Claude-Zen.
  */
+/**
+ * @file coordination-event adapter implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
-import type { AgentManager } from '../../../coordination/agents/agent-manager';
-import type { Orchestrator } from '../../../coordination/orchestrator';
+import type { AgentManager } from '../coordination/agents/agent-manager';
+import type { Orchestrator } from '../coordination/orchestrator';
 // Import coordination system classes to wrap their EventEmitter usage
-import type { SwarmCoordinator } from '../../../coordination/swarm/core/swarm-coordinator';
-import { createLogger, type Logger } from '../../../core/logger';
+import type { SwarmCoordinator } from '../coordination/swarm/core/swarm-coordinator';
+import { createLogger, type Logger } from '../core/logger';
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -35,7 +40,7 @@ import type { CoordinationEvent, EventPriority } from '../types';
 import { EventPriorityMap } from '../types';
 
 /**
- * Coordination event adapter configuration extending UEL EventManagerConfig
+ * Coordination event adapter configuration extending UEL EventManagerConfig.
  *
  * @example
  */
@@ -47,7 +52,7 @@ export interface CoordinationEventAdapterConfig extends EventManagerConfig {
     wrapPerformanceEvents?: boolean;
     wrapTopologyEvents?: boolean;
     wrapHealthEvents?: boolean;
-    coordinators?: string[]; // List of coordinators to wrap
+    coordinators?: string[]; // List of coordinators to wrap.
   };
 
   /** Agent management integration settings */
@@ -122,7 +127,7 @@ export interface CoordinationEventAdapterConfig extends EventManagerConfig {
 }
 
 /**
- * Coordination event operation metrics for performance monitoring
+ * Coordination event operation metrics for performance monitoring.
  *
  * @example
  */
@@ -148,7 +153,7 @@ interface CoordinationEventMetrics {
 }
 
 /**
- * Coordination correlation entry for tracking related events
+ * Coordination correlation entry for tracking related events.
  *
  * @example
  */
@@ -171,7 +176,7 @@ interface CoordinationCorrelation {
 }
 
 /**
- * Coordination health tracking entry
+ * Coordination health tracking entry.
  *
  * @example
  */
@@ -195,7 +200,7 @@ interface CoordinationHealthEntry {
 }
 
 /**
- * Wrapped coordination component for unified event management
+ * Wrapped coordination component for unified event management.
  *
  * @example
  */
@@ -215,9 +220,9 @@ interface WrappedCoordinationComponent {
 }
 
 /**
- * Unified Coordination Event Adapter
+ * Unified Coordination Event Adapter.
  *
- * Provides a unified interface to coordination-level EventEmitter patterns
+ * Provides a unified interface to coordination-level EventEmitter patterns.
  * while implementing the IEventManager interface for UEL compatibility.
  *
  * Features:
@@ -269,15 +274,15 @@ export class CoordinationEventAdapter implements IEventManager {
   private processingEvents = false;
   private eventHistory: CoordinationEvent[] = [];
 
-  // Coordination-specific tracking
+  // Coordination-specific tracking.
   private swarmMetrics = new Map<string, any>();
   private agentMetrics = new Map<string, any>();
   private taskMetrics = new Map<string, any>();
   private coordinationPatterns = new Map<string, any>();
 
   constructor(config: CoordinationEventAdapterConfig) {
-    this.name = config.name;
-    this.type = config.type;
+    this.name = config?.name;
+    this.type = config?.type;
     this.config = {
       // Default configuration values
       swarmCoordination: {
@@ -287,7 +292,7 @@ export class CoordinationEventAdapter implements IEventManager {
         wrapTopologyEvents: true,
         wrapHealthEvents: true,
         coordinators: ['default', 'sparc'],
-        ...config.swarmCoordination,
+        ...config?.swarmCoordination,
       },
       agentManagement: {
         enabled: true,
@@ -295,7 +300,7 @@ export class CoordinationEventAdapter implements IEventManager {
         wrapHealthEvents: true,
         wrapRegistryEvents: true,
         wrapLifecycleEvents: true,
-        ...config.agentManagement,
+        ...config?.agentManagement,
       },
       taskOrchestration: {
         enabled: true,
@@ -303,7 +308,7 @@ export class CoordinationEventAdapter implements IEventManager {
         wrapDistributionEvents: true,
         wrapExecutionEvents: true,
         wrapCompletionEvents: true,
-        ...config.taskOrchestration,
+        ...config?.taskOrchestration,
       },
       protocolManagement: {
         enabled: true,
@@ -311,7 +316,7 @@ export class CoordinationEventAdapter implements IEventManager {
         wrapTopologyEvents: true,
         wrapLifecycleEvents: true,
         wrapCoordinationEvents: true,
-        ...config.protocolManagement,
+        ...config?.protocolManagement,
       },
       performance: {
         enableSwarmCorrelation: true,
@@ -320,7 +325,7 @@ export class CoordinationEventAdapter implements IEventManager {
         maxConcurrentCoordinations: 100,
         coordinationTimeout: 30000,
         enablePerformanceTracking: true,
-        ...config.performance,
+        ...config?.performance,
       },
       coordination: {
         enabled: true,
@@ -335,7 +340,7 @@ export class CoordinationEventAdapter implements IEventManager {
         ],
         trackAgentCommunication: true,
         trackSwarmHealth: true,
-        ...config.coordination,
+        ...config?.coordination,
       },
       agentHealthMonitoring: {
         enabled: true,
@@ -354,7 +359,7 @@ export class CoordinationEventAdapter implements IEventManager {
           'agent-availability': 0.9,
         },
         autoRecoveryEnabled: true,
-        ...config.agentHealthMonitoring,
+        ...config?.agentHealthMonitoring,
       },
       swarmOptimization: {
         enabled: true,
@@ -366,7 +371,7 @@ export class CoordinationEventAdapter implements IEventManager {
         },
         autoScaling: true,
         loadBalancing: true,
-        ...config.swarmOptimization,
+        ...config?.swarmOptimization,
       },
       ...config,
     };
@@ -383,7 +388,7 @@ export class CoordinationEventAdapter implements IEventManager {
   // ============================================
 
   /**
-   * Start the coordination event adapter
+   * Start the coordination event adapter.
    */
   async start(): Promise<void> {
     if (this.running) {
@@ -428,7 +433,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Stop the coordination event adapter
+   * Stop the coordination event adapter.
    */
   async stop(): Promise<void> {
     if (!this.running) {
@@ -460,7 +465,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Restart the coordination event adapter
+   * Restart the coordination event adapter.
    */
   async restart(): Promise<void> {
     this.logger.info(`Restarting coordination event adapter: ${this.name}`);
@@ -469,14 +474,14 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Check if the adapter is running
+   * Check if the adapter is running.
    */
   isRunning(): boolean {
     return this.running;
   }
 
   /**
-   * Emit a coordination event with correlation and performance tracking
+   * Emit a coordination event with correlation and performance tracking.
    *
    * @param event
    * @param options
@@ -559,7 +564,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit batch of coordination events with optimized processing
+   * Emit batch of coordination events with optimized processing.
    *
    * @param batch
    * @param options
@@ -604,7 +609,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit coordination event immediately without queuing
+   * Emit coordination event immediately without queuing.
    *
    * @param event
    */
@@ -613,7 +618,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to coordination events with filtering and transformation
+   * Subscribe to coordination events with filtering and transformation.
    *
    * @param eventTypes
    * @param listener
@@ -631,8 +636,8 @@ export class CoordinationEventAdapter implements IEventManager {
       id: subscriptionId,
       eventTypes: types,
       listener,
-      ...(options?.filter && { filter: options.filter }),
-      ...(options?.transform && { transform: options.transform }),
+      ...(options?.filter && { filter: options?.filter }),
+      ...(options?.transform && { transform: options?.transform }),
       priority: options?.priority || 'medium',
       created: new Date(),
       active: true,
@@ -650,7 +655,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Unsubscribe from coordination events
+   * Unsubscribe from coordination events.
    *
    * @param subscriptionId
    */
@@ -668,7 +673,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Unsubscribe all coordination listeners for event type
+   * Unsubscribe all coordination listeners for event type.
    *
    * @param eventType
    */
@@ -697,7 +702,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Add coordination event filter
+   * Add coordination event filter.
    *
    * @param filter
    */
@@ -709,7 +714,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Remove coordination event filter
+   * Remove coordination event filter.
    *
    * @param filterId
    */
@@ -722,7 +727,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Add coordination event transform
+   * Add coordination event transform.
    *
    * @param transform
    */
@@ -734,7 +739,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Remove coordination event transform
+   * Remove coordination event transform.
    *
    * @param transformId
    */
@@ -747,7 +752,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Query coordination event history with filtering and pagination
+   * Query coordination event history with filtering and pagination.
    *
    * @param options
    */
@@ -755,30 +760,30 @@ export class CoordinationEventAdapter implements IEventManager {
     let events = [...this.eventHistory] as T[];
 
     // Apply filters
-    if (options.filter) {
-      events = events.filter((event) => this.applyFilter(event, options.filter!));
+    if (options?.filter) {
+      events = events.filter((event) => this.applyFilter(event, options?.filter!));
     }
 
     // Apply sorting
-    if (options.sortBy) {
+    if (options?.sortBy) {
       events.sort((a, b) => {
-        const aVal = this.getEventSortValue(a, options.sortBy!);
-        const bVal = this.getEventSortValue(b, options.sortBy!);
+        const aVal = this.getEventSortValue(a, options?.sortBy!);
+        const bVal = this.getEventSortValue(b, options?.sortBy!);
         const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
         return options.sortOrder === 'desc' ? -comparison : comparison;
       });
     }
 
     // Apply pagination
-    const offset = options.offset || 0;
-    const limit = options.limit || 100;
+    const offset = options?.offset || 0;
+    const limit = options?.limit || 100;
     events = events.slice(offset, offset + limit);
 
     return events;
   }
 
   /**
-   * Get coordination event history for specific event type
+   * Get coordination event history for specific event type.
    *
    * @param eventType
    * @param limit
@@ -789,7 +794,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Perform health check on the coordination event adapter
+   * Perform health check on the coordination event adapter.
    */
   async healthCheck(): Promise<EventManagerStatus> {
     const now = new Date();
@@ -835,7 +840,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get performance metrics for the coordination adapter
+   * Get performance metrics for the coordination adapter.
    */
   async getMetrics(): Promise<EventManagerMetrics> {
     const now = new Date();
@@ -869,14 +874,14 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get active coordination subscriptions
+   * Get active coordination subscriptions.
    */
   getSubscriptions(): EventSubscription[] {
     return Array.from(this.subscriptions.values()).filter((sub) => sub.active);
   }
 
   /**
-   * Update adapter configuration
+   * Update adapter configuration.
    *
    * @param config
    */
@@ -890,7 +895,7 @@ export class CoordinationEventAdapter implements IEventManager {
    * Event handler management (EventEmitter compatibility)
    *
    * @param event
-   * @param handler
+   * @param handler.
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
@@ -912,7 +917,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Cleanup and destroy the adapter
+   * Cleanup and destroy the adapter.
    */
   async destroy(): Promise<void> {
     this.logger.info(`Destroying coordination event adapter: ${this.name}`);
@@ -956,7 +961,7 @@ export class CoordinationEventAdapter implements IEventManager {
   // ============================================
 
   /**
-   * Emit swarm coordination event with enhanced tracking
+   * Emit swarm coordination event with enhanced tracking.
    *
    * @param event
    */
@@ -980,7 +985,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to swarm lifecycle events with convenience
+   * Subscribe to swarm lifecycle events with convenience.
    *
    * @param listener
    */
@@ -989,7 +994,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to agent management events
+   * Subscribe to agent management events.
    *
    * @param listener
    */
@@ -998,7 +1003,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to task orchestration events
+   * Subscribe to task orchestration events.
    *
    * @param listener
    */
@@ -1007,7 +1012,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to topology management events
+   * Subscribe to topology management events.
    *
    * @param listener
    */
@@ -1016,7 +1021,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get coordination health status for all components
+   * Get coordination health status for all components.
    */
   async getCoordinationHealthStatus(): Promise<Record<string, CoordinationHealthEntry>> {
     const healthStatus: Record<string, CoordinationHealthEntry> = {};
@@ -1029,7 +1034,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get correlated coordination events for a specific correlation ID
+   * Get correlated coordination events for a specific correlation ID.
    *
    * @param correlationId
    */
@@ -1038,14 +1043,14 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get active coordination correlations
+   * Get active coordination correlations.
    */
   getActiveCoordinationCorrelations(): CoordinationCorrelation[] {
     return Array.from(this.coordinationCorrelations.values()).filter((c) => c.status === 'active');
   }
 
   /**
-   * Get swarm performance metrics
+   * Get swarm performance metrics.
    *
    * @param swarmId
    */
@@ -1057,7 +1062,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get agent performance metrics
+   * Get agent performance metrics.
    *
    * @param agentId
    */
@@ -1069,7 +1074,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get task execution metrics
+   * Get task execution metrics.
    *
    * @param taskId
    */
@@ -1081,7 +1086,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Force health check on all wrapped coordination components
+   * Force health check on all wrapped coordination components.
    */
   async performCoordinationHealthCheck(): Promise<Record<string, CoordinationHealthEntry>> {
     const healthResults: Record<string, CoordinationHealthEntry> = {};
@@ -1178,7 +1183,7 @@ export class CoordinationEventAdapter implements IEventManager {
   // ============================================
 
   /**
-   * Initialize coordination component integrations
+   * Initialize coordination component integrations.
    */
   private async initializeCoordinationIntegrations(): Promise<void> {
     this.logger.debug('Initializing coordination component integrations');
@@ -1207,7 +1212,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap SwarmCoordinator events with UEL integration
+   * Wrap SwarmCoordinator events with UEL integration.
    */
   private async wrapSwarmCoordinators(): Promise<void> {
     const coordinators = this.config.swarmCoordination?.coordinators || ['default'];
@@ -1252,9 +1257,9 @@ export class CoordinationEventAdapter implements IEventManager {
             correlationId: this.generateCorrelationId(),
             details: {
               ...data,
-              agentCount: data.agentCount,
-              topology: data.topology,
-              metrics: data.metrics,
+              agentCount: data?.agentCount,
+              topology: data?.topology,
+              metrics: data?.metrics,
             },
             metadata: { originalEvent, data, coordinatorName },
           };
@@ -1270,7 +1275,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap AgentManager events with UEL integration
+   * Wrap AgentManager events with UEL integration.
    */
   private async wrapAgentManagers(): Promise<void> {
     const wrapper = new EventEmitter();
@@ -1312,13 +1317,13 @@ export class CoordinationEventAdapter implements IEventManager {
           source: 'agent-manager',
           type: uelEvent as any,
           operation: this.extractCoordinationOperation(originalEvent),
-          targetId: data.agentId || data.poolId || 'agent-manager',
+          targetId: data?.agentId || data?.poolId || 'agent-manager',
           priority: this.determineEventPriority(originalEvent),
           correlationId: this.generateCorrelationId(),
           details: {
             ...data,
-            agentCount: data.totalAgents,
-            metrics: data.metrics,
+            agentCount: data?.totalAgents,
+            metrics: data?.metrics,
           },
           metadata: { originalEvent, data },
         };
@@ -1333,7 +1338,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap Orchestrator events with UEL integration
+   * Wrap Orchestrator events with UEL integration.
    */
   private async wrapOrchestrators(): Promise<void> {
     const wrapper = new EventEmitter();
@@ -1367,14 +1372,14 @@ export class CoordinationEventAdapter implements IEventManager {
           source: 'orchestrator',
           type: uelEvent as any,
           operation: this.extractCoordinationOperation(originalEvent),
-          targetId: data.taskId || data.task?.id || 'orchestrator',
+          targetId: data?.taskId || data?.task?.id || 'orchestrator',
           priority: this.determineEventPriority(originalEvent),
           correlationId: this.generateCorrelationId(),
           details: {
             ...data,
-            taskType: data.task?.type,
-            progress: data.task?.progress,
-            assignedTo: data.task?.assignedTo,
+            taskType: data?.task?.type,
+            progress: data?.task?.progress,
+            assignedTo: data?.task?.assignedTo,
           },
           metadata: { originalEvent, data },
         };
@@ -1389,7 +1394,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap Protocol Manager events with UEL integration
+   * Wrap Protocol Manager events with UEL integration.
    */
   private async wrapProtocolManagers(): Promise<void> {
     const protocolTypes = ['topology', 'lifecycle', 'communication'];
@@ -1429,13 +1434,13 @@ export class CoordinationEventAdapter implements IEventManager {
             source: `${protocolType}-protocol`,
             type: uelEvent as any,
             operation: this.extractCoordinationOperation(originalEvent),
-            targetId: data.protocolId || data.agentId || `${protocolType}-protocol`,
+            targetId: data?.protocolId || data?.agentId || `${protocolType}-protocol`,
             priority: this.determineEventPriority(originalEvent),
             correlationId: this.generateCorrelationId(),
             details: {
               ...data,
               protocolType,
-              topology: data.topology,
+              topology: data?.topology,
             },
             metadata: { originalEvent, data, protocolType },
           };
@@ -1454,7 +1459,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Unwrap all coordination components
+   * Unwrap all coordination components.
    */
   private async unwrapCoordinationComponents(): Promise<void> {
     for (const [componentName, wrapped] of this.wrappedComponents.entries()) {
@@ -1480,7 +1485,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Process coordination event emission with correlation and filtering
+   * Process coordination event emission with correlation and filtering.
    *
    * @param event
    * @param options
@@ -1555,7 +1560,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Start event processing loop for coordination events
+   * Start event processing loop for coordination events.
    */
   private startEventProcessing(): void {
     this.processingEvents = true;
@@ -1583,7 +1588,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Start health monitoring for coordination components
+   * Start health monitoring for coordination components.
    */
   private startCoordinationHealthMonitoring(): void {
     const interval = this.config.agentHealthMonitoring?.healthCheckInterval || 30000;
@@ -1617,7 +1622,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Start coordination correlation cleanup to prevent memory leaks
+   * Start coordination correlation cleanup to prevent memory leaks.
    */
   private startCoordinationCorrelationCleanup(): void {
     const cleanupInterval = 60000; // 1 minute
@@ -1650,7 +1655,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Start swarm optimization if enabled
+   * Start swarm optimization if enabled.
    */
   private startSwarmOptimization(): void {
     const interval = this.config.swarmOptimization?.optimizationInterval || 60000;
@@ -1701,7 +1706,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Start coordination event correlation for tracking related events
+   * Start coordination event correlation for tracking related events.
    *
    * @param event
    */
@@ -1734,7 +1739,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Update existing coordination event correlation
+   * Update existing coordination event correlation.
    *
    * @param event
    */
@@ -1773,7 +1778,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Check if coordination correlation is complete based on patterns
+   * Check if coordination correlation is complete based on patterns.
    *
    * @param correlation
    */
@@ -1794,7 +1799,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Calculate coordination efficiency for correlation
+   * Calculate coordination efficiency for correlation.
    *
    * @param correlation
    */
@@ -1811,7 +1816,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Check health of all coordination components
+   * Check health of all coordination components.
    */
   private async checkCoordinationComponentHealth(): Promise<
     Record<string, CoordinationHealthEntry>
@@ -1840,7 +1845,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Batch processing methods for different strategies
+   * Batch processing methods for different strategies.
    *
    * @param batch
    * @param options
@@ -1884,7 +1889,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Utility methods for coordination event processing
+   * Utility methods for coordination event processing.
    *
    * @param event
    */
@@ -2120,7 +2125,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * ID generation methods
+   * ID generation methods.
    */
   private generateEventId(): string {
     return `coord-evt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
@@ -2143,7 +2148,7 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit wrapper for internal use
+   * Emit wrapper for internal use.
    *
    * @param event
    * @param data
@@ -2154,7 +2159,7 @@ export class CoordinationEventAdapter implements IEventManager {
 }
 
 /**
- * Factory function for creating CoordinationEventAdapter instances
+ * Factory function for creating CoordinationEventAdapter instances.
  *
  * @param config
  */
@@ -2165,7 +2170,7 @@ export function createCoordinationEventAdapter(
 }
 
 /**
- * Helper function for creating default coordination event adapter configuration
+ * Helper function for creating default coordination event adapter configuration.
  *
  * @param name
  * @param overrides
@@ -2287,11 +2292,11 @@ export function createDefaultCoordinationEventAdapterConfig(
 }
 
 /**
- * Helper functions for coordination event operations
+ * Helper functions for coordination event operations.
  */
 export const CoordinationEventHelpers = {
   /**
-   * Create swarm initialization event
+   * Create swarm initialization event.
    *
    * @param swarmId
    * @param topology
@@ -2316,7 +2321,7 @@ export const CoordinationEventHelpers = {
   },
 
   /**
-   * Create agent spawn event
+   * Create agent spawn event.
    *
    * @param agentId
    * @param swarmId
@@ -2341,7 +2346,7 @@ export const CoordinationEventHelpers = {
   },
 
   /**
-   * Create task distribution event
+   * Create task distribution event.
    *
    * @param taskId
    * @param assignedTo
@@ -2366,7 +2371,7 @@ export const CoordinationEventHelpers = {
   },
 
   /**
-   * Create topology change event
+   * Create topology change event.
    *
    * @param swarmId
    * @param topology
@@ -2391,7 +2396,7 @@ export const CoordinationEventHelpers = {
   },
 
   /**
-   * Create coordination error event
+   * Create coordination error event.
    *
    * @param component
    * @param targetId

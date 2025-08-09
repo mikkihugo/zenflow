@@ -154,7 +154,7 @@ describe('Memory Efficiency - Classical TDD', () => {
 
         const networkConfig: NetworkConfig = {
           inputSize: 3,
-          hiddenLayers: config.layers,
+          hiddenLayers: config?.layers,
           outputSize: 2,
           outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
         };
@@ -166,7 +166,7 @@ describe('Memory Efficiency - Classical TDD', () => {
 
         // Verify network was created correctly
         const info = network.getInfo();
-        expect(info.numLayers).toBe(config.layers.length + 2); // +input +output
+        expect(info.numLayers).toBe(config?.layers.length + 2); // +input +output
       }
 
       // Each additional layer should add reasonable memory overhead
@@ -262,8 +262,8 @@ describe('Memory Efficiency - Classical TDD', () => {
       };
 
       for (let i = 0; i < 1000; i++) {
-        largeDataset.inputs.push([Math.random(), Math.random(), Math.random()]);
-        largeDataset.outputs.push([Math.random() > 0.5 ? 1 : 0, Math.random() > 0.5 ? 1 : 0]);
+        largeDataset?.inputs?.push([Math.random(), Math.random(), Math.random()]);
+        largeDataset?.outputs?.push([Math.random() > 0.5 ? 1 : 0, Math.random() > 0.5 ? 1 : 0]);
       }
 
       const preMemory = process.memoryUsage().heapUsed;
@@ -468,7 +468,7 @@ describe('Memory Efficiency - Classical TDD', () => {
       // Network should still function
       const result = await network.run([0.1, 0.2, 0.3, 0.4, 0.5]);
       expect(result).toHaveLength(3);
-      expect(result.every((v) => Number.isFinite(v))).toBe(true);
+      expect(result?.every((v) => Number.isFinite(v))).toBe(true);
     });
   });
 
@@ -510,7 +510,7 @@ describe('Memory Efficiency - Classical TDD', () => {
       for (const network of networks) {
         const result = await network.run([0.5, 0.5, 0.5]);
         expect(result).toHaveLength(2);
-        expect(result.every((v) => Number.isFinite(v))).toBe(true);
+        expect(result?.every((v) => Number.isFinite(v))).toBe(true);
       }
 
       // Average memory per network should be reasonable

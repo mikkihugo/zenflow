@@ -1,9 +1,14 @@
 /**
  * Performance Optimizer.
  *
- * Optimizes agent behavior, task allocation, and resource utilization based on
+ * Optimizes agent behavior, task allocation, and resource utilization based on.
  * learned patterns to improve overall swarm performance and efficiency.
  */
+/**
+ * @file performance-optimizer implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type {
@@ -762,19 +767,19 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
     const totalImprovement = optimizations.reduce((sum, opt) => sum + opt.expectedImpact, 0);
 
     return {
-      throughput: current.throughput * (1 + totalImprovement),
-      latency: current.latency * (1 - totalImprovement * 0.5),
-      errorRate: current.errorRate * (1 - totalImprovement * 0.3),
+      throughput: current?.throughput * (1 + totalImprovement),
+      latency: current?.latency * (1 - totalImprovement * 0.5),
+      errorRate: current?.errorRate * (1 - totalImprovement * 0.3),
       resourceUtilization: {
-        cpu: Math.max(0.1, current.resourceUtilization.cpu * (1 - totalImprovement * 0.2)),
-        memory: Math.max(0.1, current.resourceUtilization.memory * (1 - totalImprovement * 0.2)),
-        network: current.resourceUtilization.network,
-        diskIO: current.resourceUtilization.diskIO,
-        bandwidth: current.resourceUtilization.bandwidth,
-        latency: current.resourceUtilization.latency * (1 - totalImprovement * 0.4),
+        cpu: Math.max(0.1, current?.resourceUtilization?.cpu * (1 - totalImprovement * 0.2)),
+        memory: Math.max(0.1, current?.resourceUtilization?.memory * (1 - totalImprovement * 0.2)),
+        network: current?.resourceUtilization?.network,
+        diskIO: current?.resourceUtilization?.diskIO,
+        bandwidth: current?.resourceUtilization?.bandwidth,
+        latency: current?.resourceUtilization?.latency * (1 - totalImprovement * 0.4),
       },
-      efficiency: Math.min(1, current.efficiency + totalImprovement),
-      quality: Math.min(1, current.quality + totalImprovement * 0.1),
+      efficiency: Math.min(1, current?.efficiency + totalImprovement),
+      quality: Math.min(1, current?.quality + totalImprovement * 0.1),
     };
   }
 

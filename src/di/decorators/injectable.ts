@@ -1,7 +1,12 @@
 /**
- * Injectable decorator implementation
- * Marks classes as injectable and enables automatic dependency resolution
+ * Injectable decorator implementation.
+ * Marks classes as injectable and enables automatic dependency resolution.
  */
+/**
+ * @file injectable implementation
+ */
+
+
 
 import 'reflect-metadata';
 import type { Constructor, DIToken, InjectionMetadata } from '../types/di-types';
@@ -11,7 +16,7 @@ const INJECTION_TOKENS_KEY = Symbol('injection_tokens');
 const INJECTABLE_KEY = Symbol('injectable');
 
 /**
- * Injectable decorator for marking classes as injectable
+ * Injectable decorator for marking classes as injectable.
  *
  * @param constructor
  */
@@ -33,7 +38,7 @@ export function injectable<T extends Constructor>(constructor: T): T {
 }
 
 /**
- * Inject decorator for parameter injection
+ * Inject decorator for parameter injection.
  *
  * @param token
  */
@@ -46,7 +51,7 @@ export function inject<T>(token: DIToken<T>) {
 }
 
 /**
- * Check if a class is marked as injectable
+ * Check if a class is marked as injectable.
  *
  * @param constructor
  */
@@ -55,7 +60,7 @@ export function isInjectable(constructor: Constructor): boolean {
 }
 
 /**
- * Get injection tokens for a constructor
+ * Get injection tokens for a constructor.
  *
  * @param constructor
  */
@@ -66,7 +71,7 @@ export function getInjectionTokens(
 }
 
 /**
- * Set injection tokens for a constructor
+ * Set injection tokens for a constructor.
  *
  * @param constructor
  * @param tokens
@@ -79,7 +84,7 @@ export function setInjectionTokens(
 }
 
 /**
- * Get injection metadata for a constructor
+ * Get injection metadata for a constructor.
  *
  * @param constructor
  */
@@ -98,18 +103,18 @@ export function getInjectionMetadata(constructor: Constructor): InjectionMetadat
 }
 
 /**
- * Set injection metadata for a constructor
+ * Set injection metadata for a constructor.
  *
  * @param constructor
  * @param metadata
  */
 export function setInjectionMetadata(constructor: Constructor, metadata: InjectionMetadata): void {
-  Reflect.defineMetadata('design:paramtypes', metadata.parameterTypes, constructor);
-  setInjectionTokens(constructor, metadata.injectionTokens);
+  Reflect.defineMetadata('design:paramtypes', metadata?.parameterTypes, constructor);
+  setInjectionTokens(constructor, metadata?.injectionTokens);
 }
 
 /**
- * Copy metadata from source to target constructor
+ * Copy metadata from source to target constructor.
  *
  * @param source
  * @param target

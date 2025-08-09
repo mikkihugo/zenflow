@@ -1,8 +1,10 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-utils-logger");
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-utils-logger');
+
 /**
  * @fileoverview Utility logger implementation
- * Provides simple logging functionality for the application
+ * Provides simple logging functionality for the application.
  */
 
 import { config } from '../config';
@@ -52,10 +54,13 @@ enum LogLevel {
 const getLogLevel = (): LogLevel => {
   try {
     const centralConfig = config?.getAll();
-    const configLevel = centralConfig?.core?.logger?.level?.toUpperCase();
+    const configLevel = centralConfig?.core?.logger?.level.toUpperCase();
     // Fallback for development environment
-    const level = centralConfig?.environment?.isDevelopment && configLevel === 'INFO' ? 'DEBUG' : configLevel;
-    return Object.values(LogLevel).find(l => l.toUpperCase() === level) as LogLevel || LogLevel.INFO;
+    const level =
+      centralConfig?.environment?.isDevelopment && configLevel === 'INFO' ? 'DEBUG' : configLevel;
+    return (
+      (Object.values(LogLevel).find((l) => l.toUpperCase() === level) as LogLevel) || LogLevel.INFO
+    );
   } catch (error) {
     // Fallback to INFO if config is not available
     return LogLevel.INFO;
@@ -63,13 +68,18 @@ const getLogLevel = (): LogLevel => {
 };
 
 const shouldLog = (messageLevel: LogLevel, configuredLevel: LogLevel = getLogLevel()): boolean => {
-  const levels = { [LogLevel.DEBUG]: 0, [LogLevel.INFO]: 1, [LogLevel.WARN]: 2, [LogLevel.ERROR]: 3 };
+  const levels = {
+    [LogLevel.DEBUG]: 0,
+    [LogLevel.INFO]: 1,
+    [LogLevel.WARN]: 2,
+    [LogLevel.ERROR]: 3,
+  };
   return levels[messageLevel] >= levels[configuredLevel];
 };
 
 class Logger implements ILogger {
   private logLevel: LogLevel;
-  
+
   constructor(private prefix: string = '') {
     this.logLevel = getLogLevel();
   }
@@ -77,7 +87,8 @@ class Logger implements ILogger {
   private formatMessage(level: string, message: string, meta?: any): string {
     const timestamp = new Date().toISOString();
     const cleanMeta = sanitizeLogMeta(meta);
-    const metaStr = cleanMeta && Object.keys(cleanMeta).length > 0 ? ` ${JSON.stringify(cleanMeta)}` : '';
+    const metaStr =
+      cleanMeta && Object.keys(cleanMeta).length > 0 ? ` ${JSON.stringify(cleanMeta)}` : '';
     return `[${timestamp}] ${level.toUpperCase()} [${this.prefix || 'claude-zen'}]: ${message}${metaStr}`;
   }
 

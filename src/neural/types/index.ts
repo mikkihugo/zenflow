@@ -1,10 +1,15 @@
 /**
- * Neural Types - Barrel Export
+ * Neural Types - Barrel Export.
  *
- * Central export point for all neural system types and utilities
+ * Central export point for all neural system types and utilities.
  */
 
 // DSPy types and utilities (complete export)
+/**
+ * @file types module exports
+ */
+
+
 export type {
   DSPyConfig,
   DSPyExample,

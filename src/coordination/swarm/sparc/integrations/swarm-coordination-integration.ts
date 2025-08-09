@@ -1,15 +1,22 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-sparc-integrations-swarm-coordination-integration");
 /**
- * SPARC Swarm Coordination Integration
+ * @file Coordination system: swarm-coordination-integration
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-sparc-integrations-swarm-coordination-integration');
+
+/**
+ * SPARC Swarm Coordination Integration.
  *
  * Integrates SPARC methodology with Claude-Zen's sophisticated swarm coordination system.
  * Enables distributed SPARC development using existing agent types and coordination protocols.
  */
 
-import type { AgentType } from '../../../../types/agent-types';
-import { TaskAPI } from '../../../api';
-import { type TaskConfig, TaskCoordinator } from '../../../task-coordinator';
+import type { AgentType } from '../types/agent-types';
+import { TaskAPI } from '../api';
+import { type TaskConfig, TaskCoordinator } from '../task-coordinator';
 import type { SPARCPhase, SPARCProject } from '../types/sparc-types';
 
 // SPARC-specific agent types from existing 147+ agent types
@@ -35,7 +42,7 @@ export interface SPARCSwarmTask {
 }
 
 /**
- * Coordinates SPARC development using existing swarm intelligence
+ * Coordinates SPARC development using existing swarm intelligence.
  *
  * @example
  */
@@ -53,7 +60,7 @@ export class SPARCSwarmCoordinator {
   }
 
   /**
-   * Create a swarm for SPARC project development
+   * Create a swarm for SPARC project development.
    *
    * @param project
    */
@@ -80,7 +87,7 @@ export class SPARCSwarmCoordinator {
 
       const taskId = await TaskAPI.createTask({
         type: `${agentType}-${project.currentPhase}`,
-        description: taskConfig.description,
+        description: taskConfig?.description,
         priority: 3,
       });
 
@@ -92,7 +99,7 @@ export class SPARCSwarmCoordinator {
   }
 
   /**
-   * Execute SPARC phase using coordinated swarm
+   * Execute SPARC phase using coordinated swarm.
    *
    * @param projectId
    * @param phase
@@ -127,8 +134,8 @@ export class SPARCSwarmCoordinator {
 
       try {
         const result = await this.taskCoordinator.executeTask(taskConfig);
-        results.set(agentType, result);
-        return result.success;
+        results?.set(agentType, result);
+        return result?.success;
       } catch (error) {
         logger.error(`SPARC phase execution failed for ${agentType}:`, error);
         return false;
@@ -142,7 +149,7 @@ export class SPARCSwarmCoordinator {
   }
 
   /**
-   * Get appropriate agents for each SPARC phase
+   * Get appropriate agents for each SPARC phase.
    *
    * @param phase
    */
@@ -159,7 +166,7 @@ export class SPARCSwarmCoordinator {
   }
 
   /**
-   * Generate phase-specific prompts for agents
+   * Generate phase-specific prompts for agents.
    *
    * @param project
    * @param phase
@@ -203,11 +210,11 @@ export class SPARCSwarmCoordinator {
       },
     };
 
-    return phasePrompts[phase][agentType] || `${basePrompt} Execute ${phase} phase tasks.`;
+    return phasePrompts[phase]?.[agentType] || `${basePrompt} Execute ${phase} phase tasks.`;
   }
 
   /**
-   * Get expected output for each phase and agent combination
+   * Get expected output for each phase and agent combination.
    *
    * @param phase
    * @param agentType
@@ -226,7 +233,7 @@ export class SPARCSwarmCoordinator {
   }
 
   /**
-   * Get required tools for each phase and agent
+   * Get required tools for each phase and agent.
    *
    * @param _phase
    * @param agentType
@@ -249,7 +256,7 @@ export class SPARCSwarmCoordinator {
   }
 
   /**
-   * Get timeout for each phase in minutes
+   * Get timeout for each phase in minutes.
    *
    * @param phase
    */
@@ -266,7 +273,7 @@ export class SPARCSwarmCoordinator {
   }
 
   /**
-   * Monitor SPARC swarm progress
+   * Monitor SPARC swarm progress.
    *
    * @param projectId
    */
@@ -304,7 +311,7 @@ export class SPARCSwarmCoordinator {
   }
 
   /**
-   * Terminate SPARC swarm and cleanup resources
+   * Terminate SPARC swarm and cleanup resources.
    *
    * @param projectId
    */
@@ -328,7 +335,7 @@ export class SPARCSwarmCoordinator {
   }
 
   /**
-   * Get status of a specific task
+   * Get status of a specific task.
    *
    * @param _taskId
    */
@@ -341,7 +348,7 @@ export class SPARCSwarmCoordinator {
   }
 
   /**
-   * Cancel a specific task
+   * Cancel a specific task.
    *
    * @param taskId
    */

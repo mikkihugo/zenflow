@@ -1,6 +1,6 @@
 /**
  * @file Memory-specific Error Types and Handling
- * Comprehensive error classification and recovery for memory systems
+ * Comprehensive error classification and recovery for memory systems.
  */
 
 export enum MemoryErrorCode {
@@ -65,11 +65,11 @@ export class MemoryError extends Error {
     this.name = 'MemoryError';
     this.code = code;
     this.context = context;
-    this.recoverable = options.recoverable ?? MemoryError.isRecoverable(code);
-    this.severity = options.severity ?? MemoryError.getSeverity(code);
+    this.recoverable = options?.recoverable ?? MemoryError.isRecoverable(code);
+    this.severity = options?.severity ?? MemoryError.getSeverity(code);
 
-    if (options.cause) {
-      this.cause = options.cause;
+    if (options?.cause) {
+      this.cause = options?.cause;
     }
 
     // Maintain proper stack trace
@@ -79,7 +79,7 @@ export class MemoryError extends Error {
   }
 
   /**
-   * Check if an error code is typically recoverable
+   * Check if an error code is typically recoverable.
    *
    * @param code
    */
@@ -97,7 +97,7 @@ export class MemoryError extends Error {
   }
 
   /**
-   * Get severity level for an error code
+   * Get severity level for an error code.
    *
    * @param code
    */
@@ -129,7 +129,7 @@ export class MemoryError extends Error {
   }
 
   /**
-   * Convert to a serializable object
+   * Convert to a serializable object.
    */
   toJSON() {
     return {
@@ -144,7 +144,7 @@ export class MemoryError extends Error {
   }
 
   /**
-   * Create a MemoryError from a generic error
+   * Create a MemoryError from a generic error.
    *
    * @param error
    * @param context
@@ -213,13 +213,13 @@ export class MemoryPerformanceError extends MemoryError {
 }
 
 /**
- * Error classification helper
+ * Error classification helper.
  *
  * @example
  */
 export class MemoryErrorClassifier {
   /**
-   * Classify an error by its characteristics
+   * Classify an error by its characteristics.
    *
    * @param error
    */

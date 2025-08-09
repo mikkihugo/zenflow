@@ -1,10 +1,15 @@
 /**
- * Interactive Terminal Application - Google Standard Component
+ * Interactive Terminal Application - Google Standard Component.
  *
  * Full-featured interactive terminal interface with real-time updates.
  * Manages multiple screens and provides rich user interaction.
  * Renamed from TUIMode to reflect actual responsibility.
  */
+/**
+ * @file Interface implementation: interactive-terminal-application
+ */
+
+
 
 import { Box, Text, useInput } from 'ink';
 import type React from 'react';
@@ -36,7 +41,7 @@ interface TUIState {
 }
 
 /**
- * Interactive Terminal Application Component
+ * Interactive Terminal Application Component.
  *
  * Manages multi-screen terminal interface with real-time updates and user interaction.
  * Coordinates between different screens and manages application state.

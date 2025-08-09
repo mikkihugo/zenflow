@@ -1,14 +1,19 @@
 /**
  * Interface Launcher.
  *
- * Handles launching the appropriate interface (CLI/TUI/Web) based on environment
+ * Handles launching the appropriate interface (CLI/TUI/Web) based on environment.
  * and configuration. Integrates with all core systems directly without plugins.
  */
+/**
+ * @file interface-launcher implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import { getWebDashboardURL } from '../config/url-builder';
 import { InterfaceModeDetector } from './interface-mode-detector';
 import { createLogger } from './logger';
-import { getWebDashboardURL } from '../config/url-builder';
 
 const logger = createLogger('InterfaceLauncher');
 
@@ -34,13 +39,15 @@ export interface LaunchResult {
 
 export class InterfaceLauncher extends EventEmitter {
   private static instance: InterfaceLauncher;
-  private activeInterface?: {
-    mode: InterfaceMode;
-    process?: any;
-    server?: any;
-    url?: string;
-    pid?: number;
-  } | undefined;
+  private activeInterface?:
+    | {
+        mode: InterfaceMode;
+        process?: any;
+        server?: any;
+        url?: string;
+        pid?: number;
+      }
+    | undefined;
 
   private constructor() {
     super();

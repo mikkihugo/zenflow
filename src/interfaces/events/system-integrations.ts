@@ -1,10 +1,10 @@
 /**
- * UEL (Unified Event Layer) - System Integration Layer
+ * UEL (Unified Event Layer) - System Integration Layer.
  *
- * Comprehensive system integration layer that enhances existing EventEmitter-based
+ * Comprehensive system integration layer that enhances existing EventEmitter-based.
  * systems with UEL capabilities while maintaining 100% backward compatibility.
  *
- * This module provides migration utilities and enhanced versions of core systems
+ * This module provides migration utilities and enhanced versions of core systems.
  * that can gradually adopt UEL features without breaking existing functionality.
  *
  * @file System Integration and Migration Implementation
@@ -25,7 +25,7 @@ import type { EventManager } from './manager';
 import type { MonitoringEvent, SystemLifecycleEvent } from './types';
 
 /**
- * Enhanced Event Bus with UEL integration
+ * Enhanced Event Bus with UEL integration.
  * Provides backward compatibility with existing event-bus.ts while adding UEL features
  *
  * @example
@@ -50,16 +50,16 @@ export class UELEnhancedEventBus extends EventEmitter {
   ) {
     super();
 
-    this.logger = options.logger;
-    this.setMaxListeners(options.maxListeners || 100);
+    this.logger = options?.logger;
+    this.setMaxListeners(options?.maxListeners || 100);
 
-    if (options.enableUEL && options.uelIntegration?.eventManager) {
-      this.initializeUELIntegration(options.uelIntegration);
+    if (options?.enableUEL && options?.uelIntegration?.eventManager) {
+      this.initializeUELIntegration(options?.uelIntegration);
     }
   }
 
   /**
-   * Initialize UEL integration for the event bus
+   * Initialize UEL integration for the event bus.
    *
    * @param integration
    * @param integration.eventManager
@@ -90,7 +90,7 @@ export class UELEnhancedEventBus extends EventEmitter {
   }
 
   /**
-   * Enhanced emit with UEL integration and metrics
+   * Enhanced emit with UEL integration and metrics.
    *
    * @param eventName
    * @param {...any} args
@@ -112,7 +112,7 @@ export class UELEnhancedEventBus extends EventEmitter {
   }
 
   /**
-   * Enhanced on with UEL subscription tracking
+   * Enhanced on with UEL subscription tracking.
    *
    * @param eventName
    * @param listener
@@ -131,7 +131,7 @@ export class UELEnhancedEventBus extends EventEmitter {
   }
 
   /**
-   * Get comprehensive event bus status including UEL integration
+   * Get comprehensive event bus status including UEL integration.
    */
   getStatus(): {
     eventEmitter: {
@@ -171,7 +171,7 @@ export class UELEnhancedEventBus extends EventEmitter {
   }
 
   /**
-   * Map event names to UEL event types for better categorization
+   * Map event names to UEL event types for better categorization.
    *
    * @param eventEmitterEvent
    * @param uelEventType
@@ -182,7 +182,7 @@ export class UELEnhancedEventBus extends EventEmitter {
   }
 
   /**
-   * Enable UEL mode for the event bus
+   * Enable UEL mode for the event bus.
    *
    * @param eventManager
    * @param options
@@ -215,7 +215,7 @@ export class UELEnhancedEventBus extends EventEmitter {
   }
 
   /**
-   * Private methods for UEL integration
+   * Private methods for UEL integration.
    */
 
   private async emitToUEL(eventName: string, args: any[], startTime: number): Promise<void> {
@@ -289,7 +289,7 @@ export class UELEnhancedEventBus extends EventEmitter {
 }
 
 /**
- * Enhanced Application Coordinator with UEL integration
+ * Enhanced Application Coordinator with UEL integration.
  * Maintains compatibility with existing application-coordinator.ts
  *
  * @example
@@ -313,15 +313,15 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
   ) {
     super();
 
-    this.logger = options.logger || console;
+    this.logger = options?.logger || console;
 
-    if (options.enableUEL) {
-      this.initializeUEL(options.uelConfig);
+    if (options?.enableUEL) {
+      this.initializeUEL(options?.uelConfig);
     }
   }
 
   /**
-   * Initialize UEL system for the application coordinator
+   * Initialize UEL system for the application coordinator.
    *
    * @param config
    * @param config.enableValidation
@@ -368,7 +368,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Set up event mappings for application coordinator events
+   * Set up event mappings for application coordinator events.
    */
   private setupEventMappings(): void {
     if (!this.eventBus) return;
@@ -392,7 +392,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Create system-specific event managers
+   * Create system-specific event managers.
    */
   private async createSystemManagers(): Promise<void> {
     if (!this.uelSystem) return;
@@ -429,7 +429,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Enhanced emit that routes to appropriate UEL managers
+   * Enhanced emit that routes to appropriate UEL managers.
    *
    * @param eventName
    * @param {...any} args
@@ -447,7 +447,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Get comprehensive system status including UEL integration
+   * Get comprehensive system status including UEL integration.
    */
   async getSystemStatus(): Promise<{
     applicationCoordinator: {
@@ -491,7 +491,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Create event manager for specific system component
+   * Create event manager for specific system component.
    *
    * @param componentName
    * @param type
@@ -526,7 +526,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Validate system integration health
+   * Validate system integration health.
    */
   async validateIntegration(): Promise<{
     valid: boolean;
@@ -582,7 +582,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Shutdown UEL integration gracefully
+   * Shutdown UEL integration gracefully.
    */
   async shutdown(): Promise<void> {
     try {
@@ -612,7 +612,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
 }
 
 /**
- * Observer System Enhancement with UEL integration
+ * Observer System Enhancement with UEL integration.
  * Maintains compatibility with existing observer-system.ts
  *
  * @example
@@ -631,15 +631,15 @@ export class UELEnhancedObserverSystem extends EventEmitter {
   ) {
     super();
 
-    this.logger = options.logger;
+    this.logger = options?.logger;
 
-    if (options.enableUEL && options.eventManager) {
-      this.initializeUELIntegration(options.eventManager);
+    if (options?.enableUEL && options?.eventManager) {
+      this.initializeUELIntegration(options?.eventManager);
     }
   }
 
   /**
-   * Initialize UEL integration for observer system
+   * Initialize UEL integration for observer system.
    *
    * @param eventManager
    */
@@ -658,7 +658,7 @@ export class UELEnhancedObserverSystem extends EventEmitter {
   }
 
   /**
-   * Create observer with optional UEL integration
+   * Create observer with optional UEL integration.
    *
    * @param name
    * @param type
@@ -680,7 +680,7 @@ export class UELEnhancedObserverSystem extends EventEmitter {
   }
 
   /**
-   * Enhance observer with UEL capabilities
+   * Enhance observer with UEL capabilities.
    *
    * @param observer
    * @param name
@@ -719,7 +719,7 @@ export class UELEnhancedObserverSystem extends EventEmitter {
   }
 
   /**
-   * Get observer system status
+   * Get observer system status.
    */
   getStatus(): {
     observerSystem: {
@@ -744,7 +744,7 @@ export class UELEnhancedObserverSystem extends EventEmitter {
   }
 
   /**
-   * Remove observer and clean up resources
+   * Remove observer and clean up resources.
    *
    * @param name
    */
@@ -761,7 +761,7 @@ export class UELEnhancedObserverSystem extends EventEmitter {
   }
 
   /**
-   * Get observer by name
+   * Get observer by name.
    *
    * @param name
    */
@@ -770,7 +770,7 @@ export class UELEnhancedObserverSystem extends EventEmitter {
   }
 
   /**
-   * List all observer names
+   * List all observer names.
    */
   listObservers(): string[] {
     return Array.from(this.observers.keys());
@@ -778,8 +778,8 @@ export class UELEnhancedObserverSystem extends EventEmitter {
 }
 
 /**
- * System Integration Factory
- * Provides factory methods for creating enhanced versions of core systems
+ * System Integration Factory.
+ * Provides factory methods for creating enhanced versions of core systems.
  *
  * @example
  */
@@ -798,7 +798,7 @@ export class SystemIntegrationFactory {
   }
 
   /**
-   * Initialize the factory with UEL event manager
+   * Initialize the factory with UEL event manager.
    *
    * @param eventManager
    * @param logger
@@ -809,7 +809,7 @@ export class SystemIntegrationFactory {
   }
 
   /**
-   * Create enhanced event bus with UEL integration
+   * Create enhanced event bus with UEL integration.
    *
    * @param options
    * @param options.enableUEL
@@ -826,21 +826,21 @@ export class SystemIntegrationFactory {
     } = {}
   ): UELEnhancedEventBus {
     return new UELEnhancedEventBus({
-      enableUEL: options.enableUEL && !!this.eventManager,
+      enableUEL: options?.enableUEL && !!this.eventManager,
       uelIntegration: this.eventManager
         ? {
             eventManager: this.eventManager,
-            managerType: options.managerType || EventManagerTypes.SYSTEM,
-            managerName: options.managerName || 'enhanced-bus',
+            managerType: options?.managerType || EventManagerTypes.SYSTEM,
+            managerName: options?.managerName || 'enhanced-bus',
           }
         : undefined,
       logger: this.logger,
-      maxListeners: options.maxListeners,
+      maxListeners: options?.maxListeners,
     });
   }
 
   /**
-   * Create enhanced application coordinator with UEL integration
+   * Create enhanced application coordinator with UEL integration.
    *
    * @param options
    * @param options.enableUEL
@@ -860,35 +860,35 @@ export class SystemIntegrationFactory {
     } = {}
   ): UELEnhancedApplicationCoordinator {
     return new UELEnhancedApplicationCoordinator({
-      enableUEL: options.enableUEL,
+      enableUEL: options?.enableUEL,
       logger: this.logger,
-      uelConfig: options.uelConfig,
+      uelConfig: options?.uelConfig,
     });
   }
 
   /**
-   * Create enhanced observer system with UEL integration
+   * Create enhanced observer system with UEL integration.
    *
    * @param options
    * @param options.enableUEL
    */
   createEnhancedObserverSystem(options: { enableUEL?: boolean } = {}): UELEnhancedObserverSystem {
     return new UELEnhancedObserverSystem({
-      enableUEL: options.enableUEL && !!this.eventManager,
+      enableUEL: options?.enableUEL && !!this.eventManager,
       eventManager: this.eventManager,
       logger: this.logger,
     });
   }
 
   /**
-   * Check if UEL integration is available
+   * Check if UEL integration is available.
    */
   isUELAvailable(): boolean {
     return !!this.eventManager;
   }
 
   /**
-   * Get integration status
+   * Get integration status.
    */
   getStatus(): {
     initialized: boolean;
@@ -904,11 +904,11 @@ export class SystemIntegrationFactory {
 }
 
 /**
- * Utility functions for system integration
+ * Utility functions for system integration.
  */
 
 /**
- * Create UEL-enhanced version of any EventEmitter-based class
+ * Create UEL-enhanced version of any EventEmitter-based class.
  *
  * @param originalInstance
  * @param name
@@ -928,7 +928,7 @@ export async function enhanceWithUEL<T extends EventEmitter>(
 }
 
 /**
- * Analyze existing EventEmitter usage across the system
+ * Analyze existing EventEmitter usage across the system.
  *
  * @param logger
  */
@@ -1007,7 +1007,7 @@ export function analyzeSystemEventEmitterUsage(
 }
 
 /**
- * Global system integration utilities
+ * Global system integration utilities.
  */
 export const UELSystemIntegration = {
   // Factory instance

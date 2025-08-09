@@ -1,12 +1,17 @@
 /**
- * USL Validation Framework - Comprehensive Integration Validation
+ * USL Validation Framework - Comprehensive Integration Validation.
  *
  * Advanced validation system for USL integration quality assurance,
  * system health validation, configuration validation, and integration testing.
  * Following the same patterns as UACL Agent 6.
  */
+/**
+ * @file Interface implementation: validation
+ */
 
-import { createLogger, type Logger } from '../../utils/logger';
+
+
+import { createLogger, type Logger } from '../utils/logger';
 import { USLCompatibilityLayer } from './compatibility';
 import type { IService, ServiceLifecycleStatus } from './core/interfaces';
 import type { ServiceManager } from './manager';
@@ -67,8 +72,7 @@ export interface ValidationResult {
   overall: 'pass' | 'warning' | 'fail';
   score: number; // 0-100
   timestamp: Date;
-  duration: number; // ms
-
+  duration: number; // ms.
   results: {
     configuration: ValidationSectionResult;
     dependencies: ValidationSectionResult;
@@ -138,7 +142,7 @@ export interface SystemHealthValidation {
 }
 
 /**
- * Comprehensive USL Validation Framework
+ * Comprehensive USL Validation Framework.
  *
  * @example
  */
@@ -209,7 +213,7 @@ export class USLValidationFramework {
   // ============================================
 
   /**
-   * Perform comprehensive USL system validation
+   * Perform comprehensive USL system validation.
    */
   async validateSystem(): Promise<ValidationResult> {
     this.logger.info('Starting comprehensive USL system validation');
@@ -241,27 +245,27 @@ export class USLValidationFramework {
     try {
       // Run validation sections based on configuration
       if (this.config.scopes.configuration) {
-        result.results.configuration = await this.validateConfiguration();
+        result?.results.configuration = await this.validateConfiguration();
       }
 
       if (this.config.scopes.dependencies) {
-        result.results.dependencies = await this.validateDependencies();
+        result?.results.dependencies = await this.validateDependencies();
       }
 
       if (this.config.scopes.performance) {
-        result.results.performance = await this.validatePerformance();
+        result?.results.performance = await this.validatePerformance();
       }
 
       if (this.config.scopes.security) {
-        result.results.security = await this.validateSecurity();
+        result?.results.security = await this.validateSecurity();
       }
 
       if (this.config.scopes.compatibility) {
-        result.results.compatibility = await this.validateCompatibility();
+        result?.results.compatibility = await this.validateCompatibility();
       }
 
       if (this.config.scopes.integration) {
-        result.results.integration = await this.validateIntegration();
+        result?.results.integration = await this.validateIntegration();
       }
 
       // Calculate overall results
@@ -270,7 +274,7 @@ export class USLValidationFramework {
       result.duration = Date.now() - startTime;
 
       this.logger.info(
-        `Validation completed in ${result.duration}ms with overall status: ${result.overall} (Score: ${result.score})`
+        `Validation completed in ${result?.duration}ms with overall status: ${result?.overall} (Score: ${result?.score})`
       );
 
       return result;
@@ -280,9 +284,9 @@ export class USLValidationFramework {
       result.overall = 'fail';
       result.score = 0;
       result.duration = Date.now() - startTime;
-      result.summary.criticalIssues = 1;
+      result?.summary.criticalIssues = 1;
 
-      result.recommendations.push({
+      result?.recommendations.push({
         type: 'critical',
         category: 'system',
         description: 'Validation framework encountered a critical error',
@@ -296,7 +300,7 @@ export class USLValidationFramework {
   }
 
   /**
-   * Validate system health and service status
+   * Validate system health and service status.
    */
   async validateSystemHealth(): Promise<SystemHealthValidation> {
     this.logger.info('Validating system health');
@@ -397,7 +401,7 @@ export class USLValidationFramework {
   }
 
   /**
-   * Validate specific service configuration
+   * Validate specific service configuration.
    *
    * @param serviceName
    */
@@ -672,8 +676,8 @@ export class USLValidationFramework {
       const totalServices = Object.keys(performanceMetrics.services).length;
 
       Object.entries(performanceMetrics.services).forEach(([serviceName, serviceData]) => {
-        const serviceLatency = serviceData.performance.responseTime;
-        const serviceErrorRate = serviceData.performance.errorRate;
+        const serviceLatency = serviceData?.performance?.responseTime;
+        const serviceErrorRate = serviceData?.performance?.errorRate;
 
         if (
           serviceLatency <= this.config.thresholds.maxResponseTime &&
@@ -711,14 +715,14 @@ export class USLValidationFramework {
         const loadTestResult = await this.performLoadTest();
         checks.push({
           name: 'Load Test',
-          status: loadTestResult.success ? 'pass' : 'fail',
-          message: loadTestResult.message,
-          details: loadTestResult.metrics,
-          duration: loadTestResult.duration,
+          status: loadTestResult?.success ? 'pass' : 'fail',
+          message: loadTestResult?.message,
+          details: loadTestResult?.metrics,
+          duration: loadTestResult?.duration,
         });
 
-        if (!loadTestResult.success) {
-          errors.push(`Load test failed: ${loadTestResult.message}`);
+        if (!loadTestResult?.success) {
+          errors.push(`Load test failed: ${loadTestResult?.message}`);
         }
       }
     } catch (error) {
@@ -789,13 +793,13 @@ export class USLValidationFramework {
       const sensitiveDataCheck = await this.checkSensitiveDataExposure();
       checks.push({
         name: 'Sensitive Data Protection',
-        status: sensitiveDataCheck.exposed ? 'fail' : 'pass',
-        message: sensitiveDataCheck.message,
-        details: sensitiveDataCheck.details,
-        duration: sensitiveDataCheck.duration,
+        status: sensitiveDataCheck?.exposed ? 'fail' : 'pass',
+        message: sensitiveDataCheck?.message,
+        details: sensitiveDataCheck?.details,
+        duration: sensitiveDataCheck?.duration,
       });
 
-      if (sensitiveDataCheck.exposed) {
+      if (sensitiveDataCheck?.exposed) {
         errors.push('Potential sensitive data exposure detected');
       }
     } catch (error) {
@@ -918,14 +922,14 @@ export class USLValidationFramework {
 
       checks.push({
         name: 'Data Flow Integrity',
-        status: dataFlowTest.success ? 'pass' : 'warning',
-        message: dataFlowTest.message,
-        details: dataFlowTest.details,
+        status: dataFlowTest?.success ? 'pass' : 'warning',
+        message: dataFlowTest?.message,
+        details: dataFlowTest?.details,
         duration: Date.now() - dataFlowStart,
       });
 
-      if (!dataFlowTest.success) {
-        warnings.push(...dataFlowTest.warnings);
+      if (!dataFlowTest?.success) {
+        warnings.push(...dataFlowTest?.warnings);
       }
 
       // Integration health check
@@ -973,7 +977,7 @@ export class USLValidationFramework {
   // ============================================
 
   private calculateOverallResults(result: ValidationResult): void {
-    const sections = Object.values(result.results);
+    const sections = Object.values(result?.results);
     const totalScore = sections.reduce((sum, section) => sum + section.score, 0);
     const sectionCount = sections.filter((section) => section.checks.length > 0).length;
 
@@ -981,20 +985,20 @@ export class USLValidationFramework {
 
     // Calculate summary
     sections.forEach((section) => {
-      result.summary.totalChecks += section.checks.length;
-      result.summary.passed += section.checks.filter((c) => c.status === 'pass').length;
-      result.summary.warnings += section.checks.filter((c) => c.status === 'warning').length;
-      result.summary.failures += section.checks.filter((c) => c.status === 'fail').length;
-      result.summary.criticalIssues += section.errors.length;
+      result?.summary.totalChecks += section.checks.length;
+      result?.summary.passed += section.checks.filter((c) => c.status === 'pass').length;
+      result?.summary.warnings += section.checks.filter((c) => c.status === 'warning').length;
+      result?.summary.failures += section.checks.filter((c) => c.status === 'fail').length;
+      result?.summary.criticalIssues += section.errors.length;
     });
 
     // Determine overall status
     if (
-      result.summary.criticalIssues > 0 ||
-      result.summary.failures > result.summary.totalChecks * 0.2
+      result?.summary?.criticalIssues > 0 ||
+      result?.summary?.failures > result?.summary?.totalChecks * 0.2
     ) {
       result.overall = 'fail';
-    } else if (result.summary.warnings > 0 || result.summary.failures > 0) {
+    } else if (result?.summary?.warnings > 0 || result?.summary?.failures > 0) {
       result.overall = 'warning';
     } else {
       result.overall = 'pass';
@@ -1029,7 +1033,7 @@ export class USLValidationFramework {
     const recommendations: ValidationResult['recommendations'] = [];
 
     // Critical issues
-    if (result.summary.criticalIssues > 0) {
+    if (result?.summary?.criticalIssues > 0) {
       recommendations.push({
         type: 'critical',
         category: 'system',
@@ -1041,7 +1045,7 @@ export class USLValidationFramework {
     }
 
     // Performance issues
-    if (result.results.performance.status === 'fail') {
+    if (result?.results?.performance?.status === 'fail') {
       recommendations.push({
         type: 'critical',
         category: 'performance',
@@ -1053,7 +1057,7 @@ export class USLValidationFramework {
     }
 
     // Security issues
-    if (result.results.security.status === 'fail') {
+    if (result?.results?.security?.status === 'fail') {
       recommendations.push({
         type: 'critical',
         category: 'security',
@@ -1065,7 +1069,7 @@ export class USLValidationFramework {
     }
 
     // Migration issues
-    if (result.results.compatibility.status !== 'pass') {
+    if (result?.results?.compatibility?.status !== 'pass') {
       recommendations.push({
         type: 'warning',
         category: 'migration',
@@ -1077,7 +1081,7 @@ export class USLValidationFramework {
     }
 
     // General improvements
-    if (result.score < 90) {
+    if (result?.score < 90) {
       recommendations.push({
         type: 'improvement',
         category: 'general',
@@ -1225,9 +1229,9 @@ export class USLValidationFramework {
     const responseTimes = Object.values(services).map((s: any) => s.performance.responseTime);
     if (responseTimes.length === 0) return 0;
 
-    responseTimes.sort((a, b) => a - b);
+    responseTimes?.sort((a, b) => a - b);
     const p95Index = Math.floor(responseTimes.length * 0.95);
-    return responseTimes[p95Index] || 0;
+    return responseTimes?.[p95Index] || 0;
   }
 
   private calculateTotalMemoryUsage(services: Record<string, any>): number {

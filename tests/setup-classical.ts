@@ -1,4 +1,5 @@
 /**
+/// <reference types="./global-types" />
  * Classical TDD (Detroit) Test Setup
  *
  * @file Setup configuration for state-based testing
@@ -31,16 +32,16 @@ afterEach(() => {
 
 function setupPerformanceMonitoring() {
   // Track execution time for algorithm tests
-  (globalThis as any).testStartTime = Date.now();
+  globalThis.testStartTime = Date.now();
 
   // Setup memory usage monitoring
-  if (typeof (globalThis as any).gc === 'function') {
+  if (typeof globalThis.gc === 'function') {
     try {
-      (globalThis as any).gc();
+      globalThis.gc?.();
     } catch {
       /* ignore */
     }
-    (globalThis as any).testStartMemory = process.memoryUsage();
+    globalThis.testStartMemory = process.memoryUsage();
   }
 }
 
@@ -71,9 +72,9 @@ function cleanupTestState() {
 
 function collectPerformanceMetrics() {
   const startMem = (globalThis as any).testStartMemory as NodeJS.MemoryUsage | undefined;
-  if (typeof (globalThis as any).gc === 'function' && startMem) {
+  if (typeof globalThis.gc === 'function' && startMem) {
     try {
-      (globalThis as any).gc();
+      globalThis.gc?.();
     } catch {
       /* ignore */
     }

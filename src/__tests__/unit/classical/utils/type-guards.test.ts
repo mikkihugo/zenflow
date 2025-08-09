@@ -54,8 +54,8 @@ describe('Type Guards - Classical TDD', () => {
 
       // Type narrowing verification
       if (isQuerySuccess(successResult)) {
-        expect(successResult.data.id).toBe(1);
-        expect(successResult.data.name).toBe('Test');
+        expect(successResult?.data?.id).toBe(1);
+        expect(successResult?.data?.name).toBe('Test');
       }
     });
 
@@ -75,8 +75,8 @@ describe('Type Guards - Classical TDD', () => {
 
       // Type narrowing verification
       if (isQueryError(errorResult)) {
-        expect(errorResult.error.code).toBe('QUERY_FAILED');
-        expect(errorResult.error.message).toBe('Table does not exist');
+        expect(errorResult?.error?.code).toBe('QUERY_FAILED');
+        expect(errorResult?.error?.message).toBe('Table does not exist');
       }
     });
 
@@ -98,13 +98,13 @@ describe('Type Guards - Classical TDD', () => {
         },
       ];
 
-      const successResults = results.filter(isQuerySuccess);
-      const errorResults = results.filter(isQueryError);
+      const successResults = results?.filter(isQuerySuccess);
+      const errorResults = results?.filter(isQueryError);
 
       expect(successResults).toHaveLength(1);
       expect(errorResults).toHaveLength(1);
-      expect(successResults[0].data).toEqual([{ id: 1 }]);
-      expect(errorResults[0].error.code).toBe('CONNECTION_ERROR');
+      expect(successResults?.[0]?.data).toEqual([{ id: 1 }]);
+      expect(errorResults?.[0]?.error?.code).toBe('CONNECTION_ERROR');
     });
   });
 
@@ -129,8 +129,8 @@ describe('Type Guards - Classical TDD', () => {
 
       // Type narrowing verification
       if (isMemorySuccess(successResult)) {
-        expect(successResult.data).toBe('cached_value');
-        expect(successResult.key).toBe('test_key');
+        expect(successResult?.data).toBe('cached_value');
+        expect(successResult?.key).toBe('test_key');
       }
     });
 
@@ -147,8 +147,8 @@ describe('Type Guards - Classical TDD', () => {
 
       // Type narrowing verification
       if (isMemoryNotFound(notFoundResult)) {
-        expect(notFoundResult.key).toBe('missing_key');
-        expect(notFoundResult.reason).toBe('not_found');
+        expect(notFoundResult?.key).toBe('missing_key');
+        expect(notFoundResult?.reason).toBe('not_found');
       }
     });
 
@@ -168,8 +168,8 @@ describe('Type Guards - Classical TDD', () => {
 
       // Type narrowing verification
       if (isMemoryError(errorResult)) {
-        expect(errorResult.error.code).toBe('MEMORY_CORRUPTED');
-        expect(errorResult.error.key).toBe('corrupted_key');
+        expect(errorResult?.error?.code).toBe('MEMORY_CORRUPTED');
+        expect(errorResult?.error?.key).toBe('corrupted_key');
       }
     });
   });
@@ -197,8 +197,8 @@ describe('Type Guards - Classical TDD', () => {
 
       // Type narrowing verification
       if (isTrainingResult(trainingResult)) {
-        expect(trainingResult.finalError).toBe(0.001);
-        expect(trainingResult.converged).toBe(true);
+        expect(trainingResult?.finalError).toBe(0.001);
+        expect(trainingResult?.converged).toBe(true);
       }
     });
 
@@ -217,8 +217,8 @@ describe('Type Guards - Classical TDD', () => {
 
       // Type narrowing verification
       if (isInferenceResult(inferenceResult)) {
-        expect(inferenceResult.predictions).toEqual([0.1, 0.8, 0.1]);
-        expect(inferenceResult.processingTime).toBe(50);
+        expect(inferenceResult?.predictions).toEqual([0.1, 0.8, 0.1]);
+        expect(inferenceResult?.processingTime).toBe(50);
       }
     });
 

@@ -1,10 +1,15 @@
 /**
- * Coordination Module - Barrel Export
+ * Coordination Module - Barrel Export.
  *
- * Central export point for swarm coordination functionality
+ * Central export point for swarm coordination functionality.
  */
 
 // Export diagnostics
+/**
+ * @file coordination module exports
+ */
+
+
 export * from './diagnostics';
 
 // Export core coordination components

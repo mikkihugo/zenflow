@@ -1,5 +1,5 @@
 /**
- * USL (Unified Service Layer) Factory Implementation
+ * USL (Unified Service Layer) Factory Implementation.
  *
  * @file Central factory system for creating, managing, and orchestrating service instances
  * across the Claude-Zen ecosystem. Provides dependency injection, service discovery,
@@ -36,7 +36,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../../utils/logger';
+import { createLogger, type Logger } from '../utils/logger';
 import type {
   IService,
   IServiceCapabilityRegistry,
@@ -70,7 +70,7 @@ import {
 } from './types';
 
 /**
- * Configuration for the USL Factory system
+ * Configuration for the USL Factory system.
  *
  * @interface USLFactoryConfig
  * @description Comprehensive configuration options for the USL Factory system,
@@ -161,7 +161,7 @@ export interface USLFactoryConfig {
 }
 
 /**
- * Main USL Factory class for creating and managing service instances
+ * Main USL Factory class for creating and managing service instances.
  *
  * @example
  */
@@ -176,31 +176,31 @@ export class USLFactory implements IServiceFactory {
   constructor(config: USLFactoryConfig = {}) {
     this.logger = createLogger('USLFactory');
     this.config = {
-      maxConcurrentInits: config.maxConcurrentInits ?? 5,
-      defaultTimeout: config.defaultTimeout ?? 30000,
-      enableDependencyResolution: config.enableDependencyResolution ?? true,
+      maxConcurrentInits: config?.maxConcurrentInits ?? 5,
+      defaultTimeout: config?.defaultTimeout ?? 30000,
+      enableDependencyResolution: config?.enableDependencyResolution ?? true,
       discovery: {
-        enabled: config.discovery?.enabled ?? true,
-        advertisementInterval: config.discovery?.advertisementInterval ?? 30000,
-        heartbeatInterval: config.discovery?.heartbeatInterval ?? 10000,
+        enabled: config?.discovery?.enabled ?? true,
+        advertisementInterval: config?.discovery?.advertisementInterval ?? 30000,
+        heartbeatInterval: config?.discovery?.heartbeatInterval ?? 10000,
       },
       healthMonitoring: {
-        enabled: config.healthMonitoring?.enabled ?? true,
-        interval: config.healthMonitoring?.interval ?? 30000,
+        enabled: config?.healthMonitoring?.enabled ?? true,
+        interval: config?.healthMonitoring?.interval ?? 30000,
         alertThresholds: {
-          errorRate: config.healthMonitoring?.alertThresholds?.errorRate ?? 5,
-          responseTime: config.healthMonitoring?.alertThresholds?.responseTime ?? 1000,
+          errorRate: config?.healthMonitoring?.alertThresholds?.errorRate ?? 5,
+          responseTime: config?.healthMonitoring?.alertThresholds?.responseTime ?? 1000,
         },
       },
       metricsCollection: {
-        enabled: config.metricsCollection?.enabled ?? true,
-        interval: config.metricsCollection?.interval ?? 10000,
-        retention: config.metricsCollection?.retention ?? 86400000, // 24 hours
+        enabled: config?.metricsCollection?.enabled ?? true,
+        interval: config?.metricsCollection?.interval ?? 10000,
+        retention: config?.metricsCollection?.retention ?? 86400000, // 24 hours
       },
       autoRecovery: {
-        enabled: config.autoRecovery?.enabled ?? true,
-        maxRetries: config.autoRecovery?.maxRetries ?? 3,
-        backoffMultiplier: config.autoRecovery?.backoffMultiplier ?? 2,
+        enabled: config?.autoRecovery?.enabled ?? true,
+        maxRetries: config?.autoRecovery?.maxRetries ?? 3,
+        backoffMultiplier: config?.autoRecovery?.backoffMultiplier ?? 2,
       },
     };
 
@@ -208,57 +208,57 @@ export class USLFactory implements IServiceFactory {
   }
 
   /**
-   * Create a service instance based on configuration
+   * Create a service instance based on configuration.
    *
    * @param config
    */
   async create<T extends ServiceConfig = ServiceConfig>(config: T): Promise<IService> {
-    this.logger.info(`Creating service: ${config.name} (${config.type})`);
+    this.logger.info(`Creating service: ${config?.name} (${config?.type})`);
 
     // Validate configuration
     const isValid = await this.validateConfig(config);
     if (!isValid) {
-      throw new ServiceConfigurationError(config.name, 'Invalid service configuration');
+      throw new ServiceConfigurationError(config?.name, 'Invalid service configuration');
     }
 
     // Check if service already exists
-    if (this.services.has(config.name)) {
-      this.logger.warn(`Service ${config.name} already exists, returning existing instance`);
-      return this.services.get(config.name)!;
+    if (this.services.has(config?.name)) {
+      this.logger.warn(`Service ${config?.name} already exists, returning existing instance`);
+      return this.services.get(config?.name)!;
     }
 
     // Check if service is already being initialized
-    if (this.initializationQueue.has(config.name)) {
-      this.logger.debug(`Service ${config.name} is already being initialized, waiting...`);
-      return await this.initializationQueue.get(config.name)!;
+    if (this.initializationQueue.has(config?.name)) {
+      this.logger.debug(`Service ${config?.name} is already being initialized, waiting...`);
+      return await this.initializationQueue.get(config?.name)!;
     }
 
     // Create initialization promise
     const initPromise = this.createServiceInstance(config);
-    this.initializationQueue.set(config.name, initPromise);
+    this.initializationQueue.set(config?.name, initPromise);
 
     try {
       const service = await initPromise;
-      this.services.set(config.name, service);
-      this.initializationQueue.delete(config.name);
+      this.services.set(config?.name, service);
+      this.initializationQueue.delete(config?.name);
 
       // Set up service event handling
       this.setupServiceEventHandling(service);
 
       // Emit service creation event
-      this.eventEmitter.emit('service-created', config.name, service);
+      this.eventEmitter.emit('service-created', config?.name, service);
 
-      this.logger.info(`Service created successfully: ${config.name}`);
+      this.logger.info(`Service created successfully: ${config?.name}`);
       return service;
     } catch (error) {
-      this.initializationQueue.delete(config.name);
-      this.logger.error(`Failed to create service ${config.name}:`, error);
-      throw new ServiceInitializationError(config.name, error as Error);
+      this.initializationQueue.delete(config?.name);
+      this.logger.error(`Failed to create service ${config?.name}:`, error);
+      throw new ServiceInitializationError(config?.name, error as Error);
     }
   }
 
   /**
-   * Create multiple services concurrently
+   * Create multiple services concurrently.
    *
    * @param configs
    */
@@ -293,7 +293,7 @@ export class USLFactory implements IServiceFactory {
   }
 
   /**
-   * Get service by name
+   * Get service by name.
    *
    * @param name
    */
@@ -302,14 +302,14 @@ export class USLFactory implements IServiceFactory {
   }
 
   /**
-   * List all services
+   * List all services.
    */
   list(): IService[] {
     return Array.from(this.services.values());
   }
 
   /**
-   * Check if service exists
+   * Check if service exists.
    *
    * @param name
    */
@@ -318,7 +318,7 @@ export class USLFactory implements IServiceFactory {
   }
 
   /**
-   * Remove and destroy service
+   * Remove and destroy service.
    *
    * @param name
    */
@@ -350,14 +350,14 @@ export class USLFactory implements IServiceFactory {
   }
 
   /**
-   * Get supported service types
+   * Get supported service types.
    */
   getSupportedTypes(): string[] {
     return Object.values(ServiceType);
   }
 
   /**
-   * Check if service type is supported
+   * Check if service type is supported.
    *
    * @param type
    */
@@ -366,7 +366,7 @@ export class USLFactory implements IServiceFactory {
   }
 
   /**
-   * Start all services
+   * Start all services.
    */
   async startAll(): Promise<void> {
     this.logger.info('Starting all services...');
@@ -412,7 +412,7 @@ export class USLFactory implements IServiceFactory {
   }
 
   /**
-   * Stop all services
+   * Stop all services.
    */
   async stopAll(): Promise<void> {
     this.logger.info('Stopping all services...');
@@ -451,7 +451,7 @@ export class USLFactory implements IServiceFactory {
   }
 
   /**
-   * Perform health check on all services
+   * Perform health check on all services.
    */
   async healthCheckAll(): Promise<Map<string, ServiceStatus>> {
     this.logger.debug('Performing health check on all services');
@@ -462,10 +462,10 @@ export class USLFactory implements IServiceFactory {
     const healthCheckPromises = services.map(async (service) => {
       try {
         const status = await service.getStatus();
-        results.set(service.name, status);
+        results?.set(service.name, status);
       } catch (error) {
         this.logger.error(`Health check failed for service ${service.name}:`, error);
-        results.set(service.name, {
+        results?.set(service.name, {
           name: service.name,
           type: service.type,
           lifecycle: 'error',
@@ -483,7 +483,7 @@ export class USLFactory implements IServiceFactory {
   }
 
   /**
-   * Get metrics from all services
+   * Get metrics from all services.
    */
   async getMetricsAll(): Promise<Map<string, ServiceMetrics>> {
     this.logger.debug('Collecting metrics from all services');
@@ -494,7 +494,7 @@ export class USLFactory implements IServiceFactory {
     const metricsPromises = services.map(async (service) => {
       try {
         const metrics = await service.getMetrics();
-        results.set(service.name, metrics);
+        results?.set(service.name, metrics);
       } catch (error) {
         this.logger.error(`Failed to get metrics for service ${service.name}:`, error);
       }
@@ -505,7 +505,7 @@ export class USLFactory implements IServiceFactory {
   }
 
   /**
-   * Shutdown factory and all services
+   * Shutdown factory and all services.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down USL Factory...');
@@ -541,14 +541,14 @@ export class USLFactory implements IServiceFactory {
   }
 
   /**
-   * Get number of active services
+   * Get number of active services.
    */
   getActiveCount(): number {
     return this.services.size;
   }
 
   /**
-   * Get services by type
+   * Get services by type.
    *
    * @param type
    */
@@ -557,43 +557,43 @@ export class USLFactory implements IServiceFactory {
   }
 
   /**
-   * Validate service configuration
+   * Validate service configuration.
    *
    * @param config
    */
   async validateConfig(config: ServiceConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config.name || !config.type) {
+      if (!config?.name || !config?.type) {
         this.logger.error('Service configuration missing required fields: name or type');
         return false;
       }
 
       // Check if type is supported
-      if (!this.supportsType(config.type)) {
-        this.logger.error(`Unsupported service type: ${config.type}`);
+      if (!this.supportsType(config?.type)) {
+        this.logger.error(`Unsupported service type: ${config?.type}`);
         return false;
       }
 
       // Type-specific validation
       const validationResult = this.validateTypeSpecificConfig(config);
-      if (!validationResult.valid) {
+      if (!validationResult?.valid) {
         this.logger.error(
-          `Service configuration validation failed for ${config.name}:`,
-          validationResult.errors
+          `Service configuration validation failed for ${config?.name}:`,
+          validationResult?.errors
         );
         return false;
       }
 
       return true;
     } catch (error) {
-      this.logger.error(`Error validating service configuration for ${config.name}:`, error);
+      this.logger.error(`Error validating service configuration for ${config?.name}:`, error);
       return false;
     }
   }
 
   /**
-   * Get configuration schema for service type
+   * Get configuration schema for service type.
    *
    * @param type
    */
@@ -666,19 +666,22 @@ export class USLFactory implements IServiceFactory {
       await service.initialize(config);
 
       const duration = Date.now() - startTime;
-      this.logger.info(`Service ${config.name} initialized in ${duration}ms`);
+      this.logger.info(`Service ${config?.name} initialized in ${duration}ms`);
 
       return service;
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.error(`Service ${config.name} initialization failed after ${duration}ms:`, error);
+      this.logger.error(
+        `Service ${config?.name} initialization failed after ${duration}ms:`,
+        error
+      );
       throw error;
     }
   }
 
   private async instantiateServiceByType(config: ServiceConfig): Promise<IService> {
     // Dynamic import based on service type to avoid circular dependencies
-    const serviceType = config.type as ServiceType;
+    const serviceType = config?.type as ServiceType;
 
     switch (serviceType) {
       case ServiceType.DATA:
@@ -734,7 +737,7 @@ export class USLFactory implements IServiceFactory {
 
       default: {
         // Try to find registered factory for this type
-        const factory = this.serviceFactories.get(config.type);
+        const factory = this.serviceFactories.get(config?.type);
         if (factory) {
           return await factory.create(config);
         }
@@ -753,20 +756,20 @@ export class USLFactory implements IServiceFactory {
       if (isDataServiceConfig(config)) {
         // Validate data service specific configuration
         if (
-          config.dataSource &&
-          !['database', 'memory', 'file', 'api'].includes(config.dataSource.type)
+          config?.dataSource &&
+          !['database', 'memory', 'file', 'api'].includes(config?.dataSource?.type)
         ) {
-          errors.push(`Invalid data source type: ${config.dataSource.type}`);
+          errors.push(`Invalid data source type: ${config?.dataSource?.type}`);
         }
       } else if (isWebServiceConfig(config)) {
         // Validate web service specific configuration
-        if (config.server?.port && (config.server.port < 1 || config.server.port > 65535)) {
-          errors.push(`Invalid port number: ${config.server.port}`);
+        if (config?.server?.port && (config?.server?.port < 1 || config?.server?.port > 65535)) {
+          errors.push(`Invalid port number: ${config?.server?.port}`);
         }
       } else if (isCoordinationServiceConfig(config)) {
         // Validate coordination service specific configuration
-        if (config.coordination?.maxAgents && config.coordination.maxAgents < 1) {
-          errors.push(`Invalid maxAgents value: ${config.coordination.maxAgents}`);
+        if (config?.coordination?.maxAgents && config?.coordination?.maxAgents < 1) {
+          errors.push(`Invalid maxAgents value: ${config?.coordination?.maxAgents}`);
         }
       }
       // Add more type-specific validations as needed
@@ -901,7 +904,7 @@ export class USLFactory implements IServiceFactory {
     setInterval(async () => {
       try {
         const healthResults = await this.healthCheckAll();
-        const unhealthyServices = Array.from(healthResults.entries())
+        const unhealthyServices = Array.from(healthResults?.entries())
           .filter(([_, status]) => status.health !== 'healthy')
           .map(([name, _]) => name);
 
@@ -965,7 +968,7 @@ export class USLFactory implements IServiceFactory {
 }
 
 /**
- * Service Registry implementation for global service management
+ * Service Registry implementation for global service management.
  *
  * @example
  */
@@ -1056,7 +1059,7 @@ export class ServiceRegistry implements IServiceRegistry {
       try {
         const results = await factory.healthCheckAll();
         results.forEach((status, name) => {
-          allResults.set(name, status);
+          allResults?.set(name, status);
         });
       } catch (error) {
         this.logger.error('Error during factory health check:', error);
@@ -1183,12 +1186,12 @@ export class ServiceRegistry implements IServiceRegistry {
 }
 
 /**
- * Global USL Factory instance
+ * Global USL Factory instance.
  */
 export const globalUSLFactory = new USLFactory();
 
 /**
- * Global Service Registry instance
+ * Global Service Registry instance.
  */
 export const globalServiceRegistry = new ServiceRegistry();
 
@@ -1196,7 +1199,7 @@ export const globalServiceRegistry = new ServiceRegistry();
 globalServiceRegistry.registerFactory('usl', globalUSLFactory);
 
 /**
- * Service configuration validator implementation
+ * Service configuration validator implementation.
  *
  * @example
  */
@@ -1219,25 +1222,25 @@ export class ServiceConfigValidator implements IServiceConfigValidator {
 
     try {
       // Basic validation
-      if (!config.name) {
+      if (!config?.name) {
         errors.push('Service name is required');
       }
 
-      if (!config.type) {
+      if (!config?.type) {
         errors.push('Service type is required');
       }
 
       // Type-specific validation
-      if (config.type) {
-        const typeValid = await this.validateType(config.type, config);
+      if (config?.type) {
+        const typeValid = await this.validateType(config?.type, config);
         if (!typeValid) {
-          errors.push(`Invalid configuration for service type: ${config.type}`);
+          errors.push(`Invalid configuration for service type: ${config?.type}`);
         }
       }
 
       // Dependency validation
-      if (config.dependencies) {
-        config.dependencies.forEach((dep) => {
+      if (config?.dependencies) {
+        config?.dependencies?.forEach((dep) => {
           if (!dep.serviceName) {
             errors.push('Dependency service name is required');
           }
@@ -1288,7 +1291,7 @@ export class ServiceConfigValidator implements IServiceConfigValidator {
 }
 
 /**
- * Service capability registry implementation
+ * Service capability registry implementation.
  *
  * @example
  */
@@ -1353,7 +1356,7 @@ export class ServiceCapabilityRegistry implements IServiceCapabilityRegistry {
 }
 
 /**
- * Global instances
+ * Global instances.
  */
 export const globalServiceConfigValidator = new ServiceConfigValidator();
 export const globalServiceCapabilityRegistry = new ServiceCapabilityRegistry();

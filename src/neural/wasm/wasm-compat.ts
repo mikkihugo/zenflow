@@ -1,14 +1,19 @@
 /**
- * WASM Compatibility Layer
+ * WASM Compatibility Layer.
  *
  * Provides a backwards-compatible wrapper so legacy code/tests using
- * `new WasmModuleLoader()` continue to function while the system
+ * `new WasmModuleLoader()` continue to function while the system.
  * migrates to the unified `NeuralWasmGateway` facade.
  *
  * Deprecation Plan:
  * 1. Migrate imports to `NeuralWasmGateway`
  * 2. Remove this compat layer and legacy shims
  */
+/**
+ * @file Neural network: wasm-compat
+ */
+
+
 import { NeuralWasmGateway } from './gateway';
 
 export class WasmModuleLoaderCompat {

@@ -1,22 +1,27 @@
 /**
- * USL Integration Service Helpers and Utilities
+ * USL Integration Service Helpers and Utilities.
  *
- * Provides helper functions and utilities for working with IntegrationServiceAdapter
+ * Provides helper functions and utilities for working with IntegrationServiceAdapter.
  * instances, including common operations, batch processing, validation helpers,
  * and specialized integration patterns.
  */
+/**
+ * @file Interface implementation: integration-service-helpers
+ */
 
-import type { ArchitectureDesign } from '../../../coordination/swarm/sparc/database/architecture-storage';
 
-import type { APIResult } from '../../../interfaces/api/safe-api-client';
-import { createLogger } from '../../../utils/logger';
+
+import type { ArchitectureDesign } from '../coordination/swarm/sparc/database/architecture-storage';
+
+import type { APIResult } from '../interfaces/api/safe-api-client';
+import { createLogger } from '../utils/logger';
 import type {
   IntegrationServiceAdapter,
   IntegrationServiceAdapterConfig,
 } from './integration-service-adapter';
 
 /**
- * Integration operation result type
+ * Integration operation result type.
  *
  * @example
  */
@@ -38,7 +43,7 @@ export interface IntegrationOperationResult<T = any> {
 }
 
 /**
- * Batch integration operation configuration
+ * Batch integration operation configuration.
  *
  * @example
  */
@@ -56,7 +61,7 @@ export interface BatchIntegrationConfig {
 }
 
 /**
- * Architecture operation configuration
+ * Architecture operation configuration.
  *
  * @example
  */
@@ -74,7 +79,7 @@ export interface ArchitectureOperationConfig {
 }
 
 /**
- * API operation configuration
+ * API operation configuration.
  *
  * @example
  */
@@ -97,7 +102,7 @@ export interface APIOperationConfig {
 }
 
 /**
- * Protocol operation configuration
+ * Protocol operation configuration.
  *
  * @example
  */
@@ -119,9 +124,9 @@ export interface ProtocolOperationConfig {
 }
 
 /**
- * Integration Service Helper Class
+ * Integration Service Helper Class.
  *
- * Provides high-level helper methods for common integration operations
+ * Provides high-level helper methods for common integration operations.
  * across Architecture Storage, Safe API, and Protocol Management.
  *
  * @example
@@ -136,7 +141,7 @@ export class IntegrationServiceHelper {
   // ============================================
 
   /**
-   * Save architecture with enhanced options
+   * Save architecture with enhanced options.
    *
    * @param architecture
    * @param config
@@ -147,8 +152,8 @@ export class IntegrationServiceHelper {
   ): Promise<IntegrationOperationResult<string>> {
     try {
       // Apply custom validation if specified
-      if (config.customValidation) {
-        const isValid = await config.customValidation(architecture);
+      if (config?.customValidation) {
+        const isValid = await config?.customValidation(architecture);
         if (!isValid) {
           return {
             success: false,
@@ -161,16 +166,16 @@ export class IntegrationServiceHelper {
       }
 
       // Apply tags if specified
-      if (config.tags) {
+      if (config?.tags) {
         architecture.metadata = {
           ...architecture.metadata,
-          tags: config.tags,
+          tags: config?.tags,
         };
       }
 
       const result = await this.adapter.execute<string>('architecture-save', {
         architecture,
-        projectId: config.projectId,
+        projectId: config?.projectId,
       });
 
       return result;
@@ -187,7 +192,7 @@ export class IntegrationServiceHelper {
   }
 
   /**
-   * Batch save multiple architectures
+   * Batch save multiple architectures.
    *
    * @param architectures
    * @param batchConfig
@@ -215,11 +220,11 @@ export class IntegrationServiceHelper {
               ),
             ]);
 
-            if (result.success) {
-              return result.data || null;
+            if (result?.success) {
+              return result?.data || null;
             } else {
-              errors.push(result.error);
-              if (failFast) throw new Error(result.error?.message || 'Batch operation failed');
+              errors.push(result?.error);
+              if (failFast) throw new Error(result?.error?.message || 'Batch operation failed');
               return null;
             }
           } catch (error) {
@@ -260,7 +265,7 @@ export class IntegrationServiceHelper {
   }
 
   /**
-   * Search architectures with enhanced filtering
+   * Search architectures with enhanced filtering.
    *
    * @param criteria
    * @param criteria.domain
@@ -289,9 +294,9 @@ export class IntegrationServiceHelper {
       });
 
       // Additional client-side filtering if needed
-      if (result.success && result.data && criteria.dateRange) {
+      if (result?.success && result?.data && criteria.dateRange) {
         const { start, end } = criteria.dateRange;
-        result.data = result.data.filter((arch) => {
+        result.data = result?.data?.filter((arch) => {
           const createdAt = new Date(arch.createdAt || Date.now());
           return createdAt >= start && createdAt <= end;
         });
@@ -314,7 +319,7 @@ export class IntegrationServiceHelper {
   // ============================================
 
   /**
-   * Enhanced API request with comprehensive configuration
+   * Enhanced API request with comprehensive configuration.
    *
    * @param method
    * @param endpoint
@@ -333,32 +338,32 @@ export class IntegrationServiceHelper {
         endpoint,
         data,
         options: {
-          timeout: config.timeout,
-          retries: config.retries,
-          headers: config.headers,
+          timeout: config?.timeout,
+          retries: config?.retries,
+          headers: config?.headers,
         },
       };
 
       const result = await this.adapter.execute<APIResult<T>>(operation, params);
 
-      if (result.success && result.data) {
+      if (result?.success && result?.data) {
         // Extract data from APIResult wrapper
-        const apiResult = result.data;
-        if (apiResult.success) {
+        const apiResult = result?.data;
+        if (apiResult?.success) {
           return {
             success: true,
-            data: apiResult.data,
-            metadata: result.metadata,
+            data: apiResult?.data,
+            metadata: result?.metadata,
           };
         } else {
           return {
             success: false,
             error: {
-              code: apiResult.error?.code || 'API_ERROR',
-              message: apiResult.error?.message || 'API request failed',
-              details: apiResult.error?.details,
+              code: apiResult?.error?.code || 'API_ERROR',
+              message: apiResult?.error?.message || 'API request failed',
+              details: apiResult?.error?.details,
             },
-            metadata: result.metadata,
+            metadata: result?.metadata,
           };
         }
       }
@@ -376,7 +381,7 @@ export class IntegrationServiceHelper {
   }
 
   /**
-   * Batch API requests with intelligent concurrency control
+   * Batch API requests with intelligent concurrency control.
    *
    * @param requests
    * @param batchConfig
@@ -414,11 +419,11 @@ export class IntegrationServiceHelper {
               ),
             ]);
 
-            if (result.success) {
-              return result.data || null;
+            if (result?.success) {
+              return result?.data || null;
             } else {
-              errors.push(result.error);
-              if (failFast) throw new Error(result.error?.message || 'Batch request failed');
+              errors.push(result?.error);
+              if (failFast) throw new Error(result?.error?.message || 'Batch request failed');
               return null;
             }
           } catch (error) {
@@ -459,7 +464,7 @@ export class IntegrationServiceHelper {
   }
 
   /**
-   * Resource management with CRUD operations
+   * Resource management with CRUD operations.
    *
    * @param operation
    * @param endpoint
@@ -526,7 +531,7 @@ export class IntegrationServiceHelper {
   // ============================================
 
   /**
-   * Enhanced protocol communication
+   * Enhanced protocol communication.
    *
    * @param operation
    * @param config
@@ -547,28 +552,28 @@ export class IntegrationServiceHelper {
         case 'connect':
           operationName = 'protocol-connect';
           params = {
-            protocol: config.protocol,
+            protocol: config?.protocol,
             config: {
-              timeout: config.connectionTimeout,
-              usePooling: config.useConnectionPooling,
+              timeout: config?.connectionTimeout,
+              usePooling: config?.useConnectionPooling,
             },
           };
           break;
         case 'disconnect':
           operationName = 'protocol-disconnect';
-          params = { protocol: config.protocol };
+          params = { protocol: config?.protocol };
           break;
         case 'send':
           operationName = 'protocol-send';
-          params = { protocol: config.protocol, message: config.message };
+          params = { protocol: config?.protocol, message: config?.message };
           break;
         case 'receive':
           operationName = 'protocol-receive';
-          params = { protocol: config.protocol, timeout: config.timeout };
+          params = { protocol: config?.protocol, timeout: config?.timeout };
           break;
         case 'broadcast':
           operationName = 'protocol-broadcast';
-          params = { message: config.message, protocols: config.protocols };
+          params = { message: config?.message, protocols: config?.protocols };
           break;
         default:
           throw new Error(`Unknown protocol operation: ${operation}`);
@@ -587,7 +592,7 @@ export class IntegrationServiceHelper {
   }
 
   /**
-   * Protocol health monitoring
+   * Protocol health monitoring.
    *
    * @param protocols
    */
@@ -607,13 +612,13 @@ export class IntegrationServiceHelper {
     try {
       const targetProtocols = protocols || (await this.adapter.execute<string[]>('protocol-list'));
 
-      if (!targetProtocols.success || !targetProtocols.data) {
+      if (!targetProtocols?.success || !targetProtocols?.data) {
         throw new Error('Failed to get protocol list');
       }
 
       const healthResults: Record<string, any> = {};
 
-      for (const protocol of targetProtocols.data) {
+      for (const protocol of targetProtocols?.data) {
         try {
           const startTime = Date.now();
           const healthResult = await this.adapter.execute<boolean>('protocol-health-check', {
@@ -622,10 +627,10 @@ export class IntegrationServiceHelper {
           const latency = Date.now() - startTime;
 
           healthResults[protocol] = {
-            status: healthResult.success ? 'healthy' : 'unhealthy',
+            status: healthResult?.success ? 'healthy' : 'unhealthy',
             latency,
             lastCheck: new Date(),
-            errorCount: healthResult.success ? 0 : 1,
+            errorCount: healthResult?.success ? 0 : 1,
           };
         } catch (_error) {
           healthResults[protocol] = {
@@ -657,7 +662,7 @@ export class IntegrationServiceHelper {
   // ============================================
 
   /**
-   * Get comprehensive service statistics
+   * Get comprehensive service statistics.
    */
   async getServiceStatistics(): Promise<
     IntegrationOperationResult<{
@@ -718,7 +723,7 @@ export class IntegrationServiceHelper {
   }
 
   /**
-   * Validate service configuration
+   * Validate service configuration.
    */
   async validateConfiguration(): Promise<
     IntegrationOperationResult<{
@@ -798,7 +803,7 @@ export class IntegrationServiceHelper {
   }
 
   /**
-   * Optimize service performance
+   * Optimize service performance.
    */
   async optimizePerformance(): Promise<
     IntegrationOperationResult<{
@@ -827,7 +832,7 @@ export class IntegrationServiceHelper {
           component: 'cache',
           action: 'Cleared cache',
           impact: 'Reduced memory usage and improved cache efficiency',
-          applied: clearResult.success,
+          applied: clearResult?.success,
         });
       }
 
@@ -866,15 +871,15 @@ export class IntegrationServiceHelper {
 }
 
 /**
- * Integration Service Utilities
+ * Integration Service Utilities.
  *
- * Static utility functions for integration operations
+ * Static utility functions for integration operations.
  *
  * @example
  */
 export class IntegrationServiceUtils {
   /**
-   * Create helper instance for an adapter
+   * Create helper instance for an adapter.
    *
    * @param adapter
    */
@@ -883,7 +888,7 @@ export class IntegrationServiceUtils {
   }
 
   /**
-   * Validate API endpoint URL
+   * Validate API endpoint URL.
    *
    * @param url
    */
@@ -897,14 +902,14 @@ export class IntegrationServiceUtils {
   }
 
   /**
-   * Generate unique operation ID
+   * Generate unique operation ID.
    */
   static generateOperationId(): string {
     return `op_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
   }
 
   /**
-   * Calculate retry delay with exponential backoff
+   * Calculate retry delay with exponential backoff.
    *
    * @param attempt
    * @param baseDelay
@@ -920,7 +925,7 @@ export class IntegrationServiceUtils {
   }
 
   /**
-   * Sanitize architecture data for storage
+   * Sanitize architecture data for storage.
    *
    * @param architecture
    */
@@ -943,7 +948,7 @@ export class IntegrationServiceUtils {
   }
 
   /**
-   * Validate protocol name
+   * Validate protocol name.
    *
    * @param protocol
    */
@@ -953,7 +958,7 @@ export class IntegrationServiceUtils {
   }
 
   /**
-   * Format error for logging
+   * Format error for logging.
    *
    * @param error
    */
@@ -965,7 +970,7 @@ export class IntegrationServiceUtils {
   }
 
   /**
-   * Calculate success rate from operation results
+   * Calculate success rate from operation results.
    *
    * @param results
    */
@@ -976,7 +981,7 @@ export class IntegrationServiceUtils {
   }
 
   /**
-   * Merge integration configurations
+   * Merge integration configurations.
    *
    * @param base
    * @param override
@@ -1024,7 +1029,7 @@ export class IntegrationServiceUtils {
   }
 
   /**
-   * Extract metrics from operation results
+   * Extract metrics from operation results.
    *
    * @param results
    */

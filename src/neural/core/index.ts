@@ -1,10 +1,15 @@
 /**
- * Neural Core Module - Barrel Export
+ * Neural Core Module - Barrel Export.
  *
- * Central export point for core neural network functionality
+ * Central export point for core neural network functionality.
  */
 
 // Export types from network module
+/**
+ * @file core module exports
+ */
+
+
 export type {
   ActivationFunctions as ActivationFunction,
   AgentNetworkConfig,
@@ -60,23 +65,23 @@ export { NeuralNetworkManager } from './neural-network-manager';
 // Core utilities
 export const NeuralCoreUtils = {
   /**
-   * Get available neural network types
+   * Get available neural network types.
    */
   getNetworkTypes: (): string[] => {
     return ['feedforward', 'lstm', 'transformer', 'autoencoder', 'cnn', 'gnn'];
   },
 
   /**
-   * Validate network configuration
+   * Validate network configuration.
    *
    * @param config
    */
   validateNetworkConfig: (config: any): boolean => {
-    return Boolean(config?.layers && Array.isArray(config.layers));
+    return Boolean(config?.layers && Array.isArray(config?.layers));
   },
 
   /**
-   * Generate network ID
+   * Generate network ID.
    *
    * @param type
    */
@@ -85,7 +90,7 @@ export const NeuralCoreUtils = {
   },
 
   /**
-   * Calculate network complexity
+   * Calculate network complexity.
    *
    * @param layers
    */
@@ -97,7 +102,7 @@ export const NeuralCoreUtils = {
   },
 
   /**
-   * Estimate training time
+   * Estimate training time.
    *
    * @param complexity
    * @param dataSize

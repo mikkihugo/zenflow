@@ -1,10 +1,15 @@
 /**
- * Intelligence Module - Barrel Export
+ * Intelligence Module - Barrel Export.
  *
- * Central export point for AI intelligence and adaptive learning functionality
+ * Central export point for AI intelligence and adaptive learning functionality.
  */
 
 // Legacy exports for backward compatibility
+/**
+ * @file intelligence module exports
+ */
+
+
 export * from './adaptive-learning/behavioral-optimization';
 export * from './adaptive-learning/knowledge-evolution';
 export { LearningCoordinator } from './adaptive-learning/learning-coordinator';
@@ -29,7 +34,7 @@ export { ConversationFramework } from './conversation-framework/index';
 // Intelligence utilities
 export const IntelligenceUtils = {
   /**
-   * Get available intelligence capabilities
+   * Get available intelligence capabilities.
    */
   getCapabilities: (): string[] => {
     return [
@@ -54,7 +59,7 @@ export const IntelligenceUtils = {
   },
 
   /**
-   * Validate intelligence configuration
+   * Validate intelligence configuration.
    *
    * @param config
    */
@@ -69,7 +74,7 @@ export const IntelligenceUtils = {
   },
 
   /**
-   * Get intelligence metrics
+   * Get intelligence metrics.
    */
   getMetrics: (): Record<string, any> => {
     return {
@@ -85,7 +90,7 @@ export const IntelligenceUtils = {
   },
 
   /**
-   * Initialize enhanced intelligence systems
+   * Initialize enhanced intelligence systems.
    *
    * @param config
    */
@@ -168,7 +173,7 @@ export const IntelligenceUtils = {
   },
 
   /**
-   * Create adaptive learning system factory
+   * Create adaptive learning system factory.
    *
    * @param config
    */
@@ -230,7 +235,7 @@ export class IntelligenceFactory {
   private static systems = new Map<string, any>();
 
   /**
-   * Get intelligence system by type
+   * Get intelligence system by type.
    *
    * @param type
    * @param config
@@ -245,7 +250,7 @@ export class IntelligenceFactory {
   }
 
   /**
-   * Get adaptive learning system
+   * Get adaptive learning system.
    *
    * @param config
    */
@@ -261,7 +266,7 @@ export class IntelligenceFactory {
   }
 
   /**
-   * Clear all cached systems
+   * Clear all cached systems.
    */
   static clearSystems(): void {
     IntelligenceFactory.systems.clear();

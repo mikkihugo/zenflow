@@ -1,7 +1,12 @@
 /**
- * Core Performance Optimizer
- * Orchestrates optimization across all system domains
+ * Core Performance Optimizer.
+ * Orchestrates optimization across all system domains.
  */
+/**
+ * @file performance-optimizer implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type {
@@ -104,7 +109,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Start continuous performance optimization
+   * Start continuous performance optimization.
    */
   public async startOptimization(): Promise<void> {
     if (!this.config.enabled || this.isOptimizing) {
@@ -122,7 +127,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Stop continuous optimization
+   * Stop continuous optimization.
    */
   public stopOptimization(): void {
     this.isOptimizing = false;
@@ -130,7 +135,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Perform immediate comprehensive optimization
+   * Perform immediate comprehensive optimization.
    */
   public async optimizeNow(): Promise<OptimizationResult[]> {
     const results: OptimizationResult[] = [];
@@ -169,7 +174,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Get current system performance state
+   * Get current system performance state.
    */
   public async getPerformanceState(): Promise<SystemPerformanceState> {
     const overall = await this.getCurrentPerformanceMetrics();
@@ -186,7 +191,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Register a domain optimizer
+   * Register a domain optimizer.
    *
    * @param domain
    * @param optimizer
@@ -197,7 +202,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Generate optimization plan based on current performance
+   * Generate optimization plan based on current performance.
    *
    * @param currentMetrics
    */
@@ -222,7 +227,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Execute a specific optimization plan
+   * Execute a specific optimization plan.
    *
    * @param plan
    */
@@ -275,7 +280,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Execute a specific optimization action
+   * Execute a specific optimization action.
    *
    * @param optimizer
    * @param action
@@ -349,7 +354,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Schedule next optimization cycle
+   * Schedule next optimization cycle.
    */
   private scheduleOptimization(): void {
     if (!this.isOptimizing) return;
@@ -367,7 +372,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Perform optimization cycle
+   * Perform optimization cycle.
    */
   private async optimizationCycle(): Promise<void> {
     const currentMetrics = await this.getCurrentPerformanceMetrics();
@@ -387,7 +392,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Check if optimization is needed
+   * Check if optimization is needed.
    *
    * @param metrics
    */
@@ -395,15 +400,15 @@ export class PerformanceOptimizer extends EventEmitter {
     const targets = this.config.targetMetrics;
 
     return (
-      metrics.latency > targets.latency ||
-      metrics.throughput < targets.throughput ||
-      metrics.memoryUsage > targets.memoryUsage ||
-      metrics.cpuUsage > targets.cpuUsage
+      metrics.latency > targets?.latency ||
+      metrics.throughput < targets?.throughput ||
+      metrics.memoryUsage > targets?.memoryUsage ||
+      metrics.cpuUsage > targets?.cpuUsage
     );
   }
 
   /**
-   * Identify performance bottlenecks
+   * Identify performance bottlenecks.
    *
    * @param metrics
    */
@@ -411,16 +416,16 @@ export class PerformanceOptimizer extends EventEmitter {
     const bottlenecks: string[] = [];
     const targets = this.config.targetMetrics;
 
-    if (metrics.latency > targets.latency) {
+    if (metrics.latency > targets?.latency) {
       bottlenecks.push('latency');
     }
-    if (metrics.throughput < targets.throughput) {
+    if (metrics.throughput < targets?.throughput) {
       bottlenecks.push('throughput');
     }
-    if (metrics.memoryUsage > targets.memoryUsage) {
+    if (metrics.memoryUsage > targets?.memoryUsage) {
       bottlenecks.push('memory');
     }
-    if (metrics.cpuUsage > targets.cpuUsage) {
+    if (metrics.cpuUsage > targets?.cpuUsage) {
       bottlenecks.push('cpu');
     }
 
@@ -428,7 +433,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Create optimization plan for bottleneck
+   * Create optimization plan for bottleneck.
    *
    * @param bottleneck
    */
@@ -492,7 +497,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Sort optimization plans by priority and dependencies
+   * Sort optimization plans by priority and dependencies.
    *
    * @param plans
    */
@@ -507,7 +512,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Calculate performance improvement
+   * Calculate performance improvement.
    *
    * @param before
    * @param after
@@ -528,7 +533,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Get current performance metrics
+   * Get current performance metrics.
    */
   private async getCurrentPerformanceMetrics(): Promise<PerformanceMetrics> {
     // Mock implementation - replace with actual metrics collection
@@ -543,7 +548,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Get domain-specific metrics
+   * Get domain-specific metrics.
    *
    * @param _domain
    */
@@ -553,7 +558,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Assess current performance across all domains
+   * Assess current performance across all domains.
    */
   private async assessCurrentPerformance(): Promise<void> {
     const metrics = await this.getCurrentPerformanceMetrics();

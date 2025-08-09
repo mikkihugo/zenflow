@@ -1,4 +1,10 @@
+/**
+ * @file url-builder implementation
+ */
+
+
 import { DEFAULT_CONFIG } from './defaults';
+import type { SystemConfiguration } from './types';
 
 export interface URLBuilderConfig {
   protocol?: 'http' | 'https';
@@ -61,7 +67,7 @@ export class URLBuilder {
    */
   getCORSOrigins(): string[] {
     const protocol = this.getProtocol();
-    
+
     // Get all service URLs for CORS
     const mcpURL = this.getMCPServerURL({ protocol });
     const webURL = this.getWebDashboardURL({ protocol });
@@ -69,9 +75,9 @@ export class URLBuilder {
 
     // Add configured origins
     const configuredOrigins = this.config.interfaces.web.corsOrigins || [];
-    
+
     // Convert localhost origins to use current protocol
-    const updatedOrigins = configuredOrigins?.map(origin => {
+    const updatedOrigins = configuredOrigins?.map((origin) => {
       if (origin.includes('localhost') && !origin.startsWith('http')) {
         return `${protocol}://${origin}`;
       }
@@ -82,12 +88,7 @@ export class URLBuilder {
     });
 
     // Combine all origins and deduplicate
-    const allOrigins = [
-      ...updatedOrigins,
-      mcpURL,
-      webURL,
-      monitoringURL
-    ];
+    const allOrigins = [...updatedOrigins, mcpURL, webURL, monitoringURL];
 
     return [...new Set(allOrigins)];
   }
@@ -98,7 +99,10 @@ export class URLBuilder {
    * @param service
    * @param overrides
    */
-  getServiceBaseURL(service: 'mcp' | 'web' | 'monitoring', overrides: Partial<URLBuilderConfig> = {}): string {
+  getServiceBaseURL(
+    service: 'mcp' | 'web' | 'monitoring',
+    overrides: Partial<URLBuilderConfig> = {}
+  ): string {
     switch (service) {
       case 'mcp':
         return this.getMCPServerURL(overrides);
@@ -116,7 +120,7 @@ export class URLBuilder {
    */
   getAPIEndpoints(): Array<{ url: string; description: string }> {
     const protocol = this.getProtocol();
-    
+
     return [
       {
         url: this.getMCPServerURL({ protocol }),
@@ -131,16 +135,18 @@ export class URLBuilder {
         description: 'Monitoring Dashboard (Development)',
       },
       // Add production URLs if configured
-      ...(this.config.environment.isProduction ? [
-        {
-          url: process.env['PRODUCTION_API_URL'] || 'https://api.claude-zen.com',
-          description: 'Production API Server',
-        },
-        {
-          url: process.env['PRODUCTION_WEB_URL'] || 'https://dashboard.claude-zen.com',
-          description: 'Production Dashboard',
-        }
-      ] : [])
+      ...(this.config.environment.isProduction
+        ? [
+            {
+              url: process.env['PRODUCTION_API_URL'] || 'https://api.claude-zen.com',
+              description: 'Production API Server',
+            },
+            {
+              url: process.env['PRODUCTION_WEB_URL'] || 'https://dashboard.claude-zen.com',
+              description: 'Production Dashboard',
+            },
+          ]
+        : []),
     ];
   }
 
@@ -154,9 +160,9 @@ export class URLBuilder {
    */
   private buildURL(protocol: string, host: string, port: number, path: string): string {
     // Handle default ports
-    const shouldOmitPort = (protocol === 'http' && port === 80) || 
-                          (protocol === 'https' && port === 443);
-    
+    const shouldOmitPort =
+      (protocol === 'http' && port === 80) || (protocol === 'https' && port === 443);
+
     const portPart = shouldOmitPort ? '' : `:${port}`;
     const pathPart = path.startsWith('/') ? path : `/${path}`;
     const cleanPath = path === '' ? '' : pathPart;
@@ -172,7 +178,7 @@ export class URLBuilder {
     if (process.env['FORCE_HTTPS'] === 'true') {
       return 'https';
     }
-    
+
     if (process.env['FORCE_HTTP'] === 'true') {
       return 'http';
     }
@@ -192,9 +198,12 @@ export class URLBuilder {
    * @param service
    * @param overrides
    */
-  getDisplayURL(service: 'mcp' | 'web' | 'monitoring', overrides: Partial<URLBuilderConfig> = {}): string {
+  getDisplayURL(
+    service: 'mcp' | 'web' | 'monitoring',
+    overrides: Partial<URLBuilderConfig> = {}
+  ): string {
     const url = this.getServiceBaseURL(service, overrides);
-    
+
     // Replace 0.0.0.0 with localhost for better display
     return url.replace('://0.0.0.0:', '://localhost:');
   }
@@ -238,17 +247,15 @@ export const createURLBuilder = (config: SystemConfiguration): URLBuilder => {
  *
  * @param overrides
  */
-export const getMCPServerURL = (overrides?: Partial<URLBuilderConfig>) => 
+export const getMCPServerURL = (overrides?: Partial<URLBuilderConfig>) =>
   defaultURLBuilder.getMCPServerURL(overrides);
 
-export const getWebDashboardURL = (overrides?: Partial<URLBuilderConfig>) => 
+export const getWebDashboardURL = (overrides?: Partial<URLBuilderConfig>) =>
   defaultURLBuilder.getWebDashboardURL(overrides);
 
-export const getMonitoringDashboardURL = (overrides?: Partial<URLBuilderConfig>) => 
+export const getMonitoringDashboardURL = (overrides?: Partial<URLBuilderConfig>) =>
   defaultURLBuilder.getMonitoringDashboardURL(overrides);
 
-export const getCORSOrigins = () => 
-  defaultURLBuilder.getCORSOrigins();
+export const getCORSOrigins = () => defaultURLBuilder.getCORSOrigins();
 
-export const getAPIEndpoints = () => 
-  defaultURLBuilder.getAPIEndpoints();
+export const getAPIEndpoints = () => defaultURLBuilder.getAPIEndpoints();

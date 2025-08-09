@@ -1,9 +1,14 @@
 /**
- * Cross-Agent Knowledge Sharing Index
- * Central export point for all collective intelligence and knowledge sharing systems
+ * Cross-Agent Knowledge Sharing Index.
+ * Central export point for all collective intelligence and knowledge sharing systems.
  */
 
 // Collaborative Reasoning Types
+/**
+ * @file knowledge module exports
+ */
+
+
 export type {
   CollaborativeSolution,
   ComprehensiveSolution,
@@ -114,11 +119,11 @@ export { SQLiteBackend } from './storage-backends/sqlite-backend';
 export { StorageInterface } from './storage-interface';
 
 /**
- * Factory Functions for Easy System Creation
+ * Factory Functions for Easy System Creation.
  */
 
 /**
- * Create a complete cross-agent knowledge sharing system
+ * Create a complete cross-agent knowledge sharing system.
  *
  * @param config
  * @param logger
@@ -138,7 +143,7 @@ export async function createKnowledgeSharingSystem(
 
   // Create logger and event bus if not provided
   const finalLogger = logger || console;
-  const finalEventBus = eventBus || new ((await import('node:events')).EventEmitter)();
+  const finalEventBus = eventBus || new (await import('node:events')).EventEmitter();
 
   const system = new CrossAgentKnowledgeIntegration(finalConfig, finalLogger, finalEventBus);
   await system.initialize();
@@ -147,7 +152,7 @@ export async function createKnowledgeSharingSystem(
 }
 
 /**
- * Create a knowledge swarm system
+ * Create a knowledge swarm system.
  *
  * @param config
  * @param vectorDb
@@ -158,11 +163,11 @@ export async function createKnowledgeSwarm(config?: any, vectorDb?: any): Promis
 }
 
 /**
- * Utility Functions
+ * Utility Functions.
  */
 
 /**
- * Validate cross-agent knowledge configuration
+ * Validate cross-agent knowledge configuration.
  *
  * @param config
  */
@@ -214,7 +219,7 @@ export function validateKnowledgeConfig(config: CrossAgentKnowledgeConfig): {
 }
 
 /**
- * Get system capabilities based on configuration
+ * Get system capabilities based on configuration.
  *
  * @param config
  */
@@ -241,7 +246,7 @@ export function getSystemCapabilities(config: CrossAgentKnowledgeConfig): {
 }
 
 /**
- * Helper function to create minimal configuration for testing
+ * Helper function to create minimal configuration for testing.
  */
 export function createTestConfig(): CrossAgentKnowledgeConfig {
   const defaultConfig = getDefaultConfig();
@@ -263,11 +268,11 @@ export function createTestConfig(): CrossAgentKnowledgeConfig {
 }
 
 /**
- * Storage and Persistence Utilities
+ * Storage and Persistence Utilities.
  */
 
 /**
- * Check if storage directory exists and create if needed
+ * Check if storage directory exists and create if needed.
  *
  * @param basePath
  */
@@ -300,7 +305,7 @@ export async function ensureStorageDirectory(basePath: string = process.cwd()): 
 }
 
 /**
- * Get storage paths for knowledge systems
+ * Get storage paths for knowledge systems.
  *
  * @param basePath
  */
@@ -325,6 +330,6 @@ export function getKnowledgeStoragePaths(basePath: string = process.cwd()): {
 }
 
 /**
- * Main Integration System Class is exported above
- * Default export pointing to the main class for convenience
+ * Main Integration System Class is exported above.
+ * Default export pointing to the main class for convenience.
  */

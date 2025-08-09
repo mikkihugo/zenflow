@@ -1,8 +1,15 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-load-balancing-optimization-emergency-protocol-handler");
 /**
- * Emergency Protocol Handler
- * Advanced emergency response and load shedding system
+ * @file Coordination system: emergency-protocol-handler
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-load-balancing-optimization-emergency-protocol-handler');
+
+/**
+ * Emergency Protocol Handler.
+ * Advanced emergency response and load shedding system.
  */
 
 import { EventEmitter } from 'node:events';

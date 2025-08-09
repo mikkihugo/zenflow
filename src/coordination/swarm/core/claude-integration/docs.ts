@@ -1,7 +1,14 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-claude-integration-docs");
 /**
- * Documentation generation module for Claude Code integration
+ * @file Coordination system: docs
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-claude-integration-docs');
+
+/**
+ * Documentation generation module for Claude Code integration.
  * Generates claude.md and .claude/commands/ documentation
  */
 
@@ -55,7 +62,7 @@ class ClaudeDocsGenerator {
   private advancedGenerator: any;
 
   constructor(options: DocsGeneratorOptions = {}) {
-    this.workingDir = options.workingDir || process.cwd();
+    this.workingDir = options?.workingDir || process.cwd();
     this.advancedGenerator = new AdvancedCommandsGenerator(options);
   }
 
@@ -264,8 +271,7 @@ Once configured, Claude Zen MCP tools enhance Claude Code's coordination:
 **Step 3:** Coordinate research execution
 - Tool: \`mcp__claude-zen-swarm__task_orchestrate\`
 - Parameters: \`{"task": "Research neural architecture search papers", "strategy": "adaptive"}\`
-- Result: Claude Code systematically searches, reads, and analyzes papers
-
+- Result: Claude Code systematically searches, reads, and analyzes papers.
 **What Actually Happens:**
 1. The swarm sets up a coordination framework
 2. Each agent MUST use Claude Zen hooks for coordination:
@@ -292,8 +298,7 @@ Once configured, Claude Zen MCP tools enhance Claude Code's coordination:
 **Step 3:** Coordinate implementation
 - Tool: \`mcp__claude-zen-swarm__task_orchestrate\`
 - Parameters: \`{"task": "Implement user authentication with JWT", "strategy": "parallel"}\`
-- Result: Claude Code implements features using its native tools
-
+- Result: Claude Code implements features using its native tools.
 **What Actually Happens:**
 1. The swarm creates a development coordination plan
 2. Each agent coordinates using mandatory hooks:
@@ -681,7 +686,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
   }
 
   /**
-   * Generate command documentation files in organized subdirectories
+   * Generate command documentation files in organized subdirectories.
    */
   async generateCommandDocs() {
     const commandsDir = path.join(this.workingDir, '.claude', 'commands');
@@ -1063,34 +1068,34 @@ Already configured by default for common file types.
 
       if (hasContent(config)) {
         // Use provided content for workflow files
-        content = config.content;
+        content = config?.content;
       } else if (hasTool(config)) {
         // Generate content for tool documentation
-        content = `# ${config.title}
+        content = `# ${config?.title}
 
 ## 🎯 Key Principle
 **This tool coordinates Claude Code's actions. It does NOT write code or create content.**
 
 ## MCP Tool Usage in Claude Code
 
-**Tool:** \`${config.tool}\`
+**Tool:** \`${config?.tool}\`
 
 ## Parameters
 \`\`\`json
-${config.params}
+${config?.params}
 \`\`\`
 
 ## Description
-${config.description}
+${config?.description}
 
 ## Details
-${config.details}
+${config?.details}
 
 ## Example Usage
 
 **In Claude Code:**
-1. Use the tool: \`${config.tool}\`
-2. With parameters: \`${config.params}\`
+1. Use the tool: \`${config?.tool}\`
+2. With parameters: \`${config?.params}\`
 3. Claude Code then executes the coordinated plan using its native tools
 
 ## Important Reminders
@@ -1174,7 +1179,7 @@ ${config.details}
   }
 
   /**
-   * Check if file exists
+   * Check if file exists.
    *
    * @param filePath
    */
@@ -1188,7 +1193,7 @@ ${config.details}
   }
 
   /**
-   * Create backup of existing file
+   * Create backup of existing file.
    *
    * @param filePath
    */
@@ -1208,7 +1213,7 @@ ${config.details}
   /**
    * Clean up old backup files (keep last 5)
    *
-   * @param filePath
+   * @param filePath.
    */
   async cleanupOldBackups(filePath: string) {
     const dir = path.dirname(filePath);
@@ -1324,8 +1329,7 @@ ${config.details}
 - 💾 **Memory management** - Persistent state across sessions
 - 🤖 **Neural features** - Cognitive patterns and learning
 - 📊 **Performance tracking** - Monitoring and metrics
-- 🐝 **Swarm orchestration** - Multi-agent coordination
-
+- 🐝 **Swarm orchestration** - Multi-agent coordination.
 ### ⚠️ Key Principle:
 **MCP tools DO NOT create content or write code.** They coordinate and enhance Claude Code's native capabilities. Think of them as an orchestration layer that helps Claude Code work more efficiently.
 
@@ -1479,7 +1483,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
   }
 
   /**
-   * Intelligently combine Claude Zen content with existing content
+   * Intelligently combine Claude Zen content with existing content.
    *
    * @param existingContent
    * @param claudeZenContent
@@ -1504,7 +1508,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
   }
 
   /**
-   * Find existing Claude Zen section in content
+   * Find existing Claude Zen section in content.
    *
    * @param lines
    */
@@ -1512,7 +1516,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
     for (let i = 0; i < lines.length; i++) {
       const lineElement = lines[i];
       if (lineElement) {
-        const line = lineElement.toLowerCase();
+        const line = lineElement?.toLowerCase();
         if (
           (line.includes('claude-zen') || line.includes('claude zen')) &&
           (line.startsWith('#') || line.includes('claude code configuration'))
@@ -1525,7 +1529,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
   }
 
   /**
-   * Intelligently insert new content based on context
+   * Intelligently insert new content based on context.
    *
    * @param existingLines
    * @param newLines
@@ -1537,7 +1541,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
     // 1. After main title but before first major section
     for (let i = 0; i < existingLines.length; i++) {
       const lineElement = existingLines[i];
-      if (lineElement && lineElement.startsWith('# ') && i > 0) {
+      if (lineElement && lineElement?.startsWith('# ') && i > 0) {
         // Found first major heading after title
         insertIndex = i;
         break;
@@ -1548,7 +1552,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
     if (insertIndex === -1) {
       for (let i = 0; i < existingLines.length; i++) {
         const lineElement = existingLines[i];
-        if (lineElement && lineElement.startsWith('## ') && i > 5) {
+        if (lineElement && lineElement?.startsWith('## ') && i > 5) {
           insertIndex = i;
           break;
         }
@@ -1571,7 +1575,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
   }
 
   /**
-   * Find the end of a markdown section
+   * Find the end of a markdown section.
    *
    * @param lines
    * @param startIndex
@@ -1582,14 +1586,14 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
       const lineElement = lines[i];
       if (lineElement) {
         if (
-          lineElement.startsWith('# ') &&
-          !lineElement.includes('claude-zen') &&
-          !lineElement.includes('claude zen')
+          lineElement?.startsWith('# ') &&
+          !lineElement?.includes('claude-zen') &&
+          !lineElement?.includes('claude zen')
         ) {
           return i;
         }
         // Also check for horizontal rules that might separate sections
-        if (lineElement.trim() === '---' && i > startIndex + 10) {
+        if (lineElement?.trim() === '---' && i > startIndex + 10) {
           return i;
         }
       }
@@ -1598,7 +1602,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
   }
 
   /**
-   * Generate all documentation files
+   * Generate all documentation files.
    *
    * @param options
    */

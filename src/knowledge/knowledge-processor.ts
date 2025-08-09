@@ -1,10 +1,17 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-knowledge-knowledge-processor");
 /**
- * WASM-Powered FACT Integration for Claude-Zen
+ * @file knowledge-processor implementation
+ */
+
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-knowledge-knowledge-processor');
+
+/**
+ * WASM-Powered FACT Integration for Claude-Zen.
  *
  * High-performance external knowledge gathering using Rust/WASM core
- * - 10x faster cache operations than JavaScript
+ * - 10x faster cache operations than JavaScript.
  * - 5.25x faster query processing
  * - 9x faster template execution
  * - 51% memory usage reduction
@@ -14,7 +21,7 @@ const logger = getLogger("src-knowledge-knowledge-processor");
  * - Cognitive templates for intelligent data analysis
  * - FastCache for sub-millisecond caching
  * - Hive-controlled knowledge gathering missions
- * - Multi-agent swarm coordination
+ * - Multi-agent swarm coordination.
  */
 
 import { EventEmitter } from 'node:events';
@@ -96,8 +103,8 @@ interface WASMPerformanceMetrics {
 }
 
 /**
- * WASM-Powered FACT Integration
- * Uses Rust/WebAssembly core for high-performance external knowledge processing
+ * WASM-Powered FACT Integration.
+ * Uses Rust/WebAssembly core for high-performance external knowledge processing.
  *
  * @example
  */
@@ -189,7 +196,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * Initialize WASM-powered FACT system
+   * Initialize WASM-powered FACT system.
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) {
@@ -226,7 +233,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * Process external knowledge gathering using WASM-powered cognitive templates
+   * Process external knowledge gathering using WASM-powered cognitive templates.
    *
    * @param template
    * @param data
@@ -282,7 +289,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * Intelligent knowledge gathering based on project context
+   * Intelligent knowledge gathering based on project context.
    *
    * @param query
    * @param context
@@ -328,7 +335,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * Gather knowledge for specific dependencies detected by hive
+   * Gather knowledge for specific dependencies detected by hive.
    *
    * @param dependencies
    */
@@ -358,7 +365,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * Execute knowledge gathering missions from hive system
+   * Execute knowledge gathering missions from hive system.
    *
    * @param missions
    */
@@ -395,7 +402,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * Get WASM performance metrics
+   * Get WASM performance metrics.
    */
   getPerformanceMetrics(): WASMPerformanceMetrics {
     if (!this.isInitialized) {
@@ -443,7 +450,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * List available cognitive templates
+   * List available cognitive templates.
    *
    * @param category
    */
@@ -458,7 +465,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * Create a custom cognitive template
+   * Create a custom cognitive template.
    *
    * @param name
    * @param pattern
@@ -499,7 +506,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * Load WASM module dynamically
+   * Load WASM module dynamically.
    */
   private async loadWASMModule(): Promise<void> {
     try {
@@ -581,7 +588,7 @@ export class WASMFactIntegration extends EventEmitter {
           analyze_context(context: any) {
             return {
               suggestedTemplates: ['analysis-basic', 'pattern-detection'],
-              useHive: context.query?.length > 100,
+              useHive: context.query.length > 100,
               contextTags: ['analysis', 'data'],
               confidence: 0.85,
             };
@@ -611,7 +618,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * Initialize WASM components
+   * Initialize WASM components.
    */
   private async initializeWASMComponents(): Promise<void> {
     if (!this.wasmModule) {
@@ -631,7 +638,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * Load cognitive templates
+   * Load cognitive templates.
    */
   private async loadCognitiveTemplates(): Promise<void> {
     for (const [name, templateDef] of Object.entries(WASMFactIntegration.COGNITIVE_TEMPLATES)) {
@@ -652,7 +659,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * Helper methods
+   * Helper methods.
    *
    * @param template
    * @param data
@@ -760,7 +767,7 @@ export class WASMFactIntegration extends EventEmitter {
   }
 
   /**
-   * Shutdown WASM system
+   * Shutdown WASM system.
    */
   async shutdown(): Promise<void> {
     if (this.fastCache) {

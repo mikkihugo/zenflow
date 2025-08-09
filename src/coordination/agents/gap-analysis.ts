@@ -1,11 +1,16 @@
 /**
  * Agent System Gap Analysis - Compare our 147+ agents vs claude-zen's 54
  *
- * This utility provides comprehensive analysis of our agent system
+ * This utility provides comprehensive analysis of our agent system.
  * capabilities compared to claude-zen and other systems.
  */
+/**
+ * @file Coordination system: gap-analysis
+ */
 
-import type { AgentType } from '../../types/agent-types';
+
+
+import type { AgentType } from '../types/agent-types';
 
 // claude-zen's 54 agent types (from their documentation)
 export const CLAUDE_FLOW_AGENTS: Record<string, string[]> = {
@@ -245,7 +250,7 @@ export interface GapAnalysisResult {
 }
 
 /**
- * Perform comprehensive gap analysis between our agent system and claude-zen
+ * Perform comprehensive gap analysis between our agent system and claude-zen.
  */
 export function performGapAnalysis(): GapAnalysisResult {
   // Count our agents
@@ -332,7 +337,7 @@ export function performGapAnalysis(): GapAnalysisResult {
 }
 
 /**
- * Generate a detailed comparison report
+ * Generate a detailed comparison report.
  */
 export function generateComparisonReport(): string {
   const analysis = performGapAnalysis();
@@ -347,12 +352,12 @@ export function generateComparisonReport(): string {
   report += `## 🎯 Category-by-Category Analysis\n\n`;
 
   for (const [category, data] of Object.entries(analysis.categoryComparison)) {
-    const advantage = data.advantage > 0 ? `+${data.advantage}` : `${data.advantage}`;
-    const advantageEmoji = data.advantage > 0 ? '✅' : data.advantage === 0 ? '🔄' : '❌';
+    const advantage = data?.advantage > 0 ? `+${data?.advantage}` : `${data?.advantage}`;
+    const advantageEmoji = data?.advantage > 0 ? '✅' : data.advantage === 0 ? '🔄' : '❌';
 
     report += `### ${category} ${advantageEmoji}\n`;
-    report += `- **Ours**: ${data.ours} agents\n`;
-    report += `- **Theirs**: ${data.theirs} agents\n`;
+    report += `- **Ours**: ${data?.ours} agents\n`;
+    report += `- **Theirs**: ${data?.theirs} agents\n`;
     report += `- **Advantage**: ${advantage}\n\n`;
   }
 
@@ -385,7 +390,7 @@ export function generateComparisonReport(): string {
 }
 
 /**
- * Audit current auto-assignment capabilities
+ * Audit current auto-assignment capabilities.
  */
 export function auditAutoAssignmentCapabilities(): {
   hasIntelligentSelection: boolean;

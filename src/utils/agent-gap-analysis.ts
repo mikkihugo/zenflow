@@ -1,10 +1,15 @@
-#!/usr/bin/env nodeimport { getLogger } from "../config/logging-config";
-const logger = getLogger("src-utils-agent-gap-analysis");
+/**
+ * @file agent-gap-analysis implementation
+ */
+
+
+#!/usr/bin/env nodeimport { getLogger } from '../core/logger';
+const logger = getLogger('src-utils-agent-gap-analysis');
 
 /**
- * Agent Gap Analysis CLI Utility
+ * Agent Gap Analysis CLI Utility.
  *
- * Generate comprehensive analysis comparing our agent system to claude-zen
+ * Generate comprehensive analysis comparing our agent system to claude-zen.
  */
 
 import {

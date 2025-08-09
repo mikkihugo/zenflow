@@ -1,9 +1,14 @@
 /**
- * SPARC Memory Systems Template
+ * SPARC Memory Systems Template.
  *
  * Pre-built template for multi-backend memory systems with caching,
  * consistency, and distributed storage capabilities.
  */
+/**
+ * @file Coordination system: memory-systems-template
+ */
+
+
 
 import { nanoid } from 'nanoid';
 import type {

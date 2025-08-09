@@ -1,7 +1,13 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-singleton-container");
 /**
- * Registration options for singleton container
+ * @file Coordination system: singleton-container
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-singleton-container');
+/**
+ * Registration options for singleton container.
  *
  * @example
  */
@@ -12,8 +18,8 @@ interface RegistrationOptions {
 }
 
 /**
- * Singleton Container - Dependency Injection Pattern
- * Replaces global state management with proper IoC container
+ * Singleton Container - Dependency Injection Pattern.
+ * Replaces global state management with proper IoC container.
  *
  * @example
  */
@@ -29,7 +35,7 @@ class SingletonContainer {
   }
 
   /**
-   * Register a singleton factory
+   * Register a singleton factory.
    *
    * @param {string} key - Service identifier
    * @param {Function} factory - Factory function to create instance
@@ -42,14 +48,14 @@ class SingletonContainer {
 
     this.factories.set(key, {
       factory,
-      lazy: options.lazy !== false, // Default to lazy loading
-      singleton: options.singleton !== false, // Default to singleton
-      dependencies: options.dependencies || [],
+      lazy: options?.lazy !== false, // Default to lazy loading
+      singleton: options?.singleton !== false, // Default to singleton
+      dependencies: options?.dependencies || [],
     });
   }
 
   /**
-   * Get or create singleton instance
+   * Get or create singleton instance.
    *
    * @param {string} key - Service identifier
    * @returns {*} Singleton instance
@@ -71,14 +77,14 @@ class SingletonContainer {
     }
 
     // Resolve dependencies
-    const dependencies = config.dependencies.map((dep) => this.get(dep));
+    const dependencies = config?.dependencies?.map((dep) => this.get(dep));
 
     try {
       // Create instance using factory
-      const instance = config.factory(...dependencies);
+      const instance = config?.factory(...dependencies);
 
       // Store singleton instance
-      if (config.singleton) {
+      if (config?.singleton) {
         this.instances.set(key, instance);
       }
 
@@ -89,7 +95,7 @@ class SingletonContainer {
   }
 
   /**
-   * Check if service is registered
+   * Check if service is registered.
    *
    * @param {string} key - Service identifier
    * @returns {boolean} True if registered
@@ -101,7 +107,7 @@ class SingletonContainer {
   /**
    * Clear specific instance (force recreation)
    *
-   * @param {string} key - Service identifier
+   * @param {string} key - Service identifier.
    */
   clear(key: string): void {
     const instance = this.instances.get(key);
@@ -112,7 +118,7 @@ class SingletonContainer {
   }
 
   /**
-   * Destroy all instances and clear container
+   * Destroy all instances and clear container.
    */
   destroy(): void {
     this.isDestroying = true;
@@ -146,7 +152,7 @@ class SingletonContainer {
   }
 
   /**
-   * Get container statistics
+   * Get container statistics.
    *
    * @returns {Object} Container stats
    */
@@ -164,7 +170,7 @@ class SingletonContainer {
 let globalContainer: SingletonContainer | null = null;
 
 /**
- * Get or create global container
+ * Get or create global container.
  *
  * @returns {SingletonContainer} Global container instance
  */

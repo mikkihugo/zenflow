@@ -13,7 +13,10 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import { createClaudeZenMocks, clearAllClaudeZenMocks } from './helpers/claude-zen-tdd-london-mocks';
+import {
+  clearAllClaudeZenMocks,
+  createClaudeZenMocks,
+} from './helpers/claude-zen-tdd-london-mocks';
 
 // === CLAUDE-ZEN ARCHITECTURE MOCKS ===
 

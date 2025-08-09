@@ -1,9 +1,11 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-config-loader");
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-config-loader');
+
 /**
  * @file Configuration Loader
  *
- * Handles loading configuration from multiple sources with proper priority
+ * Handles loading configuration from multiple sources with proper priority.
  */
 
 import * as fs from 'node:fs';
@@ -13,7 +15,7 @@ import type { ConfigurationSource, ConfigValidationResult, SystemConfiguration }
 import { ConfigValidator } from './validator';
 
 /**
- * Configuration loader with multi-source support
+ * Configuration loader with multi-source support.
  *
  * @example
  */
@@ -22,7 +24,7 @@ export class ConfigurationLoader {
   private validator = new ConfigValidator();
 
   /**
-   * Load configuration from all sources
+   * Load configuration from all sources.
    *
    * @param configPaths
    */
@@ -72,7 +74,7 @@ export class ConfigurationLoader {
   }
 
   /**
-   * Add a configuration source
+   * Add a configuration source.
    *
    * @param source
    */
@@ -83,7 +85,7 @@ export class ConfigurationLoader {
   }
 
   /**
-   * Load configuration from file
+   * Load configuration from file.
    *
    * @param filePath
    */
@@ -120,7 +122,7 @@ export class ConfigurationLoader {
   }
 
   /**
-   * Load configuration from environment variables
+   * Load configuration from environment variables.
    */
   private loadFromEnvironment(): void {
     const envConfig: Partial<SystemConfiguration> = {};
@@ -169,7 +171,7 @@ export class ConfigurationLoader {
   }
 
   /**
-   * Load configuration from CLI arguments
+   * Load configuration from CLI arguments.
    */
   private loadFromCliArgs(): void {
     const args = process.argv.slice(2);
@@ -214,7 +216,7 @@ export class ConfigurationLoader {
   }
 
   /**
-   * Merge all configuration sources by priority
+   * Merge all configuration sources by priority.
    */
   private mergeSources(): SystemConfiguration {
     let mergedConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
@@ -227,7 +229,7 @@ export class ConfigurationLoader {
   }
 
   /**
-   * Deep merge two objects
+   * Deep merge two objects.
    *
    * @param target
    * @param source
@@ -237,9 +239,9 @@ export class ConfigurationLoader {
 
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-        result?.[key] = this.deepMerge(result?.[key] || {}, source[key]);
+        result[key] = this.deepMerge(result?.[key] || {}, source[key]);
       } else {
-        result?.[key] = source[key];
+        result[key] = source[key];
       }
     }
 
@@ -247,7 +249,7 @@ export class ConfigurationLoader {
   }
 
   /**
-   * Set nested property using dot notation
+   * Set nested property using dot notation.
    *
    * @param obj
    * @param path
@@ -260,7 +262,7 @@ export class ConfigurationLoader {
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
       if (part && (!(part in current) || typeof current?.[part] !== 'object')) {
-        current?.[part] = {};
+        current[part] = {};
       }
       if (part) {
         current = current?.[part];
@@ -269,12 +271,12 @@ export class ConfigurationLoader {
 
     const lastPart = parts[parts.length - 1];
     if (lastPart) {
-      current?.[lastPart] = value;
+      current[lastPart] = value;
     }
   }
 
   /**
-   * Get configuration sources for debugging
+   * Get configuration sources for debugging.
    */
   getSources(): ConfigurationSource[] {
     return [...this.sources];

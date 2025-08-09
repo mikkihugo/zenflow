@@ -1,11 +1,26 @@
 /**
- * Hive-Swarm Synchronization System
+ * Hive-Swarm Synchronization System.
  *
  * Maintains real-time awareness between distributed swarms and the central hive mind.
  * Ensures all swarms know about available agents, task distribution, and global state.
  */
+/**
+ * @file Coordination system: hive-swarm-sync.
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type {
+  GlobalAgentInfo,
+  SwarmInfo,
+  Task as HiveTask,
+  GlobalResourceMetrics,
+  HiveHealthMetrics,
+  SwarmPerformanceMetrics,
+} from './hive-types';
+import type { HiveFACTSystem } from './hive-fact-integration';
 
 export interface HiveRegistry {
   // Global agent registry
@@ -29,7 +44,7 @@ export interface HiveRegistry {
 import { initializeHiveFACT } from './hive-fact-integration';
 
 /**
- * Central hive mind synchronization coordinator
+ * Central hive mind synchronization coordinator.
  *
  * @example
  */
@@ -62,7 +77,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Start hive-swarm synchronization
+   * Start hive-swarm synchronization.
    */
   async start(): Promise<void> {
     this.logger?.info('Starting hive-swarm coordination');
@@ -101,7 +116,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Stop hive-swarm synchronization
+   * Stop hive-swarm synchronization.
    */
   async stop(): Promise<void> {
     this.logger?.info('Stopping hive-swarm coordination');
@@ -126,7 +141,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Core hive synchronization process
+   * Core hive synchronization process.
    */
   private async performHiveSync(): Promise<void> {
     try {
@@ -163,7 +178,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Collect agent states from all active swarms
+   * Collect agent states from all active swarms.
    */
   private async collectAgentStates(): Promise<void> {
     // Request agent states from all swarms
@@ -176,7 +191,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Update global resource metrics
+   * Update global resource metrics.
    */
   private async updateGlobalResources(): Promise<void> {
     const agents = Array.from(this.hiveRegistry.availableAgents.values());
@@ -194,7 +209,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Intelligent task distribution across swarms
+   * Intelligent task distribution across swarms.
    */
   private async optimizeTaskDistribution(): Promise<void> {
     const pendingTasks = this.hiveRegistry.globalTaskQueue.filter(
@@ -231,7 +246,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Find the best agent for a specific task
+   * Find the best agent for a specific task.
    *
    * @param task
    * @param availableAgents
@@ -256,7 +271,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Calculate how well an agent matches a task
+   * Calculate how well an agent matches a task.
    *
    * @param agent
    * @param task
@@ -288,7 +303,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Balance workloads across swarms
+   * Balance workloads across swarms.
    */
   private async balanceWorkloads(): Promise<void> {
     const swarms = Array.from(this.hiveRegistry.activeSwarms.values());
@@ -307,7 +322,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Update swarm performance metrics
+   * Update swarm performance metrics.
    */
   private async updateSwarmMetrics(): Promise<void> {
     for (const [swarmId, swarmInfo] of this.hiveRegistry.activeSwarms) {
@@ -341,7 +356,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Broadcast global state to all swarms
+   * Broadcast global state to all swarms.
    */
   private async broadcastGlobalState(): Promise<void> {
     const globalState = {
@@ -357,7 +372,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Send heartbeat to all swarms
+   * Send heartbeat to all swarms.
    */
   private sendHeartbeats(): void {
     (this.eventBus as any).emit('hive:heartbeat', {
@@ -369,7 +384,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Check health of all swarms
+   * Check health of all swarms.
    */
   private checkSwarmHealth(): void {
     const now = Date.now();
@@ -395,7 +410,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Update overall hive health metrics
+   * Update overall hive health metrics.
    */
   private updateHiveHealth(): void {
     const swarms = Array.from(this.hiveRegistry.activeSwarms.values());
@@ -439,7 +454,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Set up event handlers for hive-swarm communication
+   * Set up event handlers for hive-swarm communication.
    */
   private setupEventHandlers(): void {
     // Handle swarm registration
@@ -475,7 +490,11 @@ export class HiveSwarmCoordinator extends EventEmitter {
     // Handle FACT requests from swarms
     (this.eventBus as any).on('swarm:fact:request', async (data: any) => {
       try {
-        const result = await this.requestUniversalFact(data?.swarmId, data?.factType, data?.subject);
+        const result = await this.requestUniversalFact(
+          data?.swarmId,
+          data?.factType,
+          data?.subject
+        );
 
         (this.eventBus as any).emit('swarm:fact:response', {
           requestId: data?.requestId,
@@ -510,7 +529,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Register a new swarm with the hive
+   * Register a new swarm with the hive.
    *
    * @param data
    */
@@ -535,7 +554,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Register a new agent with the hive
+   * Register a new agent with the hive.
    *
    * @param data
    */
@@ -562,7 +581,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Update agent state in hive registry
+   * Update agent state in hive registry.
    *
    * @param data
    */
@@ -575,7 +594,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Handle swarm heartbeat
+   * Handle swarm heartbeat.
    *
    * @param data
    */
@@ -592,7 +611,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Handle task completion
+   * Handle task completion.
    *
    * @param data
    */
@@ -611,7 +630,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Handle swarm disconnection
+   * Handle swarm disconnection.
    *
    * @param data
    */
@@ -632,7 +651,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Get current hive status
+   * Get current hive status.
    */
   getHiveStatus(): HiveStatus {
     return {
@@ -652,7 +671,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Get HiveFACT system for universal knowledge access
+   * Get HiveFACT system for universal knowledge access.
    */
   getHiveFACT(): HiveFACTSystem | undefined {
     return this.hiveFact;
@@ -660,7 +679,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
   /**
    * Request universal fact from HiveFACT
-   * Used by swarms to access universal knowledge
+   * Used by swarms to access universal knowledge.
    *
    * @param swarmId
    * @param factType

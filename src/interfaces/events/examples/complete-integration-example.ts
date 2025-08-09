@@ -1,5 +1,5 @@
 /**
- * UEL (Unified Event Layer) - Complete Integration Example
+ * UEL (Unified Event Layer) - Complete Integration Example.
  *
  * This example demonstrates the complete UEL integration capabilities,
  * including system migration, enhanced components, and validation.
@@ -18,8 +18,8 @@ import {
 } from '../index';
 
 /**
- * Example: Complete UEL System Integration
- * Demonstrates migration from existing EventEmitter-based systems to UEL
+ * Example: Complete UEL System Integration.
+ * Demonstrates migration from existing EventEmitter-based systems to UEL.
  *
  * @example
  */
@@ -32,7 +32,7 @@ export class CompleteUELIntegrationExample {
   };
 
   /**
-   * Example 1: Basic UEL Setup and Usage
+   * Example 1: Basic UEL Setup and Usage.
    */
   async exampleBasicSetup(): Promise<void> {
     // Initialize UEL with full features
@@ -118,7 +118,7 @@ export class CompleteUELIntegrationExample {
   }
 
   /**
-   * Example 2: System Migration from EventEmitter to UEL
+   * Example 2: System Migration from EventEmitter to UEL.
    */
   async exampleSystemMigration(): Promise<void> {
     // Create legacy EventEmitter-based systems
@@ -178,10 +178,10 @@ export class CompleteUELIntegrationExample {
     // Perform migration
     const migrationResult = await UELHelpers.migrateSystemToUEL(systems);
 
-    if (migrationResult.migrationReport.success) {
+    if (migrationResult?.migrationReport?.success) {
       this.logger.info('Migration successful!', {
-        migratedSystems: migrationResult.migrationReport.migratedSystems,
-        errors: migrationResult.migrationReport.errors,
+        migratedSystems: migrationResult?.migrationReport?.migratedSystems,
+        errors: migrationResult?.migrationReport?.errors,
       });
 
       // Test migrated systems - they maintain EventEmitter compatibility
@@ -211,14 +211,14 @@ export class CompleteUELIntegrationExample {
         this.logger.info('Enhanced observer system status:', observerStatus);
       }
     } else {
-      this.logger.error('Migration failed:', migrationResult.migrationReport.errors);
+      this.logger.error('Migration failed:', migrationResult?.migrationReport?.errors);
     }
 
     this.logger.info('System migration example completed');
   }
 
   /**
-   * Example 3: Complete System Setup with All Components
+   * Example 3: Complete System Setup with All Components.
    */
   async exampleCompleteSystemSetup(): Promise<void> {
     // One-command complete system setup
@@ -308,7 +308,7 @@ export class CompleteUELIntegrationExample {
   }
 
   /**
-   * Example 4: Validation and Monitoring
+   * Example 4: Validation and Monitoring.
    */
   async exampleValidationAndMonitoring(): Promise<void> {
     const uel = UEL.getInstance();
@@ -330,10 +330,10 @@ export class CompleteUELIntegrationExample {
     });
 
     this.logger.info('Validation results:', {
-      passed: validationResult.summary.passed,
-      score: validationResult.summary.score,
-      criticalIssues: validationResult.summary.criticalIssues,
-      recommendations: validationResult.summary.recommendations,
+      passed: validationResult?.summary?.passed,
+      score: validationResult?.summary?.score,
+      criticalIssues: validationResult?.summary?.criticalIssues,
+      recommendations: validationResult?.summary?.recommendations,
     });
 
     // Get quick system status
@@ -390,7 +390,7 @@ export class CompleteUELIntegrationExample {
   }
 
   /**
-   * Example 5: Advanced Integration Patterns
+   * Example 5: Advanced Integration Patterns.
    */
   async exampleAdvancedIntegrationPatterns(): Promise<void> {
     const uel = UEL.getInstance();
@@ -510,7 +510,7 @@ export class CompleteUELIntegrationExample {
   }
 
   /**
-   * Run all examples
+   * Run all examples.
    */
   async runAllExamples(): Promise<void> {
     try {
@@ -533,7 +533,7 @@ export class CompleteUELIntegrationExample {
 }
 
 /**
- * Utility function to run the complete integration example
+ * Utility function to run the complete integration example.
  */
 export async function runCompleteIntegrationExample(): Promise<void> {
   const example = new CompleteUELIntegrationExample();
@@ -541,7 +541,7 @@ export async function runCompleteIntegrationExample(): Promise<void> {
 }
 
 /**
- * Run if this file is executed directly
+ * Run if this file is executed directly.
  */
 if (require.main === module) {
   runCompleteIntegrationExample().catch((error) => {

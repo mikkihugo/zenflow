@@ -1,17 +1,17 @@
 /**
  * @file Knowledge-Aware Domain Discovery
- * Uses Hive Knowledge System to improve domain discovery accuracy and efficiency
+ * Uses Hive Knowledge System to improve domain discovery accuracy and efficiency.
  *
  * Features:
  * - Leverages universal knowledge from Hive FACT for domain patterns
  * - Applies learned patterns from other projects and swarms
  * - Real-time knowledge integration during discovery process
- * - Confidence boosting through knowledge validation
+ * - Confidence boosting through knowledge validation.
  */
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from '@core/logger';
-import type { SessionMemoryStore } from '../../memory';
+import type { SessionMemoryStore } from '../memory';
 import type { HiveFACTSystem } from '../hive-fact-integration';
 import type { SwarmKnowledgeSync } from '../swarm/knowledge-sync';
 import type { DiscoveredDomain } from './domain-discovery-bridge';
@@ -77,7 +77,7 @@ export interface KnowledgeDiscoveryContext {
 }
 
 /**
- * Improves domain discovery with knowledge from Hive FACT and swarm learning
+ * Improves domain discovery with knowledge from Hive FACT and swarm learning.
  *
  * @example
  */
@@ -109,7 +109,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   }
 
   /**
-   * Apply knowledge insights to domain discovery
+   * Apply knowledge insights to domain discovery.
    *
    * @param originalDomains
    * @param context
@@ -156,7 +156,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   }
 
   /**
-   * Load relevant knowledge for project context
+   * Load relevant knowledge for project context.
    *
    * @param context
    */
@@ -230,7 +230,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   }
 
   /**
-   * Query Hive FACT for domain-specific knowledge
+   * Query Hive FACT for domain-specific knowledge.
    *
    * @param domain
    * @param context
@@ -256,7 +256,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   }
 
   /**
-   * Query swarm knowledge for domain patterns
+   * Query swarm knowledge for domain patterns.
    *
    * @param domain
    * @param context
@@ -279,7 +279,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   }
 
   /**
-   * Query technology-specific patterns
+   * Query technology-specific patterns.
    *
    * @param technology
    * @param _context
@@ -323,7 +323,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   }
 
   /**
-   * Apply knowledge to individual domain
+   * Apply knowledge to individual domain.
    *
    * @param domain
    * @param projectKnowledge
@@ -398,7 +398,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   }
 
   /**
-   * Apply cross-domain knowledge and relationships
+   * Apply cross-domain knowledge and relationships.
    *
    * @param domains
    * @param projectKnowledge
@@ -425,8 +425,8 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
           if (!domain1.relatedDomains) domain1.relatedDomains = [];
           if (!domain2.relatedDomains) domain2.relatedDomains = [];
 
-          domain1.relatedDomains?.push(domain2.name);
-          domain2.relatedDomains?.push(domain1.name);
+          domain1.relatedDomains.push(domain2.name);
+          domain2.relatedDomains.push(domain1.name);
 
           // Apply cross-domain optimizations
           this.applyCrossDomainOptimizations(domain1, domain2, relationshipStrength);
@@ -436,7 +436,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   }
 
   /**
-   * Convert Hive FACT results to domain knowledge
+   * Convert Hive FACT results to domain knowledge.
    *
    * @param domain
    * @param facts
@@ -491,7 +491,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   }
 
   /**
-   * Convert swarm knowledge to domain knowledge
+   * Convert swarm knowledge to domain knowledge.
    *
    * @param domain
    * @param swarmData
@@ -504,9 +504,9 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   ): DomainKnowledge {
     // Extract knowledge from swarm learning data
     const patterns = this.extractPatternsFromSwarmData(swarmData);
-    const bestPractices = swarmData.insights?.whatWorked || [];
-    const commonPitfalls = swarmData.insights?.whatFailed || [];
-    const optimizations = swarmData.insights?.optimizations || [];
+    const bestPractices = swarmData?.insights?.whatWorked || [];
+    const commonPitfalls = swarmData?.insights?.whatFailed || [];
+    const optimizations = swarmData?.insights?.optimizations || [];
 
     return {
       domain,
@@ -515,13 +515,13 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       commonPitfalls,
       relatedDomains: [],
       toolRecommendations: optimizations,
-      confidenceScore: swarmData.confidence || 0.8,
+      confidenceScore: swarmData?.confidence || 0.8,
       source,
     };
   }
 
   /**
-   * Find best matching knowledge for domain
+   * Find best matching knowledge for domain.
    *
    * @param domain
    * @param projectKnowledge

@@ -1,11 +1,16 @@
 /**
- * Memory Module - Enhanced Barrel Export
+ * Memory Module - Enhanced Barrel Export.
  *
- * Central export point for advanced memory management functionality
- * Includes coordination, optimization, monitoring, and MCP integration
+ * Central export point for advanced memory management functionality.
+ * Includes coordination, optimization, monitoring, and MCP integration.
  */
 
 // Core memory functionality
+/**
+ * @file memory module exports
+ */
+
+
 export * from './backends/base-backend';
 export * from './backends/factory';
 export { MemoryBackendFactory as BackendFactory, memoryBackendFactory } from './backends/factory';
@@ -67,7 +72,7 @@ export {
 // Memory system factory for easy initialization
 export class MemorySystemFactory {
   /**
-   * Create a complete memory system with all advanced features
+   * Create a complete memory system with all advanced features.
    *
    * @param config
    * @param config.coordination
@@ -175,7 +180,7 @@ export class MemorySystemFactory {
   }
 
   /**
-   * Create a basic memory system with essential features
+   * Create a basic memory system with essential features.
    *
    * @param backends
    */

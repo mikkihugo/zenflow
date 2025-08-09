@@ -501,7 +501,7 @@ describe('CoordinationEventAdapter', () => {
 
       const history = await adapter.getEventHistory('coordination:swarm');
       expect(history).toHaveLength(1);
-      expect(history[0].id).toBe('history-1');
+      expect(history[0]?.id).toBe('history-1');
     });
 
     it('should query events with filters', async () => {
@@ -537,7 +537,7 @@ describe('CoordinationEventAdapter', () => {
       });
 
       expect(highPriorityEvents).toHaveLength(1);
-      expect(highPriorityEvents[0].id).toBe('query-1');
+      expect(highPriorityEvents[0]?.id).toBe('query-1');
     });
 
     it('should sort and paginate query results', async () => {
@@ -563,8 +563,8 @@ describe('CoordinationEventAdapter', () => {
 
       expect(sortedEvents).toHaveLength(3);
       // Events should be sorted by timestamp descending
-      expect(sortedEvents[0].timestamp.getTime()).toBeGreaterThan(
-        sortedEvents[1].timestamp.getTime()
+      expect(sortedEvents[0]?.timestamp?.getTime()).toBeGreaterThan(
+        sortedEvents[1]?.timestamp?.getTime()
       );
     });
   });
@@ -605,7 +605,7 @@ describe('CoordinationEventAdapter', () => {
 
       expect(subscriptionId).toMatch(/coord-sub-/);
       expect(adapter.getSubscriptions()).toHaveLength(1);
-      expect(adapter.getSubscriptions()[0].eventTypes).toContain('coordination:swarm');
+      expect(adapter.getSubscriptions()[0]?.eventTypes).toContain('coordination:swarm');
     });
 
     it('should subscribe to agent management events', () => {
@@ -613,7 +613,7 @@ describe('CoordinationEventAdapter', () => {
       const subscriptionId = adapter.subscribeAgentManagementEvents(listener);
 
       expect(subscriptionId).toMatch(/coord-sub-/);
-      expect(adapter.getSubscriptions()[0].eventTypes).toContain('coordination:agent');
+      expect(adapter.getSubscriptions()[0]?.eventTypes).toContain('coordination:agent');
     });
 
     it('should subscribe to task orchestration events', () => {
@@ -621,7 +621,7 @@ describe('CoordinationEventAdapter', () => {
       const subscriptionId = adapter.subscribeTaskOrchestrationEvents(listener);
 
       expect(subscriptionId).toMatch(/coord-sub-/);
-      expect(adapter.getSubscriptions()[0].eventTypes).toContain('coordination:task');
+      expect(adapter.getSubscriptions()[0]?.eventTypes).toContain('coordination:task');
     });
   });
 
@@ -736,10 +736,10 @@ describe('CoordinationEventAdapter Factory Functions', () => {
         },
       });
 
-      expect(config.name).toBe('default-test');
-      expect(config.type).toBe(EventManagerTypes.COORDINATION);
-      expect(config.coordination?.enabled).toBe(false);
-      expect(config.coordination?.strategy).toBe('agent');
+      expect(config?.name).toBe('default-test');
+      expect(config?.type).toBe(EventManagerTypes.COORDINATION);
+      expect(config?.coordination?.enabled).toBe(false);
+      expect(config?.coordination?.strategy).toBe('agent');
     });
   });
 });

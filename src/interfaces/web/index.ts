@@ -1,9 +1,14 @@
 /**
- * Web Interface Exports - Refactored for Google Standards
+ * Web Interface Exports - Refactored for Google Standards.
  *
  * Exports focused, single-responsibility modules following Google code standards.
  * Each module has a clear, descriptive name indicating its actual purpose.
  */
+/**
+ * @file web module exports
+ */
+
+
 
 export { type ApiConfig, ApiRouteHandler, type SystemStatus } from './api-route-handler';
 export {

@@ -1,9 +1,16 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-sparc-integrations-roadmap-integration");
 /**
- * SPARC Roadmap and Epic Management Integration
+ * @file Coordination system: roadmap-integration
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-sparc-integrations-roadmap-integration');
+
+/**
+ * SPARC Roadmap and Epic Management Integration.
  *
- * Provides strategic planning integration between SPARC projects and
+ * Provides strategic planning integration between SPARC projects and.
  * enterprise roadmap planning systems.
  */
 
@@ -36,7 +43,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
   }
 
   /**
-   * Generate an epic from a SPARC project
+   * Generate an epic from a SPARC project.
    *
    * @param project
    */
@@ -63,7 +70,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
   }
 
   /**
-   * Generate features from SPARC project phases
+   * Generate features from SPARC project phases.
    *
    * @param project
    */
@@ -124,7 +131,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
   }
 
   /**
-   * Add SPARC project to enterprise roadmap
+   * Add SPARC project to enterprise roadmap.
    *
    * @param project
    * @param targetQuarter
@@ -179,7 +186,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
   }
 
   /**
-   * Generate domain-specific roadmap
+   * Generate domain-specific roadmap.
    *
    * @param domain
    * @param timeframe
@@ -206,7 +213,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
   }
 
   /**
-   * Save epics and features to project files
+   * Save epics and features to project files.
    *
    * @param project
    */
@@ -361,12 +368,12 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
     if (parts.length !== 2) {
       throw new Error(`Invalid quarter format: ${startQuarter}. Expected format: YYYY-QN`);
     }
-    
+
     const [year, quarter] = parts;
     if (!year || !quarter) {
       throw new Error(`Invalid quarter format: ${startQuarter}. Expected format: YYYY-QN`);
     }
-    
+
     const startQuarterNum = parseInt(quarter, 10);
     let endYear = parseInt(year, 10);
     let endQuarter = startQuarterNum + quartersAhead;

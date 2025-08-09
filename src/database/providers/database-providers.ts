@@ -1,9 +1,9 @@
 /**
- * Database Domain Dependency Injection Providers
+ * Database Domain Dependency Injection Providers.
  *
  * @file Implements comprehensive database adapter providers with dependency injection
  * patterns for multi-database support. This module provides concrete implementations for
- * PostgreSQL, SQLite, MySQL, Kuzu (graph), and LanceDB (vector) databases with unified
+ * PostgreSQL, SQLite, MySQL, Kuzu (graph), and LanceDB (vector) databases with unified.
  * interfaces, connection pooling, transaction management, and specialized operations.
  * @author Claude-Zen DAL Team
  * @version 2.0.0
@@ -26,7 +26,7 @@
  * ```
  * @example Specialized Database Operations
  * ```typescript
- * // Graph database operations
+ * // Graph database operations.
  * const graphAdapter = factory.createGraphAdapter({
  *   type: 'kuzu',
  *   database: './knowledge-graph.kuzu'
@@ -57,9 +57,9 @@ import type {
   QueryResult,
   SchemaInfo,
   TransactionContext,
-} from '../../core/interfaces/base-interfaces';
-import { injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
+} from '../core/interfaces/base-interfaces';
+import { injectable } from '../di/decorators/injectable';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
 
 import {
   type DatabaseResult,
@@ -67,13 +67,13 @@ import {
   isQuerySuccess,
   type QueryError,
   type QuerySuccess,
-} from '../../utils/type-guards';
+} from '../utils/type-guards';
 
 // Re-export DatabaseAdapter for external use
-export { DatabaseAdapter } from '../../core/interfaces/base-interfaces';
+export { DatabaseAdapter } from '../core/interfaces/base-interfaces';
 
 /**
- * Graph Database Query Result Interface
+ * Graph Database Query Result Interface.
  *
  * Represents the result of a graph database query, containing nodes, relationships,
  * and execution metadata. Used for Cypher queries and graph traversal operations.
@@ -120,9 +120,9 @@ export interface GraphResult {
 }
 
 /**
- * Vector Database Search Result Interface
+ * Vector Database Search Result Interface.
  *
- * Represents the result of a vector similarity search, containing matching vectors
+ * Represents the result of a vector similarity search, containing matching vectors.
  * with similarity scores and execution metadata. Used for embedding searches and
  * semantic similarity operations.
  *
@@ -160,10 +160,10 @@ export interface VectorResult {
 }
 
 /**
- * Vector Data Interface for Vector Database Operations
+ * Vector Data Interface for Vector Database Operations.
  *
  * Represents a vector document for insertion or update operations in vector databases.
- * Contains the vector embedding, unique identifier, and optional metadata for
+ * Contains the vector embedding, unique identifier, and optional metadata for.
  * filtering and retrieval.
  *
  * @interface VectorData
@@ -224,9 +224,9 @@ export interface VectorData {
 }
 
 /**
- * Vector Index Configuration Interface
+ * Vector Index Configuration Interface.
  *
- * Defines the configuration for creating vector indexes to optimize similarity search
+ * Defines the configuration for creating vector indexes to optimize similarity search.
  * performance. Different index types and distance metrics can be configured based
  * on the specific use case and data characteristics.
  *
@@ -275,9 +275,9 @@ export interface IndexConfig {
 }
 
 /**
- * Graph Database Adapter Interface
+ * Graph Database Adapter Interface.
  *
- * Extends the base DatabaseAdapter with graph-specific operations for node and
+ * Extends the base DatabaseAdapter with graph-specific operations for node and.
  * relationship management, graph traversal queries, and network analysis.
  * Designed for Kuzu and other graph databases supporting Cypher-like query languages.
  *
@@ -316,7 +316,7 @@ export interface GraphDatabaseAdapter extends DatabaseAdapter {
 }
 
 /**
- * Vector Database Adapter Interface
+ * Vector Database Adapter Interface.
  *
  * Extends the base DatabaseAdapter with vector-specific operations for similarity search,
  * embedding storage, and high-dimensional data management. Designed for LanceDB and other
@@ -371,9 +371,9 @@ export interface VectorDatabaseAdapter extends DatabaseAdapter {
 }
 
 /**
- * Database Configuration Interface
+ * Database Configuration Interface.
  *
- * Comprehensive configuration interface supporting all database types with connection
+ * Comprehensive configuration interface supporting all database types with connection.
  * parameters, security settings, performance tuning, and adapter-specific options.
  * Used by the DatabaseProviderFactory to create properly configured database adapters.
  *
@@ -486,10 +486,10 @@ export interface DatabaseConfig {
 }
 
 /**
- * Database Provider Factory Class
+ * Database Provider Factory Class.
  *
  * Central factory for creating database adapter instances with dependency injection support.
- * Handles the creation and configuration of all supported database adapters including
+ * Handles the creation and configuration of all supported database adapters including.
  * relational (PostgreSQL, MySQL, SQLite), graph (Kuzu), and vector (LanceDB) databases.
  *
  * @class DatabaseProviderFactory
@@ -529,9 +529,9 @@ export class DatabaseProviderFactory {
   ) {}
 
   /**
-   * Create Database Adapter Based on Configuration
+   * Create Database Adapter Based on Configuration.
    *
-   * Creates and returns the appropriate database adapter implementation based on the
+   * Creates and returns the appropriate database adapter implementation based on the.
    * provided configuration. Supports all database types with automatic driver selection
    * and connection parameter validation.
    *
@@ -560,7 +560,7 @@ export class DatabaseProviderFactory {
    * const users = await pgAdapter.query('SELECT * FROM users WHERE active = $1', [true]);
    * ```
    * @example Creating SQLite Adapter for Development
-   * ```typescript
+   * ```typescript.
    * const devAdapter = factory.createAdapter({
    *   type: 'sqlite',
    *   database: './dev.db', // Or ':memory:' for in-memory
@@ -585,10 +585,10 @@ export class DatabaseProviderFactory {
    * ```
    */
   createAdapter(config: DatabaseConfig): DatabaseAdapter {
-    this.logger.info(`Creating database adapter: ${config.type}`);
+    this.logger.info(`Creating database adapter: ${config?.type}`);
 
     try {
-      switch (config.type) {
+      switch (config?.type) {
         case 'postgresql':
           return new PostgreSQLAdapter(config, this.logger);
         case 'sqlite':
@@ -600,7 +600,7 @@ export class DatabaseProviderFactory {
         case 'mysql':
           return new MySQLAdapter(config, this.logger);
         default:
-          throw new Error(`Unsupported database type: ${config.type}`);
+          throw new Error(`Unsupported database type: ${config?.type}`);
       }
     } catch (error) {
       this.logger.error(`Failed to create database adapter: ${error}`);
@@ -611,7 +611,7 @@ export class DatabaseProviderFactory {
   }
 
   /**
-   * Create Specialized Graph Database Adapter
+   * Create Specialized Graph Database Adapter.
    *
    * Creates a Kuzu graph database adapter with graph-specific optimizations and operations.
    * The adapter supports Cypher-like queries, graph traversal, and network analysis operations.
@@ -676,7 +676,7 @@ export class DatabaseProviderFactory {
   }
 
   /**
-   * Create Specialized Vector Database Adapter
+   * Create Specialized Vector Database Adapter.
    *
    * Creates a LanceDB vector database adapter optimized for high-dimensional vector operations,
    * similarity search, and machine learning workloads. Supports various distance metrics and
@@ -765,7 +765,7 @@ export class DatabaseProviderFactory {
 }
 
 /**
- * PostgreSQL database adapter implementation
+ * PostgreSQL database adapter implementation.
  *
  * @example
  */
@@ -856,7 +856,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
   }
 
   /**
-   * Enhanced query method with union type return for safe property access
+   * Enhanced query method with union type return for safe property access.
    *
    * @param sql
    * @param params
@@ -1045,7 +1045,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
 }
 
 /**
- * SQLite database adapter implementation
+ * SQLite database adapter implementation.
  *
  * @example
  */
@@ -1269,7 +1269,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
 }
 
 /**
- * Kuzu graph database adapter implementation
+ * Kuzu graph database adapter implementation.
  *
  * @example
  */
@@ -1554,7 +1554,7 @@ export class KuzuAdapter implements GraphDatabaseAdapter {
 }
 
 /**
- * LanceDB vector database adapter implementation
+ * LanceDB vector database adapter implementation.
  *
  * @example
  */
@@ -1657,9 +1657,9 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
         const limitMatch = sql.match(/LIMIT\s+(\d+)/i);
 
         if (vectorMatch && tableMatch) {
-          const vectorStr = vectorMatch[1];
-          const tableName = tableMatch[1] || 'default';
-          const limit = limitMatch ? parseInt(limitMatch[1], 10) : 10;
+          const vectorStr = vectorMatch?.[1];
+          const tableName = tableMatch?.[1] || 'default';
+          const limit = limitMatch ? parseInt(limitMatch?.[1], 10) : 10;
 
           // Parse vector from string - fix for possible undefined
           if (vectorStr) {
@@ -1672,13 +1672,13 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 
             // Convert vector results to QueryResult format
             const result: QueryResult = {
-              rows: vectorResults.matches.map((match) => ({
-                id: match.id,
-                vector: match.vector,
-                score: match.score,
-                metadata: match.metadata,
+              rows: vectorResults?.matches?.map((match) => ({
+                id: match?.id,
+                vector: match?.vector,
+                score: match?.score,
+                metadata: match?.metadata,
               })),
-              rowCount: vectorResults.matches.length,
+              rowCount: vectorResults?.matches.length,
               fields: [
                 { name: 'id', type: 'TEXT', nullable: false },
                 { name: 'vector', type: 'VECTOR', nullable: false },
@@ -1728,7 +1728,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
         // Extract table name and create it
         const tableMatch = sql.match(/CREATE TABLE\s+(\w+)/i);
         if (tableMatch) {
-          const tableName = tableMatch[1];
+          const tableName = tableMatch?.[1];
           // Table creation is handled automatically by DAL
           affectedRows = 1;
         }
@@ -1808,11 +1808,11 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 
       // Convert DAL results to VectorResult format
       const result: VectorResult = {
-        matches: searchResults.map((result: any) => ({
-          id: result.id,
-          vector: result.vector || query, // fallback to query vector if not available
-          score: result.score || result.similarity || 1.0,
-          metadata: result.metadata || {},
+        matches: searchResults?.map((result: any) => ({
+          id: result?.id,
+          vector: result?.vector || query, // fallback to query vector if not available
+          score: result?.score || result?.similarity || 1.0,
+          metadata: result?.metadata || {},
         })),
         executionTime,
       };
@@ -1849,21 +1849,21 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
   }
 
   async createIndex(config: IndexConfig): Promise<void> {
-    this.logger.debug(`Creating LanceDB index: ${config.name}`);
+    this.logger.debug(`Creating LanceDB index: ${config?.name}`);
     await this.ensureConnected();
 
     try {
       // DAL handles indexing automatically through repositories
       // Create a sample document to ensure table exists
       const sampleDoc = {
-        id: `index_${config.name}_${Date.now()}`,
-        vector: new Array(config.dimension).fill(0),
-        metadata: { index: config.name, type: 'sample' },
+        id: `index_${config?.name}_${Date.now()}`,
+        vector: new Array(config?.dimension).fill(0),
+        metadata: { index: config?.name, type: 'sample' },
       };
       await this.vectorRepository.create(sampleDoc);
       await this.vectorRepository.delete(sampleDoc.id); // Clean up sample
 
-      this.logger.debug(`Successfully created LanceDB index: ${config.name}`);
+      this.logger.debug(`Successfully created LanceDB index: ${config?.name}`);
     } catch (error) {
       this.logger.error(`Failed to create LanceDB index: ${error}`);
       throw error;
@@ -1939,7 +1939,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 }
 
 /**
- * MySQL database adapter implementation
+ * MySQL database adapter implementation.
  *
  * @example
  */

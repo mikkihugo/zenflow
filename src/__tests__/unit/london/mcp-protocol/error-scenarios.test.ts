@@ -389,9 +389,9 @@ describe('MCP Error Scenarios - London TDD', () => {
         expect(mockRetryManager.shouldRetry).toHaveBeenCalled();
         expect(mockMetricsCollector.recordRetry).toHaveBeenCalledWith('tools/call', 1);
 
-        expect(response.result).toBeDefined();
-        expect(response.result.recovered).toBe(true);
-        expect(response.result.strategy).toBe('retry');
+        expect(response?.result).toBeDefined();
+        expect(response?.result?.recovered).toBe(true);
+        expect(response?.result?.strategy).toBe('retry');
       });
 
       it('should stop retrying after max attempts exceeded', async () => {
@@ -451,8 +451,8 @@ describe('MCP Error Scenarios - London TDD', () => {
             }),
           })
         );
-        expect(response.error).toBeDefined();
-        expect(response.error.data.attempts).toBe(5);
+        expect(response?.error).toBeDefined();
+        expect(response?.error?.data?.attempts).toBe(5);
       });
     });
 
@@ -488,11 +488,11 @@ describe('MCP Error Scenarios - London TDD', () => {
         });
         expect(mockMetricsCollector.recordCircuitBreakerTrip).toHaveBeenCalled();
 
-        expect(response.error).toBeDefined();
-        expect(response.error.code).toBe(-32000);
-        expect(response.error.message).toBe('Service temporarily unavailable');
-        expect(response.error.data.reason).toBe('circuit_breaker_open');
-        expect(response.error.data.retryAfter).toBe(30000);
+        expect(response?.error).toBeDefined();
+        expect(response?.error?.code).toBe(-32000);
+        expect(response?.error?.message).toBe('Service temporarily unavailable');
+        expect(response?.error?.data?.reason).toBe('circuit_breaker_open');
+        expect(response?.error?.data?.retryAfter).toBe(30000);
       });
 
       it('should record failures and potentially trip circuit breaker', async () => {
@@ -541,9 +541,9 @@ describe('MCP Error Scenarios - London TDD', () => {
 
         // Assert - Verify circuit breaker failure recording
         expect(mockCircuitBreaker.recordFailure).toHaveBeenCalled();
-        expect(response.error.code).toBe(-32001);
-        expect(response.error.data.type).toBe('resource');
-        expect(response.error.data.severity).toBe('critical');
+        expect(response?.error?.code).toBe(-32001);
+        expect(response?.error?.data?.type).toBe('resource');
+        expect(response?.error?.data?.severity).toBe('critical');
       });
     });
   });
@@ -601,7 +601,7 @@ describe('MCP Error Scenarios - London TDD', () => {
           severity: 'critical',
           context: errorContext,
         });
-        expect(response.error.data.severity).toBe('critical');
+        expect(response?.error?.data?.severity).toBe('critical');
       });
 
       it('should not alert for low-severity errors below threshold', async () => {
@@ -693,12 +693,12 @@ describe('MCP Error Scenarios - London TDD', () => {
         const response = await errorHandler.handleError(standardError, errorContext);
 
         // Assert - Verify JSON-RPC 2.0 error response format
-        expect(response.jsonrpc).toBe('2.0');
-        expect(response.id).toBe('format-test-1');
-        expect(response.error).toBeDefined();
-        expect(response.error.code).toBe(-32601);
-        expect(response.error.message).toBe('Method not found');
-        expect(response.error.data).toEqual(
+        expect(response?.jsonrpc).toBe('2.0');
+        expect(response?.id).toBe('format-test-1');
+        expect(response?.error).toBeDefined();
+        expect(response?.error?.code).toBe(-32601);
+        expect(response?.error?.message).toBe('Method not found');
+        expect(response?.error?.data).toEqual(
           expect.objectContaining({
             type: 'validation',
             severity: 'medium',
@@ -707,7 +707,7 @@ describe('MCP Error Scenarios - London TDD', () => {
             attempts: 1,
           })
         );
-        expect(response.result).toBeUndefined(); // Error responses should not have result
+        expect(response?.result).toBeUndefined(); // Error responses should not have result
       });
     });
   });
@@ -780,8 +780,8 @@ describe('MCP Error Scenarios - London TDD', () => {
       expect(mockAlertManager.sendAlert).toHaveBeenCalled();
       expect(mockErrorHandler.createErrorResponse).toHaveBeenCalled();
 
-      expect(response.error).toBeDefined();
-      expect(response.error.code).toBe(-32003);
+      expect(response?.error).toBeDefined();
+      expect(response?.error?.code).toBe(-32003);
     });
   });
 

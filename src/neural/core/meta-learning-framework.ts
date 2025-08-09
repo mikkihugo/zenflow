@@ -1,7 +1,12 @@
 /**
- * Meta Learning Framework
- * Learning to learn - adaptive learning strategies
+ * Meta Learning Framework.
+ * Learning to learn - adaptive learning strategies.
  */
+/**
+ * @file Neural network: meta-learning-framework
+ */
+
+
 
 interface MetaLearningOptions {
   maxStrategies?: number;
@@ -34,7 +39,7 @@ export class MetaLearningFramework {
   }
 
   /**
-   * Register a learning strategy
+   * Register a learning strategy.
    *
    * @param id
    * @param strategy
@@ -49,7 +54,7 @@ export class MetaLearningFramework {
   }
 
   /**
-   * Select best strategy for given task
+   * Select best strategy for given task.
    *
    * @param taskType
    * @param _context
@@ -63,7 +68,7 @@ export class MetaLearningFramework {
   }
 
   /**
-   * Update strategy performance
+   * Update strategy performance.
    *
    * @param strategyId
    * @param performance
@@ -89,7 +94,7 @@ export class MetaLearningFramework {
   }
 
   /**
-   * Get framework metrics
+   * Get framework metrics.
    */
   getMetrics() {
     return {
@@ -111,13 +116,13 @@ export class MetaLearningFramework {
   private getBestStrategy() {
     const strategies = Array.from(this.learningStrategies.values());
     return strategies.reduce(
-      (best, current) => (current.performance > best.performance ? current : best),
+      (best, current) => (current?.performance > best.performance ? current : best),
       { performance: -1 }
     );
   }
 
   /**
-   * Adapt configuration for an agent
+   * Adapt configuration for an agent.
    *
    * @param agentId
    * @param config
@@ -137,15 +142,15 @@ export class MetaLearningFramework {
     // Adapt configuration based on best performance
     const adaptedConfig = {
       ...config,
-      learningRate: bestTask.config?.learningRate || config.learningRate,
-      architecture: bestTask.config?.architecture || config.architecture,
+      learningRate: bestTask.config?.learningRate || config?.learningRate,
+      architecture: bestTask.config?.architecture || config?.architecture,
     };
 
     return adaptedConfig;
   }
 
   /**
-   * Optimize training options for an agent
+   * Optimize training options for an agent.
    *
    * @param agentId
    * @param options
@@ -166,16 +171,16 @@ export class MetaLearningFramework {
 
     // Adjust learning rate based on performance
     if (avgPerformance < 0.7) {
-      optimizedOptions.learningRate = (options.learningRate || 0.001) * 1.1;
+      optimizedOptions.learningRate = (options?.learningRate || 0.001) * 1.1;
     } else if (avgPerformance > 0.9) {
-      optimizedOptions.learningRate = (options.learningRate || 0.001) * 0.9;
+      optimizedOptions.learningRate = (options?.learningRate || 0.001) * 0.9;
     }
 
     return optimizedOptions;
   }
 
   /**
-   * Preserve learning state for an agent
+   * Preserve learning state for an agent.
    *
    * @param agentId
    */
@@ -189,7 +194,7 @@ export class MetaLearningFramework {
   }
 
   /**
-   * Restore learning state for an agent
+   * Restore learning state for an agent.
    *
    * @param agentId
    * @param state
@@ -202,7 +207,7 @@ export class MetaLearningFramework {
   }
 
   /**
-   * Extract experiences for an agent
+   * Extract experiences for an agent.
    *
    * @param agentId
    */
@@ -217,7 +222,7 @@ export class MetaLearningFramework {
   }
 
   /**
-   * Get meta-learning statistics
+   * Get meta-learning statistics.
    */
   getStatistics() {
     const totalTasks = Array.from(this.taskHistory.values()).reduce(

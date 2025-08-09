@@ -99,10 +99,10 @@ describe('Performance Optimization System', () => {
       const result = await neuralOptimizer.optimizeTrainingSpeed(mockNetwork);
 
       expect(result).toBeDefined();
-      expect(result.success).toBe(true);
-      expect(result.improvement).toBeGreaterThanOrEqual(0);
-      expect(result.beforeMetrics).toBeDefined();
-      expect(result.afterMetrics).toBeDefined();
+      expect(result?.success).toBe(true);
+      expect(result?.improvement).toBeGreaterThanOrEqual(0);
+      expect(result?.beforeMetrics).toBeDefined();
+      expect(result?.afterMetrics).toBeDefined();
     });
 
     it('should implement batch processing', async () => {
@@ -121,10 +121,10 @@ describe('Performance Optimization System', () => {
       const result = await neuralOptimizer.implementBatchProcessing(mockTrainer);
 
       expect(result).toBeDefined();
-      expect(result.batchSize).toBeGreaterThan(0);
-      expect(result.parallelism).toBeGreaterThan(0);
-      expect(result.memoryLimit).toBeGreaterThan(0);
-      expect(['sequential', 'parallel', 'adaptive']).toContain(result.processingMode);
+      expect(result?.batchSize).toBeGreaterThan(0);
+      expect(result?.parallelism).toBeGreaterThan(0);
+      expect(result?.memoryLimit).toBeGreaterThan(0);
+      expect(['sequential', 'parallel', 'adaptive']).toContain(result?.processingMode);
     });
 
     it('should enable GPU acceleration', async () => {
@@ -136,9 +136,9 @@ describe('Performance Optimization System', () => {
       const result = await neuralOptimizer.enableGPUAcceleration(mockComputeUnits);
 
       expect(result).toBeDefined();
-      expect(['GPU', 'WASM']).toContain(result.accelerationType);
-      expect(result.speedImprovement).toBeGreaterThan(0);
-      expect(result.fallbackStrategy).toBeDefined();
+      expect(['GPU', 'WASM']).toContain(result?.accelerationType);
+      expect(result?.speedImprovement).toBeGreaterThan(0);
+      expect(result?.fallbackStrategy).toBeDefined();
     });
 
     it('should optimize memory usage', async () => {
@@ -160,9 +160,9 @@ describe('Performance Optimization System', () => {
       const result = await neuralOptimizer.optimizeMemoryUsage(mockNetworks);
 
       expect(result).toBeDefined();
-      expect(result.memoryReduction).toBeGreaterThanOrEqual(0);
-      expect(result.compressionRatio).toBeGreaterThanOrEqual(0);
-      expect(result.poolingStrategy).toBeDefined();
+      expect(result?.memoryReduction).toBeGreaterThanOrEqual(0);
+      expect(result?.compressionRatio).toBeGreaterThanOrEqual(0);
+      expect(result?.poolingStrategy).toBeDefined();
     });
   });
 
@@ -177,10 +177,10 @@ describe('Performance Optimization System', () => {
       const result = await swarmOptimizer.optimizeMessageRouting(mockTopology);
 
       expect(result).toBeDefined();
-      expect(result.routingLatency).toBeGreaterThan(0);
-      expect(result.messageCompression).toBeGreaterThanOrEqual(0);
-      expect(result.protocolEfficiency).toBeGreaterThan(0);
-      expect(result.topologyOptimization).toBeDefined();
+      expect(result?.routingLatency).toBeGreaterThan(0);
+      expect(result?.messageCompression).toBeGreaterThanOrEqual(0);
+      expect(result?.protocolEfficiency).toBeGreaterThan(0);
+      expect(result?.topologyOptimization).toBeDefined();
     });
 
     it('should implement caching', async () => {
@@ -193,11 +193,11 @@ describe('Performance Optimization System', () => {
       const result = await swarmOptimizer.implementCaching(mockCoordinationLayer);
 
       expect(result).toBeDefined();
-      expect(result.hitRatio).toBeGreaterThanOrEqual(0);
-      expect(result.hitRatio).toBeLessThanOrEqual(1);
-      expect(['LRU', 'LFU', 'TTL', 'adaptive']).toContain(result.evictionPolicy);
-      expect(result.cacheSize).toBeGreaterThanOrEqual(0);
-      expect(result.layers).toBeGreaterThan(0);
+      expect(result?.hitRatio).toBeGreaterThanOrEqual(0);
+      expect(result?.hitRatio).toBeLessThanOrEqual(1);
+      expect(['LRU', 'LFU', 'TTL', 'adaptive']).toContain(result?.evictionPolicy);
+      expect(result?.cacheSize).toBeGreaterThanOrEqual(0);
+      expect(result?.layers).toBeGreaterThan(0);
     });
 
     it('should reduce latency', async () => {
@@ -209,10 +209,10 @@ describe('Performance Optimization System', () => {
       const result = await swarmOptimizer.reduceLatency(mockProtocols);
 
       expect(result).toBeDefined();
-      expect(result.reductionPercentage).toBeGreaterThanOrEqual(0);
-      expect(result.averageLatency).toBeGreaterThan(0);
-      expect(result.p95Latency).toBeGreaterThan(0);
-      expect(Array.isArray(result.optimizationTechniques)).toBe(true);
+      expect(result?.reductionPercentage).toBeGreaterThanOrEqual(0);
+      expect(result?.averageLatency).toBeGreaterThan(0);
+      expect(result?.p95Latency).toBeGreaterThan(0);
+      expect(Array.isArray(result?.optimizationTechniques)).toBe(true);
     });
 
     it('should scale horizontally', async () => {
@@ -221,12 +221,12 @@ describe('Performance Optimization System', () => {
       const result = await swarmOptimizer.scaleHorizontally(swarmSize);
 
       expect(result).toBeDefined();
-      expect(result.maxAgents).toBeGreaterThanOrEqual(swarmSize);
+      expect(result?.maxAgents).toBeGreaterThanOrEqual(swarmSize);
       expect(['round_robin', 'least_connections', 'weighted', 'adaptive']).toContain(
-        result.loadBalancing
+        result?.loadBalancing
       );
-      expect(typeof result.autoScaling).toBe('boolean');
-      expect(result.resourceAllocation).toBeDefined();
+      expect(typeof result?.autoScaling).toBe('boolean');
+      expect(result?.resourceAllocation).toBeDefined();
     });
   });
 
@@ -237,13 +237,13 @@ describe('Performance Optimization System', () => {
         { sql: 'SELECT * FROM orders WHERE user_id = ?', parameters: [1], estimatedCost: 500 },
       ];
 
-      const result = await dataOptimizer.optimizeQueryPerformance(mockQueries);
+      const result = await dataOptimizer?.optimizeQueryPerformance(mockQueries);
 
       expect(result).toBeDefined();
-      expect(result.queryTime).toBeGreaterThan(0);
-      expect(Array.isArray(result.indexOptimization)).toBe(true);
-      expect(result.queryPlanImprovement).toBeGreaterThanOrEqual(0);
-      expect(result.cacheUtilization).toBeGreaterThanOrEqual(0);
+      expect(result?.queryTime).toBeGreaterThan(0);
+      expect(Array.isArray(result?.indexOptimization)).toBe(true);
+      expect(result?.queryPlanImprovement).toBeGreaterThanOrEqual(0);
+      expect(result?.cacheUtilization).toBeGreaterThanOrEqual(0);
     });
 
     it('should implement connection pooling', async () => {
@@ -252,14 +252,14 @@ describe('Performance Optimization System', () => {
         { id: 'conn2', type: 'network' as const, isActive: false, lastUsed: new Date() },
       ];
 
-      const result = await dataOptimizer.implementConnectionPooling(mockConnections);
+      const result = await dataOptimizer?.implementConnectionPooling(mockConnections);
 
       expect(result).toBeDefined();
-      expect(result.minConnections).toBeGreaterThan(0);
-      expect(result.maxConnections).toBeGreaterThan(result.minConnections);
-      expect(result.connectionTimeout).toBeGreaterThan(0);
-      expect(result.idleTimeout).toBeGreaterThan(0);
-      expect(result.healthCheckInterval).toBeGreaterThan(0);
+      expect(result?.minConnections).toBeGreaterThan(0);
+      expect(result?.maxConnections).toBeGreaterThan(result?.minConnections);
+      expect(result?.connectionTimeout).toBeGreaterThan(0);
+      expect(result?.idleTimeout).toBeGreaterThan(0);
+      expect(result?.healthCheckInterval).toBeGreaterThan(0);
     });
 
     it('should add intelligent caching', async () => {
@@ -269,14 +269,14 @@ describe('Performance Optimization System', () => {
         ttl: 3600,
       };
 
-      const result = await dataOptimizer.addIntelligentCaching(mockCacheLayer);
+      const result = await dataOptimizer?.addIntelligentCaching(mockCacheLayer);
 
       expect(result).toBeDefined();
-      expect(result.hitRatio).toBeGreaterThanOrEqual(0);
-      expect(result.hitRatio).toBeLessThanOrEqual(1);
-      expect(result.responseTime).toBeGreaterThanOrEqual(0);
-      expect(result.memoryEfficiency).toBeGreaterThanOrEqual(0);
-      expect(result.invalidationStrategy).toBeDefined();
+      expect(result?.hitRatio).toBeGreaterThanOrEqual(0);
+      expect(result?.hitRatio).toBeLessThanOrEqual(1);
+      expect(result?.responseTime).toBeGreaterThanOrEqual(0);
+      expect(result?.memoryEfficiency).toBeGreaterThanOrEqual(0);
+      expect(result?.invalidationStrategy).toBeDefined();
     });
 
     it('should compress data storage', async () => {
@@ -286,14 +286,14 @@ describe('Performance Optimization System', () => {
         compression: false,
       };
 
-      const result = await dataOptimizer.compressDataStorage(mockStorage);
+      const result = await dataOptimizer?.compressDataStorage(mockStorage);
 
       expect(result).toBeDefined();
-      expect(result.compressionRatio).toBeGreaterThanOrEqual(0);
-      expect(result.compressionRatio).toBeLessThanOrEqual(1);
-      expect(result.decompressionSpeed).toBeGreaterThan(0);
-      expect(['gzip', 'brotli', 'lz4', 'zstd']).toContain(result.algorithm);
-      expect(result.storageReduction).toBeGreaterThanOrEqual(0);
+      expect(result?.compressionRatio).toBeGreaterThanOrEqual(0);
+      expect(result?.compressionRatio).toBeLessThanOrEqual(1);
+      expect(result?.decompressionSpeed).toBeGreaterThan(0);
+      expect(['gzip', 'brotli', 'lz4', 'zstd']).toContain(result?.algorithm);
+      expect(result?.storageReduction).toBeGreaterThanOrEqual(0);
     });
   });
 
@@ -307,10 +307,10 @@ describe('Performance Optimization System', () => {
       const result = await wasmOptimizer.optimizeWasmModuleLoading(mockModules);
 
       expect(result).toBeDefined();
-      expect(result.loadTime).toBeGreaterThanOrEqual(0);
-      expect(typeof result.cacheUtilization).toBe('boolean');
-      expect(typeof result.streamingEnabled).toBe('boolean');
-      expect(['eager', 'lazy', 'predictive']).toContain(result.preloadStrategy);
+      expect(result?.loadTime).toBeGreaterThanOrEqual(0);
+      expect(typeof result?.cacheUtilization).toBe('boolean');
+      expect(typeof result?.streamingEnabled).toBe('boolean');
+      expect(['eager', 'lazy', 'predictive']).toContain(result?.preloadStrategy);
     });
 
     it('should implement streaming compilation', async () => {
@@ -322,10 +322,10 @@ describe('Performance Optimization System', () => {
       const result = await wasmOptimizer.implementStreamingCompilation(mockWasmFiles);
 
       expect(result).toBeDefined();
-      expect(result.compilationTime).toBeGreaterThanOrEqual(0);
-      expect(typeof result.streamingEnabled).toBe('boolean');
-      expect(result.memoryEfficiency).toBeGreaterThanOrEqual(0);
-      expect(result.instantiationSpeed).toBeGreaterThanOrEqual(0);
+      expect(result?.compilationTime).toBeGreaterThanOrEqual(0);
+      expect(typeof result?.streamingEnabled).toBe('boolean');
+      expect(result?.memoryEfficiency).toBeGreaterThanOrEqual(0);
+      expect(result?.instantiationSpeed).toBeGreaterThanOrEqual(0);
     });
 
     it('should optimize memory sharing', async () => {
@@ -338,10 +338,10 @@ describe('Performance Optimization System', () => {
       const result = await wasmOptimizer.optimizeMemorySharing(mockBridge);
 
       expect(result).toBeDefined();
-      expect(result.memoryReduction).toBeGreaterThanOrEqual(0);
-      expect(result.compressionRatio).toBeGreaterThanOrEqual(0);
-      expect(result.garbageCollectionImprovement).toBeGreaterThanOrEqual(0);
-      expect(result.poolingStrategy).toBeDefined();
+      expect(result?.memoryReduction).toBeGreaterThanOrEqual(0);
+      expect(result?.compressionRatio).toBeGreaterThanOrEqual(0);
+      expect(result?.garbageCollectionImprovement).toBeGreaterThanOrEqual(0);
+      expect(result?.poolingStrategy).toBeDefined();
     });
 
     it('should enable SIMD acceleration', async () => {
@@ -353,10 +353,10 @@ describe('Performance Optimization System', () => {
       const result = await wasmOptimizer.enableSIMDAcceleration(mockKernels);
 
       expect(result).toBeDefined();
-      expect(typeof result.simdSupport).toBe('boolean');
-      expect(result.performanceGain).toBeGreaterThan(0);
-      expect(Array.isArray(result.instructionOptimization)).toBe(true);
-      expect(result.vectorizationLevel).toBeGreaterThanOrEqual(0);
+      expect(typeof result?.simdSupport).toBe('boolean');
+      expect(result?.performanceGain).toBeGreaterThan(0);
+      expect(Array.isArray(result?.instructionOptimization)).toBe(true);
+      expect(result?.vectorizationLevel).toBeGreaterThanOrEqual(0);
     });
   });
 
@@ -368,7 +368,7 @@ describe('Performance Optimization System', () => {
       expect(results.length).toBeGreaterThan(0);
 
       // Check that we have results from multiple domains
-      const domains = new Set(results.map((r) => r.beforeMetrics));
+      const domains = new Set(results?.map((r) => r.beforeMetrics));
       expect(domains.size).toBeGreaterThan(0);
     });
 
@@ -394,7 +394,7 @@ describe('Performance Optimization System', () => {
       const results = await testOptimizer.optimizeNow();
 
       expect(results).toBeDefined();
-      expect(results.some((r) => !r.success)).toBe(true);
+      expect(results?.some((r) => !r.success)).toBe(true);
     });
   });
 
@@ -413,7 +413,7 @@ describe('Performance Optimization System', () => {
       const result = await neuralOptimizer.optimizeTrainingSpeed(mockNetwork);
 
       // Validate against target: 5x training speed improvement
-      expect(result.success).toBe(true);
+      expect(result?.success).toBe(true);
       // Note: In real implementation, we would check against actual targets
     });
 
@@ -427,7 +427,7 @@ describe('Performance Optimization System', () => {
       const result = await swarmOptimizer.optimizeMessageRouting(mockTopology);
 
       // Validate against target: <5ms message routing
-      expect(result.routingLatency).toBeDefined();
+      expect(result?.routingLatency).toBeDefined();
       // Note: In real implementation, we would check latency <= 5ms
     });
 
@@ -436,10 +436,10 @@ describe('Performance Optimization System', () => {
         { sql: 'SELECT * FROM users WHERE id = ?', parameters: [1], estimatedCost: 100 },
       ];
 
-      const result = await dataOptimizer.optimizeQueryPerformance(mockQueries);
+      const result = await dataOptimizer?.optimizeQueryPerformance(mockQueries);
 
       // Validate against target: <50ms query response time
-      expect(result.queryTime).toBeDefined();
+      expect(result?.queryTime).toBeDefined();
       // Note: In real implementation, we would check queryTime <= 50ms
     });
 
@@ -451,7 +451,7 @@ describe('Performance Optimization System', () => {
       const result = await wasmOptimizer.optimizeWasmModuleLoading(mockModules);
 
       // Validate against target: <100ms module loading
-      expect(result.loadTime).toBeDefined();
+      expect(result?.loadTime).toBeDefined();
       // Note: In real implementation, we would check loadTime <= 100ms
     });
   });

@@ -1,9 +1,14 @@
 /**
- * AGUI Adapter - Bridges @ag-ui/core with Claude-Zen's human validation needs
+ * AGUI Adapter - Bridges @ag-ui/core with Claude-Zen's human validation needs.
  *
  * The @ag-ui/core package provides the Agent-User Interaction Protocol.
  * This adapter wraps it to provide the interface expected by our discovery system.
  */
+/**
+ * @file agui adapter implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import * as readline from 'node:readline';
@@ -33,8 +38,8 @@ export interface AGUIInterface {
 }
 
 /**
- * Terminal-based AGUI implementation
- * Since @ag-ui/core is a protocol definition, we implement our own UI
+ * Terminal-based AGUI implementation.
+ * Since @ag-ui/core is a protocol definition, we implement our own UI.
  *
  * @example
  */
@@ -138,7 +143,7 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
 }
 
 /**
- * Mock AGUI for testing - provides automatic responses
+ * Mock AGUI for testing - provides automatic responses.
  *
  * @example
  */
@@ -178,7 +183,7 @@ export class MockAGUI implements AGUIInterface {
 }
 
 /**
- * Factory function to create appropriate AGUI instance
+ * Factory function to create appropriate AGUI instance.
  *
  * @param type
  */

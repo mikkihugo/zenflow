@@ -4,7 +4,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { Agent } from '../../types';
+import type { Agent } from '../types';
 
 // Core strategy interfaces with strong typing
 export interface CoordinationContext {
@@ -474,7 +474,7 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
   private selectHub(agents: Agent[]): Agent {
     // Select agent with most capabilities as hub
     return agents.reduce((best, current) =>
-      current.capabilities.length > best.capabilities.length ? current : best
+      current?.capabilities.length > best.capabilities.length ? current : best
     );
   }
 
@@ -553,7 +553,7 @@ export class SwarmCoordinator<T extends Agent = Agent> extends EventEmitter {
 
       // Record successful coordination
       this.recordHistory(agents, 'coordinate', 'success', {
-        latency: result.latency,
+        latency: result?.latency,
         reliability: this.strategy.getMetrics().reliability,
       });
 
@@ -567,7 +567,7 @@ export class SwarmCoordinator<T extends Agent = Agent> extends EventEmitter {
         context,
         result,
         agents: agents.length,
-        latency: result.latency,
+        latency: result?.latency,
       });
 
       return result;
@@ -611,7 +611,7 @@ export class SwarmCoordinator<T extends Agent = Agent> extends EventEmitter {
     }));
 
     // Select highest scoring strategy
-    const best = scores.reduce((best, current) => (current.score > best.score ? current : best));
+    const best = scores.reduce((best, current) => (current?.score > best.score ? current : best));
 
     return best.strategy;
   }

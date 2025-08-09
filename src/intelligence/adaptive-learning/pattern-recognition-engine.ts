@@ -1,8 +1,13 @@
 /**
  * Pattern Recognition Engine for Swarm Execution Analysis
- * Analyzes swarm behaviors, task patterns, and communication flows
+ * Analyzes swarm behaviors, task patterns, and communication flows.
  * Enhanced to implement the adaptive learning interface.
  */
+/**
+ * @file pattern-recognition processing engine
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type {
@@ -751,7 +756,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
         diskIO: 0,
         timestamp: Date.now(),
         duration: 0,
-        context: 'empty'
+        context: 'empty',
       };
     }
 
@@ -762,7 +767,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
       diskIO: resources.reduce((sum, r) => sum + r.diskIO, 0) / resources.length,
       timestamp: Date.now(),
       duration: resources.reduce((sum, r) => sum + (r.duration || 0), 0) / resources.length,
-      context: 'aggregated'
+      context: 'aggregated',
     };
   }
 
@@ -874,7 +879,11 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return sizes.length > 0 ? sizes.reduce((a, b) => a + b, 0) / sizes.length : 0;
   }
 
-  private calculateReliabilityFromTraces(source: string, target: string, traces: ExecutionTrace[]): number {
+  private calculateReliabilityFromTraces(
+    source: string,
+    target: string,
+    traces: ExecutionTrace[]
+  ): number {
     const relevantTraces = traces.filter(
       (t) => t.agentId === source && t.parameters?.target === target
     );
@@ -975,9 +984,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     targetContext: ExecutionContext
   ): boolean {
     return (
-      patternContext.taskType === targetContext.taskType ||
-      patternContext.topology === targetContext.topology ||
-      patternContext.environment === targetContext.environment
+      patternContext.taskType === targetContext?.taskType ||
+      patternContext.topology === targetContext?.topology ||
+      patternContext.environment === targetContext?.environment
     );
   }
 
@@ -1023,21 +1032,21 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   private convertToTrace(data: ExecutionData): ExecutionTrace {
     return {
-      swarmId: (data.context as any)?.swarmId || 'unknown',
-      agentId: data.agentId,
-      action: data.action,
-      parameters: data.parameters,
-      result: data.result,
-      timestamp: data.timestamp,
-      duration: data.duration,
+      swarmId: (data?.context as any)?.swarmId || 'unknown',
+      agentId: data?.agentId,
+      action: data?.action,
+      parameters: data?.parameters,
+      result: data?.result,
+      timestamp: data?.timestamp,
+      duration: data?.duration,
       resourceUsage: {
-        cpu: data.resourceUsage.cpu,
-        memory: data.resourceUsage.memory,
-        network: data.resourceUsage.network,
-        diskIO: data.resourceUsage.diskIO,
-        timestamp: data.resourceUsage.timestamp || Date.now(),
-        duration: data.resourceUsage.duration || data.duration,
-        context: data.resourceUsage.context || 'execution'
+        cpu: data?.resourceUsage?.cpu,
+        memory: data?.resourceUsage?.memory,
+        network: data?.resourceUsage?.network,
+        diskIO: data?.resourceUsage?.diskIO,
+        timestamp: data?.resourceUsage?.timestamp || Date.now(),
+        duration: data?.resourceUsage?.duration || data?.duration,
+        context: data?.resourceUsage?.context || 'execution',
       },
     };
   }
@@ -1054,7 +1063,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     const groups = new Map<string, ExecutionData[]>();
 
     for (const item of data) {
-      const key = `${item.taskType}_${item.success}`;
+      const key = `${item?.taskType}_${item?.success}`;
       if (!groups.has(key)) {
         groups.set(key, []);
       }
@@ -1111,15 +1120,15 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     const std = Math.sqrt(this.calculateVariance(durations));
 
     for (const item of data) {
-      const zScore = Math.abs((item.duration - mean) / std);
+      const zScore = Math.abs((item?.duration - mean) / std);
 
       if (zScore > 3) {
         // 3-sigma rule
         anomalies.push({
-          id: `anomaly_${item.id}_${Date.now()}`,
+          id: `anomaly_${item?.id}_${Date.now()}`,
           type: 'performance',
           severity: zScore > 4 ? 'critical' : 'high',
-          description: `Unusual execution time: ${item.duration}ms (expected ~${mean.toFixed(0)}ms)`,
+          description: `Unusual execution time: ${item?.duration}ms (expected ~${mean.toFixed(0)}ms)`,
           affectedData: [item],
           confidence: Math.min(0.95, zScore / 5),
           timestamp: Date.now(),
@@ -1142,7 +1151,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
             const dataItem = data[i];
             if (dataItem) {
               anomalies.push({
-                id: `resource_anomaly_${dataItem.id}_${resourceType}_${Date.now()}`,
+                id: `resource_anomaly_${dataItem?.id}_${resourceType}_${Date.now()}`,
                 type: 'resource',
                 severity: zScore > 4 ? 'critical' : zScore > 3 ? 'high' : 'medium',
                 description: `Unusual ${resourceType} usage: ${value.toFixed(2)} (expected ~${resourceMean.toFixed(2)})`,

@@ -1,5 +1,12 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-sparc-core-template-engine");
+/**
+ * @file template processing engine
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-sparc-core-template-engine');
+
 /**
  * SPARC Template Engine.
  *
@@ -375,14 +382,14 @@ export class TemplateEngine {
 
     // Get most used templates
     const entriesByUsage = Array.from(this.templateRegistry.entries()).sort(
-      (a, b) => b[1].metadata.usageCount - a[1].metadata.usageCount
+      (a, b) => b[1]?.metadata?.usageCount - a[1]?.metadata?.usageCount
     );
     stats.mostUsed = entriesByUsage.slice(0, 5).map(([id, _]) => id);
 
     // Get recently used templates
     const entriesByRecent = Array.from(this.templateRegistry.entries())
       .filter(([_, entry]) => entry.metadata.lastUsed)
-      .sort((a, b) => b[1].metadata.lastUsed!.getTime() - a[1].metadata.lastUsed!.getTime());
+      .sort((a, b) => b[1]?.metadata?.lastUsed!.getTime() - a[1]?.metadata?.lastUsed!.getTime());
     stats.recentlyUsed = entriesByRecent.slice(0, 5).map(([id, _]) => id);
 
     return stats;
@@ -472,7 +479,7 @@ export class TemplateEngine {
       id: nanoid(),
       domain: projectSpec.domain,
       functionalRequirements:
-        projectSpec.requirements?.map((req) => ({
+        projectSpec.requirements.map((req) => ({
           id: nanoid(),
           title: req,
           description: `Requirement: ${req}`,

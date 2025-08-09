@@ -24,7 +24,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
 
     it('should train XOR network to convergence using real implementation', async () => {
       // Classical TDD: Use real neural network implementation
-      const trainingData = NeuralTestDataGenerator.generateXORData();
+      const trainingData = NeuralTestDataGenerator?.generateXORData();
 
       // Mock neural network for this example
       const mockNetwork = {
@@ -34,7 +34,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
 
         train: (data: any[], config: any) => {
           const errors: number[] = [];
-          for (let epoch = 0; epoch < config.epochs; epoch++) {
+          for (let epoch = 0; epoch < config?.epochs; epoch++) {
             let epochError = 0;
 
             for (const sample of data) {
@@ -47,10 +47,10 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
             errors.push(epochError);
 
             // Simulate convergence
-            if (epochError < config.convergenceThreshold) break;
+            if (epochError < config?.convergenceThreshold) break;
           }
 
-          return { errors, converged: errors[errors.length - 1] < config.convergenceThreshold };
+          return { errors, converged: errors[errors.length - 1] < config?.convergenceThreshold };
         },
 
         predict: (input: number[]) => {
@@ -64,12 +64,12 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       const result = mockNetwork.train(trainingData, neuralSuite.config);
 
       // Classical TDD assertions: Verify actual results
-      neuralSuite.validator.validateConvergence(result.errors, neuralSuite.config);
-      expect(result.converged).toBe(true);
+      neuralSuite.validator.validateConvergence(result?.errors, neuralSuite.config);
+      expect(result?.converged).toBe(true);
 
       // Test predictions on training data
-      const predictions = trainingData.map((sample) => mockNetwork.predict(sample.input));
-      const expectedOutputs = trainingData.map((sample) => sample.output);
+      const predictions = trainingData?.map((sample) => mockNetwork.predict(sample.input));
+      const expectedOutputs = trainingData?.map((sample) => sample.output);
 
       const accuracy = neuralSuite.validator.validatePredictionAccuracy(
         predictions,
@@ -90,7 +90,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
 
         // Verify mathematical correctness
         expect(result).toHaveLength(100);
-        expect(result[0]).toHaveLength(25);
+        expect(result?.[0]).toHaveLength(25);
 
         // Verify computation is deterministic
         const result2 = neuralSuite.math.matrixMultiply(matrix1, matrix2);
@@ -118,8 +118,8 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
 
       // Test coordination workflow
       const initResult = swarm.coordinator('initialize', { type: 'neural_training' });
-      expect(initResult.success).toBe(true);
-      expect(initResult.swarmId).toBe('test-swarm');
+      expect(initResult?.success).toBe(true);
+      expect(initResult?.swarmId).toBe('test-swarm');
 
       // Mock neural training task distribution
       const trainingTasks = [
@@ -140,9 +140,9 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
         assignments.push(assignResult);
 
         // Verify task assignment interaction
-        expect(assignResult.success).toBe(true);
-        expect(assignResult.taskId).toBe(task.id);
-        expect(assignResult.assignedTo).toBe(agentId);
+        expect(assignResult?.success).toBe(true);
+        expect(assignResult?.taskId).toBe(task.id);
+        expect(assignResult?.assignedTo).toBe(agentId);
       }
 
       // Test message routing interactions
@@ -151,8 +151,8 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
         progress: 0.5,
       });
 
-      expect(routingResult.success).toBe(true);
-      expect(routingResult.delivered).toBe(true);
+      expect(routingResult?.success).toBe(true);
+      expect(routingResult?.delivered).toBe(true);
 
       // Verify broadcast coordination
       const broadcastResult = swarm.coordinator('broadcast', {
@@ -160,8 +160,8 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
         weights: [0.1, 0.2, 0.3],
       });
 
-      expect(broadcastResult.success).toBe(true);
-      expect(broadcastResult.count).toBe(4);
+      expect(broadcastResult?.success).toBe(true);
+      expect(broadcastResult?.count).toBe(4);
 
       // London TDD: Verify interaction patterns
       const interactions = coordinationSuite.builder.getInteractions();
@@ -183,7 +183,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
 
       // Test error detection
       const statusResult = swarm.coordinator('status', {});
-      const failedAgent = statusResult.agents.find((agent: any) => agent.id === 'agent-1');
+      const failedAgent = statusResult?.agents?.find((agent: any) => agent.id === 'agent-1');
 
       expect(failedAgent).toBeDefined();
       expect(failedAgent.status).toBe('error');
@@ -229,14 +229,14 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       const _networkTopology = [2, 4, 1];
 
       // London part: Mock coordination interactions
-      mocks['coordination-protocol'].mockImplementation((action: string) => {
+      mocks['coordination-protocol']?.mockImplementation((action: string) => {
         if (action === 'distribute_training') {
           return { success: true, distributed: true };
         }
         return { success: true };
       });
 
-      mocks['message-router'].mockImplementation((_message: any) => {
+      mocks['message-router']?.mockImplementation((_message: any) => {
         return { delivered: true, timestamp: Date.now() };
       });
 
@@ -245,16 +245,16 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
 
       // Step 1: Initialize coordination (London - test interactions)
       const coordResult = mocks['coordination-protocol']('initialize');
-      expect(coordResult.success).toBe(true);
+      expect(coordResult?.success).toBe(true);
 
       // Step 2: Distribute training data (London - test message routing)
       const distributionResult = mocks['coordination-protocol']('distribute_training');
-      expect(distributionResult.distributed).toBe(true);
+      expect(distributionResult?.distributed).toBe(true);
 
       // Step 3: Train on each node (Classical - test computation)
       const nodeResults = [];
       for (let nodeId = 0; nodeId < 3; nodeId++) {
-        const nodeData = trainingData.slice(nodeId, nodeId + 2); // Simulate data partition
+        const nodeData = trainingData?.slice(nodeId, nodeId + 2); // Simulate data partition
 
         // Real computation (Classical approach)
         const nodeResult = {
@@ -264,7 +264,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
           finalError: Math.random() * 0.1, // Simulate training result
         };
 
-        nodeResults.push(nodeResult);
+        nodeResults?.push(nodeResult);
 
         // Mock message sending (London approach)
         const messageResult = mocks['message-router']({
@@ -273,12 +273,12 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
           result: nodeResult,
         });
 
-        expect(messageResult.delivered).toBe(true);
+        expect(messageResult?.delivered).toBe(true);
       }
 
       // Step 4: Aggregate results (Classical - verify computation)
       const avgError =
-        nodeResults.reduce((sum, result) => sum + result.finalError, 0) / nodeResults.length;
+        nodeResults?.reduce((sum, result) => sum + result?.finalError, 0) / nodeResults.length;
       expect(avgError).toBeLessThan(0.1);
 
       // Step 5: Verify coordination interactions (London - verify interactions)

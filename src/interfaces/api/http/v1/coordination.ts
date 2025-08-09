@@ -1,5 +1,5 @@
 /**
- * Coordination API v1 Routes
+ * Coordination API v1 Routes.
  *
  * REST API routes for coordination domain.
  * Moved from coordination/api.ts to unified API layer.
@@ -9,13 +9,13 @@
  */
 
 import { type Request, type Response, Router } from 'express';
-import { CoordinationAPI } from '../../../../coordination/api';
+import { CoordinationAPI } from '../coordination/api';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log } from '../middleware/logging';
 
 /**
- * Create coordination routes
- * All coordination endpoints under /api/v1/coordination
+ * Create coordination routes.
+ * All coordination endpoints under /api/v1/coordination.
  */
 export const createCoordinationRoutes = (): Router => {
   const router = Router();
@@ -23,8 +23,8 @@ export const createCoordinationRoutes = (): Router => {
   // ===== AGENT MANAGEMENT =====
 
   /**
-   * GET /api/v1/coordination/agents
-   * List all agents with filtering and pagination
+   * GET /api/v1/coordination/agents.
+   * List all agents with filtering and pagination.
    */
   router.get(
     '/agents',
@@ -45,8 +45,8 @@ export const createCoordinationRoutes = (): Router => {
   );
 
   /**
-   * POST /api/v1/coordination/agents
-   * Create new agent
+   * POST /api/v1/coordination/agents.
+   * Create new agent.
    */
   router.post(
     '/agents',
@@ -59,8 +59,8 @@ export const createCoordinationRoutes = (): Router => {
       const result = await CoordinationAPI.agents.createAgent(req.body);
 
       log(LogLevel.INFO, 'Agent created successfully', req, {
-        agentId: result.id,
-        agentType: result.type,
+        agentId: result?.id,
+        agentType: result?.type,
       });
 
       res.status(201).json(result);
@@ -68,8 +68,8 @@ export const createCoordinationRoutes = (): Router => {
   );
 
   /**
-   * GET /api/v1/coordination/agents/:agentId
-   * Get specific agent by ID
+   * GET /api/v1/coordination/agents/:agentId.
+   * Get specific agent by ID.
    */
   router.get(
     '/agents/:agentId',
@@ -86,8 +86,8 @@ export const createCoordinationRoutes = (): Router => {
   );
 
   /**
-   * DELETE /api/v1/coordination/agents/:agentId
-   * Remove agent from system
+   * DELETE /api/v1/coordination/agents/:agentId.
+   * Remove agent from system.
    */
   router.delete(
     '/agents/:agentId',
@@ -111,8 +111,8 @@ export const createCoordinationRoutes = (): Router => {
   // ===== TASK MANAGEMENT =====
 
   /**
-   * POST /api/v1/coordination/tasks
-   * Create new task
+   * POST /api/v1/coordination/tasks.
+   * Create new task.
    */
   router.post(
     '/tasks',
@@ -125,8 +125,8 @@ export const createCoordinationRoutes = (): Router => {
       const result = await CoordinationAPI.tasks.createTask(req.body);
 
       log(LogLevel.INFO, 'Task created successfully', req, {
-        taskId: result.id,
-        taskType: result.type,
+        taskId: result?.id,
+        taskType: result?.type,
       });
 
       res.status(201).json(result);
@@ -134,8 +134,8 @@ export const createCoordinationRoutes = (): Router => {
   );
 
   /**
-   * GET /api/v1/coordination/tasks/:taskId
-   * Get task status and details
+   * GET /api/v1/coordination/tasks/:taskId.
+   * Get task status and details.
    */
   router.get(
     '/tasks/:taskId',
@@ -154,8 +154,8 @@ export const createCoordinationRoutes = (): Router => {
   // ===== SWARM MANAGEMENT =====
 
   /**
-   * GET /api/v1/coordination/swarm/config
-   * Get current swarm configuration
+   * GET /api/v1/coordination/swarm/config.
+   * Get current swarm configuration.
    */
   router.get(
     '/swarm/config',
@@ -168,8 +168,8 @@ export const createCoordinationRoutes = (): Router => {
   );
 
   /**
-   * PUT /api/v1/coordination/swarm/config
-   * Update swarm configuration
+   * PUT /api/v1/coordination/swarm/config.
+   * Update swarm configuration.
    */
   router.put(
     '/swarm/config',
@@ -181,8 +181,8 @@ export const createCoordinationRoutes = (): Router => {
       const result = await CoordinationAPI.swarm.updateConfig(req.body);
 
       log(LogLevel.INFO, 'Swarm configuration updated', req, {
-        topology: result.topology,
-        maxAgents: result.maxAgents,
+        topology: result?.topology,
+        maxAgents: result?.maxAgents,
       });
 
       res.json(result);
@@ -192,8 +192,8 @@ export const createCoordinationRoutes = (): Router => {
   // ===== HEALTH & METRICS =====
 
   /**
-   * GET /api/v1/coordination/health
-   * Get coordination system health
+   * GET /api/v1/coordination/health.
+   * Get coordination system health.
    */
   router.get(
     '/health',
@@ -201,14 +201,14 @@ export const createCoordinationRoutes = (): Router => {
       const result = await CoordinationAPI.health.getHealth();
 
       // Set appropriate HTTP status based on health
-      const statusCode = result.status === 'healthy' ? 200 : 503;
+      const statusCode = result?.status === 'healthy' ? 200 : 503;
       res.status(statusCode).json(result);
     })
   );
 
   /**
-   * GET /api/v1/coordination/metrics
-   * Get performance metrics
+   * GET /api/v1/coordination/metrics.
+   * Get performance metrics.
    */
   router.get(
     '/metrics',
@@ -227,8 +227,8 @@ export const createCoordinationRoutes = (): Router => {
   // ===== ADVANCED COORDINATION ENDPOINTS =====
 
   /**
-   * POST /api/v1/coordination/swarm/initialize
-   * Initialize new swarm with specified topology
+   * POST /api/v1/coordination/swarm/initialize.
+   * Initialize new swarm with specified topology.
    */
   router.post(
     '/swarm/initialize',
@@ -249,8 +249,8 @@ export const createCoordinationRoutes = (): Router => {
       };
 
       log(LogLevel.INFO, 'Swarm initialization started', req, {
-        swarmId: result.swarmId,
-        topology: result.topology,
+        swarmId: result?.swarmId,
+        topology: result?.topology,
       });
 
       res.status(202).json(result);
@@ -258,8 +258,8 @@ export const createCoordinationRoutes = (): Router => {
   );
 
   /**
-   * GET /api/v1/coordination/agents/:agentId/tasks
-   * Get tasks assigned to specific agent
+   * GET /api/v1/coordination/agents/:agentId/tasks.
+   * Get tasks assigned to specific agent.
    */
   router.get(
     '/agents/:agentId/tasks',
@@ -285,8 +285,8 @@ export const createCoordinationRoutes = (): Router => {
   );
 
   /**
-   * POST /api/v1/coordination/tasks/:taskId/assign
-   * Assign task to specific agent
+   * POST /api/v1/coordination/tasks/:taskId/assign.
+   * Assign task to specific agent.
    */
   router.post(
     '/tasks/:taskId/assign',
@@ -317,8 +317,8 @@ export const createCoordinationRoutes = (): Router => {
   );
 
   /**
-   * POST /api/v1/coordination/agents/:agentId/heartbeat
-   * Update agent heartbeat
+   * POST /api/v1/coordination/agents/:agentId/heartbeat.
+   * Update agent heartbeat.
    */
   router.post(
     '/agents/:agentId/heartbeat',
@@ -347,6 +347,6 @@ export const createCoordinationRoutes = (): Router => {
 };
 
 /**
- * Default export for the coordination routes
+ * Default export for the coordination routes.
  */
 export default createCoordinationRoutes;

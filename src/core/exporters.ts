@@ -1,8 +1,13 @@
 /**
  * Export System
- * Handles exporting data and configurations in various formats
- * Migrated from plugins to utils domain
+ * Handles exporting data and configurations in various formats.
+ * Migrated from plugins to utils domain.
  */
+/**
+ * @file exporters implementation
+ */
+
+
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
@@ -127,7 +132,7 @@ export class ExportSystem {
       return '';
     }
 
-    const headers = Object.keys(data?.[0]);
+    const headers = Object.keys(data[0]);
     const csvRows = [headers.join(',')];
 
     for (const row of data) {
@@ -276,14 +281,14 @@ export class ExportSystem {
 // Utility functions for direct export
 export const ExportUtils = {
   /**
-   * Quick JSON export
+   * Quick JSON export.
    *
    * @param data
    */
   toJSON: (data: any): string => JSON.stringify(data, null, 2),
 
   /**
-   * Quick CSV export for arrays
+   * Quick CSV export for arrays.
    *
    * @param data
    */
@@ -293,7 +298,7 @@ export const ExportUtils = {
   },
 
   /**
-   * Quick YAML export
+   * Quick YAML export.
    *
    * @param data
    */
@@ -303,7 +308,7 @@ export const ExportUtils = {
   },
 
   /**
-   * Quick XML export
+   * Quick XML export.
    *
    * @param data
    */
@@ -313,7 +318,7 @@ export const ExportUtils = {
   },
 
   /**
-   * Quick Markdown export
+   * Quick Markdown export.
    *
    * @param data
    */

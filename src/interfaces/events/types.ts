@@ -1,14 +1,19 @@
 /**
- * Unified Event Layer (UEL) - Type Definitions
+ * Unified Event Layer (UEL) - Type Definitions.
  *
- * Core type definitions for event types, manager types, and enums
+ * Core type definitions for event types, manager types, and enums.
  * used throughout the UEL system for type-safe event operations.
  */
+/**
+ * @file TypeScript type definitions for interfaces
+ */
+
+
 
 import type { EventPriority, SystemEvent } from './core/interfaces';
 
 /**
- * System Events - Core system lifecycle and health
+ * System Events - Core system lifecycle and health.
  *
  * @example
  */
@@ -27,7 +32,7 @@ export interface SystemLifecycleEvent extends SystemEvent {
 }
 
 /**
- * Coordination Events - Swarm coordination and agent management
+ * Coordination Events - Swarm coordination and agent management.
  *
  * @example
  */
@@ -55,7 +60,7 @@ export interface CoordinationEvent extends SystemEvent {
 }
 
 /**
- * Communication Events - WebSocket, MCP, protocol communication
+ * Communication Events - WebSocket, MCP, protocol communication.
  *
  * @example
  */
@@ -81,7 +86,7 @@ export interface CommunicationEvent extends SystemEvent {
 }
 
 /**
- * Monitoring Events - Metrics, health checks, performance monitoring
+ * Monitoring Events - Metrics, health checks, performance monitoring.
  *
  * @example
  */
@@ -109,7 +114,7 @@ export interface MonitoringEvent extends SystemEvent {
 }
 
 /**
- * Interface Events - CLI, web, terminal interface interactions
+ * Interface Events - CLI, web, terminal interface interactions.
  *
  * @example
  */
@@ -132,7 +137,7 @@ export interface InterfaceEvent extends SystemEvent {
 }
 
 /**
- * Neural Events - Neural network and AI operations
+ * Neural Events - Neural network and AI operations.
  *
  * @example
  */
@@ -158,7 +163,7 @@ export interface NeuralEvent extends SystemEvent {
 }
 
 /**
- * Database Events - Database operations and queries
+ * Database Events - Database operations and queries.
  *
  * @example
  */
@@ -189,7 +194,7 @@ export interface DatabaseEvent extends SystemEvent {
 }
 
 /**
- * Memory Events - Memory operations and caching
+ * Memory Events - Memory operations and caching.
  *
  * @example
  */
@@ -211,7 +216,7 @@ export interface MemoryEvent extends SystemEvent {
 }
 
 /**
- * Workflow Events - Workflow execution and orchestration
+ * Workflow Events - Workflow execution and orchestration.
  *
  * @example
  */
@@ -237,7 +242,7 @@ export interface WorkflowEvent extends SystemEvent {
 }
 
 /**
- * Union type for all UEL events
+ * Union type for all UEL events.
  */
 export type UELEvent =
   | SystemLifecycleEvent
@@ -251,7 +256,7 @@ export type UELEvent =
   | WorkflowEvent;
 
 /**
- * Event category mappings for organization
+ * Event category mappings for organization.
  */
 export const EventCategories = {
   SYSTEM: 'system' as const,
@@ -266,7 +271,7 @@ export const EventCategories = {
 } as const;
 
 /**
- * Event type patterns for filtering and matching
+ * Event type patterns for filtering and matching.
  */
 export const EventTypePatterns = {
   // System events
@@ -319,7 +324,7 @@ export const EventTypePatterns = {
 } as const;
 
 /**
- * Default configurations for different event manager types
+ * Default configurations for different event manager types.
  */
 export const DefaultEventManagerConfigs = {
   [EventCategories.SYSTEM]: {
@@ -507,7 +512,7 @@ export const DefaultEventManagerConfigs = {
 } as const;
 
 /**
- * Event priority mappings by type
+ * Event priority mappings by type.
  */
 export const EventPriorityMap: Record<string, EventPriority> = {
   // System events - highest priority
@@ -566,7 +571,7 @@ export const EventPriorityMap: Record<string, EventPriority> = {
 } as const;
 
 /**
- * Event source categories for filtering
+ * Event source categories for filtering.
  */
 export const EventSources = {
   // System sources
@@ -624,7 +629,7 @@ export const EventSources = {
 } as const;
 
 /**
- * Type guards for UEL event types
+ * Type guards for UEL event types.
  */
 export const UELTypeGuards = {
   isSystemLifecycleEvent: (event: SystemEvent): event is SystemLifecycleEvent => {
@@ -670,7 +675,7 @@ export const UELTypeGuards = {
 } as const;
 
 /**
- * Event constants for consistent usage
+ * Event constants for consistent usage.
  */
 export const EventConstants = {
   // Default values

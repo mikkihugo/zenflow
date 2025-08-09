@@ -1,7 +1,12 @@
 /**
- * Neural Network Presets Index
- * Collection of predefined neural network configurations
+ * Neural Network Presets Index.
+ * Collection of predefined neural network configurations.
  */
+/**
+ * @file presets module exports
+ */
+
+
 
 export interface NeuralPreset {
   id: string;
@@ -64,7 +69,7 @@ export const NEURAL_PRESETS: NeuralPresetMap = {
 };
 
 /**
- * Get preset by category and name
+ * Get preset by category and name.
  *
  * @param category
  * @param presetName
@@ -85,7 +90,7 @@ export function getPreset(category: string, presetName?: string): NeuralPreset |
 }
 
 /**
- * Get recommended preset for use case
+ * Get recommended preset for use case.
  *
  * @param useCase
  */
@@ -97,7 +102,7 @@ export function getRecommendedPreset(useCase: string): NeuralPreset {
 }
 
 /**
- * Search presets by use case
+ * Search presets by use case.
  *
  * @param useCase
  */
@@ -107,7 +112,7 @@ export function searchPresetsByUseCase(useCase: string): NeuralPreset[] {
 }
 
 /**
- * Get presets by category
+ * Get presets by category.
  *
  * @param category
  */
@@ -117,7 +122,7 @@ export function getCategoryPresets(category: string): NeuralPreset[] {
 }
 
 /**
- * Validate preset configuration
+ * Validate preset configuration.
  *
  * @param config
  */
@@ -129,7 +134,7 @@ export function validatePresetConfig(config: Partial<NeuralPreset>): boolean {
     throw new Error(`Invalid preset configuration. Missing: ${missing.join(', ')}`);
   }
 
-  if (!Array.isArray(config.layers) || config.layers.length === 0) {
+  if (!Array.isArray(config?.layers) || config?.layers.length === 0) {
     throw new Error('Layers must be a non-empty array');
   }
 

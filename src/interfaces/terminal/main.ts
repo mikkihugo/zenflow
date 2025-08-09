@@ -1,5 +1,6 @@
-#!/usr/bin/env nodeimport { getLogger } from "../../config/logging-config";
-const logger = getLogger("interfaces-terminal-main");
+#!/usr/bin/env nodeimport { getLogger } from '../config/logging-config";
+const logger = getLogger('interfaces-terminal-main');
+
 /**
  * @file Main Terminal Interface Entry Point
  *
@@ -7,10 +8,11 @@ const logger = getLogger("interfaces-terminal-main");
  * It gets called by the CLI binary and launches the appropriate terminal interface.
  */
 
+import type { getLogger } from '../core/logger';
 import { detectModeWithReason, launchTerminalInterface } from './index';
 
 /**
- * Main entry point for terminal interface
+ * Main entry point for terminal interface.
  */
 async function main() {
   try {
@@ -27,7 +29,7 @@ async function main() {
 
     // Launch the terminal interface
     await launchTerminalInterface({
-      mode: flags.mode || modeResult.mode,
+      mode: flags.mode || modeResult?.mode,
       theme: flags.theme || 'dark',
       verbose: flags.verbose || false,
       autoRefresh: !flags['no-refresh'],
@@ -45,7 +47,7 @@ async function main() {
 }
 
 /**
- * Terminal interface flag values
+ * Terminal interface flag values.
  *
  * @example
  */
@@ -79,7 +81,7 @@ interface TerminalFlags {
 }
 
 /**
- * Parse command line flags into typed object
+ * Parse command line flags into typed object.
  *
  * @param args
  */

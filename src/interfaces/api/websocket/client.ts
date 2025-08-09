@@ -1,7 +1,12 @@
 /** Node.js 22 Native WebSocket Client Implementation
  * Uses the built-in WebSocket client available in Node.js 22+
- * Provides high-performance, standards-compliant WebSocket connectivity
+ * Provides high-performance, standards-compliant WebSocket connectivity.
  */
+/**
+ * @file Interface implementation: client
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 
@@ -21,7 +26,7 @@ interface WebSocketClientOptions {
  * - Message queuing during disconnection
  * - Heartbeat/ping-pong support
  * - Connection state management
- * - Error handling and recovery
+ * - Error handling and recovery.
  */
 
 export class WebSocketClient extends EventEmitter {
@@ -132,7 +137,7 @@ export class WebSocketClient extends EventEmitter {
   }
 
   /**
-   * Queue message for later sending
+   * Queue message for later sending.
    *
    * @param message
    */

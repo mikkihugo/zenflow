@@ -132,7 +132,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
       mockTaskDistributionEngine.distributeTasks.mockImplementation(async (tasks, agents) => {
         const assignments = tasks.map((task, index) => ({
           taskId: task.id,
-          agentId: agents[index % agents.length].id,
+          agentId: agents[index % agents.length]?.id,
           estimatedStartTime: Date.now() + index * 1000,
           estimatedDuration: 30000,
         }));
@@ -293,8 +293,8 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
       );
 
       // Verify correct branching decisions
-      expect(result.success).toBe(true);
-      expect(result.executionPlan.branchingDecisions).toEqual(
+      expect(result?.success).toBe(true);
+      expect(result?.executionPlan?.branchingDecisions).toEqual(
         expect.arrayContaining([
           expect.objectContaining({ taskId: 'simple-processing', skipped: true }),
           expect.objectContaining({ taskId: 'complex-processing', executed: true }),
@@ -302,7 +302,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         ])
       );
 
-      expect(result.executionPlan.skippedTasks).toContain('simple-processing');
+      expect(result?.executionPlan?.skippedTasks).toContain('simple-processing');
     });
 
     it('should optimize resource allocation across multiple concurrent workflows', async () => {
@@ -410,7 +410,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
       });
 
       // High priority workflows should be allocated first
-      const highPriorityAllocations = allocationResult.allocations.filter(
+      const highPriorityAllocations = allocationResult?.allocations?.filter(
         (allocation) => allocation.priority <= 2
       );
       expect(highPriorityAllocations.length).toBe(2);

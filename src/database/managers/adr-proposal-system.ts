@@ -1,9 +1,14 @@
 /**
- * ADR Proposal System - Human-Driven Architecture Decision Process
+ * ADR Proposal System - Human-Driven Architecture Decision Process.
  *
  * System for proposing ADRs to humans for discussion and decision.
  * ADRs are never imported - they must go through proper human review process.
  */
+/**
+ * @file Database layer: adr-proposal-system
+ */
+
+
 
 import type { ADRDocumentEntity } from '../entities/document-entities';
 import { adrManager } from './adr-manager';
@@ -44,14 +49,14 @@ export interface ADRDiscussion {
 }
 
 /**
- * ADR Proposal System for human-driven architecture decisions
+ * ADR Proposal System for human-driven architecture decisions.
  *
  * @example
  */
 export class ADRProposalSystem {
   /**
-   * Propose a new ADR for human discussion
-   * Creates ADR in 'proposed' status awaiting human review
+   * Propose a new ADR for human discussion.
+   * Creates ADR in 'proposed' status awaiting human review.
    *
    * @param proposal
    */
@@ -88,7 +93,7 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Record human discussion and feedback on ADR
+   * Record human discussion and feedback on ADR.
    *
    * @param adrNumber
    * @param discussion
@@ -133,7 +138,7 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Make final decision on ADR after human discussion
+   * Make final decision on ADR after human discussion.
    *
    * @param adrNumber
    * @param decision
@@ -199,7 +204,7 @@ export class ADRProposalSystem {
   }
 
   /**
-   * List ADRs awaiting human discussion
+   * List ADRs awaiting human discussion.
    */
   async getADRsAwaitingDiscussion(): Promise<ADRDocumentEntity[]> {
     const { adrs } = await adrManager.queryADRs({
@@ -215,7 +220,7 @@ export class ADRProposalSystem {
   }
 
   /**
-   * List ADRs currently in discussion
+   * List ADRs currently in discussion.
    */
   async getADRsInDiscussion(): Promise<ADRDocumentEntity[]> {
     const { adrs } = await adrManager.queryADRs({
@@ -227,7 +232,7 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Get ADRs ready for decision
+   * Get ADRs ready for decision.
    */
   async getADRsReadyForDecision(): Promise<ADRDocumentEntity[]> {
     const { adrs } = await adrManager.queryADRs({
@@ -243,7 +248,7 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Propose ADR for the document workflow automation system
+   * Propose ADR for the document workflow automation system.
    * (ADR number will be automatically assigned by the system)
    */
   async proposeDocumentWorkflowADR(): Promise<ADRDocumentEntity> {
@@ -345,7 +350,7 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Format context section with proposal details
+   * Format context section with proposal details.
    *
    * @param proposal
    */
@@ -376,7 +381,7 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Format consequences with expected outcomes
+   * Format consequences with expected outcomes.
    *
    * @param proposal
    */
@@ -391,7 +396,7 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Map urgency to priority
+   * Map urgency to priority.
    *
    * @param urgency
    */
@@ -411,7 +416,7 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Log proposal for human review
+   * Log proposal for human review.
    *
    * @param adr
    * @param proposal
@@ -425,7 +430,7 @@ export class ADRProposalSystem {
   }
 
   /**
-   * Update ADR content with final decision
+   * Update ADR content with final decision.
    *
    * @param content
    * @param decision

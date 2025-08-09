@@ -44,9 +44,9 @@ describe('Comprehensive Error Handling System Integration', () => {
         correlationId: 'test_123',
       });
 
-      expect(result.finalError).toBeInstanceOf(FACTError);
-      expect(result.finalError?.severity).toBe('high');
-      expect(result.finalError?.category).toBe('FACT');
+      expect(result?.finalError).toBeInstanceOf(FACTError);
+      expect(result?.finalError?.severity).toBe('high');
+      expect(result?.finalError?.category).toBe('FACT');
     });
 
     it('should correctly classify RAG system errors', async () => {
@@ -58,9 +58,9 @@ describe('Comprehensive Error Handling System Integration', () => {
         correlationId: 'test_456',
       });
 
-      expect(result.finalError).toBeInstanceOf(RAGError);
-      expect(result.finalError?.severity).toBe('medium');
-      expect(result.finalError?.category).toBe('RAG');
+      expect(result?.finalError).toBeInstanceOf(RAGError);
+      expect(result?.finalError?.severity).toBe('medium');
+      expect(result?.finalError?.category).toBe('RAG');
     });
 
     it('should correctly classify Swarm coordination errors', async () => {
@@ -72,9 +72,9 @@ describe('Comprehensive Error Handling System Integration', () => {
         correlationId: 'test_789',
       });
 
-      expect(result.finalError).toBeInstanceOf(SwarmError);
-      expect(result.finalError?.severity).toBe('high');
-      expect(result.finalError?.category).toBe('Swarm');
+      expect(result?.finalError).toBeInstanceOf(SwarmError);
+      expect(result?.finalError?.severity).toBe('high');
+      expect(result?.finalError?.category).toBe('Swarm');
     });
   });
 
@@ -145,9 +145,9 @@ describe('Comprehensive Error Handling System Integration', () => {
         correlationId: 'timeout_test',
       });
 
-      expect(result.recovered).toBe(false);
-      expect(result.finalError).toBeInstanceOf(TimeoutError);
-      expect(result.finalError?.recoverable).toBe(false);
+      expect(result?.recovered).toBe(false);
+      expect(result?.finalError).toBeInstanceOf(TimeoutError);
+      expect(result?.finalError?.recoverable).toBe(false);
     });
   });
 
@@ -189,7 +189,7 @@ describe('Comprehensive Error Handling System Integration', () => {
         ),
       ]);
 
-      expect(results.every((r) => r.status === 'fulfilled')).toBe(true);
+      expect(results?.every((r) => r.status === 'fulfilled')).toBe(true);
     });
 
     it('should manage resources properly', async () => {
@@ -296,14 +296,14 @@ describe('Comprehensive Error Handling System Integration', () => {
           operation: 'mixed_error_test',
           correlationId: `mixed_${error.constructor.name}`,
         });
-        results.push(result);
+        results?.push(result);
       }
 
       // Check that all errors were processed
       expect(results).toHaveLength(5);
 
       // Check that different error types were classified correctly
-      const errorTypes = results.map((r) => r.finalError?.constructor.name);
+      const errorTypes = results?.map((r) => r.finalError?.constructor.name);
       expect(errorTypes).toContain('FACTError');
       expect(errorTypes).toContain('RAGError');
       expect(errorTypes).toContain('SwarmError');
@@ -339,8 +339,8 @@ describe('Comprehensive Error Handling System Integration', () => {
       expect(endTime - startTime).toBeLessThan(5000); // Should complete within 5 seconds
 
       // Check that some operations succeeded and some were handled
-      const successCount = results.filter((r) => r.startsWith('Success')).length;
-      const handledCount = results.filter((r) => r.startsWith('Handled')).length;
+      const successCount = results?.filter((r) => r.startsWith('Success')).length;
+      const handledCount = results?.filter((r) => r.startsWith('Handled')).length;
 
       expect(successCount).toBeGreaterThan(0);
       expect(handledCount).toBeGreaterThan(0);
@@ -358,8 +358,8 @@ describe('Comprehensive Error Handling System Integration', () => {
         correlationId: 'non_recoverable_test',
       });
 
-      expect(result.recovered).toBe(false);
-      expect(result.finalError).toBeDefined();
+      expect(result?.recovered).toBe(false);
+      expect(result?.finalError).toBeDefined();
     });
 
     it('should handle circular recovery attempts', async () => {
@@ -404,18 +404,18 @@ describe('Comprehensive Error Handling System Integration', () => {
       const results = await Promise.allSettled(resourcePromises);
 
       // Should have some successful allocations and some failures due to limits
-      const successes = results.filter(
+      const successes = results?.filter(
         (r) => r.status === 'fulfilled' && typeof r.value === 'string'
       );
-      const failures = results.filter((r) => r.status === 'fulfilled' && r.value instanceof Error);
+      const failures = results?.filter((r) => r.status === 'fulfilled' && r.value instanceof Error);
 
       expect(successes.length).toBeGreaterThan(0);
       expect(failures.length).toBeGreaterThan(0);
 
       // Clean up allocated resources
       for (const result of successes) {
-        if (result.status === 'fulfilled' && typeof result.value === 'string') {
-          await resourceManager.releaseResource(result.value).catch(() => {});
+        if (result?.status === 'fulfilled' && typeof result?.value === 'string') {
+          await resourceManager.releaseResource(result?.value).catch(() => {});
         }
       }
     });
@@ -437,12 +437,12 @@ describe('MCP Error Handling Integration', () => {
         required: ['input'],
       },
       handler: async (params: any) => {
-        if (params.input === 'error') {
+        if (params?.input === 'error') {
           throw new Error('Simulated tool error');
         }
         return {
           success: true,
-          content: [{ type: 'text', text: `Processed: ${params.input}` }],
+          content: [{ type: 'text', text: `Processed: ${params?.input}` }],
         };
       },
     };
@@ -451,12 +451,12 @@ describe('MCP Error Handling Integration', () => {
 
     // Test successful execution
     const successResult = await wrappedTool.handler({ input: 'test' });
-    expect(successResult.success).toBe(true);
+    expect(successResult?.success).toBe(true);
 
     // Test error handling
     const errorResult = await wrappedTool.handler({ input: 'error' });
-    expect(errorResult.success).toBe(false);
-    expect(errorResult.content[0].text).toContain('execution failed');
+    expect(errorResult?.success).toBe(false);
+    expect(errorResult?.content?.[0]?.text).toContain('execution failed');
   });
 
   it('should validate MCP tool parameters', async () => {
@@ -477,8 +477,8 @@ describe('MCP Error Handling Integration', () => {
       { required_param: 'test', optional_param: 50 },
       schema
     );
-    expect(validResult.valid).toBe(true);
-    expect(validResult.errors).toHaveLength(0);
+    expect(validResult?.valid).toBe(true);
+    expect(validResult?.errors).toHaveLength(0);
 
     // Test missing required parameter
     const missingResult = MCPParameterValidator.validateParameters(
@@ -486,8 +486,8 @@ describe('MCP Error Handling Integration', () => {
       { optional_param: 50 },
       schema
     );
-    expect(missingResult.valid).toBe(false);
-    expect(missingResult.errors).toContain('Missing required parameter: required_param');
+    expect(missingResult?.valid).toBe(false);
+    expect(missingResult?.errors).toContain('Missing required parameter: required_param');
 
     // Test invalid parameter type
     const typeResult = MCPParameterValidator.validateParameters(
@@ -495,8 +495,8 @@ describe('MCP Error Handling Integration', () => {
       { required_param: 123 }, // Should be string
       schema
     );
-    expect(typeResult.valid).toBe(false);
-    expect(typeResult.errors.some((e) => e.includes('expected type string'))).toBe(true);
+    expect(typeResult?.valid).toBe(false);
+    expect(typeResult?.errors?.some((e) => e.includes('expected type string'))).toBe(true);
 
     // Test parameter constraints
     const constraintResult = MCPParameterValidator.validateParameters(
@@ -504,8 +504,8 @@ describe('MCP Error Handling Integration', () => {
       { required_param: 'test', optional_param: 150 }, // Exceeds maximum
       schema
     );
-    expect(constraintResult.valid).toBe(false);
-    expect(constraintResult.errors.some((e) => e.includes('must be at most 100'))).toBe(true);
+    expect(constraintResult?.valid).toBe(false);
+    expect(constraintResult?.errors?.some((e) => e.includes('must be at most 100'))).toBe(true);
   });
 });
 

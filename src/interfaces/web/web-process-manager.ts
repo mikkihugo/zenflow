@@ -1,14 +1,19 @@
 /**
- * Web Process Manager - Daemon and process lifecycle management
+ * Web Process Manager - Daemon and process lifecycle management.
  *
  * Handles daemon mode operations, PID file management,
  * and graceful shutdown procedures for the web interface.
  */
+/**
+ * @file web-process management system
+ */
+
+
 
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { createLogger } from '../../utils/logger';
+import { createLogger } from '../utils/logger';
 import type { WebConfig } from './web-config';
 
 export interface ProcessInfo {
@@ -52,12 +57,12 @@ export class WebProcessManager {
   }
 
   /**
-   * Save process ID to file
+   * Save process ID to file.
    */
   private async savePidFile(): Promise<void> {
     try {
       await mkdir(dirname(this.pidFile), { recursive: true });
-      await writeFile(this.pidFile, this.pid?.toString());
+      await writeFile(this.pidFile, this.pid.toString());
       this.logger.debug(`PID file saved: ${this.pidFile}`);
     } catch (error) {
       this.logger.error('Failed to save PID file:', error);
@@ -66,7 +71,7 @@ export class WebProcessManager {
   }
 
   /**
-   * Remove PID file
+   * Remove PID file.
    */
   private async removePidFile(): Promise<void> {
     try {
@@ -81,7 +86,7 @@ export class WebProcessManager {
   }
 
   /**
-   * Setup signal handlers for graceful shutdown
+   * Setup signal handlers for graceful shutdown.
    */
   private setupSignalHandlers(): void {
     const signals = ['SIGTERM', 'SIGINT', 'SIGUSR2'] as const;
@@ -107,7 +112,7 @@ export class WebProcessManager {
   }
 
   /**
-   * Perform graceful shutdown
+   * Perform graceful shutdown.
    *
    * @param signal
    */
@@ -135,7 +140,7 @@ export class WebProcessManager {
   }
 
   /**
-   * Check if another instance is running
+   * Check if another instance is running.
    */
   async isInstanceRunning(): Promise<ProcessInfo | null> {
     try {
@@ -174,7 +179,7 @@ export class WebProcessManager {
   }
 
   /**
-   * Check if a process is running by PID
+   * Check if a process is running by PID.
    *
    * @param pid
    */
@@ -198,7 +203,7 @@ export class WebProcessManager {
   }
 
   /**
-   * Stop a running instance
+   * Stop a running instance.
    *
    * @param pid
    */
@@ -240,7 +245,7 @@ export class WebProcessManager {
   }
 
   /**
-   * Get current process information
+   * Get current process information.
    */
   getCurrentProcessInfo(): ProcessInfo {
     return {
@@ -252,7 +257,7 @@ export class WebProcessManager {
   }
 
   /**
-   * Get process statistics
+   * Get process statistics.
    */
   getProcessStats(): {
     pid: number;
@@ -271,7 +276,7 @@ export class WebProcessManager {
   }
 
   /**
-   * Health check for process manager
+   * Health check for process manager.
    */
   healthCheck(): {
     status: 'healthy' | 'warning' | 'error';

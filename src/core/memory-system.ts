@@ -1,7 +1,7 @@
 /**
  * Memory System - Multi-Backend Memory Management.
  *
- * Clean, focused memory system with support for multiple backends
+ * Clean, focused memory system with support for multiple backends.
  * without bloated "unified" architecture. Supports LanceDB, SQLite, and JSON backends.
  *
  * @example
@@ -16,6 +16,11 @@
  * const data = await memorySystem.retrieve('key');
  * ```
  */
+/**
+ * @file memory-system implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from './logger';
@@ -196,7 +201,7 @@ class JSONBackend implements BackendInterface {
       if (key.startsWith(prefix)) {
         const simpleKey = key.substring(prefix.length);
         if (pattern === '*' || simpleKey.includes(pattern.replace('*', ''))) {
-          results?.[simpleKey] = entry.value;
+          results[simpleKey] = entry.value;
         }
       }
     }
@@ -381,7 +386,7 @@ class SQLiteBackend implements BackendInterface {
 
       for (const row of rows) {
         try {
-          results?.[row.key] = JSON.parse(row.value);
+          results[row.key] = JSON.parse(row.value);
         } catch (_error) {
           logger.warn(`Failed to parse value for key ${row.key}`);
         }
@@ -577,7 +582,7 @@ export class MemorySystem extends EventEmitter {
 
     const result = await this.backend.store(key, value, namespace);
 
-    if (result?.status === 'success') {
+    if (result.status === 'success') {
       this.emit('stored', { key, namespace, timestamp: result?.timestamp });
     } else {
       this.emit('error', { operation: 'store', key, namespace, error: result?.error });

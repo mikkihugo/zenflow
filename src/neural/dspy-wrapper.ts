@@ -4,8 +4,8 @@
  * Provides a type-safe, unified interface to the ruvnet dspy.ts package
  * with proper error handling, validation, and consistent API patterns.
  *
- * Created by: Type-System-Analyst agent
- * Purpose: Centralize all DSPy API access with full TypeScript support
+ * Created by: Type-System-Analyst agent.
+ * Purpose: Centralize all DSPy API access with full TypeScript support.
  */
 
 import { createLogger } from '../core/logger';
@@ -33,7 +33,7 @@ const logger = createLogger({ prefix: 'DSPyWrapper' });
 
 /**
  * Type-safe wrapper implementation for the dspy.ts package
- * Provides consistent API across all DSPy integrations in claude-code-zen
+ * Provides consistent API across all DSPy integrations in claude-code-zen.
  */
 export class DSPyWrapperImpl implements DSPyWrapper {
   private dspyInstance: any = null;
@@ -54,7 +54,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
   }
 
   /**
-   * Configure the DSPy language model with proper error handling
+   * Configure the DSPy language model with proper error handling.
    */
   async configure(config: DSPyConfig): Promise<void> {
     try {
@@ -131,7 +131,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
   }
 
   /**
-   * Create a new DSPy program with type safety and validation
+   * Create a new DSPy program with type safety and validation.
    */
   async createProgram(signature: string, description: string): Promise<DSPyProgram> {
     this.ensureInitialized();
@@ -190,7 +190,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
   }
 
   /**
-   * Execute a program with comprehensive error handling and result validation
+   * Execute a program with comprehensive error handling and result validation.
    */
   async execute(program: DSPyProgram, input: Record<string, any>): Promise<DSPyExecutionResult> {
     this.ensureInitialized();
@@ -252,7 +252,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       };
 
       if (this.currentConfig?.model) {
-        metadata?.model = this.currentConfig.model;
+        metadata.model = this.currentConfig.model;
       }
 
       return {
@@ -265,7 +265,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
   }
 
   /**
-   * Add training examples to a program with validation
+   * Add training examples to a program with validation.
    */
   async addExamples(program: DSPyProgram, examples: DSPyExample[]): Promise<void> {
     this.ensureInitialized();
@@ -326,7 +326,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
   }
 
   /**
-   * Optimize a program with comprehensive configuration and result handling
+   * Optimize a program with comprehensive configuration and result handling.
    */
   async optimize(
     program: DSPyProgram,
@@ -407,14 +407,14 @@ export class DSPyWrapperImpl implements DSPyWrapper {
   }
 
   /**
-   * Get current configuration
+   * Get current configuration.
    */
   getConfig(): DSPyConfig | null {
     return this.currentConfig;
   }
 
   /**
-   * Health check for DSPy system
+   * Health check for DSPy system.
    */
   async healthCheck(): Promise<boolean> {
     try {
@@ -443,7 +443,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
   }
 
   /**
-   * Get statistics about the wrapper usage
+   * Get statistics about the wrapper usage.
    */
   getStats() {
     return {
@@ -461,7 +461,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
   }
 
   /**
-   * Clean up resources
+   * Clean up resources.
    */
   async cleanup(): Promise<void> {
     this.programs.clear();
@@ -480,7 +480,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 }
 
 /**
- * Internal wrapper class for DSPy programs with enhanced metadata tracking
+ * Internal wrapper class for DSPy programs with enhanced metadata tracking.
  */
 class DSPyProgramWrapper implements DSPyProgram {
   public readonly id: string;
@@ -549,7 +549,7 @@ class DSPyProgramWrapper implements DSPyProgram {
 // =============================================================================
 
 /**
- * Create a new DSPy wrapper with configuration
+ * Create a new DSPy wrapper with configuration.
  */
 export async function createDSPyWrapper(config: DSPyConfig): Promise<DSPyWrapper> {
   const wrapper = new DSPyWrapperImpl();
@@ -558,7 +558,7 @@ export async function createDSPyWrapper(config: DSPyConfig): Promise<DSPyWrapper
 }
 
 /**
- * Create a DSPy wrapper with default configuration
+ * Create a DSPy wrapper with default configuration.
  */
 export async function createDefaultDSPyWrapper(): Promise<DSPyWrapper> {
   return createDSPyWrapper(DEFAULT_DSPY_CONFIG);
@@ -577,5 +577,5 @@ export async function getSingletonDSPyWrapper(config?: DSPyConfig): Promise<DSPy
 
 // Export types that other modules need
 export type { DSPyWrapper, DSPyProgram };
-// Export the main implementation class as default
+// Export the main implementation class as default.
 export default DSPyWrapperImpl;

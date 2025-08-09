@@ -1,7 +1,12 @@
 /**
- * Least Connections Load Balancing Algorithm
- * Predictive capacity modeling with connection tracking
+ * Least Connections Load Balancing Algorithm.
+ * Predictive capacity modeling with connection tracking.
  */
+/**
+ * @file Coordination system: least-connections
+ */
+
+
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
 import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
@@ -32,7 +37,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   };
 
   /**
-   * Select agent with least connections and available capacity
+   * Select agent with least connections and available capacity.
    *
    * @param task
    * @param availableAgents
@@ -68,17 +73,17 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     // Sort by score (lower is better for least connections)
     scoredAgents.sort((a, b) => a.score - b.score);
 
-    const selectedAgent = scoredAgents[0].agent;
+    const selectedAgent = scoredAgents[0]?.agent;
     const confidence = this.calculateConfidence(scoredAgents);
     const alternatives = scoredAgents.slice(1, 4).map((s) => s.agent);
 
     // Update connection count for selected agent
-    await this.incrementConnections(selectedAgent.id);
+    await this.incrementConnections(selectedAgent?.id);
 
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected agent with ${scoredAgents[0].connections} active connections (capacity: ${scoredAgents[0].capacity})`,
+      reasoning: `Selected agent with ${scoredAgents[0]?.connections} active connections (capacity: ${scoredAgents[0]?.capacity})`,
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),
@@ -86,7 +91,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update algorithm configuration
+   * Update algorithm configuration.
    *
    * @param config
    */
@@ -95,7 +100,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Get performance metrics
+   * Get performance metrics.
    */
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
     const states = Array.from(this.connectionStates.values());
@@ -115,7 +120,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Handle task completion
+   * Handle task completion.
    *
    * @param agentId
    * @param _task
@@ -150,7 +155,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Handle agent failure
+   * Handle agent failure.
    *
    * @param agentId
    * @param _error
@@ -167,7 +172,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Get or create connection state for an agent
+   * Get or create connection state for an agent.
    *
    * @param agentId
    */
@@ -188,7 +193,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update connection states based on current metrics
+   * Update connection states based on current metrics.
    *
    * @param agents
    * @param metrics
@@ -220,7 +225,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Score agents based on connections and capacity
+   * Score agents based on connections and capacity.
    *
    * @param agents
    * @param task
@@ -278,7 +283,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Increment connection count for an agent
+   * Increment connection count for an agent.
    *
    * @param agentId
    */
@@ -288,7 +293,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update capacity prediction based on historical data
+   * Update capacity prediction based on historical data.
    *
    * @param state
    */
@@ -323,7 +328,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   /**
    * Calculate recent throughput (completions per second)
    *
-   * @param state
+   * @param state.
    */
   private calculateRecentThroughput(state: ConnectionState): number {
     const now = new Date();
@@ -336,7 +341,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update average connection duration with new measurement
+   * Update average connection duration with new measurement.
    *
    * @param state
    * @param newDuration
@@ -349,15 +354,15 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Calculate confidence in the selection
+   * Calculate confidence in the selection.
    *
    * @param scoredAgents
    */
   private calculateConfidence(scoredAgents: Array<{ score: number }>): number {
     if (scoredAgents.length < 2) return 1.0;
 
-    const bestScore = scoredAgents[0].score;
-    const secondBestScore = scoredAgents[1].score;
+    const bestScore = scoredAgents[0]?.score;
+    const secondBestScore = scoredAgents[1]?.score;
 
     // Higher difference in scores = higher confidence
     const scoreDifference = secondBestScore - bestScore;
@@ -367,7 +372,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Estimate latency based on current load
+   * Estimate latency based on current load.
    *
    * @param agent
    * @param metrics
@@ -386,7 +391,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Estimate quality based on error rate and utilization
+   * Estimate quality based on error rate and utilization.
    *
    * @param agent
    * @param metrics
@@ -412,7 +417,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Calculate prediction accuracy
+   * Calculate prediction accuracy.
    */
   private async calculatePredictionAccuracy(): Promise<number> {
     const states = Array.from(this.connectionStates.values());
@@ -435,7 +440,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Calculate average connection duration across all agents
+   * Calculate average connection duration across all agents.
    *
    * @param states
    */

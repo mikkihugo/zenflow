@@ -1,9 +1,14 @@
 /**
- * Knowledge Evolution System for Continuous Learning
+ * Knowledge Evolution System for Continuous Learning.
  *
  * Manages continuous learning from swarm interactions, pattern-based knowledge base updates,
  * expertise evolution tracking, best practice emergence, and anti-pattern detection.
  */
+/**
+ * @file knowledge-evolution implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type { AgentBehavior } from './behavioral-optimization';
@@ -200,7 +205,7 @@ export class KnowledgeEvolution extends EventEmitter {
   }
 
   /**
-   * Learn from swarm interactions and update knowledge base
+   * Learn from swarm interactions and update knowledge base.
    *
    * @param patterns
    * @param behaviors
@@ -223,24 +228,24 @@ export class KnowledgeEvolution extends EventEmitter {
 
     // Extract knowledge from patterns
     const extractedKnowledge = await this.extractKnowledgeFromPatterns(patterns, domain);
-    learningResult.newKnowledge.push(...extractedKnowledge.newItems);
-    learningResult.updatedKnowledge.push(...extractedKnowledge.updatedItems);
+    learningResult?.newKnowledge.push(...extractedKnowledge.newItems);
+    learningResult?.updatedKnowledge.push(...extractedKnowledge.updatedItems);
 
     // Identify emergent patterns
     const emergentPatterns = this.identifyEmergentPatterns(patterns);
-    learningResult.emergentPatterns.push(...emergentPatterns);
+    learningResult?.emergentPatterns.push(...emergentPatterns);
 
     // Detect best practices
     const bestPractices = await this.detectBestPractices(patterns, behaviors);
-    learningResult.bestPracticesIdentified.push(...bestPractices);
+    learningResult?.bestPracticesIdentified.push(...bestPractices);
 
     // Detect anti-patterns
     const antiPatterns = await this.detectAntiPatterns(patterns, behaviors);
-    learningResult.antiPatternsDetected.push(...antiPatterns);
+    learningResult?.antiPatternsDetected.push(...antiPatterns);
 
     // Update expertise profiles
     const expertiseUpdates = await this.updateExpertiseProfiles(patterns, behaviors);
-    learningResult.expertiseUpdates.push(...expertiseUpdates);
+    learningResult?.expertiseUpdates.push(...expertiseUpdates);
 
     // Update knowledge base
     await this.updateKnowledgeBase(domain, learningResult);
@@ -250,7 +255,7 @@ export class KnowledgeEvolution extends EventEmitter {
   }
 
   /**
-   * Update knowledge base with pattern-based insights
+   * Update knowledge base with pattern-based insights.
    *
    * @param patternClusters
    * @param domain
@@ -274,7 +279,7 @@ export class KnowledgeEvolution extends EventEmitter {
   }
 
   /**
-   * Track expertise evolution for agents
+   * Track expertise evolution for agents.
    *
    * @param agentId
    * @param patterns
@@ -325,7 +330,7 @@ export class KnowledgeEvolution extends EventEmitter {
   }
 
   /**
-   * Identify and codify emerging best practices
+   * Identify and codify emerging best practices.
    *
    * @param patterns
    * @param minEffectiveness
@@ -359,7 +364,7 @@ export class KnowledgeEvolution extends EventEmitter {
   }
 
   /**
-   * Detect and catalog anti-patterns
+   * Detect and catalog anti-patterns.
    *
    * @param patterns
    * @param behaviors
@@ -372,7 +377,8 @@ export class KnowledgeEvolution extends EventEmitter {
 
     // Analyze failure patterns
     const failurePatterns = patterns.filter(
-      (p) => (p.metadata as any).success === false || p.confidence < this.config.antiPatternThreshold
+      (p) =>
+        (p.metadata as any).success === false || p.confidence < this.config.antiPatternThreshold
     );
 
     // Group similar failure patterns
@@ -396,7 +402,7 @@ export class KnowledgeEvolution extends EventEmitter {
   }
 
   /**
-   * Validate and maintain knowledge consistency
+   * Validate and maintain knowledge consistency.
    *
    * @param knowledgeBase
    */
@@ -437,7 +443,7 @@ export class KnowledgeEvolution extends EventEmitter {
   }
 
   /**
-   * Evolve knowledge base based on new evidence
+   * Evolve knowledge base based on new evidence.
    *
    * @param domain
    * @param trigger
@@ -493,7 +499,7 @@ export class KnowledgeEvolution extends EventEmitter {
   }
 
   /**
-   * Get knowledge recommendations based on context
+   * Get knowledge recommendations based on context.
    *
    * @param context
    */
@@ -507,7 +513,7 @@ export class KnowledgeEvolution extends EventEmitter {
       // Get applicable knowledge items
       const applicableItems = this.findApplicableKnowledge(kb, context);
 
-      applicableItems.forEach((item) => {
+      applicableItems?.forEach((item) => {
         const relevance = this.calculateRelevance(item, context);
 
         if (relevance >= 0.7) {
@@ -515,7 +521,7 @@ export class KnowledgeEvolution extends EventEmitter {
             type: this.determineRecommendationType(item, context),
             knowledgeItem: item,
             relevance,
-            confidence: item.confidence,
+            confidence: item?.confidence,
             applicability: this.assessApplicability(item, context),
             reasoning: this.generateReasoningExplanation(item, context),
           });
@@ -530,7 +536,7 @@ export class KnowledgeEvolution extends EventEmitter {
   }
 
   /**
-   * Export knowledge for transfer learning
+   * Export knowledge for transfer learning.
    *
    * @param domain
    * @param format
@@ -555,7 +561,7 @@ export class KnowledgeEvolution extends EventEmitter {
       },
     };
 
-    exportData.metadata.exportSize = JSON.stringify(exportData.data).length;
+    exportData?.metadata.exportSize = JSON.stringify(exportData?.data).length;
 
     this.emit('knowledge_exported', exportData);
     return exportData;
@@ -612,11 +618,11 @@ export class KnowledgeEvolution extends EventEmitter {
       });
 
       currentWindow.forEach((p) => {
-        currentTypes.set(p.type, (currentTypes.get(p.type) || 0) + 1);
+        currentTypes?.set(p.type, (currentTypes?.get(p.type) || 0) + 1);
       });
 
       // Look for emerging patterns (significant increase in frequency)
-      currentTypes.forEach((currentCount, type) => {
+      currentTypes?.forEach((currentCount, type) => {
         const previousCount = previousTypes.get(type) || 0;
         const growthRate = previousCount > 0 ? currentCount / previousCount : currentCount;
 
@@ -624,7 +630,7 @@ export class KnowledgeEvolution extends EventEmitter {
           // At least doubling and minimum frequency
           emergentPatterns.push({
             type,
-            emergenceTime: currentWindow[0]?.timestamp || Date.now(),
+            emergenceTime: currentWindow?.[0]?.timestamp || Date.now(),
             frequency: currentCount,
             growthRate,
             confidence: Math.min(0.95, growthRate / 5),
@@ -645,7 +651,8 @@ export class KnowledgeEvolution extends EventEmitter {
 
     // Analyze highly successful patterns
     const highPerformancePatterns = patterns.filter(
-      (p) => p.confidence >= this.config.bestPracticeThreshold && (p.metadata as any).success === true
+      (p) =>
+        p.confidence >= this.config.bestPracticeThreshold && (p.metadata as any).success === true
     );
 
     // Group by similar characteristics
@@ -805,7 +812,7 @@ export class KnowledgeEvolution extends EventEmitter {
     const conflicts: KnowledgeConflict[] = [];
 
     // Check for contradictory rules
-    const rules = knowledgeBase.knowledge.filter((item) => item.type === 'rule');
+    const rules = knowledgeBase.knowledge.filter((item) => item?.type === 'rule');
 
     for (let i = 0; i < rules.length; i++) {
       for (let j = i + 1; j < rules.length; j++) {
@@ -821,7 +828,7 @@ export class KnowledgeEvolution extends EventEmitter {
     }
 
     // Check for conflicting facts
-    const facts = knowledgeBase.knowledge.filter((item) => item.type === 'fact');
+    const facts = knowledgeBase.knowledge.filter((item) => item?.type === 'fact');
 
     for (let i = 0; i < facts.length; i++) {
       for (let j = i + 1; j < facts.length; j++) {
@@ -854,9 +861,11 @@ export class KnowledgeEvolution extends EventEmitter {
     ];
 
     for (const [positive, negative] of contradictoryPairs) {
-      if (positive && negative &&
+      if (
+        positive &&
+        negative &&
         ((content1.includes(positive) && content2.includes(negative)) ||
-        (content1.includes(negative) && content2.includes(positive)))
+          (content1.includes(negative) && content2.includes(positive)))
       ) {
         return {
           type: 'rule_contradiction',
@@ -964,7 +973,7 @@ export class KnowledgeEvolution extends EventEmitter {
     let currentWindow: ExecutionPattern[] = [];
     const firstPattern = sortedPatterns[0];
     if (!firstPattern) return windows;
-    
+
     let windowStart = firstPattern.timestamp;
 
     for (const pattern of sortedPatterns) {
@@ -993,7 +1002,8 @@ export class KnowledgeEvolution extends EventEmitter {
       const swarmIds = [...new Set(patterns.map((p) => p.context.swarmId))];
       const taskTypes = [...new Set(patterns.map((p) => p.context.taskType))];
       const avgComplexity =
-        patterns.reduce((sum, p) => sum + ((p.context as any).complexity || 0), 0) / patterns.length;
+        patterns.reduce((sum, p) => sum + ((p.context as any).complexity || 0), 0) /
+        patterns.length;
 
       context['swarmIds'] = swarmIds;
       context['taskTypes'] = taskTypes;
@@ -1054,7 +1064,7 @@ export class KnowledgeEvolution extends EventEmitter {
 
     evolution.changes.push(
       ...newItems.map((item) => ({
-        itemId: item.id,
+        itemId: item?.id,
         field: 'creation',
         oldValue: null,
         newValue: item,
@@ -1071,17 +1081,17 @@ export class KnowledgeEvolution extends EventEmitter {
     // Update existing knowledge items with new evidence
     evidence.forEach((e) => {
       const relevantItems = this.findRelevantKnowledgeItems(knowledgeBase, e);
-      relevantItems.forEach((item) => {
-        const oldConfidence = item.confidence;
-        item.evidence.push(e);
+      relevantItems?.forEach((item) => {
+        const oldConfidence = item?.confidence;
+        item?.evidence.push(e);
         item.confidence = this.recalculateConfidence(item);
         item.lastVerified = Date.now();
 
         evolution.changes.push({
-          itemId: item.id,
+          itemId: item?.id,
           field: 'confidence',
           oldValue: oldConfidence,
-          newValue: item.confidence,
+          newValue: item?.confidence,
           reason: 'Updated with new evidence',
         });
       });
@@ -1099,11 +1109,11 @@ export class KnowledgeEvolution extends EventEmitter {
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      if (!item || merged.has(item.id)) continue;
+      if (!item || merged.has(item?.id)) continue;
 
       const similarItems = items
-        .slice(i + 1)
-        .filter((item) => item && !merged.has(item.id) && this.areItemsSimilar(items[i]!, item));
+        ?.slice(i + 1)
+        .filter((item) => item && !merged.has(item?.id) && this.areItemsSimilar(items[i]!, item));
 
       if (similarItems.length > 0) {
         const mergedItem = this.mergeItems(item, similarItems);
@@ -1111,7 +1121,7 @@ export class KnowledgeEvolution extends EventEmitter {
         // Remove original items
         [item, ...similarItems].forEach((itemToRemove) => {
           if (itemToRemove) {
-            merged.add(itemToRemove.id);
+            merged.add(itemToRemove?.id);
             const index = knowledgeBase.knowledge.indexOf(itemToRemove);
             if (index > -1) {
               knowledgeBase.knowledge.splice(index, 1);
@@ -1123,10 +1133,10 @@ export class KnowledgeEvolution extends EventEmitter {
         knowledgeBase.knowledge.push(mergedItem);
 
         evolution.changes.push({
-          itemId: mergedItem.id,
+          itemId: mergedItem?.id,
           field: 'merge',
-          oldValue: [item.id, ...similarItems.map((s) => s.id)],
-          newValue: mergedItem.id,
+          oldValue: [item?.id, ...similarItems?.map((s) => s.id)],
+          newValue: mergedItem?.id,
           reason: 'Merged similar knowledge items',
         });
       }
@@ -1150,18 +1160,18 @@ export class KnowledgeEvolution extends EventEmitter {
     // Mark knowledge items as deprecated based on evidence
     evidence.forEach((e) => {
       const relevantItems = this.findRelevantKnowledgeItems(knowledgeBase, e);
-      relevantItems.forEach((item) => {
+      relevantItems?.forEach((item) => {
         if (e.strength < 0) {
           // Negative evidence
-          item.confidence = Math.max(0, item.confidence - Math.abs(e.strength));
+          item.confidence = Math.max(0, item?.confidence - Math.abs(e.strength));
 
-          if (item.confidence < 0.1) {
-            item.tags.push('deprecated');
+          if (item?.confidence < 0.1) {
+            item?.tags.push('deprecated');
             evolution.changes.push({
-              itemId: item.id,
+              itemId: item?.id,
               field: 'tags',
-              oldValue: item.tags.filter((t) => t !== 'deprecated'),
-              newValue: item.tags,
+              oldValue: item?.tags.filter((t) => t !== 'deprecated'),
+              newValue: item?.tags,
               reason: 'Deprecated due to negative evidence',
             });
           }
@@ -1182,16 +1192,16 @@ export class KnowledgeEvolution extends EventEmitter {
       if (relevantEvidence.length > 0) {
         const validationResult = this.validateItemWithEvidence(item, relevantEvidence);
 
-        if (validationResult.confidence !== item.confidence) {
+        if (validationResult?.confidence !== item?.confidence) {
           evolution.changes.push({
-            itemId: item.id,
+            itemId: item?.id,
             field: 'confidence',
-            oldValue: item.confidence,
-            newValue: validationResult.confidence,
+            oldValue: item?.confidence,
+            newValue: validationResult?.confidence,
             reason: 'Validation against new evidence',
           });
 
-          item.confidence = validationResult.confidence;
+          item.confidence = validationResult?.confidence;
         }
       }
     });
@@ -1363,10 +1373,12 @@ export class KnowledgeEvolution extends EventEmitter {
       const durationsWithValues = patterns
         .filter((p) => (p as any).duration !== undefined)
         .map((p) => (p as any).duration || 0);
-      
-      const avgDuration = durationsWithValues.length > 0
-        ? durationsWithValues.reduce((sum: number, d: number) => sum + d, 0) / durationsWithValues.length
-        : 0;
+
+      const avgDuration =
+        durationsWithValues.length > 0
+          ? durationsWithValues.reduce((sum: number, d: number) => sum + d, 0) /
+            durationsWithValues.length
+          : 0;
 
       if (avgDuration > 0) {
         facts.push({
@@ -1412,9 +1424,9 @@ export class KnowledgeEvolution extends EventEmitter {
     let severity = 0.5; // Base severity
 
     const metadata = pattern.metadata as any;
-    if (metadata.errorType === 'critical') severity += 0.3;
-    if (metadata.impactLevel === 'high') severity += 0.2;
-    if (metadata.recoverable === false) severity += 0.2;
+    if (metadata?.errorType === 'critical') severity += 0.3;
+    if (metadata?.impactLevel === 'high') severity += 0.2;
+    if (metadata?.recoverable === false) severity += 0.2;
 
     return Math.min(1, severity);
   }
@@ -1440,7 +1452,7 @@ export class KnowledgeEvolution extends EventEmitter {
     // Similar metadata
     const metadataKeys = new Set([...Object.keys(p1.metadata), ...Object.keys(p2.metadata)]);
     let matchingKeys = 0;
-    metadataKeys.forEach((key) => {
+    metadataKeys?.forEach((key) => {
       if ((p1.metadata as any)[key] === (p2.metadata as any)[key]) {
         matchingKeys++;
       }
@@ -1455,10 +1467,10 @@ export class KnowledgeEvolution extends EventEmitter {
     const causes: string[] = [];
     const metadata = pattern.metadata as any;
 
-    if (metadata.errorType) causes.push(metadata.errorType);
-    if (metadata.rootCause) causes.push(metadata.rootCause);
-    if (metadata.contributingFactors) {
-      causes.push(...metadata.contributingFactors);
+    if (metadata?.errorType) causes.push(metadata?.errorType);
+    if (metadata?.rootCause) causes.push(metadata?.rootCause);
+    if (metadata?.contributingFactors) {
+      causes.push(...metadata?.contributingFactors);
     }
 
     return causes;
@@ -1467,7 +1479,7 @@ export class KnowledgeEvolution extends EventEmitter {
   private generatePracticeName(group: PracticeGroup): string {
     const firstPattern = group.patterns[0];
     if (!firstPattern) return 'Unknown Practice';
-    
+
     const commonType = firstPattern.type;
     const effectiveness = (group.effectiveness * 100).toFixed(0);
     return `High-Performance ${commonType} (${effectiveness}% effective)`;
@@ -1477,7 +1489,7 @@ export class KnowledgeEvolution extends EventEmitter {
     const patterns = group.patterns;
     const firstPattern = patterns[0];
     if (!firstPattern) return 'No description available';
-    
+
     const commonContext = firstPattern.context.taskType;
     const avgComplexity =
       patterns.reduce((sum, p) => sum + ((p.context as any).complexity || 0), 0) / patterns.length;
@@ -1584,12 +1596,12 @@ export class KnowledgeEvolution extends EventEmitter {
 
     if (cutoff) {
       knowledgeBase.knowledge.forEach((item) => {
-        if (now - item.lastVerified > cutoff) {
+        if (now - item?.lastVerified > cutoff) {
           outdated.push({
-            itemId: item.id,
-            age: now - item.lastVerified,
-            lastVerified: item.lastVerified,
-            confidence: item.confidence,
+            itemId: item?.id,
+            age: now - item?.lastVerified,
+            lastVerified: item?.lastVerified,
+            confidence: item?.confidence,
             reason: 'Not verified within retention period',
           });
         }
@@ -1603,10 +1615,10 @@ export class KnowledgeEvolution extends EventEmitter {
     const results: ValidationResult[] = [];
 
     knowledgeBase.knowledge.forEach((item) => {
-      const weakEvidence = item.evidence.filter((e) => e.strength < 0.3);
-      if (weakEvidence.length > item.evidence.length / 2) {
+      const weakEvidence = item?.evidence.filter((e) => e.strength < 0.3);
+      if (weakEvidence.length > item?.evidence.length / 2) {
         results.push({
-          itemId: item.id,
+          itemId: item?.id,
           type: 'weak_evidence',
           severity: 'medium',
           description: 'Majority of evidence has low strength',
@@ -1644,7 +1656,7 @@ export class KnowledgeEvolution extends EventEmitter {
     report.outdatedItems.forEach((outdated) => {
       const item = knowledgeBase.knowledge.find((k) => k.id === outdated.itemId);
       if (item && outdated.confidence < 0.3) {
-        item.tags.push('needs_review');
+        item?.tags.push('needs_review');
       }
     });
   }
@@ -1713,12 +1725,12 @@ export class KnowledgeEvolution extends EventEmitter {
     _context: RecommendationContext
   ): string {
     // Determine type of recommendation
-    return item.type === 'best_practice' ? 'practice_suggestion' : 'knowledge_application';
+    return item?.type === 'best_practice' ? 'practice_suggestion' : 'knowledge_application';
   }
 
   private assessApplicability(item: KnowledgeItem, _context: RecommendationContext): number {
     // Assess how applicable the knowledge is to the context
-    return item.confidence * 0.8;
+    return item?.confidence * 0.8;
   }
 
   private generateReasoningExplanation(
@@ -1726,7 +1738,7 @@ export class KnowledgeEvolution extends EventEmitter {
     _context: RecommendationContext
   ): string {
     // Generate explanation for why this knowledge is relevant
-    return `Based on ${item.evidence.length} pieces of evidence with ${(item.confidence * 100).toFixed(1)}% confidence`;
+    return `Based on ${item?.evidence.length} pieces of evidence with ${(item?.confidence * 100).toFixed(1)}% confidence`;
   }
 
   private serializeKnowledge(knowledgeBase: KnowledgeBase, format: string): any {
@@ -1768,20 +1780,20 @@ export class KnowledgeEvolution extends EventEmitter {
     evidence: Evidence
   ): KnowledgeItem[] {
     return knowledgeBase.knowledge.filter((item) =>
-      item.tags.some((tag) => evidence.context.patternType?.includes(tag))
+      item?.tags.some((tag) => evidence.context.patternType?.includes(tag))
     );
   }
 
   private recalculateConfidence(item: KnowledgeItem): number {
     const avgEvidenceStrength =
-      item.evidence.reduce((sum, e) => sum + e.strength, 0) / item.evidence.length;
+      item?.evidence.reduce((sum, e) => sum + e.strength, 0) / item?.evidence.length;
     return Math.min(1, avgEvidenceStrength * 1.1);
   }
 
   private areItemsSimilar(item1: KnowledgeItem, item2: KnowledgeItem): boolean {
     return (
-      item1.type === item2.type &&
-      item1.content.toLowerCase().includes(item2.content.toLowerCase().split(' ')[0])
+      item1?.type === item2?.type &&
+      item1?.content.toLowerCase().includes(item2?.content.toLowerCase().split(' ')[0])
     );
   }
 
@@ -1800,8 +1812,8 @@ export class KnowledgeEvolution extends EventEmitter {
 
   private isEvidenceRelevant(evidence: Evidence, item: KnowledgeItem): boolean {
     return (
-      evidence.context.patternType === item.type ||
-      item.tags.some((tag) => evidence.source.includes(tag))
+      evidence.context.patternType === item?.type ||
+      item?.tags.some((tag) => evidence.source.includes(tag))
     );
   }
 
@@ -1816,7 +1828,7 @@ export class KnowledgeEvolution extends EventEmitter {
     const penalty = negativeEvidence.length * 0.05;
 
     return {
-      confidence: Math.max(0, Math.min(1, item.confidence + boost - penalty)),
+      confidence: Math.max(0, Math.min(1, item?.confidence + boost - penalty)),
     };
   }
 
@@ -1824,13 +1836,13 @@ export class KnowledgeEvolution extends EventEmitter {
     knowledgeBase: KnowledgeBase,
     item: KnowledgeItem
   ): Promise<void> {
-    const existingIndex = knowledgeBase.knowledge.findIndex((k) => k.content === item.content);
+    const existingIndex = knowledgeBase.knowledge.findIndex((k) => k.content === item?.content);
 
     if (existingIndex >= 0) {
       // Update existing
       const existing = knowledgeBase.knowledge[existingIndex];
       if (existing) {
-        existing.evidence.push(...item.evidence);
+        existing.evidence.push(...item?.evidence);
         existing.confidence = this.recalculateConfidence(existing);
         existing.lastVerified = Date.now();
       }

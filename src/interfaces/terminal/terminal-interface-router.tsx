@@ -1,7 +1,12 @@
 #!/usr/bin/env node
+/**
+ * @file Interface implementation: terminal-interface-router
+ */
+
+
 
 /**
- * Terminal Interface Router - Google Standard Entry Point
+ * Terminal Interface Router - Google Standard Entry Point.
  *
  * Routes between different terminal interface modes based on context.
  * Single responsibility: mode detection and component routing.
@@ -24,8 +29,8 @@ export interface TerminalAppProps {
 }
 
 /**
- * Main Terminal App - Routes to command execution or interactive terminal interface
- * Enhanced with Advanced CLI capabilities for AI-powered project management
+ * Main Terminal App - Routes to command execution or interactive terminal interface.
+ * Enhanced with Advanced CLI capabilities for AI-powered project management.
  *
  * @param root0
  * @param root0.commands
@@ -51,7 +56,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
 };
 
 /**
- * Parse command line arguments
+ * Parse command line arguments.
  */
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -83,7 +88,7 @@ function parseArgs() {
 }
 
 /**
- * Handle version flag
+ * Handle version flag.
  */
 async function handleVersion() {
   try {
@@ -97,14 +102,14 @@ async function handleVersion() {
 }
 
 /**
- * Handle help flag
+ * Handle help flag.
  */
 function handleHelp() {
   process.exit(0);
 }
 
 /**
- * Main terminal application entry point
+ * Main terminal application entry point.
  */
 async function main() {
   try {
@@ -155,7 +160,7 @@ async function main() {
 }
 
 /**
- * Error handling
+ * Error handling.
  */
 process.on('uncaughtException', (error) => {
   logger.error('Uncaught Exception:', error);

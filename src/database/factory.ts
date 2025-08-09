@@ -1,5 +1,5 @@
 /**
- * Unified Data Access Layer (DAL) - Factory Implementation
+ * Unified Data Access Layer (DAL) - Factory Implementation.
  *
  * @file Central factory for creating repository and DAO instances based on database type,
  * entity requirements, and configuration. Supports dependency injection, caching,
@@ -102,12 +102,18 @@ interface DatabaseProviderFactory {
   createAdapter(config: DatabaseConfig): Promise<DatabaseAdapter>;
 }
 
-import type { IDataAccessObject } from './interfaces';
+import type { ICoordinationRepository, IMemoryRepository } from '../database/interfaces';
+import type {
+  IDataAccessObject,
+  IGraphRepository,
+  IRepository,
+  IVectorRepository,
+} from './interfaces';
 
 /**
- * Configuration interface for repository and DAO creation
+ * Configuration interface for repository and DAO creation.
  *
- * This interface defines all the configuration options needed to create
+ * This interface defines all the configuration options needed to create.
  * repository or DAO instances. It supports database connection configuration,
  * entity schema definition, and repository-specific customization options.
  *
@@ -174,9 +180,9 @@ export interface RepositoryConfig {
 }
 
 /**
- * Union type for all possible repository implementations
+ * Union type for all possible repository implementations.
  *
- * This type represents the different repository interfaces that can be returned
+ * This type represents the different repository interfaces that can be returned.
  * by the factory based on the database type. Each database type has specialized
  * methods beyond the base repository interface.
  *
@@ -207,7 +213,7 @@ export type RepositoryType<T> =
   | ICoordinationRepository<T>;
 
 /**
- * Entity Type Registry Interface
+ * Entity Type Registry Interface.
  *
  * The registry provides centralized entity schema management, enabling type safety,
  * automatic table creation, index management, and database migration support.
@@ -269,9 +275,9 @@ export interface EntityTypeRegistry {
 }
 
 /**
- * Main Factory Class for Data Access Layer Instance Creation
+ * Main Factory Class for Data Access Layer Instance Creation.
  *
- * The DALFactory is the central component responsible for creating, caching, and managing
+ * The DALFactory is the central component responsible for creating, caching, and managing.
  * all database access layer instances. It handles dependency injection, connection pooling,
  * schema validation, and provides both repository and DAO pattern implementations.
  *
@@ -284,7 +290,7 @@ export interface EntityTypeRegistry {
  * - Transaction and error handling support
  *
  * @class DALFactory
- * @injectable
+ * @injectable.
  * @since 1.0.0
  * @example Basic Factory Setup
  * ```typescript
@@ -341,7 +347,7 @@ export class DALFactory {
   }
 
   /**
-   * Create a Repository Instance for Entity Management
+   * Create a Repository Instance for Entity Management.
    *
    * Creates a repository instance providing low-level database access with entity mapping,
    * query building, and database-specific optimizations. Repositories handle the persistence
@@ -426,7 +432,7 @@ export class DALFactory {
   }
 
   /**
-   * Create a Data Access Object (DAO) Instance with Business Logic
+   * Create a Data Access Object (DAO) Instance with Business Logic.
    *
    * Creates a DAO instance that wraps a repository with additional business logic,
    * validation, caching, and transaction management. DAOs provide a higher-level
@@ -518,7 +524,7 @@ export class DALFactory {
   }
 
   /**
-   * Register Entity Type with Schema and Database Configuration
+   * Register Entity Type with Schema and Database Configuration.
    *
    * Registers an entity type in the factory's entity registry, providing schema definitions,
    * table mapping, indexing strategies, and database type preferences. This enables
@@ -613,7 +619,7 @@ export class DALFactory {
   }
 
   /**
-   * Retrieve Registered Entity Configuration
+   * Retrieve Registered Entity Configuration.
    *
    * Gets the complete configuration for a registered entity type, including schema,
    * table mapping, indexes, and database preferences. Returns undefined if the
@@ -654,9 +660,9 @@ export class DALFactory {
   }
 
   /**
-   * Create Kuzu Graph Database Repository with Optimized Configuration
+   * Create Kuzu Graph Database Repository with Optimized Configuration.
    *
-   * Creates a specialized graph repository for Kuzu database with pre-configured
+   * Creates a specialized graph repository for Kuzu database with pre-configured.
    * settings optimized for graph traversal queries, relationship management,
    * and network analysis operations.
    *
@@ -739,9 +745,9 @@ export class DALFactory {
   }
 
   /**
-   * Create LanceDB Vector Database Repository for Similarity Search
+   * Create LanceDB Vector Database Repository for Similarity Search.
    *
-   * Creates a specialized vector repository for LanceDB with optimized configuration
+   * Creates a specialized vector repository for LanceDB with optimized configuration.
    * for vector similarity search, embedding storage, and high-dimensional data operations.
    * Supports various distance metrics and indexing strategies for performance.
    *
@@ -838,10 +844,10 @@ export class DALFactory {
   }
 
   /**
-   * Create Coordination Repository for Distributed System Operations
+   * Create Coordination Repository for Distributed System Operations.
    *
    * Creates a specialized repository for coordination operations in distributed systems,
-   * including distributed locking, leader election, task scheduling, and inter-service
+   * including distributed locking, leader election, task scheduling, and inter-service.
    * communication. Uses SQLite by default for reliable local coordination.
    *
    * @template T The entity type representing coordination objects
@@ -934,7 +940,7 @@ export class DALFactory {
   }
 
   /**
-   * Create Memory Repository for Caching and Session Management
+   * Create Memory Repository for Caching and Session Management.
    *
    * Creates a specialized in-memory repository optimized for caching, session storage,
    * and temporary data management. Uses SQLite's in-memory mode with configurable
@@ -1035,9 +1041,9 @@ export class DALFactory {
   }
 
   /**
-   * Create Multi-Database DAO for Distributed Data Operations
+   * Create Multi-Database DAO for Distributed Data Operations.
    *
-   * Creates a sophisticated multi-database DAO that can coordinate operations across
+   * Creates a sophisticated multi-database DAO that can coordinate operations across.
    * different database types and instances. The primary database handles writes and
    * authoritative reads, while secondary databases provide read scaling, caching,
    * specialized queries, and data redundancy.
@@ -1159,7 +1165,7 @@ export class DALFactory {
   }
 
   /**
-   * Clear all caches
+   * Clear all caches.
    */
   clearCaches(): void {
     this._logger.info('Clearing DAL factory caches');
@@ -1169,7 +1175,7 @@ export class DALFactory {
   }
 
   /**
-   * Get cache statistics
+   * Get cache statistics.
    */
   getCacheStats(): {
     repositories: number;
@@ -1184,7 +1190,7 @@ export class DALFactory {
   }
 
   /**
-   * Private methods for internal operations
+   * Private methods for internal operations.
    */
 
   private async getOrCreateAdapter(config: RepositoryConfig): Promise<DatabaseAdapter> {
@@ -1206,7 +1212,7 @@ export class DALFactory {
     const adapter = await this.databaseProviderFactory.createAdapter(config?.databaseConfig);
     // TODO: TypeScript error TS2339 - Property 'connect' does not exist on type 'DatabaseAdapter' (AI unsure of safe fix - human review needed)
     // Note: DatabaseAdapter interface may need to include connect method or adapter creation should handle connection
-    
+
     this.adapterCache.set(adapterCacheKey, adapter);
     return adapter;
   }
@@ -1424,7 +1430,7 @@ export class DALFactory {
 }
 
 /**
- * Multi-database DAO that can coordinate operations across multiple data sources
+ * Multi-database DAO that can coordinate operations across multiple data sources.
  *
  * @example
  */

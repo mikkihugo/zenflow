@@ -1,14 +1,21 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-schemas");
 /**
- * Input Validation Schemas for RUV-Swarm MCP Tools
- * Provides comprehensive validation for all 25+ MCP tools
+ * @file Coordination system: schemas
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-schemas');
+
+/**
+ * Input Validation Schemas for RUV-Swarm MCP Tools.
+ * Provides comprehensive validation for all 25+ MCP tools.
  */
 
 import { ValidationError } from './errors';
 
 /**
- * Base validator class
+ * Base validator class.
  *
  * @example
  */
@@ -167,7 +174,7 @@ class BaseValidator {
 }
 
 /**
- * Schema definitions for all MCP tools
+ * Schema definitions for all MCP tools.
  */
 const MCPSchemas = {
   // Core Swarm Management
@@ -741,13 +748,13 @@ const MCPSchemas = {
 };
 
 /**
- * Validation utilities
+ * Validation utilities.
  *
  * @example
  */
 class ValidationUtils {
   /**
-   * Validate parameters against a schema
+   * Validate parameters against a schema.
    *
    * @param params
    * @param toolName
@@ -773,7 +780,7 @@ class ValidationUtils {
     // Validate each parameter
     for (const [fieldName, fieldSchema] of Object.entries(schema)) {
       try {
-        const value = params[fieldName];
+        const value = params?.[fieldName];
         validatedParams[fieldName] = BaseValidator.validate(value, fieldSchema, fieldName);
       } catch (error) {
         // Add tool context to error
@@ -799,7 +806,7 @@ class ValidationUtils {
   }
 
   /**
-   * Get schema documentation for a tool
+   * Get schema documentation for a tool.
    *
    * @param toolName
    */
@@ -844,7 +851,7 @@ class ValidationUtils {
   }
 
   /**
-   * Generate human-readable description for a field
+   * Generate human-readable description for a field.
    *
    * @param fieldName
    * @param schema
@@ -877,14 +884,14 @@ class ValidationUtils {
   }
 
   /**
-   * Get all available tool schemas
+   * Get all available tool schemas.
    */
   static getAllSchemas() {
     return Object.keys(MCPSchemas);
   }
 
   /**
-   * Validate a UUID string
+   * Validate a UUID string.
    *
    * @param str
    */
@@ -894,7 +901,7 @@ class ValidationUtils {
   }
 
   /**
-   * Sanitize input to prevent injection attacks
+   * Sanitize input to prevent injection attacks.
    *
    * @param input
    */
@@ -908,7 +915,7 @@ class ValidationUtils {
 }
 
 /**
- * Export validation schemas and utilities
+ * Export validation schemas and utilities.
  */
 export { MCPSchemas, BaseValidator, ValidationUtils };
 

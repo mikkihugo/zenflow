@@ -1,14 +1,19 @@
 /**
- * Unified API Client Layer (UACL) - Factory Implementation
+ * Unified API Client Layer (UACL) - Factory Implementation.
  *
  * Central factory for creating client instances based on client type,
  * protocol requirements, and configuration. Supports dependency injection and
  * provides a single point of access for all client implementations.
  */
+/**
+ * @file Interface implementation: factories
+ */
 
-import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
-import { inject, injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS } from '../../di/tokens/core-tokens';
+
+
+import type { IConfig, ILogger } from '../core/interfaces/base-interfaces';
+import { inject, injectable } from '../di/decorators/injectable';
+import { CORE_TOKENS } from '../di/tokens/core-tokens';
 import type {
   ClientConfig,
   ClientHealthStatus,
@@ -32,7 +37,7 @@ import {
 } from './types';
 
 /**
- * Configuration for client creation
+ * Configuration for client creation.
  *
  * @example
  */
@@ -62,7 +67,7 @@ export interface ClientFactoryConfig {
 }
 
 /**
- * Client type mapping for better type safety
+ * Client type mapping for better type safety.
  */
 export type ClientTypeMap<T> =
   | IClient<T>
@@ -72,7 +77,7 @@ export type ClientTypeMap<T> =
   | IMcpClient<T>;
 
 /**
- * Client registry for managing client instances
+ * Client registry for managing client instances.
  *
  * @example
  */
@@ -88,7 +93,7 @@ export interface ClientRegistry {
 }
 
 /**
- * Main factory class for creating UACL client instances
+ * Main factory class for creating UACL client instances.
  *
  * @example
  */
@@ -107,7 +112,7 @@ export class UACLFactory {
   }
 
   /**
-   * Create a client instance
+   * Create a client instance.
    *
    * @param factoryConfig
    */
@@ -153,7 +158,7 @@ export class UACLFactory {
   }
 
   /**
-   * Create HTTP client with convenience methods
+   * Create HTTP client with convenience methods.
    *
    * @param url
    * @param config
@@ -173,7 +178,7 @@ export class UACLFactory {
   }
 
   /**
-   * Create WebSocket client with real-time capabilities
+   * Create WebSocket client with real-time capabilities.
    *
    * @param url
    * @param config
@@ -193,7 +198,7 @@ export class UACLFactory {
   }
 
   /**
-   * Create Knowledge client for FACT integration
+   * Create Knowledge client for FACT integration.
    *
    * @param url
    * @param config
@@ -211,7 +216,7 @@ export class UACLFactory {
   }
 
   /**
-   * Create MCP client for Model Context Protocol
+   * Create MCP client for Model Context Protocol.
    *
    * @param url
    * @param config
@@ -239,7 +244,7 @@ export class UACLFactory {
   }
 
   /**
-   * Create generic client for custom protocols
+   * Create generic client for custom protocols.
    *
    * @param protocol
    * @param url
@@ -259,7 +264,7 @@ export class UACLFactory {
   }
 
   /**
-   * Get client by ID from registry
+   * Get client by ID from registry.
    *
    * @param clientId
    */
@@ -268,14 +273,14 @@ export class UACLFactory {
   }
 
   /**
-   * List all registered clients
+   * List all registered clients.
    */
   listClients(): ClientRegistry {
     return { ...this.clientRegistry };
   }
 
   /**
-   * Health check for all clients
+   * Health check for all clients.
    */
   async healthCheckAll(): Promise<ClientHealthStatus[]> {
     const results: ClientHealthStatus[] = [];
@@ -314,7 +319,7 @@ export class UACLFactory {
   }
 
   /**
-   * Execute transaction across multiple clients
+   * Execute transaction across multiple clients.
    *
    * @param operations
    */
@@ -345,12 +350,12 @@ export class UACLFactory {
       // Update operation results
       operations.forEach((op, index) => {
         const result = results[index];
-        if (result.status === 'fulfilled') {
-          op.result = result.value;
+        if (result?.status === 'fulfilled') {
+          op.result = result?.value;
         } else {
           op.error = {
             name: 'ClientError',
-            message: result.reason.message || 'Unknown error',
+            message: result?.reason?.message || 'Unknown error',
             code: ClientErrorCodes.UNKNOWN_ERROR,
             protocol: 'unknown' as ProtocolType,
           };
@@ -376,7 +381,7 @@ export class UACLFactory {
   }
 
   /**
-   * Disconnect and clean up all clients
+   * Disconnect and clean up all clients.
    */
   async disconnectAll(): Promise<void> {
     this.logger.info('Disconnecting all clients');
@@ -399,7 +404,7 @@ export class UACLFactory {
   }
 
   /**
-   * Get factory statistics
+   * Get factory statistics.
    */
   getStats(): {
     totalClients: number;
@@ -441,7 +446,7 @@ export class UACLFactory {
   }
 
   /**
-   * Private methods for internal operations
+   * Private methods for internal operations.
    */
 
   private async initializeFactories(): Promise<void> {
@@ -528,7 +533,8 @@ export class UACLFactory {
     url: string,
     config?: Partial<ClientConfig>
   ): ClientConfig {
-    const defaults = DefaultClientConfigs[clientType] || DefaultClientConfigs[ClientTypes.GENERIC];
+    const defaults =
+      DefaultClientConfigs?.[clientType] || DefaultClientConfigs?.[ClientTypes.GENERIC];
 
     return {
       ...defaults,
@@ -579,7 +585,7 @@ export class UACLFactory {
   }
 
   private generateClientId(config: ClientConfig): string {
-    return `${config.protocol}:${config.url}:${Date.now()}`;
+    return `${config?.protocol}:${config?.url}:${Date.now()}`;
   }
 
   private generateTransactionId(): string {
@@ -587,12 +593,12 @@ export class UACLFactory {
   }
 
   private getClientTypeFromConfig(config: ClientConfig): ClientType | null {
-    return ProtocolToClientTypeMap[config.protocol] || null;
+    return ProtocolToClientTypeMap[config?.protocol] || null;
   }
 }
 
 /**
- * Multi-client coordinator for handling operations across different client types
+ * Multi-client coordinator for handling operations across different client types.
  *
  * @example
  */
@@ -603,7 +609,7 @@ export class MultiClientCoordinator {
   ) {}
 
   /**
-   * Execute operation on multiple clients with different protocols
+   * Execute operation on multiple clients with different protocols.
    *
    * @param clients
    * @param operation
@@ -623,10 +629,10 @@ export class MultiClientCoordinator {
     const clientInstances = await Promise.all(
       clients.map((clientConfig) =>
         this.factory.createClient({
-          clientType: clientConfig.type,
-          protocol: clientConfig.protocol,
-          url: clientConfig.url,
-          config: clientConfig.config,
+          clientType: clientConfig?.type,
+          protocol: clientConfig?.protocol,
+          url: clientConfig?.url,
+          config: clientConfig?.config,
         })
       )
     );
@@ -639,10 +645,10 @@ export class MultiClientCoordinator {
     const errors: Error[] = [];
 
     results.forEach((result, index) => {
-      if (result.status === 'fulfilled') {
-        successfulResults.push(result.value);
+      if (result?.status === 'fulfilled') {
+        successfulResults.push(result?.value);
       } else {
-        errors.push(new Error(`Client ${index} failed: ${result.reason}`));
+        errors.push(new Error(`Client ${index} failed: ${result?.reason}`));
       }
     });
 
@@ -654,7 +660,7 @@ export class MultiClientCoordinator {
   }
 
   /**
-   * Create load-balanced client setup
+   * Create load-balanced client setup.
    *
    * @param clientConfigs
    * @param strategy
@@ -670,15 +676,15 @@ export class MultiClientCoordinator {
     strategy: 'round-robin' | 'weighted' | 'random' = 'round-robin'
   ): Promise<LoadBalancedClient<T>> {
     const clients = await Promise.all(
-      clientConfigs.map(async (config) => ({
+      clientConfigs?.map(async (config) => ({
         client: await this.factory.createClient<T>({
-          clientType: config.type,
-          protocol: config.protocol,
-          url: config.url,
-          config: config.config,
+          clientType: config?.type,
+          protocol: config?.protocol,
+          url: config?.url,
+          config: config?.config,
         }),
-        weight: config.weight || 1,
-        url: config.url,
+        weight: config?.weight || 1,
+        url: config?.url,
       }))
     );
 
@@ -687,7 +693,7 @@ export class MultiClientCoordinator {
 }
 
 /**
- * Load-balanced client wrapper
+ * Load-balanced client wrapper.
  *
  * @example
  */
@@ -746,7 +752,7 @@ export class LoadBalancedClient<T = any> implements IClient<T> {
 
       case 'random': {
         const randomIndex = Math.floor(Math.random() * this.clients.length);
-        return this.clients[randomIndex].client;
+        return this.clients[randomIndex]?.client;
       }
 
       case 'weighted': {
@@ -761,11 +767,11 @@ export class LoadBalancedClient<T = any> implements IClient<T> {
           }
         }
 
-        return this.clients[0].client; // Fallback
+        return this.clients[0]?.client; // Fallback
       }
 
       default:
-        return this.clients[0].client;
+        return this.clients[0]?.client;
     }
   }
 }
@@ -773,7 +779,7 @@ export class LoadBalancedClient<T = any> implements IClient<T> {
 // Convenience factory functions (following DAL pattern)
 
 /**
- * Create a simple client for quick setup
+ * Create a simple client for quick setup.
  *
  * @param clientType
  * @param protocol
@@ -814,7 +820,7 @@ export async function createClient<T = any>(
 }
 
 /**
- * Create HTTP client with convenience
+ * Create HTTP client with convenience.
  *
  * @param url
  * @param config
@@ -828,7 +834,7 @@ export async function createHttpClient<T = any>(
 }
 
 /**
- * Create WebSocket client with convenience
+ * Create WebSocket client with convenience.
  *
  * @param url
  * @param config
@@ -847,7 +853,7 @@ export async function createWebSocketClient<T = any>(
 }
 
 /**
- * Create MCP client with convenience
+ * Create MCP client with convenience.
  *
  * @param url
  * @param config

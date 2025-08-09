@@ -1,7 +1,12 @@
 /**
- * Scoped dependency injection container implementation
- * Provides hierarchical scoping for service lifetimes
+ * Scoped dependency injection container implementation.
+ * Provides hierarchical scoping for service lifetimes.
  */
+/**
+ * @file di-scope implementation
+ */
+
+
 
 import type { DIContainer, DIToken, DIScope as IDIScope, Provider } from '../types/di-types';
 
@@ -13,7 +18,7 @@ export class DIScope implements IDIScope {
   constructor(public readonly parent: DIContainer) {}
 
   /**
-   * Register a service provider in this scope
+   * Register a service provider in this scope.
    *
    * @param token
    * @param provider
@@ -23,7 +28,7 @@ export class DIScope implements IDIScope {
   }
 
   /**
-   * Resolve a service, checking scope hierarchy
+   * Resolve a service, checking scope hierarchy.
    *
    * @param token
    */
@@ -39,7 +44,7 @@ export class DIScope implements IDIScope {
   }
 
   /**
-   * Create a child scope
+   * Create a child scope.
    */
   createScope(): IDIScope {
     const child = new DIScope(this);
@@ -55,7 +60,7 @@ export class DIScope implements IDIScope {
   }
 
   /**
-   * Dispose scope and all child scopes
+   * Dispose scope and all child scopes.
    */
   async dispose(): Promise<void> {
     const disposalPromises: Promise<void>[] = [];
@@ -70,7 +75,7 @@ export class DIScope implements IDIScope {
 
     // Dispose all child scopes
     for (const child of this.children) {
-      disposalPromises.push(child.dispose());
+      disposalPromises.push(child?.dispose());
     }
 
     await Promise.all(disposalPromises);
@@ -81,7 +86,7 @@ export class DIScope implements IDIScope {
   }
 
   /**
-   * Check if a service is registered in this scope
+   * Check if a service is registered in this scope.
    *
    * @param token
    */
@@ -90,7 +95,7 @@ export class DIScope implements IDIScope {
   }
 
   /**
-   * Resolve a scoped service with instance caching
+   * Resolve a scoped service with instance caching.
    *
    * @param token
    * @param provider

@@ -1,12 +1,17 @@
 /**
- * API Route Handler - RESTful API endpoints
+ * API Route Handler - RESTful API endpoints.
  *
  * Handles all REST API routes for the web dashboard including system status,
  * swarm management, task operations, and command execution.
  */
+/**
+ * @file Interface implementation: api-route-handler
+ */
+
+
 
 import type { Express, Request, Response } from 'express';
-import { createLogger } from '../../utils/logger';
+import { createLogger } from '../utils/logger';
 import type { WebSocketCoordinator } from './web-socket-coordinator';
 
 export interface ApiConfig {
@@ -33,7 +38,7 @@ export interface SystemStatus {
 }
 
 /**
- * Handles RESTful API routes for web interface
+ * Handles RESTful API routes for web interface.
  *
  * @example
  */
@@ -49,7 +54,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Setup all API routes
+   * Setup all API routes.
    */
   private setupRoutes(): void {
     const api = this.config.prefix;
@@ -82,7 +87,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Health check handler
+   * Health check handler.
    *
    * @param _req
    * @param res
@@ -97,7 +102,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * System status handler
+   * System status handler.
    *
    * @param _req
    * @param res
@@ -113,7 +118,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Get swarms handler
+   * Get swarms handler.
    *
    * @param _req
    * @param res
@@ -129,7 +134,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Create swarm handler
+   * Create swarm handler.
    *
    * @param req
    * @param res
@@ -146,7 +151,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Get tasks handler
+   * Get tasks handler.
    *
    * @param _req
    * @param res
@@ -162,7 +167,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Create task handler
+   * Create task handler.
    *
    * @param req
    * @param res
@@ -179,7 +184,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Get documents handler
+   * Get documents handler.
    *
    * @param _req
    * @param res
@@ -195,7 +200,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Execute command handler
+   * Execute command handler.
    *
    * @param req
    * @param res
@@ -217,7 +222,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Get settings handler
+   * Get settings handler.
    *
    * @param req
    * @param res
@@ -234,7 +239,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Update settings handler
+   * Update settings handler.
    *
    * @param req
    * @param res
@@ -251,7 +256,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Get comprehensive system status
+   * Get comprehensive system status.
    */
   private async getSystemStatus(): Promise<SystemStatus> {
     return {
@@ -274,7 +279,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Get available swarms
+   * Get available swarms.
    */
   private async getSwarms(): Promise<any[]> {
     return [
@@ -300,17 +305,17 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Create a new swarm
+   * Create a new swarm.
    *
    * @param config
    */
   private async createSwarm(config: any): Promise<any> {
     const swarm = {
       id: `swarm-${Date.now()}`,
-      name: config.name || 'New Swarm',
+      name: config?.name || 'New Swarm',
       status: 'active',
-      agents: config.agents || 4,
-      topology: config.topology || 'mesh',
+      agents: config?.agents || 4,
+      topology: config?.topology || 'mesh',
       uptime: 0,
       created: new Date().toISOString(),
     };
@@ -320,7 +325,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Get available tasks
+   * Get available tasks.
    */
   private async getTasks(): Promise<any[]> {
     return [
@@ -348,18 +353,18 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Create a new task
+   * Create a new task.
    *
    * @param config
    */
   private async createTask(config: any): Promise<any> {
     const task = {
       id: `task-${Date.now()}`,
-      description: config.description || 'New Task',
+      description: config?.description || 'New Task',
       status: 'pending',
       progress: 0,
-      assignedAgents: config.assignedAgents || [],
-      priority: config.priority || 'medium',
+      assignedAgents: config?.assignedAgents || [],
+      priority: config?.priority || 'medium',
       created: new Date().toISOString(),
     };
 
@@ -368,7 +373,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Get available documents
+   * Get available documents.
    */
   private async getDocuments(): Promise<any[]> {
     return [
@@ -392,7 +397,7 @@ export class ApiRouteHandler {
   }
 
   /**
-   * Execute a command
+   * Execute a command.
    *
    * @param command
    * @param args

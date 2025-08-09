@@ -1,7 +1,12 @@
 /**
  * DAA Cognition (Decision, Action, Adaptation)
- * Cognitive decision-making system with adaptive learning
+ * Cognitive decision-making system with adaptive learning.
  */
+/**
+ * @file Neural network: daa-cognition
+ */
+
+
 
 interface DAACognitionOptions {
   adaptationRate?: number;
@@ -53,7 +58,7 @@ export class DAACognition {
   }
 
   /**
-   * Make a cognitive decision based on input data
+   * Make a cognitive decision based on input data.
    *
    * @param context
    * @param options
@@ -85,7 +90,7 @@ export class DAACognition {
   }
 
   /**
-   * Execute an action based on decision
+   * Execute an action based on decision.
    *
    * @param decisionId
    * @param actionType
@@ -115,7 +120,7 @@ export class DAACognition {
   }
 
   /**
-   * Adapt based on feedback
+   * Adapt based on feedback.
    *
    * @param feedback
    */
@@ -137,7 +142,7 @@ export class DAACognition {
   }
 
   /**
-   * Get decision history
+   * Get decision history.
    *
    * @param limit
    */
@@ -146,7 +151,7 @@ export class DAACognition {
   }
 
   /**
-   * Get cognitive metrics
+   * Get cognitive metrics.
    */
   getMetrics() {
     return {

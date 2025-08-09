@@ -1,7 +1,7 @@
 /**
  * SPARC-Enabled Swarm Coordinator.
  *
- * Integrates SPARC methodology into swarm coordination for implementing
+ * Integrates SPARC methodology into swarm coordination for implementing.
  * Features and Tasks from the database-driven product flow.
  *
  * Architecture:
@@ -10,13 +10,18 @@
  * 3. Coordinates agents to implement each SPARC phase
  * 4. Returns completed implementation artifacts.
  */
+/**
+ * @file sparc-swarm coordination system
+ */
 
-import { createLogger } from '../../../core/logger';
+
+
+import { createLogger } from '../core/logger';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
-} from '../../../database/entities/product-entities';
-import type { AgentType } from '../../../types/agent-types';
+} from '../database/entities/product-entities';
+import type { AgentType } from '../types/agent-types';
 import type { SPARCPhase } from '../sparc/types/sparc-types';
 import { type SwarmAgent, SwarmCoordinator, type SwarmMetrics } from './swarm-coordinator';
 
@@ -73,7 +78,7 @@ export interface SPARCSwarmMetrics extends SwarmMetrics {
 /**
  * SPARC-Enhanced Swarm Coordinator.
  *
- * Coordinates swarm agents using SPARC methodology for implementing
+ * Coordinates swarm agents using SPARC methodology for implementing.
  * database-driven Features and Tasks.
  *
  * @example
@@ -214,12 +219,12 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   private async executeSPARCPhase(sparcTask: SPARCTask, phase: SPARCPhase): Promise<void> {
     const phaseResult = sparcTask.phaseProgress[phase];
     phaseResult.status = 'in_progress';
-    phaseResult.metrics.startTime = new Date();
+    phaseResult?.metrics.startTime = new Date();
 
     // Select specialized agents for this phase
     const phaseAgents = this.selectPhaseAgents(phase, sparcTask);
     sparcTask.assignedAgents[phase] = phaseAgents.map((agent) => agent.id);
-    phaseResult.metrics.agentsInvolved = phaseAgents.map((agent) => agent.id);
+    phaseResult?.metrics.agentsInvolved = phaseAgents.map((agent) => agent.id);
 
     // Execute phase based on type
     switch (phase) {
@@ -241,8 +246,8 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
     }
 
     phaseResult.status = 'completed';
-    phaseResult.metrics.endTime = new Date();
-    phaseResult.metrics.iterationsCount = 1; // Could be higher if retries were needed
+    phaseResult?.metrics.endTime = new Date();
+    phaseResult?.metrics.iterationsCount = 1; // Could be higher if retries were needed
   }
 
   /**
@@ -454,9 +459,9 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
     const phaseResult = sparcTask.phaseProgress[phase];
 
     // Basic validation criteria
-    const hasArtifacts = phaseResult.artifacts.length > 0;
-    const hasAgents = phaseResult.metrics.agentsInvolved.length > 0;
-    const hasTimestamps = phaseResult.metrics.startTime && phaseResult.metrics.endTime;
+    const hasArtifacts = phaseResult?.artifacts.length > 0;
+    const hasAgents = phaseResult?.metrics?.agentsInvolved.length > 0;
+    const hasTimestamps = phaseResult?.metrics?.startTime && phaseResult?.metrics?.endTime;
 
     const validationChecks = [hasArtifacts, hasAgents, hasTimestamps];
     const score = validationChecks.filter(Boolean).length / validationChecks.length;
@@ -472,7 +477,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
       feedback,
     };
 
-    return phaseResult.validation;
+    return phaseResult?.validation;
   }
 
   /**
@@ -486,7 +491,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
     // Reset phase status
     sparcTask.phaseProgress[phase].status = 'not_started';
-    sparcTask.phaseProgress[phase].metrics.iterationsCount++;
+    sparcTask.phaseProgress[phase]?.metrics.iterationsCount++;
 
     // Execute phase again with different agents if possible
     await this.executeSPARCPhase(sparcTask, phase);

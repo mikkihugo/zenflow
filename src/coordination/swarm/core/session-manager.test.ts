@@ -1,9 +1,23 @@
 /**
  * Comprehensive test suite for Session Management System.
  */
+/**
+ * @file Test suite for session-manager
+ */
+
+
 
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import type { SessionCoordinationDao, SessionEntity, CoordinationLock, CoordinationChange, CoordinationEvent, CoordinationStats, QueryOptions, CustomQuery } from '../../../database';
+import type {
+  CoordinationChange,
+  CoordinationEvent,
+  CoordinationLock,
+  CoordinationStats,
+  CustomQuery,
+  QueryOptions,
+  SessionCoordinationDao,
+  SessionEntity,
+} from '../database';
 import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
 import { SessionManager, type SessionState } from './session-manager';
 import { SessionSerializer, SessionStats, SessionValidator } from './session-utils';
@@ -15,21 +29,37 @@ class MockCoordinationDao implements SessionCoordinationDao {
 
   // Jest spies for interaction testing (TDD London approach) - properly typed
   query: jest.MockedFunction<(sql: string, params?: unknown[]) => Promise<any[]>> = jest.fn();
-  execute: jest.MockedFunction<(sql: string, params?: unknown[]) => Promise<{ affectedRows?: number; insertId?: number }>> = jest.fn();
+  execute: jest.MockedFunction<
+    (sql: string, params?: unknown[]) => Promise<{ affectedRows?: number; insertId?: number }>
+  > = jest.fn();
   findById: jest.MockedFunction<(id: string | number) => Promise<SessionEntity | null>> = jest.fn();
-  findBy: jest.MockedFunction<(criteria: Partial<SessionEntity>, options?: QueryOptions) => Promise<SessionEntity[]>> = jest.fn();
+  findBy: jest.MockedFunction<
+    (criteria: Partial<SessionEntity>, options?: QueryOptions) => Promise<SessionEntity[]>
+  > = jest.fn();
   findAll: jest.MockedFunction<(options?: QueryOptions) => Promise<SessionEntity[]>> = jest.fn();
-  create: jest.MockedFunction<(entity: Omit<SessionEntity, 'id'>) => Promise<SessionEntity>> = jest.fn();
-  update: jest.MockedFunction<(id: string | number, updates: Partial<SessionEntity>) => Promise<SessionEntity>> = jest.fn();
+  create: jest.MockedFunction<(entity: Omit<SessionEntity, 'id'>) => Promise<SessionEntity>> =
+    jest.fn();
+  update: jest.MockedFunction<
+    (id: string | number, updates: Partial<SessionEntity>) => Promise<SessionEntity>
+  > = jest.fn();
   delete: jest.MockedFunction<(id: string | number) => Promise<boolean>> = jest.fn();
   count: jest.MockedFunction<(criteria?: Partial<SessionEntity>) => Promise<number>> = jest.fn();
   exists: jest.MockedFunction<(id: string | number) => Promise<boolean>> = jest.fn();
   executeCustomQuery: jest.MockedFunction<(query: CustomQuery) => Promise<any>> = jest.fn();
-  acquireLock: jest.MockedFunction<(resourceId: string, lockTimeout?: number) => Promise<CoordinationLock>> = jest.fn();
+  acquireLock: jest.MockedFunction<
+    (resourceId: string, lockTimeout?: number) => Promise<CoordinationLock>
+  > = jest.fn();
   releaseLock: jest.MockedFunction<(lockId: string) => Promise<void>> = jest.fn();
-  subscribe: jest.MockedFunction<(pattern: string, callback: (change: CoordinationChange<SessionEntity>) => void) => Promise<string>> = jest.fn();
+  subscribe: jest.MockedFunction<
+    (
+      pattern: string,
+      callback: (change: CoordinationChange<SessionEntity>) => void
+    ) => Promise<string>
+  > = jest.fn();
   unsubscribe: jest.MockedFunction<(subscriptionId: string) => Promise<void>> = jest.fn();
-  publish: jest.MockedFunction<(channel: string, event: CoordinationEvent<SessionEntity>) => Promise<void>> = jest.fn();
+  publish: jest.MockedFunction<
+    (channel: string, event: CoordinationEvent<SessionEntity>) => Promise<void>
+  > = jest.fn();
   getCoordinationStats: jest.MockedFunction<() => Promise<CoordinationStats>> = jest.fn();
 
   constructor() {
@@ -50,7 +80,7 @@ class MockCoordinationDao implements SessionCoordinationDao {
       resourceId: 'test-resource',
       acquired: new Date(), // Fixed: 'acquired' not 'acquiredAt'
       expiresAt: new Date(Date.now() + 30000),
-      owner: 'test'
+      owner: 'test',
     });
     this.releaseLock.mockResolvedValue(undefined);
     this.subscribe.mockResolvedValue('mock-subscription-id');
@@ -61,7 +91,7 @@ class MockCoordinationDao implements SessionCoordinationDao {
       activeSubscriptions: 0,
       messagesPublished: 0,
       messagesReceived: 0,
-      uptime: 0
+      uptime: 0,
     });
   }
 
@@ -73,7 +103,7 @@ class MockCoordinationDao implements SessionCoordinationDao {
       status: 'active',
       createdAt: new Date(),
       lastAccessedAt: new Date(),
-      ...sessionData
+      ...sessionData,
     } as SessionEntity);
     this.exists.mockResolvedValueOnce(true);
   }
@@ -156,10 +186,10 @@ describe('SessionManager', () => {
   describe('Session Lifecycle', () => {
     test('should create a new session - London TDD: verify DAO interactions', async () => {
       // ARRANGE: Setup mock return value
-      persistence.create.mockResolvedValueOnce({ 
-        id: 'session_123', 
+      persistence.create.mockResolvedValueOnce({
+        id: 'session_123',
         name: 'Test Session',
-        status: 'active'
+        status: 'active',
       } as SessionEntity);
 
       // ACT: Create session
@@ -172,7 +202,7 @@ describe('SessionManager', () => {
       // ASSERT: Verify interactions (London TDD)
       persistence.expectCreateCalled({
         name: 'Test Session',
-        status: 'active'
+        status: 'active',
       });
       expect(sessionId).toBe('session_123');
     });
@@ -182,7 +212,7 @@ describe('SessionManager', () => {
       const testSessionId = 'session_456';
       persistence.setupSessionExists(testSessionId, {
         name: 'Test Session',
-        status: 'active'
+        status: 'active',
       });
 
       // ACT: Load session
@@ -198,7 +228,7 @@ describe('SessionManager', () => {
       // ARRANGE: Setup session exists
       const sessionId = 'session_save_test';
       persistence.setupSessionExists(sessionId);
-      
+
       const updatedState = {
         ...mockSwarmState,
         metrics: {
@@ -216,7 +246,7 @@ describe('SessionManager', () => {
       persistence.expectUpdateCalled(sessionId, {
         // Note: swarmState is part of SessionState but not SessionEntity
         // Using available properties for test verification
-        lastAccessedAt: expect.any(Date) as any
+        lastAccessedAt: expect.any(Date) as any,
       });
     });
 
@@ -269,13 +299,13 @@ describe('SessionManager', () => {
       // ARRANGE: Setup session exists and mock lock
       const sessionId = 'session_checkpoint_test';
       persistence.setupSessionExists(sessionId);
-      
+
       persistence.acquireLock.mockResolvedValueOnce({
         id: 'checkpoint_lock_123',
         resourceId: sessionId,
         acquired: new Date(),
         expiresAt: new Date(Date.now() + 30000),
-        owner: 'session_manager'
+        owner: 'session_manager',
       });
 
       // ACT: Create checkpoint
@@ -284,10 +314,11 @@ describe('SessionManager', () => {
       // ASSERT: Verify coordination interactions (London TDD)
       persistence.expectLockAcquired(`session:${sessionId}`, undefined);
       expect(persistence.releaseLock).toHaveBeenCalledWith('checkpoint_lock_123');
-      persistence.expectExecuteCalled(
-        'INSERT INTO session_checkpoints',
-        [expect.any(String), sessionId, 'Test checkpoint']
-      );
+      persistence.expectExecuteCalled('INSERT INTO session_checkpoints', [
+        expect.any(String),
+        sessionId,
+        'Test checkpoint',
+      ]);
       expect(checkpointId).toBeDefined();
     });
 
@@ -477,8 +508,8 @@ describe('SessionValidator', () => {
 
   test('should validate valid session state', () => {
     const result = SessionValidator.validateSessionState(validSession);
-    expect(result.valid).toBe(true);
-    expect(result.errors).toHaveLength(0);
+    expect(result?.valid).toBe(true);
+    expect(result?.errors).toHaveLength(0);
   });
 
   test('should detect invalid session state', () => {
@@ -489,8 +520,8 @@ describe('SessionValidator', () => {
     } as any;
 
     const result = SessionValidator.validateSessionState(invalidSession);
-    expect(result.valid).toBe(false);
-    expect(result.errors.length).toBeGreaterThan(0);
+    expect(result?.valid).toBe(false);
+    expect(result?.errors.length).toBeGreaterThan(0);
   });
 });
 
@@ -604,11 +635,11 @@ describe('SessionStats', () => {
     expect(summary).toHaveProperty('checkpoints');
     expect(summary).toHaveProperty('performance');
 
-    expect(summary['agents']['total']).toBe(1);
-    expect(summary['tasks']['total']).toBe(10);
-    expect(summary['tasks']['completed']).toBe(8);
-    expect(summary['tasks']['successRate']).toBe(0.8);
-    expect(summary['checkpoints']['total']).toBe(1);
+    expect(summary['agents']?.['total']).toBe(1);
+    expect(summary['tasks']?.['total']).toBe(10);
+    expect(summary['tasks']?.['completed']).toBe(8);
+    expect(summary['tasks']?.['successRate']).toBe(0.8);
+    expect(summary['checkpoints']?.['total']).toBe(1);
   });
 });
 

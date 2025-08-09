@@ -1,12 +1,17 @@
 /**
- * Web API Routes - RESTful API endpoint definitions
+ * Web API Routes - RESTful API endpoint definitions.
  *
  * Centralized API route definitions for the web dashboard.
  * Handles all HTTP API endpoints with proper error handling.
  */
+/**
+ * @file Interface implementation: web-api-routes
+ */
+
+
 
 import type { Express, Request, Response } from 'express';
-import { createLogger } from '../../utils/logger';
+import { createLogger } from '../utils/logger';
 import type { WebConfig } from './web-config';
 import type { WebDataService } from './web-data-service';
 import type { WebSessionManager } from './web-session-manager';
@@ -24,7 +29,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Setup all API routes
+   * Setup all API routes.
    *
    * @param app
    */
@@ -59,7 +64,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Health check endpoint
+   * Health check endpoint.
    *
    * @param _req
    * @param res
@@ -74,7 +79,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * System status endpoint
+   * System status endpoint.
    *
    * @param _req
    * @param res
@@ -90,7 +95,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Get swarms endpoint
+   * Get swarms endpoint.
    *
    * @param _req
    * @param res
@@ -106,7 +111,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Create swarm endpoint
+   * Create swarm endpoint.
    *
    * @param req
    * @param res
@@ -123,7 +128,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Get tasks endpoint
+   * Get tasks endpoint.
    *
    * @param _req
    * @param res
@@ -139,7 +144,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Create task endpoint
+   * Create task endpoint.
    *
    * @param req
    * @param res
@@ -156,7 +161,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Get documents endpoint
+   * Get documents endpoint.
    *
    * @param _req
    * @param res
@@ -172,7 +177,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Execute command endpoint
+   * Execute command endpoint.
    *
    * @param req
    * @param res
@@ -190,7 +195,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Get settings endpoint
+   * Get settings endpoint.
    *
    * @param req
    * @param res
@@ -207,7 +212,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Update settings endpoint
+   * Update settings endpoint.
    *
    * @param req
    * @param res

@@ -1,5 +1,5 @@
 /**
- * UEL (Unified Event Layer) - Event Manager System
+ * UEL (Unified Event Layer) - Event Manager System.
  *
  * Comprehensive event manager for lifecycle management, factory registration,
  * and coordinated event processing across all UEL components.
@@ -7,9 +7,9 @@
  * @file Event Manager Implementation following UACL/USL patterns
  */
 
-import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
-import { inject, injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS } from '../../di/tokens/core-tokens';
+import type { IConfig, ILogger } from '../core/interfaces/base-interfaces';
+import { inject, injectable } from '../di/decorators/injectable';
+import { CORE_TOKENS } from '../di/tokens/core-tokens';
 import type {
   EventManagerConfig,
   EventManagerStatus,
@@ -34,7 +34,7 @@ import { EventRegistry } from './registry';
 import { DefaultEventManagerConfigs, EventCategories } from './types';
 
 /**
- * Configuration options for creating new event managers
+ * Configuration options for creating new event managers.
  *
  * @interface EventManagerCreationOptions
  * @example
@@ -95,7 +95,7 @@ export interface EventManagerCreationOptions {
 }
 
 /**
- * Connection management for event manager integration
+ * Connection management for event manager integration.
  *
  * @example
  */
@@ -117,7 +117,7 @@ export interface ConnectionManager {
 }
 
 /**
- * Event manager coordination settings
+ * Event manager coordination settings.
  *
  * @example
  */
@@ -144,7 +144,7 @@ export interface CoordinationSettings {
 }
 
 /**
- * Manager statistics and metrics
+ * Manager statistics and metrics.
  *
  * @example
  */
@@ -178,7 +178,7 @@ export interface ManagerStatistics {
 }
 
 /**
- * Main event manager class for comprehensive UEL management
+ * Main event manager class for comprehensive UEL management.
  *
  * Provides centralized management of event managers, factories, and coordination.
  * Handles lifecycle management, health monitoring, and recovery operations.
@@ -262,7 +262,7 @@ export class EventManager {
   }
 
   /**
-   * Initialize the event manager system
+   * Initialize the event manager system.
    *
    * Sets up the registry, registers default factories, and starts health monitoring.
    *
@@ -301,11 +301,11 @@ export class EventManager {
 
     // Apply configuration overrides
     if (options?.coordination) {
-      this.coordinationSettings = { ...this.coordinationSettings, ...options.coordination };
+      this.coordinationSettings = { ...this.coordinationSettings, ...options?.coordination };
     }
 
     if (options?.connection) {
-      this.connectionManager = { ...this.connectionManager, ...options.connection };
+      this.connectionManager = { ...this.connectionManager, ...options?.connection };
     }
 
     // Register default factories
@@ -323,7 +323,7 @@ export class EventManager {
   }
 
   /**
-   * Create and register a new event manager
+   * Create and register a new event manager.
    *
    * Creates a new event manager instance using the appropriate factory,
    * registers it with the system, and optionally starts it.
@@ -352,10 +352,10 @@ export class EventManager {
     const startTime = Date.now();
 
     try {
-      this.logger.info(`🏗️ Creating event manager: ${options.name} (${options.type})`);
+      this.logger.info(`🏗️ Creating event manager: ${options?.name} (${options?.type})`);
 
       // Get or create factory
-      const factory = await this.getOrCreateFactory(options.type);
+      const factory = await this.getOrCreateFactory(options?.type);
 
       // Merge configuration with defaults and presets
       const config = this.mergeConfiguration(options);
@@ -364,21 +364,21 @@ export class EventManager {
       const manager = await factory.create(config);
 
       // Register with registry
-      this.registry.registerManager(options.name, manager, factory, config);
+      this.registry.registerManager(options?.name, manager, factory, config);
 
       // Add to active managers
-      this.activeManagers.set(options.name, manager);
+      this.activeManagers.set(options?.name, manager);
 
       // Update connection tracking
-      this.connectionManager.connections.get(options.type)?.add(manager);
-      this.connectionManager.health.set(options.name, {
+      this.connectionManager.connections.get(options?.type)?.add(manager);
+      this.connectionManager.health.set(options?.name, {
         healthy: true,
         lastCheck: new Date(),
         failures: 0,
       });
 
       // Auto-start if requested
-      if (options.autoStart !== false) {
+      if (options?.autoStart !== false) {
         await manager.start();
       }
 
@@ -390,11 +390,11 @@ export class EventManager {
         (this.statistics.averageStartupTime * (this.statistics.totalCreated - 1) + duration) /
         this.statistics.totalCreated;
 
-      this.logger.info(`✅ Event manager created successfully: ${options.name} (${duration}ms)`);
+      this.logger.info(`✅ Event manager created successfully: ${options?.name} (${duration}ms)`);
       return manager;
     } catch (error) {
       this.statistics.failedManagers++;
-      this.logger.error(`❌ Failed to create event manager ${options.name}:`, error);
+      this.logger.error(`❌ Failed to create event manager ${options?.name}:`, error);
       throw new Error(
         `Event manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -402,7 +402,7 @@ export class EventManager {
   }
 
   /**
-   * Create system event manager with UEL integration
+   * Create system event manager with UEL integration.
    *
    * @param name
    * @param config
@@ -422,7 +422,7 @@ export class EventManager {
   }
 
   /**
-   * Create coordination event manager for swarm operations
+   * Create coordination event manager for swarm operations.
    *
    * @param name
    * @param config
@@ -442,7 +442,7 @@ export class EventManager {
   }
 
   /**
-   * Create communication event manager for protocols
+   * Create communication event manager for protocols.
    *
    * @param name
    * @param config
@@ -462,7 +462,7 @@ export class EventManager {
   }
 
   /**
-   * Create monitoring event manager for metrics and health
+   * Create monitoring event manager for metrics and health.
    *
    * @param name
    * @param config
@@ -482,7 +482,7 @@ export class EventManager {
   }
 
   /**
-   * Create interface event manager for UI interactions
+   * Create interface event manager for UI interactions.
    *
    * @param name
    * @param config
@@ -502,7 +502,7 @@ export class EventManager {
   }
 
   /**
-   * Create neural event manager for AI operations
+   * Create neural event manager for AI operations.
    *
    * @param name
    * @param config
@@ -522,7 +522,7 @@ export class EventManager {
   }
 
   /**
-   * Create database event manager for DB operations
+   * Create database event manager for DB operations.
    *
    * @param name
    * @param config
@@ -542,7 +542,7 @@ export class EventManager {
   }
 
   /**
-   * Create memory event manager for cache operations
+   * Create memory event manager for cache operations.
    *
    * @param name
    * @param config
@@ -561,7 +561,7 @@ export class EventManager {
   }
 
   /**
-   * Create workflow event manager for orchestration
+   * Create workflow event manager for orchestration.
    *
    * @param name
    * @param config
@@ -581,7 +581,7 @@ export class EventManager {
   }
 
   /**
-   * Get event manager by name
+   * Get event manager by name.
    *
    * @param name
    */
@@ -590,7 +590,7 @@ export class EventManager {
   }
 
   /**
-   * Get all event managers by type
+   * Get all event managers by type.
    *
    * @param type
    */
@@ -599,14 +599,14 @@ export class EventManager {
   }
 
   /**
-   * Get all active event managers
+   * Get all active event managers.
    */
   getAllEventManagers(): Map<string, IEventManager> {
     return new Map(this.activeManagers);
   }
 
   /**
-   * Remove and destroy event manager
+   * Remove and destroy event manager.
    *
    * @param name
    */
@@ -637,7 +637,7 @@ export class EventManager {
   }
 
   /**
-   * Restart event manager with recovery logic
+   * Restart event manager with recovery logic.
    *
    * @param name
    */
@@ -682,14 +682,14 @@ export class EventManager {
   }
 
   /**
-   * Perform comprehensive health check
+   * Perform comprehensive health check.
    */
   async performHealthCheck(): Promise<Map<string, EventManagerStatus>> {
     return await this.registry.healthCheckAll();
   }
 
   /**
-   * Get global system metrics
+   * Get global system metrics.
    */
   async getGlobalMetrics(): Promise<{
     registry: Awaited<ReturnType<EventRegistry['getGlobalMetrics']>>;
@@ -734,7 +734,7 @@ export class EventManager {
   }
 
   /**
-   * Broadcast event to all managers or specific type
+   * Broadcast event to all managers or specific type.
    *
    * @param event
    * @param options
@@ -746,7 +746,7 @@ export class EventManager {
     options?: { type?: EventManagerType; excludeManagers?: string[] }
   ): Promise<void> {
     if (options?.type) {
-      await this.registry.broadcastToType(options.type, event);
+      await this.registry.broadcastToType(options?.type, event);
     } else {
       await this.registry.broadcast(event);
     }
@@ -755,7 +755,7 @@ export class EventManager {
   }
 
   /**
-   * Register event manager factory
+   * Register event manager factory.
    *
    * @param type
    * @param factory
@@ -771,7 +771,7 @@ export class EventManager {
   }
 
   /**
-   * Get comprehensive system status
+   * Get comprehensive system status.
    */
   async getSystemStatus(): Promise<{
     initialized: boolean;
@@ -808,7 +808,7 @@ export class EventManager {
   }
 
   /**
-   * Shutdown all event managers and cleanup
+   * Shutdown all event managers and cleanup.
    */
   async shutdown(): Promise<void> {
     this.logger.info('🔄 Shutting down Event Manager system...');
@@ -845,7 +845,7 @@ export class EventManager {
   }
 
   /**
-   * Private methods for internal operations
+   * Private methods for internal operations.
    */
 
   private async getOrCreateFactory(type: EventManagerType): Promise<IEventManagerFactory> {
@@ -914,17 +914,17 @@ export class EventManager {
 
   private mergeConfiguration(options: EventManagerCreationOptions): EventManagerConfig {
     const defaults =
-      DefaultEventManagerConfigs[options.type] ||
-      DefaultEventManagerConfigs[EventCategories.SYSTEM];
-    const presetConfig = options.preset ? EventManagerPresets[options.preset] : {};
+      DefaultEventManagerConfigs?.[options?.type] ||
+      DefaultEventManagerConfigs?.[EventCategories.SYSTEM];
+    const presetConfig = options?.preset ? EventManagerPresets[options?.preset] : {};
 
     return {
       ...defaults,
       ...presetConfig,
-      ...options.config,
+      ...options?.config,
       // Ensure required fields are not overwritten
-      name: options.name,
-      type: options.type,
+      name: options?.name,
+      type: options?.type,
     } as EventManagerConfig;
   }
 

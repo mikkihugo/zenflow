@@ -1,7 +1,12 @@
 /**
- * Weighted Round Robin Load Balancing Algorithm
- * Performance-based weights with dynamic adjustment
+ * Weighted Round Robin Load Balancing Algorithm.
+ * Performance-based weights with dynamic adjustment.
  */
+/**
+ * @file Coordination system: weighted-round-robin
+ */
+
+
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
 import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
@@ -30,7 +35,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   };
 
   /**
-   * Select the best agent using weighted round robin
+   * Select the best agent using weighted round robin.
    *
    * @param _task
    * @param availableAgents
@@ -81,7 +86,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     }
 
     // Decrease the current weight of selected agent
-    const selectedWeight = this.weights.get(selectedAgent.id)!;
+    const selectedWeight = this.weights.get(selectedAgent?.id)!;
     selectedWeight.currentWeight -= totalWeight;
 
     // Calculate confidence and alternatives
@@ -91,7 +96,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected based on weighted round robin (weight: ${selectedWeight.effectiveWeight})`,
+      reasoning: `Selected based on weighted round robin (weight: ${selectedWeight?.effectiveWeight})`,
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),
@@ -99,7 +104,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update algorithm configuration
+   * Update algorithm configuration.
    *
    * @param config
    */
@@ -108,7 +113,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Get performance metrics for this algorithm
+   * Get performance metrics for this algorithm.
    */
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
     const weights = Array.from(this.weights.values());
@@ -123,7 +128,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update weights based on current performance metrics
+   * Update weights based on current performance metrics.
    *
    * @param agents
    * @param metrics
@@ -133,7 +138,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Handle task completion to adjust weights
+   * Handle task completion to adjust weights.
    *
    * @param agentId
    * @param _task
@@ -169,7 +174,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Handle agent failure
+   * Handle agent failure.
    *
    * @param agentId
    * @param _error
@@ -186,7 +191,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Get or create weight entry for an agent
+   * Get or create weight entry for an agent.
    *
    * @param agentId
    */
@@ -206,7 +211,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update weights based on performance metrics
+   * Update weights based on performance metrics.
    *
    * @param agents
    * @param metrics
@@ -241,7 +246,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Calculate performance score from metrics
+   * Calculate performance score from metrics.
    *
    * @param metrics
    */
@@ -264,7 +269,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update effective weight considering recent performance
+   * Update effective weight considering recent performance.
    *
    * @param weight
    */
@@ -288,7 +293,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Calculate confidence in the selection
+   * Calculate confidence in the selection.
    *
    * @param selectedAgent
    * @param availableAgents
@@ -299,7 +304,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     availableAgents: Agent[],
     _metrics: Map<string, LoadMetrics>
   ): number {
-    const selectedWeight = this.weights.get(selectedAgent.id);
+    const selectedWeight = this.weights.get(selectedAgent?.id);
     if (!selectedWeight) return 0.5;
 
     // Calculate confidence based on weight advantage over others
@@ -317,7 +322,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Get alternative agents sorted by preference
+   * Get alternative agents sorted by preference.
    *
    * @param selectedAgent
    * @param availableAgents
@@ -329,7 +334,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     count: number
   ): Agent[] {
     return availableAgents
-      .filter((agent) => agent.id !== selectedAgent.id)
+      .filter((agent) => agent.id !== selectedAgent?.id)
       .sort((a, b) => {
         const weightA = this.weights.get(a.id)?.effectiveWeight || this.config.initialWeight;
         const weightB = this.weights.get(b.id)?.effectiveWeight || this.config.initialWeight;
@@ -339,7 +344,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Estimate latency for an agent
+   * Estimate latency for an agent.
    *
    * @param agent
    * @param metrics
@@ -352,7 +357,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Estimate quality for an agent
+   * Estimate quality for an agent.
    *
    * @param agent
    * @param metrics
@@ -365,7 +370,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Calculate variance in weights
+   * Calculate variance in weights.
    *
    * @param weights
    */
@@ -379,7 +384,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Calculate overall success rate
+   * Calculate overall success rate.
    *
    * @param weights
    */

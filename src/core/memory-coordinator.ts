@@ -4,6 +4,11 @@
  * Integrates memory backend functionality using unified DAL
  * Supports all database types through consistent DAL interface.
  */
+/**
+ * @file memory coordination system
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { createDao, DatabaseTypes, EntityTypes } from '../database/index';
@@ -166,10 +171,10 @@ class LanceDBBackend implements BackendInterface {
 
       for (const result of allResults || []) {
         const metadata = result?.metadata || {};
-        if (metadata?.namespace === namespace && metadata?.serialized_data) {
+        if (metadata.namespace === namespace && metadata?.serialized_data) {
           const key = metadata?.key;
           if (pattern === '*' || key.includes(pattern.replace('*', ''))) {
-            results?.[key] = JSON.parse(metadata?.serialized_data);
+            results[key] = JSON.parse(metadata?.serialized_data);
           }
         }
       }
@@ -350,7 +355,7 @@ class SQLiteBackend implements BackendInterface {
 
       for (const row of rows) {
         try {
-          results?.[row.key] = JSON.parse(row.value);
+          results[row.key] = JSON.parse(row.value);
         } catch (_error) {
           logger.warn(`Failed to parse value for key ${row.key}`);
         }
@@ -504,7 +509,7 @@ class JSONBackend implements BackendInterface {
       if (key.startsWith(prefix)) {
         const simpleKey = key.substring(prefix.length);
         if (pattern === '*' || simpleKey.includes(pattern.replace('*', ''))) {
-          results?.[simpleKey] = entry.value;
+          results[simpleKey] = entry.value;
         }
       }
     }
@@ -623,7 +628,7 @@ export class MemorySystem extends EventEmitter {
 
     const result = await this.backend.store(key, value, namespace);
 
-    if (result?.status === 'success') {
+    if (result.status === 'success') {
       this.emit('stored', { key, namespace, timestamp: result?.timestamp });
     } else {
       this.emit('error', { operation: 'store', key, namespace, error: result?.error });

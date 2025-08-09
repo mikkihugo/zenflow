@@ -7,6 +7,11 @@
  * - MCP tools enhancement (intelligent project tools)
  * - Unified learning and optimization across all DSPy systems.
  */
+/**
+ * @file dspy-integration management system
+ */
+
+
 
 import DSPySwarmIntelligence from '../coordination/swarm/dspy-swarm-intelligence';
 import DSPyEnhancedMCPTools from '../interfaces/mcp/dspy-enhanced-tools';
@@ -76,13 +81,13 @@ export class DSPyIntegrationManager {
     // Initialize DSPy wrapper
     try {
       const dsypConfig: DSPyConfig = {};
-      if (this.config.model !== undefined) dsypConfig?.model = this.config.model;
-      if (this.config.temperature !== undefined) dsypConfig?.temperature = this.config.temperature;
-      if (this.config.maxTokens !== undefined) dsypConfig?.maxTokens = this.config.maxTokens;
-      if (this.config.apiKey !== undefined) dsypConfig?.apiKey = this.config.apiKey;
-      if (this.config.baseURL !== undefined) dsypConfig?.baseURL = this.config.baseURL;
-      if (this.config.modelParams !== undefined) dsypConfig?.modelParams = this.config.modelParams;
-      
+      if (this.config.model !== undefined) dsypConfig.model = this.config.model;
+      if (this.config.temperature !== undefined) dsypConfig.temperature = this.config.temperature;
+      if (this.config.maxTokens !== undefined) dsypConfig.maxTokens = this.config.maxTokens;
+      if (this.config.apiKey !== undefined) dsypConfig.apiKey = this.config.apiKey;
+      if (this.config.baseURL !== undefined) dsypConfig.baseURL = this.config.baseURL;
+      if (this.config.modelParams !== undefined) dsypConfig.modelParams = this.config.modelParams;
+
       this.dspyWrapper = await createDSPyWrapper(dsypConfig);
     } catch (error) {
       logger.error('Failed to initialize DSPy wrapper', { error });
@@ -96,9 +101,9 @@ export class DSPyIntegrationManager {
     const swarmConfig: any = {
       enableContinuousLearning: false, // Managed by unified learning
     };
-    if (this.config.model !== undefined) swarmConfig?.model = this.config.model;
-    if (this.config.temperature !== undefined) swarmConfig?.temperature = this.config.temperature;
-    
+    if (this.config.model !== undefined) swarmConfig.model = this.config.model;
+    if (this.config.temperature !== undefined) swarmConfig.temperature = this.config.temperature;
+
     this.swarmIntelligence = new DSPySwarmIntelligence(swarmConfig);
 
     // Initialize MCP tools system

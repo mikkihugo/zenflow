@@ -1,4 +1,10 @@
+/**
+ * @file orchestrator-provider implementation
+ */
+
+
 import { config } from '../config';
+import type { logger } from '../core/logger';
 import { HTTPMCPServer as MCPServer } from '../interfaces/mcp';
 import { TerminalManager } from '../interfaces/terminal';
 import { MemoryManager } from '../memory/index';

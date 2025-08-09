@@ -1,7 +1,12 @@
 /**
- * Neural Presets Complete
- * Complete collection of neural network presets and utilities
+ * Neural Presets Complete.
+ * Complete collection of neural network presets and utilities.
  */
+/**
+ * @file Neural network: neural-presets-complete
+ */
+
+
 
 export interface CompletePreset {
   id: string;
@@ -60,8 +65,8 @@ export const COMPLETE_NEURAL_PRESETS: CompletePresetMap = {
 };
 
 /**
- * Cognitive Pattern Selector
- * Selects optimal neural patterns based on task requirements
+ * Cognitive Pattern Selector.
+ * Selects optimal neural patterns based on task requirements.
  *
  * @example
  */
@@ -80,7 +85,7 @@ export class CognitivePatternSelector {
   }
 
   /**
-   * Select pattern based on task type and requirements
+   * Select pattern based on task type and requirements.
    *
    * @param taskType
    * @param requirements
@@ -100,7 +105,7 @@ export class CognitivePatternSelector {
   }
 
   /**
-   * Register a custom pattern
+   * Register a custom pattern.
    *
    * @param pattern
    */
@@ -161,7 +166,7 @@ export class CognitivePatternSelector {
   }
 
   /**
-   * Select patterns for a specific preset
+   * Select patterns for a specific preset.
    *
    * @param modelType
    * @param presetName
@@ -194,7 +199,7 @@ export class CognitivePatternSelector {
   }
 
   /**
-   * Get preset recommendations based on use case
+   * Get preset recommendations based on use case.
    *
    * @param useCase
    * @param requirements
@@ -240,8 +245,8 @@ export class CognitivePatternSelector {
 }
 
 /**
- * Neural Adaptation Engine
- * Adapts neural networks based on performance feedback
+ * Neural Adaptation Engine.
+ * Adapts neural networks based on performance feedback.
  *
  * @example
  */
@@ -274,7 +279,7 @@ export class NeuralAdaptationEngine {
   }
 
   /**
-   * Adapt network based on performance feedback
+   * Adapt network based on performance feedback.
    *
    * @param networkConfig
    * @param performanceData
@@ -300,7 +305,7 @@ export class NeuralAdaptationEngine {
   }
 
   /**
-   * Get adaptation recommendations
+   * Get adaptation recommendations.
    *
    * @param _networkConfig
    */
@@ -379,7 +384,7 @@ export class NeuralAdaptationEngine {
   }
 
   /**
-   * Initialize adaptation for an agent
+   * Initialize adaptation for an agent.
    *
    * @param agentId
    * @param modelType
@@ -404,7 +409,7 @@ export class NeuralAdaptationEngine {
   }
 
   /**
-   * Record an adaptation result
+   * Record an adaptation result.
    *
    * @param agentId
    * @param adaptationResult
@@ -418,7 +423,7 @@ export class NeuralAdaptationEngine {
     });
 
     this.performanceHistory.push({
-      performance: adaptationResult.performance || adaptationResult,
+      performance: adaptationResult?.performance || adaptationResult,
       timestamp: new Date(),
     });
 
@@ -426,7 +431,7 @@ export class NeuralAdaptationEngine {
   }
 
   /**
-   * Get adaptation recommendations for an agent
+   * Get adaptation recommendations for an agent.
    *
    * @param agentId
    */
@@ -467,7 +472,7 @@ export class NeuralAdaptationEngine {
   }
 
   /**
-   * Export adaptation insights
+   * Export adaptation insights.
    */
   exportAdaptationInsights() {
     const insights: {

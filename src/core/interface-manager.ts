@@ -1,5 +1,5 @@
 /**
- * Interface Manager - User Interface Management
+ * Interface Manager - User Interface Management.
  *
  * Clean, focused interface manager that handles different user interfaces (CLI, TUI, Web)
  * without bloated "unified" architecture.
@@ -16,20 +16,25 @@
  * await interfaceManager.launch();
  * ```
  */
+/**
+ * @file interface management system
+ */
+
+
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from './logger';
 import { config } from '../config';
+import { createLogger } from './logger';
 
 const logger = createLogger('InterfaceManager');
 
 /**
- * Interface mode types
+ * Interface mode types.
  */
 export type InterfaceMode = 'auto' | 'cli' | 'tui' | 'web';
 
 /**
- * Interface manager configuration
+ * Interface manager configuration.
  *
  * @example
  */
@@ -47,7 +52,7 @@ export interface InterfaceManagerConfig {
 }
 
 /**
- * Interface statistics
+ * Interface statistics.
  *
  * @example
  */
@@ -61,7 +66,7 @@ export interface InterfaceStats {
 }
 
 /**
- * Clean interface manager for user interface handling
+ * Clean interface manager for user interface handling.
  *
  * @example
  */
@@ -78,8 +83,9 @@ export class InterfaceManager extends EventEmitter {
     this.config = {
       defaultMode: userConfig?.defaultMode || 'auto',
       webPort: userConfig?.webPort || centralConfig?.interfaces?.web?.port,
-      theme: userConfig?.theme || centralConfig?.interfaces?.shared?.theme as 'dark' | 'light',
-      enableRealTime: userConfig?.enableRealTime ?? centralConfig?.interfaces?.shared?.realTimeUpdates,
+      theme: userConfig?.theme || (centralConfig?.interfaces?.shared?.theme as 'dark' | 'light'),
+      enableRealTime:
+        userConfig?.enableRealTime ?? centralConfig?.interfaces?.shared?.realTimeUpdates,
       coreSystem: userConfig?.coreSystem,
     };
   }
@@ -153,7 +159,7 @@ export class InterfaceManager extends EventEmitter {
     // Use centralized environment detection
     const centralConfig = config?.getAll();
     const environment = centralConfig?.environment;
-    
+
     // CI environment detection
     if (environment.isCI || !process.stdout.isTTY) {
       return 'cli';

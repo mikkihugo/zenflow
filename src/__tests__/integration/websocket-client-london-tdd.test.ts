@@ -1,4 +1,5 @@
 /**
+/// <reference types="./global-types" />
  * Claude-Zen WebSocket Client - London School TDD Tests
  *
  * Testing the Node.js 22 native WebSocket client using London School principles:
@@ -79,7 +80,7 @@ interface ReconnectionContract {
 }
 
 interface MessageQueueContract {
-  enqueue(message: any): void;
+  enqueue(message: unknown): void;
   flush(): Promise<void>;
   clear(): void;
 }
@@ -114,7 +115,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
       mockWebSocket.on('error', this.handleError.bind(this));
 
       // Start heartbeat if enabled
-      if (options.heartbeat) {
+      if (options?.heartbeat) {
         mockHeartbeatManager.start();
       }
 
@@ -359,8 +360,8 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
       eventDrivenClient.setupEventHandlers();
 
       // Simulate events
-      mockEventBus.subscribe.mock.calls[0][1]('connected');
-      mockEventBus.subscribe.mock.calls[1][1]({ id: 'msg-123', data: 'test' });
+      mockEventBus.subscribe.mock.calls[0]?.[1]('connected');
+      mockEventBus.subscribe.mock.calls[1]?.[1]({ id: 'msg-123', data: 'test' });
 
       // Assert - Verify event interaction conversation
       expect(mockEventBus.subscribe).toHaveBeenCalledWith(

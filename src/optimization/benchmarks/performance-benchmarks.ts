@@ -1,7 +1,12 @@
 /**
- * Performance Benchmarks Suite
- * Comprehensive benchmarking for all optimization components
+ * Performance Benchmarks Suite.
+ * Comprehensive benchmarking for all optimization components.
  */
+/**
+ * @file performance-benchmarks implementation
+ */
+
+
 
 import type {
   DataOptimizer,
@@ -84,7 +89,7 @@ export class PerformanceBenchmarkSuite {
   }
 
   /**
-   * Run comprehensive performance benchmarks
+   * Run comprehensive performance benchmarks.
    */
   public async runBenchmarks(): Promise<SystemBenchmarkResults> {
     const startTime = Date.now();
@@ -138,7 +143,7 @@ export class PerformanceBenchmarkSuite {
   }
 
   /**
-   * Run neural network performance benchmarks
+   * Run neural network performance benchmarks.
    */
   private async runNeuralBenchmarks(): Promise<BenchmarkResult[]> {
     if (!this.neuralOptimizer) return [];
@@ -147,7 +152,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'training_speed_optimization',
         description: 'Test neural network training speed improvements',
-        target: NEURAL_PERFORMANCE_TARGETS.trainingSpeedImprovement,
+        target: NEURAL_PERFORMANCE_TARGETS?.trainingSpeedImprovement,
         expectedImprovement: 5.0,
         run: async (optimizer: NeuralOptimizer) => {
           const mockNetwork = this.createMockNeuralNetwork();
@@ -173,7 +178,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'batch_processing_optimization',
         description: 'Test batch processing implementation',
-        target: NEURAL_PERFORMANCE_TARGETS.batchThroughput,
+        target: NEURAL_PERFORMANCE_TARGETS?.batchThroughput,
         expectedImprovement: 3.0,
         run: async (optimizer: NeuralOptimizer) => {
           const mockTrainer = this.createMockNetworkTrainer();
@@ -199,7 +204,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'memory_optimization',
         description: 'Test neural network memory usage optimization',
-        target: NEURAL_PERFORMANCE_TARGETS.memoryReduction,
+        target: NEURAL_PERFORMANCE_TARGETS?.memoryReduction,
         expectedImprovement: 0.6,
         run: async (optimizer: NeuralOptimizer) => {
           const mockNetworks = [this.createMockNeuralNetwork(), this.createMockNeuralNetwork()];
@@ -225,7 +230,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'inference_latency',
         description: 'Test neural network inference latency',
-        target: NEURAL_PERFORMANCE_TARGETS.inferenceLatency,
+        target: NEURAL_PERFORMANCE_TARGETS?.inferenceLatency,
         expectedImprovement: 0.5,
         run: async (_optimizer: NeuralOptimizer) => {
           const mockNetwork = this.createMockNeuralNetwork();
@@ -255,7 +260,7 @@ export class PerformanceBenchmarkSuite {
   }
 
   /**
-   * Run swarm coordination benchmarks
+   * Run swarm coordination benchmarks.
    */
   private async runSwarmBenchmarks(): Promise<BenchmarkResult[]> {
     if (!this.swarmOptimizer) return [];
@@ -264,7 +269,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'message_routing_optimization',
         description: 'Test message routing latency optimization',
-        target: SWARM_PERFORMANCE_TARGETS.messageLatency,
+        target: SWARM_PERFORMANCE_TARGETS?.messageLatency,
         expectedImprovement: 0.5,
         run: async (optimizer: SwarmOptimizer) => {
           const mockTopology = this.createMockSwarmTopology();
@@ -316,7 +321,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'horizontal_scaling',
         description: 'Test horizontal scaling capability',
-        target: SWARM_PERFORMANCE_TARGETS.scalability,
+        target: SWARM_PERFORMANCE_TARGETS?.scalability,
         expectedImprovement: 10.0,
         run: async (optimizer: SwarmOptimizer) => {
           const before = await this.measureScalingPerformance(1000);
@@ -344,7 +349,7 @@ export class PerformanceBenchmarkSuite {
   }
 
   /**
-   * Run data optimization benchmarks
+   * Run data optimization benchmarks.
    */
   private async runDataBenchmarks(): Promise<BenchmarkResult[]> {
     if (!this.dataOptimizer) return [];
@@ -353,7 +358,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'query_performance_optimization',
         description: 'Test database query performance improvements',
-        target: DATA_PERFORMANCE_TARGETS.queryResponseTime,
+        target: DATA_PERFORMANCE_TARGETS?.queryResponseTime,
         expectedImprovement: 0.6,
         run: async (optimizer: DataOptimizer) => {
           const mockQueries = this.createMockDatabaseQueries();
@@ -379,7 +384,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'connection_pooling',
         description: 'Test connection pooling efficiency',
-        target: DATA_PERFORMANCE_TARGETS.connectionEfficiency,
+        target: DATA_PERFORMANCE_TARGETS?.connectionEfficiency,
         expectedImprovement: 0.3,
         run: async (optimizer: DataOptimizer) => {
           const mockConnections = this.createMockConnections();
@@ -405,7 +410,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'intelligent_caching',
         description: 'Test intelligent caching implementation',
-        target: DATA_PERFORMANCE_TARGETS.cacheHitRatio,
+        target: DATA_PERFORMANCE_TARGETS?.cacheHitRatio,
         expectedImprovement: 0.4,
         run: async (optimizer: DataOptimizer) => {
           const mockCacheLayer = this.createMockCacheLayer();
@@ -434,7 +439,7 @@ export class PerformanceBenchmarkSuite {
   }
 
   /**
-   * Run WASM optimization benchmarks
+   * Run WASM optimization benchmarks.
    */
   private async runWasmBenchmarks(): Promise<BenchmarkResult[]> {
     if (!this.wasmOptimizer) return [];
@@ -443,7 +448,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'module_loading_optimization',
         description: 'Test WASM module loading performance',
-        target: WASM_PERFORMANCE_TARGETS.moduleLoadTime,
+        target: WASM_PERFORMANCE_TARGETS?.moduleLoadTime,
         expectedImprovement: 0.7,
         run: async (optimizer: WasmOptimizer) => {
           const mockModules = this.createMockWasmModules();
@@ -469,7 +474,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'streaming_compilation',
         description: 'Test streaming compilation implementation',
-        target: WASM_PERFORMANCE_TARGETS.executionSpeedImprovement,
+        target: WASM_PERFORMANCE_TARGETS?.executionSpeedImprovement,
         expectedImprovement: 8.0,
         run: async (optimizer: WasmOptimizer) => {
           const mockWasmFiles = this.createMockWasmFiles();
@@ -524,7 +529,7 @@ export class PerformanceBenchmarkSuite {
   }
 
   /**
-   * Run a suite of benchmarks
+   * Run a suite of benchmarks.
    *
    * @param domain
    * @param benchmarks
@@ -560,16 +565,16 @@ export class PerformanceBenchmarkSuite {
   }
 
   /**
-   * Calculate overall benchmark results
+   * Calculate overall benchmark results.
    *
    * @param results
    */
   private calculateOverallResults(results: SystemBenchmarkResults): void {
     const allResults = [
-      ...results.domains.neural,
-      ...results.domains.swarm,
-      ...results.domains.data,
-      ...results.domains.wasm,
+      ...results?.domains?.neural,
+      ...results?.domains?.swarm,
+      ...results?.domains?.data,
+      ...results?.domains?.wasm,
     ];
 
     results.overall.totalTests = allResults.length;
@@ -584,7 +589,7 @@ export class PerformanceBenchmarkSuite {
   }
 
   /**
-   * Calculate improvement between before and after metrics
+   * Calculate improvement between before and after metrics.
    *
    * @param before
    * @param after
@@ -605,7 +610,7 @@ export class PerformanceBenchmarkSuite {
   }
 
   /**
-   * Mock data creation methods
+   * Mock data creation methods.
    */
   private createMockNeuralNetwork(): any {
     return {
@@ -719,7 +724,7 @@ export class PerformanceBenchmarkSuite {
   }
 
   /**
-   * Mock measurement methods
+   * Mock measurement methods.
    *
    * @param _network
    * @param mode

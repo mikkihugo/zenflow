@@ -1,4 +1,5 @@
 /**
+/// <reference types="./global-types" />
  * Network Test Helper - Network Testing Utilities
  *
  * Comprehensive network testing support for HTTP, WebSocket, and other protocols
@@ -34,7 +35,7 @@ export interface NetworkTestHelper {
 
 export interface WebSocketHandlers {
   onConnect?: () => void;
-  onMessage?: (message: any) => void;
+  onMessage?: (message: unknown) => void;
   onDisconnect?: () => void;
   onError?: (error: Error) => void;
 }
@@ -50,8 +51,8 @@ export interface HttpClient {
 export interface WebSocketClient {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
-  send(message: any): Promise<void>;
-  onMessage(callback: (message: any) => void): void;
+  send(message: unknown): Promise<void>;
+  onMessage(callback: (message: unknown) => void): void;
   onError(callback: (error: Error) => void): void;
   onConnect(callback: () => void): void;
   onDisconnect(callback: () => void): void;
@@ -152,7 +153,7 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
     const self = this;
     const path = new URL(url).pathname;
     let isConnected = false;
-    const messageCallbacks: Array<(message: any) => void> = [];
+    const messageCallbacks: Array<(message: unknown) => void> = [];
     const errorCallbacks: Array<(error: Error) => void> = [];
     const connectCallbacks: Array<() => void> = [];
     const disconnectCallbacks: Array<() => void> = [];
@@ -188,7 +189,7 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
         disconnectCallbacks.forEach((callback) => callback());
       },
 
-      async send(message: any): Promise<void> {
+      async send(message: unknown): Promise<void> {
         if (!isConnected) {
           throw new Error('WebSocket not connected');
         }
@@ -207,7 +208,7 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
         }
       },
 
-      onMessage(callback: (message: any) => void): void {
+      onMessage(callback: (message: unknown) => void): void {
         messageCallbacks.push(callback);
       },
 
@@ -421,8 +422,10 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
       const response = this.routes.get(key);
 
       if (response) {
-        res.writeHead(response.status, response.headers);
-        res.end(typeof response.body === 'string' ? response.body : JSON.stringify(response.body));
+        res.writeHead(response?.status, response?.headers);
+        res.end(
+          typeof response?.body === 'string' ? response?.body : JSON.stringify(response?.body)
+        );
       } else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Not Found', path: req.url }));
@@ -452,11 +455,11 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
         }
 
         const response = await fetch(url, options);
-        const responseBody = await response.text();
+        const responseBody = await response?.text();
 
         return {
-          status: response.status,
-          headers: Object.fromEntries(response.headers.entries()),
+          status: response?.status,
+          headers: Object.fromEntries(response?.headers?.entries()),
           body: this.tryParseJson(responseBody),
         };
       } else {
@@ -522,9 +525,9 @@ export async function testHttpEndpoint(
   }
 
   // Verify expected response
-  if (expectedResponse.status !== undefined) {
-    if (response.status !== expectedResponse.status) {
-      throw new Error(`Expected status ${expectedResponse.status}, got ${response.status}`);
+  if (expectedResponse?.status !== undefined) {
+    if (response?.status !== expectedResponse?.status) {
+      throw new Error(`Expected status ${expectedResponse?.status}, got ${response?.status}`);
     }
   }
 

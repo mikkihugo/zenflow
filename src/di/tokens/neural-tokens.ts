@@ -1,7 +1,12 @@
 /**
- * Neural network tokens for dependency injection
- * Defines tokens for neural network and AI services
+ * Neural network tokens for dependency injection.
+ * Defines tokens for neural network and AI services.
  */
+/**
+ * @file neural-tokens implementation
+ */
+
+
 
 import { createToken } from './token-factory';
 

@@ -20,7 +20,7 @@ export const defaultCoreConfig: ClaudeZenCoreConfig = {
 };
 
 /**
- * Initialize the core system
+ * Initialize the core system.
  *
  * @param config
  */

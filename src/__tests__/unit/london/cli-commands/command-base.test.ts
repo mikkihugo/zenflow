@@ -225,8 +225,8 @@ describe('BaseCommand - TDD London', () => {
       const result = await command.execute(invalidContext);
 
       // Assert - verify type validation
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('expected number but got string');
+      expect(result?.success).toBe(false);
+      expect(result?.error).toContain('expected number but got string');
     });
 
     it('should validate argument count', async () => {
@@ -240,8 +240,8 @@ describe('BaseCommand - TDD London', () => {
       const result1 = await command.execute(tooFewArgs);
 
       // Assert
-      expect(result1.success).toBe(false);
-      expect(result1.error).toContain('Expected at least 1 arguments, got 0');
+      expect(result1?.success).toBe(false);
+      expect(result1?.error).toContain('Expected at least 1 arguments, got 0');
 
       // Arrange - Too many arguments
       const tooManyArgs = {
@@ -253,8 +253,8 @@ describe('BaseCommand - TDD London', () => {
       const result2 = await command.execute(tooManyArgs);
 
       // Assert
-      expect(result2.success).toBe(false);
-      expect(result2.error).toContain('Expected at most 3 arguments, got 4');
+      expect(result2?.success).toBe(false);
+      expect(result2?.error).toContain('Expected at most 3 arguments, got 4');
     });
 
     it('should call custom validation and include its results', async () => {
@@ -271,8 +271,8 @@ describe('BaseCommand - TDD London', () => {
 
       // Assert - verify custom validation integration
       expect(customValidation).toHaveBeenCalledWith(mockContext);
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Custom validation failed');
+      expect(result?.success).toBe(false);
+      expect(result?.error).toContain('Custom validation failed');
 
       expect(mockEventHandler).toHaveBeenCalledWith(['Custom warning']);
     });
@@ -286,8 +286,8 @@ describe('BaseCommand - TDD London', () => {
       const result = await command.execute(mockContext);
 
       // Assert - verify validation error handling
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Validation failed: Validation exploded');
+      expect(result?.success).toBe(false);
+      expect(result?.error).toContain('Validation failed: Validation exploded');
     });
   });
 
@@ -349,8 +349,8 @@ describe('BaseCommand - TDD London', () => {
       const result = await command.execute(mockContext);
 
       // Assert - verify hook exception handling
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Hook failed');
+      expect(result?.success).toBe(false);
+      expect(result?.error).toContain('Hook failed');
       expect(mockHooks.onError).toHaveBeenCalled();
     });
 

@@ -3,6 +3,11 @@
  * Provides efficient message passing, compression, broadcast/multicast,
  * gossip protocol, and consensus mechanisms
  */
+/**
+ * @file Coordination system: communication-protocols
+ */
+
+
 
 import { createHash, randomBytes } from 'node:crypto';
 import { EventEmitter } from 'node:events';
@@ -61,7 +66,7 @@ export interface CompressionConfig {
   enabled: boolean;
   algorithm: 'gzip' | 'lz4' | 'brotli' | 'none';
   level: number;
-  threshold: number; // Minimum size to compress
+  threshold: number; // Minimum size to compress.
 }
 
 export interface RoutingConfig {
@@ -145,7 +150,7 @@ export interface BroadcastTree {
 }
 
 /**
- * Advanced Communication Protocol Manager
+ * Advanced Communication Protocol Manager.
  *
  * @example
  */
@@ -215,17 +220,17 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   /**
-   * Register a communication node
+   * Register a communication node.
    *
    * @param node
    */
   async registerNode(node: CommunicationNode): Promise<void> {
-    this.nodes.set(node.id, node);
+    this.nodes.set(node?.id, node);
 
     this._logger.info('Communication node registered', {
-      nodeId: node.id,
-      address: node.address,
-      capabilities: node.capabilities,
+      nodeId: node?.id,
+      address: node?.address,
+      capabilities: node?.capabilities,
     });
 
     // Update routing table
@@ -234,11 +239,11 @@ export class CommunicationProtocols extends EventEmitter {
     // Update broadcast trees
     await this.updateBroadcastTrees();
 
-    this.emit('node:registered', { nodeId: node.id });
+    this.emit('node:registered', { nodeId: node?.id });
   }
 
   /**
-   * Send a message using various protocols
+   * Send a message using various protocols.
    *
    * @param message
    */
@@ -297,7 +302,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   /**
-   * Broadcast message to all nodes
+   * Broadcast message to all nodes.
    *
    * @param payload
    * @param priority
@@ -321,7 +326,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   /**
-   * Multicast message to specific group
+   * Multicast message to specific group.
    *
    * @param recipients
    * @param payload
@@ -348,7 +353,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   /**
-   * Send unicast message
+   * Send unicast message.
    *
    * @param recipient
    * @param payload
@@ -375,7 +380,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   /**
-   * Start gossip protocol for state synchronization
+   * Start gossip protocol for state synchronization.
    *
    * @param key
    * @param data
@@ -396,7 +401,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   /**
-   * Initiate consensus on a proposal
+   * Initiate consensus on a proposal.
    *
    * @param type
    * @param value
@@ -443,7 +448,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   /**
-   * Vote on a consensus proposal
+   * Vote on a consensus proposal.
    *
    * @param proposalId
    * @param decision
@@ -489,7 +494,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   /**
-   * Register message handler for specific message type
+   * Register message handler for specific message type.
    *
    * @param messageType
    * @param handler
@@ -501,7 +506,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   /**
-   * Get communication metrics
+   * Get communication metrics.
    */
   getMetrics(): {
     nodes: number;
@@ -529,7 +534,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   /**
-   * Get node status
+   * Get node status.
    *
    * @param nodeId
    */
@@ -538,7 +543,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   /**
-   * Get routing information
+   * Get routing information.
    */
   getRoutingInfo(): {
     routingTable: Record<string, string[]>;
@@ -661,7 +666,7 @@ export class CommunicationProtocols extends EventEmitter {
 
   private async handleIncomingMessage(data: any): Promise<void> {
     try {
-      const message: Message = data.message;
+      const message: Message = data?.message;
 
       // Verify checksum
       if (!this.verifyChecksum(message)) {
@@ -735,7 +740,7 @@ export class CommunicationProtocols extends EventEmitter {
 
   private async handleGossipMessage(message: Message): Promise<void> {
     const gossipData = message.payload.data;
-    if (gossipData.type === 'state_update') {
+    if (gossipData?.type === 'state_update') {
       await this.gossipEngine.handleStateUpdate(gossipData, this.gossipState);
     }
   }
@@ -743,10 +748,10 @@ export class CommunicationProtocols extends EventEmitter {
   private async handleConsensusMessage(message: Message): Promise<void> {
     const consensusData = message.payload.data;
 
-    if (consensusData.type === 'consensus_proposal') {
-      await this.handleConsensusProposal(consensusData.proposal);
-    } else if (consensusData.type === 'consensus_vote') {
-      await this.handleConsensusVote(consensusData.vote);
+    if (consensusData?.type === 'consensus_proposal') {
+      await this.handleConsensusProposal(consensusData?.proposal);
+    } else if (consensusData?.type === 'consensus_vote') {
+      await this.handleConsensusVote(consensusData?.vote);
     }
   }
 
@@ -822,12 +827,12 @@ export class CommunicationProtocols extends EventEmitter {
     // Simple binary tree construction
     for (let i = 0; i < nodeIds.length; i++) {
       const parentIndex = Math.floor((i - 1) / 2);
-      const parentId = i === 0 ? this._nodeId : nodeIds[parentIndex];
-      const nodeId = nodeIds[i];
+      const parentId = i === 0 ? this._nodeId : nodeIds?.[parentIndex];
+      const nodeId = nodeIds?.[i];
 
       if (parentId && nodeId) {
         const children = tree.children.get(parentId) || [];
-        children.push(nodeId);
+        children?.push(nodeId);
         tree.children.set(parentId, children);
       }
     }
@@ -910,7 +915,7 @@ export class CommunicationProtocols extends EventEmitter {
     const now = new Date();
 
     for (const [nodeId, node] of this.nodes) {
-      const timeSinceLastSeen = now.getTime() - node.lastSeen.getTime();
+      const timeSinceLastSeen = now.getTime() - node?.lastSeen?.getTime();
 
       if (timeSinceLastSeen > this.config.heartbeatInterval * 3) {
         node.status = 'offline';
@@ -928,7 +933,7 @@ export class CommunicationProtocols extends EventEmitter {
     if (totalNodes === 0) return 1;
 
     const onlineNodes = Array.from(this.nodes.values()).filter(
-      (node) => node.status === 'online'
+      (node) => node?.status === 'online'
     ).length;
 
     return onlineNodes / totalNodes;
@@ -938,9 +943,9 @@ export class CommunicationProtocols extends EventEmitter {
     const topology = {
       nodes: Array.from(this.nodes.entries()).map(([id, node]) => ({
         id,
-        status: node.status,
-        address: node.address,
-        lastSeen: node.lastSeen,
+        status: node?.status,
+        address: node?.address,
+        lastSeen: node?.lastSeen,
       })),
       connections: Array.from(this.routingTable.entries()).map(([source, targets]) => ({
         source,
@@ -1003,16 +1008,16 @@ export class CommunicationProtocols extends EventEmitter {
     // Update sender metrics
     const senderNode = this.nodes.get(message.sender);
     if (senderNode) {
-      senderNode.metrics.messagesSent++;
-      senderNode.metrics.lastUpdated = new Date();
+      senderNode?.metrics.messagesSent++;
+      senderNode?.metrics.lastUpdated = new Date();
     }
 
     // Update recipient metrics
     for (const recipientId of message.recipients) {
       const recipientNode = this.nodes.get(recipientId);
       if (recipientNode) {
-        recipientNode.metrics.messagesReceived++;
-        recipientNode.metrics.lastUpdated = new Date();
+        recipientNode?.metrics.messagesReceived++;
+        recipientNode?.metrics.lastUpdated = new Date();
       }
     }
   }
@@ -1029,14 +1034,14 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   private handleNodeConnected(data: any): void {
-    this._logger.info('Node connected', { nodeId: data.nodeId });
+    this._logger.info('Node connected', { nodeId: data?.nodeId });
     this.updateRoutingTable();
     this.updateBroadcastTrees();
   }
 
   private handleNodeDisconnected(data: any): void {
-    this._logger.info('Node disconnected', { nodeId: data.nodeId });
-    const node = this.nodes.get(data.nodeId);
+    this._logger.info('Node disconnected', { nodeId: data?.nodeId });
+    const node = this.nodes.get(data?.nodeId);
     if (node) {
       node.status = 'offline';
     }
@@ -1073,17 +1078,17 @@ class CompressionEngine {
   constructor(private logger: ILogger) {}
 
   async compress(payload: MessagePayload, config: CompressionConfig): Promise<MessagePayload> {
-    if (!config.enabled) return payload;
+    if (!config?.enabled) return payload;
 
     const data = JSON.stringify(payload.data);
-    if (data.length < config.threshold) return payload;
+    if (data.length < config?.threshold) return payload;
 
     try {
       let compressed: Buffer;
 
-      switch (config.algorithm) {
+      switch (config?.algorithm) {
         case 'gzip':
-          compressed = gzipSync(data, { level: config.level });
+          compressed = gzipSync(data, { level: config?.level });
           break;
         default:
           return payload;
@@ -1102,13 +1107,13 @@ class CompressionEngine {
   }
 
   async decompress(payload: MessagePayload, config: CompressionConfig): Promise<MessagePayload> {
-    if (!config.enabled || !payload.metadata['compressed']) return payload;
+    if (!config?.enabled || !payload.metadata['compressed']) return payload;
 
     try {
       const compressedData = Buffer.from(payload.data as string, 'base64');
       let decompressed: Buffer;
 
-      switch (config.algorithm) {
+      switch (config?.algorithm) {
         case 'gzip':
           decompressed = gunzipSync(compressedData);
           break;
@@ -1138,7 +1143,7 @@ class EncryptionEngine {
   }
 
   async encrypt(payload: MessagePayload, config: EncryptionConfig): Promise<MessagePayload> {
-    if (!this.enabled || !config.enabled) return payload;
+    if (!this.enabled || !config?.enabled) return payload;
 
     // Placeholder for encryption implementation
     // Would use actual encryption algorithms like AES-GCM
@@ -1149,7 +1154,7 @@ class EncryptionEngine {
   }
 
   async decrypt(payload: MessagePayload, config: EncryptionConfig): Promise<MessagePayload> {
-    if (!this.enabled || !config.enabled || !payload.metadata['encrypted']) return payload;
+    if (!this.enabled || !config?.enabled || !payload.metadata['encrypted']) return payload;
 
     // Placeholder for decryption implementation
     return {
@@ -1191,7 +1196,7 @@ class RoutingEngine {
 
   async multicast(message: Message, nodes: Map<string, CommunicationNode>): Promise<void> {
     for (const recipient of message.recipients) {
-      if (nodes.has(recipient)) {
+      if (nodes?.has(recipient)) {
         await this.forwardMessage(message, recipient, nodes);
       }
     }
@@ -1222,8 +1227,8 @@ class RoutingEngine {
     targetId: string,
     nodes: Map<string, CommunicationNode>
   ): Promise<void> {
-    const targetNode = nodes.get(targetId);
-    if (!targetNode || targetNode.status === 'offline') {
+    const targetNode = nodes?.get(targetId);
+    if (!targetNode || targetNode?.status === 'offline') {
       throw new Error(`Target node ${targetId} is unreachable`);
     }
 
@@ -1231,7 +1236,7 @@ class RoutingEngine {
     this.logger.debug('Message forwarded', {
       messageId: message.id,
       target: targetId,
-      address: targetNode.address,
+      address: targetNode?.address,
     });
   }
 
@@ -1257,7 +1262,7 @@ class RoutingEngine {
 
     const children = tree.children.get(nodeId) || [];
     for (const childId of children) {
-      if (nodes.has(childId)) {
+      if (nodes?.has(childId)) {
         await this.forwardMessage(message, childId, nodes);
         await this.traverseBroadcastTree(message, childId, tree, nodes, visited);
       }
@@ -1274,7 +1279,7 @@ class ConsensusEngine {
   ) {}
 
   /**
-   * Initiate consensus process for a proposal
+   * Initiate consensus process for a proposal.
    *
    * @param proposalId
    * @param proposal
@@ -1289,7 +1294,7 @@ class ConsensusEngine {
   }
 
   /**
-   * Process an incoming consensus proposal
+   * Process an incoming consensus proposal.
    *
    * @param proposal
    */
@@ -1305,7 +1310,7 @@ class ConsensusEngine {
   }
 
   /**
-   * Get active proposals for monitoring
+   * Get active proposals for monitoring.
    */
   getActiveProposals(): ConsensusProposal[] {
     return Array.from(this.activeProposals.values());
@@ -1340,7 +1345,7 @@ class GossipEngine {
     const { key, state } = data;
     const currentState = gossipState.get(key);
 
-    if (!currentState || state.version > currentState.version) {
+    if (!currentState || state.version > currentState?.version) {
       gossipState.set(key, state);
       this.logger.debug('Gossip state updated', {
         key,

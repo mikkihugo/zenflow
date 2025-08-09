@@ -4,11 +4,16 @@
  * Multi-agent conversation capabilities inspired by ag2.ai (AutoGen)
  * for enhanced agent collaboration and structured dialogue
  */
+/**
+ * @file conversation-framework module exports
+ */
+
+
 
 import type { ConversationMCPTools, ConversationMemory, ConversationOrchestrator } from './types';
 
 /**
- * Configuration for conversation framework creation
+ * Configuration for conversation framework creation.
  *
  * @example
  */
@@ -22,7 +27,7 @@ export interface ConversationFrameworkConfig {
 }
 
 /**
- * Complete conversation framework system
+ * Complete conversation framework system.
  *
  * @example
  */
@@ -42,15 +47,15 @@ export { ConversationOrchestratorImpl } from './orchestrator';
 export * from './types';
 
 /**
- * Conversation Framework Factory
+ * Conversation Framework Factory.
  *
- * Main entry point for creating conversation systems
+ * Main entry point for creating conversation systems.
  *
  * @example
  */
 export class ConversationFramework {
   /**
-   * Create a complete conversation system with orchestrator and memory
+   * Create a complete conversation system with orchestrator and memory.
    *
    * @param config
    */
@@ -94,7 +99,7 @@ export class ConversationFramework {
   }
 
   /**
-   * Get available conversation patterns
+   * Get available conversation patterns.
    */
   static getAvailablePatterns(): string[] {
     return [
@@ -110,7 +115,7 @@ export class ConversationFramework {
   }
 
   /**
-   * Get conversation framework capabilities
+   * Get conversation framework capabilities.
    */
   static getCapabilities(): string[] {
     return [
@@ -128,35 +133,35 @@ export class ConversationFramework {
   }
 
   /**
-   * Validate conversation configuration
+   * Validate conversation configuration.
    *
    * @param config
    */
   static validateConfig(config: any): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
-    if (!config.title || typeof config.title !== 'string') {
+    if (!config?.title || typeof config?.title !== 'string') {
       errors.push('Title is required and must be a string');
     }
 
-    if (!config.pattern || typeof config.pattern !== 'string') {
+    if (!config?.pattern || typeof config?.pattern !== 'string') {
       errors.push('Pattern is required and must be a string');
     }
 
-    if (!config.goal || typeof config.goal !== 'string') {
+    if (!config?.goal || typeof config?.goal !== 'string') {
       errors.push('Goal is required and must be a string');
     }
 
-    if (!config.domain || typeof config.domain !== 'string') {
+    if (!config?.domain || typeof config?.domain !== 'string') {
       errors.push('Domain is required and must be a string');
     }
 
-    if (!Array.isArray(config.participants) || config.participants.length === 0) {
+    if (!Array.isArray(config?.participants) || config?.participants.length === 0) {
       errors.push('At least one participant is required');
     }
 
-    if (config.participants) {
-      config.participants.forEach((participant: any, index: number) => {
+    if (config?.participants) {
+      config?.participants?.forEach((participant: any, index: number) => {
         if (!participant.id || !participant.type || !participant.swarmId) {
           errors.push(`Participant ${index} missing required fields (id, type, swarmId)`);
         }

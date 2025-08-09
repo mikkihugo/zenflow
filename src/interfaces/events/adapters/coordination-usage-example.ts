@@ -1,9 +1,16 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-events-adapters-coordination-usage-example");
 /**
- * Coordination Event Adapter Usage Example
+ * @file Interface implementation: coordination-usage-example
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-events-adapters-coordination-usage-example');
+
+/**
+ * Coordination Event Adapter Usage Example.
  *
- * Demonstrates practical usage of the CoordinationEventAdapter
+ * Demonstrates practical usage of the CoordinationEventAdapter.
  * in various scenarios within the Claude-Zen system.
  */
 
@@ -17,9 +24,9 @@ import {
 } from './coordination-event-adapter';
 
 /**
- * Example 1: Basic Coordination Event Management
+ * Example 1: Basic Coordination Event Management.
  *
- * Shows how to set up basic coordination event monitoring
+ * Shows how to set up basic coordination event monitoring.
  * for swarm, agent, and task events.
  */
 export async function basicCoordinationExample(): Promise<void> {
@@ -56,7 +63,7 @@ export async function basicCoordinationExample(): Promise<void> {
 }
 
 /**
- * Example 2: Advanced Coordination Monitoring
+ * Example 2: Advanced Coordination Monitoring.
  *
  * Shows comprehensive coordination monitoring with health tracking,
  * performance metrics, and event correlation.
@@ -102,9 +109,9 @@ export async function advancedCoordinationExample(): Promise<void> {
 }
 
 /**
- * Example 3: High-Performance Coordination
+ * Example 3: High-Performance Coordination.
  *
- * Shows how to use the high-performance configuration
+ * Shows how to use the high-performance configuration.
  * for production workloads with minimal overhead.
  */
 export async function highPerformanceCoordinationExample(): Promise<void> {
@@ -154,9 +161,9 @@ export async function highPerformanceCoordinationExample(): Promise<void> {
 }
 
 /**
- * Example 4: Custom Coordination Configuration
+ * Example 4: Custom Coordination Configuration.
  *
- * Shows how to create a custom coordination manager
+ * Shows how to create a custom coordination manager.
  * with specific configuration for particular use cases.
  */
 export async function customCoordinationExample(): Promise<void> {
@@ -243,7 +250,7 @@ export async function customCoordinationExample(): Promise<void> {
 }
 
 /**
- * Helper function to simulate basic swarm lifecycle
+ * Helper function to simulate basic swarm lifecycle.
  *
  * @param coordinator
  */
@@ -284,7 +291,7 @@ async function simulateSwarmLifecycle(coordinator: CoordinationEventAdapter): Pr
 }
 
 /**
- * Helper function to simulate complex coordination workflow
+ * Helper function to simulate complex coordination workflow.
  *
  * @param coordinator
  */
@@ -339,7 +346,7 @@ async function simulateComplexCoordinationWorkflow(
 }
 
 /**
- * Helper function to simulate research coordination
+ * Helper function to simulate research coordination.
  *
  * @param coordinator
  */
@@ -380,7 +387,7 @@ async function simulateResearchCoordination(coordinator: CoordinationEventAdapte
 }
 
 /**
- * Main function to run all examples
+ * Main function to run all examples.
  */
 export async function runCoordinationExamples(): Promise<void> {
   try {

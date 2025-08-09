@@ -1,7 +1,12 @@
 /**
- * Scoped provider implementation
- * Creates one instance per scope lifetime
+ * Scoped provider implementation.
+ * Creates one instance per scope lifetime.
  */
+/**
+ * @file scoped-provider implementation
+ */
+
+
 
 import type { DIContainer, DIScope, Provider } from '../types/di-types';
 
@@ -48,6 +53,6 @@ export class ScopedProvider<T> implements Provider<T> {
    */
   clearInstances(): void {
     // WeakMap automatically clears when scopes are garbage collected
-    // This method is mainly for explicit cleanup if needed
+    // This method is mainly for explicit cleanup if needed.
   }
 }

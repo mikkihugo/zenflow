@@ -484,7 +484,7 @@ export interface IMetricsCollector {
 }
 
 /**
- * ClaudeZenFacade - Main system facade providing simplified access to all subsystems
+ * ClaudeZenFacade - Main system facade providing simplified access to all subsystems.
  * Implements comprehensive orchestration with dependency injection and error handling.
  *
  * @example
@@ -926,8 +926,16 @@ export class ClaudeZenFacade extends EventEmitter {
       const operation = operations[i];
 
       if (!operation) {
-        errors.push({ error: new Error('Operation is undefined'), operationIndex: i, operation: 'unknown' });
-        results?.push({ success: false, error: new Error('Operation is undefined'), operationIndex: i });
+        errors.push({
+          error: new Error('Operation is undefined'),
+          operationIndex: i,
+          operation: 'unknown',
+        });
+        results.push({
+          success: false,
+          error: new Error('Operation is undefined'),
+          operationIndex: i,
+        });
         continue;
       }
 
@@ -954,7 +962,7 @@ export class ClaudeZenFacade extends EventEmitter {
             throw new Error(`Unknown operation type: ${operation.type}`);
         }
 
-        results?.push({ success: true, data: result, operationIndex: i });
+        results.push({ success: true, data: result, operationIndex: i });
 
         // Emit progress update
         this.emit('batch:progress', {
@@ -964,12 +972,12 @@ export class ClaudeZenFacade extends EventEmitter {
         });
       } catch (error) {
         errors.push({ error, operationIndex: i, operation: operation.type });
-        results?.push({ success: false, error, operationIndex: i });
+        results.push({ success: false, error, operationIndex: i });
       }
     }
 
     this.logger.info('Batch execution completed', {
-      successful: results?.filter((r) => r.success).length,
+      successful: results.filter((r) => r.success).length,
       failed: errors.length,
       operationId,
     });
@@ -1031,7 +1039,7 @@ export class ClaudeZenFacade extends EventEmitter {
     const errors: string[] = [];
     const warnings: string[] = [];
 
-    if (!config?.name || config?.name?.trim().length === 0) {
+    if (!config?.name || config?.name.trim().length === 0) {
       errors.push('Project name is required');
     }
 
@@ -1344,7 +1352,7 @@ export class ClaudeZenFacade extends EventEmitter {
         });
       }
 
-      if (status.errors?.length) {
+      if (status.errors.length) {
         status.errors.forEach((error) => {
           alerts.push({
             id: `error-${component}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,

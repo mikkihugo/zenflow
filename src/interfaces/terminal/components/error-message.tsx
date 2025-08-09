@@ -1,9 +1,14 @@
 /**
- * Unified Error Message Component
+ * Unified Error Message Component.
  *
  * Displays error messages with appropriate styling and optional actions.
  * Consolidates error display functionality from both command execution and interactive terminal interfaces.
  */
+/**
+ * @file Interface implementation: error-message
+ */
+
+
 
 import { Box, Text } from 'ink';
 import type React from 'react';
@@ -19,7 +24,7 @@ export interface ErrorMessageProps {
 }
 
 /**
- * Unified Error Message Component
+ * Unified Error Message Component.
  *
  * Displays error information with context-appropriate styling and actions.
  *
@@ -71,28 +76,27 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
   };
 
   const config = getVariantConfig();
-  const displayTitle = title === 'Error' ? config.prefix : title;
+  const displayTitle = title === 'Error' ? config?.prefix : title;
 
   return (
     <Box flexDirection="column">
       {/* Error header */}
       <Box
         borderStyle={showBorder ? 'single' : undefined}
-        borderColor={config.borderColor}
+        borderColor={config?.borderColor}
         padding={showBorder ? 1 : 0}
         marginBottom={showBorder ? 0 : 1}
       >
         <Box flexDirection="column">
-          <Text bold color={config.color}>
-            {config.icon} {displayTitle}
+          <Text bold color={config?.color}>
+            {config?.icon} {displayTitle}
           </Text>
 
           <Box marginTop={1}>
-            <Text color={config.color}>{errorMessage}</Text>
+            <Text color={config?.color}>{errorMessage}</Text>
           </Box>
         </Box>
       </Box>
-
       {/* Stack trace */}
       {showStack && errorStack && (
         <Box borderStyle="single" borderColor="gray" padding={1} marginTop={1}>
@@ -106,7 +110,6 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
           </Box>
         </Box>
       )}
-
       {/* Available actions */}
       {actions && actions.length > 0 && (
         <Box marginTop={1}>

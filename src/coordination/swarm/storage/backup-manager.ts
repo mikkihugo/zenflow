@@ -1,9 +1,14 @@
 /**
  * Swarm Backup & Recovery System.
  *
- * Provides automated daily backups and disaster recovery
+ * Provides automated daily backups and disaster recovery.
  * for hundreds of swarms with simple tar-based storage.
  */
+/**
+ * @file backup management system
+ */
+
+
 
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -235,7 +240,7 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   private async saveMetadata(metadata: BackupMetadata): Promise<void> {
-    const metadataPath = path.join(this.backupsPath, 'metadata', `${metadata.id}.json`);
+    const metadataPath = path.join(this.backupsPath, 'metadata', `${metadata?.id}.json`);
     await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
   }
 

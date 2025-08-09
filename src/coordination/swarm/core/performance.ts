@@ -1,7 +1,14 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-performance");
 /**
- * Performance Analysis CLI for ruv-swarm
+ * @file Coordination system: performance
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-performance');
+
+/**
+ * Performance Analysis CLI for ruv-swarm.
  * Provides performance analysis, optimization, and suggestions.
  */
 
@@ -248,8 +255,8 @@ class PerformanceCLI {
     const selectedOpt = optimizations[target] || optimizations.balanced;
 
     try {
-      for (let i = 0; i < selectedOpt.changes.length; i++) {
-        const _change = selectedOpt.changes[i];
+      for (let i = 0; i < selectedOpt?.changes.length; i++) {
+        const _change = selectedOpt?.changes?.[i];
 
         if (!dryRun) {
           // Simulate applying optimization

@@ -1,9 +1,16 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-clients-factories-http-client-factory");
 /**
- * HTTP Client Factory
+ * @file Interface implementation: http-client-factory
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-clients-factories-http-client-factory');
+
+/**
+ * HTTP Client Factory.
  *
- * Factory implementation for creating and managing HTTP clients
+ * Factory implementation for creating and managing HTTP clients.
  * with UACL (Unified API Client Layer) patterns.
  */
 
@@ -12,7 +19,7 @@ import type { HTTPClientConfig } from '../adapters/http-types';
 import type { ClientMetrics, ClientStatus, IClient, IClientFactory } from '../core/interfaces';
 
 /**
- * HTTP Client Factory implementing UACL IClientFactory interface
+ * HTTP Client Factory implementing UACL IClientFactory interface.
  *
  * @example
  */
@@ -27,8 +34,8 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       throw new Error('Factory is shutting down, cannot create new clients');
     }
 
-    if (this.clients.has(config.name)) {
-      throw new Error(`Client with name '${config.name}' already exists`);
+    if (this.clients.has(config?.name)) {
+      throw new Error(`Client with name '${config?.name}' already exists`);
     }
 
     const client = new HTTPClientAdapter(config);
@@ -37,15 +44,15 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     this.setupClientHandlers(client);
 
     // Store client
-    this.clients.set(config.name, client);
+    this.clients.set(config?.name, client);
 
     // Auto-connect if specified
-    if (config.monitoring?.enabled || config.health) {
+    if (config?.monitoring?.enabled || config?.health) {
       try {
         await client.connect();
       } catch (error) {
         // Remove failed client
-        this.clients.delete(config.name);
+        this.clients.delete(config?.name);
         throw error;
       }
     }
@@ -87,7 +94,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
 
       // Create aggregated error
       const errorMessages = errors
-        .map(({ config, error }) => `${config.name}: ${error.message}`)
+        .map(({ config, error }) => `${config?.name}: ${error.message}`)
         .join('; ');
 
       throw new Error(`Failed to create ${errors.length} clients: ${errorMessages}`);
@@ -136,9 +143,9 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     const promises = Array.from(this.clients.entries()).map(async ([name, client]) => {
       try {
         const status = await client.healthCheck();
-        results.set(name, status);
+        results?.set(name, status);
       } catch (error) {
-        results.set(name, {
+        results?.set(name, {
           name,
           status: 'unhealthy',
           lastCheck: new Date(),
@@ -162,10 +169,10 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     const promises = Array.from(this.clients.entries()).map(async ([name, client]) => {
       try {
         const metrics = await client.getMetrics();
-        results.set(name, metrics);
+        results?.set(name, metrics);
       } catch (_error) {
         // Return empty metrics on error
-        results.set(name, {
+        results?.set(name, {
           name,
           requestCount: 0,
           successCount: 0,
@@ -207,7 +214,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
   // ===== HTTP-Specific Factory Methods =====
 
   /**
-   * Create HTTP client with authentication preset
+   * Create HTTP client with authentication preset.
    *
    * @param name
    * @param baseURL
@@ -268,7 +275,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
   }
 
   /**
-   * Create HTTP client with retry configuration
+   * Create HTTP client with retry configuration.
    *
    * @param name
    * @param baseURL
@@ -290,9 +297,9 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       name,
       baseURL,
       retry: {
-        attempts: retryConfig.attempts,
-        delay: retryConfig.delay,
-        backoff: retryConfig.backoff || 'exponential',
+        attempts: retryConfig?.attempts,
+        delay: retryConfig?.delay,
+        backoff: retryConfig?.backoff || 'exponential',
       },
     };
 
@@ -300,7 +307,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
   }
 
   /**
-   * Create HTTP client with monitoring enabled
+   * Create HTTP client with monitoring enabled.
    *
    * @param name
    * @param baseURL
@@ -330,8 +337,8 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       },
       health: monitoringConfig?.healthCheckInterval
         ? {
-            endpoint: monitoringConfig.healthEndpoint || '/health',
-            interval: monitoringConfig.healthCheckInterval,
+            endpoint: monitoringConfig?.healthEndpoint || '/health',
+            interval: monitoringConfig?.healthCheckInterval,
             timeout: 5000,
             failureThreshold: 3,
             successThreshold: 2,
@@ -343,7 +350,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
   }
 
   /**
-   * Create load-balanced HTTP clients
+   * Create load-balanced HTTP clients.
    *
    * @param baseName
    * @param baseURLs
@@ -387,7 +394,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
   // ===== Utility Methods =====
 
   /**
-   * Get clients by status
+   * Get clients by status.
    *
    * @param status
    */
@@ -408,7 +415,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
   }
 
   /**
-   * Get factory statistics
+   * Get factory statistics.
    */
   getStats(): {
     totalClients: number;
@@ -441,7 +448,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
   // ===== Private Helper Methods =====
 
   /**
-   * Setup event handlers for created clients
+   * Setup event handlers for created clients.
    *
    * @param client
    */
@@ -459,12 +466,12 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
 }
 
 /**
- * Default HTTP client factory instance
+ * Default HTTP client factory instance.
  */
 export const httpClientFactory = new HTTPClientFactory();
 
 /**
- * Convenience function to create HTTP client
+ * Convenience function to create HTTP client.
  *
  * @param config
  */
@@ -473,7 +480,7 @@ export const createHTTPClient = async (config: HTTPClientConfig): Promise<IClien
 };
 
 /**
- * Convenience function to create multiple HTTP clients
+ * Convenience function to create multiple HTTP clients.
  *
  * @param configs
  */

@@ -1,14 +1,19 @@
 /**
- * Unified Event Layer (UEL) - Factory Implementation
+ * Unified Event Layer (UEL) - Factory Implementation.
  *
  * Central factory for creating event manager instances based on event type,
  * processing requirements, and configuration. Supports dependency injection and
  * provides a single point of access for all event manager implementations.
  */
+/**
+ * @file Interface implementation: factories
+ */
 
-import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
-import { inject, injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS } from '../../di/tokens/core-tokens';
+
+
+import type { IConfig, ILogger } from '../core/interfaces/base-interfaces';
+import { inject, injectable } from '../di/decorators/injectable';
+import { CORE_TOKENS } from '../di/tokens/core-tokens';
 import type {
   EventManagerConfig,
   EventManagerMetrics,
@@ -34,7 +39,7 @@ import type {
 import { DefaultEventManagerConfigs, EventCategories } from './types';
 
 /**
- * Configuration for event manager creation through factories
+ * Configuration for event manager creation through factories.
  *
  * Provides comprehensive options for customizing event manager creation,
  * including type selection, configuration overrides, and reuse policies.
@@ -79,7 +84,7 @@ export interface EventManagerFactoryConfig {
 }
 
 /**
- * Event manager type mapping for better type safety
+ * Event manager type mapping for better type safety.
  */
 export type EventManagerTypeMap<T extends EventManagerType> = T extends 'system'
   ? ISystemEventManager
@@ -102,7 +107,7 @@ export type EventManagerTypeMap<T extends EventManagerType> = T extends 'system'
                   : IEventManager;
 
 /**
- * Event manager registry for managing event manager instances
+ * Event manager registry for managing event manager instances.
  *
  * @example
  */
@@ -118,7 +123,7 @@ export interface EventManagerRegistry {
 }
 
 /**
- * Event manager transaction for batch operations
+ * Event manager transaction for batch operations.
  *
  * @example
  */
@@ -138,9 +143,9 @@ export interface EventManagerTransaction {
 }
 
 /**
- * Specialized system event manager interface for system lifecycle events
+ * Specialized system event manager interface for system lifecycle events.
  *
- * Extends the base event manager with system-specific methods for handling
+ * Extends the base event manager with system-specific methods for handling.
  * application lifecycle, startup, shutdown, and health monitoring events.
  *
  * @interface ISystemEventManager
@@ -170,7 +175,7 @@ export interface EventManagerTransaction {
  */
 export interface ISystemEventManager extends IEventManager {
   /**
-   * Emit a system lifecycle event
+   * Emit a system lifecycle event.
    *
    * @param event - System lifecycle event to emit
    * @throws {EventEmissionError} If emission fails
@@ -178,7 +183,7 @@ export interface ISystemEventManager extends IEventManager {
   emitSystemEvent(event: SystemLifecycleEvent): Promise<void>;
 
   /**
-   * Subscribe to system lifecycle events
+   * Subscribe to system lifecycle events.
    *
    * @param listener - Function to handle system events
    * @returns Subscription ID for unsubscribing
@@ -186,7 +191,7 @@ export interface ISystemEventManager extends IEventManager {
   subscribeSystemEvents(listener: (event: SystemLifecycleEvent) => void): string;
 
   /**
-   * Get overall system health status
+   * Get overall system health status.
    *
    * @returns Promise resolving to health summary with any issues
    */
@@ -278,7 +283,7 @@ export interface IWorkflowEventManager extends IEventManager {
 }
 
 /**
- * Main factory class for creating UEL event manager instances
+ * Main factory class for creating UEL event manager instances.
  *
  * Provides centralized creation, caching, and management of event managers.
  * Supports factory caching, transaction logging, and batch operations.
@@ -319,9 +324,9 @@ export class UELFactory {
   }
 
   /**
-   * Create an event manager instance with full configuration support
+   * Create an event manager instance with full configuration support.
    *
-   * Creates a new event manager using the appropriate factory, with support for
+   * Creates a new event manager using the appropriate factory, with support for.
    * caching, configuration merging, and automatic registration.
    *
    * @template T - Event manager type
@@ -386,7 +391,7 @@ export class UELFactory {
   }
 
   /**
-   * Create system event manager with convenience methods
+   * Create system event manager with convenience methods.
    *
    * @param name
    * @param config
@@ -404,7 +409,7 @@ export class UELFactory {
   }
 
   /**
-   * Create coordination event manager for swarm operations
+   * Create coordination event manager for swarm operations.
    *
    * @param name
    * @param config
@@ -422,7 +427,7 @@ export class UELFactory {
   }
 
   /**
-   * Create communication event manager for protocol events
+   * Create communication event manager for protocol events.
    *
    * @param name
    * @param config
@@ -440,7 +445,7 @@ export class UELFactory {
   }
 
   /**
-   * Create monitoring event manager for metrics and health
+   * Create monitoring event manager for metrics and health.
    *
    * @param name
    * @param config
@@ -458,7 +463,7 @@ export class UELFactory {
   }
 
   /**
-   * Create interface event manager for UI interactions
+   * Create interface event manager for UI interactions.
    *
    * @param name
    * @param config
@@ -476,7 +481,7 @@ export class UELFactory {
   }
 
   /**
-   * Create neural event manager for AI operations
+   * Create neural event manager for AI operations.
    *
    * @param name
    * @param config
@@ -494,7 +499,7 @@ export class UELFactory {
   }
 
   /**
-   * Create database event manager for DB operations
+   * Create database event manager for DB operations.
    *
    * @param name
    * @param config
@@ -512,7 +517,7 @@ export class UELFactory {
   }
 
   /**
-   * Create memory event manager for cache operations
+   * Create memory event manager for cache operations.
    *
    * @param name
    * @param config
@@ -529,7 +534,7 @@ export class UELFactory {
   }
 
   /**
-   * Create workflow event manager for orchestration
+   * Create workflow event manager for orchestration.
    *
    * @param name
    * @param config
@@ -547,7 +552,7 @@ export class UELFactory {
   }
 
   /**
-   * Get event manager by ID from registry
+   * Get event manager by ID from registry.
    *
    * @param managerId
    */
@@ -556,14 +561,14 @@ export class UELFactory {
   }
 
   /**
-   * List all registered event managers
+   * List all registered event managers.
    */
   listEventManagers(): EventManagerRegistry {
     return { ...this.managerRegistry };
   }
 
   /**
-   * Health check for all event managers
+   * Health check for all event managers.
    */
   async healthCheckAll(): Promise<EventManagerStatus[]> {
     const results: EventManagerStatus[] = [];
@@ -596,9 +601,9 @@ export class UELFactory {
   }
 
   /**
-   * Execute transaction across multiple event managers
+   * Execute transaction across multiple event managers.
    *
-   * Performs multiple operations across different event managers as a coordinated
+   * Performs multiple operations across different event managers as a coordinated.
    * transaction with rollback support and detailed logging.
    *
    * @param operations - Array of operations to execute across managers
@@ -670,10 +675,10 @@ export class UELFactory {
       // Update operation results
       transaction.operations.forEach((op, index) => {
         const result = results[index];
-        if (result.status === 'fulfilled') {
-          op.result = result.value;
+        if (result?.status === 'fulfilled') {
+          op.result = result?.value;
         } else {
-          op.error = result.reason;
+          op.error = result?.reason;
         }
       });
 
@@ -691,7 +696,7 @@ export class UELFactory {
   }
 
   /**
-   * Stop and clean up all event managers
+   * Stop and clean up all event managers.
    */
   async shutdownAll(): Promise<void> {
     this.logger.info('Shutting down all event managers');
@@ -715,7 +720,7 @@ export class UELFactory {
   }
 
   /**
-   * Get factory statistics
+   * Get factory statistics.
    */
   getStats(): {
     totalManagers: number;
@@ -752,7 +757,7 @@ export class UELFactory {
   }
 
   /**
-   * Private methods for internal operations
+   * Private methods for internal operations.
    */
 
   private async initializeFactories(): Promise<void> {
@@ -919,7 +924,8 @@ export class UELFactory {
     preset?: keyof typeof EventManagerPresets
   ): EventManagerConfig {
     const defaults =
-      DefaultEventManagerConfigs[managerType] || DefaultEventManagerConfigs[EventCategories.SYSTEM];
+      DefaultEventManagerConfigs?.[managerType] ||
+      DefaultEventManagerConfigs?.[EventCategories.SYSTEM];
     const presetConfig = preset ? EventManagerPresets[preset] : {};
 
     return {
@@ -969,7 +975,7 @@ export class UELFactory {
   }
 
   private generateManagerId(config: EventManagerConfig): string {
-    return `${config.type}:${config.name}:${Date.now()}`;
+    return `${config?.type}:${config?.name}:${Date.now()}`;
   }
 
   private generateTransactionId(): string {
@@ -978,7 +984,7 @@ export class UELFactory {
 }
 
 /**
- * Event manager registry implementation
+ * Event manager registry implementation.
  *
  * @example
  */
@@ -1027,9 +1033,9 @@ export class UELRegistry implements IEventManagerRegistry {
     for (const [name, manager] of this.globalEventManagers) {
       try {
         const status = await manager.healthCheck();
-        results.set(name, status);
+        results?.set(name, status);
       } catch (error) {
-        results.set(name, {
+        results?.set(name, {
           name: manager.name,
           type: manager.type,
           status: 'unhealthy',
@@ -1065,7 +1071,7 @@ export class UELRegistry implements IEventManagerRegistry {
     });
 
     const allMetrics = (await Promise.allSettled(metricsPromises))
-      .filter((result) => result.status === 'fulfilled' && result.value !== null)
+      .filter((result) => result?.status === 'fulfilled' && result?.value !== null)
       .map((result) => (result as PromiseFulfilledResult<EventManagerMetrics>).value);
 
     const totalEvents = allMetrics.reduce((sum, metrics) => sum + metrics.eventsProcessed, 0);
@@ -1121,7 +1127,7 @@ export class UELRegistry implements IEventManagerRegistry {
 // Convenience factory functions (following DAL/UACL/USL pattern)
 
 /**
- * Create a simple event manager for quick setup
+ * Create a simple event manager for quick setup.
  *
  * @param managerType
  * @param name
@@ -1159,7 +1165,7 @@ export async function createEventManager<T extends EventManagerType>(
 }
 
 /**
- * Create system event manager with convenience
+ * Create system event manager with convenience.
  *
  * @param name
  * @param config
@@ -1172,7 +1178,7 @@ export async function createSystemEventBus(
 }
 
 /**
- * Create coordination event manager with convenience
+ * Create coordination event manager with convenience.
  *
  * @param name
  * @param config
@@ -1189,7 +1195,7 @@ export async function createCoordinationEventBus(
 }
 
 /**
- * Create communication event manager with convenience
+ * Create communication event manager with convenience.
  *
  * @param name
  * @param config
@@ -1206,7 +1212,7 @@ export async function createCommunicationEventBus(
 }
 
 /**
- * Create monitoring event manager with convenience
+ * Create monitoring event manager with convenience.
  *
  * @param name
  * @param config

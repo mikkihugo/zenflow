@@ -29,7 +29,7 @@ export interface CLIModuleConfig {
 }
 
 /**
- * Initialize the Advanced CLI Module
+ * Initialize the Advanced CLI Module.
  *
  * @param config
  */
@@ -47,15 +47,15 @@ export async function initializeAdvancedCLI(
   const engine = new AdvancedCLIEngine();
 
   // Configure based on provided settings
-  if (finalConfig.aiAssistance) {
+  if (finalConfig?.aiAssistance) {
     // Enable AI assistance features
   }
 
-  if (finalConfig.realTimeMonitoring) {
+  if (finalConfig?.realTimeMonitoring) {
     // Enable real-time monitoring
   }
 
-  if (finalConfig.autoOptimization) {
+  if (finalConfig?.autoOptimization) {
     // Enable automatic optimization
   }
 
@@ -63,7 +63,7 @@ export async function initializeAdvancedCLI(
 }
 
 /**
- * Create CLI instance with intelligent defaults
+ * Create CLI instance with intelligent defaults.
  *
  * @param _options
  */
@@ -72,7 +72,7 @@ export function createAdvancedCLI(_options: Partial<CLIModuleConfig> = {}): Adva
 }
 
 /**
- * CLI Module Version and Metadata
+ * CLI Module Version and Metadata.
  */
 export const CLI_MODULE_VERSION = '1.0.0';
 export const CLI_MODULE_NAME = 'Advanced CLI & Project Management';
@@ -80,7 +80,7 @@ export const CLI_MODULE_DESCRIPTION =
   'Revolutionary AI-powered project management and coordination platform';
 
 /**
- * Feature Flags and Capabilities
+ * Feature Flags and Capabilities.
  */
 export const CLI_CAPABILITIES = {
   intelligentScaffolding: true,
@@ -94,7 +94,7 @@ export const CLI_CAPABILITIES = {
 };
 
 /**
- * Default CLI Export
+ * Default CLI Export.
  */
 export default {
   AdvancedCLIEngine,

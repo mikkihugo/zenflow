@@ -1,16 +1,21 @@
 /**
- * Coordination Service Implementation
+ * Coordination Service Implementation.
  *
- * Service implementation for swarm coordination, orchestration, and
+ * Service implementation for swarm coordination, orchestration, and.
  * multi-agent management. Integrates with existing coordination systems.
  */
+/**
+ * @file coordination service implementation
+ */
+
+
 
 import type { IService } from '../core/interfaces';
 import type { CoordinationServiceConfig, ServiceOperationOptions } from '../types';
 import { BaseService } from './base-service';
 
 /**
- * Coordination service implementation
+ * Coordination service implementation.
  *
  * @example
  */
@@ -21,7 +26,7 @@ export class CoordinationService extends BaseService implements IService {
   private activeWorkflows = new Map<string, any>();
 
   constructor(config: CoordinationServiceConfig) {
-    super(config.name, config.type, config);
+    super(config?.name, config?.type, config);
 
     // Add coordination service capabilities
     this.addCapability('swarm-coordination');
@@ -42,21 +47,21 @@ export class CoordinationService extends BaseService implements IService {
 
     // Initialize coordination configuration
     const coordination = {
-      topology: config.coordination?.topology || 'mesh',
-      maxAgents: config.coordination?.maxAgents || 10,
-      strategy: config.coordination?.strategy || 'adaptive',
-      timeout: config.coordination?.timeout || 30000,
+      topology: config?.coordination?.topology || 'mesh',
+      maxAgents: config?.coordination?.maxAgents || 10,
+      strategy: config?.coordination?.strategy || 'adaptive',
+      timeout: config?.coordination?.timeout || 30000,
     };
 
     this.logger.debug(`Coordination configuration:`, coordination);
 
     // Initialize persistence if enabled
-    if (config.persistence?.enabled) {
+    if (config?.persistence?.enabled) {
       await this.initializePersistence();
     }
 
     // Initialize recovery if enabled
-    if (config.recovery?.enabled) {
+    if (config?.recovery?.enabled) {
       this.initializeRecovery();
     }
 
@@ -73,7 +78,7 @@ export class CoordinationService extends BaseService implements IService {
 
     // Start recovery monitoring if enabled
     const config = this.config as CoordinationServiceConfig;
-    if (config.recovery?.enabled) {
+    if (config?.recovery?.enabled) {
       this.startRecoveryMonitoring();
     }
 
@@ -125,7 +130,7 @@ export class CoordinationService extends BaseService implements IService {
 
       // Check coordination state health
       const config = this.config as CoordinationServiceConfig;
-      const maxAgents = config.coordination?.maxAgents || 10;
+      const maxAgents = config?.coordination?.maxAgents || 10;
 
       if (this.agents.size > maxAgents) {
         this.logger.warn(`Agent count (${this.agents.size}) exceeds maximum (${maxAgents})`);
@@ -135,7 +140,7 @@ export class CoordinationService extends BaseService implements IService {
       // Check for stuck workflows
       const stuckWorkflows = Array.from(this.activeWorkflows.values()).filter((workflow) => {
         const runTime = Date.now() - workflow.startTime;
-        const timeout = config.coordination?.timeout || 30000;
+        const timeout = config?.coordination?.timeout || 30000;
         return runTime > timeout * 3; // 3x timeout threshold
       });
 
@@ -261,12 +266,12 @@ export class CoordinationService extends BaseService implements IService {
 
     // Add agent to swarm if specified
     if (config?.swarmId) {
-      const swarm = this.swarms.get(config.swarmId);
+      const swarm = this.swarms.get(config?.swarmId);
       if (swarm) {
         swarm.agents.push(agentId);
-        this.logger.info(`Spawned agent ${agentId} in swarm ${config.swarmId}`);
+        this.logger.info(`Spawned agent ${agentId} in swarm ${config?.swarmId}`);
       } else {
-        this.logger.warn(`Swarm ${config.swarmId} not found for agent ${agentId}`);
+        this.logger.warn(`Swarm ${config?.swarmId} not found for agent ${agentId}`);
       }
     } else {
       this.logger.info(`Spawned independent agent: ${agentId}`);
@@ -429,7 +434,7 @@ export class CoordinationService extends BaseService implements IService {
 
   private startRecoveryMonitoring(): void {
     const config = this.config as CoordinationServiceConfig;
-    const checkInterval = config.recovery?.checkInterval || 10000;
+    const checkInterval = config?.recovery?.checkInterval || 10000;
 
     setInterval(() => {
       this.checkRecovery();
@@ -450,7 +455,7 @@ export class CoordinationService extends BaseService implements IService {
   private checkRecovery(): void {
     // Check for agents or workflows that need recovery
     const config = this.config as CoordinationServiceConfig;
-    const timeout = config.coordination?.timeout || 30000;
+    const timeout = config?.coordination?.timeout || 30000;
     const now = Date.now();
 
     // Check for stuck workflows

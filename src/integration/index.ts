@@ -1,9 +1,16 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-integration-index");
 /**
- * Integration Module - Barrel Export
+ * @file integration module exports
+ */
+
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-integration-index');
+
+/**
+ * Integration Module - Barrel Export.
  *
- * Central export point for multi-system integration functionality
+ * Central export point for multi-system integration functionality.
  */
 
 // Core integration components
@@ -13,7 +20,7 @@ export { MultiSystemCoordinator as default } from './multi-system-coordinator';
 // Integration utilities
 export const IntegrationUtils = {
   /**
-   * Validate system compatibility
+   * Validate system compatibility.
    *
    * @param systemA
    * @param systemB
@@ -33,7 +40,7 @@ export const IntegrationUtils = {
   },
 
   /**
-   * Get integration requirements
+   * Get integration requirements.
    *
    * @param systems
    */
@@ -60,7 +67,7 @@ export const IntegrationUtils = {
   },
 
   /**
-   * Check system health
+   * Check system health.
    *
    * @param system
    */
@@ -93,7 +100,7 @@ export class IntegrationFactory {
   private static coordinators = new Map<string, any>();
 
   /**
-   * Create or get integration coordinator
+   * Create or get integration coordinator.
    *
    * @param systems
    * @param instanceKey
@@ -121,7 +128,7 @@ export class IntegrationFactory {
   }
 
   /**
-   * Clear all coordinators
+   * Clear all coordinators.
    */
   static clearCoordinators(): void {
     IntegrationFactory.coordinators.clear();

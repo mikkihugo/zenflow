@@ -1,5 +1,5 @@
 /**
- * Common API Schemas
+ * Common API Schemas.
  *
  * Shared schemas used across multiple API domains.
  * Following OpenAPI 3.0 standards for consistency.
@@ -8,8 +8,8 @@
  */
 
 /**
- * Common pagination parameters
- * Standard across all list endpoints
+ * Common pagination parameters.
+ * Standard across all list endpoints.
  *
  * @example
  */
@@ -19,8 +19,8 @@ export interface PaginationParams {
 }
 
 /**
- * Standard pagination response
- * Consistent pagination metadata across all endpoints
+ * Standard pagination response.
+ * Consistent pagination metadata across all endpoints.
  *
  * @example
  */
@@ -32,8 +32,8 @@ export interface PaginationResponse {
 }
 
 /**
- * Standard list response wrapper
- * Generic container for paginated list responses
+ * Standard list response wrapper.
+ * Generic container for paginated list responses.
  *
  * @example
  */
@@ -43,8 +43,8 @@ export interface ListResponse<T> extends PaginationResponse {
 }
 
 /**
- * Standard API error response
- * Following Google API Design Guide error format
+ * Standard API error response.
+ * Following Google API Design Guide error format.
  *
  * @example
  */
@@ -61,8 +61,8 @@ export interface APIError {
 }
 
 /**
- * Standard success response wrapper
- * Generic container for successful API responses
+ * Standard success response wrapper.
+ * Generic container for successful API responses.
  *
  * @example
  */
@@ -74,8 +74,8 @@ export interface SuccessResponse<T = unknown> {
 }
 
 /**
- * Standard health check response
- * Consistent health check format across all services
+ * Standard health check response.
+ * Consistent health check format across all services.
  *
  * @example
  */
@@ -95,8 +95,8 @@ export interface HealthResponse {
 }
 
 /**
- * Standard metrics response
- * Performance and operational metrics
+ * Standard metrics response.
+ * Performance and operational metrics.
  *
  * @example
  */
@@ -124,8 +124,8 @@ export interface MetricsResponse {
 }
 
 /**
- * Standard sort parameters
- * Consistent sorting across list endpoints
+ * Standard sort parameters.
+ * Consistent sorting across list endpoints.
  *
  * @example
  */
@@ -135,8 +135,8 @@ export interface SortParams {
 }
 
 /**
- * Standard filter parameters
- * Common filtering patterns
+ * Standard filter parameters.
+ * Common filtering patterns.
  *
  * @example
  */
@@ -149,8 +149,8 @@ export interface FilterParams {
 }
 
 /**
- * Standard timestamp fields
- * Common timestamp properties for entities
+ * Standard timestamp fields.
+ * Common timestamp properties for entities.
  *
  * @example
  */
@@ -160,8 +160,8 @@ export interface TimestampFields {
 }
 
 /**
- * Standard identification fields
- * Common ID and metadata for entities
+ * Standard identification fields.
+ * Common ID and metadata for entities.
  *
  * @example
  */
@@ -172,8 +172,8 @@ export interface EntityFields {
 }
 
 /**
- * Standard audit fields
- * Audit trail information
+ * Standard audit fields.
+ * Audit trail information.
  *
  * @example
  */
@@ -185,8 +185,8 @@ export interface AuditFields extends TimestampFields {
 }
 
 /**
- * Standard resource state
- * Common state management for resources
+ * Standard resource state.
+ * Common state management for resources.
  *
  * @example
  */
@@ -197,8 +197,8 @@ export interface ResourceState {
 }
 
 /**
- * Standard configuration fields
- * Common configuration properties
+ * Standard configuration fields.
+ * Common configuration properties.
  *
  * @example
  */
@@ -210,8 +210,8 @@ export interface ConfigurationFields {
 }
 
 /**
- * Standard validation error detail
- * Detailed validation error information
+ * Standard validation error detail.
+ * Detailed validation error information.
  *
  * @example
  */
@@ -224,8 +224,8 @@ export interface ValidationError {
 }
 
 /**
- * Batch operation request
- * Standard format for batch operations
+ * Batch operation request.
+ * Standard format for batch operations.
  *
  * @example
  */
@@ -239,8 +239,8 @@ export interface BatchRequest<T> {
 }
 
 /**
- * Batch operation response
- * Standard format for batch operation results
+ * Batch operation response.
+ * Standard format for batch operation results.
  *
  * @example
  */
@@ -261,8 +261,8 @@ export interface BatchResponse<T> {
 }
 
 /**
- * Standard async operation response
- * For long-running operations
+ * Standard async operation response.
+ * For long-running operations.
  *
  * @example
  */
@@ -279,8 +279,8 @@ export interface AsyncOperationResponse {
 }
 
 /**
- * Standard file upload response
- * For file upload operations
+ * Standard file upload response.
+ * For file upload operations.
  *
  * @example
  */
@@ -296,8 +296,8 @@ export interface FileUploadResponse {
 }
 
 /**
- * Standard rate limit information
- * Rate limiting metadata in response headers
+ * Standard rate limit information.
+ * Rate limiting metadata in response headers.
  *
  * @example
  */

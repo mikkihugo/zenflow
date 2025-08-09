@@ -1,10 +1,17 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-clients-adapters-mcp-client-adapter");
 /**
- * MCP Client Adapter - UACL Implementation
+ * @file Mcp-client adapter implementation.
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-clients-adapters-mcp-client-adapter');
+
+/**
+ * MCP Client Adapter - UACL Implementation.
  *
- * Converts the existing MCP client to implement the UACL IClient interface
- * Supports both stdio and HTTP MCP protocols with unified configuration
+ * Converts the existing MCP client to implement the UACL IClient interface.
+ * Supports both stdio and HTTP MCP protocols with unified configuration.
  */
 
 import { type ChildProcess, spawn } from 'node:child_process';
@@ -23,7 +30,7 @@ import {
 } from '../core/interfaces.js';
 
 /**
- * MCP-specific client configuration
+ * MCP-specific client configuration.
  *
  * @example
  */
@@ -53,7 +60,7 @@ export interface MCPClientConfig extends ClientConfig {
 }
 
 /**
- * MCP Tool definition
+ * MCP Tool definition.
  *
  * @example
  */
@@ -65,7 +72,7 @@ export interface MCPTool {
 }
 
 /**
- * MCP Protocol Message types
+ * MCP Protocol Message types.
  *
  * @example
  */
@@ -83,7 +90,7 @@ export interface MCPMessage {
 }
 
 /**
- * Tool execution result
+ * Tool execution result.
  *
  * @example
  */
@@ -98,7 +105,7 @@ export interface MCPToolResult {
 }
 
 /**
- * MCP Client Adapter - Implements UACL IClient interface
+ * MCP Client Adapter - Implements UACL IClient interface.
  *
  * @example
  */
@@ -132,16 +139,17 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   };
   private _latencyHistory: number[] = [];
   private _lastMetricsUpdate = Date.now();
+  private _messageId = 0;
 
   constructor(config: MCPClientConfig) {
     super();
     this.config = { ...config };
-    this.name = config.name;
-    this._metrics.name = config.name;
+    this.name = config?.name;
+    this._metrics.name = config?.name;
   }
 
   /**
-   * Connect to MCP server
+   * Connect to MCP server.
    */
   async connect(): Promise<void> {
     if (this._isConnected) {
@@ -171,7 +179,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Connect via stdio protocol
+   * Connect via stdio protocol.
    */
   private async _connectStdio(): Promise<void> {
     if (!this.config.command || this.config.command.length === 0) {
@@ -229,7 +237,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Connect via HTTP protocol
+   * Connect via HTTP protocol.
    */
   private async _connectHTTP(): Promise<void> {
     if (!this.config.url) {
@@ -243,13 +251,13 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
       signal: AbortSignal.timeout(this.config.timeout || 10000),
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP connection failed: ${response.status} ${response.statusText}`);
+    if (!response?.ok) {
+      throw new Error(`HTTP connection failed: ${response?.status} ${response?.statusText}`);
     }
   }
 
   /**
-   * Disconnect from MCP server
+   * Disconnect from MCP server.
    */
   async disconnect(): Promise<void> {
     if (!this._isConnected) {
@@ -296,14 +304,14 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Check if connected
+   * Check if connected.
    */
   isConnected(): boolean {
     return this._isConnected;
   }
 
   /**
-   * Perform health check
+   * Perform health check.
    */
   async healthCheck(): Promise<ClientStatus> {
     const startTime = Date.now();
@@ -324,7 +332,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
         const response = await fetch(`${this.config.url}/health`, {
           signal: AbortSignal.timeout(this.config.health?.timeout || 5000),
         });
-        status = response.ok ? 'healthy' : 'degraded';
+        status = response?.ok ? 'healthy' : 'degraded';
       }
 
       responseTime = Date.now() - startTime;
@@ -349,7 +357,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Get performance metrics
+   * Get performance metrics.
    */
   async getMetrics(): Promise<ClientMetrics> {
     this._updateMetrics();
@@ -357,7 +365,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Execute MCP tool (mapped to POST request)
+   * Execute MCP tool (mapped to POST request).
    *
    * @param toolName
    * @param parameters
@@ -403,7 +411,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Get available tools (mapped to GET request)
+   * Get available tools (mapped to GET request).
    *
    * @param endpoint
    * @param options
@@ -437,21 +445,21 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Not supported for MCP - throws error
+   * Not supported for MCP - throws error.
    */
   async put<T = any>(): Promise<ClientResponse<T>> {
     throw new Error('PUT not supported for MCP client');
   }
 
   /**
-   * Not supported for MCP - throws error
+   * Not supported for MCP - throws error.
    */
   async delete<T = any>(): Promise<ClientResponse<T>> {
     throw new Error('DELETE not supported for MCP client');
   }
 
   /**
-   * Update configuration
+   * Update configuration.
    *
    * @param config
    */
@@ -460,7 +468,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Cleanup and destroy client
+   * Cleanup and destroy client.
    */
   async destroy(): Promise<void> {
     await this.disconnect();
@@ -468,7 +476,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Execute MCP tool call
+   * Execute MCP tool call.
    *
    * @param toolName
    * @param parameters
@@ -494,7 +502,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Discover available tools from server
+   * Discover available tools from server.
    */
   private async _discoverTools(): Promise<void> {
     try {
@@ -504,9 +512,9 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
         method: 'tools/list',
       });
 
-      if (response.tools) {
+      if (response?.tools) {
         this._tools.clear();
-        for (const tool of response.tools) {
+        for (const tool of response?.tools) {
           this._tools.set(tool.name, tool);
         }
       }
@@ -516,7 +524,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Send message to MCP server
+   * Send message to MCP server.
    *
    * @param message
    * @param timeout
@@ -534,7 +542,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Send message via stdio
+   * Send message via stdio.
    *
    * @param message
    * @param timeout
@@ -577,7 +585,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Send message via HTTP
+   * Send message via HTTP.
    *
    * @param message
    * @param timeout
@@ -593,25 +601,25 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
       signal: AbortSignal.timeout(timeout),
     });
 
-    if (!response.ok) {
+    if (!response?.ok) {
       throw new ClientError(
-        `HTTP request failed: ${response.status} ${response.statusText}`,
+        `HTTP request failed: ${response?.status} ${response?.statusText}`,
         'HTTP_ERROR',
         this.name
       );
     }
 
-    const result = await response.json();
+    const result = await response?.json();
 
-    if (result.error) {
-      throw new ClientError(`MCP error: ${result.error.message}`, 'MCP_ERROR', this.name);
+    if (result?.error) {
+      throw new ClientError(`MCP error: ${result?.error?.message}`, 'MCP_ERROR', this.name);
     }
 
-    return result.result;
+    return result?.result;
   }
 
   /**
-   * Handle stdio messages
+   * Handle stdio messages.
    *
    * @param data
    */
@@ -644,7 +652,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Get authentication headers for HTTP
+   * Get authentication headers for HTTP.
    */
   private _getAuthHeaders(): Record<string, string> {
     const headers: Record<string, string> = {};
@@ -668,14 +676,14 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Generate next message ID
+   * Generate next message ID.
    */
   private _nextMessageId(): number {
     return ++this._messageId;
   }
 
   /**
-   * Record latency for metrics
+   * Record latency for metrics.
    *
    * @param latency
    */
@@ -689,7 +697,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Calculate error rate
+   * Calculate error rate.
    */
   private _calculateErrorRate(): number {
     if (this._metrics.requestCount === 0) return 0;
@@ -697,7 +705,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Update metrics
+   * Update metrics.
    */
   private _updateMetrics(): void {
     const now = Date.now();
@@ -720,7 +728,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
 }
 
 /**
- * MCP Client Factory - Creates and manages MCP clients
+ * MCP Client Factory - Creates and manages MCP clients.
  *
  * @example
  */
@@ -728,18 +736,18 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
   private _clients: Map<string, MCPClientAdapter> = new Map();
 
   /**
-   * Create new MCP client
+   * Create new MCP client.
    *
    * @param config
    */
   async create(config: MCPClientConfig): Promise<IClient> {
     const client = new MCPClientAdapter(config);
-    this._clients.set(config.name, client);
+    this._clients.set(config?.name, client);
     return client;
   }
 
   /**
-   * Create multiple MCP clients
+   * Create multiple MCP clients.
    *
    * @param configs
    */
@@ -755,7 +763,7 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
   }
 
   /**
-   * Get client by name
+   * Get client by name.
    *
    * @param name
    */
@@ -764,14 +772,14 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
   }
 
   /**
-   * List all clients
+   * List all clients.
    */
   list(): IClient[] {
     return Array.from(this._clients.values());
   }
 
   /**
-   * Check if client exists
+   * Check if client exists.
    *
    * @param name
    */
@@ -780,7 +788,7 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
   }
 
   /**
-   * Remove client
+   * Remove client.
    *
    * @param name
    */
@@ -793,7 +801,7 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
   }
 
   /**
-   * Health check all clients
+   * Health check all clients.
    */
   async healthCheckAll(): Promise<Map<string, ClientStatus>> {
     const results = new Map<string, ClientStatus>();
@@ -801,9 +809,9 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
     for (const [name, client] of this._clients) {
       try {
         const status = await client.healthCheck();
-        results.set(name, status);
+        results?.set(name, status);
       } catch (error) {
-        results.set(name, {
+        results?.set(name, {
           name,
           status: 'unhealthy',
           lastCheck: new Date(),
@@ -819,7 +827,7 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
   }
 
   /**
-   * Get metrics for all clients
+   * Get metrics for all clients.
    */
   async getMetricsAll(): Promise<Map<string, ClientMetrics>> {
     const results = new Map<string, ClientMetrics>();
@@ -827,7 +835,7 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
     for (const [name, client] of this._clients) {
       try {
         const metrics = await client.getMetrics();
-        results.set(name, metrics);
+        results?.set(name, metrics);
       } catch (error) {
         // Skip failed metrics
         logger.warn(`Failed to get metrics for ${name}:`, error);
@@ -838,7 +846,7 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
   }
 
   /**
-   * Shutdown all clients
+   * Shutdown all clients.
    */
   async shutdown(): Promise<void> {
     const shutdownPromises = Array.from(this._clients.values()).map((client) =>
@@ -852,7 +860,7 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
   }
 
   /**
-   * Get active client count
+   * Get active client count.
    */
   getActiveCount(): number {
     return this._clients.size;
@@ -860,7 +868,7 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
 }
 
 /**
- * Helper function to create MCP client configurations from legacy format
+ * Helper function to create MCP client configurations from legacy format.
  *
  * @param name
  * @param legacyConfig
@@ -869,6 +877,7 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
  * @param legacyConfig.command
  * @param legacyConfig.timeout
  * @param legacyConfig.capabilities
+ * @example
  */
 export function createMCPConfigFromLegacy(
   name: string,
@@ -880,15 +889,15 @@ export function createMCPConfigFromLegacy(
     capabilities?: string[];
   }
 ): MCPClientConfig {
-  const protocol = legacyConfig.command ? 'stdio' : 'http';
+  const protocol = legacyConfig?.command ? 'stdio' : 'http';
 
   return {
     name,
-    baseURL: legacyConfig.url || '',
+    baseURL: legacyConfig?.url || '',
     protocol,
-    command: legacyConfig.command,
-    url: legacyConfig.url,
-    timeout: legacyConfig.timeout || 30000,
+    command: legacyConfig?.command,
+    url: legacyConfig?.url,
+    timeout: legacyConfig?.timeout || 30000,
     authentication: { type: 'none' },
     tools: {
       timeout: 30000,
@@ -898,7 +907,7 @@ export function createMCPConfigFromLegacy(
     server: {
       name,
       version: '1.0.0',
-      capabilities: legacyConfig.capabilities || [],
+      capabilities: legacyConfig?.capabilities || [],
     },
     stdio: {
       encoding: 'utf8',

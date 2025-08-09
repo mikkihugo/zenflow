@@ -1,13 +1,18 @@
 /**
- * Neural Network Core Implementation
+ * Neural Network Core Implementation.
  *
- * TypeScript wrapper for WASM neural network functionality
+ * TypeScript wrapper for WASM neural network functionality.
  * Consolidated from swarm-zen/neural-network.ts with enhanced type safety
  */
 
 // =============================================================================
 // INTERFACES & TYPES
 // =============================================================================
+/**
+ * @file Neural network: network
+ */
+
+
 
 export interface NetworkConfig {
   inputSize: number;
@@ -153,7 +158,7 @@ export const COGNITIVE_PATTERNS = {
 const wasmModule: any = null;
 
 /**
- * Initialize the WASM neural network module
+ * Initialize the WASM neural network module.
  */
 export async function initializeNeuralWasm(): Promise<any> {
   if (wasmModule) return wasmModule;
@@ -174,7 +179,7 @@ export async function initializeNeuralWasm(): Promise<any> {
 // =============================================================================
 
 /**
- * Neural Network wrapper for WASM implementation
+ * Neural Network wrapper for WASM implementation.
  *
  * @example
  */
@@ -189,7 +194,7 @@ export class NeuralNetwork {
   }
 
   /**
-   * Run inference on the network
+   * Run inference on the network.
    *
    * @param inputs
    */
@@ -198,14 +203,14 @@ export class NeuralNetwork {
   }
 
   /**
-   * Get network weights
+   * Get network weights.
    */
   getWeights(): Float32Array {
     return this.network.get_weights();
   }
 
   /**
-   * Set network weights
+   * Set network weights.
    *
    * @param weights
    */
@@ -214,14 +219,14 @@ export class NeuralNetwork {
   }
 
   /**
-   * Get network information and metrics
+   * Get network information and metrics.
    */
   getInfo(): NetworkInfo {
     return this.network.get_network_info();
   }
 
   /**
-   * Set training data for the network
+   * Set training data for the network.
    *
    * @param data
    */
@@ -230,7 +235,7 @@ export class NeuralNetwork {
   }
 
   /**
-   * Get internal network reference for training
+   * Get internal network reference for training.
    */
   getInternalNetwork(): any {
     return this.network;
@@ -242,7 +247,7 @@ export class NeuralNetwork {
 // =============================================================================
 
 /**
- * Neural Network trainer with various algorithms
+ * Neural Network trainer with various algorithms.
  *
  * @example
  */
@@ -257,7 +262,7 @@ export class NeuralTrainer {
   }
 
   /**
-   * Train a single epoch
+   * Train a single epoch.
    *
    * @param network
    * @param data
@@ -267,7 +272,7 @@ export class NeuralTrainer {
   }
 
   /**
-   * Train until target error is reached
+   * Train until target error is reached.
    *
    * @param network
    * @param data
@@ -289,14 +294,14 @@ export class NeuralTrainer {
   }
 
   /**
-   * Get training history
+   * Get training history.
    */
   getTrainingHistory(): any[] {
     return this.trainer.get_training_history();
   }
 
   /**
-   * Get algorithm information
+   * Get algorithm information.
    */
   getAlgorithmInfo(): any {
     return this.trainer.get_algorithm_info();
@@ -308,7 +313,7 @@ export class NeuralTrainer {
 // =============================================================================
 
 /**
- * Manager for agent-specific neural networks
+ * Manager for agent-specific neural networks.
  *
  * @example
  */
@@ -320,7 +325,7 @@ export class AgentNeuralManager {
   }
 
   /**
-   * Create a neural network for a specific agent
+   * Create a neural network for a specific agent.
    *
    * @param config
    */
@@ -329,7 +334,7 @@ export class AgentNeuralManager {
   }
 
   /**
-   * Train an agent's neural network
+   * Train an agent's neural network.
    *
    * @param agentId
    * @param data
@@ -339,7 +344,7 @@ export class AgentNeuralManager {
   }
 
   /**
-   * Get inference results from an agent's network
+   * Get inference results from an agent's network.
    *
    * @param agentId
    * @param inputs
@@ -349,7 +354,7 @@ export class AgentNeuralManager {
   }
 
   /**
-   * Get cognitive state of an agent
+   * Get cognitive state of an agent.
    *
    * @param agentId
    */
@@ -358,7 +363,7 @@ export class AgentNeuralManager {
   }
 
   /**
-   * Fine-tune agent network during execution
+   * Fine-tune agent network during execution.
    *
    * @param agentId
    * @param experienceData
@@ -373,13 +378,13 @@ export class AgentNeuralManager {
 // =============================================================================
 
 /**
- * Utility class for working with activation functions
+ * Utility class for working with activation functions.
  *
  * @example
  */
 export class ActivationFunctions {
   /**
-   * Get all available activation functions
+   * Get all available activation functions.
    *
    * @param wasm
    */
@@ -388,7 +393,7 @@ export class ActivationFunctions {
   }
 
   /**
-   * Test an activation function with specific input
+   * Test an activation function with specific input.
    *
    * @param wasm
    * @param name
@@ -405,7 +410,7 @@ export class ActivationFunctions {
   }
 
   /**
-   * Compare all activation functions with given input
+   * Compare all activation functions with given input.
    *
    * @param wasm
    * @param input
@@ -415,7 +420,7 @@ export class ActivationFunctions {
   }
 
   /**
-   * Get properties of a specific activation function
+   * Get properties of a specific activation function.
    *
    * @param wasm
    * @param name
@@ -430,7 +435,7 @@ export class ActivationFunctions {
 // =============================================================================
 
 /**
- * Cascade correlation trainer
+ * Cascade correlation trainer.
  *
  * @example
  */
@@ -451,21 +456,21 @@ export class CascadeTrainer {
   }
 
   /**
-   * Train using cascade correlation
+   * Train using cascade correlation.
    */
   async train(): Promise<any> {
     return this.trainer.train();
   }
 
   /**
-   * Get trainer configuration
+   * Get trainer configuration.
    */
   getConfig(): any {
     return this.trainer.get_config();
   }
 
   /**
-   * Get default cascade configuration
+   * Get default cascade configuration.
    *
    * @param wasm
    */
@@ -474,7 +479,7 @@ export class CascadeTrainer {
   }
 
   /**
-   * Get default configuration for this trainer
+   * Get default configuration for this trainer.
    */
   private getDefaultConfig(): CascadeConfig {
     return CascadeTrainer.getDefaultConfig(this.wasm);
@@ -486,7 +491,7 @@ export class CascadeTrainer {
 // =============================================================================
 
 /**
- * Create a neural network with the given configuration
+ * Create a neural network with the given configuration.
  *
  * @param config
  */
@@ -496,7 +501,7 @@ export async function createNeuralNetwork(config: NetworkConfig): Promise<Neural
 }
 
 /**
- * Create a trainer with the given configuration
+ * Create a trainer with the given configuration.
  *
  * @param config
  */
@@ -506,7 +511,7 @@ export async function createTrainer(config: TrainingConfig): Promise<NeuralTrain
 }
 
 /**
- * Create an agent neural manager
+ * Create an agent neural manager.
  */
 export async function createAgentNeuralManager(): Promise<AgentNeuralManager> {
   const wasm = await initializeNeuralWasm();
@@ -514,7 +519,7 @@ export async function createAgentNeuralManager(): Promise<AgentNeuralManager> {
 }
 
 /**
- * Create a cascade trainer
+ * Create a cascade trainer.
  *
  * @param config
  * @param network
@@ -534,34 +539,34 @@ export async function createCascadeTrainer(
 // =============================================================================
 
 /**
- * Validate network configuration
+ * Validate network configuration.
  *
  * @param config
  */
 export function validateNetworkConfig(config: NetworkConfig): boolean {
   return (
-    config.inputSize > 0 &&
-    config.outputSize > 0 &&
-    config.hiddenLayers.length > 0 &&
-    config.hiddenLayers.every((layer) => layer.size > 0)
+    config?.inputSize > 0 &&
+    config?.outputSize > 0 &&
+    config?.hiddenLayers.length > 0 &&
+    config?.hiddenLayers.every((layer) => layer.size > 0)
   );
 }
 
 /**
- * Validate training configuration
+ * Validate training configuration.
  *
  * @param config
  */
 export function validateTrainingConfig(config: TrainingConfig): boolean {
   return (
-    config.maxEpochs > 0 &&
-    config.targetError >= 0 &&
-    Object.values(TRAINING_ALGORITHMS).includes(config.algorithm)
+    config?.maxEpochs > 0 &&
+    config?.targetError >= 0 &&
+    Object.values(TRAINING_ALGORITHMS).includes(config?.algorithm)
   );
 }
 
 /**
- * Get recommended network configuration for agent type
+ * Get recommended network configuration for agent type.
  *
  * @param cognitivePattern
  * @param inputSize

@@ -1,8 +1,15 @@
-import { getLogger } from "./config/logging-config";
-const logger = getLogger("test-pseudocode-engine");
 /**
- * Simple manual test for SPARC Pseudocode Engine
- * Tests core functionality without complex jest setup
+ * @file test-pseudocode processing engine
+ */
+
+
+import { getLogger } from './config/logging-config';
+
+const logger = getLogger('test-pseudocode-engine');
+
+/**
+ * Simple manual test for SPARC Pseudocode Engine.
+ * Tests core functionality without complex jest setup.
  */
 
 import { PseudocodePhaseEngine } from './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine';
@@ -75,10 +82,10 @@ async function testPseudocodeEngine() {
 // Run the test if this file is executed directly
 if (require.main === module) {
   testPseudocodeEngine().then((result) => {
-    if (result.success) {
+    if (result?.success) {
       process.exit(0);
     } else {
-      logger.error('💥 Manual test failed:', result.error);
+      logger.error('💥 Manual test failed:', result?.error);
       process.exit(1);
     }
   });

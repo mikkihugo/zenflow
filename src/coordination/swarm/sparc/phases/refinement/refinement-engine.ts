@@ -4,6 +4,11 @@
  * Handles the fourth phase of SPARC methodology - performance optimization,
  * iterative improvement, and quality enhancement.
  */
+/**
+ * @file refinement processing engine
+ */
+
+
 
 import { nanoid } from 'nanoid';
 import type {
@@ -34,7 +39,7 @@ import type {
   TechnicalDebtAnalysis,
   UpdatedArchitecture,
   ValidationResult,
-} from '../../types/sparc-types';
+} from '../types/sparc-types';
 
 export class RefinementPhaseEngine implements RefinementEngine {
   /**
@@ -870,7 +875,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   // Helper methods
   private calculateImprovedPerformance(currentPerformance: string): string {
-    const currentMs = parseInt(currentPerformance.replace(/[^\d]/g, ''));
+    const currentMs = parseInt(currentPerformance?.replace(/[^\d]/g, ''));
     const improvedMs = Math.max(1, Math.floor(currentMs * 0.2)); // 80% improvement
     return `${improvedMs}ms`;
   }
@@ -951,7 +956,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     });
 
     const overallScore =
-      validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
+      validationResults.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
 
     return {
       overallScore,
@@ -970,8 +975,8 @@ export class RefinementPhaseEngine implements RefinementEngine {
     const recommendations: string[] = [];
 
     for (const result of validationResults) {
-      if (!result.passed) {
-        switch (result.criterion) {
+      if (!result?.passed) {
+        switch (result?.criterion) {
           case 'Optimization strategies':
             recommendations.push(
               'Define comprehensive optimization strategies for all identified issues'

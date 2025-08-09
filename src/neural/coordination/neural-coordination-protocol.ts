@@ -1,8 +1,14 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("neural-coordination-neural-coordination-protocol");
 /**
- * Neural Coordination Protocol
- * Enables sophisticated coordination between neural network agents
+ * @file Coordination system: neural-coordination-protocol
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('neural-coordination-neural-coordination-protocol');
+/**
+ * Neural Coordination Protocol.
+ * Enables sophisticated coordination between neural network agents.
  */
 
 interface CoordinationStrategy {
@@ -94,7 +100,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Initialize coordination strategies
+   * Initialize coordination strategies.
    */
   private initializeCoordinationStrategies(): void {
     // Hierarchical Coordination
@@ -267,7 +273,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Initialize consensus protocols
+   * Initialize consensus protocols.
    */
   private initializeConsensusProtocols(): void {
     // Proof of Stake Consensus
@@ -340,7 +346,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Register agent with coordination protocol
+   * Register agent with coordination protocol.
    *
    * @param agentId
    * @param agent
@@ -375,7 +381,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Analyze agent capabilities for coordination
+   * Analyze agent capabilities for coordination.
    *
    * @param agent
    */
@@ -428,7 +434,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Initialize coordination session
+   * Initialize coordination session.
    *
    * @param session
    */
@@ -466,7 +472,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Select optimal coordination strategy for session
+   * Select optimal coordination strategy for session.
    *
    * @param session
    */
@@ -532,7 +538,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Calculate scalability score for agent count
+   * Calculate scalability score for agent count.
    *
    * @param agentCount
    * @param strategyScalability
@@ -544,7 +550,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Calculate session trust level
+   * Calculate session trust level.
    *
    * @param session
    * @param session.agentIds
@@ -569,7 +575,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Estimate task complexity for session
+   * Estimate task complexity for session.
    *
    * @param session
    */
@@ -593,7 +599,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Check if session has heterogeneous agents
+   * Check if session has heterogeneous agents.
    *
    * @param session
    * @param session.agentIds
@@ -612,7 +618,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Select consensus protocol for strategy
+   * Select consensus protocol for strategy.
    *
    * @param session
    * @param session.agentIds
@@ -637,7 +643,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Build communication graph for session
+   * Build communication graph for session.
    *
    * @param agentIds
    * @param strategy
@@ -678,7 +684,7 @@ export class NeuralCoordinationProtocol {
    * Build star topology (one central node connected to all others)
    *
    * @param graph
-   * @param agentIds
+   * @param agentIds.
    */
   private buildStarTopology(graph: Map<string, Set<string>>, agentIds: string[]): void {
     if (agentIds.length === 0) {
@@ -698,7 +704,7 @@ export class NeuralCoordinationProtocol {
    * Build mesh topology (all nodes connected to all others)
    *
    * @param graph
-   * @param agentIds
+   * @param agentIds.
    */
   private buildMeshTopology(graph: Map<string, Set<string>>, agentIds: string[]): void {
     for (let i = 0; i < agentIds.length; i++) {
@@ -715,7 +721,7 @@ export class NeuralCoordinationProtocol {
    * Build ring topology (each node connected to neighbors in a ring)
    *
    * @param graph
-   * @param agentIds
+   * @param agentIds.
    */
   private buildRingTopology(graph: Map<string, Set<string>>, agentIds: string[]): void {
     for (let i = 0; i < agentIds.length; i++) {
@@ -733,7 +739,7 @@ export class NeuralCoordinationProtocol {
    *
    * @param graph
    * @param agentIds
-   * @param radius
+   * @param radius.
    */
   private buildNeighborhoodTopology(
     graph: Map<string, Set<string>>,
@@ -759,7 +765,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Initialize communication channels for session
+   * Initialize communication channels for session.
    *
    * @param session
    */
@@ -792,7 +798,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Calculate communication latency between agents
+   * Calculate communication latency between agents.
    *
    * @param _agentA
    * @param _agentB
@@ -805,7 +811,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Calculate communication bandwidth between agents
+   * Calculate communication bandwidth between agents.
    *
    * @param agentA
    * @param agentB
@@ -824,7 +830,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Calculate communication reliability between agents
+   * Calculate communication reliability between agents.
    *
    * @param agentA
    * @param agentB
@@ -841,7 +847,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Coordinate agents in session
+   * Coordinate agents in session.
    *
    * @param session
    * @param session.id
@@ -884,7 +890,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Execute coordination strategy
+   * Execute coordination strategy.
    *
    * @param session
    */
@@ -1014,7 +1020,7 @@ export class NeuralCoordinationProtocol {
       const metrics = this.coordinationMetrics.get(agentId);
       if (metrics) {
         metrics.consensusParticipation++;
-        if (result.success) {
+        if (result?.success) {
           const currentSuccess = metrics.coordinationSuccessRate * metrics.consensusParticipation;
           metrics.coordinationSuccessRate =
             (currentSuccess + 1) / (metrics.consensusParticipation + 1);
@@ -1028,7 +1034,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Get coordination results for session
+   * Get coordination results for session.
    *
    * @param sessionId
    */
@@ -1037,7 +1043,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Get coordination statistics
+   * Get coordination statistics.
    */
   getStatistics(): any {
     const activeSessions = this.activeSessions.size;

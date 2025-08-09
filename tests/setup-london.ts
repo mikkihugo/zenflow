@@ -1,4 +1,5 @@
 /**
+/// <reference types="./global-types" />
  * London TDD (Mockist) Test Setup
  *
  * @file Setup configuration for interaction-based testing
@@ -88,7 +89,7 @@ function setupDefaultMocks(): void {
  * @param name - Name for the spy function
  * @returns Jest mock function
  */
-(globalThis as any).createInteractionSpy = (name: string): jest.Mock => {
+createInteractionSpy = (name: string): jest.Mock => {
   return jest.fn().mockName(name);
 };
 
@@ -99,7 +100,7 @@ function setupDefaultMocks(): void {
  * @param spy - Jest mock to verify
  * @param expectedCalls - Array of expected call arguments
  */
-(globalThis as any).verifyInteractions = (spy: jest.Mock, expectedCalls: ExpectedCall[]): void => {
+verifyInteractions = (spy: jest.Mock, expectedCalls: ExpectedCall[]): void => {
   expect(spy).toHaveBeenCalledTimes(expectedCalls.length);
   expectedCalls.forEach((call, index) => {
     expect(spy).toHaveBeenNthCalledWith(index + 1, ...call.args);
@@ -113,7 +114,7 @@ function setupDefaultMocks(): void {
  * @param defaults - Default values for the mock object
  * @returns Function that creates mock objects with overrides
  */
-(globalThis as any).createMockFactory = <T>(defaults: Partial<T> = {}) => {
+createMockFactory = <T>(defaults: Partial<T> = {}) => {
   return (overrides: Partial<T> = {}): T =>
     ({
       ...defaults,
@@ -129,7 +130,7 @@ function setupDefaultMocks(): void {
  * @param timeout - Maximum time to wait in milliseconds
  * @throws Error if interaction doesn't occur within timeout
  */
-(globalThis as any).waitForInteraction = async (spy: jest.Mock, timeout = 1000): Promise<void> => {
+waitForInteraction = async (spy: jest.Mock, timeout = 1000): Promise<void> => {
   const start = Date.now();
   while (spy.mock.calls.length === 0 && Date.now() - start < timeout) {
     await new Promise((resolve) => setTimeout(resolve, 10));
@@ -145,9 +146,9 @@ function setupDefaultMocks(): void {
  *
  * @param mockProtocol - Mock protocol function to configure
  */
-(globalThis as any).simulateProtocolHandshake = (mockProtocol: jest.Mock): void => {
+simulateProtocolHandshake = (mockProtocol: jest.Mock): void => {
   // Relax typing because jest v30 mockImplementation expects (...args: unknown[]) => unknown
-  mockProtocol.mockImplementation((message: any): Promise<ProtocolResponse> => {
+  mockProtocol.mockImplementation((message: unknown): Promise<ProtocolResponse> => {
     if (message && message.type === 'handshake') {
       return Promise.resolve({ type: 'handshake_ack', success: true });
     }

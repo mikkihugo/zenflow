@@ -1,13 +1,25 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-neural-safe-neural-network");
 /**
- * Safe Neural Network Operations
+ * @file Neural network: safe-neural-network
+ */
+
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-neural-safe-neural-network');
+
+/**
+ * Safe Neural Network Operations.
  *
- * Provides type-safe neural network operations with proper union type handling
+ * Provides type-safe neural network operations with proper union type handling.
  * for training, inference, and error scenarios.
  */
 
-import { isInferenceResult, isNeuralError, isTrainingResult, isWasmError } from '../utils/type-guards';
+import {
+  isInferenceResult,
+  isNeuralError,
+  isTrainingResult,
+  isWasmError,
+} from '../utils/type-guards';
 
 export interface NeuralNetworkConfig {
   layers: number[];
@@ -35,7 +47,7 @@ export interface TrainingOptions {
 }
 
 /**
- * Type-safe neural network implementation with union type results
+ * Type-safe neural network implementation with union type results.
  *
  * @example
  */
@@ -54,7 +66,7 @@ export class SafeNeuralNetwork {
   }
 
   /**
-   * Initialize the neural network with type-safe result
+   * Initialize the neural network with type-safe result.
    */
   async initialize(): Promise<NeuralResult> {
     try {
@@ -103,7 +115,7 @@ export class SafeNeuralNetwork {
   }
 
   /**
-   * Train the neural network with type-safe result handling
+   * Train the neural network with type-safe result handling.
    *
    * @param data
    * @param options
@@ -149,7 +161,11 @@ export class SafeNeuralNetwork {
         }
 
         // Early stopping check
-        if (options?.earlyStop && options?.patience && epochsWithoutImprovement >= options?.patience) {
+        if (
+          options?.earlyStop &&
+          options?.patience &&
+          epochsWithoutImprovement >= options?.patience
+        ) {
           converged = true;
           break;
         }
@@ -204,7 +220,7 @@ export class SafeNeuralNetwork {
   }
 
   /**
-   * Make predictions with type-safe result handling
+   * Make predictions with type-safe result handling.
    *
    * @param inputs
    */
@@ -467,7 +483,7 @@ export class SafeNeuralNetwork {
 // ============================================
 
 /**
- * Example function showing safe neural network usage
+ * Example function showing safe neural network usage.
  */
 export async function safeNeuralUsageExample(): Promise<void> {
   const config: NeuralNetworkConfig = {

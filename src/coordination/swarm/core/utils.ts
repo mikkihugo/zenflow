@@ -1,11 +1,16 @@
 /**
- * Utility functions for ZenSwarm
+ * Utility functions for ZenSwarm.
  */
+/**
+ * @file Coordination system: utils
+ */
+
+
 
 import type { AgentType, CognitiveProfile, SwarmTopology, TaskPriority } from './types';
 
 /**
- * Generate a unique ID for agents, tasks, and messages
+ * Generate a unique ID for agents, tasks, and messages.
  *
  * @param prefix
  */
@@ -16,7 +21,7 @@ export function generateId(prefix: string = ''): string {
 }
 
 /**
- * Create a default cognitive profile based on agent type
+ * Create a default cognitive profile based on agent type.
  *
  * @param type
  */
@@ -119,7 +124,7 @@ export function getDefaultCognitiveProfile(type: AgentType): CognitiveProfile {
 }
 
 /**
- * Calculate cognitive diversity score between two profiles
+ * Calculate cognitive diversity score between two profiles.
  *
  * @param profile1
  * @param profile2
@@ -140,7 +145,7 @@ export function calculateCognitiveDiversity(
 }
 
 /**
- * Determine optimal topology based on swarm characteristics
+ * Determine optimal topology based on swarm characteristics.
  *
  * @param agentCount
  * @param taskComplexity
@@ -171,7 +176,7 @@ export function recommendTopology(
 }
 
 /**
- * Convert task priority to numeric value for sorting
+ * Convert task priority to numeric value for sorting.
  *
  * @param priority
  */
@@ -186,7 +191,7 @@ export function priorityToNumber(priority: TaskPriority): number {
 }
 
 /**
- * Format swarm metrics for display
+ * Format swarm metrics for display.
  *
  * @param metrics
  * @param metrics.totalTasks
@@ -219,32 +224,32 @@ Swarm Metrics:
 }
 
 /**
- * Validate swarm options
+ * Validate swarm options.
  *
  * @param options
  */
 export function validateSwarmOptions(options: any): string[] {
   const errors: string[] = [];
 
-  if (options.maxAgents !== undefined) {
-    if (typeof options.maxAgents !== 'number' || options.maxAgents < 1) {
+  if (options?.maxAgents !== undefined) {
+    if (typeof options?.maxAgents !== 'number' || options?.maxAgents < 1) {
       errors.push('maxAgents must be a positive number');
     }
   }
 
-  if (options.connectionDensity !== undefined) {
+  if (options?.connectionDensity !== undefined) {
     if (
-      typeof options.connectionDensity !== 'number' ||
-      options.connectionDensity < 0 ||
-      options.connectionDensity > 1
+      typeof options?.connectionDensity !== 'number' ||
+      options?.connectionDensity < 0 ||
+      options?.connectionDensity > 1
     ) {
       errors.push('connectionDensity must be a number between 0 and 1');
     }
   }
 
-  if (options.topology !== undefined) {
+  if (options?.topology !== undefined) {
     const validTopologies = ['mesh', 'hierarchical', 'distributed', 'centralized', 'hybrid'];
-    if (!validTopologies.includes(options.topology)) {
+    if (!validTopologies.includes(options?.topology)) {
       errors.push(`topology must be one of: ${validTopologies.join(', ')}`);
     }
   }
@@ -253,7 +258,7 @@ export function validateSwarmOptions(options: any): string[] {
 }
 
 /**
- * Deep clone an object
+ * Deep clone an object.
  *
  * @param obj
  */
@@ -297,7 +302,7 @@ export function deepClone<T>(obj: T): T {
 }
 
 /**
- * Retry a function with exponential backoff
+ * Retry a function with exponential backoff.
  *
  * @param fn
  * @param maxRetries

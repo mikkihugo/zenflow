@@ -1,14 +1,15 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("interfaces-api-http-di-database-container");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-api-http-di-database-container');
 /**
- * Database Domain DI Container Setup - Simplified
- * Configures dependency injection for database operations
+ * Database Domain DI Container Setup - Simplified.
+ * Configures dependency injection for database operations.
  *
  * @file Simplified DI container configuration for database domain
  */
 
 /**
- * Request interface for database query operations
+ * Request interface for database query operations.
  *
  * @example
  */
@@ -31,7 +32,7 @@ export interface QueryRequest {
 }
 
 /**
- * Request interface for database command operations
+ * Request interface for database command operations.
  *
  * @example
  */
@@ -52,7 +53,7 @@ export interface CommandRequest {
 }
 
 /**
- * Request interface for batch operations
+ * Request interface for batch operations.
  *
  * @example
  */
@@ -73,7 +74,7 @@ export interface BatchRequest {
 }
 
 /**
- * Migration operation interface
+ * Migration operation interface.
  *
  * @example
  */
@@ -89,7 +90,7 @@ export interface MigrationRequest {
 }
 
 /**
- * Response interface for database operations
+ * Response interface for database operations.
  *
  * @example
  */
@@ -116,7 +117,7 @@ export interface DatabaseResponse {
 }
 
 /**
- * Database health status interface
+ * Database health status interface.
  *
  * @example
  */
@@ -140,7 +141,7 @@ export interface DatabaseHealthStatus {
 }
 
 /**
- * Mock logger implementation for DI system
+ * Mock logger implementation for DI system.
  *
  * @example
  */
@@ -162,7 +163,7 @@ class ConsoleLogger {
 }
 
 /**
- * Mock database configuration
+ * Mock database configuration.
  *
  * @example
  */
@@ -187,7 +188,7 @@ interface DatabaseConfig {
 }
 
 /**
- * Connection statistics interface
+ * Connection statistics interface.
  *
  * @example
  */
@@ -199,7 +200,7 @@ interface ConnectionStats {
 }
 
 /**
- * Mock database adapter for testing and development
+ * Mock database adapter for testing and development.
  *
  * @example
  */
@@ -333,7 +334,7 @@ class MockDatabaseAdapter {
 }
 
 /**
- * Database provider factory for creating adapters
+ * Database provider factory for creating adapters.
  *
  * @example
  */
@@ -344,8 +345,8 @@ class MockDatabaseProviderFactory {
 }
 
 /**
- * Simplified Database Controller without DI decorators
- * Provides the same interface as the full DatabaseController
+ * Simplified Database Controller without DI decorators.
+ * Provides the same interface as the full DatabaseController.
  *
  * @example
  */
@@ -375,7 +376,7 @@ class SimplifiedDatabaseController {
   }
 
   /**
-   * Same interface as DatabaseController methods
+   * Same interface as DatabaseController methods.
    */
   async getDatabaseStatus(): Promise<any> {
     const startTime = Date.now();
@@ -452,7 +453,7 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       this.logger.debug(
-        `Query completed successfully in ${executionTime}ms, returned ${result.rowCount} rows`
+        `Query completed successfully in ${executionTime}ms, returned ${result?.rowCount} rows`
       );
 
       return {
@@ -460,11 +461,11 @@ class SimplifiedDatabaseController {
         data: {
           query: request.sql,
           parameters: request.params,
-          results: result.rows,
-          fields: result.fields,
+          results: result?.rows,
+          fields: result?.fields,
         },
         metadata: {
-          rowCount: result.rowCount,
+          rowCount: result?.rowCount,
           executionTime,
           timestamp: Date.now(),
           adapter: this.config.type,
@@ -506,7 +507,7 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       this.logger.debug(
-        `Command completed successfully in ${executionTime}ms, affected ${result.affectedRows} rows`
+        `Command completed successfully in ${executionTime}ms, affected ${result?.affectedRows} rows`
       );
 
       return {
@@ -514,11 +515,11 @@ class SimplifiedDatabaseController {
         data: {
           command: request.sql,
           parameters: request.params,
-          affectedRows: result.affectedRows,
-          insertId: result.insertId,
+          affectedRows: result?.affectedRows,
+          insertId: result?.insertId,
         },
         metadata: {
-          rowCount: result.affectedRows,
+          rowCount: result?.affectedRows,
           executionTime,
           timestamp: Date.now(),
           adapter: this.config.type,
@@ -567,8 +568,8 @@ class SimplifiedDatabaseController {
                 sql: operation.sql,
                 params: operation.params,
                 success: true,
-                rowCount: result.rowCount,
-                data: result.rows,
+                rowCount: result?.rowCount,
+                data: result?.rows,
               });
             } else if (operation.type === 'execute') {
               result = await tx.execute(operation.sql, operation.params);
@@ -577,8 +578,8 @@ class SimplifiedDatabaseController {
                 sql: operation.sql,
                 params: operation.params,
                 success: true,
-                affectedRows: result.affectedRows,
-                insertId: result.insertId,
+                affectedRows: result?.affectedRows,
+                insertId: result?.insertId,
               });
             } else {
               throw new Error(`Unsupported operation type: ${operation.type}`);
@@ -607,8 +608,8 @@ class SimplifiedDatabaseController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      const totalRows = results.reduce((sum, r) => sum + (r.rowCount || r.affectedRows || 0), 0);
-      const successfulOps = results.filter((r) => r.success).length;
+      const totalRows = results?.reduce((sum, r) => sum + (r.rowCount || r.affectedRows || 0), 0);
+      const successfulOps = results?.filter((r) => r.success).length;
 
       this.logger.debug(
         `Transaction completed successfully in ${executionTime}ms, ${successfulOps}/${results.length} operations successful`
@@ -771,8 +772,8 @@ class SimplifiedDatabaseController {
             migrationResults.push({
               statement: `${statement.substring(0, 100)}...`,
               success: true,
-              affectedRows: result.affectedRows,
-              executionTime: result.executionTime,
+              affectedRows: result?.affectedRows,
+              executionTime: result?.executionTime,
             });
           } catch (error) {
             migrationResults.push({
@@ -803,7 +804,7 @@ class SimplifiedDatabaseController {
           successfulStatements: results.length,
         },
         metadata: {
-          rowCount: results.reduce((sum, r) => sum + (r.affectedRows || 0), 0),
+          rowCount: results?.reduce((sum, r) => sum + (r.affectedRows || 0), 0),
           executionTime,
           timestamp: Date.now(),
           adapter: this.config.type,
@@ -910,7 +911,7 @@ class SimplifiedDatabaseController {
   /**
    * Check if SQL statement is a query (SELECT)
    *
-   * @param sql
+   * @param sql.
    */
   private isQueryStatement(sql: string): boolean {
     const trimmedSql = sql.trim().toLowerCase();
@@ -924,7 +925,7 @@ class SimplifiedDatabaseController {
   }
 
   /**
-   * Update performance metrics
+   * Update performance metrics.
    *
    * @param responseTime
    * @param success
@@ -939,7 +940,7 @@ class SimplifiedDatabaseController {
   }
 
   /**
-   * Calculate operations per second
+   * Calculate operations per second.
    */
   private calculateOperationsPerSecond(): number {
     const uptimeSeconds = (Date.now() - this.performanceMetrics.startTime) / 1000;
@@ -948,12 +949,12 @@ class SimplifiedDatabaseController {
 }
 
 /**
- * Global controller instance
+ * Global controller instance.
  */
 let databaseController: SimplifiedDatabaseController | undefined;
 
 /**
- * Get database controller instance
+ * Get database controller instance.
  */
 export function getDatabaseController(): SimplifiedDatabaseController {
   if (!databaseController) {
@@ -970,7 +971,7 @@ export function resetDatabaseContainer(): void {
 }
 
 /**
- * Health check for database container
+ * Health check for database container.
  */
 export async function checkDatabaseContainerHealth(): Promise<{
   status: 'healthy' | 'unhealthy';
@@ -996,7 +997,7 @@ export async function checkDatabaseContainerHealth(): Promise<{
     // Test controller functionality
     try {
       const result = await controller.getDatabaseStatus();
-      services.controller = result.success;
+      services.controller = result?.success;
       services.logger = true; // Logger is working if we got this far
       services.config = true; // Config is working if we got this far
       services.factory = true; // Factory is working if we got this far

@@ -1,5 +1,5 @@
 /**
- * Unified Interface Exports - Central Interface Registry
+ * Unified Interface Exports - Central Interface Registry.
  *
  * This file provides a single point for importing all standardized interfaces,
  * ensuring consistency across the codebase and preventing interface conflicts.
@@ -8,7 +8,7 @@
  */
 
 // Neural interfaces
-export { WasmBindingInterface } from '../../bindings/wasm-binding-interface';
+export { WasmBindingInterface } from '../bindings/wasm-binding-interface';
 // Coordination interfaces
 export {
   AgentPerformance,
@@ -27,11 +27,11 @@ export {
   TaskPriority,
   TaskStatus,
   WasmModule,
-} from '../../coordination/swarm/core/types';
+} from '../coordination/swarm/core/types';
 // Database interfaces
-export { DatabaseConfig } from '../../database/providers/database-providers';
+export { DatabaseConfig } from '../database/providers/database-providers';
 // Memory interfaces
-export { CacheEntry, SessionState } from '../../memory/memory';
+export { CacheEntry, SessionState } from '../memory/memory';
 // Agent interfaces - unified types
 export {
   Agent,
@@ -43,9 +43,9 @@ export {
   AgentType,
   ExecutionResult,
   Task,
-} from '../../types/agent-types';
+} from '../types/agent-types';
 // Event interfaces
-export * from '../../types/event-types';
+export * from '../types/event-types';
 export {
   BackendInterface,
   BackendStats,

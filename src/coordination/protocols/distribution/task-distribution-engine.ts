@@ -3,10 +3,15 @@
  * Provides intelligent task decomposition, optimal agent assignment,
  * dynamic work redistribution, and priority-based scheduling
  */
+/**
+ * @file task-distribution processing engine.
+ */
+
+
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../../../core/event-bus';
-import type { ILogger } from '../../../core/logger';
+import type { IEventBus } from '../core/event-bus';
+import type { ILogger } from '../core/logger';
 
 // Core types for task distribution
 export interface TaskDefinition {
@@ -282,7 +287,7 @@ export interface DistributionMetrics {
 }
 
 /**
- * Advanced Task Distribution Engine with ML-based optimization
+ * Advanced Task Distribution Engine with ML-based optimization.
  *
  * @example
  */
@@ -359,7 +364,7 @@ export class TaskDistributionEngine extends EventEmitter {
   }
 
   /**
-   * Submit a task for distribution
+   * Submit a task for distribution.
    *
    * @param taskDef
    */
@@ -398,7 +403,7 @@ export class TaskDistributionEngine extends EventEmitter {
   }
 
   /**
-   * Register an agent's capabilities
+   * Register an agent's capabilities.
    *
    * @param agentCapability
    */
@@ -418,14 +423,14 @@ export class TaskDistributionEngine extends EventEmitter {
   }
 
   /**
-   * Get current distribution metrics
+   * Get current distribution metrics.
    */
   getMetrics(): DistributionMetrics {
     return { ...this.metrics };
   }
 
   /**
-   * Get task status
+   * Get task status.
    *
    * @param taskId
    */
@@ -441,7 +446,7 @@ export class TaskDistributionEngine extends EventEmitter {
   }
 
   /**
-   * Cancel a task
+   * Cancel a task.
    *
    * @param taskId
    * @param reason
@@ -477,7 +482,7 @@ export class TaskDistributionEngine extends EventEmitter {
   }
 
   /**
-   * Reassign a task to a different agent
+   * Reassign a task to a different agent.
    *
    * @param taskId
    * @param reason
@@ -492,7 +497,7 @@ export class TaskDistributionEngine extends EventEmitter {
     this.assignments.delete(taskId);
 
     // Update agent availability
-    const agent = this.agentCapabilities.get(currentAssignment.agentId);
+    const agent = this.agentCapabilities.get(currentAssignment?.agentId);
     if (agent) {
       agent.currentLoad = Math.max(0, agent.currentLoad - 1);
     }
@@ -503,15 +508,15 @@ export class TaskDistributionEngine extends EventEmitter {
     this.logger.info('Task reassigned', {
       taskId,
       reason,
-      previousAgent: currentAssignment.agentId,
+      previousAgent: currentAssignment?.agentId,
     });
-    this.emit('task:reassigned', { taskId, reason, previousAgent: currentAssignment.agentId });
+    this.emit('task:reassigned', { taskId, reason, previousAgent: currentAssignment?.agentId });
 
     return true;
   }
 
   /**
-   * Get queue status
+   * Get queue status.
    */
   getQueueStatus(): {
     pending: number;
@@ -1007,17 +1012,17 @@ export class TaskDistributionEngine extends EventEmitter {
   }
 
   private async handleAgentCapabilitiesUpdate(data: any): Promise<void> {
-    const agent = this.agentCapabilities.get(data.agentId);
+    const agent = this.agentCapabilities.get(data?.agentId);
     if (agent) {
-      agent.capabilities = data.capabilities;
-      agent.performance = data.performance || agent.performance;
+      agent.capabilities = data?.capabilities;
+      agent.performance = data?.performance || agent.performance;
     }
   }
 
   private async handleAgentPerformanceUpdate(data: any): Promise<void> {
-    const agent = this.agentCapabilities.get(data.agentId);
+    const agent = this.agentCapabilities.get(data?.agentId);
     if (agent) {
-      agent.performance = { ...agent.performance, ...data.performance };
+      agent.performance = { ...agent.performance, ...data?.performance };
     }
   }
 
@@ -1026,14 +1031,14 @@ export class TaskDistributionEngine extends EventEmitter {
   }
 
   private async handleTaskCompletion(data: any): Promise<void> {
-    const assignment = this.assignments.get(data.taskId);
+    const assignment = this.assignments.get(data?.taskId);
     if (assignment) {
       const agent = this.agentCapabilities.get(assignment.agentId);
       if (agent) {
         agent.currentLoad = Math.max(0, agent.currentLoad - 1);
       }
 
-      this.assignments.delete(data.taskId);
+      this.assignments.delete(data?.taskId);
       this.metrics.completedTasks++;
     }
 
@@ -1041,31 +1046,31 @@ export class TaskDistributionEngine extends EventEmitter {
   }
 
   private async handleTaskFailure(data: any): Promise<void> {
-    const assignment = this.assignments.get(data.taskId);
+    const assignment = this.assignments.get(data?.taskId);
     if (assignment) {
       const agent = this.agentCapabilities.get(assignment.agentId);
       if (agent) {
         agent.currentLoad = Math.max(0, agent.currentLoad - 1);
       }
 
-      this.assignments.delete(data.taskId);
+      this.assignments.delete(data?.taskId);
       this.metrics.failedTasks++;
 
       // Handle failure recovery
-      await this.failureHandler.handleFailure(data.taskId, data.error, this.tasks, this.queue);
+      await this.failureHandler.handleFailure(data?.taskId, data?.error, this.tasks, this.queue);
     }
 
     this.emit('task:failed', data);
   }
 
   private async handleAgentUnavailable(data: any): Promise<void> {
-    const agent = this.agentCapabilities.get(data.agentId);
+    const agent = this.agentCapabilities.get(data?.agentId);
     if (agent) {
       agent.availability.currentStatus = 'offline';
 
       // Reassign tasks from unavailable agent
       const affectedAssignments = Array.from(this.assignments.entries()).filter(
-        ([_, assignment]) => assignment.agentId === data.agentId
+        ([_, assignment]) => assignment.agentId === data?.agentId
       );
 
       for (const [taskId] of affectedAssignments) {

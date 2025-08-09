@@ -1,5 +1,5 @@
 /**
- * UACL Client Manager
+ * UACL Client Manager.
  *
  * Manages the complete lifecycle of all client types in the system.
  * Provides factories, health monitoring, metrics collection, and recovery.
@@ -8,7 +8,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { FACTIntegration } from '../../knowledge/knowledge-client';
+import { FACTIntegration } from '../knowledge/knowledge-client';
 
 // Import actual client implementations
 import { createAPIClient } from '../api/http/client';
@@ -27,7 +27,7 @@ import {
 } from './registry';
 
 /**
- * Manager configuration options
+ * Manager configuration options.
  *
  * @example
  */
@@ -41,7 +41,7 @@ export interface ClientManagerConfig {
 }
 
 /**
- * Client metrics interface
+ * Client metrics interface.
  *
  * @example
  */
@@ -79,28 +79,28 @@ export interface ClientMetrics {
 }
 
 /**
- * HTTP Client Factory Implementation
+ * HTTP Client Factory Implementation.
  *
  * @example
  */
 class HTTPClientFactory implements ClientFactory {
   async create(config: ClientConfig): Promise<ClientInstance> {
-    if (config.type !== ClientType.HTTP) {
+    if (config?.type !== ClientType.HTTP) {
       throw new Error('Invalid client type for HTTP factory');
     }
 
     const httpConfig = config as HTTPClientConfig;
     const apiClient = createAPIClient({
-      baseURL: httpConfig.baseURL,
-      timeout: httpConfig.timeout,
-      apiKey: httpConfig.apiKey,
-      bearerToken: httpConfig.bearerToken,
-      headers: httpConfig.headers,
-      retryAttempts: httpConfig.retryAttempts,
+      baseURL: httpConfig?.baseURL,
+      timeout: httpConfig?.timeout,
+      apiKey: httpConfig?.apiKey,
+      bearerToken: httpConfig?.bearerToken,
+      headers: httpConfig?.headers,
+      retryAttempts: httpConfig?.retryAttempts,
     });
 
     return {
-      id: config.id,
+      id: config?.id,
       type: ClientType.HTTP,
       config,
       client: apiClient,
@@ -110,9 +110,9 @@ class HTTPClientFactory implements ClientFactory {
   }
 
   validate(config: ClientConfig): boolean {
-    if (config.type !== ClientType.HTTP) return false;
+    if (config?.type !== ClientType.HTTP) return false;
     const httpConfig = config as HTTPClientConfig;
-    return !!(httpConfig.baseURL && httpConfig.id);
+    return !!(httpConfig?.baseURL && httpConfig?.id);
   }
 
   getDefaultConfig(type: ClientType): Partial<ClientConfig> {
@@ -143,26 +143,26 @@ class HTTPClientFactory implements ClientFactory {
 }
 
 /**
- * WebSocket Client Factory Implementation
+ * WebSocket Client Factory Implementation.
  *
  * @example
  */
 class WebSocketClientFactory implements ClientFactory {
   async create(config: ClientConfig): Promise<ClientInstance> {
-    if (config.type !== ClientType.WEBSOCKET) {
+    if (config?.type !== ClientType.WEBSOCKET) {
       throw new Error('Invalid client type for WebSocket factory');
     }
 
     const wsConfig = config as WebSocketClientConfig;
-    const wsClient = new WebSocketClient(wsConfig.url, {
-      reconnect: wsConfig.reconnect,
-      reconnectInterval: wsConfig.reconnectInterval,
-      maxReconnectAttempts: wsConfig.maxReconnectAttempts,
-      timeout: wsConfig.timeout,
+    const wsClient = new WebSocketClient(wsConfig?.url, {
+      reconnect: wsConfig?.reconnect,
+      reconnectInterval: wsConfig?.reconnectInterval,
+      maxReconnectAttempts: wsConfig?.maxReconnectAttempts,
+      timeout: wsConfig?.timeout,
     });
 
     return {
-      id: config.id,
+      id: config?.id,
       type: ClientType.WEBSOCKET,
       config,
       client: wsClient,
@@ -172,9 +172,9 @@ class WebSocketClientFactory implements ClientFactory {
   }
 
   validate(config: ClientConfig): boolean {
-    if (config.type !== ClientType.WEBSOCKET) return false;
+    if (config?.type !== ClientType.WEBSOCKET) return false;
     const wsConfig = config as WebSocketClientConfig;
-    return !!(wsConfig.url && wsConfig.id);
+    return !!(wsConfig?.url && wsConfig?.id);
   }
 
   getDefaultConfig(type: ClientType): Partial<ClientConfig> {
@@ -207,27 +207,27 @@ class WebSocketClientFactory implements ClientFactory {
 }
 
 /**
- * Knowledge (FACT) Client Factory Implementation
+ * Knowledge (FACT) Client Factory Implementation.
  *
  * @example
  */
 class KnowledgeClientFactory implements ClientFactory {
   async create(config: ClientConfig): Promise<ClientInstance> {
-    if (config.type !== ClientType.KNOWLEDGE) {
+    if (config?.type !== ClientType.KNOWLEDGE) {
       throw new Error('Invalid client type for Knowledge factory');
     }
 
     const knowledgeConfig = config as KnowledgeClientConfig;
     const factClient = new FACTIntegration({
-      factRepoPath: knowledgeConfig.factRepoPath,
-      anthropicApiKey: knowledgeConfig.anthropicApiKey,
-      pythonPath: knowledgeConfig.pythonPath,
-      enableCache: knowledgeConfig.enableCache,
-      cacheConfig: knowledgeConfig.cacheConfig,
+      factRepoPath: knowledgeConfig?.factRepoPath,
+      anthropicApiKey: knowledgeConfig?.anthropicApiKey,
+      pythonPath: knowledgeConfig?.pythonPath,
+      enableCache: knowledgeConfig?.enableCache,
+      cacheConfig: knowledgeConfig?.cacheConfig,
     });
 
     return {
-      id: config.id,
+      id: config?.id,
       type: ClientType.KNOWLEDGE,
       config,
       client: factClient,
@@ -237,12 +237,12 @@ class KnowledgeClientFactory implements ClientFactory {
   }
 
   validate(config: ClientConfig): boolean {
-    if (config.type !== ClientType.KNOWLEDGE) return false;
+    if (config?.type !== ClientType.KNOWLEDGE) return false;
     const knowledgeConfig = config as KnowledgeClientConfig;
     return !!(
-      knowledgeConfig.factRepoPath &&
-      knowledgeConfig.anthropicApiKey &&
-      knowledgeConfig.id
+      knowledgeConfig?.factRepoPath &&
+      knowledgeConfig?.anthropicApiKey &&
+      knowledgeConfig?.id
     );
   }
 
@@ -275,13 +275,13 @@ class KnowledgeClientFactory implements ClientFactory {
 }
 
 /**
- * MCP Client Factory Implementation
+ * MCP Client Factory Implementation.
  *
  * @example
  */
 class MCPClientFactory implements ClientFactory {
   async create(config: ClientConfig): Promise<ClientInstance> {
-    if (config.type !== ClientType.MCP) {
+    if (config?.type !== ClientType.MCP) {
       throw new Error('Invalid client type for MCP factory');
     }
 
@@ -289,7 +289,7 @@ class MCPClientFactory implements ClientFactory {
     const mcpClient = new ExternalMCPClient();
 
     return {
-      id: config.id,
+      id: config?.id,
       type: ClientType.MCP,
       config,
       client: mcpClient,
@@ -299,9 +299,9 @@ class MCPClientFactory implements ClientFactory {
   }
 
   validate(config: ClientConfig): boolean {
-    if (config.type !== ClientType.MCP) return false;
+    if (config?.type !== ClientType.MCP) return false;
     const mcpConfig = config as MCPClientConfig;
-    return !!(mcpConfig.servers && Object.keys(mcpConfig.servers).length > 0 && mcpConfig.id);
+    return !!(mcpConfig?.servers && Object.keys(mcpConfig?.servers).length > 0 && mcpConfig?.id);
   }
 
   getDefaultConfig(type: ClientType): Partial<ClientConfig> {
@@ -332,7 +332,7 @@ class MCPClientFactory implements ClientFactory {
 }
 
 /**
- * Main Client Manager Class
+ * Main Client Manager Class.
  *
  * Provides complete lifecycle management for all client types:
  * - Factory registration and client creation
@@ -341,7 +341,7 @@ class MCPClientFactory implements ClientFactory {
  * - Configuration validation
  * - Error handling and logging
  *
- * @example
+ * @example.
  */
 export class ClientManager extends EventEmitter {
   public readonly registry: ClientRegistry;
@@ -354,12 +354,12 @@ export class ClientManager extends EventEmitter {
     super();
 
     this.config = {
-      healthCheckInterval: config.healthCheckInterval ?? 30000,
-      autoReconnect: config.autoReconnect ?? true,
-      maxRetryAttempts: config.maxRetryAttempts ?? 3,
-      retryDelay: config.retryDelay ?? 1000,
-      metricsRetention: config.metricsRetention ?? 24 * 60 * 60 * 1000, // 1 day
-      enableLogging: config.enableLogging ?? true,
+      healthCheckInterval: config?.healthCheckInterval ?? 30000,
+      autoReconnect: config?.autoReconnect ?? true,
+      maxRetryAttempts: config?.maxRetryAttempts ?? 3,
+      retryDelay: config?.retryDelay ?? 1000,
+      metricsRetention: config?.metricsRetention ?? 24 * 60 * 60 * 1000, // 1 day
+      enableLogging: config?.enableLogging ?? true,
     };
 
     this.registry = new ClientRegistry(this.config.healthCheckInterval);
@@ -367,7 +367,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Initialize the client manager
+   * Initialize the client manager.
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) {
@@ -391,7 +391,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Create and register a new client
+   * Create and register a new client.
    *
    * @param config
    */
@@ -403,18 +403,18 @@ export class ClientManager extends EventEmitter {
     const instance = await this.registry.register(config);
 
     // Initialize metrics for this client
-    this.metricsStore.set(config.id, this.createInitialMetrics());
+    this.metricsStore.set(config?.id, this.createInitialMetrics());
 
     // Connect the client if it's enabled
-    if (config.enabled) {
-      await this.connectClient(config.id);
+    if (config?.enabled) {
+      await this.connectClient(config?.id);
     }
 
     return instance;
   }
 
   /**
-   * Connect a client by ID
+   * Connect a client by ID.
    *
    * @param clientId
    */
@@ -469,7 +469,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Disconnect a client by ID
+   * Disconnect a client by ID.
    *
    * @param clientId
    */
@@ -514,7 +514,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Remove a client completely
+   * Remove a client completely.
    *
    * @param clientId
    */
@@ -525,7 +525,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Get client instance by ID
+   * Get client instance by ID.
    *
    * @param clientId
    */
@@ -534,7 +534,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Get all clients of a specific type
+   * Get all clients of a specific type.
    *
    * @param type
    */
@@ -543,7 +543,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Get the best available client for a type
+   * Get the best available client for a type.
    *
    * @param type
    */
@@ -556,7 +556,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Get client metrics
+   * Get client metrics.
    *
    * @param clientId
    */
@@ -565,7 +565,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Get aggregated metrics for all clients
+   * Get aggregated metrics for all clients.
    */
   getAggregatedMetrics(): {
     total: number;
@@ -617,7 +617,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Get system health status
+   * Get system health status.
    */
   getHealthStatus(): {
     overall: 'healthy' | 'warning' | 'critical';
@@ -654,7 +654,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Schedule reconnection attempt
+   * Schedule reconnection attempt.
    *
    * @param clientId
    */
@@ -689,7 +689,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Setup event handlers for registry events
+   * Setup event handlers for registry events.
    */
   private setupEventHandlers(): void {
     this.registry.on('client:registered', (client) => {
@@ -726,7 +726,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Create initial metrics for a client
+   * Create initial metrics for a client.
    */
   private createInitialMetrics(): ClientMetrics {
     return {
@@ -744,7 +744,7 @@ export class ClientManager extends EventEmitter {
   }
 
   /**
-   * Clean shutdown of the manager
+   * Clean shutdown of the manager.
    */
   async shutdown(): Promise<void> {
     if (this.config.enableLogging) {
@@ -771,16 +771,16 @@ export class ClientManager extends EventEmitter {
 }
 
 /**
- * Global client manager instance
+ * Global client manager instance.
  */
 export const globalClientManager = new ClientManager();
 
 /**
- * Helper functions for common manager operations
+ * Helper functions for common manager operations.
  */
 export const ClientManagerHelpers = {
   /**
-   * Initialize the global manager with default configuration
+   * Initialize the global manager with default configuration.
    *
    * @param config
    */
@@ -792,7 +792,7 @@ export const ClientManagerHelpers = {
   },
 
   /**
-   * Create HTTP client with sensible defaults
+   * Create HTTP client with sensible defaults.
    *
    * @param id
    * @param baseURL
@@ -816,7 +816,7 @@ export const ClientManagerHelpers = {
   },
 
   /**
-   * Create WebSocket client with sensible defaults
+   * Create WebSocket client with sensible defaults.
    *
    * @param id
    * @param url
@@ -842,7 +842,7 @@ export const ClientManagerHelpers = {
   },
 
   /**
-   * Create Knowledge client with sensible defaults
+   * Create Knowledge client with sensible defaults.
    *
    * @param id
    * @param factRepoPath
@@ -870,7 +870,7 @@ export const ClientManagerHelpers = {
   },
 
   /**
-   * Create MCP client with sensible defaults
+   * Create MCP client with sensible defaults.
    *
    * @param id
    * @param servers
@@ -894,7 +894,7 @@ export const ClientManagerHelpers = {
   },
 
   /**
-   * Get comprehensive system status
+   * Get comprehensive system status.
    */
   getSystemStatus(): {
     health: ReturnType<ClientManager['getHealthStatus']>;

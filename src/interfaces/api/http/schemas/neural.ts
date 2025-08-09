@@ -1,5 +1,5 @@
 /**
- * Neural Network API Schemas
+ * Neural Network API Schemas.
  *
  * OpenAPI 3.0 schemas for neural network domain.
  * Consolidates neural network types and validation schemas.
@@ -10,7 +10,7 @@
 import type { EntityFields, ResourceState, TimestampFields } from './common';
 
 /**
- * Neural Network Layer Configuration
+ * Neural Network Layer Configuration.
  *
  * @example
  */
@@ -32,7 +32,7 @@ export interface NeuralLayer {
 }
 
 /**
- * Neural Network Architecture
+ * Neural Network Architecture.
  *
  * @example
  */
@@ -69,7 +69,7 @@ export interface NeuralNetwork extends EntityFields, TimestampFields, ResourceSt
 }
 
 /**
- * Training Configuration
+ * Training Configuration.
  *
  * @example
  */
@@ -97,7 +97,7 @@ export interface TrainingConfig {
 }
 
 /**
- * Training Data Point
+ * Training Data Point.
  *
  * @example
  */
@@ -108,7 +108,7 @@ export interface TrainingDataPoint {
 }
 
 /**
- * Training Request
+ * Training Request.
  *
  * @example
  */
@@ -125,7 +125,7 @@ export interface TrainingRequest {
 }
 
 /**
- * Training Job Status
+ * Training Job Status.
  *
  * @example
  */
@@ -151,7 +151,7 @@ export interface TrainingJob extends EntityFields, TimestampFields {
 }
 
 /**
- * Prediction Request
+ * Prediction Request.
  *
  * @example
  */
@@ -165,7 +165,7 @@ export interface PredictionRequest {
 }
 
 /**
- * Prediction Response
+ * Prediction Response.
  *
  * @example
  */
@@ -179,7 +179,7 @@ export interface PredictionResponse {
 }
 
 /**
- * Model Evaluation Metrics
+ * Model Evaluation Metrics.
  *
  * @example
  */
@@ -197,7 +197,7 @@ export interface EvaluationMetrics {
 }
 
 /**
- * Model Export Configuration
+ * Model Export Configuration.
  *
  * @example
  */
@@ -216,7 +216,7 @@ export interface ModelExportConfig {
 }
 
 /**
- * Model Import Configuration
+ * Model Import Configuration.
  *
  * @example
  */

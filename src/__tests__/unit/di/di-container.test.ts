@@ -283,10 +283,10 @@ describe('DI Container - Integration with Core Tokens', () => {
 
     // Test functionality
     logger.info('Test message');
-    config.set('test', 'value');
+    config?.set('test', 'value');
 
     expect(logger.info).toHaveBeenCalledWith('Test message');
-    expect(config.get('test')).toBe('value');
+    expect(config?.get('test')).toBe('value');
   });
 
   it('should work with swarm tokens', () => {

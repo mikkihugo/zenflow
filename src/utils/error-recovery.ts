@@ -1,7 +1,12 @@
 /**
- * Error Recovery System
- * Handles automatic error recovery and system resilience
+ * Error Recovery System.
+ * Handles automatic error recovery and system resilience.
  */
+/**
+ * @file error-recovery implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 
@@ -56,7 +61,7 @@ export class ErrorRecoverySystem extends EventEmitter {
   }
 
   /**
-   * Register a recovery strategy
+   * Register a recovery strategy.
    *
    * @param strategy
    */
@@ -66,7 +71,7 @@ export class ErrorRecoverySystem extends EventEmitter {
   }
 
   /**
-   * Attempt error recovery
+   * Attempt error recovery.
    *
    * @param context
    */
@@ -122,7 +127,7 @@ export class ErrorRecoverySystem extends EventEmitter {
   }
 
   /**
-   * Get recovery strategies for a given error type
+   * Get recovery strategies for a given error type.
    *
    * @param errorType
    * @param component
@@ -138,7 +143,7 @@ export class ErrorRecoverySystem extends EventEmitter {
   }
 
   /**
-   * Get recovery history
+   * Get recovery history.
    *
    * @param component
    * @param since
@@ -158,7 +163,7 @@ export class ErrorRecoverySystem extends EventEmitter {
   }
 
   /**
-   * Get recovery statistics
+   * Get recovery statistics.
    */
   getRecoveryStats(): {
     totalRecoveries: number;

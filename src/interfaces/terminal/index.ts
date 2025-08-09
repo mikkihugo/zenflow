@@ -1,11 +1,16 @@
 /**
- * Unified Terminal Interface - Main Export
+ * Unified Terminal Interface - Main Export.
  *
  * Consolidates command execution and interactive terminal functionality into a single interface.
  * This replaces the separate command execution and interactive terminal interface directories.
  */
 
 // Business logic (separated from UI)
+/**
+ * @file terminal module exports
+ */
+
+
 export * from './command-execution-engine';
 export { CommandExecutionEngine } from './command-execution-engine';
 export * from './command-execution-renderer';
@@ -71,14 +76,14 @@ export class TerminalInterface {
   }
 
   /**
-   * Initialize the terminal interface
+   * Initialize the terminal interface.
    */
   async initialize(): Promise<void> {
     // Initialization logic if needed
   }
 
   /**
-   * Render the terminal interface
+   * Render the terminal interface.
    */
   async render(): Promise<void> {
     const { render } = await import('ink');
@@ -116,7 +121,7 @@ export class TerminalInterface {
   }
 
   /**
-   * Parse command line flags
+   * Parse command line flags.
    *
    * @param args
    */
@@ -146,14 +151,14 @@ export class TerminalInterface {
   }
 
   /**
-   * Get current configuration
+   * Get current configuration.
    */
   getConfig(): TerminalInterfaceConfig {
     return { ...this.config };
   }
 
   /**
-   * Update configuration
+   * Update configuration.
    *
    * @param updates
    */

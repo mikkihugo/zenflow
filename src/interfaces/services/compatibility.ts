@@ -1,12 +1,17 @@
 /**
- * USL Compatibility Layer - Backward Compatibility and Migration Support
+ * USL Compatibility Layer - Backward Compatibility and Migration Support.
  *
- * Provides seamless backward compatibility for existing service usage patterns
+ * Provides seamless backward compatibility for existing service usage patterns.
  * while enabling gradual migration to the enhanced USL system.
  * Ensures zero breaking changes during transition.
  */
+/**
+ * @file Interface implementation: compatibility
+ */
 
-import { createLogger, type Logger } from '../../utils/logger';
+
+
+import { createLogger, type Logger } from '../utils/logger';
 import type { IService } from './core/interfaces';
 import { usl } from './index';
 import { ServiceManager } from './manager';
@@ -45,7 +50,7 @@ export interface CompatibilityConfig {
 }
 
 /**
- * Compatibility wrapper that provides legacy API surface while using USL internally
+ * Compatibility wrapper that provides legacy API surface while using USL internally.
  *
  * @example
  */
@@ -76,7 +81,7 @@ export class USLCompatibilityLayer {
   }
 
   /**
-   * Initialize the compatibility layer
+   * Initialize the compatibility layer.
    */
   async initialize(): Promise<void> {
     await this.serviceManager.initialize();
@@ -271,7 +276,7 @@ export class USLCompatibilityLayer {
   // ============================================
 
   /**
-   * Migrate existing service instances to USL
+   * Migrate existing service instances to USL.
    *
    * @param services
    */
@@ -322,7 +327,7 @@ export class USLCompatibilityLayer {
   }
 
   /**
-   * Generate migration guide for existing codebase
+   * Generate migration guide for existing codebase.
    *
    * @param codePatterns
    */
@@ -393,7 +398,7 @@ export class USLCompatibilityLayer {
   }
 
   /**
-   * Get migration status and recommendations
+   * Get migration status and recommendations.
    */
   getMigrationStatus(): {
     legacyUsageCount: number;
@@ -431,7 +436,7 @@ export class USLCompatibilityLayer {
   // ============================================
 
   /**
-   * Migrate ClaudeZenFacade to use USL infrastructure services
+   * Migrate ClaudeZenFacade to use USL infrastructure services.
    */
   async migrateFacadeToUSL(): Promise<{
     success: boolean;
@@ -491,7 +496,7 @@ export class USLCompatibilityLayer {
   }
 
   /**
-   * Migrate pattern integration systems to USL
+   * Migrate pattern integration systems to USL.
    */
   async migratePatternIntegrationToUSL(): Promise<{
     success: boolean;
@@ -559,7 +564,7 @@ export class USLCompatibilityLayer {
   // ============================================
 
   /**
-   * Migrate scattered service usage to unified service discovery
+   * Migrate scattered service usage to unified service discovery.
    *
    * @param existingServiceReferences
    */
@@ -631,7 +636,7 @@ export class USLCompatibilityLayer {
   // ============================================
 
   /**
-   * Get migration summary and statistics
+   * Get migration summary and statistics.
    */
   getMigrationSummary(): {
     totalLegacyUsages: number;
@@ -722,27 +727,27 @@ export class USLCompatibilityLayer {
     }
 
     // Check for known service patterns
-    if (serviceInstance.isDataService || serviceInstance.constructor?.name?.includes('Data')) {
+    if (serviceInstance.isDataService || serviceInstance.constructor?.name.includes('Data')) {
       return ServiceType.DATA;
     }
 
     if (
       serviceInstance.isCoordinationService ||
-      serviceInstance.constructor?.name?.includes('Coordination')
+      serviceInstance.constructor?.name.includes('Coordination')
     ) {
       return ServiceType.COORDINATION;
     }
 
     if (
       serviceInstance.isIntegrationService ||
-      serviceInstance.constructor?.name?.includes('Integration')
+      serviceInstance.constructor?.name.includes('Integration')
     ) {
       return ServiceType.API;
     }
 
     if (
       serviceInstance.isInfrastructureService ||
-      serviceInstance.constructor?.name?.includes('Infrastructure')
+      serviceInstance.constructor?.name.includes('Infrastructure')
     ) {
       return ServiceType.INFRASTRUCTURE;
     }
@@ -876,30 +881,30 @@ export class USLCompatibilityLayer {
   private getDefaultConfigTransformations(): Record<string, (oldConfig: any) => AnyServiceConfig> {
     return {
       dataService: (oldConfig: any) => ({
-        name: oldConfig.name || 'migrated-data-service',
+        name: oldConfig?.name || 'migrated-data-service',
         type: ServiceType.DATA,
         enabled: true,
         priority: ServicePriority.NORMAL,
-        dataSource: oldConfig.dataSource || { type: 'memory' },
+        dataSource: oldConfig?.dataSource || { type: 'memory' },
         caching: { enabled: true, ttl: 300000 },
         validation: { enabled: true, strict: false },
       }),
 
       coordinationService: (oldConfig: any) => ({
-        name: oldConfig.name || 'migrated-coordination-service',
+        name: oldConfig?.name || 'migrated-coordination-service',
         type: ServiceType.COORDINATION,
         enabled: true,
         priority: ServicePriority.HIGH,
         coordination: {
-          topology: oldConfig.topology || 'mesh',
-          maxAgents: oldConfig.maxAgents || 10,
-          strategy: oldConfig.strategy || 'adaptive',
+          topology: oldConfig?.topology || 'mesh',
+          maxAgents: oldConfig?.maxAgents || 10,
+          strategy: oldConfig?.strategy || 'adaptive',
         },
         persistence: { enabled: true, storage: 'memory' },
       }),
 
       integrationService: (oldConfig: any) => ({
-        name: oldConfig.name || 'migrated-integration-service',
+        name: oldConfig?.name || 'migrated-integration-service',
         type: ServiceType.API,
         enabled: true,
         priority: ServicePriority.HIGH,
@@ -919,12 +924,12 @@ export class USLCompatibilityLayer {
 }
 
 /**
- * Global compatibility layer instance
+ * Global compatibility layer instance.
  */
 export const compat = new USLCompatibilityLayer();
 
 /**
- * Initialize compatibility layer with USL
+ * Initialize compatibility layer with USL.
  *
  * @param config
  */
@@ -936,11 +941,11 @@ export const initializeCompatibility = async (
 };
 
 /**
- * Migration utilities for gradual USL adoption
+ * Migration utilities for gradual USL adoption.
  */
 export const MigrationUtils = {
   /**
-   * Create migration plan for existing codebase
+   * Create migration plan for existing codebase.
    *
    * @param codebase
    */
@@ -951,7 +956,7 @@ export const MigrationUtils = {
   },
 
   /**
-   * Validate migration readiness
+   * Validate migration readiness.
    *
    * @param services
    */
@@ -986,7 +991,7 @@ export const MigrationUtils = {
   },
 
   /**
-   * Generate compatibility report
+   * Generate compatibility report.
    */
   generateCompatibilityReport: (): {
     status: 'compatible' | 'partial' | 'incompatible';

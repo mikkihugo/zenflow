@@ -1,7 +1,12 @@
 /**
- * Cognitive Pattern Evolution
- * Advanced neural pattern recognition and evolution system
+ * Cognitive Pattern Evolution.
+ * Advanced neural pattern recognition and evolution system.
  */
+/**
+ * @file Neural network: cognitive-pattern-evolution
+ */
+
+
 
 export class CognitivePatternEvolution {
   private patterns: Map<string, any>;
@@ -20,7 +25,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Evolve cognitive patterns based on performance
+   * Evolve cognitive patterns based on performance.
    *
    * @param agentId
    * @param performanceData
@@ -50,7 +55,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Register a new cognitive pattern
+   * Register a new cognitive pattern.
    *
    * @param id
    * @param pattern
@@ -65,7 +70,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Get pattern by ID
+   * Get pattern by ID.
    *
    * @param id
    */
@@ -74,7 +79,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Get all patterns
+   * Get all patterns.
    */
   getAllPatterns() {
     return Array.from(this.patterns.values());
@@ -112,7 +117,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Initialize agent for cognitive pattern evolution
+   * Initialize agent for cognitive pattern evolution.
    *
    * @param agentId
    * @param config
@@ -133,7 +138,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Assess cognitive growth for an agent
+   * Assess cognitive growth for an agent.
    *
    * @param agentId
    */
@@ -153,7 +158,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Enable cross-agent evolution
+   * Enable cross-agent evolution.
    *
    * @param agentIds
    * @param session
@@ -183,7 +188,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Calculate aggregation weights for gradients
+   * Calculate aggregation weights for gradients.
    *
    * @param gradients
    */
@@ -195,7 +200,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Preserve cognitive history for an agent
+   * Preserve cognitive history for an agent.
    *
    * @param agentId
    */
@@ -211,7 +216,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Restore cognitive history for an agent
+   * Restore cognitive history for an agent.
    *
    * @param agentId
    * @param history
@@ -226,7 +231,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Extract patterns for an agent
+   * Extract patterns for an agent.
    *
    * @param agentId
    */
@@ -242,7 +247,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Transfer patterns to another agent
+   * Transfer patterns to another agent.
    *
    * @param agentId
    * @param patterns
@@ -262,7 +267,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Apply pattern updates to an agent
+   * Apply pattern updates to an agent.
    *
    * @param agentId
    * @param patternUpdates
@@ -280,7 +285,7 @@ export class CognitivePatternEvolution {
   }
 
   /**
-   * Get evolution statistics
+   * Get evolution statistics.
    */
   getStatistics() {
     return {

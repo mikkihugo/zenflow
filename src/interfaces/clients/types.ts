@@ -1,17 +1,22 @@
 /**
- * Unified API Client Layer (UACL) - Type Definitions
+ * Unified API Client Layer (UACL) - Type Definitions.
  *
- * Core type definitions for client types, protocol types, and enums
+ * Core type definitions for client types, protocol types, and enums.
  * used throughout the UACL system for type-safe client operations.
  */
 
 /**
- * Supported client types
+ * Supported client types.
  */
+/**
+ * @file TypeScript type definitions for interfaces
+ */
+
+
 export type ClientType = 'http' | 'websocket' | 'knowledge' | 'mcp' | 'generic';
 
 /**
- * Supported protocol types
+ * Supported protocol types.
  */
 export type ProtocolType =
   | 'http'
@@ -25,17 +30,17 @@ export type ProtocolType =
   | 'custom';
 
 /**
- * Authentication types
+ * Authentication types.
  */
 export type AuthType = 'none' | 'bearer' | 'basic' | 'api-key' | 'oauth' | 'jwt' | 'custom';
 
 /**
- * HTTP methods
+ * HTTP methods.
  */
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD' | 'OPTIONS';
 
 /**
- * WebSocket event types
+ * WebSocket event types.
  */
 export type WebSocketEventType =
   | 'connect'
@@ -46,17 +51,17 @@ export type WebSocketEventType =
   | 'custom';
 
 /**
- * Knowledge query types
+ * Knowledge query types.
  */
 export type KnowledgeQueryType = 'exact' | 'fuzzy' | 'semantic' | 'vector' | 'hybrid';
 
 /**
- * MCP message types
+ * MCP message types.
  */
 export type McpMessageType = 'request' | 'response' | 'notification' | 'error';
 
 /**
- * Client status types
+ * Client status types.
  */
 export type ClientStatus =
   | 'disconnected'
@@ -67,27 +72,27 @@ export type ClientStatus =
   | 'suspended';
 
 /**
- * Response format types
+ * Response format types.
  */
 export type ResponseFormat = 'json' | 'xml' | 'text' | 'binary' | 'stream' | 'auto';
 
 /**
- * Compression types
+ * Compression types.
  */
 export type CompressionType = 'none' | 'gzip' | 'deflate' | 'brotli' | 'lz4';
 
 /**
- * Client configuration presets
+ * Client configuration presets.
  */
 export type ClientPreset = 'default' | 'fast' | 'reliable' | 'minimal' | 'secure' | 'debug';
 
 /**
- * Error severity levels
+ * Error severity levels.
  */
 export type ErrorSeverity = 'low' | 'medium' | 'high' | 'critical';
 
 /**
- * Load balancing strategies
+ * Load balancing strategies.
  */
 export type LoadBalancingStrategy =
   | 'round-robin'
@@ -97,17 +102,17 @@ export type LoadBalancingStrategy =
   | 'health-based';
 
 /**
- * Circuit breaker states
+ * Circuit breaker states.
  */
 export type CircuitBreakerState = 'closed' | 'open' | 'half-open';
 
 /**
- * Serialization formats
+ * Serialization formats.
  */
 export type SerializationFormat = 'json' | 'msgpack' | 'protobuf' | 'avro' | 'custom';
 
 /**
- * Client type enum for runtime usage
+ * Client type enum for runtime usage.
  */
 export const ClientTypes = {
   HTTP: 'http' as const,
@@ -118,7 +123,7 @@ export const ClientTypes = {
 } as const;
 
 /**
- * Protocol type enum for runtime usage
+ * Protocol type enum for runtime usage.
  */
 export const ProtocolTypes = {
   HTTP: 'http' as const,
@@ -133,7 +138,7 @@ export const ProtocolTypes = {
 } as const;
 
 /**
- * Authentication type enum for runtime usage
+ * Authentication type enum for runtime usage.
  */
 export const AuthTypes = {
   NONE: 'none' as const,
@@ -146,7 +151,7 @@ export const AuthTypes = {
 } as const;
 
 /**
- * HTTP method enum for runtime usage
+ * HTTP method enum for runtime usage.
  */
 export const HttpMethods = {
   GET: 'GET' as const,
@@ -159,7 +164,7 @@ export const HttpMethods = {
 } as const;
 
 /**
- * Client status enum for runtime usage
+ * Client status enum for runtime usage.
  */
 export const ClientStatuses = {
   DISCONNECTED: 'disconnected' as const,
@@ -171,7 +176,7 @@ export const ClientStatuses = {
 } as const;
 
 /**
- * Default client configurations by type
+ * Default client configurations by type.
  */
 export const DefaultClientConfigs = {
   [ClientTypes.HTTP]: {
@@ -242,7 +247,7 @@ export const DefaultClientConfigs = {
 } as const;
 
 /**
- * Protocol to client type mapping
+ * Protocol to client type mapping.
  */
 export const ProtocolToClientTypeMap: Record<ProtocolType, ClientType> = {
   http: ClientTypes.HTTP,
@@ -257,7 +262,7 @@ export const ProtocolToClientTypeMap: Record<ProtocolType, ClientType> = {
 } as const;
 
 /**
- * Standard HTTP status codes
+ * Standard HTTP status codes.
  */
 export const HttpStatusCodes = {
   // Success
@@ -290,7 +295,7 @@ export const HttpStatusCodes = {
 } as const;
 
 /**
- * WebSocket close codes
+ * WebSocket close codes.
  */
 export const WebSocketCloseCodes = {
   NORMAL_CLOSURE: 1000,
@@ -311,7 +316,7 @@ export const WebSocketCloseCodes = {
 } as const;
 
 /**
- * Client error codes
+ * Client error codes.
  */
 export const ClientErrorCodes = {
   CONNECTION_FAILED: 'CONNECTION_FAILED',
@@ -329,7 +334,7 @@ export const ClientErrorCodes = {
 } as const;
 
 /**
- * MCP protocol constants
+ * MCP protocol constants.
  */
 export const McpConstants = {
   PROTOCOL_VERSION: '2024-11-05',
@@ -358,7 +363,7 @@ export const McpConstants = {
 } as const;
 
 /**
- * Knowledge client constants
+ * Knowledge client constants.
  */
 export const KnowledgeConstants = {
   DEFAULT_LIMIT: 10,
@@ -384,7 +389,7 @@ export const KnowledgeConstants = {
 } as const;
 
 /**
- * Type guards for runtime type checking
+ * Type guards for runtime type checking.
  */
 export const TypeGuards = {
   isClientType: (value: any): value is ClientType => {

@@ -1,29 +1,34 @@
 /**
- * CLI Command Adapter for Terminal Interface
+ * CLI Command Adapter for Terminal Interface.
  *
- * This adapter provides terminal interface access to CLI functionality
+ * This adapter provides terminal interface access to CLI functionality.
  * without creating cross-interface dependencies. It implements the
  * CommandExecutorContract using shared abstractions.
  */
+/**
+ * @file cli-command adapter implementation
+ */
+
+
 
 import type {
   CommandContext,
   CommandExecutorContract,
   CommandResult,
   ProjectConfig,
-} from '../../shared/index';
+} from '../shared/index';
 
 /**
- * CLI Command Adapter
+ * CLI Command Adapter.
  *
- * Adapts CLI functionality for use in terminal interface while
+ * Adapts CLI functionality for use in terminal interface while.
  * maintaining interface isolation through shared contracts.
  *
  * @example
  */
 export class CliCommandAdapter implements CommandExecutorContract {
   /**
-   * Execute a command with the given context
+   * Execute a command with the given context.
    *
    * @param context
    */
@@ -61,7 +66,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   }
 
   /**
-   * Check if command is valid
+   * Check if command is valid.
    *
    * @param command
    */
@@ -81,7 +86,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   }
 
   /**
-   * Get help for commands
+   * Get help for commands.
    *
    * @param command
    */
@@ -103,7 +108,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   }
 
   /**
-   * Get list of available commands
+   * Get list of available commands.
    */
   getAvailableCommands(): string[] {
     return [
@@ -120,32 +125,32 @@ export class CliCommandAdapter implements CommandExecutorContract {
   }
 
   /**
-   * Handle project creation
+   * Handle project creation.
    *
    * @param args
    * @param options
    */
   private async handleCreateProject(args: string[], options: any): Promise<CommandResult> {
     const projectName = args[0] || 'new-project';
-    const projectType = options.type || 'full-stack';
-    const complexity = options.complexity || 'moderate';
+    const projectType = options?.type || 'full-stack';
+    const complexity = options?.complexity || 'moderate';
 
     // Build project config using shared types
     const projectConfig: ProjectConfig = {
       name: projectName,
       type: projectType,
       complexity: complexity,
-      domains: this.parseDomains(options.domains),
+      domains: this.parseDomains(options?.domains),
       integrations: [],
       aiFeatures: {
         enabled: options.aiFeatures === 'all' || options.aiFeatures === true,
-        neuralNetworks: options.neural !== false,
-        swarmIntelligence: options.swarm !== false,
+        neuralNetworks: options?.neural !== false,
+        swarmIntelligence: options?.swarm !== false,
         quantumOptimization: options.quantum === true,
-        autoCodeGeneration: options.codeGen !== false,
+        autoCodeGeneration: options?.codeGen !== false,
       },
       performance: {
-        targets: options.targets ? options.targets.split(',') : ['speed', 'efficiency'],
+        targets: options?.targets ? options?.targets?.split(',') : ['speed', 'efficiency'],
       },
     };
 
@@ -173,7 +178,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   }
 
   /**
-   * Handle project optimization
+   * Handle project optimization.
    *
    * @param args
    * @param _options
@@ -204,7 +209,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   }
 
   /**
-   * Handle project status
+   * Handle project status.
    *
    * @param args
    * @param _options
@@ -237,7 +242,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   }
 
   /**
-   * Handle swarm commands
+   * Handle swarm commands.
    *
    * @param args
    * @param options
@@ -263,8 +268,8 @@ export class CliCommandAdapter implements CommandExecutorContract {
           message: '🐝 Swarm spawned successfully',
           data: {
             swarmId: `swarm-${Date.now()}`,
-            topology: options.topology || 'mesh',
-            agents: parseInt(options.agents || '5'),
+            topology: options?.topology || 'mesh',
+            agents: parseInt(options?.agents || '5'),
           },
         };
       default:
@@ -276,7 +281,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   }
 
   /**
-   * Handle generate commands
+   * Handle generate commands.
    *
    * @param args
    * @param options
@@ -299,7 +304,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
           success: true,
           message: '🧠 Neural network architecture generated',
           data: {
-            architecture: options.architecture || 'transformer',
+            architecture: options?.architecture || 'transformer',
             files: 4,
           },
         };
@@ -312,7 +317,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   }
 
   /**
-   * Handle test commands
+   * Handle test commands.
    *
    * @param _args
    * @param _options
@@ -331,7 +336,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   }
 
   /**
-   * Handle performance commands
+   * Handle performance commands.
    *
    * @param _args
    * @param _options
@@ -349,7 +354,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   }
 
   /**
-   * Parse domains from string
+   * Parse domains from string.
    *
    * @param domainsStr
    */
@@ -359,7 +364,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
   }
 
   /**
-   * Get general help
+   * Get general help.
    */
   private getGeneralHelp(): string {
     return `
@@ -379,7 +384,7 @@ Use 'help <command>' for detailed information about a specific command.
   }
 
   /**
-   * Get create command help
+   * Get create command help.
    */
   private getCreateHelp(): string {
     return `
@@ -398,7 +403,7 @@ Examples:
   }
 
   /**
-   * Get swarm command help
+   * Get swarm command help.
    */
   private getSwarmHelp(): string {
     return `
@@ -421,7 +426,7 @@ Examples:
   }
 
   /**
-   * Get generate command help
+   * Get generate command help.
    */
   private getGenerateHelp(): string {
     return `

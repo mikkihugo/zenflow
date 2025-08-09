@@ -10,7 +10,7 @@
  * - SQL injection prevention with parameterized queries
  * - Advanced query operations (JOINs, aggregations, batch operations)
  * - Date range queries and full-text search
- * - Batch insert/update/delete operations
+ * - Batch insert/update/delete operations.
  * - Schema-aware field type detection.
  * @author Claude-Zen DAL Team
  * @version 2.0.0
@@ -111,7 +111,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   /**
    * Map Database Row to Entity Object.
    *
-   * Converts a raw database row to a properly typed entity object, handling
+   * Converts a raw database row to a properly typed entity object, handling.
    * SQL-specific data type conversions including JSON columns, boolean values,
    * date/time fields, and numeric types. Uses schema information for intelligent
    * type detection and conversion.
@@ -371,7 +371,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const params = criteria ? Object.values(this.mapEntityToRow(criteria)) : [];
       const result = await this.adapter.query(sql, params);
 
-      return result.rows.map((row) => this.mapRowToEntity(row));
+      return result?.rows?.map((row) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`JOIN query failed: ${error}`);
       throw new Error(
@@ -383,7 +383,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   /**
    * Execute SQL Aggregate Queries.
    *
-   * Performs SQL aggregate functions including COUNT, SUM, AVG, MIN, and MAX operations
+   * Performs SQL aggregate functions including COUNT, SUM, AVG, MIN, and MAX operations.
    * on specified columns with optional filtering criteria. Returns numeric results for
    * statistical analysis and reporting.
    *
@@ -459,7 +459,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const params = criteria ? Object.values(this.mapEntityToRow(criteria)) : [];
 
       const result = await this.adapter.query(sql, params);
-      return Number(result.rows[0]?.result || 0);
+      return Number(result?.rows?.[0]?.result || 0);
     } catch (error) {
       this.logger.error(`Aggregate query failed: ${error}`);
       throw new Error(
@@ -472,7 +472,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
    * Batch Insert Multiple Entities.
    *
    * Performs efficient batch insertion of multiple entities in a single SQL statement.
-   * Uses parameterized queries to prevent SQL injection and optimize database performance
+   * Uses parameterized queries to prevent SQL injection and optimize database performance.
    * by reducing round-trips to the database server.
    *
    * @param {Omit<T, 'id'>[]} entities - Array of entities to insert (without ID field).
@@ -650,7 +650,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const params = [...Object.values(mappedUpdates), ...Object.values(mappedCriteria)];
 
       const result = await this.adapter.query(sql, params);
-      return result.rowCount || 0;
+      return result?.rowCount || 0;
     } catch (error) {
       this.logger.error(`Update many failed: ${error}`);
       throw new Error(
@@ -726,7 +726,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const params = Object.values(mappedCriteria);
 
       const result = await this.adapter.query(sql, params);
-      return result.rowCount || 0;
+      return result?.rowCount || 0;
     } catch (error) {
       this.logger.error(`Delete many failed: ${error}`);
       throw new Error(
@@ -739,7 +739,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
    * Search Using SQL LIKE Operator.
    *
    * Performs text-based search using SQL LIKE operator with wildcard matching.
-   * Supports partial string matching and is useful for implementing search functionality
+   * Supports partial string matching and is useful for implementing search functionality.
    * across text fields.
    *
    * @param {string} field - Database field name to search in.
@@ -812,7 +812,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const params = [`%${searchTerm}%`];
 
       const result = await this.adapter.query(sql, params);
-      return result.rows.map((row) => this.mapRowToEntity(row));
+      return result?.rows?.map((row) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`Search failed: ${error}`);
       throw new Error(`Search failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -924,7 +924,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const params = [startDate.toISOString(), endDate.toISOString()];
       const result = await this.adapter.query(sql, params);
 
-      return result.rows.map((row) => this.mapRowToEntity(row));
+      return result?.rows?.map((row) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`Date range query failed: ${error}`);
       throw new Error(

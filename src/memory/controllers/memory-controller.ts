@@ -1,13 +1,13 @@
 /**
- * Memory Domain REST API Controller
- * Provides comprehensive REST endpoints for memory management
+ * Memory Domain REST API Controller.
+ * Provides comprehensive REST endpoints for memory management.
  *
  * @file memory-controller.ts
  * @description Enhanced memory controller with DI integration for Issue #63
  */
 
-import { inject, injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS, MEMORY_TOKENS } from '../../di/tokens/core-tokens';
+import { inject, injectable } from '../di/decorators/injectable';
+import { CORE_TOKENS, MEMORY_TOKENS } from '../di/tokens/core-tokens';
 import type {
   MemoryBackend,
   MemoryConfig,
@@ -15,7 +15,7 @@ import type {
 } from '../providers/memory-providers';
 
 /**
- * Request interface for memory operations
+ * Request interface for memory operations.
  *
  * @example
  */
@@ -36,7 +36,7 @@ export interface MemoryRequest {
 }
 
 /**
- * Response interface for memory operations
+ * Response interface for memory operations.
  *
  * @example
  */
@@ -61,7 +61,7 @@ export interface MemoryResponse {
 }
 
 /**
- * Batch operation request
+ * Batch operation request.
  *
  * @example
  */
@@ -82,7 +82,7 @@ export interface MemoryBatchRequest {
 }
 
 /**
- * Memory analytics response
+ * Memory analytics response.
  *
  * @example
  */
@@ -123,8 +123,8 @@ export interface MemoryAnalytics {
 }
 
 /**
- * Memory REST API Controller
- * Provides comprehensive memory management through REST endpoints
+ * Memory REST API Controller.
+ * Provides comprehensive memory management through REST endpoints.
  *
  * @example
  */
@@ -147,8 +147,8 @@ export class MemoryController {
   }
 
   /**
-   * GET /api/memory/status
-   * Get memory system status and health information
+   * GET /api/memory/status.
+   * Get memory system status and health information.
    */
   async getMemoryStatus(): Promise<MemoryResponse> {
     const startTime = Date.now();
@@ -201,8 +201,8 @@ export class MemoryController {
   }
 
   /**
-   * POST /api/memory/store
-   * Store data in memory with optional TTL and compression
+   * POST /api/memory/store.
+   * Store data in memory with optional TTL and compression.
    *
    * @param request
    */
@@ -265,8 +265,8 @@ export class MemoryController {
   }
 
   /**
-   * GET /api/memory/retrieve/:key
-   * Retrieve data from memory by key
+   * GET /api/memory/retrieve/:key.
+   * Retrieve data from memory by key.
    *
    * @param key
    */
@@ -324,8 +324,8 @@ export class MemoryController {
   }
 
   /**
-   * DELETE /api/memory/delete/:key
-   * Delete data from memory by key
+   * DELETE /api/memory/delete/:key.
+   * Delete data from memory by key.
    *
    * @param key
    */
@@ -379,8 +379,8 @@ export class MemoryController {
   }
 
   /**
-   * POST /api/memory/clear
-   * Clear all memory data
+   * POST /api/memory/clear.
+   * Clear all memory data.
    */
   async clearMemory(): Promise<MemoryResponse> {
     const startTime = Date.now();
@@ -427,8 +427,8 @@ export class MemoryController {
   }
 
   /**
-   * POST /api/memory/batch
-   * Perform multiple memory operations in a single request
+   * POST /api/memory/batch.
+   * Perform multiple memory operations in a single request.
    *
    * @param request
    */
@@ -466,12 +466,12 @@ export class MemoryController {
           results.push({
             operation: operation.type,
             key: operation.key,
-            success: result.success,
-            data: result.data,
-            error: result.error,
+            success: result?.success,
+            data: result?.data,
+            error: result?.error,
           });
 
-          if (!result.success) {
+          if (!result?.success) {
             errorCount++;
             if (!request.continueOnError) {
               break;
@@ -534,8 +534,8 @@ export class MemoryController {
   }
 
   /**
-   * GET /api/memory/analytics
-   * Get comprehensive memory analytics and performance metrics
+   * GET /api/memory/analytics.
+   * Get comprehensive memory analytics and performance metrics.
    */
   async getMemoryAnalytics(): Promise<MemoryResponse> {
     const startTime = Date.now();
@@ -610,7 +610,7 @@ export class MemoryController {
   }
 
   /**
-   * Initialize the memory backend
+   * Initialize the memory backend.
    */
   private initializeBackend(): void {
     try {
@@ -677,7 +677,7 @@ export class MemoryController {
   }
 
   /**
-   * Update performance metrics
+   * Update performance metrics.
    *
    * @param responseTime
    * @param success
@@ -691,7 +691,7 @@ export class MemoryController {
   }
 
   /**
-   * Calculate operations per second
+   * Calculate operations per second.
    */
   private calculateOperationsPerSecond(): number {
     const uptimeSeconds = (Date.now() - this.performanceMetrics.startTime) / 1000;

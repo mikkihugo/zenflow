@@ -1,9 +1,16 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("neural-core-neural-core");
 /**
- * Neural Core System - Advanced AI Computing Engine
+ * @file Neural network: neural-core
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('neural-core-neural-core');
+
+/**
+ * Neural Core System - Advanced AI Computing Engine.
  *
- * Central neural network functionality with WASM acceleration, cognitive pattern
+ * Central neural network functionality with WASM acceleration, cognitive pattern.
  * optimization, and enterprise-scale AI capabilities. Provides comprehensive neural
  * training, real-time inference, pattern analysis, and performance optimization
  * for distributed AI development workflows.
@@ -167,8 +174,8 @@ export interface WeightsExport {
 }
 
 /**
- * Neural CLI System
- * Provides comprehensive neural network management capabilities
+ * Neural CLI System.
+ * Provides comprehensive neural network management capabilities.
  *
  * @example
  */
@@ -176,7 +183,7 @@ export class NeuralCLI {
   private ruvSwarm: any = null;
 
   /**
-   * Initialize the neural system
+   * Initialize the neural system.
    *
    * @param config
    * @param _config
@@ -197,7 +204,7 @@ export class NeuralCLI {
   }
 
   /**
-   * Get neural system status
+   * Get neural system status.
    *
    * @param _args
    */
@@ -207,7 +214,7 @@ export class NeuralCLI {
     try {
       // Get neural network status from WASM
       const status = rs.wasmLoader.modules.get('core')?.neural_status
-        ? rs.wasmLoader.modules.get('core').neural_status()
+        ? rs.wasmLoader.modules.get('core')?.neural_status()
         : 'Neural networks not available';
 
       // Load persistence information
@@ -266,7 +273,7 @@ export class NeuralCLI {
   }
 
   /**
-   * Train neural models
+   * Train neural models.
    *
    * @param args
    */
@@ -294,7 +301,7 @@ export class NeuralCLI {
 
         // Call WASM training if available
         if (rs.wasmLoader.modules.get('core')?.neural_train) {
-          rs.wasmLoader.modules.get('core').neural_train(modelType, i, iterations);
+          rs.wasmLoader.modules.get('core')?.neural_train(modelType, i, iterations);
         }
       }
 
@@ -320,7 +327,7 @@ export class NeuralCLI {
   }
 
   /**
-   * Analyze neural patterns
+   * Analyze neural patterns.
    *
    * @param args
    */
@@ -334,7 +341,7 @@ export class NeuralCLI {
     let patternType = this.getArg(args, '--pattern') || this.getArg(args, '--model');
 
     // If no flag-based argument, check positional argument (but skip if it's a flag)
-    if (!patternType && args[0] && !args[0].startsWith('--')) {
+    if (!patternType && args[0] && !args[0]?.startsWith('--')) {
       patternType = args[0];
     }
 
@@ -372,7 +379,7 @@ export class NeuralCLI {
   }
 
   /**
-   * Export neural weights
+   * Export neural weights.
    *
    * @param args
    */
@@ -429,7 +436,7 @@ export class NeuralCLI {
   }
 
   /**
-   * Calculate convergence rate from training results
+   * Calculate convergence rate from training results.
    *
    * @param trainingResults
    */
@@ -438,9 +445,9 @@ export class NeuralCLI {
       return 'insufficient_data';
     }
 
-    const recentResults = trainingResults.slice(-5); // Last 5 iterations
-    const lossVariance = this.calculateVariance(recentResults.map((r) => r.loss));
-    const accuracyTrend = this.calculateTrend(recentResults.map((r) => r.accuracy));
+    const recentResults = trainingResults?.slice(-5); // Last 5 iterations
+    const lossVariance = this.calculateVariance(recentResults?.map((r) => r.loss));
+    const accuracyTrend = this.calculateTrend(recentResults?.map((r) => r.accuracy));
 
     if (lossVariance < 0.001 && accuracyTrend > 0) {
       return 'converged';
@@ -453,7 +460,7 @@ export class NeuralCLI {
   }
 
   /**
-   * Calculate variance of values
+   * Calculate variance of values.
    *
    * @param values
    */
@@ -468,7 +475,7 @@ export class NeuralCLI {
   /**
    * Calculate trend (positive = improving)
    *
-   * @param values
+   * @param values.
    */
   private calculateTrend(values: number[]): number {
     if (values.length < 2) {
@@ -480,7 +487,7 @@ export class NeuralCLI {
   }
 
   /**
-   * Load persistence information from filesystem
+   * Load persistence information from filesystem.
    */
   private async loadPersistenceInfo(): Promise<PersistenceInfo> {
     const neuralDir = path.join(process.cwd(), '.ruv-swarm', 'neural');
@@ -511,7 +518,7 @@ export class NeuralCLI {
             // Extract model type from filename
             const modelMatch = file.match(/training-([^-]+)-/);
             if (modelMatch) {
-              const modelType = modelMatch[1];
+              const modelType = modelMatch?.[1];
 
               // Update model details
               if (!modelDetails[modelType]) {
@@ -519,19 +526,19 @@ export class NeuralCLI {
               }
 
               if (
-                !modelDetails[modelType].lastTrained ||
-                new Date(data.timestamp) > new Date(modelDetails[modelType].lastTrained!)
+                !modelDetails[modelType]?.lastTrained ||
+                new Date(data?.timestamp) > new Date(modelDetails[modelType]?.lastTrained!)
               ) {
-                modelDetails[modelType].lastTrained = data.timestamp;
-                modelDetails[modelType].lastAccuracy = data.finalAccuracy;
-                modelDetails[modelType].iterations = data.iterations;
-                modelDetails[modelType].learningRate = data.learningRate;
+                modelDetails[modelType].lastTrained = data?.timestamp;
+                modelDetails[modelType].lastAccuracy = data?.finalAccuracy;
+                modelDetails[modelType].iterations = data?.iterations;
+                modelDetails[modelType].learningRate = data?.learningRate;
               }
 
               // Update totals
-              totalTrainingTime += data.duration || 0;
-              if (data.finalAccuracy) {
-                const accuracy = parseFloat(data.finalAccuracy);
+              totalTrainingTime += data?.duration || 0;
+              if (data?.finalAccuracy) {
+                const accuracy = parseFloat(data?.finalAccuracy);
                 totalAccuracy += accuracy;
                 accuracyCount++;
 
@@ -549,7 +556,7 @@ export class NeuralCLI {
           // Mark model as having saved weights
           const modelMatch = file.match(/^([^-]+)-weights-/);
           if (modelMatch) {
-            const modelType = modelMatch[1];
+            const modelType = modelMatch?.[1];
             if (!modelDetails[modelType]) {
               modelDetails[modelType] = {};
             }
@@ -580,8 +587,9 @@ export class NeuralCLI {
       const sessionContinuity =
         totalSessions > 0
           ? {
-              loadedModels: Object.keys(modelDetails).filter((m) => modelDetails[m].hasSavedWeights)
-                .length,
+              loadedModels: Object.keys(modelDetails).filter(
+                (m) => modelDetails[m]?.hasSavedWeights
+              ).length,
               sessionStart: new Date().toLocaleString(),
               memorySize: `${(Math.random() * 50 + 10).toFixed(1)} MB`,
             }
@@ -611,15 +619,15 @@ export class NeuralCLI {
   }
 
   /**
-   * Get memory usage for specific pattern type
+   * Get memory usage for specific pattern type.
    *
    * @param patternType
    */
   private async getPatternMemoryUsage(patternType: PatternType): Promise<number> {
-    const config = PATTERN_MEMORY_CONFIG[patternType] || PATTERN_MEMORY_CONFIG.convergent;
+    const config = PATTERN_MEMORY_CONFIG?.[patternType] || PATTERN_MEMORY_CONFIG?.convergent;
 
     // Calculate memory usage based on pattern type
-    const baseMemory = config.baseMemory;
+    const baseMemory = config?.baseMemory;
 
     // Add very small variance for realism (±2% to keep within 250-300 MB range)
     const variance = (Math.random() - 0.5) * 0.04;
@@ -627,7 +635,7 @@ export class NeuralCLI {
   }
 
   /**
-   * Get pattern definitions for analysis
+   * Get pattern definitions for analysis.
    */
   private getPatternDefinitions(): Record<string, PatternData> {
     return {
@@ -688,7 +696,7 @@ export class NeuralCLI {
   }
 
   /**
-   * Display all patterns
+   * Display all patterns.
    *
    * @param patterns
    */
@@ -704,18 +712,18 @@ export class NeuralCLI {
     const neuralModels = ['attention', 'lstm', 'transformer'];
     for (const pattern of cognitivePatterns) {
       for (const [_category, items] of Object.entries(patterns[pattern])) {
-        items.forEach((_item) => {});
+        items?.forEach((_item) => {});
       }
     }
     for (const model of neuralModels) {
       for (const [_category, items] of Object.entries(patterns[model])) {
-        items.forEach((_item) => {});
+        items?.forEach((_item) => {});
       }
     }
   }
 
   /**
-   * Display specific pattern
+   * Display specific pattern.
    *
    * @param patternType
    * @param patterns
@@ -728,12 +736,12 @@ export class NeuralCLI {
     }
 
     for (const [_category, items] of Object.entries(patternData)) {
-      items.forEach((_item) => {});
+      items?.forEach((_item) => {});
     }
   }
 
   /**
-   * Parse command line argument
+   * Parse command line argument.
    *
    * @param args
    * @param flag

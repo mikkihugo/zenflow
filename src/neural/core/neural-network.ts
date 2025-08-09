@@ -1,5 +1,11 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("neural-core-neural-network");
+/**
+ * @file Neural network: neural-network
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('neural-core-neural-network');
 // neural-network.ts - TypeScript wrapper for WASM neural network functionality
 
 export interface NetworkConfig {

@@ -1,7 +1,12 @@
 /**
- * DI token creation utilities
+ * DI token creation utilities.
  * Provides type-safe token creation for dependency injection.
  */
+/**
+ * @file token-factory implementation
+ */
+
+
 
 import type { Constructor, DIToken } from '../types/di-types';
 

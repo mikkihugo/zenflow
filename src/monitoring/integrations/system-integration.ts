@@ -1,7 +1,12 @@
 /**
- * System Integration Hub
- * Connects monitoring system with existing Claude-Zen components
+ * System Integration Hub.
+ * Connects monitoring system with existing Claude-Zen components.
  */
+/**
+ * @file system-integration implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { PerformanceAnalyzer, type PerformanceInsights } from '../analytics/performance-analyzer';
@@ -99,7 +104,7 @@ export class SystemIntegration extends EventEmitter {
 
     // Initialize components
     this.metricsCollector = new MetricsCollector({
-      collectionInterval: config.metricsInterval,
+      collectionInterval: config?.metricsInterval,
       maxHistorySize: 3600,
     });
 
@@ -108,8 +113,8 @@ export class SystemIntegration extends EventEmitter {
     this.optimizationEngine = new OptimizationEngine();
 
     this.dashboardServer = new DashboardServer({
-      port: config.dashboardPort,
-      updateInterval: config.metricsInterval,
+      port: config?.dashboardPort,
+      updateInterval: config?.metricsInterval,
       corsOrigins: ['http://localhost:3000', 'http://localhost:8080'],
     });
 
@@ -118,7 +123,7 @@ export class SystemIntegration extends EventEmitter {
   }
 
   /**
-   * Setup event handlers between components
+   * Setup event handlers between components.
    */
   private setupEventHandlers(): void {
     // Metrics collector events
@@ -149,7 +154,7 @@ export class SystemIntegration extends EventEmitter {
     });
 
     this.optimizationEngine.on('action:failed', (result: OptimizationResult) => {
-      this.log('warn', `Optimization failed: ${result.actionId} - ${result.error}`);
+      this.log('warn', `Optimization failed: ${result?.actionId} - ${result?.error}`);
       this.dashboardServer.updateOptimizations([result]);
     });
 
@@ -164,7 +169,7 @@ export class SystemIntegration extends EventEmitter {
   }
 
   /**
-   * Setup system integration hooks
+   * Setup system integration hooks.
    */
   private setupSystemHooks(): void {
     // FACT system hooks
@@ -306,7 +311,7 @@ export class SystemIntegration extends EventEmitter {
   }
 
   /**
-   * Start the monitoring system
+   * Start the monitoring system.
    */
   public async start(): Promise<void> {
     if (this.isRunning) {
@@ -334,7 +339,7 @@ export class SystemIntegration extends EventEmitter {
   }
 
   /**
-   * Stop the monitoring system
+   * Stop the monitoring system.
    */
   public async stop(): Promise<void> {
     if (!this.isRunning) {
@@ -358,7 +363,7 @@ export class SystemIntegration extends EventEmitter {
   }
 
   /**
-   * Handle collected metrics
+   * Handle collected metrics.
    *
    * @param metrics
    */
@@ -381,7 +386,7 @@ export class SystemIntegration extends EventEmitter {
   }
 
   /**
-   * Handle generated insights
+   * Handle generated insights.
    *
    * @param insights
    */
@@ -406,18 +411,18 @@ export class SystemIntegration extends EventEmitter {
   }
 
   /**
-   * Handle completed optimizations
+   * Handle completed optimizations.
    *
    * @param result
    */
   private handleOptimizationCompleted(result: OptimizationResult): void {
     this.log(
       'info',
-      `Optimization completed: ${result.actionId} (${result.success ? 'success' : 'failed'})`
+      `Optimization completed: ${result?.actionId} (${result?.success ? 'success' : 'failed'})`
     );
 
-    if (result.success) {
-      const impact = result.impact.performance * 100;
+    if (result?.success) {
+      const impact = result?.impact?.performance * 100;
       this.log('info', `Performance improvement: ${impact.toFixed(1)}%`);
     }
 
@@ -426,7 +431,7 @@ export class SystemIntegration extends EventEmitter {
   }
 
   /**
-   * Enhance metrics with integration data
+   * Enhance metrics with integration data.
    *
    * @param metrics
    */
@@ -564,7 +569,7 @@ export class SystemIntegration extends EventEmitter {
   }
 
   /**
-   * Generate alerts based on insights
+   * Generate alerts based on insights.
    *
    * @param insights
    */
@@ -605,14 +610,14 @@ export class SystemIntegration extends EventEmitter {
   }
 
   /**
-   * Get system hooks for external integration
+   * Get system hooks for external integration.
    */
   public getSystemHooks(): SystemHooks {
     return { ...this.hooks };
   }
 
   /**
-   * Get current system status
+   * Get current system status.
    */
   public getSystemStatus(): {
     isRunning: boolean;
@@ -649,7 +654,7 @@ export class SystemIntegration extends EventEmitter {
   }
 
   /**
-   * Reset integration metrics
+   * Reset integration metrics.
    */
   public resetMetrics(): void {
     this.factMetrics = {
@@ -692,7 +697,7 @@ export class SystemIntegration extends EventEmitter {
   }
 
   /**
-   * Logging utility
+   * Logging utility.
    *
    * @param level
    * @param _message
@@ -702,7 +707,7 @@ export class SystemIntegration extends EventEmitter {
     const levels = { error: 0, warn: 1, info: 2, debug: 3 };
     const configLevels = { error: 0, warn: 1, info: 2, debug: 3 };
 
-    if (levels[level] <= configLevels[this.config.logLevel]) {
+    if (levels[level] <= configLevels?.[this.config.logLevel]) {
     }
   }
 }

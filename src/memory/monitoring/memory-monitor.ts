@@ -1,10 +1,10 @@
 /**
  * @file Real-time Memory System Monitor
- * Comprehensive monitoring and analytics for memory operations
+ * Comprehensive monitoring and analytics for memory operations.
  */
 
 import { EventEmitter } from 'node:events';
-import type { BackendInterface } from '../../core/memory-system';
+import type { BackendInterface } from '../core/memory-system';
 import type { MemoryCoordinator } from '../core/memory-coordinator';
 import type { PerformanceOptimizer } from '../optimization/performance-optimizer';
 
@@ -82,8 +82,8 @@ export interface MonitoringConfig {
 }
 
 /**
- * Real-time Memory Monitor
- * Provides comprehensive monitoring and alerting for memory systems
+ * Real-time Memory Monitor.
+ * Provides comprehensive monitoring and alerting for memory systems.
  *
  * @example
  */
@@ -112,13 +112,13 @@ export class MemoryMonitor extends EventEmitter {
     super();
     this.config = config;
 
-    if (config.enabled) {
+    if (config?.enabled) {
       this.startCollection();
     }
   }
 
   /**
-   * Register components for monitoring
+   * Register components for monitoring.
    *
    * @param id
    * @param backend
@@ -139,7 +139,7 @@ export class MemoryMonitor extends EventEmitter {
   }
 
   /**
-   * Start metric collection
+   * Start metric collection.
    */
   startCollection(): void {
     if (this.collecting) return;
@@ -153,7 +153,7 @@ export class MemoryMonitor extends EventEmitter {
   }
 
   /**
-   * Stop metric collection
+   * Stop metric collection.
    */
   stopCollection(): void {
     if (!this.collecting) return;
@@ -168,7 +168,7 @@ export class MemoryMonitor extends EventEmitter {
   }
 
   /**
-   * Record an operation for tracking
+   * Record an operation for tracking.
    *
    * @param operation
    * @param duration
@@ -205,7 +205,7 @@ export class MemoryMonitor extends EventEmitter {
   }
 
   /**
-   * Collect current metrics
+   * Collect current metrics.
    */
   private async collectMetrics(): Promise<void> {
     try {
@@ -319,7 +319,7 @@ export class MemoryMonitor extends EventEmitter {
   }
 
   /**
-   * Check metrics against alert thresholds
+   * Check metrics against alert thresholds.
    *
    * @param metrics
    */
@@ -404,7 +404,7 @@ export class MemoryMonitor extends EventEmitter {
   }
 
   /**
-   * Create and emit an alert
+   * Create and emit an alert.
    *
    * @param alertData
    */
@@ -430,7 +430,7 @@ export class MemoryMonitor extends EventEmitter {
   }
 
   /**
-   * Acknowledge an alert
+   * Acknowledge an alert.
    *
    * @param alertId
    */
@@ -445,7 +445,7 @@ export class MemoryMonitor extends EventEmitter {
   }
 
   /**
-   * Resolve an alert
+   * Resolve an alert.
    *
    * @param alertId
    */
@@ -460,14 +460,14 @@ export class MemoryMonitor extends EventEmitter {
   }
 
   /**
-   * Get current metrics
+   * Get current metrics.
    */
   getCurrentMetrics(): MemoryMetrics | null {
     return this.metrics.length > 0 ? this.metrics[this.metrics.length - 1] : null;
   }
 
   /**
-   * Get metrics for a time range
+   * Get metrics for a time range.
    *
    * @param startTime
    * @param endTime
@@ -477,7 +477,7 @@ export class MemoryMonitor extends EventEmitter {
   }
 
   /**
-   * Get recent metrics
+   * Get recent metrics.
    *
    * @param count
    */
@@ -486,21 +486,21 @@ export class MemoryMonitor extends EventEmitter {
   }
 
   /**
-   * Get active alerts
+   * Get active alerts.
    */
   getActiveAlerts(): MemoryAlert[] {
     return this.alerts.filter((a) => !a.resolved);
   }
 
   /**
-   * Get all alerts
+   * Get all alerts.
    */
   getAllAlerts(): MemoryAlert[] {
     return [...this.alerts];
   }
 
   /**
-   * Get monitoring statistics
+   * Get monitoring statistics.
    */
   getStats() {
     const currentMetrics = this.getCurrentMetrics();
@@ -534,7 +534,7 @@ export class MemoryMonitor extends EventEmitter {
   }
 
   /**
-   * Generate a health report
+   * Generate a health report.
    */
   generateHealthReport(): {
     overall: 'healthy' | 'warning' | 'critical';
@@ -555,13 +555,13 @@ export class MemoryMonitor extends EventEmitter {
     }
 
     const scores = {
-      latency: Math.max(0, 100 - currentMetrics.averageLatency),
-      errorRate: Math.max(0, 100 - currentMetrics.errorRate * 1000),
-      memory: Math.max(0, 100 - (currentMetrics.totalMemoryUsage / 1000) * 100),
-      cache: currentMetrics.cacheHitRate * 100,
+      latency: Math.max(0, 100 - currentMetrics?.averageLatency),
+      errorRate: Math.max(0, 100 - currentMetrics?.errorRate * 1000),
+      memory: Math.max(0, 100 - (currentMetrics?.totalMemoryUsage / 1000) * 100),
+      cache: currentMetrics?.cacheHitRate * 100,
       nodes:
-        currentMetrics.activeNodes > 0
-          ? (currentMetrics.healthyNodes / currentMetrics.activeNodes) * 100
+        currentMetrics?.activeNodes > 0
+          ? (currentMetrics?.healthyNodes / currentMetrics?.activeNodes) * 100
           : 100,
     };
 

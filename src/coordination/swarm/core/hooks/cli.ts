@@ -1,9 +1,15 @@
 #!/usr/bin/env node
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-hooks-cli");
+/**
+ * @file Coordination system: cli
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-hooks-cli');
 
 /**
- * CLI handler for ruv-swarm hooks
+ * CLI handler for ruv-swarm hooks.
  * Usage: npx ruv-swarm hook <type> [options].
  */
 
@@ -29,7 +35,7 @@ async function main() {
     const result = await handleHook(hookType, options);
 
     // Exit with appropriate code
-    if (result.continue === false) {
+    if (result?.continue === false) {
       process.exit(2); // Blocking error
     } else {
       process.exit(0); // Success
@@ -38,11 +44,13 @@ async function main() {
     const errorMessage = error instanceof Error ? error.message : String(error);
     const errorStack = error instanceof Error ? error.stack : undefined;
 
-    logger.error(JSON.stringify({
-      continue: true,
-      error: errorMessage,
-      stack: process.env['DEBUG'] ? errorStack : undefined,
-    }));
+    logger.error(
+      JSON.stringify({
+        continue: true,
+        error: errorMessage,
+        stack: process.env['DEBUG'] ? errorStack : undefined,
+      })
+    );
     process.exit(1); // Non-blocking error
   }
 }
@@ -70,10 +78,10 @@ function parseArgs(args: string[]): any {
       }
     } else if (!args[i - 1]?.startsWith('--')) {
       // Positional argument
-      if (!options._) {
+      if (!options?._) {
         options._ = [];
       }
-      options._.push(arg);
+      options?._?.push(arg);
     }
   }
 

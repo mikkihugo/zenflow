@@ -1,18 +1,23 @@
 /**
- * Real-Time Monitoring Dashboard Server
- * Web-based dashboard for performance monitoring and visualization
+ * Real-Time Monitoring Dashboard Server.
+ * Web-based dashboard for performance monitoring and visualization.
  */
+/**
+ * @file dashboard-server implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { createServer } from 'node:http';
 import * as path from 'node:path';
 import express from 'express';
 import { Server as SocketIOServer } from 'socket.io';
+import { getConfig } from '../config';
+import { getCORSOrigins } from '../config/url-builder';
 import type { PerformanceInsights } from '../analytics/performance-analyzer';
 import type { CompositeMetrics } from '../core/metrics-collector';
 import type { OptimizationResult } from '../optimization/optimization-engine';
-import { getCORSOrigins } from '../../config/url-builder';
-import { getConfig } from '../../config';
 
 export interface DashboardConfig {
   port: number;
@@ -52,11 +57,11 @@ export class DashboardServer extends EventEmitter {
     this.config = config;
     this.app = express();
     this.server = createServer(this.app);
-    
+
     // Get centralized CORS origins
     this.io = new SocketIOServer(this.server, {
       cors: {
-        origin: config.corsOrigins || getCORSOrigins(),
+        origin: config?.corsOrigins || getCORSOrigins(),
         methods: ['GET', 'POST'],
       },
     });
@@ -67,7 +72,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Setup Express middleware and static files
+   * Setup Express middleware and static files.
    */
   private setupExpress(): void {
     this.app.use(express.json());
@@ -80,7 +85,10 @@ export class DashboardServer extends EventEmitter {
     // CORS middleware using centralized configuration
     this.app.use((_req, res, next) => {
       const corsOrigins = this.config.corsOrigins || getCORSOrigins();
-      res.header('Access-Control-Allow-Origin', Array.isArray(corsOrigins) ? corsOrigins.join(',') : corsOrigins);
+      res.header(
+        'Access-Control-Allow-Origin',
+        Array.isArray(corsOrigins) ? corsOrigins.join(',') : corsOrigins
+      );
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
       res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
       next();
@@ -129,7 +137,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Setup REST API routes
+   * Setup REST API routes.
    */
   private setupRoutes(): void {
     // Health check
@@ -192,7 +200,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Start the dashboard server
+   * Start the dashboard server.
    */
   public async start(): Promise<void> {
     if (this.isRunning) {
@@ -214,7 +222,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Stop the dashboard server
+   * Stop the dashboard server.
    */
   public async stop(): Promise<void> {
     if (!this.isRunning) {
@@ -231,7 +239,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Update dashboard with new metrics
+   * Update dashboard with new metrics.
    *
    * @param metrics
    */
@@ -242,7 +250,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Update dashboard with new insights
+   * Update dashboard with new insights.
    *
    * @param insights
    */
@@ -275,7 +283,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Update dashboard with optimization results
+   * Update dashboard with optimization results.
    *
    * @param optimizations
    */
@@ -295,7 +303,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Add alert to dashboard
+   * Add alert to dashboard.
    *
    * @param type
    * @param message
@@ -320,7 +328,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Generate dashboard summary
+   * Generate dashboard summary.
    */
   private generateDashboardSummary(): any {
     const metrics = this.dashboardData.metrics;
@@ -372,7 +380,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Handle export request via socket
+   * Handle export request via socket.
    *
    * @param socket
    * @param format
@@ -393,7 +401,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Handle export response via HTTP
+   * Handle export response via HTTP.
    *
    * @param res
    * @param format
@@ -415,7 +423,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Generate export data
+   * Generate export data.
    *
    * @param format
    */
@@ -437,7 +445,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Convert data to CSV format
+   * Convert data to CSV format.
    *
    * @param data
    */
@@ -447,10 +455,10 @@ export class DashboardServer extends EventEmitter {
     // Summary section
     lines.push('DASHBOARD SUMMARY');
     lines.push('Timestamp,Health Score,CPU Usage,Memory Usage,Alerts,Optimizations');
-    const summary = data.summary;
+    const summary = data?.summary;
     lines.push(
       [
-        new Date(data.timestamp).toISOString(),
+        new Date(data?.timestamp).toISOString(),
         summary.system?.health || 0,
         summary.system?.cpuUsage || 0,
         summary.system?.memoryUsage || 0,
@@ -464,7 +472,7 @@ export class DashboardServer extends EventEmitter {
     // Alerts section
     lines.push('ALERTS');
     lines.push('ID,Type,Message,Timestamp');
-    data.alerts.forEach((alert: any) => {
+    data?.alerts?.forEach((alert: any) => {
       lines.push(
         [
           alert.id,
@@ -480,7 +488,7 @@ export class DashboardServer extends EventEmitter {
     // Optimizations section
     lines.push('OPTIMIZATIONS');
     lines.push('Action ID,Success,Performance Impact,Efficiency Impact,Execution Time');
-    data.optimizations.forEach((opt: any) => {
+    data?.optimizations.forEach((opt: any) => {
       lines.push(
         [
           opt.actionId,
@@ -496,7 +504,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Get server status
+   * Get server status.
    */
   public getStatus(): {
     isRunning: boolean;
@@ -513,7 +521,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Get connected clients
+   * Get connected clients.
    */
   public getConnectedClients(): string[] {
     return Array.from(this.connectedClients);

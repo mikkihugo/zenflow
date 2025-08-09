@@ -1,8 +1,15 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-claude-integration-index");
 /**
- * Main Claude Code integration orchestrator
- * Coordinates all integration modules for modular, remote-capable setup
+ * @file claude-integration module exports
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-claude-integration-index');
+
+/**
+ * Main Claude Code integration orchestrator.
+ * Coordinates all integration modules for modular, remote-capable setup.
  */
 
 import { ClaudeIntegrationCore } from './core';
@@ -40,14 +47,14 @@ class ClaudeIntegrationOrchestrator {
 
   constructor(options: ClaudeIntegrationOptions = {}) {
     this.options = {
-      autoSetup: options.autoSetup || false,
-      forceSetup: options.forceSetup || false,
-      mergeSetup: options.mergeSetup || false,
-      backupSetup: options.backupSetup || false,
-      noBackup: options.noBackup || false,
-      interactive: options.interactive !== false, // Default to true
-      workingDir: options.workingDir || process.cwd(),
-      packageName: options.packageName || 'ruv-swarm',
+      autoSetup: options?.autoSetup || false,
+      forceSetup: options?.forceSetup || false,
+      mergeSetup: options?.mergeSetup || false,
+      backupSetup: options?.backupSetup || false,
+      noBackup: options?.noBackup || false,
+      interactive: options?.interactive !== false, // Default to true
+      workingDir: options?.workingDir || process.cwd(),
+      packageName: options?.packageName || 'ruv-swarm',
       ...options,
     };
 
@@ -58,7 +65,7 @@ class ClaudeIntegrationOrchestrator {
   }
 
   /**
-   * Setup complete Claude Code integration
+   * Setup complete Claude Code integration.
    */
   async setupIntegration(): Promise<SetupResults> {
     try {
@@ -68,28 +75,28 @@ class ClaudeIntegrationOrchestrator {
         success: true,
         modules: {},
       };
-      results.modules.docs = await this.docs.generateAll({
+      results?.modules.docs = await this.docs.generateAll({
         force: this.options.forceSetup ?? false,
         merge: this.options.mergeSetup ?? false,
         backup: this.options.backupSetup ?? false,
         noBackup: this.options.noBackup ?? false,
         interactive: this.options.interactive ?? true,
       });
-      results.modules.remote = await this.remote.createAll();
+      results?.modules.remote = await this.remote.createAll();
 
       // Step 3: Initialize core integration (if auto setup enabled)
       if (this.options.autoSetup) {
         try {
-          results.modules.core = await this.core.initialize();
+          results?.modules.core = await this.core.initialize();
         } catch (error: any) {
-          results.modules.core = {
+          results?.modules.core = {
             success: false,
             error: error.message,
             manualSetup: true,
           };
         }
       } else {
-        results.modules.core = {
+        results?.modules.core = {
           success: true,
           manualSetup: true,
           instructions: [
@@ -98,7 +105,7 @@ class ClaudeIntegrationOrchestrator {
           ],
         };
       }
-      if (results.modules.core.manualSetup) {
+      if (results?.modules?.core?.manualSetup) {
       } else {
       }
 
@@ -110,7 +117,7 @@ class ClaudeIntegrationOrchestrator {
   }
 
   /**
-   * Invoke Claude with a prompt using the core module
+   * Invoke Claude with a prompt using the core module.
    *
    * @param prompt
    */
@@ -119,7 +126,7 @@ class ClaudeIntegrationOrchestrator {
   }
 
   /**
-   * Check integration status
+   * Check integration status.
    */
   async checkStatus(): Promise<any> {
     try {
@@ -138,7 +145,7 @@ class ClaudeIntegrationOrchestrator {
   }
 
   /**
-   * Clean up integration files
+   * Clean up integration files.
    */
   async cleanup(): Promise<{ success: boolean; removedFiles: string[] }> {
     const { promises: fs } = await import('node:fs');

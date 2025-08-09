@@ -18,10 +18,10 @@ class MockGitHubAPI {
     const issue = {
       id: this.issues.length + 1,
       number: this.issues.length + 1,
-      title: data.title,
-      body: data.body,
-      labels: data.labels || [],
-      assignees: data.assignees || [],
+      title: data?.title,
+      body: data?.body,
+      labels: data?.labels || [],
+      assignees: data?.assignees || [],
       state: 'open',
       created_at: new Date().toISOString(),
     };
@@ -41,10 +41,10 @@ class MockGitHubAPI {
     const pr = {
       id: this.pullRequests.length + 1,
       number: this.pullRequests.length + 1,
-      title: data.title,
-      body: data.body,
-      head: { ref: data.head },
-      base: { ref: data.base },
+      title: data?.title,
+      body: data?.body,
+      head: { ref: data?.head },
+      base: { ref: data?.base },
       state: 'open',
       created_at: new Date().toISOString(),
     };
@@ -55,8 +55,8 @@ class MockGitHubAPI {
   async createProject(data: any) {
     const project = {
       id: this.projects.length + 1,
-      name: data.name,
-      body: data.body,
+      name: data?.name,
+      body: data?.body,
       state: 'open',
       created_at: new Date().toISOString(),
     };
@@ -192,9 +192,9 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
           ]);
 
           expect(issues.length).toBe(3);
-          expect(issues[0].title).toContain('Authentication System');
-          expect(issues[1].title).toContain('Product Catalog');
-          expect(issues[2].title).toContain('Payment Processing');
+          expect(issues[0]?.title).toContain('Authentication System');
+          expect(issues[1]?.title).toContain('Product Catalog');
+          expect(issues[2]?.title).toContain('Payment Processing');
         }
       });
 
@@ -848,7 +848,7 @@ Complete e-commerce platform with user management, product catalog, and order pr
         // Simulate status report generation
         const byType = projectDocs.reduce((acc, doc) => {
           if (!acc[doc.type]) acc[doc.type] = [];
-          acc[doc.type].push(doc);
+          acc[doc.type]?.push(doc);
           return acc;
         }, {} as any);
 

@@ -1,7 +1,12 @@
 /**
- * Core system tokens for dependency injection
- * Defines tokens for fundamental system services
+ * Core system tokens for dependency injection.
+ * Defines tokens for fundamental system services.
  */
+/**
+ * @file core-tokens implementation
+ */
+
+
 
 import { createToken } from './token-factory';
 

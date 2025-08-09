@@ -1,6 +1,6 @@
 /**
- * Knowledge Quality Management System for Claude-Zen
- * Implements reputation-based validation, quality assurance, and peer review systems
+ * Knowledge Quality Management System for Claude-Zen.
+ * Implements reputation-based validation, quality assurance, and peer review systems.
  *
  * Architecture: Multi-layered quality assurance with consensus-driven validation
  * - Reputation System: Track agent credibility and knowledge contribution quality
@@ -9,8 +9,14 @@
  * - Temporal Management: Handle knowledge decay, updates, and versioning
  * - Peer Review: Structured peer review and consensus building processes
  */
+/**
+ * @file knowledge-quality-management implementation.
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 
 // Quick type aliases to resolve missing type errors
 export type BootstrappingConfig = any;
@@ -76,7 +82,7 @@ export type ConsensusType =
 export type ReviewType = 'peer' | 'expert' | 'automated' | 'hybrid' | 'crowdsourced';
 
 /**
- * Reputation System
+ * Reputation System.
  *
  * @example
  */
@@ -165,7 +171,7 @@ export type AdvancedDecayFunctionType =
   | 'adaptive-decay';
 
 /**
- * Validation Protocols
+ * Validation Protocols.
  *
  * @example
  */
@@ -246,7 +252,7 @@ export type ValidatorType =
 export type VerificationLevel = 'basic' | 'standard' | 'rigorous' | 'comprehensive' | 'critical';
 
 /**
- * Quality Assurance System
+ * Quality Assurance System.
  *
  * @example
  */
@@ -326,7 +332,7 @@ export type ImprovementType =
   | 'coverage-expansion';
 
 /**
- * Temporal Knowledge Management
+ * Temporal Knowledge Management.
  *
  * @example
  */
@@ -387,7 +393,7 @@ export type MergeStrategy =
   | 'automated-merge';
 
 /**
- * Peer Review System
+ * Peer Review System.
  *
  * @example
  */
@@ -453,7 +459,7 @@ export type ReviewRecommendation =
   | 'require-additional-review';
 
 /**
- * Main Knowledge Quality Management System
+ * Main Knowledge Quality Management System.
  *
  * @example
  */
@@ -486,7 +492,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
   }
 
   /**
-   * Initialize all quality management systems
+   * Initialize all quality management systems.
    */
   private initializeSystems(): void {
     this.reputationSystem = new ReputationManagementSystem(
@@ -522,7 +528,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
   }
 
   /**
-   * Set up system integrations
+   * Set up system integrations.
    */
   private setupIntegrations(): void {
     // Reputation System -> Validation Protocols
@@ -557,7 +563,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
   }
 
   /**
-   * Validate knowledge item through comprehensive validation
+   * Validate knowledge item through comprehensive validation.
    *
    * @param knowledgeItem
    * @param validationType
@@ -637,7 +643,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
   }
 
   /**
-   * Manage reputation scores for knowledge contributors
+   * Manage reputation scores for knowledge contributors.
    *
    * @param agentId
    * @param contribution
@@ -709,7 +715,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
   }
 
   /**
-   * Conduct peer review process for knowledge items
+   * Conduct peer review process for knowledge items.
    *
    * @param knowledgeItem
    * @param reviewType
@@ -798,7 +804,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
   }
 
   /**
-   * Monitor and maintain knowledge quality continuously
+   * Monitor and maintain knowledge quality continuously.
    */
   async monitorKnowledgeQuality(): Promise<QualityMonitoringReport> {
     const startTime = Date.now();
@@ -849,7 +855,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
   }
 
   /**
-   * Get comprehensive quality management metrics
+   * Get comprehensive quality management metrics.
    */
   async getMetrics(): Promise<KnowledgeQualityMetrics> {
     return {
@@ -887,7 +893,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
   }
 
   /**
-   * Shutdown quality management system gracefully
+   * Shutdown quality management system gracefully.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down knowledge quality management system...');
@@ -935,7 +941,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 }
 
 /**
- * Configuration and result interfaces
+ * Configuration and result interfaces.
  *
  * @example
  */

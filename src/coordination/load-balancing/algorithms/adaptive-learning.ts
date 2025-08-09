@@ -1,7 +1,12 @@
 /**
- * Adaptive Learning Load Balancing Algorithm
- * Self-improving algorithm that learns from historical patterns and adapts strategies
+ * Adaptive Learning Load Balancing Algorithm.
+ * Self-improving algorithm that learns from historical patterns and adapts strategies.
  */
+/**
+ * @file Coordination system: adaptive-learning
+ */
+
+
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
 import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
@@ -79,7 +84,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Select agent using adaptive learning strategy
+   * Select agent using adaptive learning strategy.
    *
    * @param task
    * @param availableAgents
@@ -119,7 +124,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update algorithm configuration
+   * Update algorithm configuration.
    *
    * @param config
    */
@@ -127,16 +132,16 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     this.config = { ...this.config, ...config };
 
     // Adjust exploration rate
-    if (config.explorationRate !== undefined) {
+    if (config?.explorationRate !== undefined) {
       this.config.explorationRate = Math.max(
         this.config.minExplorationRate,
-        config.explorationRate
+        config?.explorationRate
       );
     }
   }
 
   /**
-   * Get performance metrics
+   * Get performance metrics.
    */
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
     const strategies = Array.from(this.strategies.values());
@@ -153,7 +158,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
         : 0;
 
     const mostUsedStrategy = strategies.reduce(
-      (best, current) => (current.usageCount > best.usageCount ? current : best),
+      (best, current) => (current?.usageCount > best.usageCount ? current : best),
       strategies[0] || { name: 'none', usageCount: 0 }
     );
 
@@ -170,7 +175,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Handle task completion for reinforcement learning
+   * Handle task completion for reinforcement learning.
    *
    * @param agentId
    * @param task
@@ -213,7 +218,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Handle agent failure
+   * Handle agent failure.
    *
    * @param agentId
    * @param _error
@@ -234,7 +239,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Initialize available strategies
+   * Initialize available strategies.
    */
   private initializeStrategies(): void {
     const initialStrategies = [
@@ -260,7 +265,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Extract context features from current situation
+   * Extract context features from current situation.
    *
    * @param task
    * @param availableAgents
@@ -284,7 +289,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Detect patterns in historical data
+   * Detect patterns in historical data.
    *
    * @param context
    */
@@ -304,7 +309,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Select strategy using epsilon-greedy or other methods
+   * Select strategy using epsilon-greedy or other methods.
    *
    * @param _context
    * @param detectedPattern
@@ -332,7 +337,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Epsilon-greedy strategy selection
+   * Epsilon-greedy strategy selection.
    */
   private epsilonGreedySelection(): string {
     if (Math.random() < this.config.explorationRate) {
@@ -357,7 +362,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Upper Confidence Bound strategy selection
+   * Upper Confidence Bound strategy selection.
    */
   private upperConfidenceBoundSelection(): string {
     const totalUsage = Array.from(this.strategies.values()).reduce(
@@ -388,7 +393,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Thompson sampling strategy selection
+   * Thompson sampling strategy selection.
    */
   private thompsonSamplingSelection(): string {
     let bestStrategy = '';
@@ -412,7 +417,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Apply selected strategy to choose agent
+   * Apply selected strategy to choose agent.
    *
    * @param strategyName
    * @param task
@@ -462,20 +467,20 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
         break;
     }
 
-    const alternatives = availableAgents.filter((a) => a.id !== selectedAgent.id).slice(0, 3);
+    const alternatives = availableAgents.filter((a) => a.id !== selectedAgent?.id).slice(0, 3);
 
     return {
       selectedAgent,
       confidence: this.strategies.get(strategyName)?.confidence || 0.5,
       reasoning: `${reasoning} (strategy: ${strategyName})`,
       alternativeAgents: alternatives,
-      estimatedLatency: metrics.get(selectedAgent.id)?.responseTime || 1000,
+      estimatedLatency: metrics.get(selectedAgent?.id)?.responseTime || 1000,
       expectedQuality: this.strategies.get(strategyName)?.successRate || 0.8,
     };
   }
 
   /**
-   * Calculate reward for reinforcement learning
+   * Calculate reward for reinforcement learning.
    *
    * @param duration
    * @param success
@@ -506,7 +511,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update strategy performance based on outcome
+   * Update strategy performance based on outcome.
    *
    * @param strategyName
    * @param duration
@@ -544,7 +549,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Record decision for learning
+   * Record decision for learning.
    *
    * @param task
    * @param result
@@ -560,7 +565,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     const decision: DecisionHistory = {
       timestamp: new Date(),
       taskId: task.id,
-      agentId: result.selectedAgent.id,
+      agentId: result?.selectedAgent?.id,
       strategy,
       features: {
         taskPriority: task.priority,
@@ -569,9 +574,9 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
         agentCount: context.agentCount,
       },
       outcome: {
-        latency: result.estimatedLatency,
+        latency: result?.estimatedLatency,
         success: true, // Will be updated when task completes
-        quality: result.expectedQuality,
+        quality: result?.expectedQuality,
       },
     };
 

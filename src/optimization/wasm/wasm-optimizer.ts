@@ -1,9 +1,14 @@
 /**
- * WASM Integration Performance Optimizer
- * Optimizes WASM module loading, compilation, memory sharing, and SIMD acceleration
+ * WASM Integration Performance Optimizer.
+ * Optimizes WASM module loading, compilation, memory sharing, and SIMD acceleration.
+ */
+/**
+ * @file wasm-optimizer implementation
  */
 
-import { createLogger } from '../../core/logger';
+
+
+import { createLogger } from '../core/logger';
 import type {
   Bridge,
   Kernel,
@@ -66,7 +71,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Optimize WASM module loading performance
+   * Optimize WASM module loading performance.
    *
    * @param modules
    */
@@ -122,7 +127,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Implement streaming compilation for faster startup
+   * Implement streaming compilation for faster startup.
    *
    * @param wasmFiles
    */
@@ -166,7 +171,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Optimize memory sharing between JS and WASM
+   * Optimize memory sharing between JS and WASM.
    *
    * @param jsWasmBridge
    */
@@ -213,7 +218,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Enable SIMD acceleration for compute kernels
+   * Enable SIMD acceleration for compute kernels.
    *
    * @param computeKernels
    */
@@ -235,9 +240,9 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
       for (const kernel of computeKernels) {
         if (this.isKernelSIMDCapable(kernel)) {
           const result = await this.optimizeKernelWithSIMD(kernel);
-          optimizations.push(...result.optimizations);
-          totalPerformanceGain += result.performanceGain;
-          vectorizationLevel = Math.max(vectorizationLevel, result.vectorizationLevel);
+          optimizations.push(...result?.optimizations);
+          totalPerformanceGain += result?.performanceGain;
+          vectorizationLevel = Math.max(vectorizationLevel, result?.vectorizationLevel);
         }
       }
 
@@ -256,7 +261,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Detect WASM capabilities of the current environment
+   * Detect WASM capabilities of the current environment.
    */
   private detectWasmCapabilities(): WasmCapabilities {
     const capabilities: WasmCapabilities = {
@@ -351,7 +356,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Implement module caching strategy
+   * Implement module caching strategy.
    *
    * @param modules
    */
@@ -372,7 +377,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Enable module preloading based on strategy
+   * Enable module preloading based on strategy.
    *
    * @param modules
    */
@@ -391,7 +396,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Implement streaming compilation for a single file
+   * Implement streaming compilation for a single file.
    *
    * @param wasmFile
    */
@@ -423,7 +428,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Optimize compute kernel with SIMD instructions
+   * Optimize compute kernel with SIMD instructions.
    *
    * @param kernel
    */
@@ -450,7 +455,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Check if kernel is capable of SIMD optimization
+   * Check if kernel is capable of SIMD optimization.
    *
    * @param kernel
    */
@@ -461,7 +466,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Check if operation can be vectorized
+   * Check if operation can be vectorized.
    *
    * @param operation
    */
@@ -471,7 +476,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Vectorize a specific operation
+   * Vectorize a specific operation.
    *
    * @param operation
    */
@@ -491,7 +496,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Measure module loading performance
+   * Measure module loading performance.
    *
    * @param modules
    */
@@ -526,7 +531,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   /**
-   * Helper methods with mock implementations
+   * Helper methods with mock implementations.
    *
    * @param _module
    */

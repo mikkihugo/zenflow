@@ -1,6 +1,6 @@
 /**
  * @file Advanced Memory Coordination System
- * Provides advanced coordination capabilities for distributed memory management
+ * Provides advanced coordination capabilities for distributed memory management.
  */
 
 import { EventEmitter } from 'node:events';
@@ -57,8 +57,8 @@ export interface CoordinationDecision {
 }
 
 /**
- * Advanced Memory Coordinator
- * Manages distributed memory operations with consensus and optimization
+ * Advanced Memory Coordinator.
+ * Manages distributed memory operations with consensus and optimization.
  *
  * @example
  */
@@ -73,7 +73,7 @@ export class MemoryCoordinator extends EventEmitter {
   }
 
   /**
-   * Register a memory node for coordination
+   * Register a memory node for coordination.
    *
    * @param id
    * @param backend
@@ -93,7 +93,7 @@ export class MemoryCoordinator extends EventEmitter {
   }
 
   /**
-   * Unregister a memory node
+   * Unregister a memory node.
    *
    * @param id
    */
@@ -103,7 +103,7 @@ export class MemoryCoordinator extends EventEmitter {
   }
 
   /**
-   * Coordinate a distributed memory operation
+   * Coordinate a distributed memory operation.
    *
    * @param operation
    */
@@ -136,32 +136,32 @@ export class MemoryCoordinator extends EventEmitter {
   }
 
   /**
-   * Select optimal nodes for an operation
+   * Select optimal nodes for an operation.
    *
    * @param operationType
    */
   private selectParticipants(operationType: string): string[] {
     const activeNodes = Array.from(this.nodes.entries())
-      .filter(([, node]) => node.status === 'active')
+      .filter(([, node]) => node?.status === 'active')
       .sort(([, a], [, b]) => a.load - b.load);
 
     if (operationType === 'read') {
       // For reads, prefer nodes with lower load
-      return activeNodes.slice(0, 1).map(([id]) => id);
+      return activeNodes?.slice(0, 1).map(([id]) => id);
     }
 
     if (operationType === 'write') {
       // For writes, use replication factor
       const replicationCount = Math.min(this.config.distributed.replication, activeNodes.length);
-      return activeNodes.slice(0, replicationCount).map(([id]) => id);
+      return activeNodes?.slice(0, replicationCount).map(([id]) => id);
     }
 
     // Default to single node for other operations
-    return activeNodes.slice(0, 1).map(([id]) => id);
+    return activeNodes?.slice(0, 1).map(([id]) => id);
   }
 
   /**
-   * Execute coordination decision
+   * Execute coordination decision.
    *
    * @param decision
    */
@@ -190,7 +190,7 @@ export class MemoryCoordinator extends EventEmitter {
   }
 
   /**
-   * Execute distributed read operation
+   * Execute distributed read operation.
    *
    * @param decision
    */
@@ -200,11 +200,11 @@ export class MemoryCoordinator extends EventEmitter {
       throw new Error(`Node not found: ${decision.participants[0]}`);
     }
 
-    return await node.backend.retrieve(decision.target);
+    return await node?.backend?.retrieve(decision.target);
   }
 
   /**
-   * Execute distributed write operation
+   * Execute distributed write operation.
    *
    * @param decision
    */
@@ -215,7 +215,7 @@ export class MemoryCoordinator extends EventEmitter {
         throw new Error(`Node not found: ${nodeId}`);
       }
 
-      return await node.backend.store(decision.target, decision.metadata?.data);
+      return await node?.backend?.store(decision.target, decision.metadata?.data);
     });
 
     if (this.config.distributed.consistency === 'strong') {
@@ -234,7 +234,7 @@ export class MemoryCoordinator extends EventEmitter {
   }
 
   /**
-   * Execute distributed delete operation
+   * Execute distributed delete operation.
    *
    * @param decision
    */
@@ -245,14 +245,14 @@ export class MemoryCoordinator extends EventEmitter {
         throw new Error(`Node not found: ${nodeId}`);
       }
 
-      return await node.backend.delete(decision.target);
+      return await node?.backend?.delete(decision.target);
     });
 
     await Promise.all(deletePromises);
   }
 
   /**
-   * Execute sync operation between nodes
+   * Execute sync operation between nodes.
    *
    * @param decision
    */
@@ -269,15 +269,15 @@ export class MemoryCoordinator extends EventEmitter {
         continue;
       }
 
-      const data = await sourceNode.backend.retrieve(decision.target);
+      const data = await sourceNode?.backend?.retrieve(decision.target);
       if (data) {
-        await targetNode.backend.store(decision.target, data);
+        await targetNode?.backend?.store(decision.target, data);
       }
     }
   }
 
   /**
-   * Execute repair operation for inconsistent data
+   * Execute repair operation for inconsistent data.
    *
    * @param decision
    */
@@ -289,7 +289,7 @@ export class MemoryCoordinator extends EventEmitter {
         if (!node) return null;
 
         try {
-          return await node.backend.retrieve(decision.target);
+          return await node?.backend?.retrieve(decision.target);
         } catch {
           return null;
         }
@@ -315,14 +315,14 @@ export class MemoryCoordinator extends EventEmitter {
       const node = this.nodes.get(nodeId);
       if (!node) return;
 
-      await node.backend.store(decision.target, correctValue);
+      await node?.backend?.store(decision.target, correctValue);
     });
 
     await Promise.all(repairPromises);
   }
 
   /**
-   * Get coordination statistics
+   * Get coordination statistics.
    */
   getStats() {
     return {
@@ -345,7 +345,7 @@ export class MemoryCoordinator extends EventEmitter {
   }
 
   /**
-   * Store data across distributed memory nodes
+   * Store data across distributed memory nodes.
    *
    * @param key
    * @param data
@@ -370,7 +370,7 @@ export class MemoryCoordinator extends EventEmitter {
   }
 
   /**
-   * Retrieve data from distributed memory nodes
+   * Retrieve data from distributed memory nodes.
    *
    * @param key
    */
@@ -388,7 +388,7 @@ export class MemoryCoordinator extends EventEmitter {
   }
 
   /**
-   * Delete data from distributed memory nodes
+   * Delete data from distributed memory nodes.
    *
    * @param key
    */
@@ -404,7 +404,7 @@ export class MemoryCoordinator extends EventEmitter {
   }
 
   /**
-   * List all keys matching a pattern across distributed nodes
+   * List all keys matching a pattern across distributed nodes.
    *
    * @param pattern
    */
@@ -417,14 +417,14 @@ export class MemoryCoordinator extends EventEmitter {
     for (const node of activeNodes) {
       try {
         // Assuming backend implements a keys() method
-        if ('keys' in node.backend && typeof node.backend.keys === 'function') {
-          const keys = await node.backend.keys();
+        if ('keys' in node?.backend && typeof node?.backend?.keys === 'function') {
+          const keys = await node?.backend?.keys();
           const matchingKeys = keys.filter((key) => this.matchesPattern(key, pattern));
 
           for (const key of matchingKeys) {
             try {
-              const value = await node.backend.retrieve(key);
-              results.push({ key, value });
+              const value = await node?.backend?.retrieve(key);
+              results?.push({ key, value });
             } catch (_error) {}
           }
         }
@@ -434,16 +434,16 @@ export class MemoryCoordinator extends EventEmitter {
     // Remove duplicates (in case of replication)
     const uniqueResults = new Map();
     for (const result of results) {
-      if (!uniqueResults.has(result.key)) {
-        uniqueResults.set(result.key, result);
+      if (!uniqueResults?.has(result?.key)) {
+        uniqueResults?.set(result?.key, result);
       }
     }
 
-    return Array.from(uniqueResults.values());
+    return Array.from(uniqueResults?.values());
   }
 
   /**
-   * Simple pattern matching for key listing
+   * Simple pattern matching for key listing.
    *
    * @param key
    * @param pattern
@@ -462,7 +462,7 @@ export class MemoryCoordinator extends EventEmitter {
   }
 
   /**
-   * Health check for coordinator
+   * Health check for coordinator.
    */
   async healthCheck(): Promise<{ status: string; details: any }> {
     const stats = this.getStats();
@@ -472,7 +472,7 @@ export class MemoryCoordinator extends EventEmitter {
       status: unhealthyNodes.length === 0 ? 'healthy' : 'degraded',
       details: {
         ...stats,
-        unhealthyNodes: unhealthyNodes.map((n) => ({ id: n.id, status: n.status })),
+        unhealthyNodes: unhealthyNodes?.map((n) => ({ id: n.id, status: n.status })),
       },
     };
   }

@@ -1,13 +1,18 @@
 /**
- * USL Service Registry - Complete Service Management System
+ * USL Service Registry - Complete Service Management System.
  *
  * Advanced service registry providing comprehensive service management,
- * health monitoring, lifecycle orchestration, and service discovery
+ * health monitoring, lifecycle orchestration, and service discovery.
  * following the same patterns as UACL Agent 6.
  */
+/**
+ * @file Interface implementation: registry
+ */
+
+
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../../utils/logger';
+import { createLogger, type Logger } from '../utils/logger';
 import type {
   IService,
   IServiceFactory,
@@ -101,13 +106,13 @@ export interface ServiceDependencyGraph {
   // Circular dependency detection
   cycles: string[][];
 
-  // Topological ordering for startup/shutdown
+  // Topological ordering for startup/shutdown.
   startupOrder: string[];
   shutdownOrder: string[];
 }
 
 /**
- * Enhanced Service Registry with comprehensive service management capabilities
+ * Enhanced Service Registry with comprehensive service management capabilities.
  *
  * @example
  */
@@ -330,7 +335,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     const healthCheckPromises = Array.from(allServices.entries()).map(async ([name, service]) => {
       try {
         const status = await this.performServiceHealthCheck(service);
-        results.set(name, status);
+        results?.set(name, status);
         this.healthStatuses.set(name, status);
       } catch (error) {
         this.logger.error(`Health check failed for service ${name}:`, error);
@@ -347,7 +352,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
           metadata: { error: error instanceof Error ? error.message : String(error) },
         };
 
-        results.set(name, errorStatus);
+        results?.set(name, errorStatus);
         this.healthStatuses.set(name, errorStatus);
       }
     });
@@ -488,14 +493,14 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
   }
 
   /**
-   * Get comprehensive service discovery information
+   * Get comprehensive service discovery information.
    */
   getServiceDiscoveryInfo(): Map<string, ServiceDiscoveryInfo> {
     return new Map(this.serviceDiscovery);
   }
 
   /**
-   * Register service for discovery
+   * Register service for discovery.
    *
    * @param service
    * @param metadata
@@ -517,7 +522,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
   }
 
   /**
-   * Update service heartbeat
+   * Update service heartbeat.
    *
    * @param serviceName
    */
@@ -744,7 +749,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     const healthResults = await this.healthCheckAll();
 
     // Check for alerts
-    const unhealthyServices = Array.from(healthResults.entries())
+    const unhealthyServices = Array.from(healthResults?.entries())
       .filter(([_, status]) => status.health !== 'healthy')
       .map(([name, _]) => name);
 
@@ -761,7 +766,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     const totalServices = healthResults.size;
     if (totalServices === 0) return;
 
-    const unhealthyCount = Array.from(healthResults.values()).filter(
+    const unhealthyCount = Array.from(healthResults?.values()).filter(
       (status) => status.health !== 'healthy'
     ).length;
 
@@ -806,7 +811,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     const staleServices: string[] = [];
 
     this.serviceDiscovery.forEach((info, serviceName) => {
-      const timeSinceHeartbeat = currentTime.getTime() - info.lastHeartbeat.getTime();
+      const timeSinceHeartbeat = currentTime?.getTime() - info.lastHeartbeat.getTime();
 
       if (timeSinceHeartbeat > timeoutThreshold) {
         staleServices.push(serviceName);
@@ -832,7 +837,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
   private updateServiceHealth(serviceName: string, healthData: any): void {
     const discoveryInfo = this.serviceDiscovery.get(serviceName);
     if (discoveryInfo && healthData) {
-      discoveryInfo.health = healthData.health || discoveryInfo.health;
+      discoveryInfo.health = healthData?.health || discoveryInfo.health;
       discoveryInfo.lastHeartbeat = new Date();
     }
   }
@@ -850,10 +855,10 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     const metrics = this.operationMetrics.get(serviceName)!;
     if (metricsData) {
       metrics.totalOperations += 1;
-      if (metricsData.success) {
+      if (metricsData?.success) {
         metrics.successfulOperations += 1;
       }
-      metrics.averageLatency = (metrics.averageLatency + (metricsData.latency || 0)) / 2;
+      metrics.averageLatency = (metrics.averageLatency + (metricsData?.latency || 0)) / 2;
       metrics.lastOperation = new Date();
     }
   }
@@ -868,7 +873,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
     // Build dependency nodes
     for (const [name, service] of allServices) {
-      nodes.set(name, {
+      nodes?.set(name, {
         service,
         dependencies: new Set(service.config.dependencies?.map((dep) => dep.serviceName) || []),
         dependents: new Set<string>(),
@@ -878,10 +883,10 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
     // Calculate dependents and levels
     for (const [nodeName, node] of nodes) {
-      for (const depName of node.dependencies) {
-        const depNode = nodes.get(depName);
+      for (const depName of node?.dependencies) {
+        const depNode = nodes?.get(depName);
         if (depNode) {
-          depNode.dependents.add(nodeName);
+          depNode?.dependents?.add(nodeName);
         }
       }
     }
@@ -907,11 +912,11 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     const visit = (nodeName: string) => {
       if (visited.has(nodeName)) return;
 
-      const node = nodes.get(nodeName);
+      const node = nodes?.get(nodeName);
       if (!node) return;
 
       // Visit dependencies first
-      for (const depName of node.dependencies) {
+      for (const depName of node?.dependencies) {
         visit(depName);
       }
 
@@ -920,7 +925,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     };
 
     // Visit all nodes
-    for (const nodeName of nodes.keys()) {
+    for (const nodeName of nodes?.keys()) {
       visit(nodeName);
     }
 

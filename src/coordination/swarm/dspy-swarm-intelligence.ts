@@ -4,16 +4,21 @@
  * Integrates DSPy into swarm coordination for:
  * - Intelligent agent selection and task assignment
  * - Dynamic topology optimization
- * - Self-improving coordination strategies
+ * - Self-improving coordination strategies.
  * - Predictive performance optimization.
  */
+/**
+ * @file Coordination system: dspy-swarm-intelligence
+ */
 
-import { createLogger } from '../../core/logger';
-import type { DSPyWrapper } from '../../neural/dspy-wrapper';
+
+
+import { createLogger } from '../core/logger';
+import type { DSPyWrapper } from '../neural/dspy-wrapper';
 // Using the new wrapper architecture instead of direct dspy.ts imports
-import { createDSPyWrapper } from '../../neural/dspy-wrapper';
-import type { DSPyConfig } from '../../neural/types/dspy-types';
-import type { AgentType } from '../../types/agent-types';
+import { createDSPyWrapper } from '../neural/dspy-wrapper';
+import type { DSPyConfig } from '../neural/types/dspy-types';
+import type { AgentType } from '../types/agent-types';
 
 const logger = createLogger({ prefix: 'DSPySwarmIntelligence' });
 
@@ -118,19 +123,19 @@ export class DSPySwarmIntelligence {
       const program = await this.dspyWrapper.createProgram(signature, description);
       const executionResult = await this.dspyWrapper.execute(program, input);
 
-      if (!executionResult.success) {
-        throw new Error(executionResult.error?.message || `${programType} execution failed`);
+      if (!executionResult?.success) {
+        throw new Error(executionResult?.error?.message || `${programType} execution failed`);
       }
 
       // Record learning example
       this.recordLearningExample(programType, {
         input,
-        output: executionResult.result,
+        output: executionResult?.result,
         success: true,
         timestamp: new Date(),
       });
 
-      return executionResult.result;
+      return executionResult?.result;
     } catch (error) {
       logger.error(`${programType} failed:`, error);
       return fallbackResult;
@@ -174,11 +179,11 @@ export class DSPySwarmIntelligence {
       const executionResult = await this.dspyWrapper.execute(program, input);
       const executionTime = Date.now() - startTime;
 
-      if (!executionResult.success) {
-        throw new Error(executionResult.error?.message || 'Agent selection execution failed');
+      if (!executionResult?.success) {
+        throw new Error(executionResult?.error?.message || 'Agent selection execution failed');
       }
 
-      const result = this.parseAgentSelectionResponse(JSON.stringify(executionResult.result));
+      const result = this.parseAgentSelectionResponse(JSON.stringify(executionResult?.result));
 
       // Record learning example
       this.recordLearningExample('agent_selection', {
@@ -189,8 +194,8 @@ export class DSPySwarmIntelligence {
       });
 
       logger.debug(`Agent selection completed in ${executionTime}ms`, {
-        selectedAgents: result.selectedAgents,
-        confidence: result.confidence,
+        selectedAgents: result?.selectedAgents,
+        confidence: result?.confidence,
       });
 
       return result;
@@ -244,11 +249,11 @@ export class DSPySwarmIntelligence {
     );
 
     return {
-      optimalTopology: result.optimal_topology || result.optimalTopology || currentTopology,
-      restructurePlan: result.restructure_plan || result.restructurePlan || {},
-      performanceGain: result.performance_gain || result.performanceGain || 0,
+      optimalTopology: result?.optimal_topology || result?.optimalTopology || currentTopology,
+      restructurePlan: result?.restructure_plan || result?.restructurePlan || {},
+      performanceGain: result?.performance_gain || result?.performanceGain || 0,
       implementationSteps: this.generateImplementationSteps(
-        result.restructure_plan || result.restructurePlan
+        result?.restructure_plan || result?.restructurePlan
       ),
     };
   }
@@ -293,13 +298,13 @@ export class DSPySwarmIntelligence {
 
     return {
       loadDistribution:
-        result.load_distribution ||
-        result.loadDistribution ||
+        result?.load_distribution ||
+        result?.loadDistribution ||
         this.createBalancedDistribution(agentLoads, taskQueue),
-      rebalancingActions: result.rebalancing_actions || result.rebalancingActions || [],
-      efficiencyScore: result.efficiency_score || result.efficiencyScore || 0.7,
+      rebalancingActions: result?.rebalancing_actions || result?.rebalancingActions || [],
+      efficiencyScore: result?.efficiency_score || result?.efficiencyScore || 0.7,
       urgentActions: this.identifyUrgentActions(
-        result.rebalancing_actions || result.rebalancingActions || []
+        result?.rebalancing_actions || result?.rebalancingActions || []
       ),
     };
   }
@@ -347,17 +352,17 @@ export class DSPySwarmIntelligence {
 
     return {
       performancePrediction:
-        result.performance_prediction ||
-        result.performancePrediction ||
-        fallbackResult.performancePrediction,
+        result?.performance_prediction ||
+        result?.performancePrediction ||
+        fallbackResult?.performancePrediction,
       bottleneckWarnings:
-        result.bottleneck_warnings ||
-        result.bottleneckWarnings ||
-        fallbackResult.bottleneckWarnings,
+        result?.bottleneck_warnings ||
+        result?.bottleneckWarnings ||
+        fallbackResult?.bottleneckWarnings,
       optimizationSuggestions:
-        result.optimization_suggestions ||
-        result.optimizationSuggestions ||
-        fallbackResult.optimizationSuggestions,
+        result?.optimization_suggestions ||
+        result?.optimizationSuggestions ||
+        fallbackResult?.optimizationSuggestions,
       confidence,
     };
   }
@@ -402,15 +407,15 @@ export class DSPySwarmIntelligence {
 
     return {
       recoveryStrategy:
-        result.recovery_strategy || result.recoveryStrategy || fallbackResult.recoveryStrategy,
+        result?.recovery_strategy || result?.recoveryStrategy || fallbackResult?.recoveryStrategy,
       agentReassignments:
-        result.agent_reassignments ||
-        result.agentReassignments ||
-        fallbackResult.agentReassignments,
+        result?.agent_reassignments ||
+        result?.agentReassignments ||
+        fallbackResult?.agentReassignments,
       riskMitigation:
-        result.risk_mitigation || result.riskMitigation || fallbackResult.riskMitigation,
+        result?.risk_mitigation || result?.riskMitigation || fallbackResult?.riskMitigation,
       estimatedRecoveryTime: this.estimateRecoveryTime(
-        result.recovery_strategy || result.recoveryStrategy || fallbackResult.recoveryStrategy
+        result?.recovery_strategy || result?.recoveryStrategy || fallbackResult?.recoveryStrategy
       ),
     };
   }
@@ -498,7 +503,7 @@ export class DSPySwarmIntelligence {
       (acc, ex) => {
         const programType = (ex as any).programType;
         if (!acc[programType]) acc[programType] = [];
-        acc[programType].push(ex);
+        acc[programType]?.push(ex);
         return acc;
       },
       {} as Record<string, any[]>
@@ -587,10 +592,10 @@ export class DSPySwarmIntelligence {
     // Base confidence on the quality and completeness of the prediction
     let confidence = 0.5;
 
-    if (result.performance_prediction) confidence += 0.2;
-    if (result.bottleneck_warnings?.length > 0) confidence += 0.1;
-    if (result.optimization_suggestions?.length > 0) confidence += 0.1;
-    if (result.confidence) confidence = Math.max(confidence, result.confidence);
+    if (result?.performance_prediction) confidence += 0.2;
+    if (result?.bottleneck_warnings?.length > 0) confidence += 0.1;
+    if (result?.optimization_suggestions?.length > 0) confidence += 0.1;
+    if (result?.confidence) confidence = Math.max(confidence, result?.confidence);
 
     return Math.min(confidence, 0.95);
   }
@@ -608,14 +613,14 @@ export class DSPySwarmIntelligence {
 
   private parseAgentSelectionResponse(response: string): any {
     try {
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      const jsonMatch = response?.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        const result = JSON.parse(jsonMatch[0]);
+        const result = JSON.parse(jsonMatch?.[0]);
         return {
-          selectedAgents: result.selectedAgents || [],
-          reasoning: result.reasoning || 'Agent selection completed',
-          confidence: result.confidence || 0.7,
-          alternativeOptions: result.alternativeOptions,
+          selectedAgents: result?.selectedAgents || [],
+          reasoning: result?.reasoning || 'Agent selection completed',
+          confidence: result?.confidence || 0.7,
+          alternativeOptions: result?.alternativeOptions,
         };
       }
     } catch (error) {

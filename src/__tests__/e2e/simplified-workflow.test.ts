@@ -223,12 +223,12 @@ Test content with metadata in the header.
 
       // Check that all documents are tracked
       const docPaths = Array.from(workspaceDocuments.keys());
-      expect(docPaths).toContain(docs[0].path);
-      expect(docPaths).toContain(docs[1].path);
-      expect(docPaths).toContain(docs[2].path);
+      expect(docPaths).toContain(docs[0]?.path);
+      expect(docPaths).toContain(docs[1]?.path);
+      expect(docPaths).toContain(docs[2]?.path);
 
       // Check document content is accessible
-      const visionDoc = workspaceDocuments.get(docs[0].path);
+      const visionDoc = workspaceDocuments.get(docs[0]?.path);
       expect(visionDoc).toBeDefined();
       expect(visionDoc?.type).toBe('vision');
       expect(visionDoc?.content).toContain('Workspace Vision');
@@ -249,10 +249,10 @@ Test content with metadata in the header.
       }));
 
       // Write all files
-      await Promise.all(concurrentDocs.map((doc) => fsHelper.createFile(doc.path, doc.content)));
+      await Promise.all(concurrentDocs?.map((doc) => fsHelper.createFile(doc.path, doc.content)));
 
       // Process all documents concurrently
-      const processingPromises = concurrentDocs.map((doc) =>
+      const processingPromises = concurrentDocs?.map((doc) =>
         documentSystem.processVisionaryDocument(workspaceId, doc.path)
       );
 

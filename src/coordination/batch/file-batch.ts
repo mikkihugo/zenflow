@@ -1,12 +1,12 @@
 /**
  * @file File Batch Operations
- * Implements concurrent file operations following claude-zen patterns
- * Achieves significant performance improvements for file-heavy workflows
+ * Implements concurrent file operations following claude-zen patterns.
+ * Achieves significant performance improvements for file-heavy workflows.
  */
 
 import { promises as fs } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { createLogger } from '../../core/logger';
+import { createLogger } from '../core/logger';
 import type { BatchOperation } from './batch-engine';
 
 const logger = createLogger({ prefix: 'FileBatch' });
@@ -30,8 +30,8 @@ export interface FileOperationResult {
 }
 
 /**
- * Handles concurrent file operations with intelligent batching
- * Implements claude-zen's file operation optimization patterns
+ * Handles concurrent file operations with intelligent batching.
+ * Implements claude-zen's file operation optimization patterns.
  *
  * @example
  */
@@ -45,8 +45,8 @@ export class FileBatchOperator {
   }
 
   /**
-   * Execute multiple file operations concurrently
-   * Follows claude-zen's "1 MESSAGE = ALL OPERATIONS" principle for files
+   * Execute multiple file operations concurrently.
+   * Follows claude-zen's "1 MESSAGE = ALL OPERATIONS" principle for files.
    *
    * @param operations
    */
@@ -100,7 +100,7 @@ export class FileBatchOperator {
   }
 
   /**
-   * Group operations by type for intelligent execution order
+   * Group operations by type for intelligent execution order.
    *
    * @param operations
    */
@@ -119,14 +119,14 @@ export class FileBatchOperator {
     };
 
     for (const operation of operations) {
-      groups[operation.type].push(operation);
+      groups[operation.type]?.push(operation);
     }
 
     return groups;
   }
 
   /**
-   * Execute operations concurrently with controlled concurrency
+   * Execute operations concurrently with controlled concurrency.
    *
    * @param operations
    * @param executor
@@ -144,16 +144,16 @@ export class FileBatchOperator {
 
       const chunkResults = await Promise.allSettled(chunkPromises);
 
-      chunkResults.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-          results.push(result.value);
+      chunkResults?.forEach((result, index) => {
+        if (result?.status === 'fulfilled') {
+          results.push(result?.value);
         } else {
           // Create error result for failed operations
           const operation = chunk[index] as FileOperation;
           results.push({
             operation,
             success: false,
-            error: result.reason?.message || 'Unknown error',
+            error: result?.reason?.message || 'Unknown error',
             executionTime: 0,
           });
         }
@@ -164,7 +164,7 @@ export class FileBatchOperator {
   }
 
   /**
-   * Execute a single file operation
+   * Execute a single file operation.
    *
    * @param operation
    */
@@ -202,7 +202,7 @@ export class FileBatchOperator {
   }
 
   /**
-   * Execute read operation
+   * Execute read operation.
    *
    * @param operation
    * @param startTime
@@ -225,7 +225,7 @@ export class FileBatchOperator {
   }
 
   /**
-   * Execute write operation
+   * Execute write operation.
    *
    * @param operation
    * @param startTime
@@ -256,7 +256,7 @@ export class FileBatchOperator {
   }
 
   /**
-   * Execute create operation (write with exclusive flag)
+   * Execute create operation (write with exclusive flag).
    *
    * @param operation
    * @param startTime
@@ -287,7 +287,7 @@ export class FileBatchOperator {
   }
 
   /**
-   * Execute delete operation
+   * Execute delete operation.
    *
    * @param operation
    * @param startTime
@@ -307,7 +307,7 @@ export class FileBatchOperator {
   }
 
   /**
-   * Execute copy operation
+   * Execute copy operation.
    *
    * @param operation
    * @param startTime
@@ -337,7 +337,7 @@ export class FileBatchOperator {
   }
 
   /**
-   * Execute move operation
+   * Execute move operation.
    *
    * @param operation
    * @param startTime
@@ -367,7 +367,7 @@ export class FileBatchOperator {
   }
 
   /**
-   * Execute mkdir operation
+   * Execute mkdir operation.
    *
    * @param operation
    */
@@ -401,7 +401,7 @@ export class FileBatchOperator {
   }
 
   /**
-   * Execute rmdir operation
+   * Execute rmdir operation.
    *
    * @param operation
    * @param startTime
@@ -421,8 +421,9 @@ export class FileBatchOperator {
   }
 
   /**
-   * Ensure directory exists (create if necessary)
+   * Ensure directory exists (create if necessary).
    *
+   * @param dirPath.
    * @param dirPath
    */
   private async ensureDirectoryExists(dirPath: string): Promise<void> {
@@ -434,7 +435,7 @@ export class FileBatchOperator {
   }
 
   /**
-   * Convert FileOperation to BatchOperation for use with BatchEngine
+   * Convert FileOperation to BatchOperation for use with BatchEngine.
    *
    * @param fileOps
    */
@@ -454,8 +455,8 @@ export class FileBatchOperator {
   }
 
   /**
-   * Create multiple file write operations for batch execution
-   * Implements claude-zen's "BatchWrite" pattern
+   * Create multiple file write operations for batch execution.
+   * Implements claude-zen's "BatchWrite" pattern.
    *
    * @param files
    */
@@ -482,8 +483,8 @@ export class FileBatchOperator {
   }
 
   /**
-   * Create project structure batch operations
-   * Implements claude-zen's project initialization pattern
+   * Create project structure batch operations.
+   * Implements claude-zen's project initialization pattern.
    *
    * @param basePath
    * @param structure
@@ -531,7 +532,7 @@ export class FileBatchOperator {
   }
 
   /**
-   * Validate file operations before execution
+   * Validate file operations before execution.
    *
    * @param operations
    */

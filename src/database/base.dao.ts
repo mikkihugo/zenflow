@@ -1,11 +1,24 @@
 /**
- * Unified Data Access Layer (DAL) - Base Repository Implementation
+ * Unified Data Access Layer (DAL) - Base Repository Implementation.
  *
- * Provides the base implementation for all repository types, with adapter pattern
+ * Provides the base implementation for all repository types, with adapter pattern.
  * to support different underlying database technologies.
  */
+/**
+ * @file Database layer: base.dao
+ */
 
-import type { IDataAccessObject, IRepository } from './interfaces';
+
+
+import type {
+  CustomQuery,
+  DatabaseMetadata,
+  SortCriteria,
+  TransactionOperation,
+} from '../database/interfaces';
+import type { HealthStatus } from '../types/health-types';
+import type { PerformanceMetrics } from '../types/performance-types';
+import type { IDataAccessObject, IRepository, QueryOptions } from './interfaces';
 
 // Create a simple logger interface to avoid import issues
 interface ILogger {
@@ -23,7 +36,7 @@ interface DatabaseAdapter {
 }
 
 /**
- * Base repository implementation that adapts to different database types
+ * Base repository implementation that adapts to different database types.
  *
  * @template T The entity type this repository manages
  */
@@ -36,13 +49,13 @@ export abstract class BaseDao<T> implements IRepository<T> {
   ) {}
 
   /**
-   * Abstract methods that must be implemented by subclasses
+   * Abstract methods that must be implemented by subclasses.
    */
   protected abstract mapRowToEntity(row: any): T;
   protected abstract mapEntityToRow(entity: Partial<T>): Record<string, any>;
 
   /**
-   * Find entity by ID
+   * Find entity by ID.
    */
   async findById(id: string | number): Promise<T | null> {
     this.logger.debug(`Finding entity by ID: ${id} in table: ${this.tableName}`);
@@ -65,7 +78,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
   }
 
   /**
-   * Find entities by criteria
+   * Find entities by criteria.
    */
   async findBy(criteria: Partial<T>, options?: QueryOptions): Promise<T[]> {
     this.logger.debug(`Finding entities by criteria in table: ${this.tableName}`, {
@@ -77,7 +90,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
       const query = this.buildFindByQuery(criteria, options);
       const result = await this.adapter.query(query.sql, query.params);
 
-      return result?.rows?.map((row) => this.mapRowToEntity(row));
+      return result?.rows.map((row) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`Failed to find entities by criteria: ${error}`);
       throw new Error(
@@ -87,7 +100,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
   }
 
   /**
-   * Find all entities
+   * Find all entities.
    */
   async findAll(options?: QueryOptions): Promise<T[]> {
     this.logger.debug(`Finding all entities in table: ${this.tableName}`, { options });
@@ -96,7 +109,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
       const query = this.buildFindAllQuery(options);
       const result = await this.adapter.query(query.sql, query.params);
 
-      return result?.rows?.map((row) => this.mapRowToEntity(row));
+      return result?.rows.map((row) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`Failed to find all entities: ${error}`);
       throw new Error(
@@ -106,7 +119,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
   }
 
   /**
-   * Create a new entity
+   * Create a new entity.
    */
   async create(entity: Omit<T, 'id'>): Promise<T> {
     this.logger.debug(`Creating new entity in table: ${this.tableName}`, { entity });
@@ -137,7 +150,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
   }
 
   /**
-   * Update an existing entity
+   * Update an existing entity.
    */
   async update(id: string | number, updates: Partial<T>): Promise<T> {
     this.logger.debug(`Updating entity ${id} in table: ${this.tableName}`, { updates });
@@ -160,7 +173,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
   }
 
   /**
-   * Delete an entity by ID
+   * Delete an entity by ID.
    */
   async delete(id: string | number): Promise<boolean> {
     this.logger.debug(`Deleting entity ${id} from table: ${this.tableName}`);
@@ -177,7 +190,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
   }
 
   /**
-   * Count entities matching criteria
+   * Count entities matching criteria.
    */
   async count(criteria?: Partial<T>): Promise<number> {
     this.logger.debug(`Counting entities in table: ${this.tableName}`, { criteria });
@@ -194,7 +207,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
   }
 
   /**
-   * Check if entity exists
+   * Check if entity exists.
    */
   async exists(id: string | number): Promise<boolean> {
     this.logger.debug(`Checking if entity ${id} exists in table: ${this.tableName}`);
@@ -209,7 +222,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
   }
 
   /**
-   * Execute custom query specific to the underlying database
+   * Execute custom query specific to the underlying database.
    */
   async executeCustomQuery<R = any>(query: CustomQuery): Promise<R> {
     this.logger.debug(`Executing custom query: ${query.type}`);
@@ -238,7 +251,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
   }
 
   /**
-   * Query building methods
+   * Query building methods.
    */
   protected buildFindByIdQuery(id: string | number): { sql: string; params: any[] } {
     return {
@@ -359,7 +372,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
 }
 
 /**
- * Base Data Access Object implementation that wraps a repository
+ * Base Data Access Object implementation that wraps a repository.
  *
  * @template T The entity type
  */
@@ -371,14 +384,14 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
   ) {}
 
   /**
-   * Get repository for basic CRUD operations
+   * Get repository for basic CRUD operations.
    */
   getRepository(): IRepository<T> {
     return this.repository;
   }
 
   /**
-   * Execute transaction with multiple operations
+   * Execute transaction with multiple operations.
    */
   async executeTransaction<R>(operations: TransactionOperation[]): Promise<R> {
     this.logger.debug(`Executing transaction with ${operations.length} operations`);
@@ -420,7 +433,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
               throw new Error(`Unsupported operation type: ${operation.type}`);
           }
 
-          results?.push(result);
+          results.push(result);
         }
 
         return results as R;
@@ -434,7 +447,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
   }
 
   /**
-   * Get database-specific metadata
+   * Get database-specific metadata.
    */
   async getMetadata(): Promise<DatabaseMetadata> {
     this.logger.debug('Getting database metadata');
@@ -458,7 +471,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
   }
 
   /**
-   * Perform health check
+   * Perform health check.
    */
   async healthCheck(): Promise<HealthStatus> {
     this.logger.debug('Performing health check');
@@ -493,7 +506,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
   }
 
   /**
-   * Get performance metrics
+   * Get performance metrics.
    */
   async getMetrics(): Promise<PerformanceMetrics> {
     this.logger.debug('Getting performance metrics');
@@ -526,7 +539,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
   }
 
   /**
-   * Abstract methods for subclasses to implement
+   * Abstract methods for subclasses to implement.
    */
   protected abstract getDatabaseType(): DatabaseMetadata['type'];
   protected abstract getSupportedFeatures(): string[];

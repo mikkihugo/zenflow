@@ -1,9 +1,14 @@
 /**
- * MCP Interface
+ * MCP Interface.
  *
  * Claude Desktop remote interface for coordinating with MCP tools.
  * Handles communication with Claude Code via MCP protocol.
  */
+/**
+ * @file Interface implementation: mcp-interface
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from './mcp-logger';
@@ -43,7 +48,7 @@ export class MCPInterface extends EventEmitter {
   }
 
   /**
-   * Initialize MCP connection
+   * Initialize MCP connection.
    */
   async start(): Promise<void> {
     logger.info('Starting MCP interface...');
@@ -59,7 +64,7 @@ export class MCPInterface extends EventEmitter {
   }
 
   /**
-   * Stop MCP interface
+   * Stop MCP interface.
    */
   async stop(): Promise<void> {
     logger.info('Stopping MCP interface...');
@@ -74,7 +79,7 @@ export class MCPInterface extends EventEmitter {
   }
 
   /**
-   * Send tool call to Claude Code via MCP
+   * Send tool call to Claude Code via MCP.
    *
    * @param name
    * @param args
@@ -97,7 +102,7 @@ export class MCPInterface extends EventEmitter {
   }
 
   /**
-   * List available MCP tools
+   * List available MCP tools.
    */
   async listTools(): Promise<string[]> {
     const message: MCPMessage = {
@@ -162,7 +167,7 @@ export class MCPInterface extends EventEmitter {
 }
 
 /**
- * Create and configure MCP interface instance
+ * Create and configure MCP interface instance.
  *
  * @param config
  */

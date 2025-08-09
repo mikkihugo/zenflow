@@ -1,13 +1,20 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-session-example");
+/**
+ * @file Coordination system: session-example
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-session-example');
+
 /**
  * Session Management System - Comprehensive Examples.
  *
- * This file demonstrates how to use the session management system
+ * This file demonstrates how to use the session management system.
  * for persistent swarm orchestration across multiple executions.
  */
 
-// import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
+// import { DALFactory } from '../database'; // TODO: Implement proper DI integration
 import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
 import { SessionManager } from './session-manager';
 import { SessionStats, SessionValidator } from './session-utils';
@@ -164,8 +171,8 @@ async function sessionRecoveryExample(existingSessionId: string) {
       await swarm.createCheckpoint('Added hyperparameter optimization');
 
       // Demonstrate checkpoint restoration
-      if (currentSession.checkpoints.length > 0) {
-        const firstCheckpoint = currentSession.checkpoints[0]!; // Non-null assertion since we checked length
+      if (currentSession?.checkpoints.length > 0) {
+        const firstCheckpoint = currentSession?.checkpoints?.[0]!; // Non-null assertion since we checked length
         await swarm.restoreFromCheckpoint(firstCheckpoint.id);
       }
     }
@@ -334,7 +341,7 @@ async function advancedSessionExample() {
     swarm.on('session:checkpoint_created', (_data: any) => {});
 
     swarm.on('session:error', (data: any) => {
-      logger.error(`Session error: ${data.error} during ${data.operation}`);
+      logger.error(`Session error: ${data?.error} during ${data?.operation}`);
     });
 
     const _sessionId = await swarm.createSession('Advanced ML Pipeline');
@@ -472,14 +479,14 @@ async function advancedSessionExample() {
     const taskIds: string[] = [];
     for (let i = 0; i < tasks.length; i++) {
       const task = tasks[i]!; // Non-null assertion since we're within array bounds
-      
+
       if (i > 0) {
         const previousTaskId = taskIds[i - 1];
         if (previousTaskId) {
           task.dependencies = [previousTaskId]; // Sequential dependencies
         }
       }
-      
+
       const taskId = await swarm.submitTask(task);
       taskIds.push(taskId);
     }

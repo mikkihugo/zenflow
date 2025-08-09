@@ -2,26 +2,31 @@
  * Swarm Database Manager.
  *
  * Uses existing DAL Factory for proper swarm storage with multi-database support:
- * - Central coordination: SQLite/Kuzu via DAL Factory
+ * - Central coordination: SQLite/Kuzu via DAL Factory.
  * - Per-swarm clusters: Kuzu (graph) + LanceDB (vectors) + SQLite (data)
  * - Leverages existing repository and DAO patterns.
  */
+/**
+ * @file swarm-database management system
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import path from 'node:path';
-import type { DALFactory } from '../../../database/factory.js';
+import type { DALFactory } from '../database/factory.js';
 import type {
   ICoordinationRepository,
   IGraphRepository,
   IVectorRepository,
-} from '../../../database/interfaces.js';
-import { inject, injectable } from '../../../di/decorators/injectable.js';
+} from '../database/interfaces.js';
+import { inject, injectable } from '../di/decorators/injectable.js';
 import {
   CORE_TOKENS,
   DATABASE_TOKENS,
   type ILogger,
   SWARM_TOKENS,
-} from '../../../di/tokens/core-tokens.js';
+} from '../di/tokens/core-tokens.js';
 
 export interface SwarmDatabaseConfig {
   // Central coordination database
@@ -321,7 +326,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }): Promise<string[]> {
     // Use coordination repository for queries
     const result = await this.centralRepo.findBy(criteria);
-    return result.map((r) => r.swarmId);
+    return result?.map((r) => r.swarmId);
   }
 
   /**

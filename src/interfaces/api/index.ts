@@ -1,13 +1,18 @@
 /**
- * API Interface Module
+ * API Interface Module.
  *
  * Unified API interface providing multiple communication protocols:
  * - HTTP API (REST/GraphQL server + client)
  * - WebSocket API (real-time communication)
- * - Unified configuration and utilities
+ * - Unified configuration and utilities.
  *
- * Architecture: Protocol-based organization, not implementation-based
+ * Architecture: Protocol-based organization, not implementation-based.
  */
+/**
+ * @file api module exports
+ */
+
+
 
 import { getWebDashboardURL } from '../config/url-builder';
 
@@ -33,7 +38,7 @@ export interface APIInterfaceConfig {
 // API utilities
 export const APIUtils = {
   /**
-   * Create WebSocket URL from base URL
+   * Create WebSocket URL from base URL.
    *
    * @param baseUrl
    */
@@ -42,23 +47,23 @@ export const APIUtils = {
   },
 
   /**
-   * Validate API configuration
+   * Validate API configuration.
    *
    * @param config
    */
   validateConfig: (config: APIInterfaceConfig): boolean => {
-    return Boolean(config.baseUrl || config.websocketUrl);
+    return Boolean(config?.baseUrl || config?.websocketUrl);
   },
 
   /**
-   * Parse API response
+   * Parse API response.
    *
    * @param response
    */
   parseResponse: (response: any): { success: boolean; data?: any; error?: string } => {
     if (response && typeof response === 'object') {
-      if (response.error) {
-        return { success: false, error: response.error };
+      if (response?.error) {
+        return { success: false, error: response?.error };
       }
       return { success: true, data: response };
     }
@@ -66,7 +71,7 @@ export const APIUtils = {
   },
 
   /**
-   * Format API request
+   * Format API request.
    *
    * @param method
    * @param params
@@ -86,7 +91,7 @@ export class APIClientFactory {
   private static instances = new Map<string, WebSocketClient>();
 
   /**
-   * Create or get a WebSocket client instance
+   * Create or get a WebSocket client instance.
    *
    * @param url
    * @param instanceKey
@@ -103,7 +108,7 @@ export class APIClientFactory {
   }
 
   /**
-   * Clear all cached instances
+   * Clear all cached instances.
    */
   static clearInstances(): void {
     for (const [, client] of APIClientFactory.instances) {
@@ -113,7 +118,7 @@ export class APIClientFactory {
   }
 
   /**
-   * Get all active instances
+   * Get all active instances.
    */
   static getActiveInstances(): string[] {
     return Array.from(APIClientFactory.instances.keys());

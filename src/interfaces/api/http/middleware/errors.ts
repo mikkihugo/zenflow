@@ -1,7 +1,9 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("interfaces-api-http-middleware-errors");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-api-http-middleware-errors');
+
 /**
- * Error Handling Middleware
+ * Error Handling Middleware.
  *
  * Standardized error handling following Google API Design Guide.
  * Provides consistent error responses across all API endpoints.
@@ -12,8 +14,8 @@ const logger = getLogger("interfaces-api-http-middleware-errors");
 import type { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 
 /**
- * Standard API Error Response Structure
- * Following Google API Design Guide error format
+ * Standard API Error Response Structure.
+ * Following Google API Design Guide error format.
  *
  * @example
  */
@@ -30,8 +32,8 @@ export interface APIErrorResponse {
 }
 
 /**
- * Error codes mapping HTTP status to error types
- * Following Google API Design Guide standards
+ * Error codes mapping HTTP status to error types.
+ * Following Google API Design Guide standards.
  */
 export const ErrorCodes = {
   // Client Errors (4xx)
@@ -53,8 +55,8 @@ export const ErrorCodes = {
 } as const;
 
 /**
- * Custom API Error Class
- * Extends Error with additional metadata for API responses
+ * Custom API Error Class.
+ * Extends Error with additional metadata for API responses.
  *
  * @example
  */
@@ -86,16 +88,16 @@ export class APIError extends Error {
 }
 
 /**
- * Generate unique trace ID for error tracking
- * Simple implementation - can be enhanced with proper UUID library
+ * Generate unique trace ID for error tracking.
+ * Simple implementation - can be enhanced with proper UUID library.
  */
 const generateTraceId = (): string => {
   return `trace-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
 };
 
 /**
- * Determine error code from HTTP status code
- * Maps status codes to standardized error codes
+ * Determine error code from HTTP status code.
+ * Maps status codes to standardized error codes.
  *
  * @param statusCode
  */
@@ -133,8 +135,8 @@ const _getErrorCodeFromStatus = (statusCode: number): string => {
 };
 
 /**
- * Main Error Handler Middleware
- * Catches all errors and formats them according to Google API standards
+ * Main Error Handler Middleware.
+ * Catches all errors and formats them according to Google API standards.
  *
  * @param error
  * @param req
@@ -237,8 +239,8 @@ export const errorHandler: ErrorRequestHandler = (
 };
 
 /**
- * Not Found Handler
- * Handles 404 errors for unmatched routes
+ * Not Found Handler.
+ * Handles 404 errors for unmatched routes.
  *
  * @param req
  * @param res
@@ -262,8 +264,8 @@ export const notFoundHandler = (req: Request, res: Response): void => {
 };
 
 /**
- * Async Error Handler Wrapper
- * Wraps async route handlers to catch errors automatically
+ * Async Error Handler Wrapper.
+ * Wraps async route handlers to catch errors automatically.
  *
  * @param fn
  */
@@ -276,8 +278,8 @@ export const asyncHandler = (
 };
 
 /**
- * Validation Error Creator
- * Helper to create validation errors with detailed information
+ * Validation Error Creator.
+ * Helper to create validation errors with detailed information.
  *
  * @param field
  * @param value
@@ -304,8 +306,8 @@ export const createValidationError = (
 };
 
 /**
- * Not Found Error Creator
- * Helper to create consistent 404 errors
+ * Not Found Error Creator.
+ * Helper to create consistent 404 errors.
  *
  * @param resource
  * @param identifier
@@ -329,8 +331,8 @@ export const createNotFoundError = (
 };
 
 /**
- * Conflict Error Creator
- * Helper to create resource conflict errors
+ * Conflict Error Creator.
+ * Helper to create resource conflict errors.
  *
  * @param resource
  * @param reason
@@ -354,8 +356,8 @@ export const createConflictError = (
 };
 
 /**
- * Rate Limit Error Creator
- * Helper to create rate limiting errors
+ * Rate Limit Error Creator.
+ * Helper to create rate limiting errors.
  *
  * @param limit
  * @param windowMs
@@ -380,8 +382,8 @@ export const createRateLimitError = (
 };
 
 /**
- * Internal Error Creator
- * Helper to create internal server errors with optional details
+ * Internal Error Creator.
+ * Helper to create internal server errors with optional details.
  *
  * @param message
  * @param details

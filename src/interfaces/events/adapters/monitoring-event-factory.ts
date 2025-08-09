@@ -1,10 +1,15 @@
 /**
- * UEL Monitoring Event Factory
+ * UEL Monitoring Event Factory.
  *
  * Factory for creating and managing MonitoringEventAdapter instances
- * with unified configuration management and pre-configured setups
+ * with unified configuration management and pre-configured setups.
  * following the exact same patterns as other UEL adapter factories.
  */
+/**
+ * @file Interface implementation: monitoring-event-factory
+ */
+
+
 
 import {
   createDefaultMonitoringEventAdapterConfig,
@@ -14,7 +19,7 @@ import {
 } from './monitoring-event-adapter';
 
 /**
- * Monitoring event manager factory class
+ * Monitoring event manager factory class.
  *
  * @example
  */
@@ -23,7 +28,7 @@ export class MonitoringEventFactory {
   private static defaultConfigs = new Map<string, Partial<MonitoringEventAdapterConfig>>();
 
   /**
-   * Create a new monitoring event adapter instance
+   * Create a new monitoring event adapter instance.
    *
    * @param name
    * @param config
@@ -49,7 +54,7 @@ export class MonitoringEventFactory {
   }
 
   /**
-   * Get existing monitoring event adapter instance
+   * Get existing monitoring event adapter instance.
    *
    * @param name
    */
@@ -58,7 +63,7 @@ export class MonitoringEventFactory {
   }
 
   /**
-   * Get or create monitoring event adapter instance
+   * Get or create monitoring event adapter instance.
    *
    * @param name
    * @param config
@@ -76,7 +81,7 @@ export class MonitoringEventFactory {
   }
 
   /**
-   * Remove monitoring event adapter instance
+   * Remove monitoring event adapter instance.
    *
    * @param name
    */
@@ -92,21 +97,21 @@ export class MonitoringEventFactory {
   }
 
   /**
-   * List all monitoring event adapter names
+   * List all monitoring event adapter names.
    */
   static list(): string[] {
     return Array.from(MonitoringEventFactory.instances.keys());
   }
 
   /**
-   * Get all monitoring event adapter instances
+   * Get all monitoring event adapter instances.
    */
   static getAll(): MonitoringEventAdapter[] {
     return Array.from(MonitoringEventFactory.instances.values());
   }
 
   /**
-   * Clear all monitoring event adapter instances
+   * Clear all monitoring event adapter instances.
    */
   static async clear(): Promise<void> {
     const adapters = Array.from(MonitoringEventFactory.instances.values());
@@ -115,7 +120,7 @@ export class MonitoringEventFactory {
   }
 
   /**
-   * Register default configuration for a monitoring event adapter
+   * Register default configuration for a monitoring event adapter.
    *
    * @param name
    * @param config
@@ -125,7 +130,7 @@ export class MonitoringEventFactory {
   }
 
   /**
-   * Check if monitoring event adapter exists
+   * Check if monitoring event adapter exists.
    *
    * @param name
    */
@@ -134,7 +139,7 @@ export class MonitoringEventFactory {
   }
 
   /**
-   * Get monitoring event adapter count
+   * Get monitoring event adapter count.
    */
   static count(): number {
     return MonitoringEventFactory.instances.size;
@@ -142,11 +147,11 @@ export class MonitoringEventFactory {
 }
 
 /**
- * Pre-configured monitoring event adapter configurations
+ * Pre-configured monitoring event adapter configurations.
  */
 export const MonitoringEventConfigs = {
   /**
-   * Performance monitoring focused configuration
+   * Performance monitoring focused configuration.
    */
   PERFORMANCE_FOCUSED: {
     performanceMonitoring: {
@@ -176,7 +181,7 @@ export const MonitoringEventConfigs = {
   } as Partial<MonitoringEventAdapterConfig>,
 
   /**
-   * Health monitoring focused configuration
+   * Health monitoring focused configuration.
    */
   HEALTH_FOCUSED: {
     healthMonitoring: {
@@ -201,7 +206,7 @@ export const MonitoringEventConfigs = {
   } as Partial<MonitoringEventAdapterConfig>,
 
   /**
-   * Analytics monitoring focused configuration
+   * Analytics monitoring focused configuration.
    */
   ANALYTICS_FOCUSED: {
     analyticsMonitoring: {
@@ -231,7 +236,7 @@ export const MonitoringEventConfigs = {
   } as Partial<MonitoringEventAdapterConfig>,
 
   /**
-   * Alert management focused configuration
+   * Alert management focused configuration.
    */
   ALERT_FOCUSED: {
     alertManagement: {
@@ -264,7 +269,7 @@ export const MonitoringEventConfigs = {
   } as Partial<MonitoringEventAdapterConfig>,
 
   /**
-   * Dashboard integration focused configuration
+   * Dashboard integration focused configuration.
    */
   DASHBOARD_FOCUSED: {
     dashboardIntegration: {
@@ -289,7 +294,7 @@ export const MonitoringEventConfigs = {
   } as Partial<MonitoringEventAdapterConfig>,
 
   /**
-   * High-throughput monitoring configuration
+   * High-throughput monitoring configuration.
    */
   HIGH_THROUGHPUT: {
     processing: {
@@ -310,7 +315,7 @@ export const MonitoringEventConfigs = {
   } as Partial<MonitoringEventAdapterConfig>,
 
   /**
-   * Low-latency monitoring configuration
+   * Low-latency monitoring configuration.
    */
   LOW_LATENCY: {
     processing: {
@@ -335,11 +340,11 @@ export const MonitoringEventConfigs = {
 };
 
 /**
- * Quick factory methods for common monitoring patterns
+ * Quick factory methods for common monitoring patterns.
  */
 export const MonitoringEventAdapterFactory = {
   /**
-   * Create performance-focused monitoring adapter
+   * Create performance-focused monitoring adapter.
    *
    * @param name
    * @param overrides
@@ -349,13 +354,13 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.PERFORMANCE_FOCUSED,
+      ...MonitoringEventConfigs?.PERFORMANCE_FOCUSED,
       ...overrides,
     });
   },
 
   /**
-   * Create health-focused monitoring adapter
+   * Create health-focused monitoring adapter.
    *
    * @param name
    * @param overrides
@@ -365,13 +370,13 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.HEALTH_FOCUSED,
+      ...MonitoringEventConfigs?.HEALTH_FOCUSED,
       ...overrides,
     });
   },
 
   /**
-   * Create analytics-focused monitoring adapter
+   * Create analytics-focused monitoring adapter.
    *
    * @param name
    * @param overrides
@@ -381,13 +386,13 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.ANALYTICS_FOCUSED,
+      ...MonitoringEventConfigs?.ANALYTICS_FOCUSED,
       ...overrides,
     });
   },
 
   /**
-   * Create alert-focused monitoring adapter
+   * Create alert-focused monitoring adapter.
    *
    * @param name
    * @param overrides
@@ -397,13 +402,13 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.ALERT_FOCUSED,
+      ...MonitoringEventConfigs?.ALERT_FOCUSED,
       ...overrides,
     });
   },
 
   /**
-   * Create dashboard-focused monitoring adapter
+   * Create dashboard-focused monitoring adapter.
    *
    * @param name
    * @param overrides
@@ -413,13 +418,13 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.DASHBOARD_FOCUSED,
+      ...MonitoringEventConfigs?.DASHBOARD_FOCUSED,
       ...overrides,
     });
   },
 
   /**
-   * Create high-throughput monitoring adapter
+   * Create high-throughput monitoring adapter.
    *
    * @param name
    * @param overrides
@@ -429,13 +434,13 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.HIGH_THROUGHPUT,
+      ...MonitoringEventConfigs?.HIGH_THROUGHPUT,
       ...overrides,
     });
   },
 
   /**
-   * Create low-latency monitoring adapter
+   * Create low-latency monitoring adapter.
    *
    * @param name
    * @param overrides
@@ -445,13 +450,13 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.LOW_LATENCY,
+      ...MonitoringEventConfigs?.LOW_LATENCY,
       ...overrides,
     });
   },
 
   /**
-   * Create comprehensive monitoring adapter with all features enabled
+   * Create comprehensive monitoring adapter with all features enabled.
    *
    * @param name
    * @param overrides
@@ -509,7 +514,7 @@ export const MonitoringEventAdapterFactory = {
 };
 
 /**
- * Registry for monitoring event adapters with automatic lifecycle management
+ * Registry for monitoring event adapters with automatic lifecycle management.
  *
  * @example
  */
@@ -525,7 +530,7 @@ export class MonitoringEventRegistry {
   >();
 
   /**
-   * Register monitoring event adapter with lifecycle management
+   * Register monitoring event adapter with lifecycle management.
    *
    * @param name
    * @param adapter
@@ -577,7 +582,7 @@ export class MonitoringEventRegistry {
   }
 
   /**
-   * Unregister monitoring event adapter
+   * Unregister monitoring event adapter.
    *
    * @param name
    */
@@ -594,7 +599,7 @@ export class MonitoringEventRegistry {
   }
 
   /**
-   * Get registered monitoring event adapter
+   * Get registered monitoring event adapter.
    *
    * @param name
    */
@@ -603,7 +608,7 @@ export class MonitoringEventRegistry {
   }
 
   /**
-   * Start all registered monitoring event adapters
+   * Start all registered monitoring event adapters.
    */
   static async startAll(): Promise<void> {
     const startPromises = Array.from(MonitoringEventRegistry.adapters.values()).map((adapter) =>
@@ -613,7 +618,7 @@ export class MonitoringEventRegistry {
   }
 
   /**
-   * Stop all registered monitoring event adapters
+   * Stop all registered monitoring event adapters.
    */
   static async stopAll(): Promise<void> {
     const stopPromises = Array.from(MonitoringEventRegistry.adapters.values()).map((adapter) =>
@@ -623,7 +628,7 @@ export class MonitoringEventRegistry {
   }
 
   /**
-   * Get health status of all registered adapters
+   * Get health status of all registered adapters.
    */
   static async getHealthStatus(): Promise<Record<string, any>> {
     const healthPromises = Array.from(MonitoringEventRegistry.adapters.entries()).map(
@@ -638,7 +643,7 @@ export class MonitoringEventRegistry {
   }
 
   /**
-   * Get performance metrics of all registered adapters
+   * Get performance metrics of all registered adapters.
    */
   static async getMetrics(): Promise<Record<string, any>> {
     const metricsPromises = Array.from(MonitoringEventRegistry.adapters.entries()).map(
@@ -653,21 +658,21 @@ export class MonitoringEventRegistry {
   }
 
   /**
-   * List all registered adapter names
+   * List all registered adapter names.
    */
   static list(): string[] {
     return Array.from(MonitoringEventRegistry.adapters.keys());
   }
 
   /**
-   * Get count of registered adapters
+   * Get count of registered adapters.
    */
   static count(): number {
     return MonitoringEventRegistry.adapters.size;
   }
 
   /**
-   * Clear all registered adapters
+   * Clear all registered adapters.
    */
   static async clear(): Promise<void> {
     await MonitoringEventRegistry.stopAll();
@@ -677,7 +682,7 @@ export class MonitoringEventRegistry {
 }
 
 /**
- * Singleton monitoring event manager for global access
+ * Singleton monitoring event manager for global access.
  *
  * @example
  */
@@ -686,7 +691,7 @@ export class MonitoringEventManager {
   private static config: MonitoringEventAdapterConfig | null = null;
 
   /**
-   * Initialize global monitoring event manager
+   * Initialize global monitoring event manager.
    *
    * @param config
    */
@@ -703,7 +708,7 @@ export class MonitoringEventManager {
   }
 
   /**
-   * Get global monitoring event manager instance
+   * Get global monitoring event manager instance.
    */
   static getInstance(): MonitoringEventAdapter {
     if (!MonitoringEventManager.instance) {
@@ -713,7 +718,7 @@ export class MonitoringEventManager {
   }
 
   /**
-   * Shutdown global monitoring event manager
+   * Shutdown global monitoring event manager.
    */
   static async shutdown(): Promise<void> {
     if (MonitoringEventManager.instance) {
@@ -724,14 +729,14 @@ export class MonitoringEventManager {
   }
 
   /**
-   * Check if monitoring event manager is initialized
+   * Check if monitoring event manager is initialized.
    */
   static isInitialized(): boolean {
     return MonitoringEventManager.instance !== null;
   }
 
   /**
-   * Get current configuration
+   * Get current configuration.
    */
   static getConfig(): MonitoringEventAdapterConfig | null {
     return MonitoringEventManager.config;

@@ -1,8 +1,15 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-claude-integration-core");
 /**
- * Core Claude Code integration module
- * Handles MCP server setup and basic integration
+ * @file Coordination system: core
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-claude-integration-core');
+
+/**
+ * Core Claude Code integration module.
+ * Handles MCP server setup and basic integration.
  */
 
 import { execSync } from 'node:child_process';
@@ -25,13 +32,13 @@ class ClaudeIntegrationCore {
   private workingDir: string;
 
   constructor(options: ClaudeIntegrationOptions = {}) {
-    this._autoSetup = options.autoSetup || false;
-    this.forceSetup = options.forceSetup || false;
-    this.workingDir = options.workingDir || process.cwd();
+    this._autoSetup = options?.autoSetup || false;
+    this.forceSetup = options?.forceSetup || false;
+    this.workingDir = options?.workingDir || process.cwd();
   }
 
   /**
-   * Check if Claude CLI is available
+   * Check if Claude CLI is available.
    */
   async isClaudeAvailable() {
     try {
@@ -43,7 +50,7 @@ class ClaudeIntegrationCore {
   }
 
   /**
-   * Add ruv-swarm MCP server to Claude Code
+   * Add ruv-swarm MCP server to Claude Code.
    */
   async addMcpServer() {
     if (!(await this.isClaudeAvailable())) {
@@ -63,7 +70,7 @@ class ClaudeIntegrationCore {
   }
 
   /**
-   * Check if integration files already exist
+   * Check if integration files already exist.
    */
   async checkExistingFiles() {
     try {
@@ -76,7 +83,7 @@ class ClaudeIntegrationCore {
   }
 
   /**
-   * Initialize Claude integration
+   * Initialize Claude integration.
    */
   async initialize() {
     // Check if files exist (unless force setup)
@@ -100,7 +107,7 @@ class ClaudeIntegrationCore {
    * Invoke Claude with a prompt (supports both secure and legacy modes)
    *
    * @param prompt
-   * @param options
+   * @param options.
    */
   async invokeClaudeWithPrompt(prompt: string, options: ClaudeInvokeOptions = {}) {
     if (!prompt || !prompt.trim()) {
@@ -112,7 +119,7 @@ class ClaudeIntegrationCore {
     }
 
     // Default behavior for backward compatibility (legacy mode)
-    const addPermissions = options.secure !== true;
+    const addPermissions = options?.secure !== true;
     const permissions = addPermissions ? ' --dangerously-skip-permissions' : '';
     const claudeCommand = `claude "${prompt.trim()}"${permissions}`;
 

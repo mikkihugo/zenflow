@@ -3,11 +3,14 @@
  * @fileoverview Unified Workflow Engine - Database-Driven Architecture.
  *
  * PURE DATABASE-DRIVEN workflow engine - NO FILE OPERATIONS
- * Handles Vision → ADRs → PRDs → Epics → Features → Tasks → Code
- * Uses DocumentService for all document operations
+ * Handles Vision → ADRs → PRDs → Epics → Features → Tasks → Code.
+ * Uses DocumentService for all document operations.
  */
 
 import { EventEmitter } from 'node:events';
+import type { DocumentManager } from '../core/workflow-engine';
+import type { BaseDocumentEntity } from '../database/entities/product-entities';
+import type { MemorySystem } from '../memory/memory-system';
 import { createLogger } from './logger';
 
 const logger = createLogger('WorkflowEngine');
@@ -312,7 +315,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Register built-in step handlers
+   * Register built-in step handlers.
    */
   private registerBuiltInHandlers(): void {
     // Document processing handlers
@@ -350,7 +353,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Register document workflow definitions
+   * Register document workflow definitions.
    */
   private registerDocumentWorkflows(): void {
     for (const workflow of DOCUMENT_WORKFLOWS) {
@@ -360,7 +363,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Register a custom step handler
+   * Register a custom step handler.
    *
    * @param type
    * @param handler
@@ -374,7 +377,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Register a custom workflow definition
+   * Register a custom workflow definition.
    *
    * @param name
    * @param definition
@@ -385,7 +388,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Start a workflow
+   * Start a workflow.
    *
    * @param workflowName
    * @param context
@@ -493,7 +496,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Start workflow based on document entity event
+   * Start workflow based on document entity event.
    *
    * @param event
    * @param document
@@ -552,7 +555,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Convert database entity to workflow document content
+   * Convert database entity to workflow document content.
    *
    * @param entity
    */
@@ -578,7 +581,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Execute a workflow
+   * Execute a workflow.
    *
    * @param workflow
    */
@@ -624,7 +627,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Execute a single workflow step
+   * Execute a single workflow step.
    *
    * @param workflow
    * @param step
@@ -723,7 +726,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Built-in step handlers
+   * Built-in step handlers.
    *
    * @param context
    * @param _params
@@ -967,7 +970,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Utility methods
+   * Utility methods.
    *
    * @param context
    * @param expression
@@ -1088,7 +1091,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Public workflow management methods
+   * Public workflow management methods.
    */
   async getActiveWorkflows(): Promise<WorkflowState[]> {
     return Array.from(this.activeWorkflows.values()).filter((w) =>
@@ -1176,7 +1179,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Extract keywords from content for search indexing
+   * Extract keywords from content for search indexing.
    *
    * @param content
    */
@@ -1208,7 +1211,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Shutdown the workflow engine gracefully
+   * Shutdown the workflow engine gracefully.
    */
   async shutdown(): Promise<void> {
     logger.info('Shutting down workflow engine...');
@@ -1230,7 +1233,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Generate a simple checksum for content
+   * Generate a simple checksum for content.
    *
    * @param content
    */

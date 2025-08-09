@@ -1,5 +1,5 @@
 /**
- * REST API Schemas
+ * REST API Schemas.
  *
  * Consolidated OpenAPI 3.0 schemas from all domains.
  * Provides single source of truth for API documentation and validation.
@@ -7,7 +7,7 @@
  * @file REST API schemas for all domains
  */
 
-import { getMCPServerURL } from '../../../config/url-builder';
+import { getMCPServerURL } from '../config/url-builder';
 
 // Re-export coordination types that are actually available
 export type {
@@ -17,14 +17,14 @@ export type {
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '../../../../coordination/schemas';
+} from '../coordination/schemas';
 // Import domain-specific schemas
 export * from './common';
 export * from './neural';
 
 /**
  * Complete OpenAPI 3.0 Schema Definition
- * Combines all domain schemas into REST API specification
+ * Combines all domain schemas into REST API specification.
  */
 export const RestAPISchema = {
   openapi: '3.0.0',

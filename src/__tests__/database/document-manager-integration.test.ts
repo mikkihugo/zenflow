@@ -283,20 +283,20 @@ describe('DocumentManager Integration Tests', () => {
         limit: 10,
       });
 
-      expect(results.documents).toBeDefined();
-      expect(results.documents.length).toBeGreaterThan(0);
-      expect(results.searchMetadata.searchType).toBe('fulltext');
-      expect(results.searchMetadata.relevanceScores).toBeDefined();
-      expect(results.searchMetadata.processingTime).toBeGreaterThan(0);
+      expect(results?.documents).toBeDefined();
+      expect(results?.documents.length).toBeGreaterThan(0);
+      expect(results?.searchMetadata?.searchType).toBe('fulltext');
+      expect(results?.searchMetadata?.relevanceScores).toBeDefined();
+      expect(results?.searchMetadata?.processingTime).toBeGreaterThan(0);
 
       // Verify results are ordered by relevance
-      const scores = results.searchMetadata.relevanceScores!;
+      const scores = results?.searchMetadata?.relevanceScores!;
       for (let i = 1; i < scores.length; i++) {
         expect(scores[i]).toBeLessThanOrEqual(scores[i - 1]);
       }
 
       // Auth system PRD should rank highest (more keywords match)
-      expect(results.documents[0].title).toContain('Authentication');
+      expect(results?.documents?.[0]?.title).toContain('Authentication');
     });
 
     test('should perform semantic search with content similarity', async () => {
@@ -307,13 +307,13 @@ describe('DocumentManager Integration Tests', () => {
         limit: 10,
       });
 
-      expect(results.documents).toBeDefined();
-      expect(results.documents.length).toBeGreaterThan(0);
-      expect(results.searchMetadata.searchType).toBe('semantic');
-      expect(results.searchMetadata.relevanceScores).toBeDefined();
+      expect(results?.documents).toBeDefined();
+      expect(results?.documents.length).toBeGreaterThan(0);
+      expect(results?.searchMetadata?.searchType).toBe('semantic');
+      expect(results?.searchMetadata?.relevanceScores).toBeDefined();
 
       // Should find authentication-related documents even without exact matches
-      const authRelated = results.documents.some(
+      const authRelated = results?.documents?.some(
         (doc) => doc.keywords.includes('authentication') || doc.title.toLowerCase().includes('auth')
       );
       expect(authRelated).toBe(true);
@@ -327,12 +327,12 @@ describe('DocumentManager Integration Tests', () => {
         limit: 10,
       });
 
-      expect(results.documents).toBeDefined();
-      expect(results.documents.length).toBeGreaterThan(0);
-      expect(results.searchMetadata.searchType).toBe('keyword');
+      expect(results?.documents).toBeDefined();
+      expect(results?.documents.length).toBeGreaterThan(0);
+      expect(results?.searchMetadata?.searchType).toBe('keyword');
 
       // All results should have 'security' in keywords or title
-      results.documents.forEach((doc) => {
+      results?.documents?.forEach((doc) => {
         const hasSecurityKeyword = doc.keywords.includes('security');
         const hasSecurityInTitle = doc.title.toLowerCase().includes('security');
         const hasSecurityInContent = doc.content.toLowerCase().includes('security');
@@ -349,13 +349,13 @@ describe('DocumentManager Integration Tests', () => {
         limit: 10,
       });
 
-      expect(results.documents).toBeDefined();
-      expect(results.documents.length).toBeGreaterThan(0);
-      expect(results.searchMetadata.searchType).toBe('combined');
-      expect(results.searchMetadata.relevanceScores).toBeDefined();
+      expect(results?.documents).toBeDefined();
+      expect(results?.documents.length).toBeGreaterThan(0);
+      expect(results?.searchMetadata?.searchType).toBe('combined');
+      expect(results?.searchMetadata?.relevanceScores).toBeDefined();
 
       // Combined search should provide comprehensive results
-      expect(results.documents.length).toBeGreaterThanOrEqual(1);
+      expect(results?.documents.length).toBeGreaterThanOrEqual(1);
     });
 
     test('should apply filters and date ranges', async () => {
@@ -378,10 +378,10 @@ describe('DocumentManager Integration Tests', () => {
         limit: 10,
       });
 
-      expect(results.documents).toBeDefined();
+      expect(results?.documents).toBeDefined();
 
       // Verify filters are applied
-      results.documents.forEach((doc) => {
+      results?.documents?.forEach((doc) => {
         expect(['prd', 'feature']).toContain(doc.type);
         expect(['approved', 'in_progress']).toContain(doc.status);
         expect(['high', 'medium']).toContain(doc.priority);
@@ -717,9 +717,9 @@ describe('DocumentManager Integration Tests', () => {
         limit: 10,
       });
 
-      expect(searchResults.documents.length).toBeGreaterThanOrEqual(3);
+      expect(searchResults?.documents.length).toBeGreaterThanOrEqual(3);
 
-      const docTypes = new Set(searchResults.documents.map((d) => d.type));
+      const docTypes = new Set(searchResults?.documents?.map((d) => d.type));
       expect(docTypes.size).toBeGreaterThanOrEqual(2); // Multiple document types
 
       // 8. Verify project overview shows complete document hierarchy

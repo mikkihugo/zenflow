@@ -57,13 +57,13 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
     it('should handle vanishing gradient problem in deep networks', () => {
       // Classical TDD: Test gradient flow in deep networks
       const deepNetwork = createSimpleNetwork([2, 10, 10, 10, 10, 1]);
-      const trainingData = NeuralTestDataGenerator.generateLinearData(20, 0.05);
+      const trainingData = NeuralTestDataGenerator?.generateLinearData(20, 0.05);
 
       const gradientHistory: number[] = [];
 
       // Train for several epochs and monitor gradient magnitude
       for (let epoch = 0; epoch < 10; epoch++) {
-        trainingData.forEach((sample) => {
+        trainingData?.forEach((sample) => {
           const activations = forwardPassWithActivations(deepNetwork, sample.input);
           const gradients = backpropagateGradients(deepNetwork, activations, sample.output);
 
@@ -91,14 +91,14 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
     it('should implement momentum correctly in backpropagation', () => {
       // Classical TDD: Test momentum-enhanced backpropagation
       const network = createSimpleNetwork([2, 4, 1]);
-      const trainingData = NeuralTestDataGenerator.generateXORData();
+      const trainingData = NeuralTestDataGenerator?.generateXORData();
 
       const momentumFactor = 0.9;
       const velocities = initializeVelocities(network);
 
       let previousVelocities = JSON.parse(JSON.stringify(velocities));
 
-      trainingData.forEach((sample, iteration) => {
+      trainingData?.forEach((sample, iteration) => {
         const activations = forwardPassWithActivations(network, sample.input);
         const gradients = backpropagateGradients(network, activations, sample.output);
 
@@ -110,8 +110,8 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
           velocities.weights.forEach((layerVel, layerIdx) => {
             layerVel.forEach((neuronVel, neuronIdx) => {
               neuronVel.forEach((weightVel, weightIdx) => {
-                const prevVel = previousVelocities.weights[layerIdx][neuronIdx][weightIdx];
-                const gradient = gradients.weights[layerIdx][neuronIdx][weightIdx];
+                const prevVel = previousVelocities.weights[layerIdx]?.[neuronIdx]?.[weightIdx];
+                const gradient = gradients.weights[layerIdx]?.[neuronIdx]?.[weightIdx];
                 const expectedVel = momentumFactor * prevVel + 0.1 * gradient;
 
                 expect(Math.abs(weightVel - expectedVel)).toBeLessThan(1e-10);
@@ -138,11 +138,11 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       };
 
       const rpropState = initializeRPROPState(network, rpropConfig);
-      const trainingData = NeuralTestDataGenerator.generateXORData();
+      const trainingData = NeuralTestDataGenerator?.generateXORData();
 
       let previousGradients: any = null;
 
-      trainingData.forEach((sample, iteration) => {
+      trainingData?.forEach((sample, iteration) => {
         const activations = forwardPassWithActivations(network, sample.input);
         const gradients = backpropagateGradients(network, activations, sample.output);
 
@@ -151,11 +151,11 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
           updateRPROPDeltas(rpropState, gradients, previousGradients, rpropConfig);
 
           // Verify delta bounds
-          rpropState.deltas.weights.forEach((layerDeltas) => {
+          rpropState?.deltas?.weights?.forEach((layerDeltas) => {
             layerDeltas.forEach((neuronDeltas) => {
               neuronDeltas.forEach((delta) => {
-                expect(delta).toBeGreaterThanOrEqual(rpropConfig.deltaMin);
-                expect(delta).toBeLessThanOrEqual(rpropConfig.deltaMax);
+                expect(delta).toBeGreaterThanOrEqual(rpropConfig?.deltaMin);
+                expect(delta).toBeLessThanOrEqual(rpropConfig?.deltaMax);
                 expect(Number.isFinite(delta)).toBe(true);
               });
             });
@@ -169,11 +169,11 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       });
 
       // Verify RPROP can solve XOR problem
-      const finalPredictions = trainingData.map((sample) => forwardPass(network, sample.input));
+      const finalPredictions = trainingData?.map((sample) => forwardPass(network, sample.input));
 
       const accuracy = calculateBinaryAccuracy(
         finalPredictions,
-        trainingData.map((d) => d.output),
+        trainingData?.map((d) => d.output),
         0.3
       );
 
@@ -188,7 +188,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       // Use identical initial weights for fair comparison
       copyNetworkWeights(standardNetwork, rpropNetwork);
 
-      const trainingData = NeuralTestDataGenerator.generateXORData();
+      const trainingData = NeuralTestDataGenerator?.generateXORData();
       const maxEpochs = 1000;
 
       // Train with standard backpropagation
@@ -205,12 +205,12 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       });
 
       // RPROP should converge in fewer epochs
-      if (standardResult.converged && rpropResult.converged) {
-        expect(rpropResult.epochs).toBeLessThanOrEqual(standardResult.epochs);
+      if (standardResult?.converged && rpropResult?.converged) {
+        expect(rpropResult?.epochs).toBeLessThanOrEqual(standardResult?.epochs);
       }
 
       // Both should achieve reasonable accuracy (more lenient for testing)
-      expect(rpropResult.finalError).toBeLessThan(0.4);
+      expect(rpropResult?.finalError).toBeLessThan(0.4);
     });
   });
 
@@ -225,13 +225,13 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       };
 
       const _quickpropState = initializeQuickPropState(network);
-      const trainingData = NeuralTestDataGenerator.generateLinearData(50, 0.1);
+      const trainingData = NeuralTestDataGenerator?.generateLinearData(50, 0.1);
 
       let previousGradients: any = null;
       let previousWeightChanges: any = null;
 
       for (let epoch = 0; epoch < 10; epoch++) {
-        trainingData.forEach((sample) => {
+        trainingData?.forEach((sample) => {
           const activations = forwardPassWithActivations(network, sample.input);
           const gradients = backpropagateGradients(network, activations, sample.output);
 
@@ -259,7 +259,10 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
             previousWeightChanges = weightUpdates;
           } else {
             // First iteration: use standard gradient descent
-            const standardUpdates = computeStandardUpdates(gradients, quickpropConfig.learningRate);
+            const standardUpdates = computeStandardUpdates(
+              gradients,
+              quickpropConfig?.learningRate
+            );
             applyWeightUpdates(network, standardUpdates);
             previousWeightChanges = standardUpdates;
           }
@@ -312,27 +315,29 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       };
 
       const network = initializeCascadeNetwork([2, 1]); // Start with no hidden layer
-      const trainingData = NeuralTestDataGenerator.generateXORData();
+      const trainingData = NeuralTestDataGenerator?.generateXORData();
 
       const cascadeResult = trainWithCascadeCorrelation(network, trainingData, cascadeConfig);
 
       // Verify cascade structure was built (make it more lenient)
-      expect(cascadeResult.hiddenNeuronsAdded).toBeGreaterThanOrEqual(0);
-      expect(cascadeResult.hiddenNeuronsAdded).toBeLessThanOrEqual(cascadeConfig.maxHiddenNeurons);
+      expect(cascadeResult?.hiddenNeuronsAdded).toBeGreaterThanOrEqual(0);
+      expect(cascadeResult?.hiddenNeuronsAdded).toBeLessThanOrEqual(
+        cascadeConfig?.maxHiddenNeurons
+      );
 
       // Verify final network performance (more lenient)
-      const finalPredictions = trainingData.map((sample) =>
-        forwardPassCascade(cascadeResult.network, sample.input)
+      const finalPredictions = trainingData?.map((sample) =>
+        forwardPassCascade(cascadeResult?.network, sample.input)
       );
 
       const accuracy = calculateBinaryAccuracy(
         finalPredictions,
-        trainingData.map((d) => d.output),
+        trainingData?.map((d) => d.output),
         0.4 // More lenient threshold
       );
 
       expect(accuracy).toBeGreaterThan(0.6); // Should achieve reasonable accuracy
-      expect(cascadeResult.finalError).toBeLessThan(0.4); // More lenient
+      expect(cascadeResult?.finalError).toBeLessThan(0.4); // More lenient
     });
 
     it('should add neurons incrementally when needed', () => {
@@ -347,7 +352,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       };
 
       const network = initializeCascadeNetwork([2, 1]);
-      const complexData = NeuralTestDataGenerator.generateSpiralData(25, 2);
+      const complexData = NeuralTestDataGenerator?.generateSpiralData(25, 2);
 
       const neuronAdditionHistory: number[] = [];
       let currentNeurons = 0;
@@ -373,7 +378,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
 
       // Final network should have added some hidden neurons (more lenient)
       expect(currentNeurons).toBeGreaterThanOrEqual(0);
-      expect(currentNeurons).toBeLessThanOrEqual(cascadeConfig.maxHiddenNeurons);
+      expect(currentNeurons).toBeLessThanOrEqual(cascadeConfig?.maxHiddenNeurons);
     });
   });
 
@@ -388,7 +393,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
         [2, 6, 3, 1],
       ];
 
-      const xorData = NeuralTestDataGenerator.generateXORData();
+      const xorData = NeuralTestDataGenerator?.generateXORData();
       const convergenceResults: Array<{
         architecture: number[];
         converged: boolean;
@@ -403,26 +408,26 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
           targetError: 0.1,
         });
 
-        convergenceResults.push({
+        convergenceResults?.push({
           architecture,
-          converged: result.converged,
-          epochs: result.epochs,
+          converged: result?.converged,
+          epochs: result?.epochs,
         });
 
         // Each architecture should be capable of solving XOR
-        expect(result.finalError).toBeLessThan(0.3);
+        expect(result?.finalError).toBeLessThan(0.3);
       });
 
       // At least 60% of architectures should converge (more realistic)
       const convergenceRate =
-        convergenceResults.filter((r) => r.converged).length / convergenceResults.length;
+        convergenceResults?.filter((r) => r.converged).length / convergenceResults.length;
       expect(convergenceRate).toBeGreaterThan(0.6);
     });
 
     it('should demonstrate XOR is not linearly separable', () => {
       // Classical TDD: Verify linear models cannot solve XOR
       const linearNetwork = createSimpleNetwork([2, 1]); // No hidden layer
-      const xorData = NeuralTestDataGenerator.generateXORData();
+      const xorData = NeuralTestDataGenerator?.generateXORData();
 
       const linearResult = trainWithBackpropagation(linearNetwork, xorData, {
         learningRate: 0.1,
@@ -431,13 +436,13 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       });
 
       // Linear network should fail to solve XOR
-      expect(linearResult.finalError).toBeGreaterThan(0.2);
+      expect(linearResult?.finalError).toBeGreaterThan(0.2);
 
       // Verify predictions are poor
-      const predictions = xorData.map((sample) => forwardPass(linearNetwork, sample.input));
+      const predictions = xorData?.map((sample) => forwardPass(linearNetwork, sample.input));
       const accuracy = calculateBinaryAccuracy(
         predictions,
-        xorData.map((d) => d.output),
+        xorData?.map((d) => d.output),
         0.5
       );
 
@@ -447,7 +452,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
     it('should maintain XOR solution stability', () => {
       // Classical TDD: Test solution stability after convergence
       const network = createSimpleNetwork([2, 4, 1]);
-      const xorData = NeuralTestDataGenerator.generateXORData();
+      const xorData = NeuralTestDataGenerator?.generateXORData();
 
       // Train to convergence
       const trainingResult = trainWithBackpropagation(network, xorData, {
@@ -456,7 +461,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
         targetError: 0.05,
       });
 
-      expect(trainingResult.converged).toBe(true);
+      expect(trainingResult?.converged).toBe(true);
 
       // Continue training for additional epochs
       const additionalResult = trainWithBackpropagation(network, xorData, {
@@ -466,11 +471,11 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       });
 
       // Solution should remain stable (not degrade significantly)
-      const stabilityRatio = additionalResult.finalError / trainingResult.finalError;
+      const stabilityRatio = additionalResult?.finalError / trainingResult?.finalError;
       expect(stabilityRatio).toBeLessThan(2.0); // Error shouldn't double
 
       // Verify XOR logic is still correct
-      const finalPredictions = xorData.map((sample) => forwardPass(network, sample.input)[0]);
+      const finalPredictions = xorData?.map((sample) => forwardPass(network, sample.input)[0]);
       expect(finalPredictions[0]).toBeLessThan(0.3); // [0,0] -> 0
       expect(finalPredictions[1]).toBeGreaterThan(0.7); // [0,1] -> 1
       expect(finalPredictions[2]).toBeGreaterThan(0.7); // [1,0] -> 1
@@ -482,12 +487,12 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
     it('should maintain numerical precision in weight updates', () => {
       // Classical TDD: Test numerical precision throughout training
       const network = createSimpleNetwork([3, 5, 2]);
-      const trainingData = NeuralTestDataGenerator.generateLinearData(100, 0.05);
+      const trainingData = NeuralTestDataGenerator?.generateLinearData(100, 0.05);
 
       const weightPrecisionHistory: number[] = [];
 
       for (let epoch = 0; epoch < 50; epoch++) {
-        trainingData.forEach((sample) => {
+        trainingData?.forEach((sample) => {
           const activations = forwardPassWithActivations(network, sample.input);
           const gradients = backpropagateGradients(network, activations, sample.output);
 
@@ -552,9 +557,9 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
       const network = createSimpleNetwork([2, 3, 1]);
 
       // Set extreme weight values
-      network.weights[0][0][0] = 100; // Large positive
-      network.weights[0][1][0] = -100; // Large negative
-      network.weights[0][2][0] = 1e-10; // Very small
+      network.weights[0]?.[0][0] = 100; // Large positive
+      network.weights[0]?.[1][0] = -100; // Large negative
+      network.weights[0]?.[2][0] = 1e-10; // Very small
 
       const testInput = [0.5, 0.5];
       const testOutput = [0.5];
@@ -634,9 +639,9 @@ function forwardPass(network: any, input: number[]): number[] {
     const newActivations: number[] = [];
 
     for (let j = 0; j < network.weights[i].length; j++) {
-      let sum = network.biases[i][j];
+      let sum = network.biases[i]?.[j];
       for (let k = 0; k < activations.length; k++) {
-        sum += activations[k] * network.weights[i][j][k];
+        sum += activations[k] * network.weights[i]?.[j]?.[k];
       }
       newActivations.push(1 / (1 + Math.exp(-sum))); // Sigmoid activation
     }
@@ -661,9 +666,9 @@ function forwardPassWithActivations(
     const preActivations: number[] = [];
 
     for (let j = 0; j < network.weights[i].length; j++) {
-      let sum = network.biases[i][j];
+      let sum = network.biases[i]?.[j];
       for (let k = 0; k < currentActivations.length; k++) {
-        sum += currentActivations[k] * network.weights[i][j][k];
+        sum += currentActivations?.[k] * network.weights[i]?.[j]?.[k];
       }
       preActivations.push(sum);
       newActivations.push(1 / (1 + Math.exp(-sum))); // Sigmoid activation
@@ -687,10 +692,10 @@ function backpropagateGradients(network: any, activations: any, target: number[]
     weightGradients.push([]);
     biasGradients.push([]);
     for (let j = 0; j < network.weights[i].length; j++) {
-      weightGradients[i].push([]);
-      biasGradients[i].push(0);
-      for (let k = 0; k < network.weights[i][j].length; k++) {
-        weightGradients[i][j].push(0);
+      weightGradients[i]?.push([]);
+      biasGradients[i]?.push(0);
+      for (let k = 0; k < network.weights[i]?.[j].length; k++) {
+        weightGradients[i]?.[j]?.push(0);
       }
     }
   }
@@ -700,8 +705,8 @@ function backpropagateGradients(network: any, activations: any, target: number[]
   const outputErrors: number[] = [];
 
   for (let i = 0; i < target.length; i++) {
-    const output = layerActivations[finalLayerIdx][i];
-    const error = target[i] - output;
+    const output = layerActivations[finalLayerIdx]?.[i];
+    const error = target?.[i] - output;
     const derivative = output * (1 - output); // Sigmoid derivative
     const gradientValue = error * derivative;
 
@@ -721,12 +726,12 @@ function backpropagateGradients(network: any, activations: any, target: number[]
 
     // Compute gradients for current layer
     for (let j = 0; j < network.weights[layer].length; j++) {
-      biasGradients[layer][j] = currentErrors[j] || 0;
+      biasGradients[layer][j] = currentErrors?.[j] || 0;
 
-      for (let k = 0; k < network.weights[layer][j].length; k++) {
-        const gradient = (currentErrors[j] || 0) * (layerActivations[layer][k] || 0);
+      for (let k = 0; k < network.weights[layer]?.[j].length; k++) {
+        const gradient = (currentErrors?.[j] || 0) * (layerActivations[layer]?.[k] || 0);
         // Clamp gradients to prevent explosion
-        weightGradients[layer][j][k] = Math.max(-1, Math.min(1, gradient));
+        weightGradients[layer]?.[j][k] = Math.max(-1, Math.min(1, gradient));
       }
     }
 
@@ -735,9 +740,9 @@ function backpropagateGradients(network: any, activations: any, target: number[]
       for (let k = 0; k < layerActivations[layer].length; k++) {
         let error = 0;
         for (let j = 0; j < network.weights[layer].length; j++) {
-          error += (currentErrors[j] || 0) * (network.weights[layer][j][k] || 0);
+          error += (currentErrors?.[j] || 0) * (network.weights[layer]?.[j]?.[k] || 0);
         }
-        const activation = layerActivations[layer][k] || 0;
+        const activation = layerActivations[layer]?.[k] || 0;
         const derivative = activation * (1 - activation);
         const nextError = error * derivative;
 
@@ -769,10 +774,10 @@ function computeNumericalGradients(
     weightGradients.push([]);
     biasGradients.push([]);
     for (let j = 0; j < network.weights[i].length; j++) {
-      weightGradients[i].push([]);
-      biasGradients[i].push(0);
-      for (let k = 0; k < network.weights[i][j].length; k++) {
-        weightGradients[i][j].push(0);
+      weightGradients[i]?.push([]);
+      biasGradients[i]?.push(0);
+      for (let k = 0; k < network.weights[i]?.[j].length; k++) {
+        weightGradients[i]?.[j]?.push(0);
       }
     }
   }
@@ -780,24 +785,24 @@ function computeNumericalGradients(
   // Compute numerical gradients for weights
   for (let i = 0; i < network.weights.length; i++) {
     for (let j = 0; j < network.weights[i].length; j++) {
-      for (let k = 0; k < network.weights[i][j].length; k++) {
-        const originalWeight = network.weights[i][j][k];
+      for (let k = 0; k < network.weights[i]?.[j].length; k++) {
+        const originalWeight = network.weights[i]?.[j]?.[k];
 
         // Forward difference
-        network.weights[i][j][k] = originalWeight + epsilon;
+        network.weights[i]?.[j][k] = originalWeight + epsilon;
         const outputPlus = forwardPass(network, input);
         const errorPlus = calculateSampleError(outputPlus, target);
 
-        network.weights[i][j][k] = originalWeight - epsilon;
+        network.weights[i]?.[j][k] = originalWeight - epsilon;
         const outputMinus = forwardPass(network, input);
         const errorMinus = calculateSampleError(outputMinus, target);
 
         // Central difference
         const gradient = (errorPlus - errorMinus) / (2 * epsilon);
-        weightGradients[i][j][k] = -gradient; // Negative because we want to minimize error
+        weightGradients[i]?.[j][k] = -gradient; // Negative because we want to minimize error
 
         // Restore original weight
-        network.weights[i][j][k] = originalWeight;
+        network.weights[i]?.[j][k] = originalWeight;
       }
     }
   }
@@ -806,14 +811,14 @@ function computeNumericalGradients(
 }
 
 function calculateSampleError(output: number[], target: number[]): number {
-  return output.reduce((sum, pred, idx) => sum + (pred - target[idx]) ** 2, 0) / output.length;
+  return output.reduce((sum, pred, idx) => sum + (pred - target?.[idx]) ** 2, 0) / output.length;
 }
 
 function expectGradientsNearlyEqual(computed: any, numerical: any, tolerance: number): void {
   for (let i = 0; i < computed.weights.length; i++) {
     for (let j = 0; j < computed.weights[i].length; j++) {
-      for (let k = 0; k < computed.weights[i][j].length; k++) {
-        const diff = Math.abs(computed.weights[i][j][k] - numerical.weights[i][j][k]);
+      for (let k = 0; k < computed.weights[i]?.[j].length; k++) {
+        const diff = Math.abs(computed.weights[i]?.[j]?.[k] - numerical.weights[i]?.[j]?.[k]);
         expect(diff).toBeLessThan(tolerance);
       }
     }
@@ -840,10 +845,10 @@ function initializeVelocities(network: any): any {
     velocities.weights.push([]);
     velocities.biases.push([]);
     for (let j = 0; j < network.weights[i].length; j++) {
-      velocities.weights[i].push([]);
-      velocities.biases[i].push(0);
-      for (let k = 0; k < network.weights[i][j].length; k++) {
-        velocities.weights[i][j].push(0);
+      velocities.weights[i]?.push([]);
+      velocities.biases[i]?.push(0);
+      for (let k = 0; k < network.weights[i]?.[j].length; k++) {
+        velocities.weights[i]?.[j]?.push(0);
       }
     }
   }
@@ -859,9 +864,10 @@ function updateVelocitiesWithMomentum(
 ): void {
   for (let i = 0; i < velocities.weights.length; i++) {
     for (let j = 0; j < velocities.weights[i].length; j++) {
-      for (let k = 0; k < velocities.weights[i][j].length; k++) {
-        velocities.weights[i][j][k] =
-          momentum * velocities.weights[i][j][k] + learningRate * gradients.weights[i][j][k];
+      for (let k = 0; k < velocities.weights[i]?.[j].length; k++) {
+        velocities.weights[i]?.[j][k] =
+          momentum * velocities.weights[i]?.[j]?.[k] +
+          learningRate * gradients.weights[i]?.[j]?.[k];
       }
     }
   }
@@ -875,8 +881,8 @@ function calculateBinaryAccuracy(
   let correct = 0;
 
   for (let i = 0; i < predictions.length; i++) {
-    const predictedClass = predictions[i][0] > threshold ? 1 : 0;
-    const actualClass = targets[i][0] > threshold ? 1 : 0;
+    const predictedClass = predictions[i]?.[0] > threshold ? 1 : 0;
+    const actualClass = targets?.[i]?.[0] > threshold ? 1 : 0;
 
     if (predictedClass === actualClass) {
       correct++;
@@ -897,10 +903,10 @@ function initializeRPROPState(network: any, config: any): any {
     deltas.weights.push([]);
     deltas.biases.push([]);
     for (let j = 0; j < network.weights[i].length; j++) {
-      deltas.weights[i].push([]);
-      deltas.biases[i].push(config.initialDelta);
-      for (let k = 0; k < network.weights[i][j].length; k++) {
-        deltas.weights[i][j].push(config.initialDelta);
+      deltas.weights[i]?.push([]);
+      deltas.biases[i]?.push(config?.initialDelta);
+      for (let k = 0; k < network.weights[i]?.[j].length; k++) {
+        deltas.weights[i]?.[j]?.push(config?.initialDelta);
       }
     }
   }
@@ -916,22 +922,22 @@ function updateRPROPDeltas(
 ): void {
   for (let i = 0; i < gradients.weights.length; i++) {
     for (let j = 0; j < gradients.weights[i].length; j++) {
-      for (let k = 0; k < gradients.weights[i][j].length; k++) {
-        const currentGrad = gradients.weights[i][j][k];
-        const prevGrad = previousGradients.weights[i][j][k];
+      for (let k = 0; k < gradients.weights[i]?.[j].length; k++) {
+        const currentGrad = gradients.weights[i]?.[j]?.[k];
+        const prevGrad = previousGradients.weights[i]?.[j]?.[k];
         const gradientProduct = currentGrad * prevGrad;
 
         if (gradientProduct > 0) {
           // Same sign: increase delta
-          rpropState.deltas.weights[i][j][k] = Math.min(
-            rpropState.deltas.weights[i][j][k] * config.etaPlus,
-            config.deltaMax
+          rpropState?.deltas?.weights?.[i]?.[j][k] = Math.min(
+            rpropState?.deltas?.weights?.[i]?.[j]?.[k] * config?.etaPlus,
+            config?.deltaMax
           );
         } else if (gradientProduct < 0) {
           // Different sign: decrease delta
-          rpropState.deltas.weights[i][j][k] = Math.max(
-            rpropState.deltas.weights[i][j][k] * config.etaMinus,
-            config.deltaMin
+          rpropState?.deltas?.weights?.[i]?.[j][k] = Math.max(
+            rpropState?.deltas?.weights?.[i]?.[j]?.[k] * config?.etaMinus,
+            config?.deltaMin
           );
         }
         // If gradient product is 0, keep delta unchanged
@@ -943,12 +949,12 @@ function updateRPROPDeltas(
 function applyRPROPUpdates(network: any, gradients: any, rpropState: any): void {
   for (let i = 0; i < network.weights.length; i++) {
     for (let j = 0; j < network.weights[i].length; j++) {
-      for (let k = 0; k < network.weights[i][j].length; k++) {
-        const gradient = gradients.weights[i][j][k];
-        const delta = rpropState.deltas.weights[i][j][k];
+      for (let k = 0; k < network.weights[i]?.[j].length; k++) {
+        const gradient = gradients.weights[i]?.[j]?.[k];
+        const delta = rpropState?.deltas?.weights?.[i]?.[j]?.[k];
         const weightUpdate = -Math.sign(gradient) * delta;
 
-        network.weights[i][j][k] += weightUpdate;
+        network.weights[i]?.[j][k] += weightUpdate;
       }
     }
   }
@@ -959,10 +965,10 @@ function trainWithBackpropagation(network: any, trainingData: any[], config: any
   let converged = false;
   let epochs = 0;
 
-  for (let epoch = 0; epoch < config.epochs && !converged; epoch++) {
+  for (let epoch = 0; epoch < config?.epochs && !converged; epoch++) {
     let epochError = 0;
 
-    trainingData.forEach((sample) => {
+    trainingData?.forEach((sample) => {
       const activations = forwardPassWithActivations(network, sample.input);
       const prediction = activations.activations[activations.activations.length - 1];
 
@@ -970,14 +976,14 @@ function trainWithBackpropagation(network: any, trainingData: any[], config: any
       epochError += sampleError;
 
       const gradients = backpropagateGradients(network, activations, sample.output);
-      updateNetworkWeights(network, gradients, config.learningRate);
+      updateNetworkWeights(network, gradients, config?.learningRate);
     });
 
     epochError /= trainingData.length;
     errors.push(epochError);
     epochs = epoch + 1;
 
-    if (epochError < config.targetError) {
+    if (epochError < config?.targetError) {
       converged = true;
     }
   }
@@ -1005,11 +1011,11 @@ function trainWithRPROP(network: any, trainingData: any[], config: any): any {
   let epochs = 0;
   let previousGradients: any = null;
 
-  for (let epoch = 0; epoch < config.epochs && !converged; epoch++) {
+  for (let epoch = 0; epoch < config?.epochs && !converged; epoch++) {
     let epochError = 0;
     let epochGradients: any = null;
 
-    trainingData.forEach((sample) => {
+    trainingData?.forEach((sample) => {
       const activations = forwardPassWithActivations(network, sample.input);
       const prediction = activations.activations[activations.activations.length - 1];
 
@@ -1024,8 +1030,8 @@ function trainWithRPROP(network: any, trainingData: any[], config: any): any {
         // Accumulate gradients
         for (let i = 0; i < gradients.weights.length; i++) {
           for (let j = 0; j < gradients.weights[i].length; j++) {
-            for (let k = 0; k < gradients.weights[i][j].length; k++) {
-              epochGradients.weights[i][j][k] += gradients.weights[i][j][k];
+            for (let k = 0; k < gradients.weights[i]?.[j].length; k++) {
+              epochGradients.weights[i]?.[j][k] += gradients.weights[i]?.[j]?.[k];
             }
           }
         }
@@ -1035,8 +1041,8 @@ function trainWithRPROP(network: any, trainingData: any[], config: any): any {
     // Average gradients
     for (let i = 0; i < epochGradients.weights.length; i++) {
       for (let j = 0; j < epochGradients.weights[i].length; j++) {
-        for (let k = 0; k < epochGradients.weights[i][j].length; k++) {
-          epochGradients.weights[i][j][k] /= trainingData.length;
+        for (let k = 0; k < epochGradients.weights[i]?.[j].length; k++) {
+          epochGradients.weights[i]?.[j][k] /= trainingData.length;
         }
       }
     }
@@ -1052,7 +1058,7 @@ function trainWithRPROP(network: any, trainingData: any[], config: any): any {
     errors.push(epochError);
     epochs = epoch + 1;
 
-    if (epochError < config.targetError) {
+    if (epochError < config?.targetError) {
       converged = true;
     }
   }
@@ -1068,8 +1074,8 @@ function trainWithRPROP(network: any, trainingData: any[], config: any): any {
 function updateNetworkWeights(network: any, gradients: any, learningRate: number): void {
   for (let i = 0; i < network.weights.length; i++) {
     for (let j = 0; j < network.weights[i].length; j++) {
-      for (let k = 0; k < network.weights[i][j].length; k++) {
-        network.weights[i][j][k] += learningRate * gradients.weights[i][j][k];
+      for (let k = 0; k < network.weights[i]?.[j].length; k++) {
+        network.weights[i]?.[j][k] += learningRate * gradients.weights[i]?.[j]?.[k];
       }
     }
   }
@@ -1078,8 +1084,8 @@ function updateNetworkWeights(network: any, gradients: any, learningRate: number
 function copyNetworkWeights(source: any, target: any): void {
   for (let i = 0; i < source.weights.length; i++) {
     for (let j = 0; j < source.weights[i].length; j++) {
-      for (let k = 0; k < source.weights[i][j].length; k++) {
-        target.weights[i][j][k] = source.weights[i][j][k];
+      for (let k = 0; k < source.weights[i]?.[j].length; k++) {
+        target?.weights?.[i]?.[j][k] = source.weights[i]?.[j]?.[k];
       }
     }
   }
@@ -1107,16 +1113,16 @@ function computeQuickPropUpdates(
     weightUpdates.weights.push([]);
     weightUpdates.biases.push([]);
     for (let j = 0; j < gradients.weights[i].length; j++) {
-      weightUpdates.weights[i].push([]);
-      weightUpdates.biases[i].push(0);
-      for (let k = 0; k < gradients.weights[i][j].length; k++) {
+      weightUpdates.weights[i]?.push([]);
+      weightUpdates.biases[i]?.push(0);
+      for (let k = 0; k < gradients.weights[i]?.[j].length; k++) {
         const update = computeQuickPropStep(
-          gradients.weights[i][j][k],
-          previousGradients.weights[i][j][k],
-          previousWeightChanges.weights[i][j][k],
-          config.maxFactor
+          gradients.weights[i]?.[j]?.[k],
+          previousGradients.weights[i]?.[j]?.[k],
+          previousWeightChanges.weights[i]?.[j]?.[k],
+          config?.maxFactor
         );
-        weightUpdates.weights[i][j].push(update);
+        weightUpdates.weights[i]?.[j]?.push(update);
       }
     }
   }
@@ -1152,10 +1158,10 @@ function computeStandardUpdates(gradients: any, learningRate: number): any {
     updates.weights.push([]);
     updates.biases.push([]);
     for (let j = 0; j < gradients.weights[i].length; j++) {
-      updates.weights[i].push([]);
-      updates.biases[i].push(learningRate * gradients.biases[i][j]);
-      for (let k = 0; k < gradients.weights[i][j].length; k++) {
-        updates.weights[i][j].push(learningRate * gradients.weights[i][j][k]);
+      updates.weights[i]?.push([]);
+      updates.biases[i]?.push(learningRate * gradients.biases[i]?.[j]);
+      for (let k = 0; k < gradients.weights[i]?.[j].length; k++) {
+        updates.weights[i]?.[j]?.push(learningRate * gradients.weights[i]?.[j]?.[k]);
       }
     }
   }
@@ -1166,8 +1172,8 @@ function computeStandardUpdates(gradients: any, learningRate: number): any {
 function applyWeightUpdates(network: any, updates: any): void {
   for (let i = 0; i < network.weights.length; i++) {
     for (let j = 0; j < network.weights[i].length; j++) {
-      for (let k = 0; k < network.weights[i][j].length; k++) {
-        network.weights[i][j][k] += updates.weights[i][j][k];
+      for (let k = 0; k < network.weights[i]?.[j].length; k++) {
+        network.weights[i]?.[j][k] += updates.weights[i]?.[j]?.[k];
       }
     }
   }
@@ -1176,7 +1182,7 @@ function applyWeightUpdates(network: any, updates: any): void {
 function calculateNetworkError(network: any, data: any[]): number {
   let totalError = 0;
 
-  data.forEach((sample) => {
+  data?.forEach((sample) => {
     const output = forwardPass(network, sample.input);
     const error = calculateSampleError(output, sample.output);
     totalError += error;
@@ -1210,15 +1216,15 @@ function trainWithCascadeCorrelation(network: any, trainingData: any[], config: 
   finalError = trainCascadeOutputLayer(
     network,
     trainingData,
-    config.outputMaxEpochs,
-    config.outputTargetError
+    config?.outputMaxEpochs,
+    config?.outputTargetError
   );
 
   // Add hidden neurons until convergence or max reached
-  while (hiddenNeuronsAdded < config.maxHiddenNeurons && finalError > config.outputTargetError) {
+  while (hiddenNeuronsAdded < config?.maxHiddenNeurons && finalError > config?.outputTargetError) {
     const bestCandidate = trainCascadeCandidateNeurons(network, trainingData, config);
 
-    if (bestCandidate.correlation > config.candidateTargetCorrelation) {
+    if (bestCandidate.correlation > config?.candidateTargetCorrelation) {
       network.hiddenNeurons.push(bestCandidate);
       hiddenNeuronsAdded++;
 
@@ -1226,8 +1232,8 @@ function trainWithCascadeCorrelation(network: any, trainingData: any[], config: 
       finalError = trainCascadeOutputLayer(
         network,
         trainingData,
-        config.outputMaxEpochs,
-        config.outputTargetError
+        config?.outputMaxEpochs,
+        config?.outputTargetError
       );
     } else {
       break; // No useful candidate found
@@ -1252,7 +1258,7 @@ function trainCascadeOutputLayer(
   for (let epoch = 0; epoch < maxEpochs && error > targetError; epoch++) {
     let epochError = 0;
 
-    trainingData.forEach((sample) => {
+    trainingData?.forEach((sample) => {
       const output = forwardPassCascade(network, sample.input);
       const sampleError = calculateSampleError(output, sample.output);
       epochError += sampleError;
@@ -1277,7 +1283,7 @@ function trainCascadeOutputLayer(
 function trainCascadeCandidateNeurons(network: any, trainingData: any[], config: any): any {
   const candidates = [];
 
-  for (let c = 0; c < config.numCandidates; c++) {
+  for (let c = 0; c < config?.numCandidates; c++) {
     const candidate = {
       inputWeights: Array(network.inputSize + network.hiddenNeurons.length)
         .fill(0)
@@ -1287,12 +1293,12 @@ function trainCascadeCandidateNeurons(network: any, trainingData: any[], config:
     };
 
     // Train candidate to maximize correlation with residual error
-    for (let epoch = 0; epoch < config.candidateMaxEpochs; epoch++) {
+    for (let epoch = 0; epoch < config?.candidateMaxEpochs; epoch++) {
       let totalCorrelation = 0;
 
-      trainingData.forEach((sample) => {
+      trainingData?.forEach((sample) => {
         const currentOutput = forwardPassCascade(network, sample.input);
-        const residualError = sample.output.map((target, i) => target - currentOutput[i]);
+        const residualError = sample.output.map((target, i) => target - currentOutput?.[i]);
 
         const features = getCascadeFeatures(network, sample.input);
         const candidateOutput = activateCandidate(candidate, features);
@@ -1313,7 +1319,7 @@ function trainCascadeCandidateNeurons(network: any, trainingData: any[], config:
 
   // Return best candidate
   return candidates.reduce((best, current) =>
-    current.correlation > best.correlation ? current : best
+    current?.correlation > best.correlation ? current : best
   );
 }
 
@@ -1331,14 +1337,14 @@ function trainWithCascadeCorrelationTracked(
   finalError = trainCascadeOutputLayer(
     network,
     trainingData,
-    config.outputMaxEpochs,
-    config.outputTargetError
+    config?.outputMaxEpochs,
+    config?.outputTargetError
   );
 
-  while (hiddenNeuronsAdded < config.maxHiddenNeurons && finalError > config.outputTargetError) {
+  while (hiddenNeuronsAdded < config?.maxHiddenNeurons && finalError > config?.outputTargetError) {
     const bestCandidate = trainCascadeCandidateNeurons(network, trainingData, config);
 
-    if (bestCandidate.correlation > config.candidateTargetCorrelation) {
+    if (bestCandidate.correlation > config?.candidateTargetCorrelation) {
       network.hiddenNeurons.push(bestCandidate);
       hiddenNeuronsAdded++;
       callback(hiddenNeuronsAdded);
@@ -1346,8 +1352,8 @@ function trainWithCascadeCorrelationTracked(
       finalError = trainCascadeOutputLayer(
         network,
         trainingData,
-        config.outputMaxEpochs,
-        config.outputTargetError
+        config?.outputMaxEpochs,
+        config?.outputTargetError
       );
     } else {
       break;
@@ -1368,7 +1374,7 @@ function forwardPassCascade(network: any, input: number[]): number[] {
   for (let i = 0; i < network.outputWeights.length; i++) {
     let sum = network.outputBiases[i];
     for (let j = 0; j < features.length; j++) {
-      sum += network.outputWeights[i][j] * features[j];
+      sum += network.outputWeights[i]?.[j] * features[j];
     }
     output.push(1 / (1 + Math.exp(-sum))); // Sigmoid
   }
@@ -1385,7 +1391,7 @@ function getCascadeFeatures(network: any, input: number[]): number[] {
     // Add previous hidden neuron outputs (cascade connection)
     network.hiddenNeurons.forEach((prevNeuron: any) => {
       if (prevNeuron === neuron) return; // Don't include self
-      currentFeatures.push(activateCandidate(prevNeuron, currentFeatures.slice(0, input.length)));
+      currentFeatures?.push(activateCandidate(prevNeuron, currentFeatures?.slice(0, input.length)));
     });
 
     features.push(activateCandidate(neuron, currentFeatures));

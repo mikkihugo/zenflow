@@ -1,13 +1,19 @@
 #!/usr/bin/env nodeimport { getLogger } from "./config/logging-config";
-const logger = getLogger("sparc-pseudocode-cli");
+/**
+ * @file sparc-pseudocode-cli implementation
+ */
+
+
+const logger = getLogger('sparc-pseudocode-cli');
 
 /**
- * Simple standalone CLI test for SPARC Pseudocode Engine
- * Tests the pseudocode generation commands without broader system dependencies
+ * Simple standalone CLI test for SPARC Pseudocode Engine.
+ * Tests the pseudocode generation commands without broader system dependencies.
  */
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
+import type { getLogger } from '../core/logger';
 
 const program = new Command();
 
@@ -33,7 +39,7 @@ program
       const engine = new PseudocodePhaseEngine();
 
       // Read specification file
-      const specContent = await readFile(options.specFile, 'utf8');
+      const specContent = await readFile(options?.specFile, 'utf8');
       const specification = JSON.parse(specContent);
 
       // Generate pseudocode structure
@@ -48,7 +54,7 @@ program
       }
 
       // Write output
-      await writeFile(options.output, output, 'utf8');
+      await writeFile(options?.output, output, 'utf8');
       pseudocodeStructure.algorithms.forEach((_alg: any, _index: number) => {});
     } catch (error) {
       logger.error('❌ Failed to generate pseudocode:', error);
@@ -70,7 +76,7 @@ program
       const engine = new PseudocodePhaseEngine();
 
       // Read pseudocode file
-      const pseudocodeContent = await readFile(options.pseudocodeFile, 'utf8');
+      const pseudocodeContent = await readFile(options?.pseudocodeFile, 'utf8');
       const pseudocodeStructure = JSON.parse(pseudocodeContent);
 
       // Validate the pseudocode structure
@@ -109,13 +115,13 @@ program
   .action(async (options) => {
     try {
       const exampleSpec = {
-        id: `example-${options.domain}-spec`,
-        domain: options.domain,
+        id: `example-${options?.domain}-spec`,
+        domain: options?.domain,
         functionalRequirements: [
           {
             id: 'req-001',
             title: 'Main Algorithm',
-            description: `Primary algorithm for ${options.domain} functionality`,
+            description: `Primary algorithm for ${options?.domain} functionality`,
             type: 'algorithmic',
             priority: 'HIGH',
             testCriteria: ['Algorithm executes correctly', 'Performance meets requirements'],
@@ -165,7 +171,7 @@ program
         ],
       };
 
-      await writeFile(options.output, JSON.stringify(exampleSpec, null, 2), 'utf8');
+      await writeFile(options?.output, JSON.stringify(exampleSpec, null, 2), 'utf8');
     } catch (error) {
       logger.error('❌ Failed to create example specification:', error);
       process.exit(1);

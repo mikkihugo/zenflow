@@ -1,7 +1,12 @@
 /**
- * Capacity Predictor
- * ML-based capacity prediction and forecasting
+ * Capacity Predictor.
+ * ML-based capacity prediction and forecasting.
  */
+/**
+ * @file Coordination system: capacity-predictor
+ */
+
+
 
 interface AgentCapacityProfile {
   agentId: string;

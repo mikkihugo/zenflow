@@ -1,12 +1,17 @@
 /**
- * WebSocket Coordinator - Real-time updates and broadcasting
+ * WebSocket Coordinator - Real-time updates and broadcasting.
  *
- * Handles WebSocket connections, sessions, and real-time data broadcasting
+ * Handles WebSocket connections, sessions, and real-time data broadcasting.
  * for the web dashboard interface.
  */
+/**
+ * @file web-socket coordination system
+ */
+
+
 
 import type { Server as SocketIOServer } from 'socket.io';
-import { createLogger } from '../../utils/logger';
+import { createLogger } from '../utils/logger';
 
 export interface WebSession {
   id: string;
@@ -29,7 +34,7 @@ export interface WebSocketConfig {
 }
 
 /**
- * Manages WebSocket connections and real-time updates
+ * Manages WebSocket connections and real-time updates.
  *
  * @example
  */
@@ -47,7 +52,7 @@ export class WebSocketCoordinator {
   }
 
   /**
-   * Setup WebSocket connection handlers
+   * Setup WebSocket connection handlers.
    */
   private setupWebSocket(): void {
     this.io.on('connection', (socket) => {
@@ -102,7 +107,7 @@ export class WebSocketCoordinator {
   }
 
   /**
-   * Broadcast message to all connected clients
+   * Broadcast message to all connected clients.
    *
    * @param event
    * @param data
@@ -119,7 +124,7 @@ export class WebSocketCoordinator {
   }
 
   /**
-   * Send message to specific session
+   * Send message to specific session.
    *
    * @param sessionId
    * @param event
@@ -141,14 +146,14 @@ export class WebSocketCoordinator {
   }
 
   /**
-   * Get active sessions
+   * Get active sessions.
    */
   getSessions(): WebSession[] {
     return Array.from(this.sessions.values());
   }
 
   /**
-   * Get session by ID
+   * Get session by ID.
    *
    * @param sessionId
    */
@@ -157,7 +162,7 @@ export class WebSocketCoordinator {
   }
 
   /**
-   * Update session preferences
+   * Update session preferences.
    *
    * @param sessionId
    * @param preferences
@@ -179,7 +184,7 @@ export class WebSocketCoordinator {
   }
 
   /**
-   * Clean up expired sessions
+   * Clean up expired sessions.
    *
    * @param maxAge
    */
@@ -203,7 +208,7 @@ export class WebSocketCoordinator {
   }
 
   /**
-   * Get connection statistics
+   * Get connection statistics.
    */
   getStats(): {
     totalSessions: number;

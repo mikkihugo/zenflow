@@ -169,11 +169,11 @@ describe('Maestro Steering Performance Benchmarks', () => {
         const duration = endTime - startTime;
         const perDocument = duration / size;
 
-        results.push({ count: size, duration, perDocument });
+        results?.push({ count: size, duration, perDocument });
       }
 
       // Check that per-document time remains relatively consistent
-      const perDocTimes = results.map((r) => r.perDocument);
+      const perDocTimes = results?.map((r) => r.perDocument);
       const avgPerDoc = perDocTimes.reduce((a, b) => a + b, 0) / perDocTimes.length;
       const maxPerDoc = Math.max(...perDocTimes);
 
@@ -315,8 +315,8 @@ describe('Maestro Steering Performance Benchmarks', () => {
       const endTime = performance.now();
 
       const duration = endTime - startTime;
-      const successfulOperations = results.filter((r) => r.status === 'fulfilled').length;
-      const _failedOperations = results.filter((r) => r.status === 'rejected').length;
+      const successfulOperations = results?.filter((r) => r.status === 'fulfilled').length;
+      const _failedOperations = results?.filter((r) => r.status === 'rejected').length;
 
       expect(successfulOperations).toBeGreaterThan(operationCount * 0.95); // 95% success rate
       expect(duration).toBeLessThan(10000); // Should complete within 10 seconds
@@ -351,7 +351,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
       const endTime = performance.now();
 
       const duration = endTime - startTime;
-      const successfulOperations = results.filter((r) => r.status === 'fulfilled').length;
+      const successfulOperations = results?.filter((r) => r.status === 'fulfilled').length;
 
       expect(successfulOperations).toBeGreaterThan(operations.length * 0.9); // 90% success rate
       expect(duration).toBeLessThan(5000); // Should complete within 5 seconds
@@ -395,7 +395,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
         const duration = endTime - startTime;
         const passedBaseline = duration <= test.expectedMax;
 
-        baselineResults.push({
+        baselineResults?.push({
           name: test.name,
           duration,
           passedBaseline,
@@ -403,7 +403,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
       }
 
       // All baseline tests should pass
-      const allPassed = baselineResults.every((result) => result.passedBaseline);
+      const allPassed = baselineResults?.every((result) => result?.passedBaseline);
       expect(allPassed).toBe(true);
     });
   });

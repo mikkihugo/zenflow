@@ -1,16 +1,23 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-base-swarm");
 /**
- * Base ZenSwarm Class - Core implementation without circular dependencies
+ * @file Coordination system: base-swarm
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-base-swarm');
+
+/**
+ * Base ZenSwarm Class - Core implementation without circular dependencies.
  *
- * This file contains the core ZenSwarm implementation to avoid circular
+ * This file contains the core ZenSwarm implementation to avoid circular.
  * dependencies with session-integration.ts
  */
 
 import { EventEmitter } from 'node:events';
-// import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.js';
-import { AgentPool, type BaseAgent } from '../../agents/agent';
+// import { DALFactory } from '../database'; // TODO: Implement proper DI integration
+import { WasmModuleLoader } from '../neural/wasm/wasm-loader.js';
+import { AgentPool, type BaseAgent } from '../agents/agent';
 import { getContainer } from './singleton-container';
 import type { SwarmEventEmitter, SwarmLifecycleState, SwarmOptions } from './types';
 import { generateId, validateSwarmOptions } from './utils';
@@ -32,7 +39,7 @@ interface ExtendedSwarmOptions extends SwarmOptions {
 }
 
 /**
- * Core ZenSwarm implementation with all base functionality
+ * Core ZenSwarm implementation with all base functionality.
  *
  * @example
  */

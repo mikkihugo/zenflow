@@ -1,18 +1,23 @@
 /**
- * DSPy Agent Programs
+ * DSPy Agent Programs.
  *
  * Individual DSPy programs that function as intelligent agents in the swarm.
  * Each program is specialized for specific tasks and learns from examples.
  */
+/**
+ * @file Coordination system: dspy-agent-programs
+ */
 
-import { createLogger } from '../../core/logger';
-import type { DSPyProgram, DSPyWrapper } from '../../neural/dspy-wrapper';
-import type { DSPyExample } from '../../neural/types/dspy-types';
+
+
+import { createLogger } from '../core/logger';
+import type { DSPyProgram, DSPyWrapper } from '../neural/dspy-wrapper';
+import type { DSPyExample } from '../neural/types/dspy-types';
 
 const logger = createLogger({ prefix: 'DSPyAgentPrograms' });
 
 /**
- * Base class for DSPy Agent Programs
+ * Base class for DSPy Agent Programs.
  */
 export abstract class BaseDSPyAgentProgram {
   protected dspyWrapper: DSPyWrapper;
@@ -39,7 +44,7 @@ export abstract class BaseDSPyAgentProgram {
   abstract getCapabilities(): string[];
 
   /**
-   * Initialize the DSPy program
+   * Initialize the DSPy program.
    */
   async initialize(): Promise<void> {
     this.program = await this.dspyWrapper.createProgram(this.getSignature(), this.getDescription());
@@ -47,7 +52,7 @@ export abstract class BaseDSPyAgentProgram {
   }
 
   /**
-   * Execute the program with input
+   * Execute the program with input.
    */
   async execute(input: any): Promise<any> {
     if (!this.program) {
@@ -60,7 +65,7 @@ export abstract class BaseDSPyAgentProgram {
     try {
       const result = await this.dspyWrapper.execute(this.program, input);
 
-      if (result.success) {
+      if (result?.success) {
         this.performance.successfulExecutions++;
         const responseTime = Date.now() - startTime;
         this.performance.averageResponseTime =
@@ -69,9 +74,9 @@ export abstract class BaseDSPyAgentProgram {
         this.performance.accuracy =
           this.performance.successfulExecutions / this.performance.totalExecutions;
 
-        return result.result;
+        return result?.result;
       } else {
-        throw new Error(result.error?.message || 'Execution failed');
+        throw new Error(result?.error?.message || 'Execution failed');
       }
     } catch (error) {
       logger.error(`Program execution failed: ${this.constructor.name}`, error);
@@ -80,7 +85,7 @@ export abstract class BaseDSPyAgentProgram {
   }
 
   /**
-   * Add learning examples
+   * Add learning examples.
    */
   async addExamples(examples: Array<{ input: any; output: any }>): Promise<void> {
     if (!this.program) return;
@@ -100,7 +105,7 @@ export abstract class BaseDSPyAgentProgram {
   }
 
   /**
-   * Optimize the program
+   * Optimize the program.
    */
   async optimize(): Promise<void> {
     if (!this.program || this.examples.length < 3) return;
@@ -114,10 +119,10 @@ export abstract class BaseDSPyAgentProgram {
         timeout: 30000,
       });
 
-      if (result.success) {
-        this.program = result.program;
+      if (result?.success) {
+        this.program = result?.program;
         logger.info(`Optimized DSPy program: ${this.constructor.name}`, {
-          improvement: result.metrics.improvementPercent,
+          improvement: result?.metrics?.improvementPercent,
         });
       }
     } catch (error) {
@@ -126,7 +131,7 @@ export abstract class BaseDSPyAgentProgram {
   }
 
   /**
-   * Get performance metrics
+   * Get performance metrics.
    */
   getPerformance() {
     return { ...this.performance };
@@ -134,7 +139,7 @@ export abstract class BaseDSPyAgentProgram {
 }
 
 /**
- * Code Generator Agent Program
+ * Code Generator Agent Program.
  */
 export class CodeGeneratorProgram extends BaseDSPyAgentProgram {
   getSignature(): string {
@@ -157,7 +162,7 @@ export class CodeGeneratorProgram extends BaseDSPyAgentProgram {
   }
 
   /**
-   * Generate code with tests and documentation
+   * Generate code with tests and documentation.
    */
   async generateCode(
     requirements: string,
@@ -173,7 +178,7 @@ export class CodeGeneratorProgram extends BaseDSPyAgentProgram {
 }
 
 /**
- * Code Analyzer Agent Program
+ * Code Analyzer Agent Program.
  */
 export class CodeAnalyzerProgram extends BaseDSPyAgentProgram {
   getSignature(): string {
@@ -195,7 +200,7 @@ export class CodeAnalyzerProgram extends BaseDSPyAgentProgram {
   }
 
   /**
-   * Analyze code quality and provide suggestions
+   * Analyze code quality and provide suggestions.
    */
   async analyzeCode(code: string, filePath: string, projectContext: string = '') {
     return await this.execute({
@@ -207,7 +212,7 @@ export class CodeAnalyzerProgram extends BaseDSPyAgentProgram {
 }
 
 /**
- * Architecture Designer Agent Program
+ * Architecture Designer Agent Program.
  */
 export class ArchitectureDesignerProgram extends BaseDSPyAgentProgram {
   getSignature(): string {
@@ -230,7 +235,7 @@ export class ArchitectureDesignerProgram extends BaseDSPyAgentProgram {
   }
 
   /**
-   * Design system architecture
+   * Design system architecture.
    */
   async designArchitecture(
     requirements: string,
@@ -248,7 +253,7 @@ export class ArchitectureDesignerProgram extends BaseDSPyAgentProgram {
 }
 
 /**
- * Test Engineer Agent Program
+ * Test Engineer Agent Program.
  */
 export class TestEngineerProgram extends BaseDSPyAgentProgram {
   getSignature(): string {
@@ -270,7 +275,7 @@ export class TestEngineerProgram extends BaseDSPyAgentProgram {
   }
 
   /**
-   * Generate comprehensive test suite
+   * Generate comprehensive test suite.
    */
   async generateTests(code: string, requirements: string, testStrategy: string = 'comprehensive') {
     return await this.execute({
@@ -282,7 +287,7 @@ export class TestEngineerProgram extends BaseDSPyAgentProgram {
 }
 
 /**
- * Research Specialist Agent Program
+ * Research Specialist Agent Program.
  */
 export class ResearchSpecialistProgram extends BaseDSPyAgentProgram {
   getSignature(): string {
@@ -304,7 +309,7 @@ export class ResearchSpecialistProgram extends BaseDSPyAgentProgram {
   }
 
   /**
-   * Conduct research and provide insights
+   * Conduct research and provide insights.
    */
   async conductResearch(
     query: string,
@@ -322,7 +327,7 @@ export class ResearchSpecialistProgram extends BaseDSPyAgentProgram {
 }
 
 /**
- * Task Coordinator Agent Program
+ * Task Coordinator Agent Program.
  */
 export class TaskCoordinatorProgram extends BaseDSPyAgentProgram {
   getSignature(): string {
@@ -344,7 +349,7 @@ export class TaskCoordinatorProgram extends BaseDSPyAgentProgram {
   }
 
   /**
-   * Coordinate multi-agent task execution
+   * Coordinate multi-agent task execution.
    */
   async coordinateTasks(
     tasks: any[],
@@ -362,7 +367,7 @@ export class TaskCoordinatorProgram extends BaseDSPyAgentProgram {
 }
 
 /**
- * Error Diagnosis Agent Program
+ * Error Diagnosis Agent Program.
  */
 export class ErrorDiagnosisProgram extends BaseDSPyAgentProgram {
   getSignature(): string {
@@ -384,7 +389,7 @@ export class ErrorDiagnosisProgram extends BaseDSPyAgentProgram {
   }
 
   /**
-   * Diagnose errors and provide solutions
+   * Diagnose errors and provide solutions.
    */
   async diagnoseError(
     errorMessage: string,
@@ -402,7 +407,7 @@ export class ErrorDiagnosisProgram extends BaseDSPyAgentProgram {
 }
 
 /**
- * Performance Optimizer Agent Program
+ * Performance Optimizer Agent Program.
  */
 export class PerformanceOptimizerProgram extends BaseDSPyAgentProgram {
   getSignature(): string {
@@ -424,7 +429,7 @@ export class PerformanceOptimizerProgram extends BaseDSPyAgentProgram {
   }
 
   /**
-   * Optimize code performance
+   * Optimize code performance.
    */
   async optimizePerformance(
     code: string,
@@ -442,7 +447,7 @@ export class PerformanceOptimizerProgram extends BaseDSPyAgentProgram {
 }
 
 /**
- * DSPy Agent Program Factory
+ * DSPy Agent Program Factory.
  */
 export class DSPyAgentProgramFactory {
   private dspyWrapper: DSPyWrapper;
@@ -452,7 +457,7 @@ export class DSPyAgentProgramFactory {
   }
 
   /**
-   * Create agent program by type
+   * Create agent program by type.
    */
   async createProgram(type: string): Promise<BaseDSPyAgentProgram> {
     let program: BaseDSPyAgentProgram;
@@ -491,7 +496,7 @@ export class DSPyAgentProgramFactory {
   }
 
   /**
-   * Get available program types
+   * Get available program types.
    */
   getAvailableTypes(): string[] {
     return [

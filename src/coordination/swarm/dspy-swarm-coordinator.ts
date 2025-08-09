@@ -2,15 +2,20 @@
  * DSPy Swarm Coordinator.
  *
  * A DSPy-powered swarm where each agent is a DSPy program that learns and optimizes.
- * This creates an intelligent swarm where agents improve their performance over time
+ * This creates an intelligent swarm where agents improve their performance over time.
  * through DSPy's optimization capabilities.
  */
+/**
+ * @file dspy-swarm coordination system
+ */
 
-import { createLogger } from '../../core/logger';
-import type { DSPyProgram, DSPyWrapper } from '../../neural/dspy-wrapper';
-import { createDSPyWrapper } from '../../neural/dspy-wrapper';
-import type { DSPyConfig } from '../../neural/types/dspy-types';
-import type { AgentType } from '../../types/agent-types';
+
+
+import { createLogger } from '../core/logger';
+import type { DSPyProgram, DSPyWrapper } from '../neural/dspy-wrapper';
+import { createDSPyWrapper } from '../neural/dspy-wrapper';
+import type { DSPyConfig } from '../neural/types/dspy-types';
+import type { AgentType } from '../types/agent-types';
 
 const logger = createLogger({ prefix: 'DSPySwarmCoordinator' });
 
@@ -95,7 +100,7 @@ export class DSPySwarmCoordinator {
 
   constructor(config: DSPyConfig & { topology?: string } = {}) {
     this.topology = {
-      type: (config.topology as any) || 'mesh',
+      type: (config?.topology as any) || 'mesh',
       agents: [],
       connections: [],
       coordinationStrategy: 'adaptive',
@@ -103,7 +108,7 @@ export class DSPySwarmCoordinator {
 
     logger.info('DSPy Swarm Coordinator initialized', {
       topology: this.topology.type,
-      model: config.model,
+      model: config?.model,
     });
   }
 
@@ -228,15 +233,15 @@ export class DSPySwarmCoordinator {
   }): Promise<DSPyAgent> {
     if (!this.dspyWrapper) throw new Error('DSPy wrapper not initialized');
 
-    const program = await this.dspyWrapper.createProgram(config.signature, config.description);
+    const program = await this.dspyWrapper.createProgram(config?.signature, config?.description);
 
     const agent: DSPyAgent = {
-      id: `dspy-${config.type}-${Date.now()}`,
-      type: config.type,
-      name: config.name,
+      id: `dspy-${config?.type}-${Date.now()}`,
+      type: config?.type,
+      name: config?.name,
       program,
-      signature: config.signature,
-      capabilities: config.capabilities,
+      signature: config?.signature,
+      capabilities: config?.capabilities,
       performance: {
         accuracy: 0.8, // Starting accuracy
         responseTime: 1000, // ms
@@ -248,10 +253,10 @@ export class DSPySwarmCoordinator {
     };
 
     this.agents.set(agent.id, agent);
-    logger.info(`Created DSPy agent: ${config.name}`, {
+    logger.info(`Created DSPy agent: ${config?.name}`, {
       id: agent.id,
-      type: config.type,
-      capabilities: config.capabilities,
+      type: config?.type,
+      capabilities: config?.capabilities,
     });
 
     return agent;
@@ -336,13 +341,17 @@ export class DSPySwarmCoordinator {
         },
       });
 
-      if (coordinationResult.success && coordinationResult.result && coordinationResult.result['optimal_assignment']) {
-        const optimalAssignment = coordinationResult.result['optimal_assignment'];
+      if (
+        coordinationResult?.success &&
+        coordinationResult?.result &&
+        coordinationResult?.result?.['optimal_assignment']
+      ) {
+        const optimalAssignment = coordinationResult?.result?.['optimal_assignment'];
         const selectedAgentId = optimalAssignment?.agent_id;
         const selectedAgent = selectedAgentId ? this.agents.get(selectedAgentId) : undefined;
 
         if (selectedAgent) {
-          logger.debug(`DSPy coordination selected agent: ${selectedAgent.name}`, {
+          logger.debug(`DSPy coordination selected agent: ${selectedAgent?.name}`, {
             reasoning: optimalAssignment?.reasoning,
           });
           return selectedAgent;
@@ -372,7 +381,10 @@ export class DSPySwarmCoordinator {
     if (suitableAgents.length === 0) return null;
 
     // Select agent with highest success rate
-    return suitableAgents.sort((a, b) => b.performance.successRate - a.performance.successRate)[0] || null;
+    return (
+      suitableAgents.sort((a, b) => b.performance.successRate - a.performance.successRate)[0] ||
+      null
+    );
   }
 
   /**
@@ -390,11 +402,11 @@ export class DSPySwarmCoordinator {
     try {
       const executionResult = await this.dspyWrapper.execute(agent.program, task.input);
 
-      if (!executionResult.success) {
-        throw new Error(`Agent execution failed: ${executionResult.error?.message}`);
+      if (!executionResult?.success) {
+        throw new Error(`Agent execution failed: ${executionResult?.error?.message}`);
       }
 
-      return executionResult.result;
+      return executionResult?.result;
     } finally {
       agent.status = 'idle';
     }
@@ -508,16 +520,16 @@ export class DSPySwarmCoordinator {
         // timeout: 30000, // 30 seconds - timeout not part of DSPyOptimizationConfig
       });
 
-      if (optimizationResult.success && optimizationResult.program) {
-        agent.program = optimizationResult.program;
-        if (optimizationResult.metrics?.finalAccuracy) {
-          agent.performance.accuracy = optimizationResult.metrics.finalAccuracy;
+      if (optimizationResult?.success && optimizationResult?.program) {
+        agent.program = optimizationResult?.program;
+        if (optimizationResult?.metrics?.finalAccuracy) {
+          agent.performance.accuracy = optimizationResult?.metrics?.finalAccuracy;
         }
         agent.lastOptimization = new Date();
 
         logger.info(`Agent optimized successfully: ${agent.name}`, {
           accuracy: agent.performance.accuracy,
-          improvement: optimizationResult.metrics?.improvementPercent,
+          improvement: optimizationResult?.metrics?.improvementPercent,
           examples: agentExamples.length,
         });
       }
@@ -580,7 +592,7 @@ export class DSPySwarmCoordinator {
           const nextAgent = agents[nextIndex];
           if (currentAgent && nextAgent) {
             this.topology.connections.push({
-              from: currentAgent.id,
+              from: currentAgent?.id,
               to: nextAgent.id,
               weight: 1.0,
               messageTypes: ['coordination', 'data'],

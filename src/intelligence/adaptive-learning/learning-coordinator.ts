@@ -1,13 +1,18 @@
 /**
  * Learning Coordinator.
  *
- * Coordinates learning across multiple agents in the swarm, manages knowledge
+ * Coordinates learning across multiple agents in the swarm, manages knowledge.
  * sharing, tracks expertise evolution, and identifies best practices and anti-patterns.
  */
+/**
+ * @file learning coordination system
+ */
+
+
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../../di/index';
-import { CORE_TOKENS, inject, injectable } from '../../di/index';
+import type { ILogger } from '../di/index';
+import { CORE_TOKENS, inject, injectable } from '../di/index';
 import type {
   AdaptiveLearningConfig,
   Agent,
@@ -69,7 +74,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     const aggregatedResult = this.aggregateLearningResults(learningResults);
 
     // Update knowledge base with new learnings
-    await this.updateKnowledgeBase(aggregatedResult.patterns);
+    await this.updateKnowledgeBase(aggregatedResult?.patterns);
 
     // Track learning progress
     this.trackLearningProgress(agents, aggregatedResult);
@@ -360,9 +365,9 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     const allKnowledge: KnowledgeUpdate[] = [];
 
     for (const result of results) {
-      allPatterns.push(...result.patterns);
-      allImprovements.push(...result.improvements);
-      allKnowledge.push(...result.knowledge);
+      allPatterns.push(...result?.patterns);
+      allImprovements.push(...result?.improvements);
+      allKnowledge.push(...result?.knowledge);
     }
 
     // Calculate aggregate metadata
@@ -457,7 +462,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private trackLearningProgress(agents: Agent[], result: LearningResult): void {
     for (const agent of agents) {
-      const agentResult = result.patterns.filter((p) => p.context['agentId'] === agent.id);
+      const agentResult = result?.patterns.filter((p) => p.context['agentId'] === agent.id);
 
       // Update agent learning progress (simplified)
       agent.learningProgress.totalExperience += agentResult.length;

@@ -1,12 +1,17 @@
 /**
- * Comprehensive agent management system
+ * Comprehensive agent management system.
  */
+/**
+ * @file agent management system
+ */
+
+
 
 import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../../core/event-bus';
-import type { ILogger } from '../../core/logger';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
+import type { IEventBus } from '../core/event-bus';
+import type { ILogger } from '../core/logger';
+import type { MemoryCoordinator } from '../memory/core/memory-coordinator';
 import type {
   AgentCapabilities,
   AgentConfig,
@@ -17,7 +22,7 @@ import type {
   AgentState,
   AgentStatus,
   AgentType,
-} from '../../types/agent-types';
+} from '../types/agent-types';
 import { generateId } from '../swarm/core/utils';
 
 export interface AgentManagerConfig {
@@ -120,7 +125,7 @@ export interface HealthIssue {
 }
 
 /**
- * Comprehensive agent lifecycle and resource management
+ * Comprehensive agent lifecycle and resource management.
  *
  * @example
  */
@@ -211,14 +216,14 @@ export class AgentManager extends EventEmitter {
 
     this.eventBus.on('task:assigned', (data: unknown) => {
       const taskData = data as { agentId: string };
-      this.updateAgentWorkload(taskData.agentId, 1);
+      this.updateAgentWorkload(taskData?.agentId, 1);
     });
 
     this.eventBus.on('task:completed', (data: unknown) => {
       const completedData = data as { agentId: string; metrics?: AgentMetrics };
-      this.updateAgentWorkload(completedData.agentId, -1);
-      if (completedData.metrics) {
-        this.updateAgentMetrics(completedData.agentId, completedData.metrics);
+      this.updateAgentWorkload(completedData?.agentId, -1);
+      if (completedData?.metrics) {
+        this.updateAgentMetrics(completedData?.agentId, completedData?.metrics);
       }
     });
 
@@ -227,7 +232,7 @@ export class AgentManager extends EventEmitter {
         agentId: string;
         usage: { cpu: number; memory: number; disk: number };
       };
-      this.updateResourceUsage(resourceData.agentId, resourceData.usage);
+      this.updateResourceUsage(resourceData?.agentId, resourceData?.usage);
     });
   }
 
@@ -1121,21 +1126,21 @@ export class AgentManager extends EventEmitter {
       id: poolId,
       name,
       type: template.type,
-      minSize: config.minSize,
-      maxSize: config.maxSize,
+      minSize: config?.minSize,
+      maxSize: config?.maxSize,
       currentSize: 0,
       availableAgents: [],
       busyAgents: [],
       template,
-      autoScale: config.autoScale || false,
-      scaleUpThreshold: config.scaleUpThreshold || 0.8,
-      scaleDownThreshold: config.scaleDownThreshold || 0.3,
+      autoScale: config?.autoScale || false,
+      scaleUpThreshold: config?.scaleUpThreshold || 0.8,
+      scaleDownThreshold: config?.scaleDownThreshold || 0.3,
     };
 
     this.pools.set(poolId, pool);
 
     // Create minimum agents
-    for (let i = 0; i < config.minSize; i++) {
+    for (let i = 0; i < config?.minSize; i++) {
       const agentId = await this.createAgent(templateName, {
         name: `${name}-${i + 1}`,
       });
@@ -1149,7 +1154,7 @@ export class AgentManager extends EventEmitter {
       pool.currentSize++;
     }
 
-    this.logger.info('Created agent pool', { poolId, name, minSize: config.minSize });
+    this.logger.info('Created agent pool', { poolId, name, minSize: config?.minSize });
     this.emit('pool:created', { pool });
 
     return poolId;
@@ -1437,11 +1442,11 @@ export class AgentManager extends EventEmitter {
     });
 
     // Handle process events
-    childProcess.on('exit', (code: number | null) => {
+    childProcess?.on('exit', (code: number | null) => {
       this.handleProcessExit(agent.id.id, code);
     });
 
-    childProcess.on('error', (error: Error) => {
+    childProcess?.on('error', (error: Error) => {
       this.handleProcessError(agent.id.id, error);
     });
 
@@ -1456,7 +1461,7 @@ export class AgentManager extends EventEmitter {
 
       const handler = (data: unknown) => {
         const readyData = data as { agentId: string };
-        if (readyData.agentId === agentId) {
+        if (readyData?.agentId === agentId) {
           clearTimeout(timer);
           this.eventBus.off('agent:status:changed', handler);
           resolve();
@@ -1527,29 +1532,29 @@ export class AgentManager extends EventEmitter {
     timestamp: Date;
     metrics?: AgentMetrics;
   }): void {
-    const agent = this.agents.get(data.agentId);
+    const agent = this.agents.get(data?.agentId);
     if (!agent) return;
 
-    agent.lastHeartbeat = data.timestamp;
+    agent.lastHeartbeat = data?.timestamp;
 
-    if (data.metrics) {
-      this.updateAgentMetrics(data.agentId, data.metrics);
+    if (data?.metrics) {
+      this.updateAgentMetrics(data?.agentId, data?.metrics);
     }
 
     // Update health if agent was previously unresponsive
     if (agent.status === 'error') {
       agent.status = 'idle';
-      this.updateAgentStatus(data.agentId, 'idle');
+      this.updateAgentStatus(data?.agentId, 'idle');
     }
   }
 
   private handleAgentError(data: { agentId: string; error: AgentError }): void {
-    this.addAgentError(data.agentId, data.error);
+    this.addAgentError(data?.agentId, data?.error);
 
-    const agent = this.agents.get(data.agentId);
-    if (agent && data.error.severity === 'critical') {
+    const agent = this.agents.get(data?.agentId);
+    if (agent && data?.error?.severity === 'critical') {
       agent.status = 'error';
-      this.updateAgentStatus(data.agentId, 'error');
+      this.updateAgentStatus(data?.agentId, 'error');
     }
   }
 

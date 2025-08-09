@@ -190,16 +190,16 @@ describe('Adapter Pattern Implementation', () => {
           requestId: 'error-test-001',
           timestamp: new Date(),
           success: false,
-          error: errorResponse.error.message,
+          error: errorResponse?.error?.message,
           metadata: {
-            errorCode: errorResponse.error.code,
-            errorData: errorResponse.error.data,
+            errorCode: errorResponse?.error?.code,
+            errorData: errorResponse?.error?.data,
           },
         };
 
-        expect(protocolResponse.success).toBe(false);
-        expect(protocolResponse.error).toBe('Invalid Request');
-        expect(protocolResponse.metadata?.errorCode).toBe(-32600);
+        expect(protocolResponse?.success).toBe(false);
+        expect(protocolResponse?.error).toBe('Invalid Request');
+        expect(protocolResponse?.metadata?.errorCode).toBe(-32600);
       });
     });
 
@@ -300,7 +300,7 @@ describe('Adapter Pattern Implementation', () => {
         expect(batchedMessage.type).toBe('batch');
         expect(batchedMessage.payload.count).toBe(3);
         expect(batchedMessage.payload.messages).toHaveLength(3);
-        expect(batchedMessage.payload.messages[1].payload.value).toBe(2);
+        expect(batchedMessage.payload.messages[1]?.payload?.value).toBe(2);
       });
     });
 
@@ -347,7 +347,7 @@ describe('Adapter Pattern Implementation', () => {
           },
         ];
 
-        authConfigs.forEach(({ type, credentials, expectedHeader }) => {
+        authConfigs?.forEach(({ type, credentials, expectedHeader }) => {
           const adapter = new RESTAdapter();
           (adapter as any).setupAuthentication({ type, credentials });
 
@@ -707,8 +707,8 @@ describe('Adapter Pattern Implementation', () => {
         const response = await protocolManager.sendMessage(message, 'sender');
 
         expect(mockAdapter.send).toHaveBeenCalledWith(message);
-        expect(response.success).toBe(true);
-        expect(response.data.result).toBe('success');
+        expect(response?.success).toBe(true);
+        expect(response?.data?.result).toBe('success');
       });
 
       it('should broadcast messages to multiple adapters', async () => {
@@ -753,9 +753,9 @@ describe('Adapter Pattern Implementation', () => {
         const responses = await protocolManager.broadcast(broadcastMessage);
 
         expect(responses).toHaveLength(3);
-        responses.forEach((response, index) => {
-          expect(response.success).toBe(true);
-          expect(response.data.handler).toBe(`broadcast-${index + 1}`);
+        responses?.forEach((response, index) => {
+          expect(response?.success).toBe(true);
+          expect(response?.data?.handler).toBe(`broadcast-${index + 1}`);
         });
 
         adapters.forEach(({ mock }) => {
@@ -819,8 +819,8 @@ describe('Adapter Pattern Implementation', () => {
 
         expect(responses).toHaveLength(2);
 
-        const workingResponse = responses.find((r) => r.success);
-        const failingResponse = responses.find((r) => !r.success);
+        const workingResponse = responses?.find((r) => r.success);
+        const failingResponse = responses?.find((r) => !r.success);
 
         expect(workingResponse?.data.status).toBe('working');
         expect(failingResponse?.error).toBe('Adapter failure');
@@ -867,7 +867,7 @@ describe('Adapter Pattern Implementation', () => {
         const response = await protocolManager.sendMessage(routedMessage);
 
         expect(routedAdapter.send).toHaveBeenCalledWith(routedMessage);
-        expect(response.data.routed).toBe(true);
+        expect(response?.data?.routed).toBe(true);
       });
 
       it('should perform health checks on all adapters', async () => {
@@ -911,14 +911,14 @@ describe('Adapter Pattern Implementation', () => {
         const healthCheckResults: Array<{ name: string; healthy: boolean }> = [];
 
         protocolManager.on('protocol:health', (result) => {
-          healthCheckResults.push(result);
+          healthCheckResults?.push(result);
         });
 
         await protocolManager.healthCheckAll();
 
         expect(healthCheckResults).toHaveLength(2);
-        expect(healthCheckResults.find((r) => r.name === 'healthy-protocol')?.healthy).toBe(true);
-        expect(healthCheckResults.find((r) => r.name === 'unhealthy-protocol')?.healthy).toBe(
+        expect(healthCheckResults?.find((r) => r.name === 'healthy-protocol')?.healthy).toBe(true);
+        expect(healthCheckResults?.find((r) => r.name === 'unhealthy-protocol')?.healthy).toBe(
           false
         );
       });
@@ -1003,8 +1003,8 @@ describe('Adapter Pattern Implementation', () => {
 
           const response = await mcpAdapter.send(message);
 
-          expect(response.success).toBe(true);
-          expect(response.metadata?.protocol).toBe('http');
+          expect(response?.success).toBe(true);
+          expect(response?.metadata?.protocol).toBe('http');
         });
       });
 
@@ -1174,7 +1174,7 @@ describe('Adapter Pattern Implementation', () => {
               expectResponse: true,
             })
           );
-          expect(response.success).toBe(true);
+          expect(response?.success).toBe(true);
         });
 
         it('should implement auto-reconnection', async () => {
@@ -1267,8 +1267,8 @@ describe('Adapter Pattern Implementation', () => {
               body: JSON.stringify({ topology: 'ring', agentCount: 4 }),
             })
           );
-          expect(response.success).toBe(true);
-          expect(response.data.swarmId).toBe('rest-swarm-001');
+          expect(response?.success).toBe(true);
+          expect(response?.data?.swarmId).toBe('rest-swarm-001');
         });
       });
     });
@@ -1339,14 +1339,14 @@ describe('Adapter Pattern Implementation', () => {
         { protocol: 'http', host: 'localhost', timeout: -1 }, // Invalid timeout
       ];
 
-      invalidConfigs.forEach((config) => {
+      invalidConfigs?.forEach((config) => {
         expect(() => {
           // This would be validation logic in the actual adapter
-          if (!config.protocol) throw new Error('Protocol is required');
-          if (!config.host) throw new Error('Host is required');
-          if (config.port !== undefined && config.port < 0)
+          if (!config?.protocol) throw new Error('Protocol is required');
+          if (!config?.host) throw new Error('Host is required');
+          if (config?.port !== undefined && config?.port < 0)
             throw new Error('Port must be positive');
-          if (config.timeout !== undefined && config.timeout < 0)
+          if (config?.timeout !== undefined && config?.timeout < 0)
             throw new Error('Timeout must be positive');
         }).toThrow();
       });

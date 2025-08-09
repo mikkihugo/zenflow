@@ -1,5 +1,12 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-sparc-integrations-project-management-integration");
+/**
+ * @file Coordination system: project-management-integration
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-sparc-integrations-project-management-integration');
+
 /**
  * SPARC Integration with Existing Claude-Zen Infrastructure.
  *
@@ -12,11 +19,11 @@ const logger = getLogger("coordination-swarm-sparc-integrations-project-manageme
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
-import { MemorySystem } from '../../../../core/memory-system';
-import type { WorkflowEngine } from '../../../../core/workflow-engine';
-import { TaskAPI } from '../../../api';
-import { type TaskConfig, TaskCoordinator } from '../../../task-coordinator';
+import { DocumentDrivenSystem } from '../core/document-driven-system';
+import { MemorySystem } from '../core/memory-system';
+import type { WorkflowEngine } from '../core/workflow-engine';
+import { TaskAPI } from '../api';
+import { type TaskConfig, TaskCoordinator } from '../task-coordinator';
 import type { DetailedSpecification, SPARCProject } from '../types/sparc-types';
 
 // Task Management Integration Types
@@ -135,7 +142,7 @@ export interface Roadmap {
  * Integrates SPARC methodology with existing Claude-Zen infrastructure:
  * - Uses existing TaskAPI and EnhancedTaskTool for task management
  * - Integrates with TaskDistributionEngine for task coordination
- * - Leverages existing ADR infrastructure
+ * - Leverages existing ADR infrastructure.
  * - Extends existing tasks.json format.
  *
  * @example
@@ -260,12 +267,12 @@ export class ProjectManagementIntegration {
 
     if (artifactTypes.includes('all') || artifactTypes.includes('epics')) {
       results.epics = await this.createEpicsFromSPARC(project);
-      await this.saveEpicsToWorkspace(results.epics, workspaceId);
+      await this.saveEpicsToWorkspace(results?.epics, workspaceId);
     }
 
     if (artifactTypes.includes('all') || artifactTypes.includes('features')) {
       results.features = await this.createFeaturesFromSPARC(project);
-      await this.saveFeaturesFromWorkspace(results.features, workspaceId);
+      await this.saveFeaturesFromWorkspace(results?.features, workspaceId);
     }
 
     return results;
@@ -369,8 +376,8 @@ Related: SPARC-${project.id}
             })
           : { success: false, error: 'WorkflowEngine not available' };
 
-        if (result.success && result.workflowId) {
-          results[workflowName] = result.workflowId;
+        if (result?.success && result?.workflowId) {
+          results[workflowName] = result?.workflowId;
         }
       } catch (error) {
         logger.warn(`Failed to execute workflow ${workflowName}:`, error);
@@ -422,7 +429,7 @@ Related: SPARC-${project.id}
 
       const task: Task = {
         id: taskId,
-        title: enhancedTaskConfig.description,
+        title: enhancedTaskConfig?.description,
         component: `sparc-${phase}`,
         description: this.getPhaseDescription(phase),
         status:
@@ -431,12 +438,12 @@ Related: SPARC-${project.id}
             : phases.indexOf(phase) < phases.indexOf(project.currentPhase)
               ? 'completed'
               : 'todo',
-        priority: this.convertPriorityToNumber(enhancedTaskConfig.priority || 'medium'),
+        priority: this.convertPriorityToNumber(enhancedTaskConfig?.priority || 'medium'),
         estimated_hours: this.getPhaseEstimatedHours(phase),
         actual_hours: null,
-        dependencies: enhancedTaskConfig.dependencies || [],
+        dependencies: enhancedTaskConfig?.dependencies || [],
         acceptance_criteria: this.getPhaseAcceptanceCriteria(phase, project),
-        notes: `Generated from SPARC project: ${project.name}. Agent: ${enhancedTaskConfig.subagent_type}`,
+        notes: `Generated from SPARC project: ${project.name}. Agent: ${enhancedTaskConfig?.subagent_type}`,
         assigned_to: 'sparc-engine',
         created_date: new Date().toISOString(),
         completed_date: null,
@@ -514,8 +521,8 @@ Related: SPARC-${project.id}
         this.logger?.debug('Enhanced SPARC task configuration created', {
           taskId: task.id,
           component: task.component,
-          priority: enhancedTaskConfig.priority,
-          agentType: enhancedTaskConfig.subagent_type,
+          priority: enhancedTaskConfig?.priority,
+          agentType: enhancedTaskConfig?.subagent_type,
           estimatedHours: task.estimated_hours,
         });
 

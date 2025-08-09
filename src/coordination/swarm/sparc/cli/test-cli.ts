@@ -1,6 +1,11 @@
 /**
- * Simple test for architecture CLI functionality
+ * Simple test for architecture CLI functionality.
  */
+/**
+ * @file Test suite for test-cli
+ */
+
+
 
 import { nanoid } from 'nanoid';
 import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';

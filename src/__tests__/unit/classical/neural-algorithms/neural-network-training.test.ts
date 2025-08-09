@@ -55,9 +55,9 @@ class NeuralNetwork {
       const newActivation: number[] = [];
 
       for (let j = 0; j < this.weights[i].length; j++) {
-        let sum = this.biases[i][j];
+        let sum = this.biases[i]?.[j];
         for (let k = 0; k < activation.length; k++) {
-          sum += activation[k] * this.weights[i][j][k];
+          sum += activation[k] * this.weights[i]?.[j]?.[k];
         }
         newActivation.push(this.sigmoid(sum));
       }
@@ -72,10 +72,10 @@ class NeuralNetwork {
     data: Array<{ input: number[]; output: number[] }>,
     options: { epochs: number; learningRate?: number }
   ) {
-    const learningRate = options.learningRate || 0.5;
+    const learningRate = options?.learningRate || 0.5;
     let finalError = 0;
 
-    for (let epoch = 0; epoch < options.epochs; epoch++) {
+    for (let epoch = 0; epoch < options?.epochs; epoch++) {
       let epochError = 0;
 
       for (const sample of data) {
@@ -87,9 +87,9 @@ class NeuralNetwork {
           const newActivation: number[] = [];
 
           for (let j = 0; j < this.weights[i].length; j++) {
-            let sum = this.biases[i][j];
+            let sum = this.biases[i]?.[j];
             for (let k = 0; k < activation.length; k++) {
-              sum += activation[k] * this.weights[i][j][k];
+              sum += activation[k] * this.weights[i]?.[j]?.[k];
             }
             newActivation.push(this.sigmoid(sum));
           }
@@ -113,7 +113,7 @@ class NeuralNetwork {
           for (let j = 0; j < this.weights[i - 1].length; j++) {
             let sum = 0;
             for (let k = 0; k < this.weights[i].length; k++) {
-              sum += error[k] * this.weights[i][k][j];
+              sum += error[k] * this.weights[i]?.[k]?.[j];
             }
             newError.push(sum);
           }
@@ -125,10 +125,10 @@ class NeuralNetwork {
         // Update weights and biases
         for (let i = 0; i < this.weights.length; i++) {
           for (let j = 0; j < this.weights[i].length; j++) {
-            const delta = errors[i + 1][j] * this.sigmoidDerivative(activations[i + 1][j]);
+            const delta = errors[i + 1]?.[j] * this.sigmoidDerivative(activations[i + 1]?.[j]);
 
-            for (let k = 0; k < this.weights[i][j].length; k++) {
-              this.weights[i][j][k] += learningRate * delta * activations[i][k];
+            for (let k = 0; k < this.weights[i]?.[j].length; k++) {
+              this.weights[i]?.[j][k] += learningRate * delta * activations[i]?.[k];
             }
 
             this.biases[i][j] += learningRate * delta;
@@ -163,7 +163,7 @@ describe('Neural Network Training - Classical TDD', () => {
       expect(network.predict([0, 1])[0]).toBeCloseTo(1, 1);
       expect(network.predict([1, 0])[0]).toBeCloseTo(1, 1);
       expect(network.predict([1, 1])[0]).toBeCloseTo(0, 1);
-      expect(result.finalError).toBeLessThan(0.1);
+      expect(result?.finalError).toBeLessThan(0.1);
     });
 
     it('should converge faster with higher learning rate', () => {
@@ -181,7 +181,7 @@ describe('Neural Network Training - Classical TDD', () => {
       const result2 = network2.train(xorData, { epochs: 1000, learningRate: 0.8 });
 
       // Higher learning rate should achieve lower error in same epochs
-      expect(result2.finalError).toBeLessThan(result1.finalError);
+      expect(result2?.finalError).toBeLessThan(result1?.finalError);
     });
   });
 
@@ -200,7 +200,7 @@ describe('Neural Network Training - Classical TDD', () => {
       // AND is linearly separable, should converge quickly
       expect(network.predict([0, 0])[0]).toBeCloseTo(0, 1);
       expect(network.predict([1, 1])[0]).toBeCloseTo(1, 1);
-      expect(result.finalError).toBeLessThan(0.05);
+      expect(result?.finalError).toBeLessThan(0.05);
     });
   });
 
@@ -248,7 +248,7 @@ describe('Neural Network Training - Classical TDD', () => {
       // Track error over epochs
       for (let i = 0; i < 10; i++) {
         const result = network.train(data, { epochs: 100, learningRate: 0.1 });
-        errors.push(result.finalError);
+        errors.push(result?.finalError);
       }
 
       // Error should generally decrease (allowing for small fluctuations)

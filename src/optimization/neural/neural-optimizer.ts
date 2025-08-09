@@ -1,7 +1,12 @@
 /**
- * Neural Network Performance Optimizer
- * Optimizes neural network training, inference, and memory usage
+ * Neural Network Performance Optimizer.
+ * Optimizes neural network training, inference, and memory usage.
  */
+/**
+ * @file Neural network: neural-optimizer
+ */
+
+
 
 import type {
   AccelerationResult,
@@ -68,7 +73,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Optimize neural network training speed
+   * Optimize neural network training speed.
    *
    * @param network
    */
@@ -131,7 +136,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Implement optimized batch processing
+   * Implement optimized batch processing.
    *
    * @param trainer
    */
@@ -171,7 +176,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Enable GPU acceleration where possible
+   * Enable GPU acceleration where possible.
    *
    * @param computeUnits
    */
@@ -214,7 +219,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Optimize memory usage for neural networks
+   * Optimize memory usage for neural networks.
    *
    * @param networks
    */
@@ -251,7 +256,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Initialize acceleration support detection
+   * Initialize acceleration support detection.
    */
   private initializeAccelerationSupport(): void {
     // Detect WebGL support for GPU acceleration
@@ -265,7 +270,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Optimize network architecture for performance
+   * Optimize network architecture for performance.
    *
    * @param network
    */
@@ -294,7 +299,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Enable mixed precision training
+   * Enable mixed precision training.
    *
    * @param network
    */
@@ -315,7 +320,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Optimize data loading pipeline
+   * Optimize data loading pipeline.
    *
    * @param _network
    */
@@ -334,7 +339,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Enable gradient accumulation for large effective batch sizes
+   * Enable gradient accumulation for large effective batch sizes.
    *
    * @param network
    */
@@ -349,7 +354,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Optimize learning rate schedule
+   * Optimize learning rate schedule.
    *
    * @param network
    */
@@ -362,7 +367,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Enable WASM acceleration as fallback
+   * Enable WASM acceleration as fallback.
    */
   private async enableWASMAcceleration(): Promise<AccelerationResult> {
     try {
@@ -394,7 +399,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Calculate optimal batch size based on network complexity and memory
+   * Calculate optimal batch size based on network complexity and memory.
    *
    * @param complexity
    * @param availableMemory
@@ -422,7 +427,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Calculate optimal parallelism level
+   * Calculate optimal parallelism level.
    *
    * @param batchSize
    */
@@ -436,7 +441,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Determine optimal processing mode
+   * Determine optimal processing mode.
    *
    * @param batchSize
    * @param parallelism
@@ -451,7 +456,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Measure network performance
+   * Measure network performance.
    *
    * @param _network
    * @param mode
@@ -475,7 +480,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Calculate training improvement
+   * Calculate training improvement.
    *
    * @param before
    * @param after
@@ -492,7 +497,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   /**
    * Helper methods (mock implementations)
    *
-   * @param network
+   * @param network.
    */
   private calculateNetworkComplexity(network: NeuralNetwork): number {
     return network.layers.reduce((sum, layer) => sum + layer, 0);
@@ -530,7 +535,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   private selectOptimalGPU(gpuUnits: ComputeUnit[]): ComputeUnit {
     // Select GPU with highest memory
     return gpuUnits.reduce((optimal, current) =>
-      current.memory > optimal.memory ? current : optimal
+      current?.memory > optimal.memory ? current : optimal
     );
   }
 

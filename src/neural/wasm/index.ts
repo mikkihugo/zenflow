@@ -1,5 +1,5 @@
 /**
- * Neural WASM Module - Unified WebAssembly components
+ * Neural WASM Module - Unified WebAssembly components.
  *
  * This module provides access to all neural WebAssembly components:
  * - CUDA-Rust transpiler for GPU acceleration (main implementation)
@@ -8,6 +8,11 @@
  */
 
 // CUDA-Rust WASM (main neural WASM implementation)
+/**
+ * @file wasm module exports.
+ */
+
+
 export * from './binaries/wasm-bindings-loader.mjs';
 // Compatibility exports
 export * from './wasm-compat';

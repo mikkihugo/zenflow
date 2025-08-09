@@ -1,7 +1,12 @@
 /**
- * Optimization Engine
- * Automatic performance tuning and resource optimization
+ * Optimization Engine.
+ * Automatic performance tuning and resource optimization.
  */
+/**
+ * @file optimization processing engine
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type {
@@ -59,7 +64,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Initialize optimization strategies
+   * Initialize optimization strategies.
    */
   private initializeStrategies(): void {
     this.strategies.set('cache_optimization', {
@@ -104,7 +109,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Initialize resource limits
+   * Initialize resource limits.
    */
   private initializeResourceLimits(): void {
     this.resourceLimits.set('max_cpu_usage', 85);
@@ -115,7 +120,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Start optimization engine
+   * Start optimization engine.
    */
   public startOptimization(): void {
     this.isOptimizing = true;
@@ -123,7 +128,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Stop optimization engine
+   * Stop optimization engine.
    */
   public stopOptimization(): void {
     this.isOptimizing = false;
@@ -131,7 +136,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Analyze performance insights and generate optimization actions
+   * Analyze performance insights and generate optimization actions.
    *
    * @param insights
    * @param metrics
@@ -181,7 +186,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Handle performance anomalies
+   * Handle performance anomalies.
    *
    * @param anomaly
    * @param _metrics
@@ -273,7 +278,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Handle performance bottlenecks
+   * Handle performance bottlenecks.
    *
    * @param bottleneck
    * @param metrics
@@ -368,7 +373,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Handle predicted resource exhaustion
+   * Handle predicted resource exhaustion.
    *
    * @param predictions
    * @param predictions.capacityUtilization
@@ -426,7 +431,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Handle low system health
+   * Handle low system health.
    *
    * @param healthScore
    * @param _metrics
@@ -467,7 +472,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Filter and validate optimization actions
+   * Filter and validate optimization actions.
    *
    * @param actions
    */
@@ -482,7 +487,7 @@ export class OptimizationEngine extends EventEmitter {
 
       // Check cooldown period
       const lastSimilarAction = this.actionHistory
-        .filter((result) => result.actionId.includes(action.type))
+        .filter((result) => result?.actionId.includes(action.type))
         .sort((a, b) => b.executionTime - a.executionTime)[0];
 
       if (lastSimilarAction && now - lastSimilarAction.executionTime < strategy.cooldownPeriod) {
@@ -491,7 +496,7 @@ export class OptimizationEngine extends EventEmitter {
 
       // Check rate limiting
       const recentActions = this.actionHistory.filter(
-        (result) => result.actionId.includes(action.type) && now - result.executionTime < 60000
+        (result) => result?.actionId.includes(action.type) && now - result?.executionTime < 60000
       );
 
       if (recentActions.length >= strategy.maxActionsPerMinute) {
@@ -521,7 +526,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Check if action would exceed resource limits
+   * Check if action would exceed resource limits.
    *
    * @param action
    */
@@ -545,7 +550,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Execute pending optimization actions
+   * Execute pending optimization actions.
    */
   private async executePendingActions(): Promise<void> {
     const criticalActions = this.pendingActions.filter((a) => a.priority === 'critical');
@@ -574,7 +579,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Execute a single optimization action
+   * Execute a single optimization action.
    *
    * @param action
    */
@@ -591,11 +596,11 @@ export class OptimizationEngine extends EventEmitter {
       const executionTime = Date.now() - startTime;
       const optimizationResult: OptimizationResult = {
         actionId: action.id,
-        success: result.success ?? true,
+        success: result?.success ?? true,
         executionTime,
-        beforeMetrics: result.beforeMetrics ?? ({} as CompositeMetrics),
-        afterMetrics: result.afterMetrics,
-        impact: result.impact ?? { performance: 0, efficiency: 0, cost: 0 },
+        beforeMetrics: result?.beforeMetrics ?? ({} as CompositeMetrics),
+        afterMetrics: result?.afterMetrics,
+        impact: result?.impact ?? { performance: 0, efficiency: 0, cost: 0 },
       };
 
       this.actionHistory.push(optimizationResult);
@@ -630,7 +635,7 @@ export class OptimizationEngine extends EventEmitter {
   private async simulateActionExecution(
     action: OptimizationAction
   ): Promise<Partial<OptimizationResult>> {
-    // Simulate execution time
+    // Simulate execution time.
     await new Promise((resolve) => setTimeout(resolve, Math.min(action.executionTime, 1000)));
 
     // Simulate success/failure
@@ -658,7 +663,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Maintain action history size
+   * Maintain action history size.
    *
    * @param maxSize
    */
@@ -669,7 +674,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Get optimization statistics
+   * Get optimization statistics.
    */
   public getOptimizationStats(): {
     totalActions: number;
@@ -690,7 +695,7 @@ export class OptimizationEngine extends EventEmitter {
 
     const actionsByType: Record<string, number> = {};
     this.actionHistory.forEach((result) => {
-      const type = result.actionId.split('_')[0];
+      const type = result?.actionId?.split('_')[0];
       actionsByType[type] = (actionsByType[type] || 0) + 1;
     });
 
@@ -706,7 +711,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Update optimization strategy
+   * Update optimization strategy.
    *
    * @param strategyName
    * @param updates
@@ -720,7 +725,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Get current strategies
+   * Get current strategies.
    */
   public getStrategies(): Map<string, OptimizationStrategy> {
     return new Map(this.strategies);

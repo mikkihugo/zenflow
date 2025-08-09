@@ -1,7 +1,12 @@
 #!/usr/bin/env node
+/**
+ * @file Interface implementation: http-mcp-server
+ */
+
+
 
 /**
- * Claude-Zen HTTP MCP Server - Official SDK Implementation
+ * Claude-Zen HTTP MCP Server - Official SDK Implementation.
  *
  * HTTP-based MCP server for Claude Desktop integration using the official MCP SDK.
  * Provides core Claude-Zen functionality via MCP protocol over HTTP on port 3000.
@@ -17,9 +22,9 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp';
 import express from 'express';
 import { z } from 'zod';
+import { config } from '../config';
+import { getCORSOrigins } from '../config/url-builder';
 import { createLogger } from './mcp-logger';
-import { config } from '../../config';
-import { getCORSOrigins } from '../../config/url-builder';
 
 const logger = createLogger('SDK-HTTP-MCP-Server');
 
@@ -31,7 +36,7 @@ export interface MCPServerConfig {
 }
 
 /**
- * HTTP MCP Server using Official SDK for Claude Desktop integration
+ * HTTP MCP Server using Official SDK for Claude Desktop integration.
  *
  * @example
  */
@@ -44,12 +49,12 @@ export class HTTPMCPServer {
 
   constructor(userConfig: Partial<MCPServerConfig> = {}) {
     // Use pure centralized configuration with user overrides
-    const centralConfig = config.getAll();
+    const centralConfig = config?.getAll();
     this.config = {
-      port: userConfig.port || centralConfig.interfaces.mcp.http.port,
-      host: userConfig.host || centralConfig.interfaces.mcp.http.host,
-      timeout: userConfig.timeout || centralConfig.interfaces.mcp.http.timeout,
-      logLevel: userConfig.logLevel || centralConfig.core.logger.level,
+      port: userConfig?.port || centralConfig?.interfaces?.mcp?.http?.port,
+      host: userConfig?.host || centralConfig?.interfaces?.mcp?.http?.host,
+      timeout: userConfig?.timeout || centralConfig?.interfaces?.mcp?.http?.timeout,
+      logLevel: userConfig?.logLevel || centralConfig?.core?.logger?.level,
     };
 
     // Create MCP server with SDK
@@ -80,7 +85,7 @@ export class HTTPMCPServer {
   }
 
   /**
-   * Setup Express middleware for SDK transport
+   * Setup Express middleware for SDK transport.
    */
   private setupExpressMiddleware(): void {
     // Body parsing - MUST come before routes
@@ -91,19 +96,19 @@ export class HTTPMCPServer {
     this.expressApp.use((req, res, next) => {
       const corsOrigins = getCORSOrigins();
       const origin = req.headers.origin;
-      
+
       // Allow configured origins or all origins in development
       if (corsOrigins.includes('*') || (origin && corsOrigins.includes(origin)) || !origin) {
         res.header('Access-Control-Allow-Origin', origin || '*');
       }
-      
+
       res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
       res.header(
         'Access-Control-Allow-Headers',
         'Content-Type, Authorization, X-MCP-Client-Info, Last-Event-ID, MCP-Session-ID'
       );
       res.header('Access-Control-Allow-Credentials', 'true');
-      
+
       if (req.method === 'OPTIONS') {
         res.sendStatus(200);
       } else {
@@ -135,7 +140,7 @@ export class HTTPMCPServer {
   }
 
   /**
-   * Register Claude-Zen tools with the SDK
+   * Register Claude-Zen tools with the SDK.
    */
   private async registerTools(): Promise<void> {
     // System information tool
@@ -542,7 +547,7 @@ export class HTTPMCPServer {
   }
 
   /**
-   * Setup SDK transport routes
+   * Setup SDK transport routes.
    */
   private setupSDKRoutes(): void {
     // Map to store active transports by session ID
@@ -654,7 +659,7 @@ export class HTTPMCPServer {
 
         // Clean up transport
         if (sessionId && transports[sessionId]) {
-          await transports[sessionId].close();
+          await transports[sessionId]?.close();
           delete transports[sessionId];
         }
       } catch (error) {
@@ -709,7 +714,7 @@ export class HTTPMCPServer {
   }
 
   /**
-   * Start the HTTP MCP server
+   * Start the HTTP MCP server.
    */
   async start(): Promise<void> {
     if (this.isRunning) {
@@ -746,7 +751,7 @@ export class HTTPMCPServer {
   }
 
   /**
-   * Stop the HTTP MCP server
+   * Stop the HTTP MCP server.
    */
   async stop(): Promise<void> {
     if (!this.isRunning || !this.httpServer) {
@@ -763,7 +768,7 @@ export class HTTPMCPServer {
   }
 
   /**
-   * Get server status
+   * Get server status.
    */
   getStatus(): any {
     return {
@@ -777,7 +782,7 @@ export class HTTPMCPServer {
 }
 
 /**
- * Start the server if run directly
+ * Start the server if run directly.
  */
 if (import.meta.url === `file://${process.argv[1]}`) {
   const server = new HTTPMCPServer();

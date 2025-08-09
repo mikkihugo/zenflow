@@ -1,9 +1,14 @@
 /**
- * Hook System - Core Infrastructure
- * Provides safety validation, auto-assignment, performance tracking, and context loading
+ * Hook System - Core Infrastructure.
+ * Provides safety validation, auto-assignment, performance tracking, and context loading.
+ */
+/**
+ * @file Coordination system: hook-system
  */
 
-import type { AgentType } from '../../types/agent-types';
+
+
+import type { AgentType } from '../types/agent-types';
 
 // Hook Type Definitions
 export type HookType =

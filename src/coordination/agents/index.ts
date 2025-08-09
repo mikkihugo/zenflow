@@ -1,6 +1,11 @@
 // Coordination Agents - Export Hub
 
 // Re-export agent functionality
+/**
+ * @file agents module exports
+ */
+
+
 export * from './agent';
 export { AgentManager } from './agent-manager';
 export { AgentRegistry } from './agent-registry';

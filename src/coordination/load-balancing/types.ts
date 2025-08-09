@@ -1,6 +1,11 @@
 /**
- * Type definitions for the Intelligent Load Balancing System
+ * Type definitions for the Intelligent Load Balancing System.
  */
+/**
+ * @file TypeScript type definitions for coordination
+ */
+
+
 
 export interface Agent {
   id: string;

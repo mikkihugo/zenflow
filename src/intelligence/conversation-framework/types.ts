@@ -1,14 +1,19 @@
 /**
- * Conversation Framework Types
+ * Conversation Framework Types.
  *
  * ag2.ai-inspired conversation types for multi-agent communication
  */
+/**
+ * @file TypeScript type definitions
+ */
+
+
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import type { AgentId, AgentType } from '../../types/agent-types';
+import type { AgentId, AgentType } from '../types/agent-types';
 
 /**
- * Conversation message types for structured agent communication
+ * Conversation message types for structured agent communication.
  *
  * @example
  */
@@ -59,7 +64,7 @@ export interface ConversationAttachment {
 }
 
 /**
- * Conversation session management
+ * Conversation session management.
  *
  * @example
  */
@@ -115,7 +120,7 @@ export interface ConversationMetrics {
 }
 
 /**
- * Conversation patterns and orchestration
+ * Conversation patterns and orchestration.
  *
  * @example
  */
@@ -168,7 +173,7 @@ export interface PatternConstraint {
 }
 
 /**
- * Conversation orchestration engine
+ * Conversation orchestration engine.
  *
  * @example
  */
@@ -201,7 +206,7 @@ export interface ModerationAction {
 }
 
 /**
- * Learning and adaptation types
+ * Learning and adaptation types.
  *
  * @example
  */
@@ -237,7 +242,7 @@ export interface ConversationFeedback {
 }
 
 /**
- * Memory and persistence
+ * Memory and persistence.
  *
  * @example
  */
@@ -262,7 +267,7 @@ export interface ConversationQuery {
 }
 
 /**
- * Interface for MCP tools integration
+ * Interface for MCP tools integration.
  *
  * @example
  */

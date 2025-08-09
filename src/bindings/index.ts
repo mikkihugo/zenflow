@@ -1,15 +1,20 @@
 /**
- * Bindings Module - Barrel Export
+ * Bindings Module - Barrel Export.
  *
- * Central export point for Rust/WASM bindings and native integrations
+ * Central export point for Rust/WASM bindings and native integrations.
  */
 
 // TypeScript definitions for Rust bindings - types will be inferred from implementations
 
 // Bindings utilities
+/**
+ * @file bindings module exports
+ */
+
+
 export const BindingsUtils = {
   /**
-   * Check if native bindings are available
+   * Check if native bindings are available.
    */
   isNativeAvailable: (): boolean => {
     try {
@@ -22,7 +27,7 @@ export const BindingsUtils = {
   },
 
   /**
-   * Get binding type based on availability
+   * Get binding type based on availability.
    */
   getBindingType: (): 'native' | 'wasm' | 'fallback' => {
     if (BindingsUtils.isNativeAvailable()) {
@@ -36,7 +41,7 @@ export const BindingsUtils = {
   },
 
   /**
-   * Load appropriate binding
+   * Load appropriate binding.
    */
   loadBinding: async () => {
     const bindingType = BindingsUtils.getBindingType();
@@ -61,7 +66,7 @@ export class BindingFactory {
   private static instance: any = null;
 
   /**
-   * Get singleton binding instance
+   * Get singleton binding instance.
    */
   static async getInstance(): Promise<any> {
     if (!BindingFactory.instance) {
@@ -71,7 +76,7 @@ export class BindingFactory {
   }
 
   /**
-   * Clear cached instance
+   * Clear cached instance.
    */
   static clearInstance(): void {
     BindingFactory.instance = null;

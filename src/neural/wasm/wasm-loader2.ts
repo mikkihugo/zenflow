@@ -1,7 +1,12 @@
 /**
- * WASM Module Loader 2 - Temporary stub implementation
- * TODO: Implement enhanced WASM loading functionality
+ * WASM Module Loader 2 - Temporary stub implementation.
+ * TODO: Implement enhanced WASM loading functionality.
  */
+/**
+ * @file Neural network: wasm-loader2
+ */
+
+
 
 export class WasmLoader2 {
   private initialized = false;

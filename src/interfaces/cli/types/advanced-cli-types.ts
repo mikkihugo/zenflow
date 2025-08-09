@@ -7,7 +7,7 @@
  */
 
 /**
- * Main Advanced CLI System Interface
+ * Main Advanced CLI System Interface.
  *
  * @example
  */
@@ -29,7 +29,7 @@ export interface AdvancedCLISystem {
 }
 
 /**
- * Project Configuration Types
+ * Project Configuration Types.
  */
 export type ProjectType =
   | 'neural-ai'
@@ -80,7 +80,7 @@ export interface PerformanceRequirements {
 }
 
 /**
- * Project Management Results
+ * Project Management Results.
  *
  * @example
  */
@@ -182,7 +182,7 @@ export interface Optimization {
 }
 
 /**
- * Swarm Coordination Types
+ * Swarm Coordination Types.
  *
  * @example
  */
@@ -386,7 +386,7 @@ export interface VisualizationResult {
 }
 
 /**
- * Development Pipeline Types
+ * Development Pipeline Types.
  *
  * @example
  */
@@ -583,7 +583,7 @@ export interface TestCoverage {
 }
 
 /**
- * Advanced Command Types
+ * Advanced Command Types.
  *
  * @example
  */
@@ -626,7 +626,7 @@ export interface CommandExample {
 }
 
 /**
- * CLI Configuration Types
+ * CLI Configuration Types.
  *
  * @example
  */
@@ -655,7 +655,7 @@ export interface PerformanceConfig {
 }
 
 /**
- * Error and Status Types
+ * Error and Status Types.
  *
  * @example
  */

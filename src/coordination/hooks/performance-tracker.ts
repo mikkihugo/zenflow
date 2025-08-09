@@ -1,11 +1,18 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("coordination-hooks-performance-tracker");
 /**
- * Performance Tracking System
- * Tracks operation performance, collects metrics, and provides optimization suggestions
+ * @file Coordination system: performance-tracker
  */
 
-import type { AgentType } from '../../types/agent-types';
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-hooks-performance-tracker');
+
+/**
+ * Performance Tracking System.
+ * Tracks operation performance, collects metrics, and provides optimization suggestions.
+ */
+
+import type { AgentType } from '../types/agent-types';
 import type {
   AgentPerformanceSummary,
   Bottleneck,
@@ -48,13 +55,13 @@ export class HookPerformanceTracker implements MetricsTracker {
     const metrics: OperationMetrics = {
       operationId: operation.id,
       type: operation.type,
-      startTime: result.startTime,
-      endTime: result.endTime,
-      duration: result.endTime.getTime() - result.startTime.getTime(),
-      success: result.success,
-      resourceUsage: result.resourceUsage,
-      ...(result.error?.type && { errorType: result.error.type }),
-      ...(result.agentMetrics && { agentPerformance: result.agentMetrics }),
+      startTime: result?.startTime,
+      endTime: result?.endTime,
+      duration: result?.endTime?.getTime() - result?.startTime?.getTime(),
+      success: result?.success,
+      resourceUsage: result?.resourceUsage,
+      ...(result?.error?.type && { errorType: result?.error?.type }),
+      ...(result?.agentMetrics && { agentPerformance: result?.agentMetrics }),
       qualityScore: await this.calculateQualityScore(operation, result),
       userSatisfaction: await this.estimateUserSatisfaction(operation, result),
     };
@@ -69,8 +76,8 @@ export class HookPerformanceTracker implements MetricsTracker {
     }
 
     // Update agent performance profiles
-    if (result.agent && result.agentMetrics) {
-      await this.updateAgentProfile(result.agent.id, metrics);
+    if (result?.agent && result?.agentMetrics) {
+      await this.updateAgentProfile(result?.agent?.id, metrics);
     }
 
     // Generate real-time optimizations if needed
@@ -157,17 +164,17 @@ export class HookPerformanceTracker implements MetricsTracker {
     let score = 0.5; // Base score
 
     // Success factor
-    if (result.success) score += 0.3;
+    if (result?.success) score += 0.3;
 
     // Performance factor
     const expectedDuration = await this.getExpectedDuration(operation.type);
-    const actualDuration = result.endTime.getTime() - result.startTime.getTime();
+    const actualDuration = result?.endTime?.getTime() - result?.startTime?.getTime();
     if (actualDuration <= expectedDuration) score += 0.2;
 
     // Resource efficiency factor
-    if (result.resourceUsage.memoryMB < this.performanceThresholds.maxMemoryUsage * 0.5)
+    if (result?.resourceUsage?.memoryMB < this.performanceThresholds.maxMemoryUsage * 0.5)
       score += 0.1;
-    if (result.resourceUsage.cpuPercent < this.performanceThresholds.maxCpuUsage * 0.5)
+    if (result?.resourceUsage?.cpuPercent < this.performanceThresholds.maxCpuUsage * 0.5)
       score += 0.1;
 
     return Math.min(score, 1.0);
@@ -180,8 +187,8 @@ export class HookPerformanceTracker implements MetricsTracker {
     // Mock implementation - would integrate with user feedback systems
     let satisfaction = 0.8; // Base satisfaction
 
-    if (!result.success) satisfaction -= 0.4;
-    if (result.endTime.getTime() - result.startTime.getTime() > 60000) satisfaction -= 0.2; // > 1 minute
+    if (!result?.success) satisfaction -= 0.4;
+    if (result?.endTime?.getTime() - result?.startTime?.getTime() > 60000) satisfaction -= 0.2; // > 1 minute
 
     return Math.max(satisfaction, 0.1);
   }
@@ -551,10 +558,10 @@ export class HookPerformanceTracker implements MetricsTracker {
   }
 
   private calculateFutureTimeframe(currentTimeframe: TimeFrame): string {
-    const duration = currentTimeframe.end.getTime() - currentTimeframe.start.getTime();
-    const futureEnd = new Date(currentTimeframe.end.getTime() + duration);
+    const duration = currentTimeframe?.end?.getTime() - currentTimeframe?.start?.getTime();
+    const futureEnd = new Date(currentTimeframe?.end?.getTime() + duration);
 
-    return `${currentTimeframe.end.toISOString()} to ${futureEnd.toISOString()}`;
+    return `${currentTimeframe?.end?.toISOString()} to ${futureEnd.toISOString()}`;
   }
 
   private async getExpectedDuration(operationType: string): Promise<number> {

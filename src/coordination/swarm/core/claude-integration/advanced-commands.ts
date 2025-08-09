@@ -1,7 +1,12 @@
 /**
- * Advanced Commands Generator - Temporary stub implementation
- * TODO: Implement advanced command generation functionality
+ * Advanced Commands Generator - Temporary stub implementation.
+ * TODO: Implement advanced command generation functionality.
  */
+/**
+ * @file Coordination system: advanced-commands
+ */
+
+
 
 interface CommandConfig {
   [key: string]: unknown;

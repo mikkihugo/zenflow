@@ -4,12 +4,17 @@
  * Provides Hive-level coordination commands that abstract away swarm complexity.
  * Users interact with the Hive mind rather than individual swarms.
  */
+/**
+ * @file Coordination system: hive-tools
+ */
+
+
 
 import { exec } from 'node:child_process';
 import * as os from 'node:os';
 import { promisify } from 'node:util';
-import { createLogger } from '../../../core/logger';
-import type { DALFactory } from '../../../database/factory';
+import { createLogger } from '../core/logger';
+import type { DALFactory } from '../database/factory';
 
 const logger = createLogger({ prefix: 'HiveTools' });
 
@@ -72,9 +77,9 @@ export class HiveTools {
         status: activeSwarms.length > 0 ? 'active' : 'idle',
         totalSwarms: activeSwarms.length,
         activeSwarms: activeSwarms.filter((s) => s.healthy).length,
-        totalAgents: agentData.result.total,
-        availableAgents: agentData.result.available,
-        busyAgents: agentData.result.busy,
+        totalAgents: agentData?.result?.total,
+        availableAgents: agentData?.result?.available,
+        busyAgents: agentData?.result?.busy,
         swarmDetails: activeSwarms.map((s) => ({
           id: s.id,
           type: s.type,
@@ -152,7 +157,7 @@ export class HiveTools {
       };
 
       logger.info(
-        `Swarm query completed: ${results.results.length} results from ${activeSwarms.length} swarms`
+        `Swarm query completed: ${results?.results.length} results from ${activeSwarms.length} swarms`
       );
       return results;
     } catch (error) {

@@ -1,11 +1,16 @@
 /**
- * Mock Command Handler - Delegates to Command Execution Engine
+ * Mock Command Handler - Delegates to Command Execution Engine.
  *
  * Thin wrapper around CommandExecutionEngine for backward compatibility.
  * Renamed to reflect its mock/testing nature per Google standards.
  */
+/**
+ * @file Interface implementation: mock-command-handler
+ */
 
-import { createLogger } from '../../../core/logger';
+
+
+import { createLogger } from '../core/logger';
 import { CommandExecutionEngine } from '../command-execution-engine';
 
 const logger = createLogger({ prefix: 'mock-command-handler' });
@@ -26,13 +31,13 @@ export interface CommandContext {
 }
 
 /**
- * Execute terminal commands with unified result handling
+ * Execute terminal commands with unified result handling.
  *
  * @example
  */
 export class MockCommandHandler {
   /**
-   * Execute init command
+   * Execute init command.
    *
    * @param args
    * @param flags
@@ -70,7 +75,7 @@ export class MockCommandHandler {
   }
 
   /**
-   * Execute status command
+   * Execute status command.
    *
    * @param _args
    * @param flags
@@ -129,7 +134,7 @@ export class MockCommandHandler {
   }
 
   /**
-   * Execute swarm command
+   * Execute swarm command.
    *
    * @param args
    * @param flags
@@ -219,7 +224,7 @@ export class MockCommandHandler {
   }
 
   /**
-   * Execute MCP command
+   * Execute MCP command.
    *
    * @param args
    * @param flags
@@ -290,7 +295,7 @@ export class MockCommandHandler {
   }
 
   /**
-   * Execute workspace command
+   * Execute workspace command.
    *
    * @param args
    * @param _flags
@@ -383,7 +388,7 @@ export class MockCommandHandler {
   }
 
   /**
-   * Execute any command - delegates to CommandExecutionEngine
+   * Execute any command - delegates to CommandExecutionEngine.
    *
    * @param command
    * @param args
@@ -404,10 +409,10 @@ export class MockCommandHandler {
 
       // Convert engine result to expected format
       return {
-        success: result.success,
-        message: result.message,
-        data: result.data,
-        error: result.error,
+        success: result?.success,
+        message: result?.message,
+        data: result?.data,
+        error: result?.error,
       };
     } catch (error) {
       logger.error(`Mock command handler failed for ${command}:`, error);

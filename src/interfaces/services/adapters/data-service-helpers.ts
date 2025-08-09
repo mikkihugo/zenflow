@@ -1,24 +1,24 @@
 /**
  * @fileoverview USL Data Service Helper Functions
  *
- * Collection of utility functions and helper methods for common data operations
+ * Collection of utility functions and helper methods for common data operations.
  * across DataServiceAdapter instances. Provides simplified interfaces for
  * frequently used operations, data transformation utilities, and convenience
  * methods for working with unified data services.
  *
- * These helpers follow the same patterns as UACL client helpers, providing
+ * These helpers follow the same patterns as UACL client helpers, providing.
  * a higher-level abstraction over the core adapter functionality.
  */
 
-import type { BaseDocumentEntity } from '../../../database/entities/document-entities';
-import type { DocumentSearchOptions } from '../../../database/managers/document-manager';
-import type { DocumentType } from '../../../types/workflow-types';
-import { createLogger, type Logger } from '../../../utils/logger';
-import type { SwarmData, SystemStatusData, TaskData } from '../../web/web-data-service';
+import type { BaseDocumentEntity } from '../database/entities/product-entities';
+import type { DocumentSearchOptions } from '../database/managers/document-manager';
+import type { DocumentType } from '../types/workflow-types';
+import { createLogger, type Logger } from '../utils/logger';
+import type { SwarmData, SystemStatusData, TaskData } from '../web/web-data-service';
 import type { DataServiceAdapter } from './data-service-adapter';
 
 /**
- * Data operation result with standardized metadata
+ * Data operation result with standardized metadata.
  *
  * @example
  */
@@ -36,7 +36,7 @@ export interface DataOperationResult<T = any> {
 }
 
 /**
- * Batch operation configuration
+ * Batch operation configuration.
  *
  * @example
  */
@@ -52,7 +52,7 @@ export interface BatchOperationConfig {
 }
 
 /**
- * Data validation result
+ * Data validation result.
  *
  * @example
  */
@@ -64,7 +64,7 @@ export interface DataValidationResult {
 }
 
 /**
- * Search and filter options for enhanced querying
+ * Search and filter options for enhanced querying.
  *
  * @example
  */
@@ -84,7 +84,7 @@ export interface EnhancedSearchOptions {
 }
 
 /**
- * Data aggregation options
+ * Data aggregation options.
  *
  * @example
  */
@@ -99,7 +99,7 @@ export interface DataAggregationOptions {
 }
 
 /**
- * Data transformation pipeline step
+ * Data transformation pipeline step.
  *
  * @example
  */
@@ -109,7 +109,7 @@ export interface TransformationStep {
 }
 
 /**
- * Data service helper class with common operations
+ * Data service helper class with common operations.
  *
  * @example
  */
@@ -125,7 +125,7 @@ export class DataServiceHelper {
   // ============================================
 
   /**
-   * Get comprehensive system status with caching
+   * Get comprehensive system status with caching.
    *
    * @param useCache
    */
@@ -140,9 +140,9 @@ export class DataServiceHelper {
       );
 
       return {
-        success: response.success,
-        data: response.data,
-        error: response.error?.message,
+        success: response?.success,
+        data: response?.data,
+        error: response?.error?.message,
         metadata: {
           operation: 'system-status',
           timestamp: new Date(),
@@ -157,7 +157,7 @@ export class DataServiceHelper {
   }
 
   /**
-   * Get system health summary
+   * Get system health summary.
    */
   async getSystemHealthSummary(): Promise<
     DataOperationResult<{
@@ -225,7 +225,7 @@ export class DataServiceHelper {
   // ============================================
 
   /**
-   * Get all swarms with enhanced filtering
+   * Get all swarms with enhanced filtering.
    *
    * @param filters
    * @param filters.status
@@ -244,15 +244,15 @@ export class DataServiceHelper {
     try {
       const response = await this.adapter.execute<SwarmData[]>('swarms');
 
-      if (!response.success || !response.data) {
+      if (!response?.success || !response?.data) {
         return {
           success: false,
-          error: response.error?.message,
+          error: response?.error?.message,
           metadata: this.createMetadata('get-swarms', startTime),
         };
       }
 
-      let swarms = response.data;
+      let swarms = response?.data;
 
       // Apply filters if provided
       if (filters) {
@@ -279,7 +279,7 @@ export class DataServiceHelper {
   }
 
   /**
-   * Create swarm with validation and monitoring
+   * Create swarm with validation and monitoring.
    *
    * @param config
    * @param config.name
@@ -309,9 +309,9 @@ export class DataServiceHelper {
       const response = await this.adapter.execute<SwarmData>('create-swarm', config);
 
       return {
-        success: response.success,
-        data: response.data,
-        error: response.error?.message,
+        success: response?.success,
+        data: response?.data,
+        error: response?.error?.message,
         metadata: this.createMetadata('create-swarm', startTime),
       };
     } catch (error) {
@@ -320,7 +320,7 @@ export class DataServiceHelper {
   }
 
   /**
-   * Get swarm statistics and analytics
+   * Get swarm statistics and analytics.
    */
   async getSwarmAnalytics(): Promise<
     DataOperationResult<{
@@ -344,7 +344,7 @@ export class DataServiceHelper {
         this.adapter.execute<TaskData[]>('tasks'),
       ]);
 
-      if (!swarmsResponse.success || !tasksResponse.success) {
+      if (!swarmsResponse?.success || !tasksResponse?.success) {
         return {
           success: false,
           error: 'Failed to fetch swarm or task data',
@@ -352,8 +352,8 @@ export class DataServiceHelper {
         };
       }
 
-      const swarms = swarmsResponse.data || [];
-      const tasks = tasksResponse.data || [];
+      const swarms = swarmsResponse?.data || [];
+      const tasks = tasksResponse?.data || [];
 
       const analytics = {
         totalSwarms: swarms.length,
@@ -388,7 +388,7 @@ export class DataServiceHelper {
   // ============================================
 
   /**
-   * Get tasks with enhanced filtering and sorting
+   * Get tasks with enhanced filtering and sorting.
    *
    * @param options
    */
@@ -398,34 +398,34 @@ export class DataServiceHelper {
     try {
       const response = await this.adapter.execute<TaskData[]>('tasks');
 
-      if (!response.success || !response.data) {
+      if (!response?.success || !response?.data) {
         return {
           success: false,
-          error: response.error?.message,
+          error: response?.error?.message,
           metadata: this.createMetadata('get-tasks', startTime),
         };
       }
 
-      let tasks = response.data;
+      let tasks = response?.data;
 
       // Apply filters
       if (options?.filters) {
-        tasks = this.applyFilters(tasks, options.filters);
+        tasks = this.applyFilters(tasks, options?.filters);
       }
 
       // Apply search
       if (options?.query) {
-        tasks = this.searchTasks(tasks, options.query);
+        tasks = this.searchTasks(tasks, options?.query);
       }
 
       // Apply sorting
       if (options?.sort) {
-        tasks = this.sortData(tasks, options.sort.field, options.sort.direction);
+        tasks = this.sortData(tasks, options?.sort?.field, options?.sort?.direction);
       }
 
       // Apply pagination
       if (options?.pagination) {
-        const { limit, offset } = options.pagination;
+        const { limit, offset } = options?.pagination;
         tasks = tasks.slice(offset, offset + limit);
       }
 
@@ -440,7 +440,7 @@ export class DataServiceHelper {
   }
 
   /**
-   * Create task with workflow integration
+   * Create task with workflow integration.
    *
    * @param config
    * @param config.title
@@ -474,9 +474,9 @@ export class DataServiceHelper {
       const response = await this.adapter.execute<TaskData>('create-task', config);
 
       return {
-        success: response.success,
-        data: response.data,
-        error: response.error?.message,
+        success: response?.success,
+        data: response?.data,
+        error: response?.error?.message,
         metadata: this.createMetadata('create-task', startTime),
       };
     } catch (error) {
@@ -489,7 +489,7 @@ export class DataServiceHelper {
   // ============================================
 
   /**
-   * Enhanced document search with multiple search types
+   * Enhanced document search with multiple search types.
    *
    * @param query
    * @param options
@@ -530,9 +530,9 @@ export class DataServiceHelper {
       const response = await this.adapter.execute('document-search', { searchOptions });
 
       return {
-        success: response.success,
-        data: response.data,
-        error: response.error?.message,
+        success: response?.success,
+        data: response?.data,
+        error: response?.error?.message,
         metadata: this.createMetadata('search-documents', startTime),
       };
     } catch (error) {
@@ -541,7 +541,7 @@ export class DataServiceHelper {
   }
 
   /**
-   * Bulk document operations
+   * Bulk document operations.
    *
    * @param operations
    */
@@ -585,14 +585,14 @@ export class DataServiceHelper {
       );
 
       const processedResults = results.map((result) => {
-        if (result.status === 'fulfilled') {
-          return result.value;
+        if (result?.status === 'fulfilled') {
+          return result?.value;
         } else {
-          return { success: false, error: result.reason?.message };
+          return { success: false, error: result?.reason?.message };
         }
       });
 
-      const successful = processedResults.filter((r) => r.success).length;
+      const successful = processedResults?.filter((r) => r.success).length;
       const failed = processedResults.length - successful;
 
       return {
@@ -614,21 +614,21 @@ export class DataServiceHelper {
   // ============================================
 
   /**
-   * Execute multiple operations in parallel with concurrency control
+   * Execute multiple operations in parallel with concurrency control.
    *
    * @param config
    */
   async executeBatch(config: BatchOperationConfig): Promise<DataOperationResult<any[]>> {
     const startTime = Date.now();
-    const concurrency = config.concurrency || 5;
+    const concurrency = config?.concurrency || 5;
 
     try {
       const results: any[] = [];
       const errors: string[] = [];
 
       // Process operations in batches with concurrency control
-      for (let i = 0; i < config.operations.length; i += concurrency) {
-        const batch = config.operations.slice(i, i + concurrency);
+      for (let i = 0; i < config?.operations.length; i += concurrency) {
+        const batch = config?.operations?.slice(i, i + concurrency);
 
         const batchPromises = batch.map(async (op, index) => {
           try {
@@ -638,7 +638,7 @@ export class DataServiceHelper {
             const errorMsg = `Operation ${op.operation} failed: ${(error as Error).message}`;
             errors.push(errorMsg);
 
-            if (config.failFast) {
+            if (config?.failFast) {
               throw new Error(errorMsg);
             }
 
@@ -649,10 +649,10 @@ export class DataServiceHelper {
         const batchResults = await Promise.allSettled(batchPromises);
 
         for (const result of batchResults) {
-          if (result.status === 'fulfilled') {
-            results[result.value.index] = result.value.result;
-          } else if (config.failFast) {
-            throw new Error(result.reason);
+          if (result?.status === 'fulfilled') {
+            results[result?.value?.index] = result?.value?.result;
+          } else if (config?.failFast) {
+            throw new Error(result?.reason);
           }
         }
       }
@@ -673,7 +673,7 @@ export class DataServiceHelper {
   // ============================================
 
   /**
-   * Apply data transformation pipeline
+   * Apply data transformation pipeline.
    *
    * @param data
    * @param pipeline
@@ -684,10 +684,10 @@ export class DataServiceHelper {
     for (const step of pipeline) {
       switch (step.type) {
         case 'filter':
-          result = result.filter(step.config.predicate);
+          result = result?.filter(step.config.predicate);
           break;
         case 'map':
-          result = result.map(step.config.mapper);
+          result = result?.map(step.config.mapper);
           break;
         case 'sort':
           result = this.sortData(result, step.config.field, step.config.direction);
@@ -696,7 +696,7 @@ export class DataServiceHelper {
           result = this.groupData(result, step.config.field);
           break;
         case 'validate':
-          result = result.filter((item: any) => this.validateItem(item, step.config.schema));
+          result = result?.filter((item: any) => this.validateItem(item, step.config.schema));
           break;
         default:
           this.logger.warn(`Unknown transformation step: ${step.type}`);
@@ -707,7 +707,7 @@ export class DataServiceHelper {
   }
 
   /**
-   * Data aggregation with multiple operations
+   * Data aggregation with multiple operations.
    *
    * @param data
    * @param options
@@ -716,26 +716,26 @@ export class DataServiceHelper {
     let result = data;
 
     // Group by fields if specified
-    if (options.groupBy) {
-      const groupFields = Array.isArray(options.groupBy) ? options.groupBy : [options.groupBy];
+    if (options?.groupBy) {
+      const groupFields = Array.isArray(options?.groupBy) ? options?.groupBy : [options?.groupBy];
       result = this.groupByMultipleFields(result, groupFields);
     }
 
     // Apply aggregations
-    if (options.aggregations) {
-      result = this.applyAggregations(result, options.aggregations);
+    if (options?.aggregations) {
+      result = this.applyAggregations(result, options?.aggregations);
     }
 
     // Apply having filters
-    if (options.having) {
-      result = this.applyFilters(result, options.having);
+    if (options?.having) {
+      result = this.applyFilters(result, options?.having);
     }
 
     return result;
   }
 
   /**
-   * Export data in various formats
+   * Export data in various formats.
    *
    * @param data
    * @param format
@@ -761,22 +761,25 @@ export class DataServiceHelper {
     const errors: string[] = [];
     const warnings: string[] = [];
 
-    if (!config.name || typeof config.name !== 'string') {
+    if (!config?.name || typeof config?.name !== 'string') {
       errors.push('Swarm name is required and must be a string');
     }
 
-    if (config.agents !== undefined && (typeof config.agents !== 'number' || config.agents < 1)) {
+    if (
+      config?.agents !== undefined &&
+      (typeof config?.agents !== 'number' || config?.agents < 1)
+    ) {
       errors.push('Agent count must be a positive number');
     }
 
     if (
-      config.timeout !== undefined &&
-      (typeof config.timeout !== 'number' || config.timeout < 1000)
+      config?.timeout !== undefined &&
+      (typeof config?.timeout !== 'number' || config?.timeout < 1000)
     ) {
       errors.push('Timeout must be at least 1000ms');
     }
 
-    if (config.agents && config.agents > 100) {
+    if (config?.agents && config?.agents > 100) {
       warnings.push('Large agent count may impact performance');
     }
 
@@ -792,17 +795,17 @@ export class DataServiceHelper {
     const errors: string[] = [];
     const warnings: string[] = [];
 
-    if (!config.title || typeof config.title !== 'string') {
+    if (!config?.title || typeof config?.title !== 'string') {
       errors.push('Task title is required and must be a string');
     }
 
-    if (config.priority && !['low', 'medium', 'high'].includes(config.priority)) {
+    if (config?.priority && !['low', 'medium', 'high'].includes(config?.priority)) {
       errors.push('Priority must be low, medium, or high');
     }
 
     if (
-      config.assignedAgents &&
-      (!Array.isArray(config.assignedAgents) || config.assignedAgents.length === 0)
+      config?.assignedAgents &&
+      (!Array.isArray(config?.assignedAgents) || config?.assignedAgents.length === 0)
     ) {
       warnings.push('No agents assigned to task');
     }
@@ -860,14 +863,14 @@ export class DataServiceHelper {
     return data.filter((item) => {
       return Object.entries(filters).every(([key, value]) => {
         if (Array.isArray(value)) {
-          return value.includes(item[key]);
+          return value.includes(item?.[key]);
         } else if (typeof value === 'object' && value !== null) {
           // Handle range filters, etc.
-          if (value.min !== undefined && item[key] < value.min) return false;
-          if (value.max !== undefined && item[key] > value.max) return false;
+          if (value.min !== undefined && item?.[key] < value.min) return false;
+          if (value.max !== undefined && item?.[key] > value.max) return false;
           return true;
         } else {
-          return item[key] === value;
+          return item?.[key] === value;
         }
       });
     });
@@ -896,9 +899,9 @@ export class DataServiceHelper {
   private groupData(data: any[], field: string): any[] {
     const groups = data.reduce(
       (acc, item) => {
-        const key = item[field];
+        const key = item?.[field];
         if (!acc[key]) acc[key] = [];
-        acc[key].push(item);
+        acc[key]?.push(item);
         return acc;
       },
       {} as Record<string, any[]>
@@ -914,9 +917,9 @@ export class DataServiceHelper {
   private groupByMultipleFields(data: any[], fields: string[]): any[] {
     const groups = data.reduce(
       (acc, item) => {
-        const key = fields.map((field) => item[field]).join('|');
+        const key = fields.map((field) => item?.[field]).join('|');
         if (!acc[key]) acc[key] = [];
-        acc[key].push(item);
+        acc[key]?.push(item);
         return acc;
       },
       {} as Record<string, any[]>
@@ -941,7 +944,7 @@ export class DataServiceHelper {
 
       for (const agg of aggregations) {
         const values = group.items
-          .map((item: any) => item[agg.field])
+          .map((item: any) => item?.[agg.field])
           .filter((v: any) => v !== undefined);
         const alias = agg.alias || `${agg.operation}_${agg.field}`;
 
@@ -974,7 +977,7 @@ export class DataServiceHelper {
   private calculateDistribution(data: any[], field: string): Record<string, number> {
     return data.reduce(
       (acc, item) => {
-        const value = item[field] || 'unknown';
+        const value = item?.[field] || 'unknown';
         acc[value] = (acc[value] || 0) + 1;
         return acc;
       },
@@ -1007,7 +1010,7 @@ export class DataServiceHelper {
 
   private convertToXML(data: any[]): string {
     const xmlRows = data
-      .map((item) => {
+      ?.map((item) => {
         const xmlFields = Object.entries(item)
           .map(([key, value]) => `    <${key}>${value}</${key}>`)
           .join('\n');
@@ -1020,7 +1023,7 @@ export class DataServiceHelper {
 }
 
 /**
- * Factory function for creating data service helpers
+ * Factory function for creating data service helpers.
  *
  * @param adapter
  */
@@ -1033,7 +1036,7 @@ export function createDataServiceHelper(adapter: DataServiceAdapter): DataServic
  */
 export const DataServiceUtils = {
   /**
-   * Validate configuration object against schema
+   * Validate configuration object against schema.
    *
    * @param config
    * @param schema
@@ -1060,7 +1063,7 @@ export const DataServiceUtils = {
   },
 
   /**
-   * Generate cache key for operation
+   * Generate cache key for operation.
    *
    * @param operation
    * @param params
@@ -1073,7 +1076,7 @@ export const DataServiceUtils = {
   },
 
   /**
-   * Estimate data size in bytes
+   * Estimate data size in bytes.
    *
    * @param data
    */
@@ -1086,7 +1089,7 @@ export const DataServiceUtils = {
   },
 
   /**
-   * Deep clone object safely
+   * Deep clone object safely.
    *
    * @param obj
    */
@@ -1095,7 +1098,7 @@ export const DataServiceUtils = {
   },
 
   /**
-   * Merge objects deeply
+   * Merge objects deeply.
    *
    * @param target
    * @param {...any} sources
@@ -1107,8 +1110,8 @@ export const DataServiceUtils = {
     if (typeof target === 'object' && typeof source === 'object') {
       for (const key in source) {
         if (typeof source[key] === 'object' && source[key] !== null) {
-          if (!target[key]) target[key] = {};
-          this.deepMerge(target[key], source[key]);
+          if (!target?.[key]) target[key] = {};
+          this.deepMerge(target?.[key], source[key]);
         } else {
           target[key] = source[key];
         }
@@ -1119,7 +1122,7 @@ export const DataServiceUtils = {
   },
 
   /**
-   * Rate limiting utility
+   * Rate limiting utility.
    *
    * @param maxRequests
    * @param windowMs

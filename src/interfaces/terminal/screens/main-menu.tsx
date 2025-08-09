@@ -1,9 +1,14 @@
 /**
- * Main Menu Screen
+ * Main Menu Screen.
  *
  * Interactive menu system for TUI mode navigation.
  * Consolidates menu functionality from command execution interface.
  */
+/**
+ * @file Interface implementation: main-menu
+ */
+
+
 
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
@@ -29,7 +34,7 @@ export interface MainMenuProps {
 }
 
 /**
- * Main Menu Screen Component
+ * Main Menu Screen Component.
  *
  * Provides interactive navigation for TUI mode.
  *
@@ -102,12 +107,12 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   });
 
   const handleSelect = (item: MenuItem) => {
-    if (item.disabled) return;
+    if (item?.disabled) return;
 
-    if (item.value === 'exit') {
+    if (item?.value === 'exit') {
       onExit();
     } else {
-      onSelect(item.value);
+      onSelect(item?.value);
     }
   };
 
@@ -122,7 +127,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
     <Box flexDirection="column" height="100%">
       {/* Header */}
       {showHeader && (
-        <Header
+        <Header.
           title={title}
           version="2.0.0-alpha.73"
           swarmStatus={swarmStatus}
@@ -131,12 +136,10 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           centerAlign={false}
         />
       )}
-
       {/* System status */}
       <Box marginBottom={1} paddingX={2}>
         {getSystemStatusBadge()}
       </Box>
-
       {/* Main menu */}
       <Box flexGrow={1} paddingX={2}>
         <Box flexDirection="column" width="100%">
@@ -144,7 +147,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             Select an option:
           </Text>
 
-          <SelectInput
+          <SelectInput.
             items={menuItems}
             onSelect={handleSelect}
             onHighlight={(item) => setSelectedItem(item)}
@@ -159,12 +162,11 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           {/* Description of selected item */}
           {selectedItem?.description && (
             <Box marginTop={1} borderStyle="single" borderColor="gray" padding={1}>
-              <Text dimColor>{selectedItem.description}</Text>
+              <Text dimColor>{selectedItem?.description}</Text>
             </Box>
           )}
         </Box>
       </Box>
-
       {/* Footer */}
       {showFooter && (
         <InteractiveFooter
@@ -174,7 +176,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             { key: 'Enter', name: 'Select' },
           ]}
           status={
-            swarmStatus
+            swarmStatus.
               ? `${swarmStatus.activeAgents}/${swarmStatus.totalAgents} agents`
               : undefined
           }
@@ -185,7 +187,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 };
 
 /**
- * Create default menu items for common use cases
+ * Create default menu items for common use cases.
  *
  * @param _handlers
  * @param _handlers.onStartSwarm

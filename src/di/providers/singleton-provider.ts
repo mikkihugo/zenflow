@@ -1,7 +1,12 @@
 /**
- * Singleton provider implementation
+ * Singleton provider implementation.
  * Ensures only one instance of a service exists throughout the application lifetime.
  */
+/**
+ * @file singleton-provider implementation
+ */
+
+
 
 import type { DIContainer, Provider } from '../types/di-types';
 

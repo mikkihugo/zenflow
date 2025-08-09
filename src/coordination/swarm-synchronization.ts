@@ -1,11 +1,18 @@
 /**
- * Swarm Synchronization System
+ * Swarm Synchronization System.
  *
  * Comprehensive synchronization strategy for distributed swarms ensuring consistency,
  * fault tolerance, and efficient coordination across all agents and Claude Code instances.
  */
+/**
+ * @file Coordination system: swarm-synchronization
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { AgentState } from '../types/agent-types';
 
 export interface SwarmSyncConfig {
   syncInterval: number; // Milliseconds between sync cycles
@@ -50,7 +57,7 @@ export interface ResourceMetrics {
 }
 
 /**
- * Multi-layered synchronization system for distributed swarms
+ * Multi-layered synchronization system for distributed swarms.
  *
  * @example
  */
@@ -90,7 +97,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Start synchronization processes
+   * Start synchronization processes.
    */
   async start(): Promise<void> {
     this.logger?.info('Starting swarm synchronization', { swarmId: this.swarmId });
@@ -114,7 +121,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Stop synchronization processes
+   * Stop synchronization processes.
    */
   async stop(): Promise<void> {
     this.logger?.info('Stopping swarm synchronization', { swarmId: this.swarmId });
@@ -133,7 +140,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Core synchronization cycle
+   * Core synchronization cycle.
    */
   private async performSyncCycle(): Promise<void> {
     const syncId = this.generateSyncId();
@@ -185,7 +192,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Gather current local swarm state
+   * Gather current local swarm state.
    */
   private async gatherLocalState(): Promise<SwarmLocalState> {
     const agentStates = new Map(this.agentStates);
@@ -202,7 +209,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Broadcast state to peer swarms
+   * Broadcast state to peer swarms.
    *
    * @param localState
    * @param syncId
@@ -225,7 +232,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Wait for peer swarm responses
+   * Wait for peer swarm responses.
    *
    * @param syncId
    */
@@ -235,7 +242,7 @@ export class SwarmSynchronizer extends EventEmitter {
       const timeout = setTimeout(() => resolve(peerStates), this.config.consensusTimeout);
 
       const responseHandler = (data: any) => {
-        if (data?.syncId === syncId && data?.sourceSwarmId !== this.swarmId) {
+        if (data.syncId === syncId && data?.sourceSwarmId !== this.swarmId) {
           peerStates.push(data?.state);
 
           // If we have enough peers, resolve early
@@ -256,7 +263,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Reach consensus on global state
+   * Reach consensus on global state.
    *
    * @param localState
    * @param peerStates
@@ -273,7 +280,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Apply consensus state changes locally
+   * Apply consensus state changes locally.
    *
    * @param consensusState
    */
@@ -299,7 +306,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Create synchronization checkpoint
+   * Create synchronization checkpoint.
    *
    * @param consensusState
    */
@@ -330,7 +337,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Monitor agent heartbeats and handle failures
+   * Monitor agent heartbeats and handle failures.
    */
   private checkAgentHeartbeats(): void {
     const now = Date.now();
@@ -350,7 +357,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Handle agents that have become unresponsive
+   * Handle agents that have become unresponsive.
    *
    * @param staleAgents
    */
@@ -371,7 +378,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Calculate global swarm metrics
+   * Calculate global swarm metrics.
    */
   private async calculateGlobalMetrics(): Promise<SwarmGlobalState> {
     const agents = Array.from(this.agentStates.values());
@@ -395,7 +402,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Set up event handlers for synchronization
+   * Set up event handlers for synchronization.
    */
   private setupEventHandlers(): void {
     if (!this.eventBus) return;
@@ -409,14 +416,14 @@ export class SwarmSynchronizer extends EventEmitter {
 
     // Handle agent state updates
     this.eventBus.on('agent:state:updated', (data) => {
-      if (data?.swarmId === this.swarmId) {
+      if (data.swarmId === this.swarmId) {
         this.updateAgentState(data?.agentId, data?.state);
       }
     });
   }
 
   /**
-   * Handle sync broadcast from peer swarm
+   * Handle sync broadcast from peer swarm.
    *
    * @param data
    */
@@ -440,7 +447,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Update local agent state
+   * Update local agent state.
    *
    * @param agentId
    * @param newState
@@ -457,7 +464,7 @@ export class SwarmSynchronizer extends EventEmitter {
   }
 
   /**
-   * Get current synchronization status
+   * Get current synchronization status.
    */
   getSyncStatus(): SwarmSyncStatus {
     const lastSync = this.syncHistory[this.syncHistory.length - 1];
@@ -555,7 +562,7 @@ interface Task {
 }
 
 /**
- * Consensus protocol implementation
+ * Consensus protocol implementation.
  *
  * @example
  */

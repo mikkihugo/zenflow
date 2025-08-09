@@ -1,7 +1,12 @@
 /**
- * Real-time Performance Monitoring System for Claude-Zen
- * Provides comprehensive performance tracking and alerting
+ * Real-time Performance Monitoring System for Claude-Zen.
+ * Provides comprehensive performance tracking and alerting.
  */
+/**
+ * @file real-time-monitor implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { performance } from 'node:perf_hooks';
@@ -49,15 +54,15 @@ export class RealTimePerformanceMonitor extends EventEmitter {
       ...config,
     };
 
-    if (config.alertThresholds) {
-      this.alerts = config.alertThresholds;
+    if (config?.alertThresholds) {
+      this.alerts = config?.alertThresholds;
     }
 
     this.setupDefaultAlerts();
   }
 
   /**
-   * Start real-time monitoring
+   * Start real-time monitoring.
    */
   start(): void {
     if (this.isMonitoring) return;
@@ -75,7 +80,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   }
 
   /**
-   * Stop monitoring
+   * Stop monitoring.
    */
   stop(): void {
     if (!this.isMonitoring) return;
@@ -88,7 +93,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   }
 
   /**
-   * Record a performance metric
+   * Record a performance metric.
    *
    * @param name
    * @param value
@@ -114,7 +119,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   }
 
   /**
-   * Measure execution time of a function
+   * Measure execution time of a function.
    *
    * @param name
    * @param fn
@@ -136,7 +141,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   }
 
   /**
-   * Measure async function execution time
+   * Measure async function execution time.
    *
    * @param name
    * @param fn
@@ -162,7 +167,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   }
 
   /**
-   * Get performance metrics for a specific metric name
+   * Get performance metrics for a specific metric name.
    *
    * @param name
    */
@@ -171,7 +176,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   }
 
   /**
-   * Get aggregated statistics for a metric
+   * Get aggregated statistics for a metric.
    *
    * @param name
    */
@@ -193,7 +198,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   }
 
   /**
-   * Get current system performance snapshot
+   * Get current system performance snapshot.
    */
   getSystemSnapshot(): Record<string, any> {
     const mem = memoryUsage();
@@ -217,7 +222,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   }
 
   /**
-   * Generate performance report
+   * Generate performance report.
    */
   generateReport(): string {
     const report = {
@@ -240,7 +245,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   }
 
   /**
-   * Add performance alert
+   * Add performance alert.
    *
    * @param alert
    */
@@ -249,7 +254,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   }
 
   /**
-   * Remove performance alert
+   * Remove performance alert.
    *
    * @param metric
    */
@@ -258,7 +263,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   }
 
   /**
-   * Private methods
+   * Private methods.
    */
   private collectSystemMetrics(): void {
     const snapshot = this.getSystemSnapshot();
@@ -289,7 +294,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
       const latestMetrics = this.getMetrics(alert.metric);
       if (latestMetrics.length === 0) continue;
 
-      const latestValue = latestMetrics[latestMetrics.length - 1].value;
+      const latestValue = latestMetrics[latestMetrics.length - 1]?.value;
       const triggered = this.evaluateAlert(latestValue, alert);
 
       if (triggered) {

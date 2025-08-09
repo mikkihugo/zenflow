@@ -1,7 +1,9 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-api-http-server");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-api-http-server');
+
 /**
- * REST API Server - Express with Schema-driven Development
+ * REST API Server - Express with Schema-driven Development.
  *
  * Main Express server implementing Google API Design Guide standards.
  * Features automatic OpenAPI 3 documentation and request validation.
@@ -18,8 +20,8 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 
 // Import centralized configuration
-import { DEFAULT_CONFIG } from '../../config/defaults';
-import { getCORSOrigins, getAPIEndpoints } from '../../config/url-builder';
+import { DEFAULT_CONFIG } from '../config/defaults';
+import { getAPIEndpoints, getCORSOrigins } from '../config/url-builder';
 
 // Optional dependencies - handle missing gracefully
 let compression: any = null;
@@ -36,9 +38,7 @@ try {
 try {
   ({ OpenApiValidator } = require('express-openapi-validator'));
 } catch (_e) {
-  logger.warn(
-    'express-openapi-validator package not available - request validation disabled'
-  );
+  logger.warn('express-openapi-validator package not available - request validation disabled');
 }
 
 try {
@@ -48,21 +48,20 @@ try {
   logger.warn('swagger packages not available - API documentation disabled');
 }
 
+import { getConfig } from '../config';
 import { authMiddleware } from './middleware/auth';
 // Import middleware
 import { errorHandler } from './middleware/errors';
 import { requestLogger } from './middleware/logging';
-
 // Import modular route handlers
 import { createCoordinationRoutes } from './v1/coordination';
 import { createDatabaseRoutes } from './v1/database';
-import { getConfig } from '../../../config';
 import { createMemoryRoutes } from './v1/memory';
 import { createNeuralRoutes } from './v1/neural';
 
 /**
- * Main API Server Configuration
- * Following Google's secure by default principles
+ * Main API Server Configuration.
+ * Following Google's secure by default principles.
  *
  * @example
  */
@@ -79,8 +78,8 @@ export interface APIServerConfig {
 }
 
 /**
- * API Client Configuration
- * Configuration for API client instances
+ * API Client Configuration.
+ * Configuration for API client instances.
  *
  * @example
  */
@@ -95,27 +94,30 @@ export interface APIClientConfig {
 }
 
 /**
- * Default server configuration with secure defaults from centralized config
+ * Default server configuration with secure defaults from centralized config.
  */
 export const DEFAULT_API_CONFIG: APIServerConfig = (() => {
   const centralConfig = getConfig();
   return {
-    port: centralConfig.interfaces.web.port,
-    host: centralConfig.interfaces.web.host,
-    environment: centralConfig.environment.isProduction ? 'production' : 
-                 centralConfig.environment.isDevelopment ? 'development' : 'test',
-    enableSwagger: centralConfig.environment.enableDebugEndpoints,
-    enableValidation: centralConfig.environment.strictValidation,
+    port: centralConfig?.interfaces?.web?.port,
+    host: centralConfig?.interfaces?.web?.host,
+    environment: centralConfig?.environment?.isProduction
+      ? 'production'
+      : centralConfig?.environment?.isDevelopment
+        ? 'development'
+        : 'test',
+    enableSwagger: centralConfig?.environment?.enableDebugEndpoints,
+    enableValidation: centralConfig?.environment?.strictValidation,
     enableRateLimit: true,
     rateLimitWindowMs: 15 * 60 * 1000, // 15 minutes
     rateLimitMaxRequests: 100, // 100 requests per window
-    corsOrigins: centralConfig.interfaces.web.corsOrigins,
+    corsOrigins: centralConfig?.interfaces?.web?.corsOrigins,
   } as const;
 })();
 
 /**
  * OpenAPI 3.0 Configuration
- * Unified documentation for all domain APIs
+ * Unified documentation for all domain APIs.
  */
 const swaggerOptions = (() => {
   const centralConfig = getConfig();
@@ -125,7 +127,8 @@ const swaggerOptions = (() => {
       info: {
         title: 'Claude Code Flow API',
         version: '1.0.0',
-        description: 'Unified API for coordination, neural networks, memory, and database operations',
+        description:
+          'Unified API for coordination, neural networks, memory, and database operations',
         contact: {
           name: 'Claude Code Flow Team',
           url: 'https://github.com/claude-zen-flow',
@@ -137,19 +140,19 @@ const swaggerOptions = (() => {
       },
       servers: getAPIEndpoints(),
       components: {
-      securitySchemes: {
-        BearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-        },
-        ApiKeyAuth: {
-          type: 'apiKey',
-          in: 'header',
-          name: 'X-API-Key',
+        securitySchemes: {
+          BearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+          },
+          ApiKeyAuth: {
+            type: 'apiKey',
+            in: 'header',
+            name: 'X-API-Key',
+          },
         },
       },
-    },
       security: [
         {
           BearerAuth: [],
@@ -160,10 +163,10 @@ const swaggerOptions = (() => {
       ],
     },
     apis: [
-    // Domain API surface files (coordination + neural) - keep explicit
-    './src/coordination/api.ts',
-    './src/neural/api.ts',
-    // New canonical interface routes & schemas (replaces legacy ./src/api/* globs)
+      // Domain API surface files (coordination + neural) - keep explicit
+      './src/coordination/api.ts',
+      './src/neural/api.ts',
+      // New canonical interface routes & schemas (replaces legacy ./src/api/* globs)
       './src/interfaces/api/http/v1/*.ts',
       './src/interfaces/api/http/schemas/*.ts',
     ],
@@ -171,8 +174,8 @@ const swaggerOptions = (() => {
 })();
 
 /**
- * Main API Server Class
- * Implements Express server with all domain APIs
+ * Main API Server Class.
+ * Implements Express server with all domain APIs.
  *
  * @example
  */
@@ -183,10 +186,10 @@ export class APIServer {
 
   constructor(config: Partial<APIServerConfig> = {}) {
     // Merge config and populate CORS origins dynamically from centralized configuration
-    this.config = { 
-      ...DEFAULT_API_CONFIG, 
+    this.config = {
+      ...DEFAULT_API_CONFIG,
       ...config,
-      corsOrigins: config.corsOrigins || getCORSOrigins()
+      corsOrigins: config?.corsOrigins || getCORSOrigins(),
     };
     this.app = express();
     this.setupMiddleware();
@@ -195,8 +198,8 @@ export class APIServer {
   }
 
   /**
-   * Setup middleware stack
-   * Following Google security and performance best practices
+   * Setup middleware stack.
+   * Following Google security and performance best practices.
    */
   private setupMiddleware(): void {
     // Security middleware
@@ -262,8 +265,8 @@ export class APIServer {
   }
 
   /**
-   * Setup API routes
-   * All domain APIs under /api/v1/ with unified documentation
+   * Setup API routes.
+   * All domain APIs under /api/v1/ with unified documentation.
    */
   private setupRoutes(): void {
     // Health check endpoint (no auth required)
@@ -350,7 +353,7 @@ export class APIServer {
   }
 
   /**
-   * Setup coordination domain routes
+   * Setup coordination domain routes.
    * Uses modular route handlers from v1/coordination.ts
    */
   private setupCoordinationRoutes(): void {
@@ -358,7 +361,7 @@ export class APIServer {
   }
 
   /**
-   * Setup neural network domain routes
+   * Setup neural network domain routes.
    * Uses modular route handlers from v1/neural.ts
    */
   private setupNeuralRoutes(): void {
@@ -366,7 +369,7 @@ export class APIServer {
   }
 
   /**
-   * Setup memory domain routes
+   * Setup memory domain routes.
    * Uses modular route handlers from v1/memory.ts
    */
   private setupMemoryRoutes(): void {
@@ -374,7 +377,7 @@ export class APIServer {
   }
 
   /**
-   * Setup database domain routes
+   * Setup database domain routes.
    * Uses modular route handlers from v1/database.ts
    */
   private setupDatabaseRoutes(): void {
@@ -382,8 +385,8 @@ export class APIServer {
   }
 
   /**
-   * Setup system-wide routes
-   * System health, metrics, configuration
+   * Setup system-wide routes.
+   * System health, metrics, configuration.
    */
   private setupSystemRoutes(): void {
     const router = express.Router();
@@ -422,16 +425,16 @@ export class APIServer {
   }
 
   /**
-   * Setup error handling
-   * Standardized error responses following Google API Design Guide
+   * Setup error handling.
+   * Standardized error responses following Google API Design Guide.
    */
   private setupErrorHandling(): void {
     this.app.use(errorHandler);
   }
 
   /**
-   * Start the API server
-   * Returns a promise that resolves when server is listening
+   * Start the API server.
+   * Returns a promise that resolves when server is listening.
    */
   public async start(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -450,8 +453,8 @@ export class APIServer {
   }
 
   /**
-   * Stop the API server
-   * Gracefully closes all connections
+   * Stop the API server.
+   * Gracefully closes all connections.
    */
   public async stop(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -471,15 +474,15 @@ export class APIServer {
   }
 
   /**
-   * Get the Express app instance
-   * Useful for testing and custom middleware
+   * Get the Express app instance.
+   * Useful for testing and custom middleware.
    */
   public getApp(): Application {
     return this.app;
   }
 
   /**
-   * Get current server configuration
+   * Get current server configuration.
    */
   public getConfig(): APIServerConfig {
     return { ...this.config };
@@ -487,8 +490,8 @@ export class APIServer {
 }
 
 /**
- * Factory function to create and start API server
- * Convenient for simple use cases
+ * Factory function to create and start API server.
+ * Convenient for simple use cases.
  *
  * @param config
  */
@@ -499,8 +502,8 @@ export const createAPIServer = async (config?: Partial<APIServerConfig>): Promis
 };
 
 /**
- * Main entry point when run directly
- * Starts the API server with default configuration
+ * Main entry point when run directly.
+ * Starts the API server with default configuration.
  */
 if (require.main === module) {
   const server = new APIServer();

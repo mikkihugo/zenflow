@@ -1,17 +1,22 @@
 /**
- * Unified Data Access Layer (DAL) - Core Interfaces
+ * Unified Data Access Layer (DAL) - Core Interfaces.
  *
- * Provides generic interfaces for standardizing data access across all data sources
- * including Kuzu (graph), LanceDB (vector), coordination databases, memory stores,
+ * Provides generic interfaces for standardizing data access across all data sources.
+ * Including Kuzu (graph), LanceDB (vector), coordination databases, memory stores,
  * relational databases, and any other data persistence mechanisms.
  */
 
 /**
- * Generic repository interface for standardized data access
+ * Generic repository interface for standardized data access.
  *
- * @template T The entity type this repository manages
+ * @template T The entity type this repository manages.
  * @example
  */
+/**
+ * @file Database layer: interfaces.
+ */
+
+
 export interface IRepository<T> {
   /** Find entity by ID */
   findById(id: string | number): Promise<T | null>;
@@ -42,9 +47,9 @@ export interface IRepository<T> {
 }
 
 /**
- * Data Access Object interface for domain-specific operations
+ * Data Access Object interface for domain-specific operations.
  *
- * @template T The entity type
+ * @template T The entity type.
  * @example
  */
 export interface IDataAccessObject<T> {
@@ -65,7 +70,7 @@ export interface IDataAccessObject<T> {
 }
 
 /**
- * Specialized interface for graph databases (Kuzu)
+ * Specialized interface for graph databases (Kuzu).
  *
  * @example
  */
@@ -100,7 +105,7 @@ export interface IGraphRepository<T> extends IRepository<T> {
 }
 
 /**
- * Specialized interface for vector databases (LanceDB)
+ * Specialized interface for vector databases (LanceDB).
  *
  * @example
  */
@@ -125,7 +130,7 @@ export interface IVectorRepository<T> extends IRepository<T> {
 }
 
 /**
- * Specialized interface for memory stores
+ * Specialized interface for memory stores.
  *
  * @example
  */
@@ -150,7 +155,9 @@ export interface IMemoryRepository<T> extends IRepository<T> {
 }
 
 /**
- * Legacy aliases for backward compatibility
+ * Legacy aliases for backward compatibility.
+ *
+ * @example
  */
 export interface IDao<T> extends IRepository<T> {}
 export interface IManager<T> extends IDataAccessObject<T> {}
@@ -163,7 +170,9 @@ export interface ICoordinationDao<T> extends ICoordinationRepository<T> {}
 
 /**
  * Common entity types for coordination DAOs - provides type safety
- * and reduces repetition across the codebase
+ * and reduces repetition across the codebase.
+ *
+ * @example
  */
 export interface SessionEntity {
   id: string;
@@ -184,8 +193,10 @@ export interface CheckpointEntity {
 }
 
 /**
- * Specialized interface for agent memory management
- * Used by hooks system and other agent coordination features
+ * Specialized interface for agent memory management.
+ * Used by hooks system and other agent coordination features.
+ *
+ * @example
  */
 export interface IAgentMemoryDao<T> extends ICoordinationDao<T> {
   /** Store memory for a specific agent */
@@ -204,7 +215,7 @@ export interface IAgentMemoryDao<T> extends ICoordinationDao<T> {
   clearAgentMemory(agentId: string, pattern?: string): Promise<number>;
 }
 
-// Utility type aliases for common coordination DAO patterns
+// Utility type aliases for common coordination DAO patterns.
 export type SessionCoordinationDao = ICoordinationDao<SessionEntity>;
 export type CheckpointCoordinationDao = ICoordinationDao<CheckpointEntity>;
 export type EventCoordinationDao<T = any> = ICoordinationDao<CoordinationEvent<T>>;
@@ -212,7 +223,7 @@ export type AgentMemoryCoordinationDao<T = any> = IAgentMemoryDao<CoordinationEv
 export type GenericCoordinationDao<T = any> = ICoordinationDao<T>;
 
 /**
- * Entity type enums for strongly typed entity management
+ * Entity type enums for strongly typed entity management.
  */
 export enum EntityTypes {
   User = 'User',
@@ -228,7 +239,7 @@ export enum EntityTypes {
 }
 
 /**
- * Database type enums for database selection
+ * Database type enums for database selection.
  */
 export enum DatabaseTypes {
   PostgreSQL = 'postgresql',
@@ -243,7 +254,9 @@ export enum DatabaseTypes {
 }
 
 /**
- * Database query types for query building
+ * Database query types for query building.
+ *
+ * @example
  */
 export interface DatabaseQuery {
   type: 'select' | 'insert' | 'update' | 'delete' | 'aggregate';
@@ -263,7 +276,7 @@ export interface DatabaseQuery {
 }
 
 /**
- * Specialized interface for coordination databases
+ * Specialized interface for coordination databases.
  *
  * @example
  */
@@ -294,7 +307,7 @@ export interface ICoordinationRepository<T> extends IRepository<T> {
 }
 
 /**
- * Query options for standardized data access
+ * Query options for standardized data access.
  *
  * @example
  */
@@ -319,7 +332,7 @@ export interface QueryOptions {
 }
 
 /**
- * Sort criteria
+ * Sort criteria.
  *
  * @example
  */
@@ -329,7 +342,7 @@ export interface SortCriteria {
 }
 
 /**
- * Custom query interface for database-specific operations
+ * Custom query interface for database-specific operations.
  *
  * @example
  */
@@ -348,7 +361,7 @@ export interface CustomQuery {
 }
 
 /**
- * Transaction operation
+ * Transaction operation.
  *
  * @example
  */
@@ -367,7 +380,7 @@ export interface TransactionOperation {
 }
 
 /**
- * Database metadata
+ * Database metadata.
  *
  * @example
  */
@@ -389,7 +402,7 @@ export interface DatabaseMetadata {
 }
 
 /**
- * Health status
+ * Health status.
  *
  * @example
  */
@@ -411,7 +424,7 @@ export interface HealthStatus {
 }
 
 /**
- * Performance metrics
+ * Performance metrics.
  *
  * @example
  */
@@ -442,7 +455,7 @@ export interface PerformanceMetrics {
 }
 
 /**
- * Graph database specific types
+ * Graph database specific types.
  *
  * @example
  */
@@ -480,7 +493,7 @@ export interface GraphQueryResult {
 }
 
 /**
- * Vector database specific types
+ * Vector database specific types.
  *
  * @example
  */
@@ -544,7 +557,7 @@ export interface ClusterResult {
 }
 
 /**
- * Memory store specific types
+ * Memory store specific types.
  *
  * @example
  */
@@ -558,7 +571,7 @@ export interface MemoryStats {
 }
 
 /**
- * Coordination database specific types
+ * Coordination database specific types.
  *
  * @example
  */

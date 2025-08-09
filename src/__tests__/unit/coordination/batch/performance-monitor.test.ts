@@ -354,10 +354,10 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
 
       const exportedData = monitor.exportPerformanceData();
 
-      expect(exportedData.metrics).toHaveLength(1);
-      expect(exportedData.baseline).toBeNull();
-      expect(exportedData.summary).toBeDefined();
-      expect(exportedData.summary.totalExecutions).toBe(1);
+      expect(exportedData?.metrics).toHaveLength(1);
+      expect(exportedData?.baseline).toBeNull();
+      expect(exportedData?.summary).toBeDefined();
+      expect(exportedData?.summary?.totalExecutions).toBe(1);
     });
 
     it('should manage history size limits', () => {

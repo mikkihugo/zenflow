@@ -6,11 +6,11 @@
  * - Consistent initialization, lifecycle management, and monitoring patterns
  * - Factory pattern for service creation and management
  * - Health checks, performance monitoring, and configuration management
- * - Type-safe service registry and discovery system
+ * - Type-safe service registry and discovery system.
  */
 
 /**
- * Service authentication configuration
+ * Service authentication configuration.
  *
  * @interface ServiceAuthConfig
  * @description Configuration for various authentication methods supported by services
@@ -81,7 +81,7 @@ export interface ServiceAuthConfig {
 }
 
 /**
- * Service retry configuration with multiple backoff strategies
+ * Service retry configuration with multiple backoff strategies.
  *
  * @example
  */
@@ -94,7 +94,7 @@ export interface ServiceRetryConfig {
 }
 
 /**
- * Service health check configuration
+ * Service health check configuration.
  *
  * @example
  */
@@ -108,7 +108,7 @@ export interface ServiceHealthConfig {
 }
 
 /**
- * Service performance monitoring configuration
+ * Service performance monitoring configuration.
  *
  * @example
  */
@@ -123,7 +123,7 @@ export interface ServiceMonitoringConfig {
 }
 
 /**
- * Service dependency configuration
+ * Service dependency configuration.
  *
  * @example
  */
@@ -136,7 +136,7 @@ export interface ServiceDependencyConfig {
 }
 
 /**
- * Base service configuration interface
+ * Base service configuration interface.
  *
  * @example
  */
@@ -182,7 +182,7 @@ export interface ServiceConfig {
 }
 
 /**
- * Service lifecycle status
+ * Service lifecycle status.
  */
 export type ServiceLifecycleStatus =
   | 'uninitialized'
@@ -196,7 +196,7 @@ export type ServiceLifecycleStatus =
   | 'destroyed';
 
 /**
- * Service health status information
+ * Service health status information.
  *
  * @example
  */
@@ -219,7 +219,7 @@ export interface ServiceStatus {
 }
 
 /**
- * Service performance metrics
+ * Service performance metrics.
  *
  * @example
  */
@@ -243,7 +243,7 @@ export interface ServiceMetrics {
 }
 
 /**
- * Generic service operation options
+ * Generic service operation options.
  *
  * @example
  */
@@ -255,7 +255,7 @@ export interface ServiceOperationOptions {
 }
 
 /**
- * Generic service operation response
+ * Generic service operation response.
  *
  * @example
  */
@@ -276,7 +276,7 @@ export interface ServiceOperationResponse<T = any> {
 }
 
 /**
- * Service event types for lifecycle and operations
+ * Service event types for lifecycle and operations.
  */
 export type ServiceEventType =
   | 'initializing'
@@ -291,7 +291,7 @@ export type ServiceEventType =
   | 'metrics-update';
 
 /**
- * Service event data
+ * Service event data.
  *
  * @example
  */
@@ -304,7 +304,7 @@ export interface ServiceEvent {
 }
 
 /**
- * Core service interface that all services must implement
+ * Core service interface that all services must implement.
  *
  * @interface IService
  * @description Base interface that all USL services must implement for consistent lifecycle management,
@@ -377,7 +377,7 @@ export interface IService {
   readonly config: ServiceConfig;
 
   /**
-   * Initialize the service with optional configuration override
+   * Initialize the service with optional configuration override.
    *
    * @param config Optional configuration override
    * @returns Promise that resolves when initialization is complete
@@ -386,7 +386,7 @@ export interface IService {
   initialize(config?: Partial<ServiceConfig>): Promise<void>;
 
   /**
-   * Start the service and begin processing
+   * Start the service and begin processing.
    *
    * @returns Promise that resolves when service is started
    * @throws {ServiceOperationError} When startup fails
@@ -394,7 +394,7 @@ export interface IService {
   start(): Promise<void>;
 
   /**
-   * Stop the service gracefully
+   * Stop the service gracefully.
    *
    * @returns Promise that resolves when service is stopped
    * @throws {ServiceOperationError} When shutdown fails
@@ -402,7 +402,7 @@ export interface IService {
   stop(): Promise<void>;
 
   /**
-   * Destroy the service and clean up resources
+   * Destroy the service and clean up resources.
    *
    * @returns Promise that resolves when destruction is complete
    * @throws {ServiceOperationError} When destruction fails
@@ -410,21 +410,21 @@ export interface IService {
   destroy(): Promise<void>;
 
   /**
-   * Get current service status and health information
+   * Get current service status and health information.
    *
    * @returns Promise resolving to service status
    */
   getStatus(): Promise<ServiceStatus>;
 
   /**
-   * Get service performance metrics
+   * Get service performance metrics.
    *
    * @returns Promise resolving to service metrics
    */
   getMetrics(): Promise<ServiceMetrics>;
 
   /**
-   * Perform health check on the service
+   * Perform health check on the service.
    *
    * @returns Promise resolving to true if service is healthy
    */
@@ -439,7 +439,7 @@ export interface IService {
   getCapabilities(): string[];
 
   /**
-   * Execute a service-specific operation
+   * Execute a service-specific operation.
    *
    * @template T The expected return type
    * @param operation Operation name to execute
@@ -475,7 +475,7 @@ export interface IService {
   ): Promise<ServiceOperationResponse<T>>;
 
   /**
-   * Register an event handler for service events
+   * Register an event handler for service events.
    *
    * @param event Event type to listen for
    * @param handler Function to call when event occurs
@@ -484,7 +484,7 @@ export interface IService {
   on(event: ServiceEventType, handler: (event: ServiceEvent) => void): void;
 
   /**
-   * Remove an event handler
+   * Remove an event handler.
    *
    * @param event Event type to stop listening for
    * @param handler Specific handler to remove (optional)
@@ -493,7 +493,7 @@ export interface IService {
   off(event: ServiceEventType, handler?: (event: ServiceEvent) => void): void;
 
   /**
-   * Emit a service event
+   * Emit a service event.
    *
    * @param event Event type to emit
    * @param data Optional event data
@@ -509,7 +509,7 @@ export interface IService {
 }
 
 /**
- * Service factory interface for creating and managing service instances
+ * Service factory interface for creating and managing service instances.
  *
  * @interface IServiceFactory
  * @template TConfig Service configuration type
@@ -547,7 +547,7 @@ export interface IService {
  */
 export interface IServiceFactory<TConfig extends ServiceConfig = ServiceConfig> {
   /**
-   * Create a single service instance
+   * Create a single service instance.
    *
    * @param config Service configuration
    * @returns Promise resolving to created service
@@ -556,7 +556,7 @@ export interface IServiceFactory<TConfig extends ServiceConfig = ServiceConfig> 
   create(config: TConfig): Promise<IService>;
 
   /**
-   * Create multiple service instances
+   * Create multiple service instances.
    *
    * @param configs Array of service configurations
    * @returns Promise resolving to array of created services
@@ -565,7 +565,7 @@ export interface IServiceFactory<TConfig extends ServiceConfig = ServiceConfig> 
   createMultiple(configs: TConfig[]): Promise<IService[]>;
 
   /**
-   * Get a service instance by name
+   * Get a service instance by name.
    *
    * @param name Service name identifier
    * @returns Service instance or undefined if not found
@@ -573,14 +573,14 @@ export interface IServiceFactory<TConfig extends ServiceConfig = ServiceConfig> 
   get(name: string): IService | undefined;
 
   /**
-   * List all managed service instances
+   * List all managed service instances.
    *
    * @returns Array of all service instances
    */
   list(): IService[];
 
   /**
-   * Check if a service with the given name exists
+   * Check if a service with the given name exists.
    *
    * @param name Service name to check
    * @returns True if service exists
@@ -588,7 +588,7 @@ export interface IServiceFactory<TConfig extends ServiceConfig = ServiceConfig> 
   has(name: string): boolean;
 
   /**
-   * Remove and destroy a service instance
+   * Remove and destroy a service instance.
    *
    * @param name Service name to remove
    * @returns Promise resolving to true if removed successfully
@@ -617,7 +617,7 @@ export interface IServiceFactory<TConfig extends ServiceConfig = ServiceConfig> 
 }
 
 /**
- * Service registry interface for global service management
+ * Service registry interface for global service management.
  *
  * @example
  */
@@ -664,7 +664,7 @@ export interface IServiceRegistry {
 }
 
 /**
- * Service configuration validator interface
+ * Service configuration validator interface.
  *
  * @example
  */
@@ -683,7 +683,7 @@ export interface IServiceConfigValidator {
 }
 
 /**
- * Service error types
+ * Service error types.
  *
  * @example
  */
@@ -760,7 +760,7 @@ export class ServiceTimeoutError extends ServiceError {
 }
 
 /**
- * Service capability definitions
+ * Service capability definitions.
  *
  * @example
  */
@@ -773,7 +773,7 @@ export interface ServiceCapability {
 }
 
 /**
- * Service capability registry
+ * Service capability registry.
  *
  * @example
  */

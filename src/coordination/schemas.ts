@@ -1,5 +1,5 @@
 /**
- * Coordination Domain - OpenAPI 3 Schemas
+ * Coordination Domain - OpenAPI 3 Schemas.
  *
  * Comprehensive schema definitions for Swagger autodoc generation.
  * Following Google API Design Guide standards.

@@ -1,9 +1,14 @@
 /**
- * Advanced Swarm Coordination Protocols
- * Comprehensive system for sophisticated multi-agent collaboration
+ * Advanced Swarm Coordination Protocols.
+ * Comprehensive system for sophisticated multi-agent collaboration.
  */
 
 // Communication Protocols
+/**
+ * @file protocols module exports
+ */
+
+
 export {
   type CommunicationNode,
   CommunicationProtocols,
@@ -92,12 +97,12 @@ export {
   type TopologyType,
 } from './topology/topology-manager';
 
-import type { IEventBus } from '../../core/event-bus';
+import type { IEventBus } from '../core/event-bus';
 /**
- * Advanced Coordination System Factory
- * Creates and configures integrated coordination systems
+ * Advanced Coordination System Factory.
+ * Creates and configures integrated coordination systems.
  */
-import type { ILogger } from '../../core/logger';
+import type { ILogger } from '../core/logger';
 import { CommunicationProtocols } from './communication/communication-protocols';
 import { TaskDistributionEngine } from './distribution/task-distribution-engine';
 import { AgentLifecycleManager } from './lifecycle/agent-lifecycle-manager';
@@ -278,7 +283,7 @@ export interface CoordinationMetrics {
 }
 
 /**
- * Create an integrated advanced coordination system
+ * Create an integrated advanced coordination system.
  *
  * @param config
  * @param logger
@@ -292,22 +297,22 @@ export async function createAdvancedCoordinationSystem(
   // Create topology manager
   const topologyManager = new TopologyManager(
     {
-      type: config.topology.type,
-      parameters: config.topology.parameters,
-      constraints: config.topology.constraints,
-      adaptation: config.topology.adaptation,
+      type: config?.topology?.type,
+      parameters: config?.topology?.parameters,
+      constraints: config?.topology?.constraints,
+      adaptation: config?.topology?.adaptation,
     },
     logger,
     eventBus
   );
 
   // Create task distribution engine
-  const distributionEngine = new TaskDistributionEngine(config.distribution, logger, eventBus);
+  const distributionEngine = new TaskDistributionEngine(config?.distribution, logger, eventBus);
 
   // Create communication protocols
   const communicationProtocols = new CommunicationProtocols(
-    config.nodeId,
-    config.communication,
+    config?.nodeId,
+    config?.communication,
     logger,
     eventBus
   );
@@ -315,16 +320,16 @@ export async function createAdvancedCoordinationSystem(
   // Create agent lifecycle manager
   const lifecycleManager = new AgentLifecycleManager(
     {
-      maxAgents: config.lifecycle.maxAgents,
-      minAgents: config.lifecycle.minAgents,
-      spawnTimeout: config.lifecycle.spawnTimeout,
-      shutdownTimeout: config.lifecycle.shutdownTimeout,
-      healthCheckInterval: config.lifecycle.healthCheckInterval,
-      performanceWindow: config.lifecycle.performanceWindow,
-      autoRestart: config.lifecycle.autoRestart,
-      autoScale: config.lifecycle.autoScale,
-      resourceLimits: config.lifecycle.resourceLimits,
-      qualityThresholds: config.lifecycle.qualityThresholds,
+      maxAgents: config?.lifecycle?.maxAgents,
+      minAgents: config?.lifecycle?.minAgents,
+      spawnTimeout: config?.lifecycle?.spawnTimeout,
+      shutdownTimeout: config?.lifecycle?.shutdownTimeout,
+      healthCheckInterval: config?.lifecycle?.healthCheckInterval,
+      performanceWindow: config?.lifecycle?.performanceWindow,
+      autoRestart: config?.lifecycle?.autoRestart,
+      autoScale: config?.lifecycle?.autoScale,
+      resourceLimits: config?.lifecycle?.resourceLimits,
+      qualityThresholds: config?.lifecycle?.qualityThresholds,
     },
     logger,
     eventBus
@@ -332,14 +337,14 @@ export async function createAdvancedCoordinationSystem(
 
   // Create coordination patterns
   const coordinationPatterns = new CoordinationPatterns(
-    config.nodeId,
-    config.patterns,
+    config?.nodeId,
+    config?.patterns,
     logger,
     eventBus
   );
 
   // Create performance optimizer
-  const performanceOptimizer = new PerformanceOptimizer(config.optimization, logger, eventBus);
+  const performanceOptimizer = new PerformanceOptimizer(config?.optimization, logger, eventBus);
 
   // Set up cross-system integrations
   await setupIntegrations(
@@ -365,7 +370,7 @@ export async function createAdvancedCoordinationSystem(
 }
 
 /**
- * Set up integrations between coordination systems
+ * Set up integrations between coordination systems.
  *
  * @param systems
  * @param logger
@@ -383,7 +388,7 @@ async function setupIntegrations(
   // Distribution -> Lifecycle: Dynamic agent scaling based on task load
   systems.distributionEngine.on('load:spike', (data) => {
     logger.info('Task load spike detected, triggering agent scaling', data);
-    systems.lifecycleManager.triggerScaling('worker', data.targetAgents).catch((error) => {
+    systems.lifecycleManager.triggerScaling('worker', data?.targetAgents).catch((error) => {
       logger.error('Auto-scaling failed', { error });
     });
   });
@@ -418,7 +423,7 @@ async function setupIntegrations(
 }
 
 /**
- * Get comprehensive coordination metrics
+ * Get comprehensive coordination metrics.
  *
  * @param systems
  */
@@ -502,7 +507,7 @@ function calculateAdaptabilityScore(metrics: any): number {
 }
 
 /**
- * Shutdown coordination system gracefully
+ * Shutdown coordination system gracefully.
  *
  * @param systems
  * @param logger
@@ -530,7 +535,7 @@ export async function shutdownCoordinationSystem(
 }
 
 /**
- * Default configuration for advanced coordination system
+ * Default configuration for advanced coordination system.
  *
  * @param nodeId
  */

@@ -4,12 +4,17 @@
  * Handles Express server initialization, middleware, and core HTTP functionality.
  * Separated from business logic for better maintainability.
  */
+/**
+ * @file Interface implementation: web-dashboard-server
+ */
+
+
 
 import { existsSync } from 'node:fs';
 import { createServer, type Server as HTTPServer } from 'node:http';
 import express, { type Express } from 'express';
 import { Server as SocketIOServer } from 'socket.io';
-import { createLogger } from '../../utils/logger';
+import { createLogger } from '../utils/logger';
 import type { WebConfig } from './web-config';
 
 export class WebDashboardServer {
@@ -32,14 +37,14 @@ export class WebDashboardServer {
   }
 
   /**
-   * Get Express app instance
+   * Get Express app instance.
    */
   getApp(): Express {
     return this.app;
   }
 
   /**
-   * Get HTTP server instance
+   * Get HTTP server instance.
    */
   getServer(): HTTPServer {
     return this.server;
@@ -53,7 +58,7 @@ export class WebDashboardServer {
   }
 
   /**
-   * Setup Express middleware
+   * Setup Express middleware.
    */
   setupMiddleware(): void {
     // CORS
@@ -84,7 +89,7 @@ export class WebDashboardServer {
   }
 
   /**
-   * Start the HTTP server
+   * Start the HTTP server.
    */
   async start(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -110,7 +115,7 @@ export class WebDashboardServer {
   }
 
   /**
-   * Stop the HTTP server
+   * Stop the HTTP server.
    */
   async stop(): Promise<void> {
     this.io.close();
@@ -119,7 +124,7 @@ export class WebDashboardServer {
   }
 
   /**
-   * Get server capabilities
+   * Get server capabilities.
    */
   static getCapabilities(): any {
     return {

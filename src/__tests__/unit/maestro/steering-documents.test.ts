@@ -111,7 +111,7 @@ describe('Maestro Steering Document Generation', () => {
 
       await maestroOrchestrator.createSteeringDocument(domain, content);
 
-      const writtenContent = (mockWriteFile as jest.Mock).mock.calls[0][1];
+      const writtenContent = (mockWriteFile as jest.Mock).mock.calls[0]?.[1];
 
       expect(writtenContent).toContain('# Tech Steering Document');
       expect(writtenContent).toContain(content);
@@ -132,7 +132,7 @@ describe('Maestro Steering Document Generation', () => {
 
         await maestroOrchestrator.createSteeringDocument(testCase.domain, 'Test content');
 
-        const writtenContent = (mockWriteFile as jest.Mock).mock.calls[0][1];
+        const writtenContent = (mockWriteFile as jest.Mock).mock.calls[0]?.[1];
         expect(writtenContent).toContain(`# ${testCase.expectedTitle}`);
       }
     });
@@ -315,7 +315,7 @@ function validateSteeringDocumentStructure(content: string, domain: string) {
     (section) => content.includes(`## ${section}`) || content.includes(`### ${section}`)
   );
 
-  const missingSections = requiredSections.filter((section) => !foundRequired.includes(section));
+  const missingSections = requiredSections.filter((section) => !foundRequired?.includes(section));
 
   const hasTitle = content.includes(
     `# ${domain.charAt(0).toUpperCase() + domain.slice(1)} Steering Document`

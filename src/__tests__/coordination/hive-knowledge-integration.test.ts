@@ -60,7 +60,7 @@ class MockHiveFACT extends EventEmitter implements Partial<HiveFACTSystem> {
     const results = Array.from(this.facts.values()).filter((fact) =>
       JSON.stringify(fact).toLowerCase().includes(query.query.toLowerCase())
     );
-    return results.slice(0, query.limit || 10);
+    return results?.slice(0, query.limit || 10);
   }
 
   async getFact(type: string, subject: string, swarmId?: string): Promise<UniversalFact | null> {
@@ -200,11 +200,11 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       const response = await knowledgeBridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(true);
-      expect(response.data).toBeDefined();
-      expect(response.data.results).toBeInstanceOf(Array);
-      expect(response.metadata.source).toBe('hive-fact');
-      expect(response.metadata.confidence).toBeGreaterThan(0);
+      expect(response?.success).toBe(true);
+      expect(response?.data).toBeDefined();
+      expect(response?.data?.results).toBeInstanceOf(Array);
+      expect(response?.metadata?.source).toBe('hive-fact');
+      expect(response?.metadata?.confidence).toBeGreaterThan(0);
     });
 
     test('should handle knowledge contributions', async () => {
@@ -266,9 +266,9 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       const response = await knowledgeBridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(true);
-      expect(response.data.status).toBe('queued-for-processing');
-      expect(response.metadata.source).toBe('swarm-contribution');
+      expect(response?.success).toBe(true);
+      expect(response?.data?.status).toBe('queued-for-processing');
+      expect(response?.metadata?.source).toBe('swarm-contribution');
     });
 
     test('should handle subscription requests', async () => {
@@ -283,9 +283,9 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       const response = await knowledgeBridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(true);
-      expect(response.data.subscribed).toBe(true);
-      expect(response.data.domain).toBe('frontend');
+      expect(response?.success).toBe(true);
+      expect(response?.data?.subscribed).toBe(true);
+      expect(response?.data?.domain).toBe('frontend');
     });
 
     test('should handle request errors gracefully', async () => {
@@ -300,9 +300,9 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       const response = await knowledgeBridge.processKnowledgeRequest(invalidRequest);
 
-      expect(response.success).toBe(false);
-      expect(response.error).toBeDefined();
-      expect(typeof response.error).toBe('string');
+      expect(response?.success).toBe(false);
+      expect(response?.error).toBeDefined();
+      expect(typeof response?.error).toBe('string');
     });
   });
 
@@ -430,7 +430,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
           'authentication'
         );
         expect(result).toBeDefined();
-        expect(result.fallback).toBe(true);
+        expect(result?.fallback).toBe(true);
       } catch (error) {
         // Query should fail but might not have fallback
         expect(error).toBeInstanceOf(Error);
@@ -577,7 +577,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
       );
 
       expect(knowledgeAwareDomains).toHaveLength(1);
-      expect(knowledgeAwareDomains[0].knowledgeInsights).toBeDefined();
+      expect(knowledgeAwareDomains[0]?.knowledgeInsights).toBeDefined();
 
       // Step 5: Verify knowledge distribution
       const bridgeStats = knowledgeBridge.getStats();
@@ -609,7 +609,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
       expect(results).toHaveLength(4);
 
       // At least some should succeed
-      const successful = results.filter((r) => r.status === 'fulfilled');
+      const successful = results?.filter((r) => r.status === 'fulfilled');
       expect(successful.length).toBeGreaterThan(0);
     });
 

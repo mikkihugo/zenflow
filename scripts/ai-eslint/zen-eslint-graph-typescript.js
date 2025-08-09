@@ -14,8 +14,8 @@
 import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import * as ts from 'typescript';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -141,18 +141,19 @@ class TypeScriptGraphESLintAnalyzer {
             resolvedPath.includes('monitoring-event-adapter')
           ) {
             // Try to find similar paths in fileNodes for debugging
-            const similarPaths = [...this.fileNodes.keys()].filter(p => 
-              path.basename(p) === path.basename(resolvedPath) ||
-              p.includes(path.basename(resolvedPath, path.extname(resolvedPath)))
+            const similarPaths = [...this.fileNodes.keys()].filter(
+              (p) =>
+                path.basename(p) === path.basename(resolvedPath) ||
+                p.includes(path.basename(resolvedPath, path.extname(resolvedPath)))
             );
-            
+
             failedResolutions.push({
               from: path.basename(filePath),
               import: importPath,
               resolved: resolvedPath,
               exists: fs.existsSync(resolvedPath),
               inFileNodes: this.fileNodes.has(resolvedPath),
-              similarPaths: similarPaths.slice(0, 2).map(p => path.basename(p)),
+              similarPaths: similarPaths.slice(0, 2).map((p) => path.basename(p)),
             });
           }
         }
@@ -321,13 +322,11 @@ class TypeScriptGraphESLintAnalyzer {
 
     const batches = [];
     const totalFiles = prioritizedFiles.length;
-    
+
     // Simple efficient batching: fixed sizes to avoid ENOBUFS
     for (let i = 0; i < totalFiles; i += maxBatchSize) {
-      const batch = prioritizedFiles
-        .slice(i, i + maxBatchSize)
-        .map(fileInfo => fileInfo.path);
-      
+      const batch = prioritizedFiles.slice(i, i + maxBatchSize).map((fileInfo) => fileInfo.path);
+
       if (batch.length > 0) {
         batches.push(batch);
       }
@@ -336,8 +335,13 @@ class TypeScriptGraphESLintAnalyzer {
     console.log(
       `📊 Created ${batches.length} efficient batches (avg size: ${(totalFiles / batches.length).toFixed(1)})`
     );
-    console.log(`🎯 Batch sizes: ${batches.slice(0, 5).map(b => b.length).join(', ')}${batches.length > 5 ? ', ...' : ''}`);
-    
+    console.log(
+      `🎯 Batch sizes: ${batches
+        .slice(0, 5)
+        .map((b) => b.length)
+        .join(', ')}${batches.length > 5 ? ', ...' : ''}`
+    );
+
     return batches;
   }
 
@@ -359,9 +363,11 @@ class TypeScriptGraphESLintAnalyzer {
     // Quick mode: only process first 2 batches for testing
     const isQuickMode = process.argv.includes('--quick');
     const batchesToProcess = isQuickMode ? Math.min(2, batches.length) : batches.length;
-    
+
     if (isQuickMode) {
-      console.log(`⚡ Quick mode: Processing only first ${batchesToProcess} batches (${batchesToProcess * 10} files) for TypeScript API testing`);
+      console.log(
+        `⚡ Quick mode: Processing only first ${batchesToProcess} batches (${batchesToProcess * 10} files) for TypeScript API testing`
+      );
     }
 
     const allViolations = [];
@@ -369,7 +375,7 @@ class TypeScriptGraphESLintAnalyzer {
 
     for (const [index, batch] of batches.entries()) {
       if (index >= batchesToProcess) break; // Stop at the limit for quick mode
-      
+
       const progress = (((index + 1) / batchesToProcess) * 100).toFixed(1);
       console.log(
         `📊 Batch ${index + 1}/${batchesToProcess} (${batch.length} files, ${progress}% complete)`
@@ -503,11 +509,11 @@ class TypeScriptGraphESLintAnalyzer {
           case ts.SyntaxKind.ImportDeclaration:
             this.extractImportDeclaration(node, dependencies);
             break;
-          
+
           case ts.SyntaxKind.ExportDeclaration:
             this.extractExportDeclaration(node, dependencies);
             break;
-            
+
           case ts.SyntaxKind.CallExpression:
             this.extractDynamicImport(node, dependencies);
             break;
@@ -519,7 +525,6 @@ class TypeScriptGraphESLintAnalyzer {
 
       // Start traversal from root
       ts.forEachChild(sourceFile, visitNode);
-
     } catch (error) {
       // Fallback to regex on TypeScript parsing error
       console.warn(`⚠️  TypeScript parsing failed for ${path.basename(filePath)}: ${error.message}`);
@@ -558,11 +563,12 @@ class TypeScriptGraphESLintAnalyzer {
    */
   extractDynamicImport(node, dependencies) {
     // Check if this is an import() call
-    if (ts.isCallExpression(node) && 
-        node.expression && 
-        node.expression.kind === ts.SyntaxKind.ImportKeyword &&
-        node.arguments.length > 0) {
-      
+    if (
+      ts.isCallExpression(node) &&
+      node.expression &&
+      node.expression.kind === ts.SyntaxKind.ImportKeyword &&
+      node.arguments.length > 0
+    ) {
       const firstArg = node.arguments[0];
       if (ts.isStringLiteral(firstArg)) {
         const importPath = firstArg.text;

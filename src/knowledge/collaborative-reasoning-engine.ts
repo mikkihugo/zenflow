@@ -1,6 +1,6 @@
 /**
- * Collaborative Reasoning Engine for Claude-Zen
- * Implements multi-agent collaborative problem-solving with distributed reasoning
+ * Collaborative Reasoning Engine for Claude-Zen.
+ * Implements multi-agent collaborative problem-solving with distributed reasoning.
  *
  * Architecture: Collective intelligence through collaborative reasoning
  * - Multi-Agent Problem Decomposition: Break complex problems into solvable components
@@ -9,8 +9,14 @@
  * - Solution Synthesis: Combine partial solutions into comprehensive answers
  * - Context Sharing: Maintain shared reasoning context across agent interactions
  */
+/**
+ * @file collaborative-reasoning processing engine.
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 
 // Basic utility types
 export interface DependencyMapper {
@@ -132,7 +138,7 @@ export interface Problem {
 }
 
 /**
- * Problem Decomposition System
+ * Problem Decomposition System.
  *
  * @example
  */
@@ -383,7 +389,7 @@ export interface BeliefRevisionSystem {
 }
 
 /**
- * Distributed Reasoning System
+ * Distributed Reasoning System.
  *
  * @example
  */
@@ -474,7 +480,7 @@ export type ReasoningStatus =
   | 'inconclusive';
 
 /**
- * Consensus Building System
+ * Consensus Building System.
  *
  * @example
  */
@@ -721,7 +727,7 @@ export type ConsensusActivity =
   | 'decision-finalization';
 
 /**
- * Solution Synthesis System
+ * Solution Synthesis System.
  *
  * @example
  */
@@ -777,7 +783,7 @@ export type IntegrationMethod =
   | 'evolutionary-integration';
 
 /**
- * Context Sharing System
+ * Context Sharing System.
  *
  * @example
  */
@@ -833,7 +839,7 @@ export type ContextRole =
   | 'observer';
 
 /**
- * Main Collaborative Reasoning Engine
+ * Main Collaborative Reasoning Engine.
  *
  * @example
  */
@@ -866,7 +872,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
   }
 
   /**
-   * Initialize all reasoning systems
+   * Initialize all reasoning systems.
    */
   private initializeSystems(): void {
     this.problemDecomposer = new ProblemDecompositionSystem(
@@ -903,7 +909,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
   }
 
   /**
-   * Set up system integrations
+   * Set up system integrations.
    */
   private setupIntegrations(): void {
     // Problem Decomposition -> Distributed Reasoning
@@ -939,7 +945,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
   }
 
   /**
-   * Solve a complex problem collaboratively
+   * Solve a complex problem collaboratively.
    *
    * @param problem
    * @param participants
@@ -1023,7 +1029,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
   }
 
   /**
-   * Decompose complex problem into manageable subproblems
+   * Decompose complex problem into manageable subproblems.
    *
    * @param problem
    * @param participants
@@ -1085,7 +1091,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
   }
 
   /**
-   * Coordinate distributed reasoning across multiple agents
+   * Coordinate distributed reasoning across multiple agents.
    *
    * @param reasoningTasks
    * @param sharedContext
@@ -1149,7 +1155,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
   }
 
   /**
-   * Build consensus through structured dialogue and voting
+   * Build consensus through structured dialogue and voting.
    *
    * @param reasoningResults
    * @param participants
@@ -1168,7 +1174,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
       // Initialize consensus process for each conflict
       const consensusProcesses = await Promise.all(
-        reasoningResults?.conflictAnalysis?.conflicts?.map((conflict) =>
+        reasoningResults?.conflictAnalysis?.conflicts.map((conflict) =>
           this.initializeConsensusProcess(conflict, participants)
         )
       );
@@ -1215,7 +1221,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
   }
 
   /**
-   * Synthesize partial solutions into comprehensive solution
+   * Synthesize partial solutions into comprehensive solution.
    *
    * @param consensusResults
    * @param decomposition
@@ -1283,7 +1289,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
   }
 
   /**
-   * Get comprehensive reasoning engine metrics
+   * Get comprehensive reasoning engine metrics.
    */
   async getMetrics(): Promise<CollaborativeReasoningMetrics> {
     return {
@@ -1321,7 +1327,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
   }
 
   /**
-   * Shutdown reasoning engine gracefully
+   * Shutdown reasoning engine gracefully.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down collaborative reasoning engine...');
@@ -1371,7 +1377,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 }
 
 /**
- * Configuration and result interfaces
+ * Configuration and result interfaces.
  *
  * @example
  */

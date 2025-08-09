@@ -1,11 +1,11 @@
 /**
  * @file Hive Knowledge Bridge - Production Integration
- * Bridges the Hive FACT system with swarm coordination for real-time knowledge sharing
+ * Bridges the Hive FACT system with swarm coordination for real-time knowledge sharing.
  *
  * Architecture:
  * - Hive FACT contains universal knowledge (npm, repos, APIs, etc.)
  * - This bridge enables swarms to access and contribute to that knowledge
- * - Real-time knowledge distribution with bidirectional learning
+ * - Real-time knowledge distribution with bidirectional learning.
  */
 
 import { EventEmitter } from 'node:events';
@@ -78,8 +78,8 @@ export interface KnowledgeDistributionUpdate {
 }
 
 /**
- * Bridges Hive FACT system with swarm coordination
- * Enables real-time knowledge sharing and bidirectional learning
+ * Bridges Hive FACT system with swarm coordination.
+ * Enables real-time knowledge sharing and bidirectional learning.
  *
  * @example
  */
@@ -103,7 +103,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Initialize the knowledge bridge
+   * Initialize the knowledge bridge.
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -138,7 +138,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Register a swarm with the knowledge bridge
+   * Register a swarm with the knowledge bridge.
    *
    * @param swarmId
    * @param interests
@@ -166,7 +166,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Process knowledge request from swarm
+   * Process knowledge request from swarm.
    *
    * @param request
    */
@@ -198,7 +198,9 @@ export class HiveKnowledgeBridge extends EventEmitter {
       }
 
       // Update response metadata
-      response?.metadata?.timestamp = Date.now();
+      if (response) {
+        response.metadata.timestamp = Date.now();
+      }
 
       // Clean up pending request
       this.pendingRequests.delete(request.requestId);
@@ -229,7 +231,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Handle knowledge query request
+   * Handle knowledge query request.
    *
    * @param request
    */
@@ -285,7 +287,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Handle knowledge contribution from swarm
+   * Handle knowledge contribution from swarm.
    *
    * @param request
    */
@@ -336,7 +338,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Handle knowledge update request
+   * Handle knowledge update request.
    *
    * @param request
    */
@@ -374,7 +376,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Handle knowledge subscription request
+   * Handle knowledge subscription request.
    *
    * @param request
    */
@@ -406,7 +408,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Enhance search results with swarm-specific context
+   * Enhance search results with swarm-specific context.
    *
    * @param results
    * @param swarmId
@@ -440,7 +442,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Calculate relevance of fact to specific swarm
+   * Calculate relevance of fact to specific swarm.
    *
    * @param fact
    * @param swarmId
@@ -464,7 +466,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Calculate compatibility of fact with specific agent
+   * Calculate compatibility of fact with specific agent.
    *
    * @param _fact
    * @param _agentId
@@ -476,7 +478,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Find swarms related to the given swarm
+   * Find swarms related to the given swarm.
    *
    * @param _swarmId
    */
@@ -487,18 +489,18 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Calculate average confidence of search results
+   * Calculate average confidence of search results.
    *
    * @param results
    */
   private calculateAverageConfidence(results: UniversalFact[]): number {
     if (results.length === 0) return 0;
-    const total = results?.reduce((sum, fact) => sum + fact.metadata.confidence, 0);
+    const total = results.reduce((sum, fact) => sum + fact.metadata.confidence, 0);
     return total / results.length;
   }
 
   /**
-   * Set up event handlers for knowledge bridge
+   * Set up event handlers for knowledge bridge.
    */
   private setupEventHandlers(): void {
     // Listen for HiveFACT updates
@@ -537,7 +539,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Start processing contribution queue
+   * Start processing contribution queue.
    */
   private startContributionProcessor(): void {
     setInterval(() => {
@@ -548,7 +550,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Process queued contributions from swarms
+   * Process queued contributions from swarms.
    */
   private async processContributionQueue(): Promise<void> {
     for (const [swarmId, contributions] of this.contributionQueue) {
@@ -576,7 +578,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Process individual swarm contribution
+   * Process individual swarm contribution.
    *
    * @param contribution
    */
@@ -623,7 +625,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Set up knowledge distribution system
+   * Set up knowledge distribution system.
    */
   private setupKnowledgeDistribution(): void {
     // This would set up WebSocket or other real-time communication
@@ -634,7 +636,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Distribute knowledge update to relevant swarms
+   * Distribute knowledge update to relevant swarms.
    *
    * @param update
    */
@@ -677,7 +679,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Find swarms interested in a specific domain
+   * Find swarms interested in a specific domain.
    *
    * @param domain
    */
@@ -694,7 +696,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Get bridge statistics
+   * Get bridge statistics.
    */
   getStats(): {
     registeredSwarms: number;
@@ -718,7 +720,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   }
 
   /**
-   * Shutdown the knowledge bridge
+   * Shutdown the knowledge bridge.
    */
   async shutdown(): Promise<void> {
     logger.info('Shutting down Hive Knowledge Bridge');

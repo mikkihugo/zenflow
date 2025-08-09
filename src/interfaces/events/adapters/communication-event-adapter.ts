@@ -1,21 +1,23 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-events-adapters-communication-event-adapter");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-events-adapters-communication-event-adapter');
+
 /**
  * @file UEL Communication Event Adapter providing unified event management for communication-related events.
  *
  * Unified Event Layer adapter for communication-related events, providing
- * a consistent interface to scattered EventEmitter patterns across the communication system
+ * a consistent interface to scattered EventEmitter patterns across the communication system.
  * while maintaining full backward compatibility and adding enhanced monitoring,
  * event correlation, performance tracking, and unified communication functionality.
  *
  * This adapter follows the exact same patterns as the system and coordination event adapters,
- * implementing the IEventManager interface and providing unified configuration
+ * implementing the IEventManager interface and providing unified configuration.
  * management for communication events across Claude-Zen.
  */
 
 // Import communication system classes to wrap their EventEmitter usage
-import type { WebSocketClientAdapter } from '../../clients/adapters/websocket-client-adapter';
-import type { HTTPMCPServer } from '../../mcp/http-mcp-server';
+import type { WebSocketClientAdapter } from '../clients/adapters/websocket-client-adapter';
+import type { HTTPMCPServer } from '../mcp/http-mcp-server';
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -58,7 +60,7 @@ const createLogger = (name: string): Logger => ({
 import { EventEmitter } from 'node:events';
 
 /**
- * Communication event adapter configuration extending UEL EventManagerConfig
+ * Communication event adapter configuration extending UEL EventManagerConfig.
  *
  * @example
  */
@@ -91,7 +93,7 @@ export interface CommunicationEventAdapterConfig extends EventManagerConfig {
     wrapOptimizationEvents?: boolean;
     wrapFailoverEvents?: boolean;
     wrapSwitchingEvents?: boolean;
-    protocols?: string[]; // List of protocols to wrap
+    protocols?: string[]; // List of protocols to wrap.
   };
 
   /** HTTP communication integration settings */
@@ -148,7 +150,7 @@ export interface CommunicationEventAdapterConfig extends EventManagerConfig {
 }
 
 /**
- * Communication event operation metrics for performance monitoring
+ * Communication event operation metrics for performance monitoring.
  *
  * @example
  */
@@ -174,7 +176,7 @@ interface CommunicationEventMetrics {
 }
 
 /**
- * Communication correlation entry for tracking related events
+ * Communication correlation entry for tracking related events.
  *
  * @example
  */
@@ -197,7 +199,7 @@ interface CommunicationCorrelation {
 }
 
 /**
- * Communication health tracking entry
+ * Communication health tracking entry.
  *
  * @example
  */
@@ -221,7 +223,7 @@ interface CommunicationHealthEntry {
 }
 
 /**
- * Wrapped communication component for unified event management
+ * Wrapped communication component for unified event management.
  *
  * @example
  */
@@ -241,9 +243,9 @@ interface WrappedCommunicationComponent {
 }
 
 /**
- * Unified Communication Event Adapter
+ * Unified Communication Event Adapter.
  *
- * Provides a unified interface to communication-level EventEmitter patterns
+ * Provides a unified interface to communication-level EventEmitter patterns.
  * while implementing the IEventManager interface for UEL compatibility.
  *
  * Features:
@@ -295,14 +297,14 @@ export class CommunicationEventAdapter implements IEventManager {
   private processingEvents = false;
   private eventHistory: CommunicationEvent[] = [];
 
-  // Communication-specific tracking
+  // Communication-specific tracking.
   private connectionMetrics = new Map<string, any>();
   private messageMetrics = new Map<string, any>();
   private protocolMetrics = new Map<string, any>();
   private communicationPatterns = new Map<string, any>();
 
   constructor(config: CommunicationEventAdapterConfig) {
-    this.name = config.name;
+    this.name = config?.name;
     this.type = EventManagerTypes.COMMUNICATION;
     this.config = {
       // Default configuration values
@@ -313,7 +315,7 @@ export class CommunicationEventAdapter implements IEventManager {
         wrapHealthEvents: true,
         wrapReconnectionEvents: true,
         clients: ['default'],
-        ...config.websocketCommunication,
+        ...config?.websocketCommunication,
       },
       mcpProtocol: {
         enabled: true,
@@ -323,7 +325,7 @@ export class CommunicationEventAdapter implements IEventManager {
         wrapProtocolEvents: true,
         servers: ['http-mcp-server'],
         clients: ['default-mcp-client'],
-        ...config.mcpProtocol,
+        ...config?.mcpProtocol,
       },
       protocolCommunication: {
         enabled: true,
@@ -332,7 +334,7 @@ export class CommunicationEventAdapter implements IEventManager {
         wrapFailoverEvents: true,
         wrapSwitchingEvents: true,
         protocols: ['http', 'https', 'ws', 'wss', 'stdio'],
-        ...config.protocolCommunication,
+        ...config?.protocolCommunication,
       },
       httpCommunication: {
         enabled: true,
@@ -340,7 +342,7 @@ export class CommunicationEventAdapter implements IEventManager {
         wrapResponseEvents: true,
         wrapTimeoutEvents: true,
         wrapRetryEvents: true,
-        ...config.httpCommunication,
+        ...config?.httpCommunication,
       },
       performance: {
         enableConnectionCorrelation: true,
@@ -349,7 +351,7 @@ export class CommunicationEventAdapter implements IEventManager {
         maxConcurrentConnections: 1000,
         connectionTimeout: 30000,
         enablePerformanceTracking: true,
-        ...config.performance,
+        ...config?.performance,
       },
       communication: {
         enabled: true,
@@ -364,7 +366,7 @@ export class CommunicationEventAdapter implements IEventManager {
         ],
         trackMessageFlow: true,
         trackConnectionHealth: true,
-        ...config.communication,
+        ...config?.communication,
       },
       connectionHealthMonitoring: {
         enabled: true,
@@ -383,7 +385,7 @@ export class CommunicationEventAdapter implements IEventManager {
           'connection-availability': 0.9,
         },
         autoRecoveryEnabled: true,
-        ...config.connectionHealthMonitoring,
+        ...config?.connectionHealthMonitoring,
       },
       communicationOptimization: {
         enabled: true,
@@ -395,7 +397,7 @@ export class CommunicationEventAdapter implements IEventManager {
         },
         connectionPooling: true,
         messageCompression: true,
-        ...config.communicationOptimization,
+        ...config?.communicationOptimization,
       },
       ...config,
     };
@@ -412,7 +414,7 @@ export class CommunicationEventAdapter implements IEventManager {
   // ============================================
 
   /**
-   * Start the communication event adapter
+   * Start the communication event adapter.
    */
   async start(): Promise<void> {
     if (this.running) {
@@ -457,7 +459,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Stop the communication event adapter
+   * Stop the communication event adapter.
    */
   async stop(): Promise<void> {
     if (!this.running) {
@@ -489,7 +491,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Restart the communication event adapter
+   * Restart the communication event adapter.
    */
   async restart(): Promise<void> {
     this.logger.info(`Restarting communication event adapter: ${this.name}`);
@@ -498,14 +500,14 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Check if the adapter is running
+   * Check if the adapter is running.
    */
   isRunning(): boolean {
     return this.running;
   }
 
   /**
-   * Emit a communication event with correlation and performance tracking
+   * Emit a communication event with correlation and performance tracking.
    *
    * @param event
    * @param options
@@ -584,7 +586,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit batch of communication events with optimized processing
+   * Emit batch of communication events with optimized processing.
    *
    * @param batch
    * @param options
@@ -629,7 +631,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit communication event immediately without queuing
+   * Emit communication event immediately without queuing.
    *
    * @param event
    */
@@ -638,7 +640,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to communication events with filtering and transformation
+   * Subscribe to communication events with filtering and transformation.
    *
    * @param eventTypes
    * @param listener
@@ -656,8 +658,8 @@ export class CommunicationEventAdapter implements IEventManager {
       id: subscriptionId,
       eventTypes: types,
       listener,
-      ...(options?.filter && { filter: options.filter }),
-      ...(options?.transform && { transform: options.transform }),
+      ...(options?.filter && { filter: options?.filter }),
+      ...(options?.transform && { transform: options?.transform }),
       priority: options?.priority || 'medium',
       created: new Date(),
       active: true,
@@ -675,7 +677,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Unsubscribe from communication events
+   * Unsubscribe from communication events.
    *
    * @param subscriptionId
    */
@@ -693,7 +695,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Unsubscribe all communication listeners for event type
+   * Unsubscribe all communication listeners for event type.
    *
    * @param eventType
    */
@@ -722,7 +724,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Add communication event filter
+   * Add communication event filter.
    *
    * @param filter
    */
@@ -734,7 +736,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Remove communication event filter
+   * Remove communication event filter.
    *
    * @param filterId
    */
@@ -747,7 +749,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Add communication event transform
+   * Add communication event transform.
    *
    * @param transform
    */
@@ -759,7 +761,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Remove communication event transform
+   * Remove communication event transform.
    *
    * @param transformId
    */
@@ -772,7 +774,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Query communication event history with filtering and pagination
+   * Query communication event history with filtering and pagination.
    *
    * @param options
    */
@@ -780,30 +782,30 @@ export class CommunicationEventAdapter implements IEventManager {
     let events = [...this.eventHistory] as T[];
 
     // Apply filters
-    if (options.filter) {
-      events = events.filter((event) => this.applyFilter(event, options.filter!));
+    if (options?.filter) {
+      events = events.filter((event) => this.applyFilter(event, options?.filter!));
     }
 
     // Apply sorting
-    if (options.sortBy) {
+    if (options?.sortBy) {
       events.sort((a, b) => {
-        const aVal = this.getEventSortValue(a, options.sortBy!);
-        const bVal = this.getEventSortValue(b, options.sortBy!);
+        const aVal = this.getEventSortValue(a, options?.sortBy!);
+        const bVal = this.getEventSortValue(b, options?.sortBy!);
         const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
         return options.sortOrder === 'desc' ? -comparison : comparison;
       });
     }
 
     // Apply pagination
-    const offset = options.offset || 0;
-    const limit = options.limit || 100;
+    const offset = options?.offset || 0;
+    const limit = options?.limit || 100;
     events = events.slice(offset, offset + limit);
 
     return events;
   }
 
   /**
-   * Get communication event history for specific event type
+   * Get communication event history for specific event type.
    *
    * @param eventType
    * @param limit
@@ -814,7 +816,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Perform health check on the communication event adapter
+   * Perform health check on the communication event adapter.
    */
   async healthCheck(): Promise<EventManagerStatus> {
     const now = new Date();
@@ -860,7 +862,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get performance metrics for the communication adapter
+   * Get performance metrics for the communication adapter.
    */
   async getMetrics(): Promise<EventManagerMetrics> {
     const now = new Date();
@@ -894,14 +896,14 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get active communication subscriptions
+   * Get active communication subscriptions.
    */
   getSubscriptions(): EventSubscription[] {
     return Array.from(this.subscriptions.values()).filter((sub) => sub.active);
   }
 
   /**
-   * Update adapter configuration
+   * Update adapter configuration.
    *
    * @param config
    */
@@ -915,7 +917,7 @@ export class CommunicationEventAdapter implements IEventManager {
    * Event handler management (EventEmitter compatibility)
    *
    * @param event
-   * @param handler
+   * @param handler.
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
@@ -937,7 +939,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Cleanup and destroy the adapter
+   * Cleanup and destroy the adapter.
    */
   async destroy(): Promise<void> {
     this.logger.info(`Destroying communication event adapter: ${this.name}`);
@@ -981,7 +983,7 @@ export class CommunicationEventAdapter implements IEventManager {
   // ============================================
 
   /**
-   * Emit WebSocket communication event with enhanced tracking
+   * Emit WebSocket communication event with enhanced tracking.
    *
    * @param event
    */
@@ -1005,7 +1007,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit MCP protocol event with enhanced tracking
+   * Emit MCP protocol event with enhanced tracking.
    *
    * @param event
    */
@@ -1027,7 +1029,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to WebSocket communication events with convenience
+   * Subscribe to WebSocket communication events with convenience.
    *
    * @param listener
    */
@@ -1036,7 +1038,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to MCP protocol events
+   * Subscribe to MCP protocol events.
    *
    * @param listener
    */
@@ -1045,7 +1047,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to HTTP communication events
+   * Subscribe to HTTP communication events.
    *
    * @param listener
    */
@@ -1054,7 +1056,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to protocol communication events
+   * Subscribe to protocol communication events.
    *
    * @param listener
    */
@@ -1063,7 +1065,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get communication health status for all components
+   * Get communication health status for all components.
    */
   async getCommunicationHealthStatus(): Promise<Record<string, CommunicationHealthEntry>> {
     const healthStatus: Record<string, CommunicationHealthEntry> = {};
@@ -1076,7 +1078,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get correlated communication events for a specific correlation ID
+   * Get correlated communication events for a specific correlation ID.
    *
    * @param correlationId
    */
@@ -1085,14 +1087,14 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get active communication correlations
+   * Get active communication correlations.
    */
   getActiveCommunicationCorrelations(): CommunicationCorrelation[] {
     return Array.from(this.communicationCorrelations.values()).filter((c) => c.status === 'active');
   }
 
   /**
-   * Get connection performance metrics
+   * Get connection performance metrics.
    *
    * @param connectionId
    */
@@ -1104,7 +1106,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get message performance metrics
+   * Get message performance metrics.
    *
    * @param messageId
    */
@@ -1116,7 +1118,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Get protocol execution metrics
+   * Get protocol execution metrics.
    *
    * @param protocolType
    */
@@ -1128,7 +1130,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Force health check on all wrapped communication components
+   * Force health check on all wrapped communication components.
    */
   async performCommunicationHealthCheck(): Promise<Record<string, CommunicationHealthEntry>> {
     const healthResults: Record<string, CommunicationHealthEntry> = {};
@@ -1230,7 +1232,7 @@ export class CommunicationEventAdapter implements IEventManager {
   // ============================================
 
   /**
-   * Initialize communication component integrations
+   * Initialize communication component integrations.
    */
   private async initializeCommunicationIntegrations(): Promise<void> {
     this.logger.debug('Initializing communication component integrations');
@@ -1260,7 +1262,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap WebSocket client events with UEL integration
+   * Wrap WebSocket client events with UEL integration.
    */
   private async wrapWebSocketClients(): Promise<void> {
     const clients = this.config.websocketCommunication?.clients || ['default'];
@@ -1324,7 +1326,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap MCP server events with UEL integration
+   * Wrap MCP server events with UEL integration.
    */
   private async wrapMCPServers(): Promise<void> {
     const servers = this.config.mcpProtocol?.servers || ['http-mcp-server'];
@@ -1392,7 +1394,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap MCP client events with UEL integration
+   * Wrap MCP client events with UEL integration.
    */
   private async wrapMCPClients(): Promise<void> {
     const clients = this.config.mcpProtocol?.clients || ['default-mcp-client'];
@@ -1457,7 +1459,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap HTTP communication events with UEL integration
+   * Wrap HTTP communication events with UEL integration.
    */
   private async wrapHTTPCommunication(): Promise<void> {
     const wrapper = new EventEmitter();
@@ -1514,7 +1516,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap protocol communication events with UEL integration
+   * Wrap protocol communication events with UEL integration.
    */
   private async wrapProtocolCommunication(): Promise<void> {
     const protocols = this.config.protocolCommunication?.protocols || [
@@ -1584,7 +1586,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Unwrap all communication components
+   * Unwrap all communication components.
    */
   private async unwrapCommunicationComponents(): Promise<void> {
     for (const [componentName, wrapped] of this.wrappedComponents.entries()) {
@@ -1610,7 +1612,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Process communication event emission with correlation and filtering
+   * Process communication event emission with correlation and filtering.
    *
    * @param event
    * @param options
@@ -1685,7 +1687,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Start event processing loop for communication events
+   * Start event processing loop for communication events.
    */
   private startEventProcessing(): void {
     this.processingEvents = true;
@@ -1713,7 +1715,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Start health monitoring for communication components
+   * Start health monitoring for communication components.
    */
   private startCommunicationHealthMonitoring(): void {
     const interval = this.config.connectionHealthMonitoring?.healthCheckInterval || 30000;
@@ -1746,7 +1748,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Start communication correlation cleanup to prevent memory leaks
+   * Start communication correlation cleanup to prevent memory leaks.
    */
   private startCommunicationCorrelationCleanup(): void {
     const cleanupInterval = 60000; // 1 minute
@@ -1779,7 +1781,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Start communication optimization if enabled
+   * Start communication optimization if enabled.
    */
   private startCommunicationOptimization(): void {
     const interval = this.config.communicationOptimization?.optimizationInterval || 60000;
@@ -1828,7 +1830,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Start communication event correlation for tracking related events
+   * Start communication event correlation for tracking related events.
    *
    * @param event
    */
@@ -1861,7 +1863,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Update existing communication event correlation
+   * Update existing communication event correlation.
    *
    * @param event
    */
@@ -1900,7 +1902,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Check if communication correlation is complete based on patterns
+   * Check if communication correlation is complete based on patterns.
    *
    * @param correlation
    */
@@ -1921,7 +1923,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Calculate communication efficiency for correlation
+   * Calculate communication efficiency for correlation.
    *
    * @param correlation
    */
@@ -1940,7 +1942,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Check health of all communication components
+   * Check health of all communication components.
    */
   private async checkCommunicationComponentHealth(): Promise<
     Record<string, CommunicationHealthEntry>
@@ -1969,7 +1971,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Batch processing methods for different strategies
+   * Batch processing methods for different strategies.
    *
    * @param batch
    * @param options
@@ -2098,7 +2100,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   private extractProtocol(eventType: string, data: any): CommunicationEvent['protocol'] {
-    if (data?.protocol) return data.protocol;
+    if (data?.protocol) return data?.protocol;
     if (eventType.includes('websocket') || eventType.includes('ws')) return 'ws';
     if (eventType.includes('http')) return 'http';
     if (eventType.includes('mcp')) return 'stdio';
@@ -2236,7 +2238,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * ID generation methods
+   * ID generation methods.
    */
   private generateEventId(): string {
     return `comm-evt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
@@ -2259,7 +2261,7 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit wrapper for internal use
+   * Emit wrapper for internal use.
    *
    * @param event
    * @param data
@@ -2270,7 +2272,7 @@ export class CommunicationEventAdapter implements IEventManager {
 }
 
 /**
- * Factory function for creating CommunicationEventAdapter instances
+ * Factory function for creating CommunicationEventAdapter instances.
  *
  * @param config
  */
@@ -2281,7 +2283,7 @@ export function createCommunicationEventAdapter(
 }
 
 /**
- * Helper function for creating default communication event adapter configuration
+ * Helper function for creating default communication event adapter configuration.
  *
  * @param name
  * @param overrides
@@ -2406,11 +2408,11 @@ export function createDefaultCommunicationEventAdapterConfig(
 }
 
 /**
- * Helper functions for communication event operations
+ * Helper functions for communication event operations.
  */
 export const CommunicationEventHelpers = {
   /**
-   * Create WebSocket connection event
+   * Create WebSocket connection event.
    *
    * @param connectionId
    * @param url
@@ -2436,7 +2438,7 @@ export const CommunicationEventHelpers = {
   },
 
   /**
-   * Create MCP tool execution event
+   * Create MCP tool execution event.
    *
    * @param toolName
    * @param requestId
@@ -2463,7 +2465,7 @@ export const CommunicationEventHelpers = {
   },
 
   /**
-   * Create HTTP request event
+   * Create HTTP request event.
    *
    * @param method
    * @param url
@@ -2489,7 +2491,7 @@ export const CommunicationEventHelpers = {
   },
 
   /**
-   * Create protocol switching event
+   * Create protocol switching event.
    *
    * @param fromProtocol
    * @param toProtocol
@@ -2516,7 +2518,7 @@ export const CommunicationEventHelpers = {
   },
 
   /**
-   * Create communication error event
+   * Create communication error event.
    *
    * @param component
    * @param protocol

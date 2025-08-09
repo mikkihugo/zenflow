@@ -1,9 +1,16 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-memory-safe-memory-store");
 /**
- * Enhanced Memory Provider with Union Type Safety
+ * @file Memory management: safe-memory-store
+ */
+
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-memory-safe-memory-store');
+
+/**
+ * Enhanced Memory Provider with Union Type Safety.
  *
- * Provides type-safe memory operations using discriminated unions
+ * Provides type-safe memory operations using discriminated unions.
  * for proper error handling and result discrimination.
  */
 
@@ -38,7 +45,7 @@ export interface MemoryMetadata {
 }
 
 /**
- * Type-safe memory store with union type results
+ * Type-safe memory store with union type results.
  *
  * @example
  */
@@ -76,7 +83,7 @@ export class SafeMemoryStore extends EventEmitter {
   }
 
   /**
-   * Store data with type-safe error handling
+   * Store data with type-safe error handling.
    *
    * @param key
    * @param data
@@ -139,7 +146,7 @@ export class SafeMemoryStore extends EventEmitter {
   }
 
   /**
-   * Retrieve data with type-safe result discrimination
+   * Retrieve data with type-safe result discrimination.
    *
    * @param key
    */
@@ -168,7 +175,7 @@ export class SafeMemoryStore extends EventEmitter {
 
       // Update access information
       const now = new Date();
-      metadata?.accessed = now;
+      metadata.accessed = now;
       metadata?.accessCount++;
       this.metadata.set(fullKey, metadata);
 
@@ -194,7 +201,7 @@ export class SafeMemoryStore extends EventEmitter {
   }
 
   /**
-   * Delete data with type-safe result
+   * Delete data with type-safe result.
    *
    * @param key
    */
@@ -241,7 +248,7 @@ export class SafeMemoryStore extends EventEmitter {
   }
 
   /**
-   * Check if key exists with type-safe result
+   * Check if key exists with type-safe result.
    *
    * @param key
    */
@@ -272,7 +279,7 @@ export class SafeMemoryStore extends EventEmitter {
   }
 
   /**
-   * Get store statistics
+   * Get store statistics.
    */
   async getStats(): Promise<
     MemoryResult<{
@@ -323,7 +330,7 @@ export class SafeMemoryStore extends EventEmitter {
   }
 
   /**
-   * Clear all data
+   * Clear all data.
    */
   async clear(): Promise<void> {
     // Clear all TTL timers
@@ -339,7 +346,7 @@ export class SafeMemoryStore extends EventEmitter {
   }
 
   /**
-   * Shutdown the store gracefully
+   * Shutdown the store gracefully.
    */
   async shutdown(): Promise<void> {
     await this.clear();
@@ -424,7 +431,7 @@ export class SafeMemoryStore extends EventEmitter {
 // ============================================
 
 /**
- * Example function showing safe property access patterns
+ * Example function showing safe property access patterns.
  */
 export async function safeMemoryUsageExample(): Promise<void> {
   const store = new SafeMemoryStore({ namespace: 'example' });

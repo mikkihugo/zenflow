@@ -160,3 +160,4 @@ integration-test-report.json
 *-summary.md
 *-report.md
 *-completion*.md
+.rollup.cache/

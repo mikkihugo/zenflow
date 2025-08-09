@@ -1,5 +1,12 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-performance-benchmarks");
+/**
+ * @file Coordination system: performance-benchmarks
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-performance-benchmarks');
+
 /**
  * Comprehensive Performance Benchmarking Suite.
  *
@@ -7,7 +14,7 @@ const logger = getLogger("coordination-swarm-core-performance-benchmarks");
  * WASM loading, memory management, and Claude Code Flow coordination.
  */
 
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
+import { WasmModuleLoader } from '../neural/wasm/wasm-loader';
 // import { getClaudeFlow } from './claude-flow-enhanced';
 import { ZenSwarm } from './index';
 
@@ -72,19 +79,19 @@ class PerformanceBenchmarks {
     };
 
     try {
-      results.benchmarks.simdOperations = await this.benchmarkSIMDOperations();
-      results.benchmarks.wasmLoading = await this.benchmarkWASMLoading();
-      results.benchmarks.memoryManagement = await this.benchmarkMemoryManagement();
-      results.benchmarks.neuralNetworks = await this.benchmarkNeuralNetworks();
-      results.benchmarks.claudeFlowCoordination = await this.benchmarkClaudeFlowCoordination();
-      results.benchmarks.parallelExecution = await this.benchmarkParallelExecution();
-      results.benchmarks.browserCompatibility = await this.benchmarkBrowserCompatibility();
+      results?.benchmarks.simdOperations = await this.benchmarkSIMDOperations();
+      results?.benchmarks.wasmLoading = await this.benchmarkWASMLoading();
+      results?.benchmarks.memoryManagement = await this.benchmarkMemoryManagement();
+      results?.benchmarks.neuralNetworks = await this.benchmarkNeuralNetworks();
+      results?.benchmarks.claudeFlowCoordination = await this.benchmarkClaudeFlowCoordination();
+      results?.benchmarks.parallelExecution = await this.benchmarkParallelExecution();
+      results?.benchmarks.browserCompatibility = await this.benchmarkBrowserCompatibility();
 
       const totalTime = performance.now() - suiteStartTime;
       results.totalBenchmarkTime = totalTime;
 
       // Calculate overall performance score
-      results.performanceScore = this.calculateOverallScore(results.benchmarks);
+      results.performanceScore = this.calculateOverallScore(results?.benchmarks);
 
       this.results.set('full_suite', results);
       return results;
@@ -118,7 +125,7 @@ class PerformanceBenchmarks {
     };
 
     for (const operation of operations) {
-      results.operations[operation] = {
+      results?.operations[operation] = {
         sizes: {},
         averageSpeedup: 0,
       };
@@ -142,7 +149,7 @@ class PerformanceBenchmarks {
 
           const speedup = performanceReport.vector_operations?.speedup_factor || 1.0;
 
-          results.operations[operation].sizes[size] = {
+          results?.operations?.[operation]?.sizes[size] = {
             iterations: iterCount,
             speedupFactor: speedup,
             scalarTime: performanceReport.vector_operations?.scalar_time_ns || 0,
@@ -154,24 +161,24 @@ class PerformanceBenchmarks {
           validTests++;
         } catch (error) {
           logger.warn(`Failed to benchmark ${operation} with size ${size}:`, error);
-          results.operations[operation].sizes[size] = {
+          results?.operations?.[operation]?.sizes[size] = {
             error: (error as Error).message,
             speedupFactor: 1.0,
           };
         }
       }
 
-      results.operations[operation].averageSpeedup =
+      results?.operations?.[operation].averageSpeedup =
         validTests > 0 ? totalSpeedup / validTests : 1.0;
     }
 
     // Calculate overall SIMD performance score
-    const speedups = Object.values(results.operations)
+    const speedups = Object.values(results?.operations)
       .map((op: any) => op.averageSpeedup)
       .filter((s: any) => s > 0);
 
     results.averageSpeedup = speedups.reduce((acc, s) => acc + s, 0) / speedups.length;
-    results.performanceScore = Math.min(100, (results.averageSpeedup - 1.0) * 25); // Max score at 5x speedup
+    results.performanceScore = Math.min(100, (results?.averageSpeedup - 1.0) * 25); // Max score at 5x speedup
 
     return results;
   }
@@ -203,13 +210,13 @@ class PerformanceBenchmarks {
         const loadTime = performance.now() - startTime;
         const memoryUsage = 0; // testLoader.getTotalMemoryUsage();
 
-        results.strategies[strategy] = {
+        results?.strategies[strategy] = {
           loadTime,
           memoryUsage,
           success: true,
         };
       } catch (error) {
-        results.strategies[strategy] = {
+        results?.strategies[strategy] = {
           error: (error as Error).message,
           success: false,
         };
@@ -220,15 +227,15 @@ class PerformanceBenchmarks {
     results.moduleStats = this.wasmLoader.getModuleStatus();
 
     // Performance recommendations
-    const progressiveTime = results.strategies.progressive?.loadTime || Infinity;
-    const eagerTime = results.strategies.eager?.loadTime || Infinity;
+    const progressiveTime = results?.strategies?.progressive?.loadTime || Infinity;
+    const eagerTime = results?.strategies?.eager?.loadTime || Infinity;
 
     if (progressiveTime < eagerTime * 0.8) {
-      results.recommendations.push('Progressive loading provides best performance');
+      results?.recommendations.push('Progressive loading provides best performance');
     } else if (eagerTime < progressiveTime * 0.8) {
-      results.recommendations.push('Eager loading provides best performance');
+      results?.recommendations.push('Eager loading provides best performance');
     } else {
-      results.recommendations.push('Loading strategies have similar performance');
+      results?.recommendations.push('Loading strategies have similar performance');
     }
 
     results.performanceScore = Math.max(0, 100 - progressiveTime / 100); // Good if under 100ms
@@ -277,7 +284,7 @@ class PerformanceBenchmarks {
         const endTime = performance.now();
         const endMemory = this.wasmLoader.getTotalMemoryUsage();
 
-        results.allocation[`${size}_bytes`] = {
+        results?.allocation[`${size}_bytes`] = {
           count,
           totalTime: endTime - startTime,
           avgTimePerAllocation: (endTime - startTime) / count,
@@ -313,10 +320,10 @@ class PerformanceBenchmarks {
 
       // Calculate performance score
       const avgAllocationTime =
-        (Object.values(results.allocation).reduce(
+        (Object.values(results?.allocation).reduce(
           (acc: any, a: any) => acc + a.avgTimePerAllocation,
           0
-        ) as number) / Object.keys(results.allocation).length;
+        ) as number) / Object.keys(results?.allocation).length;
 
       results.performanceScore = Math.max(0, 100 - avgAllocationTime); // Good if under 1ms average
     } catch (error) {
@@ -360,19 +367,19 @@ class PerformanceBenchmarks {
         const iterations = config.name === 'large' ? 10 : 100;
 
         // Create test network (simulated) - ensure layers[0] is defined with fallback
-        const inputSize = config.layers[0] ?? 32; // Default to 32 if undefined
+        const inputSize = config?.layers?.[0] ?? 32; // Default to 32 if undefined
         const testInput = Array.from({ length: inputSize }, () => Math.random());
 
         // Run multiple inferences
         for (let i = 0; i < iterations; i++) {
           // Simulate neural network inference
-          const _result = this.simulateNeuralInference(testInput, config.layers);
+          const _result = this.simulateNeuralInference(testInput, config?.layers);
         }
 
         const totalTime = performance.now() - startTime;
 
-        results.networkSizes[config.name] = {
-          layers: config.layers,
+        results?.networkSizes[config?.name] = {
+          layers: config?.layers,
           iterations,
           totalTime,
           avgInferenceTime: totalTime / iterations,
@@ -394,7 +401,7 @@ class PerformanceBenchmarks {
 
         const totalTime = performance.now() - startTime;
 
-        results.activationFunctions[activation] = {
+        results?.activationFunctions[activation] = {
           totalTime,
           avgTime: totalTime / iterations,
           vectorSize: testVector.length,
@@ -416,7 +423,7 @@ class PerformanceBenchmarks {
       }
 
       // Calculate performance score
-      const mediumNetworkThroughput = results.networkSizes.medium?.throughput || 0;
+      const mediumNetworkThroughput = results?.networkSizes?.medium?.throughput || 0;
       results.performanceScore = Math.min(100, mediumNetworkThroughput / 10); // Good if >1000 inferences/sec
     } catch (error) {
       results.error = (error as Error).message;
@@ -456,8 +463,8 @@ class PerformanceBenchmarks {
       const workflow = await this.claudeFlow.createOptimizedWorkflow(testWorkflow);
       const createTime = performance.now() - createStartTime;
 
-      results.workflowExecution.creationTime = createTime;
-      results.workflowExecution.parallelizationRate = workflow.metrics.parallelizationRate;
+      results?.workflowExecution.creationTime = createTime;
+      results?.workflowExecution.parallelizationRate = workflow.metrics.parallelizationRate;
 
       // Test workflow execution (simulated)
       const execStartTime = performance.now();
@@ -471,8 +478,8 @@ class PerformanceBenchmarks {
       const batchResults = await Promise.all(batchPromises);
       const execTime = performance.now() - execStartTime;
 
-      results.workflowExecution.executionTime = execTime;
-      results.workflowExecution.stepsCompleted = batchResults.length;
+      results?.workflowExecution.executionTime = execTime;
+      results?.workflowExecution.stepsCompleted = batchResults.length;
 
       // Calculate theoretical vs actual speedup
       const sequentialTime = testWorkflow.steps.length * 20; // Assume 20ms per step
@@ -534,7 +541,7 @@ class PerformanceBenchmarks {
 
         const totalTime = performance.now() - startTime;
 
-        results.batchSizes[batchSize] = {
+        results?.batchSizes[batchSize] = {
           totalTime,
           avgTimePerTask: totalTime / batchSize,
           throughput: (batchSize * 1000) / totalTime,
@@ -560,7 +567,7 @@ class PerformanceBenchmarks {
 
         const totalTime = performance.now() - startTime;
 
-        results.taskTypes[taskType.name] = {
+        results?.taskTypes[taskType.name] = {
           batchSize,
           totalTime,
           efficiency: (taskType.duration * batchSize) / totalTime,
@@ -570,7 +577,7 @@ class PerformanceBenchmarks {
 
       // Test scalability
       const scalabilitySizes = [1, 2, 4, 8];
-      results.scalability.measurements = [];
+      results?.scalability.measurements = [];
 
       for (const size of scalabilitySizes) {
         const startTime = performance.now();
@@ -584,7 +591,7 @@ class PerformanceBenchmarks {
         const totalTime = performance.now() - startTime;
         const efficiency = (20 * size) / totalTime;
 
-        results.scalability.measurements.push({
+        results?.scalability?.measurements?.push({
           batchSize: size,
           totalTime,
           efficiency,
@@ -595,10 +602,10 @@ class PerformanceBenchmarks {
 
       // Calculate performance score
       const avgEfficiency =
-        (Object.values(results.taskTypes).reduce(
+        (Object.values(results?.taskTypes).reduce(
           (acc: any, t: any) => acc + t.efficiency,
           0
-        ) as number) / Object.keys(results.taskTypes).length;
+        ) as number) / Object.keys(results?.taskTypes).length;
 
       results.performanceScore = Math.min(100, avgEfficiency * 100);
     } catch (error) {
@@ -651,12 +658,12 @@ class PerformanceBenchmarks {
       };
 
       // Calculate compatibility score
-      const featureCount = Object.values(results.features).filter(Boolean).length;
-      const performanceCount = Object.values(results.performance).filter(Boolean).length;
+      const featureCount = Object.values(results?.features).filter(Boolean).length;
+      const performanceCount = Object.values(results?.performance).filter(Boolean).length;
 
       results.performanceScore =
-        ((featureCount / Object.keys(results.features).length) * 60 +
-          (performanceCount / Object.keys(results.performance).length) * 40) *
+        ((featureCount / Object.keys(results?.features).length) * 60 +
+          (performanceCount / Object.keys(results?.performance).length) * 40) *
         100;
     } catch (error) {
       results.error = (error as Error).message;
@@ -704,7 +711,7 @@ class PerformanceBenchmarks {
       const score = benchmarks[category]?.performanceScore;
       if (typeof score === 'number' && !Number.isNaN(score)) {
         totalScore += score * (weight as number);
-        totalWeight += (weight as number);
+        totalWeight += weight as number;
       }
     }
 
@@ -723,13 +730,13 @@ class PerformanceBenchmarks {
     for (let i = 0; i < layers.length - 1; i++) {
       const nextSize = layers[i + 1];
       if (nextSize === undefined) continue;
-      
+
       const next = new Array(nextSize);
 
       for (let j = 0; j < nextSize; j++) {
         let sum = 0;
         for (let k = 0; k < current.length; k++) {
-          sum += (current[k] ?? 0) * Math.random(); // Simulated weight
+          sum += (current?.[k] ?? 0) * Math.random(); // Simulated weight
         }
         next[j] = Math.max(0, sum); // ReLU activation
       }
@@ -790,13 +797,13 @@ class PerformanceBenchmarks {
   generatePerformanceReport(results: any) {
     const report = {
       summary: {
-        overallScore: results.performanceScore,
-        grade: this.getPerformanceGrade(results.performanceScore),
-        timestamp: results.timestamp,
-        environment: results.environment,
+        overallScore: results?.performanceScore,
+        grade: this.getPerformanceGrade(results?.performanceScore),
+        timestamp: results?.timestamp,
+        environment: results?.environment,
       },
-      detailed: results.benchmarks,
-      recommendations: this.generateRecommendations(results.benchmarks),
+      detailed: results?.benchmarks,
+      recommendations: this.generateRecommendations(results?.benchmarks),
       comparison: this.compareWithBaseline(results),
       exportData: {
         csv: this.generateCSVData(results),
@@ -903,7 +910,7 @@ class PerformanceBenchmarks {
   generateCSVData(results: any) {
     const rows = [['Category', 'Metric', 'Value', 'Score']];
 
-    for (const [category, data] of Object.entries(results.benchmarks)) {
+    for (const [category, data] of Object.entries(results?.benchmarks)) {
       if ((data as any).performanceScore !== undefined) {
         rows.push([
           category,

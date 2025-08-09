@@ -1,9 +1,14 @@
-#!/usr/bin/env tsximport { getLogger } from "../../config/logging-config";
-const logger = getLogger("tools-domain-splitting-cli");
+/**
+ * @file cli implementation
+ */
+
+
+#!/usr/bin/env tsximport { getLogger } from '../config/logging-config";
+const logger = getLogger('tools-domain-splitting-cli');
 
 /**
- * CLI command for domain splitting operations
- * Converted from commander to meow as per project standards
+ * CLI command for domain splitting operations.
+ * Converted from commander to meow as per project standards.
  */
 
 import path from 'node:path';
@@ -109,7 +114,7 @@ async function handleAnalyze(domainPath: string, options: any) {
   const fullPath = path.resolve(domainPath);
   const analysis = await demo.analyzeDomain(fullPath);
 
-  if (options.verbose) {
+  if (options?.verbose) {
     for (const [_category, files] of Object.entries(analysis.filesByCategory)) {
       if (files.length > 0) {
         // Verbose output
@@ -133,7 +138,7 @@ async function handleSplit(domainPath: string, options: any) {
     const demo = new demoModule.default();
     await demo.demonstrateNeuralSplitting();
   } else {
-    if (options.dryRun) {
+    if (options?.dryRun) {
     }
     // Handle other domains
   }
@@ -197,7 +202,7 @@ async function getTypeScriptFiles(dir: string): Promise<string[]> {
 
       if (stat.isDirectory()) {
         await scanDirectory(itemPath);
-      } else if (item.endsWith('.ts') || item.endsWith('.tsx')) {
+      } else if (item?.endsWith('.ts') || item?.endsWith('.tsx')) {
         files.push(itemPath);
       }
     }

@@ -4,6 +4,11 @@
  * Optimizes agent behaviors based on successful patterns, task allocation,
  * communication protocols, resource allocation, and coordination strategies.
  */
+/**
+ * @file behavioral-optimization implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type { ExecutionPattern } from './pattern-recognition-engine';
@@ -281,10 +286,14 @@ export class BehavioralOptimization extends EventEmitter {
     };
 
     // Analyze successful task completion patterns
-    const taskTypes = new Set(successfulPatterns.map((p) => (p.metadata as any)?.taskType).filter(Boolean));
+    const taskTypes = new Set(
+      successfulPatterns.map((p) => (p.metadata as any)?.taskType).filter(Boolean)
+    );
 
     taskTypes.forEach((taskType) => {
-      const typePatterns = successfulPatterns.filter((p) => (p.metadata as any)?.taskType === taskType);
+      const typePatterns = successfulPatterns.filter(
+        (p) => (p.metadata as any)?.taskType === taskType
+      );
       const avgPerformance =
         typePatterns.reduce((sum, p) => sum + p.confidence, 0) / typePatterns.length;
 
@@ -332,7 +341,8 @@ export class BehavioralOptimization extends EventEmitter {
     // Analyze communication effectiveness
     const effectiveComms = commPatterns.filter((p) => (p.metadata as any)?.effective === true);
     const avgLatency =
-      effectiveComms.reduce((sum, p) => sum + ((p.metadata as any)?.latency || 0), 0) / effectiveComms.length;
+      effectiveComms.reduce((sum, p) => sum + ((p.metadata as any)?.latency || 0), 0) /
+      effectiveComms.length;
 
     // Optimize based on successful communication patterns
     optimization.frequencies = this.calculateOptimalFrequencies(effectiveComms);
@@ -366,14 +376,20 @@ export class BehavioralOptimization extends EventEmitter {
     };
 
     // Analyze resource usage efficiency
-    const resourceTypes = new Set(resourcePatterns.map((p) => (p.metadata as any)?.resourceType).filter(Boolean));
+    const resourceTypes = new Set(
+      resourcePatterns.map((p) => (p.metadata as any)?.resourceType).filter(Boolean)
+    );
 
     resourceTypes.forEach((resourceType) => {
-      const typePatterns = resourcePatterns.filter((p) => (p.metadata as any)?.resourceType === resourceType);
+      const typePatterns = resourcePatterns.filter(
+        (p) => (p.metadata as any)?.resourceType === resourceType
+      );
       const avgUtilization =
         typePatterns.reduce((sum, p) => sum + ((p.metadata as any)?.utilization || 0), 0) /
         typePatterns.length;
-      const peakUtilization = Math.max(...typePatterns.map((p) => (p.metadata as any)?.utilization || 0));
+      const peakUtilization = Math.max(
+        ...typePatterns.map((p) => (p.metadata as any)?.utilization || 0)
+      );
 
       strategy.allocations[resourceType] = avgUtilization * 1.2; // 20% buffer
       strategy.thresholds[resourceType] = {
@@ -417,7 +433,9 @@ export class BehavioralOptimization extends EventEmitter {
     };
 
     // Analyze coordination effectiveness
-    const effectiveCoordination = coordPatterns.filter((p) => (p.metadata as any)?.effective === true);
+    const effectiveCoordination = coordPatterns.filter(
+      (p) => (p.metadata as any)?.effective === true
+    );
 
     if (effectiveCoordination.length > 0) {
       // Determine optimal leadership model
@@ -579,7 +597,8 @@ export class BehavioralOptimization extends EventEmitter {
 
     // Calculate performance change from baseline
     const performanceChange = behavior.performance.efficiency - originalPerformance.efficiency;
-    const successRate = (behavior.performance.success_rate || 0) - (originalPerformance.success_rate || 0);
+    const successRate =
+      (behavior.performance.success_rate || 0) - (originalPerformance.success_rate || 0);
 
     // Record the adaptation with performance comparison
     this.recordAdaptation(agentId, {
@@ -589,9 +608,11 @@ export class BehavioralOptimization extends EventEmitter {
       impact: {
         performanceChange: performanceChange,
         efficiencyGain: successRate,
-        stabilityEffect: (behavior.performance.response_time || 0) - (originalPerformance.response_time || 0),
+        stabilityEffect:
+          (behavior.performance.response_time || 0) - (originalPerformance.response_time || 0),
         collaborationImprovement:
-          (behavior.performance.collaboration_score || 0) - (originalPerformance.collaboration_score || 0),
+          (behavior.performance.collaboration_score || 0) -
+          (originalPerformance.collaboration_score || 0),
       },
       success: performanceChange >= 0, // Success if performance improved or stayed same
       originalPerformance,
@@ -632,7 +653,10 @@ export class BehavioralOptimization extends EventEmitter {
 
       // Check convergence
       const bestFitness = Math.max(...fitness);
-      if (generation > 0 && Math.abs(bestFitness - fitness[0]) < (this.config.convergenceThreshold || 0.01)) {
+      if (
+        generation > 0 &&
+        Math.abs(bestFitness - fitness[0]) < (this.config.convergenceThreshold || 0.01)
+      ) {
         break;
       }
     }
@@ -890,8 +914,8 @@ export class BehavioralOptimization extends EventEmitter {
     const offspring: AgentBehavior[] = [];
 
     for (let i = 0; i < parents.length - 1; i += 2) {
-      const parent1 = parents[i];
-      const parent2 = parents[i + 1];
+      const parent1 = parents?.[i];
+      const parent2 = parents?.[i + 1];
 
       if (parent1 && parent2 && Math.random() < (this.config.crossoverRate || 0.8)) {
         const child1 = this.createChild(parent1, parent2);
@@ -911,13 +935,14 @@ export class BehavioralOptimization extends EventEmitter {
 
     // Mix parameters from both parents
     if (Math.random() < 0.5)
-      child.parameters.taskSelection = { ...parent2.parameters.taskSelection };
+      child?.parameters.taskSelection = { ...parent2?.parameters?.taskSelection };
     if (Math.random() < 0.5)
-      child.parameters.communication = { ...parent2.parameters.communication };
+      child?.parameters.communication = { ...parent2?.parameters?.communication };
     if (Math.random() < 0.5)
-      child.parameters.resourceManagement = { ...parent2.parameters.resourceManagement };
-    if (Math.random() < 0.5) child.parameters.coordination = { ...parent2.parameters.coordination };
-    if (Math.random() < 0.5) child.parameters.learning = { ...parent2.parameters.learning };
+      child?.parameters.resourceManagement = { ...parent2?.parameters?.resourceManagement };
+    if (Math.random() < 0.5)
+      child?.parameters.coordination = { ...parent2?.parameters?.coordination };
+    if (Math.random() < 0.5) child?.parameters.learning = { ...parent2?.parameters?.learning };
 
     return child;
   }
@@ -982,7 +1007,7 @@ export class BehavioralOptimization extends EventEmitter {
     indexed.sort((a, b) => (b.fitness || 0) - (a.fitness || 0));
 
     // Return top individuals
-    return indexed.slice(0, parents.length).map((item) => item.individual);
+    return indexed.slice(0, parents.length).map((item) => item?.individual);
   }
 
   private calculateGradients(
@@ -1277,12 +1302,16 @@ export class BehavioralOptimization extends EventEmitter {
     const criteria: Record<string, any> = {};
 
     // Analyze what makes agents successful for specific tasks
-    const successfulAgents = patterns.filter((p) => (p.metadata as any)?.success).map((p) => (p as any).agentId);
+    const successfulAgents = patterns
+      .filter((p) => (p.metadata as any)?.success)
+      .map((p) => (p as any).agentId);
     const uniqueAgents = [...new Set(successfulAgents)];
 
     if (uniqueAgents.length > 0) {
       criteria['preferredAgents'] = uniqueAgents;
-      criteria['minExperience'] = Math.min(...patterns.map((p) => (p.metadata as any)?.experience || 0));
+      criteria['minExperience'] = Math.min(
+        ...patterns.map((p) => (p.metadata as any)?.experience || 0)
+      );
       criteria['requiredSkills'] = this.extractRequiredSkills(patterns);
     }
 
@@ -1306,8 +1335,12 @@ export class BehavioralOptimization extends EventEmitter {
     const constraints: Record<string, any> = {};
 
     if (patterns.length > 0) {
-      const memoryUsages = patterns.map((p) => (p.metadata as any)?.memoryUsage || 0).filter((m) => m > 0);
-      const cpuUsages = patterns.map((p) => (p.metadata as any)?.cpuUsage || 0).filter((c) => c > 0);
+      const memoryUsages = patterns
+        .map((p) => (p.metadata as any)?.memoryUsage || 0)
+        .filter((m) => m > 0);
+      const cpuUsages = patterns
+        .map((p) => (p.metadata as any)?.cpuUsage || 0)
+        .filter((c) => c > 0);
 
       if (memoryUsages.length > 0) {
         constraints['maxMemory'] = Math.max(...memoryUsages) * 1.2; // 20% buffer
@@ -1325,7 +1358,9 @@ export class BehavioralOptimization extends EventEmitter {
     const frequencies: Record<string, number> = {};
 
     // Group by message type and calculate optimal frequencies
-    const messageTypes = new Set(patterns.map((p) => (p.metadata as any)?.messageType).filter(Boolean));
+    const messageTypes = new Set(
+      patterns.map((p) => (p.metadata as any)?.messageType).filter(Boolean)
+    );
 
     messageTypes.forEach((messageType) => {
       const typePatterns = patterns.filter((p) => (p.metadata as any)?.messageType === messageType);
@@ -1570,7 +1605,7 @@ export class BehavioralOptimization extends EventEmitter {
   private setNestedProperty(obj: any, path: string, value: any): void {
     const keys = path.split('.');
     const lastKey = keys.pop()!;
-    const target = keys.reduce((current, key) => current[key], obj);
+    const target = keys.reduce((current, key) => current?.[key], obj);
     target[lastKey] = value;
   }
 

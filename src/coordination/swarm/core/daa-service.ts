@@ -1,7 +1,12 @@
 /**
- * DAA Service - Temporary stub implementation
- * TODO: Implement Data Accessibility and Analysis service functionality
+ * DAA Service - Temporary stub implementation.
+ * TODO: Implement Data Accessibility and Analysis service functionality.
  */
+/**
+ * @file daa service implementation
+ */
+
+
 
 export class DaaService {
   private initialized = false;

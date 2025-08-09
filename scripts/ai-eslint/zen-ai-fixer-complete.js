@@ -28,7 +28,7 @@ class ZenAIFixerComplete {
    */
   async run(mode = 'production') {
     const phase = this.getPhaseFromArgs();
-    
+
     if (phase) {
       return await this.runSpecificPhase(phase, mode);
     }
@@ -72,7 +72,6 @@ class ZenAIFixerComplete {
       if (process.argv.includes('--warnings-as-errors')) {
         console.log('✅ TypeScript warnings resolved');
       }
-
     } catch (error) {
       console.error('❌ Complete fixing failed:', error.message);
       process.exit(1);
@@ -125,7 +124,6 @@ class ZenAIFixerComplete {
       }
 
       console.log(`\n🎉 ${phase.toUpperCase()} phase completed successfully!`);
-
     } catch (error) {
       console.error(`❌ ${phase.toUpperCase()} phase failed:`, error.message);
       process.exit(1);
@@ -138,7 +136,7 @@ class ZenAIFixerComplete {
    * Extract phase from command line arguments
    */
   getPhaseFromArgs() {
-    const phaseArg = process.argv.find(arg => arg.startsWith('--phase='));
+    const phaseArg = process.argv.find((arg) => arg.startsWith('--phase='));
     if (phaseArg) {
       return phaseArg.split('=')[1];
     }
@@ -152,14 +150,14 @@ class ZenAIFixerComplete {
     console.log('🔍 Checking TypeScript compilation...');
 
     const tsErrors = await this.runTypeScriptCompiler();
-    
+
     if (tsErrors.length === 0) {
       console.log('✅ No TypeScript compilation errors found');
       return;
     }
 
     console.log(`🚨 Found ${tsErrors.length} TypeScript compilation errors`);
-    
+
     // Test Claude CLI availability
     const claudeAvailable = await ClaudeAIIntegration.testClaudeAvailability();
     if (!claudeAvailable) {
@@ -177,15 +175,17 @@ class ZenAIFixerComplete {
 
     for (const [filePath, errors] of errorsByFile.entries()) {
       console.log(`🔧 Fixing ${errors.length} errors in ${path.basename(filePath)}`);
-      
+
       const result = await this.fixTypeScriptErrorsInFile(filePath, errors);
-      
+
       if (result.success) {
         if (result.commented) {
-          console.log(`  💬 Added ${errors.length} TODO comments (AI unsure - human review needed)`);
+          console.log(
+            `  💬 Added ${errors.length} TODO comments (AI unsure - human review needed)`
+          );
           filesWithComments.push({
             filePath,
-            todoComments: result.todoComments
+            todoComments: result.todoComments,
           });
         } else {
           fixedFiles++;
@@ -206,7 +206,9 @@ class ZenAIFixerComplete {
     // Verify compilation now works
     const remainingErrors = await this.runTypeScriptCompiler();
     if (remainingErrors.length > 0) {
-      console.warn(`⚠️  ${remainingErrors.length} TypeScript errors remain - continuing with ESLint phase`);
+      console.warn(
+        `⚠️  ${remainingErrors.length} TypeScript errors remain - continuing with ESLint phase`
+      );
     } else {
       console.log('🎉 All TypeScript compilation errors resolved!');
     }
@@ -249,7 +251,7 @@ class ZenAIFixerComplete {
     console.log('🔍 Checking TypeScript warnings in strict mode...');
 
     const tsWarnings = await this.runTypeScriptCompilerStrict();
-    
+
     if (tsWarnings.length === 0) {
       console.log('✅ No TypeScript warnings found');
       return;
@@ -263,12 +265,14 @@ class ZenAIFixerComplete {
 
     for (const [filePath, warnings] of warningsByFile.entries()) {
       console.log(`🔧 Fixing ${warnings.length} warnings in ${path.basename(filePath)}`);
-      
+
       const result = await this.fixTypeScriptWarningsInFile(filePath, warnings);
-      
+
       if (result.success) {
         if (result.commented) {
-          console.log(`  💬 Added ${warnings.length} TODO comments (AI unsure - human review needed)`);
+          console.log(
+            `  💬 Added ${warnings.length} TODO comments (AI unsure - human review needed)`
+          );
         } else {
           fixedFiles++;
           console.log(`  ✅ Fixed ${warnings.length} warnings`);
@@ -287,29 +291,49 @@ class ZenAIFixerComplete {
   async runTypeScriptCompiler() {
     return new Promise((resolve) => {
       // Use exact same TypeScript compilation as build.sh
-      const tsc = spawn('node', [
-        './node_modules/typescript/lib/tsc.js',
-        '--noEmitOnError', 'false',
-        '--skipLibCheck', 'true', 
-        '--noImplicitAny', 'false',
-        '--strict', 'false',
-        '--forceConsistentCasingInFileNames', 'false',
-        '--noUnusedLocals', 'false',
-        '--noUnusedParameters', 'false',
-        '--noEmit', 'true',  // Add noEmit for error checking only
-        '--pretty', 'false'
-      ], {
-        stdio: 'pipe',
-        cwd: path.resolve(__dirname, '../..'),
-        env: {
-          ...process.env,
-          NODE_OPTIONS: '--max-old-space-size=2048',
-        },
-      });
+      const tsc = spawn(
+        'node',
+        [
+          './node_modules/typescript/lib/tsc.js',
+          '--noEmitOnError',
+          'false',
+          '--skipLibCheck',
+          'true',
+          '--noImplicitAny',
+          'false',
+          '--strict',
+          'false',
+          '--forceConsistentCasingInFileNames',
+          'false',
+          '--noUnusedLocals',
+          'false',
+          '--noUnusedParameters',
+          'false',
+          '--noEmit',
+          'true', // Add noEmit for error checking only
+          '--pretty',
+          'false',
+          // 🔧 TRANSFORMATION FIX: Add missing flags for Map iteration and ES modules
+          '--downlevelIteration',
+          'true',
+          '--esModuleInterop',
+          'true',
+          '--target',
+          'ES2023',
+        ],
+        {
+          stdio: 'pipe',
+          cwd: path.resolve(__dirname, '../..'),
+          env: {
+            ...process.env,
+            NODE_OPTIONS: '--max-old-space-size=2048',
+          },
+        }
+      );
 
       let stdout = '';
       let stderr = '';
-      
+
       tsc.stdout.on('data', (chunk) => {
         stdout += chunk.toString();
       });
@@ -331,14 +355,18 @@ class ZenAIFixerComplete {
    */
   async runTypeScriptCompilerStrict() {
     return new Promise((resolve) => {
-      const tsc = spawn('npx', ['tsc', '--noEmit', '--strict', '--noImplicitAny', '--pretty', 'false'], {
-        stdio: 'pipe',
-        cwd: path.resolve(__dirname, '../..'),
-        env: {
-          ...process.env,
-          NODE_OPTIONS: '--max-old-space-size=2048',
-        },
-      });
+      const tsc = spawn(
+        'npx',
+        ['tsc', '--noEmit', '--strict', '--noImplicitAny', '--pretty', 'false'],
+        {
+          stdio: 'pipe',
+          cwd: path.resolve(__dirname, '../..'),
+          env: {
+            ...process.env,
+            NODE_OPTIONS: '--max-old-space-size=2048',
+          },
+        }
+      );
 
       let stderr = '';
       tsc.stderr.on('data', (chunk) => {
@@ -358,7 +386,7 @@ class ZenAIFixerComplete {
   parseTypeScriptErrors(output) {
     const errors = [];
     const lines = output.split('\n');
-    
+
     for (const line of lines) {
       // Parse format: src/file.ts(line,col): error TSxxxx: message
       const match = line.match(/^(.+\.tsx?)\((\d+),(\d+)\): error (TS\d+): (.+)$/);
@@ -369,13 +397,15 @@ class ZenAIFixerComplete {
           column: parseInt(match[3]),
           code: match[4],
           message: match[5],
-          fullLine: line
+          fullLine: line,
         });
       }
     }
-    
-    console.log(`🔍 Parsed ${errors.length} TypeScript errors from ${lines.length} lines of output`);
-    
+
+    console.log(
+      `🔍 Parsed ${errors.length} TypeScript errors from ${lines.length} lines of output`
+    );
+
     return errors;
   }
 
@@ -384,19 +414,19 @@ class ZenAIFixerComplete {
    */
   groupErrorsByFile(errors) {
     const errorsByFile = new Map();
-    
+
     for (const error of errors) {
       // Skip library files and dependencies
       if (this.shouldSkipFile(error.file)) {
         continue;
       }
-      
+
       if (!errorsByFile.has(error.file)) {
         errorsByFile.set(error.file, []);
       }
       errorsByFile.get(error.file).push(error);
     }
-    
+
     return errorsByFile;
   }
 
@@ -406,16 +436,16 @@ class ZenAIFixerComplete {
   shouldSkipFile(filePath) {
     const skipPatterns = [
       'node_modules/',
-      '.d.ts',              // TypeScript declaration files
+      '.d.ts', // TypeScript declaration files
       '/dist/',
       '/build/',
       'lib/',
       'vendor/',
       '.min.js',
-      '.bundle.js'
+      '.bundle.js',
     ];
-    
-    return skipPatterns.some(pattern => filePath.includes(pattern));
+
+    return skipPatterns.some((pattern) => filePath.includes(pattern));
   }
 
   /**
@@ -424,7 +454,7 @@ class ZenAIFixerComplete {
   async fixTypeScriptErrorsInFile(filePath, errors) {
     const prompt = `Fix these TypeScript compilation errors in ${path.basename(filePath)}:
 
-${errors.map(error => `Line ${error.line}, Column ${error.column}: ${error.code} - ${error.message}`).join('\n')}
+${errors.map((error) => `Line ${error.line}, Column ${error.column}: ${error.code} - ${error.message}`).join('\n')}
 
 PRIORITY ORDER for TypeScript compilation errors:
 
@@ -453,19 +483,19 @@ Use your tools directly - do not return code in your response.`;
       const originalContent = fs.readFileSync(filePath, 'utf8');
       const result = await this.claude.callClaudeCLI(filePath, prompt);
       const updatedContent = fs.readFileSync(filePath, 'utf8');
-      
+
       // Check if Claude added TODO comments instead of fixing
       const addedTodoComments = this.detectTodoComments(originalContent, updatedContent);
-      
+
       if (addedTodoComments.count > 0) {
         console.log(`   💬 Claude added ${addedTodoComments.count} TODO comments for human review`);
         return { success: true, result, commented: true, todoComments: addedTodoComments.comments };
       }
-      
+
       // Auto-ESLint fix after successful TypeScript fix (only if actually fixed, not commented)
       console.log(`   🔧 Auto-ESLint: Running ESLint --fix on ${path.basename(filePath)}`);
       await this.runESLintAutofix(filePath);
-      
+
       return { success: true, result, commented: false };
     } catch (error) {
       return { success: false, error: error.message };
@@ -478,28 +508,30 @@ Use your tools directly - do not return code in your response.`;
   detectTodoComments(originalContent, updatedContent) {
     const originalLines = originalContent.split('\n');
     const updatedLines = updatedContent.split('\n');
-    
+
     const addedComments = [];
-    
+
     // Look for new lines containing TypeScript error TODO comments
     updatedLines.forEach((line, index) => {
       // Check if this line wasn't in original and contains our TODO pattern
       if (index >= originalLines.length || line !== originalLines[index]) {
-        if (line.includes('TODO:') && 
-            (line.includes('TypeScript error') || 
-             line.includes('AI unsure') || 
-             line.includes('human review needed'))) {
+        if (
+          line.includes('TODO:') &&
+          (line.includes('TypeScript error') ||
+            line.includes('AI unsure') ||
+            line.includes('human review needed'))
+        ) {
           addedComments.push({
             lineNumber: index + 1,
-            comment: line.trim()
+            comment: line.trim(),
           });
         }
       }
     });
-    
+
     return {
       count: addedComments.length,
-      comments: addedComments
+      comments: addedComments,
     };
   }
 
@@ -517,7 +549,7 @@ Use your tools directly - do not return code in your response.`;
         },
       });
 
-      let fixedCount = 0;
+      const fixedCount = 0;
       let stderr = '';
 
       eslint.stderr.on('data', (chunk) => {
@@ -526,7 +558,9 @@ Use your tools directly - do not return code in your response.`;
 
       eslint.on('close', (code) => {
         if (code === 0) {
-          console.log(`   🔧 Auto-ESLint: Fixed auto-fixable violations in ${path.basename(filePath)}`);
+          console.log(
+            `   🔧 Auto-ESLint: Fixed auto-fixable violations in ${path.basename(filePath)}`
+          );
         } else if (stderr.trim()) {
           console.log(`   ⚠️  Auto-ESLint: ${stderr.trim()}`);
         }
@@ -551,7 +585,7 @@ Use your tools directly - do not return code in your response.`;
   async fixTypeScriptWarningsInFile(filePath, warnings) {
     const prompt = `Fix these TypeScript warnings to follow best practices in ${path.basename(filePath)}:
 
-${warnings.map(warning => `Line ${warning.line}, Column ${warning.column}: ${warning.code} - ${warning.message}`).join('\n')}
+${warnings.map((warning) => `Line ${warning.line}, Column ${warning.column}: ${warning.code} - ${warning.message}`).join('\n')}
 
 PRIORITY ORDER for TypeScript warnings:
 
@@ -579,15 +613,15 @@ Use your tools directly - do not return code in your response.`;
       const originalContent = fs.readFileSync(filePath, 'utf8');
       const result = await this.claude.callClaudeCLI(filePath, prompt);
       const updatedContent = fs.readFileSync(filePath, 'utf8');
-      
+
       // Check if Claude added TODO comments instead of fixing
       const addedTodoComments = this.detectTodoComments(originalContent, updatedContent);
-      
+
       if (addedTodoComments.count > 0) {
         console.log(`   💬 Claude added ${addedTodoComments.count} TODO comments for human review`);
         return { success: true, result, commented: true, todoComments: addedTodoComments.comments };
       }
-      
+
       return { success: true, result, commented: false };
     } catch (error) {
       return { success: false, error: error.message };
@@ -603,7 +637,9 @@ Use your tools directly - do not return code in your response.`;
    */
   async runQuickAnalysis() {
     const includeTests = process.argv.includes('--include-tests');
-    console.log(`🔍 Running quick ESLint analysis (top 5 priority files only)${includeTests ? ' + test files' : ''}...`);
+    console.log(
+      `🔍 Running quick ESLint analysis (top 5 priority files only)${includeTests ? ' + test files' : ''}...`
+    );
 
     // Build dependency graph with optional test files
     await this.analyzer.buildDependencyGraph(includeTests);
@@ -618,7 +654,9 @@ Use your tools directly - do not return code in your response.`;
           : 5;
 
     const prioritizedFiles = this.analyzer.prioritizeFilesByImpact().slice(0, quickFileCount);
-    console.log(`🎯 Analyzing only top ${prioritizedFiles.length} priority files${includeTests ? ' (including tests)' : ''}`);
+    console.log(
+      `🎯 Analyzing only top ${prioritizedFiles.length} priority files${includeTests ? ' (including tests)' : ''}`
+    );
 
     // Single batch mode: 1 batch with all priority files
     console.log(`📦 Creating single batch for efficient analysis`);
@@ -866,24 +904,24 @@ Use your tools directly - do not return code in your response.`;
    */
   generateTodoCommentsReport(filesWithComments) {
     if (filesWithComments.length === 0) return;
-    
+
     console.log('\n📝 TODO Comments Report (Human Review Needed)');
-    console.log('=' .repeat(60));
-    
+    console.log('='.repeat(60));
+
     let totalComments = 0;
-    
+
     filesWithComments.forEach(({ filePath, todoComments }) => {
       console.log(`\n📁 ${path.basename(filePath)}`);
       console.log(`   Path: ${path.relative(process.cwd(), filePath)}`);
       console.log(`   Comments: ${todoComments.length}`);
-      
-      todoComments.forEach(comment => {
+
+      todoComments.forEach((comment) => {
         console.log(`   Line ${comment.lineNumber}: ${comment.comment}`);
       });
-      
+
       totalComments += todoComments.length;
     });
-    
+
     console.log('\n📊 Summary:');
     console.log(`   Files with TODO comments: ${filesWithComments.length}`);
     console.log(`   Total TODO comments: ${totalComments}`);

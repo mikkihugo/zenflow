@@ -1,18 +1,23 @@
 /**
- * Utility helper functions
+ * Utility helper functions.
  */
+/**
+ * @file helpers implementation
+ */
+
+
 
 import { randomBytes } from 'node:crypto';
 
 /**
- * Generate a unique ID
+ * Generate a unique ID.
  */
 export function generateId(): string {
   return randomBytes(16).toString('hex');
 }
 
 /**
- * Sleep for specified milliseconds
+ * Sleep for specified milliseconds.
  *
  * @param ms
  */
@@ -21,7 +26,7 @@ export function sleep(ms: number): Promise<void> {
 }
 
 /**
- * Retry an async function with exponential backoff
+ * Retry an async function with exponential backoff.
  *
  * @param fn
  * @param maxRetries
@@ -49,7 +54,7 @@ export async function retry<T>(
 }
 
 /**
- * Deep clone an object
+ * Deep clone an object.
  *
  * @param obj
  */
@@ -58,7 +63,7 @@ export function deepClone<T>(obj: T): T {
 }
 
 /**
- * Check if value is empty
+ * Check if value is empty.
  *
  * @param value
  */

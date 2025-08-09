@@ -1,10 +1,15 @@
 /**
- * Auto-Agent Assignment System
- * Intelligently assigns optimal agents based on file types, operations, and agent capabilities
+ * Auto-Agent Assignment System.
+ * Intelligently assigns optimal agents based on file types, operations, and agent capabilities.
+ */
+/**
+ * @file Coordination system: auto-agent-assignment
  */
 
+
+
 import * as path from 'node:path';
-import type { AgentType } from '../../types/agent-types';
+import type { AgentType } from '../types/agent-types';
 import type {
   AgentAssignment,
   AgentContext,
@@ -55,16 +60,16 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
     // 4. Select optimal agent
     const selectedAgent = scoredAgents.reduce((best, current) =>
-      current.score > best.score ? current : best
+      current?.score > best.score ? current : best
     );
 
     // 5. Estimate performance for the assignment
-    const performanceEstimate = await this.estimatePerformance(selectedAgent.agent, context);
+    const performanceEstimate = await this.estimatePerformance(selectedAgent?.agent, context);
 
     return {
-      agent: selectedAgent.agent,
-      confidence: selectedAgent.score,
-      reasoning: selectedAgent.reasoning,
+      agent: selectedAgent?.agent,
+      confidence: selectedAgent?.score,
+      reasoning: selectedAgent?.reasoning,
       alternatives: scoredAgents.slice(1, 4).map((sa) => sa.agent),
       estimatedPerformance: performanceEstimate,
     };
@@ -434,7 +439,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     // Mock implementation - would query actual performance database
     const historicalData = await this.loadPerformanceHistory(agentId);
 
-    const relevantHistory = historicalData.filter(
+    const relevantHistory = historicalData?.filter(
       (record) =>
         record.context['fileType'] === analysis['fileType'] ||
         record.context['operationType'] === analysis['operationType']

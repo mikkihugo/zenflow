@@ -1,7 +1,12 @@
 /**
- * Auto-Scaling Strategy
- * Intelligent auto-scaling based on load patterns and predictions
+ * Auto-Scaling Strategy.
+ * Intelligent auto-scaling based on load patterns and predictions.
  */
+/**
+ * @file Coordination system: auto-scaling-strategy
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type { AutoScaler } from '../interfaces';
@@ -175,7 +180,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
 
     // Calculate average response time
     const responseTimes = metricsArray.map((m) => m.responseTime);
-    const avgResponseTime = responseTimes.reduce((sum, rt) => sum + rt, 0) / responseTimes.length;
+    const avgResponseTime = responseTimes?.reduce((sum, rt) => sum + rt, 0) / responseTimes.length;
 
     // Calculate average error rate
     const errorRates = metricsArray.map((m) => m.errorRate);

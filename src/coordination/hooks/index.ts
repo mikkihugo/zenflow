@@ -3,6 +3,11 @@
  * Central exports for the hooks system with safety validation,
  * auto-assignment, performance tracking, and context loading
  */
+/**
+ * @file hooks module exports.
+ */
+
+
 
 export * from './auto-agent-assignment';
 export * from './hook-manager';

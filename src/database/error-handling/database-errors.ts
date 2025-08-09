@@ -81,12 +81,12 @@ export class DatabaseError extends Error {
     this.name = 'DatabaseError';
     this.code = code;
     this.context = context;
-    this.recoverable = options.recoverable ?? DatabaseError.isRecoverable(code);
-    this.severity = options.severity ?? DatabaseError.getSeverity(code);
-    this.retryable = options.retryable ?? DatabaseError.isRetryable(code);
+    this.recoverable = options?.recoverable ?? DatabaseError?.isRecoverable(code);
+    this.severity = options?.severity ?? DatabaseError?.getSeverity(code);
+    this.retryable = options?.retryable ?? DatabaseError?.isRetryable(code);
 
-    if (options.cause) {
-      this.cause = options.cause;
+    if (options?.cause) {
+      this.cause = options?.cause;
     }
 
     // Maintain proper stack trace
@@ -102,15 +102,15 @@ export class DatabaseError extends Error {
    */
   static isRecoverable(code: DatabaseErrorCode): boolean {
     const recoverableErrors = new Set([
-      DatabaseErrorCode.ENGINE_TIMEOUT,
-      DatabaseErrorCode.ENGINE_OVERLOADED,
-      DatabaseErrorCode.QUERY_TIMEOUT,
-      DatabaseErrorCode.PERFORMANCE_DEGRADED,
-      DatabaseErrorCode.CACHE_MISS_RATE_HIGH,
-      DatabaseErrorCode.THROUGHPUT_LOW,
-      DatabaseErrorCode.TRANSACTION_TIMEOUT,
-      DatabaseErrorCode.CONNECTION_POOL_EXHAUSTED,
-      DatabaseErrorCode.SYSTEM_UNAVAILABLE,
+      DatabaseErrorCode?.ENGINE_TIMEOUT,
+      DatabaseErrorCode?.ENGINE_OVERLOADED,
+      DatabaseErrorCode?.QUERY_TIMEOUT,
+      DatabaseErrorCode?.PERFORMANCE_DEGRADED,
+      DatabaseErrorCode?.CACHE_MISS_RATE_HIGH,
+      DatabaseErrorCode?.THROUGHPUT_LOW,
+      DatabaseErrorCode?.TRANSACTION_TIMEOUT,
+      DatabaseErrorCode?.CONNECTION_POOL_EXHAUSTED,
+      DatabaseErrorCode?.SYSTEM_UNAVAILABLE,
     ]);
 
     return recoverableErrors.has(code);
@@ -123,12 +123,12 @@ export class DatabaseError extends Error {
    */
   static isRetryable(code: DatabaseErrorCode): boolean {
     const retryableErrors = new Set([
-      DatabaseErrorCode.ENGINE_TIMEOUT,
-      DatabaseErrorCode.QUERY_TIMEOUT,
-      DatabaseErrorCode.ENGINE_CONNECTION_FAILED,
-      DatabaseErrorCode.TRANSACTION_TIMEOUT,
-      DatabaseErrorCode.DEADLOCK_DETECTED,
-      DatabaseErrorCode.SYSTEM_UNAVAILABLE,
+      DatabaseErrorCode?.ENGINE_TIMEOUT,
+      DatabaseErrorCode?.QUERY_TIMEOUT,
+      DatabaseErrorCode?.ENGINE_CONNECTION_FAILED,
+      DatabaseErrorCode?.TRANSACTION_TIMEOUT,
+      DatabaseErrorCode?.DEADLOCK_DETECTED,
+      DatabaseErrorCode?.SYSTEM_UNAVAILABLE,
     ]);
 
     return retryableErrors.has(code);
@@ -141,36 +141,36 @@ export class DatabaseError extends Error {
    */
   static getSeverity(code: DatabaseErrorCode): 'low' | 'medium' | 'high' | 'critical' {
     const severityMap = {
-      [DatabaseErrorCode.COORDINATION_FAILED]: 'high',
-      [DatabaseErrorCode.ENGINE_SELECTION_FAILED]: 'medium',
-      [DatabaseErrorCode.ROUTING_FAILED]: 'medium',
-      [DatabaseErrorCode.LOAD_BALANCING_FAILED]: 'low',
-      [DatabaseErrorCode.ENGINE_UNAVAILABLE]: 'high',
-      [DatabaseErrorCode.ENGINE_OVERLOADED]: 'medium',
-      [DatabaseErrorCode.ENGINE_TIMEOUT]: 'medium',
-      [DatabaseErrorCode.ENGINE_CONNECTION_FAILED]: 'high',
-      [DatabaseErrorCode.ENGINE_INITIALIZATION_FAILED]: 'critical',
-      [DatabaseErrorCode.QUERY_INVALID]: 'low',
-      [DatabaseErrorCode.QUERY_TIMEOUT]: 'medium',
-      [DatabaseErrorCode.QUERY_OPTIMIZATION_FAILED]: 'low',
-      [DatabaseErrorCode.QUERY_EXECUTION_FAILED]: 'medium',
-      [DatabaseErrorCode.QUERY_RESULT_INVALID]: 'medium',
-      [DatabaseErrorCode.PERFORMANCE_DEGRADED]: 'medium',
-      [DatabaseErrorCode.CACHE_MISS_RATE_HIGH]: 'low',
-      [DatabaseErrorCode.LATENCY_THRESHOLD_EXCEEDED]: 'medium',
-      [DatabaseErrorCode.THROUGHPUT_LOW]: 'medium',
-      [DatabaseErrorCode.TRANSACTION_FAILED]: 'high',
-      [DatabaseErrorCode.TRANSACTION_TIMEOUT]: 'medium',
-      [DatabaseErrorCode.TRANSACTION_ROLLBACK_FAILED]: 'critical',
-      [DatabaseErrorCode.DEADLOCK_DETECTED]: 'medium',
-      [DatabaseErrorCode.CONSISTENCY_VIOLATION]: 'critical',
-      [DatabaseErrorCode.RESOURCE_EXHAUSTED]: 'high',
-      [DatabaseErrorCode.CAPACITY_EXCEEDED]: 'high',
-      [DatabaseErrorCode.CONNECTION_POOL_EXHAUSTED]: 'high',
-      [DatabaseErrorCode.MEMORY_LIMIT_EXCEEDED]: 'critical',
-      [DatabaseErrorCode.CONFIGURATION_INVALID]: 'critical',
-      [DatabaseErrorCode.SYSTEM_UNAVAILABLE]: 'critical',
-      [DatabaseErrorCode.UNKNOWN_ERROR]: 'medium',
+      [DatabaseErrorCode?.COORDINATION_FAILED]: 'high',
+      [DatabaseErrorCode?.ENGINE_SELECTION_FAILED]: 'medium',
+      [DatabaseErrorCode?.ROUTING_FAILED]: 'medium',
+      [DatabaseErrorCode?.LOAD_BALANCING_FAILED]: 'low',
+      [DatabaseErrorCode?.ENGINE_UNAVAILABLE]: 'high',
+      [DatabaseErrorCode?.ENGINE_OVERLOADED]: 'medium',
+      [DatabaseErrorCode?.ENGINE_TIMEOUT]: 'medium',
+      [DatabaseErrorCode?.ENGINE_CONNECTION_FAILED]: 'high',
+      [DatabaseErrorCode?.ENGINE_INITIALIZATION_FAILED]: 'critical',
+      [DatabaseErrorCode?.QUERY_INVALID]: 'low',
+      [DatabaseErrorCode?.QUERY_TIMEOUT]: 'medium',
+      [DatabaseErrorCode?.QUERY_OPTIMIZATION_FAILED]: 'low',
+      [DatabaseErrorCode?.QUERY_EXECUTION_FAILED]: 'medium',
+      [DatabaseErrorCode?.QUERY_RESULT_INVALID]: 'medium',
+      [DatabaseErrorCode?.PERFORMANCE_DEGRADED]: 'medium',
+      [DatabaseErrorCode?.CACHE_MISS_RATE_HIGH]: 'low',
+      [DatabaseErrorCode?.LATENCY_THRESHOLD_EXCEEDED]: 'medium',
+      [DatabaseErrorCode?.THROUGHPUT_LOW]: 'medium',
+      [DatabaseErrorCode?.TRANSACTION_FAILED]: 'high',
+      [DatabaseErrorCode?.TRANSACTION_TIMEOUT]: 'medium',
+      [DatabaseErrorCode?.TRANSACTION_ROLLBACK_FAILED]: 'critical',
+      [DatabaseErrorCode?.DEADLOCK_DETECTED]: 'medium',
+      [DatabaseErrorCode?.CONSISTENCY_VIOLATION]: 'critical',
+      [DatabaseErrorCode?.RESOURCE_EXHAUSTED]: 'high',
+      [DatabaseErrorCode?.CAPACITY_EXCEEDED]: 'high',
+      [DatabaseErrorCode?.CONNECTION_POOL_EXHAUSTED]: 'high',
+      [DatabaseErrorCode?.MEMORY_LIMIT_EXCEEDED]: 'critical',
+      [DatabaseErrorCode?.CONFIGURATION_INVALID]: 'critical',
+      [DatabaseErrorCode?.SYSTEM_UNAVAILABLE]: 'critical',
+      [DatabaseErrorCode?.UNKNOWN_ERROR]: 'medium',
     } as const;
 
     return severityMap[code] || 'medium';
@@ -200,22 +200,22 @@ export class DatabaseError extends Error {
    */
   static fromError(error: Error, context: DatabaseErrorContext): DatabaseError {
     // Try to determine error code from error message or type
-    let code = DatabaseErrorCode.UNKNOWN_ERROR;
+    let code = DatabaseErrorCode?.UNKNOWN_ERROR;
 
     if (error.message.includes('timeout')) {
-      code = DatabaseErrorCode.QUERY_TIMEOUT;
+      code = DatabaseErrorCode?.QUERY_TIMEOUT;
     } else if (error.message.includes('connection') || error.message.includes('connect')) {
-      code = DatabaseErrorCode.ENGINE_CONNECTION_FAILED;
+      code = DatabaseErrorCode?.ENGINE_CONNECTION_FAILED;
     } else if (error.message.includes('invalid') || error.message.includes('malformed')) {
-      code = DatabaseErrorCode.QUERY_INVALID;
+      code = DatabaseErrorCode?.QUERY_INVALID;
     } else if (error.message.includes('overload') || error.message.includes('busy')) {
-      code = DatabaseErrorCode.ENGINE_OVERLOADED;
+      code = DatabaseErrorCode?.ENGINE_OVERLOADED;
     } else if (error.message.includes('deadlock')) {
-      code = DatabaseErrorCode.DEADLOCK_DETECTED;
+      code = DatabaseErrorCode?.DEADLOCK_DETECTED;
     } else if (error.message.includes('capacity') || error.message.includes('limit')) {
-      code = DatabaseErrorCode.CAPACITY_EXCEEDED;
+      code = DatabaseErrorCode?.CAPACITY_EXCEEDED;
     } else if (error.message.includes('transaction')) {
-      code = DatabaseErrorCode.TRANSACTION_FAILED;
+      code = DatabaseErrorCode?.TRANSACTION_FAILED;
     }
 
     return new DatabaseError(code, error.message, context, { cause: error });
@@ -224,7 +224,7 @@ export class DatabaseError extends Error {
 
 export class DatabaseCoordinationError extends DatabaseError {
   constructor(message: string, context: DatabaseErrorContext, options: { cause?: Error } = {}) {
-    super(DatabaseErrorCode.COORDINATION_FAILED, message, context, options);
+    super(DatabaseErrorCode?.COORDINATION_FAILED, message, context, options);
     this.name = 'DatabaseCoordinationError';
   }
 }
@@ -291,19 +291,19 @@ export class DatabaseErrorClassifier {
     retryStrategy?: 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none';
   } {
     if (error instanceof DatabaseError) {
-      return DatabaseErrorClassifier.classifyDatabaseError(error);
+      return DatabaseErrorClassifier?.classifyDatabaseError(error);
     }
 
     // Classify generic errors
-    const category = DatabaseErrorClassifier.inferCategory(error);
-    const priority = DatabaseErrorClassifier.inferPriority(error);
+    const category = DatabaseErrorClassifier?.inferCategory(error);
+    const priority = DatabaseErrorClassifier?.inferPriority(error);
 
     return {
       category,
       priority,
       actionRequired: priority === 'high' || priority === 'critical',
-      suggestedActions: DatabaseErrorClassifier.getSuggestedActions(category, error.message),
-      retryStrategy: DatabaseErrorClassifier.inferRetryStrategy(error),
+      suggestedActions: DatabaseErrorClassifier?.getSuggestedActions(category, error.message),
+      retryStrategy: DatabaseErrorClassifier?.inferRetryStrategy(error),
     };
   }
 
@@ -355,8 +355,8 @@ export class DatabaseErrorClassifier {
       category,
       priority: error.severity,
       actionRequired: error.severity === 'high' || error.severity === 'critical',
-      suggestedActions: DatabaseErrorClassifier.getSuggestedActions(category, error.message),
-      retryStrategy: DatabaseErrorClassifier.getRetryStrategy(error),
+      suggestedActions: DatabaseErrorClassifier?.getSuggestedActions(category, error.message),
+      retryStrategy: DatabaseErrorClassifier?.getRetryStrategy(error),
     };
   }
 
@@ -518,17 +518,17 @@ export class DatabaseErrorClassifier {
     }
 
     switch (error.code) {
-      case DatabaseErrorCode.DEADLOCK_DETECTED:
+      case DatabaseErrorCode?.DEADLOCK_DETECTED:
         return 'immediate';
 
-      case DatabaseErrorCode.ENGINE_TIMEOUT:
-      case DatabaseErrorCode.QUERY_TIMEOUT:
-      case DatabaseErrorCode.TRANSACTION_TIMEOUT:
+      case DatabaseErrorCode?.ENGINE_TIMEOUT:
+      case DatabaseErrorCode?.QUERY_TIMEOUT:
+      case DatabaseErrorCode?.TRANSACTION_TIMEOUT:
         return 'exponential_backoff';
 
-      case DatabaseErrorCode.ENGINE_UNAVAILABLE:
-      case DatabaseErrorCode.ENGINE_CONNECTION_FAILED:
-      case DatabaseErrorCode.SYSTEM_UNAVAILABLE:
+      case DatabaseErrorCode?.ENGINE_UNAVAILABLE:
+      case DatabaseErrorCode?.ENGINE_CONNECTION_FAILED:
+      case DatabaseErrorCode?.SYSTEM_UNAVAILABLE:
         return 'circuit_breaker';
 
       default:

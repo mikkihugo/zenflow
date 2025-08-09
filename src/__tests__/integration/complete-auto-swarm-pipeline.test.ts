@@ -112,15 +112,15 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     expect(swarmConfigs.length).toBeGreaterThan(0); // ✓ Swarms created for high-confidence domains
 
     // ✓ Appropriate topologies selected
-    const databaseSwarm = swarmConfigs.find((c) => c.domain === 'database');
-    const apiSwarm = swarmConfigs.find((c) => c.domain === 'api');
+    const databaseSwarm = swarmConfigs?.find((c) => c.domain === 'database');
+    const apiSwarm = swarmConfigs?.find((c) => c.domain === 'api');
 
     expect(databaseSwarm?.topology.type).toBe('hierarchical'); // Database complexity
     expect(apiSwarm?.topology.type).toBe('star'); // Centralized API service
 
     // ✓ Resource constraints properly enforced
-    const totalAgents = swarmConfigs.reduce(
-      (sum, config) => sum + config.agents.reduce((agentSum, agent) => agentSum + agent.count, 0),
+    const totalAgents = swarmConfigs?.reduce(
+      (sum, config) => sum + config?.agents?.reduce((agentSum, agent) => agentSum + agent.count, 0),
       0
     );
     expect(totalAgents).toBeLessThanOrEqual(calculateResourceConstraints().maxTotalAgents);
@@ -134,7 +134,7 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     // Verify appropriate agent configurations
     expect(databaseSwarm?.agents.some((a) => a.type === 'data-specialist')).toBe(true);
     expect(apiSwarm?.agents.some((a) => a.type === 'api-specialist')).toBe(true);
-    expect(swarmConfigs.every((c) => c.agents.some((a) => a.type === 'coordinator'))).toBe(true);
+    expect(swarmConfigs?.every((c) => c.agents.some((a) => a.type === 'coordinator'))).toBe(true);
 
     // 5. Test Expected Swarm Configuration Examples
     // Database domain: Hierarchical topology with specialized data agents
@@ -160,7 +160,7 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     // Mock coordinator to fail for one domain
     const originalInitialize = swarmCoordinator.initialize;
     swarmCoordinator.initialize = vi.fn().mockImplementation(async (config) => {
-      if (config.domain === 'failing-domain') {
+      if (config?.domain === 'failing-domain') {
         throw new Error('Initialization failed');
       }
       return originalInitialize.call(swarmCoordinator, config);
@@ -215,9 +215,9 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     const swarmConfigs = await factory.createSwarmsForDomains(testDomains);
 
     expect(swarmConfigs).toHaveLength(1); // Only successful domain
-    expect(swarmConfigs[0].domain).toBe('good-domain');
+    expect(swarmConfigs?.[0]?.domain).toBe('good-domain');
     expect(errorEvents).toHaveLength(1); // Error event for failed domain
-    expect(errorEvents[0].config.domain).toBe('failing-domain');
+    expect(errorEvents[0]?.config?.domain).toBe('failing-domain');
   });
 
   it('should validate resource constraints properly', async () => {

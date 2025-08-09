@@ -131,12 +131,12 @@ class MockNeuralNetwork {
 
 // Data processing helper functions
 function normalizeData(data: number[]): number[] {
-  const mean = data.reduce((sum, x) => sum + x, 0) / data.length;
-  const variance = data.reduce((sum, x) => sum + (x - mean) ** 2, 0) / data.length;
+  const mean = data?.reduce((sum, x) => sum + x, 0) / data.length;
+  const variance = data?.reduce((sum, x) => sum + (x - mean) ** 2, 0) / data.length;
   const stdDev = Math.sqrt(variance);
 
-  if (stdDev === 0) return data.map(() => 0);
-  return data.map((x) => (x - mean) / stdDev);
+  if (stdDev === 0) return data?.map(() => 0);
+  return data?.map((x) => (x - mean) / stdDev);
 }
 
 function denormalizeData(
@@ -144,13 +144,13 @@ function denormalizeData(
   originalMean: number,
   originalStdDev: number
 ): number[] {
-  return normalizedData.map((x) => x * originalStdDev + originalMean);
+  return normalizedData?.map((x) => x * originalStdDev + originalMean);
 }
 
 function createTimeSeriesWindows(data: number[], windowSize: number, step: number = 1): number[][] {
   const windows: number[][] = [];
   for (let i = 0; i <= data.length - windowSize; i += step) {
-    windows.push(data.slice(i, i + windowSize));
+    windows.push(data?.slice(i, i + windowSize));
   }
   return windows;
 }
@@ -158,11 +158,11 @@ function createTimeSeriesWindows(data: number[], windowSize: number, step: numbe
 function handleMissingValues(data: number[], strategy: 'mean' | 'zero' | 'forward_fill'): number[] {
   const result = [...data];
   const mean =
-    data.filter((x) => !Number.isNaN(x)).reduce((sum, x) => sum + x, 0) /
-    data.filter((x) => !Number.isNaN(x)).length;
+    data?.filter((x) => !Number.isNaN(x)).reduce((sum, x) => sum + x, 0) /
+    data?.filter((x) => !Number.isNaN(x)).length;
 
   for (let i = 0; i < result.length; i++) {
-    if (Number.isNaN(result[i])) {
+    if (Number.isNaN(result?.[i])) {
       switch (strategy) {
         case 'mean':
           result[i] = mean || 0;
@@ -171,7 +171,7 @@ function handleMissingValues(data: number[], strategy: 'mean' | 'zero' | 'forwar
           result[i] = 0;
           break;
         case 'forward_fill':
-          result[i] = i > 0 ? result[i - 1] : 0;
+          result[i] = i > 0 ? result?.[i - 1] : 0;
           break;
       }
     }
@@ -184,10 +184,10 @@ describe('Neural Network Model Invariants', () => {
     fc.assert(
       fc.property(networkConfig(), (config) => {
         const network = new MockNeuralNetwork(config);
-        const input = new Array(config.inputSize).fill(0.5);
+        const input = new Array(config?.inputSize).fill(0.5);
         const output = network.predict(input);
 
-        expect(output).toHaveLength(config.outputSize);
+        expect(output).toHaveLength(config?.outputSize);
       })
     );
   });
@@ -199,11 +199,11 @@ describe('Neural Network Model Invariants', () => {
         const info = network.getInfo();
 
         // Input/output sizes should match config
-        expect(info.numInputs).toBe(config.inputSize);
-        expect(info.numOutputs).toBe(config.outputSize);
+        expect(info.numInputs).toBe(config?.inputSize);
+        expect(info.numOutputs).toBe(config?.outputSize);
 
         // Layer count should be consistent
-        expect(info.numLayers).toBe(config.hiddenLayers.length + 2);
+        expect(info.numLayers).toBe(config?.hiddenLayers.length + 2);
 
         // Total neurons should be positive
         expect(info.totalNeurons).toBeGreaterThan(0);
@@ -241,14 +241,14 @@ describe('Neural Network Model Invariants', () => {
         const inputs = Array(batchSize)
           .fill(0)
           .map(() =>
-            Array(config.inputSize)
+            Array(config?.inputSize)
               .fill(0)
               .map(() => Math.random() * 2 - 1)
           );
         const outputs = Array(batchSize)
           .fill(0)
           .map(() =>
-            Array(config.outputSize)
+            Array(config?.outputSize)
               .fill(0)
               .map(() => Math.random() * 2 - 1)
           );
@@ -257,10 +257,10 @@ describe('Neural Network Model Invariants', () => {
         const result = network.train({ inputs, outputs });
 
         // Training should converge
-        expect(typeof result.converged).toBe('boolean');
-        expect(result.finalError).toBeGreaterThanOrEqual(0);
-        expect(result.epochs).toBeGreaterThan(0);
-        expect(Number.isFinite(result.finalError)).toBe(true);
+        expect(typeof result?.converged).toBe('boolean');
+        expect(result?.finalError).toBeGreaterThanOrEqual(0);
+        expect(result?.epochs).toBeGreaterThan(0);
+        expect(Number.isFinite(result?.finalError)).toBe(true);
       })
     );
   });
@@ -274,8 +274,8 @@ describe('Data Processing Invariants', () => {
         const unique = [...new Set(data)];
         fc.pre(unique.length > 1);
 
-        const mean = data.reduce((sum, x) => sum + x, 0) / data.length;
-        const variance = data.reduce((sum, x) => sum + (x - mean) ** 2, 0) / data.length;
+        const mean = data?.reduce((sum, x) => sum + x, 0) / data.length;
+        const variance = data?.reduce((sum, x) => sum + (x - mean) ** 2, 0) / data.length;
         const stdDev = Math.sqrt(variance);
 
         const normalized = normalizeData(data);
@@ -283,7 +283,7 @@ describe('Data Processing Invariants', () => {
 
         // Original data should be approximately restored
         for (let i = 0; i < data.length; i++) {
-          expect(denormalized[i]).toBeCloseTo(data[i], 5);
+          expect(denormalized[i]).toBeCloseTo(data?.[i], 5);
         }
       })
     );
@@ -337,7 +337,7 @@ describe('Data Processing Invariants', () => {
           for (let i = 0; i < windows.length; i++) {
             const startIndex = i * step;
             for (let j = 0; j < windowSize; j++) {
-              expect(windows[i][j]).toBe(data[startIndex + j]);
+              expect(windows[i]?.[j]).toBe(data?.[startIndex + j]);
             }
           }
         }
@@ -357,15 +357,15 @@ describe('Data Processing Invariants', () => {
           expect(result).toHaveLength(dataWithNaN.length);
 
           // No NaN values should remain
-          expect(result.every((x) => !Number.isNaN(x))).toBe(true);
+          expect(result?.every((x) => !Number.isNaN(x))).toBe(true);
 
           // All values should be finite
-          expect(result.every((x) => Number.isFinite(x))).toBe(true);
+          expect(result?.every((x) => Number.isFinite(x))).toBe(true);
 
           // Non-NaN values should be preserved
           for (let i = 0; i < dataWithNaN.length; i++) {
-            if (!Number.isNaN(dataWithNaN[i])) {
-              expect(result[i]).toBe(dataWithNaN[i]);
+            if (!Number.isNaN(dataWithNaN?.[i])) {
+              expect(result?.[i]).toBe(dataWithNaN?.[i]);
             }
           }
         }
@@ -456,7 +456,8 @@ describe('Numerical Stability Properties', () => {
 
           // Mean Squared Error
           const mse =
-            predictions.reduce((sum, p, i) => sum + (p - targets[i]) ** 2, 0) / predictions.length;
+            predictions.reduce((sum, p, i) => sum + (p - targets?.[i]) ** 2, 0) /
+            predictions.length;
 
           expect(mse).toBeGreaterThanOrEqual(0);
           expect(Number.isFinite(mse)).toBe(true);
@@ -523,13 +524,13 @@ describe('Edge Case Handling', () => {
         ),
         (malformedData) => {
           // Data cleaning should handle malformed inputs
-          const cleanedData = malformedData.map((x) => (Number.isFinite(x) ? x : 0));
+          const cleanedData = malformedData?.map((x) => (Number.isFinite(x) ? x : 0));
 
-          expect(cleanedData.every((x) => Number.isFinite(x))).toBe(true);
+          expect(cleanedData?.every((x) => Number.isFinite(x))).toBe(true);
           expect(cleanedData).toHaveLength(malformedData.length);
 
           // Missing value handling should work
-          const withNaN = malformedData.map((x) => (Number.isFinite(x) ? x : NaN));
+          const withNaN = malformedData?.map((x) => (Number.isFinite(x) ? x : NaN));
           const handled = handleMissingValues(withNaN, 'zero');
 
           expect(handled.every((x) => Number.isFinite(x))).toBe(true);
@@ -554,7 +555,7 @@ describe('Statistical Properties', () => {
           // Check that relative ordering is preserved
           for (let i = 0; i < data.length - 1; i++) {
             for (let j = i + 1; j < data.length; j++) {
-              const originalOrder = data[i] <= data[j];
+              const originalOrder = data?.[i] <= data?.[j];
               const normalizedOrder = normalized[i] <= normalized[j];
               expect(originalOrder).toBe(normalizedOrder);
             }
@@ -572,7 +573,7 @@ describe('Statistical Properties', () => {
         fc.float({ min: -10, max: 10 }),
         (baseData, correlation, offset) => {
           // Create correlated data
-          const correlatedData = baseData.map(
+          const correlatedData = baseData?.map(
             (x) => correlation * x + offset + (Math.random() - 0.5) * 0.1
           );
 

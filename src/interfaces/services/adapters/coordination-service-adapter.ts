@@ -2,24 +2,24 @@
  * @fileoverview USL Coordination Service Adapter
  *
  * Unified Service Layer adapter for coordination-related services, providing
- * a consistent interface to DaaService, SessionRecoveryService, and SwarmCoordinator
+ * a consistent interface to DaaService, SessionRecoveryService, and SwarmCoordinator.
  * while maintaining full backward compatibility and adding enhanced monitoring,
  * caching, retry logic, and performance metrics.
  *
  * This adapter follows the exact same patterns as the UACL client adapters,
- * implementing the IService interface and providing unified configuration
+ * implementing the IService interface and providing unified configuration.
  * management for coordination operations across Claude-Zen.
  */
 
 import { EventEmitter } from 'node:events';
-import { DaaService } from '../../../coordination/swarm/core/daa-service';
-import { SessionEnabledSwarm } from '../../../coordination/swarm/core/session-integration';
-import type { SessionConfig, SessionState } from '../../../coordination/swarm/core/session-manager';
-import type { SwarmAgent, SwarmMetrics } from '../../../coordination/swarm/core/swarm-coordinator';
-import { SwarmCoordinator } from '../../../coordination/swarm/core/swarm-coordinator';
-import type { SwarmOptions, SwarmTopology } from '../../../coordination/swarm/core/types';
-import type { AgentType } from '../../../types/agent-types';
-import { createLogger, type Logger } from '../../../utils/logger';
+import { DaaService } from '../coordination/swarm/core/daa-service';
+import { SessionEnabledSwarm } from '../coordination/swarm/core/session-integration';
+import type { SessionConfig, SessionState } from '../coordination/swarm/core/session-manager';
+import type { SwarmAgent, SwarmMetrics } from '../coordination/swarm/core/swarm-coordinator';
+import { SwarmCoordinator } from '../coordination/swarm/core/swarm-coordinator';
+import type { SwarmOptions, SwarmTopology } from '../coordination/swarm/core/types';
+import type { AgentType } from '../types/agent-types';
+import { createLogger, type Logger } from '../utils/logger';
 import type {
   IService,
   ServiceConfig,
@@ -33,10 +33,16 @@ import type {
   ServiceStatus,
 } from '../core/interfaces';
 import { ServiceDependencyError } from '../core/interfaces';
+import type {
+  ServiceEnvironment,
+  ServiceError,
+  ServicePriority,
+  ServiceType,
+} from '../interfaces/services/types';
 import type { CoordinationServiceConfig } from '../types';
 
 /**
- * Coordination service adapter configuration extending USL CoordinationServiceConfig
+ * Coordination service adapter configuration extending USL CoordinationServiceConfig.
  *
  * @example
  */
@@ -115,7 +121,7 @@ export interface CoordinationServiceAdapterConfig {
 }
 
 /**
- * Coordination operation metrics for performance monitoring
+ * Coordination operation metrics for performance monitoring.
  *
  * @example
  */
@@ -132,7 +138,7 @@ interface CoordinationOperationMetrics {
 }
 
 /**
- * Agent performance tracking
+ * Agent performance tracking.
  *
  * @example
  */
@@ -147,7 +153,7 @@ interface AgentPerformanceMetrics {
 }
 
 /**
- * Session performance tracking
+ * Session performance tracking.
  *
  * @example
  */
@@ -161,7 +167,7 @@ interface SessionPerformanceMetrics {
 }
 
 /**
- * Cache entry structure for coordination caching
+ * Cache entry structure for coordination caching.
  *
  * @example
  */
@@ -174,7 +180,7 @@ interface CacheEntry<T = any> {
 }
 
 /**
- * Request deduplication entry
+ * Request deduplication entry.
  *
  * @example
  */
@@ -185,9 +191,9 @@ interface PendingRequest<T = any> {
 }
 
 /**
- * Unified Coordination Service Adapter
+ * Unified Coordination Service Adapter.
  *
- * Provides a unified interface to DaaService, SessionRecoveryService, and SwarmCoordinator
+ * Provides a unified interface to DaaService, SessionRecoveryService, and SwarmCoordinator.
  * while implementing the IService interface for USL compatibility.
  *
  * Features:
@@ -226,7 +232,7 @@ export class CoordinationServiceAdapter implements IService {
   private sessionEnabledSwarm?: SessionEnabledSwarm;
   private swarmCoordinator?: SwarmCoordinator;
 
-  // Performance optimization
+  // Performance optimization.
   private cache = new Map<string, CacheEntry>();
   private pendingRequests = new Map<string, PendingRequest>();
   private metrics: CoordinationOperationMetrics[] = [];
@@ -240,11 +246,11 @@ export class CoordinationServiceAdapter implements IService {
   };
 
   constructor(config: CoordinationServiceAdapterConfig) {
-    this.name = config.service.name;
-    this.type = config.service.type;
-    this.config = config.service;
+    this.name = config?.service?.name;
+    this.type = config?.service?.type;
+    this.config = config?.service;
     this.adapterConfig = {
-      service: config.service,
+      service: config?.service,
       // Default configuration values
       daaService: {
         enabled: true,
@@ -252,7 +258,7 @@ export class CoordinationServiceAdapter implements IService {
         enableLearning: true,
         enableCognitive: true,
         enableMetaLearning: true,
-        ...config.daaService,
+        ...config?.daaService,
       },
       sessionService: {
         enabled: true,
@@ -260,7 +266,7 @@ export class CoordinationServiceAdapter implements IService {
         healthCheckInterval: 30000, // 30 seconds
         maxSessions: 100,
         checkpointInterval: 300000, // 5 minutes
-        ...config.sessionService,
+        ...config?.sessionService,
       },
       swarmCoordinator: {
         enabled: true,
@@ -268,7 +274,7 @@ export class CoordinationServiceAdapter implements IService {
         maxAgents: 50,
         coordinationTimeout: 10000,
         performanceThreshold: 0.8,
-        ...config.swarmCoordinator,
+        ...config?.swarmCoordinator,
       },
       performance: {
         enableRequestDeduplication: true,
@@ -277,7 +283,7 @@ export class CoordinationServiceAdapter implements IService {
         enableMetricsCollection: true,
         agentPooling: true,
         sessionCaching: true,
-        ...config.performance,
+        ...config?.performance,
       },
       retry: {
         enabled: true,
@@ -294,7 +300,7 @@ export class CoordinationServiceAdapter implements IService {
           'swarm-assign-task',
           'knowledge-share',
         ],
-        ...config.retry,
+        ...config?.retry,
       },
       cache: {
         enabled: true,
@@ -302,21 +308,21 @@ export class CoordinationServiceAdapter implements IService {
         defaultTTL: 600000, // 10 minutes
         maxSize: 500,
         keyPrefix: 'coord-adapter:',
-        ...config.cache,
+        ...config?.cache,
       },
       agentManagement: {
         autoSpawn: false,
         maxLifetime: 3600000, // 1 hour
         healthCheckInterval: 60000, // 1 minute
         performanceTracking: true,
-        ...config.agentManagement,
+        ...config?.agentManagement,
       },
       learning: {
         enableContinuousLearning: true,
         knowledgeSharing: true,
         patternAnalysis: true,
         metaLearningInterval: 1800000, // 30 minutes
-        ...config.learning,
+        ...config?.learning,
       },
       ...config,
     };
@@ -330,7 +336,7 @@ export class CoordinationServiceAdapter implements IService {
   // ============================================
 
   /**
-   * Initialize the coordination service adapter and its dependencies
+   * Initialize the coordination service adapter and its dependencies.
    *
    * @param config
    */
@@ -457,7 +463,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   /**
-   * Start the coordination service adapter
+   * Start the coordination service adapter.
    */
   async start(): Promise<void> {
     this.logger.info(`Starting coordination service adapter: ${this.name}`);
@@ -489,7 +495,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   /**
-   * Stop the coordination service adapter
+   * Stop the coordination service adapter.
    */
   async stop(): Promise<void> {
     this.logger.info(`Stopping coordination service adapter: ${this.name}`);
@@ -527,7 +533,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   /**
-   * Destroy the coordination service adapter and clean up resources
+   * Destroy the coordination service adapter and clean up resources.
    */
   async destroy(): Promise<void> {
     this.logger.info(`Destroying coordination service adapter: ${this.name}`);
@@ -564,7 +570,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   /**
-   * Get service status information
+   * Get service status information.
    */
   async getStatus(): Promise<ServiceStatus> {
     const now = new Date();
@@ -622,7 +628,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   /**
-   * Get service performance metrics
+   * Get service performance metrics.
    */
   async getMetrics(): Promise<ServiceMetrics> {
     const now = new Date();
@@ -675,7 +681,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   /**
-   * Perform health check on the service
+   * Perform health check on the service.
    */
   async healthCheck(): Promise<boolean> {
     this.healthStats.totalHealthChecks++;
@@ -741,7 +747,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   /**
-   * Update service configuration
+   * Update service configuration.
    *
    * @param config
    */
@@ -767,37 +773,37 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   /**
-   * Validate service configuration
+   * Validate service configuration.
    *
    * @param config
    */
   async validateConfig(config: CoordinationServiceAdapterConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config.name || !config.type) {
+      if (!config?.name || !config?.type) {
         this.logger.error('Configuration missing required fields: name or type');
         return false;
       }
 
       // Validate DAA service configuration
       if (
-        config.daaService?.enabled &&
-        config.performance?.requestTimeout &&
-        config.performance.requestTimeout < 1000
+        config?.daaService?.enabled &&
+        config?.performance?.requestTimeout &&
+        config?.performance?.requestTimeout < 1000
       ) {
         this.logger.error('Request timeout must be at least 1000ms');
         return false;
       }
 
       // Validate session service configuration
-      if (config.sessionService?.enabled) {
-        if (config.sessionService.maxSessions && config.sessionService.maxSessions < 1) {
+      if (config?.sessionService?.enabled) {
+        if (config?.sessionService?.maxSessions && config?.sessionService?.maxSessions < 1) {
           this.logger.error('Max sessions must be at least 1');
           return false;
         }
         if (
-          config.sessionService.checkpointInterval &&
-          config.sessionService.checkpointInterval < 10000
+          config?.sessionService?.checkpointInterval &&
+          config?.sessionService?.checkpointInterval < 10000
         ) {
           this.logger.error('Checkpoint interval must be at least 10000ms');
           return false;
@@ -805,15 +811,15 @@ export class CoordinationServiceAdapter implements IService {
       }
 
       // Validate swarm coordinator configuration
-      if (config.swarmCoordinator?.enabled) {
-        if (config.swarmCoordinator.maxAgents && config.swarmCoordinator.maxAgents < 1) {
+      if (config?.swarmCoordinator?.enabled) {
+        if (config?.swarmCoordinator?.maxAgents && config?.swarmCoordinator?.maxAgents < 1) {
           this.logger.error('Max agents must be at least 1');
           return false;
         }
         if (
-          config.swarmCoordinator.performanceThreshold &&
-          (config.swarmCoordinator.performanceThreshold < 0 ||
-            config.swarmCoordinator.performanceThreshold > 1)
+          config?.swarmCoordinator?.performanceThreshold &&
+          (config?.swarmCoordinator?.performanceThreshold < 0 ||
+            config?.swarmCoordinator?.performanceThreshold > 1)
         ) {
           this.logger.error('Performance threshold must be between 0 and 1');
           return false;
@@ -821,19 +827,19 @@ export class CoordinationServiceAdapter implements IService {
       }
 
       // Validate performance configuration
-      if (config.performance?.maxConcurrency && config.performance.maxConcurrency < 1) {
+      if (config?.performance?.maxConcurrency && config?.performance?.maxConcurrency < 1) {
         this.logger.error('Max concurrency must be at least 1');
         return false;
       }
 
       // Validate retry configuration
-      if (config.retry?.enabled && config.retry.maxAttempts && config.retry.maxAttempts < 1) {
+      if (config?.retry?.enabled && config?.retry?.maxAttempts && config?.retry?.maxAttempts < 1) {
         this.logger.error('Retry max attempts must be at least 1');
         return false;
       }
 
       // Validate cache configuration
-      if (config.cache?.enabled && config.cache.maxSize && config.cache.maxSize < 1) {
+      if (config?.cache?.enabled && config?.cache?.maxSize && config?.cache?.maxSize < 1) {
         this.logger.error('Cache max size must be at least 1');
         return false;
       }
@@ -846,14 +852,14 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   /**
-   * Check if service is ready to handle operations
+   * Check if service is ready to handle operations.
    */
   isReady(): boolean {
     return this.lifecycleStatus === 'running';
   }
 
   /**
-   * Get service capabilities
+   * Get service capabilities.
    */
   getCapabilities(): string[] {
     const capabilities = ['coordination-operations'];
@@ -905,7 +911,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   /**
-   * Execute service operations with unified interface
+   * Execute service operations with unified interface.
    *
    * @param operation
    * @param params
@@ -1051,7 +1057,7 @@ export class CoordinationServiceAdapter implements IService {
     try {
       const dependencyChecks = Array.from(this.dependencies.entries()).map(
         async ([name, config]) => {
-          if (!config.healthCheck) {
+          if (!config?.healthCheck) {
             return true; // Skip health check if not required
           }
 
@@ -1061,13 +1067,13 @@ export class CoordinationServiceAdapter implements IService {
             return true;
           } catch (error) {
             this.logger.warn(`Dependency ${name} health check failed:`, error);
-            return !config.required; // Return false only if dependency is required
+            return !config?.required; // Return false only if dependency is required
           }
         }
       );
 
       const results = await Promise.all(dependencyChecks);
-      return results.every((result) => result === true);
+      return results?.every((result) => result === true);
     } catch (error) {
       this.logger.error(`Error checking dependencies for ${this.name}:`, error);
       return false;
@@ -1079,7 +1085,7 @@ export class CoordinationServiceAdapter implements IService {
   // ============================================
 
   /**
-   * Internal operation execution with caching, deduplication, and retry logic
+   * Internal operation execution with caching, deduplication, and retry logic.
    *
    * @param operation
    * @param params
@@ -1149,7 +1155,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   /**
-   * Execute operation with retry logic
+   * Execute operation with retry logic.
    *
    * @param operation
    * @param params
@@ -1192,7 +1198,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   /**
-   * Perform the actual operation based on operation type
+   * Perform the actual operation based on operation type.
    *
    * @param operation
    * @param params
@@ -1318,9 +1324,9 @@ export class CoordinationServiceAdapter implements IService {
 
     // Track agent metrics
     if (this.config.agentManagement?.performanceTracking) {
-      this.agentMetrics.set(result.id, {
-        agentId: result.id,
-        type: result.type || 'unknown',
+      this.agentMetrics.set(result?.id, {
+        agentId: result?.id,
+        type: result?.type || 'unknown',
         tasksCompleted: 0,
         averageResponseTime: 0,
         errorRate: 0,
@@ -1697,7 +1703,7 @@ export class CoordinationServiceAdapter implements IService {
 
     const toRemove = this.cache.size - targetSize;
     for (let i = 0; i < toRemove; i++) {
-      this.cache.delete(entries[i][0]);
+      this.cache.delete(entries[i]?.[0]);
     }
 
     this.logger.debug(`Cache cleanup: removed ${toRemove} entries`);
@@ -1814,11 +1820,11 @@ export class CoordinationServiceAdapter implements IService {
   private estimateAgentCount(params: any): number | undefined {
     if (!params) return undefined;
 
-    if (params.agents && Array.isArray(params.agents)) {
-      return params.agents.length;
+    if (params?.agents && Array.isArray(params?.agents)) {
+      return params?.agents.length;
     }
 
-    if (params.agentId || params.agent) {
+    if (params?.agentId || params?.agent) {
       return 1;
     }
 
@@ -1830,8 +1836,8 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   private calculateCoordinationLatency(result: any): number | undefined {
-    if (result && typeof result === 'object' && result.averageLatency) {
-      return result.averageLatency;
+    if (result && typeof result === 'object' && result?.averageLatency) {
+      return result?.averageLatency;
     }
     return undefined;
   }
@@ -1906,7 +1912,7 @@ export class CoordinationServiceAdapter implements IService {
 }
 
 /**
- * Factory function for creating CoordinationServiceAdapter instances
+ * Factory function for creating CoordinationServiceAdapter instances.
  *
  * @param config
  */
@@ -1917,7 +1923,7 @@ export function createCoordinationServiceAdapter(
 }
 
 /**
- * Helper function for creating default configuration
+ * Helper function for creating default configuration.
  *
  * @param name
  * @param overrides

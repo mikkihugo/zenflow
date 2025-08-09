@@ -1,8 +1,13 @@
 /**
- * Public interface for neural WASM operations
+ * Public interface for neural WASM operations.
  *
  * @example
  */
+/**
+ * @file Neural network: public-api
+ */
+
+
 export interface NeuralWASM {
   // Initialize WASM module
   initialize(): Promise<void>;
@@ -17,8 +22,8 @@ export interface NeuralWASM {
 }
 
 /**
- * Factory function to create a public neural WASM interface
- * This wraps the internal WASM modules with a limited public interface
+ * Factory function to create a public neural WASM interface.
+ * This wraps the internal WASM modules with a limited public interface.
  */
 export async function createNeuralWASM(): Promise<NeuralWASM> {
   // Dynamically import to avoid architecture violations

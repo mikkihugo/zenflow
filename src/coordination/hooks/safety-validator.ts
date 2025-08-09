@@ -1,7 +1,12 @@
 /**
- * Safety Validation System
- * Validates potentially dangerous commands and operations, providing safer alternatives
+ * Safety Validation System.
+ * Validates potentially dangerous commands and operations, providing safer alternatives.
  */
+/**
+ * @file Coordination system: safety-validator
+ */
+
+
 
 import type {
   FileOperation,
@@ -269,7 +274,7 @@ export class BashSafetyValidator implements SafetyValidator {
   async assessRiskLevel(operation: Operation): Promise<RiskLevel> {
     if (operation.command) {
       const result = await this.validateCommand(operation.command);
-      return result.riskLevel;
+      return result?.riskLevel;
     }
 
     if (operation.filePath) {
@@ -279,7 +284,7 @@ export class BashSafetyValidator implements SafetyValidator {
         content: operation.parameters['content'] as string,
       };
       const result = await this.validateFileOperation(fileOp);
-      return result.riskLevel;
+      return result?.riskLevel;
     }
 
     return 'LOW';

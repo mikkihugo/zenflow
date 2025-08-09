@@ -1,12 +1,19 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-storage-swarm-maintenance");
+/**
+ * @file Coordination system: swarm-maintenance
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-storage-swarm-maintenance');
+
 /**
  * Swarm Storage Maintenance System.
  *
  * Handles lifecycle management for hundreds of swarms:
  * - Automatic archival of inactive swarms
  * - Cleanup of deleted/failed swarms
- * - Storage optimization and compression
+ * - Storage optimization and compression.
  * - Health monitoring and repair.
  */
 
@@ -84,7 +91,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
     // Create metadata file
     const meta: SwarmMeta = {
       id: swarmId,
-      name: metadata.name || swarmId,
+      name: metadata?.name || swarmId,
       createdAt: new Date(),
       lastAccessedAt: new Date(),
       status: 'active',
@@ -117,9 +124,9 @@ export class SwarmMaintenanceManager extends EventEmitter {
 
       try {
         const metaData = JSON.parse(await fs.readFile(metaPath, 'utf8'));
-        const lastAccessed = new Date(metaData.lastAccessedAt);
+        const lastAccessed = new Date(metaData?.lastAccessedAt);
 
-        if (lastAccessed < cutoffDate && metaData.status === 'active') {
+        if (lastAccessed < cutoffDate && metaData?.status === 'active') {
           await this.archiveSwarm(swarmId);
           archivedCount++;
         }
@@ -177,14 +184,14 @@ export class SwarmMaintenanceManager extends EventEmitter {
       for (const monthDir of monthDirs) {
         const monthPath = path.join(archivedDir, monthDir);
         const splitResult = monthDir.split('-');
-        const yearStr = splitResult[0];
-        const monthStr = splitResult[1];
-        
+        const yearStr = splitResult?.[0];
+        const monthStr = splitResult?.[1];
+
         if (!yearStr || !monthStr) {
           logger.warn(`Invalid month directory format: ${monthDir}`);
           continue;
         }
-        
+
         const monthDate = new Date(parseInt(yearStr), parseInt(monthStr) - 1);
 
         if (monthDate < cutoffDate) {
@@ -240,7 +247,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
       );
     });
 
-    const sizeStr = sizeResult.split('\t')[0];
+    const sizeStr = sizeResult?.split('\t')[0];
     const totalSizeBytes = sizeStr ? parseInt(sizeStr) : 0;
 
     return {

@@ -312,8 +312,8 @@ describe('DI System Comprehensive Integration', () => {
       const results = await Promise.all(promises);
 
       // Assert - All should be the same instance (singleton)
-      const firstResult = results[0];
-      expect(results.every((result) => result === firstResult)).toBe(true);
+      const firstResult = results?.[0];
+      expect(results?.every((result) => result === firstResult)).toBe(true);
       expect(creationCount).toBe(1); // Only created once
     });
   });

@@ -70,9 +70,9 @@ class MockMCPMessageValidator implements MessageValidatorContract {
     this.logger.debug('Validating MCP message', { messageType: typeof message });
 
     const jsonRpcResult = this.schemaValidator.validateJsonRpc(message);
-    if (!jsonRpcResult.valid) {
+    if (!jsonRpcResult?.valid) {
       this.metrics.recordValidationError('jsonrpc_invalid');
-      return { valid: false, errors: jsonRpcResult.errors };
+      return { valid: false, errors: jsonRpcResult?.errors };
     }
 
     const mcpMessage = message as MCPRequest | MCPResponse | MCPNotification;
@@ -95,17 +95,17 @@ class MockMCPMessageValidator implements MessageValidatorContract {
     this.logger.debug('Validating MCP request', { method: request.method });
 
     const methodResult = this.schemaValidator.validateMethod(request.method);
-    if (!methodResult.valid) {
+    if (!methodResult?.valid) {
       this.metrics.recordValidationError('method_invalid');
-      return { valid: false, errors: methodResult.errors };
+      return { valid: false, errors: methodResult?.errors };
     }
 
     const schema = this.schemaValidator.getSchemaForMethod(request.method);
     const paramsResult = this.schemaValidator.validateParams(request.params, schema);
 
-    if (!paramsResult.valid) {
+    if (!paramsResult?.valid) {
       this.metrics.recordValidationError('params_invalid');
-      return { valid: false, errors: paramsResult.errors };
+      return { valid: false, errors: paramsResult?.errors };
     }
 
     this.metrics.recordValidation('request_valid');
@@ -113,10 +113,10 @@ class MockMCPMessageValidator implements MessageValidatorContract {
   }
 
   async validateResponse(response: MCPResponse): Promise<ValidationResult> {
-    this.logger.debug('Validating MCP response', { id: response.id });
+    this.logger.debug('Validating MCP response', { id: response?.id });
 
-    if (response.error) {
-      const errorValid = this.validateError(response.error);
+    if (response?.error) {
+      const errorValid = this.validateError(response?.error);
       if (!errorValid.valid) {
         this.metrics.recordValidationError('error_invalid');
         return errorValid;
@@ -131,9 +131,9 @@ class MockMCPMessageValidator implements MessageValidatorContract {
     this.logger.debug('Validating MCP notification', { method: notification.method });
 
     const methodResult = this.schemaValidator.validateMethod(notification.method);
-    if (!methodResult.valid) {
+    if (!methodResult?.valid) {
       this.metrics.recordValidationError('notification_method_invalid');
-      return { valid: false, errors: methodResult.errors };
+      return { valid: false, errors: methodResult?.errors };
     }
 
     this.metrics.recordValidation('notification_valid');
@@ -199,7 +199,7 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith('tools/list');
         expect(mockSchemaValidator.validateParams).toHaveBeenCalledWith({}, { type: 'object' });
         expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith('request_valid');
-        expect(result.valid).toBe(true);
+        expect(result?.valid).toBe(true);
       });
 
       it('should reject messages with invalid JSON-RPC version', async () => {
@@ -229,9 +229,9 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         // Assert - Verify error handling conversation
         expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(invalidRequest);
         expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith('jsonrpc_invalid');
-        expect(result.valid).toBe(false);
-        expect(result.errors).toHaveLength(1);
-        expect(result.errors[0].code).toBe('INVALID_VERSION');
+        expect(result?.valid).toBe(false);
+        expect(result?.errors).toHaveLength(1);
+        expect(result?.errors?.[0]?.code).toBe('INVALID_VERSION');
       });
     });
 
@@ -269,7 +269,7 @@ describe('MCP Protocol Message Validation - London TDD', () => {
 
           // Assert - Verify method validation conversation
           expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith(method);
-          expect(result.valid).toBe(true);
+          expect(result?.valid).toBe(true);
         }
 
         expect(mockSchemaValidator.validateMethod).toHaveBeenCalledTimes(standardMethods.length);
@@ -304,8 +304,8 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         // Assert - Verify unknown method handling
         expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith('unknown/method');
         expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith('method_invalid');
-        expect(result.valid).toBe(false);
-        expect(result.errors[0].code).toBe('UNKNOWN_METHOD');
+        expect(result?.valid).toBe(false);
+        expect(result?.errors?.[0]?.code).toBe('UNKNOWN_METHOD');
       });
     });
 
@@ -351,7 +351,7 @@ describe('MCP Protocol Message Validation - London TDD', () => {
           toolCallRequest.params,
           toolCallSchema
         );
-        expect(result.valid).toBe(true);
+        expect(result?.valid).toBe(true);
       });
 
       it('should reject invalid parameters', async () => {
@@ -391,8 +391,8 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         // Assert - Verify parameter error handling
         expect(mockSchemaValidator.validateParams).toHaveBeenCalled();
         expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith('params_invalid');
-        expect(result.valid).toBe(false);
-        expect(result.errors[0].code).toBe('MISSING_REQUIRED');
+        expect(result?.valid).toBe(false);
+        expect(result?.errors?.[0]?.code).toBe('MISSING_REQUIRED');
       });
     });
   });
@@ -425,7 +425,7 @@ describe('MCP Protocol Message Validation - London TDD', () => {
           id: 'test-123',
         });
         expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith('response_valid');
-        expect(result.valid).toBe(true);
+        expect(result?.valid).toBe(true);
       });
     });
 
@@ -451,7 +451,7 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         const result = await validator.validateResponse(errorResponse);
 
         // Assert - Verify error response validation
-        expect(result.valid).toBe(true);
+        expect(result?.valid).toBe(true);
         expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith('response_valid');
       });
 
@@ -473,10 +473,10 @@ describe('MCP Protocol Message Validation - London TDD', () => {
 
         // Assert - Verify malformed error handling
         expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith('error_invalid');
-        expect(result.valid).toBe(false);
-        expect(result.errors).toHaveLength(2);
-        expect(result.errors.some((e) => e.field === 'error.code')).toBe(true);
-        expect(result.errors.some((e) => e.field === 'error.message')).toBe(true);
+        expect(result?.valid).toBe(false);
+        expect(result?.errors).toHaveLength(2);
+        expect(result?.errors?.some((e) => e.field === 'error.code')).toBe(true);
+        expect(result?.errors?.some((e) => e.field === 'error.message')).toBe(true);
       });
     });
   });
@@ -524,8 +524,8 @@ describe('MCP Protocol Message Validation - London TDD', () => {
       });
       expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith('request_valid');
 
-      expect(result.valid).toBe(true);
-      expect(result.errors).toHaveLength(0);
+      expect(result?.valid).toBe(true);
+      expect(result?.errors).toHaveLength(0);
     });
 
     it('should handle validation error cascade properly', async () => {
@@ -563,8 +563,8 @@ describe('MCP Protocol Message Validation - London TDD', () => {
       expect(mockSchemaValidator.validateParams).not.toHaveBeenCalled();
 
       expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith('method_invalid');
-      expect(result.valid).toBe(false);
-      expect(result.errors[0].code).toBe('METHOD_NOT_FOUND');
+      expect(result?.valid).toBe(false);
+      expect(result?.errors?.[0]?.code).toBe('METHOD_NOT_FOUND');
     });
   });
 

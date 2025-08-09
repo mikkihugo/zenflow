@@ -2,10 +2,10 @@
 
 /**
  * Automated Console-to-Logger Migration Script
- * 
+ *
  * This script uses jscodeshift to automatically migrate console statements
  * to our centralized logging system across the entire codebase.
- * 
+ *
  * Usage:
  *   node scripts/migrate-logging.cjs [--dry-run] [--pattern=src/file.ts]
  */
@@ -18,21 +18,21 @@ const glob = require('glob');
 // Configuration
 const DEFAULT_PATTERN = 'src/**/*.ts';
 const EXCLUDE_PATTERNS = [
-  'src/__tests__/**/*',           // Test files
-  'src/**/examples/**/*',         // Example files  
-  'scripts/**/*',                 // Build scripts
-  '**/*.d.ts',                    // Type definitions
-  '**/node_modules/**/*'          // Dependencies
+  'src/__tests__/**/*', // Test files
+  'src/**/examples/**/*', // Example files
+  'scripts/**/*', // Build scripts
+  '**/*.d.ts', // Type definitions
+  '**/node_modules/**/*', // Dependencies
 ];
 
 // Console method mappings
 const CONSOLE_MAPPINGS = {
-  'log': 'info',
-  'info': 'info', 
-  'warn': 'warn',
-  'error': 'error',
-  'debug': 'debug',
-  'trace': 'debug'
+  log: 'info',
+  info: 'info',
+  warn: 'warn',
+  error: 'error',
+  debug: 'debug',
+  trace: 'debug',
 };
 
 /**
@@ -148,16 +148,16 @@ function getTransformerPath() {
 function getFilesToTransform(pattern) {
   const files = glob.sync(pattern, {
     ignore: EXCLUDE_PATTERNS,
-    absolute: true
+    absolute: true,
   });
-  
+
   // Filter to only files that actually contain console statements
-  return files.filter(file => {
+  return files.filter((file) => {
     try {
       const content = fs.readFileSync(file, 'utf-8');
       // Exclude commented console statements by looking for uncommented ones
       const lines = content.split('\n');
-      return lines.some(line => {
+      return lines.some((line) => {
         const trimmed = line.trim();
         // Skip commented lines
         if (trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.startsWith('*')) {
@@ -168,11 +168,19 @@ function getFilesToTransform(pattern) {
           return false;
         }
         // Skip console statements in HTML/JavaScript template strings (client-side code)
-        if (line.includes('<script>') || line.includes('socket.on(') || line.includes('</script>')) {
+        if (
+          line.includes('<script>') ||
+          line.includes('socket.on(') ||
+          line.includes('</script>')
+        ) {
           return false;
         }
         // Skip object property assignments with console methods (fallback loggers)
-        if (/\s*(debug|info|warn|error|log|trace):\s*console\.(debug|info|warn|error|log|trace)/.test(line)) {
+        if (
+          /\s*(debug|info|warn|error|log|trace):\s*console\.(debug|info|warn|error|log|trace)/.test(
+            line
+          )
+        ) {
           return false;
         }
         return /console\.(log|info|warn|error|debug|trace)/.test(line);
@@ -191,9 +199,9 @@ function runTransformation(files, transformerPath, dryRun = false) {
     console.log('✅ No files with console statements found!');
     return;
   }
-  
+
   console.log(`🔄 Transforming ${files.length} files with console statements...`);
-  
+
   const command = [
     'npx jscodeshift',
     `--transform=${transformerPath}`,
@@ -202,20 +210,22 @@ function runTransformation(files, transformerPath, dryRun = false) {
     dryRun ? '--dry' : '',
     '--print',
     '--verbose=2',
-    files.join(' ')
-  ].filter(Boolean).join(' ');
-  
+    files.join(' '),
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   try {
     console.log(`📝 Running: ${command}`);
-    const output = execSync(command, { 
+    const output = execSync(command, {
       stdio: 'pipe',
       encoding: 'utf-8',
-      maxBuffer: 10 * 1024 * 1024 // 10MB buffer
+      maxBuffer: 10 * 1024 * 1024, // 10MB buffer
     });
-    
+
     console.log('✅ Transformation completed successfully!');
     console.log(output);
-    
+
     return true;
   } catch (error) {
     console.error('❌ Transformation failed:');
@@ -230,22 +240,24 @@ function runTransformation(files, transformerPath, dryRun = false) {
  */
 function validateResults(pattern) {
   console.log('🔍 Validating transformation results...');
-  
+
   const remainingFiles = getFilesToTransform(pattern);
   const totalFiles = glob.sync(pattern, { ignore: EXCLUDE_PATTERNS }).length;
-  
+
   console.log(`📊 Results:`);
   console.log(`   Total TypeScript files: ${totalFiles}`);
   console.log(`   Files with console statements: ${remainingFiles.length}`);
-  console.log(`   Migration progress: ${Math.round((1 - remainingFiles.length / totalFiles) * 100)}%`);
-  
+  console.log(
+    `   Migration progress: ${Math.round((1 - remainingFiles.length / totalFiles) * 100)}%`
+  );
+
   if (remainingFiles.length > 0) {
     console.log(`⚠️  Files still needing migration:`);
-    remainingFiles.slice(0, 10).forEach(file => {
+    remainingFiles.slice(0, 10).forEach((file) => {
       const relativePath = path.relative(process.cwd(), file);
       console.log(`   - ${relativePath}`);
     });
-    
+
     if (remainingFiles.length > 10) {
       console.log(`   ... and ${remainingFiles.length - 10} more files`);
     }
@@ -258,14 +270,14 @@ function validateResults(pattern) {
 function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes('--dry-run');
-  const patternArg = args.find(arg => arg.startsWith('--pattern='));
+  const patternArg = args.find((arg) => arg.startsWith('--pattern='));
   const pattern = patternArg ? patternArg.split('=')[1] : DEFAULT_PATTERN;
-  
+
   console.log('🚀 Claude-Zen Automated Logging Migration');
   console.log(`📁 Pattern: ${pattern}`);
   console.log(`🔍 Dry run: ${dryRun ? 'Yes' : 'No'}`);
   console.log();
-  
+
   // Check dependencies
   try {
     execSync('npx jscodeshift --version', { stdio: 'pipe' });
@@ -274,38 +286,40 @@ function main() {
     try {
       execSync('npm install jscodeshift', { stdio: 'inherit' });
     } catch (installError) {
-      console.error('❌ Failed to install jscodeshift. Please install manually: npm install jscodeshift');
+      console.error(
+        '❌ Failed to install jscodeshift. Please install manually: npm install jscodeshift'
+      );
       process.exit(1);
     }
   }
-  
+
   // Get files to transform
   const files = getFilesToTransform(pattern);
   console.log(`📊 Found ${files.length} files with console statements`);
-  
+
   if (files.length === 0) {
     console.log('✅ No console statements found! Migration already complete.');
     return;
   }
-  
+
   // Show sample files
   console.log('📋 Sample files to transform:');
-  files.slice(0, 5).forEach(file => {
+  files.slice(0, 5).forEach((file) => {
     const relativePath = path.relative(process.cwd(), file);
     console.log(`   - ${relativePath}`);
   });
-  
+
   if (files.length > 5) {
     console.log(`   ... and ${files.length - 5} more files`);
   }
   console.log();
-  
+
   // Get transformer and run
   const transformerPath = getTransformerPath();
-  
+
   try {
     const success = runTransformation(files, transformerPath, dryRun);
-    
+
     if (success && !dryRun) {
       validateResults(pattern);
       console.log();
@@ -314,9 +328,10 @@ function main() {
       console.log('   1. Review transformed files for correctness');
       console.log('   2. Run tests: npm test');
       console.log('   3. Check builds: npm run build');
-      console.log('   4. Commit changes: git add . && git commit -m "Auto-migrate console to structured logging"');
+      console.log(
+        '   4. Commit changes: git add . && git commit -m "Auto-migrate console to structured logging"'
+      );
     }
-    
   } finally {
     // Cleanup temporary transformer
     try {
@@ -336,5 +351,5 @@ module.exports = {
   getFilesToTransform,
   runTransformation,
   validateResults,
-  CONSOLE_MAPPINGS
+  CONSOLE_MAPPINGS,
 };

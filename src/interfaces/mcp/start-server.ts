@@ -1,16 +1,21 @@
 #!/usr/bin/env node
+/**
+ * @file Interface implementation: start-server
+ */
+
+
 
 /**
- * Start HTTP MCP Server - Official SDK Implementation
+ * Start HTTP MCP Server - Official SDK Implementation.
  *
  * Startup script for the Claude-Zen HTTP MCP server using the official MCP SDK.
  * This replaces the custom Express.js implementation while maintaining all functionality.
  */
 
+import { getConfig } from '../config';
+import { DEFAULT_CONFIG } from '../config/defaults';
 import { HTTPMCPServer } from './http-mcp-server';
 import { createLogger } from './mcp-logger';
-import { DEFAULT_CONFIG } from '../../config/defaults';
-import { getConfig } from '../../config';
 
 const logger = createLogger('MCP-Starter');
 
@@ -22,7 +27,7 @@ interface StartupConfig {
 }
 
 /**
- * Parse command line arguments
+ * Parse command line arguments.
  */
 function parseArgs(): StartupConfig {
   const config: StartupConfig = {};
@@ -84,12 +89,12 @@ function parseArgs(): StartupConfig {
 }
 
 /**
- * Print usage information
+ * Print usage information.
  */
 function printUsage(): void {}
 
 /**
- * Setup graceful shutdown
+ * Setup graceful shutdown.
  *
  * @param server
  */
@@ -133,29 +138,29 @@ function setupGracefulShutdown(server: HTTPMCPServer): void {
 }
 
 /**
- * Validate startup configuration
+ * Validate startup configuration.
  *
  * @param config
  */
 function validateConfig(config: StartupConfig): void {
   // Validate port
-  if (config.port && (config.port < 1 || config.port > 65535)) {
-    throw new Error(`Invalid port: ${config.port} (must be 1-65535)`);
+  if (config?.port && (config?.port < 1 || config?.port > 65535)) {
+    throw new Error(`Invalid port: ${config?.port} (must be 1-65535)`);
   }
 
   // Validate host
-  if (config.host && config.host.length === 0) {
+  if (config?.host && config?.host.length === 0) {
     throw new Error('Host cannot be empty');
   }
 
   // Validate timeout
-  if (config.timeout && config.timeout < 1000) {
-    throw new Error(`Invalid timeout: ${config.timeout}ms (minimum 1000ms)`);
+  if (config?.timeout && config?.timeout < 1000) {
+    throw new Error(`Invalid timeout: ${config?.timeout}ms (minimum 1000ms)`);
   }
 }
 
 /**
- * Main startup function
+ * Main startup function.
  */
 async function main(): Promise<void> {
   try {
@@ -169,19 +174,35 @@ async function main(): Promise<void> {
 
     // Get centralized configuration
     const centralConfig = getConfig();
-    
+
     // Create and configure server using centralized config with environment overrides
     const server = new HTTPMCPServer({
-      port: config.port || 
-            parseInt(process.env['CLAUDE_MCP_PORT'] || process.env['MCP_PORT'] || String(centralConfig.interfaces.mcp.http.port), 10),
-      host: config.host || 
-            process.env['CLAUDE_MCP_HOST'] || process.env['MCP_HOST'] || 
-            centralConfig.interfaces.mcp.http.host,
-      logLevel: config.logLevel || 
-                (process.env['CLAUDE_LOG_LEVEL'] || process.env['MCP_LOG_LEVEL'] as any) || 
-                centralConfig.core.logger.level,
-      timeout: config.timeout || 
-               parseInt(process.env['CLAUDE_MCP_TIMEOUT'] || process.env['MCP_TIMEOUT'] || String(centralConfig.interfaces.mcp.http.timeout), 10),
+      port:
+        config?.port ||
+        parseInt(
+          process.env['CLAUDE_MCP_PORT'] ||
+            process.env['MCP_PORT'] ||
+            String(centralConfig?.interfaces?.mcp?.http?.port),
+          10
+        ),
+      host:
+        config?.host ||
+        process.env['CLAUDE_MCP_HOST'] ||
+        process.env['MCP_HOST'] ||
+        centralConfig?.interfaces?.mcp?.http?.host,
+      logLevel:
+        config?.logLevel ||
+        process.env['CLAUDE_LOG_LEVEL'] ||
+        (process.env['MCP_LOG_LEVEL'] as any) ||
+        centralConfig?.core?.logger?.level,
+      timeout:
+        config?.timeout ||
+        parseInt(
+          process.env['CLAUDE_MCP_TIMEOUT'] ||
+            process.env['MCP_TIMEOUT'] ||
+            String(centralConfig?.interfaces?.mcp?.http?.timeout),
+          10
+        ),
     });
 
     // Setup graceful shutdown

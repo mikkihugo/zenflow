@@ -1,15 +1,20 @@
 /**
- * SPARC Specification Phase Engine
+ * SPARC Specification Phase Engine.
  *
- * Handles the first phase of SPARC methodology - gathering and analyzing
+ * Handles the first phase of SPARC methodology - gathering and analyzing.
  * detailed requirements, constraints, and acceptance criteria.
  *
- * TEMPLATE INTEGRATION: Now supports template-based specification generation
+ * TEMPLATE INTEGRATION: Now supports template-based specification generation.
  * using the TemplateEngine for domain-specific requirements and patterns.
  */
+/**
+ * @file specification processing engine
+ */
+
+
 
 import { nanoid } from 'nanoid';
-import { TemplateEngine } from '../../core/template-engine';
+import { TemplateEngine } from '../core/template-engine';
 import type {
   AcceptanceCriterion,
   ConstraintAnalysis,
@@ -32,7 +37,7 @@ import type {
   SystemConstraint,
   ValidationReport,
   ValidationResult,
-} from '../../types/sparc-types';
+} from '../types/sparc-types';
 
 export class SpecificationPhaseEngine implements SpecificationEngine {
   private readonly templateEngine: TemplateEngine;
@@ -42,7 +47,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   /**
-   * Generate specification from project using template-based approach
+   * Generate specification from project using template-based approach.
    *
    * @param projectSpec
    * @param templateId
@@ -63,20 +68,23 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       if (!bestMatch) {
         throw new Error(`No suitable template found for domain: ${projectSpec.domain}`);
       }
-      template = bestMatch.template;
+      template = bestMatch?.template;
     }
 
     // Apply template to project
     const result = await this.templateEngine.applyTemplate(template, projectSpec);
 
     // Generate additional specification details
-    const enhancedSpec = await this.enhanceTemplateSpecification(result.specification, projectSpec);
+    const enhancedSpec = await this.enhanceTemplateSpecification(
+      result?.specification,
+      projectSpec
+    );
 
     return enhancedSpec;
   }
 
   /**
-   * Enhance template-generated specification with additional analysis
+   * Enhance template-generated specification with additional analysis.
    *
    * @param templateSpec
    * @param projectSpec
@@ -106,7 +114,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   /**
-   * List available templates for interactive selection
+   * List available templates for interactive selection.
    */
   getAvailableTemplates(): Array<{
     id: string;
@@ -125,7 +133,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   /**
-   * Validate template compatibility with project
+   * Validate template compatibility with project.
    *
    * @param projectSpec
    * @param templateId
@@ -152,7 +160,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     return this.templateEngine.validateTemplateCompatibility(template, projectSpec);
   }
   /**
-   * Gather comprehensive requirements from project context
+   * Gather comprehensive requirements from project context.
    *
    * @param context
    */
@@ -164,7 +172,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   /**
-   * Analyze system constraints and their implications
+   * Analyze system constraints and their implications.
    *
    * @param requirements
    */
@@ -176,7 +184,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   /**
-   * Define comprehensive acceptance criteria for all requirements
+   * Define comprehensive acceptance criteria for all requirements.
    *
    * @param requirements
    */
@@ -213,7 +221,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   /**
-   * Generate comprehensive specification document
+   * Generate comprehensive specification document.
    *
    * @param analysis
    */
@@ -253,7 +261,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   /**
-   * Validate specification completeness and quality
+   * Validate specification completeness and quality.
    *
    * @param spec
    */
@@ -300,8 +308,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     ];
 
     const overallScore =
-      validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
-    const allPassed = validationResults.every((result) => result.passed);
+      validationResults.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
+    const allPassed = validationResults.every((result) => result?.passed);
 
     const recommendations = this.generateValidationRecommendations(validationResults);
 
@@ -705,7 +713,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   private extractConstraintsFromAnalysis(analysis: ConstraintAnalysis): SystemConstraint[] {
     return analysis.filter(
       (item): item is SystemConstraint =>
-        'type' in item && ['technical', 'business', 'regulatory', 'performance'].includes(item.type)
+        'type' in item &&
+        ['technical', 'business', 'regulatory', 'performance'].includes(item?.type)
     );
   }
 
@@ -742,8 +751,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     const recommendations: string[] = [];
 
     results.forEach((result) => {
-      if (!result.passed) {
-        switch (result.criterion) {
+      if (!result?.passed) {
+        switch (result?.criterion) {
           case 'functional-requirements-present':
             recommendations.push('Add detailed functional requirements for all major features');
             break;

@@ -1,7 +1,12 @@
 /**
- * Resource Monitor
- * Real-time resource monitoring and threshold management
+ * Resource Monitor.
+ * Real-time resource monitoring and threshold management.
  */
+/**
+ * @file Coordination system: resource-monitor
+ */
+
+
 
 import type { LoadMetrics } from '../types';
 

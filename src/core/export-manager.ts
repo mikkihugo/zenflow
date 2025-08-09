@@ -1,9 +1,14 @@
 /**
  * Unified Export System - Direct Integration.
  *
- * Multi-format export system integrated directly into core
+ * Multi-format export system integrated directly into core.
  * Supports JSON, YAML, CSV, XML, and custom formats.
  */
+/**
+ * @file export management system
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -274,10 +279,10 @@ export class ExportSystem extends EventEmitter {
         const result = await this.exportData(data, format, {
           ...options,
           ...(options?.filename && {
-            filename: `${options?.filename?.replace(/\.[^/.]+$/, '')}.${format}`
+            filename: `${options?.filename?.replace(/\.[^/.]+$/, '')}.${format}`,
           }),
         });
-        results?.push(result);
+        results.push(result);
       } catch (error) {
         logger.error(`Batch export failed for format ${format}:`, error);
         // Continue with other formats
@@ -375,7 +380,7 @@ export class ExportSystem extends EventEmitter {
     }
 
     // Get headers from first object
-    const headers = Object.keys(data?.[0]);
+    const headers = Object.keys(data[0]);
     const csvRows = [headers.join(',')];
 
     // Convert each row

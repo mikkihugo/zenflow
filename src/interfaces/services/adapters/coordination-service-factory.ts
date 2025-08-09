@@ -1,12 +1,17 @@
 /**
- * USL Coordination Service Factory
+ * USL Coordination Service Factory.
  *
  * Factory functions and helper utilities for creating and managing
- * coordination service adapter instances with proper configuration
+ * coordination service adapter instances with proper configuration.
  * and dependency injection.
  */
+/**
+ * @file Interface implementation: coordination-service-factory
+ */
 
-import { createLogger, type Logger } from '../../../utils/logger';
+
+
+import { createLogger, type Logger } from '../utils/logger';
 import type { IServiceFactory } from '../core/interfaces';
 import { ServicePriority, ServiceType } from '../types';
 import {
@@ -17,7 +22,7 @@ import {
 } from './coordination-service-adapter';
 
 /**
- * Factory class for creating CoordinationServiceAdapter instances
+ * Factory class for creating CoordinationServiceAdapter instances.
  *
  * @example
  */
@@ -32,35 +37,35 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Create a new coordination service adapter instance
+   * Create a new coordination service adapter instance.
    *
    * @param config
    */
   async create(config: CoordinationServiceAdapterConfig): Promise<CoordinationServiceAdapter> {
-    this.logger.info(`Creating coordination service adapter: ${config.name}`);
+    this.logger.info(`Creating coordination service adapter: ${config?.name}`);
 
     // Check if instance already exists
-    if (this.instances.has(config.name)) {
+    if (this.instances.has(config?.name)) {
       this.logger.warn(
-        `Coordination service adapter ${config.name} already exists, returning existing instance`
+        `Coordination service adapter ${config?.name} already exists, returning existing instance`
       );
-      return this.instances.get(config.name)!;
+      return this.instances.get(config?.name)!;
     }
 
     try {
       const adapter = createCoordinationServiceAdapter(config);
-      this.instances.set(config.name, adapter);
+      this.instances.set(config?.name, adapter);
 
-      this.logger.info(`Coordination service adapter created successfully: ${config.name}`);
+      this.logger.info(`Coordination service adapter created successfully: ${config?.name}`);
       return adapter;
     } catch (error) {
-      this.logger.error(`Failed to create coordination service adapter ${config.name}:`, error);
+      this.logger.error(`Failed to create coordination service adapter ${config?.name}:`, error);
       throw error;
     }
   }
 
   /**
-   * Create multiple coordination service adapter instances
+   * Create multiple coordination service adapter instances.
    *
    * @param configs
    */
@@ -76,7 +81,7 @@ export class CoordinationServiceFactory
         const adapter = await this.create(config);
         results.push(adapter);
       } catch (error) {
-        this.logger.error(`Failed to create coordination service adapter ${config.name}:`, error);
+        this.logger.error(`Failed to create coordination service adapter ${config?.name}:`, error);
         throw error;
       }
     }
@@ -85,7 +90,7 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Get coordination service adapter by name
+   * Get coordination service adapter by name.
    *
    * @param name
    */
@@ -94,14 +99,14 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * List all coordination service adapter instances
+   * List all coordination service adapter instances.
    */
   list(): CoordinationServiceAdapter[] {
     return Array.from(this.instances.values());
   }
 
   /**
-   * Check if coordination service adapter exists
+   * Check if coordination service adapter exists.
    *
    * @param name
    */
@@ -110,7 +115,7 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Remove and destroy coordination service adapter
+   * Remove and destroy coordination service adapter.
    *
    * @param name
    */
@@ -132,14 +137,14 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Get supported service types
+   * Get supported service types.
    */
   getSupportedTypes(): string[] {
     return [ServiceType.COORDINATION, ServiceType.DAA, ServiceType.SESSION_RECOVERY];
   }
 
   /**
-   * Check if service type is supported
+   * Check if service type is supported.
    *
    * @param type
    */
@@ -148,7 +153,7 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Start all coordination service adapters
+   * Start all coordination service adapters.
    */
   async startAll(): Promise<void> {
     this.logger.info('Starting all coordination service adapters');
@@ -167,7 +172,7 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Stop all coordination service adapters
+   * Stop all coordination service adapters.
    */
   async stopAll(): Promise<void> {
     this.logger.info('Stopping all coordination service adapters');
@@ -185,7 +190,7 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Perform health check on all coordination service adapters
+   * Perform health check on all coordination service adapters.
    */
   async healthCheckAll(): Promise<Map<string, any>> {
     this.logger.debug('Performing health check on all coordination service adapters');
@@ -196,13 +201,13 @@ export class CoordinationServiceFactory
     const healthCheckPromises = adapters.map(async (adapter) => {
       try {
         const status = await adapter.getStatus();
-        results.set(adapter.name, status);
+        results?.set(adapter.name, status);
       } catch (error) {
         this.logger.error(
           `Health check failed for coordination service adapter ${adapter.name}:`,
           error
         );
-        results.set(adapter.name, {
+        results?.set(adapter.name, {
           name: adapter.name,
           type: adapter.type,
           lifecycle: 'error',
@@ -220,7 +225,7 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Get metrics from all coordination service adapters
+   * Get metrics from all coordination service adapters.
    */
   async getMetricsAll(): Promise<Map<string, any>> {
     this.logger.debug('Collecting metrics from all coordination service adapters');
@@ -231,7 +236,7 @@ export class CoordinationServiceFactory
     const metricsPromises = adapters.map(async (adapter) => {
       try {
         const metrics = await adapter.getMetrics();
-        results.set(adapter.name, metrics);
+        results?.set(adapter.name, metrics);
       } catch (error) {
         this.logger.error(
           `Failed to get metrics for coordination service adapter ${adapter.name}:`,
@@ -245,7 +250,7 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Shutdown factory and all coordination service adapters
+   * Shutdown factory and all coordination service adapters.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down coordination service factory');
@@ -275,7 +280,7 @@ export class CoordinationServiceFactory
   }
 
   /**
-   * Get number of active coordination service adapters
+   * Get number of active coordination service adapters.
    */
   getActiveCount(): number {
     return this.instances.size;
@@ -283,7 +288,7 @@ export class CoordinationServiceFactory
 }
 
 /**
- * Helper function to create agent-focused coordination service configuration
+ * Helper function to create agent-focused coordination service configuration.
  *
  * @param name
  * @param options
@@ -334,7 +339,7 @@ export function createAgentCoordinationConfig(
 }
 
 /**
- * Helper function to create session-focused coordination service configuration
+ * Helper function to create session-focused coordination service configuration.
  *
  * @param name
  * @param options
@@ -378,7 +383,7 @@ export function createSessionCoordinationConfig(
 }
 
 /**
- * Helper function to create DAA-focused coordination service configuration
+ * Helper function to create DAA-focused coordination service configuration.
  *
  * @param name
  * @param options
@@ -420,7 +425,7 @@ export function createDAACoordinationConfig(
 }
 
 /**
- * Helper function to create high-performance coordination service configuration
+ * Helper function to create high-performance coordination service configuration.
  *
  * @param name
  * @param options
@@ -476,11 +481,11 @@ export function createHighPerformanceCoordinationConfig(
 }
 
 /**
- * Configuration presets for common coordination use cases
+ * Configuration presets for common coordination use cases.
  */
 export const CoordinationConfigPresets = {
   /**
-   * Basic coordination configuration for simple agent management
+   * Basic coordination configuration for simple agent management.
    *
    * @param name
    */
@@ -491,7 +496,7 @@ export const CoordinationConfigPresets = {
     }),
 
   /**
-   * Advanced coordination configuration with all features enabled
+   * Advanced coordination configuration with all features enabled.
    *
    * @param name
    */
@@ -504,7 +509,7 @@ export const CoordinationConfigPresets = {
     }),
 
   /**
-   * Session-focused configuration for session management
+   * Session-focused configuration for session management.
    *
    * @param name
    */
@@ -516,7 +521,7 @@ export const CoordinationConfigPresets = {
     }),
 
   /**
-   * DAA-focused configuration for data analysis and learning
+   * DAA-focused configuration for data analysis and learning.
    *
    * @param name
    */
@@ -528,7 +533,7 @@ export const CoordinationConfigPresets = {
     }),
 
   /**
-   * High-performance configuration for heavy workloads
+   * High-performance configuration for heavy workloads.
    *
    * @param name
    */
@@ -541,7 +546,7 @@ export const CoordinationConfigPresets = {
 };
 
 /**
- * Global coordination service factory instance
+ * Global coordination service factory instance.
  */
 export const coordinationServiceFactory = new CoordinationServiceFactory();
 

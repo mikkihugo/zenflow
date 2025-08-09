@@ -1,7 +1,12 @@
 /**
- * Resource-Aware Load Balancing Algorithm
- * Multi-dimensional resource monitoring and intelligent scheduling
+ * Resource-Aware Load Balancing Algorithm.
+ * Multi-dimensional resource monitoring and intelligent scheduling.
  */
+/**
+ * @file Coordination system: resource-aware
+ */
+
+
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
 import type { Agent, LoadMetrics, ResourceConstraint, RoutingResult, Task } from '../types';
@@ -78,7 +83,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   };
 
   /**
-   * Select agent based on multi-dimensional resource availability
+   * Select agent based on multi-dimensional resource availability.
    *
    * @param task
    * @param availableAgents
@@ -125,17 +130,17 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     // Sort by resource fitness score (higher is better)
     viableAgents.sort((a, b) => b.score - a.score);
 
-    const selectedAgent = viableAgents[0].agent;
+    const selectedAgent = viableAgents[0]?.agent;
     const confidence = this.calculateConfidence(viableAgents);
     const alternatives = viableAgents.slice(1, 4).map((s) => s.agent);
 
     // Reserve resources for the task
-    await this.reserveResources(selectedAgent.id, taskRequirements);
+    await this.reserveResources(selectedAgent?.id, taskRequirements);
 
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected based on optimal resource fit (score: ${viableAgents[0].score.toFixed(2)})`,
+      reasoning: `Selected based on optimal resource fit (score: ${viableAgents[0]?.score.toFixed(2)})`,
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics, false),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),
@@ -143,7 +148,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update algorithm configuration
+   * Update algorithm configuration.
    *
    * @param config
    */
@@ -157,7 +162,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Get performance metrics
+   * Get performance metrics.
    */
   public async getPerformanceMetrics(): Promise<Record<string, number>> {
     const profiles = Array.from(this.resourceProfiles.values());
@@ -183,7 +188,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Handle task completion
+   * Handle task completion.
    *
    * @param agentId
    * @param task
@@ -207,7 +212,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Handle agent failure
+   * Handle agent failure.
    *
    * @param agentId
    * @param _error
@@ -235,7 +240,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Get or create resource profile for an agent
+   * Get or create resource profile for an agent.
    *
    * @param agentId
    */
@@ -263,7 +268,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Create a resource metric with default values
+   * Create a resource metric with default values.
    *
    * @param threshold
    */
@@ -279,7 +284,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update resource profiles based on current metrics
+   * Update resource profiles based on current metrics.
    *
    * @param agents
    * @param metrics
@@ -342,7 +347,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Estimate resource requirements for a task
+   * Estimate resource requirements for a task.
    *
    * @param task
    */
@@ -363,7 +368,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Score agents based on resource fitness for the task
+   * Score agents based on resource fitness for the task.
    *
    * @param agents
    * @param taskRequirements
@@ -442,7 +447,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Check if an agent can handle a task based on resource constraints
+   * Check if an agent can handle a task based on resource constraints.
    *
    * @param profile
    * @param requirements
@@ -467,7 +472,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Calculate fitness score for a specific resource
+   * Calculate fitness score for a specific resource.
    *
    * @param resource
    * @param requirement
@@ -485,7 +490,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Apply penalties based on resource trends
+   * Apply penalties based on resource trends.
    *
    * @param score
    * @param profile
@@ -503,7 +508,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Apply penalties based on resource constraints
+   * Apply penalties based on resource constraints.
    *
    * @param score
    * @param profile
@@ -523,7 +528,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Reserve resources for a task
+   * Reserve resources for a task.
    *
    * @param agentId
    * @param requirements
@@ -542,7 +547,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Release resources after task completion
+   * Release resources after task completion.
    *
    * @param agentId
    * @param requirements
@@ -574,7 +579,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update resource averages and trend analysis
+   * Update resource averages and trend analysis.
    *
    * @param profile
    */
@@ -598,7 +603,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Calculate trend using simple linear regression
+   * Calculate trend using simple linear regression.
    *
    * @param values
    */
@@ -619,7 +624,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Update adaptive resource thresholds
+   * Update adaptive resource thresholds.
    *
    * @param profile
    */
@@ -649,14 +654,14 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     agent: Agent;
     score: number;
   } {
-    return scoredAgents.reduce((best, current) => (current.score > best.score ? current : best));
+    return scoredAgents.reduce((best, current) => (current?.score > best.score ? current : best));
   }
 
   private calculateConfidence(viableAgents: Array<{ score: number }>): number {
     if (viableAgents.length < 2) return 1.0;
 
-    const bestScore = viableAgents[0].score;
-    const secondBestScore = viableAgents[1].score;
+    const bestScore = viableAgents[0]?.score;
+    const secondBestScore = viableAgents[1]?.score;
     const advantage = (bestScore - secondBestScore) / Math.max(bestScore, 0.1);
 
     return Math.min(1.0, Math.max(0.3, advantage + 0.5));
@@ -681,7 +686,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     resource: keyof Pick<ResourceProfile, 'cpu' | 'memory' | 'disk' | 'network'>
   ): number {
     if (profiles.length === 0) return 0;
-    return profiles.reduce((sum, p) => sum + p[resource].utilization, 0) / profiles.length;
+    return profiles.reduce((sum, p) => sum + p[resource]?.utilization, 0) / profiles.length;
   }
 
   private calculateResourceEfficiency(profiles: ResourceProfile[]): number {

@@ -1,8 +1,15 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-load-balancing-routing-health-checker");
 /**
- * Health Checker
- * Comprehensive agent health monitoring and status management
+ * @file Coordination system: health-checker
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-load-balancing-routing-health-checker');
+
+/**
+ * Health Checker.
+ * Comprehensive agent health monitoring and status management.
  */
 
 import { EventEmitter } from 'node:events';

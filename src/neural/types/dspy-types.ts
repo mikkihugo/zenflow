@@ -1,11 +1,11 @@
 /**
  * @file DSPy Types and Configurations
  *
- * Comprehensive type definitions, constants, error classes, and type guards
+ * Comprehensive type definitions, constants, error classes, and type guards.
  * for DSPy integration in the neural system.
  *
- * Created by: Agent Juliet - Neural Domain TypeScript Error Elimination
- * Purpose: Provide all missing types, constants, and utilities for DSPy wrapper
+ * Created by: Agent Juliet - Neural Domain TypeScript Error Elimination.
+ * Purpose: Provide all missing types, constants, and utilities for DSPy wrapper.
  */
 
 // =============================================================================
@@ -13,7 +13,7 @@
 // =============================================================================
 
 /**
- * Configuration interface for DSPy language model setup
+ * Configuration interface for DSPy language model setup.
  */
 export interface DSPyConfig {
   model?: string;
@@ -28,7 +28,7 @@ export interface DSPyConfig {
 }
 
 /**
- * Training example structure for DSPy programs
+ * Training example structure for DSPy programs.
  */
 export interface DSPyExample {
   input: Record<string, any>;
@@ -41,7 +41,7 @@ export interface DSPyExample {
 }
 
 /**
- * Result from DSPy program execution
+ * Result from DSPy program execution.
  */
 export interface DSPyExecutionResult {
   success: boolean;
@@ -58,7 +58,7 @@ export interface DSPyExecutionResult {
 }
 
 /**
- * Configuration for DSPy program optimization
+ * Configuration for DSPy program optimization.
  */
 export interface DSPyOptimizationConfig {
   strategy: 'bootstrap' | 'mipro' | 'copro' | 'auto' | 'custom';
@@ -71,7 +71,7 @@ export interface DSPyOptimizationConfig {
 }
 
 /**
- * Result from DSPy program optimization
+ * Result from DSPy program optimization.
  */
 export interface DSPyOptimizationResult {
   success: boolean;
@@ -87,7 +87,7 @@ export interface DSPyOptimizationResult {
 }
 
 /**
- * DSPy program interface with execution capabilities
+ * DSPy program interface with execution capabilities.
  */
 export interface DSPyProgram {
   id?: string;
@@ -98,7 +98,7 @@ export interface DSPyProgram {
 }
 
 /**
- * Metadata for DSPy program tracking
+ * Metadata for DSPy program tracking.
  */
 export interface DSPyProgramMetadata {
   signature: string;
@@ -111,7 +111,7 @@ export interface DSPyProgramMetadata {
 }
 
 /**
- * Main DSPy wrapper interface
+ * Main DSPy wrapper interface.
  */
 export interface DSPyWrapper {
   configure(config: DSPyConfig): Promise<void>;
@@ -130,7 +130,7 @@ export interface DSPyWrapper {
 // =============================================================================
 
 /**
- * Default DSPy configuration with sensible defaults
+ * Default DSPy configuration with sensible defaults.
  */
 const DEFAULT_DSPY_CONFIG: DSPyConfig = {
   model: 'gpt-3.5-turbo',
@@ -147,7 +147,7 @@ const DEFAULT_DSPY_CONFIG: DSPyConfig = {
 };
 
 /**
- * Default optimization configuration for DSPy programs
+ * Default optimization configuration for DSPy programs.
  */
 const DEFAULT_OPTIMIZATION_CONFIG: DSPyOptimizationConfig = {
   strategy: 'bootstrap',
@@ -164,7 +164,7 @@ const DEFAULT_OPTIMIZATION_CONFIG: DSPyOptimizationConfig = {
 };
 
 /**
- * System limits and constraints for DSPy operations
+ * System limits and constraints for DSPy operations.
  */
 const DSPY_LIMITS = {
   MAX_PROGRAMS_PER_WRAPPER: 50,
@@ -184,7 +184,7 @@ const DSPY_LIMITS = {
 // =============================================================================
 
 /**
- * Base error class for DSPy-related errors
+ * Base error class for DSPy-related errors.
  */
 class DSPyBaseError extends Error {
   public readonly code: string;
@@ -204,7 +204,7 @@ class DSPyBaseError extends Error {
 }
 
 /**
- * Error thrown when DSPy API calls fail
+ * Error thrown when DSPy API calls fail.
  */
 class DSPyAPIError extends DSPyBaseError {
   constructor(message: string, context?: Record<string, any>) {
@@ -213,7 +213,7 @@ class DSPyAPIError extends DSPyBaseError {
 }
 
 /**
- * Error thrown when DSPy configuration is invalid
+ * Error thrown when DSPy configuration is invalid.
  */
 class DSPyConfigurationError extends DSPyBaseError {
   constructor(message: string, context?: Record<string, any>) {
@@ -222,7 +222,7 @@ class DSPyConfigurationError extends DSPyBaseError {
 }
 
 /**
- * Error thrown during DSPy program execution
+ * Error thrown during DSPy program execution.
  */
 class DSPyExecutionError extends DSPyBaseError {
   constructor(message: string, context?: Record<string, any>) {
@@ -231,7 +231,7 @@ class DSPyExecutionError extends DSPyBaseError {
 }
 
 /**
- * Error thrown during DSPy program optimization
+ * Error thrown during DSPy program optimization.
  */
 class DSPyOptimizationError extends DSPyBaseError {
   constructor(message: string, context?: Record<string, any>) {
@@ -244,7 +244,7 @@ class DSPyOptimizationError extends DSPyBaseError {
 // =============================================================================
 
 /**
- * Type guard to check if an object is a valid DSPyConfig
+ * Type guard to check if an object is a valid DSPyConfig.
  */
 function isDSPyConfig(obj: any): obj is DSPyConfig {
   return (
@@ -265,7 +265,7 @@ function isDSPyConfig(obj: any): obj is DSPyConfig {
 }
 
 /**
- * Type guard to check if an object is a valid DSPyProgram
+ * Type guard to check if an object is a valid DSPyProgram.
  */
 function isDSPyProgram(obj: any): obj is DSPyProgram {
   return (
@@ -280,7 +280,7 @@ function isDSPyProgram(obj: any): obj is DSPyProgram {
 }
 
 /**
- * Type guard to check if an object is a valid DSPyExample
+ * Type guard to check if an object is a valid DSPyExample.
  */
 function isDSPyExample(obj: any): obj is DSPyExample {
   return (
@@ -296,7 +296,7 @@ function isDSPyExample(obj: any): obj is DSPyExample {
 }
 
 /**
- * Type guard to check if an object is a valid DSPyOptimizationConfig
+ * Type guard to check if an object is a valid DSPyOptimizationConfig.
  */
 function isDSPyOptimizationConfig(obj: any): obj is DSPyOptimizationConfig {
   const validStrategies = ['bootstrap', 'mipro', 'copro', 'auto', 'custom'];
@@ -325,7 +325,7 @@ function isDSPyOptimizationConfig(obj: any): obj is DSPyOptimizationConfig {
 // =============================================================================
 
 /**
- * Validates and normalizes a DSPy configuration
+ * Validates and normalizes a DSPy configuration.
  */
 function validateDSPyConfig(config: Partial<DSPyConfig>): DSPyConfig {
   if (!config || typeof config !== 'object') {
@@ -344,7 +344,7 @@ function validateDSPyConfig(config: Partial<DSPyConfig>): DSPyConfig {
 }
 
 /**
- * Validates a DSPy program signature format
+ * Validates a DSPy program signature format.
  */
 function validateSignature(signature: string): boolean {
   if (!signature || typeof signature !== 'string') {
@@ -363,7 +363,7 @@ function validateSignature(signature: string): boolean {
 }
 
 /**
- * Creates a validation error with detailed context
+ * Creates a validation error with detailed context.
  */
 function createValidationError(
   field: string,
@@ -378,7 +378,7 @@ function createValidationError(
 }
 
 /**
- * Sanitizes input for DSPy operations
+ * Sanitizes input for DSPy operations.
  */
 function sanitizeInput(input: Record<string, any>): Record<string, any> {
   const sanitized: Record<string, any> = {};
@@ -399,7 +399,7 @@ function sanitizeInput(input: Record<string, any>): Record<string, any> {
 // =============================================================================
 
 /**
- * Performance metrics for DSPy operations
+ * Performance metrics for DSPy operations.
  */
 export interface DSPyPerformanceMetrics {
   executionTime: number;
@@ -411,7 +411,7 @@ export interface DSPyPerformanceMetrics {
 }
 
 /**
- * Health check result for DSPy systems
+ * Health check result for DSPy systems.
  */
 export interface DSPyHealthCheck {
   healthy: boolean;
@@ -431,7 +431,7 @@ export interface DSPyHealthCheck {
 // =============================================================================
 
 /**
- * DSPy System Statistics
+ * DSPy System Statistics.
  */
 export interface DSPySystemStats {
   totalPrograms: number;

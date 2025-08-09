@@ -64,72 +64,72 @@ describe('Kuzu Graph Database Integration', () => {
     it('should execute Cypher queries successfully', async () => {
       const cypherQuery = 'MATCH (n:Person) RETURN n LIMIT 10';
 
-      const response = await databaseController.executeGraphQuery({
+      const response = await databaseController?.executeGraphQuery({
         cypher: cypherQuery,
         params: [],
       });
 
-      expect(response.success).toBe(true);
-      expect(response.data).toBeDefined();
-      expect(response.data.query).toBe(cypherQuery);
-      expect(response.data.nodes).toBeDefined();
-      expect(response.data.relationships).toBeDefined();
-      expect(response.metadata.adapter).toBe('kuzu');
+      expect(response?.success).toBe(true);
+      expect(response?.data).toBeDefined();
+      expect(response?.data?.query).toBe(cypherQuery);
+      expect(response?.data?.nodes).toBeDefined();
+      expect(response?.data?.relationships).toBeDefined();
+      expect(response?.metadata?.adapter).toBe('kuzu');
     });
 
     it('should handle parameterized Cypher queries', async () => {
       const cypherQuery = 'MATCH (n:Person {name: $name}) RETURN n';
       const params = ['Alice'];
 
-      const response = await databaseController.executeGraphQuery({
+      const response = await databaseController?.executeGraphQuery({
         cypher: cypherQuery,
         params,
       });
 
-      expect(response.success).toBe(true);
-      expect(response.data.parameters).toEqual(params);
+      expect(response?.success).toBe(true);
+      expect(response?.data?.parameters).toEqual(params);
     });
 
     it('should return error for invalid Cypher queries', async () => {
       const invalidQuery = 'INVALID CYPHER SYNTAX';
 
-      const response = await databaseController.executeGraphQuery({
+      const response = await databaseController?.executeGraphQuery({
         cypher: invalidQuery,
         params: [],
       });
 
       // Since we're using a mock adapter that simulates responses,
       // this will still succeed. In a real implementation, this would fail.
-      expect(response.success).toBe(true);
+      expect(response?.success).toBe(true);
     });
 
     it('should detect and route Cypher queries in regular query endpoint', async () => {
       const cypherQuery = 'MATCH (n) RETURN count(n)';
 
-      const response = await databaseController.executeQuery({
+      const response = await databaseController?.executeQuery({
         sql: cypherQuery,
         params: [],
       });
 
-      expect(response.success).toBe(true);
-      expect(response.data.results).toBeDefined();
+      expect(response?.success).toBe(true);
+      expect(response?.data?.results).toBeDefined();
       // Should include both nodes and relationships as results
-      expect(Array.isArray(response.data.results)).toBe(true);
+      expect(Array.isArray(response?.data?.results)).toBe(true);
     });
   });
 
   describe('Graph Schema Operations', () => {
     it('should retrieve graph schema information', async () => {
-      const response = await databaseController.getGraphSchema();
+      const response = await databaseController?.getGraphSchema();
 
-      expect(response.success).toBe(true);
-      expect(response.data).toBeDefined();
-      expect(response.data.schema).toBeDefined();
-      expect(response.data.graphStatistics).toBeDefined();
-      expect(response.data.graphStatistics.totalNodes).toBeGreaterThanOrEqual(0);
-      expect(response.data.graphStatistics.totalRelationships).toBeGreaterThanOrEqual(0);
-      expect(response.data.graphStatistics.nodeTypes).toBeDefined();
-      expect(response.data.graphStatistics.relationshipTypes).toBeDefined();
+      expect(response?.success).toBe(true);
+      expect(response?.data).toBeDefined();
+      expect(response?.data?.schema).toBeDefined();
+      expect(response?.data?.graphStatistics).toBeDefined();
+      expect(response?.data?.graphStatistics?.totalNodes).toBeGreaterThanOrEqual(0);
+      expect(response?.data?.graphStatistics?.totalRelationships).toBeGreaterThanOrEqual(0);
+      expect(response?.data?.graphStatistics?.nodeTypes).toBeDefined();
+      expect(response?.data?.graphStatistics?.relationshipTypes).toBeDefined();
     });
 
     it('should return error for non-graph adapters', async () => {
@@ -140,25 +140,25 @@ describe('Kuzu Graph Database Integration', () => {
 
       const response = await sqliteController.getGraphSchema();
 
-      expect(response.success).toBe(false);
-      expect(response.error).toContain('Graph schema not available');
+      expect(response?.success).toBe(false);
+      expect(response?.error).toContain('Graph schema not available');
     });
   });
 
   describe('Graph Analytics', () => {
     it('should provide comprehensive graph analytics', async () => {
-      const response = await databaseController.getGraphAnalytics();
+      const response = await databaseController?.getGraphAnalytics();
 
-      expect(response.success).toBe(true);
-      expect(response.data).toBeDefined();
-      expect(response.data.adapter).toBe('kuzu');
-      expect(response.data.health).toBeDefined();
-      expect(response.data.graphStatistics).toBeDefined();
-      expect(response.data.performance).toBeDefined();
-      expect(response.data.connections).toBeDefined();
+      expect(response?.success).toBe(true);
+      expect(response?.data).toBeDefined();
+      expect(response?.data?.adapter).toBe('kuzu');
+      expect(response?.data?.health).toBeDefined();
+      expect(response?.data?.graphStatistics).toBeDefined();
+      expect(response?.data?.performance).toBeDefined();
+      expect(response?.data?.connections).toBeDefined();
 
       // Verify graph-specific metrics
-      const stats = response.data.graphStatistics;
+      const stats = response?.data?.graphStatistics;
       expect(stats.totalNodes).toBeDefined();
       expect(stats.totalRelationships).toBeDefined();
       expect(stats.averageConnections).toBeDefined();
@@ -167,8 +167,8 @@ describe('Kuzu Graph Database Integration', () => {
     });
 
     it('should calculate graph metrics correctly', async () => {
-      const response = await databaseController.getGraphAnalytics();
-      const stats = response.data.graphStatistics;
+      const response = await databaseController?.getGraphAnalytics();
+      const stats = response?.data?.graphStatistics;
 
       // Verify metric calculations
       if (stats.totalNodes > 0) {
@@ -200,17 +200,17 @@ describe('Kuzu Graph Database Integration', () => {
         },
       ];
 
-      const response = await databaseController.executeGraphBatch({
+      const response = await databaseController?.executeGraphBatch({
         operations,
         continueOnError: false,
         includeData: true,
       });
 
-      expect(response.success).toBe(true);
-      expect(response.data.results).toHaveLength(3);
-      expect(response.data.summary.totalOperations).toBe(3);
-      expect(response.data.summary.successfulOperations).toBe(3);
-      expect(response.data.summary.failedOperations).toBe(0);
+      expect(response?.success).toBe(true);
+      expect(response?.data?.results).toHaveLength(3);
+      expect(response?.data?.summary?.totalOperations).toBe(3);
+      expect(response?.data?.summary?.successfulOperations).toBe(3);
+      expect(response?.data?.summary?.failedOperations).toBe(0);
     });
 
     it('should handle errors in batch operations with continueOnError', async () => {
@@ -229,7 +229,7 @@ describe('Kuzu Graph Database Integration', () => {
         },
       ];
 
-      const response = await databaseController.executeGraphBatch({
+      const response = await databaseController?.executeGraphBatch({
         operations,
         continueOnError: true,
         includeData: false,
@@ -237,8 +237,8 @@ describe('Kuzu Graph Database Integration', () => {
 
       // With mock adapter, all operations succeed
       // In real implementation, the invalid syntax would fail
-      expect(response.data.results).toHaveLength(3);
-      expect(response.data.summary.totalOperations).toBe(3);
+      expect(response?.data?.results).toHaveLength(3);
+      expect(response?.data?.summary?.totalOperations).toBe(3);
     });
   });
 
@@ -256,13 +256,13 @@ describe('Kuzu Graph Database Integration', () => {
       ];
 
       for (const query of cypherQueries) {
-        const response = await databaseController.executeQuery({
+        const response = await databaseController?.executeQuery({
           sql: query,
           params: [],
         });
 
         // Should route to graph adapter for Cypher-like queries
-        expect(response.success).toBe(true);
+        expect(response?.success).toBe(true);
 
         // For mixed SQL/Cypher, check that it's handled appropriately
         if (query.toLowerCase().startsWith('select')) {
@@ -281,28 +281,28 @@ describe('Kuzu Graph Database Integration', () => {
       ];
 
       for (const query of sqlQueries) {
-        const response = await databaseController.executeQuery({
+        const response = await databaseController?.executeQuery({
           sql: query,
           params: [],
         });
 
         // These should be handled by regular SQL adapter
         // For our test, they will succeed due to mocking
-        expect(response.success).toBe(true);
+        expect(response?.success).toBe(true);
       }
     });
   });
 
   describe('Graph Database Configuration', () => {
     it('should recognize Kuzu adapter configuration', async () => {
-      const status = await databaseController.getDatabaseStatus();
+      const status = await databaseController?.getDatabaseStatus();
 
       expect(status.success).toBe(true);
       expect(status.data.adapter).toBe('kuzu');
     });
 
     it('should include graph-specific configuration in analytics', async () => {
-      const analytics = await databaseController.getDatabaseAnalytics();
+      const analytics = await databaseController?.getDatabaseAnalytics();
 
       expect(analytics.success).toBe(true);
       expect(analytics.data.configuration.type).toBe('kuzu');

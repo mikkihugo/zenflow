@@ -1,6 +1,6 @@
 /**
  * @file Demo script for Progressive Confidence Builder
- * Shows how the system builds confidence through iterations
+ * Shows how the system builds confidence through iterations.
  */
 
 import { DocumentDrivenSystem } from '@core/document-driven-system';
@@ -50,7 +50,7 @@ class DemoAGUI {
 }
 
 /**
- * Run the progressive confidence builder demo
+ * Run the progressive confidence builder demo.
  */
 async function runDemo() {
   logger.info('Starting Progressive Confidence Builder Demo');
@@ -140,17 +140,17 @@ async function runDemo() {
 
     logger.info('\n🎉 Confidence Building Complete!\n');
     logger.info('Final Results:', {
-      domains: result.domains.size,
-      relationships: result.relationships.length,
-      finalConfidence: `${(result.confidence.overall * 100).toFixed(1)}%`,
-      validations: result.validationCount,
-      research: result.researchCount,
-      learningEvents: result.learningHistory.length,
+      domains: result?.domains.size,
+      relationships: result?.relationships.length,
+      finalConfidence: `${(result?.confidence?.overall * 100).toFixed(1)}%`,
+      validations: result?.validationCount,
+      research: result?.researchCount,
+      learningEvents: result?.learningHistory.length,
     });
 
     // Show domain details
     logger.info('\n📊 Domain Confidence Scores:');
-    for (const [name, domain] of result.domains) {
+    for (const [name, domain] of result?.domains) {
       logger.info(`  ${name}: ${(domain.confidence.overall * 100).toFixed(1)}%`, {
         validations: domain.validations.length,
         research: domain.research.length,
@@ -159,9 +159,9 @@ async function runDemo() {
     }
 
     // Show relationships
-    if (result.relationships.length > 0) {
+    if (result?.relationships.length > 0) {
       logger.info('\n🔗 Discovered Relationships:');
-      for (const rel of result.relationships) {
+      for (const rel of result?.relationships) {
         logger.info(
           `  ${rel.sourceDomain} ${rel.type} ${rel.targetDomain} (${(rel.confidence * 100).toFixed(0)}%)`
         );
@@ -170,7 +170,7 @@ async function runDemo() {
 
     // Show confidence breakdown
     logger.info('\n📈 Confidence Metrics Breakdown:');
-    Object.entries(result.confidence).forEach(([metric, value]) => {
+    Object.entries(result?.confidence).forEach(([metric, value]) => {
       logger.info(`  ${metric}: ${(value * 100).toFixed(1)}%`);
     });
   } catch (error) {

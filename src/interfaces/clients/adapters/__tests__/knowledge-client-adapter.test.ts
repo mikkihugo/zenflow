@@ -195,8 +195,8 @@ describe('KnowledgeClientAdapter', () => {
         await expect(knowledgeClient.send(request)).rejects.toThrow('Query failed');
 
         const metadata = await knowledgeClient.getMetadata();
-        expect(metadata.metrics.failedRequests).toBe(1);
-        expect(metadata.metrics.totalRequests).toBe(1);
+        expect(metadata?.metrics?.failedRequests).toBe(1);
+        expect(metadata?.metrics?.totalRequests).toBe(1);
       });
     });
 
@@ -389,17 +389,17 @@ describe('KnowledgeClientAdapter', () => {
         });
 
         // Verify confidence calculation
-        expect(response.confidence).toBeGreaterThan(0.5);
-        expect(response.confidence).toBeLessThanOrEqual(1.0);
+        expect(response?.confidence).toBeGreaterThan(0.5);
+        expect(response?.confidence).toBeLessThanOrEqual(1.0);
 
         // Verify sources extraction
-        expect(response.sources).toHaveLength(2);
-        expect(response.sources?.[0]).toEqual({
+        expect(response?.sources).toHaveLength(2);
+        expect(response?.sources?.[0]).toEqual({
           title: 'web_scraper result',
           url: 'fact://tool/web_scraper',
           relevance: 1.0,
         });
-        expect(response.sources?.[1]).toEqual({
+        expect(response?.sources?.[1]).toEqual({
           title: 'documentation_parser result',
           url: 'fact://tool/documentation_parser',
           relevance: 0.9,
@@ -448,15 +448,15 @@ describe('KnowledgeClientAdapter', () => {
         const metadata = await knowledgeClient.getMetadata();
 
         // Verify metrics calculations
-        expect(metadata.metrics.totalRequests).toBe(4);
-        expect(metadata.metrics.successfulRequests).toBe(3);
-        expect(metadata.metrics.failedRequests).toBe(1);
+        expect(metadata?.metrics?.totalRequests).toBe(4);
+        expect(metadata?.metrics?.successfulRequests).toBe(3);
+        expect(metadata?.metrics?.failedRequests).toBe(1);
 
         // Average response time should be (1000 + 2000 + 1500 + 800) / 4 = 1325
-        expect(metadata.metrics.averageResponseTime).toBeCloseTo(1325, 0);
+        expect(metadata?.metrics?.averageResponseTime).toBeCloseTo(1325, 0);
 
-        expect(metadata.metrics.lastRequestTime).toBeInstanceOf(Date);
-        expect(metadata.metrics.uptime).toBeGreaterThan(0);
+        expect(metadata?.metrics?.lastRequestTime).toBeInstanceOf(Date);
+        expect(metadata?.metrics?.uptime).toBeGreaterThan(0);
       });
     });
 
@@ -530,7 +530,7 @@ describe('KnowledgeClientAdapter', () => {
           };
 
           const response = await knowledgeClient.send<KnowledgeResponse>(request);
-          expect(response.confidence).toBeCloseTo(testCase.expectedConfidence, 1);
+          expect(response?.confidence).toBeCloseTo(testCase.expectedConfidence, 1);
         }
       });
     });
@@ -659,13 +659,13 @@ describe('KnowledgeClientAdapter', () => {
         expect(client).toBeInstanceOf(KnowledgeClientAdapter);
 
         const config = client.getConfig() as KnowledgeClientConfig;
-        expect(config.protocol).toBe(ProtocolTypes.CUSTOM);
-        expect(config.url).toBe('fact://local');
-        expect(config.provider).toBe('fact');
-        expect(config.factConfig?.factRepoPath).toBe('./test-fact');
-        expect(config.factConfig?.anthropicApiKey).toBe('test-api-key');
-        expect(config.timeout).toBe(45000);
-        expect(config.tools).toContain('custom_tool');
+        expect(config?.protocol).toBe(ProtocolTypes.CUSTOM);
+        expect(config?.url).toBe('fact://local');
+        expect(config?.provider).toBe('fact');
+        expect(config?.factConfig?.factRepoPath).toBe('./test-fact');
+        expect(config?.factConfig?.anthropicApiKey).toBe('test-api-key');
+        expect(config?.timeout).toBe(45000);
+        expect(config?.tools).toContain('custom_tool');
       });
     });
 
@@ -678,10 +678,10 @@ describe('KnowledgeClientAdapter', () => {
         expect(client).toBeInstanceOf(KnowledgeClientAdapter);
 
         const config = client.getConfig() as KnowledgeClientConfig;
-        expect(config.protocol).toBe(ProtocolTypes.HTTPS);
-        expect(config.url).toBe('https://knowledge.api.com');
-        expect(config.provider).toBe('custom');
-        expect(config.timeout).toBe(20000);
+        expect(config?.protocol).toBe(ProtocolTypes.HTTPS);
+        expect(config?.url).toBe('https://knowledge.api.com');
+        expect(config?.provider).toBe('custom');
+        expect(config?.timeout).toBe(20000);
       });
     });
   });

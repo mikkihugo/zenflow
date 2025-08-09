@@ -1,12 +1,17 @@
 /**
  * Coordination Repository Implementation.
  *
- * Specialized repository for coordination operations including
+ * Specialized repository for coordination operations including.
  * distributed locking, pub/sub messaging, and change notifications.
  */
+/**
+ * @file Database layer: coordination.dao
+ */
+
+
 
 import { EventEmitter } from 'node:events';
-import type { DatabaseAdapter, ILogger } from '../../core/interfaces/base-interfaces';
+import type { DatabaseAdapter, ILogger } from '../core/interfaces/base-interfaces';
 import { BaseDao } from '../base.dao';
 import type {
   CoordinationChange,
@@ -267,12 +272,15 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
    * @param sql
    * @param params
    */
-  async execute(sql: string, params?: unknown[]): Promise<{ affectedRows?: number; insertId?: number }> {
+  async execute(
+    sql: string,
+    params?: unknown[]
+  ): Promise<{ affectedRows?: number; insertId?: number }> {
     try {
       const result = await this.adapter.execute(sql, params);
       return {
-        affectedRows: result.rowCount,
-        insertId: result.insertId
+        affectedRows: result?.rowCount,
+        insertId: result?.insertId,
       };
     } catch (error) {
       this.logger.error('Execute query failed:', error);

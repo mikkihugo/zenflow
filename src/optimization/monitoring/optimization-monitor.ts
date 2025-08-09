@@ -1,7 +1,12 @@
 /**
- * Performance Optimization Monitor
- * Real-time monitoring and alerting for optimization processes
+ * Performance Optimization Monitor.
+ * Real-time monitoring and alerting for optimization processes.
  */
+/**
+ * @file optimization-monitor implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type { OptimizationResult, PerformanceMetrics } from '../interfaces/optimization-interfaces';
@@ -87,7 +92,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Start optimization monitoring
+   * Start optimization monitoring.
    */
   public startMonitoring(): void {
     if (!this.config.enabled || this.isMonitoring) {
@@ -105,7 +110,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Stop optimization monitoring
+   * Stop optimization monitoring.
    */
   public stopMonitoring(): void {
     if (!this.isMonitoring) return;
@@ -121,7 +126,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Record optimization result
+   * Record optimization result.
    *
    * @param result
    */
@@ -141,7 +146,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Record performance metrics
+   * Record performance metrics.
    *
    * @param domain
    * @param metrics
@@ -163,7 +168,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Get current optimization dashboard
+   * Get current optimization dashboard.
    */
   public getDashboard(): OptimizationDashboard {
     const currentMetrics = this.getCurrentMetrics();
@@ -182,7 +187,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Get alerts by severity
+   * Get alerts by severity.
    *
    * @param severity
    */
@@ -193,7 +198,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Acknowledge alert
+   * Acknowledge alert.
    *
    * @param alertId
    */
@@ -206,7 +211,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Get optimization trends for domain
+   * Get optimization trends for domain.
    *
    * @param _domain
    * @param period
@@ -236,7 +241,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Perform monitoring cycle
+   * Perform monitoring cycle.
    */
   private async performMonitoringCycle(): Promise<void> {
     try {
@@ -258,35 +263,35 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Check for performance degradation
+   * Check for performance degradation.
    *
    * @param result
    */
   private checkPerformanceDegradation(result: OptimizationResult): void {
-    if (!result.success) {
+    if (!result?.success) {
       this.createAlert({
         type: 'optimization_failure',
         severity: 'high',
         domain: 'system',
-        message: `Optimization failed: ${result.error}`,
-        metrics: result.beforeMetrics,
+        message: `Optimization failed: ${result?.error}`,
+        metrics: result?.beforeMetrics,
       });
       return;
     }
 
-    if (result.improvement < 0) {
+    if (result?.improvement < 0) {
       this.createAlert({
         type: 'performance_degradation',
         severity: 'medium',
         domain: 'system',
-        message: `Performance degraded by ${Math.abs(result.improvement * 100).toFixed(1)}%`,
-        metrics: result.afterMetrics,
+        message: `Performance degraded by ${Math.abs(result?.improvement * 100).toFixed(1)}%`,
+        metrics: result?.afterMetrics,
       });
     }
   }
 
   /**
-   * Check threshold violations
+   * Check threshold violations.
    *
    * @param domain
    * @param metrics
@@ -346,7 +351,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Create alert
+   * Create alert.
    *
    * @param alertData
    * @param alertData.type
@@ -378,7 +383,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Get current system metrics
+   * Get current system metrics.
    */
   private getCurrentMetrics(): PerformanceMetrics {
     const allMetrics: PerformanceMetrics[] = [];
@@ -414,7 +419,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Calculate performance trends
+   * Calculate performance trends.
    */
   private calculateTrends(): OptimizationDashboard['trends'] {
     const trends = {
@@ -445,7 +450,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Assess system health
+   * Assess system health.
    */
   private assessSystemHealth(): OptimizationDashboard['systemHealth'] {
     const thresholds = this.config.alertThresholds;
@@ -467,14 +472,14 @@ export class OptimizationMonitor extends EventEmitter {
       let domainHealth: 'healthy' | 'warning' | 'critical' = 'healthy';
 
       if (
-        current.memoryUsage > thresholds.memoryUsage ||
-        current.errorRate > thresholds.errorRate
+        current?.memoryUsage > thresholds.memoryUsage ||
+        current?.errorRate > thresholds.errorRate
       ) {
         domainHealth = 'critical';
       } else if (
-        current.latency > thresholds.latency ||
-        current.cpuUsage > thresholds.cpuUsage ||
-        current.throughput < thresholds.throughput
+        current?.latency > thresholds.latency ||
+        current?.cpuUsage > thresholds.cpuUsage ||
+        current?.throughput < thresholds.throughput
       ) {
         domainHealth = 'warning';
       }
@@ -493,7 +498,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Generate optimization recommendations
+   * Generate optimization recommendations.
    */
   private generateRecommendations(): OptimizationRecommendation[] {
     const recommendations: OptimizationRecommendation[] = [];
@@ -501,7 +506,7 @@ export class OptimizationMonitor extends EventEmitter {
     const thresholds = this.config.alertThresholds;
 
     // High latency recommendation
-    if (currentMetrics.latency > thresholds.latency) {
+    if (currentMetrics?.latency > thresholds.latency) {
       recommendations.push({
         id: 'latency-optimization',
         domain: 'system',
@@ -515,7 +520,7 @@ export class OptimizationMonitor extends EventEmitter {
     }
 
     // High memory usage recommendation
-    if (currentMetrics.memoryUsage > thresholds.memoryUsage) {
+    if (currentMetrics?.memoryUsage > thresholds.memoryUsage) {
       recommendations.push({
         id: 'memory-optimization',
         domain: 'system',
@@ -529,7 +534,7 @@ export class OptimizationMonitor extends EventEmitter {
     }
 
     // Low throughput recommendation
-    if (currentMetrics.throughput < thresholds.throughput) {
+    if (currentMetrics?.throughput < thresholds.throughput) {
       recommendations.push({
         id: 'throughput-optimization',
         domain: 'system',
@@ -546,21 +551,21 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Get active alerts
+   * Get active alerts.
    */
   private getActiveAlerts(): OptimizationAlert[] {
     return this.alerts.filter((alert) => !alert.acknowledged).slice(-10);
   }
 
   /**
-   * Get recent optimizations
+   * Get recent optimizations.
    */
   private getRecentOptimizations(): OptimizationResult[] {
     return this.optimizationHistory.slice(-20);
   }
 
   /**
-   * Collect metrics for specific domain
+   * Collect metrics for specific domain.
    *
    * @param domain
    */
@@ -580,7 +585,7 @@ export class OptimizationMonitor extends EventEmitter {
   }
 
   /**
-   * Cleanup old data
+   * Cleanup old data.
    */
   private cleanupOldData(): void {
     const cutoff = Date.now() - this.config.retentionPeriod;

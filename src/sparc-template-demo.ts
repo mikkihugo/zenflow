@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 /**
- * Complete SPARC Template Engine Demonstration
+ * @file sparc-template-demo implementation
+ */
+
+
+/**
+ * Complete SPARC Template Engine Demonstration.
  *
- * Shows all functionality of the SPARC specification engine with template integration
+ * Shows all functionality of the SPARC specification engine with template integration.
  */
 
 import { TemplateEngine } from './coordination/swarm/sparc/core/template-engine';
@@ -61,15 +66,15 @@ async function demonstrateSPARCTemplateEngine() {
       // Find best template
       const bestMatch = templateEngine.findBestTemplate(project);
       if (bestMatch) {
-        if (bestMatch.compatibility.warnings.length > 0) {
+        if (bestMatch?.compatibility?.warnings.length > 0) {
         }
 
         // Apply template
-        const result = await templateEngine.applyTemplate(bestMatch.template, project);
+        const result = await templateEngine.applyTemplate(bestMatch?.template, project);
 
-        if (result.customizations.length > 0) {
-          result.customizations.slice(0, 2).forEach((_change) => {});
-          if (result.customizations.length > 2) {
+        if (result?.customizations.length > 0) {
+          result?.customizations?.slice(0, 2).forEach((_change) => {});
+          if (result?.customizations.length > 2) {
           }
         }
       } else {
@@ -83,9 +88,9 @@ async function demonstrateSPARCTemplateEngine() {
   const testProject = testProjects[0];
   if (testProject) {
     const bestMatch = templateEngine.findBestTemplate(testProject);
-    if (bestMatch && bestMatch.template) {
-      const result = await templateEngine.applyTemplate(bestMatch.template, testProject);
-      const validation = await specEngine.validateSpecificationCompleteness(result.specification);
+    if (bestMatch && bestMatch?.template) {
+      const result = await templateEngine.applyTemplate(bestMatch?.template, testProject);
+      const validation = await specEngine.validateSpecificationCompleteness(result?.specification);
 
       // xxx NEEDS_HUMAN: This variable appears to be for logging but is unused
       // const passed = validation.results.filter((r) => r.passed).length;

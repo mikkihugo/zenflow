@@ -1,6 +1,6 @@
 /**
  * @file Neural Network Bridge
- * Integrates neural network components with Claude-Zen system
+ * Integrates neural network components with Claude-Zen system.
  */
 
 import { createLogger } from '../core/logger';
@@ -37,7 +37,7 @@ export interface PredictionResult {
 }
 
 /**
- * Neural Network Bridge for Claude-Zen integration
+ * Neural Network Bridge for Claude-Zen integration.
  *
  * @example
  */
@@ -64,7 +64,7 @@ export class NeuralBridge {
   }
 
   /**
-   * Initialize neural network bridge
+   * Initialize neural network bridge.
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -91,7 +91,7 @@ export class NeuralBridge {
   }
 
   /**
-   * Create a new neural network
+   * Create a new neural network.
    *
    * @param id
    * @param type
@@ -116,7 +116,7 @@ export class NeuralBridge {
   }
 
   /**
-   * Train a neural network
+   * Train a neural network.
    *
    * @param networkId
    * @param trainingData
@@ -160,7 +160,7 @@ export class NeuralBridge {
   }
 
   /**
-   * Make predictions with a neural network
+   * Make predictions with a neural network.
    *
    * @param networkId
    * @param inputs
@@ -193,7 +193,7 @@ export class NeuralBridge {
   }
 
   /**
-   * Get network status
+   * Get network status.
    *
    * @param networkId
    */
@@ -202,14 +202,14 @@ export class NeuralBridge {
   }
 
   /**
-   * List all networks
+   * List all networks.
    */
   listNetworks(): NeuralNetwork[] {
     return Array.from(this.networks.values());
   }
 
   /**
-   * Remove a network
+   * Remove a network.
    *
    * @param networkId
    */
@@ -218,7 +218,7 @@ export class NeuralBridge {
   }
 
   /**
-   * Get neural system stats
+   * Get neural system stats.
    */
   getStats(): {
     totalNetworks: number;
@@ -295,7 +295,7 @@ export class NeuralBridge {
   }
 
   /**
-   * Shutdown neural bridge
+   * Shutdown neural bridge.
    */
   async shutdown(): Promise<void> {
     logger.info('Shutting down Neural Bridge...');

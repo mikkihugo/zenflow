@@ -1,7 +1,12 @@
 /**
- * Task-Agent Matcher
- * Intelligent matching of tasks to suitable agents based on capabilities and performance
+ * Task-Agent Matcher.
+ * Intelligent matching of tasks to suitable agents based on capabilities and performance.
  */
+/**
+ * @file Coordination system: task-agent-matcher
+ */
+
+
 
 import type { CapacityManager } from '../interfaces';
 import type { Agent, Task } from '../types';
@@ -34,7 +39,7 @@ export class TaskAgentMatcher {
     }
 
     // Sort by score (highest first)
-    matchingScores.sort((a, b) => b.score - a.score);
+    matchingScores?.sort((a, b) => b.score - a.score);
 
     // Store matching history
     this.matchingHistory.set(task.id, matchingScores);

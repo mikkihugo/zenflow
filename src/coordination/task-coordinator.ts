@@ -1,3 +1,11 @@
+/**
+ * @file task coordination system
+ */
+
+
+import type { FeatureDocumentEntity } from '../database/entities/product-entities';
+import type { TaskDocumentEntity } from '../database/entities/product-entities';
+import type { AgentType } from '../types/agent-types';
 import { generateSubAgentConfig, mapToClaudeSubAgent } from './sub-agent-generator';
 
 export interface TaskConfig {
@@ -192,10 +200,11 @@ export class TaskCoordinator {
     // Use SPARC for complex, high-priority tasks or when explicitly requested
     return (
       // Long descriptions indicate complexity
-      (config?.use_sparc_methodology === true ||
-      config?.priority === 'high' ||
-      config?.priority === 'critical' ||
-      (config?.source_document && this.isComplexDocument(config?.source_document)) || config?.description.length > 200)
+      config.use_sparc_methodology === true ||
+      config.priority === 'high' ||
+      config.priority === 'critical' ||
+      (config?.source_document && this.isComplexDocument(config?.source_document)) ||
+      config?.description.length > 200
     );
   }
 
@@ -223,7 +232,7 @@ export class TaskCoordinator {
     return {
       id: `temp-task-${Date.now()}`,
       type: 'task',
-      title: config?.description?.substring(0, 100),
+      title: config?.description.substring(0, 100),
       content: config?.prompt,
       status: 'draft',
       priority: config?.priority || 'medium',
@@ -319,7 +328,7 @@ export class TaskCoordinator {
    */
   private isClaudeSubAgentOptimal(config: TaskConfig): boolean {
     // High-priority tasks benefit from specialized sub-agents
-    if (config?.priority === 'high' || config?.priority === 'critical') {
+    if (config.priority === 'high' || config.priority === 'critical') {
       return true;
     }
 
@@ -528,7 +537,7 @@ export async function executeBatchTasks(configs: TaskConfig[]): Promise<TaskResu
   const taskCoordinator = TaskCoordinator.getInstance();
 
   // Execute tasks in parallel for better performance
-  const promises = configs?.map((config) => taskCoordinator.executeTask(config));
+  const promises = configs.map((config) => taskCoordinator.executeTask(config));
 
   return await Promise.all(promises);
 }

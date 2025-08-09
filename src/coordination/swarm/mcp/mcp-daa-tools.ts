@@ -1,7 +1,12 @@
 /**
- * DAA (Decentralized Autonomous Agents) MCP Tools
+ * DAA (Decentralized Autonomous Agents) MCP Tools.
  * Exposes DAA capabilities through the MCP interface.
  */
+/**
+ * @file Coordination system: mcp-daa-tools
+ */
+
+
 
 import { DaaService } from '../core/daa-service';
 
@@ -24,7 +29,7 @@ export class DAA_MCPTools {
   }
 
   /**
-   * DAA MCP Tool: daa_init
+   * DAA MCP Tool: daa_init.
    * Initialize the DAA service with autonomous agent capabilities.
    *
    * @param params
@@ -63,7 +68,7 @@ export class DAA_MCPTools {
   }
 
   /**
-   * DAA MCP Tool: daa_agent_create
+   * DAA MCP Tool: daa_agent_create.
    * Create an autonomous agent with DAA capabilities.
    *
    * @param params
@@ -171,7 +176,7 @@ export class DAA_MCPTools {
   }
 
   /**
-   * DAA MCP Tool: daa_agent_adapt
+   * DAA MCP Tool: daa_agent_adapt.
    * Trigger agent adaptation based on feedback.
    *
    * @param params
@@ -198,10 +203,10 @@ export class DAA_MCPTools {
       const result = {
         agent_id: id,
         adaptation_complete: true,
-        previous_pattern: adaptationResult.previousPattern,
-        new_pattern: adaptationResult.newPattern,
-        performance_improvement: adaptationResult.improvement,
-        learning_insights: adaptationResult.insights,
+        previous_pattern: adaptationResult?.previousPattern,
+        new_pattern: adaptationResult?.newPattern,
+        performance_improvement: adaptationResult?.improvement,
+        learning_insights: adaptationResult?.insights,
         timestamp: new Date().toISOString(),
       };
 
@@ -218,7 +223,7 @@ export class DAA_MCPTools {
   }
 
   /**
-   * DAA MCP Tool: daa_workflow_create
+   * DAA MCP Tool: daa_workflow_create.
    * Create an autonomous workflow with DAA coordination.
    *
    * @param params
@@ -259,7 +264,7 @@ export class DAA_MCPTools {
   }
 
   /**
-   * DAA MCP Tool: daa_workflow_execute
+   * DAA MCP Tool: daa_workflow_execute.
    * Execute a DAA workflow with autonomous agents.
    *
    * @param params
@@ -285,12 +290,12 @@ export class DAA_MCPTools {
 
       const result = {
         workflow_id: id,
-        execution_complete: executionResult.complete,
-        steps_completed: executionResult.stepsCompleted,
-        total_steps: executionResult.totalSteps,
-        execution_time_ms: executionResult.executionTime,
-        agents_involved: executionResult.agentsInvolved,
-        results: executionResult.stepResults,
+        execution_complete: executionResult?.complete,
+        steps_completed: executionResult?.stepsCompleted,
+        total_steps: executionResult?.totalSteps,
+        execution_time_ms: executionResult?.executionTime,
+        agents_involved: executionResult?.agentsInvolved,
+        results: executionResult?.stepResults,
         timestamp: new Date().toISOString(),
       };
 
@@ -307,7 +312,7 @@ export class DAA_MCPTools {
   }
 
   /**
-   * DAA MCP Tool: daa_knowledge_share
+   * DAA MCP Tool: daa_knowledge_share.
    * Share knowledge between autonomous agents.
    *
    * @param params
@@ -353,8 +358,8 @@ export class DAA_MCPTools {
         target_agents: targetIds,
         knowledge_domain: knowledgeDomain,
         sharing_complete: true,
-        agents_updated: sharingResults.updatedAgents,
-        knowledge_transfer_rate: sharingResults.transferRate,
+        agents_updated: sharingResults?.updatedAgents,
+        knowledge_transfer_rate: sharingResults?.transferRate,
         timestamp: new Date().toISOString(),
       };
 
@@ -371,7 +376,7 @@ export class DAA_MCPTools {
   }
 
   /**
-   * DAA MCP Tool: daa_learning_status
+   * DAA MCP Tool: daa_learning_status.
    * Get learning progress and status for DAA agents.
    *
    * @param params
@@ -421,7 +426,7 @@ export class DAA_MCPTools {
   }
 
   /**
-   * DAA MCP Tool: daa_cognitive_pattern
+   * DAA MCP Tool: daa_cognitive_pattern.
    * Analyze or change cognitive patterns for agents.
    *
    * @param params
@@ -463,10 +468,10 @@ export class DAA_MCPTools {
 
       const result = {
         agent_id: agentId,
-        previous_pattern: changeResult.previousPattern,
+        previous_pattern: changeResult?.previousPattern,
         new_pattern: pattern,
-        adaptation_success: changeResult.success,
-        expected_improvement: changeResult.expectedImprovement,
+        adaptation_success: changeResult?.success,
+        expected_improvement: changeResult?.expectedImprovement,
         timestamp: new Date().toISOString(),
       };
 
@@ -483,7 +488,7 @@ export class DAA_MCPTools {
   }
 
   /**
-   * DAA MCP Tool: daa_meta_learning
+   * DAA MCP Tool: daa_meta_learning.
    * Enable meta-learning capabilities across domains.
    *
    * @param params
@@ -507,10 +512,10 @@ export class DAA_MCPTools {
         source_domain: sourceDomain,
         target_domain: targetDomain,
         transfer_mode: transferMode,
-        knowledge_transferred: metaLearningResult.knowledgeItems,
-        agents_updated: metaLearningResult.updatedAgents,
-        domain_proficiency_gain: metaLearningResult.proficiencyGain,
-        cross_domain_insights: metaLearningResult.insights,
+        knowledge_transferred: metaLearningResult?.knowledgeItems,
+        agents_updated: metaLearningResult?.updatedAgents,
+        domain_proficiency_gain: metaLearningResult?.proficiencyGain,
+        cross_domain_insights: metaLearningResult?.insights,
         timestamp: new Date().toISOString(),
       };
 
@@ -527,7 +532,7 @@ export class DAA_MCPTools {
   }
 
   /**
-   * DAA MCP Tool: daa_performance_metrics
+   * DAA MCP Tool: daa_performance_metrics.
    * Get comprehensive DAA performance metrics.
    *
    * @param params

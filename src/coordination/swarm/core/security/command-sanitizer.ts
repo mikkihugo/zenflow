@@ -2,14 +2,19 @@
  * Security module for command sanitization and input validation
  * Addresses critical vulnerabilities in Issue #115
  */
+/**
+ * @file Coordination system: command-sanitizer
+ */
+
+
 
 const { spawn } = require('node:child_process');
 const path = require('node:path');
 
 class CommandSanitizer {
   /**
-   * Safe command execution using spawn instead of execSync
-   * Prevents command injection by using argument arrays
+   * Safe command execution using spawn instead of execSync.
+   * Prevents command injection by using argument arrays.
    *
    * @param command
    * @param args
@@ -25,19 +30,19 @@ class CommandSanitizer {
       let stdout = '';
       let stderr = '';
 
-      if (child.stdout) {
-        child.stdout.on('data', (data) => {
+      if (child?.stdout) {
+        child?.stdout?.on('data', (data) => {
           stdout += data.toString();
         });
       }
 
-      if (child.stderr) {
-        child.stderr.on('data', (data) => {
+      if (child?.stderr) {
+        child?.stderr?.on('data', (data) => {
           stderr += data.toString();
         });
       }
 
-      child.on('close', (code) => {
+      child?.on('close', (code) => {
         if (code === 0) {
           resolve({ stdout: stdout.trim(), stderr: stderr.trim(), code });
         } else {
@@ -45,14 +50,14 @@ class CommandSanitizer {
         }
       });
 
-      child.on('error', (error) => {
+      child?.on('error', (error) => {
         reject(error);
       });
     });
   }
 
   /**
-   * Validate and sanitize issue numbers
+   * Validate and sanitize issue numbers.
    *
    * @param issueNumber
    */
@@ -65,7 +70,7 @@ class CommandSanitizer {
   }
 
   /**
-   * Validate and sanitize repository owner/name
+   * Validate and sanitize repository owner/name.
    *
    * @param identifier
    */
@@ -81,7 +86,7 @@ class CommandSanitizer {
   }
 
   /**
-   * Sanitize swarm ID to prevent path traversal and injection
+   * Sanitize swarm ID to prevent path traversal and injection.
    *
    * @param swarmId
    */
@@ -97,7 +102,7 @@ class CommandSanitizer {
   }
 
   /**
-   * Sanitize labels to prevent injection
+   * Sanitize labels to prevent injection.
    *
    * @param label
    */
@@ -113,7 +118,7 @@ class CommandSanitizer {
   }
 
   /**
-   * Sanitize comment/message content
+   * Sanitize comment/message content.
    *
    * @param message
    */
@@ -134,7 +139,7 @@ class CommandSanitizer {
   }
 
   /**
-   * Validate file paths to prevent directory traversal
+   * Validate file paths to prevent directory traversal.
    *
    * @param filePath
    */
@@ -157,7 +162,7 @@ class CommandSanitizer {
   }
 
   /**
-   * Sanitize branch names
+   * Sanitize branch names.
    *
    * @param branchName
    */
@@ -177,7 +182,7 @@ class CommandSanitizer {
   }
 
   /**
-   * Validate environment variables
+   * Validate environment variables.
    */
   static validateEnvironment() {
     const required = ['GITHUB_OWNER', 'GITHUB_REPO'];
@@ -197,7 +202,7 @@ class CommandSanitizer {
   }
 
   /**
-   * Create safe GitHub CLI command arguments
+   * Create safe GitHub CLI command arguments.
    *
    * @param operation
    * @param params
@@ -218,8 +223,8 @@ class CommandSanitizer {
     const args = [...baseArgs];
 
     // Add repository parameter safely
-    if (params.repo) {
-      const [owner, repo] = params.repo.split('/');
+    if (params?.repo) {
+      const [owner, repo] = params?.repo?.split('/');
       CommandSanitizer.validateRepoIdentifier(owner);
       CommandSanitizer.validateRepoIdentifier(repo);
       args.push('--repo', `${owner}/${repo}`);
@@ -228,17 +233,17 @@ class CommandSanitizer {
     // Add other parameters based on operation
     switch (operation) {
       case 'issue-list':
-        if (params.state) {
+        if (params?.state) {
           const validStates = ['open', 'closed', 'all'];
-          if (validStates.includes(params.state)) {
-            args.push('--state', params.state);
+          if (validStates.includes(params?.state)) {
+            args.push('--state', params?.state);
           }
         }
-        if (params.label) {
-          args.push('--label', CommandSanitizer.sanitizeLabel(params.label));
+        if (params?.label) {
+          args.push('--label', CommandSanitizer.sanitizeLabel(params?.label));
         }
-        if (params.limit) {
-          const limit = parseInt(params.limit, 10);
+        if (params?.limit) {
+          const limit = parseInt(params?.limit, 10);
           if (limit > 0 && limit <= 1000) {
             args.push('--limit', limit.toString());
           }
@@ -247,38 +252,38 @@ class CommandSanitizer {
         break;
 
       case 'issue-edit':
-        if (params.issueNumber) {
-          args.push(CommandSanitizer.validateIssueNumber(params.issueNumber).toString());
+        if (params?.issueNumber) {
+          args.push(CommandSanitizer.validateIssueNumber(params?.issueNumber).toString());
         }
-        if (params.addLabel) {
-          args.push('--add-label', CommandSanitizer.sanitizeLabel(params.addLabel));
+        if (params?.addLabel) {
+          args.push('--add-label', CommandSanitizer.sanitizeLabel(params?.addLabel));
         }
-        if (params.removeLabel) {
-          args.push('--remove-label', CommandSanitizer.sanitizeLabel(params.removeLabel));
+        if (params?.removeLabel) {
+          args.push('--remove-label', CommandSanitizer.sanitizeLabel(params?.removeLabel));
         }
         break;
 
       case 'issue-comment':
-        if (params.issueNumber) {
-          args.push(CommandSanitizer.validateIssueNumber(params.issueNumber).toString());
+        if (params?.issueNumber) {
+          args.push(CommandSanitizer.validateIssueNumber(params?.issueNumber).toString());
         }
-        if (params.body) {
-          args.push('--body', CommandSanitizer.sanitizeMessage(params.body));
+        if (params?.body) {
+          args.push('--body', CommandSanitizer.sanitizeMessage(params?.body));
         }
         break;
 
       case 'pr-create':
-        if (params.title) {
-          args.push('--title', CommandSanitizer.sanitizeMessage(params.title));
+        if (params?.title) {
+          args.push('--title', CommandSanitizer.sanitizeMessage(params?.title));
         }
-        if (params.body) {
-          args.push('--body', CommandSanitizer.sanitizeMessage(params.body));
+        if (params?.body) {
+          args.push('--body', CommandSanitizer.sanitizeMessage(params?.body));
         }
-        if (params.base) {
-          args.push('--base', CommandSanitizer.sanitizeBranchName(params.base));
+        if (params?.base) {
+          args.push('--base', CommandSanitizer.sanitizeBranchName(params?.base));
         }
-        if (params.head) {
-          args.push('--head', CommandSanitizer.sanitizeBranchName(params.head));
+        if (params?.head) {
+          args.push('--head', CommandSanitizer.sanitizeBranchName(params?.head));
         }
         break;
     }
@@ -287,7 +292,7 @@ class CommandSanitizer {
   }
 
   /**
-   * Create safe git command arguments
+   * Create safe git command arguments.
    *
    * @param operation
    * @param params
@@ -308,32 +313,32 @@ class CommandSanitizer {
 
     switch (operation) {
       case 'checkout':
-        if (params.createBranch) {
+        if (params?.createBranch) {
           args.push('-b');
         }
-        if (params.branch) {
-          args.push(CommandSanitizer.sanitizeBranchName(params.branch));
+        if (params?.branch) {
+          args.push(CommandSanitizer.sanitizeBranchName(params?.branch));
         }
         break;
 
       case 'add':
-        if (params.file) {
-          args.push(CommandSanitizer.validateFilePath(params.file));
+        if (params?.file) {
+          args.push(CommandSanitizer.validateFilePath(params?.file));
         }
         break;
 
       case 'commit':
-        if (params.message) {
-          args.push('-m', CommandSanitizer.sanitizeMessage(params.message));
+        if (params?.message) {
+          args.push('-m', CommandSanitizer.sanitizeMessage(params?.message));
         }
         break;
 
       case 'push':
-        if (params.remote) {
-          args.push(CommandSanitizer.validateRepoIdentifier(params.remote));
+        if (params?.remote) {
+          args.push(CommandSanitizer.validateRepoIdentifier(params?.remote));
         }
-        if (params.branch) {
-          args.push(CommandSanitizer.sanitizeBranchName(params.branch));
+        if (params?.branch) {
+          args.push(CommandSanitizer.sanitizeBranchName(params?.branch));
         }
         break;
     }

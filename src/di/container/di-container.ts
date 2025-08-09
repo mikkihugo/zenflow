@@ -1,7 +1,14 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("di-container-di-container");
 /**
- * Main dependency injection container implementation
+ * @file di-container implementation
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('di-container-di-container');
+
+/**
+ * Main dependency injection container implementation.
  * Provides type-safe service registration and resolution.
  */
 
@@ -23,10 +30,10 @@ export class DIContainer implements IDIContainer {
 
   constructor(options: DIContainerOptions = {}) {
     this.options = {
-      enableCircularDependencyDetection: options.enableCircularDependencyDetection ?? true,
-      maxResolutionDepth: options.maxResolutionDepth ?? 50,
-      enablePerformanceMetrics: options.enablePerformanceMetrics ?? false,
-      autoRegisterByConvention: options.autoRegisterByConvention ?? false,
+      enableCircularDependencyDetection: options?.enableCircularDependencyDetection ?? true,
+      maxResolutionDepth: options?.maxResolutionDepth ?? 50,
+      enablePerformanceMetrics: options?.enablePerformanceMetrics ?? false,
+      autoRegisterByConvention: options?.autoRegisterByConvention ?? false,
     };
   }
 

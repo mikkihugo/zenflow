@@ -1,9 +1,14 @@
 /**
- * Base Backend Abstract Class for Memory Storage
+ * Base Backend Abstract Class for Memory Storage.
  *
- * Abstract base class defining the interface for all memory storage backends
- * Supports multiple backend types: sqlite, jsonb, file, memory
+ * Abstract base class defining the interface for all memory storage backends.
+ * Supports multiple backend types: sqlite, jsonb, file, memory.
  */
+/**
+ * @file Memory management: base-backend
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type { MemoryConfig } from '../providers/memory-providers';
@@ -276,7 +281,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
 
   /** Concrete implementation of search for BackendInterface compatibility */
   public async search(pattern: string, _namespace?: string): Promise<Record<string, any>> {
-    // Base implementation - override in subclasses
+    // Base implementation - override in subclasses.
     const results = await this.list(pattern);
     const resultMap: Record<string, any> = {};
     for (const key of results) {

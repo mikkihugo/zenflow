@@ -1,9 +1,14 @@
 /**
- * SPARC Template: Swarm Coordination System
+ * SPARC Template: Swarm Coordination System.
  *
  * Comprehensive template for developing swarm coordination systems using SPARC methodology.
  * Includes pre-defined requirements, architecture patterns, and implementation strategies.
  */
+/**
+ * @file Coordination system: swarm-coordination-template
+ */
+
+
 
 import { nanoid } from 'nanoid';
 import type {

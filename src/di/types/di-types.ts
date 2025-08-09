@@ -1,13 +1,18 @@
 /**
- * Core dependency injection type definitions
- * Following Google TypeScript Style Guide and enterprise DI patterns
+ * Core dependency injection type definitions.
+ * Following Google TypeScript Style Guide and enterprise DI patterns.
  */
 
 /**
- * Dependency injection token for type-safe service registration
+ * Dependency injection token for type-safe service registration.
  *
  * @example
  */
+/**
+ * @file TypeScript type definitions
+ */
+
+
 export interface DIToken<T> {
   readonly symbol: symbol;
   readonly name: string;
@@ -15,12 +20,12 @@ export interface DIToken<T> {
 }
 
 /**
- * Provider lifecycle types
+ * Provider lifecycle types.
  */
 export type ProviderLifestyle = 'singleton' | 'transient' | 'scoped';
 
 /**
- * Base provider interface for service creation
+ * Base provider interface for service creation.
  *
  * @example
  */
@@ -31,7 +36,7 @@ export interface Provider<T> {
 }
 
 /**
- * Main dependency injection container interface
+ * Main dependency injection container interface.
  *
  * @example
  */
@@ -43,7 +48,7 @@ export interface DIContainer {
 }
 
 /**
- * Scoped container interface extending base container
+ * Scoped container interface extending base container.
  *
  * @example
  */
@@ -53,7 +58,7 @@ export interface DIScope extends DIContainer {
 }
 
 /**
- * Singleton provider configuration
+ * Singleton provider configuration.
  *
  * @example
  */
@@ -63,7 +68,7 @@ export interface SingletonProvider<T> extends Provider<T> {
 }
 
 /**
- * Factory provider configuration
+ * Factory provider configuration.
  *
  * @example
  */
@@ -73,7 +78,7 @@ export interface FactoryProvider<T> extends Provider<T> {
 }
 
 /**
- * Scoped provider configuration
+ * Scoped provider configuration.
  *
  * @example
  */
@@ -82,7 +87,7 @@ export interface ScopedProvider<T> extends Provider<T> {
 }
 
 /**
- * Service configuration for configuration-based registration
+ * Service configuration for configuration-based registration.
  *
  * @example
  */
@@ -97,7 +102,7 @@ export interface ServiceConfiguration {
 }
 
 /**
- * Service mapping for auto-registration
+ * Service mapping for auto-registration.
  *
  * @example
  */
@@ -109,7 +114,7 @@ export interface ServiceMapping {
 }
 
 /**
- * Service registration result
+ * Service registration result.
  *
  * @example
  */
@@ -123,7 +128,7 @@ export interface ServiceRegistration {
 }
 
 /**
- * DI container configuration options
+ * DI container configuration options.
  *
  * @example
  */
@@ -135,7 +140,7 @@ export interface DIContainerOptions {
 }
 
 /**
- * DI error types
+ * DI error types.
  *
  * @example
  */
@@ -164,7 +169,7 @@ export class ServiceNotFoundError extends DIError {
 }
 
 /**
- * Injection metadata for decorator support
+ * Injection metadata for decorator support.
  *
  * @example
  */
@@ -174,12 +179,12 @@ export interface InjectionMetadata {
 }
 
 /**
- * Constructor type for injectable classes
+ * Constructor type for injectable classes.
  */
 export type Constructor<T = {}> = new (...args: any[]) => T;
 
 /**
- * Parameter decorator type
+ * Parameter decorator type.
  */
 export type ParameterDecorator = (
   target: any,
@@ -188,6 +193,6 @@ export type ParameterDecorator = (
 ) => void;
 
 /**
- * Class decorator type for injectable
+ * Class decorator type for injectable.
  */
 export type ClassDecorator = <T extends Constructor>(constructor: T) => T;

@@ -1,11 +1,18 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-knowledge-knowledge-client");
 /**
- * FACT Integration for Claude-Zen
- * Integrates the real FACT system (Fast Augmented Context Tools) for external knowledge gathering
+ * @file knowledge-client implementation
+ */
+
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-knowledge-knowledge-client');
+
+/**
+ * FACT Integration for Claude-Zen.
+ * Integrates the real FACT system (Fast Augmented Context Tools) for external knowledge gathering.
  *
  * Based on: https://github.com/ruvnet/FACT
- * Architecture: MCP-based tool execution with intelligent caching
+ * Architecture: MCP-based tool execution with intelligent caching.
  */
 
 import { spawn } from 'node:child_process';
@@ -59,8 +66,8 @@ interface FACTMetrics {
 }
 
 /**
- * FACT Integration class that bridges to the Python FACT system
- * Provides external knowledge gathering through MCP tools and intelligent caching
+ * FACT Integration class that bridges to the Python FACT system.
+ * Provides external knowledge gathering through MCP tools and intelligent caching.
  *
  * @example
  */
@@ -93,7 +100,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Initialize the FACT system
+   * Initialize the FACT system.
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) {
@@ -119,7 +126,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Query external knowledge using FACT system
+   * Query external knowledge using FACT system.
    *
    * @param factQuery
    */
@@ -164,7 +171,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Get real-time documentation for frameworks/libraries
+   * Get real-time documentation for frameworks/libraries.
    *
    * @param framework
    * @param version
@@ -190,7 +197,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Get specific API reference information
+   * Get specific API reference information.
    *
    * @param api
    * @param endpoint
@@ -208,7 +215,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Get changelog and release information
+   * Get changelog and release information.
    *
    * @param project
    * @param version
@@ -226,7 +233,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Search Stack Overflow and developer communities
+   * Search Stack Overflow and developer communities.
    *
    * @param topic
    * @param tags
@@ -243,7 +250,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Get current metrics from FACT system
+   * Get current metrics from FACT system.
    */
   async getMetrics(): Promise<FACTMetrics> {
     try {
@@ -270,7 +277,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Shutdown the FACT system
+   * Shutdown the FACT system.
    */
   async shutdown(): Promise<void> {
     if (this.factProcess) {
@@ -290,7 +297,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Verify FACT repository exists and is properly set up
+   * Verify FACT repository exists and is properly set up.
    */
   private async verifyFACTRepository(): Promise<void> {
     try {
@@ -307,7 +314,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Set up environment variables for FACT system
+   * Set up environment variables for FACT system.
    */
   private async setupEnvironment(): Promise<void> {
     const envPath = path.join(this.config.factRepoPath, '.env');
@@ -348,7 +355,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Execute a FACT query through Python interface
+   * Execute a FACT query through Python interface.
    *
    * @param queryId
    * @param factQuery
@@ -367,7 +374,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Execute Python command in FACT repository
+   * Execute Python command in FACT repository.
    *
    * @param command
    */
@@ -424,12 +431,12 @@ export class FACTIntegration extends EventEmitter {
 }
 
 /**
- * Global FACT integration instance for the Claude-Zen system
+ * Global FACT integration instance for the Claude-Zen system.
  */
 let globalFACTInstance: FACTIntegration | null = null;
 
 /**
- * Initialize global FACT integration
+ * Initialize global FACT integration.
  *
  * @param config
  */
@@ -445,14 +452,14 @@ export async function initializeFACT(config: FACTConfig): Promise<FACTIntegratio
 }
 
 /**
- * Get the global FACT integration instance
+ * Get the global FACT integration instance.
  */
 export function getFACT(): FACTIntegration | null {
   return globalFACTInstance;
 }
 
 /**
- * Shutdown global FACT integration
+ * Shutdown global FACT integration.
  */
 export async function shutdownFACT(): Promise<void> {
   if (globalFACTInstance) {
@@ -462,11 +469,11 @@ export async function shutdownFACT(): Promise<void> {
 }
 
 /**
- * Quick helper functions for common FACT operations
+ * Quick helper functions for common FACT operations.
  */
 export const FACTHelpers = {
   /**
-   * Get React documentation
+   * Get React documentation.
    *
    * @param version
    */
@@ -479,7 +486,7 @@ export const FACTHelpers = {
   },
 
   /**
-   * Get TypeScript documentation
+   * Get TypeScript documentation.
    *
    * @param version
    */
@@ -492,7 +499,7 @@ export const FACTHelpers = {
   },
 
   /**
-   * Search for solutions to coding problems
+   * Search for solutions to coding problems.
    *
    * @param problem
    * @param tags
@@ -506,7 +513,7 @@ export const FACTHelpers = {
   },
 
   /**
-   * Get API documentation
+   * Get API documentation.
    *
    * @param api
    * @param endpoint

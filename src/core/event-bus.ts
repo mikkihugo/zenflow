@@ -1,12 +1,26 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-core-event-bus");
+/**
+ * @file event-bus implementation
+ */
+
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-core-event-bus');
+
 /**
  * Event Bus - Core event system for claude-zen
- * Provides centralized event handling and communication
+ * Provides centralized event handling and communication.
  * Following Google TypeScript standards with strict typing.
  */
 
 import { EventEmitter } from 'node:events';
+import type {
+  EventBusConfig,
+  EventListenerAny,
+  EventMap,
+  EventMetrics,
+  EventMiddleware,
+} from '../interfaces/events/types';
 
 export interface IEventBus {
   on<T extends keyof EventMap>(event: T, listener: EventListener<T>): this;
@@ -16,7 +30,7 @@ export interface IEventBus {
 }
 
 /**
- * Unified Event Bus implementation
+ * Unified Event Bus implementation.
  * Extends Node.js EventEmitter with additional features.
  *
  * @example

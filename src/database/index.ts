@@ -1,5 +1,5 @@
 /**
- * Unified Data Access Layer (DAL) - Main Export Module
+ * Unified Data Access Layer (DAL) - Main Export Module.
  *
  * @file Central export point for the unified DAL providing standardized access
  * to all database types through a consistent interface architecture. This module serves as
@@ -56,7 +56,7 @@ export {
   DALFactory,
   // TODO: TypeScript error TS2614 - DaoConfig not exported from factory (AI unsure of safe fix - human review needed)
   // type DaoConfig,
-  // TODO: TypeScript error TS2614 - DaoType not exported from factory (AI unsure of safe fix - human review needed)  
+  // TODO: TypeScript error TS2614 - DaoType not exported from factory (AI unsure of safe fix - human review needed)
   // type DaoType,
   type EntityTypeRegistry,
   MultiDatabaseDAO,
@@ -114,7 +114,7 @@ export type {
 } from './interfaces';
 
 // TODO: TypeScript error TS2323/TS2484 - Conflicting exports with constants below (AI unsure of safe fix - human review needed)
-// Export enums  
+// Export enums
 // export { DatabaseTypes, EntityTypes } from './interfaces';
 // Manager implementations
 export { DocumentManager } from './managers/document-manager';
@@ -132,11 +132,11 @@ export type {
 } from './providers/database-providers';
 
 /**
- * Convenience functions for quick DAL setup
+ * Convenience functions for quick DAL setup.
  */
 
 /**
- * Create a Data Access Object (DAO) for a specific entity type and database
+ * Create a Data Access Object (DAO) for a specific entity type and database.
  *
  * This function creates a fully configured DAO instance with database connection,
  * entity mapping, and CRUD operations. It handles dependency injection setup
@@ -223,7 +223,7 @@ export async function createDao<T>(
 }
 
 /**
- * Create a Manager instance for high-level entity operations
+ * Create a Manager instance for high-level entity operations.
  *
  * Managers provide business logic layer above DAOs, offering complex operations,
  * data validation, caching, and cross-entity relationships. They're ideal for
@@ -303,11 +303,11 @@ export async function createManager<T>(
 }
 
 /**
- * Create a multi-database DAO setup with primary and secondary databases
+ * Create a multi-database DAO setup with primary and secondary databases.
  *
- * This function creates a sophisticated multi-database architecture with a primary database
+ * This function creates a sophisticated multi-database architecture with a primary database.
  * for writes and optional secondary databases for reads, caching, or replication.
- * The primary database handles all write operations, while reads can be distributed
+ * The primary database handles all write operations, while reads can be distributed.
  * across secondaries for performance and reliability.
  *
  * @template T The entity type for the multi-database setup
@@ -412,7 +412,7 @@ export async function createMultiDatabaseSetup<T>(
     error: console.error,
   })) as any);
 
-  // TODO: TypeScript error TS2345 - Config provider type mismatch (AI unsure of safe fix - human review needed)  
+  // TODO: TypeScript error TS2345 - Config provider type mismatch (AI unsure of safe fix - human review needed)
   container.register(CORE_TOKENS.Config, (() => ({})) as any);
 
   // TODO: TypeScript error TS2345/TS18046 - DALFactory DI token type mismatch (AI unsure of safe fix - human review needed)
@@ -431,11 +431,15 @@ export async function createMultiDatabaseSetup<T>(
   }));
 
   // TODO: TypeScript error TS18046 - factory type resolution (AI unsure of safe fix - human review needed)
-  return await (factory as any).createMultiDatabaseDAO<T>(entityType, primaryDaoConfig, secondaryDaoConfigs);
+  return await (factory as any).createMultiDatabaseDAO<T>(
+    entityType,
+    primaryDaoConfig,
+    secondaryDaoConfigs
+  );
 }
 
 /**
- * Get default database configuration for a given database type
+ * Get default database configuration for a given database type.
  *
  * This function provides sensible defaults for different database types,
  * including connection parameters, pool settings, and database-specific options.
@@ -536,9 +540,9 @@ function getDefaultConfig(databaseType: string): any {
 }
 
 /**
- * Predefined Entity Type Constants
+ * Predefined Entity Type Constants.
  *
- * This object provides a centralized registry of common entity types used throughout
+ * This object provides a centralized registry of common entity types used throughout.
  * the Claude-Zen system. Using these constants ensures consistency and prevents
  * typos when creating DAOs and managers.
  *
@@ -609,10 +613,10 @@ export const EntityTypes = {
 } as const;
 
 /**
- * Supported Database Type Constants
+ * Supported Database Type Constants.
  *
  * This object provides constants for all supported database types in the DAL.
- * Using these constants prevents typos and provides better IDE support with
+ * Using these constants prevents typos and provides better IDE support with.
  * autocomplete and type checking.
  *
  * @readonly
@@ -666,10 +670,10 @@ export const DatabaseTypes = {
 } as const;
 
 /**
- * Quick Setup Patterns for Common Use Cases
+ * Quick Setup Patterns for Common Use Cases.
  *
  * This object provides pre-configured factory methods for common application patterns,
- * eliminating boilerplate code and providing battle-tested configurations for typical
+ * eliminating boilerplate code and providing battle-tested configurations for typical.
  * scenarios in AI applications, distributed systems, and data processing.
  *
  * @namespace QuickSetup
@@ -723,7 +727,7 @@ export const DatabaseTypes = {
  */
 export const QuickSetup = {
   /**
-   * Create a typical swarm coordination setup
+   * Create a typical swarm coordination setup.
    */
   async swarmCoordination() {
     return {
@@ -736,7 +740,7 @@ export const QuickSetup = {
   },
 
   /**
-   * Create a typical AI/ML data setup
+   * Create a typical AI/ML data setup.
    */
   async aimlData() {
     return {
@@ -748,7 +752,7 @@ export const QuickSetup = {
   },
 
   /**
-   * Create a distributed application setup
+   * Create a distributed application setup.
    */
   async distributedApp() {
     const primaryDB = await createManager('User', 'postgresql');

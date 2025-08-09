@@ -1,4 +1,5 @@
 /**
+/// <reference types="./global-types" />
  * Hybrid TDD Setup - Comprehensive Testing Configuration
  *
  * @file Implements the 70% London TDD / 30% Classical TDD hybrid approach
@@ -82,12 +83,12 @@ function setupLondonTDD() {
   jest.useFakeTimers();
 
   // Setup interaction spies
-  (globalThis as any).createInteractionSpy = (name: string) => {
+  createInteractionSpy = (name: string) => {
     return jest.fn().mockName(name);
   };
 
   // Mock factory for complex coordination objects
-  (globalThis as any).createCoordinationMock = <T>(defaults: Partial<T> = {}) => {
+  createCoordinationMock = <T>(defaults: Partial<T> = {}) => {
     return (overrides: Partial<T> = {}): T =>
       ({
         ...defaults,
@@ -102,15 +103,15 @@ function setupLondonTDD() {
  */
 function setupClassicalTDD() {
   // Performance monitoring for neural computations
-  (globalThis as any).testStartTime = Date.now();
+  globalThis.testStartTime = Date.now();
 
-  if (typeof (globalThis as any).gc === 'function') {
+  if (typeof globalThis.gc === 'function') {
     try {
-      (globalThis as any).gc();
+      globalThis.gc?.();
     } catch {
       /* ignore */
     }
-    (globalThis as any).testStartMemory = process.memoryUsage();
+    globalThis.testStartMemory = process.memoryUsage();
   }
 
   // Neural-specific test data generators
@@ -120,7 +121,7 @@ function setupClassicalTDD() {
    * @param config - Configuration for data generation
    * @returns Array of training data points
    */
-  (globalThis as any).generateNeuralTestData = (config: NeuralTestConfig): NeuralTestData[] => {
+  generateNeuralTestData = (config: NeuralTestConfig): NeuralTestData[] => {
     switch (config.type) {
       case 'xor':
         return [
@@ -148,7 +149,7 @@ function setupClassicalTDD() {
    * @param expected - Expected value
    * @param tolerance - Allowed difference (default: 1e-10)
    */
-  (globalThis as any).expectNearlyEqual = (
+  expectNearlyEqual = (
     actual: number,
     expected: number,
     tolerance: number = 1e-10
@@ -167,7 +168,7 @@ function setupHybridTDD() {
   setupClassicalTDD();
 
   // Hybrid-specific utilities
-  (globalThis as any).testWithApproach = (
+  testWithApproach = (
     approach: 'london' | 'classical',
     testFn: () => void | Promise<void>
   ) => {
@@ -181,7 +182,7 @@ function setupHybridTDD() {
   };
 
   // Memory-specific test utilities
-  (globalThis as any).createMemoryTestScenario = (type: 'sqlite' | 'lancedb' | 'json') => {
+  createMemoryTestScenario = (type: 'sqlite' | 'lancedb' | 'json') => {
     switch (type) {
       case 'sqlite':
         return {

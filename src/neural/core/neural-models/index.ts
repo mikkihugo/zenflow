@@ -1,7 +1,12 @@
 /**
- * Neural Models Index
- * Central registry for neural network models and presets
+ * Neural Models Index.
+ * Central registry for neural network models and presets.
  */
+/**
+ * @file neural-models module exports
+ */
+
+
 
 export const MODEL_PRESETS = {
   CLASSIFICATION: {
@@ -40,7 +45,7 @@ export const MODEL_PRESETS = {
 };
 
 /**
- * Create a neural model from preset or custom configuration
+ * Create a neural model from preset or custom configuration.
  *
  * @param modelType
  * @param config
@@ -65,25 +70,25 @@ export function createNeuralModel(modelType, config = {}) {
   return {
     ...actualConfig,
     created: new Date(),
-    id: actualConfig.id || `custom_${Date.now()}`,
+    id: actualConfig?.id || `custom_${Date.now()}`,
   };
 }
 
 /**
- * Get available model presets
+ * Get available model presets.
  */
 export function getAvailablePresets() {
   return Object.keys(MODEL_PRESETS);
 }
 
 /**
- * Validate model configuration
+ * Validate model configuration.
  *
  * @param config
  */
 export function validateModelConfig(config) {
   const required = ['architecture', 'layers'];
-  const missing = required.filter((field) => !config[field]);
+  const missing = required.filter((field) => !config?.[field]);
 
   if (missing.length > 0) {
     throw new Error(`Missing required fields: ${missing.join(', ')}`);

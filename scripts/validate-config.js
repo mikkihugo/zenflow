@@ -2,13 +2,13 @@
 
 /**
  * Claude-Zen Configuration Validation Script
- * 
+ *
  * Validates environment configuration for production deployment
- * 
+ *
  * Usage:
  *   node scripts/validate-config.js
  *   npm run validate-config
- *   
+ *
  * Options:
  *   --env production|development|docker  # Environment to validate
  *   --file path/to/.env                  # Custom .env file
@@ -33,7 +33,7 @@ const colors = {
   white: '\x1b[37m',
   reset: '\x1b[0m',
   bold: '\x1b[1m',
-  dim: '\x1b[2m'
+  dim: '\x1b[2m',
 };
 
 class ConfigValidator {
@@ -44,9 +44,9 @@ class ConfigValidator {
       strict: options.strict || false,
       output: options.output || 'table',
       fix: options.fix || false,
-      ...options
+      ...options,
     };
-    
+
     this.errors = [];
     this.warnings = [];
     this.info = [];
@@ -58,12 +58,14 @@ class ConfigValidator {
    * Main validation entry point
    */
   async validate() {
-    console.log(`${colors.blue}${colors.bold}🔍 Claude-Zen Configuration Validator${colors.reset}\n`);
-    
+    console.log(
+      `${colors.blue}${colors.bold}🔍 Claude-Zen Configuration Validator${colors.reset}\n`
+    );
+
     try {
       // Load configuration
       this.loadConfiguration();
-      
+
       // Run validation checks
       this.validateCore();
       this.validateLogging();
@@ -77,19 +79,18 @@ class ConfigValidator {
       this.validateMonitoring();
       this.validateFeatureFlags();
       this.validateEnvironmentSpecific();
-      
+
       // Apply fixes if requested
       if (this.options.fix && this.fixes.length > 0) {
         this.applyFixes();
       }
-      
+
       // Output results
       this.outputResults();
-      
+
       // Exit with appropriate code
       const exitCode = this.errors.length > 0 ? 1 : 0;
       process.exit(exitCode);
-      
     } catch (error) {
       console.error(`${colors.red}❌ Validation failed: ${error.message}${colors.reset}`);
       process.exit(1);
@@ -121,7 +122,7 @@ class ConfigValidator {
   parseEnvFile(content) {
     const vars = {};
     const lines = content.split('\n');
-    
+
     for (const line of lines) {
       const trimmed = line.trim();
       if (trimmed && !trimmed.startsWith('#')) {
@@ -132,7 +133,7 @@ class ConfigValidator {
         }
       }
     }
-    
+
     return vars;
   }
 
@@ -142,7 +143,7 @@ class ConfigValidator {
   validateCore() {
     this.checkRequired('NODE_ENV', 'Node.js environment');
     this.checkRequired('APP_NAME', 'Application name');
-    
+
     // Validate NODE_ENV
     const validEnvs = ['production', 'development', 'testing'];
     if (!validEnvs.includes(this.config.NODE_ENV)) {
@@ -153,12 +154,14 @@ class ConfigValidator {
     const nodeOptions = this.config.NODE_OPTIONS;
     if (nodeOptions) {
       if (!nodeOptions.includes('--max-old-space-size')) {
-        this.warnings.push('NODE_OPTIONS should include --max-old-space-size for memory management');
+        this.warnings.push(
+          'NODE_OPTIONS should include --max-old-space-size for memory management'
+        );
         this.fixes.push({
           key: 'NODE_OPTIONS',
           current: nodeOptions,
           suggested: `${nodeOptions} --max-old-space-size=4096`,
-          reason: 'Add memory management option'
+          reason: 'Add memory management option',
         });
       }
     }
@@ -188,7 +191,7 @@ class ConfigValidator {
           key: 'CLAUDE_LOG_CONSOLE',
           current: this.config.CLAUDE_LOG_CONSOLE,
           suggested: 'false',
-          reason: 'Disable console logging in production'
+          reason: 'Disable console logging in production',
         });
       }
 
@@ -198,7 +201,7 @@ class ConfigValidator {
           key: 'CLAUDE_LOG_FILE',
           current: this.config.CLAUDE_LOG_FILE,
           suggested: 'true',
-          reason: 'Enable file logging in production'
+          reason: 'Enable file logging in production',
         });
       }
 
@@ -245,7 +248,7 @@ class ConfigValidator {
         key: 'CORS_ORIGIN',
         current: '*',
         suggested: 'https://your-domain.com',
-        reason: 'Restrict CORS to specific domain for security'
+        reason: 'Restrict CORS to specific domain for security',
       });
     }
   }
@@ -265,20 +268,13 @@ class ConfigValidator {
           key: 'JWT_SECRET',
           current: `${jwtSecret.substring(0, 10)}...`,
           suggested: this.generateSecureSecret(64),
-          reason: 'Generate stronger JWT secret'
+          reason: 'Generate stronger JWT secret',
         });
       }
 
       // Check for weak secrets
-      const weakSecrets = [
-        'your-jwt-secret',
-        'change-me',
-        'secret',
-        'password',
-        '12345',
-        'admin'
-      ];
-      if (weakSecrets.some(weak => jwtSecret.toLowerCase().includes(weak))) {
+      const weakSecrets = ['your-jwt-secret', 'change-me', 'secret', 'password', '12345', 'admin'];
+      if (weakSecrets.some((weak) => jwtSecret.toLowerCase().includes(weak))) {
         this.errors.push('JWT_SECRET appears to be a default/weak value');
       }
     }
@@ -293,7 +289,7 @@ class ConfigValidator {
         key: 'ENCRYPTION_KEY',
         current: `${encryptionKey.substring(0, 10)}...`,
         suggested: this.generateSecureSecret(32),
-        reason: 'Generate 32-character encryption key'
+        reason: 'Generate 32-character encryption key',
       });
     }
 
@@ -305,7 +301,7 @@ class ConfigValidator {
         key: 'SESSION_SECRET',
         current: sessionSecret || 'not set',
         suggested: this.generateSecureSecret(32),
-        reason: 'Generate secure session secret'
+        reason: 'Generate secure session secret',
       });
     }
 
@@ -317,7 +313,7 @@ class ConfigValidator {
           key: 'FORCE_HTTPS',
           current: this.config.FORCE_HTTPS || 'not set',
           suggested: 'true',
-          reason: 'Enforce HTTPS in production'
+          reason: 'Enforce HTTPS in production',
         });
       }
 
@@ -343,7 +339,7 @@ class ConfigValidator {
       if (!anthropicKey.startsWith('sk-ant-api03-')) {
         this.warnings.push('ANTHROPIC_API_KEY format may be incorrect');
       }
-      
+
       if (anthropicKey.includes('your-') || anthropicKey.includes('replace')) {
         this.errors.push('ANTHROPIC_API_KEY appears to be a placeholder value');
       }
@@ -376,7 +372,7 @@ class ConfigValidator {
    */
   validateDatabase() {
     const databaseUrl = this.config.DATABASE_URL || this.config.POSTGRES_URL;
-    
+
     if (!databaseUrl && !this.config.SQLITE_DB_PATH) {
       this.errors.push('Either DATABASE_URL or SQLITE_DB_PATH must be configured');
       return;
@@ -386,7 +382,7 @@ class ConfigValidator {
     if (databaseUrl) {
       try {
         const parsed = new URL(databaseUrl);
-        
+
         if (parsed.protocol !== 'postgresql:') {
           this.errors.push('DATABASE_URL must use postgresql:// protocol');
         }
@@ -407,7 +403,6 @@ class ConfigValidator {
         if (this.config.NODE_ENV === 'production' && this.config.DATABASE_SSL !== 'require') {
           this.warnings.push('DATABASE_SSL should be "require" in production');
         }
-        
       } catch (error) {
         this.errors.push(`Invalid DATABASE_URL format: ${error.message}`);
       }
@@ -416,7 +411,7 @@ class ConfigValidator {
     // Connection pool validation
     this.checkNumeric('DATABASE_POOL_MIN', 'DB pool min', 1, 100);
     this.checkNumeric('DATABASE_POOL_MAX', 'DB pool max', 1, 1000);
-    
+
     const poolMin = parseInt(this.config.DATABASE_POOL_MIN) || 5;
     const poolMax = parseInt(this.config.DATABASE_POOL_MAX) || 20;
     if (poolMin >= poolMax) {
@@ -425,7 +420,7 @@ class ConfigValidator {
 
     // Vector database validation
     this.checkNumeric('VECTOR_DIMENSION', 'Vector dimension', 1, 8192);
-    
+
     const vectorMetric = this.config.VECTOR_METRIC;
     if (vectorMetric && !['cosine', 'euclidean', 'dot'].includes(vectorMetric)) {
       this.errors.push('VECTOR_METRIC must be one of: cosine, euclidean, dot');
@@ -444,11 +439,11 @@ class ConfigValidator {
    */
   validateCaching() {
     const redisUrl = this.config.REDIS_URL;
-    
+
     if (redisUrl) {
       try {
         const parsed = new URL(redisUrl);
-        
+
         if (parsed.protocol !== 'redis:') {
           this.errors.push('REDIS_URL must use redis:// protocol');
         }
@@ -456,7 +451,6 @@ class ConfigValidator {
         if (parsed.password && (parsed.password === 'password' || parsed.password.length < 8)) {
           this.warnings.push('Redis password appears to be weak');
         }
-        
       } catch (error) {
         this.errors.push(`Invalid REDIS_URL format: ${error.message}`);
       }
@@ -504,7 +498,9 @@ class ConfigValidator {
     // Strategy validation
     const strategy = this.config.DEFAULT_COORDINATION_STRATEGY;
     if (strategy && !['parallel', 'sequential', 'adaptive'].includes(strategy)) {
-      this.errors.push('DEFAULT_COORDINATION_STRATEGY must be one of: parallel, sequential, adaptive');
+      this.errors.push(
+        'DEFAULT_COORDINATION_STRATEGY must be one of: parallel, sequential, adaptive'
+      );
     }
 
     // Performance recommendations
@@ -512,8 +508,9 @@ class ConfigValidator {
     const maxMemory = parseInt(this.config.AGENT_MAX_MEMORY) || 512;
     const totalMemory = maxAgents * maxMemory;
 
-    if (totalMemory > 16384) { // 16GB
-      this.warnings.push(`Swarm configuration may require ${Math.ceil(totalMemory/1024)}GB RAM`);
+    if (totalMemory > 16384) {
+      // 16GB
+      this.warnings.push(`Swarm configuration may require ${Math.ceil(totalMemory / 1024)}GB RAM`);
     }
   }
 
@@ -522,12 +519,7 @@ class ConfigValidator {
    */
   validateFileSystem() {
     // Check directory paths
-    const dirs = [
-      'CLAUDE_WORK_DIR',
-      'CLAUDE_TEMP_DIR', 
-      'CLAUDE_CACHE_DIR',
-      'CLAUDE_CONFIG_DIR'
-    ];
+    const dirs = ['CLAUDE_WORK_DIR', 'CLAUDE_TEMP_DIR', 'CLAUDE_CACHE_DIR', 'CLAUDE_CONFIG_DIR'];
 
     for (const dir of dirs) {
       const path = this.config[dir];
@@ -590,7 +582,7 @@ class ConfigValidator {
     // Boolean feature flags
     const booleanFlags = [
       'MCP_HTTP_ENABLED',
-      'MCP_STDIO_ENABLED', 
+      'MCP_STDIO_ENABLED',
       'WEB_DASHBOARD_ENABLED',
       'TUI_ENABLED',
       'CLI_ENABLED',
@@ -606,7 +598,7 @@ class ConfigValidator {
       'ENABLE_VECTOR_SEARCH',
       'DEBUG',
       'DEBUG_ENABLED',
-      'DEV_TOOLS_ENABLED'
+      'DEV_TOOLS_ENABLED',
     ];
 
     for (const flag of booleanFlags) {
@@ -619,10 +611,10 @@ class ConfigValidator {
     // Production recommendations
     if (this.config.NODE_ENV === 'production') {
       const productionFlags = {
-        'DEBUG': 'false',
-        'DEBUG_ENABLED': 'false', 
-        'DEV_TOOLS_ENABLED': 'false',
-        'TUI_ENABLED': 'false'
+        DEBUG: 'false',
+        DEBUG_ENABLED: 'false',
+        DEV_TOOLS_ENABLED: 'false',
+        TUI_ENABLED: 'false',
       };
 
       for (const [flag, expected] of Object.entries(productionFlags)) {
@@ -632,7 +624,7 @@ class ConfigValidator {
             key: flag,
             current: this.config[flag],
             suggested: expected,
-            reason: 'Production security/performance recommendation'
+            reason: 'Production security/performance recommendation',
           });
         }
       }
@@ -666,12 +658,7 @@ class ConfigValidator {
    * Production-specific validations
    */
   validateProduction() {
-    const requiredProd = [
-      'ANTHROPIC_API_KEY',
-      'JWT_SECRET',
-      'ENCRYPTION_KEY',
-      'DATABASE_URL'
-    ];
+    const requiredProd = ['ANTHROPIC_API_KEY', 'JWT_SECRET', 'ENCRYPTION_KEY', 'DATABASE_URL'];
 
     for (const key of requiredProd) {
       if (!this.config[key]) {
@@ -720,7 +707,7 @@ class ConfigValidator {
         key: 'CLAUDE_MCP_HOST',
         current: 'localhost',
         suggested: '0.0.0.0',
-        reason: 'Allow external access to Docker container'
+        reason: 'Allow external access to Docker container',
       });
     }
 
@@ -751,11 +738,13 @@ class ConfigValidator {
    * Apply automatic fixes
    */
   applyFixes() {
-    console.log(`\n${colors.blue}🔧 Applying ${this.fixes.length} automatic fixes...${colors.reset}\n`);
-    
+    console.log(
+      `\n${colors.blue}🔧 Applying ${this.fixes.length} automatic fixes...${colors.reset}\n`
+    );
+
     let envContent = '';
     const envPath = path.resolve(this.options.envFile);
-    
+
     // Load existing .env file if it exists
     if (fs.existsSync(envPath)) {
       envContent = fs.readFileSync(envPath, 'utf8');
@@ -764,11 +753,11 @@ class ConfigValidator {
     // Apply each fix
     for (const fix of this.fixes) {
       console.log(`  ${colors.green}✓${colors.reset} ${fix.key}: ${fix.reason}`);
-      
+
       // Update or add the environment variable
       const regex = new RegExp(`^${fix.key}=.*$`, 'm');
       const newLine = `${fix.key}=${fix.suggested}`;
-      
+
       if (regex.test(envContent)) {
         envContent = envContent.replace(regex, newLine);
       } else {
@@ -807,17 +796,17 @@ class ConfigValidator {
         errors: this.errors.length,
         warnings: this.warnings.length,
         info: this.info.length,
-        fixes: this.fixes.length
+        fixes: this.fixes.length,
       },
       errors: this.errors,
       warnings: this.warnings,
       info: this.info,
-      fixes: this.fixes.map(f => ({
+      fixes: this.fixes.map((f) => ({
         key: f.key,
         reason: f.reason,
         current: f.current,
-        suggested: f.suggested
-      }))
+        suggested: f.suggested,
+      })),
     };
 
     console.log(JSON.stringify(result, null, 2));
@@ -827,12 +816,14 @@ class ConfigValidator {
    * Output results as formatted table
    */
   outputTable() {
-    console.log(`\n${colors.bold}📊 Validation Results for ${this.options.env.toUpperCase()} environment:${colors.reset}\n`);
+    console.log(
+      `\n${colors.bold}📊 Validation Results for ${this.options.env.toUpperCase()} environment:${colors.reset}\n`
+    );
 
     // Summary
     const errorColor = this.errors.length > 0 ? colors.red : colors.green;
     const warningColor = this.warnings.length > 0 ? colors.yellow : colors.green;
-    
+
     console.log(`${errorColor}❌ Errors: ${this.errors.length}${colors.reset}`);
     console.log(`${warningColor}⚠️  Warnings: ${this.warnings.length}${colors.reset}`);
     console.log(`${colors.blue}ℹ️  Info: ${this.info.length}${colors.reset}`);
@@ -847,7 +838,7 @@ class ConfigValidator {
       console.log();
     }
 
-    // Warnings  
+    // Warnings
     if (this.warnings.length > 0) {
       console.log(`${colors.yellow}${colors.bold}⚠️  WARNINGS:${colors.reset}`);
       this.warnings.forEach((warning, i) => {
@@ -874,18 +865,26 @@ class ConfigValidator {
         console.log(`     Suggested: ${colors.green}${fix.suggested}${colors.reset}`);
       });
       console.log();
-      console.log(`${colors.magenta}💡 Run with --fix to apply these changes automatically${colors.reset}\n`);
+      console.log(
+        `${colors.magenta}💡 Run with --fix to apply these changes automatically${colors.reset}\n`
+      );
     }
 
     // Final status
     if (this.errors.length === 0) {
-      console.log(`${colors.green}${colors.bold}✅ Configuration validation passed!${colors.reset}`);
+      console.log(
+        `${colors.green}${colors.bold}✅ Configuration validation passed!${colors.reset}`
+      );
       if (this.warnings.length > 0) {
-        console.log(`${colors.yellow}Consider addressing the warnings above for optimal performance.${colors.reset}`);
+        console.log(
+          `${colors.yellow}Consider addressing the warnings above for optimal performance.${colors.reset}`
+        );
       }
     } else {
       console.log(`${colors.red}${colors.bold}❌ Configuration validation failed!${colors.reset}`);
-      console.log(`${colors.red}Please fix the errors above before deploying to production.${colors.reset}`);
+      console.log(
+        `${colors.red}Please fix the errors above before deploying to production.${colors.reset}`
+      );
     }
     console.log();
   }
@@ -942,7 +941,10 @@ class ConfigValidator {
   }
 
   generateSecureSecret(length) {
-    return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').substring(0, length);
+    return crypto
+      .randomBytes(Math.ceil(length / 2))
+      .toString('hex')
+      .substring(0, length);
   }
 }
 
@@ -954,7 +956,7 @@ if (require.main === module) {
   // Parse command line arguments
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    
+
     if (arg === '--env' && i + 1 < args.length) {
       options.env = args[++i];
     } else if (arg === '--file' && i + 1 < args.length) {
@@ -989,7 +991,7 @@ Examples:
 
   // Run validation
   const validator = new ConfigValidator(options);
-  validator.validate().catch(error => {
+  validator.validate().catch((error) => {
     console.error(`${colors.red}❌ Validation error: ${error.message}${colors.reset}`);
     process.exit(1);
   });

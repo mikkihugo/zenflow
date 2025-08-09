@@ -1,9 +1,14 @@
 /**
- * Error System Integration
+ * Error System Integration.
  *
  * Central integration point for all error handling, recovery, monitoring,
  * and resilience systems in Claude-Zen
  */
+/**
+ * @file error-system-integration implementation.
+ */
+
+
 
 import { mcpErrorHandler } from '../coordination/swarm/mcp/error-handler';
 import { errorMonitor } from './error-monitoring';
@@ -462,12 +467,13 @@ export class IntegratedErrorHandler {
       // Execute with resilience patterns if specified
       if (options?.resilience) {
         const resilienceOptions: any = {};
-        if (options?.resilience?.bulkhead) resilienceOptions?.bulkhead = options?.resilience?.bulkhead;
+        if (options?.resilience?.bulkhead)
+          resilienceOptions.bulkhead = options?.resilience?.bulkhead;
         if (options?.resilience?.errorBoundary)
-          resilienceOptions?.errorBoundary = options?.resilience?.errorBoundary;
+          resilienceOptions.errorBoundary = options?.resilience?.errorBoundary;
         if (options?.resilience?.timeoutMs)
-          resilienceOptions?.timeoutMs = options?.resilience?.timeoutMs;
-        if (context.operation) resilienceOptions?.operationName = context.operation;
+          resilienceOptions.timeoutMs = options?.resilience?.timeoutMs;
+        if (context.operation) resilienceOptions.operationName = context.operation;
 
         return await systemResilienceOrchestrator.executeWithResilience(
           operation,

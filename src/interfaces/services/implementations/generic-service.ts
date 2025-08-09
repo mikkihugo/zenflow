@@ -1,15 +1,20 @@
 /**
- * Generic Service Implementation
+ * Generic Service Implementation.
  *
- * A basic service implementation that can be used for simple services
+ * A basic service implementation that can be used for simple services.
  * or as a fallback when no specific service implementation is available.
  */
+/**
+ * @file generic service implementation
+ */
+
+
 
 import type { ServiceConfig, ServiceOperationOptions } from '../core/interfaces';
 import { BaseService } from './base-service';
 
 /**
- * Generic service that provides basic functionality
+ * Generic service that provides basic functionality.
  *
  * @example
  */
@@ -18,7 +23,7 @@ export class GenericService extends BaseService {
   private healthCheckFn?: () => Promise<boolean>;
 
   constructor(config: ServiceConfig) {
-    super(config.name, config.type, config);
+    super(config?.name, config?.type, config);
 
     // Add basic capabilities
     this.addCapability('execute');
@@ -137,7 +142,7 @@ export class GenericService extends BaseService {
   // ============================================
 
   /**
-   * Register an operation handler
+   * Register an operation handler.
    *
    * @param name
    * @param handler
@@ -152,7 +157,7 @@ export class GenericService extends BaseService {
   }
 
   /**
-   * Unregister an operation handler
+   * Unregister an operation handler.
    *
    * @param name
    */
@@ -164,14 +169,14 @@ export class GenericService extends BaseService {
   }
 
   /**
-   * Get list of registered operations
+   * Get list of registered operations.
    */
   getRegisteredOperations(): string[] {
     return Array.from(this.operations.keys());
   }
 
   /**
-   * Check if operation is registered
+   * Check if operation is registered.
    *
    * @param name
    */
@@ -180,7 +185,7 @@ export class GenericService extends BaseService {
   }
 
   /**
-   * Set custom health check function
+   * Set custom health check function.
    *
    * @param healthCheckFn
    */
@@ -190,7 +195,7 @@ export class GenericService extends BaseService {
   }
 
   /**
-   * Execute multiple operations in sequence
+   * Execute multiple operations in sequence.
    *
    * @param operations
    */
@@ -200,7 +205,7 @@ export class GenericService extends BaseService {
     for (const op of operations) {
       try {
         const response = await this.execute(op.name, op.params);
-        results.push(response.data);
+        results.push(response?.data);
       } catch (error) {
         this.logger.error(`Sequence execution failed at operation '${op.name}':`, error);
         throw error;
@@ -211,7 +216,7 @@ export class GenericService extends BaseService {
   }
 
   /**
-   * Execute multiple operations in parallel
+   * Execute multiple operations in parallel.
    *
    * @param operations
    */
@@ -220,7 +225,7 @@ export class GenericService extends BaseService {
 
     try {
       const responses = await Promise.all(promises);
-      return responses.map((response) => response.data);
+      return responses?.map((response) => response?.data);
     } catch (error) {
       this.logger.error(`Parallel execution failed:`, error);
       throw error;
@@ -228,7 +233,7 @@ export class GenericService extends BaseService {
   }
 
   /**
-   * Execute operations with specific strategy
+   * Execute operations with specific strategy.
    *
    * @param operations
    * @param strategy

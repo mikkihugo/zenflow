@@ -1,8 +1,15 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-claude-integration-remote");
 /**
- * Remote wrapper generation module
- * Creates cross-platform wrapper scripts for remote execution
+ * @file Coordination system: remote
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-claude-integration-remote');
+
+/**
+ * Remote wrapper generation module.
+ * Creates cross-platform wrapper scripts for remote execution.
  */
 
 import { promises as fs } from 'node:fs';
@@ -19,12 +26,12 @@ class RemoteWrapperGenerator {
   private packageName: string;
 
   constructor(options: RemoteWrapperOptions = {}) {
-    this.workingDir = options.workingDir || process.cwd();
-    this.packageName = options.packageName || 'ruv-swarm';
+    this.workingDir = options?.workingDir || process.cwd();
+    this.packageName = options?.packageName || 'ruv-swarm';
   }
 
   /**
-   * Generate bash wrapper script for Unix-like systems
+   * Generate bash wrapper script for Unix-like systems.
    */
   generateBashWrapper(): string {
     return `#!/usr/bin/env bash
@@ -74,7 +81,7 @@ find_and_execute "\$@"
   }
 
   /**
-   * Generate Windows batch wrapper script
+   * Generate Windows batch wrapper script.
    */
   generateBatchWrapper(): string {
     return `@echo off
@@ -124,7 +131,7 @@ goto :eof
   }
 
   /**
-   * Generate PowerShell wrapper script
+   * Generate PowerShell wrapper script.
    */
   generatePowerShellWrapper(): string {
     return `#!/usr/bin/env pwsh
@@ -187,7 +194,7 @@ Find-And-Execute $Arguments
   }
 
   /**
-   * Generate Claude helper scripts
+   * Generate Claude helper scripts.
    */
   generateClaudeHelpers(): any {
     const bashHelper = `#!/usr/bin/env bash
@@ -310,7 +317,7 @@ if "%1"=="research" (
   }
 
   /**
-   * Create all wrapper scripts
+   * Create all wrapper scripts.
    */
   async createWrappers(): Promise<{ success: boolean; files: string[] }> {
     try {
@@ -347,7 +354,7 @@ if "%1"=="research" (
   }
 
   /**
-   * Create Claude helper scripts
+   * Create Claude helper scripts.
    */
   async createClaudeHelpers(): Promise<{ success: boolean; files: string[] }> {
     try {
@@ -381,7 +388,7 @@ if "%1"=="research" (
   }
 
   /**
-   * Create all remote scripts
+   * Create all remote scripts.
    */
   async createAll(): Promise<any> {
     try {

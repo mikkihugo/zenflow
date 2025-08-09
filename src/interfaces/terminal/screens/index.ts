@@ -1,10 +1,15 @@
 /**
- * Terminal Screens - Index
+ * Terminal Screens - Index.
  *
  * Exports all screen components for the unified terminal interface.
  */
 
 // Re-export SwarmStatus from components for convenience
+/**
+ * @file screens module exports
+ */
+
+
 export type { SwarmStatus } from '../components/index';
 // Main screens
 export * from './main-menu';
@@ -96,11 +101,11 @@ export const ScreenUtils = {
   },
 
   getMenuScreens: (): ScreenConfig[] => {
-    return defaultScreenConfigs.filter((config) => config.showInMenu);
+    return defaultScreenConfigs.filter((config) => config?.showInMenu);
   },
 
   getSwarmScreens: (): ScreenConfig[] => {
-    return defaultScreenConfigs.filter((config) => config.requiresSwarm);
+    return defaultScreenConfigs.filter((config) => config?.requiresSwarm);
   },
 
   isSwarmRequired: (screenId: ScreenType): boolean => {

@@ -1,12 +1,19 @@
-import { getLogger } from "./config/logging-config";
-const logger = getLogger("comprehensive-sparc-test");
+/**
+ * @file Test suite for comprehensive-sparc-test
+ */
+
+
+import { getLogger } from './config/logging-config';
+
+const logger = getLogger('comprehensive-sparc-test');
+
 /**
  * Comprehensive End-to-End Test for SPARC Pseudocode Engine (Sub-task 4.2).
  *
  * This test validates the complete implementation of SPARC Phase 2:
  * - Core pseudocode engine functionality
  * - CLI integration
- * - MCP tools integration
+ * - MCP tools integration.
  * - End-to-end specification → pseudocode flow.
  */
 
@@ -37,7 +44,7 @@ async function runComprehensiveTest() {
       .slice(0, -1)
       .every((r) => r);
 
-    if (results.overallSuccess) {
+    if (results?.overallSuccess) {
     } else {
     }
 
@@ -146,14 +153,14 @@ async function testCLIIntegration() {
     const validateResult = await execAsync(validateCommand);
 
     const success: boolean =
-      generateResult.stdout.includes('✅ Pseudocode generation completed') &&
-      validateResult.stdout.includes('✅ APPROVED');
+      generateResult?.stdout?.includes('✅ Pseudocode generation completed') &&
+      validateResult?.stdout?.includes('✅ APPROVED');
 
     return {
       success,
       details: {
-        generateOutput: generateResult.stdout.includes('Generated'),
-        validateOutput: validateResult.stdout.includes('APPROVED'),
+        generateOutput: generateResult?.stdout?.includes('Generated'),
+        validateOutput: validateResult?.stdout?.includes('APPROVED'),
       },
     };
   } catch (error) {
@@ -202,34 +209,34 @@ async function testMCPIntegration() {
 
     const generateResult = await pseudocodeGenerationTool.handler({ specification: testSpec });
 
-    if (!generateResult.success) {
+    if (!generateResult?.success) {
       return { success: false, error: 'MCP generation failed' };
     }
 
     const validateResult = await validationTool.handler({
       pseudocodeStructure: {
-        id: generateResult.data.pseudocodeId,
-        algorithms: generateResult.data.algorithms,
-        dataStructures: generateResult.data.dataStructures,
-        controlFlows: generateResult.data.controlFlows,
+        id: generateResult?.data?.pseudocodeId,
+        algorithms: generateResult?.data?.algorithms,
+        dataStructures: generateResult?.data?.dataStructures,
+        controlFlows: generateResult?.data?.controlFlows,
       },
     });
 
     const algorithmsResult = await algorithmsOnlyTool.handler({ specification: testSpec });
 
     const success: boolean =
-      generateResult.success &&
-      validateResult.success &&
-      algorithmsResult.success &&
-      validateResult.data.validation.approved;
+      generateResult?.success &&
+      validateResult?.success &&
+      algorithmsResult?.success &&
+      validateResult?.data?.validation?.approved;
 
     return {
       success,
       details: {
-        generation: generateResult.success,
-        validation: validateResult.success,
-        algorithmsOnly: algorithmsResult.success,
-        approved: validateResult.data.validation.approved,
+        generation: generateResult?.success,
+        validation: validateResult?.success,
+        algorithmsOnly: algorithmsResult?.success,
+        approved: validateResult?.data?.validation?.approved,
       },
     };
   } catch (error) {
@@ -337,7 +344,7 @@ async function testEndToEndFlow() {
 // Run the comprehensive test if this file is executed directly
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   runComprehensiveTest().then((results) => {
-    process.exit(results.overallSuccess ? 0 : 1);
+    process.exit(results?.overallSuccess ? 0 : 1);
   });
 }
 

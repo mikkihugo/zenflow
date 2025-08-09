@@ -1,5 +1,5 @@
 /**
- * Intelligent Load Balancing Manager
+ * Intelligent Load Balancing Manager.
  *
  * Central coordinator for all load balancing operations with ML-powered optimization,
  * real-time health monitoring, and adaptive resource management. Supports multiple
@@ -52,6 +52,11 @@
  * @since 2.0.0-alpha.73
  * @author Claude Zen Flow Team
  */
+/**
+ * @file load-balancing management system
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { AdaptiveLearningAlgorithm } from './algorithms/adaptive-learning';
@@ -115,7 +120,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Initialize all load balancing components
+   * Initialize all load balancing components.
    */
   private initializeComponents(): void {
     // TODO: Replace direct instantiation with factory pattern or DI container resolution
@@ -146,7 +151,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Setup event handlers for component coordination
+   * Setup event handlers for component coordination.
    */
   private setupEventHandlers(): void {
     this.healthChecker.on('agent:unhealthy', (agentId: string) => {
@@ -171,7 +176,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Start the load balancing system
+   * Start the load balancing system.
    */
   public async start(): Promise<void> {
     if (this.isRunning) return;
@@ -191,7 +196,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Stop the load balancing system
+   * Stop the load balancing system.
    */
   public async stop(): Promise<void> {
     if (!this.isRunning) return;
@@ -208,7 +213,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Add an agent to the load balancing pool
+   * Add an agent to the load balancing pool.
    *
    * @param agent
    */
@@ -235,7 +240,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Remove an agent from the load balancing pool
+   * Remove an agent from the load balancing pool.
    *
    * @param agentId
    */
@@ -266,7 +271,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Route a task to the best available agent
+   * Route a task to the best available agent.
    *
    * @param task
    */
@@ -293,21 +298,21 @@ export class LoadBalancingManager extends EventEmitter {
 
     // Update capacity tracking
     await this.capacityManager.updateCapacity(
-      result.selectedAgent.id,
+      result?.selectedAgent?.id,
       this.createTaskMetrics(task)
     );
 
     // Notify observers
     for (const observer of this.observers) {
-      await observer.onTaskRouted(task, result.selectedAgent);
+      await observer.onTaskRouted(task, result?.selectedAgent);
     }
 
-    this.emit('task:routed', { task, agent: result.selectedAgent, result });
+    this.emit('task:routed', { task, agent: result?.selectedAgent, result });
     return result;
   }
 
   /**
-   * Handle task completion notification
+   * Handle task completion notification.
    *
    * @param taskId
    * @param agentId
@@ -346,7 +351,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Switch to a different load balancing algorithm
+   * Switch to a different load balancing algorithm.
    *
    * @param algorithm
    */
@@ -375,7 +380,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Get current load balancing statistics
+   * Get current load balancing statistics.
    */
   public getStatistics(): Record<string, any> {
     const totalAgents = this.agents.size;
@@ -401,7 +406,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Update load balancing configuration
+   * Update load balancing configuration.
    *
    * @param newConfig
    */
@@ -409,12 +414,12 @@ export class LoadBalancingManager extends EventEmitter {
     this.config = { ...this.config, ...newConfig };
 
     // Update algorithm if changed
-    if (newConfig.algorithm && newConfig.algorithm !== this.config.algorithm) {
-      await this.switchAlgorithm(newConfig.algorithm);
+    if (newConfig?.algorithm && newConfig?.algorithm !== this.config.algorithm) {
+      await this.switchAlgorithm(newConfig?.algorithm);
     }
 
     // Update health check interval if changed
-    if (newConfig.healthCheckInterval) {
+    if (newConfig?.healthCheckInterval) {
       // This would require restarting health checker with new interval
       // Implementation depends on HealthChecker interface
     }
@@ -423,7 +428,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Register an observer for load balancing events
+   * Register an observer for load balancing events.
    *
    * @param observer
    */
@@ -432,7 +437,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Remove an observer
+   * Remove an observer.
    *
    * @param observer
    */
@@ -444,7 +449,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Handle agent failure
+   * Handle agent failure.
    *
    * @param agentId
    * @param error
@@ -475,7 +480,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Handle agent recovery
+   * Handle agent recovery.
    *
    * @param agentId
    */
@@ -493,7 +498,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Handle scale up event
+   * Handle scale up event.
    *
    * @param count
    */
@@ -504,7 +509,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Handle scale down event
+   * Handle scale down event.
    *
    * @param agentIds
    */
@@ -518,7 +523,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Start monitoring loop
+   * Start monitoring loop.
    */
   private startMonitoring(): void {
     this.monitoringInterval = setInterval(async () => {
@@ -527,7 +532,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Stop monitoring loop
+   * Stop monitoring loop.
    */
   private stopMonitoring(): void {
     if (this.monitoringInterval) {
@@ -537,7 +542,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Perform a monitoring cycle
+   * Perform a monitoring cycle.
    */
   private async performMonitoringCycle(): Promise<void> {
     try {
@@ -575,7 +580,7 @@ export class LoadBalancingManager extends EventEmitter {
   }
 
   /**
-   * Check if emergency conditions are met
+   * Check if emergency conditions are met.
    */
   private async checkEmergencyConditions(): Promise<void> {
     const healthyAgents = Array.from(this.agents.values()).filter(
@@ -595,23 +600,23 @@ export class LoadBalancingManager extends EventEmitter {
   // Helper methods
   private mergeConfig(config: Partial<LoadBalancingConfig>): LoadBalancingConfig {
     return {
-      algorithm: config.algorithm || LoadBalancingAlgorithm.WEIGHTED_ROUND_ROBIN,
-      healthCheckInterval: config.healthCheckInterval || 5000,
-      maxRetries: config.maxRetries || 3,
-      timeoutMs: config.timeoutMs || 30000,
-      circuitBreakerConfig: config.circuitBreakerConfig || {
+      algorithm: config?.algorithm || LoadBalancingAlgorithm.WEIGHTED_ROUND_ROBIN,
+      healthCheckInterval: config?.healthCheckInterval || 5000,
+      maxRetries: config?.maxRetries || 3,
+      timeoutMs: config?.timeoutMs || 30000,
+      circuitBreakerConfig: config?.circuitBreakerConfig || {
         failureThreshold: 5,
         recoveryTimeout: 60000,
         halfOpenMaxCalls: 3,
         monitoringPeriod: 10000,
       },
-      stickySessionConfig: config.stickySessionConfig || {
+      stickySessionConfig: config?.stickySessionConfig || {
         enabled: false,
         sessionTimeout: 300000,
         affinityStrength: 0.8,
         fallbackStrategy: 'redistribute',
       },
-      autoScalingConfig: config.autoScalingConfig || {
+      autoScalingConfig: config?.autoScalingConfig || {
         enabled: true,
         minAgents: 2,
         maxAgents: 20,
@@ -619,7 +624,7 @@ export class LoadBalancingManager extends EventEmitter {
         scaleDownThreshold: 0.3,
         cooldownPeriod: 300000,
       },
-      optimizationConfig: config.optimizationConfig || {
+      optimizationConfig: config?.optimizationConfig || {
         connectionPooling: true,
         requestBatching: true,
         cacheAwareRouting: true,

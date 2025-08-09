@@ -1,9 +1,14 @@
 /**
- * SQLite Backend Implementation for Knowledge Cache
+ * SQLite Backend Implementation for Knowledge Cache.
  *
  * High-performance SQLite-based storage backend for FACT knowledge entries
  * with full-text search and vector similarity capabilities
  */
+/**
+ * @file sqlite-backend implementation.
+ */
+
+
 
 import type {
   FACTBackendStats,
@@ -15,9 +20,9 @@ import type {
 } from '../types/fact-types.js';
 
 /**
- * SQLite-based FACT storage backend
+ * SQLite-based FACT storage backend.
  *
- * Provides persistent storage with full-text search and metadata querying
+ * Provides persistent storage with full-text search and metadata querying.
  */
 export class SQLiteBackend implements FACTStorageBackend {
   private db: any; // SQLite database instance (stub)
@@ -39,7 +44,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   /**
-   * Initialize SQLite database and create required tables
+   * Initialize SQLite database and create required tables.
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) {
@@ -59,7 +64,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   /**
-   * Store a knowledge entry in SQLite database
+   * Store a knowledge entry in SQLite database.
    */
   async store(entry: FACTKnowledgeEntry): Promise<void> {
     await this.ensureInitialized();
@@ -90,7 +95,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   /**
-   * Retrieve a knowledge entry by ID
+   * Retrieve a knowledge entry by ID.
    */
   async retrieve(id: string): Promise<FACTKnowledgeEntry | null> {
     await this.ensureInitialized();
@@ -120,7 +125,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   /**
-   * Search knowledge entries with various criteria
+   * Search knowledge entries with various criteria.
    */
   async search(_query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]> {
     await this.ensureInitialized();
@@ -133,7 +138,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   /**
-   * Delete a knowledge entry by ID
+   * Delete a knowledge entry by ID.
    */
   async delete(id: string): Promise<boolean> {
     await this.ensureInitialized();
@@ -146,7 +151,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   /**
-   * Get storage statistics
+   * Get storage statistics.
    */
   async getStats(): Promise<FACTStorageStats> {
     await this.ensureInitialized();
@@ -183,7 +188,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   /**
-   * Clear all knowledge entries
+   * Clear all knowledge entries.
    */
   async clear(): Promise<void> {
     await this.ensureInitialized();
@@ -202,7 +207,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   /**
-   * Close database connection
+   * Close database connection.
    */
   async close(): Promise<void> {
     if (this.db) {
@@ -217,7 +222,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   /**
-   * Get backend capabilities
+   * Get backend capabilities.
    */
   getCapabilities(): {
     supportsFullTextSearch: boolean;

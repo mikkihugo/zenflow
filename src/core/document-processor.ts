@@ -1,7 +1,7 @@
 /**
  * Document Processor - Unified Document Processing System.
  *
- * Clean, focused document processor that consolidates DocumentDrivenSystem and DatabaseDrivenSystem
+ * Clean, focused document processor that consolidates DocumentDrivenSystem and DatabaseDrivenSystem.
  * into a single, coherent document processing system. Handles Vision → ADRs → PRDs → Epics → Features → Tasks → Code.
  *
  * @example
@@ -15,12 +15,17 @@
  * await processor.processDocument('./docs/vision/product-vision.md');
  * ```
  */
+/**
+ * @file document-processor implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
-import type { BaseDocumentEntity } from '../database/entities/document-entities';
+import type { BaseDocumentEntity } from '../database/entities/product-entities';
 import { createLogger } from './logger';
 import type { MemorySystem } from './memory-system';
 import type { WorkflowEngine } from './workflow-engine';
@@ -602,23 +607,23 @@ export class DocumentProcessor extends EventEmitter {
 
       if (trimmedLine.startsWith('- **Author:**') || trimmedLine.startsWith('Author:')) {
         const author = trimmedLine.split(':')[1]?.trim();
-        if (author) metadata?.author = author;
+        if (author) metadata.author = author;
       }
       if (trimmedLine.startsWith('- **Created:**') || trimmedLine.startsWith('Created:')) {
         const dateStr = trimmedLine.split(':')[1]?.trim();
-        if (dateStr) metadata?.created = new Date(dateStr);
+        if (dateStr) metadata.created = new Date(dateStr);
       }
       if (trimmedLine.startsWith('- **Status:**') || trimmedLine.startsWith('Status:')) {
         const status = trimmedLine.split(':')[1]?.trim();
-        if (status) metadata?.status = status;
+        if (status) metadata.status = status;
       }
       if (trimmedLine.startsWith('- **Priority:**') || trimmedLine.startsWith('Priority:')) {
-        metadata?.priority = trimmedLine.split(':')[1]?.trim() as any;
+        metadata.priority = trimmedLine.split(':')[1]?.trim() as any;
       }
       if (trimmedLine.startsWith('- **Tags:**') || trimmedLine.startsWith('Tags:')) {
         const tagsStr = trimmedLine.split(':')[1]?.trim();
         if (tagsStr) {
-          metadata?.tags = tagsStr.split(',').map((tag) => tag.trim());
+          metadata.tags = tagsStr.split(',').map((tag) => tag.trim());
         }
       }
     }

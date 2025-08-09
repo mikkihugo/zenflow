@@ -1,7 +1,14 @@
-import { getLogger } from "./config/logging-config";
-const logger = getLogger("claude-zen-core");
 /**
- * Claude Code Zen - Main Application Entry Point
+ * @file claude-zen-core implementation
+ */
+
+
+import { getLogger } from './config/logging-config';
+
+const logger = getLogger('claude-zen-core');
+
+/**
+ * Claude Code Zen - Main Application Entry Point.
  *
  * Demonstrates full DI integration with all coordinators and services.
  * This is the complete "all done" implementation requested by @mikkihugo.
@@ -152,7 +159,7 @@ class MockDatabase implements IDatabase {
 }
 
 /**
- * Main Application class with full DI integration
+ * Main Application class with full DI integration.
  *
  * @example
  */
@@ -168,7 +175,7 @@ export class ClaudeZenCore {
   }
 
   /**
-   * Setup comprehensive DI container with all services
+   * Setup comprehensive DI container with all services.
    */
   private setupDependencyInjection(): DIContainer {
     const container = createContainerBuilder()
@@ -193,9 +200,9 @@ export class ClaudeZenCore {
 
         return new CoordinationManager(
           {
-            maxAgents: config.get('swarm.maxAgents') || 10,
-            heartbeatInterval: config.get('swarm.heartbeatInterval') || 5000,
-            timeout: config.get('coordination.timeout') || 30000,
+            maxAgents: config?.get('swarm.maxAgents') || 10,
+            heartbeatInterval: config?.get('swarm.heartbeatInterval') || 5000,
+            timeout: config?.get('coordination.timeout') || 30000,
             enableHealthCheck: true,
           },
           logger,
@@ -271,7 +278,7 @@ export class ClaudeZenCore {
   }
 
   /**
-   * Initialize all systems with DI
+   * Initialize all systems with DI.
    */
   async initialize(): Promise<void> {
     const logger = this.container.resolve(CORE_TOKENS.Logger);
@@ -280,8 +287,8 @@ export class ClaudeZenCore {
     try {
       // Initialize core database
       const database = this.container.resolve(CORE_TOKENS.Database);
-      if (database.initialize) {
-        await database.initialize();
+      if (database?.initialize) {
+        await database?.initialize();
       }
 
       // Resolve all coordinators through DI
@@ -312,7 +319,7 @@ export class ClaudeZenCore {
   }
 
   /**
-   * Demonstrate that all DI-enhanced systems are working together
+   * Demonstrate that all DI-enhanced systems are working together.
    */
   private async demonstrateSystemIntegration(): Promise<void> {
     const logger = this.container.resolve(CORE_TOKENS.Logger);
@@ -352,7 +359,7 @@ export class ClaudeZenCore {
   }
 
   /**
-   * Graceful shutdown with DI cleanup
+   * Graceful shutdown with DI cleanup.
    */
   async shutdown(): Promise<void> {
     const logger = this.container.resolve(CORE_TOKENS.Logger);
@@ -378,7 +385,7 @@ export class ClaudeZenCore {
 // const createToken is imported above
 
 /**
- * Application entry point
+ * Application entry point.
  */
 async function main() {
   const app = new ClaudeZenCore();

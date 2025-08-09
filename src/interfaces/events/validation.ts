@@ -1,5 +1,5 @@
 /**
- * UEL (Unified Event Layer) - Validation Framework
+ * UEL (Unified Event Layer) - Validation Framework.
  *
  * Comprehensive validation framework for ensuring UEL integration quality,
  * event type safety, and system health across all components.
@@ -7,7 +7,7 @@
  * @file Validation Framework Implementation
  */
 
-import type { ILogger } from '../../core/interfaces/base-interfaces';
+import type { ILogger } from '../core/interfaces/base-interfaces';
 import type { EventManagerConfig, EventManagerType, SystemEvent } from './core/interfaces';
 
 import { EventManagerTypes, EventTypeGuards } from './core/interfaces';
@@ -15,7 +15,7 @@ import type { EventManager } from './manager';
 import type { EventRegistry } from './registry';
 
 /**
- * Validation result interface
+ * Validation result interface.
  *
  * @example
  */
@@ -52,7 +52,7 @@ export interface ValidationResult {
 }
 
 /**
- * Validation error details
+ * Validation error details.
  *
  * @example
  */
@@ -84,7 +84,7 @@ export interface ValidationError {
 }
 
 /**
- * Validation warning details
+ * Validation warning details.
  *
  * @example
  */
@@ -106,7 +106,7 @@ export interface ValidationWarning {
 }
 
 /**
- * Validation recommendation details
+ * Validation recommendation details.
  *
  * @example
  */
@@ -131,7 +131,7 @@ export interface ValidationRecommendation {
 }
 
 /**
- * Event type validation schema
+ * Event type validation schema.
  *
  * @example
  */
@@ -164,7 +164,7 @@ export interface EventTypeSchema {
 }
 
 /**
- * System health validation configuration
+ * System health validation configuration.
  *
  * @example
  */
@@ -189,7 +189,7 @@ export interface HealthValidationConfig {
 }
 
 /**
- * Integration validation configuration
+ * Integration validation configuration.
  *
  * @example
  */
@@ -212,7 +212,7 @@ export interface IntegrationValidationConfig {
 }
 
 /**
- * Main validation framework class
+ * Main validation framework class.
  *
  * @example
  */
@@ -250,7 +250,7 @@ export class UELValidationFramework {
   }
 
   /**
-   * Validate event type against schema
+   * Validate event type against schema.
    *
    * @param event
    * @param schema
@@ -395,7 +395,7 @@ export class UELValidationFramework {
   }
 
   /**
-   * Validate event manager configuration
+   * Validate event manager configuration.
    *
    * @param config
    */
@@ -406,7 +406,7 @@ export class UELValidationFramework {
     const recommendations: ValidationRecommendation[] = [];
 
     // Validate required fields
-    if (!config.name || typeof config.name !== 'string') {
+    if (!config?.name || typeof config?.name !== 'string') {
       errors.push({
         code: 'INVALID_MANAGER_NAME',
         message: 'Event manager name is required and must be a string',
@@ -416,38 +416,38 @@ export class UELValidationFramework {
       });
     }
 
-    if (!EventTypeGuards.isEventManagerType(config.type)) {
+    if (!EventTypeGuards.isEventManagerType(config?.type)) {
       errors.push({
         code: 'INVALID_MANAGER_TYPE',
-        message: `Invalid event manager type: ${config.type}`,
+        message: `Invalid event manager type: ${config?.type}`,
         severity: 'critical',
         category: 'config',
         suggestion: `Use one of: ${Object.values(EventManagerTypes).join(', ')}`,
-        context: { type: config.type },
+        context: { type: config?.type },
       });
     }
 
     // Validate configuration values
     if (
-      config.maxListeners !== undefined &&
-      (config.maxListeners < 1 || config.maxListeners > 10000)
+      config?.maxListeners !== undefined &&
+      (config?.maxListeners < 1 || config?.maxListeners > 10000)
     ) {
       warnings.push({
         code: 'UNUSUAL_MAX_LISTENERS',
-        message: `Unusual maxListeners value: ${config.maxListeners}`,
+        message: `Unusual maxListeners value: ${config?.maxListeners}`,
         category: 'optimization',
         impact: 'medium',
-        context: { maxListeners: config.maxListeners },
+        context: { maxListeners: config?.maxListeners },
       });
     }
 
-    if (config.queueSize !== undefined && config.queueSize > 50000) {
+    if (config?.queueSize !== undefined && config?.queueSize > 50000) {
       warnings.push({
         code: 'LARGE_QUEUE_SIZE',
-        message: `Large queue size may impact memory usage: ${config.queueSize}`,
+        message: `Large queue size may impact memory usage: ${config?.queueSize}`,
         category: 'optimization',
         impact: 'high',
-        context: { queueSize: config.queueSize },
+        context: { queueSize: config?.queueSize },
       });
 
       recommendations.push({
@@ -482,13 +482,13 @@ export class UELValidationFramework {
         validator: 'UELValidationFramework.validateManagerConfig',
         timestamp: new Date(),
         version: '1.0.0',
-        context: { managerType: config.type, managerName: config.name },
+        context: { managerType: config?.type, managerName: config?.name },
       },
     };
   }
 
   /**
-   * Validate system health
+   * Validate system health.
    *
    * @param eventManager
    * @param config
@@ -508,7 +508,7 @@ export class UELValidationFramework {
       const systemStatus = await Promise.race([
         eventManager.getSystemStatus(),
         new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('Health check timeout')), healthConfig.timeout)
+          setTimeout(() => reject(new Error('Health check timeout')), healthConfig?.timeout)
         ),
       ]);
 
@@ -545,7 +545,7 @@ export class UELValidationFramework {
       const globalMetrics = await eventManager.getGlobalMetrics();
 
       // Validate performance metrics
-      if (globalMetrics.registry.errorRate > healthConfig.errorRateThreshold / 100) {
+      if (globalMetrics.registry.errorRate > healthConfig?.errorRateThreshold / 100) {
         errors.push({
           code: 'HIGH_ERROR_RATE',
           message: `Error rate exceeds threshold: ${(globalMetrics.registry.errorRate * 100).toFixed(2)}%`,
@@ -555,7 +555,7 @@ export class UELValidationFramework {
         });
       }
 
-      if (globalMetrics.registry.averageLatency > healthConfig.responseTimeThreshold) {
+      if (globalMetrics.registry.averageLatency > healthConfig?.responseTimeThreshold) {
         warnings.push({
           code: 'HIGH_LATENCY',
           message: `Average latency is high: ${globalMetrics.registry.averageLatency}ms`,
@@ -634,7 +634,7 @@ export class UELValidationFramework {
   }
 
   /**
-   * Validate UEL integration completeness
+   * Validate UEL integration completeness.
    *
    * @param eventManager
    * @param registry
@@ -655,7 +655,7 @@ export class UELValidationFramework {
       // Validate required manager types are present
       const registryStats = registry.getRegistryStats();
 
-      for (const requiredType of integrationConfig.requiredManagerTypes) {
+      for (const requiredType of integrationConfig?.requiredManagerTypes) {
         if (registryStats.managersByType[requiredType] === 0) {
           errors.push({
             code: 'MISSING_REQUIRED_MANAGER_TYPE',
@@ -671,7 +671,7 @@ export class UELValidationFramework {
       // Validate required event types are registered
       const eventTypes = registry.getEventTypes();
 
-      for (const requiredEventType of integrationConfig.requiredEventTypes) {
+      for (const requiredEventType of integrationConfig?.requiredEventTypes) {
         if (!eventTypes.includes(requiredEventType)) {
           warnings.push({
             code: 'MISSING_RECOMMENDED_EVENT_TYPE',
@@ -706,7 +706,7 @@ export class UELValidationFramework {
 
       // Performance benchmark validation
       const globalMetrics = await eventManager.getGlobalMetrics();
-      const performanceBenchmarks = integrationConfig.performanceBenchmarks;
+      const performanceBenchmarks = integrationConfig?.performanceBenchmarks;
 
       if (globalMetrics.registry.averageLatency > performanceBenchmarks.maxLatency) {
         warnings.push({
@@ -774,7 +774,7 @@ export class UELValidationFramework {
   }
 
   /**
-   * Perform comprehensive UEL validation
+   * Perform comprehensive UEL validation.
    *
    * @param eventManager
    * @param registry
@@ -805,12 +805,12 @@ export class UELValidationFramework {
     ]);
 
     const health =
-      healthResult.status === 'fulfilled'
-        ? healthResult.value
+      healthResult?.status === 'fulfilled'
+        ? healthResult?.value
         : this.createErrorResult('Health validation failed');
     const integration =
-      integrationResult.status === 'fulfilled'
-        ? integrationResult.value
+      integrationResult?.status === 'fulfilled'
+        ? integrationResult?.value
         : this.createErrorResult('Integration validation failed');
 
     // Validate sample events if provided
@@ -823,28 +823,28 @@ export class UELValidationFramework {
 
     // Calculate overall result
     const allResults = [health, integration, ...events];
-    const totalErrors = allResults.reduce((sum, result) => sum + result.errors.length, 0);
-    const totalWarnings = allResults.reduce((sum, result) => sum + result.warnings.length, 0);
+    const totalErrors = allResults.reduce((sum, result) => sum + result?.errors.length, 0);
+    const totalWarnings = allResults.reduce((sum, result) => sum + result?.warnings.length, 0);
     const totalRecommendations = allResults.reduce(
-      (sum, result) => sum + result.recommendations.length,
+      (sum, result) => sum + result?.recommendations.length,
       0
     );
     const criticalIssues = allResults.reduce(
-      (sum, result) => sum + result.errors.filter((e) => e.severity === 'critical').length,
+      (sum, result) => sum + result?.errors.filter((e) => e.severity === 'critical').length,
       0
     );
 
     const overallScore =
       allResults.length > 0
-        ? allResults.reduce((sum, result) => sum + result.score, 0) / allResults.length
+        ? allResults.reduce((sum, result) => sum + result?.score, 0) / allResults.length
         : 0;
 
     const overall: ValidationResult = {
       valid: criticalIssues === 0 && overallScore >= 70,
       score: overallScore,
-      errors: allResults.flatMap((r) => r.errors),
-      warnings: allResults.flatMap((r) => r.warnings),
-      recommendations: allResults.flatMap((r) => r.recommendations),
+      errors: allResults?.flatMap((r) => r.errors),
+      warnings: allResults?.flatMap((r) => r.warnings),
+      recommendations: allResults?.flatMap((r) => r.recommendations),
       metrics: {
         validationTime: Date.now() - startTime,
         checkCount: totalErrors + totalWarnings,
@@ -881,7 +881,7 @@ export class UELValidationFramework {
   }
 
   /**
-   * Register custom event type schema
+   * Register custom event type schema.
    *
    * @param eventType
    * @param schema
@@ -892,21 +892,21 @@ export class UELValidationFramework {
   }
 
   /**
-   * Get validation history
+   * Get validation history.
    */
   getValidationHistory(): ValidationResult[] {
     return [...this.validationHistory];
   }
 
   /**
-   * Clear validation history
+   * Clear validation history.
    */
   clearValidationHistory(): void {
     this.validationHistory = [];
   }
 
   /**
-   * Export validation report
+   * Export validation report.
    *
    * @param results
    */
@@ -943,11 +943,11 @@ export class UELValidationFramework {
     const recommendationsByType: Record<string, number> = {};
 
     results.forEach((result) => {
-      result.errors.forEach((error) => {
+      result?.errors.forEach((error) => {
         errorsByCategory[error.category] = (errorsByCategory[error.category] || 0) + 1;
       });
 
-      result.recommendations.forEach((rec) => {
+      result?.recommendations.forEach((rec) => {
         recommendationsByType[rec.type] = (recommendationsByType[rec.type] || 0) + 1;
       });
     });
@@ -964,7 +964,7 @@ export class UELValidationFramework {
   }
 
   /**
-   * Private helper methods
+   * Private helper methods.
    */
 
   private validatePropertyType(value: any, expectedType: string): boolean {

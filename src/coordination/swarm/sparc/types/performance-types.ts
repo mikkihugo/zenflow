@@ -1,8 +1,13 @@
 /**
- * SPARC Performance Metrics Type Definitions
+ * SPARC Performance Metrics Type Definitions.
  *
- * Performance tracking and optimization types for SPARC methodology
+ * Performance tracking and optimization types for SPARC methodology.
  */
+/**
+ * @file TypeScript type definitions for coordination
+ */
+
+
 
 export interface SPARCPerformanceMetrics {
   phaseMetrics: PhasePerformanceMetrics;

@@ -1,19 +1,24 @@
 /**
- * Agent Registry - Manages registration and discovery of agents
+ * Agent Registry - Manages registration and discovery of agents.
  *
- * Provides a centralized registry for agent management, allowing
+ * Provides a centralized registry for agent management, allowing.
  * agents to be discovered, queried, and managed across the system.
  */
+/**
+ * @file Coordination system: agent-registry
+ */
+
+
 
 import { EventEmitter } from 'node:events';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
+import type { MemoryCoordinator } from '../memory/core/memory-coordinator';
 import type {
   AgentCapabilities,
   AgentId,
   AgentMetrics,
   AgentStatus,
   AgentType,
-} from '../../types/agent-types';
+} from '../types/agent-types';
 
 export interface AgentRegistryQuery {
   type?: AgentType;
@@ -49,7 +54,7 @@ export interface AgentSelectionCriteria {
 }
 
 /**
- * Centralized agent registry for discovery and management
+ * Centralized agent registry for discovery and management.
  *
  * @example
  */
@@ -96,7 +101,7 @@ export class AgentRegistry extends EventEmitter {
   }
 
   /**
-   * Register an agent in the registry
+   * Register an agent in the registry.
    *
    * @param agent
    * @param agent.id
@@ -151,7 +156,7 @@ export class AgentRegistry extends EventEmitter {
   }
 
   /**
-   * Unregister an agent from the registry
+   * Unregister an agent from the registry.
    *
    * @param agentId
    */
@@ -169,7 +174,7 @@ export class AgentRegistry extends EventEmitter {
   }
 
   /**
-   * Update agent status and metrics
+   * Update agent status and metrics.
    *
    * @param agentId
    * @param updates
@@ -218,7 +223,7 @@ export class AgentRegistry extends EventEmitter {
   }
 
   /**
-   * Query agents matching criteria
+   * Query agents matching criteria.
    *
    * @param query
    */
@@ -273,7 +278,7 @@ export class AgentRegistry extends EventEmitter {
   }
 
   /**
-   * Select best agents for a task based on criteria
+   * Select best agents for a task based on criteria.
    *
    * @param criteria
    */
@@ -320,7 +325,7 @@ export class AgentRegistry extends EventEmitter {
   }
 
   /**
-   * Get specific agent by ID
+   * Get specific agent by ID.
    *
    * @param agentId
    */
@@ -329,14 +334,14 @@ export class AgentRegistry extends EventEmitter {
   }
 
   /**
-   * Get all registered agents
+   * Get all registered agents.
    */
   getAllAgents(): RegisteredAgent[] {
     return Array.from(this.agents.values());
   }
 
   /**
-   * Get agents by type
+   * Get agents by type.
    *
    * @param type
    */
@@ -345,7 +350,7 @@ export class AgentRegistry extends EventEmitter {
   }
 
   /**
-   * Get registry statistics
+   * Get registry statistics.
    */
   getStats() {
     const agents = Array.from(this.agents.values());

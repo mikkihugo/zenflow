@@ -1,5 +1,12 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-index");
+/**
+ * @file core module exports
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-index');
+
 /**
  * 🚀 ULTIMATE ZenSwarm Implementation - FULLY INTEGRATED
  *
@@ -10,13 +17,13 @@ const logger = getLogger("coordination-swarm-core-index");
  * - Full persistence with coordination DAO
  * - Enterprise-grade session management
  * - Real-time performance monitoring
- * - Chaos engineering and fault tolerance
+ * - Chaos engineering and fault tolerance.
  */
 
-import type { SessionCoordinationDao } from '../../../database';
-// import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
-import { AgentPool, createAgent } from '../../agents/agent';
+import type { SessionCoordinationDao } from '../database';
+// import { DALFactory } from '../database'; // TODO: Implement proper DI integration
+import { WasmModuleLoader } from '../neural/wasm/wasm-loader';
+import { AgentPool, createAgent } from '../agents/agent';
 import { executeTaskWithAgent } from './agent-adapter';
 import { getContainer } from './singleton-container';
 import type {
@@ -32,10 +39,10 @@ import type {
 } from './types';
 import { formatMetrics, generateId, priorityToNumber, validateSwarmOptions } from './utils';
 
-export * from '../../../neural/core/neural-network';
-export * from '../../../neural/wasm/wasm-loader';
+export * from '../neural/core/neural-network';
+export * from '../neural/wasm/wasm-loader';
 // Enhanced exports with neural capabilities
-export * from '../../agents/agent';
+export * from '../agents/agent';
 export * from '../mcp/mcp-daa-tools';
 // Export the base implementation as BaseZenSwarm to avoid conflict
 export { ZenSwarm as BaseZenSwarm } from './base-swarm';
@@ -59,7 +66,7 @@ export * from './types';
 export * from './utils';
 
 /**
- * Enhanced Agent class with neural capabilities and cognitive patterns
+ * Enhanced Agent class with neural capabilities and cognitive patterns.
  *
  * @example
  */
@@ -74,13 +81,13 @@ export class Agent {
   public status: 'idle' | 'active' | 'busy';
 
   constructor(config: any = {}) {
-    this.id = config.id || `agent-${Date.now()}`;
-    this.type = config.type || 'generic';
+    this.id = config?.id || `agent-${Date.now()}`;
+    this.type = config?.type || 'generic';
     this.config = config;
     this.isActive = false;
-    this.neuralNetworkId = config.enableNeuralNetwork ? `nn-${Date.now()}` : undefined;
-    this.cognitivePattern = config.cognitivePattern || 'adaptive';
-    this.capabilities = config.capabilities || [];
+    this.neuralNetworkId = config?.enableNeuralNetwork ? `nn-${Date.now()}` : undefined;
+    this.cognitivePattern = config?.cognitivePattern || 'adaptive';
+    this.capabilities = config?.capabilities || [];
     this.status = 'idle';
   }
 
@@ -208,11 +215,11 @@ export class ZenSwarm implements SwarmEventEmitter {
     }
 
     this.options = {
-      topology: options.topology || 'mesh',
-      maxAgents: options.maxAgents || 10,
-      connectionDensity: options.connectionDensity || 0.5,
-      syncInterval: options.syncInterval || 1000,
-      wasmPath: options.wasmPath || './wasm/ruv_swarm_wasm.js',
+      topology: options?.topology || 'mesh',
+      maxAgents: options?.maxAgents || 10,
+      connectionDensity: options?.connectionDensity || 0.5,
+      syncInterval: options?.syncInterval || 1000,
+      wasmPath: options?.wasmPath || './wasm/ruv_swarm_wasm.js',
       persistence: {
         enabled: false,
         dbPath: '',
@@ -247,7 +254,7 @@ export class ZenSwarm implements SwarmEventEmitter {
   }
 
   /**
-   * Initialize the swarm with WASM module
+   * Initialize the swarm with WASM module.
    */
   async init(): Promise<void> {
     if (this.isInitialized) {
@@ -280,7 +287,7 @@ export class ZenSwarm implements SwarmEventEmitter {
   }
 
   /**
-   * Static factory method for easy initialization
+   * Static factory method for easy initialization.
    *
    * @param options
    */
@@ -291,7 +298,7 @@ export class ZenSwarm implements SwarmEventEmitter {
   }
 
   /**
-   * Enhanced static initialization with comprehensive features
+   * Enhanced static initialization with comprehensive features.
    *
    * @param options
    */
@@ -424,7 +431,7 @@ export class ZenSwarm implements SwarmEventEmitter {
   }
 
   /**
-   * Create a new swarm with neural capabilities
+   * Create a new swarm with neural capabilities.
    *
    * @param config
    */
@@ -501,7 +508,7 @@ export class ZenSwarm implements SwarmEventEmitter {
   }
 
   /**
-   * Get global metrics including neural performance
+   * Get global metrics including neural performance.
    */
   async getGlobalMetrics(): Promise<any> {
     this.metrics.memoryUsage = this.wasmLoader.getTotalMemoryUsage();
@@ -529,7 +536,7 @@ export class ZenSwarm implements SwarmEventEmitter {
   }
 
   /**
-   * Legacy compatibility method for spawnAgent with neural capabilities
+   * Legacy compatibility method for spawnAgent with neural capabilities.
    *
    * @param name
    * @param type
@@ -540,7 +547,7 @@ export class ZenSwarm implements SwarmEventEmitter {
     if (this.activeSwarms.size === 0) {
       await this.createSwarm({
         name: 'default-swarm',
-        maxAgents: options.maxAgents || 10,
+        maxAgents: options?.maxAgents || 10,
       });
     }
 
@@ -665,7 +672,7 @@ export class ZenSwarm implements SwarmEventEmitter {
   }
 
   /**
-   * Shutdown the swarm with comprehensive cleanup
+   * Shutdown the swarm with comprehensive cleanup.
    */
   async destroy(): Promise<void> {
     if (!this.isInitialized) {
@@ -849,7 +856,7 @@ export class ZenSwarm implements SwarmEventEmitter {
   }
 
   /**
-   * Feature detection helpers
+   * Feature detection helpers.
    */
   static detectSIMDSupport(): boolean {
     try {
@@ -893,7 +900,7 @@ export class ZenSwarm implements SwarmEventEmitter {
 }
 
 /**
- * Enhanced Swarm wrapper class with neural orchestration
+ * Enhanced Swarm wrapper class with neural orchestration.
  *
  * @example
  */
@@ -914,13 +921,13 @@ export class SwarmWrapper {
 
   async spawnAgent(name: string, type = 'researcher', options: any = {}): Promise<Agent> {
     const agent = new Agent({
-      id: options.id || `agent-${Date.now()}`,
+      id: options?.id || `agent-${Date.now()}`,
       name,
       type,
       enableNeuralNetwork:
-        options.enableNeuralNetwork !== false && this.ruvSwarm.features.neural_networks,
-      cognitivePattern: options.cognitivePattern || 'adaptive',
-      capabilities: options.capabilities || ['neural-processing', 'pattern-matching'],
+        options?.enableNeuralNetwork !== false && this.ruvSwarm.features.neural_networks,
+      cognitivePattern: options?.cognitivePattern || 'adaptive',
+      capabilities: options?.capabilities || ['neural-processing', 'pattern-matching'],
       ...options,
     });
 
@@ -953,7 +960,7 @@ export class SwarmWrapper {
 }
 
 /**
- * Enhanced Task wrapper class with neural execution
+ * Enhanced Task wrapper class with neural execution.
  *
  * @example
  */
@@ -970,9 +977,9 @@ export class TaskWrapper {
 
   constructor(id: string, wasmResult: any, swarm: SwarmWrapper) {
     this.id = id;
-    this.description = wasmResult.task_description || wasmResult.description;
-    this.status = wasmResult.status || 'pending';
-    this.assignedAgents = wasmResult.assigned_agents || [];
+    this.description = wasmResult?.task_description || wasmResult?.description;
+    this.status = wasmResult?.status || 'pending';
+    this.assignedAgents = wasmResult?.assigned_agents || [];
     this.result = null;
     this.swarm = swarm;
     this.startTime = null;
@@ -994,7 +1001,7 @@ export class TaskWrapper {
 // Export neural-enhanced utilities
 export const NeuralSwarmUtils = {
   /**
-   * Create a neural-enhanced swarm with pre-configured agents
+   * Create a neural-enhanced swarm with pre-configured agents.
    *
    * @param config
    */
@@ -1009,7 +1016,7 @@ export const NeuralSwarmUtils = {
   },
 
   /**
-   * Spawn a team of neural agents with different cognitive patterns
+   * Spawn a team of neural agents with different cognitive patterns.
    *
    * @param swarm
    * @param teamConfig
@@ -1036,6 +1043,6 @@ export const NeuralSwarmUtils = {
 };
 
 /**
- * Default export for convenience
+ * Default export for convenience.
  */
 export default ZenSwarm;

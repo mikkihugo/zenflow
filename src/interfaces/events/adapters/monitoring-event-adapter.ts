@@ -1,5 +1,7 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-events-adapters-monitoring-event-adapter");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-events-adapters-monitoring-event-adapter');
+
 /**
  * @file UEL Monitoring Event Adapter - Unified Event Layer adapter for monitoring-related events.
  * @fileoverview UEL Monitoring Event Adapter - Unified Event Layer adapter for monitoring-related events, providing
@@ -7,14 +9,14 @@ const logger = getLogger("interfaces-events-adapters-monitoring-event-adapter");
  * while maintaining full backward compatibility and adding enhanced real-time metrics,
  * health correlation, performance tracking, and unified monitoring functionality.
  * This adapter follows the exact same patterns as the system, coordination, and communication
- * event adapters, implementing the IEventManager interface and providing unified configuration
+ * event adapters, implementing the IEventManager interface and providing unified configuration.
  * management for monitoring events across Claude-Zen.
  */
 
-import type { PerformanceAnalyzer } from '../../../monitoring/analytics/performance-analyzer';
-import type { MetricsCollector } from '../../../monitoring/core/metrics-collector';
+import type { PerformanceAnalyzer } from '../monitoring/analytics/performance-analyzer';
+import type { MetricsCollector } from '../monitoring/core/metrics-collector';
 // Import monitoring system classes to wrap their EventEmitter usage
-import type { RealTimePerformanceMonitor } from '../../../monitoring/performance/real-time-monitor';
+import type { RealTimePerformanceMonitor } from '../monitoring/performance/real-time-monitor';
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -57,7 +59,7 @@ const createLogger = (name: string): Logger => ({
 import { EventEmitter } from 'node:events';
 
 /**
- * Monitoring event adapter configuration extending UEL EventManagerConfig
+ * Monitoring event adapter configuration extending UEL EventManagerConfig.
  *
  * @example
  */
@@ -109,7 +111,7 @@ export interface MonitoringEventAdapterConfig extends EventManagerConfig {
     wrapVisualizationEvents?: boolean;
     wrapStreamingEvents?: boolean;
     wrapInteractionEvents?: boolean;
-    dashboards?: string[]; // List of dashboards to monitor
+    dashboards?: string[]; // List of dashboards to monitor.
   };
 
   /** Performance optimization settings */
@@ -161,7 +163,7 @@ export interface MonitoringEventAdapterConfig extends EventManagerConfig {
 }
 
 /**
- * Monitoring event operation metrics for performance tracking
+ * Monitoring event operation metrics for performance tracking.
  *
  * @example
  */
@@ -191,7 +193,7 @@ interface MonitoringEventMetrics {
 }
 
 /**
- * Monitoring correlation entry for tracking related events
+ * Monitoring correlation entry for tracking related events.
  *
  * @example
  */
@@ -215,7 +217,7 @@ interface MonitoringCorrelation {
 }
 
 /**
- * Monitoring health tracking entry
+ * Monitoring health tracking entry.
  *
  * @example
  */
@@ -240,7 +242,7 @@ interface MonitoringHealthEntry {
 }
 
 /**
- * Wrapped monitoring component for unified event management
+ * Wrapped monitoring component for unified event management.
  *
  * @example
  */
@@ -264,9 +266,9 @@ interface WrappedMonitoringComponent {
 }
 
 /**
- * Unified Monitoring Event Adapter
+ * Unified Monitoring Event Adapter.
  *
- * Provides a unified interface to monitoring-level EventEmitter patterns
+ * Provides a unified interface to monitoring-level EventEmitter patterns.
  * while implementing the IEventManager interface for UEL compatibility.
  *
  * Features:
@@ -319,14 +321,14 @@ export class MonitoringEventAdapter implements IEventManager {
   private processingEvents = false;
   private eventHistory: MonitoringEvent[] = [];
 
-  // Monitoring-specific tracking
+  // Monitoring-specific tracking.
   private metricsData = new Map<string, any>();
   private healthData = new Map<string, any>();
   private alertData = new Map<string, any>();
   private performanceInsights = new Map<string, any>();
 
   constructor(config: MonitoringEventAdapterConfig) {
-    this.name = config.name;
+    this.name = config?.name;
     this.type = EventManagerTypes.MONITORING;
     this.config = {
       // Default configuration values
@@ -337,7 +339,7 @@ export class MonitoringEventAdapter implements IEventManager {
         wrapAlertEvents: true,
         wrapOptimizationEvents: true,
         monitors: ['default-performance-monitor'],
-        ...config.performanceMonitoring,
+        ...config?.performanceMonitoring,
       },
       healthMonitoring: {
         enabled: true,
@@ -346,7 +348,7 @@ export class MonitoringEventAdapter implements IEventManager {
         wrapRecoveryEvents: true,
         wrapCorrelationEvents: true,
         components: ['system-health', 'service-health', 'component-health'],
-        ...config.healthMonitoring,
+        ...config?.healthMonitoring,
       },
       analyticsMonitoring: {
         enabled: true,
@@ -355,7 +357,7 @@ export class MonitoringEventAdapter implements IEventManager {
         wrapReportingEvents: true,
         wrapInsightEvents: true,
         analyzers: ['performance-analyzer', 'trend-analyzer', 'anomaly-detector'],
-        ...config.analyticsMonitoring,
+        ...config?.analyticsMonitoring,
       },
       alertManagement: {
         enabled: true,
@@ -364,7 +366,7 @@ export class MonitoringEventAdapter implements IEventManager {
         wrapResolutionEvents: true,
         wrapNotificationEvents: true,
         alertLevels: ['info', 'warning', 'error', 'critical'],
-        ...config.alertManagement,
+        ...config?.alertManagement,
       },
       dashboardIntegration: {
         enabled: true,
@@ -373,7 +375,7 @@ export class MonitoringEventAdapter implements IEventManager {
         wrapStreamingEvents: true,
         wrapInteractionEvents: true,
         dashboards: ['main-dashboard', 'metrics-dashboard', 'health-dashboard'],
-        ...config.dashboardIntegration,
+        ...config?.dashboardIntegration,
       },
       performance: {
         enableMetricsCorrelation: true,
@@ -382,7 +384,7 @@ export class MonitoringEventAdapter implements IEventManager {
         maxConcurrentMonitors: 50,
         monitoringInterval: 5000,
         enablePerformanceTracking: true,
-        ...config.performance,
+        ...config?.performance,
       },
       monitoring: {
         enabled: true,
@@ -398,7 +400,7 @@ export class MonitoringEventAdapter implements IEventManager {
         trackMetricsFlow: true,
         trackHealthStatus: true,
         trackPerformanceInsights: true,
-        ...config.monitoring,
+        ...config?.monitoring,
       },
       healthMonitoringConfig: {
         enabled: true,
@@ -418,7 +420,7 @@ export class MonitoringEventAdapter implements IEventManager {
         },
         autoRecoveryEnabled: true,
         correlateHealthData: true,
-        ...config.healthMonitoringConfig,
+        ...config?.healthMonitoringConfig,
       },
       metricsOptimization: {
         enabled: true,
@@ -432,7 +434,7 @@ export class MonitoringEventAdapter implements IEventManager {
         dataAggregation: true,
         intelligentSampling: true,
         anomalyDetection: true,
-        ...config.metricsOptimization,
+        ...config?.metricsOptimization,
       },
       ...config,
     };
@@ -449,7 +451,7 @@ export class MonitoringEventAdapter implements IEventManager {
   // ============================================
 
   /**
-   * Start the monitoring event adapter
+   * Start the monitoring event adapter.
    */
   async start(): Promise<void> {
     if (this.running) {
@@ -494,7 +496,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Stop the monitoring event adapter
+   * Stop the monitoring event adapter.
    */
   async stop(): Promise<void> {
     if (!this.running) {
@@ -526,7 +528,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Restart the monitoring event adapter
+   * Restart the monitoring event adapter.
    */
   async restart(): Promise<void> {
     this.logger.info(`Restarting monitoring event adapter: ${this.name}`);
@@ -535,14 +537,14 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Check if the adapter is running
+   * Check if the adapter is running.
    */
   isRunning(): boolean {
     return this.running;
   }
 
   /**
-   * Emit a monitoring event with correlation and performance tracking
+   * Emit a monitoring event with correlation and performance tracking.
    *
    * @param event
    * @param options
@@ -623,7 +625,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit batch of monitoring events with optimized processing
+   * Emit batch of monitoring events with optimized processing.
    *
    * @param batch
    * @param options
@@ -668,7 +670,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit monitoring event immediately without queuing
+   * Emit monitoring event immediately without queuing.
    *
    * @param event
    */
@@ -677,7 +679,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to monitoring events with filtering and transformation
+   * Subscribe to monitoring events with filtering and transformation.
    *
    * @param eventTypes
    * @param listener
@@ -695,8 +697,8 @@ export class MonitoringEventAdapter implements IEventManager {
       id: subscriptionId,
       eventTypes: types,
       listener,
-      ...(options?.filter && { filter: options.filter }),
-      ...(options?.transform && { transform: options.transform }),
+      ...(options?.filter && { filter: options?.filter }),
+      ...(options?.transform && { transform: options?.transform }),
       priority: options?.priority || 'medium',
       created: new Date(),
       active: true,
@@ -714,7 +716,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Unsubscribe from monitoring events
+   * Unsubscribe from monitoring events.
    *
    * @param subscriptionId
    */
@@ -732,7 +734,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Unsubscribe all monitoring listeners for event type
+   * Unsubscribe all monitoring listeners for event type.
    *
    * @param eventType
    */
@@ -761,7 +763,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Add monitoring event filter
+   * Add monitoring event filter.
    *
    * @param filter
    */
@@ -773,7 +775,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Remove monitoring event filter
+   * Remove monitoring event filter.
    *
    * @param filterId
    */
@@ -786,7 +788,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Add monitoring event transform
+   * Add monitoring event transform.
    *
    * @param transform
    */
@@ -798,7 +800,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Remove monitoring event transform
+   * Remove monitoring event transform.
    *
    * @param transformId
    */
@@ -811,7 +813,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Query monitoring event history with filtering and pagination
+   * Query monitoring event history with filtering and pagination.
    *
    * @param options
    */
@@ -819,30 +821,30 @@ export class MonitoringEventAdapter implements IEventManager {
     let events = [...this.eventHistory] as unknown as T[];
 
     // Apply filters
-    if (options.filter) {
-      events = events.filter((event) => this.applyFilter(event, options.filter!));
+    if (options?.filter) {
+      events = events.filter((event) => this.applyFilter(event, options?.filter!));
     }
 
     // Apply sorting
-    if (options.sortBy) {
+    if (options?.sortBy) {
       events.sort((a, b) => {
-        const aVal = this.getEventSortValue(a, options.sortBy!);
-        const bVal = this.getEventSortValue(b, options.sortBy!);
+        const aVal = this.getEventSortValue(a, options?.sortBy!);
+        const bVal = this.getEventSortValue(b, options?.sortBy!);
         const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
         return options.sortOrder === 'desc' ? -comparison : comparison;
       });
     }
 
     // Apply pagination
-    const offset = options.offset || 0;
-    const limit = options.limit || 100;
+    const offset = options?.offset || 0;
+    const limit = options?.limit || 100;
     events = events.slice(offset, offset + limit);
 
     return events;
   }
 
   /**
-   * Get monitoring event history for specific event type
+   * Get monitoring event history for specific event type.
    *
    * @param eventType
    * @param limit
@@ -853,7 +855,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Perform health check on the monitoring event adapter
+   * Perform health check on the monitoring event adapter.
    */
   async healthCheck(): Promise<EventManagerStatus> {
     const now = new Date();
@@ -900,7 +902,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Get performance metrics for the monitoring adapter
+   * Get performance metrics for the monitoring adapter.
    */
   async getMetrics(): Promise<EventManagerMetrics> {
     const now = new Date();
@@ -934,14 +936,14 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Get active monitoring subscriptions
+   * Get active monitoring subscriptions.
    */
   getSubscriptions(): EventSubscription[] {
     return Array.from(this.subscriptions.values()).filter((sub) => sub.active);
   }
 
   /**
-   * Update adapter configuration
+   * Update adapter configuration.
    *
    * @param config
    */
@@ -955,7 +957,7 @@ export class MonitoringEventAdapter implements IEventManager {
    * Event handler management (EventEmitter compatibility)
    *
    * @param event
-   * @param handler
+   * @param handler.
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
@@ -977,7 +979,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Cleanup and destroy the adapter
+   * Cleanup and destroy the adapter.
    */
   async destroy(): Promise<void> {
     this.logger.info(`Destroying monitoring event adapter: ${this.name}`);
@@ -1022,7 +1024,7 @@ export class MonitoringEventAdapter implements IEventManager {
   // ============================================
 
   /**
-   * Emit performance monitoring event with enhanced tracking
+   * Emit performance monitoring event with enhanced tracking.
    *
    * @param event
    */
@@ -1046,7 +1048,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit health monitoring event with enhanced tracking
+   * Emit health monitoring event with enhanced tracking.
    *
    * @param event
    */
@@ -1068,7 +1070,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit analytics monitoring event with enhanced tracking
+   * Emit analytics monitoring event with enhanced tracking.
    *
    * @param event
    */
@@ -1092,7 +1094,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit alert monitoring event with enhanced tracking
+   * Emit alert monitoring event with enhanced tracking.
    *
    * @param event
    */
@@ -1114,7 +1116,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to performance monitoring events with convenience
+   * Subscribe to performance monitoring events with convenience.
    *
    * @param listener
    */
@@ -1123,7 +1125,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to health monitoring events
+   * Subscribe to health monitoring events.
    *
    * @param listener
    */
@@ -1132,7 +1134,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to metrics collection events
+   * Subscribe to metrics collection events.
    *
    * @param listener
    */
@@ -1141,7 +1143,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Subscribe to alert events
+   * Subscribe to alert events.
    *
    * @param listener
    */
@@ -1150,7 +1152,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Get monitoring health status for all components
+   * Get monitoring health status for all components.
    */
   async getMonitoringHealthStatus(): Promise<Record<string, MonitoringHealthEntry>> {
     const healthStatus: Record<string, MonitoringHealthEntry> = {};
@@ -1163,7 +1165,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Get correlated monitoring events for a specific correlation ID
+   * Get correlated monitoring events for a specific correlation ID.
    *
    * @param correlationId
    */
@@ -1172,14 +1174,14 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Get active monitoring correlations
+   * Get active monitoring correlations.
    */
   getActiveMonitoringCorrelations(): MonitoringCorrelation[] {
     return Array.from(this.monitoringCorrelations.values()).filter((c) => c.status === 'active');
   }
 
   /**
-   * Get metrics data for monitoring
+   * Get metrics data for monitoring.
    *
    * @param metricName
    */
@@ -1191,7 +1193,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Get health data for monitoring
+   * Get health data for monitoring.
    *
    * @param component
    */
@@ -1203,7 +1205,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Get alert data for monitoring
+   * Get alert data for monitoring.
    *
    * @param alertId
    */
@@ -1215,7 +1217,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Get performance insights
+   * Get performance insights.
    *
    * @param component
    */
@@ -1227,7 +1229,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Force health check on all wrapped monitoring components
+   * Force health check on all wrapped monitoring components.
    */
   async performMonitoringHealthCheck(): Promise<Record<string, MonitoringHealthEntry>> {
     const healthResults: Record<string, MonitoringHealthEntry> = {};
@@ -1329,7 +1331,7 @@ export class MonitoringEventAdapter implements IEventManager {
   // ============================================
 
   /**
-   * Initialize monitoring component integrations
+   * Initialize monitoring component integrations.
    */
   private async initializeMonitoringIntegrations(): Promise<void> {
     this.logger.debug('Initializing monitoring component integrations');
@@ -1363,7 +1365,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap performance monitor events with UEL integration
+   * Wrap performance monitor events with UEL integration.
    */
   private async wrapPerformanceMonitors(): Promise<void> {
     const monitors = this.config.performanceMonitoring?.monitors || ['default-performance-monitor'];
@@ -1429,7 +1431,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap health component events with UEL integration
+   * Wrap health component events with UEL integration.
    */
   private async wrapHealthComponents(): Promise<void> {
     const components = this.config.healthMonitoring?.components || [
@@ -1477,9 +1479,9 @@ export class MonitoringEventAdapter implements IEventManager {
               ...data,
               healthScore: data?.healthScore,
               severity:
-                data?.status === 'unhealthy'
+                data.status === 'unhealthy'
                   ? 'error'
-                  : data?.status === 'degraded'
+                  : data.status === 'degraded'
                     ? 'warning'
                     : 'info',
               performanceData: data?.performanceData,
@@ -1501,7 +1503,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap analytics component events with UEL integration
+   * Wrap analytics component events with UEL integration.
    */
   private async wrapAnalyticsComponents(): Promise<void> {
     const analyzers = this.config.analyticsMonitoring?.analyzers || ['performance-analyzer'];
@@ -1564,7 +1566,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap alert management events with UEL integration
+   * Wrap alert management events with UEL integration.
    */
   private async wrapAlertManagement(): Promise<void> {
     const wrapper = new EventEmitter();
@@ -1619,7 +1621,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Wrap dashboard integration events with UEL integration
+   * Wrap dashboard integration events with UEL integration.
    */
   private async wrapDashboardIntegration(): Promise<void> {
     const dashboards = this.config.dashboardIntegration?.dashboards || ['main-dashboard'];
@@ -1679,7 +1681,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Unwrap all monitoring components
+   * Unwrap all monitoring components.
    */
   private async unwrapMonitoringComponents(): Promise<void> {
     for (const [componentName, wrapped] of Array.from(this.wrappedComponents.entries())) {
@@ -1705,7 +1707,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Process monitoring event emission with correlation and filtering
+   * Process monitoring event emission with correlation and filtering.
    *
    * @param event
    * @param options
@@ -1779,7 +1781,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Start event processing loop for monitoring events
+   * Start event processing loop for monitoring events.
    */
   private startEventProcessing(): void {
     this.processingEvents = true;
@@ -1807,7 +1809,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Start health monitoring for monitoring components
+   * Start health monitoring for monitoring components.
    */
   private startMonitoringHealthMonitoring(): void {
     const interval = this.config.healthMonitoringConfig?.healthCheckInterval || 30000;
@@ -1847,7 +1849,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Start monitoring correlation cleanup to prevent memory leaks
+   * Start monitoring correlation cleanup to prevent memory leaks.
    */
   private startMonitoringCorrelationCleanup(): void {
     const cleanupInterval = 60000; // 1 minute
@@ -1882,7 +1884,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Start metrics optimization if enabled
+   * Start metrics optimization if enabled.
    */
   private startMetricsOptimization(): void {
     const interval = this.config.metricsOptimization?.optimizationInterval || 120000;
@@ -1937,7 +1939,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Start monitoring event correlation for tracking related events
+   * Start monitoring event correlation for tracking related events.
    *
    * @param event
    */
@@ -1971,7 +1973,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Update existing monitoring event correlation
+   * Update existing monitoring event correlation.
    *
    * @param event
    */
@@ -2011,7 +2013,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Check if monitoring correlation is complete based on patterns
+   * Check if monitoring correlation is complete based on patterns.
    *
    * @param correlation
    */
@@ -2032,7 +2034,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Calculate monitoring efficiency for correlation
+   * Calculate monitoring efficiency for correlation.
    *
    * @param correlation
    */
@@ -2051,7 +2053,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Calculate data accuracy for correlation
+   * Calculate data accuracy for correlation.
    *
    * @param correlation
    */
@@ -2069,7 +2071,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Check health of all monitoring components
+   * Check health of all monitoring components.
    */
   private async checkMonitoringComponentHealth(): Promise<Record<string, MonitoringHealthEntry>> {
     const componentHealth: Record<string, MonitoringHealthEntry> = {};
@@ -2095,7 +2097,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Batch processing methods for different strategies
+   * Batch processing methods for different strategies.
    *
    * @param batch
    * @param options
@@ -2385,7 +2387,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * ID generation methods
+   * ID generation methods.
    */
   private generateEventId(): string {
     return `mon-evt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
@@ -2408,7 +2410,7 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Emit wrapper for internal use
+   * Emit wrapper for internal use.
    *
    * @param event
    * @param data
@@ -2419,7 +2421,7 @@ export class MonitoringEventAdapter implements IEventManager {
 }
 
 /**
- * Factory function for creating MonitoringEventAdapter instances
+ * Factory function for creating MonitoringEventAdapter instances.
  *
  * @param config
  */
@@ -2430,7 +2432,7 @@ export function createMonitoringEventAdapter(
 }
 
 /**
- * Helper function for creating default monitoring event adapter configuration
+ * Helper function for creating default monitoring event adapter configuration.
  *
  * @param name
  * @param overrides
@@ -2564,11 +2566,11 @@ export function createDefaultMonitoringEventAdapterConfig(
 }
 
 /**
- * Helper functions for monitoring event operations
+ * Helper functions for monitoring event operations.
  */
 export const MonitoringEventHelpers = {
   /**
-   * Create performance metrics event
+   * Create performance metrics event.
    *
    * @param metricName
    * @param metricValue
@@ -2597,7 +2599,7 @@ export const MonitoringEventHelpers = {
   },
 
   /**
-   * Create health status event
+   * Create health status event.
    *
    * @param component
    * @param healthScore
@@ -2625,7 +2627,7 @@ export const MonitoringEventHelpers = {
   },
 
   /**
-   * Create alert event
+   * Create alert event.
    *
    * @param alertId
    * @param severity
@@ -2653,7 +2655,7 @@ export const MonitoringEventHelpers = {
   },
 
   /**
-   * Create analytics insight event
+   * Create analytics insight event.
    *
    * @param component
    * @param insights
@@ -2679,7 +2681,7 @@ export const MonitoringEventHelpers = {
   },
 
   /**
-   * Create monitoring error event
+   * Create monitoring error event.
    *
    * @param component
    * @param error

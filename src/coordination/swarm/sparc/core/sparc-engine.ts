@@ -1,5 +1,12 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-sparc-core-sparc-engine");
+/**
+ * @file sparc processing engine
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-sparc-core-sparc-engine');
+
 /**
  * SPARC Engine Core Implementation with Deep Claude-Zen Integration.
  *
@@ -9,17 +16,17 @@ const logger = getLogger("coordination-swarm-sparc-core-sparc-engine");
  * DEEP INTEGRATION with existing Claude-Zen infrastructure:
  * - DocumentDrivenSystem: Vision → ADRs → PRDs → Epics → Features → Tasks → Code
  * - UnifiedWorkflowEngine: Automated workflow execution
- * - SwarmCoordination: Distributed SPARC development using existing agents
+ * - SwarmCoordination: Distributed SPARC development using existing agents.
  * - TaskAPI & TaskCoordinator: Task management and execution.
  */
 
 import { nanoid } from 'nanoid';
+import { DocumentDrivenSystem } from '../core/document-driven-system';
+import { MemorySystem } from '../core/memory-system';
+import { WorkflowEngine } from '../core/workflow-engine';
 // Real implementations - no more mocks!
-import { TaskAPI } from '../../../api';
-import { MemorySystem } from '../../../../core/memory-system';
-import { WorkflowEngine } from '../../../../core/workflow-engine';
-import { TaskCoordinator } from '../../../task-coordinator';
-import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
+import { TaskAPI } from '../api';
+import { TaskCoordinator } from '../task-coordinator';
 import { ProjectManagementIntegration } from '../integrations/project-management-integration';
 import { SPARCSwarmCoordinator } from '../integrations/swarm-coordination-integration';
 import { ArchitecturePhaseEngine } from '../phases/architecture/architecture-engine';
@@ -72,7 +79,7 @@ export class SPARCEngineCore implements SPARCEngine {
     this.documentDrivenSystem = new DocumentDrivenSystem();
     this.memorySystem = new MemorySystem({
       backend: 'json',
-      path: './data/sparc-engine-memory'
+      path: './data/sparc-engine-memory',
     });
     this.workflowEngine = new WorkflowEngine(this.memorySystem);
     this.swarmCoordinator = new SPARCSwarmCoordinator();
@@ -775,7 +782,7 @@ export class SPARCEngineCore implements SPARCEngine {
           project.architecture,
           mockFeedback
         );
-        project.architecture = refinementResult.refinedArchitecture;
+        project.architecture = refinementResult?.refinedArchitecture;
 
         deliverables.push({
           id: nanoid(),
@@ -1011,11 +1018,11 @@ export class SPARCEngineCore implements SPARCEngine {
   private analyzePerformanceGaps(feedback: RefinementFeedback) {
     // Analyze gaps between current performance and targets
     return feedback.targets.map((target) => ({
-      metric: target.metric,
+      metric: target?.metric,
       currentValue: feedback.metrics.latency, // simplified
-      targetValue: target.target,
-      gap: target.target - feedback.metrics.latency,
-      priority: target.priority,
+      targetValue: target?.target,
+      gap: target?.target - feedback.metrics.latency,
+      priority: target?.priority,
     }));
   }
 
@@ -1193,7 +1200,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
     try {
       const result = await this.swarmCoordinator.executeSPARCPhase(project.id, phase);
 
-      if (result.success) {
+      if (result?.success) {
       } else {
         logger.warn(`⚠️ SPARC ${phase} had issues, but continuing...`);
       }

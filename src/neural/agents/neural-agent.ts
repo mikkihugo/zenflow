@@ -2,6 +2,11 @@
  * Neural Agent Module - Integrates ruv-FANN neural network capabilities
  * into agent processing for cognitive diversity and learning
  */
+/**
+ * @file Neural network: neural-agent
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 
@@ -85,7 +90,7 @@ interface TaskHistoryEntry {
   };
 }
 
-// Agent type to cognitive pattern mapping
+// Agent type to cognitive pattern mapping.
 const AGENT_COGNITIVE_PROFILES: Record<string, CognitiveProfile> = {
   researcher: {
     primary: COGNITIVE_PATTERNS.DIVERGENT,
@@ -133,7 +138,7 @@ const AGENT_COGNITIVE_PROFILES: Record<string, CognitiveProfile> = {
 };
 
 /**
- * Neural Network wrapper for agent cognitive processing
+ * Neural Network wrapper for agent cognitive processing.
  *
  * @example
  */
@@ -151,10 +156,10 @@ class NeuralNetwork {
 
   constructor(config: NeuralNetworkConfig, memoryOptimizer: any = null) {
     this.config = config;
-    this.layers = config.networkLayers;
-    this.activationFunction = config.activationFunction;
-    this.learningRate = config.learningRate;
-    this.momentum = config.momentum;
+    this.layers = config?.networkLayers;
+    this.activationFunction = config?.activationFunction;
+    this.learningRate = config?.learningRate;
+    this.momentum = config?.momentum;
     this.memoryOptimizer = memoryOptimizer;
 
     // Memory-optimized storage
@@ -262,7 +267,7 @@ class NeuralNetwork {
       for (let j = 0; j < weights.length; j++) {
         let sum = biases[j];
         for (let k = 0; k < currentInput.length; k++) {
-          sum += weights[j][k] * currentInput[k];
+          sum += weights[j]?.[k] * currentInput?.[k];
         }
         output[j] = this._activation(sum);
       }
@@ -288,7 +293,7 @@ class NeuralNetwork {
     // Calculate output layer error
     const outputError: number[] = [];
     for (let i = 0; i < output.length; i++) {
-      outputError[i] = (target[i] - output[i]) * this._activation(output[i], true);
+      outputError[i] = (target?.[i] - output[i]) * this._activation(output[i], true);
     }
     errors.unshift(outputError);
 
@@ -301,9 +306,9 @@ class NeuralNetwork {
       for (let j = 0; j < this.weights[i - 1].length; j++) {
         let error = 0;
         for (let k = 0; k < weights.length; k++) {
-          error += weights[k][j] * prevError[k];
+          error += weights[k]?.[j] * prevError[k];
         }
-        layerError[j] = error * this._activation(activations[i][j], true);
+        layerError[j] = error * this._activation(activations[i]?.[j], true);
       }
       errors.unshift(layerError);
     }
@@ -322,9 +327,9 @@ class NeuralNetwork {
         // Update weights with momentum
         for (let k = 0; k < weights[j].length; k++) {
           const delta = lr * layerError[j] * layerInput[k];
-          const momentumDelta = this.momentum * this.previousWeightDeltas[i][j][k];
+          const momentumDelta = this.momentum * this.previousWeightDeltas[i]?.[j]?.[k];
           weights[j][k] += delta + momentumDelta;
-          this.previousWeightDeltas[i][j][k] = delta;
+          this.previousWeightDeltas[i]?.[j][k] = delta;
         }
       }
     }
@@ -341,13 +346,13 @@ class NeuralNetwork {
   }
 
   load(data: { weights: number[][][]; biases: number[][] }): void {
-    this.weights = data.weights;
-    this.biases = data.biases;
+    this.weights = data?.weights;
+    this.biases = data?.biases;
   }
 }
 
 /**
- * Neural Agent class that enhances base agents with neural network capabilities
+ * Neural Agent class that enhances base agents with neural network capabilities.
  *
  * @example
  */
@@ -409,7 +414,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Process task through neural network for intelligent routing
+   * Process task through neural network for intelligent routing.
    *
    * @param task
    */
@@ -437,7 +442,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Execute task with neural enhancement
+   * Execute task with neural enhancement.
    *
    * @param task
    */
@@ -476,7 +481,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Convert task to neural network input vector
+   * Convert task to neural network input vector.
    *
    * @param task
    */
@@ -526,7 +531,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Apply cognitive pattern to analysis
+   * Apply cognitive pattern to analysis.
    *
    * @param analysis
    */
@@ -571,7 +576,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Update cognitive state based on task execution
+   * Update cognitive state based on task execution.
    *
    * @param analysis
    */
@@ -598,7 +603,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Calculate performance metrics
+   * Calculate performance metrics.
    *
    * @param _task
    * @param result
@@ -607,19 +612,19 @@ class NeuralAgent extends EventEmitter {
   private _calculatePerformance(_task: Task, result: TaskResult, executionTime: number): any {
     const performance = {
       speed: Math.max(0, 1 - executionTime / 60000), // Normalize to 1 minute
-      accuracy: result.success ? 0.8 : 0.2,
+      accuracy: result?.success ? 0.8 : 0.2,
       creativity: 0.5, // Default, should be evaluated based on result
       efficiency: 0.5,
       overall: 0.5,
     };
 
     // Adjust based on result quality indicators
-    if (result.metrics) {
-      if (result.metrics.linesOfCode) {
-        performance.efficiency = Math.min(1.0, 100 / result.metrics.linesOfCode);
+    if (result?.metrics) {
+      if (result?.metrics?.linesOfCode) {
+        performance.efficiency = Math.min(1.0, 100 / result?.metrics?.linesOfCode);
       }
-      if (result.metrics.testsPass) {
-        performance.accuracy = result.metrics.testsPass;
+      if (result?.metrics?.testsPass) {
+        performance.accuracy = result?.metrics?.testsPass;
       }
     }
 
@@ -634,7 +639,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Learn from task execution
+   * Learn from task execution.
    *
    * @param task
    * @param result
@@ -653,7 +658,7 @@ class NeuralAgent extends EventEmitter {
       performance.accuracy,
       performance.creativity,
       performance.efficiency,
-      result.success ? 1.0 : 0.0,
+      result?.success ? 1.0 : 0.0,
     ];
 
     // Train neural network
@@ -685,7 +690,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Update overall performance metrics
+   * Update overall performance metrics.
    *
    * @param performance
    */
@@ -710,7 +715,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Find similar tasks from history
+   * Find similar tasks from history.
    *
    * @param task
    * @param limit
@@ -755,7 +760,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Apply secondary cognitive pattern
+   * Apply secondary cognitive pattern.
    *
    * @param analysis
    * @param pattern
@@ -792,7 +797,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Rest the agent to reduce fatigue
+   * Rest the agent to reduce fatigue.
    *
    * @param duration
    */
@@ -807,9 +812,9 @@ class NeuralAgent extends EventEmitter {
           const collected = await this.memoryOptimizer.garbageCollect();
           if (collected > 0) {
             // Recalculate memory usage after GC
-            const patternConfig = PATTERN_MEMORY_CONFIG[this.cognitiveProfile.primary];
+            const patternConfig = PATTERN_MEMORY_CONFIG?.[this.cognitiveProfile.primary];
             this.memoryUsage.current =
-              patternConfig.baseMemory * (1 - patternConfig.poolSharing * 0.5);
+              patternConfig?.baseMemory * (1 - patternConfig?.poolSharing * 0.5);
           }
         }
 
@@ -819,27 +824,28 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Initialize memory tracking for the agent
+   * Initialize memory tracking for the agent.
    */
   private _initializeMemoryTracking(): void {
     const patternConfig = PATTERN_MEMORY_CONFIG?.[this.cognitiveProfile.primary] || {
       baseMemory: 100,
       poolSharing: 0.5,
     };
-    this.memoryUsage.baseline = patternConfig.baseMemory;
-    this.memoryUsage.current = patternConfig.baseMemory;
+    this.memoryUsage.baseline = patternConfig?.baseMemory;
+    this.memoryUsage.current = patternConfig?.baseMemory;
 
     // Initialize memory pools if not already done
     if (this.memoryOptimizer && !this.memoryOptimizer.isPoolInitialized()) {
       this.memoryOptimizer.initializePools().then(() => {
         // Recalculate memory usage with pooling
-        this.memoryUsage.current = patternConfig.baseMemory * (1 - patternConfig.poolSharing * 0.5);
+        this.memoryUsage.current =
+          patternConfig?.baseMemory * (1 - patternConfig?.poolSharing * 0.5);
       });
     }
   }
 
   /**
-   * Get current memory usage for this agent
+   * Get current memory usage for this agent.
    */
   getCurrentMemoryUsage(): number {
     let memoryUsage = this.memoryUsage.current;
@@ -862,7 +868,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Get agent status including neural state
+   * Get agent status including neural state.
    */
   getStatus(): any {
     return {
@@ -884,7 +890,7 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Save neural state for persistence
+   * Save neural state for persistence.
    */
   saveNeuralState(): any {
     return {
@@ -898,31 +904,31 @@ class NeuralAgent extends EventEmitter {
   }
 
   /**
-   * Load neural state from saved data
+   * Load neural state from saved data.
    *
    * @param data
    */
   loadNeuralState(data: any): void {
-    if (data.neuralNetwork) {
-      this.neuralNetwork.load(data.neuralNetwork);
+    if (data?.neuralNetwork) {
+      this.neuralNetwork.load(data?.neuralNetwork);
     }
-    if (data.cognitiveState) {
-      this.cognitiveState = data.cognitiveState;
+    if (data?.cognitiveState) {
+      this.cognitiveState = data?.cognitiveState;
     }
-    if (data.performanceMetrics) {
-      this.performanceMetrics = data.performanceMetrics;
+    if (data?.performanceMetrics) {
+      this.performanceMetrics = data?.performanceMetrics;
     }
-    if (data.learningHistory) {
-      this.learningHistory = data.learningHistory;
+    if (data?.learningHistory) {
+      this.learningHistory = data?.learningHistory;
     }
-    if (data.taskHistory) {
-      this.taskHistory = data.taskHistory;
+    if (data?.taskHistory) {
+      this.taskHistory = data?.taskHistory;
     }
   }
 }
 
 /**
- * Neural Agent Factory
+ * Neural Agent Factory.
  *
  * @example
  */

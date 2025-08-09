@@ -1,8 +1,15 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("coordination-diagnostics-health-monitor");
 /**
- * HealthMonitor - Proactive health monitoring system for session persistence
- * Part of comprehensive solution for Issue #137: Swarm session persistence and recovery
+ * @file Coordination system: health-monitor
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-diagnostics-health-monitor');
+
+/**
+ * HealthMonitor - Proactive health monitoring system for session persistence.
+ * Part of comprehensive solution for Issue #137: Swarm session persistence and recovery.
  *
  * Features:
  * - Real-time health checking with configurable intervals
@@ -10,11 +17,11 @@ const logger = getLogger("coordination-diagnostics-health-monitor");
  * - Custom health check registration
  * - Threshold-based alerting and escalation
  * - Performance metrics collection
- * - Integration with recovery workflows
+ * - Integration with recovery workflows.
  *
  * Version: 1.0.0 - Production Grade
  * Author: Claude Code Assistant (Swarm Implementation)
- * License: MIT
+ * License: MIT.
  */
 
 import { randomUUID } from 'node:crypto';
@@ -80,7 +87,7 @@ export interface HealthAlert {
  * HealthMonitor provides comprehensive system health monitoring
  * with configurable checks and automatic alerting
  *
- * @example
+ * @example.
  */
 export class HealthMonitor extends EventEmitter {
   private options: HealthMonitorOptions;
@@ -97,12 +104,12 @@ export class HealthMonitor extends EventEmitter {
     super();
 
     this.options = {
-      checkInterval: options.checkInterval || 30000, // 30 seconds
-      alertThreshold: options.alertThreshold || 70, // Alert when health < 70%
-      criticalThreshold: options.criticalThreshold || 50, // Critical when health < 50%
-      enableSystemChecks: options.enableSystemChecks !== false,
-      enableCustomChecks: options.enableCustomChecks !== false,
-      maxHistorySize: options.maxHistorySize || 1000,
+      checkInterval: options?.checkInterval || 30000, // 30 seconds
+      alertThreshold: options?.alertThreshold || 70, // Alert when health < 70%
+      criticalThreshold: options?.criticalThreshold || 50, // Critical when health < 50%
+      enableSystemChecks: options?.enableSystemChecks !== false,
+      enableCustomChecks: options?.enableCustomChecks !== false,
+      maxHistorySize: options?.maxHistorySize || 1000,
       ...options,
     };
 
@@ -120,7 +127,7 @@ export class HealthMonitor extends EventEmitter {
   }
 
   /**
-   * Start health monitoring
+   * Start health monitoring.
    */
   async start(): Promise<void> {
     if (this.isRunning) return;
@@ -146,7 +153,7 @@ export class HealthMonitor extends EventEmitter {
   }
 
   /**
-   * Stop health monitoring
+   * Stop health monitoring.
    */
   async stop(): Promise<void> {
     if (!this.isRunning) return;
@@ -163,7 +170,7 @@ export class HealthMonitor extends EventEmitter {
   }
 
   /**
-   * Register a custom health check
+   * Register a custom health check.
    *
    * @param name
    * @param checkFunction
@@ -177,11 +184,11 @@ export class HealthMonitor extends EventEmitter {
     const healthCheck = {
       name,
       checkFunction,
-      weight: options.weight || 1,
-      timeout: options.timeout || 5000,
-      enabled: options.enabled !== false,
-      critical: options.critical || false,
-      description: options.description || `Custom health check: ${name}`,
+      weight: options?.weight || 1,
+      timeout: options?.timeout || 5000,
+      enabled: options?.enabled !== false,
+      critical: options?.critical || false,
+      description: options?.description || `Custom health check: ${name}`,
       lastRun: null,
       lastResult: null,
       runCount: 0,
@@ -195,7 +202,7 @@ export class HealthMonitor extends EventEmitter {
   }
 
   /**
-   * Remove a health check
+   * Remove a health check.
    *
    * @param name
    */
@@ -208,7 +215,7 @@ export class HealthMonitor extends EventEmitter {
   }
 
   /**
-   * Run all health checks
+   * Run all health checks.
    */
   async runHealthChecks(): Promise<HealthReport> {
     const startTime = performance.now();
@@ -239,7 +246,7 @@ export class HealthMonitor extends EventEmitter {
     let totalWeight = 0;
     let criticalFailures = 0;
 
-    checkResults.forEach((result, index) => {
+    checkResults?.forEach((result, index) => {
       const checkName = Array.from(this.healthChecks.keys())[index];
       if (!checkName) return; // Guard against undefined
       const check = this.healthChecks.get(checkName);
@@ -250,8 +257,8 @@ export class HealthMonitor extends EventEmitter {
         return;
       }
 
-      if (result.status === 'fulfilled') {
-        const { score, status, details, metrics } = result.value;
+      if (result?.status === 'fulfilled') {
+        const { score, status, details, metrics } = result?.value;
 
         results[checkName] = {
           score,
@@ -259,7 +266,7 @@ export class HealthMonitor extends EventEmitter {
           details,
           metrics,
           timestamp: new Date().toISOString(),
-          duration: result.value.duration,
+          duration: result?.value?.duration,
         };
 
         totalScore += score * check.weight;
@@ -269,7 +276,7 @@ export class HealthMonitor extends EventEmitter {
           criticalFailures++;
         }
 
-        check.lastResult = result.value;
+        check.lastResult = result?.value;
         check.lastRun = new Date().toISOString();
         check.runCount++;
       } else {
@@ -324,7 +331,7 @@ export class HealthMonitor extends EventEmitter {
   }
 
   /**
-   * Run a single health check
+   * Run a single health check.
    *
    * @param name
    * @param check
@@ -355,10 +362,10 @@ export class HealthMonitor extends EventEmitter {
 
       // Normalize result format
       const normalizedResult = {
-        score: typeof result === 'number' ? result : result.score || 100,
-        status: result.status || 'healthy',
-        details: result.details || result.message || 'Health check passed',
-        metrics: result.metrics || {},
+        score: typeof result === 'number' ? result : result?.score || 100,
+        status: result?.status || 'healthy',
+        details: result?.details || result?.message || 'Health check passed',
+        metrics: result?.metrics || {},
         duration,
       };
 
@@ -377,7 +384,7 @@ export class HealthMonitor extends EventEmitter {
   }
 
   /**
-   * Get current system health status
+   * Get current system health status.
    */
   getCurrentHealth(): any {
     return {
@@ -390,7 +397,7 @@ export class HealthMonitor extends EventEmitter {
   }
 
   /**
-   * Get health history
+   * Get health history.
    *
    * @param limit
    */
@@ -399,7 +406,7 @@ export class HealthMonitor extends EventEmitter {
   }
 
   /**
-   * Get health trends and analysis
+   * Get health trends and analysis.
    */
   getHealthTrends(): any {
     if (this.healthHistory.length < 2) {
@@ -644,7 +651,7 @@ export class HealthMonitor extends EventEmitter {
   }
 
   /**
-   * Set persistence checker function
+   * Set persistence checker function.
    *
    * @param checkerFunction
    */
@@ -653,7 +660,7 @@ export class HealthMonitor extends EventEmitter {
   }
 
   /**
-   * Cleanup resources
+   * Cleanup resources.
    */
   async destroy(): Promise<void> {
     await this.stop();

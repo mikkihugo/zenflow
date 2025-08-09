@@ -1,9 +1,14 @@
 /**
- * Unified Terminal Components - Index
+ * Unified Terminal Components - Index.
  *
- * Exports all consolidated terminal components that merge functionality
+ * Exports all consolidated terminal components that merge functionality.
  * from both command execution and interactive terminal interfaces.
  */
+/**
+ * @file components module exports
+ */
+
+
 
 export * from './error-message';
 export {

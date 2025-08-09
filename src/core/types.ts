@@ -1,8 +1,13 @@
 /**
- * Core type definitions for Claude-Flow
+ * Core type definitions for Claude-Flow.
  */
 
 // Configuration interface
+/**
+ * @file TypeScript type definitions for core
+ */
+
+
 export interface Config {
   env: 'development' | 'production' | 'test';
   logLevel: 'debug' | 'info' | 'warn' | 'error';

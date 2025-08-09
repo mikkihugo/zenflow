@@ -1,9 +1,14 @@
 /**
  * Error Monitoring and Reporting Infrastructure.
  *
- * Comprehensive error tracking, aggregation, analysis, and alerting system
+ * Comprehensive error tracking, aggregation, analysis, and alerting system.
  * for Claude-Zen distributed architecture.
  */
+/**
+ * @file error-monitoring implementation
+ */
+
+
 
 import {
   type BaseClaudeZenError,
@@ -272,25 +277,25 @@ export class HealthMonitor {
       const responseTime = Date.now() - startTime;
 
       if (checkResult?.healthy) {
-        result?.healthy = true;
-        result?.failureCount = 0;
+        result.healthy = true;
+        result.failureCount = 0;
       } else {
-        result?.healthy = false;
+        result.healthy = false;
         result?.failureCount++;
       }
 
-      result?.lastCheck = Date.now();
-      result?.responseTime = responseTime;
+      result.lastCheck = Date.now();
+      result.responseTime = responseTime;
 
       // Log health check results
       if (!checkResult?.healthy) {
         logger.warn(`Health check failed: ${checkName}`, checkResult?.details);
       }
     } catch (error) {
-      result?.healthy = false;
+      result.healthy = false;
       result?.failureCount++;
-      result?.lastCheck = Date.now();
-      result?.responseTime = Date.now() - startTime;
+      result.lastCheck = Date.now();
+      result.responseTime = Date.now() - startTime;
 
       logger.error(`Health check error: ${checkName}`, error);
     }
@@ -410,7 +415,8 @@ export class AlertSystem {
     metrics: SystemHealthMetrics,
     _trends: ErrorTrend[]
   ): string {
-    return config?.template?.replace('{{timestamp}}', new Date(metrics.timestamp).toISOString())
+    return config?.template
+      ?.replace('{{timestamp}}', new Date(metrics.timestamp).toISOString())
       .replace('{{health}}', metrics.overallHealth)
       .replace('{{errorRate}}', metrics.errorRate.toString())
       .replace('{{uptime}}', metrics.uptime.toFixed(2))

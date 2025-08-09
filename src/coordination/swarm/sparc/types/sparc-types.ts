@@ -6,6 +6,11 @@
  */
 
 // Core SPARC Phase Types
+/**
+ * @file TypeScript type definitions for coordination
+ */
+
+
 export type SPARCPhase =
   | 'specification'
   | 'pseudocode'
@@ -1209,10 +1214,10 @@ export const ValidationReportFactory = {
    */
   create(options: Partial<ValidationReport> = {}): ValidationReport {
     return {
-      overall: options.overall ?? true,
-      score: options.score ?? 100,
-      results: options.results ?? [],
-      recommendations: options.recommendations ?? [],
+      overall: options?.overall ?? true,
+      score: options?.score ?? 100,
+      results: options?.results ?? [],
+      recommendations: options?.recommendations ?? [],
       ...options, // Allow for optional aliases
     };
   },

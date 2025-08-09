@@ -1,4 +1,5 @@
 /**
+/// <reference types="./global-types" />
  * Coordination Test Helpers
  *
  * @file Specialized helpers for testing coordination/swarm components (London TDD)
@@ -185,7 +186,7 @@ export class CoordinationTestBuilder {
   }
 
   private createMessageRouterBehavior() {
-    return (fromId: string, toId: string, message: any) => {
+    return (fromId: string, toId: string, message: unknown) => {
       const routingInteraction = {
         timestamp: Date.now(),
         from: fromId,
@@ -200,7 +201,7 @@ export class CoordinationTestBuilder {
       // Simulate message delivery
       const targetAgent = this.agents.get(toId);
       if (targetAgent) {
-        targetAgent.messageQueue.push({
+        targetAgent?.messageQueue?.push({
           from: fromId,
           message,
           timestamp: Date.now(),
@@ -434,7 +435,7 @@ export class CoordinationProtocolValidator {
       const latencies = [];
       for (let i = 1; i < coordinationInteractions.length; i++) {
         const latency =
-          coordinationInteractions[i].timestamp - coordinationInteractions[i - 1].timestamp;
+          coordinationInteractions[i]?.timestamp - coordinationInteractions[i - 1]?.timestamp;
         latencies.push(latency);
       }
 

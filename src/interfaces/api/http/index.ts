@@ -1,7 +1,9 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-api-http-index");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-api-http-index');
+
 /**
- * REST API Layer - Main Entry Point
+ * REST API Layer - Main Entry Point.
  *
  * Central export point for the REST API layer.
  * Following Google Code Standards with explicit exports.
@@ -10,10 +12,10 @@ const logger = getLogger("interfaces-api-http-index");
  * @file Main entry point for REST API layer
  */
 
+import { getCORSOrigins, getMCPServerURL } from '../config/url-builder';
 import { APIClient } from './client';
 // Import server types for internal use
 import { type APIClientConfig, APIServer, type APIServerConfig } from './server';
-import { getMCPServerURL, getCORSOrigins } from '../../config/url-builder';
 
 export type { APIClientConfig, PaginationOptions, RequestOptions } from './client';
 // ===== API CLIENT SDK =====
@@ -83,8 +85,8 @@ export const REST_API_VERSION = '1.0.0' as const;
 export const SUPPORTED_API_VERSIONS = ['v1'] as const;
 
 /**
- * API Layer Configuration
- * Central configuration for the entire API layer
+ * API Layer Configuration.
+ * Central configuration for the entire API layer.
  *
  * @example
  */
@@ -98,7 +100,7 @@ export interface APILayerConfig {
 }
 
 /**
- * Default API layer configuration
+ * Default API layer configuration.
  */
 export const DEFAULT_API_LAYER_CONFIG: APILayerConfig = {
   server: {
@@ -126,8 +128,8 @@ export const DEFAULT_API_LAYER_CONFIG: APILayerConfig = {
 } as const;
 
 /**
- * API Layer Factory
- * Creates complete API layer with server and client
+ * API Layer Factory.
+ * Creates complete API layer with server and client.
  *
  * @example
  */
@@ -143,42 +145,42 @@ export class APILayer {
   }
 
   /**
-   * Start the API server
+   * Start the API server.
    */
   public async start(): Promise<void> {
     await this.server.start();
   }
 
   /**
-   * Stop the API server
+   * Stop the API server.
    */
   public async stop(): Promise<void> {
     await this.server.stop();
   }
 
   /**
-   * Get the API server instance
+   * Get the API server instance.
    */
   public getServer(): APIServer {
     return this.server;
   }
 
   /**
-   * Get the API client instance
+   * Get the API client instance.
    */
   public getClient(): APIClient {
     return this.client;
   }
 
   /**
-   * Get current configuration
+   * Get current configuration.
    */
   public getConfig(): APILayerConfig {
     return { ...this.config };
   }
 
   /**
-   * Test API connectivity
+   * Test API connectivity.
    */
   public async ping(): Promise<boolean> {
     return this.client.ping();
@@ -186,7 +188,7 @@ export class APILayer {
 }
 
 /**
- * Create API layer with configuration
+ * Create API layer with configuration.
  *
  * @param config
  */
@@ -195,8 +197,8 @@ export const createAPILayer = (config?: Partial<APILayerConfig>): APILayer => {
 };
 
 /**
- * API Layer Health Check
- * Comprehensive health check for the entire API layer
+ * API Layer Health Check.
+ * Comprehensive health check for the entire API layer.
  *
  * @param layer
  */
@@ -220,11 +222,11 @@ export const checkAPILayerHealth = async (
   try {
     // Check if server is running
     const serverConfig = layer.getServer().getConfig();
-    checks.server = serverConfig.port > 0;
+    checks.server = serverConfig?.port > 0;
 
     // Check if client is configured
     const clientConfig = layer.getClient().getConfig();
-    checks.client = !!clientConfig.baseURL;
+    checks.client = !!clientConfig?.baseURL;
 
     // Check connectivity
     checks.connectivity = await layer.ping();
@@ -242,8 +244,8 @@ export const checkAPILayerHealth = async (
 };
 
 /**
- * API Documentation URLs
- * Standard endpoints for API documentation
+ * API Documentation URLs.
+ * Standard endpoints for API documentation.
  */
 export const API_DOCS = {
   swagger: '/docs',
@@ -253,8 +255,8 @@ export const API_DOCS = {
 } as const;
 
 /**
- * API Endpoint Patterns
- * Standard URL patterns following Google API Design Guide
+ * API Endpoint Patterns.
+ * Standard URL patterns following Google API Design Guide.
  */
 export const API_PATTERNS = {
   // Collection patterns
@@ -280,8 +282,8 @@ export const API_PATTERNS = {
 } as const;
 
 /**
- * Standard HTTP Status Codes
- * Following Google API Design Guide recommendations
+ * Standard HTTP Status Codes.
+ * Following Google API Design Guide recommendations.
  */
 export const HTTP_STATUS = {
   // Success
@@ -309,8 +311,8 @@ export const HTTP_STATUS = {
 } as const;
 
 /**
- * Standard Error Codes
- * Following Google API Design Guide error codes
+ * Standard Error Codes.
+ * Following Google API Design Guide error codes.
  */
 export const ERROR_CODES = {
   // Client errors

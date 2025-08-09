@@ -1,20 +1,20 @@
 /**
- * UEL (Unified Event Layer) - Backward Compatibility Layer
+ * UEL (Unified Event Layer) - Backward Compatibility Layer.
  *
- * Provides 100% backward compatibility with existing EventEmitter code
+ * Provides 100% backward compatibility with existing EventEmitter code.
  * while offering enhanced UEL capabilities and migration utilities.
  *
  * @file Backward Compatibility Implementation
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../../core/interfaces/base-interfaces';
+import type { ILogger } from '../core/interfaces/base-interfaces';
 import type { EventManagerType, IEventManager, SystemEvent } from './core/interfaces';
 import { EventManagerTypes } from './core/interfaces';
 import type { EventManager } from './manager';
 
 /**
- * Enhanced EventEmitter that provides UEL integration while maintaining compatibility
+ * Enhanced EventEmitter that provides UEL integration while maintaining compatibility.
  *
  * @example
  */
@@ -43,7 +43,7 @@ export class UELCompatibleEventEmitter extends EventEmitter {
   }
 
   /**
-   * Enable UEL integration with migration support
+   * Enable UEL integration with migration support.
    *
    * @param manager
    * @param options
@@ -84,7 +84,7 @@ export class UELCompatibleEventEmitter extends EventEmitter {
   }
 
   /**
-   * Enhanced emit with UEL integration
+   * Enhanced emit with UEL integration.
    *
    * @param eventName
    * @param {...any} args
@@ -103,7 +103,7 @@ export class UELCompatibleEventEmitter extends EventEmitter {
   }
 
   /**
-   * Enhanced on with UEL subscription tracking
+   * Enhanced on with UEL subscription tracking.
    *
    * @param eventName
    * @param listener
@@ -122,7 +122,7 @@ export class UELCompatibleEventEmitter extends EventEmitter {
   }
 
   /**
-   * Enhanced once with UEL integration
+   * Enhanced once with UEL integration.
    *
    * @param eventName
    * @param listener
@@ -141,7 +141,7 @@ export class UELCompatibleEventEmitter extends EventEmitter {
   }
 
   /**
-   * Map EventEmitter event to UEL event type
+   * Map EventEmitter event to UEL event type.
    *
    * @param eventEmitterEvent
    * @param uelEventType
@@ -152,7 +152,7 @@ export class UELCompatibleEventEmitter extends EventEmitter {
   }
 
   /**
-   * Get UEL compatibility status
+   * Get UEL compatibility status.
    */
   getUELStatus(): {
     enabled: boolean;
@@ -174,7 +174,7 @@ export class UELCompatibleEventEmitter extends EventEmitter {
   }
 
   /**
-   * Private methods for UEL integration
+   * Private methods for UEL integration.
    */
 
   private async emitToUEL(eventName: string, args: any[]): Promise<void> {
@@ -272,7 +272,7 @@ export class UELCompatibleEventEmitter extends EventEmitter {
 }
 
 /**
- * Migration utilities for converting existing EventEmitter code to UEL
+ * Migration utilities for converting existing EventEmitter code to UEL.
  *
  * @example
  */
@@ -292,7 +292,7 @@ export class EventEmitterMigrationHelper {
   }
 
   /**
-   * Create UEL-compatible EventEmitter instance
+   * Create UEL-compatible EventEmitter instance.
    *
    * @param managerName
    * @param managerType
@@ -337,7 +337,7 @@ export class EventEmitterMigrationHelper {
   }
 
   /**
-   * Wrap existing EventEmitter with UEL compatibility
+   * Wrap existing EventEmitter with UEL compatibility.
    *
    * @param originalEmitter
    * @param managerName
@@ -393,7 +393,7 @@ export class EventEmitterMigrationHelper {
   }
 
   /**
-   * Analyze EventEmitter usage patterns
+   * Analyze EventEmitter usage patterns.
    *
    * @param emitter
    */
@@ -449,7 +449,7 @@ export class EventEmitterMigrationHelper {
   }
 
   /**
-   * Generate migration plan for EventEmitter conversion
+   * Generate migration plan for EventEmitter conversion.
    *
    * @param analysis
    */
@@ -537,14 +537,14 @@ export class EventEmitterMigrationHelper {
   }
 
   /**
-   * Get migration statistics
+   * Get migration statistics.
    */
   getMigrationStats(): typeof EventEmitterMigrationHelper.prototype.migrationStats {
     return { ...this.migrationStats };
   }
 
   /**
-   * Reset migration statistics
+   * Reset migration statistics.
    */
   resetStats(): void {
     this.migrationStats = {
@@ -557,7 +557,7 @@ export class EventEmitterMigrationHelper {
 }
 
 /**
- * Factory for creating backward-compatible event emitters
+ * Factory for creating backward-compatible event emitters.
  *
  * @example
  */
@@ -575,7 +575,7 @@ export class CompatibilityFactory {
   }
 
   /**
-   * Initialize compatibility factory
+   * Initialize compatibility factory.
    *
    * @param eventManager
    * @param logger
@@ -586,7 +586,7 @@ export class CompatibilityFactory {
   }
 
   /**
-   * Create enhanced EventEmitter with UEL capabilities
+   * Create enhanced EventEmitter with UEL capabilities.
    *
    * @param name
    * @param type
@@ -610,7 +610,7 @@ export class CompatibilityFactory {
   }
 
   /**
-   * Wrap existing EventEmitter with UEL capabilities
+   * Wrap existing EventEmitter with UEL capabilities.
    *
    * @param emitter
    * @param name
@@ -629,7 +629,7 @@ export class CompatibilityFactory {
   }
 
   /**
-   * Get migration helper for advanced operations
+   * Get migration helper for advanced operations.
    */
   getMigrationHelper(): EventEmitterMigrationHelper | undefined {
     return this.migrationHelper;
@@ -637,11 +637,11 @@ export class CompatibilityFactory {
 }
 
 /**
- * Convenience functions for quick compatibility setup
+ * Convenience functions for quick compatibility setup.
  */
 
 /**
- * Create UEL-compatible EventEmitter instance
+ * Create UEL-compatible EventEmitter instance.
  *
  * @param name
  * @param type
@@ -665,7 +665,7 @@ export async function createCompatibleEventEmitter(
 }
 
 /**
- * Wrap existing EventEmitter with UEL compatibility
+ * Wrap existing EventEmitter with UEL compatibility.
  *
  * @param emitter
  * @param name

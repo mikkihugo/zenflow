@@ -1,6 +1,6 @@
 /**
- * Performance Optimization System for Cross-Agent Knowledge Sharing
- * Implements intelligent caching, bandwidth optimization, and priority management
+ * Performance Optimization System for Cross-Agent Knowledge Sharing.
+ * Implements intelligent caching, bandwidth optimization, and priority management.
  *
  * Architecture: Multi-layer optimization with adaptive resource management
  * - Intelligent Caching: Multi-tier caching with prediction and prefetching
@@ -9,8 +9,15 @@
  * - Load Balancing: Intelligent distribution of knowledge requests
  * - Real-time Monitoring: Performance tracking and adaptive optimization
  */
+/**
+ * @file performance-optimization-system implementation.
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { HealthStatus } from '../types/health-types';
 
 // Basic types for performance optimization system
 export interface ConsistencyManager {
@@ -167,7 +174,7 @@ export interface CostBenefit {
 }
 
 /**
- * Intelligent Caching System
+ * Intelligent Caching System.
  *
  * @example
  */
@@ -272,7 +279,7 @@ export type AdvancedConsistencyLevel =
   | 'monotonic';
 
 /**
- * Bandwidth Optimization System
+ * Bandwidth Optimization System.
  *
  * @example
  */
@@ -356,7 +363,7 @@ export type StreamingProtocol =
   | 'p2p-streaming';
 
 /**
- * Priority Management System
+ * Priority Management System.
  *
  * @example
  */
@@ -418,7 +425,7 @@ export type AllocationStrategy =
   | 'rate-monotonic';
 
 /**
- * Load Balancing System
+ * Load Balancing System.
  *
  * @example
  */
@@ -480,7 +487,7 @@ export type LoadBalancingAlgorithm =
   | 'geographic-proximity';
 
 /**
- * Real-time Monitoring System
+ * Real-time Monitoring System.
  *
  * @example
  */
@@ -542,7 +549,7 @@ export type AnomalyDetectionAlgorithm =
   | 'neural-networks';
 
 /**
- * Main Performance Optimization System
+ * Main Performance Optimization System.
  *
  * @example
  */
@@ -575,7 +582,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
   }
 
   /**
-   * Initialize all optimization systems
+   * Initialize all optimization systems.
    */
   private initializeSystems(): void {
     this.cachingSystem = new IntelligentCachingEngine(
@@ -612,7 +619,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
   }
 
   /**
-   * Set up system integrations
+   * Set up system integrations.
    */
   private setupIntegrations(): void {
     // Monitoring -> All Systems (feedback loop)
@@ -647,7 +654,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
   }
 
   /**
-   * Optimize knowledge request processing
+   * Optimize knowledge request processing.
    *
    * @param request
    */
@@ -721,7 +728,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
   }
 
   /**
-   * Optimize knowledge sharing between agents
+   * Optimize knowledge sharing between agents.
    *
    * @param sharingRequest
    */
@@ -799,7 +806,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
   }
 
   /**
-   * Optimize cache performance dynamically
+   * Optimize cache performance dynamically.
    */
   async optimizeCachePerformance(): Promise<CacheOptimizationResult> {
     const startTime = Date.now();
@@ -868,7 +875,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
   }
 
   /**
-   * Get comprehensive performance metrics
+   * Get comprehensive performance metrics.
    */
   async getMetrics(): Promise<PerformanceOptimizationMetrics> {
     return {
@@ -913,7 +920,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
   }
 
   /**
-   * Shutdown optimization system gracefully
+   * Shutdown optimization system gracefully.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down performance optimization system...');
@@ -964,7 +971,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
 }
 
 /**
- * Configuration and result interfaces
+ * Configuration and result interfaces.
  *
  * @example
  */

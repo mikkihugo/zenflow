@@ -121,8 +121,8 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
         );
 
         expect(agentSpawnedEvents.length).toBeGreaterThan(0);
-        expect(agentSpawnedEvents[0].data.agentId).toBe(newAgent.id);
-        expect(agentSpawnedEvents[0].data.agentType).toBe('coordinator');
+        expect(agentSpawnedEvents[0]?.data?.agentId).toBe(newAgent.id);
+        expect(agentSpawnedEvents[0]?.data?.agentType).toBe('coordinator');
       }
 
       // Assign task - should trigger more real-time updates
@@ -141,8 +141,8 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
         );
 
         expect(taskAssignedEvents.length).toBeGreaterThan(0);
-        expect(taskAssignedEvents[0].data.taskId).toBe('realtime-test-task');
-        expect(taskAssignedEvents[0].data.agentId).toBe(newAgent.id);
+        expect(taskAssignedEvents[0]?.data?.taskId).toBe('realtime-test-task');
+        expect(taskAssignedEvents[0]?.data?.agentId).toBe(newAgent.id);
       }
 
       // Cleanup
@@ -250,7 +250,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       };
 
       const agents = await agentManager.getAllActiveAgents();
-      await swarmCoordinator.assignTask(agents[0].id, complexTask);
+      await swarmCoordinator.assignTask(agents[0]?.id, complexTask);
 
       // Simulate task execution with progress updates
       const startTime = Date.now();
@@ -489,7 +489,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
         const senderIndex = i % agents.length;
         const receiverIndex = (i + 1) % agents.length;
 
-        await swarmCoordinator.sendMessage(agents[senderIndex].id, agents[receiverIndex].id, {
+        await swarmCoordinator.sendMessage(agents[senderIndex]?.id, agents[receiverIndex]?.id, {
           id: `network-test-${i}`,
           type: 'ping',
           content: { ping: Date.now() },
@@ -569,7 +569,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       const disconnectOrder = [2, 0, 4, 1, 3];
 
       for (const index of disconnectOrder) {
-        clients[index].close();
+        clients[index]?.close();
         await networkHelper.wait(200); // Allow disconnection processing
       }
 
@@ -667,7 +667,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
       // Verify heartbeat timing
       for (let i = 1; i < heartbeats.length; i++) {
-        const timeDiff = heartbeats[i].timestamp - heartbeats[i - 1].timestamp;
+        const timeDiff = heartbeats[i]?.timestamp - heartbeats[i - 1]?.timestamp;
         expect(timeDiff).toBeGreaterThan(1800); // Allow some variance
         expect(timeDiff).toBeLessThan(2200);
       }
@@ -758,7 +758,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       ];
 
       for (const edit of edits) {
-        collaborators[edit.collaborator].send(
+        collaborators[edit.collaborator]?.send(
           JSON.stringify({
             type: 'document_edit',
             documentId,
@@ -824,7 +824,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
       // Join document session
       for (let i = 0; i < collaborators.length; i++) {
-        collaborators[i].send(
+        collaborators[i]?.send(
           JSON.stringify({
             type: 'join_document',
             documentId,
@@ -855,7 +855,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       ];
 
       for (const movement of cursorMovements) {
-        collaborators[movement.user].send(
+        collaborators[movement.user]?.send(
           JSON.stringify({
             type: 'cursor_move',
             documentId,

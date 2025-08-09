@@ -1,6 +1,6 @@
 /**
  * Collective Intelligence Coordinator
- * Neural center of swarm intelligence orchestrating collective decision-making and
+ * Neural center of swarm intelligence orchestrating collective decision-making and.
  * shared intelligence through ML-driven coordination patterns.
  *
  * Architecture: Distributed knowledge sharing with consensus-driven validation
@@ -10,11 +10,18 @@
  * - Cross-Agent Learning: Facilitate transfer learning and federated learning patterns
  * - Emergent Intelligence Detection: Identify and amplify collective intelligence emergence
  */
+/**
+ * @file collective-intelligence coordination system.
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { PerformanceMetrics } from '../types/performance-types';
 
 /**
- * Knowledge Exchange Protocols
+ * Knowledge Exchange Protocols.
  *
  * @example
  */
@@ -137,7 +144,7 @@ export type ConflictResolutionStrategy =
   | 'temporal-latest';
 
 /**
- * Distributed Learning Systems
+ * Distributed Learning Systems.
  *
  * @example
  */
@@ -220,7 +227,7 @@ export type ConsolidationTrigger =
   | 'performance-degradation';
 
 /**
- * Collaborative Problem-Solving
+ * Collaborative Problem-Solving.
  *
  * @example
  */
@@ -288,7 +295,7 @@ export type ConsensusAlgorithm =
   | 'liquid-democracy';
 
 /**
- * Intelligence Coordination
+ * Intelligence Coordination.
  *
  * @example
  */
@@ -335,7 +342,7 @@ export interface SpecializationEmergenceDetector {
 }
 
 /**
- * Knowledge Quality Management
+ * Knowledge Quality Management.
  *
  * @example
  */
@@ -379,7 +386,7 @@ export type ValidationType =
   | 'automated-checking';
 
 /**
- * Performance Optimization
+ * Performance Optimization.
  *
  * @example
  */
@@ -417,7 +424,7 @@ export type CacheType =
 // Removed: using EvictionPolicyType from performance-optimization-system
 
 /**
- * Main Collective Intelligence Coordinator Class
+ * Main Collective Intelligence Coordinator Class.
  *
  * @example
  */
@@ -451,7 +458,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   }
 
   /**
-   * Initialize all coordination systems
+   * Initialize all coordination systems.
    */
   private initializeSystems(): void {
     this.knowledgeExchange = new KnowledgeExchangeSystem(
@@ -494,7 +501,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   }
 
   /**
-   * Set up cross-system integrations
+   * Set up cross-system integrations.
    */
   private setupIntegrations(): void {
     // Knowledge Exchange -> Quality Management
@@ -525,7 +532,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   }
 
   /**
-   * Coordinate knowledge aggregation from multiple agents
+   * Coordinate knowledge aggregation from multiple agents.
    *
    * @param contributions
    */
@@ -574,7 +581,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   }
 
   /**
-   * Coordinate collective decision making
+   * Coordinate collective decision making.
    *
    * @param decisionContext
    */
@@ -633,7 +640,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   }
 
   /**
-   * Distribute work using intelligent load balancing
+   * Distribute work using intelligent load balancing.
    *
    * @param tasks
    */
@@ -683,7 +690,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   }
 
   /**
-   * Weight agent contributions based on expertise and reputation
+   * Weight agent contributions based on expertise and reputation.
    *
    * @param contributions
    */
@@ -717,7 +724,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   }
 
   /**
-   * Synthesize knowledge from weighted contributions
+   * Synthesize knowledge from weighted contributions.
    *
    * @param weightedContributions
    */
@@ -756,7 +763,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   }
 
   /**
-   * Update knowledge graph with validated knowledge
+   * Update knowledge graph with validated knowledge.
    *
    * @param validatedKnowledge
    */
@@ -792,7 +799,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   }
 
   /**
-   * Get comprehensive coordination metrics
+   * Get comprehensive coordination metrics.
    */
   async getCoordinationMetrics(): Promise<CollectiveIntelligenceMetrics> {
     return {
@@ -813,7 +820,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   }
 
   /**
-   * Shutdown coordination system gracefully
+   * Shutdown coordination system gracefully.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down collective intelligence coordinator...');
@@ -877,7 +884,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 }
 
 /**
- * Configuration interfaces
+ * Configuration interfaces.
  *
  * @example
  */

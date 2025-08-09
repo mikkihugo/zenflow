@@ -1,7 +1,12 @@
 /**
- * Network Latency Optimizer
- * Advanced network path optimization and latency reduction
+ * Network Latency Optimizer.
+ * Advanced network path optimization and latency reduction.
  */
+/**
+ * @file Coordination system: network-latency-optimizer
+ */
+
+
 
 import type { NetworkOptimizer } from '../interfaces';
 import type { QoSRequirement } from '../types';

@@ -1,9 +1,14 @@
 /**
  * Graph Database Repository Implementation (Kuzu)
  *
- * Specialized repository for graph database operations including
+ * Specialized repository for graph database operations including.
  * node and relationship management, traversals, and Cypher queries.
  */
+/**
+ * @file Database layer: graph.dao
+ */
+
+
 
 import { BaseDao } from '../base.dao';
 import type {
@@ -17,7 +22,7 @@ import type {
 import type { GraphDatabaseAdapter } from '../providers/database-providers';
 
 /**
- * Graph database repository implementation for Kuzu
+ * Graph database repository implementation for Kuzu.
  *
  * @template T The entity type this repository manages
  * @example
@@ -28,7 +33,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
   }
 
   /**
-   * Execute graph traversal query
+   * Execute graph traversal query.
    *
    * @param startNode
    * @param relationshipType
@@ -74,7 +79,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
   }
 
   /**
-   * Find nodes by label and properties
+   * Find nodes by label and properties.
    *
    * @param label
    * @param properties
@@ -113,7 +118,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
   }
 
   /**
-   * Find relationships between nodes
+   * Find relationships between nodes.
    *
    * @param fromNodeId
    * @param toNodeId
@@ -153,7 +158,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
   }
 
   /**
-   * Create relationship between nodes
+   * Create relationship between nodes.
    *
    * @param fromNodeId
    * @param toNodeId
@@ -215,7 +220,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
   }
 
   /**
-   * Execute Cypher query
+   * Execute Cypher query.
    *
    * @param cypher
    * @param parameters
@@ -243,14 +248,14 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
   }
 
   /**
-   * Enhanced graph-specific operations
+   * Enhanced graph-specific operations.
    */
 
   /**
    * Get node degree (number of connections)
    *
    * @param nodeId
-   * @param direction
+   * @param direction.
    */
   async getNodeDegree(
     nodeId: string | number,
@@ -278,7 +283,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
       // TODO: TypeScript error TS2353 - queryGraph expects any[] but we need named parameters (AI review needed)
       const result = await this.graphAdapter.queryGraph(cypher, [nodeId] as any);
       // TODO: TypeScript error TS2339 - Property 'results' may not exist on GraphResult type (AI review needed)
-      return (result as any).results?.[0]?.degree || 0;
+      return (result as any).results[0]?.degree || 0;
     } catch (error) {
       this.logger.error(`Get node degree failed: ${error}`);
       throw new Error(
@@ -288,7 +293,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
   }
 
   /**
-   * Find shortest path between two nodes
+   * Find shortest path between two nodes.
    *
    * @param fromNodeId
    * @param toNodeId
@@ -331,7 +336,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
   }
 
   /**
-   * Get graph statistics
+   * Get graph statistics.
    */
   async getGraphStats(): Promise<{
     nodeCount: number;
@@ -372,7 +377,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
   }
 
   /**
-   * Override base repository methods for graph-specific implementations
+   * Override base repository methods for graph-specific implementations.
    */
 
   protected mapRowToEntity(row: any): T {
@@ -409,7 +414,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
   }
 
   /**
-   * Execute custom query - override to handle object-based queries
+   * Execute custom query - override to handle object-based queries.
    *
    * @param customQuery
    */
@@ -423,7 +428,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
   }
 
   /**
-   * Helper methods
+   * Helper methods.
    *
    * @param result
    * @param _result

@@ -1,5 +1,5 @@
 /**
- * Monitoring Dashboard Integration for ZenSwarm
+ * Monitoring Dashboard Integration for ZenSwarm.
  *
  * Provides dashboard-ready data export, real-time metrics streaming,
  * and integration points for monitoring systems like Grafana, Prometheus, etc.
@@ -12,6 +12,11 @@
  * - Alert correlation and analysis
  * - Performance trend analysis
  */
+/**
+ * @file Coordination system: monitoring-dashboard.
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { ErrorFactory } from './errors';
@@ -45,12 +50,12 @@ export class MonitoringDashboard extends EventEmitter {
     super();
 
     this.options = {
-      metricsRetentionPeriod: options.metricsRetentionPeriod || 86400000, // 24 hours
-      aggregationInterval: options.aggregationInterval || 60000, // 1 minute
-      enableRealTimeStreaming: options.enableRealTimeStreaming !== false,
-      enableTrendAnalysis: options.enableTrendAnalysis !== false,
-      maxDataPoints: options.maxDataPoints || 1440, // 24 hours at 1-minute intervals
-      exportFormats: options.exportFormats || ['prometheus', 'json', 'grafana'],
+      metricsRetentionPeriod: options?.metricsRetentionPeriod || 86400000, // 24 hours
+      aggregationInterval: options?.aggregationInterval || 60000, // 1 minute
+      enableRealTimeStreaming: options?.enableRealTimeStreaming !== false,
+      enableTrendAnalysis: options?.enableTrendAnalysis !== false,
+      maxDataPoints: options?.maxDataPoints || 1440, // 24 hours at 1-minute intervals
+      exportFormats: options?.exportFormats || ['prometheus', 'json', 'grafana'],
       ...options,
     };
 
@@ -84,7 +89,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Initialize monitoring dashboard
+   * Initialize monitoring dashboard.
    */
   async initialize() {
     try {
@@ -113,7 +118,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Set integration points
+   * Set integration points.
    *
    * @param healthMonitor
    */
@@ -176,31 +181,31 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Record health metric
+   * Record health metric.
    *
    * @param healthResult
    */
   recordHealthMetric(healthResult: any) {
     const timestamp = new Date();
-    const metricKey = `health.${healthResult.name}`;
+    const metricKey = `health.${healthResult?.name}`;
 
     const metric = {
       timestamp,
-      name: healthResult.name,
-      status: healthResult.status,
-      duration: healthResult.duration,
-      category: healthResult.metadata?.category || 'unknown',
-      priority: healthResult.metadata?.priority || 'normal',
-      failureCount: healthResult.failureCount || 0,
+      name: healthResult?.name,
+      status: healthResult?.status,
+      duration: healthResult?.duration,
+      category: healthResult?.metadata?.category || 'unknown',
+      priority: healthResult?.metadata?.priority || 'normal',
+      failureCount: healthResult?.failureCount || 0,
     };
 
     this.addMetric(metricKey, metric);
 
     // Update health status map
-    this.healthStatus.set(healthResult.name, {
-      status: healthResult.status,
+    this.healthStatus.set(healthResult?.name, {
+      status: healthResult?.status,
       lastUpdate: timestamp,
-      failureCount: healthResult.failureCount || 0,
+      failureCount: healthResult?.failureCount || 0,
     });
 
     // Stream to real-time clients
@@ -210,7 +215,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Record alert
+   * Record alert.
    *
    * @param alert
    */
@@ -238,7 +243,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Record recovery metric
+   * Record recovery metric.
    *
    * @param eventType
    * @param event
@@ -266,7 +271,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Record connection metric
+   * Record connection metric.
    *
    * @param eventType
    * @param event
@@ -292,7 +297,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Add metric to storage
+   * Add metric to storage.
    *
    * @param key
    * @param metric
@@ -317,7 +322,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Start metric aggregation
+   * Start metric aggregation.
    */
   startMetricAggregation() {
     this.aggregationTimer = setInterval(() => {
@@ -334,7 +339,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Aggregate metrics for dashboard display
+   * Aggregate metrics for dashboard display.
    */
   aggregateMetrics() {
     const timestamp = new Date();
@@ -386,7 +391,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Aggregate health metrics
+   * Aggregate health metrics.
    *
    * @param aggregations
    * @param timestamp
@@ -438,7 +443,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Aggregate recovery metrics
+   * Aggregate recovery metrics.
    *
    * @param aggregations
    * @param timestamp
@@ -496,7 +501,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Aggregate connection metrics
+   * Aggregate connection metrics.
    *
    * @param aggregations
    * @param timestamp
@@ -542,7 +547,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Aggregate system metrics
+   * Aggregate system metrics.
    *
    * @param aggregations
    * @param timestamp
@@ -572,7 +577,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Update trend analysis
+   * Update trend analysis.
    *
    * @param aggregations
    * @param timestamp
@@ -599,7 +604,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Set up data collection
+   * Set up data collection.
    */
   setupDataCollection() {
     // Collect initial system state
@@ -612,7 +617,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Collect current system state
+   * Collect current system state.
    */
   collectSystemState() {
     try {
@@ -620,9 +625,9 @@ export class MonitoringDashboard extends EventEmitter {
       if (this.healthMonitor) {
         const healthData = this.healthMonitor.exportHealthData();
         this.recordSystemMetric('health_summary', {
-          totalChecks: healthData.healthChecks.length,
-          activeAlerts: healthData.alerts.length,
-          isMonitoring: healthData.stats.isRunning,
+          totalChecks: healthData?.healthChecks.length,
+          activeAlerts: healthData?.alerts.length,
+          isMonitoring: healthData?.stats?.isRunning,
         });
       }
 
@@ -630,9 +635,9 @@ export class MonitoringDashboard extends EventEmitter {
       if (this.recoveryWorkflows) {
         const recoveryData = this.recoveryWorkflows.exportRecoveryData();
         this.recordSystemMetric('recovery_summary', {
-          activeRecoveries: recoveryData.activeRecoveries.length,
-          totalWorkflows: recoveryData.workflows.length,
-          stats: recoveryData.stats,
+          activeRecoveries: recoveryData?.activeRecoveries.length,
+          totalWorkflows: recoveryData?.workflows.length,
+          stats: recoveryData?.stats,
         });
       }
 
@@ -640,9 +645,9 @@ export class MonitoringDashboard extends EventEmitter {
       if (this.connectionManager) {
         const connectionData = this.connectionManager.exportConnectionData();
         this.recordSystemMetric('connection_summary', {
-          totalConnections: Object.keys(connectionData.connections).length,
-          activeConnections: connectionData.stats.activeConnections,
-          stats: connectionData.stats,
+          totalConnections: Object.keys(connectionData?.connections).length,
+          activeConnections: connectionData?.stats?.activeConnections,
+          stats: connectionData?.stats,
         });
       }
     } catch (error) {
@@ -653,7 +658,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Record system metric
+   * Record system metric.
    *
    * @param name
    * @param data
@@ -672,7 +677,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Stream update to real-time clients
+   * Stream update to real-time clients.
    *
    * @param type
    * @param data
@@ -704,7 +709,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Add streaming client
+   * Add streaming client.
    *
    * @param client
    */
@@ -738,7 +743,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Get dashboard data in specified format
+   * Get dashboard data in specified format.
    *
    * @param format
    */
@@ -766,7 +771,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Generate summary statistics
+   * Generate summary statistics.
    */
   generateSummary(): any {
     const now = Date.now();
@@ -800,13 +805,13 @@ export class MonitoringDashboard extends EventEmitter {
     // Get active recoveries from recovery workflows
     if (this.recoveryWorkflows) {
       const recoveryData = this.recoveryWorkflows.exportRecoveryData();
-      activeRecoveries = recoveryData.activeRecoveries.length;
+      activeRecoveries = recoveryData?.activeRecoveries.length;
     }
 
     // Get active connections
     if (this.connectionManager) {
       const connectionData = this.connectionManager.exportConnectionData();
-      activeConnections = connectionData.stats.activeConnections;
+      activeConnections = connectionData?.stats?.activeConnections;
     }
 
     return {
@@ -821,7 +826,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Export health data for dashboard
+   * Export health data for dashboard.
    */
   exportHealthData(): any {
     return {
@@ -833,7 +838,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Export recovery data for dashboard
+   * Export recovery data for dashboard.
    */
   exportRecoveryData(): any {
     return {
@@ -844,7 +849,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Export connection data for dashboard
+   * Export connection data for dashboard.
    */
   exportConnectionData(): any {
     return {
@@ -855,7 +860,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Export system data for dashboard
+   * Export system data for dashboard.
    */
   exportSystemData(): any {
     return {
@@ -865,7 +870,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Export alert data for dashboard
+   * Export alert data for dashboard.
    */
   exportAlertData(): any {
     const recentAlerts = Array.from(this.alerts.values())
@@ -884,20 +889,20 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Export trend data for dashboard
+   * Export trend data for dashboard.
    */
   exportTrendData(): any {
     const trends = {};
 
     for (const [category, trendData] of this.trends) {
-      trends[category] = trendData.slice(-100); // Last 100 data points
+      trends[category] = trendData?.slice(-100); // Last 100 data points
     }
 
     return trends;
   }
 
   /**
-   * Helper methods for data processing
+   * Helper methods for data processing.
    */
 
   getRecentMetrics(category: string, limit = 100): any[] {
@@ -981,7 +986,7 @@ export class MonitoringDashboard extends EventEmitter {
     const connectionData = this.connectionManager.exportConnectionData();
     const healthStatus = {};
 
-    connectionData.connections.forEach((connection) => {
+    connectionData?.connections?.forEach((connection) => {
       healthStatus[connection.id] = {
         status: connection.health?.status || 'unknown',
         latency: connection.health?.latency,
@@ -1020,7 +1025,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Format data for Prometheus
+   * Format data for Prometheus.
    *
    * @param data
    */
@@ -1030,29 +1035,29 @@ export class MonitoringDashboard extends EventEmitter {
     // Health metrics
     metrics.push('# HELP ruv_swarm_health_checks_total Total number of health checks');
     metrics.push('# TYPE ruv_swarm_health_checks_total counter');
-    metrics.push(`ruv_swarm_health_checks_total ${data.health.recentMetrics.length}`);
+    metrics.push(`ruv_swarm_health_checks_total ${data?.health?.recentMetrics.length}`);
 
     // Recovery metrics
     metrics.push('# HELP ruv_swarm_recoveries_total Total number of recoveries');
     metrics.push('# TYPE ruv_swarm_recoveries_total counter');
-    const recoveryTotal = data.recovery.recentMetrics.length;
+    const recoveryTotal = data?.recovery?.recentMetrics.length;
     metrics.push(`ruv_swarm_recoveries_total ${recoveryTotal}`);
 
     // Connection metrics
     metrics.push('# HELP ruv_swarm_connections_active Active connections');
     metrics.push('# TYPE ruv_swarm_connections_active gauge');
-    metrics.push(`ruv_swarm_connections_active ${data.summary.activeConnections}`);
+    metrics.push(`ruv_swarm_connections_active ${data?.summary?.activeConnections}`);
 
     // Alert metrics
     metrics.push('# HELP ruv_swarm_alerts_active Active alerts');
     metrics.push('# TYPE ruv_swarm_alerts_active gauge');
-    metrics.push(`ruv_swarm_alerts_active ${data.summary.activeAlerts}`);
+    metrics.push(`ruv_swarm_alerts_active ${data?.summary?.activeAlerts}`);
 
     return metrics.join('\n');
   }
 
   /**
-   * Format data for Grafana
+   * Format data for Grafana.
    *
    * @param data
    */
@@ -1085,7 +1090,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Acknowledge alert
+   * Acknowledge alert.
    *
    * @param alertId
    * @param acknowledgedBy
@@ -1112,7 +1117,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Get monitoring statistics
+   * Get monitoring statistics.
    */
   getMonitoringStats(): any {
     return {
@@ -1132,7 +1137,7 @@ export class MonitoringDashboard extends EventEmitter {
   }
 
   /**
-   * Cleanup and shutdown
+   * Cleanup and shutdown.
    */
   async shutdown() {
     this.logger.info('Shutting down Monitoring Dashboard');

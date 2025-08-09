@@ -1,9 +1,14 @@
 /**
- * Dependency Injection System Entry Point
+ * Dependency Injection System Entry Point.
  * Provides a comprehensive, type-safe DI container for Claude Code Zen.
  */
 
 // Container implementations - Import for internal use and export
+/**
+ * @file di module exports
+ */
+
+
 import { DIContainer } from './container/di-container';
 import { DIScope } from './container/di-scope';
 import { FactoryProvider } from './providers/factory-provider';

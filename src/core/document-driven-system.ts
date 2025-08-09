@@ -1,5 +1,5 @@
 /**
- * Document-Driven Development System - HIVE SYSTEM CORE
+ * Document-Driven Development System - HIVE SYSTEM CORE.
  *
  * The focused hive system that works with existing document workflows:
  * - Vision → ADRs → PRDs → Epics → Features → Tasks → Code
@@ -7,6 +7,11 @@
  * - Maestro integration where it adds value to document workflow
  * - Respects existing document structure and process
  */
+/**
+ * @file document-driven-system implementation.
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';
@@ -58,7 +63,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Initialize system - respects existing document structure
+   * Initialize system - respects existing document structure.
    */
   async initialize(): Promise<void> {
     logger.info('🚀 Initializing Document-Driven Development System');
@@ -68,7 +73,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Load existing workspace with documents
+   * Load existing workspace with documents.
    *
    * @param workspacePath
    */
@@ -108,7 +113,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Process Visionary document with optional structured approach
+   * Process Visionary document with optional structured approach.
    *
    * @param workspaceId
    * @param docPath
@@ -162,7 +167,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Process Vision document - top level strategic document
+   * Process Vision document - top level strategic document.
    *
    * @param workspaceId
    * @param doc
@@ -182,7 +187,7 @@ export class DocumentDrivenSystem extends EventEmitter {
    * Process ADR (Architecture Decision Record)
    *
    * @param workspaceId
-   * @param doc
+   * @param doc.
    */
   private async processADR(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     logger.info('📐 Processing ADR document');
@@ -195,7 +200,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Process PRD with structured approach
+   * Process PRD with structured approach.
    *
    * @param workspaceId
    * @param doc
@@ -216,7 +221,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Process Epic document
+   * Process Epic document.
    *
    * @param workspaceId
    * @param doc
@@ -232,7 +237,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Process Feature document
+   * Process Feature document.
    *
    * @param workspaceId
    * @param doc
@@ -253,7 +258,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Process Task document - ready for implementation
+   * Process Task document - ready for implementation.
    *
    * @param workspaceId
    * @param doc
@@ -274,7 +279,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Scan workspace for existing documents
+   * Scan workspace for existing documents.
    *
    * @param workspaceId
    */
@@ -310,7 +315,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Determine document type from path
+   * Determine document type from path.
    *
    * @param path
    */
@@ -326,7 +331,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Extract metadata from document content
+   * Extract metadata from document content.
    *
    * @param content
    */
@@ -337,11 +342,11 @@ export class DocumentDrivenSystem extends EventEmitter {
     // Simple extraction - would be more sophisticated
     const lines = content.split('\n');
     for (const line of lines.slice(0, 10)) {
-      if (line.startsWith('Author:')) metadata?.author = line.substring(7).trim();
-      if (line.startsWith('Created:')) metadata?.created = new Date(line.substring(8).trim());
-      if (line.startsWith('Status:')) metadata?.status = line.substring(7).trim();
+      if (line.startsWith('Author:')) metadata.author = line.substring(7).trim();
+      if (line.startsWith('Created:')) metadata.created = new Date(line.substring(8).trim());
+      if (line.startsWith('Status:')) metadata.status = line.substring(7).trim();
       if (line.startsWith('Related:')) {
-        metadata?.relatedDocs = line
+        metadata.relatedDocs = line
           .substring(8)
           .trim()
           .split(',')
@@ -353,7 +358,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Setup file watchers for document changes
+   * Setup file watchers for document changes.
    *
    * @param _workspaceId
    */
@@ -363,7 +368,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Setup document processing handlers
+   * Setup document processing handlers.
    */
   private setupDocumentHandlers(): void {
     this.on('document:created', this.handleDocumentCreated.bind(this));
@@ -390,7 +395,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Get workspace documents
+   * Get workspace documents.
    *
    * @param workspaceId
    */
@@ -400,7 +405,7 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Get all workspaces
+   * Get all workspaces.
    */
   getWorkspaces(): string[] {
     return Array.from(this.workspaces.keys());

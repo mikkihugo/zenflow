@@ -1,8 +1,10 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-core-pattern-integration");
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-core-pattern-integration');
+
 /**
  * @file Pattern Integration Layer
- * Integrates all design patterns with existing swarm coordination system
+ * Integrates all design patterns with existing swarm coordination system.
  */
 
 import { EventEmitter } from 'node:events';
@@ -701,8 +703,8 @@ export class IntegratedPatternSystem extends EventEmitter {
   }
 
   /**
-   * Create neural service with mock implementation
-   * Note: Real neural modules not yet implemented - using mock service
+   * Create neural service with mock implementation.
+   * Note: Real neural modules not yet implemented - using mock service.
    */
   private async createRealNeuralService(): Promise<INeuralService> {
     // TODO: Replace with real neural system components when available
@@ -774,7 +776,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   }
 
   /**
-   * Create real memory service connected to actual memory coordinator
+   * Create real memory service connected to actual memory coordinator.
    */
   private async createRealMemoryService(): Promise<IMemoryService> {
     try {
@@ -792,7 +794,7 @@ export class IntegratedPatternSystem extends EventEmitter {
         },
         delete: async (key: string) => {
           const result = await memoryCoordinator.delete(key);
-          return result?.status === 'success';
+          return result.status === 'success';
         },
         list: async () => {
           const stats = await memoryCoordinator.getStats();
@@ -833,7 +835,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   }
 
   /**
-   * Create real database service connected to DAL Factory
+   * Create real database service connected to DAL Factory.
    */
   private async createRealDatabaseService(): Promise<IDatabaseService> {
     try {
@@ -904,7 +906,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   }
 
   /**
-   * Create real interface service connected to actual interface managers
+   * Create real interface service connected to actual interface managers.
    */
   private async createRealInterfaceService(): Promise<IInterfaceService> {
     try {
@@ -958,7 +960,12 @@ export class IntegratedPatternSystem extends EventEmitter {
       };
     } catch (_error) {
       return {
-        startHTTPMCP: async (): Promise<any> => ({ serverId: '', port: 0, status: 'failed', uptime: 0 }),
+        startHTTPMCP: async (): Promise<any> => ({
+          serverId: '',
+          port: 0,
+          status: 'failed',
+          uptime: 0,
+        }),
         startWebDashboard: async (): Promise<any> => ({
           serverId: '',
           port: 0,
@@ -974,7 +981,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   }
 
   /**
-   * Create real workflow service connected to actual workflow engine
+   * Create real workflow service connected to actual workflow engine.
    */
   private async createRealWorkflowService(): Promise<IWorkflowService> {
     try {
@@ -1065,10 +1072,10 @@ export class ConfigurationFactory {
     const config = ConfigurationFactory?.createDefaultConfig();
 
     // Production-specific overrides
-    config?.swarm?.maxAgents = 100;
-    config?.events?.enableDatabasePersistence = true;
-    config?.commands?.maxConcurrentCommands = 10;
-    config?.protocols?.enabledAdapters = ['mcp-http', 'mcp-stdio', 'websocket', 'rest'];
+    config?.swarm.maxAgents = 100;
+    config?.events.enableDatabasePersistence = true;
+    config?.commands.maxConcurrentCommands = 10;
+    config?.protocols.enabledAdapters = ['mcp-http', 'mcp-stdio', 'websocket', 'rest'];
 
     return config;
   }
@@ -1077,9 +1084,9 @@ export class ConfigurationFactory {
     const config = ConfigurationFactory?.createDefaultConfig();
 
     // Development-specific overrides
-    config?.swarm?.maxAgents = 10;
-    config?.events?.enableDatabasePersistence = false;
-    config?.commands?.maxConcurrentCommands = 3;
+    config?.swarm.maxAgents = 10;
+    config?.events.enableDatabasePersistence = false;
+    config?.commands.maxConcurrentCommands = 3;
 
     return config;
   }

@@ -1,9 +1,14 @@
 /**
- * Unified Progress Bar Component
+ * Unified Progress Bar Component.
  *
  * Consolidates progress bar functionality from both command execution and interactive terminal interfaces.
  * Supports both standard and swarm-specific progress displays.
  */
+/**
+ * @file Interface implementation: progress-bar
+ */
+
+
 
 import { Box, Text } from 'ink';
 import type React from 'react';
@@ -23,7 +28,7 @@ export interface ProgressBarProps {
 }
 
 /**
- * Unified Progress Bar Component
+ * Unified Progress Bar Component.
  *
  * Displays progress with customizable styling and information.
  * Supports different visual variants for different contexts.
@@ -126,7 +131,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   );
 };
 
-// Convenience components for specific use cases
+// Convenience components for specific use cases.
 export const StandardProgressBar: React.FC<Omit<ProgressBarProps, 'variant'>> = (props) => (
   <ProgressBar {...props} variant="standard" />
 );

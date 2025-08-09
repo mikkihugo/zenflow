@@ -1,6 +1,6 @@
 /**
  * @file Recovery Strategies for Memory System Errors
- * Advanced error recovery and fault tolerance mechanisms
+ * Advanced error recovery and fault tolerance mechanisms.
  */
 
 import { EventEmitter } from 'node:events';
@@ -41,7 +41,7 @@ export interface RecoveryResult {
 }
 
 /**
- * Recovery Strategy Registry and Executor
+ * Recovery Strategy Registry and Executor.
  *
  * @example
  */
@@ -59,7 +59,7 @@ export class RecoveryStrategyManager extends EventEmitter {
   }
 
   /**
-   * Register a recovery strategy
+   * Register a recovery strategy.
    *
    * @param strategy
    */
@@ -69,7 +69,7 @@ export class RecoveryStrategyManager extends EventEmitter {
   }
 
   /**
-   * Attempt to recover from an error
+   * Attempt to recover from an error.
    *
    * @param error
    * @param context
@@ -102,7 +102,7 @@ export class RecoveryStrategyManager extends EventEmitter {
 
           const result = await this.executeWithTimeout(strategy, error, context);
 
-          if (result.success) {
+          if (result?.success) {
             this.recordRecovery(error, result);
             this.emit('recoverySucceeded', { error, result });
             return result;
@@ -141,7 +141,7 @@ export class RecoveryStrategyManager extends EventEmitter {
   }
 
   /**
-   * Execute strategy with timeout
+   * Execute strategy with timeout.
    *
    * @param strategy
    * @param error
@@ -173,7 +173,7 @@ export class RecoveryStrategyManager extends EventEmitter {
   }
 
   /**
-   * Find strategies applicable to an error
+   * Find strategies applicable to an error.
    *
    * @param error
    */
@@ -184,7 +184,7 @@ export class RecoveryStrategyManager extends EventEmitter {
   }
 
   /**
-   * Record recovery attempt for analysis
+   * Record recovery attempt for analysis.
    *
    * @param error
    * @param result
@@ -203,7 +203,7 @@ export class RecoveryStrategyManager extends EventEmitter {
   }
 
   /**
-   * Register default recovery strategies
+   * Register default recovery strategies.
    */
   private registerDefaultStrategies(): void {
     // Node Reconnection Strategy
@@ -302,7 +302,7 @@ export class RecoveryStrategyManager extends EventEmitter {
 
               if (data !== null) {
                 const dataKey = JSON.stringify(data);
-                dataVersions.set(dataKey, (dataVersions.get(dataKey) || 0) + 1);
+                dataVersions?.set(dataKey, (dataVersions?.get(dataKey) || 0) + 1);
                 healthyBackends.push({ id, backend, data });
               }
             } catch {
@@ -350,7 +350,7 @@ export class RecoveryStrategyManager extends EventEmitter {
           );
 
           const repairResults = await Promise.all(repairPromises);
-          const successfulRepairs = repairResults.filter((r) => r.status === 'repaired').length;
+          const successfulRepairs = repairResults?.filter((r) => r.status === 'repaired').length;
 
           return {
             success: successfulRepairs > 0,
@@ -580,7 +580,7 @@ export class RecoveryStrategyManager extends EventEmitter {
   }
 
   /**
-   * Get recovery statistics
+   * Get recovery statistics.
    */
   getStats() {
     const totalRecoveries = this.recoveryHistory.length;
@@ -602,7 +602,7 @@ export class RecoveryStrategyManager extends EventEmitter {
   }
 
   /**
-   * Get recommended strategies for an error
+   * Get recommended strategies for an error.
    *
    * @param error
    */

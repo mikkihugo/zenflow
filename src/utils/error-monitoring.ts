@@ -1,9 +1,15 @@
 /**
- * Error Monitoring System
- * Comprehensive error tracking, analysis, and reporting for Claude-Zen
+ * Error Monitoring System.
+ * Comprehensive error tracking, analysis, and reporting for Claude-Zen.
+ */
+/**
+ * @file error-monitoring implementation
  */
 
+
+
 import { EventEmitter } from 'node:events';
+import type { ILogger } from '../core/interfaces/base-interfaces';
 
 export interface ErrorContext {
   component: string;
@@ -66,7 +72,7 @@ export class ErrorMonitoring extends EventEmitter {
   }
 
   /**
-   * Record an error
+   * Record an error.
    *
    * @param error
    * @param context
@@ -101,7 +107,7 @@ export class ErrorMonitoring extends EventEmitter {
   }
 
   /**
-   * Add error pattern monitoring
+   * Add error pattern monitoring.
    *
    * @param pattern
    */
@@ -111,7 +117,7 @@ export class ErrorMonitoring extends EventEmitter {
   }
 
   /**
-   * Remove error pattern
+   * Remove error pattern.
    *
    * @param patternId
    */
@@ -121,14 +127,14 @@ export class ErrorMonitoring extends EventEmitter {
   }
 
   /**
-   * Get current error metrics
+   * Get current error metrics.
    */
   getMetrics(): ErrorMetrics {
     return { ...this.metrics };
   }
 
   /**
-   * Get errors for a specific component
+   * Get errors for a specific component.
    *
    * @param component
    * @param since
@@ -148,7 +154,7 @@ export class ErrorMonitoring extends EventEmitter {
   }
 
   /**
-   * Get error trends over time
+   * Get error trends over time.
    *
    * @param component
    * @param timeWindow
@@ -200,7 +206,7 @@ export class ErrorMonitoring extends EventEmitter {
   }
 
   /**
-   * Clear old errors
+   * Clear old errors.
    *
    * @param maxAge
    */
@@ -226,7 +232,7 @@ export class ErrorMonitoring extends EventEmitter {
   }
 
   /**
-   * Generate error report
+   * Generate error report.
    *
    * @param timeWindow
    */

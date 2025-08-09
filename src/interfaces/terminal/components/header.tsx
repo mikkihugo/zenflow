@@ -1,9 +1,14 @@
 /**
- * Unified Header Component
+ * Unified Header Component.
  *
  * Consolidates functionality from both command execution Header and interactive terminal SwarmHeader.
  * Supports both standard and swarm-specific display modes.
  */
+/**
+ * @file Interface implementation: header
+ */
+
+
 
 import { Box, Text } from 'ink';
 import type React from 'react';
@@ -28,7 +33,7 @@ export interface HeaderProps {
 }
 
 /**
- * Unified Header Component
+ * Unified Header Component.
  *
  * Displays application header with optional swarm status information.
  * Adapts display based on mode (standard command execution or swarm interactive terminal).
@@ -127,7 +132,7 @@ export const Header: React.FC<HeaderProps> = ({
   );
 };
 
-// Export specific variants for convenience
+// Export specific variants for convenience.
 export const StandardHeader: React.FC<Omit<HeaderProps, 'mode'>> = (props) => (
   <Header {...props} mode="standard" />
 );

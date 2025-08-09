@@ -899,14 +899,14 @@ describe('CommunicationEventAdapter', () => {
       expect(healthResults).toHaveProperty('websocket-client-test');
       expect(healthResults).toHaveProperty('mcp-server-test');
 
-      const websocketHealth = healthResults['websocket-client-test'];
+      const websocketHealth = healthResults?.['websocket-client-test'];
       expect(websocketHealth.componentType).toBe('websocket');
       expect(websocketHealth.status).toMatch(/healthy|degraded|unhealthy/);
       expect(websocketHealth.communicationLatency).toBeGreaterThanOrEqual(0);
       expect(websocketHealth.reliability).toBeGreaterThanOrEqual(0);
       expect(websocketHealth.reliability).toBeLessThanOrEqual(1);
 
-      const mcpHealth = healthResults['mcp-server-test'];
+      const mcpHealth = healthResults?.['mcp-server-test'];
       expect(mcpHealth.componentType).toBe('mcp-server');
       expect(mcpHealth.throughput).toBeGreaterThanOrEqual(0);
     });

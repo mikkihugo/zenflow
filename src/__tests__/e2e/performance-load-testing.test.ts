@@ -157,11 +157,11 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
 
             performanceMetrics.push({
               responseTime: executionTime,
-              throughput: result.tasksCompleted / (executionTime / 1000),
-              memoryUsage: result.metrics?.memoryUsage || 0,
-              cpuUsage: result.metrics?.cpuUsage || 0,
-              errorRate: result.errors?.length / result.totalOperations || 0,
-              successRate: result.successfulOperations / result.totalOperations || 1,
+              throughput: result?.tasksCompleted / (executionTime / 1000),
+              memoryUsage: result?.metrics?.memoryUsage || 0,
+              cpuUsage: result?.metrics?.cpuUsage || 0,
+              errorRate: result?.errors?.length / result?.totalOperations || 0,
+              successRate: result?.successfulOperations / result?.totalOperations || 1,
             });
 
             return result;
@@ -178,9 +178,9 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
       expect(totalExecutionTime).toBeLessThan(60000); // Less than 60 seconds
 
       // All workflows should complete successfully
-      results.forEach((result, index) => {
-        expect(result.success).toBe(true);
-        expect(result.workflowId).toBe(`concurrent-workflow-${index}`);
+      results?.forEach((result, index) => {
+        expect(result?.success).toBe(true);
+        expect(result?.workflowId).toBe(`concurrent-workflow-${index}`);
       });
 
       // Analyze performance metrics
@@ -257,23 +257,23 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
         const results = await Promise.all(workflowPromises);
         const executionTime = Date.now() - startTime;
 
-        scalabilityResults.push({
+        scalabilityResults?.push({
           workflows: test.workflows,
           executionTime,
-          successfulWorkflows: results.filter((r) => r.success).length,
+          successfulWorkflows: results?.filter((r) => r.success).length,
           avgWorkflowTime: executionTime / test.workflows,
         });
 
         expect(executionTime).toBeLessThan(test.expectedMaxTime);
-        expect(results.every((r) => r.success)).toBe(true);
+        expect(results?.every((r) => r.success)).toBe(true);
       }
 
       // Analyze scalability curve
-      const scalabilityFactors = scalabilityResults.map((result, index) => {
+      const scalabilityFactors = scalabilityResults?.map((result, index) => {
         if (index === 0) return 1;
-        const baseline = scalabilityResults[0];
-        const expectedTime = baseline.avgWorkflowTime * result.workflows;
-        return result.executionTime / expectedTime;
+        const baseline = scalabilityResults?.[0];
+        const expectedTime = baseline.avgWorkflowTime * result?.workflows;
+        return result?.executionTime / expectedTime;
       });
 
       // Scalability should be near-linear (factor close to 1)
@@ -307,12 +307,12 @@ High-performance workflow ${i} for concurrent execution testing with realistic c
       }, 1000);
 
       const startTime = Date.now();
-      const endTime = startTime + loadTestConfig.duration * 1000;
+      const endTime = startTime + loadTestConfig?.duration * 1000;
       const requests: Promise<any>[] = [];
 
       // Generate sustained load
       while (Date.now() < endTime) {
-        for (let user = 0; user < loadTestConfig.concurrentUsers; user++) {
+        for (let user = 0; user < loadTestConfig?.concurrentUsers; user++) {
           const docContent = `
 # Load Test Document ${Date.now()}-${user}
 
@@ -345,15 +345,17 @@ This document is generated for memory usage testing under sustained load.
         }
 
         // Throttle to target throughput
-        await new Promise((resolve) => setTimeout(resolve, 1000 / loadTestConfig.targetThroughput));
+        await new Promise((resolve) =>
+          setTimeout(resolve, 1000 / loadTestConfig?.targetThroughput)
+        );
       }
 
       clearInterval(memoryMonitor);
 
       // Wait for all requests to complete
       const results = await Promise.allSettled(requests);
-      const successfulRequests = results.filter((r) => r.status === 'fulfilled').length;
-      const failedRequests = results.filter((r) => r.status === 'rejected').length;
+      const successfulRequests = results?.filter((r) => r.status === 'fulfilled').length;
+      const failedRequests = results?.filter((r) => r.status === 'rejected').length;
 
       // Memory analysis
       const initialMemory = memoryMeasurements[0];
@@ -444,7 +446,7 @@ class DocumentProcessor {
           const processingTime = endTime - startTime;
           const memoryUsed = endMemory - startMemory;
 
-          processingResults.push({
+          processingResults?.push({
             size: size.name,
             actualSizeKB: Math.round(actualSize / 1024),
             processingTimeMs: processingTime,
@@ -457,7 +459,7 @@ class DocumentProcessor {
           expect(processingTime).toBeLessThan(10000); // <10 seconds
           expect(memoryUsed).toBeLessThan(100 * 1024 * 1024); // <100MB additional
         } catch (error) {
-          processingResults.push({
+          processingResults?.push({
             size: size.name,
             actualSizeKB: Math.round(actualSize / 1024),
             error: error.message,
@@ -467,10 +469,10 @@ class DocumentProcessor {
       }
 
       // All sizes should process successfully
-      expect(processingResults.every((r) => r.success)).toBe(true);
+      expect(processingResults?.every((r) => r.success)).toBe(true);
 
       // Performance should scale reasonably with size
-      const throughputs = processingResults.map((r) => r.throughputKBps);
+      const throughputs = processingResults?.map((r) => r.throughputKBps);
       const minThroughput = Math.min(...throughputs);
       const maxThroughput = Math.max(...throughputs);
 
@@ -531,11 +533,11 @@ class DocumentProcessor {
               })
               .then((response) => {
                 const responseTime = Date.now() - requestStartTime;
-                responseTimes.push(responseTime);
+                responseTimes?.push(responseTime);
                 return { response, responseTime };
               });
 
-            concurrentRequests.push(request);
+            concurrentRequests?.push(request);
           }
 
           batchPromises.push(Promise.all(concurrentRequests));
@@ -548,20 +550,20 @@ class DocumentProcessor {
 
         // Calculate consistency metrics
         const avgResponseTime =
-          responseTimes.reduce((sum, rt) => sum + rt, 0) / responseTimes.length;
-        const sortedTimes = responseTimes.sort((a, b) => a - b);
+          responseTimes?.reduce((sum, rt) => sum + rt, 0) / responseTimes.length;
+        const sortedTimes = responseTimes?.sort((a, b) => a - b);
         const p50 = sortedTimes[Math.floor(sortedTimes.length * 0.5)];
         const p95 = sortedTimes[Math.floor(sortedTimes.length * 0.95)];
         const p99 = sortedTimes[Math.floor(sortedTimes.length * 0.99)];
         const minTime = Math.min(...responseTimes);
         const maxTime = Math.max(...responseTimes);
         const variance =
-          responseTimes.reduce((sum, rt) => sum + (rt - avgResponseTime) ** 2, 0) /
+          responseTimes?.reduce((sum, rt) => sum + (rt - avgResponseTime) ** 2, 0) /
           responseTimes.length;
         const stdDev = Math.sqrt(variance);
         const coefficientOfVariation = stdDev / avgResponseTime;
 
-        consistencyResults.push({
+        consistencyResults?.push({
           pattern: pattern.name,
           avgResponseTime,
           p50,
@@ -581,8 +583,8 @@ class DocumentProcessor {
       }
 
       // Response times should not degrade significantly with load
-      const lowLoadAvg = consistencyResults[0].avgResponseTime;
-      const highLoadAvg = consistencyResults[2].avgResponseTime;
+      const lowLoadAvg = consistencyResults?.[0]?.avgResponseTime;
+      const highLoadAvg = consistencyResults?.[2]?.avgResponseTime;
       const degradationFactor = highLoadAvg / lowLoadAvg;
 
       expect(degradationFactor).toBeLessThan(3.0); // <3x degradation under high load
@@ -633,8 +635,8 @@ class DocumentProcessor {
       const spikeAvgTime = spikeTime / spikeTest.spikeRequests;
 
       // Analyze spike handling
-      const successfulSpike = spikeResults.filter((r) => !r.error).length;
-      const _failedSpike = spikeResults.filter((r) => r.error).length;
+      const successfulSpike = spikeResults?.filter((r) => !r.error).length;
+      const _failedSpike = spikeResults?.filter((r) => r.error).length;
       const successRate = successfulSpike / spikeTest.spikeRequests;
 
       // Recovery test - return to baseline
@@ -749,23 +751,23 @@ class DocumentProcessor {
         const finalResources = await swarmCoordinator.getResourceMetrics();
 
         // Calculate resource efficiency
-        const allocatedAgents = results.reduce((sum, r) => sum + (r.agentsUsed || 0), 0);
+        const allocatedAgents = results?.reduce((sum, r) => sum + (r.agentsUsed || 0), 0);
         const totalAvailableAgents = test.workflowCount * 3; // Assume 3 agents per workflow optimally
         const resourceEfficiency = Math.min(allocatedAgents / totalAvailableAgents, 1.0);
 
-        resourceResults.push({
+        resourceResults?.push({
           workflowCount: test.workflowCount,
           resourceEfficiency,
           allocatedAgents,
           totalAvailableAgents,
-          successfulWorkflows: results.filter((r) => r.success).length,
+          successfulWorkflows: results?.filter((r) => r.success).length,
           avgResourceUsage:
-            results.reduce((sum, r) => sum + (r.resourceUsage || 0), 0) / results.length,
+            results?.reduce((sum, r) => sum + (r.resourceUsage || 0), 0) / results.length,
         });
 
         // Resource efficiency assertions
         expect(resourceEfficiency).toBeGreaterThan(test.expectedResourceEfficiency);
-        expect(results.every((r) => r.success)).toBe(true);
+        expect(results?.every((r) => r.success)).toBe(true);
 
         // Cleanup verification
         expect(finalResources.unusedResources).toBeGreaterThan(
@@ -774,7 +776,7 @@ class DocumentProcessor {
       }
 
       // Resource efficiency should remain reasonable as load increases
-      const efficiencies = resourceResults.map((r) => r.resourceEfficiency);
+      const efficiencies = resourceResults?.map((r) => r.resourceEfficiency);
       const efficiencyDrop = efficiencies[0] - efficiencies[efficiencies.length - 1];
       expect(efficiencyDrop).toBeLessThan(0.2); // <20% efficiency drop
     });
@@ -834,7 +836,7 @@ class DocumentProcessor {
                 `http://localhost:${WEB_SERVER_PORT}/api/documents/process`,
                 {
                   workspaceId: userWorkspaceId,
-                  documentPath: response1.data.path,
+                  documentPath: response1?.data?.path,
                 }
               );
 
@@ -862,14 +864,14 @@ class DocumentProcessor {
         const totalTime = Date.now() - startTime;
 
         // Calculate metrics
-        const successfulUsers = userResults.filter((r) => r.success).length;
-        const failedUsers = userResults.filter((r) => !r.success).length;
+        const successfulUsers = userResults?.filter((r) => r.success).length;
+        const failedUsers = userResults?.filter((r) => !r.success).length;
         const avgResponseTime =
-          userResults.reduce((sum, r) => sum + r.responseTime, 0) / userResults.length;
-        const maxResponseTime = Math.max(...userResults.map((r) => r.responseTime));
-        const minResponseTime = Math.min(...userResults.map((r) => r.responseTime));
+          userResults?.reduce((sum, r) => sum + r.responseTime, 0) / userResults.length;
+        const maxResponseTime = Math.max(...userResults?.map((r) => r.responseTime));
+        const minResponseTime = Math.min(...userResults?.map((r) => r.responseTime));
 
-        scalabilityResults.push({
+        scalabilityResults?.push({
           users: scenario.users,
           totalTime,
           avgResponseTime,
@@ -888,8 +890,8 @@ class DocumentProcessor {
       }
 
       // Overall scalability analysis
-      const throughputs = scalabilityResults.map((r) => r.throughput);
-      const _avgResponseTimes = scalabilityResults.map((r) => r.avgResponseTime);
+      const throughputs = scalabilityResults?.map((r) => r.throughput);
+      const _avgResponseTimes = scalabilityResults?.map((r) => r.avgResponseTime);
 
       // Throughput should not degrade severely with more users
       const throughputDegradation = throughputs[0] / throughputs[throughputs.length - 1];

@@ -1,18 +1,34 @@
 /**
- * Database-SPARC Bridge
+ * Database-SPARC Bridge.
  *
- * Connects the database-driven product flow with SPARC swarm coordination
+ * Connects the database-driven product flow with SPARC swarm coordination.
  *
  * Flow:
  * 1. DatabaseDrivenSystem generates Features/Tasks
  * 2. DatabaseSPARCBridge receives assignments
  * 3. SPARCSwarmCoordinator processes using SPARC methodology
- * 4. Results are stored back in database
+ * 4. Results are stored back in database.
+ */
+/**
+ * @file Coordination system: database-sparc-bridge
  */
 
+
+
 import { EventEmitter } from 'node:events';
+import type { DatabaseDrivenSystem } from '../core/database-driven-system';
 import { generateId } from '../core/helpers';
 import { createLogger } from '../core/logger';
+import type {
+  FeatureDocumentEntity,
+  TaskDocumentEntity,
+} from '../database/entities/product-entities';
+import type { DocumentManager } from '../database/managers/document-manager';
+import type {
+  SPARCSwarmCoordinator,
+  SPARCSwarmMetrics,
+  SPARCTask,
+} from './swarm/core/sparc-swarm-coordinator';
 
 const logger = createLogger('DatabaseSPARCBridge');
 
@@ -53,7 +69,7 @@ export interface ImplementationResult {
 }
 
 /**
- * Bridge between Database-Driven Product Flow and SPARC Swarm Coordination
+ * Bridge between Database-Driven Product Flow and SPARC Swarm Coordination.
  *
  * @example
  */
@@ -78,7 +94,7 @@ class DatabaseSPARCBridge extends EventEmitter {
   }
 
   /**
-   * Initialize the bridge and establish connections
+   * Initialize the bridge and establish connections.
    */
   async initialize(): Promise<void> {
     logger.info('🌉 Initializing Database-SPARC Bridge');
@@ -96,7 +112,7 @@ class DatabaseSPARCBridge extends EventEmitter {
   }
 
   /**
-   * Assign a Feature to SPARC swarm for implementation
+   * Assign a Feature to SPARC swarm for implementation.
    *
    * @param feature
    */
@@ -129,7 +145,7 @@ class DatabaseSPARCBridge extends EventEmitter {
   }
 
   /**
-   * Assign a Task to SPARC swarm for implementation
+   * Assign a Task to SPARC swarm for implementation.
    *
    * @param task
    */
@@ -160,7 +176,7 @@ class DatabaseSPARCBridge extends EventEmitter {
   }
 
   /**
-   * Get status of all active work assignments
+   * Get status of all active work assignments.
    */
   async getWorkStatus(): Promise<{
     active: WorkAssignment[];
@@ -197,7 +213,7 @@ class DatabaseSPARCBridge extends EventEmitter {
   }
 
   /**
-   * Process completion of SPARC work and update database
+   * Process completion of SPARC work and update database.
    *
    * @param sparcTask
    */
@@ -236,7 +252,7 @@ class DatabaseSPARCBridge extends EventEmitter {
   }
 
   /**
-   * Update the original document with SPARC implementation results
+   * Update the original document with SPARC implementation results.
    *
    * @param assignment
    * @param result
@@ -276,7 +292,7 @@ class DatabaseSPARCBridge extends EventEmitter {
   }
 
   /**
-   * Extract artifacts from completed SPARC task
+   * Extract artifacts from completed SPARC task.
    *
    * @param sparcTask
    */
@@ -288,8 +304,9 @@ class DatabaseSPARCBridge extends EventEmitter {
       architecture: phases.find((p) => p.phase === 'architecture')?.artifacts || [],
       implementation: phases.find((p) => p.phase === 'completion')?.artifacts || [],
       tests:
-        phases.find((p) => p.phase === 'completion')?.artifacts.filter((a) => a.includes('test')) ||
-        [],
+        phases
+          .find((p) => p.phase === 'completion')
+          ?.artifacts?.filter((a) => a.includes('test')) || [],
       documentation: [
         ...(phases.find((p) => p.phase === 'specification')?.artifacts || []),
         ...(phases.find((p) => p.phase === 'architecture')?.artifacts || []),
@@ -298,7 +315,7 @@ class DatabaseSPARCBridge extends EventEmitter {
   }
 
   /**
-   * Calculate metrics from SPARC task execution
+   * Calculate metrics from SPARC task execution.
    *
    * @param sparcTask
    */
@@ -307,23 +324,23 @@ class DatabaseSPARCBridge extends EventEmitter {
     const allAgents = phases.flatMap((p) => p.metrics.agentsInvolved);
 
     // Calculate total time
-    const startTime = phases[0]?.metrics.startTime;
-    const endTime = phases[phases.length - 1]?.metrics.endTime;
+    const startTime = phases[0]?.metrics?.startTime;
+    const endTime = phases[phases.length - 1]?.metrics?.endTime;
     const totalTime = startTime && endTime ? endTime.getTime() - startTime.getTime() : 0;
 
     // Calculate phase times
     const phaseTimes: Record<string, number> = {};
     phases.forEach((phase) => {
-      if (phase.metrics.startTime && phase.metrics.endTime) {
+      if (phase.metrics?.startTime && phase.metrics?.endTime) {
         phaseTimes[phase.phase] =
           phase.metrics.endTime.getTime() - phase.metrics.startTime.getTime();
       }
     });
 
     // Calculate quality score based on validation results
-    const validationScores = phases.map((p) => p.validation.score);
+    const validationScores = phases.map((p) => p.validation?.score || 0);
     const qualityScore =
-      validationScores.reduce((sum, score) => sum + score, 0) / validationScores.length;
+      validationScores.reduce((sum, score) => sum + score, 0) / (validationScores.length || 1);
 
     return {
       totalTimeMs: totalTime,
@@ -334,7 +351,7 @@ class DatabaseSPARCBridge extends EventEmitter {
   }
 
   /**
-   * Generate completion report
+   * Generate completion report.
    *
    * @param sparcTask
    */
@@ -355,20 +372,20 @@ class DatabaseSPARCBridge extends EventEmitter {
 ${phases
   .map(
     (phase) => `
-### ${phase.phase.toUpperCase()} Phase
+### ${phase.phase?.toUpperCase() || 'UNKNOWN'} Phase
 - **Status**: ${phase.status}
-- **Agents**: ${phase.metrics.agentsInvolved.length}
-- **Artifacts**: ${phase.artifacts.length}
-- **Quality Score**: ${(phase.validation.score * 100).toFixed(1)}%
-- **Iterations**: ${phase.metrics.iterationsCount}
+- **Agents**: ${phase.metrics?.agentsInvolved?.length || 0}
+- **Artifacts**: ${phase.artifacts?.length || 0}
+- **Quality Score**: ${((phase.validation?.score || 0) * 100).toFixed(1)}%
+- **Iterations**: ${phase.metrics?.iterationsCount || 0}
 `
   )
   .join('\n')}
 
 ## Overall Results
-- **Total Agents Used**: ${[...new Set(phases.flatMap((p) => p.metrics.agentsInvolved))].length}
-- **Total Artifacts**: ${phases.reduce((sum, p) => sum + p.artifacts.length, 0)}
-- **Average Quality**: ${((phases.reduce((sum, p) => sum + p.validation.score, 0) / phases.length) * 100).toFixed(1)}%
+- **Total Agents Used**: ${[...new Set(phases.flatMap((p) => p.metrics?.agentsInvolved || []))].length}
+- **Total Artifacts**: ${phases.reduce((sum, p) => sum + (p.artifacts?.length || 0), 0)}
+- **Average Quality**: ${((phases.reduce((sum, p) => sum + (p.validation?.score || 0), 0) / (phases.length || 1)) * 100).toFixed(1)}%
 
 ## Methodology Applied
 This implementation used the SPARC methodology (Specification → Pseudocode → Architecture → Refinement → Completion) with distributed swarm coordination.
@@ -381,7 +398,7 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
   }
 
   /**
-   * Setup event handlers for database system
+   * Setup event handlers for database system.
    */
   private setupDatabaseListeners(): void {
     this.databaseSystem.on('document:processed', async (event) => {
@@ -397,7 +414,7 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
   }
 
   /**
-   * Setup event handlers for SPARC swarm
+   * Setup event handlers for SPARC swarm.
    */
   private setupSPARCListeners(): void {
     this.sparcSwarm.on('sparc:cycle:completed', async (event) => {
@@ -422,7 +439,7 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
   }
 
   /**
-   * Determine if a document should be auto-assigned to SPARC swarm
+   * Determine if a document should be auto-assigned to SPARC swarm.
    *
    * @param document
    */
@@ -437,7 +454,7 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
   }
 
   /**
-   * Map document priority to work assignment priority
+   * Map document priority to work assignment priority.
    *
    * @param priority
    */
@@ -452,7 +469,7 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
   }
 
   /**
-   * Get bridge status and metrics
+   * Get bridge status and metrics.
    */
   getStatus(): {
     bridgeStatus: 'active' | 'inactive';
@@ -461,11 +478,12 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
     sparcSwarmStatus: string;
     databaseConnection: boolean;
   } {
+    const sparcMetrics = this.sparcSwarm.getSPARCMetrics();
     return {
       bridgeStatus: 'active',
       activeAssignments: this.activeAssignments.size,
       completedWork: this.completedWork.size,
-      sparcSwarmStatus: this.sparcSwarm.getState(),
+      sparcSwarmStatus: `${sparcMetrics.totalTasks} tasks, ${sparcMetrics.completedTasks} completed`,
       databaseConnection: true, // Would check actual connection
     };
   }

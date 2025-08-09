@@ -1,16 +1,21 @@
 /**
- * Database Service Implementation
+ * Database Service Implementation.
  *
  * Service implementation for database operations, connection management,
  * and data persistence.
  */
+/**
+ * @file database service implementation
+ */
+
+
 
 import type { IService } from '../core/interfaces';
 import type { DatabaseServiceConfig, ServiceOperationOptions } from '../types';
 import { BaseService } from './base-service';
 
 /**
- * Database service implementation
+ * Database service implementation.
  *
  * @example
  */
@@ -21,7 +26,7 @@ export class DatabaseService extends BaseService implements IService {
   private backupTimer?: NodeJS.Timeout;
 
   constructor(config: DatabaseServiceConfig) {
-    super(config.name, config.type, config);
+    super(config?.name, config?.type, config);
 
     // Add database service capabilities
     this.addCapability('connection-management');
@@ -44,7 +49,7 @@ export class DatabaseService extends BaseService implements IService {
     await this.initializeConnection();
 
     // Run migrations if enabled
-    if (config.migrations?.enabled && config.migrations.autoRun) {
+    if (config?.migrations?.enabled && config?.migrations?.autoRun) {
       await this.runMigrations();
     }
 
@@ -57,10 +62,10 @@ export class DatabaseService extends BaseService implements IService {
     const config = this.config as DatabaseServiceConfig;
 
     // Start backup timer if enabled
-    if (config.backup?.enabled && config.backup.interval) {
+    if (config?.backup?.enabled && config?.backup?.interval) {
       this.backupTimer = setInterval(() => {
         this.performBackup();
-      }, config.backup.interval);
+      }, config?.backup?.interval);
     }
 
     this.logger.info(`Database service ${this.name} started successfully`);
@@ -282,7 +287,7 @@ export class DatabaseService extends BaseService implements IService {
   private async runMigrations(): Promise<any> {
     const config = this.config as DatabaseServiceConfig;
 
-    if (!config.migrations?.enabled) {
+    if (!config?.migrations?.enabled) {
       throw new Error('Migrations are not enabled');
     }
 
@@ -336,7 +341,7 @@ export class DatabaseService extends BaseService implements IService {
   private async performBackup(): Promise<any> {
     const config = this.config as DatabaseServiceConfig;
 
-    if (!config.backup?.enabled) {
+    if (!config?.backup?.enabled) {
       throw new Error('Backup is not enabled');
     }
 
@@ -347,8 +352,8 @@ export class DatabaseService extends BaseService implements IService {
       id: backupId,
       timestamp: new Date(),
       size: Math.floor(Math.random() * 1000000) + 500000, // Random size
-      path: config.backup.path
-        ? `${config.backup.path}/${backupId}.sql`
+      path: config?.backup?.path
+        ? `${config?.backup?.path}/${backupId}.sql`
         : `./backups/${backupId}.sql`,
       status: 'completed',
     };
@@ -417,11 +422,11 @@ export class DatabaseService extends BaseService implements IService {
     const config = this.config as DatabaseServiceConfig;
 
     await this.createConnection('default', {
-      host: config.connection?.host || 'localhost',
-      port: config.connection?.port || 5432,
-      database: config.connection?.database || 'claude_zen',
-      username: config.connection?.username || 'postgres',
-      poolSize: config.connection?.poolSize || 10,
+      host: config?.connection?.host || 'localhost',
+      port: config?.connection?.port || 5432,
+      database: config?.connection?.database || 'claude_zen',
+      username: config?.connection?.username || 'postgres',
+      poolSize: config?.connection?.poolSize || 10,
     });
   }
 

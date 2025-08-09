@@ -1,7 +1,12 @@
 /**
- * Swarm coordination tokens for dependency injection
- * Defines tokens for swarm and agent management services
+ * Swarm coordination tokens for dependency injection.
+ * Defines tokens for swarm and agent management services.
  */
+/**
+ * @file swarm-tokens implementation
+ */
+
+
 
 import { createToken } from './token-factory';
 

@@ -1,7 +1,12 @@
 /**
- * Performance Analytics Engine
- * Real-time trend analysis, anomaly detection, and predictive modeling
+ * Performance Analytics Engine.
+ * Real-time trend analysis, anomaly detection, and predictive modeling.
  */
+/**
+ * @file performance-analyzer implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type { CompositeMetrics } from '../core/metrics-collector';
@@ -61,7 +66,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Initialize baseline metrics for comparison
+   * Initialize baseline metrics for comparison.
    */
   private initializeBaselines(): void {
     this.baselineMetrics.set('cpu_usage', 50);
@@ -73,7 +78,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Initialize anomaly detection thresholds
+   * Initialize anomaly detection thresholds.
    */
   private initializeThresholds(): void {
     this.anomalyThresholds.set('cpu_usage', { min: 10, max: 85 });
@@ -85,7 +90,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Start performance analysis
+   * Start performance analysis.
    */
   public startAnalysis(): void {
     this.isAnalyzing = true;
@@ -93,7 +98,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Stop performance analysis
+   * Stop performance analysis.
    */
   public stopAnalysis(): void {
     this.isAnalyzing = false;
@@ -101,7 +106,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Analyze new metrics
+   * Analyze new metrics.
    *
    * @param metrics
    */
@@ -127,7 +132,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Detect anomalies in current metrics
+   * Detect anomalies in current metrics.
    *
    * @param metrics
    */
@@ -203,7 +208,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Check for anomaly in a specific metric
+   * Check for anomaly in a specific metric.
    *
    * @param anomalies
    * @param metricName
@@ -253,7 +258,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Analyze trends in metrics over time
+   * Analyze trends in metrics over time.
    */
   private analyzeTrends(): TrendAnalysis[] {
     if (this.metricsHistory.length < 10) {
@@ -307,7 +312,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Analyze trend for a specific metric
+   * Analyze trend for a specific metric.
    *
    * @param metricName
    * @param values
@@ -358,7 +363,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Identify performance bottlenecks
+   * Identify performance bottlenecks.
    *
    * @param metrics
    */
@@ -458,7 +463,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Calculate overall system health score
+   * Calculate overall system health score.
    *
    * @param metrics
    */
@@ -506,7 +511,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Generate predictive insights
+   * Generate predictive insights.
    */
   private generatePredictions(): {
     capacityUtilization: number;
@@ -531,7 +536,7 @@ export class PerformanceAnalyzer extends EventEmitter {
     );
     if (cpuTrend.direction === 'increasing' && cpuTrend.rate > 0) {
       const timeToCapacity =
-        (90 - recentMetrics[recentMetrics.length - 1].system.cpu.usage) / cpuTrend.rate;
+        (90 - recentMetrics[recentMetrics.length - 1]?.system?.cpu?.usage) / cpuTrend.rate;
       if (timeToCapacity < 300) {
         // 5 minutes
         resourceExhaustion.push('CPU');
@@ -545,7 +550,8 @@ export class PerformanceAnalyzer extends EventEmitter {
     );
     if (memoryTrend.direction === 'increasing' && memoryTrend.rate > 0) {
       const timeToCapacity =
-        (90 - recentMetrics[recentMetrics.length - 1].system.memory.percentage) / memoryTrend.rate;
+        (90 - recentMetrics[recentMetrics.length - 1]?.system?.memory?.percentage) /
+        memoryTrend.rate;
       if (timeToCapacity < 600) {
         // 10 minutes
         resourceExhaustion.push('Memory');
@@ -566,7 +572,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Maintain metrics history size
+   * Maintain metrics history size.
    *
    * @param maxSize
    */
@@ -577,7 +583,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Get historical performance insights
+   * Get historical performance insights.
    *
    * @param timeRange
    * @param timeRange.start
@@ -594,7 +600,7 @@ export class PerformanceAnalyzer extends EventEmitter {
   }
 
   /**
-   * Update baselines based on historical data
+   * Update baselines based on historical data.
    */
   public updateBaselines(): void {
     if (this.metricsHistory.length < 100) return;

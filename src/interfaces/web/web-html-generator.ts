@@ -1,9 +1,14 @@
 /**
- * Web HTML Generator - Inline HTML generation
+ * Web HTML Generator - Inline HTML generation.
  *
  * Generates inline HTML dashboard when no React build is available.
  * Provides fallback UI with basic functionality and theming support.
  */
+/**
+ * @file Interface implementation: web-html-generator
+ */
+
+
 
 import type { WebConfig } from './web-config';
 
@@ -15,7 +20,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate complete inline HTML dashboard
+   * Generate complete inline HTML dashboard.
    */
   generateDashboardHtml(): string {
     return `
@@ -45,7 +50,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate CSS styles based on theme
+   * Generate CSS styles based on theme.
    */
   private generateStyles(): string {
     const isDark = this.config.theme === 'dark';
@@ -175,7 +180,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate HTML header section
+   * Generate HTML header section.
    */
   private generateHeader(): string {
     return `
@@ -190,7 +195,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate main dashboard content
+   * Generate main dashboard content.
    */
   private generateMainContent(): string {
     return `
@@ -206,7 +211,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate system status card
+   * Generate system status card.
    */
   private generateSystemStatusCard(): string {
     return `
@@ -235,7 +240,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate swarms status card
+   * Generate swarms status card.
    */
   private generateSwarmsCard(): string {
     return `
@@ -260,7 +265,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate tasks status card
+   * Generate tasks status card.
    */
   private generateTasksCard(): string {
     return `
@@ -285,7 +290,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate API endpoints card
+   * Generate API endpoints card.
    */
   private generateApiCard(): string {
     return `
@@ -303,7 +308,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate performance metrics card
+   * Generate performance metrics card.
    */
   private generateMetricsCard(): string {
     return `
@@ -328,7 +333,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate quick actions card
+   * Generate quick actions card.
    */
   private generateQuickActionsCard(): string {
     return `
@@ -345,7 +350,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate footer section
+   * Generate footer section.
    */
   private generateFooter(): string {
     return `
@@ -360,7 +365,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate JavaScript for interactivity and real-time updates
+   * Generate JavaScript for interactivity and real-time updates.
    */
   private generateJavaScript(): string {
     return `
@@ -421,7 +426,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate WebSocket code for real-time updates
+   * Generate WebSocket code for real-time updates.
    */
   private generateWebSocketCode(): string {
     return `
@@ -469,7 +474,7 @@ export class WebHtmlGenerator {
   }
 
   /**
-   * Generate polling code for non-real-time updates
+   * Generate polling code for non-real-time updates.
    */
   private generatePollingCode(): string {
     return `

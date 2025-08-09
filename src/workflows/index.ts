@@ -1,10 +1,15 @@
 /**
  * Workflows Domain - Index
- * Exports for workflow execution and management
- * Migrated from plugins to proper domain structure
+ * Exports for workflow execution and management.
+ * Migrated from plugins to proper domain structure.
  */
 
 // Re-export workflow types
+/**
+ * @file workflows module exports
+ */
+
+
 export type {
   WorkflowContext,
   WorkflowDefinition,
@@ -21,7 +26,7 @@ import { WorkflowEngine } from './engine';
 // Workflow utilities
 export const WorkflowUtils = {
   /**
-   * Create a simple workflow definition
+   * Create a simple workflow definition.
    *
    * @param name
    * @param steps
@@ -34,7 +39,7 @@ export const WorkflowUtils = {
   }),
 
   /**
-   * Create a delay step
+   * Create a delay step.
    *
    * @param duration
    * @param name
@@ -46,7 +51,7 @@ export const WorkflowUtils = {
   }),
 
   /**
-   * Create a transform step
+   * Create a transform step.
    *
    * @param input
    * @param transformation
@@ -61,7 +66,7 @@ export const WorkflowUtils = {
   }),
 
   /**
-   * Create a conditional step
+   * Create a conditional step.
    *
    * @param condition
    * @param thenStep
@@ -75,7 +80,7 @@ export const WorkflowUtils = {
   }),
 
   /**
-   * Create a parallel execution step
+   * Create a parallel execution step.
    *
    * @param tasks
    * @param name
@@ -87,7 +92,7 @@ export const WorkflowUtils = {
   }),
 
   /**
-   * Create a loop step
+   * Create a loop step.
    *
    * @param items
    * @param step
@@ -100,7 +105,7 @@ export const WorkflowUtils = {
   }),
 
   /**
-   * Validate workflow definition
+   * Validate workflow definition.
    *
    * @param workflow
    */
@@ -113,7 +118,7 @@ export const WorkflowUtils = {
   },
 
   /**
-   * Get workflow progress percentage
+   * Get workflow progress percentage.
    *
    * @param currentStep
    * @param totalSteps
@@ -129,7 +134,7 @@ export class WorkflowFactory {
   private static instances = new Map<string, WorkflowEngine>();
 
   /**
-   * Create or get a workflow engine instance
+   * Create or get a workflow engine instance.
    *
    * @param config
    * @param instanceKey
@@ -144,7 +149,7 @@ export class WorkflowFactory {
   }
 
   /**
-   * Clear all cached instances
+   * Clear all cached instances.
    */
   static clearInstances(): void {
     for (const [, engine] of WorkflowFactory.instances) {
@@ -154,7 +159,7 @@ export class WorkflowFactory {
   }
 
   /**
-   * Get all active engine instances
+   * Get all active engine instances.
    */
   static getActiveInstances(): string[] {
     return Array.from(WorkflowFactory.instances.keys());

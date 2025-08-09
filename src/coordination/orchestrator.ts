@@ -3,7 +3,11 @@
  */
 
 import { EventEmitter } from 'node:events';
+import type { ILogger } from '../core/interfaces/base-interfaces';
+import type { IDatabase } from '../database/interfaces';
 import type { ISwarmCoordinator } from '../di/tokens/swarm-tokens';
+import type { Agent } from '../types/agent-types';
+import type { Task } from '../types/shared-types';
 import { ZenSwarmStrategy } from './strategies/ruv-swarm.strategy';
 
 @injectable

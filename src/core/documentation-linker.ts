@@ -1,9 +1,14 @@
 /**
  * Unified Documentation Linker - Direct Integration.
  *
- * Links code references to documentation and generates cross-references
+ * Links code references to documentation and generates cross-references.
  * Integrated directly into core without plugin architecture.
  */
+/**
+ * @file documentation-linker implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';
@@ -715,7 +720,7 @@ export class DocumentationLinker extends EventEmitter {
       if (match && match?.[1] && match?.[2]) {
         const text = match?.[1];
         const target = match?.[2];
-        const type = target?.startsWith('http') ? 'external' : 'internal';
+        const type = target.startsWith('http') ? 'external' : 'internal';
         links.push({ type, target, text });
       }
     }

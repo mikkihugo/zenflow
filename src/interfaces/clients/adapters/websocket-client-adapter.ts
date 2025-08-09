@@ -1,5 +1,7 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-clients-adapters-websocket-client-adapter");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-clients-adapters-websocket-client-adapter');
+
 /**
  * WebSocket Client Adapter for UACL (Unified API Client Layer)
  *
@@ -24,7 +26,7 @@ const logger = getLogger("interfaces-clients-adapters-websocket-client-adapter")
  * - WebSocket subprotocol negotiation
  * - Authentication over WebSocket (query, headers, protocols)
  * @example
- * ```typescript
+ * ```typescript.
  * import { WebSocketClientAdapter } from './websocket-client-adapter';
  * import type { WebSocketClientConfig } from './websocket-client-adapter';
  *
@@ -162,7 +164,7 @@ import type {
 } from '../core/interfaces';
 
 /**
- * WebSocket-specific authentication configuration
+ * WebSocket-specific authentication configuration.
  *
  * @example
  */
@@ -174,7 +176,7 @@ export interface WebSocketAuthenticationConfig extends AuthenticationConfig {
 }
 
 /**
- * WebSocket-specific retry configuration
+ * WebSocket-specific retry configuration.
  *
  * @example
  */
@@ -186,7 +188,7 @@ export interface WebSocketRetryConfig extends RetryConfig {
 }
 
 /**
- * WebSocket client configuration extending UACL ClientConfig
+ * WebSocket client configuration extending UACL ClientConfig.
  *
  * @example
  */
@@ -239,7 +241,7 @@ export interface WebSocketClientConfig extends ClientConfig {
 }
 
 /**
- * WebSocket request options
+ * WebSocket request options.
  *
  * @example
  */
@@ -257,7 +259,7 @@ export interface WebSocketRequestOptions extends RequestOptions {
 }
 
 /**
- * WebSocket response wrapper
+ * WebSocket response wrapper.
  *
  * @example
  */
@@ -275,7 +277,7 @@ export interface WebSocketResponse<T = any> extends ClientResponse<T> {
 }
 
 /**
- * WebSocket message interface
+ * WebSocket message interface.
  *
  * @example
  */
@@ -288,7 +290,7 @@ export interface WebSocketMessage<T = any> {
 }
 
 /**
- * WebSocket Client Adapter implementing UACL IClient interface
+ * WebSocket Client Adapter implementing UACL IClient interface.
  *
  * @class WebSocketClientAdapter
  * @augments EventEmitter
@@ -447,7 +449,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   private startTime: number;
 
   /**
-   * Create new WebSocket Client Adapter instance
+   * Create new WebSocket Client Adapter instance.
    *
    * @param {WebSocketClientConfig} config - WebSocket client configuration
    * @param {string} config.name - Unique client identifier
@@ -505,7 +507,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
       ...config,
     };
 
-    this.name = config.name || `ws-client-${Date.now()}`;
+    this.name = config?.name || `ws-client-${Date.now()}`;
     this._connectionId = this.generateConnectionId();
     this.startTime = Date.now();
     this.metrics = this.initializeMetrics();
@@ -646,8 +648,8 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Generic GET request (UACL interface) - WebSocket doesn't have HTTP methods
-   * This is implemented as a request-response pattern over WebSocket
+   * Generic GET request (UACL interface) - WebSocket doesn't have HTTP methods.
+   * This is implemented as a request-response pattern over WebSocket.
    */
   async get<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>> {
     return this.sendRequest('GET', endpoint, undefined, options);
@@ -746,7 +748,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Send typed message with metadata
+   * Send typed message with metadata.
    */
   async sendMessage<T = any>(
     message: WebSocketMessage<T>,
@@ -782,28 +784,28 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Get connection URL
+   * Get connection URL.
    */
   get connectionUrl(): string {
     return this.config.url;
   }
 
   /**
-   * Get queued message count
+   * Get queued message count.
    */
   get queuedMessages(): number {
     return this.messageQueue.length;
   }
 
   /**
-   * Get current connection state
+   * Get current connection state.
    */
   get readyState(): number {
     return this.ws?.readyState || WebSocket.CLOSED;
   }
 
   /**
-   * Get connection ID
+   * Get connection ID.
    */
   get connectionId(): string {
     return this._connectionId;
@@ -899,10 +901,10 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
         const duration = Date.now() - startTime;
 
         resolve({
-          data: responseData.data,
-          status: responseData.status || 200,
-          statusText: responseData.statusText || 'OK',
-          headers: responseData.headers || {},
+          data: responseData?.data,
+          status: responseData?.status || 200,
+          statusText: responseData?.statusText || 'OK',
+          headers: responseData?.headers || {},
           config: options || {},
           metadata: {
             requestId,
@@ -1092,7 +1094,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 }
 
 /**
- * WebSocket Client Factory implementing UACL IClientFactory interface
+ * WebSocket Client Factory implementing UACL IClientFactory interface.
  *
  * @example
  */
@@ -1100,7 +1102,7 @@ export class WebSocketClientFactory {
   private clients = new Map<string, WebSocketClientAdapter>();
 
   /**
-   * Create new WebSocket client instance
+   * Create new WebSocket client instance.
    *
    * @param config
    */
@@ -1111,7 +1113,7 @@ export class WebSocketClientFactory {
   }
 
   /**
-   * Create multiple WebSocket clients
+   * Create multiple WebSocket clients.
    *
    * @param configs
    */
@@ -1120,7 +1122,7 @@ export class WebSocketClientFactory {
   }
 
   /**
-   * Get cached client by name
+   * Get cached client by name.
    *
    * @param name
    */
@@ -1129,14 +1131,14 @@ export class WebSocketClientFactory {
   }
 
   /**
-   * List all clients
+   * List all clients.
    */
   list(): WebSocketClientAdapter[] {
     return Array.from(this.clients.values());
   }
 
   /**
-   * Check if client exists
+   * Check if client exists.
    *
    * @param name
    */
@@ -1145,7 +1147,7 @@ export class WebSocketClientFactory {
   }
 
   /**
-   * Remove client by name
+   * Remove client by name.
    *
    * @param name
    */
@@ -1160,7 +1162,7 @@ export class WebSocketClientFactory {
   }
 
   /**
-   * Health check all clients
+   * Health check all clients.
    */
   async healthCheckAll(): Promise<Map<string, ClientStatus>> {
     const results = new Map<string, ClientStatus>();
@@ -1168,9 +1170,9 @@ export class WebSocketClientFactory {
     for (const [name, client] of this.clients) {
       try {
         const status = await client.healthCheck();
-        results.set(name, status);
+        results?.set(name, status);
       } catch (error) {
-        results.set(name, {
+        results?.set(name, {
           name,
           status: 'unhealthy',
           lastCheck: new Date(),
@@ -1186,7 +1188,7 @@ export class WebSocketClientFactory {
   }
 
   /**
-   * Get metrics for all clients
+   * Get metrics for all clients.
    */
   async getMetricsAll(): Promise<Map<string, ClientMetrics>> {
     const results = new Map<string, ClientMetrics>();
@@ -1194,10 +1196,10 @@ export class WebSocketClientFactory {
     for (const [name, client] of this.clients) {
       try {
         const metrics = await client.getMetrics();
-        results.set(name, metrics);
+        results?.set(name, metrics);
       } catch (_error) {
         // Create error metrics
-        results.set(name, {
+        results?.set(name, {
           name,
           requestCount: 0,
           successCount: 0,
@@ -1215,7 +1217,7 @@ export class WebSocketClientFactory {
   }
 
   /**
-   * Shutdown all clients
+   * Shutdown all clients.
    */
   async shutdown(): Promise<void> {
     const shutdownPromises = Array.from(this.clients.values()).map((client) =>
@@ -1229,7 +1231,7 @@ export class WebSocketClientFactory {
   }
 
   /**
-   * Get active client count
+   * Get active client count.
    */
   getActiveCount(): number {
     return this.clients.size;

@@ -1,14 +1,21 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-clients-adapters-mcp-integration-example");
 /**
- * MCP Integration Example
+ * @file Interface implementation: mcp-integration-example
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-clients-adapters-mcp-integration-example');
+
+/**
+ * MCP Integration Example.
  *
  * Shows how to integrate the UACL MCP adapter with existing MCP infrastructure
- * and provides a migration path from the legacy external MCP client
+ * and provides a migration path from the legacy external MCP client.
  */
 
 import { EventEmitter } from 'node:events';
-import { ExternalMCPClient } from '../../mcp/external-mcp-client.js';
+import { ExternalMCPClient } from '../mcp/external-mcp-client.js';
 import type { IClient } from '../core/interfaces.js';
 import {
   createMCPConfigFromLegacy,
@@ -17,8 +24,8 @@ import {
 } from './mcp-client-adapter.js';
 
 /**
- * MCP Integration Manager
- * Bridges legacy MCP clients with new UACL architecture
+ * MCP Integration Manager.
+ * Bridges legacy MCP clients with new UACL architecture.
  *
  * @example
  */
@@ -35,7 +42,7 @@ export class MCPIntegrationManager {
   }
 
   /**
-   * Initialize both legacy and UACL MCP systems
+   * Initialize both legacy and UACL MCP systems.
    */
   async initialize(): Promise<void> {
     try {
@@ -50,7 +57,7 @@ export class MCPIntegrationManager {
   }
 
   /**
-   * Migrate legacy MCP configurations to UACL
+   * Migrate legacy MCP configurations to UACL.
    */
   private async migrateLegacyToUACL(): Promise<void> {
     const legacyServers = this.legacyClient.getServerStatus();
@@ -70,7 +77,7 @@ export class MCPIntegrationManager {
   }
 
   /**
-   * Create UACL config from legacy server status
+   * Create UACL config from legacy server status.
    *
    * @param serverName
    * @param serverStatus
@@ -108,7 +115,7 @@ export class MCPIntegrationManager {
   }
 
   /**
-   * Setup unified interface that works with both systems
+   * Setup unified interface that works with both systems.
    */
   private setupUnifiedInterface(): void {
     // Create unified tool execution method
@@ -128,10 +135,10 @@ export class MCPIntegrationManager {
             toolName,
             success: true,
             source: 'UACL',
-            result: result.data,
+            result: result?.data,
             metrics: {
-              responseTime: result.metadata?.responseTime,
-              status: result.status,
+              responseTime: result?.metadata?.responseTime,
+              status: result?.status,
             },
           });
         } else {
@@ -141,10 +148,10 @@ export class MCPIntegrationManager {
           this.eventEmitter.emit('tool-executed', {
             serverName,
             toolName,
-            success: result.success,
+            success: result?.success,
             source: 'Legacy',
-            result: result.result,
-            error: result.error,
+            result: result?.result,
+            error: result?.error,
           });
         }
       } catch (error) {
@@ -159,23 +166,23 @@ export class MCPIntegrationManager {
   }
 
   /**
-   * Setup event handlers for monitoring
+   * Setup event handlers for monitoring.
    */
   private setupEventHandlers(): void {
     this.eventEmitter.on('tool-executed', (data) => {
-      if (data.metrics) {
+      if (data?.metrics) {
       }
     });
 
     this.eventEmitter.on('tool-error', (data) => {
       logger.error(
-        `❌ Tool error: ${data.toolName} on ${data.serverName} (${data.source}): ${data.error}`
+        `❌ Tool error: ${data?.toolName} on ${data?.serverName} (${data?.source}): ${data?.error}`
       );
     });
   }
 
   /**
-   * Execute tool with automatic failover between UACL and Legacy
+   * Execute tool with automatic failover between UACL and Legacy.
    *
    * @param serverName
    * @param toolName
@@ -194,8 +201,8 @@ export class MCPIntegrationManager {
         return {
           success: true,
           source: 'UACL',
-          data: result.data,
-          metadata: result.metadata,
+          data: result?.data,
+          metadata: result?.metadata,
         };
       } catch (_error) {
         logger.warn(`⚠️  UACL execution failed for ${toolName}, falling back to legacy...`);
@@ -206,10 +213,10 @@ export class MCPIntegrationManager {
     try {
       const result = await this.legacyClient.executeTool(serverName, toolName, parameters);
       return {
-        success: result.success,
+        success: result?.success,
         source: 'Legacy',
-        data: result.result,
-        error: result.error,
+        data: result?.result,
+        error: result?.error,
       };
     } catch (error) {
       throw new Error(`Both UACL and Legacy execution failed: ${(error as Error).message}`);
@@ -217,7 +224,7 @@ export class MCPIntegrationManager {
   }
 
   /**
-   * Get comprehensive system status
+   * Get comprehensive system status.
    */
   async getSystemStatus(): Promise<{
     legacy: any;
@@ -259,7 +266,7 @@ export class MCPIntegrationManager {
   }
 
   /**
-   * Performance comparison between Legacy and UACL
+   * Performance comparison between Legacy and UACL.
    *
    * @param serverName
    * @param toolName
@@ -325,7 +332,7 @@ export class MCPIntegrationManager {
   }
 
   /**
-   * Gradual migration strategy
+   * Gradual migration strategy.
    *
    * @param migrationConfig
    * @param migrationConfig.servers
@@ -398,7 +405,7 @@ export class MCPIntegrationManager {
   }
 
   /**
-   * Cleanup and shutdown
+   * Cleanup and shutdown.
    */
   async shutdown(): Promise<void> {
     try {
@@ -428,7 +435,7 @@ export class MCPIntegrationManager {
 }
 
 /**
- * Example usage and demonstration
+ * Example usage and demonstration.
  */
 export async function demonstrateMCPIntegration(): Promise<void> {
   const manager = new MCPIntegrationManager();

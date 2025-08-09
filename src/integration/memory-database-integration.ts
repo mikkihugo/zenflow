@@ -1,6 +1,6 @@
 /**
  * @file Integration Example: Enhanced Memory and Database Systems
- * Demonstrates how to use the advanced Memory and Database domain features together
+ * Demonstrates how to use the advanced Memory and Database domain features together.
  */
 
 import { DALFactory } from '../database/index';
@@ -9,7 +9,7 @@ import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
 import { MemorySystemFactory } from '../memory/index';
 
 /**
- * Example: Complete system integration with Memory and Database coordination
+ * Example: Complete system integration with Memory and Database coordination.
  */
 export async function createIntegratedSystem() {
   // Initialize advanced memory system with coordination
@@ -298,7 +298,7 @@ export async function createIntegratedSystem() {
 }
 
 /**
- * Example: Using MCP tools for system management
+ * Example: Using MCP tools for system management.
  */
 export async function demonstrateMCPIntegration() {
   // Import MCP tools
@@ -321,7 +321,7 @@ export async function demonstrateMCPIntegration() {
   });
 
   // Example: Initialize database system via MCP
-  const databaseInitResult = await databaseTools?.[0]?.handler({
+  const databaseInitResult = await databaseTools[0]?.handler({
     engines: [
       {
         id: 'main-vector',
@@ -336,7 +336,7 @@ export async function demonstrateMCPIntegration() {
   });
 
   // Example: Execute optimized query via MCP
-  const queryResult = await databaseTools?.[1]?.handler({
+  const queryResult = await databaseTools[1]?.handler({
     operation: 'vector_search',
     parameters: { vector: [0.1, 0.2, 0.3], options: { limit: 5 } },
     requirements: { consistency: 'eventual', timeout: 10000, priority: 'medium' },
@@ -348,7 +348,7 @@ export async function demonstrateMCPIntegration() {
   // Example: Monitor system performance via MCP
   const monitoringResult = await Promise.all([
     memoryTools[2]?.handler({ duration: 30000, metrics: ['latency', 'memory', 'cache'] }),
-    databaseTools?.[3]?.handler({
+    databaseTools[3]?.handler({
       duration: 30000,
       metrics: ['performance', 'utilization', 'queries'],
     }),
@@ -363,7 +363,7 @@ export async function demonstrateMCPIntegration() {
 }
 
 /**
- * Example: Advanced error handling and recovery
+ * Example: Advanced error handling and recovery.
  */
 export async function demonstrateErrorHandling() {
   const system = await createIntegratedSystem();
@@ -404,7 +404,7 @@ export async function demonstrateErrorHandling() {
 }
 
 /**
- * Example: Performance optimization workflow
+ * Example: Performance optimization workflow.
  */
 export async function demonstrateOptimization() {
   const system = await createIntegratedSystem();

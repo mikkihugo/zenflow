@@ -1,7 +1,7 @@
 /**
  * @file Advanced CLI Commands Integration
  *
- * Provides advanced CLI command implementations that integrate with the existing
+ * Provides advanced CLI command implementations that integrate with the existing.
  * command execution system. Uses shared abstractions to avoid cross-interface dependencies.
  */
 
@@ -9,9 +9,9 @@ import type { CommandContext, CommandResult } from '../shared/index';
 import { CliCommandAdapter } from './adapters/cli-command-adapter';
 
 /**
- * Advanced CLI Commands Handler
+ * Advanced CLI Commands Handler.
  *
- * Implements the advanced CLI commands while maintaining compatibility
+ * Implements the advanced CLI commands while maintaining compatibility.
  * with the existing terminal interface system. Uses adapter pattern
  * to avoid cross-interface dependencies.
  *
@@ -25,7 +25,7 @@ export class AdvancedCLICommands {
   }
 
   /**
-   * Execute advanced CLI command
+   * Execute advanced CLI command.
    *
    * @param commandName
    * @param args
@@ -43,7 +43,7 @@ export class AdvancedCLICommands {
   }
 
   /**
-   * Check if command is an advanced CLI command
+   * Check if command is an advanced CLI command.
    *
    * @param commandName
    */
@@ -52,14 +52,14 @@ export class AdvancedCLICommands {
   }
 
   /**
-   * Get available commands
+   * Get available commands.
    */
   getAvailableCommands(): string[] {
     return this.commandAdapter.getAvailableCommands();
   }
 
   /**
-   * Get help for advanced commands
+   * Get help for advanced commands.
    *
    * @param command
    */

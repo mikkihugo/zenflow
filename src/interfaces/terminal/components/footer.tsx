@@ -1,9 +1,14 @@
 /**
- * Unified Footer Component
+ * Unified Footer Component.
  *
  * Displays navigation help and status information at the bottom of the terminal interface.
  * Adapts content based on current mode and available actions.
  */
+/**
+ * @file Interface implementation: footer
+ */
+
+
 
 import { Box, Text } from 'ink';
 import type React from 'react';
@@ -17,7 +22,7 @@ export interface FooterProps {
 }
 
 /**
- * Unified Footer Component
+ * Unified Footer Component.
  *
  * Provides context-appropriate navigation and help information.
  *
@@ -87,7 +92,7 @@ export const Footer: React.FC<FooterProps> = ({
   );
 };
 
-// Specialized footer variants
+// Specialized footer variants.
 export const CommandExecutionFooter: React.FC<{ status?: string }> = ({ status }) => (
   <Footer mode="command" status={status} />
 );

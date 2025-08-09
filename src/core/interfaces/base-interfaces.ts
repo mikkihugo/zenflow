@@ -1,17 +1,17 @@
 /**
- * Unified Base Interfaces for Interface Contract Standardization
+ * Unified Base Interfaces for Interface Contract Standardization.
  *
- * This file provides standardized base interfaces that all domain-specific
+ * This file provides standardized base interfaces that all domain-specific.
  * implementations must conform to, eliminating interface contract mismatches.
  *
  * @file Core base interfaces for cross-domain compatibility
  */
 
 // Re-export core token interfaces for consistency
-export { IConfig, IDatabase, IEventBus, ILogger } from '../../di/tokens/core-tokens';
+export { IConfig, IDatabase, IEventBus, ILogger } from '../di/tokens/core-tokens';
 
 /**
- * Base database adapter interface that all database implementations must follow
+ * Base database adapter interface that all database implementations must follow.
  *
  * @example
  */
@@ -35,7 +35,7 @@ export interface DatabaseAdapter {
 }
 
 /**
- * Standardized query result interface
+ * Standardized query result interface.
  *
  * @example
  */
@@ -55,7 +55,7 @@ export interface QueryResult {
 }
 
 /**
- * Standardized execute result interface
+ * Standardized execute result interface.
  *
  * @example
  */
@@ -69,7 +69,7 @@ export interface ExecuteResult {
 }
 
 /**
- * Standardized transaction context interface
+ * Standardized transaction context interface.
  *
  * @example
  */
@@ -85,7 +85,7 @@ export interface TransactionContext {
 }
 
 /**
- * Standardized schema information interface
+ * Standardized schema information interface.
  *
  * @example
  */
@@ -117,7 +117,7 @@ export interface SchemaInfo {
 }
 
 /**
- * Standardized connection statistics interface
+ * Standardized connection statistics interface.
  *
  * @example
  */
@@ -135,7 +135,7 @@ export interface ConnectionStats {
 }
 
 /**
- * Base memory store interface that all memory implementations must follow
+ * Base memory store interface that all memory implementations must follow.
  *
  * @example
  */
@@ -157,7 +157,7 @@ export interface IMemoryStore {
 }
 
 /**
- * Memory store options interface
+ * Memory store options interface.
  *
  * @example
  */
@@ -173,7 +173,7 @@ export interface StoreOptions {
 }
 
 /**
- * Memory store statistics interface
+ * Memory store statistics interface.
  *
  * @example
  */
@@ -189,7 +189,7 @@ export interface MemoryStats {
 }
 
 /**
- * Base neural network interface for WASM compatibility
+ * Base neural network interface for WASM compatibility.
  *
  * @example
  */
@@ -209,7 +209,7 @@ export interface NeuralNetworkInterface {
 }
 
 /**
- * Neural network configuration interface
+ * Neural network configuration interface.
  *
  * @example
  */
@@ -225,7 +225,7 @@ export interface NeuralConfig {
 }
 
 /**
- * Training data interface
+ * Training data interface.
  *
  * @example
  */
@@ -237,7 +237,7 @@ export interface TrainingData {
 }
 
 /**
- * Training options interface
+ * Training options interface.
  *
  * @example
  */
@@ -251,7 +251,7 @@ export interface TrainingOptions {
 }
 
 /**
- * Training result interface
+ * Training result interface.
  *
  * @example
  */
@@ -267,7 +267,7 @@ export interface TrainingResult {
 }
 
 /**
- * Model state interface for serialization
+ * Model state interface for serialization.
  *
  * @example
  */
@@ -283,7 +283,7 @@ export interface ModelState {
 }
 
 /**
- * Network performance metrics interface
+ * Network performance metrics interface.
  *
  * @example
  */
@@ -299,7 +299,7 @@ export interface NetworkMetrics {
 }
 
 /**
- * WASM neural binding interface for type safety
+ * WASM neural binding interface for type safety.
  *
  * @example
  */

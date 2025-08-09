@@ -1,7 +1,7 @@
 /**
- * Coordination Event Manager Factory
+ * Coordination Event Manager Factory.
  *
- * Factory implementation for creating CoordinationEventAdapter instances
+ * Factory implementation for creating CoordinationEventAdapter instances.
  * following the UEL factory pattern and integrating with the main UELFactory.
  *
  * This factory specializes in creating coordination event managers for:
@@ -10,9 +10,14 @@
  * - Task distribution and execution tracking
  * - Inter-swarm communication and protocol management
  */
+/**
+ * @file Interface implementation: coordination-event-factory.
+ */
 
-import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces';
-import { createLogger } from '../../../core/logger';
+
+
+import type { IConfig, ILogger } from '../core/interfaces/base-interfaces';
+import { createLogger } from '../core/logger';
 import type { IEventManager, IEventManagerFactory } from '../core/interfaces';
 import { EventManagerTypes } from '../core/interfaces';
 import type { CoordinationEventAdapterConfig } from './coordination-event-adapter';
@@ -22,7 +27,7 @@ import {
 } from './coordination-event-adapter';
 
 /**
- * Coordination Event Manager Factory
+ * Coordination Event Manager Factory.
  *
  * Creates and manages CoordinationEventAdapter instances for coordination-level event management.
  * Integrates with the UEL factory system to provide unified access to coordination events.
@@ -42,12 +47,12 @@ export class CoordinationEventManagerFactory
   }
 
   /**
-   * Create a new CoordinationEventAdapter instance
+   * Create a new CoordinationEventAdapter instance.
    *
    * @param config
    */
   async create(config: CoordinationEventAdapterConfig): Promise<IEventManager> {
-    this.logger.info(`Creating coordination event manager: ${config.name}`);
+    this.logger.info(`Creating coordination event manager: ${config?.name}`);
 
     try {
       // Validate configuration
@@ -57,18 +62,18 @@ export class CoordinationEventManagerFactory
       const adapter = new CoordinationEventAdapter(config);
 
       // Store instance for management
-      this.instances.set(config.name, adapter);
+      this.instances.set(config?.name, adapter);
 
-      this.logger.info(`Coordination event manager created successfully: ${config.name}`);
+      this.logger.info(`Coordination event manager created successfully: ${config?.name}`);
       return adapter;
     } catch (error) {
-      this.logger.error(`Failed to create coordination event manager ${config.name}:`, error);
+      this.logger.error(`Failed to create coordination event manager ${config?.name}:`, error);
       throw error;
     }
   }
 
   /**
-   * Create multiple coordination event managers
+   * Create multiple coordination event managers.
    *
    * @param configs
    */
@@ -81,13 +86,13 @@ export class CoordinationEventManagerFactory
     const managers: IEventManager[] = [];
     const errors: Error[] = [];
 
-    results.forEach((result, index) => {
-      if (result.status === 'fulfilled') {
-        managers.push(result.value);
+    results?.forEach((result, index) => {
+      if (result?.status === 'fulfilled') {
+        managers.push(result?.value);
       } else {
         errors.push(
           new Error(
-            `Failed to create coordination manager ${configs[index].name}: ${result.reason}`
+            `Failed to create coordination manager ${configs?.[index]?.name}: ${result?.reason}`
           )
         );
       }
@@ -105,7 +110,7 @@ export class CoordinationEventManagerFactory
   }
 
   /**
-   * Get existing coordination event manager by name
+   * Get existing coordination event manager by name.
    *
    * @param name
    */
@@ -114,14 +119,14 @@ export class CoordinationEventManagerFactory
   }
 
   /**
-   * List all coordination event managers
+   * List all coordination event managers.
    */
   list(): IEventManager[] {
     return Array.from(this.instances.values());
   }
 
   /**
-   * Check if coordination event manager exists
+   * Check if coordination event manager exists.
    *
    * @param name
    */
@@ -130,7 +135,7 @@ export class CoordinationEventManagerFactory
   }
 
   /**
-   * Remove coordination event manager
+   * Remove coordination event manager.
    *
    * @param name
    */
@@ -159,7 +164,7 @@ export class CoordinationEventManagerFactory
   }
 
   /**
-   * Health check all coordination event managers
+   * Health check all coordination event managers.
    */
   async healthCheckAll(): Promise<Map<string, any>> {
     const results = new Map<string, any>();
@@ -167,9 +172,9 @@ export class CoordinationEventManagerFactory
     const healthPromises = Array.from(this.instances.entries()).map(async ([name, manager]) => {
       try {
         const status = await manager.healthCheck();
-        results.set(name, status);
+        results?.set(name, status);
       } catch (error) {
-        results.set(name, {
+        results?.set(name, {
           name: manager.name,
           type: manager.type,
           status: 'unhealthy',
@@ -188,7 +193,7 @@ export class CoordinationEventManagerFactory
   }
 
   /**
-   * Get metrics from all coordination event managers
+   * Get metrics from all coordination event managers.
    */
   async getMetricsAll(): Promise<Map<string, any>> {
     const results = new Map<string, any>();
@@ -196,7 +201,7 @@ export class CoordinationEventManagerFactory
     const metricsPromises = Array.from(this.instances.entries()).map(async ([name, manager]) => {
       try {
         const metrics = await manager.getMetrics();
-        results.set(name, metrics);
+        results?.set(name, metrics);
       } catch (error) {
         this.logger.warn(`Failed to get metrics for coordination event manager ${name}:`, error);
       }
@@ -207,7 +212,7 @@ export class CoordinationEventManagerFactory
   }
 
   /**
-   * Start all coordination event managers
+   * Start all coordination event managers.
    */
   async startAll(): Promise<void> {
     this.logger.info(`Starting ${this.instances.size} coordination event managers`);
@@ -227,7 +232,7 @@ export class CoordinationEventManagerFactory
   }
 
   /**
-   * Stop all coordination event managers
+   * Stop all coordination event managers.
    */
   async stopAll(): Promise<void> {
     this.logger.info(`Stopping ${this.instances.size} coordination event managers`);
@@ -247,7 +252,7 @@ export class CoordinationEventManagerFactory
   }
 
   /**
-   * Shutdown the factory and all managed instances
+   * Shutdown the factory and all managed instances.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down CoordinationEventManagerFactory');
@@ -273,14 +278,14 @@ export class CoordinationEventManagerFactory
   }
 
   /**
-   * Get active manager count
+   * Get active manager count.
    */
   getActiveCount(): number {
     return Array.from(this.instances.values()).filter((manager) => manager.isRunning()).length;
   }
 
   /**
-   * Get factory metrics
+   * Get factory metrics.
    */
   getFactoryMetrics() {
     const runningManagers = this.getActiveCount();
@@ -294,40 +299,40 @@ export class CoordinationEventManagerFactory
   }
 
   /**
-   * Validate coordination event manager configuration
+   * Validate coordination event manager configuration.
    *
    * @param config
    */
   private validateConfig(config: CoordinationEventAdapterConfig): void {
-    if (!config.name || typeof config.name !== 'string') {
+    if (!config?.name || typeof config?.name !== 'string') {
       throw new Error('Coordination event manager configuration must have a valid name');
     }
 
-    if (config.type !== EventManagerTypes.COORDINATION) {
+    if (config?.type !== EventManagerTypes.COORDINATION) {
       throw new Error(
         `Coordination event manager must have type '${EventManagerTypes.COORDINATION}'`
       );
     }
 
     // Validate coordination-specific configuration
-    if (config.swarmCoordination?.enabled === undefined) {
-      config.swarmCoordination = { ...config.swarmCoordination, enabled: true };
+    if (config?.swarmCoordination?.enabled === undefined) {
+      config.swarmCoordination = { ...config?.swarmCoordination, enabled: true };
     }
 
-    if (config.coordination?.enabled && !config.coordination.correlationTTL) {
+    if (config?.coordination?.enabled && !config?.coordination?.correlationTTL) {
       throw new Error('Coordination correlation TTL must be specified when correlation is enabled');
     }
 
     if (
-      config.agentHealthMonitoring?.enabled &&
-      !config.agentHealthMonitoring.healthCheckInterval
+      config?.agentHealthMonitoring?.enabled &&
+      !config?.agentHealthMonitoring?.healthCheckInterval
     ) {
       throw new Error(
         'Health check interval must be specified when agent health monitoring is enabled'
       );
     }
 
-    if (config.swarmOptimization?.enabled && !config.swarmOptimization.performanceThresholds) {
+    if (config?.swarmOptimization?.enabled && !config?.swarmOptimization?.performanceThresholds) {
       throw new Error(
         'Performance thresholds must be specified when swarm optimization is enabled'
       );
@@ -335,8 +340,8 @@ export class CoordinationEventManagerFactory
 
     // Validate coordinator list
     if (
-      config.swarmCoordination?.coordinators &&
-      !Array.isArray(config.swarmCoordination.coordinators)
+      config?.swarmCoordination?.coordinators &&
+      !Array.isArray(config?.swarmCoordination?.coordinators)
     ) {
       throw new Error('Swarm coordinators must be an array');
     }
@@ -344,11 +349,11 @@ export class CoordinationEventManagerFactory
 }
 
 /**
- * Convenience factory functions for coordination event managers
+ * Convenience factory functions for coordination event managers.
  */
 
 /**
- * Create a coordination event manager with default configuration
+ * Create a coordination event manager with default configuration.
  *
  * @param name
  * @param overrides
@@ -364,7 +369,7 @@ export async function createCoordinationEventManager(
 }
 
 /**
- * Create coordination event manager for swarm coordination only
+ * Create coordination event manager for swarm coordination only.
  *
  * @param name
  */
@@ -413,7 +418,7 @@ export async function createSwarmCoordinationEventManager(
 }
 
 /**
- * Create coordination event manager for agent management only
+ * Create coordination event manager for agent management only.
  *
  * @param name
  */
@@ -458,7 +463,7 @@ export async function createAgentManagementEventManager(
 }
 
 /**
- * Create coordination event manager for task orchestration only
+ * Create coordination event manager for task orchestration only.
  *
  * @param name
  */
@@ -503,7 +508,7 @@ export async function createTaskOrchestrationEventManager(
 }
 
 /**
- * Create coordination event manager for protocol management only
+ * Create coordination event manager for protocol management only.
  *
  * @param name
  */
@@ -540,7 +545,7 @@ export async function createProtocolManagementEventManager(
 }
 
 /**
- * Create comprehensive coordination event manager for full coordination monitoring
+ * Create comprehensive coordination event manager for full coordination monitoring.
  *
  * @param name
  */
@@ -634,7 +639,7 @@ export async function createComprehensiveCoordinationEventManager(
 }
 
 /**
- * Create high-performance coordination event manager for production workloads
+ * Create high-performance coordination event manager for production workloads.
  *
  * @param name
  */
@@ -721,7 +726,7 @@ export async function createHighPerformanceCoordinationEventManager(
 }
 
 /**
- * Create development coordination event manager with enhanced debugging
+ * Create development coordination event manager with enhanced debugging.
  *
  * @param name
  */

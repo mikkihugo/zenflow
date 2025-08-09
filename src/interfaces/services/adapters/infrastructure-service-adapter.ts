@@ -3,12 +3,12 @@
  *
  * Unified Service Layer adapter for infrastructure-related services, providing
  * a consistent interface to ClaudeZenFacade, IntegratedPatternSystem, and
- * core infrastructure services while maintaining full backward compatibility
+ * core infrastructure services while maintaining full backward compatibility.
  * and adding enhanced orchestration, resource management, configuration management,
  * and performance metrics.
  *
  * This adapter follows the exact same patterns as other USL service adapters,
- * implementing the IService interface and providing unified configuration
+ * implementing the IService interface and providing unified configuration.
  * management for infrastructure operations across Claude-Zen.
  */
 
@@ -21,13 +21,13 @@ import {
   type INeuralService,
   type ISwarmService,
   type IWorkflowService,
-} from '../../../core/facade';
+} from '../core/facade';
 import {
   ConfigurationFactory,
   IntegratedPatternSystem,
   type IntegrationConfig,
-} from '../../../core/pattern-integration';
-import { createLogger, type Logger } from '../../../utils/logger';
+} from '../core/pattern-integration';
+import { createLogger, type Logger } from '../utils/logger';
 import type {
   IService,
   ServiceDependencyConfig,
@@ -39,10 +39,16 @@ import type {
   ServiceOperationResponse,
   ServiceStatus,
 } from '../core/interfaces';
+import type {
+  ServiceEnvironment,
+  ServiceError,
+  ServicePriority,
+  ServiceType,
+} from '../interfaces/services/types';
 import type { InfrastructureServiceConfig } from '../types';
 
 /**
- * Infrastructure service adapter configuration extending USL InfrastructureServiceConfig
+ * Infrastructure service adapter configuration extending USL InfrastructureServiceConfig.
  *
  * @example
  */
@@ -132,7 +138,7 @@ export interface InfrastructureServiceAdapterConfig extends InfrastructureServic
 }
 
 /**
- * Infrastructure operation metrics for performance monitoring
+ * Infrastructure operation metrics for performance monitoring.
  *
  * @example
  */
@@ -153,7 +159,7 @@ interface InfrastructureOperationMetrics {
 }
 
 /**
- * Service orchestration entry
+ * Service orchestration entry.
  *
  * @example
  */
@@ -173,7 +179,7 @@ interface ServiceOrchestrationEntry {
 }
 
 /**
- * Configuration version entry
+ * Configuration version entry.
  *
  * @example
  */
@@ -186,7 +192,7 @@ interface ConfigurationVersion {
 }
 
 /**
- * Resource tracking entry
+ * Resource tracking entry.
  *
  * @example
  */
@@ -201,10 +207,10 @@ interface ResourceTrackingEntry {
 }
 
 /**
- * Unified Infrastructure Service Adapter
+ * Unified Infrastructure Service Adapter.
  *
  * Provides a unified interface to ClaudeZenFacade, IntegratedPatternSystem,
- * and core infrastructure services while implementing the IService interface
+ * and core infrastructure services while implementing the IService interface.
  * for USL compatibility.
  *
  * Features:
@@ -253,7 +259,7 @@ export class InfrastructureServiceAdapter implements IService {
     { failures: number; lastFailure?: Date; open: boolean }
   >();
 
-  // Performance optimization
+  // Performance optimization.
   private cache = new Map<string, { data: any; timestamp: Date; ttl: number }>();
   private performanceStats = {
     lastHealthCheck: new Date(),
@@ -265,8 +271,8 @@ export class InfrastructureServiceAdapter implements IService {
   };
 
   constructor(config: InfrastructureServiceAdapterConfig) {
-    this.name = config.name;
-    this.type = config.type;
+    this.name = config?.name;
+    this.type = config?.type;
     this.config = {
       // Default configuration values
       facade: {
@@ -278,7 +284,7 @@ export class InfrastructureServiceAdapter implements IService {
         systemStatusInterval: 30000,
         mockServices: false,
         enableBatchOperations: true,
-        ...config.facade,
+        ...config?.facade,
       },
       patternIntegration: {
         enabled: true,
@@ -289,7 +295,7 @@ export class InfrastructureServiceAdapter implements IService {
         enableAgentSystem: true,
         maxAgents: 20,
         enableAutoOptimization: true,
-        ...config.patternIntegration,
+        ...config?.patternIntegration,
       },
       orchestration: {
         enableServiceDiscovery: true,
@@ -299,7 +305,7 @@ export class InfrastructureServiceAdapter implements IService {
         serviceStartupTimeout: 30000,
         shutdownGracePeriod: 10000,
         enableServiceMesh: true,
-        ...config.orchestration,
+        ...config?.orchestration,
       },
       resourceManagement: {
         enableResourceTracking: true,
@@ -310,7 +316,7 @@ export class InfrastructureServiceAdapter implements IService {
         networkThreshold: 0.8,
         cleanupInterval: 300000,
         enableGarbageCollection: true,
-        ...config.resourceManagement,
+        ...config?.resourceManagement,
       },
       configManagement: {
         enableHotReload: true,
@@ -320,7 +326,7 @@ export class InfrastructureServiceAdapter implements IService {
         backupConfigs: true,
         maxConfigHistory: 50,
         configEncryption: false,
-        ...config.configManagement,
+        ...config?.configManagement,
       },
       eventCoordination: {
         enableCentralizedEvents: true,
@@ -330,7 +336,7 @@ export class InfrastructureServiceAdapter implements IService {
         eventRetentionPeriod: 3600000,
         enableEventFiltering: true,
         enableEventAggregation: true,
-        ...config.eventCoordination,
+        ...config?.eventCoordination,
       },
       healthMonitoring: {
         enableAdvancedChecks: true,
@@ -343,7 +349,7 @@ export class InfrastructureServiceAdapter implements IService {
           resourceUsage: 0.8,
         },
         enablePredictiveMonitoring: true,
-        ...config.healthMonitoring,
+        ...config?.healthMonitoring,
       },
       ...config,
     };
@@ -357,7 +363,7 @@ export class InfrastructureServiceAdapter implements IService {
   // ============================================
 
   /**
-   * Initialize the infrastructure service adapter and its dependencies
+   * Initialize the infrastructure service adapter and its dependencies.
    *
    * @param config
    */
@@ -464,7 +470,7 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   /**
-   * Start the infrastructure service adapter
+   * Start the infrastructure service adapter.
    */
   async start(): Promise<void> {
     this.logger.info(`Starting infrastructure service adapter: ${this.name}`);
@@ -496,7 +502,7 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   /**
-   * Stop the infrastructure service adapter
+   * Stop the infrastructure service adapter.
    */
   async stop(): Promise<void> {
     this.logger.info(`Stopping infrastructure service adapter: ${this.name}`);
@@ -527,7 +533,7 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   /**
-   * Destroy the infrastructure service adapter and clean up resources
+   * Destroy the infrastructure service adapter and clean up resources.
    */
   async destroy(): Promise<void> {
     this.logger.info(`Destroying infrastructure service adapter: ${this.name}`);
@@ -574,7 +580,7 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   /**
-   * Get service status information
+   * Get service status information.
    */
   async getStatus(): Promise<ServiceStatus> {
     const now = new Date();
@@ -643,7 +649,7 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   /**
-   * Get service performance metrics
+   * Get service performance metrics.
    */
   async getMetrics(): Promise<ServiceMetrics> {
     const now = new Date();
@@ -689,7 +695,7 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   /**
-   * Perform health check on the service
+   * Perform health check on the service.
    */
   async healthCheck(): Promise<boolean> {
     this.performanceStats.totalHealthChecks++;
@@ -793,7 +799,7 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   /**
-   * Update service configuration
+   * Update service configuration.
    *
    * @param config
    */
@@ -829,23 +835,23 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   /**
-   * Validate service configuration
+   * Validate service configuration.
    *
    * @param config
    */
   async validateConfig(config: InfrastructureServiceAdapterConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config.name || !config.type) {
+      if (!config?.name || !config?.type) {
         this.logger.error('Configuration missing required fields: name or type');
         return false;
       }
 
       // Validate facade configuration
       if (
-        config.facade?.enabled &&
-        config.facade.systemStatusInterval &&
-        config.facade.systemStatusInterval < 1000
+        config?.facade?.enabled &&
+        config?.facade?.systemStatusInterval &&
+        config?.facade?.systemStatusInterval < 1000
       ) {
         this.logger.error('Facade system status interval must be at least 1000ms');
         return false;
@@ -853,9 +859,9 @@ export class InfrastructureServiceAdapter implements IService {
 
       // Validate pattern integration configuration
       if (
-        config.patternIntegration?.enabled &&
-        config.patternIntegration.maxAgents &&
-        config.patternIntegration.maxAgents < 1
+        config?.patternIntegration?.enabled &&
+        config?.patternIntegration?.maxAgents &&
+        config?.patternIntegration?.maxAgents < 1
       ) {
         this.logger.error('Pattern integration max agents must be at least 1');
         return false;
@@ -863,8 +869,8 @@ export class InfrastructureServiceAdapter implements IService {
 
       // Validate orchestration configuration
       if (
-        config.orchestration?.maxConcurrentServices &&
-        config.orchestration.maxConcurrentServices < 1
+        config?.orchestration?.maxConcurrentServices &&
+        config?.orchestration?.maxConcurrentServices < 1
       ) {
         this.logger.error('Max concurrent services must be at least 1');
         return false;
@@ -872,9 +878,9 @@ export class InfrastructureServiceAdapter implements IService {
 
       // Validate resource management configuration
       if (
-        config.resourceManagement?.memoryThreshold &&
-        (config.resourceManagement.memoryThreshold < 0 ||
-          config.resourceManagement.memoryThreshold > 1)
+        config?.resourceManagement?.memoryThreshold &&
+        (config?.resourceManagement?.memoryThreshold < 0 ||
+          config?.resourceManagement?.memoryThreshold > 1)
       ) {
         this.logger.error('Memory threshold must be between 0 and 1');
         return false;
@@ -882,8 +888,8 @@ export class InfrastructureServiceAdapter implements IService {
 
       // Validate health monitoring configuration
       if (
-        config.healthMonitoring?.healthCheckTimeout &&
-        config.healthMonitoring.healthCheckTimeout < 1000
+        config?.healthMonitoring?.healthCheckTimeout &&
+        config?.healthMonitoring?.healthCheckTimeout < 1000
       ) {
         this.logger.error('Health check timeout must be at least 1000ms');
         return false;
@@ -897,14 +903,14 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   /**
-   * Check if service is ready to handle operations
+   * Check if service is ready to handle operations.
    */
   isReady(): boolean {
     return this.lifecycleStatus === 'running';
   }
 
   /**
-   * Get service capabilities
+   * Get service capabilities.
    */
   getCapabilities(): string[] {
     const capabilities = ['infrastructure-operations'];
@@ -953,7 +959,7 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   /**
-   * Execute service operations with unified interface
+   * Execute service operations with unified interface.
    *
    * @param operation
    * @param params
@@ -1120,7 +1126,7 @@ export class InfrastructureServiceAdapter implements IService {
     try {
       const dependencyChecks = Array.from(this.dependencies.entries()).map(
         async ([name, config]) => {
-          if (!config.healthCheck) {
+          if (!config?.healthCheck) {
             return true; // Skip health check if not required
           }
 
@@ -1146,13 +1152,13 @@ export class InfrastructureServiceAdapter implements IService {
             }
           } catch (error) {
             this.logger.warn(`Dependency ${name} health check failed:`, error);
-            return !config.required; // Return false only if dependency is required
+            return !config?.required; // Return false only if dependency is required
           }
         }
       );
 
       const results = await Promise.all(dependencyChecks);
-      return results.every((result) => result === true);
+      return results?.every((result) => result === true);
     } catch (error) {
       this.logger.error(`Error checking dependencies for ${this.name}:`, error);
       return false;
@@ -1164,7 +1170,7 @@ export class InfrastructureServiceAdapter implements IService {
   // ============================================
 
   /**
-   * Internal operation execution with infrastructure-specific logic
+   * Internal operation execution with infrastructure-specific logic.
    *
    * @param operation
    * @param params
@@ -1452,7 +1458,7 @@ export class InfrastructureServiceAdapter implements IService {
       agentId,
       swarmId,
       status: 'ready',
-      capabilities: agentConfig.capabilities || [],
+      capabilities: agentConfig?.capabilities || [],
     };
   }
 
@@ -1536,7 +1542,7 @@ export class InfrastructureServiceAdapter implements IService {
     const selectedService = services[Math.floor(Math.random() * services.length)];
 
     return {
-      selectedService: selectedService.serviceId,
+      selectedService: selectedService?.serviceId,
       operation,
       timestamp: new Date(),
       totalServices: services.length,
@@ -1650,7 +1656,7 @@ export class InfrastructureServiceAdapter implements IService {
       dataPoints: recent.length,
       trackingDuration:
         this.resourceTracker.length > 0
-          ? Date.now() - this.resourceTracker[0].timestamp.getTime()
+          ? Date.now() - this.resourceTracker[0]?.timestamp?.getTime()
           : 0,
     };
   }
@@ -1694,7 +1700,7 @@ export class InfrastructureServiceAdapter implements IService {
       timestamp: new Date(),
       version:
         this.configVersions.length > 0
-          ? this.configVersions[this.configVersions.length - 1].version
+          ? this.configVersions[this.configVersions.length - 1]?.version
           : '1.0.0',
     };
   }
@@ -1732,7 +1738,7 @@ export class InfrastructureServiceAdapter implements IService {
     }
 
     // Apply the rollback configuration
-    Object.assign(this.config, configVersion.config);
+    Object.assign(this.config, configVersion?.config);
 
     // Create new version entry for rollback
     this.createConfigurationVersion(this.config, `Rollback to version ${version}`);
@@ -1777,7 +1783,7 @@ export class InfrastructureServiceAdapter implements IService {
       recentEvents: recentEvents.length,
       queueCapacity: this.config.eventCoordination?.maxEventQueueSize || 10000,
       processingRate: this.calculateEventProcessingRate(),
-      oldestEvent: this.eventQueue.length > 0 ? this.eventQueue[0].timestamp : null,
+      oldestEvent: this.eventQueue.length > 0 ? this.eventQueue[0]?.timestamp : null,
     };
   }
 
@@ -1878,11 +1884,11 @@ export class InfrastructureServiceAdapter implements IService {
 
     switch (profile) {
       case 'production':
-        return ConfigurationFactory.createProductionConfig();
+        return ConfigurationFactory?.createProductionConfig();
       case 'development':
-        return ConfigurationFactory.createDevelopmentConfig();
+        return ConfigurationFactory?.createDevelopmentConfig();
       default:
-        return ConfigurationFactory.createDefaultConfig();
+        return ConfigurationFactory?.createDefaultConfig();
     }
   }
 
@@ -2097,19 +2103,19 @@ export class InfrastructureServiceAdapter implements IService {
     this.logger.info('Performing hot reload of configuration');
 
     // Apply configuration changes that can be hot-reloaded
-    if (config.resourceManagement?.cleanupInterval !== undefined) {
+    if (config?.resourceManagement?.cleanupInterval !== undefined) {
       // Restart resource tracking with new interval
       this.startResourceTracking();
     }
 
-    if (config.healthMonitoring?.healthCheckTimeout !== undefined) {
+    if (config?.healthMonitoring?.healthCheckTimeout !== undefined) {
       // Restart health monitoring with new timeout
       this.startAdvancedHealthMonitoring();
     }
 
-    if (config.eventCoordination?.maxEventQueueSize !== undefined) {
+    if (config?.eventCoordination?.maxEventQueueSize !== undefined) {
       // Trim event queue if new size is smaller
-      const maxSize = config.eventCoordination.maxEventQueueSize;
+      const maxSize = config?.eventCoordination?.maxEventQueueSize;
       if (this.eventQueue.length > maxSize) {
         this.eventQueue.splice(0, this.eventQueue.length - maxSize);
       }
@@ -2139,7 +2145,7 @@ export class InfrastructureServiceAdapter implements IService {
     const configStr = JSON.stringify(config);
     let hash = 0;
     for (let i = 0; i < configStr.length; i++) {
-      const char = configStr.charCodeAt(i);
+      const char = configStr?.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
@@ -2479,7 +2485,7 @@ export class InfrastructureServiceAdapter implements IService {
 }
 
 /**
- * Factory function for creating InfrastructureServiceAdapter instances
+ * Factory function for creating InfrastructureServiceAdapter instances.
  *
  * @param config
  */
@@ -2490,7 +2496,7 @@ export function createInfrastructureServiceAdapter(
 }
 
 /**
- * Helper function for creating default configuration
+ * Helper function for creating default configuration.
  *
  * @param name
  * @param overrides

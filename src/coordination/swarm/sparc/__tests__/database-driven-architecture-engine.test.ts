@@ -1,5 +1,7 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-sparc-tests-database-driven-architecture-enginetest");
+import { getLogger } from '../../../../config/logging-config';
+
+const logger = getLogger('coordination-swarm-sparc-tests-database-driven-architecture-enginetest');
+
 /**
  * Test for Database-Driven SPARC Architecture Engine
  *
@@ -54,7 +56,9 @@ class MockDatabaseAdapter {
 
         if (sql.includes('WHERE') && params.length > 0) {
           // Simple mock for WHERE queries
-          const record = table.find((r) => r.architecture_id === params[0] || r.id === params[0]);
+          const record = table.find(
+            (r) => r.architecture_id === params?.[0] || r.id === params?.[0]
+          );
           return { rows: record ? [record] : [] };
         }
 
@@ -82,19 +86,19 @@ class MockDatabaseAdapter {
 
   private createMockRecord(params: any[]): any {
     return {
-      id: params[0] || nanoid(),
-      architecture_id: params[1] || nanoid(),
-      project_id: params[2] || null,
-      name: params[3] || 'Test Architecture',
-      domain: params[4] || 'general',
-      design_data: params[5] || '{}',
-      components_data: params[6] || '[]',
-      validation_data: params[7] || null,
+      id: params?.[0] || nanoid(),
+      architecture_id: params?.[1] || nanoid(),
+      project_id: params?.[2] || null,
+      name: params?.[3] || 'Test Architecture',
+      domain: params?.[4] || 'general',
+      design_data: params?.[5] || '{}',
+      components_data: params?.[6] || '[]',
+      validation_data: params?.[7] || null,
       created_at: new Date(),
       updated_at: new Date(),
       version: 1,
-      tags: params[10] || '[]',
-      metadata: params[11] || '{}',
+      tags: params?.[10] || '[]',
+      metadata: params?.[11] || '{}',
     };
   }
 }

@@ -79,7 +79,7 @@ export interface SwarmConfig {
     expectedThroughput: number; // tasks/second
     resourceLimits: {
       memory: string;
-      cpu: number; // cores
+      cpu: number; // cores.
     };
   };
   created: number;
@@ -131,9 +131,9 @@ export interface ConfidentDomain {
 }
 
 /**
- * Auto-Swarm Factory - The final piece for complete automation
+ * Auto-Swarm Factory - The final piece for complete automation.
  *
- * This factory analyzes confident domains and automatically creates
+ * This factory analyzes confident domains and automatically creates.
  * optimized swarm configurations without manual intervention.
  *
  * @example
@@ -169,7 +169,7 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Main entry point - Create swarms for all confident domains
+   * Main entry point - Create swarms for all confident domains.
    *
    * @param confidentDomains
    */
@@ -235,7 +235,7 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Create optimized swarm configuration for a single domain
+   * Create optimized swarm configuration for a single domain.
    *
    * @param domain
    */
@@ -295,7 +295,7 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Analyze domain characteristics for optimal swarm configuration
+   * Analyze domain characteristics for optimal swarm configuration.
    *
    * @param domain
    */
@@ -357,7 +357,7 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Select optimal topology based on domain characteristics
+   * Select optimal topology based on domain characteristics.
    *
    * @param chars
    */
@@ -432,7 +432,7 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Configure agents based on domain characteristics and topology
+   * Configure agents based on domain characteristics and topology.
    *
    * @param chars
    * @param _topology
@@ -523,7 +523,7 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Configure persistence strategy based on domain characteristics
+   * Configure persistence strategy based on domain characteristics.
    *
    * @param chars
    */
@@ -553,7 +553,7 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Configure coordination strategy
+   * Configure coordination strategy.
    *
    * @param chars
    * @param topology
@@ -584,7 +584,7 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Calculate expected performance metrics
+   * Calculate expected performance metrics.
    *
    * @param chars
    * @param topology
@@ -618,7 +618,7 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Calculate maximum agents for the swarm
+   * Calculate maximum agents for the swarm.
    *
    * @param chars
    */
@@ -634,13 +634,13 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Validate resource constraints across all swarms
+   * Validate resource constraints across all swarms.
    *
    * @param configs
    */
   private async validateResourceConstraints(configs: SwarmConfig[]): Promise<void> {
     const totalAgents = configs.reduce(
-      (sum, config) => sum + config.agents.reduce((agentSum, agent) => agentSum + agent.count, 0),
+      (sum, config) => sum + config?.agents.reduce((agentSum, agent) => agentSum + agent.count, 0),
       0
     );
 
@@ -658,7 +658,7 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Perform human validation of swarm configurations
+   * Perform human validation of swarm configurations.
    *
    * @param configs
    */
@@ -668,11 +668,11 @@ export class AutoSwarmFactory extends EventEmitter {
     logger.info('🤔 Requesting human validation for swarm configurations...');
 
     const summary = configs.map((config) => ({
-      domain: config.domain,
-      topology: config.topology.type,
-      agents: config.agents.length,
-      totalAgentCount: config.agents.reduce((sum, a) => sum + a.count, 0),
-      confidence: `${(config.confidence * 100).toFixed(1)}%`,
+      domain: config?.domain,
+      topology: config?.topology?.type,
+      agents: config?.agents.length,
+      totalAgentCount: config?.agents.reduce((sum, a) => sum + a.count, 0),
+      confidence: `${(config?.confidence * 100).toFixed(1)}%`,
     }));
 
     const response = await this.agui.askQuestion({
@@ -698,11 +698,11 @@ export class AutoSwarmFactory extends EventEmitter {
       confidence: 0.9,
     });
 
-    if (response === '3' || response.toLowerCase().includes('cancel')) {
+    if (response === '3' || response?.toLowerCase().includes('cancel')) {
       throw new Error('Swarm creation cancelled by user');
     }
 
-    if (response === '2' || response.toLowerCase().includes('review')) {
+    if (response === '2' || response?.toLowerCase().includes('review')) {
       // Individual review (simplified for now)
       logger.info('Individual review requested - proceeding with approval for demo');
     }
@@ -711,7 +711,7 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Initialize all approved swarms
+   * Initialize all approved swarms.
    *
    * @param configs
    */
@@ -727,18 +727,18 @@ export class AutoSwarmFactory extends EventEmitter {
         await this.hiveSync.registerSwarm(config);
 
         // 3. Store configuration in memory
-        await this.memoryStore.store(`swarm-${config.id}`, 'auto-factory-config', {
+        await this.memoryStore.store(`swarm-${config?.id}`, 'auto-factory-config', {
           config,
           created: Date.now(),
           status: 'active',
         });
 
         this.emit('swarm:initialized', { config });
-        logger.info(`✅ Swarm initialized: ${config.name}`);
+        logger.info(`✅ Swarm initialized: ${config?.name}`);
 
         return config;
       } catch (error) {
-        logger.error(`Failed to initialize swarm ${config.name}:`, error);
+        logger.error(`Failed to initialize swarm ${config?.name}:`, error);
         this.emit('swarm:init-error', { config, error });
         throw error;
       }
@@ -749,7 +749,7 @@ export class AutoSwarmFactory extends EventEmitter {
   }
 
   /**
-   * Get statistics about created swarms
+   * Get statistics about created swarms.
    */
   getSwarmStatistics(): {
     totalSwarms: number;

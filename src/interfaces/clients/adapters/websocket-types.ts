@@ -1,8 +1,13 @@
 /**
- * WebSocket Client Types for UACL
+ * WebSocket Client Types for UACL.
  *
- * WebSocket-specific extensions to UACL core interfaces and types
+ * WebSocket-specific extensions to UACL core interfaces and types.
  */
+/**
+ * @file TypeScript type definitions for interfaces
+ */
+
+
 
 import type {
   AuthenticationConfig,
@@ -13,7 +18,7 @@ import type {
 } from '../core/interfaces';
 
 /**
- * WebSocket connection states
+ * WebSocket connection states.
  */
 export const WebSocketReadyState = {
   CONNECTING: 0,
@@ -25,7 +30,7 @@ export const WebSocketReadyState = {
 export type WebSocketReadyState = (typeof WebSocketReadyState)[keyof typeof WebSocketReadyState];
 
 /**
- * WebSocket message types
+ * WebSocket message types.
  */
 export const WebSocketMessageType = {
   TEXT: 'text',
@@ -61,7 +66,7 @@ export const WebSocketCloseCode = {
 export type WebSocketCloseCode = (typeof WebSocketCloseCode)[keyof typeof WebSocketCloseCode];
 
 /**
- * WebSocket authentication methods
+ * WebSocket authentication methods.
  */
 export const WebSocketAuthMethod = {
   NONE: 'none',
@@ -75,7 +80,7 @@ export const WebSocketAuthMethod = {
 export type WebSocketAuthMethod = (typeof WebSocketAuthMethod)[keyof typeof WebSocketAuthMethod];
 
 /**
- * WebSocket authentication configuration
+ * WebSocket authentication configuration.
  *
  * @example
  */
@@ -104,7 +109,7 @@ export interface WebSocketAuthenticationConfig extends AuthenticationConfig {
 }
 
 /**
- * WebSocket retry configuration
+ * WebSocket retry configuration.
  *
  * @example
  */
@@ -125,7 +130,7 @@ export interface WebSocketRetryConfig extends RetryConfig {
 }
 
 /**
- * WebSocket heartbeat configuration
+ * WebSocket heartbeat configuration.
  *
  * @example
  */
@@ -138,7 +143,7 @@ export interface WebSocketHeartbeatConfig {
 }
 
 /**
- * WebSocket message queue configuration
+ * WebSocket message queue configuration.
  *
  * @example
  */
@@ -152,7 +157,7 @@ export interface WebSocketMessageQueueConfig {
 }
 
 /**
- * WebSocket compression configuration
+ * WebSocket compression configuration.
  *
  * @example
  */
@@ -166,7 +171,7 @@ export interface WebSocketCompressionConfig {
 }
 
 /**
- * Complete WebSocket client configuration
+ * Complete WebSocket client configuration.
  *
  * @example
  */
@@ -227,7 +232,7 @@ export interface WebSocketClientConfig extends ClientConfig {
 }
 
 /**
- * WebSocket request options
+ * WebSocket request options.
  *
  * @example
  */
@@ -243,7 +248,7 @@ export interface WebSocketRequestOptions extends RequestOptions {
 }
 
 /**
- * WebSocket response
+ * WebSocket response.
  *
  * @example
  */
@@ -257,7 +262,7 @@ export interface WebSocketResponse<T = any> extends ClientResponse<T> {
 }
 
 /**
- * WebSocket message structure
+ * WebSocket message structure.
  *
  * @example
  */
@@ -276,7 +281,7 @@ export interface WebSocketMessage<T = any> {
 }
 
 /**
- * WebSocket connection info
+ * WebSocket connection info.
  *
  * @example
  */
@@ -313,7 +318,7 @@ export interface WebSocketConnectionInfo {
 }
 
 /**
- * WebSocket event types
+ * WebSocket event types.
  *
  * @example
  */
@@ -354,7 +359,7 @@ export interface WebSocketEvents {
 }
 
 /**
- * WebSocket metrics
+ * WebSocket metrics.
  *
  * @example
  */
@@ -402,7 +407,7 @@ export interface WebSocketMetrics {
 }
 
 /**
- * WebSocket connection pool configuration
+ * WebSocket connection pool configuration.
  *
  * @example
  */
@@ -426,7 +431,7 @@ export interface WebSocketPoolConfig {
 }
 
 /**
- * WebSocket protocol extensions
+ * WebSocket protocol extensions.
  *
  * @example
  */
@@ -438,7 +443,7 @@ export interface WebSocketExtension {
 }
 
 /**
- * WebSocket security configuration
+ * WebSocket security configuration.
  *
  * @example
  */
@@ -475,7 +480,7 @@ export interface WebSocketSecurityConfig {
 }
 
 /**
- * Type guards for WebSocket types
+ * Type guards for WebSocket types.
  */
 export const WebSocketTypeGuards = {
   isWebSocketConfig: (config: any): config is WebSocketClientConfig => {
@@ -496,25 +501,25 @@ export const WebSocketTypeGuards = {
 };
 
 /**
- * WebSocket utility functions
+ * WebSocket utility functions.
  */
 export const WebSocketUtils = {
   /**
-   * Generate a unique message ID
+   * Generate a unique message ID.
    */
   generateMessageId: (): string => {
     return `ws-msg-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   },
 
   /**
-   * Generate a unique connection ID
+   * Generate a unique connection ID.
    */
   generateConnectionId: (): string => {
     return `ws-conn-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   },
 
   /**
-   * Calculate exponential backoff delay
+   * Calculate exponential backoff delay.
    *
    * @param attempt
    * @param baseDelay
@@ -538,7 +543,7 @@ export const WebSocketUtils = {
   },
 
   /**
-   * Check if URL is a valid WebSocket URL
+   * Check if URL is a valid WebSocket URL.
    *
    * @param url
    */
@@ -552,7 +557,7 @@ export const WebSocketUtils = {
   },
 
   /**
-   * Get human-readable close code description
+   * Get human-readable close code description.
    *
    * @param code
    */
@@ -594,7 +599,7 @@ export const WebSocketUtils = {
   },
 
   /**
-   * Get human-readable ready state description
+   * Get human-readable ready state description.
    *
    * @param state
    */

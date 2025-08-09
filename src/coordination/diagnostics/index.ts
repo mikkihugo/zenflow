@@ -1,8 +1,13 @@
 /**
- * Diagnostics Module - Barrel Export
+ * Diagnostics Module - Barrel Export.
  *
- * Central export point for diagnostics functionality
+ * Central export point for diagnostics functionality.
  */
+/**
+ * @file diagnostics module exports
+ */
+
+
 
 export * from './cli-diagnostics';
 export * from './diagnostics';

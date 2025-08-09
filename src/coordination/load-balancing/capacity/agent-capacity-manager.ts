@@ -1,7 +1,12 @@
 /**
- * Agent Capacity Manager
- * Real-time capacity monitoring and dynamic adjustment system
+ * Agent Capacity Manager.
+ * Real-time capacity monitoring and dynamic adjustment system.
  */
+/**
+ * @file agent-capacity management system
+ */
+
+
 
 import type { CapacityManager } from '../interfaces';
 import type { CapacityMetrics, LoadMetrics, ResourceConstraint } from '../types';
@@ -84,7 +89,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Get current capacity metrics for an agent
+   * Get current capacity metrics for an agent.
    *
    * @param agentId
    */
@@ -105,7 +110,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Predict capacity for a future time horizon
+   * Predict capacity for a future time horizon.
    *
    * @param agentId
    * @param timeHorizon
@@ -120,7 +125,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Update capacity based on new metrics
+   * Update capacity based on new metrics.
    *
    * @param agentId
    * @param metrics
@@ -161,7 +166,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Check if capacity is available for required resources
+   * Check if capacity is available for required resources.
    *
    * @param agentId
    * @param requiredResources
@@ -186,14 +191,14 @@ export class AgentCapacityManager implements CapacityManager {
     }
 
     // Check if current utilization plus required resources exceeds capacity
-    const projectedUtilization = currentMetrics.activeTasks + (requiredResources.tasks || 1);
+    const projectedUtilization = currentMetrics?.activeTasks + (requiredResources.tasks || 1);
     const availableCapacity = this.calculateAvailableCapacity(profile);
 
     return projectedUtilization <= availableCapacity;
   }
 
   /**
-   * Get or create capacity profile for an agent
+   * Get or create capacity profile for an agent.
    *
    * @param agentId
    */
@@ -230,7 +235,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Update capacity profile with latest information
+   * Update capacity profile with latest information.
    *
    * @param profile
    */
@@ -248,7 +253,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Calculate optimal capacity based on current performance
+   * Calculate optimal capacity based on current performance.
    *
    * @param profile
    * @param metrics
@@ -297,7 +302,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Calculate resource utilization score
+   * Calculate resource utilization score.
    *
    * @param metrics
    */
@@ -319,7 +324,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Calculate performance score
+   * Calculate performance score.
    *
    * @param performance
    */
@@ -332,7 +337,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Calculate utilization pattern score
+   * Calculate utilization pattern score.
    *
    * @param profile
    */
@@ -356,7 +361,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Calculate demand prediction score
+   * Calculate demand prediction score.
    *
    * @param profile
    */
@@ -382,7 +387,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Apply constraints to capacity calculation
+   * Apply constraints to capacity calculation.
    *
    * @param profile
    * @param proposedCapacity
@@ -425,7 +430,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Evaluate resource constraints
+   * Evaluate resource constraints.
    *
    * @param profile
    * @param metrics
@@ -489,7 +494,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Calculate constraint severity based on threshold violation
+   * Calculate constraint severity based on threshold violation.
    *
    * @param currentValue
    * @param threshold
@@ -507,7 +512,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Update performance metrics
+   * Update performance metrics.
    *
    * @param profile
    * @param metrics
@@ -538,7 +543,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Update adaptive thresholds based on performance
+   * Update adaptive thresholds based on performance.
    *
    * @param profile
    * @param metrics
@@ -560,7 +565,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Calculate current utilization percentage
+   * Calculate current utilization percentage.
    *
    * @param profile
    */
@@ -573,7 +578,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Calculate available capacity
+   * Calculate available capacity.
    *
    * @param profile
    */
@@ -586,7 +591,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Calculate capacity trend
+   * Calculate capacity trend.
    *
    * @param profile
    */
@@ -610,7 +615,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Adjust agent capacity
+   * Adjust agent capacity.
    *
    * @param profile
    * @param newCapacity
@@ -643,7 +648,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Calculate confidence in capacity adjustment
+   * Calculate confidence in capacity adjustment.
    *
    * @param profile
    */
@@ -657,7 +662,7 @@ export class AgentCapacityManager implements CapacityManager {
   }
 
   /**
-   * Calculate performance consistency
+   * Calculate performance consistency.
    *
    * @param profile
    */

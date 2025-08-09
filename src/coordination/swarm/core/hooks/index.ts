@@ -1,5 +1,7 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-hooks-index");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-hooks-index');
+
 /**
  * @file Claude Code Hooks Implementation for ruv-swarm - provides automated coordination, formatting, and learning capabilities.
  */
@@ -9,9 +11,9 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import type { AgentMemoryCoordinationDao } from '../../../../database';
+import type { AgentMemoryCoordinationDao } from '../database';
 
-// import { DALFactory } from '../../../../database'; // TODO: Implement proper DI integration
+// import { DALFactory } from '../database'; // TODO: Implement proper DI integration
 
 type SwarmPersistence = AgentMemoryCoordinationDao;
 
@@ -41,7 +43,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Initialize persistence layer with error handling
+   * Initialize persistence layer with error handling.
    */
   async initializePersistence() {
     try {
@@ -59,7 +61,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Main hook handler - routes to specific hook implementations
+   * Main hook handler - routes to specific hook implementations.
    *
    * @param hookType
    * @param args
@@ -127,7 +129,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Pre-search hook - Prepare cache and optimize search
+   * Pre-search hook - Prepare cache and optimize search.
    *
    * @param args
    */
@@ -141,12 +143,12 @@ class ZenSwarmHooks {
 
     // Check cache for similar patterns
     const cachedResult = this.sessionData.searchCache.get(pattern);
-    if (cachedResult && Date.now() - cachedResult.timestamp < 300000) {
+    if (cachedResult && Date.now() - cachedResult?.timestamp < 300000) {
       // 5 min cache
       return {
         continue: true,
         cached: true,
-        cacheHit: cachedResult.files.length,
+        cacheHit: cachedResult?.files.length,
         metadata: { pattern, cached: true },
       };
     }
@@ -159,7 +161,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Pre-MCP hook - Validate MCP tool state
+   * Pre-MCP hook - Validate MCP tool state.
    *
    * @param args
    */
@@ -197,7 +199,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Pre-edit hook - Ensure coordination before file modifications
+   * Pre-edit hook - Ensure coordination before file modifications.
    *
    * @param args
    */
@@ -242,7 +244,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Pre-task hook - Auto-spawn agents and optimize topology
+   * Pre-task hook - Auto-spawn agents and optimize topology.
    *
    * @param args
    */
@@ -276,7 +278,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Post-edit hook - Format and learn from edits
+   * Post-edit hook - Format and learn from edits.
    *
    * @param args
    */
@@ -314,7 +316,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Post-task hook - Analyze performance and update coordination
+   * Post-task hook - Analyze performance and update coordination.
    *
    * @param args
    */
@@ -352,7 +354,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Post-web-search hook - Analyze results and update knowledge
+   * Post-web-search hook - Analyze results and update knowledge.
    *
    * @param args
    */
@@ -387,7 +389,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Post-web-fetch hook - Extract patterns and cache content
+   * Post-web-fetch hook - Extract patterns and cache content.
    *
    * @param args
    */
@@ -416,7 +418,7 @@ class ZenSwarmHooks {
       }
       this.sessionData.contentCache.set(url, {
         timestamp: Date.now(),
-        patterns: result.patterns,
+        patterns: result?.patterns,
       });
       result.cached = true;
     }
@@ -425,7 +427,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Notification hook - Handle notifications with swarm status
+   * Notification hook - Handle notifications with swarm status.
    *
    * @param args
    */
@@ -473,7 +475,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Pre-bash hook - Validate commands before execution
+   * Pre-bash hook - Validate commands before execution.
    *
    * @param args
    */
@@ -507,7 +509,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * MCP swarm initialized hook - Persist configuration
+   * MCP swarm initialized hook - Persist configuration.
    *
    * @param args
    */
@@ -549,7 +551,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * MCP agent spawned hook - Update roster and train
+   * MCP agent spawned hook - Update roster and train.
    *
    * @param args
    */
@@ -595,7 +597,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * MCP task orchestrated hook - Monitor and optimize
+   * MCP task orchestrated hook - Monitor and optimize.
    *
    * @param args
    */
@@ -646,7 +648,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * MCP neural trained hook - Save improvements
+   * MCP neural trained hook - Save improvements.
    *
    * @param args
    */
@@ -699,11 +701,11 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Agent complete hook - Commit to git with detailed report
+   * Agent complete hook - Commit to git with detailed report.
    */
 
   /**
-   * Extract key points from output
+   * Extract key points from output.
    *
    * @param output
    */
@@ -727,7 +729,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Extract bullet points for commit message
+   * Extract bullet points for commit message.
    *
    * @param output
    */
@@ -745,7 +747,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Get count of modified files
+   * Get count of modified files.
    */
   getModifiedFilesCount(): number {
     const fileOps = this.sessionData.operations.filter((op) =>
@@ -757,7 +759,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Get list of modified files
+   * Get list of modified files.
    */
   getModifiedFilesList(): string {
     const fileOps = this.sessionData.operations.filter((op) =>
@@ -770,7 +772,7 @@ class ZenSwarmHooks {
         if (!fileMap.has(op.file)) {
           fileMap.set(op.file, []);
         }
-        fileMap.get(op.file).push(op.type);
+        fileMap.get(op.file)?.push(op.type);
       }
     });
 
@@ -784,7 +786,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Session restore hook - Load previous state
+   * Session restore hook - Load previous state.
    *
    * @param args
    */
@@ -814,7 +816,7 @@ class ZenSwarmHooks {
         ) {
           const memory = JSON.parse(await fs.readFile(memoryPath, 'utf-8'));
           this.sessionData = { ...this.sessionData, ...memory };
-          result.restored.memory = true;
+          result?.restored.memory = true;
         }
       }
 
@@ -831,7 +833,7 @@ class ZenSwarmHooks {
           roster.forEach((agent: any) => {
             this.sessionData.agents.set(agent.id, agent);
           });
-          result.restored.agents = true;
+          result?.restored.agents = true;
         }
       }
 
@@ -845,7 +847,7 @@ class ZenSwarmHooks {
       ) {
         const metrics = JSON.parse(await fs.readFile(metricsPath, 'utf-8'));
         this.sessionData.metrics = { ...this.sessionData.metrics, ...metrics };
-        result.restored.metrics = true;
+        result?.restored.metrics = true;
       }
     } catch (error) {
       logger.error('Session restore error:', error.message);
@@ -855,7 +857,7 @@ class ZenSwarmHooks {
   }
 
   /**
-   * Session end hook - Generate summary and persist state
+   * Session end hook - Generate summary and persist state.
    *
    * @param args
    */
@@ -1265,7 +1267,7 @@ ${this.sessionData.learnings
     }
 
     const node = graph.nodes.get(nodeId);
-    node.operations.push({
+    node?.operations?.push({
       type: operation,
       timestamp: Date.now(),
       agent: this.getCurrentAgent(),
@@ -1473,8 +1475,8 @@ ${this.sessionData.learnings
         kb.searches = [];
       }
       kb.searches.push({
-        query: data.query,
-        patterns: data.patterns,
+        query: data?.query,
+        patterns: data?.patterns,
         timestamp: Date.now(),
       });
 
@@ -1482,7 +1484,7 @@ ${this.sessionData.learnings
       if (!kb.patterns) {
         kb.patterns = {};
       }
-      data.patterns.forEach((pattern) => {
+      data?.patterns.forEach((pattern) => {
         kb.patterns[pattern] = (kb.patterns[pattern] || 0) + 1;
       });
     }
@@ -1699,7 +1701,7 @@ ${this.sessionData.learnings
     });
 
     const sorted = Object.entries(agentCounts).sort((a, b) => Number(b[1]) - Number(a[1]));
-    return sorted.length > 0 && sorted[0] ? sorted[0][0] : 'coordinator';
+    return sorted.length > 0 && sorted[0] ? sorted[0]?.[0] : 'coordinator';
   }
 
   async findRelatedFiles(filePath): Promise<string[]> {
@@ -1833,7 +1835,7 @@ ${this.sessionData.learnings
   }
 
   /**
-   * Get current session ID for coordination
+   * Get current session ID for coordination.
    */
   getSessionId(): string {
     if (!this._sessionId) {

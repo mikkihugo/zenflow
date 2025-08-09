@@ -1,7 +1,14 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("tools-domain-splitting-splitters-domain-splitter");
 /**
- * Safe domain splitter with rollback capability
+ * @file domain-splitter implementation
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('tools-domain-splitting-splitters-domain-splitter');
+
+/**
+ * Safe domain splitter with rollback capability.
  */
 
 import * as path from 'node:path';
@@ -136,11 +143,11 @@ export class SafeDomainSplitter implements DomainSplitter {
     try {
       // Check TypeScript compilation
       const buildResult = await this.validateBuild();
-      metrics.buildSuccess = buildResult.success;
-      if (!buildResult.success) {
+      metrics.buildSuccess = buildResult?.success;
+      if (!buildResult?.success) {
         issues.push({
           type: 'build-error' as const,
-          description: `Build failed: ${buildResult.errors.join(', ')}`,
+          description: `Build failed: ${buildResult?.errors?.join(', ')}`,
           severity: 'error' as const,
         });
       }
@@ -390,7 +397,7 @@ export class SafeDomainSplitter implements DomainSplitter {
       const importMatch = line.match(/from\s+['"`]([^'"`]+)['"`]/);
 
       if (importMatch) {
-        const importPath = importMatch[1];
+        const importPath = importMatch?.[1];
 
         if (importPath.startsWith('.')) {
           // Relative import - resolve and check if target moved
@@ -521,11 +528,11 @@ export class SafeDomainSplitter implements DomainSplitter {
 
     let match;
     while ((match = exportRegex.exec(content)) !== null) {
-      exports.push(match[1]);
+      exports.push(match?.[1]);
     }
 
     while ((match = namedExportRegex.exec(content)) !== null) {
-      const namedExports = match[1].split(',').map((e) => e.trim().split(' as ')[0].trim());
+      const namedExports = match?.[1]?.split(',').map((e) => e.trim().split(' as ')[0]?.trim());
       exports.push(...namedExports);
     }
 
@@ -533,7 +540,7 @@ export class SafeDomainSplitter implements DomainSplitter {
   }
 
   private toPascalCase(str: string): string {
-    return str.replace(/(^\w|[-_]\w)/g, (match) => match.replace(/[-_]/, '').toUpperCase());
+    return str.replace(/(^\w|[-_]\w)/g, (match) => match?.replace(/[-_]/, '').toUpperCase());
   }
 
   private async validateBuild(): Promise<{ success: boolean; errors: string[] }> {

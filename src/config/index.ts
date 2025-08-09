@@ -9,25 +9,41 @@ import { configManager } from './manager';
 import type { SystemConfiguration } from './types';
 
 // Constants and defaults
-export { 
-  DEFAULT_CONFIG, 
-  ENV_MAPPINGS, 
-  VALIDATION_RULES, 
-  PRODUCTION_VALIDATION_SCHEMA, 
-  DEFAULT_PORT_ALLOCATION, 
-  PORT_ALLOCATION_BY_ENV 
+export {
+  DEFAULT_CONFIG,
+  DEFAULT_PORT_ALLOCATION,
+  ENV_MAPPINGS,
+  PORT_ALLOCATION_BY_ENV,
+  PRODUCTION_VALIDATION_SCHEMA,
+  VALIDATION_RULES,
 } from './defaults';
+// Health checking and monitoring
+export {
+  ConfigHealthChecker,
+  configHealthChecker,
+  createConfigHealthEndpoint,
+  createDeploymentReadinessEndpoint,
+  initializeConfigHealthChecker,
+} from './health-checker';
 export { ConfigurationLoader } from './loader';
 // Core exports
 export { ConfigurationManager, configManager } from './manager';
-
+export type {
+  StartupValidationOptions,
+  StartupValidationResult,
+} from './startup-validator';
+// Startup validation
+export {
+  cli as runStartupValidationCLI,
+  runStartupValidation,
+  validateAndExit,
+} from './startup-validator';
 // Types
 export type {
   ConfigChangeEvent,
+  ConfigHealthReport,
   ConfigurationSource,
   ConfigValidationResult,
-  ValidationResult,
-  ConfigHealthReport,
   CoordinationConfig,
   CoreConfig,
   DatabaseConfig,
@@ -39,31 +55,11 @@ export type {
   OptimizationConfig,
   SystemConfiguration,
   TerminalConfig,
+  ValidationResult,
   WebConfig,
 } from './types';
-
 // Validation system
 export { ConfigValidator } from './validator';
-
-// Health checking and monitoring
-export { 
-  ConfigHealthChecker,
-  configHealthChecker,
-  initializeConfigHealthChecker,
-  createConfigHealthEndpoint,
-  createDeploymentReadinessEndpoint,
-} from './health-checker';
-
-// Startup validation
-export { 
-  runStartupValidation,
-  validateAndExit,
-  cli as runStartupValidationCLI,
-} from './startup-validator';
-export type { 
-  StartupValidationOptions, 
-  StartupValidationResult 
-} from './startup-validator';
 
 // Convenience functions
 export const config = {

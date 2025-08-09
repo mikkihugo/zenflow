@@ -1,9 +1,14 @@
 /**
- * Complete System Integration Example
+ * Complete System Integration Example.
  *
  * This demonstrates the "all done" DI integration requested by @mikkihugo.
  * Shows how all major coordinators and services work together with dependency injection.
  */
+/**
+ * @file complete-system-integration implementation
+ */
+
+
 
 import {
   CORE_TOKENS,
@@ -231,7 +236,7 @@ class SwarmCoordinatorImplementation implements ISwarmCoordinator {
 
     // Subscribe to agent events
     this._eventBus.subscribe('agent.registered', (data) => {
-      this._logger.info(`Swarm coordinator notified of new agent: ${data.id}`);
+      this._logger.info(`Swarm coordinator notified of new agent: ${data?.id}`);
     });
 
     this.isRunning = true;
@@ -294,7 +299,7 @@ class NeuralNetworkTrainer implements INeuralNetworkTrainer {
     const model = {
       id: `model_${Date.now()}`,
       accuracy: 0.95,
-      epochs: options.epochs || 100,
+      epochs: options?.epochs || 100,
       learningRate,
     };
 
@@ -345,7 +350,7 @@ class NeuralNetworkTrainer implements INeuralNetworkTrainer {
 }
 
 /**
- * Complete system integration demonstration
+ * Complete system integration demonstration.
  *
  * @example
  */
@@ -393,7 +398,7 @@ export class CompleteSystemIntegration {
   }
 
   /**
-   * Demonstrate complete system integration with all services working together
+   * Demonstrate complete system integration with all services working together.
    */
   async demonstrateIntegration(): Promise<void> {
     const logger = this.container.resolve(CORE_TOKENS.Logger);
@@ -403,7 +408,7 @@ export class CompleteSystemIntegration {
     try {
       // Initialize database
       const database = this.container.resolve(CORE_TOKENS.Database);
-      await database.initialize?.();
+      await database?.initialize?.();
 
       // Initialize swarm coordinator
       const swarmCoordinator = this.container.resolve(SWARM_TOKENS.SwarmCoordinator);
@@ -451,7 +456,7 @@ export class CompleteSystemIntegration {
   }
 
   /**
-   * Cleanup resources
+   * Cleanup resources.
    */
   async cleanup(): Promise<void> {
     const logger = this.container.resolve(CORE_TOKENS.Logger);
@@ -463,7 +468,7 @@ export class CompleteSystemIntegration {
 }
 
 /**
- * Run the complete integration demonstration
+ * Run the complete integration demonstration.
  */
 export async function runCompleteIntegration(): Promise<void> {
   const integration = new CompleteSystemIntegration();

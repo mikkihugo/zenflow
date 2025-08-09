@@ -1,9 +1,11 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-config-manager");
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-config-manager');
+
 /**
  * @file Unified Configuration Manager
  *
- * Central configuration management with hot-reloading, validation, and event system
+ * Central configuration management with hot-reloading, validation, and event system.
  */
 
 import { EventEmitter } from 'node:events';
@@ -15,7 +17,7 @@ import type { ConfigChangeEvent, ConfigValidationResult, SystemConfiguration } f
 import { ConfigValidator } from './validator';
 
 /**
- * Unified Configuration Manager
+ * Unified Configuration Manager.
  *
  * Features:
  * - Multi-source configuration loading (files, env, CLI)
@@ -25,7 +27,7 @@ import { ConfigValidator } from './validator';
  * - Thread-safe configuration access
  * - Configuration history and rollback
  *
- * @example
+ * @example.
  */
 export class ConfigurationManager extends EventEmitter {
   private static instance: ConfigurationManager | null = null;
@@ -45,7 +47,7 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Get singleton instance
+   * Get singleton instance.
    */
   static getInstance(): ConfigurationManager {
     if (!ConfigurationManager.instance) {
@@ -55,7 +57,7 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Initialize configuration system
+   * Initialize configuration system.
    *
    * @param configPaths
    */
@@ -104,14 +106,14 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Get current configuration
+   * Get current configuration.
    */
   getConfig(): SystemConfiguration {
     return JSON.parse(JSON.stringify(this.config));
   }
 
   /**
-   * Get configuration section
+   * Get configuration section.
    *
    * @param section
    */
@@ -120,7 +122,7 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Get nested configuration value
+   * Get nested configuration value.
    *
    * @param path
    */
@@ -132,7 +134,7 @@ export class ConfigurationManager extends EventEmitter {
    * Update configuration (runtime only)
    *
    * @param path
-   * @param value
+   * @param value.
    */
   update(path: string, value: any): ConfigValidationResult {
     const oldValue = this.get(path);
@@ -169,28 +171,28 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Reload configuration from sources
+   * Reload configuration from sources.
    */
   async reload(): Promise<ConfigValidationResult> {
     return this.initialize(this.configPaths);
   }
 
   /**
-   * Validate current configuration
+   * Validate current configuration.
    */
   validate(): ConfigValidationResult {
     return this.validator.validate(this.config);
   }
 
   /**
-   * Get configuration history
+   * Get configuration history.
    */
   getHistory(): SystemConfiguration[] {
     return [...this.configHistory];
   }
 
   /**
-   * Rollback to previous configuration
+   * Rollback to previous configuration.
    *
    * @param steps
    */
@@ -216,7 +218,7 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Export current configuration
+   * Export current configuration.
    *
    * @param format
    */
@@ -230,14 +232,14 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Get configuration sources info
+   * Get configuration sources info.
    */
   getSourcesInfo() {
     return this.loader.getSources();
   }
 
   /**
-   * Cleanup resources
+   * Cleanup resources.
    */
   destroy(): void {
     // Clear file watchers
@@ -255,7 +257,7 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Setup file watchers for hot-reloading
+   * Setup file watchers for hot-reloading.
    */
   private setupFileWatchers(): void {
     // Clear existing watchers
@@ -293,7 +295,7 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Setup error handling
+   * Setup error handling.
    */
   private setupErrorHandling(): void {
     this.on('error', (error) => {
@@ -306,7 +308,7 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Add configuration to history
+   * Add configuration to history.
    *
    * @param config
    */
@@ -320,7 +322,7 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Set nested value using dot notation
+   * Set nested value using dot notation.
    *
    * @param obj
    * @param path
@@ -333,7 +335,7 @@ export class ConfigurationManager extends EventEmitter {
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
       if (part && (!(part in current) || typeof current?.[part] !== 'object')) {
-        current?.[part] = {};
+        current[part] = {};
       }
       if (part) {
         current = current?.[part];
@@ -342,7 +344,7 @@ export class ConfigurationManager extends EventEmitter {
 
     const lastPart = parts[parts.length - 1];
     if (lastPart) {
-      current?.[lastPart] = value;
+      current[lastPart] = value;
     }
   }
 
@@ -350,7 +352,7 @@ export class ConfigurationManager extends EventEmitter {
    * Simple YAML export (basic implementation)
    *
    * @param obj
-   * @param indent
+   * @param indent.
    */
   private toSimpleYaml(obj: any, indent = 0): string {
     const spaces = '  '.repeat(indent);

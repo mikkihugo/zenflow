@@ -1,5 +1,5 @@
 /**
- * Event System Type Definitions
+ * Event System Type Definitions.
  *
  * Comprehensive TypeScript types for the event bus system.
  * Replaces loose 'any' types with strict, type-safe interfaces.
@@ -9,7 +9,7 @@
  */
 
 /**
- * Base event payload structure
+ * Base event payload structure.
  *
  * @example
  */
@@ -21,7 +21,7 @@ export interface BaseEventPayload {
 }
 
 /**
- * System events
+ * System events.
  *
  * @example
  */
@@ -57,7 +57,7 @@ export interface SystemHealthChangedPayload extends BaseEventPayload {
 }
 
 /**
- * Workflow events
+ * Workflow events.
  *
  * @example
  */
@@ -132,7 +132,7 @@ export interface WorkflowStepFailedPayload extends BaseEventPayload {
 }
 
 /**
- * Coordination events
+ * Coordination events.
  *
  * @example
  */
@@ -938,7 +938,7 @@ export interface AgentStateUpdatedPayload extends BaseEventPayload {
 }
 
 /**
- * Neural events
+ * Neural events.
  *
  * @example
  */
@@ -988,7 +988,7 @@ export interface NeuralPredictionMadePayload extends BaseEventPayload {
 }
 
 /**
- * Memory events
+ * Memory events.
  *
  * @example
  */
@@ -1042,7 +1042,7 @@ export interface MemorySyncCompletedPayload extends BaseEventPayload {
 }
 
 /**
- * Combined event map for type safety
+ * Combined event map for type safety.
  */
 export type EventMap = SystemEvents &
   WorkflowEvents &
@@ -1051,7 +1051,7 @@ export type EventMap = SystemEvents &
   MemoryEvents;
 
 /**
- * Event listener types
+ * Event listener types.
  */
 export type EventListener<T extends keyof EventMap> = (
   payload: EventMap[T]
@@ -1060,7 +1060,7 @@ export type EventListener<T extends keyof EventMap> = (
 export type EventListenerAny = (payload: BaseEventPayload) => void | Promise<void>;
 
 /**
- * Event middleware function
+ * Event middleware function.
  */
 export type EventMiddleware<T extends keyof EventMap = keyof EventMap> = (
   event: T,
@@ -1069,7 +1069,7 @@ export type EventMiddleware<T extends keyof EventMap = keyof EventMap> = (
 ) => void | Promise<void>;
 
 /**
- * Supporting types
+ * Supporting types.
  *
  * @example
  */
@@ -1143,7 +1143,7 @@ export interface MemoryStoreConfig {
 }
 
 /**
- * Event bus configuration
+ * Event bus configuration.
  *
  * @example
  */
@@ -1156,7 +1156,7 @@ export interface EventBusConfig {
 }
 
 /**
- * Event metrics
+ * Event metrics.
  *
  * @example
  */

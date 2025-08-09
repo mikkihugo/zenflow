@@ -1,8 +1,13 @@
 #!/usr/bin/env node
+/**
+ * @file Test suite for test-external-servers
+ */
+
+
 
 /**
- * External MCP Server Connection Test
- * Tests connectivity and tool discovery for external MCP servers
+ * External MCP Server Connection Test.
+ * Tests connectivity and tool discovery for external MCP servers.
  */
 
 import { ExternalMCPClient } from './external-mcp-client';
@@ -11,7 +16,7 @@ import { createLogger } from './simple-logger';
 const logger = createLogger('MCP-Test');
 
 /**
- * Test external MCP server connections
+ * Test external MCP server connections.
  */
 async function testExternalMCPServers(): Promise<void> {
   logger.info('Starting external MCP server connection tests...');
@@ -26,15 +31,15 @@ async function testExternalMCPServers(): Promise<void> {
 
     // Set up event listeners
     client.on('serverConnected', (data) => {
-      logger.info(`✅ Server connected: ${data.server} (${data.tools} tools)`);
+      logger.info(`✅ Server connected: ${data?.server} (${data?.tools} tools)`);
     });
 
     client.on('serverError', (data) => {
-      logger.error(`❌ Server error: ${data.server} - ${data.error}`);
+      logger.error(`❌ Server error: ${data?.server} - ${data?.error}`);
     });
 
     client.on('toolExecuted', (data) => {
-      logger.info(`🔧 Tool executed: ${data.tool} on ${data.server}`);
+      logger.info(`🔧 Tool executed: ${data?.tool} on ${data?.server}`);
     });
 
     // Test server connections
@@ -42,12 +47,12 @@ async function testExternalMCPServers(): Promise<void> {
     const connectionResults = await client.connectAll();
 
     for (const result of connectionResults) {
-      const _status = result.success ? '✅' : '❌';
+      const _status = result?.success ? '✅' : '❌';
 
-      if (result.success) {
-        logger.info(`Successfully connected to ${result.serverName}`);
+      if (result?.success) {
+        logger.info(`Successfully connected to ${result?.serverName}`);
       } else {
-        logger.error(`Failed to connect to ${result.serverName}: ${result.error}`);
+        logger.error(`Failed to connect to ${result?.serverName}: ${result?.error}`);
       }
     }
 
@@ -87,7 +92,7 @@ async function testExternalMCPServers(): Promise<void> {
       try {
         const result = await client.executeTool(test.server, test.tool, test.params);
 
-        if (result.success) {
+        if (result?.success) {
         } else {
         }
       } catch (_error) {}
@@ -105,7 +110,7 @@ async function testExternalMCPServers(): Promise<void> {
 }
 
 /**
- * Validate configuration files
+ * Validate configuration files.
  */
 function validateConfigurationFiles(): void {
   import('node:fs')
@@ -150,7 +155,7 @@ function validateConfigurationFiles(): void {
 }
 
 /**
- * Main test function
+ * Main test function.
  */
 async function main(): Promise<void> {
   // Validate configuration files first

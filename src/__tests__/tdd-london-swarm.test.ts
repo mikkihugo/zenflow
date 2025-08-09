@@ -1,4 +1,5 @@
 /**
+/// <reference types="./global-types" />
  * TDD London School Swarm - Claude-Zen Acceptance Tests
  *
  * Claude-Zen v2.0.0-alpha.73 - Enhanced multi-Queen AI platform
@@ -51,7 +52,7 @@ interface WebApiContract {
 
 interface McpServerContract {
   initialize(options: { stdio: boolean }): Promise<void>;
-  handleStdioMessage(message: any): Promise<any>;
+  handleStdioMessage(message: unknown): Promise<any>;
   sendResponse(id: string, result: any): Promise<void>;
   registerTool(name: string, handler: Function): void;
 }

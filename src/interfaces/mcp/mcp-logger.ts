@@ -1,8 +1,14 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("interfaces-mcp-mcp-logger");
 /**
- * MCP Logger for MCP Server
- * Standalone logger to avoid dependency issues
+ * @file Interface implementation: mcp-logger
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-mcp-mcp-logger');
+/**
+ * MCP Logger for MCP Server.
+ * Standalone logger to avoid dependency issues.
  */
 
 export interface MCPLogger {

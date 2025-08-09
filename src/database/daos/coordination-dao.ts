@@ -2,9 +2,14 @@
  * @deprecated Use CoordinationDao from '../dao/coordination.dao'.
  * This shim will be removed after migration period.
  */
+/**
+ * @file Database layer: coordination-dao
+ */
+
+
 export { CoordinationDao as CoordinationDAO } from '../dao/coordination.dao';
 
-import { Logger } from '../../utils/logger';
+import type { Logger } from '../utils/logger';
 
 interface CoordinationEvent<T = any> {
   type: string;
@@ -37,7 +42,12 @@ interface CoordinationStats {
 
 interface CoordinationRepository {
   publish(channel: string, event: any): Promise<void>;
-  tryAcquireLock(key: string, maxRetries: number, retryDelay: number, timeout: number): Promise<CoordinationLock | null>;
+  tryAcquireLock(
+    key: string,
+    maxRetries: number,
+    retryDelay: number,
+    timeout: number
+  ): Promise<CoordinationLock | null>;
   acquireLock(key: string, timeout: number): Promise<CoordinationLock>;
   releaseLock(lockId: string): Promise<void>;
   getCoordinationStats(): Promise<CoordinationStats>;
@@ -52,7 +62,7 @@ export class CoordinationService {
   ) {}
 
   /**
-   * Distributed messaging and event coordination
+   * Distributed messaging and event coordination.
    *
    * @param eventType
    * @param data
@@ -92,27 +102,27 @@ export class CoordinationService {
         timestamp: new Date(),
         source: this.generateNodeIdentifier(),
         metadata: {
-          targetNodes: eventOptions.targetNodes,
-          waitForAck: eventOptions.waitForAcknowledgment,
-          timeout: eventOptions.timeout,
+          targetNodes: eventOptions?.targetNodes,
+          waitForAck: eventOptions?.waitForAcknowledgment,
+          timeout: eventOptions?.timeout,
         },
       };
 
       // Publish the event
-      await this.coordinationRepository.publish(eventOptions.channel, event);
+      await this.coordinationRepository.publish(eventOptions?.channel, event);
 
       let acknowledgments = 0;
       const errors: string[] = [];
 
       // Wait for acknowledgments if required
-      if (eventOptions.waitForAcknowledgment) {
+      if (eventOptions?.waitForAcknowledgment) {
         const ackResult = await this.waitForAcknowledgments(
           event,
-          eventOptions.targetNodes.length,
-          eventOptions.timeout
+          eventOptions?.targetNodes.length,
+          eventOptions?.timeout
         );
-        acknowledgments = ackResult.count;
-        errors.push(...ackResult.errors);
+        acknowledgments = ackResult?.count;
+        errors.push(...ackResult?.errors);
       }
 
       return {
@@ -131,7 +141,7 @@ export class CoordinationService {
   }
 
   /**
-   * Leader election and consensus management
+   * Leader election and consensus management.
    *
    * @param electionId
    * @param candidateId
@@ -168,16 +178,16 @@ export class CoordinationService {
         `election:${electionId}`,
         3, // max retries
         1000, // retry delay
-        electionOptions.timeout
+        electionOptions?.timeout
       );
 
       if (!electionLock) {
         // Someone else is conducting the election
-        const result = await this.waitForElectionResult(electionId, electionOptions.timeout);
+        const result = await this.waitForElectionResult(electionId, electionOptions?.timeout);
         return {
-          isLeader: result.leaderId === candidateId,
-          leaderId: result.leaderId,
-          term: result.term,
+          isLeader: result?.leaderId === candidateId,
+          leaderId: result?.leaderId,
+          term: result?.term,
           votes: 0,
         };
       }
@@ -199,7 +209,7 @@ export class CoordinationService {
   }
 
   /**
-   * Distributed workflow coordination
+   * Distributed workflow coordination.
    *
    * @param workflowId
    * @param steps
@@ -250,7 +260,7 @@ export class CoordinationService {
       );
 
       try {
-        if (workflowOptions.parallelExecution) {
+        if (workflowOptions?.parallelExecution) {
           await this.executeWorkflowParallel(steps, results, errors, workflowOptions);
         } else {
           await this.executeWorkflowSequential(steps, results, errors, workflowOptions);
@@ -297,7 +307,7 @@ export class CoordinationService {
   }
 
   /**
-   * Get coordination health and metrics
+   * Get coordination health and metrics.
    */
   async getCoordinationHealth(): Promise<{
     stats: CoordinationStats;
@@ -337,7 +347,7 @@ export class CoordinationService {
   }
 
   /**
-   * Get database-specific metadata with coordination information
+   * Get database-specific metadata with coordination information.
    */
   protected getDatabaseType(): 'relational' | 'graph' | 'vector' | 'memory' | 'coordination' {
     return 'coordination';
@@ -368,7 +378,7 @@ export class CoordinationService {
   }
 
   /**
-   * Enhanced performance metrics for coordination databases
+   * Enhanced performance metrics for coordination databases.
    */
   protected getCustomMetrics(): Record<string, any> | undefined {
     return {
@@ -383,7 +393,7 @@ export class CoordinationService {
   }
 
   /**
-   * Private helper methods
+   * Private helper methods.
    */
 
   private extractResourceIds(operations: TransactionOperation[]): string[] {
@@ -423,7 +433,7 @@ export class CoordinationService {
     timeout: number
   ): Promise<{
     count: number;
-    errors: string[]
+    errors: string[];
   }> {
     // Mock acknowledgment waiting
     return new Promise((resolve) => {

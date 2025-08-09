@@ -1,7 +1,7 @@
 /**
- * Chaos Engineering Test Framework for ZenSwarm
+ * Chaos Engineering Test Framework for ZenSwarm.
  *
- * Provides comprehensive chaos engineering capabilities for testing
+ * Provides comprehensive chaos engineering capabilities for testing.
  * recovery workflows and system resilience under failure conditions.
  *
  * Features:
@@ -12,16 +12,21 @@
  * - Integration with recovery workflows validation
  * - Reproducible failure scenarios
  */
+/**
+ * @file Coordination system: chaos-engineering
+ */
+
+
 
 import { EventEmitter } from 'node:events';
-import { ConfigurationError, SystemError, ValidationError } from '../../../core/errors';
-import { createLogger } from '../../../core/logger';
-import type { HealthMonitor } from '../../diagnostics/health-monitor';
+import { ConfigurationError, SystemError, ValidationError } from '../core/errors';
+import { createLogger } from '../core/logger';
+import type { HealthMonitor } from '../diagnostics/health-monitor';
 import type { ConnectionStateManager as ConnectionManager } from '../connection-management/connection-state-manager';
 import type { RecoveryWorkflows } from '../core/recovery-workflows';
 import { generateId } from '../core/utils';
 
-// import { MCPToolsManager } from '../../../interfaces/mcp/tool-registry'; // xxx NEEDS_HUMAN: Unused import - verify if needed for future integration
+// import { MCPToolsManager } from '../interfaces/mcp/tool-registry'; // xxx NEEDS_HUMAN: Unused import - verify if needed for future integration
 
 // Type definitions for chaos engineering
 interface ExperimentPhase {
@@ -173,11 +178,11 @@ export class ChaosEngineering extends EventEmitter {
 
     this.options = {
       enableChaos: options.enableChaos === true,
-      safetyEnabled: options.safetyEnabled !== false,
-      maxConcurrentExperiments: options.maxConcurrentExperiments || 3,
-      experimentTimeout: options.experimentTimeout || 300000, // 5 minutes
-      recoveryTimeout: options.recoveryTimeout || 600000, // 10 minutes
-      blastRadiusLimit: options.blastRadiusLimit || 0.3, // 30% of resources
+      safetyEnabled: options?.safetyEnabled !== false,
+      maxConcurrentExperiments: options?.maxConcurrentExperiments || 3,
+      experimentTimeout: options?.experimentTimeout || 300000, // 5 minutes
+      recoveryTimeout: options?.recoveryTimeout || 600000, // 10 minutes
+      blastRadiusLimit: options?.blastRadiusLimit || 0.3, // 30% of resources
     } as Required<ChaosEngineeringOptions>;
 
     this.logger = createLogger({ prefix: 'ChaosEngineering' });
@@ -216,7 +221,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Initialize chaos engineering framework
+   * Initialize chaos engineering framework.
    */
   async initialize() {
     if (!this.options.enableChaos) {
@@ -255,7 +260,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Register a chaos experiment
+   * Register a chaos experiment.
    *
    * @param name
    * @param experimentDefinition
@@ -302,7 +307,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Run a chaos experiment
+   * Run a chaos experiment.
    *
    * @param experimentName
    * @param overrideParams
@@ -480,7 +485,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Run experiment phase
+   * Run experiment phase.
    *
    * @param execution
    * @param phaseName
@@ -536,7 +541,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Perform safety checks before experiment
+   * Perform safety checks before experiment.
    *
    * @param experiment
    */
@@ -571,8 +576,8 @@ export class ChaosEngineering extends EventEmitter {
       const safetyCheck = this.safetyChecks.get(checkName);
       if (safetyCheck) {
         const result = await safetyCheck(experiment);
-        if (!result.safe) {
-          throw new Error(`Safety check failed: ${checkName} - ${result.reason}`);
+        if (!result?.safe) {
+          throw new Error(`Safety check failed: ${checkName} - ${result?.reason}`);
         }
       }
     }
@@ -583,7 +588,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Inject failure based on experiment configuration
+   * Inject failure based on experiment configuration.
    *
    * @param experiment
    * @param execution
@@ -612,7 +617,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Monitor failure impact
+   * Monitor failure impact.
    *
    * @param execution
    * @param duration
@@ -700,7 +705,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Trigger recovery manually if needed
+   * Trigger recovery manually if needed.
    *
    * @param execution
    */
@@ -736,7 +741,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Monitor recovery process
+   * Monitor recovery process.
    *
    * @param execution
    */
@@ -792,7 +797,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Cleanup after experiment
+   * Cleanup after experiment.
    *
    * @param execution
    */
@@ -829,7 +834,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Check if system has recovered
+   * Check if system has recovered.
    *
    * @param _execution
    */
@@ -867,14 +872,14 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Register built-in failure injectors
+   * Register built-in failure injectors.
    */
   registerBuiltInInjectors() {
     // Memory pressure injector
     this.registerFailureInjector('memory_pressure', {
       inject: async (params: any) => {
         const size = params.size || 100 * 1024 * 1024; // 100MB default
-        const duration = params.duration || 60000; // 1 minute
+        const duration = params?.duration || 60000; // 1 minute
 
         const arrays: Array<unknown[]> = [];
         for (let i = 0; i < 10; i++) {
@@ -892,11 +897,11 @@ export class ChaosEngineering extends EventEmitter {
         };
       },
       cleanup: async (injectionResult: any) => {
-        if (injectionResult.cleanupTimer) {
-          clearTimeout(injectionResult.cleanupTimer);
+        if (injectionResult?.cleanupTimer) {
+          clearTimeout(injectionResult?.cleanupTimer);
         }
-        if (injectionResult.arrays) {
-          injectionResult.arrays.length = 0;
+        if (injectionResult?.arrays) {
+          injectionResult?.arrays.length = 0;
         }
       },
     });
@@ -904,8 +909,8 @@ export class ChaosEngineering extends EventEmitter {
     // CPU stress injector
     this.registerFailureInjector('cpu_stress', {
       inject: async (params: any) => {
-        const duration = params.duration || 60000; // 1 minute
-        const intensity = params.intensity || 0.5; // 50% CPU usage
+        const duration = params?.duration || 60000; // 1 minute
+        const intensity = params?.intensity || 0.5; // 50% CPU usage
 
         const workers: any[] = [];
         const cpuCount = require('node:os').cpus().length;
@@ -926,11 +931,11 @@ export class ChaosEngineering extends EventEmitter {
         };
       },
       cleanup: async (injectionResult: any) => {
-        if (injectionResult.cleanupTimer) {
-          clearTimeout(injectionResult.cleanupTimer);
+        if (injectionResult?.cleanupTimer) {
+          clearTimeout(injectionResult?.cleanupTimer);
         }
-        if (injectionResult.workers) {
-          injectionResult.workers.forEach((worker: any) => {
+        if (injectionResult?.workers) {
+          injectionResult?.workers.forEach((worker: any) => {
             try {
               worker.terminate();
             } catch (_error) {
@@ -944,8 +949,8 @@ export class ChaosEngineering extends EventEmitter {
     // Network failure injector
     this.registerFailureInjector('network_failure', {
       inject: async (params: any) => {
-        const targetConnections = params.connections || 'all';
-        const failureType = params.failureType || 'disconnect'; // disconnect, slow, drop
+        const targetConnections = params?.connections || 'all';
+        const failureType = params?.failureType || 'disconnect'; // disconnect, slow, drop
 
         const affectedConnections: Array<{ id: string; action: string }> = [];
 
@@ -956,11 +961,11 @@ export class ChaosEngineering extends EventEmitter {
               type: 'network_failure',
               failureType,
               affectedConnections,
-              duration: params.duration || 0,
+              duration: params?.duration || 0,
             };
 
           for (const [id, _connection] of Object.entries(connections.connections)) {
-            if (targetConnections === 'all' || targetConnections.includes(id)) {
+            if (targetConnections === 'all' || targetConnections?.includes(id)) {
               if (failureType === 'disconnect') {
                 await this.connectionManager.disconnectConnection(id, 'Chaos experiment');
                 affectedConnections.push({ id, action: 'disconnected' });
@@ -973,7 +978,7 @@ export class ChaosEngineering extends EventEmitter {
           type: 'network_failure',
           failureType,
           affectedConnections,
-          duration: params.duration || 0,
+          duration: params?.duration || 0,
         };
       },
       cleanup: async (_injectionResult: any) => {
@@ -985,7 +990,7 @@ export class ChaosEngineering extends EventEmitter {
     // Process crash injector
     this.registerFailureInjector('process_crash', {
       inject: async (params: any) => {
-        const crashType = params.crashType || 'graceful'; // graceful, force, oom
+        const crashType = params?.crashType || 'graceful'; // graceful, force, oom
 
         if (crashType === 'oom') {
           // Trigger out-of-memory condition
@@ -995,7 +1000,7 @@ export class ChaosEngineering extends EventEmitter {
           }
           return await memoryInjector.inject({
             size: 1024 * 1024 * 1024, // 1GB
-            duration: params.duration || 30000,
+            duration: params?.duration || 30000,
           });
         }
 
@@ -1003,7 +1008,7 @@ export class ChaosEngineering extends EventEmitter {
           type: 'process_crash',
           crashType,
           simulated: true, // Don't actually crash in testing
-          duration: params.duration || 0,
+          duration: params?.duration || 0,
         };
       },
     });
@@ -1014,7 +1019,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Register built-in experiments
+   * Register built-in experiments.
    */
   registerBuiltInExperiments() {
     // Memory pressure recovery test
@@ -1068,7 +1073,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Register failure injector
+   * Register failure injector.
    *
    * @param name
    * @param injector
@@ -1079,7 +1084,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Set up safety checks
+   * Set up safety checks.
    */
   setupSafetyChecks() {
     // Memory availability check
@@ -1122,7 +1127,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Helper methods
+   * Helper methods.
    */
 
   createCPUWorker() {
@@ -1152,7 +1157,7 @@ export class ChaosEngineering extends EventEmitter {
       if (Date.now() - start > 5000 && (Date.now() - start) % 10000 < 100) {
         this.logger.debug('CPU worker active', {
           workTime: Date.now() - start,
-          computationResult: result.toFixed(2),
+          computationResult: result?.toFixed(2),
         });
       }
 
@@ -1194,7 +1199,7 @@ export class ChaosEngineering extends EventEmitter {
         usage: `${(((totalMem - freeMem) / totalMem) * 100).toFixed(1)}%`,
       },
       cpu: {
-        loadAverage: loadAvg[0].toFixed(2),
+        loadAverage: loadAvg[0]?.toFixed(2),
         utilization: `${((loadAvg[0] / cpuCount) * 100).toFixed(1)}%`,
         cores: cpuCount,
       },
@@ -1224,7 +1229,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Emergency stop all experiments
+   * Emergency stop all experiments.
    *
    * @param reason
    */
@@ -1243,7 +1248,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Cancel an active experiment
+   * Cancel an active experiment.
    *
    * @param executionId
    * @param reason
@@ -1282,7 +1287,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Clear emergency stop
+   * Clear emergency stop.
    */
   clearEmergencyStop() {
     this.emergencyStop = false;
@@ -1291,7 +1296,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Get experiment status
+   * Get experiment status.
    *
    * @param executionId
    */
@@ -1314,7 +1319,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Get chaos statistics
+   * Get chaos statistics.
    */
   getChaosStats() {
     return {
@@ -1328,7 +1333,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Set integration points
+   * Set integration points.
    *
    * @param healthMonitor
    */
@@ -1355,7 +1360,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Export chaos data for analysis
+   * Export chaos data for analysis.
    */
   exportChaosData() {
     return {
@@ -1373,7 +1378,7 @@ export class ChaosEngineering extends EventEmitter {
   }
 
   /**
-   * Cleanup and shutdown
+   * Cleanup and shutdown.
    */
   async shutdown() {
     this.logger.info('Shutting down Chaos Engineering Framework');

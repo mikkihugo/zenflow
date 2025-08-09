@@ -152,7 +152,7 @@ describe('Native Hive Mind Integration Tests', () => {
       expect(workflowState?.status).toBe('running');
 
       // Verify requirements file was created
-      const requirementsPath = join(config.specsDirectory, featureName, 'requirements.md');
+      const requirementsPath = join(config?.specsDirectory, featureName, 'requirements.md');
       await expect(access(requirementsPath)).resolves.not.toThrow();
     }, 30000);
 
@@ -173,7 +173,7 @@ describe('Native Hive Mind Integration Tests', () => {
       expect(workflowState?.history[1].status).toBe('completed');
 
       // Verify design file was created
-      const designPath = join(config.specsDirectory, featureName, 'design.md');
+      const designPath = join(config?.specsDirectory, featureName, 'design.md');
       await expect(access(designPath)).resolves.not.toThrow();
     }, 60000);
 
@@ -192,7 +192,7 @@ describe('Native Hive Mind Integration Tests', () => {
       expect(workflowState?.currentPhase).toBe('Implementation Planning');
 
       // Verify tasks file was created
-      const tasksPath = join(config.specsDirectory, featureName, 'tasks.md');
+      const tasksPath = join(config?.specsDirectory, featureName, 'tasks.md');
       await expect(access(tasksPath)).resolves.not.toThrow();
     }, 90000);
 
@@ -317,7 +317,7 @@ describe('Native Hive Mind Integration Tests', () => {
       const limitedConfig = {
         ...config,
         hiveMindConfig: {
-          ...config.hiveMindConfig,
+          ...config?.hiveMindConfig,
           maxAgents: 4,
         },
       };

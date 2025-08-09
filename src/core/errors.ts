@@ -1,9 +1,14 @@
 /**
- * Comprehensive Error Handling System for Claude-Zen
+ * Comprehensive Error Handling System for Claude-Zen.
  *
- * Hierarchical error types for FACT, RAG, Swarm, MCP, and WASM systems
- * Includes error recovery strategies, monitoring, and resilience patterns
+ * Hierarchical error types for FACT, RAG, Swarm, MCP, and WASM systems.
+ * Includes error recovery strategies, monitoring, and resilience patterns.
  */
+/**
+ * @file errors implementation
+ */
+
+
 
 import { createLogger } from './logger';
 

@@ -1,5 +1,12 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-intelligence-conversation-demo");
+/**
+ * @file conversation-demo implementation
+ */
+
+
+import { getLogger } from '../core/logger';
+import type { AgentId } from '../types/agent-types';
+
+const logger = getLogger('src-intelligence-conversation-demo');
 
 /**
  * Mock memory backend for demo purposes.

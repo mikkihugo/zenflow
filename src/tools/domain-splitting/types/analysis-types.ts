@@ -1,6 +1,11 @@
 /**
- * Analysis result types for domain splitting
+ * Analysis result types for domain splitting.
  */
+/**
+ * @file TypeScript type definitions
+ */
+
+
 
 import type { DependencyGraph } from './domain-types';
 

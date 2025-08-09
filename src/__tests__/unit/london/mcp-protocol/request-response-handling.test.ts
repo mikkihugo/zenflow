@@ -291,7 +291,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
             ],
           };
         });
-        mockResponseBuilder.buildSuccessResponse.mockReturnValue({
+        mockResponseBuilder?.buildSuccessResponse?.mockReturnValue({
           jsonrpc: '2.0',
           id: 'tools-1',
           result: {
@@ -333,14 +333,14 @@ describe('MCP Request/Response Handling - London TDD', () => {
         expect(mockRequestRouter.getHandler).toHaveBeenCalledWith('tools/list');
         expect(mockSessionManager.updateActivity).toHaveBeenCalledWith('session-123');
         expect(mockMetricsCollector.recordRequest).toHaveBeenCalledWith('tools/list');
-        expect(mockResponseBuilder.buildSuccessResponse).toHaveBeenCalledWith(
+        expect(mockResponseBuilder?.buildSuccessResponse).toHaveBeenCalledWith(
           'tools-1',
           expect.objectContaining({ tools: expect.any(Array) })
         );
 
-        expect(response.jsonrpc).toBe('2.0');
-        expect(response.id).toBe('tools-1');
-        expect(response.result).toBeDefined();
+        expect(response?.jsonrpc).toBe('2.0');
+        expect(response?.id).toBe('tools-1');
+        expect(response?.result).toBeDefined();
       });
 
       it('should process tools/call request with proper execution context', async () => {
@@ -348,7 +348,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
         mockRequestValidator.validate.mockReturnValue({ valid: true, errors: [] });
         mockRequestRouter.getHandler.mockReturnValue(async (params, context) => {
           // Simulate tool execution
-          const toolResult = await mockToolExecutor.execute(params.name, params.arguments);
+          const toolResult = await mockToolExecutor.execute(params?.name, params?.arguments);
           return toolResult;
         });
         mockToolExecutor.execute.mockResolvedValue({
@@ -359,7 +359,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
             },
           ],
         });
-        mockResponseBuilder.buildSuccessResponse.mockReturnValue({
+        mockResponseBuilder?.buildSuccessResponse?.mockReturnValue({
           jsonrpc: '2.0',
           id: 'tool-call-1',
           result: {
@@ -402,8 +402,8 @@ describe('MCP Request/Response Handling - London TDD', () => {
           codebase: '/path/to/project',
           language: 'typescript',
         });
-        expect(response.result).toBeDefined();
-        expect(response.result.content[0].text).toContain('Analysis complete');
+        expect(response?.result).toBeDefined();
+        expect(response?.result?.content?.[0]?.text).toContain('Analysis complete');
       });
     });
 
@@ -414,7 +414,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
           valid: false,
           errors: ['Method is required', 'Invalid JSON-RPC format'],
         });
-        mockResponseBuilder.buildErrorResponse.mockReturnValue({
+        mockResponseBuilder?.buildErrorResponse?.mockReturnValue({
           jsonrpc: '2.0',
           id: 'invalid-1',
           error: {
@@ -443,20 +443,20 @@ describe('MCP Request/Response Handling - London TDD', () => {
 
         // Assert - Verify validation error handling
         expect(mockRequestValidator.validate).toHaveBeenCalledWith(invalidRequest);
-        expect(mockResponseBuilder.buildErrorResponse).toHaveBeenCalledWith('invalid-1', {
+        expect(mockResponseBuilder?.buildErrorResponse).toHaveBeenCalledWith('invalid-1', {
           code: -32602,
           message: 'Invalid params',
           data: ['Method is required', 'Invalid JSON-RPC format'],
         });
-        expect(response.error).toBeDefined();
-        expect(response.error.code).toBe(-32602);
+        expect(response?.error).toBeDefined();
+        expect(response?.error?.code).toBe(-32602);
       });
 
       it('should handle method not found errors', async () => {
         // Arrange - Mock method not found
         mockRequestValidator.validate.mockReturnValue({ valid: true, errors: [] });
         mockRequestRouter.getHandler.mockReturnValue(null); // No handler found
-        mockResponseBuilder.buildErrorResponse.mockReturnValue({
+        mockResponseBuilder?.buildErrorResponse?.mockReturnValue({
           jsonrpc: '2.0',
           id: 'not-found-1',
           error: {
@@ -492,8 +492,8 @@ describe('MCP Request/Response Handling - London TDD', () => {
             error: expect.stringContaining('No handler found'),
           })
         );
-        expect(response.error).toBeDefined();
-        expect(response.error.code).toBe(-32603);
+        expect(response?.error).toBeDefined();
+        expect(response?.error?.code).toBe(-32603);
       });
     });
   });
@@ -580,7 +580,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
           await new Promise((resolve) => setTimeout(resolve, 100)); // Short delay for test
           return { result: 'completed' };
         });
-        mockResponseBuilder.buildErrorResponse.mockReturnValue({
+        mockResponseBuilder?.buildErrorResponse?.mockReturnValue({
           jsonrpc: '2.0',
           id: 'timeout-1',
           error: {
@@ -616,8 +616,8 @@ describe('MCP Request/Response Handling - London TDD', () => {
             error: 'Request timeout',
           })
         );
-        expect(response.error).toBeDefined();
-        expect(response.error.data.error).toBe('Request timeout');
+        expect(response?.error).toBeDefined();
+        expect(response?.error?.data?.error).toBe('Request timeout');
 
         const metrics = handler.getRequestMetrics();
         expect(metrics.timeouts).toBe(1);
@@ -630,7 +630,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
       it('should build proper success responses', async () => {
         // Arrange - Mock response building
         const expectedResult = { status: 'success', data: { count: 42 } };
-        mockResponseBuilder.buildSuccessResponse.mockReturnValue({
+        mockResponseBuilder?.buildSuccessResponse?.mockReturnValue({
           jsonrpc: '2.0',
           id: 'success-1',
           result: expectedResult,
@@ -642,13 +642,13 @@ describe('MCP Request/Response Handling - London TDD', () => {
         const response = handler.createSuccessResponse('success-1', expectedResult);
 
         // Assert - Verify success response construction
-        expect(mockResponseBuilder.buildSuccessResponse).toHaveBeenCalledWith(
+        expect(mockResponseBuilder?.buildSuccessResponse).toHaveBeenCalledWith(
           'success-1',
           expectedResult
         );
-        expect(response.jsonrpc).toBe('2.0');
-        expect(response.id).toBe('success-1');
-        expect(response.result).toEqual(expectedResult);
+        expect(response?.jsonrpc).toBe('2.0');
+        expect(response?.id).toBe('success-1');
+        expect(response?.result).toEqual(expectedResult);
       });
 
       it('should build proper error responses', async () => {
@@ -658,7 +658,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
           message: 'Server error',
           data: { context: 'database connection failed' },
         };
-        mockResponseBuilder.buildErrorResponse.mockReturnValue({
+        mockResponseBuilder?.buildErrorResponse?.mockReturnValue({
           jsonrpc: '2.0',
           id: 'error-1',
           error: errorDetails,
@@ -670,13 +670,13 @@ describe('MCP Request/Response Handling - London TDD', () => {
         const response = handler.createErrorResponse('error-1', errorDetails);
 
         // Assert - Verify error response construction
-        expect(mockResponseBuilder.buildErrorResponse).toHaveBeenCalledWith(
+        expect(mockResponseBuilder?.buildErrorResponse).toHaveBeenCalledWith(
           'error-1',
           errorDetails
         );
-        expect(response.jsonrpc).toBe('2.0');
-        expect(response.id).toBe('error-1');
-        expect(response.error).toEqual(errorDetails);
+        expect(response?.jsonrpc).toBe('2.0');
+        expect(response?.id).toBe('error-1');
+        expect(response?.error).toEqual(errorDetails);
       });
     });
   });
@@ -688,7 +688,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
       mockRequestRouter.getHandler.mockReturnValue(async (params, context) => {
         return { processed: true, sessionId: context.sessionId };
       });
-      mockResponseBuilder.buildSuccessResponse.mockReturnValue({
+      mockResponseBuilder?.buildSuccessResponse?.mockReturnValue({
         jsonrpc: '2.0',
         id: 'lifecycle-1',
         result: { processed: true, sessionId: 'session-lifecycle' },
@@ -721,7 +721,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
       expect(mockSessionManager.updateActivity).toHaveBeenCalledWith('session-lifecycle');
       expect(mockRequestValidator.validate).toHaveBeenCalledWith(lifecycleRequest);
       expect(mockRequestRouter.getHandler).toHaveBeenCalledWith('test/lifecycle');
-      expect(mockResponseBuilder.buildSuccessResponse).toHaveBeenCalledWith(
+      expect(mockResponseBuilder?.buildSuccessResponse).toHaveBeenCalledWith(
         'lifecycle-1',
         expect.objectContaining({ processed: true })
       );
@@ -731,7 +731,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
         expect.objectContaining({ id: 'lifecycle-1' })
       );
 
-      expect(response.result.processed).toBe(true);
+      expect(response?.result?.processed).toBe(true);
 
       const metrics = handler.getRequestMetrics();
       expect(metrics.totalRequests).toBe(1);

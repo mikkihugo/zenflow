@@ -1,25 +1,25 @@
 /**
- * Memory Domain Dependency Injection Providers
- * Implements comprehensive DI patterns for memory management
+ * Memory Domain Dependency Injection Providers.
+ * Implements comprehensive DI patterns for memory management.
  *
  * @file memory-providers.ts
  * @description Enhanced memory providers with DI integration for Issue #63
  */
 
-import type { DALFactory } from '../../database/factory';
-import type { ICoordinationRepository, IVectorRepository } from '../../database/interfaces';
-import { inject, injectable } from '../../di/decorators/injectable';
+import type { DALFactory } from '../database/factory';
+import type { ICoordinationRepository, IVectorRepository } from '../database/interfaces';
+import { inject, injectable } from '../di/decorators/injectable';
 import {
   CORE_TOKENS,
   DATABASE_TOKENS,
   type IConfig,
   type ILogger,
   MEMORY_TOKENS,
-} from '../../di/tokens/core-tokens';
+} from '../di/tokens/core-tokens';
 
 /**
- * Interface for memory backend implementations
- * Updated to be compatible with BaseMemoryBackend
+ * Interface for memory backend implementations.
+ * Updated to be compatible with BaseMemoryBackend.
  *
  * @example
  */
@@ -39,7 +39,7 @@ export interface MemoryBackend {
 }
 
 /**
- * Configuration interface for memory providers
+ * Configuration interface for memory providers.
  *
  * @example
  */
@@ -57,8 +57,8 @@ export interface MemoryConfig {
 }
 
 /**
- * Factory for creating memory backend providers
- * Uses dependency injection for logger, configuration, and DAL Factory
+ * Factory for creating memory backend providers.
+ * Uses dependency injection for logger, configuration, and DAL Factory.
  *
  * @example
  */
@@ -71,16 +71,16 @@ export class MemoryProviderFactory {
   ) {}
 
   /**
-   * Create a memory provider based on configuration
+   * Create a memory provider based on configuration.
    *
    * @param config Memory configuration
    * @returns Appropriate memory backend implementation
    */
   createProvider(config: MemoryConfig): MemoryBackend {
-    this.logger.info(`Creating memory provider: ${config.type}`);
+    this.logger.info(`Creating memory provider: ${config?.type}`);
 
     try {
-      switch (config.type) {
+      switch (config?.type) {
         case 'sqlite':
           return new SqliteMemoryBackend(config, this.logger, this.dalFactory);
         case 'lancedb':
@@ -101,7 +101,7 @@ export class MemoryProviderFactory {
 }
 
 /**
- * SQLite-based memory backend implementation using DAL Factory
+ * SQLite-based memory backend implementation using DAL Factory.
  *
  * @example
  */
@@ -140,8 +140,8 @@ export class SqliteMemoryBackend implements MemoryBackend {
 
     try {
       const results = await this.repository.findAll({});
-      const filtered = results.filter((r: any) => r.id === key);
-      return filtered.length > 0 ? filtered[0].data : null;
+      const filtered = results?.filter((r: any) => r.id === key);
+      return filtered.length > 0 ? filtered[0]?.data : null;
     } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;
@@ -225,7 +225,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
 }
 
 /**
- * LanceDB-based memory backend implementation using DAL Factory
+ * LanceDB-based memory backend implementation using DAL Factory.
  *
  * @example
  */
@@ -272,17 +272,17 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
     try {
       const results = await this.repository.similaritySearch([0], { limit: 1000 });
-      const match = results.find((r) => r.id === key);
+      const match = results?.find((r) => r.id === key);
       // Ensure metadata exists on VectorSearchResult and access originalValue safely
       if (
         match &&
         'metadata' in match &&
-        match.metadata &&
-        typeof match.metadata === 'object' &&
-        match.metadata !== null &&
-        'originalValue' in match.metadata
+        match?.metadata &&
+        typeof match?.metadata === 'object' &&
+        match?.metadata !== null &&
+        'originalValue' in match?.metadata
       ) {
-        return (match.metadata as any).originalValue;
+        return (match?.metadata as any).originalValue;
       }
       return null;
     } catch (error) {
@@ -387,7 +387,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 }
 
 /**
- * JSON file-based memory backend implementation
+ * JSON file-based memory backend implementation.
  *
  * @example
  */
@@ -514,9 +514,9 @@ export class InMemoryBackend implements MemoryBackend {
 
   constructor(
     private config: MemoryConfig,
-    private logger: ILogger
+    private logger: ILogger.
   ) {
-    this.maxSize = config.maxSize || 10000;
+    this.maxSize = config?.maxSize || 10000;
     this.logger.info(`Initialized in-memory backend with max size: ${this.maxSize}`);
   }
 

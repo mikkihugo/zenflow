@@ -373,9 +373,9 @@ describe('CLI Commands Integration - TDD London', () => {
         if (parsed.command) {
           const result = await mockRegistry.execute(parsed.command, context);
           return {
-            success: result.success,
-            exitCode: result.exitCode,
-            output: result.message,
+            success: result?.success,
+            exitCode: result?.exitCode,
+            output: result?.message,
           };
         }
         return { success: false, exitCode: 1 };
@@ -387,7 +387,7 @@ describe('CLI Commands Integration - TDD London', () => {
       // Assert - verify component coordination
       expect(mockParser.parse).toHaveBeenCalledWith(input);
       expect(mockRegistry.execute).toHaveBeenCalledWith('deploy', context);
-      expect(result.success).toBe(true);
+      expect(result?.success).toBe(true);
     });
 
     it('should format output using formatter when command succeeds', async () => {
@@ -412,7 +412,7 @@ describe('CLI Commands Integration - TDD London', () => {
 
       // Assert - verify formatter usage
       expect(mockFormatter.format).toHaveBeenCalledWith(commandData, { format: 'table' });
-      expect(result.output).toBe(formattedOutput);
+      expect(result?.output).toBe(formattedOutput);
     });
 
     it('should use error handler when command fails', async () => {

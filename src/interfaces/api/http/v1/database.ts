@@ -1,5 +1,5 @@
 /**
- * Database API v1 Routes - Enhanced with Full DI Integration
+ * Database API v1 Routes - Enhanced with Full DI Integration.
  *
  * REST API routes for database operations using full DI-enabled DatabaseController.
  * Features authentication, rate limiting, and complete dependency injection.
@@ -29,7 +29,7 @@ import {
 } from '../middleware/rate-limit';
 
 /**
- * Get DI-enabled database controller instance
+ * Get DI-enabled database controller instance.
  */
 function getDatabaseControllerInstance() {
   try {
@@ -40,7 +40,7 @@ function getDatabaseControllerInstance() {
 }
 
 /**
- * Input validation middleware
+ * Input validation middleware.
  *
  * @param req
  */
@@ -133,7 +133,7 @@ function validateMigrationRequest(req: Request): MigrationRequest {
 }
 
 /**
- * Permission check for database operations
+ * Permission check for database operations.
  *
  * @param req
  * @param operation
@@ -156,8 +156,8 @@ function checkDatabasePermission(req: Request, operation: 'read' | 'write' | 'ad
 }
 
 /**
- * Create database management routes with enhanced features
- * All database endpoints under /api/v1/database with authentication and rate limiting
+ * Create database management routes with enhanced features.
+ * All database endpoints under /api/v1/database with authentication and rate limiting.
  */
 export const createDatabaseRoutes = (): Router => {
   const router = Router();
@@ -169,8 +169,8 @@ export const createDatabaseRoutes = (): Router => {
 
   /**
    * GET /api/v1/database/status
-   * Get comprehensive database status and health information
-   * Rate limited as light operation, requires read permission
+   * Get comprehensive database status and health information.
+   * Rate limited as light operation, requires read permission.
    */
   router.get(
     '/status',
@@ -187,8 +187,8 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_status', duration, req, {
-          success: result.success,
-          adapter: result.metadata?.adapter,
+          success: result?.success,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -207,8 +207,8 @@ export const createDatabaseRoutes = (): Router => {
 
   /**
    * POST /api/v1/database/query
-   * Execute database SELECT queries with parameters
-   * Rate limited as medium operation, requires read permission
+   * Execute database SELECT queries with parameters.
+   * Rate limited as medium operation, requires read permission.
    */
   router.post(
     '/query',
@@ -230,9 +230,9 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_query', duration, req, {
-          success: result.success,
-          rowCount: result.metadata?.rowCount,
-          adapter: result.metadata?.adapter,
+          success: result?.success,
+          rowCount: result?.metadata?.rowCount,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -250,9 +250,9 @@ export const createDatabaseRoutes = (): Router => {
   );
 
   /**
-   * POST /api/v1/database/execute
+   * POST /api/v1/database/execute.
    * Execute database commands (INSERT, UPDATE, DELETE, DDL)
-   * Rate limited as medium operation, requires write permission
+   * Rate limited as medium operation, requires write permission.
    */
   router.post(
     '/execute',
@@ -274,9 +274,9 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_execute', duration, req, {
-          success: result.success,
-          rowCount: result.metadata?.rowCount,
-          adapter: result.metadata?.adapter,
+          success: result?.success,
+          rowCount: result?.metadata?.rowCount,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -295,8 +295,8 @@ export const createDatabaseRoutes = (): Router => {
 
   /**
    * POST /api/v1/database/transaction
-   * Execute multiple commands within a transaction
-   * Rate limited as heavy operation, requires write permission
+   * Execute multiple commands within a transaction.
+   * Rate limited as heavy operation, requires write permission.
    */
   router.post(
     '/transaction',
@@ -318,9 +318,9 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_transaction', duration, req, {
-          success: result.success,
+          success: result?.success,
           operationCount: batchRequest.operations.length,
-          adapter: result.metadata?.adapter,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -339,8 +339,8 @@ export const createDatabaseRoutes = (): Router => {
 
   /**
    * GET /api/v1/database/schema
-   * Get comprehensive database schema information
-   * Rate limited as light operation, requires read permission
+   * Get comprehensive database schema information.
+   * Rate limited as light operation, requires read permission.
    */
   router.get(
     '/schema',
@@ -359,9 +359,9 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_schema', duration, req, {
-          success: result.success,
-          tableCount: result.metadata?.rowCount,
-          adapter: result.metadata?.adapter,
+          success: result?.success,
+          tableCount: result?.metadata?.rowCount,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -380,8 +380,8 @@ export const createDatabaseRoutes = (): Router => {
 
   /**
    * POST /api/v1/database/migrate
-   * Execute database migration operations
-   * Rate limited as admin operation, requires admin permission
+   * Execute database migration operations.
+   * Rate limited as admin operation, requires admin permission.
    */
   router.post(
     '/migrate',
@@ -404,10 +404,10 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_migration', duration, req, {
-          success: result.success,
+          success: result?.success,
           version: migrationRequest.version,
           statementCount: migrationRequest.statements.length,
-          adapter: result.metadata?.adapter,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -426,8 +426,8 @@ export const createDatabaseRoutes = (): Router => {
 
   /**
    * GET /api/v1/database/analytics
-   * Get comprehensive database analytics and performance metrics
-   * Rate limited as light operation, requires read permission
+   * Get comprehensive database analytics and performance metrics.
+   * Rate limited as light operation, requires read permission.
    */
   router.get(
     '/analytics',
@@ -446,8 +446,8 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_analytics', duration, req, {
-          success: result.success,
-          adapter: result.metadata?.adapter,
+          success: result?.success,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -467,8 +467,8 @@ export const createDatabaseRoutes = (): Router => {
   // ===== SYSTEM ENDPOINTS =====
 
   /**
-   * GET /api/v1/database/health
-   * Database health check for the DI container and controller
+   * GET /api/v1/database/health.
+   * Database health check for the DI container and controller.
    */
   router.get(
     '/health',
@@ -536,6 +536,6 @@ export const createDatabaseRoutes = (): Router => {
 };
 
 /**
- * Default export for the database routes
+ * Default export for the database routes.
  */
 export default createDatabaseRoutes;

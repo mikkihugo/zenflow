@@ -1,8 +1,14 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("coordination-diagnostics-logging-config");
 /**
- * Logging Configuration for Diagnostics System
- * Provides centralized logging configuration specifically for diagnostics
+ * @file Coordination system: logging-config
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-diagnostics-logging-config');
+/**
+ * Logging Configuration for Diagnostics System.
+ * Provides centralized logging configuration specifically for diagnostics.
  */
 
 export interface LoggerInterface {
@@ -21,7 +27,7 @@ export interface LogConfiguration {
 }
 
 /**
- * Simple logger implementation for diagnostics
+ * Simple logger implementation for diagnostics.
  *
  * @example
  */
@@ -70,7 +76,7 @@ class DiagnosticsLogger implements LoggerInterface {
 }
 
 /**
- * Logging configuration manager for diagnostics
+ * Logging configuration manager for diagnostics.
  *
  * @example
  */
@@ -78,14 +84,14 @@ export class DiagnosticsLoggingConfig {
   private loggers = new Map<string, LoggerInterface>();
 
   /**
-   * Get or create a logger for a component
+   * Get or create a logger for a component.
    *
    * @param component
    * @param options
    * @param options.level
    */
   getLogger(component: string, options: { level: string }): LoggerInterface {
-    const key = `${component}-${options.level}`;
+    const key = `${component}-${options?.level}`;
 
     if (this.loggers.has(key)) {
       return this.loggers.get(key)!;
@@ -97,7 +103,7 @@ export class DiagnosticsLoggingConfig {
   }
 
   /**
-   * Get logging configuration
+   * Get logging configuration.
    */
   logConfiguration(): LogConfiguration {
     return {

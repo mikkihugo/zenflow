@@ -1,8 +1,13 @@
 /**
- * Conversation MCP Tools
+ * Conversation MCP Tools.
  *
  * MCP tools for managing ag2.ai-inspired multi-agent conversations
  */
+/**
+ * @file mcp-tools implementation
+ */
+
+
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { ConversationMemoryFactory } from './memory';
@@ -16,7 +21,7 @@ import type {
 } from './types';
 
 /**
- * MCP tools for conversation management
+ * MCP tools for conversation management.
  *
  * @example
  */
@@ -28,7 +33,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
   }
 
   /**
-   * Get all conversation MCP tools
+   * Get all conversation MCP tools.
    */
   getTools(): Tool[] {
     return [
@@ -265,7 +270,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
   }
 
   /**
-   * Handle conversation MCP tool calls
+   * Handle conversation MCP tool calls.
    *
    * @param name
    * @param args
@@ -519,7 +524,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
   }
 
   /**
-   * Static method for backward compatibility
+   * Static method for backward compatibility.
    *
    * @deprecated Use instance method getTools() instead
    */
@@ -543,7 +548,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
 }
 
 /**
- * Factory for creating conversation MCP tools
+ * Factory for creating conversation MCP tools.
  *
  * @example
  */

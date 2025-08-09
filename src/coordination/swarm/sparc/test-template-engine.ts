@@ -1,8 +1,15 @@
 #!/usr/bin/env node
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-sparc-test-template-engine");
 /**
- * Simple test script for SPARC Template Engine
+ * @file test-template processing engine
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-sparc-test-template-engine');
+
+/**
+ * Simple test script for SPARC Template Engine.
  * Tests template integration functionality.
  */
 
@@ -25,14 +32,14 @@ async function testTemplateEngine() {
   const bestMatch = templateEngine.findBestTemplate(testProject);
 
   if (bestMatch) {
-    if (bestMatch.compatibility.warnings.length > 0) {
-      bestMatch.compatibility.warnings.forEach((_warning) => {});
+    if (bestMatch?.compatibility?.warnings.length > 0) {
+      bestMatch?.compatibility?.warnings?.forEach((_warning) => {});
     }
     try {
-      const result = await templateEngine.applyTemplate(bestMatch.template, testProject);
+      const result = await templateEngine.applyTemplate(bestMatch?.template, testProject);
 
-      if (result.customizations.length > 0) {
-        result.customizations.forEach((_customization) => {});
+      if (result?.customizations.length > 0) {
+        result?.customizations?.forEach((_customization) => {});
       }
       const _stats = templateEngine.getTemplateStats();
     } catch (error) {

@@ -1,9 +1,14 @@
 /**
- * Web Interface Server - Main web dashboard server
+ * Web Interface Server - Main web dashboard server.
  *
- * Refactored Google-standard web interface that coordinates between
+ * Refactored Google-standard web interface that coordinates between.
  * focused modules for WebSocket, API routes, and daemon management.
  */
+/**
+ * @file Interface implementation: web-interface-server
+ */
+
+
 
 import { existsSync } from 'node:fs';
 import { createServer, type Server as HTTPServer } from 'node:http';
@@ -11,7 +16,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express, { type Express } from 'express';
 import { Server as SocketIOServer } from 'socket.io';
-import { createLogger } from '../../utils/logger';
+import { createLogger } from '../utils/logger';
 import { ApiRouteHandler } from './api-route-handler';
 import { DaemonProcessManager } from './daemon-process-manager';
 import { WebSocketCoordinator } from './web-socket-coordinator';
@@ -35,7 +40,7 @@ export interface WebConfig {
 }
 
 /**
- * Main web interface server coordinating all web functionality
+ * Main web interface server coordinating all web functionality.
  *
  * @example
  */
@@ -79,7 +84,7 @@ export class WebInterfaceServer {
   }
 
   /**
-   * Initialize server components
+   * Initialize server components.
    */
   private initializeServer(): void {
     // Create Express app and HTTP server
@@ -116,7 +121,7 @@ export class WebInterfaceServer {
   }
 
   /**
-   * Setup Express middleware
+   * Setup Express middleware.
    */
   private setupMiddleware(): void {
     // CORS middleware
@@ -154,7 +159,7 @@ export class WebInterfaceServer {
   }
 
   /**
-   * Setup static file serving
+   * Setup static file serving.
    */
   private setupStaticRoutes(): void {
     // Serve static files if build directory exists
@@ -205,7 +210,7 @@ export class WebInterfaceServer {
   }
 
   /**
-   * Start the web interface server
+   * Start the web interface server.
    */
   async start(): Promise<void> {
     try {
@@ -221,7 +226,7 @@ export class WebInterfaceServer {
   }
 
   /**
-   * Start server in normal mode
+   * Start server in normal mode.
    */
   private async startServer(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -246,7 +251,7 @@ export class WebInterfaceServer {
   }
 
   /**
-   * Start server in daemon mode
+   * Start server in daemon mode.
    */
   private async startDaemon(): Promise<void> {
     const _processInfo = await this.daemonManager.startDaemon(process.execPath, [
@@ -256,7 +261,7 @@ export class WebInterfaceServer {
   }
 
   /**
-   * Stop the web interface server
+   * Stop the web interface server.
    */
   async stop(): Promise<void> {
     this.logger.info('Stopping web interface...');
@@ -272,7 +277,7 @@ export class WebInterfaceServer {
   }
 
   /**
-   * Get server status
+   * Get server status.
    */
   async getStatus(): Promise<{
     running: boolean;
@@ -305,7 +310,7 @@ export class WebInterfaceServer {
   }
 
   /**
-   * Generate inline HTML for development
+   * Generate inline HTML for development.
    */
   private generateInlineHTML(): string {
     return `

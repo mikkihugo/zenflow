@@ -172,7 +172,7 @@ export interface DiscoveryContext {
 }
 
 /**
- * Progressive Confidence Builder
+ * Progressive Confidence Builder.
  * Iteratively builds confidence in domain discovery through human validation and research.
  *
  * @example
@@ -428,7 +428,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     if (response && response.toLowerCase() !== 'skip') {
       // Parse document paths
       const paths = response
-        .split(/[,\n]/)
+        ?.split(/[,\n]/)
         .map((p) => p.trim())
         .filter((p) => p);
 
@@ -481,7 +481,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
       for (let i = 0; i < batch.length; i++) {
         const question = batch[i];
-        const response = responses[i];
+        const response = responses?.[i];
 
         this.totalQuestionsAsked++;
 
@@ -1185,7 +1185,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Allow manual confidence adjustment
+   * Allow manual confidence adjustment.
    */
   private async adjustConfidence(): Promise<void> {
     const adjustQuestion: ValidationQuestion = {
@@ -1221,7 +1221,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Collect validator notes
+   * Collect validator notes.
    *
    * @param checkpoint
    */
@@ -1258,7 +1258,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Check if question is relevant to a domain
+   * Check if question is relevant to a domain.
    *
    * @param question
    * @param domain
@@ -1268,7 +1268,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     domain: ConfidentDomain
   ): boolean {
     // Check if question context mentions this domain
-    if (question.context?.domain === domain.name) {
+    if (question.context.domain === domain.name) {
       return true;
     }
 
@@ -1287,7 +1287,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Prioritize questions based on confidence and importance
+   * Prioritize questions based on confidence and importance.
    *
    * @param questions
    */
@@ -1308,7 +1308,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Check if minimum validations are met for each domain
+   * Check if minimum validations are met for each domain.
    */
   private async checkMinimumValidations(): Promise<void> {
     const underValidatedDomains = Array.from(this.domains.values()).filter(
@@ -1343,7 +1343,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Update audit trail
+   * Update audit trail.
    */
   private async updateAuditTrail(): Promise<void> {
     const significantChanges: string[] = [];

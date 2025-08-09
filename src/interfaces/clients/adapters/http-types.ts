@@ -1,13 +1,18 @@
 /**
- * HTTP Client Adapter Types
+ * HTTP Client Adapter Types.
  *
- * HTTP-specific extensions to UACL core interfaces
+ * HTTP-specific extensions to UACL core interfaces.
  */
+/**
+ * @file TypeScript type definitions for interfaces
+ */
+
+
 
 import type { AuthenticationConfig, ClientConfig, RetryConfig } from '../core/interfaces';
 
 /**
- * HTTP-specific authentication configuration
+ * HTTP-specific authentication configuration.
  *
  * @example
  */
@@ -31,7 +36,7 @@ export interface HTTPAuthenticationConfig extends AuthenticationConfig {
 }
 
 /**
- * HTTP-specific retry configuration
+ * HTTP-specific retry configuration.
  *
  * @example
  */
@@ -47,7 +52,7 @@ export interface HTTPRetryConfig extends RetryConfig {
 }
 
 /**
- * HTTP client configuration
+ * HTTP client configuration.
  *
  * @example
  */
@@ -102,7 +107,7 @@ export interface HTTPClientConfig extends ClientConfig {
 }
 
 /**
- * HTTP request options
+ * HTTP request options.
  *
  * @example
  */
@@ -119,7 +124,7 @@ export interface HTTPRequestOptions {
 }
 
 /**
- * HTTP response type
+ * HTTP response type.
  *
  * @example
  */
@@ -134,7 +139,7 @@ export interface HTTPResponse<T = any> {
 }
 
 /**
- * HTTP error details
+ * HTTP error details.
  *
  * @example
  */
@@ -147,7 +152,7 @@ export interface HTTPErrorDetails {
 }
 
 /**
- * HTTP client capabilities
+ * HTTP client capabilities.
  *
  * @example
  */
@@ -162,7 +167,7 @@ export interface HTTPClientCapabilities {
 }
 
 /**
- * OAuth credentials for HTTP clients
+ * OAuth credentials for HTTP clients.
  *
  * @example
  */

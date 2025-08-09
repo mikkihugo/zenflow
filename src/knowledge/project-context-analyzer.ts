@@ -1,9 +1,16 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-knowledge-project-context-analyzer");
 /**
- * Hive-Controlled FACT System for Claude-Zen
+ * @file project-context-analyzer implementation
+ */
+
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-knowledge-project-context-analyzer');
+
+/**
+ * Hive-Controlled FACT System for Claude-Zen.
  *
- * The Hive Mind intelligently determines what external knowledge to gather
+ * The Hive Mind intelligently determines what external knowledge to gather.
  * based on:
  * - Project dependencies (package.json, Cargo.toml, etc.)
  * - Code analysis (imports, APIs used, frameworks detected)
@@ -14,7 +21,7 @@ const logger = getLogger("src-knowledge-project-context-analyzer");
  * - Hive analyzes project and determines knowledge needs
  * - Domain swarms receive targeted FACT gathering missions
  * - Service swarms execute specific knowledge collection tasks
- * - Results are cached and shared across the organization
+ * - Results are cached and shared across the organization.
  */
 
 import { exec } from 'node:child_process';
@@ -109,8 +116,8 @@ interface ProjectAnalyzerConfig {
 }
 
 /**
- * Project Context Analyzer
- * Analyzes project context and determines what external knowledge should be gathered
+ * Project Context Analyzer.
+ * Analyzes project context and determines what external knowledge should be gathered.
  *
  * @example
  */
@@ -139,7 +146,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Initialize the project context analyzer
+   * Initialize the project context analyzer.
    */
   async initialize(): Promise<void> {
     try {
@@ -167,7 +174,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Analyze the current project to understand what knowledge is needed
+   * Analyze the current project to understand what knowledge is needed.
    */
   async analyzeProjectContext(): Promise<ProjectContext> {
     try {
@@ -214,7 +221,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Detect if the project is a monorepo and what type
+   * Detect if the project is a monorepo and what type.
    *
    * @param context
    */
@@ -342,7 +349,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Analyze monorepo structure in detail
+   * Analyze monorepo structure in detail.
    *
    * @param context
    */
@@ -377,7 +384,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
           // Parse YAML to get packages - simplified for now
           const packagesMatch = pnpmWorkspace.match(/packages:\s*\n((?:\s+-\s+.*\n?)*)/);
           if (packagesMatch) {
-            context.monorepo.packages = packagesMatch?.[1]?.split('\n')
+            context.monorepo.packages = packagesMatch?.[1]
+              ?.split('\n')
               .map((line) => line.trim().replace(/^-\s*/, ''))
               .filter(Boolean);
           }
@@ -406,7 +414,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Generate knowledge gathering missions based on project context
+   * Generate knowledge gathering missions based on project context.
    */
   async generateKnowledgeMissions(): Promise<void> {
     if (!this.projectContext) {
@@ -455,7 +463,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Execute knowledge gathering missions through the swarm
+   * Execute knowledge gathering missions through the swarm.
    *
    * @param priority
    */
@@ -479,7 +487,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Execute a single knowledge gathering mission
+   * Execute a single knowledge gathering mission.
    *
    * @param mission
    */
@@ -534,7 +542,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Query the knowledge base for specific information
+   * Query the knowledge base for specific information.
    *
    * @param query
    * @param context
@@ -595,10 +603,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       }
     } catch (error) {
       // Log dependency analysis errors for debugging
-      logger.warn(
-        'Error analyzing dependencies:',
-        error instanceof Error ? error.message : error
-      );
+      logger.warn('Error analyzing dependencies:', error instanceof Error ? error.message : error);
     }
 
     // Add support for other package managers (Cargo.toml, requirements.txt, etc.)
@@ -607,7 +612,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Detect frameworks and libraries being used
+   * Detect frameworks and libraries being used.
    *
    * @param context
    */
@@ -646,7 +651,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Analyze programming languages used in the project
+   * Analyze programming languages used in the project.
    *
    * @param context
    */
@@ -667,10 +672,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         });
       }
     } catch (error) {
-      logger.warn(
-        'Error analyzing languages:',
-        error instanceof Error ? error.message : error
-      );
+      logger.warn('Error analyzing languages:', error instanceof Error ? error.message : error);
     }
   }
 
@@ -703,10 +705,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         // File doesn't exist, skip
       }
     } catch (error) {
-      logger.warn(
-        'Error analyzing Cargo.toml:',
-        error instanceof Error ? error.message : error
-      );
+      logger.warn('Error analyzing Cargo.toml:', error instanceof Error ? error.message : error);
     }
   }
 
@@ -745,7 +744,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Detect API usage patterns
+   * Detect API usage patterns.
    *
    * @param context
    */
@@ -785,7 +784,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Determine if we should gather knowledge for a dependency
+   * Determine if we should gather knowledge for a dependency.
    *
    * @param dep
    */
@@ -803,7 +802,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Create a dependency-focused knowledge gathering mission
+   * Create a dependency-focused knowledge gathering mission.
    *
    * @param dep
    */
@@ -827,7 +826,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Create a framework-focused knowledge gathering mission
+   * Create a framework-focused knowledge gathering mission.
    *
    * @param framework
    */
@@ -853,7 +852,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Create an API-focused knowledge gathering mission
+   * Create an API-focused knowledge gathering mission.
    *
    * @param api
    */
@@ -876,7 +875,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Create a security-focused knowledge gathering mission
+   * Create a security-focused knowledge gathering mission.
    *
    * @param vulnDeps
    */
@@ -899,7 +898,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Create a performance-focused knowledge gathering mission
+   * Create a performance-focused knowledge gathering mission.
    */
   private createPerformanceMission(): KnowledgeGatheringMission {
     const frameworks = this.projectContext?.frameworks.map((f) => f.name) || [];
@@ -922,7 +921,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Create a best practices knowledge gathering mission
+   * Create a best practices knowledge gathering mission.
    */
   private createBestPracticesMission(): KnowledgeGatheringMission {
     const stack = [
@@ -948,7 +947,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Create an ad-hoc mission for immediate queries
+   * Create an ad-hoc mission for immediate queries.
    *
    * @param query
    * @param context
@@ -966,7 +965,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Get priority weight for sorting
+   * Get priority weight for sorting.
    *
    * @param priority
    */
@@ -976,7 +975,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Search cached knowledge in context cache
+   * Search cached knowledge in context cache.
    *
    * @param query
    * @param context
@@ -988,8 +987,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
       // Search context cache for relevant knowledge
       for (const [_key, cached] of this.contextCache.entries()) {
-        if (cached.query?.toLowerCase().includes(queryLower)) {
-          results?.push(cached);
+        if (cached.query.toLowerCase().includes(queryLower)) {
+          results.push(cached);
         }
 
         // Also search by context tags
@@ -998,12 +997,12 @@ export class ProjectContextAnalyzer extends EventEmitter {
             cached.context.some((c: string) => c.toLowerCase().includes(ctx.toLowerCase()))
           );
           if (hasMatchingContext) {
-            results?.push(cached);
+            results.push(cached);
           }
         }
       }
 
-      return results?.slice(0, 5); // Top 5 results
+      return results.slice(0, 5); // Top 5 results
     } catch (error) {
       logger.error('Failed to search cached knowledge:', error);
       return [];
@@ -1011,7 +1010,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Format cached knowledge for presentation
+   * Format cached knowledge for presentation.
    *
    * @param knowledge
    */
@@ -1031,7 +1030,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Store knowledge in context cache
+   * Store knowledge in context cache.
    *
    * @param mission
    * @param result
@@ -1067,7 +1066,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Start background context monitoring
+   * Start background context monitoring.
    */
   private startContextMonitoring(): void {
     // Re-analyze context every hour
@@ -1090,7 +1089,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Get current system status
+   * Get current system status.
    */
   getStatus() {
     const missions = Array.from(this.knowledgeMissions.values());
@@ -1107,14 +1106,14 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Get monorepo detection results
+   * Get monorepo detection results.
    */
   getMonorepoInfo(): MonorepoInfo | null {
     return this.projectContext?.monorepo || null;
   }
 
   /**
-   * Check if project is a monorepo with high confidence
+   * Check if project is a monorepo with high confidence.
    *
    * @param confidenceThreshold
    */
@@ -1126,7 +1125,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Shutdown the system
+   * Shutdown the system.
    */
   async shutdown(): Promise<void> {
     await this.knowledgeSwarm.shutdown();

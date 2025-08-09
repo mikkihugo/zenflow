@@ -1,7 +1,12 @@
 /**
- * Example integration of SwarmCoordinator with Dependency Injection
+ * Example integration of SwarmCoordinator with Dependency Injection.
  * Demonstrates how to migrate existing services to use DI patterns.
  */
+/**
+ * @file swarm-integration implementation
+ */
+
+
 
 import {
   CORE_TOKENS,
@@ -20,7 +25,7 @@ import {
 // Example integration with existing systems
 
 /**
- * Enhanced SwarmCoordinator using dependency injection
+ * Enhanced SwarmCoordinator using dependency injection.
  * This shows how to refactor existing services to use DI.
  *
  * @example
@@ -123,20 +128,20 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     this.tasks.set(taskId, {
       id: taskId,
       ...task,
-      assignedAgentId: selectedAgent.id,
+      assignedAgentId: selectedAgent?.id,
       status: 'assigned',
       timestamp: Date.now(),
     });
 
     // Notify agent via message broker
-    await this._messageBroker.publish(`agent.${selectedAgent.id}`, {
+    await this._messageBroker.publish(`agent.${selectedAgent?.id}`, {
       type: 'task_assignment',
       taskId,
       task,
       timestamp: Date.now(),
     });
 
-    this._logger.info('Task assigned successfully', { taskId, agentId: selectedAgent.id });
+    this._logger.info('Task assigned successfully', { taskId, agentId: selectedAgent?.id });
     return taskId;
   }
 

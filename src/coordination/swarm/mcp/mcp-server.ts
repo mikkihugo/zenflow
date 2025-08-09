@@ -1,13 +1,18 @@
 /**
- * Unified MCP Server for Claude Code CLI Integration
- * Single stdio MCP server combining coordination and swarm functionality
+ * Unified MCP Server for Claude Code CLI Integration.
+ * Single stdio MCP server combining coordination and swarm functionality.
  */
+/**
+ * @file Coordination system: mcp-server
+ */
+
+
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { createLogger } from '../../../core/logger';
-import { dspySwarmMCPTools } from '../../mcp/dspy-swarm-mcp-tools';
+import { createLogger } from '../core/logger';
+import { dspySwarmMCPTools } from '../mcp/dspy-swarm-mcp-tools';
 import { HiveTools } from './hive-tools';
 import { SwarmTools } from './swarm-tools';
 import type { MCPServerConfig } from './types';

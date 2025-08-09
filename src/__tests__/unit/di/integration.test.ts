@@ -46,7 +46,7 @@ describe('DI System Integration Tests', () => {
 
       expect(logger).toBeInstanceOf(MockLogger);
       expect(config).toBeInstanceOf(MockConfig);
-      expect(config.get('env')).toBe('test');
+      expect(config?.get('env')).toBe('test');
       expect(broker1).toBeInstanceOf(MockMessageBroker);
       expect(broker2).toBeInstanceOf(MockMessageBroker);
       expect(broker1).not.toBe(broker2); // Different instances (transient)
@@ -163,8 +163,8 @@ describe('DI System Integration Tests', () => {
       const config2 = container2.resolve(CORE_TOKENS.Config);
 
       expect(config1).not.toBe(config2);
-      expect(config1.get('swarm.maxAgents')).toBe(5);
-      expect(config2.get('swarm.maxAgents')).toBe(10);
+      expect(config1?.get('swarm.maxAgents')).toBe(5);
+      expect(config2?.get('swarm.maxAgents')).toBe(10);
     });
   });
 
@@ -212,7 +212,7 @@ describe('DI System Integration Tests', () => {
       const instance1a = scope1.resolve(testToken);
       const instance1b = scope1.resolve(testToken);
       const instance2 = scope2.resolve(testToken);
-      const instanceChild1 = childScope1.resolve(testToken);
+      const instanceChild1 = childScope1?.resolve(testToken);
 
       expect(instance1a).toBe(instance1b); // Same in scope
       expect(instance1a).not.toBe(instance2); // Different scopes

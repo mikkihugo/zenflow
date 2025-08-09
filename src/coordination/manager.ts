@@ -1,8 +1,13 @@
 /**
  * Coordination Manager - Agent coordination and swarm management
- * Handles agent lifecycle, communication, and task distribution
- * Following Google TypeScript standards with strict typing
+ * Handles agent lifecycle, communication, and task distribution.
+ * Following Google TypeScript standards with strict typing.
  */
+/**
+ * @file Coordination system: manager
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type { IEventBus, ILogger } from '../di/index';
@@ -36,7 +41,7 @@ export interface Task {
 }
 
 /**
- * Coordination Manager for agent and task management
+ * Coordination Manager for agent and task management.
  *
  * @example
  */
@@ -67,7 +72,7 @@ export class CoordinationManager extends EventEmitter {
   }
 
   /**
-   * Start coordination services
+   * Start coordination services.
    */
   async start(): Promise<void> {
     if (this.isRunning) {
@@ -86,7 +91,7 @@ export class CoordinationManager extends EventEmitter {
   }
 
   /**
-   * Stop coordination services
+   * Stop coordination services.
    */
   async stop(): Promise<void> {
     if (!this.isRunning) {
@@ -106,7 +111,7 @@ export class CoordinationManager extends EventEmitter {
   }
 
   /**
-   * Register an agent
+   * Register an agent.
    *
    * @param agentConfig
    * @param agentConfig.id
@@ -138,7 +143,7 @@ export class CoordinationManager extends EventEmitter {
   }
 
   /**
-   * Unregister an agent
+   * Unregister an agent.
    *
    * @param agentId
    */
@@ -154,7 +159,7 @@ export class CoordinationManager extends EventEmitter {
   }
 
   /**
-   * Submit a task for execution
+   * Submit a task for execution.
    *
    * @param taskConfig
    * @param taskConfig.id
@@ -187,7 +192,7 @@ export class CoordinationManager extends EventEmitter {
   }
 
   /**
-   * Get available agents
+   * Get available agents.
    */
   getAvailableAgents(): Agent[] {
     return Array.from(this.agents.values()).filter(
@@ -196,7 +201,7 @@ export class CoordinationManager extends EventEmitter {
   }
 
   /**
-   * Get agents by capability
+   * Get agents by capability.
    *
    * @param capability
    */
@@ -207,14 +212,14 @@ export class CoordinationManager extends EventEmitter {
   }
 
   /**
-   * Get pending tasks
+   * Get pending tasks.
    */
   getPendingTasks(): Task[] {
     return Array.from(this.tasks.values()).filter((task) => task.status === 'pending');
   }
 
   /**
-   * Update agent heartbeat
+   * Update agent heartbeat.
    *
    * @param agentId
    */
@@ -230,7 +235,7 @@ export class CoordinationManager extends EventEmitter {
   }
 
   /**
-   * Update task status
+   * Update task status.
    *
    * @param taskId
    * @param status
@@ -255,7 +260,7 @@ export class CoordinationManager extends EventEmitter {
   }
 
   /**
-   * Get coordination statistics
+   * Get coordination statistics.
    */
   getStats(): {
     totalAgents: number;
@@ -343,13 +348,13 @@ export class CoordinationManager extends EventEmitter {
     }
 
     // Assign task
-    task.assignedAgent = selectedAgent?.id;
+    task.assignedAgent = selectedAgent.id;
     task.status = 'assigned';
-    selectedAgent?.status = 'busy';
-    selectedAgent?.taskCount++;
+    selectedAgent.status = 'busy';
+    selectedAgent.taskCount++;
 
-    this._logger?.info(`Task assigned: ${task.id} -> ${selectedAgent?.id}`);
-    this.emit('taskAssigned', { taskId: task.id, agentId: selectedAgent?.id });
+    this._logger?.info(`Task assigned: ${task.id} -> ${selectedAgent.id}`);
+    this.emit('taskAssigned', { taskId: task.id, agentId: selectedAgent.id });
   }
 }
 

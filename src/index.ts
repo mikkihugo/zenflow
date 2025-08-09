@@ -1,5 +1,5 @@
 /**
- * Claude Code Flow - Main Entry Point
+ * Claude Code Flow - Main Entry Point.
  *
  * Central export hub for all system components following clean architecture principles.
  * Organized by domain with clear separation of concerns.
@@ -76,7 +76,7 @@ export * as Integration from './integration/index';
 
 /**
  * @file Claude-Zen Integrated System
- * Unified entry point for all claude-zen components
+ * Unified entry point for all claude-zen components.
  */
 
 // =============================================================================
@@ -132,7 +132,7 @@ export * from './neural/neural-bridge';
 export * from './types/index';
 
 /**
- * Claude-Zen integrated system configuration
+ * Claude-Zen integrated system configuration.
  *
  * @example
  */
@@ -186,7 +186,7 @@ export interface ClaudeZenConfig {
 /**
  * Default configuration for Claude-Zen
  * HTTP MCP enabled for Claude Desktop integration
- * stdio MCP dormant - only for temporary Claude Code coordination when needed
+ * stdio MCP dormant - only for temporary Claude Code coordination when needed.
  * Project swarms use direct real agent protocols (Raft, message passing, etc.)
  */
 export const defaultConfig: ClaudeZenConfig = {
@@ -225,7 +225,7 @@ export const defaultConfig: ClaudeZenConfig = {
 };
 
 /**
- * Initialize Claude-Zen integrated system
+ * Initialize Claude-Zen integrated system.
  *
  * @param config
  */
@@ -233,17 +233,17 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
   const finalConfig = { ...defaultConfig, ...config };
 
   // Initialize HTTP MCP for Claude Desktop (usually enabled)
-  if (finalConfig.mcp.http.enabled) {
+  if (finalConfig?.mcp?.http?.enabled) {
     const { HTTPMCPServer } = await import('./interfaces/mcp/http-mcp-server');
     const httpMcpServer = new HTTPMCPServer({
-      ...(finalConfig.mcp.http.port !== undefined && { port: finalConfig.mcp.http.port }),
-      ...(finalConfig.mcp.http.host !== undefined && { host: finalConfig.mcp.http.host }),
+      ...(finalConfig?.mcp?.http?.port !== undefined && { port: finalConfig?.mcp?.http?.port }),
+      ...(finalConfig?.mcp?.http?.host !== undefined && { host: finalConfig?.mcp?.http?.host }),
     });
     await httpMcpServer.start();
   }
 
   // Initialize stdio MCP only if explicitly enabled (for temporary Claude Code coordination)
-  if (finalConfig.mcp.stdio.enabled) {
+  if (finalConfig?.mcp?.stdio?.enabled) {
     const { MCPServer } = await import('./coordination/swarm/mcp/mcp-server');
     const stdioMcpServer = new MCPServer();
     await stdioMcpServer.start();
@@ -253,27 +253,27 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
   // TODO: TypeScript error TS2339 - Property 'SwarmOrchestrator' does not exist on type (AI unsure of safe fix - human review needed)
   const { SwarmOrchestrator } = await import('./coordination/public-api');
   const orchestrator = new SwarmOrchestrator({
-    topology: finalConfig.swarm.topology,
-    maxAgents: finalConfig.swarm.maxAgents,
-    strategy: finalConfig.swarm.strategy,
+    topology: finalConfig?.swarm?.topology,
+    maxAgents: finalConfig?.swarm?.maxAgents,
+    strategy: finalConfig?.swarm?.strategy,
   });
   await orchestrator.initialize();
 
   // Initialize neural bridge if enabled
-  if (finalConfig.neural.enabled) {
+  if (finalConfig?.neural?.enabled) {
     const { NeuralBridge } = await import('./neural/neural-bridge');
-    const neuralBridge = NeuralBridge.getInstance(finalConfig.neural);
+    const neuralBridge = NeuralBridge.getInstance(finalConfig?.neural);
     await neuralBridge.initialize();
   }
 
   // Initialize SPARC methodology system if enabled
-  if (finalConfig.sparc.enabled) {
+  if (finalConfig?.sparc?.enabled) {
     const { SPARC } = await import('./coordination/swarm/sparc/index');
     const _sparcEngine = SPARC.getEngine();
   }
 
   // Initialize plugin system
-  if (finalConfig.plugins.autoLoad) {
+  if (finalConfig?.plugins?.autoLoad) {
     // const pluginManager = PluginManager.getInstance();
     // await pluginManager.initialize();
     // console.log('✅ Plugin Manager initialized');
@@ -281,7 +281,7 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
 }
 
 /**
- * Shutdown Claude-Zen system gracefully
+ * Shutdown Claude-Zen system gracefully.
  */
 export async function shutdownClaudeZen(): Promise<void> {
   // Shutdown functionality is handled per-component
@@ -289,7 +289,7 @@ export async function shutdownClaudeZen(): Promise<void> {
 }
 
 /**
- * System health check
+ * System health check.
  *
  * @returns Promise resolving to system health status
  */
@@ -310,7 +310,7 @@ export async function healthCheck() {
 }
 
 /**
- * Get system version and build info
+ * Get system version and build info.
  *
  * @returns System version information
  */

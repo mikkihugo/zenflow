@@ -1,10 +1,16 @@
 /**
  * Multi-System Coordinator - Advanced Integration Layer
- * Orchestrates LanceDB, Kuzu, and other system integrations
- * Provides unified interface and cross-system intelligence
+ * Orchestrates LanceDB, Kuzu, and other system integrations.
+ * Provides unified interface and cross-system intelligence.
+ */
+/**
+ * @file multi-system coordination system
  */
 
+
+
 import { EventEmitter } from 'node:events';
+import type { ILogger } from '../core/interfaces/base-interfaces';
 
 @injectable
 export class MultiSystemCoordinator extends EventEmitter {
@@ -21,7 +27,7 @@ export class MultiSystemCoordinator extends EventEmitter {
   }
 
   /**
-   * Initialize all systems with coordination
+   * Initialize all systems with coordination.
    */
   async initialize(): Promise<void> {
     this._logger.info('Initializing Multi-System Coordinator...');
@@ -37,7 +43,7 @@ export class MultiSystemCoordinator extends EventEmitter {
   }
 
   /**
-   * Coordinate operation across multiple systems
+   * Coordinate operation across multiple systems.
    *
    * @param operation
    * @param data
@@ -66,7 +72,7 @@ export class MultiSystemCoordinator extends EventEmitter {
   }
 
   /**
-   * Get coordination status
+   * Get coordination status.
    */
   getStatus(): any {
     return {
@@ -77,7 +83,7 @@ export class MultiSystemCoordinator extends EventEmitter {
   }
 
   /**
-   * Shutdown coordinator and cleanup resources
+   * Shutdown coordinator and cleanup resources.
    */
   async shutdown(): Promise<void> {
     this._logger.info('Shutting down Multi-System Coordinator...');

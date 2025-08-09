@@ -2,13 +2,18 @@
  * DSPy Wrapper Type Definitions.
  *
  * Comprehensive TypeScript interfaces for the DSPy wrapper system.
- * These types ensure full compatibility between Claude-Zen's expected DSPy interface
+ * These types ensure full compatibility between Claude-Zen's expected DSPy interface.
  * and the actual dspy.ts v0.1.3 API through the wrapper layer.
  */
 
 // ============================================================================
 // RE-EXPORT ACTUAL DSPY.TS TYPES
 // ============================================================================
+/**
+ * @file TypeScript type definitions
+ */
+
+
 
 export {
   GenerationOptions,

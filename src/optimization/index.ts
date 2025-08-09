@@ -1,7 +1,12 @@
 /**
- * Performance Optimization System
- * Comprehensive performance optimization across all system components
+ * Performance Optimization System.
+ * Comprehensive performance optimization across all system components.
  */
+/**
+ * @file optimization module exports
+ */
+
+
 
 export * from './benchmarks/performance-benchmarks';
 export * from './core/performance-optimizer';

@@ -13,7 +13,7 @@ import { LogLevel, log } from './logging';
 
 /**
  * User information interface (for future use)
- * Following Google Identity standards structure
+ * Following Google Identity standards structure.
  *
  * @example
  */
@@ -29,7 +29,7 @@ export interface User {
 /**
  * Authentication context (for future use)
  *
- * @example
+ * @example.
  */
 export interface AuthContext {
   readonly user?: User;
@@ -39,7 +39,7 @@ export interface AuthContext {
 }
 
 /**
- * No-Op Authentication Middleware
+ * No-Op Authentication Middleware.
  *
  * Currently allows all requests without authentication.
  * Provides structure for future authentication implementation.
@@ -79,7 +79,7 @@ export const authMiddleware = (req: Request, _res: Response, next: NextFunction)
 };
 
 /**
- * Optional Authentication Middleware
+ * Optional Authentication Middleware.
  *
  * For routes that might have authentication but don't require it.
  * Checks for auth tokens but doesn't reject if missing.
@@ -136,7 +136,7 @@ export const optionalAuthMiddleware = (req: Request, _res: Response, next: NextF
 };
 
 /**
- * Permission Check Helper
+ * Permission Check Helper.
  *
  * Utility function to check if current user has required permission.
  * Currently always returns true since no auth is required.
@@ -158,7 +158,7 @@ export const hasPermission = (req: Request, permission: string): boolean => {
 };
 
 /**
- * Role Check Helper
+ * Role Check Helper.
  *
  * Utility function to check if current user has required role.
  * Currently always returns true since no auth is required.
@@ -177,7 +177,7 @@ export const hasRole = (req: Request, role: string): boolean => {
 };
 
 /**
- * Admin Check Helper
+ * Admin Check Helper.
  *
  * Utility function to check if current user is admin.
  * Currently always returns true since no auth is required.
@@ -189,7 +189,7 @@ export const isAdmin = (_req: Request): boolean => {
 };
 
 /**
- * Get Current User Helper
+ * Get Current User Helper.
  *
  * Utility function to get current authenticated user.
  * Returns anonymous user since no auth is required.
@@ -201,7 +201,7 @@ export const getCurrentUser = (req: Request): User | undefined => {
 };
 
 /**
- * Future Authentication Implementation Guide
+ * Future Authentication Implementation Guide.
  *
  * When authentication is needed, replace the middleware with:
  *

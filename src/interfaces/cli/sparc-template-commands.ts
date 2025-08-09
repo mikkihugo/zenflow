@@ -1,16 +1,23 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("interfaces-cli-sparc-template-commands");
 /**
- * SPARC Template CLI Commands
+ * @file Interface implementation: sparc-template-commands
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-cli-sparc-template-commands');
+
+/**
+ * SPARC Template CLI Commands.
  *
- * CLI interface for SPARC template engine integration and specification generation
+ * CLI interface for SPARC template engine integration and specification generation.
  */
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
-import { TemplateEngine } from '../../coordination/swarm/sparc/core/template-engine';
-import { SpecificationPhaseEngine } from '../../coordination/swarm/sparc/phases/specification/specification-engine';
-import type { ProjectSpecification } from '../../coordination/swarm/sparc/types/sparc-types';
+import { TemplateEngine } from '../coordination/swarm/sparc/core/template-engine';
+import { SpecificationPhaseEngine } from '../coordination/swarm/sparc/phases/specification/specification-engine';
+import type { ProjectSpecification } from '../coordination/swarm/sparc/types/sparc-types';
 
 export function createSPARCTemplateCommands(): Command {
   const sparcTemplateCmd = new Command('spec');
@@ -51,19 +58,19 @@ export function createSPARCTemplateCommands(): Command {
       try {
         // Create project specification
         const projectSpec: ProjectSpecification = {
-          name: options.name,
-          domain: options.domain,
-          complexity: options.complexity,
-          requirements: options.requirements || [],
-          constraints: options.constraints || [],
+          name: options?.name,
+          domain: options?.domain,
+          complexity: options?.complexity,
+          requirements: options?.requirements || [],
+          constraints: options?.constraints || [],
         };
 
         let specification;
-        if (options.template) {
+        if (options?.template) {
           // Validate template compatibility first
           const compatibility = specEngine.validateTemplateCompatibility(
             projectSpec,
-            options.template
+            options?.template
           );
 
           if (compatibility.warnings.length > 0) {
@@ -78,7 +85,7 @@ export function createSPARCTemplateCommands(): Command {
           // Generate with specific template
           specification = await specEngine.generateSpecificationFromTemplate(
             projectSpec,
-            options.template
+            options?.template
           );
         } else {
           // Auto-select best template
@@ -94,7 +101,7 @@ export function createSPARCTemplateCommands(): Command {
         }
 
         // Write output
-        await writeFile(options.output, output, 'utf8');
+        await writeFile(options?.output, output, 'utf8');
       } catch (error) {
         logger.error('❌ Failed to generate specification:', error);
         process.exit(1);
@@ -121,14 +128,14 @@ export function createSPARCTemplateCommands(): Command {
     .requiredOption('--file <path>', 'Path to specification file')
     .action(async (options) => {
       try {
-        const content = await readFile(options.file, 'utf8');
+        const content = await readFile(options?.file, 'utf8');
         const specification = JSON.parse(content);
 
         const validation = await specEngine.validateSpecificationCompleteness(specification);
 
         if (validation.results.length > 0) {
           validation.results.forEach((result) => {
-            const _status = result.passed ? '✅' : '❌';
+            const _status = result?.passed ? '✅' : '❌';
           });
         }
 
@@ -155,7 +162,7 @@ export function createSPARCTemplateCommands(): Command {
 }
 
 /**
- * Format specification as Markdown
+ * Format specification as Markdown.
  *
  * @param specification
  */

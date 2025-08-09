@@ -1,5 +1,5 @@
 /**
- * UACL (Unified Adaptive Client Layer) - Main Exports
+ * UACL (Unified Adaptive Client Layer) - Main Exports.
  *
  * Central export point for all UACL functionality including:
  * - Client registry and manager
@@ -8,7 +8,7 @@
  * - Global instances and initialization
  *
  * @file Main UACL exports providing unified access to HTTP, WebSocket, Knowledge, and MCP clients
- * @module interfaces/clients
+ * @module interfaces/clients.
  * @version 2.0.0
  * @example
  * ```typescript
@@ -44,10 +44,19 @@
  * ```
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../config/logging-config';
+import type { ClientManager } from '../interfaces/clients/client-manager';
+import type {
+  ClientInstance,
+  ClientType,
+  HTTPClientConfig,
+  KnowledgeClientConfig,
+  MCPClientConfig,
+  WebSocketClientConfig,
+} from '../interfaces/clients/interfaces';
 
 // Legacy FACT integration
-export { FACTIntegration } from '../../knowledge/knowledge-client';
+export { FACTIntegration } from '../knowledge/knowledge-client';
 // Re-export client implementations for convenience
 export { APIClient, createAPIClient } from '../api/http/client';
 // WebSocket clients - both legacy and UACL
@@ -99,7 +108,7 @@ export {
 } from './registry';
 
 /**
- * UACL Main Interface
+ * UACL Main Interface.
  *
  * Primary interface for interacting with the Unified Adaptive Client Layer.
  * Provides high-level methods for client management and operations.
@@ -138,7 +147,7 @@ export class UACL {
   private constructor() {}
 
   /**
-   * Get singleton UACL instance
+   * Get singleton UACL instance.
    *
    * @returns {UACL} The singleton UACL instance
    * @description Returns the global UACL instance, creating it if it doesn't exist.
@@ -157,7 +166,7 @@ export class UACL {
   }
 
   /**
-   * Initialize UACL system
+   * Initialize UACL system.
    *
    * @param {ClientManagerConfig} [config] - Optional configuration for the client manager
    * @param {boolean} [config.enableHealthChecks=true] - Enable automatic health checking
@@ -191,7 +200,7 @@ export class UACL {
   }
 
   /**
-   * Check if UACL is initialized
+   * Check if UACL is initialized.
    *
    * @returns {boolean} True if UACL has been initialized
    * @description Returns the initialization status without side effects.
@@ -207,7 +216,7 @@ export class UACL {
   }
 
   /**
-   * Create and register HTTP client
+   * Create and register HTTP client.
    *
    * @param {string} id - Unique identifier for the HTTP client
    * @param {string} baseURL - Base URL for all HTTP requests (e.g., 'https://api.example.com')
@@ -268,7 +277,7 @@ export class UACL {
   }
 
   /**
-   * Create and register WebSocket client
+   * Create and register WebSocket client.
    *
    * @param {string} id - Unique identifier for the WebSocket client
    * @param {string} url - WebSocket server URL (e.g., 'wss://api.example.com/ws')
@@ -341,7 +350,7 @@ export class UACL {
   }
 
   /**
-   * Create and register Knowledge client
+   * Create and register Knowledge client.
    *
    * @param {string} id - Unique identifier for the Knowledge client
    * @param {string} factRepoPath - Path to the FACT knowledge repository directory
@@ -413,7 +422,7 @@ export class UACL {
   }
 
   /**
-   * Create and register MCP (Model Context Protocol) client
+   * Create and register MCP (Model Context Protocol) client.
    *
    * @param {string} id - Unique identifier for the MCP client
    * @param {MCPClientConfig['servers']} servers - MCP server configuration array
@@ -495,7 +504,7 @@ export class UACL {
   }
 
   /**
-   * Get client by ID
+   * Get client by ID.
    *
    * @param {string} clientId - The unique identifier of the client to retrieve
    * @returns {ClientInstance | undefined} The client instance if found, undefined otherwise
@@ -518,7 +527,7 @@ export class UACL {
   }
 
   /**
-   * Get best available client for a type
+   * Get best available client for a type.
    *
    * @param {ClientType} type - The type of client to retrieve (HTTP, WEBSOCKET, KNOWLEDGE, MCP)
    * @returns {ClientInstance | undefined} The best available client of the specified type, or undefined
@@ -544,7 +553,7 @@ export class UACL {
   }
 
   /**
-   * Get all clients of a specific type
+   * Get all clients of a specific type.
    *
    * @param {ClientType} type - The type of clients to retrieve
    * @returns {ClientInstance[]} Array of all client instances of the specified type
@@ -574,7 +583,7 @@ export class UACL {
   }
 
   /**
-   * Get system health status
+   * Get system health status.
    *
    * @returns {object} System health status with overall health, client counts, and status breakdown
    * @returns {string} returns.status - Overall system status ('healthy' | 'degraded' | 'critical')
@@ -610,7 +619,7 @@ export class UACL {
   }
 
   /**
-   * Get aggregated metrics
+   * Get aggregated metrics.
    *
    * @returns {object} Aggregated metrics across all clients
    * @returns {number} returns.total - Total number of clients
@@ -647,7 +656,7 @@ export class UACL {
   }
 
   /**
-   * Get comprehensive system status
+   * Get comprehensive system status.
    *
    * @returns {object} Comprehensive system status including health, metrics, and detailed breakdowns
    * @returns {object} returns.health - Detailed health status by client and type
@@ -685,7 +694,7 @@ export class UACL {
   }
 
   /**
-   * Connect all clients
+   * Connect all clients.
    *
    * @returns {Promise<void>} Resolves when all connection attempts are complete
    * @throws {AggregateError} If multiple connection attempts fail (contains all individual errors)
@@ -730,7 +739,7 @@ export class UACL {
   }
 
   /**
-   * Disconnect all clients
+   * Disconnect all clients.
    *
    * @returns {Promise<void>} Resolves when all disconnection attempts are complete
    * @description Gracefully disconnects all registered clients regardless of their current state.
@@ -771,7 +780,7 @@ export class UACL {
   }
 
   /**
-   * Shutdown UACL system
+   * Shutdown UACL system.
    *
    * @returns {Promise<void>} Resolves when the system is completely shut down
    * @description Performs a complete shutdown of the UACL system, including:
@@ -815,7 +824,7 @@ export class UACL {
 }
 
 /**
- * Global UACL instance for convenience
+ * Global UACL instance for convenience.
  *
  * @constant {UACL} uacl - Pre-instantiated global UACL singleton instance
  * @description Provides immediate access to the UACL system without needing to call getInstance().
@@ -833,7 +842,7 @@ export class UACL {
 export const uacl = UACL.getInstance();
 
 /**
- * Initialize UACL with default configuration
+ * Initialize UACL with default configuration.
  *
  * @param {ClientManagerConfig} [config] - Optional UACL system configuration
  * @param {boolean} [config.enableHealthChecks=true] - Enable automatic health monitoring
@@ -882,7 +891,7 @@ export const initializeUACL = async (config?: ClientManagerConfig): Promise<void
 };
 
 /**
- * Quick access functions for common operations
+ * Quick access functions for common operations.
  *
  * @namespace UACLHelpers
  * @description Collection of utility functions for common UACL operations and setup patterns.
@@ -890,7 +899,7 @@ export const initializeUACL = async (config?: ClientManagerConfig): Promise<void
  */
 export const UACLHelpers = {
   /**
-   * Initialize and create common clients for a typical setup
+   * Initialize and create common clients for a typical setup.
    *
    * @param {object} config - Configuration object for common client types
    * @param {string} [config.httpBaseURL] - Base URL for HTTP client creation
@@ -973,27 +982,27 @@ export const UACLHelpers = {
     } = {};
 
     try {
-      if (config.httpBaseURL) {
-        clients.http = await uacl.createHTTPClient('default-http', config.httpBaseURL);
+      if (config?.httpBaseURL) {
+        clients.http = await uacl.createHTTPClient('default-http', config?.httpBaseURL);
       }
 
-      if (config.websocketURL) {
+      if (config?.websocketURL) {
         clients.websocket = await uacl.createWebSocketClient(
           'default-websocket',
-          config.websocketURL
+          config?.websocketURL
         );
       }
 
-      if (config.factRepoPath && config.anthropicApiKey) {
+      if (config?.factRepoPath && config?.anthropicApiKey) {
         clients.knowledge = await uacl.createKnowledgeClient(
           'default-knowledge',
-          config.factRepoPath,
-          config.anthropicApiKey
+          config?.factRepoPath,
+          config?.anthropicApiKey
         );
       }
 
-      if (config.mcpServers) {
-        clients.mcp = await uacl.createMCPClient('default-mcp', config.mcpServers);
+      if (config?.mcpServers) {
+        clients.mcp = await uacl.createMCPClient('default-mcp', config?.mcpServers);
       }
 
       // Connect all created clients
@@ -1002,22 +1011,22 @@ export const UACLHelpers = {
       return clients;
     } catch (error) {
       const logger = getLogger('uacl-setup');
-      logger.error('Failed to setup common clients', { 
+      logger.error('Failed to setup common clients', {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
         config: {
-          httpBaseURL: config.httpBaseURL,
-          websocketURL: config.websocketURL,
-          factRepoPath: config.factRepoPath,
-          hasMCPServers: !!config.mcpServers
-        }
+          httpBaseURL: config?.httpBaseURL,
+          websocketURL: config?.websocketURL,
+          factRepoPath: config?.factRepoPath,
+          hasMCPServers: !!config?.mcpServers,
+        },
       });
       throw error;
     }
   },
 
   /**
-   * Get a quick status overview
+   * Get a quick status overview.
    *
    * @returns {object} Quick status overview with health assessment
    * @returns {boolean} returns.initialized - Whether UACL system is initialized
@@ -1034,7 +1043,7 @@ export const UACLHelpers = {
    * - critical: <50% clients connected or system not initialized
    * @example
    * ```typescript
-   * // Quick health check
+   * // Quick health check.
    * const status = UACLHelpers.getQuickStatus();
    * console.log(`System: ${status.status.toUpperCase()}`);
    * console.log(`Health: ${status.healthPercentage.toFixed(1)}%`);
@@ -1097,7 +1106,7 @@ export const UACLHelpers = {
   },
 
   /**
-   * Perform health check on all clients
+   * Perform health check on all clients.
    *
    * @returns {Promise<Record<string, boolean>>} Map of client IDs to health status (true = healthy, false = unhealthy)
    * @throws Never throws - all errors are caught and reported as unhealthy clients
@@ -1178,10 +1187,10 @@ export const UACLHelpers = {
 
     const results = await Promise.allSettled(healthChecks);
 
-    return results.reduce(
+    return results?.reduce(
       (acc, result) => {
-        if (result.status === 'fulfilled') {
-          Object.assign(acc, result.value);
+        if (result?.status === 'fulfilled') {
+          Object.assign(acc, result?.value);
         }
         return acc;
       },
@@ -1201,6 +1210,6 @@ export {
 } from './validation';
 
 /**
- * Default export for convenience
+ * Default export for convenience.
  */
 export default uacl;

@@ -1,8 +1,10 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("interfaces-events-observer-system");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-events-observer-system');
+
 /**
  * @file Observer Pattern Implementation for Real-Time Event System
- * Provides type-safe event handling with priority management and error recovery
+ * Provides type-safe event handling with priority management and error recovery.
  */
 
 import { EventEmitter } from 'node:events';
@@ -435,7 +437,7 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
     const current = this.metrics.get(key) || { count: 0, lastSeen: null };
 
     this.metrics.set(key, {
-      count: current.count + 1,
+      count: current?.count + 1,
       lastSeen: event.timestamp,
       type: event.type,
       source: event.source,
@@ -468,11 +470,11 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
     const current = this.metrics.get(key) || { sum: 0, count: 0, avg: 0, min: Infinity, max: 0 };
 
     this.metrics.set(key, {
-      sum: current.sum + time,
-      count: current.count + 1,
-      avg: (current.sum + time) / (current.count + 1),
-      min: Math.min(current.min, time),
-      max: Math.max(current.max, time),
+      sum: current?.sum + time,
+      count: current?.count + 1,
+      avg: (current?.sum + time) / (current?.count + 1),
+      min: Math.min(current?.min, time),
+      max: Math.max(current?.max, time),
     });
   }
 }
@@ -605,7 +607,7 @@ export class SystemEventManager extends EventEmitter {
 
       const item = this.eventQueue.dequeue();
       if (item) {
-        await this.processEventWithObservers(item.event, item.observers);
+        await this.processEventWithObservers(item?.event, item?.observers);
       }
 
       // Continue processing
@@ -797,14 +799,14 @@ export class EventBuilder {
     return {
       id: `neural-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       timestamp: new Date(),
-      source: options.source || 'neural-service',
+      source: options?.source || 'neural-service',
       type: 'neural',
       modelId,
       operation,
       processingTime,
-      accuracy: options.accuracy,
-      loss: options.loss,
-      dataSize: options.dataSize,
+      accuracy: options?.accuracy,
+      loss: options?.loss,
+      dataSize: options?.dataSize,
     };
   }
 }

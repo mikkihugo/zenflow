@@ -1,10 +1,15 @@
 /**
- * Neural Module - Barrel Export
+ * Neural Module - Barrel Export.
  *
- * Central export point for neural network functionality
+ * Central export point for neural network functionality.
  */
 
 // Types (re-export shared types for convenience)
+/**
+ * @file neural module exports
+ */
+
+
 export type {
   ModelMetadata,
   ModelStatus,

@@ -85,9 +85,9 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
       expect(results).toHaveLength(3);
 
       // Verify dependency order
-      const mkdirResult = results.find((r) => r.operationId === 'mkdir');
-      const srcMkdirResult = results.find((r) => r.operationId === 'src-mkdir');
-      const writeResult = results.find((r) => r.operationId === 'write-file');
+      const mkdirResult = results?.find((r) => r.operationId === 'mkdir');
+      const srcMkdirResult = results?.find((r) => r.operationId === 'src-mkdir');
+      const writeResult = results?.find((r) => r.operationId === 'write-file');
 
       expect(mkdirResult?.startTime).toBeLessThan(srcMkdirResult?.startTime!);
       expect(srcMkdirResult?.startTime).toBeLessThan(writeResult?.startTime!);
@@ -191,7 +191,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
 
       // Estimate sequential time (sum of individual execution times)
       const results = batchEngine.getResults();
-      const estimatedSequentialTime = results.reduce((sum, r) => sum + r.executionTime, 0);
+      const estimatedSequentialTime = results?.reduce((sum, r) => sum + r.executionTime, 0);
 
       // Verify performance improvement
       const actualSpeedImprovement = estimatedSequentialTime / batchTime;
@@ -219,7 +219,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
 
       const results = batchEngine.getResults();
       expect(results).toHaveLength(2);
-      expect(results.every((r) => r.success)).toBe(true);
+      expect(results?.every((r) => r.success)).toBe(true);
     });
 
     it('should handle circular dependencies', async () => {
@@ -247,7 +247,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
       const results = shortTimeoutEngine.getResults();
       expect(results).toHaveLength(1);
       // The result should have either succeeded or failed with timeout
-      expect(results[0].operationId).toBe('quick-test');
+      expect(results?.[0]?.operationId).toBe('quick-test');
     });
   });
 
@@ -289,18 +289,18 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
       expect(results).toHaveLength(3);
 
       // Verify each result has required fields
-      results.forEach((result) => {
-        expect(result.operationId).toBeDefined();
-        expect(result.success).toBeDefined();
-        expect(result.executionTime).toBeGreaterThan(0);
-        expect(result.startTime).toBeGreaterThan(0);
-        expect(result.endTime).toBeGreaterThan(result.startTime);
+      results?.forEach((result) => {
+        expect(result?.operationId).toBeDefined();
+        expect(result?.success).toBeDefined();
+        expect(result?.executionTime).toBeGreaterThan(0);
+        expect(result?.startTime).toBeGreaterThan(0);
+        expect(result?.endTime).toBeGreaterThan(result?.startTime);
       });
 
       // Test selective result retrieval
       const specificResults = batchEngine.getResults(['track1', 'track3']);
       expect(specificResults).toHaveLength(2);
-      expect(specificResults.map((r) => r.operationId)).toEqual(['track1', 'track3']);
+      expect(specificResults?.map((r) => r.operationId)).toEqual(['track1', 'track3']);
     });
   });
 

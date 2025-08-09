@@ -1,13 +1,18 @@
 /**
- * Custom Error Classes for RUV-Swarm MCP Tools
- * Provides detailed, actionable error messages with context
+ * Custom Error Classes for RUV-Swarm MCP Tools.
+ * Provides detailed, actionable error messages with context.
  */
 
 /**
- * Base error class for all ruv-swarm MCP errors
+ * Base error class for all ruv-swarm MCP errors.
  *
  * @example
  */
+/**
+ * @file Coordination system: errors
+ */
+
+
 class ZenSwarmError extends Error {
   public code: string;
   public details: any;
@@ -34,7 +39,7 @@ class ZenSwarmError extends Error {
   }
 
   /**
-   * Get actionable suggestions for resolving this error
+   * Get actionable suggestions for resolving this error.
    */
   getSuggestions() {
     return [
@@ -46,7 +51,7 @@ class ZenSwarmError extends Error {
 }
 
 /**
- * Validation errors for input parameters
+ * Validation errors for input parameters.
  *
  * @example
  */
@@ -99,7 +104,7 @@ class ValidationError extends ZenSwarmError {
 }
 
 /**
- * Swarm-related errors
+ * Swarm-related errors.
  *
  * @example
  */
@@ -137,7 +142,7 @@ class SwarmError extends ZenSwarmError {
 }
 
 /**
- * Agent-related errors
+ * Agent-related errors.
  *
  * @example
  */
@@ -186,7 +191,7 @@ class AgentError extends ZenSwarmError {
 }
 
 /**
- * Task-related errors
+ * Task-related errors.
  *
  * @example
  */
@@ -235,7 +240,7 @@ class TaskError extends ZenSwarmError {
 }
 
 /**
- * Neural network related errors
+ * Neural network related errors.
  *
  * @example
  */
@@ -284,7 +289,7 @@ class NeuralError extends ZenSwarmError {
 }
 
 /**
- * WASM-related errors
+ * WASM-related errors.
  *
  * @example
  */
@@ -326,7 +331,7 @@ class WasmError extends ZenSwarmError {
 }
 
 /**
- * Configuration errors
+ * Configuration errors.
  *
  * @example
  */
@@ -353,7 +358,7 @@ class ConfigurationError extends ZenSwarmError {
 }
 
 /**
- * Network/connectivity errors
+ * Network/connectivity errors.
  *
  * @example
  */
@@ -392,7 +397,7 @@ class NetworkError extends ZenSwarmError {
 }
 
 /**
- * Database/persistence errors
+ * Database/persistence errors.
  *
  * @example
  */
@@ -431,7 +436,7 @@ class PersistenceError extends ZenSwarmError {
 }
 
 /**
- * Resource/memory errors
+ * Resource/memory errors.
  *
  * @example
  */
@@ -478,7 +483,7 @@ class ResourceError extends ZenSwarmError {
 }
 
 /**
- * Concurrency/threading errors
+ * Concurrency/threading errors.
  *
  * @example
  */
@@ -510,13 +515,13 @@ class ConcurrencyError extends ZenSwarmError {
 }
 
 /**
- * Error factory for creating appropriate error types
+ * Error factory for creating appropriate error types.
  *
  * @example
  */
 class ErrorFactory {
   /**
-   * Create an appropriate error based on the context
+   * Create an appropriate error based on the context.
    *
    * @param type
    * @param message
@@ -557,7 +562,7 @@ class ErrorFactory {
   }
 
   /**
-   * Wrap an existing error with additional context
+   * Wrap an existing error with additional context.
    *
    * @param originalError
    * @param type
@@ -579,7 +584,7 @@ class ErrorFactory {
 }
 
 /**
- * Error context for logging and debugging
+ * Error context for logging and debugging.
  *
  * @example
  */
@@ -607,7 +612,7 @@ class ErrorContext {
   }
 
   /**
-   * Add context to an error
+   * Add context to an error.
    *
    * @param error
    */

@@ -1,11 +1,16 @@
 /**
- * Unified DI Integration Example
+ * Unified DI Integration Example.
  *
- * Demonstrates how Database, Memory, and Swarm systems
+ * Demonstrates how Database, Memory, and Swarm systems.
  * work together through the unified DAL Factory architecture.
  */
 
 // Swarm domain
+/**
+ * @file unified-di-integration implementation
+ */
+
+
 import {
   initializeSwarmStorage,
   registerSwarmProviders,
@@ -19,7 +24,7 @@ import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens.js';
 import { initializeMemorySystem, registerMemoryProviders } from '../memory/memory-integration.js';
 
 /**
- * Complete system integration example
+ * Complete system integration example.
  */
 export async function unifiedIntegrationExample(): Promise<void> {
   // 1. Create DI container
@@ -105,7 +110,7 @@ export async function unifiedIntegrationExample(): Promise<void> {
 }
 
 /**
- * Register core services required by all domains
+ * Register core services required by all domains.
  *
  * @param container
  */
@@ -149,7 +154,7 @@ function registerCoreServices(container: DIContainer): void {
  * @param container
  */
 function registerDatabaseServices(container: DIContainer): void {
-  // Database provider factory
+  // Database provider factory.
   container.register(DATABASE_TOKENS?.ProviderFactory, {
     type: 'singleton',
     create: (container) =>
@@ -172,7 +177,7 @@ function registerDatabaseServices(container: DIContainer): void {
 }
 
 /**
- * Example of specialized usage patterns
+ * Example of specialized usage patterns.
  */
 export async function specializedUsageExamples(): Promise<void> {
   const container = new DIContainer();
@@ -214,7 +219,7 @@ export async function specializedUsageExamples(): Promise<void> {
 }
 
 /**
- * Production deployment example
+ * Production deployment example.
  */
 export function productionDeploymentExample(): void {
   // Production-ready DI container

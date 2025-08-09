@@ -3,6 +3,11 @@
  * Temporary stub to fix import errors
  * xxx NEEDS_HUMAN: Complete implementation based on actual neural functionality
  */
+/**
+ * @file Neural network: api
+ */
+
+
 
 export interface NeuralModel {
   id: string;
@@ -33,11 +38,11 @@ export interface NeuralMetrics {
 
 /**
  * Neural Domain API class
- * xxx NEEDS_HUMAN: Complete implementation with actual neural services
+ * xxx NEEDS_HUMAN: Complete implementation with actual neural services.
  */
 export class NeuralDomainAPI {
   /**
-   * Create a new neural model
+   * Create a new neural model.
    */
   async createModel(model: Omit<NeuralModel, 'id' | 'status'>): Promise<NeuralModel> {
     // xxx NEEDS_HUMAN: Implement actual model creation
@@ -49,7 +54,7 @@ export class NeuralDomainAPI {
   }
 
   /**
-   * Get model by ID
+   * Get model by ID.
    */
   async getModel(modelId: string): Promise<NeuralModel | null> {
     // xxx NEEDS_HUMAN: Implement actual model retrieval
@@ -57,7 +62,7 @@ export class NeuralDomainAPI {
   }
 
   /**
-   * List all models
+   * List all models.
    */
   async listModels(): Promise<NeuralModel[]> {
     // xxx NEEDS_HUMAN: Implement actual model listing
@@ -65,7 +70,7 @@ export class NeuralDomainAPI {
   }
 
   /**
-   * Train a model
+   * Train a model.
    */
   async train(request: TrainingRequest): Promise<NeuralMetrics> {
     // xxx NEEDS_HUMAN: Implement actual training
@@ -78,7 +83,7 @@ export class NeuralDomainAPI {
   }
 
   /**
-   * Make a prediction
+   * Make a prediction.
    */
   async predict(request: PredictionRequest): Promise<number[]> {
     // xxx NEEDS_HUMAN: Implement actual prediction
@@ -86,7 +91,7 @@ export class NeuralDomainAPI {
   }
 
   /**
-   * Delete a model
+   * Delete a model.
    */
   async deleteModel(modelId: string): Promise<boolean> {
     // xxx NEEDS_HUMAN: Implement actual model deletion
@@ -94,7 +99,7 @@ export class NeuralDomainAPI {
   }
 
   /**
-   * Get training metrics
+   * Get training metrics.
    */
   async getMetrics(modelId: string): Promise<NeuralMetrics | null> {
     // xxx NEEDS_HUMAN: Implement actual metrics retrieval

@@ -1,14 +1,16 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("database-managers-document-manager");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('database-managers-document-manager');
+
 /**
  * @fileoverview Document Manager - Pure DAL Implementation
  *
- * Complete rewrite using unified DAL patterns only
- * Replaces file-based operations with database entities
+ * Complete rewrite using unified DAL patterns only.
+ * Replaces file-based operations with database entities.
  */
 
 import { nanoid } from 'nanoid';
-import type { DocumentType } from '../../types/workflow-types';
+import type { DocumentType } from '../types/workflow-types';
 import type {
   ADRDocumentEntity,
   BaseDocumentEntity,
@@ -56,8 +58,8 @@ export interface DocumentSearchOptions extends DocumentQueryOptions {
 }
 
 /**
- * Pure DAL-Based Document Manager
- * Uses unified DAL for all database operations
+ * Pure DAL-Based Document Manager.
+ * Uses unified DAL for all database operations.
  *
  * @example
  */
@@ -70,7 +72,7 @@ export class DocumentManager {
   constructor(private databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql') {}
 
   /**
-   * Initialize document manager and all DAL repositories
+   * Initialize document manager and all DAL repositories.
    */
   async initialize(): Promise<void> {
     // Initialize all repositories using DAL factory
@@ -97,7 +99,7 @@ export class DocumentManager {
   // ==================== DOCUMENT CRUD OPERATIONS ====================
 
   /**
-   * Create a new document using DAL
+   * Create a new document using DAL.
    *
    * @param document
    * @param options
@@ -122,17 +124,17 @@ export class DocumentManager {
     const created = await this.documentRepository.create(fullDocument as any);
 
     // Auto-generate relationships if requested
-    if (options.autoGenerateRelationships) {
+    if (options?.autoGenerateRelationships) {
       await this.generateDocumentRelationships(created as T);
     }
 
     // Start workflow if specified
-    if (options.startWorkflow) {
-      await this.startDocumentWorkflow(id, options.startWorkflow);
+    if (options?.startWorkflow) {
+      await this.startDocumentWorkflow(id, options?.startWorkflow);
     }
 
     // Generate search index
-    if (options.generateSearchIndex !== false) {
+    if (options?.generateSearchIndex !== false) {
       await this.generateSearchIndex(created as T);
     }
 
@@ -140,7 +142,7 @@ export class DocumentManager {
   }
 
   /**
-   * Get document by ID using DAL
+   * Get document by ID using DAL.
    *
    * @param id
    * @param options
@@ -156,12 +158,12 @@ export class DocumentManager {
     }
 
     // Load relationships if requested
-    if (options.includeRelationships) {
+    if (options?.includeRelationships) {
       (document as any).relationships = await this.getDocumentRelationships(id);
     }
 
     // Load workflow state if requested
-    if (options.includeWorkflowState) {
+    if (options?.includeWorkflowState) {
       (document as any).workflowState = await this.getDocumentWorkflowState(id);
     }
 
@@ -169,7 +171,7 @@ export class DocumentManager {
   }
 
   /**
-   * Update document using DAL
+   * Update document using DAL.
    *
    * @param id
    * @param updates
@@ -190,8 +192,8 @@ export class DocumentManager {
     // Remove undefined values
     Object.keys(updatedData).forEach(
       (key) =>
-        updatedData[key as keyof typeof updatedData] === undefined &&
-        delete updatedData[key as keyof typeof updatedData]
+        updatedData?.[key as keyof typeof updatedData] === undefined &&
+        delete updatedData?.[key as keyof typeof updatedData]
     );
 
     const updated = await this.documentRepository.update(id, updatedData as any);
@@ -202,7 +204,7 @@ export class DocumentManager {
     }
 
     // Update relationships if content significantly changed
-    if (options.autoGenerateRelationships && updates.content) {
+    if (options?.autoGenerateRelationships && updates.content) {
       await this.updateDocumentRelationships(updated as T);
     }
 
@@ -210,7 +212,7 @@ export class DocumentManager {
   }
 
   /**
-   * Delete document using DAL
+   * Delete document using DAL.
    *
    * @param id
    */
@@ -231,7 +233,7 @@ export class DocumentManager {
   // ==================== DOCUMENT QUERYING ====================
 
   /**
-   * Query documents with filters using DAL
+   * Query documents with filters using DAL.
    *
    * @param filters
    * @param filters.type
@@ -263,8 +265,8 @@ export class DocumentManager {
   }> {
     // Build query options for DAL
     const queryOptions = {
-      limit: options.limit || 50,
-      offset: options.offset || 0,
+      limit: options?.limit || 50,
+      offset: options?.offset || 0,
     };
 
     // Use DAL findAll with filters
@@ -288,10 +290,10 @@ export class DocumentManager {
     }
 
     // Sort results
-    if (options.sortBy) {
+    if (options?.sortBy) {
       filtered.sort((a, b) => {
-        const aVal = a[options.sortBy!] as any;
-        const bVal = b[options.sortBy!] as any;
+        const aVal = a[options?.sortBy!] as any;
+        const bVal = b[options?.sortBy!] as any;
 
         if (options.sortOrder === 'desc') {
           return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
@@ -304,12 +306,12 @@ export class DocumentManager {
     return {
       documents: filtered,
       total: filtered.length,
-      hasMore: (options.offset || 0) + filtered.length < filtered.length,
+      hasMore: (options?.offset || 0) + filtered.length < filtered.length,
     };
   }
 
   /**
-   * Advanced document search using multiple search strategies
+   * Advanced document search using multiple search strategies.
    *
    * @param searchOptions
    */
@@ -332,10 +334,10 @@ export class DocumentManager {
 
     // Get all documents with filters applied
     const baseFilters: any = {};
-    if (searchOptions.projectId) baseFilters.projectId = searchOptions.projectId;
-    if (searchOptions.documentTypes) baseFilters.type = searchOptions.documentTypes;
-    if (searchOptions.status) baseFilters.status = searchOptions.status;
-    if (searchOptions.priority) baseFilters.priority = searchOptions.priority;
+    if (searchOptions?.projectId) baseFilters.projectId = searchOptions?.projectId;
+    if (searchOptions?.documentTypes) baseFilters.type = searchOptions?.documentTypes;
+    if (searchOptions?.status) baseFilters.status = searchOptions?.status;
+    if (searchOptions?.priority) baseFilters.priority = searchOptions?.priority;
 
     const { documents: candidateDocuments } = await this.queryDocuments(baseFilters, {
       includeContent: true,
@@ -345,8 +347,8 @@ export class DocumentManager {
 
     // Apply date range filter if specified
     let filteredCandidates = candidateDocuments as T[];
-    if (searchOptions.dateRange) {
-      const { start, end, field } = searchOptions.dateRange;
+    if (searchOptions?.dateRange) {
+      const { start, end, field } = searchOptions?.dateRange;
       filteredCandidates = filteredCandidates.filter((doc) => {
         const dateValue = doc[field] as Date;
         return dateValue >= start && dateValue <= end;
@@ -354,42 +356,42 @@ export class DocumentManager {
     }
 
     // Execute search based on search type
-    switch (searchOptions.searchType) {
+    switch (searchOptions?.searchType) {
       case 'fulltext':
         ({ documents, relevanceScores } = this.performFulltextSearch(
           filteredCandidates,
-          searchOptions.query
+          searchOptions?.query
         ));
         break;
       case 'semantic':
         ({ documents, relevanceScores } = await this.performSemanticSearch(
           filteredCandidates,
-          searchOptions.query
+          searchOptions?.query
         ));
         break;
       case 'keyword':
         ({ documents, relevanceScores } = this.performKeywordSearch(
           filteredCandidates,
-          searchOptions.query
+          searchOptions?.query
         ));
         break;
       case 'combined':
         ({ documents, relevanceScores } = await this.performCombinedSearch(
           filteredCandidates,
-          searchOptions.query
+          searchOptions?.query
         ));
         break;
       default:
         ({ documents, relevanceScores } = this.performFulltextSearch(
           filteredCandidates,
-          searchOptions.query
+          searchOptions?.query
         ));
     }
 
     // Apply pagination
     const total = documents.length;
-    const offset = searchOptions.offset || 0;
-    const limit = searchOptions.limit || 20;
+    const offset = searchOptions?.offset || 0;
+    const limit = searchOptions?.limit || 20;
     const paginatedDocuments = documents.slice(offset, offset + limit);
     const paginatedScores = relevanceScores.slice(offset, offset + limit);
     const hasMore = offset + limit < total;
@@ -401,8 +403,8 @@ export class DocumentManager {
       total,
       hasMore,
       searchMetadata: {
-        searchType: searchOptions.searchType,
-        query: searchOptions.query,
+        searchType: searchOptions?.searchType,
+        query: searchOptions?.query,
         processingTime,
         relevanceScores: paginatedScores,
       },
@@ -410,7 +412,7 @@ export class DocumentManager {
   }
 
   /**
-   * Perform fulltext search with TF-IDF scoring
+   * Perform fulltext search with TF-IDF scoring.
    *
    * @param documents
    * @param query
@@ -444,21 +446,21 @@ export class DocumentManager {
       }
 
       if (score > 0) {
-        results.push({ document: doc, score });
+        results?.push({ document: doc, score });
       }
     }
 
     // Sort by relevance score
-    results.sort((a, b) => b.score - a.score);
+    results?.sort((a, b) => b.score - a.score);
 
     return {
-      documents: results.map((r) => r.document),
-      relevanceScores: results.map((r) => r.score),
+      documents: results?.map((r) => r.document),
+      relevanceScores: results?.map((r) => r.score),
     };
   }
 
   /**
-   * Perform semantic search using content similarity
+   * Perform semantic search using content similarity.
    *
    * @param documents
    * @param query
@@ -486,20 +488,20 @@ export class DocumentManager {
       const finalScore = similarity * 0.7 + conceptualScore * 0.3;
 
       if (finalScore > 0.1) {
-        results.push({ document: doc, score: finalScore });
+        results?.push({ document: doc, score: finalScore });
       }
     }
 
-    results.sort((a, b) => b.score - a.score);
+    results?.sort((a, b) => b.score - a.score);
 
     return {
-      documents: results.map((r) => r.document),
-      relevanceScores: results.map((r) => r.score),
+      documents: results?.map((r) => r.document),
+      relevanceScores: results?.map((r) => r.score),
     };
   }
 
   /**
-   * Perform keyword-based search
+   * Perform keyword-based search.
    *
    * @param documents
    * @param query
@@ -534,20 +536,20 @@ export class DocumentManager {
       }
 
       if (score > 0) {
-        results.push({ document: doc, score });
+        results?.push({ document: doc, score });
       }
     }
 
-    results.sort((a, b) => b.score - a.score);
+    results?.sort((a, b) => b.score - a.score);
 
     return {
-      documents: results.map((r) => r.document),
-      relevanceScores: results.map((r) => r.score),
+      documents: results?.map((r) => r.document),
+      relevanceScores: results?.map((r) => r.score),
     };
   }
 
   /**
-   * Perform combined search using multiple strategies
+   * Perform combined search using multiple strategies.
    *
    * @param documents
    * @param query
@@ -566,22 +568,22 @@ export class DocumentManager {
     const allDocuments = new Map<string, T>();
 
     // Fulltext search (40% weight)
-    fulltextResults.documents.forEach((doc, index) => {
-      const score = (fulltextResults.relevanceScores[index] || 0) * 0.4;
+    fulltextResults?.documents.forEach((doc, index) => {
+      const score = (fulltextResults?.relevanceScores?.[index] || 0) * 0.4;
       combinedScores.set(doc.id, (combinedScores.get(doc.id) || 0) + score);
       allDocuments.set(doc.id, doc);
     });
 
     // Semantic search (35% weight)
-    semanticResults.documents.forEach((doc, index) => {
-      const score = (semanticResults.relevanceScores[index] || 0) * 0.35;
+    semanticResults?.documents.forEach((doc, index) => {
+      const score = (semanticResults?.relevanceScores?.[index] || 0) * 0.35;
       combinedScores.set(doc.id, (combinedScores.get(doc.id) || 0) + score);
       allDocuments.set(doc.id, doc);
     });
 
     // Keyword search (25% weight)
-    keywordResults.documents.forEach((doc, index) => {
-      const score = (keywordResults.relevanceScores[index] || 0) * 0.25;
+    keywordResults?.documents.forEach((doc, index) => {
+      const score = (keywordResults?.relevanceScores?.[index] || 0) * 0.25;
       combinedScores.set(doc.id, (combinedScores.get(doc.id) || 0) + score);
       allDocuments.set(doc.id, doc);
     });
@@ -592,15 +594,15 @@ export class DocumentManager {
       .filter(([, score]) => score > 0.1); // Filter out very low scores
 
     return {
-      documents: sortedResults.map(([docId]) => allDocuments.get(docId)!),
-      relevanceScores: sortedResults.map(([, score]) => score),
+      documents: sortedResults?.map(([docId]) => allDocuments.get(docId)!),
+      relevanceScores: sortedResults?.map(([, score]) => score),
     };
   }
 
   // ==================== PROJECT OPERATIONS ====================
 
   /**
-   * Create a new project using DAL
+   * Create a new project using DAL.
    *
    * @param project
    */
@@ -621,7 +623,7 @@ export class DocumentManager {
   }
 
   /**
-   * Get project with all related documents using DAL
+   * Get project with all related documents using DAL.
    *
    * @param projectId
    */
@@ -667,7 +669,7 @@ export class DocumentManager {
   // ==================== WORKFLOW AUTOMATION ====================
 
   /**
-   * Start workflow for document using DAL with automated stage progression
+   * Start workflow for document using DAL with automated stage progression.
    *
    * @param documentId
    * @param workflowName
@@ -708,7 +710,7 @@ export class DocumentManager {
   }
 
   /**
-   * Advance document workflow with automated rule checking
+   * Advance document workflow with automated rule checking.
    *
    * @param documentId
    * @param nextStage
@@ -753,7 +755,7 @@ export class DocumentManager {
   }
 
   /**
-   * Check and trigger workflow automation based on predefined rules
+   * Check and trigger workflow automation based on predefined rules.
    *
    * @param documentId
    */
@@ -775,7 +777,7 @@ export class DocumentManager {
   }
 
   /**
-   * Evaluate if an automation rule should trigger
+   * Evaluate if an automation rule should trigger.
    *
    * @param document
    * @param rule
@@ -821,7 +823,7 @@ export class DocumentManager {
   }
 
   /**
-   * Execute automation action when rule triggers
+   * Execute automation action when rule triggers.
    *
    * @param document
    * @param rule
@@ -871,7 +873,7 @@ export class DocumentManager {
   }
 
   /**
-   * Execute create document automation action
+   * Execute create document automation action.
    *
    * @param sourceDocument
    * @param actionConfig
@@ -896,19 +898,19 @@ export class DocumentManager {
     }
   ): Promise<BaseDocumentEntity> {
     const documentTitle =
-      actionConfig.title ||
-      `${actionConfig.documentType.charAt(0).toUpperCase() + actionConfig.documentType.slice(1)} for ${sourceDocument.title}`;
+      actionConfig?.title ||
+      `${actionConfig?.documentType?.charAt(0).toUpperCase() + actionConfig?.documentType?.slice(1)} for ${sourceDocument.title}`;
 
     const newDocumentData = {
-      type: actionConfig.documentType,
+      type: actionConfig?.documentType,
       title: documentTitle,
-      content: actionConfig.template || this.getDefaultTemplate(actionConfig.documentType),
-      summary: `Auto-generated ${actionConfig.documentType} from ${sourceDocument.type}: ${sourceDocument.title}`,
-      author: actionConfig.assignTo || sourceDocument.author,
+      content: actionConfig?.template || this.getDefaultTemplate(actionConfig?.documentType),
+      summary: `Auto-generated ${actionConfig?.documentType} from ${sourceDocument.type}: ${sourceDocument.title}`,
+      author: actionConfig?.assignTo || sourceDocument.author,
       project_id: sourceDocument.project_id,
-      status: actionConfig.status || 'draft',
-      priority: actionConfig.priority || sourceDocument.priority,
-      keywords: actionConfig.inheritKeywords ? [...sourceDocument.keywords] : [],
+      status: actionConfig?.status || 'draft',
+      priority: actionConfig?.priority || sourceDocument.priority,
+      keywords: actionConfig?.inheritKeywords ? [...sourceDocument.keywords] : [],
       metadata: {
         source_document_id: sourceDocument.id,
         auto_generated: true,
@@ -920,7 +922,7 @@ export class DocumentManager {
     // TODO: TypeScript error TS2379 - optional property types issue (AI unsure of safe fix - human review needed)
     const createdDocument = await this.createDocument(newDocumentData as any, {
       autoGenerateRelationships: true,
-      startWorkflow: `${actionConfig.documentType}_workflow`,
+      startWorkflow: `${actionConfig?.documentType}_workflow`,
       generateSearchIndex: true,
     });
 
@@ -942,7 +944,7 @@ export class DocumentManager {
   }
 
   /**
-   * Generate workflow artifacts
+   * Generate workflow artifacts.
    *
    * @param document
    * @param artifactTypes
@@ -981,7 +983,7 @@ export class DocumentManager {
   }
 
   /**
-   * Send workflow notification
+   * Send workflow notification.
    *
    * @param document
    * @param notificationConfig
@@ -1007,7 +1009,7 @@ export class DocumentManager {
   ): Promise<void> {}
 
   /**
-   * Get workflow definition for a workflow type
+   * Get workflow definition for a workflow type.
    *
    * @param workflowName
    */
@@ -1026,7 +1028,7 @@ export class DocumentManager {
   }
 
   /**
-   * Evaluate a condition with operator
+   * Evaluate a condition with operator.
    *
    * @param value
    * @param operator
@@ -1058,7 +1060,7 @@ export class DocumentManager {
   }
 
   /**
-   * Get default template for document type
+   * Get default template for document type.
    *
    * @param documentType
    */
@@ -1073,7 +1075,7 @@ export class DocumentManager {
       task: '# Task\n\n## Description\n\n## Steps\n\n## Acceptance Criteria\n\n## Notes\n',
       code: '# Code\n\n## Implementation\n',
       test: '# Test\n\n## Test Cases\n',
-      documentation: '# Documentation\n\n## Content\n'
+      documentation: '# Documentation\n\n## Content\n',
     };
 
     return templates[documentType] || '# Document\n\n## Content\n';
@@ -1107,7 +1109,7 @@ export class DocumentManager {
   // ==================== RELATIONSHIP MANAGEMENT ====================
 
   /**
-   * Generate document relationships based on content analysis and workflow stage
+   * Generate document relationships based on content analysis and workflow stage.
    *
    * @param document
    */
@@ -1136,7 +1138,7 @@ export class DocumentManager {
   }
 
   /**
-   * Find parent documents based on document type hierarchy
+   * Find parent documents based on document type hierarchy.
    *
    * @param document
    */
@@ -1155,7 +1157,7 @@ export class DocumentManager {
       task: ['feature', 'epic'], // Tasks relate to features and epics
       code: ['feature', 'task'],
       test: ['code', 'feature'],
-      documentation: ['feature', 'code']
+      documentation: ['feature', 'code'],
     };
 
     const parentTypes = typeHierarchy[document.type] || [];
@@ -1169,14 +1171,14 @@ export class DocumentManager {
       });
 
       // Create relationships based on content similarity and recency
-      for (const parent of potentialParents.slice(0, 3)) {
+      for (const parent of potentialParents?.slice(0, 3)) {
         // Limit to 3 most relevant
         const strength = this.calculateRelationshipStrength(document, parent);
         if (strength > 0.3) {
           // Only create relationships above threshold
           relationships.push({
             source_document_id: document.id,
-            target_document_id: parent.id,
+            target_document_id: parent?.id,
             // TODO: TypeScript error TS2322 - 'derives_from' not in relationship type enum (AI unsure of safe fix - human review needed)
             relationship_type: 'relates_to' as any,
             // TODO: TypeScript error TS2353 - 'strength' property doesn't exist (AI unsure of safe fix - human review needed)
@@ -1184,7 +1186,7 @@ export class DocumentManager {
             metadata: {
               auto_generated: true,
               generation_method: 'type_hierarchy',
-              parent_type: parent.type,
+              parent_type: parent?.type,
             },
           });
         }
@@ -1195,7 +1197,7 @@ export class DocumentManager {
   }
 
   /**
-   * Find semantic relationships based on content analysis
+   * Find semantic relationships based on content analysis.
    *
    * @param document
    */
@@ -1253,7 +1255,7 @@ export class DocumentManager {
   }
 
   /**
-   * Find workflow-based relationships
+   * Find workflow-based relationships.
    *
    * @param document
    */
@@ -1274,10 +1276,10 @@ export class DocumentManager {
 
       // Check if documents were generated from this source
       for (const target of existingDocs) {
-        if (target.metadata?.['source_document_id'] === document.id) {
+        if (target?.metadata?.['source_document_id'] === document.id) {
           relationships.push({
             source_document_id: document.id,
-            target_document_id: target.id,
+            target_document_id: target?.id,
             relationship_type: 'generates',
             // TODO: TypeScript error TS2353 - 'strength' property doesn't exist (AI unsure of safe fix - human review needed)
             // strength: 1.0,
@@ -1295,7 +1297,7 @@ export class DocumentManager {
   }
 
   /**
-   * Calculate relationship strength between two documents
+   * Calculate relationship strength between two documents.
    *
    * @param doc1
    * @param doc2
@@ -1330,7 +1332,7 @@ export class DocumentManager {
   }
 
   /**
-   * Calculate keyword overlap between two arrays
+   * Calculate keyword overlap between two arrays.
    *
    * @param keywords1
    * @param keywords2
@@ -1348,7 +1350,7 @@ export class DocumentManager {
   }
 
   /**
-   * Get workflow generation rules for document type
+   * Get workflow generation rules for document type.
    *
    * @param documentType
    */
@@ -1410,7 +1412,7 @@ export class DocumentManager {
   }
 
   /**
-   * Update document relationships when content changes significantly
+   * Update document relationships when content changes significantly.
    *
    * @param document
    */
@@ -1450,72 +1452,73 @@ export class DocumentManager {
   }
 
   // ==================== MISSING TEXT PROCESSING METHODS ====================
-  
+
   private tokenizeText(text: string): string[] {
     // Simple tokenization - split on whitespace and punctuation
-    return text.toLowerCase()
+    return text
+      .toLowerCase()
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
-      .filter(token => token.length > 2);
+      .filter((token) => token.length > 2);
   }
-  
+
   private calculateTermFrequency(term: string, docTerms: string[]): number {
-    const termCount = docTerms.filter(t => t === term).length;
+    const termCount = docTerms.filter((t) => t === term).length;
     return docTerms.length > 0 ? termCount / docTerms.length : 0;
   }
-  
+
   private calculateInverseDocumentFrequency(term: string, documents: BaseDocumentEntity[]): number {
-    const docsContainingTerm = documents.filter(doc => 
+    const docsContainingTerm = documents.filter((doc) =>
       `${doc.title} ${doc.content}`.toLowerCase().includes(term)
     ).length;
     return docsContainingTerm > 0 ? Math.log(documents.length / docsContainingTerm) : 0;
   }
-  
+
   private expandTokensWithSynonyms(tokens: string[]): string[] {
     // Simple synonym expansion - in production use proper NLP library
     const synonymMap: Record<string, string[]> = {
-      'user': ['customer', 'client', 'end-user'],
-      'system': ['platform', 'application', 'service'],
-      'feature': ['functionality', 'capability', 'component'],
-      'requirement': ['specification', 'need', 'criteria']
+      user: ['customer', 'client', 'end-user'],
+      system: ['platform', 'application', 'service'],
+      feature: ['functionality', 'capability', 'component'],
+      requirement: ['specification', 'need', 'criteria'],
     };
-    
+
     const expanded = new Set(tokens);
     for (const token of tokens) {
       if (synonymMap[token]) {
-        synonymMap[token].forEach(synonym => expanded.add(synonym));
+        synonymMap[token]?.forEach((synonym) => expanded.add(synonym));
       }
     }
     return Array.from(expanded);
   }
-  
+
   private calculateJaccardSimilarity(tokens1: string[], tokens2: string[]): number {
     const set1 = new Set(tokens1);
     const set2 = new Set(tokens2);
-    const intersection = new Set([...set1].filter(x => set2.has(x)));
+    const intersection = new Set([...set1].filter((x) => set2.has(x)));
     const union = new Set([...set1, ...set2]);
     return union.size > 0 ? intersection.size / union.size : 0;
   }
-  
+
   private calculateConceptualSimilarity(text1: string, text2: string): number {
     // Simple conceptual similarity based on common phrases
     const phrases1 = this.extractPhrases(text1);
     const phrases2 = this.extractPhrases(text2);
     return this.calculateJaccardSimilarity(phrases1, phrases2);
   }
-  
+
   private extractPhrases(text: string): string[] {
     // Extract 2-3 word phrases
     const words = this.tokenizeText(text);
     const phrases: string[] = [];
-    
+
     for (let i = 0; i < words.length - 1; i++) {
       phrases.push(`${words[i]} ${words[i + 1]}`);
       if (i < words.length - 2) {
         phrases.push(`${words[i]} ${words[i + 1]} ${words[i + 2]}`);
       }
     }
-    
+
     return phrases;
   }
 }

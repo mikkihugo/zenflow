@@ -167,7 +167,7 @@ describe('DI Decorators', () => {
         new SingletonProvider((c) => {
           const metadata = getInjectionMetadata(UserService);
           if (metadata) {
-            const dependencies = metadata.injectionTokens.map((token) =>
+            const dependencies = metadata?.injectionTokens?.map((token) =>
               token ? c.resolve(token) : undefined
             );
             return new UserService(...dependencies);

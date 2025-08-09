@@ -1,7 +1,7 @@
 /**
- * Type Guards Utility Module
+ * Type Guards Utility Module.
  *
- * Provides type guard functions for safe union type property access
+ * Provides type guard functions for safe union type property access.
  * throughout the claude-code-zen codebase. This addresses TypeScript
  * strict mode compilation issues with union type handling.
  *
@@ -13,12 +13,12 @@
 // ============================================
 
 /**
- * Union type for database query operations
+ * Union type for database query operations.
  */
 export type DatabaseResult<T = any> = QuerySuccess<T> | QueryError;
 
 /**
- * Successful query result with discriminant property
+ * Successful query result with discriminant property.
  *
  * @example
  */
@@ -35,7 +35,7 @@ export interface QuerySuccess<T = any> {
 }
 
 /**
- * Query error result with discriminant property
+ * Query error result with discriminant property.
  *
  * @example
  */
@@ -51,7 +51,7 @@ export interface QueryError {
 }
 
 /**
- * Type guard for successful database query results
+ * Type guard for successful database query results.
  *
  * @param result
  */
@@ -60,7 +60,7 @@ export function isQuerySuccess<T = any>(result: DatabaseResult<T>): result is Qu
 }
 
 /**
- * Type guard for database query errors
+ * Type guard for database query errors.
  *
  * @param result
  */
@@ -73,12 +73,12 @@ export function isQueryError(result: DatabaseResult): result is QueryError {
 // ============================================
 
 /**
- * Union type for memory store operations
+ * Union type for memory store operations.
  */
 export type MemoryResult<T = any> = MemorySuccess<T> | MemoryNotFound | MemoryError;
 
 /**
- * Successful memory retrieval with discriminant property
+ * Successful memory retrieval with discriminant property.
  *
  * @example
  */
@@ -92,7 +92,7 @@ export interface MemorySuccess<T = any> {
 }
 
 /**
- * Memory key not found result with discriminant property
+ * Memory key not found result with discriminant property.
  *
  * @example
  */
@@ -103,7 +103,7 @@ export interface MemoryNotFound {
 }
 
 /**
- * Memory operation error with discriminant property
+ * Memory operation error with discriminant property.
  *
  * @example
  */
@@ -117,7 +117,7 @@ export interface MemoryError {
 }
 
 /**
- * Type guard for successful memory operations
+ * Type guard for successful memory operations.
  *
  * @param result
  */
@@ -126,7 +126,7 @@ export function isMemorySuccess<T = any>(result: MemoryResult<T>): result is Mem
 }
 
 /**
- * Type guard for memory not found results
+ * Type guard for memory not found results.
  *
  * @param result
  */
@@ -135,7 +135,7 @@ export function isMemoryNotFound(result: MemoryResult): result is MemoryNotFound
 }
 
 /**
- * Type guard for memory operation errors
+ * Type guard for memory operation errors.
  *
  * @param result
  */
@@ -148,12 +148,12 @@ export function isMemoryError(result: MemoryResult): result is MemoryError {
 // ============================================
 
 /**
- * Union type for neural network operations
+ * Union type for neural network operations.
  */
 export type NeuralResult = TrainingResult | InferenceResult | NeuralError;
 
 /**
- * Neural network training result with discriminant property
+ * Neural network training result with discriminant property.
  *
  * @example
  */
@@ -169,7 +169,7 @@ export interface TrainingResult {
 }
 
 /**
- * Neural network inference result with discriminant property
+ * Neural network inference result with discriminant property.
  *
  * @example
  */
@@ -182,7 +182,7 @@ export interface InferenceResult {
 }
 
 /**
- * Neural network operation error with discriminant property
+ * Neural network operation error with discriminant property.
  *
  * @example
  */
@@ -198,7 +198,7 @@ export interface NeuralError {
 }
 
 /**
- * Type guard for neural training results
+ * Type guard for neural training results.
  *
  * @param result
  */
@@ -207,7 +207,7 @@ export function isTrainingResult(result: NeuralResult): result is TrainingResult
 }
 
 /**
- * Type guard for neural inference results
+ * Type guard for neural inference results.
  *
  * @param result
  */
@@ -216,7 +216,7 @@ export function isInferenceResult(result: NeuralResult): result is InferenceResu
 }
 
 /**
- * Type guard for neural operation errors
+ * Type guard for neural operation errors.
  *
  * @param result
  */
@@ -229,12 +229,12 @@ export function isNeuralError(result: NeuralResult): result is NeuralError {
 // ============================================
 
 /**
- * Union type for API responses
+ * Union type for API responses.
  */
 export type APIResult<T = any> = APISuccess<T> | APIError;
 
 /**
- * Successful API response with discriminant property
+ * Successful API response with discriminant property.
  *
  * @example
  */
@@ -249,7 +249,7 @@ export interface APISuccess<T = any> {
 }
 
 /**
- * API error response with discriminant property
+ * API error response with discriminant property.
  *
  * @example
  */
@@ -269,7 +269,7 @@ export interface APIError {
 }
 
 /**
- * Type guard for successful API responses
+ * Type guard for successful API responses.
  *
  * @param result
  */
@@ -278,7 +278,7 @@ export function isAPISuccess<T = any>(result: APIResult<T>): result is APISucces
 }
 
 /**
- * Type guard for API error responses
+ * Type guard for API error responses.
  *
  * @param result
  */
@@ -291,12 +291,12 @@ export function isAPIError(result: APIResult): result is APIError {
 // ============================================
 
 /**
- * Union type for WASM operations
+ * Union type for WASM operations.
  */
 export type WasmResult<T = any> = WasmSuccess<T> | WasmError;
 
 /**
- * Successful WASM operation with discriminant property
+ * Successful WASM operation with discriminant property.
  *
  * @example
  */
@@ -308,7 +308,7 @@ export interface WasmSuccess<T = any> {
 }
 
 /**
- * WASM operation error with discriminant property
+ * WASM operation error with discriminant property.
  *
  * @example
  */
@@ -323,7 +323,7 @@ export interface WasmError {
 }
 
 /**
- * Type guard for successful WASM operations
+ * Type guard for successful WASM operations.
  *
  * @param result
  */
@@ -332,7 +332,7 @@ export function isWasmSuccess<T = any>(result: WasmResult<T>): result is WasmSuc
 }
 
 /**
- * Type guard for WASM operation errors
+ * Type guard for WASM operation errors.
  *
  * @param result
  */
@@ -345,12 +345,12 @@ export function isWasmError(result: WasmResult): result is WasmError {
 // ============================================
 
 /**
- * Union type for coordination operations
+ * Union type for coordination operations.
  */
 export type CoordinationResult<T = any> = CoordinationSuccess<T> | CoordinationError;
 
 /**
- * Successful coordination operation with discriminant property
+ * Successful coordination operation with discriminant property.
  *
  * @example
  */
@@ -363,7 +363,7 @@ export interface CoordinationSuccess<T = any> {
 }
 
 /**
- * Coordination operation error with discriminant property
+ * Coordination operation error with discriminant property.
  *
  * @example
  */
@@ -379,7 +379,7 @@ export interface CoordinationError {
 }
 
 /**
- * Type guard for successful coordination operations
+ * Type guard for successful coordination operations.
  *
  * @param result
  */
@@ -390,7 +390,7 @@ export function isCoordinationSuccess<T = any>(
 }
 
 /**
- * Type guard for coordination operation errors
+ * Type guard for coordination operation errors.
  *
  * @param result
  */
@@ -403,12 +403,12 @@ export function isCoordinationError(result: CoordinationResult): result is Coord
 // ============================================
 
 /**
- * Generic union type for operations with success/error states
+ * Generic union type for operations with success/error states.
  */
 export type Result<T, E = Error> = Success<T> | Failure<E>;
 
 /**
- * Generic success result
+ * Generic success result.
  *
  * @example
  */
@@ -418,7 +418,7 @@ export interface Success<T> {
 }
 
 /**
- * Generic failure result
+ * Generic failure result.
  *
  * @example
  */
@@ -428,7 +428,7 @@ export interface Failure<E = Error> {
 }
 
 /**
- * Type guard for successful results
+ * Type guard for successful results.
  *
  * @param result
  */
@@ -437,7 +437,7 @@ export function isSuccess<T, E = Error>(result: Result<T, E>): result is Success
 }
 
 /**
- * Type guard for failed results
+ * Type guard for failed results.
  *
  * @param result
  */
@@ -450,7 +450,7 @@ export function isFailure<T, E = Error>(result: Result<T, E>): result is Failure
 // ============================================
 
 /**
- * Safely extract data from a result union type
+ * Safely extract data from a result union type.
  *
  * @param result
  */
@@ -462,7 +462,7 @@ export function extractData<T>(result: DatabaseResult<T>): T | null {
 }
 
 /**
- * Safely extract error message from any result type
+ * Safely extract error message from any result type.
  *
  * @param result
  */
@@ -488,7 +488,7 @@ export function extractErrorMessage(
 }
 
 /**
- * Type predicate to check if an object has a specific property
+ * Type predicate to check if an object has a specific property.
  *
  * @param obj
  * @param prop
@@ -501,7 +501,7 @@ export function hasProperty<T, K extends PropertyKey>(
 }
 
 /**
- * Safe property access with type checking
+ * Safe property access with type checking.
  *
  * @param obj
  * @param prop
@@ -521,7 +521,7 @@ export function safePropertyAccess<T, K extends keyof T>(
 // ============================================
 
 /**
- * Type guard to check if an object is a valid neural network config
+ * Type guard to check if an object is a valid neural network config.
  *
  * @param obj
  */
@@ -542,7 +542,7 @@ export function isNeuralNetworkConfig(obj: any): obj is {
 }
 
 /**
- * Type guard to check if a value is a valid activation function
+ * Type guard to check if a value is a valid activation function.
  *
  * @param value
  */
@@ -561,7 +561,7 @@ export function isActivationFunction(value: any): value is string {
 }
 
 /**
- * Type guard for checking array of objects with required properties
+ * Type guard for checking array of objects with required properties.
  *
  * @param arr
  * @param requiredProps
@@ -576,12 +576,12 @@ export function isObjectArrayWithProps<T>(arr: any, requiredProps: string[]): ar
       return false;
     }
 
-    return requiredProps?.every((prop) => prop in item);
+    return requiredProps.every((prop) => prop in item);
   });
 }
 
 /**
- * Type guard for checking if value is a non-empty string
+ * Type guard for checking if value is a non-empty string.
  *
  * @param value
  */
@@ -592,14 +592,14 @@ export function isNonEmptyString(value: any): value is string {
 /**
  * Type guard for checking if value is a valid number (not NaN or Infinity)
  *
- * @param value
+ * @param value.
  */
 export function isValidNumber(value: any): value is number {
   return typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value);
 }
 
 /**
- * Type guard for checking if value is a valid positive number
+ * Type guard for checking if value is a valid positive number.
  *
  * @param value
  */

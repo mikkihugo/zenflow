@@ -174,17 +174,17 @@ export class LoadTestRunner {
     profiler.start();
 
     const promises: Promise<void>[] = [];
-    const rampUpTime = config.rampUpTime || 0;
-    const rampUpDelay = rampUpTime / config.concurrency;
+    const rampUpTime = config?.rampUpTime || 0;
+    const rampUpDelay = rampUpTime / config?.concurrency;
 
-    for (let i = 0; i < config.concurrency; i++) {
+    for (let i = 0; i < config?.concurrency; i++) {
       const startDelay = i * rampUpDelay;
 
       const workerPromise = LoadTestRunner.runWorker(
         testFunction,
-        config.duration - startDelay,
+        config?.duration - startDelay,
         startDelay,
-        config.targetRPS,
+        config?.targetRPS,
         profiler
       );
 

@@ -1,5 +1,5 @@
 /**
- * NeuralWasmGateway
+ * NeuralWasmGateway.
  * Unified, public-safe facade for all neural WebAssembly functionality.
  * Enforces controlled access, lazy initialization, and metrics capture.
  *
@@ -8,6 +8,11 @@
  * - Direct imports of deep wasm internals (src/neural/wasm/(src|binaries|fact-core)) are blocked by dependency-cruiser
  * - Provides stable surface while underlying loaders evolve
  */
+/**
+ * @file Neural network: gateway.
+ */
+
+
 import { WasmModuleLoader } from './wasm-loader';
 import { WasmMemoryOptimizer } from './wasm-memory-optimizer';
 

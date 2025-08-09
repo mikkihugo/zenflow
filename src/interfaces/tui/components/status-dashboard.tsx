@@ -31,7 +31,7 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
 
   const topologyBreakdown = Array.from(state.swarmConfigs.values()).reduce(
     (acc, config) => {
-      acc[config.topology] = (acc[config.topology] || 0) + 1;
+      acc[config?.topology] = (acc[config?.topology] || 0) + 1;
       return acc;
     },
     {} as Record<string, number>
@@ -94,7 +94,7 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
       {showDetailed && (
         <Box flexDirection="column" marginBottom={1}>
           <Text bold marginBottom={1}>
-            🐝 Active Swarms
+            🐝 Active Swarms.
           </Text>
           {Array.from(state.deploymentStatus.entries()).map(([domain, status]) => (
             <Box key={domain} borderStyle="single" paddingX={1} marginBottom={0}>

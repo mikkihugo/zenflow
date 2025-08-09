@@ -4,6 +4,11 @@
  * Handles the third phase of SPARC methodology - designing system architecture,
  * component relationships, and deployment strategies.
  */
+/**
+ * @file architecture processing engine
+ */
+
+
 
 import { nanoid } from 'nanoid';
 import type {
@@ -35,7 +40,7 @@ import type {
   SecurityRequirement,
   SystemArchitecture,
   ValidationResult,
-} from '../../types/sparc-types';
+} from '../types/sparc-types';
 
 // Additional types needed for this module
 interface SystemComponent {
@@ -208,22 +213,22 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   private async createComponentFromDataStructure(dataStructure: any): Promise<SystemComponent> {
     return {
       id: nanoid(),
-      name: `${dataStructure.name}Manager`,
+      name: `${dataStructure?.name}Manager`,
       type: 'data-manager',
-      description: `Manages ${dataStructure.description}`,
+      description: `Manages ${dataStructure?.description}`,
       responsibilities: [
         'Data storage and retrieval',
         'Data consistency',
         'Performance optimization',
         'Backup and recovery',
       ],
-      interfaces: [`I${dataStructure.name}Manager`],
+      interfaces: [`I${dataStructure?.name}Manager`],
       dependencies: await this.extractDataStructureDependencies(dataStructure),
       technologies: await this.selectTechnologiesForDataStructure(dataStructure),
       scalability: await this.assessDataStructureScalability(dataStructure),
       performance: {
         expectedLatency: this.getDataStructureLatency(
-          dataStructure.performance || { lookup: 'O(1)' }
+          dataStructure?.performance || { lookup: 'O(1)' }
         ),
       },
     };
@@ -434,7 +439,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
       if (sourceComponent && targetComponent) {
         dataFlows.push({
           from: sourceComponent.name,
-          to: targetComponent.name,
+          to: targetComponent?.name,
           data: this.inferDataTypeFromSystemComponents(sourceComponent, targetComponent),
           protocol: this.selectProtocolForSystemComponents(sourceComponent, targetComponent),
           frequency: this.estimateDataFrequencyFromSystemComponents(
@@ -556,8 +561,8 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     source: SystemComponent,
     target: SystemComponent
   ): string {
-    if (source.name.includes('Agent') && target.name.includes('Registry')) return 'AgentInfo';
-    if (source.name.includes('Task') && target.name.includes('Queue')) return 'Task';
+    if (source.name.includes('Agent') && target?.name.includes('Registry')) return 'AgentInfo';
+    if (source.name.includes('Task') && target?.name.includes('Queue')) return 'Task';
     if (source.name.includes('Neural')) return 'Matrix';
     return 'JSON';
   }
@@ -566,9 +571,9 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     source: SystemComponent,
     target: SystemComponent
   ): string {
-    if (source.type === 'gateway' || target.type === 'gateway') return 'HTTP/REST';
-    if (source.type === 'service' && target.type === 'service') return 'HTTP/REST';
-    if (target.type === 'database') return 'TCP/SQL';
+    if (source.type === 'gateway' || target?.type === 'gateway') return 'HTTP/REST';
+    if (source.type === 'service' && target?.type === 'service') return 'HTTP/REST';
+    if (target?.type === 'database') return 'TCP/SQL';
     return 'Internal';
   }
 
@@ -577,28 +582,28 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     target: SystemComponent
   ): string {
     if (source.type === 'gateway') return 'High';
-    if (source.type === 'service' && target.type === 'database') return 'Medium';
+    if (source.type === 'service' && target?.type === 'database') return 'Medium';
     return 'Low';
   }
 
   // Helper methods for Component type (for public interface methods)
   private inferDataTypeFromComponents(source: Component, target: Component): string {
-    if (source.name.includes('Agent') && target.name.includes('Registry')) return 'AgentInfo';
-    if (source.name.includes('Task') && target.name.includes('Queue')) return 'Task';
+    if (source.name.includes('Agent') && target?.name.includes('Registry')) return 'AgentInfo';
+    if (source.name.includes('Task') && target?.name.includes('Queue')) return 'Task';
     if (source.name.includes('Neural')) return 'Matrix';
     return 'JSON';
   }
 
   private selectProtocolForComponents(source: Component, target: Component): string {
-    if (source.type === 'gateway' || target.type === 'gateway') return 'HTTP/REST';
-    if (source.type === 'service' && target.type === 'service') return 'HTTP/REST';
-    if (target.type === 'database') return 'TCP/SQL';
+    if (source.type === 'gateway' || target?.type === 'gateway') return 'HTTP/REST';
+    if (source.type === 'service' && target?.type === 'service') return 'HTTP/REST';
+    if (target?.type === 'database') return 'TCP/SQL';
     return 'Internal';
   }
 
   private estimateDataFrequencyFromComponents(source: Component, target: Component): string {
     if (source.type === 'gateway') return 'High';
-    if (source.type === 'service' && target.type === 'database') return 'Medium';
+    if (source.type === 'service' && target?.type === 'database') return 'Medium';
     return 'Low';
   }
 
@@ -679,17 +684,17 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   private parseEffortToHours(effort: string): number {
     if (effort.includes('hours')) {
       const match = effort.match(/(\d+)-?(\d*)\s*hours?/);
-      if (match && match[1]) {
-        const min = parseInt(match[1]);
-        const max = match[2] ? parseInt(match[2]) : min;
+      if (match && match?.[1]) {
+        const min = parseInt(match?.[1]);
+        const max = match?.[2] ? parseInt(match?.[2]) : min;
         return (min + max) / 2;
       }
     }
     if (effort.includes('days')) {
       const match = effort.match(/(\d+)-?(\d*)\s*days?/);
-      if (match && match[1]) {
-        const min = parseInt(match[1]);
-        const max = match[2] ? parseInt(match[2]) : min;
+      if (match && match?.[1]) {
+        const min = parseInt(match?.[1]);
+        const max = match?.[2] ? parseInt(match?.[2]) : min;
         return ((min + max) / 2) * 8; // 8 hours per day
       }
     }
@@ -787,14 +792,14 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     // Extract dependencies from input parameters if they exist
     if (algorithm.inputs && Array.isArray(algorithm.inputs)) {
       for (const param of algorithm.inputs) {
-        if (param.type?.includes('Agent')) dependencies.push('AgentRegistryManager');
-        if (param.type?.includes('Task')) dependencies.push('TaskQueueManager');
-        if (param.type?.includes('Memory')) dependencies.push('MemoryManager');
+        if (param.type.includes('Agent')) dependencies.push('AgentRegistryManager');
+        if (param.type.includes('Task')) dependencies.push('TaskQueueManager');
+        if (param.type.includes('Memory')) dependencies.push('MemoryManager');
       }
     }
 
     // Extract dependencies from algorithm name/purpose
-    if (algorithm.name?.includes('Agent')) {
+    if (algorithm.name.includes('Agent')) {
       dependencies.push('AgentRegistryManager');
     }
     if (algorithm.purpose?.includes('store')) {
@@ -816,7 +821,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
       }
     }
 
-    if (algorithm.name?.includes('Neural')) {
+    if (algorithm.name.includes('Neural')) {
       technologies.push('TensorFlow.js', 'WASM');
     }
 
@@ -838,9 +843,9 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   private async extractDataStructureDependencies(dataStructure: any): Promise<string[]> {
     const dependencies: string[] = [];
 
-    if (dataStructure.type === 'HashMap') dependencies.push('HashingService');
-    if (dataStructure.type === 'PriorityQueue') dependencies.push('ComparatorService');
-    if (dataStructure.type === 'Matrix') dependencies.push('WASMModule');
+    if (dataStructure?.type === 'HashMap') dependencies.push('HashingService');
+    if (dataStructure?.type === 'PriorityQueue') dependencies.push('ComparatorService');
+    if (dataStructure?.type === 'Matrix') dependencies.push('WASMModule');
 
     return dependencies;
   }
@@ -848,7 +853,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   private async selectTechnologiesForDataStructure(dataStructure: any): Promise<string[]> {
     const technologies = ['TypeScript'];
 
-    switch (dataStructure.type) {
+    switch (dataStructure?.type) {
       case 'HashMap':
         technologies.push('Map', 'Redis');
         break;
@@ -864,7 +869,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   private async assessDataStructureScalability(dataStructure: any): Promise<string> {
-    if (dataStructure.expectedSize > 100000) {
+    if (dataStructure?.expectedSize > 100000) {
       return 'horizontal';
     }
     return 'vertical';
@@ -1000,7 +1005,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
         if (targetComponent) {
           dataFlows.push({
             from: component.name,
-            to: targetComponent.name,
+            to: targetComponent?.name,
             data: this.inferDataTypeFromComponents(component, targetComponent),
             protocol: this.selectProtocolForComponents(component, targetComponent),
             frequency: this.estimateDataFrequencyFromComponents(component, targetComponent),
@@ -1047,7 +1052,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     if (databaseComponents.length > 0) {
       deploymentUnits.push({
         name: 'database',
-        components: databaseComponents.map((c) => c.name),
+        components: databaseComponents?.map((c) => c.name),
         infrastructure: [
           {
             type: 'storage',
@@ -1246,7 +1251,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     });
 
     const _overallScore =
-      validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
+      validationResults.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
 
     return validationResults;
   }

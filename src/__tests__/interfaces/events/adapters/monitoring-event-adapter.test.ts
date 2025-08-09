@@ -350,7 +350,7 @@ describe('MonitoringEventAdapter', () => {
 
       // Verify transform was applied
       expect(listener).toHaveBeenCalled();
-      const transformedEvent = listener.mock.calls[0][0];
+      const transformedEvent = listener.mock.calls[0]?.[0];
       expect(transformedEvent.metadata?.enriched).toBe(true);
       expect(transformedEvent.metadata?.transformedAt).toBeDefined();
 
@@ -484,8 +484,8 @@ describe('MonitoringEventAdapter', () => {
 
       // Events should be in chronological order
       for (let i = 1; i < history.length; i++) {
-        expect(history[i].timestamp.getTime()).toBeGreaterThanOrEqual(
-          history[i - 1].timestamp.getTime()
+        expect(history[i]?.timestamp?.getTime()).toBeGreaterThanOrEqual(
+          history[i - 1]?.timestamp?.getTime()
         );
       }
     });
@@ -550,8 +550,8 @@ describe('MonitoringEventAdapter', () => {
       const metricsData = adapter.getMetricsData(metricName);
 
       expect(metricsData).toBeDefined();
-      expect(metricsData.eventCount).toBe(values.length);
-      expect(metricsData.latestValue).toBe(values[values.length - 1]);
+      expect(metricsData?.eventCount).toBe(values.length);
+      expect(metricsData?.latestValue).toBe(values[values.length - 1]);
     });
 
     it('should calculate component health scores accurately', async () => {
@@ -577,8 +577,8 @@ describe('MonitoringEventAdapter', () => {
       const healthData = adapter.getHealthData(component);
 
       expect(healthData).toBeDefined();
-      expect(healthData.eventCount).toBe(healthScores.length);
-      expect(healthData.latestScore).toBe(healthScores[healthScores.length - 1]);
+      expect(healthData?.eventCount).toBe(healthScores.length);
+      expect(healthData?.latestScore).toBe(healthScores[healthScores.length - 1]);
     });
 
     it('should track alert patterns and frequencies', async () => {
@@ -604,8 +604,8 @@ describe('MonitoringEventAdapter', () => {
       const alertData = adapter.getAlertData(alertId);
 
       expect(alertData).toBeDefined();
-      expect(alertData.eventCount).toBe(severities.length);
-      expect(alertData.severity).toBe(severities[severities.length - 1]); // Latest severity
+      expect(alertData?.eventCount).toBe(severities.length);
+      expect(alertData?.severity).toBe(severities[severities.length - 1]); // Latest severity
     });
 
     it('should maintain performance insights over time', async () => {

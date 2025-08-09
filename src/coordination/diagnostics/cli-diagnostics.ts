@@ -1,8 +1,13 @@
 #!/usr/bin/env node
+/**
+ * @file Coordination system: cli-diagnostics
+ */
+
+
 
 /**
- * Diagnostic CLI for ruv-swarm
- * Usage: npx ruv-swarm diagnose [options]
+ * Diagnostic CLI for ruv-swarm.
+ * Usage: npx ruv-swarm diagnose [options].
  */
 
 import fs from 'node:fs';
@@ -32,7 +37,7 @@ async function main(): Promise<void> {
   const command = args[0] || 'help';
 
   // Initialize diagnostics logger
-  const logger = cliLoggingConfig.getLogger('cli-diagnostics', { level: 'INFO' });
+  const logger = cliLoggingConfig?.getLogger('cli-diagnostics', { level: 'INFO' });
 
   try {
     switch (command) {
@@ -70,18 +75,20 @@ async function runDiagnosticTests(logger: LoggerInterface): Promise<void> {
 
   const results = await diagnostics.runDiagnosticTests();
 
-  results.tests.forEach((test) => {
-    // const _icon = test.success ? '✅' : '❌'; // TODO: Use when implementing display
-    if (!test.success) {
-      if ('error' in test) {
+  if (results && results.tests) {
+    results.tests.forEach((test) => {
+      // const _icon = test.success ? '✅' : '❌'; // TODO: Use when implementing display
+      if (!test.success) {
+        if ('error' in test) {
+        }
+      } else if ('allocated' in test) {
+      } else if ('path' in test) {
+      } else {
       }
-    } else if ('allocated' in test) {
-    } else if ('path' in test) {
-    } else {
-    }
-  });
+    });
+  }
 
-  if (results.summary.failed > 0) {
+  if (results && results.summary && results.summary.failed > 0) {
     process.exit(1);
   }
 }
@@ -296,7 +303,7 @@ export { main as diagnosticsCLI };
 if (
   typeof process !== 'undefined' &&
   process.argv?.[1] &&
-  process.argv[1].includes('cli-diagnostics')
+  process.argv[1]?.includes('cli-diagnostics')
 ) {
   main().catch(console.error);
 }

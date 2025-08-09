@@ -1,5 +1,12 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-sparc-index");
+/**
+ * @file sparc module exports
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-sparc-index');
+
 /**
  * SPARC Methodology System - Main Export.
  *
@@ -11,7 +18,7 @@ const logger = getLogger("coordination-swarm-sparc-index");
 export { SPARCEngineCore } from './core/sparc-engine';
 
 import { SPARCEngineCore } from './core/sparc-engine';
-import type { SPARCProject, PhaseResult } from './types/sparc-types';
+import type { PhaseResult, SPARCProject } from './types/sparc-types';
 
 // MCP Integration
 export { SPARCMCPTools, sparcMCPTools } from './integrations/mcp-sparc-tools';

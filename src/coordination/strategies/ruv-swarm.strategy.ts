@@ -1,5 +1,7 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("coordination-strategies-ruv-swarmstrategy");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-strategies-ruv-swarmstrategy');
+
 /**
  * @file A swarm strategy that uses the ZenSwarm implementation.
  */
@@ -18,7 +20,7 @@ export class ZenSwarmStrategy implements SwarmStrategy {
     const agentId = this.swarm.addAgent(config);
     return {
       id: agentId,
-      capabilities: config.capabilities || [],
+      capabilities: config?.capabilities || [],
       status: 'idle' as const,
     };
   }

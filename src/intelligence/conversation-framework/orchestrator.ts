@@ -3,9 +3,14 @@
  *
  * Core orchestration engine for ag2.ai-inspired multi-agent conversations.
  */
+/**
+ * @file orchestrator implementation
+ */
+
+
 
 import { nanoid } from 'nanoid';
-import type { AgentId } from '../../types/agent-types';
+import type { AgentId } from '../types/agent-types';
 import type {
   ConversationConfig,
   ConversationMemory,
@@ -18,7 +23,7 @@ import type {
 } from './types';
 
 /**
- * Implementation of the conversation orchestrator
+ * Implementation of the conversation orchestrator.
  * Manages multi-agent conversations with patterns and learning.
  *
  * @example
@@ -38,21 +43,26 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param config
    */
   async createConversation(config: ConversationConfig): Promise<ConversationSession> {
-    const pattern = this.patterns.get(config.pattern);
+    const pattern = this.patterns.get(config?.pattern);
     if (!pattern) {
-      throw new Error(`Unknown conversation pattern: ${config.pattern}`);
+      throw new Error(`Unknown conversation pattern: ${config?.pattern}`);
     }
 
     const session: ConversationSession = {
       id: nanoid(),
-      title: config.title,
-      description: config.description,
-      participants: [...config.initialParticipants],
-      initiator: config.initialParticipants[0] || { id: 'unknown', swarmId: 'system', type: 'coordinator', instance: 0 },
-      orchestrator: config.orchestrator,
+      title: config?.title,
+      description: config?.description,
+      participants: [...config?.initialParticipants],
+      initiator: config?.initialParticipants?.[0] || {
+        id: 'unknown',
+        swarmId: 'system',
+        type: 'coordinator',
+        instance: 0,
+      },
+      orchestrator: config?.orchestrator,
       startTime: new Date(),
       status: 'initializing',
-      context: config.context,
+      context: config?.context,
       messages: [],
       outcomes: [],
       metrics: {
@@ -65,7 +75,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     };
 
     // Initialize participation tracking
-    config.initialParticipants.forEach((agent) => {
+    config?.initialParticipants?.forEach((agent) => {
       session.metrics.participationByAgent[agent.id] = 0;
     });
 
@@ -154,7 +164,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Add to session
     session.messages.push(message);
     session.metrics.messageCount++;
-    session.metrics.participationByAgent[message.fromAgent.id] = 
+    session.metrics.participationByAgent[message.fromAgent.id] =
       (session.metrics.participationByAgent[message.fromAgent.id] || 0) + 1;
 
     // Update session in memory
@@ -652,7 +662,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       const currentMsg = messages[i];
       const prevMsg = messages[i - 1];
       if (currentMsg && prevMsg) {
-        totalTime += currentMsg.timestamp.getTime() - prevMsg.timestamp.getTime();
+        totalTime += currentMsg?.timestamp?.getTime() - prevMsg.timestamp.getTime();
       }
     }
 

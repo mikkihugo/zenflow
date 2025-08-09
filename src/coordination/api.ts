@@ -1,4 +1,18 @@
 /**
+ * @file Coordination system: api
+ */
+
+
+import type {
+  Agent,
+  CoordinationError,
+  HealthStatus,
+  PerformanceMetrics,
+  SwarmConfig,
+  Task,
+} from './schemas';
+
+/**
  * @swagger
  * tags:
  *   - name: Agents
@@ -13,7 +27,7 @@
 
 /**
  * Agent Management API
- * Following Google API Design Guide: collection-based resource naming
+ * Following Google API Design Guide: collection-based resource naming.
  *
  * @example
  */
@@ -213,7 +227,7 @@ export class AgentAPI {
 
 /**
  * Task Management API
- * Following Google API Design Guide standards
+ * Following Google API Design Guide standards.
  *
  * @example
  */
@@ -301,7 +315,7 @@ export class TaskAPI {
 
 /**
  * Swarm Management API
- * Control swarm topology and coordination settings
+ * Control swarm topology and coordination settings.
  *
  * @example
  */
@@ -360,7 +374,7 @@ export class SwarmAPI {
 
 /**
  * Health and Monitoring API
- * System health checks and performance metrics
+ * System health checks and performance metrics.
  *
  * @example
  */
@@ -420,8 +434,8 @@ export class HealthAPI {
 }
 
 /**
- * API Error Handler
- * Standardized error handling following Google API Design Guide
+ * API Error Handler.
+ * Standardized error handling following Google API Design Guide.
  *
  * @example
  */

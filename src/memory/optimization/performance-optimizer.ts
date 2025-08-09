@@ -1,10 +1,10 @@
 /**
  * @file Advanced Performance Optimizer for Memory Systems
- * Provides intelligent performance optimization for memory operations
+ * Provides intelligent performance optimization for memory operations.
  */
 
 import { EventEmitter } from 'node:events';
-import type { BackendInterface } from '../../core/memory-system';
+import type { BackendInterface } from '../core/memory-system';
 
 export interface PerformanceMetrics {
   operationsPerSecond: number;
@@ -53,8 +53,8 @@ export interface OptimizationAction {
 }
 
 /**
- * Advanced Performance Optimizer
- * Uses ML-like adaptive algorithms to optimize memory system performance
+ * Advanced Performance Optimizer.
+ * Uses ML-like adaptive algorithms to optimize memory system performance.
  *
  * @example
  */
@@ -81,13 +81,13 @@ export class PerformanceOptimizer extends EventEmitter {
       lastUpdated: Date.now(),
     };
 
-    if (config.adaptation.enabled) {
+    if (config?.adaptation?.enabled) {
       this.startAdaptiveOptimization();
     }
   }
 
   /**
-   * Register a backend for optimization
+   * Register a backend for optimization.
    *
    * @param id
    * @param backend
@@ -98,7 +98,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Update performance metrics
+   * Update performance metrics.
    *
    * @param newMetrics
    */
@@ -114,7 +114,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Check performance thresholds and trigger optimizations
+   * Check performance thresholds and trigger optimizations.
    */
   private checkThresholds(): void {
     const warnings = [];
@@ -145,7 +145,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Suggest optimization based on performance issue
+   * Suggest optimization based on performance issue.
    *
    * @param issue
    */
@@ -206,7 +206,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Execute an optimization action
+   * Execute an optimization action.
    *
    * @param actionId
    */
@@ -235,7 +235,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Perform the actual optimization
+   * Perform the actual optimization.
    *
    * @param action
    */
@@ -257,7 +257,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Adjust cache settings
+   * Adjust cache settings.
    */
   private async adjustCache(): Promise<any> {
     // Simulate cache adjustment
@@ -279,7 +279,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Rebuild indexes for better performance
+   * Rebuild indexes for better performance.
    */
   private async rebuildIndexes(): Promise<any> {
     const results = [];
@@ -296,7 +296,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Toggle compression to save memory
+   * Toggle compression to save memory.
    */
   private async toggleCompression(): Promise<any> {
     const results = [];
@@ -314,7 +314,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Adjust prefetch strategy
+   * Adjust prefetch strategy.
    */
   private async adjustPrefetch(): Promise<any> {
     const results = [];
@@ -334,7 +334,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Rebalance partitions for better distribution
+   * Rebalance partitions for better distribution.
    */
   private async rebalancePartitions(): Promise<any> {
     const results = [];
@@ -352,7 +352,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Start adaptive optimization loop
+   * Start adaptive optimization loop.
    */
   private startAdaptiveOptimization(): void {
     setInterval(() => {
@@ -361,7 +361,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Perform adaptive optimization based on historical data
+   * Perform adaptive optimization based on historical data.
    */
   private performAdaptiveOptimization(): void {
     const history = this.optimizationHistory.slice(-10); // Last 10 entries
@@ -404,7 +404,7 @@ export class PerformanceOptimizer extends EventEmitter {
   /**
    * Calculate trend from array of values (positive = increasing)
    *
-   * @param values
+   * @param values.
    */
   private calculateTrend(values: number[]): number {
     if (values.length < 2) return 0;
@@ -420,7 +420,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Get optimization statistics
+   * Get optimization statistics.
    */
   getStats() {
     return {
@@ -439,7 +439,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Get performance recommendations
+   * Get performance recommendations.
    */
   getRecommendations(): Array<{
     type: string;

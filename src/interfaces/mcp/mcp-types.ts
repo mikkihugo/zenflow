@@ -1,6 +1,11 @@
 /**
- * Shared MCP Type Definitions
+ * Shared MCP Type Definitions.
  */
+/**
+ * @file TypeScript type definitions for interfaces
+ */
+
+
 
 export type McpToolId = string;
 

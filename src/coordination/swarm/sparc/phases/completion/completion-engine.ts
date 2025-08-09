@@ -1,9 +1,14 @@
 /**
  * SPARC Completion Phase Engine.
  *
- * Handles the fifth and final phase of SPARC methodology - generating
+ * Handles the fifth and final phase of SPARC methodology - generating.
  * production-ready code, tests, documentation, and deployment artifacts.
  */
+/**
+ * @file completion processing engine
+ */
+
+
 
 import { nanoid } from 'nanoid';
 import type {
@@ -30,7 +35,7 @@ import type {
   TestCase,
   TestSuite,
   ValidationResult,
-} from '../../types/sparc-types';
+} from '../types/sparc-types';
 
 export class CompletionPhaseEngine implements CompletionEngine {
   /**
@@ -1071,7 +1076,7 @@ export const middleware = {
   private generateConfigManagerCode(): string {
     return `
 /**
- * Configuration Manager
+ * Configuration Manager.
  */
 export class ConfigManager {
   // Environment-based configuration management
@@ -1082,7 +1087,7 @@ export class ConfigManager {
   private generateLoggerCode(): string {
     return `
 /**
- * Structured Logger
+ * Structured Logger.
  */
 export class Logger {
   // Logging implementation with appropriate levels
@@ -1093,7 +1098,7 @@ export class Logger {
   private generateErrorHandlerCode(): string {
     return `
 /**
- * Error Handler
+ * Error Handler.
  */
 export class ErrorHandler {
   // Centralized error handling and response formatting
@@ -1104,7 +1109,7 @@ export class ErrorHandler {
   private generateSecurityCode(_securityOpts: any[]): string {
     return `
 /**
- * Security Framework
+ * Security Framework.
  */
 export class SecurityFramework {
   // Security implementations based on optimization requirements
@@ -1168,15 +1173,17 @@ export class SecurityFramework {
     });
 
     const overallScore =
-      validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
+      validationResults.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
 
     return {
       readyForProduction: readinessScore >= 85,
       score: overallScore,
       validations: validationResults,
-      blockers: validationResults.filter((v) => !v.passed && v.score < 0.5).map((v) => v.criterion),
+      blockers: validationResults
+        ?.filter((v) => !v.passed && v.score < 0.5)
+        .map((v) => v.criterion),
       warnings: validationResults
-        .filter((v) => !v.passed && v.score >= 0.5)
+        ?.filter((v) => !v.passed && v.score >= 0.5)
         .map((v) => v.criterion),
       overallScore,
       validationResults,
@@ -1195,8 +1202,8 @@ export class SecurityFramework {
     const recommendations: string[] = [];
 
     for (const result of validationResults) {
-      if (!result.passed) {
-        switch (result.criterion) {
+      if (!result?.passed) {
+        switch (result?.criterion) {
           case 'Code generation completeness':
             recommendations.push('Complete code generation for all system components');
             break;

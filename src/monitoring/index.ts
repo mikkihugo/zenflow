@@ -1,8 +1,15 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-monitoring-index");
 /**
- * Claude-Zen Performance Monitoring System
- * Comprehensive real-time monitoring, analytics, and optimization
+ * @file monitoring module exports
+ */
+
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-monitoring-index');
+
+/**
+ * Claude-Zen Performance Monitoring System.
+ * Comprehensive real-time monitoring, analytics, and optimization.
  */
 
 export {
@@ -35,11 +42,11 @@ export {
 } from './optimization/optimization-engine';
 export * from './performance/real-time-monitor';
 
-import { type IntegrationConfig, SystemIntegration } from './integrations/system-integration';
 import { getConfig } from '../config';
+import { type IntegrationConfig, SystemIntegration } from './integrations/system-integration';
 
 /**
- * Main monitoring system factory
+ * Main monitoring system factory.
  *
  * @example
  */
@@ -61,35 +68,35 @@ export class PerformanceMonitoringSystem {
   }
 
   /**
-   * Start the complete monitoring system
+   * Start the complete monitoring system.
    */
   public async start(): Promise<void> {
     await this.integration.start();
   }
 
   /**
-   * Stop the monitoring system
+   * Stop the monitoring system.
    */
   public async stop(): Promise<void> {
     await this.integration.stop();
   }
 
   /**
-   * Get system integration hooks for external systems
+   * Get system integration hooks for external systems.
    */
   public getHooks(): import('./integrations/system-integration').SystemHooks {
     return this.integration.getSystemHooks();
   }
 
   /**
-   * Get current system status
+   * Get current system status.
    */
   public getStatus(): ReturnType<typeof this.integration.getSystemStatus> {
     return this.integration.getSystemStatus();
   }
 
   /**
-   * Get the underlying integration instance for advanced usage
+   * Get the underlying integration instance for advanced usage.
    */
   public getIntegration(): SystemIntegration {
     return this.integration;
@@ -97,7 +104,7 @@ export class PerformanceMonitoringSystem {
 }
 
 /**
- * Create and start a monitoring system with default configuration
+ * Create and start a monitoring system with default configuration.
  *
  * @param config
  */
@@ -110,7 +117,7 @@ export async function createMonitoringSystem(
 }
 
 /**
- * Quick setup function for Claude-Zen integration
+ * Quick setup function for Claude-Zen integration.
  *
  * @param options
  * @param options.dashboardPort
@@ -128,7 +135,8 @@ export async function setupClaudeZenMonitoring(
   const config: Partial<IntegrationConfig> = {
     dashboardPort: options?.dashboardPort || centralConfig?.monitoring?.dashboard?.port,
     enableOptimization: options?.enableOptimization !== false,
-    metricsInterval: options?.metricsInterval || centralConfig?.core?.performance?.metricsInterval || 1000,
+    metricsInterval:
+      options?.metricsInterval || centralConfig?.core?.performance?.metricsInterval || 1000,
     enableAlerts: true,
     logLevel: centralConfig?.core?.logger?.level as any,
   };
@@ -141,11 +149,11 @@ export async function setupClaudeZenMonitoring(
 }
 
 /**
- * Example usage and integration patterns
+ * Example usage and integration patterns.
  */
 export const examples = {
   /**
-   * Basic setup example
+   * Basic setup example.
    */
   basicSetup: async () => {
     const { system, hooks, dashboardUrl } = await setupClaudeZenMonitoring();
@@ -174,7 +182,7 @@ export const examples = {
   },
 
   /**
-   * Custom configuration example
+   * Custom configuration example.
    */
   customSetup: async () => {
     const system = new PerformanceMonitoringSystem({
@@ -200,7 +208,7 @@ export const examples = {
   },
 
   /**
-   * Production deployment example
+   * Production deployment example.
    */
   productionSetup: async () => {
     const centralConfig = getConfig();

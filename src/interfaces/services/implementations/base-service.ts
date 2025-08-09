@@ -1,12 +1,17 @@
 /**
- * Base Service Implementation
+ * Base Service Implementation.
  *
  * Abstract base class that provides common functionality for all service implementations.
  * Follows the same patterns established by the DAL and UACL systems.
  */
+/**
+ * @file base service implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../../../utils/logger';
+import { createLogger, type Logger } from '../utils/logger';
 import type {
   IService,
   ServiceConfig,
@@ -29,7 +34,7 @@ import {
 } from '../core/interfaces';
 
 /**
- * Abstract base service class with common functionality
+ * Abstract base service class with common functionality.
  *
  * @example
  */
@@ -53,8 +58,8 @@ export abstract class BaseService extends EventEmitter implements IService {
     this.logger = createLogger(`Service:${name}`);
 
     // Initialize dependencies
-    if (config.dependencies) {
-      config.dependencies.forEach((dep) => {
+    if (config?.dependencies) {
+      config?.dependencies?.forEach((dep) => {
         this.dependencies.set(dep.serviceName, dep);
       });
     }
@@ -65,32 +70,32 @@ export abstract class BaseService extends EventEmitter implements IService {
   // ============================================
 
   /**
-   * Perform service-specific initialization
-   * Must be implemented by concrete service classes
+   * Perform service-specific initialization.
+   * Must be implemented by concrete service classes.
    */
   protected abstract doInitialize(): Promise<void>;
 
   /**
-   * Perform service-specific startup
-   * Must be implemented by concrete service classes
+   * Perform service-specific startup.
+   * Must be implemented by concrete service classes.
    */
   protected abstract doStart(): Promise<void>;
 
   /**
-   * Perform service-specific shutdown
-   * Must be implemented by concrete service classes
+   * Perform service-specific shutdown.
+   * Must be implemented by concrete service classes.
    */
   protected abstract doStop(): Promise<void>;
 
   /**
-   * Perform service-specific cleanup
-   * Must be implemented by concrete service classes
+   * Perform service-specific cleanup.
+   * Must be implemented by concrete service classes.
    */
   protected abstract doDestroy(): Promise<void>;
 
   /**
-   * Perform service-specific health check
-   * Must be implemented by concrete service classes
+   * Perform service-specific health check.
+   * Must be implemented by concrete service classes.
    */
   protected abstract doHealthCheck(): Promise<boolean>;
 
@@ -359,9 +364,9 @@ export abstract class BaseService extends EventEmitter implements IService {
     this.config = newConfig;
 
     // Update dependencies if changed
-    if (config.dependencies) {
+    if (config?.dependencies) {
       this.dependencies.clear();
-      config.dependencies.forEach((dep) => {
+      config?.dependencies?.forEach((dep) => {
         this.dependencies.set(dep.serviceName, dep);
       });
     }
@@ -372,18 +377,18 @@ export abstract class BaseService extends EventEmitter implements IService {
   async validateConfig(config: ServiceConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config.name || !config.type) {
+      if (!config?.name || !config?.type) {
         return false;
       }
 
       // Validate timeout
-      if (config.timeout && config.timeout < 1000) {
+      if (config?.timeout && config?.timeout < 1000) {
         return false;
       }
 
       // Validate dependencies
-      if (config.dependencies) {
-        for (const dep of config.dependencies) {
+      if (config?.dependencies) {
+        for (const dep of config?.dependencies) {
           if (!dep.serviceName) {
             return false;
           }
@@ -522,7 +527,7 @@ export abstract class BaseService extends EventEmitter implements IService {
           this.logger.debug(`Checking dependency: ${depName}`);
 
           // Simulate dependency check with timeout
-          const _timeout = depConfig.timeout || 5000;
+          const _timeout = depConfig?.timeout || 5000;
           await new Promise((resolve) => setTimeout(resolve, Math.random() * 100));
 
           return { name: depName, available: true };
@@ -535,9 +540,9 @@ export abstract class BaseService extends EventEmitter implements IService {
 
     const results = await Promise.allSettled(dependencyChecks);
     const failedDependencies = results
-      .filter((result, _index) => {
-        if (result.status === 'fulfilled') {
-          return !result.value.available;
+      ?.filter((result, _index) => {
+        if (result?.status === 'fulfilled') {
+          return !result?.value?.available;
         }
         return true; // Consider rejected promises as failed dependencies
       })
@@ -587,8 +592,8 @@ export abstract class BaseService extends EventEmitter implements IService {
   // ============================================
 
   /**
-   * Execute service-specific operation
-   * Must be implemented by concrete service classes
+   * Execute service-specific operation.
+   * Must be implemented by concrete service classes.
    */
   protected abstract executeOperation<T = any>(
     operation: string,
@@ -597,7 +602,7 @@ export abstract class BaseService extends EventEmitter implements IService {
   ): Promise<T>;
 
   /**
-   * Create a service event
+   * Create a service event.
    *
    * @param type
    * @param data
@@ -614,7 +619,7 @@ export abstract class BaseService extends EventEmitter implements IService {
   }
 
   /**
-   * Record latency metric
+   * Record latency metric.
    *
    * @param latency
    */
@@ -628,7 +633,7 @@ export abstract class BaseService extends EventEmitter implements IService {
   }
 
   /**
-   * Add capability to service
+   * Add capability to service.
    *
    * @param capability
    */
@@ -640,7 +645,7 @@ export abstract class BaseService extends EventEmitter implements IService {
   }
 
   /**
-   * Remove capability from service
+   * Remove capability from service.
    *
    * @param capability
    */
@@ -653,7 +658,7 @@ export abstract class BaseService extends EventEmitter implements IService {
   }
 
   /**
-   * Execute operation with retries
+   * Execute operation with retries.
    *
    * @param operation
    * @param maxRetries

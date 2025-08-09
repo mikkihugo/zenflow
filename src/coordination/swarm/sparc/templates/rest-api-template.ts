@@ -4,6 +4,11 @@
  * Pre-built template for REST API systems with authentication,
  * validation, rate limiting, and comprehensive error handling.
  */
+/**
+ * @file Coordination system: rest-api-template
+ */
+
+
 
 import { nanoid } from 'nanoid';
 import type {
@@ -884,7 +889,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           {
             stepNumber: 1,
             description: 'Create audit entry object',
-            pseudocode: 'auditEntry ← { timestamp: CURRENT_TIME(), user: user.id, action: action, resource: request.path, method: request.method, ip: request.ip, userAgent: request.userAgent, requestId: request.id, responseStatus: response.status, duration: response.duration }',
+            pseudocode:
+              'auditEntry ← { timestamp: CURRENT_TIME(), user: user.id, action: action, resource: request.path, method: request.method, ip: request.ip, userAgent: request.userAgent, requestId: request.id, responseStatus: response.status, duration: response.duration }',
             complexity: 'O(1)',
           },
           {
@@ -924,7 +930,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         infrastructure: ['Docker', 'Nginx'],
         scalingApproach: 'vertical',
         containerization: true,
-        orchestration: 'docker-compose'
+        orchestration: 'docker-compose',
       };
     } else if (projectSpec.complexity === 'enterprise') {
       // Enhanced: Set microservices deployment for enterprise projects
@@ -933,7 +939,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         infrastructure: ['Kubernetes', 'Docker', 'Nginx', 'Load Balancer'],
         scalingApproach: 'horizontal',
         containerization: true,
-        orchestration: 'kubernetes'
+        orchestration: 'kubernetes',
       };
     } else {
       // Enhanced: Default hybrid approach for moderate complexity
@@ -942,7 +948,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         infrastructure: ['Docker', 'Nginx', 'Load Balancer'],
         scalingApproach: 'auto',
         containerization: true,
-        orchestration: 'docker-swarm'
+        orchestration: 'docker-swarm',
       };
     }
 

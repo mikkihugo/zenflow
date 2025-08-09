@@ -1,12 +1,20 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("interfaces-clients-validation");
 /**
- * UACL Integration Validation
+ * @file Interface implementation: validation
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-clients-validation');
+
+/**
+ * UACL Integration Validation.
  *
  * Validates that the UACL integration is complete and working correctly.
  * Tests all client types, factories, and integrations.
  */
 
+import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
 import {
   createCompatibleAPIClient,
   createCompatibleKnowledgeClient,
@@ -14,7 +22,6 @@ import {
   createCompatibleWebSocketClient,
 } from './compatibility';
 import { ClientType, UACLHelpers, uacl } from './index';
-import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
 
 export interface ValidationResult {
   component: string;
@@ -37,13 +44,13 @@ export interface ValidationReport {
 }
 
 /**
- * UACL Integration Validator
+ * UACL Integration Validator.
  *
  * @example
  */
 export class UACLValidator {
   /**
-   * Run complete UACL validation
+   * Run complete UACL validation.
    */
   async validateComplete(): Promise<ValidationReport> {
     const results: ValidationResult[] = [];
@@ -82,7 +89,7 @@ export class UACLValidator {
   }
 
   /**
-   * Validate core UACL functionality
+   * Validate core UACL functionality.
    */
   private async validateCore(): Promise<ValidationResult[]> {
     const results: ValidationResult[] = [];
@@ -139,7 +146,7 @@ export class UACLValidator {
   }
 
   /**
-   * Validate client factories
+   * Validate client factories.
    */
   private async validateFactories(): Promise<ValidationResult[]> {
     const results: ValidationResult[] = [];
@@ -175,7 +182,7 @@ export class UACLValidator {
   }
 
   /**
-   * Validate client creation
+   * Validate client creation.
    */
   private async validateClientCreation(): Promise<ValidationResult[]> {
     const results: ValidationResult[] = [];
@@ -204,10 +211,14 @@ export class UACLValidator {
 
     // Test WebSocket client creation
     try {
-      const wsClient = await uacl.createWebSocketClient('test-ws', getWebDashboardURL({ protocol: 'ws' as any }).replace(/^https?/, 'ws') + '/ws', {
-        enabled: false,
-        priority: 1,
-      });
+      const wsClient = await uacl.createWebSocketClient(
+        'test-ws',
+        getWebDashboardURL({ protocol: 'ws' as any }).replace(/^https?/, 'ws') + '/ws',
+        {
+          enabled: false,
+          priority: 1,
+        }
+      );
       results.push({
         component: 'WebSocket Client Creation',
         status: 'pass',
@@ -272,7 +283,7 @@ export class UACLValidator {
   }
 
   /**
-   * Validate backward compatibility
+   * Validate backward compatibility.
    */
   private async validateCompatibility(): Promise<ValidationResult[]> {
     const results: ValidationResult[] = [];
@@ -349,7 +360,7 @@ export class UACLValidator {
   }
 
   /**
-   * Validate system integrations
+   * Validate system integrations.
    */
   private async validateIntegrations(): Promise<ValidationResult[]> {
     const results: ValidationResult[] = [];
@@ -394,7 +405,7 @@ export class UACLValidator {
   }
 
   /**
-   * Generate human-readable report
+   * Generate human-readable report.
    *
    * @param report
    */
@@ -420,25 +431,25 @@ export class UACLValidator {
     // Group results by component
     const byComponent = new Map<string, ValidationResult[]>();
     for (const result of results) {
-      if (!byComponent.has(result.component)) {
-        byComponent.set(result.component, []);
+      if (!byComponent.has(result?.component)) {
+        byComponent.set(result?.component, []);
       }
-      byComponent.get(result.component)?.push(result);
+      byComponent.get(result?.component)?.push(result);
     }
 
     for (const [component, componentResults] of byComponent) {
       output += `### ${component}\n\n`;
 
       for (const result of componentResults) {
-        const icon = result.status === 'pass' ? '✅' : result.status === 'fail' ? '❌' : '⚠️';
-        output += `${icon} **${result.status.toUpperCase()}**: ${result.message}\n`;
+        const icon = result?.status === 'pass' ? '✅' : result?.status === 'fail' ? '❌' : '⚠️';
+        output += `${icon} **${result?.status?.toUpperCase()}**: ${result?.message}\n`;
 
-        if (result.error) {
-          output += `   - Error: ${result.error.message}\n`;
+        if (result?.error) {
+          output += `   - Error: ${result?.error?.message}\n`;
         }
 
-        if (result.details) {
-          output += `   - Details: ${JSON.stringify(result.details, null, 2)}\n`;
+        if (result?.details) {
+          output += `   - Details: ${JSON.stringify(result?.details, null, 2)}\n`;
         }
 
         output += '\n';
@@ -452,7 +463,7 @@ export class UACLValidator {
 }
 
 /**
- * Quick validation function for easy testing
+ * Quick validation function for easy testing.
  */
 export async function validateUACL(): Promise<ValidationReport> {
   const validator = new UACLValidator();
@@ -460,7 +471,7 @@ export async function validateUACL(): Promise<ValidationReport> {
 }
 
 /**
- * Print validation report to console
+ * Print validation report to console.
  */
 export async function printValidationReport(): Promise<void> {
   const validator = new UACLValidator();

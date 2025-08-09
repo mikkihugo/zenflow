@@ -1,11 +1,16 @@
 /**
- * Web Data Service - Business logic and data management
+ * Web Data Service - Business logic and data management.
  *
  * Handles all business logic for the web dashboard.
  * Provides data services for API endpoints with mock implementations.
  */
+/**
+ * @file web-data service implementation
+ */
 
-import { createLogger } from '../../utils/logger';
+
+
+import { createLogger } from '../utils/logger';
 
 export interface SystemStatusData {
   system: string;
@@ -60,7 +65,7 @@ export class WebDataService {
   private logger = createLogger('WebData');
 
   /**
-   * Get comprehensive system status
+   * Get comprehensive system status.
    */
   async getSystemStatus(): Promise<SystemStatusData> {
     this.logger.debug('Retrieving system status');
@@ -80,7 +85,7 @@ export class WebDataService {
   }
 
   /**
-   * Get all swarms
+   * Get all swarms.
    */
   async getSwarms(): Promise<SwarmData[]> {
     this.logger.debug('Retrieving swarms');
@@ -106,7 +111,7 @@ export class WebDataService {
   }
 
   /**
-   * Create new swarm
+   * Create new swarm.
    *
    * @param config
    */
@@ -115,9 +120,9 @@ export class WebDataService {
 
     const swarm: SwarmData = {
       id: `swarm-${Date.now()}`,
-      name: config.name || 'New Swarm',
+      name: config?.name || 'New Swarm',
       status: 'initializing',
-      agents: config.agents || 4,
+      agents: config?.agents || 4,
       tasks: 0,
       progress: 0,
       createdAt: new Date().toISOString(),
@@ -130,7 +135,7 @@ export class WebDataService {
   }
 
   /**
-   * Get all tasks
+   * Get all tasks.
    */
   async getTasks(): Promise<TaskData[]> {
     this.logger.debug('Retrieving tasks');
@@ -156,7 +161,7 @@ export class WebDataService {
   }
 
   /**
-   * Create new task
+   * Create new task.
    *
    * @param config
    */
@@ -165,11 +170,11 @@ export class WebDataService {
 
     const task: TaskData = {
       id: `task-${Date.now()}`,
-      title: config.title || 'New Task',
+      title: config?.title || 'New Task',
       status: 'pending',
       assignedAgents: [],
       progress: 0,
-      eta: config.eta || '30m',
+      eta: config?.eta || '30m',
       createdAt: new Date().toISOString(),
     };
 
@@ -180,7 +185,7 @@ export class WebDataService {
   }
 
   /**
-   * Get all documents
+   * Get all documents.
    */
   async getDocuments(): Promise<DocumentData[]> {
     this.logger.debug('Retrieving documents');
@@ -204,7 +209,7 @@ export class WebDataService {
   }
 
   /**
-   * Execute command
+   * Execute command.
    *
    * @param command
    * @param args
@@ -225,7 +230,7 @@ export class WebDataService {
   }
 
   /**
-   * Get service statistics
+   * Get service statistics.
    */
   getServiceStats(): {
     requestsServed: number;

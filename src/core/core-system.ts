@@ -11,7 +11,7 @@
  * - **WorkflowEngine**: Document workflow processing (Vision → ADRs → PRDs → Epics → Features → Tasks → Code)
  * - **DocumentProcessor**: Unified document processing (consolidates file-based and database-driven)
  * - **ExportManager**: Data export in multiple formats
- * - **DocumentationManager**: Documentation indexing and linking
+ * - **DocumentationManager**: Documentation indexing and linking.
  * - **InterfaceManager**: Multi-interface support (CLI, TUI, Web).
  *
  * ## Key Improvements
@@ -65,6 +65,11 @@
  * ```
  * @since 2.0.0-clean-architecture
  */
+/**
+ * @file core-system implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { DocumentProcessor } from './document-processor';

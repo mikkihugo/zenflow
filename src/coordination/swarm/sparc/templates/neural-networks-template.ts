@@ -4,6 +4,11 @@
  * Pre-built template for neural network systems with WASM acceleration,
  * training algorithms, and model management.
  */
+/**
+ * @file Coordination system: neural-networks-template
+ */
+
+
 
 import { nanoid } from 'nanoid';
 import type {
@@ -1057,16 +1062,24 @@ END
         infrastructure: ['Docker', 'WASM Runtime', 'GPU Support'],
         scalingApproach: 'vertical',
         containerization: true,
-        orchestration: 'docker-compose'
+        orchestration: 'docker-compose',
       };
     } else if (projectSpec.complexity === 'enterprise') {
       // Enhanced: Set enterprise deployment for neural networks with advanced infrastructure
       customized.deploymentStrategy = {
         type: 'microservices',
-        infrastructure: ['Kubernetes', 'Docker', 'GPU Cluster', 'WASM Runtime', 'Service Mesh', 'Enterprise Security', 'Compliance Monitoring'],
+        infrastructure: [
+          'Kubernetes',
+          'Docker',
+          'GPU Cluster',
+          'WASM Runtime',
+          'Service Mesh',
+          'Enterprise Security',
+          'Compliance Monitoring',
+        ],
         scalingApproach: 'horizontal',
         containerization: true,
-        orchestration: 'kubernetes'
+        orchestration: 'kubernetes',
       };
     } else {
       // Enhanced: Default hybrid approach for neural networks
@@ -1075,7 +1088,7 @@ END
         infrastructure: ['Docker', 'GPU Support', 'WASM Runtime', 'Load Balancer'],
         scalingApproach: 'auto',
         containerization: true,
-        orchestration: 'docker-swarm'
+        orchestration: 'docker-swarm',
       };
     }
 

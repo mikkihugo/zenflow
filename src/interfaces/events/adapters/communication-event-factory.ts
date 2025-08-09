@@ -1,15 +1,20 @@
 /**
- * UEL Communication Event Factory
+ * UEL Communication Event Factory.
  *
- * Factory implementation for creating and managing Communication Event Adapters
+ * Factory implementation for creating and managing Communication Event Adapters.
  * following the exact same patterns as system and coordination event factories.
  *
- * Provides centralized management, health monitoring, and metrics collection
+ * Provides centralized management, health monitoring, and metrics collection.
  * for all communication event adapters in the UEL system.
  */
+/**
+ * @file Interface implementation: communication-event-factory
+ */
+
+
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../../../core/logger';
+import { createLogger, type Logger } from '../core/logger';
 import type {
   EventManagerMetrics,
   EventManagerStatus,
@@ -22,7 +27,7 @@ import {
 } from './communication-event-adapter';
 
 /**
- * Communication Event Manager Factory
+ * Communication Event Manager Factory.
  *
  * Manages the lifecycle of communication event adapters, providing:
  * - Centralized creation and configuration management
@@ -49,20 +54,20 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Create new communication event adapter instance
+   * Create new communication event adapter instance.
    *
    * @param config
    */
   async create(config: CommunicationEventAdapterConfig): Promise<CommunicationEventAdapter> {
     try {
-      this.logger.info(`Creating communication event adapter: ${config.name}`);
+      this.logger.info(`Creating communication event adapter: ${config?.name}`);
 
       // Validate configuration
       this.validateConfig(config);
 
       // Check for duplicate names
-      if (this.adapters.has(config.name)) {
-        throw new Error(`Communication event adapter with name '${config.name}' already exists`);
+      if (this.adapters.has(config?.name)) {
+        throw new Error(`Communication event adapter with name '${config?.name}' already exists`);
       }
 
       // Create adapter instance
@@ -75,23 +80,23 @@ export class CommunicationEventFactory
       await adapter.start();
 
       // Store in registry
-      this.adapters.set(config.name, adapter);
+      this.adapters.set(config?.name, adapter);
       this.totalCreated++;
 
-      this.logger.info(`Communication event adapter created successfully: ${config.name}`);
-      this.emit('adapter-created', { name: config.name, adapter });
+      this.logger.info(`Communication event adapter created successfully: ${config?.name}`);
+      this.emit('adapter-created', { name: config?.name, adapter });
 
       return adapter;
     } catch (error) {
       this.totalErrors++;
-      this.logger.error(`Failed to create communication event adapter '${config.name}':`, error);
-      this.emit('adapter-creation-failed', { name: config.name, error });
+      this.logger.error(`Failed to create communication event adapter '${config?.name}':`, error);
+      this.emit('adapter-creation-failed', { name: config?.name, error });
       throw error;
     }
   }
 
   /**
-   * Create multiple communication event adapters
+   * Create multiple communication event adapters.
    *
    * @param configs
    */
@@ -110,7 +115,7 @@ export class CommunicationEventFactory
         results.push(adapter);
         return adapter;
       } catch (error) {
-        errors.push({ name: config.name, error: error as Error });
+        errors.push({ name: config?.name, error: error as Error });
         return null;
       }
     });
@@ -132,7 +137,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Get communication event adapter by name
+   * Get communication event adapter by name.
    *
    * @param name
    */
@@ -141,14 +146,14 @@ export class CommunicationEventFactory
   }
 
   /**
-   * List all communication event adapters
+   * List all communication event adapters.
    */
   list(): CommunicationEventAdapter[] {
     return Array.from(this.adapters.values());
   }
 
   /**
-   * Check if communication event adapter exists
+   * Check if communication event adapter exists.
    *
    * @param name
    */
@@ -157,7 +162,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Remove communication event adapter by name
+   * Remove communication event adapter by name.
    *
    * @param name
    */
@@ -191,7 +196,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Health check all communication event adapters
+   * Health check all communication event adapters.
    */
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
     this.logger.debug('Performing health check on all communication event adapters');
@@ -203,10 +208,10 @@ export class CommunicationEventFactory
       const healthPromise = (async () => {
         try {
           const status = await adapter.healthCheck();
-          results.set(name, status);
+          results?.set(name, status);
         } catch (error) {
           this.logger.warn(`Health check failed for communication event adapter '${name}':`, error);
-          results.set(name, {
+          results?.set(name, {
             name,
             type: adapter.type,
             status: 'unhealthy',
@@ -232,7 +237,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Get metrics for all communication event adapters
+   * Get metrics for all communication event adapters.
    */
   async getMetricsAll(): Promise<Map<string, EventManagerMetrics>> {
     this.logger.debug('Collecting metrics from all communication event adapters');
@@ -244,14 +249,14 @@ export class CommunicationEventFactory
       const metricsPromise = (async () => {
         try {
           const metrics = await adapter.getMetrics();
-          results.set(name, metrics);
+          results?.set(name, metrics);
         } catch (error) {
           this.logger.warn(
             `Metrics collection failed for communication event adapter '${name}':`,
             error
           );
           // Create default error metrics
-          results.set(name, {
+          results?.set(name, {
             name,
             type: adapter.type,
             eventsProcessed: 0,
@@ -279,7 +284,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Start all communication event adapters
+   * Start all communication event adapters.
    */
   async startAll(): Promise<void> {
     this.logger.info(`Starting ${this.adapters.size} communication event adapters`);
@@ -314,7 +319,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Stop all communication event adapters
+   * Stop all communication event adapters.
    */
   async stopAll(): Promise<void> {
     this.logger.info(`Stopping ${this.adapters.size} communication event adapters`);
@@ -349,7 +354,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Shutdown factory and all communication event adapters
+   * Shutdown factory and all communication event adapters.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down Communication Event Factory');
@@ -385,14 +390,14 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Get active adapter count
+   * Get active adapter count.
    */
   getActiveCount(): number {
     return this.adapters.size;
   }
 
   /**
-   * Get factory metrics
+   * Get factory metrics.
    */
   getFactoryMetrics() {
     const uptime = Date.now() - this.startTime.getTime();
@@ -411,7 +416,7 @@ export class CommunicationEventFactory
   // ============================================
 
   /**
-   * Create communication event adapter with WebSocket focus
+   * Create communication event adapter with WebSocket focus.
    *
    * @param name
    * @param config
@@ -439,7 +444,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Create communication event adapter with MCP focus
+   * Create communication event adapter with MCP focus.
    *
    * @param name
    * @param config
@@ -468,7 +473,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Create communication event adapter with HTTP focus
+   * Create communication event adapter with HTTP focus.
    *
    * @param name
    * @param config
@@ -495,7 +500,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Create communication event adapter with protocol management focus
+   * Create communication event adapter with protocol management focus.
    *
    * @param name
    * @param config
@@ -526,7 +531,7 @@ export class CommunicationEventFactory
    * Create comprehensive communication event adapter (all communication types)
    *
    * @param name
-   * @param config
+   * @param config.
    */
   async createComprehensiveAdapter(
     name: string,
@@ -544,7 +549,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Get communication health summary for all adapters
+   * Get communication health summary for all adapters.
    */
   async getCommunicationHealthSummary(): Promise<{
     totalAdapters: number;
@@ -562,7 +567,7 @@ export class CommunicationEventFactory
     const connectionHealth: Record<string, any> = {};
     const protocolHealth: Record<string, any> = {};
 
-    for (const [name, status] of healthResults.entries()) {
+    for (const [name, status] of healthResults?.entries()) {
       switch (status.status) {
         case 'healthy':
           healthyCount++;
@@ -598,7 +603,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Get communication metrics summary for all adapters
+   * Get communication metrics summary for all adapters.
    */
   async getCommunicationMetricsSummary(): Promise<{
     totalEvents: number;
@@ -619,7 +624,7 @@ export class CommunicationEventFactory
     const connectionMetrics: Record<string, any> = {};
     const protocolMetrics: Record<string, any> = {};
 
-    for (const [name, metrics] of metricsResults.entries()) {
+    for (const [name, metrics] of metricsResults?.entries()) {
       totalEvents += metrics.eventsProcessed;
       successfulEvents += metrics.eventsEmitted;
       failedEvents += metrics.eventsFailed;
@@ -654,7 +659,7 @@ export class CommunicationEventFactory
   }
 
   /**
-   * Configure all adapters with new settings
+   * Configure all adapters with new settings.
    *
    * @param configUpdates
    */
@@ -690,25 +695,25 @@ export class CommunicationEventFactory
   // ============================================
 
   /**
-   * Validate communication event adapter configuration
+   * Validate communication event adapter configuration.
    *
    * @param config
    */
   private validateConfig(config: CommunicationEventAdapterConfig): void {
-    if (!config.name || typeof config.name !== 'string') {
+    if (!config?.name || typeof config?.name !== 'string') {
       throw new Error('Communication event adapter configuration must have a valid name');
     }
 
-    if (!config.type || config.type !== 'communication') {
+    if (!config?.type || config?.type !== 'communication') {
       throw new Error('Communication event adapter configuration must have type "communication"');
     }
 
     // Validate at least one communication type is enabled
     const communicationTypes = [
-      config.websocketCommunication?.enabled,
-      config.mcpProtocol?.enabled,
-      config.httpCommunication?.enabled,
-      config.protocolCommunication?.enabled,
+      config?.websocketCommunication?.enabled,
+      config?.mcpProtocol?.enabled,
+      config?.httpCommunication?.enabled,
+      config?.protocolCommunication?.enabled,
     ];
 
     if (!communicationTypes.some((enabled) => enabled === true)) {
@@ -716,36 +721,36 @@ export class CommunicationEventFactory
     }
 
     // Validate processing strategy
-    if (config.processing?.strategy) {
+    if (config?.processing?.strategy) {
       const validStrategies = ['immediate', 'queued', 'batched', 'throttled'];
-      if (!validStrategies.includes(config.processing.strategy)) {
-        throw new Error(`Invalid processing strategy: ${config.processing.strategy}`);
+      if (!validStrategies.includes(config?.processing?.strategy)) {
+        throw new Error(`Invalid processing strategy: ${config?.processing?.strategy}`);
       }
     }
 
     // Validate retry configuration
-    if (config.retry) {
-      if (config.retry.attempts && config.retry.attempts < 0) {
+    if (config?.retry) {
+      if (config?.retry?.attempts && config?.retry?.attempts < 0) {
         throw new Error('Retry attempts must be non-negative');
       }
-      if (config.retry.delay && config.retry.delay < 0) {
+      if (config?.retry?.delay && config?.retry?.delay < 0) {
         throw new Error('Retry delay must be non-negative');
       }
     }
 
     // Validate health configuration
-    if (config.health) {
-      if (config.health.checkInterval && config.health.checkInterval < 1000) {
+    if (config?.health) {
+      if (config?.health?.checkInterval && config?.health?.checkInterval < 1000) {
         throw new Error('Health check interval must be at least 1000ms');
       }
-      if (config.health.timeout && config.health.timeout < 100) {
+      if (config?.health?.timeout && config?.health?.timeout < 100) {
         throw new Error('Health check timeout must be at least 100ms');
       }
     }
   }
 
   /**
-   * Set up event forwarding from adapter to factory
+   * Set up event forwarding from adapter to factory.
    *
    * @param adapter
    */
@@ -774,12 +779,12 @@ export class CommunicationEventFactory
 }
 
 /**
- * Global communication event factory instance
+ * Global communication event factory instance.
  */
 export const communicationEventFactory = new CommunicationEventFactory();
 
 /**
- * Convenience functions for creating communication event adapters
+ * Convenience functions for creating communication event adapters.
  *
  * @param config
  */

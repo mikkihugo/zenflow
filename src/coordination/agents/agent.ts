@@ -1,7 +1,14 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("coordination-agents-agent");
 /**
- * Agent implementation and wrappers
+ * @file Coordination system: agent
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-agents-agent');
+
+/**
+ * Agent implementation and wrappers.
  */
 
 import type {
@@ -15,7 +22,7 @@ import type {
   Message,
   MessageType,
   Task,
-} from '../../types/agent-types';
+} from '../types/agent-types';
 import { generateId, getDefaultCognitiveProfile } from '../swarm/core/utils';
 
 export class BaseAgent implements Agent {
@@ -40,12 +47,12 @@ export class BaseAgent implements Agent {
   }
 
   constructor(config: AgentConfig) {
-    this.id = config.id || generateId('agent');
-    this.type = config.type;
+    this.id = config?.id || generateId('agent');
+    this.type = config?.type;
     this.config = {
       ...config,
       id: this.id,
-      cognitiveProfile: config.cognitiveProfile || getDefaultCognitiveProfile(config.type),
+      cognitiveProfile: config?.cognitiveProfile || getDefaultCognitiveProfile(config?.type),
     };
 
     // Initialize metrics
@@ -69,8 +76,8 @@ export class BaseAgent implements Agent {
 
     this.state = {
       id: this.id as any, // Temporarily cast to any for AgentId compatibility
-      name: config.name || `Agent-${this.id}`,
-      type: config.type,
+      name: config?.name || `Agent-${this.id}`,
+      type: config?.type,
       status: 'idle',
       capabilities: {
         codeGeneration: true,
@@ -93,7 +100,7 @@ export class BaseAgent implements Agent {
         reliability: 0.95,
         speed: 0.8,
         quality: 0.9,
-        ...config.capabilities,
+        ...config?.capabilities,
       },
       metrics: this.metrics,
       workload: 0,
@@ -259,7 +266,7 @@ export class BaseAgent implements Agent {
       };
 
       this.metrics.tasksCompleted++;
-      this.updatePerformanceMetrics(true, result.executionTime);
+      this.updatePerformanceMetrics(true, result?.executionTime);
       return result;
     } catch (error) {
       this.metrics.tasksFailed++;
@@ -302,7 +309,7 @@ export class BaseAgent implements Agent {
 }
 
 /**
- * Specialized agent for research tasks
+ * Specialized agent for research tasks.
  *
  * @example
  */
@@ -337,7 +344,7 @@ export class ResearcherAgent extends BaseAgent {
 }
 
 /**
- * Specialized agent for coding tasks
+ * Specialized agent for coding tasks.
  *
  * @example
  */
@@ -375,7 +382,7 @@ export class CoderAgent extends BaseAgent {
 }
 
 /**
- * Specialized agent for analysis tasks
+ * Specialized agent for analysis tasks.
  *
  * @example
  */
@@ -407,12 +414,12 @@ export class AnalystAgent extends BaseAgent {
 }
 
 /**
- * Factory function to create specialized agents
+ * Factory function to create specialized agents.
  *
  * @param config
  */
 export function createAgent(config: AgentConfig): Agent {
-  switch (config.type) {
+  switch (config?.type) {
     case 'researcher':
       return new ResearcherAgent(config);
     case 'coder':
@@ -425,7 +432,7 @@ export function createAgent(config: AgentConfig): Agent {
 }
 
 /**
- * Agent pool for managing multiple agents
+ * Agent pool for managing multiple agents.
  *
  * @example
  */
@@ -470,7 +477,7 @@ export class AgentPool {
     }
 
     if (selectedAgent?.id) {
-      this.availableAgents.delete(selectedAgent.id);
+      this.availableAgents.delete(selectedAgent?.id);
     }
 
     return selectedAgent;

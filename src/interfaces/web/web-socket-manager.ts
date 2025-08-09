@@ -1,12 +1,17 @@
 /**
- * WebSocket Manager - Real-time communication system
+ * WebSocket Manager - Real-time communication system.
  *
  * Handles WebSocket connections, real-time data broadcasting,
  * and client event management for the web dashboard.
  */
+/**
+ * @file web-socket management system
+ */
+
+
 
 import type { Server as SocketIOServer } from 'socket.io';
-import { createLogger } from '../../utils/logger';
+import { createLogger } from '../utils/logger';
 import type { WebConfig } from './web-config';
 import type { WebDataService } from './web-data-service';
 
@@ -30,7 +35,7 @@ export class WebSocketManager {
   }
 
   /**
-   * Setup WebSocket event handlers
+   * Setup WebSocket event handlers.
    */
   setupWebSocket(): void {
     if (!this.config.realTime) {
@@ -83,7 +88,7 @@ export class WebSocketManager {
   }
 
   /**
-   * Send initial data for a specific channel
+   * Send initial data for a specific channel.
    *
    * @param socket
    * @param channel
@@ -115,7 +120,7 @@ export class WebSocketManager {
   }
 
   /**
-   * Start broadcasting real-time data updates
+   * Start broadcasting real-time data updates.
    */
   private startDataBroadcast(): void {
     // System status updates every 5 seconds
@@ -155,7 +160,7 @@ export class WebSocketManager {
   }
 
   /**
-   * Broadcast message to all connected clients
+   * Broadcast message to all connected clients.
    *
    * @param event
    * @param data
@@ -174,7 +179,7 @@ export class WebSocketManager {
   }
 
   /**
-   * Broadcast to specific room/channel
+   * Broadcast to specific room/channel.
    *
    * @param room
    * @param event
@@ -194,7 +199,7 @@ export class WebSocketManager {
   }
 
   /**
-   * Get connected client statistics
+   * Get connected client statistics.
    */
   getConnectionStats(): {
     totalConnections: number;
@@ -215,7 +220,7 @@ export class WebSocketManager {
   }
 
   /**
-   * Stop all broadcasting intervals
+   * Stop all broadcasting intervals.
    */
   stopBroadcasting(): void {
     this.broadcastIntervals.forEach((interval) => clearInterval(interval));
@@ -224,7 +229,7 @@ export class WebSocketManager {
   }
 
   /**
-   * Shutdown WebSocket manager
+   * Shutdown WebSocket manager.
    */
   shutdown(): void {
     this.stopBroadcasting();

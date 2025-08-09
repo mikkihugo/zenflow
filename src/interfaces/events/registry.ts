@@ -1,5 +1,5 @@
 /**
- * UEL (Unified Event Layer) - Event Registry System
+ * UEL (Unified Event Layer) - Event Registry System.
  *
  * Central registry for managing all event types, factories, and lifecycle management.
  * Provides type-safe event registration, discovery, and health monitoring.
@@ -7,9 +7,9 @@
  * @file Event Registry Implementation following UACL/USL patterns
  */
 
-import type { ILogger } from '../../core/interfaces/base-interfaces';
-import { inject, injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS } from '../../di/tokens/core-tokens';
+import type { ILogger } from '../core/interfaces/base-interfaces';
+import { inject, injectable } from '../di/decorators/injectable';
+import { CORE_TOKENS } from '../di/tokens/core-tokens';
 import type {
   EventManagerConfig,
   EventManagerMetrics,
@@ -24,7 +24,7 @@ import { EventManagerTypes } from './core/interfaces';
 import { EventCategories, EventPriorityMap } from './types';
 
 /**
- * Registry entry for managing event manager instances and their lifecycle
+ * Registry entry for managing event manager instances and their lifecycle.
  *
  * Tracks the complete lifecycle and usage statistics of registered event managers.
  *
@@ -97,7 +97,7 @@ export interface EventRegistryEntry {
 }
 
 /**
- * Event type registry for managing event type configurations
+ * Event type registry for managing event type configurations.
  *
  * @example
  */
@@ -134,7 +134,7 @@ export interface EventTypeRegistry {
 }
 
 /**
- * Factory registry for managing event manager factories
+ * Factory registry for managing event manager factories.
  *
  * @example
  */
@@ -166,7 +166,7 @@ export interface FactoryRegistry {
 }
 
 /**
- * Health monitoring configuration
+ * Health monitoring configuration.
  *
  * @example
  */
@@ -191,7 +191,7 @@ export interface HealthMonitoringConfig {
 }
 
 /**
- * Event discovery configuration
+ * Event discovery configuration.
  *
  * @example
  */
@@ -210,9 +210,9 @@ export interface EventDiscoveryConfig {
 }
 
 /**
- * Main event registry implementation for centralized event manager management
+ * Main event registry implementation for centralized event manager management.
  *
- * Provides centralized registration, discovery, and lifecycle management of event managers
+ * Provides centralized registration, discovery, and lifecycle management of event managers.
  * and their factories. Includes health monitoring, metrics collection, and event broadcasting.
  *
  * @class EventRegistry
@@ -271,7 +271,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Initialize the registry system
+   * Initialize the registry system.
    *
    * Sets up health monitoring, event discovery, and registers default event types.
    *
@@ -309,11 +309,11 @@ export class EventRegistry implements IEventManagerRegistry {
 
     // Apply configuration overrides
     if (config?.healthMonitoring) {
-      this.healthMonitoring = { ...this.healthMonitoring, ...config.healthMonitoring };
+      this.healthMonitoring = { ...this.healthMonitoring, ...config?.healthMonitoring };
     }
 
     if (config?.discovery) {
-      this.discoveryConfig = { ...this.discoveryConfig, ...config.discovery };
+      this.discoveryConfig = { ...this.discoveryConfig, ...config?.discovery };
     }
 
     // Register default event types
@@ -334,7 +334,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Register an event manager factory for a specific type
+   * Register an event manager factory for a specific type.
    *
    * Registers a factory that can create event managers of the specified type.
    * Updates the factory registry with metadata and usage tracking.
@@ -376,7 +376,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Get factory for event manager type
+   * Get factory for event manager type.
    */
   getFactory<T extends EventManagerConfig>(
     type: EventManagerType
@@ -394,14 +394,14 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * List all registered factory types
+   * List all registered factory types.
    */
   listFactoryTypes(): EventManagerType[] {
     return Array.from(this.factories.keys());
   }
 
   /**
-   * Register an event manager instance with the registry
+   * Register an event manager instance with the registry.
    *
    * Creates a registry entry to track the manager's lifecycle, usage, and health.
    *
@@ -448,18 +448,18 @@ export class EventRegistry implements IEventManagerRegistry {
     this.eventManagers.set(name, entry);
 
     // Update factory usage statistics
-    if (this.factoryRegistry[config.type]) {
-      const registry = this.factoryRegistry[config.type];
+    if (this.factoryRegistry[config?.type]) {
+      const registry = this.factoryRegistry[config?.type];
       if (registry) {
         registry.usage.managersCreated++;
       }
     }
 
-    this.logger.info(`📝 Registered event manager: ${name} (${config.type})`);
+    this.logger.info(`📝 Registered event manager: ${name} (${config?.type})`);
   }
 
   /**
-   * Find event manager by name
+   * Find event manager by name.
    */
   findEventManager(name: string): IEventManager | undefined {
     const entry = this.eventManagers.get(name);
@@ -474,7 +474,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Get all event managers
+   * Get all event managers.
    */
   getAllEventManagers(): Map<string, IEventManager> {
     const managers = new Map<string, IEventManager>();
@@ -489,7 +489,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Get event managers by type
+   * Get event managers by type.
    */
   getEventManagersByType(type: EventManagerType): IEventManager[] {
     const managers: IEventManager[] = [];
@@ -506,7 +506,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Get event managers by status
+   * Get event managers by status.
    */
   getEventManagersByStatus(status: EventRegistryEntry['status']): IEventManager[] {
     const managers: IEventManager[] = [];
@@ -521,7 +521,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Register event type for discovery and validation
+   * Register event type for discovery and validation.
    */
   registerEventType(
     eventType: string,
@@ -535,11 +535,11 @@ export class EventRegistry implements IEventManagerRegistry {
   ): void {
     this.eventTypes[eventType] = {
       type: eventType,
-      category: config.category,
-      priority: config.priority || EventPriorityMap.medium || 2,
-      schema: config.schema,
-      managerTypes: config.managerTypes,
-      config: config.options || {},
+      category: config?.category,
+      priority: config?.priority || EventPriorityMap.medium || 2,
+      schema: config?.schema,
+      managerTypes: config?.managerTypes,
+      config: config?.options || {},
       registered: new Date(),
       usage: {
         totalEmissions: 0,
@@ -552,21 +552,21 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Get registered event types
+   * Get registered event types.
    */
   getEventTypes(): string[] {
     return Object.keys(this.eventTypes);
   }
 
   /**
-   * Get event type configuration
+   * Get event type configuration.
    */
   getEventTypeConfig(eventType: string): EventTypeRegistry[string] | undefined {
     return this.eventTypes[eventType];
   }
 
   /**
-   * Perform health check on all event managers
+   * Perform health check on all event managers.
    */
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
     const results = new Map<string, EventManagerStatus>();
@@ -575,11 +575,11 @@ export class EventRegistry implements IEventManagerRegistry {
     for (const [name, entry] of this.eventManagers) {
       const healthPromise = this.performHealthCheck(name, entry)
         .then((status) => {
-          results.set(name, status);
+          results?.set(name, status);
         })
         .catch((error) => {
           this.logger.error(`❌ Health check failed for ${name}:`, error);
-          results.set(name, {
+          results?.set(name, {
             name: entry.manager.name,
             type: entry.manager.type,
             status: 'unhealthy',
@@ -600,7 +600,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Get global metrics across all event managers
+   * Get global metrics across all event managers.
    */
   async getGlobalMetrics(): Promise<{
     totalManagers: number;
@@ -628,7 +628,7 @@ export class EventRegistry implements IEventManagerRegistry {
     });
 
     const allMetrics = (await Promise.allSettled(metricsPromises))
-      .filter((result) => result.status === 'fulfilled' && result.value !== null)
+      .filter((result) => result?.status === 'fulfilled' && result?.value !== null)
       .map((result) => (result as PromiseFulfilledResult<EventManagerMetrics>).value);
 
     // Calculate aggregate metrics
@@ -678,7 +678,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Broadcast event to all event managers
+   * Broadcast event to all event managers.
    */
   async broadcast<T extends SystemEvent>(event: T): Promise<void> {
     const broadcastPromises: Promise<void>[] = [];
@@ -703,7 +703,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Broadcast event to specific event manager type
+   * Broadcast event to specific event manager type.
    */
   async broadcastToType<T extends SystemEvent>(type: EventManagerType, event: T): Promise<void> {
     const managers = this.getEventManagersByType(type);
@@ -717,7 +717,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Shutdown all event managers
+   * Shutdown all event managers.
    */
   async shutdownAll(): Promise<void> {
     this.logger.info('🔄 Shutting down all event managers...');
@@ -749,7 +749,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Get registry statistics
+   * Get registry statistics.
    */
   getRegistryStats(): {
     totalManagers: number;
@@ -785,7 +785,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Export registry configuration
+   * Export registry configuration.
    */
   exportConfig(): {
     eventTypes: EventTypeRegistry;
@@ -816,7 +816,7 @@ export class EventRegistry implements IEventManagerRegistry {
   }
 
   /**
-   * Private methods for internal operations
+   * Private methods for internal operations.
    */
 
   private async performHealthCheck(

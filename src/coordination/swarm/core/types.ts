@@ -1,12 +1,17 @@
 /**
- * Core types and interfaces for ZenSwarm
+ * Core types and interfaces for ZenSwarm.
  */
+/**
+ * @file TypeScript type definitions for coordination
+ */
+
+
 
 import type {
   AgentType,
   Agent as BaseAgent,
   AgentConfig as BaseAgentConfig,
-} from '../../../types/agent-types';
+} from '../types/agent-types';
 
 export interface SwarmOptions {
   topology?: SwarmTopology;
@@ -32,7 +37,7 @@ export type SwarmTopology = 'mesh' | 'hierarchical' | 'distributed' | 'centraliz
 export type SwarmLifecycleState = 'initializing' | 'active' | 'terminated';
 
 // Re-export from main agent types for compatibility
-export type { AgentType } from '../../../types/agent-types';
+export type { AgentType } from '../types/agent-types';
 
 export interface AgentConfig extends Partial<BaseAgentConfig> {
   id: string;

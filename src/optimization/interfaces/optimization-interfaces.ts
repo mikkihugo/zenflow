@@ -1,9 +1,14 @@
 /**
- * Performance Optimization Interfaces
- * Core interfaces for all performance optimization components
+ * Performance Optimization Interfaces.
+ * Core interfaces for all performance optimization components.
  */
 
 // Neural Network Performance Optimization Interface
+/**
+ * @file Interface implementation: optimization-interfaces
+ */
+
+
 export interface NeuralOptimizer {
   optimizeTrainingSpeed(network: NeuralNetwork): Promise<OptimizationResult>;
   implementBatchProcessing(trainer: NetworkTrainer): Promise<BatchConfig>;

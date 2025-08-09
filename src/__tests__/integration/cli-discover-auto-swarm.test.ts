@@ -57,14 +57,14 @@ describe('CLI Discover Auto-Swarm Integration', () => {
     };
 
     const calculateResourceConstraints = () => {
-      const baseCpuLimit = Math.min(8, Math.max(2, mockConfidenceResult.domains.size * 2));
+      const baseCpuLimit = Math.min(8, Math.max(2, mockConfidenceResult?.domains.size * 2));
       const baseMemoryLimit =
-        mockConfidenceResult.domains.size < 3
+        mockConfidenceResult?.domains.size < 3
           ? '2GB'
-          : mockConfidenceResult.domains.size < 6
+          : mockConfidenceResult?.domains.size < 6
             ? '4GB'
             : '8GB';
-      const baseMaxAgents = Math.min(10 * mockConfidenceResult.domains.size, 50);
+      const baseMaxAgents = Math.min(10 * mockConfidenceResult?.domains.size, 50);
 
       return {
         maxTotalAgents: baseMaxAgents,
@@ -98,11 +98,11 @@ describe('CLI Discover Auto-Swarm Integration', () => {
     swarmFactory.on('factory:complete', (event) => events.push({ type: 'complete', ...event }));
 
     // Create swarms for domains
-    const swarmConfigs = await swarmFactory.createSwarmsForDomains(mockConfidenceResult.domains);
+    const swarmConfigs = await swarmFactory.createSwarmsForDomains(mockConfidenceResult?.domains);
 
     // Verify results
     expect(swarmConfigs).toHaveLength(1);
-    expect(swarmConfigs[0].domain).toBe('test-domain');
+    expect(swarmConfigs?.[0]?.domain).toBe('test-domain');
 
     // Verify events were fired
     expect(events.some((e) => e.type === 'start')).toBe(true);
@@ -133,16 +133,16 @@ describe('CLI Discover Auto-Swarm Integration', () => {
     try {
       const status = swarmCoordinator.getStatus();
       const verificationResult = {
-        swarmId: mockConfig.id,
-        name: mockConfig.name,
+        swarmId: mockConfig?.id,
+        name: mockConfig?.name,
         healthy: status.state !== 'error',
         agentCount: status.agentCount,
         uptime: status.uptime,
       };
 
       expect(verificationResult).toBeDefined();
-      expect(verificationResult.swarmId).toBe('test-swarm-123');
-      expect(typeof verificationResult.healthy).toBe('boolean');
+      expect(verificationResult?.swarmId).toBe('test-swarm-123');
+      expect(typeof verificationResult?.healthy).toBe('boolean');
     } catch (error) {
       // Health check may fail in test environment, but should handle gracefully
       expect(error).toBeDefined();

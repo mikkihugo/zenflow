@@ -1,10 +1,17 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-clients-adapters-mcp-client-demo");
 /**
- * MCP Client Adapter Demonstration
+ * @file Interface implementation: mcp-client-demo
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-clients-adapters-mcp-client-demo');
+
+/**
+ * MCP Client Adapter Demonstration.
  *
  * Shows how to use the UACL MCP adapter to convert existing MCP clients
- * and provides examples of both stdio and HTTP protocol usage
+ * and provides examples of both stdio and HTTP protocol usage.
  */
 
 import {
@@ -15,7 +22,7 @@ import {
 } from './mcp-client-adapter.js';
 
 /**
- * Example: Convert existing external MCP client setup to UACL
+ * Example: Convert existing external MCP client setup to UACL.
  */
 export async function demonstrateMCPClientConversion() {
   // 1. Create UACL MCP clients from existing configurations
@@ -74,7 +81,7 @@ export async function demonstrateMCPClientConversion() {
 
     // Execute tools (POST request - mapped to tool execution)
     if (Array.isArray(httpTools.data) && httpTools.data.length > 0) {
-      const toolName = httpTools.data[0].name;
+      const toolName = httpTools.data[0]?.name;
 
       const _result = await httpClient.post(toolName, {
         query: 'test research query',
@@ -82,7 +89,7 @@ export async function demonstrateMCPClientConversion() {
     }
 
     if (Array.isArray(stdioTools.data) && stdioTools.data.length > 0) {
-      const toolName = stdioTools.data[0].name;
+      const toolName = stdioTools.data[0]?.name;
 
       const _result = await stdioClient.post(toolName, {
         path: './test-file.txt',
@@ -114,7 +121,7 @@ export async function demonstrateMCPClientConversion() {
 }
 
 /**
- * Example: Migrate from legacy ExternalMCPClient to UACL
+ * Example: Migrate from legacy ExternalMCPClient to UACL.
  */
 export async function migrateLegacyMCPClient() {
   // Legacy configuration (from existing external-mcp-client.ts)
@@ -172,7 +179,7 @@ export async function migrateLegacyMCPClient() {
 }
 
 /**
- * Example: Usage patterns for different MCP protocols
+ * Example: Usage patterns for different MCP protocols.
  */
 export async function demonstrateProtocolPatterns() {
   const factory = new MCPClientFactory();

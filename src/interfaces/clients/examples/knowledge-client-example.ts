@@ -1,7 +1,7 @@
 /**
- * UACL Knowledge Client Example
+ * UACL Knowledge Client Example.
  *
- * Demonstrates how to use the unified Knowledge Client Adapter
+ * Demonstrates how to use the unified Knowledge Client Adapter.
  * with FACT integration through the UACL interface.
  *
  * This example shows:
@@ -10,7 +10,13 @@
  * - Using helper methods for common tasks
  * - Monitoring client health and metrics
  */
+/**
+ * @file Interface implementation: knowledge-client-example.
+ */
 
+
+
+import { getConfig } from '../config';
 import {
   createFACTClient,
   type KnowledgeClientAdapter,
@@ -18,12 +24,10 @@ import {
   type KnowledgeRequest,
   type KnowledgeResponse,
 } from '../adapters/knowledge-client-adapter';
-
 import { UACLFactory } from '../factories';
-import { getConfig } from '../../../config';
 
 /**
- * Example 1: Create FACT-based Knowledge Client using convenience function
+ * Example 1: Create FACT-based Knowledge Client using convenience function.
  */
 export async function example1_CreateFACTClient(): Promise<void> {
   try {
@@ -32,10 +36,10 @@ export async function example1_CreateFACTClient(): Promise<void> {
       './FACT', // FACT repository path
       (() => {
         const config = getConfig();
-        if (!config.services.anthropic.apiKey) {
+        if (!config?.services?.anthropic?.apiKey) {
           throw new Error('Anthropic API key is required for knowledge client');
         }
-        return config.services.anthropic.apiKey;
+        return config?.services?.anthropic?.apiKey;
       })(),
       {
         caching: {
@@ -70,7 +74,7 @@ export async function example1_CreateFACTClient(): Promise<void> {
 }
 
 /**
- * Example 2: Create Knowledge Client using UACL Factory
+ * Example 2: Create Knowledge Client using UACL Factory.
  */
 export async function example2_CreateWithFactory(): Promise<void> {
   try {
@@ -87,10 +91,10 @@ export async function example2_CreateWithFactory(): Promise<void> {
         factRepoPath: './FACT',
         anthropicApiKey: (() => {
           const config = getConfig();
-          if (!config.services.anthropic.apiKey) {
+          if (!config?.services?.anthropic?.apiKey) {
             throw new Error('Anthropic API key is required for knowledge client');
           }
-          return config.services.anthropic.apiKey;
+          return config?.services?.anthropic?.apiKey;
         })(),
         pythonPath: 'python3',
       },
@@ -116,7 +120,7 @@ export async function example2_CreateWithFactory(): Promise<void> {
 }
 
 /**
- * Example 3: Perform Knowledge Queries
+ * Example 3: Perform Knowledge Queries.
  */
 export async function example3_PerformQueries(): Promise<void> {
   try {
@@ -124,14 +128,14 @@ export async function example3_PerformQueries(): Promise<void> {
       './FACT',
       (() => {
         const config = getConfig();
-        if (!config.services.anthropic.apiKey) {
-          if (config.environment.isDevelopment) {
+        if (!config?.services?.anthropic?.apiKey) {
+          if (config?.environment?.isDevelopment) {
             console.warn('Using fallback API key for development');
             return 'test-key-development';
           }
           throw new Error('Anthropic API key is required');
         }
-        return config.services.anthropic.apiKey;
+        return config?.services?.anthropic?.apiKey;
       })()
     );
     await knowledgeClient.connect();
@@ -174,7 +178,7 @@ export async function example3_PerformQueries(): Promise<void> {
 }
 
 /**
- * Example 4: Using Knowledge Helper Functions
+ * Example 4: Using Knowledge Helper Functions.
  */
 export async function example4_UseHelpers(): Promise<void> {
   try {
@@ -182,14 +186,14 @@ export async function example4_UseHelpers(): Promise<void> {
       './FACT',
       (() => {
         const config = getConfig();
-        if (!config.services.anthropic.apiKey) {
-          if (config.environment.isDevelopment) {
+        if (!config?.services?.anthropic?.apiKey) {
+          if (config?.environment?.isDevelopment) {
             console.warn('Using fallback API key for development');
             return 'test-key-development';
           }
           throw new Error('Anthropic API key is required');
         }
-        return config.services.anthropic.apiKey;
+        return config?.services?.anthropic?.apiKey;
       })()
     );
     await knowledgeClient.connect();
@@ -212,7 +216,7 @@ export async function example4_UseHelpers(): Promise<void> {
 }
 
 /**
- * Example 5: Monitor Client Performance and Health
+ * Example 5: Monitor Client Performance and Health.
  */
 export async function example5_MonitorPerformance(): Promise<void> {
   try {
@@ -220,14 +224,14 @@ export async function example5_MonitorPerformance(): Promise<void> {
       './FACT',
       (() => {
         const config = getConfig();
-        if (!config.services.anthropic.apiKey) {
-          if (config.environment.isDevelopment) {
+        if (!config?.services?.anthropic?.apiKey) {
+          if (config?.environment?.isDevelopment) {
             console.warn('Using fallback API key for development');
             return 'test-key-development';
           }
           throw new Error('Anthropic API key is required');
         }
-        return config.services.anthropic.apiKey;
+        return config?.services?.anthropic?.apiKey;
       })()
     );
     await knowledgeClient.connect();
@@ -260,7 +264,7 @@ export async function example5_MonitorPerformance(): Promise<void> {
 }
 
 /**
- * Example 6: Error Handling and Resilience
+ * Example 6: Error Handling and Resilience.
  */
 export async function example6_ErrorHandling(): Promise<void> {
   try {
@@ -289,7 +293,7 @@ export async function example6_ErrorHandling(): Promise<void> {
 }
 
 /**
- * Run all examples
+ * Run all examples.
  */
 export async function runAllExamples(): Promise<void> {
   const examples = [
@@ -311,7 +315,7 @@ export async function runAllExamples(): Promise<void> {
 }
 
 /**
- * CLI entry point
+ * CLI entry point.
  */
 if (require.main === module) {
   runAllExamples().catch(console.error);

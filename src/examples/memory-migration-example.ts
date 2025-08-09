@@ -1,4 +1,14 @@
-import { extractErrorMessage, isMemoryError, isMemoryNotFound, isMemorySuccess } from '../utils/type-guards';
+/**
+ * @file memory-migration-example implementation
+ */
+
+
+import {
+  extractErrorMessage,
+  isMemoryError,
+  isMemoryNotFound,
+  isMemorySuccess,
+} from '../utils/type-guards';
 
 // ============================================
 // BEFORE: Unsafe Memory Operations
@@ -260,7 +270,7 @@ class SafeMemoryService {
   // ============================================
 
   /**
-   * Enhanced retrieve method that returns MemoryResult
+   * Enhanced retrieve method that returns MemoryResult.
    *
    * @param namespace
    * @param key
@@ -297,7 +307,7 @@ class SafeMemoryService {
   }
 
   /**
-   * Enhanced store method that returns MemoryResult
+   * Enhanced store method that returns MemoryResult.
    *
    * @param namespace
    * @param key
@@ -372,7 +382,7 @@ interface UserSettings {
 // ============================================
 
 /**
- * Example showing the difference in usage patterns
+ * Example showing the difference in usage patterns.
  */
 export async function demonstrateMigration(): Promise<void> {
   // Mock store for demonstration
@@ -446,6 +456,6 @@ export async function demonstrateMigration(): Promise<void> {
 }
 
 /**
- * Performance comparison between unsafe and safe approaches
+ * Performance comparison between unsafe and safe approaches.
  */
 export async function performanceComparison(): Promise<void> {}

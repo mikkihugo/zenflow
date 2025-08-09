@@ -1,15 +1,20 @@
 /**
- * USL Integration Service Factory
+ * USL Integration Service Factory.
  *
- * Factory for creating and managing IntegrationServiceAdapter instances
+ * Factory for creating and managing IntegrationServiceAdapter instances.
  * with predefined configurations for different integration scenarios.
- * Provides convenience methods for Architecture Storage, Safe API, and
+ * Provides convenience methods for Architecture Storage, Safe API, and.
  * Protocol Management integration patterns.
  */
+/**
+ * @file Interface implementation: integration-service-factory
+ */
 
-import { createLogger, type Logger } from '../../../utils/logger';
+
+
+import { createLogger, type Logger } from '../utils/logger';
+import { getMCPServerURL } from '../config/url-builder';
 import type { IService, IServiceFactory, ServiceConfig } from '../core/interfaces';
-import { getMCPServerURL } from '../../config/url-builder';
 
 import type { ServiceType } from '../types';
 import {
@@ -20,7 +25,7 @@ import {
 } from './integration-service-adapter';
 
 /**
- * Integration Service Factory Options for different integration patterns
+ * Integration Service Factory Options for different integration patterns.
  *
  * @example
  */
@@ -51,10 +56,10 @@ export interface IntegrationServiceFactoryOptions {
 }
 
 /**
- * Integration Service Factory
+ * Integration Service Factory.
  *
  * Creates specialized IntegrationServiceAdapter instances for different
- * integration patterns including Architecture Storage, Safe API, and
+ * integration patterns including Architecture Storage, Safe API, and.
  * Protocol Management scenarios.
  *
  * @example
@@ -90,15 +95,15 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * IServiceFactory implementation - create service from configuration
+   * IServiceFactory implementation - create service from configuration.
    *
    * @param config
    */
   async create(config: ServiceConfig): Promise<IService> {
-    this.logger.info(`Creating integration service: ${config.name}`);
+    this.logger.info(`Creating integration service: ${config?.name}`);
 
-    if (!this.canHandle(config.type)) {
-      throw new Error(`IntegrationServiceFactory cannot handle service type: ${config.type}`);
+    if (!this.canHandle(config?.type)) {
+      throw new Error(`IntegrationServiceFactory cannot handle service type: ${config?.type}`);
     }
 
     // Convert ServiceConfig to IntegrationServiceAdapterConfig
@@ -107,14 +112,14 @@ export class IntegrationServiceFactory implements IServiceFactory {
     const adapter = createIntegrationServiceAdapter(adapterConfig);
     await adapter.initialize();
 
-    this.createdServices.set(config.name, adapter);
-    this.logger.info(`Integration service created successfully: ${config.name}`);
+    this.createdServices.set(config?.name, adapter);
+    this.logger.info(`Integration service created successfully: ${config?.name}`);
 
     return adapter;
   }
 
   /**
-   * Check if factory can handle the given service type
+   * Check if factory can handle the given service type.
    *
    * @param type
    */
@@ -131,14 +136,14 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * Get supported service types
+   * Get supported service types.
    */
   getSupportedTypes(): (ServiceType | string)[] {
     return ['api', 'safe-api', 'architecture-storage', 'integration'];
   }
 
   /**
-   * Create Architecture Storage integration adapter
+   * Create Architecture Storage integration adapter.
    *
    * @param name
    * @param databaseType
@@ -190,7 +195,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * Create Safe API integration adapter
+   * Create Safe API integration adapter.
    *
    * @param name
    * @param baseURL
@@ -254,7 +259,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * Create Protocol Management integration adapter
+   * Create Protocol Management integration adapter.
    *
    * @param name
    * @param supportedProtocols
@@ -329,7 +334,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
    * Create unified integration adapter (all features enabled)
    *
    * @param name
-   * @param options
+   * @param options.
    */
   async createUnifiedIntegrationAdapter(
     name: string,
@@ -435,7 +440,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
    *
    * @param name
    * @param baseURL
-   * @param options
+   * @param options.
    */
   async createWebDataIntegrationAdapter(
     name: string,
@@ -516,7 +521,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
    *
    * @param name
    * @param databaseType
-   * @param options
+   * @param options.
    */
   async createDocumentIntegrationAdapter(
     name: string,
@@ -580,14 +585,14 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * Get all created services
+   * Get all created services.
    */
   getCreatedServices(): Map<string, IntegrationServiceAdapter> {
     return new Map(this.createdServices);
   }
 
   /**
-   * Get service by name
+   * Get service by name.
    *
    * @param name
    */
@@ -596,7 +601,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * Check if service exists
+   * Check if service exists.
    *
    * @param name
    */
@@ -605,7 +610,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * Remove service from tracking
+   * Remove service from tracking.
    *
    * @param name
    */
@@ -626,7 +631,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * Get factory statistics
+   * Get factory statistics.
    */
   getFactoryStats(): {
     totalCreatedServices: number;
@@ -653,7 +658,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * Shutdown all created services
+   * Shutdown all created services.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down IntegrationServiceFactory');
@@ -672,53 +677,53 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * Convert ServiceConfig to IntegrationServiceAdapterConfig
+   * Convert ServiceConfig to IntegrationServiceAdapterConfig.
    *
    * @param config
    */
   private convertToAdapterConfig(config: ServiceConfig): IntegrationServiceAdapterConfig {
     // Start with default configuration
-    const adapterConfig = createDefaultIntegrationServiceAdapterConfig(config.name);
+    const adapterConfig = createDefaultIntegrationServiceAdapterConfig(config?.name);
 
     // Apply common ServiceConfig properties
-    adapterConfig.enabled = config.enabled ?? true;
-    adapterConfig.timeout = config.timeout ?? 30000;
+    adapterConfig.enabled = config?.enabled ?? true;
+    adapterConfig.timeout = config?.timeout ?? 30000;
 
     // Apply health configuration if present
-    if (config.health) {
-      adapterConfig.health = { ...adapterConfig.health, ...config.health };
+    if (config?.health) {
+      adapterConfig.health = { ...adapterConfig?.health, ...config?.health };
     }
 
     // Apply monitoring configuration if present
-    if (config.monitoring) {
-      adapterConfig.monitoring = { ...adapterConfig.monitoring, ...config.monitoring };
+    if (config?.monitoring) {
+      adapterConfig.monitoring = { ...adapterConfig?.monitoring, ...config?.monitoring };
     }
 
     // Apply global factory settings
     if (this.options.enableGlobalCaching !== undefined) {
       adapterConfig.cache = {
-        ...adapterConfig.cache,
+        ...adapterConfig?.cache,
         enabled: this.options.enableGlobalCaching,
       };
     }
 
     if (this.options.enableGlobalMetrics !== undefined) {
       adapterConfig.performance = {
-        ...adapterConfig.performance,
+        ...adapterConfig?.performance,
         enableMetricsCollection: this.options.enableGlobalMetrics,
       };
     }
 
     if (this.options.defaultRetrySettings) {
       adapterConfig.retry = {
-        ...adapterConfig.retry,
+        ...adapterConfig?.retry,
         ...this.options.defaultRetrySettings,
       };
     }
 
     if (this.options.defaultSecuritySettings) {
       adapterConfig.security = {
-        ...adapterConfig.security,
+        ...adapterConfig?.security,
         ...this.options.defaultSecuritySettings,
       };
     }
@@ -728,16 +733,16 @@ export class IntegrationServiceFactory implements IServiceFactory {
 }
 
 /**
- * Global integration service factory instance
+ * Global integration service factory instance.
  */
 export const integrationServiceFactory = new IntegrationServiceFactory();
 
 /**
- * Convenience functions for creating integration services
+ * Convenience functions for creating integration services.
  */
 export const IntegrationServiceHelpers = {
   /**
-   * Create architecture storage service
+   * Create architecture storage service.
    *
    * @param name
    * @param databaseType
@@ -750,7 +755,7 @@ export const IntegrationServiceHelpers = {
   },
 
   /**
-   * Create safe API service
+   * Create safe API service.
    *
    * @param name
    * @param baseURL
@@ -760,7 +765,7 @@ export const IntegrationServiceHelpers = {
   },
 
   /**
-   * Create protocol management service
+   * Create protocol management service.
    *
    * @param name
    * @param protocols
@@ -773,7 +778,7 @@ export const IntegrationServiceHelpers = {
   },
 
   /**
-   * Create unified integration service
+   * Create unified integration service.
    *
    * @param name
    * @param options
@@ -793,7 +798,7 @@ export const IntegrationServiceHelpers = {
   },
 
   /**
-   * Create web data integration service
+   * Create web data integration service.
    *
    * @param name
    * @param baseURL
@@ -806,7 +811,7 @@ export const IntegrationServiceHelpers = {
   },
 
   /**
-   * Create document integration service
+   * Create document integration service.
    *
    * @param name
    * @param databaseType

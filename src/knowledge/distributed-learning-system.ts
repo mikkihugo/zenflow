@@ -1,6 +1,6 @@
 /**
- * Distributed Learning System for Claude-Zen
- * Implements federated learning, cross-agent experience sharing, and collective model improvement
+ * Distributed Learning System for Claude-Zen.
+ * Implements federated learning, cross-agent experience sharing, and collective model improvement.
  *
  * Architecture: Multi-agent collaborative learning with privacy preservation
  * - Federated Learning: Decentralized model training across agents
@@ -9,11 +9,18 @@
  * - Transfer Learning: Cross-domain knowledge transfer between specialized agents
  * - Collective Memory: Shared learning experiences and meta-learning patterns
  */
+/**
+ * @file distributed-learning-system implementation.
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { PerformanceMetrics } from '../types/performance-types';
 
 /**
- * Federated Learning Implementation
+ * Federated Learning Implementation.
  *
  * @example
  */
@@ -100,7 +107,7 @@ export type PrivacyLevel =
   | 'zero-knowledge';
 
 /**
- * Experience Aggregation System
+ * Experience Aggregation System.
  *
  * @example
  */
@@ -169,7 +176,7 @@ export type PatternType =
   | 'behavioral-pattern';
 
 /**
- * Model Synchronization System
+ * Model Synchronization System.
  *
  * @example
  */
@@ -232,7 +239,7 @@ export type SyncTrigger =
   | 'manual-trigger';
 
 /**
- * Transfer Learning System
+ * Transfer Learning System.
  *
  * @example
  */
@@ -294,7 +301,7 @@ export type AdaptationStrategy =
   | 'gradual-domain-adaptation';
 
 /**
- * Collective Memory Management
+ * Collective Memory Management.
  *
  * @example
  */
@@ -349,7 +356,7 @@ export type ConsolidationTrigger =
   | 'pattern-emergence';
 
 /**
- * Main Distributed Learning System
+ * Main Distributed Learning System.
  *
  * @example
  */
@@ -382,7 +389,7 @@ export class DistributedLearningSystem extends EventEmitter {
   }
 
   /**
-   * Initialize all learning components
+   * Initialize all learning components.
    */
   private initializeComponents(): void {
     this.federatedLearning = new FederatedLearningCoordinator(
@@ -419,7 +426,7 @@ export class DistributedLearningSystem extends EventEmitter {
   }
 
   /**
-   * Set up component integrations
+   * Set up component integrations.
    */
   private setupIntegrations(): void {
     // Federated Learning -> Experience Aggregation
@@ -448,7 +455,7 @@ export class DistributedLearningSystem extends EventEmitter {
   }
 
   /**
-   * Coordinate federated learning round
+   * Coordinate federated learning round.
    *
    * @param participants
    * @param globalModel
@@ -521,7 +528,7 @@ export class DistributedLearningSystem extends EventEmitter {
   }
 
   /**
-   * Aggregate collective experiences from agents
+   * Aggregate collective experiences from agents.
    *
    * @param experiences
    */
@@ -578,7 +585,7 @@ export class DistributedLearningSystem extends EventEmitter {
   }
 
   /**
-   * Synchronize models across agent swarm
+   * Synchronize models across agent swarm.
    *
    * @param models
    * @param synchronizationStrategy
@@ -637,7 +644,7 @@ export class DistributedLearningSystem extends EventEmitter {
   }
 
   /**
-   * Facilitate cross-domain knowledge transfer
+   * Facilitate cross-domain knowledge transfer.
    *
    * @param sourceDomain
    * @param targetDomain
@@ -712,7 +719,7 @@ export class DistributedLearningSystem extends EventEmitter {
   }
 
   /**
-   * Get comprehensive learning system metrics
+   * Get comprehensive learning system metrics.
    */
   async getMetrics(): Promise<DistributedLearningMetrics> {
     return {
@@ -751,7 +758,7 @@ export class DistributedLearningSystem extends EventEmitter {
   }
 
   /**
-   * Shutdown learning system gracefully
+   * Shutdown learning system gracefully.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down distributed learning system...');
@@ -807,7 +814,7 @@ export class DistributedLearningSystem extends EventEmitter {
 }
 
 /**
- * Configuration and result interfaces
+ * Configuration and result interfaces.
  *
  * @example
  */

@@ -3,6 +3,11 @@
  * Provides adaptive batch sizing, connection pooling and reuse,
  * message deduplication and caching, real-time performance monitoring
  */
+/**
+ * @file Coordination system: performance-optimizer
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '@core/event-bus';
@@ -202,7 +207,7 @@ export interface DeduplicationEntry {
   accessCount: number;
 }
 
-// Prediction types
+// Prediction types.
 export interface PredictionModel {
   predict(features: number[]): number;
   train(features: number[][], labels: number[]): void;
@@ -218,7 +223,7 @@ export interface LoadPrediction {
 }
 
 /**
- * Advanced Performance Optimizer with ML-based adaptation
+ * Advanced Performance Optimizer with ML-based adaptation.
  *
  * @example
  */
@@ -240,12 +245,12 @@ export class PerformanceOptimizer extends EventEmitter {
   ) {
     super();
 
-    this.batchProcessor = new AdaptiveBatchProcessor(config.batchSizing, logger);
-    this.connectionPool = new AdvancedConnectionPool(config.connectionPooling, logger);
-    this.cache = new IntelligentCache(config.caching, logger);
-    this.monitor = new RealTimeMonitor(config.monitoring, logger, eventBus);
+    this.batchProcessor = new AdaptiveBatchProcessor(config?.batchSizing, logger);
+    this.connectionPool = new AdvancedConnectionPool(config?.connectionPooling, logger);
+    this.cache = new IntelligentCache(config?.caching, logger);
+    this.monitor = new RealTimeMonitor(config?.monitoring, logger, eventBus);
     this.predictor = new PerformancePredictor(logger);
-    this.optimizer = new AdaptationEngine(config.adaptation, logger);
+    this.optimizer = new AdaptationEngine(config?.adaptation, logger);
 
     this.metrics = this.initializeMetrics();
     this.setupEventHandlers();
@@ -287,7 +292,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Process items with adaptive batching
+   * Process items with adaptive batching.
    *
    * @param items
    * @param processor
@@ -297,14 +302,14 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Get optimized connection from pool
+   * Get optimized connection from pool.
    */
   async getConnection(): Promise<PooledConnection> {
     return await this.connectionPool.acquire();
   }
 
   /**
-   * Release connection back to pool
+   * Release connection back to pool.
    *
    * @param connection
    */
@@ -313,7 +318,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Cache data with intelligent policies
+   * Cache data with intelligent policies.
    *
    * @param key
    * @param value
@@ -330,7 +335,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Retrieve from cache with automatic optimization
+   * Retrieve from cache with automatic optimization.
    *
    * @param key
    */
@@ -339,7 +344,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Deduplicate operations
+   * Deduplicate operations.
    *
    * @param operation
    * @param key
@@ -349,21 +354,21 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Get current performance metrics
+   * Get current performance metrics.
    */
   getMetrics(): PerformanceMetrics {
     return { ...this.metrics };
   }
 
   /**
-   * Get optimization recommendations
+   * Get optimization recommendations.
    */
   async getOptimizationRecommendations(): Promise<OptimizationRecommendation[]> {
     return await this.optimizer.getRecommendations(this.metrics, this.optimizationHistory);
   }
 
   /**
-   * Apply optimization settings
+   * Apply optimization settings.
    *
    * @param optimizations
    */
@@ -374,7 +379,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Predict future load and performance
+   * Predict future load and performance.
    *
    * @param horizon
    */
@@ -383,7 +388,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Get optimization status
+   * Get optimization status.
    */
   getOptimizationStatus(): {
     isOptimizing: boolean;
@@ -394,7 +399,7 @@ export class PerformanceOptimizer extends EventEmitter {
   } {
     const lastItem = this.optimizationHistory[this.optimizationHistory.length - 1];
     const lastOptimization =
-      this.optimizationHistory.length > 0 && lastItem ? lastItem.timestamp : new Date(0);
+      this.optimizationHistory.length > 0 && lastItem ? lastItem?.timestamp : new Date(0);
 
     const improvements = this.optimizationHistory
       .filter((action) => action.impact > 0)
@@ -531,13 +536,14 @@ export class PerformanceOptimizer extends EventEmitter {
 
     // Calculate improvement based on key metrics
     const latencyImprovement =
-      (baselineMetrics.latency.average - currentMetrics.latency.average) /
+      (baselineMetrics.latency.average - currentMetrics?.latency?.average) /
       baselineMetrics.latency.average;
     const throughputImprovement =
-      (currentMetrics.throughput.requestsPerSecond - baselineMetrics.throughput.requestsPerSecond) /
+      (currentMetrics?.throughput?.requestsPerSecond -
+        baselineMetrics.throughput.requestsPerSecond) /
       baselineMetrics.throughput.requestsPerSecond;
     const resourceImprovement =
-      (baselineMetrics.resourceUsage.cpuUsage - currentMetrics.resourceUsage.cpuUsage) /
+      (baselineMetrics.resourceUsage.cpuUsage - currentMetrics?.resourceUsage?.cpuUsage) /
       baselineMetrics.resourceUsage.cpuUsage;
 
     // Weighted average of improvements
@@ -575,7 +581,7 @@ export class PerformanceOptimizer extends EventEmitter {
 
   // Event handlers
   private handleMetricsUpdate(data: any): void {
-    this.metrics = { ...this.metrics, ...data.metrics };
+    this.metrics = { ...this.metrics, ...data?.metrics };
     this.emit('metrics:updated', this.metrics);
   }
 
@@ -772,7 +778,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
     private logger: ILogger
   ) {
     super();
-    this.currentBatchSize = config.initialSize;
+    this.currentBatchSize = config?.initialSize;
   }
 
   async process<T>(items: T[], processor: (batch: T[]) => Promise<void>): Promise<void> {
@@ -1111,8 +1117,8 @@ class IntelligentCache extends EventEmitter {
 
     // Logger is available for future use
     this.cache = new LRUCache({
-      max: config.maxSize,
-      ttl: config.ttl,
+      max: config?.maxSize,
+      ttl: config?.ttl,
       dispose: (value: any, key: string) => {
         this.handleEviction(key, value);
       },

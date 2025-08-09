@@ -1,7 +1,7 @@
 /**
  * HTTP Client Adapter for UACL (Unified API Client Layer)
  *
- * Converts existing HTTP APIClient to UACL architecture while maintaining
+ * Converts existing HTTP APIClient to UACL architecture while maintaining.
  * backward compatibility and adding enterprise-grade features.
  *
  * @file HTTP client adapter implementing the UACL IClient interface
@@ -20,7 +20,7 @@
  * - OAuth token refresh automation
  * - Circuit breaker pattern for fault tolerance
  * @example
- * ```typescript
+ * ```typescript.
  * import { HTTPClientAdapter } from './http-client-adapter';
  * import type { HTTPClientConfig } from './http-types';
  *
@@ -106,7 +106,7 @@ import {
 import type { HTTPClientCapabilities, HTTPClientConfig, OAuthCredentials } from './http-types';
 
 /**
- * HTTP Client Adapter implementing UACL IClient interface
+ * HTTP Client Adapter implementing UACL IClient interface.
  *
  * @class HTTPClientAdapter
  * @augments EventEmitter
@@ -247,7 +247,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   private startTime = Date.now();
 
   /**
-   * Create new HTTP Client Adapter instance
+   * Create new HTTP Client Adapter instance.
    *
    * @param {HTTPClientConfig} config - HTTP client configuration
    * @param {string} config.name - Unique client identifier
@@ -273,23 +273,23 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   constructor(config: HTTPClientConfig) {
     super();
     this.config = { ...config };
-    this.name = config.name;
+    this.name = config?.name;
     this.http = this.createHttpClient();
     this.metrics = this.initializeMetrics();
 
     // Setup monitoring if enabled
-    if (config.monitoring?.enabled) {
+    if (config?.monitoring?.enabled) {
       this.startMonitoring();
     }
 
     // Setup health checks
-    if (config.health) {
+    if (config?.health) {
       this.startHealthChecks();
     }
   }
 
   /**
-   * Create configured Axios instance with UACL patterns
+   * Create configured Axios instance with UACL patterns.
    */
   private createHttpClient(): AxiosInstance {
     const client = axios.create({
@@ -325,7 +325,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Setup authentication based on configuration
+   * Setup authentication based on configuration.
    */
   private setupAuthentication(client: AxiosInstance): void {
     const auth = this.config.authentication;
@@ -371,7 +371,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Setup OAuth token management
+   * Setup OAuth token management.
    */
   private setupOAuthInterceptor(client: AxiosInstance): void {
     const auth = this.config.authentication;
@@ -380,8 +380,8 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
     client.interceptors.request.use(async (config) => {
       const token = await this.getValidOAuthToken(auth.credentials!);
       if (token) {
-        config.headers = config.headers || {};
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers = config?.headers || {};
+        config?.headers.Authorization = `Bearer ${token}`;
       }
       return config;
     });
@@ -391,7 +391,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
    * Get valid OAuth token (refresh if needed)
    */
   private async getValidOAuthToken(credentials: OAuthCredentials): Promise<string | null> {
-    // Check if current token is still valid
+    // Check if current token is still valid.
     if (credentials.accessToken && credentials.expiresAt && credentials.expiresAt > new Date()) {
       return credentials.accessToken;
     }
@@ -406,9 +406,9 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
           client_secret: credentials.clientSecret,
         });
 
-        credentials.accessToken = response.data.access_token;
-        credentials.refreshToken = response.data.refresh_token || credentials.refreshToken;
-        credentials.expiresAt = new Date(Date.now() + response.data.expires_in * 1000);
+        credentials.accessToken = response?.data?.access_token;
+        credentials.refreshToken = response?.data?.refresh_token || credentials.refreshToken;
+        credentials.expiresAt = new Date(Date.now() + response?.data?.expires_in * 1000);
 
         return credentials.accessToken;
       } catch (error) {
@@ -421,7 +421,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Setup retry logic with UACL patterns
+   * Setup retry logic with UACL patterns.
    */
   private setupRetryLogic(client: AxiosInstance): void {
     const retryConfig = this.config.retry;
@@ -432,20 +432,20 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
       async (error: AxiosError) => {
         const config = error.config as any;
 
-        if (!config || config.__retryCount >= retryConfig.attempts) {
-          this.emit('error', new RetryExhaustedError(this.name, retryConfig.attempts, error));
+        if (!config || config?.__retryCount >= retryConfig?.attempts) {
+          this.emit('error', new RetryExhaustedError(this.name, retryConfig?.attempts, error));
           return Promise.reject(error);
         }
 
-        config.__retryCount = (config.__retryCount || 0) + 1;
+        config.__retryCount = (config?.__retryCount || 0) + 1;
 
         // Check retry conditions
         if (this.shouldRetry(error, retryConfig)) {
-          const delay = this.calculateRetryDelay(config.__retryCount, retryConfig);
+          const delay = this.calculateRetryDelay(config?.__retryCount, retryConfig);
           await new Promise((resolve) => setTimeout(resolve, delay));
 
           this.emit('retry', {
-            attempt: config.__retryCount,
+            attempt: config?.__retryCount,
             error: error.message,
             delay,
           });
@@ -459,12 +459,12 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Determine if request should be retried
+   * Determine if request should be retried.
    */
   private shouldRetry(error: AxiosError, retryConfig: any): boolean {
     // Use custom retry condition if provided
-    if (retryConfig.retryCondition) {
-      return retryConfig.retryCondition(error);
+    if (retryConfig?.retryCondition) {
+      return retryConfig?.retryCondition(error);
     }
 
     // Default retry logic
@@ -474,21 +474,21 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
     }
 
     const status = error.response.status;
-    const retryStatusCodes = retryConfig.retryStatusCodes || [408, 429, 500, 502, 503, 504];
+    const retryStatusCodes = retryConfig?.retryStatusCodes || [408, 429, 500, 502, 503, 504];
 
     return retryStatusCodes.includes(status);
   }
 
   /**
-   * Calculate retry delay with backoff strategy
+   * Calculate retry delay with backoff strategy.
    */
   private calculateRetryDelay(attempt: number, retryConfig: any): number {
-    const baseDelay = retryConfig.delay || 1000;
-    const maxDelay = retryConfig.maxDelay || 30000;
+    const baseDelay = retryConfig?.delay || 1000;
+    const maxDelay = retryConfig?.maxDelay || 30000;
 
     let delay: number;
 
-    switch (retryConfig.backoff) {
+    switch (retryConfig?.backoff) {
       case 'exponential':
         delay = baseDelay * 2 ** (attempt - 1);
         break;
@@ -504,7 +504,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Setup error handling with UACL error types
+   * Setup error handling with UACL error types.
    */
   private setupErrorHandling(client: AxiosInstance): void {
     client.interceptors.response.use(
@@ -537,7 +537,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Setup custom interceptors from configuration
+   * Setup custom interceptors from configuration.
    */
   private setupInterceptors(client: AxiosInstance): void {
     // Request interceptors
@@ -556,7 +556,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Setup metrics collection
+   * Setup metrics collection.
    */
   private setupMetricsCollection(client: AxiosInstance): void {
     client.interceptors.request.use((config) => {
@@ -567,7 +567,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
 
     client.interceptors.response.use(
       (response) => {
-        this.recordSuccess(response.config);
+        this.recordSuccess(response?.config);
         return response;
       },
       (error) => {
@@ -578,7 +578,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Record successful request metrics
+   * Record successful request metrics.
    */
   private recordSuccess(config: any): void {
     this.successCount++;
@@ -586,7 +586,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Record failed request metrics
+   * Record failed request metrics.
    */
   private recordError(config: any): void {
     this.errorCount++;
@@ -594,11 +594,11 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Record request latency
+   * Record request latency.
    */
   private recordLatency(config: any): void {
-    if (config.__startTime) {
-      const latency = Date.now() - config.__startTime;
+    if (config?.__startTime) {
+      const latency = Date.now() - config?.__startTime;
       this.latencySum += latency;
       this.latencies.push(latency);
 
@@ -610,7 +610,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Initialize metrics object
+   * Initialize metrics object.
    */
   private initializeMetrics(): ClientMetrics {
     return {
@@ -627,7 +627,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Start monitoring timers
+   * Start monitoring timers.
    */
   private startMonitoring(): void {
     const interval = this.config.monitoring?.metricsInterval || 60000;
@@ -638,7 +638,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Start health check timer
+   * Start health check timer.
    */
   private startHealthChecks(): void {
     const health = this.config.health!;
@@ -654,7 +654,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Update metrics calculations
+   * Update metrics calculations.
    */
   private updateMetrics(): void {
     const now = new Date();
@@ -674,7 +674,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Calculate latency percentile
+   * Calculate latency percentile.
    */
   private calculatePercentile(percentile: number): number {
     if (this.latencies.length === 0) return 0;
@@ -810,7 +810,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   // ===== Helper Methods =====
 
   /**
-   * Build Axios configuration from UACL options
+   * Build Axios configuration from UACL options.
    */
   private buildAxiosConfig(
     method: string,
@@ -829,23 +829,23 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Transform Axios response to UACL ClientResponse
+   * Transform Axios response to UACL ClientResponse.
    */
   private transformResponse<T>(response: AxiosResponse<T>): ClientResponse<T> {
     return {
-      data: response.data,
-      status: response.status,
-      statusText: response.statusText,
-      headers: response.headers as Record<string, string>,
-      config: response.config as RequestOptions,
-      metadata: (response.config as any)?.metadata,
+      data: response?.data,
+      status: response?.status,
+      statusText: response?.statusText,
+      headers: response?.headers as Record<string, string>,
+      config: response?.config as RequestOptions,
+      metadata: (response?.config as any)?.metadata,
     };
   }
 
   // ===== HTTP-Specific Methods (for backward compatibility) =====
 
   /**
-   * Get client capabilities
+   * Get client capabilities.
    */
   getCapabilities(): HTTPClientCapabilities {
     return {

@@ -1,16 +1,21 @@
 /**
- * Web Service Implementation
+ * Web Service Implementation.
  *
  * Service implementation for web server operations, HTTP/HTTPS handling,
  * middleware management, and web interface coordination.
  */
+/**
+ * @file web service implementation
+ */
+
+
 
 import type { IService } from '../core/interfaces';
 import type { ServiceOperationOptions, WebServiceConfig } from '../types';
 import { BaseService } from './base-service';
 
 /**
- * Web service implementation
+ * Web service implementation.
  *
  * @example
  */
@@ -20,7 +25,7 @@ export class WebService extends BaseService implements IService {
   private routes = new Map<string, Function>();
 
   constructor(config: WebServiceConfig) {
-    super(config.name, config.type, config);
+    super(config?.name, config?.type, config);
 
     // Add web service capabilities
     this.addCapability('http-server');
@@ -41,9 +46,9 @@ export class WebService extends BaseService implements IService {
 
     // Initialize server configuration
     const serverConfig = {
-      host: config.server?.host || 'localhost',
-      port: config.server?.port || 3000,
-      ssl: config.server?.ssl?.enabled || false,
+      host: config?.server?.host || 'localhost',
+      port: config?.server?.port || 3000,
+      ssl: config?.server?.ssl?.enabled || false,
     };
 
     this.logger.debug(`Web server configuration:`, serverConfig);
@@ -55,7 +60,7 @@ export class WebService extends BaseService implements IService {
     this.initializeRoutes();
 
     this.logger.info(
-      `Web service ${this.name} initialized for ${serverConfig.host}:${serverConfig.port}`
+      `Web service ${this.name} initialized for ${serverConfig?.host}:${serverConfig?.port}`
     );
   }
 
@@ -63,8 +68,8 @@ export class WebService extends BaseService implements IService {
     this.logger.info(`Starting web service: ${this.name}`);
 
     const config = this.config as WebServiceConfig;
-    const port = config.server?.port || 3000;
-    const host = config.server?.host || 'localhost';
+    const port = config?.server?.port || 3000;
+    const host = config?.server?.host || 'localhost';
 
     // Simulate server startup
     this.server = {
@@ -160,11 +165,11 @@ export class WebService extends BaseService implements IService {
     const config = this.config as WebServiceConfig;
     return {
       name: this.name,
-      host: config.server?.host || 'localhost',
-      port: config.server?.port || 3000,
-      ssl: config.server?.ssl?.enabled || false,
-      cors: config.cors?.enabled || false,
-      rateLimit: config.rateLimit?.enabled || false,
+      host: config?.server?.host || 'localhost',
+      port: config?.server?.port || 3000,
+      ssl: config?.server?.ssl?.enabled || false,
+      cors: config?.cors?.enabled || false,
+      rateLimit: config?.rateLimit?.enabled || false,
       status: this.server?.started ? 'running' : 'stopped',
       uptime: this.server?.startTime ? Date.now() - this.server.startTime.getTime() : 0,
     };
@@ -249,25 +254,25 @@ export class WebService extends BaseService implements IService {
     const config = this.config as WebServiceConfig;
 
     // Add default middleware based on configuration
-    if (config.middleware?.compression) {
+    if (config?.middleware?.compression) {
       this.middleware.push({ name: 'compression', handler: () => {} });
     }
 
-    if (config.middleware?.helmet) {
+    if (config?.middleware?.helmet) {
       this.middleware.push({ name: 'helmet', handler: () => {} });
     }
 
-    if (config.middleware?.morgan) {
+    if (config?.middleware?.morgan) {
       this.middleware.push({ name: 'morgan', handler: () => {} });
     }
 
     // Add CORS middleware if enabled
-    if (config.cors?.enabled) {
+    if (config?.cors?.enabled) {
       this.middleware.push({ name: 'cors', handler: () => {} });
     }
 
     // Add rate limiting middleware if enabled
-    if (config.rateLimit?.enabled) {
+    if (config?.rateLimit?.enabled) {
       this.middleware.push({ name: 'rate-limit', handler: () => {} });
     }
 

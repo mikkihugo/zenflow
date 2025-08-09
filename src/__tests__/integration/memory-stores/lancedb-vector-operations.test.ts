@@ -131,12 +131,12 @@ describe('LanceDB Vector Operations Integration Tests', () => {
 
       // Test add operation
       const addResult = await table.add([]);
-      expect(addResult.inserted).toBe(5);
+      expect(addResult?.inserted).toBe(5);
 
       // Test search operation
       const searchResults = await table.search([1, 0, 0]).limit(2).toArray();
       expect(searchResults).toHaveLength(2);
-      expect(searchResults[0]._distance).toBe(0.1);
+      expect(searchResults?.[0]?._distance).toBe(0.1);
     });
 
     it('should handle connection errors gracefully', async () => {
@@ -262,12 +262,12 @@ describe('LanceDB Vector Operations Integration Tests', () => {
 
       try {
         const result = await lancedb.insertVectors('embeddings', testVectors);
-        expect(result.inserted).toBe(2);
-        expect(result.errors).toHaveLength(0);
+        expect(result?.inserted).toBe(2);
+        expect(result?.errors).toHaveLength(0);
       } catch {
         // Mock test if LanceDB is not available
         expect(testVectors).toHaveLength(2);
-        expect(testVectors[0].vector).toHaveLength(128);
+        expect(testVectors[0]?.vector).toHaveLength(128);
       }
     });
 
@@ -285,12 +285,12 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         const results = await lancedb.searchSimilar('search_test', queryVector, 5);
 
         expect(results).toHaveLength(5);
-        expect(results[0].score).toBeDefined();
-        expect(results[0].id).toMatch(/search-doc-\d+/);
+        expect(results?.[0]?.score).toBeDefined();
+        expect(results?.[0]?.id).toMatch(/search-doc-\d+/);
 
         // Results should be ordered by similarity (best first)
         for (let i = 1; i < results.length; i++) {
-          expect(results[i].score).toBeGreaterThanOrEqual(results[i - 1].score);
+          expect(results?.[i]?.score).toBeGreaterThanOrEqual(results?.[i - 1]?.score);
         }
       } catch {
         // Classical test of similarity calculation
@@ -303,7 +303,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         const top5 = similarities.slice(0, 5);
 
         expect(top5).toHaveLength(5);
-        expect(top5[0].similarity).toBeGreaterThanOrEqual(top5[4].similarity);
+        expect(top5[0]?.similarity).toBeGreaterThanOrEqual(top5[4]?.similarity);
       }
     });
 
@@ -327,8 +327,8 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         });
 
         expect(filteredResults.length).toBeLessThanOrEqual(10);
-        filteredResults.forEach((result) => {
-          expect(result.metadata?.category).toBe('even');
+        filteredResults?.forEach((result) => {
+          expect(result?.metadata?.category).toBe('even');
         });
       } catch {
         // Classical filtering test
@@ -379,7 +379,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         const endTime = process.hrtime.bigint();
         const durationMs = Number(endTime - startTime) / 1_000_000;
 
-        expect(result.inserted).toBe(batchSize);
+        expect(result?.inserted).toBe(batchSize);
 
         // Should complete within reasonable time
         expect(durationMs).toBeLessThan(10000); // 10 seconds max

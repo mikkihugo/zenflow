@@ -1,9 +1,20 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-bindings-wasm-binding-interface");
+/**
+ * @file wasm-binding-interface implementation
+ */
+
+
+import { getLogger } from '../core/logger';
+import type {
+  NeuralConfig,
+  NeuralNetworkInterface,
+  WasmNeuralBinding,
+} from '../core/interfaces/base-interfaces';
+
+const logger = getLogger('src-bindings-wasm-binding-interface');
 
 /**
- * WASM binding interface contract
- * Defines what bindings can expect from WASM modules
+ * WASM binding interface contract.
+ * Defines what bindings can expect from WASM modules.
  *
  * @example
  */
@@ -15,8 +26,8 @@ export interface WasmBindingInterface extends WasmNeuralBinding {
 }
 
 /**
- * WASM binding provider
- * Implements the interface by delegating to actual WASM modules
+ * WASM binding provider.
+ * Implements the interface by delegating to actual WASM modules.
  *
  * @example
  */
@@ -91,7 +102,7 @@ class WasmBindingProvider implements WasmBindingInterface {
 }
 
 /**
- * Singleton instance for consistent binding access
+ * Singleton instance for consistent binding access.
  */
 const wasmBindingProvider = new WasmBindingProvider();
 

@@ -1,6 +1,13 @@
 #!/usr/bin/env node
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-sparc-cli-cli-demo");
+/**
+ * @file Coordination system: cli-demo
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-sparc-cli-cli-demo');
+
 /**
  * SPARC Architecture CLI Demo.
  *

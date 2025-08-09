@@ -1,7 +1,14 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-clients-adapters-base-client-adapter");
 /**
- * Universal Abstraction and Client Layer (UACL) Base Adapter
+ * @file base-client adapter implementation
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-clients-adapters-base-client-adapter');
+
+/**
+ * Universal Abstraction and Client Layer (UACL) Base Adapter.
  *
  * Provides the foundational interfaces and patterns for all client adapters.
  * Following UACL architecture for consistent client management across the system.
@@ -10,7 +17,7 @@ const logger = getLogger("interfaces-clients-adapters-base-client-adapter");
 import { EventEmitter } from 'node:events';
 
 /**
- * Base configuration interface that all client configurations extend
+ * Base configuration interface that all client configurations extend.
  *
  * @example
  */
@@ -42,7 +49,7 @@ export interface ClientConfig {
 }
 
 /**
- * Client operation result interface
+ * Client operation result interface.
  *
  * @example
  */
@@ -73,7 +80,7 @@ export interface ClientResult<T = any> {
 }
 
 /**
- * Client health status
+ * Client health status.
  *
  * @example
  */
@@ -105,7 +112,7 @@ export interface ClientComponentHealth {
 }
 
 /**
- * Client metrics interface
+ * Client metrics interface.
  *
  * @example
  */
@@ -133,7 +140,7 @@ export interface ClientMetrics {
 /**
  * Universal Client Interface (IClient)
  *
- * All client adapters must implement this interface to ensure consistency
+ * All client adapters must implement this interface to ensure consistency.
  * and interoperability across the UACL system.
  *
  * @example
@@ -152,35 +159,35 @@ export interface IClient extends EventEmitter {
   readonly isInitialized: boolean;
 
   /**
-   * Initialize the client
+   * Initialize the client.
    */
   initialize(): Promise<void>;
 
   /**
-   * Execute a client operation
+   * Execute a client operation.
    */
   execute<T = any>(operation: string, params?: any): Promise<ClientResult<T>>;
 
   /**
-   * Check client health
+   * Check client health.
    */
   healthCheck(): Promise<ClientHealth>;
 
   /**
-   * Get client metrics
+   * Get client metrics.
    */
   getMetrics(): Promise<ClientMetrics>;
 
   /**
-   * Shutdown the client gracefully
+   * Shutdown the client gracefully.
    */
   shutdown(): Promise<void>;
 }
 
 /**
- * Client Factory Interface
+ * Client Factory Interface.
  *
- * Defines the contract for creating client instances with proper configuration
+ * Defines the contract for creating client instances with proper configuration.
  * and lifecycle management.
  *
  * @example
@@ -190,33 +197,33 @@ export interface IClientFactory<TConfig extends ClientConfig = ClientConfig> {
   readonly type: string;
 
   /**
-   * Create a new client instance
+   * Create a new client instance.
    */
   createClient(config: TConfig): Promise<IClient>;
 
   /**
-   * Get or create a cached client instance
+   * Get or create a cached client instance.
    */
   getClient(id: string, config: TConfig): Promise<IClient>;
 
   /**
-   * Validate client configuration
+   * Validate client configuration.
    */
   validateConfig(config: TConfig): boolean;
 
   /**
-   * Get all active client instances
+   * Get all active client instances.
    */
   getActiveClients(): IClient[];
 
   /**
-   * Shutdown all clients managed by this factory
+   * Shutdown all clients managed by this factory.
    */
   shutdownAll(): Promise<void>;
 }
 
 /**
- * Base Client Adapter
+ * Base Client Adapter.
  *
  * Abstract base class that provides common functionality for all client adapters.
  * Implements the IClient interface with shared behavior.
@@ -254,7 +261,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
   abstract execute<T = any>(operation: string, params?: any): Promise<ClientResult<T>>;
 
   /**
-   * Check client health
+   * Check client health.
    */
   async healthCheck(): Promise<ClientHealth> {
     return {
@@ -283,7 +290,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
   }
 
   /**
-   * Get client metrics
+   * Get client metrics.
    */
   async getMetrics(): Promise<ClientMetrics> {
     this._metrics.uptime = Date.now() - this._startTime;
@@ -291,7 +298,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
   }
 
   /**
-   * Shutdown the client
+   * Shutdown the client.
    */
   async shutdown(): Promise<void> {
     this._isInitialized = false;
@@ -299,7 +306,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
   }
 
   /**
-   * Create a standardized client result
+   * Create a standardized client result.
    *
    * @param operationId
    * @param success
@@ -331,7 +338,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
   }
 
   /**
-   * Update metrics after an operation
+   * Update metrics after an operation.
    *
    * @param success
    * @param duration
@@ -367,7 +374,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
   }
 
   /**
-   * Generate a unique operation ID
+   * Generate a unique operation ID.
    */
   protected generateOperationId(): string {
     return `${this.type}_${++this._operationCounter}_${Date.now()}`;
@@ -380,7 +387,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
    * @param message
    * @param meta
    * @param _message
-   * @param _meta
+   * @param _meta.
    */
   protected log(level: 'debug' | 'info' | 'warn' | 'error', _message: string, _meta?: any): void {
     if (this.config.logging?.enabled) {
@@ -393,7 +400,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
   }
 
   /**
-   * Check if log level should be output
+   * Check if log level should be output.
    *
    * @param level
    */
@@ -404,7 +411,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
   }
 
   /**
-   * Initialize default metrics
+   * Initialize default metrics.
    */
   private initializeMetrics(): ClientMetrics {
     return {
@@ -422,9 +429,9 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
 }
 
 /**
- * Base Client Factory
+ * Base Client Factory.
  *
- * Abstract base class for client factories that provides common functionality
+ * Abstract base class for client factories that provides common functionality.
  * and lifecycle management.
  *
  * @example
@@ -442,7 +449,7 @@ export abstract class BaseClientFactory<TConfig extends ClientConfig = ClientCon
   abstract createClient(config: TConfig): Promise<IClient>;
 
   /**
-   * Get or create a cached client instance
+   * Get or create a cached client instance.
    *
    * @param id
    * @param config
@@ -466,21 +473,21 @@ export abstract class BaseClientFactory<TConfig extends ClientConfig = ClientCon
   /**
    * Validate client configuration (default implementation)
    *
-   * @param config
+   * @param config.
    */
   validateConfig(config: TConfig): boolean {
     return Boolean(config && typeof config === 'object');
   }
 
   /**
-   * Get all active client instances
+   * Get all active client instances.
    */
   getActiveClients(): IClient[] {
     return Array.from(this.clients.values());
   }
 
   /**
-   * Shutdown all clients managed by this factory
+   * Shutdown all clients managed by this factory.
    */
   async shutdownAll(): Promise<void> {
     const shutdownPromises = Array.from(this.clients.values()).map((client) =>

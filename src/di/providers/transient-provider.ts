@@ -1,7 +1,12 @@
 /**
- * Transient provider implementation
- * Creates a new instance every time the service is resolved
+ * Transient provider implementation.
+ * Creates a new instance every time the service is resolved.
  */
+/**
+ * @file transient-provider implementation
+ */
+
+
 
 import type { DIContainer, Provider } from '../types/di-types';
 

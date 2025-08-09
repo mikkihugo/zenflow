@@ -4,8 +4,13 @@
  * In-memory repository with TTL support, caching capabilities,
  * and memory management for fast data access.
  */
+/**
+ * @file Database layer: memory.dao
+ */
 
-import type { DatabaseAdapter, ILogger } from '../../core/interfaces/base-interfaces';
+
+
+import type { DatabaseAdapter, ILogger } from '../core/interfaces/base-interfaces';
 import { BaseDao } from '../base.dao';
 import type { CustomQuery, IMemoryRepository, MemoryStats } from '../interfaces';
 

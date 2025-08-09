@@ -11,11 +11,16 @@
  * 3. Product Flow defines business requirements, SPARC provides technical implementation
  * 4. Workflow orchestrates both flows seamlessly.
  */
+/**
+ * @file product-workflow processing engine
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
-import { createLogger } from '../../core/logger';
-import type { MemorySystem } from '../../core/memory-system';
+import { createLogger } from '../core/logger';
+import type { MemorySystem } from '../core/memory-system';
 import type {
   ADRDocumentEntity,
   EpicDocumentEntity,
@@ -23,8 +28,8 @@ import type {
   PRDDocumentEntity,
   TaskDocumentEntity,
   VisionDocumentEntity,
-} from '../../database/entities/product-entities';
-import type { DocumentManager } from '../../database/managers/document-manager';
+} from '../database/entities/product-entities';
+import type { DocumentManager } from '../database/managers/document-manager';
 import type {
   CompletedStepInfo,
   StepExecutionResult,
@@ -38,7 +43,7 @@ import type {
   WorkflowStatus,
   WorkflowStepResults,
   WorkflowStepState,
-} from '../../types/workflow-types';
+} from '../types/workflow-types';
 import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine';
 import type {
   ProjectSpecification,
@@ -128,7 +133,7 @@ export interface ProductWorkflowConfig extends WorkflowEngineConfig {
 /**
  * Product Workflow Engine - Main Orchestrator.
  *
- * Orchestrates the complete Product Flow (Vision→Task) with SPARC methodology
+ * Orchestrates the complete Product Flow (Vision→Task) with SPARC methodology.
  * applied as the technical implementation tool WITHIN Features and Tasks.
  *
  * @example
@@ -327,21 +332,21 @@ export class ProductWorkflowEngine extends EventEmitter {
       await this.saveWorkflow(workflow);
 
       // Apply execution options
-      if (options.dryRun) {
+      if (options?.dryRun) {
         logger.info(`🧪 DRY RUN: Would execute Product Flow workflow: ${workflow.definition.name}`);
         return;
       }
 
       // Set timeout if specified
-      if (options.timeout) {
+      if (options?.timeout) {
         setTimeout(() => {
-          throw new Error(`Workflow execution timed out after ${options.timeout}ms`);
-        }, options.timeout);
+          throw new Error(`Workflow execution timed out after ${options?.timeout}ms`);
+        }, options?.timeout);
       }
 
       logger.info(`🚀 Starting Product Flow workflow: ${workflow.definition.name}`);
-      if (options.maxConcurrency) {
-        logger.info(`⚡ Max concurrency: ${options.maxConcurrency}`);
+      if (options?.maxConcurrency) {
+        logger.info(`⚡ Max concurrency: ${options?.maxConcurrency}`);
       }
 
       // Execute Product Flow steps in sequence
@@ -564,14 +569,14 @@ export class ProductWorkflowEngine extends EventEmitter {
           // Execute SPARC phase
           const result = await this.sparcEngine.executePhase(sparcProject, phase);
 
-          if (result.success) {
+          if (result?.success) {
             // Update workflow state
             const completedPhases = workflow.sparcIntegration.completedPhases.get(featureId) || [];
             completedPhases.push(phase);
             workflow.sparcIntegration.completedPhases.set(featureId, completedPhases);
 
             // Update active phase
-            const nextPhase = result.nextPhase;
+            const nextPhase = result?.nextPhase;
             if (nextPhase) {
               workflow.sparcIntegration.activePhases.set(featureId, nextPhase);
             } else {

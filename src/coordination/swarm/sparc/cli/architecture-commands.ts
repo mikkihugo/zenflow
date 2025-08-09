@@ -1,5 +1,12 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-sparc-cli-architecture-commands");
+/**
+ * @file Coordination system: architecture-commands
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-sparc-cli-architecture-commands');
+
 /**
  * CLI Commands for SPARC Architecture Management.
  *
@@ -8,29 +15,29 @@ const logger = getLogger("coordination-swarm-sparc-cli-architecture-commands");
 
 import chalk from 'chalk';
 import { Command } from 'commander';
+import type { IDao } from '../database';
+import { createDao, DatabaseTypes, EntityTypes } from '../database';
 import { ArchitectureMCPToolsImpl } from '../mcp/architecture-tools';
 import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
 import type { ArchitectureDesign, PseudocodeStructure } from '../types/sparc-types';
-import { createDao, DatabaseTypes, EntityTypes } from '../../../../database';
-import type { IDao } from '../../../../database';
 
 // Real database adapter for CLI using existing database infrastructure
 class CLIDatabaseAdapter {
   private coordinationDao: IDao<any> | null = null;
-  
+
   private async ensureConnection(): Promise<void> {
     if (!this.coordinationDao) {
       try {
         // Use the existing database infrastructure instead of mocking
         this.coordinationDao = await createDao(
           EntityTypes.CoordinationEvent,
-          DatabaseTypes.Coordination
+          DatabaseTypes?.Coordination
         );
       } catch (error) {
-        logger.error(
-          '⚠️  Failed to connect to database for CLI. CLI operations will be limited.'
+        logger.error('⚠️  Failed to connect to database for CLI. CLI operations will be limited.');
+        throw new Error(
+          'Database connection required for SPARC CLI operations. Please ensure database is configured.'
         );
-        throw new Error('Database connection required for SPARC CLI operations. Please ensure database is configured.');
       }
     }
   }
@@ -40,7 +47,7 @@ class CLIDatabaseAdapter {
     if (!this.coordinationDao) {
       throw new Error('Database connection not available');
     }
-    
+
     // Use real database execution through existing infrastructure
     try {
       const result = await this.coordinationDao.execute(sql, params || []);
@@ -56,7 +63,7 @@ class CLIDatabaseAdapter {
     if (!this.coordinationDao) {
       throw new Error('Database connection not available');
     }
-    
+
     // Use real database querying through existing infrastructure
     try {
       const result = await this.coordinationDao.findByQuery(sql, params || []);
@@ -97,10 +104,10 @@ export function createArchitectureCLI(): Command {
 
         let pseudocode: PseudocodeStructure;
 
-        if (options.input) {
+        if (options?.input) {
           // Load from file
           const fs = await import('node:fs/promises');
-          const content = await fs.readFile(options.input, 'utf-8');
+          const content = await fs.readFile(options?.input, 'utf-8');
           pseudocode = JSON.parse(content);
         } else {
           // Use sample pseudocode for demo
@@ -111,7 +118,7 @@ export function createArchitectureCLI(): Command {
         const architecture = await engine.designArchitecture(pseudocode);
 
         // Validate if requested
-        if (options.validate) {
+        if (options?.validate) {
           const validation = await engine.validateArchitecturalConsistency(
             architecture.systemArchitecture
           );
@@ -122,9 +129,9 @@ export function createArchitectureCLI(): Command {
         }
 
         // Save output
-        if (options.output) {
+        if (options?.output) {
           const fs = await import('node:fs/promises');
-          await fs.writeFile(options.output, JSON.stringify(architecture, null, 2));
+          await fs.writeFile(options?.output, JSON.stringify(architecture, null, 2));
         } else {
           // Display summary
           displayArchitectureSummary(architecture);
@@ -151,25 +158,25 @@ export function createArchitectureCLI(): Command {
 
         const result = await mcpTools.validateArchitecture({
           architectureId,
-          validationType: options.type,
+          validationType: options?.type,
         });
 
-        if (result.success) {
-          const validation = result.validation;
+        if (result?.success) {
+          const validation = result?.validation;
 
-          if (options.report && validation.validationResults) {
+          if (options?.report && validation.validationResults) {
             validation.validationResults.forEach((result, _i) => {
-              const _status = result.passed ? chalk.green('✅') : chalk.red('❌');
-              if (result.feedback) {
+              const _status = result?.passed ? chalk.green('✅') : chalk.red('❌');
+              if (result?.feedback) {
               }
             });
           }
 
-          if (result.recommendations.length > 0) {
-            result.recommendations.forEach((_rec, _i) => {});
+          if (result?.recommendations.length > 0) {
+            result?.recommendations?.forEach((_rec, _i) => {});
           }
         } else {
-          logger.error(chalk.red('❌ Validation failed:'), result.message);
+          logger.error(chalk.red('❌ Validation failed:'), result?.message);
           process.exit(1);
         }
       } catch (error) {
@@ -195,23 +202,23 @@ export function createArchitectureCLI(): Command {
         await mcpTools.initialize();
 
         const searchCriteria = {
-          domain: options.domain,
-          tags: options.tags ? options.tags.split(',') : undefined,
-          minScore: parseFloat(options.minScore),
-          limit: parseInt(options.limit),
+          domain: options?.domain,
+          tags: options?.tags ? options?.tags?.split(',') : undefined,
+          minScore: parseFloat(options?.minScore),
+          limit: parseInt(options?.limit),
         };
 
         const result = await mcpTools.searchArchitectures(searchCriteria);
 
-        if (result.success) {
-          if (options.json) {
+        if (result?.success) {
+          if (options?.json) {
           } else {
-            if (result.architectures.length > 0) {
-              result.architectures.forEach((_arch, _i) => {});
+            if (result?.architectures.length > 0) {
+              result?.architectures?.forEach((_arch, _i) => {});
             }
           }
         } else {
-          logger.error(chalk.red('❌ Search failed:'), result.message);
+          logger.error(chalk.red('❌ Search failed:'), result?.message);
           process.exit(1);
         }
       } catch (error) {
@@ -235,17 +242,17 @@ export function createArchitectureCLI(): Command {
 
         const result = await mcpTools.exportArchitecture({
           architectureId,
-          format: options.format,
+          format: options?.format,
         });
 
-        if (result.success) {
-          if (options.output) {
+        if (result?.success) {
+          if (options?.output) {
             const fs = await import('node:fs/promises');
-            await fs.writeFile(options.output, result.content);
+            await fs.writeFile(options?.output, result?.content);
           } else {
           }
         } else {
-          logger.error(chalk.red('❌ Export failed:'), result.message);
+          logger.error(chalk.red('❌ Export failed:'), result?.message);
           process.exit(1);
         }
       } catch (error) {
@@ -267,10 +274,10 @@ export function createArchitectureCLI(): Command {
 
         const result = await mcpTools.getArchitectureStats();
 
-        if (result.success) {
-          if (options.json) {
+        if (result?.success) {
+          if (options?.json) {
           } else {
-            const stats = result.stats;
+            const stats = result?.stats;
 
             if (Object.keys(stats.byDomain).length > 0) {
               Object.entries(stats.byDomain).forEach(([_domain, _count]) => {});
@@ -279,7 +286,7 @@ export function createArchitectureCLI(): Command {
             const _valStats = stats.validationStats;
           }
         } else {
-          logger.error(chalk.red('❌ Failed to get statistics:'), result.message);
+          logger.error(chalk.red('❌ Failed to get statistics:'), result?.message);
           process.exit(1);
         }
       } catch (error) {

@@ -1,4 +1,9 @@
 // Interface mode detection utilities
+/**
+ * @file interface-mode-detector implementation
+ */
+
+
 
 export type InterfaceMode = 'cli' | 'tui' | 'web';
 
@@ -99,19 +104,19 @@ export class InterfaceModeDetector {
     // Build config object with proper optional property handling
     const port = webPort || (mode === 'web' ? 3456 : undefined);
     const daemonMode = daemon || mode === 'web';
-    
+
     const config: ModeDetectionResult['config'] = {
       interactive,
       hasTerminal,
       isCI,
     };
-    
+
     // Only add optional properties when they have defined values
     if (port !== undefined) {
-      config?.port = port;
+      config.port = port;
     }
     if (daemonMode !== undefined) {
-      config?.daemon = daemonMode;
+      config.daemon = daemonMode;
     }
 
     return {

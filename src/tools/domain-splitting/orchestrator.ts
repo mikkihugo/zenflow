@@ -1,7 +1,14 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("tools-domain-splitting-orchestrator");
 /**
- * Main orchestrator for domain splitting operations
+ * @file orchestrator implementation
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('tools-domain-splitting-orchestrator');
+
+/**
+ * Main orchestrator for domain splitting operations.
  */
 
 import { DomainAnalysisEngine } from './analyzers/domain-analyzer';
@@ -23,7 +30,7 @@ export class DomainSplittingOrchestrator {
   }
 
   /**
-   * Execute complete domain splitting workflow
+   * Execute complete domain splitting workflow.
    *
    * @param domainPath
    * @param plan
@@ -58,7 +65,7 @@ export class DomainSplittingOrchestrator {
       // Step 5: Execute splitting
       const result = await this.splitter.executeSplitting([finalPlan]);
 
-      if (result.success) {
+      if (result?.success) {
       }
 
       return result;
@@ -69,7 +76,7 @@ export class DomainSplittingOrchestrator {
   }
 
   /**
-   * Analyze domain and provide recommendations
+   * Analyze domain and provide recommendations.
    *
    * @param domainPath
    */
@@ -87,7 +94,7 @@ export class DomainSplittingOrchestrator {
   }
 
   /**
-   * Split neural domain using predefined plan
+   * Split neural domain using predefined plan.
    */
   async splitNeuralDomain(): Promise<SplittingResult> {
     const neuralPath = 'src/neural';
@@ -99,7 +106,7 @@ export class DomainSplittingOrchestrator {
   }
 
   /**
-   * Validate an existing domain split
+   * Validate an existing domain split.
    *
    * @param plans
    */

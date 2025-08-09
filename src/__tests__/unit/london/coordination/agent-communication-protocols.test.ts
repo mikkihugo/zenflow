@@ -109,8 +109,8 @@ describe('Agent Communication Protocols (London TDD)', () => {
 
       // Verify retry attempts
       expect(mockMessageBroker.sendDirectMessage).toHaveBeenCalledTimes(3);
-      expect(result.success).toBe(true);
-      expect(result.retryCount).toBe(2);
+      expect(result?.success).toBe(true);
+      expect(result?.retryCount).toBe(2);
     });
 
     it('should compress large messages automatically', async () => {
@@ -169,8 +169,8 @@ describe('Agent Communication Protocols (London TDD)', () => {
         })
       );
 
-      expect(result.success).toBe(true);
-      expect(result.deliveredTo.length).toBe(mockAgents.length - 1);
+      expect(result?.success).toBe(true);
+      expect(result?.deliveredTo.length).toBe(mockAgents.length - 1);
     });
 
     it('should support selective broadcast with agent filtering', async () => {
@@ -228,8 +228,8 @@ describe('Agent Communication Protocols (London TDD)', () => {
 
       // Verify retry for failed deliveries
       expect(mockMessageBroker.broadcast).toHaveBeenCalledTimes(1);
-      expect(result.requiresRetry).toBe(true);
-      expect(result.failedDeliveries.length).toBe(2);
+      expect(result?.requiresRetry).toBe(true);
+      expect(result?.failedDeliveries.length).toBe(2);
     });
   });
 
@@ -362,7 +362,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
       await communicationProtocol.sendDirectMessage(sender.id, receiver.id, criticalMessage);
 
       const criticalCall = mockMessageBroker.sendDirectMessage.mock.calls.find(
-        (call) => call[2].priority === 'critical'
+        (call) => call[2]?.priority === 'critical'
       );
 
       expect(criticalCall[2]).toMatchObject({
@@ -434,13 +434,13 @@ describe('Agent Communication Protocols (London TDD)', () => {
 
       const results = await Promise.allSettled(sendPromises);
 
-      const successful = results.filter((r) => r.status === 'fulfilled' && r.value.success).length;
-      const rateLimited = results.filter(
+      const successful = results?.filter((r) => r.status === 'fulfilled' && r.value.success).length;
+      const rateLimited = results?.filter(
         (r) => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)
       ).length;
 
       // Some messages should be rate limited
-      expect(successful).toBeLessThanOrEqual(rateLimitConfig.burstLimit);
+      expect(successful).toBeLessThanOrEqual(rateLimitConfig?.burstLimit);
       expect(rateLimited).toBeGreaterThan(0);
     });
   });
@@ -502,8 +502,8 @@ describe('Agent Communication Protocols (London TDD)', () => {
         signedMessage
       );
 
-      expect(result.success).toBe(true);
-      expect(result.signatureVerified).toBe(true);
+      expect(result?.success).toBe(true);
+      expect(result?.signatureVerified).toBe(true);
 
       expect(mockMessageBroker.sendDirectMessage).toHaveBeenCalledWith(
         sender.id,
@@ -565,8 +565,8 @@ describe('Agent Communication Protocols (London TDD)', () => {
           if (i !== j) {
             const frequency = Math.random() * 10; // Random communication frequency
             communicationMatrix.push({
-              from: agents[i].id,
-              to: agents[j].id,
+              from: agents[i]?.id,
+              to: agents[j]?.id,
               frequency,
               avgLatency: 20 + Math.random() * 60,
             });

@@ -1,17 +1,22 @@
 /**
- * Unified API Client Layer (UACL) - Core Interfaces
+ * Unified API Client Layer (UACL) - Core Interfaces.
  *
- * Provides generic interfaces for standardizing client access across all protocols
+ * Provides generic interfaces for standardizing client access across all protocols.
  * including HTTP (REST API), WebSocket (Real-time), Knowledge (FACT integration),
  * MCP (Model Context Protocol), and any other client communication mechanisms.
  */
 
 /**
- * Generic client interface for standardized API access
+ * Generic client interface for standardized API access.
  *
  * @template T The request/response type this client handles
  * @example
  */
+/**
+ * @file Interface implementation: interfaces
+ */
+
+
 export interface IClient<T = any> {
   /** Connect to the service */
   connect(): Promise<void>;
@@ -36,7 +41,7 @@ export interface IClient<T = any> {
 }
 
 /**
- * Client factory interface for creating protocol-specific clients
+ * Client factory interface for creating protocol-specific clients.
  *
  * @example
  */
@@ -147,7 +152,7 @@ export interface IKnowledgeClient<T = any> extends IClient<T> {
 /**
  * Specialized interface for MCP clients (Model Context Protocol)
  *
- * @example
+ * @example.
  */
 export interface IMcpClient<T = any> extends IClient<T> {
   /** List available tools */
@@ -173,7 +178,7 @@ export interface IMcpClient<T = any> extends IClient<T> {
 }
 
 /**
- * Generic client configuration
+ * Generic client configuration.
  *
  * @example
  */
@@ -207,7 +212,7 @@ export interface ClientConfig {
 }
 
 /**
- * Request options for HTTP clients
+ * Request options for HTTP clients.
  *
  * @example
  */
@@ -232,7 +237,7 @@ export interface RequestOptions {
 }
 
 /**
- * Authentication configuration
+ * Authentication configuration.
  *
  * @example
  */
@@ -257,7 +262,7 @@ export interface AuthConfig {
 }
 
 /**
- * Retry configuration
+ * Retry configuration.
  *
  * @example
  */
@@ -282,7 +287,7 @@ export interface RetryConfig {
 }
 
 /**
- * Health check configuration
+ * Health check configuration.
  *
  * @example
  */
@@ -304,7 +309,7 @@ export interface HealthCheckConfig {
 }
 
 /**
- * Client logging configuration
+ * Client logging configuration.
  *
  * @example
  */
@@ -326,7 +331,7 @@ export interface ClientLoggingConfig {
 }
 
 /**
- * Client metadata
+ * Client metadata.
  *
  * @example
  */
@@ -356,7 +361,7 @@ export interface ClientMetadata {
 }
 
 /**
- * Client performance metrics
+ * Client performance metrics.
  *
  * @example
  */
@@ -387,7 +392,7 @@ export interface ClientMetrics {
 }
 
 /**
- * WebSocket specific types
+ * WebSocket specific types.
  *
  * @example
  */
@@ -417,7 +422,7 @@ export interface ReconnectOptions {
 }
 
 /**
- * Knowledge client specific types
+ * Knowledge client specific types.
  *
  * @example
  */
@@ -452,7 +457,7 @@ export interface KnowledgeStats {
 }
 
 /**
- * MCP client specific types
+ * MCP client specific types.
  *
  * @example
  */
@@ -505,7 +510,7 @@ export interface McpInitResult {
 }
 
 /**
- * Error types for client operations
+ * Error types for client operations.
  *
  * @example
  */
@@ -518,7 +523,7 @@ export interface ClientError extends Error {
 }
 
 /**
- * Client health status
+ * Client health status.
  *
  * @example
  */
@@ -533,7 +538,7 @@ export interface ClientHealthStatus {
 }
 
 /**
- * Transaction operation for multi-client operations
+ * Transaction operation for multi-client operations.
  *
  * @example
  */

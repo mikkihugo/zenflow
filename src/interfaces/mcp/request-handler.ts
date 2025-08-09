@@ -1,9 +1,14 @@
 /**
- * MCP Request Handler
+ * MCP Request Handler.
  *
  * Handles MCP protocol requests and routes them to appropriate tool handlers.
  * Implements the Model Context Protocol specification for tool calls.
  */
+/**
+ * @file Interface implementation: request-handler
+ */
+
+
 
 import { createLogger } from './mcp-logger';
 
@@ -45,7 +50,7 @@ export interface MCPServerInfo {
 }
 
 /**
- * Handles MCP protocol requests
+ * Handles MCP protocol requests.
  *
  * @example
  */
@@ -77,7 +82,7 @@ export class MCPRequestHandler {
   }
 
   /**
-   * Handle incoming MCP request
+   * Handle incoming MCP request.
    *
    * @param request
    */
@@ -155,7 +160,7 @@ export class MCPRequestHandler {
   }
 
   /**
-   * Handle initialization request
+   * Handle initialization request.
    *
    * @param params
    */
@@ -175,7 +180,7 @@ export class MCPRequestHandler {
   }
 
   /**
-   * Handle initialization notification
+   * Handle initialization notification.
    *
    * @param params
    */
@@ -189,7 +194,7 @@ export class MCPRequestHandler {
   }
 
   /**
-   * Handle tools list request
+   * Handle tools list request.
    */
   private async handleToolsList(): Promise<any> {
     const tools = await this.toolRegistry.listTools();
@@ -200,12 +205,12 @@ export class MCPRequestHandler {
   }
 
   /**
-   * Handle tool call request
+   * Handle tool call request.
    *
    * @param params
    */
   private async handleToolCall(params: any): Promise<any> {
-    if (!params || !params.name) {
+    if (!params || !params?.name) {
       throw new Error('Tool name is required');
     }
 
@@ -252,7 +257,7 @@ export class MCPRequestHandler {
   }
 
   /**
-   * Handle resources list request
+   * Handle resources list request.
    */
   private async handleResourcesList(): Promise<any> {
     return {
@@ -280,12 +285,12 @@ export class MCPRequestHandler {
   }
 
   /**
-   * Handle resource read request
+   * Handle resource read request.
    *
    * @param params
    */
   private async handleResourceRead(params: any): Promise<any> {
-    if (!params || !params.uri) {
+    if (!params || !params?.uri) {
       throw new Error('Resource URI is required');
     }
 
@@ -333,7 +338,7 @@ export class MCPRequestHandler {
   }
 
   /**
-   * Handle ping request
+   * Handle ping request.
    */
   private async handlePing(): Promise<any> {
     return {
@@ -346,7 +351,7 @@ export class MCPRequestHandler {
   }
 
   /**
-   * Get system status information
+   * Get system status information.
    */
   private async getSystemStatus(): Promise<any> {
     const memUsage = process.memoryUsage();
@@ -369,7 +374,7 @@ export class MCPRequestHandler {
   }
 
   /**
-   * Get tools information
+   * Get tools information.
    */
   private async getToolsInfo(): Promise<any> {
     const tools = await this.toolRegistry.listTools();
@@ -391,7 +396,7 @@ export class MCPRequestHandler {
   }
 
   /**
-   * Get performance metrics
+   * Get performance metrics.
    */
   private async getMetrics(): Promise<any> {
     return {
@@ -409,21 +414,21 @@ export class MCPRequestHandler {
   }
 
   /**
-   * Check if server is initialized
+   * Check if server is initialized.
    */
   isInitialized(): boolean {
     return this.initialized;
   }
 
   /**
-   * Get server information
+   * Get server information.
    */
   getServerInfo(): MCPServerInfo {
     return { ...this.serverInfo };
   }
 
   /**
-   * Get server capabilities
+   * Get server capabilities.
    */
   getCapabilities(): MCPCapabilities {
     return { ...this.capabilities };

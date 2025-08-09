@@ -38,18 +38,18 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
         updates.topology = tempValue as 'mesh' | 'hierarchical' | 'star' | 'ring';
         break;
       case 'maxAgents':
-        updates.maxAgents = parseInt(tempValue) || config.maxAgents;
+        updates.maxAgents = parseInt(tempValue) || config?.maxAgents;
         break;
       case 'memory':
         updates.resourceLimits = {
-          ...config.resourceLimits,
+          ...config?.resourceLimits,
           memory: tempValue,
         };
         break;
       case 'cpu':
         updates.resourceLimits = {
-          ...config.resourceLimits,
-          cpu: parseInt(tempValue) || config.resourceLimits.cpu,
+          ...config?.resourceLimits,
+          cpu: parseInt(tempValue) || config?.resourceLimits?.cpu,
         };
         break;
       case 'persistence':
@@ -77,17 +77,17 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
     } else {
       // Field selection navigation
       if (input === 't') {
-        handleFieldEdit('topology', config.topology);
+        handleFieldEdit('topology', config?.topology);
       } else if (input === 'a') {
-        handleFieldEdit('maxAgents', config.maxAgents);
+        handleFieldEdit('maxAgents', config?.maxAgents);
       } else if (input === 'm') {
-        handleFieldEdit('memory', config.resourceLimits.memory);
+        handleFieldEdit('memory', config?.resourceLimits?.memory);
       } else if (input === 'c') {
-        handleFieldEdit('cpu', config.resourceLimits.cpu);
+        handleFieldEdit('cpu', config?.resourceLimits?.cpu);
       } else if (input === 'p') {
-        handleFieldEdit('persistence', config.persistence);
+        handleFieldEdit('persistence', config?.persistence);
       } else if (input === 's') {
-        onConfigChange({ enableAutoScaling: !config.enableAutoScaling });
+        onConfigChange({ enableAutoScaling: !config?.enableAutoScaling });
       }
     }
   });
@@ -129,7 +129,6 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
           {domain} Swarm Configuration
         </Text>
       </Box>
-
       <Box borderStyle="single" paddingX={1} flexDirection="column">
         {/* Topology Configuration */}
         <Box marginBottom={1}>
@@ -139,7 +138,7 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
           {editingField === 'topology' ? (
             <Box>
               <Text>Select: </Text>
-              <SelectInput
+              <SelectInput.
                 items={[
                   { label: '🕸️  Mesh (High Redundancy)', value: 'mesh' },
                   { label: '🌳 Hierarchical (Efficient)', value: 'hierarchical' },
@@ -147,7 +146,7 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
                   { label: '🔄 Ring (Balanced)', value: 'ring' },
                 ]}
                 onSelect={(item) => {
-                  setTempValue(item.value);
+                  setTempValue(item?.value);
                   handleFieldSave();
                 }}
               />
@@ -155,9 +154,9 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
           ) : (
             <Box>
               <Text>
-                {getTopologyIcon(config.topology)} {config.topology}
+                {getTopologyIcon(config?.topology)} {config?.topology}
               </Text>
-              <Text dimColor> - {getTopologyDescription(config.topology)}</Text>
+              <Text dimColor> - {getTopologyDescription(config?.topology)}</Text>
             </Box>
           )}
         </Box>
@@ -170,7 +169,7 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
           {editingField === 'maxAgents' ? (
             <Box>
               <Text>Enter count: </Text>
-              <TextInput
+              <TextInput.
                 value={tempValue}
                 onChange={setTempValue}
                 onSubmit={handleFieldSave}
@@ -179,11 +178,11 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
             </Box>
           ) : (
             <Box>
-              <Text>🤖 {config.maxAgents} agents</Text>
+              <Text>🤖 {config?.maxAgents} agents</Text>
               <Text dimColor>
                 {' '}
-                (recommended: {Math.ceil(config.maxAgents * 0.8)}-
-                {Math.ceil(config.maxAgents * 1.2)})
+                (recommended: {Math.ceil(config?.maxAgents * 0.8)}-
+                {Math.ceil(config?.maxAgents * 1.2)})
               </Text>
             </Box>
           )}
@@ -197,7 +196,7 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
           {editingField === 'memory' ? (
             <Box>
               <Text>Enter limit: </Text>
-              <TextInput
+              <TextInput.
                 value={tempValue}
                 onChange={setTempValue}
                 onSubmit={handleFieldSave}
@@ -206,7 +205,7 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
             </Box>
           ) : (
             <Box>
-              <Text>💾 {config.resourceLimits.memory}</Text>
+              <Text>💾 {config?.resourceLimits?.memory}</Text>
             </Box>
           )}
         </Box>
@@ -227,7 +226,7 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
             </Box>
           ) : (
             <Box>
-              <Text>⚡ {config.resourceLimits.cpu} cores</Text>
+              <Text>⚡ {config?.resourceLimits?.cpu} cores</Text>
             </Box>
           )}
         </Box>
@@ -238,11 +237,11 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
             <Text color="yellow">[S] Auto Scale:</Text>
           </Box>
           <Box>
-            <Text color={config.enableAutoScaling ? 'green' : 'red'}>
-              {config.enableAutoScaling ? '✅ Enabled' : '❌ Disabled'}
+            <Text color={config?.enableAutoScaling ? 'green' : 'red'}>
+              {config?.enableAutoScaling ? '✅ Enabled' : '❌ Disabled'}
             </Text>
             <Text dimColor>
-              {config.enableAutoScaling
+              {config?.enableAutoScaling
                 ? ' - Agents scale based on workload'
                 : ' - Fixed agent count'}
             </Text>
@@ -257,14 +256,14 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
           {editingField === 'persistence' ? (
             <Box>
               <Text>Select: </Text>
-              <SelectInput
+              <SelectInput.
                 items={[
                   { label: '📄 JSON (Simple)', value: 'json' },
                   { label: '🗃️  SQLite (Structured)', value: 'sqlite' },
                   { label: '🚀 LanceDB (Vector)', value: 'lancedb' },
                 ]}
                 onSelect={(item) => {
-                  setTempValue(item.value);
+                  setTempValue(item?.value);
                   handleFieldSave();
                 }}
               />
@@ -274,7 +273,7 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
               <Text>
                 {config.persistence === 'json' && '📄 JSON'}
                 {config.persistence === 'sqlite' && '🗃️  SQLite'}
-                {config.persistence === 'lancedb' && '🚀 LanceDB'} {config.persistence}
+                {config.persistence === 'lancedb' && '🚀 LanceDB'} {config?.persistence}
               </Text>
               <Text dimColor>
                 {config.persistence === 'json' && ' - Simple file storage'}
@@ -285,7 +284,6 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
           )}
         </Box>
       </Box>
-
       <Box marginTop={1}>
         <Text dimColor>
           {editingField

@@ -104,14 +104,14 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
         const result = await sparcEngine.executePhase(testProject, 'specification');
 
         // Assert
-        expect(result.success).toBe(true);
-        expect(result.phase).toBe('specification');
-        expect(result.metrics.duration).toBeGreaterThan(0);
-        expect(result.metrics.qualityScore).toBeGreaterThan(0.5);
-        expect(result.metrics.completeness).toBeGreaterThan(0.8);
-        expect(result.deliverables).toHaveLength(1);
-        expect(result.nextPhase).toBe('pseudocode');
-        expect(result.recommendations).toContain(
+        expect(result?.success).toBe(true);
+        expect(result?.phase).toBe('specification');
+        expect(result?.metrics?.duration).toBeGreaterThan(0);
+        expect(result?.metrics?.qualityScore).toBeGreaterThan(0.5);
+        expect(result?.metrics?.completeness).toBeGreaterThan(0.8);
+        expect(result?.deliverables).toHaveLength(1);
+        expect(result?.nextPhase).toBe('pseudocode');
+        expect(result?.recommendations).toContain(
           'Ensure all stakeholder requirements are captured'
         );
 
@@ -134,8 +134,8 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
         for (const phase of phases) {
           const result = await sparcEngine.executePhase(testProject, phase);
 
-          expect(result.success).toBe(true);
-          expect(result.phase).toBe(phase);
+          expect(result?.success).toBe(true);
+          expect(result?.phase).toBe(phase);
           expect(testProject.progress.completedPhases).toContain(phase);
         }
 
@@ -153,9 +153,9 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
 
         for (const phase of phases) {
           const result = await sparcEngine.executePhase(testProject, phase);
-          expect(result.recommendations).toEqual(
+          expect(result?.recommendations).toEqual(
             expect.arrayContaining([
-              expect.stringContaining(expectedRecommendations[phase][0].split(' ')[0]),
+              expect.stringContaining(expectedRecommendations[phase]?.[0]?.split(' ')[0]),
             ])
           );
         }
@@ -194,9 +194,9 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
         expect(artifactTypes).toContain('test-suite');
 
         // Verify relationships
-        expect(artifactSet.relationships[0].type).toBe('generates');
-        expect(artifactSet.relationships[1].type).toBe('implements');
-        expect(artifactSet.relationships[2].type).toBe('validates');
+        expect(artifactSet.relationships[0]?.type).toBe('generates');
+        expect(artifactSet.relationships[1]?.type).toBe('implements');
+        expect(artifactSet.relationships[2]?.type).toBe('validates');
       });
     });
 
@@ -493,11 +493,11 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
 
         const result = await sparcMCPTools.handleToolCall('sparc_create_project', args);
 
-        expect(result.success).toBe(true);
-        expect(result.projectId).toBeDefined();
-        expect(result.project.name).toBe('MCP Test Project');
-        expect(result.project.domain).toBe('swarm-coordination');
-        expect(result.nextSteps).toContain('Execute specification phase to analyze requirements');
+        expect(result?.success).toBe(true);
+        expect(result?.projectId).toBeDefined();
+        expect(result?.project?.name).toBe('MCP Test Project');
+        expect(result?.project?.domain).toBe('swarm-coordination');
+        expect(result?.nextSteps).toContain('Execute specification phase to analyze requirements');
       });
 
       it('should handle phase execution via MCP', async () => {
@@ -512,7 +512,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
 
         // Then execute a phase
         const executeArgs = {
-          projectId: createResult.projectId,
+          projectId: createResult?.projectId,
           phase: 'specification',
         };
         const executeResult = await sparcMCPTools.handleToolCall(
@@ -520,11 +520,11 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
           executeArgs
         );
 
-        expect(executeResult.success).toBe(true);
-        expect(executeResult.phase).toBe('specification');
-        expect(executeResult.duration).toMatch(/\d+\.\d+ minutes/);
-        expect(executeResult.nextPhase).toBe('pseudocode');
-        expect(executeResult.recommendations).toBeDefined();
+        expect(executeResult?.success).toBe(true);
+        expect(executeResult?.phase).toBe('specification');
+        expect(executeResult?.duration).toMatch(/\d+\.\d+ minutes/);
+        expect(executeResult?.nextPhase).toBe('pseudocode');
+        expect(executeResult?.recommendations).toBeDefined();
       });
 
       it('should handle project status retrieval via MCP', async () => {
@@ -538,7 +538,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
         const createResult = await sparcMCPTools.handleToolCall('sparc_create_project', createArgs);
 
         const statusArgs = {
-          projectId: createResult.projectId,
+          projectId: createResult?.projectId,
           includeDetails: true,
         };
         const statusResult = await sparcMCPTools.handleToolCall(
@@ -546,12 +546,12 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
           statusArgs
         );
 
-        expect(statusResult.id).toBe(createResult.projectId);
-        expect(statusResult.name).toBe('Status Test Project');
-        expect(statusResult.domain).toBe('neural-networks');
-        expect(statusResult.overallProgress).toBe('0.0%');
-        expect(statusResult.specification).toBeDefined();
-        expect(statusResult.artifacts).toBeDefined();
+        expect(statusResult?.id).toBe(createResult?.projectId);
+        expect(statusResult?.name).toBe('Status Test Project');
+        expect(statusResult?.domain).toBe('neural-networks');
+        expect(statusResult?.overallProgress).toBe('0.0%');
+        expect(statusResult?.specification).toBeDefined();
+        expect(statusResult?.artifacts).toBeDefined();
       });
 
       it('should list projects correctly via MCP', async () => {
@@ -577,15 +577,15 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
 
         const listResult = await sparcMCPTools.handleToolCall('sparc_list_projects', {});
 
-        expect(listResult.totalProjects).toBeGreaterThanOrEqual(2);
-        expect(listResult.projects).toBeDefined();
-        expect(listResult.projects.length).toBeGreaterThanOrEqual(2);
+        expect(listResult?.totalProjects).toBeGreaterThanOrEqual(2);
+        expect(listResult?.projects).toBeDefined();
+        expect(listResult?.projects.length).toBeGreaterThanOrEqual(2);
 
         // Test domain filtering
         const filteredResult = await sparcMCPTools.handleToolCall('sparc_list_projects', {
           domain: 'swarm-coordination',
         });
-        expect(filteredResult.projects.every((p: any) => p.domain === 'swarm-coordination')).toBe(
+        expect(filteredResult?.projects?.every((p: any) => p.domain === 'swarm-coordination')).toBe(
           true
         );
       });
@@ -645,7 +645,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
         await sparcEngine.executePhase(project, 'specification');
         const validation = await sparcEngine.validateCompletion(project);
 
-        qualityResults.push({
+        qualityResults?.push({
           domain,
           score: validation.score,
           blockers: validation.blockers.length,
@@ -653,8 +653,8 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
       }
 
       // All domains should maintain minimum quality
-      qualityResults.forEach((result) => {
-        expect(result.score).toBeGreaterThan(0.3); // Partial completion acceptable
+      qualityResults?.forEach((result) => {
+        expect(result?.score).toBeGreaterThan(0.3); // Partial completion acceptable
       });
     }, 20000);
   });

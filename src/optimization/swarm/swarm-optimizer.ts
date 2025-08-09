@@ -1,9 +1,14 @@
 /**
- * Swarm Coordination Performance Optimizer
- * Optimizes message routing, caching, latency, and scaling for swarm systems
+ * Swarm Coordination Performance Optimizer.
+ * Optimizes message routing, caching, latency, and scaling for swarm systems.
+ */
+/**
+ * @file swarm-optimizer implementation
  */
 
-import { createLogger } from '../../core/logger';
+
+
+import { createLogger } from '../core/logger';
 import type {
   CacheStrategy,
   CoordinationLayer,
@@ -58,7 +63,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Optimize message routing for improved latency and efficiency
+   * Optimize message routing for improved latency and efficiency.
    *
    * @param topology
    */
@@ -120,7 +125,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Implement intelligent caching for coordination data
+   * Implement intelligent caching for coordination data.
    *
    * @param coordinationLayer
    */
@@ -171,7 +176,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Reduce coordination latency through various optimizations
+   * Reduce coordination latency through various optimizations.
    *
    * @param communicationProtocols
    */
@@ -222,7 +227,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Implement horizontal scaling strategies
+   * Implement horizontal scaling strategies.
    *
    * @param swarmSize
    */
@@ -269,7 +274,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Analyze topology efficiency
+   * Analyze topology efficiency.
    *
    * @param topology
    */
@@ -292,7 +297,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Optimize routing algorithms for the given topology
+   * Optimize routing algorithms for the given topology.
    *
    * @param topology
    */
@@ -312,23 +317,23 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
     );
 
     // Select the best performing algorithm
-    const bestResult = results.reduce((best, current) =>
-      current.performance > best.performance ? current : best
+    const bestResult = results?.reduce((best, current) =>
+      current?.performance > best.performance ? current : best
     );
 
     // Update configuration if better algorithm found
-    if (bestResult.algorithm !== currentAlgorithm) {
-      this.config.routingAlgorithm = bestResult.algorithm as any;
+    if (bestResult?.algorithm !== currentAlgorithm) {
+      this.config.routingAlgorithm = bestResult?.algorithm as any;
     }
 
     return {
-      algorithm: bestResult.algorithm,
-      improvement: bestResult.performance,
+      algorithm: bestResult?.algorithm,
+      improvement: bestResult?.performance,
     };
   }
 
   /**
-   * Implement message compression
+   * Implement message compression.
    *
    * @param topology
    */
@@ -347,7 +352,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Optimize network protocols
+   * Optimize network protocols.
    *
    * @param topology
    */
@@ -389,7 +394,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Calculate optimal cache size based on coordination patterns
+   * Calculate optimal cache size based on coordination patterns.
    *
    * @param patterns
    */
@@ -406,7 +411,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Select eviction policy based on access patterns
+   * Select eviction policy based on access patterns.
    *
    * @param patterns
    */
@@ -421,7 +426,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Determine optimal load balancing strategy
+   * Determine optimal load balancing strategy.
    *
    * @param swarmSize
    */
@@ -435,7 +440,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Measure routing performance
+   * Measure routing performance.
    *
    * @param _topology
    */
@@ -450,7 +455,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Calculate topology efficiency
+   * Calculate topology efficiency.
    *
    * @param topology
    */
@@ -471,7 +476,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Identify topology bottlenecks
+   * Identify topology bottlenecks.
    *
    * @param topology
    */
@@ -494,7 +499,7 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   }
 
   /**
-   * Helper methods with mock implementations
+   * Helper methods with mock implementations.
    *
    * @param _topology
    */

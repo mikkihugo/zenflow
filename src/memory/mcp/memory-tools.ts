@@ -1,6 +1,6 @@
 /**
  * @file Memory Management MCP Tools
- * Comprehensive MCP tools for advanced memory system coordination and management
+ * Comprehensive MCP tools for advanced memory system coordination and management.
  */
 
 import type { BaseMemoryBackend } from '../backends/base-backend';
@@ -170,24 +170,24 @@ export const memoryInitTool: MCPTool = {
       for (const backendConfig of backends) {
         try {
           const backend = await MemoryBackendFactory.createBackend(
-            backendConfig.type as any,
-            backendConfig.config
+            backendConfig?.type as any,
+            backendConfig?.config
           );
           await backend.initialize();
 
-          registeredBackends.set(backendConfig.id, backend);
-          await memoryCoordinator.registerNode(backendConfig.id, backend);
-          performanceOptimizer.registerBackend(backendConfig.id, backend);
+          registeredBackends.set(backendConfig?.id, backend);
+          await memoryCoordinator.registerNode(backendConfig?.id, backend);
+          performanceOptimizer.registerBackend(backendConfig?.id, backend);
 
           initializedBackends.push({
-            id: backendConfig.id,
-            type: backendConfig.type,
+            id: backendConfig?.id,
+            type: backendConfig?.type,
             status: 'initialized',
           });
         } catch (error) {
           initializedBackends.push({
-            id: backendConfig.id,
-            type: backendConfig.type,
+            id: backendConfig?.id,
+            type: backendConfig?.type,
             status: 'failed',
             error: error.message,
           });
@@ -369,25 +369,25 @@ export const memoryMonitorTool: MCPTool = {
       // Get coordinator stats if available
       if (memoryCoordinator) {
         const coordinatorHealth = await memoryCoordinator.healthCheck();
-        (monitoringData.systems as any).coordinator = coordinatorHealth;
+        (monitoringData?.systems as any).coordinator = coordinatorHealth;
       }
 
       // Get optimizer stats if available
       if (performanceOptimizer) {
         const optimizerStats = performanceOptimizer.getStats();
-        (monitoringData.systems as any).optimizer = optimizerStats;
+        (monitoringData?.systems as any).optimizer = optimizerStats;
 
         // Check alerts
         const currentMetrics = optimizerStats.metrics;
 
         if (
           metrics.includes('latency') &&
-          currentMetrics.averageLatency > (alertThresholds.latency || 100)
+          currentMetrics?.averageLatency > (alertThresholds.latency || 100)
         ) {
-          monitoringData.alerts.push({
+          monitoringData?.alerts?.push({
             type: 'latency',
             severity: 'warning',
-            value: currentMetrics.averageLatency,
+            value: currentMetrics?.averageLatency,
             threshold: alertThresholds.latency || 100,
             message: 'Average latency exceeds threshold',
           });
@@ -395,12 +395,12 @@ export const memoryMonitorTool: MCPTool = {
 
         if (
           metrics.includes('errors') &&
-          currentMetrics.errorRate > (alertThresholds.errorRate || 0.05)
+          currentMetrics?.errorRate > (alertThresholds.errorRate || 0.05)
         ) {
-          monitoringData.alerts.push({
+          monitoringData?.alerts?.push({
             type: 'error_rate',
             severity: 'warning',
-            value: currentMetrics.errorRate,
+            value: currentMetrics?.errorRate,
             threshold: alertThresholds.errorRate || 0.05,
             message: 'Error rate exceeds threshold',
           });
@@ -408,12 +408,12 @@ export const memoryMonitorTool: MCPTool = {
 
         if (
           metrics.includes('memory') &&
-          currentMetrics.memoryUsage > (alertThresholds.memoryUsage || 0.8)
+          currentMetrics?.memoryUsage > (alertThresholds.memoryUsage || 0.8)
         ) {
-          monitoringData.alerts.push({
+          monitoringData?.alerts?.push({
             type: 'memory_usage',
             severity: 'warning',
-            value: currentMetrics.memoryUsage,
+            value: currentMetrics?.memoryUsage,
             threshold: alertThresholds.memoryUsage || 0.8,
             message: 'Memory usage exceeds threshold',
           });
@@ -421,12 +421,12 @@ export const memoryMonitorTool: MCPTool = {
 
         if (
           metrics.includes('cache') &&
-          currentMetrics.cacheHitRate < (alertThresholds.cacheHitRate || 0.7)
+          currentMetrics?.cacheHitRate < (alertThresholds.cacheHitRate || 0.7)
         ) {
-          monitoringData.alerts.push({
+          monitoringData?.alerts?.push({
             type: 'cache_hit_rate',
             severity: 'warning',
-            value: currentMetrics.cacheHitRate,
+            value: currentMetrics?.cacheHitRate,
             threshold: alertThresholds.cacheHitRate || 0.7,
             message: 'Cache hit rate below threshold',
           });
@@ -453,7 +453,7 @@ export const memoryMonitorTool: MCPTool = {
         }
       }
 
-      (monitoringData.systems as any).backends = backendStatus;
+      (monitoringData?.systems as any).backends = backendStatus;
 
       return {
         success: true,

@@ -1,8 +1,10 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("coordination-agents-composite-system");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-agents-composite-system');
+
 /**
  * @file Composite Pattern Implementation for Agent Hierarchies
- * Provides uniform interfaces for individual agents and agent groups
+ * Provides uniform interfaces for individual agents and agent groups.
  */
 
 import { EventEmitter } from 'node:events';
@@ -311,12 +313,12 @@ export class Agent extends EventEmitter implements AgentComponent {
     this.status.lastActivity = new Date();
 
     // Apply configuration
-    if (config.maxConcurrentTasks) {
-      this.maxConcurrentTasks = config.maxConcurrentTasks;
+    if (config?.maxConcurrentTasks) {
+      this.maxConcurrentTasks = config?.maxConcurrentTasks;
     }
 
-    if (config.capabilities) {
-      config.capabilities.forEach((cap: AgentCapability) => {
+    if (config?.capabilities) {
+      config?.capabilities.forEach((cap: AgentCapability) => {
         this.addCapability(cap);
       });
     }
@@ -782,17 +784,17 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     }
 
     try {
-      const result = await selectedAgent.executeTask(task);
+      const result = await selectedAgent?.executeTask(task);
       this.emit('task:delegated', {
         taskId: task.id,
-        selectedAgentId: selectedAgent.getId(),
+        selectedAgentId: selectedAgent?.getId(),
         groupId: this.id,
       });
       return result;
     } catch (error) {
       this.emit('task:delegation_failed', {
         taskId: task.id,
-        selectedAgentId: selectedAgent.getId(),
+        selectedAgentId: selectedAgent?.getId(),
         groupId: this.id,
         error: (error as Error).message,
       });
@@ -946,9 +948,9 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
 
     const results = await Promise.allSettled(taskPromises);
 
-    return results.map((result, index) => {
-      if (result.status === 'fulfilled') {
-        return result.value;
+    return results?.map((result, index) => {
+      if (result?.status === 'fulfilled') {
+        return result?.value;
       } else {
         const agent = eligibleMembers[index];
         return {
@@ -957,7 +959,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
           status: 'failed' as const,
           startTime: new Date(),
           endTime: new Date(),
-          error: result.reason.message,
+          error: result?.reason?.message,
         };
       }
     });
@@ -1003,10 +1005,10 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
 
     return eligibleMembers.reduce((least, current) => {
       const leastStatus = least.getStatus();
-      const currentStatus = current.getStatus();
+      const currentStatus = current?.getStatus();
 
       const leastLoad = 'queuedTasks' in leastStatus ? leastStatus.queuedTasks : 0;
-      const currentLoad = 'queuedTasks' in currentStatus ? currentStatus.queuedTasks : 0;
+      const currentLoad = 'queuedTasks' in currentStatus ? currentStatus?.queuedTasks : 0;
 
       return leastLoad <= currentLoad ? least : current;
     });
@@ -1023,14 +1025,14 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     // Select member with the most matching capabilities
     return eligibleMembers.reduce((best, current) => {
       const bestCapabilities = best.getCapabilities();
-      const currentCapabilities = current.getCapabilities();
+      const currentCapabilities = current?.getCapabilities();
 
       const bestMatches = task.requiredCapabilities.filter((req) =>
         bestCapabilities.some((cap) => cap.name === req)
       ).length;
 
       const currentMatches = task.requiredCapabilities.filter((req) =>
-        currentCapabilities.some((cap) => cap.name === req)
+        currentCapabilities?.some((cap) => cap.name === req)
       ).length;
 
       return bestMatches >= currentMatches ? best : current;

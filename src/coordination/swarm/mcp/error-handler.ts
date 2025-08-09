@@ -1,9 +1,14 @@
 /**
- * Unified MCP Error Handler for Coordination and Swarm
+ * Unified MCP Error Handler for Coordination and Swarm.
  * Consolidates error handling from the removed coordination/mcp directory.
  */
+/**
+ * @file Coordination system: error-handler
+ */
 
-import { createLogger } from '../../../core/logger';
+
+
+import { createLogger } from '../core/logger';
 
 const logger = createLogger({ prefix: 'MCP-ErrorHandler' });
 
@@ -261,7 +266,12 @@ export class ErrorFactory {
           metadata?.['field']
         );
       case 'agent':
-        return ErrorFactory.createErrorWithContext(AgentError, message, context, metadata?.['agentId']);
+        return ErrorFactory.createErrorWithContext(
+          AgentError,
+          message,
+          context,
+          metadata?.['agentId']
+        );
       case 'neural':
         return ErrorFactory.createErrorWithContext(
           NeuralError,

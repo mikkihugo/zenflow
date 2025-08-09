@@ -1,9 +1,14 @@
 /**
- * SPARC Pseudocode Phase Engine
+ * SPARC Pseudocode Phase Engine.
  *
- * Handles the second phase of SPARC methodology - generating algorithmic
+ * Handles the second phase of SPARC methodology - generating algorithmic.
  * pseudocode with complexity analysis and optimization strategies.
  */
+/**
+ * @file pseudocode processing engine
+ */
+
+
 
 import { nanoid } from 'nanoid';
 import type {
@@ -23,11 +28,11 @@ import type {
   PseudocodeValidation,
   ReturnDefinition,
   ValidationResult,
-} from '../../types/sparc-types';
+} from '../types/sparc-types';
 
 export class PseudocodePhaseEngine implements PseudocodeEngine {
   /**
-   * Generate algorithmic pseudocode from detailed specifications
+   * Generate algorithmic pseudocode from detailed specifications.
    *
    * @param spec
    */
@@ -140,7 +145,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
     return validationResults;
   }
   /**
-   * Generate algorithmic pseudocode from detailed specifications
+   * Generate algorithmic pseudocode from detailed specifications.
    *
    * @param specification
    */
@@ -164,7 +169,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   }
 
   /**
-   * Analyze computational complexity of algorithms
+   * Analyze computational complexity of algorithms.
    *
    * @param algorithms
    */
@@ -227,7 +232,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   }
 
   /**
-   * Identify optimization opportunities
+   * Identify optimization opportunities.
    *
    * @param algorithms
    */
@@ -270,7 +275,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   }
 
   /**
-   * Generate algorithm-specific pseudocode
+   * Generate algorithm-specific pseudocode.
    *
    * @param requirement
    * @param _domain
@@ -294,7 +299,7 @@ END
   }
 
   /**
-   * Estimate algorithm complexity
+   * Estimate algorithm complexity.
    *
    * @param _requirement
    */
@@ -310,7 +315,7 @@ END
   /**
    * Extract input parameters from requirement as ParameterDefinition[]
    *
-   * @param requirement
+   * @param requirement.
    */
   private async extractInputParameterDefinitions(requirement: any): Promise<ParameterDefinition[]> {
     const inputs = requirement.inputs || ['input'];
@@ -325,7 +330,7 @@ END
   /**
    * Extract output definitions from requirement as ReturnDefinition[]
    *
-   * @param requirement
+   * @param requirement.
    */
   private async extractOutputDefinitions(requirement: any): Promise<ReturnDefinition[]> {
     const outputs = requirement.outputs || ['result'];
@@ -337,7 +342,7 @@ END
   }
 
   /**
-   * Generate pseudocode steps from requirement
+   * Generate pseudocode steps from requirement.
    *
    * @param requirement
    * @param domain
@@ -359,7 +364,7 @@ END
   }
 
   /**
-   * Identify optimization opportunities for specific algorithm
+   * Identify optimization opportunities for specific algorithm.
    *
    * @param requirement
    */
@@ -378,7 +383,7 @@ END
   }
 
   /**
-   * Validate generated pseudocode
+   * Validate generated pseudocode.
    *
    * @param pseudocode
    */
@@ -418,7 +423,7 @@ END
     });
 
     const overallScore =
-      validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
+      validationResults.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
 
     return {
       id: nanoid(),
@@ -434,7 +439,7 @@ END
   }
 
   /**
-   * Generate recommendations based on validation results
+   * Generate recommendations based on validation results.
    *
    * @param validationResults
    */
@@ -442,8 +447,8 @@ END
     const recommendations: string[] = [];
 
     for (const result of validationResults) {
-      if (!result.passed) {
-        switch (result.criterion) {
+      if (!result?.passed) {
+        switch (result?.criterion) {
           case 'Algorithm completeness':
             recommendations.push('Add missing core algorithms for all functional requirements');
             break;

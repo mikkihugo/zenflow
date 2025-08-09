@@ -1,6 +1,7 @@
 /**
+/// <reference types="./global-types" />
  * Common TDD London Mock Classes
- * 
+ *
  * Ready-to-use mock classes following TDD London pattern for the most
  * common services found in the codebase. Based on analysis of 48 test files
  * with 225+ mock patterns that need conversion.
@@ -20,11 +21,9 @@ export class MockCoordinationService {
   coordinateAgents: jest.MockedFunction<
     (agentIds: string[], topology: string, task?: string) => Promise<CoordinationResult>
   > = jest.fn();
-  
-  releaseCoordination: jest.MockedFunction<
-    (coordinationId: string) => Promise<void>
-  > = jest.fn();
-  
+
+  releaseCoordination: jest.MockedFunction<(coordinationId: string) => Promise<void>> = jest.fn();
+
   getCoordinationStatus: jest.MockedFunction<
     (coordinationId: string) => Promise<CoordinationStatus>
   > = jest.fn();
@@ -35,14 +34,14 @@ export class MockCoordinationService {
       coordinationId: 'coord-123',
       memoryAllocations: [],
       activeAgents: 2,
-      topology: 'mesh'
+      topology: 'mesh',
     });
-    
+
     this.releaseCoordination.mockResolvedValue(undefined);
     this.getCoordinationStatus.mockResolvedValue({
       coordinationId: 'coord-123',
       status: 'active',
-      agentCount: 2
+      agentCount: 2,
     });
   }
 
@@ -114,7 +113,7 @@ export class MockMemoryStoreService {
   }
 
   setupRetrieveValue(key: string, value: any) {
-    this.retrieve.mockImplementationOnce((k) => 
+    this.retrieve.mockImplementationOnce((k) =>
       k === key ? Promise.resolve(value) : Promise.resolve(null)
     );
     return this;
@@ -188,7 +187,7 @@ export class MockSwarmService {
     this.getSwarmStatus.mockResolvedValue({
       totalAgents: 5,
       activeAgents: 3,
-      status: 'operational'
+      status: 'operational',
     });
     this.orchestrateTask.mockResolvedValue({ success: true });
   }
@@ -229,7 +228,8 @@ export class MockSwarmService {
  */
 export class MockDatabaseService {
   query: jest.MockedFunction<(sql: string, params?: any[]) => Promise<any[]>> = jest.fn();
-  execute: jest.MockedFunction<(sql: string, params?: any[]) => Promise<{ affectedRows: number }>> = jest.fn();
+  execute: jest.MockedFunction<(sql: string, params?: any[]) => Promise<{ affectedRows: number }>> =
+    jest.fn();
   transaction: jest.MockedFunction<(fn: (tx: any) => Promise<any>) => Promise<any>> = jest.fn();
   connect: jest.MockedFunction<() => Promise<void>> = jest.fn();
   disconnect: jest.MockedFunction<() => Promise<void>> = jest.fn();
@@ -275,7 +275,7 @@ export class MockDatabaseService {
  */
 export class MockMCPServerService {
   initialize: jest.MockedFunction<() => Promise<void>> = jest.fn();
-  handleMessage: jest.MockedFunction<(message: any) => Promise<any>> = jest.fn();
+  handleMessage: jest.MockedFunction<(message: unknown) => Promise<any>> = jest.fn();
   registerTool: jest.MockedFunction<(tool: any) => Promise<void>> = jest.fn();
   shutdown: jest.MockedFunction<() => Promise<void>> = jest.fn();
 
@@ -357,7 +357,7 @@ export function createCommonMocks() {
  * Helper to clear all mocks in a collection
  */
 export function clearAllCommonMocks(mocks: ReturnType<typeof createCommonMocks>) {
-  Object.values(mocks).forEach(mock => mock.clearAllMocks());
+  Object.values(mocks).forEach((mock) => mock.clearAllMocks());
 }
 
 // ============================================================================

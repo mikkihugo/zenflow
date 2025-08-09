@@ -1,7 +1,12 @@
 /**
- * Real-Time Metrics Collection System
- * Comprehensive system-wide performance monitoring
+ * Real-Time Metrics Collection System.
+ * Comprehensive system-wide performance monitoring.
  */
+/**
+ * @file metrics-collector implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import * as fs from 'node:fs/promises';
@@ -149,12 +154,12 @@ export class MetricsCollector extends EventEmitter {
     } = {}
   ) {
     super();
-    this.collectionInterval = options.collectionInterval || 1000;
-    this.maxHistorySize = options.maxHistorySize || 3600;
+    this.collectionInterval = options?.collectionInterval || 1000;
+    this.maxHistorySize = options?.maxHistorySize || 3600;
   }
 
   /**
-   * Start metrics collection
+   * Start metrics collection.
    */
   public startCollection(): void {
     if (this.isCollecting) return;
@@ -168,7 +173,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Stop metrics collection
+   * Stop metrics collection.
    */
   public stopCollection(): void {
     if (!this.isCollecting) return;
@@ -183,7 +188,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Collect comprehensive metrics
+   * Collect comprehensive metrics.
    */
   private async collectMetrics(): Promise<void> {
     try {
@@ -203,7 +208,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Collect system performance metrics
+   * Collect system performance metrics.
    */
   private async collectSystemMetrics(): Promise<SystemMetrics> {
     const memUsage = process.memoryUsage();
@@ -241,7 +246,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Collect FACT system metrics
+   * Collect FACT system metrics.
    */
   private async collectFactMetrics(): Promise<FactMetrics> {
     // Integration point with FACT system
@@ -271,7 +276,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Collect RAG system metrics
+   * Collect RAG system metrics.
    */
   private async collectRagMetrics(): Promise<RagMetrics> {
     // Integration point with RAG system
@@ -301,7 +306,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Collect swarm coordination metrics
+   * Collect swarm coordination metrics.
    */
   private async collectSwarmMetrics(): Promise<SwarmMetrics> {
     // Integration point with swarm system
@@ -337,7 +342,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Collect MCP tool metrics
+   * Collect MCP tool metrics.
    */
   private async collectMcpToolMetrics(): Promise<McpToolMetrics> {
     // Integration point with MCP system
@@ -391,7 +396,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Get CPU usage percentage
+   * Get CPU usage percentage.
    */
   private async getCpuUsage(): Promise<number> {
     return new Promise((resolve) => {
@@ -410,7 +415,7 @@ export class MetricsCollector extends EventEmitter {
    */
   private async getIoStats(): Promise<any> {
     // This would read from /proc/diskstats on Linux or similar on other platforms
-    // For now, return mock data
+    // For now, return mock data.
     const current = {
       readBytes: Math.floor(Math.random() * 1000000),
       writeBytes: Math.floor(Math.random() * 500000),
@@ -420,10 +425,10 @@ export class MetricsCollector extends EventEmitter {
 
     if (this.lastIoStats) {
       return {
-        readBytes: Math.max(0, current.readBytes - this.lastIoStats.readBytes),
-        writeBytes: Math.max(0, current.writeBytes - this.lastIoStats.writeBytes),
-        readOps: Math.max(0, current.readOps - this.lastIoStats.readOps),
-        writeOps: Math.max(0, current.writeOps - this.lastIoStats.writeOps),
+        readBytes: Math.max(0, current?.readBytes - this.lastIoStats.readBytes),
+        writeBytes: Math.max(0, current?.writeBytes - this.lastIoStats.writeBytes),
+        readOps: Math.max(0, current?.readOps - this.lastIoStats.readOps),
+        writeOps: Math.max(0, current?.writeOps - this.lastIoStats.writeOps),
       };
     }
 
@@ -436,7 +441,7 @@ export class MetricsCollector extends EventEmitter {
    */
   private async getNetworkStats(): Promise<any> {
     // This would read from /proc/net/dev on Linux or similar on other platforms
-    // For now, return mock data
+    // For now, return mock data.
     return {
       bytesIn: Math.floor(Math.random() * 100000),
       bytesOut: Math.floor(Math.random() * 50000),
@@ -445,7 +450,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Add metrics to history with size limit
+   * Add metrics to history with size limit.
    *
    * @param metrics
    */
@@ -458,7 +463,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Get metrics history
+   * Get metrics history.
    *
    * @param timeRange
    * @param timeRange.start
@@ -476,7 +481,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Get latest metrics
+   * Get latest metrics.
    */
   public getLatestMetrics(): CompositeMetrics | null {
     return this.metricsHistory.length > 0
@@ -485,7 +490,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Generate random metric value within range
+   * Generate random metric value within range.
    *
    * @param min
    * @param max
@@ -495,7 +500,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Export metrics to file
+   * Export metrics to file.
    *
    * @param filePath
    * @param format
@@ -512,7 +517,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Convert metrics to CSV format
+   * Convert metrics to CSV format.
    *
    * @param data
    */

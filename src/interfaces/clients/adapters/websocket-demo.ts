@@ -1,14 +1,21 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-clients-adapters-websocket-demo");
 /**
- * WebSocket Client Adapter Demo
+ * @file Interface implementation: websocket-demo
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-clients-adapters-websocket-demo');
+
+/**
+ * WebSocket Client Adapter Demo.
  *
- * Demonstrates how to use the UACL WebSocket client adapters
+ * Demonstrates how to use the UACL WebSocket client adapters.
  * and showcases the migration from legacy to UACL patterns.
  */
 
 // Legacy WebSocket client for comparison
-import { WebSocketClient as LegacyWebSocketClient } from '../../api/websocket/client';
+import { WebSocketClient as LegacyWebSocketClient } from '../api/websocket/client';
 import {
   createOptimalWebSocketClient,
   createSimpleWebSocketClient,
@@ -24,7 +31,7 @@ import {
 } from './websocket-index';
 
 /**
- * Example 1: Basic UACL WebSocket Client Usage
+ * Example 1: Basic UACL WebSocket Client Usage.
  */
 export async function basicUACLWebSocketExample() {
   // Create a WebSocket client using UACL configuration
@@ -81,7 +88,7 @@ export async function basicUACLWebSocketExample() {
 }
 
 /**
- * Example 2: Enhanced WebSocket Client with Legacy Compatibility
+ * Example 2: Enhanced WebSocket Client with Legacy Compatibility.
  */
 export async function enhancedWebSocketExample() {
   // Create using legacy constructor pattern (backward compatibility)
@@ -124,7 +131,7 @@ export async function enhancedWebSocketExample() {
 }
 
 /**
- * Example 3: WebSocket Client Factory Usage
+ * Example 3: WebSocket Client Factory Usage.
  */
 export async function webSocketFactoryExample() {
   const factory = new WebSocketClientFactory();
@@ -158,7 +165,7 @@ export async function webSocketFactoryExample() {
 }
 
 /**
- * Example 4: Load Balanced WebSocket Clients
+ * Example 4: Load Balanced WebSocket Clients.
  */
 export async function loadBalancedWebSocketExample() {
   const factory = new WebSocketClientFactory();
@@ -196,7 +203,7 @@ export async function loadBalancedWebSocketExample() {
 }
 
 /**
- * Example 5: Failover WebSocket Client
+ * Example 5: Failover WebSocket Client.
  */
 export async function failoverWebSocketExample() {
   const factory = new WebSocketClientFactory();
@@ -221,7 +228,7 @@ export async function failoverWebSocketExample() {
 }
 
 /**
- * Example 6: WebSocket Health Monitoring
+ * Example 6: WebSocket Health Monitoring.
  */
 export async function webSocketHealthMonitoringExample() {
   const monitor = new WebSocketHealthMonitor();
@@ -254,7 +261,7 @@ export async function webSocketHealthMonitoringExample() {
 }
 
 /**
- * Example 7: Migration from Legacy to UACL
+ * Example 7: Migration from Legacy to UACL.
  */
 export async function migrationExample() {
   const legacyClient = new LegacyWebSocketClient('wss://echo.websocket.org', {
@@ -309,7 +316,7 @@ export async function migrationExample() {
 }
 
 /**
- * Run all examples
+ * Run all examples.
  */
 export async function runAllWebSocketExamples() {
   const examples = [

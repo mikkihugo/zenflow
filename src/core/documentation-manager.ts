@@ -1,7 +1,7 @@
 /**
- * Documentation Manager - Documentation Indexing and Linking
+ * Documentation Manager - Documentation Indexing and Linking.
  *
- * Clean, focused documentation manager that handles documentation indexing and linking
+ * Clean, focused documentation manager that handles documentation indexing and linking.
  * without bloated "unified" architecture.
  *
  * @example
@@ -15,14 +15,20 @@
  * await docManager.indexDocument(document);
  * ```
  */
+/**
+ * @file documentation management system
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import type { MemorySystem } from '../memory/memory-system';
 import { createLogger } from './logger';
 
 const logger = createLogger('DocumentationManager');
 
 /**
- * Documentation manager configuration
+ * Documentation manager configuration.
  *
  * @example
  */
@@ -36,7 +42,7 @@ export interface DocumentationManagerConfig {
 }
 
 /**
- * Documentation statistics
+ * Documentation statistics.
  *
  * @example
  */
@@ -50,7 +56,7 @@ export interface DocumentationStats {
 }
 
 /**
- * Clean documentation manager for indexing and linking
+ * Clean documentation manager for indexing and linking.
  *
  * @example
  */

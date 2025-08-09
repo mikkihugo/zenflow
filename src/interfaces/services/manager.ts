@@ -1,5 +1,5 @@
 /**
- * USL Service Manager - Complete Service Lifecycle Management
+ * USL Service Manager - Complete Service Lifecycle Management.
  *
  * @file Advanced service manager providing comprehensive lifecycle orchestration,
  * factory registration, health monitoring, auto-recovery, and service coordination
@@ -68,7 +68,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../../utils/logger';
+import { createLogger, type Logger } from '../utils/logger';
 import {
   type CoordinationServiceAdapterConfig,
   type CoordinationServiceFactory,
@@ -101,7 +101,7 @@ import { EnhancedServiceRegistry, type ServiceRegistryConfig } from './registry'
 import { type AnyServiceConfig, ServicePriority, ServiceType } from './types';
 
 /**
- * Service Manager Configuration
+ * Service Manager Configuration.
  *
  * @interface ServiceManagerConfig
  * @description Comprehensive configuration for the USL Service Manager,
@@ -232,7 +232,7 @@ export interface ServiceManagerConfig {
     };
     caching: {
       enabled: boolean;
-      ttl: number; // ms
+      ttl: number; // ms.
       maxSize: number;
     };
     loadBalancing: {
@@ -274,7 +274,7 @@ export interface BatchServiceCreationRequest {
 }
 
 /**
- * Complete Service Manager for USL ecosystem
+ * Complete Service Manager for USL ecosystem.
  *
  * @example
  */
@@ -322,7 +322,7 @@ export class ServiceManager extends EventEmitter {
   // ============================================
 
   /**
-   * Initialize the service manager and register all service factories
+   * Initialize the service manager and register all service factories.
    */
   async initialize(): Promise<void> {
     if (this.initialized) {
@@ -357,24 +357,24 @@ export class ServiceManager extends EventEmitter {
   }
 
   /**
-   * Check if service manager is initialized
+   * Check if service manager is initialized.
    */
   isInitialized(): boolean {
     return this.initialized;
   }
 
   /**
-   * Get comprehensive service manager status
+   * Get comprehensive service manager status.
    */
   async getStatus(): Promise<ServiceManagerStatus> {
     const systemMetrics = await this.registry.getSystemMetrics();
     const healthResults = await this.registry.healthCheckAll();
 
-    const _healthyCount = Array.from(healthResults.values()).filter(
+    const _healthyCount = Array.from(healthResults?.values()).filter(
       (status) => status.health === 'healthy'
     ).length;
 
-    const errorCount = Array.from(healthResults.values()).filter(
+    const errorCount = Array.from(healthResults?.values()).filter(
       (status) => status.health === 'unhealthy' || status.lifecycle === 'error'
     ).length;
 
@@ -418,7 +418,7 @@ export class ServiceManager extends EventEmitter {
   // ============================================
 
   /**
-   * Create a single service with enhanced configuration
+   * Create a single service with enhanced configuration.
    *
    * @param request
    */
@@ -447,7 +447,7 @@ export class ServiceManager extends EventEmitter {
   }
 
   /**
-   * Create multiple services with dependency resolution
+   * Create multiple services with dependency resolution.
    *
    * @param request
    */
@@ -477,13 +477,13 @@ export class ServiceManager extends EventEmitter {
 
         const results = await Promise.allSettled(createPromises);
 
-        results.forEach((result, index) => {
-          if (result.status === 'fulfilled') {
-            createdServices.push(result.value);
+        results?.forEach((result, index) => {
+          if (result?.status === 'fulfilled') {
+            createdServices.push(result?.value);
           } else {
             this.logger.error(
-              `Failed to create service ${request.services[index].name}:`,
-              result.reason
+              `Failed to create service ${request.services[index]?.name}:`,
+              result?.reason
             );
           }
         });
@@ -514,7 +514,7 @@ export class ServiceManager extends EventEmitter {
   }
 
   /**
-   * Enhanced service creation methods for each service type
+   * Enhanced service creation methods for each service type.
    */
 
   // Data Services
@@ -637,7 +637,7 @@ export class ServiceManager extends EventEmitter {
   // ============================================
 
   /**
-   * Start specific services by name
+   * Start specific services by name.
    *
    * @param serviceNames
    */
@@ -654,7 +654,7 @@ export class ServiceManager extends EventEmitter {
   }
 
   /**
-   * Stop specific services by name
+   * Stop specific services by name.
    *
    * @param serviceNames
    */
@@ -677,7 +677,7 @@ export class ServiceManager extends EventEmitter {
   }
 
   /**
-   * Start all services
+   * Start all services.
    */
   async startAllServices(): Promise<void> {
     this.logger.info('Starting all services...');
@@ -685,7 +685,7 @@ export class ServiceManager extends EventEmitter {
   }
 
   /**
-   * Stop all services
+   * Stop all services.
    */
   async stopAllServices(): Promise<void> {
     this.logger.info('Stopping all services...');
@@ -693,7 +693,7 @@ export class ServiceManager extends EventEmitter {
   }
 
   /**
-   * Restart specific services
+   * Restart specific services.
    *
    * @param serviceNames
    */
@@ -723,7 +723,7 @@ export class ServiceManager extends EventEmitter {
   // ============================================
 
   /**
-   * Get comprehensive system health report
+   * Get comprehensive system health report.
    */
   async getSystemHealth(): Promise<{
     overall: 'healthy' | 'degraded' | 'unhealthy';
@@ -749,11 +749,13 @@ export class ServiceManager extends EventEmitter {
     const metrics = await this.registry.getSystemMetrics();
 
     const total = healthResults.size;
-    const healthy = Array.from(healthResults.values()).filter((s) => s.health === 'healthy').length;
-    const degraded = Array.from(healthResults.values()).filter(
+    const healthy = Array.from(healthResults?.values()).filter(
+      (s) => s.health === 'healthy'
+    ).length;
+    const degraded = Array.from(healthResults?.values()).filter(
       (s) => s.health === 'degraded'
     ).length;
-    const unhealthy = Array.from(healthResults.values()).filter(
+    const unhealthy = Array.from(healthResults?.values()).filter(
       (s) => s.health === 'unhealthy'
     ).length;
 
@@ -793,7 +795,7 @@ export class ServiceManager extends EventEmitter {
   }
 
   /**
-   * Get performance metrics for all services
+   * Get performance metrics for all services.
    */
   async getPerformanceMetrics(): Promise<{
     timestamp: Date;
@@ -832,7 +834,7 @@ export class ServiceManager extends EventEmitter {
     let serviceCount = 0;
 
     metrics.aggregatedMetrics.forEach((metric) => {
-      const health = healthResults.get(metric.name);
+      const health = healthResults?.get(metric.name);
       if (!health) return;
 
       const _successRate =
@@ -888,7 +890,7 @@ export class ServiceManager extends EventEmitter {
   // ============================================
 
   /**
-   * Discover services by criteria
+   * Discover services by criteria.
    *
    * @param criteria
    * @param criteria.type
@@ -906,7 +908,7 @@ export class ServiceManager extends EventEmitter {
   }
 
   /**
-   * Get service by name
+   * Get service by name.
    *
    * @param name
    */
@@ -915,14 +917,14 @@ export class ServiceManager extends EventEmitter {
   }
 
   /**
-   * Get all services
+   * Get all services.
    */
   getAllServices(): Map<string, IService> {
     return this.registry.getAllServices();
   }
 
   /**
-   * Get services by type
+   * Get services by type.
    *
    * @param type
    */
@@ -935,7 +937,7 @@ export class ServiceManager extends EventEmitter {
   // ============================================
 
   /**
-   * Graceful shutdown of service manager
+   * Graceful shutdown of service manager.
    */
   async shutdown(): Promise<void> {
     if (!this.initialized) {
@@ -1553,7 +1555,7 @@ export class ServiceManager extends EventEmitter {
     const timestamp = new Date();
 
     // Check service health alerts
-    healthResults.forEach((status, serviceName) => {
+    healthResults?.forEach((status, serviceName) => {
       if (status.health !== 'healthy') {
         alerts.push({
           type: 'service-health',

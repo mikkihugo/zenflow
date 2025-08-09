@@ -1,5 +1,5 @@
 /**
- * Neural Network API v1 Routes
+ * Neural Network API v1 Routes.
  *
  * REST API routes for neural network domain.
  * Moved from neural/api.ts to unified API layer.
@@ -9,13 +9,13 @@
  */
 
 import { type Request, type Response, Router } from 'express';
-import { NeuralDomainAPI } from '../../neural/api';
+import { NeuralDomainAPI } from '../neural/api';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log, logPerformance } from '../middleware/logging';
 
 /**
- * Create neural network routes
- * All neural endpoints under /api/v1/neural
+ * Create neural network routes.
+ * All neural endpoints under /api/v1/neural.
  */
 export const createNeuralRoutes = (): Router => {
   const router = Router();
@@ -23,8 +23,8 @@ export const createNeuralRoutes = (): Router => {
   // ===== NEURAL NETWORK MANAGEMENT =====
 
   /**
-   * GET /api/v1/neural/networks
-   * List all neural networks with filtering
+   * GET /api/v1/neural/networks.
+   * List all neural networks with filtering.
    */
   router.get(
     '/networks',
@@ -41,7 +41,7 @@ export const createNeuralRoutes = (): Router => {
       const duration = Date.now() - startTime;
 
       logPerformance('list_neural_networks', duration, req, {
-        networksCount: result.networks.length,
+        networksCount: result?.networks.length,
         filters: req.query,
       });
 
@@ -50,8 +50,8 @@ export const createNeuralRoutes = (): Router => {
   );
 
   /**
-   * POST /api/v1/neural/networks
-   * Create new neural network
+   * POST /api/v1/neural/networks.
+   * Create new neural network.
    */
   router.post(
     '/networks',
@@ -66,15 +66,15 @@ export const createNeuralRoutes = (): Router => {
       const duration = Date.now() - startTime;
 
       logPerformance('create_neural_network', duration, req, {
-        networkId: result.id,
-        networkType: result.type,
-        layers: result.layers.length,
+        networkId: result?.id,
+        networkType: result?.type,
+        layers: result?.layers.length,
       });
 
       log(LogLevel.INFO, 'Neural network created successfully', req, {
-        networkId: result.id,
-        networkType: result.type,
-        layerCount: result.layers.length,
+        networkId: result?.id,
+        networkType: result?.type,
+        layerCount: result?.layers.length,
       });
 
       res.status(201).json(result);
@@ -82,8 +82,8 @@ export const createNeuralRoutes = (): Router => {
   );
 
   /**
-   * GET /api/v1/neural/networks/:networkId
-   * Get specific neural network by ID
+   * GET /api/v1/neural/networks/:networkId.
+   * Get specific neural network by ID.
    */
   router.get(
     '/networks/:networkId',
@@ -115,8 +115,8 @@ export const createNeuralRoutes = (): Router => {
   );
 
   /**
-   * DELETE /api/v1/neural/networks/:networkId
-   * Delete neural network
+   * DELETE /api/v1/neural/networks/:networkId.
+   * Delete neural network.
    */
   router.delete(
     '/networks/:networkId',
@@ -139,8 +139,8 @@ export const createNeuralRoutes = (): Router => {
   // ===== TRAINING OPERATIONS =====
 
   /**
-   * POST /api/v1/neural/networks/:networkId/train
-   * Start training a neural network
+   * POST /api/v1/neural/networks/:networkId/train.
+   * Start training a neural network.
    */
   router.post(
     '/networks/:networkId/train',
@@ -161,14 +161,14 @@ export const createNeuralRoutes = (): Router => {
 
       logPerformance('start_training', duration, req, {
         networkId,
-        trainingId: result.trainingId,
+        trainingId: result?.trainingId,
         epochs: req.body.epochs,
       });
 
       log(LogLevel.INFO, 'Training started successfully', req, {
         networkId,
-        trainingId: result.trainingId,
-        status: result.status,
+        trainingId: result?.trainingId,
+        status: result?.status,
       });
 
       res.status(202).json(result);
@@ -176,8 +176,8 @@ export const createNeuralRoutes = (): Router => {
   );
 
   /**
-   * GET /api/v1/neural/networks/:networkId/training/:trainingId
-   * Get training job status
+   * GET /api/v1/neural/networks/:networkId/training/:trainingId.
+   * Get training job status.
    */
   router.get(
     '/networks/:networkId/training/:trainingId',
@@ -211,8 +211,8 @@ export const createNeuralRoutes = (): Router => {
   );
 
   /**
-   * DELETE /api/v1/neural/networks/:networkId/training/:trainingId
-   * Cancel training job
+   * DELETE /api/v1/neural/networks/:networkId/training/:trainingId.
+   * Cancel training job.
    */
   router.delete(
     '/networks/:networkId/training/:trainingId',
@@ -237,8 +237,8 @@ export const createNeuralRoutes = (): Router => {
   // ===== PREDICTION OPERATIONS =====
 
   /**
-   * POST /api/v1/neural/networks/:networkId/predict
-   * Make prediction using trained network
+   * POST /api/v1/neural/networks/:networkId/predict.
+   * Make prediction using trained network.
    */
   router.post(
     '/networks/:networkId/predict',
@@ -258,14 +258,14 @@ export const createNeuralRoutes = (): Router => {
       logPerformance('neural_prediction', duration, req, {
         networkId,
         inputSize: req.body.input?.length,
-        outputSize: result.output.length,
-        confidence: result.confidence,
+        outputSize: result?.output.length,
+        confidence: result?.confidence,
       });
 
       log(LogLevel.DEBUG, 'Prediction completed', req, {
         networkId,
         processingTime: duration,
-        confidence: result.confidence,
+        confidence: result?.confidence,
       });
 
       res.json(result);
@@ -273,8 +273,8 @@ export const createNeuralRoutes = (): Router => {
   );
 
   /**
-   * POST /api/v1/neural/networks/:networkId/predict/batch
-   * Make batch predictions
+   * POST /api/v1/neural/networks/:networkId/predict/batch.
+   * Make batch predictions.
    */
   router.post(
     '/networks/:networkId/predict/batch',
@@ -303,7 +303,7 @@ export const createNeuralRoutes = (): Router => {
       logPerformance('batch_predictions', duration, req, {
         networkId,
         batchSize: results.length,
-        avgConfidence: results.reduce((sum, r) => sum + r.confidence, 0) / results.length,
+        avgConfidence: results?.reduce((sum, r) => sum + r.confidence, 0) / results.length,
       });
 
       const response = {
@@ -313,7 +313,7 @@ export const createNeuralRoutes = (): Router => {
           total: results.length,
           successful: results.length,
           failed: 0,
-          avgConfidence: results.reduce((sum, r) => sum + r.confidence, 0) / results.length,
+          avgConfidence: results?.reduce((sum, r) => sum + r.confidence, 0) / results.length,
           totalProcessingTime: duration,
         },
         timestamp: new Date().toISOString(),
@@ -326,8 +326,8 @@ export const createNeuralRoutes = (): Router => {
   // ===== MODEL MANAGEMENT =====
 
   /**
-   * POST /api/v1/neural/networks/:networkId/export
-   * Export trained model
+   * POST /api/v1/neural/networks/:networkId/export.
+   * Export trained model.
    */
   router.post(
     '/networks/:networkId/export',
@@ -356,7 +356,7 @@ export const createNeuralRoutes = (): Router => {
 
       log(LogLevel.INFO, 'Model export completed', req, {
         networkId,
-        exportId: result.exportId,
+        exportId: result?.exportId,
         format,
         size: result.size,
       });
@@ -366,8 +366,8 @@ export const createNeuralRoutes = (): Router => {
   );
 
   /**
-   * POST /api/v1/neural/networks/import
-   * Import model from file
+   * POST /api/v1/neural/networks/import.
+   * Import model from file.
    */
   router.post(
     '/networks/import',
@@ -389,8 +389,8 @@ export const createNeuralRoutes = (): Router => {
       };
 
       log(LogLevel.INFO, 'Model import completed', req, {
-        networkId: result.id,
-        name: result.name,
+        networkId: result?.id,
+        name: result?.name,
       });
 
       res.status(201).json(result);
@@ -400,8 +400,8 @@ export const createNeuralRoutes = (): Router => {
   // ===== EVALUATION AND ANALYSIS =====
 
   /**
-   * POST /api/v1/neural/networks/:networkId/evaluate
-   * Evaluate model performance
+   * POST /api/v1/neural/networks/:networkId/evaluate.
+   * Evaluate model performance.
    */
   router.post(
     '/networks/:networkId/evaluate',
@@ -438,10 +438,10 @@ export const createNeuralRoutes = (): Router => {
         timestamp: new Date().toISOString(),
       };
 
-      logPerformance('model_evaluation', result.evaluationTime, req, {
+      logPerformance('model_evaluation', result?.evaluationTime, req, {
         networkId,
-        testSamples: result.testSamples,
-        accuracy: result.metrics.accuracy,
+        testSamples: result?.testSamples,
+        accuracy: result?.metrics?.accuracy,
       });
 
       res.json(result);
@@ -452,6 +452,6 @@ export const createNeuralRoutes = (): Router => {
 };
 
 /**
- * Default export for the neural routes
+ * Default export for the neural routes.
  */
 export default createNeuralRoutes;

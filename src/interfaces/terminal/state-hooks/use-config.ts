@@ -1,12 +1,17 @@
 /**
- * Configuration State Hook
+ * Configuration State Hook.
  *
  * React hook for managing terminal interface configuration state.
  * Note: This is a React hook, NOT a Claude Code hook (which belongs in templates/).
  */
+/**
+ * @file Interface implementation: use-config
+ */
+
+
 
 import { useEffect, useState } from 'react';
-import { createLogger } from '../../../core/logger';
+import { createLogger } from '../core/logger';
 
 const logger = createLogger({ prefix: 'ConfigHook' });
 
@@ -57,7 +62,7 @@ export interface UseConfigReturn {
 }
 
 /**
- * Configuration React Hook
+ * Configuration React Hook.
  *
  * Provides reactive configuration management for terminal interface components.
  */
@@ -110,9 +115,9 @@ export const useConfig = (): UseConfigReturn => {
           const configData = await fs.readFile(configPath, 'utf-8');
           const parsedConfig = JSON.parse(configData);
 
-          if (parsedConfig.terminal) {
-            return parsedConfig.terminal;
-          } else if (parsedConfig.theme || parsedConfig.swarmConfig) {
+          if (parsedConfig?.terminal) {
+            return parsedConfig?.terminal;
+          } else if (parsedConfig?.theme || parsedConfig?.swarmConfig) {
             return parsedConfig;
           }
         } catch (_err) {}
@@ -165,13 +170,13 @@ export const useConfig = (): UseConfigReturn => {
 
   const updateUIConfig = async (updates: Partial<TerminalConfig['ui']>) => {
     await updateConfig({
-      ui: { ...config.ui, ...updates },
+      ui: { ...config?.ui, ...updates },
     });
   };
 
   const updateSwarmConfig = async (updates: Partial<TerminalConfig['swarmConfig']>) => {
     await updateConfig({
-      swarmConfig: { ...config.swarmConfig, ...updates },
+      swarmConfig: { ...config?.swarmConfig, ...updates },
     });
   };
 

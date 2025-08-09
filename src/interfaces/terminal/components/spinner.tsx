@@ -1,9 +1,14 @@
 /**
- * Unified Spinner Component
+ * Unified Spinner Component.
  *
  * Consolidates functionality from both command execution Spinner and interactive terminal SwarmSpinner.
  * Supports both standard and swarm-specific animation types.
  */
+/**
+ * @file Interface implementation: spinner
+ */
+
+
 
 import { Box, Text } from 'ink';
 import type React from 'react';
@@ -18,7 +23,7 @@ export interface SpinnerProps {
 }
 
 /**
- * Unified Spinner Component
+ * Unified Spinner Component.
  *
  * Displays animated loading spinner with both standard and swarm-specific animations.
  * Supports customizable text, colors, and animation speed.

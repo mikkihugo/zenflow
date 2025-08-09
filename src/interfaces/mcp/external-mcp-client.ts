@@ -1,10 +1,17 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("interfaces-mcp-external-mcp-client");
+/**
+ * @file Interface implementation: external-mcp-client
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-mcp-external-mcp-client');
+
 import { EventEmitter } from 'node:events';
 
 /**
- * External MCP Server Client
- * Connects to remote MCP servers like Context7, DeepWiki, GitMCP, and Semgrep
+ * External MCP Server Client.
+ * Connects to remote MCP servers like Context7, DeepWiki, GitMCP, and Semgrep.
  *
  * @example
  */
@@ -20,7 +27,7 @@ export class ExternalMCPClient extends EventEmitter {
   }
 
   /**
-   * Load external server configurations
+   * Load external server configurations.
    */
   private loadServerConfigs(): void {
     const externalServers = {
@@ -64,7 +71,7 @@ export class ExternalMCPClient extends EventEmitter {
   }
 
   /**
-   * Connect to all configured external MCP servers
+   * Connect to all configured external MCP servers.
    */
   async connectAll(): Promise<ConnectionResult[]> {
     const results: ConnectionResult[] = [];
@@ -86,7 +93,7 @@ export class ExternalMCPClient extends EventEmitter {
   }
 
   /**
-   * Connect to a specific external MCP server
+   * Connect to a specific external MCP server.
    *
    * @param name
    * @param config
@@ -105,9 +112,9 @@ export class ExternalMCPClient extends EventEmitter {
       return {
         server: name,
         success: true,
-        url: config.url,
+        url: config?.url,
         toolCount: tools.length,
-        capabilities: config.capabilities,
+        capabilities: config?.capabilities,
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -124,7 +131,7 @@ export class ExternalMCPClient extends EventEmitter {
   }
 
   /**
-   * Create connection based on server type
+   * Create connection based on server type.
    *
    * @param name
    * @param config
@@ -135,12 +142,12 @@ export class ExternalMCPClient extends EventEmitter {
     } else if (config.type === 'sse') {
       return this.createSSEConnection(name, config);
     } else {
-      throw new Error(`Unsupported server type: ${config.type}`);
+      throw new Error(`Unsupported server type: ${config?.type}`);
     }
   }
 
   /**
-   * Create HTTP connection to MCP server
+   * Create HTTP connection to MCP server.
    *
    * @param _name
    * @param config
@@ -153,7 +160,7 @@ export class ExternalMCPClient extends EventEmitter {
     // In practice, this would use the actual MCP protocol over HTTP
     return {
       type: 'http',
-      url: config.url,
+      url: config?.url,
       connected: true,
       lastPing: new Date(),
       send: async (_message: any) => {
@@ -164,7 +171,7 @@ export class ExternalMCPClient extends EventEmitter {
   }
 
   /**
-   * Create SSE connection to MCP server
+   * Create SSE connection to MCP server.
    *
    * @param _name
    * @param config
@@ -177,7 +184,7 @@ export class ExternalMCPClient extends EventEmitter {
     // In practice, this would use Server-Sent Events for real-time communication
     return {
       type: 'sse',
-      url: config.url,
+      url: config?.url,
       connected: true,
       lastPing: new Date(),
       send: async (_message: any) => {
@@ -188,7 +195,7 @@ export class ExternalMCPClient extends EventEmitter {
   }
 
   /**
-   * Discover available tools from connected server
+   * Discover available tools from connected server.
    *
    * @param name
    * @param _connection
@@ -207,7 +214,7 @@ export class ExternalMCPClient extends EventEmitter {
   /**
    * Get mock tools for demonstration (replace with actual MCP tool discovery)
    *
-   * @param serverName
+   * @param serverName.
    */
   private getMockToolsForServer(serverName: string): MCPTool[] {
     const toolSets = {
@@ -237,7 +244,7 @@ export class ExternalMCPClient extends EventEmitter {
   }
 
   /**
-   * Execute tool on external server
+   * Execute tool on external server.
    *
    * @param serverName
    * @param toolName
@@ -297,7 +304,7 @@ export class ExternalMCPClient extends EventEmitter {
     toolName: string,
     _parameters: any
   ): Promise<any> {
-    // Simulate network delay
+    // Simulate network delay.
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000 + 500));
 
     // Simulate different responses based on server and tool
@@ -330,7 +337,7 @@ export class ExternalMCPClient extends EventEmitter {
       },
     };
 
-    const serverResponses = responses[serverName as keyof typeof responses];
+    const serverResponses = responses?.[serverName as keyof typeof responses];
     return (
       serverResponses?.[toolName as keyof typeof serverResponses] || {
         message: 'Tool executed successfully',
@@ -339,7 +346,7 @@ export class ExternalMCPClient extends EventEmitter {
   }
 
   /**
-   * Get available tools from all connected servers
+   * Get available tools from all connected servers.
    */
   getAvailableTools(): { [serverName: string]: MCPTool[] } {
     const allTools: { [serverName: string]: MCPTool[] } = {};
@@ -352,7 +359,7 @@ export class ExternalMCPClient extends EventEmitter {
   }
 
   /**
-   * Get server status
+   * Get server status.
    */
   getServerStatus(): { [serverName: string]: ServerStatus } {
     const status: { [serverName: string]: ServerStatus } = {};
@@ -363,11 +370,11 @@ export class ExternalMCPClient extends EventEmitter {
 
       status[name] = {
         name,
-        url: config.url,
-        type: config.type,
+        url: config?.url,
+        type: config?.type,
         connected: !!connection?.connected,
         toolCount: tools.length,
-        capabilities: config.capabilities,
+        capabilities: config?.capabilities,
         lastPing: connection?.lastPing || null,
       };
     }
@@ -376,7 +383,7 @@ export class ExternalMCPClient extends EventEmitter {
   }
 
   /**
-   * Disconnect from all servers
+   * Disconnect from all servers.
    */
   async disconnectAll(): Promise<void> {
     for (const [name, connection] of this.connections) {

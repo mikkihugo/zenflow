@@ -1,5 +1,12 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-session-manager");
+/**
+ * @file session management system
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-session-manager');
+
 /**
  * Session Management System for ZenSwarm.
  *
@@ -10,14 +17,14 @@ const logger = getLogger("coordination-swarm-core-session-manager");
  * - SessionManager: Main class handling session lifecycle
  * - SessionState: Interface for session data structure
  * - Checkpoint system with integrity verification
- * - Recovery mechanisms with rollback capabilities
+ * - Recovery mechanisms with rollback capabilities.
  * - Integration with existing persistence layer.
  */
 
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import type { IDao, SessionCoordinationDao, SessionEntity } from '../../../database';
-import { createDao, DatabaseTypes, EntityTypes } from '../../../database';
+import type { IDao, SessionCoordinationDao, SessionEntity } from '../database';
+import { createDao, DatabaseTypes, EntityTypes } from '../database';
 import type { SwarmOptions, SwarmState } from './types';
 import { generateId } from './utils';
 
@@ -82,15 +89,16 @@ export class SessionManager extends EventEmitter {
     this.checkpointTimers = new Map();
 
     this.config = {
-      autoCheckpoint: config.autoCheckpoint === undefined ? true : config.autoCheckpoint,
+      autoCheckpoint: config.autoCheckpoint === undefined ? true : config?.autoCheckpoint,
       checkpointInterval:
-        config.checkpointInterval === undefined ? 300000 : config.checkpointInterval, // 5 minutes
-      maxCheckpoints: config.maxCheckpoints === undefined ? 10 : config.maxCheckpoints,
+        config.checkpointInterval === undefined ? 300000 : config?.checkpointInterval, // 5 minutes
+      maxCheckpoints: config.maxCheckpoints === undefined ? 10 : config?.maxCheckpoints,
       compressionEnabled:
-        config.compressionEnabled === undefined ? true : config.compressionEnabled,
-      encryptionEnabled: config.encryptionEnabled === undefined ? false : config.encryptionEnabled,
+        config.compressionEnabled === undefined ? true : config?.compressionEnabled,
+      encryptionEnabled:
+        config.encryptionEnabled === undefined ? false : config?.encryptionEnabled,
       encryptionKey:
-        config.encryptionKey === undefined ? this.generateEncryptionKey() : config.encryptionKey,
+        config.encryptionKey === undefined ? this.generateEncryptionKey() : config?.encryptionKey,
     };
   }
 
@@ -102,9 +110,9 @@ export class SessionManager extends EventEmitter {
       // Create a coordination DAO with proper interface
       const dao = await createDao<SessionEntity>(
         EntityTypes.CoordinationEvent,
-        DatabaseTypes.Coordination
+        DatabaseTypes?.Coordination
       );
-      
+
       // Type assertion with proper coordination methods
       this.coordinationDao = {
         ...dao,
@@ -113,16 +121,18 @@ export class SessionManager extends EventEmitter {
           const customQuery = {
             type: 'sql' as const,
             query: sql,
-            parameters: params ? Object.fromEntries(params.map((p, i) => [i.toString(), p])) : {}
+            parameters: params ? Object.fromEntries(params.map((p, i) => [i.toString(), p])) : {},
           };
-          const result = await dao.executeCustomQuery<{ affectedRows?: number; insertId?: number }>(customQuery);
+          const result = await dao.executeCustomQuery<{ affectedRows?: number; insertId?: number }>(
+            customQuery
+          );
           return result || { affectedRows: 0 };
         },
         query: async (sql: string, params?: unknown[]) => {
           const customQuery = {
             type: 'sql' as const,
             query: sql,
-            parameters: params ? Object.fromEntries(params.map((p, i) => [i.toString(), p])) : {}
+            parameters: params ? Object.fromEntries(params.map((p, i) => [i.toString(), p])) : {},
           };
           const result = await dao.executeCustomQuery<any[]>(customQuery);
           return Array.isArray(result) ? result : [];
@@ -148,9 +158,9 @@ export class SessionManager extends EventEmitter {
             activeSubscriptions: 0,
             messagesPublished: 0,
             messagesReceived: 0,
-            uptime: Date.now()
+            uptime: Date.now(),
           };
-        }
+        },
       } as SessionCoordinationDao;
     }
   }
@@ -208,7 +218,7 @@ export class SessionManager extends EventEmitter {
     const defaultSwarmState: SwarmState = {
       agents: new Map(),
       tasks: new Map(),
-      topology: swarmOptions.topology || 'mesh',
+      topology: swarmOptions?.topology || 'mesh',
       connections: [],
       metrics: {
         totalTasks: 0,
@@ -291,17 +301,19 @@ export class SessionManager extends EventEmitter {
 
     const sessionData = sessions[0];
     const sessionState: SessionState = {
-      id: sessionData.id,
-      name: sessionData.name,
-      createdAt: new Date(sessionData.created_at),
+      id: sessionData?.id,
+      name: sessionData?.name,
+      createdAt: new Date(sessionData?.created_at),
       lastAccessedAt: new Date(),
-      ...(sessionData.last_checkpoint_at && { lastCheckpointAt: new Date(sessionData.last_checkpoint_at) }),
-      status: sessionData.status as SessionStatus,
-      swarmState: this.deserializeData(sessionData.swarm_state),
-      swarmOptions: this.deserializeData(sessionData.swarm_options),
-      metadata: this.deserializeData(sessionData.metadata),
+      ...(sessionData?.last_checkpoint_at && {
+        lastCheckpointAt: new Date(sessionData?.last_checkpoint_at),
+      }),
+      status: sessionData?.status as SessionStatus,
+      swarmState: this.deserializeData(sessionData?.swarm_state),
+      swarmOptions: this.deserializeData(sessionData?.swarm_options),
+      metadata: this.deserializeData(sessionData?.metadata),
       checkpoints: await this.loadSessionCheckpoints(sessionId),
-      version: sessionData.version,
+      version: sessionData?.version,
     } satisfies SessionState;
 
     // Add to active sessions
@@ -458,15 +470,15 @@ export class SessionManager extends EventEmitter {
     }
 
     const checkpointData = checkpoints[0];
-    const stateData = checkpointData.state_data;
+    const stateData = checkpointData?.state_data;
 
     // Verify integrity if requested
-    if (options.validateState !== false) {
-      const expectedChecksum = checkpointData.checksum;
+    if (options?.validateState !== false) {
+      const expectedChecksum = checkpointData?.checksum;
       const actualChecksum = this.calculateChecksum(stateData);
 
       if (expectedChecksum !== actualChecksum) {
-        if (!options.ignoreCorruption) {
+        if (!options?.ignoreCorruption) {
           throw new Error(`Checkpoint ${checkpointId} integrity check failed`);
         }
         this.emit('session:corruption_detected', { sessionId, checkpointId });
@@ -670,19 +682,23 @@ export class SessionManager extends EventEmitter {
     const dao = await this.getDao();
     const sessions = await dao.query(sql, params);
 
-    return sessions.map((sessionData: any): SessionState => ({
-      id: sessionData.id,
-      name: sessionData.name,
-      createdAt: new Date(sessionData.created_at),
-      lastAccessedAt: new Date(sessionData.last_accessed_at),
-      ...(sessionData.last_checkpoint_at && { lastCheckpointAt: new Date(sessionData.last_checkpoint_at) }),
-      status: sessionData.status as SessionStatus,
-      swarmState: this.deserializeData(sessionData.swarm_state),
-      swarmOptions: this.deserializeData(sessionData.swarm_options),
-      metadata: this.deserializeData(sessionData.metadata),
-      checkpoints: [], // Load on demand
-      version: sessionData.version,
-    }));
+    return sessions.map(
+      (sessionData: any): SessionState => ({
+        id: sessionData?.id,
+        name: sessionData?.name,
+        createdAt: new Date(sessionData?.created_at),
+        lastAccessedAt: new Date(sessionData?.last_accessed_at),
+        ...(sessionData?.last_checkpoint_at && {
+          lastCheckpointAt: new Date(sessionData?.last_checkpoint_at),
+        }),
+        status: sessionData?.status as SessionStatus,
+        swarmState: this.deserializeData(sessionData?.swarm_state),
+        swarmOptions: this.deserializeData(sessionData?.swarm_options),
+        metadata: this.deserializeData(sessionData?.metadata),
+        checkpoints: [], // Load on demand
+        version: sessionData?.version,
+      })
+    );
   }
 
   /**
@@ -726,8 +742,8 @@ export class SessionManager extends EventEmitter {
       const totalCheckpoints = await dao.query('SELECT COUNT(*) as total FROM session_checkpoints');
 
       return {
-        totalSessions: totalSessions[0].total,
-        totalCheckpoints: totalCheckpoints[0].total,
+        totalSessions: totalSessions[0]?.total,
+        totalCheckpoints: totalCheckpoints[0]?.total,
         activeSessions: this.activeSessions.size,
         statusBreakdown: stats.reduce((acc: any, stat: any) => {
           acc[stat.status] = {
@@ -797,17 +813,19 @@ export class SessionManager extends EventEmitter {
 
     for (const sessionData of activeSessions) {
       const sessionState: SessionState = {
-        id: sessionData.id,
-        name: sessionData.name,
-        createdAt: new Date(sessionData.created_at),
-        lastAccessedAt: new Date(sessionData.last_accessed_at),
-        ...(sessionData.last_checkpoint_at && { lastCheckpointAt: new Date(sessionData.last_checkpoint_at) }),
-        status: sessionData.status as SessionStatus,
-        swarmState: this.deserializeData(sessionData.swarm_state),
-        swarmOptions: this.deserializeData(sessionData.swarm_options),
-        metadata: this.deserializeData(sessionData.metadata),
-        checkpoints: await this.loadSessionCheckpoints(sessionData.id),
-        version: sessionData.version,
+        id: sessionData?.id,
+        name: sessionData?.name,
+        createdAt: new Date(sessionData?.created_at),
+        lastAccessedAt: new Date(sessionData?.last_accessed_at),
+        ...(sessionData?.last_checkpoint_at && {
+          lastCheckpointAt: new Date(sessionData?.last_checkpoint_at),
+        }),
+        status: sessionData?.status as SessionStatus,
+        swarmState: this.deserializeData(sessionData?.swarm_state),
+        swarmOptions: this.deserializeData(sessionData?.swarm_options),
+        metadata: this.deserializeData(sessionData?.metadata),
+        checkpoints: await this.loadSessionCheckpoints(sessionData?.id),
+        version: sessionData?.version,
       } satisfies SessionState;
 
       this.activeSessions.set(sessionState.id, sessionState);

@@ -1,6 +1,6 @@
 /**
- * Intelligence Coordination System for Claude-Zen
- * Orchestrates expertise discovery, knowledge routing, and cross-domain transfer
+ * Intelligence Coordination System for Claude-Zen.
+ * Orchestrates expertise discovery, knowledge routing, and cross-domain transfer.
  *
  * Architecture: Multi-layer intelligence coordination with adaptive routing
  * - Expertise Discovery: Identify and map agent capabilities and specializations
@@ -9,11 +9,18 @@
  * - Cross-Domain Transfer: Facilitate knowledge transfer across different domains
  * - Collective Memory: Maintain distributed intelligence and learning history
  */
+/**
+ * @file intelligence-coordination-system implementation.
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { CoordinationEvent } from '../interfaces/events/types';
 
 /**
- * Expertise Discovery Engine
+ * Expertise Discovery Engine.
  *
  * @example
  */
@@ -2895,7 +2902,7 @@ export interface SchedulePattern {
 export type ExceptionType = 'unavailable' | 'limited' | 'extended' | 'emergency';
 
 /**
- * Knowledge Routing System
+ * Knowledge Routing System.
  *
  * @example
  */
@@ -2975,7 +2982,7 @@ export type OptimizationObjective =
   | 'optimize-learning';
 
 /**
- * Specialization Emergence Detector
+ * Specialization Emergence Detector.
  *
  * @example
  */
@@ -3045,7 +3052,7 @@ export type AdaptationType =
   | 'resource-reallocation';
 
 /**
- * Cross-Domain Transfer System
+ * Cross-Domain Transfer System.
  *
  * @example
  */
@@ -3115,7 +3122,7 @@ export type AbstractionLevel =
   | 'meta-principles';
 
 /**
- * Collective Memory Manager
+ * Collective Memory Manager.
  *
  * @example
  */
@@ -3179,7 +3186,7 @@ export type RetrievalStrategy =
   | 'importance-based-retrieval';
 
 /**
- * Main Intelligence Coordination System
+ * Main Intelligence Coordination System.
  *
  * @example
  */
@@ -3212,7 +3219,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   }
 
   /**
-   * Initialize all coordination systems
+   * Initialize all coordination systems.
    */
   private initializeSystems(): void {
     this.expertiseDiscovery = new ExpertiseDiscoverySystemImpl(
@@ -3249,7 +3256,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   }
 
   /**
-   * Set up system integrations
+   * Set up system integrations.
    */
   private setupIntegrations(): void {
     // Expertise Discovery -> Knowledge Routing
@@ -3283,7 +3290,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   }
 
   /**
-   * Discover and map agent expertise across the swarm
+   * Discover and map agent expertise across the swarm.
    *
    * @param agents
    */
@@ -3347,7 +3354,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   }
 
   /**
-   * Route knowledge queries to optimal experts
+   * Route knowledge queries to optimal experts.
    *
    * @param query
    * @param routingOptions
@@ -3417,7 +3424,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   }
 
   /**
-   * Detect and foster agent specialization emergence
+   * Detect and foster agent specialization emergence.
    *
    * @param observationPeriod
    */
@@ -3481,7 +3488,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   }
 
   /**
-   * Facilitate cross-domain knowledge transfer
+   * Facilitate cross-domain knowledge transfer.
    *
    * @param sourceDomain
    * @param targetDomain
@@ -3560,7 +3567,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   }
 
   /**
-   * Get comprehensive intelligence coordination metrics
+   * Get comprehensive intelligence coordination metrics.
    */
   async getMetrics(): Promise<IntelligenceCoordinationMetrics> {
     return {
@@ -3598,7 +3605,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   }
 
   /**
-   * Shutdown intelligence coordination system gracefully
+   * Shutdown intelligence coordination system gracefully.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down intelligence coordination system...');
@@ -3643,7 +3650,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
 }
 
 /**
- * Configuration and result interfaces
+ * Configuration and result interfaces.
  *
  * @example
  */

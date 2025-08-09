@@ -1,11 +1,16 @@
 /**
- * Swarm MCP Tools - Core Swarm Management
+ * Swarm MCP Tools - Core Swarm Management.
  *
  * Swarm coordination tools using clean DAL Factory integration.
  * Provides essential swarm functionality for CLI and MCP integration.
  */
+/**
+ * @file Coordination system: swarm-tools
+ */
 
-import { createLogger } from '../../../core/logger';
+
+
+import { createLogger } from '../core/logger';
 
 const logger = createLogger({ prefix: 'SwarmTools' });
 
@@ -30,7 +35,7 @@ export class SwarmTools {
   }
 
   /**
-   * Get swarm system status
+   * Get swarm system status.
    *
    * @param _params
    */
@@ -68,7 +73,7 @@ export class SwarmTools {
   }
 
   /**
-   * Initialize new swarm
+   * Initialize new swarm.
    *
    * @param params
    */
@@ -99,7 +104,7 @@ export class SwarmTools {
   }
 
   /**
-   * Monitor swarm activity
+   * Monitor swarm activity.
    *
    * @param _params
    */
@@ -130,7 +135,7 @@ export class SwarmTools {
   }
 
   /**
-   * Spawn new agent
+   * Spawn new agent.
    *
    * @param params
    */
@@ -160,7 +165,7 @@ export class SwarmTools {
   }
 
   /**
-   * List active agents
+   * List active agents.
    *
    * @param _params
    */
@@ -184,7 +189,7 @@ export class SwarmTools {
   }
 
   /**
-   * Get agent metrics
+   * Get agent metrics.
    *
    * @param _params
    */
@@ -210,7 +215,7 @@ export class SwarmTools {
   }
 
   /**
-   * Orchestrate task
+   * Orchestrate task.
    *
    * @param params
    */
@@ -239,7 +244,7 @@ export class SwarmTools {
   }
 
   /**
-   * Get task status
+   * Get task status.
    *
    * @param params
    */
@@ -265,7 +270,7 @@ export class SwarmTools {
   }
 
   /**
-   * Get task results
+   * Get task results.
    *
    * @param params
    */
@@ -292,7 +297,7 @@ export class SwarmTools {
   }
 
   /**
-   * Get memory usage
+   * Get memory usage.
    *
    * @param _params
    */
@@ -318,7 +323,7 @@ export class SwarmTools {
   }
 
   /**
-   * Run benchmark
+   * Run benchmark.
    *
    * @param _params
    */
@@ -352,7 +357,7 @@ export class SwarmTools {
   }
 
   /**
-   * Detect available features
+   * Detect available features.
    *
    * @param _params
    */

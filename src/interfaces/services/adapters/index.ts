@@ -1,5 +1,5 @@
 /**
- * USL Service Adapters - Index and Registry Integration
+ * USL Service Adapters - Index and Registry Integration.
  *
  * @file Exports all service adapter components and integrates them with
  * the global USL service registry. This provides a unified entry point
@@ -115,7 +115,7 @@ import { getInfrastructureServiceFactory } from './infrastructure-service-factor
 import { integrationServiceFactory } from './integration-service-factory';
 
 /**
- * Register data service factory with global registry
+ * Register data service factory with global registry.
  *
  * @function registerDataServiceFactory
  * @returns {void}
@@ -141,7 +141,7 @@ export function registerDataServiceFactory(): void {
 }
 
 /**
- * Register coordination service factory with global registry
+ * Register coordination service factory with global registry.
  *
  * @function registerCoordinationServiceFactory
  * @returns {void}
@@ -167,7 +167,7 @@ export function registerCoordinationServiceFactory(): void {
 }
 
 /**
- * Register integration service factory with global registry
+ * Register integration service factory with global registry.
  *
  * @function registerIntegrationServiceFactory
  * @returns {void}
@@ -200,7 +200,7 @@ export function registerIntegrationServiceFactory(): void {
 }
 
 /**
- * Register infrastructure service factory with global registry
+ * Register infrastructure service factory with global registry.
  *
  * @function registerInfrastructureServiceFactory
  * @returns {void}
@@ -231,7 +231,7 @@ export function registerInfrastructureServiceFactory(): void {
 }
 
 /**
- * Auto-register service factories on module load
+ * Auto-register service factories on module load.
  */
 registerDataServiceFactory();
 registerCoordinationServiceFactory();

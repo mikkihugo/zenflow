@@ -1,6 +1,6 @@
 /**
  * TDD London Conversion Example
- * 
+ *
  * Shows BEFORE/AFTER comparison of converting basic object mocks
  * to proper TDD London interaction testing pattern.
  */
@@ -40,8 +40,8 @@ function OLD_PATTERN_example() {
     );
 
     expect(allocation.id).toBeDefined(); // ❌ Testing return value
-    expect(coordinationResult.success).toBe(true); // ❌ Testing return value
-    
+    expect(coordinationResult?.success).toBe(true); // ❌ Testing return value
+
     const deallocated = mockMemoryPool.deallocate(allocation.id);
     expect(deallocated).toBe(true); // ❌ Testing return value
   });
@@ -135,7 +135,7 @@ describe('Neural Agent Coordination - TDD London Pattern', () => {
     // Create fresh mocks for each test
     mockMemoryPool = new MockMemoryPool();
     mockCoordination = new MockCoordinationService();
-    
+
     // Inject mocks into system under test (dependency injection)
     systemUnderTest = new NeuralCoordinationOrchestrator(mockMemoryPool, mockCoordination);
   });
@@ -223,14 +223,13 @@ class NeuralCoordinationOrchestrator {
     // Allocate memory based on agent count
     const memorySize = agentIds.length * 2048;
     const allocation = this.memoryPool.allocate('neural-coordination', memorySize);
-    
+
     try {
       // Determine topology based on agent count
       const topology = agentIds.length > 3 ? 'mesh' : 'peer_to_peer';
-      
+
       // Coordinate agents
       await this.coordination.coordinateAgents(agentIds, topology, task);
-      
     } finally {
       // Always cleanup memory
       this.memoryPool.deallocate(allocation.id);

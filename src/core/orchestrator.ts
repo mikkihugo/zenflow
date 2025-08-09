@@ -1,9 +1,15 @@
 /**
- * Orchestrator - Core orchestration system for claude-zen
+ * Orchestrator - Core orchestration system for claude-zen.
  * Coordinates components and manages system lifecycle.
  */
+/**
+ * @file orchestrator implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 
 export interface OrchestratorConfig {
   name?: string;

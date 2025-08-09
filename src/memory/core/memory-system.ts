@@ -1,9 +1,14 @@
 /**
- * Core Memory System Types and Interfaces
+ * Core Memory System Types and Interfaces.
  *
- * Provides central types and interfaces for the memory management system
+ * Provides central types and interfaces for the memory management system.
  * including backend interfaces and core system types.
  */
+/**
+ * @file Memory management: memory-system
+ */
+
+
 
 import type { MemoryStats } from '../backends/base-backend';
 
@@ -17,7 +22,7 @@ export type JSONValue =
   | JSONValue[];
 
 /**
- * Backend Stats format used by some legacy implementations
+ * Backend Stats format used by some legacy implementations.
  *
  * @deprecated Use MemoryStats from base-backend.ts instead
  */
@@ -34,7 +39,7 @@ export interface BackendStats {
 
 /**
  * Utility function to convert MemoryStats to BackendStats format
- * for compatibility with legacy code
+ * for compatibility with legacy code.
  */
 export function memoryStatsToBackendStats(memoryStats: MemoryStats): BackendStats {
   return {
@@ -47,7 +52,7 @@ export function memoryStatsToBackendStats(memoryStats: MemoryStats): BackendStat
 
 /**
  * Utility function to convert BackendStats to MemoryStats format
- * for compatibility with BaseMemoryBackend
+ * for compatibility with BaseMemoryBackend.
  */
 export function backendStatsToMemoryStats(backendStats: BackendStats): MemoryStats {
   return {
@@ -62,8 +67,8 @@ export function backendStatsToMemoryStats(backendStats: BackendStats): MemorySta
 }
 
 /**
- * Backend Interface for memory storage implementations
- * Compatible with BaseMemoryBackend implementations
+ * Backend Interface for memory storage implementations.
+ * Compatible with BaseMemoryBackend implementations.
  */
 export interface BackendInterface {
   /** Initialize the backend */
@@ -107,7 +112,7 @@ export interface BackendInterface {
 }
 
 /**
- * Backend Configuration
+ * Backend Configuration.
  */
 export interface BackendConfig {
   type: 'sqlite' | 'lancedb' | 'json' | 'memory';
@@ -118,7 +123,7 @@ export interface BackendConfig {
 }
 
 /**
- * Memory System Configuration
+ * Memory System Configuration.
  */
 export interface MemorySystemConfig {
   backend: BackendConfig;
@@ -130,7 +135,7 @@ export interface MemorySystemConfig {
 }
 
 /**
- * Memory Entry Metadata
+ * Memory Entry Metadata.
  */
 export interface MemoryEntryMetadata {
   created: Date;
@@ -143,7 +148,7 @@ export interface MemoryEntryMetadata {
 }
 
 /**
- * Memory Entry with metadata
+ * Memory Entry with metadata.
  */
 export interface MemoryEntryWithMetadata<T = JSONValue> {
   key: string;
@@ -152,7 +157,7 @@ export interface MemoryEntryWithMetadata<T = JSONValue> {
 }
 
 /**
- * Memory Operation Result
+ * Memory Operation Result.
  */
 export interface MemoryOperationResult<T = any> {
   success: boolean;
@@ -166,7 +171,7 @@ export interface MemoryOperationResult<T = any> {
 }
 
 /**
- * Memory Search Options
+ * Memory Search Options.
  */
 export interface MemorySearchOptions {
   pattern?: string;
@@ -177,7 +182,7 @@ export interface MemorySearchOptions {
 }
 
 /**
- * Memory Health Check Result
+ * Memory Health Check Result.
  */
 export interface MemoryHealthCheck {
   healthy: boolean;

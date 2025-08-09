@@ -68,10 +68,10 @@ describe('LanceDB Integration Validation', () => {
     expect(DatabaseController).toBeDefined();
 
     // Check that vector methods exist on the prototype
-    expect(DatabaseController.prototype.vectorSearch).toBeDefined();
-    expect(DatabaseController.prototype.addVectors).toBeDefined();
-    expect(DatabaseController.prototype.getVectorStats).toBeDefined();
-    expect(DatabaseController.prototype.createVectorIndex).toBeDefined();
+    expect(DatabaseController?.prototype?.vectorSearch).toBeDefined();
+    expect(DatabaseController?.prototype?.addVectors).toBeDefined();
+    expect(DatabaseController?.prototype?.getVectorStats).toBeDefined();
+    expect(DatabaseController?.prototype?.createVectorIndex).toBeDefined();
   });
 
   it('should have proper vector interfaces defined', async () => {

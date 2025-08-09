@@ -1,15 +1,15 @@
 /**
- * Database Domain REST API Controller
+ * Database Domain REST API Controller.
  * Provides comprehensive REST endpoints for database management.
  *
  * @file Database-controller.ts.
  * @description Enhanced database controller with DI integration for Issue #63.
  */
 
-import type { ConnectionStats, ILogger } from '../../core/interfaces/base-interfaces';
-import { inject } from '../../di/decorators/inject';
-import { injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
+import type { ConnectionStats, ILogger } from '../core/interfaces/base-interfaces';
+import { inject } from '../di/decorators/inject';
+import { injectable } from '../di/decorators/injectable';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
 import type {
   DatabaseAdapter,
   DatabaseConfig,
@@ -281,7 +281,7 @@ interface MigrationResult {
   error?: string;
 }
 
-// Graph result types  
+// Graph result types
 interface GraphQueryResult {
   cypher: string;
   params?: any[];
@@ -306,7 +306,7 @@ interface GraphQueryResult {
 }
 
 /**
- * Database REST API Controller
+ * Database REST API Controller.
  * Provides comprehensive database management through REST endpoints.
  *
  * @example
@@ -331,7 +331,7 @@ export class DatabaseController {
   }
 
   /**
-   * GET /api/database/status
+   * GET /api/database/status.
    * Get comprehensive database status and health information.
    */
   async getDatabaseStatus(): Promise<DatabaseResponse> {
@@ -389,7 +389,7 @@ export class DatabaseController {
 
   /**
    * POST /api/database/query
-   * Execute database SELECT queries with parameters
+   * Execute database SELECT queries with parameters.
    * Automatically detects and routes Cypher queries to graph adapter.
    *
    * @param request
@@ -429,7 +429,7 @@ export class DatabaseController {
       this.updateMetrics(executionTime, true);
 
       this._logger.debug(
-        `Query completed successfully in ${executionTime}ms, returned ${result.rowCount} rows`
+        `Query completed successfully in ${executionTime}ms, returned ${result?.rowCount} rows`
       );
 
       return {
@@ -437,14 +437,14 @@ export class DatabaseController {
         data: {
           query: request.sql,
           parameters: request.params,
-          results: result.rows,
-          fields: result.fields,
+          results: result?.rows,
+          fields: result?.fields,
           executionPlan: request.options?.includeExecutionPlan
             ? await this.getExecutionPlan(request.sql)
             : undefined,
         },
         metadata: {
-          rowCount: result.rowCount,
+          rowCount: result?.rowCount,
           executionTime,
           timestamp: Date.now(),
           adapter: this._config.type,
@@ -470,7 +470,7 @@ export class DatabaseController {
   }
 
   /**
-   * POST /api/database/execute
+   * POST /api/database/execute.
    * Execute database commands (INSERT, UPDATE, DELETE, DDL).
    *
    * @param request
@@ -492,7 +492,7 @@ export class DatabaseController {
       this.updateMetrics(executionTime, true);
 
       this._logger.debug(
-        `Command completed successfully in ${executionTime}ms, affected ${result.affectedRows} rows`
+        `Command completed successfully in ${executionTime}ms, affected ${result?.affectedRows} rows`
       );
 
       return {
@@ -500,12 +500,12 @@ export class DatabaseController {
         data: {
           command: request.sql,
           parameters: request.params,
-          affectedRows: result.affectedRows,
-          insertId: result.insertId,
+          affectedRows: result?.affectedRows,
+          insertId: result?.insertId,
           details: request.options?.detailed
             ? {
                 statementType: this.getStatementType(request.sql),
-                executionTime: result.executionTime,
+                executionTime: result?.executionTime,
                 optimizationHints: request.options?.prepared
                   ? 'prepared_statement'
                   : 'direct_execution',
@@ -513,7 +513,7 @@ export class DatabaseController {
             : undefined,
         },
         metadata: {
-          rowCount: result.affectedRows,
+          rowCount: result?.affectedRows,
           executionTime,
           timestamp: Date.now(),
           adapter: this._config.type,
@@ -539,7 +539,7 @@ export class DatabaseController {
   }
 
   /**
-   * POST /api/database/transaction
+   * POST /api/database/transaction.
    * Execute multiple commands within a transaction.
    *
    * @param request
@@ -568,8 +568,8 @@ export class DatabaseController {
                 sql: operation.sql,
                 params: operation.params,
                 success: true,
-                rowCount: result.rowCount,
-                data: result.rows,
+                rowCount: result?.rowCount,
+                data: result?.rows,
               });
             } else if (operation.type === 'execute') {
               result = await tx.execute(operation.sql, operation.params);
@@ -578,8 +578,8 @@ export class DatabaseController {
                 sql: operation.sql,
                 params: operation.params,
                 success: true,
-                affectedRows: result.affectedRows,
-                insertId: result.insertId,
+                affectedRows: result?.affectedRows,
+                insertId: result?.insertId,
               });
             } else {
               throw new Error(`Unsupported operation type: ${operation.type}`);
@@ -608,7 +608,10 @@ export class DatabaseController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      const totalRows = results.reduce((sum, r) => sum + ((r as any).rowCount || (r as any).affectedRows || 0), 0);
+      const totalRows = results.reduce(
+        (sum, r) => sum + ((r as any).rowCount || (r as any).affectedRows || 0),
+        0
+      );
       const successfulOps = results.filter((r) => r.success).length;
 
       this._logger.debug(
@@ -653,7 +656,7 @@ export class DatabaseController {
   }
 
   /**
-   * POST /api/database/batch
+   * POST /api/database/batch.
    * Execute multiple operations (with optional transaction).
    *
    * @param request
@@ -686,13 +689,13 @@ export class DatabaseController {
               type: 'query',
               sql: operation.sql,
               params: operation.params,
-              success: queryResult.success,
-              data: queryResult.data,
-              rowCount: queryResult.metadata?.rowCount || 0,
-              error: queryResult.error,
+              success: queryResult?.success,
+              data: queryResult?.data,
+              rowCount: queryResult?.metadata?.rowCount || 0,
+              error: queryResult?.error,
             };
 
-            totalRows += result.rowCount;
+            totalRows += result?.rowCount;
           } else if (operation.type === 'execute') {
             const executeResult = await this.executeCommand({
               sql: operation.sql,
@@ -703,20 +706,20 @@ export class DatabaseController {
               type: 'execute',
               sql: operation.sql,
               params: operation.params,
-              success: executeResult.success,
-              affectedRows: executeResult.metadata?.rowCount || 0,
-              data: executeResult.data,
-              error: executeResult.error,
+              success: executeResult?.success,
+              affectedRows: executeResult?.metadata?.rowCount || 0,
+              data: executeResult?.data,
+              error: executeResult?.error,
             };
 
-            totalRows += result.affectedRows;
+            totalRows += result?.affectedRows;
           } else {
             throw new Error(`Unsupported operation type: ${operation.type}`);
           }
 
           results.push(result);
 
-          if (!result.success) {
+          if (!result?.success) {
             errorCount++;
             if (!request.continueOnError) {
               break;
@@ -784,7 +787,7 @@ export class DatabaseController {
   }
 
   /**
-   * GET /api/database/schema
+   * GET /api/database/schema.
    * Get comprehensive database schema information.
    */
   async getDatabaseSchema(): Promise<DatabaseResponse> {
@@ -843,7 +846,7 @@ export class DatabaseController {
   }
 
   /**
-   * POST /api/database/migrate
+   * POST /api/database/migrate.
    * Execute database migration operations.
    *
    * @param request
@@ -913,8 +916,8 @@ export class DatabaseController {
             migrationResults.push({
               statement: `${statement.substring(0, 100)}...`,
               success: true,
-              affectedRows: result.affectedRows,
-              executionTime: result.executionTime,
+              affectedRows: result?.affectedRows,
+              executionTime: result?.executionTime,
             });
           } catch (error) {
             migrationResults.push({
@@ -973,7 +976,7 @@ export class DatabaseController {
   }
 
   /**
-   * GET /api/database/analytics
+   * GET /api/database/analytics.
    * Get comprehensive database analytics and performance metrics.
    */
   async getDatabaseAnalytics(): Promise<DatabaseResponse> {
@@ -1163,7 +1166,7 @@ export class DatabaseController {
   }
 
   /**
-   * POST /api/database/graph/query
+   * POST /api/database/graph/query.
    * Execute graph-specific queries (Cypher-like syntax).
    *
    * @param request
@@ -1191,7 +1194,7 @@ export class DatabaseController {
       this.updateMetrics(executionTime, true);
 
       this._logger.debug(
-        `Graph query completed successfully in ${executionTime}ms, returned ${result.nodes.length} nodes and ${result.relationships.length} relationships`
+        `Graph query completed successfully in ${executionTime}ms, returned ${result?.nodes.length} nodes and ${result?.relationships.length} relationships`
       );
 
       return {
@@ -1199,13 +1202,13 @@ export class DatabaseController {
         data: {
           query: request.cypher,
           parameters: request.params,
-          nodes: result.nodes,
-          relationships: result.relationships,
-          nodeCount: result.nodes.length,
-          relationshipCount: result.relationships.length,
+          nodes: result?.nodes,
+          relationships: result?.relationships,
+          nodeCount: result?.nodes.length,
+          relationshipCount: result?.relationships.length,
         },
         metadata: {
-          rowCount: result.nodes.length + result.relationships.length,
+          rowCount: result?.nodes.length + result?.relationships.length,
           executionTime,
           timestamp: Date.now(),
           adapter: this._config.type,
@@ -1231,7 +1234,7 @@ export class DatabaseController {
   }
 
   /**
-   * GET /api/database/graph/schema
+   * GET /api/database/graph/schema.
    * Get graph-specific schema information (nodes, relationships, properties).
    */
   async getGraphSchema(): Promise<DatabaseResponse> {
@@ -1302,7 +1305,7 @@ export class DatabaseController {
   }
 
   /**
-   * GET /api/database/graph/stats
+   * GET /api/database/graph/stats.
    * Get comprehensive graph analytics and statistics.
    */
   async getGraphAnalytics(): Promise<DatabaseResponse> {
@@ -1400,7 +1403,7 @@ export class DatabaseController {
   }
 
   /**
-   * POST /api/database/graph/batch
+   * POST /api/database/graph/batch.
    * Execute batch graph operations.
    *
    * @param request
@@ -1435,15 +1438,15 @@ export class DatabaseController {
             cypher: operation.cypher,
             params: operation.params,
             success: true,
-            nodeCount: result.nodes.length,
-            relationshipCount: result.relationships.length,
+            nodeCount: result?.nodes.length,
+            relationshipCount: result?.relationships.length,
             data: request.includeData
-              ? { nodes: result.nodes, relationships: result.relationships }
+              ? { nodes: result?.nodes, relationships: result?.relationships }
               : undefined,
           });
 
-          totalNodes += result.nodes.length;
-          totalRelationships += result.relationships.length;
+          totalNodes += result?.nodes.length;
+          totalRelationships += result?.relationships.length;
         } catch (error) {
           errorCount++;
           results.push({
@@ -1542,23 +1545,23 @@ export class DatabaseController {
     const graphResponse = await this.executeGraphQuery(request);
 
     // Convert graph response format to standard query response format
-    if (graphResponse.success && graphResponse.data) {
+    if (graphResponse?.success && graphResponse?.data) {
       return {
         ...graphResponse,
         data: {
           query: request.cypher,
           parameters: request.params,
           results: [
-            ...graphResponse.data.nodes.map((node) => ({ type: 'node', ...node })),
-            ...graphResponse.data.relationships.map((rel) => ({ type: 'relationship', ...rel })),
+            ...graphResponse?.data?.nodes?.map((node) => ({ type: 'node', ...node })),
+            ...graphResponse?.data?.relationships?.map((rel) => ({ type: 'relationship', ...rel })),
           ],
           fields: [
             { name: 'type', type: 'string', nullable: false },
             { name: 'id', type: 'string', nullable: false },
             { name: 'data', type: 'object', nullable: true },
           ],
-          nodeCount: graphResponse.data.nodeCount,
-          relationshipCount: graphResponse.data.relationshipCount,
+          nodeCount: graphResponse?.data?.nodeCount,
+          relationshipCount: graphResponse?.data?.relationshipCount,
         },
       };
     }
@@ -1591,7 +1594,7 @@ export class DatabaseController {
   }
 
   /**
-   * POST /api/database/vector/search
+   * POST /api/database/vector/search.
    * Perform vector similarity search.
    *
    * @param request
@@ -1619,8 +1622,8 @@ export class DatabaseController {
       return {
         success: true,
         data: {
-          matches: result.matches,
-          executionTime: result.executionTime,
+          matches: result?.matches,
+          executionTime: result?.executionTime,
           query: {
             vectorDim: request.vector.length,
             limit: request.limit || 10,
@@ -1628,7 +1631,7 @@ export class DatabaseController {
           },
         },
         metadata: {
-          rowCount: result.matches.length,
+          rowCount: result?.matches.length,
           executionTime,
           timestamp: Date.now(),
           adapter: 'lancedb',
@@ -1654,7 +1657,7 @@ export class DatabaseController {
   }
 
   /**
-   * POST /api/database/vector/add
+   * POST /api/database/vector/add.
    * Add vectors to the database.
    *
    * @param request
@@ -1719,7 +1722,7 @@ export class DatabaseController {
   }
 
   /**
-   * GET /api/database/vector/stats
+   * GET /api/database/vector/stats.
    * Get vector database statistics.
    */
   async getVectorStats(): Promise<DatabaseResponse> {
@@ -1787,7 +1790,7 @@ export class DatabaseController {
   }
 
   /**
-   * POST /api/database/vector/index
+   * POST /api/database/vector/index.
    * Create or optimize vector index.
    *
    * @param request

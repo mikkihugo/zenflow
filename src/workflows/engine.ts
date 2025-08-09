@@ -1,9 +1,16 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-workflows-engine");
+/**
+ * @file engine implementation
+ */
+
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-workflows-engine');
+
 /**
  * Workflow Engine
- * Sequential workflow processing engine migrated from plugins
- * Removed plugin dependencies and simplified for direct use
+ * Sequential workflow processing engine migrated from plugins.
+ * Removed plugin dependencies and simplified for direct use.
  */
 
 import { EventEmitter } from 'node:events';
@@ -74,14 +81,14 @@ export class WorkflowEngine extends EventEmitter {
 
     this.config = {
       maxConcurrentWorkflows:
-        config?.maxConcurrentWorkflows === undefined ? 10 : config?.maxConcurrentWorkflows,
-      persistWorkflows: config?.persistWorkflows === undefined ? false : config?.persistWorkflows,
+        config.maxConcurrentWorkflows === undefined ? 10 : config?.maxConcurrentWorkflows,
+      persistWorkflows: config.persistWorkflows === undefined ? false : config?.persistWorkflows,
       persistencePath:
-        config?.persistencePath === undefined ? './workflows' : config?.persistencePath,
-      stepTimeout: config?.stepTimeout === undefined ? 30000 : config?.stepTimeout,
-      retryDelay: config?.retryDelay === undefined ? 1000 : config?.retryDelay,
+        config.persistencePath === undefined ? './workflows' : config?.persistencePath,
+      stepTimeout: config.stepTimeout === undefined ? 30000 : config?.stepTimeout,
+      retryDelay: config.retryDelay === undefined ? 1000 : config?.retryDelay,
       enableVisualization:
-        config?.enableVisualization === undefined ? false : config?.enableVisualization,
+        config.enableVisualization === undefined ? false : config?.enableVisualization,
     };
   }
 
@@ -136,7 +143,7 @@ export class WorkflowEngine extends EventEmitter {
       for (const item of items) {
         const loopContext = { ...context, loopItem: item };
         const result = await this.executeStep(params?.step, loopContext);
-        results?.push(result);
+        results.push(result);
       }
 
       return { results };
@@ -208,9 +215,9 @@ export class WorkflowEngine extends EventEmitter {
       const result: Record<string, any> = {};
       for (const [key, value] of Object.entries(transformation)) {
         if (typeof value === 'string' && value.startsWith('$.')) {
-          result?.[key] = this.getContextValue({ data }, value.substring(2));
+          result[key] = this.getContextValue({ data }, value.substring(2));
         } else {
-          result?.[key] = value;
+          result[key] = value;
         }
       }
       return result;
@@ -228,7 +235,7 @@ export class WorkflowEngine extends EventEmitter {
         const filePath = path.join(this.config.persistencePath, file);
         const data = JSON.parse(await readFile(filePath, 'utf8'));
 
-        if (data?.status === 'running' || data?.status === 'paused') {
+        if (data.status === 'running' || data.status === 'paused') {
           this.activeWorkflows.set(data?.id, data);
         }
       }

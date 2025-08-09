@@ -1,7 +1,7 @@
 /**
  * @file Configuration Manager - Clean Export
  *
- * Re-export of the unified configuration system for backward compatibility
+ * Re-export of the unified configuration system for backward compatibility.
  */
 
 export { DEFAULT_CONFIG } from './defaults';

@@ -1,3 +1,8 @@
+/**
+ * @file dspy-enhanced-operations implementation
+ */
+
+
 import { createLogger } from './logger';
 
 const logger = createLogger({ prefix: 'DSPyOperations' });
@@ -186,7 +191,9 @@ export class DSPyEnhancedOperations {
       execution_plan: executionResult?.result?.['execution_plan'] || [],
       agent_assignments: executionResult?.result?.['agent_assignments'] || {},
       priority_order: executionResult?.result?.['priority_order'] || [],
-      estimatedDuration: this.estimateDuration(executionResult?.result?.['execution_plan']?.length || 0),
+      estimatedDuration: this.estimateDuration(
+        executionResult?.result?.['execution_plan']?.length || 0
+      ),
     };
   }
 

@@ -1,9 +1,14 @@
 /**
- * Hook Manager - Manages hook lifecycle and execution
+ * Hook Manager - Manages hook lifecycle and execution.
+ */
+/**
+ * @file hook management system
  */
 
+
+
 import { EventEmitter } from 'node:events';
-import { createLogger } from '../../core/logger';
+import { createLogger } from '../core/logger';
 import type { HookSystem } from './hook-system-core';
 import { DefaultHookSystem } from './hook-system-core';
 
@@ -23,7 +28,7 @@ export interface HookExecutionResult {
 }
 
 /**
- * Default Hook Manager Implementation
+ * Default Hook Manager Implementation.
  *
  * @example
  */
@@ -134,8 +139,8 @@ export class DefaultHookManager extends EventEmitter {
       } else {
         return Promise.allSettled(promises).then((results) =>
           results.map((result) =>
-            result.status === 'fulfilled'
-              ? result.value
+            result?.status === 'fulfilled'
+              ? result?.value
               : {
                   success: false,
                   error: new Error('Hook execution failed'),
@@ -151,7 +156,7 @@ export class DefaultHookManager extends EventEmitter {
         const result = await this.executeHook(name, context);
         results.push(result);
 
-        if (failFast && !result.success) {
+        if (failFast && !result?.success) {
           break;
         }
       }

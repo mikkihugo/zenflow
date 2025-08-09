@@ -3,9 +3,15 @@
  * Maps our 104 agent types to Claude Code sub-agent configurations
  * Generates templates for external projects (not for this dev codebase)
  */
+/**
+ * @file Coordination system: sub-agent-generator.
+ */
+
+
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import type { AgentType } from '../types/agent-types';
 
 export interface SubAgentConfig {
   name: string;
@@ -24,7 +30,7 @@ export interface SubAgentTemplate {
 }
 
 /**
- * Sub-agent configuration templates for different agent categories
+ * Sub-agent configuration templates for different agent categories.
  */
 export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
   // Core Development Agents
@@ -99,7 +105,7 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
 };
 
 /**
- * Generate sub-agent configuration for a specific agent type
+ * Generate sub-agent configuration for a specific agent type.
  *
  * @param agentType
  */
@@ -123,7 +129,7 @@ export function generateSubAgentConfig(agentType: AgentType): SubAgentConfig {
 }
 
 /**
- * Generate generic configuration for unmapped agent types
+ * Generate generic configuration for unmapped agent types.
  *
  * @param agentType
  */
@@ -145,7 +151,7 @@ function generateGenericConfig(agentType: AgentType): SubAgentConfig {
 }
 
 /**
- * Generate all sub-agent configurations for template system
+ * Generate all sub-agent configurations for template system.
  *
  * @param outputDir
  */
@@ -231,7 +237,7 @@ export async function generateAllSubAgentTemplates(outputDir: string): Promise<v
 }
 
 /**
- * Enhanced Task tool integration with sub-agent support
+ * Enhanced Task tool integration with sub-agent support.
  *
  * @example
  */
@@ -243,7 +249,7 @@ export interface TaskWithSubAgent {
 }
 
 /**
- * Map agent type to optimal Claude Code sub-agent
+ * Map agent type to optimal Claude Code sub-agent.
  *
  * @param agentType
  */

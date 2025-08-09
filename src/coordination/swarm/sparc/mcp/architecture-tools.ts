@@ -4,6 +4,11 @@
  * Provides Model Context Protocol tools for managing SPARC architecture designs,
  * enabling external access to architecture generation and validation.
  */
+/**
+ * @file Coordination system: architecture-tools
+ */
+
+
 
 import { nanoid } from 'nanoid';
 import { ArchitectureStorageService } from '../database/architecture-storage';
@@ -387,20 +392,20 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
     message: string;
   }> {
     try {
-      this.logger?.info(`Generating architecture for domain: ${params.domain || 'general'}`);
+      this.logger?.info(`Generating architecture for domain: ${params?.domain || 'general'}`);
 
       // Validate pseudocode structure
-      if (!params.pseudocode.algorithms || params.pseudocode.algorithms.length === 0) {
+      if (!params?.pseudocode?.algorithms || params?.pseudocode?.algorithms.length === 0) {
         throw new Error('Pseudocode structure must contain at least one algorithm');
       }
 
       // Generate architecture using the enhanced engine
-      const architecture = await this.architectureEngine.designArchitecture(params.pseudocode);
+      const architecture = await this.architectureEngine.designArchitecture(params?.pseudocode);
 
       // Save with project association if provided
       const architectureId = await this.storageService.saveArchitecture(
         architecture,
-        params.projectId
+        params?.projectId
       );
 
       return {
@@ -440,13 +445,13 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }> {
     try {
       this.logger?.info(
-        `Generating architecture from specification with ${params.pseudocode.length} algorithms`
+        `Generating architecture from specification with ${params?.pseudocode.length} algorithms`
       );
 
       // Generate system architecture from specification and pseudocode
       const systemArchitecture = await this.architectureEngine.designSystemArchitecture(
-        params.specification,
-        params.pseudocode
+        params?.specification,
+        params?.pseudocode
       );
 
       // Create full architecture design
@@ -473,7 +478,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
       // Save the architecture
       const architectureId = await this.storageService.saveArchitecture(
         architecture,
-        params.projectId
+        params?.projectId
       );
 
       return {
@@ -507,12 +512,12 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
     message: string;
   }> {
     try {
-      this.logger?.info(`Validating architecture: ${params.architectureId}`);
+      this.logger?.info(`Validating architecture: ${params?.architectureId}`);
 
       // Get architecture from database
-      const architecture = await this.storageService.getArchitectureById(params.architectureId);
+      const architecture = await this.storageService.getArchitectureById(params?.architectureId);
       if (!architecture) {
-        throw new Error(`Architecture not found: ${params.architectureId}`);
+        throw new Error(`Architecture not found: ${params?.architectureId}`);
       }
 
       // Perform validation
@@ -522,9 +527,9 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
 
       // Save validation results
       await this.storageService.saveValidation(
-        params.architectureId,
+        params?.architectureId,
         validation,
-        params.validationType || 'general'
+        params?.validationType || 'general'
       );
 
       return {
@@ -564,16 +569,16 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
     message: string;
   }> {
     try {
-      this.logger?.info(`Retrieving architecture: ${params.architectureId}`);
+      this.logger?.info(`Retrieving architecture: ${params?.architectureId}`);
 
-      const architecture = await this.storageService.getArchitectureById(params.architectureId);
+      const architecture = await this.storageService.getArchitectureById(params?.architectureId);
 
       return {
         success: true,
         architecture,
         message: architecture
           ? `Architecture retrieved successfully`
-          : `Architecture not found: ${params.architectureId}`,
+          : `Architecture not found: ${params?.architectureId}`,
       };
     } catch (error) {
       this.logger?.error('Failed to get architecture:', error);
@@ -643,11 +648,11 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
     message: string;
   }> {
     try {
-      this.logger?.info(`Updating architecture: ${params.architectureId}`);
+      this.logger?.info(`Updating architecture: ${params?.architectureId}`);
 
       const updatedArchitecture = await this.architectureEngine.updateArchitecture(
-        params.architectureId,
-        params.updates
+        params?.architectureId,
+        params?.updates
       );
 
       return {
@@ -676,9 +681,9 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
     message: string;
   }> {
     try {
-      this.logger?.info(`Deleting architecture: ${params.architectureId}`);
+      this.logger?.info(`Deleting architecture: ${params?.architectureId}`);
 
-      await this.storageService.deleteArchitecture(params.architectureId);
+      await this.storageService.deleteArchitecture(params?.architectureId);
 
       return {
         success: true,
@@ -756,42 +761,42 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
     message: string;
   }> {
     try {
-      this.logger?.info(`Exporting architecture ${params.architectureId} as ${params.format}`);
+      this.logger?.info(`Exporting architecture ${params?.architectureId} as ${params?.format}`);
 
-      const architecture = await this.storageService.getArchitectureById(params.architectureId);
+      const architecture = await this.storageService.getArchitectureById(params?.architectureId);
       if (!architecture) {
-        throw new Error(`Architecture not found: ${params.architectureId}`);
+        throw new Error(`Architecture not found: ${params?.architectureId}`);
       }
 
       let content: string;
       let filename: string;
 
-      switch (params.format) {
+      switch (params?.format) {
         case 'json':
           content = JSON.stringify(architecture, null, 2);
-          filename = `architecture-${params.architectureId}.json`;
+          filename = `architecture-${params?.architectureId}.json`;
           break;
 
         case 'yaml':
           // Simple YAML conversion (would use a proper YAML library in production)
           content = this.jsonToYaml(architecture);
-          filename = `architecture-${params.architectureId}.yaml`;
+          filename = `architecture-${params?.architectureId}.yaml`;
           break;
 
         case 'mermaid':
           content = this.architectureToMermaid(architecture);
-          filename = `architecture-${params.architectureId}.mmd`;
+          filename = `architecture-${params?.architectureId}.mmd`;
           break;
 
         default:
-          throw new Error(`Unsupported export format: ${params.format}`);
+          throw new Error(`Unsupported export format: ${params?.format}`);
       }
 
       return {
         success: true,
         content,
         filename,
-        message: `Architecture exported successfully as ${params.format}`,
+        message: `Architecture exported successfully as ${params?.format}`,
       };
     } catch (error) {
       this.logger?.error('Failed to export architecture:', error);
@@ -823,20 +828,20 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
     message: string;
   }> {
     try {
-      this.logger?.info(`Cloning architecture: ${params.sourceArchitectureId}`);
+      this.logger?.info(`Cloning architecture: ${params?.sourceArchitectureId}`);
 
       // Get source architecture
       const sourceArchitecture = await this.storageService.getArchitectureById(
-        params.sourceArchitectureId
+        params?.sourceArchitectureId
       );
       if (!sourceArchitecture) {
-        throw new Error(`Source architecture not found: ${params.sourceArchitectureId}`);
+        throw new Error(`Source architecture not found: ${params?.sourceArchitectureId}`);
       }
 
       // Create cloned architecture with modifications
       const clonedArchitecture: ArchitectureDesign = {
         ...sourceArchitecture,
-        ...params.modifications,
+        ...params?.modifications,
         id: nanoid(),
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -845,7 +850,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
       // Save cloned architecture
       const newArchitectureId = await this.storageService.saveArchitecture(
         clonedArchitecture,
-        params.targetProjectId
+        params?.targetProjectId
       );
 
       return {
@@ -901,7 +906,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
     });
 
     // Add data flows
-    dataFlow.forEach((flow) => {
+    dataFlow?.forEach((flow) => {
       const fromId = flow.from.replace(/\s+/g, '');
       const toId = flow.to.replace(/\s+/g, '');
       mermaid += `    ${fromId} --> ${toId}\n`;

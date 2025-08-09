@@ -5,6 +5,7 @@
  */
 
 import { VALIDATION_RULES } from './defaults';
+import type { ConfigValidationResult, SystemConfiguration, ValidationResult } from './types';
 
 /**
  * Configuration validator.
@@ -314,48 +315,49 @@ export class ConfigValidator {
    */
   validateEnhanced(config: SystemConfiguration): ValidationResult {
     const basicResult = this.validate(config);
-    
+
     const securityIssues: string[] = [];
     const portConflicts: string[] = [];
     const performanceWarnings: string[] = [];
     const failsafeApplied: string[] = [];
-    
+
     // Check security issues
     if (!config?.core?.security?.enableSandbox && config?.core?.security?.allowShellAccess) {
       securityIssues.push('Shell access enabled without sandbox protection');
     }
-    
+
     if (config?.core?.security?.trustedHosts?.length === 0) {
       securityIssues.push('No trusted hosts configured for security');
     }
-    
+
     // Check port conflicts
     const ports = [
       config?.interfaces?.web?.port,
       config?.interfaces?.mcp?.http?.port,
-      config?.monitoring?.dashboard?.port
+      config?.monitoring?.dashboard?.port,
     ].filter((port): port is number => typeof port === 'number');
-    
+
     const uniquePorts = new Set(ports);
     if (ports.length !== uniquePorts.size) {
       portConflicts.push('Multiple services configured to use the same port');
     }
-    
+
     // Check performance warnings
     if (config?.coordination?.maxAgents && config?.coordination?.maxAgents > 1000) {
       performanceWarnings.push('High agent count may impact performance');
     }
-    
+
     if (config?.core?.logger?.level === 'debug') {
       performanceWarnings.push('Debug logging enabled - may impact performance');
     }
-    
+
     // Check production readiness
-    const productionReady = basicResult?.valid && 
-                           securityIssues.length === 0 && 
-                           portConflicts.length === 0 &&
-                           config?.core?.security?.enableSandbox === true;
-    
+    const productionReady =
+      basicResult?.valid &&
+      securityIssues.length === 0 &&
+      portConflicts.length === 0 &&
+      config?.core?.security?.enableSandbox === true;
+
     const result: ValidationResult = {
       valid: basicResult?.valid,
       errors: basicResult?.errors,
@@ -366,7 +368,7 @@ export class ConfigValidator {
       performanceWarnings,
       failsafeApplied,
     };
-    
+
     return result;
   }
 
@@ -388,15 +390,22 @@ export class ConfigValidator {
   } {
     const result = this.validateEnhanced(config);
     const recommendations: string[] = [];
-    
+
     // Calculate health scores
-    const structureScore = result?.errors.length === 0 ? 100 : Math.max(0, 100 - (result?.errors.length * 10));
-    const securityScore = result?.securityIssues.length === 0 ? 100 : Math.max(0, 100 - (result?.securityIssues.length * 20));
-    const performanceScore = result?.performanceWarnings.length === 0 ? 100 : Math.max(0, 100 - (result?.performanceWarnings.length * 5));
+    const structureScore =
+      result?.errors.length === 0 ? 100 : Math.max(0, 100 - result?.errors.length * 10);
+    const securityScore =
+      result?.securityIssues.length === 0
+        ? 100
+        : Math.max(0, 100 - result?.securityIssues.length * 20);
+    const performanceScore =
+      result?.performanceWarnings.length === 0
+        ? 100
+        : Math.max(0, 100 - result?.performanceWarnings.length * 5);
     const productionScore = result?.productionReady ? 100 : 50;
-    
+
     const overallScore = (structureScore + securityScore + performanceScore + productionScore) / 4;
-    
+
     // Generate recommendations
     if (result?.errors.length > 0) {
       recommendations.push('Fix configuration errors before deployment');
@@ -410,9 +419,9 @@ export class ConfigValidator {
     if (result?.performanceWarnings.length > 0) {
       recommendations.push('Review performance configuration for optimization');
     }
-    
+
     const status = overallScore >= 90 ? 'healthy' : overallScore >= 70 ? 'warning' : 'critical';
-    
+
     return {
       status,
       score: Math.round(overallScore),

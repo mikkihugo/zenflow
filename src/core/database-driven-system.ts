@@ -2,12 +2,27 @@
  * Database-Driven Development System.
  *
  * REPLACES file-based DocumentDrivenSystem with pure database architecture
- * Handles Vision → ADRs → PRDs → Epics → Features → Tasks → Code via database entities
+ * Handles Vision → ADRs → PRDs → Epics → Features → Tasks → Code via database entities.
  * Integrates with existing DatabaseCoordinator and UnifiedWorkflowEngine.
  */
+/**
+ * @file database-driven-system implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
+import type { DocumentManager } from '../core/workflow-engine';
+import type { ADRDocumentEntity } from '../database/entities/product-entities';
+import type { BaseDocumentEntity } from '../database/entities/product-entities';
+import type { EpicDocumentEntity } from '../database/entities/product-entities';
+import type { FeatureDocumentEntity } from '../database/entities/product-entities';
+import type { PRDDocumentEntity } from '../database/entities/product-entities';
+import type { ProjectEntity } from '../database/entities/product-entities';
+import type { TaskDocumentEntity } from '../database/entities/product-entities';
+import type { VisionDocumentEntity } from '../database/entities/product-entities';
+import type { WorkflowEngine } from '../workflows/engine';
 import { createLogger } from './logger';
 
 const logger = createLogger('DatabaseDriven');
@@ -30,7 +45,7 @@ export interface DocumentProcessingOptions {
 /**
  * Database-Driven Development System.
  *
- * Pure database operations - NO file system interactions
+ * Pure database operations - NO file system interactions.
  * All documents are database entities with export capabilities.
  *
  * @example
@@ -291,7 +306,9 @@ export class DatabaseDrivenSystem extends EventEmitter {
       stakeholders: visionSpec.stakeholders,
       timeline: {
         ...(visionSpec.timeline?.startDate && { start_date: visionSpec.timeline.startDate }),
-        ...(visionSpec.timeline?.targetCompletion && { target_completion: visionSpec.timeline.targetCompletion }),
+        ...(visionSpec.timeline?.targetCompletion && {
+          target_completion: visionSpec.timeline.targetCompletion,
+        }),
         milestones: visionSpec.timeline?.milestones || [],
       },
       generated_adrs: [],

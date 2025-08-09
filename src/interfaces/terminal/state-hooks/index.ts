@@ -1,11 +1,16 @@
 /**
- * Terminal State Hooks - Index
+ * Terminal State Hooks - Index.
  *
  * React hooks for state management in the unified terminal interface.
  * Note: These are React hooks, NOT Claude Code hooks (which belong in templates/).
  */
 
 // Core React state hooks
+/**
+ * @file state-hooks module exports
+ */
+
+
 export * from './use-config';
 // Re-export key hooks for convenience
 export { type TerminalConfig, type UseConfigReturn, useConfig } from './use-config';
@@ -21,7 +26,7 @@ export {
 // Additional React hook utilities
 export const StateHookUtils = {
   /**
-   * Debounce function for React hooks
+   * Debounce function for React hooks.
    *
    * @param func
    * @param delay
@@ -36,7 +41,7 @@ export const StateHookUtils = {
   },
 
   /**
-   * Throttle function for React hooks
+   * Throttle function for React hooks.
    *
    * @param func
    * @param delay

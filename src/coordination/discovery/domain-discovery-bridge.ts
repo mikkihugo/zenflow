@@ -1,9 +1,9 @@
 /**
- * Domain Discovery Bridge - Connects Document Processing to Domain Analysis
+ * Domain Discovery Bridge - Connects Document Processing to Domain Analysis.
  *
  * This bridge connects the document-driven development workflow with domain discovery,
  * enabling automatic domain identification based on project documentation and code analysis.
- * It leverages neural networks for intelligent domain mapping and provides human-in-the-loop
+ * It leverages neural networks for intelligent domain mapping and provides human-in-the-loop.
  * validation through AGUI integration.
  *
  * @module coordination/discovery/domain-discovery-bridge
@@ -23,7 +23,7 @@
  *   intelligenceCoordinator
  * );
  *
- * // Initialize and start discovery
+ * // Initialize and start discovery.
  * await bridge.initialize();
  * const domains = await bridge.discoverDomains();
  *
@@ -31,25 +31,30 @@
  * const relevantDocs = await bridge.askHumanRelevance(documents);
  * ```
  */
+/**
+ * @file Coordination system: domain-discovery-bridge
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { basename } from 'node:path';
-import type { Document, DocumentProcessor, DocumentType } from '../../core/document-processor';
-import { createLogger } from '../../core/logger';
-import type { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
+import type { Document, DocumentProcessor, DocumentType } from '../core/document-processor';
+import { createLogger } from '../core/logger';
+import type { IntelligenceCoordinationSystem } from '../knowledge/intelligence-coordination-system';
 import type {
   MonorepoInfo,
   ProjectContextAnalyzer,
-} from '../../knowledge/project-context-analyzer';
+} from '../knowledge/project-context-analyzer';
 import type {
   DomainAnalysis,
   DomainAnalysisEngine,
-} from '../../tools/domain-splitting/analyzers/domain-analyzer';
+} from '../tools/domain-splitting/analyzers/domain-analyzer';
 
 const logger = createLogger({ prefix: 'DomainDiscoveryBridge' });
 
 /**
- * Represents a discovered domain with enriched metadata
+ * Represents a discovered domain with enriched metadata.
  *
  * @example
  */
@@ -79,7 +84,7 @@ export interface DiscoveredDomain {
 }
 
 /**
- * Document relevance information for human validation
+ * Document relevance information for human validation.
  *
  * @example
  */
@@ -97,7 +102,7 @@ export interface DocumentRelevance {
 }
 
 /**
- * Mapping between a document and discovered domains
+ * Mapping between a document and discovered domains.
  *
  * @example
  */
@@ -117,7 +122,7 @@ export interface DocumentDomainMapping {
 }
 
 /**
- * AGUI validation request structure
+ * AGUI validation request structure.
  *
  * @example
  */
@@ -140,7 +145,7 @@ export interface AGUIValidationRequest {
 }
 
 /**
- * Configuration for the Domain Discovery Bridge
+ * Configuration for the Domain Discovery Bridge.
  *
  * @example
  */
@@ -158,9 +163,9 @@ export interface DomainDiscoveryBridgeConfig {
 }
 
 /**
- * Domain Discovery Bridge - Connects document processing with domain analysis
+ * Domain Discovery Bridge - Connects document processing with domain analysis.
  *
- * This class acts as the integration point between the document-driven development
+ * This class acts as the integration point between the document-driven development.
  * workflow and automatic domain discovery. It analyzes documents for concepts,
  * maps them to code domains, and provides human validation touchpoints.
  *
@@ -174,7 +179,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   private initialized = false;
 
   /**
-   * Creates a new Domain Discovery Bridge
+   * Creates a new Domain Discovery Bridge.
    *
    * @param docProcessor - Document processor for scanning and processing documents
    * @param domainAnalyzer - Domain analyzer for code analysis and categorization
@@ -191,20 +196,20 @@ export class DomainDiscoveryBridge extends EventEmitter {
   ) {
     super();
     this.config = {
-      confidenceThreshold: config.confidenceThreshold ?? 0.7,
-      autoDiscovery: config.autoDiscovery ?? true,
-      maxDomainsPerDocument: config.maxDomainsPerDocument ?? 3,
-      useNeuralAnalysis: config.useNeuralAnalysis ?? true,
-      enableCache: config.enableCache ?? true,
+      confidenceThreshold: config?.confidenceThreshold ?? 0.7,
+      autoDiscovery: config?.autoDiscovery ?? true,
+      maxDomainsPerDocument: config?.maxDomainsPerDocument ?? 3,
+      useNeuralAnalysis: config?.useNeuralAnalysis ?? true,
+      enableCache: config?.enableCache ?? true,
     };
 
     this.setupEventListeners();
   }
 
   /**
-   * Initialize the domain discovery bridge
+   * Initialize the domain discovery bridge.
    *
-   * Sets up event listeners and performs initial discovery if configured
+   * Sets up event listeners and performs initial discovery if configured.
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -228,7 +233,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Discover domains by analyzing documents and code
+   * Discover domains by analyzing documents and code.
    *
    * This is the main entry point for domain discovery. It combines document
    * analysis, code analysis, and human validation to identify domains.
@@ -287,7 +292,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Ask human to validate document relevance for domain discovery
+   * Ask human to validate document relevance for domain discovery.
    *
    * @param documents - All documents to evaluate
    * @returns Documents marked as relevant by human
@@ -320,7 +325,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
       options: relevanceAnalysis.map((analysis, index) => ({
         id: documents[index]?.path || '',
         label: `${documents[index]?.type?.toUpperCase() || 'UNKNOWN'}: ${basename(documents[index]?.path || '')}`,
-        preview: (documents[index]?.content?.substring(0, 200) ?? '') + '...',
+        preview: (documents[index]?.content.substring(0, 200) ?? '') + '...',
         metadata: {
           suggestedRelevance: analysis.suggestedRelevance,
           concepts: analysis.concepts.slice(0, 5),
@@ -341,7 +346,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Validate domain mappings with human approval
+   * Validate domain mappings with human approval.
    *
    * @param mappings - Proposed document-domain mappings
    * @returns Human-validated mappings
@@ -385,7 +390,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Extract concepts from document content using NLP and pattern matching
+   * Extract concepts from document content using NLP and pattern matching.
    *
    * @param content - Document content to analyze
    * @returns Array of extracted concepts
@@ -423,14 +428,14 @@ export class DomainDiscoveryBridge extends EventEmitter {
     patterns.forEach((pattern) => {
       const matches = content.match(pattern);
       if (matches) {
-        matches.forEach((match) => concepts.add(match.toLowerCase()));
+        matches?.forEach((match) => concepts.add(match?.toLowerCase()));
       }
     });
 
     // Extract from headers (# Header, ## Subheader)
     const headerMatches = content.match(/^#{1,3}\s+(.+)$/gm);
     if (headerMatches) {
-      headerMatches.forEach((header) => {
+      headerMatches?.forEach((header) => {
         const cleanHeader = header.replace(/^#+\s+/, '').toLowerCase();
         if (cleanHeader.length > 3 && cleanHeader.length < 50) {
           concepts.add(cleanHeader);
@@ -441,12 +446,12 @@ export class DomainDiscoveryBridge extends EventEmitter {
     // Extract from bullet points focusing on key terms
     const bulletMatches = content.match(/^[\s-*]+\s*(.+)$/gm);
     if (bulletMatches) {
-      bulletMatches.forEach((bullet) => {
+      bulletMatches?.forEach((bullet) => {
         const cleanBullet = bullet.replace(/^[\s-*]+/, '').toLowerCase();
         patterns.forEach((pattern) => {
           const matches = cleanBullet.match(pattern);
           if (matches) {
-            matches.forEach((match) => concepts.add(match.toLowerCase()));
+            matches?.forEach((match) => concepts.add(match?.toLowerCase()));
           }
         });
       });
@@ -463,7 +468,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Calculate relevance score between concepts and a domain
+   * Calculate relevance score between concepts and a domain.
    *
    * @param concepts - Extracted concepts from document
    * @param domain - Domain to compare against
@@ -531,7 +536,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Analyze a document to determine its relevance for domain discovery
+   * Analyze a document to determine its relevance for domain discovery.
    *
    * @param document - Document to analyze
    * @returns Relevance analysis with score and reasoning
@@ -590,7 +595,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Create mappings between documents and domains
+   * Create mappings between documents and domains.
    *
    * @param documents - Relevant documents to map
    * @param domainAnalysis - Code domain analysis results
@@ -649,7 +654,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Generate enriched domain objects from validated mappings
+   * Generate enriched domain objects from validated mappings.
    *
    * @param mappings - Validated document-domain mappings
    * @param domainAnalysis - Code domain analysis
@@ -706,7 +711,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Create a domain object with full metadata
+   * Create a domain object with full metadata.
    *
    * @param domainId - Domain identifier (category name)
    * @param domainAnalysis - Code analysis results
@@ -738,7 +743,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Generate human-readable domain description
+   * Generate human-readable domain description.
    *
    * @param domainId - Domain identifier
    * @param fileCount - Number of files in domain
@@ -761,7 +766,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Suggest optimal swarm topology for a domain
+   * Suggest optimal swarm topology for a domain.
    *
    * @param domainId - Domain identifier
    * @param fileCount - Number of files in domain
@@ -800,7 +805,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Find related domains based on shared concepts
+   * Find related domains based on shared concepts.
    *
    * @param domain - Domain to find relations for
    * @param allDomains - All discovered domains
@@ -836,7 +841,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Calculate category relevance for concept matching
+   * Calculate category relevance for concept matching.
    *
    * @param concepts - Document concepts
    * @param category - Domain category
@@ -881,7 +886,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Identify potential domains from concept list
+   * Identify potential domains from concept list.
    *
    * @param concepts - Extracted concepts
    * @returns Array of potential domain names
@@ -908,7 +913,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Get all documents from active workspaces
+   * Get all documents from active workspaces.
    *
    * @returns Array of all documents across workspaces
    */
@@ -925,7 +930,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Group documents by type for analysis
+   * Group documents by type for analysis.
    *
    * @param documents - Documents to group
    * @returns Grouped documents by type
@@ -944,7 +949,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Group mappings by domain for validation
+   * Group mappings by domain for validation.
    *
    * @param mappings - Mappings to group
    * @returns Mappings grouped by domain
@@ -959,7 +964,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
         if (!grouped[domainId]) {
           grouped[domainId] = [];
         }
-        grouped[domainId].push(mapping);
+        grouped[domainId]?.push(mapping);
       });
     });
 
@@ -967,7 +972,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Calculate average confidence across mappings
+   * Calculate average confidence across mappings.
    *
    * @param mappings - Mappings to analyze
    * @returns Average confidence score
@@ -985,7 +990,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Setup event listeners for document processing
+   * Setup event listeners for document processing.
    */
   private setupEventListeners(): void {
     // Listen for document processing events
@@ -1006,7 +1011,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Handle document processed event
+   * Handle document processed event.
    *
    * @param event - Document processed event
    */
@@ -1024,7 +1029,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Handle workspace loaded event
+   * Handle workspace loaded event.
    *
    * @param event - Workspace loaded event
    */
@@ -1043,7 +1048,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Get discovered domains
+   * Get discovered domains.
    *
    * @returns Map of discovered domains
    */
@@ -1052,7 +1057,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Get document mappings
+   * Get document mappings.
    *
    * @returns Map of document-domain mappings
    */
@@ -1061,7 +1066,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Clear all caches and reset state
+   * Clear all caches and reset state.
    */
   clearCache(): void {
     this.conceptCache.clear();
@@ -1069,7 +1074,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   }
 
   /**
-   * Shutdown the bridge and clean up resources
+   * Shutdown the bridge and clean up resources.
    */
   async shutdown(): Promise<void> {
     logger.info('Shutting down Domain Discovery Bridge...');
@@ -1082,7 +1087,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
 }
 
 /**
- * Factory function to create a configured Domain Discovery Bridge
+ * Factory function to create a configured Domain Discovery Bridge.
  *
  * @param docProcessor - Document processor instance
  * @param domainAnalyzer - Domain analyzer instance

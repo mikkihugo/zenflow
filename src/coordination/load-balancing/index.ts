@@ -1,7 +1,12 @@
 /**
- * Intelligent Load Balancing System for Claude-Zen Swarm Agents
- * Advanced load balancing with ML-based prediction and multi-dimensional metrics
+ * Intelligent Load Balancing System for Claude-Zen Swarm Agents.
+ * Advanced load balancing with ML-based prediction and multi-dimensional metrics.
  */
+/**
+ * @file load-balancing module exports
+ */
+
+
 
 export { AdaptiveLearningAlgorithm } from './algorithms/adaptive-learning';
 export { LeastConnectionsAlgorithm } from './algorithms/least-connections';

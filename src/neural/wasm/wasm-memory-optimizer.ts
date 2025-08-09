@@ -1,7 +1,12 @@
 /**
- * WASM Memory Optimizer - Temporary stub implementation
- * TODO: Implement WASM memory optimization functionality
+ * WASM Memory Optimizer - Temporary stub implementation.
+ * TODO: Implement WASM memory optimization functionality.
  */
+/**
+ * @file Neural network: wasm-memory-optimizer
+ */
+
+
 
 export class WasmMemoryOptimizer {
   private optimized = false;

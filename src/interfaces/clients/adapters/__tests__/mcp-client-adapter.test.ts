@@ -155,8 +155,8 @@ describe('MCPClientAdapter', () => {
       }, 10);
 
       const result = await adapter.get('/tools');
-      expect(result.data).toHaveLength(2);
-      expect(result.data[0].name).toBe('test-tool');
+      expect(result?.data).toHaveLength(2);
+      expect(result?.data?.[0]?.name).toBe('test-tool');
     });
 
     it('should execute tools via stdio', async () => {
@@ -196,8 +196,8 @@ describe('MCPClientAdapter', () => {
       }, 10);
 
       const result = await executionPromise;
-      expect(result.status).toBe(200);
-      expect(result.data.content[0].text).toBe('Tool executed successfully');
+      expect(result?.status).toBe(200);
+      expect(result?.data?.content?.[0]?.text).toBe('Tool executed successfully');
     });
 
     it('should handle process errors', async () => {
@@ -301,8 +301,8 @@ describe('MCPClientAdapter', () => {
 
       const result = await adapter.post('http-tool', { data: 'test' });
 
-      expect(result.status).toBe(200);
-      expect(result.data.content[0].text).toBe('HTTP tool executed');
+      expect(result?.status).toBe(200);
+      expect(result?.data?.content?.[0]?.text).toBe('HTTP tool executed');
     });
 
     it('should handle HTTP errors', async () => {
@@ -516,11 +516,11 @@ describe('MCPClientFactory', () => {
 
     const healthResults = await factory.healthCheckAll();
     expect(healthResults.size).toBe(1);
-    expect(healthResults.has('bulk-test-client')).toBe(true);
+    expect(healthResults?.has('bulk-test-client')).toBe(true);
 
     const metricsResults = await factory.getMetricsAll();
     expect(metricsResults.size).toBe(1);
-    expect(metricsResults.has('bulk-test-client')).toBe(true);
+    expect(metricsResults?.has('bulk-test-client')).toBe(true);
   });
 
   it('should remove clients', async () => {

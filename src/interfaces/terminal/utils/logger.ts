@@ -1,7 +1,13 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("interfaces-terminal-utils-logger");
 /**
- * Simple Logger for Terminal Interface
+ * @file Interface implementation: logger
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-terminal-utils-logger');
+/**
+ * Simple Logger for Terminal Interface.
  *
  * Standalone logger to avoid circular dependencies.
  */

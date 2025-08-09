@@ -85,7 +85,7 @@ export class PerformanceMeasurement {
     const memoryMeasurements: Array<{ heap: number; external: number; total: number }> = [];
 
     // Warmup
-    for (let i = 0; i < config.warmup!; i++) {
+    for (let i = 0; i < config?.warmup!; i++) {
       fn();
     }
 
@@ -97,7 +97,7 @@ export class PerformanceMeasurement {
     const initialMemory = process.memoryUsage();
 
     // Actual measurements
-    for (let i = 0; i < config.iterations!; i++) {
+    for (let i = 0; i < config?.iterations!; i++) {
       const startTime = performance.now();
       const startMemory = process.memoryUsage();
 
@@ -142,7 +142,7 @@ export class PerformanceMeasurement {
     const memoryMeasurements: Array<{ heap: number; external: number; total: number }> = [];
 
     // Warmup
-    for (let i = 0; i < config.warmup!; i++) {
+    for (let i = 0; i < config?.warmup!; i++) {
       await fn();
     }
 
@@ -152,7 +152,7 @@ export class PerformanceMeasurement {
     }
 
     // Actual measurements
-    for (let i = 0; i < config.iterations!; i++) {
+    for (let i = 0; i < config?.iterations!; i++) {
       const startTime = performance.now();
       const startMemory = process.memoryUsage();
 
@@ -237,12 +237,12 @@ export class PerformanceMeasurement {
         ? await this.measureAsync(benchmark.name, benchmark.fn as () => Promise<T>, options)
         : this.measureSync(benchmark.name, benchmark.fn as () => T, options);
 
-      results.push({ name: benchmark.name, metrics });
+      results?.push({ name: benchmark.name, metrics });
     }
 
     // Rank by execution time (lower is better)
     const ranked = results
-      .sort(
+      ?.sort(
         (a, b) =>
           (a.metrics.statistics?.mean || a.metrics.executionTime) -
           (b.metrics.statistics?.mean || b.metrics.executionTime)

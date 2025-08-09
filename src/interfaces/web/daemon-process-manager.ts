@@ -1,15 +1,20 @@
 /**
- * Daemon Process Manager - Background process management
+ * Daemon Process Manager - Background process management.
  *
- * Handles daemon mode operations, process lifecycle, and PID management
+ * Handles daemon mode operations, process lifecycle, and PID management.
  * for the web interface server.
  */
+/**
+ * @file daemon-process management system
+ */
+
+
 
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { createLogger } from '../../utils/logger';
+import { createLogger } from '../utils/logger';
 
 export interface DaemonConfig {
   pidFile?: string;
@@ -28,7 +33,7 @@ export interface ProcessInfo {
 }
 
 /**
- * Manages daemon processes and background operations
+ * Manages daemon processes and background operations.
  *
  * @example
  */
@@ -38,16 +43,16 @@ export class DaemonProcessManager {
 
   constructor(config: DaemonConfig = {}) {
     this.config = {
-      pidFile: config.pidFile || join(process.cwd(), '.claude-zen-web.pid'),
-      logFile: config.logFile || join(process.cwd(), '.claude-zen-web.log'),
-      errorFile: config.errorFile || join(process.cwd(), '.claude-zen-web.error'),
-      cwd: config.cwd || process.cwd(),
-      detached: config.detached ?? true,
+      pidFile: config?.pidFile || join(process.cwd(), '.claude-zen-web.pid'),
+      logFile: config?.logFile || join(process.cwd(), '.claude-zen-web.log'),
+      errorFile: config?.errorFile || join(process.cwd(), '.claude-zen-web.error'),
+      cwd: config?.cwd || process.cwd(),
+      detached: config?.detached ?? true,
     };
   }
 
   /**
-   * Start process in daemon mode
+   * Start process in daemon mode.
    *
    * @param command
    * @param args
@@ -71,12 +76,12 @@ export class DaemonProcessManager {
       stdio: ['ignore', 'ignore', 'ignore'],
     });
 
-    if (!child.pid) {
+    if (!child?.pid) {
       throw new Error('Failed to start daemon process');
     }
 
     const processInfo: ProcessInfo = {
-      pid: child.pid,
+      pid: child?.pid,
       startTime: new Date(),
       status: 'running',
       command,
@@ -84,32 +89,32 @@ export class DaemonProcessManager {
     };
 
     // Write PID file
-    await writeFile(this.config.pidFile, child.pid.toString());
+    await writeFile(this.config.pidFile, child?.pid.toString());
 
     // Handle process events
-    child.on('error', (error) => {
+    child?.on('error', (error) => {
       this.logger.error('Daemon process error:', error);
       this.handleProcessError(error);
     });
 
-    child.on('exit', (code, signal) => {
+    child?.on('exit', (code, signal) => {
       this.logger.info(`Daemon process exited with code ${code}, signal ${signal}`);
       this.cleanupPidFile();
     });
 
     // Detach from parent
     if (this.config.detached) {
-      child.unref();
+      child?.unref();
     }
 
     this.currentProcess = child;
-    this.logger.info(`Daemon started with PID: ${child.pid}`);
+    this.logger.info(`Daemon started with PID: ${child?.pid}`);
 
     return processInfo;
   }
 
   /**
-   * Stop the daemon process
+   * Stop the daemon process.
    *
    * @param signal
    */
@@ -148,7 +153,7 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Restart the daemon process
+   * Restart the daemon process.
    *
    * @param command
    * @param args
@@ -165,7 +170,7 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Get information about running daemon process
+   * Get information about running daemon process.
    */
   async getRunningProcess(): Promise<ProcessInfo | null> {
     if (!existsSync(this.config.pidFile)) {
@@ -202,7 +207,7 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Check if daemon is running
+   * Check if daemon is running.
    */
   async isDaemonRunning(): Promise<boolean> {
     const processInfo = await this.getRunningProcess();
@@ -210,7 +215,7 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Get daemon status with health information
+   * Get daemon status with health information.
    */
   async getDaemonStatus(): Promise<{
     running: boolean;
@@ -249,7 +254,7 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Read daemon logs
+   * Read daemon logs.
    *
    * @param maxLines
    */
@@ -269,7 +274,7 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Check if a process is running by PID
+   * Check if a process is running by PID.
    *
    * @param pid
    */
@@ -284,7 +289,7 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Wait for process to stop
+   * Wait for process to stop.
    *
    * @param pid
    * @param timeout
@@ -303,7 +308,7 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Clean up PID file
+   * Clean up PID file.
    */
   private async cleanupPidFile(): Promise<void> {
     try {
@@ -317,7 +322,7 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Ensure required directories exist
+   * Ensure required directories exist.
    */
   private async ensureDirectories(): Promise<void> {
     const dirs = [this.config.pidFile, this.config.logFile, this.config.errorFile].map((file) =>
@@ -332,7 +337,7 @@ export class DaemonProcessManager {
   }
 
   /**
-   * Handle process errors
+   * Handle process errors.
    *
    * @param error
    */

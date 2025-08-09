@@ -1,9 +1,14 @@
 /**
- * Knowledge Client Factory Implementation
+ * Knowledge Client Factory Implementation.
  *
  * Factory implementation for creating Knowledge clients in the UACL system.
- * This file provides the actual factory class that was imported in the main
+ * This file provides the actual factory class that was imported in the main.
  * factories.ts file for dynamic loading.
  */
+/**
+ * @file Interface implementation: knowledge-client-factory
+ */
+
+
 
 export { KnowledgeClientFactory } from '../adapters/knowledge-client-adapter';

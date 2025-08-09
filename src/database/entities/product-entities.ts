@@ -1,16 +1,21 @@
 /**
- * Product Flow Entities - Clean Naming and Proper SPARC Integration
+ * Product Flow Entities - Clean Naming and Proper SPARC Integration.
  *
  * MISSION ACCOMPLISHED: Renamed from document-entities.ts to product-entities.ts
  * - Clean Product Flow naming throughout (no generic "document" terminology)
  * - Proper SPARC integration in Features and Tasks
  * - Clear separation: Product Flow = WHAT, SPARC = HOW
  */
+/**
+ * @file Database layer: product-entities
+ */
 
-import type { DocumentType } from '../../types/workflow-types';
+
+
+import type { DocumentType } from '../types/workflow-types';
 
 /**
- * Base entity for all Product Flow documents
+ * Base entity for all Product Flow documents.
  *
  * @example
  */
@@ -33,6 +38,8 @@ export interface BaseProductEntity {
   // Metadata
   version: string;
   checksum: string;
+  metadata: Record<string, any>; // Generic metadata for extensibility
+  name?: string; // Optional name property for compatibility
   created_at: Date;
   updated_at: Date;
 
@@ -46,8 +53,8 @@ export interface BaseProductEntity {
 }
 
 /**
- * Vision Document Entity
- * Strategic vision and high-level goals
+ * Vision Document Entity.
+ * Strategic vision and high-level goals.
  *
  * @example
  */
@@ -74,8 +81,8 @@ export interface VisionDocumentEntity extends BaseProductEntity {
 }
 
 /**
- * Architecture Decision Record Entity
- * Technical decisions and rationale
+ * Architecture Decision Record Entity.
+ * Technical decisions and rationale.
  *
  * @example
  */
@@ -97,8 +104,8 @@ export interface ADRDocumentEntity extends BaseProductEntity {
 }
 
 /**
- * Product Requirements Document Entity
- * Detailed feature specifications
+ * Product Requirements Document Entity.
+ * Detailed feature specifications.
  *
  * @example
  */
@@ -135,8 +142,8 @@ export interface PRDDocumentEntity extends BaseProductEntity {
 }
 
 /**
- * Epic Document Entity
- * Large feature groupings
+ * Epic Document Entity.
+ * Large feature groupings.
  *
  * @example
  */
@@ -169,7 +176,7 @@ export interface EpicDocumentEntity extends BaseProductEntity {
 
 /**
  * Feature Document Entity - ENHANCED with PROPER SPARC INTEGRATION
- * Individual implementable features with SPARC methodology as implementation tool
+ * Individual implementable features with SPARC methodology as implementation tool.
  *
  * @example
  */
@@ -274,7 +281,7 @@ export interface FeatureDocumentEntity extends BaseProductEntity {
 
 /**
  * Task Document Entity - ENHANCED with PROPER SPARC INTEGRATION
- * Granular implementation tasks with SPARC methodology details
+ * Granular implementation tasks with SPARC methodology details.
  *
  * @example
  */
@@ -373,8 +380,8 @@ export interface TaskDocumentEntity extends BaseProductEntity {
 }
 
 /**
- * Product Flow Relationship Entity
- * Tracks relationships between Product Flow documents
+ * Product Flow Relationship Entity.
+ * Tracks relationships between Product Flow documents.
  *
  * @example
  */
@@ -394,8 +401,8 @@ export interface ProductRelationshipEntity {
 }
 
 /**
- * Product Workflow State Entity
- * Tracks Product Flow workflow progression
+ * Product Workflow State Entity.
+ * Tracks Product Flow workflow progression.
  *
  * @example
  */
@@ -432,7 +439,7 @@ export interface ProductWorkflowStateEntity {
 
 /**
  * Product Project Entity - ENHANCED with COMPREHENSIVE SPARC INTEGRATION
- * Groups related Product Flow documents with SPARC methodology support
+ * Groups related Product Flow documents with SPARC methodology support.
  *
  * @example
  */
@@ -530,8 +537,8 @@ export interface ProductProjectEntity {
 }
 
 /**
- * Product Search Index Entity
- * Optimized search and discovery for Product Flow
+ * Product Search Index Entity.
+ * Optimized search and discovery for Product Flow.
  *
  * @example
  */
@@ -577,7 +584,7 @@ export interface ProductSearchIndexEntity {
 }
 
 /**
- * Database Schema Export - UPDATED for Product Flow naming
+ * Database Schema Export - UPDATED for Product Flow naming.
  */
 export const PRODUCT_DATABASE_SCHEMAS = {
   product_documents: `
@@ -814,7 +821,7 @@ export const PRODUCT_DATABASE_SCHEMAS = {
 } as const;
 
 /**
- * Type guards for Product Flow entities
+ * Type guards for Product Flow entities.
  *
  * @param doc
  */

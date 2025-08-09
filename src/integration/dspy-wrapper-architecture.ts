@@ -8,6 +8,11 @@
  * The wrapper implements the expected DSPy interface using the available LMDriver,
  * providing program-like functionality through structured prompting and response parsing.
  */
+/**
+ * @file dspy-wrapper-architecture implementation
+ */
+
+
 
 import { configureLM, DummyLM, type GenerationOptions, getLM, type LMDriver } from 'dspy.ts';
 import { createLogger } from '../core/logger';
@@ -62,7 +67,7 @@ export interface DSPyConfig {
 // ============================================================================
 
 /**
- * Claude-specific LMDriver implementation
+ * Claude-specific LMDriver implementation.
  * Adapts Claude API calls to the dspy.ts LMDriver interface.
  *
  * @example
@@ -129,7 +134,7 @@ class ClaudeLMDriver implements LMDriver {
 // ============================================================================
 
 /**
- * Main DSPy wrapper class that provides the expected DSPy interface
+ * Main DSPy wrapper class that provides the expected DSPy interface.
  * Uses the available dspy.ts LMDriver under the hood.
  *
  * @example
@@ -164,7 +169,7 @@ export class DSPy {
   }
 
   /**
-   * Create a DSPy program with signature and description
+   * Create a DSPy program with signature and description.
    * Mimics the expected DSPy.createProgram interface.
    *
    * @param signature
@@ -195,7 +200,7 @@ export class DSPy {
   }
 
   /**
-   * Execute a DSPy program with given inputs
+   * Execute a DSPy program with given inputs.
    * Converts the program signature into structured prompts for the LM.
    *
    * @param program
@@ -428,11 +433,11 @@ export class DSPy {
     // Fallback: create structured response based on signature
     const result: DSPyExecutionResult = {};
     parsedSignature.outputs.forEach((output: any) => {
-      result?.[output.name] = this.extractFieldFromText(rawResponse, output.name, output.type);
+      result[output.name] = this.extractFieldFromText(rawResponse, output.name, output.type);
     });
 
-    result?.confidence = 0.6; // Lower confidence for fallback parsing
-    result?.reasoning = 'Parsed from unstructured response';
+    result.confidence = 0.6; // Lower confidence for fallback parsing
+    result.reasoning = 'Parsed from unstructured response';
 
     return result;
   }

@@ -1,16 +1,22 @@
-#!/usr/bin/env nodeimport { getLogger } from "../../config/logging-config";
-const logger = getLogger("interfaces-mcp-validate-external-config");
+#!/usr/bin/env nodeimport { getLogger } from '../config/logging-config";
+/**
+ * @file Interface implementation: validate-external-config
+ */
+
+
+const logger = getLogger('interfaces-mcp-validate-external-config');
 
 /**
- * Simple External MCP Configuration Validator
- * Validates the external MCP server configuration files
+ * Simple External MCP Configuration Validator.
+ * Validates the external MCP server configuration files.
  */
 
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import type { getLogger } from '../core/logger';
 
 /**
- * Validate configuration files
+ * Validate configuration files.
  */
 function validateConfigurationFiles(): void {
   const configFiles = [
@@ -64,7 +70,7 @@ function validateConfigurationFiles(): void {
 }
 
 /**
- * Test MCP server configuration
+ * Test MCP server configuration.
  */
 function testMCPConfiguration(): void {
   try {
@@ -72,11 +78,11 @@ function testMCPConfiguration(): void {
     if (existsSync('claude_desktop_config.json')) {
       const config = JSON.parse(readFileSync('claude_desktop_config.json', 'utf8'));
 
-      if (config.mcpServers) {
-        const _serverCount = Object.keys(config.mcpServers).length;
+      if (config?.mcpServers) {
+        const _serverCount = Object.keys(config?.mcpServers).length;
 
         // List configured servers
-        for (const [_name, _serverConfig] of Object.entries(config.mcpServers as any)) {
+        for (const [_name, _serverConfig] of Object.entries(config?.mcpServers as any)) {
         }
       } else {
       }
@@ -86,10 +92,10 @@ function testMCPConfiguration(): void {
     if (existsSync('.copilotrc.json')) {
       const config = JSON.parse(readFileSync('.copilotrc.json', 'utf8'));
 
-      if (config.mcp?.external_servers) {
-        const externalServers = Object.keys(config.mcp.external_servers);
+      if (config?.mcp?.external_servers) {
+        const externalServers = Object.keys(config?.mcp?.external_servers);
         for (const server of externalServers) {
-          const _serverConfig = config.mcp.external_servers[server];
+          const _serverConfig = config?.mcp?.external_servers?.[server];
         }
       }
     }
@@ -97,12 +103,12 @@ function testMCPConfiguration(): void {
 }
 
 /**
- * Print setup instructions
+ * Print setup instructions.
  */
 function printSetupInstructions(): void {}
 
 /**
- * Main function
+ * Main function.
  */
 function main(): void {
   validateConfigurationFiles();

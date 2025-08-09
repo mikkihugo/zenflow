@@ -1,9 +1,14 @@
 /**
- * Swarm Dashboard Screen
+ * Swarm Dashboard Screen.
  *
  * Real-time swarm monitoring and management interface.
  * Consolidates swarm functionality from TUI interface.
  */
+/**
+ * @file Interface implementation: swarm-dashboard
+ */
+
+
 
 import { Box, Text, useInput } from 'ink';
 import type React from 'react';
@@ -72,7 +77,7 @@ export interface SwarmDashboardProps {
 }
 
 /**
- * Swarm Dashboard Screen Component
+ * Swarm Dashboard Screen Component.
  *
  * Provides real-time monitoring of swarm activities.
  *
@@ -181,7 +186,7 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
       <Box flexDirection="row" marginBottom={2}>
         <Box flexDirection="column" width="50%">
           <Box marginBottom={1}>
-            <StatusBadge
+            <StatusBadge.
               status={swarmStatus.status}
               text={`Swarm ${swarmStatus.status.toUpperCase()}`}
               variant="full"
@@ -282,7 +287,7 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
       </Box>
 
       {/* Footer */}
-      <InteractiveFooter
+      <InteractiveFooter.
         currentScreen="Swarm Dashboard"
         availableScreens={[
           { key: '2', name: 'Agents' },

@@ -1,9 +1,14 @@
+/**
+ * @file Test suite for test-domain-discovery
+ */
+
+
 #!/usr/bin/env node
 
 /**
- * Test script for Domain Discovery Bridge
+ * Test script for Domain Discovery Bridge.
  *
- * Demonstrates how the DomainDiscoveryBridge connects document processing
+ * Demonstrates how the DomainDiscoveryBridge connects document processing.
  * with domain analysis to automatically discover domains in a codebase.
  *
  * @example
@@ -16,20 +21,20 @@
  * ```
  */
 
-import { DocumentProcessor } from '../../core/document-processor';
-import { EventBus } from '../../core/event-bus';
-import { createLogger } from '../../core/logger';
-import { MemorySystem } from '../../core/memory-system';
-import { WorkflowEngine } from '../../core/workflow-engine';
-import { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
-import ProjectContextAnalyzer from '../../knowledge/project-context-analyzer';
-import { DomainAnalysisEngine } from '../../tools/domain-splitting/analyzers/domain-analyzer';
+import { DocumentProcessor } from '../core/document-processor';
+import { EventBus } from '../core/event-bus';
+import { createLogger } from '../core/logger';
+import { MemorySystem } from '../core/memory-system';
+import { WorkflowEngine } from '../core/workflow-engine';
+import { IntelligenceCoordinationSystem } from '../knowledge/intelligence-coordination-system';
+import ProjectContextAnalyzer from '../knowledge/project-context-analyzer';
+import { DomainAnalysisEngine } from '../tools/domain-splitting/analyzers/domain-analyzer';
 import { DomainDiscoveryBridge } from './domain-discovery-bridge';
 
 const logger = createLogger('DomainDiscoveryTest');
 
 /**
- * Test the Domain Discovery Bridge with a real project
+ * Test the Domain Discovery Bridge with a real project.
  *
  * @param projectPath - Path to the project to analyze
  */

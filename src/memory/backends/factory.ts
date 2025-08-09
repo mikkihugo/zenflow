@@ -1,9 +1,14 @@
 /**
- * Memory Backend Factory Pattern Implementation
+ * Memory Backend Factory Pattern Implementation.
  *
- * Factory for creating and managing memory storage backends
- * Supports multiple backend types with configuration-driven instantiation
+ * Factory for creating and managing memory storage backends.
+ * Supports multiple backend types with configuration-driven instantiation.
  */
+/**
+ * @file Memory management: factory
+ */
+
+
 
 import type { BackendInterface } from '../core/memory-system';
 import type { MemoryConfig } from '../providers/memory-providers';
@@ -25,9 +30,9 @@ export interface BackendCapabilities {
 const backendRegistry = new Map<MemoryBackendType, () => Promise<typeof BaseMemoryBackend>>();
 
 /**
- * Memory Backend Factory Class
+ * Memory Backend Factory Class.
  *
- * Provides centralized creation and management of memory storage backends
+ * Provides centralized creation and management of memory storage backends.
  */
 export class MemoryBackendFactory {
   private static instance: MemoryBackendFactory;
@@ -44,7 +49,7 @@ export class MemoryBackendFactory {
   }
 
   /**
-   * Get singleton instance
+   * Get singleton instance.
    */
   public static getInstance(): MemoryBackendFactory {
     if (!MemoryBackendFactory.instance) {
@@ -54,7 +59,7 @@ export class MemoryBackendFactory {
   }
 
   /**
-   * Create a memory backend instance
+   * Create a memory backend instance.
    */
   public async createBackend(
     type: MemoryBackendType,
@@ -90,14 +95,14 @@ export class MemoryBackendFactory {
   }
 
   /**
-   * Get existing backend instance
+   * Get existing backend instance.
    */
   public getBackend(instanceId: string): BaseMemoryBackend | null {
     return this.backends.get(instanceId) || null;
   }
 
   /**
-   * List all active backend instances
+   * List all active backend instances.
    */
   public listBackends(): Array<{ id: string; type: string; config: MemoryConfig }> {
     return Array.from(this.backends.entries()).map(([id, backend]) => ({
@@ -108,7 +113,7 @@ export class MemoryBackendFactory {
   }
 
   /**
-   * Close and cleanup a backend instance
+   * Close and cleanup a backend instance.
    */
   public async closeBackend(instanceId: string): Promise<boolean> {
     const backend = this.backends.get(instanceId);
@@ -121,7 +126,7 @@ export class MemoryBackendFactory {
   }
 
   /**
-   * Close all backend instances
+   * Close all backend instances.
    */
   public async closeAllBackends(): Promise<void> {
     const closePromises = Array.from(this.backends.values()).map((backend) => backend.close());
@@ -130,7 +135,7 @@ export class MemoryBackendFactory {
   }
 
   /**
-   * Get backend capabilities
+   * Get backend capabilities.
    */
   public async getBackendCapabilities(type: MemoryBackendType): Promise<BackendCapabilities> {
     const BackendClass = await this.getBackendClass(type);
@@ -139,7 +144,7 @@ export class MemoryBackendFactory {
   }
 
   /**
-   * Register a custom backend type
+   * Register a custom backend type.
    */
   public registerBackend(
     type: MemoryBackendType,
@@ -149,21 +154,21 @@ export class MemoryBackendFactory {
   }
 
   /**
-   * Check if backend type is supported
+   * Check if backend type is supported.
    */
   public isBackendSupported(type: MemoryBackendType): boolean {
     return backendRegistry.has(type);
   }
 
   /**
-   * Get all supported backend types
+   * Get all supported backend types.
    */
   public getSupportedBackends(): MemoryBackendType[] {
     return Array.from(backendRegistry.keys());
   }
 
   /**
-   * Create backend with auto-detection based on config
+   * Create backend with auto-detection based on config.
    */
   public async createAutoBackend(config: Partial<MemoryConfig> = {}): Promise<BaseMemoryBackend> {
     const type = this.detectOptimalBackend(config);
@@ -171,7 +176,7 @@ export class MemoryBackendFactory {
   }
 
   /**
-   * Static method for compatibility with existing code
+   * Static method for compatibility with existing code.
    */
   public static async createBackend(
     type: MemoryBackendType,
@@ -181,7 +186,7 @@ export class MemoryBackendFactory {
   }
 
   /**
-   * Health check all active backends
+   * Health check all active backends.
    */
   public async healthCheckAll(): Promise<Record<string, any>> {
     const results: Record<string, any> = {};
@@ -228,17 +233,17 @@ export class MemoryBackendFactory {
     return {
       ...this.defaultConfig,
       ...config,
-      type: config.type || 'memory',
+      type: config?.type || 'memory',
     } as MemoryConfig;
   }
 
   private detectOptimalBackend(config: Partial<MemoryConfig>): MemoryBackendType {
     // Auto-detect optimal backend based on requirements
-    if (config.persistent) {
-      return config.maxSize && config.maxSize > 50 * 1024 * 1024 ? 'sqlite' : 'file';
+    if (config?.persistent) {
+      return config?.maxSize && config?.maxSize > 50 * 1024 * 1024 ? 'sqlite' : 'file';
     }
 
-    if (config.maxSize && config.maxSize > 100 * 1024 * 1024) {
+    if (config?.maxSize && config?.maxSize > 100 * 1024 * 1024) {
       return 'sqlite';
     }
 

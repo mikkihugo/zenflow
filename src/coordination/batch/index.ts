@@ -1,6 +1,6 @@
 /**
  * @file Batch Operations Module
- * Exports all batch operation components following claude-zen patterns
+ * Exports all batch operation components following claude-zen patterns.
  */
 
 // Import the actual classes for use in factory functions
@@ -28,7 +28,7 @@ export type { SwarmBatchConfig, SwarmOperation, SwarmOperationResult } from './s
 export { SwarmBatchCoordinator } from './swarm-batch';
 
 /**
- * Factory function to create a complete batch system with all components
+ * Factory function to create a complete batch system with all components.
  *
  * @param options
  * @param options.batchConfig
@@ -52,7 +52,7 @@ export function createBatchSystem(options?: {
     swarmBatchCoordinator,
 
     /**
-     * Execute a complete batch workflow with performance monitoring
+     * Execute a complete batch workflow with performance monitoring.
      *
      * @param operations
      */

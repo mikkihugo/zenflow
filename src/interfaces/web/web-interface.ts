@@ -1,14 +1,19 @@
 /**
- * Web Interface - Modern modular browser-based dashboard
+ * Web Interface - Modern modular browser-based dashboard.
  *
  * Refactored into clean, maintainable modules following Google standards.
  * Orchestrates web server, API routes, WebSocket, sessions, and process management.
  */
+/**
+ * @file Interface implementation: web-interface
+ */
+
+
 
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createLogger } from '../../utils/logger';
+import { createLogger } from '../utils/logger';
 import { WebApiRoutes } from './web-api-routes';
 // Import modular components
 import { createWebConfig, type WebConfig } from './web-config';
@@ -23,7 +28,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 /**
- * Main Web Interface orchestrator
+ * Main Web Interface orchestrator.
  *
  * Coordinates all web dashboard components using composition pattern.
  * Reduced from 728 lines to clean, maintainable architecture.
@@ -55,7 +60,7 @@ export class WebInterface {
   }
 
   /**
-   * Initialize all modular components
+   * Initialize all modular components.
    */
   private initializeComponents(): void {
     // Core server setup
@@ -87,7 +92,7 @@ export class WebInterface {
   }
 
   /**
-   * Start the complete web interface system
+   * Start the complete web interface system.
    */
   async run(): Promise<void> {
     try {
@@ -120,7 +125,7 @@ export class WebInterface {
   }
 
   /**
-   * Setup all components with proper integration
+   * Setup all components with proper integration.
    */
   private async setupComponents(): Promise<void> {
     const app = this.server.getApp();
@@ -144,7 +149,7 @@ export class WebInterface {
   }
 
   /**
-   * Setup fallback routes for HTML generation
+   * Setup fallback routes for HTML generation.
    *
    * @param app
    */
@@ -169,7 +174,7 @@ export class WebInterface {
   }
 
   /**
-   * Stop the web interface gracefully
+   * Stop the web interface gracefully.
    */
   async stop(): Promise<void> {
     this.logger.info('Stopping web interface...');
@@ -194,7 +199,7 @@ export class WebInterface {
   }
 
   /**
-   * Get comprehensive system status
+   * Get comprehensive system status.
    */
   async getStatus(): Promise<{
     server: any;
@@ -216,7 +221,7 @@ export class WebInterface {
   }
 
   /**
-   * Broadcast event to all connected WebSocket clients
+   * Broadcast event to all connected WebSocket clients.
    *
    * @param event
    * @param data
@@ -233,7 +238,7 @@ export class WebInterface {
   }
 
   /**
-   * Health check for the entire web interface
+   * Health check for the entire web interface.
    */
   healthCheck(): {
     status: 'healthy' | 'warning' | 'error';

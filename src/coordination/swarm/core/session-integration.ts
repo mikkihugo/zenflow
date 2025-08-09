@@ -1,5 +1,7 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-session-integration");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-session-integration');
+
 /**
  * @file Session Integration Layer.
  *
@@ -11,7 +13,7 @@ const logger = getLogger("coordination-swarm-core-session-integration");
 import { EventEmitter } from 'node:events';
 
 // External dependencies
-import type { IDao, SessionCoordinationDao } from '../../../database';
+import type { IDao, SessionCoordinationDao } from '../database';
 
 // Internal modules - absolute paths
 import { ZenSwarm } from './base-swarm';
@@ -24,7 +26,7 @@ import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './
 /**
  * Enhanced ZenSwarm with session management capabilities.
  *
- * Provides persistent session support for swarm operations, allowing
+ * Provides persistent session support for swarm operations, allowing.
  * recovery from failures and resumption of long-running tasks.
  *
  * @example
@@ -68,20 +70,20 @@ export class SessionEnabledSwarm extends ZenSwarm {
         findById: async (_id: string | number) => null,
         findBy: async (_criteria: Partial<any>, _options?: any) => [],
         findAll: async (_options?: any) => [],
-        create: async (_entity: Omit<any, 'id'>) => ({ 
-          id: 'mock-id', 
+        create: async (_entity: Omit<any, 'id'>) => ({
+          id: 'mock-id',
           name: 'mock-session',
           createdAt: new Date(),
           lastAccessedAt: new Date(),
-          status: 'active'
+          status: 'active',
         }),
-        update: async (_id: string | number, _updates: Partial<any>) => ({ 
+        update: async (_id: string | number, _updates: Partial<any>) => ({
           id: _id,
           name: 'mock-session',
           createdAt: new Date(),
           lastAccessedAt: new Date(),
           status: 'active',
-          ..._updates
+          ..._updates,
         }),
         delete: async (_id: string | number) => true,
         count: async (_criteria?: Partial<any>) => 0,
@@ -89,22 +91,22 @@ export class SessionEnabledSwarm extends ZenSwarm {
         executeCustomQuery: async (_query: any) => null,
         // Coordination methods
         acquireLock: async (_resourceId: string, _lockTimeout?: number) => ({
-          id: 'mock-lock', 
-          resourceId: _resourceId, 
-          acquired: new Date(), 
-          expiresAt: new Date(Date.now() + 30000), 
-          owner: 'mock-session-integration'
+          id: 'mock-lock',
+          resourceId: _resourceId,
+          acquired: new Date(),
+          expiresAt: new Date(Date.now() + 30000),
+          owner: 'mock-session-integration',
         }),
         releaseLock: async (_lockId: string) => {},
-        subscribe: async (_pattern: string, _callback: any) => `mock-sub-${  Date.now()}`,
+        subscribe: async (_pattern: string, _callback: any) => `mock-sub-${Date.now()}`,
         unsubscribe: async (_subscriptionId: string) => {},
         publish: async (_channel: string, _event: any) => {},
         getCoordinationStats: async () => ({
-          activeLocks: 0, 
-          activeSubscriptions: 0, 
+          activeLocks: 0,
+          activeSubscriptions: 0,
           messagesPublished: 0,
-          messagesReceived: 0, 
-          uptime: Date.now()
+          messagesReceived: 0,
+          uptime: Date.now(),
         }),
         execute: async (_sql: string, _params?: unknown[]) => ({ affectedRows: 1 }),
         query: async (_sql: string, _params?: unknown[]) => [],
@@ -119,7 +121,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   /**
    * Initialize swarm with session support.
    *
-   * Sets up the base swarm infrastructure and initializes the session
+   * Sets up the base swarm infrastructure and initializes the session.
    * management layer for persistent operation tracking.
    *
    * @throws Error if initialization fails.
@@ -346,7 +348,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
    */
   async addAgent(config: AgentConfig): Promise<string> {
     // Create agent ID and simulate adding agent
-    const agentId = config.id || `agent-${Date.now()}`;
+    const agentId = config?.id || `agent-${Date.now()}`;
 
     // For now, just emit the event since the base class doesn't have addAgent
     this.emit('agent:added', { agentId, config });
@@ -633,7 +635,7 @@ export class SessionRecoveryService extends EventEmitter {
         healthReport['healthy']++;
       } else {
         healthReport['corrupted']++;
-        healthReport['needsRecovery'].push({
+        healthReport['needsRecovery']?.push({
           sessionId: session.id,
           name: session.name,
           errors: validation.errors,
@@ -641,13 +643,13 @@ export class SessionRecoveryService extends EventEmitter {
 
         // Generate recovery recommendation
         if (session.checkpoints.length > 0) {
-          healthReport['recoveryRecommendations'].push({
+          healthReport['recoveryRecommendations']?.push({
             sessionId: session.id,
             recommendation: 'automatic_recovery',
             availableCheckpoints: session.checkpoints.length,
           });
         } else {
-          healthReport['recoveryRecommendations'].push({
+          healthReport['recoveryRecommendations']?.push({
             sessionId: session.id,
             recommendation: 'manual_intervention',
             reason: 'No checkpoints available',
@@ -667,7 +669,7 @@ export class SessionRecoveryService extends EventEmitter {
     const healthReport = await this.runHealthCheck();
 
     const autoRecoverySessions = healthReport['recoveryRecommendations']
-      .filter((rec: any) => rec.recommendation === 'automatic_recovery')
+      ?.filter((rec: any) => rec.recommendation === 'automatic_recovery')
       .map((rec: any) => rec.sessionId);
 
     this.emit('auto_recovery:scheduled', {

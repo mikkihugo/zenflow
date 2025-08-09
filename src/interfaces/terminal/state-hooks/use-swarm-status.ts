@@ -1,12 +1,17 @@
 /**
- * Swarm Status State Hook
+ * Swarm Status State Hook.
  *
  * React hook for managing swarm state and providing real-time updates.
  * Note: This is a React hook, NOT a Claude Code hook (which belongs in templates/).
  */
+/**
+ * @file Interface implementation: use-swarm-status
+ */
+
+
 
 import { useEffect, useState } from 'react';
-import { createLogger } from '../../../core/logger';
+import { createLogger } from '../core/logger';
 import type { SwarmAgent, SwarmMetrics, SwarmTask } from '../screens/index';
 
 const logger = createLogger({ prefix: 'SwarmStatusHook' });
@@ -71,7 +76,7 @@ const initialSwarmState: SwarmState = {
 };
 
 /**
- * Swarm Status React Hook
+ * Swarm Status React Hook.
  *
  * Provides reactive swarm state management with real-time updates for React components.
  *
@@ -274,10 +279,10 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
 
       // Fallback: simulate by adding to mock data
       const newAgent: SwarmAgent = {
-        id: agentConfig.id || `agent-${Date.now()}`,
-        role: agentConfig.role || 'worker',
+        id: agentConfig?.id || `agent-${Date.now()}`,
+        role: agentConfig?.role || 'worker',
         status: 'active',
-        capabilities: agentConfig.capabilities || ['general'],
+        capabilities: agentConfig?.capabilities || ['general'],
         lastActivity: new Date(),
         metrics: {
           tasksCompleted: 0,
@@ -286,7 +291,7 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
           successRate: 1.0,
           totalTasks: 0,
         },
-        cognitivePattern: agentConfig.cognitivePattern || 'adaptive',
+        cognitivePattern: agentConfig?.cognitivePattern || 'adaptive',
         performanceScore: 1.0,
         ...agentConfig,
       };
@@ -348,13 +353,13 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
       logger.debug('Creating task:', taskConfig);
 
       const newTask: SwarmTask = {
-        id: taskConfig.id || `task-${Date.now()}`,
-        description: taskConfig.description || 'New task',
-        status: taskConfig.status || 'pending',
-        progress: taskConfig.progress || 0,
-        assignedAgents: taskConfig.assignedAgents || [],
-        priority: taskConfig.priority || 'medium',
-        startTime: taskConfig.status === 'in_progress' ? new Date() : undefined,
+        id: taskConfig?.id || `task-${Date.now()}`,
+        description: taskConfig?.description || 'New task',
+        status: taskConfig?.status || 'pending',
+        progress: taskConfig?.progress || 0,
+        assignedAgents: taskConfig?.assignedAgents || [],
+        priority: taskConfig?.priority || 'medium',
+        startTime: taskConfig?.status === 'in_progress' ? new Date() : undefined,
         ...taskConfig,
       };
 

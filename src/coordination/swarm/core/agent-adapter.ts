@@ -1,17 +1,17 @@
 /**
- * Agent Interface Adapter - Compatibility Layer
+ * Agent Interface Adapter - Compatibility Layer.
  *
- * This module provides adapter functions to bridge the interface differences
+ * This module provides adapter functions to bridge the interface differences.
  * between the base Agent interface and coordination-specific requirements.
  *
  * @file Agent interface compatibility adapter
  */
 
-import type { Agent as BaseAgent, Task as BaseTask } from '../../../types/agent-types';
+import type { Agent as BaseAgent, Task as BaseTask } from '../types/agent-types';
 import type { Agent as CoordinationAgent, Task as CoordinationTask, Message } from './types';
 
 /**
- * Adapter function to convert base Agent to coordination Agent
+ * Adapter function to convert base Agent to coordination Agent.
  *
  * @param baseAgent
  */
@@ -40,7 +40,7 @@ export function adaptAgentForCoordination(baseAgent: BaseAgent): CoordinationAge
 }
 
 /**
- * Adapter function to convert coordination Task to base Task
+ * Adapter function to convert coordination Task to base Task.
  *
  * @param coordinationTask
  */
@@ -62,7 +62,7 @@ export function adaptTaskForExecution(coordinationTask: CoordinationTask): BaseT
 }
 
 /**
- * Type-safe agent execution with adaptation
+ * Type-safe agent execution with adaptation.
  *
  * @param agent
  * @param task
@@ -79,7 +79,7 @@ export async function executeTaskWithAgent(
 }
 
 /**
- * Create agent pool entry with proper typing
+ * Create agent pool entry with proper typing.
  *
  * @param agent
  */

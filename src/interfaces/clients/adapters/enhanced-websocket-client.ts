@@ -1,9 +1,14 @@
 /**
- * Enhanced WebSocket Client with UACL Integration
+ * Enhanced WebSocket Client with UACL Integration.
  *
- * Extends the original WebSocket client to implement UACL interface
- * while maintaining 100% backward compatibility with existing code.
+ * Extends the original WebSocket client to implement UACL interface.
+ * While maintaining 100% backward compatibility with existing code.
  */
+/**
+ * @file Interface implementation: enhanced-websocket-client.
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import type {
@@ -31,10 +36,10 @@ interface WebSocketClientOptions {
 }
 
 /**
- * Enhanced WebSocket Client implementing both legacy interface and UACL
+ * Enhanced WebSocket Client implementing both legacy interface and UACL.
  *
- * Maintains 100% backward compatibility with the original WebSocketClient
- * while adding UACL interface support for unified client management.
+ * Maintains 100% backward compatibility with the original WebSocketClient.
+ * While adding UACL interface support for unified client management..
  *
  * @example
  */
@@ -60,7 +65,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   private connectionInfo: WebSocketConnectionInfo;
 
   /**
-   * Constructor supporting both legacy and UACL patterns
+   * Constructor supporting both legacy and UACL patterns.
    *
    * @param urlOrConfig
    * @param legacyOptions
@@ -124,7 +129,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   // =============================================================================
 
   /**
-   * Connect to WebSocket server (UACL interface)
+   * Connect to WebSocket server (UACL interface).
    */
   async connect(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -192,7 +197,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Disconnect from WebSocket server (UACL interface)
+   * Disconnect from WebSocket server (UACL interface).
    */
   async disconnect(): Promise<void> {
     return new Promise((resolve) => {
@@ -217,14 +222,14 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Check if client is connected (UACL interface)
+   * Check if client is connected (UACL interface).
    */
   isConnected(): boolean {
     return this._isConnected && this.ws?.readyState === WebSocket.OPEN;
   }
 
   /**
-   * Health check (UACL interface)
+   * Health check (UACL interface).
    */
   async healthCheck(): Promise<ClientStatus> {
     const responseTime = await this.measurePingTime();
@@ -248,7 +253,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Get client metrics (UACL interface)
+   * Get client metrics (UACL interface).
    */
   async getMetrics(): Promise<ClientMetrics> {
     return {
@@ -258,9 +263,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Generic GET request (UACL interface)
+   * Generic GET request (UACL interface).
    *
    * @param endpoint
+   * @param options.
    * @param options
    */
   async get<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>> {
@@ -268,7 +274,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Generic POST request (UACL interface)
+   * Generic POST request (UACL interface).
    *
    * @param endpoint
    * @param data
@@ -283,7 +289,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Generic PUT request (UACL interface)
+   * Generic PUT request (UACL interface).
    *
    * @param endpoint
    * @param data
@@ -298,9 +304,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Generic DELETE request (UACL interface)
+   * Generic DELETE request (UACL interface).
    *
    * @param endpoint
+   * @param options.
    * @param options
    */
   async delete<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>> {
@@ -308,8 +315,9 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Update client configuration (UACL interface)
+   * Update client configuration (UACL interface).
    *
+   * @param config.
    * @param config
    */
   updateConfig(config: Partial<WebSocketClientConfig>): void {
@@ -322,9 +330,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Event handler registration (UACL interface)
+   * Event handler registration (UACL interface).
    *
    * @param event
+   * @param handler.
    * @param handler
    */
   on(
@@ -335,9 +344,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Event handler removal (UACL interface)
+   * Event handler removal (UACL interface).
    *
    * @param event
+   * @param handler.
    * @param handler
    */
   off(event: string, handler?: (...args: any[]) => void): void {
@@ -349,7 +359,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Cleanup and destroy client (UACL interface)
+   * Cleanup and destroy client (UACL interface).
    */
   async destroy(): Promise<void> {
     await this.disconnect();
@@ -363,8 +373,9 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   // =============================================================================
 
   /**
-   * Send message (legacy method - exact same signature as original)
+   * Send message (legacy method - exact same signature as original).
    *
+   * @param data.
    * @param data
    */
   send(data: any): void {
@@ -386,21 +397,21 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Get connection status (legacy property)
+   * Get connection status (legacy property).
    */
   get connected(): boolean {
     return this._isConnected;
   }
 
   /**
-   * Get connection URL (legacy property)
+   * Get connection URL (legacy property).
    */
   get connectionUrl(): string {
     return this.url;
   }
 
   /**
-   * Get queued message count (legacy property)
+   * Get queued message count (legacy property).
    */
   get queuedMessages(): number {
     return this.messageQueue.length;
@@ -411,7 +422,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   // =============================================================================
 
   /**
-   * Send typed message with enhanced features
+   * Send typed message with enhanced features.
    *
    * @param message
    * @param options
@@ -453,7 +464,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Get connection information
+   * Get connection information.
    */
   getConnectionInfo(): WebSocketConnectionInfo {
     return {
@@ -465,7 +476,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Get WebSocket-specific metrics
+   * Get WebSocket-specific metrics.
    */
   async getWebSocketMetrics(): Promise<WebSocketMetrics> {
     return {
@@ -506,7 +517,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   /**
-   * Get current ready state
+   * Get current ready state.
    */
   get readyState(): number {
     return this.ws?.readyState || WebSocket.CLOSED;
@@ -546,7 +557,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
       // Check for response correlation
       if (data?.id && data.type === 'response') {
-        this.emit(`response:${data.correlationId || data.id}`, data);
+        this.emit(`response:${data?.correlationId || data?.id}`, data);
         return;
       }
 
@@ -592,10 +603,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
         const duration = Date.now() - startTime;
 
         resolve({
-          data: responseData.data,
-          status: responseData.status || 200,
-          statusText: responseData.statusText || 'OK',
-          headers: responseData.headers || {},
+          data: responseData?.data,
+          status: responseData?.status || 200,
+          statusText: responseData?.statusText || 'OK',
+          headers: responseData?.headers || {},
           config: options || {},
           metadata: {
             requestId,
@@ -776,11 +787,11 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       name: `ws-client-${Date.now()}`,
       baseURL: url,
       url: url,
-      timeout: options.timeout,
+      timeout: options?.timeout,
       reconnection: {
-        enabled: options.reconnect || true,
-        maxAttempts: options.maxReconnectAttempts || 10,
-        initialDelay: options.reconnectInterval || 1000,
+        enabled: options?.reconnect || true,
+        maxAttempts: options?.maxReconnectAttempts || 10,
+        initialDelay: options?.reconnectInterval || 1000,
         maxDelay: 30000,
         backoff: 'exponential',
       },
@@ -798,10 +809,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
   private convertUACLToLegacy(config: WebSocketClientConfig): WebSocketClientOptions {
     return {
-      reconnect: config.reconnection?.enabled || true,
-      reconnectInterval: config.reconnection?.initialDelay || 1000,
-      maxReconnectAttempts: config.reconnection?.maxAttempts || 10,
-      timeout: config.timeout || 30000,
+      reconnect: config?.reconnection?.enabled || true,
+      reconnectInterval: config?.reconnection?.initialDelay || 1000,
+      maxReconnectAttempts: config?.reconnection?.maxAttempts || 10,
+      timeout: config?.timeout || 30000,
     };
   }
 }

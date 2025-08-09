@@ -203,8 +203,8 @@ describe('WASM Matrix Operations - Classical TDD', () => {
 
       // Sobel edge detection in X direction
       expect(result.length).toBe(4); // 2x2 output
-      expect(result[0]).toBe(-8); // Top-left
-      expect(result[1]).toBe(-8); // Top-right
+      expect(result?.[0]).toBe(-8); // Top-left
+      expect(result?.[1]).toBe(-8); // Top-right
     });
 
     it('should handle stride in convolution', () => {
@@ -215,8 +215,8 @@ describe('WASM Matrix Operations - Classical TDD', () => {
 
       // With stride 2, output should be 2x2
       expect(result.length).toBe(4);
-      expect(result[0]).toBe(14); // 1+2+5+6
-      expect(result[1]).toBe(22); // 3+4+7+8
+      expect(result?.[0]).toBe(14); // 1+2+5+6
+      expect(result?.[1]).toBe(22); // 3+4+7+8
     });
   });
 
@@ -276,10 +276,10 @@ describe('WASM Matrix Operations - Classical TDD', () => {
       const result = wasmOps.batchMatMul(batchA, batchB, 2, 2, 2, 2);
 
       // First batch: A * I = A
-      expect(result.slice(0, 4)).toEqual([1, 2, 3, 4]);
+      expect(result?.slice(0, 4)).toEqual([1, 2, 3, 4]);
 
       // Second batch: A * 2I = 2A
-      expect(result.slice(4, 8)).toEqual([10, 12, 14, 16]);
+      expect(result?.slice(4, 8)).toEqual([10, 12, 14, 16]);
     });
   });
 
@@ -294,8 +294,8 @@ describe('WASM Matrix Operations - Classical TDD', () => {
       const duration = performance.now() - startTime;
 
       // All elements should be size * 2 (sum of row * column)
-      expect(result[0]).toBe(size * 2);
-      expect(result[result.length - 1]).toBe(size * 2);
+      expect(result?.[0]).toBe(size * 2);
+      expect(result?.[result.length - 1]).toBe(size * 2);
 
       // Performance assertion (adjust based on actual WASM performance)
       expect(duration).toBeLessThan(100); // Should complete in < 100ms

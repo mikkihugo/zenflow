@@ -1,8 +1,8 @@
 /**
- * UACL Knowledge Client Adapter - FACT Integration Conversion
+ * UACL Knowledge Client Adapter - FACT Integration Conversion.
  *
  * Converts the existing FACTIntegration to implement the UACL IClient interface,
- * providing standardized access to external knowledge gathering through the
+ * providing standardized access to external knowledge gathering through the.
  * unified API client layer architecture.
  *
  * Features:
@@ -12,15 +12,20 @@
  * - Factory pattern implementation
  * - Multiple knowledge provider support
  */
+/**
+ * @file knowledge-client adapter implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
-// Import existing FACT integration
+// Import existing FACT integration.
 import {
   type FACTConfig,
   FACTIntegration,
   type FACTQuery,
   type FACTResult,
-} from '../../../knowledge/knowledge-client';
+} from '../knowledge/knowledge-client';
 import type {
   ClientConfig,
   ClientMetadata,
@@ -37,7 +42,7 @@ import type { ProtocolType } from '../types';
 import { ClientStatuses, ProtocolTypes } from '../types';
 
 /**
- * Extended client configuration for Knowledge clients
+ * Extended client configuration for Knowledge clients.
  *
  * @example
  */
@@ -68,7 +73,7 @@ export interface KnowledgeClientConfig extends ClientConfig {
 }
 
 /**
- * Knowledge query request type
+ * Knowledge query request type.
  *
  * @example
  */
@@ -81,7 +86,7 @@ export interface KnowledgeRequest {
 }
 
 /**
- * Knowledge query response type
+ * Knowledge query response type.
  *
  * @example
  */
@@ -102,8 +107,8 @@ export interface KnowledgeResponse {
 }
 
 /**
- * UACL Knowledge Client Adapter
- * Wraps the existing FACTIntegration with standardized UACL interface
+ * UACL Knowledge Client Adapter.
+ * Wraps the existing FACTIntegration with standardized UACL interface.
  *
  * @example
  */
@@ -131,21 +136,21 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Get client configuration
+   * Get client configuration.
    */
   getConfig(): ClientConfig {
     return this.config;
   }
 
   /**
-   * Check if client is connected
+   * Check if client is connected.
    */
   isConnected(): boolean {
     return this._connected;
   }
 
   /**
-   * Connect to the knowledge service
+   * Connect to the knowledge service.
    */
   async connect(): Promise<void> {
     if (this._connected) {
@@ -170,7 +175,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Disconnect from the knowledge service
+   * Disconnect from the knowledge service.
    */
   async disconnect(): Promise<void> {
     if (!this._connected) {
@@ -190,7 +195,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Send knowledge query and receive response
+   * Send knowledge query and receive response.
    *
    * @param data
    */
@@ -205,10 +210,10 @@ export class KnowledgeClientAdapter
     try {
       // Convert UACL request to FACT query
       const factQuery: FACTQuery = {
-        query: data.query,
-        tools: data.tools,
+        query: data?.query,
+        tools: data?.tools,
         useCache: this.config.caching?.enabled !== false,
-        metadata: data.metadata,
+        metadata: data?.metadata,
       };
 
       // Execute query through FACT integration
@@ -216,15 +221,15 @@ export class KnowledgeClientAdapter
 
       // Convert FACT result to UACL response
       const response: KnowledgeResponse = {
-        response: factResult.response,
-        queryId: factResult.queryId,
-        executionTimeMs: factResult.executionTimeMs,
-        cacheHit: factResult.cacheHit,
-        toolsUsed: factResult.toolsUsed,
-        cost: factResult.cost,
+        response: factResult?.response,
+        queryId: factResult?.queryId,
+        executionTimeMs: factResult?.executionTimeMs,
+        cacheHit: factResult?.cacheHit,
+        toolsUsed: factResult?.toolsUsed,
+        cost: factResult?.cost,
         confidence: this.calculateConfidence(factResult),
         sources: this.extractSources(factResult),
-        metadata: factResult.metadata,
+        metadata: factResult?.metadata,
       };
 
       // Update metrics
@@ -243,7 +248,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Health check for knowledge service
+   * Health check for knowledge service.
    */
   async health(): Promise<boolean> {
     try {
@@ -267,7 +272,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Get client metadata
+   * Get client metadata.
    */
   async getMetadata(): Promise<ClientMetadata> {
     const factMetrics = await this.factIntegration.getMetrics();
@@ -301,7 +306,7 @@ export class KnowledgeClientAdapter
   // IKnowledgeClient interface implementation
 
   /**
-   * Query knowledge base
+   * Query knowledge base.
    *
    * @param query
    * @param options
@@ -319,7 +324,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Search knowledge entries
+   * Search knowledge entries.
    *
    * @param searchTerm
    * @param options
@@ -341,7 +346,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Get knowledge entry by ID
+   * Get knowledge entry by ID.
    *
    * @param id
    */
@@ -362,7 +367,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Add knowledge entry
+   * Add knowledge entry.
    *
    * @param data
    */
@@ -375,11 +380,11 @@ export class KnowledgeClientAdapter
     };
 
     const response = await this.send(request);
-    return response.queryId; // Use query ID as entry ID
+    return response?.queryId; // Use query ID as entry ID
   }
 
   /**
-   * Update knowledge entry
+   * Update knowledge entry.
    *
    * @param id
    * @param data
@@ -401,7 +406,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Delete knowledge entry
+   * Delete knowledge entry.
    *
    * @param id
    */
@@ -422,7 +427,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Get knowledge statistics
+   * Get knowledge statistics.
    */
   async getKnowledgeStats(): Promise<KnowledgeStats> {
     const factMetrics = await this.factIntegration.getMetrics();
@@ -441,7 +446,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Execute semantic search
+   * Execute semantic search.
    *
    * @param query
    * @param options
@@ -465,30 +470,31 @@ export class KnowledgeClientAdapter
   // Helper methods
 
   /**
-   * Convert UACL config to FACT config
+   * Convert UACL config to FACT config.
    *
    * @param config
    */
   private convertToFACTConfig(config: KnowledgeClientConfig): FACTConfig {
     return {
-      pythonPath: config.factConfig?.pythonPath,
-      factRepoPath: config.factConfig?.factRepoPath || './FACT',
-      anthropicApiKey: config.factConfig?.anthropicApiKey || process.env['ANTHROPIC_API_KEY'] || '',
-      cacheConfig: config.caching
+      pythonPath: config?.factConfig?.pythonPath,
+      factRepoPath: config?.factConfig?.factRepoPath || './FACT',
+      anthropicApiKey:
+        config?.factConfig?.anthropicApiKey || process.env['ANTHROPIC_API_KEY'] || '',
+      cacheConfig: config?.caching
         ? {
-            prefix: config.caching.prefix,
-            minTokens: config.caching.minTokens,
+            prefix: config?.caching?.prefix,
+            minTokens: config?.caching?.minTokens,
             maxSize: '100MB', // Default from FACT
-            ttlSeconds: config.caching.ttlSeconds,
+            ttlSeconds: config?.caching?.ttlSeconds,
           }
         : undefined,
-      enableCache: config.caching?.enabled ?? true,
+      enableCache: config?.caching?.enabled ?? true,
       databasePath: './data/knowledge.db',
     };
   }
 
   /**
-   * Setup event forwarding from FACT to UACL
+   * Setup event forwarding from FACT to UACL.
    */
   private setupEventForwarding(): void {
     this.factIntegration.on('initialized', () => {
@@ -509,7 +515,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Initialize metrics tracking
+   * Initialize metrics tracking.
    */
   private initializeMetrics(): ClientMetrics {
     return {
@@ -525,7 +531,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Update metrics after request
+   * Update metrics after request.
    *
    * @param responseTime
    * @param success
@@ -545,7 +551,7 @@ export class KnowledgeClientAdapter
   }
 
   /**
-   * Calculate confidence score from FACT result
+   * Calculate confidence score from FACT result.
    *
    * @param result
    */
@@ -553,15 +559,15 @@ export class KnowledgeClientAdapter
     // Simple confidence calculation based on cache hit and tools used
     let confidence = 0.5; // Base confidence
 
-    if (result.cacheHit) confidence += 0.2;
-    if (result.toolsUsed.length > 0) confidence += 0.2;
-    if (result.executionTimeMs < 5000) confidence += 0.1;
+    if (result?.cacheHit) confidence += 0.2;
+    if (result?.toolsUsed.length > 0) confidence += 0.2;
+    if (result?.executionTimeMs < 5000) confidence += 0.1;
 
     return Math.min(confidence, 1.0);
   }
 
   /**
-   * Extract sources from FACT result
+   * Extract sources from FACT result.
    *
    * @param result
    */
@@ -569,7 +575,7 @@ export class KnowledgeClientAdapter
     result: FACTResult
   ): Array<{ title: string; url: string; relevance: number }> {
     // FACT doesn't provide structured sources, so we'll create a placeholder
-    return result.toolsUsed.map((tool, index) => ({
+    return result?.toolsUsed.map((tool, index) => ({
       title: `${tool} result`,
       url: `fact://tool/${tool}`,
       relevance: 1.0 - index * 0.1,
@@ -578,8 +584,8 @@ export class KnowledgeClientAdapter
 }
 
 /**
- * Knowledge Client Factory
- * Creates and manages Knowledge client instances
+ * Knowledge Client Factory.
+ * Creates and manages Knowledge client instances.
  *
  * @example
  */
@@ -589,7 +595,7 @@ export class KnowledgeClientFactory implements IClientFactory {
   ) {}
 
   /**
-   * Create a Knowledge client instance
+   * Create a Knowledge client instance.
    *
    * @param protocol
    * @param config
@@ -605,7 +611,7 @@ export class KnowledgeClientFactory implements IClientFactory {
     const knowledgeConfig = config as KnowledgeClientConfig;
 
     // Ensure provider is set
-    if (!knowledgeConfig.provider) {
+    if (!knowledgeConfig?.provider) {
       knowledgeConfig.provider = 'fact';
     }
 
@@ -617,7 +623,7 @@ export class KnowledgeClientFactory implements IClientFactory {
   }
 
   /**
-   * Check if factory supports a protocol
+   * Check if factory supports a protocol.
    *
    * @param protocol
    */
@@ -626,14 +632,14 @@ export class KnowledgeClientFactory implements IClientFactory {
   }
 
   /**
-   * Get supported protocols
+   * Get supported protocols.
    */
   getSupportedProtocols(): ProtocolType[] {
     return [ProtocolTypes.HTTP, ProtocolTypes.HTTPS, ProtocolTypes.CUSTOM];
   }
 
   /**
-   * Validate configuration for a protocol
+   * Validate configuration for a protocol.
    *
    * @param protocol
    * @param config
@@ -646,16 +652,16 @@ export class KnowledgeClientFactory implements IClientFactory {
     const knowledgeConfig = config as KnowledgeClientConfig;
 
     // Validate required fields
-    if (!knowledgeConfig.url) {
+    if (!knowledgeConfig?.url) {
       return false;
     }
 
     // Validate FACT configuration if provider is fact
-    if (knowledgeConfig.provider === 'fact') {
-      if (!knowledgeConfig.factConfig?.factRepoPath) {
+    if (knowledgeConfig?.provider === 'fact') {
+      if (!knowledgeConfig?.factConfig?.factRepoPath) {
         return false;
       }
-      if (!knowledgeConfig.factConfig?.anthropicApiKey && !process.env['ANTHROPIC_API_KEY']) {
+      if (!knowledgeConfig?.factConfig?.anthropicApiKey && !process.env['ANTHROPIC_API_KEY']) {
         return false;
       }
     }
@@ -665,11 +671,11 @@ export class KnowledgeClientFactory implements IClientFactory {
 }
 
 /**
- * Convenience functions for creating Knowledge clients
+ * Convenience functions for creating Knowledge clients.
  */
 
 /**
- * Create a Knowledge client with FACT provider
+ * Create a Knowledge client with FACT provider.
  *
  * @param factRepoPath
  * @param anthropicApiKey
@@ -711,7 +717,7 @@ export async function createFACTClient(
 }
 
 /**
- * Create a Knowledge client with custom provider
+ * Create a Knowledge client with custom provider.
  *
  * @param url
  * @param options
@@ -738,11 +744,11 @@ export async function createCustomKnowledgeClient(
 }
 
 /**
- * Export helper functions for FACT integration
+ * Export helper functions for FACT integration.
  */
 export const KnowledgeHelpers = {
   /**
-   * Get documentation for a framework
+   * Get documentation for a framework.
    *
    * @param client
    * @param framework
@@ -763,7 +769,7 @@ export const KnowledgeHelpers = {
   },
 
   /**
-   * Search for API reference
+   * Search for API reference.
    *
    * @param client
    * @param api
@@ -785,7 +791,7 @@ export const KnowledgeHelpers = {
   },
 
   /**
-   * Search community knowledge
+   * Search community knowledge.
    *
    * @param client
    * @param topic

@@ -1,5 +1,5 @@
 /**
- * UACL (Unified API Client Layer) Core Interfaces
+ * UACL (Unified API Client Layer) Core Interfaces.
  *
  * Provides unified abstractions for all client implementations:
  * - HTTP, WebSocket, GraphQL, gRPC clients
@@ -8,7 +8,7 @@
  * - Health checks and performance monitoring
  *
  * @file Core interfaces defining the UACL contract for all client types
- * @module interfaces/clients/core
+ * @module interfaces/clients/core.
  * @version 2.0.0
  * @description This module defines the foundational interfaces that all UACL clients must implement,
  *              providing a consistent API surface across HTTP, WebSocket, Knowledge, and MCP clients.
@@ -23,7 +23,7 @@
  * - Extensible: Support for custom authentication and middleware
  * @example
  * ```typescript
- * // Implement a custom client using UACL interfaces
+ * // Implement a custom client using UACL interfaces.
  * import type { IClient, ClientConfig, ClientResponse } from './core/interfaces';
  *
  * class CustomClient extends EventEmitter implements IClient {
@@ -51,7 +51,7 @@
  */
 
 /**
- * Authentication configuration for clients
+ * Authentication configuration for clients.
  *
  * @interface AuthenticationConfig
  * @description Unified authentication configuration supporting multiple authentication methods.
@@ -141,7 +141,7 @@ export interface AuthenticationConfig {
 }
 
 /**
- * Retry configuration with multiple backoff strategies
+ * Retry configuration with multiple backoff strategies.
  *
  * @interface RetryConfig
  * @description Configuration for automatic retry logic with various backoff strategies.
@@ -208,7 +208,7 @@ export interface RetryConfig {
 }
 
 /**
- * Health check configuration
+ * Health check configuration.
  *
  * @example
  */
@@ -221,7 +221,7 @@ export interface HealthConfig {
 }
 
 /**
- * Performance monitoring configuration
+ * Performance monitoring configuration.
  *
  * @example
  */
@@ -234,7 +234,7 @@ export interface MonitoringConfig {
 }
 
 /**
- * Base client configuration
+ * Base client configuration.
  *
  * @example
  */
@@ -251,7 +251,7 @@ export interface ClientConfig {
 }
 
 /**
- * Client status information
+ * Client status information.
  *
  * @example
  */
@@ -266,7 +266,7 @@ export interface ClientStatus {
 }
 
 /**
- * Client performance metrics
+ * Client performance metrics.
  *
  * @example
  */
@@ -283,7 +283,7 @@ export interface ClientMetrics {
 }
 
 /**
- * Generic request options
+ * Generic request options.
  *
  * @example
  */
@@ -295,7 +295,7 @@ export interface RequestOptions {
 }
 
 /**
- * Generic response wrapper
+ * Generic response wrapper.
  *
  * @example
  */
@@ -309,7 +309,7 @@ export interface ClientResponse<T = any> {
 }
 
 /**
- * Core client interface that all clients must implement
+ * Core client interface that all clients must implement.
  *
  * @interface IClient
  * @augments EventEmitter
@@ -394,7 +394,7 @@ export interface IClient {
   readonly name: string;
 
   /**
-   * Establish connection to the service
+   * Establish connection to the service.
    *
    * @returns {Promise<void>} Resolves when connection is established
    * @throws {ConnectionError} If connection fails
@@ -404,7 +404,7 @@ export interface IClient {
   connect(): Promise<void>;
 
   /**
-   * Gracefully close connection to the service
+   * Gracefully close connection to the service.
    *
    * @returns {Promise<void>} Resolves when disconnection is complete
    * @fires disconnect When disconnection is complete
@@ -412,14 +412,14 @@ export interface IClient {
   disconnect(): Promise<void>;
 
   /**
-   * Check if client is currently connected
+   * Check if client is currently connected.
    *
    * @returns {boolean} True if connected, false otherwise
    */
   isConnected(): boolean;
 
   /**
-   * Perform health check and get current status
+   * Perform health check and get current status.
    *
    * @returns {Promise<ClientStatus>} Current health status with metrics
    * @throws {Error} If health check fails
@@ -427,14 +427,14 @@ export interface IClient {
   healthCheck(): Promise<ClientStatus>;
 
   /**
-   * Get current performance metrics
+   * Get current performance metrics.
    *
    * @returns {Promise<ClientMetrics>} Performance metrics and statistics
    */
   getMetrics(): Promise<ClientMetrics>;
 
   /**
-   * Perform GET request
+   * Perform GET request.
    *
    * @template T Response data type
    * @param {string} endpoint - Request endpoint/path
@@ -447,7 +447,7 @@ export interface IClient {
   get<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>>;
 
   /**
-   * Perform POST request
+   * Perform POST request.
    *
    * @template T Response data type
    * @param {string} endpoint - Request endpoint/path
@@ -459,7 +459,7 @@ export interface IClient {
   post<T = any>(endpoint: string, data?: any, options?: RequestOptions): Promise<ClientResponse<T>>;
 
   /**
-   * Perform PUT request
+   * Perform PUT request.
    *
    * @template T Response data type
    * @param {string} endpoint - Request endpoint/path
@@ -471,7 +471,7 @@ export interface IClient {
   put<T = any>(endpoint: string, data?: any, options?: RequestOptions): Promise<ClientResponse<T>>;
 
   /**
-   * Perform DELETE request
+   * Perform DELETE request.
    *
    * @template T Response data type
    * @param {string} endpoint - Request endpoint/path
@@ -482,7 +482,7 @@ export interface IClient {
   delete<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>>;
 
   /**
-   * Update client configuration
+   * Update client configuration.
    *
    * @param {Partial<ClientConfig>} config - Partial configuration to update
    * @description Updates the client configuration and reinitializes affected components.
@@ -491,7 +491,7 @@ export interface IClient {
   updateConfig(config: Partial<ClientConfig>): void;
 
   /**
-   * Register event handler
+   * Register event handler.
    *
    * @param {'connect'|'disconnect'|'error'|'retry'|string} event - Event name
    * @param {Function} handler - Event handler function
@@ -500,7 +500,7 @@ export interface IClient {
   on(event: 'connect' | 'disconnect' | 'error' | 'retry', handler: (...args: any[]) => void): void;
 
   /**
-   * Remove event handler
+   * Remove event handler.
    *
    * @param {string} event - Event name
    * @param {Function} [handler] - Specific handler to remove (removes all if not specified)
@@ -508,7 +508,7 @@ export interface IClient {
   off(event: string, handler?: (...args: any[]) => void): void;
 
   /**
-   * Clean up resources and destroy client
+   * Clean up resources and destroy client.
    *
    * @returns {Promise<void>} Resolves when cleanup is complete
    * @description Performs complete cleanup including disconnection, timer cleanup,
@@ -518,7 +518,7 @@ export interface IClient {
 }
 
 /**
- * Client factory interface for creating and managing clients
+ * Client factory interface for creating and managing clients.
  *
  * @example
  */
@@ -543,7 +543,7 @@ export interface IClientFactory<TConfig extends ClientConfig = ClientConfig> {
 }
 
 /**
- * Client registry for global client management
+ * Client registry for global client management.
  *
  * @example
  */
@@ -564,7 +564,7 @@ export interface IClientRegistry {
 }
 
 /**
- * Error types for client operations
+ * Error types for client operations.
  *
  * @example
  */
@@ -614,7 +614,7 @@ export class RetryExhaustedError extends ClientError {
 }
 
 /**
- * Missing exports for compatibility
+ * Missing exports for compatibility.
  *
  * @example
  */

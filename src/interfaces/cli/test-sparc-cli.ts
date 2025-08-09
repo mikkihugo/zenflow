@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 /**
- * Test CLI commands for SPARC Template Engine
+ * @file Test suite for test-sparc-cli
+ */
+
+
+/**
+ * Test CLI commands for SPARC Template Engine.
  */
 
 import { Command } from 'commander';

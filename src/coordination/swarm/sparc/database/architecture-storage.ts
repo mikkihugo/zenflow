@@ -4,6 +4,11 @@
  * Provides database-driven persistence for architecture designs,
  * integrating with multi-backend database system.
  */
+/**
+ * @file Coordination system: architecture-storage
+ */
+
+
 
 import { nanoid } from 'nanoid';
 import type { ArchitecturalValidation, ArchitectureDesign, Component } from '../types/sparc-types';
@@ -224,11 +229,11 @@ export class ArchitectureStorageService {
       [architectureId]
     );
 
-    if (!result.rows || result.rows.length === 0) {
+    if (!result?.rows || result?.rows.length === 0) {
       return null;
     }
 
-    const record = result.rows[0] as ArchitectureRecord;
+    const record = result?.rows?.[0] as ArchitectureRecord;
     return this.recordToArchitecture(record);
   }
 
@@ -247,11 +252,11 @@ export class ArchitectureStorageService {
       [projectId]
     );
 
-    if (!result.rows || result.rows.length === 0) {
+    if (!result?.rows || result?.rows.length === 0) {
       return [];
     }
 
-    return result.rows.map((record: ArchitectureRecord) => this.recordToArchitecture(record));
+    return result?.rows?.map((record: ArchitectureRecord) => this.recordToArchitecture(record));
   }
 
   /**
@@ -269,11 +274,11 @@ export class ArchitectureStorageService {
       [domain]
     );
 
-    if (!result.rows || result.rows.length === 0) {
+    if (!result?.rows || result?.rows.length === 0) {
       return [];
     }
 
-    return result.rows.map((record: ArchitectureRecord) => this.recordToArchitecture(record));
+    return result?.rows?.map((record: ArchitectureRecord) => this.recordToArchitecture(record));
   }
 
   /**
@@ -405,11 +410,11 @@ export class ArchitectureStorageService {
       [architectureId]
     );
 
-    if (!result.rows || result.rows.length === 0) {
+    if (!result?.rows || result?.rows.length === 0) {
       return [];
     }
 
-    return result.rows.map((record: ValidationRecord) => ({
+    return result?.rows?.map((record: ValidationRecord) => ({
       overallScore: record.score,
       validationResults: JSON.parse(record.results_data),
       recommendations: JSON.parse(record.recommendations),
@@ -457,11 +462,11 @@ export class ArchitectureStorageService {
 
     const result = await this.db.query(query, params);
 
-    if (!result.rows || result.rows.length === 0) {
+    if (!result?.rows || result?.rows.length === 0) {
       return [];
     }
 
-    let architectures = result.rows.map((record: ArchitectureRecord) =>
+    let architectures = result?.rows?.map((record: ArchitectureRecord) =>
       this.recordToArchitecture(record)
     );
 
@@ -493,7 +498,7 @@ export class ArchitectureStorageService {
     const totalResult = await this.db.query(`
       SELECT COUNT(*) as count FROM ${this.tableName}
     `);
-    const totalArchitectures = totalResult.rows[0].count;
+    const totalArchitectures = totalResult?.rows?.[0]?.count;
 
     // By domain
     const domainResult = await this.db.query(`
@@ -502,7 +507,7 @@ export class ArchitectureStorageService {
       GROUP BY domain
     `);
     const byDomain: Record<string, number> = {};
-    domainResult.rows.forEach((row: any) => {
+    domainResult?.rows?.forEach((row: any) => {
       byDomain[row.domain] = row.count;
     });
 
@@ -515,7 +520,7 @@ export class ArchitectureStorageService {
         GROUP BY architecture_id
       ) AS component_counts
     `);
-    const averageComponents = componentsResult.rows[0]?.avg_components || 0;
+    const averageComponents = componentsResult?.rows?.[0]?.avg_components || 0;
 
     // Validation stats
     const validationResult = await this.db.query(`
@@ -526,9 +531,9 @@ export class ArchitectureStorageService {
       FROM ${this.validationsTableName}
     `);
     const validationStats = {
-      totalValidated: validationResult.rows[0]?.total_validated || 0,
-      averageScore: validationResult.rows[0]?.average_score || 0,
-      passRate: validationResult.rows[0]?.pass_rate || 0,
+      totalValidated: validationResult?.rows?.[0]?.total_validated || 0,
+      averageScore: validationResult?.rows?.[0]?.average_score || 0,
+      passRate: validationResult?.rows?.[0]?.pass_rate || 0,
     };
 
     return {
@@ -630,7 +635,7 @@ export class ArchitectureStorageService {
     const tags: string[] = [];
 
     // Add component types as tags
-    architecture.components?.forEach((component) => {
+    architecture.components.forEach((component) => {
       if (component.type && !tags.includes(component.type)) {
         tags.push(component.type);
       }

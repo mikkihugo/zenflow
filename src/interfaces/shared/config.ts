@@ -1,26 +1,28 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("interfaces-shared-config");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-shared-config');
+
 /**
  * @file Shared Interface Configuration
  *
- * Interface-specific configuration utilities that integrate with the unified config system
+ * Interface-specific configuration utilities that integrate with the unified config system.
  */
 
-import { config, type InterfaceConfig } from '../../config';
+import { config, type InterfaceConfig } from '../config';
 
 /**
- * Get interface configuration with fallbacks
+ * Get interface configuration with fallbacks.
  */
 export function getInterfaceConfig(): InterfaceConfig {
-  return config.getSection('interfaces').shared;
+  return config?.getSection('interfaces').shared;
 }
 
 /**
- * Common interface constants derived from configuration
+ * Common interface constants derived from configuration.
  */
 export const INTERFACE_CONSTANTS = {
   get DEFAULT_TIMEOUT() {
-    return config.get('interfaces.mcp.http.timeout') || 30000;
+    return config?.get('interfaces.mcp.http.timeout') || 30000;
   },
   get DEFAULT_RETRY_ATTEMPTS() {
     return 3;
@@ -29,10 +31,10 @@ export const INTERFACE_CONSTANTS = {
     return 1000;
   },
   get MAX_COMMAND_HISTORY() {
-    return config.get('interfaces.shared.maxCommandHistory') || 100;
+    return config?.get('interfaces.shared.maxCommandHistory') || 100;
   },
   get DEFAULT_PAGE_SIZE() {
-    return config.get('interfaces.shared.pageSize') || 25;
+    return config?.get('interfaces.shared.pageSize') || 25;
   },
   get MIN_REFRESH_INTERVAL() {
     return 1000;
@@ -43,7 +45,7 @@ export const INTERFACE_CONSTANTS = {
 } as const;
 
 /**
- * Color scheme definitions for interfaces
+ * Color scheme definitions for interfaces.
  */
 export const COLOR_SCHEMES = {
   dark: {
@@ -71,7 +73,7 @@ export const COLOR_SCHEMES = {
 } as const;
 
 /**
- * Common validation patterns
+ * Common validation patterns.
  */
 export const VALIDATION_PATTERNS = {
   projectName: /^[a-zA-Z][a-zA-Z0-9-_]*$/,
@@ -81,7 +83,7 @@ export const VALIDATION_PATTERNS = {
 } as const;
 
 /**
- * Common error messages
+ * Common error messages.
  */
 export const ERROR_MESSAGES = {
   INVALID_PROJECT_NAME:
@@ -97,13 +99,13 @@ export const ERROR_MESSAGES = {
 } as const;
 
 /**
- * Configuration utilities integrated with unified config system
+ * Configuration utilities integrated with unified config system.
  *
  * @example
  */
 export class ConfigurationUtils {
   /**
-   * Merge configuration with current interface config
+   * Merge configuration with current interface config.
    *
    * @param overrides
    */
@@ -116,26 +118,26 @@ export class ConfigurationUtils {
   }
 
   /**
-   * Validate interface configuration
+   * Validate interface configuration.
    *
    * @param configOverrides
    */
   static validateConfig(configOverrides: Partial<InterfaceConfig>): string[] {
     const errors: string[] = [];
 
-    if (configOverrides.theme && !['dark', 'light', 'auto'].includes(configOverrides.theme)) {
+    if (configOverrides?.theme && !['dark', 'light', 'auto'].includes(configOverrides?.theme)) {
       errors.push('Invalid theme. Must be one of: dark, light, auto');
     }
 
     if (
-      configOverrides.verbosity &&
-      !['quiet', 'normal', 'verbose', 'debug'].includes(configOverrides.verbosity)
+      configOverrides?.verbosity &&
+      !['quiet', 'normal', 'verbose', 'debug'].includes(configOverrides?.verbosity)
     ) {
       errors.push('Invalid verbosity. Must be one of: quiet, normal, verbose, debug');
     }
 
-    if (configOverrides.refreshInterval) {
-      const interval = configOverrides.refreshInterval;
+    if (configOverrides?.refreshInterval) {
+      const interval = configOverrides?.refreshInterval;
       if (interval < INTERFACE_CONSTANTS.MIN_REFRESH_INTERVAL) {
         errors.push(`Refresh interval must be >= ${INTERFACE_CONSTANTS.MIN_REFRESH_INTERVAL}ms`);
       }
@@ -145,15 +147,15 @@ export class ConfigurationUtils {
     }
 
     if (
-      configOverrides.pageSize &&
-      (configOverrides.pageSize < 1 || configOverrides.pageSize > 1000)
+      configOverrides?.pageSize &&
+      (configOverrides?.pageSize < 1 || configOverrides?.pageSize > 1000)
     ) {
       errors.push('Page size must be between 1 and 1000');
     }
 
     if (
-      configOverrides.maxCommandHistory &&
-      (configOverrides.maxCommandHistory < 10 || configOverrides.maxCommandHistory > 10000)
+      configOverrides?.maxCommandHistory &&
+      (configOverrides?.maxCommandHistory < 10 || configOverrides?.maxCommandHistory > 10000)
     ) {
       errors.push('Max command history must be between 10 and 10000');
     }
@@ -162,12 +164,12 @@ export class ConfigurationUtils {
   }
 
   /**
-   * Get color scheme for theme from configuration
+   * Get color scheme for theme from configuration.
    *
    * @param theme
    */
   static getColorScheme(theme?: 'dark' | 'light' | 'auto'): typeof COLOR_SCHEMES.dark {
-    const currentTheme = theme || config.get('interfaces.shared.theme') || 'dark';
+    const currentTheme = theme || config?.get('interfaces.shared.theme') || 'dark';
 
     if (currentTheme === 'auto') {
       // In a real implementation, this would detect system theme
@@ -180,12 +182,12 @@ export class ConfigurationUtils {
   }
 
   /**
-   * Update interface configuration at runtime
+   * Update interface configuration at runtime.
    *
    * @param updates
    */
   static updateInterfaceConfig(updates: Partial<InterfaceConfig>): boolean {
-    const errors = ConfigurationUtils.validateConfig(updates);
+    const errors = ConfigurationUtils?.validateConfig(updates);
     if (errors.length > 0) {
       logger.error('Interface configuration validation errors:', errors);
       return false;
@@ -193,9 +195,9 @@ export class ConfigurationUtils {
 
     // Update the unified configuration
     for (const [key, value] of Object.entries(updates)) {
-      const result = config.set(`interfaces.shared.${key}`, value);
-      if (!result.valid) {
-        logger.error(`Failed to update interfaces.shared.${key}:`, result.errors);
+      const result = config?.set(`interfaces.shared.${key}`, value);
+      if (!result?.valid) {
+        logger.error(`Failed to update interfaces.shared.${key}:`, result?.errors);
         return false;
       }
     }
@@ -204,14 +206,14 @@ export class ConfigurationUtils {
   }
 
   /**
-   * Get current interface configuration with live updates
+   * Get current interface configuration with live updates.
    */
   static getCurrentConfig(): InterfaceConfig {
     return getInterfaceConfig();
   }
 
   /**
-   * Listen for interface configuration changes
+   * Listen for interface configuration changes.
    *
    * @param callback
    */
@@ -222,14 +224,14 @@ export class ConfigurationUtils {
       }
     };
 
-    config.onChange(handler);
+    config?.onChange(handler);
 
     // Return cleanup function
-    return () => config.removeListener(handler);
+    return () => config?.removeListener(handler);
   }
 }
 
 /**
- * Default export for backward compatibility
+ * Default export for backward compatibility.
  */
 export const defaultInterfaceConfig = getInterfaceConfig();

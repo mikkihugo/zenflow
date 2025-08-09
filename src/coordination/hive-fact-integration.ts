@@ -1,6 +1,6 @@
 /**
  * @file Hive-Level FACT Integration
- * Centralized FACT (Fast Augmented Context Tools) system at the Hive level
+ * Centralized FACT (Fast Augmented Context Tools) system at the Hive level.
  * Provides universal knowledge to all swarms - facts about npm packages, repos, etc.
  *
  * FACT is CENTRAL - not swarm-specific. All swarms access the same FACT knowledge.
@@ -8,7 +8,9 @@
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from '@core/logger';
-import type { UniversalFact } from './hive-types';
+import type { UniversalFact, HiveFACTConfig } from './hive-types';
+import type { FACTSearchQuery, FACTStorageStats } from '../knowledge/types/fact-types';
+import { HiveSwarmCoordinator } from './hive-swarm-sync';
 
 // import { FACTExternalOrchestrator } from './mcp/tools/fact-external-integration'; // TODO: Migrate to unified MCP
 
@@ -20,11 +22,14 @@ const logger = createLogger({ prefix: 'Hive-FACT' });
  * @example
  */
 interface IFactOrchestrator {
-  gatherKnowledge(query: string, options: {
-    sources: string[];
-    maxResults?: number;
-    timeout?: number;
-  }): Promise<{
+  gatherKnowledge(
+    query: string,
+    options: {
+      sources: string[];
+      maxResults?: number;
+      timeout?: number;
+    }
+  ): Promise<{
     knowledge?: Array<{
       content?: string;
       summary?: string;
@@ -39,7 +44,7 @@ interface IFactOrchestrator {
 }
 
 /**
- * Centralized FACT system at Hive level
+ * Centralized FACT system at Hive level.
  * Manages universal facts accessible by all swarms.
  *
  * @example
@@ -166,18 +171,19 @@ export class HiveFACTSystem extends EventEmitter {
     // Search in cached facts first
     for (const [_key, fact] of this.universalFacts) {
       if (this.matchesQuery(fact, query)) {
-        results?.push(fact);
+        results.push(fact);
       }
     }
 
     // If not enough results, query external sources
     if (results.length < (query.limit || 10)) {
       const externalResults = await this.searchExternalFacts(query);
-      results?.push(...externalResults);
+      results.push(...externalResults);
     }
 
     // Sort by relevance and limit
-    return results?.sort((a, b) => (b.metadata?.confidence || 0) - (a.metadata?.confidence || 0))
+    return results
+      ?.sort((a, b) => (b.metadata?.confidence || 0) - (a.metadata?.confidence || 0))
       .slice(0, query.limit || 10);
   }
 
@@ -309,7 +315,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Build query based on fact type
+   * Build query based on fact type.
    * xxx NEEDS_HUMAN: Currently unused - will be used when FACT orchestrator is implemented.
    *
    * @param type
@@ -368,7 +374,7 @@ export class HiveFACTSystem extends EventEmitter {
   private calculateConfidence(result: any): number {
     const sourceCount = Array.isArray(result?.sources) ? result?.sources.length : 0;
     const hasErrors = Array.isArray(result?.sources)
-      ? result?.sources?.some((s: any) => s?.error)
+      ? result?.sources.some((s: any) => s?.error)
       : false;
 
     let confidence = 0.5; // Base confidence
@@ -405,9 +411,9 @@ export class HiveFACTSystem extends EventEmitter {
         const result = await this.factOrchestrator.gatherKnowledge(query.query || '', {
           sources: this.config.knowledgeSources || ['web', 'internal'],
           maxResults: query.limit || 10,
-          timeout: query.timeout || 30000
+          timeout: query.timeout || 30000,
         });
-        
+
         if (result && result?.knowledge && Array.isArray(result?.knowledge)) {
           // Convert real results to universal facts
           return result?.knowledge?.map((knowledge: any, index: number) => ({
@@ -419,7 +425,7 @@ export class HiveFACTSystem extends EventEmitter {
               insight: knowledge.content || knowledge.summary || knowledge.text,
               source: knowledge.source || 'external_search',
               url: knowledge.url,
-              relevance: knowledge.relevance
+              relevance: knowledge.relevance,
             },
             source: knowledge.source || 'external_search',
             confidence: knowledge.confidence || 0.8,
@@ -440,8 +446,10 @@ export class HiveFACTSystem extends EventEmitter {
     }
 
     // If no real search implementation available, return empty results with warning
-    logger.warn('🔍 External search not implemented - returning empty results. Consider implementing factOrchestrator.gatherKnowledge() for real search functionality.');
-    
+    logger.warn(
+      '🔍 External search not implemented - returning empty results. Consider implementing factOrchestrator.gatherKnowledge() for real search functionality.'
+    );
+
     // Return empty array instead of fake data
     return [];
   }

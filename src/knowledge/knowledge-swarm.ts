@@ -1,20 +1,29 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-knowledge-knowledge-swarm");
 /**
- * Knowledge Swarm System for Claude-Zen
- * Coordinates multiple knowledge gathering agents for external knowledge collection
+ * @file knowledge-swarm implementation
+ */
+
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-knowledge-knowledge-swarm');
+
+/**
+ * Knowledge Swarm System for Claude-Zen.
+ * Coordinates multiple knowledge gathering agents for external knowledge collection.
  *
  * Architecture: Distributed swarm of knowledge gathering agents
  * - Each agent specializes in different knowledge domains
  * - Parallel processing with intelligent load balancing
- * - Cross-agent knowledge sharing and deduplication
+ * - Cross-agent knowledge sharing and deduplication.
  * - Independent storage system (separate from RAG/vector database)
  */
 
 import { EventEmitter } from 'node:events';
 import { createDAO, createRepository, DatabaseTypes, EntityTypes } from '../database/index';
+import type { IRepository } from '../database/interfaces';
 // Import UACL for unified client management
 import { ClientType, uacl } from '../interfaces/clients/index';
+import type { ClientInstance, KnowledgeClientConfig } from '../interfaces/clients/interfaces';
 import { FACTIntegration } from './knowledge-client';
 
 export interface KnowledgeSwarmConfig extends KnowledgeClientConfig {
@@ -71,7 +80,7 @@ interface KnowledgeAgent {
 }
 
 /**
- * FACT Swarm System - Orchestrates multiple FACT agents for comprehensive knowledge gathering
+ * FACT Swarm System - Orchestrates multiple FACT agents for comprehensive knowledge gathering.
  *
  * @example
  */
@@ -143,7 +152,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Initialize the FACT swarm system
+   * Initialize the FACT swarm system.
    */
   async initialize(): Promise<void> {
     try {
@@ -188,7 +197,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Query the swarm with intelligent agent selection and parallel processing
+   * Query the swarm with intelligent agent selection and parallel processing.
    *
    * @param query
    */
@@ -237,11 +246,11 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * High-level knowledge gathering functions
+   * High-level knowledge gathering functions.
    */
 
   /**
-   * Get comprehensive documentation for a technology
+   * Get comprehensive documentation for a technology.
    *
    * @param technology
    * @param version
@@ -260,7 +269,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Research solutions for a specific problem
+   * Research solutions for a specific problem.
    *
    * @param problem
    * @param context
@@ -279,7 +288,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Get API integration guide
+   * Get API integration guide.
    *
    * @param api
    * @param language
@@ -298,7 +307,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Research performance optimization strategies
+   * Research performance optimization strategies.
    *
    * @param context
    */
@@ -316,7 +325,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Get security best practices and vulnerability information
+   * Get security best practices and vulnerability information.
    *
    * @param technology
    * @param context
@@ -335,7 +344,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Create specialized swarm agents
+   * Create specialized swarm agents.
    */
   private async createSwarmAgents(): Promise<void> {
     const agentPromises = this.config.specializations
@@ -421,7 +430,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Select optimal agents for a query using intelligent routing
+   * Select optimal agents for a query using intelligent routing.
    *
    * @param query
    */
@@ -441,7 +450,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Intelligent agent selection based on specialization, load, and performance
+   * Intelligent agent selection based on specialization, load, and performance.
    *
    * @param candidates
    * @param query
@@ -452,7 +461,7 @@ export class KnowledgeSwarm extends EventEmitter {
 
       // Specialization match
       const domainMatch =
-        query.domains?.some((domain) =>
+        query.domains.some((domain) =>
           agent.specialization.domains.some(
             (agentDomain) => domain.includes(agentDomain) || agentDomain.includes(domain)
           )
@@ -489,7 +498,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Select agents by specialization
+   * Select agents by specialization.
    *
    * @param candidates
    * @param query
@@ -503,7 +512,7 @@ export class KnowledgeSwarm extends EventEmitter {
     }
 
     const specialized = candidates.filter((agent) =>
-      query.domains?.some((domain) => agent.specialization.domains.includes(domain))
+      query.domains.some((domain) => agent.specialization.domains.includes(domain))
     );
 
     return specialized.length > 0
@@ -512,7 +521,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Select least loaded agents
+   * Select least loaded agents.
    *
    * @param candidates
    * @param query
@@ -523,7 +532,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Round-robin agent selection
+   * Round-robin agent selection.
    *
    * @param candidates
    * @param _query
@@ -534,7 +543,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Execute query across multiple agents in parallel
+   * Execute query across multiple agents in parallel.
    *
    * @param query
    * @param agents
@@ -575,14 +584,15 @@ export class KnowledgeSwarm extends EventEmitter {
     });
 
     const results = await Promise.allSettled(promises);
-    return results?.filter(
+    return results
+      ?.filter(
         (result): result is PromiseFulfilledResult<FACTResult> => result?.status === 'fulfilled'
       )
       .map((result) => result?.value);
   }
 
   /**
-   * Consolidate results from multiple agents
+   * Consolidate results from multiple agents.
    *
    * @param results
    */
@@ -592,7 +602,7 @@ export class KnowledgeSwarm extends EventEmitter {
     }
 
     if (results.length === 1) {
-      return results?.[0]?.response;
+      return results[0]?.response;
     }
 
     // Group results by similarity and merge
@@ -614,7 +624,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Deduplicate similar results
+   * Deduplicate similar results.
    *
    * @param results
    */
@@ -653,14 +663,14 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Store knowledge in vector database
+   * Store knowledge in vector database.
    *
    * @param query
    * @param results
    */
   private async storeKnowledge(query: SwarmQuery, results: KnowledgeResult[]): Promise<void> {
     try {
-      const documents = results?.map((result, index) => ({
+      const documents = results.map((result, index) => ({
         id: `${query.id}-result-${index}`,
         vector: new Array(1536).fill(0).map(() => Math.random()), // Placeholder embedding
         metadata: {
@@ -692,7 +702,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Share knowledge across agents
+   * Share knowledge across agents.
    *
    * @param _agents
    * @param results
@@ -702,7 +712,7 @@ export class KnowledgeSwarm extends EventEmitter {
     results: KnowledgeResult[]
   ): Promise<void> {
     // Update agent expertise based on successful results
-    results?.forEach((result) => {
+    results.forEach((result) => {
       const agentId = result?.metadata?.agentId;
       if (agentId) {
         const agent = this.agents.get(agentId);
@@ -719,7 +729,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Calculate confidence score for results
+   * Calculate confidence score for results.
    *
    * @param results
    */
@@ -728,7 +738,7 @@ export class KnowledgeSwarm extends EventEmitter {
 
     let totalConfidence = 0;
 
-    results?.forEach((result) => {
+    results.forEach((result) => {
       let confidence = 0.5; // Base confidence
 
       // Cache hit bonus (cached results are more reliable)
@@ -741,7 +751,9 @@ export class KnowledgeSwarm extends EventEmitter {
       if (result?.toolsUsed.length > 1) confidence += 0.1;
 
       // Agent specialization bonus
-      const agent = Array.from(this.agents.values()).find((a) => a.id === result?.metadata?.agentId);
+      const agent = Array.from(this.agents.values()).find(
+        (a) => a.id === result?.metadata?.agentId
+      );
       if (agent && agent.successRate > 0.8) confidence += 0.1;
 
       totalConfidence += Math.min(1.0, confidence);
@@ -751,14 +763,14 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Calculate diversity score for sources
+   * Calculate diversity score for sources.
    *
    * @param results
    */
   private calculateDiversity(results: KnowledgeResult[]): number {
     if (results.length <= 1) return 0;
 
-    const agents = new Set(results?.map((r) => r.metadata?.agentId));
+    const agents = new Set(results.map((r) => r.metadata?.agentId));
     const tools = new Set(results?.flatMap((r) => r.toolsUsed));
 
     // Diversity based on agent variety and tool variety
@@ -769,7 +781,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Setup knowledge storage tables in vector database
+   * Setup knowledge storage tables in vector database.
    */
   private async setupKnowledgeStorage(): Promise<void> {
     try {
@@ -779,12 +791,12 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Start the query processing system
+   * Start the query processing system.
    */
   private startQueryProcessor(): void {}
 
   /**
-   * Get swarm performance metrics
+   * Get swarm performance metrics.
    */
   async getSwarmMetrics(): Promise<any> {
     const agentMetrics = Array.from(this.agents.values()).map((agent) => ({
@@ -812,7 +824,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Shutdown the swarm system
+   * Shutdown the swarm system.
    */
   async shutdown(): Promise<void> {
     // Shutdown all agents
@@ -830,7 +842,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Get swarm health status
+   * Get swarm health status.
    */
   getSwarmHealth(): {
     agentCount: number;
@@ -869,7 +881,7 @@ export class KnowledgeSwarm extends EventEmitter {
   }
 
   /**
-   * Get detailed agent metrics
+   * Get detailed agent metrics.
    */
   getAgentMetrics(): Array<{
     id: string;
@@ -895,12 +907,12 @@ export class KnowledgeSwarm extends EventEmitter {
 }
 
 /**
- * Global FACT swarm instance
+ * Global FACT swarm instance.
  */
 let globalFACTSwarm: KnowledgeSwarm | null = null;
 
 /**
- * Initialize global FACT swarm system
+ * Initialize global FACT swarm system.
  *
  * @param config
  */
@@ -916,18 +928,18 @@ export async function initializeFACTSwarm(config: FACTSwarmConfig): Promise<Know
 }
 
 /**
- * Get the global FACT swarm instance
+ * Get the global FACT swarm instance.
  */
 export function getFACTSwarm(): KnowledgeSwarm | null {
   return globalFACTSwarm;
 }
 
 /**
- * Quick swarm helper functions
+ * Quick swarm helper functions.
  */
 export const FACTSwarmHelpers = {
   /**
-   * Research a development problem using the swarm
+   * Research a development problem using the swarm.
    *
    * @param problem
    * @param context
@@ -941,7 +953,7 @@ export const FACTSwarmHelpers = {
   },
 
   /**
-   * Get comprehensive technology documentation
+   * Get comprehensive technology documentation.
    *
    * @param technology
    * @param version
@@ -955,7 +967,7 @@ export const FACTSwarmHelpers = {
   },
 
   /**
-   * Get API integration guidance
+   * Get API integration guidance.
    *
    * @param api
    * @param language
@@ -969,7 +981,7 @@ export const FACTSwarmHelpers = {
   },
 
   /**
-   * Get performance optimization strategies
+   * Get performance optimization strategies.
    *
    * @param context
    */
@@ -982,7 +994,7 @@ export const FACTSwarmHelpers = {
   },
 
   /**
-   * Get security guidance and best practices
+   * Get security guidance and best practices.
    *
    * @param technology
    * @param context

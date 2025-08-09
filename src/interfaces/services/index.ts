@@ -1,19 +1,23 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("interfaces-services-index");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-services-index');
+
 /**
- * USL (Unified Service Layer) - Main Exports
+ * USL (Unified Service Layer) - Main Exports.
  *
  * Central export point for all USL functionality including:
  * - Service registry and factory management
  * - Service type definitions and configurations
  * - Helper functions and utilities
  * - Global instances and initialization
- * - Convenience functions for common service operations
+ * - Convenience functions for common service operations.
  *
  * @file Main USL exports following the same successful patterns as DAL and UACL
  */
 
 import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
+import type { IService } from '../interfaces/services/interfaces';
+import type { ServiceMetrics, ServiceStatus, ServiceType } from '../interfaces/services/types';
 
 // Data service adapters (enhanced implementations)
 // Integration service adapters (enhanced implementations)
@@ -165,7 +169,7 @@ export {
 } from './validation';
 
 /**
- * USL Main Interface
+ * USL Main Interface.
  *
  * Primary interface for interacting with the Unified Service Layer.
  * Provides high-level methods for service management and operations.
@@ -202,7 +206,7 @@ export class USL {
   private constructor() {}
 
   /**
-   * Get singleton USL instance
+   * Get singleton USL instance.
    *
    * @static
    * @returns {USL} The singleton USL instance
@@ -221,7 +225,7 @@ export class USL {
   }
 
   /**
-   * Initialize USL system
+   * Initialize USL system.
    *
    * @param {USLFactoryConfig} [config] Optional factory configuration
    * @param _config
@@ -249,7 +253,7 @@ export class USL {
   }
 
   /**
-   * Check if USL is initialized
+   * Check if USL is initialized.
    *
    * @returns {boolean} True if USL system is initialized
    * @description Returns the initialization status of the USL system
@@ -274,7 +278,7 @@ export class USL {
    * @throws {ServiceInitializationError} When service creation fails
    * @description Creates a new data service with enhanced adapter capabilities
    * @example
-   * ```typescript
+   * ```typescript.
    * const dataService = await usl.createDataService('user-data', {
    *   type: ServiceType.DATA,
    *   enabled: true,
@@ -297,7 +301,7 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createDataServiceConfig(name, {
+    const config = ServiceConfigFactory?.createDataServiceConfig(name, {
       type: ServiceType.DATA,
       ...options,
     });
@@ -315,7 +319,7 @@ export class USL {
    * @throws {ServiceInitializationError} When adapter creation fails
    * @description Creates an optimized data service adapter for web-based operations
    * @example
-   * ```typescript
+   * ```typescript.
    * const webAdapter = await usl.createWebDataService('api-data', {
    *   web: {
    *     enabled: true,
@@ -339,7 +343,7 @@ export class USL {
       await this.initialize();
     }
 
-    const adapter = await globalDataServiceFactory.createWebDataAdapter(name, options);
+    const adapter = await globalDataServiceFactory?.createWebDataAdapter(name, options);
     return adapter;
   }
 
@@ -354,7 +358,7 @@ export class USL {
    * @throws {ServiceInitializationError} When adapter creation fails
    * @description Creates an optimized data service adapter for document/database operations
    * @example
-   * ```typescript
+   * ```typescript.
    * const docAdapter = await usl.createDocumentService('user-docs', 'postgresql', {
    *   document: {
    *     enabled: true,
@@ -382,7 +386,7 @@ export class USL {
       await this.initialize();
     }
 
-    const adapter = await globalDataServiceFactory.createDocumentAdapter(
+    const adapter = await globalDataServiceFactory?.createDocumentAdapter(
       name,
       databaseType,
       options
@@ -401,7 +405,7 @@ export class USL {
    * @throws {ServiceInitializationError} When adapter creation fails
    * @description Creates a unified data service adapter supporting both web and document operations
    * @example
-   * ```typescript
+   * ```typescript.
    * const unifiedAdapter = await usl.createUnifiedDataService('hybrid-data', 'postgresql', {
    *   web: {
    *     enabled: true,
@@ -430,7 +434,7 @@ export class USL {
       await this.initialize();
     }
 
-    const adapter = await globalDataServiceFactory.createUnifiedDataAdapter(
+    const adapter = await globalDataServiceFactory?.createUnifiedDataAdapter(
       name,
       databaseType,
       options
@@ -439,7 +443,7 @@ export class USL {
   }
 
   /**
-   * Create and register a web service
+   * Create and register a web service.
    *
    * @param {string} name Unique service name identifier
    * @param {number} [port=3000] Port number for the web server
@@ -480,7 +484,7 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createWebServiceConfig(name, {
+    const config = ServiceConfigFactory?.createWebServiceConfig(name, {
       type: ServiceType.WEB,
       server: { port, host: 'localhost' },
       ...options,
@@ -490,7 +494,7 @@ export class USL {
   }
 
   /**
-   * Create and register a coordination service
+   * Create and register a coordination service.
    *
    * @param {string} name Unique service name identifier
    * @param {Partial<CoordinationServiceConfig>} [options={}] Coordination service configuration
@@ -534,7 +538,7 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createCoordinationServiceConfig(name, {
+    const config = ServiceConfigFactory?.createCoordinationServiceConfig(name, {
       type: ServiceType.SWARM,
       ...options,
     });
@@ -543,7 +547,7 @@ export class USL {
   }
 
   /**
-   * Create and register a neural service
+   * Create and register a neural service.
    *
    * @param {string} name Unique service name identifier
    * @param {Partial<NeuralServiceConfig>} [options={}] Neural service configuration options
@@ -593,7 +597,7 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createNeuralServiceConfig(name, {
+    const config = ServiceConfigFactory?.createNeuralServiceConfig(name, {
       type: ServiceType.NEURAL,
       ...options,
     });
@@ -602,7 +606,7 @@ export class USL {
   }
 
   /**
-   * Create and register a memory service
+   * Create and register a memory service.
    *
    * @param name
    * @param options
@@ -615,7 +619,7 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createMemoryServiceConfig(name, {
+    const config = ServiceConfigFactory?.createMemoryServiceConfig(name, {
       type: ServiceType.MEMORY,
       ...options,
     });
@@ -624,7 +628,7 @@ export class USL {
   }
 
   /**
-   * Create and register a database service
+   * Create and register a database service.
    *
    * @param name
    * @param options
@@ -637,7 +641,7 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createDatabaseServiceConfig(name, {
+    const config = ServiceConfigFactory?.createDatabaseServiceConfig(name, {
       type: ServiceType.DATABASE,
       ...options,
     });
@@ -646,7 +650,7 @@ export class USL {
   }
 
   /**
-   * Create and register an integration service
+   * Create and register an integration service.
    *
    * @param name
    * @param options
@@ -659,7 +663,7 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createIntegrationServiceConfig(name, {
+    const config = ServiceConfigFactory?.createIntegrationServiceConfig(name, {
       type: ServiceType.API,
       ...options,
     });
@@ -671,7 +675,7 @@ export class USL {
    * Create integration service adapter (optimized for integration operations)
    *
    * @param name
-   * @param options
+   * @param options.
    */
   async createIntegrationServiceAdapter(
     name: string,
@@ -689,7 +693,7 @@ export class USL {
   }
 
   /**
-   * Create architecture storage integration service
+   * Create architecture storage integration service.
    *
    * @param name
    * @param databaseType
@@ -722,7 +726,7 @@ export class USL {
   }
 
   /**
-   * Create safe API integration service
+   * Create safe API integration service.
    *
    * @param name
    * @param baseURL
@@ -758,7 +762,7 @@ export class USL {
   }
 
   /**
-   * Create protocol management integration service
+   * Create protocol management integration service.
    *
    * @param name
    * @param supportedProtocols
@@ -801,7 +805,7 @@ export class USL {
    * Create unified integration service (all integration features enabled)
    *
    * @param name
-   * @param options
+   * @param options.
    */
   async createUnifiedIntegrationService(
     name: string,
@@ -864,7 +868,7 @@ export class USL {
   }
 
   /**
-   * Create and register a monitoring service
+   * Create and register a monitoring service.
    *
    * @param name
    * @param options
@@ -877,7 +881,7 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createMonitoringServiceConfig(name, {
+    const config = ServiceConfigFactory?.createMonitoringServiceConfig(name, {
       type: ServiceType.MONITORING,
       ...options,
     });
@@ -886,7 +890,7 @@ export class USL {
   }
 
   /**
-   * Get service by name
+   * Get service by name.
    *
    * @param serviceName
    */
@@ -895,7 +899,7 @@ export class USL {
   }
 
   /**
-   * Get all services of a specific type
+   * Get all services of a specific type.
    *
    * @param type
    */
@@ -904,28 +908,28 @@ export class USL {
   }
 
   /**
-   * Get all services
+   * Get all services.
    */
   getAllServices(): Map<string, IService> {
     return globalServiceRegistry.getAllServices();
   }
 
   /**
-   * Start all services
+   * Start all services.
    */
   async startAllServices(): Promise<void> {
     await globalServiceRegistry.startAllServices();
   }
 
   /**
-   * Stop all services
+   * Stop all services.
    */
   async stopAllServices(): Promise<void> {
     await globalServiceRegistry.stopAllServices();
   }
 
   /**
-   * Get system health status
+   * Get system health status.
    *
    * @returns {Promise<Object>} Promise resolving to comprehensive system health information
    * @returns {Promise<Object>} returns.overall Overall system health status
@@ -998,7 +1002,7 @@ export class USL {
   }
 
   /**
-   * Get system metrics
+   * Get system metrics.
    *
    * @returns {Promise<Object>} Promise resolving to comprehensive system performance metrics
    * @returns {Promise<number>} returns.totalServices Total number of registered services
@@ -1068,7 +1072,7 @@ export class USL {
   }
 
   /**
-   * Discover services by criteria
+   * Discover services by criteria.
    *
    * @param {Object} [criteria] Service discovery criteria
    * @param {ServiceType} [criteria.type] Filter by service type
@@ -1110,7 +1114,7 @@ export class USL {
   }
 
   /**
-   * Register a service capability
+   * Register a service capability.
    *
    * @param serviceName
    * @param capability
@@ -1120,7 +1124,7 @@ export class USL {
   }
 
   /**
-   * Find services by capability
+   * Find services by capability.
    *
    * @param capabilityName
    */
@@ -1129,7 +1133,7 @@ export class USL {
   }
 
   /**
-   * Shutdown USL system
+   * Shutdown USL system.
    *
    * @returns {Promise<void>} Promise that resolves when shutdown is complete
    * @throws {ServiceOperationError} When shutdown operations fail
@@ -1162,7 +1166,7 @@ export class USL {
 }
 
 /**
- * Global USL instance for convenience
+ * Global USL instance for convenience.
  *
  * @constant {USL}
  * @description Pre-initialized global USL instance for immediate use across the application
@@ -1178,7 +1182,7 @@ export class USL {
 export const usl = USL.getInstance();
 
 /**
- * Initialize USL with default configuration
+ * Initialize USL with default configuration.
  *
  * @param {USLFactoryConfig} [config] Optional factory configuration
  * @returns {Promise<void>} Promise that resolves when initialization is complete
@@ -1204,7 +1208,7 @@ export const initializeUSL = async (config?: USLFactoryConfig): Promise<void> =>
 };
 
 /**
- * Convenience functions for common service operations
+ * Convenience functions for common service operations.
  *
  * @namespace USLHelpers
  * @description Collection of utility functions for common USL operations and workflows
@@ -1226,7 +1230,7 @@ export const initializeUSL = async (config?: USLFactoryConfig): Promise<void> =>
  */
 export const USLHelpers = {
   /**
-   * Initialize and create common services for a typical setup
+   * Initialize and create common services for a typical setup.
    *
    * @param {Object} config Configuration for common services setup
    * @param {number} [config.webPort] Port for web service (creates web service if provided)
@@ -1291,29 +1295,29 @@ export const USLHelpers = {
 
     try {
       // Create core services
-      services.memory = await usl.createMemoryService('default-memory', config.memoryConfig);
+      services.memory = await usl.createMemoryService('default-memory', config?.memoryConfig);
       services.data = await usl.createDataService('default-data');
 
-      if (config.webPort) {
-        services.web = await usl.createWebService('default-web', config.webPort);
+      if (config?.webPort) {
+        services.web = await usl.createWebService('default-web', config?.webPort);
       }
 
-      if (config.databaseConfig) {
+      if (config?.databaseConfig) {
         services.database = await usl.createDatabaseService(
           'default-database',
-          config.databaseConfig
+          config?.databaseConfig
         );
       }
 
-      if (config.enableCoordination) {
+      if (config?.enableCoordination) {
         services.coordination = await usl.createCoordinationService('default-coordination');
       }
 
-      if (config.enableNeural) {
+      if (config?.enableNeural) {
         services.neural = await usl.createNeuralService('default-neural');
       }
 
-      if (config.enableMonitoring) {
+      if (config?.enableMonitoring) {
         services.monitoring = await usl.createMonitoringService('default-monitoring');
       }
 
@@ -1328,7 +1332,7 @@ export const USLHelpers = {
   },
 
   /**
-   * Get a quick system status overview
+   * Get a quick system status overview.
    */
   async getQuickStatus(): Promise<{
     initialized: boolean;
@@ -1367,7 +1371,7 @@ export const USLHelpers = {
   },
 
   /**
-   * Perform comprehensive health check on all services
+   * Perform comprehensive health check on all services.
    */
   async performHealthCheck(): Promise<{
     overall: 'healthy' | 'degraded' | 'unhealthy';
@@ -1424,7 +1428,7 @@ export const USLHelpers = {
   },
 
   /**
-   * Get performance metrics for all services
+   * Get performance metrics for all services.
    */
   async getPerformanceMetrics(): Promise<{
     timestamp: Date;
@@ -1505,7 +1509,7 @@ export const USLHelpers = {
   },
 
   /**
-   * Create a service with automatic dependency resolution
+   * Create a service with automatic dependency resolution.
    *
    * @param config
    * @param dependencies
@@ -1518,7 +1522,7 @@ export const USLHelpers = {
     for (const depName of dependencies) {
       const existingService = usl.getService(depName);
       if (!existingService) {
-        throw new ServiceDependencyError(config.name, depName);
+        throw new ServiceDependencyError(config?.name, depName);
       }
     }
 
@@ -1538,7 +1542,7 @@ export const USLHelpers = {
   },
 
   /**
-   * Batch create services with dependency resolution
+   * Batch create services with dependency resolution.
    *
    * @param configs
    */
@@ -1547,8 +1551,8 @@ export const USLHelpers = {
   ): Promise<IService[]> {
     // Sort by dependency order
     const sortedConfigs = [...configs].sort((a, b) => {
-      const aDeps = a.dependencies?.length || 0;
-      const bDeps = b.dependencies?.length || 0;
+      const aDeps = a.dependencies.length || 0;
+      const bDeps = b.dependencies.length || 0;
       return aDeps - bDeps;
     });
 
@@ -1559,7 +1563,7 @@ export const USLHelpers = {
         const service = await USLHelpers.createServiceWithDependencies(config, dependencies);
         createdServices.push(service);
       } catch (error) {
-        logger.error(`Failed to create service ${config.name}:`, error);
+        logger.error(`Failed to create service ${config?.name}:`, error);
         throw error;
       }
     }
@@ -1568,7 +1572,7 @@ export const USLHelpers = {
   },
 
   /**
-   * Initialize complete USL system with enhanced integration layer
+   * Initialize complete USL system with enhanced integration layer.
    *
    * @param config
    * @param config.enableServiceManager
@@ -1634,10 +1638,10 @@ export const USLHelpers = {
       // Initialize Validation Framework if enabled
       if (config?.enableValidationFramework ?? false) {
         const { USLValidationFramework } = await import('./validation');
-        if (result.serviceManager && result.registry) {
+        if (result?.serviceManager && result?.registry) {
           const validation = new USLValidationFramework(
-            result.serviceManager,
-            result.registry,
+            result?.serviceManager,
+            result?.registry,
             config?.validationConfig
           );
           result.validation = validation;
@@ -1652,7 +1656,7 @@ export const USLHelpers = {
   },
 
   /**
-   * Migrate existing system to USL with full integration
+   * Migrate existing system to USL with full integration.
    *
    * @param existingServices
    */
@@ -1677,10 +1681,10 @@ export const USLHelpers = {
       const compatibilityReport = MigrationUtils.generateCompatibilityReport();
 
       return {
-        success: migrationResult.failed.length === 0,
-        migrated: migrationResult.migrated,
-        failed: migrationResult.failed,
-        warnings: migrationResult.warnings,
+        success: migrationResult?.failed.length === 0,
+        migrated: migrationResult?.migrated,
+        failed: migrationResult?.failed,
+        warnings: migrationResult?.warnings,
         compatibilityReport,
       };
     } catch (error) {
@@ -1696,7 +1700,7 @@ export const USLHelpers = {
   },
 
   /**
-   * Validate complete USL system integration
+   * Validate complete USL system integration.
    *
    * @param config
    */
@@ -1724,7 +1728,7 @@ export const USLHelpers = {
       // Generate recommendations
       const recommendations: string[] = [];
 
-      if (validationResult.overall === 'fail') {
+      if (validationResult?.overall === 'fail') {
         recommendations.push('Address critical validation failures before production deployment');
       }
 
@@ -1732,10 +1736,10 @@ export const USLHelpers = {
         recommendations.push('Resolve system health issues to ensure optimal performance');
       }
 
-      recommendations.push(...validationResult.recommendations.map((rec) => rec.action));
+      recommendations.push(...validationResult?.recommendations.map((rec) => rec.action));
 
       return {
-        success: validationResult.overall !== 'fail',
+        success: validationResult?.overall !== 'fail',
         validationResult,
         healthValidation,
         recommendations,
@@ -1799,7 +1803,7 @@ export const USLHelpers = {
 // Export common service creation functions
 
 /**
- * Create a data service with specified configuration
+ * Create a data service with specified configuration.
  *
  * @function createDataService
  * @param {string} name Service name identifier
@@ -1810,7 +1814,7 @@ export const USLHelpers = {
 export const createDataService = usl.createDataService.bind(usl);
 
 /**
- * Create a web-optimized data service adapter
+ * Create a web-optimized data service adapter.
  *
  * @function createWebDataService
  * @param {string} name Service name identifier
@@ -1821,7 +1825,7 @@ export const createDataService = usl.createDataService.bind(usl);
 export const createWebDataService = usl.createWebDataService.bind(usl);
 
 /**
- * Create a document-optimized data service adapter
+ * Create a document-optimized data service adapter.
  *
  * @function createDocumentService
  * @param {string} name Service name identifier
@@ -1839,13 +1843,13 @@ export const createDocumentService = usl.createDocumentService.bind(usl);
  * @param {string} name Service name identifier
  * @param {'postgresql' | 'sqlite' | 'mysql'} databaseType Database type
  * @param {Partial<DataServiceAdapterConfig>} options Adapter configuration options
- * @returns {Promise<DataServiceAdapter>} Promise resolving to unified adapter
+ * @returns {Promise<DataServiceAdapter>} Promise resolving to unified adapter.
  * @example createUnifiedDataService('hybrid', 'postgresql', { web: { enabled: true }, document: { enabled: true } })
  */
 export const createUnifiedDataService = usl.createUnifiedDataService.bind(usl);
 
 /**
- * Create a web service with HTTP server capabilities
+ * Create a web service with HTTP server capabilities.
  *
  * @function createWebService
  * @param {string} name Service name identifier
@@ -1857,7 +1861,7 @@ export const createUnifiedDataService = usl.createUnifiedDataService.bind(usl);
 export const createWebService = usl.createWebService.bind(usl);
 
 /**
- * Create a coordination service for distributed operations
+ * Create a coordination service for distributed operations.
  *
  * @function createCoordinationService
  * @param {string} name Service name identifier
@@ -1868,7 +1872,7 @@ export const createWebService = usl.createWebService.bind(usl);
 export const createCoordinationService = usl.createCoordinationService.bind(usl);
 
 /**
- * Create a neural service for machine learning operations
+ * Create a neural service for machine learning operations.
  *
  * @function createNeuralService
  * @param {string} name Service name identifier
@@ -1879,7 +1883,7 @@ export const createCoordinationService = usl.createCoordinationService.bind(usl)
 export const createNeuralService = usl.createNeuralService.bind(usl);
 
 /**
- * Create a memory service for caching and storage
+ * Create a memory service for caching and storage.
  *
  * @function createMemoryService
  * @param {string} name Service name identifier
@@ -1890,7 +1894,7 @@ export const createNeuralService = usl.createNeuralService.bind(usl);
 export const createMemoryService = usl.createMemoryService.bind(usl);
 
 /**
- * Create a database service for persistent data storage
+ * Create a database service for persistent data storage.
  *
  * @function createDatabaseService
  * @param {string} name Service name identifier
@@ -1901,7 +1905,7 @@ export const createMemoryService = usl.createMemoryService.bind(usl);
 export const createDatabaseService = usl.createDatabaseService.bind(usl);
 
 /**
- * Create an integration service for external system connectivity
+ * Create an integration service for external system connectivity.
  *
  * @function createIntegrationService
  * @param {string} name Service name identifier
@@ -1912,7 +1916,7 @@ export const createDatabaseService = usl.createDatabaseService.bind(usl);
 export const createIntegrationService = usl.createIntegrationService.bind(usl);
 
 /**
- * Create an integration service adapter with enhanced capabilities
+ * Create an integration service adapter with enhanced capabilities.
  *
  * @function createIntegrationServiceAdapter
  * @param {string} name Service name identifier
@@ -1923,7 +1927,7 @@ export const createIntegrationService = usl.createIntegrationService.bind(usl);
 export const createIntegrationServiceAdapter = usl.createIntegrationServiceAdapter.bind(usl);
 
 /**
- * Create an architecture storage service for system metadata
+ * Create an architecture storage service for system metadata.
  *
  * @function createArchitectureStorageService
  * @param {string} name Service name identifier
@@ -1935,7 +1939,7 @@ export const createIntegrationServiceAdapter = usl.createIntegrationServiceAdapt
 export const createArchitectureStorageService = usl.createArchitectureStorageService.bind(usl);
 
 /**
- * Create a safe API service with validation and security features
+ * Create a safe API service with validation and security features.
  *
  * @function createSafeAPIService
  * @param {string} name Service name identifier
@@ -1947,7 +1951,7 @@ export const createArchitectureStorageService = usl.createArchitectureStorageSer
 export const createSafeAPIService = usl.createSafeAPIService.bind(usl);
 
 /**
- * Create a protocol management service for multi-protocol communication
+ * Create a protocol management service for multi-protocol communication.
  *
  * @function createProtocolManagementService
  * @param {string} name Service name identifier
@@ -1959,7 +1963,7 @@ export const createSafeAPIService = usl.createSafeAPIService.bind(usl);
 export const createProtocolManagementService = usl.createProtocolManagementService.bind(usl);
 
 /**
- * Create a unified integration service with all features enabled
+ * Create a unified integration service with all features enabled.
  *
  * @function createUnifiedIntegrationService
  * @param {string} name Service name identifier
@@ -1970,7 +1974,7 @@ export const createProtocolManagementService = usl.createProtocolManagementServi
 export const createUnifiedIntegrationService = usl.createUnifiedIntegrationService.bind(usl);
 
 /**
- * Create a monitoring service for system observability
+ * Create a monitoring service for system observability.
  *
  * @function createMonitoringService
  * @param {string} name Service name identifier
@@ -1983,7 +1987,7 @@ export const createMonitoringService = usl.createMonitoringService.bind(usl);
 // Export service discovery functions
 
 /**
- * Get a service by its unique name
+ * Get a service by its unique name.
  *
  * @function getService
  * @param {string} serviceName Unique service identifier
@@ -1993,7 +1997,7 @@ export const createMonitoringService = usl.createMonitoringService.bind(usl);
 export const getService = usl.getService.bind(usl);
 
 /**
- * Get all services of a specific type
+ * Get all services of a specific type.
  *
  * @function getServicesByType
  * @param {ServiceType} type Service type to filter by
@@ -2003,7 +2007,7 @@ export const getService = usl.getService.bind(usl);
 export const getServicesByType = usl.getServicesByType.bind(usl);
 
 /**
- * Get all registered services
+ * Get all registered services.
  *
  * @function getAllServices
  * @returns {Map<string, IService>} Map of all services by name
@@ -2016,7 +2020,7 @@ export const getAllServices = usl.getAllServices.bind(usl);
  *
  * @function discoverServices
  * @param {Object} criteria Discovery criteria
- * @returns {IService[]} Array of matching services
+ * @returns {IService[]} Array of matching services.
  * @example const mlServices = discoverServices({ capabilities: ['training', 'inference'] });
  */
 export const discoverServices = usl.discoverServices.bind(usl);
@@ -2024,7 +2028,7 @@ export const discoverServices = usl.discoverServices.bind(usl);
 // Export system management functions
 
 /**
- * Start all registered services
+ * Start all registered services.
  *
  * @function startAllServices
  * @returns {Promise<void>} Promise that resolves when all services are started
@@ -2034,7 +2038,7 @@ export const discoverServices = usl.discoverServices.bind(usl);
 export const startAllServices = usl.startAllServices.bind(usl);
 
 /**
- * Stop all registered services
+ * Stop all registered services.
  *
  * @function stopAllServices
  * @returns {Promise<void>} Promise that resolves when all services are stopped
@@ -2044,7 +2048,7 @@ export const startAllServices = usl.startAllServices.bind(usl);
 export const stopAllServices = usl.stopAllServices.bind(usl);
 
 /**
- * Get comprehensive system health status
+ * Get comprehensive system health status.
  *
  * @function getSystemHealth
  * @returns {Promise<Object>} Promise resolving to system health information
@@ -2053,7 +2057,7 @@ export const stopAllServices = usl.stopAllServices.bind(usl);
 export const getSystemHealth = usl.getSystemHealth.bind(usl);
 
 /**
- * Get system performance metrics
+ * Get system performance metrics.
  *
  * @function getSystemMetrics
  * @returns {Promise<Object>} Promise resolving to system metrics
@@ -2062,7 +2066,7 @@ export const getSystemHealth = usl.getSystemHealth.bind(usl);
 export const getSystemMetrics = usl.getSystemMetrics.bind(usl);
 
 /**
- * Default export for convenience
+ * Default export for convenience.
  *
  * @default {USL}
  * @description The global USL instance as the default export

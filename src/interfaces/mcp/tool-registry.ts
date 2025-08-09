@@ -1,5 +1,7 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("interfaces-mcp-tool-registry");
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-mcp-tool-registry');
+
 /**
  * @file MCP Tools Registry
  *
@@ -7,6 +9,7 @@ const logger = getLogger("interfaces-mcp-tool-registry");
  * Integrates with existing HTTP and Stdio MCP servers.
  */
 
+import type { DocumentService } from '../services/document-service';
 import coordinationTools from './tools/coordination-tools';
 import githubIntegrationTools from './tools/github-integration-tools';
 import memoryNeuralTools from './tools/memory-neural-tools';
@@ -16,7 +19,7 @@ import { createSPARCIntegrationTools } from './tools/sparc-integration-tools';
 import systemTools from './tools/system-tools';
 
 /**
- * MCP Tool interface
+ * MCP Tool interface.
  *
  * @example
  */
@@ -36,7 +39,7 @@ export interface MCPTool {
 }
 
 /**
- * Simple tool registry
+ * Simple tool registry.
  *
  * @example
  */
@@ -79,8 +82,8 @@ class SimpleToolRegistry {
 export const toolRegistry = new SimpleToolRegistry();
 
 /**
- * MCP Tools Manager
- * Provides centralized management for MCP tools
+ * MCP Tools Manager.
+ * Provides centralized management for MCP tools.
  *
  * @example
  */
@@ -95,7 +98,7 @@ export class MCPToolsManager {
   }
 
   /**
-   * Initialize all tools in the registry
+   * Initialize all tools in the registry.
    */
   private initializeTools(): void {
     if (this.initialized) return;
@@ -153,7 +156,7 @@ export class MCPToolsManager {
   }
 
   /**
-   * Get tool by name
+   * Get tool by name.
    *
    * @param name
    */
@@ -162,7 +165,7 @@ export class MCPToolsManager {
   }
 
   /**
-   * Execute tool with enhanced error handling and metrics
+   * Execute tool with enhanced error handling and metrics.
    *
    * @param name
    * @param params
@@ -190,7 +193,7 @@ export class MCPToolsManager {
   }
 
   /**
-   * List all tools with metadata
+   * List all tools with metadata.
    */
   listAllTools(): any {
     const tools = toolRegistry.getAllTools();
@@ -212,7 +215,7 @@ export class MCPToolsManager {
   }
 
   /**
-   * Get tools by category
+   * Get tools by category.
    *
    * @param category
    */
@@ -221,7 +224,7 @@ export class MCPToolsManager {
   }
 
   /**
-   * Get tool execution statistics
+   * Get tool execution statistics.
    */
   getToolStats(): any {
     const stats: any = {};
@@ -238,7 +241,7 @@ export class MCPToolsManager {
   }
 
   /**
-   * Get registry overview
+   * Get registry overview.
    */
   getRegistryOverview(): any {
     const categoryStats = toolRegistry.getCategorySummary();
@@ -266,7 +269,7 @@ export class MCPToolsManager {
   }
 
   /**
-   * Search tools by tags or keywords
+   * Search tools by tags or keywords.
    *
    * @param query
    */
@@ -283,14 +286,14 @@ export class MCPToolsManager {
   }
 
   /**
-   * Get tool count
+   * Get tool count.
    */
   getToolCount(): number {
     return toolRegistry.getToolCount();
   }
 
   /**
-   * Check if tool exists
+   * Check if tool exists.
    *
    * @param name
    */
@@ -299,7 +302,7 @@ export class MCPToolsManager {
   }
 
   /**
-   * Get tools requiring specific permissions
+   * Get tools requiring specific permissions.
    *
    * @param permissionType
    * @param resource
@@ -340,7 +343,7 @@ export class MCPToolsManager {
 export const mcpToolsManager = new MCPToolsManager();
 
 /**
- * Initialize the MCP tools manager with database services for SPARC integration
+ * Initialize the MCP tools manager with database services for SPARC integration.
  *
  * @param documentService
  */
@@ -351,13 +354,13 @@ export function initializeWithDatabaseServices(documentService: DocumentService)
 }
 
 /**
- * Integration helper for existing MCP servers
+ * Integration helper for existing MCP servers.
  *
  * @example
  */
 export class MCPServerIntegration {
   /**
-   * Register tools with HTTP MCP server
+   * Register tools with HTTP MCP server.
    *
    * @param mcpServer
    */
@@ -384,7 +387,7 @@ export class MCPServerIntegration {
   }
 
   /**
-   * Register tools with Stdio MCP server
+   * Register tools with Stdio MCP server.
    *
    * @param mcpServer
    */
@@ -411,7 +414,7 @@ export class MCPServerIntegration {
   }
 
   /**
-   * Create tool discovery endpoint
+   * Create tool discovery endpoint.
    */
   static createDiscoveryEndpoint(): any {
     return {
@@ -438,7 +441,7 @@ export class MCPServerIntegration {
   }
 
   /**
-   * Create tool execution endpoint
+   * Create tool execution endpoint.
    */
   static createExecutionEndpoint(): any {
     return {

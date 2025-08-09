@@ -1,8 +1,10 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-integration-adapter-system");
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-integration-adapter-system');
+
 /**
  * @file Adapter Pattern Implementation for Multi-Protocol Support
- * Provides protocol adaptation and legacy system integration
+ * Provides protocol adaptation and legacy system integration.
  */
 
 import { EventEmitter } from 'node:events';
@@ -277,7 +279,7 @@ export class MCPAdapter implements ProtocolAdapter {
       }, 30000);
 
       const responseHandler = (data: any) => {
-        if (data?.id === message.id) {
+        if (data.id === message.id) {
           clearTimeout(timeout);
           if (data?.error) {
             reject(new Error(data?.error?.message));
@@ -423,7 +425,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
 
       // Set up response handler
       const responseHandler = (response: any) => {
-        if (response?.requestId === message.id) {
+        if (response.requestId === message.id) {
           clearTimeout(timeout);
           resolve({
             id: response?.id || `resp-${Date.now()}`,
@@ -473,7 +475,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
   }
 
   isConnected(): boolean {
-    return this.connected && this.connection?.readyState === WebSocket.OPEN;
+    return this.connected && this.connection.readyState === WebSocket.OPEN;
   }
 
   getProtocolName(): string {
@@ -700,7 +702,7 @@ export class RESTAdapter implements ProtocolAdapter {
     };
 
     if (body && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
-      options?.body = JSON.stringify(body);
+      options.body = JSON.stringify(body);
     }
 
     return fetch(url, options);
@@ -730,7 +732,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
     // Could support protocols like FTP, SOAP, proprietary TCP protocols, etc.
 
     try {
-      switch (config?.protocol?.toLowerCase()) {
+      switch (config?.protocol.toLowerCase()) {
         case 'soap':
           await this.connectSOAP(config);
           break;
@@ -972,9 +974,9 @@ export class ProtocolManager extends EventEmitter {
 
       try {
         const response = await adapter.send(message);
-        results?.push(response);
+        results.push(response);
       } catch (error) {
-        results?.push({
+        results.push({
           id: `error-${Date.now()}`,
           requestId: message.id,
           timestamp: new Date(),

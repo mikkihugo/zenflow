@@ -275,7 +275,7 @@ ${steeringContext}
       const concurrentDomains = Array.from({ length: 5 }, (_, i) => `concurrent-${i}`);
 
       // Create all documents concurrently
-      const promises = concurrentDomains.map((domain) =>
+      const promises = concurrentDomains?.map((domain) =>
         maestroOrchestrator.createSteeringDocument(domain, `Content for ${domain}`)
       );
 

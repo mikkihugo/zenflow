@@ -1,15 +1,20 @@
 /**
- * Database Entities for Document-Driven System
+ * Database Entities for Document-Driven System.
  *
  * PURE DATABASE-DRIVEN ARCHITECTURE
- * Replaces file-based document system with database entities
- * Provides typed interfaces for Vision/ADR/PRD/Epic/Feature/Task storage
+ * Replaces file-based document system with database entities.
+ * Provides typed interfaces for Vision/ADR/PRD/Epic/Feature/Task storage.
+ */
+/**
+ * @file Database layer: document-entities
  */
 
-import type { DocumentType } from '../../types/workflow-types';
+
+
+import type { DocumentType } from '../types/workflow-types';
 
 /**
- * Base document entity - all documents inherit from this
+ * Base document entity - all documents inherit from this.
  *
  * @example
  */
@@ -47,8 +52,8 @@ export interface BaseDocumentEntity {
 }
 
 /**
- * Vision Document Entity
- * Strategic vision and high-level goals
+ * Vision Document Entity.
+ * Strategic vision and high-level goals.
  *
  * @example
  */
@@ -75,8 +80,8 @@ export interface VisionDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Architecture Decision Record Entity
- * Technical decisions and rationale
+ * Architecture Decision Record Entity.
+ * Technical decisions and rationale.
  *
  * @example
  */
@@ -98,8 +103,8 @@ export interface ADRDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Product Requirements Document Entity
- * Detailed feature specifications
+ * Product Requirements Document Entity.
+ * Detailed feature specifications.
  *
  * @example
  */
@@ -136,8 +141,8 @@ export interface PRDDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Epic Document Entity
- * Large feature groupings
+ * Epic Document Entity.
+ * Large feature groupings.
  *
  * @example
  */
@@ -169,8 +174,8 @@ export interface EpicDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Feature Document Entity
- * Individual implementable features with SPARC methodology integration
+ * Feature Document Entity.
+ * Individual implementable features with SPARC methodology integration.
  *
  * @example
  */
@@ -253,8 +258,8 @@ export interface FeatureDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Task Document Entity
- * Granular implementation tasks with SPARC methodology integration
+ * Task Document Entity.
+ * Granular implementation tasks with SPARC methodology integration.
  *
  * @example
  */
@@ -343,8 +348,8 @@ export interface TaskDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
- * Document Relationships Entity
- * Tracks relationships between documents
+ * Document Relationships Entity.
+ * Tracks relationships between documents.
  *
  * @example
  */
@@ -358,8 +363,8 @@ export interface DocumentRelationshipEntity {
 }
 
 /**
- * Document Workflow State Entity
- * Tracks document workflow progression
+ * Document Workflow State Entity.
+ * Tracks document workflow progression.
  *
  * @example
  */
@@ -388,8 +393,8 @@ export interface DocumentWorkflowStateEntity {
 }
 
 /**
- * Project Entity
- * Groups related documents into projects with comprehensive SPARC integration
+ * Project Entity.
+ * Groups related documents into projects with comprehensive SPARC integration.
  *
  * @example
  */
@@ -474,8 +479,8 @@ export interface ProjectEntity {
 }
 
 /**
- * Document Search Index Entity
- * Optimized search and discovery
+ * Document Search Index Entity.
+ * Optimized search and discovery.
  *
  * @example
  */
@@ -513,8 +518,8 @@ export interface DocumentSearchIndexEntity {
 }
 
 /**
- * Database Schema Export
- * Defines table structures for database creation
+ * Database Schema Export.
+ * Defines table structures for database creation.
  */
 export const DATABASE_SCHEMAS = {
   documents: `
@@ -730,7 +735,7 @@ export const DATABASE_SCHEMAS = {
 } as const;
 
 /**
- * Type guards for document entities
+ * Type guards for document entities.
  *
  * @param doc
  */

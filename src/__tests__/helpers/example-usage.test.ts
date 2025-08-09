@@ -80,9 +80,9 @@ describe('Test Helper Utilities - Example Usage', () => {
         // Simulate a service that uses the database
         class DataService {
           async getData(id: string) {
-            await mockDatabase.connect();
-            const result = await mockDatabase.query('SELECT * FROM data WHERE id = ?', [id]);
-            await mockDatabase.disconnect();
+            await mockDatabase?.connect();
+            const result = await mockDatabase?.query('SELECT * FROM data WHERE id = ?', [id]);
+            await mockDatabase?.disconnect();
             return result;
           }
         }
@@ -90,17 +90,19 @@ describe('Test Helper Utilities - Example Usage', () => {
         const service = new DataService();
 
         // Setup mocks
-        mockDatabase.connect.mockResolvedValue(undefined);
-        mockDatabase.query.mockResolvedValue([{ id: '123', name: 'test' }]);
-        mockDatabase.disconnect.mockResolvedValue(undefined);
+        mockDatabase?.connect?.mockResolvedValue(undefined);
+        mockDatabase?.query?.mockResolvedValue([{ id: '123', name: 'test' }]);
+        mockDatabase?.disconnect?.mockResolvedValue(undefined);
 
         // Execute
         const result = await service.getData('123');
 
         // London School: Verify interactions (HOW it works)
-        expect(mockDatabase.connect).toHaveBeenCalledBefore(mockDatabase.query);
-        expect(mockDatabase.query).toHaveBeenCalledWith('SELECT * FROM data WHERE id = ?', ['123']);
-        expect(mockDatabase.disconnect).toHaveBeenCalledAfter(mockDatabase.query);
+        expect(mockDatabase?.connect).toHaveBeenCalledBefore(mockDatabase?.query);
+        expect(mockDatabase?.query).toHaveBeenCalledWith('SELECT * FROM data WHERE id = ?', [
+          '123',
+        ]);
+        expect(mockDatabase?.disconnect).toHaveBeenCalledAfter(mockDatabase?.query);
 
         testLogger.logInteraction('DataService', 'getData', ['123'], result);
       });
@@ -216,8 +218,8 @@ describe('Test Helper Utilities - Example Usage', () => {
 
             for (let i = 0; i < n - 1; i++) {
               for (let j = 0; j < n - i - 1; j++) {
-                if (result[j] > result[j + 1]) {
-                  [result[j], result[j + 1]] = [result[j + 1], result[j]];
+                if (result?.[j] > result?.[j + 1]) {
+                  [result?.[j], result?.[j + 1]] = [result?.[j + 1], result?.[j]];
                 }
               }
             }
@@ -256,11 +258,11 @@ describe('Test Helper Utilities - Example Usage', () => {
   describe('📊 Performance Testing Examples', () => {
     it('should measure and compare algorithm performance', async () => {
       // Test data generation
-      const testData = testDataFactory.createPerformanceData(1000);
+      const testData = testDataFactory?.createPerformanceData(1000);
 
       function linearSearch(arr: any[], target: any): number {
         for (let i = 0; i < arr.length; i++) {
-          if (arr[i].id === target) return i;
+          if (arr[i]?.id === target) return i;
         }
         return -1;
       }
@@ -271,22 +273,22 @@ describe('Test Helper Utilities - Example Usage', () => {
 
         while (left <= right) {
           const mid = Math.floor((left + right) / 2);
-          if (arr[mid].id === target) return mid;
-          if (arr[mid].id < target) left = mid + 1;
+          if (arr[mid]?.id === target) return mid;
+          if (arr[mid]?.id < target) left = mid + 1;
           else right = mid - 1;
         }
         return -1;
       }
 
       // Sort data for binary search
-      const sortedData = testData.data.sort((a, b) => a.id - b.id);
-      const target = testData.data[500].id;
+      const sortedData = testData?.data?.sort((a, b) => a.id - b.id);
+      const target = testData?.data?.[500]?.id;
 
       // Benchmark comparison
       const results = await performanceMeasurement.benchmarkComparison([
         {
           name: 'Linear Search',
-          fn: () => linearSearch(testData.data, target),
+          fn: () => linearSearch(testData?.data, target),
         },
         {
           name: 'Binary Search',
@@ -296,12 +298,12 @@ describe('Test Helper Utilities - Example Usage', () => {
 
       // Performance assertions
       expect(results).toHaveLength(2);
-      expect(results[0].ranking).toBeLessThanOrEqual(2);
-      expect(results[1].ranking).toBeLessThanOrEqual(2);
+      expect(results?.[0]?.ranking).toBeLessThanOrEqual(2);
+      expect(results?.[1]?.ranking).toBeLessThanOrEqual(2);
 
       // Binary search should be faster (lower ranking = better performance)
-      const binaryResult = results.find((r) => r.name === 'Binary Search');
-      const linearResult = results.find((r) => r.name === 'Linear Search');
+      const binaryResult = results?.find((r) => r.name === 'Binary Search');
+      const linearResult = results?.find((r) => r.name === 'Linear Search');
 
       expect(binaryResult?.ranking).toBeLessThan(linearResult?.ranking);
 
@@ -340,18 +342,18 @@ describe('Test Helper Utilities - Example Usage', () => {
       );
 
       // The leaky function should show memory growth
-      expect(leakResult.memoryGrowth).toBeGreaterThan(cleanResult.memoryGrowth);
+      expect(leakResult?.memoryGrowth).toBeGreaterThan(cleanResult?.memoryGrowth);
     });
   });
 
   describe('🧪 Test Data Factory Examples', () => {
     it('should generate realistic test data', () => {
       // Generate consistent test data with seed
-      testDataFactory.resetSeed(12345);
+      testDataFactory?.resetSeed(12345);
 
-      const users = testDataFactory.createUsers(5);
-      const projects = Array.from({ length: 3 }, () => testDataFactory.createProject());
-      const swarms = Array.from({ length: 2 }, () => testDataFactory.createSwarm());
+      const users = testDataFactory?.createUsers(5);
+      const projects = Array.from({ length: 3 }, () => testDataFactory?.createProject());
+      const swarms = Array.from({ length: 2 }, () => testDataFactory?.createSwarm());
 
       // Verify data structure
       expect(users).toHaveLength(5);
@@ -385,10 +387,10 @@ describe('Test Helper Utilities - Example Usage', () => {
     });
 
     it('should create neural network training data', () => {
-      const trainingData = testDataFactory.createNeuralTrainingData(100);
+      const trainingData = testDataFactory?.createNeuralTrainingData(100);
 
       expect(trainingData).toHaveLength(100);
-      trainingData.forEach((sample) => {
+      trainingData?.forEach((sample) => {
         expect(sample).toHaveProperty('input');
         expect(sample).toHaveProperty('output');
         expect(sample.input).toHaveLength(3);
@@ -424,13 +426,13 @@ describe('Test Helper Utilities - Example Usage', () => {
         const { database, filesystem, network } = await testSetup.setup();
 
         // Test database operations
-        await database.setup();
-        await database.seed([
+        await database?.setup();
+        await database?.seed([
           { id: 1, name: 'Test User 1' },
           { id: 2, name: 'Test User 2' },
         ]);
 
-        const connection = database.getConnection();
+        const connection = database?.getConnection();
         expect(connection).toBeDefined();
 
         // Test filesystem operations
@@ -455,8 +457,8 @@ describe('Test Helper Utilities - Example Usage', () => {
 
         const client = network.createHttpClient();
         const response = await client.get('/api/health');
-        expect(response.status).toBe(200);
-        expect(response.body).toEqual({ status: 'healthy' });
+        expect(response?.status).toBe(200);
+        expect(response?.body).toEqual({ status: 'healthy' });
 
         testLogger.logStateChange(
           'IntegrationTest',
@@ -537,7 +539,7 @@ describe('Test Helper Utilities - Example Usage', () => {
 
       const performanceLogs = componentLogger.getLogsByCategory('performance');
       expect(performanceLogs).toHaveLength(1);
-      expect(performanceLogs[0].message).toContain('Database Insert');
+      expect(performanceLogs[0]?.message).toContain('Database Insert');
 
       const interactionLogs = componentLogger.getLogsByCategory('interaction');
       expect(interactionLogs).toHaveLength(1);

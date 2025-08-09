@@ -1,11 +1,16 @@
 /**
- * Swarm Coordinator
- * Central coordination for swarm operations and agent management
+ * Swarm Coordinator.
+ * Central coordination for swarm operations and agent management.
+ */
+/**
+ * @file swarm coordination system
  */
 
+
+
 import { EventEmitter } from 'node:events';
-import type { AgentType } from '../../../types/agent-types';
-import type { SwarmTopology } from '../../../types/shared-types';
+import type { AgentType } from '../types/agent-types';
+import type { SwarmTopology } from '../types/shared-types';
 
 export interface SwarmAgent {
   id: string;
@@ -57,7 +62,7 @@ export class SwarmCoordinator extends EventEmitter {
   private state: 'initializing' | 'active' | 'terminated' = 'initializing';
 
   /**
-   * Initialize the swarm coordinator
+   * Initialize the swarm coordinator.
    *
    * @param config
    */
@@ -67,7 +72,7 @@ export class SwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Shutdown the swarm coordinator
+   * Shutdown the swarm coordinator.
    */
   async shutdown(): Promise<void> {
     this.state = 'terminated';
@@ -77,28 +82,28 @@ export class SwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Get the current state
+   * Get the current state.
    */
   getState(): 'initializing' | 'active' | 'terminated' {
     return this.state;
   }
 
   /**
-   * Get the swarm ID
+   * Get the swarm ID.
    */
   getSwarmId(): string {
     return this.swarmId;
   }
 
   /**
-   * Get total agent count
+   * Get total agent count.
    */
   getAgentCount(): number {
     return this.agents.size;
   }
 
   /**
-   * Get list of active agent IDs
+   * Get list of active agent IDs.
    */
   getActiveAgents(): string[] {
     return Array.from(this.agents.values())
@@ -107,21 +112,21 @@ export class SwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Get task count
+   * Get task count.
    */
   getTaskCount(): number {
     return this.tasks.size;
   }
 
   /**
-   * Get uptime in milliseconds
+   * Get uptime in milliseconds.
    */
   getUptime(): number {
     return Date.now() - this.startTime;
   }
 
   /**
-   * Add an agent to the swarm
+   * Add an agent to the swarm.
    *
    * @param agent
    */
@@ -143,7 +148,7 @@ export class SwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Remove an agent from the swarm
+   * Remove an agent from the swarm.
    *
    * @param agentId
    */
@@ -158,14 +163,14 @@ export class SwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Get all agents
+   * Get all agents.
    */
   getAgents(): SwarmAgent[] {
     return Array.from(this.agents.values());
   }
 
   /**
-   * Get agent by ID
+   * Get agent by ID.
    *
    * @param agentId
    */
@@ -174,7 +179,7 @@ export class SwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Assign a task to the best available agent
+   * Assign a task to the best available agent.
    *
    * @param task
    * @param task.id
@@ -210,7 +215,7 @@ export class SwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Complete a task
+   * Complete a task.
    *
    * @param taskId
    * @param result
@@ -238,14 +243,14 @@ export class SwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Get current swarm metrics
+   * Get current swarm metrics.
    */
   getMetrics(): SwarmMetrics {
     return { ...this.metrics };
   }
 
   /**
-   * Coordinate swarm operations
+   * Coordinate swarm operations.
    *
    * @param agents
    * @param topology

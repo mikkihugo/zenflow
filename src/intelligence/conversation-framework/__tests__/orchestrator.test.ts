@@ -61,13 +61,13 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
 
       // Assert
       expect(session).toMatchObject({
-        title: config.title,
-        participants: config.initialParticipants,
+        title: config?.title,
+        participants: config?.initialParticipants,
         status: 'active',
       });
       expect(mockMemory.storeConversation).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: config.title,
+          title: config?.title,
           status: 'initializing',
         })
       );
@@ -449,7 +449,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
       // Assert - Verify the interaction chain
       expect(mockMemory.storeConversation).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: config.title,
+          title: config?.title,
           status: 'initializing',
         })
       );

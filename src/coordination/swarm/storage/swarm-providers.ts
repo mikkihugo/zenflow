@@ -1,20 +1,27 @@
-import { getLogger } from "../../../config/logging-config";
-const logger = getLogger("coordination-swarm-storage-swarm-providers");
 /**
- * Swarm Storage Providers for Dependency Injection
+ * @file Coordination system: swarm-providers
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-storage-swarm-providers');
+
+/**
+ * Swarm Storage Providers for Dependency Injection.
  *
- * Provides DI registration for swarm storage components using
+ * Provides DI registration for swarm storage components using.
  * the existing DAL Factory and repository patterns.
  */
 
-import { DIContainer } from '../../../di/container/di-container.js';
-import { CORE_TOKENS, DATABASE_TOKENS, SWARM_TOKENS } from '../../../di/tokens/core-tokens.js';
+import { DIContainer } from '../di/container/di-container.js';
+import { CORE_TOKENS, DATABASE_TOKENS, SWARM_TOKENS } from '../di/tokens/core-tokens.js';
 import { type BackupConfig, SwarmBackupManager } from './backup-manager.js';
 import { type SwarmDatabaseConfig, SwarmDatabaseManager } from './swarm-database-manager.js';
 import { type MaintenanceConfig, SwarmMaintenanceManager } from './swarm-maintenance.js';
 
 /**
- * Default swarm storage configuration
+ * Default swarm storage configuration.
  */
 export const defaultSwarmConfig: SwarmDatabaseConfig = {
   central: {
@@ -26,7 +33,7 @@ export const defaultSwarmConfig: SwarmDatabaseConfig = {
 };
 
 /**
- * Default maintenance configuration
+ * Default maintenance configuration.
  */
 export const defaultMaintenanceConfig: MaintenanceConfig = {
   archiveAfterDays: 30,
@@ -36,7 +43,7 @@ export const defaultMaintenanceConfig: MaintenanceConfig = {
 };
 
 /**
- * Default backup configuration
+ * Default backup configuration.
  */
 export const defaultBackupConfig: BackupConfig = {
   dailyBackupHour: 2,
@@ -47,7 +54,7 @@ export const defaultBackupConfig: BackupConfig = {
 };
 
 /**
- * Register swarm storage providers with DI container
+ * Register swarm storage providers with DI container.
  *
  * @param container
  * @param customConfig
@@ -84,7 +91,7 @@ export function registerSwarmProviders(
     create: (container) =>
       new SwarmDatabaseManager(
         container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig,
-        container.resolve(DATABASE_TOKENS.DALFactory) as any,
+        container.resolve(DATABASE_TOKENS?.DALFactory) as any,
         container.resolve(CORE_TOKENS.Logger)
       ),
   });
@@ -94,7 +101,7 @@ export function registerSwarmProviders(
     type: 'singleton',
     create: (container) => {
       const config = container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig;
-      return new SwarmMaintenanceManager(config.basePath, {
+      return new SwarmMaintenanceManager(config?.basePath, {
         ...defaultMaintenanceConfig,
         ...customConfig?.maintenance,
       });
@@ -106,7 +113,7 @@ export function registerSwarmProviders(
     type: 'singleton',
     create: (container) => {
       const config = container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig;
-      return new SwarmBackupManager(config.basePath, {
+      return new SwarmBackupManager(config?.basePath, {
         ...defaultBackupConfig,
         ...customConfig?.backup,
       });
@@ -115,7 +122,7 @@ export function registerSwarmProviders(
 }
 
 /**
- * Initialize swarm storage system with DI
+ * Initialize swarm storage system with DI.
  *
  * @param container
  */
@@ -132,7 +139,7 @@ export async function initializeSwarmStorage(container: DIContainer): Promise<{
   const backupManager = container.resolve(SWARM_TOKENS.BackupManager) as SwarmBackupManager;
 
   // Initialize in order
-  await databaseManager.initialize();
+  await databaseManager?.initialize();
   await maintenanceManager.initialize();
   await backupManager.initialize();
 
@@ -144,7 +151,7 @@ export async function initializeSwarmStorage(container: DIContainer): Promise<{
 }
 
 /**
- * Utility function to create a pre-configured swarm DI container
+ * Utility function to create a pre-configured swarm DI container.
  *
  * @param customConfig
  */
@@ -174,7 +181,7 @@ export function createSwarmContainer(
   });
 
   // Register DAL Factory (would normally come from database domain)
-  container.register(DATABASE_TOKENS.DALFactory, {
+  container.register(DATABASE_TOKENS?.DALFactory, {
     type: 'singleton',
     create: (container) => {
       const { DALFactory } = require('../../../database/factory.js');

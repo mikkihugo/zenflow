@@ -19,6 +19,7 @@ import {
 } from '../data-service-adapter';
 import { DataServiceFactory } from '../data-service-factory';
 import { DataServiceHelper, DataServiceUtils } from '../data-service-helpers';
+import type { DocumentService } from '../services/document-service';
 
 // Mock external dependencies
 jest.mock('../../../web/web-data-service');
@@ -97,7 +98,7 @@ describe('DataServiceAdapter', () => {
       getProjectWithDocuments: jest.fn(),
     } as any;
 
-    MockedWebDataService.mockImplementation(() => mockWebDataService);
+    MockedWebDataService?.mockImplementation(() => mockWebDataService);
     MockedDocumentService.mockImplementation(() => mockDocumentService);
 
     adapter = new DataServiceAdapter(config);
@@ -130,7 +131,7 @@ describe('DataServiceAdapter', () => {
 
     it('should initialize only WebDataService when DocumentService is disabled', async () => {
       // Arrange
-      config.documentData!.enabled = false;
+      config?.documentData!.enabled = false;
       adapter = new DataServiceAdapter(config);
 
       // Act
@@ -190,15 +191,15 @@ describe('DataServiceAdapter', () => {
         resources: { cpu: '45%', memory: '67%', disk: '23%' },
         uptime: '120m',
       };
-      mockWebDataService.getSystemStatus.mockResolvedValue(mockStatus);
+      mockWebDataService?.getSystemStatus?.mockResolvedValue(mockStatus);
 
       // Act
       const response = await adapter.execute('system-status');
 
       // Assert - verify interaction and response
-      expect(mockWebDataService.getSystemStatus).toHaveBeenCalledTimes(1);
-      expect(response.success).toBe(true);
-      expect(response.data).toEqual(mockStatus);
+      expect(mockWebDataService?.getSystemStatus).toHaveBeenCalledTimes(1);
+      expect(response?.success).toBe(true);
+      expect(response?.data).toEqual(mockStatus);
     });
 
     it('should delegate swarm operations to WebDataService', async () => {
@@ -206,28 +207,28 @@ describe('DataServiceAdapter', () => {
       const mockSwarms = [
         { id: 'swarm-1', name: 'Test Swarm', status: 'active', agents: 4, tasks: 8, progress: 75 },
       ];
-      mockWebDataService.getSwarms.mockResolvedValue(mockSwarms);
+      mockWebDataService?.getSwarms?.mockResolvedValue(mockSwarms);
 
       // Act
       const response = await adapter.execute('swarms');
 
       // Assert
-      expect(mockWebDataService.getSwarms).toHaveBeenCalledTimes(1);
-      expect(response.success).toBe(true);
-      expect(response.data).toEqual(mockSwarms);
+      expect(mockWebDataService?.getSwarms).toHaveBeenCalledTimes(1);
+      expect(response?.success).toBe(true);
+      expect(response?.data).toEqual(mockSwarms);
     });
 
     it('should handle WebDataService errors gracefully', async () => {
       // Arrange
       const error = new Error('WebDataService connection failed');
-      mockWebDataService.getSystemStatus.mockRejectedValue(error);
+      mockWebDataService?.getSystemStatus?.mockRejectedValue(error);
 
       // Act
       const response = await adapter.execute('system-status');
 
       // Assert
-      expect(response.success).toBe(false);
-      expect(response.error?.message).toBe('WebDataService connection failed');
+      expect(response?.success).toBe(false);
+      expect(response?.error?.message).toBe('WebDataService connection failed');
     });
   });
 
@@ -249,8 +250,8 @@ describe('DataServiceAdapter', () => {
 
       // Assert
       expect(mockDocumentService.createDocument).toHaveBeenCalledWith(mockDocument, undefined);
-      expect(response.success).toBe(true);
-      expect(response.data).toEqual(createdDocument);
+      expect(response?.success).toBe(true);
+      expect(response?.data).toEqual(createdDocument);
     });
 
     it('should delegate document search to DocumentService', async () => {
@@ -273,8 +274,8 @@ describe('DataServiceAdapter', () => {
 
       // Assert
       expect(mockDocumentService.searchDocuments).toHaveBeenCalledWith(searchOptions);
-      expect(response.success).toBe(true);
-      expect(response.data).toEqual(mockResults);
+      expect(response?.success).toBe(true);
+      expect(response?.data).toEqual(mockResults);
     });
   });
 
@@ -287,8 +288,8 @@ describe('DataServiceAdapter', () => {
 
     it('should retry failed operations according to configuration', async () => {
       // Arrange
-      mockWebDataService.getSystemStatus
-        .mockRejectedValueOnce(new Error('Temporary failure'))
+      mockWebDataService?.getSystemStatus
+        ?.mockRejectedValueOnce(new Error('Temporary failure'))
         .mockRejectedValueOnce(new Error('Another failure'))
         .mockResolvedValue({ system: 'healthy', version: '1.0.0' } as any);
 
@@ -296,34 +297,34 @@ describe('DataServiceAdapter', () => {
       const response = await adapter.execute('system-status');
 
       // Assert - verify retry attempts
-      expect(mockWebDataService.getSystemStatus).toHaveBeenCalledTimes(3);
-      expect(response.success).toBe(true);
+      expect(mockWebDataService?.getSystemStatus).toHaveBeenCalledTimes(3);
+      expect(response?.success).toBe(true);
     });
 
     it('should not retry non-retryable operations', async () => {
       // Arrange
-      mockWebDataService.createSwarm.mockRejectedValue(new Error('Creation failed'));
+      mockWebDataService?.createSwarm?.mockRejectedValue(new Error('Creation failed'));
 
       // Act
       const response = await adapter.execute('create-swarm', { name: 'Test Swarm' });
 
       // Assert - no retries for non-retryable operations
-      expect(mockWebDataService.createSwarm).toHaveBeenCalledTimes(1);
-      expect(response.success).toBe(false);
+      expect(mockWebDataService?.createSwarm).toHaveBeenCalledTimes(1);
+      expect(response?.success).toBe(false);
     });
 
     it('should fail after max retry attempts', async () => {
       // Arrange
       const error = new Error('Persistent failure');
-      mockWebDataService.getSystemStatus.mockRejectedValue(error);
+      mockWebDataService?.getSystemStatus?.mockRejectedValue(error);
 
       // Act
       const response = await adapter.execute('system-status');
 
       // Assert
-      expect(mockWebDataService.getSystemStatus).toHaveBeenCalledTimes(3); // Initial + 2 retries
-      expect(response.success).toBe(false);
-      expect(response.error?.message).toBe('Persistent failure');
+      expect(mockWebDataService?.getSystemStatus).toHaveBeenCalledTimes(3); // Initial + 2 retries
+      expect(response?.success).toBe(false);
+      expect(response?.error?.message).toBe('Persistent failure');
     });
   });
 
@@ -331,7 +332,7 @@ describe('DataServiceAdapter', () => {
     it('should check dependencies during health checks', async () => {
       // Arrange
       mockDocumentService.initialize.mockResolvedValue();
-      mockWebDataService.getServiceStats.mockReturnValue({
+      mockWebDataService?.getServiceStats?.mockReturnValue({
         requestsServed: 100,
         averageResponseTime: 150,
         cacheHitRate: 0.85,
@@ -345,13 +346,13 @@ describe('DataServiceAdapter', () => {
 
       // Assert
       expect(isHealthy).toBe(true);
-      expect(mockWebDataService.getServiceStats).toHaveBeenCalled();
+      expect(mockWebDataService?.getServiceStats).toHaveBeenCalled();
     });
 
     it('should fail health check when dependencies are unhealthy', async () => {
       // Arrange
       mockDocumentService.initialize.mockResolvedValue();
-      mockWebDataService.getServiceStats.mockReturnValue({
+      mockWebDataService?.getServiceStats?.mockReturnValue({
         requestsServed: 100,
         averageResponseTime: 15000, // Exceeds threshold
         cacheHitRate: 0.85,
@@ -398,7 +399,7 @@ describe('DataServiceAdapter', () => {
       const invalidConfig = {
         ...config,
         documentData: {
-          ...config.documentData!,
+          ...config?.documentData!,
           databaseType: 'invalid-db' as any,
         },
       };
@@ -415,7 +416,7 @@ describe('DataServiceAdapter', () => {
       const invalidConfig = {
         ...config,
         performance: {
-          ...config.performance!,
+          ...config?.performance!,
           maxConcurrency: 0, // Invalid value
         },
       };
@@ -438,7 +439,7 @@ describe('DataServiceAdapter', () => {
     it('should cache successful operation results', async () => {
       // Arrange
       const mockStatus = { system: 'healthy', version: '1.0.0' };
-      mockWebDataService.getSystemStatus.mockResolvedValue(mockStatus as any);
+      mockWebDataService?.getSystemStatus?.mockResolvedValue(mockStatus as any);
 
       // Act - First call
       const response1 = await adapter.execute('system-status');
@@ -446,10 +447,10 @@ describe('DataServiceAdapter', () => {
       const response2 = await adapter.execute('system-status');
 
       // Assert
-      expect(mockWebDataService.getSystemStatus).toHaveBeenCalledTimes(1); // Only first call hits service
-      expect(response1.success).toBe(true);
-      expect(response2.success).toBe(true);
-      expect(response1.data).toEqual(response2.data);
+      expect(mockWebDataService?.getSystemStatus).toHaveBeenCalledTimes(1); // Only first call hits service
+      expect(response1?.success).toBe(true);
+      expect(response2?.success).toBe(true);
+      expect(response1?.data).toEqual(response2?.data);
     });
 
     it('should return cache statistics', async () => {
@@ -457,24 +458,24 @@ describe('DataServiceAdapter', () => {
       const response = await adapter.execute('cache-stats');
 
       // Assert
-      expect(response.success).toBe(true);
-      expect(response.data).toHaveProperty('size');
-      expect(response.data).toHaveProperty('maxSize');
-      expect(response.data).toHaveProperty('hitRate');
-      expect(response.data).toHaveProperty('memoryUsage');
+      expect(response?.success).toBe(true);
+      expect(response?.data).toHaveProperty('size');
+      expect(response?.data).toHaveProperty('maxSize');
+      expect(response?.data).toHaveProperty('hitRate');
+      expect(response?.data).toHaveProperty('memoryUsage');
     });
 
     it('should clear cache when requested', async () => {
       // Arrange - Add some data to cache first
-      mockWebDataService.getSystemStatus.mockResolvedValue({ system: 'healthy' } as any);
+      mockWebDataService?.getSystemStatus?.mockResolvedValue({ system: 'healthy' } as any);
       await adapter.execute('system-status');
 
       // Act
       const response = await adapter.execute('clear-cache');
 
       // Assert
-      expect(response.success).toBe(true);
-      expect(response.data.cleared).toBeGreaterThanOrEqual(0);
+      expect(response?.success).toBe(true);
+      expect(response?.data?.cleared).toBeGreaterThanOrEqual(0);
     });
   });
 
@@ -487,7 +488,7 @@ describe('DataServiceAdapter', () => {
 
     it('should collect operation metrics', async () => {
       // Arrange
-      mockWebDataService.getSystemStatus.mockResolvedValue({ system: 'healthy' } as any);
+      mockWebDataService?.getSystemStatus?.mockResolvedValue({ system: 'healthy' } as any);
 
       // Act - Perform some operations
       await adapter.execute('system-status');
@@ -505,7 +506,7 @@ describe('DataServiceAdapter', () => {
 
     it('should track error metrics', async () => {
       // Arrange
-      mockWebDataService.getSystemStatus.mockRejectedValue(new Error('Test error'));
+      mockWebDataService?.getSystemStatus?.mockRejectedValue(new Error('Test error'));
 
       // Act
       await adapter.execute('system-status');
@@ -519,7 +520,7 @@ describe('DataServiceAdapter', () => {
 
     it('should calculate custom metrics correctly', async () => {
       // Arrange
-      mockWebDataService.getSystemStatus.mockResolvedValue({ system: 'healthy' } as any);
+      mockWebDataService?.getSystemStatus?.mockResolvedValue({ system: 'healthy' } as any);
 
       // Act - Hit cache to test cache hit rate
       await adapter.execute('system-status'); // Cache miss
@@ -536,7 +537,7 @@ describe('DataServiceAdapter', () => {
   describe('Status and Health Reporting (Classical TDD)', () => {
     beforeEach(async () => {
       mockDocumentService.initialize.mockResolvedValue();
-      mockWebDataService.getServiceStats.mockReturnValue({
+      mockWebDataService?.getServiceStats?.mockReturnValue({
         requestsServed: 100,
         averageResponseTime: 150,
         cacheHitRate: 0.85,
@@ -602,7 +603,7 @@ describe('DataServiceAdapter', () => {
 
     it('should report limited capabilities when only web data is enabled', async () => {
       // Arrange
-      config.documentData!.enabled = false;
+      config?.documentData!.enabled = false;
       adapter = new DataServiceAdapter(config);
       await adapter.initialize();
 
@@ -766,16 +767,16 @@ describe('DataServiceHelper', () => {
     it('should get system status with metadata', async () => {
       // Arrange
       const mockStatus = { system: 'healthy', version: '1.0.0' };
-      mockWebDataService.getSystemStatus.mockResolvedValue(mockStatus as any);
+      mockWebDataService?.getSystemStatus?.mockResolvedValue(mockStatus as any);
 
       // Act
       const result = await helper.getSystemStatus();
 
       // Assert
-      expect(result.success).toBe(true);
-      expect(result.data).toEqual(mockStatus);
-      expect(result.metadata.operation).toBe('system-status');
-      expect(result.metadata.duration).toBeGreaterThanOrEqual(0);
+      expect(result?.success).toBe(true);
+      expect(result?.data).toEqual(mockStatus);
+      expect(result?.metadata?.operation).toBe('system-status');
+      expect(result?.metadata?.duration).toBeGreaterThanOrEqual(0);
     });
 
     it('should filter swarms correctly', async () => {
@@ -798,15 +799,15 @@ describe('DataServiceHelper', () => {
           progress: 100,
         },
       ];
-      mockWebDataService.getSwarms.mockResolvedValue(mockSwarms as any);
+      mockWebDataService?.getSwarms?.mockResolvedValue(mockSwarms as any);
 
       // Act
       const result = await helper.getSwarms({ status: 'active', minAgents: 4 });
 
       // Assert
-      expect(result.success).toBe(true);
-      expect(result.data).toHaveLength(1);
-      expect(result.data?.[0].id).toBe('swarm-1');
+      expect(result?.success).toBe(true);
+      expect(result?.data).toHaveLength(1);
+      expect(result?.data?.[0].id).toBe('swarm-1');
     });
 
     it('should validate swarm configuration correctly', async () => {
@@ -819,9 +820,9 @@ describe('DataServiceHelper', () => {
       const invalidResult = await helper.createSwarm(invalidConfig);
 
       // Assert
-      expect(validResult.success).toBe(true);
-      expect(invalidResult.success).toBe(false);
-      expect(invalidResult.error).toContain('Validation failed');
+      expect(validResult?.success).toBe(true);
+      expect(invalidResult?.success).toBe(false);
+      expect(invalidResult?.error).toContain('Validation failed');
     });
   });
 
@@ -835,11 +836,11 @@ describe('DataServiceHelper', () => {
       ];
 
       const pipeline = [
-        { type: 'filter' as const, config: { predicate: (item: any) => item.active } },
+        { type: 'filter' as const, config: { predicate: (item: any) => item?.active } },
         { type: 'sort' as const, config: { field: 'value', direction: 'desc' } },
         {
           type: 'map' as const,
-          config: { mapper: (item: any) => ({ ...item, doubled: item.value * 2 }) },
+          config: { mapper: (item: any) => ({ ...item, doubled: item?.value * 2 }) },
         },
       ];
 
@@ -848,10 +849,10 @@ describe('DataServiceHelper', () => {
 
       // Assert
       expect(result).toHaveLength(2);
-      expect(result[0].id).toBe(3); // Highest value after sort
-      expect(result[0].doubled).toBe(60);
-      expect(result[1].id).toBe(1);
-      expect(result[1].doubled).toBe(20);
+      expect(result?.[0]?.id).toBe(3); // Highest value after sort
+      expect(result?.[0]?.doubled).toBe(60);
+      expect(result?.[1]?.id).toBe(1);
+      expect(result?.[1]?.doubled).toBe(20);
     });
 
     it('should export data in different formats', () => {
@@ -886,8 +887,8 @@ describe('DataServiceUtils', () => {
       const params2 = { num: 123, key: 'value' }; // Different order, same content
 
       // Act
-      const key1 = DataServiceUtils.generateCacheKey(operation, params1);
-      const key2 = DataServiceUtils.generateCacheKey(operation, params2);
+      const key1 = DataServiceUtils?.generateCacheKey(operation, params1);
+      const key2 = DataServiceUtils?.generateCacheKey(operation, params2);
 
       // Assert
       expect(key1).toBe(key2); // Should be the same due to JSON.stringify normalization
@@ -900,8 +901,8 @@ describe('DataServiceUtils', () => {
       const largeData = { key: 'value'.repeat(1000) };
 
       // Act
-      const smallSize = DataServiceUtils.estimateDataSize(smallData);
-      const largeSize = DataServiceUtils.estimateDataSize(largeData);
+      const smallSize = DataServiceUtils?.estimateDataSize(smallData);
+      const largeSize = DataServiceUtils?.estimateDataSize(largeData);
 
       // Assert
       expect(smallSize).toBeGreaterThan(0);
@@ -920,7 +921,7 @@ describe('DataServiceUtils', () => {
       };
 
       // Act
-      const cloned = DataServiceUtils.deepClone(original);
+      const cloned = DataServiceUtils?.deepClone(original);
       cloned.level1.level2.value = 'modified';
 
       // Assert
@@ -934,19 +935,19 @@ describe('DataServiceUtils', () => {
       const source = { b: { c: 4, e: 5 }, f: 6 };
 
       // Act
-      const result = DataServiceUtils.deepMerge(target, source);
+      const result = DataServiceUtils?.deepMerge(target, source);
 
       // Assert
-      expect(result.a).toBe(1); // Preserved from target
-      expect(result.b.c).toBe(4); // Overridden by source
-      expect(result.b.d).toBe(3); // Preserved from target
-      expect(result.b.e).toBe(5); // Added from source
-      expect(result.f).toBe(6); // Added from source
+      expect(result?.a).toBe(1); // Preserved from target
+      expect(result?.b?.c).toBe(4); // Overridden by source
+      expect(result?.b?.d).toBe(3); // Preserved from target
+      expect(result?.b?.e).toBe(5); // Added from source
+      expect(result?.f).toBe(6); // Added from source
     });
 
     it('should create working rate limiter', () => {
       // Arrange
-      const rateLimiter = DataServiceUtils.createRateLimiter(3, 1000); // 3 requests per second
+      const rateLimiter = DataServiceUtils?.createRateLimiter(3, 1000); // 3 requests per second
 
       // Act & Assert
       expect(rateLimiter('key1')).toBe(true); // 1st request - allowed
@@ -972,15 +973,15 @@ describe('DataServiceUtils', () => {
       const invalidConfig = { name: 'test' }; // Missing 'type'
 
       // Act
-      const validResult = DataServiceUtils.validateConfiguration(validConfig, schema);
-      const invalidResult = DataServiceUtils.validateConfiguration(invalidConfig, schema);
+      const validResult = DataServiceUtils?.validateConfiguration(validConfig, schema);
+      const invalidResult = DataServiceUtils?.validateConfiguration(invalidConfig, schema);
 
       // Assert
-      expect(validResult.valid).toBe(true);
-      expect(validResult.errors).toHaveLength(0);
+      expect(validResult?.valid).toBe(true);
+      expect(validResult?.errors).toHaveLength(0);
 
-      expect(invalidResult.valid).toBe(false);
-      expect(invalidResult.errors).toContain('Required field missing: type');
+      expect(invalidResult?.valid).toBe(false);
+      expect(invalidResult?.errors).toContain('Required field missing: type');
     });
   });
 });

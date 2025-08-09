@@ -66,13 +66,13 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
       const result = (await batchExecuteTool.handler(params)) as MCPToolResult;
 
       // Verify MCP response structure
-      expect(result.success).toBe(true);
-      expect(result.content).toBeDefined();
-      expect(Array.isArray(result.content)).toBe(true);
-      expect(result.content.length).toBeGreaterThan(0);
+      expect(result?.success).toBe(true);
+      expect(result?.content).toBeDefined();
+      expect(Array.isArray(result?.content)).toBe(true);
+      expect(result?.content.length).toBeGreaterThan(0);
 
       // Check that response contains performance metrics
-      const responseText = result.content[0].text;
+      const responseText = result?.content?.[0]?.text;
       expect(responseText).toContain('Batch Execution Complete');
       expect(responseText).toContain('Speed Improvement:');
       expect(responseText).toContain('Token Reduction:');
@@ -114,9 +114,9 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
 
       const result = (await batchExecuteTool.handler(params)) as MCPToolResult;
 
-      expect(result.success).toBe(true);
+      expect(result?.success).toBe(true);
 
-      const responseText = result.content[0].text;
+      const responseText = result?.content?.[0]?.text;
       expect(responseText).toContain('3 successful');
       expect(responseText).toContain('0 failed');
     }, 8000);
@@ -139,7 +139,7 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
 
       // Even if operations fail, the MCP tool should return success with error details
       expect(result).toBeDefined();
-      expect(result.content).toBeDefined();
+      expect(result?.content).toBeDefined();
     }, 5000);
   });
 
@@ -168,9 +168,9 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
 
       const result = (await projectInitBatchTool.handler(params)) as MCPToolResult;
 
-      expect(result.success).toBe(true);
+      expect(result?.success).toBe(true);
 
-      const responseText = result.content[0].text;
+      const responseText = result?.content?.[0]?.text;
       expect(responseText).toContain('Project "claude-zen-test" Initialized Successfully!');
       expect(responseText).toContain('speed improvement');
       expect(responseText).toContain('token reduction');
@@ -190,9 +190,9 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
 
       const result = (await projectInitBatchTool.handler(params)) as MCPToolResult;
 
-      expect(result.success).toBe(true);
+      expect(result?.success).toBe(true);
 
-      const responseText = result.content[0].text;
+      const responseText = result?.content?.[0]?.text;
       expect(responseText).toContain('Project "minimal-test" Initialized Successfully!');
       expect(responseText).toContain('Agents spawned: researcher, coder, analyst'); // Default agents
       expect(responseText).toContain('hierarchical'); // Default topology
@@ -223,9 +223,9 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
         hours: 1,
       })) as MCPToolResult;
 
-      expect(result.success).toBe(true);
+      expect(result?.success).toBe(true);
 
-      const responseText = result.content[0].text;
+      const responseText = result?.content?.[0]?.text;
       expect(responseText).toContain('Batch Performance Summary');
       expect(responseText).toContain('Total Executions:');
       expect(responseText).toContain('Average Speed Improvement:');
@@ -240,9 +240,9 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
         hours: 24,
       })) as MCPToolResult;
 
-      expect(result.success).toBe(true);
+      expect(result?.success).toBe(true);
 
-      const responseText = result.content[0].text;
+      const responseText = result?.content?.[0]?.text;
       expect(responseText).toContain('Performance Trends - throughput');
       expect(responseText).toContain('Trend Direction:');
       expect(responseText).toContain('Change Rate:');
@@ -253,9 +253,9 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
         action: 'clear',
       })) as MCPToolResult;
 
-      expect(result.success).toBe(true);
+      expect(result?.success).toBe(true);
 
-      const responseText = result.content[0].text;
+      const responseText = result?.content?.[0]?.text;
       expect(responseText).toContain('Performance History Cleared');
     });
 
@@ -264,9 +264,9 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
         action: 'unknown_action' as any,
       })) as MCPToolResult;
 
-      expect(result.success).toBe(false);
+      expect(result?.success).toBe(false);
 
-      const responseText = result.content[0].text;
+      const responseText = result?.content?.[0]?.text;
       expect(responseText).toContain('Unknown action');
     });
   });
@@ -291,16 +291,16 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
 
       const result = (await batchExecuteTool.handler(batchParams)) as MCPToolResult;
 
-      expect(result.success).toBe(true);
+      expect(result?.success).toBe(true);
 
-      const responseText = result.content[0].text;
+      const responseText = result?.content?.[0]?.text;
 
       // Extract speed improvement from response
-      const speedMatch = responseText.match(/Speed Improvement:\s*\*\*([\d.]+)x\*\*/);
+      const speedMatch = responseText?.match(/Speed Improvement:\s*\*\*([\d.]+)x\*\*/);
       expect(speedMatch).toBeTruthy();
 
       if (speedMatch) {
-        const speedImprovement = parseFloat(speedMatch[1]);
+        const speedImprovement = parseFloat(speedMatch?.[1]);
         // Should show significant improvement for batch operations
         expect(speedImprovement).toBeGreaterThan(1.5); // At least 1.5x improvement
       }
@@ -349,17 +349,17 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
 
       const result = (await batchExecuteTool.handler(params)) as MCPToolResult;
 
-      expect(result.success).toBe(true);
+      expect(result?.success).toBe(true);
 
-      const responseText = result.content[0].text;
+      const responseText = result?.content?.[0]?.text;
 
       // Should report token reduction
       expect(responseText).toMatch(/Token Reduction:\s*\*\*[\d.]+%\*\*/);
 
       // Extract token reduction value
-      const tokenMatch = responseText.match(/Token Reduction:\s*\*\*([\d.]+)%\*\*/);
+      const tokenMatch = responseText?.match(/Token Reduction:\s*\*\*([\d.]+)%\*\*/);
       if (tokenMatch) {
-        const tokenReduction = parseFloat(tokenMatch[1]);
+        const tokenReduction = parseFloat(tokenMatch?.[1]);
         // Should show some token reduction benefit
         expect(tokenReduction).toBeGreaterThanOrEqual(0);
       }

@@ -1,4 +1,11 @@
 /**
+ * @file defaults implementation
+ */
+
+
+import type { SystemConfiguration } from './types.js';
+
+/**
  * Default system configuration.
  */
 export const DEFAULT_CONFIG: SystemConfiguration = {
@@ -111,12 +118,14 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
   // External services and API keys
   services: {
     anthropic: {
-      apiKey: process.env['ANTHROPIC_API_KEY'] || (() => {
-        if (process.env['NODE_ENV'] === 'production') {
-          throw new Error('ANTHROPIC_API_KEY environment variable is required in production');
-        }
-        return null; // Allow null in development
-      })(),
+      apiKey:
+        process.env['ANTHROPIC_API_KEY'] ||
+        (() => {
+          if (process.env['NODE_ENV'] === 'production') {
+            throw new Error('ANTHROPIC_API_KEY environment variable is required in production');
+          }
+          return null; // Allow null in development
+        })(),
       baseUrl: process.env['ANTHROPIC_BASE_URL'] || 'https://api.anthropic.com',
       timeout: 30000,
       maxRetries: 3,
@@ -259,14 +268,14 @@ export const ENV_MAPPINGS = {
  * @example
  */
 export interface ConfigValidationSchema {
-  required: string[];           // Required environment variables
-  optional: string[];          // Optional with defaults  
+  required: string[]; // Required environment variables
+  optional: string[]; // Optional with defaults
   validation: {
     [key: string]: (value: any) => boolean;
   };
   production: {
-    enforced: string[];        // Must be set in production
-    forbidden: string[];       // Cannot be set in production
+    enforced: string[]; // Must be set in production
+    forbidden: string[]; // Cannot be set in production
     fallbacks: { [key: string]: any }; // Safe fallbacks
   };
   portRanges: {
@@ -295,7 +304,7 @@ export const VALIDATION_RULES = {
     fallback: 3456, // Safe fallback different from MCP
   },
   'interfaces.mcp.http.port': {
-    type: 'number', 
+    type: 'number',
     min: 1,
     max: 65535,
     productionMin: 3000,
@@ -359,18 +368,12 @@ export const VALIDATION_RULES = {
  * Production environment validation schema.
  */
 export const PRODUCTION_VALIDATION_SCHEMA: ConfigValidationSchema = {
-  required: [
-    'NODE_ENV',
-  ],
-  optional: [
-    'CLAUDE_WEB_PORT',
-    'CLAUDE_MCP_PORT',
-    'CLAUDE_LOG_LEVEL',
-    'CLAUDE_MAX_AGENTS',
-  ],
+  required: ['NODE_ENV'],
+  optional: ['CLAUDE_WEB_PORT', 'CLAUDE_MCP_PORT', 'CLAUDE_LOG_LEVEL', 'CLAUDE_MAX_AGENTS'],
   validation: {
     NODE_ENV: (value: string) => ['production', 'development', 'test'].includes(value),
-    ANTHROPIC_API_KEY: (value: string) => process.env['NODE_ENV'] === 'production' ? !!value && value.length > 10 : true,
+    ANTHROPIC_API_KEY: (value: string) =>
+      process.env['NODE_ENV'] === 'production' ? !!value && value.length > 10 : true,
     CLAUDE_WEB_PORT: (value: string) => {
       const port = parseInt(value, 10);
       return !isNaN(port) && port >= 3000 && port <= 65535;
@@ -381,11 +384,7 @@ export const PRODUCTION_VALIDATION_SCHEMA: ConfigValidationSchema = {
     },
   },
   production: {
-    enforced: [
-      'core.security.enableSandbox',
-      'core.logger.level',
-      'environment.strictValidation',
-    ],
+    enforced: ['core.security.enableSandbox', 'core.logger.level', 'environment.strictValidation'],
     forbidden: [
       'core.security.allowShellAccess',
       'environment.allowUnsafeOperations',
@@ -413,11 +412,11 @@ export const PRODUCTION_VALIDATION_SCHEMA: ConfigValidationSchema = {
  * Port allocation strategy to avoid conflicts.
  */
 export const DEFAULT_PORT_ALLOCATION = {
-  'interfaces.mcp.http.port': 3000,     // Primary MCP server
-  'interfaces.web.port': 3456,          // Web dashboard  
-  'monitoring.dashboard.port': 3457,    // Monitoring dashboard
-  'development.port': 3001,             // Development server if needed
-  'backup.port': 3002,                  // Backup/failover port
+  'interfaces.mcp.http.port': 3000, // Primary MCP server
+  'interfaces.web.port': 3456, // Web dashboard
+  'monitoring.dashboard.port': 3457, // Monitoring dashboard
+  'development.port': 3001, // Development server if needed
+  'backup.port': 3002, // Backup/failover port
 } as const;
 
 /**

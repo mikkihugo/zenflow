@@ -1,7 +1,13 @@
-import { getLogger } from "../../../../config/logging-config";
-const logger = getLogger("coordination-swarm-core-security-security-tests");
 /**
- * Security Tests for Issue #115 Command Injection Vulnerabilities
+ * @file Test suite for security-tests
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-security-security-tests');
+/**
+ * Security Tests for Issue #115 Command Injection Vulnerabilities.
  * Comprehensive test suite to validate security fixes.
  */
 

@@ -1,10 +1,17 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("neural-wasm-wasm-neural-accelerator");
 /**
- * WASM Neural Accelerator Implementation
+ * @file Neural network: wasm-neural-accelerator
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('neural-wasm-wasm-neural-accelerator');
+
+/**
+ * WASM Neural Accelerator Implementation.
  *
  * High-performance WebAssembly-based neural network acceleration
- * with SIMD support and optimized mathematical operations
+ * with SIMD support and optimized mathematical operations.
  */
 
 import type {
@@ -22,9 +29,9 @@ import type {
 } from '../types/wasm-types.js';
 
 /**
- * WASM-powered neural network accelerator
+ * WASM-powered neural network accelerator.
  *
- * Provides high-performance neural operations through WebAssembly
+ * Provides high-performance neural operations through WebAssembly.
  */
 export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   private config: WASMNeuralConfig;
@@ -57,7 +64,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Initialize WASM module and neural accelerator
+   * Initialize WASM module and neural accelerator.
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) {
@@ -92,7 +99,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Create and configure a neural network model
+   * Create and configure a neural network model.
    */
   async createModel(modelId: string, definition: WASMModelDefinition): Promise<void> {
     await this.ensureInitialized();
@@ -128,7 +135,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Train a neural network model with provided data
+   * Train a neural network model with provided data.
    */
   async trainModel(
     modelId: string,
@@ -195,8 +202,8 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
         (this.metrics.averageExecutionTime * (this.metrics.totalOperations - 1) + executionTime) /
         this.metrics.totalOperations;
 
-      this.metrics.throughput = trainingData.inputs.length / (executionTime / 1000);
-      this.metrics.memoryUsage = this.estimateMemoryUsage(model, trainingData.inputs.length);
+      this.metrics.throughput = trainingData?.inputs.length / (executionTime / 1000);
+      this.metrics.memoryUsage = this.estimateMemoryUsage(model, trainingData?.inputs.length);
 
       return { ...this.metrics };
     } catch (error) {
@@ -205,7 +212,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Run prediction with a trained model
+   * Run prediction with a trained model.
    */
   async predict(modelId: string, _input: WASMPredictionInput): Promise<WASMPredictionOutput> {
     await this.ensureInitialized();
@@ -267,7 +274,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Run performance benchmarks
+   * Run performance benchmarks.
    */
   async benchmark(
     operations: Array<'create' | 'train' | 'predict'> = ['train', 'predict']
@@ -331,7 +338,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
       return {
         // Base BenchmarkResult properties
         operationsPerSecond: this.metrics.throughput,
-        averageLatency: results.predict || results.train || 0,
+        averageLatency: results?.predict || results?.train || 0,
         memoryBandwidth: this.calculateMemoryEfficiency() * 1000,
         simdUtilization: this.metrics.simdSupport ? 0.85 : 0,
         threadEfficiency: this.metrics.threadUtilization || 0.75,
@@ -349,14 +356,14 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Get current performance metrics
+   * Get current performance metrics.
    */
   getMetrics(): WASMPerformanceMetrics {
     return { ...this.metrics };
   }
 
   /**
-   * Get WASM capabilities and features
+   * Get WASM capabilities and features.
    */
   getCapabilities(): {
     simdSupport: boolean;
@@ -381,7 +388,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Optimize model for better performance
+   * Optimize model for better performance.
    */
   async optimizeModel(
     modelId: string,
@@ -420,7 +427,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Clean up resources
+   * Clean up resources.
    */
   async dispose(): Promise<void> {
     if (this.wasmInstance) {
@@ -491,7 +498,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
     };
 
     const result = await this.predict(networkId, wasmInput);
-    return Array.from(result.predictions);
+    return Array.from(result?.predictions);
   }
 
   freeNetwork(networkId: string): void {
@@ -512,7 +519,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Type-safe WASM module loading with proper ArrayBuffer handling
+   * Type-safe WASM module loading with proper ArrayBuffer handling.
    */
   private async loadWasmBinary(): Promise<{ buffer: ArrayBuffer } | null> {
     // xxx NEEDS_HUMAN: WASM module typing requires systems expertise
@@ -521,7 +528,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Type-safe WASM module instantiation with proper exports access
+   * Type-safe WASM module instantiation with proper exports access.
    */
   private async instantiateWasm(wasmModule: any): Promise<WASMNeuralInstance | null> {
     // xxx NEEDS_HUMAN: WASM module typing requires systems expertise
@@ -561,7 +568,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Type-safe WASM buffer initialization
+   * Type-safe WASM buffer initialization.
    */
   private async initializeWasmWithBuffer(buffer: ArrayBuffer): Promise<void> {
     // xxx NEEDS_HUMAN: WASM module typing requires systems expertise
@@ -575,7 +582,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Convert input data to proper ArrayBuffer format for WASM
+   * Convert input data to proper ArrayBuffer format for WASM.
    */
   private ensureArrayBuffer(data: any): ArrayBuffer | null {
     if (!data) return null;
@@ -584,8 +591,8 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
       return data;
     }
 
-    if (data.buffer && data.buffer instanceof ArrayBuffer) {
-      return data.buffer;
+    if (data?.buffer && data?.buffer instanceof ArrayBuffer) {
+      return data?.buffer;
     }
 
     if (Array.isArray(data)) {
@@ -596,7 +603,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   }
 
   /**
-   * Safe WASM function call with bracket notation and type guards
+   * Safe WASM function call with bracket notation and type guards.
    */
   private safeWasmCall(functionName: string, ...args: any[]): any {
     if (!this.wasmInstance || !this.wasmInstance.exports) {

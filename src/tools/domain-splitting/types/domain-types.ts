@@ -1,6 +1,11 @@
 /**
- * Domain splitting type definitions
+ * Domain splitting type definitions.
  */
+/**
+ * @file TypeScript type definitions
+ */
+
+
 
 export interface DomainAnalysis {
   domainPath: string;

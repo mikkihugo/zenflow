@@ -1,7 +1,12 @@
 /**
- * Neural Coordination Protocol
- * Protocol for coordinating neural networks across distributed agents
+ * Neural Coordination Protocol.
+ * Protocol for coordinating neural networks across distributed agents.
  */
+/**
+ * @file Neural network: neural-coordination-protocol
+ */
+
+
 
 export class NeuralCoordinationProtocol {
   public nodes: Map<string, any>;
@@ -27,7 +32,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Register a neural node
+   * Register a neural node.
    *
    * @param nodeId
    * @param nodeInfo
@@ -42,7 +47,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Send coordination message
+   * Send coordination message.
    *
    * @param fromNode
    * @param toNode
@@ -77,7 +82,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Synchronize neural states
+   * Synchronize neural states.
    *
    * @param nodeId
    * @param neuralState
@@ -110,23 +115,23 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Get protocol metrics
+   * Get protocol metrics.
    */
   getMetrics() {
     const nodes = Array.from(this.nodes.values());
     return {
       totalNodes: nodes.length,
-      activeNodes: nodes.filter((n) => n.status === 'active').length,
+      activeNodes: nodes?.filter((n) => n.status === 'active').length,
       totalMessages: this.messages.length,
       avgMessagesPerNode:
-        nodes.length > 0 ? nodes.reduce((sum, n) => sum + n.messageCount, 0) / nodes.length : 0,
+        nodes.length > 0 ? nodes?.reduce((sum, n) => sum + n.messageCount, 0) / nodes.length : 0,
       lastActivity:
-        this.messages.length > 0 ? this.messages[this.messages.length - 1].timestamp : null,
+        this.messages.length > 0 ? this.messages[this.messages.length - 1]?.timestamp : null,
     };
   }
 
   /**
-   * Get recent messages
+   * Get recent messages.
    *
    * @param limit
    */
@@ -137,7 +142,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Register an agent with the coordination protocol
+   * Register an agent with the coordination protocol.
    *
    * @param agentId
    * @param agent
@@ -160,7 +165,7 @@ export class NeuralCoordinationProtocol {
         await this.sendMessage(agentId, otherId, 'register', {
           type: 'agent_registration',
           agentId,
-          capabilities: nodeInfo.capabilities,
+          capabilities: nodeInfo?.capabilities,
           timestamp: new Date(),
         });
       }
@@ -170,7 +175,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Initialize a coordination session
+   * Initialize a coordination session.
    *
    * @param session
    */
@@ -206,7 +211,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Coordinate agents in a session
+   * Coordinate agents in a session.
    *
    * @param session
    */
@@ -231,7 +236,7 @@ export class NeuralCoordinationProtocol {
           timestamp: new Date(),
         };
 
-        coordinationResults.set(agentId, coordination);
+        coordinationResults?.set(agentId, coordination);
       }
     }
 
@@ -245,7 +250,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Get coordination results for a session
+   * Get coordination results for a session.
    *
    * @param sessionId
    */
@@ -254,7 +259,7 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Get coordination statistics
+   * Get coordination statistics.
    */
   getStatistics() {
     return {
@@ -283,7 +288,7 @@ export class NeuralCoordinationProtocol {
     const nodes = Array.from(this.nodes.values());
     if (nodes.length === 0) return 0;
 
-    const total = nodes.reduce((sum, node) => sum + (node.messageCount || 0), 0);
+    const total = nodes?.reduce((sum, node) => sum + (node?.messageCount || 0), 0);
     return total / nodes.length;
   }
 }

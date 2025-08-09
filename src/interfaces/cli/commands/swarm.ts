@@ -9,7 +9,7 @@ import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { performance } from 'node:perf_hooks';
 import meow from 'meow';
-import { createLogger } from '../../../core/logger';
+import { createLogger } from '../core/logger';
 
 const logger = createLogger({ prefix: 'SwarmCommand' });
 
@@ -84,7 +84,7 @@ Examples
 );
 
 /**
- * Call MCP tool via stdio protocol
+ * Call MCP tool via stdio protocol.
  *
  * @param toolName
  * @param params
@@ -131,15 +131,15 @@ async function callMcpTool(
         if (line.trim() && line.includes('"jsonrpc"')) {
           try {
             const response = JSON.parse(line.trim());
-            if (response.id === request.id && !isResolved) {
+            if (response?.id === request.id && !isResolved) {
               isResolved = true;
               clearTimeout(timeout);
               mcpProcess.kill();
 
-              if (response.error) {
-                resolve({ success: false, error: response.error.message });
+              if (response?.error) {
+                resolve({ success: false, error: response?.error?.message });
               } else {
-                resolve({ success: true, data: response.result });
+                resolve({ success: true, data: response?.result });
               }
               return;
             }
@@ -189,7 +189,7 @@ async function callMcpTool(
 }
 
 /**
- * Format output based on user preference
+ * Format output based on user preference.
  *
  * @param data
  * @param format
@@ -213,7 +213,7 @@ function _formatOutput(data: any, format: string): string {
 }
 
 /**
- * Execute swarm command
+ * Execute swarm command.
  */
 export async function executeSwarmCommand(): Promise<void> {
   const startTime = performance.now();
@@ -238,8 +238,8 @@ export async function executeSwarmCommand(): Promise<void> {
 
       case 'init':
         result = await callMcpTool('swarm_init', {
-          topology: options.topology || 'auto',
-          maxAgents: options.agents || 4,
+          topology: options?.topology || 'auto',
+          maxAgents: options?.agents || 4,
         });
         break;
 
@@ -255,8 +255,8 @@ export async function executeSwarmCommand(): Promise<void> {
         const swarmName = input[1] || 'New Swarm';
         result = await callMcpTool('swarm_init', {
           name: swarmName,
-          topology: options.topology || 'auto',
-          maxAgents: options.agents || 4,
+          topology: options?.topology || 'auto',
+          maxAgents: options?.agents || 4,
         });
         break;
       }
@@ -278,16 +278,16 @@ export async function executeSwarmCommand(): Promise<void> {
     const endTime = performance.now();
     const duration = endTime - startTime;
 
-    if (result.success) {
-      if (result.data) {
+    if (result?.success) {
+      if (result?.data) {
       }
 
-      if (options.verbose) {
+      if (options?.verbose) {
       }
     } else {
-      logger.error(`❌ Swarm ${command} failed: ${result.error}`);
+      logger.error(`❌ Swarm ${command} failed: ${result?.error}`);
 
-      if (options.verbose && result.error) {
+      if (options?.verbose && result?.error) {
         logger.error('');
         logger.error('Debug information:');
         logger.error(`Command: ${command}`);
@@ -304,7 +304,7 @@ export async function executeSwarmCommand(): Promise<void> {
     logger.error('Swarm command execution failed:', error);
     logger.error(`❌ Swarm ${command} failed: ${error.message}`);
 
-    if (options.verbose) {
+    if (options?.verbose) {
       logger.error('');
       logger.error('Debug information:');
       logger.error(`Duration: ${duration.toFixed(2)}ms`);
@@ -316,7 +316,7 @@ export async function executeSwarmCommand(): Promise<void> {
 }
 
 /**
- * Get MCP tool name for a command
+ * Get MCP tool name for a command.
  *
  * @param command
  */

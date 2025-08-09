@@ -1,4 +1,5 @@
 /**
+/// <reference types="./global-types" />
  * Vitest Global Setup
  *
  * This file sets up the global test environment for Vitest tests.
@@ -25,8 +26,8 @@ expect.extend({
     }
   },
 
-  toHaveBeenCalledWithObjectContaining(received: any, expected: any) {
-    const pass = received.mock.calls.some((call: any[]) =>
+  toHaveBeenCalledWithObjectContaining(received: jest.Mock, expected: unknown) {
+    const pass = received.mock.calls.some((call: unknown[]) =>
       call.some(
         (arg) =>
           typeof arg === 'object' &&

@@ -1,9 +1,14 @@
 /**
- * Database & Memory Performance Optimizer
- * Optimizes query performance, connection pooling, caching, and data compression
+ * Database & Memory Performance Optimizer.
+ * Optimizes query performance, connection pooling, caching, and data compression.
+ */
+/**
+ * @file data-optimizer implementation
  */
 
-import { createLogger } from '../../core/logger';
+
+
+import { createLogger } from '../core/logger';
 import type {
   CacheLayer,
   CacheOptimization,
@@ -64,7 +69,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Optimize database query performance
+   * Optimize database query performance.
    *
    * @param queries
    */
@@ -125,7 +130,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Implement connection pooling for database efficiency
+   * Implement connection pooling for database efficiency.
    *
    * @param connections
    */
@@ -177,7 +182,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Add intelligent caching layer
+   * Add intelligent caching layer.
    *
    * @param cacheLayer
    */
@@ -235,7 +240,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Compress data storage for space efficiency
+   * Compress data storage for space efficiency.
    *
    * @param storage
    */
@@ -283,7 +288,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Analyze query patterns to identify optimization opportunities
+   * Analyze query patterns to identify optimization opportunities.
    *
    * @param queries
    */
@@ -321,7 +326,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Optimize database indexes based on query patterns
+   * Optimize database indexes based on query patterns.
    *
    * @param queries
    */
@@ -366,7 +371,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Optimize query execution plans
+   * Optimize query execution plans.
    *
    * @param queries
    */
@@ -394,7 +399,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Implement query result caching
+   * Implement query result caching.
    *
    * @param queries
    */
@@ -415,7 +420,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Calculate optimal connection pool size
+   * Calculate optimal connection pool size.
    *
    * @param analysis
    */
@@ -440,7 +445,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Calculate optimal idle timeout based on connection patterns
+   * Calculate optimal idle timeout based on connection patterns.
    *
    * @param analysis
    */
@@ -457,14 +462,14 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Select compression algorithm based on data characteristics
+   * Select compression algorithm based on data characteristics.
    *
    * @param dataAnalysis
    */
   private selectCompressionAlgorithm(dataAnalysis: any): string {
-    const dataType = dataAnalysis.predominantType || 'mixed';
-    const compressionSpeed = dataAnalysis.compressionSpeedRequirement || 'balanced';
-    const dataSize = dataAnalysis.averageDataSize || 1024;
+    const dataType = dataAnalysis?.predominantType || 'mixed';
+    const compressionSpeed = dataAnalysis?.compressionSpeedRequirement || 'balanced';
+    const dataSize = dataAnalysis?.averageDataSize || 1024;
 
     // Select algorithm based on requirements
     if (compressionSpeed === 'fast' || dataSize < 1024) {
@@ -479,7 +484,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Select cache invalidation strategy
+   * Select cache invalidation strategy.
    *
    * @param accessPatterns
    */
@@ -500,7 +505,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Measure query performance
+   * Measure query performance.
    *
    * @param queries
    */
@@ -516,7 +521,7 @@ export class DataPerformanceOptimizer implements DataOptimizer {
   }
 
   /**
-   * Helper methods with mock implementations
+   * Helper methods with mock implementations.
    *
    * @param sql
    */

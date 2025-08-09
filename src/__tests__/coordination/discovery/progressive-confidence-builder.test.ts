@@ -102,10 +102,10 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       const result = await builder.buildConfidence(context);
 
-      expect(result.domains.size).toBe(1);
-      expect(result.domains.has('auth')).toBe(true);
-      expect(result.confidence.overall).toBeGreaterThan(0);
-      expect(result.learningHistory.length).toBeGreaterThan(0);
+      expect(result?.domains.size).toBe(1);
+      expect(result?.domains?.has('auth')).toBe(true);
+      expect(result?.confidence?.overall).toBeGreaterThan(0);
+      expect(result?.learningHistory.length).toBeGreaterThan(0);
     });
 
     it('should emit progress events during iterations', async () => {
@@ -190,7 +190,7 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       // Should still return a result despite error
       expect(result).toBeDefined();
-      expect(result.confidence.overall).toBeLessThan(0.8); // Confidence reduced due to error
+      expect(result?.confidence?.overall).toBeLessThan(0.8); // Confidence reduced due to error
     });
   });
 
@@ -224,7 +224,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       expect(askedQuestions.length).toBeGreaterThan(0);
       expect(askedQuestions[0]).toHaveProperty('type');
       expect(askedQuestions[0]).toHaveProperty('question');
-      expect(askedQuestions[0].question).toContain('unclear-domain');
+      expect(askedQuestions[0]?.question).toContain('unclear-domain');
     });
 
     it('should update confidence based on validation responses', async () => {
@@ -252,7 +252,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       const result = await builder.buildConfidence(context);
 
       // Check that validations were recorded
-      const domain = result.domains.get('test-domain');
+      const domain = result?.domains?.get('test-domain');
       expect(domain?.validations.length).toBeGreaterThan(0);
     });
   });
@@ -322,7 +322,7 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       const result = await builder.buildConfidence(context);
 
-      const securityDomain = result.domains.get('security');
+      const securityDomain = result?.domains?.get('security');
       expect(securityDomain?.research.length).toBeGreaterThan(0);
       expect(securityDomain?.research[0].insights.length).toBeGreaterThan(0);
     });
@@ -349,15 +349,15 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       const result = await builder.buildConfidence(context);
 
-      expect(result.confidence).toHaveProperty('overall');
-      expect(result.confidence).toHaveProperty('documentCoverage');
-      expect(result.confidence).toHaveProperty('humanValidations');
-      expect(result.confidence).toHaveProperty('researchDepth');
-      expect(result.confidence).toHaveProperty('domainClarity');
-      expect(result.confidence).toHaveProperty('consistency');
+      expect(result?.confidence).toHaveProperty('overall');
+      expect(result?.confidence).toHaveProperty('documentCoverage');
+      expect(result?.confidence).toHaveProperty('humanValidations');
+      expect(result?.confidence).toHaveProperty('researchDepth');
+      expect(result?.confidence).toHaveProperty('domainClarity');
+      expect(result?.confidence).toHaveProperty('consistency');
 
       // All metrics should be between 0 and 1
-      Object.values(result.confidence).forEach((metric) => {
+      Object.values(result?.confidence).forEach((metric) => {
         expect(metric).toBeGreaterThanOrEqual(0);
         expect(metric).toBeLessThanOrEqual(1);
       });
@@ -399,8 +399,8 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       // Check that confidence improved over iterations
       if (progressEvents.length >= 2) {
-        expect(progressEvents[progressEvents.length - 1].confidence).toBeGreaterThan(
-          progressEvents[0].confidence
+        expect(progressEvents[progressEvents.length - 1]?.confidence).toBeGreaterThan(
+          progressEvents[0]?.confidence
         );
       }
     });
@@ -435,11 +435,11 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       const result = await builder.buildConfidence(context);
 
-      expect(result.relationships.length).toBeGreaterThan(0);
-      expect(result.relationships[0]).toHaveProperty('sourceDomain');
-      expect(result.relationships[0]).toHaveProperty('targetDomain');
-      expect(result.relationships[0]).toHaveProperty('type');
-      expect(result.relationships[0].evidence).toContain('api-client');
+      expect(result?.relationships.length).toBeGreaterThan(0);
+      expect(result?.relationships?.[0]).toHaveProperty('sourceDomain');
+      expect(result?.relationships?.[0]).toHaveProperty('targetDomain');
+      expect(result?.relationships?.[0]).toHaveProperty('type');
+      expect(result?.relationships?.[0]?.evidence).toContain('api-client');
     });
   });
 
@@ -544,7 +544,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       const result = await builder.buildConfidence(context);
 
       // Check that validations include new metadata
-      const domain = result.domains.get('audit-test');
+      const domain = result?.domains?.get('audit-test');
       expect(domain?.validations.length).toBeGreaterThan(0);
 
       const validation = domain?.validations[0];
@@ -632,7 +632,7 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       // Should have asked additional questions for under-validated domains
       expect(additionalQuestions.length).toBeGreaterThan(0);
-      expect(additionalQuestions[0].priority).toBe('high');
+      expect(additionalQuestions[0]?.priority).toBe('high');
     });
   });
 
@@ -702,7 +702,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       await builder.buildConfidence(context);
 
       expect(finalQuestions.length).toBe(1);
-      expect(finalQuestions[0].question).toContain('Approve and proceed');
+      expect(finalQuestions[0]?.question).toContain('Approve and proceed');
     });
 
     it('should allow continuing iterations if requested', async () => {

@@ -113,9 +113,9 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
       const response = await bridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(true);
-      expect(response.data.results).toHaveLength(1);
-      expect(response.metadata.source).toBe('hive-fact');
+      expect(response?.success).toBe(true);
+      expect(response?.data?.results).toHaveLength(1);
+      expect(response?.metadata?.source).toBe('hive-fact');
       expect(mockHiveFACT.searchFacts).toHaveBeenCalledWith({
         query: 'authentication patterns',
         domains: ['security'],
@@ -138,7 +138,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
       const response = await bridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(true);
+      expect(response?.success).toBe(true);
       expect(mockHiveFACT.searchFacts).toHaveBeenCalledWith({
         query: 'general patterns',
         domains: undefined,
@@ -161,8 +161,8 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
       const response = await bridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(false);
-      expect(response.error).toBe('Search failed');
+      expect(response?.success).toBe(false);
+      expect(response?.error).toBe('Search failed');
     });
 
     test('should enhance results with swarm context', async () => {
@@ -192,11 +192,11 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
       const response = await bridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(true);
-      expect(response.data.results[0]).toHaveProperty('swarmContext');
-      expect(response.data.results[0].swarmContext).toHaveProperty('relevanceScore');
-      expect(response.data.results[0].swarmContext).toHaveProperty('usageHistory');
-      expect(response.data.results[0].swarmContext.usageHistory).toBe('previously-used');
+      expect(response?.success).toBe(true);
+      expect(response?.data?.results?.[0]).toHaveProperty('swarmContext');
+      expect(response?.data?.results?.[0]?.swarmContext).toHaveProperty('relevanceScore');
+      expect(response?.data?.results?.[0]?.swarmContext).toHaveProperty('usageHistory');
+      expect(response?.data?.results?.[0]?.swarmContext?.usageHistory).toBe('previously-used');
     });
   });
 
@@ -229,9 +229,9 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
       const response = await bridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(true);
-      expect(response.data.status).toBe('queued-for-processing');
-      expect(response.metadata.source).toBe('swarm-contribution');
+      expect(response?.success).toBe(true);
+      expect(response?.data?.status).toBe('queued-for-processing');
+      expect(response?.metadata?.source).toBe('swarm-contribution');
       expect(mockMemoryStore.store).toHaveBeenCalledWith(
         expect.stringContaining('hive-bridge/contributions/swarm-1/'),
         'contribution',
@@ -251,8 +251,8 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
       const response = await bridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(false);
-      expect(response.error).toBe('Knowledge contribution data is required');
+      expect(response?.success).toBe(false);
+      expect(response?.error).toBe('Knowledge contribution data is required');
     });
   });
 
@@ -274,9 +274,9 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
       const response = await bridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(true);
-      expect(response.data.status).toBe('update-queued');
-      expect(response.data.factId).toBe('fact-1');
+      expect(response?.success).toBe(true);
+      expect(response?.data?.status).toBe('update-queued');
+      expect(response?.data?.factId).toBe('fact-1');
     });
 
     test('should reject update without fact ID', async () => {
@@ -291,8 +291,8 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
       const response = await bridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(false);
-      expect(response.error).toBe('Fact ID is required for knowledge update');
+      expect(response?.success).toBe(false);
+      expect(response?.error).toBe('Fact ID is required for knowledge update');
     });
   });
 
@@ -309,9 +309,9 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
       const response = await bridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(true);
-      expect(response.data.subscribed).toBe(true);
-      expect(response.data.domain).toBe('machine-learning');
+      expect(response?.success).toBe(true);
+      expect(response?.data?.subscribed).toBe(true);
+      expect(response?.data?.domain).toBe('machine-learning');
     });
 
     test('should reject subscription without domain', async () => {
@@ -326,8 +326,8 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
       const response = await bridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(false);
-      expect(response.error).toBe('Domain is required for knowledge subscription');
+      expect(response?.success).toBe(false);
+      expect(response?.error).toBe('Domain is required for knowledge subscription');
     });
   });
 
@@ -380,8 +380,8 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
       const response = await bridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(false);
-      expect(response.error).toContain('Unsupported request type');
+      expect(response?.success).toBe(false);
+      expect(response?.error).toContain('Unsupported request type');
     });
 
     test('should clean up pending requests on failure', async () => {
@@ -398,7 +398,7 @@ describe('HiveKnowledgeBridge Unit Tests', () => {
 
       const response = await bridge.processKnowledgeRequest(request);
 
-      expect(response.success).toBe(false);
+      expect(response?.success).toBe(false);
 
       // Pending request should be cleaned up
       const stats = bridge.getStats();

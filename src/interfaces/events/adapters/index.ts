@@ -1,9 +1,14 @@
 /**
- * UEL Event Adapters - Unified Exports
+ * UEL Event Adapters - Unified Exports.
  *
- * Provides unified exports for all UEL event adapters, following the same
+ * Provides unified exports for all UEL event adapters, following the same.
  * patterns as UACL client adapters and USL service adapters.
  */
+/**
+ * @file adapters module exports
+ */
+
+
 
 export type {
   EventBatch,
@@ -117,7 +122,7 @@ export {
 } from './system-event-factory';
 
 /**
- * Adapter type registry for type-safe adapter creation
+ * Adapter type registry for type-safe adapter creation.
  */
 export const EventAdapterTypes = {
   SYSTEM: 'system',
@@ -129,7 +134,7 @@ export const EventAdapterTypes = {
 export type EventAdapterType = (typeof EventAdapterTypes)[keyof typeof EventAdapterTypes];
 
 /**
- * Adapter factory registry for easy access to all adapter factories
+ * Adapter factory registry for easy access to all adapter factories.
  */
 export const EventAdapterFactories = {
   [EventAdapterTypes.SYSTEM]: SystemEventManagerFactory,
@@ -139,11 +144,11 @@ export const EventAdapterFactories = {
 } as const;
 
 /**
- * Quick access functions for common adapter operations
+ * Quick access functions for common adapter operations.
  */
 export const EventAdapterUtils = {
   /**
-   * Create system event adapter with sensible defaults
+   * Create system event adapter with sensible defaults.
    *
    * @param name
    * @param overrides
@@ -154,7 +159,7 @@ export const EventAdapterUtils = {
   },
 
   /**
-   * Create coordination event adapter with sensible defaults
+   * Create coordination event adapter with sensible defaults.
    *
    * @param name
    * @param overrides
@@ -168,7 +173,7 @@ export const EventAdapterUtils = {
   },
 
   /**
-   * Create communication event adapter with sensible defaults
+   * Create communication event adapter with sensible defaults.
    *
    * @param name
    * @param overrides
@@ -182,7 +187,7 @@ export const EventAdapterUtils = {
   },
 
   /**
-   * Create monitoring event adapter with sensible defaults
+   * Create monitoring event adapter with sensible defaults.
    *
    * @param name
    * @param overrides
@@ -193,32 +198,32 @@ export const EventAdapterUtils = {
   },
 
   /**
-   * Create system event adapter factory
+   * Create system event adapter factory.
    */
   createSystemFactory: () => new SystemEventManagerFactory(),
 
   /**
-   * Create coordination event adapter factory
+   * Create coordination event adapter factory.
    */
   createCoordinationFactory: () => new CoordinationEventManagerFactory(),
 
   /**
-   * Create communication event adapter factory
+   * Create communication event adapter factory.
    */
   createCommunicationFactory: () => new CommunicationEventFactory(),
 
   /**
-   * Create monitoring event adapter factory
+   * Create monitoring event adapter factory.
    */
   createMonitoringFactory: () => MonitoringEventFactory,
 
   /**
-   * Get all available adapter types
+   * Get all available adapter types.
    */
   getAdapterTypes: () => Object.values(EventAdapterTypes),
 
   /**
-   * Check if adapter type is supported
+   * Check if adapter type is supported.
    *
    * @param type
    */

@@ -1,7 +1,12 @@
 /**
- * Intelligent Routing Engine
- * Advanced routing with task-agent matching and failover capabilities
+ * Intelligent Routing Engine.
+ * Advanced routing with task-agent matching and failover capabilities.
  */
+/**
+ * @file intelligent-routing processing engine
+ */
+
+
 
 import type { CapacityManager, RoutingEngine } from '../interfaces';
 import { NetworkLatencyOptimizer } from '../optimization/network-latency-optimizer';
@@ -86,7 +91,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Route a task to the optimal agent
+   * Route a task to the optimal agent.
    *
    * @param task
    */
@@ -136,7 +141,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Update routing table with current agents
+   * Update routing table with current agents.
    *
    * @param agents
    */
@@ -149,7 +154,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Handle failover when an agent fails
+   * Handle failover when an agent fails.
    *
    * @param failedAgentId
    */
@@ -167,7 +172,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Optimize routing paths and decisions
+   * Optimize routing paths and decisions.
    */
   public async optimizeRoutes(): Promise<void> {
     if (!this.config.adaptiveRoutingEnabled) return;
@@ -187,7 +192,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Set network topology for geographic-aware routing
+   * Set network topology for geographic-aware routing.
    *
    * @param topology
    */
@@ -196,7 +201,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Get routing statistics
+   * Get routing statistics.
    */
   public getRoutingStatistics(): RoutingMetrics & {
     routingTableSize: number;
@@ -214,7 +219,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Get available agents from routing table
+   * Get available agents from routing table.
    */
   private getAvailableAgents(): Agent[] {
     const agents: Agent[] = [];
@@ -239,7 +244,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Update routing information for a specific agent
+   * Update routing information for a specific agent.
    *
    * @param agent
    */
@@ -258,7 +263,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Discover available routes to an agent
+   * Discover available routes to an agent.
    *
    * @param agent
    */
@@ -285,7 +290,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Discover geographic routes using network topology
+   * Discover geographic routes using network topology.
    *
    * @param agent
    */
@@ -322,7 +327,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Make intelligent routing decision
+   * Make intelligent routing decision.
    *
    * @param task
    * @param candidates
@@ -347,9 +352,9 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     }
 
     // Sort by routing score (higher is better)
-    routingOptions.sort((a, b) => b.score - a.score);
+    routingOptions?.sort((a, b) => b.score - a.score);
 
-    const bestOption = routingOptions[0];
+    const bestOption = routingOptions?.[0];
     const fallbackOptions = routingOptions.slice(1, 4).map((opt) => opt.agent);
 
     // Select best route for the chosen agent
@@ -366,7 +371,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Calculate routing score for an agent
+   * Calculate routing score for an agent.
    *
    * @param task
    * @param agent
@@ -405,7 +410,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Select the best route from available options
+   * Select the best route from available options.
    *
    * @param routingEntry
    * @param task
@@ -431,7 +436,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Score a route based on task requirements
+   * Score a route based on task requirements.
    *
    * @param route
    * @param task
@@ -457,7 +462,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Update routing metrics
+   * Update routing metrics.
    *
    * @param latency
    * @param success
@@ -474,7 +479,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Redistribute routes after agent failure
+   * Redistribute routes after agent failure.
    *
    * @param failedAgentId
    */
@@ -503,7 +508,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Optimize network paths using topology information
+   * Optimize network paths using topology information.
    */
   private async optimizeNetworkPaths(): Promise<void> {
     if (!this.networkTopology) return;
@@ -530,7 +535,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Update reliability scores based on historical performance
+   * Update reliability scores based on historical performance.
    */
   private async updateReliabilityScores(): Promise<void> {
     for (const [agentId, routingEntry] of this.routingTable) {
@@ -546,7 +551,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   /**
-   * Balance load across available routes
+   * Balance load across available routes.
    */
   private async balanceRouteLoad(): Promise<void> {
     // Implement load balancing across routes

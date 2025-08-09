@@ -1,7 +1,12 @@
 /**
- * Failover Manager
- * Advanced failover and recovery management system
+ * Failover Manager.
+ * Advanced failover and recovery management system.
  */
+/**
+ * @file failover management system
+ */
+
+
 
 export class FailoverManager {
   private failoverStrategies: Map<string, string> = new Map();

@@ -1,20 +1,28 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-memory-memory-integration");
 /**
- * Memory Domain DI Integration
+ * @file Memory management: memory-integration
+ */
+
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-memory-memory-integration');
+
+/**
+ * Memory Domain DI Integration.
  *
- * Provides unified registration and setup for memory services
+ * Provides unified registration and setup for memory services.
  * with proper DAL Factory integration.
  */
 
 import type { DALFactory } from '../database/factory.js';
 import { DIContainer } from '../di/container/di-container.js';
 import { CORE_TOKENS, DATABASE_TOKENS, MEMORY_TOKENS } from '../di/tokens/core-tokens.js';
+import type { MemoryConfig } from '../memory/interfaces';
 import { MemoryController } from './controllers/memory-controller.js';
 import { MemoryProviderFactory } from './providers/memory-providers.js';
 
 /**
- * Default memory configurations for different use cases
+ * Default memory configurations for different use cases.
  */
 export const defaultMemoryConfigurations = {
   // High-performance cache (in-memory)
@@ -52,7 +60,7 @@ export const defaultMemoryConfigurations = {
 } as const;
 
 /**
- * Memory backend performance characteristics
+ * Memory backend performance characteristics.
  */
 export const memoryBackendSpecs = {
   memory: {
@@ -82,7 +90,7 @@ export const memoryBackendSpecs = {
 } as const;
 
 /**
- * Register memory providers with DI container
+ * Register memory providers with DI container.
  *
  * @param container
  */
@@ -129,7 +137,7 @@ export function registerMemoryProviders(
 }
 
 /**
- * Create specialized memory backends for different use cases
+ * Create specialized memory backends for different use cases.
  *
  * @param container
  */
@@ -150,7 +158,7 @@ export async function createMemoryBackends(container: DIContainer): Promise<{
 }
 
 /**
- * Initialize memory system with comprehensive setup
+ * Initialize memory system with comprehensive setup.
  *
  * @param container
  * @param options
@@ -250,7 +258,7 @@ export async function initializeMemorySystem(
 }
 
 /**
- * Utility function to create a pre-configured memory DI container
+ * Utility function to create a pre-configured memory DI container.
  *
  * @param customConfigs
  */
@@ -304,7 +312,7 @@ export function createMemoryContainer(
 }
 
 /**
- * Memory system usage examples and recommendations
+ * Memory system usage examples and recommendations.
  */
 export const memoryUsageGuide = {
   // Use in-memory backend for frequently accessed data

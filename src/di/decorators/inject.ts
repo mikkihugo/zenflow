@@ -1,14 +1,19 @@
 /**
- * Inject decorator implementation
- * Enables parameter-level dependency injection
+ * Inject decorator implementation.
+ * Enables parameter-level dependency injection.
  */
+/**
+ * @file inject implementation
+ */
+
+
 
 import 'reflect-metadata';
 import type { DIToken, ParameterDecorator } from '../types/di-types';
 import { getInjectionTokens, setInjectionTokens } from './injectable';
 
 /**
- * Inject decorator for marking constructor parameters for injection
+ * Inject decorator for marking constructor parameters for injection.
  *
  * @param token
  */
@@ -31,7 +36,7 @@ export function inject<T>(token: DIToken<T>): ParameterDecorator {
 }
 
 /**
- * Get the injection token for a specific parameter
+ * Get the injection token for a specific parameter.
  *
  * @param constructor
  * @param parameterIndex
@@ -45,7 +50,7 @@ export function getInjectionToken(
 }
 
 /**
- * Check if a parameter has an injection token
+ * Check if a parameter has an injection token.
  *
  * @param constructor
  * @param parameterIndex

@@ -1,11 +1,16 @@
 /**
- * Core Module - Clean Architecture Exports
+ * Core Module - Clean Architecture Exports.
  *
  * Central export point for core system functionality with clean, focused architecture.
  * Replaces bloated "Unified" systems with single-responsibility components.
  */
 
 // ==================== CLEAN ARCHITECTURE SYSTEMS ====================
+/**
+ * @file core module exports
+ */
+
+
 
 export type {
   WorkflowDefinition,

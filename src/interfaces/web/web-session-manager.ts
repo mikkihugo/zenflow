@@ -1,12 +1,17 @@
 /**
- * Web Session Manager - HTTP session management
+ * Web Session Manager - HTTP session management.
  *
  * Handles user sessions, preferences, and session lifecycle.
  * Provides clean separation of session concerns from server logic.
  */
+/**
+ * @file web-session management system
+ */
+
+
 
 import type { NextFunction, Request, Response } from 'express';
-import { createLogger } from '../../utils/logger';
+import { createLogger } from '../utils/logger';
 import type { WebConfig, WebSession } from './web-config';
 
 export class WebSessionManager {
@@ -19,7 +24,7 @@ export class WebSessionManager {
   }
 
   /**
-   * Session middleware for Express
+   * Session middleware for Express.
    */
   middleware() {
     return (req: Request, _res: Response, next: NextFunction) => {
@@ -48,7 +53,7 @@ export class WebSessionManager {
   }
 
   /**
-   * Get session by ID
+   * Get session by ID.
    *
    * @param sessionId
    */
@@ -57,7 +62,7 @@ export class WebSessionManager {
   }
 
   /**
-   * Update session preferences
+   * Update session preferences.
    *
    * @param sessionId
    * @param preferences
@@ -76,14 +81,14 @@ export class WebSessionManager {
   }
 
   /**
-   * Get all active sessions
+   * Get all active sessions.
    */
   getActiveSessions(): WebSession[] {
     return Array.from(this.sessions.values());
   }
 
   /**
-   * Clean up expired sessions
+   * Clean up expired sessions.
    *
    * @param maxAgeMs
    */
@@ -107,14 +112,14 @@ export class WebSessionManager {
   }
 
   /**
-   * Generate unique session ID
+   * Generate unique session ID.
    */
   private generateSessionId(): string {
     return `session-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   /**
-   * Get session statistics
+   * Get session statistics.
    */
   getStats(): {
     total: number;

@@ -1,11 +1,18 @@
 /**
- * Persistent Learning System for Ephemeral Swarms
+ * Persistent Learning System for Ephemeral Swarms.
  *
- * While swarm instances are ephemeral (temporary), their knowledge and learnings
+ * While swarm instances are ephemeral (temporary), their knowledge and learnings.
  * are persistent and shared across all future swarm instances.
  */
+/**
+ * @file Coordination system: persistent-learning-system
+ */
+
+
 
 import { EventEmitter } from 'node:events';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { AgentType } from '../types/agent-types';
 
 export interface AgentKnowledge {
   agentType: AgentType;
@@ -146,7 +153,7 @@ export interface TaskOutcome {
 }
 
 /**
- * Manages persistent learning across ephemeral swarm instances
+ * Manages persistent learning across ephemeral swarm instances.
  *
  * @example
  */
@@ -166,7 +173,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * When a new swarm is created, inject accumulated knowledge
+   * When a new swarm is created, inject accumulated knowledge.
    *
    * @param swarmId
    * @param agentTypes
@@ -242,7 +249,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Collect learnings when a swarm completes
+   * Collect learnings when a swarm completes.
    *
    * @param swarmId
    * @param swarmResults
@@ -271,7 +278,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Process individual agent learnings
+   * Process individual agent learnings.
    *
    * @param agentResult
    * @param swarmMemory
@@ -334,7 +341,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Extract patterns from agent behavior
+   * Extract patterns from agent behavior.
    *
    * @param knowledge
    * @param agentResult
@@ -344,7 +351,7 @@ export class PersistentLearningSystem extends EventEmitter {
     agentResult: AgentResult
   ): Promise<void> {
     // Analyze action sequences for patterns
-    const actionSequence = agentResult?.actions?.map((a) => a.action).join(' -> ');
+    const actionSequence = agentResult?.actions.map((a) => a.action).join(' -> ');
 
     let pattern = knowledge.patterns.find((p) => p.pattern === actionSequence);
     if (pattern) {
@@ -373,7 +380,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Update agent capabilities based on performance
+   * Update agent capabilities based on performance.
    *
    * @param knowledge
    * @param agentResult
@@ -423,8 +430,8 @@ export class PersistentLearningSystem extends EventEmitter {
       specialization = {
         domain,
         expertise: agentResult?.outcome?.quality / 2, // Start with half the quality score
-        keyPatterns: [agentResult?.actions?.map((a) => a.action).join(' -> ')],
-        tools: agentResult?.actions?.map((a) => a.parameters['tool']).filter(Boolean),
+        keyPatterns: [agentResult?.actions.map((a) => a.action).join(' -> ')],
+        tools: agentResult?.actions.map((a) => a.parameters['tool']).filter(Boolean),
         bestPractices: agentResult?.lessonsLearned,
       };
       knowledge.capabilities.specializations.push(specialization);
@@ -432,7 +439,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Update agent relationships based on collaboration
+   * Update agent relationships based on collaboration.
    *
    * @param knowledge
    * @param agentResult
@@ -444,7 +451,9 @@ export class PersistentLearningSystem extends EventEmitter {
     swarmMemory: SwarmMemory
   ): Promise<void> {
     // Analyze collaborations with other agents in the swarm
-    const otherAgentTypes = swarmMemory.agentTypes.filter((type) => type !== agentResult?.agentType);
+    const otherAgentTypes = swarmMemory.agentTypes.filter(
+      (type) => type !== agentResult?.agentType
+    );
 
     for (const partnerType of otherAgentTypes) {
       let collaboration = knowledge.relationships.collaborations.find(
@@ -477,7 +486,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Filter relevant knowledge for a new swarm
+   * Filter relevant knowledge for a new swarm.
    *
    * @param knowledge
    * @param _swarmMemory
@@ -510,7 +519,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Get cross-swarm insights for new swarm
+   * Get cross-swarm insights for new swarm.
    *
    * @param agentTypes
    */
@@ -525,7 +534,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Initialize knowledge for a new agent type
+   * Initialize knowledge for a new agent type.
    *
    * @param agentType
    */
@@ -559,7 +568,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Extract global patterns across all swarms
+   * Extract global patterns across all swarms.
    *
    * @param swarmResults
    */
@@ -593,13 +602,13 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Update cross-swarm learnings
+   * Update cross-swarm learnings.
    *
    * @param swarmResults
    */
   private async updateCrossSwarmLearnings(swarmResults: SwarmResults): Promise<void> {
     // Analyze what works well across different agent combinations
-    const agentTypes = swarmResults?.agentResults?.map((r) => r.agentType);
+    const agentTypes = swarmResults?.agentResults.map((r) => r.agentType);
     const overallSuccess = swarmResults?.overallSuccess;
 
     if (overallSuccess > 0.8) {
@@ -638,7 +647,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Archive swarm memory for future reference
+   * Archive swarm memory for future reference.
    *
    * @param swarmId
    * @param swarmResults
@@ -661,7 +670,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Setup event handlers
+   * Setup event handlers.
    */
   private setupEventHandlers(): void {
     this.eventBus.on('swarm:created', (data) => {
@@ -685,7 +694,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Start periodic learning processes
+   * Start periodic learning processes.
    */
   private startPeriodicLearning(): void {
     // Periodically analyze and consolidate learnings
@@ -695,7 +704,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Consolidate and optimize learnings
+   * Consolidate and optimize learnings.
    */
   private consolidateLearnings(): void {
     // Clean up low-confidence patterns
@@ -725,7 +734,7 @@ export class PersistentLearningSystem extends EventEmitter {
   }
 
   /**
-   * Get knowledge summary for an agent type
+   * Get knowledge summary for an agent type.
    *
    * @param agentType
    */

@@ -625,7 +625,7 @@ describe('SystemEventAdapter', () => {
       for (const eventConfig of events) {
         const _startTime = Date.now();
         const event: SystemLifecycleEvent = {
-          id: `perf-event-${eventConfig.delay}`,
+          id: `perf-event-${eventConfig?.delay}`,
           timestamp: new Date(),
           source: 'test-component',
           type: 'system:health',
@@ -635,7 +635,7 @@ describe('SystemEventAdapter', () => {
         };
 
         // Simulate processing delay
-        await new Promise((resolve) => setTimeout(resolve, eventConfig.delay));
+        await new Promise((resolve) => setTimeout(resolve, eventConfig?.delay));
         await adapter.emit(event);
       }
 
@@ -827,8 +827,8 @@ describe('SystemEventManagerFactory', () => {
       const healthResults = await factory.healthCheckAll();
 
       expect(healthResults.size).toBe(2);
-      expect(healthResults.has('health-1')).toBe(true);
-      expect(healthResults.has('health-2')).toBe(true);
+      expect(healthResults?.has('health-1')).toBe(true);
+      expect(healthResults?.has('health-2')).toBe(true);
     });
 
     it('should start and stop all managers', async () => {

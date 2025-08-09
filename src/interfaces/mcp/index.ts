@@ -1,5 +1,5 @@
 /**
- * MCP Interface Module
+ * MCP Interface Module.
  *
  * Exports MCP (Model Context Protocol) interface components for Claude Desktop integration.
  *
@@ -8,6 +8,11 @@
  */
 
 // HTTP MCP Server (for Claude Desktop)
+/**
+ * @file mcp module exports
+ */
+
+
 export * from './http-mcp-server';
 // Default export
 export { HTTPMCPServer as default } from './http-mcp-server';

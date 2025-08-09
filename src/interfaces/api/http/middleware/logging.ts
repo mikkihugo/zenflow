@@ -1,5 +1,5 @@
 /**
- * Request Logging Middleware
+ * Request Logging Middleware.
  *
  * Comprehensive request/response logging following Google standards.
  * Provides structured logging with performance metrics and tracing.
@@ -10,7 +10,7 @@
 import type { NextFunction, Request, Response } from 'express';
 
 /**
- * Log levels following Google Cloud Logging standards
+ * Log levels following Google Cloud Logging standards.
  */
 export enum LogLevel {
   DEBUG = 'DEBUG',
@@ -24,8 +24,8 @@ export enum LogLevel {
 }
 
 /**
- * Structured log entry format
- * Following Google Cloud Logging JSON format
+ * Structured log entry format.
+ * Following Google Cloud Logging JSON format.
  *
  * @example
  */
@@ -57,7 +57,7 @@ export interface LogEntry {
 }
 
 /**
- * Request metadata for logging context
+ * Request metadata for logging context.
  *
  * @example
  */
@@ -70,15 +70,15 @@ interface RequestMetadata {
 }
 
 /**
- * Generate unique request ID for tracing
+ * Generate unique request ID for tracing.
  */
 const generateRequestId = (): string => {
   return `req-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
 };
 
 /**
- * Get client IP address from request
- * Handles various proxy headers
+ * Get client IP address from request.
+ * Handles various proxy headers.
  *
  * @param req
  */
@@ -93,7 +93,7 @@ const getClientIp = (req: Request): string => {
 };
 
 /**
- * Calculate request body size
+ * Calculate request body size.
  *
  * @param req
  */
@@ -116,7 +116,7 @@ const getRequestSize = (req: Request): number => {
 };
 
 /**
- * Calculate response body size
+ * Calculate response body size.
  *
  * @param res
  */
@@ -129,7 +129,7 @@ const getResponseSize = (res: Response): number => {
 };
 
 /**
- * Format duration in human-readable format
+ * Format duration in human-readable format.
  *
  * @param milliseconds
  */
@@ -141,7 +141,7 @@ const formatDuration = (milliseconds: number): string => {
 };
 
 /**
- * Determine log level based on HTTP status code
+ * Determine log level based on HTTP status code.
  *
  * @param statusCode
  */
@@ -153,8 +153,8 @@ const getLogLevelFromStatus = (statusCode: number): LogLevel => {
 };
 
 /**
- * Check if route should be logged
- * Excludes health checks and internal routes from verbose logging
+ * Check if route should be logged.
+ * Excludes health checks and internal routes from verbose logging.
  *
  * @param path
  * @param _method
@@ -174,8 +174,8 @@ const shouldLog = (path: string, _method: string): boolean => {
 };
 
 /**
- * Sanitize sensitive data from request/response
- * Removes or masks sensitive information
+ * Sanitize sensitive data from request/response.
+ * Removes or masks sensitive information.
  *
  * @param data
  */
@@ -210,7 +210,7 @@ const sanitizeData = (data: any): any => {
 };
 
 /**
- * Create structured log entry
+ * Create structured log entry.
  *
  * @param level
  * @param message
@@ -226,7 +226,7 @@ const createLogEntry = (
   metadata?: Record<string, unknown>
 ): LogEntry => {
   const requestMetadata = req.metadata as RequestMetadata;
-  const duration = res ? Date.now() - requestMetadata.startTime : undefined;
+  const duration = res ? Date.now() - requestMetadata?.startTime : undefined;
 
   const logEntry: LogEntry = {
     timestamp: new Date().toISOString(),
@@ -238,15 +238,15 @@ const createLogEntry = (
       requestSize: getRequestSize(req),
       status: res?.statusCode,
       responseSize: res ? getResponseSize(res) : undefined,
-      userAgent: requestMetadata.userAgent,
-      remoteIp: requestMetadata.remoteIp,
-      referer: requestMetadata.referer,
+      userAgent: requestMetadata?.userAgent,
+      remoteIp: requestMetadata?.remoteIp,
+      referer: requestMetadata?.referer,
       latency: duration ? formatDuration(duration) : undefined,
       protocol: req.protocol,
     },
-    trace: requestMetadata.requestId,
+    trace: requestMetadata?.requestId,
     operation: {
-      id: requestMetadata.requestId,
+      id: requestMetadata?.requestId,
       producer: 'claude-zen-flow-api',
       first: !res, // First log entry for request
       last: !!res, // Last log entry for response
@@ -258,8 +258,8 @@ const createLogEntry = (
 };
 
 /**
- * Output log entry to console
- * In production, this would typically send to a logging service
+ * Output log entry to console.
+ * In production, this would typically send to a logging service.
  *
  * @param logEntry
  */
@@ -281,8 +281,8 @@ const outputLog = (logEntry: LogEntry): void => {
 };
 
 /**
- * Request Start Logging Middleware
- * Logs incoming requests and sets up metadata
+ * Request Start Logging Middleware.
+ * Logs incoming requests and sets up metadata.
  *
  * @param req
  * @param res
@@ -347,8 +347,8 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
 };
 
 /**
- * Error Logging Function
- * Logs errors with full context
+ * Error Logging Function.
+ * Logs errors with full context.
  *
  * @param error
  * @param req
@@ -372,8 +372,8 @@ export const logError = (
 };
 
 /**
- * Performance Logging Function
- * Logs performance metrics for critical operations
+ * Performance Logging Function.
+ * Logs performance metrics for critical operations.
  *
  * @param operation
  * @param duration
@@ -404,8 +404,8 @@ export const logPerformance = (
 };
 
 /**
- * Custom Log Function
- * Allows custom structured logging throughout the application
+ * Custom Log Function.
+ * Allows custom structured logging throughout the application.
  *
  * @param level
  * @param message

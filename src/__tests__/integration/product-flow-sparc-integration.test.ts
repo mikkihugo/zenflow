@@ -208,14 +208,14 @@ describe('Product Flow + SPARC Integration', () => {
         },
       });
 
-      expect(result.success).toBe(true);
-      expect(result.workflowId).toBeDefined();
+      expect(result?.success).toBe(true);
+      expect(result?.workflowId).toBeDefined();
 
       // Verify workflow is running
       const workflows = await productWorkflowEngine.getActiveProductWorkflows();
       expect(workflows.length).toBeGreaterThan(0);
 
-      const workflow = workflows.find((w) => w.id === result.workflowId);
+      const workflow = workflows.find((w) => w.id === result?.workflowId);
       expect(workflow).toBeDefined();
       expect(workflow?.productFlow.currentStep).toBeDefined();
       expect(workflow?.sparcIntegration).toBeDefined();
@@ -228,7 +228,7 @@ describe('Product Flow + SPARC Integration', () => {
         workspaceId,
       });
 
-      const workflow = await productWorkflowEngine.getProductWorkflowStatus(result.workflowId!);
+      const workflow = await productWorkflowEngine.getProductWorkflowStatus(result?.workflowId!);
       expect(workflow).toBeDefined();
 
       // Verify Product Flow step sequencing
@@ -296,9 +296,9 @@ describe('Product Flow + SPARC Integration', () => {
 
       for (const phase of phases) {
         const result = await sparcEngine.executePhase(sparcProject, phase);
-        results.push(result);
-        expect(result.success).toBe(true);
-        expect(result.phase).toBe(phase);
+        results?.push(result);
+        expect(result?.success).toBe(true);
+        expect(result?.phase).toBe(phase);
       }
 
       // Verify all phases completed
@@ -374,16 +374,16 @@ describe('Product Flow + SPARC Integration', () => {
       });
 
       // Pause workflow
-      const pauseResult = await productWorkflowEngine.pauseProductWorkflow(result.workflowId!);
-      expect(pauseResult.success).toBe(true);
+      const pauseResult = await productWorkflowEngine.pauseProductWorkflow(result?.workflowId!);
+      expect(pauseResult?.success).toBe(true);
 
       // Verify paused status
-      const workflow = await productWorkflowEngine.getProductWorkflowStatus(result.workflowId!);
+      const workflow = await productWorkflowEngine.getProductWorkflowStatus(result?.workflowId!);
       expect(workflow?.status).toBe('paused');
 
       // Resume workflow
-      const resumeResult = await productWorkflowEngine.resumeProductWorkflow(result.workflowId!);
-      expect(resumeResult.success).toBe(true);
+      const resumeResult = await productWorkflowEngine.resumeProductWorkflow(result?.workflowId!);
+      expect(resumeResult?.success).toBe(true);
     });
 
     it('should handle workflow errors gracefully', async () => {
@@ -394,8 +394,8 @@ describe('Product Flow + SPARC Integration', () => {
         workspaceId,
       });
 
-      expect(result.success).toBe(false);
-      expect(result.error).toBeDefined();
+      expect(result?.success).toBe(false);
+      expect(result?.error).toBeDefined();
     });
   });
 

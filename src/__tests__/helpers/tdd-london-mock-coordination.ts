@@ -1,6 +1,6 @@
 /**
  * TDD London Mock Coordination Conversion Examples
- * 
+ *
  * Shows how to convert basic object mocks to proper TDD London approach
  * that focuses on interaction testing rather than state testing.
  */
@@ -33,15 +33,13 @@ export class MockCoordinationService {
   coordinateAgents: jest.MockedFunction<
     (agentIds: string[], topology: string, task?: string) => Promise<CoordinationResult>
   > = jest.fn();
-  
-  releaseCoordination: jest.MockedFunction<
-    (coordinationId: string) => Promise<void>
-  > = jest.fn();
-  
+
+  releaseCoordination: jest.MockedFunction<(coordinationId: string) => Promise<void>> = jest.fn();
+
   getCoordinationStatus: jest.MockedFunction<
     (coordinationId: string) => Promise<CoordinationStatus>
   > = jest.fn();
-  
+
   updateCoordinationMetrics: jest.MockedFunction<
     (coordinationId: string, metrics: CoordinationMetrics) => Promise<void>
   > = jest.fn();
@@ -57,20 +55,20 @@ export class MockCoordinationService {
       coordinationMetrics: {
         latency: 50,
         throughput: 1000,
-        reliability: 0.99
-      }
+        reliability: 0.99,
+      },
     });
-    
+
     this.releaseCoordination.mockResolvedValue(undefined);
-    
+
     this.getCoordinationStatus.mockResolvedValue({
       coordinationId: 'coord-123',
       status: 'active',
       agentCount: 2,
       established: new Date(),
-      lastActivity: new Date()
+      lastActivity: new Date(),
     });
-    
+
     this.updateCoordinationMetrics.mockResolvedValue(undefined);
   }
 
@@ -108,11 +106,14 @@ export class MockCoordinationService {
   expectMetricsUpdated(coordinationId: string, metrics?: Partial<CoordinationMetrics>) {
     if (metrics) {
       expect(this.updateCoordinationMetrics).toHaveBeenCalledWith(
-        coordinationId, 
+        coordinationId,
         expect.objectContaining(metrics)
       );
     } else {
-      expect(this.updateCoordinationMetrics).toHaveBeenCalledWith(coordinationId, expect.any(Object));
+      expect(this.updateCoordinationMetrics).toHaveBeenCalledWith(
+        coordinationId,
+        expect.any(Object)
+      );
     }
     return this;
   }
@@ -141,7 +142,7 @@ export class MockCoordinationService {
       status: 'active',
       agentCount,
       established: new Date(),
-      lastActivity: new Date()
+      lastActivity: new Date(),
     });
     return this;
   }
@@ -198,11 +199,9 @@ export class MockMemoryPool {
   allocate: jest.MockedFunction<
     (type: string, size: number) => { success: boolean; ptr: ArrayBuffer; id: string }
   > = jest.fn();
-  
-  deallocate: jest.MockedFunction<
-    (id: string) => boolean
-  > = jest.fn();
-  
+
+  deallocate: jest.MockedFunction<(id: string) => boolean> = jest.fn();
+
   getStats: jest.MockedFunction<
     () => { totalMemory: number; usedMemory: number; fragmentation: number }
   > = jest.fn();
@@ -211,15 +210,15 @@ export class MockMemoryPool {
     this.allocate.mockReturnValue({
       success: true,
       ptr: new ArrayBuffer(1024),
-      id: 'mem-123'
+      id: 'mem-123',
     });
-    
+
     this.deallocate.mockReturnValue(true);
-    
+
     this.getStats.mockReturnValue({
       totalMemory: 1024 * 1024,
       usedMemory: 512 * 1024,
-      fragmentation: 0.1
+      fragmentation: 0.1,
     });
   }
 

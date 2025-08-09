@@ -1,14 +1,14 @@
 /**
  * @fileoverview USL (Unified Service Layer) Types and Configuration
  *
- * Centralized type definitions and configuration schemas for all service types
+ * Centralized type definitions and configuration schemas for all service types.
  * in the Claude-Zen ecosystem.
  */
 
 import type { ServiceConfig } from './core/interfaces';
 
 /**
- * Service type enumeration for all supported service categories
+ * Service type enumeration for all supported service categories.
  */
 export enum ServiceType {
   // Data Services
@@ -70,7 +70,7 @@ export enum ServiceType {
 }
 
 /**
- * Service priority levels for initialization and resource allocation
+ * Service priority levels for initialization and resource allocation.
  */
 export enum ServicePriority {
   CRITICAL = 0, // System-critical services (database, logging)
@@ -81,7 +81,7 @@ export enum ServicePriority {
 }
 
 /**
- * Service environment configuration
+ * Service environment configuration.
  */
 export enum ServiceEnvironment {
   DEVELOPMENT = 'development',
@@ -91,7 +91,7 @@ export enum ServiceEnvironment {
 }
 
 /**
- * Base service configuration with common properties
+ * Base service configuration with common properties.
  *
  * @example
  */
@@ -103,7 +103,7 @@ export interface BaseServiceConfig extends ServiceConfig {
 }
 
 /**
- * Data service configuration for data management services
+ * Data service configuration for data management services.
  *
  * @example
  */
@@ -127,7 +127,7 @@ export interface DataServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Web service configuration for HTTP/WebSocket services
+ * Web service configuration for HTTP/WebSocket services.
  *
  * @example
  */
@@ -166,7 +166,7 @@ export interface WebServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Coordination service configuration for swarm and orchestration
+ * Coordination service configuration for swarm and orchestration.
  *
  * @example
  */
@@ -197,7 +197,7 @@ export interface CoordinationServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Neural service configuration for AI and ML services
+ * Neural service configuration for AI and ML services.
  *
  * @example
  */
@@ -228,7 +228,7 @@ export interface NeuralServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Memory service configuration for caching and session management
+ * Memory service configuration for caching and session management.
  *
  * @example
  */
@@ -256,7 +256,7 @@ export interface MemoryServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Database service configuration for database integrations
+ * Database service configuration for database integrations.
  *
  * @example
  */
@@ -291,7 +291,7 @@ export interface DatabaseServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Interface service configuration for CLI, TUI, MCP services
+ * Interface service configuration for CLI, TUI, MCP services.
  *
  * @example
  */
@@ -316,7 +316,7 @@ export interface InterfaceServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Monitoring service configuration for health and performance tracking
+ * Monitoring service configuration for health and performance tracking.
  *
  * @example
  */
@@ -344,7 +344,7 @@ export interface MonitoringServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Workflow service configuration for task and pipeline management
+ * Workflow service configuration for task and pipeline management.
  *
  * @example
  */
@@ -374,7 +374,7 @@ export interface WorkflowServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Integration service configuration for integration services
+ * Integration service configuration for integration services.
  *
  * @example
  */
@@ -407,7 +407,7 @@ export interface IntegrationServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Infrastructure service configuration for infrastructure and system services
+ * Infrastructure service configuration for infrastructure and system services.
  *
  * @example
  */
@@ -476,7 +476,7 @@ export interface InfrastructureServiceConfig extends BaseServiceConfig {
 }
 
 /**
- * Union type for all service configurations
+ * Union type for all service configurations.
  */
 export type AnyServiceConfig =
   | DataServiceConfig
@@ -493,13 +493,13 @@ export type AnyServiceConfig =
   | BaseServiceConfig;
 
 /**
- * Service configuration factory for creating typed configurations
+ * Service configuration factory for creating typed configurations.
  *
  * @example
  */
 export class ServiceConfigFactory {
   /**
-   * Create a data service configuration
+   * Create a data service configuration.
    *
    * @param name
    * @param options
@@ -535,7 +535,7 @@ export class ServiceConfigFactory {
   }
 
   /**
-   * Create a web service configuration
+   * Create a web service configuration.
    *
    * @param name
    * @param options
@@ -586,7 +586,7 @@ export class ServiceConfigFactory {
   }
 
   /**
-   * Create a coordination service configuration
+   * Create a coordination service configuration.
    *
    * @param name
    * @param options
@@ -639,7 +639,7 @@ export class ServiceConfigFactory {
   }
 
   /**
-   * Create a neural service configuration
+   * Create a neural service configuration.
    *
    * @param name
    * @param options
@@ -693,7 +693,7 @@ export class ServiceConfigFactory {
   }
 
   /**
-   * Create a memory service configuration
+   * Create a memory service configuration.
    *
    * @param name
    * @param options
@@ -745,7 +745,7 @@ export class ServiceConfigFactory {
   }
 
   /**
-   * Create a database service configuration
+   * Create a database service configuration.
    *
    * @param name
    * @param options
@@ -801,7 +801,7 @@ export class ServiceConfigFactory {
   }
 
   /**
-   * Create a monitoring service configuration
+   * Create a monitoring service configuration.
    *
    * @param name
    * @param options
@@ -855,7 +855,7 @@ export class ServiceConfigFactory {
   }
 
   /**
-   * Create an integration service configuration
+   * Create an integration service configuration.
    *
    * @param name
    * @param options
@@ -915,7 +915,7 @@ export class ServiceConfigFactory {
   }
 
   /**
-   * Create an infrastructure service configuration
+   * Create an infrastructure service configuration.
    *
    * @param name
    * @param options
@@ -1011,7 +1011,7 @@ export class ServiceConfigFactory {
   }
 
   /**
-   * Create a workflow service configuration
+   * Create a workflow service configuration.
    *
    * @param name
    * @param options
@@ -1068,19 +1068,19 @@ export class ServiceConfigFactory {
 }
 
 /**
- * Type guard functions for service configurations
+ * Type guard functions for service configurations.
  *
  * @param config
  */
 export function isDataServiceConfig(config: AnyServiceConfig): config is DataServiceConfig {
   return [ServiceType.DATA, ServiceType.WEB_DATA, ServiceType.DOCUMENT].includes(
-    config.type as ServiceType
+    config?.type as ServiceType
   );
 }
 
 export function isWebServiceConfig(config: AnyServiceConfig): config is WebServiceConfig {
   return [ServiceType.WEB, ServiceType.API, ServiceType.SAFE_API, ServiceType.WEBSOCKET].includes(
-    config.type as ServiceType
+    config?.type as ServiceType
   );
 }
 
@@ -1093,24 +1093,24 @@ export function isCoordinationServiceConfig(
     ServiceType.ORCHESTRATION,
     ServiceType.DAA,
     ServiceType.SESSION_RECOVERY,
-  ].includes(config.type as ServiceType);
+  ].includes(config?.type as ServiceType);
 }
 
 export function isNeuralServiceConfig(config: AnyServiceConfig): config is NeuralServiceConfig {
   return [ServiceType.NEURAL, ServiceType.LEARNING, ServiceType.PATTERN_RECOGNITION].includes(
-    config.type as ServiceType
+    config?.type as ServiceType
   );
 }
 
 export function isMemoryServiceConfig(config: AnyServiceConfig): config is MemoryServiceConfig {
   return [ServiceType.MEMORY, ServiceType.CACHE, ServiceType.SESSION].includes(
-    config.type as ServiceType
+    config?.type as ServiceType
   );
 }
 
 export function isDatabaseServiceConfig(config: AnyServiceConfig): config is DatabaseServiceConfig {
   return [ServiceType.DATABASE, ServiceType.VECTOR, ServiceType.GRAPH].includes(
-    config.type as ServiceType
+    config?.type as ServiceType
   );
 }
 
@@ -1118,7 +1118,7 @@ export function isIntegrationServiceConfig(
   config: AnyServiceConfig
 ): config is IntegrationServiceConfig {
   return [ServiceType.API, ServiceType.SAFE_API, ServiceType.ARCHITECTURE_STORAGE].includes(
-    config.type as ServiceType
+    config?.type as ServiceType
   );
 }
 
@@ -1126,7 +1126,7 @@ export function isInfrastructureServiceConfig(
   config: AnyServiceConfig
 ): config is InfrastructureServiceConfig {
   return [ServiceType.INFRASTRUCTURE, ServiceType.SYSTEM, ServiceType.MONITORING].includes(
-    config.type as ServiceType
+    config?.type as ServiceType
   );
 }
 
@@ -1134,6 +1134,6 @@ export function isMonitoringServiceConfig(
   config: AnyServiceConfig
 ): config is MonitoringServiceConfig {
   return [ServiceType.HEALTH, ServiceType.MONITORING, ServiceType.LOGGING].includes(
-    config.type as ServiceType
+    config?.type as ServiceType
   );
 }

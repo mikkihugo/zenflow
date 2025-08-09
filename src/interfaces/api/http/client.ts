@@ -1,5 +1,5 @@
 /**
- * REST API Client SDK
+ * REST API Client SDK.
  *
  * TypeScript client for Claude Code Flow REST API.
  * Auto-generated types from OpenAPI schemas for type safety.
@@ -9,13 +9,14 @@
  */
 
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import { getMCPServerURL } from '../config/url-builder';
 import type {
   Agent,
   HealthStatus,
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '../../../coordination/schemas';
+} from '../coordination/schemas';
 import type { APIError } from './schemas/common';
 import type {
   NeuralNetwork,
@@ -23,11 +24,10 @@ import type {
   PredictionResponse,
   TrainingRequest,
 } from './schemas/neural';
-import { getMCPServerURL } from '../../../config/url-builder';
 
 /**
- * API Client Configuration
- * Following Google client library patterns
+ * API Client Configuration.
+ * Following Google client library patterns.
  *
  * @example
  */
@@ -42,7 +42,7 @@ export interface APIClientConfig {
 }
 
 /**
- * Default client configuration using centralized URL configuration
+ * Default client configuration using centralized URL configuration.
  */
 export const DEFAULT_CLIENT_CONFIG: APIClientConfig = {
   baseURL: getMCPServerURL(),
@@ -52,7 +52,7 @@ export const DEFAULT_CLIENT_CONFIG: APIClientConfig = {
 } as const;
 
 /**
- * Request options for API calls
+ * Request options for API calls.
  *
  * @example
  */
@@ -63,7 +63,7 @@ export interface RequestOptions {
 }
 
 /**
- * Pagination parameters for list operations
+ * Pagination parameters for list operations.
  *
  * @example
  */
@@ -73,8 +73,8 @@ export interface PaginationOptions {
 }
 
 /**
- * Main API Client Class
- * Provides typed methods for all API endpoints
+ * Main API Client Class.
+ * Provides typed methods for all API endpoints.
  *
  * @example
  */
@@ -88,7 +88,7 @@ export class APIClient {
   }
 
   /**
-   * Create configured Axios instance
+   * Create configured Axios instance.
    */
   private createHttpClient(): AxiosInstance {
     const client = axios.create({
@@ -119,7 +119,7 @@ export class APIClient {
   }
 
   /**
-   * Setup retry logic for failed requests
+   * Setup retry logic for failed requests.
    *
    * @param client
    */
@@ -129,11 +129,11 @@ export class APIClient {
       async (error) => {
         const config = error.config;
 
-        if (!config || config.__retryCount >= (this.config.retryAttempts || 3)) {
+        if (!config || config?.__retryCount >= (this.config.retryAttempts || 3)) {
           return Promise.reject(error);
         }
 
-        config.__retryCount = (config.__retryCount || 0) + 1;
+        config.__retryCount = (config?.__retryCount || 0) + 1;
 
         // Only retry on network errors or 5xx status codes
         if (
@@ -152,7 +152,7 @@ export class APIClient {
   }
 
   /**
-   * Setup error handling and response transformation
+   * Setup error handling and response transformation.
    *
    * @param client
    */
@@ -177,7 +177,7 @@ export class APIClient {
   }
 
   /**
-   * Generic HTTP method wrapper with type safety
+   * Generic HTTP method wrapper with type safety.
    *
    * @param method
    * @param endpoint
@@ -199,17 +199,17 @@ export class APIClient {
     };
 
     const response: AxiosResponse<T> = await this.http.request(config);
-    return response.data;
+    return response?.data;
   }
 
   // ===== COORDINATION API METHODS =====
 
   /**
-   * Coordination API client
+   * Coordination API client.
    */
   public readonly coordination = {
     /**
-     * List agents with filtering and pagination
+     * List agents with filtering and pagination.
      *
      * @param params
      * @param params.status
@@ -228,10 +228,10 @@ export class APIClient {
       options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
-      if (params?.status) queryParams.set('status', params.status);
-      if (params?.type) queryParams.set('type', params.type);
-      if (params?.limit) queryParams.set('limit', params.limit.toString());
-      if (params?.offset) queryParams.set('offset', params.offset.toString());
+      if (params?.status) queryParams?.set('status', params?.status);
+      if (params?.type) queryParams?.set('type', params?.type);
+      if (params?.limit) queryParams?.set('limit', params?.limit.toString());
+      if (params?.offset) queryParams?.set('offset', params?.offset.toString());
 
       return this.request<{
         agents: Agent[];
@@ -242,7 +242,7 @@ export class APIClient {
     },
 
     /**
-     * Create new agent
+     * Create new agent.
      *
      * @param data
      * @param data.type
@@ -260,7 +260,7 @@ export class APIClient {
     },
 
     /**
-     * Get agent by ID
+     * Get agent by ID.
      *
      * @param agentId
      * @param options
@@ -275,7 +275,7 @@ export class APIClient {
     },
 
     /**
-     * Remove agent
+     * Remove agent.
      *
      * @param agentId
      * @param options
@@ -290,7 +290,7 @@ export class APIClient {
     },
 
     /**
-     * Create new task
+     * Create new task.
      *
      * @param data
      * @param data.type
@@ -312,7 +312,7 @@ export class APIClient {
     },
 
     /**
-     * Get task by ID
+     * Get task by ID.
      *
      * @param taskId
      * @param options
@@ -322,7 +322,7 @@ export class APIClient {
     },
 
     /**
-     * Get swarm configuration
+     * Get swarm configuration.
      *
      * @param options
      */
@@ -336,7 +336,7 @@ export class APIClient {
     },
 
     /**
-     * Update swarm configuration
+     * Update swarm configuration.
      *
      * @param config
      * @param options
@@ -346,7 +346,7 @@ export class APIClient {
     },
 
     /**
-     * Get coordination system health
+     * Get coordination system health.
      *
      * @param options
      */
@@ -355,7 +355,7 @@ export class APIClient {
     },
 
     /**
-     * Get performance metrics
+     * Get performance metrics.
      *
      * @param timeRange
      * @param options
@@ -374,11 +374,11 @@ export class APIClient {
   // ===== NEURAL NETWORK API METHODS =====
 
   /**
-   * Neural Network API client
+   * Neural Network API client.
    */
   public readonly neural = {
     /**
-     * List neural networks
+     * List neural networks.
      *
      * @param params
      * @param params.type
@@ -393,8 +393,8 @@ export class APIClient {
       options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
-      if (params?.type) queryParams.set('type', params.type);
-      if (params?.status) queryParams.set('status', params.status);
+      if (params?.type) queryParams?.set('type', params?.type);
+      if (params?.status) queryParams?.set('status', params?.status);
 
       return this.request<{
         networks: NeuralNetwork[];
@@ -402,7 +402,7 @@ export class APIClient {
     },
 
     /**
-     * Create neural network
+     * Create neural network.
      *
      * @param data
      * @param data.type
@@ -420,7 +420,7 @@ export class APIClient {
     },
 
     /**
-     * Get neural network by ID
+     * Get neural network by ID.
      *
      * @param networkId
      * @param options
@@ -435,7 +435,7 @@ export class APIClient {
     },
 
     /**
-     * Start training
+     * Start training.
      *
      * @param networkId
      * @param data
@@ -449,7 +449,7 @@ export class APIClient {
     },
 
     /**
-     * Make prediction
+     * Make prediction.
      *
      * @param networkId
      * @param data
@@ -465,7 +465,7 @@ export class APIClient {
     },
 
     /**
-     * Get training job status
+     * Get training job status.
      *
      * @param networkId
      * @param trainingId
@@ -483,7 +483,7 @@ export class APIClient {
     },
 
     /**
-     * Cancel training job
+     * Cancel training job.
      *
      * @param networkId
      * @param trainingId
@@ -502,11 +502,11 @@ export class APIClient {
   // ===== MEMORY API METHODS =====
 
   /**
-   * Memory API client
+   * Memory API client.
    */
   public readonly memory = {
     /**
-     * List memory stores
+     * List memory stores.
      *
      * @param options
      */
@@ -525,7 +525,7 @@ export class APIClient {
     },
 
     /**
-     * Get value by key
+     * Get value by key.
      *
      * @param storeId
      * @param key
@@ -543,7 +543,7 @@ export class APIClient {
     },
 
     /**
-     * Set value by key
+     * Set value by key.
      *
      * @param storeId
      * @param key
@@ -573,7 +573,7 @@ export class APIClient {
     },
 
     /**
-     * Delete key
+     * Delete key.
      *
      * @param storeId
      * @param key
@@ -589,7 +589,7 @@ export class APIClient {
     },
 
     /**
-     * Get memory health
+     * Get memory health.
      *
      * @param options
      */
@@ -609,11 +609,11 @@ export class APIClient {
   // ===== DATABASE API METHODS =====
 
   /**
-   * Database API client
+   * Database API client.
    */
   public readonly database = {
     /**
-     * List database connections
+     * List database connections.
      *
      * @param options
      */
@@ -632,7 +632,7 @@ export class APIClient {
     },
 
     /**
-     * Vector similarity search
+     * Vector similarity search.
      *
      * @param collection
      * @param data
@@ -661,7 +661,7 @@ export class APIClient {
     },
 
     /**
-     * Execute graph query
+     * Execute graph query.
      *
      * @param data
      * @param data.query
@@ -682,7 +682,7 @@ export class APIClient {
     },
 
     /**
-     * Execute SQL query
+     * Execute SQL query.
      *
      * @param data
      * @param data.query
@@ -704,7 +704,7 @@ export class APIClient {
     },
 
     /**
-     * Get database health
+     * Get database health.
      *
      * @param options
      */
@@ -725,11 +725,11 @@ export class APIClient {
   // ===== SYSTEM API METHODS =====
 
   /**
-   * System API client
+   * System API client.
    */
   public readonly system = {
     /**
-     * Get system health
+     * Get system health.
      *
      * @param options
      */
@@ -749,7 +749,7 @@ export class APIClient {
     },
 
     /**
-     * Get system metrics
+     * Get system metrics.
      *
      * @param options
      */
@@ -773,7 +773,7 @@ export class APIClient {
   // ===== UTILITY METHODS =====
 
   /**
-   * Update client configuration
+   * Update client configuration.
    *
    * @param newConfig
    */
@@ -783,14 +783,14 @@ export class APIClient {
   }
 
   /**
-   * Get current configuration
+   * Get current configuration.
    */
   public getConfig(): APIClientConfig {
     return { ...this.config };
   }
 
   /**
-   * Test API connectivity
+   * Test API connectivity.
    *
    * @param options
    */
@@ -805,7 +805,7 @@ export class APIClient {
 }
 
 /**
- * Factory function to create API client
+ * Factory function to create API client.
  *
  * @param config
  */
@@ -814,8 +814,8 @@ export const createAPIClient = (config?: Partial<APIClientConfig>): APIClient =>
 };
 
 /**
- * Default API client instance
- * Pre-configured for local development
+ * Default API client instance.
+ * Pre-configured for local development.
  */
 export const apiClient = createAPIClient();
 

@@ -1,16 +1,23 @@
-import { getLogger } from "../../config/logging-config";
-const logger = getLogger("interfaces-web-system-metrics-dashboard");
+/**
+ * @file Interface implementation: system-metrics-dashboard
+ */
+
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-web-system-metrics-dashboard');
+
 /** Unified Performance Dashboard */
 /** Real-time monitoring and analytics for Claude Zen systems */
 
 import { EventEmitter } from 'node:events';
-import { createDAO, createRepository, DatabaseTypes, EntityTypes } from '../../database/index';
-import type { IRepository } from '../../database/interfaces';
+import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
+import { createDAO, createRepository, DatabaseTypes, EntityTypes } from '../database/index';
+import type { IRepository } from '../database/interfaces';
 // Import UACL for unified client management
 import { UACLHelpers, uacl } from '../clients/index';
 import type MCPPerformanceMetrics from '../mcp/performance-metrics';
 import type EnhancedMemory from '../memory/memory';
-import { getMCPServerURL, getWebDashboardURL } from '../../config/url-builder';
 
 interface DashboardConfig {
   refreshInterval?: number;
@@ -59,14 +66,14 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     this.enhancedMemory = enhancedMemory;
 
     this.config = {
-      refreshInterval: config.refreshInterval ?? 1000,
-      enableRealtime: config.enableRealtime ?? true,
-      maxDataPoints: config.maxDataPoints ?? 1000,
+      refreshInterval: config?.refreshInterval ?? 1000,
+      enableRealtime: config?.enableRealtime ?? true,
+      maxDataPoints: config?.maxDataPoints ?? 1000,
       alertThresholds: {
-        latency: config.alertThresholds?.latency ?? 1000,
-        errorRate: config.alertThresholds?.errorRate ?? 0.05,
-        memoryUsage: config.alertThresholds?.memoryUsage ?? 100 * 1024 * 1024,
-        ...config.alertThresholds,
+        latency: config?.alertThresholds?.latency ?? 1000,
+        errorRate: config?.alertThresholds?.errorRate ?? 0.05,
+        memoryUsage: config?.alertThresholds?.memoryUsage ?? 100 * 1024 * 1024,
+        ...config?.alertThresholds,
       },
     };
   }
@@ -97,14 +104,14 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     try {
       this.vectorRepository = await createRepository(
         EntityTypes.VectorDocument,
-        DatabaseTypes.LanceDB,
+        DatabaseTypes?.LanceDB,
         {
           database: './data/dashboard-metrics',
           options: { vectorSize: 384, metricType: 'cosine' },
         }
       );
 
-      this.vectorDAO = await createDAO(EntityTypes.VectorDocument, DatabaseTypes.LanceDB, {
+      this.vectorDAO = await createDAO(EntityTypes.VectorDocument, DatabaseTypes?.LanceDB, {
         database: './data/dashboard-metrics',
         options: { vectorSize: 384 },
       });
@@ -144,7 +151,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       memory: any;
       database: any;
       neural: any;
-      clients: any; // Added UACL client metrics
+      clients: any; // Added UACL client metrics.
     };
     performance: {
       uptime: number;
@@ -182,7 +189,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   }
 
   /**
-   * Assess overall system health
+   * Assess overall system health.
    *
    * @param mcpMetrics
    * @param memoryStats
@@ -284,7 +291,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   }
 
   /**
-   * Assess individual component health
+   * Assess individual component health.
    *
    * @param latency
    * @param errorRate
@@ -392,7 +399,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
    * @param status
    */
   private displayConsoleStatus(status: any): void {
-    // Overall health
+    // Overall health.
     const _healthEmoji =
       status.health.overall === 'healthy' ? '✅' : status.health.overall === 'warning' ? '⚠️' : '❌';
 
@@ -451,7 +458,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   }
 
   /**
-   * Assess client health and add alerts
+   * Assess client health and add alerts.
    *
    * @param clientMetrics
    * @param alerts

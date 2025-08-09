@@ -1,9 +1,15 @@
-import { getLogger } from "./config/logging-config";
-const logger = getLogger("claude-zen-integrated");
 /**
- * Claude Code Zen - Integrated Application Entry Point
+ * @file claude-zen-integrated implementation
+ */
+
+
+import { getLogger } from './config/logging-config';
+
+const logger = getLogger('claude-zen-integrated');
+/**
+ * Claude Code Zen - Integrated Application Entry Point.
  *
- * This file provides the CLI-compatible entry point with command-line argument support
+ * This file provides the CLI-compatible entry point with command-line argument support.
  * and integrates with HTTP server functionality for development and production use.
  */
 
@@ -21,8 +27,7 @@ interface IntegratedOptions {
  */
 export class ClaudeZenIntegrated {
   private options: IntegratedOptions;
-  private server?: any; // HTTP server instance
-
+  private server?: any; // HTTP server instance.
   constructor(options: IntegratedOptions = {}) {
     this.options = {
       port: 3000,
@@ -34,7 +39,7 @@ export class ClaudeZenIntegrated {
   }
 
   /**
-   * Parse command line arguments
+   * Parse command line arguments.
    *
    * @param args
    */
@@ -65,7 +70,7 @@ export class ClaudeZenIntegrated {
   }
 
   /**
-   * Initialize basic system without DI complexity
+   * Initialize basic system without DI complexity.
    */
   async initialize(): Promise<void> {
     // Start HTTP server if port is specified
@@ -75,7 +80,7 @@ export class ClaudeZenIntegrated {
   }
 
   /**
-   * Start HTTP server for API access
+   * Start HTTP server for API access.
    */
   private async startServer(): Promise<void> {
     try {
@@ -111,7 +116,7 @@ export class ClaudeZenIntegrated {
   }
 
   /**
-   * Simplified shutdown
+   * Simplified shutdown.
    */
   async shutdown(): Promise<void> {
     // Close HTTP server
@@ -127,7 +132,7 @@ export class ClaudeZenIntegrated {
 }
 
 /**
- * Main entry point for CLI usage
+ * Main entry point for CLI usage.
  */
 async function main() {
   // Parse command line arguments
@@ -150,7 +155,7 @@ async function main() {
     await app.initialize();
 
     // Keep process alive
-    if (!options.daemon) {
+    if (!options?.daemon) {
     }
 
     // Keep the process running

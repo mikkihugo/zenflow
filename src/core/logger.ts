@@ -1,8 +1,10 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-core-logger");
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-core-logger');
+
 /**
  * @file Logger utility for Neural and Queen components
- * Simple wrapper around the core logger for component-specific logging
+ * Simple wrapper around the core logger for component-specific logging.
  * @module Logger
  */
 
@@ -33,10 +35,13 @@ export interface ILogger {
 const getLogLevel = (): LogLevel => {
   try {
     const centralConfig = config?.getAll();
-    const configLevel = centralConfig?.core?.logger?.level?.toUpperCase();
+    const configLevel = centralConfig?.core?.logger?.level.toUpperCase();
     // Fallback for development environment
-    const level = centralConfig?.environment?.isDevelopment && configLevel === 'INFO' ? 'DEBUG' : configLevel;
-    return Object.values(LogLevel).find(l => l.toUpperCase() === level) as LogLevel || LogLevel.INFO;
+    const level =
+      centralConfig?.environment?.isDevelopment && configLevel === 'INFO' ? 'DEBUG' : configLevel;
+    return (
+      (Object.values(LogLevel).find((l) => l.toUpperCase() === level) as LogLevel) || LogLevel.INFO
+    );
   } catch (error) {
     // Fallback to INFO if config is not available
     return LogLevel.INFO;
@@ -44,7 +49,12 @@ const getLogLevel = (): LogLevel => {
 };
 
 const shouldLog = (messageLevel: LogLevel, configuredLevel: LogLevel = getLogLevel()): boolean => {
-  const levels = { [LogLevel.DEBUG]: 0, [LogLevel.INFO]: 1, [LogLevel.WARN]: 2, [LogLevel.ERROR]: 3 };
+  const levels = {
+    [LogLevel.DEBUG]: 0,
+    [LogLevel.INFO]: 1,
+    [LogLevel.WARN]: 2,
+    [LogLevel.ERROR]: 3,
+  };
   return levels[messageLevel] >= levels[configuredLevel];
 };
 
@@ -56,7 +66,10 @@ const formatLogMessage = (level: string, prefix: string, message: string, meta?:
 
 // Enhanced logger implementation with proper level control
 function simpleCreateLogger(config: Partial<LoggerConfig> | string = {}) {
-  const configObj = typeof config === 'string' ? { prefix: config, level: getLogLevel() } : { level: getLogLevel(), ...config };
+  const configObj =
+    typeof config === 'string'
+      ? { prefix: config, level: getLogLevel() }
+      : { level: getLogLevel(), ...config };
   const prefix = configObj?.prefix ? `[${configObj?.prefix}]` : '[claude-zen]';
   const logLevel = configObj?.level || getLogLevel();
 

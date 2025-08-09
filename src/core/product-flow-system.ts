@@ -3,12 +3,18 @@
  *
  * MISSION ACCOMPLISHED: Clean Product Flow naming
  * - Product Flow System orchestrates Vision → ADRs → PRDs → Epics → Features → Tasks → Code
- * - SPARC methodology applied as implementation tool WITHIN Features/Tasks
+ * - SPARC methodology applied as implementation tool WITHIN Features/Tasks.
  * - Clear naming: Product Flow = WHAT, SPARC = HOW.
  */
+/**
+ * @file product-flow-system implementation
+ */
+
+
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
+import type { DocumentManager } from '../core/workflow-engine';
 import { createLogger } from './logger';
 
 const logger = createLogger('ProductFlowSystem');
