@@ -1,21 +1,4 @@
-/**
- * Migration Example: Updating Memory Operations to Use Type Guards
- *
- * This file demonstrates how to migrate existing memory operations
- * from unsafe union type access to type-safe patterns using type guards.
- */
-
-import type { SessionMemoryStore } from '../memory/memory';
-import {
-  extractErrorMessage,
-  isMemoryError,
-  isMemoryNotFound,
-  isMemorySuccess,
-  type MemoryError,
-  type MemoryNotFound,
-  type MemoryResult,
-  type MemorySuccess,
-} from '../utils/type-guards';
+import { extractErrorMessage, isMemoryError, isMemoryNotFound, isMemorySuccess } from '../utils/type-guards';
 
 // ============================================
 // BEFORE: Unsafe Memory Operations
@@ -34,7 +17,7 @@ class UnsafeMemoryService {
     const result = await this.store.retrieve('user-profiles', userId);
 
     // This could fail at runtime if result is null/undefined
-    return result.profile || null; // ❌ Unsafe property access
+    return result?.profile || null; // ❌ Unsafe property access
   }
 
   // ❌ Unsafe: No error handling for failed operations
@@ -48,8 +31,8 @@ class UnsafeMemoryService {
     const result = await this.store.retrieve('user-preferences', userId);
 
     // ❌ Direct property access without null/type checking
-    const preferences = result.preferences;
-    const settings = result.settings;
+    const preferences = result?.preferences;
+    const settings = result?.settings;
 
     return { preferences, settings };
   }
@@ -114,7 +97,7 @@ class SafeMemoryService {
       if (isMemorySuccess(result)) {
         return result;
       } else if (isMemoryError(result)) {
-        console.error(`❌ Failed to cache session for ${userId}:`, result.error.message);
+        console.error(`❌ Failed to cache session for ${userId}:`, result?.error?.message);
         return result;
       }
 
@@ -151,8 +134,8 @@ class SafeMemoryService {
     if (isMemorySuccess(result)) {
       // ✅ Type-safe access - TypeScript knows result.data exists
       return {
-        preferences: result.data.preferences || null,
-        settings: result.data.settings || null,
+        preferences: result?.data?.preferences || null,
+        settings: result?.data?.settings || null,
       };
     } else if (isMemoryNotFound(result)) {
       // ✅ Handle not found case gracefully
@@ -165,7 +148,7 @@ class SafeMemoryService {
       return {
         preferences: null,
         settings: null,
-        error: result.error.message,
+        error: result?.error?.message,
       };
     }
 
@@ -196,7 +179,7 @@ class SafeMemoryService {
     // Get profile with error handling
     const profileResult = await this.getUserProfile(userId);
     if (isMemorySuccess(profileResult)) {
-      profile = profileResult.data;
+      profile = profileResult?.data;
     } else {
       const errorMsg = extractErrorMessage(profileResult);
       if (errorMsg) errors.push(`Profile: ${errorMsg}`);
@@ -205,7 +188,7 @@ class SafeMemoryService {
     // Get session with error handling
     const sessionResult = await this.retrieveWithResult<UserSession>('user-sessions', userId);
     if (isMemorySuccess(sessionResult)) {
-      session = sessionResult.data;
+      session = sessionResult?.data;
     } else {
       const errorMsg = extractErrorMessage(sessionResult);
       if (errorMsg) errors.push(`Session: ${errorMsg}`);
@@ -213,9 +196,9 @@ class SafeMemoryService {
 
     // Get preferences with error handling
     const preferencesData = await this.getUserPreferences(userId);
-    preferences = preferencesData.preferences;
-    if (preferencesData.error) {
-      errors.push(`Preferences: ${preferencesData.error}`);
+    preferences = preferencesData?.preferences;
+    if (preferencesData?.error) {
+      errors.push(`Preferences: ${preferencesData?.error}`);
     }
 
     return { profile, session, preferences, errors };
@@ -246,9 +229,9 @@ class SafeMemoryService {
         return {
           userId,
           data: {
-            profile: userData.profile,
-            session: userData.session,
-            error: userData.errors.length > 0 ? userData.errors.join('; ') : undefined,
+            profile: userData?.profile,
+            session: userData?.session,
+            error: userData?.errors.length > 0 ? userData?.errors?.join('; ') : undefined,
           },
         };
       } catch (error) {
@@ -266,7 +249,7 @@ class SafeMemoryService {
     const resolved = await Promise.all(promises);
 
     resolved.forEach(({ userId, data }) => {
-      results.set(userId, data);
+      results?.set(userId, data);
     });
 
     return results;
@@ -418,7 +401,7 @@ export async function demonstrateMigration(): Promise<void> {
   if (isMemorySuccess(profileResult)) {
   } else if (isMemoryNotFound(profileResult)) {
   } else if (isMemoryError(profileResult)) {
-    console.error('❌ Profile error:', profileResult.error.message);
+    console.error('❌ Profile error:', profileResult?.error?.message);
   }
 
   // ✅ Type-safe session caching
@@ -434,29 +417,29 @@ export async function demonstrateMigration(): Promise<void> {
 
   if (isMemorySuccess(cacheResult)) {
   } else if (isMemoryError(cacheResult)) {
-    console.error('❌ Session caching failed:', cacheResult.error.message);
+    console.error('❌ Session caching failed:', cacheResult?.error?.message);
   }
 
   // ✅ Type-safe preferences with graceful error handling
   const preferencesData = await safeService.getUserPreferences(userId);
 
-  if (preferencesData.preferences) {
-  } else if (preferencesData.error) {
-    console.error('❌ Preferences error:', preferencesData.error);
+  if (preferencesData?.preferences) {
+  } else if (preferencesData?.error) {
+    console.error('❌ Preferences error:', preferencesData?.error);
   } else {
   }
 
   // ✅ Complex operation with comprehensive error handling
   const userData = await safeService.getUserData(userId);
 
-  if (userData.errors.length > 0) {
+  if (userData?.errors.length > 0) {
   }
 
   // ✅ Batch operations with individual error handling
   const batchUserIds = ['user1', 'user2', 'user3'];
   const batchResults = await safeService.getUsersData(batchUserIds);
-  batchResults.forEach((result, userId) => {
-    if (result.error) {
+  batchResults?.forEach((result, userId) => {
+    if (result?.error) {
     } else {
     }
   });

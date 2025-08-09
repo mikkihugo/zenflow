@@ -1,9 +1,10 @@
-#!/usr/bin/env nodeimport { getLogger } from "../../../../config/logging-config";
+#!/usr/bin/env node
+import { getLogger } from "../../../../config/logging-config";
 const logger = getLogger("coordination-swarm-sparc-cli-cli-demo");
 /**
- * SPARC Architecture CLI Demo
+ * SPARC Architecture CLI Demo.
  *
- * Demonstrates the CLI functionality for architecture management
+ * Demonstrates the CLI functionality for architecture management.
  */
 
 import { createArchitectureCLI } from './architecture-commands';

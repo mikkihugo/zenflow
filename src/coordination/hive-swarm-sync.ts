@@ -6,15 +6,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
-import type {
-  GlobalAgentInfo,
-  GlobalResourceMetrics,
-  HiveHealthMetrics,
-  Task as HiveTask,
-  SwarmInfo,
-} from './hive-types';
 
 export interface HiveRegistry {
   // Global agent registry
@@ -35,9 +26,7 @@ export interface HiveRegistry {
 }
 
 // Import HiveFACT from integration module
-import { type HiveFACTSystem, initializeHiveFACT } from './hive-fact-integration';
-// Import common types from hive-types
-import type { SwarmPerformanceMetrics } from './hive-types';
+import { initializeHiveFACT } from './hive-fact-integration';
 
 /**
  * Central hive mind synchronization coordinator
@@ -486,20 +475,20 @@ export class HiveSwarmCoordinator extends EventEmitter {
     // Handle FACT requests from swarms
     (this.eventBus as any).on('swarm:fact:request', async (data: any) => {
       try {
-        const result = await this.requestUniversalFact(data.swarmId, data.factType, data.subject);
+        const result = await this.requestUniversalFact(data?.swarmId, data?.factType, data?.subject);
 
         (this.eventBus as any).emit('swarm:fact:response', {
-          requestId: data.requestId,
-          swarmId: data.swarmId,
-          factType: data.factType,
-          subject: data.subject,
+          requestId: data?.requestId,
+          swarmId: data?.swarmId,
+          factType: data?.factType,
+          subject: data?.subject,
           content: result,
           success: true,
         });
       } catch (error) {
         (this.eventBus as any).emit('swarm:fact:response', {
-          requestId: data.requestId,
-          swarmId: data.swarmId,
+          requestId: data?.requestId,
+          swarmId: data?.swarmId,
           error: error instanceof Error ? error.message : 'Unknown error',
           success: false,
         });
@@ -527,22 +516,22 @@ export class HiveSwarmCoordinator extends EventEmitter {
    */
   public registerSwarm(data: any): void {
     const swarmInfo: SwarmInfo = {
-      id: data.swarmId,
-      hiveMindId: data.hiveMindId || 'default',
-      topology: data.topology || 'mesh',
-      agentCount: data.agentCount || 0,
-      activeAgents: data.activeAgents || 0,
-      taskQueue: data.taskQueue || 0,
-      performance: data.performance || this.initializeSwarmPerformance(),
+      id: data?.swarmId,
+      hiveMindId: data?.hiveMindId || 'default',
+      topology: data?.topology || 'mesh',
+      agentCount: data?.agentCount || 0,
+      activeAgents: data?.activeAgents || 0,
+      taskQueue: data?.taskQueue || 0,
+      performance: data?.performance || this.initializeSwarmPerformance(),
       lastHeartbeat: new Date(),
-      location: data.location,
+      location: data?.location,
     };
 
-    this.hiveRegistry.activeSwarms.set(data.swarmId, swarmInfo);
-    this.connectionHealth.set(data.swarmId, 100);
+    this.hiveRegistry.activeSwarms.set(data?.swarmId, swarmInfo);
+    this.connectionHealth.set(data?.swarmId, 100);
 
-    this.logger?.info('Swarm registered with hive', { swarmId: data.swarmId });
-    this.emit('swarm:registered', { swarmId: data.swarmId, swarmInfo });
+    this.logger?.info('Swarm registered with hive', { swarmId: data?.swarmId });
+    this.emit('swarm:registered', { swarmId: data?.swarmId, swarmInfo });
   }
 
   /**
@@ -552,23 +541,23 @@ export class HiveSwarmCoordinator extends EventEmitter {
    */
   private registerAgent(data: any): void {
     const agentInfo: GlobalAgentInfo = {
-      ...data.agentState,
-      swarmId: data.swarmId,
-      hiveMindId: data.hiveMindId || 'default',
-      availability: data.availability || {
+      ...data?.agentState,
+      swarmId: data?.swarmId,
+      hiveMindId: data?.hiveMindId || 'default',
+      availability: data?.availability || {
         status: 'available',
         currentTasks: 0,
         maxConcurrentTasks: 5,
       },
       lastSync: new Date(),
-      networkLatency: data.networkLatency || 50,
+      networkLatency: data?.networkLatency || 50,
     };
 
-    this.hiveRegistry.availableAgents.set(data.agentState.id, agentInfo);
+    this.hiveRegistry.availableAgents.set(data?.agentState?.id, agentInfo);
 
     this.logger?.debug('Agent registered with hive', {
-      agentId: data.agentState.id,
-      swarmId: data.swarmId,
+      agentId: data?.agentState?.id,
+      swarmId: data?.swarmId,
     });
   }
 
@@ -578,9 +567,9 @@ export class HiveSwarmCoordinator extends EventEmitter {
    * @param data
    */
   private updateAgentState(data: any): void {
-    const agent = this.hiveRegistry.availableAgents.get(data.agentId);
+    const agent = this.hiveRegistry.availableAgents.get(data?.agentId);
     if (agent) {
-      Object.assign(agent, data.updates);
+      Object.assign(agent, data?.updates);
       agent.lastSync = new Date();
     }
   }
@@ -591,14 +580,14 @@ export class HiveSwarmCoordinator extends EventEmitter {
    * @param data
    */
   private handleSwarmHeartbeat(data: any): void {
-    const swarm = this.hiveRegistry.activeSwarms.get(data.swarmId);
+    const swarm = this.hiveRegistry.activeSwarms.get(data?.swarmId);
     if (swarm) {
       swarm.lastHeartbeat = new Date();
-      swarm.agentCount = data.agentCount || swarm.agentCount;
-      swarm.activeAgents = data.activeAgents || swarm.activeAgents;
-      swarm.taskQueue = data.taskQueue || swarm.taskQueue;
+      swarm.agentCount = data?.agentCount || swarm.agentCount;
+      swarm.activeAgents = data?.activeAgents || swarm.activeAgents;
+      swarm.taskQueue = data?.taskQueue || swarm.taskQueue;
 
-      this.connectionHealth.set(data.swarmId, 100);
+      this.connectionHealth.set(data?.swarmId, 100);
     }
   }
 
@@ -609,10 +598,10 @@ export class HiveSwarmCoordinator extends EventEmitter {
    */
   private handleTaskCompletion(data: any): void {
     // Remove from task assignments
-    this.hiveRegistry.taskAssignments.delete(data.taskId);
+    this.hiveRegistry.taskAssignments.delete(data?.taskId);
 
     // Update agent availability
-    const agent = this.hiveRegistry.availableAgents.get(data.agentId);
+    const agent = this.hiveRegistry.availableAgents.get(data?.agentId);
     if (agent) {
       agent.currentWorkload = Math.max(0, agent.currentWorkload - 1);
       if (agent.currentWorkload === 0) {
@@ -628,18 +617,18 @@ export class HiveSwarmCoordinator extends EventEmitter {
    */
   private handleSwarmDisconnect(data: any): void {
     // Remove swarm
-    this.hiveRegistry.activeSwarms.delete(data.swarmId);
-    this.connectionHealth.delete(data.swarmId);
+    this.hiveRegistry.activeSwarms.delete(data?.swarmId);
+    this.connectionHealth.delete(data?.swarmId);
 
     // Remove agents from this swarm
     for (const [agentId, agent] of this.hiveRegistry.availableAgents) {
-      if (agent.swarmId === data.swarmId) {
+      if (agent.swarmId === data?.swarmId) {
         this.hiveRegistry.availableAgents.delete(agentId);
       }
     }
 
-    this.logger?.warn('Swarm disconnected from hive', { swarmId: data.swarmId });
-    this.emit('swarm:disconnected', { swarmId: data.swarmId });
+    this.logger?.warn('Swarm disconnected from hive', { swarmId: data?.swarmId });
+    this.emit('swarm:disconnected', { swarmId: data?.swarmId });
   }
 
   /**

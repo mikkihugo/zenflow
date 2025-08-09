@@ -120,25 +120,25 @@ export async function exampleProjectInitialization() {
   };
 
   const result = await projectInitBatchTool.handler(params);
-  if (result.success && result.content && result.content[0] && result.content[0].text) {
-    const response = result.content[0].text;
+  if (result?.success && result?.content && result?.content?.[0] && result?.content?.[0]?.text) {
+    const response = result?.content?.[0]?.text;
     // Extract metrics from response
     if (response) {
-      const speedMatch = response.match(/(\d+\.?\d*)x speed improvement/);
-      const tokenMatch = response.match(/(\d+\.?\d*)% token reduction/);
+      const speedMatch = response?.match(/(\d+\.?\d*)x speed improvement/);
+      const tokenMatch = response?.match(/(\d+\.?\d*)% token reduction/);
 
       // TODO: TypeScript error TS2339 - Property 'performance' does not exist on type 'MCPToolResult' (AI unsure of safe fix - human review needed)
       // Adding performance tracking if the property exists
       const resultWithPerformance = result as any;
-      if (!resultWithPerformance.performance) {
-        resultWithPerformance.performance = {};
+      if (!resultWithPerformance?.performance) {
+        resultWithPerformance?.performance = {};
       }
 
-      if (speedMatch && speedMatch[1]) {
-        resultWithPerformance.performance.speedImprovement = Number.parseFloat(speedMatch[1]);
+      if (speedMatch && speedMatch?.[1]) {
+        resultWithPerformance?.performance?.speedImprovement = Number.parseFloat(speedMatch?.[1]);
       }
-      if (tokenMatch && tokenMatch[1]) {
-        resultWithPerformance.performance.tokenReduction = Number.parseFloat(tokenMatch[1]);
+      if (tokenMatch && tokenMatch?.[1]) {
+        resultWithPerformance?.performance?.tokenReduction = Number.parseFloat(tokenMatch?.[1]);
       }
     }
   }

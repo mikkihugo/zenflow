@@ -1,9 +1,10 @@
-#!/usr/bin/env nodeimport { getLogger } from "../../../../config/logging-config";
+#!/usr/bin/env node
+import { getLogger } from "../../../../config/logging-config";
 const logger = getLogger("coordination-swarm-core-hooks-cli");
 
 /**
  * CLI handler for ruv-swarm hooks
- * Usage: npx ruv-swarm hook <type> [options]
+ * Usage: npx ruv-swarm hook <type> [options].
  */
 
 import { handleHook } from './index';

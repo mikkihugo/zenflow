@@ -5,17 +5,7 @@
  * to support different underlying database technologies.
  */
 
-import type {
-  CustomQuery,
-  DatabaseMetadata,
-  HealthStatus,
-  IDataAccessObject,
-  IRepository,
-  PerformanceMetrics,
-  QueryOptions,
-  SortCriteria,
-  TransactionOperation,
-} from './interfaces';
+import type { IDataAccessObject, IRepository } from './interfaces';
 
 // Create a simple logger interface to avoid import issues
 interface ILogger {
@@ -61,11 +51,11 @@ export abstract class BaseDao<T> implements IRepository<T> {
       const query = this.buildFindByIdQuery(id);
       const result = await this.adapter.query(query.sql, query.params);
 
-      if (result.rowCount === 0) {
+      if (result?.rowCount === 0) {
         return null;
       }
 
-      return this.mapRowToEntity(result.rows[0]);
+      return this.mapRowToEntity(result?.rows?.[0]);
     } catch (error) {
       this.logger.error(`Failed to find entity by ID: ${error}`);
       throw new Error(
@@ -87,7 +77,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
       const query = this.buildFindByQuery(criteria, options);
       const result = await this.adapter.query(query.sql, query.params);
 
-      return result.rows.map((row) => this.mapRowToEntity(row));
+      return result?.rows?.map((row) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`Failed to find entities by criteria: ${error}`);
       throw new Error(
@@ -106,7 +96,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
       const query = this.buildFindAllQuery(options);
       const result = await this.adapter.query(query.sql, query.params);
 
-      return result.rows.map((row) => this.mapRowToEntity(row));
+      return result?.rows?.map((row) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`Failed to find all entities: ${error}`);
       throw new Error(
@@ -126,12 +116,12 @@ export abstract class BaseDao<T> implements IRepository<T> {
       const result = await this.adapter.query(query.sql, query.params);
 
       // For most databases, we need to fetch the created entity
-      if (result.rows && result.rows.length > 0) {
-        return this.mapRowToEntity(result.rows[0]);
+      if (result?.rows && result?.rows.length > 0) {
+        return this.mapRowToEntity(result?.rows?.[0]);
       }
 
       // Fallback: assume auto-generated ID and fetch the entity
-      const createdId = result.rows?.[0]?.id || result.rows?.[0]?.insertId;
+      const createdId = result?.rows?.[0]?.id || result?.rows?.[0]?.insertId;
       if (createdId) {
         const created = await this.findById(createdId);
         if (created) {
@@ -179,7 +169,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
       const query = this.buildDeleteQuery(id);
       const result = await this.adapter.query(query.sql, query.params);
 
-      return result.rowCount > 0;
+      return result?.rowCount > 0;
     } catch (error) {
       this.logger.error(`Failed to delete entity: ${error}`);
       throw new Error(`Delete failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -196,7 +186,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
       const query = this.buildCountQuery(criteria);
       const result = await this.adapter.query(query.sql, query.params);
 
-      return result.rows[0]?.count || 0;
+      return result?.rows?.[0]?.count || 0;
     } catch (error) {
       this.logger.error(`Failed to count entities: ${error}`);
       throw new Error(`Count failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -430,7 +420,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
               throw new Error(`Unsupported operation type: ${operation.type}`);
           }
 
-          results.push(result);
+          results?.push(result);
         }
 
         return results as R;

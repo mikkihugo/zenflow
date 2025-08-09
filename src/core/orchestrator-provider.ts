@@ -2,7 +2,6 @@ import { config } from '../config';
 import { HTTPMCPServer as MCPServer } from '../interfaces/mcp';
 import { TerminalManager } from '../interfaces/terminal';
 import { MemoryManager } from '../memory/index';
-import type { CoordinationProvider } from '../types/shared-types';
 import { EventBus } from './event-bus';
 import { createLogger } from './logger';
 import { Orchestrator } from './orchestrator';
@@ -34,10 +33,10 @@ export function createOrchestratorInstance(
   const eventBus = new EventBus();
 
   // Get configuration sections from unified config
-  const terminalConfig = config.getSection('interfaces').terminal;
-  const memoryConfig = config.getSection('storage').memory;
-  const coordinationConfig = config.getSection('coordination');
-  const mcpConfig = config.getSection('interfaces').mcp.http;
+  const terminalConfig = config?.getSection('interfaces').terminal;
+  const memoryConfig = config?.getSection('storage').memory;
+  const coordinationConfig = config?.getSection('coordination');
+  const mcpConfig = config?.getSection('interfaces').mcp.http;
 
   const terminalManager = new TerminalManager(terminalConfig, logger, eventBus);
   const memoryManager = new MemoryManager(memoryConfig);
@@ -73,7 +72,7 @@ export function getOrchestratorInstance(): Orchestrator {
       // Dynamic import to break circular dependency
       import('../coordination/manager')
         .then(({ CoordinationManager }) => {
-          const coordinationConfig = config.getSection('coordination');
+          const coordinationConfig = config?.getSection('coordination');
           const logger = createLogger({ prefix: 'coordination' });
           const eventBus = new EventBus();
 

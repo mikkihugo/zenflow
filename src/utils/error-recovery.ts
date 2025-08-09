@@ -90,12 +90,12 @@ export class ErrorRecoverySystem extends EventEmitter {
       const duration = Date.now() - startTime;
 
       const recoveryResult: RecoveryResult = {
-        success: result.success,
+        success: result?.success,
         strategy: strategy.id,
-        actionsExecuted: result.actionsExecuted,
+        actionsExecuted: result?.actionsExecuted,
         duration,
-        ...(result.error !== undefined && { error: result.error }),
-        ...(result.nextRetryAt !== undefined && { nextRetryAt: result.nextRetryAt }),
+        ...(result?.error !== undefined && { error: result?.error }),
+        ...(result?.nextRetryAt !== undefined && { nextRetryAt: result?.nextRetryAt }),
       };
 
       this.recordRecovery(context, recoveryResult);

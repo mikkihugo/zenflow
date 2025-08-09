@@ -20,11 +20,6 @@ const logger = getLogger("src-knowledge-knowledge-processor");
 import { EventEmitter } from 'node:events';
 import path from 'node:path';
 import KnowledgeCacheSystem from './knowledge-cache-system';
-import type {
-  KnowledgeGatheringMission,
-  ProjectContext,
-  ProjectContextAnalyzer,
-} from './project-context-analyzer';
 
 // WASM module interface (will be loaded dynamically)
 interface WASMFact {
@@ -351,10 +346,10 @@ export class WASMFactIntegration extends EventEmitter {
           includeSecurityInfo: true,
         });
 
-        results.set(dep, result);
+        results?.set(dep, result);
       } catch (error) {
         logger.error(`❌ Failed to gather knowledge for ${dep}:`, error);
-        results.set(dep, { error: error.message });
+        results?.set(dep, { error: error.message });
       }
     });
 
@@ -385,11 +380,11 @@ export class WASMFactIntegration extends EventEmitter {
             priority: mission.priority,
           });
 
-          results.set(mission.id, result);
+          results?.set(mission.id, result);
           return { mission: mission.id, success: true };
         } catch (error) {
           logger.error(`Mission failed [${mission.id}]:`, error);
-          results.set(mission.id, { error: error.message });
+          results?.set(mission.id, { error: error.message });
           return { mission: mission.id, success: false, error };
         }
       });

@@ -32,10 +32,10 @@ export interface ILogger {
 // Configuration from centralized config system
 const getLogLevel = (): LogLevel => {
   try {
-    const centralConfig = config.getAll();
-    const configLevel = centralConfig.core.logger.level.toUpperCase();
+    const centralConfig = config?.getAll();
+    const configLevel = centralConfig?.core?.logger?.level?.toUpperCase();
     // Fallback for development environment
-    const level = centralConfig.environment.isDevelopment && configLevel === 'INFO' ? 'DEBUG' : configLevel;
+    const level = centralConfig?.environment?.isDevelopment && configLevel === 'INFO' ? 'DEBUG' : configLevel;
     return Object.values(LogLevel).find(l => l.toUpperCase() === level) as LogLevel || LogLevel.INFO;
   } catch (error) {
     // Fallback to INFO if config is not available
@@ -57,8 +57,8 @@ const formatLogMessage = (level: string, prefix: string, message: string, meta?:
 // Enhanced logger implementation with proper level control
 function simpleCreateLogger(config: Partial<LoggerConfig> | string = {}) {
   const configObj = typeof config === 'string' ? { prefix: config, level: getLogLevel() } : { level: getLogLevel(), ...config };
-  const prefix = configObj.prefix ? `[${configObj.prefix}]` : '[claude-zen]';
-  const logLevel = configObj.level || getLogLevel();
+  const prefix = configObj?.prefix ? `[${configObj?.prefix}]` : '[claude-zen]';
+  const logLevel = configObj?.level || getLogLevel();
 
   return {
     debug: (message: string, meta?: any) => {

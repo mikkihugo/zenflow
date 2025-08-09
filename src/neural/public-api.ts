@@ -1,13 +1,4 @@
 /**
- * Public API for Neural System
- *
- * This file provides the public interface for external modules to interact
- * with the neural system without directly accessing WASM internals
- */
-
-import type { WASMPerformanceMetrics } from './types/wasm-types.js';
-
-/**
  * Public interface for neural WASM operations
  *
  * @example

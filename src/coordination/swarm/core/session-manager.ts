@@ -68,13 +68,13 @@ export interface SessionRecoveryOptions {
  * @example
  */
 export class SessionManager extends EventEmitter {
-  private coordinationDao: IDao<SessionCoordinationDao>;
+  private coordinationDao: SessionCoordinationDao;
   private activeSessions: Map<string, SessionState>;
   private config: Required<SessionConfig>;
   private checkpointTimers: Map<string, NodeJS.Timeout>;
   private initialized: boolean = false;
 
-  constructor(coordinationDao: IDao<SessionCoordinationDao>, config: SessionConfig = {}) {
+  constructor(coordinationDao: SessionCoordinationDao, config: SessionConfig = {}) {
     super();
 
     this.coordinationDao = coordinationDao;
@@ -99,18 +99,66 @@ export class SessionManager extends EventEmitter {
    */
   private async ensureInitialized(): Promise<void> {
     if (!this.coordinationDao) {
-      // Enhanced: Use correct IDao<SessionCoordinationDao> type - no casting needed
-      this.coordinationDao = await createDao<SessionCoordinationDao>(
+      // Create a coordination DAO with proper interface
+      const dao = await createDao<SessionEntity>(
         EntityTypes.CoordinationEvent,
         DatabaseTypes.Coordination
       );
+      
+      // Type assertion with proper coordination methods
+      this.coordinationDao = {
+        ...dao,
+        // Add coordination-specific methods
+        execute: async (sql: string, params?: unknown[]) => {
+          const customQuery = {
+            type: 'sql' as const,
+            query: sql,
+            parameters: params ? Object.fromEntries(params.map((p, i) => [i.toString(), p])) : {}
+          };
+          const result = await dao.executeCustomQuery<{ affectedRows?: number; insertId?: number }>(customQuery);
+          return result || { affectedRows: 0 };
+        },
+        query: async (sql: string, params?: unknown[]) => {
+          const customQuery = {
+            type: 'sql' as const,
+            query: sql,
+            parameters: params ? Object.fromEntries(params.map((p, i) => [i.toString(), p])) : {}
+          };
+          const result = await dao.executeCustomQuery<any[]>(customQuery);
+          return Array.isArray(result) ? result : [];
+        },
+        acquireLock: async (resourceId: string, lockTimeout?: number) => {
+          throw new Error('Lock operations not yet implemented');
+        },
+        releaseLock: async (lockId: string) => {
+          throw new Error('Lock operations not yet implemented');
+        },
+        subscribe: async (pattern: string, callback: any) => {
+          throw new Error('Subscription operations not yet implemented');
+        },
+        unsubscribe: async (subscriptionId: string) => {
+          throw new Error('Subscription operations not yet implemented');
+        },
+        publish: async (channel: string, event: any) => {
+          throw new Error('Publish operations not yet implemented');
+        },
+        getCoordinationStats: async () => {
+          return {
+            activeLocks: 0,
+            activeSubscriptions: 0,
+            messagesPublished: 0,
+            messagesReceived: 0,
+            uptime: Date.now()
+          };
+        }
+      } as SessionCoordinationDao;
     }
   }
 
   /**
    * Get initialized DAO with null safety.
    */
-  private async getDao() {
+  private async getDao(): Promise<SessionCoordinationDao> {
     await this.ensureInitialized();
     return this.coordinationDao!;
   }

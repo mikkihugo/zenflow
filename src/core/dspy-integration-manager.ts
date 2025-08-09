@@ -76,12 +76,12 @@ export class DSPyIntegrationManager {
     // Initialize DSPy wrapper
     try {
       const dsypConfig: DSPyConfig = {};
-      if (this.config.model !== undefined) dsypConfig.model = this.config.model;
-      if (this.config.temperature !== undefined) dsypConfig.temperature = this.config.temperature;
-      if (this.config.maxTokens !== undefined) dsypConfig.maxTokens = this.config.maxTokens;
-      if (this.config.apiKey !== undefined) dsypConfig.apiKey = this.config.apiKey;
-      if (this.config.baseURL !== undefined) dsypConfig.baseURL = this.config.baseURL;
-      if (this.config.modelParams !== undefined) dsypConfig.modelParams = this.config.modelParams;
+      if (this.config.model !== undefined) dsypConfig?.model = this.config.model;
+      if (this.config.temperature !== undefined) dsypConfig?.temperature = this.config.temperature;
+      if (this.config.maxTokens !== undefined) dsypConfig?.maxTokens = this.config.maxTokens;
+      if (this.config.apiKey !== undefined) dsypConfig?.apiKey = this.config.apiKey;
+      if (this.config.baseURL !== undefined) dsypConfig?.baseURL = this.config.baseURL;
+      if (this.config.modelParams !== undefined) dsypConfig?.modelParams = this.config.modelParams;
       
       this.dspyWrapper = await createDSPyWrapper(dsypConfig);
     } catch (error) {
@@ -96,8 +96,8 @@ export class DSPyIntegrationManager {
     const swarmConfig: any = {
       enableContinuousLearning: false, // Managed by unified learning
     };
-    if (this.config.model !== undefined) swarmConfig.model = this.config.model;
-    if (this.config.temperature !== undefined) swarmConfig.temperature = this.config.temperature;
+    if (this.config.model !== undefined) swarmConfig?.model = this.config.model;
+    if (this.config.temperature !== undefined) swarmConfig?.temperature = this.config.temperature;
     
     this.swarmIntelligence = new DSPySwarmIntelligence(swarmConfig);
 
@@ -128,7 +128,7 @@ export class DSPyIntegrationManager {
         },
         result,
         true,
-        result.confidence,
+        result?.confidence,
         Date.now() - startTime
       );
 
@@ -179,8 +179,8 @@ export class DSPyIntegrationManager {
 
       return {
         ...result,
-        qualityScore: await this.assessCodeQuality(result.code),
-        integrationRecommendations: await this.getIntegrationRecommendations(result.code, context),
+        qualityScore: await this.assessCodeQuality(result?.code),
+        integrationRecommendations: await this.getIntegrationRecommendations(result?.code, context),
       };
     } catch (error) {
       this.recordUnifiedLearning(
@@ -219,7 +219,7 @@ export class DSPyIntegrationManager {
         },
         result,
         true,
-        result.confidence,
+        result?.confidence,
         Date.now() - startTime
       );
 
@@ -266,14 +266,14 @@ export class DSPyIntegrationManager {
         },
         result,
         true,
-        result.confidence,
+        result?.confidence,
         Date.now() - startTime
       );
 
       return {
         ...result,
         performancePrediction: await this.predictAgentPerformance(
-          result.selectedAgents,
+          result?.selectedAgents,
           taskRequirements
         ),
         riskAssessment: await this.assessSelectionRisk(result),
@@ -332,7 +332,7 @@ export class DSPyIntegrationManager {
 
       return {
         ...result,
-        migrationPlan: await this.generateMigrationPlan(currentTopology, result.optimalTopology),
+        migrationPlan: await this.generateMigrationPlan(currentTopology, result?.optimalTopology),
         rollbackStrategy: await this.generateRollbackStrategy(currentTopology, result),
       };
     } catch (error) {
@@ -388,8 +388,8 @@ export class DSPyIntegrationManager {
         toolName,
         parameters,
         result,
-        result.success,
-        result.confidence || 0.7,
+        result?.success,
+        result?.confidence || 0.7,
         Date.now() - startTime
       );
 
@@ -605,8 +605,8 @@ export class DSPyIntegrationManager {
         e.operation === 'code_generation' &&
         e.success &&
         i < history.length - 1 &&
-        history[i + 1].system === 'core' &&
-        history[i + 1].operation === 'error_diagnosis'
+        history[i + 1]?.system === 'core' &&
+        history[i + 1]?.operation === 'error_diagnosis'
     );
 
     if (codeGenErrors.length > 2) {
@@ -658,11 +658,11 @@ export class DSPyIntegrationManager {
     // Cross-system insights based on historical patterns
     const insights: string[] = [];
 
-    if (operation === 'code_analysis' && result.complexity > 70) {
+    if (operation === 'code_analysis' && result?.complexity > 70) {
       insights.push('High complexity detected - consider refactoring recommendations');
     }
 
-    if (result.confidence < 0.7) {
+    if (result?.confidence < 0.7) {
       insights.push('Low confidence result - consider gathering more context');
     }
 
@@ -712,11 +712,11 @@ export class DSPyIntegrationManager {
   private async generatePreventionStrategy(result: any): Promise<string[]> {
     const strategies = ['Follow coding best practices'];
 
-    if (result.diagnosis?.includes('type')) {
+    if (result?.diagnosis?.includes('type')) {
       strategies.push('Use stricter TypeScript configuration');
     }
 
-    if (result.diagnosis?.includes('import')) {
+    if (result?.diagnosis?.includes('import')) {
       strategies.push('Implement import validation in CI/CD');
     }
 
@@ -736,8 +736,8 @@ export class DSPyIntegrationManager {
 
   private async assessSelectionRisk(result: any): Promise<any> {
     return {
-      level: result.confidence > 0.8 ? 'low' : 'medium',
-      factors: result.confidence < 0.7 ? ['Low confidence in selection'] : [],
+      level: result?.confidence > 0.8 ? 'low' : 'medium',
+      factors: result?.confidence < 0.7 ? ['Low confidence in selection'] : [],
     };
   }
 
@@ -789,11 +789,11 @@ export class DSPyIntegrationManager {
   private async getOptimizationSuggestions(result: any): Promise<string[]> {
     const suggestions: string[] = [];
 
-    if (result.confidence < 0.8) {
+    if (result?.confidence < 0.8) {
       suggestions.push('Gather more context for better results');
     }
 
-    if (result.result?.complexity > 70) {
+    if (result?.result?.complexity > 70) {
       suggestions.push('Consider breaking down complex operations');
     }
 

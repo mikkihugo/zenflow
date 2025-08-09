@@ -69,7 +69,7 @@
 import { EventEmitter } from 'node:events';
 import { DocumentProcessor } from './document-processor';
 import { DocumentationManager } from './documentation-manager';
-import { UnifiedExportSystem as ExportManager } from './export-manager';
+import { ExportSystem as ExportManager } from './export-manager';
 import { InterfaceManager } from './interface-manager';
 import { createLogger } from './logger';
 import { MemorySystem } from './memory-system';
@@ -147,7 +147,7 @@ export interface SystemStatus {
  * @example
  */
 export class System extends EventEmitter {
-  private config: CoreSystemConfig;
+  private config: SystemConfig;
   private status: SystemStatus['status'] = 'initializing';
   private startTime: number;
 
@@ -161,7 +161,7 @@ export class System extends EventEmitter {
 
   private initialized = false;
 
-  constructor(config: CoreSystemConfig = {}) {
+  constructor(config: SystemConfig = {}) {
     super();
     this.config = config;
     this.startTime = Date.now();
@@ -399,7 +399,7 @@ export class System extends EventEmitter {
       };
 
       const result = await this.exportManager.exportData(exportData, format, options);
-      return { success: true, filename: result.filename };
+      return { success: true, filename: result?.filename };
     } catch (error) {
       logger.error('Failed to export system data:', error);
       return {
@@ -464,8 +464,8 @@ export class System extends EventEmitter {
    *
    * @param config
    */
-  static async create(config?: CoreSystemConfig): Promise<CoreSystem> {
-    const system = new CoreSystem(config);
+  static async create(config?: SystemConfig): Promise<System> {
+    const system = new System(config);
     await system.initialize();
     return system;
   }
@@ -475,8 +475,8 @@ export class System extends EventEmitter {
    *
    * @param config
    */
-  static async quickStart(config?: CoreSystemConfig): Promise<CoreSystem> {
-    const system = await CoreSystem.create(config);
+  static async quickStart(config?: SystemConfig): Promise<System> {
+    const system = await System.create(config);
     await system.launch();
     return system;
   }

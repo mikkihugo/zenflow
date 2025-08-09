@@ -352,7 +352,7 @@ export class IntegratedErrorHandler {
       claudeZenError = this.classifyError(error, context);
     }
     // Report to monitoring
-    if (finalOptions.reportToMonitoring) {
+    if (finalOptions?.reportToMonitoring) {
       errorMonitor.reportError(claudeZenError, context);
     }
     // Check if we're in emergency mode
@@ -368,7 +368,7 @@ export class IntegratedErrorHandler {
       };
     }
     // Attempt recovery if enabled
-    if (finalOptions.useRecovery && claudeZenError.recoverable) {
+    if (finalOptions?.useRecovery && claudeZenError.recoverable) {
       try {
         const operationName = context.operation || 'unknown_operation';
         const result = await errorRecoveryOrchestrator.executeWithRecovery(
@@ -382,7 +382,7 @@ export class IntegratedErrorHandler {
             retryDelayMs: this.config.retryDelayMs,
             exponentialBackoff: this.config.exponentialBackoff,
             circuitBreakerThreshold: this.config.circuitBreakerThreshold,
-            fallbackEnabled: finalOptions.useFallback,
+            fallbackEnabled: finalOptions?.useFallback,
             gracefulDegradation: true,
           }
         );
@@ -460,14 +460,14 @@ export class IntegratedErrorHandler {
     }
     try {
       // Execute with resilience patterns if specified
-      if (options.resilience) {
+      if (options?.resilience) {
         const resilienceOptions: any = {};
-        if (options.resilience.bulkhead) resilienceOptions.bulkhead = options.resilience.bulkhead;
-        if (options.resilience.errorBoundary)
-          resilienceOptions.errorBoundary = options.resilience.errorBoundary;
-        if (options.resilience.timeoutMs)
-          resilienceOptions.timeoutMs = options.resilience.timeoutMs;
-        if (context.operation) resilienceOptions.operationName = context.operation;
+        if (options?.resilience?.bulkhead) resilienceOptions?.bulkhead = options?.resilience?.bulkhead;
+        if (options?.resilience?.errorBoundary)
+          resilienceOptions?.errorBoundary = options?.resilience?.errorBoundary;
+        if (options?.resilience?.timeoutMs)
+          resilienceOptions?.timeoutMs = options?.resilience?.timeoutMs;
+        if (context.operation) resilienceOptions?.operationName = context.operation;
 
         return await systemResilienceOrchestrator.executeWithResilience(
           operation,
@@ -479,13 +479,13 @@ export class IntegratedErrorHandler {
     } catch (error) {
       const handleResult = await this.handleError(error as Error, context, {
         useRecovery: true,
-        useFallback: options.recovery?.fallbackEnabled !== false,
+        useFallback: options?.recovery?.fallbackEnabled !== false,
         reportToMonitoring: true,
       });
-      if (handleResult.recovered && handleResult.result !== undefined) {
-        return handleResult.result;
+      if (handleResult?.recovered && handleResult?.result !== undefined) {
+        return handleResult?.result;
       } else {
-        throw handleResult.finalError || error;
+        throw handleResult?.finalError || error;
       }
     }
   }

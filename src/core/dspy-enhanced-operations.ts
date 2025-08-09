@@ -1,14 +1,3 @@
-/**
- * DSPy-Enhanced Claude Code Operations.
- *
- * Integrates ruvnet dspy.ts into core Claude Code operations for:
- * - Intelligent code analysis and generation
- * - Automated prompt optimization for different tasks
- * - Context-aware decision making
- * - Self-improving workflows.
- */
-
-import type { DSPyProgram, DSPyWrapper } from '../neural/types/dspy-types';
 import { createLogger } from './logger';
 
 const logger = createLogger({ prefix: 'DSPyOperations' });
@@ -82,19 +71,19 @@ export class DSPyEnhancedOperations {
       task_type: taskType,
     });
 
-    if (!executionResult.success) {
-      throw new Error(`Code analysis failed: ${executionResult.error?.message}`);
+    if (!executionResult?.success) {
+      throw new Error(`Code analysis failed: ${executionResult?.error?.message}`);
     }
 
-    const result = executionResult.result;
+    const result = executionResult?.result;
     if (!result) {
       throw new Error('No result returned from code analysis');
     }
     return {
-      analysis: result['analysis'],
-      suggestions: result['suggestions'],
-      complexity: result['complexity'],
-      confidence: result['confidence'] || executionResult.metadata.confidence || 0.8,
+      analysis: result?.['analysis'],
+      suggestions: result?.['suggestions'],
+      complexity: result?.['complexity'],
+      confidence: result?.['confidence'] || executionResult?.metadata?.confidence || 0.8,
     };
   }
 
@@ -115,18 +104,18 @@ export class DSPyEnhancedOperations {
       file_path: filePath,
     });
 
-    if (!executionResult.success) {
-      throw new Error(`Error diagnosis failed: ${executionResult.error?.message}`);
+    if (!executionResult?.success) {
+      throw new Error(`Error diagnosis failed: ${executionResult?.error?.message}`);
     }
 
-    const result = executionResult.result;
+    const result = executionResult?.result;
     if (!result) {
       throw new Error('No result returned from error diagnosis');
     }
     return {
-      diagnosis: result['diagnosis'],
-      fixSuggestions: result['fix_suggestions'],
-      confidence: result['confidence'] || executionResult.metadata.confidence || 0.7,
+      diagnosis: result?.['diagnosis'],
+      fixSuggestions: result?.['fix_suggestions'],
+      confidence: result?.['confidence'] || executionResult?.metadata?.confidence || 0.7,
       severity: this.assessErrorSeverity(errorMessage),
     };
   }
@@ -152,19 +141,19 @@ export class DSPyEnhancedOperations {
       style_guide: styleGuide,
     });
 
-    if (!executionResult.success) {
-      throw new Error(`Code generation failed: ${executionResult.error?.message}`);
+    if (!executionResult?.success) {
+      throw new Error(`Code generation failed: ${executionResult?.error?.message}`);
     }
 
-    const result = executionResult.result;
+    const result = executionResult?.result;
     if (!result) {
       throw new Error('No result returned from code generation');
     }
     return {
-      code: result['code'],
-      explanation: result['explanation'],
-      tests: result['tests'],
-      estimatedComplexity: this.estimateComplexity(result['code']),
+      code: result?.['code'],
+      explanation: result?.['explanation'],
+      tests: result?.['tests'],
+      estimatedComplexity: this.estimateComplexity(result?.['code']),
     };
   }
 
@@ -189,15 +178,15 @@ export class DSPyEnhancedOperations {
       project_context: projectContext,
     });
 
-    if (!executionResult.success) {
-      throw new Error(`Task orchestration failed: ${executionResult.error?.message}`);
+    if (!executionResult?.success) {
+      throw new Error(`Task orchestration failed: ${executionResult?.error?.message}`);
     }
 
     return {
-      execution_plan: executionResult.result?.['execution_plan'] || [],
-      agent_assignments: executionResult.result?.['agent_assignments'] || {},
-      priority_order: executionResult.result?.['priority_order'] || [],
-      estimatedDuration: this.estimateDuration(executionResult.result?.['execution_plan']?.length || 0),
+      execution_plan: executionResult?.result?.['execution_plan'] || [],
+      agent_assignments: executionResult?.result?.['agent_assignments'] || {},
+      priority_order: executionResult?.result?.['priority_order'] || [],
+      estimatedDuration: this.estimateDuration(executionResult?.result?.['execution_plan']?.length || 0),
     };
   }
 
@@ -222,19 +211,19 @@ export class DSPyEnhancedOperations {
       performance_metrics: JSON.stringify(performanceMetrics),
     });
 
-    if (!executionResult.success) {
-      throw new Error(`Swarm optimization failed: ${executionResult.error?.message}`);
+    if (!executionResult?.success) {
+      throw new Error(`Swarm optimization failed: ${executionResult?.error?.message}`);
     }
 
-    const result = executionResult.result;
+    const result = executionResult?.result;
     if (!result) {
       throw new Error('No result returned from swarm optimization');
     }
     return {
-      optimizedTopology: result['optimized_topology'],
-      agentRebalancing: result['agent_rebalancing'],
-      performancePrediction: result['performance_prediction'],
-      optimizationReasoning: result['reasoning'] || 'DSPy optimization applied',
+      optimizedTopology: result?.['optimized_topology'],
+      agentRebalancing: result?.['agent_rebalancing'],
+      performancePrediction: result?.['performance_prediction'],
+      optimizationReasoning: result?.['reasoning'] || 'DSPy optimization applied',
     };
   }
 
@@ -265,13 +254,13 @@ export class DSPyEnhancedOperations {
           maxIterations: 5,
         });
 
-        if (optimizationResult.success) {
+        if (optimizationResult?.success) {
           // Update the program in our cache
-          this.programs.set(operationType, optimizationResult.program);
+          this.programs.set(operationType, optimizationResult?.program);
           logger.info(
             `Trained ${operationType} program with ${successfulExamples.length} successful examples`,
             {
-              improvement: optimizationResult.metrics.improvementPercent,
+              improvement: optimizationResult?.metrics?.improvementPercent,
             }
           );
         }

@@ -198,7 +198,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
       }
 
       // Update response metadata
-      response.metadata.timestamp = Date.now();
+      response?.metadata?.timestamp = Date.now();
 
       // Clean up pending request
       this.pendingRequests.delete(request.requestId);
@@ -343,7 +343,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
   private async handleKnowledgeUpdate(request: KnowledgeRequest): Promise<KnowledgeResponse> {
     const updateData = request.payload.knowledge;
 
-    if (!updateData || !updateData.factId) {
+    if (!updateData || !updateData?.factId) {
       throw new Error('Fact ID is required for knowledge update');
     }
 
@@ -351,8 +351,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
     // For now, we'll emit an event for processing
     this.emit('knowledge:update-requested', {
       swarmId: request.swarmId,
-      factId: updateData.factId,
-      updates: updateData.updates,
+      factId: updateData?.factId,
+      updates: updateData?.updates,
       timestamp: Date.now(),
     });
 
@@ -362,7 +362,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
       success: true,
       data: {
         status: 'update-queued',
-        factId: updateData.factId,
+        factId: updateData?.factId,
       },
       metadata: {
         source: 'swarm-contribution',
@@ -431,10 +431,10 @@ export class HiveKnowledgeBridge extends EventEmitter {
         },
       };
 
-      enhancedResults.push(enhanced);
+      enhancedResults?.push(enhanced);
     }
 
-    return enhancedResults.sort(
+    return enhancedResults?.sort(
       (a, b) => b.swarmContext.relevanceScore - a.swarmContext.relevanceScore
     );
   }
@@ -493,7 +493,7 @@ export class HiveKnowledgeBridge extends EventEmitter {
    */
   private calculateAverageConfidence(results: UniversalFact[]): number {
     if (results.length === 0) return 0;
-    const total = results.reduce((sum, fact) => sum + fact.metadata.confidence, 0);
+    const total = results?.reduce((sum, fact) => sum + fact.metadata.confidence, 0);
     return total / results.length;
   }
 
@@ -507,9 +507,9 @@ export class HiveKnowledgeBridge extends EventEmitter {
         this.distributeKnowledgeUpdate({
           updateId: `fact-update-${Date.now()}`,
           type: 'fact-updated',
-          domain: data.type,
+          domain: data?.type,
           priority: 'medium',
-          content: data.fact,
+          content: data?.fact,
           timestamp: Date.now(),
         });
       });
@@ -518,9 +518,9 @@ export class HiveKnowledgeBridge extends EventEmitter {
         this.distributeKnowledgeUpdate({
           updateId: `fact-refresh-${Date.now()}`,
           type: 'fact-updated',
-          domain: data.fact.type,
+          domain: data?.fact?.type,
           priority: 'low',
-          content: data.fact,
+          content: data?.fact,
           timestamp: Date.now(),
         });
       });
@@ -529,8 +529,8 @@ export class HiveKnowledgeBridge extends EventEmitter {
     // Listen for hive coordinator events
     if (this.hiveCoordinator) {
       this.hiveCoordinator.on('swarm:registered', (data) => {
-        this.registerSwarm(data.swarmId, []).catch((error) => {
-          logger.error(`Failed to register swarm ${data.swarmId}:`, error);
+        this.registerSwarm(data?.swarmId, []).catch((error) => {
+          logger.error(`Failed to register swarm ${data?.swarmId}:`, error);
         });
       });
     }

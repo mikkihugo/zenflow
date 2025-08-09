@@ -5,7 +5,7 @@
  * Includes retry patterns, circuit breakers, fallback strategies, and graceful degradation.
  */
 
-import { type ErrorRecoveryOptions, isRecoverableError } from './errors';
+import { isRecoverableError } from './errors';
 import { createLogger } from './logger';
 
 const logger = createLogger({ prefix: 'ErrorRecovery' });
@@ -558,8 +558,8 @@ export class ErrorRecoveryOrchestrator {
     options: ErrorRecoveryOptions = {}
   ): Promise<T> {
     const circuitBreaker = this.circuitBreakerRegistry.getOrCreate(operationName, {
-      failureThreshold: options.circuitBreakerThreshold || 5,
-      maxRetries: options.maxRetries || 3,
+      failureThreshold: options?.circuitBreakerThreshold || 5,
+      maxRetries: options?.maxRetries || 3,
     });
 
     const retryStrategy = this.getOrCreateRetryStrategy(operationName, options);
@@ -573,7 +573,7 @@ export class ErrorRecoveryOrchestrator {
       this.degradationManager.reportError(error as Error);
 
       // Try fallback if available and enabled
-      if (options.fallbackEnabled) {
+      if (options?.fallbackEnabled) {
         const fallbackManager = this.fallbackManagers.get(operationName);
         if (fallbackManager) {
           return await fallbackManager.executeWithFallbacks(operation, error as Error);
@@ -592,9 +592,9 @@ export class ErrorRecoveryOrchestrator {
       this.retryStrategies.set(
         operationName,
         new RetryStrategy({
-          maxAttempts: options.maxRetries || 3,
-          initialDelayMs: options.retryDelayMs || 1000,
-          exponentialBase: options.exponentialBackoff ? 2 : 1,
+          maxAttempts: options?.maxRetries || 3,
+          initialDelayMs: options?.retryDelayMs || 1000,
+          exponentialBase: options?.exponentialBackoff ? 2 : 1,
         })
       );
     }

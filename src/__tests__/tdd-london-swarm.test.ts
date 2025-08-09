@@ -11,7 +11,7 @@
  * - Integration with Claude-Zen's Hive Mind architecture
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 
 // Mock Dependencies - Contract Definition Phase
 const mockWebApiServer = {

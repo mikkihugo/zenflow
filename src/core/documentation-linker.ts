@@ -251,12 +251,12 @@ export class DocumentationLinker extends EventEmitter {
         // Find TODO comments
         if (line) {
           const todoMatch = line.match(/\/\/\s*TODO:?\s*(.+)/i) || line.match(/#\s*TODO:?\s*(.+)/i);
-          if (todoMatch && todoMatch[1]) {
+          if (todoMatch && todoMatch?.[1]) {
             await this.addCodeReference({
               file: filePath,
               line: lineNumber,
               type: 'todo',
-              text: todoMatch[1].trim(),
+              text: todoMatch?.[1]?.trim(),
               context: this.getContextLines(lines, i, 2),
             });
           }
@@ -265,12 +265,12 @@ export class DocumentationLinker extends EventEmitter {
         // Find documentation comments
         if (line) {
           const docCommentMatch = line.match(/\/\*\*\s*(.+?)\s*\*\//s) || line.match(/\*\s*(.+)/);
-          if (docCommentMatch && docCommentMatch[1] && !line.includes('TODO')) {
+          if (docCommentMatch && docCommentMatch?.[1] && !line.includes('TODO')) {
             await this.addCodeReference({
               file: filePath,
               line: lineNumber,
               type: 'comment',
-              text: docCommentMatch[1].trim(),
+              text: docCommentMatch?.[1]?.trim(),
               context: this.getContextLines(lines, i, 1),
             });
           }
@@ -280,13 +280,13 @@ export class DocumentationLinker extends EventEmitter {
         if (line) {
           const functionMatch = line.match(/(?:function|class|interface|type)\s+(\w+)/);
           if (functionMatch) {
-            const precedingComment = i > 0 && lines[i - 1] ? lines[i - 1].trim() : '';
+            const precedingComment = i > 0 && lines[i - 1] ? lines[i - 1]?.trim() : '';
             if (!precedingComment.startsWith('//') && !precedingComment.startsWith('*')) {
               await this.addCodeReference({
                 file: filePath,
                 line: lineNumber,
-                type: functionMatch[0].includes('class') ? 'class' : 'function',
-                text: `${functionMatch[0]} needs documentation`,
+                type: functionMatch?.[0]?.includes('class') ? 'class' : 'function',
+                text: `${functionMatch?.[0]} needs documentation`,
                 context: this.getContextLines(lines, i, 3),
               });
             }
@@ -452,7 +452,7 @@ export class DocumentationLinker extends EventEmitter {
         const targetDoc = this.documentationIndex.get(crossRef.targetDocument);
 
         if (sourceDoc && targetDoc) {
-          report.push(`### ${sourceDoc.title} → ${targetDoc.title}`);
+          report.push(`### ${sourceDoc.title} → ${targetDoc?.title}`);
           report.push(`**Relationship**: ${crossRef.linkType}`);
           report.push(`**Confidence**: ${Math.round(crossRef.confidence * 100)}%`);
           report.push(`**Context**: ${crossRef.context}`);
@@ -616,7 +616,7 @@ export class DocumentationLinker extends EventEmitter {
   private extractTitle(content: string, filePath: string): string {
     // Try to extract title from first heading
     const headingMatch = content.match(/^#\s+(.+)$/m);
-    if (headingMatch && headingMatch[1]) return headingMatch[1].trim();
+    if (headingMatch && headingMatch?.[1]) return headingMatch?.[1]?.trim();
 
     // Try to extract from filename
     const filename = relative(process.cwd(), filePath).replace(extname(filePath), '');
@@ -682,15 +682,15 @@ export class DocumentationLinker extends EventEmitter {
         }
 
         // Start new section
-        if (headingMatch[1] && headingMatch[2]) {
+        if (headingMatch?.[1] && headingMatch?.[2]) {
           currentSection = {
-            title: headingMatch[2].trim(),
-            level: headingMatch[1].length,
+            title: headingMatch?.[2]?.trim(),
+            level: headingMatch?.[1].length,
             content: '',
           };
         }
       } else if (currentSection) {
-        currentSection.content += `${line}\n`;
+        currentSection?.content += `${line}\n`;
       }
     }
 
@@ -712,10 +712,10 @@ export class DocumentationLinker extends EventEmitter {
     const markdownLinks = content.match(/\[([^\]]+)\]\(([^)]+)\)/g) || [];
     for (const link of markdownLinks) {
       const match = link.match(/\[([^\]]+)\]\(([^)]+)\)/);
-      if (match && match[1] && match[2]) {
-        const text = match[1];
-        const target = match[2];
-        const type = target.startsWith('http') ? 'external' : 'internal';
+      if (match && match?.[1] && match?.[2]) {
+        const text = match?.[1];
+        const target = match?.[2];
+        const type = target?.startsWith('http') ? 'external' : 'internal';
         links.push({ type, target, text });
       }
     }

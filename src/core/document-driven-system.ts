@@ -337,11 +337,11 @@ export class DocumentDrivenSystem extends EventEmitter {
     // Simple extraction - would be more sophisticated
     const lines = content.split('\n');
     for (const line of lines.slice(0, 10)) {
-      if (line.startsWith('Author:')) metadata.author = line.substring(7).trim();
-      if (line.startsWith('Created:')) metadata.created = new Date(line.substring(8).trim());
-      if (line.startsWith('Status:')) metadata.status = line.substring(7).trim();
+      if (line.startsWith('Author:')) metadata?.author = line.substring(7).trim();
+      if (line.startsWith('Created:')) metadata?.created = new Date(line.substring(8).trim());
+      if (line.startsWith('Status:')) metadata?.status = line.substring(7).trim();
       if (line.startsWith('Related:')) {
-        metadata.relatedDocs = line
+        metadata?.relatedDocs = line
           .substring(8)
           .trim()
           .split(',')

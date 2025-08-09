@@ -82,12 +82,12 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       if (configureLM) {
         try {
           await configureLM({
-            model: finalConfig.model,
-            temperature: finalConfig.temperature,
-            maxTokens: finalConfig.maxTokens,
-            ...(finalConfig.apiKey && { apiKey: finalConfig.apiKey }),
-            ...(finalConfig.baseURL && { baseURL: finalConfig.baseURL }),
-            ...finalConfig.modelParams,
+            model: finalConfig?.model,
+            temperature: finalConfig?.temperature,
+            maxTokens: finalConfig?.maxTokens,
+            ...(finalConfig?.apiKey && { apiKey: finalConfig?.apiKey }),
+            ...(finalConfig?.baseURL && { baseURL: finalConfig?.baseURL }),
+            ...finalConfig?.modelParams,
           });
         } catch (error) {
           throw new DSPyConfigurationError('Failed to configure language model', {
@@ -115,9 +115,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       this.isInitialized = true;
 
       logger.info('DSPy configured successfully', {
-        model: finalConfig.model,
-        temperature: finalConfig.temperature,
-        maxTokens: finalConfig.maxTokens,
+        model: finalConfig?.model,
+        temperature: finalConfig?.temperature,
+        maxTokens: finalConfig?.maxTokens,
       });
     } catch (error) {
       this.isInitialized = false;
@@ -222,7 +222,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
           timestamp: new Date(),
           model: this.currentConfig?.model,
           // Add token usage if available in result
-          ...(rawResult?.['tokensUsed'] && { tokensUsed: rawResult['tokensUsed'] }),
+          ...(rawResult?.['tokensUsed'] && { tokensUsed: rawResult?.['tokensUsed'] }),
           // Ensure confidence is always present, even if undefined
           confidence: rawResult?.['confidence'] || undefined,
         },
@@ -252,7 +252,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       };
 
       if (this.currentConfig?.model) {
-        metadata.model = this.currentConfig.model;
+        metadata?.model = this.currentConfig.model;
       }
 
       return {
@@ -348,9 +348,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       // Try different optimization API patterns
       if (this.dspyInstance.optimize) {
         optimizationResult = await this.dspyInstance.optimize(rawProgram, {
-          strategy: optimizationConfig.strategy,
-          maxIterations: optimizationConfig.maxIterations,
-          ...optimizationConfig.strategyParams,
+          strategy: optimizationConfig?.strategy,
+          maxIterations: optimizationConfig?.maxIterations,
+          ...optimizationConfig?.strategyParams,
         });
       } else if (rawProgram.optimize) {
         optimizationResult = await rawProgram.optimize(optimizationConfig);
@@ -362,29 +362,29 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       const executionTime = Date.now() - startTime;
       const result: DSPyOptimizationResult = {
         success: true,
-        program: optimizationResult.program
+        program: optimizationResult?.program
           ? new DSPyProgramWrapper(
-              optimizationResult.program,
+              optimizationResult?.program,
               program.signature,
               program.description,
               this
             )
           : program,
         metrics: {
-          iterationsCompleted: optimizationResult.iterations || 0,
+          iterationsCompleted: optimizationResult?.iterations || 0,
           executionTime,
-          initialAccuracy: optimizationResult.initialAccuracy,
-          finalAccuracy: optimizationResult.finalAccuracy,
-          improvementPercent: optimizationResult.improvementPercent || 0,
+          initialAccuracy: optimizationResult?.initialAccuracy,
+          finalAccuracy: optimizationResult?.finalAccuracy,
+          improvementPercent: optimizationResult?.improvementPercent || 0,
         },
-        issues: optimizationResult.warnings || [],
+        issues: optimizationResult?.warnings || [],
       };
 
       logger.info('DSPy program optimization completed', {
         programId: (program as any).id,
-        strategy: optimizationConfig.strategy,
+        strategy: optimizationConfig?.strategy,
         executionTime,
-        improvement: result.metrics.improvementPercent,
+        improvement: result?.metrics?.improvementPercent,
       });
 
       return result;
@@ -393,7 +393,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 
       logger.error('DSPy program optimization failed', {
         programId: (program as any).id,
-        strategy: optimizationConfig.strategy,
+        strategy: optimizationConfig?.strategy,
         executionTime,
         error: error instanceof Error ? error.message : String(error),
       });
@@ -433,7 +433,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       // Clean up test program
       this.programs.delete((testProgram as any).id);
 
-      return result.success;
+      return result?.success;
     } catch (error) {
       logger.warn('DSPy health check failed', {
         error: error instanceof Error ? error.message : String(error),

@@ -278,6 +278,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
     algorithms: [],
     coreAlgorithms: [
       {
+        id: nanoid(),
         name: 'WASMMatrixMultiplication',
         purpose: 'WASM-accelerated matrix multiplication for neural network operations',
         inputs: [
@@ -332,6 +333,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         ],
       },
       {
+        id: nanoid(),
         name: 'DistributedBackpropagation',
         purpose: 'Distributed backpropagation with gradient synchronization',
         inputs: [
@@ -387,6 +389,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         ],
       },
       {
+        id: nanoid(),
         name: 'AdaptiveModelSharding',
         purpose: 'Dynamically shard large models across available memory and compute resources',
         inputs: [

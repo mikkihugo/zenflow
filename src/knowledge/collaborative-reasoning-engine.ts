@@ -11,8 +11,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
 
 // Basic utility types
 export interface DependencyMapper {
@@ -916,7 +914,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
     // Distributed Reasoning -> Consensus Building
     this.distributedReasoning.on('reasoning:completed', async (results) => {
-      if (results.requiresConsensus) {
+      if (results?.requiresConsensus) {
         await this.consensusBuilder.initiateConsensus(results);
       }
       this.emit('reasoning:results', results);
@@ -1164,13 +1162,13 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
     try {
       this.logger.info('Building consensus on reasoning results', {
-        conflicts: reasoningResults.conflictAnalysis.conflicts.length,
+        conflicts: reasoningResults?.conflictAnalysis?.conflicts.length,
         participants: participants.length,
       });
 
       // Initialize consensus process for each conflict
       const consensusProcesses = await Promise.all(
-        reasoningResults.conflictAnalysis.conflicts.map((conflict) =>
+        reasoningResults?.conflictAnalysis?.conflicts?.map((conflict) =>
           this.initializeConsensusProcess(conflict, participants)
         )
       );
@@ -1182,24 +1180,24 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
       // Apply voting mechanisms where dialogue is insufficient
       const votingResults = await this.applyVotingMechanisms(
-        dialogueResults.filter((result) => !result.resolved)
+        dialogueResults?.filter((result) => !result?.resolved)
       );
 
       // Resolve remaining conflicts through mediation
       const mediationResults = await this.mediateRemainingConflicts(
-        votingResults.filter((result) => !result.resolved)
+        votingResults?.filter((result) => !result?.resolved)
       );
 
       // Combine all consensus results
       const combinedResults = await this.combineConsensusResults([
-        ...dialogueResults.filter((r) => r.resolved),
-        ...votingResults.filter((r) => r.resolved),
+        ...dialogueResults?.filter((r) => r.resolved),
+        ...votingResults?.filter((r) => r.resolved),
         ...mediationResults,
       ]);
 
       const consensusResult: ConsensusResult = {
         consensusId: `consensus-${Date.now()}`,
-        originalConflicts: reasoningResults.conflictAnalysis.conflicts.length,
+        originalConflicts: reasoningResults?.conflictAnalysis?.conflicts.length,
         resolvedConflicts: combinedResults.length,
         consensusQuality: await this.calculateConsensusQuality(combinedResults),
         participantSatisfaction: await this.calculateParticipantSatisfaction(participants),
@@ -1230,7 +1228,7 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
     try {
       this.logger.info('Synthesizing comprehensive solution', {
-        consensusId: consensusResults.consensusId,
+        consensusId: consensusResults?.consensusId,
         decompositionId: decomposition.decompositionId,
       });
 

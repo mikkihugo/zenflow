@@ -42,12 +42,12 @@ export async function unifiedIntegrationExample(): Promise<void> {
   try {
     const memorySystem = await initializeMemorySystem(container);
     const swarmSystem = await initializeSwarmStorage(container);
-    await memorySystem.backends['session'].store('user:123', {
+    await memorySystem.backends['session']?.store('user:123', {
       id: 123,
       name: 'John Doe',
       preferences: { theme: 'dark' },
     });
-    const userData = await memorySystem.backends['session'].retrieve('user:123');
+    const userData = await memorySystem.backends['session']?.retrieve('user:123');
     const swarmId = 'example-swarm-001';
 
     // Create swarm cluster (repositories via DAL Factory)
@@ -76,10 +76,10 @@ export async function unifiedIntegrationExample(): Promise<void> {
       status: 'active',
       lastUpdate: new Date().toISOString(),
     };
-    await memorySystem.backends['cache'].store(`swarm:${swarmId}:metadata`, swarmMetadata);
+    await memorySystem.backends['cache']?.store(`swarm:${swarmId}:metadata`, swarmMetadata);
 
     // Use semantic memory to store swarm context
-    await memorySystem.backends['semantic'].store(`swarm:${swarmId}:context`, {
+    await memorySystem.backends['semantic']?.store(`swarm:${swarmId}:context`, {
       purpose: 'Example swarm for unified DI demonstration',
       capabilities: ['coordination', 'task execution', 'monitoring'],
       domain: 'system integration',
@@ -87,15 +87,15 @@ export async function unifiedIntegrationExample(): Promise<void> {
     for (const [name, spec] of Object.entries(memorySystem.metrics.performance)) {
     }
     const healthChecks = await Promise.allSettled([
-      memorySystem.backends['session'].health(),
-      memorySystem.backends['cache'].health(),
+      memorySystem.backends['session']?.health(),
+      memorySystem.backends['cache']?.health(),
       swarmSystem.databaseManager.getActiveSwarms(),
     ]);
 
     const healthyServices = healthChecks
       .map((result, i) => ({
         name: ['Session Memory', 'Cache Memory', 'Swarm Database'][i],
-        healthy: result.status === 'fulfilled',
+        healthy: result?.status === 'fulfilled',
       }))
       .filter((service) => service.healthy);
   } catch (error) {
@@ -134,7 +134,7 @@ function registerCoreServices(container: DIContainer): void {
           'memory.ttl.default': 3600000,
           'swarm.archive.days': 30,
         };
-        return configs[key] ?? defaultValue;
+        return configs?.[key] ?? defaultValue;
       },
       set: (key: string, value: any) => {},
       has: (key: string) =>
@@ -150,7 +150,7 @@ function registerCoreServices(container: DIContainer): void {
  */
 function registerDatabaseServices(container: DIContainer): void {
   // Database provider factory
-  container.register(DATABASE_TOKENS.ProviderFactory, {
+  container.register(DATABASE_TOKENS?.ProviderFactory, {
     type: 'singleton',
     create: (container) =>
       new DatabaseProviderFactory(
@@ -160,13 +160,13 @@ function registerDatabaseServices(container: DIContainer): void {
   });
 
   // DAL Factory (the core of the unified architecture)
-  container.register(DATABASE_TOKENS.DALFactory, {
+  container.register(DATABASE_TOKENS?.DALFactory, {
     type: 'singleton',
     create: (container) =>
       new DALFactory(
         container.resolve(CORE_TOKENS.Logger),
         container.resolve(CORE_TOKENS.Config),
-        container.resolve(DATABASE_TOKENS.ProviderFactory) as DatabaseProviderFactory
+        container.resolve(DATABASE_TOKENS?.ProviderFactory) as DatabaseProviderFactory
       ),
   });
 }
@@ -189,8 +189,8 @@ export async function specializedUsageExamples(): Promise<void> {
 
   // Simulate API response caching
   const apiResponse = { data: 'expensive computation result', cached: true };
-  await memorySystem.backends['cache'].store('api:expensive-call', apiResponse);
-  const _cachedResult = await memorySystem.backends['cache'].retrieve('api:expensive-call');
+  await memorySystem.backends['cache']?.store('api:expensive-call', apiResponse);
+  const _cachedResult = await memorySystem.backends['cache']?.retrieve('api:expensive-call');
   const swarmSystem = await initializeSwarmStorage(container);
 
   // Create related swarms sharing dependencies

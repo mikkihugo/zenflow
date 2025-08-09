@@ -4,7 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../core/logger';
 
 export interface ErrorContext {
   component: string;
@@ -259,8 +258,8 @@ export class ErrorMonitoring extends EventEmitter {
       const errorType = key.split(':')[1] || 'unknown';
       topErrors.push({
         error: errorType,
-        count: data.count,
-        component: data.component,
+        count: data?.count,
+        component: data?.component,
       });
     }
 

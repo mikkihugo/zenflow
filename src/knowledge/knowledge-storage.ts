@@ -164,9 +164,9 @@ export class FACTStorageSystem extends EventEmitter {
       const results = await this.backend.search(query);
 
       // Cache frequently accessed results in memory
-      for (const result of results.slice(0, 10)) {
+      for (const result of results?.slice(0, 10)) {
         // Top 10 results
-        if (!this.memoryCache.has(result.id)) {
+        if (!this.memoryCache.has(result?.id)) {
           await this.storeInMemory(result);
         }
       }

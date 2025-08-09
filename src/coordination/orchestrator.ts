@@ -3,12 +3,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IDatabase, ILogger } from '../di/index';
-import { CORE_TOKENS, inject, injectable } from '../di/index';
 import type { ISwarmCoordinator } from '../di/tokens/swarm-tokens';
 import { ZenSwarmStrategy } from './strategies/ruv-swarm.strategy';
-
-import type { Agent, ExecutionPlan, SwarmStrategy, Task } from './types';
 
 @injectable
 export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
@@ -177,7 +173,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
       suitableAgents.map(async (agent) => {
         const perf = await this.db.getMetrics(agent.id, 'performance_score');
         // Use the most recent performance score, default to 0.5
-        const score = perf.length > 0 ? perf[0].metric_value : 0.5;
+        const score = perf.length > 0 ? perf[0]?.metric_value : 0.5;
         return { agent, score };
       })
     );

@@ -8,7 +8,7 @@ const logger = getLogger("src-utils-logger");
 import { config } from '../config';
 
 // Local Logger interface - matches ILogger from core/logger for compatibility
-export interface Logger {
+export interface ILogger {
   debug(message: string, meta?: any): void;
   info(message: string, meta?: any): void;
   warn(message: string, meta?: any): void;
@@ -51,10 +51,10 @@ enum LogLevel {
 // Configuration from centralized config system
 const getLogLevel = (): LogLevel => {
   try {
-    const centralConfig = config.getAll();
-    const configLevel = centralConfig.core.logger.level.toUpperCase();
+    const centralConfig = config?.getAll();
+    const configLevel = centralConfig?.core?.logger?.level?.toUpperCase();
     // Fallback for development environment
-    const level = centralConfig.environment.isDevelopment && configLevel === 'INFO' ? 'DEBUG' : configLevel;
+    const level = centralConfig?.environment?.isDevelopment && configLevel === 'INFO' ? 'DEBUG' : configLevel;
     return Object.values(LogLevel).find(l => l.toUpperCase() === level) as LogLevel || LogLevel.INFO;
   } catch (error) {
     // Fallback to INFO if config is not available
@@ -67,7 +67,7 @@ const shouldLog = (messageLevel: LogLevel, configuredLevel: LogLevel = getLogLev
   return levels[messageLevel] >= levels[configuredLevel];
 };
 
-class BasicLogger implements Logger {
+class Logger implements ILogger {
   private logLevel: LogLevel;
   
   constructor(private prefix: string = '') {
@@ -106,8 +106,8 @@ class BasicLogger implements Logger {
   }
 }
 
-export function createLogger(prefix?: string): Logger {
-  return new BasicLogger(prefix);
+export function createLogger(prefix?: string): ILogger {
+  return new Logger(prefix);
 }
 
 export const defaultLogger = createLogger('claude-zen');

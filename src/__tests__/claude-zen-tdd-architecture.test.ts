@@ -12,15 +12,8 @@
  * 4. Neural integration testing with ruv-FANN-zen
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import {
-  createClaudeZenMocks,
-  clearAllClaudeZenMocks,
-  type MockHiveMindService,
-  type MockQueensService,
-  type MockNeuralFrameworkService,
-  type MockClaudeZenApiService
-} from './helpers/claude-zen-tdd-london-mocks';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { createClaudeZenMocks, clearAllClaudeZenMocks } from './helpers/claude-zen-tdd-london-mocks';
 
 // === CLAUDE-ZEN ARCHITECTURE MOCKS ===
 
@@ -162,7 +155,7 @@ describe('Claude-Zen TDD London School Architecture', () => {
         });
         expect(mockHiveMind.spawnQueen).toHaveBeenCalledTimes(3);
         expect(mockHiveMind.coordinateQueens).toHaveBeenCalledWith(complexTask);
-        expect(result.success).toBe(true);
+        expect(result?.success).toBe(true);
       });
     });
 
@@ -196,8 +189,8 @@ describe('Claude-Zen TDD London School Architecture', () => {
         // Assert - Verify neural integration contract
         expect(mockNeuralFramework.initializeNetwork).toHaveBeenCalledWith('decision-transformer');
         expect(mockNeuralFramework.predict).toHaveBeenCalledWith(decisionContext);
-        expect(designResult.pattern).toBe('use-pattern-X');
-        expect(designResult.confidence).toBe(0.92);
+        expect(designResult?.pattern).toBe('use-pattern-X');
+        expect(designResult?.confidence).toBe(0.92);
       });
     });
 
@@ -300,8 +293,8 @@ describe('Claude-Zen TDD London School Architecture', () => {
         // Assert - Verify bridging contract
         expect(mockClaudeZenApi.handleTaskRequest).toHaveBeenCalledWith(apiRequest);
         expect(mockMcpServer.handleToolCall).toHaveBeenCalledWith(mcpToolCall);
-        expect(apiResponse.status).toBe('processing');
-        expect(mcpResponse.result.analysis).toBe('component-extraction-recommended');
+        expect(apiResponse?.status).toBe('processing');
+        expect(mcpResponse?.result?.analysis).toBe('component-extraction-recommended');
       });
     });
   });
@@ -364,8 +357,8 @@ describe('Claude-Zen TDD London School Architecture', () => {
       // This test drives the design of dynamic Queen discovery
       const dynamicQueenSystem = {
         handleUnknownTask: async (task: any) => {
-          const bestQueen = mockCapabilityMatcher.findBestQueen(task);
-          const compatibility = mockCapabilityMatcher.assessCompatibility(bestQueen, task);
+          const bestQueen = mockCapabilityMatcher?.findBestQueen(task);
+          const compatibility = mockCapabilityMatcher?.assessCompatibility(bestQueen, task);
 
           if (compatibility > 0.8) {
             return mockQueenRegistry.invoke(bestQueen, task);
@@ -376,13 +369,13 @@ describe('Claude-Zen TDD London School Architecture', () => {
       };
 
       // The test defines the contract through mock expectations
-      mockCapabilityMatcher.findBestQueen.mockReturnValue('specialized-queen-v2');
-      mockCapabilityMatcher.assessCompatibility.mockReturnValue(0.95);
+      mockCapabilityMatcher?.findBestQueen?.mockReturnValue('specialized-queen-v2');
+      mockCapabilityMatcher?.assessCompatibility?.mockReturnValue(0.95);
       mockQueenRegistry.invoke.mockResolvedValue({ result: 'task-completed' });
 
       // Verify the interface exists and behaves correctly
       expect(typeof dynamicQueenSystem.handleUnknownTask).toBe('function');
-      expect(mockCapabilityMatcher.findBestQueen).toBeDefined();
+      expect(mockCapabilityMatcher?.findBestQueen).toBeDefined();
       expect(mockQueenRegistry.invoke).toBeDefined();
     });
   });

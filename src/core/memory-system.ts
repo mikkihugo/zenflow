@@ -124,7 +124,7 @@ class JSONBackend implements BackendInterface {
 
   constructor(config: MemoryConfig) {
     this.config = config;
-    this.filepath = `${config.path}/memory.json`;
+    this.filepath = `${config?.path}/memory.json`;
   }
 
   async initialize(): Promise<void> {
@@ -196,7 +196,7 @@ class JSONBackend implements BackendInterface {
       if (key.startsWith(prefix)) {
         const simpleKey = key.substring(prefix.length);
         if (pattern === '*' || simpleKey.includes(pattern.replace('*', ''))) {
-          results[simpleKey] = entry.value;
+          results?.[simpleKey] = entry.value;
         }
       }
     }
@@ -270,7 +270,7 @@ class SQLiteBackend implements BackendInterface {
 
   constructor(config: MemoryConfig) {
     this.config = config;
-    this.dbPath = `${config.path}/memory.db`;
+    this.dbPath = `${config?.path}/memory.db`;
   }
 
   async initialize(): Promise<void> {
@@ -359,7 +359,7 @@ class SQLiteBackend implements BackendInterface {
       const result = stmt.get(namespace, key);
       if (!result) return null;
 
-      return JSON.parse(result.value);
+      return JSON.parse(result?.value);
     } catch (error) {
       logger.error('SQLite retrieve error:', error);
       return null;
@@ -381,7 +381,7 @@ class SQLiteBackend implements BackendInterface {
 
       for (const row of rows) {
         try {
-          results[row.key] = JSON.parse(row.value);
+          results?.[row.key] = JSON.parse(row.value);
         } catch (_error) {
           logger.warn(`Failed to parse value for key ${row.key}`);
         }
@@ -401,7 +401,7 @@ class SQLiteBackend implements BackendInterface {
       `);
 
       const result = stmt.run(namespace, key);
-      return result.changes > 0;
+      return result?.changes > 0;
     } catch (error) {
       logger.error('SQLite delete error:', error);
       return false;
@@ -434,10 +434,10 @@ class SQLiteBackend implements BackendInterface {
       const nsResult = nsStmt.get();
 
       return {
-        entries: countResult.count,
-        size: countResult.totalSize || 0,
+        entries: countResult?.count,
+        size: countResult?.totalSize || 0,
         lastModified: Date.now(),
-        namespaces: nsResult.namespaces,
+        namespaces: nsResult?.namespaces,
       };
     } catch (error) {
       logger.error('SQLite getStats error:', error);
@@ -529,7 +529,7 @@ export class MemorySystem extends EventEmitter {
     this.config = config;
 
     // Create appropriate backend
-    switch (config.backend) {
+    switch (config?.backend) {
       case 'sqlite':
         this.backend = new SQLiteBackend(config);
         break;
@@ -540,7 +540,7 @@ export class MemorySystem extends EventEmitter {
         this.backend = new LanceDBBackend(config);
         break;
       default:
-        throw new Error(`Unknown backend type: ${config.backend}`);
+        throw new Error(`Unknown backend type: ${config?.backend}`);
     }
   }
 
@@ -577,10 +577,10 @@ export class MemorySystem extends EventEmitter {
 
     const result = await this.backend.store(key, value, namespace);
 
-    if (result.status === 'success') {
-      this.emit('stored', { key, namespace, timestamp: result.timestamp });
+    if (result?.status === 'success') {
+      this.emit('stored', { key, namespace, timestamp: result?.timestamp });
     } else {
-      this.emit('error', { operation: 'store', key, namespace, error: result.error });
+      this.emit('error', { operation: 'store', key, namespace, error: result?.error });
     }
 
     return result;

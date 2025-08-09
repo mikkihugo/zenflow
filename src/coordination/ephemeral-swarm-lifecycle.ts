@@ -6,9 +6,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
-import type { AgentType } from '../types/agent-types';
 
 export interface SwarmRequest {
   id: string;
@@ -368,7 +365,7 @@ export class EphemeralSwarmManager extends EventEmitter {
 
     // Simple selection: least busy agent
     return availableAgents.reduce((best, current) =>
-      current.taskCount < best.taskCount ? current : best
+      current?.taskCount < best.taskCount ? current : best
     );
   }
 
@@ -527,7 +524,7 @@ export class EphemeralSwarmManager extends EventEmitter {
    * @param data
    */
   private handleTaskCompletion(data: any): void {
-    const swarm = this.activeSwarms.get(data.swarmId);
+    const swarm = this.activeSwarms.get(data?.swarmId);
     if (swarm) {
       swarm.lastActivity = new Date();
       swarm.performance.tasksCompleted++;
@@ -538,7 +535,7 @@ export class EphemeralSwarmManager extends EventEmitter {
       );
 
       if (allStepsCompleted) {
-        this.scheduleSwarmCleanup(data.swarmId, 'all_tasks_completed');
+        this.scheduleSwarmCleanup(data?.swarmId, 'all_tasks_completed');
       }
     }
   }
@@ -549,9 +546,9 @@ export class EphemeralSwarmManager extends EventEmitter {
    * @param data
    */
   private handleAgentIdle(data: any): void {
-    const swarm = this.activeSwarms.get(data.swarmId);
+    const swarm = this.activeSwarms.get(data?.swarmId);
     if (swarm) {
-      const agent = swarm.agents.find((a) => a.id === data.agentId);
+      const agent = swarm.agents.find((a) => a.id === data?.agentId);
       if (agent) {
         agent.status = 'idle';
         agent.lastActivity = new Date();

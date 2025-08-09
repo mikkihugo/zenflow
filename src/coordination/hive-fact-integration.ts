@@ -8,9 +8,7 @@
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from '@core/logger';
-import type { FACTSearchQuery, FACTStorageStats } from '@knowledge/storage-interface';
-import type { HiveSwarmCoordinator } from './hive-swarm-sync';
-import type { HiveFACTConfig, UniversalFact } from './hive-types';
+import type { UniversalFact } from './hive-types';
 
 // import { FACTExternalOrchestrator } from './mcp/tools/fact-external-integration'; // TODO: Migrate to unified MCP
 
@@ -168,19 +166,18 @@ export class HiveFACTSystem extends EventEmitter {
     // Search in cached facts first
     for (const [_key, fact] of this.universalFacts) {
       if (this.matchesQuery(fact, query)) {
-        results.push(fact);
+        results?.push(fact);
       }
     }
 
     // If not enough results, query external sources
     if (results.length < (query.limit || 10)) {
       const externalResults = await this.searchExternalFacts(query);
-      results.push(...externalResults);
+      results?.push(...externalResults);
     }
 
     // Sort by relevance and limit
-    return results
-      .sort((a, b) => (b.metadata?.confidence || 0) - (a.metadata?.confidence || 0))
+    return results?.sort((a, b) => (b.metadata?.confidence || 0) - (a.metadata?.confidence || 0))
       .slice(0, query.limit || 10);
   }
 
@@ -283,18 +280,18 @@ export class HiveFACTSystem extends EventEmitter {
         subject,
         content: {
           summary: `Information about ${subject}`,
-          details: result.consolidatedKnowledge || 'No details available',
+          details: result?.consolidatedKnowledge || 'No details available',
         },
         source:
-          Array.isArray(result.sources) && result.sources.length > 0
-            ? result.sources.join(',')
+          Array.isArray(result?.sources) && result?.sources.length > 0
+            ? result?.sources?.join(',')
             : 'unknown',
         confidence: this.calculateConfidence(result),
         timestamp: Date.now(),
         metadata: {
           source:
-            Array.isArray(result.sources) && result.sources.length > 0
-              ? result.sources.join(',')
+            Array.isArray(result?.sources) && result?.sources.length > 0
+              ? result?.sources?.join(',')
               : 'unknown',
           timestamp: Date.now(),
           confidence: this.calculateConfidence(result),
@@ -369,9 +366,9 @@ export class HiveFACTSystem extends EventEmitter {
    * @param result
    */
   private calculateConfidence(result: any): number {
-    const sourceCount = Array.isArray(result.sources) ? result.sources.length : 0;
-    const hasErrors = Array.isArray(result.sources)
-      ? result.sources.some((s: any) => s?.error)
+    const sourceCount = Array.isArray(result?.sources) ? result?.sources.length : 0;
+    const hasErrors = Array.isArray(result?.sources)
+      ? result?.sources?.some((s: any) => s?.error)
       : false;
 
     let confidence = 0.5; // Base confidence
@@ -405,15 +402,15 @@ export class HiveFACTSystem extends EventEmitter {
     // Try to use real search implementation if available
     try {
       if (this.factOrchestrator && typeof this.factOrchestrator.gatherKnowledge === 'function') {
-        const result = await this.factOrchestrator.gatherKnowledge(query.query, {
+        const result = await this.factOrchestrator.gatherKnowledge(query.query || '', {
           sources: this.config.knowledgeSources || ['web', 'internal'],
           maxResults: query.limit || 10,
           timeout: query.timeout || 30000
         });
         
-        if (result && result.knowledge && Array.isArray(result.knowledge)) {
+        if (result && result?.knowledge && Array.isArray(result?.knowledge)) {
           // Convert real results to universal facts
-          return result.knowledge.map((knowledge: any, index: number) => ({
+          return result?.knowledge?.map((knowledge: any, index: number) => ({
             id: `external:search:${Date.now()}_${index}`,
             type: 'external',
             category: 'search',
@@ -485,7 +482,7 @@ export class HiveFACTSystem extends EventEmitter {
     setInterval(() => {
       const frequentlyAccessedFacts = Array.from(this.universalFacts.entries())
         .filter(([_, fact]) => (fact.accessCount || 0) > 10)
-        .sort((a, b) => (b[1].accessCount || 0) - (a[1].accessCount || 0))
+        .sort((a, b) => (b[1]?.accessCount || 0) - (a[1]?.accessCount || 0))
         .slice(0, 20); // Top 20 most accessed
 
       for (const [key, fact] of frequentlyAccessedFacts) {
@@ -601,7 +598,7 @@ export const HiveFACTHelpers = {
     if (!fact) throw new Error('Hive FACT not initialized');
 
     const result = await fact.getNPMPackageFacts(packageName, version);
-    return result.content;
+    return result?.content;
   },
 
   /**
@@ -615,7 +612,7 @@ export const HiveFACTHelpers = {
     if (!fact) throw new Error('Hive FACT not initialized');
 
     const result = await fact.getGitHubRepoFacts(owner, repo);
-    return result.content;
+    return result?.content;
   },
 
   /**
@@ -629,7 +626,7 @@ export const HiveFACTHelpers = {
     if (!fact) throw new Error('Hive FACT not initialized');
 
     const result = await fact.getAPIDocsFacts(api, endpoint);
-    return result.content;
+    return result?.content;
   },
 
   /**
@@ -642,7 +639,7 @@ export const HiveFACTHelpers = {
     if (!fact) throw new Error('Hive FACT not initialized');
 
     const result = await fact.getSecurityAdvisoryFacts(cve);
-    return result.content;
+    return result?.content;
   },
 };
 

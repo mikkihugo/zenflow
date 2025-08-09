@@ -11,8 +11,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
 
 /**
  * Expertise Discovery Engine
@@ -3336,9 +3334,9 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
 
       this.emit('expertise:discovered', result);
       this.logger.info('Swarm expertise discovery completed', {
-        discoveryId: result.discoveryId,
+        discoveryId: result?.discoveryId,
         profilesCreated: expertiseProfiles.length,
-        discoveryTime: result.discoveryTime,
+        discoveryTime: result?.discoveryTime,
       });
 
       return result;
@@ -3527,7 +3525,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
 
       // Apply validated knowledge to target domain
       const applicationResults = await this.applyTransferredKnowledge(
-        validatedResults.validKnowledge,
+        validatedResults?.validKnowledge,
         targetDomain
       );
 
@@ -3543,7 +3541,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
         domainCompatibility: domainAnalysis.compatibilityScore,
         extractedItems: extractedKnowledge.length,
         adaptedItems: adaptedKnowledge.length,
-        validatedItems: validationResults.validKnowledge.length,
+        validatedItems: validationResults?.validKnowledge.length,
         applicationResults,
         effectivenessScore: effectivenessEvaluation.overallEffectiveness,
         transferTime: Date.now() - startTime,
@@ -3551,7 +3549,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       };
 
       // Store transfer experience for future use
-      this.transferKnowledge.set(result.transferId, result);
+      this.transferKnowledge.set(result?.transferId, result);
 
       this.emit('transfer:completed', result);
       return result;

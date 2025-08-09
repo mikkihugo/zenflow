@@ -108,10 +108,10 @@ export class InterfaceModeDetector {
     
     // Only add optional properties when they have defined values
     if (port !== undefined) {
-      config.port = port;
+      config?.port = port;
     }
     if (daemonMode !== undefined) {
-      config.daemon = daemonMode;
+      config?.daemon = daemonMode;
     }
 
     return {

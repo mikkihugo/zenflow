@@ -1,12 +1,4 @@
 /**
- * @file Default Configuration Values.
- *
- * Central definition of all default configuration values.
- */
-
-import type { SystemConfiguration } from './types';
-
-/**
  * Default system configuration.
  */
 export const DEFAULT_CONFIG: SystemConfiguration = {

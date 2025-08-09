@@ -4,7 +4,6 @@
  */
 
 import { DALFactory } from '../database/index';
-import type { DatabaseQuery } from '../database/interfaces';
 import { DIContainer } from '../di/container/di-container';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
 import { MemorySystemFactory } from '../memory/index';
@@ -79,7 +78,7 @@ export async function createIntegratedSystem() {
   });
 
   // Register database provider factory
-  container.register(DATABASE_TOKENS.ProviderFactory, {
+  container.register(DATABASE_TOKENS?.ProviderFactory, {
     type: 'singleton',
     create: () => ({
       createProvider: async (type: string, config: any) => {
@@ -90,18 +89,18 @@ export async function createIntegratedSystem() {
   });
 
   // Register DALFactory
-  container.register(DATABASE_TOKENS.DALFactory, {
+  container.register(DATABASE_TOKENS?.DALFactory, {
     type: 'singleton',
     create: (c) =>
       new DALFactory(
         c.resolve(CORE_TOKENS.Logger),
         c.resolve(CORE_TOKENS.Config),
-        c.resolve(DATABASE_TOKENS.ProviderFactory) as any
+        c.resolve(DATABASE_TOKENS?.ProviderFactory) as any
       ),
   });
 
   // Get DALFactory instance
-  const dalFactory = container.resolve(DATABASE_TOKENS.DALFactory) as any;
+  const dalFactory = container.resolve(DATABASE_TOKENS?.DALFactory) as any;
 
   // For the multi-engine system, we'll create individual DAOs
   // Note: The createAdvancedDatabaseSystem method doesn't exist in the new API
@@ -193,7 +192,7 @@ export async function createIntegratedSystem() {
         sessionId,
       };
 
-      return await databaseSystem.query(query);
+      return await databaseSystem?.query(query);
     },
 
     async retrieveWithOptimization(sessionId: string, key: string) {
@@ -223,7 +222,7 @@ export async function createIntegratedSystem() {
         sessionId,
       };
 
-      return await databaseSystem.query(query);
+      return await databaseSystem?.query(query);
     },
 
     async performVectorSearch(embedding: number[], sessionId?: string) {
@@ -241,27 +240,27 @@ export async function createIntegratedSystem() {
         sessionId,
       };
 
-      return await databaseSystem.query(query);
+      return await databaseSystem?.query(query);
     },
 
     async getSystemHealth() {
       const memoryHealth = memorySystem.getHealthReport();
-      const databaseHealth = databaseSystem.getHealthReport();
+      const databaseHealth = databaseSystem?.getHealthReport();
 
       return {
         memory: memoryHealth,
         database: databaseHealth,
         overall: {
           status:
-            memoryHealth.overall === 'healthy' && databaseHealth.overall === 'healthy'
+            memoryHealth.overall === 'healthy' && databaseHealth?.overall === 'healthy'
               ? 'healthy'
-              : memoryHealth.overall === 'critical' || databaseHealth.overall === 'critical'
+              : memoryHealth.overall === 'critical' || databaseHealth?.overall === 'critical'
                 ? 'critical'
                 : 'warning',
-          score: Math.round((memoryHealth.score + databaseHealth.score) / 2),
+          score: Math.round((memoryHealth.score + databaseHealth?.score) / 2),
           components: {
             memory: memoryHealth.score,
-            database: databaseHealth.score,
+            database: databaseHealth?.score,
           },
         },
       };
@@ -269,7 +268,7 @@ export async function createIntegratedSystem() {
 
     async getPerformanceMetrics() {
       const memoryStats = memorySystem.getStats();
-      const databaseStats = databaseSystem.getStats();
+      const databaseStats = databaseSystem?.getStats();
 
       return {
         timestamp: Date.now(),
@@ -278,14 +277,14 @@ export async function createIntegratedSystem() {
         integration: {
           totalOperations:
             (memoryStats.coordinator?.decisions?.total || 0) +
-            (databaseStats.coordinator?.queries?.total || 0),
+            (databaseStats?.coordinator?.queries?.total || 0),
           averageLatency:
             ((memoryStats.current?.averageLatency || 0) +
-              (databaseStats.coordinator?.queries?.averageLatency || 0)) /
+              (databaseStats?.coordinator?.queries?.averageLatency || 0)) /
             2,
           systemUtilization: {
             memory: memoryStats.backends || 0,
-            database: databaseStats.engines || 0,
+            database: databaseStats?.engines || 0,
           },
         },
       };
@@ -293,7 +292,7 @@ export async function createIntegratedSystem() {
 
     async shutdown() {
       await memorySystem.shutdown();
-      await databaseSystem.shutdown();
+      await databaseSystem?.shutdown();
     },
   };
 }
@@ -322,7 +321,7 @@ export async function demonstrateMCPIntegration() {
   });
 
   // Example: Initialize database system via MCP
-  const databaseInitResult = await databaseTools[0]?.handler({
+  const databaseInitResult = await databaseTools?.[0]?.handler({
     engines: [
       {
         id: 'main-vector',
@@ -337,7 +336,7 @@ export async function demonstrateMCPIntegration() {
   });
 
   // Example: Execute optimized query via MCP
-  const queryResult = await databaseTools[1]?.handler({
+  const queryResult = await databaseTools?.[1]?.handler({
     operation: 'vector_search',
     parameters: { vector: [0.1, 0.2, 0.3], options: { limit: 5 } },
     requirements: { consistency: 'eventual', timeout: 10000, priority: 'medium' },
@@ -349,7 +348,7 @@ export async function demonstrateMCPIntegration() {
   // Example: Monitor system performance via MCP
   const monitoringResult = await Promise.all([
     memoryTools[2]?.handler({ duration: 30000, metrics: ['latency', 'memory', 'cache'] }),
-    databaseTools[3]?.handler({
+    databaseTools?.[3]?.handler({
       duration: 30000,
       metrics: ['performance', 'utilization', 'queries'],
     }),
@@ -393,7 +392,7 @@ export async function demonstrateErrorHandling() {
     }
 
     if (error instanceof DatabaseError) {
-      const classification = DatabaseErrorClassifier.classify(error);
+      const classification = DatabaseErrorClassifier?.classify(error);
 
       // Handle retry strategy
       if (error.retryable && classification.retryStrategy !== 'none') {
@@ -430,7 +429,7 @@ export async function demonstrateOptimization() {
   // TODO: TypeScript error TS2339 - Property 'optimizer' does not exist on database system (AI unsure of safe fix - human review needed)
   const databaseRecommendations = (system.database as any).optimizer?.getRecommendations();
   if (databaseRecommendations && databaseRecommendations.length > 0) {
-    databaseRecommendations.forEach((rec, i) => {});
+    databaseRecommendations?.forEach((rec, i) => {});
   }
 
   // Get health report

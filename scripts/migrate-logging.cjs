@@ -155,7 +155,28 @@ function getFilesToTransform(pattern) {
   return files.filter(file => {
     try {
       const content = fs.readFileSync(file, 'utf-8');
-      return /console\.(log|info|warn|error|debug|trace)/.test(content);
+      // Exclude commented console statements by looking for uncommented ones
+      const lines = content.split('\n');
+      return lines.some(line => {
+        const trimmed = line.trim();
+        // Skip commented lines
+        if (trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.startsWith('*')) {
+          return false;
+        }
+        // Skip .catch(console.error) patterns - these are valid error handling
+        if (/\.catch\(console\.(error|warn|log)\)/.test(line)) {
+          return false;
+        }
+        // Skip console statements in HTML/JavaScript template strings (client-side code)
+        if (line.includes('<script>') || line.includes('socket.on(') || line.includes('</script>')) {
+          return false;
+        }
+        // Skip object property assignments with console methods (fallback loggers)
+        if (/\s*(debug|info|warn|error|log|trace):\s*console\.(debug|info|warn|error|log|trace)/.test(line)) {
+          return false;
+        }
+        return /console\.(log|info|warn|error|debug|trace)/.test(line);
+      });
     } catch (error) {
       return false;
     }

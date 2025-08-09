@@ -13,10 +13,8 @@ const logger = getLogger("src-knowledge-knowledge-swarm");
 
 import { EventEmitter } from 'node:events';
 import { createDAO, createRepository, DatabaseTypes, EntityTypes } from '../database/index';
-import type { IRepository } from '../database/interfaces';
 // Import UACL for unified client management
-import { type ClientInstance, ClientType, uacl } from '../interfaces/clients/index';
-import type { KnowledgeClientConfig, KnowledgeResult } from './knowledge-client';
+import { ClientType, uacl } from '../interfaces/clients/index';
 import { FACTIntegration } from './knowledge-client';
 
 export interface KnowledgeSwarmConfig extends KnowledgeClientConfig {
@@ -162,14 +160,14 @@ export class KnowledgeSwarm extends EventEmitter {
       if (this.config.persistentStorage) {
         this.vectorRepository = await createRepository(
           EntityTypes.VectorDocument,
-          DatabaseTypes.LanceDB,
+          DatabaseTypes?.LanceDB,
           {
             database: './data/knowledge-swarm',
             options: { vectorSize: 1536, metricType: 'cosine' },
           }
         );
 
-        this.vectorDAO = await createDAO(EntityTypes.VectorDocument, DatabaseTypes.LanceDB, {
+        this.vectorDAO = await createDAO(EntityTypes.VectorDocument, DatabaseTypes?.LanceDB, {
           database: './data/knowledge-swarm',
           options: { vectorSize: 1536 },
         });
@@ -223,7 +221,7 @@ export class KnowledgeSwarm extends EventEmitter {
         queryId: query.id,
         results,
         consolidatedResponse,
-        agentsUsed: selectedAgents.map((a) => a.id),
+        agentsUsed: selectedAgents?.map((a) => a.id),
         totalExecutionTime: totalTime,
         knowledgeConfidence: this.calculateConfidence(results),
         sourcesDiversity: this.calculateDiversity(results),
@@ -577,11 +575,10 @@ export class KnowledgeSwarm extends EventEmitter {
     });
 
     const results = await Promise.allSettled(promises);
-    return results
-      .filter(
-        (result): result is PromiseFulfilledResult<FACTResult> => result.status === 'fulfilled'
+    return results?.filter(
+        (result): result is PromiseFulfilledResult<FACTResult> => result?.status === 'fulfilled'
       )
-      .map((result) => result.value);
+      .map((result) => result?.value);
   }
 
   /**
@@ -595,7 +592,7 @@ export class KnowledgeSwarm extends EventEmitter {
     }
 
     if (results.length === 1) {
-      return results[0].response;
+      return results?.[0]?.response;
     }
 
     // Group results by similarity and merge
@@ -604,12 +601,12 @@ export class KnowledgeSwarm extends EventEmitter {
     // Create consolidated response
     let consolidatedResponse = '# Consolidated Knowledge Swarm Results\\n\\n';
 
-    uniqueResults.forEach((result, index) => {
-      consolidatedResponse += `## Source ${index + 1} (${result.metadata?.agentId || 'Unknown Agent'})\n`;
-      consolidatedResponse += `**Tools Used:** ${result.toolsUsed.join(', ')}\n`;
-      consolidatedResponse += `**Execution Time:** ${result.executionTimeMs}ms\n`;
-      consolidatedResponse += `**Cache Hit:** ${result.cacheHit ? 'Yes' : 'No'}\n\n`;
-      consolidatedResponse += `${result.response}\n\n`;
+    uniqueResults?.forEach((result, index) => {
+      consolidatedResponse += `## Source ${index + 1} (${result?.metadata?.agentId || 'Unknown Agent'})\n`;
+      consolidatedResponse += `**Tools Used:** ${result?.toolsUsed?.join(', ')}\n`;
+      consolidatedResponse += `**Execution Time:** ${result?.executionTimeMs}ms\n`;
+      consolidatedResponse += `**Cache Hit:** ${result?.cacheHit ? 'Yes' : 'No'}\n\n`;
+      consolidatedResponse += `${result?.response}\n\n`;
       consolidatedResponse += '---\n\n';
     });
 
@@ -627,7 +624,7 @@ export class KnowledgeSwarm extends EventEmitter {
 
     for (const result of results) {
       const isDuplicate = unique.some((existing) => {
-        const similarity = this.calculateSimilarity(existing.response, result.response);
+        const similarity = this.calculateSimilarity(existing.response, result?.response);
         return similarity > 0.8; // 80% similarity threshold
       });
 
@@ -663,18 +660,18 @@ export class KnowledgeSwarm extends EventEmitter {
    */
   private async storeKnowledge(query: SwarmQuery, results: KnowledgeResult[]): Promise<void> {
     try {
-      const documents = results.map((result, index) => ({
+      const documents = results?.map((result, index) => ({
         id: `${query.id}-result-${index}`,
         vector: new Array(1536).fill(0).map(() => Math.random()), // Placeholder embedding
         metadata: {
           queryId: query.id,
           query: query.query,
-          agentId: result.metadata?.agentId || 'unknown',
-          specialization: result.metadata?.specialization || 'general',
+          agentId: result?.metadata?.agentId || 'unknown',
+          specialization: result?.metadata?.specialization || 'general',
           domains: query.domains?.join(',') || '',
           timestamp: new Date().toISOString(),
-          executionTime: result.executionTimeMs.toString(),
-          cacheHit: result.cacheHit.toString(),
+          executionTime: result?.executionTimeMs.toString(),
+          cacheHit: result?.cacheHit.toString(),
         },
         timestamp: Date.now(),
       }));
@@ -705,16 +702,16 @@ export class KnowledgeSwarm extends EventEmitter {
     results: KnowledgeResult[]
   ): Promise<void> {
     // Update agent expertise based on successful results
-    results.forEach((result) => {
-      const agentId = result.metadata?.agentId;
+    results?.forEach((result) => {
+      const agentId = result?.metadata?.agentId;
       if (agentId) {
         const agent = this.agents.get(agentId);
-        if (agent && result.executionTimeMs < 5000) {
+        if (agent && result?.executionTimeMs < 5000) {
           // Good performance
           // Boost expertise in relevant domains
-          if (result.metadata?.type) {
-            const currentConfidence = agent.expertise.get(result.metadata.type) || 0.5;
-            agent.expertise.set(result.metadata.type, Math.min(1.0, currentConfidence + 0.1));
+          if (result?.metadata?.type) {
+            const currentConfidence = agent.expertise.get(result?.metadata?.type) || 0.5;
+            agent.expertise.set(result?.metadata?.type, Math.min(1.0, currentConfidence + 0.1));
           }
         }
       }
@@ -731,20 +728,20 @@ export class KnowledgeSwarm extends EventEmitter {
 
     let totalConfidence = 0;
 
-    results.forEach((result) => {
+    results?.forEach((result) => {
       let confidence = 0.5; // Base confidence
 
       // Cache hit bonus (cached results are more reliable)
-      if (result.cacheHit) confidence += 0.2;
+      if (result?.cacheHit) confidence += 0.2;
 
       // Fast execution bonus
-      if (result.executionTimeMs < 1000) confidence += 0.1;
+      if (result?.executionTimeMs < 1000) confidence += 0.1;
 
       // Multiple tools used bonus
-      if (result.toolsUsed.length > 1) confidence += 0.1;
+      if (result?.toolsUsed.length > 1) confidence += 0.1;
 
       // Agent specialization bonus
-      const agent = Array.from(this.agents.values()).find((a) => a.id === result.metadata?.agentId);
+      const agent = Array.from(this.agents.values()).find((a) => a.id === result?.metadata?.agentId);
       if (agent && agent.successRate > 0.8) confidence += 0.1;
 
       totalConfidence += Math.min(1.0, confidence);
@@ -761,8 +758,8 @@ export class KnowledgeSwarm extends EventEmitter {
   private calculateDiversity(results: KnowledgeResult[]): number {
     if (results.length <= 1) return 0;
 
-    const agents = new Set(results.map((r) => r.metadata?.agentId));
-    const tools = new Set(results.flatMap((r) => r.toolsUsed));
+    const agents = new Set(results?.map((r) => r.metadata?.agentId));
+    const tools = new Set(results?.flatMap((r) => r.toolsUsed));
 
     // Diversity based on agent variety and tool variety
     const agentDiversity = agents.size / this.agents.size;
@@ -940,7 +937,7 @@ export const FACTSwarmHelpers = {
     if (!swarm) throw new Error('FACT Swarm not initialized');
 
     const result = await swarm.researchProblem(problem, context);
-    return result.consolidatedResponse;
+    return result?.consolidatedResponse;
   },
 
   /**
@@ -954,7 +951,7 @@ export const FACTSwarmHelpers = {
     if (!swarm) throw new Error('FACT Swarm not initialized');
 
     const result = await swarm.getTechnologyDocs(technology, version);
-    return result.consolidatedResponse;
+    return result?.consolidatedResponse;
   },
 
   /**
@@ -968,7 +965,7 @@ export const FACTSwarmHelpers = {
     if (!swarm) throw new Error('FACT Swarm not initialized');
 
     const result = await swarm.getAPIIntegration(api, language);
-    return result.consolidatedResponse;
+    return result?.consolidatedResponse;
   },
 
   /**
@@ -981,7 +978,7 @@ export const FACTSwarmHelpers = {
     if (!swarm) throw new Error('FACT Swarm not initialized');
 
     const result = await swarm.getPerformanceOptimization(context);
-    return result.consolidatedResponse;
+    return result?.consolidatedResponse;
   },
 
   /**
@@ -995,7 +992,7 @@ export const FACTSwarmHelpers = {
     if (!swarm) throw new Error('FACT Swarm not initialized');
 
     const result = await swarm.getSecurityGuidance(technology, context);
-    return result.consolidatedResponse;
+    return result?.consolidatedResponse;
   },
 };
 

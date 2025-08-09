@@ -266,7 +266,7 @@ export class NeuralBridge {
     epochs: number
   ): Promise<void> {
     // Simulate training progress
-    const batchSize = Math.min(10, trainingData.inputs.length);
+    const batchSize = Math.min(10, trainingData?.inputs.length);
     const batches = Math.ceil(epochs / batchSize);
 
     for (let batch = 0; batch < batches; batch++) {

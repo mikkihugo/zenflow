@@ -70,8 +70,11 @@ export class SPARCEngineCore implements SPARCEngine {
 
     // Initialize existing infrastructure integrations with REAL implementations
     this.documentDrivenSystem = new DocumentDrivenSystem();
-    this.workflowEngine = new WorkflowEngine();
-    this.memorySystem = new MemorySystem();
+    this.memorySystem = new MemorySystem({
+      backend: 'json',
+      path: './data/sparc-engine-memory'
+    });
+    this.workflowEngine = new WorkflowEngine(this.memorySystem);
     this.swarmCoordinator = new SPARCSwarmCoordinator();
     this.taskCoordinator = new TaskCoordinator();
     this.taskAPI = new TaskAPI();
@@ -1116,7 +1119,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
 
     for (const workflowName of workflows) {
       try {
-        await this.workflowEngine.runWorkflow(workflowName, {
+        await this.workflowEngine.startWorkflow(workflowName, {
           projectId: project.id,
           domain: project.domain,
           workspaceId,

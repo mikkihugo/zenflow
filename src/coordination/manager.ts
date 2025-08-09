@@ -56,10 +56,10 @@ export class CoordinationManager extends EventEmitter {
     super();
 
     this.config = {
-      maxAgents: config.maxAgents,
-      heartbeatInterval: config.heartbeatInterval,
-      timeout: config.timeout,
-      enableHealthCheck: config.enableHealthCheck !== false,
+      maxAgents: config?.maxAgents,
+      heartbeatInterval: config?.heartbeatInterval,
+      timeout: config?.timeout,
+      enableHealthCheck: config?.enableHealthCheck !== false,
     };
 
     this.setupEventHandlers();
@@ -123,10 +123,10 @@ export class CoordinationManager extends EventEmitter {
     }
 
     const agent: Agent = {
-      id: agentConfig.id,
-      type: agentConfig.type,
+      id: agentConfig?.id,
+      type: agentConfig?.type,
       status: 'idle',
-      capabilities: agentConfig.capabilities,
+      capabilities: agentConfig?.capabilities,
       lastHeartbeat: new Date(),
       taskCount: 0,
       created: new Date(),
@@ -171,19 +171,19 @@ export class CoordinationManager extends EventEmitter {
     metadata?: Record<string, any>;
   }): Promise<void> {
     const task: Task = {
-      id: taskConfig.id,
-      type: taskConfig.type,
-      priority: taskConfig.priority,
+      id: taskConfig?.id,
+      type: taskConfig?.type,
+      priority: taskConfig?.priority,
       status: 'pending',
       created: new Date(),
-      ...(taskConfig.metadata && { metadata: taskConfig.metadata }),
+      ...(taskConfig?.metadata && { metadata: taskConfig?.metadata }),
     };
 
     this.tasks.set(task.id, task);
     this._logger?.info(`Task submitted: ${task.id}`, { type: task.type });
 
     // Try to assign task immediately
-    await this.assignTask(task, taskConfig.requiredCapabilities || []);
+    await this.assignTask(task, taskConfig?.requiredCapabilities || []);
   }
 
   /**
@@ -285,15 +285,15 @@ export class CoordinationManager extends EventEmitter {
   private setupEventHandlers(): void {
     if (this._eventBus) {
       this._eventBus.on('agent:heartbeat', (data: any) => {
-        this.updateAgentHeartbeat(data.agentId);
+        this.updateAgentHeartbeat(data?.agentId);
       });
 
       this._eventBus.on('task:completed', (data: any) => {
-        this.updateTaskStatus(data.taskId, 'completed');
+        this.updateTaskStatus(data?.taskId, 'completed');
       });
 
       this._eventBus.on('task:failed', (data: any) => {
-        this.updateTaskStatus(data.taskId, 'failed');
+        this.updateTaskStatus(data?.taskId, 'failed');
       });
     }
   }
@@ -343,13 +343,13 @@ export class CoordinationManager extends EventEmitter {
     }
 
     // Assign task
-    task.assignedAgent = selectedAgent.id;
+    task.assignedAgent = selectedAgent?.id;
     task.status = 'assigned';
-    selectedAgent.status = 'busy';
-    selectedAgent.taskCount++;
+    selectedAgent?.status = 'busy';
+    selectedAgent?.taskCount++;
 
-    this._logger?.info(`Task assigned: ${task.id} -> ${selectedAgent.id}`);
-    this.emit('taskAssigned', { taskId: task.id, agentId: selectedAgent.id });
+    this._logger?.info(`Task assigned: ${task.id} -> ${selectedAgent?.id}`);
+    this.emit('taskAssigned', { taskId: task.id, agentId: selectedAgent?.id });
   }
 }
 

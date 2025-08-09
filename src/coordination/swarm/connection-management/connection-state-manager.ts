@@ -1,7 +1,7 @@
 import { getLogger } from "../../../config/logging-config";
 const logger = getLogger("coordination-swarm-connection-management-connection-state-manager");
 /**
- * MCP Connection State Manager for ZenSwarm
+ * MCP Connection State Manager for ZenSwarm.
  *
  * Provides comprehensive MCP connection state management with persistence,
  * automatic recovery, and health monitoring integration.
@@ -12,7 +12,7 @@ const logger = getLogger("coordination-swarm-connection-management-connection-st
  * - Health monitoring integration
  * - Connection pooling and load balancing
  * - Graceful degradation and fallback mechanisms
- * - Real-time connection status monitoring
+ * - Real-time connection status monitoring.
  */
 
 import type { ChildProcess } from 'node:child_process';
@@ -116,10 +116,10 @@ class Logger {
   }
   name: string;
   info(_msg: string, ..._args: unknown[]): void {}
-  error(msg: string, ...args: unknown[]): void {
+  error(msg: string, ...args: any[]): void {
     logger.error(`[ERROR] ${this.name}:`, msg, ...args);
   }
-  warn(msg: string, ...args: unknown[]): void {
+  warn(msg: string, ...args: any[]): void {
     logger.warn(`[WARN] ${this.name}:`, msg, ...args);
   }
   debug(_msg: string, ..._args: unknown[]): void {}
@@ -211,7 +211,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Initialize the connection state manager
+   * Initialize the connection state manager.
    */
   async initialize() {
     try {
@@ -243,7 +243,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Register a new MCP connection
+   * Register a new MCP connection.
    *
    * @param connectionConfig
    */
@@ -330,7 +330,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Establish connection to MCP server
+   * Establish connection to MCP server.
    *
    * @param connectionId
    */
@@ -405,7 +405,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Establish stdio-based MCP connection
+   * Establish stdio-based MCP connection.
    *
    * @param connection
    */
@@ -460,7 +460,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Establish WebSocket-based MCP connection
+   * Establish WebSocket-based MCP connection.
    *
    * @param connection
    */
@@ -509,7 +509,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Establish HTTP-based MCP connection
+   * Establish HTTP-based MCP connection.
    *
    * @param connection
    */
@@ -557,7 +557,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Set up message handling for stdio connections
+   * Set up message handling for stdio connections.
    *
    * @param connection
    */
@@ -590,7 +590,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Set up WebSocket message handling
+   * Set up WebSocket message handling.
    *
    * @param connection
    */
@@ -609,7 +609,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Handle incoming message from MCP connection
+   * Handle incoming message from MCP connection.
    *
    * @param connectionId
    * @param message
@@ -628,7 +628,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Send message to MCP connection
+   * Send message to MCP connection.
    *
    * @param connectionId
    * @param message
@@ -691,7 +691,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Handle connection closure
+   * Handle connection closure.
    *
    * @param connectionId
    * @param code
@@ -721,7 +721,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Schedule reconnection attempt
+   * Schedule reconnection attempt.
    *
    * @param connectionId
    */
@@ -803,7 +803,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Get connection status
+   * Get connection status.
    *
    * @param connectionId
    */
@@ -842,7 +842,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Get connection statistics
+   * Get connection statistics.
    */
   getConnectionStats() {
     return {
@@ -856,7 +856,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Disconnect a connection
+   * Disconnect a connection.
    *
    * @param connectionId
    * @param reason
@@ -913,7 +913,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Remove a connection completely
+   * Remove a connection completely.
    *
    * @param connectionId
    */
@@ -945,7 +945,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Start health monitoring
+   * Start health monitoring.
    */
   startHealthMonitoring() {
     this.healthMonitorInterval = setInterval(async () => {
@@ -962,7 +962,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Perform health checks on all connections
+   * Perform health checks on all connections.
    */
   async performHealthChecks() {
     const healthChecks = Array.from(this.connections.entries())
@@ -973,7 +973,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Perform health check on a specific connection
+   * Perform health check on a specific connection.
    *
    * @param connectionId
    */
@@ -1041,7 +1041,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Persist connection state
+   * Persist connection state.
    *
    * @param connection
    */
@@ -1076,7 +1076,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Restore persisted connections
+   * Restore persisted connections.
    */
   async restorePersistedConnections() {
     if (!this.persistence) return;
@@ -1148,7 +1148,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Remove persisted connection
+   * Remove persisted connection.
    *
    * @param connectionId
    */
@@ -1168,7 +1168,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Set integration points
+   * Set integration points.
    *
    * @param persistence
    */
@@ -1188,7 +1188,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Export connection data for monitoring dashboards
+   * Export connection data for monitoring dashboards.
    */
   exportConnectionData() {
     return {
@@ -1203,7 +1203,7 @@ export class ConnectionStateManager extends EventEmitter {
   }
 
   /**
-   * Cleanup and shutdown
+   * Cleanup and shutdown.
    */
   async shutdown() {
     this.logger.info('Shutting down Connection State Manager');

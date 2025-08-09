@@ -4,9 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { CoordinationResult, SwarmTopology } from '../coordination/swarm/core/strategy';
-import type { AllSystemEvents, SystemEventManager } from '../interfaces/events/observer-system';
-import type { MCPCommandQueue } from '../interfaces/mcp/command-system';
 
 // Service interface definitions for dependency injection
 export interface ISwarmService {
@@ -527,30 +524,30 @@ export class ClaudeZenFacade extends EventEmitter {
         throw new Error(`Configuration validation failed: ${validation.errors.join(', ')}`);
       }
 
-      const projectId = this.generateProjectId(config.name);
+      const projectId = this.generateProjectId(config?.name);
       const startTime = Date.now();
 
       // Phase 1: Initialize core services in parallel
       this.logger.info('Phase 1: Initializing core services', { operationId });
       const [swarmResult, memorySetup, databaseSetup] = await Promise.allSettled([
-        this.swarmService.initializeSwarm(config.swarm),
+        this.swarmService.initializeSwarm(config?.swarm),
         this.memoryService.store('project:config', config, { ttl: 86400 }),
         this.databaseService.createIndex('projects', ['id', 'name', 'created_at']),
       ]);
 
       // Handle initialization results
-      const swarmId = swarmResult.status === 'fulfilled' ? swarmResult.value.swarmId : undefined;
+      const swarmId = swarmResult?.status === 'fulfilled' ? swarmResult?.value?.swarmId : undefined;
       const initErrors: string[] = [];
       const initWarnings: string[] = [];
 
-      if (swarmResult.status === 'rejected') {
-        initErrors.push(`Swarm initialization failed: ${swarmResult.reason.message}`);
+      if (swarmResult?.status === 'rejected') {
+        initErrors.push(`Swarm initialization failed: ${swarmResult?.reason?.message}`);
       }
       if (memorySetup.status === 'rejected') {
         initWarnings.push(`Memory setup failed: ${memorySetup.reason.message}`);
       }
-      if (databaseSetup.status === 'rejected') {
-        initWarnings.push(`Database setup failed: ${databaseSetup.reason.message}`);
+      if (databaseSetup?.status === 'rejected') {
+        initWarnings.push(`Database setup failed: ${databaseSetup?.reason?.message}`);
       }
 
       // Phase 2: Persist project data
@@ -558,7 +555,7 @@ export class ClaudeZenFacade extends EventEmitter {
       try {
         await this.databaseService.insert('projects', {
           id: projectId,
-          name: config.name,
+          name: config?.name,
           config: JSON.stringify(config),
           swarm_id: swarmId,
           created_at: new Date(),
@@ -573,10 +570,10 @@ export class ClaudeZenFacade extends EventEmitter {
       const interfaces: Record<string, any> = {};
       const interfacePromises: Promise<any>[] = [];
 
-      if (config.interfaces.http) {
+      if (config?.interfaces?.http) {
         interfacePromises.push(
           this.interfaceService
-            .startHTTPMCP(config.interfaces.http)
+            .startHTTPMCP(config?.interfaces?.http)
             .then((server) => {
               interfaces['http'] = server;
             })
@@ -586,10 +583,10 @@ export class ClaudeZenFacade extends EventEmitter {
         );
       }
 
-      if (config.interfaces.web) {
+      if (config?.interfaces?.web) {
         interfacePromises.push(
           this.interfaceService
-            .startWebDashboard(config.interfaces.web)
+            .startWebDashboard(config?.interfaces?.web)
             .then((server) => {
               interfaces['web'] = server;
             })
@@ -599,10 +596,10 @@ export class ClaudeZenFacade extends EventEmitter {
         );
       }
 
-      if (config.interfaces.tui) {
+      if (config?.interfaces?.tui) {
         interfacePromises.push(
           this.interfaceService
-            .startTUI(config.interfaces.tui.mode)
+            .startTUI(config?.interfaces?.tui?.mode)
             .then((instance) => {
               interfaces['tui'] = instance;
             })
@@ -615,9 +612,9 @@ export class ClaudeZenFacade extends EventEmitter {
       await Promise.allSettled(interfacePromises);
 
       // Phase 4: Initialize neural models if specified
-      if (config.neural?.models) {
+      if (config?.neural?.models) {
         this.logger.info('Phase 4: Initializing neural models', { operationId });
-        for (const modelType of config.neural.models) {
+        for (const modelType of config?.neural?.models) {
           try {
             // This would integrate with actual neural service
             this.logger.info(`Neural model ${modelType} initialization queued`);
@@ -630,9 +627,9 @@ export class ClaudeZenFacade extends EventEmitter {
       }
 
       // Phase 5: Setup workflows if specified
-      if (config.workflows?.length) {
+      if (config?.workflows?.length) {
         this.logger.info('Phase 5: Setting up workflows', { operationId });
-        for (const workflowId of config.workflows) {
+        for (const workflowId of config?.workflows) {
           try {
             // This would integrate with actual workflow service
             this.logger.info(`Workflow ${workflowId} setup queued`);
@@ -662,7 +659,7 @@ export class ClaudeZenFacade extends EventEmitter {
       this.metrics.endOperation(
         'project_init',
         operationId,
-        result.status === 'failed' ? 'error' : 'success'
+        result?.status === 'failed' ? 'error' : 'success'
       );
 
       // Emit project initialization event
@@ -693,7 +690,7 @@ export class ClaudeZenFacade extends EventEmitter {
 
     try {
       // Check cache first if enabled
-      if (options.cacheResults) {
+      if (options?.cacheResults) {
         const cacheKey = `document:${documentPath}:${JSON.stringify(options)}`;
         const cached = await this.memoryService.retrieve<DocumentProcessingResult>(cacheKey);
         if (cached) {
@@ -709,7 +706,7 @@ export class ClaudeZenFacade extends EventEmitter {
       }
 
       // Get or create swarm for processing
-      const swarmId = options.swarmId || (await this.getOrCreateDefaultSwarm());
+      const swarmId = options?.swarmId || (await this.getOrCreateDefaultSwarm());
       const swarmStatus = await this.swarmService.getSwarmStatus(swarmId);
 
       if (!swarmStatus.healthy) {
@@ -720,7 +717,7 @@ export class ClaudeZenFacade extends EventEmitter {
       const analysisPromises: Promise<any>[] = [];
 
       // Text analysis using neural service
-      if (options.useNeural !== false) {
+      if (options?.useNeural !== false) {
         analysisPromises.push(
           this.neuralService
             .predictWithModel('text-analyzer', [document.content])
@@ -799,9 +796,9 @@ export class ClaudeZenFacade extends EventEmitter {
           id: operationId,
           document_id: document.id,
           document_path: documentPath,
-          analysis: JSON.stringify(result.analysis),
+          analysis: JSON.stringify(result?.analysis),
           recommendations: JSON.stringify(recommendations),
-          processing_time: result.processingTime,
+          processing_time: result?.processingTime,
           swarm_id: swarmId,
           created_at: new Date(),
         });
@@ -810,7 +807,7 @@ export class ClaudeZenFacade extends EventEmitter {
       }
 
       // Cache results if enabled
-      if (options.cacheResults) {
+      if (options?.cacheResults) {
         const cacheKey = `document:${documentPath}:${JSON.stringify(options)}`;
         await this.memoryService.store(cacheKey, result, { ttl: 1800 }); // 30 minutes
       }
@@ -898,7 +895,7 @@ export class ClaudeZenFacade extends EventEmitter {
       const result = await this.workflowService.executeWorkflow(workflowId, inputs);
 
       // Store workflow execution history
-      await this.memoryService.store(`workflow:execution:${result.executionId}`, result, {
+      await this.memoryService.store(`workflow:execution:${result?.executionId}`, result, {
         ttl: 86400,
       });
 
@@ -930,7 +927,7 @@ export class ClaudeZenFacade extends EventEmitter {
 
       if (!operation) {
         errors.push({ error: new Error('Operation is undefined'), operationIndex: i, operation: 'unknown' });
-        results.push({ success: false, error: new Error('Operation is undefined'), operationIndex: i });
+        results?.push({ success: false, error: new Error('Operation is undefined'), operationIndex: i });
         continue;
       }
 
@@ -957,7 +954,7 @@ export class ClaudeZenFacade extends EventEmitter {
             throw new Error(`Unknown operation type: ${operation.type}`);
         }
 
-        results.push({ success: true, data: result, operationIndex: i });
+        results?.push({ success: true, data: result, operationIndex: i });
 
         // Emit progress update
         this.emit('batch:progress', {
@@ -967,12 +964,12 @@ export class ClaudeZenFacade extends EventEmitter {
         });
       } catch (error) {
         errors.push({ error, operationIndex: i, operation: operation.type });
-        results.push({ success: false, error, operationIndex: i });
+        results?.push({ success: false, error, operationIndex: i });
       }
     }
 
     this.logger.info('Batch execution completed', {
-      successful: results.filter((r) => r.success).length,
+      successful: results?.filter((r) => r.success).length,
       failed: errors.length,
       operationId,
     });
@@ -1034,15 +1031,15 @@ export class ClaudeZenFacade extends EventEmitter {
     const errors: string[] = [];
     const warnings: string[] = [];
 
-    if (!config.name || config.name.trim().length === 0) {
+    if (!config?.name || config?.name?.trim().length === 0) {
       errors.push('Project name is required');
     }
 
-    if (config.swarm.agentCount <= 0) {
+    if (config?.swarm?.agentCount <= 0) {
       errors.push('Agent count must be greater than 0');
     }
 
-    if (config.swarm.agentCount > 100) {
+    if (config?.swarm?.agentCount > 100) {
       warnings.push('Large agent count may impact performance');
     }
 
@@ -1083,7 +1080,7 @@ export class ClaudeZenFacade extends EventEmitter {
       capabilities: ['document-processing', 'analysis'],
     });
 
-    return result.swarmId;
+    return result?.swarmId;
   }
 
   private async analyzeDocumentStructure(document: any): Promise<DocumentStructure> {
@@ -1308,15 +1305,15 @@ export class ClaudeZenFacade extends EventEmitter {
   private extractComponentStatus(
     settledResult: PromiseSettledResult<ComponentStatus>
   ): ComponentStatus {
-    if (settledResult.status === 'fulfilled') {
-      return settledResult.value;
+    if (settledResult?.status === 'fulfilled') {
+      return settledResult?.value;
     } else {
       return {
         health: 0,
         status: 'unhealthy',
         metrics: {},
         lastChecked: new Date(),
-        errors: [settledResult.reason.message],
+        errors: [settledResult?.reason?.message],
       };
     }
   }

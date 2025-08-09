@@ -202,7 +202,7 @@ export class LoggingConfig {
       },
     };
 
-    logger.error('📊 Logging Configuration:', JSON.stringify(config, null, 2));
+    this.getLogger('logging-config').error('📊 Logging Configuration:', config);
     return config;
   }
 }

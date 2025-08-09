@@ -271,26 +271,26 @@ export class HealthMonitor {
 
       const responseTime = Date.now() - startTime;
 
-      if (checkResult.healthy) {
-        result.healthy = true;
-        result.failureCount = 0;
+      if (checkResult?.healthy) {
+        result?.healthy = true;
+        result?.failureCount = 0;
       } else {
-        result.healthy = false;
-        result.failureCount++;
+        result?.healthy = false;
+        result?.failureCount++;
       }
 
-      result.lastCheck = Date.now();
-      result.responseTime = responseTime;
+      result?.lastCheck = Date.now();
+      result?.responseTime = responseTime;
 
       // Log health check results
-      if (!checkResult.healthy) {
-        logger.warn(`Health check failed: ${checkName}`, checkResult.details);
+      if (!checkResult?.healthy) {
+        logger.warn(`Health check failed: ${checkName}`, checkResult?.details);
       }
     } catch (error) {
-      result.healthy = false;
-      result.failureCount++;
-      result.lastCheck = Date.now();
-      result.responseTime = Date.now() - startTime;
+      result?.healthy = false;
+      result?.failureCount++;
+      result?.lastCheck = Date.now();
+      result?.responseTime = Date.now() - startTime;
 
       logger.error(`Health check error: ${checkName}`, error);
     }
@@ -309,16 +309,16 @@ export class HealthMonitor {
       if (!check) continue;
 
       totalChecks++;
-      totalResponseTime += result.responseTime;
+      totalResponseTime += result?.responseTime;
 
       let componentStatus: 'healthy' | 'warning' | 'error' | 'critical';
 
-      if (result.healthy) {
+      if (result?.healthy) {
         healthyChecks++;
         componentStatus = 'healthy';
-      } else if (result.failureCount >= check.criticalFailureThreshold) {
+      } else if (result?.failureCount >= check.criticalFailureThreshold) {
         componentStatus = 'critical';
-      } else if (result.failureCount >= 3) {
+      } else if (result?.failureCount >= 3) {
         componentStatus = 'error';
       } else {
         componentStatus = 'warning';
@@ -380,27 +380,27 @@ export class AlertSystem {
   public async checkAlerts(metrics: SystemHealthMetrics, trends: ErrorTrend[]): Promise<void> {
     for (const config of this.configs) {
       // Check cooldown
-      const lastAlert = this.lastAlertTime.get(config.name) || 0;
-      if (Date.now() - lastAlert < config.cooldownMs) {
+      const lastAlert = this.lastAlertTime.get(config?.name) || 0;
+      if (Date.now() - lastAlert < config?.cooldownMs) {
         continue;
       }
 
       // Check condition
-      if (config.condition(metrics, trends)) {
+      if (config?.condition(metrics, trends)) {
         const message = this.generateAlertMessage(config, metrics, trends);
 
-        logger.warn(`Alert triggered: ${config.name}`, { severity: config.severity, message });
+        logger.warn(`Alert triggered: ${config?.name}`, { severity: config?.severity, message });
 
         // Send alerts
         for (const handler of this.alertHandlers) {
           try {
             await handler(config, message);
           } catch (error) {
-            logger.error(`Alert handler failed for ${config.name}:`, error);
+            logger.error(`Alert handler failed for ${config?.name}:`, error);
           }
         }
 
-        this.lastAlertTime.set(config.name, Date.now());
+        this.lastAlertTime.set(config?.name, Date.now());
       }
     }
   }
@@ -410,8 +410,7 @@ export class AlertSystem {
     metrics: SystemHealthMetrics,
     _trends: ErrorTrend[]
   ): string {
-    return config.template
-      .replace('{{timestamp}}', new Date(metrics.timestamp).toISOString())
+    return config?.template?.replace('{{timestamp}}', new Date(metrics.timestamp).toISOString())
       .replace('{{health}}', metrics.overallHealth)
       .replace('{{errorRate}}', metrics.errorRate.toString())
       .replace('{{uptime}}', metrics.uptime.toFixed(2))

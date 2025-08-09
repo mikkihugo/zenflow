@@ -1,8 +1,9 @@
-#!/usr/bin/env nodeimport { getLogger } from "../../../config/logging-config";
+#!/usr/bin/env node
+import { getLogger } from "../../../config/logging-config";
 const logger = getLogger("coordination-swarm-sparc-test-template-engine");
 /**
  * Simple test script for SPARC Template Engine
- * Tests template integration functionality
+ * Tests template integration functionality.
  */
 
 import { TemplateEngine } from './core/template-engine';

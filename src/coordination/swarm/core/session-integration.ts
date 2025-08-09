@@ -11,7 +11,7 @@ const logger = getLogger("coordination-swarm-core-session-integration");
 import { EventEmitter } from 'node:events';
 
 // External dependencies
-import type { SessionCoordinationDao } from '../../../database';
+import type { IDao, SessionCoordinationDao } from '../../../database';
 
 // Internal modules - absolute paths
 import { ZenSwarm } from './base-swarm';
@@ -64,9 +64,51 @@ export class SessionEnabledSwarm extends ZenSwarm {
       // Create a simple mock implementation for now
       // TODO: Implement proper DALFactory integration with DI
       persistenceLayer = {
-        query: async (_sql: string, _params?: unknown[]) => [],
+        // Repository methods
+        findById: async (_id: string | number) => null,
+        findBy: async (_criteria: Partial<any>, _options?: any) => [],
+        findAll: async (_options?: any) => [],
+        create: async (_entity: Omit<any, 'id'>) => ({ 
+          id: 'mock-id', 
+          name: 'mock-session',
+          createdAt: new Date(),
+          lastAccessedAt: new Date(),
+          status: 'active'
+        }),
+        update: async (_id: string | number, _updates: Partial<any>) => ({ 
+          id: _id,
+          name: 'mock-session',
+          createdAt: new Date(),
+          lastAccessedAt: new Date(),
+          status: 'active',
+          ..._updates
+        }),
+        delete: async (_id: string | number) => true,
+        count: async (_criteria?: Partial<any>) => 0,
+        exists: async (_id: string | number) => false,
+        executeCustomQuery: async (_query: any) => null,
+        // Coordination methods
+        acquireLock: async (_resourceId: string, _lockTimeout?: number) => ({
+          id: 'mock-lock', 
+          resourceId: _resourceId, 
+          acquired: new Date(), 
+          expiresAt: new Date(Date.now() + 30000), 
+          owner: 'mock-session-integration'
+        }),
+        releaseLock: async (_lockId: string) => {},
+        subscribe: async (_pattern: string, _callback: any) => `mock-sub-${  Date.now()}`,
+        unsubscribe: async (_subscriptionId: string) => {},
+        publish: async (_channel: string, _event: any) => {},
+        getCoordinationStats: async () => ({
+          activeLocks: 0, 
+          activeSubscriptions: 0, 
+          messagesPublished: 0,
+          messagesReceived: 0, 
+          uptime: Date.now()
+        }),
         execute: async (_sql: string, _params?: unknown[]) => ({ affectedRows: 1 }),
-      } as unknown as SessionCoordinationDao;
+        query: async (_sql: string, _params?: unknown[]) => [],
+      } satisfies SessionCoordinationDao;
     }
     this.sessionManager = new SessionManager(persistenceLayer, sessionConfig);
 

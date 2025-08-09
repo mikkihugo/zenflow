@@ -7,14 +7,6 @@ const logger = getLogger("src-core-event-bus");
  */
 
 import { EventEmitter } from 'node:events';
-import type {
-  EventBusConfig,
-  EventListener,
-  EventListenerAny,
-  EventMap,
-  EventMetrics,
-  EventMiddleware,
-} from '../types/event-types';
 
 export interface IEventBus {
   on<T extends keyof EventMap>(event: T, listener: EventListener<T>): this;

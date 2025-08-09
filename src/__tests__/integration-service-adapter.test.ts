@@ -1,30 +1,6 @@
-/**
- * Integration Service Adapter Tests
- *
- * Comprehensive test suite for IntegrationServiceAdapter using hybrid TDD approach:
- * - TDD London (70%): For integration boundaries, API calls, protocol interactions
- * - Classical TDD (30%): For data transformations, validation logic, utility functions
- *
- * Tests cover:
- * - Architecture Storage Service integration
- * - Safe API Service integration
- * - Protocol Management integration
- * - Configuration validation
- * - Error handling and recovery
- * - Performance optimization
- * - Helper utility functions
- */
-
-import type {
-  ArchitecturalValidation,
-  ArchitectureDesign,
-} from '../coordination/swarm/sparc/database/architecture-storage';
 import {
   createDefaultIntegrationServiceAdapterConfig,
   createIntegrationServiceAdapter,
-  type IntegrationOperationResult,
-  type IntegrationServiceAdapter,
-  type IntegrationServiceAdapterConfig,
   IntegrationServiceHelper,
   IntegrationServiceUtils,
 } from '../interfaces/services/adapters/integration-service-adapter';
@@ -194,8 +170,8 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
         projectId: 'project-001',
       });
 
-      expect(result.success).toBe(true);
-      expect(result.data).toBe('arch-001');
+      expect(result?.success).toBe(true);
+      expect(result?.data).toBe('arch-001');
 
       executeSpy.mockRestore();
     });
@@ -219,14 +195,14 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const result1 = await adapter.execute('architecture-retrieve', {
         architectureId: 'arch-001',
       });
-      expect(result1.success).toBe(true);
-      expect(result1.metadata?.duration).toBe(150);
+      expect(result1?.success).toBe(true);
+      expect(result1?.metadata?.duration).toBe(150);
 
       // Second call - should hit cache (if caching enabled)
       const result2 = await adapter.execute('architecture-retrieve', {
         architectureId: 'arch-001',
       });
-      expect(result2.success).toBe(true);
+      expect(result2?.success).toBe(true);
 
       expect(executeSpy).toHaveBeenCalledTimes(2);
       executeSpy.mockRestore();
@@ -311,16 +287,16 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
         options: { timeout: 5000 },
       });
 
-      expect(successResult.success).toBe(true);
-      expect(successResult.data).toEqual(mockAPIResponse);
+      expect(successResult?.success).toBe(true);
+      expect(successResult?.data).toEqual(mockAPIResponse);
 
       // Failed request
       const errorResult = await adapter.execute('api-get', {
         endpoint: '/api/users/999',
       });
 
-      expect(errorResult.success).toBe(false);
-      expect(errorResult.error?.code).toBe('HTTP_404');
+      expect(errorResult?.success).toBe(false);
+      expect(errorResult?.error?.code).toBe('HTTP_404');
 
       executeSpy.mockRestore();
     });
@@ -501,11 +477,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
       // Healthy protocol
       const healthyResult = await adapter.execute('protocol-health-check', { protocol: 'http' });
-      expect(healthyResult.success).toBe(true);
+      expect(healthyResult?.success).toBe(true);
 
       // Unhealthy protocol
       const unhealthyResult = await adapter.execute('protocol-health-check', { protocol: 'tcp' });
-      expect(unhealthyResult.success).toBe(false);
+      expect(unhealthyResult?.success).toBe(false);
 
       executeSpy.mockRestore();
     });
@@ -521,9 +497,9 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       // TDD London: Test error handling interactions
       const errorResult = await adapter.execute('invalid-operation', {});
 
-      expect(errorResult.success).toBe(false);
-      expect(errorResult.error?.code).toBe('OPERATION_ERROR');
-      expect(errorResult.error?.message).toContain('Unknown operation');
+      expect(errorResult?.success).toBe(false);
+      expect(errorResult?.error?.code).toBe('OPERATION_ERROR');
+      expect(errorResult?.error?.message).toContain('Unknown operation');
     });
 
     it('should retry failed operations according to configuration', async () => {
@@ -544,8 +520,8 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       });
 
       // Should eventually succeed after retries
-      expect(result.success).toBe(true);
-      expect(result.data).toBe('success-after-retries');
+      expect(result?.success).toBe(true);
+      expect(result?.data).toBe('success-after-retries');
 
       executeSpy.mockRestore();
     });
@@ -554,8 +530,8 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       // TDD London: Test timeout handling
       const result = await adapter.execute('slow-operation', {}, { timeout: 100 });
 
-      expect(result.success).toBe(false);
-      expect(result.error?.code).toBe('OPERATION_ERROR');
+      expect(result?.success).toBe(false);
+      expect(result?.error?.code).toBe('OPERATION_ERROR');
     });
   });
 
@@ -710,7 +686,7 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       expect(sanitized.id).toBe('arch-transform-test');
       expect(sanitized.systemArchitecture.technologyStack).toHaveLength(2);
       expect(sanitized.components).toHaveLength(1);
-      expect(sanitized.components[0].name).toBe('User Service');
+      expect(sanitized.components[0]?.name).toBe('User Service');
       expect(sanitized.qualityAttributes).toHaveLength(1);
 
       // Should not mutate original
@@ -926,9 +902,9 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       expect(merged.performance?.enableMetricsCollection).toBe(true); // from base
 
       // Original objects should not be mutated
-      expect(baseConfig.architectureStorage?.databaseType).toBe('postgresql');
-      expect(baseConfig.safeAPI?.enabled).toBe(false);
-      expect(overrideConfig.safeAPI?.baseURL).toBeUndefined();
+      expect(baseConfig?.architectureStorage?.databaseType).toBe('postgresql');
+      expect(baseConfig?.safeAPI?.enabled).toBe(false);
+      expect(overrideConfig?.safeAPI?.baseURL).toBeUndefined();
     });
   });
 
@@ -1080,8 +1056,8 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
       projectId: 'project-workflow',
     });
 
-    expect(saveResult.success).toBe(true);
-    expect(saveResult.data).toBe('arch-workflow-001');
+    expect(saveResult?.success).toBe(true);
+    expect(saveResult?.data).toBe('arch-workflow-001');
 
     // Step 2: Retrieve architecture (should potentially hit cache on second call)
     executeSpy.mockResolvedValueOnce({
@@ -1094,8 +1070,8 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
       architectureId: 'arch-workflow-001',
     });
 
-    expect(retrieveResult.success).toBe(true);
-    expect(retrieveResult.data).toEqual(mockArchitectureDesign);
+    expect(retrieveResult?.success).toBe(true);
+    expect(retrieveResult?.data).toEqual(mockArchitectureDesign);
 
     // Step 3: Save validation
     executeSpy.mockResolvedValueOnce({
@@ -1110,7 +1086,7 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
       type: 'comprehensive',
     });
 
-    expect(validationResult.success).toBe(true);
+    expect(validationResult?.success).toBe(true);
 
     // Step 4: Search architectures
     executeSpy.mockResolvedValueOnce({
@@ -1123,8 +1099,8 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
       criteria: { domain: 'web', projectId: 'project-workflow' },
     });
 
-    expect(searchResult.success).toBe(true);
-    expect(searchResult.data).toHaveLength(1);
+    expect(searchResult?.success).toBe(true);
+    expect(searchResult?.data).toHaveLength(1);
 
     expect(executeSpy).toHaveBeenCalledTimes(4);
     executeSpy.mockRestore();
@@ -1157,8 +1133,8 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
       options: { timeout: 5000, retries: 2 },
     });
 
-    expect(apiResult.success).toBe(true);
-    expect(apiResult.data).toEqual(mockAPIResponse);
+    expect(apiResult?.success).toBe(true);
+    expect(apiResult?.data).toEqual(mockAPIResponse);
 
     executeSpy.mockRestore();
   });
@@ -1182,7 +1158,7 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
       config: { host: 'primary.server.com', port: 8080 },
     });
 
-    expect(connectResult.success).toBe(true);
+    expect(connectResult?.success).toBe(true);
 
     // Step 2: Primary protocol fails, switch to backup
     executeSpy
@@ -1199,7 +1175,7 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
       toProtocol: 'http',
     });
 
-    expect(switchResult.success).toBe(true);
+    expect(switchResult?.success).toBe(true);
 
     executeSpy.mockRestore();
   });
@@ -1247,7 +1223,7 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     const duration = Date.now() - startTime;
 
     // All operations should succeed
-    expect(results.every((r) => r.success)).toBe(true);
+    expect(results?.every((r) => r.success)).toBe(true);
 
     // Should complete reasonably quickly (allowing for test environment variance)
     expect(duration).toBeLessThan(5000); // 5 seconds max
@@ -1278,11 +1254,11 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     const results = await Promise.all(requests);
 
     // All should succeed
-    expect(results.every((r) => r.success)).toBe(true);
+    expect(results?.every((r) => r.success)).toBe(true);
 
     // Due to caching, should have fast response times
     const avgDuration =
-      results.reduce((sum, r) => sum + (r.metadata?.duration || 0), 0) / results.length;
+      results?.reduce((sum, r) => sum + (r.metadata?.duration || 0), 0) / results.length;
     expect(avgDuration).toBeLessThan(50); // Should be fast due to caching
 
     executeSpy.mockRestore();

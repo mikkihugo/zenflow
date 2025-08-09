@@ -11,8 +11,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
 import { CollaborativeReasoningEngine } from './collaborative-reasoning-engine';
 // Import all cross-agent knowledge systems
 import { CollectiveIntelligenceCoordinator } from './collective-intelligence-coordinator';
@@ -243,10 +241,10 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
         processingId,
         originalQuery: query,
         collectiveResponse: optimizedResponse,
-        factsGathered: factResults.count,
-        ragResults: ragResults.count,
-        consensusScore: reasoningResults.consensusScore,
-        qualityScore: validatedResults.qualityScore,
+        factsGathered: factResults?.count,
+        ragResults: ragResults?.count,
+        consensusScore: reasoningResults?.consensusScore,
+        qualityScore: validatedResults?.qualityScore,
         processingTime: Date.now() - startTime,
         optimizationApplied: await this.getOptimizationSummary(processingId),
         timestamp: Date.now(),
@@ -258,8 +256,8 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
       this.emit('knowledge:processed-collectively', result);
       this.logger.info('Collective knowledge processing completed', {
         processingId,
-        processingTime: result.processingTime,
-        qualityScore: result.qualityScore,
+        processingTime: result?.processingTime,
+        qualityScore: result?.qualityScore,
       });
 
       return result;
@@ -530,15 +528,15 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
     // Set up event-driven communication between components
     this.collectiveIntelligence.on('knowledge:aggregated', async (data) => {
-      await this.qualityManagement.validateKnowledge(data.knowledge);
+      await this.qualityManagement.validateKnowledge(data?.knowledge);
     });
 
     this.distributedLearning.on('model:converged', async (data) => {
-      await this.intelligenceCoordination.distributeModel(data.model);
+      await this.intelligenceCoordination.distributeModel(data?.model);
     });
 
     this.collaborativeReasoning.on('solution:synthesized', async (data) => {
-      await this.performanceOptimization.optimizeKnowledgeSharing(data.sharing);
+      await this.performanceOptimization.optimizeKnowledgeSharing(data?.sharing);
     });
 
     // Add more inter-component communication...

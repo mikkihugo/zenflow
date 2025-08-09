@@ -76,15 +76,15 @@ export class ExportSystem {
     const timestamp = Date.now();
 
     try {
-      const exporter = this.exporters.get(config.format);
+      const exporter = this.exporters.get(config?.format);
       if (!exporter) {
-        throw new Error(`Unsupported export format: ${config.format}`);
+        throw new Error(`Unsupported export format: ${config?.format}`);
       }
 
       const exportedData = exporter.export(data);
 
-      if (config.outputPath && config.fileName) {
-        const filePath = path.join(config.outputPath, config.fileName + exporter.extension);
+      if (config?.outputPath && config?.fileName) {
+        const filePath = path.join(config?.outputPath, config?.fileName + exporter.extension);
 
         // Ensure directory exists
         await mkdir(path.dirname(filePath), { recursive: true });
@@ -127,7 +127,7 @@ export class ExportSystem {
       return '';
     }
 
-    const headers = Object.keys(data[0]);
+    const headers = Object.keys(data?.[0]);
     const csvRows = [headers.join(',')];
 
     for (const row of data) {
@@ -231,7 +231,7 @@ export class ExportSystem {
           const headerRow = `| ${headers.join(' | ')} |`;
           const separatorRow = `| ${headers.map(() => '---').join(' | ')} |`;
           const dataRows = obj.map(
-            (item) => `| ${headers.map((header) => item[header]?.toString() || '').join(' | ')} |`
+            (item) => `| ${headers.map((header) => item?.[header]?.toString() || '').join(' | ')} |`
           );
           return [headerRow, separatorRow, ...dataRows].join('\n');
         } else {

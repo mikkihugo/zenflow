@@ -1,0 +1,14 @@
+{
+  "parserOpts": {
+    "plugins": [
+      "jsx",
+      "typescript",
+      "optionalChaining",
+      "nullishCoalescingOperator",
+      "decorators",
+      "classProperties",
+      "privateIn",
+      "topLevelAwait"
+    ]
+  }
+}

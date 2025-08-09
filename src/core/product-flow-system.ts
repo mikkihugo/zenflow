@@ -9,8 +9,6 @@
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
-import type { ProductWorkflowEngine } from '../coordination/orchestration/product-workflow-engine';
-import type { DocumentManager } from '../database/managers/document-manager';
 import { createLogger } from './logger';
 
 const logger = createLogger('ProductFlowSystem');
@@ -60,9 +58,9 @@ export class ProductFlowSystem extends EventEmitter {
         variables: { visionDocPath: docPath },
       });
 
-      if (result.success && result.workflowId) {
-        logger.info(`✅ Product Flow workflow started: ${result.workflowId}`);
-        this.emit('product-flow:started', { workflowId: result.workflowId, docPath });
+      if (result?.success && result?.workflowId) {
+        logger.info(`✅ Product Flow workflow started: ${result?.workflowId}`);
+        this.emit('product-flow:started', { workflowId: result?.workflowId, docPath });
       }
     } catch (error) {
       logger.error(`❌ Failed to process visionary document ${docPath}:`, error);

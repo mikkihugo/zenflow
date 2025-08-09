@@ -1,22 +1,4 @@
 /**
- * Coordination Domain - REST API Endpoints
- *
- * RESTful API following Google API Design Guide standards.
- * OpenAPI 3.0 compatible with automatic Swagger documentation.
- *
- * @file REST API for coordination domain
- */
-
-import type {
-  Agent,
-  CoordinationError,
-  HealthStatus,
-  PerformanceMetrics,
-  SwarmConfig,
-  Task,
-} from './schemas';
-
-/**
  * @swagger
  * tags:
  *   - name: Agents

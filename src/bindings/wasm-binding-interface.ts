@@ -1,20 +1,5 @@
 import { getLogger } from "../config/logging-config";
 const logger = getLogger("src-bindings-wasm-binding-interface");
-/**
- * WASM Binding Interface - Isolation Layer
- *
- * This module provides a proper abstraction layer for WASM bindings,
- * preventing direct imports between bindings and neural domains.
- *
- * Follows proper architectural boundaries:
- * bindings/ → wasm-binding-interface → neural/wasm (through abstract interface)
- */
-
-import type {
-  NeuralConfig,
-  NeuralNetworkInterface,
-  WasmNeuralBinding,
-} from '../core/interfaces/base-interfaces';
 
 /**
  * WASM binding interface contract

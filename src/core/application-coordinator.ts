@@ -15,8 +15,8 @@
 import { EventEmitter } from 'node:events';
 import { MemoryManager } from '../memory/index';
 import { DocumentDrivenSystem } from './document-driven-system';
-import { UnifiedDocumentationLinker } from './documentation-linker';
-import { UnifiedExportSystem as ExportManager } from './export-manager';
+import { DocumentationLinker } from './documentation-linker';
+import { ExportSystem as ExportManager } from './export-manager';
 import { InterfaceLauncher } from './interface-launcher';
 import { createLogger } from './logger';
 import { MemorySystem } from './memory-system';
@@ -95,7 +95,7 @@ export class ApplicationCoordinator extends EventEmitter {
   private documentSystem!: DocumentDrivenSystem;
   private workflowEngine!: WorkflowEngine;
   private exportSystem!: ExportManager;
-  private documentationLinker!: UnifiedDocumentationLinker;
+  private documentationLinker!: DocumentationLinker;
   private memorySystem!: MemorySystem;
   private memoryManager!: MemoryManager;
 
@@ -150,7 +150,7 @@ export class ApplicationCoordinator extends EventEmitter {
     this.exportSystem = new ExportManager();
 
     // Documentation linker
-    this.documentationLinker = new UnifiedDocumentationLinker({
+    this.documentationLinker = new DocumentationLinker({
       documentationPaths: this.config.documentation?.documentationPaths,
       codePaths: this.config.documentation?.codePaths,
       enableAutoLinking: this.config.documentation?.enableAutoLinking !== false,
@@ -216,7 +216,7 @@ export class ApplicationCoordinator extends EventEmitter {
 
     // Export system events
     this.exportSystem.on('export:success', (result) => {
-      logger.info(`Export completed: ${result.filename} (${result.format})`);
+      logger.info(`Export completed: ${result?.filename} (${result?.format})`);
     });
 
     // Memory system events (if supported)
@@ -428,8 +428,8 @@ export class ApplicationCoordinator extends EventEmitter {
       const result = await this.exportSystem.exportSystemStatus(systemData, format, options);
 
       return {
-        success: result.success,
-        filename: result.filename,
+        success: result?.success,
+        filename: result?.filename,
       };
     } catch (error) {
       logger.error('Failed to export system data:', error);

@@ -74,14 +74,14 @@ export class WorkflowEngine extends EventEmitter {
 
     this.config = {
       maxConcurrentWorkflows:
-        config.maxConcurrentWorkflows === undefined ? 10 : config.maxConcurrentWorkflows,
-      persistWorkflows: config.persistWorkflows === undefined ? false : config.persistWorkflows,
+        config?.maxConcurrentWorkflows === undefined ? 10 : config?.maxConcurrentWorkflows,
+      persistWorkflows: config?.persistWorkflows === undefined ? false : config?.persistWorkflows,
       persistencePath:
-        config.persistencePath === undefined ? './workflows' : config.persistencePath,
-      stepTimeout: config.stepTimeout === undefined ? 30000 : config.stepTimeout,
-      retryDelay: config.retryDelay === undefined ? 1000 : config.retryDelay,
+        config?.persistencePath === undefined ? './workflows' : config?.persistencePath,
+      stepTimeout: config?.stepTimeout === undefined ? 30000 : config?.stepTimeout,
+      retryDelay: config?.retryDelay === undefined ? 1000 : config?.retryDelay,
       enableVisualization:
-        config.enableVisualization === undefined ? false : config.enableVisualization,
+        config?.enableVisualization === undefined ? false : config?.enableVisualization,
     };
   }
 
@@ -108,35 +108,35 @@ export class WorkflowEngine extends EventEmitter {
   private registerBuiltInHandlers(): void {
     // Delay step
     this.registerStepHandler('delay', async (_context: WorkflowContext, params: any) => {
-      const duration = params.duration || 1000;
+      const duration = params?.duration || 1000;
       await new Promise((resolve) => setTimeout(resolve, duration));
       return { delayed: duration };
     });
 
     // Transform data step
     this.registerStepHandler('transform', async (context: WorkflowContext, params: any) => {
-      const data = this.getContextValue(context, params.input);
-      const transformed = await this.applyTransformation(data, params.transformation);
+      const data = this.getContextValue(context, params?.input);
+      const transformed = await this.applyTransformation(data, params?.transformation);
       return { output: transformed };
     });
 
     // Parallel execution step
     this.registerStepHandler('parallel', async (context: WorkflowContext, params: any) => {
       const results = await Promise.all(
-        params.tasks.map((task: WorkflowStep) => this.executeStep(task, context))
+        params?.tasks?.map((task: WorkflowStep) => this.executeStep(task, context))
       );
       return { results };
     });
 
     // Loop step
     this.registerStepHandler('loop', async (context: WorkflowContext, params: any) => {
-      const items = this.getContextValue(context, params.items);
+      const items = this.getContextValue(context, params?.items);
       const results: any[] = [];
 
       for (const item of items) {
         const loopContext = { ...context, loopItem: item };
-        const result = await this.executeStep(params.step, loopContext);
-        results.push(result);
+        const result = await this.executeStep(params?.step, loopContext);
+        results?.push(result);
       }
 
       return { results };
@@ -144,11 +144,11 @@ export class WorkflowEngine extends EventEmitter {
 
     // Conditional step
     this.registerStepHandler('condition', async (context: WorkflowContext, params: any) => {
-      const condition = this.evaluateCondition(context, params.condition);
+      const condition = this.evaluateCondition(context, params?.condition);
       if (condition) {
-        return await this.executeStep(params.thenStep, context);
-      } else if (params.elseStep) {
-        return await this.executeStep(params.elseStep, context);
+        return await this.executeStep(params?.thenStep, context);
+      } else if (params?.elseStep) {
+        return await this.executeStep(params?.elseStep, context);
       }
       return { skipped: true };
     });
@@ -208,9 +208,9 @@ export class WorkflowEngine extends EventEmitter {
       const result: Record<string, any> = {};
       for (const [key, value] of Object.entries(transformation)) {
         if (typeof value === 'string' && value.startsWith('$.')) {
-          result[key] = this.getContextValue({ data }, value.substring(2));
+          result?.[key] = this.getContextValue({ data }, value.substring(2));
         } else {
-          result[key] = value;
+          result?.[key] = value;
         }
       }
       return result;
@@ -228,8 +228,8 @@ export class WorkflowEngine extends EventEmitter {
         const filePath = path.join(this.config.persistencePath, file);
         const data = JSON.parse(await readFile(filePath, 'utf8'));
 
-        if (data.status === 'running' || data.status === 'paused') {
-          this.activeWorkflows.set(data.id, data);
+        if (data?.status === 'running' || data?.status === 'paused') {
+          this.activeWorkflows.set(data?.id, data);
         }
       }
     } catch (error) {

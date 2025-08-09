@@ -189,18 +189,18 @@ export class DocumentProcessor extends EventEmitter {
     this.memory = memory;
     this.workflowEngine = workflowEngine;
     this.config = {
-      autoWatch: config.autoWatch !== false,
-      enableWorkflows: config.enableWorkflows !== false,
-      workspaceRoot: config.workspaceRoot || './docs',
+      autoWatch: config?.autoWatch !== false,
+      enableWorkflows: config?.enableWorkflows !== false,
+      workspaceRoot: config?.workspaceRoot || './docs',
       documentDirs: {
-        vision: config.documentDirs?.vision || '01-vision',
-        adrs: config.documentDirs?.adrs || '02-adrs',
-        prds: config.documentDirs?.prds || '03-prds',
-        epics: config.documentDirs?.epics || '04-epics',
-        features: config.documentDirs?.features || '05-features',
-        tasks: config.documentDirs?.tasks || '06-tasks',
-        specs: config.documentDirs?.specs || '07-specs',
-        ...config.documentDirs,
+        vision: config?.documentDirs?.vision || '01-vision',
+        adrs: config?.documentDirs?.adrs || '02-adrs',
+        prds: config?.documentDirs?.prds || '03-prds',
+        epics: config?.documentDirs?.epics || '04-epics',
+        features: config?.documentDirs?.features || '05-features',
+        tasks: config?.documentDirs?.tasks || '06-tasks',
+        specs: config?.documentDirs?.specs || '07-specs',
+        ...config?.documentDirs,
       },
     };
 
@@ -602,23 +602,23 @@ export class DocumentProcessor extends EventEmitter {
 
       if (trimmedLine.startsWith('- **Author:**') || trimmedLine.startsWith('Author:')) {
         const author = trimmedLine.split(':')[1]?.trim();
-        if (author) metadata.author = author;
+        if (author) metadata?.author = author;
       }
       if (trimmedLine.startsWith('- **Created:**') || trimmedLine.startsWith('Created:')) {
         const dateStr = trimmedLine.split(':')[1]?.trim();
-        if (dateStr) metadata.created = new Date(dateStr);
+        if (dateStr) metadata?.created = new Date(dateStr);
       }
       if (trimmedLine.startsWith('- **Status:**') || trimmedLine.startsWith('Status:')) {
         const status = trimmedLine.split(':')[1]?.trim();
-        if (status) metadata.status = status;
+        if (status) metadata?.status = status;
       }
       if (trimmedLine.startsWith('- **Priority:**') || trimmedLine.startsWith('Priority:')) {
-        metadata.priority = trimmedLine.split(':')[1]?.trim() as any;
+        metadata?.priority = trimmedLine.split(':')[1]?.trim() as any;
       }
       if (trimmedLine.startsWith('- **Tags:**') || trimmedLine.startsWith('Tags:')) {
         const tagsStr = trimmedLine.split(':')[1]?.trim();
         if (tagsStr) {
-          metadata.tags = tagsStr.split(',').map((tag) => tag.trim());
+          metadata?.tags = tagsStr.split(',').map((tag) => tag.trim());
         }
       }
     }

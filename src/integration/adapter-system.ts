@@ -201,7 +201,7 @@ export class MCPAdapter implements ProtocolAdapter {
       };
 
       const response = await this.send(healthMessage);
-      return response.success;
+      return response?.success;
     } catch {
       return false;
     }
@@ -209,21 +209,21 @@ export class MCPAdapter implements ProtocolAdapter {
 
   private async connectHTTP(config: ConnectionConfig): Promise<void> {
     // HTTP MCP connection implementation
-    const url = `${config.ssl ? 'https' : 'http'}://${config.host}:${config.port || 3000}${config.path || '/mcp'}`;
+    const url = `${config?.ssl ? 'https' : 'http'}://${config?.host}:${config?.port || 3000}${config?.path || '/mcp'}`;
 
     // This would use actual HTTP client library
     this.httpClient = {
       baseURL: url,
-      timeout: config.timeout || 30000,
+      timeout: config?.timeout || 30000,
       headers: {
         'Content-Type': 'application/json',
-        ...config.headers,
+        ...config?.headers,
       },
     };
 
     // Test connection
     const testResponse = await this.makeHTTPRequest('/capabilities', 'GET');
-    if (!testResponse.success) {
+    if (!testResponse?.success) {
       throw new Error('Failed to verify HTTP MCP connection');
     }
   }
@@ -251,7 +251,7 @@ export class MCPAdapter implements ProtocolAdapter {
 
       setTimeout(() => {
         reject(new Error('Stdio connection timeout'));
-      }, config.timeout || 10000);
+      }, config?.timeout || 10000);
     });
   }
 
@@ -277,12 +277,12 @@ export class MCPAdapter implements ProtocolAdapter {
       }, 30000);
 
       const responseHandler = (data: any) => {
-        if (data.id === message.id) {
+        if (data?.id === message.id) {
           clearTimeout(timeout);
-          if (data.error) {
-            reject(new Error(data.error.message));
+          if (data?.error) {
+            reject(new Error(data?.error?.message));
           } else {
-            resolve(data.result);
+            resolve(data?.result);
           }
         }
       };
@@ -311,7 +311,7 @@ export class MCPAdapter implements ProtocolAdapter {
 
   private handleStdioMessage(data: string): void {
     try {
-      const lines = data.split('\n').filter((line) => line.trim());
+      const lines = data?.split('\n').filter((line) => line.trim());
 
       for (const line of lines) {
         const parsed = JSON.parse(line);
@@ -360,7 +360,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
       throw new Error('Already connected');
     }
 
-    const wsUrl = `${config.ssl ? 'wss' : 'ws'}://${config.host}:${config.port || 3456}${config.path || '/ws'}`;
+    const wsUrl = `${config?.ssl ? 'wss' : 'ws'}://${config?.host}:${config?.port || 3456}${config?.path || '/ws'}`;
 
     return new Promise((resolve, reject) => {
       try {
@@ -389,7 +389,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
           if (!this.connected) {
             reject(new Error('WebSocket connection timeout'));
           }
-        }, config.timeout || 10000);
+        }, config?.timeout || 10000);
       } catch (error) {
         reject(error);
       }
@@ -423,15 +423,15 @@ export class WebSocketAdapter implements ProtocolAdapter {
 
       // Set up response handler
       const responseHandler = (response: any) => {
-        if (response.requestId === message.id) {
+        if (response?.requestId === message.id) {
           clearTimeout(timeout);
           resolve({
-            id: response.id || `resp-${Date.now()}`,
+            id: response?.id || `resp-${Date.now()}`,
             requestId: message.id,
             timestamp: new Date(),
-            success: response.success !== false,
-            data: response.data,
-            error: response.error,
+            success: response?.success !== false,
+            data: response?.data,
+            error: response?.error,
             metadata: {
               protocol: 'websocket',
               responseTime: Date.now() - startTime,
@@ -502,7 +502,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
       };
 
       const response = await this.send(pingMessage);
-      return response.success;
+      return response?.success;
     } catch {
       return false;
     }
@@ -559,18 +559,18 @@ export class RESTAdapter implements ProtocolAdapter {
   private eventHandlers: Map<string, ((message: ProtocolMessage) => void)[]> = new Map();
 
   async connect(config: ConnectionConfig): Promise<void> {
-    this.baseUrl = `${config.ssl ? 'https' : 'http'}://${config.host}:${config.port || 80}${config.path || '/api'}`;
+    this.baseUrl = `${config?.ssl ? 'https' : 'http'}://${config?.host}:${config?.port || 80}${config?.path || '/api'}`;
 
     // Setup authentication
-    if (config.authentication) {
-      this.setupAuthentication(config.authentication);
+    if (config?.authentication) {
+      this.setupAuthentication(config?.authentication);
     }
 
     // Test connection
     try {
       const healthResponse = await this.makeRequest('/health', 'GET');
-      if (!healthResponse.ok) {
-        throw new Error(`Health check failed: ${healthResponse.status}`);
+      if (!healthResponse?.ok) {
+        throw new Error(`Health check failed: ${healthResponse?.status}`);
       }
       this.connected = true;
     } catch (error) {
@@ -593,19 +593,19 @@ export class RESTAdapter implements ProtocolAdapter {
 
     try {
       const response = await this.makeRequest(endpoint, 'POST', message.payload);
-      const data = await response.json();
+      const data = await response?.json();
 
       return {
         id: `resp-${Date.now()}`,
         requestId: message.id,
         timestamp: new Date(),
-        success: response.ok,
-        data: response.ok ? data : undefined,
-        error: response.ok ? undefined : data.error || `HTTP ${response.status}`,
+        success: response?.ok,
+        data: response?.ok ? data : undefined,
+        error: response?.ok ? undefined : data?.error || `HTTP ${response?.status}`,
         metadata: {
           protocol: 'rest',
           responseTime: Date.now() - startTime,
-          statusCode: response.status,
+          statusCode: response?.status,
         },
       };
     } catch (error) {
@@ -660,7 +660,7 @@ export class RESTAdapter implements ProtocolAdapter {
 
     try {
       const response = await this.makeRequest('/health', 'GET');
-      return response.ok;
+      return response?.ok;
     } catch {
       return false;
     }
@@ -700,7 +700,7 @@ export class RESTAdapter implements ProtocolAdapter {
     };
 
     if (body && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
-      options.body = JSON.stringify(body);
+      options?.body = JSON.stringify(body);
     }
 
     return fetch(url, options);
@@ -730,7 +730,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
     // Could support protocols like FTP, SOAP, proprietary TCP protocols, etc.
 
     try {
-      switch (config.protocol.toLowerCase()) {
+      switch (config?.protocol?.toLowerCase()) {
         case 'soap':
           await this.connectSOAP(config);
           break;
@@ -741,7 +741,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
           await this.connectTCP(config);
           break;
         default:
-          throw new Error(`Unsupported legacy protocol: ${config.protocol}`);
+          throw new Error(`Unsupported legacy protocol: ${config?.protocol}`);
       }
 
       this.connected = true;
@@ -835,17 +835,17 @@ export class LegacySystemAdapter implements ProtocolAdapter {
 
   private async connectSOAP(config: ConnectionConfig): Promise<void> {
     // SOAP connection implementation
-    this.connection = { type: 'soap', endpoint: `${config.host}:${config.port}` };
+    this.connection = { type: 'soap', endpoint: `${config?.host}:${config?.port}` };
   }
 
   private async connectXMLRPC(config: ConnectionConfig): Promise<void> {
     // XML-RPC connection implementation
-    this.connection = { type: 'xmlrpc', endpoint: `${config.host}:${config.port}` };
+    this.connection = { type: 'xmlrpc', endpoint: `${config?.host}:${config?.port}` };
   }
 
   private async connectTCP(config: ConnectionConfig): Promise<void> {
     // Raw TCP connection implementation
-    this.connection = { type: 'tcp', host: config.host, port: config.port };
+    this.connection = { type: 'tcp', host: config?.host, port: config?.port };
   }
 
   private transformToLegacyFormat(message: ProtocolMessage): any {
@@ -861,9 +861,9 @@ export class LegacySystemAdapter implements ProtocolAdapter {
   private transformFromLegacyFormat(response: any): any {
     // Transform legacy response to modern format
     return {
-      result: response.result || response.data,
-      status: response.status || 'success',
-      timestamp: new Date(response.timestamp || Date.now()),
+      result: response?.result || response?.data,
+      status: response?.status || 'success',
+      timestamp: new Date(response?.timestamp || Date.now()),
     };
   }
 
@@ -972,9 +972,9 @@ export class ProtocolManager extends EventEmitter {
 
       try {
         const response = await adapter.send(message);
-        results.push(response);
+        results?.push(response);
       } catch (error) {
-        results.push({
+        results?.push({
           id: `error-${Date.now()}`,
           requestId: message.id,
           timestamp: new Date(),

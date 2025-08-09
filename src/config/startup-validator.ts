@@ -10,7 +10,6 @@ const logger = getLogger("src-config-startup-validator");
 import process from 'node:process';
 import { configManager } from './manager';
 import { configHealthChecker } from './health-checker';
-import type { ValidationResult } from './types';
 
 /**
  * Startup validation options.
@@ -73,10 +72,10 @@ export async function runStartupValidation(
 
   try {
     // Initialize configuration manager
-    const configValidation = await configManager.initialize();
+    const configValidation = await configManager?.initialize();
     
     // Initialize health checker
-    await configHealthChecker.initialize({ enableMonitoring: false });
+    await configHealthChecker?.initialize({ enableMonitoring: false });
 
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -88,21 +87,21 @@ export async function runStartupValidation(
         process.stdout.write('📋 Validating configuration structure... ');
       }
       
-      if (!configValidation.valid) {
-        errors.push(...configValidation.errors);
+      if (!configValidation?.valid) {
+        errors.push(...configValidation?.errors);
         if (strict) {
-          blockers.push(...configValidation.errors);
+          blockers.push(...configValidation?.errors);
         }
       }
-      warnings.push(...configValidation.warnings);
+      warnings.push(...configValidation?.warnings);
       
       if (outputFormat === 'console') {
-        logger.info(configValidation.valid ? '✅' : '❌');
+        logger.info(configValidation?.valid ? '✅' : '❌');
       }
     }
 
     // 2. Enhanced validation with production checks
-    const detailedValidation = await configHealthChecker.getHealthReport(true);
+    const detailedValidation = await configHealthChecker?.getHealthReport(true);
     const validationDetails = detailedValidation.details!;
 
     // 3. Security validation (unless skipped)
@@ -130,7 +129,7 @@ export async function runStartupValidation(
         process.stdout.write('🌐 Validating port configuration... ');
       }
       
-      const portCheck = await configHealthChecker.checkPortConflicts();
+      const portCheck = await configHealthChecker?.checkPortConflicts();
       portConflicts = portCheck.conflicts;
       
       if (portConflicts.length > 0) {
@@ -279,8 +278,8 @@ async function validateEnvironmentVariables(isProduction: boolean): Promise<{
 
   // Validate NODE_ENV value
   const validNodeEnvs = ['development', 'production', 'test'];
-  if (process.env['NODE_ENV'] && !validNodeEnvs.includes(process.env['NODE_ENV'])) {
-    errors.push(`Invalid NODE_ENV value: ${process.env['NODE_ENV']}. Must be one of: ${validNodeEnvs.join(', ')}`);
+  if (process.env['NODE_ENV'] && !validNodeEnvs?.includes(process.env['NODE_ENV'])) {
+    errors.push(`Invalid NODE_ENV value: ${process.env['NODE_ENV']}. Must be one of: ${validNodeEnvs?.join(', ')}`);
   }
 
   // Validate API key format (basic check)
@@ -323,52 +322,52 @@ async function outputValidationResults(
 
   // Console output
   logger.info('\n📊 Validation Results:');
-  logger.info(`Overall: ${result.success ? '✅ PASSED' : '❌ FAILED'}`);
+  logger.info(`Overall: ${result?.success ? '✅ PASSED' : '❌ FAILED'}`);
   
-  if (result.blockers.length > 0) {
+  if (result?.blockers.length > 0) {
     logger.info('\n🚫 Critical Issues (deployment blockers):');
-    result.blockers.forEach(blocker => logger.info(`  ❌ ${blocker}`));
+    result?.blockers?.forEach(blocker => logger.info(`  ❌ ${blocker}`));
   }
 
-  if (result.errors.length > 0) {
+  if (result?.errors.length > 0) {
     logger.info('\n❌ Errors:');
-    result.errors.forEach(error => logger.info(`  ❌ ${error}`));
+    result?.errors?.forEach(error => logger.info(`  ❌ ${error}`));
   }
 
-  if (result.warnings.length > 0) {
+  if (result?.warnings.length > 0) {
     logger.info('\n⚠️  Warnings:');
-    result.warnings.forEach(warning => logger.info(`  ⚠️  ${warning}`));
+    result?.warnings?.forEach(warning => logger.info(`  ⚠️  ${warning}`));
   }
 
-  if (result.portConflicts.length > 0) {
+  if (result?.portConflicts.length > 0) {
     logger.info('\n🌐 Port Conflicts:');
-    result.portConflicts.forEach(conflict => {
+    result?.portConflicts?.forEach(conflict => {
       const icon = conflict.severity === 'error' ? '❌' : '⚠️';
       logger.info(`  ${icon} Port ${conflict.port}: ${conflict.services.join(', ')}`);
     });
   }
 
   // Recommendations
-  if (result.validationDetails.failsafeApplied.length > 0) {
+  if (result?.validationDetails?.failsafeApplied.length > 0) {
     logger.info('\n🛡️  Failsafe Defaults Applied:');
-    result.validationDetails.failsafeApplied.forEach(applied => logger.info(`  🛡️  ${applied}`));
+    result?.validationDetails?.failsafeApplied?.forEach(applied => logger.info(`  🛡️  ${applied}`));
   }
 
   // Health score
-  const healthReport = await configHealthChecker.getHealthReport();
+  const healthReport = await configHealthChecker?.getHealthReport();
   logger.info(
     `\n💯 Configuration Health Score: ${healthReport.score}/100 (${healthReport.status.toUpperCase()})`
   );
 
-  if (!result.success) {
+  if (!result?.success) {
     logger.info('\n🚨 Fix the issues above before deploying to production!');
-  } else if (result.warnings.length > 0) {
+  } else if (result?.warnings.length > 0) {
     logger.info('\n✅ Configuration is valid but consider addressing the warnings above.');
   } else {
     logger.info('\n🎉 Configuration is healthy and production-ready!');
   }
 
-  logger.info(`\nValidation completed in ${Date.now() - result.timestamp}ms`);
+  logger.info(`\nValidation completed in ${Date.now() - result?.timestamp}ms`);
 }
 
 /**
@@ -379,7 +378,7 @@ async function outputValidationResults(
  */
 export async function validateAndExit(options: StartupValidationOptions = {}): Promise<never> {
   const result = await runStartupValidation(options);
-  process.exit(result.exitCode);
+  process.exit(result?.exitCode);
 }
 
 /**
@@ -398,11 +397,11 @@ export async function cli(): Promise<void> {
   };
 
   // Parse skip validation flags
-  if (args.includes('--skip-structure')) options.skipValidation!.push('structure');
-  if (args.includes('--skip-security')) options.skipValidation!.push('security');
-  if (args.includes('--skip-performance')) options.skipValidation!.push('performance');
-  if (args.includes('--skip-ports')) options.skipValidation!.push('ports');
-  if (args.includes('--skip-environment')) options.skipValidation!.push('environment');
+  if (args.includes('--skip-structure')) options?.skipValidation!.push('structure');
+  if (args.includes('--skip-security')) options?.skipValidation!.push('security');
+  if (args.includes('--skip-performance')) options?.skipValidation!.push('performance');
+  if (args.includes('--skip-ports')) options?.skipValidation!.push('ports');
+  if (args.includes('--skip-environment')) options?.skipValidation!.push('environment');
 
   // Show help
   if (args.includes('--help') || args.includes('-h')) {

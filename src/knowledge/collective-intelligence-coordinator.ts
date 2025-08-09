@@ -12,9 +12,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
-import type { EvictionPolicyType, ReplicationStrategyType } from './performance-optimization-system';
 
 /**
  * Knowledge Exchange Protocols
@@ -511,7 +508,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
     // Distributed Learning -> Intelligence Coordination
     this.distributedLearning.on('model:converged', async (data) => {
-      await this.intelligenceCoordination.distributeModel(data.model);
+      await this.intelligenceCoordination.distributeModel(data?.model);
       this.emit('collective-learning:progress', data);
     });
 
@@ -619,7 +616,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
         decision: validated.decision,
         alternatives: alternatives.length,
         participantCount: decisionContext.participants.length,
-        consensusScore: consensusResult.consensusScore,
+        consensusScore: consensusResult?.consensusScore,
         qualityScore: validated.qualityScore,
         confidence: validated.confidence,
         reasoning: validated.reasoning,

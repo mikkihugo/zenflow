@@ -6,9 +6,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
-import type { AgentType } from '../types/agent-types';
 
 export interface AgentKnowledge {
   agentType: AgentType;
@@ -257,7 +254,7 @@ export class PersistentLearningSystem extends EventEmitter {
     if (!swarmMemory) return;
 
     // Process each agent's experiences
-    for (const agentResult of swarmResults.agentResults) {
+    for (const agentResult of swarmResults?.agentResults) {
       await this.processAgentLearnings(agentResult, swarmMemory);
     }
 
@@ -270,7 +267,7 @@ export class PersistentLearningSystem extends EventEmitter {
     // Clean up swarm memory (keep summary for reference)
     this.archiveSwarmMemory(swarmId, swarmResults);
 
-    this.emit('learnings:collected', { swarmId, insights: swarmResults.insights?.length || 0 });
+    this.emit('learnings:collected', { swarmId, insights: swarmResults?.insights?.length || 0 });
   }
 
   /**
@@ -283,39 +280,39 @@ export class PersistentLearningSystem extends EventEmitter {
     agentResult: AgentResult,
     swarmMemory: SwarmMemory
   ): Promise<void> {
-    let knowledge = this.agentKnowledge.get(agentResult.agentType);
+    let knowledge = this.agentKnowledge.get(agentResult?.agentType);
 
     if (!knowledge) {
-      knowledge = this.initializeAgentKnowledge(agentResult.agentType);
-      this.agentKnowledge.set(agentResult.agentType, knowledge);
+      knowledge = this.initializeAgentKnowledge(agentResult?.agentType);
+      this.agentKnowledge.set(agentResult?.agentType, knowledge);
     }
 
     // Add new experience
     const experience: Experience = {
-      id: `exp_${Date.now()}_${agentResult.agentId}`,
+      id: `exp_${Date.now()}_${agentResult?.agentId}`,
       timestamp: new Date(),
       swarmId: swarmMemory.swarmId,
-      taskType: agentResult.taskType,
-      context: agentResult.context,
-      actions: agentResult.actions,
-      outcome: agentResult.outcome,
-      lessons: agentResult.lessonsLearned,
-      confidence: agentResult.confidence,
+      taskType: agentResult?.taskType,
+      context: agentResult?.context,
+      actions: agentResult?.actions,
+      outcome: agentResult?.outcome,
+      lessons: agentResult?.lessonsLearned,
+      confidence: agentResult?.confidence,
     };
 
     knowledge.experiences.push(experience);
 
     // Update performance history
     knowledge.performance.totalTasks++;
-    if (agentResult.outcome.success) {
+    if (agentResult?.outcome?.success) {
       knowledge.performance.successfulTasks++;
     }
     knowledge.performance.averageExecutionTime =
       (knowledge.performance.averageExecutionTime * (knowledge.performance.totalTasks - 1) +
-        agentResult.executionTime) /
+        agentResult?.executionTime) /
       knowledge.performance.totalTasks;
 
-    knowledge.performance.qualityScores.push(agentResult.outcome.quality);
+    knowledge.performance.qualityScores.push(agentResult?.outcome?.quality);
 
     // Learn new patterns
     await this.extractAgentPatterns(knowledge, agentResult);
@@ -330,7 +327,7 @@ export class PersistentLearningSystem extends EventEmitter {
     knowledge.version++;
 
     this.logger?.debug('Agent knowledge updated', {
-      agentType: agentResult.agentType,
+      agentType: agentResult?.agentType,
       totalExperiences: knowledge.experiences.length,
       successRate: knowledge.performance.successfulTasks / knowledge.performance.totalTasks,
     });
@@ -347,27 +344,27 @@ export class PersistentLearningSystem extends EventEmitter {
     agentResult: AgentResult
   ): Promise<void> {
     // Analyze action sequences for patterns
-    const actionSequence = agentResult.actions.map((a) => a.action).join(' -> ');
+    const actionSequence = agentResult?.actions?.map((a) => a.action).join(' -> ');
 
     let pattern = knowledge.patterns.find((p) => p.pattern === actionSequence);
     if (pattern) {
       pattern.frequency++;
       pattern.lastReinforced = new Date();
-      if (agentResult.outcome.success) {
+      if (agentResult?.outcome?.success) {
         pattern.successRate =
           (pattern.successRate * (pattern.frequency - 1) + 1) / pattern.frequency;
       } else {
         pattern.successRate = (pattern.successRate * (pattern.frequency - 1)) / pattern.frequency;
       }
-    } else if (agentResult.actions.length > 1) {
+    } else if (agentResult?.actions.length > 1) {
       // New pattern discovered
       pattern = {
         id: `pattern_${Date.now()}_${Math.random().toString(36).slice(2)}`,
         pattern: actionSequence,
         frequency: 1,
-        successRate: agentResult.outcome.success ? 1 : 0,
-        contexts: [agentResult.context.domain],
-        examples: [agentResult.taskType],
+        successRate: agentResult?.outcome?.success ? 1 : 0,
+        contexts: [agentResult?.context?.domain],
+        examples: [agentResult?.taskType],
         discovered: new Date(),
         lastReinforced: new Date(),
       };
@@ -386,7 +383,7 @@ export class PersistentLearningSystem extends EventEmitter {
     agentResult: AgentResult
   ): Promise<void> {
     // Check for new skills demonstrated
-    for (const action of agentResult.actions) {
+    for (const action of agentResult?.actions) {
       if (action.success && action.impact > 0.7) {
         let skill = knowledge.capabilities.acquiredSkills.find((s) => s.skill === action.action);
 
@@ -414,21 +411,21 @@ export class PersistentLearningSystem extends EventEmitter {
     }
 
     // Update specializations
-    const domain = agentResult.context.domain;
+    const domain = agentResult?.context?.domain;
     let specialization = knowledge.capabilities.specializations.find((s) => s.domain === domain);
 
     if (specialization) {
       // Increase expertise based on performance
-      const performanceBonus = (agentResult.outcome.quality / 100) * 5; // Up to 5 points
+      const performanceBonus = (agentResult?.outcome?.quality / 100) * 5; // Up to 5 points
       specialization.expertise = Math.min(100, specialization.expertise + performanceBonus);
-    } else if (agentResult.outcome.quality > 70) {
+    } else if (agentResult?.outcome?.quality > 70) {
       // New specialization discovered
       specialization = {
         domain,
-        expertise: agentResult.outcome.quality / 2, // Start with half the quality score
-        keyPatterns: [agentResult.actions.map((a) => a.action).join(' -> ')],
-        tools: agentResult.actions.map((a) => a.parameters['tool']).filter(Boolean),
-        bestPractices: agentResult.lessonsLearned,
+        expertise: agentResult?.outcome?.quality / 2, // Start with half the quality score
+        keyPatterns: [agentResult?.actions?.map((a) => a.action).join(' -> ')],
+        tools: agentResult?.actions?.map((a) => a.parameters['tool']).filter(Boolean),
+        bestPractices: agentResult?.lessonsLearned,
       };
       knowledge.capabilities.specializations.push(specialization);
     }
@@ -447,7 +444,7 @@ export class PersistentLearningSystem extends EventEmitter {
     swarmMemory: SwarmMemory
   ): Promise<void> {
     // Analyze collaborations with other agents in the swarm
-    const otherAgentTypes = swarmMemory.agentTypes.filter((type) => type !== agentResult.agentType);
+    const otherAgentTypes = swarmMemory.agentTypes.filter((type) => type !== agentResult?.agentType);
 
     for (const partnerType of otherAgentTypes) {
       let collaboration = knowledge.relationships.collaborations.find(
@@ -456,12 +453,12 @@ export class PersistentLearningSystem extends EventEmitter {
 
       if (collaboration) {
         collaboration.frequency++;
-        if (!collaboration.taskTypes.includes(agentResult.taskType)) {
-          collaboration.taskTypes.push(agentResult.taskType);
+        if (!collaboration.taskTypes.includes(agentResult?.taskType)) {
+          collaboration.taskTypes.push(agentResult?.taskType);
         }
 
         // Update success rate
-        const taskSuccess = agentResult.outcome.success ? 1 : 0;
+        const taskSuccess = agentResult?.outcome?.success ? 1 : 0;
         collaboration.successRate =
           (collaboration.successRate * (collaboration.frequency - 1) + taskSuccess) /
           collaboration.frequency;
@@ -469,9 +466,9 @@ export class PersistentLearningSystem extends EventEmitter {
         // New collaboration
         collaboration = {
           partnerAgentType: partnerType,
-          taskTypes: [agentResult.taskType],
-          successRate: agentResult.outcome.success ? 1 : 0,
-          synergy: agentResult.outcome.efficiency / 100, // Initial synergy estimate
+          taskTypes: [agentResult?.taskType],
+          successRate: agentResult?.outcome?.success ? 1 : 0,
+          synergy: agentResult?.outcome?.efficiency / 100, // Initial synergy estimate
           frequency: 1,
         };
         knowledge.relationships.collaborations.push(collaboration);
@@ -569,7 +566,7 @@ export class PersistentLearningSystem extends EventEmitter {
   private async extractGlobalPatterns(swarmResults: SwarmResults): Promise<void> {
     // Analyze patterns that emerge across different swarms
     // This would be more sophisticated in practice
-    const patterns = swarmResults.insights?.filter(
+    const patterns = swarmResults?.insights?.filter(
       (insight) => insight.type === 'pattern' && insight.confidence > 0.8
     );
 
@@ -588,7 +585,7 @@ export class PersistentLearningSystem extends EventEmitter {
           frequency: 1,
           discoveredAt: new Date(),
           reinforcedAt: new Date(),
-          applicableContexts: [swarmResults.context],
+          applicableContexts: [swarmResults?.context],
           impact: patternInsight.impact || 1,
         });
       }
@@ -602,8 +599,8 @@ export class PersistentLearningSystem extends EventEmitter {
    */
   private async updateCrossSwarmLearnings(swarmResults: SwarmResults): Promise<void> {
     // Analyze what works well across different agent combinations
-    const agentTypes = swarmResults.agentResults.map((r) => r.agentType);
-    const overallSuccess = swarmResults.overallSuccess;
+    const agentTypes = swarmResults?.agentResults?.map((r) => r.agentType);
+    const overallSuccess = swarmResults?.overallSuccess;
 
     if (overallSuccess > 0.8) {
       const learning = this.crossSwarmLearnings.find(
@@ -616,23 +613,23 @@ export class PersistentLearningSystem extends EventEmitter {
         learning.frequency++;
         learning.confidence = Math.min(1.0, learning.confidence + 0.1);
         learning.examples.push({
-          swarmId: swarmResults.swarmId,
+          swarmId: swarmResults?.swarmId,
           success: overallSuccess,
-          context: swarmResults.context,
+          context: swarmResults?.context,
         });
       } else {
         this.crossSwarmLearnings.push({
           id: `cross_${Date.now()}`,
           agentCombination: agentTypes,
-          insight: `Combination of ${agentTypes.join(' + ')} works well for ${swarmResults.context}`,
+          insight: `Combination of ${agentTypes.join(' + ')} works well for ${swarmResults?.context}`,
           frequency: 1,
           confidence: 0.7,
           discoveredAt: new Date(),
           examples: [
             {
-              swarmId: swarmResults.swarmId,
+              swarmId: swarmResults?.swarmId,
               success: overallSuccess,
-              context: swarmResults.context,
+              context: swarmResults?.context,
             },
           ],
         });
@@ -652,10 +649,10 @@ export class PersistentLearningSystem extends EventEmitter {
     if (swarmMemory) {
       swarmMemory.completedAt = new Date();
       swarmMemory.finalPerformance = {
-        actualSuccess: swarmResults.overallSuccess,
-        efficiency: swarmResults.efficiency,
-        quality: swarmResults.quality,
-        insights: swarmResults.insights?.length || 0,
+        actualSuccess: swarmResults?.overallSuccess,
+        efficiency: swarmResults?.efficiency,
+        quality: swarmResults?.quality,
+        insights: swarmResults?.insights?.length || 0,
       };
 
       // Move to archive (in practice, would persist to database)
@@ -668,14 +665,14 @@ export class PersistentLearningSystem extends EventEmitter {
    */
   private setupEventHandlers(): void {
     this.eventBus.on('swarm:created', (data) => {
-      this.injectKnowledgeIntoSwarm(data.swarmId, [...(data.agentTypes || [])]);
+      this.injectKnowledgeIntoSwarm(data?.swarmId, [...(data?.agentTypes || [])]);
     });
 
     this.eventBus.on('swarm:completed', (data) => {
       const results =
-        (data.results as unknown as SwarmResults) ||
+        (data?.results as unknown as SwarmResults) ||
         ({
-          swarmId: data.swarmId,
+          swarmId: data?.swarmId,
           context: 'completion',
           overallSuccess: 1.0,
           efficiency: 0.8,
@@ -683,7 +680,7 @@ export class PersistentLearningSystem extends EventEmitter {
           agentResults: [],
           learnings: [],
         } as SwarmResults);
-      this.collectSwarmLearnings(data.swarmId, results);
+      this.collectSwarmLearnings(data?.swarmId, results);
     });
   }
 

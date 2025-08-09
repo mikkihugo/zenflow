@@ -49,11 +49,11 @@ export class PerformanceMonitoringSystem {
   constructor(config: Partial<IntegrationConfig> = {}) {
     const centralConfig = getConfig();
     const defaultConfig: IntegrationConfig = {
-      metricsInterval: centralConfig.core.performance.metricsInterval || 1000, // 1 second
-      dashboardPort: centralConfig.monitoring.dashboard.port,
-      enableOptimization: centralConfig.core.performance.enableMetrics,
+      metricsInterval: centralConfig?.core?.performance?.metricsInterval || 1000, // 1 second
+      dashboardPort: centralConfig?.monitoring?.dashboard?.port,
+      enableOptimization: centralConfig?.core?.performance?.enableMetrics,
       enableAlerts: true,
-      logLevel: centralConfig.core.logger.level as any,
+      logLevel: centralConfig?.core?.logger?.level as any,
     };
 
     const finalConfig = { ...defaultConfig, ...config };
@@ -126,16 +126,16 @@ export async function setupClaudeZenMonitoring(
 }> {
   const centralConfig = getConfig();
   const config: Partial<IntegrationConfig> = {
-    dashboardPort: options.dashboardPort || centralConfig.monitoring.dashboard.port,
-    enableOptimization: options.enableOptimization !== false,
-    metricsInterval: options.metricsInterval || centralConfig.core.performance.metricsInterval || 1000,
+    dashboardPort: options?.dashboardPort || centralConfig?.monitoring?.dashboard?.port,
+    enableOptimization: options?.enableOptimization !== false,
+    metricsInterval: options?.metricsInterval || centralConfig?.core?.performance?.metricsInterval || 1000,
     enableAlerts: true,
-    logLevel: centralConfig.core.logger.level as any,
+    logLevel: centralConfig?.core?.logger?.level as any,
   };
 
   const system = await createMonitoringSystem(config);
   const hooks = system.getHooks();
-  const dashboardUrl = `http://${centralConfig.monitoring.dashboard.host}:${config.dashboardPort}`;
+  const dashboardUrl = `http://${centralConfig?.monitoring?.dashboard?.host}:${config?.dashboardPort}`;
 
   return { system, hooks, dashboardUrl };
 }
@@ -205,9 +205,9 @@ export const examples = {
   productionSetup: async () => {
     const centralConfig = getConfig();
     const { system, hooks } = await setupClaudeZenMonitoring({
-      dashboardPort: centralConfig.monitoring.dashboard.port,
-      enableOptimization: centralConfig.environment.isProduction,
-      metricsInterval: centralConfig.environment.isProduction ? 5000 : 1000,
+      dashboardPort: centralConfig?.monitoring?.dashboard?.port,
+      enableOptimization: centralConfig?.environment?.isProduction,
+      metricsInterval: centralConfig?.environment?.isProduction ? 5000 : 1000,
     });
 
     // Production-specific monitoring
@@ -224,11 +224,11 @@ export const examples = {
 
     // Track optimization impact
     integration.on('optimization:processed', (result) => {
-      if (result.success) {
-        const impact = (result.impact.performance * 100).toFixed(1);
+      if (result?.success) {
+        const impact = (result?.impact?.performance * 100).toFixed(1);
 
         // Track optimization metrics
-        if (result.metrics) {
+        if (result?.metrics) {
         }
       }
     });

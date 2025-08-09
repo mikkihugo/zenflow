@@ -3,8 +3,7 @@
  * Provides unified logging configuration and factory methods for the entire application.
  */
 
-import { Logger as CoreLogger, createLogger as coreCreateLogger, LogLevel } from '../core/logger';
-import { createLogger as utilsCreateLogger, Logger as UtilsLogger } from '../utils/logger';
+import { Logger as CoreLogger } from '../core/logger';
 
 export enum LoggingLevel {
   DEBUG = 'debug',
@@ -208,7 +207,7 @@ export const loggingConfigManager = LoggingConfigurationManager.getInstance();
  * @example
  */
 export function getLogger(component: string): Logger {
-  return loggingConfigManager.getLogger(component);
+  return loggingConfigManager?.getLogger(component);
 }
 
 /**
@@ -218,7 +217,7 @@ export function getLogger(component: string): Logger {
  * @example
  */
 export function getConsoleReplacementLogger(component: string): Logger {
-  return loggingConfigManager.createConsoleReplacementLogger(component);
+  return loggingConfigManager?.createConsoleReplacementLogger(component);
 }
 
 /**

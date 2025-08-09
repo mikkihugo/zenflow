@@ -73,7 +73,7 @@ export const config = {
    * @param configPaths
    */
   async init(configPaths?: string[]) {
-    return configManager.initialize(configPaths);
+    return configManager?.initialize(configPaths);
   },
 
   /**
@@ -82,7 +82,7 @@ export const config = {
    * @param path
    */
   get<T = any>(path: string): T | undefined {
-    return configManager.get<T>(path);
+    return configManager?.get<T>(path);
   },
 
   /**
@@ -91,7 +91,7 @@ export const config = {
    * @param section
    */
   getSection<K extends keyof SystemConfiguration>(section: K): SystemConfiguration[K] {
-    return configManager.getSection(section);
+    return configManager?.getSection(section);
   },
 
   /**
@@ -101,28 +101,28 @@ export const config = {
    * @param value
    */
   set(path: string, value: any) {
-    return configManager.update(path, value);
+    return configManager?.update(path, value);
   },
 
   /**
    * Get full configuration.
    */
   getAll(): SystemConfiguration {
-    return configManager.getConfig();
+    return configManager?.getConfig();
   },
 
   /**
    * Validate configuration.
    */
   validate() {
-    return configManager.validate();
+    return configManager?.validate();
   },
 
   /**
    * Reload from sources.
    */
   reload() {
-    return configManager.reload();
+    return configManager?.reload();
   },
 
   /**
@@ -131,7 +131,7 @@ export const config = {
    * @param format
    */
   export(format: 'json' | 'yaml' = 'json'): string {
-    return configManager.export(format);
+    return configManager?.export(format);
   },
 
   /**
@@ -140,7 +140,7 @@ export const config = {
    * @param callback
    */
   onChange(callback: (event: any) => void) {
-    configManager.on('config:changed', callback);
+    configManager?.on('config:changed', callback);
   },
 
   /**
@@ -149,7 +149,7 @@ export const config = {
    * @param callback
    */
   removeListener(callback: (event: any) => void) {
-    configManager.off('config:changed', callback);
+    configManager?.off('config:changed', callback);
   },
 
   /**
@@ -157,7 +157,7 @@ export const config = {
    */
   async getHealthReport() {
     const { configHealthChecker } = await import('./health-checker');
-    return configHealthChecker.getHealthReport();
+    return configHealthChecker?.getHealthReport();
   },
 
   /**
@@ -165,7 +165,7 @@ export const config = {
    */
   async isProductionReady() {
     const { configHealthChecker } = await import('./health-checker');
-    const deployment = await configHealthChecker.validateForProduction();
+    const deployment = await configHealthChecker?.validateForProduction();
     return deployment.deploymentReady;
   },
 
@@ -174,7 +174,7 @@ export const config = {
    */
   async checkPorts() {
     const { configHealthChecker } = await import('./health-checker');
-    return configHealthChecker.checkPortConflicts();
+    return configHealthChecker?.checkPortConflicts();
   },
 
   /**

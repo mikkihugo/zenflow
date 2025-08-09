@@ -11,8 +11,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
 
 // Quick type aliases to resolve missing type errors
 export type BootstrappingConfig = any;
@@ -572,9 +570,9 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 
     try {
       this.logger.info('Validating knowledge item', {
-        itemId: knowledgeItem.id,
+        itemId: knowledgeItem?.id,
         validationType,
-        contentLength: knowledgeItem.content.length,
+        contentLength: knowledgeItem?.content.length,
       });
 
       // Select appropriate validation protocol
@@ -615,7 +613,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
       };
 
       // Store validation result
-      this.validationResults.set(result.validationId, result);
+      this.validationResults.set(result?.validationId, result);
 
       // Update reputation scores based on validation
       await this.updateReputationFromValidation(result);
@@ -625,9 +623,9 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 
       this.emit('knowledge:validated', result);
       this.logger.info('Knowledge validation completed', {
-        validationId: result.validationId,
-        isValid: result.isValid,
-        confidence: result.confidence,
+        validationId: result?.validationId,
+        isValid: result?.isValid,
+        confidence: result?.confidence,
         validationTime: Date.now() - startTime,
       });
 
@@ -724,9 +722,9 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 
     try {
       this.logger.info('Conducting peer review', {
-        itemId: knowledgeItem.id,
+        itemId: knowledgeItem?.id,
         reviewType,
-        contentType: knowledgeItem.type,
+        contentType: knowledgeItem?.type,
       });
 
       // Select appropriate review process
@@ -768,7 +766,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
           assignment: r.assignment,
         })),
         reviewScores,
-        overallScore: aggregatedResult.overallScore,
+        overallScore: aggregatedResult?.overallScore,
         recommendation,
         comments,
         qualityAssessment,
@@ -776,7 +774,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
       };
 
       // Store review result
-      this.reviewResults.set(result.reviewId, result);
+      this.reviewResults.set(result?.reviewId, result);
 
       // Update reviewer reputations
       await this.updateReviewerReputations(result);
@@ -786,9 +784,9 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 
       this.emit('review:completed', result);
       this.logger.info('Peer review completed', {
-        reviewId: result.reviewId,
-        recommendation: result.recommendation,
-        overallScore: result.overallScore,
+        reviewId: result?.reviewId,
+        recommendation: result?.recommendation,
+        overallScore: result?.overallScore,
         reviewTime: Date.now() - startTime,
       });
 
@@ -837,7 +835,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
         improvementRecommendations: improvementRecommendations.length,
         appliedImprovements: appliedImprovements.length,
         benchmarkUpdates: updatedBenchmarks.length,
-        overallQualityScore: currentMetrics.overallQuality,
+        overallQualityScore: currentMetrics?.overallQuality,
         monitoringTime: Date.now() - startTime,
         timestamp: Date.now(),
       };

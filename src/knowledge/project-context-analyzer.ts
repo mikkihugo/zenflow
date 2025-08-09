@@ -22,7 +22,7 @@ import { EventEmitter } from 'node:events';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { promisify } from 'node:util';
-import { KnowledgeSwarm, type KnowledgeSwarmConfig } from './knowledge-swarm';
+import { KnowledgeSwarm } from './knowledge-swarm';
 
 const execAsync = promisify(exec);
 
@@ -135,7 +135,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       },
       ...config,
     };
-    this.knowledgeSwarm = new KnowledgeSwarm(config.swarmConfig);
+    this.knowledgeSwarm = new KnowledgeSwarm(config?.swarmConfig);
   }
 
   /**
@@ -355,8 +355,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
           const lernaConfig = JSON.parse(
             await readFile(path.join(context.rootPath, 'lerna.json'), 'utf-8')
           );
-          context.monorepo.version = lernaConfig.version;
-          context.monorepo.packages = lernaConfig.packages || ['packages/*'];
+          context.monorepo.version = lernaConfig?.version;
+          context.monorepo.packages = lernaConfig?.packages || ['packages/*'];
           break;
         }
 
@@ -365,7 +365,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
             await readFile(path.join(context.rootPath, 'nx.json'), 'utf-8')
           );
           // NX has a more complex structure, we'd need to analyze workspace.json too
-          context.monorepo.version = nxConfig.version;
+          context.monorepo.version = nxConfig?.version;
           break;
         }
 
@@ -377,8 +377,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
           // Parse YAML to get packages - simplified for now
           const packagesMatch = pnpmWorkspace.match(/packages:\s*\n((?:\s+-\s+.*\n?)*)/);
           if (packagesMatch) {
-            context.monorepo.packages = packagesMatch[1]
-              .split('\n')
+            context.monorepo.packages = packagesMatch?.[1]?.split('\n')
               .map((line) => line.trim().replace(/^-\s*/, ''))
               .filter(Boolean);
           }
@@ -389,8 +388,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
           const rushConfig = JSON.parse(
             await readFile(path.join(context.rootPath, 'rush.json'), 'utf-8')
           );
-          context.monorepo.version = rushConfig.rushVersion;
-          context.monorepo.packages = rushConfig.projects?.map((p: any) => p.projectFolder) || [];
+          context.monorepo.version = rushConfig?.rushVersion;
+          context.monorepo.packages = rushConfig?.projects?.map((p: any) => p.projectFolder) || [];
           break;
         }
       }
@@ -689,7 +688,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         // Basic Cargo.toml parsing (simplified)
         const dependencySection = cargoContent.match(/\[dependencies\]([\s\S]*?)(?=\[|$)/);
         if (dependencySection) {
-          const deps = dependencySection[1].match(/^([a-zA-Z0-9_-]+)\s*=/gm) || [];
+          const deps = dependencySection[1]?.match(/^([a-zA-Z0-9_-]+)\s*=/gm) || [];
           deps.forEach((dep) => {
             const name = dep.replace(/\s*=.*/, '').trim();
             context.dependencies.push({
@@ -990,7 +989,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       // Search context cache for relevant knowledge
       for (const [_key, cached] of this.contextCache.entries()) {
         if (cached.query?.toLowerCase().includes(queryLower)) {
-          results.push(cached);
+          results?.push(cached);
         }
 
         // Also search by context tags
@@ -999,12 +998,12 @@ export class ProjectContextAnalyzer extends EventEmitter {
             cached.context.some((c: string) => c.toLowerCase().includes(ctx.toLowerCase()))
           );
           if (hasMatchingContext) {
-            results.push(cached);
+            results?.push(cached);
           }
         }
       }
 
-      return results.slice(0, 5); // Top 5 results
+      return results?.slice(0, 5); // Top 5 results
     } catch (error) {
       logger.error('Failed to search cached knowledge:', error);
       return [];
@@ -1021,10 +1020,10 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
     knowledge.forEach((item, index) => {
       formatted += `## Result ${index + 1}\n`;
-      formatted += `**Source:** ${item.metadata?.target || 'Unknown'}\n`;
-      formatted += `**Context:** ${item.metadata?.context || 'General'}\n`;
-      formatted += `**Last Updated:** ${item.metadata?.timestamp || 'Unknown'}\n\n`;
-      formatted += `${item.content || 'No content available'}\n\n`;
+      formatted += `**Source:** ${item?.metadata?.target || 'Unknown'}\n`;
+      formatted += `**Context:** ${item?.metadata?.context || 'General'}\n`;
+      formatted += `**Last Updated:** ${item?.metadata?.timestamp || 'Unknown'}\n\n`;
+      formatted += `${item?.content || 'No content available'}\n\n`;
       formatted += '---\\n\\n';
     });
 
@@ -1051,8 +1050,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
         requiredInfo: mission.requiredInfo,
         result: result,
         timestamp: Date.now(),
-        agentsUsed: result.agentsUsed || [],
-        confidence: result.knowledgeConfidence || 0,
+        agentsUsed: result?.agentsUsed || [],
+        confidence: result?.knowledgeConfidence || 0,
       };
 
       this.contextCache.set(cacheKey, cached);

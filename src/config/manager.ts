@@ -68,21 +68,21 @@ export class ConfigurationManager extends EventEmitter {
     try {
       const result = await this.loader.loadConfiguration(configPaths);
 
-      if (!result.validation.valid) {
+      if (!result?.validation?.valid) {
         logger.error('❌ Configuration validation failed:');
-        result.validation.errors.forEach((error) => logger.error(`  - ${error}`));
+        result?.validation?.errors?.forEach((error) => logger.error(`  - ${error}`));
 
-        if (result.validation.warnings.length > 0) {
+        if (result?.validation?.warnings.length > 0) {
           logger.warn('⚠️ Configuration warnings:');
-          result.validation.warnings.forEach((warning) => logger.warn(`  - ${warning}`));
+          result?.validation?.warnings?.forEach((warning) => logger.warn(`  - ${warning}`));
         }
         this.config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
       } else {
-        this.config = result.config;
+        this.config = result?.config;
 
-        if (result.validation.warnings.length > 0) {
+        if (result?.validation?.warnings.length > 0) {
           logger.warn('⚠️ Configuration warnings:');
-          result.validation.warnings.forEach((warning) => logger.warn(`  - ${warning}`));
+          result?.validation?.warnings?.forEach((warning) => logger.warn(`  - ${warning}`));
         }
       }
 
@@ -95,9 +95,9 @@ export class ConfigurationManager extends EventEmitter {
       // Add to history
       this.addToHistory(this.config);
 
-      this.emit('config:loaded', { config: this.config, validation: result.validation });
+      this.emit('config:loaded', { config: this.config, validation: result?.validation });
 
-      return result.validation;
+      return result?.validation;
     } finally {
       this.isLoading = false;
     }
@@ -332,17 +332,17 @@ export class ConfigurationManager extends EventEmitter {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (part && (!(part in current) || typeof current[part] !== 'object')) {
-        current[part] = {};
+      if (part && (!(part in current) || typeof current?.[part] !== 'object')) {
+        current?.[part] = {};
       }
       if (part) {
-        current = current[part];
+        current = current?.[part];
       }
     }
 
     const lastPart = parts[parts.length - 1];
     if (lastPart) {
-      current[lastPart] = value;
+      current?.[lastPart] = value;
     }
   }
 

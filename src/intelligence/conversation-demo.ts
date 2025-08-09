@@ -1,17 +1,5 @@
 import { getLogger } from "../config/logging-config";
 const logger = getLogger("src-intelligence-conversation-demo");
-/**
- * Simple Conversation Framework Demo.
- *
- * Demonstrates ag2.ai-inspired conversation capabilities with minimal dependencies.
- */
-
-import type { AgentId } from '../types/agent-types';
-import type {
-  ConversationConfig,
-  ConversationMessage,
-  ConversationSession,
-} from './conversation-framework/types';
 
 /**
  * Mock memory backend for demo purposes.
@@ -61,19 +49,19 @@ class DemoConversationOrchestrator {
 
   async createConversation(config: ConversationConfig): Promise<ConversationSession> {
     // Ensure there are initial participants for the initiator
-    if (config.initialParticipants.length === 0) {
+    if (config?.initialParticipants.length === 0) {
       throw new Error('At least one initial participant is required');
     }
 
     const session: ConversationSession = {
       id: `demo-${Date.now()}`,
-      title: config.title,
-      description: config.description,
-      participants: [...config.initialParticipants],
-      initiator: config.initialParticipants[0], // Safe after length check
+      title: config?.title,
+      description: config?.description,
+      participants: [...config?.initialParticipants],
+      initiator: config?.initialParticipants?.[0], // Safe after length check
       startTime: new Date(),
       status: 'active',
-      context: config.context,
+      context: config?.context,
       messages: [],
       outcomes: [],
       metrics: {
@@ -85,7 +73,7 @@ class DemoConversationOrchestrator {
       },
     };
 
-    config.initialParticipants.forEach((agent) => {
+    config?.initialParticipants?.forEach((agent) => {
       session.metrics.participationByAgent[agent.id] = 0;
     });
 

@@ -208,13 +208,13 @@ export class ExportSystem extends EventEmitter {
       const size = Buffer.byteLength(exportedData, 'utf8');
 
       // Generate filename if not provided
-      const filename = options.filename || `export_${timestamp}${exporter.extension}`;
+      const filename = options?.filename || `export_${timestamp}${exporter.extension}`;
 
       // Save to file if output path provided
-      if (options.outputPath) {
-        const filePath = join(options.outputPath, filename);
+      if (options?.outputPath) {
+        const filePath = join(options?.outputPath, filename);
         await mkdir(dirname(filePath), { recursive: true });
-        await writeFile(filePath, exportedData, options.encoding || 'utf8');
+        await writeFile(filePath, exportedData, options?.encoding || 'utf8');
       }
 
       const result: ExportResult = {
@@ -225,10 +225,10 @@ export class ExportSystem extends EventEmitter {
         timestamp,
         success: true,
         metadata: {
-          ...options.metadata,
+          ...options?.metadata,
           exporter: exporter.name,
           mimeType: exporter.mimeType,
-          outputPath: options.outputPath,
+          outputPath: options?.outputPath,
         },
       };
 
@@ -241,7 +241,7 @@ export class ExportSystem extends EventEmitter {
       const result: ExportResult = {
         id: exportId,
         format,
-        filename: options.filename || `failed_export_${timestamp}`,
+        filename: options?.filename || `failed_export_${timestamp}`,
         size: 0,
         timestamp,
         success: false,
@@ -273,11 +273,11 @@ export class ExportSystem extends EventEmitter {
       try {
         const result = await this.exportData(data, format, {
           ...options,
-          ...(options.filename && {
-            filename: `${options.filename.replace(/\.[^/.]+$/, '')}.${format}`
+          ...(options?.filename && {
+            filename: `${options?.filename?.replace(/\.[^/.]+$/, '')}.${format}`
           }),
         });
-        results.push(result);
+        results?.push(result);
       } catch (error) {
         logger.error(`Batch export failed for format ${format}:`, error);
         // Continue with other formats
@@ -327,9 +327,9 @@ export class ExportSystem extends EventEmitter {
 
     return this.exportData(documentData, format, {
       ...options,
-      filename: options.filename || `workflow_export_${Date.now()}.${format}`,
+      filename: options?.filename || `workflow_export_${Date.now()}.${format}`,
       metadata: {
-        ...options.metadata,
+        ...options?.metadata,
         type: 'workflow_export',
       },
     });
@@ -356,9 +356,9 @@ export class ExportSystem extends EventEmitter {
 
     return this.exportData(systemExport, format, {
       ...options,
-      filename: options.filename || `system_status_${Date.now()}.${format}`,
+      filename: options?.filename || `system_status_${Date.now()}.${format}`,
       metadata: {
-        ...options.metadata,
+        ...options?.metadata,
         type: 'system_status',
       },
     });
@@ -375,7 +375,7 @@ export class ExportSystem extends EventEmitter {
     }
 
     // Get headers from first object
-    const headers = Object.keys(data[0]);
+    const headers = Object.keys(data?.[0]);
     const csvRows = [headers.join(',')];
 
     // Convert each row
@@ -456,27 +456,27 @@ export class ExportSystem extends EventEmitter {
 
     if (typeof data === 'object' && data !== null) {
       // Handle document-like objects
-      if (data.title) {
-        markdown += `# ${data.title}
+      if (data?.title) {
+        markdown += `# ${data?.title}
       \n`;
       }
 
-      if (data.description) {
-        markdown += `${data.description}
+      if (data?.description) {
+        markdown += `${data?.description}
       \n`;
       }
 
-      if (data.metadata) {
+      if (data?.metadata) {
         markdown += '## Metadata\n';
-        for (const [key, value] of Object.entries(data.metadata)) {
+        for (const [key, value] of Object.entries(data?.metadata)) {
           markdown += `- **${key}**: ${value}\n`;
         }
         markdown += '\n';
       }
 
-      if (data.content) {
+      if (data?.content) {
         markdown += '## Content\n';
-        markdown += `${data.content}\n`;
+        markdown += `${data?.content}\n`;
       }
 
       // Handle arrays of items
@@ -485,14 +485,14 @@ export class ExportSystem extends EventEmitter {
           markdown += `## ${key.charAt(0).toUpperCase() + key.slice(1)}
       \n`;
           for (const item of value) {
-            if (typeof item === 'object' && item.title) {
-              markdown += `### ${item.title}
+            if (typeof item === 'object' && item?.title) {
+              markdown += `### ${item?.title}
       \n`;
-              if (item.description)
-                markdown += `${item.description}
+              if (item?.description)
+                markdown += `${item?.description}
       \n`;
-              if (item.content)
-                markdown += `${item.content}
+              if (item?.content)
+                markdown += `${item?.content}
       \n`;
             } else {
               markdown += `- ${typeof item === 'string' ? item : JSON.stringify(item)}\n`;
@@ -509,7 +509,7 @@ export class ExportSystem extends EventEmitter {
   }
 
   private convertToHTML(data: any, _options?: ExportOptions): string {
-    const title = data.title || 'Claude Code Zen Export';
+    const title = data?.title || 'Claude Code Zen Export';
 
     let html = `<!DOCTYPE html>
 <html lang="en">
@@ -534,8 +534,8 @@ export class ExportSystem extends EventEmitter {
 
     html += `<h1>${this.escapeHTML(title)}</h1>`;
 
-    if (data.timestamp || data.exportedAt) {
-      html += `<p class="timestamp">Exported: ${new Date(data.timestamp || data.exportedAt).toLocaleString()}</p>`;
+    if (data?.timestamp || data?.exportedAt) {
+      html += `<p class="timestamp">Exported: ${new Date(data?.timestamp || data?.exportedAt).toLocaleString()}</p>`;
     }
 
     html += this.objectToHTML(data);
@@ -559,8 +559,8 @@ export class ExportSystem extends EventEmitter {
         if (Array.isArray(value)) {
           for (const item of value) {
             html += '<div class="array-item">';
-            if (typeof item === 'object' && item.title) {
-              html += `<strong>${this.escapeHTML(item.title)}</strong><br>`;
+            if (typeof item === 'object' && item?.title) {
+              html += `<strong>${this.escapeHTML(item?.title)}</strong><br>`;
             }
             html += this.objectToHTML(item, level + 1);
             html += '</div>';

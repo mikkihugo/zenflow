@@ -73,12 +73,12 @@ class ClaudeLMDriver implements LMDriver {
 
   constructor(config: DSPyConfig) {
     this.config = {
-      model: config.model || 'claude-3-5-sonnet-20241022',
-      temperature: config.temperature || 0.1,
-      maxTokens: config.maxTokens || 2000,
-      topP: config.topP || 1.0,
-      enableLogging: config.enableLogging ?? true,
-      optimizationEnabled: config.optimizationEnabled ?? true,
+      model: config?.model || 'claude-3-5-sonnet-20241022',
+      temperature: config?.temperature || 0.1,
+      maxTokens: config?.maxTokens || 2000,
+      topP: config?.topP || 1.0,
+      enableLogging: config?.enableLogging ?? true,
+      optimizationEnabled: config?.optimizationEnabled ?? true,
     };
   }
 
@@ -148,12 +148,12 @@ export class DSPy {
 
   constructor(config: DSPyConfig = {}) {
     this.config = {
-      model: config.model || 'claude-3-5-sonnet-20241022',
-      temperature: config.temperature || 0.1,
-      maxTokens: config.maxTokens || 2000,
-      topP: config.topP || 1.0,
-      enableLogging: config.enableLogging ?? true,
-      optimizationEnabled: config.optimizationEnabled ?? true,
+      model: config?.model || 'claude-3-5-sonnet-20241022',
+      temperature: config?.temperature || 0.1,
+      maxTokens: config?.maxTokens || 2000,
+      topP: config?.topP || 1.0,
+      enableLogging: config?.enableLogging ?? true,
+      optimizationEnabled: config?.optimizationEnabled ?? true,
     };
 
     // Initialize Claude LM Driver and configure it globally
@@ -312,8 +312,8 @@ export class DSPy {
     if (this.config.enableLogging) {
       logger.info('Program optimization completed', {
         signature: program.signature,
-        strategy: options.strategy,
-        improvement: optimizationResult.improvement,
+        strategy: options?.strategy,
+        improvement: optimizationResult?.improvement,
       });
     }
   }
@@ -410,11 +410,11 @@ export class DSPy {
 
   private parseExecutionResult(rawResponse: string, parsedSignature: any): DSPyExecutionResult {
     // Try to extract JSON from the response
-    const jsonMatch = rawResponse.match(/\{[\s\S]*\}/);
+    const jsonMatch = rawResponse?.match(/\{[\s\S]*\}/);
 
     if (jsonMatch) {
       try {
-        const parsed = JSON.parse(jsonMatch[0]);
+        const parsed = JSON.parse(jsonMatch?.[0]);
         return {
           ...parsed,
           confidence: parsed.confidence || 0.8,
@@ -428,11 +428,11 @@ export class DSPy {
     // Fallback: create structured response based on signature
     const result: DSPyExecutionResult = {};
     parsedSignature.outputs.forEach((output: any) => {
-      result[output.name] = this.extractFieldFromText(rawResponse, output.name, output.type);
+      result?.[output.name] = this.extractFieldFromText(rawResponse, output.name, output.type);
     });
 
-    result.confidence = 0.6; // Lower confidence for fallback parsing
-    result.reasoning = 'Parsed from unstructured response';
+    result?.confidence = 0.6; // Lower confidence for fallback parsing
+    result?.reasoning = 'Parsed from unstructured response';
 
     return result;
   }

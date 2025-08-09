@@ -8,7 +8,7 @@ const logger = getLogger("src-knowledge-knowledge-client");
  * Architecture: MCP-based tool execution with intelligent caching
  */
 
-import { type ChildProcess, spawn } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -139,11 +139,11 @@ export class FACTIntegration extends EventEmitter {
 
       const factResult: FACTResult = {
         queryId,
-        response: result.response,
+        response: result?.response,
         executionTimeMs: executionTime,
-        cacheHit: result.cacheHit || false,
-        toolsUsed: result.toolsUsed || [],
-        cost: result.cost,
+        cacheHit: result?.cacheHit || false,
+        toolsUsed: result?.toolsUsed || [],
+        cost: result?.cost,
         metadata: {
           ...factQuery.metadata,
           factVersion: '1.0.0',
@@ -249,12 +249,12 @@ export class FACTIntegration extends EventEmitter {
     try {
       const result = await this.executePythonCommand('get_metrics');
       return {
-        totalQueries: result.total_queries || 0,
-        cacheHitRate: result.cache_hit_rate || 0,
-        averageLatency: result.average_latency || 0,
-        costSavings: result.cost_savings || 0,
-        toolExecutions: result.tool_executions || 0,
-        errorRate: result.error_rate || 0,
+        totalQueries: result?.total_queries || 0,
+        cacheHitRate: result?.cache_hit_rate || 0,
+        averageLatency: result?.average_latency || 0,
+        costSavings: result?.cost_savings || 0,
+        toolExecutions: result?.tool_executions || 0,
+        errorRate: result?.error_rate || 0,
       };
     } catch (error) {
       logger.error('Failed to get FACT metrics:', error);
@@ -475,7 +475,7 @@ export const FACTHelpers = {
     if (!fact) throw new Error('FACT not initialized');
 
     const result = await fact.getDocumentation('react', version);
-    return result.response;
+    return result?.response;
   },
 
   /**
@@ -488,7 +488,7 @@ export const FACTHelpers = {
     if (!fact) throw new Error('FACT not initialized');
 
     const result = await fact.getDocumentation('typescript', version);
-    return result.response;
+    return result?.response;
   },
 
   /**
@@ -502,7 +502,7 @@ export const FACTHelpers = {
     if (!fact) throw new Error('FACT not initialized');
 
     const result = await fact.searchCommunityKnowledge(problem, tags);
-    return result.response;
+    return result?.response;
   },
 
   /**
@@ -516,7 +516,7 @@ export const FACTHelpers = {
     if (!fact) throw new Error('FACT not initialized');
 
     const result = await fact.getAPIReference(api, endpoint);
-    return result.response;
+    return result?.response;
   },
 };
 

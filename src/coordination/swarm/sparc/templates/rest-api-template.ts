@@ -870,41 +870,43 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
       customized.coreAlgorithms.push({
         id: nanoid(),
         name: 'EnterpriseAuditLogging',
-        description: 'Comprehensive audit logging for enterprise compliance',
-        pseudocode: `
-ALGORITHM EnterpriseAuditLogging
-INPUT: request, response, user, action
-OUTPUT: auditLogEntry
-
-BEGIN
-  auditEntry ← {
-    timestamp: CURRENT_TIME(),
-    user: user.id,
-    action: action,
-    resource: request.path,
-    method: request.method,
-    ip: request.ip,
-    userAgent: request.userAgent,
-    requestId: request.id,
-    responseStatus: response.status,
-    duration: response.duration
-  }
-  
-  AUDIT_STORE.SAVE(auditEntry)
-  RETURN auditEntry
-END
-        `.trim(),
+        purpose: 'Comprehensive audit logging for enterprise compliance',
+        inputs: [
+          { name: 'request', type: 'object', description: 'HTTP request object' },
+          { name: 'response', type: 'object', description: 'HTTP response object' },
+          { name: 'user', type: 'object', description: 'User context object' },
+          { name: 'action', type: 'string', description: 'Action being performed' },
+        ],
+        outputs: [
+          { name: 'auditLogEntry', type: 'AuditLogEntry', description: 'Created audit log entry' },
+        ],
+        steps: [
+          {
+            stepNumber: 1,
+            description: 'Create audit entry object',
+            pseudocode: 'auditEntry ← { timestamp: CURRENT_TIME(), user: user.id, action: action, resource: request.path, method: request.method, ip: request.ip, userAgent: request.userAgent, requestId: request.id, responseStatus: response.status, duration: response.duration }',
+            complexity: 'O(1)',
+          },
+          {
+            stepNumber: 2,
+            description: 'Save audit entry',
+            pseudocode: 'AUDIT_STORE.SAVE(auditEntry)',
+            complexity: 'O(1)',
+          },
+          {
+            stepNumber: 3,
+            description: 'Return audit entry',
+            pseudocode: 'RETURN auditEntry',
+            complexity: 'O(1)',
+          },
+        ],
         complexity: {
           timeComplexity: 'O(1)',
-          spaceComplexity: 'O(1)' as const,
+          spaceComplexity: 'O(1)',
           scalability: 'Constant time logging operation',
           worstCase: 'O(1)',
         },
-        inputParameters: ['request', 'response', 'user', 'action'],
-        outputFormat: 'AuditLogEntry',
-        preconditions: ['Audit store available'],
-        postconditions: ['Audit entry recorded'],
-        invariants: ['Audit trail integrity maintained'],
+        optimizations: [],
       });
     }
 

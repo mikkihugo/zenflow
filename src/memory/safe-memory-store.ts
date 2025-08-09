@@ -53,11 +53,11 @@ export class SafeMemoryStore extends EventEmitter {
     super();
 
     this.options = {
-      namespace: options.namespace ?? 'default',
-      enableTTL: options.enableTTL ?? true,
-      defaultTTL: options.defaultTTL ?? 3600000, // 1 hour
-      maxSize: options.maxSize ?? 10000,
-      enableCompression: options.enableCompression ?? false,
+      namespace: options?.namespace ?? 'default',
+      enableTTL: options?.enableTTL ?? true,
+      defaultTTL: options?.defaultTTL ?? 3600000, // 1 hour
+      maxSize: options?.maxSize ?? 10000,
+      enableCompression: options?.enableCompression ?? false,
     };
   }
 
@@ -118,8 +118,8 @@ export class SafeMemoryStore extends EventEmitter {
       this.metadata.set(fullKey, newMetadata);
 
       // Set up TTL if enabled
-      if (this.options.enableTTL && newMetadata.ttl) {
-        this.setTTL(fullKey, newMetadata.ttl);
+      if (this.options.enableTTL && newMetadata?.ttl) {
+        this.setTTL(fullKey, newMetadata?.ttl);
       }
 
       this.emit('stored', { key: fullKey, size: newMetadata.size });
@@ -129,7 +129,7 @@ export class SafeMemoryStore extends EventEmitter {
         data: undefined as undefined,
         key: fullKey,
         timestamp: now,
-        ttl: newMetadata.ttl,
+        ttl: newMetadata?.ttl,
         metadata: { operation: 'store', success: true },
       } as MemorySuccess<void>;
     } catch (error) {
@@ -168,22 +168,22 @@ export class SafeMemoryStore extends EventEmitter {
 
       // Update access information
       const now = new Date();
-      metadata.accessed = now;
-      metadata.accessCount++;
+      metadata?.accessed = now;
+      metadata?.accessCount++;
       this.metadata.set(fullKey, metadata);
 
-      this.emit('accessed', { key: fullKey, accessCount: metadata.accessCount });
+      this.emit('accessed', { key: fullKey, accessCount: metadata?.accessCount });
 
       return {
         found: true,
         data,
         key: fullKey,
-        timestamp: metadata.updated,
-        ttl: metadata.ttl,
+        timestamp: metadata?.updated,
+        ttl: metadata?.ttl,
         metadata: {
-          created: metadata.created,
-          accessed: metadata.accessed,
-          accessCount: metadata.accessCount,
+          created: metadata?.created,
+          accessed: metadata?.accessed,
+          accessCount: metadata?.accessCount,
           size: metadata.size,
         },
       } as MemorySuccess<T>;
@@ -292,12 +292,12 @@ export class SafeMemoryStore extends EventEmitter {
       for (const metadata of this.metadata.values()) {
         totalSize += metadata.size;
 
-        if (!oldestEntry || metadata.created < oldestEntry) {
-          oldestEntry = metadata.created;
+        if (!oldestEntry || metadata?.created < oldestEntry) {
+          oldestEntry = metadata?.created;
         }
 
-        if (!newestEntry || metadata.created > newestEntry) {
-          newestEntry = metadata.created;
+        if (!newestEntry || metadata?.created > newestEntry) {
+          newestEntry = metadata?.created;
         }
       }
 
@@ -403,7 +403,7 @@ export class SafeMemoryStore extends EventEmitter {
     const now = Date.now();
 
     for (const [key, metadata] of this.metadata.entries()) {
-      if (metadata.ttl && metadata.updated.getTime() + metadata.ttl < now) {
+      if (metadata?.ttl && metadata?.updated?.getTime() + metadata?.ttl < now) {
         this.store.delete(key);
         this.metadata.delete(key);
 
@@ -436,7 +436,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
   // Safe property access using type guards
   if (isMemorySuccess(storeResult)) {
   } else if (isMemoryError(storeResult)) {
-    logger.error('❌ Storage failed:', storeResult.error.message);
+    logger.error('❌ Storage failed:', storeResult?.error?.message);
   }
 
   // Retrieve data with safe access
@@ -445,7 +445,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
   if (isMemorySuccess(retrieveResult)) {
   } else if (isMemoryNotFound(retrieveResult)) {
   } else if (isMemoryError(retrieveResult)) {
-    logger.error('Error retrieving user:', retrieveResult.error.message);
+    logger.error('Error retrieving user:', retrieveResult?.error?.message);
   }
 
   // Check existence safely

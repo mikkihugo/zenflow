@@ -237,9 +237,9 @@ export class ConfigurationLoader {
 
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-        result[key] = this.deepMerge(result[key] || {}, source[key]);
+        result?.[key] = this.deepMerge(result?.[key] || {}, source[key]);
       } else {
-        result[key] = source[key];
+        result?.[key] = source[key];
       }
     }
 
@@ -259,17 +259,17 @@ export class ConfigurationLoader {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (part && (!(part in current) || typeof current[part] !== 'object')) {
-        current[part] = {};
+      if (part && (!(part in current) || typeof current?.[part] !== 'object')) {
+        current?.[part] = {};
       }
       if (part) {
-        current = current[part];
+        current = current?.[part];
       }
     }
 
     const lastPart = parts[parts.length - 1];
     if (lastPart) {
-      current[lastPart] = value;
+      current?.[lastPart] = value;
     }
   }
 

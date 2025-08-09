@@ -1,11 +1,3 @@
-/**
- * URL Builder Utility.
- * 
- * Centralized utility for building service URLs from configuration.
- * Eliminates hardcoded localhost URLs and provides environment-aware URL generation.
- */
-
-import type { SystemConfiguration } from './types';
 import { DEFAULT_CONFIG } from './defaults';
 
 export interface URLBuilderConfig {
@@ -79,7 +71,7 @@ export class URLBuilder {
     const configuredOrigins = this.config.interfaces.web.corsOrigins || [];
     
     // Convert localhost origins to use current protocol
-    const updatedOrigins = configuredOrigins.map(origin => {
+    const updatedOrigins = configuredOrigins?.map(origin => {
       if (origin.includes('localhost') && !origin.startsWith('http')) {
         return `${protocol}://${origin}`;
       }

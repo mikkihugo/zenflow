@@ -11,15 +11,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { DatabaseDrivenSystem } from '../core/database-driven-system';
 import { generateId } from '../core/helpers';
 import { createLogger } from '../core/logger';
-import type {
-  FeatureDocumentEntity,
-  TaskDocumentEntity,
-} from '../database/entities/product-entities';
-import type { DocumentManager } from '../database/managers/document-manager';
-import type { SPARCSwarmCoordinator, SPARCTask } from './swarm/core/sparc-swarm-coordinator';
 
 const logger = createLogger('DatabaseSPARCBridge');
 
@@ -257,18 +250,18 @@ class DatabaseSPARCBridge extends EventEmitter {
     // Update document with SPARC implementation details
     const updatedDocument = {
       ...document,
-      status: result.status === 'completed' ? ('approved' as const) : ('draft' as const),
+      status: result?.status === 'completed' ? ('approved' as const) : ('draft' as const),
       completion_percentage:
-        result.status === 'completed' ? 100 : result.status === 'partial' ? 75 : 0,
+        result?.status === 'completed' ? 100 : result?.status === 'partial' ? 75 : 0,
       workflow_stage: 'sparc-completed',
       // Add SPARC-specific fields
       sparc_implementation: {
-        task_id: result.sparcTaskId,
+        task_id: result?.sparcTaskId,
         completion_date: new Date(),
-        artifacts: result.artifacts,
-        metrics: result.metrics,
+        artifacts: result?.artifacts,
+        metrics: result?.metrics,
         methodology_applied: 'SPARC',
-        quality_score: result.metrics.qualityScore,
+        quality_score: result?.metrics?.qualityScore,
       },
     };
 

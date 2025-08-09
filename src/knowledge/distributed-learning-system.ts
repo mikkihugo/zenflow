@@ -11,8 +11,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
 
 /**
  * Federated Learning Implementation
@@ -482,7 +480,7 @@ export class DistributedLearningSystem extends EventEmitter {
       );
 
       // Phase 4: Validate aggregated model
-      const validatedModel = await this.validateAggregatedModel(aggregationResult.aggregatedModel);
+      const validatedModel = await this.validateAggregatedModel(aggregationResult?.aggregatedModel);
 
       // Phase 5: Calculate convergence metrics
       const convergenceMetrics = await this.calculateConvergence(

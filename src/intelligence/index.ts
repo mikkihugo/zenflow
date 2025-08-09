@@ -61,10 +61,10 @@ export const IntelligenceUtils = {
   validateConfig: (config: any): boolean => {
     return Boolean(
       config &&
-        (config.learningRate || config.adaptationRate) &&
-        config.patternRecognition &&
-        config.learning &&
-        config.optimization
+        (config?.learningRate || config?.adaptationRate) &&
+        config?.patternRecognition &&
+        config?.learning &&
+        config?.optimization
     );
   },
 
@@ -119,10 +119,10 @@ export const IntelligenceUtils = {
     };
 
     const systemContext = {
-      environment: config.environment || 'production',
-      resources: config.resources || [],
-      constraints: config.constraints || [],
-      objectives: config.objectives || [],
+      environment: config?.environment || 'production',
+      resources: config?.resources || [],
+      constraints: config?.constraints || [],
+      objectives: config?.objectives || [],
     };
 
     const systems = await Promise.all([

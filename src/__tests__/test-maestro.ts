@@ -172,11 +172,11 @@ ${initialRequest}
           capabilities: ['design', 'architecture'],
           metadata: { task: 'design-generation' },
         });
-        selectedAgents.push(agentId);
+        selectedAgents?.push(agentId);
       }
 
       // Execute design generation
-      designTask.assignedAgent = selectedAgents[0];
+      designTask.assignedAgent = selectedAgents?.[0];
       await this.mainOrchestrator.assignTask(designTask);
 
       // Generate design document

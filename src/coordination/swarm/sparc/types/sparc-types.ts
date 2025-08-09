@@ -295,6 +295,7 @@ export interface PseudocodeStructure {
 }
 
 export interface AlgorithmPseudocode {
+  id: string;
   readonly name: string;
   readonly purpose: string;
   inputs: ParameterDefinition[];

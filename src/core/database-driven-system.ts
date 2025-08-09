@@ -8,20 +8,7 @@
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
-import type {
-  ADRDocumentEntity,
-  BaseDocumentEntity,
-  EpicDocumentEntity,
-  FeatureDocumentEntity,
-  PRDDocumentEntity,
-  ProjectEntity,
-  TaskDocumentEntity,
-  VisionDocumentEntity,
-} from '../database/entities/document-entities';
-import type { DocumentManager } from '../database/managers/document-manager';
-import type { DocumentType } from '../types/workflow-types';
 import { createLogger } from './logger';
-import type { WorkflowEngine } from './workflow-engine';
 
 const logger = createLogger('DatabaseDriven');
 
@@ -222,7 +209,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
     context.activeDocuments.set(document.id, document);
 
     // Start workflows based on document type
-    if (options.startWorkflows !== false) {
+    if (options?.startWorkflows !== false) {
       const workflowIds = await this.workflowEngine.processDocumentEvent(
         'document:created',
         document,
@@ -312,9 +299,9 @@ export class DatabaseDrivenSystem extends EventEmitter {
     };
 
     const document = await this.documentService.createDocument(visionDoc, {
-      autoGenerateRelationships: options.autoGenerateRelationships !== false,
-      generateSearchIndex: options.generateSearchIndex !== false,
-      ...(options.startWorkflows !== false && { startWorkflow: 'vision-to-adrs' }),
+      autoGenerateRelationships: options?.autoGenerateRelationships !== false,
+      generateSearchIndex: options?.generateSearchIndex !== false,
+      ...(options?.startWorkflows !== false && { startWorkflow: 'vision-to-adrs' }),
     });
 
     await this.processDocumentEntity(workspaceId, document, options);

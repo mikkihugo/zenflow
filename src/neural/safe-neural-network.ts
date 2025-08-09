@@ -7,19 +7,7 @@ const logger = getLogger("src-neural-safe-neural-network");
  * for training, inference, and error scenarios.
  */
 
-import {
-  type InferenceResult,
-  isInferenceResult,
-  isNeuralError,
-  isTrainingResult,
-  isWasmError,
-  type NeuralError,
-  type NeuralResult,
-  type TrainingResult,
-  type WasmError,
-  type WasmResult,
-  type WasmSuccess,
-} from '../utils/type-guards';
+import { isInferenceResult, isNeuralError, isTrainingResult, isWasmError } from '../utils/type-guards';
 
 export interface NeuralNetworkConfig {
   layers: number[];
@@ -82,9 +70,9 @@ export class SafeNeuralNetwork {
             success: false,
             error: {
               code: 'WASM_INITIALIZATION_FAILED',
-              message: wasmResult.error.message,
+              message: wasmResult?.error?.message,
               operation: 'initialization',
-              details: wasmResult.error,
+              details: wasmResult?.error,
             },
           } as NeuralError;
         }
@@ -140,7 +128,7 @@ export class SafeNeuralNetwork {
       let finalError = 0;
       let converged = false;
 
-      for (let epoch = 0; epoch < options.epochs; epoch++) {
+      for (let epoch = 0; epoch < options?.epochs; epoch++) {
         // Perform one epoch of training
         const epochResult = await this.trainEpoch(data, options);
 
@@ -149,7 +137,7 @@ export class SafeNeuralNetwork {
         }
 
         if (isTrainingResult(epochResult)) {
-          finalError = epochResult.finalError;
+          finalError = epochResult?.finalError;
         }
 
         // Check for convergence and early stopping
@@ -161,7 +149,7 @@ export class SafeNeuralNetwork {
         }
 
         // Early stopping check
-        if (options.earlyStop && options.patience && epochsWithoutImprovement >= options.patience) {
+        if (options?.earlyStop && options?.patience && epochsWithoutImprovement >= options?.patience) {
           converged = true;
           break;
         }
@@ -172,7 +160,7 @@ export class SafeNeuralNetwork {
           break;
         }
 
-        if (options.verbose && epoch % 100 === 0) {
+        if (options?.verbose && epoch % 100 === 0) {
         }
       }
 
@@ -181,13 +169,13 @@ export class SafeNeuralNetwork {
 
       // Calculate validation accuracy if validation data provided
       let accuracy: number | undefined;
-      if (data.validationInputs && data.validationOutputs) {
+      if (data?.validationInputs && data?.validationOutputs) {
         const validationResult = await this.validateNetwork(
-          data.validationInputs,
-          data.validationOutputs
+          data?.validationInputs,
+          data?.validationOutputs
         );
         if (isInferenceResult(validationResult)) {
-          accuracy = this.calculateAccuracy(validationResult.predictions, data.validationOutputs);
+          accuracy = this.calculateAccuracy(validationResult?.predictions, data?.validationOutputs);
         }
       }
 
@@ -195,7 +183,7 @@ export class SafeNeuralNetwork {
         type: 'training',
         success: true,
         finalError,
-        epochsCompleted: options.epochs,
+        epochsCompleted: options?.epochs,
         duration,
         converged,
         accuracy,
@@ -209,7 +197,7 @@ export class SafeNeuralNetwork {
           code: 'TRAINING_FAILED',
           message: error instanceof Error ? error.message : 'Unknown training error',
           operation: 'training',
-          details: { dataSize: data.inputs.length, options },
+          details: { dataSize: data?.inputs.length, options },
         },
       } as NeuralError;
     }
@@ -259,13 +247,13 @@ export class SafeNeuralNetwork {
             success: false,
             error: {
               code: 'WASM_PREDICTION_FAILED',
-              message: wasmResult.error.message,
+              message: wasmResult?.error?.message,
               operation: 'inference',
-              details: wasmResult.error,
+              details: wasmResult?.error,
             },
           } as NeuralError;
         }
-        predictions = wasmResult.result;
+        predictions = wasmResult?.result;
       } else {
         predictions = this.predictWithJavaScript(inputs);
       }
@@ -388,7 +376,7 @@ export class SafeNeuralNetwork {
       for (const input of inputs) {
         const result = await this.predict(input);
         if (isInferenceResult(result)) {
-          predictions.push(...result.predictions);
+          predictions.push(...result?.predictions);
         } else {
           return result; // Return error
         }
@@ -464,7 +452,7 @@ export class SafeNeuralNetwork {
     let correct = 0;
     for (let i = 0; i < predictions.length; i++) {
       const prediction = predictions[i];
-      const target = expected[i][0]; // Assuming single output
+      const target = expected[i]?.[0]; // Assuming single output
       if (Math.abs(prediction - target) < 0.1) {
         correct++;
       }
@@ -494,7 +482,7 @@ export async function safeNeuralUsageExample(): Promise<void> {
   // Initialize with safe result handling
   const initResult = await network.initialize();
   if (isNeuralError(initResult)) {
-    logger.error('❌ Network initialization failed:', initResult.error.message);
+    logger.error('❌ Network initialization failed:', initResult?.error?.message);
     return;
   }
 
@@ -520,10 +508,10 @@ export async function safeNeuralUsageExample(): Promise<void> {
   const trainResult = await network.train(trainingData, trainingOptions);
 
   if (isTrainingResult(trainResult)) {
-    if (trainResult.accuracy !== undefined) {
+    if (trainResult?.accuracy !== undefined) {
     }
   } else if (isNeuralError(trainResult)) {
-    logger.error('❌ Training failed:', trainResult.error.message);
+    logger.error('❌ Training failed:', trainResult?.error?.message);
     return;
   }
 
@@ -542,7 +530,7 @@ export async function safeNeuralUsageExample(): Promise<void> {
     } else if (isNeuralError(predictionResult)) {
       logger.error(
         `❌ Prediction failed for input [${input.join(', ')}]:`,
-        predictionResult.error.message
+        predictionResult?.error?.message
       );
     }
   }

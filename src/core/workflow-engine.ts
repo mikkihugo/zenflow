@@ -8,20 +8,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { BaseDocumentEntity } from '../database/entities/document-entities';
-import type { DocumentManager } from '../database/managers/document-manager';
-import type {
-  DocumentContent,
-  StepExecutionResult,
-  WorkflowContext,
-  WorkflowData,
-  WorkflowDefinition,
-  WorkflowEngineConfig,
-  WorkflowState,
-  WorkflowStep,
-} from '../types/workflow-types';
 import { createLogger } from './logger';
-import type { MemorySystem } from './memory-system';
 
 const logger = createLogger('WorkflowEngine');
 
@@ -550,8 +537,8 @@ export class WorkflowEngine extends EventEmitter {
               currentDocument: this.convertEntityToDocumentContent(document),
             });
 
-            if (result.success && result.workflowId) {
-              startedWorkflows.push(result.workflowId);
+            if (result?.success && result?.workflowId) {
+              startedWorkflows.push(result?.workflowId);
               logger.info(`Started workflow ${name} for ${event} on ${document.type}`);
             }
           } catch (error) {
@@ -838,8 +825,8 @@ export class WorkflowEngine extends EventEmitter {
 
   private async handleSaveDocuments(context: WorkflowContext, params: any): Promise<any> {
     // TODO: TypeScript error TS2339 - Property 'generated_docs' does not exist on WorkflowContext (AI unsure of safe fix - human review needed)
-    const documents = (context as any)[params.outputKey] || (context as any).generated_docs || [];
-    const documentType = params.documentType;
+    const documents = (context as any)[params?.outputKey] || (context as any).generated_docs || [];
+    const documentType = params?.documentType;
     const projectId = context.workspaceId;
 
     const savedDocuments: BaseDocumentEntity[] = [];
@@ -958,19 +945,19 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   private async handleDelay(_context: WorkflowContext, params: any): Promise<any> {
-    const duration = params.duration || 1000;
+    const duration = params?.duration || 1000;
     await new Promise((resolve) => setTimeout(resolve, duration));
     return { delayed: duration };
   }
 
   private async handleTransform(context: WorkflowContext, params: any): Promise<any> {
-    const data = this.getContextValue(context, params.input);
+    const data = this.getContextValue(context, params?.input);
     // Simple transformation logic
     return { transformed: data };
   }
 
   private async handleCondition(context: WorkflowContext, params: any): Promise<any> {
-    const condition = this.evaluateCondition(context, params.condition);
+    const condition = this.evaluateCondition(context, params?.condition);
     return { conditionMet: condition };
   }
 

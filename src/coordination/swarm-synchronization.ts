@@ -6,9 +6,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
-import type { AgentState } from '../types/agent-types';
 
 export interface SwarmSyncConfig {
   syncInterval: number; // Milliseconds between sync cycles
@@ -238,8 +235,8 @@ export class SwarmSynchronizer extends EventEmitter {
       const timeout = setTimeout(() => resolve(peerStates), this.config.consensusTimeout);
 
       const responseHandler = (data: any) => {
-        if (data.syncId === syncId && data.sourceSwarmId !== this.swarmId) {
-          peerStates.push(data.state);
+        if (data?.syncId === syncId && data?.sourceSwarmId !== this.swarmId) {
+          peerStates.push(data?.state);
 
           // If we have enough peers, resolve early
           if (peerStates.length >= 3) {
@@ -405,15 +402,15 @@ export class SwarmSynchronizer extends EventEmitter {
 
     // Handle sync broadcasts from other swarms
     this.eventBus.on('swarm:sync:broadcast', (data) => {
-      if (data.sourceSwarmId !== this.swarmId) {
+      if (data?.sourceSwarmId !== this.swarmId) {
         this.handlePeerSyncBroadcast(data);
       }
     });
 
     // Handle agent state updates
     this.eventBus.on('agent:state:updated', (data) => {
-      if (data.swarmId === this.swarmId) {
-        this.updateAgentState(data.agentId, data.state);
+      if (data?.swarmId === this.swarmId) {
+        this.updateAgentState(data?.agentId, data?.state);
       }
     });
   }
@@ -432,7 +429,7 @@ export class SwarmSynchronizer extends EventEmitter {
         timestamp: new Date(),
         source: this.swarmId,
         swarmId: this.swarmId,
-        syncId: data.syncId,
+        syncId: data?.syncId,
         respondingAgentId: this.swarmId,
         responseType: 'ack',
         responseData: this.gatherLocalState(),
@@ -599,7 +596,7 @@ class ConsensusProtocol {
     // Simple last-writer-wins consensus
     const allStates = [localState, ...peerStates];
     const latestState = allStates.reduce((latest, current) =>
-      current.timestamp > latest.timestamp ? current : latest
+      current?.timestamp > latest.timestamp ? current : latest
     );
 
     return {
@@ -629,7 +626,7 @@ class ConsensusProtocol {
       if (agentStates.length >= threshold) {
         // Use most recent state as consensus
         const consensusState = agentStates.reduce((latest, current) =>
-          current.lastHeartbeat > latest.lastHeartbeat ? current : latest
+          current?.lastHeartbeat > latest.lastHeartbeat ? current : latest
         );
         consensusStates.set(agentId, consensusState);
       }
@@ -657,7 +654,7 @@ class ConsensusProtocol {
     // This is a simplified version - would implement proper consensus algorithm
 
     const latestState = states.reduce((latest, current) =>
-      current.timestamp > latest.timestamp ? current : latest
+      current?.timestamp > latest.timestamp ? current : latest
     );
 
     return latestState.globalState;

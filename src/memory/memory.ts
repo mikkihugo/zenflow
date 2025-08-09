@@ -5,8 +5,7 @@ const logger = getLogger("src-memory-memory");
  */
 
 import { EventEmitter } from 'node:events';
-import type { IMemoryStore, MemoryStats, StoreOptions } from '../core/interfaces/base-interfaces';
-import type { BackendInterface, JSONValue } from '../core/memory-system';
+import type { IMemoryStore } from '../core/interfaces/base-interfaces';
 import { MemoryBackendFactory as BackendFactory } from './backends/factory';
 
 interface BackendConfig {
@@ -66,12 +65,12 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     super();
 
     this.options = {
-      backendConfig: options.backendConfig,
-      enableCache: options.enableCache ?? true,
-      cacheSize: options.cacheSize ?? 1000,
-      cacheTTL: options.cacheTTL ?? 300000, // 5 minutes
-      enableVectorStorage: options.enableVectorStorage ?? false,
-      vectorDimensions: options.vectorDimensions ?? 512,
+      backendConfig: options?.backendConfig,
+      enableCache: options?.enableCache ?? true,
+      cacheSize: options?.cacheSize ?? 1000,
+      cacheTTL: options?.cacheTTL ?? 300000, // 5 minutes
+      enableVectorStorage: options?.enableVectorStorage ?? false,
+      vectorDimensions: options?.vectorDimensions ?? 512,
     };
 
     // Backend will be created during initialization
@@ -151,7 +150,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     session.metadata.accessed = Date.now();
 
     if (storeOptions?.vector && this.options.enableVectorStorage) {
-      session.vectors?.set(key, storeOptions.vector);
+      session.vectors?.set(key, storeOptions?.vector);
     }
 
     await this.backend?.store(sessionId, session as unknown as JSONValue, 'session');

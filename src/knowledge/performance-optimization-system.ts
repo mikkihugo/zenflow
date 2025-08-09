@@ -11,8 +11,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
 
 // Basic types for performance optimization system
 export interface ConsistencyManager {
@@ -665,7 +663,7 @@ export class PerformanceOptimizationSystem extends EventEmitter {
 
       // Phase 1: Check intelligent cache
       const cacheResult = await this.checkIntelligentCache(request);
-      if (cacheResult.hit) {
+      if (cacheResult?.hit) {
         return this.createOptimizedResponse(request, cacheResult, startTime);
       }
 
@@ -711,8 +709,8 @@ export class PerformanceOptimizationSystem extends EventEmitter {
       this.emit('knowledge-request:optimized', response);
       this.logger.info('Knowledge request optimization completed', {
         requestId: request.id,
-        processingTime: response.optimizations.processingTime,
-        compressionRatio: response.optimizations.compressionRatio,
+        processingTime: response?.optimizations?.processingTime,
+        compressionRatio: response?.optimizations?.compressionRatio,
       });
 
       return response;

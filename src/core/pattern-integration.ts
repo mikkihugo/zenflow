@@ -100,13 +100,13 @@ export class IntegratedSwarmService implements ISwarmService {
     // Execute through command queue for undo support
     const result = await this.commandQueue.execute(command);
 
-    if (result.success && result.data) {
+    if (result?.success && result?.data) {
       // Emit event through observer system
       const swarmEvent = EventBuilder.createSwarmEvent(
-        result.data.swarmId,
+        result?.data?.swarmId,
         'init',
-        { healthy: true, activeAgents: config.agentCount, completedTasks: 0, errors: [] },
-        config.topology,
+        { healthy: true, activeAgents: config?.agentCount, completedTasks: 0, errors: [] },
+        config?.topology,
         {
           latency: 0,
           throughput: 0,
@@ -118,10 +118,10 @@ export class IntegratedSwarmService implements ISwarmService {
       await this.eventManager.notify(swarmEvent);
 
       // Create agent group for the swarm
-      await this.agentManager.createSwarmGroup(result.data.swarmId, config);
+      await this.agentManager.createSwarmGroup(result?.data?.swarmId, config);
     }
 
-    return result.data;
+    return result?.data;
   }
 
   async getSwarmStatus(swarmId: string): Promise<any> {
@@ -205,12 +205,12 @@ export class IntegratedSwarmService implements ISwarmService {
 
     const result = await this.commandQueue.execute(command);
 
-    if (result.success && result.data) {
+    if (result?.success && result?.data) {
       // Add agent to the swarm group
-      await this.agentManager.addAgentToSwarm(swarmId, result.data.agentId, agentConfig);
+      await this.agentManager.addAgentToSwarm(swarmId, result?.data?.agentId, agentConfig);
     }
 
-    return result.data;
+    return result?.data;
   }
 
   async listSwarms(): Promise<any[]> {
@@ -256,9 +256,9 @@ export class AgentManager extends EventEmitter {
     group.setLoadBalancingStrategy(this.config.agents.defaultLoadBalancing);
 
     // Create initial agents based on config
-    for (let i = 0; i < swarmConfig.agentCount; i++) {
+    for (let i = 0; i < swarmConfig?.agentCount; i++) {
       const agentId = `${swarmId}-agent-${i}`;
-      const agent = await this.createAgent(agentId, swarmConfig.capabilities || []);
+      const agent = await this.createAgent(agentId, swarmConfig?.capabilities || []);
       group.addMember(agent);
       this.individualAgents.set(agentId, agent);
     }
@@ -266,7 +266,7 @@ export class AgentManager extends EventEmitter {
     await group.initialize(swarmConfig);
     this.swarmGroups.set(swarmId, group);
 
-    this.emit('swarm:created', { swarmId, agentCount: swarmConfig.agentCount });
+    this.emit('swarm:created', { swarmId, agentCount: swarmConfig?.agentCount });
     return group;
   }
 
@@ -297,7 +297,7 @@ export class AgentManager extends EventEmitter {
       throw new Error(`Swarm ${swarmId} not found`);
     }
 
-    const agent = await this.createAgent(agentId, agentConfig.capabilities || []);
+    const agent = await this.createAgent(agentId, agentConfig?.capabilities || []);
     group.addMember(agent);
     this.individualAgents.set(agentId, agent);
 
@@ -600,7 +600,7 @@ export class IntegratedPatternSystem extends EventEmitter {
     // Execute through command queue
     const commandResult = await this.commandQueue.execute(command);
 
-    if (commandResult.success) {
+    if (commandResult?.success) {
       // Execute through agent system
       const taskResult = await this.agentManager.executeTaskOnSwarm(swarmId, taskDefinition);
 
@@ -611,10 +611,10 @@ export class IntegratedPatternSystem extends EventEmitter {
         { healthy: true, activeAgents: 1, completedTasks: 1, errors: [] },
         'hierarchical',
         {
-          latency: commandResult.executionTime,
+          latency: commandResult?.executionTime,
           throughput: 1,
           reliability: 1,
-          resourceUsage: commandResult.resourceUsage,
+          resourceUsage: commandResult?.resourceUsage,
         }
       );
 
@@ -623,7 +623,7 @@ export class IntegratedPatternSystem extends EventEmitter {
       return taskResult;
     }
 
-    throw new Error(`Task execution failed: ${commandResult.error?.message}`);
+    throw new Error(`Task execution failed: ${commandResult?.error?.message}`);
   }
 
   async broadcastToProtocols(message: any): Promise<any[]> {
@@ -792,7 +792,7 @@ export class IntegratedPatternSystem extends EventEmitter {
         },
         delete: async (key: string) => {
           const result = await memoryCoordinator.delete(key);
-          return result.status === 'success';
+          return result?.status === 'success';
         },
         list: async () => {
           const stats = await memoryCoordinator.getStats();
@@ -848,9 +848,9 @@ export class IntegratedPatternSystem extends EventEmitter {
       // TODO: TypeScript error TS2345 - Argument type mismatch for Provider<unknown> (AI unsure of safe fix - human review needed)
       container.register(CORE_TOKENS.Config, () => ({}));
       // TODO: TypeScript error TS2345 & TS2554 - Argument type and count mismatch (AI unsure of safe fix - human review needed)
-      container.register(DATABASE_TOKENS.DALFactory, () => new DALFactory());
+      container.register(DATABASE_TOKENS?.DALFactory, () => new DALFactory());
 
-      const _dalFactory = container.resolve(DATABASE_TOKENS.DALFactory);
+      const _dalFactory = container.resolve(DATABASE_TOKENS?.DALFactory);
 
       return {
         query: async (_sql: string, _params?: any[]) => {
@@ -1062,24 +1062,24 @@ export class ConfigurationFactory {
   }
 
   static createProductionConfig(): IntegrationConfig {
-    const config = ConfigurationFactory.createDefaultConfig();
+    const config = ConfigurationFactory?.createDefaultConfig();
 
     // Production-specific overrides
-    config.swarm.maxAgents = 100;
-    config.events.enableDatabasePersistence = true;
-    config.commands.maxConcurrentCommands = 10;
-    config.protocols.enabledAdapters = ['mcp-http', 'mcp-stdio', 'websocket', 'rest'];
+    config?.swarm?.maxAgents = 100;
+    config?.events?.enableDatabasePersistence = true;
+    config?.commands?.maxConcurrentCommands = 10;
+    config?.protocols?.enabledAdapters = ['mcp-http', 'mcp-stdio', 'websocket', 'rest'];
 
     return config;
   }
 
   static createDevelopmentConfig(): IntegrationConfig {
-    const config = ConfigurationFactory.createDefaultConfig();
+    const config = ConfigurationFactory?.createDefaultConfig();
 
     // Development-specific overrides
-    config.swarm.maxAgents = 10;
-    config.events.enableDatabasePersistence = false;
-    config.commands.maxConcurrentCommands = 3;
+    config?.swarm?.maxAgents = 10;
+    config?.events?.enableDatabasePersistence = false;
+    config?.commands?.maxConcurrentCommands = 3;
 
     return config;
   }

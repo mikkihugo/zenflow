@@ -1,9 +1,9 @@
 import { getLogger } from "../../../../config/logging-config";
 const logger = getLogger("coordination-swarm-sparc-cli-architecture-commands");
 /**
- * CLI Commands for SPARC Architecture Management
+ * CLI Commands for SPARC Architecture Management.
  *
- * Provides command-line interface for database-driven architecture operations
+ * Provides command-line interface for database-driven architecture operations.
  */
 
 import chalk from 'chalk';
@@ -11,8 +11,8 @@ import { Command } from 'commander';
 import { ArchitectureMCPToolsImpl } from '../mcp/architecture-tools';
 import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
 import type { ArchitectureDesign, PseudocodeStructure } from '../types/sparc-types';
-import { createDao, DatabaseTypes, EntityTypes } from '../../../database';
-import type { IDao } from '../../../database';
+import { createDao, DatabaseTypes, EntityTypes } from '../../../../database';
+import type { IDao } from '../../../../database';
 
 // Real database adapter for CLI using existing database infrastructure
 class CLIDatabaseAdapter {
@@ -69,7 +69,9 @@ class CLIDatabaseAdapter {
 }
 
 /**
- * Create SPARC Architecture CLI commands
+ * Create SPARC Architecture CLI commands.
+ *
+ * @example
  */
 export function createArchitectureCLI(): Command {
   const architectureCmd = new Command('architecture')
@@ -290,7 +292,9 @@ export function createArchitectureCLI(): Command {
 }
 
 /**
- * Create sample pseudocode for demonstration
+ * Create sample pseudocode for demonstration.
+ *
+ * @example
  */
 function createSamplePseudocode(): PseudocodeStructure {
   return {
@@ -443,7 +447,10 @@ function createSamplePseudocode(): PseudocodeStructure {
 }
 
 /**
- * Display architecture summary in a formatted way
+ * Display architecture summary in a formatted way.
+ *
+ * @param architecture
+ * @example
  */
 function displayArchitectureSummary(architecture: ArchitectureDesign): void {
   if (architecture.systemArchitecture?.components) {

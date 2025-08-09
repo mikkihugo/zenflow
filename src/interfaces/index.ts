@@ -73,7 +73,7 @@ export const InterfaceUtils = {
   },
 
   validateConfig(config: InterfaceConfig): boolean {
-    return ['terminal', 'web', 'mcp', 'api', 'advanced-cli'].includes(config.mode);
+    return ['terminal', 'web', 'mcp', 'api', 'advanced-cli'].includes(config?.mode);
   },
 
   isAdvancedCLIEnabled(): boolean {

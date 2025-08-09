@@ -62,7 +62,6 @@ export {
   MultiDatabaseDAO,
 } from './factory';
 
-import type { MultiDatabaseDAO as MultiDatabaseDAOType } from './factory';
 // Import interfaces for use in functions below
 import type { IDao, IManager } from './interfaces';
 
@@ -420,9 +419,9 @@ export async function createMultiDatabaseSetup<T>(
   const factory = container.resolve(DALFactory as any) as any;
 
   const primaryDaoConfig = {
-    databaseType: primaryConfig.databaseType,
+    databaseType: primaryConfig?.databaseType,
     entityType,
-    databaseConfig: primaryConfig.config || getDefaultConfig(primaryConfig.databaseType),
+    databaseConfig: primaryConfig?.config || getDefaultConfig(primaryConfig?.databaseType),
   };
 
   const secondaryDaoConfigs = secondaryConfigs?.map((sc) => ({

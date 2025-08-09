@@ -1,9 +1,3 @@
-/**
- * Shared types for Hive system to avoid circular dependencies
- */
-
-import type { AgentId, AgentMetrics, AgentStatus, AgentType } from '../types/agent-types';
-
 export interface HiveFACTConfig {
   enableCache?: boolean;
   cacheSize?: number;
@@ -13,7 +7,7 @@ export interface HiveFACTConfig {
 
 export interface UniversalFact {
   id: string;
-  type: 'npm-package' | 'github-repo' | 'api-docs' | 'security-advisory' | 'general';
+  type: 'npm-package' | 'github-repo' | 'api-docs' | 'security-advisory' | 'general' | 'external';
   category: string;
   subject: string; // e.g., "react@18.2.0", "github.com/facebook/react"
   content: any;

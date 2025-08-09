@@ -8,7 +8,6 @@
 import { EventEmitter } from 'node:events';
 import { configManager } from './manager';
 import { ConfigValidator } from './validator';
-import type { ConfigHealthReport, ValidationResult, SystemConfiguration } from './types';
 
 /**
  * Configuration health checker with monitoring capabilities.
@@ -56,13 +55,13 @@ export class ConfigHealthChecker extends EventEmitter {
     await this.performHealthCheck();
 
     // Set up configuration change listeners
-    configManager.on('config:changed', () => {
+    configManager?.on('config:changed', () => {
       this.performHealthCheck().catch(error => {
         this.emit('error', error);
       });
     });
 
-    configManager.on('config:loaded', () => {
+    configManager?.on('config:loaded', () => {
       this.performHealthCheck().catch(error => {
         this.emit('error', error);
       });
@@ -79,8 +78,11 @@ export class ConfigHealthChecker extends EventEmitter {
    *
    * @param includeDetails - Include detailed validation information.
    */
-  async getHealthReport(includeDetails = false): Promise<ConfigHealthReport & { details?: ValidationResult }> {
-    const config = configManager.getConfig();
+  async getHealthReport(): Promise<ConfigHealthReport>;
+  async getHealthReport(includeDetails: true): Promise<ConfigHealthReport & { validationDetails: ValidationResult }>;
+  async getHealthReport(includeDetails: false): Promise<ConfigHealthReport>;
+  async getHealthReport(includeDetails = false): Promise<ConfigHealthReport | (ConfigHealthReport & { validationDetails: ValidationResult })> {
+    const config = configManager?.getConfig();
     const healthReport = this.validator.getHealthReport(config);
     
     const report: ConfigHealthReport = {
@@ -95,8 +97,8 @@ export class ConfigHealthChecker extends EventEmitter {
       const validationResult = this.validator.validateEnhanced(config);
       return {
         ...report,
-        details: validationResult,
-      };
+        validationDetails: validationResult,
+      } as ConfigHealthReport & { validationDetails: ValidationResult };
     }
 
     return report;
@@ -113,7 +115,7 @@ export class ConfigHealthChecker extends EventEmitter {
     warnings: string[];
     recommendations: string[];
   }> {
-    const configToValidate = config || configManager.getConfig();
+    const configToValidate = config || configManager?.getConfig();
     const result = this.validator.validateEnhanced(configToValidate);
     
     const blockers: string[] = [];
@@ -121,28 +123,28 @@ export class ConfigHealthChecker extends EventEmitter {
     const recommendations: string[] = [];
 
     // Critical blockers for deployment
-    if (!result.valid) {
-      blockers.push(...result.errors);
+    if (!result?.valid) {
+      blockers.push(...result?.errors);
     }
     
-    if (result.securityIssues.length > 0) {
-      blockers.push(...result.securityIssues);
+    if (result?.securityIssues.length > 0) {
+      blockers.push(...result?.securityIssues);
     }
     
-    if (result.portConflicts.length > 0) {
-      blockers.push(...result.portConflicts);
+    if (result?.portConflicts.length > 0) {
+      blockers.push(...result?.portConflicts);
     }
 
     // Non-critical warnings
-    warnings.push(...result.warnings);
-    warnings.push(...result.performanceWarnings);
+    warnings.push(...result?.warnings);
+    warnings.push(...result?.performanceWarnings);
 
     // Generate deployment recommendations
-    if (!result.productionReady) {
+    if (!result?.productionReady) {
       recommendations.push('Configuration is not production-ready');
     }
     
-    if (result.failsafeApplied.length > 0) {
+    if (result?.failsafeApplied.length > 0) {
       recommendations.push('Failsafe defaults were applied - review configuration');
     }
 
@@ -152,7 +154,7 @@ export class ConfigHealthChecker extends EventEmitter {
         blockers.push('ANTHROPIC_API_KEY environment variable required in production');
       }
       
-      if (configToValidate.core?.logger?.level === 'debug') {
+      if (configToValidate?.core?.logger?.level === 'debug') {
         recommendations.push('Consider using "info" log level in production instead of "debug"');
       }
     }
@@ -176,15 +178,15 @@ export class ConfigHealthChecker extends EventEmitter {
     }>;
     recommendations: string[];
   }> {
-    const config = configManager.getConfig();
+    const config = configManager?.getConfig();
     const conflicts: Array<{ port: number; services: string[]; severity: 'error' | 'warning' }> = [];
     const recommendations: string[] = [];
     
     // Collect all port configurations
     const portMappings = [
-      { name: 'MCP HTTP', port: config.interfaces?.mcp?.http?.port, critical: true },
-      { name: 'Web Dashboard', port: config.interfaces?.web?.port, critical: true },
-      { name: 'Monitoring', port: config.monitoring?.dashboard?.port, critical: false },
+      { name: 'MCP HTTP', port: config?.interfaces?.mcp?.http?.port, critical: true },
+      { name: 'Web Dashboard', port: config?.interfaces?.web?.port, critical: true },
+      { name: 'Monitoring', port: config?.monitoring?.dashboard?.port, critical: false },
     ].filter(mapping => typeof mapping.port === 'number');
 
     // Group by port
@@ -310,12 +312,12 @@ export class ConfigHealthChecker extends EventEmitter {
       
       // Compare with previous report
       if (this.lastHealthReport) {
-        if (this.lastHealthReport.status !== currentReport.status) {
+        if (this.lastHealthReport.status !== currentReport?.status) {
           this.emit('health:changed', currentReport);
           
-          if (currentReport.status === 'critical') {
+          if (currentReport?.status === 'critical') {
             this.emit('health:critical', currentReport);
-          } else if (currentReport.status === 'healthy' && this.lastHealthReport.status !== 'healthy') {
+          } else if (currentReport?.status === 'healthy' && this.lastHealthReport.status !== 'healthy') {
             this.emit('health:recovered', currentReport);
           }
         }
@@ -378,7 +380,7 @@ export async function initializeConfigHealthChecker(options?: {
   enableMonitoring?: boolean;
   healthCheckFrequency?: number;
 }): Promise<void> {
-  await configHealthChecker.initialize(options);
+  await configHealthChecker?.initialize(options);
 }
 
 /**
@@ -392,7 +394,7 @@ export async function initializeConfigHealthChecker(options?: {
 export function createConfigHealthEndpoint() {
   return async (req: any, res: any) => {
     try {
-      const healthReport = await configHealthChecker.getHealthReport(true);
+      const healthReport = await configHealthChecker?.getHealthReport(true);
       
       // Set appropriate HTTP status
       const statusCode = healthReport.status === 'healthy' ? 200 : 
@@ -425,8 +427,8 @@ export function createConfigHealthEndpoint() {
 export function createDeploymentReadinessEndpoint() {
   return async (req: any, res: any) => {
     try {
-      const deploymentCheck = await configHealthChecker.validateForProduction();
-      const portCheck = await configHealthChecker.checkPortConflicts();
+      const deploymentCheck = await configHealthChecker?.validateForProduction();
+      const portCheck = await configHealthChecker?.checkPortConflicts();
       
       const statusCode = deploymentCheck.deploymentReady && portCheck.conflicts.length === 0 ? 200 : 503;
       

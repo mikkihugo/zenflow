@@ -56,7 +56,7 @@ export interface QueryError {
  * @param result
  */
 export function isQuerySuccess<T = any>(result: DatabaseResult<T>): result is QuerySuccess<T> {
-  return result.success === true && 'data' in result;
+  return result?.success === true && 'data' in result;
 }
 
 /**
@@ -65,7 +65,7 @@ export function isQuerySuccess<T = any>(result: DatabaseResult<T>): result is Qu
  * @param result
  */
 export function isQueryError(result: DatabaseResult): result is QueryError {
-  return result.success === false && 'error' in result;
+  return result?.success === false && 'error' in result;
 }
 
 // ============================================
@@ -122,7 +122,7 @@ export interface MemoryError {
  * @param result
  */
 export function isMemorySuccess<T = any>(result: MemoryResult<T>): result is MemorySuccess<T> {
-  return result.found === true && 'data' in result;
+  return result?.found === true && 'data' in result;
 }
 
 /**
@@ -131,7 +131,7 @@ export function isMemorySuccess<T = any>(result: MemoryResult<T>): result is Mem
  * @param result
  */
 export function isMemoryNotFound(result: MemoryResult): result is MemoryNotFound {
-  return result.found === false && 'reason' in result;
+  return result?.found === false && 'reason' in result;
 }
 
 /**
@@ -140,7 +140,7 @@ export function isMemoryNotFound(result: MemoryResult): result is MemoryNotFound
  * @param result
  */
 export function isMemoryError(result: MemoryResult): result is MemoryError {
-  return result.found === false && 'error' in result;
+  return result?.found === false && 'error' in result;
 }
 
 // ============================================
@@ -203,7 +203,7 @@ export interface NeuralError {
  * @param result
  */
 export function isTrainingResult(result: NeuralResult): result is TrainingResult {
-  return result.type === 'training' && result.success === true;
+  return result?.type === 'training' && result?.success === true;
 }
 
 /**
@@ -212,7 +212,7 @@ export function isTrainingResult(result: NeuralResult): result is TrainingResult
  * @param result
  */
 export function isInferenceResult(result: NeuralResult): result is InferenceResult {
-  return result.type === 'inference' && result.success === true;
+  return result?.type === 'inference' && result?.success === true;
 }
 
 /**
@@ -221,7 +221,7 @@ export function isInferenceResult(result: NeuralResult): result is InferenceResu
  * @param result
  */
 export function isNeuralError(result: NeuralResult): result is NeuralError {
-  return result.type === 'error' && result.success === false;
+  return result?.type === 'error' && result?.success === false;
 }
 
 // ============================================
@@ -274,7 +274,7 @@ export interface APIError {
  * @param result
  */
 export function isAPISuccess<T = any>(result: APIResult<T>): result is APISuccess<T> {
-  return result.success === true && 'data' in result;
+  return result?.success === true && 'data' in result;
 }
 
 /**
@@ -283,7 +283,7 @@ export function isAPISuccess<T = any>(result: APIResult<T>): result is APISucces
  * @param result
  */
 export function isAPIError(result: APIResult): result is APIError {
-  return result.success === false && 'error' in result;
+  return result?.success === false && 'error' in result;
 }
 
 // ============================================
@@ -328,7 +328,7 @@ export interface WasmError {
  * @param result
  */
 export function isWasmSuccess<T = any>(result: WasmResult<T>): result is WasmSuccess<T> {
-  return result.wasmSuccess === true && 'result' in result;
+  return result?.wasmSuccess === true && 'result' in result;
 }
 
 /**
@@ -337,7 +337,7 @@ export function isWasmSuccess<T = any>(result: WasmResult<T>): result is WasmSuc
  * @param result
  */
 export function isWasmError(result: WasmResult): result is WasmError {
-  return result.wasmSuccess === false && 'error' in result;
+  return result?.wasmSuccess === false && 'error' in result;
 }
 
 // ============================================
@@ -386,7 +386,7 @@ export interface CoordinationError {
 export function isCoordinationSuccess<T = any>(
   result: CoordinationResult<T>
 ): result is CoordinationSuccess<T> {
-  return result.coordinated === true && 'result' in result;
+  return result?.coordinated === true && 'result' in result;
 }
 
 /**
@@ -395,7 +395,7 @@ export function isCoordinationSuccess<T = any>(
  * @param result
  */
 export function isCoordinationError(result: CoordinationResult): result is CoordinationError {
-  return result.coordinated === false && 'error' in result;
+  return result?.coordinated === false && 'error' in result;
 }
 
 // ============================================
@@ -433,7 +433,7 @@ export interface Failure<E = Error> {
  * @param result
  */
 export function isSuccess<T, E = Error>(result: Result<T, E>): result is Success<T> {
-  return result.ok === true && 'value' in result;
+  return result?.ok === true && 'value' in result;
 }
 
 /**
@@ -442,7 +442,7 @@ export function isSuccess<T, E = Error>(result: Result<T, E>): result is Success
  * @param result
  */
 export function isFailure<T, E = Error>(result: Result<T, E>): result is Failure<E> {
-  return result.ok === false && 'error' in result;
+  return result?.ok === false && 'error' in result;
 }
 
 // ============================================
@@ -456,7 +456,7 @@ export function isFailure<T, E = Error>(result: Result<T, E>): result is Failure
  */
 export function extractData<T>(result: DatabaseResult<T>): T | null {
   if (isQuerySuccess(result)) {
-    return result.data;
+    return result?.data;
   }
   return null;
 }
@@ -469,20 +469,20 @@ export function extractData<T>(result: DatabaseResult<T>): T | null {
 export function extractErrorMessage(
   result: DatabaseResult | MemoryResult | NeuralResult | APIResult | WasmResult | CoordinationResult
 ): string | null {
-  if ('success' in result && !result.success && 'error' in result) {
-    return result.error.message;
+  if ('success' in result && !result?.success && 'error' in result) {
+    return result?.error?.message;
   }
-  if ('found' in result && !result.found && 'error' in result) {
-    return result.error.message;
+  if ('found' in result && !result?.found && 'error' in result) {
+    return result?.error?.message;
   }
-  if ('wasmSuccess' in result && !result.wasmSuccess && 'error' in result) {
-    return result.error.message;
+  if ('wasmSuccess' in result && !result?.wasmSuccess && 'error' in result) {
+    return result?.error?.message;
   }
-  if ('coordinated' in result && !result.coordinated && 'error' in result) {
-    return result.error.message;
+  if ('coordinated' in result && !result?.coordinated && 'error' in result) {
+    return result?.error?.message;
   }
-  if ('ok' in result && !result.ok && 'error' in result) {
-    return result.error instanceof Error ? result.error.message : String(result.error);
+  if ('ok' in result && !result?.ok && 'error' in result) {
+    return result?.error instanceof Error ? result?.error?.message : String(result?.error);
   }
   return null;
 }
@@ -576,7 +576,7 @@ export function isObjectArrayWithProps<T>(arr: any, requiredProps: string[]): ar
       return false;
     }
 
-    return requiredProps.every((prop) => prop in item);
+    return requiredProps?.every((prop) => prop in item);
   });
 }
 
