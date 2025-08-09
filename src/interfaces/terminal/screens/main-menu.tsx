@@ -127,7 +127,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
     <Box flexDirection="column" height="100%">
       {/* Header */}
       {showHeader && (
-        <Header.
+        <Header
           title={title}
           version="2.0.0-alpha.73"
           swarmStatus={swarmStatus}
@@ -147,7 +147,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             Select an option:
           </Text>
 
-          <SelectInput.
+          <SelectInput
             items={menuItems}
             onSelect={handleSelect}
             onHighlight={(item) => setSelectedItem(item)}
@@ -176,7 +176,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             { key: 'Enter', name: 'Select' },
           ]}
           status={
-            swarmStatus.
+            swarmStatus
               ? `${swarmStatus.activeAgents}/${swarmStatus.totalAgents} agents`
               : undefined
           }
