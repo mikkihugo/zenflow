@@ -444,13 +444,13 @@ class EnhancedMCPTools {
   }
 
   /**
-   * 🔧 CRITICAL FIX: Integrate hook notifications with MCP memory system
+   * 🔧 CRITICAL FIX: Integrate hook notifications with MCP memory system.
    *
    * @param hookInstance
    */
   async integrateHookNotifications(hookInstance: any): Promise<boolean> {
     if (!hookInstance || !this.persistence) {
-      console.warn('⚠️ Cannot integrate hook notifications - missing components');
+      this.logger.warn('⚠️ Cannot integrate hook notifications - missing components');
       return false;
     }
 
@@ -470,18 +470,18 @@ class EnhancedMCPTools {
         });
       }
 
-      console.error(
+      this.logger.info(
         `🔗 Integrated ${runtimeNotifications.length} hook notifications into MCP memory`
       );
       return true;
     } catch (error) {
-      console.error('❌ Failed to integrate hook notifications:', error.message);
+      this.logger.error('❌ Failed to integrate hook notifications:', error.message);
       return false;
     }
   }
 
   /**
-   * 🔧 CRITICAL FIX: Retrieve cross-agent notifications for coordinated decision making
+   * 🔧 CRITICAL FIX: Retrieve cross-agent notifications for coordinated decision making.
    *
    * @param agentId
    * @param type
@@ -494,17 +494,17 @@ class EnhancedMCPTools {
 
     try {
       const allAgents = agentId ? [agentId] : await this.getActiveAgentIds();
-      console.error('🔍 Debug: Target agents for notification retrieval:', allAgents);
-      const notifications = [];
+      this.logger.debug('🔍 Debug: Target agents for notification retrieval:', allAgents);
+      const notifications: any[] = [];
 
       for (const agent of allAgents) {
         const memories = await this.persistence.getAllMemory(agent);
-        console.error(`🔍 Debug: Agent ${agent} has ${memories.length} memories`);
+        this.logger.debug(`🔍 Debug: Agent ${agent} has ${memories.length} memories`);
 
         const agentNotifications = memories
           .filter((memory) => {
             const isNotification = memory.key.startsWith('notifications/');
-            console.error(`🔍 Debug: Key ${memory.key} is notification: ${isNotification}`);
+            this.logger.debug(`🔍 Debug: Key ${memory.key} is notification: ${isNotification}`);
             return isNotification;
           })
           .filter((memory) => !type || memory.value.type === type)
@@ -515,7 +515,7 @@ class EnhancedMCPTools {
             memoryKey: memory.key,
           }));
 
-        console.error(
+        logger.error(
           `🔍 Debug: Agent ${agent} has ${agentNotifications.length} notification memories`
         );
         notifications.push(...agentNotifications);
@@ -523,7 +523,7 @@ class EnhancedMCPTools {
 
       return notifications.sort((a, b) => b.timestamp - a.timestamp);
     } catch (error) {
-      console.error('❌ Failed to retrieve cross-agent notifications:', error.message);
+      logger.error('❌ Failed to retrieve cross-agent notifications:', error.message);
       return [];
     }
   }
@@ -534,21 +534,21 @@ class EnhancedMCPTools {
   async getActiveAgentIds() {
     try {
       const swarms = await this.persistence.getActiveSwarms();
-      console.error(`🔍 Debug: Found ${swarms.length} active swarms`);
-      const agentIds = [];
+      logger.error(`🔍 Debug: Found ${swarms.length} active swarms`);
+      const agentIds: string[] = [];
 
       for (const swarm of swarms) {
         // Get ALL agents (not just active) for cross-agent notifications
         const agents = await this.persistence.getSwarmAgents(swarm.id, 'all');
-        console.error(`🔍 Debug: Swarm ${swarm.id} has ${agents.length} total agents`);
+        logger.error(`🔍 Debug: Swarm ${swarm.id} has ${agents.length} total agents`);
         agentIds.push(...agents.map((a) => a.id));
       }
 
       const uniqueAgentIds = [...new Set(agentIds)]; // Remove duplicates
-      console.error('🔍 Debug: Total unique active agent IDs:', uniqueAgentIds);
+      logger.error('🔍 Debug: Total unique active agent IDs:', uniqueAgentIds);
       return uniqueAgentIds;
     } catch (error) {
-      console.error('❌ Failed to get active agent IDs:', error.message);
+      logger.error('❌ Failed to get active agent IDs:', error.message);
       return [];
     }
   }
@@ -586,13 +586,13 @@ class EnhancedMCPTools {
   async loadExistingSwarms() {
     try {
       if (!this.persistence) {
-        console.warn('Persistence not available, skipping swarm loading');
+        logger.warn('Persistence not available, skipping swarm loading');
         return;
       }
 
       const existingSwarms = await this.persistence.getActiveSwarms();
       const swarmsArray = Array.isArray(existingSwarms) ? existingSwarms : [];
-      console.error(`📦 Loading ${swarmsArray.length} existing swarms from database...`);
+      logger.error(`📦 Loading ${swarmsArray.length} existing swarms from database...`);
 
       for (const swarmData of swarmsArray) {
         try {
@@ -608,7 +608,7 @@ class EnhancedMCPTools {
 
           // Load agents for this swarm
           const agents = this.persistence.getSwarmAgents(swarmData.id);
-          console.error(`  └─ Loading ${agents.length} agents for swarm ${swarmData.id}`);
+          logger.error(`  └─ Loading ${agents.length} agents for swarm ${swarmData.id}`);
 
           for (const agentData of agents) {
             try {
@@ -620,16 +620,16 @@ class EnhancedMCPTools {
                 enableNeuralNetwork: true,
               });
             } catch (agentError) {
-              console.warn(`     ⚠️ Failed to load agent ${agentData.id}:`, agentError.message);
+              logger.warn(`     ⚠️ Failed to load agent ${agentData.id}:`, agentError.message);
             }
           }
         } catch (swarmError) {
-          console.warn(`⚠️ Failed to load swarm ${swarmData.id}:`, swarmError.message);
+          logger.warn(`⚠️ Failed to load swarm ${swarmData.id}:`, swarmError.message);
         }
       }
-      console.error(`✅ Loaded ${this.activeSwarms.size} swarms into memory`);
+      logger.error(`✅ Loaded ${this.activeSwarms.size} swarms into memory`);
     } catch (error) {
-      console.warn('Failed to load existing swarms:', error.message);
+      logger.warn('Failed to load existing swarms:', error.message);
     }
   }
 
@@ -1132,7 +1132,7 @@ class EnhancedMCPTools {
 
       if (!taskId) {
         // Return status of all tasks
-        const allTasks = [];
+        const allTasks: any[] = [];
         for (const swarm of this.activeSwarms.values()) {
           for (const task of swarm.tasks.values()) {
             const status = await task.getStatus();
@@ -1148,7 +1148,7 @@ class EnhancedMCPTools {
       }
 
       // Find specific task
-      let targetTask = null;
+      let targetTask: any = null;
       for (const swarm of this.activeSwarms.values()) {
         if (swarm.tasks.has(taskId)) {
           targetTask = swarm.tasks.get(taskId);
@@ -1187,11 +1187,11 @@ class EnhancedMCPTools {
       }
 
       // First check database for task (handle missing database gracefully)
-      let dbTask = null;
+      let dbTask: any = null;
       try {
         dbTask = this.persistence?.getTask ? this.persistence.getTask(taskId) : null;
       } catch (error) {
-        console.warn('Database task lookup failed:', error.message);
+        logger.warn('Database task lookup failed:', error.message);
       }
 
       if (!dbTask) {
@@ -1212,7 +1212,7 @@ class EnhancedMCPTools {
       }
 
       // Find task in active swarms
-      let targetTask = null;
+      let targetTask: any = null;
       // let targetSwarm = null;
       for (const swarm of this.activeSwarms.values()) {
         if (swarm.tasks?.has(taskId)) {
@@ -1240,7 +1240,7 @@ class EnhancedMCPTools {
       }
 
       // Get task results from database (handle missing database gracefully)
-      let dbTaskResults = [];
+      let dbTaskResults: any[] = [];
       try {
         if (this.persistence?.db?.prepare) {
           const taskResultsQuery = this.persistence.db.prepare(`
@@ -1271,7 +1271,7 @@ class EnhancedMCPTools {
           ];
         }
       } catch (error) {
-        console.warn('Database task results lookup failed:', error.message);
+        logger.warn('Database task results lookup failed:', error.message);
         dbTaskResults = [];
       }
 
@@ -1386,7 +1386,7 @@ class EnhancedMCPTools {
 
   // Helper method to generate recovery suggestions for task errors
   generateRecoverySuggestions(errorMessage) {
-    const suggestions = [];
+    const suggestions: string[] = [];
 
     if (errorMessage.includes('timeout')) {
       suggestions.push('Increase task timeout duration');
@@ -1446,7 +1446,7 @@ class EnhancedMCPTools {
     try {
       const { filter = 'all', swarmId = null } = params;
 
-      let agents = [];
+      let agents: any[] = [];
 
       if (swarmId) {
         const swarm = this.activeSwarms.get(swarmId);
@@ -1526,12 +1526,12 @@ class EnhancedMCPTools {
 
       if (type === 'all' || type === 'swarm') {
         if (includeSwarmBenchmarks) {
-          console.error('Running swarm benchmarks with iterations:', iterations);
+          logger.error('Running swarm benchmarks with iterations:', iterations);
           try {
             benchmarks.swarm = await this.runSwarmBenchmarks(iterations);
-            console.error('Swarm benchmarks result:', benchmarks.swarm);
+            logger.error('Swarm benchmarks result:', benchmarks.swarm);
           } catch (error) {
-            console.error('Swarm benchmark error:', error);
+            logger.error('Swarm benchmark error:', error);
             benchmarks.swarm = {
               swarm_creation: { avg_ms: 0, min_ms: 0, max_ms: 0 },
               agent_spawning: { avg_ms: 0, min_ms: 0, max_ms: 0 },
@@ -1927,14 +1927,14 @@ class EnhancedMCPTools {
       }
 
       // Load neural network from database or create new one
-      let neuralNetworks = [];
+      let neuralNetworks: any[] = [];
       try {
         neuralNetworks = this.persistence.getAgentNeuralNetworks(agentId);
       } catch (_error) {
         // Ignore error if agent doesn't have neural networks yet
       }
 
-      let [neuralNetwork] = neuralNetworks;
+      let neuralNetwork: any = neuralNetworks[0] || null;
       if (!neuralNetwork) {
         // Create new neural network
         try {
@@ -1959,7 +1959,7 @@ class EnhancedMCPTools {
       }
 
       // Perform training simulation with actual WASM integration
-      const trainingResults = [];
+      const trainingResults: any[] = [];
       let currentLoss = 1.0;
       let currentAccuracy = 0.5;
 
@@ -1986,7 +1986,7 @@ class EnhancedMCPTools {
               learningRate: validatedLearningRate,
             });
           } catch (wasmError) {
-            console.warn('WASM neural training failed:', wasmError.message);
+            logger.warn('WASM neural training failed:', wasmError.message);
           }
         }
       }
@@ -2159,10 +2159,10 @@ class EnhancedMCPTools {
     let successfulRuns = 0;
 
     // Test actual WASM module loading and execution
-    const moduleLoadTimes = [];
-    const neuralNetworkTimes = [];
-    const forecastingTimes = [];
-    const swarmOperationTimes = [];
+    const moduleLoadTimes: number[] = [];
+    const neuralNetworkTimes: number[] = [];
+    const forecastingTimes: number[] = [];
+    const swarmOperationTimes: number[] = [];
 
     for (let i = 0; i < iterations; i++) {
       try {
@@ -2197,7 +2197,7 @@ class EnhancedMCPTools {
           swarmOperationTimes.push(performance.now() - swarmStart);
         }
       } catch (error) {
-        console.warn(`WASM benchmark iteration ${i} failed:`, error.message);
+        logger.warn(`WASM benchmark iteration ${i} failed:`, error.message);
       }
     }
 
@@ -2394,16 +2394,16 @@ class EnhancedMCPTools {
         // Cleanup test data
         this.activeSwarms.delete(swarmId);
       } catch (error) {
-        console.warn(`Swarm benchmark iteration ${i} failed:`, error.message);
+        logger.warn(`Swarm benchmark iteration ${i} failed:`, error.message);
       }
     }
 
     const calculateStats = (data) => {
       if (data.length === 0) {
-        console.warn('Swarm benchmark: No data collected for timing');
+        logger.warn('Swarm benchmark: No data collected for timing');
         return { avg_ms: 0, min_ms: 0, max_ms: 0 };
       }
-      console.error('Swarm benchmark data points:', data.length, 'values:', data);
+      logger.error('Swarm benchmark data points:', data.length, 'values:', data);
 
       const avg = data.reduce((a, b) => a + b, 0) / data.length;
       const min = Math.min(...data);
@@ -2518,7 +2518,7 @@ class EnhancedMCPTools {
         agent.lastUpdate = new Date();
         benchmarks.status_updates.push(performance.now() - start);
       } catch (error) {
-        console.warn(`Agent benchmark iteration ${i} failed:`, error.message);
+        logger.warn(`Agent benchmark iteration ${i} failed:`, error.message);
       }
     }
 
@@ -2667,7 +2667,7 @@ class EnhancedMCPTools {
 
         benchmarks.dependency_resolution.push(performance.now() - start);
       } catch (error) {
-        console.warn(`Task benchmark iteration ${i} failed:`, error.message);
+        logger.warn(`Task benchmark iteration ${i} failed:`, error.message);
       }
     }
 
@@ -2690,7 +2690,7 @@ class EnhancedMCPTools {
   }
 
   generateBenchmarkSummary(benchmarks) {
-    const summary = [];
+    const summary: any[] = [];
 
     // Process WASM benchmarks if available
     if (benchmarks.wasm) {
@@ -2762,7 +2762,7 @@ class EnhancedMCPTools {
 
       await this.initialize();
 
-      let agents = [];
+      let agents: any[] = [];
 
       if (agentId) {
         // Get specific agent
@@ -2789,7 +2789,7 @@ class EnhancedMCPTools {
         }
       }
 
-      const metricsData = [];
+      const metricsData: any[] = [];
 
       for (const agent of agents) {
         // Get metrics from database

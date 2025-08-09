@@ -1,7 +1,7 @@
 /**
- * @file Unified Configuration System
+ * @file Unified Configuration System.
  *
- * Central export point for the complete configuration system
+ * Central export point for the complete configuration system.
  */
 
 // Import the configManager instance for use in convenience functions
@@ -9,7 +9,14 @@ import { configManager } from './manager';
 import type { SystemConfiguration } from './types';
 
 // Constants and defaults
-export { DEFAULT_CONFIG, ENV_MAPPINGS, VALIDATION_RULES } from './defaults';
+export { 
+  DEFAULT_CONFIG, 
+  ENV_MAPPINGS, 
+  VALIDATION_RULES, 
+  PRODUCTION_VALIDATION_SCHEMA, 
+  DEFAULT_PORT_ALLOCATION, 
+  PORT_ALLOCATION_BY_ENV 
+} from './defaults';
 export { ConfigurationLoader } from './loader';
 // Core exports
 export { ConfigurationManager, configManager } from './manager';
@@ -19,6 +26,8 @@ export type {
   ConfigChangeEvent,
   ConfigurationSource,
   ConfigValidationResult,
+  ValidationResult,
+  ConfigHealthReport,
   CoordinationConfig,
   CoreConfig,
   DatabaseConfig,
@@ -32,12 +41,34 @@ export type {
   TerminalConfig,
   WebConfig,
 } from './types';
+
+// Validation system
 export { ConfigValidator } from './validator';
+
+// Health checking and monitoring
+export { 
+  ConfigHealthChecker,
+  configHealthChecker,
+  initializeConfigHealthChecker,
+  createConfigHealthEndpoint,
+  createDeploymentReadinessEndpoint,
+} from './health-checker';
+
+// Startup validation
+export { 
+  runStartupValidation,
+  validateAndExit,
+  cli as runStartupValidationCLI,
+} from './startup-validator';
+export type { 
+  StartupValidationOptions, 
+  StartupValidationResult 
+} from './startup-validator';
 
 // Convenience functions
 export const config = {
   /**
-   * Initialize configuration system
+   * Initialize configuration system.
    *
    * @param configPaths
    */
@@ -46,7 +77,7 @@ export const config = {
   },
 
   /**
-   * Get configuration value
+   * Get configuration value.
    *
    * @param path
    */
@@ -55,7 +86,7 @@ export const config = {
   },
 
   /**
-   * Get configuration section
+   * Get configuration section.
    *
    * @param section
    */
@@ -64,7 +95,7 @@ export const config = {
   },
 
   /**
-   * Update configuration value
+   * Update configuration value.
    *
    * @param path
    * @param value
@@ -74,28 +105,28 @@ export const config = {
   },
 
   /**
-   * Get full configuration
+   * Get full configuration.
    */
   getAll(): SystemConfiguration {
     return configManager.getConfig();
   },
 
   /**
-   * Validate configuration
+   * Validate configuration.
    */
   validate() {
     return configManager.validate();
   },
 
   /**
-   * Reload from sources
+   * Reload from sources.
    */
   reload() {
     return configManager.reload();
   },
 
   /**
-   * Export configuration
+   * Export configuration.
    *
    * @param format
    */
@@ -104,7 +135,7 @@ export const config = {
   },
 
   /**
-   * Listen for configuration changes
+   * Listen for configuration changes.
    *
    * @param callback
    */
@@ -113,12 +144,47 @@ export const config = {
   },
 
   /**
-   * Remove change listener
+   * Remove change listener.
    *
    * @param callback
    */
   removeListener(callback: (event: any) => void) {
     configManager.off('config:changed', callback);
+  },
+
+  /**
+   * Get configuration health report.
+   */
+  async getHealthReport() {
+    const { configHealthChecker } = await import('./health-checker');
+    return configHealthChecker.getHealthReport();
+  },
+
+  /**
+   * Check if configuration is production ready.
+   */
+  async isProductionReady() {
+    const { configHealthChecker } = await import('./health-checker');
+    const deployment = await configHealthChecker.validateForProduction();
+    return deployment.deploymentReady;
+  },
+
+  /**
+   * Check for port conflicts.
+   */
+  async checkPorts() {
+    const { configHealthChecker } = await import('./health-checker');
+    return configHealthChecker.checkPortConflicts();
+  },
+
+  /**
+   * Run startup validation.
+   *
+   * @param options
+   */
+  async validateStartup(options?: any) {
+    const { runStartupValidation } = await import('./startup-validator');
+    return runStartupValidation(options);
   },
 };
 

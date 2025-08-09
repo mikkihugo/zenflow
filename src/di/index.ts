@@ -1,6 +1,6 @@
 /**
  * Dependency Injection System Entry Point
- * Provides a comprehensive, type-safe DI container for Claude Code Zen
+ * Provides a comprehensive, type-safe DI container for Claude Code Zen.
  */
 
 // Container implementations - Import for internal use and export
@@ -54,12 +54,14 @@ export {
 export * from './types/di-types';
 
 /**
- * Global DI container instance (singleton pattern for convenience)
+ * Global DI container instance (singleton pattern for convenience).
  */
 let globalContainer: DIContainer | undefined;
 
 /**
- * Get or create the global DI container
+ * Get or create the global DI container.
+ *
+ * @example
  */
 export function getGlobalContainer(): DIContainer {
   if (!globalContainer) {
@@ -69,23 +71,26 @@ export function getGlobalContainer(): DIContainer {
 }
 
 /**
- * Set the global DI container (useful for testing)
+ * Set the global DI container (useful for testing).
  *
  * @param container
+ * @example
  */
 export function setGlobalContainer(container: DIContainer): void {
   globalContainer = container;
 }
 
 /**
- * Clear the global DI container
+ * Clear the global DI container.
+ *
+ * @example
  */
 export function clearGlobalContainer(): void {
   globalContainer = undefined;
 }
 
 /**
- * Quick registration helpers
+ * Quick registration helpers.
  *
  * @example
  */
@@ -93,49 +98,49 @@ export class DIContainerBuilder {
   private container = new DIContainer();
 
   /**
-   * Register a singleton service
+   * Register a singleton service.
    *
    * @param token
    * @param factory
    */
   singleton<T>(
     token: import('./types/di-types').DIToken<T>,
-    factory: (container: DIContainer) => T
+    factory: (container: import('./types/di-types').DIContainer) => T
   ): this {
     this.container.register(token, new SingletonProvider(factory));
     return this;
   }
 
   /**
-   * Register a transient service
+   * Register a transient service.
    *
    * @param token
    * @param factory
    */
   transient<T>(
     token: import('./types/di-types').DIToken<T>,
-    factory: (container: DIContainer) => T
+    factory: (container: import('./types/di-types').DIContainer) => T
   ): this {
     this.container.register(token, new TransientProvider(factory));
     return this;
   }
 
   /**
-   * Register a scoped service
+   * Register a scoped service.
    *
    * @param token
    * @param factory
    */
   scoped<T>(
     token: import('./types/di-types').DIToken<T>,
-    factory: (container: DIContainer) => T
+    factory: (container: import('./types/di-types').DIContainer) => T
   ): this {
     this.container.register(token, new ScopedProvider(factory));
     return this;
   }
 
   /**
-   * Build the configured container
+   * Build the configured container.
    */
   build(): DIContainer {
     return this.container;
@@ -143,7 +148,9 @@ export class DIContainerBuilder {
 }
 
 /**
- * Create a new container builder
+ * Create a new container builder.
+ *
+ * @example
  */
 export function createContainerBuilder(): DIContainerBuilder {
   return new DIContainerBuilder();

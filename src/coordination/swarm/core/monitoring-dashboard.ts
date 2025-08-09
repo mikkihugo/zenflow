@@ -36,6 +36,7 @@ export class MonitoringDashboard extends EventEmitter {
   private healthMonitor: any;
   private recoveryWorkflows: any;
   private connectionManager: any;
+  private mcpTools: any;
 
   // Aggregation timer
   private aggregationTimer: NodeJS.Timeout | null;
@@ -116,7 +117,7 @@ export class MonitoringDashboard extends EventEmitter {
    *
    * @param healthMonitor
    */
-  setHealthMonitor(healthMonitor) {
+  setHealthMonitor(healthMonitor: any) {
     this.healthMonitor = healthMonitor;
 
     // Subscribe to health monitor events
@@ -131,7 +132,7 @@ export class MonitoringDashboard extends EventEmitter {
     this.logger.info('Health Monitor integration configured');
   }
 
-  setRecoveryWorkflows(recoveryWorkflows) {
+  setRecoveryWorkflows(recoveryWorkflows: any) {
     this.recoveryWorkflows = recoveryWorkflows;
 
     // Subscribe to recovery events
@@ -150,7 +151,7 @@ export class MonitoringDashboard extends EventEmitter {
     this.logger.info('Recovery Workflows integration configured');
   }
 
-  setConnectionManager(connectionManager) {
+  setConnectionManager(connectionManager: any) {
     this.connectionManager = connectionManager;
 
     // Subscribe to connection events
@@ -169,7 +170,7 @@ export class MonitoringDashboard extends EventEmitter {
     this.logger.info('Connection Manager integration configured');
   }
 
-  setMCPTools(mcpTools) {
+  setMCPTools(mcpTools: any) {
     this.mcpTools = mcpTools;
     this.logger.info('MCP Tools integration configured');
   }
@@ -179,7 +180,7 @@ export class MonitoringDashboard extends EventEmitter {
    *
    * @param healthResult
    */
-  recordHealthMetric(healthResult) {
+  recordHealthMetric(healthResult: any) {
     const timestamp = new Date();
     const metricKey = `health.${healthResult.name}`;
 
@@ -213,7 +214,7 @@ export class MonitoringDashboard extends EventEmitter {
    *
    * @param alert
    */
-  recordAlert(alert) {
+  recordAlert(alert: any) {
     const timestamp = new Date();
     const alertKey = `alert.${alert.id}`;
 
@@ -242,7 +243,7 @@ export class MonitoringDashboard extends EventEmitter {
    * @param eventType
    * @param event
    */
-  recordRecoveryMetric(eventType, event) {
+  recordRecoveryMetric(eventType: string, event: any) {
     const timestamp = new Date();
     const metricKey = `recovery.${eventType}`;
 
@@ -270,7 +271,7 @@ export class MonitoringDashboard extends EventEmitter {
    * @param eventType
    * @param event
    */
-  recordConnectionMetric(eventType, event) {
+  recordConnectionMetric(eventType: string, event: any) {
     const timestamp = new Date();
     const metricKey = `connection.${eventType}`;
 
@@ -296,21 +297,23 @@ export class MonitoringDashboard extends EventEmitter {
    * @param key
    * @param metric
    */
-  addMetric(key, metric) {
+  addMetric(key: string, metric: any) {
     if (!this.metrics.has(key)) {
       this.metrics.set(key, []);
     }
 
     const metrics = this.metrics.get(key);
-    metrics.push(metric);
+    if (metrics) {
+      metrics.push(metric);
 
-    // Trim old metrics based on retention period and max data points
-    const cutoffTime = Date.now() - this.options.metricsRetentionPeriod;
-    const filtered = metrics
-      .filter((m) => m.timestamp.getTime() > cutoffTime)
-      .slice(-this.options.maxDataPoints);
+      // Trim old metrics based on retention period and max data points
+      const cutoffTime = Date.now() - this.options.metricsRetentionPeriod;
+      const filtered = metrics
+        .filter((m) => m.timestamp.getTime() > cutoffTime)
+        .slice(-this.options.maxDataPoints);
 
-    this.metrics.set(key, filtered);
+      this.metrics.set(key, filtered);
+    }
   }
 
   /**
@@ -388,7 +391,7 @@ export class MonitoringDashboard extends EventEmitter {
    * @param aggregations
    * @param timestamp
    */
-  aggregateHealthMetrics(aggregations, timestamp) {
+  aggregateHealthMetrics(aggregations: Map<string, any>, timestamp: Date) {
     const healthMetrics = {
       totalChecks: 0,
       healthyChecks: 0,
@@ -440,7 +443,7 @@ export class MonitoringDashboard extends EventEmitter {
    * @param aggregations
    * @param timestamp
    */
-  aggregateRecoveryMetrics(aggregations, timestamp) {
+  aggregateRecoveryMetrics(aggregations: Map<string, any>, timestamp: Date) {
     const recoveryMetrics = {
       totalRecoveries: 0,
       startedRecoveries: 0,
@@ -498,7 +501,7 @@ export class MonitoringDashboard extends EventEmitter {
    * @param aggregations
    * @param timestamp
    */
-  aggregateConnectionMetrics(aggregations, timestamp) {
+  aggregateConnectionMetrics(aggregations: Map<string, any>, timestamp: Date) {
     const connectionMetrics = {
       establishedConnections: 0,
       failedConnections: 0,
@@ -544,7 +547,7 @@ export class MonitoringDashboard extends EventEmitter {
    * @param aggregations
    * @param timestamp
    */
-  aggregateSystemMetrics(aggregations, timestamp) {
+  aggregateSystemMetrics(aggregations: Map<string, any>, timestamp: Date) {
     const systemMetrics: any = {
       memoryUsage: process.memoryUsage(),
       cpuUsage: process.cpuUsage(),
@@ -574,24 +577,24 @@ export class MonitoringDashboard extends EventEmitter {
    * @param aggregations
    * @param timestamp
    */
-  updateTrends(aggregations, timestamp) {
+  updateTrends(aggregations: Map<string, any>, timestamp: Date) {
     for (const [category, data] of aggregations) {
       if (!this.trends.has(category)) {
         this.trends.set(category, []);
       }
 
       const trend = this.trends.get(category);
-      trend.push({
-        timestamp,
-        data,
-      });
+      if (trend) {
+        trend.push({
+          timestamp,
+          data,
+        });
 
-      // Keep only recent trend data
-      const cutoffTime = Date.now() - this.options.metricsRetentionPeriod;
-      this.trends.set(
-        category,
-        trend.filter((t) => t.timestamp.getTime() > cutoffTime)
-      );
+        // Keep only recent trend data
+        const cutoffTime = Date.now() - this.options.metricsRetentionPeriod;
+        const filteredTrend = trend.filter((t) => t.timestamp.getTime() > cutoffTime);
+        this.trends.set(category, filteredTrend);
+      }
     }
   }
 
@@ -655,7 +658,7 @@ export class MonitoringDashboard extends EventEmitter {
    * @param name
    * @param data
    */
-  recordSystemMetric(name, data) {
+  recordSystemMetric(name: string, data: any) {
     const timestamp = new Date();
     const metricKey = `system.${name}`;
 
@@ -674,7 +677,7 @@ export class MonitoringDashboard extends EventEmitter {
    * @param type
    * @param data
    */
-  streamUpdate(type, data) {
+  streamUpdate(type: string, data: any) {
     const update = {
       type,
       timestamp: new Date(),
@@ -705,7 +708,7 @@ export class MonitoringDashboard extends EventEmitter {
    *
    * @param client
    */
-  addStreamingClient(client) {
+  addStreamingClient(client: any) {
     this.streamingClients.add(client);
 
     // Send initial data
@@ -739,7 +742,7 @@ export class MonitoringDashboard extends EventEmitter {
    *
    * @param format
    */
-  exportDashboardData(format = 'json') {
+  exportDashboardData(format = 'json'): any {
     const data = {
       timestamp: new Date(),
       lastUpdate: this.lastUpdate,
@@ -765,7 +768,7 @@ export class MonitoringDashboard extends EventEmitter {
   /**
    * Generate summary statistics
    */
-  generateSummary() {
+  generateSummary(): any {
     const now = Date.now();
     const recentWindow = now - this.options.aggregationInterval;
 
@@ -820,7 +823,7 @@ export class MonitoringDashboard extends EventEmitter {
   /**
    * Export health data for dashboard
    */
-  exportHealthData() {
+  exportHealthData(): any {
     return {
       currentStatus: Object.fromEntries(this.healthStatus),
       recentMetrics: this.getRecentMetrics('health'),
@@ -832,7 +835,7 @@ export class MonitoringDashboard extends EventEmitter {
   /**
    * Export recovery data for dashboard
    */
-  exportRecoveryData() {
+  exportRecoveryData(): any {
     return {
       recentMetrics: this.getRecentMetrics('recovery'),
       workflowBreakdown: this.getWorkflowBreakdown(),
@@ -843,7 +846,7 @@ export class MonitoringDashboard extends EventEmitter {
   /**
    * Export connection data for dashboard
    */
-  exportConnectionData() {
+  exportConnectionData(): any {
     return {
       recentMetrics: this.getRecentMetrics('connection'),
       typeBreakdown: this.getConnectionTypeBreakdown(),
@@ -854,7 +857,7 @@ export class MonitoringDashboard extends EventEmitter {
   /**
    * Export system data for dashboard
    */
-  exportSystemData() {
+  exportSystemData(): any {
     return {
       recentMetrics: this.getRecentMetrics('system'),
       currentState: this.getCurrentSystemState(),
@@ -864,7 +867,7 @@ export class MonitoringDashboard extends EventEmitter {
   /**
    * Export alert data for dashboard
    */
-  exportAlertData() {
+  exportAlertData(): any {
     const recentAlerts = Array.from(this.alerts.values())
       .filter((alert) => {
         const alertAge = Date.now() - alert.timestamp.getTime();
@@ -883,7 +886,7 @@ export class MonitoringDashboard extends EventEmitter {
   /**
    * Export trend data for dashboard
    */
-  exportTrendData() {
+  exportTrendData(): any {
     const trends = {};
 
     for (const [category, trendData] of this.trends) {
@@ -897,25 +900,25 @@ export class MonitoringDashboard extends EventEmitter {
    * Helper methods for data processing
    */
 
-  getRecentMetrics(category, limit = 100) {
-    const recentMetrics = [];
+  getRecentMetrics(category: string, limit = 100): any[] {
+    const recentMetrics: any[] = [];
     const since = Date.now() - this.options.aggregationInterval * 5; // Last 5 intervals
 
     for (const [key, metrics] of this.metrics) {
       if (key.startsWith(`${category}.`)) {
-        const recent = metrics.filter((m) => m.timestamp.getTime() > since).slice(-limit);
+        const recent = metrics.filter((m: any) => m.timestamp.getTime() > since).slice(-limit);
         recentMetrics.push(...recent);
       }
     }
 
-    return recentMetrics.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    return recentMetrics.sort((a: any, b: any) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
-  getCategoryBreakdown(category) {
-    const breakdown = {};
+  getCategoryBreakdown(category: string): { [key: string]: number } {
+    const breakdown: { [key: string]: number } = {};
     const recentMetrics = this.getRecentMetrics(category);
 
-    recentMetrics.forEach((metric) => {
+    recentMetrics.forEach((metric: any) => {
       if (metric.category) {
         breakdown[metric.category] = (breakdown[metric.category] || 0) + 1;
       }
@@ -924,11 +927,11 @@ export class MonitoringDashboard extends EventEmitter {
     return breakdown;
   }
 
-  getPriorityBreakdown(category) {
-    const breakdown = {};
+  getPriorityBreakdown(category: string): { [key: string]: number } {
+    const breakdown: { [key: string]: number } = {};
     const recentMetrics = this.getRecentMetrics(category);
 
-    recentMetrics.forEach((metric) => {
+    recentMetrics.forEach((metric: any) => {
       if (metric.priority) {
         breakdown[metric.priority] = (breakdown[metric.priority] || 0) + 1;
       }
@@ -937,11 +940,11 @@ export class MonitoringDashboard extends EventEmitter {
     return breakdown;
   }
 
-  getWorkflowBreakdown() {
-    const breakdown = {};
+  getWorkflowBreakdown(): { [key: string]: number } {
+    const breakdown: { [key: string]: number } = {};
     const recoveryMetrics = this.getRecentMetrics('recovery');
 
-    recoveryMetrics.forEach((metric) => {
+    recoveryMetrics.forEach((metric: any) => {
       if (metric.workflowName) {
         breakdown[metric.workflowName] = (breakdown[metric.workflowName] || 0) + 1;
       }
@@ -950,20 +953,20 @@ export class MonitoringDashboard extends EventEmitter {
     return breakdown;
   }
 
-  getRecoverySuccessRate() {
+  getRecoverySuccessRate(): number {
     const recoveryMetrics = this.getRecentMetrics('recovery');
-    const completed = recoveryMetrics.filter((m) => m.eventType === 'completed').length;
-    const failed = recoveryMetrics.filter((m) => m.eventType === 'failed').length;
+    const completed = recoveryMetrics.filter((m: any) => m.eventType === 'completed').length;
+    const failed = recoveryMetrics.filter((m: any) => m.eventType === 'failed').length;
     const total = completed + failed;
 
     return total > 0 ? (completed / total) * 100 : 0;
   }
 
-  getConnectionTypeBreakdown() {
-    const breakdown = {};
+  getConnectionTypeBreakdown(): { [key: string]: number } {
+    const breakdown: { [key: string]: number } = {};
     const connectionMetrics = this.getRecentMetrics('connection');
 
-    connectionMetrics.forEach((metric) => {
+    connectionMetrics.forEach((metric: any) => {
       if (metric.connectionType) {
         breakdown[metric.connectionType] = (breakdown[metric.connectionType] || 0) + 1;
       }
@@ -972,7 +975,7 @@ export class MonitoringDashboard extends EventEmitter {
     return breakdown;
   }
 
-  getConnectionHealthStatus() {
+  getConnectionHealthStatus(): any {
     if (!this.connectionManager) return {};
 
     const connectionData = this.connectionManager.exportConnectionData();
@@ -989,7 +992,7 @@ export class MonitoringDashboard extends EventEmitter {
     return healthStatus;
   }
 
-  getCurrentSystemState() {
+  getCurrentSystemState(): any {
     return {
       memory: process.memoryUsage(),
       cpu: process.cpuUsage(),
@@ -1000,7 +1003,7 @@ export class MonitoringDashboard extends EventEmitter {
     };
   }
 
-  getAlertBreakdown(alerts) {
+  getAlertBreakdown(alerts: any[]): any {
     const breakdown = {
       severity: {},
       category: {},
@@ -1021,28 +1024,28 @@ export class MonitoringDashboard extends EventEmitter {
    *
    * @param data
    */
-  formatForPrometheus(data) {
-    const metrics = [];
+  formatForPrometheus(data: any): string {
+    const metrics: string[] = [];
 
     // Health metrics
-    metrics.push(`# HELP ruv_swarm_health_checks_total Total number of health checks`);
-    metrics.push(`# TYPE ruv_swarm_health_checks_total counter`);
+    metrics.push('# HELP ruv_swarm_health_checks_total Total number of health checks');
+    metrics.push('# TYPE ruv_swarm_health_checks_total counter');
     metrics.push(`ruv_swarm_health_checks_total ${data.health.recentMetrics.length}`);
 
     // Recovery metrics
-    metrics.push(`# HELP ruv_swarm_recoveries_total Total number of recoveries`);
-    metrics.push(`# TYPE ruv_swarm_recoveries_total counter`);
+    metrics.push('# HELP ruv_swarm_recoveries_total Total number of recoveries');
+    metrics.push('# TYPE ruv_swarm_recoveries_total counter');
     const recoveryTotal = data.recovery.recentMetrics.length;
     metrics.push(`ruv_swarm_recoveries_total ${recoveryTotal}`);
 
     // Connection metrics
-    metrics.push(`# HELP ruv_swarm_connections_active Active connections`);
-    metrics.push(`# TYPE ruv_swarm_connections_active gauge`);
+    metrics.push('# HELP ruv_swarm_connections_active Active connections');
+    metrics.push('# TYPE ruv_swarm_connections_active gauge');
     metrics.push(`ruv_swarm_connections_active ${data.summary.activeConnections}`);
 
     // Alert metrics
-    metrics.push(`# HELP ruv_swarm_alerts_active Active alerts`);
-    metrics.push(`# TYPE ruv_swarm_alerts_active gauge`);
+    metrics.push('# HELP ruv_swarm_alerts_active Active alerts');
+    metrics.push('# TYPE ruv_swarm_alerts_active gauge');
     metrics.push(`ruv_swarm_alerts_active ${data.summary.activeAlerts}`);
 
     return metrics.join('\n');
@@ -1053,7 +1056,7 @@ export class MonitoringDashboard extends EventEmitter {
    *
    * @param data
    */
-  formatForGrafana(data) {
+  formatForGrafana(data: any): any {
     return {
       ...data,
       panels: [
@@ -1087,7 +1090,7 @@ export class MonitoringDashboard extends EventEmitter {
    * @param alertId
    * @param acknowledgedBy
    */
-  acknowledgeAlert(alertId, acknowledgedBy = 'system') {
+  acknowledgeAlert(alertId: string, acknowledgedBy = 'system') {
     const alert = this.alerts.get(alertId);
     if (!alert) {
       throw new Error(`Alert ${alertId} not found`);
@@ -1111,7 +1114,7 @@ export class MonitoringDashboard extends EventEmitter {
   /**
    * Get monitoring statistics
    */
-  getMonitoringStats() {
+  getMonitoringStats(): any {
     return {
       metricsCount: this.metrics.size,
       totalDataPoints: Array.from(this.metrics.values()).reduce(

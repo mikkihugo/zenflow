@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-memory-memory-integration");
 /**
  * Memory Domain DI Integration
  *
@@ -261,19 +263,19 @@ export function createMemoryContainer(
   container.register(CORE_TOKENS.Logger, {
     type: 'singleton',
     create: () => ({
-      debug: (_msg: string) => {},
-      info: (_msg: string) => {},
-      warn: (msg: string) => console.warn(`[MEMORY WARN] ${msg}`),
-      error: (msg: string) => console.error(`[MEMORY ERROR] ${msg}`),
+      debug: (msg: string) => {},
+      info: (msg: string) => {},
+      warn: (msg: string) => logger.warn(`[MEMORY WARN] ${msg}`),
+      error: (msg: string) => logger.error(`[MEMORY ERROR] ${msg}`),
     }),
   });
 
   container.register(CORE_TOKENS.Config, {
     type: 'singleton',
     create: () => ({
-      get: (_key: string, defaultValue?: any) => defaultValue,
-      set: (_key: string, _value: any) => {},
-      has: (_key: string) => false,
+      get: (key: string, defaultValue?: any) => defaultValue,
+      set: (key: string, value: any) => {},
+      has: (key: string) => false,
     }),
   });
 

@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-events-adapters-communication-event-adapter");
 /**
  * @file UEL Communication Event Adapter providing unified event management for communication-related events.
  *
@@ -48,9 +50,9 @@ interface Logger {
 const createLogger = (name: string): Logger => ({
   info: (_message: string, _meta?: any) => {},
   debug: (_message: string, _meta?: any) => {},
-  warn: (message: string, meta?: any) => console.warn(`[WARN] ${name}: ${message}`, meta),
+  warn: (message: string, meta?: any) => logger.warn(`[WARN] ${name}: ${message}`, meta),
   error: (message: string, meta?: any, error?: any) =>
-    console.error(`[ERROR] ${name}: ${message}`, meta, error),
+    logger.error(`[ERROR] ${name}: ${message}`, meta, error),
 });
 
 import { EventEmitter } from 'node:events';
@@ -654,8 +656,8 @@ export class CommunicationEventAdapter implements IEventManager {
       id: subscriptionId,
       eventTypes: types,
       listener,
-      filter: options?.filter,
-      transform: options?.transform,
+      ...(options?.filter && { filter: options.filter }),
+      ...(options?.transform && { transform: options.transform }),
       priority: options?.priority || 'medium',
       created: new Date(),
       active: true,

@@ -1,3 +1,5 @@
+import { getLogger } from "./config/logging-config";
+const logger = getLogger("test-sparc-mcp-tools");
 /**
  * Test for SPARC MCP Tools Integration
  * Tests the MCP tools that use the pseudocode engine
@@ -115,7 +117,7 @@ async function testSPARCMCPTools() {
       functionalityTested: true,
     };
   } catch (error) {
-    console.error('❌ MCP tools test failed:', error);
+    logger.error('❌ MCP tools test failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -129,7 +131,7 @@ if (process.argv[1] === new URL(import.meta.url).pathname) {
     if (result.success) {
       process.exit(0);
     } else {
-      console.error('💥 MCP tools integration test failed:', result.error);
+      logger.error('💥 MCP tools integration test failed:', result.error);
       process.exit(1);
     }
   });

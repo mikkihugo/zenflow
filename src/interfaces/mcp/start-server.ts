@@ -9,6 +9,8 @@
 
 import { HTTPMCPServer } from './http-mcp-server';
 import { createLogger } from './mcp-logger';
+import { DEFAULT_CONFIG } from '../../config/defaults';
+import { getConfig } from '../../config';
 
 const logger = createLogger('MCP-Starter');
 
@@ -165,12 +167,21 @@ async function main(): Promise<void> {
 
     logger.info('Starting Claude-Zen SDK HTTP MCP Server...', { config });
 
-    // Create and configure server
+    // Get centralized configuration
+    const centralConfig = getConfig();
+    
+    // Create and configure server using centralized config with environment overrides
     const server = new HTTPMCPServer({
-      port: config.port || parseInt(process.env['MCP_PORT'] || '3000', 10),
-      host: config.host || process.env['MCP_HOST'] || 'localhost',
-      logLevel: config.logLevel || (process.env['MCP_LOG_LEVEL'] as any) || 'info',
-      timeout: config.timeout || parseInt(process.env['MCP_TIMEOUT'] || '30000', 10),
+      port: config.port || 
+            parseInt(process.env['CLAUDE_MCP_PORT'] || process.env['MCP_PORT'] || String(centralConfig.interfaces.mcp.http.port), 10),
+      host: config.host || 
+            process.env['CLAUDE_MCP_HOST'] || process.env['MCP_HOST'] || 
+            centralConfig.interfaces.mcp.http.host,
+      logLevel: config.logLevel || 
+                (process.env['CLAUDE_LOG_LEVEL'] || process.env['MCP_LOG_LEVEL'] as any) || 
+                centralConfig.core.logger.level,
+      timeout: config.timeout || 
+               parseInt(process.env['CLAUDE_MCP_TIMEOUT'] || process.env['MCP_TIMEOUT'] || String(centralConfig.interfaces.mcp.http.timeout), 10),
     });
 
     // Setup graceful shutdown
@@ -191,7 +202,7 @@ async function main(): Promise<void> {
     // Keep process alive
     process.stdin.resume();
   } catch (error) {
-    console.error('Raw startup error:', error);
+    logger.error('Raw startup error:', error);
     logger.error('Failed to start SDK server:', {
       message: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
@@ -213,7 +224,7 @@ async function main(): Promise<void> {
 // Run if this file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
-    console.error('SDK startup failed:', error);
+    logger.error('SDK startup failed:', error);
     process.exit(1);
   });
 }

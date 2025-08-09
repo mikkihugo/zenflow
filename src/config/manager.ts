@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-config-manager");
 /**
  * @file Unified Configuration Manager
  *
@@ -67,20 +69,20 @@ export class ConfigurationManager extends EventEmitter {
       const result = await this.loader.loadConfiguration(configPaths);
 
       if (!result.validation.valid) {
-        console.error('❌ Configuration validation failed:');
-        result.validation.errors.forEach((error) => console.error(`  - ${error}`));
+        logger.error('❌ Configuration validation failed:');
+        result.validation.errors.forEach((error) => logger.error(`  - ${error}`));
 
         if (result.validation.warnings.length > 0) {
-          console.warn('⚠️ Configuration warnings:');
-          result.validation.warnings.forEach((warning) => console.warn(`  - ${warning}`));
+          logger.warn('⚠️ Configuration warnings:');
+          result.validation.warnings.forEach((warning) => logger.warn(`  - ${warning}`));
         }
         this.config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
       } else {
         this.config = result.config;
 
         if (result.validation.warnings.length > 0) {
-          console.warn('⚠️ Configuration warnings:');
-          result.validation.warnings.forEach((warning) => console.warn(`  - ${warning}`));
+          logger.warn('⚠️ Configuration warnings:');
+          result.validation.warnings.forEach((warning) => logger.warn(`  - ${warning}`));
         }
       }
 
@@ -203,7 +205,7 @@ export class ConfigurationManager extends EventEmitter {
       : { valid: false, errors: ['Invalid target config'] };
 
     if (!validation.valid) {
-      console.error('Cannot rollback to invalid configuration');
+      logger.error('Cannot rollback to invalid configuration');
       return false;
     }
 
@@ -276,7 +278,7 @@ export class ConfigurationManager extends EventEmitter {
               // Debounce reloads
               setTimeout(() => {
                 this.reload().catch((error) => {
-                  console.error('Failed to reload configuration:', error);
+                  logger.error('Failed to reload configuration:', error);
                 });
               }, 1000);
             }
@@ -285,7 +287,7 @@ export class ConfigurationManager extends EventEmitter {
           this.watchers.push(watcher);
         }
       } catch (error) {
-        console.warn(`Failed to watch config file ${configFile}:`, error);
+        logger.warn(`Failed to watch config file ${configFile}:`, error);
       }
     }
   }
@@ -295,7 +297,7 @@ export class ConfigurationManager extends EventEmitter {
    */
   private setupErrorHandling(): void {
     this.on('error', (error) => {
-      console.error('Configuration manager error:', error);
+      logger.error('Configuration manager error:', error);
     });
 
     // Handle process signals for cleanup

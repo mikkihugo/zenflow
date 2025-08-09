@@ -1,8 +1,8 @@
 /**
- * Unified Export System - Direct Integration
+ * Unified Export System - Direct Integration.
  *
  * Multi-format export system integrated directly into core
- * Supports JSON, YAML, CSV, XML, and custom formats
+ * Supports JSON, YAML, CSV, XML, and custom formats.
  */
 
 import { EventEmitter } from 'node:events';
@@ -42,7 +42,7 @@ export interface ExporterDefinition {
   supports?: string[];
 }
 
-export class UnifiedExportSystem extends EventEmitter {
+export class ExportSystem extends EventEmitter {
   private exporters = new Map<string, ExporterDefinition>();
   private exportHistory: ExportResult[] = [];
   private initialized = false;
@@ -53,7 +53,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   /**
-   * Initialize the export system
+   * Initialize the export system.
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -65,7 +65,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   /**
-   * Register built-in exporters
+   * Register built-in exporters.
    */
   private registerBuiltInExporters(): void {
     // JSON Exporter
@@ -169,7 +169,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   /**
-   * Register a custom exporter
+   * Register a custom exporter.
    *
    * @param format
    * @param definition
@@ -181,7 +181,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   /**
-   * Export data to specified format
+   * Export data to specified format.
    *
    * @param data
    * @param format
@@ -256,7 +256,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   /**
-   * Export data to multiple formats
+   * Export data to multiple formats.
    *
    * @param data
    * @param formats
@@ -273,9 +273,9 @@ export class UnifiedExportSystem extends EventEmitter {
       try {
         const result = await this.exportData(data, format, {
           ...options,
-          filename: options.filename
-            ? `${options.filename.replace(/\.[^/.]+$/, '')}.${format}`
-            : undefined,
+          ...(options.filename && {
+            filename: `${options.filename.replace(/\.[^/.]+$/, '')}.${format}`
+          }),
         });
         results.push(result);
       } catch (error) {
@@ -289,7 +289,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   /**
-   * Export document workflow data
+   * Export document workflow data.
    *
    * @param workflowData
    * @param workflowData.vision
@@ -336,7 +336,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   /**
-   * Export system status and metrics
+   * Export system status and metrics.
    *
    * @param statusData
    * @param format
@@ -365,7 +365,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   /**
-   * Format conversion methods
+   * Format conversion methods.
    *
    * @param data
    */
@@ -583,7 +583,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   /**
-   * Utility methods
+   * Utility methods.
    *
    * @param str
    */
@@ -614,7 +614,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   /**
-   * Management methods
+   * Management methods.
    */
   getAvailableFormats(): Array<{
     format: string;
@@ -630,7 +630,7 @@ export class UnifiedExportSystem extends EventEmitter {
       extension: exporter.extension,
       mimeType: exporter.mimeType,
       description: exporter.description,
-      supports: exporter.supports,
+      ...(exporter.supports && { supports: exporter.supports }),
     }));
   }
 
@@ -674,7 +674,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   /**
-   * Get export metrics (alias for getExportStats)
+   * Get export metrics (alias for getExportStats).
    */
   getMetrics(): {
     totalExports: number;
@@ -688,7 +688,7 @@ export class UnifiedExportSystem extends EventEmitter {
   }
 
   /**
-   * Shutdown the export system gracefully
+   * Shutdown the export system gracefully.
    */
   async shutdown(): Promise<void> {
     logger.info('Shutting down unified export system...');

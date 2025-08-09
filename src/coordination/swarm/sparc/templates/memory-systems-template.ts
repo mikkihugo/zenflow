@@ -993,8 +993,9 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
 
   customizeSpecification(projectSpec: ProjectSpecification): DetailedSpecification {
     const customized = { ...this.specification };
+    // Enhanced: Add project name and description to specification
     customized.name = projectSpec.name;
-    customized.description = `${projectSpec.name} - ${this.specification.description}`;
+    customized.description = `${projectSpec.name} - Memory systems with vector storage and retrieval`;
     return customized;
   },
 

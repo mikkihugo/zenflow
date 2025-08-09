@@ -1,15 +1,15 @@
 /**
- * Product Workflow Engine - Proper Integration of Product Flow + SPARC Methodology
+ * Product Workflow Engine - Proper Integration of Product Flow + SPARC Methodology.
  *
  * MISSION ACCOMPLISHED: Clean integration architecture where:
  * - **Product Flow = WHAT to build** (Vision→ADR→PRD→Epic→Feature→Task)
- * - **SPARC = HOW to implement** (Technical methodology applied WITHIN Features/Tasks)
+ * - **SPARC = HOW to implement** (Technical methodology applied WITHIN Features/Tasks).
  *
  * KEY INTEGRATION POINTS:
  * 1. Features contain sparc_implementation with all 5 phases
  * 2. Tasks have sparc_implementation_details linking to parent Feature SPARC
  * 3. Product Flow defines business requirements, SPARC provides technical implementation
- * 4. Workflow orchestrates both flows seamlessly
+ * 4. Workflow orchestrates both flows seamlessly.
  */
 
 import { EventEmitter } from 'node:events';
@@ -49,7 +49,7 @@ import type {
 const logger = createLogger({ prefix: 'ProductWorkflow' });
 
 /**
- * Product Flow Step Types (Business Flow)
+ * Product Flow Step Types (Business Flow).
  */
 export type ProductFlowStep =
   | 'vision-analysis'
@@ -61,7 +61,7 @@ export type ProductFlowStep =
   | 'sparc-integration';
 
 /**
- * Mutable workflow state interface for runtime modifications
+ * Mutable workflow state interface for runtime modifications.
  *
  * @example
  */
@@ -89,7 +89,7 @@ export interface MutableWorkflowState {
 }
 
 /**
- * Integrated Product Flow + SPARC Workflow State
+ * Integrated Product Flow + SPARC Workflow State.
  *
  * @example
  */
@@ -114,7 +114,7 @@ export interface ProductWorkflowState extends MutableWorkflowState {
 }
 
 /**
- * Product Workflow Configuration
+ * Product Workflow Configuration.
  *
  * @example
  */
@@ -126,7 +126,7 @@ export interface ProductWorkflowConfig extends WorkflowEngineConfig {
 }
 
 /**
- * Product Workflow Engine - Main Orchestrator
+ * Product Workflow Engine - Main Orchestrator.
  *
  * Orchestrates the complete Product Flow (Vision→Task) with SPARC methodology
  * applied as the technical implementation tool WITHIN Features and Tasks.
@@ -197,7 +197,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Start a complete Product Flow workflow with optional SPARC integration
+   * Start a complete Product Flow workflow with optional SPARC integration.
    *
    * @param workflowName
    * @param context
@@ -310,7 +310,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Execute the complete Product Flow workflow with SPARC integration
+   * Execute the complete Product Flow workflow with SPARC integration.
    *
    * @param workflow
    * @param options
@@ -406,7 +406,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Execute individual Product Flow steps
+   * Execute individual Product Flow steps.
    *
    * @param workflow
    * @param step
@@ -455,7 +455,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   /**
-   * SPARC Integration: Create SPARC projects for features that need technical implementation
+   * SPARC Integration: Create SPARC projects for features that need technical implementation.
    *
    * @param workflow
    */
@@ -474,7 +474,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Determine if a feature should use SPARC methodology
+   * Determine if a feature should use SPARC methodology.
    *
    * @param feature
    */
@@ -484,7 +484,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Create SPARC project for a feature
+   * Create SPARC project for a feature.
    *
    * @param workflow
    * @param feature
@@ -541,7 +541,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Execute SPARC phases for all integrated features
+   * Execute SPARC phases for all integrated features.
    *
    * @param workflow
    */
@@ -592,7 +592,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Update feature document with SPARC progress
+   * Update feature document with SPARC progress.
    *
    * @param featureId
    * @param completedPhase
@@ -608,7 +608,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Map feature type to SPARC domain
+   * Map feature type to SPARC domain.
    *
    * @param featureType
    */
@@ -617,7 +617,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Assess feature complexity for SPARC
+   * Assess feature complexity for SPARC.
    *
    * @param feature
    */

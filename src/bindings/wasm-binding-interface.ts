@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-bindings-wasm-binding-interface");
 /**
  * WASM Binding Interface - Isolation Layer
  *
@@ -43,7 +45,7 @@ class WasmBindingProvider implements WasmBindingInterface {
         const { createNeuralWASM } = await import('../neural/public-api.js');
         this.wasmModule = await createNeuralWASM();
       } catch (error) {
-        console.warn('Neural WASM public API not available, using fallback:', error);
+        logger.warn('Neural WASM public API not available, using fallback:', error);
         this.wasmModule = { fallback: true };
       }
     }

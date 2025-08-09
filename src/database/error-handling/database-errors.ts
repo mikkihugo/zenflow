@@ -1,6 +1,6 @@
 /**
  * @file Database-specific Error Types and Handling
- * Comprehensive error classification and recovery for database systems
+ * Comprehensive error classification and recovery for database systems.
  */
 
 export enum DatabaseErrorCode {
@@ -96,7 +96,7 @@ export class DatabaseError extends Error {
   }
 
   /**
-   * Check if an error code is typically recoverable
+   * Check if an error code is typically recoverable.
    *
    * @param code
    */
@@ -117,7 +117,7 @@ export class DatabaseError extends Error {
   }
 
   /**
-   * Check if an error code is typically retryable
+   * Check if an error code is typically retryable.
    *
    * @param code
    */
@@ -135,7 +135,7 @@ export class DatabaseError extends Error {
   }
 
   /**
-   * Get severity level for an error code
+   * Get severity level for an error code.
    *
    * @param code
    */
@@ -177,7 +177,7 @@ export class DatabaseError extends Error {
   }
 
   /**
-   * Convert to a serializable object
+   * Convert to a serializable object.
    */
   toJSON() {
     return {
@@ -193,7 +193,7 @@ export class DatabaseError extends Error {
   }
 
   /**
-   * Create a DatabaseError from a generic error
+   * Create a DatabaseError from a generic error.
    *
    * @param error
    * @param context
@@ -266,13 +266,13 @@ export class DatabaseTransactionError extends DatabaseError {
 }
 
 /**
- * Error classification helper
+ * Error classification helper.
  *
  * @example
  */
 export class DatabaseErrorClassifier {
   /**
-   * Classify an error by its characteristics
+   * Classify an error by its characteristics.
    *
    * @param error
    */
@@ -426,7 +426,7 @@ export class DatabaseErrorClassifier {
   }
 
   private static getSuggestedActions(category: string, message: string): string[] {
-    const actions = [];
+    const actions: string[] = [];
 
     switch (category) {
       case 'coordination':

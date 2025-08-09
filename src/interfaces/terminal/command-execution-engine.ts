@@ -1,5 +1,5 @@
 /**
- * Command Execution Engine - Pure TypeScript command processing
+ * @fileoverview Command Execution Engine - Pure TypeScript command processing
  *
  * Handles command execution logic without React dependencies.
  * Separates business logic from UI rendering concerns following Google standards.

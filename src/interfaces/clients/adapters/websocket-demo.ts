@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-clients-adapters-websocket-demo");
 /**
  * WebSocket Client Adapter Demo
  *
@@ -74,7 +76,7 @@ export async function basicUACLWebSocketExample() {
     // Disconnect
     await client.disconnect();
   } catch (error) {
-    console.error('❌ Error:', error);
+    logger.error('❌ Error:', error);
   }
 }
 
@@ -116,7 +118,7 @@ export async function enhancedWebSocketExample() {
 
       await client.disconnect();
     } catch (error) {
-      console.error(`❌ ${name} Client Error:`, error);
+      logger.error(`❌ ${name} Client Error:`, error);
     }
   }
 }
@@ -151,7 +153,7 @@ export async function webSocketFactoryExample() {
     // Shutdown all clients
     await factory.shutdown();
   } catch (error) {
-    console.error('❌ Factory Error:', error);
+    logger.error('❌ Factory Error:', error);
   }
 }
 
@@ -183,13 +185,13 @@ export async function loadBalancedWebSocketExample() {
           message: `Load balanced message ${i}`,
         });
       } catch (error) {
-        console.error(`❌ Request ${i} failed:`, error);
+        logger.error(`❌ Request ${i} failed:`, error);
       }
     }
 
     await loadBalancedClient.destroy();
   } catch (error) {
-    console.error('❌ Load Balanced Error:', error);
+    logger.error('❌ Load Balanced Error:', error);
   }
 }
 
@@ -214,7 +216,7 @@ export async function failoverWebSocketExample() {
 
     await failoverClient.destroy();
   } catch (error) {
-    console.error('❌ Failover Error:', error);
+    logger.error('❌ Failover Error:', error);
   }
 }
 
@@ -273,7 +275,7 @@ export async function migrationExample() {
 
     legacyClient.disconnect();
   } catch (error) {
-    console.error('Legacy: Error:', error);
+    logger.error('Legacy: Error:', error);
   }
   const enhancedClient = new EnhancedWebSocketClient('wss://echo.websocket.org', {
     reconnect: true,
@@ -302,7 +304,7 @@ export async function migrationExample() {
 
     await enhancedClient.disconnect();
   } catch (error) {
-    console.error('Enhanced: Error:', error);
+    logger.error('Enhanced: Error:', error);
   }
 }
 
@@ -327,7 +329,7 @@ export async function runAllWebSocketExamples() {
       // Wait a bit between examples
       await new Promise((resolve) => setTimeout(resolve, 2000));
     } catch (error) {
-      console.error(`❌ ${example.name} failed:`, error);
+      logger.error(`❌ ${example.name} failed:`, error);
     }
   }
 }

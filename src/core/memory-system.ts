@@ -1,5 +1,5 @@
 /**
- * Memory System - Multi-Backend Memory Management
+ * Memory System - Multi-Backend Memory Management.
  *
  * Clean, focused memory system with support for multiple backends
  * without bloated "unified" architecture. Supports LanceDB, SQLite, and JSON backends.
@@ -23,7 +23,7 @@ import { createLogger } from './logger';
 const logger = createLogger({ prefix: 'MemorySystem' });
 
 /**
- * JSON-serializable value type
+ * JSON-serializable value type.
  */
 export type JSONValue =
   | string
@@ -34,7 +34,7 @@ export type JSONValue =
   | { [key: string]: JSONValue };
 
 /**
- * Storage operation result
+ * Storage operation result.
  *
  * @example
  */
@@ -50,7 +50,7 @@ export interface StorageResult {
 }
 
 /**
- * Backend statistics
+ * Backend statistics.
  *
  * @example
  */
@@ -66,12 +66,12 @@ export interface BackendStats {
 }
 
 /**
- * Supported backend types
+ * Supported backend types.
  */
 export type BackendType = 'lancedb' | 'sqlite' | 'json';
 
 /**
- * Memory system configuration
+ * Memory system configuration.
  *
  * @example
  */
@@ -89,7 +89,7 @@ export interface MemoryConfig {
 }
 
 /**
- * Backend interface for storage implementations
+ * Backend interface for storage implementations.
  *
  * @example
  */
@@ -113,7 +113,7 @@ export interface BackendInterface {
 }
 
 /**
- * JSON file backend implementation
+ * JSON file backend implementation.
  *
  * @example
  */
@@ -219,7 +219,7 @@ class JSONBackend implements BackendInterface {
     const namespaces = new Set<string>();
 
     for (const key of this.data.keys()) {
-      const namespace = key.split(':')[0];
+      const namespace = key.split(':')[0] ?? 'default';
       namespaces.add(namespace);
     }
 
@@ -259,13 +259,14 @@ class JSONBackend implements BackendInterface {
 }
 
 /**
- * SQLite backend implementation
+ * SQLite backend implementation.
  *
  * @example
  */
 class SQLiteBackend implements BackendInterface {
   private db?: any;
   private dbPath: string;
+  private config: MemoryConfig;
 
   constructor(config: MemoryConfig) {
     this.config = config;
@@ -453,11 +454,13 @@ class SQLiteBackend implements BackendInterface {
 }
 
 /**
- * LanceDB backend implementation (stub)
+ * LanceDB backend implementation (stub).
  *
  * @example
  */
 class LanceDBBackend implements BackendInterface {
+  private config: MemoryConfig;
+
   constructor(config: MemoryConfig) {
     this.config = config;
   }
@@ -507,7 +510,7 @@ class LanceDBBackend implements BackendInterface {
 }
 
 /**
- * Clean, focused memory system with multi-backend support
+ * Clean, focused memory system with multi-backend support.
  *
  * @example
  */
@@ -517,9 +520,9 @@ export class MemorySystem extends EventEmitter {
   private initialized = false;
 
   /**
-   * Create a new memory system
+   * Create a new memory system.
    *
-   * @param config - Memory system configuration
+   * @param config - Memory system configuration.
    */
   constructor(config: MemoryConfig) {
     super();
@@ -542,7 +545,7 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * Initialize the memory system
+   * Initialize the memory system.
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -562,12 +565,12 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * Store a value in memory
+   * Store a value in memory.
    *
-   * @param key - Storage key
-   * @param value - Value to store
-   * @param namespace - Optional namespace
-   * @returns Storage result
+   * @param key - Storage key.
+   * @param value - Value to store.
+   * @param namespace - Optional namespace.
+   * @returns Storage result.
    */
   async store(key: string, value: JSONValue, namespace?: string): Promise<StorageResult> {
     await this.ensureInitialized();
@@ -584,11 +587,11 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * Retrieve a value from memory
+   * Retrieve a value from memory.
    *
-   * @param key - Storage key
-   * @param namespace - Optional namespace
-   * @returns Stored value or null if not found
+   * @param key - Storage key.
+   * @param namespace - Optional namespace.
+   * @returns Stored value or null if not found.
    */
   async retrieve(key: string, namespace?: string): Promise<JSONValue | null> {
     await this.ensureInitialized();
@@ -601,11 +604,11 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * Search for values matching a pattern
+   * Search for values matching a pattern.
    *
-   * @param pattern - Search pattern (supports wildcards)
-   * @param namespace - Optional namespace
-   * @returns Record of matching key-value pairs
+   * @param pattern - Search pattern (supports wildcards).
+   * @param namespace - Optional namespace.
+   * @returns Record of matching key-value pairs.
    */
   async search(pattern: string, namespace?: string): Promise<Record<string, JSONValue>> {
     await this.ensureInitialized();
@@ -618,11 +621,11 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * Delete a value from memory
+   * Delete a value from memory.
    *
-   * @param key - Storage key
-   * @param namespace - Optional namespace
-   * @returns True if deleted, false if not found
+   * @param key - Storage key.
+   * @param namespace - Optional namespace.
+   * @returns True if deleted, false if not found.
    */
   async delete(key: string, namespace?: string): Promise<boolean> {
     await this.ensureInitialized();
@@ -635,9 +638,9 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * List all namespaces
+   * List all namespaces.
    *
-   * @returns Array of namespace names
+   * @returns Array of namespace names.
    */
   async listNamespaces(): Promise<string[]> {
     await this.ensureInitialized();
@@ -645,9 +648,9 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * Get memory system statistics
+   * Get memory system statistics.
    *
-   * @returns Backend statistics
+   * @returns Backend statistics.
    */
   async getStats(): Promise<BackendStats> {
     await this.ensureInitialized();
@@ -655,7 +658,7 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * Shutdown the memory system
+   * Shutdown the memory system.
    */
   async shutdown(): Promise<void> {
     logger.info('Shutting down memory system...');
@@ -674,7 +677,7 @@ export class MemorySystem extends EventEmitter {
   // ==================== UTILITY METHODS ====================
 
   /**
-   * Ensure the system is initialized
+   * Ensure the system is initialized.
    */
   private async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
@@ -685,12 +688,12 @@ export class MemorySystem extends EventEmitter {
   // ==================== CONVENIENCE METHODS ====================
 
   /**
-   * Store a document in the documents namespace
+   * Store a document in the documents namespace.
    *
-   * @param type - Document type
-   * @param id - Document ID
-   * @param document - Document data
-   * @returns Storage result
+   * @param type - Document type.
+   * @param id - Document ID.
+   * @param document - Document data.
+   * @returns Storage result.
    */
   async storeDocument(type: string, id: string, document: any): Promise<StorageResult> {
     const key = `${type}:${id}`;
@@ -707,11 +710,11 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * Retrieve a document from the documents namespace
+   * Retrieve a document from the documents namespace.
    *
-   * @param type - Document type
-   * @param id - Document ID
-   * @returns Document data or null
+   * @param type - Document type.
+   * @param id - Document ID.
+   * @returns Document data or null.
    */
   async retrieveDocument(type: string, id: string): Promise<any> {
     const key = `${type}:${id}`;
@@ -719,10 +722,10 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * Search for documents by type
+   * Search for documents by type.
    *
-   * @param type - Document type
-   * @returns Record of matching documents
+   * @param type - Document type.
+   * @returns Record of matching documents.
    */
   async searchDocuments(type: string): Promise<Record<string, any>> {
     const pattern = `${type}:*`;
@@ -730,31 +733,31 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * Store workflow data in the workflows namespace
+   * Store workflow data in the workflows namespace.
    *
-   * @param workflowId - Workflow ID
-   * @param workflow - Workflow data
-   * @returns Storage result
+   * @param workflowId - Workflow ID.
+   * @param workflow - Workflow data.
+   * @returns Storage result.
    */
   async storeWorkflow(workflowId: string, workflow: any): Promise<StorageResult> {
     return this.store(workflowId, workflow, 'workflows');
   }
 
   /**
-   * Retrieve workflow data from the workflows namespace
+   * Retrieve workflow data from the workflows namespace.
    *
-   * @param workflowId - Workflow ID
-   * @returns Workflow data or null
+   * @param workflowId - Workflow ID.
+   * @returns Workflow data or null.
    */
   async retrieveWorkflow(workflowId: string): Promise<any> {
     return this.retrieve(workflowId, 'workflows');
   }
 
   /**
-   * Search for workflows
+   * Search for workflows.
    *
-   * @param pattern - Search pattern
-   * @returns Record of matching workflows
+   * @param pattern - Search pattern.
+   * @returns Record of matching workflows.
    */
   async searchWorkflows(pattern: string = '*'): Promise<Record<string, any>> {
     return this.search(pattern, 'workflows');

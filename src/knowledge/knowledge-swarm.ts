@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-knowledge-knowledge-swarm");
 /**
  * Knowledge Swarm System for Claude-Zen
  * Coordinates multiple knowledge gathering agents for external knowledge collection
@@ -182,7 +184,7 @@ export class KnowledgeSwarm extends EventEmitter {
       this.startQueryProcessor();
       this.emit('swarmInitialized', { agentCount: this.agents.size });
     } catch (error) {
-      console.error('❌ FACT Swarm initialization failed:', error);
+      logger.error('❌ FACT Swarm initialization failed:', error);
       throw error;
     }
   }
@@ -231,7 +233,7 @@ export class KnowledgeSwarm extends EventEmitter {
 
       return swarmResult;
     } catch (error) {
-      console.error(`❌ Swarm Query failed [${query.id}]:`, error);
+      logger.error(`❌ Swarm Query failed [${query.id}]:`, error);
       throw error;
     }
   }
@@ -379,7 +381,7 @@ export class KnowledgeSwarm extends EventEmitter {
 
           this.agents.set(agentId, agent);
         } catch (error) {
-          console.error(`❌ Failed to create UACL-managed agent ${agentId}:`, error);
+          logger.error(`❌ Failed to create UACL-managed agent ${agentId}:`, error);
 
           // Fallback to direct FACT integration
           try {
@@ -408,7 +410,7 @@ export class KnowledgeSwarm extends EventEmitter {
 
             this.agents.set(agentId, agent);
           } catch (fallbackError) {
-            console.error(
+            logger.error(
               `❌ Both UACL and direct FACT creation failed for ${agentId}:`,
               fallbackError
             );
@@ -688,7 +690,7 @@ export class KnowledgeSwarm extends EventEmitter {
         }
       }
     } catch (error) {
-      console.error('Failed to store knowledge:', error);
+      logger.error('Failed to store knowledge:', error);
     }
   }
 
@@ -775,7 +777,7 @@ export class KnowledgeSwarm extends EventEmitter {
   private async setupKnowledgeStorage(): Promise<void> {
     try {
     } catch (error) {
-      console.error('Failed to setup knowledge storage:', error);
+      logger.error('Failed to setup knowledge storage:', error);
     }
   }
 

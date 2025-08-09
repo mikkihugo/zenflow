@@ -1,5 +1,5 @@
 /**
- * Document Processor - Unified Document Processing System
+ * Document Processor - Unified Document Processing System.
  *
  * Clean, focused document processor that consolidates DocumentDrivenSystem and DatabaseDrivenSystem
  * into a single, coherent document processing system. Handles Vision → ADRs → PRDs → Epics → Features → Tasks → Code.
@@ -28,12 +28,12 @@ import type { WorkflowEngine } from './workflow-engine';
 const logger = createLogger('DocumentProcessor');
 
 /**
- * Document types in the processing workflow
+ * Document types in the processing workflow.
  */
 export type DocumentType = 'vision' | 'adr' | 'prd' | 'epic' | 'feature' | 'task' | 'spec';
 
 /**
- * Document processing configuration
+ * Document processing configuration.
  *
  * @example
  */
@@ -57,7 +57,7 @@ export interface DocumentProcessorConfig {
 }
 
 /**
- * Document metadata
+ * Document metadata.
  *
  * @example
  */
@@ -79,7 +79,7 @@ export interface DocumentMetadata {
 }
 
 /**
- * Document representation
+ * Document representation.
  *
  * @example
  */
@@ -97,7 +97,7 @@ export interface Document {
 }
 
 /**
- * Workspace structure for document organization
+ * Workspace structure for document organization.
  *
  * @example
  */
@@ -123,7 +123,7 @@ export interface DocumentWorkspace {
 }
 
 /**
- * Document processing context
+ * Document processing context.
  *
  * @example
  */
@@ -139,7 +139,7 @@ export interface ProcessingContext {
 }
 
 /**
- * Document processor statistics
+ * Document processor statistics.
  *
  * @example
  */
@@ -155,7 +155,7 @@ export interface DocumentStats {
 }
 
 /**
- * Clean, focused document processor that consolidates file-based and database-driven approaches
+ * Clean, focused document processor that consolidates file-based and database-driven approaches.
  *
  * @example
  */
@@ -174,11 +174,11 @@ export class DocumentProcessor extends EventEmitter {
   };
 
   /**
-   * Create a new document processor
+   * Create a new document processor.
    *
-   * @param memory - Memory system for persistence
-   * @param workflowEngine - Workflow engine for processing
-   * @param config - Configuration options
+   * @param memory - Memory system for persistence.
+   * @param workflowEngine - Workflow engine for processing.
+   * @param config - Configuration options.
    */
   constructor(
     memory: MemorySystem,
@@ -208,7 +208,7 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Initialize the document processor
+   * Initialize the document processor.
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -226,10 +226,10 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Load or create a document workspace
+   * Load or create a document workspace.
    *
-   * @param workspacePath - Path to the workspace root
-   * @returns Workspace ID
+   * @param workspacePath - Path to the workspace root.
+   * @returns Workspace ID.
    */
   async loadWorkspace(workspacePath: string): Promise<string> {
     const workspaceId = `workspace-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
@@ -278,10 +278,10 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Process a document file
+   * Process a document file.
    *
-   * @param documentPath - Path to the document file
-   * @param workspaceId - Optional workspace ID (uses default if not provided)
+   * @param documentPath - Path to the document file.
+   * @param workspaceId - Optional workspace ID (uses default if not provided).
    */
   async processDocument(documentPath: string, workspaceId?: string): Promise<void> {
     await this.ensureInitialized();
@@ -350,13 +350,13 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Create a new document from template
+   * Create a new document from template.
    *
-   * @param type - Document type
-   * @param title - Document title
-   * @param content - Document content
-   * @param workspaceId - Workspace ID
-   * @returns Created document
+   * @param type - Document type.
+   * @param title - Document title.
+   * @param content - Document content.
+   * @param workspaceId - Workspace ID.
+   * @returns Created document.
    */
   async createDocument(
     type: DocumentType,
@@ -402,19 +402,19 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Get document processor statistics
+   * Get document processor statistics.
    *
-   * @returns Current statistics
+   * @returns Current statistics.
    */
   async getStats(): Promise<DocumentStats> {
     return { ...this.stats };
   }
 
   /**
-   * Get all documents in a workspace
+   * Get all documents in a workspace.
    *
-   * @param workspaceId - Workspace ID
-   * @returns Map of documents
+   * @param workspaceId - Workspace ID.
+   * @returns Map of documents.
    */
   getWorkspaceDocuments(workspaceId: string): Map<string, Document> {
     const context = this.workspaces.get(workspaceId);
@@ -422,16 +422,16 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Get all workspace IDs
+   * Get all workspace IDs.
    *
-   * @returns Array of workspace IDs
+   * @returns Array of workspace IDs.
    */
   getWorkspaces(): string[] {
     return Array.from(this.workspaces.keys());
   }
 
   /**
-   * Shutdown the document processor
+   * Shutdown the document processor.
    */
   async shutdown(): Promise<void> {
     logger.info('Shutting down document processor...');
@@ -454,7 +454,7 @@ export class DocumentProcessor extends EventEmitter {
   // ==================== PRIVATE METHODS ====================
 
   /**
-   * Setup event handlers
+   * Setup event handlers.
    */
   private setupEventHandlers(): void {
     this.on('document:created', this.handleDocumentCreated.bind(this));
@@ -463,7 +463,7 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Process document based on its type
+   * Process document based on its type.
    *
    * @param workspaceId
    * @param document
@@ -502,7 +502,7 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Scan workspace for existing documents
+   * Scan workspace for existing documents.
    *
    * @param workspaceId
    */
@@ -544,7 +544,7 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Determine document type from path
+   * Determine document type from path.
    *
    * @param path
    */
@@ -560,7 +560,7 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Get document directory for a type
+   * Get document directory for a type.
    *
    * @param workspace
    * @param type
@@ -587,7 +587,7 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Extract metadata from document content
+   * Extract metadata from document content.
    *
    * @param content
    */
@@ -601,14 +601,16 @@ export class DocumentProcessor extends EventEmitter {
       const trimmedLine = line.trim();
 
       if (trimmedLine.startsWith('- **Author:**') || trimmedLine.startsWith('Author:')) {
-        metadata.author = trimmedLine.split(':')[1]?.trim();
+        const author = trimmedLine.split(':')[1]?.trim();
+        if (author) metadata.author = author;
       }
       if (trimmedLine.startsWith('- **Created:**') || trimmedLine.startsWith('Created:')) {
         const dateStr = trimmedLine.split(':')[1]?.trim();
         if (dateStr) metadata.created = new Date(dateStr);
       }
       if (trimmedLine.startsWith('- **Status:**') || trimmedLine.startsWith('Status:')) {
-        metadata.status = trimmedLine.split(':')[1]?.trim();
+        const status = trimmedLine.split(':')[1]?.trim();
+        if (status) metadata.status = status;
       }
       if (trimmedLine.startsWith('- **Priority:**') || trimmedLine.startsWith('Priority:')) {
         metadata.priority = trimmedLine.split(':')[1]?.trim() as any;
@@ -625,7 +627,7 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Generate unique document ID
+   * Generate unique document ID.
    *
    * @param type
    * @param path
@@ -637,7 +639,7 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Generate document content with metadata header
+   * Generate document content with metadata header.
    *
    * @param title
    * @param content
@@ -660,7 +662,7 @@ ${content}
   }
 
   /**
-   * Get suggested next steps for document type
+   * Get suggested next steps for document type.
    *
    * @param documentType
    */
@@ -678,7 +680,7 @@ ${content}
   }
 
   /**
-   * Update processing statistics
+   * Update processing statistics.
    *
    * @param document
    */
@@ -691,7 +693,7 @@ ${content}
   }
 
   /**
-   * Ensure workspace directories exist
+   * Ensure workspace directories exist.
    *
    * @param workspace
    */
@@ -719,7 +721,7 @@ ${content}
   }
 
   /**
-   * Setup file watchers for document changes
+   * Setup file watchers for document changes.
    *
    * @param workspaceId
    */
@@ -730,7 +732,7 @@ ${content}
   }
 
   /**
-   * Ensure the processor is initialized
+   * Ensure the processor is initialized.
    */
   private async ensureInitialized(): Promise<void> {
     if (!this.initialized) {

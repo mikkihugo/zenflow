@@ -1,5 +1,5 @@
 /**
- * SPARC Refinement Phase Engine
+ * SPARC Refinement Phase Engine.
  *
  * Handles the fourth phase of SPARC methodology - performance optimization,
  * iterative improvement, and quality enhancement.
@@ -38,7 +38,7 @@ import type {
 
 export class RefinementPhaseEngine implements RefinementEngine {
   /**
-   * Apply refinements to architecture design based on feedback
+   * Apply refinements to architecture design based on feedback.
    *
    * @param architecture
    * @param feedback
@@ -80,7 +80,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     return {
       id: nanoid(),
       architectureId: architecture.id,
-      feedbackId: feedback.id,
+      feedbackId: feedback.id ?? 'unknown',
       optimizationStrategies,
       performanceOptimizations,
       securityOptimizations,
@@ -103,7 +103,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Identify optimization strategies based on feedback
+   * Identify optimization strategies based on feedback.
    *
    * @param _architecture
    * @param feedback
@@ -115,7 +115,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     const strategies: OptimizationStrategy[] = [];
 
     // Performance optimization strategies
-    if (feedback.performanceIssues?.length > 0) {
+    if ((feedback.performanceIssues?.length ?? 0) > 0) {
       strategies.push({
         id: nanoid(),
         type: 'performance',
@@ -124,7 +124,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
         priority: feedback.priority || 'HIGH',
         estimatedImpact: 'High',
         implementationEffort: 'Medium',
-        targets: feedback.performanceIssues,
+        targets: feedback.performanceIssues ?? [],
         techniques: [
           'Caching optimization',
           'Database query optimization',
@@ -141,7 +141,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     }
 
     // Security optimization strategies
-    if (feedback.securityConcerns?.length > 0) {
+    if ((feedback.securityConcerns?.length ?? 0) > 0) {
       strategies.push({
         id: nanoid(),
         type: 'security',
@@ -150,7 +150,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
         priority: 'CRITICAL',
         estimatedImpact: 'High',
         implementationEffort: 'High',
-        targets: feedback.securityConcerns,
+        targets: feedback.securityConcerns ?? [],
         techniques: [
           'Enhanced authentication',
           'Authorization improvements',
@@ -167,7 +167,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     }
 
     // Scalability optimization strategies
-    if (feedback.scalabilityRequirements?.length > 0) {
+    if ((feedback.scalabilityRequirements?.length ?? 0) > 0) {
       strategies.push({
         id: nanoid(),
         type: 'scalability',
@@ -176,7 +176,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
         priority: 'HIGH',
         estimatedImpact: 'High',
         implementationEffort: 'High',
-        targets: feedback.scalabilityRequirements,
+        targets: feedback.scalabilityRequirements ?? [],
         techniques: [
           'Microservices decomposition',
           'Database sharding',
@@ -193,7 +193,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     }
 
     // Code quality optimization strategies
-    if (feedback.codeQualityIssues?.length > 0) {
+    if ((feedback.codeQualityIssues?.length ?? 0) > 0) {
       strategies.push({
         id: nanoid(),
         type: 'code-quality',
@@ -202,7 +202,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
         priority: 'MEDIUM',
         estimatedImpact: 'Medium',
         implementationEffort: 'Low',
-        targets: feedback.codeQualityIssues,
+        targets: feedback.codeQualityIssues ?? [],
         techniques: [
           'Code refactoring',
           'Design pattern application',
@@ -222,7 +222,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Generate performance optimizations
+   * Generate performance optimizations.
    *
    * @param architecture
    * @param _feedback
@@ -238,7 +238,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
       if (component.type === 'service') {
         optimizations.push({
           id: nanoid(),
-          targetComponent: component.id,
+          targetComponent: component.id ?? 'unknown',
           type: 'algorithm',
           description: `Optimize algorithms in ${component.name}`,
           currentPerformance: component.performance.expectedLatency,
@@ -314,7 +314,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Generate security optimizations
+   * Generate security optimizations.
    *
    * @param _architecture
    * @param _feedback
@@ -398,7 +398,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Generate scalability optimizations
+   * Generate scalability optimizations.
    *
    * @param _architecture
    * @param _feedback
@@ -474,7 +474,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Generate code quality optimizations
+   * Generate code quality optimizations.
    *
    * @param _architecture
    * @param _feedback
@@ -566,7 +566,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Apply optimizations to architecture
+   * Apply optimizations to architecture.
    *
    * @param architecture
    * @param strategies
@@ -641,7 +641,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Benchmark improvements between original and refined architecture
+   * Benchmark improvements between original and refined architecture.
    *
    * @param _original
    * @param _refined
@@ -700,7 +700,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Calculate improvement metrics
+   * Calculate improvement metrics.
    *
    * @param benchmarks
    */
@@ -720,7 +720,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Identify refactoring opportunities
+   * Identify refactoring opportunities.
    *
    * @param _architecture
    */
@@ -769,7 +769,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Analyze technical debt
+   * Analyze technical debt.
    *
    * @param architecture
    */
@@ -836,7 +836,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Generate next steps recommendations
+   * Generate next steps recommendations.
    *
    * @param metrics
    */
@@ -888,7 +888,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Validate refinement results
+   * Validate refinement results.
    *
    * @param refinement
    */
@@ -962,7 +962,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
   }
 
   /**
-   * Generate refinement recommendations
+   * Generate refinement recommendations.
    *
    * @param validationResults
    */
@@ -1066,7 +1066,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     // Refine algorithms based on feedback
     const refinements: RefinementChange[] = [];
 
-    if (feedback.performanceIssues?.length > 0) {
+    if ((feedback.performanceIssues?.length ?? 0) > 0) {
       refinements.push({
         component: 'algorithm',
         modification: 'Optimize algorithmic complexity',

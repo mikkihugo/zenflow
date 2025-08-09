@@ -1,8 +1,11 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-logger");
 /**
  * Logger module for ruv-swarm with comprehensive logging capabilities
  */
 
 import { randomUUID } from 'node:crypto';
+import { config } from '../../../config';
 
 interface LoggerOptions {
   name?: string;
@@ -26,11 +29,15 @@ export class Logger {
   public operations: Map<string, any>;
 
   constructor(options: LoggerOptions = {}) {
+    // Use centralized configuration with user overrides
+    const centralConfig = config.getAll();
+    const loggerConfig = centralConfig.core.logger;
+    
     this.name = options.name || 'ruv-swarm';
-    this.level = options.level || 'INFO';
-    this.enableStderr = options.enableStderr === undefined ? true : options.enableStderr;
-    this.enableFile = options.enableFile === undefined ? false : options.enableFile;
-    this.formatJson = options.formatJson === undefined ? false : options.formatJson;
+    this.level = options.level || loggerConfig.level.toUpperCase();
+    this.enableStderr = options.enableStderr === undefined ? loggerConfig.console : options.enableStderr;
+    this.enableFile = options.enableFile === undefined ? !!loggerConfig.file : options.enableFile;
+    this.formatJson = options.formatJson === undefined ? loggerConfig.structured : options.formatJson;
     this.logDir = options.logDir || './logs';
     this.metadata = options.metadata || {};
     this.correlationId = null;
@@ -64,10 +71,10 @@ export class Logger {
     // This is essential for MCP server compatibility
     if (this.formatJson) {
       const output = JSON.stringify(logEntry);
-      console.error(output);
+      logger.error(output);
     } else {
       const output = `${prefix}[${level}] ${message}`;
-      console.error(output, Object.keys(data).length > 0 ? data : '');
+      logger.error(output, Object.keys(data).length > 0 ? data : '');
     }
   }
 
@@ -84,13 +91,17 @@ export class Logger {
   }
 
   debug(message: string, data: Record<string, any> = {}) {
-    if (this.level === 'DEBUG' || process.env['DEBUG']) {
+    const centralConfig = config.getAll();
+    const enableDebug = this.level === 'DEBUG' || centralConfig.environment.enableDebugEndpoints;
+    if (enableDebug) {
       this._log('DEBUG', message, data);
     }
   }
 
   trace(message: string, data: Record<string, any> = {}) {
-    if (this.level === 'TRACE' || process.env['DEBUG']) {
+    const centralConfig = config.getAll();
+    const enableTrace = this.level === 'TRACE' || centralConfig.environment.enableDebugEndpoints;
+    if (enableTrace) {
       this._log('TRACE', message, data);
     }
   }

@@ -62,6 +62,7 @@ export class ADRProposalSystem {
       context: this.formatContext(proposal),
       decision: `PROPOSED: ${proposal.proposed_decision}`,
       consequences: this.formatConsequences(proposal),
+      // TODO: TypeScript error TS2412 - Type mismatch between 'why_not_chosen' and 'rejected_reason' (AI unsure of safe fix - human review needed)
       alternatives: proposal.alternatives,
       author: proposal.proposer,
       priority: this.mapUrgencyToPriority(proposal.urgency),
@@ -110,7 +111,7 @@ export class ADRProposalSystem {
       metadata: {
         ...updated.metadata,
         discussion_history: [
-          ...(updated.metadata?.discussion_history || []),
+          ...(updated.metadata?.['discussion_history'] || []),
           {
             date: new Date().toISOString(),
             participants: discussion.participants,
@@ -161,6 +162,7 @@ export class ADRProposalSystem {
       throw new Error(`ADR ${adrNumber} not found`);
     }
 
+    // TODO: TypeScript error TS2345 - Status "rejected" not allowed, valid types are "proposed" | "deprecated" | "superseded" | "discussion" | "decided" | "implemented" (AI unsure of safe fix - human review needed)
     const newStatus = decision.approved ? 'decided' : 'rejected';
 
     // Update ADR with final decision
@@ -207,8 +209,8 @@ export class ADRProposalSystem {
 
     return adrs.filter(
       (adr) =>
-        adr.metadata?.requires_human_discussion &&
-        adr.metadata?.discussion_status === 'awaiting_discussion'
+        adr.metadata?.['requires_human_discussion'] &&
+        adr.metadata?.['discussion_status'] === 'awaiting_discussion'
     );
   }
 
@@ -235,8 +237,8 @@ export class ADRProposalSystem {
 
     return adrs.filter(
       (adr) =>
-        adr.metadata?.discussion_status === 'ready_for_decision' &&
-        adr.metadata?.current_consensus !== 'none'
+        adr.metadata?.['discussion_status'] === 'ready_for_decision' &&
+        adr.metadata?.['current_consensus'] !== 'none'
     );
   }
 
@@ -418,7 +420,7 @@ export class ADRProposalSystem {
     adr: ADRDocumentEntity,
     proposal: ADRProposal
   ): Promise<void> {
-    const _adrId = adr.metadata?.adr_id || `ADR-${adr.metadata?.adr_number}`;
+    const _adrId = adr.metadata?.['adr_id'] || `ADR-${adr.metadata?.['adr_number']}`;
     proposal.discussion_points.forEach((_point) => {});
   }
 

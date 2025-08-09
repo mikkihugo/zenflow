@@ -1,6 +1,6 @@
 /**
  * DAA (Decentralized Autonomous Agents) MCP Tools
- * Exposes DAA capabilities through the MCP interface
+ * Exposes DAA capabilities through the MCP interface.
  */
 
 import { DaaService } from '../core/daa-service';
@@ -25,7 +25,7 @@ export class DAA_MCPTools {
 
   /**
    * DAA MCP Tool: daa_init
-   * Initialize the DAA service with autonomous agent capabilities
+   * Initialize the DAA service with autonomous agent capabilities.
    *
    * @param params
    */
@@ -64,7 +64,7 @@ export class DAA_MCPTools {
 
   /**
    * DAA MCP Tool: daa_agent_create
-   * Create an autonomous agent with DAA capabilities
+   * Create an autonomous agent with DAA capabilities.
    *
    * @param params
    */
@@ -97,7 +97,7 @@ export class DAA_MCPTools {
       });
 
       // Find or create a swarm for the agent
-      let swarmId = null;
+      let swarmId: string | null = null;
       if (this.mcpTools?.activeSwarms) {
         for (const [id, swarm] of this.mcpTools.activeSwarms) {
           if (swarm.agents.size < swarm.maxAgents) {
@@ -172,7 +172,7 @@ export class DAA_MCPTools {
 
   /**
    * DAA MCP Tool: daa_agent_adapt
-   * Trigger agent adaptation based on feedback
+   * Trigger agent adaptation based on feedback.
    *
    * @param params
    */
@@ -219,7 +219,7 @@ export class DAA_MCPTools {
 
   /**
    * DAA MCP Tool: daa_workflow_create
-   * Create an autonomous workflow with DAA coordination
+   * Create an autonomous workflow with DAA coordination.
    *
    * @param params
    */
@@ -260,7 +260,7 @@ export class DAA_MCPTools {
 
   /**
    * DAA MCP Tool: daa_workflow_execute
-   * Execute a DAA workflow with autonomous agents
+   * Execute a DAA workflow with autonomous agents.
    *
    * @param params
    */
@@ -308,7 +308,7 @@ export class DAA_MCPTools {
 
   /**
    * DAA MCP Tool: daa_knowledge_share
-   * Share knowledge between autonomous agents
+   * Share knowledge between autonomous agents.
    *
    * @param params
    */
@@ -372,7 +372,7 @@ export class DAA_MCPTools {
 
   /**
    * DAA MCP Tool: daa_learning_status
-   * Get learning progress and status for DAA agents
+   * Get learning progress and status for DAA agents.
    *
    * @param params
    */
@@ -422,7 +422,7 @@ export class DAA_MCPTools {
 
   /**
    * DAA MCP Tool: daa_cognitive_pattern
-   * Analyze or change cognitive patterns for agents
+   * Analyze or change cognitive patterns for agents.
    *
    * @param params
    */
@@ -484,7 +484,7 @@ export class DAA_MCPTools {
 
   /**
    * DAA MCP Tool: daa_meta_learning
-   * Enable meta-learning capabilities across domains
+   * Enable meta-learning capabilities across domains.
    *
    * @param params
    */
@@ -528,7 +528,7 @@ export class DAA_MCPTools {
 
   /**
    * DAA MCP Tool: daa_performance_metrics
-   * Get comprehensive DAA performance metrics
+   * Get comprehensive DAA performance metrics.
    *
    * @param params
    */
@@ -590,7 +590,7 @@ export class DAA_MCPTools {
   }
 
   /**
-   * Get all DAA tool definitions for MCP
+   * Get all DAA tool definitions for MCP.
    */
   getToolDefinitions() {
     return [

@@ -1,5 +1,5 @@
 /**
- * USL (Unified Service Layer) Types and Configuration
+ * @fileoverview USL (Unified Service Layer) Types and Configuration
  *
  * Centralized type definitions and configuration schemas for all service types
  * in the Claude-Zen ecosystem.

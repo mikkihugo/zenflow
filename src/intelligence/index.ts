@@ -19,6 +19,7 @@ export {
 export { PatternRecognitionEngine } from './adaptive-learning/pattern-recognition-engine';
 export { PerformanceOptimizer } from './adaptive-learning/performance-optimizer';
 // Enhanced adaptive learning types
+// TODO: TypeScript error TS2308 - Module './adaptive-learning/knowledge-evolution' has already exported 'AntiPattern' and 'BestPractice'. Consider explicitly re-exporting to resolve the ambiguity. (AI unsure of safe fix - human review needed)
 export type * from './adaptive-learning/types';
 
 // ag2.ai-inspired conversation framework
@@ -153,6 +154,7 @@ export const IntelligenceUtils = {
         new patternRecognitionModule.PatternRecognitionEngine(defaultConfig, systemContext),
       learningCoordinator:
         learningCoordinatorModule &&
+        // TODO: TypeScript error TS2554 - Expected 3 arguments, but got 2. (AI unsure of safe fix - human review needed)
         new learningCoordinatorModule.LearningCoordinator(defaultConfig, systemContext),
       performanceOptimizer:
         performanceOptimizerModule &&
@@ -215,6 +217,7 @@ export const IntelligenceUtils = {
 
     return {
       patternEngine: new PatternRecognitionEngine(defaultConfig, systemContext),
+      // TODO: TypeScript error TS2554 - Expected 3 arguments, but got 2. (AI unsure of safe fix - human review needed)
       coordinator: new LearningCoordinator(defaultConfig, systemContext),
       optimizer: new PerformanceOptimizer(defaultConfig, systemContext),
       mlRegistry: new MLModelRegistry(defaultConfig),

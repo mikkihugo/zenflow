@@ -65,7 +65,17 @@ const config = {
     file: process.env.LOG_FILE ?? './logs/claude-zen.log',
   },
   security: {
-    jwtSecret: process.env.JWT_SECRET ?? 'claude-zen-development-secret-change-in-production',
+    jwtSecret: (() => {
+      const secret = process.env.JWT_SECRET;
+      if (!secret && process.env.NODE_ENV === 'production') {
+        throw new Error('SECURITY ERROR: JWT_SECRET environment variable is required in production. Set JWT_SECRET with a strong, randomly generated secret.');
+      }
+      if (!secret && process.env.NODE_ENV !== 'test') {
+        console.warn('⚠️  WARNING: Using development JWT secret. Set JWT_SECRET environment variable for production.');
+        return 'claude-zen-development-secret-DO-NOT-USE-IN-PRODUCTION';
+      }
+      return secret || 'test-secret-for-testing-only';
+    })(),
     tokenExpiry: process.env.TOKEN_EXPIRY ?? '24h',
     rateLimiting: process.env.RATE_LIMITING !== 'false',
   },

@@ -17,13 +17,37 @@ import type { HiveFACTConfig, UniversalFact } from './hive-types';
 const logger = createLogger({ prefix: 'Hive-FACT' });
 
 /**
+ * Temporary interface for factOrchestrator until unified MCP migration is complete.
+ *
+ * @example
+ */
+interface IFactOrchestrator {
+  gatherKnowledge(query: string, options: {
+    sources: string[];
+    maxResults?: number;
+    timeout?: number;
+  }): Promise<{
+    knowledge?: Array<{
+      content?: string;
+      summary?: string;
+      text?: string;
+      title?: string;
+      source?: string;
+      url?: string;
+      relevance?: number;
+      confidence?: number;
+    }>;
+  }>;
+}
+
+/**
  * Centralized FACT system at Hive level
- * Manages universal facts accessible by all swarms
+ * Manages universal facts accessible by all swarms.
  *
  * @example
  */
 export class HiveFACTSystem extends EventEmitter {
-  // private factOrchestrator: FACTExternalOrchestrator; // TODO: Migrate to unified MCP
+  private factOrchestrator?: IFactOrchestrator; // TODO: Migrate to unified MCP
   private universalFacts: Map<string, UniversalFact> = new Map();
   private refreshTimers: Map<string, NodeJS.Timeout> = new Map();
   private hiveCoordinator: HiveSwarmCoordinator | undefined;
@@ -48,7 +72,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Initialize Hive FACT system
+   * Initialize Hive FACT system.
    *
    * @param hiveCoordinator
    */
@@ -79,7 +103,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Get universal fact - accessible by any swarm
+   * Get universal fact - accessible by any swarm.
    *
    * @param type
    * @param subject
@@ -134,7 +158,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Search for facts across all knowledge
+   * Search for facts across all knowledge.
    *
    * @param query
    */
@@ -161,7 +185,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Get facts for NPM package
+   * Get facts for NPM package.
    *
    * @param packageName
    * @param version
@@ -178,7 +202,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Get facts for GitHub repository
+   * Get facts for GitHub repository.
    *
    * @param owner
    * @param repo
@@ -195,7 +219,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Get API documentation facts
+   * Get API documentation facts.
    *
    * @param api
    * @param endpoint
@@ -212,7 +236,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Get security advisory facts
+   * Get security advisory facts.
    *
    * @param cve
    */
@@ -227,7 +251,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Gather fact from external sources
+   * Gather fact from external sources.
    *
    * @param type
    * @param subject
@@ -289,7 +313,7 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Build query based on fact type
-   * xxx NEEDS_HUMAN: Currently unused - will be used when FACT orchestrator is implemented
+   * xxx NEEDS_HUMAN: Currently unused - will be used when FACT orchestrator is implemented.
    *
    * @param type
    * @param subject
@@ -310,7 +334,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Get TTL (time to live) for fact type
+   * Get TTL (time to live) for fact type.
    *
    * @param type
    */
@@ -330,7 +354,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Check if fact is still fresh
+   * Check if fact is still fresh.
    *
    * @param fact
    */
@@ -340,7 +364,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Calculate confidence score
+   * Calculate confidence score.
    *
    * @param result
    */
@@ -358,7 +382,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Match fact against search query
+   * Match fact against search query.
    *
    * @param fact
    * @param query
@@ -373,53 +397,60 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Search external sources for facts
+   * Search external sources for facts.
    *
    * @param query
    */
   private async searchExternalFacts(query: FACTSearchQuery): Promise<UniversalFact[]> {
-    // const result = await this.factOrchestrator.gatherKnowledge(query.query, {
-    //   sources: this.config.knowledgeSources,
-    //   maxResults: query.limit,
-    // });
-    // const _result = { knowledge: [] }; // TODO: Implement with unified MCP
-
-    // Convert to universal facts
-    const facts: UniversalFact[] = [];
-
-    // Parse knowledge from mock result (TODO: Implement with unified MCP)
+    // Try to use real search implementation if available
     try {
-      // Mock implementation for now
-      facts.push({
-        id: `general:search:${Date.now()}_${Math.random()}`,
-        type: 'general',
-        category: 'search', // Add required category field
-        subject: query.query ?? 'search',
-        content: {
-          insight: `Search result for: ${query.query || 'search'}`,
-          source: 'external_search',
-        },
-        source: 'external_search',
-        confidence: 0.7,
-        timestamp: Date.now(),
-        metadata: {
-          source: 'external_search',
-          timestamp: Date.now(),
-          confidence: 0.7,
-          ttl: 3600000, // 1 hour for search results
-        },
-        accessCount: 0,
-        swarmAccess: new Set(),
-      });
+      if (this.factOrchestrator && typeof this.factOrchestrator.gatherKnowledge === 'function') {
+        const result = await this.factOrchestrator.gatherKnowledge(query.query, {
+          sources: this.config.knowledgeSources || ['web', 'internal'],
+          maxResults: query.limit || 10,
+          timeout: query.timeout || 30000
+        });
+        
+        if (result && result.knowledge && Array.isArray(result.knowledge)) {
+          // Convert real results to universal facts
+          return result.knowledge.map((knowledge: any, index: number) => ({
+            id: `external:search:${Date.now()}_${index}`,
+            type: 'external',
+            category: 'search',
+            subject: knowledge.title || query.query || 'search',
+            content: {
+              insight: knowledge.content || knowledge.summary || knowledge.text,
+              source: knowledge.source || 'external_search',
+              url: knowledge.url,
+              relevance: knowledge.relevance
+            },
+            source: knowledge.source || 'external_search',
+            confidence: knowledge.confidence || 0.8,
+            timestamp: Date.now(),
+            metadata: {
+              source: knowledge.source || 'external_search',
+              timestamp: Date.now(),
+              confidence: knowledge.confidence || 0.8,
+              ttl: 3600000, // 1 hour for search results
+            },
+            accessCount: 0,
+            swarmAccess: new Set(),
+          }));
+        }
+      }
     } catch (error) {
-      logger.error('Failed to parse external search results:', error);
+      logger.error('External search failed:', error);
     }
 
-    return facts;
+    // If no real search implementation available, return empty results with warning
+    logger.warn('🔍 External search not implemented - returning empty results. Consider implementing factOrchestrator.gatherKnowledge() for real search functionality.');
+    
+    // Return empty array instead of fake data
+    return [];
   }
 
   /**
-   * Pre-load commonly needed facts
+   * Pre-load commonly needed facts.
    */
   private async preloadCommonFacts(): Promise<void> {
     const commonPackages = [
@@ -447,7 +478,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Set up auto-refresh for important facts
+   * Set up auto-refresh for important facts.
    */
   private setupAutoRefresh(): void {
     // Refresh facts that are accessed frequently
@@ -471,7 +502,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Get statistics about the FACT system
+   * Get statistics about the FACT system.
    */
   getStats(): FACTStorageStats & { swarmUsage: Record<string, number> } {
     const swarmUsage: Record<string, number> = {};
@@ -506,7 +537,7 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Shutdown FACT system
+   * Shutdown FACT system.
    */
   async shutdown(): Promise<void> {
     // Clear refresh timers
@@ -526,10 +557,11 @@ export class HiveFACTSystem extends EventEmitter {
 let globalHiveFACT: HiveFACTSystem | null = null;
 
 /**
- * Initialize global Hive FACT system
+ * Initialize global Hive FACT system.
  *
  * @param config
  * @param hiveCoordinator
+ * @example
  */
 export async function initializeHiveFACT(
   config?: HiveFACTConfig,
@@ -546,18 +578,20 @@ export async function initializeHiveFACT(
 }
 
 /**
- * Get global Hive FACT instance
+ * Get global Hive FACT instance.
+ *
+ * @example
  */
 export function getHiveFACT(): HiveFACTSystem | null {
   return globalHiveFACT;
 }
 
 /**
- * Hive FACT helpers for easy access
+ * Hive FACT helpers for easy access.
  */
 export const HiveFACTHelpers = {
   /**
-   * Get NPM package facts
+   * Get NPM package facts.
    *
    * @param packageName
    * @param version
@@ -571,7 +605,7 @@ export const HiveFACTHelpers = {
   },
 
   /**
-   * Get GitHub repo facts
+   * Get GitHub repo facts.
    *
    * @param owner
    * @param repo
@@ -585,7 +619,7 @@ export const HiveFACTHelpers = {
   },
 
   /**
-   * Get API documentation
+   * Get API documentation.
    *
    * @param api
    * @param endpoint
@@ -599,7 +633,7 @@ export const HiveFACTHelpers = {
   },
 
   /**
-   * Get security advisory
+   * Get security advisory.
    *
    * @param cve
    */

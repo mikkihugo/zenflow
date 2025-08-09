@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-connection-management-connection-state-manager");
 /**
  * MCP Connection State Manager for ZenSwarm
  *
@@ -115,10 +117,10 @@ class Logger {
   name: string;
   info(_msg: string, ..._args: unknown[]): void {}
   error(msg: string, ...args: unknown[]): void {
-    console.error(`[ERROR] ${this.name}:`, msg, ...args);
+    logger.error(`[ERROR] ${this.name}:`, msg, ...args);
   }
   warn(msg: string, ...args: unknown[]): void {
-    console.warn(`[WARN] ${this.name}:`, msg, ...args);
+    logger.warn(`[WARN] ${this.name}:`, msg, ...args);
   }
   debug(_msg: string, ..._args: unknown[]): void {}
 }

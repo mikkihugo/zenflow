@@ -1,8 +1,8 @@
 /**
- * System Resilience Patterns for Claude-Zen
+ * System Resilience Patterns for Claude-Zen.
  *
  * Implements advanced resilience patterns for distributed swarm systems
- * including bulkheads, timeouts, resource cleanup, and emergency procedures
+ * including bulkheads, timeouts, resource cleanup, and emergency procedures.
  */
 
 import { errorMonitor } from './error-monitoring';
@@ -144,7 +144,7 @@ export class ResourceManager {
   }
 
   private async enforceResourceLimits(type: ResourceHandle['type'], size?: number): Promise<void> {
-    const currentCount = this.resourcesByType.get(type)?.size;
+    const currentCount = this.resourcesByType.get(type)?.size ?? 0;
 
     // Check count limits
     switch (type) {

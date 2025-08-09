@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-api-http-index");
 /**
  * REST API Layer - Main Entry Point
  *
@@ -11,6 +13,7 @@
 import { APIClient } from './client';
 // Import server types for internal use
 import { type APIClientConfig, APIServer, type APIServerConfig } from './server';
+import { getMCPServerURL, getCORSOrigins } from '../../config/url-builder';
 
 export type { APIClientConfig, PaginationOptions, RequestOptions } from './client';
 // ===== API CLIENT SDK =====
@@ -107,10 +110,10 @@ export const DEFAULT_API_LAYER_CONFIG: APILayerConfig = {
     enableRateLimit: true,
     rateLimitWindowMs: 15 * 60 * 1000,
     rateLimitMaxRequests: 100,
-    corsOrigins: ['http://localhost:3000', 'http://localhost:3001'],
+    corsOrigins: getCORSOrigins(),
   },
   client: {
-    baseURL: 'http://localhost:3000',
+    baseURL: getMCPServerURL(),
     timeout: 30000,
     retryAttempts: 3,
     retryDelay: 1000,
@@ -226,7 +229,7 @@ export const checkAPILayerHealth = async (
     // Check connectivity
     checks.connectivity = await layer.ping();
   } catch (error) {
-    console.error('API layer health check failed:', error);
+    logger.error('API layer health check failed:', error);
   }
 
   const allHealthy = Object.values(checks).every((check) => check === true);

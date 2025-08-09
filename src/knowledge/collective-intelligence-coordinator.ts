@@ -14,6 +14,7 @@
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../core/logger';
+import type { EvictionPolicyType, ReplicationStrategyType } from './performance-optimization-system';
 
 /**
  * Knowledge Exchange Protocols
@@ -395,8 +396,8 @@ export interface PerformanceOptimizationConfig {
 
 export interface CachingStrategy {
   cacheTypes: CacheType[];
-  evictionPolicies: EvictionPolicy[];
-  replicationStrategy: ReplicationStrategy;
+  evictionPolicies: EvictionPolicyType[];
+  replicationStrategy: ReplicationStrategyType;
   consistency: ConsistencyModel;
   prefetching: PrefetchingConfig;
 }
@@ -416,7 +417,7 @@ export type CacheType =
   | 'insight-cache'
   | 'routing-cache';
 
-export type EvictionPolicy = 'lru' | 'lfu' | 'ttl' | 'quality-based' | 'access-pattern-based';
+// Removed: using EvictionPolicyType from performance-optimization-system
 
 /**
  * Main Collective Intelligence Coordinator Class

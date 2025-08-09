@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-storage-swarm-providers");
 /**
  * Swarm Storage Providers for Dependency Injection
  *
@@ -157,8 +159,8 @@ export function createSwarmContainer(
     create: () => ({
       debug: (_msg: string) => {},
       info: (_msg: string) => {},
-      warn: (msg: string) => console.warn(`[WARN] ${msg}`),
-      error: (msg: string) => console.error(`[ERROR] ${msg}`),
+      warn: (msg: string) => logger.warn(`[WARN] ${msg}`),
+      error: (msg: string) => logger.error(`[ERROR] ${msg}`),
     }),
   });
 

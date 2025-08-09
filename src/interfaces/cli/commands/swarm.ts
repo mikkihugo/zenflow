@@ -271,7 +271,7 @@ export async function executeSwarmCommand(): Promise<void> {
       }
 
       default:
-        console.error(`❌ Unknown swarm command: ${command}`);
+        logger.error(`❌ Unknown swarm command: ${command}`);
         process.exit(1);
     }
 
@@ -285,14 +285,14 @@ export async function executeSwarmCommand(): Promise<void> {
       if (options.verbose) {
       }
     } else {
-      console.error(`❌ Swarm ${command} failed: ${result.error}`);
+      logger.error(`❌ Swarm ${command} failed: ${result.error}`);
 
       if (options.verbose && result.error) {
-        console.error('');
-        console.error('Debug information:');
-        console.error(`Command: ${command}`);
-        console.error(`Options: ${JSON.stringify(options, null, 2)}`);
-        console.error(`Duration: ${duration.toFixed(2)}ms`);
+        logger.error('');
+        logger.error('Debug information:');
+        logger.error(`Command: ${command}`);
+        logger.error(`Options: ${JSON.stringify(options, null, 2)}`);
+        logger.error(`Duration: ${duration.toFixed(2)}ms`);
       }
 
       process.exit(1);
@@ -302,13 +302,13 @@ export async function executeSwarmCommand(): Promise<void> {
     const duration = endTime - startTime;
 
     logger.error('Swarm command execution failed:', error);
-    console.error(`❌ Swarm ${command} failed: ${error.message}`);
+    logger.error(`❌ Swarm ${command} failed: ${error.message}`);
 
     if (options.verbose) {
-      console.error('');
-      console.error('Debug information:');
-      console.error(`Duration: ${duration.toFixed(2)}ms`);
-      console.error(`Stack trace: ${error.stack}`);
+      logger.error('');
+      logger.error('Debug information:');
+      logger.error(`Duration: ${duration.toFixed(2)}ms`);
+      logger.error(`Stack trace: ${error.stack}`);
     }
 
     process.exit(1);

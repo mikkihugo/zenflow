@@ -1,5 +1,5 @@
 /**
- * SPARC Methodology Core Types
+ * SPARC Methodology Core Types.
  *
  * Comprehensive type definitions for the SPARC (Specification, Pseudocode,
  * Architecture, Refinement, Completion) development methodology system.
@@ -186,6 +186,8 @@ export interface SpecificationEngine {
 export interface DetailedSpecification {
   id: string;
   domain: string;
+  name?: string; // Project name for customization
+  description?: string; // Project description for customization
   functionalRequirements: FunctionalRequirement[];
   nonFunctionalRequirements: NonFunctionalRequirement[];
   constraints: SystemConstraint[];
@@ -418,13 +420,21 @@ export interface ArchitectureEngine {
   ): Promise<ArchitecturalValidation>;
 }
 
+export interface DeploymentStrategy {
+  type: 'monolith' | 'microservices' | 'serverless' | 'hybrid';
+  infrastructure: string[];
+  scalingApproach?: 'horizontal' | 'vertical' | 'auto';
+  containerization?: boolean;
+  orchestration?: string; // e.g., 'kubernetes', 'docker-swarm', 'none'
+}
+
 export interface ArchitectureDesign {
   id: string;
   systemArchitecture: SystemArchitecture;
   componentDiagrams: ComponentDiagram[];
   dataFlow: DataFlowDiagram;
   deploymentPlan: DeploymentPlan;
-  deploymentStrategy?: string;
+  deploymentStrategy?: DeploymentStrategy;
   validationResults: ArchitecturalValidation;
   components: Component[];
   relationships: ComponentRelationship[];
@@ -731,12 +741,12 @@ export interface ValidationResult {
 
 export interface ValidationReport {
   overall: boolean;
-  approved?: boolean; // Alias for overall
+  approved?: boolean | undefined; // Alias for overall
   score: number;
-  overallScore?: number; // Alias for score
+  overallScore?: number | undefined; // Alias for score
   results: ValidationResult[];
   recommendations: string[];
-  validationResults?: ValidationResult[]; // Alias for results
+  validationResults?: ValidationResult[] | undefined; // Alias for results
 }
 
 export interface CompletionValidation {
@@ -1180,7 +1190,7 @@ export interface RiskAssessment {
 // ValidationReport Factory Functions
 export const ValidationReportFactory = {
   /**
-   * Creates a default ValidationReport with success defaults
+   * Creates a default ValidationReport with success defaults.
    */
   createDefault(): ValidationReport {
     return {
@@ -1192,7 +1202,9 @@ export const ValidationReportFactory = {
   },
 
   /**
-   * Creates a ValidationReport with custom values
+   * Creates a ValidationReport with custom values.
+   *
+   * @param options
    */
   create(options: Partial<ValidationReport> = {}): ValidationReport {
     return {
@@ -1205,7 +1217,13 @@ export const ValidationReportFactory = {
   },
 
   /**
-   * Creates ValidationReport from legacy format with aliases
+   * Creates ValidationReport from legacy format with aliases.
+   *
+   * @param legacy
+   * @param legacy.approved
+   * @param legacy.overallScore
+   * @param legacy.validationResults
+   * @param legacy.recommendations
    */
   fromLegacyFormat(legacy: {
     approved?: boolean;

@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-events-index");
 /**
  * UEL (Unified Event Layer) - Main Exports
  *
@@ -1101,7 +1103,7 @@ export class UEL {
         }
       });
     } catch (error) {
-      console.warn('Some event manager factories could not be loaded:', error);
+      logger.warn('Some event manager factories could not be loaded:', error);
     }
   }
 }
@@ -1256,7 +1258,7 @@ export const UELHelpers = {
 
       return managers;
     } catch (error) {
-      console.error('❌ Failed to setup common event managers:', error);
+      logger.error('❌ Failed to setup common event managers:', error);
       throw error;
     }
   },

@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-clients-adapters-websocket-client-factory");
 /**
  * WebSocket Client Factory for UACL
  *
@@ -111,7 +113,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
       try {
         await client.destroy();
       } catch (error) {
-        console.warn(`Error destroying WebSocket client ${name}:`, error);
+        logger.warn(`Error destroying WebSocket client ${name}:`, error);
       }
 
       this.clients.delete(name);
@@ -186,7 +188,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
   async shutdown(): Promise<void> {
     const shutdownPromises = Array.from(this.clients.values()).map((client) =>
       client.destroy().catch((error) => {
-        console.error('Error shutting down WebSocket client:', error);
+        logger.error('Error shutting down WebSocket client:', error);
       })
     );
 
@@ -364,7 +366,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
           results.set(name, wsMetrics);
         }
       } catch (error) {
-        console.warn(`Failed to get WebSocket metrics for ${name}:`, error);
+        logger.warn(`Failed to get WebSocket metrics for ${name}:`, error);
       }
     }
 
@@ -384,7 +386,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
           results.set(name, connectionInfo);
         }
       } catch (error) {
-        console.warn(`Failed to get connection info for ${name}:`, error);
+        logger.warn(`Failed to get connection info for ${name}:`, error);
       }
     }
 
@@ -657,18 +659,18 @@ export class FailoverWebSocketClient implements IClient {
 
   private async failover(): Promise<void> {
     if (this.fallbackIndex < this.fallbackClients.length) {
-      console.log(`Failing over to client ${this.fallbackIndex}`);
+      logger.info(`Failing over to client ${this.fallbackIndex}`);
       this.currentClient = this.fallbackClients[this.fallbackIndex];
       this.fallbackIndex++;
 
       try {
         await this.currentClient.connect();
       } catch (error) {
-        console.error('Failover client failed to connect:', error);
+        logger.error('Failover client failed to connect:', error);
         this.failover(); // Try next fallback
       }
     } else {
-      console.error('All fallback clients exhausted');
+      logger.error('All fallback clients exhausted');
     }
   }
 }

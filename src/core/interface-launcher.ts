@@ -1,5 +1,5 @@
 /**
- * Interface Launcher
+ * Interface Launcher.
  *
  * Handles launching the appropriate interface (CLI/TUI/Web) based on environment
  * and configuration. Integrates with all core systems directly without plugins.
@@ -13,6 +13,7 @@ import {
   type ModeDetectionOptions,
 } from './interface-mode-detector';
 import { createLogger } from './logger';
+import { getWebDashboardURL } from '../config/url-builder';
 
 const logger = createLogger('InterfaceLauncher');
 
@@ -44,7 +45,7 @@ export class InterfaceLauncher extends EventEmitter {
     server?: any;
     url?: string;
     pid?: number;
-  };
+  } | undefined;
 
   private constructor() {
     super();
@@ -52,7 +53,7 @@ export class InterfaceLauncher extends EventEmitter {
   }
 
   /**
-   * Get singleton instance
+   * Get singleton instance.
    */
   static getInstance(): InterfaceLauncher {
     if (!InterfaceLauncher.instance) {
@@ -62,7 +63,7 @@ export class InterfaceLauncher extends EventEmitter {
   }
 
   /**
-   * Launch the appropriate interface based on options and environment
+   * Launch the appropriate interface based on options and environment.
    *
    * @param options
    */
@@ -106,8 +107,8 @@ export class InterfaceLauncher extends EventEmitter {
       if (result.success) {
         this.activeInterface = {
           mode: detection.mode,
-          url: result.url,
-          pid: result.pid,
+          ...(result.url !== undefined && { url: result.url }),
+          ...(result.pid !== undefined && { pid: result.pid }),
         };
 
         this.emit('interface:launched', {
@@ -138,7 +139,7 @@ export class InterfaceLauncher extends EventEmitter {
   }
 
   /**
-   * Launch CLI interface (Unified Terminal Interface)
+   * Launch CLI interface (Unified Terminal Interface).
    *
    * @param options
    */
@@ -148,7 +149,7 @@ export class InterfaceLauncher extends EventEmitter {
     try {
       // Use the unified terminal interface
       const { spawn } = await import('node:child_process');
-      const cliArgs = [];
+      const cliArgs: string[] = [];
 
       if (options.verbose) cliArgs.push('--verbose');
       if (options.config?.theme) cliArgs.push('--theme', options.config.theme);
@@ -161,12 +162,12 @@ export class InterfaceLauncher extends EventEmitter {
         cwd: process.cwd(),
       });
 
-      return new Promise((resolve, reject) => {
+      return new Promise<LaunchResult>((resolve, reject) => {
         cliProcess.on('close', (code) => {
           resolve({
             mode: 'cli',
             success: code === 0,
-            pid: cliProcess.pid,
+            ...(cliProcess.pid !== undefined && { pid: cliProcess.pid }),
           });
         });
 
@@ -183,7 +184,7 @@ export class InterfaceLauncher extends EventEmitter {
   }
 
   /**
-   * Launch TUI interface using Unified Terminal Interface
+   * Launch TUI interface using Unified Terminal Interface.
    *
    * @param options
    */
@@ -203,12 +204,12 @@ export class InterfaceLauncher extends EventEmitter {
         cwd: process.cwd(),
       });
 
-      return new Promise((resolve, reject) => {
+      return new Promise<LaunchResult>((resolve, reject) => {
         tuiProcess.on('close', (code) => {
           resolve({
             mode: 'tui',
             success: code === 0,
-            pid: tuiProcess.pid,
+            ...(tuiProcess.pid !== undefined && { pid: tuiProcess.pid }),
           });
         });
 
@@ -227,7 +228,7 @@ export class InterfaceLauncher extends EventEmitter {
   }
 
   /**
-   * Launch Web interface
+   * Launch Web interface.
    *
    * @param options
    * @param port
@@ -254,7 +255,8 @@ export class InterfaceLauncher extends EventEmitter {
       await web.run();
       const server = web as any; // Use the web interface instance as server
 
-      const url = `http://localhost:${webPort}`;
+      // Use centralized URL builder for consistent URL generation
+      const url = getWebDashboardURL({ port: webPort });
 
       this.activeInterface = {
         mode: 'web',
@@ -276,7 +278,7 @@ export class InterfaceLauncher extends EventEmitter {
   }
 
   /**
-   * Basic CLI fallback when TUI/Web interfaces aren't available
+   * Basic CLI fallback when TUI/Web interfaces aren't available.
    *
    * @param options
    */
@@ -305,7 +307,7 @@ export class InterfaceLauncher extends EventEmitter {
   }
 
   /**
-   * Get current interface status
+   * Get current interface status.
    */
   getStatus(): {
     active: boolean;
@@ -315,14 +317,14 @@ export class InterfaceLauncher extends EventEmitter {
   } {
     return {
       active: !!this.activeInterface,
-      mode: this.activeInterface?.mode,
-      url: this.activeInterface?.url,
-      pid: this.activeInterface?.pid,
+      ...(this.activeInterface?.mode !== undefined && { mode: this.activeInterface.mode }),
+      ...(this.activeInterface?.url !== undefined && { url: this.activeInterface.url }),
+      ...(this.activeInterface?.pid !== undefined && { pid: this.activeInterface.pid }),
     };
   }
 
   /**
-   * Shutdown active interface
+   * Shutdown active interface.
    */
   async shutdown(): Promise<void> {
     if (!this.activeInterface) return;
@@ -357,7 +359,7 @@ export class InterfaceLauncher extends EventEmitter {
   }
 
   /**
-   * Restart interface with new options
+   * Restart interface with new options.
    *
    * @param options
    */
@@ -369,21 +371,21 @@ export class InterfaceLauncher extends EventEmitter {
   }
 
   /**
-   * Get interface recommendations for current environment
+   * Get interface recommendations for current environment.
    */
   getRecommendations() {
     return InterfaceModeDetector.getRecommendation();
   }
 
   /**
-   * Get environment information for debugging
+   * Get environment information for debugging.
    */
   getEnvironmentInfo() {
     return InterfaceModeDetector.getEnvironmentInfo();
   }
 
   /**
-   * Setup graceful shutdown handlers
+   * Setup graceful shutdown handlers.
    */
   private setupShutdownHandlers(): void {
     const shutdown = async (signal: string) => {

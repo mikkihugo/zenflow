@@ -1,12 +1,13 @@
-#!/usr/bin/env node
+import { getLogger } from "./config/logging-config";
+const logger = getLogger("comprehensive-sparc-test");
 /**
- * Comprehensive End-to-End Test for SPARC Pseudocode Engine (Sub-task 4.2)
+ * Comprehensive End-to-End Test for SPARC Pseudocode Engine (Sub-task 4.2).
  *
  * This test validates the complete implementation of SPARC Phase 2:
  * - Core pseudocode engine functionality
  * - CLI integration
  * - MCP tools integration
- * - End-to-end specification → pseudocode flow
+ * - End-to-end specification → pseudocode flow.
  */
 
 import { writeFile } from 'node:fs/promises';
@@ -42,7 +43,7 @@ async function runComprehensiveTest() {
 
     return results;
   } catch (error) {
-    console.error('💥 Comprehensive test failed:', error);
+    logger.error('💥 Comprehensive test failed:', error);
     return { ...results, overallSuccess: false };
   }
 }

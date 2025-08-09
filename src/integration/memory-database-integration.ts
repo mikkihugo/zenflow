@@ -72,7 +72,7 @@ export async function createIntegratedSystem() {
   container.register(CORE_TOKENS.Config, {
     type: 'singleton',
     create: () => ({
-      get: (_key: string, defaultValue?: any) => defaultValue,
+      get: (key: string, defaultValue?: any) => defaultValue,
       set: () => {},
       has: () => false,
     }),
@@ -82,7 +82,7 @@ export async function createIntegratedSystem() {
   container.register(DATABASE_TOKENS.ProviderFactory, {
     type: 'singleton',
     create: () => ({
-      createProvider: async (_type: string, _config: any) => {
+      createProvider: async (type: string, config: any) => {
         // This would be properly implemented in production
         throw new Error('Provider factory not fully implemented for this example');
       },
@@ -96,29 +96,29 @@ export async function createIntegratedSystem() {
       new DALFactory(
         c.resolve(CORE_TOKENS.Logger),
         c.resolve(CORE_TOKENS.Config),
-        c.resolve(DATABASE_TOKENS.ProviderFactory)
+        c.resolve(DATABASE_TOKENS.ProviderFactory) as any
       ),
   });
 
   // Get DALFactory instance
-  const dalFactory = container.resolve(DATABASE_TOKENS.DALFactory);
+  const dalFactory = container.resolve(DATABASE_TOKENS.DALFactory) as any;
 
   // For the multi-engine system, we'll create individual DAOs
   // Note: The createAdvancedDatabaseSystem method doesn't exist in the new API
   // Instead, we create individual DAOs/repositories as needed
-  const vectorDao = await dalFactory.createDao({
+  const vectorDao = await (dalFactory as any).createDao({
     databaseType: 'lancedb',
     entityType: 'VectorDocument',
     databaseConfig: { dbPath: '/tmp/vector.db', dimensions: 768 },
   });
 
-  const graphDao = await dalFactory.createDao({
+  const graphDao = await (dalFactory as any).createDao({
     databaseType: 'kuzu',
     entityType: 'GraphNode',
     databaseConfig: { dbPath: '/tmp/graph.db' },
   });
 
-  const documentDao = await dalFactory.createDao({
+  const documentDao = await (dalFactory as any).createDao({
     databaseType: 'sqlite',
     entityType: 'Document',
     databaseConfig: { dbPath: '/tmp/documents.db' },
@@ -127,8 +127,9 @@ export async function createIntegratedSystem() {
   // Create a composite database system object to match the expected interface
   const databaseSystem = {
     query: async (query: DatabaseQuery) => {
+      // TODO: TypeScript error TS2339 - Property 'operation' does not exist on type 'DatabaseQuery' (AI unsure of safe fix - human review needed)
       // Route queries to appropriate DAO based on operation type
-      switch (query.operation) {
+      switch ((query as any).operation) {
         case 'vector_search':
           return vectorDao;
         case 'graph_query':
@@ -137,7 +138,7 @@ export async function createIntegratedSystem() {
         case 'document_find':
           return documentDao;
         default:
-          throw new Error(`Unsupported operation: ${query.operation}`);
+          throw new Error(`Unsupported operation: ${(query as any).operation}`);
       }
     },
     getHealthReport: () => ({
@@ -180,7 +181,7 @@ export async function createIntegratedSystem() {
       // Also store in database for persistence
       const query: DatabaseQuery = {
         id: `store_${Date.now()}`,
-        type: 'write',
+        type: 'insert',
         operation: 'document_insert',
         parameters: {
           collection: 'memory_store',
@@ -210,7 +211,7 @@ export async function createIntegratedSystem() {
       // Fallback to database with optimization
       const query: DatabaseQuery = {
         id: `retrieve_${Date.now()}`,
-        type: 'read',
+        type: 'select',
         operation: 'document_find',
         parameters: {
           collection: 'memory_store',
@@ -228,7 +229,7 @@ export async function createIntegratedSystem() {
     async performVectorSearch(embedding: number[], sessionId?: string) {
       const query: DatabaseQuery = {
         id: `vector_search_${Date.now()}`,
-        type: 'read',
+        type: 'select',
         operation: 'vector_search',
         parameters: {
           vector: embedding,
@@ -306,7 +307,7 @@ export async function demonstrateMCPIntegration() {
   const { databaseTools } = await import('../database/mcp/database-tools');
 
   // Example: Initialize memory system via MCP
-  const memoryInitResult = await memoryTools[0].handler({
+  const memoryInitResult = await memoryTools[0]?.handler({
     coordination: {
       enabled: true,
       consensus: { quorum: 0.67, timeout: 5000, strategy: 'majority' },
@@ -321,7 +322,7 @@ export async function demonstrateMCPIntegration() {
   });
 
   // Example: Initialize database system via MCP
-  const databaseInitResult = await databaseTools[0].handler({
+  const databaseInitResult = await databaseTools[0]?.handler({
     engines: [
       {
         id: 'main-vector',
@@ -336,7 +337,7 @@ export async function demonstrateMCPIntegration() {
   });
 
   // Example: Execute optimized query via MCP
-  const queryResult = await databaseTools[1].handler({
+  const queryResult = await databaseTools[1]?.handler({
     operation: 'vector_search',
     parameters: { vector: [0.1, 0.2, 0.3], options: { limit: 5 } },
     requirements: { consistency: 'eventual', timeout: 10000, priority: 'medium' },
@@ -347,8 +348,8 @@ export async function demonstrateMCPIntegration() {
 
   // Example: Monitor system performance via MCP
   const monitoringResult = await Promise.all([
-    memoryTools[2].handler({ duration: 30000, metrics: ['latency', 'memory', 'cache'] }),
-    databaseTools[3].handler({
+    memoryTools[2]?.handler({ duration: 30000, metrics: ['latency', 'memory', 'cache'] }),
+    databaseTools[3]?.handler({
       duration: 30000,
       metrics: ['performance', 'utilization', 'queries'],
     }),
@@ -415,24 +416,25 @@ export async function demonstrateOptimization() {
   }
 
   // Get performance metrics
-  const _metrics = await system.getPerformanceMetrics();
+  const metrics = await system.getPerformanceMetrics();
 
   // Optimize memory system
   if (system.memory.optimizer) {
     const memoryRecommendations = system.memory.optimizer.getRecommendations();
     if (memoryRecommendations.length > 0) {
-      memoryRecommendations.forEach((_rec, _i) => {});
+      memoryRecommendations.forEach((rec, i) => {});
     }
   }
 
   // Optimize database system
-  const databaseRecommendations = system.database.optimizer?.getRecommendations();
+  // TODO: TypeScript error TS2339 - Property 'optimizer' does not exist on database system (AI unsure of safe fix - human review needed)
+  const databaseRecommendations = (system.database as any).optimizer?.getRecommendations();
   if (databaseRecommendations && databaseRecommendations.length > 0) {
-    databaseRecommendations.forEach((_rec, _i) => {});
+    databaseRecommendations.forEach((rec, i) => {});
   }
 
   // Get health report
-  const _health = await system.getSystemHealth();
+  const health = await system.getSystemHealth();
 
   await system.shutdown();
 }

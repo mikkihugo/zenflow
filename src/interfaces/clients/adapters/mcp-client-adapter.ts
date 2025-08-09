@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-clients-adapters-mcp-client-adapter");
 /**
  * MCP Client Adapter - UACL Implementation
  *
@@ -202,7 +204,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
 
     if (this._process.stderr) {
       this._process.stderr.on('data', (data) => {
-        console.warn(`MCP stderr [${this.name}]:`, data.toString());
+        logger.warn(`MCP stderr [${this.name}]:`, data.toString());
       });
     }
 
@@ -509,7 +511,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
         }
       }
     } catch (error) {
-      console.warn(`Failed to discover tools for ${this.name}:`, error);
+      logger.warn(`Failed to discover tools for ${this.name}:`, error);
     }
   }
 
@@ -636,7 +638,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
           }
         }
       } catch (error) {
-        console.warn(`Failed to parse MCP message [${this.name}]:`, line, error);
+        logger.warn(`Failed to parse MCP message [${this.name}]:`, line, error);
       }
     }
   }
@@ -828,7 +830,7 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
         results.set(name, metrics);
       } catch (error) {
         // Skip failed metrics
-        console.warn(`Failed to get metrics for ${name}:`, error);
+        logger.warn(`Failed to get metrics for ${name}:`, error);
       }
     }
 
@@ -842,7 +844,7 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
     const shutdownPromises = Array.from(this._clients.values()).map((client) =>
       client
         .destroy()
-        .catch((error) => console.warn(`Error shutting down client ${client.name}:`, error))
+        .catch((error) => logger.warn(`Error shutting down client ${client.name}:`, error))
     );
 
     await Promise.all(shutdownPromises);

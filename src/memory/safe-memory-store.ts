@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-memory-safe-memory-store");
 /**
  * Enhanced Memory Provider with Union Type Safety
  *
@@ -434,7 +436,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
   // Safe property access using type guards
   if (isMemorySuccess(storeResult)) {
   } else if (isMemoryError(storeResult)) {
-    console.error('❌ Storage failed:', storeResult.error.message);
+    logger.error('❌ Storage failed:', storeResult.error.message);
   }
 
   // Retrieve data with safe access
@@ -443,7 +445,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
   if (isMemorySuccess(retrieveResult)) {
   } else if (isMemoryNotFound(retrieveResult)) {
   } else if (isMemoryError(retrieveResult)) {
-    console.error('Error retrieving user:', retrieveResult.error.message);
+    logger.error('Error retrieving user:', retrieveResult.error.message);
   }
 
   // Check existence safely

@@ -18,6 +18,8 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import express from 'express';
 import { z } from 'zod';
 import { createLogger } from './mcp-logger';
+import { config } from '../../config';
+import { getCORSOrigins } from '../../config/url-builder';
 
 const logger = createLogger('SDK-HTTP-MCP-Server');
 
@@ -40,13 +42,14 @@ export class HTTPMCPServer {
   private config: MCPServerConfig;
   private isRunning: boolean = false;
 
-  constructor(config: Partial<MCPServerConfig> = {}) {
+  constructor(userConfig: Partial<MCPServerConfig> = {}) {
+    // Use pure centralized configuration with user overrides
+    const centralConfig = config.getAll();
     this.config = {
-      port: parseInt(process.env['MCP_PORT'] || '3000', 10),
-      host: process.env['MCP_HOST'] || 'localhost',
-      timeout: parseInt(process.env['MCP_TIMEOUT'] || '30000', 10),
-      logLevel: (process.env['MCP_LOG_LEVEL'] as any) || 'info',
-      ...config,
+      port: userConfig.port || centralConfig.interfaces.mcp.http.port,
+      host: userConfig.host || centralConfig.interfaces.mcp.http.host,
+      timeout: userConfig.timeout || centralConfig.interfaces.mcp.http.timeout,
+      logLevel: userConfig.logLevel || centralConfig.core.logger.level,
     };
 
     // Create MCP server with SDK
@@ -84,14 +87,23 @@ export class HTTPMCPServer {
     this.expressApp.use(express.json({ limit: '10mb' }));
     this.expressApp.use(express.raw({ type: 'application/octet-stream', limit: '10mb' }));
 
-    // CORS support
+    // CORS support using centralized configuration
     this.expressApp.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
+      const corsOrigins = getCORSOrigins();
+      const origin = req.headers.origin;
+      
+      // Allow configured origins or all origins in development
+      if (corsOrigins.includes('*') || (origin && corsOrigins.includes(origin)) || !origin) {
+        res.header('Access-Control-Allow-Origin', origin || '*');
+      }
+      
       res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
       res.header(
         'Access-Control-Allow-Headers',
         'Content-Type, Authorization, X-MCP-Client-Info, Last-Event-ID, MCP-Session-ID'
       );
+      res.header('Access-Control-Allow-Credentials', 'true');
+      
       if (req.method === 'OPTIONS') {
         res.sendStatus(200);
       } else {

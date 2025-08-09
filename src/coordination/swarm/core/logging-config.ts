@@ -1,6 +1,6 @@
 /**
  * Logging Configuration for ruv-swarm
- * Provides centralized logging configuration and utilities
+ * Provides centralized logging configuration and utilities.
  */
 
 import { Logger } from './logger';
@@ -35,7 +35,7 @@ const ENV_LOG_MAPPING = {
 };
 
 /**
- * Logging configuration manager
+ * Logging configuration manager.
  *
  * @example
  */
@@ -52,7 +52,7 @@ export class LoggingConfig {
   }
 
   /**
-   * Load log levels from environment variables
+   * Load log levels from environment variables.
    */
   private loadFromEnvironment(): void {
     for (const [envVar, component] of Object.entries(ENV_LOG_MAPPING)) {
@@ -70,7 +70,7 @@ export class LoggingConfig {
   }
 
   /**
-   * Get or create a logger for a component
+   * Get or create a logger for a component.
    *
    * @param component
    * @param options
@@ -95,22 +95,39 @@ export class LoggingConfig {
 
     const level = this.globalLevel || this.componentLevels[component] || 'INFO';
 
-    const logger = new Logger({
+    // Create logger options with proper handling for exactOptionalPropertyTypes
+    // Only include properties when they have defined values
+    const loggerOptions: any = {
       name: component,
       level,
-      enableStderr: process.env['MCP_MODE'] === 'stdio' || options.enableStderr,
-      enableFile: process.env['LOG_TO_FILE'] === 'true' || options.enableFile,
-      formatJson: process.env['LOG_FORMAT'] === 'json' || options.formatJson,
       logDir: process.env['LOG_DIR'] || options.logDir || './logs',
       ...options,
-    });
+    };
+
+    // Conditionally add optional properties only if they have truthy values
+    const enableStderr = process.env['MCP_MODE'] === 'stdio' || options.enableStderr;
+    if (enableStderr) {
+      loggerOptions.enableStderr = true;
+    }
+
+    const enableFile = process.env['LOG_TO_FILE'] === 'true' || options.enableFile;
+    if (enableFile) {
+      loggerOptions.enableFile = true;
+    }
+
+    const formatJson = process.env['LOG_FORMAT'] === 'json' || options.formatJson;
+    if (formatJson) {
+      loggerOptions.formatJson = true;
+    }
+
+    const logger = new Logger(loggerOptions);
 
     this.loggers.set(component, logger);
     return logger;
   }
 
   /**
-   * Set log level for a component
+   * Set log level for a component.
    *
    * @param component
    * @param level
@@ -129,23 +146,23 @@ export class LoggingConfig {
   }
 
   /**
-   * Set global log level
+   * Set global log level.
    *
    * @param level
    */
-  setGlobalLogLevel(level) {
+  setGlobalLogLevel(level: string): void {
     this.globalLevel = level.toUpperCase();
 
     // Update all existing loggers
     for (const logger of this.loggers.values()) {
-      logger.level = level.toUpperCase();
+      (logger as any).level = level.toUpperCase();
     }
   }
 
   /**
-   * Get current log levels
+   * Get current log levels.
    */
-  getLogLevels() {
+  getLogLevels(): { global: string | null; components: Record<string, string> } {
     return {
       global: this.globalLevel,
       components: { ...this.componentLevels },
@@ -153,13 +170,13 @@ export class LoggingConfig {
   }
 
   /**
-   * Create child logger with correlation ID
+   * Create child logger with correlation ID.
    *
    * @param parentLogger
    * @param module
    * @param correlationId
    */
-  createChildLogger(parentLogger, module, correlationId = null) {
+  createChildLogger(parentLogger: any, module: string, correlationId: string | null = null): any {
     return parentLogger.child({
       module,
       correlationId: correlationId || parentLogger.correlationId,
@@ -167,9 +184,9 @@ export class LoggingConfig {
   }
 
   /**
-   * Log system configuration
+   * Log system configuration.
    */
-  logConfiguration() {
+  logConfiguration(): any {
     const config = {
       globalLevel: this.globalLevel || 'Not set (using component defaults)',
       componentLevels: this.componentLevels,
@@ -185,7 +202,7 @@ export class LoggingConfig {
       },
     };
 
-    console.error('📊 Logging Configuration:', JSON.stringify(config, null, 2));
+    logger.error('📊 Logging Configuration:', JSON.stringify(config, null, 2));
     return config;
   }
 }
@@ -194,9 +211,9 @@ export class LoggingConfig {
 export const loggingConfig = new LoggingConfig();
 
 // Convenience functions
-export const getLogger = (component, options) => loggingConfig.getLogger(component, options);
-export const setLogLevel = (component, level) => loggingConfig.setLogLevel(component, level);
-export const setGlobalLogLevel = (level) => loggingConfig.setGlobalLogLevel(level);
+export const getLogger = (component: string, options?: any): Logger => loggingConfig.getLogger(component, options);
+export const setLogLevel = (component: string, level: string): void => loggingConfig.setLogLevel(component, level);
+export const setGlobalLogLevel = (level: string): void => loggingConfig.setGlobalLogLevel(level);
 
 // Pre-configured loggers for common components
 export const mcpLogger = loggingConfig.getLogger('mcp-server');

@@ -28,6 +28,7 @@ import type { ConnectionConfig } from '../../../integration/adapter-system';
 import type { APIResult } from '../../../interfaces/api/safe-api-client';
 import { SafeAPIClient, SafeAPIService } from '../../../interfaces/api/safe-api-client';
 import { createLogger, type Logger } from '../../../utils/logger';
+import { getMCPServerURL } from '../../config/url-builder';
 import type {
   IService,
   ServiceDependencyConfig,
@@ -40,6 +41,7 @@ import type {
   ServiceStatus,
 } from '../core/interfaces';
 import type { IntegrationServiceConfig } from '../types';
+import { getConfig } from '../../../config';
 
 /**
  * Integration service adapter configuration extending USL IntegrationServiceConfig
@@ -318,8 +320,14 @@ export class IntegrationServiceAdapter implements IService {
       },
       safeAPI: {
         enabled: true,
-        baseURL: 'http://localhost:3000',
-        timeout: 30000,
+        baseURL: (() => {
+          const centralConfig = getConfig();
+          return `http://${centralConfig.interfaces.web.host}:${centralConfig.interfaces.web.port}`;
+        })(),
+        timeout: (() => {
+          const centralConfig = getConfig();
+          return centralConfig.network.defaultTimeout;
+        })(),
         retries: 3,
         rateLimiting: {
           enabled: true,
@@ -514,7 +522,7 @@ export class IntegrationServiceAdapter implements IService {
 
         const apiConfig = this.config.safeAPI;
         this.safeAPIClient = new SafeAPIClient(
-          apiConfig.baseURL || 'http://localhost:3000',
+          apiConfig.baseURL || getMCPServerURL(),
           apiConfig.authentication?.credentials
             ? {
                 Authorization: `Bearer ${apiConfig.authentication.credentials}`,
@@ -524,7 +532,7 @@ export class IntegrationServiceAdapter implements IService {
         );
 
         this.safeAPIService = new SafeAPIService(
-          apiConfig.baseURL || 'http://localhost:3000',
+          apiConfig.baseURL || getMCPServerURL(),
           apiConfig.authentication?.credentials
         );
 
@@ -2616,7 +2624,7 @@ export function createDefaultIntegrationServiceAdapterConfig(
     },
     safeAPI: {
       enabled: true,
-      baseURL: 'http://localhost:3000',
+      baseURL: getMCPServerURL(),
       timeout: 30000,
       retries: 3,
       rateLimiting: {

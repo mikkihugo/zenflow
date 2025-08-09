@@ -1,5 +1,5 @@
 /**
- * MCP Tools for SPARC Architecture Management
+ * MCP Tools for SPARC Architecture Management.
  *
  * Provides Model Context Protocol tools for managing SPARC architecture designs,
  * enabling external access to architecture generation and validation.
@@ -16,7 +16,7 @@ import type {
 } from '../types/sparc-types';
 
 /**
- * MCP Tool definitions for SPARC Architecture operations
+ * MCP Tool definitions for SPARC Architecture operations.
  */
 
 export interface ArchitectureMCPTools {
@@ -119,7 +119,7 @@ export interface ArchitectureMCPTools {
 }
 
 /**
- * MCP Tool Schema definitions for external integration
+ * MCP Tool Schema definitions for external integration.
  */
 export const ARCHITECTURE_MCP_TOOLS = {
   generateArchitecture: {
@@ -344,7 +344,7 @@ export const ARCHITECTURE_MCP_TOOLS = {
 };
 
 /**
- * Implementation of Architecture MCP Tools
+ * Implementation of Architecture MCP Tools.
  *
  * @example
  */
@@ -361,7 +361,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }
 
   /**
-   * Initialize the MCP tools and underlying services
+   * Initialize the MCP tools and underlying services.
    */
   async initialize(): Promise<void> {
     await this.architectureEngine.initialize();
@@ -369,7 +369,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }
 
   /**
-   * Generate architecture from pseudocode structure
+   * Generate architecture from pseudocode structure.
    *
    * @param params
    * @param params.pseudocode
@@ -421,7 +421,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }
 
   /**
-   * Generate architecture from specification and pseudocode
+   * Generate architecture from specification and pseudocode.
    *
    * @param params
    * @param params.specification
@@ -494,7 +494,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }
 
   /**
-   * Validate architecture design
+   * Validate architecture design.
    *
    * @param params
    * @param params.architectureId
@@ -531,7 +531,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
         success: true,
         validation,
         recommendations: validation.recommendations,
-        message: `Architecture validation completed with score: ${validation.overallScore.toFixed(2)}`,
+        message: `Architecture validation completed with score: ${(validation.overallScore ?? 0).toFixed(2)}`,
       };
     } catch (error) {
       this.logger?.error('Failed to validate architecture:', error);
@@ -553,7 +553,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }
 
   /**
-   * Get architecture by ID
+   * Get architecture by ID.
    *
    * @param params
    * @param params.architectureId
@@ -586,7 +586,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }
 
   /**
-   * Search architectures with criteria
+   * Search architectures with criteria.
    *
    * @param params
    * @param params.domain
@@ -628,7 +628,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }
 
   /**
-   * Update architecture design
+   * Update architecture design.
    *
    * @param params
    * @param params.architectureId
@@ -666,7 +666,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }
 
   /**
-   * Delete architecture design
+   * Delete architecture design.
    *
    * @param params
    * @param params.architectureId
@@ -694,7 +694,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }
 
   /**
-   * Get architecture statistics
+   * Get architecture statistics.
    */
   async getArchitectureStats(): Promise<{
     success: boolean;
@@ -740,7 +740,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }
 
   /**
-   * Export architecture in various formats
+   * Export architecture in various formats.
    *
    * @param params
    * @param params.architectureId
@@ -805,7 +805,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }
 
   /**
-   * Clone architecture with optional modifications
+   * Clone architecture with optional modifications.
    *
    * @param params
    * @param params.sourceArchitectureId
@@ -912,10 +912,11 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
 }
 
 /**
- * Factory function to create and initialize Architecture MCP Tools
+ * Factory function to create and initialize Architecture MCP Tools.
  *
  * @param db
  * @param logger
+ * @example
  */
 export async function createArchitectureMCPTools(
   db: any,

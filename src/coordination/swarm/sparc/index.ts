@@ -1,5 +1,7 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-sparc-index");
 /**
- * SPARC Methodology System - Main Export
+ * SPARC Methodology System - Main Export.
  *
  * Comprehensive SPARC (Specification, Pseudocode, Architecture, Refinement, Completion)
  * methodology system for systematic AI-assisted development workflow.
@@ -9,7 +11,7 @@
 export { SPARCEngineCore } from './core/sparc-engine';
 
 import { SPARCEngineCore } from './core/sparc-engine';
-import type { SPARCProject } from './types/sparc-types';
+import type { SPARCProject, PhaseResult } from './types/sparc-types';
 
 // MCP Integration
 export { SPARCMCPTools, sparcMCPTools } from './integrations/mcp-sparc-tools';
@@ -28,7 +30,7 @@ export class SPARC {
   private static instance: SPARCEngineCore;
 
   /**
-   * Get singleton SPARC engine instance
+   * Get singleton SPARC engine instance.
    */
   static getEngine(): SPARCEngineCore {
     if (!SPARC.instance) {
@@ -38,7 +40,7 @@ export class SPARC {
   }
 
   /**
-   * Quick project initialization with SPARC methodology
+   * Quick project initialization with SPARC methodology.
    *
    * @param name
    * @param domain
@@ -68,7 +70,7 @@ export class SPARC {
   }
 
   /**
-   * Execute complete SPARC workflow
+   * Execute complete SPARC workflow.
    *
    * @param projectId
    */
@@ -82,14 +84,14 @@ export class SPARC {
       'completion',
     ] as const;
 
-    const results = [];
+    const results: PhaseResult[] = [];
     for (const phase of phases) {
       try {
         const project = await SPARC.getProject(projectId);
         const result = await engine.executePhase(project, phase);
         results.push(result);
       } catch (error) {
-        console.error(`Failed to execute phase ${phase} for project ${projectId}:`, error);
+        logger.error(`Failed to execute phase ${phase} for project ${projectId}:`, error);
       }
     }
 
@@ -97,7 +99,7 @@ export class SPARC {
   }
 
   /**
-   * Get project by ID (mock implementation)
+   * Get project by ID (mock implementation).
    *
    * @param projectId
    */

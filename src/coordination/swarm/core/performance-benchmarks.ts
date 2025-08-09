@@ -1,5 +1,7 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-performance-benchmarks");
 /**
- * Comprehensive Performance Benchmarking Suite
+ * Comprehensive Performance Benchmarking Suite.
  *
  * Provides detailed performance analysis for SIMD operations,
  * WASM loading, memory management, and Claude Code Flow coordination.
@@ -8,6 +10,13 @@
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
 // import { getClaudeFlow } from './claude-flow-enhanced';
 import { ZenSwarm } from './index';
+
+interface Recommendation {
+  category: string;
+  priority: string;
+  message: string;
+  action: string;
+}
 
 class PerformanceBenchmarks {
   public results: Map<string, any>;
@@ -25,7 +34,7 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Initialize benchmarking suite
+   * Initialize benchmarking suite.
    */
   async initialize() {
     try {
@@ -46,13 +55,13 @@ class PerformanceBenchmarks {
       //   enableSIMD: true,
       // });
     } catch (error) {
-      console.error('❌ Failed to initialize benchmarking suite:', error);
+      logger.error('❌ Failed to initialize benchmarking suite:', error);
       throw error;
     }
   }
 
   /**
-   * Run comprehensive performance benchmarks
+   * Run comprehensive performance benchmarks.
    */
   async runFullBenchmarkSuite() {
     const suiteStartTime = performance.now();
@@ -80,13 +89,13 @@ class PerformanceBenchmarks {
       this.results.set('full_suite', results);
       return results;
     } catch (error) {
-      console.error('❌ Benchmark suite failed:', error);
+      logger.error('❌ Benchmark suite failed:', error);
       throw error;
     }
   }
 
   /**
-   * Benchmark SIMD operations performance
+   * Benchmark SIMD operations performance.
    */
   async benchmarkSIMDOperations() {
     const coreModule = await this.wasmLoader.loadModule('core');
@@ -121,6 +130,11 @@ class PerformanceBenchmarks {
         const size = sizes[i];
         const iterCount = iterations[i];
 
+        // Type guard to ensure size and iterCount are defined
+        if (size === undefined || iterCount === undefined) {
+          continue;
+        }
+
         try {
           const performanceReport = JSON.parse(
             coreModule.exports.simd_performance_report(size, iterCount)
@@ -139,9 +153,9 @@ class PerformanceBenchmarks {
           totalSpeedup += speedup;
           validTests++;
         } catch (error) {
-          console.warn(`Failed to benchmark ${operation} with size ${size}:`, error);
+          logger.warn(`Failed to benchmark ${operation} with size ${size}:`, error);
           results.operations[operation].sizes[size] = {
-            error: error.message,
+            error: (error as Error).message,
             speedupFactor: 1.0,
           };
         }
@@ -163,7 +177,7 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Benchmark WASM loading performance
+   * Benchmark WASM loading performance.
    */
   async benchmarkWASMLoading() {
     const results: any = {
@@ -196,7 +210,7 @@ class PerformanceBenchmarks {
         };
       } catch (error) {
         results.strategies[strategy] = {
-          error: error.message,
+          error: (error as Error).message,
           success: false,
         };
       }
@@ -223,7 +237,7 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Benchmark memory management performance
+   * Benchmark memory management performance.
    */
   async benchmarkMemoryManagement() {
     const results: any = {
@@ -241,6 +255,11 @@ class PerformanceBenchmarks {
       for (let i = 0; i < allocationSizes.length; i++) {
         const size = allocationSizes[i];
         const count = allocationCounts[i];
+
+        // Type guards to ensure size and count are defined
+        if (size === undefined || count === undefined) {
+          continue;
+        }
 
         const startTime = performance.now();
         const startMemory = this.wasmLoader.getTotalMemoryUsage();
@@ -301,7 +320,7 @@ class PerformanceBenchmarks {
 
       results.performanceScore = Math.max(0, 100 - avgAllocationTime); // Good if under 1ms average
     } catch (error) {
-      results.error = error.message;
+      results.error = (error as Error).message;
       results.performanceScore = 0;
     }
 
@@ -309,7 +328,7 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Benchmark neural network performance
+   * Benchmark neural network performance.
    */
   async benchmarkNeuralNetworks() {
     const results: any = {
@@ -340,8 +359,9 @@ class PerformanceBenchmarks {
         const startTime = performance.now();
         const iterations = config.name === 'large' ? 10 : 100;
 
-        // Create test network (simulated)
-        const testInput = Array.from({ length: config.layers[0] }, () => Math.random());
+        // Create test network (simulated) - ensure layers[0] is defined with fallback
+        const inputSize = config.layers[0] ?? 32; // Default to 32 if undefined
+        const testInput = Array.from({ length: inputSize }, () => Math.random());
 
         // Run multiple inferences
         for (let i = 0; i < iterations; i++) {
@@ -399,7 +419,7 @@ class PerformanceBenchmarks {
       const mediumNetworkThroughput = results.networkSizes.medium?.throughput || 0;
       results.performanceScore = Math.min(100, mediumNetworkThroughput / 10); // Good if >1000 inferences/sec
     } catch (error) {
-      results.error = error.message;
+      results.error = (error as Error).message;
       results.performanceScore = 0;
     }
 
@@ -407,7 +427,7 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Benchmark Claude Code Flow coordination
+   * Benchmark Claude Code Flow coordination.
    */
   async benchmarkClaudeFlowCoordination() {
     const results: any = {
@@ -479,7 +499,7 @@ class PerformanceBenchmarks {
         batchingReport.complianceScore * 0.3 + // Batching compliance (30%)
         Math.min(100, 100 - createTime) * 0.3; // Creation speed (30%)
     } catch (error) {
-      results.error = error.message;
+      results.error = (error as Error).message;
       results.performanceScore = 0;
     }
 
@@ -487,7 +507,7 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Benchmark parallel execution patterns
+   * Benchmark parallel execution patterns.
    */
   async benchmarkParallelExecution() {
     const results: any = {
@@ -582,7 +602,7 @@ class PerformanceBenchmarks {
 
       results.performanceScore = Math.min(100, avgEfficiency * 100);
     } catch (error) {
-      results.error = error.message;
+      results.error = (error as Error).message;
       results.performanceScore = 0;
     }
 
@@ -590,7 +610,7 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Test cross-browser compatibility
+   * Test cross-browser compatibility.
    */
   async benchmarkBrowserCompatibility() {
     const results: any = {
@@ -639,7 +659,7 @@ class PerformanceBenchmarks {
           (performanceCount / Object.keys(results.performance).length) * 40) *
         100;
     } catch (error) {
-      results.error = error.message;
+      results.error = (error as Error).message;
       results.performanceScore = 0;
     }
 
@@ -647,7 +667,7 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Get environment information
+   * Get environment information.
    */
   getEnvironmentInfo() {
     return {
@@ -663,11 +683,11 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Calculate overall performance score
+   * Calculate overall performance score.
    *
    * @param benchmarks
    */
-  calculateOverallScore(benchmarks) {
+  calculateOverallScore(benchmarks: any) {
     const weights = {
       simdOperations: 0.25,
       wasmLoading: 0.15,
@@ -683,8 +703,8 @@ class PerformanceBenchmarks {
     for (const [category, weight] of Object.entries(weights)) {
       const score = benchmarks[category]?.performanceScore;
       if (typeof score === 'number' && !Number.isNaN(score)) {
-        totalScore += score * weight;
-        totalWeight += weight;
+        totalScore += score * (weight as number);
+        totalWeight += (weight as number);
       }
     }
 
@@ -692,22 +712,24 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Simulate neural network inference
+   * Simulate neural network inference.
    *
    * @param input
    * @param layers
    */
-  simulateNeuralInference(input, layers) {
+  simulateNeuralInference(input: number[], layers: number[]) {
     let current = input;
 
     for (let i = 0; i < layers.length - 1; i++) {
       const nextSize = layers[i + 1];
+      if (nextSize === undefined) continue;
+      
       const next = new Array(nextSize);
 
       for (let j = 0; j < nextSize; j++) {
         let sum = 0;
         for (let k = 0; k < current.length; k++) {
-          sum += current[k] * Math.random(); // Simulated weight
+          sum += (current[k] ?? 0) * Math.random(); // Simulated weight
         }
         next[j] = Math.max(0, sum); // ReLU activation
       }
@@ -719,12 +741,12 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Simulate activation function
+   * Simulate activation function.
    *
    * @param vector
    * @param activation
    */
-  simulateActivation(vector, activation) {
+  simulateActivation(vector: number[], activation: string) {
     return vector.map((x) => {
       switch (activation) {
         case 'relu':
@@ -742,12 +764,12 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Simulate async task for parallel testing
+   * Simulate async task for parallel testing.
    *
    * @param duration
    * @param taskId
    */
-  async simulateAsyncTask(duration, taskId) {
+  async simulateAsyncTask(duration: number, taskId: string) {
     const startTime = performance.now();
 
     // Simulate work with setTimeout
@@ -761,11 +783,11 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Generate comprehensive performance report
+   * Generate comprehensive performance report.
    *
    * @param results
    */
-  generatePerformanceReport(results) {
+  generatePerformanceReport(results: any) {
     const report = {
       summary: {
         overallScore: results.performanceScore,
@@ -786,11 +808,11 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Get performance grade
+   * Get performance grade.
    *
    * @param score
    */
-  getPerformanceGrade(score) {
+  getPerformanceGrade(score: number) {
     if (score >= 90) {
       return 'A+';
     }
@@ -810,12 +832,12 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Generate performance recommendations
+   * Generate performance recommendations.
    *
    * @param benchmarks
    */
-  generateRecommendations(benchmarks) {
-    const recommendations = [];
+  generateRecommendations(benchmarks: any): Recommendation[] {
+    const recommendations: Recommendation[] = [];
 
     // SIMD recommendations
     if (benchmarks.simdOperations?.performanceScore < 70) {
@@ -861,11 +883,11 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Compare with baseline performance
+   * Compare with baseline performance.
    *
    * @param _results
    */
-  compareWithBaseline(_results) {
+  compareWithBaseline(_results: any) {
     // Would compare with stored baseline results
     return {
       available: false,
@@ -874,7 +896,7 @@ class PerformanceBenchmarks {
   }
 
   /**
-   * Generate CSV data for export
+   * Generate CSV data for export.
    *
    * @param results
    */

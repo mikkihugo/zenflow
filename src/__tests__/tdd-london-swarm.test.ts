@@ -136,7 +136,7 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
       it('should handle real-time events and broadcast to connected clients', async () => {
         // Arrange - Mock WebSocket contract
         const mockConnectionHandler = vi.fn();
-        const _mockMessageHandler = vi.fn();
+        const mockMessageHandler = vi.fn();
 
         mockWebSocketManager.createServer.mockResolvedValue(undefined);
         mockWebSocketManager.onConnection.mockImplementation(mockConnectionHandler);

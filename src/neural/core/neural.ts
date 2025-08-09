@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("neural-core-neural");
 /**
  * Neural Network CLI for ruv-swarm
  * Provides neural training, status, and pattern analysis using WASM
@@ -132,7 +134,7 @@ class NeuralCLI {
       if (typeof status === 'object') {
       }
     } catch (error) {
-      console.error(
+      logger.error(
         '❌ Error getting neural status:',
         error instanceof Error ? error.message : String(error)
       );
@@ -184,7 +186,7 @@ class NeuralCLI {
       const outputFile = path.join(outputDir, `training-${modelType}-${Date.now()}.json`);
       await fs.writeFile(outputFile, JSON.stringify(results, null, 2));
     } catch (error) {
-      console.error(
+      logger.error(
         '\n❌ Training failed:',
         error instanceof Error ? error.message : String(error)
       );
@@ -230,46 +232,45 @@ class NeuralCLI {
           'Learned Behaviors': ['Complex reasoning', 'Parallel processing', 'Feature extraction'],
           Strengths: ['Large contexts', 'Parallel computation', 'Transfer learning'],
         },
-      };
-
-      // Add cognitive patterns to the patterns object
-      patterns['convergent'] = {
-        'Cognitive Patterns': [
-          'Focused problem-solving',
-          'Analytical thinking',
-          'Solution convergence',
-        ],
-        'Learned Behaviors': ['Optimization', 'Error reduction', 'Goal achievement'],
-        Strengths: ['Efficiency', 'Precision', 'Consistency'],
-      };
-      patterns['divergent'] = {
-        'Cognitive Patterns': ['Creative exploration', 'Idea generation', 'Lateral connections'],
-        'Learned Behaviors': ['Innovation', 'Pattern breaking', 'Novel solutions'],
-        Strengths: ['Creativity', 'Flexibility', 'Discovery'],
-      };
-      patterns['lateral'] = {
-        'Cognitive Patterns': [
-          'Non-linear thinking',
-          'Cross-domain connections',
-          'Indirect approaches',
-        ],
-        'Learned Behaviors': ['Problem reframing', 'Alternative paths', 'Unexpected insights'],
-        Strengths: ['Innovation', 'Adaptability', 'Breakthrough thinking'],
-      };
-      patterns['systems'] = {
-        'Cognitive Patterns': ['Holistic thinking', 'System dynamics', 'Interconnection mapping'],
-        'Learned Behaviors': ['Dependency analysis', 'Feedback loops', 'Emergent properties'],
-        Strengths: ['Big picture view', 'Complex relationships', 'System optimization'],
-      };
-      patterns['critical'] = {
-        'Cognitive Patterns': ['Critical evaluation', 'Judgment formation', 'Validation processes'],
-        'Learned Behaviors': ['Quality assessment', 'Risk analysis', 'Decision validation'],
-        Strengths: ['Error detection', 'Quality control', 'Rational judgment'],
-      };
-      patterns['abstract'] = {
-        'Cognitive Patterns': ['Conceptual thinking', 'Generalization', 'Abstract reasoning'],
-        'Learned Behaviors': ['Pattern extraction', 'Concept formation', 'Theory building'],
-        Strengths: ['High-level thinking', 'Knowledge transfer', 'Model building'],
+        // Cognitive patterns
+        convergent: {
+          'Cognitive Patterns': [
+            'Focused problem-solving',
+            'Analytical thinking',
+            'Solution convergence',
+          ],
+          'Learned Behaviors': ['Optimization', 'Error reduction', 'Goal achievement'],
+          Strengths: ['Efficiency', 'Precision', 'Consistency'],
+        },
+        divergent: {
+          'Cognitive Patterns': ['Creative exploration', 'Idea generation', 'Lateral connections'],
+          'Learned Behaviors': ['Innovation', 'Pattern breaking', 'Novel solutions'],
+          Strengths: ['Creativity', 'Flexibility', 'Discovery'],
+        },
+        lateral: {
+          'Cognitive Patterns': [
+            'Non-linear thinking',
+            'Cross-domain connections',
+            'Indirect approaches',
+          ],
+          'Learned Behaviors': ['Problem reframing', 'Alternative paths', 'Unexpected insights'],
+          Strengths: ['Innovation', 'Adaptability', 'Breakthrough thinking'],
+        },
+        systems: {
+          'Cognitive Patterns': ['Holistic thinking', 'System dynamics', 'Interconnection mapping'],
+          'Learned Behaviors': ['Dependency analysis', 'Feedback loops', 'Emergent properties'],
+          Strengths: ['Big picture view', 'Complex relationships', 'System optimization'],
+        },
+        critical: {
+          'Cognitive Patterns': ['Critical evaluation', 'Judgment formation', 'Validation processes'],
+          'Learned Behaviors': ['Quality assessment', 'Risk analysis', 'Decision validation'],
+          Strengths: ['Error detection', 'Quality control', 'Rational judgment'],
+        },
+        abstract: {
+          'Cognitive Patterns': ['Conceptual thinking', 'Generalization', 'Abstract reasoning'],
+          'Learned Behaviors': ['Pattern extraction', 'Concept formation', 'Theory building'],
+          Strengths: ['High-level thinking', 'Knowledge transfer', 'Model building'],
+        },
       };
 
       // Handle 'all' pattern type
@@ -318,7 +319,7 @@ class NeuralCLI {
       //   patternType === 'all' ? 'convergent' : patternType
       // ); // xxx NEEDS_HUMAN: Unused variable - confirm if display logic is incomplete
     } catch (error) {
-      console.error('❌ Error analyzing patterns:', (error as Error).message);
+      logger.error('❌ Error analyzing patterns:', (error as Error).message);
       process.exit(1);
     }
   }
@@ -362,7 +363,7 @@ class NeuralCLI {
       // Save weights
       await fs.writeFile(outputPath, JSON.stringify(weights, null, 2));
     } catch (error) {
-      console.error('❌ Export failed:', (error as Error).message);
+      logger.error('❌ Export failed:', (error as Error).message);
       process.exit(1);
     }
   }

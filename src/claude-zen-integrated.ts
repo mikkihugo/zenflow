@@ -1,3 +1,5 @@
+import { getLogger } from "./config/logging-config";
+const logger = getLogger("claude-zen-integrated");
 /**
  * Claude Code Zen - Integrated Application Entry Point
  *
@@ -103,7 +105,7 @@ export class ClaudeZenIntegrated {
       // Start server
       this.server = app.listen(this.options.port, () => {});
     } catch (error) {
-      console.error('❌ Failed to start HTTP server:', error);
+      logger.error('❌ Failed to start HTTP server:', error);
       throw error;
     }
   }
@@ -156,7 +158,7 @@ async function main() {
       // Application heartbeat - could add health checks here
     }, 10000);
   } catch (error) {
-    console.error('❌ Failed to start Claude Code Zen Integrated:', error);
+    logger.error('❌ Failed to start Claude Code Zen Integrated:', error);
     process.exit(1);
   }
 }

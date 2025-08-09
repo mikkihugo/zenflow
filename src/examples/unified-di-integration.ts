@@ -35,22 +35,23 @@ export async function unifiedIntegrationExample(): Promise<void> {
   });
   registerSwarmProviders(container, {
     swarm: { basePath: './example-data/swarms' },
+    // TODO: TypeScript error TS2353 - backupsPath property name may be incorrect (AI unsure of safe fix - human review needed)
     backup: { backupsPath: './example-data/backups' },
   });
 
   try {
     const memorySystem = await initializeMemorySystem(container);
     const swarmSystem = await initializeSwarmStorage(container);
-    await memorySystem.backends.session.store('user:123', {
+    await memorySystem.backends['session'].store('user:123', {
       id: 123,
       name: 'John Doe',
       preferences: { theme: 'dark' },
     });
-    const _userData = await memorySystem.backends.session.retrieve('user:123');
+    const userData = await memorySystem.backends['session'].retrieve('user:123');
     const swarmId = 'example-swarm-001';
 
     // Create swarm cluster (repositories via DAL Factory)
-    const _cluster = await swarmSystem.databaseManager.createSwarmCluster(swarmId);
+    const cluster = await swarmSystem.databaseManager.createSwarmCluster(swarmId);
 
     // Store agent in graph database
     await swarmSystem.databaseManager.storeSwarmAgent(swarmId, {
@@ -75,23 +76,23 @@ export async function unifiedIntegrationExample(): Promise<void> {
       status: 'active',
       lastUpdate: new Date().toISOString(),
     };
-    await memorySystem.backends.cache.store(`swarm:${swarmId}:metadata`, swarmMetadata);
+    await memorySystem.backends['cache'].store(`swarm:${swarmId}:metadata`, swarmMetadata);
 
     // Use semantic memory to store swarm context
-    await memorySystem.backends.semantic.store(`swarm:${swarmId}:context`, {
+    await memorySystem.backends['semantic'].store(`swarm:${swarmId}:context`, {
       purpose: 'Example swarm for unified DI demonstration',
       capabilities: ['coordination', 'task execution', 'monitoring'],
       domain: 'system integration',
     });
-    for (const [_name, _spec] of Object.entries(memorySystem.metrics.performance)) {
+    for (const [name, spec] of Object.entries(memorySystem.metrics.performance)) {
     }
     const healthChecks = await Promise.allSettled([
-      memorySystem.backends.session.health(),
-      memorySystem.backends.cache.health(),
+      memorySystem.backends['session'].health(),
+      memorySystem.backends['cache'].health(),
       swarmSystem.databaseManager.getActiveSwarms(),
     ]);
 
-    const _healthyServices = healthChecks
+    const healthyServices = healthChecks
       .map((result, i) => ({
         name: ['Session Memory', 'Cache Memory', 'Swarm Database'][i],
         healthy: result.status === 'fulfilled',
@@ -113,8 +114,8 @@ function registerCoreServices(container: DIContainer): void {
   container.register(CORE_TOKENS.Logger, {
     type: 'singleton',
     create: () => ({
-      debug: (_msg: string, _meta?: any) => {},
-      info: (_msg: string, _meta?: any) => {},
+      debug: (msg: string, meta?: any) => {},
+      info: (msg: string, meta?: any) => {},
       warn: (msg: string, meta?: any) => console.warn(`[WARN] ${msg}`, meta || ''),
       error: (msg: string, meta?: any) => console.error(`[ERROR] ${msg}`, meta || ''),
     }),
@@ -135,7 +136,7 @@ function registerCoreServices(container: DIContainer): void {
         };
         return configs[key] ?? defaultValue;
       },
-      set: (_key: string, _value: any) => {},
+      set: (key: string, value: any) => {},
       has: (key: string) =>
         key.startsWith('database.') || key.startsWith('memory.') || key.startsWith('swarm.'),
     }),
@@ -165,7 +166,7 @@ function registerDatabaseServices(container: DIContainer): void {
       new DALFactory(
         container.resolve(CORE_TOKENS.Logger),
         container.resolve(CORE_TOKENS.Config),
-        container.resolve(DATABASE_TOKENS.ProviderFactory)
+        container.resolve(DATABASE_TOKENS.ProviderFactory) as DatabaseProviderFactory
       ),
   });
 }
@@ -188,13 +189,13 @@ export async function specializedUsageExamples(): Promise<void> {
 
   // Simulate API response caching
   const apiResponse = { data: 'expensive computation result', cached: true };
-  await memorySystem.backends.cache.store('api:expensive-call', apiResponse);
-  const _cachedResult = await memorySystem.backends.cache.retrieve('api:expensive-call');
+  await memorySystem.backends['cache'].store('api:expensive-call', apiResponse);
+  const _cachedResult = await memorySystem.backends['cache'].retrieve('api:expensive-call');
   const swarmSystem = await initializeSwarmStorage(container);
 
   // Create related swarms sharing dependencies
-  const _parentSwarm = await swarmSystem.databaseManager.createSwarmCluster('parent-swarm');
-  const _childSwarm = await swarmSystem.databaseManager.createSwarmCluster('child-swarm');
+  const parentSwarm = await swarmSystem.databaseManager.createSwarmCluster('parent-swarm');
+  const childSwarm = await swarmSystem.databaseManager.createSwarmCluster('child-swarm');
 
   // Store dependency relationship in graph
   await swarmSystem.databaseManager.storeSwarmTask('parent-swarm', {
@@ -203,7 +204,7 @@ export async function specializedUsageExamples(): Promise<void> {
     description: 'Manage multiple child swarm operations',
     dependencies: [],
   });
-  const semanticMemory = memorySystem.backends.semantic;
+  const semanticMemory = memorySystem.backends['semantic'];
 
   // Store related concepts
   await semanticMemory.store('concept:ai-coordination', {
@@ -217,14 +218,14 @@ export async function specializedUsageExamples(): Promise<void> {
  */
 export function productionDeploymentExample(): void {
   // Production-ready DI container
-  const _container = new DIContainer({
+  const container = new DIContainer({
     enableCircularDependencyDetection: true,
     enablePerformanceMetrics: true,
     maxResolutionDepth: 100,
   });
 
   // Production configuration
-  const _productionConfig = {
+  const productionConfig = {
     memory: {
       cache: { type: 'memory' as const, maxSize: 100000 },
       session: { type: 'sqlite' as const, path: '/var/lib/claude-zen/memory/sessions.db' },

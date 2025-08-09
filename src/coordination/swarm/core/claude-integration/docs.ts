@@ -1,3 +1,5 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-claude-integration-docs");
 /**
  * Documentation generation module for Claude Code integration
  * Generates claude.md and .claude/commands/ documentation
@@ -1198,7 +1200,7 @@ ${config.details}
       await fs.copyFile(filePath, backupPath);
       return backupPath;
     } catch (error) {
-      console.error('⚠️  Failed to create backup:', (error as Error).message);
+      logger.error('⚠️  Failed to create backup:', (error as Error).message);
       throw error;
     }
   }
@@ -1296,7 +1298,7 @@ ${config.details}
 
       return { file: 'CLAUDE.md', success: true, action: 'merged' };
     } catch (error) {
-      console.error('❌ Failed to merge CLAUDE.md:', (error as Error).message);
+      logger.error('❌ Failed to merge CLAUDE.md:', (error as Error).message);
       throw error;
     }
   }
@@ -1620,7 +1622,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
 
       return results;
     } catch (error) {
-      console.error('❌ Failed to generate documentation:', (error as Error).message);
+      logger.error('❌ Failed to generate documentation:', (error as Error).message);
       throw error;
     }
   }

@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("coordination-agents-composite-system");
 /**
  * @file Composite Pattern Implementation for Agent Hierarchies
  * Provides uniform interfaces for individual agents and agent groups
@@ -845,7 +847,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     const initPromises = Array.from(this.members.values()).map((member) =>
       member
         .initialize(config)
-        .catch((error) => console.error(`Failed to initialize member ${member.getId()}:`, error))
+        .catch((error) => logger.error(`Failed to initialize member ${member.getId()}:`, error))
     );
 
     await Promise.allSettled(initPromises);
@@ -857,7 +859,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     const shutdownPromises = Array.from(this.members.values()).map((member) =>
       member
         .shutdown()
-        .catch((error) => console.error(`Failed to shutdown member ${member.getId()}:`, error))
+        .catch((error) => logger.error(`Failed to shutdown member ${member.getId()}:`, error))
     );
 
     await Promise.allSettled(shutdownPromises);

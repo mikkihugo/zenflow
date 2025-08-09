@@ -1,11 +1,11 @@
 /**
- * DSPy Integration Manager
+ * DSPy Integration Manager.
  *
  * Central coordination point for all DSPy-powered systems:
  * - Core operations (code analysis, generation, error diagnosis)
  * - Swarm intelligence (agent selection, topology optimization)
  * - MCP tools enhancement (intelligent project tools)
- * - Unified learning and optimization across all DSPy systems
+ * - Unified learning and optimization across all DSPy systems.
  */
 
 import DSPySwarmIntelligence from '../coordination/swarm/dspy-swarm-intelligence';
@@ -36,9 +36,9 @@ export interface DSPyIntegrationConfig extends DSPyConfig {
 export class DSPyIntegrationManager {
   private config: DSPyIntegrationConfig;
   private dspyWrapper: DSPyWrapper | null = null;
-  private coreOperations: DSPyEnhancedOperations;
-  private swarmIntelligence: DSPySwarmIntelligence;
-  private mcpTools: DSPyEnhancedMCPTools;
+  private coreOperations!: DSPyEnhancedOperations;
+  private swarmIntelligence!: DSPySwarmIntelligence;
+  private mcpTools!: DSPyEnhancedMCPTools;
   private unifiedLearningHistory: Array<{
     system: 'core' | 'swarm' | 'mcp';
     operation: string;
@@ -75,14 +75,15 @@ export class DSPyIntegrationManager {
   private async initializeSystems() {
     // Initialize DSPy wrapper
     try {
-      this.dspyWrapper = await createDSPyWrapper({
-        model: this.config.model,
-        temperature: this.config.temperature,
-        maxTokens: this.config.maxTokens,
-        apiKey: this.config.apiKey,
-        baseURL: this.config.baseURL,
-        modelParams: this.config.modelParams,
-      });
+      const dsypConfig: DSPyConfig = {};
+      if (this.config.model !== undefined) dsypConfig.model = this.config.model;
+      if (this.config.temperature !== undefined) dsypConfig.temperature = this.config.temperature;
+      if (this.config.maxTokens !== undefined) dsypConfig.maxTokens = this.config.maxTokens;
+      if (this.config.apiKey !== undefined) dsypConfig.apiKey = this.config.apiKey;
+      if (this.config.baseURL !== undefined) dsypConfig.baseURL = this.config.baseURL;
+      if (this.config.modelParams !== undefined) dsypConfig.modelParams = this.config.modelParams;
+      
+      this.dspyWrapper = await createDSPyWrapper(dsypConfig);
     } catch (error) {
       logger.error('Failed to initialize DSPy wrapper', { error });
       throw error;
@@ -92,18 +93,24 @@ export class DSPyIntegrationManager {
     this.coreOperations = new DSPyEnhancedOperations(this.dspyWrapper);
 
     // Initialize swarm intelligence system
-    this.swarmIntelligence = new DSPySwarmIntelligence({
-      model: this.config.model,
-      temperature: this.config.temperature,
+    const swarmConfig: any = {
       enableContinuousLearning: false, // Managed by unified learning
-    });
+    };
+    if (this.config.model !== undefined) swarmConfig.model = this.config.model;
+    if (this.config.temperature !== undefined) swarmConfig.temperature = this.config.temperature;
+    
+    this.swarmIntelligence = new DSPySwarmIntelligence(swarmConfig);
 
     // Initialize MCP tools system
     this.mcpTools = new DSPyEnhancedMCPTools();
   }
 
   /**
-   * Analyze code with DSPy intelligence
+   * Analyze code with DSPy intelligence.
+   *
+   * @param code
+   * @param taskType
+   * @param context
    */
   async analyzeCode(code: string, taskType: string = 'general', context?: any) {
     const startTime = Date.now();
@@ -144,7 +151,11 @@ export class DSPyIntegrationManager {
   }
 
   /**
-   * Generate code with DSPy intelligence
+   * Generate code with DSPy intelligence.
+   *
+   * @param requirements
+   * @param context
+   * @param styleGuide
    */
   async generateCode(requirements: string, context: string, styleGuide?: string) {
     const startTime = Date.now();
@@ -186,7 +197,11 @@ export class DSPyIntegrationManager {
   }
 
   /**
-   * Diagnose errors with DSPy intelligence
+   * Diagnose errors with DSPy intelligence.
+   *
+   * @param errorMessage
+   * @param codeContext
+   * @param filePath
    */
   async diagnoseError(errorMessage: string, codeContext: string, filePath: string) {
     const startTime = Date.now();
@@ -228,7 +243,10 @@ export class DSPyIntegrationManager {
   }
 
   /**
-   * Select optimal agents with DSPy intelligence
+   * Select optimal agents with DSPy intelligence.
+   *
+   * @param taskRequirements
+   * @param availableAgents
    */
   async selectOptimalAgents(taskRequirements: any, availableAgents: any[]) {
     const startTime = Date.now();
@@ -275,7 +293,12 @@ export class DSPyIntegrationManager {
   }
 
   /**
-   * Optimize swarm topology with DSPy intelligence
+   * Optimize swarm topology with DSPy intelligence.
+   *
+   * @param currentTopology
+   * @param taskLoad
+   * @param agentPerformance
+   * @param communicationPatterns
    */
   async optimizeTopology(
     currentTopology: string,
@@ -327,7 +350,11 @@ export class DSPyIntegrationManager {
   }
 
   /**
-   * Enhanced MCP tool execution
+   * Enhanced MCP tool execution.
+   *
+   * @param toolName
+   * @param parameters
+   * @param context
    */
   async executeMCPTool(toolName: string, parameters: any, context?: any) {
     const startTime = Date.now();
@@ -386,7 +413,13 @@ export class DSPyIntegrationManager {
   }
 
   /**
-   * Update operation outcome for unified learning
+   * Update operation outcome for unified learning.
+   *
+   * @param system
+   * @param operation
+   * @param parameters
+   * @param success
+   * @param actualResult
    */
   updateOperationOutcome(
     system: 'core' | 'swarm' | 'mcp',
@@ -433,7 +466,7 @@ export class DSPyIntegrationManager {
   }
 
   /**
-   * Get comprehensive DSPy system statistics
+   * Get comprehensive DSPy system statistics.
    */
   async getSystemStats(): Promise<DSPyUnifiedSystemStats> {
     const coreStats = this.coreOperations.getProgramStats();
@@ -494,7 +527,7 @@ export class DSPyIntegrationManager {
   }
 
   /**
-   * Get system health report
+   * Get system health report.
    */
   async getHealthReport() {
     const stats = await this.getSystemStats();
@@ -577,7 +610,7 @@ export class DSPyIntegrationManager {
     );
 
     if (codeGenErrors.length > 2) {
-      patterns.push({
+      (patterns as any[]).push({
         type: 'code_quality_improvement',
         description: 'Code generation leading to errors - improve generation quality',
         frequency: codeGenErrors.length,
@@ -591,7 +624,7 @@ export class DSPyIntegrationManager {
     );
 
     if (poorAgentSelection.length > 2) {
-      patterns.push({
+      (patterns as any[]).push({
         type: 'agent_selection_improvement',
         description: 'Low confidence in agent selections - improve selection criteria',
         frequency: poorAgentSelection.length,
@@ -623,7 +656,7 @@ export class DSPyIntegrationManager {
 
   private async getEnhancedInsights(operation: string, result: any): Promise<string[]> {
     // Cross-system insights based on historical patterns
-    const insights = [];
+    const insights: string[] = [];
 
     if (operation === 'code_analysis' && result.complexity > 70) {
       insights.push('High complexity detected - consider refactoring recommendations');
@@ -647,7 +680,7 @@ export class DSPyIntegrationManager {
   }
 
   private async getIntegrationRecommendations(code: string, context: string): Promise<string[]> {
-    const recommendations = [];
+    const recommendations: string[] = [];
 
     if (code.includes('import') && !context.includes('package.json')) {
       recommendations.push('Verify all imports are available in package.json');
@@ -736,7 +769,7 @@ export class DSPyIntegrationManager {
   }
 
   private async getCrossSystemInsights(toolName: string, _result: any): Promise<string[]> {
-    const insights = [];
+    const insights: string[] = [];
 
     // Look for patterns across systems
     const recentCore = this.unifiedLearningHistory.filter(
@@ -754,7 +787,7 @@ export class DSPyIntegrationManager {
   }
 
   private async getOptimizationSuggestions(result: any): Promise<string[]> {
-    const suggestions = [];
+    const suggestions: string[] = [];
 
     if (result.confidence < 0.8) {
       suggestions.push('Gather more context for better results');
@@ -786,7 +819,7 @@ export class DSPyIntegrationManager {
   }
 
   private generateHealthRecommendations(stats: DSPySystemStats): string[] {
-    const recommendations = [];
+    const recommendations: string[] = [];
 
     if (stats.unified.overallSuccessRate < 80) {
       recommendations.push('Increase training data quality and quantity');

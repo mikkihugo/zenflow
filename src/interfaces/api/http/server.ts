@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-api-http-server");
 /**
  * REST API Server - Express with Schema-driven Development
  *
@@ -15,6 +17,10 @@ import express, { type Application, type Request, type Response } from 'express'
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 
+// Import centralized configuration
+import { DEFAULT_CONFIG } from '../../config/defaults';
+import { getCORSOrigins, getAPIEndpoints } from '../../config/url-builder';
+
 // Optional dependencies - handle missing gracefully
 let compression: any = null;
 let OpenApiValidator: any = null;
@@ -24,20 +30,22 @@ let swaggerUi: any = null;
 try {
   compression = require('compression');
 } catch (_e) {
-  console.warn('compression package not available - performance middleware disabled');
+  logger.warn('compression package not available - performance middleware disabled');
 }
 
 try {
   ({ OpenApiValidator } = require('express-openapi-validator'));
 } catch (_e) {
-  console.warn('express-openapi-validator package not available - request validation disabled');
+  logger.warn(
+    'express-openapi-validator package not available - request validation disabled'
+  );
 }
 
 try {
   swaggerJsdoc = require('swagger-jsdoc');
   swaggerUi = require('swagger-ui-express');
 } catch (_e) {
-  console.warn('swagger packages not available - API documentation disabled');
+  logger.warn('swagger packages not available - API documentation disabled');
 }
 
 import { authMiddleware } from './middleware/auth';
@@ -48,6 +56,7 @@ import { requestLogger } from './middleware/logging';
 // Import modular route handlers
 import { createCoordinationRoutes } from './v1/coordination';
 import { createDatabaseRoutes } from './v1/database';
+import { getConfig } from '../../../config';
 import { createMemoryRoutes } from './v1/memory';
 import { createNeuralRoutes } from './v1/neural';
 
@@ -86,51 +95,48 @@ export interface APIClientConfig {
 }
 
 /**
- * Default server configuration with secure defaults
+ * Default server configuration with secure defaults from centralized config
  */
-export const DEFAULT_API_CONFIG: APIServerConfig = {
-  port: 3000,
-  host: 'localhost',
-  environment: (process.env['NODE_ENV'] as any) || 'development',
-  enableSwagger: true,
-  enableValidation: true,
-  enableRateLimit: true,
-  rateLimitWindowMs: 15 * 60 * 1000, // 15 minutes
-  rateLimitMaxRequests: 100, // 100 requests per window
-  corsOrigins: ['http://localhost:3000', 'http://localhost:3001'],
-} as const;
+export const DEFAULT_API_CONFIG: APIServerConfig = (() => {
+  const centralConfig = getConfig();
+  return {
+    port: centralConfig.interfaces.web.port,
+    host: centralConfig.interfaces.web.host,
+    environment: centralConfig.environment.isProduction ? 'production' : 
+                 centralConfig.environment.isDevelopment ? 'development' : 'test',
+    enableSwagger: centralConfig.environment.enableDebugEndpoints,
+    enableValidation: centralConfig.environment.strictValidation,
+    enableRateLimit: true,
+    rateLimitWindowMs: 15 * 60 * 1000, // 15 minutes
+    rateLimitMaxRequests: 100, // 100 requests per window
+    corsOrigins: centralConfig.interfaces.web.corsOrigins,
+  } as const;
+})();
 
 /**
  * OpenAPI 3.0 Configuration
  * Unified documentation for all domain APIs
  */
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Claude Code Flow API',
-      version: '1.0.0',
-      description: 'Unified API for coordination, neural networks, memory, and database operations',
-      contact: {
-        name: 'Claude Code Flow Team',
-        url: 'https://github.com/claude-zen-flow',
+const swaggerOptions = (() => {
+  const centralConfig = getConfig();
+  return {
+    definition: {
+      openapi: '3.0.0',
+      info: {
+        title: 'Claude Code Flow API',
+        version: '1.0.0',
+        description: 'Unified API for coordination, neural networks, memory, and database operations',
+        contact: {
+          name: 'Claude Code Flow Team',
+          url: 'https://github.com/claude-zen-flow',
+        },
+        license: {
+          name: 'MIT',
+          url: 'https://opensource.org/licenses/MIT',
+        },
       },
-      license: {
-        name: 'MIT',
-        url: 'https://opensource.org/licenses/MIT',
-      },
-    },
-    servers: [
-      {
-        url: 'http://localhost:3000',
-        description: 'Development server',
-      },
-      {
-        url: 'https://api.claude-zen-flow.com',
-        description: 'Production server',
-      },
-    ],
-    components: {
+      servers: getAPIEndpoints(),
+      components: {
       securitySchemes: {
         BearerAuth: {
           type: 'http',
@@ -144,24 +150,25 @@ const swaggerOptions = {
         },
       },
     },
-    security: [
-      {
-        BearerAuth: [],
-      },
-      {
-        ApiKeyAuth: [],
-      },
-    ],
-  },
-  apis: [
+      security: [
+        {
+          BearerAuth: [],
+        },
+        {
+          ApiKeyAuth: [],
+        },
+      ],
+    },
+    apis: [
     // Domain API surface files (coordination + neural) - keep explicit
     './src/coordination/api.ts',
     './src/neural/api.ts',
     // New canonical interface routes & schemas (replaces legacy ./src/api/* globs)
-    './src/interfaces/api/http/v1/*.ts',
-    './src/interfaces/api/http/schemas/*.ts',
-  ],
-};
+      './src/interfaces/api/http/v1/*.ts',
+      './src/interfaces/api/http/schemas/*.ts',
+    ],
+  };
+})();
 
 /**
  * Main API Server Class
@@ -175,7 +182,12 @@ export class APIServer {
   private server?: any;
 
   constructor(config: Partial<APIServerConfig> = {}) {
-    this.config = { ...DEFAULT_API_CONFIG, ...config };
+    // Merge config and populate CORS origins dynamically from centralized configuration
+    this.config = { 
+      ...DEFAULT_API_CONFIG, 
+      ...config,
+      corsOrigins: config.corsOrigins || getCORSOrigins()
+    };
     this.app = express();
     this.setupMiddleware();
     this.setupRoutes();
@@ -499,7 +511,7 @@ if (require.main === module) {
       await server.stop();
       process.exit(0);
     } catch (error) {
-      console.error('Error during shutdown:', error);
+      logger.error('Error during shutdown:', error);
       process.exit(1);
     }
   };
@@ -509,7 +521,7 @@ if (require.main === module) {
 
   // Start server
   server.start().catch((error) => {
-    console.error('Failed to start API server:', error);
+    logger.error('Failed to start API server:', error);
     process.exit(1);
   });
 }

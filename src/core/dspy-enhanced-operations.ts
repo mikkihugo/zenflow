@@ -1,11 +1,11 @@
 /**
- * DSPy-Enhanced Claude Code Operations
+ * DSPy-Enhanced Claude Code Operations.
  *
  * Integrates ruvnet dspy.ts into core Claude Code operations for:
  * - Intelligent code analysis and generation
  * - Automated prompt optimization for different tasks
  * - Context-aware decision making
- * - Self-improving workflows
+ * - Self-improving workflows.
  */
 
 import type { DSPyProgram, DSPyWrapper } from '../neural/types/dspy-types';
@@ -68,7 +68,10 @@ export class DSPyEnhancedOperations {
   }
 
   /**
-   * Analyze code using DSPy intelligence
+   * Analyze code using DSPy intelligence.
+   *
+   * @param code
+   * @param taskType
    */
   async analyzeCode(code: string, taskType: string = 'general') {
     const program = this.programs.get('code_analysis');
@@ -84,16 +87,23 @@ export class DSPyEnhancedOperations {
     }
 
     const result = executionResult.result;
+    if (!result) {
+      throw new Error('No result returned from code analysis');
+    }
     return {
-      analysis: result.analysis,
-      suggestions: result.suggestions,
-      complexity: result.complexity,
-      confidence: result.confidence || executionResult.metadata.confidence || 0.8,
+      analysis: result['analysis'],
+      suggestions: result['suggestions'],
+      complexity: result['complexity'],
+      confidence: result['confidence'] || executionResult.metadata.confidence || 0.8,
     };
   }
 
   /**
-   * Diagnose errors using DSPy intelligence
+   * Diagnose errors using DSPy intelligence.
+   *
+   * @param errorMessage
+   * @param codeContext
+   * @param filePath
    */
   async diagnoseError(errorMessage: string, codeContext: string, filePath: string) {
     const program = this.programs.get('error_diagnosis');
@@ -110,16 +120,23 @@ export class DSPyEnhancedOperations {
     }
 
     const result = executionResult.result;
+    if (!result) {
+      throw new Error('No result returned from error diagnosis');
+    }
     return {
-      diagnosis: result.diagnosis,
-      fixSuggestions: result.fix_suggestions,
-      confidence: result.confidence || executionResult.metadata.confidence || 0.7,
+      diagnosis: result['diagnosis'],
+      fixSuggestions: result['fix_suggestions'],
+      confidence: result['confidence'] || executionResult.metadata.confidence || 0.7,
       severity: this.assessErrorSeverity(errorMessage),
     };
   }
 
   /**
-   * Generate code using DSPy intelligence
+   * Generate code using DSPy intelligence.
+   *
+   * @param requirements
+   * @param context
+   * @param styleGuide
    */
   async generateCode(
     requirements: string,
@@ -140,16 +157,23 @@ export class DSPyEnhancedOperations {
     }
 
     const result = executionResult.result;
+    if (!result) {
+      throw new Error('No result returned from code generation');
+    }
     return {
-      code: result.code,
-      explanation: result.explanation,
-      tests: result.tests,
-      estimatedComplexity: this.estimateComplexity(result.code),
+      code: result['code'],
+      explanation: result['explanation'],
+      tests: result['tests'],
+      estimatedComplexity: this.estimateComplexity(result['code']),
     };
   }
 
   /**
-   * Orchestrate tasks using DSPy intelligence
+   * Orchestrate tasks using DSPy intelligence.
+   *
+   * @param taskDescription
+   * @param availableAgents
+   * @param projectContext
    */
   async orchestrateTask(
     taskDescription: string,
@@ -170,15 +194,19 @@ export class DSPyEnhancedOperations {
     }
 
     return {
-      execution_plan: executionResult.result?.execution_plan || [],
-      agent_assignments: executionResult.result?.agent_assignments || {},
-      priority_order: executionResult.result?.priority_order || [],
-      estimatedDuration: this.estimateDuration(executionResult.result?.execution_plan?.length || 0),
+      execution_plan: executionResult.result?.['execution_plan'] || [],
+      agent_assignments: executionResult.result?.['agent_assignments'] || {},
+      priority_order: executionResult.result?.['priority_order'] || [],
+      estimatedDuration: this.estimateDuration(executionResult.result?.['execution_plan']?.length || 0),
     };
   }
 
   /**
-   * Optimize swarm using DSPy intelligence
+   * Optimize swarm using DSPy intelligence.
+   *
+   * @param currentTopology
+   * @param taskRequirements
+   * @param performanceMetrics
    */
   async optimizeSwarm(
     currentTopology: string,
@@ -199,16 +227,22 @@ export class DSPyEnhancedOperations {
     }
 
     const result = executionResult.result;
+    if (!result) {
+      throw new Error('No result returned from swarm optimization');
+    }
     return {
-      optimizedTopology: result.optimized_topology,
-      agentRebalancing: result.agent_rebalancing,
-      performancePrediction: result.performance_prediction,
-      optimizationReasoning: result.reasoning || 'DSPy optimization applied',
+      optimizedTopology: result['optimized_topology'],
+      agentRebalancing: result['agent_rebalancing'],
+      performancePrediction: result['performance_prediction'],
+      optimizationReasoning: result['reasoning'] || 'DSPy optimization applied',
     };
   }
 
   /**
-   * Train DSPy programs with examples from successful operations
+   * Train DSPy programs with examples from successful operations.
+   *
+   * @param operationType
+   * @param examples
    */
   async trainFromSuccessfulOperations(
     operationType: string,
@@ -248,7 +282,7 @@ export class DSPyEnhancedOperations {
   }
 
   /**
-   * Get DSPy program statistics
+   * Get DSPy program statistics.
    */
   getProgramStats() {
     return {

@@ -1,3 +1,5 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("interfaces-api-http-di-database-container");
 /**
  * Database Domain DI Container Setup - Simplified
  * Configures dependency injection for database operations
@@ -151,11 +153,11 @@ class ConsoleLogger {
   info(_message: string, _meta?: any): void {}
 
   warn(message: string, meta?: any): void {
-    console.warn(`[WARN] ${message}`, meta || '');
+    logger.warn(`[WARN] ${message}`, meta || '');
   }
 
   error(message: string, meta?: any): void {
-    console.error(`[ERROR] ${message}`, meta || '');
+    logger.error(`[ERROR] ${message}`, meta || '');
   }
 }
 

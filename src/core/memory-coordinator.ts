@@ -1,8 +1,8 @@
 /**
- * Unified Memory System - DAL Integration
+ * Unified Memory System - DAL Integration.
  *
  * Integrates memory backend functionality using unified DAL
- * Supports all database types through consistent DAL interface
+ * Supports all database types through consistent DAL interface.
  */
 
 import { EventEmitter } from 'node:events';
@@ -69,13 +69,13 @@ interface BackendInterface {
 }
 
 /**
- * LanceDB Backend - Vector Database for Semantic Storage using DAL
+ * LanceDB Backend - Vector Database for Semantic Storage using DAL.
  *
  * @example
  */
 class LanceDBBackend implements BackendInterface {
-  private vectorRepository: IRepository<any>;
-  private vectorDAO: IVectorRepository<any>;
+  private vectorRepository!: IRepository<any>;
+  private vectorDAO!: IRepository<any>;
   private config: MemoryConfig;
 
   constructor(config: MemoryConfig) {
@@ -226,7 +226,7 @@ class LanceDBBackend implements BackendInterface {
 }
 
 /**
- * SQLite Backend - Relational Database for Structured Storage
+ * SQLite Backend - Relational Database for Structured Storage.
  *
  * @example
  */
@@ -425,7 +425,7 @@ class SQLiteBackend implements BackendInterface {
 }
 
 /**
- * JSON Backend - File-based Storage for Simple Use Cases
+ * JSON Backend - File-based Storage for Simple Use Cases.
  *
  * @example
  */
@@ -569,11 +569,11 @@ class JSONBackend implements BackendInterface {
 }
 
 /**
- * Unified Memory System - Main Interface
+ * Unified Memory System - Main Interface.
  *
  * @example
  */
-export class UnifiedMemorySystem extends EventEmitter {
+export class MemorySystem extends EventEmitter {
   private backend: BackendInterface;
   private config: MemoryConfig;
   private initialized = false;

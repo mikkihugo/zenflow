@@ -1,9 +1,9 @@
 /**
  * Database Domain REST API Controller
- * Provides comprehensive REST endpoints for database management
+ * Provides comprehensive REST endpoints for database management.
  *
- * @file database-controller.ts
- * @description Enhanced database controller with DI integration for Issue #63
+ * @file Database-controller.ts.
+ * @description Enhanced database controller with DI integration for Issue #63.
  */
 
 import type { ConnectionStats, ILogger } from '../../core/interfaces/base-interfaces';
@@ -21,7 +21,7 @@ import type {
 } from '../providers/database-providers';
 
 /**
- * Request interface for database query operations
+ * Request interface for database query operations.
  *
  * @example
  */
@@ -44,7 +44,7 @@ export interface QueryRequest {
 }
 
 /**
- * Request interface for database command operations
+ * Request interface for database command operations.
  *
  * @example
  */
@@ -65,7 +65,7 @@ export interface CommandRequest {
 }
 
 /**
- * Request interface for batch operations
+ * Request interface for batch operations.
  *
  * @example
  */
@@ -86,7 +86,7 @@ export interface BatchRequest {
 }
 
 /**
- * Response interface for database operations
+ * Response interface for database operations.
  *
  * @example
  */
@@ -113,7 +113,7 @@ export interface DatabaseResponse {
 }
 
 /**
- * Database health status interface
+ * Database health status interface.
  *
  * @example
  */
@@ -137,7 +137,7 @@ export interface DatabaseHealthStatus {
 }
 
 /**
- * Migration operation interface
+ * Migration operation interface.
  *
  * @example
  */
@@ -153,7 +153,7 @@ export interface MigrationRequest {
 }
 
 /**
- * Request interface for graph query operations
+ * Request interface for graph query operations.
  *
  * @example
  */
@@ -176,7 +176,7 @@ export interface GraphQueryRequest {
 }
 
 /**
- * Request interface for graph batch operations
+ * Request interface for graph batch operations.
  *
  * @example
  */
@@ -195,7 +195,7 @@ export interface GraphBatchRequest {
 }
 
 /**
- * Request interface for vector search operations
+ * Request interface for vector search operations.
  *
  * @example
  */
@@ -211,7 +211,7 @@ export interface VectorSearchRequest {
 }
 
 /**
- * Request interface for adding vectors
+ * Request interface for adding vectors.
  *
  * @example
  */
@@ -227,7 +227,7 @@ export interface VectorAddRequest {
 }
 
 /**
- * Request interface for vector index creation
+ * Request interface for vector index creation.
  *
  * @example
  */
@@ -242,15 +242,78 @@ export interface VectorIndexRequest {
   type?: string;
 }
 
+// Transaction result types
+interface TransactionQueryResult {
+  type: 'query';
+  sql: string;
+  params?: any[];
+  success: boolean;
+  rowCount?: number;
+  data?: any;
+  error?: string;
+}
+
+interface TransactionExecuteResult {
+  type: 'execute';
+  sql: string;
+  params?: any[];
+  success: boolean;
+  affectedRows?: number;
+  insertId?: any;
+  error?: string;
+}
+
+type TransactionResult = TransactionQueryResult | TransactionExecuteResult;
+
+// Validation result types
+interface ValidationResult {
+  statement: string;
+  valid: boolean;
+  issues: string[];
+}
+
+// Migration result types
+interface MigrationResult {
+  statement: string;
+  success: boolean;
+  affectedRows?: number;
+  executionTime?: number;
+  error?: string;
+}
+
+// Graph result types  
+interface GraphQueryResult {
+  cypher: string;
+  params?: any[];
+  success: boolean;
+  nodeCount?: number;
+  relationshipCount?: number;
+  data?: {
+    nodes: Array<{
+      id: any;
+      labels: string[];
+      properties: Record<string, any>;
+    }>;
+    relationships: Array<{
+      id: any;
+      type: string;
+      startNodeId: any;
+      endNodeId: any;
+      properties: Record<string, any>;
+    }>;
+  };
+  error?: string;
+}
+
 /**
  * Database REST API Controller
- * Provides comprehensive database management through REST endpoints
+ * Provides comprehensive database management through REST endpoints.
  *
  * @example
  */
 @injectable
 export class DatabaseController {
-  private adapter: DatabaseAdapter;
+  private adapter!: DatabaseAdapter; // Definite assignment assertion
   private performanceMetrics = {
     operationCount: 0,
     totalResponseTime: 0,
@@ -269,7 +332,7 @@ export class DatabaseController {
 
   /**
    * GET /api/database/status
-   * Get comprehensive database status and health information
+   * Get comprehensive database status and health information.
    */
   async getDatabaseStatus(): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -327,7 +390,7 @@ export class DatabaseController {
   /**
    * POST /api/database/query
    * Execute database SELECT queries with parameters
-   * Automatically detects and routes Cypher queries to graph adapter
+   * Automatically detects and routes Cypher queries to graph adapter.
    *
    * @param request
    */
@@ -408,7 +471,7 @@ export class DatabaseController {
 
   /**
    * POST /api/database/execute
-   * Execute database commands (INSERT, UPDATE, DELETE, DDL)
+   * Execute database commands (INSERT, UPDATE, DELETE, DDL).
    *
    * @param request
    */
@@ -477,7 +540,7 @@ export class DatabaseController {
 
   /**
    * POST /api/database/transaction
-   * Execute multiple commands within a transaction
+   * Execute multiple commands within a transaction.
    *
    * @param request
    */
@@ -492,7 +555,7 @@ export class DatabaseController {
       }
 
       const results = await this.adapter.transaction(async (tx) => {
-        const transactionResults = [];
+        const transactionResults: TransactionResult[] = [];
 
         for (const operation of request.operations) {
           try {
@@ -522,7 +585,7 @@ export class DatabaseController {
               throw new Error(`Unsupported operation type: ${operation.type}`);
             }
           } catch (error) {
-            const errorResult = {
+            const errorResult: TransactionResult = {
               type: operation.type,
               sql: operation.sql,
               params: operation.params,
@@ -545,7 +608,7 @@ export class DatabaseController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      const totalRows = results.reduce((sum, r) => sum + (r.rowCount || r.affectedRows || 0), 0);
+      const totalRows = results.reduce((sum, r) => sum + ((r as any).rowCount || (r as any).affectedRows || 0), 0);
       const successfulOps = results.filter((r) => r.success).length;
 
       this._logger.debug(
@@ -591,7 +654,7 @@ export class DatabaseController {
 
   /**
    * POST /api/database/batch
-   * Execute multiple operations (with optional transaction)
+   * Execute multiple operations (with optional transaction).
    *
    * @param request
    */
@@ -616,7 +679,7 @@ export class DatabaseController {
           if (operation.type === 'query') {
             const queryResult = await this.executeQuery({
               sql: operation.sql,
-              params: operation.params,
+              params: operation.params || undefined,
             });
 
             result = {
@@ -633,7 +696,7 @@ export class DatabaseController {
           } else if (operation.type === 'execute') {
             const executeResult = await this.executeCommand({
               sql: operation.sql,
-              params: operation.params,
+              params: operation.params || undefined,
             });
 
             result = {
@@ -722,7 +785,7 @@ export class DatabaseController {
 
   /**
    * GET /api/database/schema
-   * Get comprehensive database schema information
+   * Get comprehensive database schema information.
    */
   async getDatabaseSchema(): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -781,7 +844,7 @@ export class DatabaseController {
 
   /**
    * POST /api/database/migrate
-   * Execute database migration operations
+   * Execute database migration operations.
    *
    * @param request
    */
@@ -801,7 +864,7 @@ export class DatabaseController {
         this._logger.info('Dry run mode: validating migration statements');
 
         // Validate statements without executing
-        const validationResults = [];
+        const validationResults: ValidationResult[] = [];
         for (const statement of request.statements) {
           try {
             // In a real implementation, this would validate syntax
@@ -842,7 +905,7 @@ export class DatabaseController {
 
       // Execute migration in transaction
       const results = await this.adapter.transaction(async (tx) => {
-        const migrationResults = [];
+        const migrationResults: MigrationResult[] = [];
 
         for (const statement of request.statements) {
           try {
@@ -911,7 +974,7 @@ export class DatabaseController {
 
   /**
    * GET /api/database/analytics
-   * Get comprehensive database analytics and performance metrics
+   * Get comprehensive database analytics and performance metrics.
    */
   async getDatabaseAnalytics(): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -993,7 +1056,7 @@ export class DatabaseController {
   }
 
   /**
-   * Initialize the database adapter
+   * Initialize the database adapter.
    */
   private async initializeAdapter(): Promise<void> {
     try {
@@ -1007,7 +1070,7 @@ export class DatabaseController {
   }
 
   /**
-   * Check if SQL statement is a query (SELECT)
+   * Check if SQL statement is a query (SELECT).
    *
    * @param sql
    */
@@ -1023,7 +1086,7 @@ export class DatabaseController {
   }
 
   /**
-   * Get statement type from SQL
+   * Get statement type from SQL.
    *
    * @param sql
    */
@@ -1040,7 +1103,7 @@ export class DatabaseController {
   }
 
   /**
-   * Get execution plan for a query (adapter-specific)
+   * Get execution plan for a query (adapter-specific).
    *
    * @param sql
    */
@@ -1064,7 +1127,7 @@ export class DatabaseController {
   }
 
   /**
-   * Get database version
+   * Get database version.
    */
   private async getDatabaseVersion(): Promise<string> {
     try {
@@ -1077,7 +1140,7 @@ export class DatabaseController {
   }
 
   /**
-   * Update performance metrics
+   * Update performance metrics.
    *
    * @param responseTime
    * @param success
@@ -1092,7 +1155,7 @@ export class DatabaseController {
   }
 
   /**
-   * Calculate operations per second
+   * Calculate operations per second.
    */
   private calculateOperationsPerSecond(): number {
     const uptimeSeconds = (Date.now() - this.performanceMetrics.startTime) / 1000;
@@ -1101,7 +1164,7 @@ export class DatabaseController {
 
   /**
    * POST /api/database/graph/query
-   * Execute graph-specific queries (Cypher-like syntax)
+   * Execute graph-specific queries (Cypher-like syntax).
    *
    * @param request
    */
@@ -1169,7 +1232,7 @@ export class DatabaseController {
 
   /**
    * GET /api/database/graph/schema
-   * Get graph-specific schema information (nodes, relationships, properties)
+   * Get graph-specific schema information (nodes, relationships, properties).
    */
   async getGraphSchema(): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -1240,7 +1303,7 @@ export class DatabaseController {
 
   /**
    * GET /api/database/graph/stats
-   * Get comprehensive graph analytics and statistics
+   * Get comprehensive graph analytics and statistics.
    */
   async getGraphAnalytics(): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -1338,7 +1401,7 @@ export class DatabaseController {
 
   /**
    * POST /api/database/graph/batch
-   * Execute batch graph operations
+   * Execute batch graph operations.
    *
    * @param request
    */
@@ -1359,7 +1422,7 @@ export class DatabaseController {
       }
 
       const graphAdapter = this.adapter as GraphDatabaseAdapter;
-      const results = [];
+      const results: GraphQueryResult[] = [];
       let errorCount = 0;
       let totalNodes = 0;
       let totalRelationships = 0;
@@ -1443,14 +1506,14 @@ export class DatabaseController {
   }
 
   /**
-   * Check if current adapter supports graph operations
+   * Check if current adapter supports graph operations.
    */
   private isGraphAdapter(): boolean {
     return this._config.type === 'kuzu';
   }
 
   /**
-   * Check if SQL statement is a Cypher query
+   * Check if SQL statement is a Cypher query.
    *
    * @param sql
    */
@@ -1471,7 +1534,7 @@ export class DatabaseController {
   }
 
   /**
-   * Route query to graph adapter
+   * Route query to graph adapter.
    *
    * @param request
    */
@@ -1504,7 +1567,7 @@ export class DatabaseController {
   }
 
   /**
-   * Extract node types from schema (graph-specific)
+   * Extract node types from schema (graph-specific).
    *
    * @param schema
    * @param _schema
@@ -1516,7 +1579,7 @@ export class DatabaseController {
   }
 
   /**
-   * Extract relationship types from schema (graph-specific)
+   * Extract relationship types from schema (graph-specific).
    *
    * @param schema
    * @param _schema
@@ -1529,7 +1592,7 @@ export class DatabaseController {
 
   /**
    * POST /api/database/vector/search
-   * Perform vector similarity search
+   * Perform vector similarity search.
    *
    * @param request
    */
@@ -1592,7 +1655,7 @@ export class DatabaseController {
 
   /**
    * POST /api/database/vector/add
-   * Add vectors to the database
+   * Add vectors to the database.
    *
    * @param request
    */
@@ -1615,7 +1678,7 @@ export class DatabaseController {
       const vectorData: VectorData[] = request.vectors.map((v) => ({
         id: v.id,
         vector: v.vector,
-        metadata: v.metadata,
+        metadata: v.metadata || undefined,
       }));
 
       await vectorAdapter.addVectors(vectorData);
@@ -1657,7 +1720,7 @@ export class DatabaseController {
 
   /**
    * GET /api/database/vector/stats
-   * Get vector database statistics
+   * Get vector database statistics.
    */
   async getVectorStats(): Promise<DatabaseResponse> {
     const startTime = Date.now();
@@ -1725,7 +1788,7 @@ export class DatabaseController {
 
   /**
    * POST /api/database/vector/index
-   * Create or optimize vector index
+   * Create or optimize vector index.
    *
    * @param request
    */
@@ -1749,7 +1812,7 @@ export class DatabaseController {
         name: request.name,
         dimension: request.dimension,
         metric: request.metric,
-        type: request.type,
+        type: request.type || undefined,
       };
 
       await vectorAdapter.createIndex(indexConfig);
@@ -1792,7 +1855,7 @@ export class DatabaseController {
   }
 
   /**
-   * Check if adapter supports vector operations
+   * Check if adapter supports vector operations.
    *
    * @param adapter
    */

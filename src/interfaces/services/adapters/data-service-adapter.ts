@@ -1,5 +1,5 @@
 /**
- * USL Data Service Adapter
+ * @fileoverview USL Data Service Adapter
  *
  * Unified Service Layer adapter for data-related services, providing
  * a consistent interface to WebDataService and DocumentService while

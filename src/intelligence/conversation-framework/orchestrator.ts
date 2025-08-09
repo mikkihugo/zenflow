@@ -1,7 +1,7 @@
 /**
- * Conversation Orchestrator
+ * Conversation Orchestrator.
  *
- * Core orchestration engine for ag2.ai-inspired multi-agent conversations
+ * Core orchestration engine for ag2.ai-inspired multi-agent conversations.
  */
 
 import { nanoid } from 'nanoid';
@@ -19,7 +19,7 @@ import type {
 
 /**
  * Implementation of the conversation orchestrator
- * Manages multi-agent conversations with patterns and learning
+ * Manages multi-agent conversations with patterns and learning.
  *
  * @example
  */
@@ -33,7 +33,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Create a new conversation session
+   * Create a new conversation session.
    *
    * @param config
    */
@@ -48,7 +48,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       title: config.title,
       description: config.description,
       participants: [...config.initialParticipants],
-      initiator: config.initialParticipants[0],
+      initiator: config.initialParticipants[0] || { id: 'unknown', swarmId: 'system', type: 'coordinator', instance: 0 },
       orchestrator: config.orchestrator,
       startTime: new Date(),
       status: 'initializing',
@@ -79,7 +79,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Add an agent to an active conversation
+   * Add an agent to an active conversation.
    *
    * @param conversationId
    * @param agent
@@ -105,7 +105,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Remove an agent from a conversation
+   * Remove an agent from a conversation.
    *
    * @param conversationId
    * @param agent
@@ -124,7 +124,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Send a message in a conversation
+   * Send a message in a conversation.
    *
    * @param message
    */
@@ -154,7 +154,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Add to session
     session.messages.push(message);
     session.metrics.messageCount++;
-    session.metrics.participationByAgent[message.fromAgent.id]++;
+    session.metrics.participationByAgent[message.fromAgent.id] = 
+      (session.metrics.participationByAgent[message.fromAgent.id] || 0) + 1;
 
     // Update session in memory
     await this.memory.updateConversation(session.id, {
@@ -170,7 +171,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Moderate a conversation (mute, warn, etc.)
+   * Moderate a conversation (mute, warn, etc.).
    *
    * @param conversationId
    * @param action
@@ -202,7 +203,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Get conversation message history
+   * Get conversation message history.
    *
    * @param conversationId
    */
@@ -219,7 +220,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Terminate a conversation and return outcomes
+   * Terminate a conversation and return outcomes.
    *
    * @param conversationId
    * @param reason
@@ -262,7 +263,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Initialize default conversation patterns
+   * Initialize default conversation patterns.
    */
   private initializeDefaultPatterns(): void {
     // Code Review Pattern
@@ -415,7 +416,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Start pattern workflow for a session
+   * Start pattern workflow for a session.
    *
    * @param session
    * @param pattern
@@ -441,7 +442,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Process message for workflow progression
+   * Process message for workflow progression.
    *
    * @param session
    * @param message
@@ -462,7 +463,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Check if a workflow step should be triggered
+   * Check if a workflow step should be triggered.
    *
    * @param step
    * @param message
@@ -483,7 +484,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Execute a workflow step
+   * Execute a workflow step.
    *
    * @param session
    * @param _pattern
@@ -500,7 +501,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Check consensus among participants
+   * Check consensus among participants.
    *
    * @param session
    * @param threshold
@@ -514,7 +515,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Send system message
+   * Send system message.
    *
    * @param session
    * @param text
@@ -540,7 +541,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Generate conversation outcomes
+   * Generate conversation outcomes.
    *
    * @param session
    */
@@ -577,12 +578,12 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Update final conversation metrics
+   * Update final conversation metrics.
    *
    * @param session
    */
   private async updateFinalMetrics(session: ConversationSession): Promise<void> {
-    const duration = session.endTime?.getTime() - session.startTime.getTime();
+    const duration = session.endTime ? session.endTime.getTime() - session.startTime.getTime() : 0;
     session.metrics.resolutionTime = duration;
 
     // Calculate consensus score
@@ -596,7 +597,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Calculate consensus score
+   * Calculate consensus score.
    *
    * @param session
    */
@@ -609,7 +610,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Calculate quality rating
+   * Calculate quality rating.
    *
    * @param session
    */
@@ -622,7 +623,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Calculate participation balance
+   * Calculate participation balance.
    *
    * @param session
    */
@@ -638,7 +639,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Calculate average response time
+   * Calculate average response time.
    *
    * @param session
    */
@@ -648,14 +649,18 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
     let totalTime = 0;
     for (let i = 1; i < messages.length; i++) {
-      totalTime += messages[i].timestamp.getTime() - messages[i - 1].timestamp.getTime();
+      const currentMsg = messages[i];
+      const prevMsg = messages[i - 1];
+      if (currentMsg && prevMsg) {
+        totalTime += currentMsg.timestamp.getTime() - prevMsg.timestamp.getTime();
+      }
     }
 
     return totalTime / (messages.length - 1);
   }
 
   /**
-   * Event system for conversation events
+   * Event system for conversation events.
    *
    * @param event
    * @param data
@@ -666,7 +671,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   }
 
   /**
-   * Register event handler
+   * Register event handler.
    *
    * @param event
    * @param handler

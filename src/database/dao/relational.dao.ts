@@ -1,5 +1,5 @@
 /**
- * Relational Database DAO Implementation
+ * Relational Database DAO Implementation.
  *
  * @file Comprehensive relational database DAO implementation supporting PostgreSQL,
  * MySQL, SQLite and other SQL-based databases. Provides standardized CRUD operations,
@@ -11,7 +11,7 @@
  * - Advanced query operations (JOINs, aggregations, batch operations)
  * - Date range queries and full-text search
  * - Batch insert/update/delete operations
- * - Schema-aware field type detection
+ * - Schema-aware field type detection.
  * @author Claude-Zen DAL Team
  * @version 2.0.0
  * @since 1.0.0
@@ -58,13 +58,13 @@ import { BaseDao } from '../base.dao';
 import type { IDao } from '../interfaces';
 
 /**
- * Relational Database DAO Implementation Class
+ * Relational Database DAO Implementation Class.
  *
  * Provides comprehensive relational database operations with automatic type conversion,
  * query optimization, and SQL database-specific features. Extends BaseDao with
  * relational-specific operations like JOINs, aggregations, and batch operations.
  *
- * @template T The entity type this DAO manages
+ * @template T The entity type this DAO manages.
  * @class RelationalDao
  * @augments BaseDao<T>
  * @implements IDao<T>
@@ -109,7 +109,7 @@ import type { IDao } from '../interfaces';
  */
 export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   /**
-   * Map Database Row to Entity Object
+   * Map Database Row to Entity Object.
    *
    * Converts a raw database row to a properly typed entity object, handling
    * SQL-specific data type conversions including JSON columns, boolean values,
@@ -117,11 +117,11 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
    * type detection and conversion.
    *
    * @protected
-   * @param {any} row - Raw database row object
-   * @returns {T} Mapped entity object with proper types
-   * @throws {Error} When row is null or undefined
-   * @throws {Error} When JSON parsing fails for JSON columns
-   * @throws {Error} When date conversion fails for date columns
+   * @param {any} row - Raw database row object.
+   * @returns {T} Mapped entity object with proper types.
+   * @throws {Error} When row is null or undefined.
+   * @throws {Error} When JSON parsing fails for JSON columns.
+   * @throws {Error} When date conversion fails for date columns.
    * @example Row to Entity Mapping
    * ```typescript
    * // Database row (raw data)
@@ -181,7 +181,13 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
 
       // Handle date columns
       if (this.isDateColumn(key)) {
-        entity[key] = value instanceof Date ? value : new Date(value);
+        if (value instanceof Date) {
+          entity[key] = value;
+        } else if (typeof value === 'string' || typeof value === 'number') {
+          entity[key] = new Date(value);
+        } else {
+          entity[key] = value;
+        }
         continue;
       }
 
@@ -200,15 +206,15 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   }
 
   /**
-   * Map Entity Object to Database Row
+   * Map Entity Object to Database Row.
    *
    * Converts a typed entity object to a database row format suitable for SQL storage,
    * handling type conversions including object serialization to JSON, date formatting,
    * and boolean conversion for different SQL databases.
    *
    * @protected
-   * @param {Partial<T>} entity - Entity object to convert
-   * @returns {Record<string, any>} Database row object ready for SQL operations
+   * @param {Partial<T>} entity - Entity object to convert.
+   * @returns {Record<string, any>} Database row object ready for SQL operations.
    * @example Entity to Row Mapping
    * ```typescript
    * // Entity object (typed)
@@ -279,26 +285,26 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   }
 
   /**
-   * Enhanced Query Methods for SQL-Specific Operations
+   * Enhanced Query Methods for SQL-Specific Operations.
    *
    * The following methods provide advanced SQL operations beyond basic CRUD,
    * including JOINs, aggregations, batch operations, and specialized queries.
    */
 
   /**
-   * Find Entities with SQL JOIN Operations
+   * Find Entities with SQL JOIN Operations.
    *
    * Performs SQL JOIN queries to retrieve entities with related data from other tables.
    * Supports INNER JOINs with custom join conditions and optional filtering criteria.
    *
-   * @param {string} joinTable - Name of the table to join with
-   * @param {string} joinCondition - SQL join condition (e.g., 'users.id = profiles.user_id')
-   * @param {Partial<T>} [criteria] - Optional filtering criteria for the main table
-   * @param {any} [options] - Optional query options (sort, limit, offset)
-   * @returns {Promise<T[]>} Array of entities with joined data
-   * @throws {Error} When JOIN query construction fails
-   * @throws {Error} When SQL execution fails
-   * @throws {Error} When join condition is invalid
+   * @param {string} joinTable - Name of the table to join with.
+   * @param {string} joinCondition - SQL join condition (e.g., 'users.id = profiles.user_id').
+   * @param {Partial<T>} [criteria] - Optional filtering criteria for the main table.
+   * @param {any} [options] - Optional query options (sort, limit, offset).
+   * @returns {Promise<T[]>} Array of entities with joined data.
+   * @throws {Error} When JOIN query construction fails.
+   * @throws {Error} When SQL execution fails.
+   * @throws {Error} When join condition is invalid.
    * @example User Profile JOIN Query
    * ```typescript
    * // Find users with their profile information
@@ -375,19 +381,19 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   }
 
   /**
-   * Execute SQL Aggregate Queries
+   * Execute SQL Aggregate Queries.
    *
    * Performs SQL aggregate functions including COUNT, SUM, AVG, MIN, and MAX operations
    * on specified columns with optional filtering criteria. Returns numeric results for
    * statistical analysis and reporting.
    *
-   * @param {('COUNT'|'SUM'|'AVG'|'MIN'|'MAX')} aggregateFunction - SQL aggregate function to execute
-   * @param {string} [column='*'] - Column name to aggregate (default: '*' for COUNT)
-   * @param {Partial<T>} [criteria] - Optional filtering criteria
-   * @returns {Promise<number>} Numeric result of the aggregate function
-   * @throws {Error} When aggregate function is invalid
-   * @throws {Error} When column does not exist
-   * @throws {Error} When SQL execution fails
+   * @param {('COUNT'|'SUM'|'AVG'|'MIN'|'MAX')} aggregateFunction - SQL aggregate function to execute.
+   * @param {string} [column='*'] - Column name to aggregate (default: '*' for COUNT).
+   * @param {Partial<T>} [criteria] - Optional filtering criteria.
+   * @returns {Promise<number>} Numeric result of the aggregate function.
+   * @throws {Error} When aggregate function is invalid.
+   * @throws {Error} When column does not exist.
+   * @throws {Error} When SQL execution fails.
    * @example User Statistics
    * ```typescript
    * // Count total active users
@@ -463,17 +469,17 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   }
 
   /**
-   * Batch Insert Multiple Entities
+   * Batch Insert Multiple Entities.
    *
    * Performs efficient batch insertion of multiple entities in a single SQL statement.
    * Uses parameterized queries to prevent SQL injection and optimize database performance
    * by reducing round-trips to the database server.
    *
-   * @param {Omit<T, 'id'>[]} entities - Array of entities to insert (without ID field)
-   * @returns {Promise<T[]>} Array of created entities with generated IDs
-   * @throws {Error} When entities array is empty
-   * @throws {Error} When batch insert SQL execution fails
-   * @throws {Error} When entity validation fails
+   * @param {Omit<T, 'id'>[]} entities - Array of entities to insert (without ID field).
+   * @returns {Promise<T[]>} Array of created entities with generated IDs.
+   * @throws {Error} When entities array is empty.
+   * @throws {Error} When batch insert SQL execution fails.
+   * @throws {Error} When entity validation fails.
    * @example Batch User Creation
    * ```typescript
    * const newUsers = [
@@ -537,7 +543,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     this.logger.debug(`Batch inserting ${entities.length} entities into ${this.tableName}`);
 
     try {
-      const mappedEntities = entities.map((entity) => this.mapEntityToRow(entity));
+      const mappedEntities = entities.map((entity) => this.mapEntityToRow(entity as Partial<T>));
       const columns = Object.keys(mappedEntities[0]);
       const columnsList = columns.join(', ');
 
@@ -551,7 +557,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       // Flatten all parameters
       const params = mappedEntities.flatMap((entity) => Object.values(entity));
 
-      await this.adapter.execute(sql, params);
+      await this.adapter.query(sql, params);
 
       // Return the created entities (approximation since we can't get all IDs easily)
       return entities.map((entity, index) => ({
@@ -567,18 +573,18 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   }
 
   /**
-   * Update Multiple Entities Matching Criteria
+   * Update Multiple Entities Matching Criteria.
    *
    * Performs bulk update operations on all entities matching the specified criteria.
    * Uses parameterized queries for security and returns the count of affected rows.
    * Efficient for updating large numbers of records in a single operation.
    *
-   * @param {Partial<T>} criteria - Filter criteria to select entities for update
-   * @param {Partial<T>} updates - Field updates to apply to matching entities
-   * @returns {Promise<number>} Number of entities updated
-   * @throws {Error} When update criteria is empty (safety check)
-   * @throws {Error} When update SQL execution fails
-   * @throws {Error} When field validation fails
+   * @param {Partial<T>} criteria - Filter criteria to select entities for update.
+   * @param {Partial<T>} updates - Field updates to apply to matching entities.
+   * @returns {Promise<number>} Number of entities updated.
+   * @throws {Error} When update criteria is empty (safety check).
+   * @throws {Error} When update SQL execution fails.
+   * @throws {Error} When field validation fails.
    * @example Bulk User Status Update
    * ```typescript
    * // Deactivate all users from a specific department
@@ -643,8 +649,8 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const sql = `UPDATE ${this.tableName} SET ${setClause} ${whereClause}`;
       const params = [...Object.values(mappedUpdates), ...Object.values(mappedCriteria)];
 
-      const result = await this.adapter.execute(sql, params);
-      return result.affectedRows;
+      const result = await this.adapter.query(sql, params);
+      return result.rowCount || 0;
     } catch (error) {
       this.logger.error(`Update many failed: ${error}`);
       throw new Error(
@@ -654,16 +660,16 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   }
 
   /**
-   * Delete Multiple Entities Matching Criteria
+   * Delete Multiple Entities Matching Criteria.
    *
    * Performs bulk deletion of entities matching the specified criteria. Includes safety
    * checks to prevent accidental deletion of all records. Returns the count of deleted rows.
    *
-   * @param {Partial<T>} criteria - Filter criteria to select entities for deletion
-   * @returns {Promise<number>} Number of entities deleted
-   * @throws {Error} When criteria is empty (prevents accidental full table deletion)
-   * @throws {Error} When delete SQL execution fails
-   * @throws {Error} When foreign key constraints are violated
+   * @param {Partial<T>} criteria - Filter criteria to select entities for deletion.
+   * @returns {Promise<number>} Number of entities deleted.
+   * @throws {Error} When criteria is empty (prevents accidental full table deletion).
+   * @throws {Error} When delete SQL execution fails.
+   * @throws {Error} When foreign key constraints are violated.
    * @example Delete Inactive Users
    * ```typescript
    * // Remove all inactive users older than 1 year
@@ -719,8 +725,8 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const sql = `DELETE FROM ${this.tableName} ${whereClause}`;
       const params = Object.values(mappedCriteria);
 
-      const result = await this.adapter.execute(sql, params);
-      return result.affectedRows;
+      const result = await this.adapter.query(sql, params);
+      return result.rowCount || 0;
     } catch (error) {
       this.logger.error(`Delete many failed: ${error}`);
       throw new Error(
@@ -730,18 +736,18 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   }
 
   /**
-   * Search Using SQL LIKE Operator
+   * Search Using SQL LIKE Operator.
    *
    * Performs text-based search using SQL LIKE operator with wildcard matching.
    * Supports partial string matching and is useful for implementing search functionality
    * across text fields.
    *
-   * @param {string} field - Database field name to search in
-   * @param {string} searchTerm - Search term to match (automatically wrapped with %)
-   * @param {any} [options] - Optional query options (limit, sort, etc.)
-   * @returns {Promise<T[]>} Array of entities matching the search term
-   * @throws {Error} When field name is invalid
-   * @throws {Error} When search SQL execution fails
+   * @param {string} field - Database field name to search in.
+   * @param {string} searchTerm - Search term to match (automatically wrapped with %).
+   * @param {any} [options] - Optional query options (limit, sort, etc.).
+   * @returns {Promise<T[]>} Array of entities matching the search term.
+   * @throws {Error} When field name is invalid.
+   * @throws {Error} When search SQL execution fails.
    * @example User Name Search
    * ```typescript
    * // Find all users with names containing 'john'
@@ -814,20 +820,20 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   }
 
   /**
-   * Find Entities by Date Range
+   * Find Entities by Date Range.
    *
    * Retrieves entities where a specified date field falls within the given date range.
    * Useful for time-based queries, reporting, and data analysis. Supports sorting
    * and pagination options.
    *
-   * @param {string} dateField - Name of the date field to filter on
-   * @param {Date} startDate - Start of the date range (inclusive)
-   * @param {Date} endDate - End of the date range (inclusive)
-   * @param {any} [options] - Optional query options (sort, limit, offset)
-   * @returns {Promise<T[]>} Array of entities within the date range
-   * @throws {Error} When date field is invalid
-   * @throws {Error} When start date is after end date
-   * @throws {Error} When date range query execution fails
+   * @param {string} dateField - Name of the date field to filter on.
+   * @param {Date} startDate - Start of the date range (inclusive).
+   * @param {Date} endDate - End of the date range (inclusive).
+   * @param {any} [options] - Optional query options (sort, limit, offset).
+   * @returns {Promise<T[]>} Array of entities within the date range.
+   * @throws {Error} When date field is invalid.
+   * @throws {Error} When start date is after end date.
+   * @throws {Error} When date range query execution fails.
    * @example Monthly User Registrations
    * ```typescript
    * // Get all users registered in January 2024
@@ -928,7 +934,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   }
 
   /**
-   * Helper methods for type checking based on schema
+   * Helper methods for type checking based on schema.
    */
   private isJsonColumn(columnName: string): boolean {
     return (

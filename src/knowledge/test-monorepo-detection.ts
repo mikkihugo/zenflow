@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodeimport { getLogger } from "../config/logging-config";
+const logger = getLogger("src-knowledge-test-monorepo-detection");
 
 /**
  * Test script for monorepo detection in ProjectContextAnalyzer
@@ -33,7 +34,7 @@ async function testMonorepoDetection(projectPath: string) {
   });
 
   // Listen for monorepo detection events
-  analyzer.on('monorepoDetected', (_data) => {});
+  analyzer.on('monorepoDetected', (data) => {});
 
   try {
     // Initialize analyzer (which will run monorepo detection)
@@ -52,12 +53,12 @@ async function testMonorepoDetection(projectPath: string) {
     }
 
     // Check with custom confidence threshold
-    const _isHighConfidenceMonorepo = analyzer.isMonorepo(0.8);
+    const isHighConfidenceMonorepo = analyzer.isMonorepo(0.8);
 
     // Get full project context
-    const _status = analyzer.getStatus();
+    const status = analyzer.getStatus();
   } catch (error) {
-    console.error('❌ Error during analysis:', error);
+    logger.error('❌ Error during analysis:', error);
   } finally {
     await analyzer.shutdown();
   }

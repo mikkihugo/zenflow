@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-schemas");
 /**
  * Input Validation Schemas for RUV-Swarm MCP Tools
  * Provides comprehensive validation for all 25+ MCP tools
@@ -789,7 +791,7 @@ class ValidationUtils {
     const unexpectedFields = providedFields.filter((field) => !allowedFields.includes(field));
 
     if (unexpectedFields.length > 0) {
-      console.warn(`Unexpected parameters for ${toolName}: ${unexpectedFields.join(', ')}`);
+      logger.warn(`Unexpected parameters for ${toolName}: ${unexpectedFields.join(', ')}`);
       // Note: We don't throw here to maintain backward compatibility
     }
 

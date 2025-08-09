@@ -1,7 +1,9 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-core-event-bus");
 /**
  * Event Bus - Core event system for claude-zen
  * Provides centralized event handling and communication
- * Following Google TypeScript standards with strict typing
+ * Following Google TypeScript standards with strict typing.
  */
 
 import { EventEmitter } from 'node:events';
@@ -23,7 +25,7 @@ export interface IEventBus {
 
 /**
  * Unified Event Bus implementation
- * Extends Node.js EventEmitter with additional features
+ * Extends Node.js EventEmitter with additional features.
  *
  * @example
  */
@@ -60,7 +62,7 @@ export class EventBus extends EventEmitter implements IEventBus {
   }
 
   /**
-   * Get singleton instance
+   * Get singleton instance.
    *
    * @param config
    */
@@ -72,12 +74,12 @@ export class EventBus extends EventEmitter implements IEventBus {
   }
 
   /**
-   * Type-safe emit with error handling and middleware support
+   * Type-safe emit with error handling and middleware support.
    *
    * @param event
    * @param payload
    */
-  emit<T extends keyof EventMap>(event: T, payload: EventMap[T]): boolean {
+  override emit<T extends keyof EventMap>(event: T, payload: EventMap[T]): boolean {
     const startTime = Date.now();
 
     try {
@@ -104,49 +106,49 @@ export class EventBus extends EventEmitter implements IEventBus {
       return result;
     } catch (error) {
       this.metrics.errorCount++;
-      console.error(`EventBus error in event '${String(event)}':`, error);
+      logger.error(`EventBus error in event '${String(event)}':`, error);
       return false;
     }
   }
 
   /**
-   * Type-safe event listener registration
+   * Type-safe event listener registration.
    *
    * @param event
    * @param listener
    */
-  on<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
+  override on<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
     super.on(event as string, listener as EventListenerAny);
     this.metrics.listenerCount++;
     return this;
   }
 
   /**
-   * Type-safe once listener registration
+   * Type-safe once listener registration.
    *
    * @param event
    * @param listener
    */
-  once<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
+  override once<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
     super.once(event as string, listener as EventListenerAny);
     this.metrics.listenerCount++;
     return this;
   }
 
   /**
-   * Type-safe event listener removal
+   * Type-safe event listener removal.
    *
    * @param event
    * @param listener
    */
-  off<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
+  override off<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
     super.off(event as string, listener as EventListenerAny);
     this.metrics.listenerCount = Math.max(0, this.metrics.listenerCount - 1);
     return this;
   }
 
   /**
-   * Add middleware for event processing
+   * Add middleware for event processing.
    *
    * @param middleware
    */
@@ -155,7 +157,7 @@ export class EventBus extends EventEmitter implements IEventBus {
   }
 
   /**
-   * Remove middleware
+   * Remove middleware.
    *
    * @param middleware
    */
@@ -167,14 +169,14 @@ export class EventBus extends EventEmitter implements IEventBus {
   }
 
   /**
-   * Get event bus metrics
+   * Get event bus metrics.
    */
   getMetrics(): EventMetrics {
     return { ...this.metrics };
   }
 
   /**
-   * Reset metrics
+   * Reset metrics.
    */
   resetMetrics(): void {
     this.metrics = {
@@ -187,7 +189,7 @@ export class EventBus extends EventEmitter implements IEventBus {
   }
 
   /**
-   * Run middleware chain
+   * Run middleware chain.
    *
    * @param event
    * @param payload
@@ -198,7 +200,7 @@ export class EventBus extends EventEmitter implements IEventBus {
     const next = (): void => {
       if (index < this.middleware.length) {
         const middleware = this.middleware[index++];
-        middleware(event, payload, next);
+        middleware?.(event, payload, next);
       }
     };
 
@@ -206,7 +208,7 @@ export class EventBus extends EventEmitter implements IEventBus {
   }
 
   /**
-   * Update processing time metrics
+   * Update processing time metrics.
    *
    * @param processingTime
    */
@@ -217,7 +219,7 @@ export class EventBus extends EventEmitter implements IEventBus {
   }
 
   /**
-   * Get event statistics
+   * Get event statistics.
    */
   getStats(): { eventNames: string[]; listenerCount: number } {
     const eventNames = this.eventNames().map((name) => String(name));

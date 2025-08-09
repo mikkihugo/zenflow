@@ -1,3 +1,5 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-hooks-index");
 /**
  * @file Claude Code Hooks Implementation for ruv-swarm - provides automated coordination, formatting, and learning capabilities.
  */
@@ -50,8 +52,8 @@ class ZenSwarmHooks {
         execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
       } as any;
     } catch (error) {
-      console.warn('⚠️ Failed to initialize persistence layer:', (error as Error).message);
-      console.warn('⚠️ Operating in memory-only mode');
+      logger.warn('⚠️ Failed to initialize persistence layer:', (error as Error).message);
+      logger.warn('⚠️ Operating in memory-only mode');
       this.persistence = null;
     }
   }
@@ -115,7 +117,7 @@ class ZenSwarmHooks {
           return { continue: true, reason: `Unknown hook type: ${hookType}` };
       }
     } catch (error) {
-      console.error(`Hook error (${hookType}):`, error.message);
+      logger.error(`Hook error (${hookType}):`, error.message);
       return {
         continue: true,
         error: error.message,
@@ -392,7 +394,11 @@ class ZenSwarmHooks {
   async postWebFetchHook(args: any) {
     const { url, extractPatterns, cacheContent } = args;
 
-    const result = {
+    const result: {
+      continue: boolean;
+      patterns: string[];
+      cached: boolean;
+    } = {
       continue: true,
       patterns: [],
       cached: false,
@@ -842,7 +848,7 @@ class ZenSwarmHooks {
         result.restored.metrics = true;
       }
     } catch (error) {
-      console.error('Session restore error:', error.message);
+      logger.error('Session restore error:', error.message);
     }
 
     return result;
@@ -1693,7 +1699,7 @@ ${this.sessionData.learnings
     });
 
     const sorted = Object.entries(agentCounts).sort((a, b) => Number(b[1]) - Number(a[1]));
-    return sorted.length > 0 ? sorted[0][0] : 'coordinator';
+    return sorted.length > 0 && sorted[0] ? sorted[0][0] : 'coordinator';
   }
 
   async findRelatedFiles(filePath): Promise<string[]> {
@@ -1730,7 +1736,7 @@ ${this.sessionData.learnings
    */
   async storeNotificationInDatabase(notification: any): Promise<void> {
     if (!this.persistence) {
-      console.warn('⚠️ No persistence layer - notification stored in memory only');
+      logger.warn('⚠️ No persistence layer - notification stored in memory only');
       return;
     }
 
@@ -1748,7 +1754,7 @@ ${this.sessionData.learnings
         sessionId: this.getSessionId(),
       });
     } catch (error) {
-      console.error('❌ Failed to store notification in database:', error.message);
+      logger.error('❌ Failed to store notification in database:', error.message);
     }
   }
 
@@ -1776,7 +1782,7 @@ ${this.sessionData.learnings
         .map((memory) => memory.value)
         .sort((a, b) => b.timestamp - a.timestamp);
     } catch (error) {
-      console.error('❌ Failed to retrieve notifications from database:', error.message);
+      logger.error('❌ Failed to retrieve notifications from database:', error.message);
       return [];
     }
   }
@@ -1803,7 +1809,7 @@ ${this.sessionData.learnings
         // Update agent status in database
         await this.persistence.updateAgentStatus(agentId, 'completed');
       } catch (error) {
-        console.error('❌ Failed to store agent completion:', error.message);
+        logger.error('❌ Failed to store agent completion:', error.message);
       }
     }
 
@@ -1856,7 +1862,7 @@ ${this.sessionData.learnings
           return memory.value;
         }
       } catch (error) {
-        console.error('❌ Failed to retrieve shared memory:', error.message);
+        logger.error('❌ Failed to retrieve shared memory:', error.message);
       }
     }
 
@@ -1880,7 +1886,7 @@ ${this.sessionData.learnings
         const targetAgentId = agentId || 'shared-memory';
         await this.persistence.storeAgentMemory(targetAgentId, key, value);
       } catch (error) {
-        console.error('❌ Failed to store shared memory:', error.message);
+        logger.error('❌ Failed to store shared memory:', error.message);
       }
     }
   }

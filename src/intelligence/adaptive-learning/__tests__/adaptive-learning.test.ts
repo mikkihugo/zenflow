@@ -1,9 +1,9 @@
 /**
- * Adaptive Learning System Tests - Hybrid TDD Approach
+ * Adaptive Learning System Tests - Hybrid TDD Approach.
  *
  * Tests for the adaptive learning system following the hybrid testing strategy:
  * - 70% London TDD (Mockist) for distributed components and integration boundaries
- * - 30% Classical TDD (Detroit) for algorithms and mathematical operations
+ * - 30% Classical TDD (Detroit) for algorithms and mathematical operations.
  */
 
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
@@ -100,7 +100,7 @@ const createTestConfig = (): AdaptiveLearningConfig => ({
 });
 
 const createTestContext = (): SystemContext => ({
-  environment: 'test',
+  environment: 'development',
   resources: [] as any[],
   constraints: [] as any[],
   objectives: [] as any[],
@@ -114,7 +114,7 @@ const createTestContext = (): SystemContext => ({
 describe('Adaptive Learning System - London TDD (Integration & Interactions)', () => {
   describe('PatternRecognitionEngine Integration', () => {
     let engine: PatternRecognitionEngine;
-    let mockEmit: jest.SpyInstance;
+    let mockEmit: jest.MockedFunction<any>;
 
     beforeEach(() => {
       engine = new PatternRecognitionEngine(createTestConfig(), createTestContext());
@@ -215,11 +215,11 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
 
   describe('LearningCoordinator Integration', () => {
     let coordinator: LearningCoordinator;
-    let mockEmit: jest.SpyInstance;
+    let mockEmit: jest.MockedFunction<any>;
 
     beforeEach(() => {
       coordinator = new LearningCoordinator(createTestConfig(), createTestContext());
-      mockEmit = jest.spyOn(coordinator, 'emit');
+      mockEmit = jest.spyOn(coordinator, 'emit').mockImplementation(() => true);
     });
 
     afterEach(() => {
@@ -343,7 +343,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
 
   describe('PerformanceOptimizer Integration', () => {
     let optimizer: PerformanceOptimizer;
-    let mockEmit: jest.SpyInstance;
+    let mockEmit: jest.MockedFunction<any>;
 
     beforeEach(() => {
       optimizer = new PerformanceOptimizer(createTestConfig(), createTestContext());
@@ -505,7 +505,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
       const ensemble = new EnsembleModels();
       const mockEmit = jest.spyOn(ensemble, 'emit');
 
-      const mockModel = { predict: jest.fn().mockResolvedValue([0.5]) };
+      const mockModel = { predict: jest.fn().mockResolvedValue([0.5] as any) };
       ensemble.addModel(mockModel, 1.0);
 
       expect(mockEmit).toHaveBeenCalledWith(
@@ -614,15 +614,15 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
         {
           ...createMockExecutionData()[0],
           duration: 1000, // Mean will be 2000
-        },
+        } as ExecutionData,
         {
           ...createMockExecutionData()[0],
           duration: 3000,
-        },
+        } as ExecutionData,
         {
           ...createMockExecutionData()[0],
           duration: 2000,
-        },
+        } as ExecutionData,
       ];
 
       const analysis = await engine.analyzeExecutionPatterns(executionData);
@@ -631,8 +631,8 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
       // Check that variance calculation is working (indirectly through stability metrics)
       expect(analysis.patterns.length).toBeGreaterThan(0);
       const pattern = analysis.patterns[0];
-      expect(pattern.stability).toBeGreaterThan(0);
-      expect(pattern.stability).toBeLessThanOrEqual(1);
+      expect(pattern?.stability).toBeGreaterThan(0);
+      expect(pattern?.stability).toBeLessThanOrEqual(1);
     });
 
     test('should correctly detect anomalies using z-score', async () => {
@@ -645,12 +645,12 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
             ...createMockExecutionData()[0],
             id: `normal_${i}`,
             duration: normalDuration + (Math.random() - 0.5) * 100, // Small variance
-          })),
+          } as ExecutionData)),
         {
           ...createMockExecutionData()[0],
           id: 'anomaly_1',
           duration: normalDuration * 10, // Clearly anomalous
-        },
+        } as ExecutionData,
       ];
 
       const analysis = await engine.analyzeExecutionPatterns(anomalousData);
@@ -661,8 +661,8 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
       expect(performanceAnomalies.length).toBeGreaterThan(0);
 
       const anomaly = performanceAnomalies[0];
-      expect(anomaly.confidence).toBeGreaterThan(0.5);
-      expect(anomaly.severity).toMatch(/high|critical/);
+      expect(anomaly?.confidence).toBeGreaterThan(0.5);
+      expect(anomaly?.severity).toMatch(/high|critical/);
     });
 
     test('should calculate communication efficiency correctly', () => {
@@ -696,10 +696,10 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
       expect(patterns.length).toBeGreaterThan(0);
 
       const pattern = patterns[0];
-      expect(pattern.averageLatency).toBeCloseTo(150, 1); // (100 + 200) / 2
-      expect(pattern.averageSize).toBeCloseTo(1500, 1); // (1000 + 2000) / 2
-      expect(pattern.efficiency).toBeGreaterThan(0);
-      expect(pattern.efficiency).toBeLessThanOrEqual(1);
+      expect(pattern?.averageLatency).toBeCloseTo(150, 1); // (100 + 200) / 2
+      expect(pattern?.averageSize).toBeCloseTo(1500, 1); // (1000 + 2000) / 2
+      expect(pattern?.efficiency).toBeGreaterThan(0);
+      expect(pattern?.efficiency).toBeLessThanOrEqual(1);
     });
   });
 
@@ -713,7 +713,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
         {
           ...createMockExecutionData()[0],
           resourceUsage: { cpu: 0, memory: 0, network: 0, diskIO: 0, bandwidth: 0, latency: 0 },
-        },
+        } as ExecutionData,
       ];
 
       const predictions = await nnPredictor.predict(testData);
@@ -721,8 +721,8 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
 
       const prediction = predictions[0];
       // Neural network should produce values between 0 and 1 (sigmoid output)
-      expect(prediction.confidence).toBeGreaterThan(0);
-      expect(prediction.confidence).toBeLessThan(1);
+      expect(prediction?.confidence).toBeGreaterThan(0);
+      expect(prediction?.confidence).toBeLessThan(1);
     });
 
     test('should implement gradient descent weight updates', async () => {
@@ -782,14 +782,14 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
 
       // Stream good data first
       for (let i = 0; i < 30; i++) {
-        await onlineLearner.processStream({ ...goodData, id: `good_${i}` });
+        await onlineLearner.processStream({ ...goodData, id: `good_${i}` } as ExecutionData);
       }
 
       const _midAccuracy = onlineLearner.getAccuracy();
 
       // Stream bad data to trigger adaptation
       for (let i = 0; i < 50; i++) {
-        await onlineLearner.processStream({ ...badData, id: `bad_${i}` });
+        await onlineLearner.processStream({ ...badData, id: `bad_${i}` } as ExecutionData);
       }
 
       const finalAccuracy = onlineLearner.getAccuracy();
@@ -806,9 +806,9 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
       const ensemble = new EnsembleModels();
 
       // Add models with known weights
-      const model1 = { predict: jest.fn().mockResolvedValue([0.8]) };
-      const model2 = { predict: jest.fn().mockResolvedValue([0.4]) };
-      const model3 = { predict: jest.fn().mockResolvedValue([0.6]) };
+      const model1 = { predict: jest.fn().mockResolvedValue([0.8] as any) };
+      const model2 = { predict: jest.fn().mockResolvedValue([0.4] as any) };
+      const model3 = { predict: jest.fn().mockResolvedValue([0.6] as any) };
 
       ensemble.addModel(model1, 0.5); // 50% weight
       ensemble.addModel(model2, 0.3); // 30% weight
@@ -843,7 +843,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
       expect(weightValues[0]).toBeGreaterThan(weightValues[1]);
 
       // Weights should sum to 1 (normalized)
-      const weightSum = weightValues.reduce((sum, w) => sum + w, 0);
+      const weightSum = weightValues.reduce((sum, w) => sum + (w ?? 0), 0);
       expect(weightSum).toBeCloseTo(1.0, 2);
     });
   });
@@ -942,7 +942,7 @@ describe('Adaptive Learning System - Integration Tests', () => {
         timestamp: Date.now() - (100 - i) * 1000, // Chronological order
       };
 
-      await onlineLearner.processStream(streamData);
+      await onlineLearner.processStream(streamData as ExecutionData);
 
       // Update RL engine
       const state = `state_${i % 10}`;

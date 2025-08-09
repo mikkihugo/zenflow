@@ -156,7 +156,7 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
     await intelligenceCoordinator.shutdown();
     await memorySystem.shutdown();
   } catch (error) {
-    console.error('\n❌ Error during domain discovery test:', error);
+    logger.error('\n❌ Error during domain discovery test:', error);
     process.exit(1);
   }
 }

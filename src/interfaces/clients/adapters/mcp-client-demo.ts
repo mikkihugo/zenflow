@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-clients-adapters-mcp-client-demo");
 /**
  * MCP Client Adapter Demonstration
  *
@@ -106,7 +108,7 @@ export async function demonstrateMCPClientConversion() {
     await stdioClient.disconnect();
     await factory.shutdown();
   } catch (error) {
-    console.error('❌ Error during MCP client demonstration:', error);
+    logger.error('❌ Error during MCP client demonstration:', error);
     throw error;
   }
 }
@@ -164,7 +166,7 @@ export async function migrateLegacyMCPClient() {
     }
     await factory.shutdown();
   } catch (error) {
-    console.error('❌ Migration error:', error);
+    logger.error('❌ Migration error:', error);
     throw error;
   }
 }
@@ -211,7 +213,7 @@ export async function demonstrateProtocolPatterns() {
     const _stdioClient = await factory.create(stdioConfig);
     const _httpClient = await factory.create(httpConfig);
   } catch (error) {
-    console.error('❌ Protocol pattern error:', error);
+    logger.error('❌ Protocol pattern error:', error);
   } finally {
     await factory.shutdown();
   }

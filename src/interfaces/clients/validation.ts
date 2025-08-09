@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-clients-validation");
 /**
  * UACL Integration Validation
  *
@@ -12,6 +14,7 @@ import {
   createCompatibleWebSocketClient,
 } from './compatibility';
 import { ClientType, UACLHelpers, uacl } from './index';
+import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
 
 export interface ValidationResult {
   component: string;
@@ -181,7 +184,7 @@ export class UACLValidator {
     try {
       const httpClient = await uacl.createHTTPClient(
         'test-http',
-        'http://localhost:3000',
+        getMCPServerURL(),
         { enabled: false, priority: 1 } // Disabled to avoid actual connections
       );
       results.push({
@@ -201,7 +204,7 @@ export class UACLValidator {
 
     // Test WebSocket client creation
     try {
-      const wsClient = await uacl.createWebSocketClient('test-ws', 'ws://localhost:3456', {
+      const wsClient = await uacl.createWebSocketClient('test-ws', getWebDashboardURL({ protocol: 'ws' as any }).replace(/^https?/, 'ws') + '/ws', {
         enabled: false,
         priority: 1,
       });
@@ -247,7 +250,7 @@ export class UACLValidator {
     try {
       const mcpClient = await uacl.createMCPClient(
         'test-mcp',
-        { 'test-server': { url: 'http://localhost:3000', type: 'http', capabilities: [] } },
+        { 'test-server': { url: getMCPServerURL(), type: 'http', capabilities: [] } },
         { enabled: false, priority: 1 }
       );
       results.push({
@@ -464,10 +467,10 @@ export async function printValidationReport(): Promise<void> {
   const report = await validator.validateComplete();
 
   if (report.overall === 'fail') {
-    console.error('❌ UACL validation failed');
+    logger.error('❌ UACL validation failed');
     process.exit(1);
   } else if (report.overall === 'warning') {
-    console.warn('⚠️ UACL validation completed with warnings');
+    logger.warn('⚠️ UACL validation completed with warnings');
   } else {
   }
 }

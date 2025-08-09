@@ -1,11 +1,13 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-sparc-integrations-project-management-integration");
 /**
- * SPARC Integration with Existing Claude-Zen Infrastructure
+ * SPARC Integration with Existing Claude-Zen Infrastructure.
  *
  * Integrates SPARC methodology with existing sophisticated infrastructure:
  * - DocumentDrivenSystem (core document workflow)
  * - WorkflowEngine (Vision → ADRs → PRDs → Epics → Features → Tasks → Code)
  * - TaskAPI & EnhancedTaskTool (coordination)
- * - Existing ADR templates and project management systems
+ * - Existing ADR templates and project management systems.
  */
 
 import * as fs from 'node:fs/promises';
@@ -128,13 +130,13 @@ export interface Roadmap {
 }
 
 /**
- * Project Management Integration Service
+ * Project Management Integration Service.
  *
  * Integrates SPARC methodology with existing Claude-Zen infrastructure:
  * - Uses existing TaskAPI and EnhancedTaskTool for task management
  * - Integrates with TaskDistributionEngine for task coordination
  * - Leverages existing ADR infrastructure
- * - Extends existing tasks.json format
+ * - Extends existing tasks.json format.
  *
  * @example
  */
@@ -152,7 +154,7 @@ export class ProjectManagementIntegration {
 
   // Enhanced infrastructure integration
   private documentDrivenSystem: DocumentDrivenSystem;
-  private workflowEngine?: WorkflowEngine;
+  private workflowEngine: WorkflowEngine | undefined;
   private memorySystem: MemorySystem;
 
   constructor(
@@ -187,7 +189,7 @@ export class ProjectManagementIntegration {
   }
 
   /**
-   * Initialize sophisticated infrastructure integration
+   * Initialize sophisticated infrastructure integration.
    */
   async initialize(): Promise<void> {
     await this.memorySystem.initialize();
@@ -198,7 +200,7 @@ export class ProjectManagementIntegration {
   }
 
   /**
-   * Enhanced comprehensive project management artifacts using existing infrastructure
+   * Enhanced comprehensive project management artifacts using existing infrastructure.
    *
    * @param project
    * @param artifactTypes
@@ -231,11 +233,11 @@ export class ProjectManagementIntegration {
     const workflowResults = await this.executeDocumentWorkflows(workspaceId, visionDocument);
 
     const results = {
-      tasks: [],
-      adrs: [],
+      tasks: [] as Task[],
+      adrs: [] as ADR[],
       prd: {} as PRD,
-      epics: [],
-      features: [],
+      epics: [] as Epic[],
+      features: [] as Feature[],
       workspaceId,
       workflowResults,
     };
@@ -270,7 +272,7 @@ export class ProjectManagementIntegration {
   }
 
   /**
-   * Create vision document from SPARC project using DocumentDrivenSystem patterns
+   * Create vision document from SPARC project using DocumentDrivenSystem patterns.
    *
    * @param project
    * @param _workspaceId
@@ -321,7 +323,7 @@ Related: SPARC-${project.id}
   }
 
   /**
-   * Execute document workflows using UnifiedWorkflowEngine
+   * Execute document workflows using UnifiedWorkflowEngine.
    *
    * @param workspaceId
    * @param visionDocument
@@ -371,7 +373,7 @@ Related: SPARC-${project.id}
           results[workflowName] = result.workflowId;
         }
       } catch (error) {
-        console.warn(`Failed to execute workflow ${workflowName}:`, error);
+        logger.warn(`Failed to execute workflow ${workflowName}:`, error);
         results[workflowName] = { error: (error as Error).message };
       }
     }
@@ -380,7 +382,7 @@ Related: SPARC-${project.id}
   }
 
   /**
-   * Generate tasks from SPARC project using existing task infrastructure
+   * Generate tasks from SPARC project using existing task infrastructure.
    *
    * @param project
    */
@@ -415,7 +417,7 @@ Related: SPARC-${project.id}
       try {
         await this.taskTool.executeTask(enhancedTaskConfig);
       } catch (error) {
-        console.warn(`Task validation failed for ${phase}:`, error);
+        logger.warn(`Task validation failed for ${phase}:`, error);
       }
 
       const task: Task = {
@@ -449,7 +451,7 @@ Related: SPARC-${project.id}
   }
 
   /**
-   * Update existing tasks with SPARC project information using TaskAPI
+   * Update existing tasks with SPARC project information using TaskAPI.
    *
    * @param project
    */
@@ -465,14 +467,15 @@ Related: SPARC-${project.id}
       for (const task of sparcTasks) {
         try {
           // Convert to TaskAPI format and validate
+          const deadline = task.completed_date ? new Date(task.completed_date) : undefined;
           await TaskAPI.createTask({
             type: task.component,
             description: task.description,
             priority: task.priority * 20, // Convert to 0-100 scale
-            deadline: task.completed_date ? new Date(task.completed_date) : undefined,
+            ...(deadline && { deadline }),
           });
         } catch (error) {
-          console.warn(`Task validation failed for ${task.id}:`, error);
+          logger.warn(`Task validation failed for ${task.id}:`, error);
         }
       }
 
@@ -481,12 +484,12 @@ Related: SPARC-${project.id}
       // Write back to file
       await fs.writeFile(this.tasksFile, JSON.stringify(existingTasks, null, 2));
     } catch (error) {
-      console.warn('Could not update tasks file:', error);
+      logger.warn('Could not update tasks file:', error);
     }
   }
 
   /**
-   * Create tasks using enhanced task distribution engine
+   * Create tasks using enhanced task distribution engine.
    *
    * @param project
    */
@@ -518,23 +521,24 @@ Related: SPARC-${project.id}
 
         // Use TaskAPI for simpler integration (TaskDistributionEngine requires complex setup)
         try {
+          const deadline = task.completed_date ? new Date(task.completed_date) : undefined;
           await TaskAPI.createTask({
             type: task.component,
             description: task.description,
             priority: task.priority * 20, // Convert to 0-100 scale
-            deadline: task.completed_date ? new Date(task.completed_date) : undefined,
+            ...(deadline && { deadline }),
           });
         } catch (error) {
-          console.warn(`Task creation failed for ${task.id}:`, error);
+          logger.warn(`Task creation failed for ${task.id}:`, error);
         }
       }
     } catch (error) {
-      console.warn('Could not distribute SPARC tasks:', error);
+      logger.warn('Could not distribute SPARC tasks:', error);
     }
   }
 
   /**
-   * Generate ADR from SPARC architecture decisions
+   * Generate ADR from SPARC architecture decisions.
    *
    * @param project
    */
@@ -560,7 +564,7 @@ Related: SPARC-${project.id}
       // Generate ADRs for significant components
       if (project.architecture?.systemArchitecture?.components) {
         project.architecture.systemArchitecture.components.forEach((component, index) => {
-          if (component.qualityAttributes && component.qualityAttributes.importance === 'high') {
+          if (component.qualityAttributes && component.qualityAttributes['importance'] === 'high') {
             const componentADR: ADR = {
               id: `ADR-${project.id}-${(index + 2).toString().padStart(3, '0')}`,
               title: `${component.name} Component Design`,
@@ -585,7 +589,7 @@ Related: SPARC-${project.id}
   }
 
   /**
-   * Generate PRD from SPARC specification
+   * Generate PRD from SPARC specification.
    *
    * @param project
    */
@@ -740,7 +744,7 @@ Related: SPARC-${project.id}
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + weeks * 7);
 
-    return endDate.toISOString().split('T')[0];
+    return endDate.toISOString().split('T')[0] ?? '';
   }
 
   private generateFeaturesFromPhases(project: SPARCProject): Feature[] {
@@ -817,7 +821,7 @@ Related: SPARC-${project.id}
   }
 
   /**
-   * Create ADR files from SPARC project using existing template structure
+   * Create ADR files from SPARC project using existing template structure.
    *
    * @param project
    */
@@ -833,12 +837,12 @@ Related: SPARC-${project.id}
         await fs.writeFile(adrFile, adrContent);
       }
     } catch (error) {
-      console.warn('Could not create ADR files:', error);
+      logger.warn('Could not create ADR files:', error);
     }
   }
 
   /**
-   * Create PRD file from SPARC project with enhanced integration
+   * Create PRD file from SPARC project with enhanced integration.
    *
    * @param project
    */
@@ -852,12 +856,12 @@ Related: SPARC-${project.id}
 
       await fs.writeFile(prdFile, prdContent);
     } catch (error) {
-      console.warn('Could not create PRD file:', error);
+      logger.warn('Could not create PRD file:', error);
     }
   }
 
   /**
-   * Create or update epics file from SPARC project
+   * Create or update epics file from SPARC project.
    *
    * @param project
    */
@@ -883,7 +887,7 @@ Related: SPARC-${project.id}
         features: [],
         business_value: this.calculateBusinessValue(project),
         timeline: {
-          start_date: new Date().toISOString().split('T')[0],
+          start_date: new Date().toISOString().split('T')[0] ?? '',
           end_date: this.calculateEpicEndDate(project),
         },
         status: 'approved',
@@ -903,13 +907,13 @@ Related: SPARC-${project.id}
 
       return epics;
     } catch (error) {
-      console.warn('Could not create epics file:', error);
+      logger.warn('Could not create epics file:', error);
       return [];
     }
   }
 
   /**
-   * Create or update features file from SPARC project
+   * Create or update features file from SPARC project.
    *
    * @param project
    */
@@ -946,15 +950,16 @@ Related: SPARC-${project.id}
 
       return allProjectFeatures;
     } catch (error) {
-      console.warn('Could not create features file:', error);
+      logger.warn('Could not create features file:', error);
       return [];
     }
   }
 
   /**
-   * Create comprehensive project management artifacts
+   * Create comprehensive project management artifacts.
    *
    * @param project
+   * @param phase
    */
   // Duplicate method createAllProjectManagementArtifacts removed
 
@@ -1137,7 +1142,7 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
   }
 
   /**
-   * Enhanced ADR creation using existing template structure and workspace management
+   * Enhanced ADR creation using existing template structure and workspace management.
    *
    * @param adrs
    * @param workspaceId
@@ -1228,7 +1233,7 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
   }
 
   /**
-   * Save epics to workspace using document-driven system
+   * Save epics to workspace using document-driven system.
    *
    * @param epics
    * @param workspaceId
@@ -1279,12 +1284,12 @@ Type: Epic
     try {
       await fs.writeFile(this.epicsFile, JSON.stringify(epics, null, 2));
     } catch (error) {
-      console.warn('Could not save epics.json:', error);
+      logger.warn('Could not save epics.json:', error);
     }
   }
 
   /**
-   * Save features to workspace using document-driven system
+   * Save features to workspace using document-driven system.
    *
    * @param features
    * @param workspaceId
@@ -1331,7 +1336,7 @@ Type: Feature
     try {
       await fs.writeFile(this.featuresFile, JSON.stringify(features, null, 2));
     } catch (error) {
-      console.warn('Could not save features.json:', error);
+      logger.warn('Could not save features.json:', error);
     }
   }
 }

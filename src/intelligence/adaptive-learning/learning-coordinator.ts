@@ -1,5 +1,5 @@
 /**
- * Learning Coordinator
+ * Learning Coordinator.
  *
  * Coordinates learning across multiple agents in the swarm, manages knowledge
  * sharing, tracks expertise evolution, and identifies best practices and anti-patterns.
@@ -49,7 +49,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   }
 
   /**
-   * Coordinate learning across multiple agents
+   * Coordinate learning across multiple agents.
    *
    * @param agents
    */
@@ -84,7 +84,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   }
 
   /**
-   * Update the knowledge base with new patterns
+   * Update the knowledge base with new patterns.
    *
    * @param patterns
    */
@@ -124,7 +124,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   }
 
   /**
-   * Track expertise evolution for an agent
+   * Track expertise evolution for an agent.
    *
    * @param agentId
    */
@@ -151,7 +151,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   }
 
   /**
-   * Emerge best practices from successful patterns
+   * Emerge best practices from successful patterns.
    *
    * @param successes
    */
@@ -188,7 +188,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   }
 
   /**
-   * Detect anti-patterns from failure patterns
+   * Detect anti-patterns from failure patterns.
    *
    * @param failures
    */
@@ -231,28 +231,28 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   }
 
   /**
-   * Get current knowledge base
+   * Get current knowledge base.
    */
   getKnowledgeBase(): Map<string, any> {
     return new Map(this.knowledgeBase);
   }
 
   /**
-   * Get expertise evolution for all agents
+   * Get expertise evolution for all agents.
    */
   getAllExpertiseEvolution(): Map<string, ExpertiseEvolution> {
     return new Map(this.expertiseTracking);
   }
 
   /**
-   * Get all identified best practices
+   * Get all identified best practices.
    */
   getBestPractices(): BestPractice[] {
     return Array.from(this.bestPractices.values()).sort((a, b) => b.successRate - a.successRate);
   }
 
   /**
-   * Get all detected anti-patterns
+   * Get all detected anti-patterns.
    */
   getAntiPatterns(): AntiPattern[] {
     return Array.from(this.antiPatterns.values()).sort(
@@ -261,7 +261,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   }
 
   /**
-   * Get learning history for an agent
+   * Get learning history for an agent.
    *
    * @param agentId
    */
@@ -270,7 +270,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
   }
 
   /**
-   * Clear learning data (for testing or reset)
+   * Clear learning data (for testing or reset).
    */
   clearLearningData(): void {
     this.knowledgeBase.clear();
@@ -457,7 +457,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private trackLearningProgress(agents: Agent[], result: LearningResult): void {
     for (const agent of agents) {
-      const agentResult = result.patterns.filter((p) => p.context.agentId === agent.id);
+      const agentResult = result.patterns.filter((p) => p.context['agentId'] === agent.id);
 
       // Update agent learning progress (simplified)
       agent.learningProgress.totalExperience += agentResult.length;

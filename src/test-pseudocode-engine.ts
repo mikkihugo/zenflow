@@ -1,3 +1,5 @@
+import { getLogger } from "./config/logging-config";
+const logger = getLogger("test-pseudocode-engine");
 /**
  * Simple manual test for SPARC Pseudocode Engine
  * Tests core functionality without complex jest setup
@@ -62,7 +64,7 @@ async function testPseudocodeEngine() {
       },
     };
   } catch (error) {
-    console.error('❌ Test failed:', error);
+    logger.error('❌ Test failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -76,7 +78,7 @@ if (require.main === module) {
     if (result.success) {
       process.exit(0);
     } else {
-      console.error('💥 Manual test failed:', result.error);
+      logger.error('💥 Manual test failed:', result.error);
       process.exit(1);
     }
   });

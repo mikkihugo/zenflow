@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodeimport { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-sparc-test-template-engine");
 /**
  * Simple test script for SPARC Template Engine
  * Tests template integration functionality
@@ -34,7 +35,7 @@ async function testTemplateEngine() {
       }
       const _stats = templateEngine.getTemplateStats();
     } catch (error) {
-      console.error('❌ Failed to apply template:', error);
+      logger.error('❌ Failed to apply template:', error);
     }
   } else {
   }

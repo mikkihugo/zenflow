@@ -1,10 +1,20 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-performance");
 /**
  * Performance Analysis CLI for ruv-swarm
- * Provides performance analysis, optimization, and suggestions
+ * Provides performance analysis, optimization, and suggestions.
  */
 
 import { promises as fs } from 'node:fs';
 import { ZenSwarm } from './index';
+
+interface PerformanceSuggestion {
+  category: string;
+  priority: string;
+  issue: string;
+  suggestion: string;
+  command: string;
+}
 
 class PerformanceCLI {
   public ruvSwarm: any;
@@ -180,7 +190,7 @@ class PerformanceCLI {
         await fs.writeFile(outputFile, JSON.stringify(analysis, null, 2));
       }
     } catch (error) {
-      console.error('❌ Analysis failed:', error.message);
+      logger.error('❌ Analysis failed:', error.message);
       process.exit(1);
     }
   }
@@ -190,7 +200,7 @@ class PerformanceCLI {
 
     // Verify swarm is properly initialized for optimization
     if (!rs || !rs.isInitialized) {
-      console.warn('⚠️ Warning: Swarm not fully initialized, optimization may be limited');
+      logger.warn('⚠️ Warning: Swarm not fully initialized, optimization may be limited');
     }
 
     const target = args[0] || this.getArg(args, '--target') || 'balanced';
@@ -281,7 +291,7 @@ class PerformanceCLI {
       } else {
       }
     } catch (error) {
-      console.error('❌ Optimization failed:', error.message);
+      logger.error('❌ Optimization failed:', error.message);
       process.exit(1);
     }
   }
@@ -290,7 +300,7 @@ class PerformanceCLI {
     try {
       // Analyze current state
       const memUsage = process.memoryUsage();
-      const suggestions = [];
+      const suggestions: PerformanceSuggestion[] = [];
 
       // Memory-based suggestions
       const memUtilization = (memUsage.heapUsed / memUsage.heapTotal) * 100;
@@ -339,17 +349,17 @@ class PerformanceCLI {
 
       // Display suggestions
       const priorityOrder = ['HIGH', 'MEDIUM', 'LOW'];
-      const groupedSuggestions = {};
+      const groupedSuggestions: Record<string, PerformanceSuggestion[]> = {};
 
       priorityOrder.forEach((priority) => {
         groupedSuggestions[priority] = suggestions.filter((s) => s.priority === priority);
       });
       let totalShown = 0;
       for (const [_priority, items] of Object.entries(groupedSuggestions)) {
-        if ((items as any[]).length === 0) {
+        if (items.length === 0) {
           continue;
         }
-        for (const _item of items as any[]) {
+        for (const _item of items) {
           totalShown++;
         }
       }
@@ -358,7 +368,7 @@ class PerformanceCLI {
       } else {
       }
     } catch (error) {
-      console.error('❌ Failed to generate suggestions:', error.message);
+      logger.error('❌ Failed to generate suggestions:', error.message);
       process.exit(1);
     }
   }

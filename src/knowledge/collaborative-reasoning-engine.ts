@@ -348,7 +348,7 @@ export interface ConsistencyChecker {
   checkConsistency(knowledge: LogicalKnowledgeBase): boolean;
 }
 
-export interface CompletenessVerifier {
+export interface nessVerifier {
   verifyCompleteness(system: ProofSystem): boolean;
 }
 
@@ -1432,7 +1432,7 @@ export interface ConsensusResult {
   timestamp: number;
 }
 
-export interface ComprehensiveSolution {
+export interface Solution {
   solutionId: string;
   originalProblem: Problem;
   partialSolutions: number;

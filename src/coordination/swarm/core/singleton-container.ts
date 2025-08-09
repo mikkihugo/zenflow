@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-singleton-container");
 /**
  * Registration options for singleton container
  *
@@ -124,7 +126,7 @@ class SingletonContainer {
           instance.destroy();
         }
       } catch (error) {
-        console.warn(`Error destroying instance '${key}':`, error.message);
+        logger.warn(`Error destroying instance '${key}':`, error.message);
       }
     }
 

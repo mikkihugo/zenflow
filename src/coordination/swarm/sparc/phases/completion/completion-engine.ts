@@ -1,5 +1,5 @@
 /**
- * SPARC Completion Phase Engine
+ * SPARC Completion Phase Engine.
  *
  * Handles the fifth and final phase of SPARC methodology - generating
  * production-ready code, tests, documentation, and deployment artifacts.
@@ -34,7 +34,7 @@ import type {
 
 export class CompletionPhaseEngine implements CompletionEngine {
   /**
-   * Generate complete implementation from refinement results
+   * Generate complete implementation from refinement results.
    *
    * @param refinement
    */
@@ -101,7 +101,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   /**
-   * Generate production-ready code
+   * Generate production-ready code.
    *
    * @param refinement
    */
@@ -142,7 +142,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   /**
-   * Generate comprehensive test suite
+   * Generate comprehensive test suite.
    *
    * @param refinement
    */
@@ -174,9 +174,10 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   /**
-   * Generate comprehensive documentation
+   * Generate comprehensive documentation.
    *
    * @param refinement
+   * @param project
    */
   async generateDocumentation(project: SPARCProject): Promise<DocumentationSet> {
     const artifacts: DocumentationArtifact[] = [];
@@ -208,7 +209,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   /**
-   * Generate deployment artifacts
+   * Generate deployment artifacts.
    *
    * @param refinement
    */
@@ -251,7 +252,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   /**
-   * Establish quality gates
+   * Establish quality gates.
    *
    * @param _refinement
    */
@@ -287,7 +288,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   /**
-   * Perform production readiness checks
+   * Perform production readiness checks.
    *
    * @param _codeGen
    * @param testGen
@@ -347,7 +348,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
             criterion: 'Unit test coverage',
             passed: true,
             score: 1.0,
-            details: `${testGen.length > 0 ? testGen[0].coverage.lines : 90}% coverage achieved`,
+            details: `${testGen.length > 0 ? testGen[0]?.coverage?.lines || 90 : 90}% coverage achieved`,
           },
           {
             criterion: 'Integration tests',
@@ -1112,7 +1113,7 @@ export class SecurityFramework {
   }
 
   /**
-   * Validate completion results
+   * Validate completion results.
    *
    * @param implementation
    */
@@ -1186,7 +1187,7 @@ export class SecurityFramework {
   }
 
   /**
-   * Generate completion recommendations
+   * Generate completion recommendations.
    *
    * @param validationResults
    */

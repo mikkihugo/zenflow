@@ -1,9 +1,9 @@
 /**
- * Database-Driven Development System
+ * Database-Driven Development System.
  *
  * REPLACES file-based DocumentDrivenSystem with pure database architecture
  * Handles Vision → ADRs → PRDs → Epics → Features → Tasks → Code via database entities
- * Integrates with existing DatabaseCoordinator and UnifiedWorkflowEngine
+ * Integrates with existing DatabaseCoordinator and UnifiedWorkflowEngine.
  */
 
 import { EventEmitter } from 'node:events';
@@ -41,10 +41,10 @@ export interface DocumentProcessingOptions {
 }
 
 /**
- * Database-Driven Development System
+ * Database-Driven Development System.
  *
  * Pure database operations - NO file system interactions
- * All documents are database entities with export capabilities
+ * All documents are database entities with export capabilities.
  *
  * @example
  */
@@ -61,7 +61,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Initialize database-driven system
+   * Initialize database-driven system.
    */
   async initialize(): Promise<void> {
     logger.info('🚀 Initializing Database-Driven Development System');
@@ -75,7 +75,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Create new project workspace
+   * Create new project workspace.
    *
    * @param projectSpec
    * @param projectSpec.name
@@ -148,7 +148,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Load existing project workspace
+   * Load existing project workspace.
    *
    * @param projectId
    */
@@ -200,7 +200,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Process document entity with database-driven workflow
+   * Process document entity with database-driven workflow.
    *
    * @param workspaceId
    * @param document
@@ -243,7 +243,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Create vision document for project
+   * Create vision document for project.
    *
    * @param workspaceId
    * @param visionSpec
@@ -303,8 +303,8 @@ export class DatabaseDrivenSystem extends EventEmitter {
       success_criteria: visionSpec.successCriteria,
       stakeholders: visionSpec.stakeholders,
       timeline: {
-        start_date: visionSpec.timeline?.startDate,
-        target_completion: visionSpec.timeline?.targetCompletion,
+        ...(visionSpec.timeline?.startDate && { start_date: visionSpec.timeline.startDate }),
+        ...(visionSpec.timeline?.targetCompletion && { target_completion: visionSpec.timeline.targetCompletion }),
         milestones: visionSpec.timeline?.milestones || [],
       },
       generated_adrs: [],
@@ -314,7 +314,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
     const document = await this.documentService.createDocument(visionDoc, {
       autoGenerateRelationships: options.autoGenerateRelationships !== false,
       generateSearchIndex: options.generateSearchIndex !== false,
-      startWorkflow: options.startWorkflows !== false ? 'vision-to-adrs' : undefined,
+      ...(options.startWorkflows !== false && { startWorkflow: 'vision-to-adrs' }),
     });
 
     await this.processDocumentEntity(workspaceId, document, options);
@@ -324,7 +324,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Generate documents from existing documents (e.g., PRDs from Vision)
+   * Generate documents from existing documents (e.g., PRDs from Vision).
    *
    * @param workspaceId
    * @param sourceDocumentId
@@ -391,7 +391,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Get workspace status and progress
+   * Get workspace status and progress.
    *
    * @param workspaceId
    */
@@ -474,7 +474,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Export workspace documents to files (optional capability)
+   * Export workspace documents to files (optional capability).
    *
    * @param workspaceId
    * @param outputPath
@@ -994,14 +994,14 @@ ${spec.title} for ${feature.title}
   }
 
   /**
-   * Get all workspaces
+   * Get all workspaces.
    */
   getWorkspaces(): string[] {
     return Array.from(this.workspaces.keys());
   }
 
   /**
-   * Get workspace documents (legacy compatibility)
+   * Get workspace documents (legacy compatibility).
    *
    * @param workspaceId
    */

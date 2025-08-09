@@ -1,9 +1,9 @@
 /**
- * DSPy Wrapper Architecture for Claude-Zen
+ * DSPy Wrapper Architecture for Claude-Zen.
  *
  * This module provides a comprehensive wrapper/adapter layer that bridges the gap between:
  * 1. Claude-Zen's expected DSPy interface (full program creation, optimization, execution)
- * 2. dspy.ts v0.1.3's actual API (basic LMDriver abstraction only)
+ * 2. Dspy.ts v0.1.3's actual API (basic LMDriver abstraction only).
  *
  * The wrapper implements the expected DSPy interface using the available LMDriver,
  * providing program-like functionality through structured prompting and response parsing.
@@ -63,7 +63,9 @@ export interface DSPyConfig {
 
 /**
  * Claude-specific LMDriver implementation
- * Adapts Claude API calls to the dspy.ts LMDriver interface
+ * Adapts Claude API calls to the dspy.ts LMDriver interface.
+ *
+ * @example
  */
 class ClaudeLMDriver implements LMDriver {
   private config: Required<DSPyConfig>;
@@ -128,7 +130,9 @@ class ClaudeLMDriver implements LMDriver {
 
 /**
  * Main DSPy wrapper class that provides the expected DSPy interface
- * Uses the available dspy.ts LMDriver under the hood
+ * Uses the available dspy.ts LMDriver under the hood.
+ *
+ * @example
  */
 export class DSPy {
   private lmDriver: LMDriver;
@@ -161,7 +165,10 @@ export class DSPy {
 
   /**
    * Create a DSPy program with signature and description
-   * Mimics the expected DSPy.createProgram interface
+   * Mimics the expected DSPy.createProgram interface.
+   *
+   * @param signature
+   * @param description
    */
   async createProgram(signature: string, description: string): Promise<DSPyProgram> {
     const programId = this.generateProgramId(signature, description);
@@ -189,7 +196,10 @@ export class DSPy {
 
   /**
    * Execute a DSPy program with given inputs
-   * Converts the program signature into structured prompts for the LM
+   * Converts the program signature into structured prompts for the LM.
+   *
+   * @param program
+   * @param inputs
    */
   async execute(program: DSPyProgram, inputs: Record<string, any>): Promise<DSPyExecutionResult> {
     const startTime = Date.now();
@@ -247,7 +257,10 @@ export class DSPy {
   }
 
   /**
-   * Add examples to a program for optimization
+   * Add examples to a program for optimization.
+   *
+   * @param program
+   * @param examples
    */
   async addExamples(
     program: DSPyProgram,
@@ -267,7 +280,10 @@ export class DSPy {
   }
 
   /**
-   * Optimize a program using examples and execution history
+   * Optimize a program using examples and execution history.
+   *
+   * @param program
+   * @param options
    */
   async optimize(
     program: DSPyProgram,
@@ -303,7 +319,7 @@ export class DSPy {
   }
 
   /**
-   * Get execution statistics and performance metrics
+   * Get execution statistics and performance metrics.
    */
   getStats() {
     const totalExecutions = this.executionHistory.length;
@@ -350,7 +366,7 @@ export class DSPy {
     const parseFields = (fieldString: string) => {
       return fieldString.split(',').map((field) => {
         const [name, type] = field.split(':').map((s) => s.trim());
-        return { name, type: type || 'string' };
+        return { name: name || 'unknown', type: type || 'string' };
       });
     };
 
@@ -495,30 +511,42 @@ export class DSPy {
 // ============================================================================
 
 /**
- * Factory function to create DSPy wrapper instances
+ * Factory function to create DSPy wrapper instances.
+ *
+ * @param config
+ * @example
  */
 export function createDSPyWrapper(config: DSPyConfig = {}): DSPy {
   return new DSPy(config);
 }
 
 /**
- * Configure the global DSPy wrapper with specific LM driver
+ * Configure the global DSPy wrapper with specific LM driver.
+ *
+ * @param config
+ * @example
  */
 export function configureDSPyWrapper(config: DSPyConfig): void {
-  const _wrapper = new DSPy(config);
+  const wrapper = new DSPy(config);
   // Set as global instance if needed
   logger.info('DSPy wrapper configured globally', { config });
 }
 
 /**
- * Get available LM drivers for DSPy wrapper
+ * Get available LM drivers for DSPy wrapper.
+ *
+ * @example
  */
 export function getAvailableLMDrivers(): string[] {
   return ['claude', 'dummy', 'openai']; // Expandable list
 }
 
 /**
- * Create specific LM driver instances
+ * Create specific LM driver instances.
+ *
+ * @param driverType
+ * @param config
+ * @example
  */
 export function createLMDriver(driverType: string, config: any): LMDriver {
   switch (driverType) {

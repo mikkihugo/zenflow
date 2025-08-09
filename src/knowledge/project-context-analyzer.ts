@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-knowledge-project-context-analyzer");
 /**
  * Hive-Controlled FACT System for Claude-Zen
  *
@@ -159,7 +161,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         context: this.projectContext,
       });
     } catch (error) {
-      console.error('❌ Project Context Analyzer initialization failed:', error);
+      logger.error('❌ Project Context Analyzer initialization failed:', error);
       throw error;
     }
   }
@@ -206,7 +208,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
       return context;
     } catch (error) {
-      console.error('❌ Project context analysis failed:', error);
+      logger.error('❌ Project context analysis failed:', error);
       throw error;
     }
   }
@@ -400,7 +402,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         packages: context.monorepo.packages,
       });
     } catch (error) {
-      console.warn('Error analyzing monorepo structure:', error);
+      logger.warn('Error analyzing monorepo structure:', error);
     }
   }
 
@@ -473,7 +475,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       const failed = missions.filter((m) => m.status === 'failed').length;
       this.emit('missionsExecuted', { completed, failed, total: missions.length });
     } catch (error) {
-      console.error('❌ Mission execution failed:', error);
+      logger.error('❌ Mission execution failed:', error);
     }
   }
 
@@ -525,7 +527,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       await this.storeKnowledgeInCache(mission, result);
       this.emit('missionCompleted', mission);
     } catch (error) {
-      console.error(`❌ Mission failed: ${mission.id}`, error);
+      logger.error(`❌ Mission failed: ${mission.id}`, error);
       mission.status = 'failed';
     }
 
@@ -553,7 +555,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
       return mission.results?.consolidatedResponse || 'No results found';
     } catch (error) {
-      console.error('Knowledge query failed:', error);
+      logger.error('Knowledge query failed:', error);
       throw error;
     }
   }
@@ -594,7 +596,10 @@ export class ProjectContextAnalyzer extends EventEmitter {
       }
     } catch (error) {
       // Log dependency analysis errors for debugging
-      console.warn('Error analyzing dependencies:', error instanceof Error ? error.message : error);
+      logger.warn(
+        'Error analyzing dependencies:',
+        error instanceof Error ? error.message : error
+      );
     }
 
     // Add support for other package managers (Cargo.toml, requirements.txt, etc.)
@@ -663,7 +668,10 @@ export class ProjectContextAnalyzer extends EventEmitter {
         });
       }
     } catch (error) {
-      console.warn('Error analyzing languages:', error instanceof Error ? error.message : error);
+      logger.warn(
+        'Error analyzing languages:',
+        error instanceof Error ? error.message : error
+      );
     }
   }
 
@@ -696,7 +704,10 @@ export class ProjectContextAnalyzer extends EventEmitter {
         // File doesn't exist, skip
       }
     } catch (error) {
-      console.warn('Error analyzing Cargo.toml:', error instanceof Error ? error.message : error);
+      logger.warn(
+        'Error analyzing Cargo.toml:',
+        error instanceof Error ? error.message : error
+      );
     }
   }
 
@@ -727,7 +738,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         // File doesn't exist, skip
       }
     } catch (error) {
-      console.warn(
+      logger.warn(
         'Error analyzing requirements.txt:',
         error instanceof Error ? error.message : error
       );
@@ -995,7 +1006,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
       return results.slice(0, 5); // Top 5 results
     } catch (error) {
-      console.error('Failed to search cached knowledge:', error);
+      logger.error('Failed to search cached knowledge:', error);
       return [];
     }
   }
@@ -1052,7 +1063,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         this.contextCache.delete(oldestKey);
       }
     } catch (error) {
-      console.error('Failed to store knowledge in cache:', error);
+      logger.error('Failed to store knowledge in cache:', error);
     }
   }
 
@@ -1072,7 +1083,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
             await this.generateKnowledgeMissions();
           }
         } catch (error) {
-          console.error('Context monitoring failed:', error);
+          logger.error('Context monitoring failed:', error);
         }
       },
       60 * 60 * 1000

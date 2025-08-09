@@ -1,3 +1,5 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("interfaces-api-http-middleware-errors");
 /**
  * Error Handling Middleware
  *
@@ -148,7 +150,7 @@ export const errorHandler: ErrorRequestHandler = (
   const traceId = generateTraceId();
 
   // Log error for monitoring (in production, use proper logging service)
-  console.error(`[${traceId}] Error occurred:`, {
+  logger.error(`[${traceId}] Error occurred:`, {
     message: error.message,
     stack: error.stack,
     path: req.path,

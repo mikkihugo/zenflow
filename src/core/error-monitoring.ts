@@ -1,8 +1,8 @@
 /**
- * Error Monitoring and Reporting Infrastructure
+ * Error Monitoring and Reporting Infrastructure.
  *
  * Comprehensive error tracking, aggregation, analysis, and alerting system
- * for Claude-Zen distributed architecture
+ * for Claude-Zen distributed architecture.
  */
 
 import {
@@ -87,7 +87,9 @@ export class ErrorStorage {
     // Clean old reports if necessary
     if (this.reports.size > this.maxReports) {
       const oldestKey = Array.from(this.reports.keys())[0];
-      this.reports.delete(oldestKey);
+      if (oldestKey) {
+        this.reports.delete(oldestKey);
+      }
     }
 
     // Update trends
@@ -127,7 +129,9 @@ export class ErrorStorage {
       const oldestTrend = Array.from(this.trends.entries()).sort(
         ([, a], [, b]) => a.lastSeen - b.lastSeen
       )[0];
-      this.trends.delete(oldestTrend[0]);
+      if (oldestTrend) {
+        this.trends.delete(oldestTrend[0]);
+      }
     }
   }
 

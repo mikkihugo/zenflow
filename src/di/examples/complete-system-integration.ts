@@ -37,6 +37,10 @@ class ProductionLogger implements ILogger {
   error(message: string): void {
     this.log(`ERROR: ${message}`);
   }
+
+  debug(message: string): void {
+    this.log(`DEBUG: ${message}`);
+  }
 }
 
 class ConfigurationManager implements IConfig {
@@ -50,8 +54,8 @@ class ConfigurationManager implements IConfig {
     this.settings.set('database.connectionPool', 10);
   }
 
-  get<T>(key: string): T | undefined {
-    return this.settings.get(key);
+  get<T>(key: string): T {
+    return this.settings.get(key) as T;
   }
 
   set<T>(key: string, value: T): void {
@@ -70,14 +74,14 @@ class EnhancedEventBus implements IEventBus {
   constructor(@inject(CORE_TOKENS.Logger) private _logger: ILogger) {}
 
   publish(event: string, data: any): void {
-    this.logger.info(`Publishing event: ${event}`);
+    this._logger.info(`Publishing event: ${event}`);
     const eventHandlers = this.handlers.get(event);
     if (eventHandlers) {
       for (const handler of eventHandlers) {
         try {
           handler(data);
         } catch (error) {
-          this.logger.error(`Error in event handler for ${event}: ${error}`);
+          this._logger.error(`Error in event handler for ${event}: ${error}`);
         }
       }
     }
@@ -88,7 +92,7 @@ class EnhancedEventBus implements IEventBus {
       this.handlers.set(event, new Set());
     }
     this.handlers.get(event)?.add(handler);
-    this.logger.info(`Subscribed to event: ${event}`);
+    this._logger.info(`Subscribed to event: ${event}`);
   }
 
   unsubscribe(event: string, handler: (data: any) => void): void {
@@ -96,6 +100,19 @@ class EnhancedEventBus implements IEventBus {
     if (eventHandlers) {
       eventHandlers.delete(handler);
     }
+  }
+
+  // IEventBus interface methods (aliases for compatibility)
+  emit(event: string, data: any): void {
+    this.publish(event, data);
+  }
+
+  on(event: string, handler: (data: any) => void): void {
+    this.subscribe(event, handler);
+  }
+
+  off(event: string, handler: (data: any) => void): void {
+    this.unsubscribe(event, handler);
   }
 }
 
@@ -106,25 +123,47 @@ class SwarmDatabase implements IDatabase {
   constructor(@inject(CORE_TOKENS.Logger) private _logger: ILogger) {}
 
   async initialize(): Promise<void> {
-    this.logger.info('Initializing swarm database...');
+    this._logger.info('Initializing swarm database...');
     // Simulate database initialization
     await new Promise((resolve) => setTimeout(resolve, 100));
     this.isInitialized = true;
-    this.logger.info('Swarm database initialized successfully');
+    this._logger.info('Swarm database initialized successfully');
   }
 
   async query(sql: string, _params?: any[]): Promise<any[]> {
     if (!this.isInitialized) {
       throw new Error('Database not initialized');
     }
-    this.logger.info(`Executing query: ${sql}`);
+    this._logger.info(`Executing query: ${sql}`);
     // Simulate database query
     return [];
   }
 
   async close(): Promise<void> {
-    this.logger.info('Closing swarm database...');
+    this._logger.info('Closing swarm database...');
     this.isInitialized = false;
+  }
+
+  // TODO: TypeScript error TS2740 - Missing IDatabase methods (AI unsure of safe fix - human review needed)
+  // Methods like execute, transaction, createTask, updateTask, etc. need proper implementation
+  async execute(sql: string, params?: any[]): Promise<any> {
+    return this.query(sql, params);
+  }
+
+  async transaction<T>(callback: () => Promise<T>): Promise<T> {
+    // Basic transaction simulation
+    return callback();
+  }
+
+  async createTask(task: any): Promise<string> {
+    // Basic task creation simulation
+    const taskId = `task_${Date.now()}`;
+    this._logger.info(`Created task: ${taskId}`);
+    return taskId;
+  }
+
+  async updateTask(taskId: string, updates: any): Promise<void> {
+    this._logger.info(`Updated task: ${taskId}`);
   }
 }
 
@@ -137,18 +176,19 @@ class AgentRegistry implements IAgentRegistry {
     @inject(CORE_TOKENS.EventBus) private _eventBus: IEventBus,
   ) {}
 
-  async registerAgent(id: string, agent: any): Promise<void> {
+  async registerAgent(id: string, agent: any): Promise<string> {
     this.agents.set(id, agent);
-    this.logger.info(`Agent registered: ${id}`);
-    this.eventBus.publish('agent.registered', { id, agent });
+    this._logger.info(`Agent registered: ${id}`);
+    this._eventBus.publish('agent.registered', { id, agent });
+    return id;
   }
 
   async unregisterAgent(id: string): Promise<void> {
     const agent = this.agents.get(id);
     if (agent) {
       this.agents.delete(id);
-      this.logger.info(`Agent unregistered: ${id}`);
-      this.eventBus.publish('agent.unregistered', { id, agent });
+      this._logger.info(`Agent unregistered: ${id}`);
+      this._eventBus.publish('agent.unregistered', { id, agent });
     }
   }
 
@@ -158,6 +198,15 @@ class AgentRegistry implements IAgentRegistry {
 
   getAllAgents(): any[] {
     return Array.from(this.agents.values());
+  }
+
+  // TODO: TypeScript error TS2739 - Missing IAgentRegistry methods (AI unsure of safe fix - human review needed)
+  getActiveAgents(): any[] {
+    return this.getAllAgents().filter((agent) => agent.status === 'active');
+  }
+
+  findAvailableAgents(criteria?: any): any[] {
+    return this.getAllAgents().filter((agent) => agent.status === 'available');
   }
 }
 
@@ -173,40 +222,58 @@ class SwarmCoordinatorImplementation implements ISwarmCoordinator {
   ) {}
 
   async initializeSwarm(_options: any): Promise<void> {
-    this.logger.info('Initializing swarm coordination...');
+    this._logger.info('Initializing swarm coordination...');
 
-    const maxAgents = this.config.get<number>('swarm.maxAgents') || 10;
-    const topology = this.config.get<string>('swarm.topology') || 'mesh';
+    const maxAgents = this._config.get<number>('swarm.maxAgents') || 10;
+    const topology = this._config.get<string>('swarm.topology') || 'mesh';
 
-    this.logger.info(`Swarm configuration: ${maxAgents} agents, ${topology} topology`);
+    this._logger.info(`Swarm configuration: ${maxAgents} agents, ${topology} topology`);
 
     // Subscribe to agent events
-    this.eventBus.subscribe('agent.registered', (data) => {
-      this.logger.info(`Swarm coordinator notified of new agent: ${data.id}`);
+    this._eventBus.subscribe('agent.registered', (data) => {
+      this._logger.info(`Swarm coordinator notified of new agent: ${data.id}`);
     });
 
     this.isRunning = true;
-    this.eventBus.publish('swarm.initialized', { maxAgents, topology });
+    this._eventBus.publish('swarm.initialized', { maxAgents, topology });
   }
 
   async addAgent(agent: any): Promise<string> {
     const agentId = `agent_${Date.now()}`;
-    await this.agentRegistry.registerAgent(agentId, agent);
-    this.logger.info(`Added agent to swarm: ${agentId}`);
+    await this._agentRegistry.registerAgent(agentId, agent);
+    this._logger.info(`Added agent to swarm: ${agentId}`);
     return agentId;
   }
 
   async removeAgent(agentId: string): Promise<void> {
-    await this.agentRegistry.unregisterAgent(agentId);
-    this.logger.info(`Removed agent from swarm: ${agentId}`);
+    await this._agentRegistry.unregisterAgent(agentId);
+    this._logger.info(`Removed agent from swarm: ${agentId}`);
   }
 
   getSwarmStatus(): any {
     return {
       isRunning: this.isRunning,
-      agentCount: this.agentRegistry.getAllAgents().length,
+      agentCount: this._agentRegistry.getAllAgents().length,
       timestamp: new Date().toISOString(),
     };
+  }
+
+  // TODO: TypeScript error TS2739 - Missing ISwarmCoordinator methods (AI unsure of safe fix - human review needed)
+  async assignTask(taskId: string, agentId: string): Promise<void> {
+    this._logger.info(`Assigning task ${taskId} to agent ${agentId}`);
+  }
+
+  getMetrics(): any {
+    return {
+      agentCount: this._agentRegistry.getAllAgents().length,
+      isRunning: this.isRunning,
+      uptime: Date.now(), // Basic metrics
+    };
+  }
+
+  async shutdown(): Promise<void> {
+    this.isRunning = false;
+    this._logger.info('Swarm coordinator shutting down');
   }
 }
 
@@ -218,8 +285,8 @@ class NeuralNetworkTrainer implements INeuralNetworkTrainer {
   ) {}
 
   async trainModel(_data: any[], options: any): Promise<any> {
-    const learningRate = this.config.get<number>('neural.learningRate') || 0.001;
-    this.logger.info(`Training neural network with learning rate: ${learningRate}`);
+    const learningRate = this._config.get<number>('neural.learningRate') || 0.001;
+    this._logger.info(`Training neural network with learning rate: ${learningRate}`);
 
     // Simulate training
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -231,12 +298,12 @@ class NeuralNetworkTrainer implements INeuralNetworkTrainer {
       learningRate,
     };
 
-    this.logger.info(`Neural network training completed: ${model.id}`);
+    this._logger.info(`Neural network training completed: ${model.id}`);
     return model;
   }
 
   async evaluateModel(model: any, _testData: any[]): Promise<any> {
-    this.logger.info(`Evaluating model: ${model.id}`);
+    this._logger.info(`Evaluating model: ${model.id}`);
 
     // Simulate evaluation
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -248,8 +315,32 @@ class NeuralNetworkTrainer implements INeuralNetworkTrainer {
       f1Score: 0.925,
     };
 
-    this.logger.info(`Model evaluation completed: ${JSON.stringify(results)}`);
+    this._logger.info(`Model evaluation completed: ${JSON.stringify(results)}`);
     return results;
+  }
+
+  // TODO: TypeScript error TS2739 - Missing INeuralNetworkTrainer methods (AI unsure of safe fix - human review needed)
+  async createNetwork(architecture: any): Promise<any> {
+    this._logger.info(`Creating neural network with architecture: ${JSON.stringify(architecture)}`);
+    return { id: `network_${Date.now()}`, architecture };
+  }
+
+  async trainNetwork(networkId: string, data: any[], options: any): Promise<any> {
+    return this.trainModel(data, options);
+  }
+
+  async evaluateNetwork(networkId: string, testData: any[]): Promise<any> {
+    const model = { id: networkId };
+    return this.evaluateModel(model, testData);
+  }
+
+  async saveModel(modelId: string, path: string): Promise<void> {
+    this._logger.info(`Saving model ${modelId} to ${path}`);
+  }
+
+  async loadModel(path: string): Promise<any> {
+    this._logger.info(`Loading model from ${path}`);
+    return { id: `loaded_model_${Date.now()}`, path };
   }
 }
 
@@ -312,7 +403,7 @@ export class CompleteSystemIntegration {
     try {
       // Initialize database
       const database = this.container.resolve(CORE_TOKENS.Database);
-      await database.initialize();
+      await database.initialize?.();
 
       // Initialize swarm coordinator
       const swarmCoordinator = this.container.resolve(SWARM_TOKENS.SwarmCoordinator);

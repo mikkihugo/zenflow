@@ -1,5 +1,5 @@
 /**
- * USL (Unified Service Layer) Core Interfaces
+ * @fileoverview USL (Unified Service Layer) Core Interfaces
  *
  * Provides unified abstractions for all service implementations across Claude-Zen:
  * - Data services, web services, coordination services, neural services

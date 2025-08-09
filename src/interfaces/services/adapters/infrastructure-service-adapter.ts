@@ -1,5 +1,5 @@
 /**
- * USL Infrastructure Service Adapter
+ * @fileoverview USL Infrastructure Service Adapter
  *
  * Unified Service Layer adapter for infrastructure-related services, providing
  * a consistent interface to ClaudeZenFacade, IntegratedPatternSystem, and

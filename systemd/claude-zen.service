@@ -1,0 +1,235 @@
+# ==============================================================================
+# CLAUDE-ZEN SYSTEMD SERVICE UNIT FILE
+# ==============================================================================
+#
+# Production-ready SystemD service configuration for Claude-Zen
+# 
+# Installation Instructions:
+#   1. Copy this file to /etc/systemd/system/claude-zen.service
+#   2. Update User, Group, and paths to match your setup
+#   3. Reload systemd: sudo systemctl daemon-reload
+#   4. Enable service: sudo systemctl enable claude-zen
+#   5. Start service: sudo systemctl start claude-zen
+#   6. Check status: sudo systemctl status claude-zen
+#
+# Service Management:
+#   sudo systemctl start claude-zen      # Start service
+#   sudo systemctl stop claude-zen       # Stop service
+#   sudo systemctl restart claude-zen    # Restart service
+#   sudo systemctl reload claude-zen     # Reload configuration
+#   sudo systemctl status claude-zen     # Check status
+#   sudo journalctl -u claude-zen -f     # Follow logs
+
+[Unit]
+Description=Claude-Zen - AI-Powered Development Environment
+Documentation=https://github.com/mikkihugo/claude-code-zen
+After=network-online.target postgresql.service redis.service
+Wants=network-online.target
+Requires=postgresql.service redis.service
+
+[Service]
+# ==============================================================================
+# SERVICE CONFIGURATION
+# ==============================================================================
+
+# Service type
+Type=exec
+ExecStart=/opt/claude-zen/bin/claude-zen start --production
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill -TERM $MAINPID
+
+# Working directory and environment
+WorkingDirectory=/opt/claude-zen
+EnvironmentFile=/opt/claude-zen/.env
+Environment=NODE_ENV=production
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+
+# User and group (create dedicated user for security)
+User=claude-zen
+Group=claude-zen
+
+# Process management
+PIDFile=/var/run/claude-zen/claude-zen.pid
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStartSec=60
+TimeoutStopSec=30
+TimeoutReloadSec=10
+
+# Restart configuration
+Restart=always
+RestartSec=10
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+# ==============================================================================
+# SECURITY HARDENING
+# ==============================================================================
+
+# Process isolation
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+
+# Network isolation
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+IPAccounting=true
+
+# System call filtering
+SystemCallFilter=@system-service
+SystemCallFilter=~@debug @mount @cpu-emulation @obsolete @privileged @reboot @swap @raw-io
+SystemCallErrorNumber=EPERM
+
+# Capabilities
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+
+# File system access
+ReadWritePaths=/opt/claude-zen/data /opt/claude-zen/logs /opt/claude-zen/cache /opt/claude-zen/workspace
+ReadOnlyPaths=/opt/claude-zen/config
+InaccessiblePaths=/home /root /boot /opt/claude-zen/secrets
+
+# Memory and process limits
+MemoryLimit=8G
+MemorySwapMax=0
+LimitNOFILE=65536
+LimitNPROC=4096
+LimitCORE=0
+
+# ==============================================================================
+# LOGGING CONFIGURATION
+# ==============================================================================
+
+# Standard output and error
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=claude-zen
+
+# Log level and rotation
+SyslogLevel=info
+LogLevelMax=info
+
+# ==============================================================================
+# MONITORING AND HEALTH CHECKS
+# ==============================================================================
+
+# Watchdog configuration (if supported by application)
+WatchdogSec=30
+NotifyAccess=main
+
+# ==============================================================================
+# ENVIRONMENT VARIABLES
+# ==============================================================================
+
+# Core application settings
+Environment=APP_NAME=claude-zen
+Environment=APP_VERSION=2.0.0
+Environment=CLAUDE_INSTANCE_ID=claude-zen-systemd
+
+# Logging configuration
+Environment=CLAUDE_LOG_LEVEL=info
+Environment=CLAUDE_LOG_CONSOLE=false
+Environment=CLAUDE_LOG_FILE=true
+Environment=CLAUDE_LOG_DIR=/var/log/claude-zen
+Environment=LOG_FORMAT=json
+
+# Network configuration
+Environment=CLAUDE_MCP_HOST=0.0.0.0
+Environment=CLAUDE_MCP_PORT=3000
+Environment=CLAUDE_WEB_HOST=0.0.0.0
+Environment=CLAUDE_WEB_PORT=3456
+
+# Security
+Environment=FORCE_HTTPS=true
+Environment=SESSION_SECURE=true
+
+# Performance
+Environment=WORKER_THREADS=8
+Environment=NODE_OPTIONS="--max-old-space-size=8192"
+
+# Feature flags
+Environment=MCP_HTTP_ENABLED=true
+Environment=WEB_DASHBOARD_ENABLED=true
+Environment=METRICS_ENABLED=true
+Environment=BACKUP_ENABLED=true
+
+# Disable development features
+Environment=DEBUG=false
+Environment=DEV_TOOLS_ENABLED=false
+
+[Install]
+WantedBy=multi-user.target
+
+# ==============================================================================
+# ADDITIONAL CONFIGURATION NOTES
+# ==============================================================================
+#
+# 1. USER SETUP:
+#    sudo useradd --system --shell /bin/false --home /opt/claude-zen claude-zen
+#    sudo chown -R claude-zen:claude-zen /opt/claude-zen
+#    sudo chmod -R 755 /opt/claude-zen
+#
+# 2. DIRECTORY STRUCTURE:
+#    /opt/claude-zen/                 # Application root
+#    ├── bin/claude-zen              # Main executable
+#    ├── .env                        # Environment configuration
+#    ├── config/                     # Configuration files
+#    ├── data/                       # Application data
+#    ├── logs/                       # Log files
+#    ├── cache/                      # Cache files
+#    ├── workspace/                  # Working directory
+#    └── backups/                    # Backup files
+#
+# 3. LOG DIRECTORY SETUP:
+#    sudo mkdir -p /var/log/claude-zen
+#    sudo chown claude-zen:claude-zen /var/log/claude-zen
+#    sudo chmod 755 /var/log/claude-zen
+#
+# 4. PID DIRECTORY SETUP:
+#    sudo mkdir -p /var/run/claude-zen
+#    sudo chown claude-zen:claude-zen /var/run/claude-zen
+#    sudo chmod 755 /var/run/claude-zen
+#
+# 5. FIREWALL CONFIGURATION:
+#    sudo ufw allow 3000/tcp         # MCP Server
+#    sudo ufw allow 3456/tcp         # Web Dashboard
+#    sudo ufw allow 4000/tcp         # API Server (if needed)
+#
+# 6. LOGROTATE CONFIGURATION:
+#    Create /etc/logrotate.d/claude-zen:
+#    /var/log/claude-zen/*.log {
+#        daily
+#        missingok
+#        rotate 30
+#        compress
+#        delaycompress
+#        notifempty
+#        sharedscripts
+#        postrotate
+#            systemctl reload claude-zen
+#        endscript
+#    }
+#
+# 7. MONITORING:
+#    Use 'systemctl status claude-zen' to check service status
+#    Use 'journalctl -u claude-zen -f' to follow logs
+#    Use 'systemctl is-active claude-zen' for health checks
+#
+# 8. BACKUP CRON JOB:
+#    Add to /etc/cron.d/claude-zen:
+#    0 2 * * * claude-zen /opt/claude-zen/scripts/backup.sh
+#
+# 9. HEALTH CHECK MONITORING:
+#    Create monitoring script to check service health:
+#    curl -f http://localhost:3000/health || systemctl restart claude-zen
+#
+# 10. SECURITY CONSIDERATIONS:
+#     - Run as dedicated non-privileged user
+#     - Use strong file permissions
+#     - Enable firewall rules
+#     - Monitor logs for security events
+#     - Regular security updates
+#
+# ==============================================================================

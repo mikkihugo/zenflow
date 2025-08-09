@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("tools-domain-splitting-orchestrator");
 /**
  * Main orchestrator for domain splitting operations
  */
@@ -61,7 +63,7 @@ export class DomainSplittingOrchestrator {
 
       return result;
     } catch (error) {
-      console.error(`❌ Domain splitting failed:`, error);
+      logger.error(`❌ Domain splitting failed:`, error);
       throw error;
     }
   }

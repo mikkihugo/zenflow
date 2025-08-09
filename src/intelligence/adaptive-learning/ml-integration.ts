@@ -1,5 +1,7 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("intelligence-adaptive-learning-ml-integration");
 /**
- * Machine Learning Integration
+ * Machine Learning Integration.
  *
  * Provides ML capabilities including neural networks, reinforcement learning,
  * ensemble models, and online learning for the adaptive learning system.
@@ -54,17 +56,22 @@ export class ReinforcementLearningEngine
   }
 
   /**
-   * Select action using epsilon-greedy policy
+   * Select action using epsilon-greedy policy.
    *
    * @param state
    * @param availableActions
    */
   selectAction(state: string, availableActions: string[]): string {
+    // Validate inputs
+    if (!availableActions || availableActions.length === 0) {
+      throw new Error('Available actions cannot be empty');
+    }
+
     // Epsilon-greedy action selection
     if (Math.random() < this.explorationRate) {
       // Explore: random action
       const randomIndex = Math.floor(Math.random() * availableActions.length);
-      const action = availableActions[randomIndex];
+      const action = availableActions[randomIndex]!; // Safe access after length check
 
       this.emit('actionSelected', {
         state,
@@ -92,7 +99,7 @@ export class ReinforcementLearningEngine
   }
 
   /**
-   * Update Q-value using Q-learning algorithm
+   * Update Q-value using Q-learning algorithm.
    *
    * @param state
    * @param action
@@ -128,7 +135,7 @@ export class ReinforcementLearningEngine
   }
 
   /**
-   * Get Q-value for state-action pair
+   * Get Q-value for state-action pair.
    *
    * @param state
    * @param action
@@ -138,7 +145,7 @@ export class ReinforcementLearningEngine
   }
 
   /**
-   * Get current policy (best action for each state)
+   * Get current policy (best action for each state).
    */
   getPolicy(): Map<string, string> {
     const policy = new Map<string, string>();
@@ -163,7 +170,7 @@ export class ReinforcementLearningEngine
   }
 
   /**
-   * Train on batch of experiences
+   * Train on batch of experiences.
    *
    * @param experiences
    */
@@ -196,7 +203,7 @@ export class ReinforcementLearningEngine
   }
 
   /**
-   * Get learning statistics
+   * Get learning statistics.
    */
   getStats(): {
     episodeCount: number;
@@ -227,7 +234,7 @@ export class ReinforcementLearningEngine
   }
 
   /**
-   * Reset learning state
+   * Reset learning state.
    */
   reset(): void {
     this.qTable.clear();
@@ -247,7 +254,12 @@ export class ReinforcementLearningEngine
   }
 
   private getBestAction(state: string, availableActions: string[]): string {
-    let bestAction = availableActions[0];
+    // Validate inputs
+    if (!availableActions || availableActions.length === 0) {
+      throw new Error('Available actions cannot be empty');
+    }
+
+    let bestAction = availableActions[0]!; // Safe access after length check
     let bestValue = this.getQValue(state, bestAction);
 
     for (const action of availableActions) {
@@ -292,7 +304,7 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
   }
 
   /**
-   * Predict patterns from execution data
+   * Predict patterns from execution data.
    *
    * @param data
    */
@@ -321,7 +333,7 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
   }
 
   /**
-   * Train the neural network
+   * Train the neural network.
    *
    * @param data
    * @param labels
@@ -358,7 +370,7 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
   }
 
   /**
-   * Evaluate model performance
+   * Evaluate model performance.
    *
    * @param testData
    */
@@ -382,7 +394,7 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
   }
 
   /**
-   * Get model information
+   * Get model information.
    */
   getModelInfo(): ModelInfo {
     return {
@@ -393,13 +405,13 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
       trainedOn: this.trainingHistory.length > 0 ? 'execution_data' : 'untrained',
       lastUpdated:
         this.trainingHistory.length > 0
-          ? this.trainingHistory[this.trainingHistory.length - 1].trainingTime
+          ? this.trainingHistory[this.trainingHistory.length - 1]?.trainingTime ?? Date.now()
           : Date.now(),
     };
   }
 
   /**
-   * Get training history
+   * Get training history.
    */
   getTrainingHistory(): TrainingResult[] {
     return [...this.trainingHistory];
@@ -476,17 +488,17 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
         prediction,
         source: data[index],
       },
-      confidence: Math.max(...prediction),
+      confidence: prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
       frequency: 1,
-      context: data[index].context,
+      context: data[index]?.context || {},
       metadata: {
-        complexity: prediction.length / this.outputSize,
-        predictability: Math.max(...prediction),
-        stability: 1 - this.calculateStd(prediction),
-        anomalyScore: Math.max(...prediction) > 0.9 ? 0.8 : 0.2,
+        complexity: prediction && prediction.length > 0 ? prediction.length / this.outputSize : 0.5,
+        predictability: prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
+        stability: prediction && prediction.length > 0 ? 1 - this.calculateStd(prediction) : 0.5,
+        anomalyScore: prediction && prediction.length > 0 && Math.max(...prediction) > 0.9 ? 0.8 : 0.2,
         correlations: [],
-        quality: Math.max(...prediction),
-        relevance: Math.max(...prediction),
+        quality: prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
+        relevance: prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
       },
       timestamp: Date.now(),
     }));
@@ -555,7 +567,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
   private totalWeight: number = 0;
 
   /**
-   * Add a model to the ensemble
+   * Add a model to the ensemble.
    *
    * @param model
    * @param weight
@@ -575,7 +587,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
   }
 
   /**
-   * Make ensemble prediction
+   * Make ensemble prediction.
    *
    * @param data
    */
@@ -594,7 +606,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
         modelPredictions.set(modelId, prediction);
         modelContributions.set(modelId, weight / this.totalWeight);
       } catch (error) {
-        console.warn(`Model ${modelId} prediction failed:`, error);
+        logger.warn(`Model ${modelId} prediction failed:`, error);
       }
     }
 
@@ -621,7 +633,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
   }
 
   /**
-   * Get model weights
+   * Get model weights.
    */
   getModelWeights(): Map<string, number> {
     const weights = new Map<string, number>();
@@ -634,7 +646,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
   }
 
   /**
-   * Update model weights based on performance
+   * Update model weights based on performance.
    *
    * @param performance
    */
@@ -651,9 +663,12 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
       const perf = performance[i];
 
       // Update weight based on performance (simplified)
-      const newWeight = Math.max(0.1, perf.accuracy || 0.5);
-      this.models.get(modelId)!.weight = newWeight;
-      this.totalWeight += newWeight;
+      const newWeight = Math.max(0.1, perf?.accuracy || 0.5);
+      const modelData = this.models.get(modelId);
+      if (modelData) {
+        modelData.weight = newWeight;
+        this.totalWeight += newWeight;
+      }
     }
 
     this.emit('weightsUpdated', {
@@ -664,7 +679,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
   }
 
   /**
-   * Remove model from ensemble
+   * Remove model from ensemble.
    *
    * @param modelId
    */
@@ -775,7 +790,7 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
   }
 
   /**
-   * Process streaming data
+   * Process streaming data.
    *
    * @param data
    */
@@ -805,21 +820,21 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
   }
 
   /**
-   * Get current model
+   * Get current model.
    */
   getCurrentModel(): any {
     return { ...this.model };
   }
 
   /**
-   * Get current accuracy
+   * Get current accuracy.
    */
   getAccuracy(): number {
     return this.accuracy;
   }
 
   /**
-   * Adapt to new data distribution
+   * Adapt to new data distribution.
    *
    * @param newData
    */
@@ -841,7 +856,7 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
   }
 
   /**
-   * Reset online learning
+   * Reset online learning.
    */
   reset(): void {
     this.recentData = [];
@@ -874,10 +889,13 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
     const prediction = this.predict(features);
     const error = target - prediction;
 
-    for (let i = 0; i < this.model.weights.length && i < features.length; i++) {
-      this.model.weights[i] += this.model.learningRate * error * features[i];
+    // Safe access to model weights
+    if (this.model && this.model.weights && Array.isArray(this.model.weights)) {
+      for (let i = 0; i < this.model.weights.length && i < features.length; i++) {
+        this.model.weights[i] += this.model.learningRate * error * features[i]!;
+      }
+      this.model.bias += this.model.learningRate * error;
     }
-    this.model.bias += this.model.learningRate * error;
 
     // Update accuracy estimate
     this.accuracy = this.accuracy * 0.99 + (Math.abs(error) < 0.5 ? 0.01 : 0);
@@ -906,9 +924,10 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
     const oldMeans = this.calculateFeatureMeans(oldFeatures);
     const newMeans = this.calculateFeatureMeans(newFeatures);
 
-    // Check if means have shifted significantly
-    for (let i = 0; i < Math.min(oldMeans.length, newMeans.length); i++) {
-      if (Math.abs(oldMeans[i] - newMeans[i]) > 0.5) {
+    // Check if means have shifted significantly - safe access to array lengths
+    const minLength = Math.min(oldMeans?.length || 0, newMeans?.length || 0);
+    for (let i = 0; i < minLength; i++) {
+      if (Math.abs((oldMeans?.[i] || 0) - (newMeans?.[i] || 0)) > 0.5) {
         return true;
       }
     }
@@ -924,13 +943,19 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
     // Simple batch update
     for (let epoch = 0; epoch < 10; epoch++) {
       for (let i = 0; i < features.length; i++) {
-        const prediction = this.predict(features[i]);
-        const error = targets[i] - prediction;
+        const currentFeatures = features[i];
+        if (!currentFeatures) continue;
 
-        for (let j = 0; j < this.model.weights.length && j < features[i].length; j++) {
-          this.model.weights[j] += this.model.learningRate * error * features[i][j];
+        const prediction = this.predict(currentFeatures);
+        const error = targets[i]! - prediction;
+
+        // Safe access to model weights
+        if (this.model && this.model.weights && Array.isArray(this.model.weights)) {
+          for (let j = 0; j < this.model.weights.length && j < currentFeatures.length; j++) {
+            this.model.weights[j] += this.model.learningRate * error * (currentFeatures[j] || 0);
+          }
+          this.model.bias += this.model.learningRate * error;
         }
-        this.model.bias += this.model.learningRate * error;
       }
     }
 
@@ -950,9 +975,13 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
   }
 
   private predict(features: number[]): number {
-    let sum = this.model.bias;
+    if (!this.model || !this.model.weights || !Array.isArray(this.model.weights)) {
+      return 0.5; // Default prediction
+    }
+
+    let sum = this.model.bias || 0;
     for (let i = 0; i < this.model.weights.length && i < features.length; i++) {
-      sum += this.model.weights[i] * features[i];
+      sum += (this.model.weights[i] || 0) * (features[i] || 0);
     }
     return 1 / (1 + Math.exp(-sum)); // Sigmoid activation
   }
@@ -972,7 +1001,10 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
 
     let correct = 0;
     for (let i = 0; i < features.length; i++) {
-      const prediction = this.predict(features[i]);
+      const currentFeatures = features[i];
+      if (!currentFeatures) continue;
+
+      const prediction = this.predict(currentFeatures);
       const predicted = prediction > 0.5 ? 1 : 0;
       if (predicted === targets[i]) {
         correct++;
@@ -983,14 +1015,15 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
   }
 
   private calculateFeatureMeans(features: number[][]): number[] {
-    if (features.length === 0) return [];
+    if (features.length === 0 || !features[0]) return [];
 
     const featureCount = features[0].length;
     const means = Array(featureCount).fill(0);
 
     for (const feature of features) {
+      if (!feature) continue;
       for (let i = 0; i < Math.min(featureCount, feature.length); i++) {
-        means[i] += feature[i];
+        means[i] += feature[i] || 0;
       }
     }
 

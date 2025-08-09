@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-mcp-external-mcp-client");
 import { EventEmitter } from 'node:events';
 
 /**
@@ -109,7 +111,7 @@ export class ExternalMCPClient extends EventEmitter {
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      console.error(`Failed to connect to ${name}: ${errorMessage}`);
+      logger.error(`Failed to connect to ${name}: ${errorMessage}`);
 
       this.emit('serverError', { server: name, error: errorMessage });
 
@@ -197,7 +199,7 @@ export class ExternalMCPClient extends EventEmitter {
       const mockTools = this.getMockToolsForServer(name);
       return mockTools;
     } catch (error) {
-      console.error(`Failed to discover tools from ${name}:`, error);
+      logger.error(`Failed to discover tools from ${name}:`, error);
       return [];
     }
   }
@@ -381,7 +383,7 @@ export class ExternalMCPClient extends EventEmitter {
       try {
         await connection.close();
       } catch (error) {
-        console.error(`Error disconnecting from ${name}:`, error);
+        logger.error(`Error disconnecting from ${name}:`, error);
       }
     }
 

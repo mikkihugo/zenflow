@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-knowledge-knowledge-processor");
 /**
  * WASM-Powered FACT Integration for Claude-Zen
  *
@@ -223,7 +225,7 @@ export class WASMFactIntegration extends EventEmitter {
         cacheSize: this.config.cacheSize,
       });
     } catch (error) {
-      console.error('❌ WASM FACT initialization failed:', error);
+      logger.error('❌ WASM FACT initialization failed:', error);
       throw error;
     }
   }
@@ -279,7 +281,7 @@ export class WASMFactIntegration extends EventEmitter {
 
       return result;
     } catch (error) {
-      console.error(`❌ WASM Template processing failed [${template}]:`, error);
+      logger.error(`❌ WASM Template processing failed [${template}]:`, error);
       throw error;
     }
   }
@@ -325,7 +327,7 @@ export class WASMFactIntegration extends EventEmitter {
 
       return optimizedResult;
     } catch (error) {
-      console.error('❌ Intelligent knowledge gathering failed:', error);
+      logger.error('❌ Intelligent knowledge gathering failed:', error);
       throw error;
     }
   }
@@ -351,7 +353,7 @@ export class WASMFactIntegration extends EventEmitter {
 
         results.set(dep, result);
       } catch (error) {
-        console.error(`❌ Failed to gather knowledge for ${dep}:`, error);
+        logger.error(`❌ Failed to gather knowledge for ${dep}:`, error);
         results.set(dep, { error: error.message });
       }
     });
@@ -386,7 +388,7 @@ export class WASMFactIntegration extends EventEmitter {
           results.set(mission.id, result);
           return { mission: mission.id, success: true };
         } catch (error) {
-          console.error(`Mission failed [${mission.id}]:`, error);
+          logger.error(`Mission failed [${mission.id}]:`, error);
           results.set(mission.id, { error: error.message });
           return { mission: mission.id, success: false, error };
         }
@@ -440,7 +442,7 @@ export class WASMFactIntegration extends EventEmitter {
 
       return this.performanceMetrics;
     } catch (error) {
-      console.error('Failed to get WASM metrics:', error);
+      logger.error('Failed to get WASM metrics:', error);
       return this.performanceMetrics;
     }
   }
@@ -496,7 +498,7 @@ export class WASMFactIntegration extends EventEmitter {
 
       return false;
     } catch (error) {
-      console.error(`Failed to create template ${name}:`, error);
+      logger.error(`Failed to create template ${name}:`, error);
       return false;
     }
   }
@@ -608,7 +610,7 @@ export class WASMFactIntegration extends EventEmitter {
         },
       } as WASMFact;
     } catch (error) {
-      console.error('❌ Failed to load WASM module:', error);
+      logger.error('❌ Failed to load WASM module:', error);
       throw error;
     }
   }

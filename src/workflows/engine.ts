@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-workflows-engine");
 /**
  * Workflow Engine
  * Sequential workflow processing engine migrated from plugins
@@ -180,7 +182,7 @@ export class WorkflowEngine extends EventEmitter {
       );
       return func(context);
     } catch (error) {
-      console.error(`[WorkflowEngine] Failed to evaluate condition: ${expression}`, error);
+      logger.error(`[WorkflowEngine] Failed to evaluate condition: ${expression}`, error);
       return false;
     }
   }
@@ -231,7 +233,7 @@ export class WorkflowEngine extends EventEmitter {
         }
       }
     } catch (error) {
-      console.error('[WorkflowEngine] Failed to load persisted workflows:', error);
+      logger.error('[WorkflowEngine] Failed to load persisted workflows:', error);
     }
   }
 
@@ -242,7 +244,7 @@ export class WorkflowEngine extends EventEmitter {
       const filePath = path.join(this.config.persistencePath, `${workflow.id}.workflow.json`);
       await writeFile(filePath, JSON.stringify(workflow, null, 2));
     } catch (error) {
-      console.error(`[WorkflowEngine] Failed to save workflow ${workflow.id}:`, error);
+      logger.error(`[WorkflowEngine] Failed to save workflow ${workflow.id}:`, error);
     }
   }
 
@@ -296,7 +298,7 @@ export class WorkflowEngine extends EventEmitter {
 
     // Start execution asynchronously
     this.executeWorkflow(workflow).catch((error) => {
-      console.error(`[WorkflowEngine] Workflow ${workflowId} failed:`, error);
+      logger.error(`[WorkflowEngine] Workflow ${workflowId} failed:`, error);
     });
 
     this.emit('workflow-started', workflowId);
@@ -379,7 +381,7 @@ export class WorkflowEngine extends EventEmitter {
       } catch (error) {
         retries++;
 
-        console.warn(
+        logger.warn(
           `[WorkflowEngine] Step ${step.name} failed (attempt ${retries}/${maxRetries + 1}): ${(error as Error).message}`
         );
 
@@ -447,7 +449,7 @@ export class WorkflowEngine extends EventEmitter {
 
       // Resume execution
       this.executeWorkflow(workflow).catch((error) => {
-        console.error(`[WorkflowEngine] Workflow ${workflowId} failed after resume:`, error);
+        logger.error(`[WorkflowEngine] Workflow ${workflowId} failed after resume:`, error);
       });
 
       this.emit('workflow-resumed', workflowId);
@@ -506,7 +508,7 @@ export class WorkflowEngine extends EventEmitter {
         (a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
       );
     } catch (error) {
-      console.error('[WorkflowEngine] Failed to get workflow history:', error);
+      logger.error('[WorkflowEngine] Failed to get workflow history:', error);
       return [];
     }
   }

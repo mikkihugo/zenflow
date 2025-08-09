@@ -1,5 +1,5 @@
 /**
- * USL Data Service Helper Functions
+ * @fileoverview USL Data Service Helper Functions
  *
  * Collection of utility functions and helper methods for common data operations
  * across DataServiceAdapter instances. Provides simplified interfaces for

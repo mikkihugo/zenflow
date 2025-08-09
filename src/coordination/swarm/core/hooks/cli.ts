@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodeimport { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-hooks-cli");
 
 /**
  * CLI handler for ruv-swarm hooks
@@ -18,6 +19,11 @@ async function main() {
   const [, hookType] = args;
   const options = parseArgs(args.slice(2));
 
+  if (!hookType) {
+    logger.error('Hook type is required');
+    process.exit(1);
+  }
+
   try {
     const result = await handleHook(hookType, options);
 
@@ -31,13 +37,11 @@ async function main() {
     const errorMessage = error instanceof Error ? error.message : String(error);
     const errorStack = error instanceof Error ? error.stack : undefined;
 
-    console.error(
-      JSON.stringify({
-        continue: true,
-        error: errorMessage,
-        stack: process.env['DEBUG'] ? errorStack : undefined,
-      })
-    );
+    logger.error(JSON.stringify({
+      continue: true,
+      error: errorMessage,
+      stack: process.env['DEBUG'] ? errorStack : undefined,
+    }));
     process.exit(1); // Non-blocking error
   }
 }

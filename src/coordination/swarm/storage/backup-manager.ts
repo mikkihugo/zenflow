@@ -1,5 +1,5 @@
 /**
- * Swarm Backup & Recovery System
+ * Swarm Backup & Recovery System.
  *
  * Provides automated daily backups and disaster recovery
  * for hundreds of swarms with simple tar-based storage.
@@ -43,7 +43,7 @@ export class SwarmBackupManager extends EventEmitter {
   private config: BackupConfig;
   private claudeZenPath: string;
   private backupsPath: string;
-  private dailyBackupTimer?: NodeJS.Timeout;
+  private dailyBackupTimer?: NodeJS.Timeout | undefined;
 
   constructor(claudeZenPath: string, config: Partial<BackupConfig> = {}) {
     super();
@@ -61,7 +61,7 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   /**
-   * Initialize backup system
+   * Initialize backup system.
    */
   async initialize(): Promise<void> {
     await fs.mkdir(this.backupsPath, { recursive: true });
@@ -73,7 +73,7 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   /**
-   * Create daily backup of all active swarms
+   * Create daily backup of all active swarms.
    */
   async createDailyBackup(): Promise<string> {
     const timestamp = new Date();
@@ -121,7 +121,7 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   /**
-   * Restore swarm from backup
+   * Restore swarm from backup.
    *
    * @param swarmId
    * @param backupId
@@ -150,7 +150,7 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   /**
-   * List available backups
+   * List available backups.
    */
   async listBackups(): Promise<BackupMetadata[]> {
     const metadataPath = path.join(this.backupsPath, 'metadata');
@@ -169,7 +169,7 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   /**
-   * Cleanup old backups according to retention policy
+   * Cleanup old backups according to retention policy.
    */
   async cleanupOldBackups(): Promise<number> {
     const backups = await this.listBackups();
@@ -187,7 +187,7 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   /**
-   * Get backup statistics
+   * Get backup statistics.
    */
   async getBackupStats(): Promise<{
     totalBackups: number;
@@ -202,8 +202,8 @@ export class SwarmBackupManager extends EventEmitter {
     return {
       totalBackups: backups.length,
       totalSizeBytes,
-      oldestBackup: backups.length > 0 ? backups[backups.length - 1].timestamp : null,
-      newestBackup: backups.length > 0 ? backups[0].timestamp : null,
+      oldestBackup: backups.length > 0 ? backups[backups.length - 1]?.timestamp || null : null,
+      newestBackup: backups.length > 0 ? backups[0]?.timestamp || null : null,
     };
   }
 
@@ -241,7 +241,7 @@ export class SwarmBackupManager extends EventEmitter {
 
   private async getLatestBackup(): Promise<BackupMetadata | null> {
     const backups = await this.listBackups();
-    return backups.length > 0 ? backups[0] : null;
+    return backups.length > 0 ? backups[0] || null : null;
   }
 
   private async getBackupMetadata(backupId: string): Promise<BackupMetadata | null> {
@@ -330,7 +330,7 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   /**
-   * Shutdown backup system
+   * Shutdown backup system.
    */
   async shutdown(): Promise<void> {
     if (this.dailyBackupTimer) {

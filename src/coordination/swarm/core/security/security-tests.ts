@@ -1,6 +1,8 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-security-security-tests");
 /**
  * Security Tests for Issue #115 Command Injection Vulnerabilities
- * Comprehensive test suite to validate security fixes
+ * Comprehensive test suite to validate security fixes.
  */
 
 const { SecureClaudeGitHubHooks } = require('../github-coordinator/claude-hooks-secure');
@@ -17,7 +19,7 @@ class SecurityTester {
   }
 
   /**
-   * Log test result
+   * Log test result.
    *
    * @param testName
    * @param passed
@@ -37,7 +39,7 @@ class SecurityTester {
   }
 
   /**
-   * Test command injection prevention
+   * Test command injection prevention.
    */
   async testCommandInjectionPrevention() {
     // Test 1: Issue number injection
@@ -89,7 +91,7 @@ class SecurityTester {
   }
 
   /**
-   * Test input validation
+   * Test input validation.
    */
   async testInputValidation() {
     // Test 1: Valid inputs pass
@@ -129,7 +131,7 @@ class SecurityTester {
   }
 
   /**
-   * Test prompt injection prevention
+   * Test prompt injection prevention.
    */
   async testPromptInjectionPrevention() {
     const maliciousPrompts = [
@@ -170,7 +172,7 @@ class SecurityTester {
   }
 
   /**
-   * Test safe command execution
+   * Test safe command execution.
    */
   async testSafeCommandExecution() {
     // Test 1: GitHub CLI argument construction
@@ -222,7 +224,7 @@ class SecurityTester {
   }
 
   /**
-   * Test environment validation
+   * Test environment validation.
    */
   async testEnvironmentValidation() {
     // Backup original environment
@@ -230,8 +232,8 @@ class SecurityTester {
 
     try {
       // Test 1: Missing environment variables
-      delete process.env.GITHUB_OWNER;
-      delete process.env.GITHUB_REPO;
+      delete process.env['GITHUB_OWNER'];
+      delete process.env['GITHUB_REPO'];
 
       try {
         CommandSanitizer.validateEnvironment();
@@ -241,8 +243,8 @@ class SecurityTester {
       }
 
       // Test 2: Invalid environment values
-      process.env.GITHUB_OWNER = 'invalid-owner-with-special-chars!@#';
-      process.env.GITHUB_REPO = 'repo';
+      process.env['GITHUB_OWNER'] = 'invalid-owner-with-special-chars!@#';
+      process.env['GITHUB_REPO'] = 'repo';
 
       try {
         CommandSanitizer.validateEnvironment();
@@ -252,8 +254,8 @@ class SecurityTester {
       }
 
       // Test 3: Valid environment
-      process.env.GITHUB_OWNER = 'valid-owner';
-      process.env.GITHUB_REPO = 'valid-repo';
+      process.env['GITHUB_OWNER'] = 'valid-owner';
+      process.env['GITHUB_REPO'] = 'valid-repo';
 
       try {
         CommandSanitizer.validateEnvironment();
@@ -268,12 +270,12 @@ class SecurityTester {
   }
 
   /**
-   * Test coordinator security integration
+   * Test coordinator security integration.
    */
   async testCoordinatorSecurity() {
     // Mock environment for testing
-    process.env.GITHUB_OWNER = 'test-owner';
-    process.env.GITHUB_REPO = 'test-repo';
+    process.env['GITHUB_OWNER'] = 'test-owner';
+    process.env['GITHUB_REPO'] = 'test-repo';
 
     try {
       // Test 1: Secure coordinator initialization
@@ -316,7 +318,7 @@ class SecurityTester {
   }
 
   /**
-   * Run all security tests
+   * Run all security tests.
    */
   async runAllTests() {
     const startTime = Date.now();
@@ -340,7 +342,7 @@ class SecurityTester {
   }
 
   /**
-   * Generate security report
+   * Generate security report.
    */
   generateSecurityReport() {
     return {
@@ -379,7 +381,7 @@ if (require.main === module) {
       process.exit(success ? 0 : 1);
     })
     .catch((error) => {
-      console.error('❌ Security test suite failed:', error);
+      logger.error('❌ Security test suite failed:', error);
       process.exit(1);
     });
 }

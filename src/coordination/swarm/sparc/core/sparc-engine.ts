@@ -1,5 +1,7 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-sparc-core-sparc-engine");
 /**
- * SPARC Engine Core Implementation with Deep Claude-Zen Integration
+ * SPARC Engine Core Implementation with Deep Claude-Zen Integration.
  *
  * Main orchestration engine for the SPARC (Specification, Pseudocode,
  * Architecture, Refinement, Completion) development methodology.
@@ -8,14 +10,16 @@
  * - DocumentDrivenSystem: Vision → ADRs → PRDs → Epics → Features → Tasks → Code
  * - UnifiedWorkflowEngine: Automated workflow execution
  * - SwarmCoordination: Distributed SPARC development using existing agents
- * - TaskAPI & TaskCoordinator: Task management and execution
+ * - TaskAPI & TaskCoordinator: Task management and execution.
  */
 
 import { nanoid } from 'nanoid';
-// Using mock implementations for missing modules - TODO: Implement proper modules
+// Real implementations - no more mocks!
 import { TaskAPI } from '../../../api';
-// import { MemorySystem } from '../../../../core/memory-system';
-// import { WorkflowEngine } from '../../../../core/workflow-engine';
+import { MemorySystem } from '../../../../core/memory-system';
+import { WorkflowEngine } from '../../../../core/workflow-engine';
+import { TaskCoordinator } from '../../../task-coordinator';
+import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
 import { ProjectManagementIntegration } from '../integrations/project-management-integration';
 import { SPARCSwarmCoordinator } from '../integrations/swarm-coordination-integration';
 import { ArchitecturePhaseEngine } from '../phases/architecture/architecture-engine';
@@ -50,10 +54,13 @@ export class SPARCEngineCore implements SPARCEngine {
   private readonly phaseEngines: Map<SPARCPhase, any>;
   private readonly projectManagement: ProjectManagementIntegration;
 
-  // Deep infrastructure integration
-  private readonly documentDrivenSystem: any; // DocumentDrivenSystem - using mock
-  private readonly workflowEngine: any; // WorkflowEngine - using mock
+  // Deep infrastructure integration - REAL implementations
+  private readonly documentDrivenSystem: DocumentDrivenSystem;
+  private readonly workflowEngine: WorkflowEngine;
   private readonly swarmCoordinator: SPARCSwarmCoordinator;
+  private readonly memorySystem: MemorySystem;
+  private readonly taskCoordinator: TaskCoordinator;
+  private readonly taskAPI: TaskAPI;
 
   constructor() {
     this.phaseDefinitions = this.initializePhaseDefinitions();
@@ -61,17 +68,17 @@ export class SPARCEngineCore implements SPARCEngine {
     this.phaseEngines = this.initializePhaseEngines();
     this.projectManagement = new ProjectManagementIntegration();
 
-    // Initialize existing infrastructure integrations with mock implementations
-    this.documentDrivenSystem = { process: async () => ({}) }; // Mock DocumentDrivenSystem
-    this.workflowEngine = { execute: async () => ({}) }; // Mock WorkflowEngine
-    this.memorySystem = { store: async () => ({}), retrieve: async () => ({}) }; // Mock MemorySystem
+    // Initialize existing infrastructure integrations with REAL implementations
+    this.documentDrivenSystem = new DocumentDrivenSystem();
+    this.workflowEngine = new WorkflowEngine();
+    this.memorySystem = new MemorySystem();
     this.swarmCoordinator = new SPARCSwarmCoordinator();
-    this.taskCoordinator = { coordinate: async () => ({}) }; // Mock TaskCoordinator
-    this.taskAPI = { execute: async () => ({}) }; // Mock TaskAPI
+    this.taskCoordinator = new TaskCoordinator();
+    this.taskAPI = new TaskAPI();
   }
 
   /**
-   * Initialize phase engines for all SPARC phases
+   * Initialize phase engines for all SPARC phases.
    */
   private initializePhaseEngines(): Map<SPARCPhase, any> {
     const engines = new Map();
@@ -84,7 +91,7 @@ export class SPARCEngineCore implements SPARCEngine {
   }
 
   /**
-   * Initialize a new SPARC project with comprehensive setup and infrastructure integration
+   * Initialize a new SPARC project with comprehensive setup and infrastructure integration.
    *
    * @param projectSpec
    */
@@ -132,14 +139,14 @@ export class SPARCEngineCore implements SPARCEngine {
       // 5. Generate comprehensive project management artifacts using existing infrastructure
       await this.createAllProjectManagementArtifacts(project);
     } catch (error) {
-      console.warn('⚠️ Infrastructure integration partial:', error);
+      logger.warn('⚠️ Infrastructure integration partial:', error);
     }
 
     return project;
   }
 
   /**
-   * Execute a specific SPARC phase with comprehensive validation
+   * Execute a specific SPARC phase with comprehensive validation.
    *
    * @param project
    * @param phase
@@ -185,7 +192,7 @@ export class SPARCEngineCore implements SPARCEngine {
         try {
           await this.projectManagement.createADRFiles(project);
         } catch (error) {
-          console.warn('⚠️ Could not generate ADRs:', error);
+          logger.warn('⚠️ Could not generate ADRs:', error);
         }
       }
 
@@ -196,12 +203,13 @@ export class SPARCEngineCore implements SPARCEngine {
         complexityScore: 0.7,
       };
 
+      const nextPhase = this.determineNextPhase(phase);
       const result: PhaseResult = {
         phase,
         success: true,
         deliverables,
         metrics,
-        nextPhase: this.determineNextPhase(phase),
+        ...(nextPhase && { nextPhase }),
         recommendations: this.generatePhaseRecommendations(phase, project),
       };
       return result;
@@ -223,13 +231,13 @@ export class SPARCEngineCore implements SPARCEngine {
         ],
       };
 
-      console.error(`❌ Phase ${phase} failed:`, error);
+      logger.error(`❌ Phase ${phase} failed:`, error);
       throw error;
     }
   }
 
   /**
-   * Refine implementation based on feedback and metrics
+   * Refine implementation based on feedback and metrics.
    *
    * @param project
    * @param feedback
@@ -276,18 +284,21 @@ export class SPARCEngineCore implements SPARCEngine {
     };
 
     // Record refinement in history
-    project.refinements.push({
-      iteration: project.refinements.length + 1,
-      timestamp: new Date(),
-      strategy: refinementStrategies[0], // Use primary strategy
-      changes: refinementStrategies[0].changes,
-      results: result,
-    });
+    const primaryStrategy = refinementStrategies[0];
+    if (primaryStrategy) {
+      project.refinements.push({
+        iteration: project.refinements.length + 1,
+        timestamp: new Date(),
+        strategy: primaryStrategy,
+        changes: primaryStrategy.changes,
+        results: result,
+      });
+    }
     return result;
   }
 
   /**
-   * Generate comprehensive artifact set for the project
+   * Generate comprehensive artifact set for the project.
    *
    * @param project
    */
@@ -341,18 +352,18 @@ export class SPARCEngineCore implements SPARCEngine {
       },
       relationships: [
         {
-          source: artifacts[0].id, // specification
-          target: artifacts[1].id, // architecture
+          source: artifacts[0]?.id || '', // specification
+          target: artifacts[1]?.id || '', // architecture
           type: 'generates',
         },
         {
-          source: artifacts[1].id, // architecture
-          target: artifacts[2].id, // implementation
+          source: artifacts[1]?.id || '', // architecture
+          target: artifacts[2]?.id || '', // implementation
           type: 'implements',
         },
         {
-          source: artifacts[2].id, // implementation
-          target: artifacts[3].id, // tests
+          source: artifacts[2]?.id || '', // implementation
+          target: artifacts[3]?.id || '', // tests
           type: 'validates',
         },
       ],
@@ -361,7 +372,7 @@ export class SPARCEngineCore implements SPARCEngine {
   }
 
   /**
-   * Validate project completion and production readiness
+   * Validate project completion and production readiness.
    *
    * @param project
    */
@@ -1049,7 +1060,7 @@ export class SPARCEngineCore implements SPARCEngine {
   // ==================== INFRASTRUCTURE INTEGRATION METHODS ====================
 
   /**
-   * Create vision document for integration with DocumentDrivenSystem
+   * Create vision document for integration with DocumentDrivenSystem.
    *
    * @param project
    * @param spec
@@ -1086,7 +1097,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
   }
 
   /**
-   * Execute existing document workflows using UnifiedWorkflowEngine
+   * Execute existing document workflows using UnifiedWorkflowEngine.
    *
    * @param workspaceId
    * @param project
@@ -1111,14 +1122,14 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
           workspaceId,
         });
       } catch (error) {
-        console.warn(`⚠️ Workflow ${workflowName} failed:`, error);
+        logger.warn(`⚠️ Workflow ${workflowName} failed:`, error);
         // Continue with other workflows
       }
     }
   }
 
   /**
-   * Generate all project management artifacts using existing infrastructure
+   * Generate all project management artifacts using existing infrastructure.
    *
    * @param project
    */
@@ -1139,7 +1150,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
   }
 
   /**
-   * Create tasks from SPARC phases using existing TaskAPI
+   * Create tasks from SPARC phases using existing TaskAPI.
    *
    * @param project
    */
@@ -1165,7 +1176,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
   }
 
   /**
-   * Execute task using swarm coordination
+   * Execute task using swarm coordination.
    *
    * @param _taskId
    * @param project
@@ -1181,15 +1192,15 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
 
       if (result.success) {
       } else {
-        console.warn(`⚠️ SPARC ${phase} had issues, but continuing...`);
+        logger.warn(`⚠️ SPARC ${phase} had issues, but continuing...`);
       }
     } catch (error) {
-      console.error(`❌ Failed to execute ${phase} with swarm:`, error);
+      logger.error(`❌ Failed to execute ${phase} with swarm:`, error);
     }
   }
 
   /**
-   * Create ADR files using existing workspace structure
+   * Create ADR files using existing workspace structure.
    *
    * @param project
    */
@@ -1213,7 +1224,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
   }
 
   /**
-   * Save epics to workspace using existing document structure
+   * Save epics to workspace using existing document structure.
    *
    * @param project
    */
@@ -1222,7 +1233,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
   }
 
   /**
-   * Save features from workspace using existing document structure
+   * Save features from workspace using existing document structure.
    *
    * @param project
    */
@@ -1231,7 +1242,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
   }
 
   /**
-   * Create epics from SPARC project phases
+   * Create epics from SPARC project phases.
    *
    * @param project
    */
@@ -1257,7 +1268,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
   }
 
   /**
-   * Create features from SPARC project
+   * Create features from SPARC project.
    *
    * @param project
    */
@@ -1281,7 +1292,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
   }
 
   /**
-   * Get SPARC project status for external monitoring
+   * Get SPARC project status for external monitoring.
    *
    * @param projectId
    */

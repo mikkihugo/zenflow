@@ -1,15 +1,15 @@
 /**
- * @file Unified Configuration Types
+ * @file Unified Configuration Types.
  *
- * Central type definitions for all configuration across Claude-Zen
+ * Central type definitions for all configuration across Claude-Zen.
  */
 
 /**
- * Core system configuration
+ * Core system configuration.
  *
  * @example
  */
-export interface CoreConfig {
+export interface Config {
   logger: {
     level: 'debug' | 'info' | 'warn' | 'error';
     console: boolean;
@@ -29,7 +29,14 @@ export interface CoreConfig {
 }
 
 /**
- * Interface-specific configuration
+ * Core system configuration (alias for Config).
+ *
+ * @example
+ */
+export interface CoreConfig extends Config {}
+
+/**
+ * Interface-specific configuration.
  *
  * @example
  */
@@ -44,7 +51,7 @@ export interface InterfaceConfig {
 }
 
 /**
- * Terminal interface configuration
+ * Terminal interface configuration.
  *
  * @example
  */
@@ -57,7 +64,7 @@ export interface TerminalConfig {
 }
 
 /**
- * Web interface configuration
+ * Web interface configuration.
  *
  * @example
  */
@@ -71,7 +78,7 @@ export interface WebConfig {
 }
 
 /**
- * MCP server configuration
+ * MCP server configuration.
  *
  * @example
  */
@@ -95,7 +102,7 @@ export interface MCPConfig {
 }
 
 /**
- * Memory system configuration
+ * Memory system configuration.
  *
  * @example
  */
@@ -111,7 +118,7 @@ export interface MemoryConfig {
 }
 
 /**
- * Database configuration
+ * Database configuration.
  *
  * @example
  */
@@ -138,7 +145,7 @@ export interface DatabaseConfig {
 }
 
 /**
- * Coordination/Swarm configuration
+ * Coordination/Swarm configuration.
  *
  * @example
  */
@@ -153,7 +160,7 @@ export interface CoordinationConfig {
 }
 
 /**
- * Neural network configuration
+ * Neural network configuration.
  *
  * @example
  */
@@ -169,7 +176,7 @@ export interface NeuralConfig {
 }
 
 /**
- * Optimization configuration
+ * Optimization configuration.
  *
  * @example
  */
@@ -182,7 +189,86 @@ export interface OptimizationConfig {
 }
 
 /**
- * Unified system configuration
+ * External services configuration.
+ *
+ * @example
+ */
+export interface ServicesConfig {
+  anthropic: {
+    apiKey: string | null;
+    baseUrl: string;
+    timeout: number;
+    maxRetries: number;
+  };
+  openai: {
+    apiKey: string | null;
+    baseUrl: string;
+    timeout: number;
+  };
+  github: {
+    token: string | null;
+    baseUrl: string;
+  };
+  search: {
+    apiKey: string | null;
+    baseUrl: string | null;
+  };
+}
+
+/**
+ * Monitoring configuration.
+ *
+ * @example
+ */
+export interface MonitoringConfig {
+  dashboard: {
+    port: number;
+    host: string;
+    enableMetrics: boolean;
+    metricsInterval: number;
+  };
+  logging: {
+    level: string;
+    format: string;
+    file: string;
+    enableConsole: boolean;
+    enableFile: boolean;
+  };
+  performance: {
+    enableProfiling: boolean;
+    sampleRate: number;
+    enableTracing: boolean;
+  };
+}
+
+/**
+ * Network configuration.
+ *
+ * @example
+ */
+export interface NetworkConfig {
+  defaultTimeout: number;
+  maxRetries: number;
+  retryDelay: number;
+  enableKeepAlive: boolean;
+}
+
+/**
+ * Environment configuration.
+ *
+ * @example
+ */
+export interface EnvironmentConfig {
+  isDevelopment: boolean;
+  isProduction: boolean;
+  isTest: boolean;
+  allowUnsafeOperations: boolean;
+  enableDebugEndpoints: boolean;
+  strictValidation: boolean;
+}
+
+/**
+ * Unified system configuration.
  *
  * @example
  */
@@ -201,10 +287,14 @@ export interface SystemConfiguration {
   coordination: CoordinationConfig;
   neural: NeuralConfig;
   optimization: OptimizationConfig;
+  services: ServicesConfig;
+  monitoring: MonitoringConfig;
+  network: NetworkConfig;
+  environment: EnvironmentConfig;
 }
 
 /**
- * Configuration source types
+ * Configuration source types.
  *
  * @example
  */
@@ -215,7 +305,7 @@ export interface ConfigurationSource {
 }
 
 /**
- * Configuration validation result
+ * Configuration validation result.
  *
  * @example
  */
@@ -226,7 +316,39 @@ export interface ConfigValidationResult {
 }
 
 /**
- * Configuration change event
+ * Enhanced validation result with production information.
+ *
+ * @example
+ */
+export interface ValidationResult extends ConfigValidationResult {
+  productionReady: boolean;
+  securityIssues: string[];
+  portConflicts: string[];
+  performanceWarnings: string[];
+  failsafeApplied: string[];
+}
+
+/**
+ * Configuration health report.
+ *
+ * @example
+ */
+export interface ConfigHealthReport {
+  status: 'healthy' | 'warning' | 'critical';
+  score: number;
+  details: {
+    structure: boolean;
+    security: boolean;
+    performance: boolean;
+    production: boolean;
+  };
+  recommendations: string[];
+  timestamp: number;
+  environment: string;
+}
+
+/**
+ * Configuration change event.
  *
  * @example
  */
@@ -239,7 +361,7 @@ export interface ConfigChangeEvent {
 }
 
 /**
- * Environment variable mappings
+ * Environment variable mappings.
  *
  * @example
  */

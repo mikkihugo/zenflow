@@ -7,6 +7,8 @@
  * @file REST API schemas for all domains
  */
 
+import { getMCPServerURL } from '../../../config/url-builder';
+
 // Re-export coordination types that are actually available
 export type {
   Agent,
@@ -41,7 +43,7 @@ export const RestAPISchema = {
   },
   servers: [
     {
-      url: 'http://localhost:3000',
+      url: getMCPServerURL(),
       description: 'Development server',
     },
     {

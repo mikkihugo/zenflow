@@ -1,5 +1,7 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-session-manager");
 /**
- * Session Management System for ZenSwarm
+ * Session Management System for ZenSwarm.
  *
  * Provides comprehensive session management with persistence integration,
  * state serialization, checkpoint system, and recovery mechanisms.
@@ -9,12 +11,12 @@
  * - SessionState: Interface for session data structure
  * - Checkpoint system with integrity verification
  * - Recovery mechanisms with rollback capabilities
- * - Integration with existing persistence layer
+ * - Integration with existing persistence layer.
  */
 
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import type { SessionCoordinationDao, SessionEntity } from '../../../database';
+import type { IDao, SessionCoordinationDao, SessionEntity } from '../../../database';
 import { createDao, DatabaseTypes, EntityTypes } from '../../../database';
 import type { SwarmOptions, SwarmState } from './types';
 import { generateId } from './utils';
@@ -61,18 +63,18 @@ export interface SessionRecoveryOptions {
 }
 
 /**
- * Core Session Manager class
+ * Core Session Manager class.
  *
  * @example
  */
 export class SessionManager extends EventEmitter {
-  private coordinationDao: SessionCoordinationDao;
+  private coordinationDao: IDao<SessionCoordinationDao>;
   private activeSessions: Map<string, SessionState>;
   private config: Required<SessionConfig>;
   private checkpointTimers: Map<string, NodeJS.Timeout>;
   private initialized: boolean = false;
 
-  constructor(coordinationDao: SessionCoordinationDao, config: SessionConfig = {}) {
+  constructor(coordinationDao: IDao<SessionCoordinationDao>, config: SessionConfig = {}) {
     super();
 
     this.coordinationDao = coordinationDao;
@@ -93,11 +95,11 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Ensure DAO is initialized
+   * Ensure DAO is initialized.
    */
   private async ensureInitialized(): Promise<void> {
     if (!this.coordinationDao) {
-      // Use the convenience function that handles DI setup internally
+      // Enhanced: Use correct IDao<SessionCoordinationDao> type - no casting needed
       this.coordinationDao = await createDao<SessionCoordinationDao>(
         EntityTypes.CoordinationEvent,
         DatabaseTypes.Coordination
@@ -106,7 +108,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Get initialized DAO with null safety
+   * Get initialized DAO with null safety.
    */
   private async getDao() {
     await this.ensureInitialized();
@@ -114,7 +116,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Initialize the session manager
+   * Initialize the session manager.
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -139,7 +141,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Create a new session
+   * Create a new session.
    *
    * @param name
    * @param swarmOptions
@@ -216,7 +218,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Load an existing session
+   * Load an existing session.
    *
    * @param sessionId
    */
@@ -245,16 +247,14 @@ export class SessionManager extends EventEmitter {
       name: sessionData.name,
       createdAt: new Date(sessionData.created_at),
       lastAccessedAt: new Date(),
-      lastCheckpointAt: sessionData.last_checkpoint_at
-        ? new Date(sessionData.last_checkpoint_at)
-        : undefined,
+      ...(sessionData.last_checkpoint_at && { lastCheckpointAt: new Date(sessionData.last_checkpoint_at) }),
       status: sessionData.status as SessionStatus,
       swarmState: this.deserializeData(sessionData.swarm_state),
       swarmOptions: this.deserializeData(sessionData.swarm_options),
       metadata: this.deserializeData(sessionData.metadata),
       checkpoints: await this.loadSessionCheckpoints(sessionId),
       version: sessionData.version,
-    };
+    } satisfies SessionState;
 
     // Add to active sessions
     this.activeSessions.set(sessionId, sessionState);
@@ -272,7 +272,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Save session state
+   * Save session state.
    *
    * @param sessionId
    * @param state
@@ -306,7 +306,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Create a checkpoint of the current session state
+   * Create a checkpoint of the current session state.
    *
    * @param sessionId
    * @param description
@@ -380,7 +380,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Restore session from a checkpoint
+   * Restore session from a checkpoint.
    *
    * @param sessionId
    * @param checkpointId
@@ -438,7 +438,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Pause a session (stop processing but keep in memory)
+   * Pause a session (stop processing but keep in memory).
    *
    * @param sessionId
    */
@@ -468,7 +468,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Resume a paused session
+   * Resume a paused session.
    *
    * @param sessionId
    */
@@ -500,7 +500,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Hibernate a session (save to disk and remove from memory)
+   * Hibernate a session (save to disk and remove from memory).
    *
    * @param sessionId
    */
@@ -536,7 +536,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Terminate a session permanently
+   * Terminate a session permanently.
    *
    * @param sessionId
    * @param cleanup
@@ -571,7 +571,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * List all sessions with optional filtering
+   * List all sessions with optional filtering.
    *
    * @param filter
    * @param filter.status
@@ -622,14 +622,12 @@ export class SessionManager extends EventEmitter {
     const dao = await this.getDao();
     const sessions = await dao.query(sql, params);
 
-    return sessions.map((sessionData: any) => ({
+    return sessions.map((sessionData: any): SessionState => ({
       id: sessionData.id,
       name: sessionData.name,
       createdAt: new Date(sessionData.created_at),
       lastAccessedAt: new Date(sessionData.last_accessed_at),
-      lastCheckpointAt: sessionData.last_checkpoint_at
-        ? new Date(sessionData.last_checkpoint_at)
-        : undefined,
+      ...(sessionData.last_checkpoint_at && { lastCheckpointAt: new Date(sessionData.last_checkpoint_at) }),
       status: sessionData.status as SessionStatus,
       swarmState: this.deserializeData(sessionData.swarm_state),
       swarmOptions: this.deserializeData(sessionData.swarm_options),
@@ -640,7 +638,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Get session statistics
+   * Get session statistics.
    *
    * @param sessionId
    */
@@ -695,7 +693,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Private helper methods
+   * Private helper methods.
    */
 
   private async initializeSessionTables(): Promise<void> {
@@ -755,16 +753,14 @@ export class SessionManager extends EventEmitter {
         name: sessionData.name,
         createdAt: new Date(sessionData.created_at),
         lastAccessedAt: new Date(sessionData.last_accessed_at),
-        lastCheckpointAt: sessionData.last_checkpoint_at
-          ? new Date(sessionData.last_checkpoint_at)
-          : undefined,
+        ...(sessionData.last_checkpoint_at && { lastCheckpointAt: new Date(sessionData.last_checkpoint_at) }),
         status: sessionData.status as SessionStatus,
         swarmState: this.deserializeData(sessionData.swarm_state),
         swarmOptions: this.deserializeData(sessionData.swarm_options),
         metadata: this.deserializeData(sessionData.metadata),
         checkpoints: await this.loadSessionCheckpoints(sessionData.id),
         version: sessionData.version,
-      };
+      } satisfies SessionState;
 
       this.activeSessions.set(sessionState.id, sessionState);
 
@@ -854,7 +850,7 @@ export class SessionManager extends EventEmitter {
   }
 
   /**
-   * Cleanup and shutdown
+   * Cleanup and shutdown.
    */
   async shutdown(): Promise<void> {
     // Stop all auto-checkpoint timers
@@ -869,7 +865,7 @@ export class SessionManager extends EventEmitter {
         try {
           await this.createCheckpoint(sessionId, 'Shutdown checkpoint');
         } catch (error) {
-          console.error(`Failed to create shutdown checkpoint for session ${sessionId}:`, error);
+          logger.error(`Failed to create shutdown checkpoint for session ${sessionId}:`, error);
         }
       }
     }

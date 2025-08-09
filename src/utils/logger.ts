@@ -1,7 +1,11 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-utils-logger");
 /**
- * Utility logger implementation
+ * @fileoverview Utility logger implementation
  * Provides simple logging functionality for the application
  */
+
+import { config } from '../config';
 
 // Local Logger interface - matches ILogger from core/logger for compatibility
 export interface Logger {
@@ -36,33 +40,74 @@ function sanitizeLogMeta(meta: any): any {
   return meta;
 }
 
-class SimpleLogger implements Logger {
-  constructor(private prefix: string = '') {}
+// Log level enumeration
+enum LogLevel {
+  DEBUG = 'debug',
+  INFO = 'info',
+  WARN = 'warn',
+  ERROR = 'error',
+}
 
-  debug(_message: string, _meta?: any): void {
-    if (process.env['NODE_ENV'] === 'development') {
+// Configuration from centralized config system
+const getLogLevel = (): LogLevel => {
+  try {
+    const centralConfig = config.getAll();
+    const configLevel = centralConfig.core.logger.level.toUpperCase();
+    // Fallback for development environment
+    const level = centralConfig.environment.isDevelopment && configLevel === 'INFO' ? 'DEBUG' : configLevel;
+    return Object.values(LogLevel).find(l => l.toUpperCase() === level) as LogLevel || LogLevel.INFO;
+  } catch (error) {
+    // Fallback to INFO if config is not available
+    return LogLevel.INFO;
+  }
+};
+
+const shouldLog = (messageLevel: LogLevel, configuredLevel: LogLevel = getLogLevel()): boolean => {
+  const levels = { [LogLevel.DEBUG]: 0, [LogLevel.INFO]: 1, [LogLevel.WARN]: 2, [LogLevel.ERROR]: 3 };
+  return levels[messageLevel] >= levels[configuredLevel];
+};
+
+class BasicLogger implements Logger {
+  private logLevel: LogLevel;
+  
+  constructor(private prefix: string = '') {
+    this.logLevel = getLogLevel();
+  }
+
+  private formatMessage(level: string, message: string, meta?: any): string {
+    const timestamp = new Date().toISOString();
+    const cleanMeta = sanitizeLogMeta(meta);
+    const metaStr = cleanMeta && Object.keys(cleanMeta).length > 0 ? ` ${JSON.stringify(cleanMeta)}` : '';
+    return `[${timestamp}] ${level.toUpperCase()} [${this.prefix || 'claude-zen'}]: ${message}${metaStr}`;
+  }
+
+  debug(message: string, meta?: any): void {
+    if (shouldLog(LogLevel.DEBUG, this.logLevel)) {
+      logger.debug(this.formatMessage('DEBUG', message, meta));
     }
   }
 
-  info(_message: string, _meta?: any): void {}
+  info(message: string, meta?: any): void {
+    if (shouldLog(LogLevel.INFO, this.logLevel)) {
+      logger.info(this.formatMessage('INFO', message, meta));
+    }
+  }
 
   warn(message: string, meta?: any): void {
-    console.warn(
-      `[${new Date().toISOString()}] WARN ${this.prefix}: ${message}`,
-      sanitizeLogMeta(meta) || ''
-    );
+    if (shouldLog(LogLevel.WARN, this.logLevel)) {
+      logger.warn(this.formatMessage('WARN', message, meta));
+    }
   }
 
   error(message: string, meta?: any): void {
-    console.error(
-      `[${new Date().toISOString()}] ERROR ${this.prefix}: ${message}`,
-      sanitizeLogMeta(meta) || ''
-    );
+    if (shouldLog(LogLevel.ERROR, this.logLevel)) {
+      logger.error(this.formatMessage('ERROR', message, meta));
+    }
   }
 }
 
 export function createLogger(prefix?: string): Logger {
-  return new SimpleLogger(prefix);
+  return new BasicLogger(prefix);
 }
 
 export const defaultLogger = createLogger('claude-zen');

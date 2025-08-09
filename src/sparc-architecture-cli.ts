@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodeimport { getLogger } from "./config/logging-config";
+const logger = getLogger("sparc-architecture-cli");
 
 /**
  * SPARC Architecture Engine CLI
@@ -88,7 +89,7 @@ program
       // Write output
       await writeFile(outputPath, output, 'utf8');
     } catch (error) {
-      console.error('❌ Failed to generate architecture:', error);
+      logger.error('❌ Failed to generate architecture:', error);
       process.exit(1);
     }
   });
@@ -132,7 +133,7 @@ program
       // Exit with appropriate code
       process.exit(overallScore >= 0.7 ? 0 : 1);
     } catch (error) {
-      console.error('❌ Failed to validate architecture:', error);
+      logger.error('❌ Failed to validate architecture:', error);
       process.exit(1);
     }
   });
@@ -173,7 +174,7 @@ program
       // Write output
       await writeFile(outputPath, output, 'utf8');
     } catch (error) {
-      console.error('❌ Failed to generate implementation plan:', error);
+      logger.error('❌ Failed to generate implementation plan:', error);
       process.exit(1);
     }
   });

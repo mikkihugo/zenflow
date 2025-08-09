@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-mcp-tool-registry");
 /**
  * @file MCP Tools Registry
  *
@@ -146,7 +148,7 @@ export class MCPToolsManager {
 
       this.initialized = true;
     } catch (error) {
-      console.error('Failed to initialize MCP tools:', error);
+      logger.error('Failed to initialize MCP tools:', error);
     }
   }
 

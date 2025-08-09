@@ -11,6 +11,8 @@ import { Server as SocketIOServer } from 'socket.io';
 import type { PerformanceInsights } from '../analytics/performance-analyzer';
 import type { CompositeMetrics } from '../core/metrics-collector';
 import type { OptimizationResult } from '../optimization/optimization-engine';
+import { getCORSOrigins } from '../../config/url-builder';
+import { getConfig } from '../../config';
 
 export interface DashboardConfig {
   port: number;
@@ -50,9 +52,11 @@ export class DashboardServer extends EventEmitter {
     this.config = config;
     this.app = express();
     this.server = createServer(this.app);
+    
+    // Get centralized CORS origins
     this.io = new SocketIOServer(this.server, {
       cors: {
-        origin: config.corsOrigins || ['http://localhost:3000'],
+        origin: config.corsOrigins || getCORSOrigins(),
         methods: ['GET', 'POST'],
       },
     });
@@ -73,9 +77,10 @@ export class DashboardServer extends EventEmitter {
     const staticPath = this.config.staticPath || path.join(__dirname, 'static');
     this.app.use(express.static(staticPath));
 
-    // CORS middleware
+    // CORS middleware using centralized configuration
     this.app.use((_req, res, next) => {
-      res.header('Access-Control-Allow-Origin', this.config.corsOrigins?.join(',') || '*');
+      const corsOrigins = this.config.corsOrigins || getCORSOrigins();
+      res.header('Access-Control-Allow-Origin', Array.isArray(corsOrigins) ? corsOrigins.join(',') : corsOrigins);
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
       res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
       next();

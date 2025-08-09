@@ -1,5 +1,5 @@
 /**
- * SPARC REST API Template
+ * SPARC REST API Template.
  *
  * Pre-built template for REST API systems with authentication,
  * validation, rate limiting, and comprehensive error handling.
@@ -836,8 +836,9 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
 
   customizeSpecification(projectSpec: ProjectSpecification): DetailedSpecification {
     const customized = { ...this.specification };
+    // Enhanced: Add project name and description to specification
     customized.name = projectSpec.name;
-    customized.description = `${projectSpec.name} - ${this.specification.description}`;
+    customized.description = `${projectSpec.name} - REST API system with enterprise-grade features`;
 
     // Add project-specific requirements
     if (projectSpec.requirements) {
@@ -895,8 +896,9 @@ END
         `.trim(),
         complexity: {
           timeComplexity: 'O(1)',
-          space: 'O(1)' as const,
-          explanation: 'Constant time logging operation',
+          spaceComplexity: 'O(1)' as const,
+          scalability: 'Constant time logging operation',
+          worstCase: 'O(1)',
         },
         inputParameters: ['request', 'response', 'user', 'action'],
         outputFormat: 'AuditLogEntry',
@@ -914,8 +916,32 @@ END
 
     // Adjust deployment based on complexity
     if (projectSpec.complexity === 'simple') {
-      customized.deploymentStrategy.type = 'monolith';
-      customized.deploymentStrategy.infrastructure = ['Docker', 'Nginx'];
+      // Enhanced: Set proper deployment strategy for simple projects
+      customized.deploymentStrategy = {
+        type: 'monolith',
+        infrastructure: ['Docker', 'Nginx'],
+        scalingApproach: 'vertical',
+        containerization: true,
+        orchestration: 'docker-compose'
+      };
+    } else if (projectSpec.complexity === 'enterprise') {
+      // Enhanced: Set microservices deployment for enterprise projects
+      customized.deploymentStrategy = {
+        type: 'microservices',
+        infrastructure: ['Kubernetes', 'Docker', 'Nginx', 'Load Balancer'],
+        scalingApproach: 'horizontal',
+        containerization: true,
+        orchestration: 'kubernetes'
+      };
+    } else {
+      // Enhanced: Default hybrid approach for moderate complexity
+      customized.deploymentStrategy = {
+        type: 'hybrid',
+        infrastructure: ['Docker', 'Nginx', 'Load Balancer'],
+        scalingApproach: 'auto',
+        containerization: true,
+        orchestration: 'docker-swarm'
+      };
     }
 
     return customized;

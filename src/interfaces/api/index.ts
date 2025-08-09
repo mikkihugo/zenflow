@@ -9,6 +9,8 @@
  * Architecture: Protocol-based organization, not implementation-based
  */
 
+import { getWebDashboardURL } from '../config/url-builder';
+
 // HTTP API (REST/GraphQL - consolidated from src/api/)
 export * from './http/index';
 
@@ -120,8 +122,8 @@ export class APIClientFactory {
 
 // Default configuration
 export const DEFAULT_API_CONFIG: APIInterfaceConfig = {
-  baseUrl: 'http://localhost:3456',
-  websocketUrl: 'ws://localhost:3456/ws',
+  baseUrl: getWebDashboardURL(),
+  websocketUrl: getWebDashboardURL({ protocol: 'ws' as any }).replace(/^https?/, 'ws') + '/ws',
   timeout: 5000,
   retries: 3,
   reconnect: true,

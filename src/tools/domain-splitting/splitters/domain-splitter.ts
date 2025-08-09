@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("tools-domain-splitting-splitters-domain-splitter");
 /**
  * Safe domain splitter with rollback capability
  */
@@ -109,13 +111,13 @@ export class SafeDomainSplitter implements DomainSplitter {
 
       return result;
     } catch (error) {
-      console.error(`❌ Domain split failed:`, error);
+      logger.error(`❌ Domain split failed:`, error);
       this.reportProgress('validating', 100, `Split failed: ${error.message}`);
 
       try {
         await this.rollbackSplit();
       } catch (rollbackError) {
-        console.error('💥 Rollback failed:', rollbackError);
+        logger.error('💥 Rollback failed:', rollbackError);
       }
 
       throw error;
@@ -338,7 +340,7 @@ export class SafeDomainSplitter implements DomainSplitter {
         // Move file
         await fs.move(operation.from, operation.to);
       } catch (error) {
-        console.error(`  ❌ Failed to move ${operation.from}: ${error.message}`);
+        logger.error(`  ❌ Failed to move ${operation.from}: ${error.message}`);
         throw error;
       }
     }

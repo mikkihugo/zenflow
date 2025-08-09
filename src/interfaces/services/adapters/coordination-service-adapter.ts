@@ -1,5 +1,5 @@
 /**
- * USL Coordination Service Adapter
+ * @fileoverview USL Coordination Service Adapter
  *
  * Unified Service Layer adapter for coordination-related services, providing
  * a consistent interface to DaaService, SessionRecoveryService, and SwarmCoordinator

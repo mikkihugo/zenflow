@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-knowledge-knowledge-client");
 /**
  * FACT Integration for Claude-Zen
  * Integrates the real FACT system (Fast Augmented Context Tools) for external knowledge gathering
@@ -111,7 +113,7 @@ export class FACTIntegration extends EventEmitter {
       this.isInitialized = true;
       this.emit('initialized');
     } catch (error) {
-      console.error('❌ FACT initialization failed:', error);
+      logger.error('❌ FACT initialization failed:', error);
       throw error;
     }
   }
@@ -154,7 +156,7 @@ export class FACTIntegration extends EventEmitter {
       return factResult;
     } catch (error) {
       const executionTime = Date.now() - startTime;
-      console.error(`❌ FACT Query failed [${queryId}]:`, error);
+      logger.error(`❌ FACT Query failed [${queryId}]:`, error);
 
       this.emit('queryError', { queryId, error, executionTime });
       throw error;
@@ -255,7 +257,7 @@ export class FACTIntegration extends EventEmitter {
         errorRate: result.error_rate || 0,
       };
     } catch (error) {
-      console.error('Failed to get FACT metrics:', error);
+      logger.error('Failed to get FACT metrics:', error);
       return {
         totalQueries: 0,
         cacheHitRate: 0,
@@ -324,7 +326,7 @@ export class FACTIntegration extends EventEmitter {
     try {
       await fs.writeFile(envPath, envContent);
     } catch (error) {
-      console.error('Failed to create FACT .env file:', error);
+      logger.error('Failed to create FACT .env file:', error);
       throw error;
     }
   }
@@ -340,7 +342,7 @@ export class FACTIntegration extends EventEmitter {
       // Initialize FACT driver
       await this.executePythonCommand('initialize');
     } catch (error) {
-      console.error('FACT system initialization failed:', error);
+      logger.error('FACT system initialization failed:', error);
       throw error;
     }
   }

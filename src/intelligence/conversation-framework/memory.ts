@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("intelligence-conversation-framework-memory");
 /**
  * Conversation Memory Backend
  *
@@ -32,7 +34,7 @@ class MemoryBackendAdapter implements BackendAdapter {
     try {
       await this.backend.store(key, data, 'conversations');
     } catch (error) {
-      console.error(`Failed to save conversation data for key ${key}:`, error);
+      logger.error(`Failed to save conversation data for key ${key}:`, error);
       throw new Error(
         `Memory save operation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -43,7 +45,7 @@ class MemoryBackendAdapter implements BackendAdapter {
     try {
       return await this.backend.retrieve(key, 'conversations');
     } catch (error) {
-      console.error(`Failed to retrieve conversation data for key ${key}:`, error);
+      logger.error(`Failed to retrieve conversation data for key ${key}:`, error);
       return null;
     }
   }
@@ -52,7 +54,7 @@ class MemoryBackendAdapter implements BackendAdapter {
     try {
       await this.backend.delete(key, 'conversations');
     } catch (error) {
-      console.error(`Failed to delete conversation data for key ${key}:`, error);
+      logger.error(`Failed to delete conversation data for key ${key}:`, error);
       throw new Error(
         `Memory delete operation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -63,7 +65,7 @@ class MemoryBackendAdapter implements BackendAdapter {
     try {
       return await this.backend.search(pattern, 'conversations');
     } catch (error) {
-      console.error(`Failed to search conversation data for pattern ${pattern}:`, error);
+      logger.error(`Failed to search conversation data for pattern ${pattern}:`, error);
       return {};
     }
   }
@@ -297,7 +299,9 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithSQLite(config: any = {}): Promise<ConversationMemory> {
-    // xxx NEEDS_HUMAN: SQLite backend implementation missing - ../../memory/backends/sqlite.backend.js does not exist
+    // TODO: TypeScript error TS2307 - Cannot find module '../../memory/backends/sqlite.backend.js'
+    // The SQLiteBackend implementation is missing. Need to create sqlite.backend.ts
+    // implementing BaseMemoryBackend interface (AI unsure of safe fix - human review needed)
     const { SQLiteBackend } = await import('../../memory/backends/sqlite.backend.js');
     const backend = new SQLiteBackend({ type: 'sqlite', path: config.path || './data', ...config });
     await backend.initialize();
@@ -310,7 +314,9 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithJSON(config: any = {}): Promise<ConversationMemory> {
-    // xxx NEEDS_HUMAN: JSON backend implementation missing - ../../memory/backends/json.backend.js does not exist
+    // TODO: TypeScript error TS2307 - Cannot find module '../../memory/backends/json.backend.js'
+    // The JSONBackend implementation is missing. Need to create json.backend.ts
+    // implementing BaseMemoryBackend interface (AI unsure of safe fix - human review needed)
     const { JSONBackend } = await import('../../memory/backends/json.backend.js');
     const backend = new JSONBackend({
       type: 'json',
@@ -327,7 +333,9 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithLanceDB(config: any = {}): Promise<ConversationMemory> {
-    // xxx NEEDS_HUMAN: LanceDB backend implementation missing - ../../memory/backends/lancedb.backend.js does not exist
+    // TODO: TypeScript error TS2307 - Cannot find module '../../memory/backends/lancedb.backend.js'
+    // The LanceDBBackend implementation is missing. Need to create lancedb.backend.ts
+    // implementing BaseMemoryBackend interface (AI unsure of safe fix - human review needed)
     const { LanceDBBackend } = await import('../../memory/backends/lancedb.backend.js');
     const backend = new LanceDBBackend({
       type: 'lancedb',

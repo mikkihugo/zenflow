@@ -12,18 +12,20 @@ let coordinationProvider: CoordinationProvider | null = null;
 
 /**
  * Set the coordination provider (dependency injection)
- * This breaks the direct dependency on coordination module
+ * This breaks the direct dependency on coordination module.
  *
  * @param provider
+ * @example
  */
 export function setCoordinationProvider(provider: CoordinationProvider): void {
   coordinationProvider = provider;
 }
 
 /**
- * Factory function to create orchestrator with injected dependencies
+ * Factory function to create orchestrator with injected dependencies.
  *
- * @param customCoordinationProvider Optional coordination provider override
+ * @param customCoordinationProvider Optional coordination provider override.
+ * @example
  */
 export function createOrchestratorInstance(
   customCoordinationProvider?: CoordinationProvider
@@ -38,7 +40,7 @@ export function createOrchestratorInstance(
   const mcpConfig = config.getSection('interfaces').mcp.http;
 
   const terminalManager = new TerminalManager(terminalConfig, logger, eventBus);
-  const memoryManager = new MemoryManager(memoryConfig, logger, eventBus);
+  const memoryManager = new MemoryManager(memoryConfig);
 
   // Use injected coordination provider or fall back to lazy loading
   const coordinationManagerProvider = customCoordinationProvider || coordinationProvider;
@@ -59,9 +61,10 @@ export function createOrchestratorInstance(
 }
 
 /**
- * Get or create orchestrator instance (singleton pattern)
+ * Get or create orchestrator instance (singleton pattern).
  *
- * @deprecated Use createOrchestratorInstance for better dependency management
+ * @deprecated Use createOrchestratorInstance for better dependency management.
+ * @example
  */
 export function getOrchestratorInstance(): Orchestrator {
   if (!orchestratorInstance) {
@@ -79,7 +82,7 @@ export function getOrchestratorInstance(): Orchestrator {
           setCoordinationProvider(coordinationManager as any);
         })
         .catch((error) => {
-          console.warn('Failed to load coordination manager:', error);
+          logger.warn('Failed to load coordination manager:', error);
         });
     }
 

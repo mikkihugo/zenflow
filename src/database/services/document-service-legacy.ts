@@ -1,9 +1,12 @@
 /**
- * Document Service - Pure Database-Driven Operations with DAL
+ * TODO: LEGACY FILE - Review for migration or removal
+ * This is a legacy document service that needs review.
+ * 
+ * Document Service - Pure Database-Driven Operations with DAL.
  *
  * REPLACES file-based DocumentDrivenSystem with database-first approach
  * Uses the unified DAL for all database operations across multiple adapters
- * Provides CRUD operations for all document entities with relationships
+ * Provides CRUD operations for all document entities with relationships.
  */
 
 import { nanoid } from 'nanoid';
@@ -56,7 +59,7 @@ export interface DocumentSearchOptions extends DocumentQueryOptions {
 
 /**
  * Pure Database-Driven Document Service with DAL
- * Replaces file-based operations with database entities using unified DAL
+ * Replaces file-based operations with database entities using unified DAL.
  *
  * @example
  */
@@ -71,7 +74,7 @@ export class DocumentService {
   constructor(private databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql') {}
 
   /**
-   * Initialize document service and repositories
+   * Initialize document service and repositories.
    */
   async initialize(): Promise<void> {
     // Initialize repositories using DAL factory
@@ -91,7 +94,7 @@ export class DocumentService {
   // ==================== DOCUMENT CRUD OPERATIONS ====================
 
   /**
-   * Create a new document with automatic relationship generation using DAL
+   * Create a new document with automatic relationship generation using DAL.
    *
    * @param document
    * @param options
@@ -134,7 +137,7 @@ export class DocumentService {
   }
 
   /**
-   * Get document by ID with optional relationships
+   * Get document by ID with optional relationships.
    *
    * @param id
    * @param options
@@ -144,8 +147,7 @@ export class DocumentService {
     options: DocumentQueryOptions = {}
   ): Promise<T | null> {
     const query: DatabaseQuery = {
-      id: `get_document_${id}`,
-      type: 'read',
+      type: 'select',
       operation: 'document_find',
       parameters: {
         collection: 'documents',
@@ -185,7 +187,7 @@ export class DocumentService {
   }
 
   /**
-   * Update document with automatic versioning
+   * Update document with automatic versioning.
    *
    * @param id
    * @param updates
@@ -210,7 +212,6 @@ export class DocumentService {
     } as T;
 
     const updateQuery: DatabaseQuery = {
-      id: `update_document_${id}`,
       type: 'update',
       operation: 'document_update',
       parameters: {
@@ -245,7 +246,7 @@ export class DocumentService {
   }
 
   /**
-   * Delete document and cleanup relationships
+   * Delete document and cleanup relationships.
    *
    * @param id
    */
@@ -261,7 +262,6 @@ export class DocumentService {
 
     // Delete document
     const deleteQuery: DatabaseQuery = {
-      id: `delete_document_${id}`,
       type: 'delete',
       operation: 'document_delete',
       parameters: {
@@ -285,7 +285,7 @@ export class DocumentService {
   // ==================== DOCUMENT QUERYING ====================
 
   /**
-   * Query documents with filters and pagination
+   * Query documents with filters and pagination.
    *
    * @param filters
    * @param filters.type
@@ -316,8 +316,7 @@ export class DocumentService {
     hasMore: boolean;
   }> {
     const query: DatabaseQuery = {
-      id: `query_documents_${nanoid()}`,
-      type: 'read',
+      type: 'select',
       operation: 'document_find',
       parameters: {
         collection: 'documents',
@@ -354,7 +353,7 @@ export class DocumentService {
   }
 
   /**
-   * Advanced document search with full-text and semantic capabilities
+   * Advanced document search with full-text and semantic capabilities.
    *
    * @param searchOptions
    */
@@ -411,7 +410,7 @@ export class DocumentService {
   // ==================== PROJECT OPERATIONS ====================
 
   /**
-   * Create a new project with document structure
+   * Create a new project with document structure.
    *
    * @param project
    */
@@ -429,8 +428,7 @@ export class DocumentService {
     };
 
     const insertQuery: DatabaseQuery = {
-      id: `insert_project_${id}`,
-      type: 'write',
+      type: 'insert',
       operation: 'document_insert',
       parameters: {
         collection: 'projects',
@@ -452,7 +450,7 @@ export class DocumentService {
   }
 
   /**
-   * Get project with all related documents
+   * Get project with all related documents.
    *
    * @param projectId
    */
@@ -469,8 +467,7 @@ export class DocumentService {
   } | null> {
     // Get project
     const projectQuery: DatabaseQuery = {
-      id: `get_project_${projectId}`,
-      type: 'read',
+      type: 'select',
       operation: 'document_find',
       parameters: {
         collection: 'projects',
@@ -520,7 +517,7 @@ export class DocumentService {
   // ==================== WORKFLOW OPERATIONS ====================
 
   /**
-   * Start workflow for document
+   * Start workflow for document.
    *
    * @param documentId
    * @param workflowName
@@ -549,8 +546,7 @@ export class DocumentService {
     };
 
     const insertQuery: DatabaseQuery = {
-      id: `insert_workflow_state_${id}`,
-      type: 'write',
+      type: 'insert',
       operation: 'document_insert',
       parameters: {
         collection: 'document_workflow_states',
@@ -572,7 +568,7 @@ export class DocumentService {
   }
 
   /**
-   * Advance document workflow to next stage
+   * Advance document workflow to next stage.
    *
    * @param documentId
    * @param nextStage
@@ -596,10 +592,9 @@ export class DocumentService {
       workflow_results: results
         ? { ...existing.workflow_results, ...results }
         : existing.workflow_results,
-    };
+    } as DocumentWorkflowStateEntity;
 
     const updateQuery: DatabaseQuery = {
-      id: `update_workflow_state_${documentId}`,
       type: 'update',
       operation: 'document_update',
       parameters: {
@@ -679,8 +674,7 @@ export class DocumentService {
 
   private buildFullTextSearchQuery(options: DocumentSearchOptions): DatabaseQuery {
     return {
-      id: `fulltext_search_${nanoid()}`,
-      type: 'read',
+      type: 'select',
       operation: 'fulltext_search',
       parameters: {
         collection: 'documents',
@@ -705,8 +699,7 @@ export class DocumentService {
 
   private buildSemanticSearchQuery(options: DocumentSearchOptions): DatabaseQuery {
     return {
-      id: `semantic_search_${nanoid()}`,
-      type: 'read',
+      type: 'select',
       operation: 'vector_search',
       parameters: {
         collection: 'document_search_index',
@@ -729,8 +722,7 @@ export class DocumentService {
 
   private buildKeywordSearchQuery(options: DocumentSearchOptions): DatabaseQuery {
     return {
-      id: `keyword_search_${nanoid()}`,
-      type: 'read',
+      type: 'select',
       operation: 'keyword_search',
       parameters: {
         collection: 'document_search_index',
@@ -753,8 +745,7 @@ export class DocumentService {
 
   private buildCombinedSearchQuery(options: DocumentSearchOptions): DatabaseQuery {
     return {
-      id: `combined_search_${nanoid()}`,
-      type: 'read',
+      type: 'select',
       operation: 'hybrid_search',
       parameters: {
         collection: 'documents',

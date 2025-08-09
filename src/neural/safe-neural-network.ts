@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-neural-safe-neural-network");
 /**
  * Safe Neural Network Operations
  *
@@ -492,7 +494,7 @@ export async function safeNeuralUsageExample(): Promise<void> {
   // Initialize with safe result handling
   const initResult = await network.initialize();
   if (isNeuralError(initResult)) {
-    console.error('❌ Network initialization failed:', initResult.error.message);
+    logger.error('❌ Network initialization failed:', initResult.error.message);
     return;
   }
 
@@ -521,7 +523,7 @@ export async function safeNeuralUsageExample(): Promise<void> {
     if (trainResult.accuracy !== undefined) {
     }
   } else if (isNeuralError(trainResult)) {
-    console.error('❌ Training failed:', trainResult.error.message);
+    logger.error('❌ Training failed:', trainResult.error.message);
     return;
   }
 
@@ -538,7 +540,7 @@ export async function safeNeuralUsageExample(): Promise<void> {
 
     if (isInferenceResult(predictionResult)) {
     } else if (isNeuralError(predictionResult)) {
-      console.error(
+      logger.error(
         `❌ Prediction failed for input [${input.join(', ')}]:`,
         predictionResult.error.message
       );

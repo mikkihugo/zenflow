@@ -1,6 +1,6 @@
 /**
  * @file Facade Pattern Implementation for System Integration
- * Provides simplified interfaces to complex subsystems with dependency injection
+ * Provides simplified interfaces to complex subsystems with dependency injection.
  */
 
 import { EventEmitter } from 'node:events';
@@ -488,7 +488,7 @@ export interface IMetricsCollector {
 
 /**
  * ClaudeZenFacade - Main system facade providing simplified access to all subsystems
- * Implements comprehensive orchestration with dependency injection and error handling
+ * Implements comprehensive orchestration with dependency injection and error handling.
  *
  * @example
  */
@@ -511,7 +511,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   /**
-   * High-level project initialization with comprehensive orchestration
+   * High-level project initialization with comprehensive orchestration.
    *
    * @param config
    */
@@ -578,7 +578,7 @@ export class ClaudeZenFacade extends EventEmitter {
           this.interfaceService
             .startHTTPMCP(config.interfaces.http)
             .then((server) => {
-              interfaces.http = server;
+              interfaces['http'] = server;
             })
             .catch((error) => {
               initWarnings.push(`HTTP MCP startup failed: ${error.message}`);
@@ -591,7 +591,7 @@ export class ClaudeZenFacade extends EventEmitter {
           this.interfaceService
             .startWebDashboard(config.interfaces.web)
             .then((server) => {
-              interfaces.web = server;
+              interfaces['web'] = server;
             })
             .catch((error) => {
               initWarnings.push(`Web dashboard startup failed: ${error.message}`);
@@ -604,7 +604,7 @@ export class ClaudeZenFacade extends EventEmitter {
           this.interfaceService
             .startTUI(config.interfaces.tui.mode)
             .then((instance) => {
-              interfaces.tui = instance;
+              interfaces['tui'] = instance;
             })
             .catch((error) => {
               initWarnings.push(`TUI startup failed: ${error.message}`);
@@ -655,8 +655,8 @@ export class ClaudeZenFacade extends EventEmitter {
           errors: initErrors.length,
           warnings: initWarnings.length,
         },
-        errors: initErrors.length > 0 ? initErrors : undefined,
-        warnings: initWarnings.length > 0 ? initWarnings : undefined,
+        ...(initErrors.length > 0 && { errors: initErrors }),
+        ...(initWarnings.length > 0 && { warnings: initWarnings }),
       };
 
       this.metrics.endOperation(
@@ -677,7 +677,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   /**
-   * Complex document processing with AI coordination and caching
+   * Complex document processing with AI coordination and caching.
    *
    * @param documentPath
    * @param options
@@ -826,7 +826,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   /**
-   * Comprehensive system health and status aggregation
+   * Comprehensive system health and status aggregation.
    */
   async getSystemStatus(): Promise<SystemStatus> {
     const operationId = this.generateOperationId();
@@ -885,7 +885,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   /**
-   * Execute complex multi-service workflows
+   * Execute complex multi-service workflows.
    *
    * @param workflowId
    * @param inputs
@@ -911,7 +911,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   /**
-   * Batch operation execution with progress tracking
+   * Batch operation execution with progress tracking.
    *
    * @param operations
    */
@@ -927,6 +927,12 @@ export class ClaudeZenFacade extends EventEmitter {
 
     for (let i = 0; i < operations.length; i++) {
       const operation = operations[i];
+
+      if (!operation) {
+        errors.push({ error: new Error('Operation is undefined'), operationIndex: i, operation: 'unknown' });
+        results.push({ success: false, error: new Error('Operation is undefined'), operationIndex: i });
+        continue;
+      }
 
       try {
         let result: any;
@@ -975,7 +981,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   /**
-   * System shutdown with graceful cleanup
+   * System shutdown with graceful cleanup.
    */
   async shutdown(): Promise<void> {
     this.logger.info('Initiating system shutdown');

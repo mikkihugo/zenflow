@@ -1,10 +1,10 @@
 /**
- * Swarm Database Manager
+ * Swarm Database Manager.
  *
  * Uses existing DAL Factory for proper swarm storage with multi-database support:
  * - Central coordination: SQLite/Kuzu via DAL Factory
  * - Per-swarm clusters: Kuzu (graph) + LanceDB (vectors) + SQLite (data)
- * - Leverages existing repository and DAO patterns
+ * - Leverages existing repository and DAO patterns.
  */
 
 import { EventEmitter } from 'node:events';
@@ -47,7 +47,7 @@ export interface SwarmRepositories {
 
 @injectable
 export class SwarmDatabaseManager extends EventEmitter {
-  private centralRepo: ICoordinationRepository<any>;
+  private centralRepo!: ICoordinationRepository<any>;
   private swarmClusters: Map<string, SwarmRepositories> = new Map();
 
   constructor(
@@ -60,7 +60,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Initialize central coordination repository
+   * Initialize central coordination repository.
    */
   async initialize(): Promise<void> {
     this._logger.info('Initializing SwarmDatabaseManager');
@@ -81,7 +81,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Create per-swarm repository cluster using DAL Factory
+   * Create per-swarm repository cluster using DAL Factory.
    *
    * @param swarmId
    */
@@ -128,7 +128,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Get swarm repository cluster (create if doesn't exist)
+   * Get swarm repository cluster (create if doesn't exist).
    *
    * @param swarmId
    */
@@ -143,7 +143,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Store swarm agent using graph repository
+   * Store swarm agent using graph repository.
    *
    * @param swarmId
    * @param agent
@@ -189,7 +189,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Store task using graph repository with dependencies
+   * Store task using graph repository with dependencies.
    *
    * @param swarmId
    * @param task
@@ -246,7 +246,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Store vector embedding using LanceDB repository
+   * Store vector embedding using LanceDB repository.
    *
    * @param swarmId
    * @param embedding
@@ -287,7 +287,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Find similar embeddings using vector search
+   * Find similar embeddings using vector search.
    *
    * @param swarmId
    * @param queryVector
@@ -307,7 +307,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Find swarms by criteria using central repository
+   * Find swarms by criteria using central repository.
    *
    * @param criteria
    * @param criteria.status
@@ -325,7 +325,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Get swarm graph traversal (find connected agents/tasks)
+   * Get swarm graph traversal (find connected agents/tasks).
    *
    * @param swarmId
    * @param startNodeId
@@ -338,7 +338,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Get cross-swarm dependencies
+   * Get cross-swarm dependencies.
    *
    * @param swarmId
    */
@@ -357,7 +357,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Archive swarm cluster (for maintenance manager integration)
+   * Archive swarm cluster (for maintenance manager integration).
    *
    * @param swarmId
    */
@@ -378,7 +378,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Get all active swarms from central repository
+   * Get all active swarms from central repository.
    */
   async getActiveSwarms(): Promise<Array<{ swarmId: string; path: string; lastAccessed: Date }>> {
     const swarms = await this.centralRepo.findBy({ status: 'active' });
@@ -391,7 +391,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Get swarm performance analytics using coordination repository
+   * Get swarm performance analytics using coordination repository.
    *
    * @param swarmId
    */
@@ -504,7 +504,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   /**
-   * Shutdown all repositories and clear caches
+   * Shutdown all repositories and clear caches.
    */
   async shutdown(): Promise<void> {
     // Clear all cached repositories

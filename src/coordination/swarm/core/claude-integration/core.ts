@@ -1,3 +1,5 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-claude-integration-core");
 /**
  * Core Claude Code integration module
  * Handles MCP server setup and basic integration
@@ -89,7 +91,7 @@ class ClaudeIntegrationCore {
       };
       return results;
     } catch (error) {
-      console.error('❌ Failed to initialize Claude integration:', (error as Error).message);
+      logger.error('❌ Failed to initialize Claude integration:', (error as Error).message);
       throw error;
     }
   }

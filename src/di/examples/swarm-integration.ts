@@ -1,6 +1,6 @@
 /**
  * Example integration of SwarmCoordinator with Dependency Injection
- * Demonstrates how to migrate existing services to use DI patterns
+ * Demonstrates how to migrate existing services to use DI patterns.
  */
 
 import {
@@ -21,7 +21,7 @@ import {
 
 /**
  * Enhanced SwarmCoordinator using dependency injection
- * This shows how to refactor existing services to use DI
+ * This shows how to refactor existing services to use DI.
  *
  * @example
  */
@@ -37,19 +37,19 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     @inject(SWARM_TOKENS.AgentRegistry) private _agentRegistry: IAgentRegistry,
     @inject(SWARM_TOKENS.MessageBroker) private _messageBroker: IMessageBroker,
   ) {
-    this.logger.info('SwarmCoordinator created with DI');
+    this._logger.info('SwarmCoordinator created with DI');
   }
 
   async initializeSwarm(options: any): Promise<void> {
-    this.logger.info('Initializing swarm', { options });
+    this._logger.info('Initializing swarm', { options });
 
-    const maxAgents = this.config.get('swarm.maxAgents', 10);
-    const topology = this.config.get('swarm.topology', 'mesh');
+    const maxAgents = this._config.get('swarm.maxAgents', 10);
+    const topology = this._config.get('swarm.topology', 'mesh');
 
-    this.logger.debug('Swarm configuration', { maxAgents, topology });
+    this._logger.debug('Swarm configuration', { maxAgents, topology });
 
     this.isInitialized = true;
-    this.logger.info('Swarm initialized successfully');
+    this._logger.info('Swarm initialized successfully');
   }
 
   async addAgent(config: any): Promise<string> {
@@ -59,55 +59,55 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
 
     const agentId = `agent-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
-    this.logger.info('Adding agent', { agentId, config });
+    this._logger.info('Adding agent', { agentId, config });
 
     // Register with agent registry
-    await this.agentRegistry.registerAgent({ id: agentId, ...config });
+    await this._agentRegistry.registerAgent({ id: agentId, ...config });
 
     // Store locally
     this.agents.set(agentId, { id: agentId, ...config, status: 'idle' });
 
     // Announce to swarm
-    await this.messageBroker.broadcast({
+    await this._messageBroker.broadcast({
       type: 'agent_joined',
       agentId,
       timestamp: Date.now(),
     });
 
-    this.logger.info('Agent added successfully', { agentId });
+    this._logger.info('Agent added successfully', { agentId });
     return agentId;
   }
 
   async removeAgent(agentId: string): Promise<void> {
-    this.logger.info('Removing agent', { agentId });
+    this._logger.info('Removing agent', { agentId });
 
     if (!this.agents.has(agentId)) {
       throw new Error(`Agent ${agentId} not found`);
     }
 
     // Unregister from agent registry
-    await this.agentRegistry.unregisterAgent(agentId);
+    await this._agentRegistry.unregisterAgent(agentId);
 
     // Remove locally
     this.agents.delete(agentId);
 
     // Announce to swarm
-    await this.messageBroker.broadcast({
+    await this._messageBroker.broadcast({
       type: 'agent_left',
       agentId,
       timestamp: Date.now(),
     });
 
-    this.logger.info('Agent removed successfully', { agentId });
+    this._logger.info('Agent removed successfully', { agentId });
   }
 
   async assignTask(task: any): Promise<string> {
     const taskId = `task-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
-    this.logger.info('Assigning task', { taskId, task });
+    this._logger.info('Assigning task', { taskId, task });
 
     // Find available agents
-    const availableAgents = await this.agentRegistry.findAvailableAgents({
+    const availableAgents = await this._agentRegistry.findAvailableAgents({
       status: 'idle',
       capabilities: task.requiredCapabilities || [],
     });
@@ -129,14 +129,14 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     });
 
     // Notify agent via message broker
-    await this.messageBroker.publish(`agent.${selectedAgent.id}`, {
+    await this._messageBroker.publish(`agent.${selectedAgent.id}`, {
       type: 'task_assignment',
       taskId,
       task,
       timestamp: Date.now(),
     });
 
-    this.logger.info('Task assigned successfully', { taskId, agentId: selectedAgent.id });
+    this._logger.info('Task assigned successfully', { taskId, agentId: selectedAgent.id });
     return taskId;
   }
 
@@ -157,12 +157,12 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
       timestamp: Date.now(),
     };
 
-    this.logger.debug('Retrieved swarm metrics', metrics);
+    this._logger.debug('Retrieved swarm metrics', metrics);
     return metrics;
   }
 
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down swarm');
+    this._logger.info('Shutting down swarm');
 
     // Remove all agents
     const agentIds = Array.from(this.agents.keys());
@@ -174,12 +174,12 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     this.tasks.clear();
 
     this.isInitialized = false;
-    this.logger.info('Swarm shutdown complete');
+    this._logger.info('Swarm shutdown complete');
   }
 }
 
 /**
- * Mock implementations for testing and development
+ * Mock implementations for testing and development.
  *
  * @example
  */
@@ -207,7 +207,7 @@ export class MockConfig implements IConfig {
   }
 
   get<T>(key: string, defaultValue?: T): T {
-    return this.data.has(key) ? this.data.get(key) : defaultValue;
+    return this.data.has(key) ? this.data.get(key) : defaultValue!;
   }
 
   set(key: string, value: any): void {
@@ -296,9 +296,10 @@ export class MockMessageBroker implements IMessageBroker {
 }
 
 /**
- * Factory function to set up a complete DI container with swarm services
+ * Factory function to set up a complete DI container with swarm services.
  *
  * @param config
+ * @example
  */
 export function createSwarmContainer(config: Record<string, any> = {}): DIContainer {
   const container = new DIContainer();
@@ -335,7 +336,9 @@ export function createSwarmContainer(config: Record<string, any> = {}): DIContai
 }
 
 /**
- * Example usage demonstrating the complete workflow
+ * Example usage demonstrating the complete workflow.
+ *
+ * @example
  */
 export async function demonstrateSwarmDI(): Promise<void> {
   // Create container with configuration

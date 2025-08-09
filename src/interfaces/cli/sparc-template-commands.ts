@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-cli-sparc-template-commands");
 /**
  * SPARC Template CLI Commands
  *
@@ -69,7 +71,7 @@ export function createSPARCTemplateCommands(): Command {
           }
 
           if (!compatibility.compatible) {
-            console.error('❌ Template is not compatible with project specification');
+            logger.error('❌ Template is not compatible with project specification');
             return;
           }
 
@@ -94,7 +96,7 @@ export function createSPARCTemplateCommands(): Command {
         // Write output
         await writeFile(options.output, output, 'utf8');
       } catch (error) {
-        console.error('❌ Failed to generate specification:', error);
+        logger.error('❌ Failed to generate specification:', error);
         process.exit(1);
       }
     });
@@ -107,7 +109,7 @@ export function createSPARCTemplateCommands(): Command {
     .action(async (_options) => {
       try {
       } catch (error) {
-        console.error('❌ Interactive mode failed:', error);
+        logger.error('❌ Interactive mode failed:', error);
         process.exit(1);
       }
     });
@@ -136,7 +138,7 @@ export function createSPARCTemplateCommands(): Command {
 
         process.exit(validation.overall ? 0 : 1);
       } catch (error) {
-        console.error('❌ Validation failed:', error);
+        logger.error('❌ Validation failed:', error);
         process.exit(1);
       }
     });

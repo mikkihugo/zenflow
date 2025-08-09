@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
 /**
- * 🧘 Zen AI ESLint Fixer - Simple Graph Edition
+ * 🧘 Zen AI ESLint Fixer - TypeScript Compiler API Edition
  *
- * Smart ESLint fixing using in-memory dependency graph for:
- * - Fast dependency analysis (no external DB required)
- * - Impact-based file prioritization
+ * Smart ESLint fixing using TypeScript Compiler API for precise AST parsing:
+ * - Official TypeScript AST parsing (most accurate)
+ * - Complete import/export declaration analysis
+ * - Impact-based file prioritization with precise dependency mapping
  * - Intelligent batching to prevent ENOBUFS
  * - Circular dependency detection
  */
@@ -14,14 +15,15 @@ import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import * as ts from 'typescript';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
- * Simple Graph ESLint Analyzer - No external dependencies
+ * TypeScript Compiler API Graph ESLint Analyzer - Official TypeScript AST parsing
  */
-class SimpleGraphESLintAnalyzer {
+class TypeScriptGraphESLintAnalyzer {
   constructor() {
     this.fileNodes = new Map(); // filePath -> node data
     this.dependencyEdges = new Map(); // filePath -> Set of dependencies
@@ -354,13 +356,23 @@ class SimpleGraphESLintAnalyzer {
     // Create intelligent batches (smaller to avoid ENOBUFS)
     const batches = this.createIntelligentBatches(prioritizedFiles, 10);
 
+    // Quick mode: only process first 2 batches for testing
+    const isQuickMode = process.argv.includes('--quick');
+    const batchesToProcess = isQuickMode ? Math.min(2, batches.length) : batches.length;
+    
+    if (isQuickMode) {
+      console.log(`⚡ Quick mode: Processing only first ${batchesToProcess} batches (${batchesToProcess * 10} files) for TypeScript API testing`);
+    }
+
     const allViolations = [];
     let processedFiles = 0;
 
     for (const [index, batch] of batches.entries()) {
-      const progress = (((index + 1) / batches.length) * 100).toFixed(1);
+      if (index >= batchesToProcess) break; // Stop at the limit for quick mode
+      
+      const progress = (((index + 1) / batchesToProcess) * 100).toFixed(1);
       console.log(
-        `📊 Batch ${index + 1}/${batches.length} (${batch.length} files, ${progress}% complete)`
+        `📊 Batch ${index + 1}/${batchesToProcess} (${batch.length} files, ${progress}% complete)`
       );
 
       try {
@@ -378,12 +390,13 @@ class SimpleGraphESLintAnalyzer {
         }
 
         const batchViolationCount = violations.length;
+        const totalFiles = isQuickMode ? batchesToProcess * 10 : prioritizedFiles.length;
         console.log(
-          `✅ Batch ${index + 1}: ${batchViolationCount} violations found (${processedFiles}/${prioritizedFiles.length} files processed)`
+          `✅ Batch ${index + 1}: ${batchViolationCount} violations found (${processedFiles}/${totalFiles} files processed)`
         );
 
         // Brief pause to prevent overwhelming the system
-        if (index < batches.length - 1) {
+        if (index < batchesToProcess - 1) {
           await this.sleep(50);
         }
       } catch (error) {
@@ -469,16 +482,108 @@ class SimpleGraphESLintAnalyzer {
   }
 
   /**
-   * Extract dependencies with multiline import support
+   * Extract dependencies using official TypeScript Compiler API
    */
   extractDependencies(content, filePath) {
     const dependencies = { imports: [], exports: [], dynamicImports: [] };
 
-    // Static imports with multiline support using DOTALL flag
+    try {
+      // Create TypeScript source file AST
+      const sourceFile = ts.createSourceFile(
+        filePath,
+        content,
+        ts.ScriptTarget.Latest,
+        true, // setParentNodes
+        path.extname(filePath) === '.tsx' ? ts.ScriptKind.TSX : ts.ScriptKind.TS
+      );
+
+      // Traverse AST and extract import/export declarations
+      const visitNode = (node) => {
+        switch (node.kind) {
+          case ts.SyntaxKind.ImportDeclaration:
+            this.extractImportDeclaration(node, dependencies);
+            break;
+          
+          case ts.SyntaxKind.ExportDeclaration:
+            this.extractExportDeclaration(node, dependencies);
+            break;
+            
+          case ts.SyntaxKind.CallExpression:
+            this.extractDynamicImport(node, dependencies);
+            break;
+        }
+
+        // Continue traversing child nodes
+        ts.forEachChild(node, visitNode);
+      };
+
+      // Start traversal from root
+      ts.forEachChild(sourceFile, visitNode);
+
+    } catch (error) {
+      // Fallback to regex on TypeScript parsing error
+      console.warn(`⚠️  TypeScript parsing failed for ${path.basename(filePath)}: ${error.message}`);
+      return this.extractDependenciesRegexFallback(content, filePath);
+    }
+
+    return dependencies;
+  }
+
+  /**
+   * Extract import declaration from TypeScript AST node
+   */
+  extractImportDeclaration(node, dependencies) {
+    if (node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) {
+      const importPath = node.moduleSpecifier.text;
+      if (importPath.startsWith('.')) {
+        dependencies.imports.push(importPath);
+      }
+    }
+  }
+
+  /**
+   * Extract export declaration from TypeScript AST node
+   */
+  extractExportDeclaration(node, dependencies) {
+    if (node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) {
+      const exportPath = node.moduleSpecifier.text;
+      if (exportPath.startsWith('.')) {
+        dependencies.exports.push(exportPath);
+      }
+    }
+  }
+
+  /**
+   * Extract dynamic import() calls from TypeScript AST
+   */
+  extractDynamicImport(node, dependencies) {
+    // Check if this is an import() call
+    if (ts.isCallExpression(node) && 
+        node.expression && 
+        node.expression.kind === ts.SyntaxKind.ImportKeyword &&
+        node.arguments.length > 0) {
+      
+      const firstArg = node.arguments[0];
+      if (ts.isStringLiteral(firstArg)) {
+        const importPath = firstArg.text;
+        if (importPath.startsWith('.')) {
+          dependencies.dynamicImports.push(importPath);
+        }
+      }
+    }
+  }
+
+  /**
+   * Regex fallback for when TypeScript parsing fails
+   */
+  extractDependenciesRegexFallback(content, filePath) {
+    const dependencies = { imports: [], exports: [], dynamicImports: [] };
+
+    // Static imports with multiline support
     const importPatterns = [
-      /import\s+[\s\S]*?from\s+['"](.*?)['"];?/g,  // Multiline imports with [\s\S]*?
-      /import\s*\(\s*['"](.*?)['"]\s*\)/g,         // Dynamic imports
-      /require\s*\(\s*['"](.*?)['"]\s*\)/g,        // CommonJS requires
+      /import\s+[\s\S]*?from\s+['"](.*?)['"];?/g,
+      /import\s*\(\s*['"](.*?)['"]\s*\)/g,
+      /require\s*\(\s*['"](.*?)['"]\s*\)/g,
     ];
 
     for (const pattern of importPatterns) {
@@ -491,7 +596,7 @@ class SimpleGraphESLintAnalyzer {
       }
     }
 
-    // Re-exports with multiline support
+    // Re-exports
     const exportPattern = /export\s+[\s\S]*?from\s+['"](.*?)['"];?/g;
     let match;
     while ((match = exportPattern.exec(content)) !== null) {
@@ -605,10 +710,10 @@ class SimpleGraphESLintAnalyzer {
  * Main execution
  */
 async function main() {
-  console.log('🧘 Claude Code Zen AI ESLint Fixer - Simple Graph Edition');
-  console.log('==========================================================');
+  console.log('🧘 Claude Code Zen AI ESLint Fixer - TypeScript Compiler API Edition');
+  console.log('====================================================================');
 
-  const analyzer = new SimpleGraphESLintAnalyzer();
+  const analyzer = new TypeScriptGraphESLintAnalyzer();
 
   try {
     const startTime = Date.now();
@@ -692,4 +797,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 
-export { SimpleGraphESLintAnalyzer };
+export { TypeScriptGraphESLintAnalyzer };

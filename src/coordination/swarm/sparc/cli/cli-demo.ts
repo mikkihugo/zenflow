@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodeimport { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-sparc-cli-cli-demo");
 /**
  * SPARC Architecture CLI Demo
  *
@@ -40,7 +41,7 @@ async function runCLIDemo() {
       } catch (_error) {}
     }
   } catch (error) {
-    console.error('❌ CLI Demo failed:', error);
+    logger.error('❌ CLI Demo failed:', error);
     process.exit(1);
   }
 }

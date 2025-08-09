@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("coordination-diagnostics-health-monitor");
 /**
  * HealthMonitor - Proactive health monitoring system for session persistence
  * Part of comprehensive solution for Issue #137: Swarm session persistence and recovery
@@ -124,7 +126,7 @@ export class HealthMonitor extends EventEmitter {
     if (this.isRunning) return;
 
     this.isRunning = true;
-    console.error('🔍 HealthMonitor starting...');
+    logger.error('🔍 HealthMonitor starting...');
 
     // Run initial health check
     await this.runHealthChecks();
@@ -134,13 +136,13 @@ export class HealthMonitor extends EventEmitter {
       try {
         await this.runHealthChecks();
       } catch (error) {
-        console.error('❌ Health check error:', error);
+        logger.error('❌ Health check error:', error);
         this.emit('healthCheckError', { error });
       }
     }, this.options.checkInterval);
 
     this.emit('started');
-    console.error('✅ HealthMonitor started successfully');
+    logger.error('✅ HealthMonitor started successfully');
   }
 
   /**
@@ -157,7 +159,7 @@ export class HealthMonitor extends EventEmitter {
     }
 
     this.emit('stopped');
-    console.error('🛑 HealthMonitor stopped');
+    logger.error('🛑 HealthMonitor stopped');
   }
 
   /**
@@ -187,7 +189,7 @@ export class HealthMonitor extends EventEmitter {
     };
 
     this.healthChecks.set(name, healthCheck);
-    console.error(`✅ Registered health check: ${name}`);
+    logger.error(`✅ Registered health check: ${name}`);
 
     return healthCheck;
   }
@@ -200,7 +202,7 @@ export class HealthMonitor extends EventEmitter {
   unregisterHealthCheck(name: string): boolean {
     const removed = this.healthChecks.delete(name);
     if (removed) {
-      console.error(`🗑️ Removed health check: ${name}`);
+      logger.error(`🗑️ Removed health check: ${name}`);
     }
     return removed;
   }
@@ -223,7 +225,7 @@ export class HealthMonitor extends EventEmitter {
       }
     > = {};
 
-    console.error('🔍 Running health checks...');
+    logger.error('🔍 Running health checks...');
 
     // Run all registered health checks
     const checkPromises = Array.from(this.healthChecks.entries()).map(([name, check]) =>
@@ -244,7 +246,7 @@ export class HealthMonitor extends EventEmitter {
 
       // Skip if check is undefined
       if (!check) {
-        console.error(`⚠️ Health check not found: ${checkName}`);
+        logger.error(`⚠️ Health check not found: ${checkName}`);
         return;
       }
 
@@ -316,7 +318,7 @@ export class HealthMonitor extends EventEmitter {
     await this.processHealthAlerts(healthReport);
 
     this.emit('healthCheck', healthReport);
-    console.error(`✅ Health check completed: ${overallScore}% (${duration.toFixed(1)}ms)`);
+    logger.error(`✅ Health check completed: ${overallScore}% (${duration.toFixed(1)}ms)`);
 
     return healthReport;
   }
@@ -618,7 +620,7 @@ export class HealthMonitor extends EventEmitter {
 
       this.alerts.push(alert);
       this.emit('criticalAlert', alert);
-      console.error(`🚨 CRITICAL ALERT: System health at ${overallScore}%`);
+      logger.error(`🚨 CRITICAL ALERT: System health at ${overallScore}%`);
     } else if (status === 'warning') {
       const alert: HealthAlert = {
         id: randomUUID(),
@@ -632,7 +634,7 @@ export class HealthMonitor extends EventEmitter {
 
       this.alerts.push(alert);
       this.emit('healthWarning', alert);
-      console.error(`⚠️ WARNING: System health at ${overallScore}%`);
+      logger.error(`⚠️ WARNING: System health at ${overallScore}%`);
     }
 
     // Clean up old alerts (keep last 100)

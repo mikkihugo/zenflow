@@ -1,3 +1,5 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-sparc-cli-architecture-commands");
 /**
  * CLI Commands for SPARC Architecture Management
  *
@@ -9,16 +11,60 @@ import { Command } from 'commander';
 import { ArchitectureMCPToolsImpl } from '../mcp/architecture-tools';
 import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
 import type { ArchitectureDesign, PseudocodeStructure } from '../types/sparc-types';
+import { createDao, DatabaseTypes, EntityTypes } from '../../../database';
+import type { IDao } from '../../../database';
 
-// Mock database for CLI (in production, this would use the actual database)
+// Real database adapter for CLI using existing database infrastructure
 class CLIDatabaseAdapter {
-  async execute(_sql: string, _params?: any[]): Promise<any> {
-    // Basic implementation for CLI demo
-    return { affectedRows: 1 };
+  private coordinationDao: IDao<any> | null = null;
+  
+  private async ensureConnection(): Promise<void> {
+    if (!this.coordinationDao) {
+      try {
+        // Use the existing database infrastructure instead of mocking
+        this.coordinationDao = await createDao(
+          EntityTypes.CoordinationEvent,
+          DatabaseTypes.Coordination
+        );
+      } catch (error) {
+        logger.error(
+          '⚠️  Failed to connect to database for CLI. CLI operations will be limited.'
+        );
+        throw new Error('Database connection required for SPARC CLI operations. Please ensure database is configured.');
+      }
+    }
   }
 
-  async query(_sql: string, _params?: any[]): Promise<any> {
-    return { rows: [] };
+  async execute(sql: string, params?: any[]): Promise<any> {
+    await this.ensureConnection();
+    if (!this.coordinationDao) {
+      throw new Error('Database connection not available');
+    }
+    
+    // Use real database execution through existing infrastructure
+    try {
+      const result = await this.coordinationDao.execute(sql, params || []);
+      return result;
+    } catch (error) {
+      logger.error('Database execution error:', error);
+      throw error;
+    }
+  }
+
+  async query(sql: string, params?: any[]): Promise<any> {
+    await this.ensureConnection();
+    if (!this.coordinationDao) {
+      throw new Error('Database connection not available');
+    }
+    
+    // Use real database querying through existing infrastructure
+    try {
+      const result = await this.coordinationDao.findByQuery(sql, params || []);
+      return { rows: result || [] };
+    } catch (error) {
+      logger.error('Database query error:', error);
+      throw error;
+    }
   }
 }
 
@@ -82,7 +128,7 @@ export function createArchitectureCLI(): Command {
           displayArchitectureSummary(architecture);
         }
       } catch (error) {
-        console.error(chalk.red('❌ Architecture generation failed:'), error);
+        logger.error(chalk.red('❌ Architecture generation failed:'), error);
         process.exit(1);
       }
     });
@@ -121,11 +167,11 @@ export function createArchitectureCLI(): Command {
             result.recommendations.forEach((_rec, _i) => {});
           }
         } else {
-          console.error(chalk.red('❌ Validation failed:'), result.message);
+          logger.error(chalk.red('❌ Validation failed:'), result.message);
           process.exit(1);
         }
       } catch (error) {
-        console.error(chalk.red('❌ Validation error:'), error);
+        logger.error(chalk.red('❌ Validation error:'), error);
         process.exit(1);
       }
     });
@@ -163,11 +209,11 @@ export function createArchitectureCLI(): Command {
             }
           }
         } else {
-          console.error(chalk.red('❌ Search failed:'), result.message);
+          logger.error(chalk.red('❌ Search failed:'), result.message);
           process.exit(1);
         }
       } catch (error) {
-        console.error(chalk.red('❌ Search error:'), error);
+        logger.error(chalk.red('❌ Search error:'), error);
         process.exit(1);
       }
     });
@@ -197,11 +243,11 @@ export function createArchitectureCLI(): Command {
           } else {
           }
         } else {
-          console.error(chalk.red('❌ Export failed:'), result.message);
+          logger.error(chalk.red('❌ Export failed:'), result.message);
           process.exit(1);
         }
       } catch (error) {
-        console.error(chalk.red('❌ Export error:'), error);
+        logger.error(chalk.red('❌ Export error:'), error);
         process.exit(1);
       }
     });
@@ -231,11 +277,11 @@ export function createArchitectureCLI(): Command {
             const _valStats = stats.validationStats;
           }
         } else {
-          console.error(chalk.red('❌ Failed to get statistics:'), result.message);
+          logger.error(chalk.red('❌ Failed to get statistics:'), result.message);
           process.exit(1);
         }
       } catch (error) {
-        console.error(chalk.red('❌ Statistics error:'), error);
+        logger.error(chalk.red('❌ Statistics error:'), error);
         process.exit(1);
       }
     });

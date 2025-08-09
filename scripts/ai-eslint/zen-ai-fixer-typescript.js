@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Claude Code Zen AI-Assisted ESLint Fixer - Batched Edition
- * ENOBUFS-Free version with intelligent batching
+ * Claude Code Zen AI-Assisted ESLint Fixer - TypeScript API Edition
+ * Official TypeScript Compiler API + Claude AI fixing integration
  */
 
 import { spawn } from 'child_process';
@@ -11,13 +11,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { ClaudeAIIntegration } from './claude-ai-integration.js';
 import { ProcessLock } from './process-lock.js';
-import { SimpleGraphESLintAnalyzer } from './zen-eslint-graph-simple.js';
+import { TypeScriptGraphESLintAnalyzer } from './zen-eslint-graph-typescript.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-class ZenAIFixerBatched {
+class ZenAIFixerTypeScript {
   constructor() {
-    this.analyzer = new SimpleGraphESLintAnalyzer();
+    this.analyzer = new TypeScriptGraphESLintAnalyzer();
     this.violations = [];
   }
 
@@ -25,8 +25,8 @@ class ZenAIFixerBatched {
    * Main execution with ENOBUFS-free batching
    */
   async run(mode = 'production') {
-    console.log('🧘 Zen AI ESLint Fixer - Batched Edition');
-    console.log('=====================================');
+    console.log('🧘 Zen AI ESLint Fixer - TypeScript API Edition');
+    console.log('===============================================');
 
     // Acquire process lock
     const lock = new ProcessLock('zen-ai-fixer');
@@ -344,7 +344,7 @@ class ZenAIFixerBatched {
 
 // Main execution
 async function main() {
-  const fixer = new ZenAIFixerBatched();
+  const fixer = new ZenAIFixerTypeScript();
 
   const mode = process.argv.includes('--mini')
     ? 'quick'
@@ -363,4 +363,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 
-export { ZenAIFixerBatched };
+export { ZenAIFixerTypeScript };

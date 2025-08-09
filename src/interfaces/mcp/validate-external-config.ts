@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodeimport { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-mcp-validate-external-config");
 
 /**
  * Simple External MCP Configuration Validator
@@ -54,7 +55,7 @@ function validateConfigurationFiles(): void {
       } catch (error) {
         const errorMsg = `Invalid config file ${file}: ${error.message}`;
         validationReport.errors.push(errorMsg);
-        console.error(`❌ ${errorMsg}`);
+        logger.error(`❌ ${errorMsg}`);
       }
     } else {
       validationReport.warnings.push(`Config file not found: ${file}`);

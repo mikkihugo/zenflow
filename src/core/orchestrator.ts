@@ -1,6 +1,6 @@
 /**
  * Orchestrator - Core orchestration system for claude-zen
- * Coordinates components and manages system lifecycle
+ * Coordinates components and manages system lifecycle.
  */
 
 import { EventEmitter } from 'node:events';
@@ -32,7 +32,7 @@ export interface TaskResult {
 }
 
 /**
- * Core orchestrator for system coordination
+ * Core orchestrator for system coordination.
  *
  * @example
  */
@@ -40,7 +40,7 @@ export class Orchestrator extends EventEmitter {
   private config: Required<OrchestratorConfig>;
   private isRunning = false;
   private activeTasks = new Map<string, Task>();
-  private healthCheckTimer?: NodeJS.Timeout;
+  private healthCheckTimer: NodeJS.Timeout | undefined;
 
   constructor(
     config: OrchestratorConfig,
@@ -66,7 +66,7 @@ export class Orchestrator extends EventEmitter {
   }
 
   /**
-   * Start the orchestrator
+   * Start the orchestrator.
    */
   async start(): Promise<void> {
     if (this.isRunning) {
@@ -92,7 +92,7 @@ export class Orchestrator extends EventEmitter {
   }
 
   /**
-   * Stop the orchestrator
+   * Stop the orchestrator.
    */
   async stop(): Promise<void> {
     if (!this.isRunning) {
@@ -122,7 +122,7 @@ export class Orchestrator extends EventEmitter {
   }
 
   /**
-   * Execute a task
+   * Execute a task.
    *
    * @param task
    */
@@ -159,7 +159,7 @@ export class Orchestrator extends EventEmitter {
   }
 
   /**
-   * Get orchestrator status
+   * Get orchestrator status.
    */
   getStatus(): {
     running: boolean;
@@ -176,7 +176,7 @@ export class Orchestrator extends EventEmitter {
   }
 
   /**
-   * Get active tasks
+   * Get active tasks.
    */
   getActiveTasks(): Task[] {
     return Array.from(this.activeTasks.values());

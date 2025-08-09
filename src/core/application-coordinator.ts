@@ -1,5 +1,5 @@
 /**
- * Application Coordinator - Main Integration Hub
+ * Application Coordinator - Main Integration Hub.
  *
  * Brings together all core systems without plugin architecture:
  * - Interface Launcher (CLI/TUI/Web)
@@ -7,9 +7,9 @@
  * - Workflow Engine
  * - Export Manager
  * - Documentation Linker
- * - Document-Driven System
+ * - Document-Driven System.
  *
- * Supports the hive document workflow: Vision → ADRs → PRDs → Epics → Features → Tasks → Code
+ * Supports the hive document workflow: Vision → ADRs → PRDs → Epics → Features → Tasks → Code.
  */
 
 import { EventEmitter } from 'node:events';
@@ -90,14 +90,14 @@ export class ApplicationCoordinator extends EventEmitter {
   private status: SystemStatus['status'] = 'initializing';
   private startTime: number;
 
-  // Core components
-  private interfaceLauncher: InterfaceLauncher;
-  private documentSystem: DocumentDrivenSystem;
-  private workflowEngine: WorkflowEngine;
-  private exportSystem: ExportManager;
-  private documentationLinker: UnifiedDocumentationLinker;
-  private memorySystem: MemorySystem;
-  private memoryManager: MemoryManager;
+  // Core components - using definite assignment assertion since they're initialized in constructor
+  private interfaceLauncher!: InterfaceLauncher;
+  private documentSystem!: DocumentDrivenSystem;
+  private workflowEngine!: WorkflowEngine;
+  private exportSystem!: ExportManager;
+  private documentationLinker!: UnifiedDocumentationLinker;
+  private memorySystem!: MemorySystem;
+  private memoryManager!: MemoryManager;
 
   // State
   private activeWorkspaceId?: string;
@@ -116,7 +116,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Initialize all core components
+   * Initialize all core components.
    */
   private initializeComponents(): void {
     // Memory system (existing)
@@ -166,7 +166,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Setup event handlers for component communication
+   * Setup event handlers for component communication.
    */
   private setupEventHandlers(): void {
     // Document system events
@@ -202,10 +202,11 @@ export class ApplicationCoordinator extends EventEmitter {
         try {
           const workflowData = await this.memorySystem.retrieve(`workflow:${event.workflowId}`);
           if (workflowData) {
-            await this.exportSystem.exportData(workflowData, this.config.export.defaultFormat, {
-              outputPath: this.config.export.outputPath,
+            const exportOptions = {
+              ...(this.config.export.outputPath !== undefined && { outputPath: this.config.export.outputPath }),
               filename: `workflow_${event.workflowId}_result`,
-            });
+            };
+            await this.exportSystem.exportData(workflowData, this.config.export.defaultFormat, exportOptions);
           }
         } catch (error) {
           logger.warn('Failed to auto-export workflow result:', error);
@@ -234,7 +235,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Initialize the entire unified system
+   * Initialize the entire unified system.
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -288,7 +289,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Launch the interface (CLI/TUI/Web based on config and environment)
+   * Launch the interface (CLI/TUI/Web based on config and environment).
    */
   async launch(): Promise<void> {
     await this.ensureInitialized();
@@ -296,16 +297,15 @@ export class ApplicationCoordinator extends EventEmitter {
     logger.info('Launching unified interface...');
 
     const launchOptions = {
-      forceMode:
-        this.config.interface?.defaultMode !== 'auto'
-          ? this.config.interface?.defaultMode
-          : undefined,
-      webPort: this.config.interface?.webPort,
+      ...(this.config.interface?.defaultMode !== 'auto' && 
+          this.config.interface?.defaultMode !== undefined && 
+          { forceMode: this.config.interface.defaultMode }),
+      ...(this.config.interface?.webPort !== undefined && { webPort: this.config.interface.webPort }),
       verbose: false,
       silent: false,
       config: {
-        theme: this.config.interface?.theme,
-        realTime: this.config.interface?.enableRealTime,
+        ...(this.config.interface?.theme !== undefined && { theme: this.config.interface.theme }),
+        ...(this.config.interface?.enableRealTime !== undefined && { realTime: this.config.interface.enableRealTime }),
         coreSystem: this, // Pass reference to access all systems
       },
     };
@@ -319,7 +319,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Get comprehensive system status
+   * Get comprehensive system status.
    */
   async getSystemStatus(): Promise<SystemStatus> {
     const memoryStats = await this.memorySystem.getStats();
@@ -353,7 +353,7 @@ export class ApplicationCoordinator extends EventEmitter {
         },
         workspace: {
           status: this.activeWorkspaceId ? 'ready' : 'none',
-          workspaceId: this.activeWorkspaceId,
+          ...(this.activeWorkspaceId !== undefined && { workspaceId: this.activeWorkspaceId }),
           documentsLoaded: 0, // Would be calculated from document system
         },
       },
@@ -363,7 +363,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Process a document through the entire workflow
+   * Process a document through the entire workflow.
    *
    * @param documentPath
    */
@@ -398,7 +398,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Export system data in specified format
+   * Export system data in specified format.
    *
    * @param format
    * @param options
@@ -441,7 +441,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Generate comprehensive system report
+   * Generate comprehensive system report.
    */
   async generateSystemReport(): Promise<string> {
     await this.ensureInitialized();
@@ -450,7 +450,7 @@ export class ApplicationCoordinator extends EventEmitter {
     const docReport = await this.documentationLinker.generateDocumentationReport();
     const exportStats = this.exportSystem.getExportStats();
 
-    const report = [];
+    const report: string[] = [];
 
     report.push('# Claude Code Zen - System Report');
     report.push(`Generated: ${new Date().toISOString()}`);
@@ -486,7 +486,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Shutdown the entire system gracefully
+   * Shutdown the entire system gracefully.
    */
   async shutdown(): Promise<void> {
     logger.info('Shutting down Unified Core System...');
@@ -512,7 +512,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Get access to core components (for interface integration)
+   * Get access to core components (for interface integration).
    */
   getComponents() {
     return {
@@ -526,7 +526,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Utility methods
+   * Utility methods.
    */
   private detectWorkspaceRoot(): string | null {
     // Simple workspace detection logic
@@ -551,7 +551,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Static factory method for easy initialization
+   * Static factory method for easy initialization.
    *
    * @param config
    */
@@ -562,7 +562,7 @@ export class ApplicationCoordinator extends EventEmitter {
   }
 
   /**
-   * Quick start method that initializes and launches
+   * Quick start method that initializes and launches.
    *
    * @param config
    */

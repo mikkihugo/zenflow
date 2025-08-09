@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-base-swarm");
 /**
  * Base ZenSwarm Class - Core implementation without circular dependencies
  *
@@ -128,7 +130,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
       await this.wasmLoader.loadModule();
       this.neuralProcessor = this.wasmLoader;
     } catch (error) {
-      console.warn('Failed to load WASM module, falling back to JS implementation:', error);
+      logger.warn('Failed to load WASM module, falling back to JS implementation:', error);
     }
 
     // Initialize agent pool

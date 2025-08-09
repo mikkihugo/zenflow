@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-api-safe-api-client");
 /**
  * Safe API Response Handler
  *
@@ -425,23 +427,23 @@ export async function safeAPIUsageExample(): Promise<void> {
 
     if (isAPISuccess(getResult)) {
     } else if (isAPIError(getResult)) {
-      console.error('❌ Failed to retrieve user:', getResult.error.message);
-      console.error('Error code:', getResult.error.code);
+      logger.error('❌ Failed to retrieve user:', getResult.error.message);
+      logger.error('Error code:', getResult.error.code);
     }
   } else if (isAPIError(createResult)) {
-    console.error('❌ Failed to create user:', createResult.error.message);
-    console.error('Error details:', createResult.error.details);
+    logger.error('❌ Failed to create user:', createResult.error.message);
+    logger.error('Error details:', createResult.error.details);
 
     // Handle specific error codes
     switch (createResult.error.code) {
       case 'HTTP_409':
-        console.error('User already exists');
+        logger.error('User already exists');
         break;
       case 'HTTP_422':
-        console.error('Invalid user data provided');
+        logger.error('Invalid user data provided');
         break;
       default:
-        console.error('Unexpected error occurred');
+        logger.error('Unexpected error occurred');
     }
   }
 
@@ -455,7 +457,7 @@ export async function safeAPIUsageExample(): Promise<void> {
   if (isAPISuccess(listResult)) {
     listResult.data.items.forEach((_user) => {});
   } else if (isAPIError(listResult)) {
-    console.error('❌ Failed to list users:', extractErrorMessage(listResult));
+    logger.error('❌ Failed to list users:', extractErrorMessage(listResult));
   }
 }
 
@@ -484,6 +486,6 @@ export async function safeConcurrentAPIExample(): Promise<void> {
   });
 
   if (errors.length > 0) {
-    console.error('Errors:', errors);
+    logger.error('Errors:', errors);
   }
 }

@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-events-adapters-monitoring-usage-example");
 /**
  * UEL Monitoring Event Adapter Usage Example
  *
@@ -608,7 +610,7 @@ async function runAllExamples(): Promise<void> {
     await helperFunctionsExample();
     await highPerformanceExample();
   } catch (error) {
-    console.error('❌ Error running examples:', error);
+    logger.error('❌ Error running examples:', error);
     throw error;
   }
 }

@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-memory-memory");
 /**
  * @file Session-based memory storage with pluggable backends.
  */
@@ -90,7 +92,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
       this.initialized = true;
       this.emit('initialized');
     } catch (error) {
-      console.error('❌ Session memory store initialization failed:', error);
+      logger.error('❌ Session memory store initialization failed:', error);
       throw error;
     }
   }

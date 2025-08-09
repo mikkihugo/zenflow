@@ -1,5 +1,5 @@
 /**
- * Recovery Integration Module for ZenSwarm
+ * Recovery Integration Module for ZenSwarm.
  *
  * Provides comprehensive integration between all recovery system components,
  * centralized configuration, and unified management interface.
@@ -10,7 +10,7 @@
  * - Configuration management and validation
  * - Unified API for all recovery operations
  * - Performance monitoring and optimization
- * - Production-ready deployment patterns
+ * - Production-ready deployment patterns.
  */
 
 import { EventEmitter } from 'node:events';
@@ -91,11 +91,14 @@ export class RecoveryIntegration extends EventEmitter {
       totalMemoryUsage: 0,
     };
 
+    // Initialize optimization interval to null
+    this.optimizationInterval = null;
+
     this.initialize();
   }
 
   /**
-   * Initialize the recovery integration system
+   * Initialize the recovery integration system.
    */
   async initialize() {
     const startTime = Date.now();
@@ -145,7 +148,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Initialize individual components
+   * Initialize individual components.
    */
   async initializeComponents() {
     // Initialize Health Monitor
@@ -200,7 +203,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Initialize a single component
+   * Initialize a single component.
    *
    * @param name
    * @param ComponentClass
@@ -252,7 +255,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Set up integrations between components
+   * Set up integrations between components.
    */
   async setupIntegrations() {
     this.logger.info('Setting up component integrations');
@@ -357,7 +360,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Set up a single integration
+   * Set up a single integration.
    *
    * @param integration
    */
@@ -414,7 +417,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Start the recovery system
+   * Start the recovery system.
    */
   async start() {
     if (!this.isInitialized) {
@@ -452,7 +455,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Stop the recovery system
+   * Stop the recovery system.
    */
   async stop() {
     if (!this.isRunning) {
@@ -481,7 +484,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Set external integrations
+   * Set external integrations.
    *
    * @param mcpTools
    */
@@ -506,7 +509,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Propagate integration to components
+   * Propagate integration to components.
    *
    * @param integrationType
    * @param integration
@@ -535,7 +538,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Register swarm for monitoring across all components
+   * Register swarm for monitoring across all components.
    *
    * @param swarmId
    * @param swarmInstance
@@ -564,7 +567,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Unregister swarm from monitoring
+   * Unregister swarm from monitoring.
    *
    * @param swarmId
    */
@@ -580,9 +583,11 @@ export class RecoveryIntegration extends EventEmitter {
     // Remove connections associated with this swarm
     if (this.connectionManager) {
       const connectionStatus = this.connectionManager.getConnectionStatus();
-      for (const [connectionId, connection] of Object.entries(connectionStatus.connections)) {
-        if ((connection as any).metadata?.swarmId === swarmId) {
-          await this.connectionManager.removeConnection(connectionId);
+      if (connectionStatus && connectionStatus.connections) {
+        for (const [connectionId, connection] of Object.entries(connectionStatus.connections)) {
+          if ((connection as any).metadata?.swarmId === swarmId) {
+            await this.connectionManager.removeConnection(connectionId);
+          }
         }
       }
     }
@@ -591,10 +596,21 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Get comprehensive system status
+   * Get comprehensive system status.
    */
   getSystemStatus() {
-    const status = {
+    const status: {
+      isInitialized: boolean;
+      isRunning: boolean;
+      components: Record<string, any>;
+      integrations: Record<string, any>;
+      performance: any;
+      health: any;
+      recovery: any;
+      connections: any;
+      monitoring: any;
+      chaos: any;
+    } = {
       isInitialized: this.isInitialized,
       isRunning: this.isRunning,
       components: {},
@@ -628,7 +644,18 @@ export class RecoveryIntegration extends EventEmitter {
     }
 
     if (this.connectionManager) {
-      status.connections = this.connectionManager.getConnectionStats();
+      const connectionStats = this.connectionManager.getConnectionStats();
+      status.connections = connectionStats || {
+        connectionCount: 0,
+        healthyConnections: 0,
+        reconnectingConnections: 0,
+        totalConnections: 0,
+        activeConnections: 0,
+        failedConnections: 0,
+        reconnectAttempts: 0,
+        averageConnectionTime: 0,
+        totalConnectionTime: 0,
+      };
     }
 
     if (this.monitoringDashboard) {
@@ -636,14 +663,26 @@ export class RecoveryIntegration extends EventEmitter {
     }
 
     if (this.chaosEngineering) {
-      status.chaos = this.chaosEngineering.getChaosStats();
+      const chaosStats = this.chaosEngineering.getChaosStats();
+      status.chaos = chaosStats || {
+        activeExperiments: 0,
+        registeredExperiments: 0,
+        enabledExperiments: 0,
+        failureInjectors: 0,
+        emergencyStop: false,
+        totalExperiments: 0,
+        successfulExperiments: 0,
+        failedExperiments: 0,
+        averageRecoveryTime: 0,
+        totalRecoveryTime: 0,
+      };
     }
 
     return status;
   }
 
   /**
-   * Get performance metrics
+   * Get performance metrics.
    */
   getPerformanceMetrics() {
     // Update memory usage
@@ -660,7 +699,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Start performance optimization
+   * Start performance optimization.
    */
   startPerformanceOptimization() {
     this.logger.info('Starting performance optimization');
@@ -680,7 +719,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Perform memory optimization
+   * Perform memory optimization.
    */
   performMemoryOptimization() {
     const memUsage = process.memoryUsage();
@@ -705,7 +744,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Optimize component caches
+   * Optimize component caches.
    */
   optimizeComponentCaches() {
     // Optimize health monitor cache
@@ -722,12 +761,12 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Validate configuration
+   * Validate configuration.
    */
   async validateConfiguration() {
     this.logger.debug('Validating recovery integration configuration');
 
-    const validationErrors = [];
+    const validationErrors: string[] = [];
 
     // Validate component configurations
     if (this.options.enableHealthMonitoring && this.options.healthMonitor) {
@@ -762,7 +801,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Run system health check
+   * Run system health check.
    */
   async runSystemHealthCheck() {
     const healthResults = {
@@ -810,7 +849,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Export comprehensive system data
+   * Export comprehensive system data.
    */
   exportSystemData(): any {
     return {
@@ -825,7 +864,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Emergency shutdown procedure
+   * Emergency shutdown procedure.
    *
    * @param reason
    */
@@ -850,7 +889,7 @@ export class RecoveryIntegration extends EventEmitter {
   }
 
   /**
-   * Cleanup and shutdown
+   * Cleanup and shutdown.
    */
   async shutdown() {
     this.logger.info('Shutting down Recovery Integration System');

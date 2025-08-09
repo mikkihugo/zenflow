@@ -1,3 +1,5 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-sparc-tests-database-driven-architecture-enginetest");
 /**
  * Test for Database-Driven SPARC Architecture Engine
  *
@@ -100,9 +102,9 @@ class MockDatabaseAdapter {
 // Mock logger
 const mockLogger = {
   info: (_msg: string, ..._args: any[]) => {},
-  error: (msg: string, ...args: any[]) => console.error(`[ERROR] ${msg}`, ...args),
+  error: (msg: string, ...args: any[]) => logger.error(`[ERROR] ${msg}`, ...args),
   debug: (_msg: string, ..._args: any[]) => {},
-  warn: (msg: string, ...args: any[]) => console.warn(`[WARN] ${msg}`, ...args),
+  warn: (msg: string, ...args: any[]) => logger.warn(`[WARN] ${msg}`, ...args),
 };
 
 /**
@@ -329,7 +331,7 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
       validation.recommendations.forEach((_rec, _index) => {});
     }
   } catch (error) {
-    console.error('❌ Test failed:', error);
+    logger.error('❌ Test failed:', error);
     throw error;
   }
 }
@@ -342,7 +344,7 @@ async function runTest() {
     await testDatabaseDrivenArchitectureEngine();
     process.exit(0);
   } catch (error) {
-    console.error('\n❌ Test suite failed:', error);
+    logger.error('\n❌ Test suite failed:', error);
     process.exit(1);
   }
 }

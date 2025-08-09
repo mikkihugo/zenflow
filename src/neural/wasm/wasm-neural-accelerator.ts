@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("neural-wasm-wasm-neural-accelerator");
 /**
  * WASM Neural Accelerator Implementation
  *
@@ -611,7 +613,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
     try {
       return wasmFunction(...args);
     } catch (error) {
-      console.error(`WASM function ${functionName} failed:`, error);
+      logger.error(`WASM function ${functionName} failed:`, error);
       return null;
     }
   }

@@ -1,5 +1,7 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-sparc-core-template-engine");
 /**
- * SPARC Template Engine
+ * SPARC Template Engine.
  *
  * Core template management system for SPARC methodology.
  * Provides template loading, application, validation, and customization.
@@ -47,7 +49,7 @@ export interface TemplateRegistryEntry {
 }
 
 /**
- * Core template engine for SPARC methodology
+ * Core template engine for SPARC methodology.
  *
  * @example
  */
@@ -62,7 +64,7 @@ export class TemplateEngine {
   }
 
   /**
-   * Initialize template registry with all available templates
+   * Initialize template registry with all available templates.
    */
   private initializeTemplateRegistry(): void {
     const templates = [
@@ -85,7 +87,7 @@ export class TemplateEngine {
   }
 
   /**
-   * Register a new template with the engine
+   * Register a new template with the engine.
    *
    * @param template
    */
@@ -103,14 +105,14 @@ export class TemplateEngine {
   }
 
   /**
-   * Get all available templates
+   * Get all available templates.
    */
   getAllTemplates(): SPARCTemplate[] {
     return Array.from(this.templateRegistry.values()).map((entry) => entry.template);
   }
 
   /**
-   * Get templates by domain
+   * Get templates by domain.
    *
    * @param domain
    */
@@ -122,7 +124,7 @@ export class TemplateEngine {
   }
 
   /**
-   * Get template by ID
+   * Get template by ID.
    *
    * @param templateId
    */
@@ -131,7 +133,7 @@ export class TemplateEngine {
   }
 
   /**
-   * Find best matching template for a project specification
+   * Find best matching template for a project specification.
    *
    * @param projectSpec
    */
@@ -142,7 +144,7 @@ export class TemplateEngine {
     const domainTemplates = this.getTemplatesByDomain(projectSpec.domain);
 
     if (domainTemplates.length === 0) {
-      console.warn(`⚠️ No templates found for domain: ${projectSpec.domain}`);
+      logger.warn(`⚠️ No templates found for domain: ${projectSpec.domain}`);
       return null;
     }
 
@@ -163,7 +165,7 @@ export class TemplateEngine {
   }
 
   /**
-   * Validate template compatibility with project specification
+   * Validate template compatibility with project specification.
    *
    * @param template
    * @param projectSpec
@@ -224,7 +226,7 @@ export class TemplateEngine {
   }
 
   /**
-   * Apply template to project specification
+   * Apply template to project specification.
    *
    * @param template
    * @param projectSpec
@@ -280,7 +282,7 @@ export class TemplateEngine {
   }
 
   /**
-   * Create custom template from project specification
+   * Create custom template from project specification.
    *
    * @param projectSpec
    * @param baseTemplateId
@@ -351,7 +353,7 @@ export class TemplateEngine {
   }
 
   /**
-   * Get template usage statistics
+   * Get template usage statistics.
    */
   getTemplateStats(): {
     totalTemplates: number;
@@ -380,7 +382,7 @@ export class TemplateEngine {
     // Get recently used templates
     const entriesByRecent = Array.from(this.templateRegistry.entries())
       .filter(([_, entry]) => entry.metadata.lastUsed)
-      .sort((a, b) => b[1].metadata.lastUsed?.getTime() - a[1].metadata.lastUsed?.getTime());
+      .sort((a, b) => b[1].metadata.lastUsed!.getTime() - a[1].metadata.lastUsed!.getTime());
     stats.recentlyUsed = entriesByRecent.slice(0, 5).map(([id, _]) => id);
 
     return stats;

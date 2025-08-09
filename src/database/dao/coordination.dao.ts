@@ -1,5 +1,5 @@
 /**
- * Coordination Repository Implementation
+ * Coordination Repository Implementation.
  *
  * Specialized repository for coordination operations including
  * distributed locking, pub/sub messaging, and change notifications.
@@ -18,7 +18,7 @@ import type {
 } from '../interfaces';
 
 /**
- * Subscription information
+ * Subscription information.
  *
  * @example
  */
@@ -32,7 +32,7 @@ interface Subscription {
 }
 
 /**
- * Lock information
+ * Lock information.
  *
  * @example
  */
@@ -41,9 +41,9 @@ interface LockInfo extends CoordinationLock {
 }
 
 /**
- * Coordination repository implementation with distributed coordination capabilities
+ * Coordination repository implementation with distributed coordination capabilities.
  *
- * @template T The entity type this repository manages
+ * @template T The entity type this repository manages.
  * @example
  */
 export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepository<T> {
@@ -67,7 +67,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Lock resource for coordination
+   * Lock resource for coordination.
    *
    * @param resourceId
    * @param lockTimeout
@@ -118,7 +118,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Release lock
+   * Release lock.
    *
    * @param lockId
    */
@@ -160,7 +160,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Subscribe to changes
+   * Subscribe to changes.
    *
    * @param pattern
    * @param callback
@@ -202,7 +202,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Unsubscribe from changes
+   * Unsubscribe from changes.
    *
    * @param subscriptionId
    */
@@ -223,7 +223,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Publish coordination event
+   * Publish coordination event.
    *
    * @param channel
    * @param event
@@ -249,7 +249,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Get coordination statistics
+   * Get coordination statistics.
    */
   async getCoordinationStats(): Promise<CoordinationStats> {
     return {
@@ -262,10 +262,29 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Override base repository methods to add coordination events
+   * Execute raw SQL/query - implements ICoordinationRepository interface.
+   *
+   * @param sql
+   * @param params
+   */
+  async execute(sql: string, params?: unknown[]): Promise<{ affectedRows?: number; insertId?: number }> {
+    try {
+      const result = await this.adapter.execute(sql, params);
+      return {
+        affectedRows: result.rowCount,
+        insertId: result.insertId
+      };
+    } catch (error) {
+      this.logger.error('Execute query failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Override base repository methods to add coordination events.
    */
 
-  async create(entity: Omit<T, 'id'>): Promise<T> {
+  override async create(entity: Omit<T, 'id'>): Promise<T> {
     const created = await super.create(entity);
 
     // Emit change notification
@@ -274,7 +293,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
     return created;
   }
 
-  async update(id: string | number, updates: Partial<T>): Promise<T> {
+  override async update(id: string | number, updates: Partial<T>): Promise<T> {
     const updated = await super.update(id, updates);
 
     // Emit change notification
@@ -283,7 +302,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
     return updated;
   }
 
-  async delete(id: string | number): Promise<boolean> {
+  override async delete(id: string | number): Promise<boolean> {
     const deleted = await super.delete(id);
 
     if (deleted) {
@@ -303,11 +322,11 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Execute custom query - override to handle coordination-specific queries
+   * Execute custom query - override to handle coordination-specific queries.
    *
    * @param customQuery
    */
-  async executeCustomQuery<R = any>(customQuery: CustomQuery): Promise<R> {
+  override async executeCustomQuery<R = any>(customQuery: CustomQuery): Promise<R> {
     if (customQuery.type === 'coordination') {
       const query = customQuery.query as any;
 
@@ -336,11 +355,11 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Enhanced coordination-specific operations
+   * Enhanced coordination-specific operations.
    */
 
   /**
-   * Try to acquire lock with retry mechanism
+   * Try to acquire lock with retry mechanism.
    *
    * @param resourceId
    * @param maxRetries
@@ -377,7 +396,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Execute with lock (acquire, execute, release)
+   * Execute with lock (acquire, execute, release).
    *
    * @param resourceId
    * @param operation
@@ -401,7 +420,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Broadcast event to all subscribers
+   * Broadcast event to all subscribers.
    *
    * @param event
    */
@@ -411,7 +430,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Get active locks
+   * Get active locks.
    */
   async getActiveLocks(): Promise<CoordinationLock[]> {
     const activeLocks: CoordinationLock[] = [];
@@ -433,7 +452,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Get subscription information
+   * Get subscription information.
    */
   async getSubscriptions(): Promise<
     Array<{
@@ -448,13 +467,13 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
       id: sub.id,
       pattern: sub.pattern,
       createdAt: sub.createdAt,
-      lastTriggered: sub.lastTriggered,
+      lastTriggered: sub.lastTriggered || undefined,
       triggerCount: sub.triggerCount,
     }));
   }
 
   /**
-   * Private helper methods
+   * Private helper methods.
    */
 
   private async emitChange(
@@ -465,7 +484,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
     const change: CoordinationChange<T> = {
       type,
       entityId,
-      entity,
+      entity: entity as T | undefined,
       timestamp: new Date(),
       metadata: {
         tableName: this.tableName,
@@ -560,7 +579,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   }
 
   /**
-   * Cleanup method to be called on shutdown
+   * Cleanup method to be called on shutdown.
    */
   async shutdown(): Promise<void> {
     this.logger.debug('Shutting down coordination repository');

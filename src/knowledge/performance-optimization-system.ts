@@ -91,7 +91,7 @@ export type CacheType = 'local' | 'distributed' | 'persistent' | 'hierarchical';
 
 // Additional missing types for performance optimization
 export interface PolicySelector {
-  selectPolicy(context: string): EvictionPolicy;
+  selectPolicy(context: string): EvictionPolicyType;
 }
 
 export interface AdaptiveEvictionEngine {
@@ -99,7 +99,7 @@ export interface AdaptiveEvictionEngine {
 }
 
 export interface EvictionPerformanceTracker {
-  trackPerformance(policy: EvictionPolicy): number;
+  trackPerformance(policy: EvictionPolicyType): number;
 }
 
 export interface EvictionPolicy {
@@ -217,15 +217,15 @@ export interface CacheEntryMetadata {
 }
 
 export interface EvictionPolicyManager {
-  policies: Map<string, EvictionPolicy>;
+  policies: Map<string, EvictionPolicyType>;
   policySelection: PolicySelector;
   adaptiveEviction: AdaptiveEvictionEngine;
   performanceTracker: EvictionPerformanceTracker;
 }
 
 export interface ReplicationManager {
-  replicationStrategy: ReplicationStrategy;
-  consistencyLevel: ConsistencyLevel;
+  replicationStrategy: ReplicationStrategyType;
+  consistencyLevel: AdvancedConsistencyLevel;
   conflictResolution: ConflictResolutionStrategy;
   syncProtocol: SynchronizationProtocol;
   healthMonitoring: ReplicationHealthMonitor;
@@ -248,7 +248,7 @@ export type KnowledgeCacheType =
   | 'validation-cache'
   | 'reputation-cache';
 
-export type EvictionPolicy =
+export type EvictionPolicyType =
   | 'lru'
   | 'lfu'
   | 'ttl'
@@ -257,7 +257,7 @@ export type EvictionPolicy =
   | 'cost-benefit-based'
   | 'predictive-eviction';
 
-export type ReplicationStrategy =
+export type ReplicationStrategyType =
   | 'master-slave'
   | 'master-master'
   | 'consistent-hashing'
@@ -265,7 +265,7 @@ export type ReplicationStrategy =
   | 'hierarchical'
   | 'adaptive';
 
-export type ConsistencyLevel =
+export type AdvancedConsistencyLevel =
   | 'eventual'
   | 'strong'
   | 'causal'

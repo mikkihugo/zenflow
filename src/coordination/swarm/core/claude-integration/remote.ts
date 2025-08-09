@@ -1,3 +1,5 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-claude-integration-remote");
 /**
  * Remote wrapper generation module
  * Creates cross-platform wrapper scripts for remote execution
@@ -339,7 +341,7 @@ if "%1"=="research" (
       }
       return { files: createdFiles, success: true };
     } catch (error: any) {
-      console.error('❌ Failed to create wrapper scripts:', error.message);
+      logger.error('❌ Failed to create wrapper scripts:', error.message);
       throw error;
     }
   }
@@ -373,7 +375,7 @@ if "%1"=="research" (
       }
       return { files: createdFiles, success: true };
     } catch (error: any) {
-      console.error('❌ Failed to create Claude helper scripts:', error.message);
+      logger.error('❌ Failed to create Claude helper scripts:', error.message);
       throw error;
     }
   }
@@ -391,7 +393,7 @@ if "%1"=="research" (
 
       return results;
     } catch (error: any) {
-      console.error('❌ Failed to setup remote execution:', error.message);
+      logger.error('❌ Failed to setup remote execution:', error.message);
       throw error;
     }
   }

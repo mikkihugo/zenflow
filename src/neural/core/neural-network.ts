@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("neural-core-neural-network");
 // neural-network.ts - TypeScript wrapper for WASM neural network functionality
 
 export interface NetworkConfig {
@@ -116,7 +118,7 @@ export async function initializeNeuralWasm() {
       throw new Error('WASM module not available');
     } catch (importError) {
       // Fallback to simulated WASM module
-      console.warn('WASM module not found, using simulation mode');
+      logger.warn('WASM module not found, using simulation mode');
       wasmModule = {
         create_neural_network: () => 'simulated_network_id',
         forward_pass: () => new Float32Array([0.5]),

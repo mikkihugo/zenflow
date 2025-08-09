@@ -27,7 +27,7 @@ export interface ModeDetectionResult {
 
 export class InterfaceModeDetector {
   /**
-   * Detect the appropriate interface mode based on environment
+   * Detect the appropriate interface mode based on environment.
    *
    * @param options
    */
@@ -96,21 +96,33 @@ export class InterfaceModeDetector {
       reason = 'Default fallback to CLI mode';
     }
 
+    // Build config object with proper optional property handling
+    const port = webPort || (mode === 'web' ? 3456 : undefined);
+    const daemonMode = daemon || mode === 'web';
+    
+    const config: ModeDetectionResult['config'] = {
+      interactive,
+      hasTerminal,
+      isCI,
+    };
+    
+    // Only add optional properties when they have defined values
+    if (port !== undefined) {
+      config.port = port;
+    }
+    if (daemonMode !== undefined) {
+      config.daemon = daemonMode;
+    }
+
     return {
       mode,
       reason,
-      config: {
-        port: webPort || (mode === 'web' ? 3456 : undefined),
-        daemon: daemon || mode === 'web',
-        interactive,
-        hasTerminal,
-        isCI,
-      },
+      config,
     };
   }
 
   /**
-   * Get environment information for debugging
+   * Get environment information for debugging.
    */
   static getEnvironmentInfo(): Record<string, any> {
     return {
@@ -134,7 +146,7 @@ export class InterfaceModeDetector {
   }
 
   /**
-   * Validate if a mode is supported in the current environment
+   * Validate if a mode is supported in the current environment.
    *
    * @param mode
    */
@@ -165,7 +177,7 @@ export class InterfaceModeDetector {
   }
 
   /**
-   * Get recommended mode based on current environment
+   * Get recommended mode based on current environment.
    */
   static getRecommendation(): {
     primary: InterfaceMode;

@@ -1,8 +1,8 @@
 /**
- * Unified Documentation Linker - Direct Integration
+ * Unified Documentation Linker - Direct Integration.
  *
  * Links code references to documentation and generates cross-references
- * Integrated directly into core without plugin architecture
+ * Integrated directly into core without plugin architecture.
  */
 
 import { EventEmitter } from 'node:events';
@@ -80,7 +80,7 @@ export interface LinkSuggestion {
   autoFixable: boolean;
 }
 
-export class UnifiedDocumentationLinker extends EventEmitter {
+export class DocumentationLinker extends EventEmitter {
   private documentationIndex = new Map<string, DocumentationIndex>();
   private codeReferences: CodeReference[] = [];
   private crossReferences: CrossReference[] = [];
@@ -141,7 +141,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   }
 
   /**
-   * Index all documentation files
+   * Index all documentation files.
    */
   private async indexDocumentation(): Promise<void> {
     for (const docPath of this.config.documentationPaths) {
@@ -204,7 +204,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   }
 
   /**
-   * Analyze code files for documentation references
+   * Analyze code files for documentation references.
    */
   private async analyzeCodeReferences(): Promise<void> {
     for (const codePath of this.config.codePaths) {
@@ -249,41 +249,47 @@ export class UnifiedDocumentationLinker extends EventEmitter {
         const lineNumber = i + 1;
 
         // Find TODO comments
-        const todoMatch = line.match(/\/\/\s*TODO:?\s*(.+)/i) || line.match(/#\s*TODO:?\s*(.+)/i);
-        if (todoMatch) {
-          await this.addCodeReference({
-            file: filePath,
-            line: lineNumber,
-            type: 'todo',
-            text: todoMatch[1].trim(),
-            context: this.getContextLines(lines, i, 2),
-          });
-        }
-
-        // Find documentation comments
-        const docCommentMatch = line.match(/\/\*\*\s*(.+?)\s*\*\//s) || line.match(/\*\s*(.+)/);
-        if (docCommentMatch && !line.includes('TODO')) {
-          await this.addCodeReference({
-            file: filePath,
-            line: lineNumber,
-            type: 'comment',
-            text: docCommentMatch[1].trim(),
-            context: this.getContextLines(lines, i, 1),
-          });
-        }
-
-        // Find function/class definitions that might need documentation
-        const functionMatch = line.match(/(?:function|class|interface|type)\s+(\w+)/);
-        if (functionMatch) {
-          const precedingComment = i > 0 ? lines[i - 1].trim() : '';
-          if (!precedingComment.startsWith('//') && !precedingComment.startsWith('*')) {
+        if (line) {
+          const todoMatch = line.match(/\/\/\s*TODO:?\s*(.+)/i) || line.match(/#\s*TODO:?\s*(.+)/i);
+          if (todoMatch && todoMatch[1]) {
             await this.addCodeReference({
               file: filePath,
               line: lineNumber,
-              type: functionMatch[0].includes('class') ? 'class' : 'function',
-              text: `${functionMatch[0]} needs documentation`,
-              context: this.getContextLines(lines, i, 3),
+              type: 'todo',
+              text: todoMatch[1].trim(),
+              context: this.getContextLines(lines, i, 2),
             });
+          }
+        }
+
+        // Find documentation comments
+        if (line) {
+          const docCommentMatch = line.match(/\/\*\*\s*(.+?)\s*\*\//s) || line.match(/\*\s*(.+)/);
+          if (docCommentMatch && docCommentMatch[1] && !line.includes('TODO')) {
+            await this.addCodeReference({
+              file: filePath,
+              line: lineNumber,
+              type: 'comment',
+              text: docCommentMatch[1].trim(),
+              context: this.getContextLines(lines, i, 1),
+            });
+          }
+        }
+
+        // Find function/class definitions that might need documentation
+        if (line) {
+          const functionMatch = line.match(/(?:function|class|interface|type)\s+(\w+)/);
+          if (functionMatch) {
+            const precedingComment = i > 0 && lines[i - 1] ? lines[i - 1].trim() : '';
+            if (!precedingComment.startsWith('//') && !precedingComment.startsWith('*')) {
+              await this.addCodeReference({
+                file: filePath,
+                line: lineNumber,
+                type: functionMatch[0].includes('class') ? 'class' : 'function',
+                text: `${functionMatch[0]} needs documentation`,
+                context: this.getContextLines(lines, i, 3),
+              });
+            }
           }
         }
       }
@@ -310,7 +316,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   }
 
   /**
-   * Generate cross-references between documents
+   * Generate cross-references between documents.
    */
   private async generateCrossReferences(): Promise<void> {
     const documents = Array.from(this.documentationIndex.values());
@@ -331,7 +337,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   }
 
   /**
-   * Generate documentation enhancement suggestions
+   * Generate documentation enhancement suggestions.
    */
   async generateLinkSuggestions(): Promise<LinkSuggestion[]> {
     const suggestions: LinkSuggestion[] = [];
@@ -387,10 +393,10 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   }
 
   /**
-   * Generate comprehensive documentation report
+   * Generate comprehensive documentation report.
    */
   async generateDocumentationReport(): Promise<string> {
-    const report = [];
+    const report: string[] = [];
 
     report.push('# Documentation Linker Report');
     report.push(`Generated: ${new Date().toISOString()}`);
@@ -474,7 +480,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   }
 
   /**
-   * Utility methods
+   * Utility methods.
    *
    * @param text
    */
@@ -610,7 +616,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   private extractTitle(content: string, filePath: string): string {
     // Try to extract title from first heading
     const headingMatch = content.match(/^#\s+(.+)$/m);
-    if (headingMatch) return headingMatch[1].trim();
+    if (headingMatch && headingMatch[1]) return headingMatch[1].trim();
 
     // Try to extract from filename
     const filename = relative(process.cwd(), filePath).replace(extname(filePath), '');
@@ -676,11 +682,13 @@ export class UnifiedDocumentationLinker extends EventEmitter {
         }
 
         // Start new section
-        currentSection = {
-          title: headingMatch[2].trim(),
-          level: headingMatch[1].length,
-          content: '',
-        };
+        if (headingMatch[1] && headingMatch[2]) {
+          currentSection = {
+            title: headingMatch[2].trim(),
+            level: headingMatch[1].length,
+            content: '',
+          };
+        }
       } else if (currentSection) {
         currentSection.content += `${line}\n`;
       }
@@ -704,7 +712,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
     const markdownLinks = content.match(/\[([^\]]+)\]\(([^)]+)\)/g) || [];
     for (const link of markdownLinks) {
       const match = link.match(/\[([^\]]+)\]\(([^)]+)\)/);
-      if (match) {
+      if (match && match[1] && match[2]) {
         const text = match[1];
         const target = match[2];
         const type = target.startsWith('http') ? 'external' : 'internal';
@@ -722,7 +730,7 @@ export class UnifiedDocumentationLinker extends EventEmitter {
   }
 
   /**
-   * Public API methods
+   * Public API methods.
    */
   getDocumentationIndex(): Map<string, DocumentationIndex> {
     return new Map(this.documentationIndex);

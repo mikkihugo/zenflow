@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-clients-compatibility");
 /**
  * UACL Backward Compatibility Layer
  *
@@ -12,6 +14,7 @@ import { type APIClient, createAPIClient } from '../api/http/client';
 import { WebSocketClient } from '../api/websocket/client';
 import { ExternalMCPClient } from '../mcp/external-mcp-client';
 import { type ClientInstance, ClientType, uacl } from './index';
+import { getMCPServerURL } from '../config/url-builder';
 
 /**
  * Legacy HTTP Client Factory (Backward Compatible)
@@ -38,7 +41,7 @@ export const createManagedAPIClient = async (
   id: string,
   config: any = {}
 ): Promise<{ client: APIClient; instance: ClientInstance }> => {
-  const instance = await uacl.createHTTPClient(id, config.baseURL || 'http://localhost:3000', {
+  const instance = await uacl.createHTTPClient(id, config.baseURL || getMCPServerURL(), {
     enabled: true,
     priority: 5,
     timeout: config.timeout,
@@ -293,7 +296,7 @@ export class UACLMigrationHelper {
           return null;
       }
     } catch (error) {
-      console.warn(`⚠️ UACL Auto-migration failed for ${clientType} client ${id}:`, error);
+      logger.warn(`⚠️ UACL Auto-migration failed for ${clientType} client ${id}:`, error);
       return null;
     }
   }
@@ -350,7 +353,10 @@ export const createEnhancedAPIClient = async (
     UACLMigrationHelper.markAsMigrated('HTTP', `createEnhancedAPIClient:${id}`);
     return result;
   } catch (error) {
-    console.warn(`⚠️ Failed to create UACL-managed HTTP client, falling back to legacy:`, error);
+    logger.warn(
+      `⚠️ Failed to create UACL-managed HTTP client, falling back to legacy:`,
+      error
+    );
     return {
       client: createCompatibleAPIClient(config),
       instance: null as any,
@@ -377,7 +383,7 @@ export const createEnhancedWebSocketClient = async (
     UACLMigrationHelper.markAsMigrated('WebSocket', `createEnhancedWebSocketClient:${id}`);
     return result;
   } catch (error) {
-    console.warn(
+    logger.warn(
       `⚠️ Failed to create UACL-managed WebSocket client, falling back to legacy:`,
       error
     );
@@ -405,7 +411,7 @@ export const createEnhancedKnowledgeClient = async (
     UACLMigrationHelper.markAsMigrated('Knowledge', `createEnhancedKnowledgeClient:${id}`);
     return result;
   } catch (error) {
-    console.warn(
+    logger.warn(
       `⚠️ Failed to create UACL-managed Knowledge client, falling back to legacy:`,
       error
     );
@@ -433,7 +439,10 @@ export const createEnhancedMCPClient = async (
     UACLMigrationHelper.markAsMigrated('MCP', `createEnhancedMCPClient:${id}`);
     return result;
   } catch (error) {
-    console.warn(`⚠️ Failed to create UACL-managed MCP client, falling back to legacy:`, error);
+    logger.warn(
+      `⚠️ Failed to create UACL-managed MCP client, falling back to legacy:`,
+      error
+    );
     return {
       client: createCompatibleMCPClient(),
       instance: null as any,

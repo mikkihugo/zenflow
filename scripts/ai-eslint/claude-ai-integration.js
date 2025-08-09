@@ -204,7 +204,7 @@ Use your tools directly - do not return code in your response. Just fix the file
 
       const claude = spawn(
         claudePath,
-        ['--print', '--output-format', 'json', '--dangerously-skip-permissions', instruction],
+        ['--model', 'sonnet', '--print', '--output-format', 'json', '--dangerously-skip-permissions', instruction],
         {
           stdio: 'pipe',
           cwd: REPO_ROOT, // Ensure repo root for file access
@@ -466,7 +466,7 @@ Use your Read and Write tools to fix this directly.`;
    */
   static async testClaudeAvailability() {
     return new Promise((resolve) => {
-      const claude = spawn('/home/mhugo/.local/share/mise/shims/claude', ['--version'], {
+      const claude = spawn('/home/mhugo/.local/share/mise/shims/claude', ['--model', 'sonnet', '--version'], {
         stdio: 'pipe',
         // No shell needed with full path
       });

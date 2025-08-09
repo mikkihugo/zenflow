@@ -1,5 +1,5 @@
 /**
- * Performance Optimizer
+ * Performance Optimizer.
  *
  * Optimizes agent behavior, task allocation, and resource utilization based on
  * learned patterns to improve overall swarm performance and efficiency.
@@ -30,6 +30,7 @@ import type {
 } from './types';
 
 export class PerformanceOptimizer extends EventEmitter implements IPerformanceOptimizer {
+  private config: AdaptiveLearningConfig;
   private behaviorCache = new Map<string, BehaviorOptimization>();
   private allocationHistory = new Map<string, AllocationStrategy[]>();
   private resourceHistory = new Map<string, ResourceStrategy[]>();
@@ -46,7 +47,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
   }
 
   /**
-   * Optimize agent behavior based on learned patterns
+   * Optimize agent behavior based on learned patterns.
    *
    * @param agentId
    * @param patterns
@@ -90,7 +91,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
   }
 
   /**
-   * Optimize task allocation across agents
+   * Optimize task allocation across agents.
    *
    * @param tasks
    * @param agents
@@ -141,7 +142,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
   }
 
   /**
-   * Optimize resource allocation
+   * Optimize resource allocation.
    *
    * @param resources
    */
@@ -188,7 +189,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
   }
 
   /**
-   * Improve overall system efficiency
+   * Improve overall system efficiency.
    *
    * @param metrics
    */
@@ -230,7 +231,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
   }
 
   /**
-   * Reduce system latency by addressing bottlenecks
+   * Reduce system latency by addressing bottlenecks.
    *
    * @param bottlenecks
    */
@@ -269,7 +270,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
   }
 
   /**
-   * Get optimization history for analysis
+   * Get optimization history for analysis.
    */
   getOptimizationHistory(): {
     behaviors: Map<string, BehaviorOptimization>;
@@ -286,7 +287,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
   }
 
   /**
-   * Clear optimization cache
+   * Clear optimization cache.
    */
   clearOptimizationCache(): void {
     this.behaviorCache.clear();
@@ -302,7 +303,7 @@ export class PerformanceOptimizer extends EventEmitter implements IPerformanceOp
   private filterPatternsForAgent(agentId: string, patterns: Pattern[]): Pattern[] {
     return patterns.filter(
       (pattern) =>
-        pattern.context.agentId === agentId ||
+        pattern.context['agentId'] === agentId ||
         pattern.confidence > 0.8 ||
         pattern.metadata.relevance > 0.7
     );

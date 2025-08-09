@@ -1,5 +1,5 @@
 /**
- * SPARC Architecture Phase Engine
+ * SPARC Architecture Phase Engine.
  *
  * Handles the third phase of SPARC methodology - designing system architecture,
  * component relationships, and deployment strategies.
@@ -56,7 +56,7 @@ interface SystemComponent {
 
 export class ArchitecturePhaseEngine implements ArchitectureEngine {
   /**
-   * Design system architecture from specification and pseudocode
+   * Design system architecture from specification and pseudocode.
    *
    * @param spec
    * @param _spec
@@ -81,7 +81,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Convert SystemComponent to Component
+   * Convert SystemComponent to Component.
    *
    * @param systemComponent
    */
@@ -101,7 +101,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Design system architecture from pseudocode structure (internal method)
+   * Design system architecture from pseudocode structure (internal method).
    *
    * @param pseudocode
    */
@@ -146,7 +146,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Identify system components from algorithms and data structures
+   * Identify system components from algorithms and data structures.
    *
    * @param pseudocode
    */
@@ -174,7 +174,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Create component from algorithm specification
+   * Create component from algorithm specification.
    *
    * @param algorithm
    */
@@ -201,7 +201,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Create component from data structure specification
+   * Create component from data structure specification.
    *
    * @param dataStructure
    */
@@ -230,7 +230,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Create infrastructure components
+   * Create infrastructure components.
    *
    * @param _pseudocode
    */
@@ -299,7 +299,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Define relationships between components
+   * Define relationships between components.
    *
    * @param components
    */
@@ -354,7 +354,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Select appropriate architecture patterns
+   * Select appropriate architecture patterns.
    *
    * @param _pseudocode
    * @param components
@@ -416,7 +416,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Define data flows between components
+   * Define data flows between components.
    *
    * @param components
    * @param relationships
@@ -449,7 +449,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Define component interfaces
+   * Define component interfaces.
    *
    * @param components
    */
@@ -472,7 +472,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Define quality attributes
+   * Define quality attributes.
    *
    * @param _pseudocode
    */
@@ -544,11 +544,11 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Create deployment strategy (removed problematic method)
+   * Create deployment strategy (removed problematic method).
    */
 
   /**
-   * Identify integration points (removed problematic method)
+   * Identify integration points (removed problematic method).
    */
 
   // Helper methods for implementation plan generation
@@ -679,7 +679,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   private parseEffortToHours(effort: string): number {
     if (effort.includes('hours')) {
       const match = effort.match(/(\d+)-?(\d*)\s*hours?/);
-      if (match) {
+      if (match && match[1]) {
         const min = parseInt(match[1]);
         const max = match[2] ? parseInt(match[2]) : min;
         return (min + max) / 2;
@@ -687,7 +687,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     }
     if (effort.includes('days')) {
       const match = effort.match(/(\d+)-?(\d*)\s*days?/);
-      if (match) {
+      if (match && match[1]) {
         const min = parseInt(match[1]);
         const max = match[2] ? parseInt(match[2]) : min;
         return ((min + max) / 2) * 8; // 8 hours per day
@@ -901,7 +901,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   private async generateInterfaceMethods(component: SystemComponent): Promise<any[]> {
-    const methods = [];
+    const methods: any[] = [];
 
     if (component.type === 'service') {
       methods.push(
@@ -973,7 +973,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Generate component diagrams from system architecture
+   * Generate component diagrams from system architecture.
    *
    * @param architecture
    */
@@ -983,7 +983,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Design data flow from components
+   * Design data flow from components.
    *
    * @param components
    */
@@ -1013,7 +1013,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Plan deployment architecture for system
+   * Plan deployment architecture for system.
    *
    * @param system
    */
@@ -1086,7 +1086,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Validate architectural consistency
+   * Validate architectural consistency.
    *
    * @param architecture
    */
@@ -1139,7 +1139,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Generate implementation plan from architecture design
+   * Generate implementation plan from architecture design.
    *
    * @param architecture
    */
@@ -1194,7 +1194,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   /**
-   * Validate architecture design
+   * Validate architecture design.
    *
    * @param architecture
    */

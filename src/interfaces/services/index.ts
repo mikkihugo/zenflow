@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-services-index");
 /**
  * USL (Unified Service Layer) - Main Exports
  *
@@ -10,6 +12,8 @@
  *
  * @file Main USL exports following the same successful patterns as DAL and UACL
  */
+
+import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
 
 // Data service adapters (enhanced implementations)
 // Integration service adapters (enhanced implementations)
@@ -450,7 +454,7 @@ export class USL {
    *   server: {
    *     host: '0.0.0.0',
    *     port: 3000,
-   *     cors: { enabled: true, origins: ['http://localhost:3456'] }
+   *     cors: { enabled: true, origins: [getWebDashboardURL()] }
    *   },
    *   middleware: {
    *     compression: true,
@@ -812,7 +816,7 @@ export class USL {
     }
 
     const {
-      baseURL = 'http://localhost:3000',
+      baseURL = getMCPServerURL(),
       databaseType = 'postgresql',
       supportedProtocols = ['http', 'websocket', 'mcp-http', 'mcp-stdio'],
       ...adapterOptions
@@ -1318,7 +1322,7 @@ export const USLHelpers = {
 
       return services;
     } catch (error) {
-      console.error('❌ Failed to setup common services:', error);
+      logger.error('❌ Failed to setup common services:', error);
       throw error;
     }
   },
@@ -1555,7 +1559,7 @@ export const USLHelpers = {
         const service = await USLHelpers.createServiceWithDependencies(config, dependencies);
         createdServices.push(service);
       } catch (error) {
-        console.error(`Failed to create service ${config.name}:`, error);
+        logger.error(`Failed to create service ${config.name}:`, error);
         throw error;
       }
     }
@@ -1642,7 +1646,7 @@ export const USLHelpers = {
 
       return result;
     } catch (error) {
-      console.error('❌ Failed to initialize complete USL system:', error);
+      logger.error('❌ Failed to initialize complete USL system:', error);
       throw error;
     }
   },
@@ -1680,7 +1684,7 @@ export const USLHelpers = {
         compatibilityReport,
       };
     } catch (error) {
-      console.error('❌ Migration to USL failed:', error);
+      logger.error('❌ Migration to USL failed:', error);
       return {
         success: false,
         migrated: [],
@@ -1737,7 +1741,7 @@ export const USLHelpers = {
         recommendations,
       };
     } catch (error) {
-      console.error('❌ System validation failed:', error);
+      logger.error('❌ System validation failed:', error);
 
       // Return minimal error result
       return {

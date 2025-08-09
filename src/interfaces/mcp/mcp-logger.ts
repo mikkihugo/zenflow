@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-mcp-mcp-logger");
 /**
  * MCP Logger for MCP Server
  * Standalone logger to avoid dependency issues
@@ -16,20 +18,20 @@ export function createLogger(name: string): MCPLogger {
   return {
     debug(message: string, meta?: any): void {
       if (process.env['DEBUG'] || process.env['MCP_DEBUG']) {
-        console.error(`${prefix} DEBUG: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
+        logger.error(`${prefix} DEBUG: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
       }
     },
 
     info(message: string, meta?: any): void {
-      console.error(`${prefix} INFO: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
+      logger.error(`${prefix} INFO: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
     },
 
     warn(message: string, meta?: any): void {
-      console.error(`${prefix} WARN: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
+      logger.error(`${prefix} WARN: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
     },
 
     error(message: string, meta?: any): void {
-      console.error(`${prefix} ERROR: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
+      logger.error(`${prefix} ERROR: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
     },
   };
 }

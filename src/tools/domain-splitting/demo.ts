@@ -1,4 +1,5 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env tsximport { getLogger } from "../../config/logging-config";
+const logger = getLogger("tools-domain-splitting-demo");
 
 /**
  * Demo script for domain splitting functionality
@@ -296,7 +297,7 @@ async function main() {
     const demo = new DomainSplittingDemo();
     await demo.demonstrateNeuralSplitting();
   } catch (error) {
-    console.error('❌ Demo failed:', error.message);
+    logger.error('❌ Demo failed:', error.message);
     process.exit(1);
   }
 }

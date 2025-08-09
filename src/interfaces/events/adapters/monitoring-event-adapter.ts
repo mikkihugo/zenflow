@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-events-adapters-monitoring-event-adapter");
 /**
  * @file UEL Monitoring Event Adapter - Unified Event Layer adapter for monitoring-related events.
  * @fileoverview UEL Monitoring Event Adapter - Unified Event Layer adapter for monitoring-related events, providing
@@ -47,9 +49,9 @@ const createLogger = (name: string): Logger => ({
   info: (_message: string, _meta?: Record<string, unknown>) => {},
   debug: (_message: string, _meta?: Record<string, unknown>) => {},
   warn: (message: string, meta?: Record<string, unknown>) =>
-    console.warn(`[WARN] ${name}: ${message}`, meta),
+    logger.warn(`[WARN] ${name}: ${message}`, meta),
   error: (message: string, meta?: Record<string, unknown>, error?: Error | unknown) =>
-    console.error(`[ERROR] ${name}: ${message}`, meta, error),
+    logger.error(`[ERROR] ${name}: ${message}`, meta, error),
 });
 
 import { EventEmitter } from 'node:events';
@@ -693,8 +695,8 @@ export class MonitoringEventAdapter implements IEventManager {
       id: subscriptionId,
       eventTypes: types,
       listener,
-      filter: options?.filter,
-      transform: options?.transform,
+      ...(options?.filter && { filter: options.filter }),
+      ...(options?.transform && { transform: options.transform }),
       priority: options?.priority || 'medium',
       created: new Date(),
       active: true,

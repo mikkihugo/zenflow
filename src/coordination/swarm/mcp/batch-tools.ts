@@ -1,6 +1,6 @@
 /**
  * Batch Tools for Unified MCP Server
- * Batch execution capabilities consolidated from coordination layer
+ * Batch execution capabilities consolidated from coordination layer.
  */
 
 import type { MCPToolResult } from './types';
@@ -39,7 +39,12 @@ export const batchExecuteTool = {
   async handler(params: any): Promise<MCPToolResult> {
     try {
       const startTime = Date.now();
-      const results = [];
+      const results: Array<{
+        type: string;
+        operation: string;
+        status: string;
+        result: string;
+      }> = [];
 
       // Simulate batch execution with performance tracking
       for (const operation of params.operations) {

@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-load-balancing-routing-health-checker");
 /**
  * Health Checker
  * Comprehensive agent health monitoring and status management
@@ -118,7 +120,7 @@ export class HealthChecker extends EventEmitter implements HealthChecker {
   private async performHealthChecks(): Promise<void> {
     const healthCheckPromises = this.activeAgents.map((agent) =>
       this.checkHealth(agent).catch((error) => {
-        console.error(`Health check failed for agent ${agent.id}:`, error);
+        logger.error(`Health check failed for agent ${agent.id}:`, error);
         return false;
       })
     );

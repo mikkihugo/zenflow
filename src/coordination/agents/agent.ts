@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("coordination-agents-agent");
 /**
  * Agent implementation and wrappers
  */
@@ -145,7 +147,7 @@ export class BaseAgent implements Agent {
     if (handler) {
       await handler(message);
     } else {
-      console.warn(`No handler for message type: ${message.type}`);
+      logger.warn(`No handler for message type: ${message.type}`);
     }
   }
 

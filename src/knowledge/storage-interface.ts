@@ -35,6 +35,7 @@ export interface FACTSearchQuery {
   maxAge?: number; // milliseconds
   minConfidence?: number;
   limit?: number;
+  timeout?: number; // milliseconds - search timeout
   sortBy?: 'relevance' | 'timestamp' | 'access_count';
 }
 

@@ -1,5 +1,5 @@
 /**
- * Core System - Main System Coordinator
+ * Core System - Main System Coordinator.
  *
  * Clean, focused system coordinator that manages core components without bloated "unified" architecture.
  * Follows single responsibility principle and provides a clean dependency injection model.
@@ -12,7 +12,7 @@
  * - **DocumentProcessor**: Unified document processing (consolidates file-based and database-driven)
  * - **ExportManager**: Data export in multiple formats
  * - **DocumentationManager**: Documentation indexing and linking
- * - **InterfaceManager**: Multi-interface support (CLI, TUI, Web)
+ * - **InterfaceManager**: Multi-interface support (CLI, TUI, Web).
  *
  * ## Key Improvements
  *
@@ -20,11 +20,11 @@
  * 2. **Clean Dependencies**: Explicit dependency injection without circular imports
  * 3. **Better Separation**: Clear boundaries between systems
  * 4. **Easier Testing**: Components can be tested in isolation
- * 5. **Maintainable**: No more bloated "unified" classes
+ * 5. **Maintainable**: No more bloated "unified" classes.
  *
  * ## Migration Guide
  *
- * **Old (ApplicationCoordinator):**
+ * **Old (ApplicationCoordinator):**.
  * ```typescript
  * const system = new ApplicationCoordinator(config);
  * await system.initialize();
@@ -78,11 +78,11 @@ import { WorkflowEngine } from './workflow-engine';
 const logger = createLogger('CoreSystem');
 
 /**
- * Core system configuration with clear, focused options
+ * Core system configuration with clear, focused options.
  *
  * @example
  */
-export interface CoreSystemConfig {
+export interface SystemConfig {
   // Memory configuration
   memory?: {
     backend?: 'lancedb' | 'sqlite' | 'json';
@@ -122,7 +122,7 @@ export interface CoreSystemConfig {
 }
 
 /**
- * System status with clear component boundaries
+ * System status with clear component boundaries.
  *
  * @example
  */
@@ -142,22 +142,22 @@ export interface SystemStatus {
 }
 
 /**
- * Clean, focused core system without bloated "unified" architecture
+ * Clean, focused core system without bloated "unified" architecture.
  *
  * @example
  */
-export class CoreSystem extends EventEmitter {
+export class System extends EventEmitter {
   private config: CoreSystemConfig;
   private status: SystemStatus['status'] = 'initializing';
   private startTime: number;
 
   // Core components with clear responsibilities
-  private memorySystem: MemorySystem;
-  private workflowEngine: WorkflowEngine;
-  private documentProcessor: DocumentProcessor;
-  private exportManager: ExportManager;
-  private documentationManager: DocumentationManager;
-  private interfaceManager: InterfaceManager;
+  private memorySystem!: MemorySystem;
+  private workflowEngine!: WorkflowEngine;
+  private documentProcessor!: DocumentProcessor;
+  private exportManager!: ExportManager;
+  private documentationManager!: DocumentationManager;
+  private interfaceManager!: InterfaceManager;
 
   private initialized = false;
 
@@ -172,7 +172,7 @@ export class CoreSystem extends EventEmitter {
   }
 
   /**
-   * Initialize all core components with proper dependency injection
+   * Initialize all core components with proper dependency injection.
    */
   private initializeComponents(): void {
     // Memory system - foundation component
@@ -219,7 +219,7 @@ export class CoreSystem extends EventEmitter {
   }
 
   /**
-   * Setup event handlers for component communication
+   * Setup event handlers for component communication.
    */
   private setupEventHandlers(): void {
     // Document processor events
@@ -257,7 +257,7 @@ export class CoreSystem extends EventEmitter {
   }
 
   /**
-   * Initialize the entire system
+   * Initialize the entire system.
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -301,7 +301,7 @@ export class CoreSystem extends EventEmitter {
   }
 
   /**
-   * Launch the interface
+   * Launch the interface.
    */
   async launch(): Promise<void> {
     await this.ensureInitialized();
@@ -310,7 +310,7 @@ export class CoreSystem extends EventEmitter {
   }
 
   /**
-   * Get comprehensive system status
+   * Get comprehensive system status.
    */
   async getSystemStatus(): Promise<SystemStatus> {
     const memoryStats = await this.memorySystem.getStats();
@@ -355,7 +355,7 @@ export class CoreSystem extends EventEmitter {
   }
 
   /**
-   * Process a document through the system
+   * Process a document through the system.
    *
    * @param documentPath
    */
@@ -380,7 +380,7 @@ export class CoreSystem extends EventEmitter {
   }
 
   /**
-   * Export system data
+   * Export system data.
    *
    * @param format
    * @param options
@@ -410,7 +410,7 @@ export class CoreSystem extends EventEmitter {
   }
 
   /**
-   * Shutdown the system gracefully
+   * Shutdown the system gracefully.
    */
   async shutdown(): Promise<void> {
     logger.info('Shutting down Core System...');
@@ -437,7 +437,7 @@ export class CoreSystem extends EventEmitter {
   }
 
   /**
-   * Get access to core components (for interface integration)
+   * Get access to core components (for interface integration).
    */
   getComponents() {
     return {
@@ -451,7 +451,7 @@ export class CoreSystem extends EventEmitter {
   }
 
   /**
-   * Utility methods
+   * Utility methods.
    */
   private async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
@@ -460,7 +460,7 @@ export class CoreSystem extends EventEmitter {
   }
 
   /**
-   * Static factory method for easy initialization
+   * Static factory method for easy initialization.
    *
    * @param config
    */
@@ -471,7 +471,7 @@ export class CoreSystem extends EventEmitter {
   }
 
   /**
-   * Quick start method that initializes and launches
+   * Quick start method that initializes and launches.
    *
    * @param config
    */

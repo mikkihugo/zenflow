@@ -1,5 +1,5 @@
 /**
- * DSPy Wrapper Type Definitions
+ * DSPy Wrapper Type Definitions.
  *
  * Comprehensive TypeScript interfaces for the DSPy wrapper system.
  * These types ensure full compatibility between Claude-Zen's expected DSPy interface
@@ -21,7 +21,9 @@ export {
 // ============================================================================
 
 /**
- * DSPy program signature parsing result
+ * DSPy program signature parsing result.
+ *
+ * @example
  */
 export interface ParsedSignature {
   inputs: Array<{
@@ -39,7 +41,9 @@ export interface ParsedSignature {
 }
 
 /**
- * DSPy program definition with metadata and performance tracking
+ * DSPy program definition with metadata and performance tracking.
+ *
+ * @example
  */
 export interface DSPyProgram {
   id: string;
@@ -54,7 +58,9 @@ export interface DSPyProgram {
 }
 
 /**
- * Training example for DSPy programs
+ * Training example for DSPy programs.
+ *
+ * @example
  */
 export interface DSPyExample {
   input: Record<string, any>;
@@ -70,7 +76,9 @@ export interface DSPyExample {
 }
 
 /**
- * Program performance metrics
+ * Program performance metrics.
+ *
+ * @example
  */
 export interface DSPyProgramPerformance {
   successRate: number;
@@ -83,7 +91,9 @@ export interface DSPyProgramPerformance {
 }
 
 /**
- * DSPy execution result with comprehensive metadata
+ * DSPy execution result with comprehensive metadata.
+ *
+ * @example
  */
 export interface DSPyExecutionResult {
   // Dynamic fields based on program signature
@@ -96,7 +106,9 @@ export interface DSPyExecutionResult {
 }
 
 /**
- * Execution metadata
+ * Execution metadata.
+ *
+ * @example
  */
 export interface DSPyExecutionMetadata {
   executionTime: number;
@@ -114,7 +126,9 @@ export interface DSPyExecutionMetadata {
 // ============================================================================
 
 /**
- * DSPy wrapper configuration options
+ * DSPy wrapper configuration options.
+ *
+ * @example
  */
 export interface DSPyConfig {
   // Language Model Configuration
@@ -143,7 +157,9 @@ export interface DSPyConfig {
 }
 
 /**
- * Optimization configuration
+ * Optimization configuration.
+ *
+ * @example
  */
 export interface DSPyOptimizationOptions {
   strategy: DSPyOptimizationStrategy;
@@ -157,7 +173,7 @@ export interface DSPyOptimizationOptions {
 }
 
 /**
- * Available optimization strategies
+ * Available optimization strategies.
  */
 export type DSPyOptimizationStrategy =
   | 'auto' // Automatic strategy selection
@@ -172,7 +188,9 @@ export type DSPyOptimizationStrategy =
 // ============================================================================
 
 /**
- * Comprehensive DSPy system statistics
+ * Comprehensive DSPy system statistics.
+ *
+ * @example
  */
 export interface DSPySystemStats {
   // Program Statistics
@@ -216,7 +234,9 @@ export interface DSPySystemStats {
 }
 
 /**
- * Time-window execution statistics
+ * Time-window execution statistics.
+ *
+ * @example
  */
 export interface DSPyExecutionStats {
   executions: number;
@@ -231,13 +251,15 @@ export interface DSPyExecutionStats {
 // ============================================================================
 
 /**
- * DSPy wrapper specific error types
+ * DSPy wrapper specific error types.
+ *
+ * @example
  */
 export class DSPyWrapperError extends Error {
   constructor(
     message: string,
     public code: DSPyErrorCode,
-    public cause?: Error,
+    public override cause?: Error,
     public metadata?: Record<string, any>
   ) {
     super(message);
@@ -262,7 +284,9 @@ export type DSPyErrorCode =
 // ============================================================================
 
 /**
- * Factory options for creating DSPy wrappers
+ * Factory options for creating DSPy wrappers.
+ *
+ * @example
  */
 export interface DSPyFactoryOptions extends DSPyConfig {
   instanceName?: string;
@@ -272,7 +296,9 @@ export interface DSPyFactoryOptions extends DSPyConfig {
 }
 
 /**
- * LM Driver factory options
+ * LM Driver factory options.
+ *
+ * @example
  */
 export interface LMDriverFactory {
   type: 'claude' | 'openai' | 'dummy' | 'custom';
@@ -281,7 +307,9 @@ export interface LMDriverFactory {
 }
 
 /**
- * Program template for common use cases
+ * Program template for common use cases.
+ *
+ * @example
  */
 export interface DSPyProgramTemplate {
   name: string;
@@ -312,7 +340,9 @@ export type DSPyProgramCategory =
 // ============================================================================
 
 /**
- * DSPy program composition options
+ * DSPy program composition options.
+ *
+ * @example
  */
 export interface DSPyCompositionOptions {
   mode: 'sequential' | 'parallel' | 'conditional';
@@ -326,7 +356,9 @@ export interface DSPyCompositionOptions {
 }
 
 /**
- * Multi-program execution pipeline
+ * Multi-program execution pipeline.
+ *
+ * @example
  */
 export interface DSPyPipeline {
   id: string;
@@ -342,7 +374,9 @@ export interface DSPyPipeline {
 }
 
 /**
- * Cache configuration and options
+ * Cache configuration and options.
+ *
+ * @example
  */
 export interface DSPyCacheOptions {
   enabled: boolean;
@@ -358,7 +392,9 @@ export interface DSPyCacheOptions {
 // ============================================================================
 
 /**
- * Claude-Zen specific integration types
+ * Claude-Zen specific integration types.
+ *
+ * @example
  */
 export interface ClaudeZenDSPyIntegration {
   // Core Operations Integration
@@ -382,7 +418,9 @@ export interface ClaudeZenDSPyIntegration {
 }
 
 /**
- * Integration with Claude-Zen's existing systems
+ * Integration with Claude-Zen's existing systems.
+ *
+ * @example
  */
 export interface DSPySystemIntegration {
   // Logging Integration
@@ -410,39 +448,9 @@ export interface DSPySystemIntegration {
 }
 
 // ============================================================================
-// EXPORT ALL TYPES
+// NOTE: All types are exported above with their definitions
+// No need for duplicate export declarations
 // ============================================================================
-
-export type {
-  // Core Types
-  ParsedSignature,
-  DSPyProgram,
-  DSPyExample,
-  DSPyProgramPerformance,
-  DSPyExecutionResult,
-  DSPyExecutionMetadata,
-  // Configuration Types
-  DSPyConfig,
-  DSPyOptimizationOptions,
-  DSPyOptimizationStrategy,
-  // Statistics Types
-  DSPySystemStats,
-  DSPyExecutionStats,
-  // Error Types
-  DSPyErrorCode,
-  // Factory Types
-  DSPyFactoryOptions,
-  LMDriverFactory,
-  DSPyProgramTemplate,
-  DSPyProgramCategory,
-  // Advanced Types
-  DSPyCompositionOptions,
-  DSPyPipeline,
-  DSPyCacheOptions,
-  // Integration Types
-  ClaudeZenDSPyIntegration,
-  DSPySystemIntegration,
-};
 
 // Default export for convenience
 export default {

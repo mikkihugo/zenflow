@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-core-pattern-integration");
 /**
  * @file Pattern Integration Layer
  * Integrates all design patterns with existing swarm coordination system
@@ -362,13 +364,13 @@ export class AgentManager extends EventEmitter {
 // Integrated system bringing all patterns together
 export class IntegratedPatternSystem extends EventEmitter {
   private config: IntegrationConfig;
-  private eventManager: SystemEventManager;
-  private commandQueue: MCPCommandQueue;
-  private swarmCoordinator: SwarmCoordinator;
-  private protocolManager: ProtocolManager;
-  private agentManager: AgentManager;
-  private swarmService: IntegratedSwarmService;
-  private facade: ClaudeZenFacade;
+  private eventManager!: SystemEventManager;
+  private commandQueue!: MCPCommandQueue;
+  private swarmCoordinator!: SwarmCoordinator;
+  private protocolManager!: ProtocolManager;
+  private agentManager!: AgentManager;
+  private swarmService!: IntegratedSwarmService;
+  private facade!: ClaudeZenFacade;
 
   constructor(config: IntegrationConfig, logger: any, metrics: any) {
     super();
@@ -446,7 +448,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           }
         });
       } catch (error) {
-        console.warn(`Failed to register adapter ${adapterType}:`, error);
+        logger.warn(`Failed to register adapter ${adapterType}:`, error);
       }
     });
   }
@@ -693,7 +695,7 @@ export class IntegratedPatternSystem extends EventEmitter {
 
         await this.protocolManager.addProtocol(`integrated-${protocolType}`, protocolType, config);
       } catch (error) {
-        console.warn(`Failed to initialize protocol ${protocolType}:`, error);
+        logger.warn(`Failed to initialize protocol ${protocolType}:`, error);
       }
     }
   }
@@ -759,7 +761,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           convergence: 'achieved',
         };
       },
-      listModels: async () => {
+      listModels: async (): Promise<any[]> => {
         // Mock list of models
         return [
           { modelId: 'mock-model-1', status: 'ready', accuracy: 0.89 },
@@ -776,6 +778,7 @@ export class IntegratedPatternSystem extends EventEmitter {
    */
   private async createRealMemoryService(): Promise<IMemoryService> {
     try {
+      // TODO: TypeScript error TS2339 - Property 'MemoryCoordinator' does not exist on type (AI unsure of safe fix - human review needed)
       const { MemoryCoordinator } = await import('./memory-coordinator');
       const memoryCoordinator = new MemoryCoordinator();
       await memoryCoordinator.initialize();
@@ -840,8 +843,11 @@ export class IntegratedPatternSystem extends EventEmitter {
       const { CORE_TOKENS } = await import('../di/tokens/core-tokens');
 
       const container = new DIContainer();
+      // TODO: TypeScript error TS2345 - Argument type mismatch for Provider<ILogger> (AI unsure of safe fix - human review needed)
       container.register(CORE_TOKENS.Logger, () => console);
+      // TODO: TypeScript error TS2345 - Argument type mismatch for Provider<unknown> (AI unsure of safe fix - human review needed)
       container.register(CORE_TOKENS.Config, () => ({}));
+      // TODO: TypeScript error TS2345 & TS2554 - Argument type and count mismatch (AI unsure of safe fix - human review needed)
       container.register(DATABASE_TOKENS.DALFactory, () => new DALFactory());
 
       const _dalFactory = container.resolve(DATABASE_TOKENS.DALFactory);
@@ -887,7 +893,7 @@ export class IntegratedPatternSystem extends EventEmitter {
         delete: async () => false,
         vectorSearch: async () => [],
         createIndex: async () => {},
-        getHealth: async () => ({
+        getHealth: async (): Promise<any> => ({
           status: 'unavailable',
           connectionCount: 0,
           queryLatency: 0,
@@ -952,15 +958,15 @@ export class IntegratedPatternSystem extends EventEmitter {
       };
     } catch (_error) {
       return {
-        startHTTPMCP: async () => ({ serverId: '', port: 0, status: 'failed', uptime: 0 }),
-        startWebDashboard: async () => ({
+        startHTTPMCP: async (): Promise<any> => ({ serverId: '', port: 0, status: 'failed', uptime: 0 }),
+        startWebDashboard: async (): Promise<any> => ({
           serverId: '',
           port: 0,
           status: 'failed',
           activeConnections: 0,
         }),
-        startTUI: async () => ({ instanceId: '', mode: '', status: 'failed' }),
-        startCLI: async () => ({ instanceId: '', status: 'failed' }),
+        startTUI: async (): Promise<any> => ({ instanceId: '', mode: '', status: 'failed' }),
+        startCLI: async (): Promise<any> => ({ instanceId: '', status: 'failed' }),
         stopInterface: async () => {},
         getInterfaceStatus: async () => [],
       };

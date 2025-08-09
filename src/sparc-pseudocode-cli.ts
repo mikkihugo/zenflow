@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodeimport { getLogger } from "./config/logging-config";
+const logger = getLogger("sparc-pseudocode-cli");
 
 /**
  * Simple standalone CLI test for SPARC Pseudocode Engine
@@ -50,7 +51,7 @@ program
       await writeFile(options.output, output, 'utf8');
       pseudocodeStructure.algorithms.forEach((_alg: any, _index: number) => {});
     } catch (error) {
-      console.error('❌ Failed to generate pseudocode:', error);
+      logger.error('❌ Failed to generate pseudocode:', error);
       process.exit(1);
     }
   });
@@ -90,7 +91,7 @@ program
       // Exit with appropriate code
       process.exit(validation.approved ? 0 : 1);
     } catch (error) {
-      console.error('❌ Failed to validate pseudocode:', error);
+      logger.error('❌ Failed to validate pseudocode:', error);
       process.exit(1);
     }
   });
@@ -166,7 +167,7 @@ program
 
       await writeFile(options.output, JSON.stringify(exampleSpec, null, 2), 'utf8');
     } catch (error) {
-      console.error('❌ Failed to create example specification:', error);
+      logger.error('❌ Failed to create example specification:', error);
       process.exit(1);
     }
   });

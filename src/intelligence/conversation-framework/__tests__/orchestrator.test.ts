@@ -1,8 +1,8 @@
 /**
- * Conversation Orchestrator Tests - London TDD
+ * Conversation Orchestrator Tests - London TDD.
  *
  * Tests for conversation orchestration using London School TDD (mockist approach)
- * Focus on interactions between orchestrator and its dependencies
+ * Focus on interactions between orchestrator and its dependencies.
  */
 
 import type { AgentId } from '../../../types/agent-types';
@@ -110,7 +110,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         id: conversationId,
         title: 'Test',
         participants: [...sampleAgents],
-        initiator: sampleAgents[0],
+        initiator: sampleAgents[0]!,
         startTime: new Date(),
         status: 'active',
         context: { goal: 'Test', domain: 'test', constraints: [], resources: [], expertise: [] },
@@ -164,7 +164,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         id: conversationId,
         title: 'Test',
         participants: [...sampleAgents],
-        initiator: sampleAgents[0],
+        initiator: sampleAgents[0]!,
         startTime: new Date(),
         status: 'active',
         context: { goal: 'Test', domain: 'test', constraints: [], resources: [], expertise: [] },
@@ -185,7 +185,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
       const message: ConversationMessage = {
         id: '',
         conversationId,
-        fromAgent: sampleAgents[0],
+        fromAgent: sampleAgents[0]!,
         timestamp: new Date(),
         content: { text: 'Hello, world!' },
         messageType: 'question',
@@ -221,7 +221,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
       const nonParticipant: AgentId = {
         id: 'outsider',
         swarmId: 'swarm-2',
-        type: 'hacker',
+        type: 'hacker' as any,
         instance: 0,
       };
 
@@ -229,7 +229,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         id: conversationId,
         title: 'Test',
         participants: [...sampleAgents],
-        initiator: sampleAgents[0],
+        initiator: sampleAgents[0]!,
         startTime: new Date(),
         status: 'active',
         context: { goal: 'Test', domain: 'test', constraints: [], resources: [], expertise: [] },
@@ -277,7 +277,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         id: conversationId,
         title: 'Code Review Complete',
         participants: [...sampleAgents],
-        initiator: sampleAgents[0],
+        initiator: sampleAgents[0]!,
         startTime: new Date(Date.now() - 60000), // 1 minute ago
         status: 'active',
         context: {
@@ -291,7 +291,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
           {
             id: 'msg-1',
             conversationId,
-            fromAgent: sampleAgents[0],
+            fromAgent: sampleAgents[0]!,
             timestamp: new Date(),
             content: { text: 'Code looks good' },
             messageType: 'decision',
@@ -341,7 +341,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         {
           id: 'msg-1',
           conversationId,
-          fromAgent: sampleAgents[0],
+          fromAgent: sampleAgents[0]!,
           timestamp: new Date(),
           content: { text: 'First message' },
           messageType: 'question',
@@ -353,7 +353,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         id: conversationId,
         title: 'Test',
         participants: [...sampleAgents],
-        initiator: sampleAgents[0],
+        initiator: sampleAgents[0]!,
         startTime: new Date(),
         status: 'active',
         context: { goal: 'Test', domain: 'test', constraints: [], resources: [], expertise: [] },
@@ -385,7 +385,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         {
           id: 'msg-1',
           conversationId,
-          fromAgent: sampleAgents[0],
+          fromAgent: sampleAgents[0]!,
           timestamp: new Date(),
           content: { text: 'Archived message' },
           messageType: 'summary',
@@ -397,7 +397,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         id: conversationId,
         title: 'Archived Conversation',
         participants: [...sampleAgents],
-        initiator: sampleAgents[0],
+        initiator: sampleAgents[0]!,
         startTime: new Date(),
         endTime: new Date(),
         status: 'completed',

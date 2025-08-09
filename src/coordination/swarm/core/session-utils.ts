@@ -1,5 +1,7 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-session-utils");
 /**
- * Session Management Utilities
+ * Session Management Utilities.
  *
  * Helper functions and utilities for session management,
  * including serialization, validation, migration, and recovery.
@@ -10,13 +12,13 @@ import type { SessionCheckpoint, SessionState, SessionStatus } from './session-m
 import type { SwarmOptions, SwarmState } from './types';
 
 /**
- * Session validation utilities
+ * Session validation utilities.
  *
  * @example
  */
 export class SessionValidator {
   /**
-   * Validate session state integrity
+   * Validate session state integrity.
    *
    * @param state
    */
@@ -75,7 +77,7 @@ export class SessionValidator {
   }
 
   /**
-   * Validate swarm state structure
+   * Validate swarm state structure.
    *
    * @param state
    */
@@ -106,7 +108,7 @@ export class SessionValidator {
   }
 
   /**
-   * Validate swarm options
+   * Validate swarm options.
    *
    * @param options
    */
@@ -140,7 +142,7 @@ export class SessionValidator {
   }
 
   /**
-   * Validate checkpoint integrity
+   * Validate checkpoint integrity.
    *
    * @param checkpoint
    */
@@ -175,13 +177,13 @@ export class SessionValidator {
 }
 
 /**
- * Session serialization utilities
+ * Session serialization utilities.
  *
  * @example
  */
 export class SessionSerializer {
   /**
-   * Serialize a SwarmState to a portable format
+   * Serialize a SwarmState to a portable format.
    *
    * @param state
    */
@@ -202,7 +204,7 @@ export class SessionSerializer {
   }
 
   /**
-   * Deserialize a SwarmState from portable format
+   * Deserialize a SwarmState from portable format.
    *
    * @param serialized
    */
@@ -222,7 +224,7 @@ export class SessionSerializer {
   }
 
   /**
-   * Export session to a portable format
+   * Export session to a portable format.
    *
    * @param session
    */
@@ -254,45 +256,56 @@ export class SessionSerializer {
   }
 
   /**
-   * Import session from portable format
+   * Import session from portable format.
    *
    * @param exported
    */
   static importSession(exported: string): SessionState {
     const data = JSON.parse(exported);
 
-    return {
+    const sessionState: SessionState = {
       id: data.id,
       name: data.name,
       createdAt: new Date(data.createdAt),
       lastAccessedAt: new Date(data.lastAccessedAt),
-      lastCheckpointAt: data.lastCheckpointAt ? new Date(data.lastCheckpointAt) : undefined,
       status: data.status,
       swarmState: SessionSerializer.deserializeSwarmState(data.swarmState),
       swarmOptions: data.swarmOptions,
-      metadata: data.metadata,
+      metadata: data.metadata || {},
       checkpoints: data.checkpoints.map((cp: any) => ({
         id: cp.id,
         sessionId: cp.sessionId,
         timestamp: new Date(cp.timestamp),
         checksum: cp.checksum,
         state: SessionSerializer.deserializeSwarmState(cp.state),
-        description: cp.description,
-        metadata: cp.metadata,
+        ...(cp.description && { description: cp.description }),
+        ...(cp.metadata && { metadata: cp.metadata }),
       })),
       version: data.version,
     };
+
+    // Handle optional lastCheckpointAt property
+    if (data.lastCheckpointAt) {
+      sessionState.lastCheckpointAt = new Date(data.lastCheckpointAt);
+    }
+
+    // Handle optional metadata property
+    if (data.metadata !== undefined) {
+      sessionState.metadata = data.metadata;
+    }
+
+    return sessionState;
   }
 }
 
 /**
- * Session migration utilities
+ * Session migration utilities.
  *
  * @example
  */
 export class SessionMigrator {
   /**
-   * Migrate session from older version
+   * Migrate session from older version.
    *
    * @param session
    * @param fromVersion
@@ -310,7 +323,7 @@ export class SessionMigrator {
   }
 
   /**
-   * Get migration path between versions
+   * Get migration path between versions.
    *
    * @param fromVersion
    * @param toVersion
@@ -330,7 +343,7 @@ export class SessionMigrator {
   }
 
   /**
-   * Example migration from 0.9.0 to 1.0.0
+   * Example migration from 0.9.0 to 1.0.0.
    *
    * @param session
    */
@@ -359,7 +372,7 @@ export class SessionMigrator {
   }
 
   /**
-   * Check if migration is needed
+   * Check if migration is needed.
    *
    * @param session
    * @param targetVersion
@@ -370,13 +383,13 @@ export class SessionMigrator {
 }
 
 /**
- * Session recovery utilities
+ * Session recovery utilities.
  *
  * @example
  */
 export class SessionRecovery {
   /**
-   * Attempt to recover a corrupted session
+   * Attempt to recover a corrupted session.
    *
    * @param corruptedSession
    * @param checkpoints
@@ -394,7 +407,8 @@ export class SessionRecovery {
       return null; // No valid checkpoints found
     }
 
-    const latestCheckpoint = sortedCheckpoints[0];
+    const latestCheckpoint = sortedCheckpoints[0]!;
+    // At this point, latestCheckpoint is guaranteed to exist since we checked the array length
 
     try {
       // Reconstruct session from checkpoint
@@ -419,13 +433,13 @@ export class SessionRecovery {
 
       return recoveredSession;
     } catch (error) {
-      console.error('Failed to recover session:', error);
+      logger.error('Failed to recover session:', error);
       return null;
     }
   }
 
   /**
-   * Validate checkpoint integrity
+   * Validate checkpoint integrity.
    *
    * @param checkpoint
    */
@@ -450,7 +464,7 @@ export class SessionRecovery {
   }
 
   /**
-   * Get default swarm options for recovery
+   * Get default swarm options for recovery.
    */
   private static getDefaultSwarmOptions(): SwarmOptions {
     return {
@@ -462,7 +476,7 @@ export class SessionRecovery {
   }
 
   /**
-   * Repair session state inconsistencies
+   * Repair session state inconsistencies.
    *
    * @param session
    */
@@ -517,13 +531,13 @@ export class SessionRecovery {
 }
 
 /**
- * Session statistics utilities
+ * Session statistics utilities.
  *
  * @example
  */
 export class SessionStats {
   /**
-   * Calculate session health score
+   * Calculate session health score.
    *
    * @param session
    */
@@ -557,7 +571,7 @@ export class SessionStats {
   }
 
   /**
-   * Generate session summary
+   * Generate session summary.
    *
    * @param session
    */
@@ -608,6 +622,6 @@ export class SessionStats {
 }
 
 /**
- * Export all utilities
+ * Export all utilities.
  */
 // Classes are already exported inline above

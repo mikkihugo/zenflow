@@ -93,9 +93,9 @@ async function testMaestroWithAgentReuse(): Promise<void> {
   const _config = { enableHiveMind: false };
 
   // Create mock dependencies
-  const _eventBus = new MockEventBus();
+  const eventBus = new MockEventBus();
   const logger = new MockLogger();
-  const _memoryManager = new MockMemoryManager();
+  const memoryManager = new MockMemoryManager();
   const agentManager = new MockAgentManager();
   const mainOrchestrator = new MockOrchestrator();
 

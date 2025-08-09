@@ -1,5 +1,5 @@
 /**
- * DSPy Swarm Coordinator
+ * DSPy Swarm Coordinator.
  *
  * A DSPy-powered swarm where each agent is a DSPy program that learns and optimizes.
  * This creates an intelligent swarm where agents improve their performance over time
@@ -15,7 +15,9 @@ import type { AgentType } from '../../types/agent-types';
 const logger = createLogger({ prefix: 'DSPySwarmCoordinator' });
 
 /**
- * DSPy Agent - Each agent is a DSPy program with specific capabilities
+ * DSPy Agent - Each agent is a DSPy program with specific capabilities.
+ *
+ * @example
  */
 export interface DSPyAgent {
   id: string;
@@ -35,7 +37,9 @@ export interface DSPyAgent {
 }
 
 /**
- * Task Assignment for DSPy agents
+ * Task Assignment for DSPy agents.
+ *
+ * @example
  */
 export interface DSPyTask {
   id: string;
@@ -53,7 +57,9 @@ export interface DSPyTask {
 }
 
 /**
- * Swarm Topology for DSPy coordination
+ * Swarm Topology for DSPy coordination.
+ *
+ * @example
  */
 export interface DSPySwarmTopology {
   type: 'mesh' | 'hierarchical' | 'ring' | 'star';
@@ -68,7 +74,9 @@ export interface DSPySwarmTopology {
 }
 
 /**
- * Main DSPy Swarm Coordinator
+ * Main DSPy Swarm Coordinator.
+ *
+ * @example
  */
 export class DSPySwarmCoordinator {
   private dspyWrapper: DSPyWrapper | null = null;
@@ -100,7 +108,9 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Initialize the DSPy swarm system
+   * Initialize the DSPy swarm system.
+   *
+   * @param config
    */
   async initialize(config?: DSPyConfig): Promise<void> {
     try {
@@ -133,7 +143,7 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Create and register specialized DSPy agents
+   * Create and register specialized DSPy agents.
    */
   private async initializeDefaultAgents(): Promise<void> {
     if (!this.dspyWrapper) throw new Error('DSPy wrapper not initialized');
@@ -200,7 +210,14 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Create a DSPy agent with specific capabilities
+   * Create a DSPy agent with specific capabilities.
+   *
+   * @param config
+   * @param config.type
+   * @param config.name
+   * @param config.signature
+   * @param config.description
+   * @param config.capabilities
    */
   async createDSPyAgent(config: {
     type: AgentType;
@@ -241,7 +258,9 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Execute a task using the best available DSPy agent
+   * Execute a task using the best available DSPy agent.
+   *
+   * @param task
    */
   async executeTask(task: Omit<DSPyTask, 'id'>): Promise<DSPyTask> {
     const taskId = `task-${Date.now()}`;
@@ -289,7 +308,9 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Select optimal agent using DSPy coordination intelligence
+   * Select optimal agent using DSPy coordination intelligence.
+   *
+   * @param task
    */
   private async selectOptimalAgent(task: DSPyTask): Promise<DSPyAgent | null> {
     if (!this.coordinationProgram || !this.dspyWrapper) {
@@ -315,13 +336,14 @@ export class DSPySwarmCoordinator {
         },
       });
 
-      if (coordinationResult.success && coordinationResult.result.optimal_assignment) {
-        const selectedAgentId = coordinationResult.result.optimal_assignment.agent_id;
-        const selectedAgent = this.agents.get(selectedAgentId);
+      if (coordinationResult.success && coordinationResult.result && coordinationResult.result['optimal_assignment']) {
+        const optimalAssignment = coordinationResult.result['optimal_assignment'];
+        const selectedAgentId = optimalAssignment?.agent_id;
+        const selectedAgent = selectedAgentId ? this.agents.get(selectedAgentId) : undefined;
 
         if (selectedAgent) {
           logger.debug(`DSPy coordination selected agent: ${selectedAgent.name}`, {
-            reasoning: coordinationResult.result.optimal_assignment.reasoning,
+            reasoning: optimalAssignment?.reasoning,
           });
           return selectedAgent;
         }
@@ -336,7 +358,9 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Fallback agent selection based on capabilities
+   * Fallback agent selection based on capabilities.
+   *
+   * @param task
    */
   private fallbackAgentSelection(task: DSPyTask): DSPyAgent | null {
     const suitableAgents = Array.from(this.agents.values()).filter(
@@ -348,11 +372,14 @@ export class DSPySwarmCoordinator {
     if (suitableAgents.length === 0) return null;
 
     // Select agent with highest success rate
-    return suitableAgents.sort((a, b) => b.performance.successRate - a.performance.successRate)[0];
+    return suitableAgents.sort((a, b) => b.performance.successRate - a.performance.successRate)[0] || null;
   }
 
   /**
-   * Execute task with specific DSPy agent
+   * Execute task with specific DSPy agent.
+   *
+   * @param task
+   * @param agent
    */
   private async executeWithAgent(task: DSPyTask, agent: DSPyAgent): Promise<any> {
     if (!this.dspyWrapper) throw new Error('DSPy wrapper not initialized');
@@ -374,7 +401,12 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Record learning example for continuous improvement
+   * Record learning example for continuous improvement.
+   *
+   * @param task
+   * @param agent
+   * @param result
+   * @param success
    */
   private recordLearningExample(
     task: DSPyTask,
@@ -385,8 +417,8 @@ export class DSPySwarmCoordinator {
     const example = {
       taskId: task.id,
       agentId: agent.id,
-      input: task.input,
-      output: result,
+      input: task.input || {},
+      output: result || {},
       success,
       timestamp: new Date(),
     };
@@ -406,14 +438,18 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Update agent performance metrics and trigger optimization if needed
+   * Update agent performance metrics and trigger optimization if needed.
+   *
+   * @param agent
+   * @param task
+   * @param success
    */
   private async updateAgentPerformance(
     agent: DSPyAgent,
     task: DSPyTask,
     success: boolean
   ): Promise<void> {
-    const duration = task.endTime?.getTime() - task.startTime?.getTime();
+    const duration = (task.endTime?.getTime() || 0) - (task.startTime?.getTime() || 0);
 
     // Update performance metrics
     agent.performance.responseTime = (agent.performance.responseTime + duration) / 2;
@@ -430,7 +466,9 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Optimize DSPy agent using collected examples
+   * Optimize DSPy agent using collected examples.
+   *
+   * @param agent
    */
   private async optimizeAgent(agent: DSPyAgent): Promise<void> {
     if (!this.dspyWrapper) return;
@@ -470,15 +508,16 @@ export class DSPySwarmCoordinator {
         // timeout: 30000, // 30 seconds - timeout not part of DSPyOptimizationConfig
       });
 
-      if (optimizationResult.success) {
+      if (optimizationResult.success && optimizationResult.program) {
         agent.program = optimizationResult.program;
-        agent.performance.accuracy =
-          optimizationResult.metrics.finalAccuracy || agent.performance.accuracy;
+        if (optimizationResult.metrics?.finalAccuracy) {
+          agent.performance.accuracy = optimizationResult.metrics.finalAccuracy;
+        }
         agent.lastOptimization = new Date();
 
         logger.info(`Agent optimized successfully: ${agent.name}`, {
           accuracy: agent.performance.accuracy,
-          improvement: optimizationResult.metrics.improvementPercent,
+          improvement: optimizationResult.metrics?.improvementPercent,
           examples: agentExamples.length,
         });
       }
@@ -490,7 +529,7 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Update topology connections based on agent performance and task patterns
+   * Update topology connections based on agent performance and task patterns.
    */
   private updateTopologyConnections(): void {
     const agents = this.topology.agents;
@@ -501,12 +540,16 @@ export class DSPySwarmCoordinator {
         // Full mesh - every agent connected to every other
         for (let i = 0; i < agents.length; i++) {
           for (let j = i + 1; j < agents.length; j++) {
-            this.topology.connections.push({
-              from: agents[i].id,
-              to: agents[j].id,
-              weight: this.calculateConnectionWeight(agents[i], agents[j]),
-              messageTypes: ['coordination', 'data', 'results'],
-            });
+            const agent1 = agents[i];
+            const agent2 = agents[j];
+            if (agent1 && agent2) {
+              this.topology.connections.push({
+                from: agent1.id,
+                to: agent2.id,
+                weight: this.calculateConnectionWeight(agent1, agent2),
+                messageTypes: ['coordination', 'data', 'results'],
+              });
+            }
           }
         }
         break;
@@ -533,12 +576,16 @@ export class DSPySwarmCoordinator {
         // Circular connections
         for (let i = 0; i < agents.length; i++) {
           const nextIndex = (i + 1) % agents.length;
-          this.topology.connections.push({
-            from: agents[i].id,
-            to: agents[nextIndex].id,
-            weight: 1.0,
-            messageTypes: ['coordination', 'data'],
-          });
+          const currentAgent = agents[i];
+          const nextAgent = agents[nextIndex];
+          if (currentAgent && nextAgent) {
+            this.topology.connections.push({
+              from: currentAgent.id,
+              to: nextAgent.id,
+              weight: 1.0,
+              messageTypes: ['coordination', 'data'],
+            });
+          }
         }
         break;
     }
@@ -550,7 +597,10 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Calculate connection weight between two agents based on collaboration success
+   * Calculate connection weight between two agents based on collaboration success.
+   *
+   * @param agent1
+   * @param agent2
    */
   private calculateConnectionWeight(agent1: DSPyAgent, agent2: DSPyAgent): number {
     // Base weight on performance similarity and complementary capabilities
@@ -566,7 +616,7 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Get swarm status and statistics
+   * Get swarm status and statistics.
    */
   getSwarmStatus(): {
     agents: Array<{
@@ -613,11 +663,11 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Cleanup swarm resources
+   * Cleanup swarm resources.
    */
   async cleanup(): Promise<void> {
     // Set all agents to idle
-    for (const agent of this.agents.values()) {
+    for (const agent of Array.from(this.agents.values())) {
       agent.status = 'idle';
     }
 

@@ -1,7 +1,7 @@
 /**
  * Pattern Recognition Engine for Swarm Execution Analysis
  * Analyzes swarm behaviors, task patterns, and communication flows
- * Enhanced to implement the adaptive learning interface
+ * Enhanced to implement the adaptive learning interface.
  */
 
 import { EventEmitter } from 'node:events';
@@ -76,13 +76,6 @@ export interface ExecutionTrace {
   resourceUsage: ResourceUsage;
 }
 
-export interface ResourceUsage {
-  cpu: number;
-  memory: number;
-  network: number;
-  diskIO: number;
-}
-
 export interface CommunicationPattern {
   source: string;
   target: string;
@@ -124,13 +117,13 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Analyze execution patterns from execution data
+   * Analyze execution patterns from execution data.
    *
    * @param data
    */
   async analyzeExecutionPatterns(data: ExecutionData[]): Promise<PatternAnalysis> {
     // Convert ExecutionData to ExecutionTrace format for compatibility
-    const traces = data.map(this.convertToTrace);
+    const traces = data.map(this.convertToTrace.bind(this));
 
     // Update internal traces
     this.traces.push(...traces);
@@ -170,7 +163,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Classify task completion patterns
+   * Classify task completion patterns.
    *
    * @param task
    */
@@ -208,7 +201,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     const commonFailures = this.identifyCommonFailures(failedTasks);
 
     const pattern: TaskCompletionPattern = {
-      taskType: task.metadata.taskType || 'unknown',
+      taskType: (task.metadata as any)?.taskType || 'unknown',
       averageDuration,
       successRate,
       qualityScore: task.quality,
@@ -235,7 +228,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Detect communication patterns from messages
+   * Detect communication patterns from messages.
    *
    * @param messages
    */
@@ -256,7 +249,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     // Analyze each communication pair
     for (const [pairKey, pairMessages] of pairGroups) {
       if (pairMessages.length >= this.minPatternFrequency) {
-        const [source, target] = pairKey.split('->');
+        const parts = pairKey.split('->');
+        const source = parts[0] || 'unknown';
+        const target = parts[1] || 'unknown';
 
         const pattern: ICommunicationPattern = {
           source,
@@ -283,7 +278,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Identify resource usage patterns
+   * Identify resource usage patterns.
    *
    * @param usage
    */
@@ -323,7 +318,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Predict failures based on failure patterns
+   * Predict failures based on failure patterns.
    *
    * @param patterns
    */
@@ -380,7 +375,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Record execution trace for pattern analysis
+   * Record execution trace for pattern analysis.
    *
    * @param trace
    */
@@ -398,7 +393,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Analyze execution patterns from traces
+   * Analyze execution patterns from traces.
    */
   private analyzePatterns(): void {
     this.analyzeTaskCompletionPatterns();
@@ -411,7 +406,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Analyze task completion patterns
+   * Analyze task completion patterns.
    */
   private analyzeTaskCompletionPatterns(): void {
     const taskGroups = this.groupTracesByTask();
@@ -438,7 +433,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Analyze communication patterns between agents
+   * Analyze communication patterns between agents.
    */
   private analyzeCommunicationPatterns(): void {
     const communicationTraces = this.traces.filter(
@@ -461,7 +456,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     // Create communication patterns
     for (const [pair, frequency] of pairwiseCommunication) {
       if (frequency >= this.minPatternFrequency) {
-        const [source, target] = pair.split('->');
+        const parts = pair.split('->');
+        const source = parts[0] || 'unknown';
+        const target = parts[1] || 'unknown';
         const commPattern: CommunicationPattern = {
           source,
           target,
@@ -478,7 +475,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Analyze resource utilization patterns
+   * Analyze resource utilization patterns.
    */
   private analyzeResourceUtilizationPatterns(): void {
     const resourceGroups = this.groupTracesByResource();
@@ -502,7 +499,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Analyze failure patterns
+   * Analyze failure patterns.
    */
   private analyzeFailurePatterns(): void {
     const failureTraces = this.traces.filter((t) => t.result?.error || t.result?.success === false);
@@ -534,7 +531,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Analyze coordination patterns
+   * Analyze coordination patterns.
    */
   private analyzeCoordinationPatterns(): void {
     const coordinationTraces = this.traces.filter(
@@ -570,7 +567,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Get patterns by type and confidence
+   * Get patterns by type and confidence.
    *
    * @param type
    * @param minConfidence
@@ -590,7 +587,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Predict likely patterns for given context
+   * Predict likely patterns for given context.
    *
    * @param context
    */
@@ -603,7 +600,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Get communication patterns for agents
+   * Get communication patterns for agents.
    *
    * @param agentId
    */
@@ -618,14 +615,14 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   /**
-   * Get failure patterns
+   * Get failure patterns.
    */
   getFailurePatterns(): FailurePattern[] {
     return Array.from(this.failurePatterns.values()).sort((a, b) => b.frequency - a.frequency);
   }
 
   /**
-   * Start continuous pattern analysis
+   * Start continuous pattern analysis.
    */
   private startPatternAnalysis(): void {
     setInterval(() => {
@@ -746,11 +743,26 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   private calculateAverageResourceUsage(resources: ResourceUsage[]): ResourceUsage {
+    if (resources.length === 0) {
+      return {
+        cpu: 0,
+        memory: 0,
+        network: 0,
+        diskIO: 0,
+        timestamp: Date.now(),
+        duration: 0,
+        context: 'empty'
+      };
+    }
+
     return {
       cpu: resources.reduce((sum, r) => sum + r.cpu, 0) / resources.length,
       memory: resources.reduce((sum, r) => sum + r.memory, 0) / resources.length,
       network: resources.reduce((sum, r) => sum + r.network, 0) / resources.length,
       diskIO: resources.reduce((sum, r) => sum + r.diskIO, 0) / resources.length,
+      timestamp: Date.now(),
+      duration: resources.reduce((sum, r) => sum + (r.duration || 0), 0) / resources.length,
+      context: 'aggregated'
     };
   }
 
@@ -793,7 +805,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return 1 - Math.min(pattern.durationVariance || 0, 1);
   }
 
-  private calculateStability(pattern: any, _traces: ExecutionTrace[]): number {
+  private calculateStabilityFromPattern(pattern: any, _traces: ExecutionTrace[]): number {
     // Simple stability metric
     return 1 - (pattern.durationVariance || 0) / (pattern.averageDuration || 1);
   }
@@ -835,7 +847,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return maxType;
   }
 
-  private calculateAverageLatency(
+  private calculateAverageLatencyFromTraces(
     source: string,
     target: string,
     traces: ExecutionTrace[]
@@ -862,7 +874,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return sizes.length > 0 ? sizes.reduce((a, b) => a + b, 0) / sizes.length : 0;
   }
 
-  private calculateReliability(source: string, target: string, traces: ExecutionTrace[]): number {
+  private calculateReliabilityFromTraces(source: string, target: string, traces: ExecutionTrace[]): number {
     const relevantTraces = traces.filter(
       (t) => t.agentId === source && t.parameters?.target === target
     );
@@ -1011,14 +1023,22 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   private convertToTrace(data: ExecutionData): ExecutionTrace {
     return {
-      swarmId: data.context.swarmId || 'unknown',
+      swarmId: (data.context as any)?.swarmId || 'unknown',
       agentId: data.agentId,
       action: data.action,
       parameters: data.parameters,
       result: data.result,
       timestamp: data.timestamp,
       duration: data.duration,
-      resourceUsage: data.resourceUsage,
+      resourceUsage: {
+        cpu: data.resourceUsage.cpu,
+        memory: data.resourceUsage.memory,
+        network: data.resourceUsage.network,
+        diskIO: data.resourceUsage.diskIO,
+        timestamp: data.resourceUsage.timestamp || Date.now(),
+        duration: data.resourceUsage.duration || data.duration,
+        context: data.resourceUsage.context || 'execution'
+      },
     };
   }
 
@@ -1043,16 +1063,19 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
     for (const [key, members] of groups) {
       if (members.length >= this.minPatternFrequency) {
-        const cluster: PatternCluster = {
-          id: `cluster_${key}_${Date.now()}`,
-          type: members[0].success ? 'task_completion' : 'failure',
-          centroid: this.calculateCentroid(members),
-          members,
-          confidence: members.length / data.length,
-          stability: this.calculateStability(members),
-        };
+        const firstMember = members[0];
+        if (firstMember) {
+          const cluster: PatternCluster = {
+            id: `cluster_${key}_${Date.now()}`,
+            type: firstMember.success ? 'task_completion' : 'failure',
+            centroid: this.calculateCentroid(members),
+            members,
+            confidence: members.length / data.length,
+            stability: this.calculateStabilityFromData(members),
+          };
 
-        clusters.push(cluster);
+          clusters.push(cluster);
+        }
       }
     }
 
@@ -1071,7 +1094,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     };
   }
 
-  private calculateStability(data: ExecutionData[]): number {
+  private calculateStabilityFromData(data: ExecutionData[]): number {
     const durations = data.map((d) => d.duration);
     const variance = this.calculateVariance(durations);
     const mean = durations.reduce((sum, d) => sum + d, 0) / durations.length;
@@ -1105,25 +1128,30 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     }
 
     // Detect resource anomalies
-    for (const resourceType of ['cpu', 'memory', 'network', 'diskIO']) {
-      const values = data.map((d) => d.resourceUsage[resourceType as keyof typeof d.resourceUsage]);
+    for (const resourceType of ['cpu', 'memory', 'network', 'diskIO'] as const) {
+      const values = data.map((d) => d.resourceUsage[resourceType]);
       const resourceMean = values.reduce((sum, v) => sum + v, 0) / values.length;
       const resourceStd = Math.sqrt(this.calculateVariance(values));
 
       for (let i = 0; i < data.length; i++) {
         const value = values[i];
-        const zScore = Math.abs((value - resourceMean) / resourceStd);
+        if (value !== undefined) {
+          const zScore = Math.abs((value - resourceMean) / resourceStd);
 
-        if (zScore > 2.5) {
-          anomalies.push({
-            id: `resource_anomaly_${data[i].id}_${resourceType}_${Date.now()}`,
-            type: 'resource',
-            severity: zScore > 4 ? 'critical' : zScore > 3 ? 'high' : 'medium',
-            description: `Unusual ${resourceType} usage: ${value.toFixed(2)} (expected ~${resourceMean.toFixed(2)})`,
-            affectedData: [data[i]],
-            confidence: Math.min(0.9, zScore / 4),
-            timestamp: Date.now(),
-          });
+          if (zScore > 2.5) {
+            const dataItem = data[i];
+            if (dataItem) {
+              anomalies.push({
+                id: `resource_anomaly_${dataItem.id}_${resourceType}_${Date.now()}`,
+                type: 'resource',
+                severity: zScore > 4 ? 'critical' : zScore > 3 ? 'high' : 'medium',
+                description: `Unusual ${resourceType} usage: ${value.toFixed(2)} (expected ~${resourceMean.toFixed(2)})`,
+                affectedData: [dataItem],
+                confidence: Math.min(0.9, zScore / 4),
+                timestamp: Date.now(),
+              });
+            }
+          }
         }
       }
     }
@@ -1210,12 +1238,12 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   private calculateAverageLatency(messages: Message[]): number {
-    const latencies = messages.filter((m) => m.latency).map((m) => m.latency!);
+    const latencies = messages.filter((m) => m.latency !== undefined).map((m) => m.latency!);
     return latencies.length > 0 ? latencies.reduce((sum, l) => sum + l, 0) / latencies.length : 0;
   }
 
   private calculateAverageSize(messages: Message[]): number {
-    const sizes = messages.filter((m) => m.size).map((m) => m.size!);
+    const sizes = messages.filter((m) => m.size !== undefined).map((m) => m.size!);
     return sizes.length > 0 ? sizes.reduce((sum, s) => sum + s, 0) / sizes.length : 0;
   }
 
@@ -1266,7 +1294,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     const x = Array.from({ length: n }, (_, i) => i);
     const sumX = x.reduce((sum, xi) => sum + xi, 0);
     const sumY = values.reduce((sum, yi) => sum + yi, 0);
-    const sumXY = x.reduce((sum, xi, i) => sum + xi * values[i], 0);
+    const sumXY = x.reduce((sum, xi, i) => sum + xi * values[i]!, 0);
     const sumXX = x.reduce((sum, xi) => sum + xi * xi, 0);
 
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
@@ -1323,11 +1351,18 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     let denominator = 0;
 
     for (let i = 0; i < n; i++) {
-      numerator += (values[i] - mean) * (values[i + lag] - mean);
+      const currentValue = values[i];
+      const laggedValue = values[i + lag];
+      if (currentValue !== undefined && laggedValue !== undefined) {
+        numerator += (currentValue - mean) * (laggedValue - mean);
+      }
     }
 
     for (let i = 0; i < values.length; i++) {
-      denominator += (values[i] - mean) ** 2;
+      const value = values[i];
+      if (value !== undefined) {
+        denominator += (value - mean) ** 2;
+      }
     }
 
     return denominator === 0 ? 0 : numerator / denominator;
@@ -1368,16 +1403,19 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     const std = Math.sqrt(this.calculateVariance(values));
 
     for (let i = 0; i < values.length; i++) {
-      const zScore = Math.abs((values[i] - mean) / std);
+      const value = values[i];
+      if (value !== undefined) {
+        const zScore = Math.abs((value - mean) / std);
 
-      if (zScore > 2.5) {
-        anomalies.push({
-          timestamp: Date.now() - (values.length - i) * 60000, // Rough timestamp
-          type: 'statistical',
-          severity: zScore > 3 ? 0.8 : 0.5,
-          description: `${resourceType} anomaly: ${values[i].toFixed(2)}`,
-          impact: Math.min(1, zScore / 4),
-        });
+        if (zScore > 2.5) {
+          anomalies.push({
+            timestamp: Date.now() - (values.length - i) * 60000, // Rough timestamp
+            type: 'statistical',
+            severity: zScore > 3 ? 0.8 : 0.5,
+            description: `${resourceType} anomaly: ${value.toFixed(2)}`,
+            impact: Math.min(1, zScore / 4),
+          });
+        }
       }
     }
 
@@ -1520,5 +1558,10 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return Array.from(errorTypes.entries())
       .filter(([, count]) => count >= Math.max(2, traces.length * 0.3))
       .map(([type]) => type);
+  }
+
+  // Rename method to avoid duplication with calculateStabilityFromData
+  private calculateStability(data: ExecutionData[]): number {
+    return this.calculateStabilityFromData(data);
   }
 }

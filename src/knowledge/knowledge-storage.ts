@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-knowledge-knowledge-storage");
 /**
  * Independent FACT Storage System
  *
@@ -71,7 +73,7 @@ export class FACTStorageSystem extends EventEmitter {
         cacheSize: this.config.maxMemoryCacheSize,
       });
     } catch (error) {
-      console.error('❌ FACT Storage initialization failed:', error);
+      logger.error('❌ FACT Storage initialization failed:', error);
       throw error;
     }
   }
@@ -107,7 +109,7 @@ export class FACTStorageSystem extends EventEmitter {
 
       return id;
     } catch (error) {
-      console.error(`❌ Failed to store FACT knowledge: ${id}`, error);
+      logger.error(`❌ Failed to store FACT knowledge: ${id}`, error);
       throw error;
     }
   }
@@ -144,7 +146,7 @@ export class FACTStorageSystem extends EventEmitter {
         return backendEntry;
       }
     } catch (error) {
-      console.error(`Failed to load FACT knowledge from backend: ${id}`, error);
+      logger.error(`Failed to load FACT knowledge from backend: ${id}`, error);
     }
 
     this.stats.misses++;
@@ -170,7 +172,7 @@ export class FACTStorageSystem extends EventEmitter {
       }
       return results;
     } catch (error) {
-      console.error('FACT knowledge search failed:', error);
+      logger.error('FACT knowledge search failed:', error);
       return [];
     }
   }
@@ -353,7 +355,7 @@ export class FACTStorageSystem extends EventEmitter {
   private startCleanupTimer(): void {
     this.cleanupTimer = setInterval(() => {
       this.cleanup().catch((error) => {
-        console.error('Scheduled cleanup failed:', error);
+        logger.error('Scheduled cleanup failed:', error);
       });
     }, this.config.cleanupInterval);
   }

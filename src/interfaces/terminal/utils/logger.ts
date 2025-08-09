@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-terminal-utils-logger");
 /**
  * Simple Logger for Terminal Interface
  *
@@ -25,11 +27,11 @@ export const createSimpleLogger = (component?: string): SimpleLogger => {
     info: (_message: string, ..._args: any[]) => {},
 
     warn: (message: string, ...args: any[]) => {
-      console.warn(`${prefix} WARN: ${message}`, ...args);
+      logger.warn(`${prefix} WARN: ${message}`, ...args);
     },
 
     error: (message: string, ...args: any[]) => {
-      console.error(`${prefix} ERROR: ${message}`, ...args);
+      logger.error(`${prefix} ERROR: ${message}`, ...args);
     },
   };
 };

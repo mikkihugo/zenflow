@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("knowledge-storage-backends-sqlite-backend");
 /**
  * SQLite Backend for FACT Storage using Unified DAL
  *
@@ -126,7 +128,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         );
       }
     } catch (error) {
-      console.error('Failed to store FACT entry:', error);
+      logger.error('Failed to store FACT entry:', error);
       throw error;
     }
   }
@@ -164,7 +166,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         lastAccessed: row.last_accessed,
       };
     } catch (error) {
-      console.error('Failed to get FACT entry:', error);
+      logger.error('Failed to get FACT entry:', error);
       return null;
     }
   }
@@ -247,7 +249,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         lastAccessed: row.last_accessed,
       }));
     } catch (error) {
-      console.error('Failed to search FACT entries:', error);
+      logger.error('Failed to search FACT entries:', error);
       return [];
     }
   }
@@ -272,7 +274,7 @@ export class SQLiteBackend implements FACTStorageBackend {
 
       return (result.rowsAffected || 0) > 0;
     } catch (error) {
-      console.error('Failed to delete FACT entry:', error);
+      logger.error('Failed to delete FACT entry:', error);
       return false;
     }
   }
@@ -299,7 +301,7 @@ export class SQLiteBackend implements FACTStorageBackend {
 
       return result.rowsAffected || 0;
     } catch (error) {
-      console.error('Failed to cleanup FACT entries:', error);
+      logger.error('Failed to cleanup FACT entries:', error);
       return 0;
     }
   }
@@ -325,7 +327,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         newestEntry: stats.newest_timestamp,
       };
     } catch (error) {
-      console.error('Failed to get FACT storage stats:', error);
+      logger.error('Failed to get FACT storage stats:', error);
       return {};
     }
   }
@@ -347,7 +349,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         this.config.tableName,
       ]);
     } catch (error) {
-      console.error('Failed to clear FACT storage:', error);
+      logger.error('Failed to clear FACT storage:', error);
       throw error;
     }
   }
@@ -408,7 +410,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       try {
         await this.dalAdapter.execute(indexSQL);
       } catch (error) {
-        console.warn('Failed to create index:', indexSQL, error);
+        logger.warn('Failed to create index:', indexSQL, error);
       }
     }
   }

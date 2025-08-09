@@ -1,5 +1,7 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-session-integration");
 /**
- * @file Session Integration Layer
+ * @file Session Integration Layer.
  *
  * Integrates the SessionManager with the existing ZenSwarm system,
  * providing seamless session persistence for swarm operations.
@@ -20,7 +22,7 @@ import { SessionRecovery, SessionValidator } from './session-utils';
 import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './types';
 
 /**
- * Enhanced ZenSwarm with session management capabilities
+ * Enhanced ZenSwarm with session management capabilities.
  *
  * Provides persistent session support for swarm operations, allowing
  * recovery from failures and resumption of long-running tasks.
@@ -29,15 +31,15 @@ import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './
  */
 export class SessionEnabledSwarm extends ZenSwarm {
   private sessionManager: SessionManager;
-  private currentSessionId?: string;
+  private currentSessionId: string | undefined;
   private sessionIntegrationEnabled: boolean = false;
 
   /**
-   * Creates a new SessionEnabledSwarm instance
+   * Creates a new SessionEnabledSwarm instance.
    *
-   * @param options - Configuration options for the swarm
-   * @param sessionConfig - Configuration for session management
-   * @param persistence - Optional persistence layer for session data
+   * @param options - Configuration options for the swarm.
+   * @param sessionConfig - Configuration for session management.
+   * @param persistence - Optional persistence layer for session data.
    * @example
    * ```typescript
    * const swarm = new SessionEnabledSwarm(
@@ -64,7 +66,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
       persistenceLayer = {
         query: async (_sql: string, _params?: unknown[]) => [],
         execute: async (_sql: string, _params?: unknown[]) => ({ affectedRows: 1 }),
-      } as SessionCoordinationDao;
+      } as unknown as SessionCoordinationDao;
     }
     this.sessionManager = new SessionManager(persistenceLayer, sessionConfig);
 
@@ -73,19 +75,19 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Initialize swarm with session support
+   * Initialize swarm with session support.
    *
    * Sets up the base swarm infrastructure and initializes the session
    * management layer for persistent operation tracking.
    *
-   * @throws Error if initialization fails
+   * @throws Error if initialization fails.
    * @example
    * ```typescript
    * await swarm.initialize()
    * console.log('Swarm ready with session support')
    * ```
    */
-  async initialize(): Promise<void> {
+  override async initialize(): Promise<void> {
     // Initialize base swarm
     await super.initialize();
 
@@ -97,7 +99,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Create a new session and associate with this swarm
+   * Create a new session and associate with this swarm.
    *
    * @param sessionName
    */
@@ -120,7 +122,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Load an existing session and restore swarm state
+   * Load an existing session and restore swarm state.
    *
    * @param sessionId
    */
@@ -139,7 +141,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Save current swarm state to session
+   * Save current swarm state to session.
    */
   async saveSession(): Promise<void> {
     if (!this.currentSessionId) {
@@ -153,7 +155,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Create a checkpoint of current state
+   * Create a checkpoint of current state.
    *
    * @param description
    */
@@ -180,7 +182,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Restore from a specific checkpoint
+   * Restore from a specific checkpoint.
    *
    * @param checkpointId
    */
@@ -202,7 +204,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Pause the current session
+   * Pause the current session.
    */
   async pauseSession(): Promise<void> {
     if (!this.currentSessionId) {
@@ -217,7 +219,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Resume a paused session
+   * Resume a paused session.
    */
   async resumeSession(): Promise<void> {
     if (!this.currentSessionId) {
@@ -229,7 +231,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Hibernate the current session
+   * Hibernate the current session.
    */
   async hibernateSession(): Promise<void> {
     if (!this.currentSessionId) {
@@ -242,11 +244,11 @@ export class SessionEnabledSwarm extends ZenSwarm {
     await this.sessionManager.hibernateSession(this.currentSessionId);
 
     this.emit('session:hibernated' as SwarmEvent, { sessionId: this.currentSessionId });
-    this.currentSessionId = undefined; // Session is no longer active
+    this.currentSessionId = undefined as string | undefined;
   }
 
   /**
-   * Terminate the current session
+   * Terminate the current session.
    *
    * @param cleanup
    */
@@ -259,11 +261,11 @@ export class SessionEnabledSwarm extends ZenSwarm {
     await this.sessionManager.terminateSession(sessionId, cleanup);
 
     this.emit('session:terminated' as SwarmEvent, { sessionId, cleanup });
-    this.currentSessionId = undefined;
+    this.currentSessionId = undefined as string | undefined;
   }
 
   /**
-   * List available sessions
+   * List available sessions.
    *
    * @param filter
    */
@@ -276,7 +278,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Get current session info
+   * Get current session info.
    */
   async getCurrentSession(): Promise<SessionState | null> {
     if (!this.currentSessionId) {
@@ -287,7 +289,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Get session statistics
+   * Get session statistics.
    *
    * @param sessionId
    */
@@ -296,7 +298,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Enhanced agent operations with session persistence
+   * Enhanced agent operations with session persistence.
    *
    * @param config
    */
@@ -324,7 +326,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Enhanced task submission with session persistence
+   * Enhanced task submission with session persistence.
    *
    * @param task
    */
@@ -352,7 +354,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Enhanced destroy with session cleanup
+   * Enhanced destroy with session cleanup.
    */
   async destroy(): Promise<void> {
     // Save session before destroying if there's an active session
@@ -361,7 +363,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
         await this.saveSession();
         await this.createCheckpoint('Pre-destroy checkpoint');
       } catch (error) {
-        console.error('Failed to save session before destroy:', error);
+        logger.error('Failed to save session before destroy:', error);
       }
     }
 
@@ -375,7 +377,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   }
 
   /**
-   * Private helper methods
+   * Private helper methods.
    */
 
   private async captureCurrentState(): Promise<SwarmState> {
@@ -403,7 +405,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
           };
           await this.addAgent(configWithId);
         } catch (error) {
-          console.warn(`Failed to restore agent ${agentId}:`, error);
+          logger.warn(`Failed to restore agent ${agentId}:`, error);
         }
       }
     }
@@ -428,7 +430,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
             metadata: {}, // Empty metadata
           });
         } catch (error) {
-          console.warn(`Failed to restore task ${taskId}:`, error);
+          logger.warn(`Failed to restore task ${taskId}:`, error);
         }
       }
     }
@@ -494,9 +496,9 @@ export class SessionEnabledSwarm extends ZenSwarm {
 }
 
 /**
- * Session Recovery Service
+ * Session Recovery Service.
  *
- * Provides automated recovery capabilities for corrupted sessions
+ * Provides automated recovery capabilities for corrupted sessions.
  *
  * @example
  */
@@ -510,7 +512,7 @@ export class SessionRecoveryService extends EventEmitter {
   }
 
   /**
-   * Attempt to recover a corrupted session
+   * Attempt to recover a corrupted session.
    *
    * @param sessionId
    */
@@ -554,7 +556,7 @@ export class SessionRecoveryService extends EventEmitter {
 
       this.emit('recovery:completed', {
         sessionId,
-        recoveredFromCheckpoint: recoveredSession.metadata.recoveredFromCheckpoint,
+        recoveredFromCheckpoint: recoveredSession.metadata['recoveredFromCheckpoint'],
       });
 
       return true;
@@ -570,7 +572,7 @@ export class SessionRecoveryService extends EventEmitter {
   }
 
   /**
-   * Run health check on all sessions
+   * Run health check on all sessions.
    */
   async runHealthCheck(): Promise<Record<string, any>> {
     const sessions = await this.sessionManager.listSessions();
@@ -586,10 +588,10 @@ export class SessionRecoveryService extends EventEmitter {
       const validation = SessionValidator.validateSessionState(session);
 
       if (validation.valid) {
-        healthReport.healthy++;
+        healthReport['healthy']++;
       } else {
-        healthReport.corrupted++;
-        healthReport.needsRecovery.push({
+        healthReport['corrupted']++;
+        healthReport['needsRecovery'].push({
           sessionId: session.id,
           name: session.name,
           errors: validation.errors,
@@ -597,13 +599,13 @@ export class SessionRecoveryService extends EventEmitter {
 
         // Generate recovery recommendation
         if (session.checkpoints.length > 0) {
-          healthReport.recoveryRecommendations.push({
+          healthReport['recoveryRecommendations'].push({
             sessionId: session.id,
             recommendation: 'automatic_recovery',
             availableCheckpoints: session.checkpoints.length,
           });
         } else {
-          healthReport.recoveryRecommendations.push({
+          healthReport['recoveryRecommendations'].push({
             sessionId: session.id,
             recommendation: 'manual_intervention',
             reason: 'No checkpoints available',
@@ -617,12 +619,12 @@ export class SessionRecoveryService extends EventEmitter {
   }
 
   /**
-   * Schedule automatic recovery for corrupted sessions
+   * Schedule automatic recovery for corrupted sessions.
    */
   async scheduleAutoRecovery(): Promise<void> {
     const healthReport = await this.runHealthCheck();
 
-    const autoRecoverySessions = healthReport.recoveryRecommendations
+    const autoRecoverySessions = healthReport['recoveryRecommendations']
       .filter((rec: any) => rec.recommendation === 'automatic_recovery')
       .map((rec: any) => rec.sessionId);
 
@@ -653,16 +655,17 @@ export class SessionRecoveryService extends EventEmitter {
 }
 
 /**
- * Factory function for creating session-enabled swarms
+ * Factory function for creating session-enabled swarms.
  *
  * @param swarmOptions
  * @param sessionConfig
  * @param persistence
+ * @example
  */
 export function createSessionEnabledSwarm(
   swarmOptions?: SwarmOptions,
   sessionConfig?: SessionConfig,
-  persistence?: ICoordinationDao
+  persistence?: SessionCoordinationDao
 ): SessionEnabledSwarm {
   return new SessionEnabledSwarm(swarmOptions, sessionConfig, persistence);
 }

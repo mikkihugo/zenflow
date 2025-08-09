@@ -23,6 +23,7 @@ import type {
   PredictionResponse,
   TrainingRequest,
 } from './schemas/neural';
+import { getMCPServerURL } from '../../../config/url-builder';
 
 /**
  * API Client Configuration
@@ -41,10 +42,10 @@ export interface APIClientConfig {
 }
 
 /**
- * Default client configuration
+ * Default client configuration using centralized URL configuration
  */
 export const DEFAULT_CLIENT_CONFIG: APIClientConfig = {
-  baseURL: 'http://localhost:3000',
+  baseURL: getMCPServerURL(),
   timeout: 30000, // 30 seconds
   retryAttempts: 3,
   retryDelay: 1000, // 1 second

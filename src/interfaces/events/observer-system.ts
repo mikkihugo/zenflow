@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-events-observer-system");
 /**
  * @file Observer Pattern Implementation for Real-Time Event System
  * Provides type-safe event handling with priority management and error recovery
@@ -340,7 +342,7 @@ export class LoggerObserver implements SystemObserver<SystemEvent> {
       });
     } catch (error) {
       this.healthy = false;
-      console.error('Logger observer error:', error);
+      logger.error('Logger observer error:', error);
     }
   }
 
@@ -404,7 +406,7 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
       }
     } catch (error) {
       this.healthy = false;
-      console.error('Metrics observer error:', error);
+      logger.error('Metrics observer error:', error);
     }
   }
 

@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodeimport { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-terminal-main");
 /**
  * @file Main Terminal Interface Entry Point
  *
@@ -38,7 +39,7 @@ async function main() {
               : 3000) || 3000,
     });
   } catch (error) {
-    console.error('❌ Failed to launch terminal interface:', error);
+    logger.error('❌ Failed to launch terminal interface:', error);
     process.exit(1);
   }
 }
@@ -129,7 +130,7 @@ process.on('SIGTERM', () => {
 const isMainModule = process.argv[1]?.endsWith('main.js') || process.argv[1]?.endsWith('main.ts');
 if (isMainModule) {
   main().catch((error) => {
-    console.error('💥 Fatal error:', error);
+    logger.error('💥 Fatal error:', error);
     process.exit(1);
   });
 }

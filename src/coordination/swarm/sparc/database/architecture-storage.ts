@@ -1,5 +1,5 @@
 /**
- * Database Storage Service for SPARC Architecture Engine
+ * Database Storage Service for SPARC Architecture Engine.
  *
  * Provides database-driven persistence for architecture designs,
  * integrating with multi-backend database system.
@@ -12,17 +12,17 @@ import type { ArchitecturalValidation, ArchitectureDesign, Component } from '../
 export interface ArchitectureRecord {
   id: string;
   architecture_id: string;
-  project_id?: string;
+  project_id?: string | undefined;
   name: string;
   domain: string;
   design_data: string; // JSON string of ArchitectureDesign
   components_data: string; // JSON string of Component[]
-  validation_data?: string; // JSON string of ArchitecturalValidation
+  validation_data?: string | undefined; // JSON string of ArchitecturalValidation
   created_at: Date;
   updated_at: Date;
   version: number;
-  tags?: string;
-  metadata?: string;
+  tags?: string | undefined;
+  metadata?: string | undefined;
 }
 
 export interface ComponentRecord {
@@ -51,7 +51,7 @@ export interface ValidationRecord {
 }
 
 /**
- * Database-driven storage service for SPARC Architecture designs
+ * Database-driven storage service for SPARC Architecture designs.
  *
  * @example
  */
@@ -65,7 +65,7 @@ export class ArchitectureStorageService {
   ) {}
 
   /**
-   * Initialize database tables for architecture storage
+   * Initialize database tables for architecture storage.
    */
   async initialize(): Promise<void> {
     // Create architectures table
@@ -143,7 +143,7 @@ export class ArchitectureStorageService {
   }
 
   /**
-   * Save architecture design to database
+   * Save architecture design to database.
    *
    * @param architecture
    * @param projectId
@@ -163,7 +163,7 @@ export class ArchitectureStorageService {
       components_data: JSON.stringify(architecture.components || []),
       validation_data: architecture.validationResults
         ? JSON.stringify(architecture.validationResults)
-        : null,
+        : undefined,
       created_at: timestamp,
       updated_at: timestamp,
       tags: JSON.stringify(this.extractTags(architecture)),
@@ -211,7 +211,7 @@ export class ArchitectureStorageService {
   }
 
   /**
-   * Get architecture design by ID
+   * Get architecture design by ID.
    *
    * @param architectureId
    */
@@ -233,7 +233,7 @@ export class ArchitectureStorageService {
   }
 
   /**
-   * Get architectures by project ID
+   * Get architectures by project ID.
    *
    * @param projectId
    */
@@ -255,7 +255,7 @@ export class ArchitectureStorageService {
   }
 
   /**
-   * Get architectures by domain
+   * Get architectures by domain.
    *
    * @param domain
    */
@@ -277,7 +277,7 @@ export class ArchitectureStorageService {
   }
 
   /**
-   * Update existing architecture
+   * Update existing architecture.
    *
    * @param architectureId
    * @param architecture
@@ -316,7 +316,7 @@ export class ArchitectureStorageService {
   }
 
   /**
-   * Delete architecture by ID
+   * Delete architecture by ID.
    *
    * @param architectureId
    */
@@ -348,7 +348,7 @@ export class ArchitectureStorageService {
   }
 
   /**
-   * Save validation results
+   * Save validation results.
    *
    * @param architectureId
    * @param validation
@@ -391,7 +391,7 @@ export class ArchitectureStorageService {
   }
 
   /**
-   * Get validation history for architecture
+   * Get validation history for architecture.
    *
    * @param architectureId
    */
@@ -418,7 +418,7 @@ export class ArchitectureStorageService {
   }
 
   /**
-   * Search architectures with criteria
+   * Search architectures with criteria.
    *
    * @param criteria
    * @param criteria.domain
@@ -477,7 +477,7 @@ export class ArchitectureStorageService {
   }
 
   /**
-   * Get architecture statistics
+   * Get architecture statistics.
    */
   async getArchitectureStats(): Promise<{
     totalArchitectures: number;

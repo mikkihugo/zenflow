@@ -1,6 +1,8 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("di-container-di-container");
 /**
  * Main dependency injection container implementation
- * Provides type-safe service registration and resolution
+ * Provides type-safe service registration and resolution.
  */
 
 import type {
@@ -29,21 +31,21 @@ export class DIContainer implements IDIContainer {
   }
 
   /**
-   * Register a service provider with the container
+   * Register a service provider with the container.
    *
    * @param token
    * @param provider
    */
   register<T>(token: DIToken<T>, provider: Provider<T>): void {
     if (this.providers.has(token.symbol)) {
-      console.warn(`Provider for token '${token.name}' is being overwritten`);
+      logger.warn(`Provider for token '${token.name}' is being overwritten`);
     }
 
     this.providers.set(token.symbol, provider);
   }
 
   /**
-   * Resolve a service from the container
+   * Resolve a service from the container.
    *
    * @param token
    */
@@ -68,7 +70,7 @@ export class DIContainer implements IDIContainer {
   }
 
   /**
-   * Create a new scope
+   * Create a new scope.
    */
   createScope(): DIScope {
     // Import DIScope dynamically to avoid circular dependency
@@ -80,7 +82,7 @@ export class DIContainer implements IDIContainer {
   }
 
   /**
-   * Dispose all singleton instances and clean up resources
+   * Dispose all singleton instances and clean up resources.
    */
   async dispose(): Promise<void> {
     const disposalPromises: Promise<void>[] = [];
@@ -100,7 +102,7 @@ export class DIContainer implements IDIContainer {
   }
 
   /**
-   * Check if a service is registered
+   * Check if a service is registered.
    *
    * @param token
    */
@@ -109,7 +111,7 @@ export class DIContainer implements IDIContainer {
   }
 
   /**
-   * Get all registered tokens (for debugging)
+   * Get all registered tokens (for debugging).
    */
   getRegisteredTokens(): string[] {
     return Array.from(this.providers.entries()).map(([symbol, _]) => {
@@ -124,7 +126,7 @@ export class DIContainer implements IDIContainer {
   }
 
   /**
-   * Internal resolution with circular dependency detection
+   * Internal resolution with circular dependency detection.
    *
    * @param token
    */
@@ -171,7 +173,7 @@ export class DIContainer implements IDIContainer {
   }
 
   /**
-   * Resolve singleton with instance caching
+   * Resolve singleton with instance caching.
    *
    * @param token
    * @param provider
@@ -184,5 +186,16 @@ export class DIContainer implements IDIContainer {
     const instance = provider.create(this);
     this.singletonInstances.set(token.symbol, instance);
     return instance;
+  }
+
+  /**
+   * Record performance metrics for service resolution.
+   *
+   * @param token - The service token that was resolved.
+   * @param duration - Resolution time in milliseconds.
+   */
+  private recordResolutionMetric<T>(token: DIToken<T>, duration: number): void {
+    // Log performance metric - could be extended to use proper metrics collector
+    logger.debug(`DI Resolution: ${token.name} resolved in ${duration}ms`);
   }
 }

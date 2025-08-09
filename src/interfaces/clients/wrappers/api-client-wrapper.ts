@@ -23,6 +23,7 @@ import type {
 } from '../../api/http/schemas/neural';
 import { HTTPClientAdapter } from '../adapters/http-client-adapter';
 import type { HTTPClientConfig } from '../adapters/http-types';
+import { getMCPServerURL } from '../../config/url-builder';
 
 /**
  * Legacy API Client Configuration (maintained for compatibility)
@@ -43,7 +44,7 @@ export interface APIClientConfig {
  * Default client configuration
  */
 export const DEFAULT_CLIENT_CONFIG: APIClientConfig = {
-  baseURL: 'http://localhost:3000',
+  baseURL: getMCPServerURL(),
   timeout: 30000, // 30 seconds
   retryAttempts: 3,
   retryDelay: 1000, // 1 second

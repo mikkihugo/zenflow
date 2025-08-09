@@ -1,7 +1,7 @@
 /**
- * Intelligence MCP Integration Tools
+ * Intelligence MCP Integration Tools.
  *
- * MCP tools that integrate ag2.ai conversation framework with existing intelligence domain
+ * MCP tools that integrate ag2.ai conversation framework with existing intelligence domain.
  */
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
@@ -12,7 +12,7 @@ import {
 } from './conversation-framework/mcp-tools';
 
 /**
- * Enhanced Intelligence MCP Tools with ag2.ai integration
+ * Enhanced Intelligence MCP Tools with ag2.ai integration.
  *
  * @example
  */
@@ -29,7 +29,7 @@ export class IntelligenceMCPTools {
   }
 
   /**
-   * Get all intelligence MCP tools including conversation capabilities
+   * Get all intelligence MCP tools including conversation capabilities.
    */
   static async getTools(): Promise<Tool[]> {
     // Initialize conversation tools once to get their definitions
@@ -139,7 +139,7 @@ export class IntelligenceMCPTools {
   }
 
   /**
-   * Handle intelligence MCP tool calls
+   * Handle intelligence MCP tool calls.
    *
    * @param name
    * @param args
@@ -150,7 +150,7 @@ export class IntelligenceMCPTools {
       if (!this.conversationTools) {
         await this.initializeConversationTools();
       }
-      return this.conversationTools.handleToolCall(name, args);
+      return this.conversationTools!.handleToolCall(name, args);
     }
 
     // Handle intelligence-specific tools
@@ -230,7 +230,7 @@ export class IntelligenceMCPTools {
         break;
     }
 
-    const analysis = {
+    const analysis: any = {
       agentId,
       timeframe,
       analysisperiod: {
@@ -462,7 +462,7 @@ export class IntelligenceMCPTools {
     const { conversationId, predictionHorizon = 30, includeRecommendations = true } = args;
 
     // Simulate AI-powered conversation outcome prediction
-    const prediction = {
+    const prediction: any = {
       conversationId,
       predictionTimestamp: new Date().toISOString(),
       predictionHorizon: `${predictionHorizon} minutes`,
@@ -533,7 +533,7 @@ export class IntelligenceMCPTools {
 }
 
 /**
- * Factory for creating intelligence MCP tools
+ * Factory for creating intelligence MCP tools.
  *
  * @example
  */

@@ -100,7 +100,7 @@ interface PerformanceRequirement {
 }
 
 /**
- * Enhanced Architecture Phase Engine with Database Integration
+ * Enhanced Architecture Phase Engine with Database Integration.
  *
  * @example
  */
@@ -115,7 +115,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Initialize the database-driven architecture engine
+   * Initialize the database-driven architecture engine.
    */
   async initialize(): Promise<void> {
     await this.storageService.initialize();
@@ -123,7 +123,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Design system architecture from pseudocode structure (Enhanced with database persistence)
+   * Design system architecture from pseudocode structure (Enhanced with database persistence).
    *
    * @param pseudocode
    */
@@ -175,7 +175,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Design system architecture with detailed specification input
+   * Design system architecture with detailed specification input.
    *
    * @param spec
    * @param pseudocode
@@ -209,7 +209,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Generate component diagrams with database persistence
+   * Generate component diagrams with database persistence.
    *
    * @param architecture
    */
@@ -234,7 +234,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Design data flow with enhanced analysis
+   * Design data flow with enhanced analysis.
    *
    * @param components
    */
@@ -298,7 +298,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Plan deployment architecture with modern best practices
+   * Plan deployment architecture with modern best practices.
    *
    * @param system
    */
@@ -324,7 +324,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Validate architectural consistency with comprehensive checks
+   * Validate architectural consistency with comprehensive checks.
    *
    * @param architecture
    */
@@ -391,7 +391,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Get architecture from database by ID
+   * Get architecture from database by ID.
    *
    * @param architectureId
    */
@@ -400,7 +400,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Search architectures with criteria
+   * Search architectures with criteria.
    *
    * @param criteria
    * @param criteria.domain
@@ -418,14 +418,14 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Get architecture statistics from database
+   * Get architecture statistics from database.
    */
   async getArchitectureStatistics(): Promise<any> {
     return await this.storageService.getArchitectureStats();
   }
 
   /**
-   * Update existing architecture design
+   * Update existing architecture design.
    *
    * @param architectureId
    * @param updates
@@ -453,7 +453,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   // Enhanced private methods for database-driven architecture generation
 
   /**
-   * Identify system components from algorithms and data structures
+   * Identify system components from algorithms and data structures.
    *
    * @param pseudocode
    */
@@ -481,7 +481,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Create component from algorithm specification
+   * Create component from algorithm specification.
    *
    * @param algorithm
    */
@@ -510,7 +510,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Create component from data structure specification
+   * Create component from data structure specification.
    *
    * @param dataStructure
    */
@@ -539,7 +539,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Create infrastructure components based on system requirements
+   * Create infrastructure components based on system requirements.
    *
    * @param pseudocode
    */
@@ -623,7 +623,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Define relationships between components with enhanced analysis
+   * Define relationships between components with enhanced analysis.
    *
    * @param components
    */
@@ -679,7 +679,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Select appropriate architecture patterns based on system characteristics
+   * Select appropriate architecture patterns based on system characteristics.
    *
    * @param pseudocode
    * @param components
@@ -741,7 +741,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Define data flows between components with enhanced analysis
+   * Define data flows between components with enhanced analysis.
    *
    * @param components
    * @param relationships
@@ -753,15 +753,15 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
     const dataFlows: DataFlow[] = [];
 
     for (const relationship of relationships) {
-      const sourceComponent = components.find((c) => c.id === relationship.sourceId);
-      const targetComponent = components.find((c) => c.id === relationship.targetId);
+      const sourceComponent = components.find((c) => c.id === relationship['sourceId']);
+      const targetComponent = components.find((c) => c.id === relationship['targetId']);
 
       if (sourceComponent && targetComponent) {
         dataFlows.push({
           id: nanoid(),
           name: `${sourceComponent.name}To${targetComponent.name}Flow`,
-          sourceComponentId: relationship.sourceId,
-          targetComponentId: relationship.targetId,
+          sourceComponentId: relationship['sourceId'],
+          targetComponentId: relationship['targetId'],
           dataType: this.inferDataType(sourceComponent, targetComponent),
           format: 'JSON',
           volume: this.estimateDataVolume(sourceComponent, targetComponent),
@@ -776,7 +776,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Define component interfaces with comprehensive specifications
+   * Define component interfaces with comprehensive specifications.
    *
    * @param components
    */
@@ -805,7 +805,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Define quality attributes with measurable criteria
+   * Define quality attributes with measurable criteria.
    *
    * @param pseudocode
    */
@@ -877,7 +877,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Define security requirements with implementation details
+   * Define security requirements with implementation details.
    *
    * @param components
    */
@@ -917,7 +917,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Define scalability requirements with specific targets
+   * Define scalability requirements with specific targets.
    *
    * @param pseudocode
    */
@@ -1036,8 +1036,8 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
 
   private extractArchitectureId(architecture: SystemArchitecture): string | null {
     // Extract architecture ID from components or other identifying information
-    if (architecture.components.length > 0 && architecture.components[0].id) {
-      return architecture.components[0].id.split('-')[0]; // Simple ID extraction
+    if (architecture.components.length > 0 && architecture.components[0]?.id) {
+      return architecture.components[0].id.split('-')[0] || null; // Simple ID extraction
     }
     return null;
   }
@@ -1139,7 +1139,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
       (c) => c.type === 'gateway' || c.type === 'monitoring'
     );
 
-    const units = [];
+    const units: any[] = [];
 
     if (serviceComponents.length > 0) {
       units.push({
@@ -1242,7 +1242,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
     spec: DetailedSpecification,
     components: SystemComponent[]
   ): Promise<any[]> {
-    const stack = [];
+    const stack: any[] = [];
 
     // Backend technology selection
     stack.push({
@@ -1282,7 +1282,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   private generateMethodsForComponent(component: SystemComponent): any[] {
-    const methods = [];
+    const methods: any[] = [];
 
     if (component.type === 'service') {
       methods.push(
@@ -1533,7 +1533,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   /**
-   * Generate architecture recommendations based on validation results
+   * Generate architecture recommendations based on validation results.
    *
    * @param validationResults
    */

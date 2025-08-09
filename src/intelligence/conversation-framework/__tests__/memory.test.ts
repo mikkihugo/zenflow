@@ -1,8 +1,8 @@
 /**
- * Conversation Memory Tests - Classical TDD
+ * Conversation Memory Tests - Classical TDD.
  *
  * Tests for conversation memory using Classical School TDD (state-based testing)
- * Focus on actual storage and retrieval behavior
+ * Focus on actual storage and retrieval behavior.
  */
 
 import type { AgentId } from '../../../types/agent-types';
@@ -46,7 +46,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
         title: 'Test Conversation',
         description: 'A test conversation for Classical TDD',
         participants: [...sampleAgents],
-        initiator: sampleAgents[0],
+        initiator: sampleAgents[0]!,
         startTime: new Date('2024-01-01T10:00:00Z'),
         endTime: new Date('2024-01-01T11:00:00Z'),
         status: 'completed',
@@ -61,7 +61,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
           {
             id: 'msg-1',
             conversationId: 'conv-123',
-            fromAgent: sampleAgents[0],
+            fromAgent: sampleAgents[0]!,
             timestamp: new Date('2024-01-01T10:30:00Z'),
             content: { text: 'Test message', code: 'console.log("test");' },
             messageType: 'question',
@@ -84,7 +84,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
             type: 'solution',
             content: { result: 'Storage working correctly' },
             confidence: 0.95,
-            contributors: [sampleAgents[0]],
+            contributors: [sampleAgents[0]!],
             timestamp: new Date('2024-01-01T10:45:00Z'),
           },
         ],
@@ -121,14 +121,14 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
 
       // Verify messages are preserved with exact content
       expect(retrieved?.messages).toHaveLength(1);
-      expect(retrieved?.messages[0].content.text).toBe('Test message');
-      expect(retrieved?.messages[0].content.code).toBe('console.log("test");');
-      expect(retrieved?.messages[0].metadata.tags).toEqual(['test', 'storage']);
+      expect(retrieved!.messages[0]!.content.text).toBe('Test message');
+      expect(retrieved!.messages[0]!.content.code).toBe('console.log("test");');
+      expect(retrieved!.messages[0]!.metadata.tags).toEqual(['test', 'storage']);
 
       // Verify outcomes are preserved
       expect(retrieved?.outcomes).toHaveLength(1);
-      expect(retrieved?.outcomes[0].type).toBe('solution');
-      expect(retrieved?.outcomes[0].confidence).toBe(0.95);
+      expect(retrieved!.outcomes[0]!.type).toBe('solution');
+      expect(retrieved!.outcomes[0]!.confidence).toBe(0.95);
 
       // Verify metrics are preserved with exact values
       expect(retrieved?.metrics.messageCount).toBe(1);
@@ -157,8 +157,8 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
         {
           id: 'conv-1',
           title: 'Agent 1 Conversation',
-          participants: [sampleAgents[0]], // Only agent-1
-          initiator: sampleAgents[0],
+          participants: [sampleAgents[0]!], // Only agent-1
+          initiator: sampleAgents[0]!,
           startTime: new Date('2024-01-01T09:00:00Z'),
           status: 'completed',
           context: {
@@ -182,7 +182,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
           id: 'conv-2',
           title: 'Both Agents Conversation',
           participants: [...sampleAgents], // Both agents
-          initiator: sampleAgents[0],
+          initiator: sampleAgents[0]!,
           startTime: new Date('2024-01-01T10:00:00Z'),
           status: 'active',
           context: {
@@ -205,8 +205,8 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
         {
           id: 'conv-3',
           title: 'Agent 2 Only',
-          participants: [sampleAgents[1]], // Only agent-2
-          initiator: sampleAgents[1],
+          participants: [sampleAgents[1]!], // Only agent-2
+          initiator: sampleAgents[1]!,
           startTime: new Date('2024-01-01T11:00:00Z'),
           status: 'paused',
           context: {
@@ -256,8 +256,8 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
         manyConversations.push({
           id: `conv-${i}`,
           title: `Conversation ${i}`,
-          participants: [sampleAgents[0]],
-          initiator: sampleAgents[0],
+          participants: [sampleAgents[0]!],
+          initiator: sampleAgents[0]!,
           startTime: new Date(`2024-01-0${Math.min(i, 9)}T${10 + i}:00:00Z`),
           status: 'completed',
           context: {
@@ -316,7 +316,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
           id: 'conv-review-1',
           title: 'Code Review Session',
           participants: [...sampleAgents],
-          initiator: sampleAgents[0],
+          initiator: sampleAgents[0]!,
           startTime: new Date(),
           status: 'completed',
           context: {
@@ -340,7 +340,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
           id: 'conv-planning-1',
           title: 'Sprint Planning',
           participants: [...sampleAgents],
-          initiator: sampleAgents[0],
+          initiator: sampleAgents[0]!,
           startTime: new Date(),
           status: 'active',
           context: {
@@ -372,8 +372,8 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
 
       // Assert
       expect(reviewConversations).toHaveLength(1);
-      expect(reviewConversations[0].id).toBe('conv-review-1');
-      expect(reviewConversations[0].context.domain).toBe('code-review');
+      expect(reviewConversations[0]!.id).toBe('conv-review-1');
+      expect(reviewConversations[0]!.context.domain).toBe('code-review');
     });
   });
 
@@ -384,7 +384,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
         id: 'conv-update-test',
         title: 'Original Title',
         participants: [...sampleAgents],
-        initiator: sampleAgents[0],
+        initiator: sampleAgents[0]!,
         startTime: new Date('2024-01-01T10:00:00Z'),
         status: 'active',
         context: {
@@ -398,7 +398,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
           {
             id: 'msg-1',
             conversationId: 'conv-update-test',
-            fromAgent: sampleAgents[0],
+            fromAgent: sampleAgents[0]!,
             timestamp: new Date(),
             content: { text: 'Original message' },
             messageType: 'question',
@@ -418,7 +418,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       await memory.storeConversation(originalConversation);
 
       // Act - Update status and add a message
-      const updates = {
+      const updates: Partial<ConversationSession> = {
         status: 'completed' as ConversationStatus,
         endTime: new Date('2024-01-01T11:00:00Z'),
         messages: [
@@ -426,7 +426,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
           {
             id: 'msg-2',
             conversationId: 'conv-update-test',
-            fromAgent: sampleAgents[1],
+            fromAgent: sampleAgents[1]!,
             timestamp: new Date(),
             content: { text: 'New message after update' },
             messageType: 'answer' as any,
@@ -460,8 +460,8 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       // Verify original data is preserved
       expect(updatedConversation?.title).toBe('Original Title');
       expect(updatedConversation?.context.goal).toBe('Original goal');
-      expect(updatedConversation?.messages[0].content.text).toBe('Original message');
-      expect(updatedConversation?.messages[1].content.text).toBe('New message after update');
+      expect(updatedConversation!.messages[0]!.content.text).toBe('Original message');
+      expect(updatedConversation!.messages[1]!.content.text).toBe('New message after update');
     });
 
     it('should throw error when updating non-existent conversation', async () => {
@@ -479,7 +479,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
         id: 'conv-delete-test',
         title: 'To Be Deleted',
         participants: [...sampleAgents],
-        initiator: sampleAgents[0],
+        initiator: sampleAgents[0]!,
         startTime: new Date(),
         status: 'completed',
         context: {
@@ -531,8 +531,8 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       const conversation: ConversationSession = {
         id: 'conv-consistency-test',
         title: 'Consistency Test',
-        participants: [sampleAgents[0]],
-        initiator: sampleAgents[0],
+        participants: [sampleAgents[0]!],
+        initiator: sampleAgents[0]!,
         startTime: new Date('2024-01-01T10:00:00Z'),
         status: 'active',
         context: {

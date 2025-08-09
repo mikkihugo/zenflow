@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-load-balancing-algorithms-ml-predictive");
 /**
  * Machine Learning Predictive Load Balancing Algorithm
  * Uses ML models to predict optimal agent selection and performance
@@ -339,7 +341,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         const prediction = await this.predictionEngine.predict(this.normalizeFeatures(features));
         predictions.set(modelType, prediction);
       } catch (error) {
-        console.warn(`Model ${modelType} prediction failed:`, error);
+        logger.warn(`Model ${modelType} prediction failed:`, error);
       }
     }
 
@@ -422,7 +424,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         // Evaluate model performance
         await this.evaluateModel(modelType, trainingData);
       } catch (error) {
-        console.error(`Failed to retrain model ${modelType}:`, error);
+        logger.error(`Failed to retrain model ${modelType}:`, error);
       }
     }
   }
@@ -448,7 +450,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     const timeSinceRetraining = Date.now() - lastRetraining;
 
     return (
-      timeSinceRetraining > this.config.retrainingInterval || this.historicalData.length % 500 === 0 // Retrain every 500 new data points
+      // Retrain every 500 new data points
+      (timeSinceRetraining > this.config.retrainingInterval || this.historicalData.length % 500 === 0)
     );
   }
 

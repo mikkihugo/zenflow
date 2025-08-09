@@ -47,7 +47,7 @@ export function createSPARCSwarmCommands(): Command {
         if (options.projectId) {
         }
       } catch (error) {
-        console.error('❌ Failed to initialize SPARC-Swarm integration:', error);
+        logger.error('❌ Failed to initialize SPARC-Swarm integration:', error);
         process.exit(1);
       }
     });
@@ -82,7 +82,7 @@ export function createSPARCSwarmCommands(): Command {
         // Assign to SPARC swarm
         const _assignmentId = await bridge.assignFeatureToSparcs(feature as FeatureDocumentEntity);
       } catch (error) {
-        console.error('❌ Failed to assign feature to SPARC swarm:', error);
+        logger.error('❌ Failed to assign feature to SPARC swarm:', error);
         process.exit(1);
       }
     });
@@ -117,7 +117,7 @@ export function createSPARCSwarmCommands(): Command {
         // Assign to SPARC swarm
         const _assignmentId = await bridge.assignTaskToSparcs(task as TaskDocumentEntity);
       } catch (error) {
-        console.error('❌ Failed to assign task to SPARC swarm:', error);
+        logger.error('❌ Failed to assign task to SPARC swarm:', error);
         process.exit(1);
       }
     });
@@ -157,7 +157,7 @@ export function createSPARCSwarmCommands(): Command {
           });
         }
       } catch (error) {
-        console.error('❌ Failed to get SPARC swarm status:', error);
+        logger.error('❌ Failed to get SPARC swarm status:', error);
         process.exit(1);
       }
     });
@@ -184,7 +184,7 @@ export function createSPARCSwarmCommands(): Command {
           const _phaseMetrics = metrics.phaseMetrics[phase];
         });
       } catch (error) {
-        console.error('❌ Failed to get SPARC phase metrics:', error);
+        logger.error('❌ Failed to get SPARC phase metrics:', error);
         process.exit(1);
       }
     });
@@ -232,7 +232,7 @@ export function createSPARCSwarmCommands(): Command {
         await fs.writeFile(options.output, output, 'utf8');
         pseudocodeStructure.algorithms.forEach((_alg, _index) => {});
       } catch (error) {
-        console.error('❌ Failed to generate pseudocode:', error);
+        logger.error('❌ Failed to generate pseudocode:', error);
         process.exit(1);
       }
     });
@@ -275,7 +275,7 @@ export function createSPARCSwarmCommands(): Command {
         // Exit with appropriate code
         process.exit(validation.approved ? 0 : 1);
       } catch (error) {
-        console.error('❌ Failed to validate pseudocode:', error);
+        logger.error('❌ Failed to validate pseudocode:', error);
         process.exit(1);
       }
     });
@@ -315,7 +315,7 @@ export function createSPARCSwarmCommands(): Command {
         // Display algorithms
         algorithms.forEach((_alg, _index) => {});
       } catch (error) {
-        console.error('❌ Failed to generate algorithms:', error);
+        logger.error('❌ Failed to generate algorithms:', error);
         process.exit(1);
       }
     });
@@ -427,7 +427,7 @@ export function createSPARCSwarmCommands(): Command {
           }, 500);
         }, 1000);
       } catch (error) {
-        console.error('❌ Failed to run SPARC demonstration:', error);
+        logger.error('❌ Failed to run SPARC demonstration:', error);
         process.exit(1);
       }
     });
@@ -634,7 +634,7 @@ export function addArchitectureCommands(program: Command): void {
           await fs.writeFile(outputPath, JSON.stringify(architecture, null, 2), 'utf8');
         }
       } catch (error) {
-        console.error('❌ Failed to generate architecture:', error);
+        logger.error('❌ Failed to generate architecture:', error);
         process.exit(1);
       }
     });
@@ -677,7 +677,7 @@ export function addArchitectureCommands(program: Command): void {
         // Exit with appropriate code
         process.exit(overallScore >= 0.7 ? 0 : 1);
       } catch (error) {
-        console.error('❌ Failed to validate architecture:', error);
+        logger.error('❌ Failed to validate architecture:', error);
         process.exit(1);
       }
     });
@@ -718,7 +718,7 @@ export function addArchitectureCommands(program: Command): void {
           await fs.writeFile(outputPath, JSON.stringify(implementationPlan, null, 2), 'utf8');
         }
       } catch (error) {
-        console.error('❌ Failed to generate implementation plan:', error);
+        logger.error('❌ Failed to generate implementation plan:', error);
         process.exit(1);
       }
     });

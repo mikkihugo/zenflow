@@ -1,8 +1,8 @@
 /**
- * SPARC-Enhanced Task Coordinator
+ * SPARC-Enhanced Task Coordinator.
  *
  * Integrates SPARC methodology with Claude Code Sub-Agent system
- * for implementing database-driven Features and Tasks
+ * for implementing database-driven Features and Tasks.
  */
 
 import type {
@@ -43,7 +43,7 @@ export interface TaskResult {
 }
 
 /**
- * SPARC-Enhanced Task Coordinator
+ * SPARC-Enhanced Task Coordinator.
  *
  * @example
  */
@@ -62,7 +62,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * Initialize with SPARC integration
+   * Initialize with SPARC integration.
    *
    * @param sparcBridge
    * @param sparcSwarm
@@ -76,7 +76,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * Execute task with optimal agent selection and methodology
+   * Execute task with optimal agent selection and methodology.
    *
    * @param config
    */
@@ -108,7 +108,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * NEW: Execute task using SPARC methodology
+   * NEW: Execute task using SPARC methodology.
    *
    * @param config
    * @param startTime
@@ -163,7 +163,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * Execute task directly (original logic)
+   * Execute task directly (original logic).
    *
    * @param config
    * @param startTime
@@ -198,7 +198,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * NEW: Determine if SPARC methodology should be used
+   * NEW: Determine if SPARC methodology should be used.
    *
    * @param config
    */
@@ -214,7 +214,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * NEW: Check if document represents complex work
+   * NEW: Check if document represents complex work.
    *
    * @param document
    */
@@ -229,7 +229,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * NEW: Create temporary task document for SPARC processing
+   * NEW: Create temporary task document for SPARC processing.
    *
    * @param config
    */
@@ -244,7 +244,6 @@ export class TaskCoordinator {
       author: 'task-coordinator',
       tags: ['sparc-generated', 'temporary'],
       project_id: 'temp-project',
-      parent_document_id: undefined,
       dependencies: config.dependencies || [],
       related_documents: [],
       version: '1.0.0',
@@ -269,13 +268,12 @@ export class TaskCoordinator {
         functions: [],
         dependencies: config.tools_required || [],
       },
-      source_feature_id: undefined,
       completion_status: 'todo',
     };
   }
 
   /**
-   * NEW: Wait for SPARC completion (simplified implementation)
+   * NEW: Wait for SPARC completion (simplified implementation).
    *
    * @param assignmentId
    */
@@ -306,7 +304,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * Select optimal agent strategy based on task requirements
+   * Select optimal agent strategy based on task requirements.
    *
    * @param config
    */
@@ -329,7 +327,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * Determine if Claude Code sub-agent is optimal for this task
+   * Determine if Claude Code sub-agent is optimal for this task.
    *
    * @param config
    */
@@ -358,7 +356,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * Prepare execution context for agent
+   * Prepare execution context for agent.
    *
    * @param config
    * @param strategy
@@ -395,7 +393,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * Execute task with selected agent
+   * Execute task with selected agent.
    *
    * @param context
    */
@@ -414,7 +412,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * Generate unique task ID
+   * Generate unique task ID.
    *
    * @param config
    */
@@ -425,7 +423,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * Simple hash function for task IDs
+   * Simple hash function for task IDs.
    *
    * @param str
    */
@@ -440,21 +438,21 @@ export class TaskCoordinator {
   }
 
   /**
-   * Get task execution history
+   * Get task execution history.
    */
   getTaskHistory(): Map<string, TaskResult> {
     return new Map(this.taskHistory);
   }
 
   /**
-   * Get currently active sub-agents
+   * Get currently active sub-agents.
    */
   getActiveSubAgents(): string[] {
     return Array.from(this.activeSubAgents);
   }
 
   /**
-   * Get performance metrics
+   * Get performance metrics.
    */
   getPerformanceMetrics(): TaskPerformanceMetrics {
     const tasks = Array.from(this.taskHistory.values());
@@ -524,9 +522,10 @@ interface TaskPerformanceMetrics {
 }
 
 /**
- * Convenience function for quick task execution
+ * Convenience function for quick task execution.
  *
  * @param config
+ * @example
  */
 export async function executeTask(config: TaskConfig): Promise<TaskResult> {
   const taskCoordinator = TaskCoordinator.getInstance();
@@ -534,9 +533,10 @@ export async function executeTask(config: TaskConfig): Promise<TaskResult> {
 }
 
 /**
- * Batch task execution with parallel processing
+ * Batch task execution with parallel processing.
  *
  * @param configs
+ * @example
  */
 export async function executeBatchTasks(configs: TaskConfig[]): Promise<TaskResult[]> {
   const taskCoordinator = TaskCoordinator.getInstance();

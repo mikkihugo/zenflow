@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-integration-index");
 /**
  * Integration Module - Barrel Export
  *
@@ -106,8 +108,8 @@ export class IntegrationFactory {
       const logger = {
         debug: (_msg: string, _meta?: any) => {},
         info: (_msg: string, _meta?: any) => {},
-        warn: (msg: string, meta?: any) => console.warn(`[MultiSystemCoordinator] ${msg}`, meta),
-        error: (msg: string, meta?: any) => console.error(`[MultiSystemCoordinator] ${msg}`, meta),
+        warn: (msg: string, meta?: any) => logger.warn(`[MultiSystemCoordinator] ${msg}`, meta),
+        error: (msg: string, meta?: any) => logger.error(`[MultiSystemCoordinator] ${msg}`, meta),
       };
 
       // Create coordinator with logger and systems config

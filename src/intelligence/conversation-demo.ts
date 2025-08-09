@@ -1,7 +1,9 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-intelligence-conversation-demo");
 /**
- * Simple Conversation Framework Demo
+ * Simple Conversation Framework Demo.
  *
- * Demonstrates ag2.ai-inspired conversation capabilities with minimal dependencies
+ * Demonstrates ag2.ai-inspired conversation capabilities with minimal dependencies.
  */
 
 import type { AgentId } from '../types/agent-types';
@@ -12,7 +14,7 @@ import type {
 } from './conversation-framework/types';
 
 /**
- * Mock memory backend for demo purposes
+ * Mock memory backend for demo purposes.
  *
  * @example
  */
@@ -49,7 +51,7 @@ class MockConversationMemory {
 }
 
 /**
- * Simplified conversation orchestrator for demo
+ * Simplified conversation orchestrator for demo.
  *
  * @example
  */
@@ -58,12 +60,17 @@ class DemoConversationOrchestrator {
   private activeSessions = new Map<string, ConversationSession>();
 
   async createConversation(config: ConversationConfig): Promise<ConversationSession> {
+    // Ensure there are initial participants for the initiator
+    if (config.initialParticipants.length === 0) {
+      throw new Error('At least one initial participant is required');
+    }
+
     const session: ConversationSession = {
       id: `demo-${Date.now()}`,
       title: config.title,
       description: config.description,
       participants: [...config.initialParticipants],
-      initiator: config.initialParticipants[0],
+      initiator: config.initialParticipants[0], // Safe after length check
       startTime: new Date(),
       status: 'active',
       context: config.context,
@@ -101,6 +108,7 @@ class DemoConversationOrchestrator {
       message.timestamp = new Date();
     }
 
+    // Session is guaranteed to exist due to the check above
     session.messages.push(message);
     session.metrics.messageCount++;
     session.metrics.participationByAgent[message.fromAgent.id]++;
@@ -125,11 +133,11 @@ class DemoConversationOrchestrator {
     session.status = 'completed';
     session.endTime = new Date();
 
-    // Generate simple outcomes
+    // Generate outcomes matching ConversationOutcome interface
     const outcomes = session.messages
       .filter((m) => m.messageType === 'decision' || m.messageType === 'agreement')
       .map((m) => ({
-        type: m.messageType === 'decision' ? 'decision' : 'consensus',
+        type: m.messageType === 'decision' ? ('decision' as const) : ('recommendation' as const),
         content: m.content,
         confidence: 0.8,
         contributors: [m.fromAgent],
@@ -149,7 +157,9 @@ class DemoConversationOrchestrator {
 }
 
 /**
- * Demo script showing conversation framework capabilities
+ * Demo script showing conversation framework capabilities.
+ *
+ * @example
  */
 export async function runSimpleConversationDemo(): Promise<void> {
   try {
@@ -176,7 +186,7 @@ export async function runSimpleConversationDemo(): Promise<void> {
       timeout: 3600000, // 1 hour
     });
 
-    const messages = [
+    const messages: Omit<ConversationMessage, 'id' | 'conversationId' | 'timestamp'>[] = [
       {
         fromAgent: agents[0], // alice-coder
         content: {
@@ -233,23 +243,24 @@ export async function runSimpleConversationDemo(): Promise<void> {
     ];
 
     for (const [index, msgData] of messages.entries()) {
-      await orchestrator.sendMessage({
+      const messageWithId: ConversationMessage = {
         id: `demo-msg-${index + 1}`,
         conversationId: conversation.id,
         timestamp: new Date(),
         ...msgData,
-      });
+      };
+      await orchestrator.sendMessage(messageWithId);
     }
     const history = await orchestrator.getConversationHistory(conversation.id);
 
     // Show message details
-    history.forEach((_msg, _index) => {});
-    Object.entries(conversation.metrics.participationByAgent).forEach(([_agentId, _count]) => {});
+    history.forEach((msg, index) => {});
+    Object.entries(conversation.metrics.participationByAgent).forEach(([agentId, count]) => {});
     const outcomes = await orchestrator.terminateConversation(
       conversation.id,
       'Code review completed successfully'
     );
-    outcomes.forEach((_outcome, _index) => {});
+    outcomes.forEach((outcome, index) => {});
     const patterns = [
       'code-review',
       'problem-solving',
@@ -258,9 +269,9 @@ export async function runSimpleConversationDemo(): Promise<void> {
       'debugging',
       'architecture-review',
     ];
-    patterns.forEach((_pattern) => {});
+    patterns.forEach((pattern) => {});
   } catch (error) {
-    console.error('❌ Demo failed:', error);
+    logger.error('❌ Demo failed:', error);
     throw error;
   }
 }

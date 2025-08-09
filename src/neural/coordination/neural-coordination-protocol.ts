@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("neural-coordination-neural-coordination-protocol");
 /**
  * Neural Coordination Protocol
  * Enables sophisticated coordination between neural network agents
@@ -876,7 +878,7 @@ export class NeuralCoordinationProtocol {
       return coordinationResult;
     } catch (error) {
       coordinationSession.coordinationState = 'error';
-      console.error(`Coordination failed for session ${session.id}:`, error);
+      logger.error(`Coordination failed for session ${session.id}:`, error);
       throw error;
     }
   }

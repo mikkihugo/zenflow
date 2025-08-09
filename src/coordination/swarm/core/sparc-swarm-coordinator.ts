@@ -1,14 +1,14 @@
 /**
- * SPARC-Enabled Swarm Coordinator
+ * SPARC-Enabled Swarm Coordinator.
  *
  * Integrates SPARC methodology into swarm coordination for implementing
- * Features and Tasks from the database-driven product flow
+ * Features and Tasks from the database-driven product flow.
  *
  * Architecture:
  * 1. Receives Features/Tasks from DatabaseDrivenSystem
  * 2. Applies SPARC methodology (Specification → Pseudocode → Architecture → Refinement → Completion)
  * 3. Coordinates agents to implement each SPARC phase
- * 4. Returns completed implementation artifacts
+ * 4. Returns completed implementation artifacts.
  */
 
 import { createLogger } from '../../../core/logger';
@@ -71,10 +71,10 @@ export interface SPARCSwarmMetrics extends SwarmMetrics {
 }
 
 /**
- * SPARC-Enhanced Swarm Coordinator
+ * SPARC-Enhanced Swarm Coordinator.
  *
  * Coordinates swarm agents using SPARC methodology for implementing
- * database-driven Features and Tasks
+ * database-driven Features and Tasks.
  *
  * @example
  */
@@ -96,7 +96,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Process a Feature using SPARC methodology
+   * Process a Feature using SPARC methodology.
    *
    * @param feature
    */
@@ -125,7 +125,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Process a Task using SPARC methodology
+   * Process a Task using SPARC methodology.
    *
    * @param task
    */
@@ -154,7 +154,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Execute complete SPARC cycle for a task
+   * Execute complete SPARC cycle for a task.
    *
    * @param sparcTask
    */
@@ -206,7 +206,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Execute a specific SPARC phase using specialized agents
+   * Execute a specific SPARC phase using specialized agents.
    *
    * @param sparcTask
    * @param phase
@@ -246,7 +246,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Execute Specification Phase
+   * Execute Specification Phase.
    *
    * @param sparcTask
    * @param agents
@@ -278,7 +278,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Execute Pseudocode Phase
+   * Execute Pseudocode Phase.
    *
    * @param sparcTask
    * @param agents
@@ -306,7 +306,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Execute Architecture Phase
+   * Execute Architecture Phase.
    *
    * @param sparcTask
    * @param agents
@@ -337,7 +337,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Execute Refinement Phase
+   * Execute Refinement Phase.
    *
    * @param sparcTask
    * @param agents
@@ -365,7 +365,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Execute Completion Phase
+   * Execute Completion Phase.
    *
    * @param sparcTask
    * @param agents
@@ -393,7 +393,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Select specialized agents for a SPARC phase
+   * Select specialized agents for a SPARC phase.
    *
    * @param phase
    * @param sparcTask
@@ -425,7 +425,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Get agent types specialized for each SPARC phase
+   * Get agent types specialized for each SPARC phase.
    *
    * @param phase
    */
@@ -442,7 +442,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Validate completion of a SPARC phase
+   * Validate completion of a SPARC phase.
    *
    * @param sparcTask
    * @param phase
@@ -476,7 +476,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Retry a failed SPARC phase
+   * Retry a failed SPARC phase.
    *
    * @param sparcTask
    * @param phase
@@ -493,21 +493,21 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Get SPARC-specific metrics
+   * Get SPARC-specific metrics.
    */
   getSPARCMetrics(): SPARCSwarmMetrics {
     return this.sparcMetrics;
   }
 
   /**
-   * Get all active SPARC tasks
+   * Get all active SPARC tasks.
    */
   getActiveSPARCTasks(): SPARCTask[] {
     return Array.from(this.sparcTasks.values()).filter((task) => task.status === 'in_progress');
   }
 
   /**
-   * Get SPARC task by ID
+   * Get SPARC task by ID.
    *
    * @param taskId
    */
@@ -635,8 +635,8 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
 
   private updateAverageSparcCycleTime(sparcTask: SPARCTask): void {
     const phases = Object.values(sparcTask.phaseProgress);
-    const startTime = phases[0].metrics.startTime;
-    const endTime = phases[phases.length - 1].metrics.endTime;
+    const startTime = phases.length > 0 ? phases[0]?.metrics.startTime : undefined;
+    const endTime = phases.length > 0 ? phases[phases.length - 1]?.metrics.endTime : undefined;
 
     if (startTime && endTime) {
       const cycleTime = endTime.getTime() - startTime.getTime();
@@ -662,7 +662,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   /**
-   * Assign a task to a specific agent
+   * Assign a task to a specific agent.
    *
    * @param agentId
    * @param task

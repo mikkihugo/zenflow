@@ -1,5 +1,7 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-session-example");
 /**
- * Session Management System - Comprehensive Examples
+ * Session Management System - Comprehensive Examples.
  *
  * This file demonstrates how to use the session management system
  * for persistent swarm orchestration across multiple executions.
@@ -11,7 +13,9 @@ import { SessionManager } from './session-manager';
 import { SessionStats, SessionValidator } from './session-utils';
 
 /**
- * Example 1: Basic Session Usage
+ * Example 1: Basic Session Usage.
+ *
+ * @example
  */
 async function basicSessionExample() {
   // Create a session-enabled swarm
@@ -117,9 +121,10 @@ async function basicSessionExample() {
 }
 
 /**
- * Example 2: Session Recovery and Restoration
+ * Example 2: Session Recovery and Restoration.
  *
  * @param existingSessionId
+ * @example
  */
 async function sessionRecoveryExample(existingSessionId: string) {
   const swarm = new SessionEnabledSwarm({
@@ -160,8 +165,7 @@ async function sessionRecoveryExample(existingSessionId: string) {
 
       // Demonstrate checkpoint restoration
       if (currentSession.checkpoints.length > 0) {
-        const firstCheckpoint = currentSession.checkpoints[0];
-
+        const firstCheckpoint = currentSession.checkpoints[0]!; // Non-null assertion since we checked length
         await swarm.restoreFromCheckpoint(firstCheckpoint.id);
       }
     }
@@ -171,7 +175,9 @@ async function sessionRecoveryExample(existingSessionId: string) {
 }
 
 /**
- * Example 3: Session Lifecycle Management
+ * Example 3: Session Lifecycle Management.
+ *
+ * @example
  */
 async function sessionLifecycleExample() {
   // Create a simple mock implementation for now
@@ -249,7 +255,9 @@ async function sessionLifecycleExample() {
 }
 
 /**
- * Example 4: Session Health Monitoring and Recovery
+ * Example 4: Session Health Monitoring and Recovery.
+ *
+ * @example
  */
 async function sessionHealthExample() {
   // Create a simple mock implementation for now
@@ -287,7 +295,8 @@ async function sessionHealthExample() {
     }
 
     // Schedule automatic recovery if needed
-    if (healthReport.needsRecovery.length > 0) {
+    // Fix: Use bracket notation to access index signature property
+    if (healthReport['needsRecovery'] && healthReport['needsRecovery'].length > 0) {
       await recoveryService.scheduleAutoRecovery();
     }
   } finally {
@@ -297,7 +306,9 @@ async function sessionHealthExample() {
 }
 
 /**
- * Example 5: Advanced Session Operations
+ * Example 5: Advanced Session Operations.
+ *
+ * @example
  */
 async function advancedSessionExample() {
   const swarm = new SessionEnabledSwarm(
@@ -323,7 +334,7 @@ async function advancedSessionExample() {
     swarm.on('session:checkpoint_created', (_data: any) => {});
 
     swarm.on('session:error', (data: any) => {
-      console.error(`Session error: ${data.error} during ${data.operation}`);
+      logger.error(`Session error: ${data.error} during ${data.operation}`);
     });
 
     const _sessionId = await swarm.createSession('Advanced ML Pipeline');
@@ -362,7 +373,8 @@ async function advancedSessionExample() {
       },
     ];
 
-    const agentIds = [];
+    // Fix: Add proper type annotation for agentIds
+    const agentIds: string[] = [];
     for (const agent of agents) {
       const agentId = await swarm.addAgent(agent);
       agentIds.push(agentId);
@@ -373,7 +385,7 @@ async function advancedSessionExample() {
       {
         description: 'Collect training data from multiple sources',
         priority: 'critical' as const,
-        assignedAgents: [agentIds[0]],
+        assignedAgents: [agentIds[0]!], // Fix: Use non-null assertion since we know it exists
         dependencies: [] as string[],
         swarmId: 'advanced-pipeline',
         strategy: 'balanced',
@@ -387,7 +399,7 @@ async function advancedSessionExample() {
       {
         description: 'Clean and validate collected data',
         priority: 'high' as const,
-        assignedAgents: [agentIds[1]],
+        assignedAgents: [agentIds[1]!], // Fix: Use non-null assertion
         dependencies: [] as string[],
         swarmId: 'advanced-pipeline',
         strategy: 'balanced',
@@ -401,7 +413,7 @@ async function advancedSessionExample() {
       {
         description: 'Engineer features from cleaned data',
         priority: 'high' as const,
-        assignedAgents: [agentIds[2]],
+        assignedAgents: [agentIds[2]!], // Fix: Use non-null assertion
         dependencies: [] as string[],
         swarmId: 'advanced-pipeline',
         strategy: 'balanced',
@@ -415,7 +427,7 @@ async function advancedSessionExample() {
       {
         description: 'Build and train multiple models',
         priority: 'high' as const,
-        assignedAgents: [agentIds[3]],
+        assignedAgents: [agentIds[3]!], // Fix: Use non-null assertion
         dependencies: [] as string[],
         swarmId: 'advanced-pipeline',
         strategy: 'balanced',
@@ -429,7 +441,7 @@ async function advancedSessionExample() {
       {
         description: 'Validate model performance',
         priority: 'medium' as const,
-        assignedAgents: [agentIds[4]],
+        assignedAgents: [agentIds[4]!], // Fix: Use non-null assertion
         dependencies: [] as string[],
         swarmId: 'advanced-pipeline',
         strategy: 'balanced',
@@ -443,7 +455,7 @@ async function advancedSessionExample() {
       {
         description: 'Deploy best performing model',
         priority: 'medium' as const,
-        assignedAgents: [agentIds[5]],
+        assignedAgents: [agentIds[5]!], // Fix: Use non-null assertion
         dependencies: [] as string[],
         swarmId: 'advanced-pipeline',
         strategy: 'balanced',
@@ -456,12 +468,18 @@ async function advancedSessionExample() {
       },
     ];
 
-    const taskIds = [];
+    // Fix: Add proper type annotation for taskIds
+    const taskIds: string[] = [];
     for (let i = 0; i < tasks.length; i++) {
-      const task = tasks[i];
+      const task = tasks[i]!; // Non-null assertion since we're within array bounds
+      
       if (i > 0) {
-        task.dependencies = [taskIds[i - 1]]; // Sequential dependencies
+        const previousTaskId = taskIds[i - 1];
+        if (previousTaskId) {
+          task.dependencies = [previousTaskId]; // Sequential dependencies
+        }
       }
+      
       const taskId = await swarm.submitTask(task);
       taskIds.push(taskId);
     }
@@ -501,7 +519,9 @@ async function advancedSessionExample() {
 }
 
 /**
- * Main execution function
+ * Main execution function.
+ *
+ * @example
  */
 async function runAllExamples() {
   try {
@@ -520,13 +540,13 @@ async function runAllExamples() {
     // Run advanced operations example
     await advancedSessionExample();
   } catch (error) {
-    console.error('❌ Error running examples:', error);
+    logger.error('❌ Error running examples:', error);
     process.exit(1);
   }
 }
 
 /**
- * Extension method for SessionEnabledSwarm to export session data
+ * Extension method for SessionEnabledSwarm to export session data.
  */
 declare module './session-integration.js' {
   interface SessionEnabledSwarm {

@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-clients-adapters-websocket-client-adapter");
 /**
  * WebSocket Client Adapter for UACL (Unified API Client Layer)
  *
@@ -1218,7 +1220,7 @@ export class WebSocketClientFactory {
   async shutdown(): Promise<void> {
     const shutdownPromises = Array.from(this.clients.values()).map((client) =>
       client.destroy().catch((error) => {
-        console.error(`Error shutting down WebSocket client:`, error);
+        logger.error(`Error shutting down WebSocket client:`, error);
       })
     );
 

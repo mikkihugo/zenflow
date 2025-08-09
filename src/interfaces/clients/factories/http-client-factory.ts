@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-clients-factories-http-client-factory");
 /**
  * HTTP Client Factory
  *
@@ -79,7 +81,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
           this.clients.delete(client.name);
         } catch (cleanupError) {
           // Log cleanup error but don't throw
-          console.error(`Failed to cleanup client ${client.name}:`, cleanupError);
+          logger.error(`Failed to cleanup client ${client.name}:`, cleanupError);
         }
       }
 
@@ -119,7 +121,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       this.clients.delete(name);
       return true;
     } catch (error) {
-      console.error(`Failed to remove client ${name}:`, error);
+      logger.error(`Failed to remove client ${name}:`, error);
       // Force remove even if destroy failed
       this.clients.delete(name);
       return true;
@@ -190,7 +192,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       try {
         await client.destroy();
       } catch (error) {
-        console.error(`Failed to shutdown client ${client.name}:`, error);
+        logger.error(`Failed to shutdown client ${client.name}:`, error);
       }
     });
 
@@ -445,7 +447,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
    */
   private setupClientHandlers(client: HTTPClientAdapter): void {
     client.on('error', (error) => {
-      console.error(`Client ${client.name} error:`, error);
+      logger.error(`Client ${client.name} error:`, error);
     });
 
     client.on('connect', () => {});

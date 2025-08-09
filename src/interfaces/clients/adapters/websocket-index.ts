@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-clients-adapters-websocket-index");
 /**
  * WebSocket Client Adapter Index
  *
@@ -364,10 +366,10 @@ export class WebSocketHealthMonitor {
         const status = await client.healthCheck();
 
         if (status.status === 'unhealthy') {
-          console.warn(`WebSocket client ${name} is unhealthy:`, status.metadata);
+          logger.warn(`WebSocket client ${name} is unhealthy:`, status.metadata);
         }
       } catch (error) {
-        console.error(`WebSocket health check failed for ${name}:`, error);
+        logger.error(`WebSocket health check failed for ${name}:`, error);
       }
     }, checkInterval);
 

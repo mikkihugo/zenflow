@@ -108,6 +108,20 @@ export interface StepExecutionResult {
 }
 
 /**
+ * Information about a completed workflow step
+ * 
+ * @example
+ */
+export interface CompletedStepInfo {
+  readonly index: number;
+  readonly step: WorkflowStep;
+  readonly result: StepExecutionResult;
+  readonly duration: number;
+  readonly timestamp: Date;
+  readonly retryCount: number;
+}
+
+/**
  * Workflow result metadata
  *
  * @example
@@ -394,19 +408,6 @@ export interface WorkflowStepResults {
   readonly [stepName: string]: StepExecutionResult;
 }
 
-/**
- * Completed step information
- *
- * @example
- */
-export interface CompletedStepInfo {
-  readonly index: number;
-  readonly step: WorkflowStep;
-  readonly result: StepExecutionResult;
-  readonly duration: number;
-  readonly timestamp: Date;
-  readonly retryCount: number;
-}
 
 /**
  * Workflow execution progress

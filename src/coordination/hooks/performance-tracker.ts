@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("coordination-hooks-performance-tracker");
 /**
  * Performance Tracking System
  * Tracks operation performance, collects metrics, and provides optimization suggestions
@@ -222,7 +224,7 @@ export class HookPerformanceTracker implements MetricsTracker {
     issues: PerformanceIssue[]
   ): Promise<void> {
     // Log performance issues
-    console.warn(`Performance issues detected for operation ${operationId}:`, issues);
+    logger.warn(`Performance issues detected for operation ${operationId}:`, issues);
 
     // Would integrate with alerting system in real implementation
   }

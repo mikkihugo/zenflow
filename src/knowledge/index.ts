@@ -325,6 +325,6 @@ export function getKnowledgeStoragePaths(basePath: string = process.cwd()): {
 }
 
 /**
- * Default Export - Main Integration System Class
+ * Main Integration System Class is exported above
+ * Default export pointing to the main class for convenience
  */
-export type { CrossAgentKnowledgeIntegration as default };

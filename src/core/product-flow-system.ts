@@ -1,10 +1,10 @@
 /**
- * Product Flow System - RENAMED from document-driven-system.ts
+ * Product Flow System - RENAMED from document-driven-system.ts.
  *
  * MISSION ACCOMPLISHED: Clean Product Flow naming
  * - Product Flow System orchestrates Vision → ADRs → PRDs → Epics → Features → Tasks → Code
  * - SPARC methodology applied as implementation tool WITHIN Features/Tasks
- * - Clear naming: Product Flow = WHAT, SPARC = HOW
+ * - Clear naming: Product Flow = WHAT, SPARC = HOW.
  */
 
 import { EventEmitter } from 'node:events';
@@ -16,10 +16,10 @@ import { createLogger } from './logger';
 const logger = createLogger('ProductFlowSystem');
 
 /**
- * Product Flow System - Main orchestrator for business workflow
+ * Product Flow System - Main orchestrator for business workflow.
  *
  * Coordinates the complete Product Flow with SPARC integration:
- * Vision → ADRs → PRDs → Epics → Features (+ SPARC) → Tasks (+ SPARC) → Code
+ * Vision → ADRs → PRDs → Epics → Features (+ SPARC) → Tasks (+ SPARC) → Code.
  *
  * @example
  */
@@ -45,7 +45,7 @@ export class ProductFlowSystem extends EventEmitter {
   }
 
   /**
-   * Process a visionary document and trigger complete Product Flow
+   * Process a visionary document and trigger complete Product Flow.
    *
    * @param workspaceId
    * @param docPath
@@ -71,7 +71,7 @@ export class ProductFlowSystem extends EventEmitter {
   }
 
   /**
-   * Load workspace for Product Flow operations
+   * Load workspace for Product Flow operations.
    *
    * @param workspacePath
    */
@@ -84,13 +84,13 @@ export class ProductFlowSystem extends EventEmitter {
   }
 
   /**
-   * Get workspace status and metrics
+   * Get workspace status and metrics.
    *
    * @param workspaceId
    */
   async getWorkspaceStatus(workspaceId: string): Promise<{
     workspaceId: string;
-    path?: string;
+    path?: string | undefined;
     activeWorkflows: number;
     sparcIntegration: boolean;
   }> {

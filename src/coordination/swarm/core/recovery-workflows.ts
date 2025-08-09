@@ -1,5 +1,5 @@
 /**
- * Recovery Workflows System for ZenSwarm
+ * Recovery Workflows System for ZenSwarm.
  *
  * Provides comprehensive recovery workflows for different failure scenarios,
  * automatic recovery procedures, and integration with health monitoring.
@@ -10,7 +10,7 @@
  * - Automatic triggering based on health monitor alerts
  * - Step-by-step execution with rollback capabilities
  * - Integration with MCP connection state management
- * - Chaos engineering support for testing recovery procedures
+ * - Chaos engineering support for testing recovery procedures.
  */
 
 import { EventEmitter } from 'node:events';
@@ -18,10 +18,26 @@ import { ErrorFactory } from './errors';
 import { Logger } from './logger';
 import { generateId } from './utils';
 
+interface WorkflowDefinition {
+  id?: string;
+  name: string;
+  description?: string;
+  triggers?: any[];
+  steps?: any[];
+  rollbackSteps?: any[];
+  timeout?: number;
+  maxRetries?: number;
+  priority?: 'low' | 'normal' | 'high' | 'critical';
+  category?: string;
+  enabled?: boolean;
+  metadata?: any;
+  createdAt?: Date;
+}
+
 export class RecoveryWorkflows extends EventEmitter {
   public options: any;
   public logger: any;
-  public workflows: Map<string, any>;
+  public workflows: Map<string, WorkflowDefinition>;
   public activeRecoveries: Map<string, any>;
   public recoveryHistory: Map<string, any>;
   public healthMonitor: any;
@@ -70,7 +86,7 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Initialize recovery workflows
+   * Initialize recovery workflows.
    */
   async initialize() {
     try {
@@ -96,13 +112,13 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Register a recovery workflow
+   * Register a recovery workflow.
    *
    * @param name
    * @param workflowDefinition
    */
-  registerWorkflow(name, workflowDefinition) {
-    const workflow = {
+  registerWorkflow(name: string, workflowDefinition: any): string {
+    const workflow: WorkflowDefinition = {
       id: generateId('workflow'),
       name,
       description: workflowDefinition.description || '',
@@ -124,19 +140,19 @@ export class RecoveryWorkflows extends EventEmitter {
     this.logger.info(`Registered recovery workflow: ${name}`, {
       category: workflow.category,
       priority: workflow.priority,
-      stepCount: workflow.steps.length,
+      stepCount: workflow.steps?.length || 0,
     });
 
-    return workflow.id;
+    return workflow.id || '';
   }
 
   /**
-   * Trigger recovery workflow
+   * Trigger recovery workflow.
    *
    * @param triggerSource
    * @param context
    */
-  async triggerRecovery(triggerSource, context = {}) {
+  async triggerRecovery(triggerSource: string, context: any = {}) {
     try {
       // Check if we're already at max concurrent recoveries
       if (this.activeRecoveries.size >= this.options.maxConcurrentRecoveries) {
@@ -155,10 +171,17 @@ export class RecoveryWorkflows extends EventEmitter {
       }
 
       // Sort by priority and execute the highest priority workflow
-      const workflow = matchingWorkflows.sort((a, b) => {
-        const priorityOrder = { critical: 4, high: 3, normal: 2, low: 1 };
-        return priorityOrder[b.priority] - priorityOrder[a.priority];
-      })[0];
+      const sortedWorkflows = matchingWorkflows.sort((a: WorkflowDefinition, b: WorkflowDefinition) => {
+        const priorityOrder: { [key: string]: number } = { critical: 4, high: 3, normal: 2, low: 1 };
+        const aPriority = a.priority || 'normal';
+        const bPriority = b.priority || 'normal';
+        return (priorityOrder[bPriority] || 0) - (priorityOrder[aPriority] || 0);
+      });
+
+      const workflow = sortedWorkflows[0];
+      if (!workflow) {
+        throw new Error('No valid workflow found after sorting');
+      }
 
       this.logger.info(`Triggering recovery workflow: ${workflow.name}`, {
         triggerSource,
@@ -182,12 +205,12 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Execute a recovery workflow
+   * Execute a recovery workflow.
    *
    * @param workflow
    * @param context
    */
-  async executeWorkflow(workflow, context = {}) {
+  async executeWorkflow(workflow: WorkflowDefinition, context: any = {}) {
     const executionId = generateId('execution');
     const startTime = Date.now();
 
@@ -222,14 +245,15 @@ export class RecoveryWorkflows extends EventEmitter {
     try {
       this.logger.info(`Executing recovery workflow: ${workflow.name}`, {
         executionId,
-        stepCount: workflow.steps.length,
+        stepCount: workflow.steps?.length || 0,
       });
 
       this.emit('recovery:started', { executionId, workflow, context });
 
       // Execute workflow steps
-      for (let i = 0; i < workflow.steps.length; i++) {
-        const step = workflow.steps[i];
+      const steps = workflow.steps || [];
+      for (let i = 0; i < steps.length; i++) {
+        const step = steps[i];
         execution.currentStep = i;
 
         this.logger.debug(`Executing recovery step ${i + 1}: ${step.name}`, {
@@ -290,7 +314,7 @@ export class RecoveryWorkflows extends EventEmitter {
       });
 
       // Attempt rollback if required
-      if (execution.rollbackRequired && workflow.rollbackSteps.length > 0) {
+      if (execution.rollbackRequired && workflow.rollbackSteps && workflow.rollbackSteps.length > 0) {
         try {
           await this.executeRollback(workflow, execution, context);
         } catch (rollbackError) {
@@ -304,7 +328,7 @@ export class RecoveryWorkflows extends EventEmitter {
       this.emit('recovery:failed', { executionId, execution, error });
     } finally {
       // Record execution in history
-      const history = this.recoveryHistory.get(workflow.name);
+      const history = this.recoveryHistory.get(workflow.name) || [];
       history.push({
         ...execution,
         completedAt: new Date(),
@@ -322,13 +346,13 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Execute a single workflow step
+   * Execute a single workflow step.
    *
    * @param step
    * @param context
    * @param execution
    */
-  async executeStep(step, context, execution) {
+  async executeStep(step: any, context: any, execution: any) {
     const stepStartTime = Date.now();
     const stepResult = {
       name: step.name,
@@ -376,13 +400,13 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Run the actual step function
+   * Run the actual step function.
    *
    * @param step
    * @param context
    * @param execution
    */
-  async runStepFunction(step, context, execution) {
+  async runStepFunction(step: any, context: any, execution: any) {
     if (typeof step.action === 'function') {
       return await step.action(context, execution);
     } else if (typeof step.action === 'string') {
@@ -394,16 +418,16 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Execute rollback steps
+   * Execute rollback steps.
    *
    * @param workflow
    * @param execution
    * @param context
    */
-  async executeRollback(workflow, execution, context) {
+  async executeRollback(workflow: WorkflowDefinition, execution: any, context: any) {
     this.logger.info(`Executing rollback for workflow: ${workflow.name}`, {
       executionId: execution.id,
-      rollbackStepCount: workflow.rollbackSteps.length,
+      rollbackStepCount: workflow.rollbackSteps?.length || 0,
     });
 
     execution.status = 'rolling_back';
@@ -418,7 +442,8 @@ export class RecoveryWorkflows extends EventEmitter {
       context: any;
     }> = [];
 
-    for (const step of workflow.rollbackSteps.reverse()) {
+    const steps = workflow.rollbackSteps || [];
+    for (const step of steps.reverse()) {
       try {
         const rollbackResult = await this.executeStep(step, context, execution);
         rollbackSteps.push(rollbackResult);
@@ -438,14 +463,14 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Run built-in recovery actions
+   * Run built-in recovery actions.
    *
    * @param actionName
    * @param parameters
    * @param context
    * @param _execution
    */
-  async runBuiltInAction(actionName, parameters, context, _execution) {
+  async runBuiltInAction(actionName: string, parameters: any, context: any, _execution: any) {
     switch (actionName) {
       case 'restart_swarm':
         return await this.restartSwarm(parameters.swarmId, context);
@@ -482,19 +507,20 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Find workflows that match the trigger
+   * Find workflows that match the trigger.
    *
    * @param triggerSource
    * @param context
    */
-  findMatchingWorkflows(triggerSource, context) {
-    const matchingWorkflows = [];
+  findMatchingWorkflows(triggerSource: string, context: any): WorkflowDefinition[] {
+    const matchingWorkflows: WorkflowDefinition[] = [];
 
     for (const [_name, workflow] of this.workflows) {
       if (!workflow.enabled) continue;
 
       // Check if workflow matches the trigger
-      const matches = workflow.triggers.some((trigger) => {
+      const triggers = workflow.triggers || [];
+      const matches = triggers.some((trigger: any) => {
         if (typeof trigger === 'string') {
           return trigger === triggerSource || triggerSource.includes(trigger);
         } else if (typeof trigger === 'object') {
@@ -512,13 +538,13 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Evaluate complex trigger conditions
+   * Evaluate complex trigger conditions.
    *
    * @param trigger
    * @param triggerSource
    * @param context
    */
-  evaluateTriggerCondition(trigger, triggerSource, context) {
+  evaluateTriggerCondition(trigger: any, triggerSource: string, context: any): boolean {
     if (trigger.source && trigger.source !== triggerSource) return false;
 
     if (trigger.pattern && !new RegExp(trigger.pattern).test(triggerSource)) return false;
@@ -533,12 +559,12 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Cancel an active recovery
+   * Cancel an active recovery.
    *
    * @param executionId
    * @param reason
    */
-  async cancelRecovery(executionId, reason = 'Manual cancellation') {
+  async cancelRecovery(executionId: string, reason: string = 'Manual cancellation') {
     const execution = this.activeRecoveries.get(executionId);
     if (!execution) {
       throw ErrorFactory.createError('validation', `Recovery execution ${executionId} not found`);
@@ -557,17 +583,17 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Get recovery status
+   * Get recovery status.
    *
    * @param executionId
    */
-  getRecoveryStatus(executionId = null) {
+  getRecoveryStatus(executionId: string | null = null) {
     if (executionId) {
       const execution = this.activeRecoveries.get(executionId);
       if (!execution) {
         // Check history
         for (const history of this.recoveryHistory.values()) {
-          const historicalExecution = history.find((e) => e.id === executionId);
+          const historicalExecution = history.find((e: any) => e.id === executionId);
           if (historicalExecution) return historicalExecution;
         }
         return null;
@@ -580,7 +606,7 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Get recovery statistics
+   * Get recovery statistics.
    */
   getRecoveryStats() {
     return {
@@ -592,27 +618,27 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Set integration points
+   * Set integration points.
    *
    * @param healthMonitor
    */
-  setHealthMonitor(healthMonitor) {
+  setHealthMonitor(healthMonitor: any) {
     this.healthMonitor = healthMonitor;
     this.logger.info('Health Monitor integration configured');
   }
 
-  setMCPTools(mcpTools) {
+  setMCPTools(mcpTools: any) {
     this.mcpTools = mcpTools;
     this.logger.info('MCP Tools integration configured');
   }
 
-  setConnectionManager(connectionManager) {
+  setConnectionManager(connectionManager: any) {
     this.connectionManager = connectionManager;
     this.logger.info('Connection Manager integration configured');
   }
 
   /**
-   * Register built-in recovery workflows
+   * Register built-in recovery workflows.
    */
   registerBuiltInWorkflows() {
     // Swarm initialization failure recovery
@@ -633,7 +659,7 @@ export class RecoveryWorkflows extends EventEmitter {
         },
         {
           name: 'retry_initialization',
-          action: async (context) => {
+          action: async (context: any) => {
             if (!this.mcpTools) throw new Error('MCP Tools not available');
             return await this.mcpTools.swarm_init(context.swarmOptions || {});
           },
@@ -658,7 +684,7 @@ export class RecoveryWorkflows extends EventEmitter {
       steps: [
         {
           name: 'diagnose_agent',
-          action: async (context) => {
+          action: async (context: any) => {
             const agentId = context.agentId;
             if (!agentId) throw new Error('Agent ID not provided');
 
@@ -674,7 +700,7 @@ export class RecoveryWorkflows extends EventEmitter {
         },
         {
           name: 'verify_agent_health',
-          action: async (context) => {
+          action: async (context: any) => {
             // Verify agent is healthy after restart
             await new Promise((resolve) => setTimeout(resolve, 2000));
             return { agentId: context.agentId, healthy: true };
@@ -707,7 +733,7 @@ export class RecoveryWorkflows extends EventEmitter {
         },
         {
           name: 'reduce_agent_count',
-          action: async (context) => {
+          action: async (context: any) => {
             // Reduce number of agents to free memory
             const targetReduction = Math.ceil(context.currentAgentCount * 0.2); // 20% reduction
             return { reducedBy: targetReduction };
@@ -725,7 +751,7 @@ export class RecoveryWorkflows extends EventEmitter {
       steps: [
         {
           name: 'diagnose_connection',
-          action: async (context) => {
+          action: async (context: any) => {
             return { connectionDiagnosed: true, context };
           },
         },
@@ -736,7 +762,7 @@ export class RecoveryWorkflows extends EventEmitter {
         },
         {
           name: 'verify_connection',
-          action: async (_context) => {
+          action: async (_context: any) => {
             // Wait and verify connection is restored
             await new Promise((resolve) => setTimeout(resolve, 3000));
             return { connectionVerified: true };
@@ -746,7 +772,7 @@ export class RecoveryWorkflows extends EventEmitter {
       rollbackSteps: [
         {
           name: 'fallback_connection',
-          action: async (_context) => {
+          action: async (_context: any) => {
             // Implement fallback connection logic
             return { fallbackActivated: true };
           },
@@ -763,7 +789,7 @@ export class RecoveryWorkflows extends EventEmitter {
       steps: [
         {
           name: 'analyze_performance',
-          action: async (_context) => {
+          action: async (_context: any) => {
             const metrics = {
               cpuUsage: process.cpuUsage(),
               memoryUsage: process.memoryUsage(),
@@ -774,14 +800,14 @@ export class RecoveryWorkflows extends EventEmitter {
         },
         {
           name: 'optimize_resources',
-          action: async (_context) => {
+          action: async (_context: any) => {
             // Trigger resource optimization
             return { resourcesOptimized: true };
           },
         },
         {
           name: 'restart_slow_components',
-          action: async (_context) => {
+          action: async (_context: any) => {
             // Restart components showing performance issues
             return { componentsRestarted: true };
           },
@@ -797,10 +823,10 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Built-in recovery action implementations
+   * Built-in recovery action implementations.
    */
 
-  async restartSwarm(swarmId, _context) {
+  async restartSwarm(swarmId: string, _context: any) {
     this.logger.info(`Restarting swarm: ${swarmId}`);
 
     if (!this.mcpTools) {
@@ -829,7 +855,7 @@ export class RecoveryWorkflows extends EventEmitter {
     }
   }
 
-  async restartAgent(agentId, _context) {
+  async restartAgent(agentId: string, _context: any) {
     this.logger.info(`Restarting agent: ${agentId}`);
 
     if (!this.mcpTools) {
@@ -839,7 +865,7 @@ export class RecoveryWorkflows extends EventEmitter {
     try {
       // Get agent info
       const agents = await this.mcpTools.agent_list({});
-      const agent = agents.agents.find((a) => a.id === agentId);
+      const agent = agents.agents.find((a: any) => a.id === agentId);
 
       if (!agent) {
         throw new Error(`Agent ${agentId} not found`);
@@ -858,11 +884,11 @@ export class RecoveryWorkflows extends EventEmitter {
     }
   }
 
-  async clearCache(cacheType, _context) {
+  async clearCache(cacheType: string, _context: any) {
     this.logger.info(`Clearing cache: ${cacheType}`);
 
     // Clear various caches based on type
-    const clearedCaches = [];
+    const clearedCaches: string[] = [];
 
     if (cacheType === 'all' || cacheType === 'memory') {
       // Clear memory caches
@@ -877,7 +903,7 @@ export class RecoveryWorkflows extends EventEmitter {
     return { cacheType, clearedCaches, timestamp: Date.now() };
   }
 
-  async restartMCPConnection(connectionId, _context) {
+  async restartMCPConnection(connectionId: string, _context: any) {
     this.logger.info(`Restarting MCP connection: ${connectionId}`);
 
     if (!this.connectionManager) {
@@ -893,7 +919,7 @@ export class RecoveryWorkflows extends EventEmitter {
     }
   }
 
-  async scaleAgents(swarmId, targetCount, _context) {
+  async scaleAgents(swarmId: string, targetCount: number, _context: any) {
     this.logger.info(`Scaling agents for swarm ${swarmId} to ${targetCount}`);
 
     if (!this.mcpTools) {
@@ -907,7 +933,7 @@ export class RecoveryWorkflows extends EventEmitter {
       if (targetCount > currentCount) {
         // Scale up
         const toAdd = targetCount - currentCount;
-        const newAgents = [];
+        const newAgents: string[] = [];
 
         for (let i = 0; i < toAdd; i++) {
           const agent = await this.mcpTools.agent_spawn({
@@ -930,10 +956,10 @@ export class RecoveryWorkflows extends EventEmitter {
     }
   }
 
-  async cleanupResources(resourceType, _context) {
+  async cleanupResources(resourceType: string, _context: any) {
     this.logger.info(`Cleaning up resources: ${resourceType}`);
 
-    const cleanedResources = [];
+    const cleanedResources: string[] = [];
 
     if (resourceType === 'all' || resourceType === 'swarm') {
       // Cleanup swarm resources
@@ -956,7 +982,7 @@ export class RecoveryWorkflows extends EventEmitter {
     return { resourceType, cleanedResources, timestamp: Date.now() };
   }
 
-  async resetNeuralNetwork(networkId, _context) {
+  async resetNeuralNetwork(networkId: string, _context: any) {
     this.logger.info(`Resetting neural network: ${networkId}`);
 
     if (!this.mcpTools) {
@@ -977,14 +1003,13 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Export recovery data for analysis
+   * Export recovery data for analysis.
    */
   exportRecoveryData() {
     return {
       timestamp: new Date(),
       stats: this.getRecoveryStats(),
       workflows: Array.from(this.workflows.entries()).map(([name, workflow]) => ({
-        name,
         ...workflow,
         history: this.recoveryHistory.get(name) || [],
       })),
@@ -993,12 +1018,12 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Chaos engineering - inject failures for testing
+   * Chaos engineering - inject failures for testing.
    *
    * @param failureType
    * @param parameters
    */
-  async injectChaosFailure(failureType, parameters = {}) {
+  async injectChaosFailure(failureType: string, parameters: any = {}) {
     if (!this.options.enableChaosEngineering) {
       throw new Error('Chaos engineering is not enabled');
     }
@@ -1023,9 +1048,9 @@ export class RecoveryWorkflows extends EventEmitter {
     }
   }
 
-  async simulateMemoryPressure(parameters) {
+  async simulateMemoryPressure(parameters: any) {
     // Create memory pressure by allocating large arrays
-    const arrays = [];
+    const arrays: any[] = [];
     const allocSize = parameters.size || 10 * 1024 * 1024; // 10MB default
     const duration = parameters.duration || 30000; // 30 seconds default
 
@@ -1040,7 +1065,7 @@ export class RecoveryWorkflows extends EventEmitter {
     return { chaosType: 'memory_pressure', allocSize, duration };
   }
 
-  async simulateAgentFailure(parameters) {
+  async simulateAgentFailure(parameters: any) {
     const agentId = parameters.agentId;
     if (!agentId) {
       throw new Error('Agent ID required for simulating agent failure');
@@ -1052,7 +1077,7 @@ export class RecoveryWorkflows extends EventEmitter {
     return { chaosType: 'agent_failure', agentId };
   }
 
-  async simulateConnectionFailure(parameters) {
+  async simulateConnectionFailure(parameters: any) {
     // Simulate MCP connection failure
     await this.triggerRecovery('mcp.connection.failed', parameters);
 
@@ -1060,7 +1085,7 @@ export class RecoveryWorkflows extends EventEmitter {
   }
 
   /**
-   * Cleanup and shutdown
+   * Cleanup and shutdown.
    */
   async shutdown() {
     this.logger.info('Shutting down Recovery Workflows');

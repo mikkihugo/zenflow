@@ -166,7 +166,7 @@ async function analyzeLogs(args: string[], logger: LoggerInterface): Promise<voi
   logger.info('Analyzing logs...', { logDir, pattern });
 
   if (!fs.existsSync(logDir)) {
-    console.error(`❌ Log directory not found: ${logDir}`);
+    logger.error(`❌ Log directory not found: ${logDir}`);
     process.exit(1);
   }
 

@@ -5,6 +5,7 @@
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import { getCORSOrigins } from '../src/config/url-builder.js';
 
 export class NetworkSecurity {
   static configureHelmet() {
@@ -44,7 +45,7 @@ export class NetworkSecurity {
 
   static configureCORS() {
     return cors({
-      origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+      origin: process.env.ALLOWED_ORIGINS?.split(',') || getCORSOrigins(),
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
       allowedHeaders: ['Content-Type', 'Authorization'],
       credentials: true,

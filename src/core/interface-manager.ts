@@ -19,6 +19,7 @@
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from './logger';
+import { config } from '../config';
 
 const logger = createLogger('InterfaceManager');
 
@@ -70,14 +71,16 @@ export class InterfaceManager extends EventEmitter {
   private isActive = false;
   private initialized = false;
 
-  constructor(config: InterfaceManagerConfig = {}) {
+  constructor(userConfig: InterfaceManagerConfig = {}) {
     super();
+    // Use centralized configuration with user overrides
+    const centralConfig = config.getAll();
     this.config = {
-      defaultMode: config.defaultMode || 'auto',
-      webPort: config.webPort || 3456,
-      theme: config.theme || 'dark',
-      enableRealTime: config.enableRealTime !== false,
-      coreSystem: config.coreSystem,
+      defaultMode: userConfig.defaultMode || 'auto',
+      webPort: userConfig.webPort || centralConfig.interfaces.web.port,
+      theme: userConfig.theme || centralConfig.interfaces.shared.theme as 'dark' | 'light',
+      enableRealTime: userConfig.enableRealTime ?? centralConfig.interfaces.shared.realTimeUpdates,
+      coreSystem: userConfig.coreSystem,
     };
   }
 
@@ -147,13 +150,18 @@ export class InterfaceManager extends EventEmitter {
   // ==================== PRIVATE METHODS ====================
 
   private detectInterfaceMode(): InterfaceMode {
-    // Simple detection logic
-    if (process.env['CI'] || !process.stdout.isTTY) {
+    // Use centralized environment detection
+    const centralConfig = config.getAll();
+    const environment = centralConfig.environment;
+    
+    // CI environment detection
+    if (environment.isCI || !process.stdout.isTTY) {
       return 'cli';
     }
 
     // Check if we're in a terminal that supports TUI
-    if (process.env['TERM'] && process.env['TERM'] !== 'dumb') {
+    const termConfig = centralConfig.interfaces.terminal;
+    if (termConfig.enableColors && termConfig.enableProgressBars) {
       return 'tui';
     }
 

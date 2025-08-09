@@ -53,7 +53,6 @@ export type ReviewCriteria = any;
 export type ReviewAggregation = any;
 export type ReviewQuality = any;
 export type ReviewStandards = any;
-export type ReviewProcess = any;
 export type ReputationModelType = 'basic' | 'weighted' | 'hierarchical' | 'consensus' | 'adaptive';
 export type ScoringAlgorithmType = 'linear' | 'logarithmic' | 'exponential' | 'sigmoid' | 'custom';
 export type WeightingStrategy =
@@ -92,7 +91,7 @@ export interface ReputationSystem {
 }
 
 export interface ReputationModel {
-  modelType: ReputationModelType;
+  modelType: AdvancedReputationModelType;
   parameters: ReputationParameters;
   components: ReputationComponent[];
   aggregation: ReputationAggregation;
@@ -112,7 +111,7 @@ export interface ReputationScore {
 
 export interface ScoringAlgorithm {
   algorithmName: string;
-  algorithmType: ScoringAlgorithmType;
+  algorithmType: QualityScoringAlgorithmType;
   weights: AlgorithmWeights;
   parameters: AlgorithmParameters;
   performance: AlgorithmPerformance;
@@ -120,7 +119,7 @@ export interface ScoringAlgorithm {
 }
 
 export interface ConsensusWeightingConfig {
-  weightingStrategy: WeightingStrategy;
+  weightingStrategy: QualityWeightingStrategy;
   thresholds: ConsensusThreshold[];
   decisionRules: DecisionRule[];
   tieBreaking: TieBreakingRule[];
@@ -128,14 +127,14 @@ export interface ConsensusWeightingConfig {
 }
 
 export interface DecayFunction {
-  functionType: DecayFunctionType;
+  functionType: AdvancedDecayFunctionType;
   parameters: DecayParameters;
   applicableComponents: string[];
   minimumRetention: number;
   maxDecayRate: number;
 }
 
-export type ReputationModelType =
+export type AdvancedReputationModelType =
   | 'pagerank-based'
   | 'eigentrust'
   | 'beta-reputation'
@@ -143,7 +142,7 @@ export type ReputationModelType =
   | 'subjective-logic'
   | 'hybrid-model';
 
-export type ScoringAlgorithmType =
+export type QualityScoringAlgorithmType =
   | 'accuracy-based'
   | 'consistency-based'
   | 'timeliness-based'
@@ -152,7 +151,7 @@ export type ScoringAlgorithmType =
   | 'usage-based'
   | 'citation-based';
 
-export type WeightingStrategy =
+export type QualityWeightingStrategy =
   | 'equal-weighting'
   | 'reputation-weighted'
   | 'expertise-weighted'
@@ -160,7 +159,7 @@ export type WeightingStrategy =
   | 'dynamic-weighting'
   | 'machine-learned';
 
-export type DecayFunctionType =
+export type AdvancedDecayFunctionType =
   | 'exponential-decay'
   | 'linear-decay'
   | 'logarithmic-decay'
@@ -404,7 +403,7 @@ export interface PeerReviewSystem {
 
 export interface ReviewProcess {
   processName: string;
-  reviewType: ReviewType;
+  reviewType: ReviewProcessType;
   phases: ReviewPhase[];
   criteria: ReviewCriteria[];
   workflow: ReviewWorkflow;
@@ -439,7 +438,7 @@ export interface ReviewResult {
   timestamp: number;
 }
 
-export type ReviewType =
+export type ReviewProcessType =
   | 'single-blind'
   | 'double-blind'
   | 'open-review'
@@ -719,7 +718,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
    */
   async conductPeerReview(
     knowledgeItem: KnowledgeItem,
-    reviewType: ReviewType = 'double-blind'
+    reviewType: ReviewProcessType = 'double-blind'
   ): Promise<ReviewResult> {
     const startTime = Date.now();
 

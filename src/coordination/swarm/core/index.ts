@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-index");
 /**
  * 🚀 ULTIMATE ZenSwarm Implementation - FULLY INTEGRATED
  *
@@ -66,7 +68,7 @@ export class Agent {
   public type: string;
   public config: any;
   public isActive: boolean;
-  public neuralNetworkId?: string;
+  public neuralNetworkId: string | undefined;
   public cognitivePattern: string;
   public capabilities: string[];
   public status: 'idle' | 'active' | 'busy';
@@ -353,7 +355,7 @@ export class ZenSwarm implements SwarmEventEmitter {
             execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
           } as any;
         } catch (error) {
-          console.warn('⚠️ Persistence not available:', (error as Error).message);
+          logger.warn('⚠️ Persistence not available:', (error as Error).message);
           instance.persistence = null;
         }
       }
@@ -390,7 +392,7 @@ export class ZenSwarm implements SwarmEventEmitter {
 
       return instance;
     } catch (error) {
-      console.error('❌ Failed to initialize ruv-swarm:', error);
+      logger.error('❌ Failed to initialize ruv-swarm:', error);
       throw error;
     }
   }
@@ -417,7 +419,7 @@ export class ZenSwarm implements SwarmEventEmitter {
         this.features.cognitive_diversity = true;
       }
     } catch (error) {
-      console.warn('⚠️ Feature detection failed:', (error as Error).message);
+      logger.warn('⚠️ Feature detection failed:', (error as Error).message);
     }
   }
 
@@ -457,7 +459,7 @@ export class ZenSwarm implements SwarmEventEmitter {
         wasmSwarm.name = name;
         wasmSwarm.config = swarmConfig;
       } catch (error) {
-        console.warn('Failed to create WASM swarm:', (error as Error).message);
+        logger.warn('Failed to create WASM swarm:', (error as Error).message);
         wasmSwarm = {
           id: id || `swarm-${Date.now()}`,
           name,
@@ -488,7 +490,7 @@ export class ZenSwarm implements SwarmEventEmitter {
         );
       } catch (error) {
         if (!(error as Error).message.includes('UNIQUE constraint failed')) {
-          console.warn('Failed to persist swarm:', (error as Error).message);
+          logger.warn('Failed to persist swarm:', (error as Error).message);
         }
       }
     }
@@ -656,7 +658,7 @@ export class ZenSwarm implements SwarmEventEmitter {
         try {
           handler(data);
         } catch (error) {
-          console.error(`Error in event handler for ${event}:`, error);
+          logger.error(`Error in event handler for ${event}:`, error);
         }
       });
     }
@@ -754,7 +756,10 @@ export class ZenSwarm implements SwarmEventEmitter {
       const pendingTasks = this.getTasksByStatus('pending');
       if (pendingTasks.length > 0) {
         pendingTasks.sort((a, b) => priorityToNumber(b.priority) - priorityToNumber(a.priority));
-        await this.assignTask(pendingTasks[0]);
+        const nextTask = pendingTasks[0];
+        if (nextTask) {
+          await this.assignTask(nextTask);
+        }
       }
     }
   }
@@ -779,7 +784,7 @@ export class ZenSwarm implements SwarmEventEmitter {
       case 'hierarchical':
         if (agents.length > 1) {
           const parentIndex = Math.floor((agents.indexOf(newAgentId) - 1) / 2);
-          if (parentIndex >= 0) {
+          if (parentIndex >= 0 && agents[parentIndex]) {
             this.state.connections.push({
               from: newAgentId,
               to: agents[parentIndex],
@@ -794,12 +799,15 @@ export class ZenSwarm implements SwarmEventEmitter {
         const numConnections = Math.floor(agents.length * this.options.connectionDensity);
         const shuffled = agents.filter((id) => id !== newAgentId).sort(() => Math.random() - 0.5);
         for (let i = 0; i < Math.min(numConnections, shuffled.length); i++) {
-          this.state.connections.push({
-            from: newAgentId,
-            to: shuffled[i],
-            weight: Math.random(),
-            type: 'data',
-          });
+          const target = shuffled[i];
+          if (target) {
+            this.state.connections.push({
+              from: newAgentId,
+              to: target,
+              weight: Math.random(),
+              type: 'data',
+            });
+          }
         }
         break;
       }
@@ -892,6 +900,7 @@ export class ZenSwarm implements SwarmEventEmitter {
 export class SwarmWrapper {
   public id: string;
   private ruvSwarm: ZenSwarm;
+  private wasmSwarm: any;
   public agents: Map<string, Agent>;
   private tasks: Map<string, TaskWrapper>;
 

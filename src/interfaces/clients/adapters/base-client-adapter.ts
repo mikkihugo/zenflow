@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-clients-adapters-base-client-adapter");
 /**
  * Universal Abstraction and Client Layer (UACL) Base Adapter
  *
@@ -483,7 +485,7 @@ export abstract class BaseClientFactory<TConfig extends ClientConfig = ClientCon
   async shutdownAll(): Promise<void> {
     const shutdownPromises = Array.from(this.clients.values()).map((client) =>
       client.shutdown().catch((error) => {
-        console.error(`Error shutting down client:`, error);
+        logger.error(`Error shutting down client:`, error);
       })
     );
 

@@ -104,10 +104,10 @@ function createMockLogger() {
 
 describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
   let adapter: IntegrationServiceAdapter;
-  let _mockLogger: any;
+  let mockLogger: any;
 
   beforeEach(() => {
-    _mockLogger = createMockLogger();
+    mockLogger = createMockLogger();
     adapter = createTestAdapter({
       architectureStorage: { enabled: true },
       safeAPI: { enabled: true, baseURL: 'http://test-api.com' },

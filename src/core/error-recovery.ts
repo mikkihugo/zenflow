@@ -1,8 +1,8 @@
 /**
- * Error Recovery Strategies and Circuit Breaker Patterns
+ * Error Recovery Strategies and Circuit Breaker Patterns.
  *
  * Implements sophisticated error recovery mechanisms for Claude-Zen distributed systems
- * Includes retry patterns, circuit breakers, fallback strategies, and graceful degradation
+ * Includes retry patterns, circuit breakers, fallback strategies, and graceful degradation.
  */
 
 import { type ErrorRecoveryOptions, isRecoverableError } from './errors';
@@ -220,7 +220,7 @@ export class RetryStrategy {
     operation: () => Promise<T>,
     operationName: string = 'unknown'
   ): Promise<T> {
-    let lastError: Error;
+    let lastError: Error = new Error(`No attempts made for ${operationName}`);
 
     for (let attempt = 1; attempt <= this.config.maxAttempts; attempt++) {
       try {

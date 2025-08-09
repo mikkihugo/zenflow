@@ -44,6 +44,8 @@
  * ```
  */
 
+import { getLogger } from '../../config/logging-config';
+
 // Legacy FACT integration
 export { FACTIntegration } from '../../knowledge/knowledge-client';
 // Re-export client implementations for convenience
@@ -999,7 +1001,17 @@ export const UACLHelpers = {
 
       return clients;
     } catch (error) {
-      console.error('❌ Failed to setup common clients:', error);
+      const logger = getLogger('uacl-setup');
+      logger.error('Failed to setup common clients', { 
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        config: {
+          httpBaseURL: config.httpBaseURL,
+          websocketURL: config.websocketURL,
+          factRepoPath: config.factRepoPath,
+          hasMCPServers: !!config.mcpServers
+        }
+      });
       throw error;
     }
   },

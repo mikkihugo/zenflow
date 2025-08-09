@@ -1,6 +1,6 @@
 /**
  * @file Strategy Pattern Implementation for Swarm Coordination
- * Provides flexible coordination strategies for different swarm topologies
+ * Provides flexible coordination strategies for different swarm topologies.
  */
 
 import { EventEmitter } from 'node:events';
@@ -368,9 +368,16 @@ export class RingStrategy implements CoordinationStrategy<Agent> {
   private establishRingConnections(agents: Agent[]): ConnectionMap {
     const connections: ConnectionMap = {};
 
+    if (agents.length === 0) {
+      return connections;
+    }
+
     agents.forEach((agent, index) => {
       const nextIndex = (index + 1) % agents.length;
-      connections[agent.id] = [agents[nextIndex].id];
+      const nextAgent = agents[nextIndex];
+      if (nextAgent !== undefined) {
+        connections[agent.id] = [nextAgent.id];
+      }
     });
 
     return connections;

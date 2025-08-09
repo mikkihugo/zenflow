@@ -1,5 +1,5 @@
 /**
- * UEL System Event Adapter
+ * @fileoverview UEL System Event Adapter
  *
  * Unified Event Layer adapter for system-level events, providing
  * a consistent interface to scattered EventEmitter patterns across the core system
@@ -520,8 +520,8 @@ export class SystemEventAdapter implements IEventManager {
       id: subscriptionId,
       eventTypes: types,
       listener,
-      filter: options?.filter,
-      transform: options?.transform,
+      ...(options?.filter && { filter: options.filter }),
+      ...(options?.transform && { transform: options.transform }),
       priority: options?.priority || 'medium',
       created: new Date(),
       active: true,

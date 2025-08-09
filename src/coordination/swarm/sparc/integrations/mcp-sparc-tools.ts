@@ -1,5 +1,5 @@
 /**
- * SPARC MCP Tools
+ * SPARC MCP Tools.
  *
  * Model Context Protocol tools for external access to SPARC methodology system.
  * Enables AI assistants to coordinate SPARC projects and execute phases.
@@ -31,7 +31,7 @@ export class SPARCMCPTools {
   }
 
   /**
-   * Get all available SPARC MCP tools
+   * Get all available SPARC MCP tools.
    */
   public getTools(): Tool[] {
     return [
@@ -308,7 +308,7 @@ export class SPARCMCPTools {
   }
 
   /**
-   * Execute MCP tool calls
+   * Execute MCP tool calls.
    *
    * @param name
    * @param args
@@ -640,7 +640,7 @@ export class SPARCMCPTools {
       'refinement',
       'completion',
     ];
-    const results = [];
+    const results: Array<{ phase: SPARCPhase; success: boolean; duration?: number; error?: string }> = [];
 
     for (const phase of phases) {
       try {
@@ -780,7 +780,7 @@ export class SPARCMCPTools {
   }
 
   /**
-   * Handle project management artifacts generation with enhanced infrastructure integration
+   * Handle project management artifacts generation with enhanced infrastructure integration.
    *
    * @param args
    */
@@ -859,7 +859,7 @@ export class SPARCMCPTools {
    * prd: 1,
    * },
    * });
-   * }
+   * }.
    *
    * return {
    * success: true,
@@ -880,8 +880,8 @@ export class SPARCMCPTools {
    * error: error instanceof Error ? error.message : 'Unknown error occurred',
    * projectId: args.projectId,
    * };
-   * }
-   * }
+   * }.
+   * }.
    *
    * /**
    * Handle epic creation from project
@@ -897,7 +897,7 @@ export class SPARCMCPTools {
     try {
       const epic = await this.roadmapManager.generateEpicFromSPARCProject(project);
 
-      let features = [];
+      let features: Array<{ id: string; title: string; status: string }> = [];
       if (args.includeFeatures) {
         features = await this.roadmapManager.generateFeaturesFromProject(project);
       }
@@ -929,7 +929,7 @@ export class SPARCMCPTools {
   }
 
   /**
-   * Handle adding project to roadmap
+   * Handle adding project to roadmap.
    *
    * @param args
    */
@@ -958,7 +958,7 @@ export class SPARCMCPTools {
   }
 
   /**
-   * Handle domain roadmap generation
+   * Handle domain roadmap generation.
    *
    * @param args
    */
@@ -997,7 +997,7 @@ export class SPARCMCPTools {
   }
 
   /**
-   * Handle tool calls with project management integration
+   * Handle tool calls with project management integration.
    *
    * @param toolName
    * @param args

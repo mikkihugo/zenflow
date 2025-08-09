@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-events-adapters-coordination-usage-example");
 /**
  * Coordination Event Adapter Usage Example
  *
@@ -387,7 +389,7 @@ export async function runCoordinationExamples(): Promise<void> {
     await highPerformanceCoordinationExample();
     await customCoordinationExample();
   } catch (error) {
-    console.error('❌ Error running coordination examples:', error);
+    logger.error('❌ Error running coordination examples:', error);
   }
 }
 

@@ -1,4 +1,5 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env tsximport { getLogger } from "../../config/logging-config";
+const logger = getLogger("tools-domain-splitting-cli");
 
 /**
  * CLI command for domain splitting operations
@@ -84,19 +85,19 @@ async function executeCommand() {
         await handleValidate(domainPath);
         break;
       default:
-        console.error(`❌ Unknown command: ${command}`);
+        logger.error(`❌ Unknown command: ${command}`);
         cli.showHelp();
         process.exit(1);
     }
   } catch (error) {
-    console.error(`❌ Command failed:`, error.message);
+    logger.error(`❌ Command failed:`, error.message);
     process.exit(1);
   }
 }
 
 async function handleAnalyze(domainPath: string, options: any) {
   if (!domainPath) {
-    console.error('❌ Domain path is required for analyze command');
+    logger.error('❌ Domain path is required for analyze command');
     process.exit(1);
   }
 
@@ -122,7 +123,7 @@ async function handleAnalyze(domainPath: string, options: any) {
 
 async function handleSplit(domainPath: string, options: any) {
   if (!domainPath) {
-    console.error('❌ Domain path is required for split command');
+    logger.error('❌ Domain path is required for split command');
     process.exit(1);
   }
 
@@ -146,14 +147,14 @@ async function handleNeural(_options: any) {
 
 async function handleValidate(domainPath: string) {
   if (!domainPath) {
-    console.error('❌ Domain path is required for validate command');
+    logger.error('❌ Domain path is required for validate command');
     process.exit(1);
   }
 
   const fullPath = path.resolve(domainPath);
 
   if (!(await fs.pathExists(fullPath))) {
-    console.error('❌ Domain path does not exist');
+    logger.error('❌ Domain path does not exist');
     process.exit(1);
   }
 

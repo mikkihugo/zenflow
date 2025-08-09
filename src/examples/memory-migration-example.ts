@@ -401,13 +401,13 @@ export async function demonstrateMigration(): Promise<void> {
   const userId = 'user123';
   try {
     // ❌ This could fail at runtime with unclear errors
-    const _unsafeProfile = await unsafeService.getUserProfile(userId);
+    const unsafeProfile = await unsafeService.getUserProfile(userId);
 
     // ❌ No indication if this succeeded or failed
     await unsafeService.cacheUserSession(userId, { id: 'session123', userId, token: 'abc' });
 
     // ❌ Could throw runtime errors on property access
-    const _unsafePrefs = await unsafeService.getUserPreferences(userId);
+    const unsafePrefs = await unsafeService.getUserPreferences(userId);
   } catch (error) {
     console.error('❌ Unsafe service failed:', error);
   }
@@ -455,7 +455,7 @@ export async function demonstrateMigration(): Promise<void> {
   // ✅ Batch operations with individual error handling
   const batchUserIds = ['user1', 'user2', 'user3'];
   const batchResults = await safeService.getUsersData(batchUserIds);
-  batchResults.forEach((result, _userId) => {
+  batchResults.forEach((result, userId) => {
     if (result.error) {
     } else {
     }

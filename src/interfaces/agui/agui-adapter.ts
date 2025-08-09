@@ -81,7 +81,7 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
         if (question.options && /^\d+$/.test(answer)) {
           const idx = parseInt(answer) - 1;
           if (idx >= 0 && idx < question.options.length) {
-            resolve(question.options[idx]);
+            resolve(question.options[idx] || '');
           } else if (answer === '0' && question.allowCustom) {
             rl.question('Enter custom response: ', (custom) => {
               resolve(custom);
@@ -100,8 +100,11 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
     const answers: string[] = [];
 
     for (let i = 0; i < questions.length; i++) {
-      const answer = await this.askQuestion(questions[i]);
-      answers.push(answer);
+      const question = questions[i];
+      if (question) {
+        const answer = await this.askQuestion(question);
+        answers.push(answer);
+      }
     }
 
     return answers;

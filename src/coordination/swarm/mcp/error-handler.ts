@@ -1,6 +1,6 @@
 /**
  * Unified MCP Error Handler for Coordination and Swarm
- * Consolidates error handling from the removed coordination/mcp directory
+ * Consolidates error handling from the removed coordination/mcp directory.
  */
 
 import { createLogger } from '../../../core/logger';
@@ -8,7 +8,7 @@ import { createLogger } from '../../../core/logger';
 const logger = createLogger({ prefix: 'MCP-ErrorHandler' });
 
 export class ValidationError extends Error {
-  public field?: string;
+  public field?: string | undefined;
 
   constructor(message: string, field?: string) {
     super(message);
@@ -169,10 +169,10 @@ export class ZenSwarmError extends Error {
 export interface ErrorContext {
   operation: string;
   timestamp: Date;
-  metadata?: Record<string, any>;
-  stackTrace?: string;
-  userId?: string;
-  sessionId?: string;
+  metadata?: Record<string, any> | undefined;
+  stackTrace?: string | undefined;
+  userId?: string | undefined;
+  sessionId?: string | undefined;
 }
 
 // Error context factory class
@@ -182,7 +182,7 @@ export class ErrorContextFactory {
       operation,
       timestamp: new Date(),
       metadata: metadata || {},
-      stackTrace: new Error().stack,
+      stackTrace: new Error().stack ?? undefined,
     };
   }
 }
@@ -258,65 +258,65 @@ export class ErrorFactory {
           ValidationError,
           message,
           context,
-          metadata?.field
+          metadata?.['field']
         );
       case 'agent':
-        return ErrorFactory.createErrorWithContext(AgentError, message, context, metadata?.agentId);
+        return ErrorFactory.createErrorWithContext(AgentError, message, context, metadata?.['agentId']);
       case 'neural':
         return ErrorFactory.createErrorWithContext(
           NeuralError,
           message,
           context,
-          metadata?.modelId,
-          metadata?.operation
+          metadata?.['modelId'],
+          metadata?.['operation']
         );
       case 'persistence':
         return ErrorFactory.createErrorWithContext(
           PersistenceError,
           message,
           context,
-          metadata?.key,
-          metadata?.operation
+          metadata?.['key'],
+          metadata?.['operation']
         );
       case 'resource':
         return ErrorFactory.createErrorWithContext(
           ResourceError,
           message,
           context,
-          metadata?.resourceType,
-          metadata?.resourceId
+          metadata?.['resourceType'],
+          metadata?.['resourceId']
         );
       case 'swarm':
         return ErrorFactory.createErrorWithContext(
           SwarmError,
           message,
           context,
-          metadata?.swarmId,
-          metadata?.agentCount
+          metadata?.['swarmId'],
+          metadata?.['agentCount']
         );
       case 'task':
         return ErrorFactory.createErrorWithContext(
           TaskError,
           message,
           context,
-          metadata?.taskId,
-          metadata?.taskType
+          metadata?.['taskId'],
+          metadata?.['taskType']
         );
       case 'wasm':
         return ErrorFactory.createErrorWithContext(
           WasmError,
           message,
           context,
-          metadata?.module,
-          metadata?.functionName
+          metadata?.['module'],
+          metadata?.['functionName']
         );
       case 'zenswarm':
         return ErrorFactory.createErrorWithContext(
           ZenSwarmError,
           message,
           context,
-          metadata?.swarmType,
-          metadata?.coordination
+          metadata?.['swarmType'],
+          metadata?.['coordination']
         );
       default: {
         // Generic error with context

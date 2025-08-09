@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("neural-core-neural-core");
 /**
  * Neural Core System - Advanced AI Computing Engine
  *
@@ -258,7 +260,7 @@ export class NeuralCLI {
       if (typeof status === 'object') {
       }
     } catch (error: any) {
-      console.error('❌ Error getting neural status:', error.message);
+      logger.error('❌ Error getting neural status:', error.message);
       process.exit(1);
     }
   }
@@ -312,7 +314,7 @@ export class NeuralCLI {
       const outputFile = path.join(outputDir, `training-${modelType}-${Date.now()}.json`);
       await fs.writeFile(outputFile, JSON.stringify(results, null, 2));
     } catch (error: any) {
-      console.error('\\n❌ Training failed:', error.message);
+      logger.error('\\n❌ Training failed:', error.message);
       process.exit(1);
     }
   }
@@ -364,7 +366,7 @@ export class NeuralCLI {
         patternType === 'all' ? 'convergent' : (patternType as PatternType)
       );
     } catch (error: any) {
-      console.error('❌ Error analyzing patterns:', error.message);
+      logger.error('❌ Error analyzing patterns:', error.message);
       process.exit(1);
     }
   }
@@ -421,7 +423,7 @@ export class NeuralCLI {
         0
       );
     } catch (error: any) {
-      console.error('❌ Export failed:', error.message);
+      logger.error('❌ Export failed:', error.message);
       process.exit(1);
     }
   }

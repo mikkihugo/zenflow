@@ -1,5 +1,5 @@
 /**
- * Memory Repository Implementation
+ * Memory Repository Implementation.
  *
  * In-memory repository with TTL support, caching capabilities,
  * and memory management for fast data access.
@@ -10,7 +10,7 @@ import { BaseDao } from '../base.dao';
 import type { CustomQuery, IMemoryRepository, MemoryStats } from '../interfaces';
 
 /**
- * In-memory cache entry
+ * In-memory cache entry.
  *
  * @example
  */
@@ -23,9 +23,9 @@ interface CacheEntry<T> {
 }
 
 /**
- * Memory repository implementation with caching and TTL support
+ * Memory repository implementation with caching and TTL support.
  *
- * @template T The entity type this repository manages
+ * @template T The entity type this repository manages.
  * @example
  */
 export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
@@ -63,7 +63,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   }
 
   /**
-   * Set TTL (time to live) for an entity
+   * Set TTL (time to live) for an entity.
    *
    * @param id
    * @param ttlSeconds
@@ -96,7 +96,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   }
 
   /**
-   * Get TTL for an entity
+   * Get TTL for an entity.
    *
    * @param id
    */
@@ -113,7 +113,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   }
 
   /**
-   * Cache entity with optional TTL
+   * Cache entity with optional TTL.
    *
    * @param key
    * @param value
@@ -129,8 +129,8 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
       value,
       createdAt: new Date(),
       accessedAt: new Date(),
-      ttl: ttlSeconds,
-      expiresAt: ttlSeconds ? new Date(Date.now() + ttlSeconds * 1000) : undefined,
+      ...(ttlSeconds !== undefined && { ttl: ttlSeconds }),
+      ...(ttlSeconds && { expiresAt: new Date(Date.now() + ttlSeconds * 1000) }),
     };
 
     this.keyStore.set(key, entry);
@@ -148,7 +148,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   }
 
   /**
-   * Get cached entity
+   * Get cached entity.
    *
    * @param key
    */
@@ -178,7 +178,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   }
 
   /**
-   * Clear cache
+   * Clear cache.
    *
    * @param pattern
    */
@@ -225,7 +225,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   }
 
   /**
-   * Get memory usage statistics
+   * Get memory usage statistics.
    */
   async getMemoryStats(): Promise<MemoryStats> {
     const totalEntries = this.memoryStore.size + this.keyStore.size;
@@ -242,10 +242,10 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   }
 
   /**
-   * Override base repository methods for memory-specific implementations
+   * Override base repository methods for memory-specific implementations.
    */
 
-  async findById(id: string | number): Promise<T | null> {
+  override async findById(id: string | number): Promise<T | null> {
     this.accessCount++;
 
     const key = this.getEntityKey(id);
@@ -281,7 +281,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
     return entry.value;
   }
 
-  async create(entity: Omit<T, 'id'>): Promise<T> {
+  override async create(entity: Omit<T, 'id'>): Promise<T> {
     // Create in underlying storage first
     const created = await super.create(entity);
 
@@ -291,7 +291,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
     return created;
   }
 
-  async update(id: string | number, updates: Partial<T>): Promise<T> {
+  override async update(id: string | number, updates: Partial<T>): Promise<T> {
     // Update in underlying storage first
     const updated = await super.update(id, updates);
 
@@ -301,7 +301,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
     return updated;
   }
 
-  async delete(id: string | number): Promise<boolean> {
+  override async delete(id: string | number): Promise<boolean> {
     // Delete from underlying storage first
     const deleted = await super.delete(id);
 
@@ -329,11 +329,11 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   }
 
   /**
-   * Execute custom query - override to handle memory-specific queries
+   * Execute custom query - override to handle memory-specific queries.
    *
    * @param customQuery
    */
-  async executeCustomQuery<R = any>(customQuery: CustomQuery): Promise<R> {
+  override async executeCustomQuery<R = any>(customQuery: CustomQuery): Promise<R> {
     if (customQuery.type === 'memory') {
       const query = customQuery.query as any;
 
@@ -357,7 +357,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   }
 
   /**
-   * Private helper methods
+   * Private helper methods.
    */
 
   private getEntityKey(id: string | number): string {
@@ -416,7 +416,9 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
     const evictCount = Math.ceil(allEntries.length * 0.25);
 
     for (let i = 0; i < evictCount && i < allEntries.length; i++) {
-      const { key, store } = allEntries[i];
+      const entry = allEntries[i];
+      if (!entry) continue;
+      const { key, store } = entry;
 
       if (store === 'memory') {
         this.memoryStore.delete(key);
@@ -515,7 +517,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   }
 
   /**
-   * Cleanup method to be called on shutdown
+   * Cleanup method to be called on shutdown.
    */
   async shutdown(): Promise<void> {
     if (this.cleanupTimer) {

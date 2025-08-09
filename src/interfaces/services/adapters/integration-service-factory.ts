@@ -9,6 +9,7 @@
 
 import { createLogger, type Logger } from '../../../utils/logger';
 import type { IService, IServiceFactory, ServiceConfig } from '../core/interfaces';
+import { getMCPServerURL } from '../../config/url-builder';
 
 import type { ServiceType } from '../types';
 import {
@@ -66,7 +67,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
   constructor(options: IntegrationServiceFactoryOptions = {}) {
     this.logger = createLogger('IntegrationServiceFactory');
     this.options = {
-      defaultBaseURL: 'http://localhost:3000',
+      defaultBaseURL: getMCPServerURL(),
       defaultDatabaseType: 'postgresql',
       defaultProtocols: ['http', 'websocket', 'mcp-http', 'mcp-stdio'],
       enableGlobalCaching: true,

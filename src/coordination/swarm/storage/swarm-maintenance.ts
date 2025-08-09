@@ -1,11 +1,13 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-swarm-storage-swarm-maintenance");
 /**
- * Swarm Storage Maintenance System
+ * Swarm Storage Maintenance System.
  *
  * Handles lifecycle management for hundreds of swarms:
  * - Automatic archival of inactive swarms
  * - Cleanup of deleted/failed swarms
  * - Storage optimization and compression
- * - Health monitoring and repair
+ * - Health monitoring and repair.
  */
 
 import { EventEmitter } from 'node:events';
@@ -43,7 +45,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
   private claudeZenPath: string;
   private swarmsPath: string;
   private registryPath: string;
-  private maintenanceTimer?: NodeJS.Timeout;
+  private maintenanceTimer?: NodeJS.Timeout | undefined;
 
   constructor(claudeZenPath: string, config: Partial<MaintenanceConfig> = {}) {
     super();
@@ -61,7 +63,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
   }
 
   /**
-   * Initialize storage structure and start maintenance
+   * Initialize storage structure and start maintenance.
    */
   async initialize(): Promise<void> {
     await this.ensureDirectories();
@@ -70,7 +72,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
   }
 
   /**
-   * Create swarm storage directory
+   * Create swarm storage directory.
    *
    * @param swarmId
    * @param metadata
@@ -99,7 +101,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
   }
 
   /**
-   * Archive inactive swarms
+   * Archive inactive swarms.
    */
   async archiveInactiveSwarms(): Promise<number> {
     const activeDir = path.join(this.swarmsPath, 'active');
@@ -122,7 +124,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
           archivedCount++;
         }
       } catch (error) {
-        console.warn(`Failed to process swarm ${swarmId}:`, error);
+        logger.warn(`Failed to process swarm ${swarmId}:`, error);
       }
     }
 
@@ -131,7 +133,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
   }
 
   /**
-   * Archive specific swarm
+   * Archive specific swarm.
    *
    * @param swarmId
    */
@@ -160,7 +162,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
   }
 
   /**
-   * Delete old archived swarms
+   * Delete old archived swarms.
    */
   async cleanupOldArchives(): Promise<number> {
     const archivedDir = path.join(this.swarmsPath, 'archived');
@@ -174,7 +176,15 @@ export class SwarmMaintenanceManager extends EventEmitter {
 
       for (const monthDir of monthDirs) {
         const monthPath = path.join(archivedDir, monthDir);
-        const [yearStr, monthStr] = monthDir.split('-');
+        const splitResult = monthDir.split('-');
+        const yearStr = splitResult[0];
+        const monthStr = splitResult[1];
+        
+        if (!yearStr || !monthStr) {
+          logger.warn(`Invalid month directory format: ${monthDir}`);
+          continue;
+        }
+        
         const monthDate = new Date(parseInt(yearStr), parseInt(monthStr) - 1);
 
         if (monthDate < cutoffDate) {
@@ -185,14 +195,14 @@ export class SwarmMaintenanceManager extends EventEmitter {
         }
       }
     } catch (error) {
-      console.warn('Failed to cleanup archives:', error);
+      logger.warn('Failed to cleanup archives:', error);
     }
 
     return deletedCount;
   }
 
   /**
-   * Get storage statistics
+   * Get storage statistics.
    */
   async getStorageStats(): Promise<{
     active: number;
@@ -230,7 +240,8 @@ export class SwarmMaintenanceManager extends EventEmitter {
       );
     });
 
-    const totalSizeBytes = parseInt(sizeResult.split('\t')[0]);
+    const sizeStr = sizeResult.split('\t')[0];
+    const totalSizeBytes = sizeStr ? parseInt(sizeStr) : 0;
 
     return {
       active: activeCount,
@@ -242,7 +253,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
   }
 
   /**
-   * Update swarm access time (for maintenance decisions)
+   * Update swarm access time (for maintenance decisions).
    *
    * @param swarmId
    */
@@ -254,12 +265,12 @@ export class SwarmMaintenanceManager extends EventEmitter {
       meta.lastAccessedAt = new Date().toISOString();
       await fs.writeFile(metaPath, JSON.stringify(meta, null, 2));
     } catch (error) {
-      console.warn(`Failed to touch swarm ${swarmId}:`, error);
+      logger.warn(`Failed to touch swarm ${swarmId}:`, error);
     }
   }
 
   /**
-   * Manual cleanup of specific swarm
+   * Manual cleanup of specific swarm.
    *
    * @param swarmId
    */
@@ -271,7 +282,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
       this.emit('swarm:deleted', { swarmId });
       return true;
     } catch (error) {
-      console.error(`Failed to delete swarm ${swarmId}:`, error);
+      logger.error(`Failed to delete swarm ${swarmId}:`, error);
       return false;
     }
   }
@@ -297,7 +308,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
       try {
         await this.runMaintenance();
       } catch (error) {
-        console.error('Maintenance failed:', error);
+        logger.error('Maintenance failed:', error);
         this.emit('maintenance:error', error);
       }
     }, intervalMs);
@@ -327,7 +338,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
   }
 
   /**
-   * Shutdown maintenance system
+   * Shutdown maintenance system.
    */
   async shutdown(): Promise<void> {
     if (this.maintenanceTimer) {

@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodeimport { getLogger } from "../config/logging-config";
+const logger = getLogger("src-utils-agent-gap-analysis");
 
 /**
  * Agent Gap Analysis CLI Utility
@@ -20,7 +21,7 @@ async function main() {
     switch (command) {
       case 'report':
       case 'compare': {
-        const _report = generateComparisonReport();
+        const report = generateComparisonReport();
         break;
       }
 
@@ -33,14 +34,14 @@ async function main() {
           .filter(([_, data]) => data.advantage > 0)
           .sort((a, b) => b[1].advantage - a[1].advantage)
           .slice(0, 5);
-        for (const [_category, _data] of topAdvantages) {
+        for (const [category, data] of topAdvantages) {
         }
         break;
       }
 
       case 'audit': {
         const audit = auditAutoAssignmentCapabilities();
-        for (const _capability of audit.capabilities) {
+        for (const capability of audit.capabilities) {
         }
         for (const recommendation of audit.recommendations) {
           if (recommendation.priority) {
@@ -56,7 +57,7 @@ async function main() {
 
         // Show our agent categories
         const { OUR_AGENT_CATEGORIES } = await import('../coordination/agents/gap-analysis.js');
-        for (const [_category, agents] of Object.entries(OUR_AGENT_CATEGORIES)) {
+        for (const [category, agents] of Object.entries(OUR_AGENT_CATEGORIES)) {
           for (const agent of agents) {
             if (agent.capabilities) {
             }
@@ -67,16 +68,16 @@ async function main() {
 
       case 'benchmark': {
         const startTime = Date.now();
-        const _analysis = performGapAnalysis();
-        const _analysisTime = Date.now() - startTime;
+        const analysis = performGapAnalysis();
+        const analysisTime = Date.now() - startTime;
 
         const reportStart = Date.now();
-        const _report = generateComparisonReport();
-        const _reportTime = Date.now() - reportStart;
+        const report = generateComparisonReport();
+        const reportTime = Date.now() - reportStart;
 
         const auditStart = Date.now();
-        const _audit = auditAutoAssignmentCapabilities();
-        const _auditTime = Date.now() - auditStart;
+        const audit = auditAutoAssignmentCapabilities();
+        const auditTime = Date.now() - auditStart;
         break;
       }
       default: {
@@ -84,7 +85,7 @@ async function main() {
       }
     }
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    logger.error('❌ Error:', error.message);
     process.exit(1);
   }
 }

@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-config-loader");
 /**
  * @file Configuration Loader
  *
@@ -103,7 +105,7 @@ export class ConfigurationLoader {
         const module = await import(resolvedPath);
         data = module.default || module;
       } else {
-        console.warn(`Unsupported config file format: ${filePath}`);
+        logger.warn(`Unsupported config file format: ${filePath}`);
         return;
       }
 
@@ -113,7 +115,7 @@ export class ConfigurationLoader {
         data,
       });
     } catch (error) {
-      console.warn(`Failed to load config from ${filePath}:`, error);
+      logger.warn(`Failed to load config from ${filePath}:`, error);
     }
   }
 
@@ -133,7 +135,7 @@ export class ConfigurationLoader {
           case 'number':
             parsedValue = Number(value);
             if (Number.isNaN(parsedValue)) {
-              console.warn(`Invalid number value for ${envVar}: ${value}`);
+              logger.warn(`Invalid number value for ${envVar}: ${value}`);
               continue;
             }
             break;

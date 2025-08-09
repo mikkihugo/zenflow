@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("coordination-load-balancing-optimization-emergency-protocol-handler");
 /**
  * Emergency Protocol Handler
  * Advanced emergency response and load shedding system
@@ -167,7 +169,7 @@ export class EmergencyProtocolHandler extends EventEmitter implements EmergencyH
   private async executeProtocol(protocol: EmergencyProtocol): Promise<void> {
     const actionPromises = protocol.actions.map((action) =>
       this.executeAction(action).catch((error) => {
-        console.error(`Failed to execute emergency action ${action.type}:`, error);
+        logger.error(`Failed to execute emergency action ${action.type}:`, error);
       })
     );
 
@@ -191,7 +193,7 @@ export class EmergencyProtocolHandler extends EventEmitter implements EmergencyH
         await this.sendAlert(action.parameters.message, action.parameters.recipients);
         break;
       default:
-        console.warn(`Unknown emergency action type: ${action.type}`);
+        logger.warn(`Unknown emergency action type: ${action.type}`);
     }
   }
 

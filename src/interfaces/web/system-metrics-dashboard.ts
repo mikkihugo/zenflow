@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-web-system-metrics-dashboard");
 /** Unified Performance Dashboard */
 /** Real-time monitoring and analytics for Claude Zen systems */
 
@@ -8,6 +10,7 @@ import type { IRepository } from '../../database/interfaces';
 import { UACLHelpers, uacl } from '../clients/index';
 import type MCPPerformanceMetrics from '../mcp/performance-metrics';
 import type EnhancedMemory from '../memory/memory';
+import { getMCPServerURL, getWebDashboardURL } from '../../config/url-builder';
 
 interface DashboardConfig {
   refreshInterval?: number;
@@ -82,12 +85,12 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
 
         // Setup default clients for monitoring
         await UACLHelpers.setupCommonClients({
-          httpBaseURL: 'http://localhost:3000',
-          websocketURL: 'ws://localhost:3456',
+          httpBaseURL: getMCPServerURL(),
+          websocketURL: getWebDashboardURL({ protocol: 'ws' }).replace('http:', 'ws:'),
         });
       }
     } catch (error) {
-      console.warn('⚠️ Could not initialize UACL for dashboard:', error);
+      logger.warn('⚠️ Could not initialize UACL for dashboard:', error);
     }
 
     // Initialize DAL repositories for database metrics
@@ -106,7 +109,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
         options: { vectorSize: 384 },
       });
     } catch (error) {
-      console.warn('⚠️ Could not initialize database metrics repository:', error);
+      logger.warn('⚠️ Could not initialize database metrics repository:', error);
     }
 
     if (this.config.enableRealtime) {
@@ -334,7 +337,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
         this.displayConsoleStatus(status);
       }
     } catch (error) {
-      console.error('❌ Dashboard update failed:', error);
+      logger.error('❌ Dashboard update failed:', error);
     }
   }
 
@@ -372,7 +375,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
         cacheHitRate: 0.85, // Default cache hit rate
       };
     } catch (error) {
-      console.warn('⚠️ Could not get database stats:', error);
+      logger.warn('⚠️ Could not get database stats:', error);
       return {
         totalVectors: 0,
         totalTables: 0,
@@ -435,7 +438,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
         healthPercentage,
       };
     } catch (error) {
-      console.warn('⚠️ Could not get client metrics:', error);
+      logger.warn('⚠️ Could not get client metrics:', error);
       return {
         total: 0,
         connected: 0,

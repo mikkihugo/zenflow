@@ -1,11 +1,11 @@
 /**
- * DSPy-Powered Swarm Intelligence
+ * DSPy-Powered Swarm Intelligence.
  *
  * Integrates DSPy into swarm coordination for:
  * - Intelligent agent selection and task assignment
  * - Dynamic topology optimization
  * - Self-improving coordination strategies
- * - Predictive performance optimization
+ * - Predictive performance optimization.
  */
 
 import { createLogger } from '../../core/logger';
@@ -72,14 +72,15 @@ export class DSPySwarmIntelligence {
   }
 
   /**
-   * Initialize the DSPy wrapper
+   * Initialize the DSPy wrapper.
+   *
    * @private
    */
   private async initializeWrapper(): Promise<void> {
     try {
       const dspyConfig: DSPyConfig = {
-        model: this.config.model,
-        temperature: this.config.temperature,
+        model: this.config.model ?? 'claude-3-5-sonnet-20241022',
+        temperature: this.config.temperature ?? 0.2,
         maxTokens: 1500,
       };
 
@@ -92,7 +93,13 @@ export class DSPySwarmIntelligence {
   }
 
   /**
-   * Generic method to execute DSPy programs with fallback handling
+   * Generic method to execute DSPy programs with fallback handling.
+   *
+   * @param signature
+   * @param description
+   * @param input
+   * @param fallbackResult
+   * @param programType
    * @private
    */
   private async executeDSPyProgram(
@@ -131,7 +138,10 @@ export class DSPySwarmIntelligence {
   }
 
   /**
-   * Intelligently select agents for a task using DSPy wrapper
+   * Intelligently select agents for a task using DSPy wrapper.
+   *
+   * @param taskRequirements
+   * @param availableAgents
    */
   async selectOptimalAgents(
     taskRequirements: TaskRequirements,
@@ -193,7 +203,12 @@ export class DSPySwarmIntelligence {
   }
 
   /**
-   * Optimize swarm topology based on current conditions using DSPy wrapper
+   * Optimize swarm topology based on current conditions using DSPy wrapper.
+   *
+   * @param currentTopology
+   * @param taskLoad
+   * @param agentPerformance
+   * @param communicationPatterns
    */
   async optimizeTopology(
     currentTopology: string,
@@ -239,7 +254,11 @@ export class DSPySwarmIntelligence {
   }
 
   /**
-   * Optimize load balancing across agents using DSPy wrapper
+   * Optimize load balancing across agents using DSPy wrapper.
+   *
+   * @param agentLoads
+   * @param taskQueue
+   * @param performanceMetrics
    */
   async optimizeLoadBalancing(
     agentLoads: AgentPerformanceData[],
@@ -286,7 +305,11 @@ export class DSPySwarmIntelligence {
   }
 
   /**
-   * Predict swarm performance and identify potential issues using DSPy wrapper
+   * Predict swarm performance and identify potential issues using DSPy wrapper.
+   *
+   * @param historicalPerformance
+   * @param currentState
+   * @param upcomingTasks
    */
   async predictPerformance(
     historicalPerformance: object[],
@@ -340,7 +363,11 @@ export class DSPySwarmIntelligence {
   }
 
   /**
-   * Intelligently recover from failures using DSPy wrapper
+   * Intelligently recover from failures using DSPy wrapper.
+   *
+   * @param failureContext
+   * @param availableAgents
+   * @param taskState
    */
   async recoverFromFailure(
     failureContext: object,
@@ -389,7 +416,11 @@ export class DSPySwarmIntelligence {
   }
 
   /**
-   * Update success/failure of previous decisions for learning
+   * Update success/failure of previous decisions for learning.
+   *
+   * @param decisionId
+   * @param success
+   * @param metrics
    */
   updateDecisionOutcome(decisionId: string, success: boolean, metrics: object) {
     const example = this.learningHistory.find(
@@ -405,7 +436,7 @@ export class DSPySwarmIntelligence {
   }
 
   /**
-   * Get swarm intelligence statistics
+   * Get swarm intelligence statistics.
    */
   getIntelligenceStats() {
     const recentDecisions = this.learningHistory.filter(
@@ -527,11 +558,19 @@ export class DSPySwarmIntelligence {
       return ['No restructuring needed'];
     }
 
-    const steps = [];
-    if (restructurePlan.topology_change) steps.push('Update topology configuration');
-    if (restructurePlan.agent_reassignments) steps.push('Reassign agents to new roles');
-    if (restructurePlan.communication_updates) steps.push('Update communication patterns');
-    if (restructurePlan.load_redistribution) steps.push('Redistribute task load');
+    const steps: string[] = [];
+    if (restructurePlan.topology_change) {
+      steps.push('Update topology configuration');
+    }
+    if (restructurePlan.agent_reassignments) {
+      steps.push('Reassign agents to new roles');
+    }
+    if (restructurePlan.communication_updates) {
+      steps.push('Update communication patterns');
+    }
+    if (restructurePlan.load_redistribution) {
+      steps.push('Redistribute task load');
+    }
 
     return steps.length > 0 ? steps : ['Apply optimization changes'];
   }

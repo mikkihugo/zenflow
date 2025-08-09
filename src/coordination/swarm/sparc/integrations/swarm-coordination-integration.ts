@@ -1,3 +1,5 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-sparc-integrations-swarm-coordination-integration");
 /**
  * SPARC Swarm Coordination Integration
  *
@@ -128,7 +130,7 @@ export class SPARCSwarmCoordinator {
         results.set(agentType, result);
         return result.success;
       } catch (error) {
-        console.error(`SPARC phase execution failed for ${agentType}:`, error);
+        logger.error(`SPARC phase execution failed for ${agentType}:`, error);
         return false;
       }
     });

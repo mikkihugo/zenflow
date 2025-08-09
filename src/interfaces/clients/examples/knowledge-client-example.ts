@@ -20,6 +20,7 @@ import {
 } from '../adapters/knowledge-client-adapter';
 
 import { UACLFactory } from '../factories';
+import { getConfig } from '../../../config';
 
 /**
  * Example 1: Create FACT-based Knowledge Client using convenience function
@@ -29,7 +30,13 @@ export async function example1_CreateFACTClient(): Promise<void> {
     // Create FACT client with minimal configuration
     const knowledgeClient = await createFACTClient(
       './FACT', // FACT repository path
-      process.env.ANTHROPIC_API_KEY || 'your-api-key',
+      (() => {
+        const config = getConfig();
+        if (!config.services.anthropic.apiKey) {
+          throw new Error('Anthropic API key is required for knowledge client');
+        }
+        return config.services.anthropic.apiKey;
+      })(),
       {
         caching: {
           enabled: true,
@@ -78,7 +85,13 @@ export async function example2_CreateWithFactory(): Promise<void> {
       provider: 'fact',
       factConfig: {
         factRepoPath: './FACT',
-        anthropicApiKey: process.env.ANTHROPIC_API_KEY || 'your-api-key',
+        anthropicApiKey: (() => {
+          const config = getConfig();
+          if (!config.services.anthropic.apiKey) {
+            throw new Error('Anthropic API key is required for knowledge client');
+          }
+          return config.services.anthropic.apiKey;
+        })(),
         pythonPath: 'python3',
       },
       caching: {
@@ -109,7 +122,17 @@ export async function example3_PerformQueries(): Promise<void> {
   try {
     const knowledgeClient = await createFACTClient(
       './FACT',
-      process.env.ANTHROPIC_API_KEY || 'test'
+      (() => {
+        const config = getConfig();
+        if (!config.services.anthropic.apiKey) {
+          if (config.environment.isDevelopment) {
+            console.warn('Using fallback API key for development');
+            return 'test-key-development';
+          }
+          throw new Error('Anthropic API key is required');
+        }
+        return config.services.anthropic.apiKey;
+      })()
     );
     await knowledgeClient.connect();
     const basicQuery: KnowledgeRequest = {
@@ -157,7 +180,17 @@ export async function example4_UseHelpers(): Promise<void> {
   try {
     const knowledgeClient = await createFACTClient(
       './FACT',
-      process.env.ANTHROPIC_API_KEY || 'test'
+      (() => {
+        const config = getConfig();
+        if (!config.services.anthropic.apiKey) {
+          if (config.environment.isDevelopment) {
+            console.warn('Using fallback API key for development');
+            return 'test-key-development';
+          }
+          throw new Error('Anthropic API key is required');
+        }
+        return config.services.anthropic.apiKey;
+      })()
     );
     await knowledgeClient.connect();
     const _reactDocs = await KnowledgeHelpers.getDocumentation(knowledgeClient, 'react', '18');
@@ -185,7 +218,17 @@ export async function example5_MonitorPerformance(): Promise<void> {
   try {
     const knowledgeClient = await createFACTClient(
       './FACT',
-      process.env.ANTHROPIC_API_KEY || 'test'
+      (() => {
+        const config = getConfig();
+        if (!config.services.anthropic.apiKey) {
+          if (config.environment.isDevelopment) {
+            console.warn('Using fallback API key for development');
+            return 'test-key-development';
+          }
+          throw new Error('Anthropic API key is required');
+        }
+        return config.services.anthropic.apiKey;
+      })()
     );
     await knowledgeClient.connect();
 
@@ -224,7 +267,7 @@ export async function example6_ErrorHandling(): Promise<void> {
     // Create client with invalid configuration to test error handling
     const knowledgeClient = await createFACTClient(
       './INVALID_FACT_PATH', // Invalid path
-      'invalid-api-key', // Invalid API key
+      'invalid-api-key-for-testing', // Invalid API key for testing
       {
         timeout: 5000, // Short timeout for testing
         caching: { enabled: false, prefix: 'test', ttlSeconds: 60, minTokens: 100 },

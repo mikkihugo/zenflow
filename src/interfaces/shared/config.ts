@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("interfaces-shared-config");
 /**
  * @file Shared Interface Configuration
  *
@@ -185,7 +187,7 @@ export class ConfigurationUtils {
   static updateInterfaceConfig(updates: Partial<InterfaceConfig>): boolean {
     const errors = ConfigurationUtils.validateConfig(updates);
     if (errors.length > 0) {
-      console.error('Interface configuration validation errors:', errors);
+      logger.error('Interface configuration validation errors:', errors);
       return false;
     }
 
@@ -193,7 +195,7 @@ export class ConfigurationUtils {
     for (const [key, value] of Object.entries(updates)) {
       const result = config.set(`interfaces.shared.${key}`, value);
       if (!result.valid) {
-        console.error(`Failed to update interfaces.shared.${key}:`, result.errors);
+        logger.error(`Failed to update interfaces.shared.${key}:`, result.errors);
         return false;
       }
     }

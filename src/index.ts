@@ -85,8 +85,10 @@ export * as Integration from './integration/index';
 
 // Swarm-zen integration (use public API instead of direct core access)
 export {
+  // TODO: TypeScript error TS2305 - Module has no exported member 'createSwarm' (AI unsure of safe fix - human review needed)
   createSwarm,
   // Export specific items to avoid conflicts
+  // TODO: TypeScript error TS2305 - Module has no exported member 'SwarmOrchestrator' (AI unsure of safe fix - human review needed)
   SwarmOrchestrator,
   // SwarmConfig and SwarmState will come from types/index
 } from './coordination/public-api';
@@ -97,8 +99,10 @@ export * from './coordination/swarm/mcp/mcp-tool-registry';
 export type {
   MCPRequest,
   MCPResponse,
+  // TODO: TypeScript error TS2305 - Module has no exported member 'MCPServer' (AI unsure of safe fix - human review needed)
   MCPServer,
   MCPTool,
+  // TODO: TypeScript error TS2305 - Module has no exported member 'MCPToolCall' (AI unsure of safe fix - human review needed)
   MCPToolCall,
   // SwarmAgent, SwarmStatus, SwarmTask will come from types/index
 } from './coordination/swarm/mcp/types';
@@ -111,9 +115,12 @@ export * from './interfaces/terminal';
 
 // Neural agent exports (avoid NeuralNetwork and Task conflicts)
 export {
+  // TODO: TypeScript error TS2305 - Module has no exported member 'createNeuralAgent' (AI unsure of safe fix - human review needed)
   createNeuralAgent,
   NeuralAgent,
+  // TODO: TypeScript error TS2305 - Module has no exported member 'NeuralAgentConfig' (AI unsure of safe fix - human review needed)
   type NeuralAgentConfig,
+  // TODO: TypeScript error TS2305/TS2724 - Module has no exported member 'NeuralAgentState' (AI unsure of safe fix - human review needed)
   type NeuralAgentState,
 } from './neural/agents/neural-agent';
 
@@ -121,6 +128,7 @@ export {
 export * from './neural/neural-bridge';
 
 // Types - main source of shared types
+// TODO: TypeScript error TS2308 - Multiple modules have already exported same members (SwarmAgent, SwarmStatus, TrainingData) - resolve ambiguity (AI unsure of safe fix - human review needed)
 export * from './types/index';
 
 /**
@@ -228,8 +236,8 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
   if (finalConfig.mcp.http.enabled) {
     const { HTTPMCPServer } = await import('./interfaces/mcp/http-mcp-server');
     const httpMcpServer = new HTTPMCPServer({
-      port: finalConfig.mcp.http.port,
-      host: finalConfig.mcp.http.host,
+      ...(finalConfig.mcp.http.port !== undefined && { port: finalConfig.mcp.http.port }),
+      ...(finalConfig.mcp.http.host !== undefined && { host: finalConfig.mcp.http.host }),
     });
     await httpMcpServer.start();
   }
@@ -242,6 +250,7 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
   }
 
   // Initialize SwarmOrchestrator from public API
+  // TODO: TypeScript error TS2339 - Property 'SwarmOrchestrator' does not exist on type (AI unsure of safe fix - human review needed)
   const { SwarmOrchestrator } = await import('./coordination/public-api');
   const orchestrator = new SwarmOrchestrator({
     topology: finalConfig.swarm.topology,
@@ -322,18 +331,18 @@ export default {
   shutdownClaudeZen,
   healthCheck,
   getVersion,
-  Core,
-  Memory,
-  Neural,
-  Database,
-  Coordination,
-  SPARC,
-  Interfaces,
-  Integration,
-  Bindings,
-  Workflows,
-  Optimization,
-  Utils,
-  Types,
-  Config,
+  Core: Core,
+  Memory: Memory,
+  Neural: Neural,
+  Database: Database,
+  Coordination: Coordination,
+  SPARC: SPARC,
+  Interfaces: Interfaces,
+  Integration: Integration,
+  Bindings: Bindings,
+  Workflows: Workflows,
+  Optimization: Optimization,
+  Utils: Utils,
+  Types: Types,
+  Config: Config,
 };

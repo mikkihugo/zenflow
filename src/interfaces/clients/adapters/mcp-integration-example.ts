@@ -1,3 +1,5 @@
+import { getLogger } from "../../../config/logging-config";
+const logger = getLogger("interfaces-clients-adapters-mcp-integration-example");
 /**
  * MCP Integration Example
  *
@@ -42,7 +44,7 @@ export class MCPIntegrationManager {
       this.setupUnifiedInterface();
       this.eventEmitter.emit('initialized');
     } catch (error) {
-      console.error('❌ Failed to initialize MCP Integration Manager:', error);
+      logger.error('❌ Failed to initialize MCP Integration Manager:', error);
       throw error;
     }
   }
@@ -62,7 +64,7 @@ export class MCPIntegrationManager {
         const uaclClient = await this.uaclFactory.create(uaclConfig);
         this.uaclClients.set(serverName, uaclClient);
       } catch (error) {
-        console.warn(`⚠️  Failed to migrate ${serverName}:`, error);
+        logger.warn(`⚠️  Failed to migrate ${serverName}:`, error);
       }
     }
   }
@@ -166,7 +168,7 @@ export class MCPIntegrationManager {
     });
 
     this.eventEmitter.on('tool-error', (data) => {
-      console.error(
+      logger.error(
         `❌ Tool error: ${data.toolName} on ${data.serverName} (${data.source}): ${data.error}`
       );
     });
@@ -196,7 +198,7 @@ export class MCPIntegrationManager {
           metadata: result.metadata,
         };
       } catch (_error) {
-        console.warn(`⚠️  UACL execution failed for ${toolName}, falling back to legacy...`);
+        logger.warn(`⚠️  UACL execution failed for ${toolName}, falling back to legacy...`);
       }
     }
 
@@ -354,7 +356,7 @@ export class MCPIntegrationManager {
             // Create UACL client
             const legacyStatus = this.legacyClient.getServerStatus()[serverName];
             if (!legacyStatus) {
-              console.warn(`⚠️  Server ${serverName} not found in legacy system`);
+              logger.warn(`⚠️  Server ${serverName} not found in legacy system`);
               continue;
             }
 
@@ -372,7 +374,7 @@ export class MCPIntegrationManager {
               throw new Error(`Health check failed: ${health.status}`);
             }
           } catch (error) {
-            console.error(`❌ Failed to migrate ${serverName}:`, error);
+            logger.error(`❌ Failed to migrate ${serverName}:`, error);
 
             if (rollbackOnFailure) {
               for (const rolledBackServer of migratedServers.slice(-batch.length)) {
@@ -390,7 +392,7 @@ export class MCPIntegrationManager {
         }
       }
     } catch (error) {
-      console.error('💥 Migration failed:', error);
+      logger.error('💥 Migration failed:', error);
       throw error;
     }
   }
@@ -410,7 +412,7 @@ export class MCPIntegrationManager {
       // Clean up event emitter
       this.eventEmitter.removeAllListeners();
     } catch (error) {
-      console.error('❌ Error during shutdown:', error);
+      logger.error('❌ Error during shutdown:', error);
       throw error;
     }
   }
@@ -459,7 +461,7 @@ export async function demonstrateMCPIntegration(): Promise<void> {
       rollbackOnFailure: false,
     });
   } catch (error) {
-    console.error('💥 Integration demonstration failed:', error);
+    logger.error('💥 Integration demonstration failed:', error);
   } finally {
     await manager.shutdown();
   }

@@ -1,5 +1,5 @@
 /**
- * Hive MCP Tools - High-Level Knowledge Coordination
+ * Hive MCP Tools - High-Level Knowledge Coordination.
  *
  * Provides Hive-level coordination commands that abstract away swarm complexity.
  * Users interact with the Hive mind rather than individual swarms.
@@ -31,7 +31,7 @@ export class HiveTools {
   }
 
   /**
-   * Initialize DAL Factory (lazy loading)
+   * Initialize DAL Factory (lazy loading).
    */
   private async getDalFactory(): Promise<DALFactory | null> {
     if (!this.dalFactory) {
@@ -48,7 +48,7 @@ export class HiveTools {
   }
 
   /**
-   * Get comprehensive Hive system status
+   * Get comprehensive Hive system status.
    *
    * @param _params
    */
@@ -101,7 +101,7 @@ export class HiveTools {
   }
 
   /**
-   * Query the Hive knowledge base
+   * Query the Hive knowledge base.
    *
    * @param params
    */
@@ -162,7 +162,7 @@ export class HiveTools {
   }
 
   /**
-   * Contribute knowledge to the Hive
+   * Contribute knowledge to the Hive.
    *
    * @param params
    */
@@ -192,7 +192,7 @@ export class HiveTools {
   }
 
   /**
-   * Get global agent information across all swarms
+   * Get global agent information across all swarms.
    *
    * @param _params
    */
@@ -258,7 +258,7 @@ export class HiveTools {
   }
 
   /**
-   * Get global task overview across all swarms
+   * Get global task overview across all swarms.
    *
    * @param params
    */
@@ -310,7 +310,7 @@ export class HiveTools {
   }
 
   /**
-   * Get knowledge base statistics and health
+   * Get knowledge base statistics and health.
    *
    * @param _params
    */
@@ -353,7 +353,7 @@ export class HiveTools {
   }
 
   /**
-   * Synchronize Hive with external systems
+   * Synchronize Hive with external systems.
    *
    * @param params
    */
@@ -403,7 +403,7 @@ export class HiveTools {
   }
 
   /**
-   * Get comprehensive Hive health metrics
+   * Get comprehensive Hive health metrics.
    *
    * @param _params
    */
@@ -463,7 +463,7 @@ export class HiveTools {
   }
 
   /**
-   * Get running agent processes from system
+   * Get running agent processes from system.
    */
   private async getRunningAgentProcesses(): Promise<any[]> {
     try {
@@ -481,8 +481,8 @@ export class HiveTools {
           const parts = line.trim().split(/\s+/);
           return {
             pid: parts[1],
-            cpu: parseFloat(parts[2]),
-            memory: parseFloat(parts[3]),
+            cpu: parseFloat(parts[2] || '0'),
+            memory: parseFloat(parts[3] || '0'),
             command: parts.slice(10).join(' '),
             healthy: true, // Assume healthy if running
           };
@@ -500,7 +500,7 @@ export class HiveTools {
   }
 
   /**
-   * Get active MCP connections
+   * Get active MCP connections.
    */
   private async getActiveMCPConnections(): Promise<any[]> {
     try {
@@ -532,7 +532,7 @@ export class HiveTools {
   }
 
   /**
-   * Get swarm states from database
+   * Get swarm states from database.
    *
    * @param dal
    * @param _dal
@@ -549,7 +549,7 @@ export class HiveTools {
   }
 
   /**
-   * Get active task queue
+   * Get active task queue.
    *
    * @param dal
    * @param _dal
@@ -582,7 +582,7 @@ export class HiveTools {
   }
 
   /**
-   * Get system performance metrics
+   * Get system performance metrics.
    */
   private async getSystemPerformanceMetrics(): Promise<any> {
     try {
@@ -594,7 +594,7 @@ export class HiveTools {
         cpu: loadavg[0], // 1-minute load average
         memory: (totalmem - freemem) / totalmem,
         network: 0.05, // Would need network monitoring
-        load: loadavg[0] / os.cpus().length,
+        load: (loadavg?.[0] || 0) / (os.cpus()?.length || 1),
         responseTime: 0.1, // Would need real response time tracking
       };
     } catch (error) {
@@ -610,7 +610,7 @@ export class HiveTools {
   }
 
   /**
-   * Get active swarms from system/database
+   * Get active swarms from system/database.
    *
    * @param dal
    * @param _dal
@@ -637,8 +637,8 @@ export class HiveTools {
             healthy: true,
             agentCount: 1, // Each process could be an agent
             uptime: process.uptime(),
-            cpu: parseFloat(parts[2]) || 0,
-            memory: parseFloat(parts[3]) || 0,
+            cpu: parseFloat(parts[2] || '0') || 0,
+            memory: parseFloat(parts[3] || '0') || 0,
           };
         });
 
@@ -650,7 +650,7 @@ export class HiveTools {
   }
 
   /**
-   * Get swarm health metrics
+   * Get swarm health metrics.
    *
    * @param dal
    * @param _dal
@@ -671,7 +671,7 @@ export class HiveTools {
   }
 
   /**
-   * Search local knowledge base
+   * Search local knowledge base.
    *
    * @param query
    * @param domain
@@ -688,7 +688,7 @@ export class HiveTools {
   }
 
   /**
-   * Search swarm memory
+   * Search swarm memory.
    *
    * @param query
    * @param dal
@@ -705,7 +705,7 @@ export class HiveTools {
   }
 
   /**
-   * Coordinate search across swarms
+   * Coordinate search across swarms.
    *
    * @param swarms
    * @param query
@@ -731,7 +731,7 @@ export class HiveTools {
   }
 
   /**
-   * Get swarm workloads
+   * Get swarm workloads.
    *
    * @param dal
    */

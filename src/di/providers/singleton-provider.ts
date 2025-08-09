@@ -1,13 +1,13 @@
 /**
  * Singleton provider implementation
- * Ensures only one instance of a service exists throughout the application lifetime
+ * Ensures only one instance of a service exists throughout the application lifetime.
  */
 
 import type { DIContainer, Provider } from '../types/di-types';
 
 export class SingletonProvider<T> implements Provider<T> {
   readonly type = 'singleton' as const;
-  private instance?: T;
+  private instance: T | undefined;
   private isCreating = false;
 
   constructor(
@@ -41,14 +41,14 @@ export class SingletonProvider<T> implements Provider<T> {
   }
 
   /**
-   * Check if instance has been created
+   * Check if instance has been created.
    */
   get hasInstance(): boolean {
     return this.instance !== undefined;
   }
 
   /**
-   * Get the instance without creating it (returns undefined if not created)
+   * Get the instance without creating it (returns undefined if not created).
    */
   get currentInstance(): T | undefined {
     return this.instance;

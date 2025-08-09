@@ -1,3 +1,5 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-sparc-integrations-roadmap-integration");
 /**
  * SPARC Roadmap and Epic Management Integration
  *
@@ -46,7 +48,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
       features: [], // Will be populated when features are generated
       business_value: this.calculateBusinessValue(project),
       timeline: {
-        start_date: new Date().toISOString().split('T')[0],
+        start_date: new Date().toISOString().split('T')[0] || new Date().toISOString(),
         end_date: this.calculateEpicEndDate(project),
       },
       status: 'approved',
@@ -172,7 +174,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
       // Save updated roadmap
       await fs.writeFile(this.roadmapFile, JSON.stringify(roadmap, null, 2));
     } catch (error) {
-      console.warn('Could not update roadmap:', error);
+      logger.warn('Could not update roadmap:', error);
     }
   }
 
@@ -243,7 +245,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
       await fs.writeFile(this.epicsFile, JSON.stringify(epics, null, 2));
       await fs.writeFile(this.featuresFile, JSON.stringify(featuresData, null, 2));
     } catch (error) {
-      console.warn('Could not save project artifacts:', error);
+      logger.warn('Could not save project artifacts:', error);
     }
   }
 
@@ -291,7 +293,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + weeks * 7);
 
-    return endDate.toISOString().split('T')[0];
+    return endDate.toISOString().split('T')[0] || endDate.toISOString();
   }
 
   private generateUserStoryIds(project: SPARCProject, phase: string): string[] {
@@ -355,10 +357,18 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
   }
 
   private calculateEndQuarter(startQuarter: string, quartersAhead: number): string {
-    const [year, quarter] = startQuarter.split('-Q');
-    const startQuarterNum = parseInt(quarter);
-
-    let endYear = parseInt(year);
+    const parts = startQuarter.split('-Q');
+    if (parts.length !== 2) {
+      throw new Error(`Invalid quarter format: ${startQuarter}. Expected format: YYYY-QN`);
+    }
+    
+    const [year, quarter] = parts;
+    if (!year || !quarter) {
+      throw new Error(`Invalid quarter format: ${startQuarter}. Expected format: YYYY-QN`);
+    }
+    
+    const startQuarterNum = parseInt(quarter, 10);
+    let endYear = parseInt(year, 10);
     let endQuarter = startQuarterNum + quartersAhead;
 
     while (endQuarter > 4) {

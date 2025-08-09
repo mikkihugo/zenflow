@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("coordination-strategies-ruv-swarmstrategy");
 /**
  * @file A swarm strategy that uses the ZenSwarm implementation.
  */
@@ -28,7 +30,7 @@ export class ZenSwarmStrategy implements SwarmStrategy {
   async sendMessage(_agentId: string, _message: any): Promise<void> {
     // ZenSwarm does not have a direct sendMessage method.
     // This would need to be implemented or mapped to an existing method.
-    console.warn('sendMessage is not implemented in ZenSwarmStrategy');
+    logger.warn('sendMessage is not implemented in ZenSwarmStrategy');
   }
 
   async assignTaskToAgent(_agentId: string, task: any): Promise<void> {

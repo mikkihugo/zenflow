@@ -2126,7 +2126,7 @@ export interface ValidityPeriod {
 }
 
 export interface ViolationResolution {
-  status: ResolutionStatus;
+  status: ResolutionProgressInfo;
   actions: ResolutionAction[];
   timeline: ResolutionTimeline;
   responsible: string[];
@@ -2134,7 +2134,7 @@ export interface ViolationResolution {
 }
 
 export interface ReportSchedule {
-  frequency: ScheduleFrequency;
+  frequency: ScheduleFrequencyConfig;
   time: ScheduleTime;
   timezone: string;
   exceptions: ScheduleException[];
@@ -2142,7 +2142,7 @@ export interface ReportSchedule {
 
 export interface PreprocessingStep {
   stepId: string;
-  operation: PreprocessingOperation;
+  operation: PreprocessingOperationConfig;
   parameters: OperationParameter[];
   validation: StepValidation;
 }
@@ -3825,7 +3825,7 @@ export interface ExtensionRule {
   approval: string;
 }
 
-export interface ResolutionStatus {
+export interface ResolutionProgressInfo {
   status: string;
   progress: number;
   blockers: string[];
@@ -3850,7 +3850,7 @@ export interface ResolutionOutcome {
   followUp: string[];
 }
 
-export interface ScheduleFrequency {
+export interface ScheduleFrequencyConfig {
   unit: 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
   value: number;
 }
@@ -3867,7 +3867,7 @@ export interface ScheduleException {
   reason: string;
 }
 
-export interface PreprocessingOperation {
+export interface PreprocessingOperationConfig {
   operation: string;
   description: string;
 }

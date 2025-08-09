@@ -1,3 +1,5 @@
+import { getLogger } from "../../../../config/logging-config";
+const logger = getLogger("coordination-swarm-core-claude-integration-index");
 /**
  * Main Claude Code integration orchestrator
  * Coordinates all integration modules for modular, remote-capable setup
@@ -102,7 +104,7 @@ class ClaudeIntegrationOrchestrator {
 
       return results;
     } catch (error: any) {
-      console.error('❌ Integration setup failed:', error.message);
+      logger.error('❌ Integration setup failed:', error.message);
       throw error;
     }
   }
@@ -130,7 +132,7 @@ class ClaudeIntegrationOrchestrator {
 
       return status;
     } catch (error: any) {
-      console.error('❌ Status check failed:', error.message);
+      logger.error('❌ Status check failed:', error.message);
       throw error;
     }
   }
@@ -175,7 +177,7 @@ class ClaudeIntegrationOrchestrator {
       }
       return { success: true, removedFiles };
     } catch (error: any) {
-      console.error('❌ Cleanup failed:', error.message);
+      logger.error('❌ Cleanup failed:', error.message);
       throw error;
     }
   }

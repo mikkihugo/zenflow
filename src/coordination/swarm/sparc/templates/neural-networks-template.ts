@@ -1,5 +1,5 @@
 /**
- * SPARC Neural Networks Template
+ * SPARC Neural Networks Template.
  *
  * Pre-built template for neural network systems with WASM acceleration,
  * training algorithms, and model management.
@@ -924,7 +924,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
   },
 
   /**
-   * Apply this template to a project specification
+   * Apply this template to a project specification.
    *
    * @param projectSpec
    */
@@ -946,7 +946,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
   },
 
   /**
-   * Customize specification based on project requirements
+   * Customize specification based on project requirements.
    *
    * @param projectSpec
    */
@@ -954,8 +954,9 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
     const customized = { ...this.specification };
 
     // Update basic information
+    // Enhanced: Add project name and description to specification
     customized.name = projectSpec.name;
-    customized.description = `${projectSpec.name} - ${this.specification.description}`;
+    customized.description = `${projectSpec.name} - Neural network systems with WASM acceleration`;
 
     // Add project-specific requirements
     if (projectSpec.requirements) {
@@ -966,11 +967,9 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           description: `Custom requirement: ${requirement}`,
           type: 'custom',
           priority: 'MEDIUM',
-          category: 'functional',
-          source: 'project',
-          validation: `Implements ${requirement}`,
+          // Enhanced: Use existing FunctionalRequirement properties
           dependencies: [],
-          acceptanceCriteria: [`Successfully implements ${requirement}`],
+          testCriteria: [`Successfully implements ${requirement}`],
         });
       }
     }
@@ -978,12 +977,12 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
     // Add project-specific constraints
     if (projectSpec.constraints) {
       for (const constraint of projectSpec.constraints) {
-        customized.systemConstraints.push({
+        // Enhanced: Use correct constraints property name
+        customized.constraints.push({
           id: nanoid(),
-          type: 'project',
+          type: 'technical',
           description: constraint,
-          rationale: 'Project-specific constraint',
-          impact: 'MEDIUM',
+          impact: 'medium',
         });
       }
     }
@@ -992,7 +991,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
   },
 
   /**
-   * Customize pseudocode based on project requirements
+   * Customize pseudocode based on project requirements.
    *
    * @param projectSpec
    */
@@ -1022,9 +1021,11 @@ BEGIN
 END
         `.trim(),
         complexity: {
-          time: 'O(n)' as const,
-          space: 'O(1)' as const,
-          explanation: 'Linear time for compliance validation',
+          // Enhanced: Use correct ComplexityAnalysis property names
+          timeComplexity: 'O(n)' as const,
+          spaceComplexity: 'O(1)' as const,
+          scalability: 'Linear time for compliance validation',
+          worstCase: 'O(n)',
         },
         inputParameters: ['model', 'complianceRules', 'auditRequirements'],
         outputFormat: 'GovernanceReport',
@@ -1038,7 +1039,7 @@ END
   },
 
   /**
-   * Customize architecture based on project requirements
+   * Customize architecture based on project requirements.
    *
    * @param projectSpec
    */
@@ -1047,21 +1048,39 @@ END
 
     // Adjust deployment strategy based on complexity
     if (projectSpec.complexity === 'simple') {
-      customized.deploymentStrategy.type = 'monolith';
-      customized.deploymentStrategy.infrastructure = ['Docker', 'WASM Runtime'];
+      // Enhanced: Set proper deployment strategy for simple neural network projects
+      customized.deploymentStrategy = {
+        type: 'monolith',
+        infrastructure: ['Docker', 'WASM Runtime', 'GPU Support'],
+        scalingApproach: 'vertical',
+        containerization: true,
+        orchestration: 'docker-compose'
+      };
     } else if (projectSpec.complexity === 'enterprise') {
-      customized.deploymentStrategy.infrastructure.push(
-        'Service Mesh',
-        'Enterprise Security',
-        'Compliance Monitoring'
-      );
+      // Enhanced: Set enterprise deployment for neural networks with advanced infrastructure
+      customized.deploymentStrategy = {
+        type: 'microservices',
+        infrastructure: ['Kubernetes', 'Docker', 'GPU Cluster', 'WASM Runtime', 'Service Mesh', 'Enterprise Security', 'Compliance Monitoring'],
+        scalingApproach: 'horizontal',
+        containerization: true,
+        orchestration: 'kubernetes'
+      };
+    } else {
+      // Enhanced: Default hybrid approach for neural networks
+      customized.deploymentStrategy = {
+        type: 'hybrid',
+        infrastructure: ['Docker', 'GPU Support', 'WASM Runtime', 'Load Balancer'],
+        scalingApproach: 'auto',
+        containerization: true,
+        orchestration: 'docker-swarm'
+      };
     }
 
     return customized;
   },
 
   /**
-   * Validate template compatibility with project
+   * Validate template compatibility with project.
    *
    * @param projectSpec
    */

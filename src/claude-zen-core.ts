@@ -1,3 +1,5 @@
+import { getLogger } from "./config/logging-config";
+const logger = getLogger("claude-zen-core");
 /**
  * Claude Code Zen - Main Application Entry Point
  *
@@ -33,11 +35,11 @@ class ConsoleLogger implements ILogger {
   info(_message: string, _meta?: any): void {}
 
   warn(message: string, meta?: any): void {
-    console.warn(`[${new Date().toISOString()}] WARN: ${message}`, meta || '');
+    logger.warn(`[${new Date().toISOString()}] WARN: ${message}`, meta || '');
   }
 
   error(message: string, meta?: any): void {
-    console.error(`[${new Date().toISOString()}] ERROR: ${message}`, meta || '');
+    logger.error(`[${new Date().toISOString()}] ERROR: ${message}`, meta || '');
   }
 }
 
@@ -400,7 +402,7 @@ async function main() {
       // Application heartbeat
     }, 10000);
   } catch (error) {
-    console.error('❌ Failed to start application:', error);
+    logger.error('❌ Failed to start application:', error);
     process.exit(1);
   }
 }

@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("neural-core-neural-network-manager");
 /**
  * @file Neural Network Manager for Per-Agent Neural Networks
  *
@@ -529,7 +531,7 @@ class NeuralNetworkManager {
         : null;
 
     if (!neuralModule || neuralModule.isPlaceholder) {
-      console.warn('Neural network module not available, using simulation');
+      logger.warn('Neural network module not available, using simulation');
       return this.createSimulatedNetwork(agentId, config);
     }
 
@@ -555,7 +557,7 @@ class NeuralNetworkManager {
 
       return network;
     } catch (error) {
-      console.error('Failed to create neural network:', error);
+      logger.error('Failed to create neural network:', error);
       return this.createSimulatedNetwork(agentId, config);
     }
   }
@@ -651,7 +653,7 @@ class NeuralNetworkManager {
 
       return wrappedModel;
     } catch (error) {
-      console.error(`Failed to create advanced neural model: ${error}`);
+      logger.error(`Failed to create advanced neural model: ${error}`);
       return this.createSimulatedNetwork(agentId, config);
     }
   }
@@ -926,7 +928,7 @@ class NeuralNetworkManager {
 
       return this.createAdvancedNeuralModel(agentId, 'preset_model', config);
     } catch (error) {
-      console.error(`Failed to create agent from preset: ${error.message}`);
+      logger.error(`Failed to create agent from preset: ${error.message}`);
       throw error;
     }
   }
@@ -1486,7 +1488,7 @@ class NeuralNetworkManager {
           }
         }
       } catch (error) {
-        console.error('Knowledge distillation failed:', error);
+        logger.error('Knowledge distillation failed:', error);
       }
 
       // Schedule next distillation
@@ -1567,7 +1569,7 @@ class NeuralNetworkManager {
         session.coordinationMatrix[studentIdx][teacherIdx] += distillationResult.improvement;
       }
     } catch (error) {
-      console.error(
+      logger.error(
         `Knowledge distillation failed between ${teacherAgentId} and ${studentAgentId}:`,
         error
       );
@@ -1624,7 +1626,7 @@ class NeuralNetworkManager {
         // Apply coordination results
         await this.applyCoordinationResults(session);
       } catch (error) {
-        console.error('Neural coordination failed:', error);
+        logger.error('Neural coordination failed:', error);
       }
 
       // Schedule next coordination
@@ -1749,7 +1751,7 @@ class NeuralNetworkManager {
 
       agent.setWeights(adjustedWeights);
     } catch (error) {
-      console.error('Failed to apply weight adjustments:', error);
+      logger.error('Failed to apply weight adjustments:', error);
     }
   }
 
@@ -1960,7 +1962,7 @@ class NeuralNetwork {
       const result = this.wasmModule.exports.forward_pass(this.networkId, input);
       return result;
     } catch (error) {
-      console.error('Forward pass failed:', error);
+      logger.error('Forward pass failed:', error);
       const outputSize = this.config.layers?.[this.config.layers.length - 1] ?? 1;
       return new Float32Array(outputSize).fill(0.5);
     }
@@ -1991,7 +1993,7 @@ class NeuralNetwork {
           epochLoss += loss;
           batchCount++;
         } catch (error) {
-          console.error('Training batch failed:', error);
+          logger.error('Training batch failed:', error);
         }
       }
 
@@ -2010,7 +2012,7 @@ class NeuralNetwork {
       const gradients = this.wasmModule.exports.get_gradients(this.networkId);
       return JSON.parse(gradients);
     } catch (error) {
-      console.error('Failed to get gradients:', error);
+      logger.error('Failed to get gradients:', error);
       return {};
     }
   }
@@ -2020,7 +2022,7 @@ class NeuralNetwork {
     try {
       this.wasmModule.exports.apply_gradients(this.networkId, JSON.stringify(gradients));
     } catch (error) {
-      console.error('Failed to apply gradients:', error);
+      logger.error('Failed to apply gradients:', error);
     }
   }
 
@@ -2049,7 +2051,7 @@ class NeuralNetwork {
       await fs.writeFile(filePath, JSON.stringify(state, null, 2));
       return true;
     } catch (error) {
-      console.error('Failed to save network:', error);
+      logger.error('Failed to save network:', error);
       return false;
     }
   }
@@ -2065,7 +2067,7 @@ class NeuralNetwork {
       this.wasmModule.exports.deserialize_network(this.networkId, state);
       return true;
     } catch (error) {
-      console.error('Failed to load network:', error);
+      logger.error('Failed to load network:', error);
       return false;
     }
   }
@@ -2239,7 +2241,7 @@ class AdvancedNeuralNetwork {
 
       return result;
     } catch (error) {
-      console.error(`Forward pass failed for ${this.modelType}:`, error);
+      logger.error(`Forward pass failed for ${this.modelType}:`, error);
       return new Float32Array(this.config.outputSize || 10).fill(0.5);
     }
   }

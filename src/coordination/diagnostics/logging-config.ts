@@ -1,3 +1,5 @@
+import { getLogger } from "../../config/logging-config";
+const logger = getLogger("coordination-diagnostics-logging-config");
 /**
  * Logging Configuration for Diagnostics System
  * Provides centralized logging configuration specifically for diagnostics
@@ -42,25 +44,27 @@ class DiagnosticsLogger implements LoggerInterface {
     return `[${timestamp}] [${this.name}] ${level.toUpperCase()}: ${message}${metaStr}`;
   }
 
-  info(_message: string, _meta?: any): void {
+  info(message: string, meta?: any): void {
     if (this.shouldLog('INFO')) {
+      logger.info(this.formatMessage('INFO', message, meta));
     }
   }
 
   warn(message: string, meta?: any): void {
     if (this.shouldLog('WARN')) {
-      console.warn(this.formatMessage('WARN', message, meta));
+      logger.warn(this.formatMessage('WARN', message, meta));
     }
   }
 
   error(message: string, meta?: any): void {
     if (this.shouldLog('ERROR')) {
-      console.error(this.formatMessage('ERROR', message, meta));
+      logger.error(this.formatMessage('ERROR', message, meta));
     }
   }
 
-  debug(_message: string, _meta?: any): void {
+  debug(message: string, meta?: any): void {
     if (this.shouldLog('DEBUG')) {
+      logger.debug(this.formatMessage('DEBUG', message, meta));
     }
   }
 }

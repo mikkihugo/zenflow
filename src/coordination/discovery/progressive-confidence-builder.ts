@@ -67,43 +67,43 @@ export interface ConfidentDomainMap {
 }
 
 export interface ConfidentDomain {
-  /** Unique domain identifier */
+  /** Unique domain identifier. */
   id: string;
-  /** Domain name derived from analysis */
+  /** Domain name derived from analysis. */
   name: string;
-  /** Domain description based on documents and code */
+  /** Domain description based on documents and code. */
   description: string;
-  /** Overall confidence score (0-1) compatible with DiscoveredDomain */
+  /** Overall confidence score (0-1) compatible with DiscoveredDomain. */
   confidence: number;
-  /** Detailed confidence metrics */
+  /** Detailed confidence metrics. */
   detailedConfidence: ConfidenceMetrics;
-  /** Associated document paths */
+  /** Associated document paths. */
   documents: string[];
-  /** Associated code file paths */
+  /** Associated code file paths. */
   codeFiles: string[];
-  /** Extracted concepts from documents */
+  /** Extracted concepts from documents. */
   concepts: string[];
-  /** Domain directory path */
+  /** Domain directory path. */
   path: string;
-  /** Files associated with this domain */
+  /** Files associated with this domain. */
   files: string[];
-  /** Suggested concepts for the domain */
+  /** Suggested concepts for the domain. */
   suggestedConcepts: string[];
-  /** Technologies detected in the domain */
+  /** Technologies detected in the domain. */
   technologies: string[];
-  /** Related domains */
+  /** Related domains. */
   relatedDomains: string[];
-  /** Domain category (e.g., 'coordination', 'neural', 'memory') */
+  /** Domain category (e.g., 'coordination', 'neural', 'memory'). */
   category: string;
-  /** Suggested swarm topology for this domain */
+  /** Suggested swarm topology for this domain. */
   suggestedTopology: 'mesh' | 'hierarchical' | 'ring' | 'star';
-  /** Suggested agents for this domain */
+  /** Suggested agents for this domain. */
   suggestedAgents: string[];
-  /** Human validation records */
+  /** Human validation records. */
   validations: ValidationRecord[];
-  /** Research results */
+  /** Research results. */
   research: ResearchResult[];
-  /** Domain refinement history */
+  /** Domain refinement history. */
   refinementHistory: DomainRefinement[];
 }
 
@@ -173,7 +173,7 @@ export interface DiscoveryContext {
 
 /**
  * Progressive Confidence Builder
- * Iteratively builds confidence in domain discovery through human validation and research
+ * Iteratively builds confidence in domain discovery through human validation and research.
  *
  * @example
  */
@@ -219,7 +219,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Build confidence through progressive iterations
+   * Build confidence through progressive iterations.
    *
    * @param context
    */
@@ -321,7 +321,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Check if we've reached a validation checkpoint
+   * Check if we've reached a validation checkpoint.
    */
   private async checkValidationCheckpoints(): Promise<void> {
     const checkpoints = this.config.validationCheckpoints || [];
@@ -342,7 +342,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Perform validation at a checkpoint
+   * Perform validation at a checkpoint.
    *
    * @param checkpoint
    * @param requireApproval
@@ -401,7 +401,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Import more documents and extract insights
+   * Import more documents and extract insights.
    *
    * @param _context
    */
@@ -453,7 +453,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Perform targeted human validation
+   * Perform targeted human validation.
    */
   private async performHumanValidation(): Promise<void> {
     logger.info('Performing human validation round');
@@ -497,7 +497,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Perform online research using HiveFACT
+   * Perform online research using HiveFACT.
    */
   private async performOnlineResearch(): Promise<void> {
     if (!this.hiveFact) {
@@ -550,7 +550,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Refine domain understanding based on accumulated knowledge
+   * Refine domain understanding based on accumulated knowledge.
    */
   private async refineDomainUnderstanding(): Promise<void> {
     logger.info('Refining domain understanding');
@@ -589,7 +589,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Update confidence metrics based on current state
+   * Update confidence metrics based on current state.
    */
   private updateConfidenceMetrics(): void {
     const documentCoverage = this.calculateDocumentCoverage();
@@ -617,7 +617,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Persist learning to memory store
+   * Persist learning to memory store.
    */
   private async persistLearning(): Promise<void> {
     try {
@@ -646,7 +646,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Show progress to user
+   * Show progress to user.
    */
   private async showProgress(): Promise<void> {
     const progress = {
@@ -669,7 +669,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Perform final validation before completion
+   * Perform final validation before completion.
    */
   private async performFinalValidation(): Promise<void> {
     logger.info('Performing final validation');
@@ -701,7 +701,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Initialize from existing domains
+   * Initialize from existing domains.
    *
    * @param existingDomains
    */
@@ -725,7 +725,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Generate validation questions based on current state
+   * Generate validation questions based on current state.
    */
   private generateValidationQuestions(): ValidationQuestion[] {
     const questions: ValidationQuestion[] = [];
@@ -762,7 +762,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Generate research queries for a domain
+   * Generate research queries for a domain.
    *
    * @param domain
    */
@@ -785,7 +785,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Helper methods
+   * Helper methods.
    */
 
   private initializeMetrics(): ConfidenceMetrics {
@@ -889,7 +889,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Calculate confidence impact based on question type and response
+   * Calculate confidence impact based on question type and response.
    *
    * @param question
    * @param response
@@ -1163,7 +1163,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   }
 
   /**
-   * Review domains interactively
+   * Review domains interactively.
    */
   private async reviewDomains(): Promise<void> {
     const domainList = Array.from(this.domains.entries()).map(([name, domain]) => ({

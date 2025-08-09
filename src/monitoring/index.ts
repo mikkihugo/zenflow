@@ -1,3 +1,5 @@
+import { getLogger } from "../config/logging-config";
+const logger = getLogger("src-monitoring-index");
 /**
  * Claude-Zen Performance Monitoring System
  * Comprehensive real-time monitoring, analytics, and optimization
@@ -34,6 +36,7 @@ export {
 export * from './performance/real-time-monitor';
 
 import { type IntegrationConfig, SystemIntegration } from './integrations/system-integration';
+import { getConfig } from '../config';
 
 /**
  * Main monitoring system factory
@@ -44,12 +47,13 @@ export class PerformanceMonitoringSystem {
   private integration: SystemIntegration;
 
   constructor(config: Partial<IntegrationConfig> = {}) {
+    const centralConfig = getConfig();
     const defaultConfig: IntegrationConfig = {
-      metricsInterval: 1000, // 1 second
-      dashboardPort: 3001,
-      enableOptimization: true,
+      metricsInterval: centralConfig.core.performance.metricsInterval || 1000, // 1 second
+      dashboardPort: centralConfig.monitoring.dashboard.port,
+      enableOptimization: centralConfig.core.performance.enableMetrics,
       enableAlerts: true,
-      logLevel: 'info',
+      logLevel: centralConfig.core.logger.level as any,
     };
 
     const finalConfig = { ...defaultConfig, ...config };
@@ -120,17 +124,18 @@ export async function setupClaudeZenMonitoring(
   hooks: import('./integrations/system-integration').SystemHooks;
   dashboardUrl: string;
 }> {
+  const centralConfig = getConfig();
   const config: Partial<IntegrationConfig> = {
-    dashboardPort: options.dashboardPort || 3001,
+    dashboardPort: options.dashboardPort || centralConfig.monitoring.dashboard.port,
     enableOptimization: options.enableOptimization !== false,
-    metricsInterval: options.metricsInterval || 1000,
+    metricsInterval: options.metricsInterval || centralConfig.core.performance.metricsInterval || 1000,
     enableAlerts: true,
-    logLevel: 'info',
+    logLevel: centralConfig.core.logger.level as any,
   };
 
   const system = await createMonitoringSystem(config);
   const hooks = system.getHooks();
-  const dashboardUrl = `http://localhost:${config.dashboardPort}`;
+  const dashboardUrl = `http://${centralConfig.monitoring.dashboard.host}:${config.dashboardPort}`;
 
   return { system, hooks, dashboardUrl };
 }
@@ -184,7 +189,7 @@ export const examples = {
 
     // Custom event handling
     const integration = system.getIntegration();
-    integration.on('metrics:enhanced', (_metrics) => {});
+    integration.on('metrics:enhanced', (metrics) => {});
 
     integration.on('insights:processed', (insights) => {
       if (insights.healthScore < 80) {
@@ -198,10 +203,11 @@ export const examples = {
    * Production deployment example
    */
   productionSetup: async () => {
+    const centralConfig = getConfig();
     const { system, hooks } = await setupClaudeZenMonitoring({
-      dashboardPort: process.env['DASHBOARD_PORT'] ? parseInt(process.env['DASHBOARD_PORT']) : 3001,
-      enableOptimization: process.env['NODE_ENV'] === 'production',
-      metricsInterval: process.env['NODE_ENV'] === 'production' ? 5000 : 1000,
+      dashboardPort: centralConfig.monitoring.dashboard.port,
+      enableOptimization: centralConfig.environment.isProduction,
+      metricsInterval: centralConfig.environment.isProduction ? 5000 : 1000,
     });
 
     // Production-specific monitoring
@@ -211,7 +217,7 @@ export const examples = {
     integration.on('insights:processed', (insights) => {
       const criticalAnomalies = insights.anomalies.filter((a) => a.severity === 'critical');
       if (criticalAnomalies.length > 0) {
-        console.error('CRITICAL PERFORMANCE ISSUES:', criticalAnomalies);
+        logger.error('CRITICAL PERFORMANCE ISSUES:', criticalAnomalies);
         // In production, you might send alerts to external monitoring systems
       }
     });
@@ -219,7 +225,7 @@ export const examples = {
     // Track optimization impact
     integration.on('optimization:processed', (result) => {
       if (result.success) {
-        const _impact = (result.impact.performance * 100).toFixed(1);
+        const impact = (result.impact.performance * 100).toFixed(1);
 
         // Track optimization metrics
         if (result.metrics) {

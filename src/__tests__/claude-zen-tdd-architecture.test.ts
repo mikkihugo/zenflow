@@ -13,6 +13,14 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import {
+  createClaudeZenMocks,
+  clearAllClaudeZenMocks,
+  type MockHiveMindService,
+  type MockQueensService,
+  type MockNeuralFrameworkService,
+  type MockClaudeZenApiService
+} from './helpers/claude-zen-tdd-london-mocks';
 
 // === CLAUDE-ZEN ARCHITECTURE MOCKS ===
 
@@ -101,6 +109,26 @@ interface NeuralFrameworkContract {
 }
 
 describe('Claude-Zen TDD London School Architecture', () => {
+  // TDD London Mock Setup
+  let mocks: ReturnType<typeof createClaudeZenMocks>;
+  let mockHiveMind: MockHiveMindService;
+  let mockQueens: MockQueensService;
+  let mockNeuralFramework: MockNeuralFrameworkService;
+  let mockClaudeZenApi: MockClaudeZenApiService;
+
+  beforeEach(() => {
+    // Create fresh TDD London mocks for each test
+    mocks = createClaudeZenMocks();
+    mockHiveMind = mocks.hiveMind;
+    mockQueens = mocks.queens;
+    mockNeuralFramework = mocks.neuralFramework;
+    mockClaudeZenApi = mocks.api;
+  });
+
+  afterEach(() => {
+    // TDD London: Clear all mocks after each test to prevent test pollution
+    clearAllClaudeZenMocks(mocks);
+  });
   describe('🧠 Acceptance Tests - Claude-Zen User Stories', () => {
     describe('User Story: Multi-Queen Task Processing', () => {
       it('should coordinate multiple Queens to solve complex development tasks', async () => {
@@ -121,9 +149,9 @@ describe('Claude-Zen TDD London School Architecture', () => {
           neuralFramework: true,
         });
 
-        const _architectQueenId = await mockHiveMind.spawnQueen('architect', {});
-        const _codeQueenId = await mockHiveMind.spawnQueen('code', {});
-        const _debugQueenId = await mockHiveMind.spawnQueen('debug', {});
+        const architectQueenId = await mockHiveMind.spawnQueen('architect', {});
+        const codeQueenId = await mockHiveMind.spawnQueen('code', {});
+        const debugQueenId = await mockHiveMind.spawnQueen('debug', {});
 
         const result = await mockHiveMind.coordinateQueens(complexTask);
 
@@ -218,7 +246,7 @@ describe('Claude-Zen TDD London School Architecture', () => {
         ]);
 
         // Act - Test Queen lifecycle
-        const _queenId = await mockHiveMind.spawnQueen('architect', {
+        const queenId = await mockHiveMind.spawnQueen('architect', {
           specialization: 'microservices',
           experience: 'senior',
         });

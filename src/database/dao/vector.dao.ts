@@ -1,5 +1,5 @@
 /**
- * Vector Database Repository Implementation (LanceDB)
+ * Vector Database Repository Implementation (LanceDB).
  *
  * Specialized repository for vector database operations including
  * similarity search, vector insertion, indexing, and clustering.
@@ -21,9 +21,9 @@ import type {
 import type { VectorDatabaseAdapter } from '../providers/database-providers';
 
 /**
- * Vector database repository implementation for LanceDB
+ * Vector database repository implementation for LanceDB.
  *
- * @template T The entity type this repository manages
+ * @template T The entity type this repository manages.
  * @example
  */
 export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
@@ -32,7 +32,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
   }
 
   /**
-   * Perform vector similarity search
+   * Perform vector similarity search.
    *
    * @param queryVector
    * @param options
@@ -80,7 +80,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
   }
 
   /**
-   * Add vectors in batch
+   * Add vectors in batch.
    *
    * @param vectors
    */
@@ -105,7 +105,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
       }));
 
       // Use vector adapter to insert vectors
-      await this.vectorAdapter.addVectors(adapterVectors);
+      await this.vectorAdapter.addVectors(adapterVectors as any);
 
       // Return success result (LanceDB doesn't provide detailed error info in current adapter)
       const result: VectorInsertResult = {
@@ -130,7 +130,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
   }
 
   /**
-   * Create vector index
+   * Create vector index.
    *
    * @param config
    */
@@ -149,7 +149,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
   }
 
   /**
-   * Get vector statistics
+   * Get vector statistics.
    */
   async getVectorStats(): Promise<VectorStats> {
     this.logger.debug(`Getting vector statistics for ${this.tableName}`);
@@ -176,7 +176,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
   }
 
   /**
-   * Perform clustering operation
+   * Perform clustering operation.
    *
    * @param options
    */
@@ -217,11 +217,11 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
   }
 
   /**
-   * Enhanced vector-specific operations
+   * Enhanced vector-specific operations.
    */
 
   /**
-   * Find similar entities to a given entity
+   * Find similar entities to a given entity.
    *
    * @param entityId
    * @param options
@@ -256,7 +256,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
   }
 
   /**
-   * Update vector for existing entity
+   * Update vector for existing entity.
    *
    * @param entityId
    * @param newVector
@@ -276,7 +276,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
       // Update the entity with new vector
       const updatedEntity = await this.update(entityId, {
         vector: newVector,
-      } as Partial<T>);
+      } as unknown as Partial<T>);
 
       return updatedEntity;
     } catch (error) {
@@ -288,7 +288,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
   }
 
   /**
-   * Batch similarity search with multiple query vectors
+   * Batch similarity search with multiple query vectors.
    *
    * @param queryVectors
    * @param options
@@ -323,7 +323,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
   }
 
   /**
-   * Override base repository methods for vector-specific implementations
+   * Override base repository methods for vector-specific implementations.
    */
 
   protected mapRowToEntity(row: any): T {
@@ -354,11 +354,11 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
   }
 
   /**
-   * Execute custom query - override to handle vector-specific queries
+   * Execute custom query - override to handle vector-specific queries.
    *
    * @param customQuery
    */
-  async executeCustomQuery<R = any>(customQuery: CustomQuery): Promise<R> {
+  override async executeCustomQuery<R = any>(customQuery: CustomQuery): Promise<R> {
     if (customQuery.type === 'vector') {
       // Handle vector-specific queries
       const query = customQuery.query as any;
@@ -378,7 +378,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
   }
 
   /**
-   * Helper methods
+   * Helper methods.
    */
 
   private validateVector(vector: number[]): void {
@@ -404,7 +404,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
 
   private getVectorDimension(): number {
     // Get from schema or default configuration
-    return this.entitySchema?.vector?.dimension || 384;
+    return this.entitySchema?.['vector']?.dimension || 384;
   }
 
   private mapVectorDocumentToEntity(match: any): T {

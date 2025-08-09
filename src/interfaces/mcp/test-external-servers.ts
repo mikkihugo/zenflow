@@ -163,7 +163,7 @@ async function main(): Promise<void> {
 // Run tests if this file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
-    console.error('Test failed:', error);
+    logger.error('Test failed:', error);
     process.exit(1);
   });
 }
