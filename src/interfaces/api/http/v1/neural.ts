@@ -8,7 +8,7 @@
  * @file Neural network domain API routes
  */
 
-import { type Request, type Response, Router } from 'express';
+import { Router } from 'express';
 import { NeuralDomainAPI } from '../../neural/api';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log, logPerformance } from '../middleware/logging';
@@ -29,7 +29,7 @@ export const createNeuralRoutes = (): Router => {
   router.get(
     '/networks',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Listing neural networks', req, {
+      log(LogLevel["DEBUG"], 'Listing neural networks', req, {
         query: req.query,
       });
 
@@ -41,7 +41,7 @@ export const createNeuralRoutes = (): Router => {
       const duration = Date.now() - startTime;
 
       logPerformance('list_neural_networks', duration, req, {
-        networksCount: result.networks.length,
+        networksCount: result?.networks.length,
         filters: req.query,
       });
 
@@ -56,7 +56,7 @@ export const createNeuralRoutes = (): Router => {
   router.post(
     '/networks',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Creating neural network', req, {
+      log(LogLevel["INFO"], 'Creating neural network', req, {
         networkType: req.body.type,
         layerCount: req.body.layers?.length,
       });
@@ -66,15 +66,15 @@ export const createNeuralRoutes = (): Router => {
       const duration = Date.now() - startTime;
 
       logPerformance('create_neural_network', duration, req, {
-        networkId: result.id,
-        networkType: result.type,
-        layers: result.layers.length,
+        networkId: result?.id,
+        networkType: result?.type,
+        layers: result?.layers.length,
       });
 
-      log(LogLevel.INFO, 'Neural network created successfully', req, {
-        networkId: result.id,
-        networkType: result.type,
-        layerCount: result.layers.length,
+      log(LogLevel["INFO"], 'Neural network created successfully', req, {
+        networkId: result?.id,
+        networkType: result?.type,
+        layerCount: result?.layers.length,
       });
 
       res.status(201).json(result);
@@ -90,7 +90,7 @@ export const createNeuralRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const networkId = req.params.networkId;
 
-      log(LogLevel.DEBUG, 'Getting neural network details', req, {
+      log(LogLevel["DEBUG"], 'Getting neural network details', req, {
         networkId,
       });
 
@@ -123,12 +123,12 @@ export const createNeuralRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const networkId = req.params.networkId;
 
-      log(LogLevel.INFO, 'Deleting neural network', req, {
+      log(LogLevel["INFO"], 'Deleting neural network', req, {
         networkId,
       });
 
       // Placeholder - would delete network from storage
-      log(LogLevel.INFO, 'Neural network deleted successfully', req, {
+      log(LogLevel["INFO"], 'Neural network deleted successfully', req, {
         networkId,
       });
 
@@ -147,7 +147,7 @@ export const createNeuralRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const networkId = req.params.networkId;
 
-      log(LogLevel.INFO, 'Starting neural network training', req, {
+      log(LogLevel["INFO"], 'Starting neural network training', req, {
         networkId,
         epochs: req.body.epochs,
         batchSize: req.body.batchSize,
@@ -161,14 +161,14 @@ export const createNeuralRoutes = (): Router => {
 
       logPerformance('start_training', duration, req, {
         networkId,
-        trainingId: result.trainingId,
+        trainingId: result?.trainingId,
         epochs: req.body.epochs,
       });
 
-      log(LogLevel.INFO, 'Training started successfully', req, {
+      log(LogLevel["INFO"], 'Training started successfully', req, {
         networkId,
-        trainingId: result.trainingId,
-        status: result.status,
+        trainingId: result?.trainingId,
+        status: result?.status,
       });
 
       res.status(202).json(result);
@@ -184,7 +184,7 @@ export const createNeuralRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const { networkId, trainingId } = req.params;
 
-      log(LogLevel.DEBUG, 'Getting training status', req, {
+      log(LogLevel["DEBUG"], 'Getting training status', req, {
         networkId,
         trainingId,
       });
@@ -219,13 +219,13 @@ export const createNeuralRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const { networkId, trainingId } = req.params;
 
-      log(LogLevel.INFO, 'Cancelling training job', req, {
+      log(LogLevel["INFO"], 'Cancelling training job', req, {
         networkId,
         trainingId,
       });
 
       // Placeholder - would cancel training job
-      log(LogLevel.INFO, 'Training job cancelled', req, {
+      log(LogLevel["INFO"], 'Training job cancelled', req, {
         networkId,
         trainingId,
       });
@@ -245,7 +245,7 @@ export const createNeuralRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const networkId = req.params.networkId;
 
-      log(LogLevel.DEBUG, 'Making prediction', req, {
+      log(LogLevel["DEBUG"], 'Making prediction', req, {
         networkId,
         inputSize: req.body.input?.length,
         includeConfidence: req.body.options?.includeConfidence,
@@ -258,14 +258,14 @@ export const createNeuralRoutes = (): Router => {
       logPerformance('neural_prediction', duration, req, {
         networkId,
         inputSize: req.body.input?.length,
-        outputSize: result.output.length,
-        confidence: result.confidence,
+        outputSize: result?.output.length,
+        confidence: result?.confidence,
       });
 
-      log(LogLevel.DEBUG, 'Prediction completed', req, {
+      log(LogLevel["DEBUG"], 'Prediction completed', req, {
         networkId,
         processingTime: duration,
-        confidence: result.confidence,
+        confidence: result?.confidence,
       });
 
       res.json(result);
@@ -282,7 +282,7 @@ export const createNeuralRoutes = (): Router => {
       const networkId = req.params.networkId;
       const inputs = req.body.inputs;
 
-      log(LogLevel.INFO, 'Making batch predictions', req, {
+      log(LogLevel["INFO"], 'Making batch predictions', req, {
         networkId,
         batchSize: inputs?.length,
       });
@@ -303,7 +303,7 @@ export const createNeuralRoutes = (): Router => {
       logPerformance('batch_predictions', duration, req, {
         networkId,
         batchSize: results.length,
-        avgConfidence: results.reduce((sum, r) => sum + r.confidence, 0) / results.length,
+        avgConfidence: results?.reduce((sum, r) => sum + r.confidence, 0) / results.length,
       });
 
       const response = {
@@ -313,7 +313,7 @@ export const createNeuralRoutes = (): Router => {
           total: results.length,
           successful: results.length,
           failed: 0,
-          avgConfidence: results.reduce((sum, r) => sum + r.confidence, 0) / results.length,
+          avgConfidence: results?.reduce((sum, r) => sum + r.confidence, 0) / results.length,
           totalProcessingTime: duration,
         },
         timestamp: new Date().toISOString(),
@@ -335,7 +335,7 @@ export const createNeuralRoutes = (): Router => {
       const networkId = req.params.networkId;
       const format = req.body.format || 'onnx';
 
-      log(LogLevel.INFO, 'Exporting neural network', req, {
+      log(LogLevel["INFO"], 'Exporting neural network', req, {
         networkId,
         format,
         includeWeights: req.body.includeWeights,
@@ -354,9 +354,9 @@ export const createNeuralRoutes = (): Router => {
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
       };
 
-      log(LogLevel.INFO, 'Model export completed', req, {
+      log(LogLevel["INFO"], 'Model export completed', req, {
         networkId,
-        exportId: result.exportId,
+        exportId: result?.exportId,
         format,
         size: result.size,
       });
@@ -372,7 +372,7 @@ export const createNeuralRoutes = (): Router => {
   router.post(
     '/networks/import',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Importing neural network', req, {
+      log(LogLevel["INFO"], 'Importing neural network', req, {
         format: req.body.format,
         name: req.body.name,
       });
@@ -388,9 +388,9 @@ export const createNeuralRoutes = (): Router => {
         created: new Date().toISOString(),
       };
 
-      log(LogLevel.INFO, 'Model import completed', req, {
-        networkId: result.id,
-        name: result.name,
+      log(LogLevel["INFO"], 'Model import completed', req, {
+        networkId: result?.id,
+        name: result?.name,
       });
 
       res.status(201).json(result);
@@ -408,7 +408,7 @@ export const createNeuralRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const networkId = req.params.networkId;
 
-      log(LogLevel.INFO, 'Evaluating neural network', req, {
+      log(LogLevel["INFO"], 'Evaluating neural network', req, {
         networkId,
         testDataSize: req.body.testData?.length,
       });
@@ -438,10 +438,10 @@ export const createNeuralRoutes = (): Router => {
         timestamp: new Date().toISOString(),
       };
 
-      logPerformance('model_evaluation', result.evaluationTime, req, {
+      logPerformance('model_evaluation', result?.evaluationTime, req, {
         networkId,
-        testSamples: result.testSamples,
-        accuracy: result.metrics.accuracy,
+        testSamples: result?.testSamples,
+        accuracy: result?.metrics?.accuracy,
       });
 
       res.json(result);

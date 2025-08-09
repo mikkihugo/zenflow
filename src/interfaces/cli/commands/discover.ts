@@ -22,22 +22,22 @@ const logger = createLogger({ prefix: 'DiscoverCommand' });
 
 // Get discovery configuration from the config system
 const getDiscoveryDefaults = () => {
-  const config = configManager.getConfig();
+  const config = configManager?.getConfig();
   return {
     MIN_CONFIDENCE: 0.0,
     MAX_CONFIDENCE: 1.0,
-    DEFAULT_CONFIDENCE: config.discovery?.defaultConfidence || 0.95,
+    DEFAULT_CONFIDENCE: config?.["discovery"]?.defaultConfidence || 0.95,
     MIN_ITERATIONS: 1,
-    MAX_ITERATIONS: config.discovery?.maxIterations || 20,
-    DEFAULT_ITERATIONS: config.discovery?.defaultIterations || 5,
+    MAX_ITERATIONS: config?.["discovery"]?.maxIterations || 20,
+    DEFAULT_ITERATIONS: config?.["discovery"]?.defaultIterations || 5,
     MIN_AGENTS: 1,
-    MAX_AGENTS: config.swarm?.maxAgents || 100,
-    DEFAULT_AGENTS: config.swarm?.defaultAgents || 20,
-    OPERATION_TIMEOUT: config.discovery?.timeout || 300000, // 5 minutes
+    MAX_AGENTS: config?.["swarm"]?.maxAgents || 100,
+    DEFAULT_AGENTS: config?.["swarm"]?.defaultAgents || 20,
+    OPERATION_TIMEOUT: config?.["discovery"]?.timeout || 300000, // 5 minutes
     MEMORY_PATH_SUFFIX: '.claude-zen/memory.json',
-    RESEARCH_THRESHOLD: config.discovery?.researchThreshold || 0.6,
-    SKIP_VALIDATION: config.discovery?.skipValidation || false,
-    DEFAULT_TOPOLOGY: config.swarm?.defaultTopology || 'auto',
+    RESEARCH_THRESHOLD: config?.["discovery"]?.researchThreshold || 0.6,
+    SKIP_VALIDATION: config?.["discovery"]?.skipValidation || false,
+    DEFAULT_TOPOLOGY: config?.["swarm"]?.defaultTopology || 'auto',
   };
 };
 
@@ -182,8 +182,8 @@ export class DiscoverCommand {
     const defaults = getDiscoveryDefaults();
     const operationTimeout = setTimeout(() => {
       logger.error('Discovery operation timed out');
-      throw new Error(`Discovery operation exceeded timeout of ${defaults.OPERATION_TIMEOUT}ms`);
-    }, defaults.OPERATION_TIMEOUT);
+      throw new Error(`Discovery operation exceeded timeout of ${defaults["OPERATION_TIMEOUT"]}ms`);
+    }, defaults["OPERATION_TIMEOUT"]);
 
     try {
       const resolvedPath = resolve(projectPath);
@@ -198,7 +198,7 @@ export class DiscoverCommand {
       }
 
       // Launch interactive TUI if requested
-      if (options.interactive) {
+      if (options?.["interactive"]) {
         return this.executeInteractive(resolvedPath, options);
       }
 
@@ -207,32 +207,32 @@ export class DiscoverCommand {
 
       // Validate and normalize options with production defaults
       const confidence = Math.max(
-        defaults.MIN_CONFIDENCE,
-        Math.min(defaults.MAX_CONFIDENCE, Number(options.confidence) || defaults.DEFAULT_CONFIDENCE)
+        defaults["MIN_CONFIDENCE"],
+        Math.min(defaults["MAX_CONFIDENCE"], Number(options?.["confidence"]) || defaults["DEFAULT_CONFIDENCE"])
       );
 
       const maxIterations = Math.max(
-        defaults.MIN_ITERATIONS,
+        defaults["MIN_ITERATIONS"],
         Math.min(
-          defaults.MAX_ITERATIONS,
-          Number(options.maxIterations) || defaults.DEFAULT_ITERATIONS
+          defaults["MAX_ITERATIONS"],
+          Number(options?.["maxIterations"]) || defaults["DEFAULT_ITERATIONS"]
         )
       );
 
       const maxAgents = Math.max(
-        defaults.MIN_AGENTS,
-        Math.min(defaults.MAX_AGENTS, Number(options.maxAgents) || defaults.DEFAULT_AGENTS)
+        defaults["MIN_AGENTS"],
+        Math.min(defaults["MAX_AGENTS"], Number(options?.["maxAgents"]) || defaults["DEFAULT_AGENTS"])
       );
 
       // Override defaults with options
-      const _topology = options.topology || defaults.DEFAULT_TOPOLOGY;
-      const _skipValidation = options.skipValidation ?? defaults.SKIP_VALIDATION;
-      const researchThreshold = defaults.RESEARCH_THRESHOLD;
+      const _topology = options?.["topology"] || defaults["DEFAULT_TOPOLOGY"];
+      const _skipValidation = options?.["skipValidation"] ?? defaults["SKIP_VALIDATION"];
+      const researchThreshold = defaults["RESEARCH_THRESHOLD"];
 
       // Validate confidence range
-      if (confidence < defaults.MIN_CONFIDENCE || confidence > defaults.MAX_CONFIDENCE) {
+      if (confidence < defaults["MIN_CONFIDENCE"] || confidence > defaults["MAX_CONFIDENCE"]) {
         throw new Error(
-          `Confidence must be between ${defaults.MIN_CONFIDENCE} and ${defaults.MAX_CONFIDENCE}`
+          `Confidence must be between ${defaults["MIN_CONFIDENCE"]} and ${defaults["MAX_CONFIDENCE"]}`
         );
       }
 
@@ -241,8 +241,8 @@ export class DiscoverCommand {
         project: resolvedPath,
         confidence,
         maxIterations,
-        autoSwarms: options.autoSwarms,
-        topology: options.topology,
+        autoSwarms: options?.["autoSwarms"],
+        topology: options?.["topology"],
         maxAgents,
       });
 
@@ -355,7 +355,7 @@ export class DiscoverCommand {
       // Phase 3: Confidence Building
       await this.showPhase('📈 Phase 3: Confidence Building');
 
-      const agui = createAGUI(options.skipValidation ? 'mock' : 'terminal');
+      const agui = createAGUI(options?.["skipValidation"] ? 'mock' : 'terminal');
       let confidenceResult: any;
 
       try {
@@ -372,9 +372,9 @@ export class DiscoverCommand {
 
         // Track confidence building progress
         confidenceBuilder.on('progress', (event) => {
-          if (options.verbose) {
+          if (options?.["verbose"]) {
             logger.info(
-              `📊 Iteration ${event.iteration}: ${(event.confidence * 100).toFixed(1)}% confidence`
+              `📊 Iteration ${event["iteration"]}: ${(event["confidence"] * 100).toFixed(1)}% confidence`
             );
           }
         });
@@ -404,29 +404,29 @@ export class DiscoverCommand {
           confidence: {
             overall: Math.min(confidence, 0.8),
             documentCoverage: 0.6,
-            humanValidations: options.skipValidation ? 0.5 : 0.7,
+            humanValidations: options?.["skipValidation"] ? 0.5 : 0.7,
             researchDepth: 0.4,
             domainClarity: 0.7,
             consistency: 0.6,
           },
           domains: new Map(discoveredDomains.map((d) => [d.name, d])),
           relationships: [],
-          validationCount: options.skipValidation ? 0 : 2,
+          validationCount: options?.["skipValidation"] ? 0 : 2,
           researchCount: 0,
           learningHistory: [],
         };
       }
 
-      this.stats.confidenceBuilt = confidenceResult.confidence.overall;
-      this.stats.validationsPerformed = confidenceResult.validationCount || 0;
-      this.stats.researchQueries = confidenceResult.researchCount || 0;
+      this.stats.confidenceBuilt = confidenceResult?.confidence?.overall;
+      this.stats.validationsPerformed = confidenceResult?.validationCount || 0;
+      this.stats.researchQueries = confidenceResult?.researchCount || 0;
 
       logger.info(
-        `✅ Built confidence: ${(confidenceResult.confidence.overall * 100).toFixed(1)}%`
+        `✅ Built confidence: ${(confidenceResult?.confidence?.overall * 100).toFixed(1)}%`
       );
-      logger.info(`📋 Validated domains: ${confidenceResult.domains.size}`);
+      logger.info(`📋 Validated domains: ${confidenceResult?.domains.size}`);
 
-      if (confidenceResult.domains.size === 0) {
+      if (confidenceResult?.domains.size === 0) {
         logger.warn(
           '⚠️  No confident domains found. Consider lowering confidence threshold or adding more documentation.'
         );
@@ -434,7 +434,7 @@ export class DiscoverCommand {
       }
 
       // Phase 4: Swarm Creation (if enabled)
-      if (options.autoSwarms && !options.dryRun) {
+      if (options?.["autoSwarms"] && !options?.["dryRun"]) {
         await this.showPhase('🏭 Phase 4: Auto-Swarm Factory');
 
         try {
@@ -453,14 +453,14 @@ export class DiscoverCommand {
 
           // Calculate optimal resource constraints based on system and domain characteristics
           const calculateResourceConstraints = () => {
-            const baseCpuLimit = Math.min(8, Math.max(2, confidenceResult.domains.size * 2));
+            const baseCpuLimit = Math.min(8, Math.max(2, confidenceResult?.domains.size * 2));
             const baseMemoryLimit =
-              confidenceResult.domains.size < 3
+              confidenceResult?.domains.size < 3
                 ? '2GB'
-                : confidenceResult.domains.size < 6
+                : confidenceResult?.domains.size < 6
                   ? '4GB'
                   : '8GB';
-            const baseMaxAgents = Math.min(maxAgents * confidenceResult.domains.size, 50);
+            const baseMaxAgents = Math.min(maxAgents * confidenceResult?.domains.size, 50);
 
             return {
               maxTotalAgents: baseMaxAgents,
@@ -470,39 +470,39 @@ export class DiscoverCommand {
           };
 
           const swarmFactory = new AutoSwarmFactory(swarmCoordinator, hiveSync, memoryStore, agui, {
-            enableHumanValidation: !options.skipValidation,
+            enableHumanValidation: !options?.["skipValidation"],
             maxSwarmsPerDomain: 1,
             resourceConstraints: calculateResourceConstraints(),
           });
 
           // Track swarm creation and lifecycle events
           swarmFactory.on('factory:start', (event) => {
-            if (options.verbose) {
-              logger.info(`🏭 Auto-Swarm Factory starting for ${event.domainCount} domains`);
+            if (options?.["verbose"]) {
+              logger.info(`🏭 Auto-Swarm Factory starting for ${event["domainCount"]} domains`);
             }
           });
 
           swarmFactory.on('swarm:created', (event) => {
-            if (options.verbose) {
+            if (options?.["verbose"]) {
               logger.info(
-                `🐝 Created swarm for ${event.domain}: ${event.config.topology.type} topology`
+                `🐝 Created swarm for ${event["domain"]}: ${event["config"]?.["topology"]?.type} topology`
               );
             }
           });
 
           swarmFactory.on('swarm:initialized', (event) => {
-            if (options.verbose) {
-              logger.info(`✅ Initialized swarm: ${event.config.name}`);
+            if (options?.["verbose"]) {
+              logger.info(`✅ Initialized swarm: ${event["config"]?.name}`);
             }
           });
 
           swarmFactory.on('swarm:init-error', (event) => {
-            logger.warn(`❌ Failed to initialize swarm: ${event.config.name}`, event.error.message);
+            logger.warn(`❌ Failed to initialize swarm: ${event["config"]?.name}`, event.error["message"]);
           });
 
           swarmFactory.on('factory:complete', (event) => {
             logger.info(
-              `🎉 Auto-Swarm Factory completed: ${event.successful}/${event.total} swarms successfully created and initialized`
+              `🎉 Auto-Swarm Factory completed: ${event["successful"]}/${event["total"]} swarms successfully created and initialized`
             );
           });
 
@@ -510,12 +510,12 @@ export class DiscoverCommand {
             logger.error('❌ Auto-Swarm Factory encountered an error:', event.error);
           });
 
-          const swarmConfigs = await swarmFactory.createSwarmsForDomains(confidenceResult.domains);
+          const swarmConfigs = await swarmFactory.createSwarmsForDomains(confidenceResult?.domains);
 
           this.stats.swarmsCreated = swarmConfigs.length;
-          this.stats.agentsDeployed = swarmConfigs.reduce(
+          this.stats.agentsDeployed = swarmConfigs?.reduce(
             (sum, config) =>
-              sum + config.agents.reduce((agentSum, agent) => agentSum + agent.count, 0),
+              sum + config?.["agents"]?.reduce((agentSum, agent) => agentSum + agent.count, 0),
             0
           );
 
@@ -528,22 +528,22 @@ export class DiscoverCommand {
             logger.info('🔍 Verifying swarm deployment...');
 
             const verificationResults = await Promise.allSettled(
-              swarmConfigs.map(async (config) => {
+              swarmConfigs?.map(async (config) => {
                 try {
                   // Basic health check - verify swarm coordinator can report status
                   const status = swarmCoordinator.getStatus();
                   return {
-                    swarmId: config.id,
-                    name: config.name,
+                    swarmId: config?.["id"],
+                    name: config?.["name"],
                     healthy: status.state !== 'error',
                     agentCount: status.agentCount,
                     uptime: status.uptime,
                   };
                 } catch (error) {
-                  logger.warn(`❌ Health check failed for swarm ${config.name}:`, error);
+                  logger.warn(`❌ Health check failed for swarm ${config?.["name"]}:`, error);
                   return {
-                    swarmId: config.id,
-                    name: config.name,
+                    swarmId: config?.["id"],
+                    name: config?.["name"],
                     healthy: false,
                     error: error instanceof Error ? error.message : 'Unknown error',
                   };
@@ -551,8 +551,8 @@ export class DiscoverCommand {
               })
             );
 
-            const healthySwarms = verificationResults.filter(
-              (result) => result.status === 'fulfilled' && result.value.healthy
+            const healthySwarms = verificationResults?.filter(
+              (result) => result?.status === 'fulfilled' && result?.value?.healthy
             ).length;
 
             if (healthySwarms === swarmConfigs.length) {
@@ -568,12 +568,12 @@ export class DiscoverCommand {
           }
 
           // Show swarm details
-          if (options.verbose) {
+          if (options?.["verbose"]) {
             for (const config of swarmConfigs) {
-              logger.info(`🐝 ${config.name}:`, {
-                topology: config.topology.type,
-                agents: config.agents.length,
-                confidence: `${(config.confidence * 100).toFixed(1)}%`,
+              logger.info(`🐝 ${config?.["name"]}:`, {
+                topology: config?.["topology"]?.type,
+                agents: config?.["agents"].length,
+                confidence: `${(config?.["confidence"] * 100).toFixed(1)}%`,
               });
             }
           }
@@ -581,7 +581,7 @@ export class DiscoverCommand {
           logger.warn('⚠️  Swarm creation failed, but domain discovery completed:', error);
           logger.info('ℹ️  Core domain discovery and confidence building succeeded');
         }
-      } else if (options.autoSwarms && options.dryRun) {
+      } else if (options?.["autoSwarms"] && options?.["dryRun"]) {
         logger.info('🧪 Dry run mode: Swarm creation skipped');
       } else {
         logger.info('ℹ️  Use --auto-swarms flag to create and deploy swarms');
@@ -644,14 +644,14 @@ export class DiscoverCommand {
           React.createElement(InteractiveDiscoveryTUI, {
             projectPath,
             options: {
-              confidence: options.confidence,
-              maxIterations: options.maxIterations,
-              skipValidation: options.skipValidation,
+              confidence: options?.["confidence"],
+              maxIterations: options?.["maxIterations"],
+              skipValidation: options?.["skipValidation"],
             },
             onComplete: (results) => {
               logger.info('🎉 Interactive discovery completed successfully');
-              if (options.saveResults) {
-                this.saveInteractiveResults(results, options.saveResults);
+              if (options?.["saveResults"]) {
+                this.saveInteractiveResults(results, options?.["saveResults"]);
               }
               resolve();
             },
@@ -691,8 +691,8 @@ export class DiscoverCommand {
 
       const summary = {
         timestamp: new Date().toISOString(),
-        selectedDomains: Array.from(results.selectedDomains || []),
-        deployedSwarms: Array.from(results.deploymentStatus?.entries() || []).map(
+        selectedDomains: Array.from(results?.selectedDomains || []),
+        deployedSwarms: Array.from(results?.deploymentStatus?.entries() || []).map(
           ([domain, status]) => ({
             domain,
             status: status.status,
@@ -700,13 +700,13 @@ export class DiscoverCommand {
             message: status.message,
           })
         ),
-        configurations: Array.from(results.swarmConfigs?.entries() || []).map(
+        configurations: Array.from(results?.swarmConfigs?.entries() || []).map(
           ([domain, config]) => ({
             domain,
-            topology: config.topology,
-            maxAgents: config.maxAgents,
-            resources: config.resourceLimits,
-            persistence: config.persistence,
+            topology: config?.["topology"],
+            maxAgents: config?.["maxAgents"],
+            resources: config?.["resourceLimits"],
+            persistence: config?.["persistence"],
           })
         ),
       };
@@ -736,16 +736,15 @@ export class DiscoverCommand {
     return `# Interactive Discovery Results
 
 ## Summary
-- **Timestamp**: ${results.timestamp}
-- **Selected Domains**: ${results.selectedDomains.length}
-- **Deployed Swarms**: ${results.deployedSwarms.length}
+- **Timestamp**: ${results?.timestamp}
+- **Selected Domains**: ${results?.selectedDomains.length}
+- **Deployed Swarms**: ${results?.deployedSwarms.length}
 
 ## Selected Domains
-${results.selectedDomains.map((domain: string) => `- ${domain}`).join('\n')}
+${results?.selectedDomains?.map((domain: string) => `- ${domain}`).join('\n')}
 
 ## Deployed Swarms
-${results.deployedSwarms
-  .map(
+${results?.deployedSwarms?.map(
     (swarm: any) => `
 ### ${swarm.domain}
 - **Status**: ${swarm.status}
@@ -756,15 +755,14 @@ ${results.deployedSwarms
   .join('\n')}
 
 ## Configurations
-${results.configurations
-  .map(
+${results?.configurations?.map(
     (config: any) => `
-### ${config.domain}
-- **Topology**: ${config.topology}
-- **Max Agents**: ${config.maxAgents}
-- **Memory**: ${config.resources.memory}
-- **CPU**: ${config.resources.cpu}
-- **Persistence**: ${config.persistence}
+### ${config?.["domain"]}
+- **Topology**: ${config?.["topology"]}
+- **Max Agents**: ${config?.["maxAgents"]}
+- **Memory**: ${config?.["resources"]?.memory}
+- **CPU**: ${config?.["resources"]?.cpu}
+- **Persistence**: ${config?.["persistence"]}
 `
   )
   .join('\n')}
@@ -804,14 +802,14 @@ ${results.configurations
       summary: {
         duration: `${duration.toFixed(2)}s`,
         domainsDiscovered: this.stats.domainsDiscovered,
-        confidenceDomains: confidenceResult.domains.size,
-        finalConfidence: `${(confidenceResult.confidence.overall * 100).toFixed(1)}%`,
+        confidenceDomains: confidenceResult?.domains.size,
+        finalConfidence: `${(confidenceResult?.confidence?.overall * 100).toFixed(1)}%`,
         swarmsCreated: this.stats.swarmsCreated,
         agentsDeployed: this.stats.agentsDeployed,
         validationsPerformed: this.stats.validationsPerformed,
         researchQueries: this.stats.researchQueries,
       },
-      domains: Array.from(confidenceResult.domains.entries()).map(
+      domains: Array.from(confidenceResult?.domains?.entries()).map(
         ([name, domain]: [string, any]) => ({
           name,
           path: domain.path,
@@ -823,21 +821,21 @@ ${results.configurations
           research: domain.research.length,
         })
       ),
-      relationships: confidenceResult.relationships.map((rel: any) => ({
+      relationships: confidenceResult?.relationships?.map((rel: any) => ({
         from: rel.sourceDomain,
         to: rel.targetDomain,
         type: rel.type,
         confidence: `${(rel.confidence * 100).toFixed(0)}%`,
         evidence: rel.evidence,
       })),
-      confidenceMetrics: Object.entries(confidenceResult.confidence).map(([key, value]) => ({
+      confidenceMetrics: Object.entries(confidenceResult?.confidence).map(([key, value]) => ({
         metric: key,
         score: `${((value as number) * 100).toFixed(1)}%`,
       })),
     };
 
     // Output results based on format
-    switch (options.output) {
+    switch (options?.["output"]) {
       case 'json':
         break;
 
@@ -851,9 +849,9 @@ ${results.configurations
     }
 
     // Save results if requested
-    if (options.saveResults) {
+    if (options?.["saveResults"]) {
       const fs = await import('node:fs/promises');
-      const outputPath = resolve(options.saveResults);
+      const outputPath = resolve(options?.["saveResults"]);
 
       let content: string;
       if (outputPath.endsWith('.json')) {
@@ -875,20 +873,20 @@ ${results.configurations
    * @param results
    */
   private async showConsoleResults(results: any): Promise<void> {
-    const _summary = results.summary;
+    const _summary = results?.summary;
 
-    if (results.domains.length > 0) {
-      for (const _domain of results.domains) {
+    if (results?.domains.length > 0) {
+      for (const _domain of results?.domains) {
       }
     }
 
-    if (results.relationships.length > 0) {
-      for (const _rel of results.relationships) {
+    if (results?.relationships.length > 0) {
+      for (const _rel of results?.relationships) {
       }
     }
-    for (const _metric of results.confidenceMetrics) {
+    for (const _metric of results?.confidenceMetrics) {
     }
-    if (results.summary.swarmsCreated > 0) {
+    if (results?.summary?.swarmsCreated > 0) {
     } else {
     }
   }
@@ -1009,16 +1007,16 @@ ${results.configurations
       const items = fs.readdirSync(dirPath, { withFileTypes: true });
 
       for (const item of items) {
-        const fullPath = path.join(dirPath, item.name);
+        const fullPath = path.join(dirPath, item?.name);
 
-        if (item.isDirectory()) {
+        if (item?.isDirectory()) {
           // Skip node_modules, dist, build directories
-          if (!['node_modules', 'dist', 'build', '.git'].includes(item.name)) {
+          if (!['node_modules', 'dist', 'build', '.git'].includes(item?.name)) {
             files.push(...(await this.getFilesRecursively(fullPath)));
           }
-        } else if (item.isFile()) {
+        } else if (item?.isFile()) {
           // Include TypeScript and JavaScript files
-          if (/\.(ts|js|tsx|jsx)$/.test(item.name) && !item.name.endsWith('.d.ts')) {
+          if (/\.(ts|js|tsx|jsx)$/.test(item?.name) && !item?.name?.endsWith('.d.ts')) {
             files.push(fullPath);
           }
         }
@@ -1030,7 +1028,7 @@ ${results.configurations
     return files;
   }
   private async generateMarkdownReport(results: any): Promise<string> {
-    const summary = results.summary;
+    const summary = results?.summary;
 
     return `# Auto-Discovery Results
 
@@ -1046,8 +1044,7 @@ ${results.configurations
 
 ## Discovered Domains
 
-${results.domains
-  .map(
+${results?.domains?.map(
     (domain: any) => `### ${domain.name}
 - **Path**: \`${domain.path}\`
 - **Confidence**: ${domain.confidence}
@@ -1062,8 +1059,7 @@ ${results.domains
 
 ## Domain Relationships
 
-${results.relationships
-  .map(
+${results?.relationships?.map(
     (rel: any) =>
       `- **${rel.from}** ${rel.type} **${rel.to}** (${rel.confidence})\n  - Evidence: ${rel.evidence}`
   )
@@ -1071,8 +1067,7 @@ ${results.relationships
 
 ## Confidence Metrics
 
-${results.confidenceMetrics
-  .map((metric: any) => `- **${metric.metric}**: ${metric.score}`)
+${results?.confidenceMetrics?.map((metric: any) => `- **${metric.metric}**: ${metric.score}`)
   .join('\n')}
 
 ## Next Steps

@@ -11,7 +11,6 @@ const logger = getLogger("comprehensive-sparc-test");
  */
 
 import { writeFile } from 'node:fs/promises';
-import type { Priority, RiskLevel } from './coordination/swarm/sparc/types/sparc-types';
 
 async function runComprehensiveTest() {
   const results = {
@@ -24,20 +23,20 @@ async function runComprehensiveTest() {
 
   try {
     const coreTest = await testCoreEngine();
-    results.coreEngine = coreTest.success;
+    results?.coreEngine = coreTest.success;
     const cliTest = await testCLIIntegration();
-    results.cliIntegration = cliTest.success;
+    results?.cliIntegration = cliTest.success;
     const mcpTest = await testMCPIntegration();
-    results.mcpIntegration = mcpTest.success;
+    results?.mcpIntegration = mcpTest.success;
     const e2eTest = await testEndToEndFlow();
-    results.endToEndFlow = e2eTest.success;
+    results?.endToEndFlow = e2eTest.success;
 
     // Overall assessment
-    results.overallSuccess = Object.values(results)
+    results?.overallSuccess = Object.values(results)
       .slice(0, -1)
       .every((r) => r);
 
-    if (results.overallSuccess) {
+    if (results?.overallSuccess) {
     } else {
     }
 
@@ -146,14 +145,14 @@ async function testCLIIntegration() {
     const validateResult = await execAsync(validateCommand);
 
     const success: boolean =
-      generateResult.stdout.includes('✅ Pseudocode generation completed') &&
-      validateResult.stdout.includes('✅ APPROVED');
+      generateResult?.stdout?.includes('✅ Pseudocode generation completed') &&
+      validateResult?.stdout?.includes('✅ APPROVED');
 
     return {
       success,
       details: {
-        generateOutput: generateResult.stdout.includes('Generated'),
-        validateOutput: validateResult.stdout.includes('APPROVED'),
+        generateOutput: generateResult?.stdout?.includes('Generated'),
+        validateOutput: validateResult?.stdout?.includes('APPROVED'),
       },
     };
   } catch (error) {
@@ -202,34 +201,34 @@ async function testMCPIntegration() {
 
     const generateResult = await pseudocodeGenerationTool.handler({ specification: testSpec });
 
-    if (!generateResult.success) {
+    if (!generateResult?.success) {
       return { success: false, error: 'MCP generation failed' };
     }
 
     const validateResult = await validationTool.handler({
       pseudocodeStructure: {
-        id: generateResult.data.pseudocodeId,
-        algorithms: generateResult.data.algorithms,
-        dataStructures: generateResult.data.dataStructures,
-        controlFlows: generateResult.data.controlFlows,
+        id: generateResult?.data?.pseudocodeId,
+        algorithms: generateResult?.data?.algorithms,
+        dataStructures: generateResult?.data?.dataStructures,
+        controlFlows: generateResult?.data?.controlFlows,
       },
     });
 
     const algorithmsResult = await algorithmsOnlyTool.handler({ specification: testSpec });
 
     const success: boolean =
-      generateResult.success &&
-      validateResult.success &&
-      algorithmsResult.success &&
-      validateResult.data.validation.approved;
+      generateResult?.success &&
+      validateResult?.success &&
+      algorithmsResult?.success &&
+      validateResult?.data?.validation?.approved;
 
     return {
       success,
       details: {
-        generation: generateResult.success,
-        validation: validateResult.success,
-        algorithmsOnly: algorithmsResult.success,
-        approved: validateResult.data.validation.approved,
+        generation: generateResult?.success,
+        validation: validateResult?.success,
+        algorithmsOnly: algorithmsResult?.success,
+        approved: validateResult?.data?.validation?.approved,
       },
     };
   } catch (error) {
@@ -337,7 +336,7 @@ async function testEndToEndFlow() {
 // Run the comprehensive test if this file is executed directly
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   runComprehensiveTest().then((results) => {
-    process.exit(results.overallSuccess ? 0 : 1);
+    process.exit(results?.overallSuccess ? 0 : 1);
   });
 }
 

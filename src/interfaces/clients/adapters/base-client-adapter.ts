@@ -235,12 +235,12 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
     public readonly version: string = '1.0.0'
   ) {
     super();
-    this._startTime = Date.now();
-    this._metrics = this.initializeMetrics();
+    this["_startTime"] = Date.now();
+    this["_metrics"] = this.initializeMetrics();
   }
 
   get isInitialized(): boolean {
-    return this._isInitialized;
+    return this["_isInitialized"];
   }
 
   /**
@@ -258,26 +258,26 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
    */
   async healthCheck(): Promise<ClientHealth> {
     return {
-      status: this._isInitialized ? 'healthy' : 'unhealthy',
+      status: this["_isInitialized"] ? 'healthy' : 'unhealthy',
       timestamp: new Date().toISOString(),
       components: {
         connectivity: {
-          status: this._isInitialized ? 'healthy' : 'unhealthy',
-          message: this._isInitialized ? 'Client initialized' : 'Client not initialized',
+          status: this["_isInitialized"] ? 'healthy' : 'unhealthy',
+          message: this["_isInitialized"] ? 'Client initialized' : 'Client not initialized',
         },
         performance: {
-          status: this._metrics.averageLatency < 5000 ? 'healthy' : 'degraded',
-          message: `Average latency: ${this._metrics.averageLatency}ms`,
+          status: this["_metrics"]?.averageLatency < 5000 ? 'healthy' : 'degraded',
+          message: `Average latency: ${this["_metrics"]?.averageLatency}ms`,
         },
       },
       metrics: {
-        uptime: Date.now() - this._startTime,
+        uptime: Date.now() - this["_startTime"],
         errorRate:
-          this._metrics.totalOperations > 0
-            ? this._metrics.failedOperations / this._metrics.totalOperations
+          this["_metrics"]?.totalOperations > 0
+            ? this["_metrics"]?.failedOperations / this["_metrics"]?.totalOperations
             : 0,
-        averageLatency: this._metrics.averageLatency,
-        throughput: this._metrics.throughput,
+        averageLatency: this["_metrics"]?.averageLatency,
+        throughput: this["_metrics"]?.throughput,
       },
     };
   }
@@ -286,15 +286,15 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
    * Get client metrics
    */
   async getMetrics(): Promise<ClientMetrics> {
-    this._metrics.uptime = Date.now() - this._startTime;
-    return { ...this._metrics };
+    this["_metrics"]?.uptime = Date.now() - this["_startTime"];
+    return { ...this["_metrics"] };
   }
 
   /**
    * Shutdown the client
    */
   async shutdown(): Promise<void> {
-    this._isInitialized = false;
+    this["_isInitialized"] = false;
     this.emit('shutdown');
   }
 
@@ -323,7 +323,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
       data,
       error,
       metadata: {
-        duration: Date.now() - this._startTime,
+        duration: Date.now() - this["_startTime"],
         timestamp: new Date().toISOString(),
         ...metadata,
       },
@@ -338,39 +338,39 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
    * @param cached
    */
   protected updateMetrics(success: boolean, duration: number, cached = false): void {
-    this._metrics.totalOperations++;
+    this["_metrics"]?.totalOperations++;
 
     if (success) {
-      this._metrics.successfulOperations++;
+      this["_metrics"]?.successfulOperations++;
     } else {
-      this._metrics.failedOperations++;
+      this["_metrics"]?.failedOperations++;
     }
 
     if (cached) {
       // Update cache hit ratio
-      const totalCacheOps = this._metrics.custom.cacheOps || 0;
-      const cacheHits = this._metrics.custom.cacheHits || 0;
-      this._metrics.custom.cacheOps = totalCacheOps + 1;
+      const totalCacheOps = this["_metrics"]?.custom?.cacheOps || 0;
+      const cacheHits = this["_metrics"]?.custom?.cacheHits || 0;
+      this["_metrics"]?.custom?.cacheOps = totalCacheOps + 1;
       if (cached) {
-        this._metrics.custom.cacheHits = cacheHits + 1;
+        this["_metrics"]?.custom?.cacheHits = cacheHits + 1;
       }
-      this._metrics.cacheHitRatio = this._metrics.custom.cacheHits / this._metrics.custom.cacheOps;
+      this["_metrics"]?.cacheHitRatio = this["_metrics"]?.custom?.cacheHits / this["_metrics"]?.custom?.cacheOps;
     }
 
     // Update average latency
-    const totalLatency = this._metrics.averageLatency * (this._metrics.totalOperations - 1);
-    this._metrics.averageLatency = (totalLatency + duration) / this._metrics.totalOperations;
+    const totalLatency = this["_metrics"]?.averageLatency * (this["_metrics"]?.totalOperations - 1);
+    this["_metrics"]?.averageLatency = (totalLatency + duration) / this["_metrics"]?.totalOperations;
 
     // Calculate throughput (operations per second over last minute)
-    const uptimeSeconds = (Date.now() - this._startTime) / 1000;
-    this._metrics.throughput = this._metrics.totalOperations / Math.max(uptimeSeconds, 1);
+    const uptimeSeconds = (Date.now() - this["_startTime"]) / 1000;
+    this["_metrics"]?.throughput = this["_metrics"]?.totalOperations / Math.max(uptimeSeconds, 1);
   }
 
   /**
    * Generate a unique operation ID
    */
   protected generateOperationId(): string {
-    return `${this.type}_${++this._operationCounter}_${Date.now()}`;
+    return `${this.type}_${++this["_operationCounter"]}_${Date.now()}`;
   }
 
   /**

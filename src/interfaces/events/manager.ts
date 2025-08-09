@@ -1,35 +1,4 @@
-/**
- * UEL (Unified Event Layer) - Event Manager System
- *
- * Comprehensive event manager for lifecycle management, factory registration,
- * and coordinated event processing across all UEL components.
- *
- * @file Event Manager Implementation following UACL/USL patterns
- */
-
-import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
-import { inject, injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS } from '../../di/tokens/core-tokens';
-import type {
-  EventManagerConfig,
-  EventManagerStatus,
-  EventManagerType,
-  IEventManager,
-  IEventManagerFactory,
-  SystemEvent,
-} from './core/interfaces';
 import { EventManagerPresets, EventManagerTypes } from './core/interfaces';
-import type {
-  ICommunicationEventManager,
-  ICoordinationEventManager,
-  IDatabaseEventManager,
-  IInterfaceEventManager,
-  IMemoryEventManager,
-  IMonitoringEventManager,
-  INeuralEventManager,
-  ISystemEventManager,
-  IWorkflowEventManager,
-} from './factories';
 import { EventRegistry } from './registry';
 import { DefaultEventManagerConfigs, EventCategories } from './types';
 
@@ -296,25 +265,25 @@ export class EventManager {
 
     // Initialize registry
     await this.registry.initialize({
-      autoRegisterDefaults: options?.autoRegisterFactories !== false,
+      autoRegisterDefaults: options?.["autoRegisterFactories"] !== false,
     });
 
     // Apply configuration overrides
-    if (options?.coordination) {
-      this.coordinationSettings = { ...this.coordinationSettings, ...options.coordination };
+    if (options?.["coordination"]) {
+      this.coordinationSettings = { ...this.coordinationSettings, ...options?.["coordination"] };
     }
 
-    if (options?.connection) {
-      this.connectionManager = { ...this.connectionManager, ...options.connection };
+    if (options?.["connection"]) {
+      this.connectionManager = { ...this.connectionManager, ...options?.["connection"] };
     }
 
     // Register default factories
-    if (options?.autoRegisterFactories !== false) {
+    if (options?.["autoRegisterFactories"] !== false) {
       await this.registerDefaultFactories();
     }
 
     // Start health monitoring if enabled
-    if (options?.healthMonitoring !== false) {
+    if (options?.["healthMonitoring"] !== false) {
       this.startHealthMonitoring();
     }
 
@@ -352,10 +321,10 @@ export class EventManager {
     const startTime = Date.now();
 
     try {
-      this.logger.info(`🏗️ Creating event manager: ${options.name} (${options.type})`);
+      this.logger.info(`🏗️ Creating event manager: ${options?.name} (${options?.type})`);
 
       // Get or create factory
-      const factory = await this.getOrCreateFactory(options.type);
+      const factory = await this.getOrCreateFactory(options?.type);
 
       // Merge configuration with defaults and presets
       const config = this.mergeConfiguration(options);
@@ -364,21 +333,21 @@ export class EventManager {
       const manager = await factory.create(config);
 
       // Register with registry
-      this.registry.registerManager(options.name, manager, factory, config);
+      this.registry.registerManager(options?.name, manager, factory, config);
 
       // Add to active managers
-      this.activeManagers.set(options.name, manager);
+      this.activeManagers.set(options?.name, manager);
 
       // Update connection tracking
-      this.connectionManager.connections.get(options.type)?.add(manager);
-      this.connectionManager.health.set(options.name, {
+      this.connectionManager.connections.get(options?.type)?.add(manager);
+      this.connectionManager.health.set(options?.name, {
         healthy: true,
         lastCheck: new Date(),
         failures: 0,
       });
 
       // Auto-start if requested
-      if (options.autoStart !== false) {
+      if (options?.["autoStart"] !== false) {
         await manager.start();
       }
 
@@ -390,11 +359,11 @@ export class EventManager {
         (this.statistics.averageStartupTime * (this.statistics.totalCreated - 1) + duration) /
         this.statistics.totalCreated;
 
-      this.logger.info(`✅ Event manager created successfully: ${options.name} (${duration}ms)`);
+      this.logger.info(`✅ Event manager created successfully: ${options?.name} (${duration}ms)`);
       return manager;
     } catch (error) {
       this.statistics.failedManagers++;
-      this.logger.error(`❌ Failed to create event manager ${options.name}:`, error);
+      this.logger.error(`❌ Failed to create event manager ${options?.name}:`, error);
       throw new Error(
         `Event manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -412,7 +381,7 @@ export class EventManager {
     config?: Partial<EventManagerConfig>
   ): Promise<ISystemEventManager> {
     const manager = await this.createEventManager({
-      type: EventManagerTypes.SYSTEM,
+      type: EventManagerTypes["SYSTEM"],
       name,
       config,
       preset: 'REAL_TIME',
@@ -432,7 +401,7 @@ export class EventManager {
     config?: Partial<EventManagerConfig>
   ): Promise<ICoordinationEventManager> {
     const manager = await this.createEventManager({
-      type: EventManagerTypes.COORDINATION,
+      type: EventManagerTypes["COORDINATION"],
       name,
       config,
       preset: 'HIGH_THROUGHPUT',
@@ -452,7 +421,7 @@ export class EventManager {
     config?: Partial<EventManagerConfig>
   ): Promise<ICommunicationEventManager> {
     const manager = await this.createEventManager({
-      type: EventManagerTypes.COMMUNICATION,
+      type: EventManagerTypes["COMMUNICATION"],
       name,
       config,
       preset: 'REAL_TIME',
@@ -472,7 +441,7 @@ export class EventManager {
     config?: Partial<EventManagerConfig>
   ): Promise<IMonitoringEventManager> {
     const manager = await this.createEventManager({
-      type: EventManagerTypes.MONITORING,
+      type: EventManagerTypes["MONITORING"],
       name,
       config,
       preset: 'BATCH_PROCESSING',
@@ -492,7 +461,7 @@ export class EventManager {
     config?: Partial<EventManagerConfig>
   ): Promise<IInterfaceEventManager> {
     const manager = await this.createEventManager({
-      type: EventManagerTypes.INTERFACE,
+      type: EventManagerTypes["INTERFACE"],
       name,
       config,
       preset: 'REAL_TIME',
@@ -512,7 +481,7 @@ export class EventManager {
     config?: Partial<EventManagerConfig>
   ): Promise<INeuralEventManager> {
     const manager = await this.createEventManager({
-      type: EventManagerTypes.NEURAL,
+      type: EventManagerTypes["NEURAL"],
       name,
       config,
       preset: 'RELIABLE',
@@ -532,7 +501,7 @@ export class EventManager {
     config?: Partial<EventManagerConfig>
   ): Promise<IDatabaseEventManager> {
     const manager = await this.createEventManager({
-      type: EventManagerTypes.DATABASE,
+      type: EventManagerTypes["DATABASE"],
       name,
       config,
       preset: 'BATCH_PROCESSING',
@@ -552,7 +521,7 @@ export class EventManager {
     config?: Partial<EventManagerConfig>
   ): Promise<IMemoryEventManager> {
     const manager = await this.createEventManager({
-      type: EventManagerTypes.MEMORY,
+      type: EventManagerTypes["MEMORY"],
       name,
       config,
     });
@@ -571,7 +540,7 @@ export class EventManager {
     config?: Partial<EventManagerConfig>
   ): Promise<IWorkflowEventManager> {
     const manager = await this.createEventManager({
-      type: EventManagerTypes.WORKFLOW,
+      type: EventManagerTypes["WORKFLOW"],
       name,
       config,
       preset: 'RELIABLE',
@@ -745,8 +714,8 @@ export class EventManager {
     event: T,
     options?: { type?: EventManagerType; excludeManagers?: string[] }
   ): Promise<void> {
-    if (options?.type) {
-      await this.registry.broadcastToType(options.type, event);
+    if (options?.["type"]) {
+      await this.registry.broadcastToType(options?.type, event);
     } else {
       await this.registry.broadcast(event);
     }
@@ -867,13 +836,13 @@ export class EventManager {
 
     try {
       switch (type) {
-        case EventManagerTypes.SYSTEM: {
+        case EventManagerTypes["SYSTEM"]: {
           const { SystemEventManagerFactory } = await import('./adapters/system-event-factory');
           FactoryClass = SystemEventManagerFactory;
           break;
         }
 
-        case EventManagerTypes.COORDINATION: {
+        case EventManagerTypes["COORDINATION"]: {
           const { CoordinationEventManagerFactory } = await import(
             './adapters/coordination-event-factory'
           );
@@ -881,7 +850,7 @@ export class EventManager {
           break;
         }
 
-        case EventManagerTypes.COMMUNICATION: {
+        case EventManagerTypes["COMMUNICATION"]: {
           const { CommunicationEventFactory } = await import(
             './adapters/communication-event-factory'
           );
@@ -889,7 +858,7 @@ export class EventManager {
           break;
         }
 
-        case EventManagerTypes.MONITORING: {
+        case EventManagerTypes["MONITORING"]: {
           const { MonitoringEventManagerFactory } = await import(
             './adapters/monitoring-event-factory'
           );
@@ -914,23 +883,23 @@ export class EventManager {
 
   private mergeConfiguration(options: EventManagerCreationOptions): EventManagerConfig {
     const defaults =
-      DefaultEventManagerConfigs[options.type] ||
-      DefaultEventManagerConfigs[EventCategories.SYSTEM];
-    const presetConfig = options.preset ? EventManagerPresets[options.preset] : {};
+      DefaultEventManagerConfigs?.[options?.type] ||
+      DefaultEventManagerConfigs?.[EventCategories["SYSTEM"]];
+    const presetConfig = options?.["preset"] ? EventManagerPresets[options?.["preset"]] : {};
 
     return {
       ...defaults,
       ...presetConfig,
-      ...options.config,
+      ...options?.["config"],
       // Ensure required fields are not overwritten
-      name: options.name,
-      type: options.type,
+      name: options?.name,
+      type: options?.type,
     } as EventManagerConfig;
   }
 
   private async registerDefaultFactories(): Promise<void> {
     // Register available factories
-    const factoryTypes = [EventManagerTypes.SYSTEM, EventManagerTypes.COORDINATION];
+    const factoryTypes = [EventManagerTypes["SYSTEM"], EventManagerTypes["COORDINATION"]];
 
     for (const type of factoryTypes) {
       try {

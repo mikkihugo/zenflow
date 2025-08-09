@@ -1,11 +1,3 @@
-/**
- * Generic Service Implementation
- *
- * A basic service implementation that can be used for simple services
- * or as a fallback when no specific service implementation is available.
- */
-
-import type { ServiceConfig, ServiceOperationOptions } from '../core/interfaces';
 import { BaseService } from './base-service';
 
 /**
@@ -13,12 +5,12 @@ import { BaseService } from './base-service';
  *
  * @example
  */
-export class GenericService extends BaseService {
+export class Service extends BaseService {
   private operations = new Map<string, Function>();
   private healthCheckFn?: () => Promise<boolean>;
 
   constructor(config: ServiceConfig) {
-    super(config.name, config.type, config);
+    super(config?.name, config?.type, config);
 
     // Add basic capabilities
     this.addCapability('execute');
@@ -200,7 +192,7 @@ export class GenericService extends BaseService {
     for (const op of operations) {
       try {
         const response = await this.execute(op.name, op.params);
-        results.push(response.data);
+        results?.push(response?.data);
       } catch (error) {
         this.logger.error(`Sequence execution failed at operation '${op.name}':`, error);
         throw error;
@@ -220,7 +212,7 @@ export class GenericService extends BaseService {
 
     try {
       const responses = await Promise.all(promises);
-      return responses.map((response) => response.data);
+      return responses?.map((response) => response?.data);
     } catch (error) {
       this.logger.error(`Parallel execution failed:`, error);
       throw error;

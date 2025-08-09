@@ -8,8 +8,7 @@ const logger = getLogger("interfaces-clients-factories-http-client-factory");
  */
 
 import { HTTPClientAdapter } from '../adapters/http-client-adapter';
-import type { HTTPClientConfig } from '../adapters/http-types';
-import type { ClientMetrics, ClientStatus, IClient, IClientFactory } from '../core/interfaces';
+import type { IClientFactory } from '../core/interfaces';
 
 /**
  * HTTP Client Factory implementing UACL IClientFactory interface
@@ -27,8 +26,8 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       throw new Error('Factory is shutting down, cannot create new clients');
     }
 
-    if (this.clients.has(config.name)) {
-      throw new Error(`Client with name '${config.name}' already exists`);
+    if (this.clients.has(config?.name)) {
+      throw new Error(`Client with name '${config?.name}' already exists`);
     }
 
     const client = new HTTPClientAdapter(config);
@@ -37,15 +36,15 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     this.setupClientHandlers(client);
 
     // Store client
-    this.clients.set(config.name, client);
+    this.clients.set(config?.name, client);
 
     // Auto-connect if specified
-    if (config.monitoring?.enabled || config.health) {
+    if (config?.["monitoring"]?.["enabled"] || config?.["health"]) {
       try {
         await client.connect();
       } catch (error) {
         // Remove failed client
-        this.clients.delete(config.name);
+        this.clients.delete(config?.name);
         throw error;
       }
     }
@@ -58,7 +57,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     const errors: Array<{ config: HTTPClientConfig; error: Error }> = [];
 
     // Create all clients in parallel
-    const promises = configs.map(async (config) => {
+    const promises = configs?.map(async (config) => {
       try {
         const client = await this.create(config);
         clients.push(client);
@@ -87,7 +86,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
 
       // Create aggregated error
       const errorMessages = errors
-        .map(({ config, error }) => `${config.name}: ${error.message}`)
+        .map(({ config, error }) => `${config?.name}: ${error.message}`)
         .join('; ');
 
       throw new Error(`Failed to create ${errors.length} clients: ${errorMessages}`);
@@ -136,9 +135,9 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     const promises = Array.from(this.clients.entries()).map(async ([name, client]) => {
       try {
         const status = await client.healthCheck();
-        results.set(name, status);
+        results?.set(name, status);
       } catch (error) {
-        results.set(name, {
+        results?.set(name, {
           name,
           status: 'unhealthy',
           lastCheck: new Date(),
@@ -162,10 +161,10 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     const promises = Array.from(this.clients.entries()).map(async ([name, client]) => {
       try {
         const metrics = await client.getMetrics();
-        results.set(name, metrics);
+        results?.set(name, metrics);
       } catch (_error) {
         // Return empty metrics on error
-        results.set(name, {
+        results?.set(name, {
           name,
           requestCount: 0,
           successCount: 0,
@@ -290,9 +289,9 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       name,
       baseURL,
       retry: {
-        attempts: retryConfig.attempts,
-        delay: retryConfig.delay,
-        backoff: retryConfig.backoff || 'exponential',
+        attempts: retryConfig?.attempts,
+        delay: retryConfig?.delay,
+        backoff: retryConfig?.backoff || 'exponential',
       },
     };
 
@@ -330,8 +329,8 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       },
       health: monitoringConfig?.healthCheckInterval
         ? {
-            endpoint: monitoringConfig.healthEndpoint || '/health',
-            interval: monitoringConfig.healthCheckInterval,
+            endpoint: monitoringConfig?.healthEndpoint || '/health',
+            interval: monitoringConfig?.healthCheckInterval,
             timeout: 5000,
             failureThreshold: 3,
             successThreshold: 2,
@@ -363,14 +362,14 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       name: `${baseName}-${index}`,
       baseURL,
       monitoring: {
-        enabled: options?.healthCheck !== false,
+        enabled: options?.["healthCheck"] !== false,
         metricsInterval: 30000,
         trackLatency: true,
         trackThroughput: true,
         trackErrors: true,
       },
       health:
-        options?.healthCheck !== false
+        options?.["healthCheck"] !== false
           ? {
               endpoint: '/health',
               interval: 10000,
@@ -399,7 +398,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       if (clientStatus.status === status) {
         const client = this.clients.get(name);
         if (client) {
-          matchingClients.push(client);
+          matchingClients?.push(client);
         }
       }
     }

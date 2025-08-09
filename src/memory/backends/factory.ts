@@ -1,12 +1,3 @@
-/**
- * Memory Backend Factory Pattern Implementation
- *
- * Factory for creating and managing memory storage backends
- * Supports multiple backend types with configuration-driven instantiation
- */
-
-import type { BackendInterface } from '../core/memory-system';
-import type { MemoryConfig } from '../providers/memory-providers';
 import { BaseMemoryBackend } from './base-backend';
 
 // Additional types needed for factory
@@ -188,9 +179,9 @@ export class MemoryBackendFactory {
 
     for (const [id, backend] of this.backends.entries()) {
       try {
-        results[id] = await backend.healthCheck();
+        results?.[id] = await backend.healthCheck();
       } catch (error) {
-        results[id] = {
+        results?.[id] = {
           healthy: false,
           error: (error as Error).message,
           backend: backend.constructor.name,
@@ -228,17 +219,17 @@ export class MemoryBackendFactory {
     return {
       ...this.defaultConfig,
       ...config,
-      type: config.type || 'memory',
+      type: config?.type || 'memory',
     } as MemoryConfig;
   }
 
   private detectOptimalBackend(config: Partial<MemoryConfig>): MemoryBackendType {
     // Auto-detect optimal backend based on requirements
-    if (config.persistent) {
-      return config.maxSize && config.maxSize > 50 * 1024 * 1024 ? 'sqlite' : 'file';
+    if (config?.["persistent"]) {
+      return config?.["maxSize"] && config?.["maxSize"] > 50 * 1024 * 1024 ? 'sqlite' : 'file';
     }
 
-    if (config.maxSize && config.maxSize > 100 * 1024 * 1024) {
+    if (config?.["maxSize"] && config?.["maxSize"] > 100 * 1024 * 1024) {
       return 'sqlite';
     }
 

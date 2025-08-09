@@ -13,14 +13,6 @@ import { MEMORY_SYSTEMS_TEMPLATE } from '../templates/memory-systems-template';
 import { NEURAL_NETWORKS_TEMPLATE } from '../templates/neural-networks-template';
 import { REST_API_TEMPLATE } from '../templates/rest-api-template';
 import { SWARM_COORDINATION_TEMPLATE } from '../templates/swarm-coordination-template';
-import type {
-  ArchitectureDesign,
-  DetailedSpecification,
-  ProjectDomain,
-  ProjectSpecification,
-  PseudocodeStructure,
-  SPARCTemplate,
-} from '../types/sparc-types';
 
 export interface TemplateApplicationResult {
   specification: DetailedSpecification;
@@ -375,14 +367,14 @@ export class TemplateEngine {
 
     // Get most used templates
     const entriesByUsage = Array.from(this.templateRegistry.entries()).sort(
-      (a, b) => b[1].metadata.usageCount - a[1].metadata.usageCount
+      (a, b) => b[1]?.metadata?.usageCount - a[1]?.metadata?.usageCount
     );
     stats.mostUsed = entriesByUsage.slice(0, 5).map(([id, _]) => id);
 
     // Get recently used templates
     const entriesByRecent = Array.from(this.templateRegistry.entries())
       .filter(([_, entry]) => entry.metadata.lastUsed)
-      .sort((a, b) => b[1].metadata.lastUsed!.getTime() - a[1].metadata.lastUsed!.getTime());
+      .sort((a, b) => b[1]?.metadata?.lastUsed!.getTime() - a[1]?.metadata?.lastUsed!.getTime());
     stats.recentlyUsed = entriesByRecent.slice(0, 5).map(([id, _]) => id);
 
     return stats;

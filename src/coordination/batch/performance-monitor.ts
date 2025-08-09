@@ -5,7 +5,6 @@
  */
 
 import { createLogger } from '../../core/logger';
-import type { BatchExecutionSummary } from './batch-engine';
 
 const logger = createLogger({ prefix: 'BatchPerformanceMonitor' });
 
@@ -359,7 +358,7 @@ export class BatchPerformanceMonitor {
       batchMetrics.forEach((batchMetric) => {
         // Find closest sequential metric for comparison
         const closestSequential = sequentialMetrics.reduce((closest, current) => {
-          const currentDiff = Math.abs(current.timestamp - batchMetric.timestamp);
+          const currentDiff = Math.abs(current?.timestamp - batchMetric.timestamp);
           const closestDiff = Math.abs(closest.timestamp - batchMetric.timestamp);
           return currentDiff < closestDiff ? current : closest;
         });
@@ -462,7 +461,7 @@ export class BatchPerformanceMonitor {
 
     const improvement =
       this.performanceBaseline.throughput > 0
-        ? currentMetrics.throughput / this.performanceBaseline.throughput
+        ? currentMetrics?.throughput / this.performanceBaseline.throughput
         : 1;
 
     let recommendation: string;

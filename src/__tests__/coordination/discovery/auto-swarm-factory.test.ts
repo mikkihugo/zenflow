@@ -6,11 +6,6 @@
  */
 
 import { AutoSwarmFactory } from '@coordination/discovery/auto-swarm-factory';
-import type { HiveSwarmCoordinator } from '@coordination/hive-swarm-sync';
-import type { SwarmCoordinator } from '@coordination/swarm/core/swarm-coordinator';
-import type { AGUIInterface } from '@interfaces/agui/agui-adapter';
-import type { jest } from '@jest/globals';
-import type { SessionMemoryStore } from '@memory/memory';
 
 describe('AutoSwarmFactory', () => {
   let factory: AutoSwarmFactory;
@@ -112,8 +107,8 @@ describe('AutoSwarmFactory', () => {
       const configs = await factory.createSwarmsForDomains(confidentDomains);
 
       expect(configs).toHaveLength(2);
-      expect(configs[0].domain).toBe('auth');
-      expect(configs[1].domain).toBe('api');
+      expect(configs?.[0]?.domain).toBe('auth');
+      expect(configs?.[1]?.domain).toBe('api');
 
       // Verify swarm initialization was called
       expect(mockSwarmCoordinator.initialize).toHaveBeenCalledTimes(2);
@@ -148,10 +143,10 @@ describe('AutoSwarmFactory', () => {
       await factory.createSwarmsForDomains(confidentDomains);
 
       expect(events).toHaveLength(3);
-      expect(events[0].type).toBe('start');
-      expect(events[1].type).toBe('swarm-created');
-      expect(events[2].type).toBe('complete');
-      expect(events[2].successful).toBe(1);
+      expect(events[0]?.type).toBe('start');
+      expect(events[1]?.type).toBe('swarm-created');
+      expect(events[2]?.type).toBe('complete');
+      expect(events[2]?.successful).toBe(1);
     });
 
     it('should handle domain processing errors gracefully', async () => {
@@ -160,7 +155,7 @@ describe('AutoSwarmFactory', () => {
 
       // Make swarm coordinator fail for one domain
       mockSwarmCoordinator.initialize.mockImplementation(async (config) => {
-        if (config.domain === 'failing-domain') {
+        if (config?.["domain"] === 'failing-domain') {
           throw new Error('Initialization failed');
         }
       });
@@ -202,9 +197,9 @@ describe('AutoSwarmFactory', () => {
 
       // Should succeed for good domain, fail for bad domain
       expect(configs).toHaveLength(1);
-      expect(configs[0].domain).toBe('good-domain');
+      expect(configs?.[0]?.domain).toBe('good-domain');
       expect(errorEvents).toHaveLength(1);
-      expect(errorEvents[0].config.domain).toBe('failing-domain');
+      expect(errorEvents[0]?.config?.domain).toBe('failing-domain');
     });
   });
 
@@ -225,8 +220,8 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      expect(config.topology.type).toBe('hierarchical');
-      expect(config.topology.reason).toContain('nested structure');
+      expect(config?.["topology"]?.type).toBe('hierarchical');
+      expect(config?.["topology"]?.["reason"]).toContain('nested structure');
     });
 
     it('should select mesh topology for highly interconnected domains', async () => {
@@ -245,8 +240,8 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      expect(config.topology.type).toBe('mesh');
-      expect(config.topology.reason).toContain('interconnectedness');
+      expect(config?.["topology"]?.type).toBe('mesh');
+      expect(config?.["topology"]?.["reason"]).toContain('interconnectedness');
     });
 
     it('should select star topology for centralized services', async () => {
@@ -265,8 +260,8 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      expect(config.topology.type).toBe('star');
-      expect(config.topology.reason.toLowerCase()).toContain('centralized');
+      expect(config?.["topology"]?.type).toBe('star');
+      expect(config?.["topology"]?.["reason"]?.["toLowerCase"]()).toContain('centralized');
     });
 
     it('should select ring topology for pipeline workflows', async () => {
@@ -285,8 +280,8 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      expect(config.topology.type).toBe('ring');
-      expect(config.topology.reason.toLowerCase()).toContain('pipeline');
+      expect(config?.["topology"]?.type).toBe('ring');
+      expect(config?.["topology"]?.["reason"]?.["toLowerCase"]()).toContain('pipeline');
     });
   });
 
@@ -307,7 +302,7 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      const tsSpecialist = config.agents.find((a) => a.type === 'typescript-specialist');
+      const tsSpecialist = config?.["agents"]?.find((a) => a.type === 'typescript-specialist');
       expect(tsSpecialist).toBeDefined();
       expect(tsSpecialist?.count).toBeGreaterThan(0);
       expect(tsSpecialist?.capabilities).toContain('type-checking');
@@ -329,7 +324,7 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      const apiSpecialist = config.agents.find((a) => a.type === 'api-specialist');
+      const apiSpecialist = config?.["agents"]?.find((a) => a.type === 'api-specialist');
       expect(apiSpecialist).toBeDefined();
       expect(apiSpecialist?.capabilities).toContain('api-design');
       expect(apiSpecialist?.capabilities).toContain('endpoint-testing');
@@ -351,7 +346,7 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      const dataSpecialist = config.agents.find((a) => a.type === 'data-specialist');
+      const dataSpecialist = config?.["agents"]?.find((a) => a.type === 'data-specialist');
       expect(dataSpecialist).toBeDefined();
       expect(dataSpecialist?.capabilities).toContain('schema-design');
       expect(dataSpecialist?.capabilities).toContain('query-optimization');
@@ -373,7 +368,7 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      const aiSpecialist = config.agents.find((a) => a.type === 'ai-specialist');
+      const aiSpecialist = config?.["agents"]?.find((a) => a.type === 'ai-specialist');
       expect(aiSpecialist).toBeDefined();
       expect(aiSpecialist?.capabilities).toContain('pattern-recognition');
       expect(aiSpecialist?.capabilities).toContain('complexity-analysis');
@@ -395,7 +390,7 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      const coordinator = config.agents.find((a) => a.type === 'coordinator');
+      const coordinator = config?.["agents"]?.find((a) => a.type === 'coordinator');
       expect(coordinator).toBeDefined();
       expect(coordinator?.count).toBe(1);
       expect(coordinator?.priority).toBe('high');
@@ -420,8 +415,8 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      expect(config.persistence.backend).toBe('lancedb');
-      expect(config.persistence.path).toContain('neural');
+      expect(config?.["persistence"]?.["backend"]).toBe('lancedb');
+      expect(config?.["persistence"]?.["path"]).toContain('neural');
     });
 
     it('should use SQLite for complex domains', async () => {
@@ -440,8 +435,8 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      expect(config.persistence.backend).toBe('sqlite');
-      expect(config.persistence.path).toContain('complex-backend');
+      expect(config?.["persistence"]?.["backend"]).toBe('sqlite');
+      expect(config?.["persistence"]?.["path"]).toContain('complex-backend');
     });
 
     it('should use JSON for simple domains', async () => {
@@ -460,8 +455,8 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      expect(config.persistence.backend).toBe('json');
-      expect(config.persistence.path).toContain('simple-utils');
+      expect(config?.["persistence"]?.["backend"]).toBe('json');
+      expect(config?.["persistence"]?.["path"]).toContain('simple-utils');
     });
   });
 
@@ -537,9 +532,9 @@ describe('AutoSwarmFactory', () => {
       const config = await factory.createSwarmForDomain(domain);
 
       // Should not exceed reasonable limits even for massive domains
-      expect(config.maxAgents).toBeLessThanOrEqual(20);
-      const totalAgents = config.agents.reduce((sum, agent) => sum + agent.count, 0);
-      expect(totalAgents).toBeLessThanOrEqual(config.maxAgents);
+      expect(config?.["maxAgents"]).toBeLessThanOrEqual(20);
+      const totalAgents = config?.["agents"]?.reduce((sum, agent) => sum + agent.count, 0);
+      expect(totalAgents).toBeLessThanOrEqual(config?.["maxAgents"]);
     });
   });
 
@@ -633,10 +628,10 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      expect(config.performance.expectedLatency).toBeGreaterThan(0);
-      expect(config.performance.expectedThroughput).toBeGreaterThan(0);
-      expect(config.performance.resourceLimits.memory).toBeTruthy();
-      expect(config.performance.resourceLimits.cpu).toBeGreaterThan(0);
+      expect(config?.["performance"]?.["expectedLatency"]).toBeGreaterThan(0);
+      expect(config?.["performance"]?.["expectedThroughput"]).toBeGreaterThan(0);
+      expect(config?.["performance"]?.["resourceLimits"]?.["memory"]).toBeTruthy();
+      expect(config?.["performance"]?.["resourceLimits"]?.["cpu"]).toBeGreaterThan(0);
     });
 
     it('should adjust performance based on complexity', async () => {
@@ -670,13 +665,13 @@ describe('AutoSwarmFactory', () => {
       const complexConfig = await factory.createSwarmForDomain(complexDomain);
 
       // Complex domain should have higher latency expectations
-      expect(complexConfig.performance.expectedLatency).toBeGreaterThan(
-        simpleConfig.performance.expectedLatency
+      expect(complexConfig?.performance?.expectedLatency).toBeGreaterThan(
+        simpleConfig?.performance?.expectedLatency
       );
 
       // Complex domain should have more resource allocation
-      expect(complexConfig.performance.resourceLimits.cpu).toBeGreaterThanOrEqual(
-        simpleConfig.performance.resourceLimits.cpu
+      expect(complexConfig?.performance?.resourceLimits?.cpu).toBeGreaterThanOrEqual(
+        simpleConfig?.performance?.resourceLimits?.cpu
       );
     });
   });
@@ -757,9 +752,9 @@ describe('AutoSwarmFactory', () => {
       const config = await factory.createSwarmForDomain(domain);
 
       // Should be mesh topology due to high interconnectedness (0.8)
-      expect(config.topology.type).toBe('mesh');
+      expect(config?.["topology"]?.type).toBe('mesh');
       // Strategy should be adaptive (default) since mesh requires high interconnectedness
-      expect(config.coordination.strategy).toBe('adaptive');
+      expect(config?.["coordination"]?.["strategy"]).toBe('adaptive');
     });
 
     it('should select sequential strategy for pipeline domains', async () => {
@@ -778,7 +773,7 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      expect(config.coordination.strategy).toBe('sequential');
+      expect(config?.["coordination"]?.["strategy"]).toBe('sequential');
     });
 
     it('should configure appropriate timeouts based on complexity', async () => {
@@ -797,9 +792,9 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(extremeDomain);
 
-      expect(config.coordination.timeout).toBe(120000); // 2 minutes for extreme complexity
-      expect(config.coordination.retryPolicy.maxRetries).toBe(3);
-      expect(config.coordination.retryPolicy.backoff).toBe('exponential');
+      expect(config?.["coordination"]?.["timeout"]).toBe(120000); // 2 minutes for extreme complexity
+      expect(config?.["coordination"]?.["retryPolicy"]?.["maxRetries"]).toBe(3);
+      expect(config?.["coordination"]?.["retryPolicy"]?.["backoff"]).toBe('exponential');
     });
   });
 });

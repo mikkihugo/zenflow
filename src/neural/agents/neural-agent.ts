@@ -151,10 +151,10 @@ class NeuralNetwork {
 
   constructor(config: NeuralNetworkConfig, memoryOptimizer: any = null) {
     this.config = config;
-    this.layers = config.networkLayers;
-    this.activationFunction = config.activationFunction;
-    this.learningRate = config.learningRate;
-    this.momentum = config.momentum;
+    this.layers = config?.networkLayers;
+    this.activationFunction = config?.activationFunction;
+    this.learningRate = config?.learningRate;
+    this.momentum = config?.momentum;
     this.memoryOptimizer = memoryOptimizer;
 
     // Memory-optimized storage
@@ -208,7 +208,7 @@ class NeuralNetwork {
     for (let i = 0; i < rows; i++) {
       matrix[i] = [];
       for (let j = 0; j < cols; j++) {
-        matrix[i][j] = Math.random() * (max - min) + min;
+        matrix[i]?.[j] = Math.random() * (max - min) + min;
       }
     }
     return matrix;
@@ -262,7 +262,7 @@ class NeuralNetwork {
       for (let j = 0; j < weights.length; j++) {
         let sum = biases[j];
         for (let k = 0; k < currentInput.length; k++) {
-          sum += weights[j][k] * currentInput[k];
+          sum += weights[j]?.[k] * currentInput?.[k];
         }
         output[j] = this._activation(sum);
       }
@@ -288,7 +288,7 @@ class NeuralNetwork {
     // Calculate output layer error
     const outputError: number[] = [];
     for (let i = 0; i < output.length; i++) {
-      outputError[i] = (target[i] - output[i]) * this._activation(output[i], true);
+      outputError[i] = (target?.[i] - output[i]) * this._activation(output[i], true);
     }
     errors.unshift(outputError);
 
@@ -301,9 +301,9 @@ class NeuralNetwork {
       for (let j = 0; j < this.weights[i - 1].length; j++) {
         let error = 0;
         for (let k = 0; k < weights.length; k++) {
-          error += weights[k][j] * prevError[k];
+          error += weights[k]?.[j] * prevError[k];
         }
-        layerError[j] = error * this._activation(activations[i][j], true);
+        layerError[j] = error * this._activation(activations[i]?.[j], true);
       }
       errors.unshift(layerError);
     }
@@ -322,9 +322,9 @@ class NeuralNetwork {
         // Update weights with momentum
         for (let k = 0; k < weights[j].length; k++) {
           const delta = lr * layerError[j] * layerInput[k];
-          const momentumDelta = this.momentum * this.previousWeightDeltas[i][j][k];
-          weights[j][k] += delta + momentumDelta;
-          this.previousWeightDeltas[i][j][k] = delta;
+          const momentumDelta = this.momentum * this.previousWeightDeltas[i]?.[j]?.[k];
+          weights[j]?.[k] += delta + momentumDelta;
+          this.previousWeightDeltas[i]?.[j]?.[k] = delta;
         }
       }
     }
@@ -341,8 +341,8 @@ class NeuralNetwork {
   }
 
   load(data: { weights: number[][][]; biases: number[][] }): void {
-    this.weights = data.weights;
-    this.biases = data.biases;
+    this.weights = data?.weights;
+    this.biases = data?.biases;
   }
 }
 
@@ -607,19 +607,19 @@ class NeuralAgent extends EventEmitter {
   private _calculatePerformance(_task: Task, result: TaskResult, executionTime: number): any {
     const performance = {
       speed: Math.max(0, 1 - executionTime / 60000), // Normalize to 1 minute
-      accuracy: result.success ? 0.8 : 0.2,
+      accuracy: result?.success ? 0.8 : 0.2,
       creativity: 0.5, // Default, should be evaluated based on result
       efficiency: 0.5,
       overall: 0.5,
     };
 
     // Adjust based on result quality indicators
-    if (result.metrics) {
-      if (result.metrics.linesOfCode) {
-        performance.efficiency = Math.min(1.0, 100 / result.metrics.linesOfCode);
+    if (result?.metrics) {
+      if (result?.metrics?.linesOfCode) {
+        performance.efficiency = Math.min(1.0, 100 / result?.metrics?.linesOfCode);
       }
-      if (result.metrics.testsPass) {
-        performance.accuracy = result.metrics.testsPass;
+      if (result?.metrics?.testsPass) {
+        performance.accuracy = result?.metrics?.testsPass;
       }
     }
 
@@ -653,7 +653,7 @@ class NeuralAgent extends EventEmitter {
       performance.accuracy,
       performance.creativity,
       performance.efficiency,
-      result.success ? 1.0 : 0.0,
+      result?.success ? 1.0 : 0.0,
     ];
 
     // Train neural network
@@ -807,9 +807,9 @@ class NeuralAgent extends EventEmitter {
           const collected = await this.memoryOptimizer.garbageCollect();
           if (collected > 0) {
             // Recalculate memory usage after GC
-            const patternConfig = PATTERN_MEMORY_CONFIG[this.cognitiveProfile.primary];
+            const patternConfig = PATTERN_MEMORY_CONFIG?.[this.cognitiveProfile.primary];
             this.memoryUsage.current =
-              patternConfig.baseMemory * (1 - patternConfig.poolSharing * 0.5);
+              patternConfig?.baseMemory * (1 - patternConfig?.poolSharing * 0.5);
           }
         }
 
@@ -826,14 +826,14 @@ class NeuralAgent extends EventEmitter {
       baseMemory: 100,
       poolSharing: 0.5,
     };
-    this.memoryUsage.baseline = patternConfig.baseMemory;
-    this.memoryUsage.current = patternConfig.baseMemory;
+    this.memoryUsage.baseline = patternConfig?.baseMemory;
+    this.memoryUsage.current = patternConfig?.baseMemory;
 
     // Initialize memory pools if not already done
     if (this.memoryOptimizer && !this.memoryOptimizer.isPoolInitialized()) {
       this.memoryOptimizer.initializePools().then(() => {
         // Recalculate memory usage with pooling
-        this.memoryUsage.current = patternConfig.baseMemory * (1 - patternConfig.poolSharing * 0.5);
+        this.memoryUsage.current = patternConfig?.baseMemory * (1 - patternConfig?.poolSharing * 0.5);
       });
     }
   }
@@ -903,20 +903,20 @@ class NeuralAgent extends EventEmitter {
    * @param data
    */
   loadNeuralState(data: any): void {
-    if (data.neuralNetwork) {
-      this.neuralNetwork.load(data.neuralNetwork);
+    if (data?.neuralNetwork) {
+      this.neuralNetwork.load(data?.neuralNetwork);
     }
-    if (data.cognitiveState) {
-      this.cognitiveState = data.cognitiveState;
+    if (data?.cognitiveState) {
+      this.cognitiveState = data?.cognitiveState;
     }
-    if (data.performanceMetrics) {
-      this.performanceMetrics = data.performanceMetrics;
+    if (data?.performanceMetrics) {
+      this.performanceMetrics = data?.performanceMetrics;
     }
-    if (data.learningHistory) {
-      this.learningHistory = data.learningHistory;
+    if (data?.learningHistory) {
+      this.learningHistory = data?.learningHistory;
     }
-    if (data.taskHistory) {
-      this.taskHistory = data.taskHistory;
+    if (data?.taskHistory) {
+      this.taskHistory = data?.taskHistory;
     }
   }
 }

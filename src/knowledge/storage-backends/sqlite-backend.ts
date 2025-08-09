@@ -9,15 +9,9 @@ const logger = getLogger("knowledge-storage-backends-sqlite-backend");
 
 import { existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
-import type { DatabaseAdapter, DatabaseConfig } from '../../database/providers/database-providers';
 // Use DAL instead of direct database access
 import { DatabaseProviderFactory } from '../../database/providers/database-providers';
-import type {
-  FACTKnowledgeEntry,
-  FACTSearchQuery,
-  FACTStorageBackend,
-  FACTStorageStats,
-} from '../storage-interface';
+import type { FACTStorageBackend } from '../storage-interface';
 
 interface SQLiteBackendConfig {
   dbPath: string;
@@ -143,14 +137,14 @@ export class SQLiteBackend implements FACTStorageBackend {
         `SELECT * FROM ${this.config.tableName} WHERE id = ?`,
         [id]
       );
-      const row = result.rows?.[0] as any;
+      const row = result?.rows?.[0] as any;
 
       if (!row) {
         return null;
       }
 
       // Check if entry is expired
-      if (Date.now() > row.expires_at) {
+      if (Date.now() > row["expires_at"]) {
         await this.delete(id);
         return null;
       }
@@ -162,8 +156,8 @@ export class SQLiteBackend implements FACTStorageBackend {
         metadata: JSON.parse(row.metadata),
         timestamp: row.timestamp,
         ttl: row.ttl,
-        accessCount: row.access_count,
-        lastAccessed: row.last_accessed,
+        accessCount: row["access_count"],
+        lastAccessed: row["last_accessed"],
       };
     } catch (error) {
       logger.error('Failed to get FACT entry:', error);
@@ -197,12 +191,12 @@ export class SQLiteBackend implements FACTStorageBackend {
         if (query.query) {
           conditions.push('(query LIKE ? OR response LIKE ?)');
           const searchTerm = `%${query.query}%`;
-          params.push(searchTerm, searchTerm);
+          params?.push(searchTerm, searchTerm);
         }
 
         if (query.type) {
           conditions.push(`JSON_EXTRACT(metadata, '$.type') = ?`);
-          params.push(query.type);
+          params?.push(query.type);
         }
 
         if (query.domains && query.domains.length > 0) {
@@ -213,17 +207,17 @@ export class SQLiteBackend implements FACTStorageBackend {
             )
             .join(' OR ');
           conditions.push(`(${domainConditions})`);
-          params.push(...query.domains);
+          params?.push(...query.domains);
         }
 
         if (query.minConfidence !== undefined) {
           conditions.push(`JSON_EXTRACT(metadata, '$.confidence') >= ?`);
-          params.push(query.minConfidence);
+          params?.push(query.minConfidence);
         }
 
         if (query.maxAge !== undefined) {
           conditions.push(`timestamp >= ?`);
-          params.push(Date.now() - query.maxAge);
+          params?.push(Date.now() - query.maxAge);
         }
 
         sql = `
@@ -232,11 +226,11 @@ export class SQLiteBackend implements FACTStorageBackend {
           ORDER BY timestamp DESC, access_count DESC
           LIMIT ?
         `;
-        params.push(query.limit || 50);
+        params?.push(query.limit || 50);
       }
 
       const result = await this.dalAdapter.query(sql, params);
-      const rows = result.rows as any[];
+      const rows = result?.rows as any[];
 
       return rows.map((row) => ({
         id: row.id,
@@ -245,8 +239,8 @@ export class SQLiteBackend implements FACTStorageBackend {
         metadata: JSON.parse(row.metadata),
         timestamp: row.timestamp,
         ttl: row.ttl,
-        accessCount: row.access_count,
-        lastAccessed: row.last_accessed,
+        accessCount: row["access_count"],
+        lastAccessed: row["last_accessed"],
       }));
     } catch (error) {
       logger.error('Failed to search FACT entries:', error);
@@ -272,7 +266,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         ]);
       }
 
-      return (result.rowsAffected || 0) > 0;
+      return (result?.rowsAffected || 0) > 0;
     } catch (error) {
       logger.error('Failed to delete FACT entry:', error);
       return false;
@@ -299,7 +293,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         );
       }
 
-      return result.rowsAffected || 0;
+      return result?.rowsAffected || 0;
     } catch (error) {
       logger.error('Failed to cleanup FACT entries:', error);
       return 0;
@@ -319,12 +313,12 @@ export class SQLiteBackend implements FACTStorageBackend {
          MAX(timestamp) as newest_timestamp
          FROM ${this.config.tableName}`
       );
-      const stats = result.rows?.[0] as any;
+      const stats = result?.rows?.[0] as any;
 
       return {
-        persistentEntries: stats.total_count,
-        oldestEntry: stats.oldest_timestamp,
-        newestEntry: stats.newest_timestamp,
+        persistentEntries: stats["total_count"],
+        oldestEntry: stats["oldest_timestamp"],
+        newestEntry: stats["newest_timestamp"],
       };
     } catch (error) {
       logger.error('Failed to get FACT storage stats:', error);

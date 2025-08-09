@@ -200,7 +200,7 @@ export class CoordinationTestBuilder {
       // Simulate message delivery
       const targetAgent = this.agents.get(toId);
       if (targetAgent) {
-        targetAgent.messageQueue.push({
+        targetAgent?.messageQueue?.push({
           from: fromId,
           message,
           timestamp: Date.now(),
@@ -346,13 +346,13 @@ export class CoordinationProtocolValidator {
    */
   static validateMCPProtocol(messages: any[]): void {
     messages.forEach((message) => {
-      if (message.message?.jsonrpc) {
-        expect(message.message.jsonrpc).toBe('2.0');
-        expect(message.message).toHaveProperty('id');
-        expect(message.message).toHaveProperty('method');
+      if (message["message"]?.["jsonrpc"]) {
+        expect(message["message"]?.["jsonrpc"]).toBe('2.0');
+        expect(message["message"]).toHaveProperty('id');
+        expect(message["message"]).toHaveProperty('method');
 
-        if (message.message.method !== 'notification') {
-          expect(message.message).toHaveProperty('params');
+        if (message["message"]?.["method"] !== 'notification') {
+          expect(message["message"]).toHaveProperty('params');
         }
       }
     });
@@ -365,9 +365,9 @@ export class CoordinationProtocolValidator {
    */
   static validateWebSocketProtocol(messages: any[]): void {
     messages.forEach((message) => {
-      expect(message.message).toHaveProperty('type');
-      expect(message.message).toHaveProperty('data');
-      expect(message.timestamp).toBeGreaterThan(0);
+      expect(message["message"]).toHaveProperty('type');
+      expect(message["message"]).toHaveProperty('data');
+      expect(message["timestamp"]).toBeGreaterThan(0);
     });
   }
 
@@ -434,7 +434,7 @@ export class CoordinationProtocolValidator {
       const latencies = [];
       for (let i = 1; i < coordinationInteractions.length; i++) {
         const latency =
-          coordinationInteractions[i].timestamp - coordinationInteractions[i - 1].timestamp;
+          coordinationInteractions[i]?.timestamp - coordinationInteractions[i - 1]?.timestamp;
         latencies.push(latency);
       }
 

@@ -65,11 +65,11 @@ export class BatchEngine {
 
   constructor(config: BatchExecutionConfig = {}) {
     this.config = {
-      maxConcurrency: config.maxConcurrency ?? 6, // claude-zen default
-      timeoutMs: config.timeoutMs ?? 30000,
-      retryAttempts: config.retryAttempts ?? 2,
-      enableDependencyResolution: config.enableDependencyResolution ?? true,
-      trackPerformance: config.trackPerformance ?? true,
+      maxConcurrency: config?.maxConcurrency ?? 6, // claude-zen default
+      timeoutMs: config?.timeoutMs ?? 30000,
+      retryAttempts: config?.retryAttempts ?? 2,
+      enableDependencyResolution: config?.enableDependencyResolution ?? true,
+      trackPerformance: config?.trackPerformance ?? true,
     };
 
     this.executionQueue = new Map();
@@ -353,16 +353,16 @@ export class BatchEngine {
     totalOperations: number
   ): BatchExecutionSummary {
     const results = Array.from(this.results.values());
-    const successfulOperations = results.filter((r) => r.success).length;
-    const failedOperations = results.filter((r) => !r.success).length;
+    const successfulOperations = results?.filter((r) => r.success).length;
+    const failedOperations = results?.filter((r) => !r.success).length;
 
     const averageExecutionTime =
       results.length > 0
-        ? results.reduce((sum, r) => sum + r.executionTime, 0) / results.length
+        ? results?.reduce((sum, r) => sum + r.executionTime, 0) / results.length
         : 0;
 
     // Calculate theoretical sequential execution time
-    const sequentialTime = results.reduce((sum, r) => sum + r.executionTime, 0);
+    const sequentialTime = results?.reduce((sum, r) => sum + r.executionTime, 0);
 
     // Calculate speed improvement (claude-zen claims 2.8-4.4x)
     const speedImprovement = sequentialTime > 0 ? sequentialTime / totalExecutionTime : 1;
@@ -450,11 +450,11 @@ export function createBatchOperation(
   };
 
   if (options?.dependencies !== undefined) {
-    batchOp.dependencies = options.dependencies;
+    batchOp.dependencies = options?.dependencies;
   }
 
   if (options?.timeout !== undefined) {
-    batchOp.timeout = options.timeout;
+    batchOp.timeout = options?.timeout;
   }
 
   return batchOp;
@@ -476,7 +476,7 @@ export function createToolBatch(
     const options: Partial<Pick<BatchOperation, 'priority' | 'dependencies' | 'timeout'>> = {};
 
     if (tool.dependencies !== undefined) {
-      options.dependencies = tool.dependencies;
+      options?.dependencies = tool.dependencies;
     }
 
     return createBatchOperation(

@@ -90,7 +90,7 @@ async function basicSessionExample() {
       metadata: {},
     });
 
-    const _evaluationTask = await swarm.submitTask({
+    const evaluationTask = await swarm.submitTask({
       description: 'Evaluate model performance',
       priority: 'medium',
       dependencies: [trainingTask],
@@ -106,10 +106,10 @@ async function basicSessionExample() {
     });
 
     // Create a manual checkpoint
-    const _checkpointId = await swarm.createCheckpoint('Initial pipeline setup');
+    const checkpointId = await swarm.createCheckpoint('Initial pipeline setup');
 
     // Get session statistics
-    const _stats = await swarm.getSessionStats();
+    const stats = await swarm.getSessionStats();
 
     // Save the session
     await swarm.saveSession();
@@ -145,7 +145,7 @@ async function sessionRecoveryExample(existingSessionId: string) {
         capabilities: ['grid-search', 'bayesian-optimization'],
       });
 
-      const _optimizationTask = await swarm.submitTask({
+      const optimizationTask = await swarm.submitTask({
         description: 'Optimize hyperparameters',
         priority: 'medium',
         assignedAgents: [optimizerAgent],
@@ -164,8 +164,8 @@ async function sessionRecoveryExample(existingSessionId: string) {
       await swarm.createCheckpoint('Added hyperparameter optimization');
 
       // Demonstrate checkpoint restoration
-      if (currentSession.checkpoints.length > 0) {
-        const firstCheckpoint = currentSession.checkpoints[0]!; // Non-null assertion since we checked length
+      if (currentSession?.checkpoints.length > 0) {
+        const firstCheckpoint = currentSession?.checkpoints?.[0]!; // Non-null assertion since we checked length
         await swarm.restoreFromCheckpoint(firstCheckpoint.id);
       }
     }
@@ -183,8 +183,8 @@ async function sessionLifecycleExample() {
   // Create a simple mock implementation for now
   // TODO: Implement proper DALFactory integration with DI
   const persistence = {
-    query: async (_sql: string, _params?: any[]) => [],
-    execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
+    query: async (sql: string, params?: any[]) => [],
+    execute: async (sql: string, params?: any[]) => ({ affectedRows: 1 }),
     initialize: async () => {},
     close: async () => {},
   } as any;
@@ -227,7 +227,7 @@ async function sessionLifecycleExample() {
     });
 
     // Create checkpoints
-    const _checkpoint1 = await sessionManager.createCheckpoint(sessionId, 'Work started');
+    const checkpoint1 = await sessionManager.createCheckpoint(sessionId, 'Work started');
 
     // Pause the session
     await sessionManager.pauseSession(sessionId);
@@ -236,16 +236,16 @@ async function sessionLifecycleExample() {
     await sessionManager.resumeSession(sessionId);
 
     // Get session statistics
-    const _stats = await sessionManager.getSessionStats(sessionId);
+    const stats = await sessionManager.getSessionStats(sessionId);
 
     // List all sessions
-    const _allSessions = await sessionManager.listSessions();
+    const allSessions = await sessionManager.listSessions();
 
     // Hibernate the session
     await sessionManager.hibernateSession(sessionId);
 
     // Load hibernated session
-    const _hibernatedSession = await sessionManager.loadSession(sessionId);
+    const hibernatedSession = await sessionManager.loadSession(sessionId);
 
     return sessionId;
   } finally {
@@ -263,8 +263,8 @@ async function sessionHealthExample() {
   // Create a simple mock implementation for now
   // TODO: Implement proper DALFactory integration with DI
   const persistence = {
-    query: async (_sql: string, _params?: any[]) => [],
-    execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
+    query: async (sql: string, params?: any[]) => [],
+    execute: async (sql: string, params?: any[]) => ({ affectedRows: 1 }),
     initialize: async () => {},
     close: async () => {},
   } as any;
@@ -290,8 +290,8 @@ async function sessionHealthExample() {
     // Get detailed statistics for each session
     for (const sessionId of [session1, session2]) {
       const session = await sessionManager.loadSession(sessionId);
-      const _healthScore = SessionStats.calculateHealthScore(session);
-      const _summary = SessionStats.generateSummary(session);
+      const healthScore = SessionStats.calculateHealthScore(session);
+      const summary = SessionStats.generateSummary(session);
     }
 
     // Schedule automatic recovery if needed
@@ -329,15 +329,15 @@ async function advancedSessionExample() {
     await swarm.initialize();
 
     // Create session with event monitoring
-    swarm.on('session:created', (_data: any) => {});
+    swarm.on('session:created', (data: any) => {});
 
-    swarm.on('session:checkpoint_created', (_data: any) => {});
+    swarm.on('session:checkpoint_created', (data: any) => {});
 
     swarm.on('session:error', (data: any) => {
-      logger.error(`Session error: ${data.error} during ${data.operation}`);
+      logger.error(`Session error: ${data?.["error"]} during ${data?.["operation"]}`);
     });
 
-    const _sessionId = await swarm.createSession('Advanced ML Pipeline');
+    const sessionId = await swarm.createSession('Advanced ML Pipeline');
 
     // Create multiple specialized agents
     const agents = [
@@ -501,14 +501,14 @@ async function advancedSessionExample() {
       }
 
       // Calculate health metrics
-      const _healthScore = SessionStats.calculateHealthScore(session);
+      const healthScore = SessionStats.calculateHealthScore(session);
 
-      const _summary = SessionStats.generateSummary(session);
+      const summary = SessionStats.generateSummary(session);
     }
 
     // Demonstrate session export/import capability
     if (session) {
-      const _exportedData = await swarm.exportSession();
+      const exportedData = await swarm.exportSession();
 
       // In a real scenario, you would save this to a file
       // and import it in another application instance
@@ -532,7 +532,7 @@ async function runAllExamples() {
     await sessionRecoveryExample(sessionId);
 
     // Run lifecycle management example
-    const _lifecycleSessionId = await sessionLifecycleExample();
+    const lifecycleSessionId = await sessionLifecycleExample();
 
     // Run health monitoring example
     await sessionHealthExample();

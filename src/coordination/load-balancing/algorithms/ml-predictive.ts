@@ -6,14 +6,6 @@ const logger = getLogger("coordination-load-balancing-algorithms-ml-predictive")
  */
 
 import type { LoadBalancingAlgorithm, PredictionEngine } from '../interfaces';
-import type {
-  Agent,
-  HistoricalData,
-  LoadMetrics,
-  PredictionModel,
-  RoutingResult,
-  Task,
-} from '../types';
 
 interface MLFeatures {
   agentId: string;
@@ -142,7 +134,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     this.config = { ...this.config, ...config };
 
     // Retrain models if configuration changed significantly
-    if (config.modelEnsembleWeights || config.adaptiveLearningRate) {
+    if (config?.["modelEnsembleWeights"] || config?.["adaptiveLearningRate"]) {
       await this.retrainModels();
     }
   }
@@ -521,7 +513,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
     if (relevantData.length === 0) return 0.8; // Default
 
-    const successes = relevantData.filter((entry) => entry.success).length;
+    const successes = relevantData?.filter((entry) => entry.success).length;
     return successes / relevantData.length;
   }
 
@@ -687,7 +679,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   private generateModelVersion(currentVersion: string): string {
-    const parts = currentVersion.split('.');
+    const parts = currentVersion?.split('.');
     const patch = parseInt(parts[2]) + 1;
     return `${parts[0]}.${parts[1]}.${patch}`;
   }
@@ -703,7 +695,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
  *
  * @example
  */
-class DefaultPredictionEngine implements PredictionEngine {
+class PredictionEngine implements PredictionEngine {
   async predict(features: Record<string, number>): Promise<number> {
     // Simple linear model for demonstration
     const weights = {

@@ -5,8 +5,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../../../core/event-bus';
-import type { ILogger } from '../../../core/logger';
 
 // Core types for topology management
 export type TopologyType =
@@ -173,24 +171,24 @@ export class TopologyManager extends EventEmitter {
     location?: { x: number; y: number; z?: number };
   }): Promise<void> {
     const node: NetworkNode = {
-      id: nodeConfig.id,
-      type: nodeConfig.type,
-      capabilities: nodeConfig.capabilities,
+      id: nodeConfig?.id,
+      type: nodeConfig?.type,
+      capabilities: nodeConfig?.capabilities,
       connections: new Map(),
       metrics: this.initializeNodeMetrics(),
-      location: nodeConfig.location || { x: Math.random() * 100, y: Math.random() * 100 },
+      location: nodeConfig?.location || { x: Math.random() * 100, y: Math.random() * 100 },
       lastSeen: new Date(),
       health: 1.0,
     };
 
-    this.nodes.set(nodeConfig.id, node);
+    this.nodes.set(nodeConfig?.id, node);
 
     // Establish connections based on current topology
     await this.establishNodeConnections(node);
 
     this.logger.info('Node registered in topology', {
-      nodeId: nodeConfig.id,
-      type: nodeConfig.type,
+      nodeId: nodeConfig?.id,
+      type: nodeConfig?.type,
     });
     this.emit('node:registered', { node });
 
@@ -274,18 +272,18 @@ export class TopologyManager extends EventEmitter {
     metrics: TopologyMetrics;
   } {
     const nodes = Array.from(this.nodes.values()).map((node) => ({
-      id: node.id,
-      type: node.type,
-      x: node.location.x,
-      y: node.location.y,
-      health: node.health,
+      id: node?.id,
+      type: node?.type,
+      x: node?.location?.x,
+      y: node?.location?.y,
+      health: node?.health,
     }));
 
     const edges: Array<{ source: string; target: string; quality: number; type: string }> = [];
     for (const node of this.nodes.values()) {
-      for (const [targetId, connection] of node.connections) {
+      for (const [targetId, connection] of node?.connections) {
         edges.push({
-          source: node.id,
+          source: node?.id,
           target: targetId,
           quality: connection.quality.reliability,
           type: connection.type,
@@ -310,12 +308,12 @@ export class TopologyManager extends EventEmitter {
     const connections = await strategy.establishConnections(node, this.nodes);
 
     for (const connection of connections) {
-      node.connections.set(connection.targetId, connection);
+      node?.connections?.set(connection.targetId, connection);
       // Also establish reverse connection if needed
       const targetNode = this.nodes.get(connection.targetId);
-      if (targetNode && !targetNode.connections.has(node.id)) {
-        targetNode.connections.set(node.id, {
-          targetId: node.id,
+      if (targetNode && !targetNode?.connections?.has(node?.id)) {
+        targetNode?.connections?.set(node?.id, {
+          targetId: node?.id,
           type: connection.type,
           quality: connection.quality,
           traffic: this.initializeTrafficStats(),
@@ -327,13 +325,13 @@ export class TopologyManager extends EventEmitter {
   }
 
   private async disconnectNodeConnections(node: NetworkNode): Promise<void> {
-    for (const [targetId, _connection] of node.connections) {
+    for (const [targetId, _connection] of node?.connections) {
       const targetNode = this.nodes.get(targetId);
       if (targetNode) {
-        targetNode.connections.delete(node.id);
+        targetNode?.connections?.delete(node?.id);
       }
     }
-    node.connections.clear();
+    node?.connections?.clear();
   }
 
   private getConnectionStrategy(topology: TopologyType): ConnectionStrategy {
@@ -390,17 +388,17 @@ export class TopologyManager extends EventEmitter {
     const dist = Array(n)
       .fill(null)
       .map(() => Array(n).fill(Infinity));
-    const nodeIds = nodes.map((n) => n.id);
+    const nodeIds = nodes?.map((n) => n.id);
 
     // Initialize distances
     for (let i = 0; i < n; i++) {
       const distI = dist[i];
       if (!distI) continue;
       distI[i] = 0;
-      const node = nodes[i];
+      const node = nodes?.[i];
       if (!node) continue;
-      for (const [targetId] of node.connections) {
-        const j = nodeIds.indexOf(targetId);
+      for (const [targetId] of node?.connections) {
+        const j = nodeIds?.indexOf(targetId);
         if (j !== -1) {
           distI[j] = 1; // Unweighted for simplicity
         }
@@ -443,16 +441,16 @@ export class TopologyManager extends EventEmitter {
     const dist = Array(n)
       .fill(null)
       .map(() => Array(n).fill(Infinity));
-    const nodeIds = nodes.map((n) => n.id);
+    const nodeIds = nodes?.map((n) => n.id);
 
     for (let i = 0; i < n; i++) {
       const distI = dist[i];
       if (!distI) continue;
       distI[i] = 0;
-      const node = nodes[i];
+      const node = nodes?.[i];
       if (!node) continue;
-      for (const [targetId] of node.connections) {
-        const j = nodeIds.indexOf(targetId);
+      for (const [targetId] of node?.connections) {
+        const j = nodeIds?.indexOf(targetId);
         if (j !== -1) {
           distI[j] = 1;
         }
@@ -491,7 +489,7 @@ export class TopologyManager extends EventEmitter {
     let totalCoefficient = 0;
 
     for (const node of nodes) {
-      const neighbors = Array.from(node.connections.keys());
+      const neighbors = Array.from(node?.connections?.keys());
       const k = neighbors.length;
 
       if (k < 2) {
@@ -525,7 +523,7 @@ export class TopologyManager extends EventEmitter {
     let totalRedundancy = 0;
 
     for (const node of nodes) {
-      const pathCounts = this.countAlternatePaths(node.id);
+      const pathCounts = this.countAlternatePaths(node?.id);
       const avgPaths =
         Object.values(pathCounts).reduce((sum, count) => sum + count, 0) /
         Object.keys(pathCounts).length;
@@ -538,7 +536,7 @@ export class TopologyManager extends EventEmitter {
   private calculateLoadBalance(nodes: NetworkNode[]): number {
     if (nodes.length === 0) return 1;
 
-    const loads = nodes.map((node) => node.metrics.taskLoad);
+    const loads = nodes?.map((node) => node?.metrics?.taskLoad);
     const avgLoad = loads.reduce((sum, load) => sum + load, 0) / loads.length;
 
     if (avgLoad === 0) return 1;
@@ -555,7 +553,7 @@ export class TopologyManager extends EventEmitter {
     let connectionCount = 0;
 
     for (const node of nodes) {
-      for (const connection of node.connections.values()) {
+      for (const connection of node?.connections?.values()) {
         const latencyScore = Math.max(0, 1 - connection.quality.latency / 1000); // Normalize to 1s max
         const bandwidthScore = Math.min(1, connection.quality.bandwidth / 1000000); // Normalize to 1Mbps max
         const reliabilityScore = connection.quality.reliability;
@@ -575,9 +573,9 @@ export class TopologyManager extends EventEmitter {
     const sampleSize = Math.min(nodes.length, 10); // Test up to 10 nodes
 
     for (let i = 0; i < sampleSize; i++) {
-      const nodeToRemove = nodes[i];
+      const nodeToRemove = nodes?.[i];
       if (!nodeToRemove) continue;
-      const remainingNodes = nodes.filter((n) => n.id !== nodeToRemove.id);
+      const remainingNodes = nodes?.filter((n) => n.id !== nodeToRemove?.id);
       const connectivity = this.calculateConnectivity(remainingNodes);
       totalTolerance += connectivity;
     }
@@ -594,7 +592,7 @@ export class TopologyManager extends EventEmitter {
     let components = 0;
 
     for (const node of nodes) {
-      if (!visited.has(node.id)) {
+      if (!visited.has(node?.id)) {
         this.dfsVisit(node, nodes, visited);
         components++;
       }
@@ -605,11 +603,11 @@ export class TopologyManager extends EventEmitter {
   }
 
   private dfsVisit(node: NetworkNode, allNodes: NetworkNode[], visited: Set<string>): void {
-    visited.add(node.id);
+    visited.add(node?.id);
 
-    for (const [neighborId] of node.connections) {
+    for (const [neighborId] of node?.connections) {
       if (!visited.has(neighborId)) {
-        const neighbor = allNodes.find((n) => n.id === neighborId);
+        const neighbor = allNodes?.find((n) => n.id === neighborId);
         if (neighbor) {
           this.dfsVisit(neighbor, allNodes, visited);
         }
@@ -630,12 +628,12 @@ export class TopologyManager extends EventEmitter {
       pathCounts[targetId] = 0;
 
       // Direct paths
-      if (sourceNode.connections.has(targetId)) {
+      if (sourceNode?.connections?.has(targetId)) {
         pathCounts[targetId]++;
       }
 
       // 2-hop paths
-      for (const [intermediateId] of sourceNode.connections) {
+      for (const [intermediateId] of sourceNode?.connections) {
         const intermediate = this.nodes.get(intermediateId);
         if (intermediate?.connections.has(targetId)) {
           pathCounts[targetId]++;
@@ -676,13 +674,13 @@ export class TopologyManager extends EventEmitter {
     const now = new Date();
 
     for (const node of this.nodes.values()) {
-      const timeSinceLastSeen = now.getTime() - node.lastSeen.getTime();
+      const timeSinceLastSeen = now.getTime() - node?.lastSeen?.getTime();
 
       if (timeSinceLastSeen > 30000) {
         // 30 seconds timeout
-        node.health = Math.max(0, node.health - 0.1);
+        node?.health = Math.max(0, node?.health - 0.1);
 
-        if (node.health < 0.3) {
+        if (node?.health < 0.3) {
           this.handleUnhealthyNode(node);
         }
       }
@@ -690,8 +688,8 @@ export class TopologyManager extends EventEmitter {
   }
 
   private async handleUnhealthyNode(node: NetworkNode): Promise<void> {
-    this.logger.warn('Unhealthy node detected', { nodeId: node.id, health: node.health });
-    this.emit('node:unhealthy', { nodeId: node.id, health: node.health });
+    this.logger.warn('Unhealthy node detected', { nodeId: node?.id, health: node?.health });
+    this.emit('node:unhealthy', { nodeId: node?.id, health: node?.health });
 
     // Implement recovery strategies
     await this.attemptNodeRecovery(node);
@@ -703,12 +701,12 @@ export class TopologyManager extends EventEmitter {
     const newConnections = await strategy.establishConnections(node, this.nodes);
 
     for (const connection of newConnections) {
-      if (!node.connections.has(connection.targetId)) {
-        node.connections.set(connection.targetId, connection);
+      if (!node?.connections?.has(connection.targetId)) {
+        node?.connections?.set(connection.targetId, connection);
       }
     }
 
-    this.emit('node:recovery-attempted', { nodeId: node.id });
+    this.emit('node:recovery-attempted', { nodeId: node?.id });
   }
 
   private scheduleTopologyOptimization(): void {
@@ -749,20 +747,20 @@ export class TopologyManager extends EventEmitter {
   }
 
   private async handleNodeMetricsUpdate(data: any): Promise<void> {
-    const node = this.nodes.get(data.nodeId);
+    const node = this.nodes.get(data?.["nodeId"]);
     if (node) {
-      node.metrics = { ...node.metrics, ...data.metrics };
-      node.lastSeen = new Date();
-      node.health = Math.min(1, node.health + 0.1); // Improve health on activity
+      node?.metrics = { ...node?.metrics, ...data?.["metrics"] };
+      node?.lastSeen = new Date();
+      node?.health = Math.min(1, node?.health + 0.1); // Improve health on activity
     }
   }
 
   private async handleConnectionQualityChange(data: any): Promise<void> {
-    const node = this.nodes.get(data.nodeId);
-    const connection = node?.connections.get(data.targetId);
+    const node = this.nodes.get(data?.["nodeId"]);
+    const connection = node?.connections.get(data?.["targetId"]);
 
     if (connection) {
-      connection.quality = { ...connection.quality, ...data.quality };
+      connection.quality = { ...connection.quality, ...data?.["quality"] };
       connection.lastActivity = new Date();
     }
   }
@@ -856,7 +854,7 @@ class MeshConnectionStrategy implements ConnectionStrategy {
     const connections: Connection[] = [];
 
     for (const [targetId, targetNode] of allNodes) {
-      if (targetId !== node.id) {
+      if (targetId !== node?.id) {
         connections.push({
           targetId,
           type: 'direct',
@@ -873,7 +871,7 @@ class MeshConnectionStrategy implements ConnectionStrategy {
 
   private calculateInitialQuality(source: NetworkNode, target: NetworkNode): ConnectionQuality {
     const distance = Math.sqrt(
-      (source.location.x - target.location.x) ** 2 + (source.location.y - target.location.y) ** 2
+      (source.location.x - target?.location?.x) ** 2 + (source.location.y - target?.location?.y) ** 2
     );
 
     return {
@@ -980,7 +978,7 @@ class TopologyAdaptationEngine {
     const analysis = await this.performTopologyAnalysis(currentConfig, nodes, metrics, history);
 
     return {
-      currentTopology: currentConfig.type,
+      currentTopology: currentConfig?.type,
       recommendedTopology: analysis.recommendedTopology,
       confidence: analysis.confidence,
       reason: analysis.reason,
@@ -1007,7 +1005,7 @@ class TopologyAdaptationEngine {
     // Would use neural networks, decision trees, or reinforcement learning
 
     return {
-      recommendedTopology: config.type,
+      recommendedTopology: config?.type,
       confidence: 0.7,
       reason: 'Current topology is optimal',
       expectedImprovement: 0.05,
@@ -1086,8 +1084,8 @@ class MigrationController {
   ): Promise<MigrationPlan> {
     // Create step-by-step migration plan
     return {
-      sourceTopology: currentConfig.type,
-      targetTopology: targetConfig.type,
+      sourceTopology: currentConfig?.type,
+      targetTopology: targetConfig?.type,
       steps: [],
       estimatedDuration: 30000, // 30 seconds
       rollbackPlan: [],

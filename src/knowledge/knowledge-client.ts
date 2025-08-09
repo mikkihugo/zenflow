@@ -249,12 +249,12 @@ export class FACTIntegration extends EventEmitter {
     try {
       const result = await this.executePythonCommand('get_metrics');
       return {
-        totalQueries: result?.total_queries || 0,
-        cacheHitRate: result?.cache_hit_rate || 0,
-        averageLatency: result?.average_latency || 0,
-        costSavings: result?.cost_savings || 0,
-        toolExecutions: result?.tool_executions || 0,
-        errorRate: result?.error_rate || 0,
+        totalQueries: result?.["total_queries"] || 0,
+        cacheHitRate: result?.["cache_hit_rate"] || 0,
+        averageLatency: result?.["average_latency"] || 0,
+        costSavings: result?.["cost_savings"] || 0,
+        toolExecutions: result?.["tool_executions"] || 0,
+        errorRate: result?.["error_rate"] || 0,
       };
     } catch (error) {
       logger.error('Failed to get FACT metrics:', error);

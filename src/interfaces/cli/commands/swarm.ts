@@ -131,19 +131,19 @@ async function callMcpTool(
         if (line.trim() && line.includes('"jsonrpc"')) {
           try {
             const response = JSON.parse(line.trim());
-            if (response.id === request.id && !isResolved) {
+            if (response?.id === request.id && !isResolved) {
               isResolved = true;
               clearTimeout(timeout);
               mcpProcess.kill();
 
-              if (response.error) {
-                resolve({ success: false, error: response.error.message });
+              if (response?.error) {
+                resolve({ success: false, error: response?.error?.message });
               } else {
-                resolve({ success: true, data: response.result });
+                resolve({ success: true, data: response?.result });
               }
               return;
             }
-          } catch (_e) {
+          } catch (e) {
             // Ignore parsing errors, continue looking
           }
         }
@@ -194,7 +194,7 @@ async function callMcpTool(
  * @param data
  * @param format
  */
-function _formatOutput(data: any, format: string): string {
+function formatOutput(data: any, format: string): string {
   switch (format) {
     case 'json':
       return JSON.stringify(data, null, 2);
@@ -238,8 +238,8 @@ export async function executeSwarmCommand(): Promise<void> {
 
       case 'init':
         result = await callMcpTool('swarm_init', {
-          topology: options.topology || 'auto',
-          maxAgents: options.agents || 4,
+          topology: options?.["topology"] || 'auto',
+          maxAgents: options?.["agents"] || 4,
         });
         break;
 
@@ -255,8 +255,8 @@ export async function executeSwarmCommand(): Promise<void> {
         const swarmName = input[1] || 'New Swarm';
         result = await callMcpTool('swarm_init', {
           name: swarmName,
-          topology: options.topology || 'auto',
-          maxAgents: options.agents || 4,
+          topology: options?.["topology"] || 'auto',
+          maxAgents: options?.["agents"] || 4,
         });
         break;
       }
@@ -278,16 +278,16 @@ export async function executeSwarmCommand(): Promise<void> {
     const endTime = performance.now();
     const duration = endTime - startTime;
 
-    if (result.success) {
-      if (result.data) {
+    if (result?.success) {
+      if (result?.data) {
       }
 
-      if (options.verbose) {
+      if (options?.["verbose"]) {
       }
     } else {
-      logger.error(`❌ Swarm ${command} failed: ${result.error}`);
+      logger.error(`❌ Swarm ${command} failed: ${result?.error}`);
 
-      if (options.verbose && result.error) {
+      if (options?.["verbose"] && result?.error) {
         logger.error('');
         logger.error('Debug information:');
         logger.error(`Command: ${command}`);
@@ -304,7 +304,7 @@ export async function executeSwarmCommand(): Promise<void> {
     logger.error('Swarm command execution failed:', error);
     logger.error(`❌ Swarm ${command} failed: ${error.message}`);
 
-    if (options.verbose) {
+    if (options?.["verbose"]) {
       logger.error('');
       logger.error('Debug information:');
       logger.error(`Duration: ${duration.toFixed(2)}ms`);
@@ -320,7 +320,7 @@ export async function executeSwarmCommand(): Promise<void> {
  *
  * @param command
  */
-function _getMcpToolName(command: string): string {
+function getMcpToolName(command: string): string {
   const toolMap: Record<string, string> = {
     status: 'swarm_status',
     init: 'swarm_init',

@@ -1,10 +1,3 @@
-/**
- * Resource Monitor
- * Real-time resource monitoring and threshold management
- */
-
-import type { LoadMetrics } from '../types';
-
 export class ResourceMonitor implements ResourceMonitor {
   private monitoringAgents: Set<string> = new Set();
   private metricsCache: Map<string, LoadMetrics> = new Map();

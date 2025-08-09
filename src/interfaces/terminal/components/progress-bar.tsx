@@ -6,7 +6,6 @@
  */
 
 import { Box, Text } from 'ink';
-import type React from 'react';
 
 export interface ProgressBarProps {
   progress: number; // 0-100
@@ -127,7 +126,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
 };
 
 // Convenience components for specific use cases
-export const StandardProgressBar: React.FC<Omit<ProgressBarProps, 'variant'>> = (props) => (
+export const ProgressBar: React.FC<Omit<ProgressBarProps, 'variant'>> = (props) => (
   <ProgressBar {...props} variant="standard" />
 );
 

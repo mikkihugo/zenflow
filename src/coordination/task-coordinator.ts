@@ -72,7 +72,7 @@ export class TaskCoordinator {
 
     try {
       // NEW: Check if SPARC methodology should be used
-      if (config?.use_sparc_methodology && this.shouldUseSPARC(config)) {
+      if (config?.["use_sparc_methodology"] && this.shouldUseSPARC(config)) {
         return await this.executeWithSPARC(config, startTime, taskId);
       }
 
@@ -81,7 +81,7 @@ export class TaskCoordinator {
     } catch (error) {
       const taskResult: TaskResult = {
         success: false,
-        agent_used: config?.subagent_type,
+        agent_used: config?.["subagent_type"],
         execution_time_ms: Date.now() - startTime,
         tools_used: [],
         methodology_applied: 'direct',
@@ -113,15 +113,15 @@ export class TaskCoordinator {
     // Convert TaskConfig to database document if needed
     let assignmentId: string;
 
-    if (config?.source_document) {
+    if (config?.["source_document"]) {
       // Use existing document
-      if (config?.source_document?.type === 'feature') {
+      if (config?.["source_document"]?.type === 'feature') {
         assignmentId = await this.sparcBridge.assignFeatureToSparcs(
-          config?.source_document as FeatureDocumentEntity
+          config?.["source_document"] as FeatureDocumentEntity
         );
       } else {
         assignmentId = await this.sparcBridge.assignTaskToSparcs(
-          config?.source_document as TaskDocumentEntity
+          config?.["source_document"] as TaskDocumentEntity
         );
       }
     } else {
@@ -173,7 +173,7 @@ export class TaskCoordinator {
     const taskResult: TaskResult = {
       success: true,
       output: result?.output,
-      agent_used: agentStrategy.agent_name,
+      agent_used: agentStrategy["agent_name"],
       execution_time_ms: Date.now() - startTime,
       tools_used: agentStrategy.tools,
       methodology_applied: 'direct',
@@ -192,10 +192,10 @@ export class TaskCoordinator {
     // Use SPARC for complex, high-priority tasks or when explicitly requested
     return (
       // Long descriptions indicate complexity
-      (config?.use_sparc_methodology === true ||
-      config?.priority === 'high' ||
-      config?.priority === 'critical' ||
-      (config?.source_document && this.isComplexDocument(config?.source_document)) || config?.description.length > 200)
+      (config?.["use_sparc_methodology"] === true ||
+        config?.["priority"] === 'high' ||
+        config?.["priority"] === 'critical' ||
+        (config?.["source_document"] && this.isComplexDocument(config?.["source_document"])) || config?.["description"].length > 200)
     );
   }
 
@@ -205,13 +205,9 @@ export class TaskCoordinator {
    * @param document
    */
   private isComplexDocument(document: FeatureDocumentEntity | TaskDocumentEntity): boolean {
-    return (
-      ('acceptance_criteria' in document && (document as any).acceptance_criteria?.length > 3) ||
-      document.tags?.includes('complex') ||
-      document.tags?.includes('architecture') ||
-      ('technical_approach' in document &&
-        (document as any).technical_approach?.includes('architecture'))
-    );
+    return (('acceptance_criteria' in document && (document as any)["acceptance_criteria"]?.length > 3) ||
+    document.tags?.includes('complex') ||
+    document.tags?.includes('architecture') || ('technical_approach' in document && (document as any)["technical_approach"]?.includes('architecture')));
   }
 
   /**
@@ -223,17 +219,17 @@ export class TaskCoordinator {
     return {
       id: `temp-task-${Date.now()}`,
       type: 'task',
-      title: config?.description?.substring(0, 100),
-      content: config?.prompt,
+      title: config?.["description"]?.substring(0, 100),
+      content: config?.["prompt"],
       status: 'draft',
-      priority: config?.priority || 'medium',
+      priority: config?.["priority"] || 'medium',
       author: 'task-coordinator',
       tags: ['sparc-generated', 'temporary'],
       project_id: 'temp-project',
-      dependencies: config?.dependencies || [],
+      dependencies: config?.["dependencies"] || [],
       related_documents: [],
       version: '1.0.0',
-      searchable_content: config?.description,
+      searchable_content: config?.["description"],
       keywords: [],
       workflow_stage: 'sparc-ready',
       completion_percentage: 0,
@@ -241,7 +237,7 @@ export class TaskCoordinator {
       updated_at: new Date(),
       checksum: 'temp-checksum',
       task_type: 'development',
-      estimated_hours: config?.timeout_minutes ? config?.timeout_minutes / 60 : 8,
+      estimated_hours: config?.["timeout_minutes"] ? config?.["timeout_minutes"] / 60 : 8,
       implementation_details: {
         files_to_create: [],
         files_to_modify: [],
@@ -249,10 +245,10 @@ export class TaskCoordinator {
         documentation_updates: [],
       },
       technical_specifications: {
-        component: config?.domain_context || 'general',
+        component: config?.["domain_context"] || 'general',
         module: 'task-coordinator',
         functions: [],
-        dependencies: config?.tools_required || [],
+        dependencies: config?.["tools_required"] || [],
       },
       completion_status: 'todo',
     };
@@ -295,18 +291,18 @@ export class TaskCoordinator {
    * @param config
    */
   private selectAgentStrategy(config: TaskConfig): AgentStrategy {
-    const claudeSubAgent = mapToClaudeSubAgent(config?.subagent_type);
-    const subAgentConfig = generateSubAgentConfig(config?.subagent_type);
+    const claudeSubAgent = mapToClaudeSubAgent(config?.["subagent_type"]);
+    const subAgentConfig = generateSubAgentConfig(config?.["subagent_type"]);
 
     // Determine if Claude Code sub-agent should be used
     const useClaudeSubAgent =
-      config?.use_claude_subagent !== false && this.isClaudeSubAgentOptimal(config);
+      config?.["use_claude_subagent"] !== false && this.isClaudeSubAgentOptimal(config);
 
     return {
-      agent_type: config?.subagent_type,
-      agent_name: useClaudeSubAgent ? claudeSubAgent : config?.subagent_type,
+      agent_type: config?.["subagent_type"],
+      agent_name: useClaudeSubAgent ? claudeSubAgent : config?.["subagent_type"],
       use_claude_subagent: useClaudeSubAgent,
-      tools: config?.tools_required || subAgentConfig?.tools,
+      tools: config?.["tools_required"] || subAgentConfig?.tools,
       capabilities: subAgentConfig?.capabilities,
       system_prompt: subAgentConfig?.systemPrompt,
     };
@@ -319,12 +315,12 @@ export class TaskCoordinator {
    */
   private isClaudeSubAgentOptimal(config: TaskConfig): boolean {
     // High-priority tasks benefit from specialized sub-agents
-    if (config?.priority === 'high' || config?.priority === 'critical') {
+    if (config?.["priority"] === 'high' || config?.["priority"] === 'critical') {
       return true;
     }
 
     // Complex tasks with multiple dependencies
-    if (config?.dependencies && config?.dependencies.length > 2) {
+    if (config?.["dependencies"] && config?.["dependencies"].length > 2) {
       return true;
     }
 
@@ -338,7 +334,7 @@ export class TaskCoordinator {
       'security-analyzer',
     ];
 
-    return specializedDomains.includes(config?.subagent_type);
+    return specializedDomains.includes(config?.["subagent_type"]);
   }
 
   /**
@@ -348,33 +344,33 @@ export class TaskCoordinator {
    * @param strategy
    */
   private prepareExecutionContext(config: TaskConfig, strategy: AgentStrategy): ExecutionContext {
-    let enhancedPrompt = config?.prompt;
+    let enhancedPrompt = config?.["prompt"];
 
     // Add domain context if provided
-    if (config?.domain_context) {
+    if (config?.["domain_context"]) {
       enhancedPrompt += `
-      \n**Domain Context**: ${config?.domain_context}`;
+      \n**Domain Context**: ${config?.["domain_context"]}`;
     }
 
     // Add expected output format if specified
-    if (config?.expected_output) {
+    if (config?.["expected_output"]) {
       enhancedPrompt += `
-      \n**Expected Output**: ${config?.expected_output}`;
+      \n**Expected Output**: ${config?.["expected_output"]}`;
     }
 
     // Add Claude Code sub-agent instructions if using sub-agent
-    if (strategy.use_claude_subagent) {
+    if (strategy["use_claude_subagent"]) {
       enhancedPrompt += `
-      \n**Specialized Focus**: ${strategy.system_prompt}`;
+      \n**Specialized Focus**: ${strategy["system_prompt"]}`;
     }
 
     return {
       task_id: this.generateTaskId(config),
-      description: config?.description,
+      description: config?.["description"],
       prompt: enhancedPrompt,
       agent_strategy: strategy,
-      timeout_ms: (config?.timeout_minutes || 10) * 60 * 1000,
-      priority: config?.priority || 'medium',
+      timeout_ms: (config?.["timeout_minutes"] || 10) * 60 * 1000,
+      priority: config?.["priority"] || 'medium',
     };
   }
 
@@ -385,15 +381,15 @@ export class TaskCoordinator {
    */
   private async executeWithAgent(context: ExecutionContext): Promise<{ output: string }> {
     // Track active sub-agent
-    this.activeSubAgents.add(context.agent_strategy.agent_name);
+    this.activeSubAgents.add(context["agent_strategy"]?.["agent_name"]);
 
     try {
       // This would be replaced with actual Task tool call
-      const output = `Task completed by ${context.agent_strategy.agent_name}: ${context.description}`;
+      const output = `Task completed by ${context["agent_strategy"]?.["agent_name"]}: ${context.description}`;
 
       return { output };
     } finally {
-      this.activeSubAgents.delete(context.agent_strategy.agent_name);
+      this.activeSubAgents.delete(context["agent_strategy"]?.["agent_name"]);
     }
   }
 
@@ -404,7 +400,7 @@ export class TaskCoordinator {
    */
   private generateTaskId(config: TaskConfig): string {
     const timestamp = Date.now();
-    const hash = this.simpleHash(config?.description + config?.subagent_type);
+    const hash = this.simpleHash(config?.["description"] + config?.["subagent_type"]);
     return `task_${timestamp}_${hash}`;
   }
 
@@ -452,7 +448,7 @@ export class TaskCoordinator {
       success_rate: tasks.length > 0 ? successful.length / tasks.length : 0,
       average_execution_time_ms:
         successful.length > 0
-          ? successful.reduce((sum, t) => sum + t.execution_time_ms, 0) / successful.length
+          ? successful.reduce((sum, t) => sum + t["execution_time_ms"], 0) / successful.length
           : 0,
       most_used_agents: this.getMostUsedAgents(tasks),
       tools_usage: this.getToolsUsage(tasks),
@@ -462,7 +458,7 @@ export class TaskCoordinator {
   private getMostUsedAgents(tasks: TaskResult[]): Record<string, number> {
     const agentCounts: Record<string, number> = {};
     tasks.forEach((task) => {
-      agentCounts[task.agent_used] = (agentCounts[task.agent_used] || 0) + 1;
+      agentCounts[task["agent_used"]] = (agentCounts[task["agent_used"]] || 0) + 1;
     });
     return agentCounts;
   }
@@ -470,7 +466,7 @@ export class TaskCoordinator {
   private getToolsUsage(tasks: TaskResult[]): Record<string, number> {
     const toolCounts: Record<string, number> = {};
     tasks.forEach((task) => {
-      task.tools_used.forEach((tool) => {
+      task["tools_used"]?.forEach((tool) => {
         toolCounts[tool] = (toolCounts[tool] || 0) + 1;
       });
     });

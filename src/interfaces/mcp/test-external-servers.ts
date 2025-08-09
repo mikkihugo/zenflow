@@ -26,15 +26,15 @@ async function testExternalMCPServers(): Promise<void> {
 
     // Set up event listeners
     client.on('serverConnected', (data) => {
-      logger.info(`✅ Server connected: ${data.server} (${data.tools} tools)`);
+      logger.info(`✅ Server connected: ${data?.["server"]} (${data?.["tools"]} tools)`);
     });
 
     client.on('serverError', (data) => {
-      logger.error(`❌ Server error: ${data.server} - ${data.error}`);
+      logger.error(`❌ Server error: ${data?.["server"]} - ${data?.["error"]}`);
     });
 
     client.on('toolExecuted', (data) => {
-      logger.info(`🔧 Tool executed: ${data.tool} on ${data.server}`);
+      logger.info(`🔧 Tool executed: ${data?.["tool"]} on ${data?.["server"]}`);
     });
 
     // Test server connections
@@ -42,18 +42,18 @@ async function testExternalMCPServers(): Promise<void> {
     const connectionResults = await client.connectAll();
 
     for (const result of connectionResults) {
-      const _status = result.success ? '✅' : '❌';
+      const status = result?.success ? '✅' : '❌';
 
-      if (result.success) {
-        logger.info(`Successfully connected to ${result.serverName}`);
+      if (result?.success) {
+        logger.info(`Successfully connected to ${result?.serverName}`);
       } else {
-        logger.error(`Failed to connect to ${result.serverName}: ${result.error}`);
+        logger.error(`Failed to connect to ${result?.serverName}: ${result?.error}`);
       }
     }
 
     // Get server status
     const serverStatus = client.getServerStatus();
-    for (const [_name, status] of Object.entries(serverStatus)) {
+    for (const [name, status] of Object.entries(serverStatus)) {
       const _connectionIcon = status.connected ? '🟢' : '🔴';
       if (status.lastPing) {
       }
@@ -61,10 +61,10 @@ async function testExternalMCPServers(): Promise<void> {
 
     // Test tool discovery
     const availableTools = client.getAvailableTools();
-    for (const [_serverName, tools] of Object.entries(availableTools)) {
+    for (const [serverName, tools] of Object.entries(availableTools)) {
       if (tools.length === 0) {
       } else {
-        for (const _tool of tools) {
+        for (const tool of tools) {
         }
       }
     }
@@ -87,13 +87,13 @@ async function testExternalMCPServers(): Promise<void> {
       try {
         const result = await client.executeTool(test.server, test.tool, test.params);
 
-        if (result.success) {
+        if (result?.success) {
         } else {
         }
-      } catch (_error) {}
+      } catch (error) {}
     }
 
-    const _totalTools = Object.values(availableTools).reduce((sum, tools) => sum + tools.length, 0);
+    const totalTools = Object.values(availableTools).reduce((sum, tools) => sum + tools.length, 0);
 
     // Cleanup
     await client.disconnectAll();
@@ -139,7 +139,7 @@ function validateConfigurationFiles(): void {
                   content.includes('semgrep')
                 ) {
                 }
-              } catch (_error) {}
+              } catch (error) {}
             } else {
             }
           }

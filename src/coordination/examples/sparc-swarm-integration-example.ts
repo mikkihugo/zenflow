@@ -1,14 +1,13 @@
 /**
- * SPARC-Swarm Integration Example
+ * SPARC-Swarm Integration Example.
  *
  * Demonstrates the complete integration of SPARC methodology with swarm coordination
- * in the database-driven product flow system
+ * in the database-driven product flow system.
  */
 
 import { DatabaseDrivenSystem } from '../../core/database-driven-system';
 import { createLogger } from '../../core/logger';
 import { WorkflowEngine } from '../../core/workflow-engine';
-import type { FeatureDocumentEntity } from '../../database/entities/product-entities';
 import { DocumentManager } from '../../database/managers/document-manager';
 import { DatabaseSPARCBridge } from '../database-sparc-bridge';
 import { SPARCSwarmCoordinator } from '../swarm/core/sparc-swarm-coordinator';
@@ -17,13 +16,13 @@ import { TaskCoordinator } from '../task-coordinator';
 const logger = createLogger('SPARCSwarmIntegrationExample');
 
 /**
- * Complete Integration Example
+ * Complete Integration Example.
  *
  * Shows the flow:
  * 1. Database-driven product flow creates Features/Tasks
  * 2. Features/Tasks are assigned to SPARC swarm
  * 3. SPARC methodology is applied by coordinated agents
- * 4. Results are stored back in database
+ * 4. Results are stored back in database.
  *
  * @example
  */
@@ -47,7 +46,7 @@ export class SPARCSwarmIntegrationExample {
   }
 
   /**
-   * Run complete integration demonstration
+   * Run complete integration demonstration.
    */
   async runIntegrationDemo(): Promise<void> {
     logger.info('🚀 Starting SPARC-Swarm Integration Demonstration');
@@ -79,7 +78,7 @@ export class SPARCSwarmIntegrationExample {
   }
 
   /**
-   * Step 1: Initialize all systems
+   * Step 1: Initialize all systems.
    */
   private async initializeSystems(): Promise<void> {
     logger.info('🔧 Initializing systems...');
@@ -104,7 +103,7 @@ export class SPARCSwarmIntegrationExample {
   }
 
   /**
-   * Step 2: Create demo workspace with product flow
+   * Step 2: Create demo workspace with product flow.
    */
   private async createDemoWorkspace(): Promise<string> {
     logger.info('📁 Creating demo workspace with database-driven product flow...');
@@ -122,7 +121,7 @@ export class SPARCSwarmIntegrationExample {
   }
 
   /**
-   * Step 3: Create demo feature using database-driven system
+   * Step 3: Create demo feature using database-driven system.
    *
    * @param workspaceId
    */
@@ -185,7 +184,7 @@ export class SPARCSwarmIntegrationExample {
   }
 
   /**
-   * Step 4: Assign feature to SPARC swarm
+   * Step 4: Assign feature to SPARC swarm.
    *
    * @param feature
    */
@@ -206,7 +205,7 @@ export class SPARCSwarmIntegrationExample {
   }
 
   /**
-   * Step 5: Demonstrate task coordination with SPARC
+   * Step 5: Demonstrate task coordination with SPARC.
    *
    * @param feature
    */
@@ -235,19 +234,19 @@ export class SPARCSwarmIntegrationExample {
     });
 
     logger.info('  📊 Task coordination results:');
-    logger.info(`    Success: ${taskResult.success ? '✅' : '❌'}`);
-    logger.info(`    Methodology: ${taskResult.methodology_applied}`);
-    logger.info(`    Agent used: ${taskResult.agent_used}`);
-    logger.info(`    Execution time: ${taskResult.execution_time_ms}ms`);
+    logger.info(`    Success: ${taskResult?.success ? '✅' : '❌'}`);
+    logger.info(`    Methodology: ${taskResult?.["methodology_applied"]}`);
+    logger.info(`    Agent used: ${taskResult?.["agent_used"]}`);
+    logger.info(`    Execution time: ${taskResult?.["execution_time_ms"]}ms`);
 
-    if (taskResult.sparc_task_id) {
-      logger.info(`    SPARC task ID: ${taskResult.sparc_task_id}`);
-      logger.info(`    Artifacts generated: ${taskResult.implementation_artifacts?.length || 0}`);
+    if (taskResult?.["sparc_task_id"]) {
+      logger.info(`    SPARC task ID: ${taskResult?.["sparc_task_id"]}`);
+      logger.info(`    Artifacts generated: ${taskResult?.["implementation_artifacts"]?.length || 0}`);
     }
   }
 
   /**
-   * Step 6: Monitor and report results
+   * Step 6: Monitor and report results.
    *
    * @param assignmentId
    * @param _assignmentId
@@ -296,7 +295,7 @@ export class SPARCSwarmIntegrationExample {
   }
 
   /**
-   * Get integration status summary
+   * Get integration status summary.
    */
   async getIntegrationStatus(): Promise<{
     databaseSystem: boolean;
@@ -314,7 +313,9 @@ export class SPARCSwarmIntegrationExample {
 }
 
 /**
- * Run the integration example
+ * Run the integration example.
+ *
+ * @example
  */
 export async function runSPARCSwarmIntegrationExample(): Promise<void> {
   const integration = new SPARCSwarmIntegrationExample();

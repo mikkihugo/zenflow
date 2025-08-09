@@ -76,15 +76,15 @@ export class ExportSystem {
     const timestamp = Date.now();
 
     try {
-      const exporter = this.exporters.get(config?.format);
+      const exporter = this.exporters.get(config?.["format"]);
       if (!exporter) {
-        throw new Error(`Unsupported export format: ${config?.format}`);
+        throw new Error(`Unsupported export format: ${config?.["format"]}`);
       }
 
       const exportedData = exporter.export(data);
 
-      if (config?.outputPath && config?.fileName) {
-        const filePath = path.join(config?.outputPath, config?.fileName + exporter.extension);
+      if (config?.["outputPath"] && config?.["fileName"]) {
+        const filePath = path.join(config?.["outputPath"], config?.["fileName"] + exporter.extension);
 
         // Ensure directory exists
         await mkdir(path.dirname(filePath), { recursive: true });
@@ -155,7 +155,7 @@ export class ExportSystem {
       }
 
       if (typeof obj === 'string') {
-        return obj.includes('\n') ? `|\n${spaces}  ${obj.replace(/\n/g, `\n${spaces}  `)}` : obj;
+        return obj.includes('\n') ? `|\n${spaces}  ${obj["replace"](/\n/g, `\n${spaces}  `)}` : obj;
       }
 
       if (typeof obj === 'number' || typeof obj === 'boolean') {

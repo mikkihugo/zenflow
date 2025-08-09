@@ -16,7 +16,6 @@ import {
   CORE_TOKENS,
   createContainerBuilder,
   createToken,
-  type DIContainer,
   type IConfig,
   type IDatabase,
   type IEventBus,
@@ -124,7 +123,7 @@ class MockDatabase implements IDatabase {
   async getSwarmTasks(swarmId: string, status?: string): Promise<any[]> {
     const tasks: any[] = [];
     for (const [key, value] of this.data.entries()) {
-      if (key.startsWith('task_') && value.swarm_id === swarmId) {
+      if (key.startsWith('task_') && value["swarm_id"] === swarmId) {
         if (!status || value.status === status) {
           tasks.push(value);
         }
@@ -175,11 +174,11 @@ export class ClaudeZenCore {
       // Core services
       .singleton(CORE_TOKENS.Logger, () => new ConsoleLogger())
       .singleton(CORE_TOKENS.Config, () => new AppConfig())
-      .singleton(CORE_TOKENS.EventBus, () => new AppEventBus())
+      .singleton(CORE_TOKENS["EventBus"], () => new AppEventBus())
       .singleton(CORE_TOKENS.Database, () => new MockDatabase())
 
       // Coordination services
-      .singleton(SWARM_TOKENS.SwarmCoordinator, (c) => {
+      .singleton(SWARM_TOKENS["SwarmCoordinator"], (c) => {
         const logger = c.resolve(CORE_TOKENS.Logger);
         const database = c.resolve(CORE_TOKENS.Database);
         return new Orchestrator(logger, database);
@@ -189,13 +188,13 @@ export class ClaudeZenCore {
       .singleton(createToken<CoordinationManager>('CoordinationManager'), (c) => {
         const config = c.resolve(CORE_TOKENS.Config);
         const logger = c.resolve(CORE_TOKENS.Logger);
-        const eventBus = c.resolve(CORE_TOKENS.EventBus);
+        const eventBus = c.resolve(CORE_TOKENS["EventBus"]);
 
         return new CoordinationManager(
           {
-            maxAgents: config.get('swarm.maxAgents') || 10,
-            heartbeatInterval: config.get('swarm.heartbeatInterval') || 5000,
-            timeout: config.get('coordination.timeout') || 30000,
+            maxAgents: config?.["get"]('swarm.maxAgents') || 10,
+            heartbeatInterval: config?.["get"]('swarm.heartbeatInterval') || 5000,
+            timeout: config?.["get"]('coordination.timeout') || 30000,
             enableHealthCheck: true,
           },
           logger,
@@ -280,12 +279,12 @@ export class ClaudeZenCore {
     try {
       // Initialize core database
       const database = this.container.resolve(CORE_TOKENS.Database);
-      if (database.initialize) {
-        await database.initialize();
+      if (database?.initialize) {
+        await database?.initialize();
       }
 
       // Resolve all coordinators through DI
-      this.orchestrator = this.container.resolve(SWARM_TOKENS.SwarmCoordinator) as Orchestrator;
+      this.orchestrator = this.container.resolve(SWARM_TOKENS["SwarmCoordinator"]) as Orchestrator;
       this.coordinationManager = this.container.resolve(
         createToken<CoordinationManager>('CoordinationManager')
       );

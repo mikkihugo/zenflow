@@ -7,7 +7,6 @@
 import { promises as fs } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { createLogger } from '../../core/logger';
-import type { BatchOperation } from './batch-engine';
 
 const logger = createLogger({ prefix: 'FileBatch' });
 
@@ -65,7 +64,7 @@ export class FileBatchOperator {
         groupedOps.mkdir,
         this.executeMkdir.bind(this)
       );
-      results.push(...mkdirResults);
+      results?.push(...mkdirResults);
     }
 
     // Execute read, write, create, copy, move operations concurrently
@@ -82,7 +81,7 @@ export class FileBatchOperator {
         mainOperations,
         this.executeFileOperation.bind(this)
       );
-      results.push(...mainResults);
+      results?.push(...mainResults);
     }
 
     // Execute delete and rmdir operations last (cleanup)
@@ -92,7 +91,7 @@ export class FileBatchOperator {
         cleanupOperations,
         this.executeFileOperation.bind(this)
       );
-      results.push(...cleanupResults);
+      results?.push(...cleanupResults);
     }
 
     logger.info(`Completed batch file operations: ${results.length} operations processed`);
@@ -119,7 +118,7 @@ export class FileBatchOperator {
     };
 
     for (const operation of operations) {
-      groups[operation.type].push(operation);
+      groups[operation.type]?.push(operation);
     }
 
     return groups;
@@ -144,16 +143,16 @@ export class FileBatchOperator {
 
       const chunkResults = await Promise.allSettled(chunkPromises);
 
-      chunkResults.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-          results.push(result.value);
+      chunkResults?.forEach((result, index) => {
+        if (result?.status === 'fulfilled') {
+          results?.push(result?.value);
         } else {
           // Create error result for failed operations
           const operation = chunk[index] as FileOperation;
-          results.push({
+          results?.push({
             operation,
             success: false,
-            error: result.reason?.message || 'Unknown error',
+            error: result?.reason?.message || 'Unknown error',
             executionTime: 0,
           });
         }

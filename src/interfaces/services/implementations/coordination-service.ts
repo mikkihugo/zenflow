@@ -6,7 +6,6 @@
  */
 
 import type { IService } from '../core/interfaces';
-import type { CoordinationServiceConfig, ServiceOperationOptions } from '../types';
 import { BaseService } from './base-service';
 
 /**
@@ -21,7 +20,7 @@ export class CoordinationService extends BaseService implements IService {
   private activeWorkflows = new Map<string, any>();
 
   constructor(config: CoordinationServiceConfig) {
-    super(config.name, config.type, config);
+    super(config?.name, config?.type, config);
 
     // Add coordination service capabilities
     this.addCapability('swarm-coordination');
@@ -42,21 +41,21 @@ export class CoordinationService extends BaseService implements IService {
 
     // Initialize coordination configuration
     const coordination = {
-      topology: config.coordination?.topology || 'mesh',
-      maxAgents: config.coordination?.maxAgents || 10,
-      strategy: config.coordination?.strategy || 'adaptive',
-      timeout: config.coordination?.timeout || 30000,
+      topology: config?.["coordination"]?.["topology"] || 'mesh',
+      maxAgents: config?.["coordination"]?.["maxAgents"] || 10,
+      strategy: config?.["coordination"]?.["strategy"] || 'adaptive',
+      timeout: config?.["coordination"]?.["timeout"] || 30000,
     };
 
     this.logger.debug(`Coordination configuration:`, coordination);
 
     // Initialize persistence if enabled
-    if (config.persistence?.enabled) {
+    if (config?.["persistence"]?.["enabled"]) {
       await this.initializePersistence();
     }
 
     // Initialize recovery if enabled
-    if (config.recovery?.enabled) {
+    if (config?.["recovery"]?.["enabled"]) {
       this.initializeRecovery();
     }
 
@@ -73,7 +72,7 @@ export class CoordinationService extends BaseService implements IService {
 
     // Start recovery monitoring if enabled
     const config = this.config as CoordinationServiceConfig;
-    if (config.recovery?.enabled) {
+    if (config?.["recovery"]?.["enabled"]) {
       this.startRecoveryMonitoring();
     }
 
@@ -125,7 +124,7 @@ export class CoordinationService extends BaseService implements IService {
 
       // Check coordination state health
       const config = this.config as CoordinationServiceConfig;
-      const maxAgents = config.coordination?.maxAgents || 10;
+      const maxAgents = config?.["coordination"]?.["maxAgents"] || 10;
 
       if (this.agents.size > maxAgents) {
         this.logger.warn(`Agent count (${this.agents.size}) exceeds maximum (${maxAgents})`);
@@ -135,7 +134,7 @@ export class CoordinationService extends BaseService implements IService {
       // Check for stuck workflows
       const stuckWorkflows = Array.from(this.activeWorkflows.values()).filter((workflow) => {
         const runTime = Date.now() - workflow.startTime;
-        const timeout = config.coordination?.timeout || 30000;
+        const timeout = config?.["coordination"]?.["timeout"] || 30000;
         return runTime > timeout * 3; // 3x timeout threshold
       });
 
@@ -163,7 +162,7 @@ export class CoordinationService extends BaseService implements IService {
         return (await this.createSwarm(params)) as T;
 
       case 'destroy-swarm':
-        return (await this.destroySwarm(params?.swarmId)) as T;
+        return (await this.destroySwarm(params?.["swarmId"])) as T;
 
       case 'get-swarms':
         return this.getSwarms() as T;
@@ -172,7 +171,7 @@ export class CoordinationService extends BaseService implements IService {
         return (await this.spawnAgent(params)) as T;
 
       case 'destroy-agent':
-        return (await this.destroyAgent(params?.agentId)) as T;
+        return (await this.destroyAgent(params?.["agentId"])) as T;
 
       case 'get-agents':
         return this.getAgents() as T;
@@ -181,13 +180,13 @@ export class CoordinationService extends BaseService implements IService {
         return (await this.startWorkflow(params)) as T;
 
       case 'stop-workflow':
-        return (await this.stopWorkflow(params?.workflowId)) as T;
+        return (await this.stopWorkflow(params?.["workflowId"])) as T;
 
       case 'get-workflows':
         return this.getWorkflows() as T;
 
       case 'coordinate':
-        return (await this.coordinate(params?.task, params?.agents)) as T;
+        return (await this.coordinate(params?.["task"], params?.["agents"])) as T;
 
       case 'get-coordination-state':
         return this.getCoordinationState() as T;
@@ -208,13 +207,13 @@ export class CoordinationService extends BaseService implements IService {
     const swarmId = `swarm-${Date.now()}`;
     const swarm = {
       id: swarmId,
-      name: config?.name || `Swarm ${swarmId}`,
-      topology: config?.topology || 'mesh',
-      maxAgents: config?.maxAgents || 5,
+      name: config?.["name"] || `Swarm ${swarmId}`,
+      topology: config?.["topology"] || 'mesh',
+      maxAgents: config?.["maxAgents"] || 5,
       agents: [],
       status: 'active',
       createdAt: new Date(),
-      metadata: config?.metadata || {},
+      metadata: config?.["metadata"] || {},
     };
 
     this.swarms.set(swarmId, swarm);
@@ -248,25 +247,25 @@ export class CoordinationService extends BaseService implements IService {
     const agentId = `agent-${Date.now()}`;
     const agent = {
       id: agentId,
-      type: config?.type || 'generic',
-      name: config?.name || `Agent ${agentId}`,
+      type: config?.["type"] || 'generic',
+      name: config?.["name"] || `Agent ${agentId}`,
       status: 'active',
-      capabilities: config?.capabilities || [],
-      swarmId: config?.swarmId,
+      capabilities: config?.["capabilities"] || [],
+      swarmId: config?.["swarmId"],
       createdAt: new Date(),
-      metadata: config?.metadata || {},
+      metadata: config?.["metadata"] || {},
     };
 
     this.agents.set(agentId, agent);
 
     // Add agent to swarm if specified
-    if (config?.swarmId) {
-      const swarm = this.swarms.get(config.swarmId);
+    if (config?.["swarmId"]) {
+      const swarm = this.swarms.get(config?.["swarmId"]);
       if (swarm) {
         swarm.agents.push(agentId);
-        this.logger.info(`Spawned agent ${agentId} in swarm ${config.swarmId}`);
+        this.logger.info(`Spawned agent ${agentId} in swarm ${config?.["swarmId"]}`);
       } else {
-        this.logger.warn(`Swarm ${config.swarmId} not found for agent ${agentId}`);
+        this.logger.warn(`Swarm ${config?.["swarmId"]} not found for agent ${agentId}`);
       }
     } else {
       this.logger.info(`Spawned independent agent: ${agentId}`);
@@ -311,13 +310,13 @@ export class CoordinationService extends BaseService implements IService {
     const workflowId = `workflow-${Date.now()}`;
     const workflow = {
       id: workflowId,
-      name: config?.name || `Workflow ${workflowId}`,
-      steps: config?.steps || [],
+      name: config?.["name"] || `Workflow ${workflowId}`,
+      steps: config?.["steps"] || [],
       status: 'running',
       startTime: Date.now(),
-      assignedAgents: config?.agents || [],
+      assignedAgents: config?.["agents"] || [],
       progress: 0,
-      metadata: config?.metadata || {},
+      metadata: config?.["metadata"] || {},
     };
 
     this.activeWorkflows.set(workflowId, workflow);
@@ -429,7 +428,7 @@ export class CoordinationService extends BaseService implements IService {
 
   private startRecoveryMonitoring(): void {
     const config = this.config as CoordinationServiceConfig;
-    const checkInterval = config.recovery?.checkInterval || 10000;
+    const checkInterval = config?.["recovery"]?.["checkInterval"] || 10000;
 
     setInterval(() => {
       this.checkRecovery();
@@ -450,7 +449,7 @@ export class CoordinationService extends BaseService implements IService {
   private checkRecovery(): void {
     // Check for agents or workflows that need recovery
     const config = this.config as CoordinationServiceConfig;
-    const timeout = config.coordination?.timeout || 30000;
+    const timeout = config?.["coordination"]?.["timeout"] || 30000;
     const now = Date.now();
 
     // Check for stuck workflows

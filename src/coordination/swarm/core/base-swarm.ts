@@ -10,9 +10,9 @@ const logger = getLogger("coordination-swarm-core-base-swarm");
 import { EventEmitter } from 'node:events';
 // import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.js';
-import { AgentPool, type BaseAgent } from '../../agents/agent';
+import { AgentPool } from '../../agents/agent';
 import { getContainer } from './singleton-container';
-import type { SwarmEventEmitter, SwarmLifecycleState, SwarmOptions } from './types';
+import type { SwarmEventEmitter } from './types';
 import { generateId, validateSwarmOptions } from './utils';
 
 // Extended options for internal use

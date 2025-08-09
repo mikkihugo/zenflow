@@ -5,7 +5,7 @@
  * for enhanced agent collaboration and structured dialogue
  */
 
-import type { ConversationMCPTools, ConversationMemory, ConversationOrchestrator } from './types';
+import type { ConversationMCPTools } from './types';
 
 /**
  * Configuration for conversation framework creation
@@ -135,28 +135,28 @@ export class ConversationFramework {
   static validateConfig(config: any): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
-    if (!config.title || typeof config.title !== 'string') {
+    if (!config?.title || typeof config?.title !== 'string') {
       errors.push('Title is required and must be a string');
     }
 
-    if (!config.pattern || typeof config.pattern !== 'string') {
+    if (!config?.["pattern"] || typeof config?.["pattern"] !== 'string') {
       errors.push('Pattern is required and must be a string');
     }
 
-    if (!config.goal || typeof config.goal !== 'string') {
+    if (!config?.["goal"] || typeof config?.["goal"] !== 'string') {
       errors.push('Goal is required and must be a string');
     }
 
-    if (!config.domain || typeof config.domain !== 'string') {
+    if (!config?.["domain"] || typeof config?.["domain"] !== 'string') {
       errors.push('Domain is required and must be a string');
     }
 
-    if (!Array.isArray(config.participants) || config.participants.length === 0) {
+    if (!Array.isArray(config?.["participants"]) || config?.["participants"].length === 0) {
       errors.push('At least one participant is required');
     }
 
-    if (config.participants) {
-      config.participants.forEach((participant: any, index: number) => {
+    if (config?.["participants"]) {
+      config?.["participants"]?.forEach((participant: any, index: number) => {
         if (!participant.id || !participant.type || !participant.swarmId) {
           errors.push(`Participant ${index} missing required fields (id, type, swarmId)`);
         }

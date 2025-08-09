@@ -1,13 +1,4 @@
 /**
- * @fileoverview USL (Unified Service Layer) Types and Configuration
- *
- * Centralized type definitions and configuration schemas for all service types
- * in the Claude-Zen ecosystem.
- */
-
-import type { ServiceConfig } from './core/interfaces';
-
-/**
  * Service type enumeration for all supported service categories
  */
 export enum ServiceType {
@@ -510,10 +501,10 @@ export class ServiceConfigFactory {
   ): DataServiceConfig {
     return {
       name,
-      type: ServiceType.DATA,
+      type: ServiceType["DATA"],
       enabled: true,
-      priority: ServicePriority.NORMAL,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority["NORMAL"],
+      environment: ServiceEnvironment["DEVELOPMENT"],
       timeout: 30000,
       health: {
         enabled: true,
@@ -546,10 +537,10 @@ export class ServiceConfigFactory {
   ): WebServiceConfig {
     return {
       name,
-      type: ServiceType.WEB,
+      type: ServiceType["WEB"],
       enabled: true,
-      priority: ServicePriority.HIGH,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority["HIGH"],
+      environment: ServiceEnvironment["DEVELOPMENT"],
       timeout: 30000,
       server: {
         host: 'localhost',
@@ -597,10 +588,10 @@ export class ServiceConfigFactory {
   ): CoordinationServiceConfig {
     return {
       name,
-      type: ServiceType.COORDINATION,
+      type: ServiceType["COORDINATION"],
       enabled: true,
-      priority: ServicePriority.HIGH,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority["HIGH"],
+      environment: ServiceEnvironment["DEVELOPMENT"],
       timeout: 60000,
       coordination: {
         topology: 'mesh',
@@ -650,10 +641,10 @@ export class ServiceConfigFactory {
   ): NeuralServiceConfig {
     return {
       name,
-      type: ServiceType.NEURAL,
+      type: ServiceType["NEURAL"],
       enabled: true,
-      priority: ServicePriority.NORMAL,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority["NORMAL"],
+      environment: ServiceEnvironment["DEVELOPMENT"],
       timeout: 120000,
       model: {
         type: 'neural-network',
@@ -704,10 +695,10 @@ export class ServiceConfigFactory {
   ): MemoryServiceConfig {
     return {
       name,
-      type: ServiceType.MEMORY,
+      type: ServiceType["MEMORY"],
       enabled: true,
-      priority: ServicePriority.HIGH,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority["HIGH"],
+      environment: ServiceEnvironment["DEVELOPMENT"],
       timeout: 30000,
       storage: {
         type: 'memory',
@@ -756,10 +747,10 @@ export class ServiceConfigFactory {
   ): DatabaseServiceConfig {
     return {
       name,
-      type: ServiceType.DATABASE,
+      type: ServiceType["DATABASE"],
       enabled: true,
-      priority: ServicePriority.CRITICAL,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority["CRITICAL"],
+      environment: ServiceEnvironment["DEVELOPMENT"],
       timeout: 60000,
       connection: {
         host: 'localhost',
@@ -812,10 +803,10 @@ export class ServiceConfigFactory {
   ): MonitoringServiceConfig {
     return {
       name,
-      type: ServiceType.MONITORING,
+      type: ServiceType["MONITORING"],
       enabled: true,
-      priority: ServicePriority.LOW,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority["LOW"],
+      environment: ServiceEnvironment["DEVELOPMENT"],
       timeout: 30000,
       metrics: {
         enabled: true,
@@ -866,10 +857,10 @@ export class ServiceConfigFactory {
   ): IntegrationServiceConfig {
     return {
       name,
-      type: ServiceType.API,
+      type: ServiceType["API"],
       enabled: true,
-      priority: ServicePriority.HIGH,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority["HIGH"],
+      environment: ServiceEnvironment["DEVELOPMENT"],
       timeout: 30000,
       integration: {
         architectureStorage: true,
@@ -926,10 +917,10 @@ export class ServiceConfigFactory {
   ): InfrastructureServiceConfig {
     return {
       name,
-      type: ServiceType.INFRASTRUCTURE,
+      type: ServiceType["INFRASTRUCTURE"],
       enabled: true,
-      priority: ServicePriority.HIGH,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority["HIGH"],
+      environment: ServiceEnvironment["DEVELOPMENT"],
       timeout: 30000,
       facade: {
         enabled: true,
@@ -1022,10 +1013,10 @@ export class ServiceConfigFactory {
   ): WorkflowServiceConfig {
     return {
       name,
-      type: ServiceType.WORKFLOW,
+      type: ServiceType["WORKFLOW"],
       enabled: true,
-      priority: ServicePriority.NORMAL,
-      environment: ServiceEnvironment.DEVELOPMENT,
+      priority: ServicePriority["NORMAL"],
+      environment: ServiceEnvironment["DEVELOPMENT"],
       timeout: 300000, // 5 minutes
       execution: {
         parallel: true,
@@ -1073,14 +1064,14 @@ export class ServiceConfigFactory {
  * @param config
  */
 export function isDataServiceConfig(config: AnyServiceConfig): config is DataServiceConfig {
-  return [ServiceType.DATA, ServiceType.WEB_DATA, ServiceType.DOCUMENT].includes(
-    config.type as ServiceType
+  return [ServiceType["DATA"], ServiceType["WEB_DATA"], ServiceType["DOCUMENT"]].includes(
+    config?.type as ServiceType
   );
 }
 
 export function isWebServiceConfig(config: AnyServiceConfig): config is WebServiceConfig {
-  return [ServiceType.WEB, ServiceType.API, ServiceType.SAFE_API, ServiceType.WEBSOCKET].includes(
-    config.type as ServiceType
+  return [ServiceType["WEB"], ServiceType["API"], ServiceType["SAFE_API"], ServiceType["WEBSOCKET"]].includes(
+    config?.type as ServiceType
   );
 }
 
@@ -1088,52 +1079,52 @@ export function isCoordinationServiceConfig(
   config: AnyServiceConfig
 ): config is CoordinationServiceConfig {
   return [
-    ServiceType.COORDINATION,
-    ServiceType.SWARM,
-    ServiceType.ORCHESTRATION,
-    ServiceType.DAA,
-    ServiceType.SESSION_RECOVERY,
-  ].includes(config.type as ServiceType);
+    ServiceType["COORDINATION"],
+    ServiceType["SWARM"],
+    ServiceType["ORCHESTRATION"],
+    ServiceType["DAA"],
+    ServiceType["SESSION_RECOVERY"],
+  ].includes(config?.type as ServiceType);
 }
 
 export function isNeuralServiceConfig(config: AnyServiceConfig): config is NeuralServiceConfig {
-  return [ServiceType.NEURAL, ServiceType.LEARNING, ServiceType.PATTERN_RECOGNITION].includes(
-    config.type as ServiceType
+  return [ServiceType["NEURAL"], ServiceType["LEARNING"], ServiceType["PATTERN_RECOGNITION"]].includes(
+    config?.type as ServiceType
   );
 }
 
 export function isMemoryServiceConfig(config: AnyServiceConfig): config is MemoryServiceConfig {
-  return [ServiceType.MEMORY, ServiceType.CACHE, ServiceType.SESSION].includes(
-    config.type as ServiceType
+  return [ServiceType["MEMORY"], ServiceType["CACHE"], ServiceType["SESSION"]].includes(
+    config?.type as ServiceType
   );
 }
 
 export function isDatabaseServiceConfig(config: AnyServiceConfig): config is DatabaseServiceConfig {
-  return [ServiceType.DATABASE, ServiceType.VECTOR, ServiceType.GRAPH].includes(
-    config.type as ServiceType
+  return [ServiceType["DATABASE"], ServiceType["VECTOR"], ServiceType["GRAPH"]].includes(
+    config?.type as ServiceType
   );
 }
 
 export function isIntegrationServiceConfig(
   config: AnyServiceConfig
 ): config is IntegrationServiceConfig {
-  return [ServiceType.API, ServiceType.SAFE_API, ServiceType.ARCHITECTURE_STORAGE].includes(
-    config.type as ServiceType
+  return [ServiceType["API"], ServiceType["SAFE_API"], ServiceType["ARCHITECTURE_STORAGE"]].includes(
+    config?.type as ServiceType
   );
 }
 
 export function isInfrastructureServiceConfig(
   config: AnyServiceConfig
 ): config is InfrastructureServiceConfig {
-  return [ServiceType.INFRASTRUCTURE, ServiceType.SYSTEM, ServiceType.MONITORING].includes(
-    config.type as ServiceType
+  return [ServiceType["INFRASTRUCTURE"], ServiceType["SYSTEM"], ServiceType["MONITORING"]].includes(
+    config?.type as ServiceType
   );
 }
 
 export function isMonitoringServiceConfig(
   config: AnyServiceConfig
 ): config is MonitoringServiceConfig {
-  return [ServiceType.HEALTH, ServiceType.MONITORING, ServiceType.LOGGING].includes(
-    config.type as ServiceType
+  return [ServiceType["HEALTH"], ServiceType["MONITORING"], ServiceType["LOGGING"]].includes(
+    config?.type as ServiceType
   );
 }

@@ -40,7 +40,7 @@ function OLD_PATTERN_example() {
     );
 
     expect(allocation.id).toBeDefined(); // ❌ Testing return value
-    expect(coordinationResult.success).toBe(true); // ❌ Testing return value
+    expect(coordinationResult?.success).toBe(true); // ❌ Testing return value
     
     const deallocated = mockMemoryPool.deallocate(allocation.id);
     expect(deallocated).toBe(true); // ❌ Testing return value

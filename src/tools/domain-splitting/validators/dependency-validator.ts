@@ -5,15 +5,6 @@
 import * as path from 'node:path';
 import * as fs from 'fs-extra';
 
-import type {
-  CircularDependency,
-  DependencyGraph,
-  OptimizedStructure,
-  SubDomainPlan,
-  ValidationIssue,
-  ValidationReport,
-} from '../types/domain-types';
-
 export interface DependencyMapper {
   mapInterDomainDependencies(domains: string[]): Promise<DependencyGraph>;
   identifyCircularDependencies(graph: DependencyGraph): Promise<CircularDependency[]>;
@@ -41,7 +32,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
           const imports = await this.extractImports(file);
           const exports = await this.extractExports(file);
 
-          nodes.push({
+          nodes?.push({
             id: file,
             file,
             imports: imports.map((imp) => imp.module),
@@ -73,8 +64,8 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
     const recursionStack = new Set<string>();
 
     for (const node of graph.nodes) {
-      if (!visited.has(node.id)) {
-        const cycle = this.detectCycleDFS(node.id, graph, visited, recursionStack, []);
+      if (!visited.has(node?.id)) {
+        const cycle = this.detectCycleDFS(node?.id, graph, visited, recursionStack, []);
         if (cycle.length > 0) {
           cycles.push({
             cycle,
@@ -206,10 +197,10 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
       const actualBuildTime = Date.now() - buildTime;
 
       return {
-        success: buildResult.success,
+        success: buildResult?.success,
         buildTime: actualBuildTime,
-        errors: buildResult.errors,
-        warnings: buildResult.warnings,
+        errors: buildResult?.errors,
+        warnings: buildResult?.warnings,
       };
     } catch (error) {
       return {
@@ -246,9 +237,9 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
 
     while ((match = importRegex.exec(content)) !== null) {
       imports.push({
-        module: match[2],
+        module: match?.[2],
         type: 'import' as const,
-        specifiers: match[1] ? match[1].split(',').map((s) => s.trim()) : [],
+        specifiers: match?.[1] ? match?.[1]?.split(',').map((s) => s.trim()) : [],
       });
     }
 
@@ -256,7 +247,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
     const requireRegex = /require\(['"`]([^'"`]+)['"`]\)/g;
     while ((match = requireRegex.exec(content)) !== null) {
       imports.push({
-        module: match[1],
+        module: match?.[1],
         type: 'require' as const,
         specifiers: [],
       });
@@ -279,9 +270,9 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
     let match;
 
     while ((match = exportRegex.exec(content)) !== null) {
-      const type = this.determineExportType(content, match[1]);
+      const type = this.determineExportType(content, match?.[1]);
       exports.push({
-        name: match[1],
+        name: match?.[1],
         type,
       });
     }
@@ -289,7 +280,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
     // Extract export statements
     const namedExportRegex = /export\s*{\s*([^}]+)\s*}/g;
     while ((match = namedExportRegex.exec(content)) !== null) {
-      const names = match[1].split(',').map((n) => n.trim().split(' as ')[0].trim());
+      const names = match?.[1]?.split(',').map((n) => n.trim().split(' as ')[0]?.trim());
       names.forEach((name) => {
         exports.push({
           name,
@@ -355,7 +346,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
   ): string[] {
     visited.add(nodeId);
     recursionStack.add(nodeId);
-    currentPath.push(nodeId);
+    currentPath?.push(nodeId);
 
     // Find all nodes this node depends on
     const dependencies = graph.edges.filter((edge) => edge.from === nodeId).map((edge) => edge.to);
@@ -366,8 +357,8 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
         if (cycle.length > 0) return cycle;
       } else if (recursionStack.has(dep)) {
         // Found a cycle
-        const cycleStart = currentPath.indexOf(dep);
-        return currentPath.slice(cycleStart).concat([dep]);
+        const cycleStart = currentPath?.indexOf(dep);
+        return currentPath?.slice(cycleStart).concat([dep]);
       }
     }
 
@@ -433,7 +424,7 @@ export class DependencyValidator implements DependencyMapper, SplitValidator {
           const imports = await this.extractImports(file);
           const exports = await this.extractExports(file);
 
-          nodes.push({
+          nodes?.push({
             id: file,
             file,
             imports: imports.map((imp) => imp.module),

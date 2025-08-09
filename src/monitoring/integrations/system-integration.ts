@@ -4,10 +4,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { PerformanceAnalyzer, type PerformanceInsights } from '../analytics/performance-analyzer';
-import { type CompositeMetrics, MetricsCollector } from '../core/metrics-collector';
+import { PerformanceAnalyzer } from '../analytics/performance-analyzer';
+import { MetricsCollector } from '../core/metrics-collector';
 import { DashboardServer } from '../dashboard/dashboard-server';
-import { OptimizationEngine, type OptimizationResult } from '../optimization/optimization-engine';
+import { OptimizationEngine } from '../optimization/optimization-engine';
 
 export interface IntegrationConfig {
   metricsInterval: number;
@@ -99,7 +99,7 @@ export class SystemIntegration extends EventEmitter {
 
     // Initialize components
     this.metricsCollector = new MetricsCollector({
-      collectionInterval: config.metricsInterval,
+      collectionInterval: config?.["metricsInterval"],
       maxHistorySize: 3600,
     });
 
@@ -108,8 +108,8 @@ export class SystemIntegration extends EventEmitter {
     this.optimizationEngine = new OptimizationEngine();
 
     this.dashboardServer = new DashboardServer({
-      port: config.dashboardPort,
-      updateInterval: config.metricsInterval,
+      port: config?.["dashboardPort"],
+      updateInterval: config?.["metricsInterval"],
       corsOrigins: ['http://localhost:3000', 'http://localhost:8080'],
     });
 
@@ -149,7 +149,7 @@ export class SystemIntegration extends EventEmitter {
     });
 
     this.optimizationEngine.on('action:failed', (result: OptimizationResult) => {
-      this.log('warn', `Optimization failed: ${result.actionId} - ${result.error}`);
+      this.log('warn', `Optimization failed: ${result?.actionId} - ${result?.error}`);
       this.dashboardServer.updateOptimizations([result]);
     });
 
@@ -413,11 +413,11 @@ export class SystemIntegration extends EventEmitter {
   private handleOptimizationCompleted(result: OptimizationResult): void {
     this.log(
       'info',
-      `Optimization completed: ${result.actionId} (${result.success ? 'success' : 'failed'})`
+      `Optimization completed: ${result?.actionId} (${result?.success ? 'success' : 'failed'})`
     );
 
-    if (result.success) {
-      const impact = result.impact.performance * 100;
+    if (result?.success) {
+      const impact = result?.impact?.performance * 100;
       this.log('info', `Performance improvement: ${impact.toFixed(1)}%`);
     }
 
@@ -702,7 +702,7 @@ export class SystemIntegration extends EventEmitter {
     const levels = { error: 0, warn: 1, info: 2, debug: 3 };
     const configLevels = { error: 0, warn: 1, info: 2, debug: 3 };
 
-    if (levels[level] <= configLevels[this.config.logLevel]) {
+    if (levels[level] <= configLevels?.[this.config.logLevel]) {
     }
   }
 }

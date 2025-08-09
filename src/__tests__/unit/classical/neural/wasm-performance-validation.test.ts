@@ -57,7 +57,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       const _jsResult = await benchmarkSuite.addBenchmark('js-matrix-multiply', async () => {
         const result = jsMatrixMultiply(matrixA, matrixB);
         expect(result).toHaveLength(500);
-        expect(result[0]).toHaveLength(400);
+        expect(result?.[0]).toHaveLength(400);
       });
 
       // Benchmark WASM implementation
@@ -69,18 +69,18 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       const _wasmResult = await benchmarkSuite.addBenchmark('wasm-matrix-multiply', async () => {
         const result = mockWasmModule.matrixMultiply(matrixA, matrixB);
         expect(result).toHaveLength(500);
-        expect(result[0]).toHaveLength(400);
+        expect(result?.[0]).toHaveLength(400);
       });
 
       const results = await benchmarkSuite.runAll();
       const comparison = benchmarkSuite.compare('js-matrix-multiply', 'wasm-matrix-multiply');
 
       // Verify performance targets
-      const jsMetrics = results.get('js-matrix-multiply')!;
-      const wasmMetrics = results.get('wasm-matrix-multiply')!;
+      const jsMetrics = results?.get('js-matrix-multiply')!;
+      const wasmMetrics = results?.get('wasm-matrix-multiply')!;
 
       expect(jsMetrics.executionTime).toBeGreaterThan(0);
-      expect(wasmMetrics.executionTime).toBeGreaterThan(0);
+      expect(wasmMetrics["executionTime"]).toBeGreaterThan(0);
 
       // In real implementation, this would show actual speedup
       // For testing purposes, we verify the structure is correct
@@ -126,15 +126,15 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       expect(jsResults).toHaveLength(batchSize);
       expect(wasmResults).toHaveLength(batchSize);
 
-      jsResults.forEach((result, i) => {
+      jsResults?.forEach((result, i) => {
         expect(result).toHaveLength(networkSize[networkSize.length - 1]);
-        expect(wasmResults[i]).toHaveLength(networkSize[networkSize.length - 1]);
+        expect(wasmResults?.[i]).toHaveLength(networkSize[networkSize.length - 1]);
       });
     });
 
     it('should validate memory-efficient training with large datasets', async () => {
       // Classical TDD: Test memory efficiency during training
-      const largeDataset = NeuralTestDataGenerator.generateLinearData(5000, 0.1);
+      const largeDataset = NeuralTestDataGenerator?.generateLinearData(5000, 0.1);
       const network = createLargeNetwork([100, 200, 100, 1]);
 
       const memoryTest = neuralSuite.performance.validateMemoryUsage(
@@ -176,8 +176,8 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
 
       // Results should be identical
       expect(simdResult).toHaveLength(standardResult.length);
-      simdResult.forEach((value, i) => {
-        expect(Math.abs(value - standardResult[i])).toBeLessThan(1e-10);
+      simdResult?.forEach((value, i) => {
+        expect(Math.abs(value - standardResult?.[i])).toBeLessThan(1e-10);
       });
     });
 
@@ -195,8 +195,8 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       const simdResult = mockWasmModule.simdVectorMultiply(vectorA, vectorB);
 
       expect(simdResult).toHaveLength(standardResult.length);
-      simdResult.forEach((value, i) => {
-        expect(Math.abs(value - standardResult[i])).toBeLessThan(1e-10);
+      simdResult?.forEach((value, i) => {
+        expect(Math.abs(value - standardResult?.[i])).toBeLessThan(1e-10);
       });
     });
 
@@ -236,8 +236,8 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       const simdResult = simdOperation();
 
       expect(standardResult).toHaveLength(simdResult.length);
-      standardResult.forEach((value, i) => {
-        expect(Math.abs(value - simdResult[i])).toBeLessThan(1e-10);
+      standardResult?.forEach((value, i) => {
+        expect(Math.abs(value - simdResult?.[i])).toBeLessThan(1e-10);
       });
     });
 
@@ -321,8 +321,8 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
 
         // Verify data integrity
         expect(finalResult).toHaveLength(size);
-        finalResult.forEach((value, i) => {
-          expect(Math.abs(value - data[i] * 2.0)).toBeLessThan(1e-10);
+        finalResult?.forEach((value, i) => {
+          expect(Math.abs(value - data?.[i] * 2.0)).toBeLessThan(1e-10);
         });
       }
 
@@ -354,7 +354,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       // Perform tensor operation in WASM
       mockWasmModule.neuralForwardPass.mockImplementation((data, _dims) => {
         // Simulate tensor convolution or similar operation
-        return data.map((x) => Math.tanh(x * 0.5));
+        return data?.map((x) => Math.tanh(x * 0.5));
       });
 
       const processedTensor = mockWasmModule.neuralForwardPass(wasmTensor, tensorDimensions);
@@ -366,15 +366,15 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
 
       // Verify tensor structure and data
       expect(resultTensor).toHaveLength(tensorDimensions[0]);
-      expect(resultTensor[0]).toHaveLength(tensorDimensions[1]);
-      expect(resultTensor[0][0]).toHaveLength(tensorDimensions[2]);
+      expect(resultTensor?.[0]).toHaveLength(tensorDimensions[1]);
+      expect(resultTensor?.[0]?.[0]).toHaveLength(tensorDimensions[2]);
 
       // Verify computational correctness
       for (let i = 0; i < tensorDimensions[0]; i++) {
         for (let j = 0; j < tensorDimensions[1]; j++) {
           for (let k = 0; k < tensorDimensions[2]; k++) {
-            const original = tensor[i][j][k];
-            const processed = resultTensor[i][j][k];
+            const original = tensor[i]?.[j]?.[k];
+            const processed = resultTensor?.[i]?.[j]?.[k];
             const expected = Math.tanh(original * 0.5);
             expect(Math.abs(processed - expected)).toBeLessThan(1e-10);
           }
@@ -448,21 +448,21 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
           size * 0.01 // Performance should scale roughly linearly
         );
 
-        performanceBaseline.set(size, performanceResult.avgTime);
+        performanceBaseline.set(size, performanceResult?.avgTime);
 
         // Performance should be reasonable
-        expect(performanceResult.avgTime).toBeLessThan(size * 0.01);
-        expect(performanceResult.withinExpected).toBe(true);
+        expect(performanceResult?.avgTime).toBeLessThan(size * 0.01);
+        expect(performanceResult?.withinExpected).toBe(true);
       }
-      dataSizes.forEach((size) => {
+      dataSizes?.forEach((size) => {
         const time = performanceBaseline.get(size)!;
         const _throughput = size / time; // elements per ms
       });
 
       // Verify throughput doesn't degrade significantly with size
-      const smallThroughput = dataSizes[0] / performanceBaseline.get(dataSizes[0])!;
+      const smallThroughput = dataSizes?.[0] / performanceBaseline.get(dataSizes?.[0])!;
       const largeThroughput =
-        dataSizes[dataSizes.length - 1] / performanceBaseline.get(dataSizes[dataSizes.length - 1])!;
+        dataSizes?.[dataSizes.length - 1] / performanceBaseline.get(dataSizes?.[dataSizes.length - 1])!;
 
       // Large dataset throughput should be at least 50% of small dataset throughput
       expect(largeThroughput).toBeGreaterThan(smallThroughput * 0.5);
@@ -504,20 +504,20 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       // All operations should complete successfully
       expect(results).toHaveLength(concurrentOperations);
 
-      results.forEach((result, i) => {
-        expect(result.id).toBe(i);
-        expect(result.result).toHaveLength(dataSize);
-        expect(result.duration).toBeGreaterThan(0);
-        expect(result.duration).toBeLessThan(1000); // 1 second max
+      results?.forEach((result, i) => {
+        expect(result?.id).toBe(i);
+        expect(result?.result).toHaveLength(dataSize);
+        expect(result?.duration).toBeGreaterThan(0);
+        expect(result?.duration).toBeLessThan(1000); // 1 second max
 
         // Verify computational correctness
-        result.result.forEach((value) => {
+        result?.result?.forEach((value) => {
           expect(value).toBeFinite();
           expect(value).not.toBeNaN();
         });
       });
 
-      const _avgDuration = results.reduce((sum, r) => sum + r.duration, 0) / results.length;
+      const _avgDuration = results?.reduce((sum, r) => sum + r.duration, 0) / results.length;
     });
 
     it('should validate WASM compilation and initialization performance', async () => {
@@ -567,7 +567,7 @@ function generateLargeMatrix(rows: number, cols: number): number[][] {
   for (let i = 0; i < rows; i++) {
     matrix[i] = [];
     for (let j = 0; j < cols; j++) {
-      matrix[i][j] = Math.random() * 2 - 1;
+      matrix[i]?.[j] = Math.random() * 2 - 1;
     }
   }
   return matrix;
@@ -576,11 +576,11 @@ function generateLargeMatrix(rows: number, cols: number): number[][] {
 function jsMatrixMultiply(a: number[][], b: number[][]): number[][] {
   const result: number[][] = [];
   for (let i = 0; i < a.length; i++) {
-    result[i] = [];
+    result?.[i] = [];
     for (let j = 0; j < b[0].length; j++) {
-      result[i][j] = 0;
+      result?.[i]?.[j] = 0;
       for (let k = 0; k < b.length; k++) {
-        result[i][j] += a[i][k] * b[k][j];
+        result?.[i]?.[j] += a[i]?.[k] * b[k]?.[j];
       }
     }
   }
@@ -649,11 +649,11 @@ function initializeNetworkWeights(topology: number[]): number[][][] {
 
 function trainNetworkWithWASM(network: any, data: any[], config: any): void {
   // Simulate WASM-accelerated training
-  for (let epoch = 0; epoch < config.epochs; epoch++) {
+  for (let epoch = 0; epoch < config?.["epochs"]; epoch++) {
     let epochError = 0;
 
-    for (let i = 0; i < data.length; i += config.batchSize) {
-      const batch = data.slice(i, i + config.batchSize);
+    for (let i = 0; i < data.length; i += config?.["batchSize"]) {
+      const batch = data?.slice(i, i + config?.["batchSize"]);
 
       batch.forEach((sample) => {
         // Simulate forward pass
@@ -667,7 +667,7 @@ function trainNetworkWithWASM(network: any, data: any[], config: any): void {
         network.weights.forEach((layer: number[][]) => {
           layer.forEach((neuron: number[]) => {
             neuron.forEach((_weight: number, idx: number) => {
-              neuron[idx] += config.learningRate * (Math.random() - 0.5) * 0.01;
+              neuron[idx] += config?.["learningRate"] * (Math.random() - 0.5) * 0.01;
             });
           });
         });
@@ -707,9 +707,9 @@ function generateRandomTensor(dimensions: number[]): number[][][] {
   for (let i = 0; i < dimensions[0]; i++) {
     tensor[i] = [];
     for (let j = 0; j < dimensions[1]; j++) {
-      tensor[i][j] = [];
+      tensor[i]?.[j] = [];
       for (let k = 0; k < dimensions[2]; k++) {
-        tensor[i][j][k] = Math.random() * 2 - 1;
+        tensor[i]?.[j]?.[k] = Math.random() * 2 - 1;
       }
     }
   }
@@ -738,9 +738,9 @@ function reshapeTensor(flatArray: number[], dimensions: number[]): number[][][] 
   for (let i = 0; i < dimensions[0]; i++) {
     tensor[i] = [];
     for (let j = 0; j < dimensions[1]; j++) {
-      tensor[i][j] = [];
+      tensor[i]?.[j] = [];
       for (let k = 0; k < dimensions[2]; k++) {
-        tensor[i][j][k] = flatArray[index++];
+        tensor[i]?.[j]?.[k] = flatArray[index++];
       }
     }
   }

@@ -1,15 +1,4 @@
 /**
- * Request Logging Middleware
- *
- * Comprehensive request/response logging following Google standards.
- * Provides structured logging with performance metrics and tracing.
- *
- * @file Express logging middleware with performance monitoring
- */
-
-import type { NextFunction, Request, Response } from 'express';
-
-/**
  * Log levels following Google Cloud Logging standards
  */
 export enum LogLevel {
@@ -146,10 +135,10 @@ const formatDuration = (milliseconds: number): string => {
  * @param statusCode
  */
 const getLogLevelFromStatus = (statusCode: number): LogLevel => {
-  if (statusCode >= 500) return LogLevel.ERROR;
-  if (statusCode >= 400) return LogLevel.WARNING;
-  if (statusCode >= 300) return LogLevel.INFO;
-  return LogLevel.INFO;
+  if (statusCode >= 500) return LogLevel["ERROR"];
+  if (statusCode >= 400) return LogLevel["WARNING"];
+  if (statusCode >= 300) return LogLevel["INFO"];
+  return LogLevel["INFO"];
 };
 
 /**
@@ -159,7 +148,7 @@ const getLogLevelFromStatus = (statusCode: number): LogLevel => {
  * @param path
  * @param _method
  */
-const shouldLog = (path: string, _method: string): boolean => {
+const shouldLog = (path: string, method: string): boolean => {
   // Skip logging for health checks in production
   if (process.env['NODE_ENV'] === 'production' && path === '/health') {
     return false;
@@ -226,7 +215,7 @@ const createLogEntry = (
   metadata?: Record<string, unknown>
 ): LogEntry => {
   const requestMetadata = req.metadata as RequestMetadata;
-  const duration = res ? Date.now() - requestMetadata.startTime : undefined;
+  const duration = res ? Date.now() - requestMetadata?.startTime : undefined;
 
   const logEntry: LogEntry = {
     timestamp: new Date().toISOString(),
@@ -238,15 +227,15 @@ const createLogEntry = (
       requestSize: getRequestSize(req),
       status: res?.statusCode,
       responseSize: res ? getResponseSize(res) : undefined,
-      userAgent: requestMetadata.userAgent,
-      remoteIp: requestMetadata.remoteIp,
-      referer: requestMetadata.referer,
+      userAgent: requestMetadata?.userAgent,
+      remoteIp: requestMetadata?.remoteIp,
+      referer: requestMetadata?.referer,
       latency: duration ? formatDuration(duration) : undefined,
       protocol: req.protocol,
     },
-    trace: requestMetadata.requestId,
+    trace: requestMetadata?.requestId,
     operation: {
-      id: requestMetadata.requestId,
+      id: requestMetadata?.requestId,
       producer: 'claude-zen-flow-api',
       first: !res, // First log entry for request
       last: !!res, // Last log entry for response
@@ -267,10 +256,10 @@ const outputLog = (logEntry: LogEntry): void => {
   if (process.env['NODE_ENV'] === 'development') {
     // Pretty print for development
     const { httpRequest, timestamp, level, message } = logEntry;
-    const _duration = httpRequest?.latency || '';
-    const _status = httpRequest?.status || '';
-    const _method = httpRequest?.requestMethod || '';
-    const _url = httpRequest?.requestUrl || '';
+    const duration = httpRequest?.latency || '';
+    const status = httpRequest?.status || '';
+    const method = httpRequest?.requestMethod || '';
+    const url = httpRequest?.requestUrl || '';
     if (httpRequest) {
     }
 
@@ -306,7 +295,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
 
   // Log request start (only if should be logged)
   if (shouldLog(req.path, req.method)) {
-    const logEntry = createLogEntry(LogLevel.INFO, 'Request started', req, undefined, {
+    const logEntry = createLogEntry(LogLevel["INFO"], 'Request started', req, undefined, {
       query: sanitizeData(req.query),
       body: req.method !== 'GET' ? sanitizeData(req.body) : undefined,
       headers: sanitizeData({
@@ -359,7 +348,7 @@ export const logError = (
   req: Request,
   additionalContext?: Record<string, unknown>
 ): void => {
-  const logEntry = createLogEntry(LogLevel.ERROR, `Error: ${error.message}`, req, undefined, {
+  const logEntry = createLogEntry(LogLevel["ERROR"], `Error: ${error.message}`, req, undefined, {
     error: {
       name: error.name,
       message: error.message,
@@ -386,7 +375,7 @@ export const logPerformance = (
   req: Request,
   metadata?: Record<string, unknown>
 ): void => {
-  const level = duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
+  const level = duration > 5000 ? LogLevel["WARNING"] : LogLevel["INFO"];
 
   const logEntry = createLogEntry(
     level,

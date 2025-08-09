@@ -7,18 +7,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../../utils/logger';
-import type {
-  IService,
-  IServiceFactory,
-  IServiceRegistry,
-  ServiceConfig,
-  ServiceEvent,
-  ServiceEventType,
-  ServiceLifecycleStatus,
-  ServiceMetrics,
-  ServiceStatus,
-} from './core/interfaces';
+import { createLogger } from '../../utils/logger';
+import type { IServiceRegistry } from './core/interfaces';
 import { ServiceOperationError } from './core/interfaces';
 
 export interface ServiceRegistryConfig {
@@ -111,7 +101,7 @@ export interface ServiceDependencyGraph {
  *
  * @example
  */
-export class EnhancedServiceRegistry extends EventEmitter implements IServiceRegistry {
+export class ServiceRegistry extends EventEmitter implements IServiceRegistry {
   private factories = new Map<string, IServiceFactory>();
   private services = new Map<string, IService>();
   private serviceDiscovery = new Map<string, ServiceDiscoveryInfo>();
@@ -143,44 +133,44 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
     this.config = {
       healthMonitoring: {
-        enabled: config?.healthMonitoring?.enabled ?? true,
-        interval: config?.healthMonitoring?.interval ?? 30000,
-        timeout: config?.healthMonitoring?.timeout ?? 5000,
+        enabled: config?.["healthMonitoring"]?.enabled ?? true,
+        interval: config?.["healthMonitoring"]?.interval ?? 30000,
+        timeout: config?.["healthMonitoring"]?.timeout ?? 5000,
         alertThresholds: {
-          errorRate: config?.healthMonitoring?.alertThresholds?.errorRate ?? 5,
-          responseTime: config?.healthMonitoring?.alertThresholds?.responseTime ?? 1000,
-          resourceUsage: config?.healthMonitoring?.alertThresholds?.resourceUsage ?? 80,
+          errorRate: config?.["healthMonitoring"]?.alertThresholds?.errorRate ?? 5,
+          responseTime: config?.["healthMonitoring"]?.alertThresholds?.responseTime ?? 1000,
+          resourceUsage: config?.["healthMonitoring"]?.alertThresholds?.resourceUsage ?? 80,
         },
       },
       metricsCollection: {
-        enabled: config?.metricsCollection?.enabled ?? true,
-        interval: config?.metricsCollection?.interval ?? 10000,
-        retention: config?.metricsCollection?.retention ?? 86400000, // 24 hours
-        aggregationWindow: config?.metricsCollection?.aggregationWindow ?? 300000, // 5 minutes
+        enabled: config?.["metricsCollection"]?.enabled ?? true,
+        interval: config?.["metricsCollection"]?.interval ?? 10000,
+        retention: config?.["metricsCollection"]?.retention ?? 86400000, // 24 hours
+        aggregationWindow: config?.["metricsCollection"]?.aggregationWindow ?? 300000, // 5 minutes
       },
       discovery: {
-        enabled: config?.discovery?.enabled ?? true,
-        heartbeatInterval: config?.discovery?.heartbeatInterval ?? 10000,
-        advertisementInterval: config?.discovery?.advertisementInterval ?? 30000,
-        timeoutThreshold: config?.discovery?.timeoutThreshold ?? 60000,
+        enabled: config?.["discovery"]?.enabled ?? true,
+        heartbeatInterval: config?.["discovery"]?.heartbeatInterval ?? 10000,
+        advertisementInterval: config?.["discovery"]?.advertisementInterval ?? 30000,
+        timeoutThreshold: config?.["discovery"]?.timeoutThreshold ?? 60000,
       },
       autoRecovery: {
-        enabled: config?.autoRecovery?.enabled ?? true,
-        maxRetries: config?.autoRecovery?.maxRetries ?? 3,
-        backoffMultiplier: config?.autoRecovery?.backoffMultiplier ?? 2,
-        recoveryTimeout: config?.autoRecovery?.recoveryTimeout ?? 30000,
+        enabled: config?.["autoRecovery"]?.enabled ?? true,
+        maxRetries: config?.["autoRecovery"]?.maxRetries ?? 3,
+        backoffMultiplier: config?.["autoRecovery"]?.backoffMultiplier ?? 2,
+        recoveryTimeout: config?.["autoRecovery"]?.recoveryTimeout ?? 30000,
       },
       dependencyManagement: {
-        enabled: config?.dependencyManagement?.enabled ?? true,
-        resolutionTimeout: config?.dependencyManagement?.resolutionTimeout ?? 30000,
-        circularDependencyCheck: config?.dependencyManagement?.circularDependencyCheck ?? true,
-        dependencyHealthCheck: config?.dependencyManagement?.dependencyHealthCheck ?? true,
+        enabled: config?.["dependencyManagement"]?.enabled ?? true,
+        resolutionTimeout: config?.["dependencyManagement"]?.resolutionTimeout ?? 30000,
+        circularDependencyCheck: config?.["dependencyManagement"]?.circularDependencyCheck ?? true,
+        dependencyHealthCheck: config?.["dependencyManagement"]?.dependencyHealthCheck ?? true,
       },
       performance: {
-        enableCaching: config?.performance?.enableCaching ?? true,
-        enableConnectionPooling: config?.performance?.enableConnectionPooling ?? true,
-        enableServiceMemoization: config?.performance?.enableServiceMemoization ?? true,
-        maxConcurrentOperations: config?.performance?.maxConcurrentOperations ?? 50,
+        enableCaching: config?.["performance"]?.enableCaching ?? true,
+        enableConnectionPooling: config?.["performance"]?.enableConnectionPooling ?? true,
+        enableServiceMemoization: config?.["performance"]?.enableServiceMemoization ?? true,
+        maxConcurrentOperations: config?.["performance"]?.maxConcurrentOperations ?? 50,
       },
     };
 
@@ -287,7 +277,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     for (const service of allServices.values()) {
       const serviceStatus = this.healthStatuses.get(service.name);
       if (serviceStatus && serviceStatus.lifecycle === status) {
-        matchingServices.push(service);
+        matchingServices?.push(service);
       }
     }
 
@@ -330,7 +320,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     const healthCheckPromises = Array.from(allServices.entries()).map(async ([name, service]) => {
       try {
         const status = await this.performServiceHealthCheck(service);
-        results.set(name, status);
+        results?.set(name, status);
         this.healthStatuses.set(name, status);
       } catch (error) {
         this.logger.error(`Health check failed for service ${name}:`, error);
@@ -347,7 +337,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
           metadata: { error: error instanceof Error ? error.message : String(error) },
         };
 
-        results.set(name, errorStatus);
+        results?.set(name, errorStatus);
         this.healthStatuses.set(name, errorStatus);
       }
     });
@@ -688,11 +678,11 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
         break;
 
       case 'health-check':
-        this.updateServiceHealth(service.name, event.data);
+        this.updateServiceHealth(service.name, event["data"]);
         break;
 
       case 'metrics-update':
-        this.updateServiceMetrics(service.name, event.data);
+        this.updateServiceMetrics(service.name, event["data"]);
         break;
     }
 
@@ -744,7 +734,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     const healthResults = await this.healthCheckAll();
 
     // Check for alerts
-    const unhealthyServices = Array.from(healthResults.entries())
+    const unhealthyServices = Array.from(healthResults?.entries())
       .filter(([_, status]) => status.health !== 'healthy')
       .map(([name, _]) => name);
 
@@ -761,7 +751,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     const totalServices = healthResults.size;
     if (totalServices === 0) return;
 
-    const unhealthyCount = Array.from(healthResults.values()).filter(
+    const unhealthyCount = Array.from(healthResults?.values()).filter(
       (status) => status.health !== 'healthy'
     ).length;
 
@@ -806,7 +796,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     const staleServices: string[] = [];
 
     this.serviceDiscovery.forEach((info, serviceName) => {
-      const timeSinceHeartbeat = currentTime.getTime() - info.lastHeartbeat.getTime();
+      const timeSinceHeartbeat = currentTime?.getTime() - info.lastHeartbeat.getTime();
 
       if (timeSinceHeartbeat > timeoutThreshold) {
         staleServices.push(serviceName);
@@ -832,7 +822,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
   private updateServiceHealth(serviceName: string, healthData: any): void {
     const discoveryInfo = this.serviceDiscovery.get(serviceName);
     if (discoveryInfo && healthData) {
-      discoveryInfo.health = healthData.health || discoveryInfo.health;
+      discoveryInfo.health = healthData?.health || discoveryInfo.health;
       discoveryInfo.lastHeartbeat = new Date();
     }
   }
@@ -850,10 +840,10 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     const metrics = this.operationMetrics.get(serviceName)!;
     if (metricsData) {
       metrics.totalOperations += 1;
-      if (metricsData.success) {
+      if (metricsData?.success) {
         metrics.successfulOperations += 1;
       }
-      metrics.averageLatency = (metrics.averageLatency + (metricsData.latency || 0)) / 2;
+      metrics.averageLatency = (metrics.averageLatency + (metricsData?.latency || 0)) / 2;
       metrics.lastOperation = new Date();
     }
   }
@@ -868,7 +858,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
     // Build dependency nodes
     for (const [name, service] of allServices) {
-      nodes.set(name, {
+      nodes?.set(name, {
         service,
         dependencies: new Set(service.config.dependencies?.map((dep) => dep.serviceName) || []),
         dependents: new Set<string>(),
@@ -878,10 +868,10 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
     // Calculate dependents and levels
     for (const [nodeName, node] of nodes) {
-      for (const depName of node.dependencies) {
-        const depNode = nodes.get(depName);
+      for (const depName of node?.dependencies) {
+        const depNode = nodes?.get(depName);
         if (depNode) {
-          depNode.dependents.add(nodeName);
+          depNode?.dependents?.add(nodeName);
         }
       }
     }
@@ -907,11 +897,11 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     const visit = (nodeName: string) => {
       if (visited.has(nodeName)) return;
 
-      const node = nodes.get(nodeName);
+      const node = nodes?.get(nodeName);
       if (!node) return;
 
       // Visit dependencies first
-      for (const depName of node.dependencies) {
+      for (const depName of node?.dependencies) {
         visit(depName);
       }
 
@@ -920,7 +910,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
     };
 
     // Visit all nodes
-    for (const nodeName of nodes.keys()) {
+    for (const nodeName of nodes?.keys()) {
       visit(nodeName);
     }
 

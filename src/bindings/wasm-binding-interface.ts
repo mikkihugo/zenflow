@@ -3,7 +3,7 @@ const logger = getLogger("src-bindings-wasm-binding-interface");
 
 /**
  * WASM binding interface contract
- * Defines what bindings can expect from WASM modules
+ * Defines what bindings can expect from WASM modules.
  *
  * @example
  */
@@ -16,7 +16,7 @@ export interface WasmBindingInterface extends WasmNeuralBinding {
 
 /**
  * WASM binding provider
- * Implements the interface by delegating to actual WASM modules
+ * Implements the interface by delegating to actual WASM modules.
  *
  * @example
  */
@@ -58,7 +58,7 @@ class WasmBindingProvider implements WasmBindingInterface {
         // Training implementation
         return {
           finalError: 0.01,
-          epochsCompleted: options?.epochs || 100,
+          epochsCompleted: options?.["epochs"] || 100,
           duration: 1000,
           converged: true,
         };
@@ -91,7 +91,7 @@ class WasmBindingProvider implements WasmBindingInterface {
 }
 
 /**
- * Singleton instance for consistent binding access
+ * Singleton instance for consistent binding access.
  */
 const wasmBindingProvider = new WasmBindingProvider();
 

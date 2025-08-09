@@ -66,6 +66,6 @@ export function createWebConfig(config: WebConfig = {}): Required<
   return {
     ...DEFAULT_WEB_CONFIG,
     ...config,
-    auth: { ...DEFAULT_WEB_CONFIG.auth, ...config.auth },
+    auth: { ...DEFAULT_WEB_CONFIG?.auth, ...config?.["auth"] },
   };
 }

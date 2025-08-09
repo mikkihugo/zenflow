@@ -1,23 +1,9 @@
-/**
- * Test Data Factory - Reproducible Test Data Generation
- *
- * Creates realistic test data for both London and Classical TDD approaches
- */
-
-import type {
-  AgentTestData,
-  ProjectTestData,
-  SwarmTestData,
-  TestDataOptions,
-  UserTestData,
-} from './types';
-
 export class TestDataFactory {
   private seed: number;
   private options: TestDataOptions;
 
   constructor(options: TestDataOptions = {}) {
-    this.seed = options.seed ?? Date.now();
+    this.seed = options?.["seed"] ?? Date.now();
     this.options = options;
     this.initializeRandom();
   }
@@ -346,10 +332,10 @@ export class TestDataFactory {
     const result = [];
 
     for (let i = 0; i < length; i++) {
-      result.push(this.randomChoice(words));
+      result?.push(this.randomChoice(words));
     }
 
-    return result.join(' ');
+    return result?.join(' ');
   }
 
   private generateCode(language: 'typescript' | 'javascript' | 'python' | 'rust'): string {

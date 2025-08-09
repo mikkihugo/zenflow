@@ -7,8 +7,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from '@core/logger';
-import type { UniversalFact } from './hive-types';
+import { createLogger } from '../core/logger';
+import type { UniversalFact, HiveFACTConfig } from './hive-types';
+import type { HiveSwarmCoordinator } from './hive-swarm-sync';
+import type { FACTSearchQuery, FACTStorageStats } from '../knowledge/types/fact-types';
 
 // import { FACTExternalOrchestrator } from './mcp/tools/fact-external-integration'; // TODO: Migrate to unified MCP
 

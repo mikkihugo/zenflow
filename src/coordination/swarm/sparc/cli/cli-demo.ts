@@ -14,7 +14,7 @@ async function runCLIDemo() {
 
   try {
     // Simulate the generate command with validation
-    const _mockOptions = {
+    const mockOptions = {
       input: null,
       output: null,
       project: null,
@@ -31,7 +31,7 @@ async function runCLIDemo() {
           ['generate', '--domain', 'swarm-coordination', '--validate'],
           { from: 'user' }
         );
-      } catch (_error) {}
+      } catch (error) {}
     }
 
     const statsCommand = architectureCmd.commands.find((cmd) => cmd.name() === 'stats');
@@ -39,7 +39,7 @@ async function runCLIDemo() {
       // Use the public API instead of accessing private _actionHandler
       try {
         await statsCommand.parseAsync(['stats'], { from: 'user' });
-      } catch (_error) {}
+      } catch (error) {}
     }
   } catch (error) {
     logger.error('❌ CLI Demo failed:', error);

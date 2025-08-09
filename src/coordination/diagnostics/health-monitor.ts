@@ -97,12 +97,12 @@ export class HealthMonitor extends EventEmitter {
     super();
 
     this.options = {
-      checkInterval: options.checkInterval || 30000, // 30 seconds
-      alertThreshold: options.alertThreshold || 70, // Alert when health < 70%
-      criticalThreshold: options.criticalThreshold || 50, // Critical when health < 50%
-      enableSystemChecks: options.enableSystemChecks !== false,
-      enableCustomChecks: options.enableCustomChecks !== false,
-      maxHistorySize: options.maxHistorySize || 1000,
+      checkInterval: options?.checkInterval || 30000, // 30 seconds
+      alertThreshold: options?.alertThreshold || 70, // Alert when health < 70%
+      criticalThreshold: options?.criticalThreshold || 50, // Critical when health < 50%
+      enableSystemChecks: options?.enableSystemChecks !== false,
+      enableCustomChecks: options?.enableCustomChecks !== false,
+      maxHistorySize: options?.maxHistorySize || 1000,
       ...options,
     };
 
@@ -177,11 +177,11 @@ export class HealthMonitor extends EventEmitter {
     const healthCheck = {
       name,
       checkFunction,
-      weight: options.weight || 1,
-      timeout: options.timeout || 5000,
-      enabled: options.enabled !== false,
-      critical: options.critical || false,
-      description: options.description || `Custom health check: ${name}`,
+      weight: options?.weight || 1,
+      timeout: options?.timeout || 5000,
+      enabled: options?.enabled !== false,
+      critical: options?.critical || false,
+      description: options?.description || `Custom health check: ${name}`,
       lastRun: null,
       lastResult: null,
       runCount: 0,
@@ -239,7 +239,7 @@ export class HealthMonitor extends EventEmitter {
     let totalWeight = 0;
     let criticalFailures = 0;
 
-    checkResults.forEach((result, index) => {
+    checkResults?.forEach((result, index) => {
       const checkName = Array.from(this.healthChecks.keys())[index];
       if (!checkName) return; // Guard against undefined
       const check = this.healthChecks.get(checkName);
@@ -250,16 +250,16 @@ export class HealthMonitor extends EventEmitter {
         return;
       }
 
-      if (result.status === 'fulfilled') {
-        const { score, status, details, metrics } = result.value;
+      if (result?.status === 'fulfilled') {
+        const { score, status, details, metrics } = result?.value;
 
-        results[checkName] = {
+        results?.[checkName] = {
           score,
           status,
           details,
           metrics,
           timestamp: new Date().toISOString(),
-          duration: result.value.duration,
+          duration: result?.value?.duration,
         };
 
         totalScore += score * check.weight;
@@ -269,11 +269,11 @@ export class HealthMonitor extends EventEmitter {
           criticalFailures++;
         }
 
-        check.lastResult = result.value;
+        check.lastResult = result?.value;
         check.lastRun = new Date().toISOString();
         check.runCount++;
       } else {
-        results[checkName] = {
+        results?.[checkName] = {
           score: 0,
           status: 'error',
           details: (result as PromiseRejectedResult).reason?.message ?? 'Unknown error',
@@ -355,10 +355,10 @@ export class HealthMonitor extends EventEmitter {
 
       // Normalize result format
       const normalizedResult = {
-        score: typeof result === 'number' ? result : result.score || 100,
-        status: result.status || 'healthy',
-        details: result.details || result.message || 'Health check passed',
-        metrics: result.metrics || {},
+        score: typeof result === 'number' ? result : result?.score || 100,
+        status: result?.status || 'healthy',
+        details: result?.details || result?.message || 'Health check passed',
+        metrics: result?.metrics || {},
         duration,
       };
 

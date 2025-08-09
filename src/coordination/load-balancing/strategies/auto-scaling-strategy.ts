@@ -5,7 +5,6 @@
 
 import { EventEmitter } from 'node:events';
 import type { AutoScaler } from '../interfaces';
-import type { Agent, AutoScalingConfig, LoadMetrics } from '../types';
 
 interface ScalingDecision {
   action: 'scale_up' | 'scale_down' | 'no_action';
@@ -175,7 +174,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
 
     // Calculate average response time
     const responseTimes = metricsArray.map((m) => m.responseTime);
-    const avgResponseTime = responseTimes.reduce((sum, rt) => sum + rt, 0) / responseTimes.length;
+    const avgResponseTime = responseTimes?.reduce((sum, rt) => sum + rt, 0) / responseTimes.length;
 
     // Calculate average error rate
     const errorRates = metricsArray.map((m) => m.errorRate);

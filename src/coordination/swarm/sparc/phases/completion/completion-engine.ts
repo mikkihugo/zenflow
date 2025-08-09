@@ -6,31 +6,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import type {
-  CodeArtifacts,
-  CompletionEngine,
-  CompletionValidation,
-  DeploymentArtifact,
-  DeploymentConfig,
-  DeploymentPlan,
-  DeploymentResult,
-  DeploymentScript,
-  DocumentationArtifact,
-  DocumentationGeneration,
-  DocumentationSet,
-  ImplementationArtifacts,
-  ProductionReadinessCheck,
-  ProductionReadinessReport,
-  RefinementResult,
-  RefinementStrategy,
-  SourceCodeArtifact,
-  SPARCProject,
-  // Method signature types
-  SystemArchitecture,
-  TestCase,
-  TestSuite,
-  ValidationResult,
-} from '../../types/sparc-types';
+import type { CompletionEngine } from '../../types/sparc-types';
 
 export class CompletionPhaseEngine implements CompletionEngine {
   /**
@@ -1121,7 +1097,7 @@ export class SecurityFramework {
     const validationResults: ValidationResult[] = [];
 
     // Validate code generation
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Code generation completeness',
       passed: implementation.codeGeneration.artifacts.length > 0,
       score: implementation.codeGeneration.artifacts.length > 0 ? 1.0 : 0.0,
@@ -1132,7 +1108,7 @@ export class SecurityFramework {
     });
 
     // Validate test generation
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Test coverage',
       passed: implementation.testGeneration.coverage.lines >= 90,
       score: implementation.testGeneration.coverage.lines >= 90 ? 1.0 : 0.8,
@@ -1143,7 +1119,7 @@ export class SecurityFramework {
     });
 
     // Validate documentation
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Documentation completeness',
       passed: implementation.documentationGeneration.artifacts.length >= 5,
       score: implementation.documentationGeneration.artifacts.length >= 5 ? 1.0 : 0.6,
@@ -1157,7 +1133,7 @@ export class SecurityFramework {
     const readinessScore =
       implementation.productionReadinessChecks.reduce((sum, check) => sum + check.score, 0) /
       implementation.productionReadinessChecks.length;
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Production readiness',
       passed: readinessScore >= 85,
       score: readinessScore >= 85 ? 1.0 : 0.7,
@@ -1168,15 +1144,14 @@ export class SecurityFramework {
     });
 
     const overallScore =
-      validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
+      validationResults?.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
 
     return {
       readyForProduction: readinessScore >= 85,
       score: overallScore,
       validations: validationResults,
-      blockers: validationResults.filter((v) => !v.passed && v.score < 0.5).map((v) => v.criterion),
-      warnings: validationResults
-        .filter((v) => !v.passed && v.score >= 0.5)
+      blockers: validationResults?.filter((v) => !v.passed && v.score < 0.5).map((v) => v.criterion),
+      warnings: validationResults?.filter((v) => !v.passed && v.score >= 0.5)
         .map((v) => v.criterion),
       overallScore,
       validationResults,
@@ -1195,8 +1170,8 @@ export class SecurityFramework {
     const recommendations: string[] = [];
 
     for (const result of validationResults) {
-      if (!result.passed) {
-        switch (result.criterion) {
+      if (!result?.passed) {
+        switch (result?.criterion) {
           case 'Code generation completeness':
             recommendations.push('Complete code generation for all system components');
             break;

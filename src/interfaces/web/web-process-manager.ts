@@ -9,7 +9,6 @@ import { existsSync } from 'node:fs';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { createLogger } from '../../utils/logger';
-import type { WebConfig } from './web-config';
 
 export interface ProcessInfo {
   pid: number;

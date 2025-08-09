@@ -1,11 +1,3 @@
-/**
- * ADR Proposal System - Human-Driven Architecture Decision Process
- *
- * System for proposing ADRs to humans for discussion and decision.
- * ADRs are never imported - they must go through proper human review process.
- */
-
-import type { ADRDocumentEntity } from '../entities/document-entities';
 import { adrManager } from './adr-manager';
 import { documentManager } from './document-manager';
 
@@ -60,21 +52,21 @@ export class ADRProposalSystem {
     const adr = await adrManager.createADR({
       title: proposal.title,
       context: this.formatContext(proposal),
-      decision: `PROPOSED: ${proposal.proposed_decision}`,
+      decision: `PROPOSED: ${proposal["proposed_decision"]}`,
       consequences: this.formatConsequences(proposal),
       // TODO: TypeScript error TS2412 - Type mismatch between 'why_not_chosen' and 'rejected_reason' (AI unsure of safe fix - human review needed)
       alternatives: proposal.alternatives,
       author: proposal.proposer,
       priority: this.mapUrgencyToPriority(proposal.urgency),
       stakeholders: proposal.stakeholders,
-      success_criteria: proposal.success_criteria,
+      success_criteria: proposal["success_criteria"],
       metadata: {
         proposal_date: new Date().toISOString(),
         urgency: proposal.urgency,
-        impact_areas: proposal.impact_areas,
-        discussion_points: proposal.discussion_points,
+        impact_areas: proposal["impact_areas"],
+        discussion_points: proposal["discussion_points"],
         risks: proposal.risks || [],
-        implementation_effort: proposal.implementation_effort,
+        implementation_effort: proposal["implementation_effort"],
         requires_human_discussion: true,
         discussion_status: 'awaiting_discussion',
         consensus_level: 'none',
@@ -115,16 +107,16 @@ export class ADRProposalSystem {
           {
             date: new Date().toISOString(),
             participants: discussion.participants,
-            notes: discussion.discussion_notes,
-            concerns: discussion.concerns_raised,
-            alternatives: discussion.alternatives_suggested,
-            consensus: discussion.consensus_level,
-            status: discussion.decision_status,
-            next_steps: discussion.next_steps,
+            notes: discussion["discussion_notes"],
+            concerns: discussion["concerns_raised"],
+            alternatives: discussion["alternatives_suggested"],
+            consensus: discussion["consensus_level"],
+            status: discussion["decision_status"],
+            next_steps: discussion["next_steps"],
           },
         ],
-        current_consensus: discussion.consensus_level,
-        discussion_status: discussion.decision_status,
+        current_consensus: discussion["consensus_level"],
+        discussion_status: discussion["decision_status"],
         last_discussion_date: new Date().toISOString(),
       },
     });
@@ -169,7 +161,7 @@ export class ADRProposalSystem {
     const updated = await adrManager.updateADRStatus(
       adrNumber,
       newStatus,
-      `Decision made by ${decision.decision_maker}: ${decision.approved ? 'APPROVED' : 'REJECTED'}`
+      `Decision made by ${decision["decision_maker"]}: ${decision.approved ? 'APPROVED' : 'REJECTED'}`
     );
 
     // Update content with final decision
@@ -179,13 +171,13 @@ export class ADRProposalSystem {
         ...updated.metadata,
         final_decision: {
           approved: decision.approved,
-          decision: decision.final_decision,
+          decision: decision["final_decision"],
           rationale: decision.rationale,
-          decision_maker: decision.decision_maker,
+          decision_maker: decision["decision_maker"],
           decision_date: new Date().toISOString(),
-          stakeholder_signoffs: decision.stakeholder_signoffs,
+          stakeholder_signoffs: decision["stakeholder_signoffs"],
           conditions: decision.conditions || [],
-          implementation_plan: decision.implementation_plan,
+          implementation_plan: decision["implementation_plan"],
         },
         decision_status: decision.approved ? 'approved_for_implementation' : 'rejected',
       },
@@ -352,8 +344,8 @@ export class ADRProposalSystem {
   private formatContext(proposal: ADRProposal): string {
     let context = `${proposal.context}\n\n`;
 
-    if (proposal.impact_areas.length > 0) {
-      context += `**Impact Areas:** ${proposal.impact_areas.join(', ')}\n\n`;
+    if (proposal["impact_areas"].length > 0) {
+      context += `**Impact Areas:** ${proposal["impact_areas"]?.join(', ')}\n\n`;
     }
 
     if (proposal.risks && proposal.risks.length > 0) {
@@ -364,9 +356,9 @@ export class ADRProposalSystem {
       context += '\n';
     }
 
-    if (proposal.discussion_points.length > 0) {
+    if (proposal["discussion_points"].length > 0) {
       context += `**Key Discussion Points:**\n`;
-      for (const point of proposal.discussion_points) {
+      for (const point of proposal["discussion_points"]) {
         context += `- ${point}\n`;
       }
       context += '\n';
@@ -381,10 +373,10 @@ export class ADRProposalSystem {
    * @param proposal
    */
   private formatConsequences(proposal: ADRProposal): string {
-    let consequences = `${proposal.expected_consequences}\n\n`;
+    let consequences = `${proposal["expected_consequences"]}\n\n`;
 
-    if (proposal.implementation_effort) {
-      consequences += `**Implementation Effort:** ${proposal.implementation_effort}\n\n`;
+    if (proposal["implementation_effort"]) {
+      consequences += `**Implementation Effort:** ${proposal["implementation_effort"]}\n\n`;
     }
 
     return consequences;
@@ -421,7 +413,7 @@ export class ADRProposalSystem {
     proposal: ADRProposal
   ): Promise<void> {
     const _adrId = adr.metadata?.['adr_id'] || `ADR-${adr.metadata?.['adr_number']}`;
-    proposal.discussion_points.forEach((_point) => {});
+    proposal["discussion_points"]?.forEach((_point) => {});
   }
 
   /**
@@ -441,9 +433,9 @@ export class ADRProposalSystem {
     updatedContent += `\n\n## Final Decision\n`;
     updatedContent += `**Decision**: ${decision.approved ? 'APPROVED' : 'REJECTED'}\n`;
     updatedContent += `**Rationale**: ${decision.rationale}\n`;
-    updatedContent += `**Decision Maker**: ${decision.decision_maker}\n`;
+    updatedContent += `**Decision Maker**: ${decision["decision_maker"]}\n`;
     updatedContent += `**Decision Date**: ${new Date().toISOString().split('T')[0]}\n`;
-    updatedContent += `**Stakeholder Signoffs**: ${decision.stakeholder_signoffs.join(', ')}\n`;
+    updatedContent += `**Stakeholder Signoffs**: ${decision["stakeholder_signoffs"]?.join(', ')}\n`;
 
     if (decision.conditions && decision.conditions.length > 0) {
       updatedContent += `**Conditions**: \n`;
@@ -452,8 +444,8 @@ export class ADRProposalSystem {
       }
     }
 
-    if (decision.implementation_plan) {
-      updatedContent += `\n**Implementation Plan**: ${decision.implementation_plan}\n`;
+    if (decision["implementation_plan"]) {
+      updatedContent += `\n**Implementation Plan**: ${decision["implementation_plan"]}\n`;
     }
 
     return updatedContent;

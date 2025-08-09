@@ -1,12 +1,3 @@
-/**
- * @file System MCP Tools
- *
- * Performance benchmarking, system diagnostics, configuration management,
- * and infrastructure optimization.
- */
-
-import type { MCPTool } from '../tool-registry';
-
 const systemTools: MCPTool[] = [
   {
     name: 'system_info',
@@ -150,7 +141,7 @@ const systemTools: MCPTool[] = [
       const results: Record<string, any> = {};
 
       for (const component of components) {
-        results[component] = {
+        results?.[component] = {
           status: 'healthy',
           responseTime: Math.floor(Math.random() * 50) + 10,
           lastCheck: new Date().toISOString(),

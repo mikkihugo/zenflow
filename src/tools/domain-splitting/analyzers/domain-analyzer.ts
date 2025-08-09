@@ -7,17 +7,8 @@ import * as acorn from 'acorn';
 import * as escomplex from 'escomplex';
 import * as fs from 'fs-extra';
 import { glob } from 'glob';
-import type { AnalysisConfig, FileAnalysis } from '../types/analysis-types';
 import { DEFAULT_ANALYSIS_CONFIG } from '../types/analysis-types';
-import type {
-  CouplingAnalysis,
-  DependencyGraph,
-  DomainAnalysis,
-  FileCategoryMap,
-  SplittingMetrics,
-  SplittingRecommendation,
-  SubDomainPlan,
-} from '../types/domain-types';
+import type { DomainAnalysis } from '../types/domain-types';
 
 export interface DomainAnalyzer {
   analyzeDomainComplexity(domainPath: string): Promise<DomainAnalysis>;
@@ -168,7 +159,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
             ? (escomplex as any).analyse(content)
             : null;
         if (complexityResult) {
-          complexity = complexityResult.aggregate?.complexity?.cyclomatic || 1;
+          complexity = complexityResult?.aggregate?.complexity?.cyclomatic || 1;
         } else {
           complexity = this.calculateSimpleComplexity(content);
         }
@@ -208,30 +199,30 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     const imports: any[] = [];
 
     const walk = (node: any) => {
-      if (node.type === 'ImportDeclaration') {
+      if (node?.type === 'ImportDeclaration') {
         imports.push({
-          module: node.source.value,
+          module: node?.source?.value,
           type: 'import',
-          specifiers: node.specifiers?.map((s: any) => s.local?.name || s.imported?.name) || [],
-          isRelative: node.source.value.startsWith('.'),
-          external: !node.source.value.startsWith('.'),
+          specifiers: node?.specifiers?.map((s: any) => s.local?.name || s.imported?.name) || [],
+          isRelative: node?.source?.value?.startsWith('.'),
+          external: !node?.source?.value?.startsWith('.'),
         });
-      } else if (node.type === 'CallExpression' && node.callee?.name === 'require') {
+      } else if (node?.type === 'CallExpression' && node?.callee?.name === 'require') {
         imports.push({
-          module: node.arguments?.[0]?.value || '',
+          module: node?.arguments?.[0]?.value || '',
           type: 'require',
           specifiers: [],
-          isRelative: node.arguments?.[0]?.value?.startsWith('.') || false,
-          external: !node.arguments?.[0]?.value?.startsWith('.'),
+          isRelative: node?.arguments?.[0]?.value?.startsWith('.') || false,
+          external: !node?.arguments?.[0]?.value?.startsWith('.'),
         });
       }
 
       for (const key in node) {
-        if (typeof node[key] === 'object' && node[key] !== null) {
-          if (Array.isArray(node[key])) {
-            node[key].forEach(walk);
+        if (typeof node?.[key] === 'object' && node?.[key] !== null) {
+          if (Array.isArray(node?.[key])) {
+            node?.[key]?.forEach(walk);
           } else {
-            walk(node[key]);
+            walk(node?.[key]);
           }
         }
       }
@@ -245,22 +236,22 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     const exports: any[] = [];
 
     const walk = (node: any) => {
-      if (node.type === 'ExportNamedDeclaration') {
-        if (node.declaration) {
-          if (node.declaration.type === 'FunctionDeclaration') {
+      if (node?.type === 'ExportNamedDeclaration') {
+        if (node?.declaration) {
+          if (node?.declaration?.type === 'FunctionDeclaration') {
             exports.push({
-              name: node.declaration.id?.name || 'anonymous',
+              name: node?.declaration?.id?.name || 'anonymous',
               type: 'function',
               isPublic: true,
             });
-          } else if (node.declaration.type === 'ClassDeclaration') {
+          } else if (node?.declaration?.type === 'ClassDeclaration') {
             exports.push({
-              name: node.declaration.id?.name || 'anonymous',
+              name: node?.declaration?.id?.name || 'anonymous',
               type: 'class',
               isPublic: true,
             });
-          } else if (node.declaration.type === 'VariableDeclaration') {
-            node.declaration.declarations?.forEach((decl: any) => {
+          } else if (node?.declaration?.type === 'VariableDeclaration') {
+            node?.declaration?.declarations?.forEach((decl: any) => {
               exports.push({
                 name: decl.id?.name || 'anonymous',
                 type: 'constant',
@@ -269,7 +260,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
             });
           }
         }
-      } else if (node.type === 'ExportDefaultDeclaration') {
+      } else if (node?.type === 'ExportDefaultDeclaration') {
         exports.push({
           name: 'default',
           type: 'default',
@@ -278,11 +269,11 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
       }
 
       for (const key in node) {
-        if (typeof node[key] === 'object' && node[key] !== null) {
-          if (Array.isArray(node[key])) {
-            node[key].forEach(walk);
+        if (typeof node?.[key] === 'object' && node?.[key] !== null) {
+          if (Array.isArray(node?.[key])) {
+            node?.[key]?.forEach(walk);
           } else {
-            walk(node[key]);
+            walk(node?.[key]);
           }
         }
       }
@@ -300,21 +291,21 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     let match;
     while ((match = importRegex.exec(content)) !== null) {
       imports.push({
-        module: match[1],
+        module: match?.[1],
         type: 'import',
         specifiers: [],
-        isRelative: match[1].startsWith('.'),
-        external: !match[1].startsWith('.'),
+        isRelative: match?.[1]?.startsWith('.'),
+        external: !match?.[1]?.startsWith('.'),
       });
     }
 
     while ((match = requireRegex.exec(content)) !== null) {
       imports.push({
-        module: match[1],
+        module: match?.[1],
         type: 'require',
         specifiers: [],
-        isRelative: match[1].startsWith('.'),
-        external: !match[1].startsWith('.'),
+        isRelative: match?.[1]?.startsWith('.'),
+        external: !match?.[1]?.startsWith('.'),
       });
     }
 
@@ -329,15 +320,15 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     let match;
     while ((match = exportRegex.exec(content)) !== null) {
       exports.push({
-        name: match[3],
+        name: match?.[3],
         type:
-          match[2] === 'function'
+          match?.[2] === 'function'
             ? 'function'
-            : match[2] === 'class'
+            : match?.[2] === 'class'
               ? 'class'
-              : match[2] === 'interface'
+              : match?.[2] === 'interface'
                 ? 'interface'
-                : match[2] === 'type'
+                : match?.[2] === 'type'
                   ? 'type'
                   : 'constant',
         isPublic: true,
@@ -455,7 +446,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     for (const analysis of fileAnalyses) {
       const category = analysis.category as keyof FileCategoryMap;
       if (categories[category]) {
-        categories[category].push(analysis.path);
+        categories[category]?.push(analysis.path);
       } else {
         categories.utilities.push(analysis.path);
       }
@@ -544,9 +535,9 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     const visited = new Set<string>();
 
     for (const node of dependencies.nodes) {
-      if (visited.has(node.id)) continue;
+      if (visited.has(node?.id)) continue;
 
-      const connectedNodes = this.findConnectedNodes(node.id, dependencies);
+      const connectedNodes = this.findConnectedNodes(node?.id, dependencies);
       if (connectedNodes.length > 1) {
         const sharedDeps = this.findSharedDependencies(connectedNodes, dependencies);
 
@@ -556,7 +547,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
           sharedDependencies: sharedDeps,
         });
 
-        connectedNodes.forEach((nodeId) => visited.add(nodeId));
+        connectedNodes?.forEach((nodeId) => visited.add(nodeId));
       }
     }
 
@@ -591,7 +582,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     for (const nodeId of nodes) {
       const node = dependencies.nodes.find((n) => n.id === nodeId);
       if (node) {
-        for (const imp of node.imports) {
+        for (const imp of node?.imports) {
           depCounts.set(imp, (depCounts.get(imp) || 0) + 1);
         }
       }
@@ -607,7 +598,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     const possibleConnections = nodes.length * (nodes.length - 1);
 
     for (const edge of dependencies.edges) {
-      if (nodes.includes(edge.from) && nodes.includes(edge.to)) {
+      if (nodes?.includes(edge.from) && nodes?.includes(edge.to)) {
         totalConnections++;
       }
     }
@@ -624,14 +615,14 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     const isolated: string[] = [];
 
     for (const node of dependencies.nodes) {
-      const incomingEdges = dependencies.edges.filter((e) => e.to === node.id).length;
-      const outgoingEdges = dependencies.edges.filter((e) => e.from === node.id).length;
+      const incomingEdges = dependencies.edges.filter((e) => e.to === node?.id).length;
+      const outgoingEdges = dependencies.edges.filter((e) => e.from === node?.id).length;
       const totalEdges = incomingEdges + outgoingEdges;
 
-      scores.set(node.id, totalEdges);
+      scores.set(node?.id, totalEdges);
 
       if (totalEdges === 0) {
-        isolated.push(node.id);
+        isolated.push(node?.id);
       }
     }
 

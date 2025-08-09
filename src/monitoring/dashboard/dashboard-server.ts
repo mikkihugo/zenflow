@@ -8,11 +8,7 @@ import { createServer } from 'node:http';
 import * as path from 'node:path';
 import express from 'express';
 import { Server as SocketIOServer } from 'socket.io';
-import type { PerformanceInsights } from '../analytics/performance-analyzer';
-import type { CompositeMetrics } from '../core/metrics-collector';
-import type { OptimizationResult } from '../optimization/optimization-engine';
 import { getCORSOrigins } from '../../config/url-builder';
-import { getConfig } from '../../config';
 
 export interface DashboardConfig {
   port: number;
@@ -56,7 +52,7 @@ export class DashboardServer extends EventEmitter {
     // Get centralized CORS origins
     this.io = new SocketIOServer(this.server, {
       cors: {
-        origin: config.corsOrigins || getCORSOrigins(),
+        origin: config?.["corsOrigins"] || getCORSOrigins(),
         methods: ['GET', 'POST'],
       },
     });
@@ -447,10 +443,10 @@ export class DashboardServer extends EventEmitter {
     // Summary section
     lines.push('DASHBOARD SUMMARY');
     lines.push('Timestamp,Health Score,CPU Usage,Memory Usage,Alerts,Optimizations');
-    const summary = data.summary;
+    const summary = data?.["summary"];
     lines.push(
       [
-        new Date(data.timestamp).toISOString(),
+        new Date(data?.["timestamp"]).toISOString(),
         summary.system?.health || 0,
         summary.system?.cpuUsage || 0,
         summary.system?.memoryUsage || 0,
@@ -464,7 +460,7 @@ export class DashboardServer extends EventEmitter {
     // Alerts section
     lines.push('ALERTS');
     lines.push('ID,Type,Message,Timestamp');
-    data.alerts.forEach((alert: any) => {
+    data?.["alerts"]?.forEach((alert: any) => {
       lines.push(
         [
           alert.id,
@@ -480,7 +476,7 @@ export class DashboardServer extends EventEmitter {
     // Optimizations section
     lines.push('OPTIMIZATIONS');
     lines.push('Action ID,Success,Performance Impact,Efficiency Impact,Execution Time');
-    data.optimizations.forEach((opt: any) => {
+    data?.["optimizations"]?.forEach((opt: any) => {
       lines.push(
         [
           opt.actionId,

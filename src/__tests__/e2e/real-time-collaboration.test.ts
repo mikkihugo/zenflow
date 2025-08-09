@@ -140,7 +140,7 @@ Test document for real-time collaboration.
     });
 
     it('should handle concurrent document edits with conflict resolution', async () => {
-      const _sessionId = `concurrent-session-${Date.now()}`;
+      const sessionId = `concurrent-session-${Date.now()}`;
       const workspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
 
       const conflictResults: any[] = [];
@@ -149,7 +149,7 @@ Test document for real-time collaboration.
       wsClient1.on('message', (data) => {
         const message = JSON.parse(data.toString());
         if (message.type === 'document.conflict' || message.type === 'document.resolved') {
-          conflictResults.push(message);
+          conflictResults?.push(message);
         }
       });
 
@@ -214,7 +214,7 @@ This is version 2 of the document.
       );
 
       // Trigger some system activity
-      const _workspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
+      const workspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
 
       // Wait for metrics updates
       await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -301,7 +301,7 @@ This is version 2 of the document.
           }
         );
 
-        expect(response.status).toBe(200);
+        expect(response?.status).toBe(200);
       }
 
       // Verify final content includes all edits
@@ -332,8 +332,8 @@ This is version 2 of the document.
         `http://localhost:${WEB_SERVER_PORT}/api/documents/history?workspaceId=${workspaceId}&path=${encodeURIComponent(docPath)}`
       );
 
-      expect(historyResponse.status).toBe(200);
-      expect(historyResponse.data.versions.length).toBeGreaterThanOrEqual(3);
+      expect(historyResponse?.status).toBe(200);
+      expect(historyResponse?.data?.versions.length).toBeGreaterThanOrEqual(3);
 
       // Rollback to version 1
       const rollbackResponse = await networkHelper.httpPost(
@@ -341,11 +341,11 @@ This is version 2 of the document.
         {
           workspaceId,
           documentPath: docPath,
-          version: historyResponse.data.versions[0].id,
+          version: historyResponse?.data?.versions?.[0]?.id,
         }
       );
 
-      expect(rollbackResponse.status).toBe(200);
+      expect(rollbackResponse?.status).toBe(200);
 
       // Verify rollback
       const rolledBackContent = await fsHelper.readFile(docPath);
@@ -488,7 +488,7 @@ This is version 2 of the document.
 
       // User 2 should be notified of disconnection
       expect(disconnectUpdates.length).toBeGreaterThan(0);
-      expect(disconnectUpdates[0].user.id).toBe('user1');
+      expect(disconnectUpdates[0]?.user?.id).toBe('user1');
     });
   });
 
@@ -510,8 +510,8 @@ This is version 2 of the document.
         `http://localhost:${WEB_SERVER_PORT}/api/dashboard/metrics`
       );
 
-      expect(dashboardResponse.status).toBe(200);
-      expect(dashboardResponse.data).toMatchObject({
+      expect(dashboardResponse?.status).toBe(200);
+      expect(dashboardResponse?.data).toMatchObject({
         system: expect.objectContaining({
           memoryUsage: expect.any(Number),
           cpuUsage: expect.any(Number),
@@ -547,8 +547,8 @@ This is version 2 of the document.
         `http://localhost:${WEB_SERVER_PORT}/api/metrics/workflow?workspaceId=${workspaceId}`
       );
 
-      expect(metricsResponse.status).toBe(200);
-      expect(metricsResponse.data).toMatchObject({
+      expect(metricsResponse?.status).toBe(200);
+      expect(metricsResponse?.data).toMatchObject({
         documentsProcessed: expect.any(Number),
         averageProcessingTime: expect.any(Number),
         workflowStages: expect.objectContaining({

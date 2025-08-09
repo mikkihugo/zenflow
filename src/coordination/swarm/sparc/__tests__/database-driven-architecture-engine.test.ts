@@ -9,7 +9,6 @@ const logger = getLogger("coordination-swarm-sparc-tests-database-driven-archite
 
 import { nanoid } from 'nanoid';
 import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
-import type { PseudocodeStructure } from '../types/sparc-types';
 
 // Mock database adapter for testing
 class MockDatabaseAdapter {
@@ -54,7 +53,7 @@ class MockDatabaseAdapter {
 
         if (sql.includes('WHERE') && params.length > 0) {
           // Simple mock for WHERE queries
-          const record = table.find((r) => r.architecture_id === params[0] || r.id === params[0]);
+          const record = table.find((r) => r["architecture_id"] === params?.[0] || r.id === params?.[0]);
           return { rows: record ? [record] : [] };
         }
 
@@ -82,28 +81,28 @@ class MockDatabaseAdapter {
 
   private createMockRecord(params: any[]): any {
     return {
-      id: params[0] || nanoid(),
-      architecture_id: params[1] || nanoid(),
-      project_id: params[2] || null,
-      name: params[3] || 'Test Architecture',
-      domain: params[4] || 'general',
-      design_data: params[5] || '{}',
-      components_data: params[6] || '[]',
-      validation_data: params[7] || null,
+      id: params?.[0] || nanoid(),
+      architecture_id: params?.[1] || nanoid(),
+      project_id: params?.[2] || null,
+      name: params?.[3] || 'Test Architecture',
+      domain: params?.[4] || 'general',
+      design_data: params?.[5] || '{}',
+      components_data: params?.[6] || '[]',
+      validation_data: params?.[7] || null,
       created_at: new Date(),
       updated_at: new Date(),
       version: 1,
-      tags: params[10] || '[]',
-      metadata: params[11] || '{}',
+      tags: params?.[10] || '[]',
+      metadata: params?.[11] || '{}',
     };
   }
 }
 
 // Mock logger
 const mockLogger = {
-  info: (_msg: string, ..._args: any[]) => {},
+  info: (msg: string, ...args: any[]) => {},
   error: (msg: string, ...args: any[]) => logger.error(`[ERROR] ${msg}`, ...args),
-  debug: (_msg: string, ..._args: any[]) => {},
+  debug: (msg: string, ...args: any[]) => {},
   warn: (msg: string, ...args: any[]) => logger.warn(`[WARN] ${msg}`, ...args),
 };
 
@@ -313,22 +312,22 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
       architecture.systemArchitecture
     );
     if (architecture.id) {
-      const _retrievedArchitecture = await architectureEngine.getArchitectureById(architecture.id);
+      const retrievedArchitecture = await architectureEngine.getArchitectureById(architecture.id);
     }
-    const _searchResults = await architectureEngine.searchArchitectures({
+    const searchResults = await architectureEngine.searchArchitectures({
       domain: 'swarm-coordination',
       limit: 10,
     });
-    const _stats = await architectureEngine.getArchitectureStatistics();
+    const stats = await architectureEngine.getArchitectureStatistics();
 
     // Display component details
     if (architecture.components && architecture.components.length > 0) {
-      architecture.components.forEach((_component, _index) => {});
+      architecture.components.forEach((component, index) => {});
     }
 
     // Display recommendations if any
     if (validation.recommendations && validation.recommendations.length > 0) {
-      validation.recommendations.forEach((_rec, _index) => {});
+      validation.recommendations.forEach((rec, index) => {});
     }
   } catch (error) {
     logger.error('❌ Test failed:', error);

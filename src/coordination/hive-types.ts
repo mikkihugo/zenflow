@@ -1,3 +1,6 @@
+// Import required types
+import type { AgentId, AgentType, AgentStatus, AgentMetrics } from '../types/agent-types';
+
 export interface HiveFACTConfig {
   enableCache?: boolean;
   cacheSize?: number;
@@ -111,4 +114,12 @@ export interface HiveHealthMetrics {
   synchronization: number;
   faultTolerance: number;
   loadBalance: number;
+}
+
+// HiveTask extends Task with additional hive-level properties
+export interface HiveTask extends Task {
+  hiveMindId: string;
+  estimatedDuration?: number;
+  swarmRestriction?: string[];
+  globalPriority: number;
 }

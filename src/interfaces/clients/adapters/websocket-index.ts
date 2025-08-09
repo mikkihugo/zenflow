@@ -113,22 +113,22 @@ export async function createOptimalWebSocketClient(
   const factory = new WebSocketClientFactory();
 
   // Handle load balancing
-  if (options?.loadBalancing?.enabled && options.loadBalancing.urls) {
-    const configs = options.loadBalancing.urls.map((url) => ({
+  if (options?.loadBalancing?.enabled && options?.loadBalancing?.urls) {
+    const configs = options?.loadBalancing?.urls?.map((url) => ({
       ...config,
       url,
-      name: `${config.name || 'ws'}-${url.split('://')[1]?.replace(/[:.]/g, '-')}`,
+      name: `${config?.name || 'ws'}-${url.split('://')[1]?.replace(/[:.]/g, '-')}`,
     }));
 
-    return factory.createLoadBalanced(configs, options.loadBalancing.strategy);
+    return factory.createLoadBalanced(configs, options?.loadBalancing?.strategy);
   }
 
   // Handle failover
-  if (options?.failover?.enabled && options.failover.fallbackUrls) {
-    const fallbackConfigs = options.failover.fallbackUrls.map((url) => ({
+  if (options?.failover?.enabled && options?.failover?.fallbackUrls) {
+    const fallbackConfigs = options?.failover?.fallbackUrls?.map((url) => ({
       ...config,
       url,
-      name: `${config.name || 'ws'}-fallback-${url.split('://')[1]?.replace(/[:.]/g, '-')}`,
+      name: `${config?.name || 'ws'}-fallback-${url.split('://')[1]?.replace(/[:.]/g, '-')}`,
     }));
 
     const primaryClient = await factory.create(config);
@@ -139,13 +139,13 @@ export async function createOptimalWebSocketClient(
 
   // Handle connection pooling
   if (options?.pooling?.enabled) {
-    const pooledClients = await factory.createPooled(config, options.pooling.size);
+    const pooledClients = await factory.createPooled(config, options?.pooling.size);
     return new LoadBalancedWebSocketClient(pooledClients, 'round-robin');
   }
 
   // Use enhanced client if requested
   if (options?.useEnhanced) {
-    config.metadata = { ...config.metadata, clientType: 'enhanced' };
+    config?.metadata = { ...config?.metadata, clientType: 'enhanced' };
   }
 
   // Create standard client
@@ -399,9 +399,9 @@ export class WebSocketHealthMonitor {
     for (const [name, client] of this.clients) {
       try {
         const status = await client.healthCheck();
-        results.set(name, status);
+        results?.set(name, status);
       } catch (error) {
-        results.set(name, {
+        results?.set(name, {
           name,
           status: 'unhealthy',
           lastCheck: new Date(),

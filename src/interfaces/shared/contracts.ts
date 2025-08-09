@@ -1,19 +1,4 @@
 /**
- * Shared Interface Contracts
- *
- * Defines the contracts and abstractions that interfaces can depend on
- * without creating cross-interface dependencies.
- */
-
-import type {
-  CommandContext,
-  CommandResult,
-  ComponentStatus,
-  ProjectConfig,
-  SystemHealth,
-} from './types';
-
-/**
  * Project Management Contract
  *
  * Abstract interface for project management operations that can be

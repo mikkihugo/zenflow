@@ -1,19 +1,4 @@
-/**
- * SPARC MCP Tools.
- *
- * Model Context Protocol tools for external access to SPARC methodology system.
- * Enables AI assistants to coordinate SPARC projects and execute phases.
- */
-
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { SPARCEngineCore } from '../core/sparc-engine';
-import type {
-  ComplexityLevel,
-  ProjectDomain,
-  ProjectSpecification,
-  SPARCPhase,
-  SPARCProject,
-} from '../types/sparc-types';
 import { ProjectManagementIntegration } from './project-management-integration';
 import { SPARCRoadmapManager } from './roadmap-integration';
 
@@ -382,19 +367,19 @@ export class SPARCMCPTools {
     const result = await this.sparcEngine.executePhase(project, phase);
 
     return {
-      success: result.success,
-      phase: result.phase,
-      duration: `${result.metrics.duration.toFixed(1)} minutes`,
-      qualityScore: `${(result.metrics.qualityScore * 100).toFixed(1)}%`,
-      completeness: `${(result.metrics.completeness * 100).toFixed(1)}%`,
-      deliverables: result.deliverables.map((d) => ({
+      success: result?.success,
+      phase: result?.phase,
+      duration: `${result?.metrics?.duration?.toFixed(1)} minutes`,
+      qualityScore: `${(result?.metrics?.qualityScore * 100).toFixed(1)}%`,
+      completeness: `${(result?.metrics?.completeness * 100).toFixed(1)}%`,
+      deliverables: result?.deliverables?.map((d) => ({
         id: d.id,
         name: d.name,
         type: d.type,
         path: d.path,
       })),
-      nextPhase: result.nextPhase,
-      recommendations: result.recommendations,
+      nextPhase: result?.nextPhase,
+      recommendations: result?.recommendations,
       projectProgress: {
         currentPhase: project.currentPhase,
         overallProgress: `${(project.progress.overallProgress * 100).toFixed(1)}%`,
@@ -530,10 +515,10 @@ export class SPARCMCPTools {
       projectId: args.projectId,
       refinementIteration: project.refinements.length,
       improvements: {
-        performanceGain: `${(refinementResult.performanceGain * 100).toFixed(1)}%`,
-        resourceReduction: `${(refinementResult.resourceReduction * 100).toFixed(1)}%`,
-        scalabilityIncrease: `${refinementResult.scalabilityIncrease}x`,
-        maintainabilityImprovement: `${(refinementResult.maintainabilityImprovement * 100).toFixed(1)}%`,
+        performanceGain: `${(refinementResult?.performanceGain * 100).toFixed(1)}%`,
+        resourceReduction: `${(refinementResult?.resourceReduction * 100).toFixed(1)}%`,
+        scalabilityIncrease: `${refinementResult?.scalabilityIncrease}x`,
+        maintainabilityImprovement: `${(refinementResult?.maintainabilityImprovement * 100).toFixed(1)}%`,
       },
       message: 'Implementation refined successfully with performance optimizations',
       nextSteps: [
@@ -645,9 +630,9 @@ export class SPARCMCPTools {
     for (const phase of phases) {
       try {
         const phaseResult = await this.sparcEngine.executePhase(project, phase);
-        results.push({ phase, success: true, duration: phaseResult.metrics.duration });
+        results?.push({ phase, success: true, duration: phaseResult?.metrics?.duration });
       } catch (error) {
-        results.push({
+        results?.push({
           phase,
           success: false,
           error: error instanceof Error ? error.message : 'Unknown error',
@@ -803,8 +788,8 @@ export class SPARCMCPTools {
       return {
         success: true,
         projectId: args.projectId,
-        workspaceId: results.workspaceId,
-        workflowResults: results.workflowResults,
+        workspaceId: results?.workspaceId,
+        workflowResults: results?.workflowResults,
         infrastructure: {
           documentDrivenSystem: 'initialized',
           unifiedWorkflowEngine: 'active',
@@ -812,32 +797,32 @@ export class SPARCMCPTools {
         },
         artifacts: {
           tasks: {
-            count: results.tasks.length,
+            count: results?.tasks.length,
             status: 'integrated with TaskAPI and TaskCoordinator',
           },
           adrs: {
-            count: results.adrs.length,
+            count: results?.adrs.length,
             status: 'created using existing template structure',
           },
           prd: {
-            id: results.prd.id,
+            id: results?.prd?.id,
             status: 'generated with comprehensive requirements',
           },
           epics: {
-            count: results.epics.length,
+            count: results?.epics.length,
             status: 'processed through DocumentDrivenSystem',
           },
           features: {
-            count: results.features.length,
+            count: results?.features.length,
             status: 'integrated with workflow engine',
           },
         },
         integration: {
-          vision_workflow: results.workflowResults['vision-to-adrs'] ? 'executed' : 'failed',
-          prd_workflow: results.workflowResults['vision-to-prds'] ? 'executed' : 'failed',
-          epic_workflow: results.workflowResults['prd-to-epics'] ? 'executed' : 'failed',
-          feature_workflow: results.workflowResults['epic-to-features'] ? 'executed' : 'failed',
-          task_workflow: results.workflowResults['feature-to-tasks'] ? 'executed' : 'failed',
+          vision_workflow: results?.workflowResults?.['vision-to-adrs'] ? 'executed' : 'failed',
+          prd_workflow: results?.workflowResults?.['vision-to-prds'] ? 'executed' : 'failed',
+          epic_workflow: results?.workflowResults?.['prd-to-epics'] ? 'executed' : 'failed',
+          feature_workflow: results?.workflowResults?.['epic-to-features'] ? 'executed' : 'failed',
+          task_workflow: results?.workflowResults?.['feature-to-tasks'] ? 'executed' : 'failed',
         },
         message: 'Successfully integrated SPARC with existing Claude-Zen infrastructure',
       };
@@ -912,7 +897,7 @@ export class SPARCMCPTools {
           title: epic.title,
           description: epic.description,
           timeline: epic.timeline,
-          businessValue: epic.business_value,
+          businessValue: epic["business_value"],
         },
         features: features.map((f) => ({
           id: f.id,
@@ -980,12 +965,12 @@ export class SPARCMCPTools {
           itemCount: roadmap.items.length,
         },
         items: roadmap.items.map((item) => ({
-          id: item.id,
-          title: item.title,
-          type: item.type,
-          quarter: item.quarter,
-          effortEstimate: item.effort_estimate,
-          businessValue: item.business_value,
+          id: item?.id,
+          title: item?.title,
+          type: item?.type,
+          quarter: item?.quarter,
+          effortEstimate: item?.["effort_estimate"],
+          businessValue: item?.["business_value"],
         })),
         message: `Generated ${args.domain} roadmap with ${roadmap.items.length} items`,
       };

@@ -128,7 +128,7 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
   async insertTestData(table: string, data: any[]): Promise<void> {
     if (data.length === 0) return;
 
-    const columns = Object.keys(data[0]);
+    const columns = Object.keys(data?.[0]);
     const placeholders = columns.map(() => '?').join(', ');
     const sql = `INSERT INTO ${table} (${columns.join(', ')}) VALUES (${placeholders})`;
 
@@ -279,7 +279,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     const tableMatches = schema.match(/CREATE TABLE(?:\s+IF NOT EXISTS)?\s+(\w+)/gi);
     if (tableMatches) {
       for (const match of tableMatches) {
-        const tableName = match.replace(/CREATE TABLE(?:\s+IF NOT EXISTS)?\s+/i, '');
+        const tableName = match?.replace(/CREATE TABLE(?:\s+IF NOT EXISTS)?\s+/i, '');
         if (!this.storage.has(tableName)) {
           this.storage.set(tableName, new Map());
           this.sequences.set(tableName, 0);
@@ -299,7 +299,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     for (const row of data) {
       const id = this.getNextId(table);
       const record = { id, ...row, created_at: new Date().toISOString() };
-      tableData.set(id.toString(), record);
+      tableData?.set(id.toString(), record);
     }
   }
 
@@ -347,18 +347,18 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     const tableMatch = sql.match(/FROM\s+(\w+)/i);
     if (!tableMatch) return [];
 
-    const tableName = tableMatch[1];
+    const tableName = tableMatch?.[1];
     const tableData = this.storage.get(tableName);
     if (!tableData) return [];
 
-    return Array.from(tableData.values());
+    return Array.from(tableData?.values());
   }
 
   private handleInsert(sql: string, params: any[]): void {
     const tableMatch = sql.match(/INSERT INTO\s+(\w+)/i);
     if (!tableMatch) return;
 
-    const tableName = tableMatch[1];
+    const tableName = tableMatch?.[1];
     if (!this.storage.has(tableName)) {
       this.storage.set(tableName, new Map());
       this.sequences.set(tableName, 0);
@@ -370,17 +370,17 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     // Simple parameter binding
     const columnsMatch = sql.match(/\(([^)]+)\)/);
     if (columnsMatch) {
-      const columns = columnsMatch[1].split(',').map((col) => col.trim());
+      const columns = columnsMatch?.[1]?.split(',').map((col) => col.trim());
       const record: any = { id };
 
       columns.forEach((col, index) => {
-        if (params[index] !== undefined) {
-          record[col] = params[index];
+        if (params?.[index] !== undefined) {
+          record[col] = params?.[index];
         }
       });
 
-      record.created_at = new Date().toISOString();
-      tableData.set(id.toString(), record);
+      record["created_at"] = new Date().toISOString();
+      tableData?.set(id.toString(), record);
     }
   }
 
@@ -389,14 +389,14 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     const tableMatch = sql.match(/UPDATE\s+(\w+)/i);
     if (!tableMatch) return;
 
-    const tableName = tableMatch[1];
+    const tableName = tableMatch?.[1];
     const tableData = this.storage.get(tableName);
     if (!tableData) return;
 
     // For simplicity, update all records
-    for (const [key, record] of tableData.entries()) {
-      record.updated_at = new Date().toISOString();
-      tableData.set(key, record);
+    for (const [key, record] of tableData?.entries()) {
+      record["updated_at"] = new Date().toISOString();
+      tableData?.set(key, record);
     }
   }
 
@@ -404,17 +404,17 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     const tableMatch = sql.match(/DELETE FROM\s+(\w+)/i);
     if (!tableMatch) return;
 
-    const tableName = tableMatch[1];
+    const tableName = tableMatch?.[1];
     const tableData = this.storage.get(tableName);
     if (tableData) {
-      tableData.clear();
+      tableData?.clear();
     }
   }
 
   private handleCreateTable(sql: string): void {
     const tableMatch = sql.match(/CREATE TABLE(?:\s+IF NOT EXISTS)?\s+(\w+)/i);
     if (tableMatch) {
-      const tableName = tableMatch[1];
+      const tableName = tableMatch?.[1];
       if (!this.storage.has(tableName)) {
         this.storage.set(tableName, new Map());
         this.sequences.set(tableName, 0);

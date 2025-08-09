@@ -1,11 +1,3 @@
-/**
- * Task-Agent Matcher
- * Intelligent matching of tasks to suitable agents based on capabilities and performance
- */
-
-import type { CapacityManager } from '../interfaces';
-import type { Agent, Task } from '../types';
-
 interface MatchingScore {
   agent: Agent;
   score: number;
@@ -29,17 +21,17 @@ export class TaskAgentMatcher {
       const score = await this.calculateMatchingScore(task, agent, capacityManager);
       if (score.score > 0.3) {
         // Minimum threshold
-        matchingScores.push(score);
+        matchingScores?.push(score);
       }
     }
 
     // Sort by score (highest first)
-    matchingScores.sort((a, b) => b.score - a.score);
+    matchingScores?.sort((a, b) => b.score - a.score);
 
     // Store matching history
     this.matchingHistory.set(task.id, matchingScores);
 
-    return matchingScores.map((score) => score.agent);
+    return matchingScores?.map((score) => score.agent);
   }
 
   private async calculateMatchingScore(

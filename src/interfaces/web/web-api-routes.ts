@@ -1,15 +1,4 @@
-/**
- * Web API Routes - RESTful API endpoint definitions
- *
- * Centralized API route definitions for the web dashboard.
- * Handles all HTTP API endpoints with proper error handling.
- */
-
-import type { Express, Request, Response } from 'express';
 import { createLogger } from '../../utils/logger';
-import type { WebConfig } from './web-config';
-import type { WebDataService } from './web-data-service';
-import type { WebSessionManager } from './web-session-manager';
 
 export class WebApiRoutes {
   private logger = createLogger('WebAPI');

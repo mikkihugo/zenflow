@@ -81,7 +81,7 @@ export default class DomainSplittingDemo {
 
         if (stat.isDirectory()) {
           await scanDirectory(itemPath);
-        } else if (item.endsWith('.ts') || item.endsWith('.tsx') || item.endsWith('.js')) {
+        } else if (item?.endsWith('.ts') || item?.endsWith('.tsx') || item?.endsWith('.js')) {
           files.push(itemPath);
         }
       }
@@ -116,7 +116,7 @@ export default class DomainSplittingDemo {
         filename.includes('core') ||
         filename.includes('network')
       ) {
-        categories['core-algorithms'].push(file);
+        categories['core-algorithms']?.push(file);
       } else if (
         directory.includes('model') ||
         directory.includes('preset') ||

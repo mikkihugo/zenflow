@@ -10,7 +10,6 @@ import { createLogger } from '../../../core/logger';
 import { dspySwarmMCPTools } from '../../mcp/dspy-swarm-mcp-tools';
 import { HiveTools } from './hive-tools';
 import { SwarmTools } from './swarm-tools';
-import type { MCPServerConfig } from './types';
 
 const logger = createLogger({ prefix: 'UnifiedMCPServer' });
 

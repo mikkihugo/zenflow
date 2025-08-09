@@ -1,11 +1,4 @@
 /**
- * DI token creation utilities
- * Provides type-safe token creation for dependency injection.
- */
-
-import type { Constructor, DIToken } from '../types/di-types';
-
-/**
  * Creates a typed DI token for service registration.
  *
  * @param name

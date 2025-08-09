@@ -1,18 +1,4 @@
 /**
- * WebSocket Client Types for UACL
- *
- * WebSocket-specific extensions to UACL core interfaces and types
- */
-
-import type {
-  AuthenticationConfig,
-  ClientConfig,
-  ClientResponse,
-  RequestOptions,
-  RetryConfig,
-} from '../core/interfaces';
-
-/**
  * WebSocket connection states
  */
 export const WebSocketReadyState = {
@@ -479,7 +465,7 @@ export interface WebSocketSecurityConfig {
  */
 export const WebSocketTypeGuards = {
   isWebSocketConfig: (config: any): config is WebSocketClientConfig => {
-    return config && typeof config.url === 'string';
+    return config && typeof config?.["url"] === 'string';
   },
 
   isWebSocketMessage: (message: any): message is WebSocketMessage => {
@@ -558,35 +544,35 @@ export const WebSocketUtils = {
    */
   getCloseCodeDescription: (code: number): string => {
     switch (code) {
-      case WebSocketCloseCode.NORMAL_CLOSURE:
+      case WebSocketCloseCode["NORMAL_CLOSURE"]:
         return 'Normal Closure';
-      case WebSocketCloseCode.GOING_AWAY:
+      case WebSocketCloseCode["GOING_AWAY"]:
         return 'Going Away';
-      case WebSocketCloseCode.PROTOCOL_ERROR:
+      case WebSocketCloseCode["PROTOCOL_ERROR"]:
         return 'Protocol Error';
-      case WebSocketCloseCode.UNSUPPORTED_DATA:
+      case WebSocketCloseCode["UNSUPPORTED_DATA"]:
         return 'Unsupported Data';
-      case WebSocketCloseCode.NO_STATUS_RECEIVED:
+      case WebSocketCloseCode["NO_STATUS_RECEIVED"]:
         return 'No Status Received';
-      case WebSocketCloseCode.ABNORMAL_CLOSURE:
+      case WebSocketCloseCode["ABNORMAL_CLOSURE"]:
         return 'Abnormal Closure';
-      case WebSocketCloseCode.INVALID_FRAME_PAYLOAD_DATA:
+      case WebSocketCloseCode["INVALID_FRAME_PAYLOAD_DATA"]:
         return 'Invalid Frame Payload Data';
-      case WebSocketCloseCode.POLICY_VIOLATION:
+      case WebSocketCloseCode["POLICY_VIOLATION"]:
         return 'Policy Violation';
-      case WebSocketCloseCode.MESSAGE_TOO_BIG:
+      case WebSocketCloseCode["MESSAGE_TOO_BIG"]:
         return 'Message Too Big';
-      case WebSocketCloseCode.MANDATORY_EXTENSION:
+      case WebSocketCloseCode["MANDATORY_EXTENSION"]:
         return 'Mandatory Extension';
-      case WebSocketCloseCode.INTERNAL_SERVER_ERROR:
+      case WebSocketCloseCode["INTERNAL_SERVER_ERROR"]:
         return 'Internal Server Error';
-      case WebSocketCloseCode.SERVICE_RESTART:
+      case WebSocketCloseCode["SERVICE_RESTART"]:
         return 'Service Restart';
-      case WebSocketCloseCode.TRY_AGAIN_LATER:
+      case WebSocketCloseCode["TRY_AGAIN_LATER"]:
         return 'Try Again Later';
-      case WebSocketCloseCode.BAD_GATEWAY:
+      case WebSocketCloseCode["BAD_GATEWAY"]:
         return 'Bad Gateway';
-      case WebSocketCloseCode.TLS_HANDSHAKE:
+      case WebSocketCloseCode["TLS_HANDSHAKE"]:
         return 'TLS Handshake';
       default:
         return `Unknown (${code})`;
@@ -600,13 +586,13 @@ export const WebSocketUtils = {
    */
   getReadyStateDescription: (state: WebSocketReadyState): string => {
     switch (state) {
-      case WebSocketReadyState.CONNECTING:
+      case WebSocketReadyState["CONNECTING"]:
         return 'Connecting';
-      case WebSocketReadyState.OPEN:
+      case WebSocketReadyState["OPEN"]:
         return 'Open';
-      case WebSocketReadyState.CLOSING:
+      case WebSocketReadyState["CLOSING"]:
         return 'Closing';
-      case WebSocketReadyState.CLOSED:
+      case WebSocketReadyState["CLOSED"]:
         return 'Closed';
       default:
         return `Unknown (${state})`;

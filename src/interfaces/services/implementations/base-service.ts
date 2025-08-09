@@ -6,19 +6,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../../../utils/logger';
-import type {
-  IService,
-  ServiceConfig,
-  ServiceDependencyConfig,
-  ServiceEvent,
-  ServiceEventType,
-  ServiceLifecycleStatus,
-  ServiceMetrics,
-  ServiceOperationOptions,
-  ServiceOperationResponse,
-  ServiceStatus,
-} from '../core/interfaces';
+import { createLogger } from '../../../utils/logger';
+import type { IService } from '../core/interfaces';
 import {
   ServiceConfigurationError,
   ServiceDependencyError,
@@ -53,8 +42,8 @@ export abstract class BaseService extends EventEmitter implements IService {
     this.logger = createLogger(`Service:${name}`);
 
     // Initialize dependencies
-    if (config.dependencies) {
-      config.dependencies.forEach((dep) => {
+    if (config?.["dependencies"]) {
+      config?.["dependencies"]?.forEach((dep) => {
         this.dependencies.set(dep.serviceName, dep);
       });
     }
@@ -359,9 +348,9 @@ export abstract class BaseService extends EventEmitter implements IService {
     this.config = newConfig;
 
     // Update dependencies if changed
-    if (config.dependencies) {
+    if (config?.["dependencies"]) {
       this.dependencies.clear();
-      config.dependencies.forEach((dep) => {
+      config?.["dependencies"]?.forEach((dep) => {
         this.dependencies.set(dep.serviceName, dep);
       });
     }
@@ -372,18 +361,18 @@ export abstract class BaseService extends EventEmitter implements IService {
   async validateConfig(config: ServiceConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config.name || !config.type) {
+      if (!config?.name || !config?.type) {
         return false;
       }
 
       // Validate timeout
-      if (config.timeout && config.timeout < 1000) {
+      if (config?.["timeout"] && config?.["timeout"] < 1000) {
         return false;
       }
 
       // Validate dependencies
-      if (config.dependencies) {
-        for (const dep of config.dependencies) {
+      if (config?.["dependencies"]) {
+        for (const dep of config?.["dependencies"]) {
           if (!dep.serviceName) {
             return false;
           }
@@ -423,7 +412,7 @@ export abstract class BaseService extends EventEmitter implements IService {
       }
 
       // Apply timeout if specified
-      const timeout = options?.timeout || this.config.timeout || 30000;
+      const timeout = options?.["timeout"] || this.config.timeout || 30000;
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new ServiceTimeoutError(this.name, operation, timeout)), timeout)
       );
@@ -457,7 +446,7 @@ export abstract class BaseService extends EventEmitter implements IService {
         })
       );
 
-      if (options?.trackMetrics !== false) {
+      if (options?.["trackMetrics"] !== false) {
         this.emit('metrics-update', this.createEvent('metrics-update'));
       }
 
@@ -522,7 +511,7 @@ export abstract class BaseService extends EventEmitter implements IService {
           this.logger.debug(`Checking dependency: ${depName}`);
 
           // Simulate dependency check with timeout
-          const _timeout = depConfig.timeout || 5000;
+          const _timeout = depConfig?.timeout || 5000;
           await new Promise((resolve) => setTimeout(resolve, Math.random() * 100));
 
           return { name: depName, available: true };
@@ -534,10 +523,9 @@ export abstract class BaseService extends EventEmitter implements IService {
     );
 
     const results = await Promise.allSettled(dependencyChecks);
-    const failedDependencies = results
-      .filter((result, _index) => {
-        if (result.status === 'fulfilled') {
-          return !result.value.available;
+    const failedDependencies = results?.filter((result, _index) => {
+        if (result?.status === 'fulfilled') {
+          return !result?.value?.available;
         }
         return true; // Consider rejected promises as failed dependencies
       })

@@ -11,7 +11,6 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { DEFAULT_CONFIG } from './defaults';
 import { ConfigurationLoader } from './loader';
-import type { ConfigChangeEvent, ConfigValidationResult, SystemConfiguration } from './types';
 import { ConfigValidator } from './validator';
 
 /**
@@ -332,10 +331,10 @@ export class ConfigurationManager extends EventEmitter {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (part && (!(part in current) || typeof current?.[part] !== 'object')) {
-        current?.[part] = {};
-      }
       if (part) {
+        if (current?.[part] === undefined || typeof current?.[part] !== 'object' || current?.[part] === null) {
+          current?.[part] = {};
+        }
         current = current?.[part];
       }
     }

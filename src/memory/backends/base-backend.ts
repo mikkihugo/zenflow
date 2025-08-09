@@ -6,8 +6,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { MemoryConfig } from '../providers/memory-providers';
-import type { BackendCapabilities } from './factory';
 
 // Additional types needed for base backend
 export interface MemoryEntry {
@@ -241,7 +239,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
   public async batchRetrieve<T = any>(keys: string[]): Promise<Record<string, T | null>> {
     const results: Record<string, T | null> = {};
     for (const key of keys) {
-      results[key] = await this.retrieve<T>(key);
+      results?.[key] = await this.retrieve<T>(key);
     }
     return results;
   }
@@ -249,7 +247,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
   public async batchDelete(keys: string[]): Promise<Record<string, boolean>> {
     const results: Record<string, boolean> = {};
     for (const key of keys) {
-      results[key] = await this.delete(key);
+      results?.[key] = await this.delete(key);
     }
     return results;
   }
@@ -282,7 +280,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
     for (const key of results) {
       const value = await this.retrieve(key);
       if (value !== null) {
-        resultMap[key] = value;
+        resultMap?.[key] = value;
       }
     }
     return resultMap;

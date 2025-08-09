@@ -112,7 +112,7 @@ export interface StepExecutionResult {
  * 
  * @example
  */
-export interface CompletedStepInfo {
+export interface dStepInfo {
   readonly index: number;
   readonly step: WorkflowStep;
   readonly result: StepExecutionResult;

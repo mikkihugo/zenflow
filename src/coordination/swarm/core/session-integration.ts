@@ -10,16 +10,10 @@ const logger = getLogger("coordination-swarm-core-session-integration");
 // Node.js modules
 import { EventEmitter } from 'node:events';
 
-// External dependencies
-import type { IDao, SessionCoordinationDao } from '../../../database';
-
 // Internal modules - absolute paths
 import { ZenSwarm } from './base-swarm';
-// Internal modules - types
-import type { SessionConfig, SessionState } from './session-manager';
 import { SessionManager } from './session-manager';
 import { SessionRecovery, SessionValidator } from './session-utils';
-import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './types';
 
 /**
  * Enhanced ZenSwarm with session management capabilities.
@@ -346,7 +340,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
    */
   async addAgent(config: AgentConfig): Promise<string> {
     // Create agent ID and simulate adding agent
-    const agentId = config.id || `agent-${Date.now()}`;
+    const agentId = config?.id || `agent-${Date.now()}`;
 
     // For now, just emit the event since the base class doesn't have addAgent
     this.emit('agent:added', { agentId, config });
@@ -633,7 +627,7 @@ export class SessionRecoveryService extends EventEmitter {
         healthReport['healthy']++;
       } else {
         healthReport['corrupted']++;
-        healthReport['needsRecovery'].push({
+        healthReport['needsRecovery']?.push({
           sessionId: session.id,
           name: session.name,
           errors: validation.errors,
@@ -641,13 +635,13 @@ export class SessionRecoveryService extends EventEmitter {
 
         // Generate recovery recommendation
         if (session.checkpoints.length > 0) {
-          healthReport['recoveryRecommendations'].push({
+          healthReport['recoveryRecommendations']?.push({
             sessionId: session.id,
             recommendation: 'automatic_recovery',
             availableCheckpoints: session.checkpoints.length,
           });
         } else {
-          healthReport['recoveryRecommendations'].push({
+          healthReport['recoveryRecommendations']?.push({
             sessionId: session.id,
             recommendation: 'manual_intervention',
             reason: 'No checkpoints available',
@@ -666,8 +660,7 @@ export class SessionRecoveryService extends EventEmitter {
   async scheduleAutoRecovery(): Promise<void> {
     const healthReport = await this.runHealthCheck();
 
-    const autoRecoverySessions = healthReport['recoveryRecommendations']
-      .filter((rec: any) => rec.recommendation === 'automatic_recovery')
+    const autoRecoverySessions = healthReport['recoveryRecommendations']?.filter((rec: any) => rec.recommendation === 'automatic_recovery')
       .map((rec: any) => rec.sessionId);
 
     this.emit('auto_recovery:scheduled', {

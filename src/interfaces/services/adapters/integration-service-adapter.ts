@@ -12,10 +12,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type {
-  ArchitecturalValidation,
-  ArchitectureDesign,
-} from '../../../coordination/swarm/sparc/database/architecture-storage';
 
 import { ArchitectureStorageService } from '../../../coordination/swarm/sparc/database/architecture-storage';
 import {
@@ -24,23 +20,10 @@ import {
   RESTAdapter,
   WebSocketAdapter,
 } from '../../../core/pattern-integration';
-import type { ConnectionConfig } from '../../../integration/adapter-system';
-import type { APIResult } from '../../../interfaces/api/safe-api-client';
 import { SafeAPIClient, SafeAPIService } from '../../../interfaces/api/safe-api-client';
 import { createLogger, type Logger } from '../../../utils/logger';
 import { getMCPServerURL } from '../../config/url-builder';
-import type {
-  IService,
-  ServiceDependencyConfig,
-  ServiceEvent,
-  ServiceEventType,
-  ServiceLifecycleStatus,
-  ServiceMetrics,
-  ServiceOperationOptions,
-  ServiceOperationResponse,
-  ServiceStatus,
-} from '../core/interfaces';
-import type { IntegrationServiceConfig } from '../types';
+import type { IService } from '../core/interfaces';
 import { getConfig } from '../../../config';
 
 /**
@@ -305,8 +288,8 @@ export class IntegrationServiceAdapter implements IService {
   >();
 
   constructor(config: IntegrationServiceAdapterConfig) {
-    this.name = config.name;
-    this.type = config.type;
+    this.name = config?.name;
+    this.type = config?.type;
     this.config = {
       // Default configuration values
       architectureStorage: {
@@ -316,17 +299,17 @@ export class IntegrationServiceAdapter implements IService {
         enableVersioning: true,
         enableValidationTracking: true,
         cachingEnabled: true,
-        ...config.architectureStorage,
+        ...config?.["architectureStorage"],
       },
       safeAPI: {
         enabled: true,
         baseURL: (() => {
           const centralConfig = getConfig();
-          return `http://${centralConfig.interfaces.web.host}:${centralConfig.interfaces.web.port}`;
+          return `http://${centralConfig?.interfaces?.web?.host}:${centralConfig?.interfaces?.web?.port}`;
         })(),
         timeout: (() => {
           const centralConfig = getConfig();
-          return centralConfig.network.defaultTimeout;
+          return centralConfig?.network?.defaultTimeout;
         })(),
         retries: 3,
         rateLimiting: {
@@ -343,7 +326,7 @@ export class IntegrationServiceAdapter implements IService {
           strictMode: false,
           sanitization: true,
         },
-        ...config.safeAPI,
+        ...config?.["safeAPI"],
       },
       protocolManagement: {
         enabled: true,
@@ -364,7 +347,7 @@ export class IntegrationServiceAdapter implements IService {
           interval: 30000, // 30 seconds
           timeout: 5000,
         },
-        ...config.protocolManagement,
+        ...config?.["protocolManagement"],
       },
       performance: {
         enableRequestDeduplication: true,
@@ -373,7 +356,7 @@ export class IntegrationServiceAdapter implements IService {
         enableMetricsCollection: true,
         connectionPooling: true,
         compressionEnabled: true,
-        ...config.performance,
+        ...config?.["performance"],
       },
       retry: {
         enabled: true,
@@ -389,7 +372,7 @@ export class IntegrationServiceAdapter implements IService {
           'validation-check',
           'health-check',
         ],
-        ...config.retry,
+        ...config?.["retry"],
       },
       cache: {
         enabled: true,
@@ -397,7 +380,7 @@ export class IntegrationServiceAdapter implements IService {
         defaultTTL: 600000, // 10 minutes
         maxSize: 1000,
         keyPrefix: 'integration-adapter:',
-        ...config.cache,
+        ...config?.["cache"],
       },
       security: {
         enableRequestValidation: true,
@@ -405,14 +388,14 @@ export class IntegrationServiceAdapter implements IService {
         enableRateLimiting: true,
         enableAuditLogging: true,
         enableEncryption: false,
-        ...config.security,
+        ...config?.["security"],
       },
       multiProtocol: {
         enableProtocolSwitching: true,
         protocolPriorityOrder: ['http', 'websocket', 'mcp-http'],
         enableLoadBalancing: true,
         enableCircuitBreaker: true,
-        ...config.multiProtocol,
+        ...config?.["multiProtocol"],
       },
       ...config,
     };
@@ -462,9 +445,9 @@ export class IntegrationServiceAdapter implements IService {
           const container = new DIContainer();
           container.register(CORE_TOKENS.Logger, () => this.logger);
           container.register(CORE_TOKENS.Config, () => ({}));
-          container.register(DATABASE_TOKENS.DALFactory, () => new DALFactory());
+          container.register(DATABASE_TOKENS?.DALFactory, () => new DALFactory());
 
-          const _dalFactory = container.resolve(DATABASE_TOKENS.DALFactory);
+          const _dalFactory = container.resolve(DATABASE_TOKENS?.DALFactory);
 
           // Create real database adapter from DAL Factory
           realDatabaseAdapter = {
@@ -522,18 +505,18 @@ export class IntegrationServiceAdapter implements IService {
 
         const apiConfig = this.config.safeAPI;
         this.safeAPIClient = new SafeAPIClient(
-          apiConfig.baseURL || getMCPServerURL(),
-          apiConfig.authentication?.credentials
+          apiConfig?.baseURL || getMCPServerURL(),
+          apiConfig?.authentication?.credentials
             ? {
-                Authorization: `Bearer ${apiConfig.authentication.credentials}`,
+                Authorization: `Bearer ${apiConfig?.authentication?.credentials}`,
               }
             : {},
-          apiConfig.timeout || 30000
+          apiConfig?.timeout || 30000
         );
 
         this.safeAPIService = new SafeAPIService(
-          apiConfig.baseURL || getMCPServerURL(),
-          apiConfig.authentication?.credentials
+          apiConfig?.baseURL || getMCPServerURL(),
+          apiConfig?.authentication?.credentials
         );
 
         await this.addDependency({
@@ -974,36 +957,36 @@ export class IntegrationServiceAdapter implements IService {
   async validateConfig(config: IntegrationServiceAdapterConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config.name || !config.type) {
+      if (!config?.name || !config?.type) {
         this.logger.error('Configuration missing required fields: name or type');
         return false;
       }
 
       // Validate architecture storage configuration
-      if (config.architectureStorage?.enabled) {
+      if (config?.["architectureStorage"]?.["enabled"]) {
         const validDbTypes = ['postgresql', 'sqlite', 'mysql'];
         if (
-          config.architectureStorage.databaseType &&
-          !validDbTypes.includes(config.architectureStorage.databaseType)
+          config?.["architectureStorage"]?.["databaseType"] &&
+          !validDbTypes.includes(config?.["architectureStorage"]?.["databaseType"])
         ) {
-          this.logger.error(`Invalid database type: ${config.architectureStorage.databaseType}`);
+          this.logger.error(`Invalid database type: ${config?.["architectureStorage"]?.["databaseType"]}`);
           return false;
         }
       }
 
       // Validate safe API configuration
-      if (config.safeAPI?.enabled) {
-        if (config.safeAPI.timeout && config.safeAPI.timeout < 1000) {
+      if (config?.["safeAPI"]?.["enabled"]) {
+        if (config?.["safeAPI"]?.["timeout"] && config?.["safeAPI"]?.["timeout"] < 1000) {
           this.logger.error('API timeout must be at least 1000ms');
           return false;
         }
-        if (config.safeAPI.retries && config.safeAPI.retries < 0) {
+        if (config?.["safeAPI"]?.["retries"] && config?.["safeAPI"]?.["retries"] < 0) {
           this.logger.error('API retries must be non-negative');
           return false;
         }
         if (
-          config.safeAPI.rateLimiting?.enabled &&
-          config.safeAPI.rateLimiting.requestsPerSecond < 1
+          config?.["safeAPI"]?.["rateLimiting"]?.["enabled"] &&
+          config?.["safeAPI"]?.["rateLimiting"]?.["requestsPerSecond"] < 1
         ) {
           this.logger.error('Rate limiting requests per second must be at least 1');
           return false;
@@ -1011,16 +994,16 @@ export class IntegrationServiceAdapter implements IService {
       }
 
       // Validate protocol management configuration
-      if (config.protocolManagement?.enabled) {
+      if (config?.["protocolManagement"]?.["enabled"]) {
         if (
-          !config.protocolManagement.supportedProtocols ||
-          config.protocolManagement.supportedProtocols.length === 0
+          !config?.["protocolManagement"]?.["supportedProtocols"] ||
+          config?.["protocolManagement"]?.["supportedProtocols"].length === 0
         ) {
           this.logger.error('Protocol management requires at least one supported protocol');
           return false;
         }
-        if (config.protocolManagement.connectionPooling?.enabled) {
-          if (config.protocolManagement.connectionPooling.maxConnections < 1) {
+        if (config?.["protocolManagement"]?.["connectionPooling"]?.["enabled"]) {
+          if (config?.["protocolManagement"]?.["connectionPooling"]?.["maxConnections"] < 1) {
             this.logger.error('Max connections must be at least 1');
             return false;
           }
@@ -1028,19 +1011,19 @@ export class IntegrationServiceAdapter implements IService {
       }
 
       // Validate performance configuration
-      if (config.performance?.maxConcurrency && config.performance.maxConcurrency < 1) {
+      if (config?.["performance"]?.["maxConcurrency"] && config?.["performance"]?.["maxConcurrency"] < 1) {
         this.logger.error('Max concurrency must be at least 1');
         return false;
       }
 
       // Validate retry configuration
-      if (config.retry?.enabled && config.retry.maxAttempts && config.retry.maxAttempts < 1) {
+      if (config?.["retry"]?.["enabled"] && config?.["retry"]?.["maxAttempts"] && config?.["retry"]?.["maxAttempts"] < 1) {
         this.logger.error('Retry max attempts must be at least 1');
         return false;
       }
 
       // Validate cache configuration
-      if (config.cache?.enabled && config.cache.maxSize && config.cache.maxSize < 1) {
+      if (config?.["cache"]?.["enabled"] && config?.["cache"]?.["maxSize"] && config?.["cache"]?.["maxSize"] < 1) {
         this.logger.error('Cache max size must be at least 1');
         return false;
       }
@@ -1142,7 +1125,7 @@ export class IntegrationServiceAdapter implements IService {
       }
 
       // Apply timeout if specified
-      const timeout = options?.timeout || this.config.performance?.requestTimeout || 30000;
+      const timeout = options?.["timeout"] || this.config.performance?.requestTimeout || 30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(() => reject(new ServiceTimeoutError(this.name, operation, timeout)), timeout);
       });
@@ -1265,7 +1248,7 @@ export class IntegrationServiceAdapter implements IService {
     try {
       const dependencyChecks = Array.from(this.dependencies.entries()).map(
         async ([name, config]) => {
-          if (!config.healthCheck) {
+          if (!config?.["healthCheck"]) {
             return true; // Skip health check if not required
           }
 
@@ -1275,13 +1258,13 @@ export class IntegrationServiceAdapter implements IService {
             return true;
           } catch (error) {
             this.logger.warn(`Dependency ${name} health check failed:`, error);
-            return !config.required; // Return false only if dependency is required
+            return !config?.["required"]; // Return false only if dependency is required
           }
         }
       );
 
       const results = await Promise.all(dependencyChecks);
-      return results.every((result) => result === true);
+      return results?.every((result) => result === true);
     } catch (error) {
       this.logger.error(`Error checking dependencies for ${this.name}:`, error);
       return false;
@@ -1421,91 +1404,91 @@ export class IntegrationServiceAdapter implements IService {
     switch (operation) {
       // Architecture Storage Service operations
       case 'architecture-save':
-        return (await this.saveArchitecture(params?.architecture, params?.projectId)) as T;
+        return (await this.saveArchitecture(params?.["architecture"], params?.["projectId"])) as T;
 
       case 'architecture-retrieve':
-        return (await this.getArchitecture(params?.architectureId)) as T;
+        return (await this.getArchitecture(params?.["architectureId"])) as T;
 
       case 'architecture-update':
-        return (await this.updateArchitecture(params?.architectureId, params?.architecture)) as T;
+        return (await this.updateArchitecture(params?.["architectureId"], params?.["architecture"])) as T;
 
       case 'architecture-delete':
-        return (await this.deleteArchitecture(params?.architectureId)) as T;
+        return (await this.deleteArchitecture(params?.["architectureId"])) as T;
 
       case 'architecture-search':
-        return (await this.searchArchitectures(params?.criteria)) as T;
+        return (await this.searchArchitectures(params?.["criteria"])) as T;
 
       case 'architecture-list-by-project':
-        return (await this.getArchitecturesByProject(params?.projectId)) as T;
+        return (await this.getArchitecturesByProject(params?.["projectId"])) as T;
 
       case 'architecture-list-by-domain':
-        return (await this.getArchitecturesByDomain(params?.domain)) as T;
+        return (await this.getArchitecturesByDomain(params?.["domain"])) as T;
 
       case 'architecture-validation-save':
         return (await this.saveValidation(
-          params?.architectureId,
-          params?.validation,
-          params?.type
+          params?.["architectureId"],
+          params?.["validation"],
+          params?.["type"]
         )) as T;
 
       case 'architecture-validation-history':
-        return (await this.getValidationHistory(params?.architectureId)) as T;
+        return (await this.getValidationHistory(params?.["architectureId"])) as T;
 
       case 'architecture-stats':
         return (await this.getArchitectureStats()) as T;
 
       // Safe API Service operations
       case 'api-get':
-        return await this.safeAPIGet<T>(params?.endpoint, params?.options);
+        return await this.safeAPIGet<T>(params?.["endpoint"], params?.["options"]);
 
       case 'api-post':
-        return await this.safeAPIPost<T>(params?.endpoint, params?.data, params?.options);
+        return await this.safeAPIPost<T>(params?.["endpoint"], params?.["data"], params?.["options"]);
 
       case 'api-put':
-        return await this.safeAPIPut<T>(params?.endpoint, params?.data, params?.options);
+        return await this.safeAPIPut<T>(params?.["endpoint"], params?.["data"], params?.["options"]);
 
       case 'api-delete':
-        return await this.safeAPIDelete<T>(params?.endpoint, params?.options);
+        return await this.safeAPIDelete<T>(params?.["endpoint"], params?.["options"]);
 
       case 'api-create-resource':
-        return await this.createResource<T>(params?.endpoint, params?.data);
+        return await this.createResource<T>(params?.["endpoint"], params?.["data"]);
 
       case 'api-get-resource':
-        return await this.getResource<T>(params?.endpoint, params?.id);
+        return await this.getResource<T>(params?.["endpoint"], params?.["id"]);
 
       case 'api-list-resources':
-        return await this.listResources<T>(params?.endpoint, params?.queryParams);
+        return await this.listResources<T>(params?.["endpoint"], params?.["queryParams"]);
 
       case 'api-update-resource':
-        return await this.updateResource<T>(params?.endpoint, params?.id, params?.data);
+        return await this.updateResource<T>(params?.["endpoint"], params?.["id"], params?.["data"]);
 
       case 'api-delete-resource':
-        return (await this.deleteResource(params?.endpoint, params?.id)) as T;
+        return (await this.deleteResource(params?.["endpoint"], params?.["id"])) as T;
 
       // Protocol Management operations
       case 'protocol-connect':
-        return (await this.connectProtocol(params?.protocol, params?.config)) as T;
+        return (await this.connectProtocol(params?.["protocol"], params?.["config"])) as T;
 
       case 'protocol-disconnect':
-        return (await this.disconnectProtocol(params?.protocol)) as T;
+        return (await this.disconnectProtocol(params?.["protocol"])) as T;
 
       case 'protocol-send':
-        return await this.sendProtocolMessage<T>(params?.protocol, params?.message);
+        return await this.sendProtocolMessage<T>(params?.["protocol"], params?.["message"]);
 
       case 'protocol-receive':
-        return await this.receiveProtocolMessage<T>(params?.protocol, params?.timeout);
+        return await this.receiveProtocolMessage<T>(params?.["protocol"], params?.["timeout"]);
 
       case 'protocol-health-check':
-        return (await this.checkProtocolHealth(params?.protocol)) as T;
+        return (await this.checkProtocolHealth(params?.["protocol"])) as T;
 
       case 'protocol-list':
         return (await this.listActiveProtocols()) as T;
 
       case 'protocol-switch':
-        return (await this.switchProtocol(params?.fromProtocol, params?.toProtocol)) as T;
+        return (await this.switchProtocol(params?.["fromProtocol"], params?.["toProtocol"])) as T;
 
       case 'protocol-broadcast':
-        return (await this.broadcastMessage(params?.message, params?.protocols)) as T;
+        return (await this.broadcastMessage(params?.["message"], params?.["protocols"])) as T;
 
       // Connection management operations
       case 'connection-pool-status':
@@ -1516,13 +1499,13 @@ export class IntegrationServiceAdapter implements IService {
 
       // Security and validation operations
       case 'validate-request':
-        return (await this.validateRequest(params?.request)) as T;
+        return (await this.validateRequest(params?.["request"])) as T;
 
       case 'sanitize-response':
-        return (await this.sanitizeResponse(params?.response)) as T;
+        return (await this.sanitizeResponse(params?.["response"])) as T;
 
       case 'rate-limit-check':
-        return (await this.checkRateLimit(params?.endpoint, params?.clientId)) as T;
+        return (await this.checkRateLimit(params?.["endpoint"], params?.["clientId"])) as T;
 
       // Utility operations
       case 'cache-stats':
@@ -1758,7 +1741,7 @@ export class IntegrationServiceAdapter implements IService {
     }
 
     const result = await this.safeAPIClient.get<T>(endpoint, options);
-    this.updateAPIEndpointMetrics(endpoint, Date.now(), result.success);
+    this.updateAPIEndpointMetrics(endpoint, Date.now(), result?.success);
     return result;
   }
 
@@ -1768,7 +1751,7 @@ export class IntegrationServiceAdapter implements IService {
     }
 
     const result = await this.safeAPIClient.post<T>(endpoint, data, options);
-    this.updateAPIEndpointMetrics(endpoint, Date.now(), result.success);
+    this.updateAPIEndpointMetrics(endpoint, Date.now(), result?.success);
     return result;
   }
 
@@ -1778,7 +1761,7 @@ export class IntegrationServiceAdapter implements IService {
     }
 
     const result = await this.safeAPIClient.put<T>(endpoint, data, options);
-    this.updateAPIEndpointMetrics(endpoint, Date.now(), result.success);
+    this.updateAPIEndpointMetrics(endpoint, Date.now(), result?.success);
     return result;
   }
 
@@ -1788,7 +1771,7 @@ export class IntegrationServiceAdapter implements IService {
     }
 
     const result = await this.safeAPIClient.delete<T>(endpoint, options);
-    this.updateAPIEndpointMetrics(endpoint, Date.now(), result.success);
+    this.updateAPIEndpointMetrics(endpoint, Date.now(), result?.success);
     return result;
   }
 
@@ -1976,9 +1959,9 @@ export class IntegrationServiceAdapter implements IService {
     for (const protocol of targetProtocols) {
       try {
         const result = await this.sendProtocolMessage(protocol, message);
-        results.push({ protocol, success: true, result });
+        results?.push({ protocol, success: true, result });
       } catch (error) {
-        results.push({ protocol, success: false, error: error.message });
+        results?.push({ protocol, success: false, error: error.message });
       }
     }
 
@@ -2011,7 +1994,7 @@ export class IntegrationServiceAdapter implements IService {
       try {
         if (pool && typeof pool.cleanup === 'function') {
           const result = await pool.cleanup();
-          cleaned += result.closed || 0;
+          cleaned += result?.closed || 0;
         }
       } catch (error) {
         this.logger.warn(`Failed to cleanup connection pool for ${protocol}:`, error);
@@ -2222,7 +2205,7 @@ export class IntegrationServiceAdapter implements IService {
 
     const toRemove = this.cache.size - targetSize;
     for (let i = 0; i < toRemove; i++) {
-      this.cache.delete(entries[i][0]);
+      this.cache.delete(entries[i]?.[0]);
     }
 
     this.logger.debug(`Cache cleanup: removed ${toRemove} entries`);
@@ -2386,11 +2369,11 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   private extractProtocol(params: any): string | undefined {
-    return params?.protocol || params?.config?.protocol;
+    return params?.["protocol"] || params?.["config"]?.protocol;
   }
 
   private extractEndpoint(params: any): string | undefined {
-    return params?.endpoint || params?.url;
+    return params?.["endpoint"] || params?.["url"];
   }
 
   private determineHealthStatus(
@@ -2594,10 +2577,10 @@ export function createDefaultIntegrationServiceAdapterConfig(
 ): IntegrationServiceAdapterConfig {
   return {
     name,
-    type: ServiceType.API, // Using API as closest match for integration services
+    type: ServiceType["API"], // Using API as closest match for integration services
     enabled: true,
-    priority: ServicePriority.HIGH,
-    environment: ServiceEnvironment.DEVELOPMENT,
+    priority: ServicePriority["HIGH"],
+    environment: ServiceEnvironment["DEVELOPMENT"],
     timeout: 30000,
     health: {
       enabled: true,

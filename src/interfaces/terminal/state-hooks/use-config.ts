@@ -110,12 +110,12 @@ export const useConfig = (): UseConfigReturn => {
           const configData = await fs.readFile(configPath, 'utf-8');
           const parsedConfig = JSON.parse(configData);
 
-          if (parsedConfig.terminal) {
-            return parsedConfig.terminal;
-          } else if (parsedConfig.theme || parsedConfig.swarmConfig) {
+          if (parsedConfig?.terminal) {
+            return parsedConfig?.terminal;
+          } else if (parsedConfig?.theme || parsedConfig?.swarmConfig) {
             return parsedConfig;
           }
-        } catch (_err) {}
+        } catch (err) {}
       }
 
       return null;
@@ -134,7 +134,7 @@ export const useConfig = (): UseConfigReturn => {
       const configDir = './.claude';
       try {
         await fs.mkdir(configDir, { recursive: true });
-      } catch (_err) {
+      } catch (err) {
         // Directory might already exist
       }
 
@@ -165,13 +165,13 @@ export const useConfig = (): UseConfigReturn => {
 
   const updateUIConfig = async (updates: Partial<TerminalConfig['ui']>) => {
     await updateConfig({
-      ui: { ...config.ui, ...updates },
+      ui: { ...config?.["ui"], ...updates },
     });
   };
 
   const updateSwarmConfig = async (updates: Partial<TerminalConfig['swarmConfig']>) => {
     await updateConfig({
-      swarmConfig: { ...config.swarmConfig, ...updates },
+      swarmConfig: { ...config?.["swarmConfig"], ...updates },
     });
   };
 

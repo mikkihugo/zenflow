@@ -6,7 +6,6 @@ const logger = getLogger("coordination-load-balancing-routing-health-checker");
  */
 
 import { EventEmitter } from 'node:events';
-import type { Agent } from '../types';
 
 interface HealthStatus {
   healthy: boolean;

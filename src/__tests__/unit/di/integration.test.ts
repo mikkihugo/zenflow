@@ -36,17 +36,17 @@ describe('DI System Integration Tests', () => {
       const container = createContainerBuilder()
         .singleton(CORE_TOKENS.Logger, () => new MockLogger())
         .singleton(CORE_TOKENS.Config, () => new MockConfig({ env: 'test' }))
-        .transient(SWARM_TOKENS.MessageBroker, () => new MockMessageBroker())
+        .transient(SWARM_TOKENS["MessageBroker"], () => new MockMessageBroker())
         .build();
 
       const logger = container.resolve(CORE_TOKENS.Logger);
       const config = container.resolve(CORE_TOKENS.Config);
-      const broker1 = container.resolve(SWARM_TOKENS.MessageBroker);
-      const broker2 = container.resolve(SWARM_TOKENS.MessageBroker);
+      const broker1 = container.resolve(SWARM_TOKENS["MessageBroker"]);
+      const broker2 = container.resolve(SWARM_TOKENS["MessageBroker"]);
 
       expect(logger).toBeInstanceOf(MockLogger);
       expect(config).toBeInstanceOf(MockConfig);
-      expect(config.get('env')).toBe('test');
+      expect(config?.["get"]('env')).toBe('test');
       expect(broker1).toBeInstanceOf(MockMessageBroker);
       expect(broker2).toBeInstanceOf(MockMessageBroker);
       expect(broker1).not.toBe(broker2); // Different instances (transient)
@@ -89,7 +89,7 @@ describe('DI System Integration Tests', () => {
     });
 
     it('should create a fully functional swarm system', async () => {
-      const coordinator = container.resolve(SWARM_TOKENS.SwarmCoordinator);
+      const coordinator = container.resolve(SWARM_TOKENS["SwarmCoordinator"]);
 
       expect(coordinator).toBeInstanceOf(EnhancedSwarmCoordinator);
 
@@ -136,11 +136,11 @@ describe('DI System Integration Tests', () => {
 
     it('should handle dependency chain resolution', () => {
       // Verify the entire dependency chain is resolved correctly
-      const coordinator = container.resolve(SWARM_TOKENS.SwarmCoordinator);
+      const coordinator = container.resolve(SWARM_TOKENS["SwarmCoordinator"]);
       const logger = container.resolve(CORE_TOKENS.Logger);
       const config = container.resolve(CORE_TOKENS.Config);
-      const agentRegistry = container.resolve(SWARM_TOKENS.AgentRegistry);
-      const messageBroker = container.resolve(SWARM_TOKENS.MessageBroker);
+      const agentRegistry = container.resolve(SWARM_TOKENS["AgentRegistry"]);
+      const messageBroker = container.resolve(SWARM_TOKENS["MessageBroker"]);
 
       expect(coordinator).toBeInstanceOf(EnhancedSwarmCoordinator);
       expect(logger).toBeInstanceOf(MockLogger);
@@ -163,8 +163,8 @@ describe('DI System Integration Tests', () => {
       const config2 = container2.resolve(CORE_TOKENS.Config);
 
       expect(config1).not.toBe(config2);
-      expect(config1.get('swarm.maxAgents')).toBe(5);
-      expect(config2.get('swarm.maxAgents')).toBe(10);
+      expect(config1?.get('swarm.maxAgents')).toBe(5);
+      expect(config2?.get('swarm.maxAgents')).toBe(10);
     });
   });
 
@@ -212,7 +212,7 @@ describe('DI System Integration Tests', () => {
       const instance1a = scope1.resolve(testToken);
       const instance1b = scope1.resolve(testToken);
       const instance2 = scope2.resolve(testToken);
-      const instanceChild1 = childScope1.resolve(testToken);
+      const instanceChild1 = childScope1?.resolve(testToken);
 
       expect(instance1a).toBe(instance1b); // Same in scope
       expect(instance1a).not.toBe(instance2); // Different scopes
@@ -231,7 +231,7 @@ describe('DI System Integration Tests', () => {
       for (let i = 0; i < iterations; i++) {
         container.resolve(CORE_TOKENS.Logger);
         container.resolve(CORE_TOKENS.Config);
-        container.resolve(SWARM_TOKENS.SwarmCoordinator);
+        container.resolve(SWARM_TOKENS["SwarmCoordinator"]);
       }
 
       const endTime = Date.now();
@@ -246,7 +246,7 @@ describe('DI System Integration Tests', () => {
 
       // Create multiple concurrent resolution promises
       const promises = Array.from({ length: 100 }, () =>
-        Promise.resolve().then(() => container.resolve(SWARM_TOKENS.SwarmCoordinator))
+        Promise.resolve().then(() => container.resolve(SWARM_TOKENS["SwarmCoordinator"]))
       );
 
       const coordinators = await Promise.all(promises);
@@ -282,11 +282,11 @@ describe('DI System Integration Tests', () => {
 
     it('should demonstrate proper resource cleanup', async () => {
       const container = createSwarmContainer();
-      const coordinator = container.resolve(SWARM_TOKENS.SwarmCoordinator);
+      const coordinator = container.resolve(SWARM_TOKENS["SwarmCoordinator"]);
 
       // Use the coordinator
       await coordinator.initializeSwarm({ name: 'cleanup-test' });
-      const _agentId = await coordinator.addAgent({ type: 'test' });
+      const agentId = await coordinator.addAgent({ type: 'test' });
 
       // Verify resources exist
       const beforeMetrics = coordinator.getMetrics();

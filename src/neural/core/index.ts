@@ -72,7 +72,7 @@ export const NeuralCoreUtils = {
    * @param config
    */
   validateNetworkConfig: (config: any): boolean => {
-    return Boolean(config?.layers && Array.isArray(config.layers));
+    return Boolean(config?.["layers"] && Array.isArray(config?.["layers"]));
   },
 
   /**

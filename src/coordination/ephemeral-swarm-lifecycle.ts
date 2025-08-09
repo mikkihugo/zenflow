@@ -1,5 +1,5 @@
 /**
- * Ephemeral Swarm Lifecycle Management
+ * Ephemeral Swarm Lifecycle Management.
  *
  * Manages on-demand swarm creation, execution, and cleanup.
  * Swarms are temporary and exist only for the duration of tasks.
@@ -83,7 +83,7 @@ export type SwarmStatus =
   | 'terminated'; // Swarm destroyed
 
 /**
- * Manages ephemeral swarm lifecycle
+ * Manages ephemeral swarm lifecycle.
  *
  * @example
  */
@@ -104,7 +104,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Request a new ephemeral swarm
+   * Request a new ephemeral swarm.
    *
    * @param request
    */
@@ -130,7 +130,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Create and provision a new swarm
+   * Create and provision a new swarm.
    *
    * @param request
    */
@@ -184,7 +184,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Spawn agents for the swarm
+   * Spawn agents for the swarm.
    *
    * @param swarm
    * @param request
@@ -229,7 +229,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Spawn a single agent
+   * Spawn a single agent.
    *
    * @param agent
    * @param swarmId
@@ -249,7 +249,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Initialize swarm coordination
+   * Initialize swarm coordination.
    *
    * @param swarm
    */
@@ -272,7 +272,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Start swarm task execution
+   * Start swarm task execution.
    *
    * @param swarm
    */
@@ -302,7 +302,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Execute a single task step
+   * Execute a single task step.
    *
    * @param swarm
    * @param step
@@ -351,7 +351,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Select best agent for a task step
+   * Select best agent for a task step.
    *
    * @param swarm
    * @param _step
@@ -370,7 +370,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Generate task steps from swarm request
+   * Generate task steps from swarm request.
    *
    * @param request
    */
@@ -396,7 +396,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Schedule swarm cleanup
+   * Schedule swarm cleanup.
    *
    * @param swarmId
    * @param reason
@@ -424,7 +424,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Terminate a swarm and clean up resources
+   * Terminate a swarm and clean up resources.
    *
    * @param swarmId
    * @param reason
@@ -469,7 +469,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Process queued swarm requests
+   * Process queued swarm requests.
    */
   private async processSwarmQueue(): Promise<void> {
     if (this.swarmQueue.length === 0) return;
@@ -482,7 +482,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Start periodic cleanup process
+   * Start periodic cleanup process.
    */
   private startCleanupProcess(): void {
     this.cleanupTimer = setInterval(() => {
@@ -491,7 +491,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Clean up idle swarms
+   * Clean up idle swarms.
    */
   private cleanupIdleSwarms(): void {
     const now = Date.now();
@@ -506,7 +506,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Set up event handlers
+   * Set up event handlers.
    */
   private setupEventHandlers(): void {
     this.eventBus.on('task:completed', (data) => {
@@ -519,12 +519,12 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Handle task completion
+   * Handle task completion.
    *
    * @param data
    */
   private handleTaskCompletion(data: any): void {
-    const swarm = this.activeSwarms.get(data?.swarmId);
+    const swarm = this.activeSwarms.get(data?.["swarmId"]);
     if (swarm) {
       swarm.lastActivity = new Date();
       swarm.performance.tasksCompleted++;
@@ -535,20 +535,20 @@ export class EphemeralSwarmManager extends EventEmitter {
       );
 
       if (allStepsCompleted) {
-        this.scheduleSwarmCleanup(data?.swarmId, 'all_tasks_completed');
+        this.scheduleSwarmCleanup(data?.["swarmId"], 'all_tasks_completed');
       }
     }
   }
 
   /**
-   * Handle agent becoming idle
+   * Handle agent becoming idle.
    *
    * @param data
    */
   private handleAgentIdle(data: any): void {
-    const swarm = this.activeSwarms.get(data?.swarmId);
+    const swarm = this.activeSwarms.get(data?.["swarmId"]);
     if (swarm) {
-      const agent = swarm.agents.find((a) => a.id === data?.agentId);
+      const agent = swarm.agents.find((a) => a.id === data?.["agentId"]);
       if (agent) {
         agent.status = 'idle';
         agent.lastActivity = new Date();
@@ -564,7 +564,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Get current swarm status
+   * Get current swarm status.
    */
   getSwarmStatus(): SwarmManagerStatus {
     return {
@@ -585,7 +585,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Map agent type to Claude Code sub-agent
+   * Map agent type to Claude Code sub-agent.
    *
    * @param agentType
    */
@@ -602,7 +602,7 @@ export class EphemeralSwarmManager extends EventEmitter {
   }
 
   /**
-   * Shutdown the manager
+   * Shutdown the manager.
    */
   async shutdown(): Promise<void> {
     this.logger?.info('Shutting down ephemeral swarm manager');

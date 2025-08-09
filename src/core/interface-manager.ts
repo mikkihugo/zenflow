@@ -74,7 +74,7 @@ export class InterfaceManager extends EventEmitter {
   constructor(userConfig: InterfaceManagerConfig = {}) {
     super();
     // Use centralized configuration with user overrides
-    const centralConfig = config?.getAll();
+    const centralConfig = config?.["getAll"]();
     this.config = {
       defaultMode: userConfig?.defaultMode || 'auto',
       webPort: userConfig?.webPort || centralConfig?.interfaces?.web?.port,
@@ -151,7 +151,7 @@ export class InterfaceManager extends EventEmitter {
 
   private detectInterfaceMode(): InterfaceMode {
     // Use centralized environment detection
-    const centralConfig = config?.getAll();
+    const centralConfig = config?.["getAll"]();
     const environment = centralConfig?.environment;
     
     // CI environment detection

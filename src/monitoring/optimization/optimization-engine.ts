@@ -4,12 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type {
-  AnomalyDetection,
-  BottleneckAnalysis,
-  PerformanceInsights,
-} from '../analytics/performance-analyzer';
-import type { CompositeMetrics } from '../core/metrics-collector';
 
 export interface OptimizationAction {
   id: string;
@@ -482,7 +476,7 @@ export class OptimizationEngine extends EventEmitter {
 
       // Check cooldown period
       const lastSimilarAction = this.actionHistory
-        .filter((result) => result.actionId.includes(action.type))
+        .filter((result) => result?.actionId?.includes(action.type))
         .sort((a, b) => b.executionTime - a.executionTime)[0];
 
       if (lastSimilarAction && now - lastSimilarAction.executionTime < strategy.cooldownPeriod) {
@@ -491,7 +485,7 @@ export class OptimizationEngine extends EventEmitter {
 
       // Check rate limiting
       const recentActions = this.actionHistory.filter(
-        (result) => result.actionId.includes(action.type) && now - result.executionTime < 60000
+        (result) => result?.actionId?.includes(action.type) && now - result?.executionTime < 60000
       );
 
       if (recentActions.length >= strategy.maxActionsPerMinute) {
@@ -591,11 +585,11 @@ export class OptimizationEngine extends EventEmitter {
       const executionTime = Date.now() - startTime;
       const optimizationResult: OptimizationResult = {
         actionId: action.id,
-        success: result.success ?? true,
+        success: result?.success ?? true,
         executionTime,
-        beforeMetrics: result.beforeMetrics ?? ({} as CompositeMetrics),
-        afterMetrics: result.afterMetrics,
-        impact: result.impact ?? { performance: 0, efficiency: 0, cost: 0 },
+        beforeMetrics: result?.beforeMetrics ?? ({} as CompositeMetrics),
+        afterMetrics: result?.afterMetrics,
+        impact: result?.impact ?? { performance: 0, efficiency: 0, cost: 0 },
       };
 
       this.actionHistory.push(optimizationResult);
@@ -690,7 +684,7 @@ export class OptimizationEngine extends EventEmitter {
 
     const actionsByType: Record<string, number> = {};
     this.actionHistory.forEach((result) => {
-      const type = result.actionId.split('_')[0];
+      const type = result?.actionId?.split('_')[0];
       actionsByType[type] = (actionsByType[type] || 0) + 1;
     });
 

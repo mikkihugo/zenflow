@@ -8,8 +8,7 @@
  * - Focus on streaming interactions and contracts
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import type { MCPContext, MCPRequest, MCPResponse } from '../../../../utils/types';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
@@ -230,8 +229,8 @@ class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolCon
 
     this.logger.debug('Processing stream data', {
       streamId,
-      sequence: data.sequence,
-      isLast: data.isLast,
+      sequence: data?.["sequence"],
+      isLast: data?.["isLast"],
     });
 
     // Check backpressure
@@ -248,9 +247,9 @@ class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolCon
     this.metrics.recordDataTransfer(streamId, bytesWritten);
 
     // Handle end of stream
-    if (data.isLast) {
+    if (data?.["isLast"]) {
       await this.endStream(streamId, {
-        totalChunks: data.sequence + 1,
+        totalChunks: data?.["sequence"] + 1,
         totalBytes: session.bytesTransferred,
         duration: Date.now() - session.created.getTime(),
         errors: 0,
@@ -263,10 +262,10 @@ class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolCon
 
     this.logger.info('Starting protocol stream', {
       streamId,
-      method: params.method,
+      method: params?.["method"],
     });
 
-    const bufferSize = params.bufferSize || 64 * 1024;
+    const bufferSize = params?.["bufferSize"] || 64 * 1024;
     const buffer = this.bufferManager.allocateBuffer(streamId, bufferSize);
 
     if (buffer) {
@@ -536,11 +535,11 @@ describe('MCP Streaming Support - London TDD', () => {
           method: 'stream/start',
           id: 'protocol-start-1',
         });
-        expect(response.jsonrpc).toBe('2.0');
-        expect(response.id).toBe('protocol-start-1');
-        expect(response.result).toBeDefined();
-        expect(response.result.streamId).toBeDefined();
-        expect(response.result.state).toBe('active');
+        expect(response?.jsonrpc).toBe('2.0');
+        expect(response?.id).toBe('protocol-start-1');
+        expect(response?.result).toBeDefined();
+        expect(response?.result?.streamId).toBeDefined();
+        expect(response?.result?.state).toBe('active');
       });
     });
   });
@@ -657,25 +656,25 @@ describe('MCP Streaming Support - London TDD', () => {
         };
 
         // Act - Process protocol chunk
-        await streamingHandler.streamChunk(streamResponse.streamId, chunk);
+        await streamingHandler.streamChunk(streamResponse?.streamId, chunk);
 
         // Assert - Verify protocol chunk processing
         expect(mockLogger.debug).toHaveBeenCalledWith('Processing stream chunk', {
-          streamId: streamResponse.streamId,
+          streamId: streamResponse?.streamId,
           sequence: 1,
           isLast: false,
         });
         expect(mockStreamManager.writeToStream).toHaveBeenCalledWith(
-          streamResponse.streamId,
+          streamResponse?.streamId,
           expect.objectContaining({
-            id: streamResponse.streamId,
+            id: streamResponse?.streamId,
             sequence: 1,
             data: chunk.data,
             isLast: false,
           })
         );
         expect(mockEventEmitter.emit).toHaveBeenCalledWith('stream:chunk-processed', {
-          streamId: streamResponse.streamId,
+          streamId: streamResponse?.streamId,
           chunk,
         });
       });
@@ -696,7 +695,7 @@ describe('MCP Streaming Support - London TDD', () => {
 
         // Act & Assert - Should throw error for invalid sequence
         await expect(
-          streamingHandler.streamChunk(streamResponse.streamId, invalidChunk)
+          streamingHandler.streamChunk(streamResponse?.streamId, invalidChunk)
         ).rejects.toThrow('Invalid chunk sequence: -1');
       });
     });

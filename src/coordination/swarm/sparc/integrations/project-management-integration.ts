@@ -14,10 +14,8 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
 import { MemorySystem } from '../../../../core/memory-system';
-import type { WorkflowEngine } from '../../../../core/workflow-engine';
 import { TaskAPI } from '../../../api';
-import { type TaskConfig, TaskCoordinator } from '../../../task-coordinator';
-import type { DetailedSpecification, SPARCProject } from '../types/sparc-types';
+import { TaskCoordinator } from '../../../task-coordinator';
 
 // Task Management Integration Types
 export interface Task {
@@ -243,29 +241,29 @@ export class ProjectManagementIntegration {
     };
 
     if (artifactTypes.includes('all') || artifactTypes.includes('tasks')) {
-      results.tasks = await this.generateTasksFromSPARC(project);
+      results?.tasks = await this.generateTasksFromSPARC(project);
       await this.updateTasksWithSPARC(project);
       await this.distributeTasksWithCoordination(project);
     }
 
     if (artifactTypes.includes('all') || artifactTypes.includes('adrs')) {
-      results.adrs = await this.generateADRFromSPARC(project);
+      results?.adrs = await this.generateADRFromSPARC(project);
       await this.createADRFiles(project);
     }
 
     if (artifactTypes.includes('all') || artifactTypes.includes('prd')) {
-      results.prd = await this.generatePRDFromSPARC(project);
+      results?.prd = await this.generatePRDFromSPARC(project);
       await this.createPRDFile(project);
     }
 
     if (artifactTypes.includes('all') || artifactTypes.includes('epics')) {
-      results.epics = await this.createEpicsFromSPARC(project);
-      await this.saveEpicsToWorkspace(results.epics, workspaceId);
+      results?.epics = await this.createEpicsFromSPARC(project);
+      await this.saveEpicsToWorkspace(results?.epics, workspaceId);
     }
 
     if (artifactTypes.includes('all') || artifactTypes.includes('features')) {
-      results.features = await this.createFeaturesFromSPARC(project);
-      await this.saveFeaturesFromWorkspace(results.features, workspaceId);
+      results?.features = await this.createFeaturesFromSPARC(project);
+      await this.saveFeaturesFromWorkspace(results?.features, workspaceId);
     }
 
     return results;
@@ -369,12 +367,12 @@ Related: SPARC-${project.id}
             })
           : { success: false, error: 'WorkflowEngine not available' };
 
-        if (result.success && result.workflowId) {
-          results[workflowName] = result.workflowId;
+        if (result?.success && result?.workflowId) {
+          results?.[workflowName] = result?.workflowId;
         }
       } catch (error) {
         logger.warn(`Failed to execute workflow ${workflowName}:`, error);
-        results[workflowName] = { error: (error as Error).message };
+        results?.[workflowName] = { error: (error as Error).message };
       }
     }
 
@@ -422,7 +420,7 @@ Related: SPARC-${project.id}
 
       const task: Task = {
         id: taskId,
-        title: enhancedTaskConfig.description,
+        title: enhancedTaskConfig?.description,
         component: `sparc-${phase}`,
         description: this.getPhaseDescription(phase),
         status:
@@ -431,12 +429,12 @@ Related: SPARC-${project.id}
             : phases.indexOf(phase) < phases.indexOf(project.currentPhase)
               ? 'completed'
               : 'todo',
-        priority: this.convertPriorityToNumber(enhancedTaskConfig.priority || 'medium'),
+        priority: this.convertPriorityToNumber(enhancedTaskConfig?.priority || 'medium'),
         estimated_hours: this.getPhaseEstimatedHours(phase),
         actual_hours: null,
-        dependencies: enhancedTaskConfig.dependencies || [],
+        dependencies: enhancedTaskConfig?.dependencies || [],
         acceptance_criteria: this.getPhaseAcceptanceCriteria(phase, project),
-        notes: `Generated from SPARC project: ${project.name}. Agent: ${enhancedTaskConfig.subagent_type}`,
+        notes: `Generated from SPARC project: ${project.name}. Agent: ${enhancedTaskConfig?.["subagent_type"]}`,
         assigned_to: 'sparc-engine',
         created_date: new Date().toISOString(),
         completed_date: null,
@@ -467,7 +465,7 @@ Related: SPARC-${project.id}
       for (const task of sparcTasks) {
         try {
           // Convert to TaskAPI format and validate
-          const deadline = task.completed_date ? new Date(task.completed_date) : undefined;
+          const deadline = task["completed_date"] ? new Date(task["completed_date"]) : undefined;
           await TaskAPI.createTask({
             type: task.component,
             description: task.description,
@@ -507,21 +505,21 @@ Related: SPARC-${project.id}
           expected_output: this.getPhaseExpectedOutput(task.component.replace('sparc-', '')),
           priority: this.convertNumberToPriority(task.priority),
           dependencies: task.dependencies,
-          timeout_minutes: task.estimated_hours * 60,
+          timeout_minutes: task["estimated_hours"] * 60,
         };
 
         // Log enhanced task configuration for monitoring
         this.logger?.debug('Enhanced SPARC task configuration created', {
           taskId: task.id,
           component: task.component,
-          priority: enhancedTaskConfig.priority,
-          agentType: enhancedTaskConfig.subagent_type,
-          estimatedHours: task.estimated_hours,
+          priority: enhancedTaskConfig?.priority,
+          agentType: enhancedTaskConfig?.["subagent_type"],
+          estimatedHours: task["estimated_hours"],
         });
 
         // Use TaskAPI for simpler integration (TaskDistributionEngine requires complex setup)
         try {
-          const deadline = task.completed_date ? new Date(task.completed_date) : undefined;
+          const deadline = task["completed_date"] ? new Date(task["completed_date"]) : undefined;
           await TaskAPI.createTask({
             type: task.component,
             description: task.description,
@@ -895,7 +893,7 @@ Related: SPARC-${project.id}
       };
 
       // Check if epic already exists
-      const existingEpicIndex = epics.findIndex((e) => e.sparc_project_id === project.id);
+      const existingEpicIndex = epics.findIndex((e) => e["sparc_project_id"] === project.id);
       if (existingEpicIndex >= 0) {
         epics[existingEpicIndex] = projectEpic;
       } else {
@@ -940,7 +938,7 @@ Related: SPARC-${project.id}
       const allProjectFeatures = [...phaseFeatures, ...requirementFeatures];
 
       // Remove existing features for this project
-      features = features.filter((f) => f.sparc_project_id !== project.id);
+      features = features.filter((f) => f["sparc_project_id"] !== project.id);
 
       // Add new features
       features.push(...allProjectFeatures);
@@ -1097,7 +1095,7 @@ ${adr.decision}
 ${adr.consequences.map((c) => `- ${c}`).join('\n')}
 
 ---
-*Generated from SPARC project: ${adr.sparc_project_id}*
+*Generated from SPARC project: ${adr["sparc_project_id"]}*
 *Date: ${adr.date}*
 *Phase: ${adr.phase}*
 `;
@@ -1107,7 +1105,7 @@ ${adr.consequences.map((c) => `- ${c}`).join('\n')}
     return `# ${prd.title}
 
 **Version:** ${prd.version}
-**Generated from SPARC Project:** ${prd.sparc_project_id}
+**Generated from SPARC Project:** ${prd["sparc_project_id"]}
 
 ## Overview
 ${prd.overview}
@@ -1116,16 +1114,16 @@ ${prd.overview}
 ${prd.objectives.map((obj) => `- ${obj}`).join('\n')}
 
 ## Success Metrics
-${prd.success_metrics.map((metric) => `- ${metric}`).join('\n')}
+${prd["success_metrics"]?.map((metric) => `- ${metric}`).join('\n')}
 
 ## User Stories
-${prd.user_stories.map((story) => `### ${story.title}\n${story.description}\n\n**Acceptance Criteria:**\n${story.acceptance_criteria.map((ac) => `- ${ac}`).join('\n')}`).join('\n\n')}
+${prd["user_stories"]?.map((story) => `### ${story.title}\n${story.description}\n\n**Acceptance Criteria:**\n${story["acceptance_criteria"]?.map((ac) => `- ${ac}`).join('\n')}`).join('\n\n')}
 
 ## Functional Requirements
-${prd.functional_requirements.map((req) => `- ${req}`).join('\n')}
+${prd["functional_requirements"]?.map((req) => `- ${req}`).join('\n')}
 
 ## Non-Functional Requirements
-${prd.non_functional_requirements.map((req) => `- ${req}`).join('\n')}
+${prd["non_functional_requirements"]?.map((req) => `- ${req}`).join('\n')}
 
 ## Constraints
 ${prd.constraints.map((constraint) => `- ${constraint}`).join('\n')}
@@ -1202,7 +1200,7 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
             : adr.consequences
         )
         .replace(/{DATE}/g, adr.date)
-        .replace(/{SPARC_PROJECT_ID}/g, adr.sparc_project_id || 'N/A')
+        .replace(/{SPARC_PROJECT_ID}/g, adr["sparc_project_id"] || 'N/A')
         .replace(/{PHASE}/g, adr.phase || 'N/A');
 
       await fs.writeFile(filePath, content);
@@ -1217,7 +1215,7 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
           metadata: {
             status: adr.status,
             phase: adr.phase,
-            sparcProjectId: adr.sparc_project_id,
+            sparcProjectId: adr["sparc_project_id"],
             filePath,
           },
         });
@@ -1252,11 +1250,11 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
 ${epic.description}
 
 ## Business Value
-${epic.business_value}
+${epic["business_value"]}
 
 ## Timeline
-- Start: ${epic.timeline.start_date}
-- End: ${epic.timeline.end_date}
+- Start: ${epic.timeline["start_date"]}
+- End: ${epic.timeline["end_date"]}
 
 ## Status
 ${epic.status}
@@ -1265,7 +1263,7 @@ ${epic.status}
 ${epic.features.map((f) => `- ${f}`).join('\n')}
 
 ## Related SPARC Project
-${epic.sparc_project_id || 'N/A'}
+${epic["sparc_project_id"] || 'N/A'}
 
 ---
 Created: ${new Date().toISOString()}
@@ -1308,16 +1306,16 @@ Type: Epic
 ${feature.description}
 
 ## Epic
-${feature.epic_id || 'N/A'}
+${feature["epic_id"] || 'N/A'}
 
 ## Status
 ${feature.status}
 
 ## User Stories
-${feature.user_stories.map((us) => `- ${us}`).join('\n')}
+${feature["user_stories"]?.map((us) => `- ${us}`).join('\n')}
 
 ## Related SPARC Project
-${feature.sparc_project_id || 'N/A'}
+${feature["sparc_project_id"] || 'N/A'}
 
 ---
 Created: ${new Date().toISOString()}

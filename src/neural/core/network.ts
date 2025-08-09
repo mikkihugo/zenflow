@@ -539,12 +539,9 @@ export async function createCascadeTrainer(
  * @param config
  */
 export function validateNetworkConfig(config: NetworkConfig): boolean {
-  return (
-    config.inputSize > 0 &&
-    config.outputSize > 0 &&
-    config.hiddenLayers.length > 0 &&
-    config.hiddenLayers.every((layer) => layer.size > 0)
-  );
+  return (config?.inputSize > 0 &&
+  config?.outputSize > 0 &&
+  config?.hiddenLayers.length > 0 && config?.hiddenLayers?.every((layer) => layer.size > 0));
 }
 
 /**
@@ -553,11 +550,8 @@ export function validateNetworkConfig(config: NetworkConfig): boolean {
  * @param config
  */
 export function validateTrainingConfig(config: TrainingConfig): boolean {
-  return (
-    config.maxEpochs > 0 &&
-    config.targetError >= 0 &&
-    Object.values(TRAINING_ALGORITHMS).includes(config.algorithm)
-  );
+  return (config?.maxEpochs > 0 &&
+  config?.targetError >= 0 && Object.values(TRAINING_ALGORITHMS).includes(config?.algorithm));
 }
 
 /**
@@ -586,34 +580,34 @@ export function getRecommendedAgentConfig(
   // Customize based on cognitive pattern
   switch (cognitivePattern as any) {
     case 'convergent':
-      baseConfig.hiddenLayers = [{ size: inputSize * 2, activation: ACTIVATION_FUNCTIONS.RELU }];
+      baseConfig?.hiddenLayers = [{ size: inputSize * 2, activation: ACTIVATION_FUNCTIONS.RELU }];
       break;
     case 'divergent':
-      baseConfig.hiddenLayers = [
+      baseConfig?.hiddenLayers = [
         { size: Math.ceil(inputSize * 2.5), activation: ACTIVATION_FUNCTIONS.TANH },
         { size: Math.ceil(inputSize * 1.5), activation: ACTIVATION_FUNCTIONS.SIGMOID },
       ];
       break;
     case 'lateral':
-      baseConfig.hiddenLayers = [
+      baseConfig?.hiddenLayers = [
         { size: inputSize * 3, activation: ACTIVATION_FUNCTIONS.ELLIOT },
         { size: inputSize, activation: ACTIVATION_FUNCTIONS.GAUSSIAN },
       ];
       break;
     case 'systems':
-      baseConfig.hiddenLayers = [
+      baseConfig?.hiddenLayers = [
         { size: inputSize * 4, activation: ACTIVATION_FUNCTIONS.RELU },
         { size: inputSize * 2, activation: ACTIVATION_FUNCTIONS.TANH },
         { size: inputSize, activation: ACTIVATION_FUNCTIONS.SIGMOID },
       ];
       break;
     case 'critical':
-      baseConfig.hiddenLayers = [
+      baseConfig?.hiddenLayers = [
         { size: Math.ceil(inputSize * 1.2), activation: ACTIVATION_FUNCTIONS.RELU },
       ];
       break;
     case 'abstract':
-      baseConfig.hiddenLayers = [
+      baseConfig?.hiddenLayers = [
         { size: inputSize * 5, activation: ACTIVATION_FUNCTIONS.TANH },
         { size: inputSize * 2, activation: ACTIVATION_FUNCTIONS.SIGMOID },
       ];

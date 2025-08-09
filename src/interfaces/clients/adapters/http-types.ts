@@ -1,12 +1,4 @@
 /**
- * HTTP Client Adapter Types
- *
- * HTTP-specific extensions to UACL core interfaces
- */
-
-import type { AuthenticationConfig, ClientConfig, RetryConfig } from '../core/interfaces';
-
-/**
  * HTTP-specific authentication configuration
  *
  * @example

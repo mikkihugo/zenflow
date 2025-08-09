@@ -9,17 +9,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../../../core/logger';
-import type {
-  EventManagerMetrics,
-  EventManagerStatus,
-  IEventManagerFactory,
-} from '../core/interfaces';
-import {
-  CommunicationEventAdapter,
-  type CommunicationEventAdapterConfig,
-  createDefaultCommunicationEventAdapterConfig,
-} from './communication-event-adapter';
+import { createLogger } from '../../../core/logger';
+import type { IEventManagerFactory } from '../core/interfaces';
+import { CommunicationEventAdapter, createDefaultCommunicationEventAdapterConfig } from './communication-event-adapter';
 
 /**
  * Communication Event Manager Factory
@@ -55,14 +47,14 @@ export class CommunicationEventFactory
    */
   async create(config: CommunicationEventAdapterConfig): Promise<CommunicationEventAdapter> {
     try {
-      this.logger.info(`Creating communication event adapter: ${config.name}`);
+      this.logger.info(`Creating communication event adapter: ${config?.name}`);
 
       // Validate configuration
       this.validateConfig(config);
 
       // Check for duplicate names
-      if (this.adapters.has(config.name)) {
-        throw new Error(`Communication event adapter with name '${config.name}' already exists`);
+      if (this.adapters.has(config?.name)) {
+        throw new Error(`Communication event adapter with name '${config?.name}' already exists`);
       }
 
       // Create adapter instance
@@ -75,17 +67,17 @@ export class CommunicationEventFactory
       await adapter.start();
 
       // Store in registry
-      this.adapters.set(config.name, adapter);
+      this.adapters.set(config?.name, adapter);
       this.totalCreated++;
 
-      this.logger.info(`Communication event adapter created successfully: ${config.name}`);
-      this.emit('adapter-created', { name: config.name, adapter });
+      this.logger.info(`Communication event adapter created successfully: ${config?.name}`);
+      this.emit('adapter-created', { name: config?.name, adapter });
 
       return adapter;
     } catch (error) {
       this.totalErrors++;
-      this.logger.error(`Failed to create communication event adapter '${config.name}':`, error);
-      this.emit('adapter-creation-failed', { name: config.name, error });
+      this.logger.error(`Failed to create communication event adapter '${config?.name}':`, error);
+      this.emit('adapter-creation-failed', { name: config?.name, error });
       throw error;
     }
   }
@@ -104,13 +96,13 @@ export class CommunicationEventFactory
     const errors: Array<{ name: string; error: Error }> = [];
 
     // Create adapters in parallel
-    const creationPromises = configs.map(async (config) => {
+    const creationPromises = configs?.map(async (config) => {
       try {
         const adapter = await this.create(config);
-        results.push(adapter);
+        results?.push(adapter);
         return adapter;
       } catch (error) {
-        errors.push({ name: config.name, error: error as Error });
+        errors.push({ name: config?.name, error: error as Error });
         return null;
       }
     });
@@ -203,10 +195,10 @@ export class CommunicationEventFactory
       const healthPromise = (async () => {
         try {
           const status = await adapter.healthCheck();
-          results.set(name, status);
+          results?.set(name, status);
         } catch (error) {
           this.logger.warn(`Health check failed for communication event adapter '${name}':`, error);
-          results.set(name, {
+          results?.set(name, {
             name,
             type: adapter.type,
             status: 'unhealthy',
@@ -244,14 +236,14 @@ export class CommunicationEventFactory
       const metricsPromise = (async () => {
         try {
           const metrics = await adapter.getMetrics();
-          results.set(name, metrics);
+          results?.set(name, metrics);
         } catch (error) {
           this.logger.warn(
             `Metrics collection failed for communication event adapter '${name}':`,
             error
           );
           // Create default error metrics
-          results.set(name, {
+          results?.set(name, {
             name,
             type: adapter.type,
             eventsProcessed: 0,
@@ -562,7 +554,7 @@ export class CommunicationEventFactory
     const connectionHealth: Record<string, any> = {};
     const protocolHealth: Record<string, any> = {};
 
-    for (const [name, status] of healthResults.entries()) {
+    for (const [name, status] of healthResults?.entries()) {
       switch (status.status) {
         case 'healthy':
           healthyCount++;
@@ -619,7 +611,7 @@ export class CommunicationEventFactory
     const connectionMetrics: Record<string, any> = {};
     const protocolMetrics: Record<string, any> = {};
 
-    for (const [name, metrics] of metricsResults.entries()) {
+    for (const [name, metrics] of metricsResults?.entries()) {
       totalEvents += metrics.eventsProcessed;
       successfulEvents += metrics.eventsEmitted;
       failedEvents += metrics.eventsFailed;
@@ -695,20 +687,20 @@ export class CommunicationEventFactory
    * @param config
    */
   private validateConfig(config: CommunicationEventAdapterConfig): void {
-    if (!config.name || typeof config.name !== 'string') {
+    if (!config?.name || typeof config?.name !== 'string') {
       throw new Error('Communication event adapter configuration must have a valid name');
     }
 
-    if (!config.type || config.type !== 'communication') {
+    if (!config?.type || config?.type !== 'communication') {
       throw new Error('Communication event adapter configuration must have type "communication"');
     }
 
     // Validate at least one communication type is enabled
     const communicationTypes = [
-      config.websocketCommunication?.enabled,
-      config.mcpProtocol?.enabled,
-      config.httpCommunication?.enabled,
-      config.protocolCommunication?.enabled,
+      config?.["websocketCommunication"]?.["enabled"],
+      config?.["mcpProtocol"]?.["enabled"],
+      config?.["httpCommunication"]?.["enabled"],
+      config?.["protocolCommunication"]?.["enabled"],
     ];
 
     if (!communicationTypes.some((enabled) => enabled === true)) {
@@ -716,29 +708,29 @@ export class CommunicationEventFactory
     }
 
     // Validate processing strategy
-    if (config.processing?.strategy) {
+    if (config?.["processing"]?.["strategy"]) {
       const validStrategies = ['immediate', 'queued', 'batched', 'throttled'];
-      if (!validStrategies.includes(config.processing.strategy)) {
-        throw new Error(`Invalid processing strategy: ${config.processing.strategy}`);
+      if (!validStrategies.includes(config?.["processing"]?.["strategy"])) {
+        throw new Error(`Invalid processing strategy: ${config?.["processing"]?.["strategy"]}`);
       }
     }
 
     // Validate retry configuration
-    if (config.retry) {
-      if (config.retry.attempts && config.retry.attempts < 0) {
+    if (config?.["retry"]) {
+      if (config?.["retry"]?.["attempts"] && config?.["retry"]?.["attempts"] < 0) {
         throw new Error('Retry attempts must be non-negative');
       }
-      if (config.retry.delay && config.retry.delay < 0) {
+      if (config?.["retry"]?.["delay"] && config?.["retry"]?.["delay"] < 0) {
         throw new Error('Retry delay must be non-negative');
       }
     }
 
     // Validate health configuration
-    if (config.health) {
-      if (config.health.checkInterval && config.health.checkInterval < 1000) {
+    if (config?.["health"]) {
+      if (config?.["health"]?.["checkInterval"] && config?.["health"]?.["checkInterval"] < 1000) {
         throw new Error('Health check interval must be at least 1000ms');
       }
-      if (config.health.timeout && config.health.timeout < 100) {
+      if (config?.["health"]?.["timeout"] && config?.["health"]?.["timeout"] < 100) {
         throw new Error('Health check timeout must be at least 100ms');
       }
     }

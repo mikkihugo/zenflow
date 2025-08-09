@@ -3,16 +3,7 @@
  * Hybrid TDD approach: London TDD for service orchestration, Classical TDD for integration results
  */
 
-import {
-  ClaudeZenFacade,
-  type IDatabaseService,
-  type IInterfaceService,
-  type IMemoryService,
-  type INeuralService,
-  type ISwarmService,
-  type IWorkflowService,
-  type ProjectInitConfig,
-} from '../../core/facade';
+import { ClaudeZenFacade } from '../../core/facade';
 
 import { SystemEventManager } from '../../interfaces/events/observer-system';
 import { MCPCommandQueue } from '../../interfaces/mcp/command-system';
@@ -210,9 +201,9 @@ describe('Facade Pattern Implementation', () => {
         const result = await facade.initializeProject(projectConfig);
 
         // Verify orchestration results
-        expect(result.success).toBe(true);
-        expect(result.projectId).toBeDefined();
-        expect(result.services).toEqual(
+        expect(result?.success).toBe(true);
+        expect(result?.projectId).toBeDefined();
+        expect(result?.services).toEqual(
           expect.objectContaining({
             swarm: expect.objectContaining({ swarmId: 'integration-swarm-001' }),
             neural: expect.objectContaining({ modelId: 'classification-model-001' }),
@@ -221,10 +212,10 @@ describe('Facade Pattern Implementation', () => {
         );
 
         // Verify service integration
-        expect(result.integrationTests).toBeDefined();
-        expect(result.integrationTests.swarmNeural).toBe(true);
-        expect(result.integrationTests.memoryPersistence).toBe(true);
-        expect(result.integrationTests.databaseConnectivity).toBe(true);
+        expect(result?.integrationTests).toBeDefined();
+        expect(result?.integrationTests?.swarmNeural).toBe(true);
+        expect(result?.integrationTests?.memoryPersistence).toBe(true);
+        expect(result?.integrationTests?.databaseConnectivity).toBe(true);
       });
 
       it('should handle partial service failures gracefully', async () => {
@@ -269,9 +260,9 @@ describe('Facade Pattern Implementation', () => {
         const result = await facade.initializeProject(projectConfig);
 
         // Should succeed with warnings about failed services
-        expect(result.success).toBe(true);
-        expect(result.warnings).toBeDefined();
-        expect(result.warnings).toContainEqual(
+        expect(result?.success).toBe(true);
+        expect(result?.warnings).toBeDefined();
+        expect(result?.warnings).toContainEqual(
           expect.objectContaining({
             service: 'interface',
             message: expect.stringContaining('Port 3000 already in use'),
@@ -279,8 +270,8 @@ describe('Facade Pattern Implementation', () => {
         );
 
         // Successfully initialized services should be available
-        expect(result.services.swarm).toBeDefined();
-        expect(result.services.interfaces).toBeUndefined();
+        expect(result?.services?.swarm).toBeDefined();
+        expect(result?.services?.interfaces).toBeUndefined();
       });
 
       it('should validate configuration before orchestration', async () => {
@@ -301,21 +292,21 @@ describe('Facade Pattern Implementation', () => {
 
         const result = await facade.initializeProject(invalidConfig);
 
-        expect(result.success).toBe(false);
-        expect(result.errors).toBeDefined();
-        expect(result.errors).toContainEqual(
+        expect(result?.success).toBe(false);
+        expect(result?.errors).toBeDefined();
+        expect(result?.errors).toContainEqual(
           expect.objectContaining({
             field: 'name',
             message: 'Project name is required',
           })
         );
-        expect(result.errors).toContainEqual(
+        expect(result?.errors).toContainEqual(
           expect.objectContaining({
             field: 'swarm.topology',
             message: expect.stringContaining('Invalid topology'),
           })
         );
-        expect(result.errors).toContainEqual(
+        expect(result?.errors).toContainEqual(
           expect.objectContaining({
             field: 'swarm.agentCount',
             message: 'Agent count must be positive',
@@ -376,14 +367,14 @@ describe('Facade Pattern Implementation', () => {
 
         const result = await facade.initializeProject(resourceConstrainedConfig);
 
-        expect(result.success).toBe(true);
-        expect(result.resourceOptimization).toBeDefined();
-        expect(result.resourceOptimization.appliedOptimizations).toContain('agent-count-reduction');
-        expect(result.resourceOptimization.appliedOptimizations).toContain(
+        expect(result?.success).toBe(true);
+        expect(result?.resourceOptimization).toBeDefined();
+        expect(result?.resourceOptimization?.appliedOptimizations).toContain('agent-count-reduction');
+        expect(result?.resourceOptimization?.appliedOptimizations).toContain(
           'model-size-optimization'
         );
-        expect(result.resourceOptimization.resourceUsage.cpu).toBeLessThanOrEqual(2.0);
-        expect(result.resourceOptimization.resourceUsage.memory).toBeLessThanOrEqual(4096);
+        expect(result?.resourceOptimization?.resourceUsage?.cpu).toBeLessThanOrEqual(2.0);
+        expect(result?.resourceOptimization?.resourceUsage?.memory).toBeLessThanOrEqual(4096);
       });
     });
 
@@ -619,11 +610,11 @@ describe('Facade Pattern Implementation', () => {
 
         const workflowResult = await facade.executeWorkflow(workflowConfig);
 
-        expect(workflowResult.success).toBe(true);
-        expect(workflowResult.workflowId).toBeDefined();
-        expect(workflowResult.executionTime).toBeGreaterThan(0);
-        expect(workflowResult.completedSteps).toBe(6);
-        expect(workflowResult.results).toEqual(
+        expect(workflowResult?.success).toBe(true);
+        expect(workflowResult?.workflowId).toBeDefined();
+        expect(workflowResult?.executionTime).toBeGreaterThan(0);
+        expect(workflowResult?.completedSteps).toBe(6);
+        expect(workflowResult?.results).toEqual(
           expect.objectContaining({
             swarmId: 'workflow-swarm-001',
             trainedModels: ['processor-model-001', 'classifier-model-001'],
@@ -632,7 +623,7 @@ describe('Facade Pattern Implementation', () => {
         );
 
         // Verify dependency resolution
-        expect(workflowResult.executionOrder).toEqual([
+        expect(workflowResult?.executionOrder).toEqual([
           'swarm.initialize',
           'database.prepare',
           'memory.configure',
@@ -675,11 +666,11 @@ describe('Facade Pattern Implementation', () => {
 
         const workflowResult = await facade.executeWorkflow(failingWorkflowConfig);
 
-        expect(workflowResult.success).toBe(false);
-        expect(workflowResult.failedStep).toBe('neural.train');
-        expect(workflowResult.error?.message).toBe('Training data corrupted');
-        expect(workflowResult.rollbackExecuted).toBe(true);
-        expect(workflowResult.rollbackResults).toEqual(
+        expect(workflowResult?.success).toBe(false);
+        expect(workflowResult?.failedStep).toBe('neural.train');
+        expect(workflowResult?.error?.message).toBe('Training data corrupted');
+        expect(workflowResult?.rollbackExecuted).toBe(true);
+        expect(workflowResult?.rollbackResults).toEqual(
           expect.objectContaining({
             'swarm.initialize': { success: true, action: 'destroyed' },
           })
@@ -711,7 +702,7 @@ describe('Facade Pattern Implementation', () => {
         };
 
         // Start workflow execution
-        const _workflowPromise = facade.executeWorkflow(longRunningWorkflowConfig);
+        const workflowPromise = facade.executeWorkflow(longRunningWorkflowConfig);
 
         // Allow first step to complete
         mockServices.swarmService.initializeSwarm.mockResolvedValue({
@@ -742,17 +733,17 @@ describe('Facade Pattern Implementation', () => {
         // Wait briefly then pause
         await new Promise((resolve) => setTimeout(resolve, 100));
         const pauseResult = await facade.pauseWorkflow('long-running-workflow');
-        expect(pauseResult.success).toBe(true);
-        expect(pauseResult.pausedAt).toBeDefined();
+        expect(pauseResult?.success).toBe(true);
+        expect(pauseResult?.pausedAt).toBeDefined();
 
         // Resume workflow
         const resumeResult = await facade.resumeWorkflow('long-running-workflow');
-        expect(resumeResult.success).toBe(true);
+        expect(resumeResult?.success).toBe(true);
 
         // Cancel workflow
         const cancelResult = await facade.cancelWorkflow('long-running-workflow');
-        expect(cancelResult.success).toBe(true);
-        expect(cancelResult.cancelled).toBe(true);
+        expect(cancelResult?.success).toBe(true);
+        expect(cancelResult?.cancelled).toBe(true);
       });
     });
 
@@ -777,9 +768,9 @@ describe('Facade Pattern Implementation', () => {
         const results = await Promise.all(failurePromises);
 
         // After threshold failures, circuit should be open
-        const laterResults = results.slice(-3);
-        expect(laterResults.every((r) => !r.success)).toBe(true);
-        expect(laterResults.some((r) => r.error?.type === 'CIRCUIT_BREAKER_OPEN')).toBe(true);
+        const laterResults = results?.slice(-3);
+        expect(laterResults?.every((r) => !r.success)).toBe(true);
+        expect(laterResults?.some((r) => r.error?.type === 'CIRCUIT_BREAKER_OPEN')).toBe(true);
 
         // Verify circuit breaker status
         const systemStatus = await facade.getSystemStatus();
@@ -798,10 +789,10 @@ describe('Facade Pattern Implementation', () => {
 
         const queryResult = await facade.queryDatabase('SELECT * FROM test', []);
 
-        expect(queryResult.success).toBe(true);
-        expect(queryResult.data).toEqual([{ id: 1, data: 'success' }]);
+        expect(queryResult?.success).toBe(true);
+        expect(queryResult?.data).toEqual([{ id: 1, data: 'success' }]);
         expect(attemptCount).toBe(3); // Should retry 2 times before success
-        expect(queryResult.retryCount).toBe(2);
+        expect(queryResult?.retryCount).toBe(2);
       });
 
       it('should gracefully degrade functionality when services are unavailable', async () => {
@@ -838,11 +829,11 @@ describe('Facade Pattern Implementation', () => {
 
         const result = await facade.initializeProject(projectConfig);
 
-        expect(result.success).toBe(true);
-        expect(result.degradedServices).toContain('neural');
-        expect(result.services.swarm).toBeDefined();
-        expect(result.services.neural).toBeUndefined();
-        expect(result.warnings).toContainEqual(
+        expect(result?.success).toBe(true);
+        expect(result?.degradedServices).toContain('neural');
+        expect(result?.services?.swarm).toBeDefined();
+        expect(result?.services?.neural).toBeUndefined();
+        expect(result?.warnings).toContainEqual(
           expect.objectContaining({
             service: 'neural',
             message: expect.stringContaining('offline'),
@@ -859,7 +850,7 @@ describe('Facade Pattern Implementation', () => {
           query: 'SELECT status FROM swarms WHERE active = true',
         }));
 
-        mockServices.databaseService.query.mockImplementation((_query) => {
+        mockServices.databaseService.query.mockImplementation((query) => {
           return Promise.resolve([
             { swarmId: 'batch-swarm-0', status: 'active' },
             { swarmId: 'batch-swarm-1', status: 'active' },
@@ -870,14 +861,14 @@ describe('Facade Pattern Implementation', () => {
           requests.map((req) => facade.queryDatabase(req.query, []))
         );
 
-        expect(results.every((r) => r.success)).toBe(true);
+        expect(results?.every((r) => r.success)).toBe(true);
 
         // Due to batching and caching, database should be called fewer times
         expect(mockServices.databaseService.query).toHaveBeenCalledTimes(1);
 
         // Results should indicate cache hits
-        const cachedResults = results.slice(1);
-        expect(cachedResults.every((r) => r.cached)).toBe(true);
+        const cachedResults = results?.slice(1);
+        expect(cachedResults?.every((r) => r.cached)).toBe(true);
       });
 
       it('should load balance requests across service instances', async () => {
@@ -889,19 +880,19 @@ describe('Facade Pattern Implementation', () => {
         ];
 
         swarmInstances.forEach((instance) => {
-          instance.initializeSwarm.mockResolvedValue({
-            swarmId: `lb-swarm-${instance.instance}`,
+          instance["initializeSwarm"]?.["mockResolvedValue"]({
+            swarmId: `lb-swarm-${instance["instance"]}`,
             topology: 'mesh',
             agentCount: 2,
             status: 'initialized',
-            handledBy: `instance-${instance.instance}`,
+            handledBy: `instance-${instance["instance"]}`,
           });
         });
 
         // Mock the facade to use load balanced instances
         facade.setServiceInstances('swarm', swarmInstances as any);
 
-        const requestPromises = Array.from({ length: 9 }, (_, _i) =>
+        const requestPromises = Array.from({ length: 9 }, (_, i) =>
           facade.initializeSwarm({
             topology: 'mesh',
             agentCount: 2,
@@ -911,11 +902,11 @@ describe('Facade Pattern Implementation', () => {
 
         const results = await Promise.all(requestPromises);
 
-        expect(results.every((r) => r.success)).toBe(true);
+        expect(results?.every((r) => r.success)).toBe(true);
 
         // Verify load balancing - each instance should handle 3 requests
         swarmInstances.forEach((instance) => {
-          expect(instance.initializeSwarm).toHaveBeenCalledTimes(3);
+          expect(instance["initializeSwarm"]).toHaveBeenCalledTimes(3);
         });
       });
 
@@ -934,7 +925,7 @@ describe('Facade Pattern Implementation', () => {
         let activeOperations = 0;
         const maxConcurrentOperations = 2;
 
-        mockServices.neuralService.trainModel.mockImplementation(async (_config) => {
+        mockServices.neuralService.trainModel.mockImplementation(async (config) => {
           if (activeOperations >= maxConcurrentOperations) {
             throw new Error('Resource pool exhausted');
           }
@@ -955,11 +946,11 @@ describe('Facade Pattern Implementation', () => {
 
         const results = await facade.batchTrainModels(intensiveOperations);
 
-        expect(results.success).toBe(true);
-        expect(results.completedModels).toBe(5);
-        expect(results.executionStrategy).toBe('resource-pooled');
-        expect(results.maxConcurrency).toBe(2);
-        expect(results.totalExecutionTime).toBeGreaterThan(200); // Should queue operations
+        expect(results?.success).toBe(true);
+        expect(results?.completedModels).toBe(5);
+        expect(results?.executionStrategy).toBe('resource-pooled');
+        expect(results?.maxConcurrency).toBe(2);
+        expect(results?.totalExecutionTime).toBeGreaterThan(200); // Should queue operations
       });
     });
   });
@@ -1121,7 +1112,7 @@ describe('Facade Pattern Implementation', () => {
 
       expect(mockServices.neuralService.trainModel).toHaveBeenCalledTimes(1);
       expect(mockServices.neuralService.trainModel).toHaveBeenCalledWith(trainingConfig);
-      expect(result.data).toEqual(expectedResult);
+      expect(result?.data).toEqual(expectedResult);
     });
 
     it('should coordinate between services through event system', async () => {
@@ -1317,8 +1308,8 @@ describe('Facade Pattern Implementation', () => {
         targetAccuracy: 0.9,
       });
 
-      expect(result.success).toBe(false);
-      expect(result.error?.message).toBe('Neural service unavailable');
+      expect(result?.success).toBe(false);
+      expect(result?.error?.message).toBe('Neural service unavailable');
 
       expect(mockLogger.error).toHaveBeenCalledWith(
         'Neural model training failed:',

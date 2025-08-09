@@ -49,14 +49,14 @@ export class RecoveryIntegration extends EventEmitter {
     super();
 
     this.options = {
-      enableHealthMonitoring: options.enableHealthMonitoring !== false,
-      enableRecoveryWorkflows: options.enableRecoveryWorkflows !== false,
-      enableConnectionManagement: options.enableConnectionManagement !== false,
-      enableMonitoringDashboard: options.enableMonitoringDashboard !== false,
-      enableChaosEngineering: options.enableChaosEngineering === true,
-      autoIntegrate: options.autoIntegrate !== false,
-      configValidation: options.configValidation !== false,
-      performanceOptimization: options.performanceOptimization !== false,
+      enableHealthMonitoring: options?.enableHealthMonitoring !== false,
+      enableRecoveryWorkflows: options?.enableRecoveryWorkflows !== false,
+      enableConnectionManagement: options?.enableConnectionManagement !== false,
+      enableMonitoringDashboard: options?.enableMonitoringDashboard !== false,
+      enableChaosEngineering: options?.enableChaosEngineering === true,
+      autoIntegrate: options?.autoIntegrate !== false,
+      configValidation: options?.configValidation !== false,
+      performanceOptimization: options?.performanceOptimization !== false,
       ...options,
     };
 
@@ -524,9 +524,9 @@ export class RecoveryIntegration extends EventEmitter {
     if (!method) return;
 
     for (const [name, componentData] of this.components) {
-      if (componentData.instance && typeof componentData.instance[method] === 'function') {
+      if (componentData?.instance && typeof componentData?.instance?.[method] === 'function') {
         try {
-          await componentData.instance[method](integration);
+          await componentData?.instance?.[method](integration);
           this.logger.debug(`Propagated ${integrationType} to ${name}`);
         } catch (error) {
           this.logger.error(`Failed to propagate ${integrationType} to ${name}`, {
@@ -626,9 +626,9 @@ export class RecoveryIntegration extends EventEmitter {
     // Component statuses
     for (const [name, componentData] of this.components) {
       status.components[name] = {
-        status: componentData.status,
-        initTime: componentData.initTime,
-        error: componentData.error,
+        status: componentData?.status,
+        initTime: componentData?.initTime,
+        error: componentData?.error,
       };
     }
 
@@ -771,21 +771,21 @@ export class RecoveryIntegration extends EventEmitter {
     // Validate component configurations
     if (this.options.enableHealthMonitoring && this.options.healthMonitor) {
       const healthConfig = this.options.healthMonitor;
-      if (healthConfig.checkInterval && healthConfig.checkInterval < 5000) {
+      if (healthConfig?.checkInterval && healthConfig?.checkInterval < 5000) {
         validationErrors.push('Health check interval too low (minimum 5000ms)');
       }
     }
 
     if (this.options.enableRecoveryWorkflows && this.options.recoveryWorkflows) {
       const recoveryConfig = this.options.recoveryWorkflows;
-      if (recoveryConfig.maxConcurrentRecoveries && recoveryConfig.maxConcurrentRecoveries > 10) {
+      if (recoveryConfig?.maxConcurrentRecoveries && recoveryConfig?.maxConcurrentRecoveries > 10) {
         validationErrors.push('Too many concurrent recoveries (maximum 10)');
       }
     }
 
     if (this.options.enableChaosEngineering && this.options.chaosEngineering) {
       const chaosConfig = this.options.chaosEngineering;
-      if (chaosConfig.blastRadiusLimit && chaosConfig.blastRadiusLimit > 0.5) {
+      if (chaosConfig?.blastRadiusLimit && chaosConfig?.blastRadiusLimit > 0.5) {
         validationErrors.push('Blast radius limit too high (maximum 0.5)');
       }
     }
@@ -812,12 +812,12 @@ export class RecoveryIntegration extends EventEmitter {
 
     // Check component health
     for (const [name, componentData] of this.components) {
-      if (componentData.status === 'failed') {
-        healthResults.components[name] = 'failed';
-        healthResults.issues.push(`Component ${name} failed to initialize`);
-        healthResults.overall = 'degraded';
+      if (componentData?.status === 'failed') {
+        healthResults?.components?.[name] = 'failed';
+        healthResults?.issues?.push(`Component ${name} failed to initialize`);
+        healthResults?.overall = 'degraded';
       } else {
-        healthResults.components[name] = 'healthy';
+        healthResults?.components?.[name] = 'healthy';
       }
     }
 
@@ -826,12 +826,12 @@ export class RecoveryIntegration extends EventEmitter {
     for (const [key, status] of this.integrationStatus) {
       if (status.status === 'failed') {
         failedIntegrations++;
-        healthResults.issues.push(`Integration failed: ${key}`);
+        healthResults?.issues?.push(`Integration failed: ${key}`);
       }
     }
 
     if (failedIntegrations > 0) {
-      healthResults.overall = failedIntegrations > 2 ? 'error' : 'degraded';
+      healthResults?.overall = failedIntegrations > 2 ? 'error' : 'degraded';
     }
 
     // Run health monitor check if available
@@ -840,8 +840,8 @@ export class RecoveryIntegration extends EventEmitter {
       // const systemHealth = this.healthMonitor.getHealthStatus();
       const systemHealth = { status: 'healthy', placeholder: true };
       if (systemHealth.status !== 'healthy') {
-        healthResults.overall = systemHealth.status;
-        healthResults.issues.push('System health monitor reports issues');
+        healthResults?.overall = systemHealth.status;
+        healthResults?.issues?.push('System health monitor reports issues');
       }
     }
 

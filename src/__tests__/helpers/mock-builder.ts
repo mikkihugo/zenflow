@@ -5,7 +5,6 @@
  */
 
 import { jest } from '@jest/globals';
-import type { MockConfiguration, MockObject } from './types';
 
 export class MockBuilder {
   private static instance: MockBuilder;
@@ -40,7 +39,7 @@ export class MockBuilder {
     }
 
     // Add interaction tracking for London School
-    if (config.trackInteractions) {
+    if (config?.["trackInteractions"]) {
       this.addInteractionTracking(mockObj);
     }
 
@@ -65,7 +64,7 @@ export class MockBuilder {
       }
     });
 
-    if (config.trackInteractions) {
+    if (config?.["trackInteractions"]) {
       this.addInteractionTracking(mockObj);
     }
 
@@ -193,7 +192,7 @@ export class MockBuilder {
 
       // Verify interaction patterns
       toHaveInteractionPattern: (pattern: string) => {
-        const interactions = (mock as any).__interactions || [];
+        const interactions = (mock as any)["__interactions"] || [];
         const patternFound = this.matchInteractionPattern(interactions, pattern);
         expect(patternFound).toBe(true);
         return expectations;
@@ -201,8 +200,8 @@ export class MockBuilder {
 
       // Verify no unexpected interactions
       toHaveNoUnexpectedInteractions: () => {
-        const interactions = (mock as any).__interactions || [];
-        const expected = (mock as any).__expectedInteractions || [];
+        const interactions = (mock as any)["__interactions"] || [];
+        const expected = (mock as any)["__expectedInteractions"] || [];
         const unexpected = interactions.filter((i: any) => !expected.includes(i.method));
         expect(unexpected).toHaveLength(0);
         return expectations;
@@ -227,8 +226,8 @@ export class MockBuilder {
         });
 
         // Clear interaction tracking
-        if (mock.__interactions) {
-          mock.__interactions = [];
+        if (mock["__interactions"]) {
+          mock["__interactions"] = [];
         }
       }
     });
@@ -240,7 +239,7 @@ export class MockBuilder {
 
     while (current && current !== Object.prototype) {
       Object.getOwnPropertyNames(current).forEach((name) => {
-        if (name !== 'constructor' && typeof current[name] === 'function') {
+        if (name !== 'constructor' && typeof current?.[name] === 'function') {
           if (!methods.includes(name)) {
             methods.push(name);
           }
@@ -255,7 +254,7 @@ export class MockBuilder {
   private createMethodMock(methodName: string, config: MockConfiguration): jest.Mock {
     const mock = jest.fn();
 
-    if (config.autoGenerate) {
+    if (config?.["autoGenerate"]) {
       // Auto-generate reasonable return values based on method name
       if (methodName.startsWith('get') || methodName.startsWith('find')) {
         mock.mockResolvedValue({});
@@ -271,7 +270,7 @@ export class MockBuilder {
 
   private addInteractionTracking(mockObj: MockObject) {
     const interactions: any[] = [];
-    mockObj.__interactions = interactions;
+    mockObj["__interactions"] = interactions;
 
     // Wrap all mock functions to track interactions
     Object.keys(mockObj).forEach((key) => {

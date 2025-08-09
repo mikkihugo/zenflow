@@ -7,12 +7,6 @@
 import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type {
-  DatabaseTestHelper,
-  FileSystemTestHelper,
-  IntegrationTestConfig,
-  NetworkTestHelper,
-} from './types';
 
 export class IntegrationTestSetup {
   private config: IntegrationTestConfig;
@@ -191,7 +185,7 @@ export class IntegrationTestSetup {
       },
 
       async seed(data: any[]) {
-        data.forEach((item, index) => {
+        data?.forEach((item, index) => {
           memoryDb.set(`item-${index}`, item);
         });
       },
@@ -265,7 +259,7 @@ export class IntegrationTestSetup {
 
         const stmt = db.prepare('INSERT OR REPLACE INTO test_data (key, value) VALUES (?, ?)');
 
-        for (const [index, item] of data.entries()) {
+        for (const [index, item] of data?.entries()) {
           await new Promise<void>((resolve, reject) => {
             stmt.run(`item-${index}`, JSON.stringify(item), (err: any) => {
               if (err) reject(err);
@@ -393,11 +387,11 @@ export class IntegrationTestSetup {
 
       async stopMockServer(): Promise<void> {
         mockRequests.length = 0;
-        mockResponses.clear();
+        mockResponses?.clear();
       },
 
       mockRequest(path: string, response: any): void {
-        mockResponses.set(path, response);
+        mockResponses?.set(path, response);
       },
 
       captureRequests(): any[] {

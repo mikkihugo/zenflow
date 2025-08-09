@@ -65,12 +65,12 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     super();
 
     this.options = {
-      backendConfig: options?.backendConfig,
-      enableCache: options?.enableCache ?? true,
-      cacheSize: options?.cacheSize ?? 1000,
-      cacheTTL: options?.cacheTTL ?? 300000, // 5 minutes
-      enableVectorStorage: options?.enableVectorStorage ?? false,
-      vectorDimensions: options?.vectorDimensions ?? 512,
+      backendConfig: options?.["backendConfig"],
+      enableCache: options?.["enableCache"] ?? true,
+      cacheSize: options?.["cacheSize"] ?? 1000,
+      cacheTTL: options?.["cacheTTL"] ?? 300000, // 5 minutes
+      enableVectorStorage: options?.["enableVectorStorage"] ?? false,
+      vectorDimensions: options?.["vectorDimensions"] ?? 512,
     };
 
     // Backend will be created during initialization

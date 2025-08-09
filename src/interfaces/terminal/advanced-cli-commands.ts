@@ -1,11 +1,3 @@
-/**
- * @file Advanced CLI Commands Integration
- *
- * Provides advanced CLI command implementations that integrate with the existing
- * command execution system. Uses shared abstractions to avoid cross-interface dependencies.
- */
-
-import type { CommandContext, CommandResult } from '../shared/index';
 import { CliCommandAdapter } from './adapters/cli-command-adapter';
 
 /**
@@ -17,7 +9,7 @@ import { CliCommandAdapter } from './adapters/cli-command-adapter';
  *
  * @example
  */
-export class AdvancedCLICommands {
+export class CLICommands {
   private commandAdapter: CliCommandAdapter;
 
   constructor() {

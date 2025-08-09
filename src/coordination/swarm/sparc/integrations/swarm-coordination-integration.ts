@@ -1,16 +1,7 @@
 import { getLogger } from "../../../../config/logging-config";
 const logger = getLogger("coordination-swarm-sparc-integrations-swarm-coordination-integration");
-/**
- * SPARC Swarm Coordination Integration
- *
- * Integrates SPARC methodology with Claude-Zen's sophisticated swarm coordination system.
- * Enables distributed SPARC development using existing agent types and coordination protocols.
- */
-
-import type { AgentType } from '../../../../types/agent-types';
 import { TaskAPI } from '../../../api';
-import { type TaskConfig, TaskCoordinator } from '../../../task-coordinator';
-import type { SPARCPhase, SPARCProject } from '../types/sparc-types';
+import { TaskCoordinator } from '../../../task-coordinator';
 
 // SPARC-specific agent types from existing 147+ agent types
 export const SPARC_AGENT_TYPES: AgentType[] = [
@@ -80,7 +71,7 @@ export class SPARCSwarmCoordinator {
 
       const taskId = await TaskAPI.createTask({
         type: `${agentType}-${project.currentPhase}`,
-        description: taskConfig.description,
+        description: taskConfig?.description,
         priority: 3,
       });
 
@@ -127,8 +118,8 @@ export class SPARCSwarmCoordinator {
 
       try {
         const result = await this.taskCoordinator.executeTask(taskConfig);
-        results.set(agentType, result);
-        return result.success;
+        results?.set(agentType, result);
+        return result?.success;
       } catch (error) {
         logger.error(`SPARC phase execution failed for ${agentType}:`, error);
         return false;
@@ -203,7 +194,7 @@ export class SPARCSwarmCoordinator {
       },
     };
 
-    return phasePrompts[phase][agentType] || `${basePrompt} Execute ${phase} phase tasks.`;
+    return phasePrompts[phase]?.[agentType] || `${basePrompt} Execute ${phase} phase tasks.`;
   }
 
   /**

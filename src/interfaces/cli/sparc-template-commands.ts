@@ -10,7 +10,6 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
 import { TemplateEngine } from '../../coordination/swarm/sparc/core/template-engine';
 import { SpecificationPhaseEngine } from '../../coordination/swarm/sparc/phases/specification/specification-engine';
-import type { ProjectSpecification } from '../../coordination/swarm/sparc/types/sparc-types';
 
 export function createSPARCTemplateCommands(): Command {
   const sparcTemplateCmd = new Command('spec');
@@ -25,7 +24,7 @@ export function createSPARCTemplateCommands(): Command {
     .description('List available SPARC templates')
     .action(async () => {
       const templates = specEngine.getAvailableTemplates();
-      templates.forEach((_template, _index) => {});
+      templates.forEach((template, index) => {});
     });
 
   // Generate specification from template
@@ -51,23 +50,23 @@ export function createSPARCTemplateCommands(): Command {
       try {
         // Create project specification
         const projectSpec: ProjectSpecification = {
-          name: options.name,
-          domain: options.domain,
-          complexity: options.complexity,
-          requirements: options.requirements || [],
-          constraints: options.constraints || [],
+          name: options?.name,
+          domain: options?.["domain"],
+          complexity: options?.["complexity"],
+          requirements: options?.["requirements"] || [],
+          constraints: options?.["constraints"] || [],
         };
 
         let specification;
-        if (options.template) {
+        if (options?.["template"]) {
           // Validate template compatibility first
           const compatibility = specEngine.validateTemplateCompatibility(
             projectSpec,
-            options.template
+            options?.["template"]
           );
 
           if (compatibility.warnings.length > 0) {
-            compatibility.warnings.forEach((_warning) => {});
+            compatibility.warnings.forEach((warning) => {});
           }
 
           if (!compatibility.compatible) {
@@ -78,7 +77,7 @@ export function createSPARCTemplateCommands(): Command {
           // Generate with specific template
           specification = await specEngine.generateSpecificationFromTemplate(
             projectSpec,
-            options.template
+            options?.["template"]
           );
         } else {
           // Auto-select best template
@@ -87,14 +86,14 @@ export function createSPARCTemplateCommands(): Command {
 
         // Format output
         let output: string;
-        if (options.format === 'markdown') {
+        if (options?.["format"] === 'markdown') {
           output = formatSpecificationAsMarkdown(specification);
         } else {
           output = JSON.stringify(specification, null, 2);
         }
 
         // Write output
-        await writeFile(options.output, output, 'utf8');
+        await writeFile(options?.["output"], output, 'utf8');
       } catch (error) {
         logger.error('❌ Failed to generate specification:', error);
         process.exit(1);
@@ -106,7 +105,7 @@ export function createSPARCTemplateCommands(): Command {
     .command('interactive')
     .description('Interactive specification generation with template selection')
     .option('--output <path>', 'Output file path', 'specification.json')
-    .action(async (_options) => {
+    .action(async (options) => {
       try {
       } catch (error) {
         logger.error('❌ Interactive mode failed:', error);
@@ -121,19 +120,19 @@ export function createSPARCTemplateCommands(): Command {
     .requiredOption('--file <path>', 'Path to specification file')
     .action(async (options) => {
       try {
-        const content = await readFile(options.file, 'utf8');
+        const content = await readFile(options?.["file"], 'utf8');
         const specification = JSON.parse(content);
 
         const validation = await specEngine.validateSpecificationCompleteness(specification);
 
         if (validation.results.length > 0) {
           validation.results.forEach((result) => {
-            const _status = result.passed ? '✅' : '❌';
+            const status = result?.passed ? '✅' : '❌';
           });
         }
 
         if (validation.recommendations.length > 0) {
-          validation.recommendations.forEach((_rec) => {});
+          validation.recommendations.forEach((rec) => {});
         }
 
         process.exit(validation.overall ? 0 : 1);
@@ -148,7 +147,7 @@ export function createSPARCTemplateCommands(): Command {
     .command('stats')
     .description('Show template engine statistics and usage')
     .action(async () => {
-      const _stats = templateEngine.getTemplateStats();
+      const stats = templateEngine.getTemplateStats();
     });
 
   return sparcTemplateCmd;

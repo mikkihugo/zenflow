@@ -6,24 +6,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import type {
-  AlgorithmPseudocode,
-  ComplexityAnalysis,
-  ControlFlowDiagram,
-  DataStructureDesign,
-  DetailedSpecification,
-  FunctionalRequirement,
-  LogicValidation,
-  OptimizationOpportunity,
-  OptimizationSuggestion,
-  ParameterDefinition,
-  PseudocodeEngine,
-  PseudocodeStep,
-  PseudocodeStructure,
-  PseudocodeValidation,
-  ReturnDefinition,
-  ValidationResult,
-} from '../../types/sparc-types';
+import type { PseudocodeEngine } from '../../types/sparc-types';
 
 export class PseudocodePhaseEngine implements PseudocodeEngine {
   /**
@@ -57,7 +40,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
     const dataStructures: DataStructureDesign[] = [];
 
     for (const requirement of requirements) {
-      dataStructures.push({
+      dataStructures?.push({
         name: `${requirement.title}Data`,
         type: 'class',
         properties: [
@@ -120,7 +103,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
 
     for (const algorithm of pseudocode) {
       // Validate algorithm structure
-      validationResults.push({
+      validationResults?.push({
         criterion: `${algorithm.name} completeness`,
         passed: algorithm.steps.length > 0,
         score: algorithm.steps.length > 0 ? 1.0 : 0.0,
@@ -129,7 +112,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
       });
 
       // Validate input/output consistency
-      validationResults.push({
+      validationResults?.push({
         criterion: `${algorithm.name} I/O consistency`,
         passed: algorithm.inputs.length > 0 && algorithm.outputs.length > 0,
         score: algorithm.inputs.length > 0 && algorithm.outputs.length > 0 ? 1.0 : 0.5,
@@ -386,7 +369,7 @@ END
     const validationResults: ValidationResult[] = [];
 
     // Validate algorithm completeness
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Algorithm completeness',
       passed: pseudocode.algorithms.length > 0,
       score: pseudocode.algorithms.length > 0 ? 1.0 : 0.0,
@@ -397,7 +380,7 @@ END
     });
 
     // Validate complexity analysis
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Complexity analysis',
       passed: !!pseudocode.complexityAnalysis,
       score: pseudocode.complexityAnalysis ? 1.0 : 0.0,
@@ -407,7 +390,7 @@ END
     });
 
     // Validate data structures
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Data structure design',
       passed: pseudocode.dataStructures.length > 0,
       score: pseudocode.dataStructures.length > 0 ? 1.0 : 0.0,
@@ -418,13 +401,13 @@ END
     });
 
     const overallScore =
-      validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
+      validationResults?.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
 
     return {
       id: nanoid(),
       algorithmId: pseudocode.id,
       validationResults,
-      logicErrors: validationResults.filter((r) => !r.passed).map((r) => r.details || ''),
+      logicErrors: validationResults?.filter((r) => !r.passed).map((r) => r.details || ''),
       optimizationSuggestions: this.generateRecommendations(validationResults),
       complexityVerification: !!pseudocode.complexityAnalysis,
       overallScore,
@@ -442,8 +425,8 @@ END
     const recommendations: string[] = [];
 
     for (const result of validationResults) {
-      if (!result.passed) {
-        switch (result.criterion) {
+      if (!result?.passed) {
+        switch (result?.criterion) {
           case 'Algorithm completeness':
             recommendations.push('Add missing core algorithms for all functional requirements');
             break;

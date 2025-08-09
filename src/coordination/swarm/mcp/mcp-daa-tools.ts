@@ -198,10 +198,10 @@ export class DAA_MCPTools {
       const result = {
         agent_id: id,
         adaptation_complete: true,
-        previous_pattern: adaptationResult.previousPattern,
-        new_pattern: adaptationResult.newPattern,
-        performance_improvement: adaptationResult.improvement,
-        learning_insights: adaptationResult.insights,
+        previous_pattern: adaptationResult?.previousPattern,
+        new_pattern: adaptationResult?.newPattern,
+        performance_improvement: adaptationResult?.improvement,
+        learning_insights: adaptationResult?.insights,
         timestamp: new Date().toISOString(),
       };
 
@@ -285,12 +285,12 @@ export class DAA_MCPTools {
 
       const result = {
         workflow_id: id,
-        execution_complete: executionResult.complete,
-        steps_completed: executionResult.stepsCompleted,
-        total_steps: executionResult.totalSteps,
-        execution_time_ms: executionResult.executionTime,
-        agents_involved: executionResult.agentsInvolved,
-        results: executionResult.stepResults,
+        execution_complete: executionResult?.complete,
+        steps_completed: executionResult?.stepsCompleted,
+        total_steps: executionResult?.totalSteps,
+        execution_time_ms: executionResult?.executionTime,
+        agents_involved: executionResult?.agentsInvolved,
+        results: executionResult?.stepResults,
         timestamp: new Date().toISOString(),
       };
 
@@ -353,8 +353,8 @@ export class DAA_MCPTools {
         target_agents: targetIds,
         knowledge_domain: knowledgeDomain,
         sharing_complete: true,
-        agents_updated: sharingResults.updatedAgents,
-        knowledge_transfer_rate: sharingResults.transferRate,
+        agents_updated: sharingResults?.updatedAgents,
+        knowledge_transfer_rate: sharingResults?.transferRate,
         timestamp: new Date().toISOString(),
       };
 
@@ -405,7 +405,7 @@ export class DAA_MCPTools {
       };
 
       if (detailed) {
-        result.detailed_metrics = learningStatus.detailedMetrics;
+        result?.detailed_metrics = learningStatus.detailedMetrics;
       }
 
       if (this.mcpTools?.recordToolMetrics) {
@@ -463,10 +463,10 @@ export class DAA_MCPTools {
 
       const result = {
         agent_id: agentId,
-        previous_pattern: changeResult.previousPattern,
+        previous_pattern: changeResult?.previousPattern,
         new_pattern: pattern,
-        adaptation_success: changeResult.success,
-        expected_improvement: changeResult.expectedImprovement,
+        adaptation_success: changeResult?.success,
+        expected_improvement: changeResult?.expectedImprovement,
         timestamp: new Date().toISOString(),
       };
 
@@ -507,10 +507,10 @@ export class DAA_MCPTools {
         source_domain: sourceDomain,
         target_domain: targetDomain,
         transfer_mode: transferMode,
-        knowledge_transferred: metaLearningResult.knowledgeItems,
-        agents_updated: metaLearningResult.updatedAgents,
-        domain_proficiency_gain: metaLearningResult.proficiencyGain,
-        cross_domain_insights: metaLearningResult.insights,
+        knowledge_transferred: metaLearningResult?.knowledgeItems,
+        agents_updated: metaLearningResult?.updatedAgents,
+        domain_proficiency_gain: metaLearningResult?.proficiencyGain,
+        cross_domain_insights: metaLearningResult?.insights,
         timestamp: new Date().toISOString(),
       };
 

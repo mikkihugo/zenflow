@@ -508,7 +508,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
     // Distributed Learning -> Intelligence Coordination
     this.distributedLearning.on('model:converged', async (data) => {
-      await this.intelligenceCoordination.distributeModel(data?.model);
+      await this.intelligenceCoordination.distributeModel(data?.["model"]);
       this.emit('collective-learning:progress', data);
     });
 

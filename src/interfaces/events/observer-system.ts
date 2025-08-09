@@ -230,8 +230,8 @@ export class WebSocketObserver implements SystemObserver<SwarmEvent | MCPEvent |
     return {
       id: event.id,
       type: event.type,
-      timestamp: event.timestamp.toISOString(),
-      source: event.source,
+      timestamp: event["timestamp"]?.["toISOString"](),
+      source: event["source"],
       data: event,
       priority: this.getPriority(),
     };
@@ -303,8 +303,8 @@ export class DatabaseObserver implements SystemObserver<SystemEvent> {
           batch.map((event) => [
             event.id,
             event.type,
-            event.timestamp,
-            event.source,
+            event["timestamp"],
+            event["source"],
             JSON.stringify(event),
           ]),
         ]
@@ -337,8 +337,8 @@ export class LoggerObserver implements SystemObserver<SystemEvent> {
       this.logger[logLevel](message, {
         eventId: event.id,
         type: event.type,
-        source: event.source,
-        timestamp: event.timestamp,
+        source: event["source"],
+        timestamp: event["timestamp"],
       });
     } catch (error) {
       this.healthy = false;
@@ -363,8 +363,8 @@ export class LoggerObserver implements SystemObserver<SystemEvent> {
   }
 
   private getLogLevel(event: SystemEvent): 'info' | 'warn' | 'error' {
-    if ('success' in event && !event.success) return 'error';
-    if ('errors' in event && Array.isArray(event.errors) && event.errors.length > 0) return 'warn';
+    if ('success' in event && !event["success"]) return 'error';
+    if ('errors' in event && Array.isArray(event["errors"]) && event["errors"].length > 0) return 'warn';
     return 'info';
   }
 
@@ -386,7 +386,7 @@ export class LoggerObserver implements SystemObserver<SystemEvent> {
       }
 
       default:
-        return `${event.type} event from ${event.source}`;
+        return `${event.type} event from ${event["source"]}`;
     }
   }
 }
@@ -431,14 +431,14 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
   }
 
   private collectMetrics(event: SystemEvent): void {
-    const key = `${event.type}:${event.source}`;
+    const key = `${event.type}:${event["source"]}`;
     const current = this.metrics.get(key) || { count: 0, lastSeen: null };
 
     this.metrics.set(key, {
-      count: current.count + 1,
-      lastSeen: event.timestamp,
+      count: current?.count + 1,
+      lastSeen: event["timestamp"],
       type: event.type,
-      source: event.source,
+      source: event["source"],
     });
 
     // Collect specific metrics based on event type
@@ -468,11 +468,11 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
     const current = this.metrics.get(key) || { sum: 0, count: 0, avg: 0, min: Infinity, max: 0 };
 
     this.metrics.set(key, {
-      sum: current.sum + time,
-      count: current.count + 1,
-      avg: (current.sum + time) / (current.count + 1),
-      min: Math.min(current.min, time),
-      max: Math.max(current.max, time),
+      sum: current?.sum + time,
+      count: current?.count + 1,
+      avg: (current?.sum + time) / (current?.count + 1),
+      min: Math.min(current?.min, time),
+      max: Math.max(current?.max, time),
     });
   }
 }
@@ -605,7 +605,7 @@ export class SystemEventManager extends EventEmitter {
 
       const item = this.eventQueue.dequeue();
       if (item) {
-        await this.processEventWithObservers(item.event, item.observers);
+        await this.processEventWithObservers(item?.event, item?.observers);
       }
 
       // Continue processing
@@ -728,8 +728,8 @@ export class SystemEventManager extends EventEmitter {
 
     // Add event-specific priority adjustments
     let eventPriorityBonus = 0;
-    if ('success' in event && !event.success) eventPriorityBonus += 1; // Errors get higher priority
-    if (event.type === 'swarm' && 'operation' in event && event.operation === 'destroy')
+    if ('success' in event && !event["success"]) eventPriorityBonus += 1; // Errors get higher priority
+    if (event.type === 'swarm' && 'operation' in event && event["operation"] === 'destroy')
       eventPriorityBonus += 1;
 
     return maxObserverPriority + eventPriorityBonus;
@@ -797,14 +797,14 @@ export class EventBuilder {
     return {
       id: `neural-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       timestamp: new Date(),
-      source: options.source || 'neural-service',
+      source: options?.["source"] || 'neural-service',
       type: 'neural',
       modelId,
       operation,
       processingTime,
-      accuracy: options.accuracy,
-      loss: options.loss,
-      dataSize: options.dataSize,
+      accuracy: options?.["accuracy"],
+      loss: options?.["loss"],
+      dataSize: options?.["dataSize"],
     };
   }
 }

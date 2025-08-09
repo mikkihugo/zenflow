@@ -1,13 +1,4 @@
-/**
- * SPARC Integration Tools for HTTP MCP Server
- *
- * Integrates SPARC methodology into existing HTTP MCP interface
- * Provides database-driven SPARC operations instead of isolated system
- */
-
-import type { MCPTool } from '../tool-registry';
-
-export function createSPARCIntegrationTools(_documentService: DocumentService): MCPTool[] {
+export function createSPARCIntegrationTools(documentService: DocumentService): MCPTool[] {
   return [
     {
       name: 'sparc_create_project',
@@ -295,12 +286,12 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
                 outputs: alg.outputs,
                 steps: alg.steps,
                 complexity: alg.complexity,
-                optimizations: options.includeOptimizations ? alg.optimizations : [],
+                optimizations: options?.["includeOptimizations"] ? alg.optimizations : [],
               })),
               dataStructures: pseudocodeStructure.dataStructures,
               controlFlows: pseudocodeStructure.controlFlows,
-              optimizations: options.includeOptimizations ? pseudocodeStructure.optimizations : [],
-              complexityAnalysis: options.includeComplexityAnalysis
+              optimizations: options?.["includeOptimizations"] ? pseudocodeStructure.optimizations : [],
+              complexityAnalysis: options?.["includeComplexityAnalysis"]
                 ? pseudocodeStructure.complexityAnalysis
                 : undefined,
               summary: {

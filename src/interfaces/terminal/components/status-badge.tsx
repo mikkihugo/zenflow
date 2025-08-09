@@ -6,7 +6,6 @@
  */
 
 import { Box, Text } from 'ink';
-import type React from 'react';
 
 export type StatusType =
   | 'success'
@@ -88,20 +87,20 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
   const renderContent = () => {
     switch (variant) {
       case 'icon-only':
-        return <Text color={config.color}>{config.icon}</Text>;
+        return <Text color={config?.["color"]}>{config?.["icon"]}</Text>;
 
       case 'minimal':
         return (
           <Box>
-            <Text color={config.color}>{config.icon}</Text>
+            <Text color={config?.["color"]}>{config?.["icon"]}</Text>
             <Text> {displayText}</Text>
           </Box>
         );
       default:
         return (
           <Box>
-            <Text color={config.color} bold>
-              {config.icon} {displayText}
+            <Text color={config?.["color"]} bold>
+              {config?.["icon"]} {displayText}
             </Text>
           </Box>
         );
@@ -110,7 +109,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 
   if (showBorder) {
     return (
-      <Box borderStyle="single" borderColor={config.color} paddingX={1}>
+      <Box borderStyle="single" borderColor={config?.["color"]} paddingX={1}>
         {renderContent()}
       </Box>
     );

@@ -106,12 +106,12 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
         }
       );
 
-      expect(workflowResult.success).toBe(true);
-      expect(workflowResult.workflowId).toBeDefined();
+      expect(workflowResult?.success).toBe(true);
+      expect(workflowResult?.workflowId).toBeDefined();
 
       // Step 2: Monitor workflow execution
       let workflow = await productWorkflowEngine.getProductWorkflowStatus(
-        workflowResult.workflowId!
+        workflowResult?.workflowId!
       );
       expect(workflow).toBeDefined();
       expect(workflow?.status).toMatch(/running|pending/);
@@ -126,7 +126,7 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
         await new Promise((resolve) => setTimeout(resolve, checkInterval));
         waitedTime += checkInterval;
 
-        workflow = await productWorkflowEngine.getProductWorkflowStatus(workflowResult.workflowId!);
+        workflow = await productWorkflowEngine.getProductWorkflowStatus(workflowResult?.workflowId!);
 
         if (workflow?.productFlow.currentStep !== lastStep) {
           lastStep = workflow?.productFlow.currentStep;
@@ -204,11 +204,11 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
 
       for (const phase of phases) {
         const result = await sparcEngine.executePhase(sparcProject, phase);
-        phaseResults.push(result);
+        phaseResults?.push(result);
 
-        expect(result.success).toBe(true);
-        expect(result.phase).toBe(phase);
-        expect(result.deliverables.length).toBeGreaterThan(0);
+        expect(result?.success).toBe(true);
+        expect(result?.phase).toBe(phase);
+        expect(result?.deliverables.length).toBeGreaterThan(0);
       }
 
       // Verify all phases completed successfully
@@ -234,8 +234,8 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
         { workspaceId: testWorkspaceId }
       );
 
-      expect(invalidResult.success).toBe(false);
-      expect(invalidResult.error).toBeDefined();
+      expect(invalidResult?.success).toBe(false);
+      expect(invalidResult?.error).toBeDefined();
 
       // Test 2: Workflow pause/resume
       const validResult = await productWorkflowEngine.startProductWorkflow(
@@ -243,27 +243,27 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
         { workspaceId: testWorkspaceId }
       );
 
-      expect(validResult.success).toBe(true);
+      expect(validResult?.success).toBe(true);
 
       // Immediately pause the workflow
-      const pauseResult = await productWorkflowEngine.pauseProductWorkflow(validResult.workflowId!);
-      expect(pauseResult.success).toBe(true);
+      const pauseResult = await productWorkflowEngine.pauseProductWorkflow(validResult?.workflowId!);
+      expect(pauseResult?.success).toBe(true);
 
       // Verify paused state
       const pausedWorkflow = await productWorkflowEngine.getProductWorkflowStatus(
-        validResult.workflowId!
+        validResult?.workflowId!
       );
       expect(pausedWorkflow?.status).toBe('paused');
       expect(pausedWorkflow?.pausedAt).toBeDefined();
 
       // Resume the workflow
       const resumeResult = await productWorkflowEngine.resumeProductWorkflow(
-        validResult.workflowId!
+        validResult?.workflowId!
       );
-      expect(resumeResult.success).toBe(true);
+      expect(resumeResult?.success).toBe(true);
 
       // Clean up - pause again to prevent interference with other tests
-      await productWorkflowEngine.pauseProductWorkflow(validResult.workflowId!);
+      await productWorkflowEngine.pauseProductWorkflow(validResult?.workflowId!);
     }, 30000);
 
     it('should provide comprehensive system metrics and monitoring', async () => {
@@ -297,16 +297,16 @@ describe('E2E: Complete Product Flow → SPARC Integration', () => {
 
       // Execute specification phase
       const specResult = await sparcEngine.executePhase(sparcProject, 'specification');
-      expect(specResult.success).toBe(true);
+      expect(specResult?.success).toBe(true);
 
       // Verify quality metrics
-      expect(specResult.metrics.qualityScore).toBeGreaterThan(0);
-      expect(specResult.metrics.completeness).toBeGreaterThan(0);
+      expect(specResult?.metrics?.qualityScore).toBeGreaterThan(0);
+      expect(specResult?.metrics?.completeness).toBeGreaterThan(0);
 
       // Execute architecture phase with validation
       const archResult = await sparcEngine.executePhase(sparcProject, 'architecture');
-      expect(archResult.success).toBe(true);
-      expect(archResult.deliverables.length).toBeGreaterThan(0);
+      expect(archResult?.success).toBe(true);
+      expect(archResult?.deliverables.length).toBeGreaterThan(0);
     }, 30000);
   });
 });

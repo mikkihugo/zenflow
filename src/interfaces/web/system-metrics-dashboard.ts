@@ -5,11 +5,8 @@ const logger = getLogger("interfaces-web-system-metrics-dashboard");
 
 import { EventEmitter } from 'node:events';
 import { createDAO, createRepository, DatabaseTypes, EntityTypes } from '../../database/index';
-import type { IRepository } from '../../database/interfaces';
 // Import UACL for unified client management
 import { UACLHelpers, uacl } from '../clients/index';
-import type MCPPerformanceMetrics from '../mcp/performance-metrics';
-import type EnhancedMemory from '../memory/memory';
 import { getMCPServerURL, getWebDashboardURL } from '../../config/url-builder';
 
 interface DashboardConfig {
@@ -40,7 +37,7 @@ interface SystemHealth {
   }>;
 }
 
-export class UnifiedPerformanceDashboard extends EventEmitter {
+export class PerformanceDashboard extends EventEmitter {
   private mcpMetrics: MCPPerformanceMetrics;
   private enhancedMemory: EnhancedMemory;
   private vectorRepository?: IRepository<any>;
@@ -59,14 +56,14 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     this.enhancedMemory = enhancedMemory;
 
     this.config = {
-      refreshInterval: config.refreshInterval ?? 1000,
-      enableRealtime: config.enableRealtime ?? true,
-      maxDataPoints: config.maxDataPoints ?? 1000,
+      refreshInterval: config?.["refreshInterval"] ?? 1000,
+      enableRealtime: config?.["enableRealtime"] ?? true,
+      maxDataPoints: config?.["maxDataPoints"] ?? 1000,
       alertThresholds: {
-        latency: config.alertThresholds?.latency ?? 1000,
-        errorRate: config.alertThresholds?.errorRate ?? 0.05,
-        memoryUsage: config.alertThresholds?.memoryUsage ?? 100 * 1024 * 1024,
-        ...config.alertThresholds,
+        latency: config?.["alertThresholds"]?.["latency"] ?? 1000,
+        errorRate: config?.["alertThresholds"]?.["errorRate"] ?? 0.05,
+        memoryUsage: config?.["alertThresholds"]?.["memoryUsage"] ?? 100 * 1024 * 1024,
+        ...config?.["alertThresholds"],
       },
     };
   }
@@ -96,15 +93,15 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     // Initialize DAL repositories for database metrics
     try {
       this.vectorRepository = await createRepository(
-        EntityTypes.VectorDocument,
-        DatabaseTypes.LanceDB,
+        EntityTypes["VectorDocument"],
+        DatabaseTypes?.["LanceDB"],
         {
           database: './data/dashboard-metrics',
           options: { vectorSize: 384, metricType: 'cosine' },
         }
       );
 
-      this.vectorDAO = await createDAO(EntityTypes.VectorDocument, DatabaseTypes.LanceDB, {
+      this.vectorDAO = await createDAO(EntityTypes["VectorDocument"], DatabaseTypes?.["LanceDB"], {
         database: './data/dashboard-metrics',
         options: { vectorSize: 384 },
       });

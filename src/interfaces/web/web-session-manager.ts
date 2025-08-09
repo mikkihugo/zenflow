@@ -1,13 +1,4 @@
-/**
- * Web Session Manager - HTTP session management
- *
- * Handles user sessions, preferences, and session lifecycle.
- * Provides clean separation of session concerns from server logic.
- */
-
-import type { NextFunction, Request, Response } from 'express';
 import { createLogger } from '../../utils/logger';
-import type { WebConfig, WebSession } from './web-config';
 
 export class WebSessionManager {
   private logger = createLogger('WebSessions');

@@ -149,8 +149,8 @@ export class MetricsCollector extends EventEmitter {
     } = {}
   ) {
     super();
-    this.collectionInterval = options.collectionInterval || 1000;
-    this.maxHistorySize = options.maxHistorySize || 3600;
+    this.collectionInterval = options?.["collectionInterval"] || 1000;
+    this.maxHistorySize = options?.["maxHistorySize"] || 3600;
   }
 
   /**
@@ -420,10 +420,10 @@ export class MetricsCollector extends EventEmitter {
 
     if (this.lastIoStats) {
       return {
-        readBytes: Math.max(0, current.readBytes - this.lastIoStats.readBytes),
-        writeBytes: Math.max(0, current.writeBytes - this.lastIoStats.writeBytes),
-        readOps: Math.max(0, current.readOps - this.lastIoStats.readOps),
-        writeOps: Math.max(0, current.writeOps - this.lastIoStats.writeOps),
+        readBytes: Math.max(0, current?.readBytes - this.lastIoStats.readBytes),
+        writeBytes: Math.max(0, current?.writeBytes - this.lastIoStats.writeBytes),
+        readOps: Math.max(0, current?.readOps - this.lastIoStats.readOps),
+        writeOps: Math.max(0, current?.writeOps - this.lastIoStats.writeOps),
       };
     }
 
@@ -529,7 +529,7 @@ export class MetricsCollector extends EventEmitter {
       'mcp_success_rate',
     ];
 
-    const rows = data.map((metrics) => [
+    const rows = data?.["map"]((metrics) => [
       metrics.system.timestamp,
       metrics.system.cpu.usage,
       metrics.system.memory.percentage,

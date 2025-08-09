@@ -6,11 +6,10 @@
  * Ensures zero breaking changes during transition.
  */
 
-import { createLogger, type Logger } from '../../utils/logger';
-import type { IService } from './core/interfaces';
+import { createLogger } from '../../utils/logger';
 import { usl } from './index';
 import { ServiceManager } from './manager';
-import { type AnyServiceConfig, ServicePriority, ServiceType } from './types';
+import { ServicePriority, ServiceType } from './types';
 
 // Legacy service patterns that need compatibility support
 export interface LegacyServicePattern {
@@ -66,12 +65,12 @@ export class USLCompatibilityLayer {
     this.serviceManager = new ServiceManager();
 
     this.config = {
-      warnOnLegacyUsage: config?.warnOnLegacyUsage ?? true,
-      autoMigrate: config?.autoMigrate ?? true,
-      legacyPatterns: config?.legacyPatterns || this.getDefaultLegacyPatterns(),
-      serviceMappings: config?.serviceMappings || this.getDefaultServiceMappings(),
+      warnOnLegacyUsage: config?.["warnOnLegacyUsage"] ?? true,
+      autoMigrate: config?.["autoMigrate"] ?? true,
+      legacyPatterns: config?.["legacyPatterns"] || this.getDefaultLegacyPatterns(),
+      serviceMappings: config?.["serviceMappings"] || this.getDefaultServiceMappings(),
       configTransformations:
-        config?.configTransformations || this.getDefaultConfigTransformations(),
+        config?.["configTransformations"] || this.getDefaultConfigTransformations(),
     };
   }
 
@@ -137,7 +136,7 @@ export class USLCompatibilityLayer {
     }
 
     // Legacy fallback - map to coordination service
-    return await usl.createCoordinationService(name, { type: ServiceType.DAA, ...options });
+    return await usl.createCoordinationService(name, { type: ServiceType["DAA"], ...options });
   }
 
   /**
@@ -157,7 +156,7 @@ export class USLCompatibilityLayer {
 
     // Legacy fallback
     return await usl.createCoordinationService(name, {
-      type: ServiceType.SESSION_RECOVERY,
+      type: ServiceType["SESSION_RECOVERY"],
       ...options,
     });
   }
@@ -467,7 +466,7 @@ export class USLCompatibilityLayer {
 
       this.logMigration(
         'ClaudeZenFacade',
-        ServiceType.INFRASTRUCTURE,
+        ServiceType["INFRASTRUCTURE"],
         'Migrated facade to USL infrastructure service'
       );
 
@@ -531,7 +530,7 @@ export class USLCompatibilityLayer {
 
       this.logMigration(
         'PatternIntegration',
-        ServiceType.INFRASTRUCTURE,
+        ServiceType["INFRASTRUCTURE"],
         'Migrated pattern integration to USL infrastructure service'
       );
 
@@ -723,39 +722,39 @@ export class USLCompatibilityLayer {
 
     // Check for known service patterns
     if (serviceInstance.isDataService || serviceInstance.constructor?.name?.includes('Data')) {
-      return ServiceType.DATA;
+      return ServiceType["DATA"];
     }
 
     if (
       serviceInstance.isCoordinationService ||
       serviceInstance.constructor?.name?.includes('Coordination')
     ) {
-      return ServiceType.COORDINATION;
+      return ServiceType["COORDINATION"];
     }
 
     if (
       serviceInstance.isIntegrationService ||
       serviceInstance.constructor?.name?.includes('Integration')
     ) {
-      return ServiceType.API;
+      return ServiceType["API"];
     }
 
     if (
       serviceInstance.isInfrastructureService ||
       serviceInstance.constructor?.name?.includes('Infrastructure')
     ) {
-      return ServiceType.INFRASTRUCTURE;
+      return ServiceType["INFRASTRUCTURE"];
     }
 
     // Fallback to custom type
-    return ServiceType.CUSTOM;
+    return ServiceType["CUSTOM"];
   }
 
   private transformServiceConfig(serviceInstance: any): Partial<AnyServiceConfig> {
     // Basic configuration transformation
     const baseConfig: Partial<AnyServiceConfig> = {
       enabled: true,
-      priority: ServicePriority.NORMAL,
+      priority: ServicePriority["NORMAL"],
     };
 
     // Apply specific transformations based on service characteristics
@@ -842,32 +841,32 @@ export class USLCompatibilityLayer {
     return {
       webDataService: {
         newName: 'enhanced-web-data',
-        newType: ServiceType.DATA,
+        newType: ServiceType["DATA"],
         migrationNotes: 'Enhanced with caching and performance optimizations',
       },
       documentService: {
         newName: 'enhanced-document',
-        newType: ServiceType.DATA,
+        newType: ServiceType["DATA"],
         migrationNotes: 'Enhanced with vector search and advanced querying',
       },
       daaService: {
         newName: 'enhanced-daa',
-        newType: ServiceType.DAA,
+        newType: ServiceType["DAA"],
         migrationNotes: 'Enhanced with advanced analytics and real-time processing',
       },
       sessionRecoveryService: {
         newName: 'enhanced-session-recovery',
-        newType: ServiceType.SESSION_RECOVERY,
+        newType: ServiceType["SESSION_RECOVERY"],
         migrationNotes: 'Enhanced with automatic backup and faster recovery',
       },
       architectureStorageService: {
         newName: 'enhanced-architecture-storage',
-        newType: ServiceType.ARCHITECTURE_STORAGE,
+        newType: ServiceType["ARCHITECTURE_STORAGE"],
         migrationNotes: 'Enhanced with versioning and validation tracking',
       },
       safeAPIService: {
         newName: 'enhanced-safe-api',
-        newType: ServiceType.SAFE_API,
+        newType: ServiceType["SAFE_API"],
         migrationNotes: 'Enhanced with advanced validation and security features',
       },
     };
@@ -876,33 +875,33 @@ export class USLCompatibilityLayer {
   private getDefaultConfigTransformations(): Record<string, (oldConfig: any) => AnyServiceConfig> {
     return {
       dataService: (oldConfig: any) => ({
-        name: oldConfig.name || 'migrated-data-service',
-        type: ServiceType.DATA,
+        name: oldConfig?.name || 'migrated-data-service',
+        type: ServiceType["DATA"],
         enabled: true,
-        priority: ServicePriority.NORMAL,
-        dataSource: oldConfig.dataSource || { type: 'memory' },
+        priority: ServicePriority["NORMAL"],
+        dataSource: oldConfig?.dataSource || { type: 'memory' },
         caching: { enabled: true, ttl: 300000 },
         validation: { enabled: true, strict: false },
       }),
 
       coordinationService: (oldConfig: any) => ({
-        name: oldConfig.name || 'migrated-coordination-service',
-        type: ServiceType.COORDINATION,
+        name: oldConfig?.name || 'migrated-coordination-service',
+        type: ServiceType["COORDINATION"],
         enabled: true,
-        priority: ServicePriority.HIGH,
+        priority: ServicePriority["HIGH"],
         coordination: {
-          topology: oldConfig.topology || 'mesh',
-          maxAgents: oldConfig.maxAgents || 10,
-          strategy: oldConfig.strategy || 'adaptive',
+          topology: oldConfig?.topology || 'mesh',
+          maxAgents: oldConfig?.maxAgents || 10,
+          strategy: oldConfig?.strategy || 'adaptive',
         },
         persistence: { enabled: true, storage: 'memory' },
       }),
 
       integrationService: (oldConfig: any) => ({
-        name: oldConfig.name || 'migrated-integration-service',
-        type: ServiceType.API,
+        name: oldConfig?.name || 'migrated-integration-service',
+        type: ServiceType["API"],
         enabled: true,
-        priority: ServicePriority.HIGH,
+        priority: ServicePriority["HIGH"],
         integration: {
           architectureStorage: true,
           safeAPI: true,

@@ -8,8 +8,6 @@ const logger = getLogger("coordination-swarm-core-session-utils");
  */
 
 import crypto from 'node:crypto';
-import type { SessionCheckpoint, SessionState, SessionStatus } from './session-manager';
-import type { SwarmOptions, SwarmState } from './types';
 
 /**
  * Session validation utilities.
@@ -116,24 +114,24 @@ export class SessionValidator {
     const errors: string[] = [];
 
     if (
-      options.maxAgents !== undefined &&
-      (typeof options.maxAgents !== 'number' || options.maxAgents <= 0)
+      options?.["maxAgents"] !== undefined &&
+      (typeof options?.["maxAgents"] !== 'number' || options?.["maxAgents"] <= 0)
     ) {
       errors.push('Invalid maxAgents value');
     }
 
     if (
-      options.connectionDensity !== undefined &&
-      (typeof options.connectionDensity !== 'number' ||
-        options.connectionDensity < 0 ||
-        options.connectionDensity > 1)
+      options?.["connectionDensity"] !== undefined &&
+      (typeof options?.["connectionDensity"] !== 'number' ||
+        options?.["connectionDensity"] < 0 ||
+        options?.["connectionDensity"] > 1)
     ) {
       errors.push('Invalid connectionDensity value');
     }
 
     if (
-      options.syncInterval !== undefined &&
-      (typeof options.syncInterval !== 'number' || options.syncInterval <= 0)
+      options?.["syncInterval"] !== undefined &&
+      (typeof options?.["syncInterval"] !== 'number' || options?.["syncInterval"] <= 0)
     ) {
       errors.push('Invalid syncInterval value');
     }
@@ -212,13 +210,13 @@ export class SessionSerializer {
     const data = JSON.parse(serialized);
 
     return {
-      agents: new Map(Object.entries(data.agents)),
-      tasks: new Map(Object.entries(data.tasks)),
-      topology: data.topology,
-      connections: data.connections,
+      agents: new Map(Object.entries(data?.["agents"])),
+      tasks: new Map(Object.entries(data?.["tasks"])),
+      topology: data?.["topology"],
+      connections: data?.["connections"],
       metrics: {
-        ...data.metrics,
-        agentUtilization: new Map(Object.entries(data.metrics.agentUtilization)),
+        ...data?.["metrics"],
+        agentUtilization: new Map(Object.entries(data?.["metrics"]?.agentUtilization)),
       },
     };
   }
@@ -264,15 +262,15 @@ export class SessionSerializer {
     const data = JSON.parse(exported);
 
     const sessionState: SessionState = {
-      id: data.id,
-      name: data.name,
-      createdAt: new Date(data.createdAt),
-      lastAccessedAt: new Date(data.lastAccessedAt),
-      status: data.status,
-      swarmState: SessionSerializer.deserializeSwarmState(data.swarmState),
-      swarmOptions: data.swarmOptions,
-      metadata: data.metadata || {},
-      checkpoints: data.checkpoints.map((cp: any) => ({
+      id: data?.["id"],
+      name: data?.["name"],
+      createdAt: new Date(data?.["createdAt"]),
+      lastAccessedAt: new Date(data?.["lastAccessedAt"]),
+      status: data?.["status"],
+      swarmState: SessionSerializer.deserializeSwarmState(data?.["swarmState"]),
+      swarmOptions: data?.["swarmOptions"],
+      metadata: data?.["metadata"] || {},
+      checkpoints: data?.["checkpoints"]?.map((cp: any) => ({
         id: cp.id,
         sessionId: cp.sessionId,
         timestamp: new Date(cp.timestamp),
@@ -281,17 +279,17 @@ export class SessionSerializer {
         ...(cp.description && { description: cp.description }),
         ...(cp.metadata && { metadata: cp.metadata }),
       })),
-      version: data.version,
+      version: data?.["version"],
     };
 
     // Handle optional lastCheckpointAt property
-    if (data.lastCheckpointAt) {
-      sessionState.lastCheckpointAt = new Date(data.lastCheckpointAt);
+    if (data?.["lastCheckpointAt"]) {
+      sessionState.lastCheckpointAt = new Date(data?.["lastCheckpointAt"]);
     }
 
     // Handle optional metadata property
-    if (data.metadata !== undefined) {
-      sessionState.metadata = data.metadata;
+    if (data?.["metadata"] !== undefined) {
+      sessionState.metadata = data?.["metadata"];
     }
 
     return sessionState;

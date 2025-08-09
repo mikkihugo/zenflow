@@ -1,15 +1,3 @@
-/**
- * Performance Benchmarks Suite
- * Comprehensive benchmarking for all optimization components
- */
-
-import type {
-  DataOptimizer,
-  NeuralOptimizer,
-  PerformanceMetrics,
-  SwarmOptimizer,
-  WasmOptimizer,
-} from '../interfaces/optimization-interfaces';
 import {
   DATA_PERFORMANCE_TARGETS,
   NEURAL_PERFORMANCE_TARGETS,
@@ -109,28 +97,28 @@ export class PerformanceBenchmarkSuite {
     try {
       // Run neural network benchmarks
       if (this.neuralOptimizer) {
-        results.domains.neural = await this.runNeuralBenchmarks();
+        results?.domains?.neural = await this.runNeuralBenchmarks();
       }
 
       // Run swarm coordination benchmarks
       if (this.swarmOptimizer) {
-        results.domains.swarm = await this.runSwarmBenchmarks();
+        results?.domains?.swarm = await this.runSwarmBenchmarks();
       }
 
       // Run data optimization benchmarks
       if (this.dataOptimizer) {
-        results.domains.data = await this.runDataBenchmarks();
+        results?.domains?.data = await this.runDataBenchmarks();
       }
 
       // Run WASM optimization benchmarks
       if (this.wasmOptimizer) {
-        results.domains.wasm = await this.runWasmBenchmarks();
+        results?.domains?.wasm = await this.runWasmBenchmarks();
       }
 
       // Calculate overall results
       this.calculateOverallResults(results);
 
-      results.executionTime = Date.now() - startTime;
+      results?.executionTime = Date.now() - startTime;
       return results;
     } catch (error) {
       throw new Error(`Benchmark execution failed: ${error}`);
@@ -147,7 +135,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'training_speed_optimization',
         description: 'Test neural network training speed improvements',
-        target: NEURAL_PERFORMANCE_TARGETS.trainingSpeedImprovement,
+        target: NEURAL_PERFORMANCE_TARGETS?.trainingSpeedImprovement,
         expectedImprovement: 5.0,
         run: async (optimizer: NeuralOptimizer) => {
           const mockNetwork = this.createMockNeuralNetwork();
@@ -173,7 +161,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'batch_processing_optimization',
         description: 'Test batch processing implementation',
-        target: NEURAL_PERFORMANCE_TARGETS.batchThroughput,
+        target: NEURAL_PERFORMANCE_TARGETS?.batchThroughput,
         expectedImprovement: 3.0,
         run: async (optimizer: NeuralOptimizer) => {
           const mockTrainer = this.createMockNetworkTrainer();
@@ -199,7 +187,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'memory_optimization',
         description: 'Test neural network memory usage optimization',
-        target: NEURAL_PERFORMANCE_TARGETS.memoryReduction,
+        target: NEURAL_PERFORMANCE_TARGETS?.memoryReduction,
         expectedImprovement: 0.6,
         run: async (optimizer: NeuralOptimizer) => {
           const mockNetworks = [this.createMockNeuralNetwork(), this.createMockNeuralNetwork()];
@@ -225,7 +213,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'inference_latency',
         description: 'Test neural network inference latency',
-        target: NEURAL_PERFORMANCE_TARGETS.inferenceLatency,
+        target: NEURAL_PERFORMANCE_TARGETS?.inferenceLatency,
         expectedImprovement: 0.5,
         run: async (_optimizer: NeuralOptimizer) => {
           const mockNetwork = this.createMockNeuralNetwork();
@@ -264,7 +252,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'message_routing_optimization',
         description: 'Test message routing latency optimization',
-        target: SWARM_PERFORMANCE_TARGETS.messageLatency,
+        target: SWARM_PERFORMANCE_TARGETS?.messageLatency,
         expectedImprovement: 0.5,
         run: async (optimizer: SwarmOptimizer) => {
           const mockTopology = this.createMockSwarmTopology();
@@ -316,7 +304,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'horizontal_scaling',
         description: 'Test horizontal scaling capability',
-        target: SWARM_PERFORMANCE_TARGETS.scalability,
+        target: SWARM_PERFORMANCE_TARGETS?.scalability,
         expectedImprovement: 10.0,
         run: async (optimizer: SwarmOptimizer) => {
           const before = await this.measureScalingPerformance(1000);
@@ -353,7 +341,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'query_performance_optimization',
         description: 'Test database query performance improvements',
-        target: DATA_PERFORMANCE_TARGETS.queryResponseTime,
+        target: DATA_PERFORMANCE_TARGETS?.queryResponseTime,
         expectedImprovement: 0.6,
         run: async (optimizer: DataOptimizer) => {
           const mockQueries = this.createMockDatabaseQueries();
@@ -379,7 +367,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'connection_pooling',
         description: 'Test connection pooling efficiency',
-        target: DATA_PERFORMANCE_TARGETS.connectionEfficiency,
+        target: DATA_PERFORMANCE_TARGETS?.connectionEfficiency,
         expectedImprovement: 0.3,
         run: async (optimizer: DataOptimizer) => {
           const mockConnections = this.createMockConnections();
@@ -405,7 +393,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'intelligent_caching',
         description: 'Test intelligent caching implementation',
-        target: DATA_PERFORMANCE_TARGETS.cacheHitRatio,
+        target: DATA_PERFORMANCE_TARGETS?.cacheHitRatio,
         expectedImprovement: 0.4,
         run: async (optimizer: DataOptimizer) => {
           const mockCacheLayer = this.createMockCacheLayer();
@@ -443,7 +431,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'module_loading_optimization',
         description: 'Test WASM module loading performance',
-        target: WASM_PERFORMANCE_TARGETS.moduleLoadTime,
+        target: WASM_PERFORMANCE_TARGETS?.["moduleLoadTime"],
         expectedImprovement: 0.7,
         run: async (optimizer: WasmOptimizer) => {
           const mockModules = this.createMockWasmModules();
@@ -469,7 +457,7 @@ export class PerformanceBenchmarkSuite {
       {
         name: 'streaming_compilation',
         description: 'Test streaming compilation implementation',
-        target: WASM_PERFORMANCE_TARGETS.executionSpeedImprovement,
+        target: WASM_PERFORMANCE_TARGETS?.["executionSpeedImprovement"],
         expectedImprovement: 8.0,
         run: async (optimizer: WasmOptimizer) => {
           const mockWasmFiles = this.createMockWasmFiles();
@@ -540,9 +528,9 @@ export class PerformanceBenchmarkSuite {
     for (const benchmark of benchmarks) {
       try {
         const result = await benchmark.run(optimizer);
-        results.push(result);
+        results?.push(result);
       } catch (error) {
-        results.push({
+        results?.push({
           domain,
           test: benchmark.name,
           before: this.createEmptyMetrics(),
@@ -566,20 +554,20 @@ export class PerformanceBenchmarkSuite {
    */
   private calculateOverallResults(results: SystemBenchmarkResults): void {
     const allResults = [
-      ...results.domains.neural,
-      ...results.domains.swarm,
-      ...results.domains.data,
-      ...results.domains.wasm,
+      ...results?.domains?.neural,
+      ...results?.domains?.swarm,
+      ...results?.domains?.data,
+      ...results?.domains?.wasm,
     ];
 
-    results.overall.totalTests = allResults.length;
-    results.overall.passed = allResults.filter((r) => r.success).length;
-    results.overall.failed = allResults.filter((r) => !r.success).length;
-    results.overall.targetsMet = allResults.filter((r) => r.targetMet).length;
+    results?.overall?.totalTests = allResults.length;
+    results?.overall?.passed = allResults?.filter((r) => r.success).length;
+    results?.overall?.failed = allResults?.filter((r) => !r.success).length;
+    results?.overall?.targetsMet = allResults?.filter((r) => r.targetMet).length;
 
     if (allResults.length > 0) {
-      results.overall.averageImprovement =
-        allResults.reduce((sum, r) => sum + r.improvement, 0) / allResults.length;
+      results?.overall?.averageImprovement =
+        allResults?.reduce((sum, r) => sum + r.improvement, 0) / allResults.length;
     }
   }
 

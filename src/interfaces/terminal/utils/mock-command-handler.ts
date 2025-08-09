@@ -404,10 +404,10 @@ export class MockCommandHandler {
 
       // Convert engine result to expected format
       return {
-        success: result.success,
-        message: result.message,
-        data: result.data,
-        error: result.error,
+        success: result?.success,
+        message: result?.message,
+        data: result?.data,
+        error: result?.error,
       };
     } catch (error) {
       logger.error(`Mock command handler failed for ${command}:`, error);

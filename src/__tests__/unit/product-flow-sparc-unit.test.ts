@@ -7,10 +7,6 @@
 
 import { describe, expect, it } from '@jest/globals';
 import { nanoid } from 'nanoid';
-import type {
-  FeatureDocumentEntity,
-  TaskDocumentEntity,
-} from '../../database/entities/product-entities';
 
 describe('Product Flow + SPARC Unit Tests', () => {
   describe('🎯 Entity Structure Validation', () => {
@@ -86,12 +82,12 @@ describe('Product Flow + SPARC Unit Tests', () => {
       };
 
       // Validate SPARC integration exists and is properly structured
-      expect(feature.sparc_implementation).toBeDefined();
-      expect(feature.sparc_implementation?.use_sparc_methodology).toBe(true);
-      expect(feature.sparc_implementation?.sparc_project_id).toBe('sparc-auth-api-001');
+      expect(feature["sparc_implementation"]).toBeDefined();
+      expect(feature["sparc_implementation"]?.["use_sparc_methodology"]).toBe(true);
+      expect(feature["sparc_implementation"]?.["sparc_project_id"]).toBe('sparc-auth-api-001');
 
       // Validate all 5 SPARC phases are defined
-      const phases = feature.sparc_implementation?.sparc_phases;
+      const phases = feature["sparc_implementation"]?.["sparc_phases"];
       expect(phases?.specification).toBeDefined();
       expect(phases?.pseudocode).toBeDefined();
       expect(phases?.architecture).toBeDefined();
@@ -101,14 +97,14 @@ describe('Product Flow + SPARC Unit Tests', () => {
       // Validate phase structure
       expect(phases?.specification.status).toBe('completed');
       expect(phases?.specification.deliverables).toHaveLength(2);
-      expect(phases?.specification.quality_score).toBe(0.92);
+      expect(phases?.specification["quality_score"]).toBe(0.92);
 
       expect(phases?.pseudocode.status).toBe('in_progress');
       expect(phases?.pseudocode.algorithms).toHaveLength(3);
 
       // Validate current phase and progress
-      expect(feature.sparc_implementation?.current_sparc_phase).toBe('pseudocode');
-      expect(feature.sparc_implementation?.sparc_progress_percentage).toBe(40.0);
+      expect(feature["sparc_implementation"]?.["current_sparc_phase"]).toBe('pseudocode');
+      expect(feature["sparc_implementation"]?.["sparc_progress_percentage"]).toBe(40.0);
     });
 
     it('should have proper SPARC integration structure in TaskDocumentEntity', () => {
@@ -194,29 +190,29 @@ describe('Product Flow + SPARC Unit Tests', () => {
       };
 
       // Validate SPARC task integration
-      expect(task.sparc_implementation_details).toBeDefined();
-      expect(task.sparc_implementation_details?.parent_feature_sparc_id).toBe('sparc-auth-api-001');
-      expect(task.sparc_implementation_details?.sparc_phase_assignment).toBe('completion');
-      expect(task.sparc_implementation_details?.sparc_deliverable_type).toBe('production_code');
+      expect(task["sparc_implementation_details"]).toBeDefined();
+      expect(task["sparc_implementation_details"]?.["parent_feature_sparc_id"]).toBe('sparc-auth-api-001');
+      expect(task["sparc_implementation_details"]?.["sparc_phase_assignment"]).toBe('completion');
+      expect(task["sparc_implementation_details"]?.["sparc_deliverable_type"]).toBe('production_code');
 
       // Validate quality gates
-      const qualityGates = task.sparc_implementation_details?.sparc_quality_gates;
+      const qualityGates = task["sparc_implementation_details"]?.["sparc_quality_gates"];
       expect(qualityGates).toHaveLength(3);
       expect(qualityGates?.[0].requirement).toContain('cryptographically secure');
       expect(qualityGates?.[1].requirement).toContain('latency');
       expect(qualityGates?.[2].requirement).toContain('coverage');
 
       // Validate artifacts
-      const artifacts = task.sparc_implementation_details?.sparc_artifacts;
+      const artifacts = task["sparc_implementation_details"]?.["sparc_artifacts"];
       expect(artifacts).toHaveLength(2);
-      expect(artifacts?.[0].artifact_type).toBe('final_implementation');
-      expect(artifacts?.[0].file_path).toBe('auth/jwt-generator.ts');
+      expect(artifacts?.[0]["artifact_type"]).toBe('final_implementation');
+      expect(artifacts?.[0]["file_path"]).toBe('auth/jwt-generator.ts');
 
       // Validate complexity analysis
-      const complexity = task.sparc_implementation_details?.complexity_analysis;
-      expect(complexity?.time_complexity).toBe('O(1)');
-      expect(complexity?.maintainability_score).toBe(85);
-      expect(complexity?.performance_impact).toBe('low');
+      const complexity = task["sparc_implementation_details"]?.["complexity_analysis"];
+      expect(complexity?.["time_complexity"]).toBe('O(1)');
+      expect(complexity?.["maintainability_score"]).toBe(85);
+      expect(complexity?.["performance_impact"]).toBe('low');
     });
   });
 
@@ -422,7 +418,7 @@ describe('Product Flow + SPARC Unit Tests', () => {
       // Validate quality gate structure
       expect(qualityGate.requirement).toBeDefined();
       expect(['pending', 'passed', 'failed']).toContain(qualityGate.status);
-      expect(['automated', 'manual', 'ai_assisted']).toContain(qualityGate.validation_method);
+      expect(['automated', 'manual', 'ai_assisted']).toContain(qualityGate["validation_method"]);
 
       // Validate requirement is specific and measurable
       expect(qualityGate.requirement).toContain('<');
@@ -439,15 +435,15 @@ describe('Product Flow + SPARC Unit Tests', () => {
       };
 
       // Validate artifact structure
-      expect(artifact.artifact_id).toMatch(/^[\w.-]+$/); // Valid ID format (allows dots)
+      expect(artifact["artifact_id"]).toMatch(/^[\w.-]+$/); // Valid ID format (allows dots)
       expect([
         'specification',
         'pseudocode',
         'architecture_diagram',
         'refactored_code',
         'final_implementation',
-      ]).toContain(artifact.artifact_type);
-      expect(artifact.file_path).toMatch(/\.(ts|js|md|json)$/); // Valid file extension
+      ]).toContain(artifact["artifact_type"]);
+      expect(artifact["file_path"]).toMatch(/\.(ts|js|md|json)$/); // Valid file extension
       expect(artifact.checksum).toMatch(/^(sha256|md5):/); // Valid checksum format
     });
   });

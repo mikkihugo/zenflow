@@ -14,26 +14,10 @@
 import { EventEmitter } from 'node:events';
 import { DaaService } from '../../../coordination/swarm/core/daa-service';
 import { SessionEnabledSwarm } from '../../../coordination/swarm/core/session-integration';
-import type { SessionConfig, SessionState } from '../../../coordination/swarm/core/session-manager';
-import type { SwarmAgent, SwarmMetrics } from '../../../coordination/swarm/core/swarm-coordinator';
 import { SwarmCoordinator } from '../../../coordination/swarm/core/swarm-coordinator';
-import type { SwarmOptions, SwarmTopology } from '../../../coordination/swarm/core/types';
-import type { AgentType } from '../../../types/agent-types';
-import { createLogger, type Logger } from '../../../utils/logger';
-import type {
-  IService,
-  ServiceConfig,
-  ServiceDependencyConfig,
-  ServiceEvent,
-  ServiceEventType,
-  ServiceLifecycleStatus,
-  ServiceMetrics,
-  ServiceOperationOptions,
-  ServiceOperationResponse,
-  ServiceStatus,
-} from '../core/interfaces';
+import { createLogger } from '../../../utils/logger';
+import type { IService } from '../core/interfaces';
 import { ServiceDependencyError } from '../core/interfaces';
-import type { CoordinationServiceConfig } from '../types';
 
 /**
  * Coordination service adapter configuration extending USL CoordinationServiceConfig
@@ -240,11 +224,11 @@ export class CoordinationServiceAdapter implements IService {
   };
 
   constructor(config: CoordinationServiceAdapterConfig) {
-    this.name = config.service.name;
-    this.type = config.service.type;
-    this.config = config.service;
+    this.name = config?.["service"]?.name;
+    this.type = config?.["service"]?.type;
+    this.config = config?.["service"];
     this.adapterConfig = {
-      service: config.service,
+      service: config?.["service"],
       // Default configuration values
       daaService: {
         enabled: true,
@@ -252,7 +236,7 @@ export class CoordinationServiceAdapter implements IService {
         enableLearning: true,
         enableCognitive: true,
         enableMetaLearning: true,
-        ...config.daaService,
+        ...config?.["daaService"],
       },
       sessionService: {
         enabled: true,
@@ -260,7 +244,7 @@ export class CoordinationServiceAdapter implements IService {
         healthCheckInterval: 30000, // 30 seconds
         maxSessions: 100,
         checkpointInterval: 300000, // 5 minutes
-        ...config.sessionService,
+        ...config?.["sessionService"],
       },
       swarmCoordinator: {
         enabled: true,
@@ -268,7 +252,7 @@ export class CoordinationServiceAdapter implements IService {
         maxAgents: 50,
         coordinationTimeout: 10000,
         performanceThreshold: 0.8,
-        ...config.swarmCoordinator,
+        ...config?.["swarmCoordinator"],
       },
       performance: {
         enableRequestDeduplication: true,
@@ -277,7 +261,7 @@ export class CoordinationServiceAdapter implements IService {
         enableMetricsCollection: true,
         agentPooling: true,
         sessionCaching: true,
-        ...config.performance,
+        ...config?.["performance"],
       },
       retry: {
         enabled: true,
@@ -294,7 +278,7 @@ export class CoordinationServiceAdapter implements IService {
           'swarm-assign-task',
           'knowledge-share',
         ],
-        ...config.retry,
+        ...config?.["retry"],
       },
       cache: {
         enabled: true,
@@ -302,21 +286,21 @@ export class CoordinationServiceAdapter implements IService {
         defaultTTL: 600000, // 10 minutes
         maxSize: 500,
         keyPrefix: 'coord-adapter:',
-        ...config.cache,
+        ...config?.["cache"],
       },
       agentManagement: {
         autoSpawn: false,
         maxLifetime: 3600000, // 1 hour
         healthCheckInterval: 60000, // 1 minute
         performanceTracking: true,
-        ...config.agentManagement,
+        ...config?.["agentManagement"],
       },
       learning: {
         enableContinuousLearning: true,
         knowledgeSharing: true,
         patternAnalysis: true,
         metaLearningInterval: 1800000, // 30 minutes
-        ...config.learning,
+        ...config?.["learning"],
       },
       ...config,
     };
@@ -774,30 +758,30 @@ export class CoordinationServiceAdapter implements IService {
   async validateConfig(config: CoordinationServiceAdapterConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config.name || !config.type) {
+      if (!config?.name || !config?.type) {
         this.logger.error('Configuration missing required fields: name or type');
         return false;
       }
 
       // Validate DAA service configuration
       if (
-        config.daaService?.enabled &&
-        config.performance?.requestTimeout &&
-        config.performance.requestTimeout < 1000
+        config?.["daaService"]?.["enabled"] &&
+        config?.["performance"]?.["requestTimeout"] &&
+        config?.["performance"]?.["requestTimeout"] < 1000
       ) {
         this.logger.error('Request timeout must be at least 1000ms');
         return false;
       }
 
       // Validate session service configuration
-      if (config.sessionService?.enabled) {
-        if (config.sessionService.maxSessions && config.sessionService.maxSessions < 1) {
+      if (config?.["sessionService"]?.["enabled"]) {
+        if (config?.["sessionService"]?.["maxSessions"] && config?.["sessionService"]?.["maxSessions"] < 1) {
           this.logger.error('Max sessions must be at least 1');
           return false;
         }
         if (
-          config.sessionService.checkpointInterval &&
-          config.sessionService.checkpointInterval < 10000
+          config?.["sessionService"]?.["checkpointInterval"] &&
+          config?.["sessionService"]?.["checkpointInterval"] < 10000
         ) {
           this.logger.error('Checkpoint interval must be at least 10000ms');
           return false;
@@ -805,15 +789,15 @@ export class CoordinationServiceAdapter implements IService {
       }
 
       // Validate swarm coordinator configuration
-      if (config.swarmCoordinator?.enabled) {
-        if (config.swarmCoordinator.maxAgents && config.swarmCoordinator.maxAgents < 1) {
+      if (config?.["swarmCoordinator"]?.["enabled"]) {
+        if (config?.["swarmCoordinator"]?.["maxAgents"] && config?.["swarmCoordinator"]?.["maxAgents"] < 1) {
           this.logger.error('Max agents must be at least 1');
           return false;
         }
         if (
-          config.swarmCoordinator.performanceThreshold &&
-          (config.swarmCoordinator.performanceThreshold < 0 ||
-            config.swarmCoordinator.performanceThreshold > 1)
+          config?.["swarmCoordinator"]?.["performanceThreshold"] &&
+          (config?.["swarmCoordinator"]?.["performanceThreshold"] < 0 ||
+            config?.["swarmCoordinator"]?.["performanceThreshold"] > 1)
         ) {
           this.logger.error('Performance threshold must be between 0 and 1');
           return false;
@@ -821,19 +805,19 @@ export class CoordinationServiceAdapter implements IService {
       }
 
       // Validate performance configuration
-      if (config.performance?.maxConcurrency && config.performance.maxConcurrency < 1) {
+      if (config?.["performance"]?.["maxConcurrency"] && config?.["performance"]?.["maxConcurrency"] < 1) {
         this.logger.error('Max concurrency must be at least 1');
         return false;
       }
 
       // Validate retry configuration
-      if (config.retry?.enabled && config.retry.maxAttempts && config.retry.maxAttempts < 1) {
+      if (config?.["retry"]?.["enabled"] && config?.["retry"]?.["maxAttempts"] && config?.["retry"]?.["maxAttempts"] < 1) {
         this.logger.error('Retry max attempts must be at least 1');
         return false;
       }
 
       // Validate cache configuration
-      if (config.cache?.enabled && config.cache.maxSize && config.cache.maxSize < 1) {
+      if (config?.["cache"]?.["enabled"] && config?.["cache"]?.["maxSize"] && config?.["cache"]?.["maxSize"] < 1) {
         this.logger.error('Cache max size must be at least 1');
         return false;
       }
@@ -928,7 +912,7 @@ export class CoordinationServiceAdapter implements IService {
       }
 
       // Apply timeout if specified
-      const timeout = options?.timeout || this.config.performance?.requestTimeout || 30000;
+      const timeout = options?.["timeout"] || this.config.performance?.requestTimeout || 30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(() => reject(new ServiceTimeoutError(this.name, operation, timeout)), timeout);
       });
@@ -1051,7 +1035,7 @@ export class CoordinationServiceAdapter implements IService {
     try {
       const dependencyChecks = Array.from(this.dependencies.entries()).map(
         async ([name, config]) => {
-          if (!config.healthCheck) {
+          if (!config?.["healthCheck"]) {
             return true; // Skip health check if not required
           }
 
@@ -1061,13 +1045,13 @@ export class CoordinationServiceAdapter implements IService {
             return true;
           } catch (error) {
             this.logger.warn(`Dependency ${name} health check failed:`, error);
-            return !config.required; // Return false only if dependency is required
+            return !config?.["required"]; // Return false only if dependency is required
           }
         }
       );
 
       const results = await Promise.all(dependencyChecks);
-      return results.every((result) => result === true);
+      return results?.every((result) => result === true);
     } catch (error) {
       this.logger.error(`Error checking dependencies for ${this.name}:`, error);
       return false;
@@ -1207,72 +1191,72 @@ export class CoordinationServiceAdapter implements IService {
     switch (operation) {
       // DaaService operations
       case 'agent-create':
-        return (await this.createAgent(params?.config)) as T;
+        return (await this.createAgent(params?.["config"])) as T;
 
       case 'agent-adapt':
-        return (await this.adaptAgent(params?.agentId, params?.adaptation)) as T;
+        return (await this.adaptAgent(params?.["agentId"], params?.["adaptation"])) as T;
 
       case 'agent-learning-status':
-        return (await this.getAgentLearningStatus(params?.agentId)) as T;
+        return (await this.getAgentLearningStatus(params?.["agentId"])) as T;
 
       case 'workflow-create':
-        return (await this.createWorkflow(params?.workflow)) as T;
+        return (await this.createWorkflow(params?.["workflow"])) as T;
 
       case 'workflow-execute':
-        return (await this.executeWorkflow(params?.workflowId, params?.params)) as T;
+        return (await this.executeWorkflow(params?.["workflowId"], params?.["params"])) as T;
 
       case 'knowledge-share':
-        return (await this.shareKnowledge(params?.knowledge)) as T;
+        return (await this.shareKnowledge(params?.["knowledge"])) as T;
 
       case 'cognitive-analyze':
-        return (await this.analyzeCognitivePatterns(params?.agentId)) as T;
+        return (await this.analyzeCognitivePatterns(params?.["agentId"])) as T;
 
       case 'cognitive-set':
-        return (await this.setCognitivePattern(params?.agentId, params?.pattern)) as T;
+        return (await this.setCognitivePattern(params?.["agentId"], params?.["pattern"])) as T;
 
       case 'meta-learning':
         return (await this.performMetaLearning(params)) as T;
 
       case 'performance-metrics':
-        return (await this.getPerformanceMetrics(params?.agentId)) as T;
+        return (await this.getPerformanceMetrics(params?.["agentId"])) as T;
 
       // Session operations
       case 'session-create':
-        return (await this.createSession(params?.name)) as T;
+        return (await this.createSession(params?.["name"])) as T;
 
       case 'session-load':
-        return (await this.loadSession(params?.sessionId)) as T;
+        return (await this.loadSession(params?.["sessionId"])) as T;
 
       case 'session-save':
-        return (await this.saveSession(params?.sessionId)) as T;
+        return (await this.saveSession(params?.["sessionId"])) as T;
 
       case 'session-checkpoint':
-        return (await this.createCheckpoint(params?.sessionId, params?.description)) as T;
+        return (await this.createCheckpoint(params?.["sessionId"], params?.["description"])) as T;
 
       case 'session-restore':
-        return (await this.restoreFromCheckpoint(params?.sessionId, params?.checkpointId)) as T;
+        return (await this.restoreFromCheckpoint(params?.["sessionId"], params?.["checkpointId"])) as T;
 
       case 'session-list':
-        return (await this.listSessions(params?.filter)) as T;
+        return (await this.listSessions(params?.["filter"])) as T;
 
       case 'session-stats':
-        return (await this.getSessionStats(params?.sessionId)) as T;
+        return (await this.getSessionStats(params?.["sessionId"])) as T;
 
       // Swarm coordination operations
       case 'swarm-coordinate':
-        return (await this.coordinateSwarm(params?.agents, params?.topology)) as T;
+        return (await this.coordinateSwarm(params?.["agents"], params?.["topology"])) as T;
 
       case 'swarm-add-agent':
-        return (await this.addAgentToSwarm(params?.agent)) as T;
+        return (await this.addAgentToSwarm(params?.["agent"])) as T;
 
       case 'swarm-remove-agent':
-        return (await this.removeAgentFromSwarm(params?.agentId)) as T;
+        return (await this.removeAgentFromSwarm(params?.["agentId"])) as T;
 
       case 'swarm-assign-task':
-        return (await this.assignTask(params?.task)) as T;
+        return (await this.assignTask(params?.["task"])) as T;
 
       case 'swarm-complete-task':
-        return (await this.completeTask(params?.taskId, params?.result)) as T;
+        return (await this.completeTask(params?.["taskId"], params?.["result"])) as T;
 
       case 'swarm-metrics':
         return (await this.getSwarmMetrics()) as T;
@@ -1318,9 +1302,9 @@ export class CoordinationServiceAdapter implements IService {
 
     // Track agent metrics
     if (this.config.agentManagement?.performanceTracking) {
-      this.agentMetrics.set(result.id, {
-        agentId: result.id,
-        type: result.type || 'unknown',
+      this.agentMetrics.set(result?.id, {
+        agentId: result?.id,
+        type: result?.type || 'unknown',
         tasksCompleted: 0,
         averageResponseTime: 0,
         errorRate: 0,
@@ -1697,7 +1681,7 @@ export class CoordinationServiceAdapter implements IService {
 
     const toRemove = this.cache.size - targetSize;
     for (let i = 0; i < toRemove; i++) {
-      this.cache.delete(entries[i][0]);
+      this.cache.delete(entries[i]?.[0]);
     }
 
     this.logger.debug(`Cache cleanup: removed ${toRemove} entries`);
@@ -1814,11 +1798,11 @@ export class CoordinationServiceAdapter implements IService {
   private estimateAgentCount(params: any): number | undefined {
     if (!params) return undefined;
 
-    if (params.agents && Array.isArray(params.agents)) {
-      return params.agents.length;
+    if (params?.["agents"] && Array.isArray(params?.["agents"])) {
+      return params?.["agents"].length;
     }
 
-    if (params.agentId || params.agent) {
+    if (params?.["agentId"] || params?.["agent"]) {
       return 1;
     }
 
@@ -1826,12 +1810,12 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   private extractSessionId(params: any): string | undefined {
-    return params?.sessionId;
+    return params?.["sessionId"];
   }
 
   private calculateCoordinationLatency(result: any): number | undefined {
-    if (result && typeof result === 'object' && result.averageLatency) {
-      return result.averageLatency;
+    if (result && typeof result === 'object' && result?.averageLatency) {
+      return result?.averageLatency;
     }
     return undefined;
   }
@@ -1928,10 +1912,10 @@ export function createDefaultCoordinationServiceAdapterConfig(
 ): CoordinationServiceAdapterConfig {
   return {
     name,
-    type: ServiceType.COORDINATION,
+    type: ServiceType["COORDINATION"],
     enabled: true,
-    priority: ServicePriority.HIGH,
-    environment: ServiceEnvironment.DEVELOPMENT,
+    priority: ServicePriority["HIGH"],
+    environment: ServiceEnvironment["DEVELOPMENT"],
     timeout: 30000,
     health: {
       enabled: true,

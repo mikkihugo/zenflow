@@ -6,9 +6,6 @@ const logger = getLogger("tools-domain-splitting-orchestrator");
 
 import { DomainAnalysisEngine } from './analyzers/domain-analyzer';
 import { SafeDomainSplitter } from './splitters/domain-splitter';
-import type { AnalysisConfig } from './types/analysis-types';
-
-import type { SplittingResult, SubDomainPlan } from './types/domain-types';
 import { DependencyValidator } from './validators/dependency-validator';
 
 export class DomainSplittingOrchestrator {
@@ -58,7 +55,7 @@ export class DomainSplittingOrchestrator {
       // Step 5: Execute splitting
       const result = await this.splitter.executeSplitting([finalPlan]);
 
-      if (result.success) {
+      if (result?.success) {
       }
 
       return result;

@@ -568,11 +568,11 @@ export class WorkflowEngine extends EventEmitter {
         status: entity.status,
         priority: entity.priority,
         dependencies: entity.dependencies,
-        relatedDocuments: entity.related_documents,
+        relatedDocuments: entity["related_documents"],
         checksum: entity.checksum,
       },
-      created: entity.created_at,
-      updated: entity.updated_at,
+      created: entity["created_at"],
+      updated: entity["updated_at"],
       version: entity.version,
     };
   }
@@ -753,8 +753,8 @@ export class WorkflowEngine extends EventEmitter {
     const document = context.currentDocument;
 
     // Extract requirements based on document content and parameters
-    const extractionStrategy = params?.strategy || 'comprehensive';
-    const targetComplexity = params?.complexity || 'medium';
+    const extractionStrategy = params?.["strategy"] || 'comprehensive';
+    const targetComplexity = params?.["complexity"] || 'medium';
 
     const requirements = {
       functional: [
@@ -790,8 +790,8 @@ export class WorkflowEngine extends EventEmitter {
 
   private async handleGenerateADRs(context: WorkflowContext, params: any): Promise<any> {
     // TODO: TypeScript error TS2339 - Properties don't exist on WorkflowContext (AI unsure of safe fix - human review needed)
-    const requirements = (context as any).architectural_requirements || [];
-    const decisions = (context as any).decision_points || [];
+    const requirements = (context as any)["architectural_requirements"] || [];
+    const decisions = (context as any)["decision_points"] || [];
 
     // Use decisions for contextual ADR generation
     const _decisionContext = decisions.map((decision: any) => ({
@@ -800,8 +800,8 @@ export class WorkflowEngine extends EventEmitter {
       rationale: decision.rationale || 'Technical requirements',
     }));
 
-    const _adrTemplate = params?.template || 'standard';
-    const _includeRationale = params?.includeRationale !== false;
+    const _adrTemplate = params?.["template"] || 'standard';
+    const _includeRationale = params?.["includeRationale"] !== false;
 
     const adrs = requirements.map((req: string, index: number) => ({
       id: `adr-${String(index + 1).padStart(3, '0')}`,
@@ -825,8 +825,8 @@ export class WorkflowEngine extends EventEmitter {
 
   private async handleSaveDocuments(context: WorkflowContext, params: any): Promise<any> {
     // TODO: TypeScript error TS2339 - Property 'generated_docs' does not exist on WorkflowContext (AI unsure of safe fix - human review needed)
-    const documents = (context as any)[params?.outputKey] || (context as any).generated_docs || [];
-    const documentType = params?.documentType;
+    const documents = (context as any)[params?.["outputKey"]] || (context as any)["generated_docs"] || [];
+    const documentType = params?.["documentType"];
     const projectId = context.workspaceId;
 
     const savedDocuments: BaseDocumentEntity[] = [];
@@ -945,19 +945,19 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   private async handleDelay(_context: WorkflowContext, params: any): Promise<any> {
-    const duration = params?.duration || 1000;
+    const duration = params?.["duration"] || 1000;
     await new Promise((resolve) => setTimeout(resolve, duration));
     return { delayed: duration };
   }
 
   private async handleTransform(context: WorkflowContext, params: any): Promise<any> {
-    const data = this.getContextValue(context, params?.input);
+    const data = this.getContextValue(context, params?.["input"]);
     // Simple transformation logic
     return { transformed: data };
   }
 
   private async handleCondition(context: WorkflowContext, params: any): Promise<any> {
-    const condition = this.evaluateCondition(context, params?.condition);
+    const condition = this.evaluateCondition(context, params?.["condition"]);
     return { conditionMet: condition };
   }
 

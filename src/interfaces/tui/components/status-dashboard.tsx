@@ -3,8 +3,6 @@
  */
 
 import { Box, Spacer, Text } from 'ink';
-import type React from 'react';
-import type { DiscoveryState } from '../types.js';
 
 export interface StatusDashboardProps {
   state: DiscoveryState;
@@ -31,7 +29,7 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
 
   const topologyBreakdown = Array.from(state.swarmConfigs.values()).reduce(
     (acc, config) => {
-      acc[config.topology] = (acc[config.topology] || 0) + 1;
+      acc[config?.["topology"]] = (acc[config?.["topology"]] || 0) + 1;
       return acc;
     },
     {} as Record<string, number>

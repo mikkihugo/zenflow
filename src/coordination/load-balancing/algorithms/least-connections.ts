@@ -4,7 +4,6 @@
  */
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
-import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 
 interface ConnectionState {
   agentId: string;
@@ -68,17 +67,17 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     // Sort by score (lower is better for least connections)
     scoredAgents.sort((a, b) => a.score - b.score);
 
-    const selectedAgent = scoredAgents[0].agent;
+    const selectedAgent = scoredAgents[0]?.agent;
     const confidence = this.calculateConfidence(scoredAgents);
     const alternatives = scoredAgents.slice(1, 4).map((s) => s.agent);
 
     // Update connection count for selected agent
-    await this.incrementConnections(selectedAgent.id);
+    await this.incrementConnections(selectedAgent?.id);
 
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected agent with ${scoredAgents[0].connections} active connections (capacity: ${scoredAgents[0].capacity})`,
+      reasoning: `Selected agent with ${scoredAgents[0]?.connections} active connections (capacity: ${scoredAgents[0]?.capacity})`,
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),
@@ -356,8 +355,8 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   private calculateConfidence(scoredAgents: Array<{ score: number }>): number {
     if (scoredAgents.length < 2) return 1.0;
 
-    const bestScore = scoredAgents[0].score;
-    const secondBestScore = scoredAgents[1].score;
+    const bestScore = scoredAgents[0]?.score;
+    const secondBestScore = scoredAgents[1]?.score;
 
     // Higher difference in scores = higher confidence
     const scoreDifference = secondBestScore - bestScore;

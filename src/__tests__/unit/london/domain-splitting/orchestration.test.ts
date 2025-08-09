@@ -135,8 +135,8 @@ describe('Domain Splitting Orchestration - London TDD', () => {
       );
 
       expect(result).toEqual(mockResult);
-      expect(result.success).toBe(true);
-      expect(result.subDomainsCreated).toBe(2);
+      expect(result?.success).toBe(true);
+      expect(result?.subDomainsCreated).toBe(2);
     });
 
     it('should handle analysis failure gracefully', async () => {
@@ -304,7 +304,7 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         ])
       );
 
-      expect(result.success).toBe(true);
+      expect(result?.success).toBe(true);
     });
   });
 
@@ -395,9 +395,9 @@ describe('Domain Splitting Orchestration - London TDD', () => {
       const result = await orchestrator.analyzeDomain(domainPath);
 
       // Assert
-      expect(result.analysis).toEqual(mockAnalysis);
-      expect(result.recommendedPlans).toEqual([]);
-      expect(result.benefits).toBeNull();
+      expect(result?.analysis).toEqual(mockAnalysis);
+      expect(result?.recommendedPlans).toEqual([]);
+      expect(result?.benefits).toBeNull();
     });
   });
 
@@ -479,8 +479,8 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         ])
       );
 
-      expect(result.success).toBe(true);
-      expect(result.subDomainsCreated).toBe(6);
+      expect(result?.success).toBe(true);
+      expect(result?.subDomainsCreated).toBe(6);
     });
   });
 
@@ -589,8 +589,8 @@ describe('Domain Splitting Orchestration - London TDD', () => {
       const result = await orchestrator.validateSplit(mockPlans);
 
       // Assert
-      expect(result.overall).toBe(false); // Should fail overall due to cyclic validation failure
-      expect(result.cyclicDependencies.success).toBe(false);
+      expect(result?.overall).toBe(false); // Should fail overall due to cyclic validation failure
+      expect(result?.cyclicDependencies?.success).toBe(false);
     });
   });
 });

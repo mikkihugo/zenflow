@@ -27,26 +27,7 @@ import { CompletionPhaseEngine } from '../phases/completion/completion-engine';
 import { PseudocodePhaseEngine } from '../phases/pseudocode/pseudocode-engine';
 import { RefinementPhaseEngine } from '../phases/refinement/refinement-engine';
 import { SpecificationPhaseEngine } from '../phases/specification/specification-engine';
-import type {
-  ArchitectureDesign,
-  ArtifactReference,
-  ArtifactSet,
-  CompletionValidation,
-  DetailedSpecification,
-  ImplementationArtifacts,
-  PhaseDefinition,
-  PhaseMetrics,
-  PhaseProgress,
-  PhaseResult,
-  ProjectDomain,
-  ProjectSpecification,
-  PseudocodeStructure,
-  RefinementFeedback,
-  RefinementResult,
-  SPARCEngine,
-  SPARCPhase,
-  SPARCProject,
-} from '../types/sparc-types';
+import type { SPARCEngine } from '../types/sparc-types';
 
 export class SPARCEngineCore implements SPARCEngine {
   private readonly phaseDefinitions: Map<SPARCPhase, PhaseDefinition>;
@@ -775,7 +756,7 @@ export class SPARCEngineCore implements SPARCEngine {
           project.architecture,
           mockFeedback
         );
-        project.architecture = refinementResult.refinedArchitecture;
+        project.architecture = refinementResult?.refinedArchitecture;
 
         deliverables.push({
           id: nanoid(),
@@ -1011,11 +992,11 @@ export class SPARCEngineCore implements SPARCEngine {
   private analyzePerformanceGaps(feedback: RefinementFeedback) {
     // Analyze gaps between current performance and targets
     return feedback.targets.map((target) => ({
-      metric: target.metric,
+      metric: target?.metric,
       currentValue: feedback.metrics.latency, // simplified
-      targetValue: target.target,
-      gap: target.target - feedback.metrics.latency,
-      priority: target.priority,
+      targetValue: target?.target,
+      gap: target?.target - feedback.metrics.latency,
+      priority: target?.priority,
     }));
   }
 
@@ -1193,7 +1174,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
     try {
       const result = await this.swarmCoordinator.executeSPARCPhase(project.id, phase);
 
-      if (result.success) {
+      if (result?.success) {
       } else {
         logger.warn(`⚠️ SPARC ${phase} had issues, but continuing...`);
       }

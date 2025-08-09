@@ -1,16 +1,4 @@
 /**
- * Agent Interface Adapter - Compatibility Layer
- *
- * This module provides adapter functions to bridge the interface differences
- * between the base Agent interface and coordination-specific requirements.
- *
- * @file Agent interface compatibility adapter
- */
-
-import type { Agent as BaseAgent, Task as BaseTask } from '../../../types/agent-types';
-import type { Agent as CoordinationAgent, Task as CoordinationTask, Message } from './types';
-
-/**
  * Adapter function to convert base Agent to coordination Agent
  *
  * @param baseAgent

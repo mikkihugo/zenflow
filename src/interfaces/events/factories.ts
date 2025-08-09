@@ -1,36 +1,6 @@
-/**
- * Unified Event Layer (UEL) - Factory Implementation
- *
- * Central factory for creating event manager instances based on event type,
- * processing requirements, and configuration. Supports dependency injection and
- * provides a single point of access for all event manager implementations.
- */
-
-import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
-import { inject, injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS } from '../../di/tokens/core-tokens';
-import type {
-  EventManagerConfig,
-  EventManagerMetrics,
-  EventManagerStatus,
-  EventManagerType,
-  IEventManager,
-  IEventManagerFactory,
-  IEventManagerRegistry,
-  SystemEvent,
-} from './core/interfaces';
+import type { IEventManagerRegistry } from './core/interfaces';
 import { EventManagerPresets, EventManagerTypes, EventTypeGuards } from './core/interfaces';
-import type {
-  CommunicationEvent,
-  CoordinationEvent,
-  DatabaseEvent,
-  InterfaceEvent,
-  MemoryEvent,
-  MonitoringEvent,
-  NeuralEvent,
-  SystemLifecycleEvent,
-  WorkflowEvent,
-} from './types';
 import { DefaultEventManagerConfigs, EventCategories } from './types';
 
 /**
@@ -396,7 +366,7 @@ export class UELFactory {
     config?: Partial<EventManagerConfig>
   ): Promise<ISystemEventManager> {
     return (await this.createEventManager({
-      managerType: EventManagerTypes.SYSTEM,
+      managerType: EventManagerTypes["SYSTEM"],
       name,
       config,
       preset: 'REAL_TIME',
@@ -414,7 +384,7 @@ export class UELFactory {
     config?: Partial<EventManagerConfig>
   ): Promise<ICoordinationEventManager> {
     return (await this.createEventManager({
-      managerType: EventManagerTypes.COORDINATION,
+      managerType: EventManagerTypes["COORDINATION"],
       name,
       config,
       preset: 'HIGH_THROUGHPUT',
@@ -432,7 +402,7 @@ export class UELFactory {
     config?: Partial<EventManagerConfig>
   ): Promise<ICommunicationEventManager> {
     return (await this.createEventManager({
-      managerType: EventManagerTypes.COMMUNICATION,
+      managerType: EventManagerTypes["COMMUNICATION"],
       name,
       config,
       preset: 'REAL_TIME',
@@ -450,7 +420,7 @@ export class UELFactory {
     config?: Partial<EventManagerConfig>
   ): Promise<IMonitoringEventManager> {
     return (await this.createEventManager({
-      managerType: EventManagerTypes.MONITORING,
+      managerType: EventManagerTypes["MONITORING"],
       name,
       config,
       preset: 'BATCH_PROCESSING',
@@ -468,7 +438,7 @@ export class UELFactory {
     config?: Partial<EventManagerConfig>
   ): Promise<IInterfaceEventManager> {
     return (await this.createEventManager({
-      managerType: EventManagerTypes.INTERFACE,
+      managerType: EventManagerTypes["INTERFACE"],
       name,
       config,
       preset: 'REAL_TIME',
@@ -486,7 +456,7 @@ export class UELFactory {
     config?: Partial<EventManagerConfig>
   ): Promise<INeuralEventManager> {
     return (await this.createEventManager({
-      managerType: EventManagerTypes.NEURAL,
+      managerType: EventManagerTypes["NEURAL"],
       name,
       config,
       preset: 'RELIABLE',
@@ -504,7 +474,7 @@ export class UELFactory {
     config?: Partial<EventManagerConfig>
   ): Promise<IDatabaseEventManager> {
     return (await this.createEventManager({
-      managerType: EventManagerTypes.DATABASE,
+      managerType: EventManagerTypes["DATABASE"],
       name,
       config,
       preset: 'BATCH_PROCESSING',
@@ -522,7 +492,7 @@ export class UELFactory {
     config?: Partial<EventManagerConfig>
   ): Promise<IMemoryEventManager> {
     return (await this.createEventManager({
-      managerType: EventManagerTypes.MEMORY,
+      managerType: EventManagerTypes["MEMORY"],
       name,
       config,
     })) as IMemoryEventManager;
@@ -539,7 +509,7 @@ export class UELFactory {
     config?: Partial<EventManagerConfig>
   ): Promise<IWorkflowEventManager> {
     return (await this.createEventManager({
-      managerType: EventManagerTypes.WORKFLOW,
+      managerType: EventManagerTypes["WORKFLOW"],
       name,
       config,
       preset: 'RELIABLE',
@@ -571,12 +541,12 @@ export class UELFactory {
     for (const [_managerId, entry] of Object.entries(this.managerRegistry)) {
       try {
         const status = await entry.manager.healthCheck();
-        results.push(status);
+        results?.push(status);
 
         // Update manager status
         entry.status = status.status === 'healthy' ? 'running' : 'error';
       } catch (error) {
-        results.push({
+        results?.push({
           name: entry.manager.name,
           type: entry.manager.type,
           status: 'unhealthy',
@@ -669,11 +639,11 @@ export class UELFactory {
 
       // Update operation results
       transaction.operations.forEach((op, index) => {
-        const result = results[index];
-        if (result.status === 'fulfilled') {
-          op.result = result.value;
+        const result = results?.[index];
+        if (result?.status === 'fulfilled') {
+          op.result = result?.value;
         } else {
-          op.error = result.reason;
+          op.error = result?.reason;
         }
       });
 
@@ -770,13 +740,13 @@ export class UELFactory {
     let FactoryClass: new (...args: any[]) => IEventManagerFactory;
 
     switch (managerType) {
-      case EventManagerTypes.SYSTEM: {
+      case EventManagerTypes["SYSTEM"]: {
         const { SystemEventManagerFactory } = await import('./adapters/system-event-factory');
         FactoryClass = SystemEventManagerFactory;
         break;
       }
 
-      case EventManagerTypes.COORDINATION: {
+      case EventManagerTypes["COORDINATION"]: {
         const { CoordinationEventManagerFactory } = await import(
           './adapters/coordination-event-factory'
         );
@@ -784,7 +754,7 @@ export class UELFactory {
         break;
       }
 
-      case EventManagerTypes.COMMUNICATION: {
+      case EventManagerTypes["COMMUNICATION"]: {
         const { CommunicationEventFactory: CommunicationEventManagerFactory } = await import(
           './adapters/communication-event-factory'
         );
@@ -792,7 +762,7 @@ export class UELFactory {
         break;
       }
 
-      case EventManagerTypes.MONITORING: {
+      case EventManagerTypes["MONITORING"]: {
         const { MonitoringEventFactory: MonitoringEventManagerFactory } = await import(
           './adapters/monitoring-event-factory'
         );
@@ -800,7 +770,7 @@ export class UELFactory {
         break;
       }
 
-      case EventManagerTypes.INTERFACE: {
+      case EventManagerTypes["INTERFACE"]: {
         // xxx NEEDS_HUMAN: InterfaceEventManagerFactory not implemented yet
         // Using a stub factory for now
         const InterfaceEventManagerFactory = class {
@@ -815,7 +785,7 @@ export class UELFactory {
         break;
       }
 
-      case EventManagerTypes.NEURAL: {
+      case EventManagerTypes["NEURAL"]: {
         // xxx NEEDS_HUMAN: NeuralEventManagerFactory not implemented yet
         // Using a stub factory for now
         const NeuralEventManagerFactory = class {
@@ -830,7 +800,7 @@ export class UELFactory {
         break;
       }
 
-      case EventManagerTypes.DATABASE: {
+      case EventManagerTypes["DATABASE"]: {
         // xxx NEEDS_HUMAN: DatabaseEventManagerFactory not implemented yet
         // Using a stub factory for now
         const DatabaseEventManagerFactory = class {
@@ -845,7 +815,7 @@ export class UELFactory {
         break;
       }
 
-      case EventManagerTypes.MEMORY: {
+      case EventManagerTypes["MEMORY"]: {
         // xxx NEEDS_HUMAN: MemoryEventManagerFactory not implemented yet
         // Using a stub factory for now
         const MemoryEventManagerFactory = class {
@@ -860,7 +830,7 @@ export class UELFactory {
         break;
       }
 
-      case EventManagerTypes.WORKFLOW: {
+      case EventManagerTypes["WORKFLOW"]: {
         // xxx NEEDS_HUMAN: WorkflowEventManagerFactory not implemented yet
         // Using a stub factory for now
         const WorkflowEventManagerFactory = class {
@@ -919,7 +889,7 @@ export class UELFactory {
     preset?: keyof typeof EventManagerPresets
   ): EventManagerConfig {
     const defaults =
-      DefaultEventManagerConfigs[managerType] || DefaultEventManagerConfigs[EventCategories.SYSTEM];
+      DefaultEventManagerConfigs?.[managerType] || DefaultEventManagerConfigs?.[EventCategories["SYSTEM"]];
     const presetConfig = preset ? EventManagerPresets[preset] : {};
 
     return {
@@ -969,7 +939,7 @@ export class UELFactory {
   }
 
   private generateManagerId(config: EventManagerConfig): string {
-    return `${config.type}:${config.name}:${Date.now()}`;
+    return `${config?.type}:${config?.name}:${Date.now()}`;
   }
 
   private generateTransactionId(): string {
@@ -1027,9 +997,9 @@ export class UELRegistry implements IEventManagerRegistry {
     for (const [name, manager] of this.globalEventManagers) {
       try {
         const status = await manager.healthCheck();
-        results.set(name, status);
+        results?.set(name, status);
       } catch (error) {
-        results.set(name, {
+        results?.set(name, {
           name: manager.name,
           type: manager.type,
           status: 'unhealthy',
@@ -1065,7 +1035,7 @@ export class UELRegistry implements IEventManagerRegistry {
     });
 
     const allMetrics = (await Promise.allSettled(metricsPromises))
-      .filter((result) => result.status === 'fulfilled' && result.value !== null)
+      .filter((result) => result?.status === 'fulfilled' && result?.value !== null)
       .map((result) => (result as PromiseFulfilledResult<EventManagerMetrics>).value);
 
     const totalEvents = allMetrics.reduce((sum, metrics) => sum + metrics.eventsProcessed, 0);
@@ -1168,7 +1138,7 @@ export async function createSystemEventBus(
   name: string = 'default-system',
   config?: Partial<EventManagerConfig>
 ): Promise<ISystemEventManager> {
-  return (await createEventManager(EventManagerTypes.SYSTEM, name, config)) as ISystemEventManager;
+  return (await createEventManager(EventManagerTypes["SYSTEM"], name, config)) as ISystemEventManager;
 }
 
 /**
@@ -1182,7 +1152,7 @@ export async function createCoordinationEventBus(
   config?: Partial<EventManagerConfig>
 ): Promise<ICoordinationEventManager> {
   return (await createEventManager(
-    EventManagerTypes.COORDINATION,
+    EventManagerTypes["COORDINATION"],
     name,
     config
   )) as ICoordinationEventManager;
@@ -1199,7 +1169,7 @@ export async function createCommunicationEventBus(
   config?: Partial<EventManagerConfig>
 ): Promise<ICommunicationEventManager> {
   return (await createEventManager(
-    EventManagerTypes.COMMUNICATION,
+    EventManagerTypes["COMMUNICATION"],
     name,
     config
   )) as ICommunicationEventManager;
@@ -1216,7 +1186,7 @@ export async function createMonitoringEventBus(
   config?: Partial<EventManagerConfig>
 ): Promise<IMonitoringEventManager> {
   return (await createEventManager(
-    EventManagerTypes.MONITORING,
+    EventManagerTypes["MONITORING"],
     name,
     config
   )) as IMonitoringEventManager;

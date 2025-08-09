@@ -6,7 +6,6 @@
  */
 
 import { Box, Text } from 'ink';
-import type React from 'react';
 
 export interface FooterProps {
   mode?: 'command' | 'interactive' | 'menu';

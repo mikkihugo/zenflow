@@ -92,19 +92,19 @@ export const defaultScreenConfigs: ScreenConfig[] = [
 // Screen navigation utilities
 export const ScreenUtils = {
   getScreenConfig: (screenId: ScreenType): ScreenConfig | undefined => {
-    return defaultScreenConfigs.find((config) => config.id === screenId);
+    return defaultScreenConfigs?.find((config) => config?.["id"] === screenId);
   },
 
   getMenuScreens: (): ScreenConfig[] => {
-    return defaultScreenConfigs.filter((config) => config.showInMenu);
+    return defaultScreenConfigs?.filter((config) => config?.["showInMenu"]);
   },
 
   getSwarmScreens: (): ScreenConfig[] => {
-    return defaultScreenConfigs.filter((config) => config.requiresSwarm);
+    return defaultScreenConfigs?.filter((config) => config?.["requiresSwarm"]);
   },
 
   isSwarmRequired: (screenId: ScreenType): boolean => {
     const config = ScreenUtils.getScreenConfig(screenId);
-    return config?.requiresSwarm || false;
+    return config?.["requiresSwarm"] || false;
   },
 };

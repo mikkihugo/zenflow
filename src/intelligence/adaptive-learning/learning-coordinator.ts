@@ -6,25 +6,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../../di/index';
-import { CORE_TOKENS, inject, injectable } from '../../di/index';
-import type {
-  AdaptiveLearningConfig,
-  Agent,
-  AntiPattern,
-  BestPractice,
-  ExpertiseEvolution,
-  FailurePattern,
-  LearningCoordinator as ILearningCoordinator,
-  KnowledgeUpdate,
-  LearningMetadata,
-  LearningResult,
-  LearningType,
-  Pattern,
-  PerformanceImprovement,
-  SuccessPattern,
-  SystemContext,
-} from './types';
+import type { LearningCoordinator as ILearningCoordinator } from './types';
 
 @injectable
 export class LearningCoordinator extends EventEmitter implements ILearningCoordinator {
@@ -69,7 +51,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     const aggregatedResult = this.aggregateLearningResults(learningResults);
 
     // Update knowledge base with new learnings
-    await this.updateKnowledgeBase(aggregatedResult.patterns);
+    await this.updateKnowledgeBase(aggregatedResult?.patterns);
 
     // Track learning progress
     this.trackLearningProgress(agents, aggregatedResult);
@@ -313,7 +295,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
     for (const agent of agents) {
       const agentResult = await this.executeAgentLearning(agent, strategy);
-      results.push(agentResult);
+      results?.push(agentResult);
 
       // Store in history
       if (!this.learningHistory.has(agent.id)) {
@@ -360,20 +342,20 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     const allKnowledge: KnowledgeUpdate[] = [];
 
     for (const result of results) {
-      allPatterns.push(...result.patterns);
-      allImprovements.push(...result.improvements);
-      allKnowledge.push(...result.knowledge);
+      allPatterns.push(...result?.patterns);
+      allImprovements.push(...result?.improvements);
+      allKnowledge.push(...result?.knowledge);
     }
 
     // Calculate aggregate metadata
     const avgMetadata: LearningMetadata = {
       algorithmUsed: 'ensemble',
-      trainingTime: results.reduce((sum, r) => sum + r.metadata.trainingTime, 0) / results.length,
-      dataQuality: results.reduce((sum, r) => sum + r.metadata.dataQuality, 0) / results.length,
-      convergence: results.every((r) => r.metadata.convergence),
-      iterations: Math.max(...results.map((r) => r.metadata.iterations)),
+      trainingTime: results?.reduce((sum, r) => sum + r.metadata.trainingTime, 0) / results.length,
+      dataQuality: results?.reduce((sum, r) => sum + r.metadata.dataQuality, 0) / results.length,
+      convergence: results?.every((r) => r.metadata.convergence),
+      iterations: Math.max(...results?.map((r) => r.metadata.iterations)),
       validationScore:
-        results.reduce((sum, r) => sum + r.metadata.validationScore, 0) / results.length,
+        results?.reduce((sum, r) => sum + r.metadata.validationScore, 0) / results.length,
     };
 
     return {
@@ -457,7 +439,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private trackLearningProgress(agents: Agent[], result: LearningResult): void {
     for (const agent of agents) {
-      const agentResult = result.patterns.filter((p) => p.context['agentId'] === agent.id);
+      const agentResult = result?.patterns?.filter((p) => p.context['agentId'] === agent.id);
 
       // Update agent learning progress (simplified)
       agent.learningProgress.totalExperience += agentResult.length;

@@ -5,8 +5,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '@core/event-bus';
-import type { ILogger } from '@core/logger';
 import LRUCache from 'lru-cache';
 
 // Core optimization types
@@ -240,12 +238,12 @@ export class PerformanceOptimizer extends EventEmitter {
   ) {
     super();
 
-    this.batchProcessor = new AdaptiveBatchProcessor(config.batchSizing, logger);
-    this.connectionPool = new AdvancedConnectionPool(config.connectionPooling, logger);
-    this.cache = new IntelligentCache(config.caching, logger);
-    this.monitor = new RealTimeMonitor(config.monitoring, logger, eventBus);
+    this.batchProcessor = new AdaptiveBatchProcessor(config?.["batchSizing"], logger);
+    this.connectionPool = new AdvancedConnectionPool(config?.["connectionPooling"], logger);
+    this.cache = new IntelligentCache(config?.["caching"], logger);
+    this.monitor = new RealTimeMonitor(config?.["monitoring"], logger, eventBus);
     this.predictor = new PerformancePredictor(logger);
-    this.optimizer = new AdaptationEngine(config.adaptation, logger);
+    this.optimizer = new AdaptationEngine(config?.["adaptation"], logger);
 
     this.metrics = this.initializeMetrics();
     this.setupEventHandlers();
@@ -394,7 +392,7 @@ export class PerformanceOptimizer extends EventEmitter {
   } {
     const lastItem = this.optimizationHistory[this.optimizationHistory.length - 1];
     const lastOptimization =
-      this.optimizationHistory.length > 0 && lastItem ? lastItem.timestamp : new Date(0);
+      this.optimizationHistory.length > 0 && lastItem ? lastItem?.timestamp : new Date(0);
 
     const improvements = this.optimizationHistory
       .filter((action) => action.impact > 0)
@@ -531,13 +529,13 @@ export class PerformanceOptimizer extends EventEmitter {
 
     // Calculate improvement based on key metrics
     const latencyImprovement =
-      (baselineMetrics.latency.average - currentMetrics.latency.average) /
+      (baselineMetrics.latency.average - currentMetrics?.latency?.average) /
       baselineMetrics.latency.average;
     const throughputImprovement =
-      (currentMetrics.throughput.requestsPerSecond - baselineMetrics.throughput.requestsPerSecond) /
+      (currentMetrics?.throughput?.requestsPerSecond - baselineMetrics.throughput.requestsPerSecond) /
       baselineMetrics.throughput.requestsPerSecond;
     const resourceImprovement =
-      (baselineMetrics.resourceUsage.cpuUsage - currentMetrics.resourceUsage.cpuUsage) /
+      (baselineMetrics.resourceUsage.cpuUsage - currentMetrics?.resourceUsage?.cpuUsage) /
       baselineMetrics.resourceUsage.cpuUsage;
 
     // Weighted average of improvements
@@ -575,7 +573,7 @@ export class PerformanceOptimizer extends EventEmitter {
 
   // Event handlers
   private handleMetricsUpdate(data: any): void {
-    this.metrics = { ...this.metrics, ...data.metrics };
+    this.metrics = { ...this.metrics, ...data?.["metrics"] };
     this.emit('metrics:updated', this.metrics);
   }
 
@@ -584,7 +582,7 @@ export class PerformanceOptimizer extends EventEmitter {
     this.emit('alert:performance', data);
 
     // Trigger immediate optimization if critical
-    if (data.severity === 'critical' && this.config.adaptation.enabled) {
+    if (data?.["severity"] === 'critical' && this.config.adaptation.enabled) {
       this.performOptimizationCycle().catch((error) => {
         this.logger.error('Emergency optimization failed', { error });
       });
@@ -772,7 +770,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
     private logger: ILogger
   ) {
     super();
-    this.currentBatchSize = config.initialSize;
+    this.currentBatchSize = config?.["initialSize"];
   }
 
   async process<T>(items: T[], processor: (batch: T[]) => Promise<void>): Promise<void> {
@@ -867,7 +865,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
   }
 }
 
-class AdvancedConnectionPool extends EventEmitter implements ConnectionPool {
+class ConnectionPool extends EventEmitter implements ConnectionPool {
   private connections: PooledConnection[] = [];
   private availableConnections: PooledConnection[] = [];
   private stats: ConnectionMetrics;
@@ -1111,8 +1109,8 @@ class IntelligentCache extends EventEmitter {
 
     // Logger is available for future use
     this.cache = new LRUCache({
-      max: config.maxSize,
-      ttl: config.ttl,
+      max: config?.["maxSize"],
+      ttl: config?.["ttl"],
       dispose: (value: any, key: string) => {
         this.handleEviction(key, value);
       },
@@ -1139,8 +1137,8 @@ class IntelligentCache extends EventEmitter {
       timestamp: new Date(),
       accessCount: 0,
       lastAccessed: new Date(),
-      ttl: options?.ttl || this.config.ttl,
-      ...(options?.compress && this.config.compressionEnabled ? { compressed: true } : {}),
+      ttl: options?.["ttl"] || this.config.ttl,
+      ...(options?.["compress"] && this.config.compressionEnabled ? { compressed: true } : {}),
     };
 
     if (entry.compressed) {
@@ -1643,7 +1641,7 @@ class PerformancePredictor {
   }
 }
 
-class SimpleLinearRegression implements PredictionModel {
+class LinearRegression implements PredictionModel {
   private weights: number[] = [];
   private accuracy = 0.5;
 

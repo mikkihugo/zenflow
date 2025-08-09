@@ -11,13 +11,6 @@
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from '@core/logger';
-import type { SessionMemoryStore } from '../../memory/memory';
-import type {
-  KnowledgeDistributionUpdate,
-  KnowledgeRequest,
-  KnowledgeResponse,
-  SwarmContribution,
-} from '../hive-knowledge-bridge';
 
 const logger = createLogger({ prefix: 'Swarm-Knowledge-Sync' });
 
@@ -156,7 +149,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
     const cacheKey = `${query}:${domain || 'general'}`;
 
     // Check local cache first
-    if (options.useCache !== false) {
+    if (options?.["useCache"] !== false) {
       const cached = this.getCachedKnowledge(cacheKey);
       if (cached) {
         logger.debug(`Cache hit for query: ${query}`);
@@ -168,10 +161,10 @@ export class SwarmKnowledgeSync extends EventEmitter {
       // Fix TS2375: Build payload object with proper conditional assignment
       const payload: { query: string; domain?: string; filters?: Record<string, any> } = { query };
       if (domain !== undefined) {
-        payload.domain = domain;
+        payload["domain"] = domain;
       }
-      if (options.filters !== undefined) {
-        payload.filters = options.filters;
+      if (options?.["filters"] !== undefined) {
+        payload["filters"] = options?.["filters"];
       }
 
       // Create knowledge request
@@ -181,25 +174,25 @@ export class SwarmKnowledgeSync extends EventEmitter {
         ...(agentId !== undefined && { agentId }),
         type: 'query',
         payload,
-        priority: options.priority || 'medium',
+        priority: options?.["priority"] || 'medium',
         timestamp: Date.now(),
       };
 
       // Send request to Hive Knowledge Bridge (via event system)
       const response = await this.sendKnowledgeRequest(request);
 
-      if (response.success && response.data) {
+      if (response?.success && response?.data) {
         // Cache the response
-        if (options.useCache !== false) {
-          this.cacheKnowledge(cacheKey, response.data, response.metadata);
+        if (options?.["useCache"] !== false) {
+          this.cacheKnowledge(cacheKey, response?.data, response?.metadata);
         }
 
         // Track successful query
-        this.trackQuerySuccess(query, domain, response.metadata.confidence);
+        this.trackQuerySuccess(query, domain, response?.metadata?.confidence);
 
-        return response.data;
+        return response?.data;
       } else {
-        throw new Error(response.error || 'Knowledge query failed');
+        throw new Error(response?.error || 'Knowledge query failed');
       }
     } catch (error) {
       logger.error(`Knowledge query failed for swarm ${this.config.swarmId}:`, error);
@@ -269,7 +262,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
 
       const response = await this.sendKnowledgeRequest(request);
 
-      if (response.success) {
+      if (response?.success) {
         // Store in learning history
         const learningEntry: SwarmLearning = {
           ...learning,
@@ -287,7 +280,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
         );
         return true;
       } else {
-        logger.error(`Failed to contribute knowledge: ${response.error}`);
+        logger.error(`Failed to contribute knowledge: ${response?.error}`);
         return false;
       }
     } catch (error) {
@@ -319,7 +312,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
 
       const response = await this.sendKnowledgeRequest(request);
 
-      if (response.success) {
+      if (response?.success) {
         this.subscriptions.add(domain);
         await this.persistSubscriptions();
 
@@ -327,7 +320,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
         logger.info(`Subscribed to knowledge updates for domain: ${domain}`);
         return true;
       } else {
-        logger.error(`Failed to subscribe to domain ${domain}: ${response.error}`);
+        logger.error(`Failed to subscribe to domain ${domain}: ${response?.error}`);
         return false;
       }
     } catch (error) {
@@ -462,9 +455,9 @@ export class SwarmKnowledgeSync extends EventEmitter {
       query: key,
       data,
       metadata: {
-        source: metadata.source,
+        source: metadata?.["source"],
         timestamp: Date.now(),
-        confidence: metadata.confidence,
+        confidence: metadata?.["confidence"],
         accessCount: 1,
         lastAccessed: Date.now(),
       },
@@ -499,7 +492,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
       }, 10000); // 10 second timeout
 
       const handleResponse = (response: KnowledgeResponse) => {
-        if (response.requestId === request.requestId) {
+        if (response?.requestId === request.requestId) {
           clearTimeout(timeout);
           this.off('knowledge:response', handleResponse);
           resolve(response);

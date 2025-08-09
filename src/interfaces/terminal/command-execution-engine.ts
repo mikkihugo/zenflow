@@ -84,9 +84,9 @@ export class CommandExecutionEngine {
 
     try {
       // Validate command
-      if (!CommandExecutionEngine.SUPPORTED_COMMANDS.includes(command)) {
+      if (!CommandExecutionEngine["SUPPORTED_COMMANDS"]?.includes(command)) {
         return CommandExecutionEngine.createErrorResult(
-          `Unknown command: ${command}. Supported commands: ${CommandExecutionEngine.SUPPORTED_COMMANDS.join(', ')}`,
+          `Unknown command: ${command}. Supported commands: ${CommandExecutionEngine["SUPPORTED_COMMANDS"]?.join(', ')}`,
           command,
           args,
           flags,
@@ -150,8 +150,8 @@ export class CommandExecutionEngine {
       }
 
       // Add execution metadata
-      result.duration = Date.now() - startTime;
-      result.metadata = {
+      result?.duration = Date.now() - startTime;
+      result?.metadata = {
         command,
         args,
         flags,
@@ -159,8 +159,8 @@ export class CommandExecutionEngine {
       };
 
       logger.info(`Command executed successfully: ${command}`, {
-        duration: result.duration,
-        success: result.success,
+        duration: result?.duration,
+        success: result?.success,
       });
 
       return result;
@@ -548,7 +548,7 @@ export class CommandExecutionEngine {
       };
 
       // Validate confidence range
-      if (options.confidence < 0 || options.confidence > 1) {
+      if (options?.["confidence"] < 0 || options?.["confidence"] > 1) {
         return {
           success: false,
           error: 'Confidence must be between 0.0 and 1.0',
@@ -617,16 +617,16 @@ export class CommandExecutionEngine {
     try {
       logger.info('🔧 Using simplified discovery implementation');
 
-      if (options.interactive) {
+      if (options?.["interactive"]) {
         return {
           success: true,
           message:
             `🧠 Interactive Discovery TUI Mode\n\n` +
             `Project: ${projectPath}\n` +
-            `Confidence Target: ${options.confidence}\n` +
-            `Max Iterations: ${options.maxIterations}\n` +
-            `Auto-Swarms: ${options.autoSwarms ? 'Enabled' : 'Disabled'}\n` +
-            `Topology: ${options.topology}\n\n` +
+            `Confidence Target: ${options?.["confidence"]}\n` +
+            `Max Iterations: ${options?.["maxIterations"]}\n` +
+            `Auto-Swarms: ${options?.["autoSwarms"] ? 'Enabled' : 'Disabled'}\n` +
+            `Topology: ${options?.["topology"]}\n\n` +
             `Note: TUI integration pending - full discovery system available\n` +
             `Run without --interactive for non-interactive mode`,
           data: {
@@ -658,29 +658,29 @@ export class CommandExecutionEngine {
         },
         domainsDiscovered: ['coordination', 'neural', 'interfaces', 'memory'],
         confidenceMetrics: {
-          overall: options.confidence,
+          overall: options?.["confidence"],
           domainMapping: 0.92,
           agentSelection: 0.89,
           topology: 0.95,
           resourceAllocation: 0.87,
         },
-        swarmsCreated: options.autoSwarms ? Math.floor(Math.random() * 3) + 1 : 0,
-        agentsDeployed: options.autoSwarms ? Math.floor(Math.random() * options.maxAgents) + 4 : 0,
+        swarmsCreated: options?.["autoSwarms"] ? Math.floor(Math.random() * 3) + 1 : 0,
+        agentsDeployed: options?.["autoSwarms"] ? Math.floor(Math.random() * options?.["maxAgents"]) + 4 : 0,
         topology:
-          options.topology === 'auto'
+          options?.["topology"] === 'auto'
             ? ['mesh', 'hierarchical', 'star'][Math.floor(Math.random() * 3)]
-            : options.topology,
+            : options?.["topology"],
       };
 
-      if (options.dryRun) {
+      if (options?.["dryRun"]) {
         return {
           success: true,
           message:
             `🧪 Dry Run Complete - No swarms created\n\n` +
             `Project: ${projectPath}\n` +
-            `Confidence: ${options.confidence}\n` +
-            `Would create ${discoveryResults.swarmsCreated} swarms with ${discoveryResults.agentsDeployed} agents\n` +
-            `Topology: ${discoveryResults.topology}`,
+            `Confidence: ${options?.["confidence"]}\n` +
+            `Would create ${discoveryResults?.swarmsCreated} swarms with ${discoveryResults?.agentsDeployed} agents\n` +
+            `Topology: ${discoveryResults?.topology}`,
           data: {
             ...discoveryResults,
             dryRun: true,
@@ -695,11 +695,11 @@ export class CommandExecutionEngine {
         message:
           `🚀 Auto-Discovery Completed Successfully!\n\n` +
           `Project: ${projectPath}\n` +
-          `Confidence: ${options.confidence}\n` +
-          `Domains: ${discoveryResults.domainsDiscovered.join(', ')}\n` +
-          `Swarms Created: ${discoveryResults.swarmsCreated}\n` +
-          `Agents Deployed: ${discoveryResults.agentsDeployed}\n` +
-          `Topology: ${discoveryResults.topology}\n\n` +
+          `Confidence: ${options?.["confidence"]}\n` +
+          `Domains: ${discoveryResults?.domainsDiscovered?.join(', ')}\n` +
+          `Swarms Created: ${discoveryResults?.swarmsCreated}\n` +
+          `Agents Deployed: ${discoveryResults?.agentsDeployed}\n` +
+          `Topology: ${discoveryResults?.topology}\n\n` +
           `✨ Neural auto-discovery system ready for task execution`,
         data: {
           ...discoveryResults,
@@ -930,15 +930,15 @@ export class CommandExecutionEngine {
           if (line.trim() && line.includes('"jsonrpc"')) {
             try {
               const response = JSON.parse(line.trim());
-              if (response.id === request.id && !isResolved) {
+              if (response?.id === request.id && !isResolved) {
                 isResolved = true;
                 clearTimeout(timeout);
                 mcpProcess.kill();
 
-                if (response.error) {
-                  resolve({ success: false, error: response.error.message });
+                if (response?.error) {
+                  resolve({ success: false, error: response?.error?.message });
                 } else {
-                  resolve({ success: true, data: response.result });
+                  resolve({ success: true, data: response?.result });
                 }
                 return;
               }
@@ -992,11 +992,11 @@ export class CommandExecutionEngine {
       // Call the swarm MCP tool for real status
       const mcpResult = await CommandExecutionEngine.callMcpTool('swarm_status', {});
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: 'Swarm system status retrieved from MCP',
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         // Fallback to mock data if MCP call fails
@@ -1066,16 +1066,16 @@ export class CommandExecutionEngine {
         maxAgents,
       });
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: `Swarm "${name}" initialized successfully with ${topology} topology`,
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         return {
           success: false,
-          error: `Failed to initialize swarm: ${mcpResult.error}`,
+          error: `Failed to initialize swarm: ${mcpResult?.error}`,
         };
       }
     } catch (error) {
@@ -1103,16 +1103,16 @@ export class CommandExecutionEngine {
         name: agentName,
       });
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: `Agent "${agentName}" of type "${agentType}" spawned successfully`,
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         return {
           success: false,
-          error: `Failed to spawn agent: ${mcpResult.error}`,
+          error: `Failed to spawn agent: ${mcpResult?.error}`,
         };
       }
     } catch (error) {
@@ -1135,16 +1135,16 @@ export class CommandExecutionEngine {
       // Call the swarm MCP tool for real monitoring data
       const mcpResult = await CommandExecutionEngine.callMcpTool('swarm_monitor', {});
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: 'Real-time swarm monitoring data retrieved',
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         return {
           success: false,
-          error: `Failed to get monitoring data: ${mcpResult.error}`,
+          error: `Failed to get monitoring data: ${mcpResult?.error}`,
         };
       }
     } catch (error) {
@@ -1167,16 +1167,16 @@ export class CommandExecutionEngine {
       // Call the swarm MCP tool for real agent metrics
       const mcpResult = await CommandExecutionEngine.callMcpTool('agent_metrics', {});
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: 'Agent performance metrics retrieved',
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         return {
           success: false,
-          error: `Failed to get agent metrics: ${mcpResult.error}`,
+          error: `Failed to get agent metrics: ${mcpResult?.error}`,
         };
       }
     } catch (error) {
@@ -1204,16 +1204,16 @@ export class CommandExecutionEngine {
         strategy,
       });
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: `Task "${task}" orchestrated successfully using ${strategy} strategy`,
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         return {
           success: false,
-          error: `Failed to orchestrate task: ${mcpResult.error}`,
+          error: `Failed to orchestrate task: ${mcpResult?.error}`,
         };
       }
     } catch (error) {
@@ -1242,16 +1242,16 @@ export class CommandExecutionEngine {
         confidence,
       });
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: `Hive knowledge query completed: "${query}"`,
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         return {
           success: false,
-          error: `Failed to query Hive knowledge: ${mcpResult.error}`,
+          error: `Failed to query Hive knowledge: ${mcpResult?.error}`,
         };
       }
     } catch (error) {
@@ -1272,16 +1272,16 @@ export class CommandExecutionEngine {
     try {
       const mcpResult = await CommandExecutionEngine.callMcpTool('hive_agents', {});
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: 'Hive agent overview retrieved successfully',
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         return {
           success: false,
-          error: `Failed to get Hive agents: ${mcpResult.error}`,
+          error: `Failed to get Hive agents: ${mcpResult?.error}`,
         };
       }
     } catch (error) {
@@ -1306,16 +1306,16 @@ export class CommandExecutionEngine {
         status,
       });
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: 'Hive task overview retrieved successfully',
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         return {
           success: false,
-          error: `Failed to get Hive tasks: ${mcpResult.error}`,
+          error: `Failed to get Hive tasks: ${mcpResult?.error}`,
         };
       }
     } catch (error) {
@@ -1336,16 +1336,16 @@ export class CommandExecutionEngine {
     try {
       const mcpResult = await CommandExecutionEngine.callMcpTool('hive_knowledge', {});
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: 'Hive knowledge base overview retrieved successfully',
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         return {
           success: false,
-          error: `Failed to get Hive knowledge: ${mcpResult.error}`,
+          error: `Failed to get Hive knowledge: ${mcpResult?.error}`,
         };
       }
     } catch (error) {
@@ -1370,16 +1370,16 @@ export class CommandExecutionEngine {
         sources: sources.length > 0 ? sources : ['all'],
       });
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: 'Hive synchronization completed successfully',
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         return {
           success: false,
-          error: `Failed to sync Hive: ${mcpResult.error}`,
+          error: `Failed to sync Hive: ${mcpResult?.error}`,
         };
       }
     } catch (error) {
@@ -1400,16 +1400,16 @@ export class CommandExecutionEngine {
     try {
       const mcpResult = await CommandExecutionEngine.callMcpTool('hive_health', {});
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: 'Hive health metrics retrieved successfully',
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         return {
           success: false,
-          error: `Failed to get Hive health: ${mcpResult.error}`,
+          error: `Failed to get Hive health: ${mcpResult?.error}`,
         };
       }
     } catch (error) {
@@ -1448,16 +1448,16 @@ export class CommandExecutionEngine {
         confidence,
       });
 
-      if (mcpResult.success) {
+      if (mcpResult?.success) {
         return {
           success: true,
           message: `Knowledge contributed to Hive: "${subject}"`,
-          data: mcpResult.data,
+          data: mcpResult?.data,
         };
       } else {
         return {
           success: false,
-          error: `Failed to contribute to Hive: ${mcpResult.error}`,
+          error: `Failed to contribute to Hive: ${mcpResult?.error}`,
         };
       }
     } catch (error) {

@@ -7,9 +7,8 @@
 
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
-import type React from 'react';
 import { useState } from 'react';
-import { Header, InteractiveFooter, StatusBadge, type SwarmStatus } from '../components/index';
+import { Header, InteractiveFooter, StatusBadge } from '../components/index';
 
 export interface MenuItem {
   label: string;
@@ -18,7 +17,7 @@ export interface MenuItem {
   disabled?: boolean;
 }
 
-export interface MainMenuProps {
+export interface MenuProps {
   title?: string;
   items?: MenuItem[];
   swarmStatus?: SwarmStatus;
@@ -42,7 +41,7 @@ export interface MainMenuProps {
  * @param root0.showHeader
  * @param root0.showFooter
  */
-export const MainMenu: React.FC<MainMenuProps> = ({
+export const Menu: React.FC<MainMenuProps> = ({
   title = 'Claude Code Zen',
   items,
   swarmStatus,
@@ -102,12 +101,12 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   });
 
   const handleSelect = (item: MenuItem) => {
-    if (item.disabled) return;
+    if (item?.disabled) return;
 
-    if (item.value === 'exit') {
+    if (item?.value === 'exit') {
       onExit();
     } else {
-      onSelect(item.value);
+      onSelect(item?.value);
     }
   };
 
@@ -131,12 +130,10 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           centerAlign={false}
         />
       )}
-
       {/* System status */}
       <Box marginBottom={1} paddingX={2}>
         {getSystemStatusBadge()}
       </Box>
-
       {/* Main menu */}
       <Box flexGrow={1} paddingX={2}>
         <Box flexDirection="column" width="100%">
@@ -159,12 +156,11 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           {/* Description of selected item */}
           {selectedItem?.description && (
             <Box marginTop={1} borderStyle="single" borderColor="gray" padding={1}>
-              <Text dimColor>{selectedItem.description}</Text>
+              <Text dimColor>{selectedItem?.description}</Text>
             </Box>
           )}
         </Box>
       </Box>
-
       {/* Footer */}
       {showFooter && (
         <InteractiveFooter
@@ -193,7 +189,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
  * @param _handlers.onViewLogs
  * @param _handlers.onSettings
  */
-export const createDefaultMenuItems = (_handlers: {
+export const createDefaultMenuItems = (handlers: {
   onStartSwarm?: () => void;
   onViewStatus?: () => void;
   onViewLogs?: () => void;

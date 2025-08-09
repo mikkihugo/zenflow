@@ -190,7 +190,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
         this.emit('sparc:phase:completed', { sparcTask, phase, validation });
       } catch (error) {
         logger.error(`❌ SPARC phase ${phase} failed for ${sparcTask.id}:`, error);
-        sparcTask.phaseProgress[phase].status = 'failed';
+        sparcTask.phaseProgress[phase]?.status = 'failed';
         sparcTask.status = 'failed';
         this.updatePhaseMetrics(phase, false);
         throw error;
@@ -213,13 +213,13 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    */
   private async executeSPARCPhase(sparcTask: SPARCTask, phase: SPARCPhase): Promise<void> {
     const phaseResult = sparcTask.phaseProgress[phase];
-    phaseResult.status = 'in_progress';
-    phaseResult.metrics.startTime = new Date();
+    phaseResult?.status = 'in_progress';
+    phaseResult?.metrics?.startTime = new Date();
 
     // Select specialized agents for this phase
     const phaseAgents = this.selectPhaseAgents(phase, sparcTask);
     sparcTask.assignedAgents[phase] = phaseAgents.map((agent) => agent.id);
-    phaseResult.metrics.agentsInvolved = phaseAgents.map((agent) => agent.id);
+    phaseResult?.metrics?.agentsInvolved = phaseAgents.map((agent) => agent.id);
 
     // Execute phase based on type
     switch (phase) {
@@ -240,9 +240,9 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
         break;
     }
 
-    phaseResult.status = 'completed';
-    phaseResult.metrics.endTime = new Date();
-    phaseResult.metrics.iterationsCount = 1; // Could be higher if retries were needed
+    phaseResult?.status = 'completed';
+    phaseResult?.metrics?.endTime = new Date();
+    phaseResult?.metrics?.iterationsCount = 1; // Could be higher if retries were needed
   }
 
   /**
@@ -454,9 +454,9 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
     const phaseResult = sparcTask.phaseProgress[phase];
 
     // Basic validation criteria
-    const hasArtifacts = phaseResult.artifacts.length > 0;
-    const hasAgents = phaseResult.metrics.agentsInvolved.length > 0;
-    const hasTimestamps = phaseResult.metrics.startTime && phaseResult.metrics.endTime;
+    const hasArtifacts = phaseResult?.artifacts.length > 0;
+    const hasAgents = phaseResult?.metrics?.agentsInvolved.length > 0;
+    const hasTimestamps = phaseResult?.metrics?.startTime && phaseResult?.metrics?.endTime;
 
     const validationChecks = [hasArtifacts, hasAgents, hasTimestamps];
     const score = validationChecks.filter(Boolean).length / validationChecks.length;
@@ -466,13 +466,13 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
     if (!hasAgents) feedback.push(`No agents were assigned to phase ${phase}`);
     if (!hasTimestamps) feedback.push(`Phase ${phase} timing not recorded`);
 
-    phaseResult.validation = {
+    phaseResult?.validation = {
       passed: score >= 0.8,
       score,
       feedback,
     };
 
-    return phaseResult.validation;
+    return phaseResult?.validation;
   }
 
   /**
@@ -485,8 +485,8 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
     logger.info(`🔄 Retrying SPARC phase: ${phase} for ${sparcTask.id}`);
 
     // Reset phase status
-    sparcTask.phaseProgress[phase].status = 'not_started';
-    sparcTask.phaseProgress[phase].metrics.iterationsCount++;
+    sparcTask.phaseProgress[phase]?.status = 'not_started';
+    sparcTask.phaseProgress[phase]?.metrics?.iterationsCount++;
 
     // Execute phase again with different agents if possible
     await this.executeSPARCPhase(sparcTask, phase);

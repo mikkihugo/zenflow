@@ -19,8 +19,8 @@ import { WebProcessManager } from './web-process-manager';
 import { WebSessionManager } from './web-session-manager';
 import { WebSocketManager } from './web-socket-manager';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const _filename = fileURLToPath(import.meta.url);
+const _dirname = dirname(_filename);
 
 /**
  * Main Web Interface orchestrator

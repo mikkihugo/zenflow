@@ -4,7 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { CompositeMetrics } from '../core/metrics-collector';
 
 export interface AnomalyDetection {
   timestamp: number;
@@ -531,7 +530,7 @@ export class PerformanceAnalyzer extends EventEmitter {
     );
     if (cpuTrend.direction === 'increasing' && cpuTrend.rate > 0) {
       const timeToCapacity =
-        (90 - recentMetrics[recentMetrics.length - 1].system.cpu.usage) / cpuTrend.rate;
+        (90 - recentMetrics[recentMetrics.length - 1]?.system?.cpu?.usage) / cpuTrend.rate;
       if (timeToCapacity < 300) {
         // 5 minutes
         resourceExhaustion.push('CPU');
@@ -545,7 +544,7 @@ export class PerformanceAnalyzer extends EventEmitter {
     );
     if (memoryTrend.direction === 'increasing' && memoryTrend.rate > 0) {
       const timeToCapacity =
-        (90 - recentMetrics[recentMetrics.length - 1].system.memory.percentage) / memoryTrend.rate;
+        (90 - recentMetrics[recentMetrics.length - 1]?.system?.memory?.percentage) / memoryTrend.rate;
       if (timeToCapacity < 600) {
         // 10 minutes
         resourceExhaustion.push('Memory');

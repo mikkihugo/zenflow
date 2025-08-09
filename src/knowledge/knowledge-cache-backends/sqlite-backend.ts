@@ -5,14 +5,7 @@
  * with full-text search and vector similarity capabilities
  */
 
-import type {
-  FACTBackendStats,
-  FACTKnowledgeEntry,
-  FACTSearchQuery,
-  FACTStorageBackend,
-  FACTStorageConfig,
-  FACTStorageStats,
-} from '../types/fact-types.js';
+import type { FACTStorageBackend } from '../types/fact-types.js';
 
 /**
  * SQLite-based FACT storage backend

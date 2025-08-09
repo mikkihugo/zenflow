@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-/**
+#!/usr/bin/env node/**
  * Complete SPARC Template Engine Demonstration
  *
  * Shows all functionality of the SPARC specification engine with template integration
@@ -7,7 +6,6 @@
 
 import { TemplateEngine } from './coordination/swarm/sparc/core/template-engine';
 import { SpecificationPhaseEngine } from './coordination/swarm/sparc/phases/specification/specification-engine';
-import type { ProjectSpecification } from './coordination/swarm/sparc/types/sparc-types';
 
 async function demonstrateSPARCTemplateEngine() {
   const templateEngine = new TemplateEngine();

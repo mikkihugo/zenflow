@@ -6,12 +6,7 @@
  * CommandExecutorContract using shared abstractions.
  */
 
-import type {
-  CommandContext,
-  CommandExecutorContract,
-  CommandResult,
-  ProjectConfig,
-} from '../../shared/index';
+import type { CommandExecutorContract } from '../../shared/index';
 
 /**
  * CLI Command Adapter
@@ -127,25 +122,25 @@ export class CliCommandAdapter implements CommandExecutorContract {
    */
   private async handleCreateProject(args: string[], options: any): Promise<CommandResult> {
     const projectName = args[0] || 'new-project';
-    const projectType = options.type || 'full-stack';
-    const complexity = options.complexity || 'moderate';
+    const projectType = options?.type || 'full-stack';
+    const complexity = options?.["complexity"] || 'moderate';
 
     // Build project config using shared types
     const projectConfig: ProjectConfig = {
       name: projectName,
       type: projectType,
       complexity: complexity,
-      domains: this.parseDomains(options.domains),
+      domains: this.parseDomains(options?.["domains"]),
       integrations: [],
       aiFeatures: {
-        enabled: options.aiFeatures === 'all' || options.aiFeatures === true,
-        neuralNetworks: options.neural !== false,
-        swarmIntelligence: options.swarm !== false,
-        quantumOptimization: options.quantum === true,
-        autoCodeGeneration: options.codeGen !== false,
+        enabled: options?.["aiFeatures"] === 'all' || options?.["aiFeatures"] === true,
+        neuralNetworks: options?.["neural"] !== false,
+        swarmIntelligence: options?.["swarm"] !== false,
+        quantumOptimization: options?.["quantum"] === true,
+        autoCodeGeneration: options?.["codeGen"] !== false,
       },
       performance: {
-        targets: options.targets ? options.targets.split(',') : ['speed', 'efficiency'],
+        targets: options?.["targets"] ? options?.["targets"]?.["split"](',') : ['speed', 'efficiency'],
       },
     };
 
@@ -263,8 +258,8 @@ export class CliCommandAdapter implements CommandExecutorContract {
           message: '🐝 Swarm spawned successfully',
           data: {
             swarmId: `swarm-${Date.now()}`,
-            topology: options.topology || 'mesh',
-            agents: parseInt(options.agents || '5'),
+            topology: options?.["topology"] || 'mesh',
+            agents: parseInt(options?.["agents"] || '5'),
           },
         };
       default:
@@ -299,7 +294,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
           success: true,
           message: '🧠 Neural network architecture generated',
           data: {
-            architecture: options.architecture || 'transformer',
+            architecture: options?.["architecture"] || 'transformer',
             files: 4,
           },
         };

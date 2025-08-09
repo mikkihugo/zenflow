@@ -49,8 +49,8 @@ export class RealTimePerformanceMonitor extends EventEmitter {
       ...config,
     };
 
-    if (config.alertThresholds) {
-      this.alerts = config.alertThresholds;
+    if (config?.["alertThresholds"]) {
+      this.alerts = config?.["alertThresholds"];
     }
 
     this.setupDefaultAlerts();
@@ -289,7 +289,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
       const latestMetrics = this.getMetrics(alert.metric);
       if (latestMetrics.length === 0) continue;
 
-      const latestValue = latestMetrics[latestMetrics.length - 1].value;
+      const latestValue = latestMetrics[latestMetrics.length - 1]?.value;
       const triggered = this.evaluateAlert(latestValue, alert);
 
       if (triggered) {

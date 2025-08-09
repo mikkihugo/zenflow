@@ -72,9 +72,9 @@ export class ExternalMCPClient extends EventEmitter {
     for (const [name, config] of this.servers) {
       try {
         const result = await this.connectToServer(name, config);
-        results.push(result);
+        results?.push(result);
       } catch (error) {
-        results.push({
+        results?.push({
           server: name,
           success: false,
           error: error instanceof Error ? error.message : String(error),
@@ -105,9 +105,9 @@ export class ExternalMCPClient extends EventEmitter {
       return {
         server: name,
         success: true,
-        url: config.url,
+        url: config?.["url"],
         toolCount: tools.length,
-        capabilities: config.capabilities,
+        capabilities: config?.["capabilities"],
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -130,12 +130,12 @@ export class ExternalMCPClient extends EventEmitter {
    * @param config
    */
   private async createConnection(name: string, config: MCPServerConfig): Promise<MCPConnection> {
-    if (config.type === 'http') {
+    if (config?.["type"] === 'http') {
       return this.createHTTPConnection(name, config);
-    } else if (config.type === 'sse') {
+    } else if (config?.["type"] === 'sse') {
       return this.createSSEConnection(name, config);
     } else {
-      throw new Error(`Unsupported server type: ${config.type}`);
+      throw new Error(`Unsupported server type: ${config?.["type"]}`);
     }
   }
 
@@ -153,7 +153,7 @@ export class ExternalMCPClient extends EventEmitter {
     // In practice, this would use the actual MCP protocol over HTTP
     return {
       type: 'http',
-      url: config.url,
+      url: config?.["url"],
       connected: true,
       lastPing: new Date(),
       send: async (_message: any) => {
@@ -177,7 +177,7 @@ export class ExternalMCPClient extends EventEmitter {
     // In practice, this would use Server-Sent Events for real-time communication
     return {
       type: 'sse',
-      url: config.url,
+      url: config?.["url"],
       connected: true,
       lastPing: new Date(),
       send: async (_message: any) => {
@@ -330,7 +330,7 @@ export class ExternalMCPClient extends EventEmitter {
       },
     };
 
-    const serverResponses = responses[serverName as keyof typeof responses];
+    const serverResponses = responses?.[serverName as keyof typeof responses];
     return (
       serverResponses?.[toolName as keyof typeof serverResponses] || {
         message: 'Tool executed successfully',
@@ -363,11 +363,11 @@ export class ExternalMCPClient extends EventEmitter {
 
       status[name] = {
         name,
-        url: config.url,
-        type: config.type,
+        url: config?.["url"],
+        type: config?.["type"],
         connected: !!connection?.connected,
         toolCount: tools.length,
-        capabilities: config.capabilities,
+        capabilities: config?.["capabilities"],
         lastPing: connection?.lastPing || null,
       };
     }

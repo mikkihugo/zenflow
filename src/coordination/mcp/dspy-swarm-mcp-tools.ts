@@ -6,9 +6,6 @@
  */
 
 import { createLogger } from '../../core/logger';
-import type { DSPyConfig } from '../../neural/types/dspy-types';
-import type { AgentType } from '../../types/agent-types';
-import type { DSPyTask } from '../swarm/dspy-swarm-coordinator';
 import { DSPySwarmCoordinator } from '../swarm/dspy-swarm-coordinator';
 
 const logger = createLogger({ prefix: 'DSPySwarmMCPTools' });
@@ -42,10 +39,10 @@ export async function dspy_swarm_init(params: {
 
     // Create DSPy configuration
     const dspyConfig: DSPyConfig & { topology?: string } = {
-      model: params.model || 'claude-3-5-sonnet-20241022',
-      temperature: params.temperature || 0.1,
+      model: params?.["model"] || 'claude-3-5-sonnet-20241022',
+      temperature: params?.["temperature"] || 0.1,
       maxTokens: 2000,
-      topology: params.topology || 'mesh',
+      topology: params?.["topology"] || 'mesh',
     };
 
     // Initialize new swarm coordinator
@@ -69,7 +66,7 @@ export async function dspy_swarm_init(params: {
         capabilities: [], // Get from swarm status instead of private property
       })),
       topology: status.topology.type,
-      message: `DSPy swarm initialized with ${status.agents.length} intelligent agents using ${params.topology || 'mesh'} topology`,
+      message: `DSPy swarm initialized with ${status.agents.length} intelligent agents using ${params?.["topology"] || 'mesh'} topology`,
     };
   } catch (error) {
     logger.error('Failed to initialize DSPy swarm', error);
@@ -112,15 +109,15 @@ export async function dspy_swarm_execute_task(params: {
   }
 
   try {
-    logger.info('Executing DSPy swarm task', { type: params.type, complexity: params.complexity });
+    logger.info('Executing DSPy swarm task', { type: params?.type, complexity: params?.["complexity"] });
 
     const task: Omit<DSPyTask, 'id'> = {
-      type: params.type,
-      description: params.description,
-      input: params.input,
-      requiredCapabilities: params.requiredCapabilities || [],
-      priority: params.priority || 'medium',
-      complexity: params.complexity || 50,
+      type: params?.type,
+      description: params?.description,
+      input: params?.["input"],
+      requiredCapabilities: params?.["requiredCapabilities"] || [],
+      priority: params?.["priority"] || 'medium',
+      complexity: params?.["complexity"] || 50,
     };
 
     const startTime = Date.now();
@@ -181,30 +178,30 @@ export async function dspy_swarm_generate_code(params: {
   try {
     const result = await globalDSPySwarm.executeTask({
       type: 'code-generation',
-      description: `Generate code: ${params.requirements}`,
+      description: `Generate code: ${params?.["requirements"]}`,
       input: {
-        requirements: params.requirements,
-        context: params.context || '',
-        style_guide: params.styleGuide || 'typescript-strict',
-        include_tests: params.includeTests !== false,
-        include_documentation: params.includeDocumentation !== false,
+        requirements: params?.["requirements"],
+        context: params?.context || '',
+        style_guide: params?.["styleGuide"] || 'typescript-strict',
+        include_tests: params?.["includeTests"] !== false,
+        include_documentation: params?.["includeDocumentation"] !== false,
       },
       requiredCapabilities: ['code-generation', 'testing', 'documentation'],
       priority: 'high',
-      complexity: Math.min(100, params.requirements.length / 10),
+      complexity: Math.min(100, params?.["requirements"].length / 10),
     });
 
-    if (result.success && result.result) {
+    if (result?.success && result?.result) {
       return {
         success: true,
-        code: result.result.code,
-        tests: result.result.tests,
-        documentation: result.result.documentation,
-        complexityScore: result.result.complexity_score,
+        code: result?.result?.code,
+        tests: result?.result?.tests,
+        documentation: result?.result?.documentation,
+        complexityScore: result?.result?.["complexity_score"],
         qualityMetrics: {
           estimatedMaintainability: 85,
-          testCoverage: result.result.tests?.length || 0,
-          documentationQuality: result.result.documentation ? 90 : 0,
+          testCoverage: result?.result?.tests?.length || 0,
+          documentationQuality: result?.result?.documentation ? 90 : 0,
         },
         message: 'Code generated successfully using DSPy intelligence',
       };
@@ -255,27 +252,27 @@ export async function dspy_swarm_analyze_code(params: {
       type: 'code-analysis',
       description: `Analyze code quality and provide recommendations`,
       input: {
-        code: params.code,
-        file_path: params.filePath || 'unknown.ts',
-        project_context: params.projectContext || '',
-        analysis_depth: params.analysisDepth || 'detailed',
+        code: params?.["code"],
+        file_path: params?.["filePath"] || 'unknown.ts',
+        project_context: params?.["projectContext"] || '',
+        analysis_depth: params?.["analysisDepth"] || 'detailed',
       },
       requiredCapabilities: ['code-analysis', 'quality-assessment', 'refactoring'],
       priority: 'medium',
-      complexity: Math.min(100, params.code.length / 50),
+      complexity: Math.min(100, params?.["code"].length / 50),
     });
 
-    if (result.success && result.result) {
+    if (result?.success && result?.result) {
       return {
         success: true,
-        qualityScore: result.result.quality_score,
-        issues: result.result.issues,
-        suggestions: result.result.suggestions,
-        refactoringOpportunities: result.result.refactoring_opportunities,
+        qualityScore: result?.result?.["quality_score"],
+        issues: result?.result?.issues,
+        suggestions: result?.result?.suggestions,
+        refactoringOpportunities: result?.result?.["refactoring_opportunities"],
         metrics: {
-          complexity: result.result.complexity || 'medium',
-          maintainability: result.result.maintainability || 'good',
-          readability: result.result.readability || 'good',
+          complexity: result?.result?.complexity || 'medium',
+          maintainability: result?.result?.maintainability || 'good',
+          readability: result?.result?.readability || 'good',
         },
         message: 'Code analysis completed using DSPy intelligence',
       };
@@ -319,27 +316,27 @@ export async function dspy_swarm_design_architecture(params: {
   try {
     const result = await globalDSPySwarm.executeTask({
       type: 'architecture-design',
-      description: `Design system architecture: ${params.requirements}`,
+      description: `Design system architecture: ${params?.["requirements"]}`,
       input: {
-        requirements: params.requirements,
-        constraints: params.constraints || [],
-        domain: params.domain || 'general',
-        scale: params.scale || 'medium',
-        include_patterns: params.includePatterns !== false,
+        requirements: params?.["requirements"],
+        constraints: params?.["constraints"] || [],
+        domain: params?.["domain"] || 'general',
+        scale: params?.["scale"] || 'medium',
+        include_patterns: params?.["includePatterns"] !== false,
       },
       requiredCapabilities: ['architecture-design', 'system-design', 'patterns', 'scalability'],
       priority: 'high',
-      complexity: Math.min(100, params.requirements.length / 8),
+      complexity: Math.min(100, params?.["requirements"].length / 8),
     });
 
-    if (result.success && result.result) {
+    if (result?.success && result?.result) {
       return {
         success: true,
-        architecture: result.result.architecture,
-        components: result.result.components,
-        patterns: result.result.patterns,
-        tradeoffs: result.result.tradeoffs,
-        recommendations: result.result.recommendations || [
+        architecture: result?.result?.architecture,
+        components: result?.result?.components,
+        patterns: result?.result?.patterns,
+        tradeoffs: result?.result?.tradeoffs,
+        recommendations: result?.result?.recommendations || [
           'Consider scalability requirements',
           'Implement proper error handling',
           'Design for maintainability',

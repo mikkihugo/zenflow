@@ -3,9 +3,8 @@
  * Advanced routing with task-agent matching and failover capabilities
  */
 
-import type { CapacityManager, RoutingEngine } from '../interfaces';
+import type { RoutingEngine } from '../interfaces';
 import { NetworkLatencyOptimizer } from '../optimization/network-latency-optimizer';
-import type { Agent, NetworkTopology, QoSRequirement, RoutingResult, Task } from '../types';
 import { FailoverManager } from './failover-manager';
 import { TaskAgentMatcher } from './task-agent-matcher';
 
@@ -337,7 +336,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
       // Calculate routing score for each candidate
       const score = await this.calculateRoutingScore(task, candidate, routingEntry);
 
-      routingOptions.push({
+      routingOptions?.push({
         agent: candidate,
         routingEntry,
         score,
@@ -347,10 +346,10 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     }
 
     // Sort by routing score (higher is better)
-    routingOptions.sort((a, b) => b.score - a.score);
+    routingOptions?.sort((a, b) => b.score - a.score);
 
-    const bestOption = routingOptions[0];
-    const fallbackOptions = routingOptions.slice(1, 4).map((opt) => opt.agent);
+    const bestOption = routingOptions?.[0];
+    const fallbackOptions = routingOptions?.slice(1, 4).map((opt) => opt.agent);
 
     // Select best route for the chosen agent
     const bestRoute = this.selectBestRoute(bestOption.routingEntry, task);

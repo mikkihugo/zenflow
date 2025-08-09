@@ -64,9 +64,9 @@ export class DocumentationManager extends EventEmitter {
     super();
     this.memory = memory;
     this.config = {
-      autoLink: config?.autoLink !== false,
-      scanPaths: config?.scanPaths || ['./docs', './src'],
-      maxDepth: config?.maxDepth || 10,
+      autoLink: config?.["autoLink"] !== false,
+      scanPaths: config?.["scanPaths"] || ['./docs', './src'],
+      maxDepth: config?.["maxDepth"] || 10,
     };
     this.stats = {
       indexedDocuments: 0,

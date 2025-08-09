@@ -1,12 +1,3 @@
-/**
- * @file Coordination MCP Tools
- *
- * Coordination tools for swarm management, topology optimization,
- * fault tolerance, and intelligent load balancing.
- */
-
-import type { MCPTool } from '../tool-registry';
-
 // Simple coordination tools
 const coordinationTools: MCPTool[] = [
   {

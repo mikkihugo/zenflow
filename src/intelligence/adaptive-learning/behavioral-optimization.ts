@@ -6,7 +6,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ExecutionPattern } from './pattern-recognition-engine';
 
 export interface AgentBehavior {
   agentId: string;
@@ -579,7 +578,7 @@ export class BehavioralOptimization extends EventEmitter {
 
     // Calculate performance change from baseline
     const performanceChange = behavior.performance.efficiency - originalPerformance.efficiency;
-    const successRate = (behavior.performance.success_rate || 0) - (originalPerformance.success_rate || 0);
+    const successRate = (behavior.performance["success_rate"] || 0) - (originalPerformance["success_rate"] || 0);
 
     // Record the adaptation with performance comparison
     this.recordAdaptation(agentId, {
@@ -589,9 +588,9 @@ export class BehavioralOptimization extends EventEmitter {
       impact: {
         performanceChange: performanceChange,
         efficiencyGain: successRate,
-        stabilityEffect: (behavior.performance.response_time || 0) - (originalPerformance.response_time || 0),
+        stabilityEffect: (behavior.performance["response_time"] || 0) - (originalPerformance["response_time"] || 0),
         collaborationImprovement:
-          (behavior.performance.collaboration_score || 0) - (originalPerformance.collaboration_score || 0),
+          (behavior.performance["collaboration_score"] || 0) - (originalPerformance["collaboration_score"] || 0),
       },
       success: performanceChange >= 0, // Success if performance improved or stayed same
       originalPerformance,
@@ -879,7 +878,7 @@ export class BehavioralOptimization extends EventEmitter {
 
       const selectedParent = population[bestIndex];
       if (selectedParent) {
-        parents.push(selectedParent);
+        parents?.push(selectedParent);
       }
     }
 
@@ -890,8 +889,8 @@ export class BehavioralOptimization extends EventEmitter {
     const offspring: AgentBehavior[] = [];
 
     for (let i = 0; i < parents.length - 1; i += 2) {
-      const parent1 = parents[i];
-      const parent2 = parents[i + 1];
+      const parent1 = parents?.[i];
+      const parent2 = parents?.[i + 1];
 
       if (parent1 && parent2 && Math.random() < (this.config.crossoverRate || 0.8)) {
         const child1 = this.createChild(parent1, parent2);
@@ -911,13 +910,13 @@ export class BehavioralOptimization extends EventEmitter {
 
     // Mix parameters from both parents
     if (Math.random() < 0.5)
-      child.parameters.taskSelection = { ...parent2.parameters.taskSelection };
+      child?.parameters?.taskSelection = { ...parent2?.parameters?.taskSelection };
     if (Math.random() < 0.5)
-      child.parameters.communication = { ...parent2.parameters.communication };
+      child?.parameters?.communication = { ...parent2?.parameters?.communication };
     if (Math.random() < 0.5)
-      child.parameters.resourceManagement = { ...parent2.parameters.resourceManagement };
-    if (Math.random() < 0.5) child.parameters.coordination = { ...parent2.parameters.coordination };
-    if (Math.random() < 0.5) child.parameters.learning = { ...parent2.parameters.learning };
+      child?.parameters?.resourceManagement = { ...parent2?.parameters?.resourceManagement };
+    if (Math.random() < 0.5) child?.parameters?.coordination = { ...parent2?.parameters?.coordination };
+    if (Math.random() < 0.5) child?.parameters?.learning = { ...parent2?.parameters?.learning };
 
     return child;
   }
@@ -982,7 +981,7 @@ export class BehavioralOptimization extends EventEmitter {
     indexed.sort((a, b) => (b.fitness || 0) - (a.fitness || 0));
 
     // Return top individuals
-    return indexed.slice(0, parents.length).map((item) => item.individual);
+    return indexed.slice(0, parents.length).map((item) => item?.individual);
   }
 
   private calculateGradients(
@@ -1353,9 +1352,9 @@ export class BehavioralOptimization extends EventEmitter {
           };
         }
 
-        messageTypes[msgType].count++;
-        messageTypes[msgType].avgSize += (pattern.metadata as any)?.messageSize || 0;
-        messageTypes[msgType].avgLatency += (pattern.metadata as any)?.latency || 0;
+        messageTypes[msgType]?.count++;
+        messageTypes[msgType]?.avgSize += (pattern.metadata as any)?.messageSize || 0;
+        messageTypes[msgType]?.avgLatency += (pattern.metadata as any)?.latency || 0;
       }
     });
 
@@ -1411,11 +1410,11 @@ export class BehavioralOptimization extends EventEmitter {
     if (items.length === 0) return null;
 
     const counts = new Map<string, number>();
-    items.forEach((item) => {
+    items?.forEach((item) => {
       counts.set(item, (counts.get(item) || 0) + 1);
     });
 
-    let mostFrequent = items[0];
+    let mostFrequent = items?.[0];
     let maxCount = 0;
 
     counts.forEach((count, item) => {
@@ -1570,8 +1569,8 @@ export class BehavioralOptimization extends EventEmitter {
   private setNestedProperty(obj: any, path: string, value: any): void {
     const keys = path.split('.');
     const lastKey = keys.pop()!;
-    const target = keys.reduce((current, key) => current[key], obj);
-    target[lastKey] = value;
+    const target = keys.reduce((current, key) => current?.[key], obj);
+    target?.[lastKey] = value;
   }
 
   private clampBehaviorParameters(behavior: AgentBehavior): void {

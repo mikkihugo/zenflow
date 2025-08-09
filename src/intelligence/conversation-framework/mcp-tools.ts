@@ -1,19 +1,6 @@
-/**
- * Conversation MCP Tools
- *
- * MCP tools for managing ag2.ai-inspired multi-agent conversations
- */
-
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { ConversationMemoryFactory } from './memory';
 import { ConversationOrchestratorImpl } from './orchestrator';
-import type {
-  ConversationConfig,
-  ConversationMCPTools as ConversationMCPToolsInterface,
-  ConversationMessage,
-  ConversationQuery,
-  MessageType,
-} from './types';
+import type { ConversationMCPTools as ConversationMCPToolsInterface } from './types';
 
 /**
  * MCP tools for conversation management
@@ -364,7 +351,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
     return {
       success: true,
       messageId: message.id,
-      timestamp: message.timestamp.toISOString(),
+      timestamp: message["timestamp"]?.["toISOString"](),
       message: 'Message sent successfully',
     };
   }

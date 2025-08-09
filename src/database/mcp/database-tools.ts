@@ -7,7 +7,6 @@ const logger = getLogger("database-mcp-database-tools");
 
 // Import UACL for unified client monitoring and MCP client management
 import { ClientType, uacl } from '../../interfaces/clients/index';
-import type { DatabaseQuery, IDataAccessObject, IRepository } from '../interfaces';
 // Import database types
 import { DatabaseTypes, EntityTypes } from '../interfaces';
 import { getConfig } from '../../config';
@@ -135,7 +134,7 @@ export const databaseInitTool: MCPTool = {
         const centralConfig = getConfig();
         const mcpServers = {
           'database-coordinator': {
-            url: `http://${centralConfig.interfaces.mcp.http.host}:${centralConfig.interfaces.mcp.http.port}/mcp`,
+            url: `http://${centralConfig?.interfaces?.mcp?.http?.host}:${centralConfig?.interfaces?.mcp?.http?.port}/mcp`,
             type: 'http' as const,
             capabilities: ['database_management', 'query_optimization', 'performance_monitoring'],
           },
@@ -144,7 +143,7 @@ export const databaseInitTool: MCPTool = {
         const _mcpClientInstance = await uacl.createMCPClient('database-mcp-client', mcpServers, {
           enabled: true,
           priority: 9, // High priority for database operations
-          timeout: coordination.defaultTimeout || centralConfig.network.defaultTimeout,
+          timeout: coordination.defaultTimeout || centralConfig?.network?.defaultTimeout,
           retryAttempts: 3,
         });
       } catch (error) {
@@ -168,10 +167,10 @@ export const databaseInitTool: MCPTool = {
       for (const engineConfig of engines) {
         try {
           const engine: DatabaseEngine = {
-            id: engineConfig.id,
-            type: engineConfig.type,
-            interface: engineConfig.interface || {},
-            capabilities: engineConfig.capabilities || [],
+            id: engineConfig?.id,
+            type: engineConfig?.type,
+            interface: engineConfig?.interface || {},
+            capabilities: engineConfig?.capabilities || [],
             status: 'active',
             lastHealthCheck: Date.now(),
             performance: {
@@ -181,14 +180,14 @@ export const databaseInitTool: MCPTool = {
               capacity: 1000,
               utilization: 0,
             },
-            config: engineConfig.config || {},
+            config: engineConfig?.config || {},
           };
 
-          await databaseCoordinator.registerEngine(engine);
+          await databaseCoordinator?.registerEngine(engine);
           registeredEngines.set(engine.id, engine);
 
           // TODO: TypeScript error TS2345 - Argument type not assignable to parameter type 'never' (AI unsure of safe fix - human review needed)
-          engineResults.push({
+          engineResults?.push({
             id: engine.id,
             type: engine.type,
             status: 'registered',
@@ -196,9 +195,9 @@ export const databaseInitTool: MCPTool = {
           });
         } catch (error) {
           // TODO: TypeScript error TS2345 - Argument type not assignable to parameter type 'never' (AI unsure of safe fix - human review needed)
-          engineResults.push({
-            id: engineConfig.id,
-            type: engineConfig.type,
+          engineResults?.push({
+            id: engineConfig?.id,
+            type: engineConfig?.type,
             status: 'failed',
             error: error.message,
           });
@@ -211,7 +210,7 @@ export const databaseInitTool: MCPTool = {
           coordinator: {
             status: 'initialized',
             engines: engineResults,
-            stats: databaseCoordinator.getStats(),
+            stats: databaseCoordinator?.getStats(),
           },
           optimizer: {
             status: 'initialized',
@@ -384,7 +383,7 @@ export const databaseQueryTool: MCPTool = {
       }
 
       // Execute query
-      const execution = await databaseCoordinator.executeQuery(optimizedQuery);
+      const execution = await databaseCoordinator?.executeQuery(optimizedQuery);
 
       // Record execution for optimizer learning
       if (queryOptimizer) {
@@ -406,12 +405,12 @@ export const databaseQueryTool: MCPTool = {
           originalQuery: query,
           // TODO: TypeScript error TS2339 - Property 'id' does not exist on type 'DatabaseQuery' (AI unsure of safe fix - human review needed)
           optimizedQuery: optimizedQuery.id !== query.id ? optimizedQuery : undefined,
-          optimizations: parameters.__optimizations,
+          optimizations: parameters["__optimizations"],
         },
       };
 
       if (execution.status === 'failed') {
-        response.error = execution.error;
+        response?.error = execution.error;
       }
 
       return response;
@@ -489,11 +488,11 @@ export const databaseOptimizeTool: MCPTool = {
       };
 
       // Get current performance metrics
-      const coordinatorStats = databaseCoordinator.getStats();
+      const coordinatorStats = databaseCoordinator?.getStats();
       const optimizerStats = queryOptimizer.getStats();
       const cacheStats = queryOptimizer.getCacheStats();
 
-      results.metrics = {
+      results?.metrics = {
         coordinator: coordinatorStats,
         optimizer: optimizerStats,
         cache: cacheStats,
@@ -503,7 +502,7 @@ export const databaseOptimizeTool: MCPTool = {
       if (target === 'all' || target === 'query_performance') {
         // Query performance optimizations
         if (optimizerStats.averageImprovement < 10) {
-          results.optimizations.push({
+          results?.optimizations?.push({
             type: 'query_performance',
             action: 'enable_aggressive_optimization',
             description: 'Enable more aggressive query optimization rules',
@@ -515,7 +514,7 @@ export const databaseOptimizeTool: MCPTool = {
       if (target === 'all' || target === 'cache_efficiency') {
         // Cache efficiency optimizations
         if (cacheStats.hitRate < 0.7) {
-          results.optimizations.push({
+          results?.optimizations?.push({
             type: 'cache_efficiency',
             action: 'increase_cache_size',
             description: 'Increase cache size to improve hit rate',
@@ -526,7 +525,7 @@ export const databaseOptimizeTool: MCPTool = {
         }
 
         if (cacheStats.memoryUsage > 80) {
-          results.optimizations.push({
+          results?.optimizations?.push({
             type: 'cache_efficiency',
             action: 'optimize_cache_eviction',
             description: 'Optimize cache eviction policy',
@@ -543,7 +542,7 @@ export const databaseOptimizeTool: MCPTool = {
         );
 
         for (const engine of utilizationIssues) {
-          results.optimizations.push({
+          results?.optimizations?.push({
             type: 'engine_utilization',
             action: 'rebalance_load',
             description: `Rebalance load for engine ${engine.id}`,
@@ -559,7 +558,7 @@ export const databaseOptimizeTool: MCPTool = {
       if (analyze) {
         const patterns = queryOptimizer.getPatterns();
         // Fixed: Assign analysis object instead of null
-        results.analysis = {
+        results?.analysis = {
           totalPatterns: patterns.length,
           frequentPatterns: patterns.filter((p) => p.frequency >= 5).length,
           topPatterns: patterns.slice(0, 10).map((p) => ({
@@ -574,7 +573,7 @@ export const databaseOptimizeTool: MCPTool = {
 
       // Generate recommendations
       if (recommendations) {
-        results.recommendations = queryOptimizer.getRecommendations();
+        results?.recommendations = queryOptimizer.getRecommendations();
       }
 
       return {
@@ -675,18 +674,18 @@ export const databaseMonitorTool: MCPTool = {
       };
 
       // Collect coordinator metrics
-      const coordinatorStats = databaseCoordinator.getStats();
-      monitoringData.system.coordinator = coordinatorStats;
+      const coordinatorStats = databaseCoordinator?.getStats();
+      monitoringData?.system?.coordinator = coordinatorStats;
 
       // Collect optimizer metrics
       const optimizerStats = queryOptimizer.getStats();
       const cacheStats = queryOptimizer.getCacheStats();
-      monitoringData.system.optimizer = optimizerStats;
-      monitoringData.system.cache = cacheStats;
+      monitoringData?.system?.optimizer = optimizerStats;
+      monitoringData?.system?.cache = cacheStats;
 
       // Collect engine-specific metrics
       for (const [id, engine] of registeredEngines) {
-        monitoringData.engines[id] = {
+        monitoringData?.engines?.[id] = {
           id: engine.id,
           type: engine.type,
           status: engine.status,
@@ -703,7 +702,7 @@ export const databaseMonitorTool: MCPTool = {
         // Engine performance alerts
         for (const [id, engine] of registeredEngines) {
           if (engine.performance.averageLatency > (thresholds.latency || 1000)) {
-            monitoringData.alerts.push({
+            monitoringData?.alerts?.push({
               type: 'performance',
               severity: 'warning',
               message: `Engine ${id} latency (${engine.performance.averageLatency}ms) exceeds threshold`,
@@ -714,7 +713,7 @@ export const databaseMonitorTool: MCPTool = {
           }
 
           if (engine.performance.errorRate > (thresholds.errorRate || 0.1)) {
-            monitoringData.alerts.push({
+            monitoringData?.alerts?.push({
               type: 'error',
               severity: 'warning',
               message: `Engine ${id} error rate (${(engine.performance.errorRate * 100).toFixed(2)}%) exceeds threshold`,
@@ -725,7 +724,7 @@ export const databaseMonitorTool: MCPTool = {
           }
 
           if (engine.performance.utilization > (thresholds.utilization || 0.8)) {
-            monitoringData.alerts.push({
+            monitoringData?.alerts?.push({
               type: 'utilization',
               severity: 'warning',
               message: `Engine ${id} utilization (${(engine.performance.utilization * 100).toFixed(1)}%) exceeds threshold`,
@@ -738,7 +737,7 @@ export const databaseMonitorTool: MCPTool = {
 
         // Cache performance alerts
         if (cacheStats.hitRate < (thresholds.cacheHitRate || 0.6)) {
-          monitoringData.alerts.push({
+          monitoringData?.alerts?.push({
             type: 'cache',
             severity: 'info',
             message: `Cache hit rate (${(cacheStats.hitRate * 100).toFixed(1)}%) below threshold`,
@@ -763,7 +762,7 @@ export const databaseMonitorTool: MCPTool = {
         Object.values(healthFactors).reduce((sum, factor) => sum + factor, 0) /
         Object.keys(healthFactors).length;
 
-      monitoringData.system.health = {
+      monitoringData?.system?.health = {
         score: Math.round(healthScore * 100),
         factors: healthFactors,
         status: healthScore > 0.8 ? 'healthy' : healthScore > 0.6 ? 'warning' : 'critical',
@@ -845,7 +844,7 @@ export const databaseHealthCheckTool: MCPTool = {
       // Check coordinator
       if (shouldCheck('coordinator')) {
         if (databaseCoordinator) {
-          const stats = databaseCoordinator.getStats();
+          const stats = databaseCoordinator?.getStats();
           const engineHealth = stats.engines.active / Math.max(stats.engines.total, 1);
 
           healthReport.components.coordinator = {
@@ -967,7 +966,7 @@ export const databaseHealthCheckTool: MCPTool = {
               clientMetrics.total > 0 ? (clientMetrics.connected / clientMetrics.total) * 100 : 100;
 
             // Get MCP clients specifically for database coordination
-            const mcpClients = uacl.getClientsByType(ClientType.MCP);
+            const mcpClients = uacl.getClientsByType(ClientType["MCP"]);
             const databaseMCPClient = mcpClients.find((c) => c.id === 'database-mcp-client');
 
             healthReport.components.clients = {
@@ -989,9 +988,9 @@ export const databaseHealthCheckTool: MCPTool = {
                     overallHealth: clientHealth,
                     databaseMCPClient: databaseMCPClient
                       ? {
-                          status: databaseMCPClient.status,
-                          priority: databaseMCPClient.config.priority,
-                          enabled: databaseMCPClient.config.enabled,
+                          status: databaseMCPClient?.status,
+                          priority: databaseMCPClient?.config?.priority,
+                          enabled: databaseMCPClient?.config?.enabled,
                         }
                       : null,
                   }
@@ -1005,7 +1004,7 @@ export const databaseHealthCheckTool: MCPTool = {
               );
             }
 
-            if (!databaseMCPClient || databaseMCPClient.status !== 'connected') {
+            if (!databaseMCPClient || databaseMCPClient?.status !== 'connected') {
               healthReport.issues.push('Database MCP client is not connected');
             }
 
@@ -1119,17 +1118,17 @@ function _mapEngineTypeToEntity(engineType: string): string {
 function _mapEngineTypeToDB(engineType: string): string {
   switch (engineType) {
     case 'vector':
-      return DatabaseTypes.LanceDB;
+      return DatabaseTypes?.["LanceDB"];
     case 'graph':
-      return DatabaseTypes.Kuzu;
+      return DatabaseTypes?.Kuzu;
     case 'document':
-      return DatabaseTypes.PostgreSQL;
+      return DatabaseTypes?.["PostgreSQL"];
     case 'relational':
-      return DatabaseTypes.PostgreSQL;
+      return DatabaseTypes?.["PostgreSQL"];
     case 'timeseries':
-      return DatabaseTypes.PostgreSQL;
+      return DatabaseTypes?.["PostgreSQL"];
     default:
-      return DatabaseTypes.PostgreSQL;
+      return DatabaseTypes?.["PostgreSQL"];
   }
 }
 
@@ -1170,14 +1169,14 @@ async function _executeQueryWithDAL(
 
   // Use first available engine (can be enhanced with load balancing)
   const selectedEngine = availableEngines[0];
-  const repository = repositories.get(selectedEngine.id);
-  const dao = daos.get(selectedEngine.id);
+  const repository = repositories.get(selectedEngine?.id);
+  const dao = daos.get(selectedEngine?.id);
 
   if (!repository || !dao) {
     return {
       // TODO: TypeScript error TS2339 - Property 'id' does not exist on type 'DatabaseQuery' (AI unsure of safe fix - human review needed)
       queryId: query.id,
-      engineId: selectedEngine.id,
+      engineId: selectedEngine?.id,
       status: 'failed',
       error: 'Engine repository/DAO not found',
       duration: Date.now() - startTime,
@@ -1215,9 +1214,9 @@ async function _executeQueryWithDAL(
       default:
         // TODO: TypeScript error TS2339 - Property 'bulkVectorOperations' does not exist on type 'IDataAccessObject<any>' (AI unsure of safe fix - human review needed)
         // Use DAO for advanced operations
-        if (selectedEngine.type === 'vector' && dao.bulkVectorOperations) {
+        if (selectedEngine?.type === 'vector' && dao.bulkVectorOperations) {
           result = await dao.bulkVectorOperations(query.parameters.vectors || [], query.operation);
-        } else if (selectedEngine.type === 'graph' && dao.traverseGraph) {
+        } else if (selectedEngine?.type === 'graph' && dao.traverseGraph) {
           // TODO: TypeScript error TS2339 - Property 'traverseGraph' does not exist on type 'IDataAccessObject<any>' (AI unsure of safe fix - human review needed)
           result = await dao.traverseGraph(
             query.parameters.startNode,
@@ -1231,26 +1230,26 @@ async function _executeQueryWithDAL(
 
     // Update engine performance metrics
     const duration = Date.now() - startTime;
-    selectedEngine.performance.averageLatency =
-      (selectedEngine.performance.averageLatency + duration) / 2;
-    selectedEngine.lastHealthCheck = Date.now();
+    selectedEngine?.performance?.averageLatency =
+      (selectedEngine?.performance?.averageLatency + duration) / 2;
+    selectedEngine?.lastHealthCheck = Date.now();
 
     return {
       // TODO: TypeScript error TS2339 - Property 'id' does not exist on type 'DatabaseQuery' (AI unsure of safe fix - human review needed)
       queryId: query.id,
-      engineId: selectedEngine.id,
+      engineId: selectedEngine?.id,
       status: 'completed',
       result,
       duration,
     };
   } catch (error) {
     // Update error metrics
-    selectedEngine.performance.errorRate = Math.min(1, selectedEngine.performance.errorRate + 0.01);
+    selectedEngine?.performance?.errorRate = Math.min(1, selectedEngine?.performance?.errorRate + 0.01);
 
     return {
       // TODO: TypeScript error TS2339 - Property 'id' does not exist on type 'DatabaseQuery' (AI unsure of safe fix - human review needed)
       queryId: query.id,
-      engineId: selectedEngine.id,
+      engineId: selectedEngine?.id,
       status: 'failed',
       error: error instanceof Error ? error.message : 'Unknown error',
       duration: Date.now() - startTime,

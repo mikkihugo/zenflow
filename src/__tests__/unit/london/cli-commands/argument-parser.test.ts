@@ -1,13 +1,3 @@
-/**
- * Argument Parser Tests - TDD London School
- *
- * Tests the behavior of argument parsing functionality using mocks
- * and interaction-based testing. Focuses on how the parser collaborates
- * with other components rather than testing implementation details.
- */
-
-import type { jest } from '@jest/globals';
-
 // Mock argument parser interface for testing interactions
 interface ArgumentParser {
   parse(args: string[]): ParseResult;
@@ -85,8 +75,8 @@ class MockArgumentParser implements ArgumentParser {
   }
 
   addCommand(config: CommandDefinition): void {
-    this.commands.set(config.name, config);
-    config.aliases?.forEach((alias) => {
+    this.commands.set(config?.name, config);
+    config?.["aliases"]?.["forEach"]((alias) => {
       this.commands.set(alias, config);
     });
   }
@@ -164,11 +154,11 @@ describe('ArgumentParser - TDD London', () => {
       const result = parser.parse(args);
 
       // Assert - verify flag parsing behavior
-      expect(result.flags).toEqual({
+      expect(result?.flags).toEqual({
         verbose: true,
         env: 'production',
       });
-      expect(result.args).toEqual(['app']);
+      expect(result?.args).toEqual(['app']);
     });
 
     it('should handle unknown flags based on options', () => {
@@ -188,7 +178,7 @@ describe('ArgumentParser - TDD London', () => {
       const result = parser.parse(args);
 
       // Assert - verify unknown flag handling
-      expect(result.unknown).toContain('--unknown-flag');
+      expect(result?.unknown).toContain('--unknown-flag');
       expect(mockParseFunction).toHaveBeenCalledWith(args);
     });
 
@@ -211,8 +201,8 @@ describe('ArgumentParser - TDD London', () => {
       const result = parser.parse(args);
 
       // Assert - verify boolean flag behavior
-      expect(result.flags.debug).toBe(true);
-      expect(result.flags.verbose).toBe(false);
+      expect(result?.flags?.debug).toBe(true);
+      expect(result?.flags?.verbose).toBe(false);
     });
 
     it('should parse array flags', () => {
@@ -233,7 +223,7 @@ describe('ArgumentParser - TDD London', () => {
       const result = parser.parse(args);
 
       // Assert - verify array flag behavior
-      expect(result.flags.include).toEqual(['file1.js', 'file2.js']);
+      expect(result?.flags?.include).toEqual(['file1.js', 'file2.js']);
     });
   });
 
@@ -336,8 +326,8 @@ describe('ArgumentParser - TDD London', () => {
       // Assert - verify validation behavior
       expect(mockValidateFunction).toHaveBeenCalledWith(parseResult);
       expect(result).toEqual(validationResult);
-      expect(result.valid).toBe(false);
-      expect(result.errors).toContain('Missing required argument: target');
+      expect(result?.valid).toBe(false);
+      expect(result?.errors).toContain('Missing required argument: target');
     });
 
     it('should validate required flags', () => {
@@ -362,8 +352,8 @@ describe('ArgumentParser - TDD London', () => {
       const result = parser.validate(parseResult);
 
       // Assert - verify required flag validation
-      expect(result.valid).toBe(false);
-      expect(result.errors).toContain('Required flag --env is missing');
+      expect(result?.valid).toBe(false);
+      expect(result?.errors).toContain('Required flag --env is missing');
     });
 
     it('should validate flag types', () => {
@@ -390,8 +380,8 @@ describe('ArgumentParser - TDD London', () => {
       const result = parser.validate(parseResult);
 
       // Assert - verify type validation behavior
-      expect(result.valid).toBe(false);
-      expect(result.errors).toContain('Flag --port must be a number');
+      expect(result?.valid).toBe(false);
+      expect(result?.errors).toContain('Flag --port must be a number');
     });
 
     it('should return warnings for deprecated flags', () => {
@@ -418,8 +408,8 @@ describe('ArgumentParser - TDD London', () => {
       const result = parser.validate(parseResult);
 
       // Assert - verify warning behavior
-      expect(result.valid).toBe(true);
-      expect(result.warnings).toContain('Flag --old-flag is deprecated, use --new-flag instead');
+      expect(result?.valid).toBe(true);
+      expect(result?.warnings).toContain('Flag --old-flag is deprecated, use --new-flag instead');
     });
   });
 
@@ -452,8 +442,8 @@ describe('ArgumentParser - TDD London', () => {
       const options = parser.getOptions();
 
       // Assert - verify option merging behavior
-      expect(options.allowUnknownFlags).toBe(true);
-      expect(options.allowUnknownCommands).toBe(false);
+      expect(options?.["allowUnknownFlags"]).toBe(true);
+      expect(options?.["allowUnknownCommands"]).toBe(false);
     });
   });
 
@@ -484,8 +474,8 @@ describe('ArgumentParser - TDD London', () => {
 
       // Assert - verify empty args handling
       expect(mockParseFunction).toHaveBeenCalledWith([]);
-      expect(result.command).toBeNull();
-      expect(result.args).toEqual([]);
+      expect(result?.command).toBeNull();
+      expect(result?.args).toEqual([]);
     });
 
     it('should handle flags without values', () => {
@@ -506,7 +496,7 @@ describe('ArgumentParser - TDD London', () => {
       const result = parser.parse(args);
 
       // Assert - verify flag without value handling
-      expect(result.flags['flag-without-value']).toBe(true);
+      expect(result?.flags?.['flag-without-value']).toBe(true);
     });
 
     it('should handle special characters in arguments', () => {
@@ -527,7 +517,7 @@ describe('ArgumentParser - TDD London', () => {
       const result = parser.parse(args);
 
       // Assert - verify special character handling
-      expect(result.flags.message).toBe('Deploy v1.0.0 with "quotes" and spaces');
+      expect(result?.flags?.message).toBe('Deploy v1.0.0 with "quotes" and spaces');
     });
 
     it('should handle variadic arguments', () => {
@@ -546,7 +536,7 @@ describe('ArgumentParser - TDD London', () => {
       const result = parser.parse(args);
 
       // Assert - verify variadic argument handling
-      expect(result.args).toEqual(['file1.js', 'file2.js', 'file3.js']);
+      expect(result?.args).toEqual(['file1.js', 'file2.js', 'file3.js']);
     });
   });
 });

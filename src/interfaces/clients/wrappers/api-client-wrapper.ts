@@ -1,28 +1,4 @@
-/**
- * API Client Wrapper
- *
- * Backward compatibility wrapper that maintains the existing APIClient interface
- * while using the new UACL HTTP Client Adapter internally.
- *
- * This allows existing code to continue working without changes while gaining
- * UACL benefits (unified auth, retry, monitoring, health checks).
- */
-
-import type {
-  Agent,
-  HealthStatus,
-  PerformanceMetrics,
-  SwarmConfig,
-  Task,
-} from '../../../coordination/schemas';
-import type {
-  NeuralNetwork,
-  PredictionRequest,
-  PredictionResponse,
-  TrainingRequest,
-} from '../../api/http/schemas/neural';
 import { HTTPClientAdapter } from '../adapters/http-client-adapter';
-import type { HTTPClientConfig } from '../adapters/http-types';
 import { getMCPServerURL } from '../../config/url-builder';
 
 /**
@@ -166,9 +142,9 @@ export class APIClient {
     options?: RequestOptions
   ): Promise<T> {
     const uaclOptions = {
-      timeout: options?.timeout,
-      headers: options?.headers,
-      retries: options?.retries,
+      timeout: options?.["timeout"],
+      headers: options?.["headers"],
+      retries: options?.["retries"],
     };
 
     let response;
@@ -190,7 +166,7 @@ export class APIClient {
         throw new Error(`Unsupported HTTP method: ${method}`);
     }
 
-    return response.data;
+    return response?.data;
   }
 
   // ===== COORDINATION API METHODS (maintained interface) =====
@@ -219,10 +195,10 @@ export class APIClient {
       options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
-      if (params?.status) queryParams.set('status', params.status);
-      if (params?.type) queryParams.set('type', params.type);
-      if (params?.limit) queryParams.set('limit', params.limit.toString());
-      if (params?.offset) queryParams.set('offset', params.offset.toString());
+      if (params?.["status"]) queryParams?.set('status', params?.["status"]);
+      if (params?.["type"]) queryParams?.set('type', params?.type);
+      if (params?.["limit"]) queryParams?.set('limit', params?.["limit"].toString());
+      if (params?.["offset"]) queryParams?.set('offset', params?.["offset"].toString());
 
       return this.request<{
         agents: Agent[];
@@ -384,8 +360,8 @@ export class APIClient {
       options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
-      if (params?.type) queryParams.set('type', params.type);
-      if (params?.status) queryParams.set('status', params.status);
+      if (params?.["type"]) queryParams?.set('type', params?.type);
+      if (params?.["status"]) queryParams?.set('status', params?.["status"]);
 
       return this.request<{
         networks: NeuralNetwork[];

@@ -1,12 +1,4 @@
-/**
- * Advanced Swarm Orchestration Test Suite
- * London TDD approach - testing complex multi-agent coordination patterns
- */
-
-import type { AgentManager } from '../../../../coordination/agents/agent-manager';
-import type { LoadBalancingManager } from '../../../../coordination/load-balancing/load-balancing-manager';
 import { SwarmOrchestrator } from '../../../../coordination/orchestrator';
-import type { TaskDistributionEngine } from '../../../../coordination/protocols/distribution/task-distribution-engine';
 import { CoordinationTestHelpers } from '../../../helpers/coordination-test-helpers';
 import { MockBuilder } from '../../../helpers/mock-builder';
 
@@ -132,7 +124,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
       mockTaskDistributionEngine.distributeTasks.mockImplementation(async (tasks, agents) => {
         const assignments = tasks.map((task, index) => ({
           taskId: task.id,
-          agentId: agents[index % agents.length].id,
+          agentId: agents[index % agents.length]?.id,
           estimatedStartTime: Date.now() + index * 1000,
           estimatedDuration: 30000,
         }));
@@ -254,7 +246,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
       mockAgentManager.getAllActiveAgents.mockResolvedValue(agents);
 
       // Mock condition evaluation
-      mockTaskDistributionEngine.evaluateConditions.mockImplementation(async (task, _context) => {
+      mockTaskDistributionEngine.evaluateConditions.mockImplementation(async (task, context) => {
         if (task.id === 'simple-processing') {
           return { shouldExecute: false, reason: 'complexity is high' };
         }
@@ -293,8 +285,8 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
       );
 
       // Verify correct branching decisions
-      expect(result.success).toBe(true);
-      expect(result.executionPlan.branchingDecisions).toEqual(
+      expect(result?.success).toBe(true);
+      expect(result?.executionPlan?.branchingDecisions).toEqual(
         expect.arrayContaining([
           expect.objectContaining({ taskId: 'simple-processing', skipped: true }),
           expect.objectContaining({ taskId: 'complex-processing', executed: true }),
@@ -302,7 +294,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         ])
       );
 
-      expect(result.executionPlan.skippedTasks).toContain('simple-processing');
+      expect(result?.executionPlan?.skippedTasks).toContain('simple-processing');
     });
 
     it('should optimize resource allocation across multiple concurrent workflows', async () => {
@@ -410,7 +402,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
       });
 
       // High priority workflows should be allocated first
-      const highPriorityAllocations = allocationResult.allocations.filter(
+      const highPriorityAllocations = allocationResult?.allocations?.filter(
         (allocation) => allocation.priority <= 2
       );
       expect(highPriorityAllocations.length).toBe(2);
@@ -573,7 +565,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       // Mock task execution with circuit breaker logic
       mockTaskDistributionEngine.executeWithCircuitBreaker.mockImplementation(
-        async (task, _agent, _circuitBreakerConfig) => {
+        async (task, agent, circuitBreakerConfig) => {
           if (task.serviceEndpoint === 'unstable-service') {
             // Simulate circuit breaker opening
             return {

@@ -11,13 +11,7 @@
  * - Monitoring client health and metrics
  */
 
-import {
-  createFACTClient,
-  type KnowledgeClientAdapter,
-  KnowledgeHelpers,
-  type KnowledgeRequest,
-  type KnowledgeResponse,
-} from '../adapters/knowledge-client-adapter';
+import { createFACTClient, KnowledgeHelpers } from '../adapters/knowledge-client-adapter';
 
 import { UACLFactory } from '../factories';
 import { getConfig } from '../../../config';
@@ -32,10 +26,10 @@ export async function example1_CreateFACTClient(): Promise<void> {
       './FACT', // FACT repository path
       (() => {
         const config = getConfig();
-        if (!config.services.anthropic.apiKey) {
+        if (!config?.["services"]?.["anthropic"]?.["apiKey"]) {
           throw new Error('Anthropic API key is required for knowledge client');
         }
-        return config.services.anthropic.apiKey;
+        return config?.["services"]?.["anthropic"]?.["apiKey"];
       })(),
       {
         caching: {
@@ -57,10 +51,10 @@ export async function example1_CreateFACTClient(): Promise<void> {
     await knowledgeClient.connect();
 
     // Check health
-    const _isHealthy = await knowledgeClient.health();
+    const isHealthy = await knowledgeClient.health();
 
     // Get metadata
-    const _metadata = await knowledgeClient.getMetadata();
+    const metadata = await knowledgeClient.getMetadata();
 
     // Cleanup
     await knowledgeClient.disconnect();
@@ -87,10 +81,10 @@ export async function example2_CreateWithFactory(): Promise<void> {
         factRepoPath: './FACT',
         anthropicApiKey: (() => {
           const config = getConfig();
-          if (!config.services.anthropic.apiKey) {
+          if (!config?.["services"]?.["anthropic"]?.["apiKey"]) {
             throw new Error('Anthropic API key is required for knowledge client');
           }
-          return config.services.anthropic.apiKey;
+          return config?.["services"]?.["anthropic"]?.["apiKey"];
         })(),
         pythonPath: 'python3',
       },
@@ -107,7 +101,7 @@ export async function example2_CreateWithFactory(): Promise<void> {
     await knowledgeClient.connect();
 
     // Get knowledge statistics
-    const _stats = await knowledgeClient.getKnowledgeStats();
+    const stats = await knowledgeClient.getKnowledgeStats();
 
     await knowledgeClient.disconnect();
   } catch (error) {
@@ -124,14 +118,14 @@ export async function example3_PerformQueries(): Promise<void> {
       './FACT',
       (() => {
         const config = getConfig();
-        if (!config.services.anthropic.apiKey) {
-          if (config.environment.isDevelopment) {
+        if (!config?.["services"]?.["anthropic"]?.["apiKey"]) {
+          if (config?.["environment"]?.["isDevelopment"]) {
             console.warn('Using fallback API key for development');
             return 'test-key-development';
           }
           throw new Error('Anthropic API key is required');
         }
-        return config.services.anthropic.apiKey;
+        return config?.["services"]?.["anthropic"]?.["apiKey"];
       })()
     );
     await knowledgeClient.connect();
@@ -142,8 +136,8 @@ export async function example3_PerformQueries(): Promise<void> {
       metadata: { category: 'authentication' },
     };
 
-    const _basicResponse = await knowledgeClient.send<KnowledgeResponse>(basicQuery);
-    const _docResponse = await knowledgeClient.query(
+    const basicResponse = await knowledgeClient.send<KnowledgeResponse>(basicQuery);
+    const docResponse = await knowledgeClient.query(
       'Get React 18 hooks documentation with examples',
       {
         limit: 5,
@@ -151,7 +145,7 @@ export async function example3_PerformQueries(): Promise<void> {
         filters: { framework: 'react', version: '18' },
       }
     );
-    const _semanticResults = await knowledgeClient.semanticSearch(
+    const semanticResults = await knowledgeClient.semanticSearch(
       'best practices for API error handling',
       {
         vectorSearch: true,
@@ -160,7 +154,7 @@ export async function example3_PerformQueries(): Promise<void> {
         limit: 3,
       }
     );
-    const _searchResults = await knowledgeClient.search('typescript generics', {
+    const searchResults = await knowledgeClient.search('typescript generics', {
       fuzzy: true,
       threshold: 0.8,
       fields: ['title', 'content'],
@@ -182,24 +176,24 @@ export async function example4_UseHelpers(): Promise<void> {
       './FACT',
       (() => {
         const config = getConfig();
-        if (!config.services.anthropic.apiKey) {
-          if (config.environment.isDevelopment) {
+        if (!config?.["services"]?.["anthropic"]?.["apiKey"]) {
+          if (config?.["environment"]?.["isDevelopment"]) {
             console.warn('Using fallback API key for development');
             return 'test-key-development';
           }
           throw new Error('Anthropic API key is required');
         }
-        return config.services.anthropic.apiKey;
+        return config?.["services"]?.["anthropic"]?.["apiKey"];
       })()
     );
     await knowledgeClient.connect();
-    const _reactDocs = await KnowledgeHelpers.getDocumentation(knowledgeClient, 'react', '18');
-    const _expressAPI = await KnowledgeHelpers.getAPIReference(
+    const reactDocs = await KnowledgeHelpers.getDocumentation(knowledgeClient, 'react', '18');
+    const expressAPI = await KnowledgeHelpers.getAPIReference(
       knowledgeClient,
       'express',
       'app.use'
     );
-    const _communityResults = await KnowledgeHelpers.searchCommunity(
+    const communityResults = await KnowledgeHelpers.searchCommunity(
       knowledgeClient,
       'docker container optimization',
       ['docker', 'performance', 'optimization']
@@ -220,14 +214,14 @@ export async function example5_MonitorPerformance(): Promise<void> {
       './FACT',
       (() => {
         const config = getConfig();
-        if (!config.services.anthropic.apiKey) {
-          if (config.environment.isDevelopment) {
+        if (!config?.["services"]?.["anthropic"]?.["apiKey"]) {
+          if (config?.["environment"]?.["isDevelopment"]) {
             console.warn('Using fallback API key for development');
             return 'test-key-development';
           }
           throw new Error('Anthropic API key is required');
         }
-        return config.services.anthropic.apiKey;
+        return config?.["services"]?.["anthropic"]?.["apiKey"];
       })()
     );
     await knowledgeClient.connect();
@@ -241,17 +235,17 @@ export async function example5_MonitorPerformance(): Promise<void> {
       'API rate limiting strategies',
     ];
 
-    for (const [_index, query] of queries.entries()) {
-      const _response = await knowledgeClient.query(query, {
+    for (const [index, query] of queries.entries()) {
+      const response = await knowledgeClient.query(query, {
         includeMetadata: true,
       });
     }
 
     // Get comprehensive metadata with metrics
-    const _metadata = await knowledgeClient.getMetadata();
+    const metadata = await knowledgeClient.getMetadata();
 
     // Health check
-    const _isHealthy = await knowledgeClient.health();
+    const isHealthy = await knowledgeClient.health();
 
     await knowledgeClient.disconnect();
   } catch (error) {
@@ -276,16 +270,16 @@ export async function example6_ErrorHandling(): Promise<void> {
 
     try {
       await knowledgeClient.connect();
-    } catch (_error) {}
+    } catch (error) {}
 
     // Test health check with disconnected client
-    const _isHealthy = await knowledgeClient.health();
+    const isHealthy = await knowledgeClient.health();
 
     // Test query with disconnected client
     try {
       await knowledgeClient.query('test query');
-    } catch (_error) {}
-  } catch (_error) {}
+    } catch (error) {}
+  } catch (error) {}
 }
 
 /**

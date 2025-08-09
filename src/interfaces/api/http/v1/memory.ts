@@ -7,7 +7,7 @@
  * @file Memory management domain API routes
  */
 
-import { type Request, type Response, Router } from 'express';
+import { Router } from 'express';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log, logPerformance } from '../middleware/logging';
 
@@ -27,7 +27,7 @@ export const createMemoryRoutes = (): Router => {
   router.get(
     '/stores',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Listing memory stores', req);
+      log(LogLevel["DEBUG"], 'Listing memory stores', req);
 
       // Placeholder - would integrate with actual memory manager
       const result = {
@@ -63,7 +63,7 @@ export const createMemoryRoutes = (): Router => {
   router.post(
     '/stores',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Creating memory store', req, {
+      log(LogLevel["INFO"], 'Creating memory store', req, {
         storeType: req.body.type,
         config: req.body.config,
       });
@@ -76,9 +76,9 @@ export const createMemoryRoutes = (): Router => {
         created: new Date().toISOString(),
       };
 
-      log(LogLevel.INFO, 'Memory store created', req, {
-        storeId: result.id,
-        type: result.type,
+      log(LogLevel["INFO"], 'Memory store created', req, {
+        storeId: result?.id,
+        type: result?.type,
       });
 
       res.status(201).json(result);
@@ -98,7 +98,7 @@ export const createMemoryRoutes = (): Router => {
       const pattern = req.query.pattern as string;
       const limit = parseInt(req.query.limit as string) || 100;
 
-      log(LogLevel.DEBUG, 'Listing memory keys', req, {
+      log(LogLevel["DEBUG"], 'Listing memory keys', req, {
         storeId,
         pattern,
         limit,
@@ -132,7 +132,7 @@ export const createMemoryRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const { storeId, key } = req.params;
 
-      log(LogLevel.DEBUG, 'Getting memory value', req, {
+      log(LogLevel["DEBUG"], 'Getting memory value', req, {
         storeId,
         key,
       });
@@ -157,7 +157,7 @@ export const createMemoryRoutes = (): Router => {
       logPerformance('memory_get', duration, req, {
         storeId,
         key,
-        valueSize: JSON.stringify(result.value).length,
+        valueSize: JSON.stringify(result?.value).length,
       });
 
       res.json(result);
@@ -174,7 +174,7 @@ export const createMemoryRoutes = (): Router => {
       const { storeId, key } = req.params;
       const { value, ttl, metadata } = req.body;
 
-      log(LogLevel.INFO, 'Setting memory value', req, {
+      log(LogLevel["INFO"], 'Setting memory value', req, {
         storeId,
         key,
         valueSize: JSON.stringify(value).length,
@@ -214,13 +214,13 @@ export const createMemoryRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const { storeId, key } = req.params;
 
-      log(LogLevel.INFO, 'Deleting memory key', req, {
+      log(LogLevel["INFO"], 'Deleting memory key', req, {
         storeId,
         key,
       });
 
       // Placeholder - would delete from actual store
-      log(LogLevel.INFO, 'Memory key deleted', req, {
+      log(LogLevel["INFO"], 'Memory key deleted', req, {
         storeId,
         key,
       });
@@ -241,7 +241,7 @@ export const createMemoryRoutes = (): Router => {
       const storeId = req.params.storeId;
       const keys = req.body.keys;
 
-      log(LogLevel.DEBUG, 'Batch get operation', req, {
+      log(LogLevel["DEBUG"], 'Batch get operation', req, {
         storeId,
         keyCount: keys?.length,
       });
@@ -261,7 +261,7 @@ export const createMemoryRoutes = (): Router => {
       logPerformance('memory_batch_get', duration, req, {
         storeId,
         keyCount: results.length,
-        foundCount: results.filter((r: any) => r.exists).length,
+        foundCount: results?.filter((r: any) => r.exists).length,
       });
 
       res.json({
@@ -286,7 +286,7 @@ export const createMemoryRoutes = (): Router => {
       const storeId = req.params.storeId;
       const items = req.body.items;
 
-      log(LogLevel.INFO, 'Batch set operation', req, {
+      log(LogLevel["INFO"], 'Batch set operation', req, {
         storeId,
         itemCount: items?.length,
       });
@@ -296,7 +296,7 @@ export const createMemoryRoutes = (): Router => {
       // Placeholder - would batch store in actual memory store
       const results =
         items?.map((item: any) => ({
-          key: item.key,
+          key: item?.key,
           success: true,
           version: 1,
           stored: new Date().toISOString(),
@@ -306,7 +306,7 @@ export const createMemoryRoutes = (): Router => {
       logPerformance('memory_batch_set', duration, req, {
         storeId,
         itemCount: results.length,
-        successCount: results.filter((r: any) => r.success).length,
+        successCount: results?.filter((r: any) => r.success).length,
       });
 
       res.json({
@@ -332,7 +332,7 @@ export const createMemoryRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const storeId = req.params.storeId;
 
-      log(LogLevel.DEBUG, 'Getting memory statistics', req, {
+      log(LogLevel["DEBUG"], 'Getting memory statistics', req, {
         storeId,
       });
 
@@ -376,7 +376,7 @@ export const createMemoryRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const storeId = req.params.storeId;
 
-      log(LogLevel.INFO, 'Synchronizing memory store', req, {
+      log(LogLevel["INFO"], 'Synchronizing memory store', req, {
         storeId,
         syncType: req.body.type || 'full',
       });
@@ -399,10 +399,10 @@ export const createMemoryRoutes = (): Router => {
         timestamp: new Date().toISOString(),
       };
 
-      logPerformance('memory_sync', result.duration, req, {
+      logPerformance('memory_sync', result?.duration, req, {
         storeId,
-        syncType: result.type,
-        totalChanges: result.changes.added + result.changes.updated + result.changes.removed,
+        syncType: result?.type,
+        totalChanges: result?.changes?.added + result?.changes?.updated + result?.changes?.removed,
       });
 
       res.status(202).json(result);
@@ -417,7 +417,7 @@ export const createMemoryRoutes = (): Router => {
    */
   router.get(
     '/health',
-    asyncHandler(async (_req: Request, res: Response) => {
+    asyncHandler(async (req: Request, res: Response) => {
       // Placeholder - would check actual memory system health
       const result = {
         status: 'healthy',
@@ -439,7 +439,7 @@ export const createMemoryRoutes = (): Router => {
         timestamp: new Date().toISOString(),
       };
 
-      const statusCode = result.status === 'healthy' ? 200 : 503;
+      const statusCode = result?.status === 'healthy' ? 200 : 503;
       res.status(statusCode).json(result);
     })
   );

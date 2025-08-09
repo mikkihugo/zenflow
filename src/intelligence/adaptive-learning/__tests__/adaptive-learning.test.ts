@@ -16,14 +16,6 @@ import {
 } from '../ml-integration';
 import { PatternRecognitionEngine } from '../pattern-recognition-engine';
 import { PerformanceOptimizer } from '../performance-optimizer';
-import type {
-  AdaptiveLearningConfig,
-  Agent,
-  ExecutionData,
-  SuccessPattern,
-  SystemContext,
-  Task,
-} from '../types';
 
 // ============================================
 // Test Helpers and Fixtures
@@ -327,7 +319,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
         },
       ];
 
-      const _practices = coordinator.emergeBestPractices(successes);
+      const practices = coordinator.emergeBestPractices(successes);
 
       expect(mockEmit).toHaveBeenCalledWith(
         'bestPracticeIdentified',
@@ -543,7 +535,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
 
     test('Q-learning update should follow correct mathematical formula', () => {
       // Classical TDD: Test actual Q-learning math
-      const _initialQ = rlEngine.getQValue('state1', 'action1');
+      const initialQ = rlEngine.getQValue('state1', 'action1');
 
       // Set up known values for deterministic testing
       rlEngine.updateQValue('state2', 'bestAction', 5.0, 'state3'); // Set max next Q = 5.0
@@ -735,11 +727,11 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
       const result = await nnPredictor.train(trainingData, labels);
 
       // Training should produce reasonable metrics
-      expect(result.accuracy).toBeGreaterThan(0);
-      expect(result.accuracy).toBeLessThanOrEqual(1);
-      expect(result.loss).toBeGreaterThanOrEqual(0);
-      expect(result.trainingTime).toBeGreaterThan(0);
-      expect(result.epochs).toBeGreaterThan(0);
+      expect(result?.accuracy).toBeGreaterThan(0);
+      expect(result?.accuracy).toBeLessThanOrEqual(1);
+      expect(result?.loss).toBeGreaterThanOrEqual(0);
+      expect(result?.trainingTime).toBeGreaterThan(0);
+      expect(result?.epochs).toBeGreaterThan(0);
     });
   });
 
@@ -751,7 +743,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
         windowSize: 50,
       });
 
-      const _initialAccuracy = onlineLearner.getAccuracy();
+      const initialAccuracy = onlineLearner.getAccuracy();
 
       // Stream data that should cause performance degradation
       const goodData = {
@@ -785,7 +777,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
         await onlineLearner.processStream({ ...goodData, id: `good_${i}` } as ExecutionData);
       }
 
-      const _midAccuracy = onlineLearner.getAccuracy();
+      const midAccuracy = onlineLearner.getAccuracy();
 
       // Stream bad data to trigger adaptation
       for (let i = 0; i < 50; i++) {
@@ -914,10 +906,10 @@ describe('Adaptive Learning System - Integration Tests', () => {
     ];
 
     const learningResult = await coordinator.coordinateLearning(agents);
-    expect(learningResult.patterns.length).toBeGreaterThan(0);
+    expect(learningResult?.patterns.length).toBeGreaterThan(0);
 
     // Apply optimizations
-    const optimization = optimizer.optimizeBehavior('agent_1', learningResult.patterns);
+    const optimization = optimizer.optimizeBehavior('agent_1', learningResult?.patterns);
     expect(optimization.expectedImprovement).toBeGreaterThan(0);
 
     // Analyze later patterns to verify improvement
@@ -947,7 +939,7 @@ describe('Adaptive Learning System - Integration Tests', () => {
       // Update RL engine
       const state = `state_${i % 10}`;
       const action = `action_${i % 5}`;
-      const reward = streamData.success ? 1 : -1;
+      const reward = streamData?.success ? 1 : -1;
       const nextState = `state_${(i + 1) % 10}`;
 
       rlEngine.updateQValue(state, action, reward, nextState);

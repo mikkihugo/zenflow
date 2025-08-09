@@ -7,16 +7,13 @@
  * Protocol Management integration patterns.
  */
 
-import { createLogger, type Logger } from '../../../utils/logger';
-import type { IService, IServiceFactory, ServiceConfig } from '../core/interfaces';
+import { createLogger } from '../../../utils/logger';
+import type { IServiceFactory } from '../core/interfaces';
 import { getMCPServerURL } from '../../config/url-builder';
 
-import type { ServiceType } from '../types';
 import {
   createDefaultIntegrationServiceAdapterConfig,
   createIntegrationServiceAdapter,
-  type IntegrationServiceAdapter,
-  type IntegrationServiceAdapterConfig,
 } from './integration-service-adapter';
 
 /**
@@ -95,10 +92,10 @@ export class IntegrationServiceFactory implements IServiceFactory {
    * @param config
    */
   async create(config: ServiceConfig): Promise<IService> {
-    this.logger.info(`Creating integration service: ${config.name}`);
+    this.logger.info(`Creating integration service: ${config?.name}`);
 
-    if (!this.canHandle(config.type)) {
-      throw new Error(`IntegrationServiceFactory cannot handle service type: ${config.type}`);
+    if (!this.canHandle(config?.type)) {
+      throw new Error(`IntegrationServiceFactory cannot handle service type: ${config?.type}`);
     }
 
     // Convert ServiceConfig to IntegrationServiceAdapterConfig
@@ -107,8 +104,8 @@ export class IntegrationServiceFactory implements IServiceFactory {
     const adapter = createIntegrationServiceAdapter(adapterConfig);
     await adapter.initialize();
 
-    this.createdServices.set(config.name, adapter);
-    this.logger.info(`Integration service created successfully: ${config.name}`);
+    this.createdServices.set(config?.name, adapter);
+    this.logger.info(`Integration service created successfully: ${config?.name}`);
 
     return adapter;
   }
@@ -678,47 +675,47 @@ export class IntegrationServiceFactory implements IServiceFactory {
    */
   private convertToAdapterConfig(config: ServiceConfig): IntegrationServiceAdapterConfig {
     // Start with default configuration
-    const adapterConfig = createDefaultIntegrationServiceAdapterConfig(config.name);
+    const adapterConfig = createDefaultIntegrationServiceAdapterConfig(config?.name);
 
     // Apply common ServiceConfig properties
-    adapterConfig.enabled = config.enabled ?? true;
-    adapterConfig.timeout = config.timeout ?? 30000;
+    adapterConfig?.enabled = config?.["enabled"] ?? true;
+    adapterConfig?.timeout = config?.["timeout"] ?? 30000;
 
     // Apply health configuration if present
-    if (config.health) {
-      adapterConfig.health = { ...adapterConfig.health, ...config.health };
+    if (config?.["health"]) {
+      adapterConfig?.health = { ...adapterConfig?.health, ...config?.["health"] };
     }
 
     // Apply monitoring configuration if present
-    if (config.monitoring) {
-      adapterConfig.monitoring = { ...adapterConfig.monitoring, ...config.monitoring };
+    if (config?.["monitoring"]) {
+      adapterConfig?.monitoring = { ...adapterConfig?.monitoring, ...config?.["monitoring"] };
     }
 
     // Apply global factory settings
     if (this.options.enableGlobalCaching !== undefined) {
-      adapterConfig.cache = {
-        ...adapterConfig.cache,
+      adapterConfig?.cache = {
+        ...adapterConfig?.cache,
         enabled: this.options.enableGlobalCaching,
       };
     }
 
     if (this.options.enableGlobalMetrics !== undefined) {
-      adapterConfig.performance = {
-        ...adapterConfig.performance,
+      adapterConfig?.performance = {
+        ...adapterConfig?.performance,
         enableMetricsCollection: this.options.enableGlobalMetrics,
       };
     }
 
     if (this.options.defaultRetrySettings) {
-      adapterConfig.retry = {
-        ...adapterConfig.retry,
+      adapterConfig?.retry = {
+        ...adapterConfig?.retry,
         ...this.options.defaultRetrySettings,
       };
     }
 
     if (this.options.defaultSecuritySettings) {
-      adapterConfig.security = {
-        ...adapterConfig.security,
+      adapterConfig?.security = {
+        ...adapterConfig?.security,
         ...this.options.defaultSecuritySettings,
       };
     }

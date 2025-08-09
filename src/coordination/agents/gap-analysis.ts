@@ -1,12 +1,3 @@
-/**
- * Agent System Gap Analysis - Compare our 147+ agents vs claude-zen's 54
- *
- * This utility provides comprehensive analysis of our agent system
- * capabilities compared to claude-zen and other systems.
- */
-
-import type { AgentType } from '../../types/agent-types';
-
 // claude-zen's 54 agent types (from their documentation)
 export const CLAUDE_FLOW_AGENTS: Record<string, string[]> = {
   'Core Development': [
@@ -347,12 +338,12 @@ export function generateComparisonReport(): string {
   report += `## 🎯 Category-by-Category Analysis\n\n`;
 
   for (const [category, data] of Object.entries(analysis.categoryComparison)) {
-    const advantage = data.advantage > 0 ? `+${data.advantage}` : `${data.advantage}`;
-    const advantageEmoji = data.advantage > 0 ? '✅' : data.advantage === 0 ? '🔄' : '❌';
+    const advantage = data?.["advantage"] > 0 ? `+${data?.["advantage"]}` : `${data?.["advantage"]}`;
+    const advantageEmoji = data?.["advantage"] > 0 ? '✅' : data?.["advantage"] === 0 ? '🔄' : '❌';
 
     report += `### ${category} ${advantageEmoji}\n`;
-    report += `- **Ours**: ${data.ours} agents\n`;
-    report += `- **Theirs**: ${data.theirs} agents\n`;
+    report += `- **Ours**: ${data?.["ours"]} agents\n`;
+    report += `- **Theirs**: ${data?.["theirs"]} agents\n`;
     report += `- **Advantage**: ${advantage}\n\n`;
   }
 

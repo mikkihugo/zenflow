@@ -4,8 +4,6 @@
  */
 export { CoordinationDao as CoordinationDAO } from '../dao/coordination.dao';
 
-import { Logger } from '../../utils/logger';
-
 interface CoordinationEvent<T = any> {
   type: string;
   data: T;
@@ -79,10 +77,10 @@ export class CoordinationService {
     this.logger.debug(`Coordinating event: ${eventType}`, { options });
 
     const eventOptions = {
-      channel: options?.channel || 'default',
-      waitForAcknowledgment: options?.waitForAcknowledgment || false,
-      timeout: options?.timeout || 5000,
-      targetNodes: options?.targetNodes || [],
+      channel: options?.["channel"] || 'default',
+      waitForAcknowledgment: options?.["waitForAcknowledgment"] || false,
+      timeout: options?.["timeout"] || 5000,
+      targetNodes: options?.["targetNodes"] || [],
     };
 
     try {
@@ -92,27 +90,27 @@ export class CoordinationService {
         timestamp: new Date(),
         source: this.generateNodeIdentifier(),
         metadata: {
-          targetNodes: eventOptions.targetNodes,
-          waitForAck: eventOptions.waitForAcknowledgment,
-          timeout: eventOptions.timeout,
+          targetNodes: eventOptions?.targetNodes,
+          waitForAck: eventOptions?.waitForAcknowledgment,
+          timeout: eventOptions?.timeout,
         },
       };
 
       // Publish the event
-      await this.coordinationRepository.publish(eventOptions.channel, event);
+      await this.coordinationRepository.publish(eventOptions?.channel, event);
 
       let acknowledgments = 0;
       const errors: string[] = [];
 
       // Wait for acknowledgments if required
-      if (eventOptions.waitForAcknowledgment) {
+      if (eventOptions?.waitForAcknowledgment) {
         const ackResult = await this.waitForAcknowledgments(
           event,
-          eventOptions.targetNodes.length,
-          eventOptions.timeout
+          eventOptions?.targetNodes.length,
+          eventOptions?.timeout
         );
-        acknowledgments = ackResult.count;
-        errors.push(...ackResult.errors);
+        acknowledgments = ackResult?.count;
+        errors.push(...ackResult?.errors);
       }
 
       return {
@@ -157,9 +155,9 @@ export class CoordinationService {
     this.logger.debug(`Participating in leader election: ${electionId}`, { candidateId, options });
 
     const electionOptions = {
-      timeout: options?.timeout || 30000,
-      termDuration: options?.termDuration || 300000, // 5 minutes
-      voteWeight: options?.voteWeight || 1,
+      timeout: options?.["timeout"] || 30000,
+      termDuration: options?.["termDuration"] || 300000, // 5 minutes
+      voteWeight: options?.["voteWeight"] || 1,
     };
 
     try {
@@ -168,16 +166,16 @@ export class CoordinationService {
         `election:${electionId}`,
         3, // max retries
         1000, // retry delay
-        electionOptions.timeout
+        electionOptions?.timeout
       );
 
       if (!electionLock) {
         // Someone else is conducting the election
-        const result = await this.waitForElectionResult(electionId, electionOptions.timeout);
+        const result = await this.waitForElectionResult(electionId, electionOptions?.timeout);
         return {
-          isLeader: result.leaderId === candidateId,
-          leaderId: result.leaderId,
-          term: result.term,
+          isLeader: result?.leaderId === candidateId,
+          leaderId: result?.leaderId,
+          term: result?.term,
           votes: 0,
         };
       }
@@ -234,9 +232,9 @@ export class CoordinationService {
 
     const startTime = Date.now();
     const workflowOptions = {
-      parallelExecution: options?.parallelExecution || false,
-      failureHandling: options?.failureHandling || 'abort',
-      maxRetries: options?.maxRetries || 3,
+      parallelExecution: options?.["parallelExecution"] || false,
+      failureHandling: options?.["failureHandling"] || 'abort',
+      maxRetries: options?.["maxRetries"] || 3,
     };
 
     const results: Record<string, any> = {};
@@ -250,7 +248,7 @@ export class CoordinationService {
       );
 
       try {
-        if (workflowOptions.parallelExecution) {
+        if (workflowOptions?.parallelExecution) {
           await this.executeWorkflowParallel(steps, results, errors, workflowOptions);
         } else {
           await this.executeWorkflowSequential(steps, results, errors, workflowOptions);
@@ -490,10 +488,10 @@ export class CoordinationService {
     const promises = steps.map(async (step) => {
       try {
         const result = await this.executeTransaction([step.operation]);
-        results[step.stepId] = result;
+        results?.[step.stepId] = result;
       } catch (error) {
         errors[step.stepId] = error instanceof Error ? error.message : 'Unknown error';
-        if (options.failureHandling === 'abort') {
+        if (options?.["failureHandling"] === 'abort') {
           throw error;
         }
       }
@@ -511,10 +509,10 @@ export class CoordinationService {
     for (const step of steps) {
       try {
         const result = await this.executeTransaction([step.operation]);
-        results[step.stepId] = result;
+        results?.[step.stepId] = result;
       } catch (error) {
         errors[step.stepId] = error instanceof Error ? error.message : 'Unknown error';
-        if (options.failureHandling === 'abort') {
+        if (options?.["failureHandling"] === 'abort') {
           throw error;
         }
       }

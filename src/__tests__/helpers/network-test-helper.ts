@@ -421,8 +421,8 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
       const response = this.routes.get(key);
 
       if (response) {
-        res.writeHead(response.status, response.headers);
-        res.end(typeof response.body === 'string' ? response.body : JSON.stringify(response.body));
+        res.writeHead(response?.status, response?.headers);
+        res.end(typeof response?.body === 'string' ? response?.body : JSON.stringify(response?.body));
       } else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Not Found', path: req.url }));
@@ -445,18 +445,18 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
         };
 
         if (body) {
-          options.body = typeof body === 'string' ? body : JSON.stringify(body);
+          options?.body = typeof body === 'string' ? body : JSON.stringify(body);
           if (!headers['Content-Type']) {
             headers['Content-Type'] = 'application/json';
           }
         }
 
         const response = await fetch(url, options);
-        const responseBody = await response.text();
+        const responseBody = await response?.text();
 
         return {
-          status: response.status,
-          headers: Object.fromEntries(response.headers.entries()),
+          status: response?.status,
+          headers: Object.fromEntries(response?.headers?.entries()),
           body: this.tryParseJson(responseBody),
         };
       } else {
@@ -522,9 +522,9 @@ export async function testHttpEndpoint(
   }
 
   // Verify expected response
-  if (expectedResponse.status !== undefined) {
-    if (response.status !== expectedResponse.status) {
-      throw new Error(`Expected status ${expectedResponse.status}, got ${response.status}`);
+  if (expectedResponse?.status !== undefined) {
+    if (response?.status !== expectedResponse?.status) {
+      throw new Error(`Expected status ${expectedResponse?.status}, got ${response?.status}`);
     }
   }
 

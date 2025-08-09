@@ -34,17 +34,7 @@
 
 import { EventEmitter } from 'node:events';
 import { basename } from 'node:path';
-import type { Document, DocumentProcessor, DocumentType } from '../../core/document-processor';
 import { createLogger } from '../../core/logger';
-import type { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
-import type {
-  MonorepoInfo,
-  ProjectContextAnalyzer,
-} from '../../knowledge/project-context-analyzer';
-import type {
-  DomainAnalysis,
-  DomainAnalysisEngine,
-} from '../../tools/domain-splitting/analyzers/domain-analyzer';
 
 const logger = createLogger({ prefix: 'DomainDiscoveryBridge' });
 
@@ -191,11 +181,11 @@ export class DomainDiscoveryBridge extends EventEmitter {
   ) {
     super();
     this.config = {
-      confidenceThreshold: config.confidenceThreshold ?? 0.7,
-      autoDiscovery: config.autoDiscovery ?? true,
-      maxDomainsPerDocument: config.maxDomainsPerDocument ?? 3,
-      useNeuralAnalysis: config.useNeuralAnalysis ?? true,
-      enableCache: config.enableCache ?? true,
+      confidenceThreshold: config?.["confidenceThreshold"] ?? 0.7,
+      autoDiscovery: config?.["autoDiscovery"] ?? true,
+      maxDomainsPerDocument: config?.["maxDomainsPerDocument"] ?? 3,
+      useNeuralAnalysis: config?.["useNeuralAnalysis"] ?? true,
+      enableCache: config?.["enableCache"] ?? true,
     };
 
     this.setupEventListeners();
@@ -423,15 +413,15 @@ export class DomainDiscoveryBridge extends EventEmitter {
     patterns.forEach((pattern) => {
       const matches = content.match(pattern);
       if (matches) {
-        matches.forEach((match) => concepts.add(match.toLowerCase()));
+        matches?.forEach((match) => concepts.add(match?.toLowerCase()));
       }
     });
 
     // Extract from headers (# Header, ## Subheader)
     const headerMatches = content.match(/^#{1,3}\s+(.+)$/gm);
     if (headerMatches) {
-      headerMatches.forEach((header) => {
-        const cleanHeader = header.replace(/^#+\s+/, '').toLowerCase();
+      headerMatches?.forEach((header) => {
+        const cleanHeader = header["replace"](/^#+\s+/, '').toLowerCase();
         if (cleanHeader.length > 3 && cleanHeader.length < 50) {
           concepts.add(cleanHeader);
         }
@@ -441,12 +431,12 @@ export class DomainDiscoveryBridge extends EventEmitter {
     // Extract from bullet points focusing on key terms
     const bulletMatches = content.match(/^[\s-*]+\s*(.+)$/gm);
     if (bulletMatches) {
-      bulletMatches.forEach((bullet) => {
+      bulletMatches?.forEach((bullet) => {
         const cleanBullet = bullet.replace(/^[\s-*]+/, '').toLowerCase();
         patterns.forEach((pattern) => {
           const matches = cleanBullet.match(pattern);
           if (matches) {
-            matches.forEach((match) => concepts.add(match.toLowerCase()));
+            matches?.forEach((match) => concepts.add(match?.toLowerCase()));
           }
         });
       });
@@ -959,7 +949,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
         if (!grouped[domainId]) {
           grouped[domainId] = [];
         }
-        grouped[domainId].push(mapping);
+        grouped[domainId]?.push(mapping);
       });
     });
 
@@ -991,7 +981,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     // Listen for document processing events
     this.docProcessor.on('document:processed', async (event) => {
       if (this.config.autoDiscovery) {
-        logger.debug(`Document processed: ${event.document.path}`);
+        logger.debug(`Document processed: ${event["document"]?.["path"]}`);
         await this.onDocumentProcessed(event);
       }
     });
@@ -999,7 +989,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     // Listen for workspace loading
     this.docProcessor.on('workspace:loaded', async (event) => {
       if (this.config.autoDiscovery) {
-        logger.debug(`Workspace loaded: ${event.workspaceId}`);
+        logger.debug(`Workspace loaded: ${event["workspaceId"]}`);
         await this.onWorkspaceLoaded(event);
       }
     });

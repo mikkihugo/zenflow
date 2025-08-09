@@ -219,9 +219,9 @@ async function testPerformanceComparison() {
 async function testEnvironmentConfiguration() {
   try {
     // Set environment variables
-    process.env.POOL_MAX_READERS = '8';
-    process.env.POOL_MAX_WORKERS = '4';
-    process.env.POOL_CACHE_SIZE = '-128000'; // 128MB
+    process.env["POOL_MAX_READERS"] = '8';
+    process.env["POOL_MAX_WORKERS"] = '4';
+    process.env["POOL_CACHE_SIZE"] = '-128000'; // 128MB
 
     cleanup();
 
@@ -234,9 +234,9 @@ async function testEnvironmentConfiguration() {
     const _stats = await mcpTools.pool_stats();
 
     // Clean up environment variables
-    delete process.env.POOL_MAX_READERS;
-    delete process.env.POOL_MAX_WORKERS;
-    delete process.env.POOL_CACHE_SIZE;
+    delete process.env["POOL_MAX_READERS"];
+    delete process.env["POOL_MAX_WORKERS"];
+    delete process.env["POOL_CACHE_SIZE"];
   } catch (error) {
     console.error('❌ Test 5 failed:', error.message);
     throw error;

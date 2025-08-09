@@ -528,15 +528,15 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
     // Set up event-driven communication between components
     this.collectiveIntelligence.on('knowledge:aggregated', async (data) => {
-      await this.qualityManagement.validateKnowledge(data?.knowledge);
+      await this.qualityManagement.validateKnowledge(data?.["knowledge"]);
     });
 
     this.distributedLearning.on('model:converged', async (data) => {
-      await this.intelligenceCoordination.distributeModel(data?.model);
+      await this.intelligenceCoordination.distributeModel(data?.["model"]);
     });
 
     this.collaborativeReasoning.on('solution:synthesized', async (data) => {
-      await this.performanceOptimization.optimizeKnowledgeSharing(data?.sharing);
+      await this.performanceOptimization.optimizeKnowledgeSharing(data?.["sharing"]);
     });
 
     // Add more inter-component communication...

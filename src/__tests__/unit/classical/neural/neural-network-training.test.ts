@@ -42,8 +42,8 @@ describe('Neural Network Training - Classical TDD', () => {
       ];
 
       expect(result).toHaveLength(2);
-      expect(result[0]).toHaveLength(2);
-      expect(result[1]).toHaveLength(2);
+      expect(result?.[0]).toHaveLength(2);
+      expect(result?.[1]).toHaveLength(2);
 
       // Verify exact values
       expectMatrixNearlyEqual(result, expected, 1e-10);
@@ -100,7 +100,7 @@ describe('Neural Network Training - Classical TDD', () => {
   describe('🎯 Algorithm Convergence (Real Training)', () => {
     it('should solve XOR problem through actual training', () => {
       // Classical TDD: Use real neural network implementation
-      const trainingData = NeuralTestDataGenerator.generateXORData();
+      const trainingData = NeuralTestDataGenerator?.generateXORData();
 
       // Simple neural network implementation for testing
       const network = createTestNeuralNetwork([2, 4, 1]);
@@ -113,7 +113,7 @@ describe('Neural Network Training - Classical TDD', () => {
 
       // Verify training convergence (Classical approach - check actual results)
       const convergenceValidation = neuralSuite.validator.validateConvergence(
-        trainingResult.errors,
+        trainingResult?.errors,
         neuralSuite.config
       );
 
@@ -121,10 +121,10 @@ describe('Neural Network Training - Classical TDD', () => {
       expect(convergenceValidation.finalError).toBeLessThan(0.05);
 
       // Test predictions on training data
-      const predictions = trainingData.map((sample) => predict(network, sample.input));
+      const predictions = trainingData?.map((sample) => predict(network, sample.input));
       const accuracy = neuralSuite.validator.validatePredictionAccuracy(
         predictions,
-        trainingData.map((d) => d.output),
+        trainingData?.map((d) => d.output),
         0.3 // Allow reasonable tolerance for XOR
       );
 
@@ -139,7 +139,7 @@ describe('Neural Network Training - Classical TDD', () => {
 
     it('should learn linear relationships accurately', () => {
       // Classical TDD: Test linear regression capability
-      const linearData = NeuralTestDataGenerator.generateLinearData(100, 0.05);
+      const linearData = NeuralTestDataGenerator?.generateLinearData(100, 0.05);
 
       // Create network for regression
       const network = createTestNeuralNetwork([1, 3, 1]);
@@ -151,8 +151,8 @@ describe('Neural Network Training - Classical TDD', () => {
       });
 
       // Verify convergence
-      expect(trainingResult.converged).toBe(true);
-      expect(trainingResult.errors[trainingResult.errors.length - 1]).toBeLessThan(0.1);
+      expect(trainingResult?.converged).toBe(true);
+      expect(trainingResult?.errors?.[trainingResult?.errors.length - 1]).toBeLessThan(0.1);
 
       // Test linear relationship accuracy
       const testPoints = [
@@ -169,7 +169,7 @@ describe('Neural Network Training - Classical TDD', () => {
 
     it('should handle non-linear classification', () => {
       // Classical TDD: Test on spiral classification data
-      const spiralData = NeuralTestDataGenerator.generateSpiralData(30, 2);
+      const spiralData = NeuralTestDataGenerator?.generateSpiralData(30, 2);
 
       const network = createTestNeuralNetwork([2, 8, 2]);
 
@@ -180,16 +180,16 @@ describe('Neural Network Training - Classical TDD', () => {
       });
 
       // Verify training progress
-      expect(trainingResult.errors.length).toBeGreaterThan(0);
-      const initialError = trainingResult.errors[0];
-      const finalError = trainingResult.errors[trainingResult.errors.length - 1];
+      expect(trainingResult?.errors.length).toBeGreaterThan(0);
+      const initialError = trainingResult?.errors?.[0];
+      const finalError = trainingResult?.errors?.[trainingResult?.errors.length - 1];
       expect(finalError).toBeLessThan(initialError); // Should improve
 
       // Test classification accuracy
-      const predictions = spiralData.map((sample) => predict(network, sample.input));
+      const predictions = spiralData?.map((sample) => predict(network, sample.input));
       const accuracy = calculateClassificationAccuracy(
         predictions,
-        spiralData.map((d) => d.output)
+        spiralData?.map((d) => d.output)
       );
 
       expect(accuracy).toBeGreaterThan(0.7); // 70% accuracy for spiral classification
@@ -212,9 +212,9 @@ describe('Neural Network Training - Classical TDD', () => {
       // Verify weight matrices have correct dimensions
       expect(xavierWeights).toHaveLength(2); // Two weight matrices for 3-layer network
       expect(xavierWeights[0]).toHaveLength(5); // First layer: 5 neurons
-      expect(xavierWeights[0][0]).toHaveLength(3); // Input dimension: 3
+      expect(xavierWeights[0]?.[0]).toHaveLength(3); // Input dimension: 3
       expect(xavierWeights[1]).toHaveLength(2); // Output layer: 2 neurons
-      expect(xavierWeights[1][0]).toHaveLength(5); // Previous layer: 5 neurons
+      expect(xavierWeights[1]?.[0]).toHaveLength(5); // Previous layer: 5 neurons
     });
 
     it('should compute gradients correctly', () => {
@@ -241,13 +241,13 @@ describe('Neural Network Training - Classical TDD', () => {
     it('should prevent vanishing and exploding gradients', () => {
       // Classical TDD: Test gradient stability in deep networks
       const deepNetwork = createTestNeuralNetwork([2, 10, 10, 10, 1]);
-      const trainingData = NeuralTestDataGenerator.generateLinearData(10, 0.1);
+      const trainingData = NeuralTestDataGenerator?.generateLinearData(10, 0.1);
 
       const gradientHistory: number[][] = [];
 
       // Train for a few epochs and collect gradients
       for (let epoch = 0; epoch < 10; epoch++) {
-        trainingData.forEach((sample) => {
+        trainingData?.forEach((sample) => {
           const gradients = computeGradients(deepNetwork, sample.input, sample.output);
           const flatGradients = gradients.flat();
           gradientHistory.push(flatGradients);
@@ -276,7 +276,7 @@ describe('Neural Network Training - Classical TDD', () => {
   describe('⚡ Performance and Memory Efficiency', () => {
     it('should train within acceptable time limits', () => {
       // Classical TDD: Test actual performance
-      const performanceData = NeuralTestDataGenerator.generateLinearData(200, 0.1);
+      const performanceData = NeuralTestDataGenerator?.generateLinearData(200, 0.1);
       const network = createTestNeuralNetwork([1, 5, 1]);
 
       const performanceResult = neuralSuite.performance.benchmarkTraining(
@@ -290,13 +290,13 @@ describe('Neural Network Training - Classical TDD', () => {
         10000 // 10 seconds max
       );
 
-      expect(performanceResult.withinExpected).toBe(true);
-      expect(performanceResult.duration).toBeLessThan(10000);
+      expect(performanceResult?.withinExpected).toBe(true);
+      expect(performanceResult?.duration).toBeLessThan(10000);
     });
 
     it('should use memory efficiently during training', () => {
       // Classical TDD: Test actual memory usage
-      const memoryData = NeuralTestDataGenerator.generateLinearData(500, 0.1);
+      const memoryData = NeuralTestDataGenerator?.generateLinearData(500, 0.1);
       const network = createTestNeuralNetwork([1, 10, 1]);
 
       const memoryResult = neuralSuite.performance.validateMemoryUsage(
@@ -310,7 +310,7 @@ describe('Neural Network Training - Classical TDD', () => {
         20 // 20MB max increase
       );
 
-      expect(memoryResult.withinLimit).toBe(true);
+      expect(memoryResult?.withinLimit).toBe(true);
     });
 
     it('should predict efficiently', () => {
@@ -336,8 +336,8 @@ describe('Neural Network Training - Classical TDD', () => {
         [-1000],
         [1000],
         [0],
-        [Number.MIN_VALUE],
-        [Number.MAX_SAFE_INTEGER / 1e10],
+        [Number["MIN_VALUE"]],
+        [Number["MAX_SAFE_INTEGER"] / 1e10],
       ];
 
       extremeInputs.forEach((input) => {
@@ -359,7 +359,7 @@ describe('Neural Network Training - Classical TDD', () => {
       // Intentionally bad initialization (all zeros)
       initializeWeightsToValue(network, 0.001);
 
-      const trainingData = NeuralTestDataGenerator.generateXORData();
+      const trainingData = NeuralTestDataGenerator?.generateXORData();
       const result = trainNetwork(network, trainingData, {
         epochs: 3000,
         learningRate: 0.5,
@@ -367,13 +367,13 @@ describe('Neural Network Training - Classical TDD', () => {
       });
 
       // Should still eventually learn (Classical approach - verify actual capability)
-      expect(result.errors[result.errors.length - 1]).toBeLessThan(0.5);
+      expect(result?.errors?.[result?.errors.length - 1]).toBeLessThan(0.5);
 
       // Verify it can make reasonable predictions
-      const finalPredictions = trainingData.map((sample) => predict(network, sample.input));
+      const finalPredictions = trainingData?.map((sample) => predict(network, sample.input));
       const accuracy = calculateClassificationAccuracy(
         finalPredictions,
-        trainingData.map((d) => d.output),
+        trainingData?.map((d) => d.output),
         0.4 // Lower threshold for challenging initialization
       );
 
@@ -440,9 +440,9 @@ function predict(network: any, input: number[]): number[] {
     const newActivations: number[] = [];
 
     for (let j = 0; j < network.weights[i].length; j++) {
-      let sum = network.biases[i][j];
+      let sum = network.biases[i]?.[j];
       for (let k = 0; k < activations.length; k++) {
-        sum += activations[k] * network.weights[i][j][k];
+        sum += activations[k] * network.weights[i]?.[j]?.[k];
       }
       newActivations.push(1 / (1 + Math.exp(-sum))); // Sigmoid activation
     }
@@ -457,10 +457,10 @@ function trainNetwork(network: any, trainingData: any[], config: any) {
   const errors: number[] = [];
   let converged = false;
 
-  for (let epoch = 0; epoch < config.epochs && !converged; epoch++) {
+  for (let epoch = 0; epoch < config?.["epochs"] && !converged; epoch++) {
     let epochError = 0;
 
-    trainingData.forEach((sample) => {
+    trainingData?.forEach((sample) => {
       // Forward pass
       const prediction = predict(network, sample.input);
 
@@ -473,13 +473,13 @@ function trainNetwork(network: any, trainingData: any[], config: any) {
       epochError += sampleError;
 
       // Simplified backpropagation (for testing purposes)
-      updateWeights(network, sample.input, sample.output, prediction, config.learningRate);
+      updateWeights(network, sample.input, sample.output, prediction, config?.["learningRate"]);
     });
 
     epochError /= trainingData.length;
     errors.push(epochError);
 
-    if (epochError < config.convergenceThreshold) {
+    if (epochError < config?.["convergenceThreshold"]) {
       converged = true;
     }
   }
@@ -495,14 +495,14 @@ function updateWeights(
   learningRate: number
 ): void {
   // Simplified weight update for testing
-  const outputError = prediction.map((pred, idx) => target[idx] - pred);
+  const outputError = prediction.map((pred, idx) => target?.[idx] - pred);
 
   // Update weights (simplified - real implementation would be more complex)
   network.weights.forEach((layer: number[][], layerIdx: number) => {
     layer.forEach((neuron: number[], neuronIdx: number) => {
       neuron.forEach((_weight: number, weightIdx: number) => {
         const gradient = outputError[neuronIdx % outputError.length] * learningRate * 0.01;
-        network.weights[layerIdx][neuronIdx][weightIdx] += gradient;
+        network.weights[layerIdx]?.[neuronIdx]?.[weightIdx] += gradient;
       });
     });
   });
@@ -511,7 +511,7 @@ function updateWeights(
 function computeGradients(network: any, input: number[], target: number[]): number[][] {
   // Simplified gradient computation for testing
   const prediction = predict(network, input);
-  const outputError = prediction.map((pred, idx) => target[idx] - pred);
+  const outputError = prediction.map((pred, idx) => target?.[idx] - pred);
 
   return network.weights.map((layer: number[][], _layerIdx: number) => {
     return layer.map((_neuron: number[], neuronIdx: number) => {
@@ -528,8 +528,8 @@ function calculateClassificationAccuracy(
   let correct = 0;
 
   for (let i = 0; i < predictions.length; i++) {
-    const predictedClass = predictions[i][0] > threshold ? 1 : 0;
-    const actualClass = targets[i][0] > threshold ? 1 : 0;
+    const predictedClass = predictions[i]?.[0] > threshold ? 1 : 0;
+    const actualClass = targets?.[i]?.[0] > threshold ? 1 : 0;
 
     if (predictedClass === actualClass) {
       correct++;
@@ -553,7 +553,7 @@ function expectMatrixNearlyEqual(
   for (let i = 0; i < actual.length; i++) {
     expect(actual[i]).toHaveLength(expected[i].length);
     for (let j = 0; j < actual[i].length; j++) {
-      expectNearlyEqual(actual[i][j], expected[i][j], tolerance);
+      expectNearlyEqual(actual[i]?.[j], expected[i]?.[j], tolerance);
     }
   }
 }

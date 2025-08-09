@@ -6,7 +6,6 @@ const logger = getLogger("test-pseudocode-engine");
  */
 
 import { PseudocodePhaseEngine } from './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine';
-import type { DetailedSpecification } from './coordination/swarm/sparc/types/sparc-types';
 
 async function testPseudocodeEngine() {
   const engine = new PseudocodePhaseEngine();
@@ -51,7 +50,7 @@ async function testPseudocodeEngine() {
     const dataStructures = await engine.designDataStructures(specification.functionalRequirements);
     const controlFlows = await engine.mapControlFlows(algorithms);
     const validation = await engine.validatePseudocodeLogic(algorithms);
-    const _pseudocodeStructure = await engine.generatePseudocode(specification);
+    const pseudocodeStructure = await engine.generatePseudocode(specification);
 
     return {
       success: true,
@@ -75,10 +74,10 @@ async function testPseudocodeEngine() {
 // Run the test if this file is executed directly
 if (require.main === module) {
   testPseudocodeEngine().then((result) => {
-    if (result.success) {
+    if (result?.success) {
       process.exit(0);
     } else {
-      logger.error('💥 Manual test failed:', result.error);
+      logger.error('💥 Manual test failed:', result?.error);
       process.exit(1);
     }
   });

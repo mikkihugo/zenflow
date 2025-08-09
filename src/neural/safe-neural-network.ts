@@ -70,9 +70,9 @@ export class SafeNeuralNetwork {
             success: false,
             error: {
               code: 'WASM_INITIALIZATION_FAILED',
-              message: wasmResult?.error?.message,
+              message: wasmResult?.["error"]?.message,
               operation: 'initialization',
-              details: wasmResult?.error,
+              details: wasmResult?.["error"],
             },
           } as NeuralError;
         }
@@ -128,7 +128,7 @@ export class SafeNeuralNetwork {
       let finalError = 0;
       let converged = false;
 
-      for (let epoch = 0; epoch < options?.epochs; epoch++) {
+      for (let epoch = 0; epoch < options?.["epochs"]; epoch++) {
         // Perform one epoch of training
         const epochResult = await this.trainEpoch(data, options);
 
@@ -149,7 +149,7 @@ export class SafeNeuralNetwork {
         }
 
         // Early stopping check
-        if (options?.earlyStop && options?.patience && epochsWithoutImprovement >= options?.patience) {
+        if (options?.["earlyStop"] && options?.["patience"] && epochsWithoutImprovement >= options?.["patience"]) {
           converged = true;
           break;
         }
@@ -160,7 +160,7 @@ export class SafeNeuralNetwork {
           break;
         }
 
-        if (options?.verbose && epoch % 100 === 0) {
+        if (options?.["verbose"] && epoch % 100 === 0) {
         }
       }
 
@@ -169,13 +169,13 @@ export class SafeNeuralNetwork {
 
       // Calculate validation accuracy if validation data provided
       let accuracy: number | undefined;
-      if (data?.validationInputs && data?.validationOutputs) {
+      if (data?.["validationInputs"] && data?.["validationOutputs"]) {
         const validationResult = await this.validateNetwork(
-          data?.validationInputs,
-          data?.validationOutputs
+          data?.["validationInputs"],
+          data?.["validationOutputs"]
         );
         if (isInferenceResult(validationResult)) {
-          accuracy = this.calculateAccuracy(validationResult?.predictions, data?.validationOutputs);
+          accuracy = this.calculateAccuracy(validationResult?.predictions, data?.["validationOutputs"]);
         }
       }
 
@@ -183,7 +183,7 @@ export class SafeNeuralNetwork {
         type: 'training',
         success: true,
         finalError,
-        epochsCompleted: options?.epochs,
+        epochsCompleted: options?.["epochs"],
         duration,
         converged,
         accuracy,
@@ -197,7 +197,7 @@ export class SafeNeuralNetwork {
           code: 'TRAINING_FAILED',
           message: error instanceof Error ? error.message : 'Unknown training error',
           operation: 'training',
-          details: { dataSize: data?.inputs.length, options },
+          details: { dataSize: data?.["inputs"].length, options },
         },
       } as NeuralError;
     }
@@ -247,13 +247,13 @@ export class SafeNeuralNetwork {
             success: false,
             error: {
               code: 'WASM_PREDICTION_FAILED',
-              message: wasmResult?.error?.message,
+              message: wasmResult?.["error"]?.message,
               operation: 'inference',
-              details: wasmResult?.error,
+              details: wasmResult?.["error"],
             },
           } as NeuralError;
         }
-        predictions = wasmResult?.result;
+        predictions = wasmResult?.["result"];
       } else {
         predictions = this.predictWithJavaScript(inputs);
       }

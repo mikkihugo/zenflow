@@ -235,7 +235,7 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   private async saveMetadata(metadata: BackupMetadata): Promise<void> {
-    const metadataPath = path.join(this.backupsPath, 'metadata', `${metadata.id}.json`);
+    const metadataPath = path.join(this.backupsPath, 'metadata', `${metadata?.["id"]}.json`);
     await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
   }
 

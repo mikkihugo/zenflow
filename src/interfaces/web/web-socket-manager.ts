@@ -1,14 +1,4 @@
-/**
- * WebSocket Manager - Real-time communication system
- *
- * Handles WebSocket connections, real-time data broadcasting,
- * and client event management for the web dashboard.
- */
-
-import type { Server as SocketIOServer } from 'socket.io';
 import { createLogger } from '../../utils/logger';
-import type { WebConfig } from './web-config';
-import type { WebDataService } from './web-data-service';
 
 export interface BroadcastData {
   event: string;

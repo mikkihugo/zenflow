@@ -12,11 +12,8 @@ import {
   createCustomKnowledgeClient,
   createFACTClient,
   KnowledgeClientAdapter,
-  type KnowledgeClientConfig,
   KnowledgeClientFactory,
   KnowledgeHelpers,
-  type KnowledgeRequest,
-  type KnowledgeResponse,
 } from '../knowledge-client-adapter';
 
 // Mock the FACT integration
@@ -32,12 +29,12 @@ jest.mock('../../../../knowledge/knowledge-client', () => {
 
   return {
     FACTIntegration: jest.fn().mockImplementation(() => mockFACTIntegration),
-    __mockFACTIntegration: mockFACTIntegration,
+    _mockFACTIntegration: mockFACTIntegration,
   };
 });
 
 // Import the mock for access in tests
-const { __mockFACTIntegration } = require('../../../../knowledge/knowledge-client');
+const { _mockFACTIntegration } = require('../../../../knowledge/knowledge-client');
 
 describe('KnowledgeClientAdapter', () => {
   let knowledgeConfig: KnowledgeClientConfig;
@@ -47,7 +44,7 @@ describe('KnowledgeClientAdapter', () => {
     jest.clearAllMocks();
 
     knowledgeConfig = {
-      protocol: ProtocolTypes.CUSTOM,
+      protocol: ProtocolTypes["CUSTOM"],
       url: 'fact://test',
       provider: 'fact',
       factConfig: {
@@ -95,13 +92,13 @@ describe('KnowledgeClientAdapter', () => {
       });
 
       it('should setup event forwarding from FACT integration', () => {
-        expect(__mockFACTIntegration.on).toHaveBeenCalledWith('initialized', expect.any(Function));
-        expect(__mockFACTIntegration.on).toHaveBeenCalledWith(
+        expect(_mockFACTIntegration.on).toHaveBeenCalledWith('initialized', expect.any(Function));
+        expect(_mockFACTIntegration.on).toHaveBeenCalledWith(
           'queryCompleted',
           expect.any(Function)
         );
-        expect(__mockFACTIntegration.on).toHaveBeenCalledWith('queryError', expect.any(Function));
-        expect(__mockFACTIntegration.on).toHaveBeenCalledWith('shutdown', expect.any(Function));
+        expect(_mockFACTIntegration.on).toHaveBeenCalledWith('queryError', expect.any(Function));
+        expect(_mockFACTIntegration.on).toHaveBeenCalledWith('shutdown', expect.any(Function));
       });
     });
 
@@ -109,7 +106,7 @@ describe('KnowledgeClientAdapter', () => {
       it('should call FACT initialize on connect', async () => {
         await knowledgeClient.connect();
 
-        expect(__mockFACTIntegration.initialize).toHaveBeenCalledTimes(1);
+        expect(_mockFACTIntegration.initialize).toHaveBeenCalledTimes(1);
         expect(knowledgeClient.isConnected()).toBe(true);
       });
 
@@ -117,7 +114,7 @@ describe('KnowledgeClientAdapter', () => {
         await knowledgeClient.connect();
         await knowledgeClient.disconnect();
 
-        expect(__mockFACTIntegration.shutdown).toHaveBeenCalledTimes(1);
+        expect(_mockFACTIntegration.shutdown).toHaveBeenCalledTimes(1);
         expect(knowledgeClient.isConnected()).toBe(false);
       });
 
@@ -137,7 +134,7 @@ describe('KnowledgeClientAdapter', () => {
 
       it('should handle connection errors', async () => {
         const error = new Error('Connection failed');
-        __mockFACTIntegration.initialize.mockRejectedValueOnce(error);
+        _mockFACTIntegration.initialize.mockRejectedValueOnce(error);
 
         const errorSpy = jest.fn();
         knowledgeClient.on('error', errorSpy);
@@ -164,7 +161,7 @@ describe('KnowledgeClientAdapter', () => {
           metadata: { test: true },
         };
 
-        __mockFACTIntegration.query.mockResolvedValueOnce(mockFACTResult);
+        _mockFACTIntegration.query.mockResolvedValueOnce(mockFACTResult);
 
         const request: KnowledgeRequest = {
           query: 'Test query',
@@ -175,7 +172,7 @@ describe('KnowledgeClientAdapter', () => {
 
         await knowledgeClient.send(request);
 
-        expect(__mockFACTIntegration.query).toHaveBeenCalledWith({
+        expect(_mockFACTIntegration.query).toHaveBeenCalledWith({
           query: 'Test query',
           tools: ['web_scraper'],
           useCache: true,
@@ -185,7 +182,7 @@ describe('KnowledgeClientAdapter', () => {
 
       it('should handle query errors and update metrics', async () => {
         const error = new Error('Query failed');
-        __mockFACTIntegration.query.mockRejectedValueOnce(error);
+        _mockFACTIntegration.query.mockRejectedValueOnce(error);
 
         const request: KnowledgeRequest = {
           query: 'Test query',
@@ -195,8 +192,8 @@ describe('KnowledgeClientAdapter', () => {
         await expect(knowledgeClient.send(request)).rejects.toThrow('Query failed');
 
         const metadata = await knowledgeClient.getMetadata();
-        expect(metadata.metrics.failedRequests).toBe(1);
-        expect(metadata.metrics.totalRequests).toBe(1);
+        expect(metadata?.["metrics"]?.["failedRequests"]).toBe(1);
+        expect(metadata?.["metrics"]?.["totalRequests"]).toBe(1);
       });
     });
 
@@ -205,7 +202,7 @@ describe('KnowledgeClientAdapter', () => {
         await knowledgeClient.connect();
 
         // Mock FACT query response
-        __mockFACTIntegration.query.mockResolvedValue({
+        _mockFACTIntegration.query.mockResolvedValue({
           queryId: 'test-123',
           response: 'Mock response',
           executionTimeMs: 1000,
@@ -218,7 +215,7 @@ describe('KnowledgeClientAdapter', () => {
       it('should call FACT integration through query method', async () => {
         await knowledgeClient.query('Test query', { limit: 5 });
 
-        expect(__mockFACTIntegration.query).toHaveBeenCalledWith({
+        expect(_mockFACTIntegration.query).toHaveBeenCalledWith({
           query: 'Test query',
           tools: ['web_scraper', 'documentation_parser'],
           useCache: true,
@@ -230,7 +227,7 @@ describe('KnowledgeClientAdapter', () => {
       it('should call FACT integration through search method', async () => {
         await knowledgeClient.search('search term', { fuzzy: true });
 
-        expect(__mockFACTIntegration.query).toHaveBeenCalledWith({
+        expect(_mockFACTIntegration.query).toHaveBeenCalledWith({
           query: 'search term',
           tools: ['web_scraper', 'documentation_parser'],
           useCache: true,
@@ -242,7 +239,7 @@ describe('KnowledgeClientAdapter', () => {
       it('should call FACT integration through semanticSearch method', async () => {
         await knowledgeClient.semanticSearch('semantic query', { vectorSearch: true });
 
-        expect(__mockFACTIntegration.query).toHaveBeenCalledWith({
+        expect(_mockFACTIntegration.query).toHaveBeenCalledWith({
           query: 'semantic query',
           tools: ['vector_search', 'semantic_analyzer'],
           useCache: true,
@@ -261,7 +258,7 @@ describe('KnowledgeClientAdapter', () => {
       it('should perform health check query when connected', async () => {
         await knowledgeClient.connect();
 
-        __mockFACTIntegration.query.mockResolvedValueOnce({
+        _mockFACTIntegration.query.mockResolvedValueOnce({
           queryId: 'health-check',
           response: 'OK',
           executionTimeMs: 100,
@@ -273,7 +270,7 @@ describe('KnowledgeClientAdapter', () => {
         const health = await knowledgeClient.health();
 
         expect(health).toBe(true);
-        expect(__mockFACTIntegration.query).toHaveBeenCalledWith({
+        expect(_mockFACTIntegration.query).toHaveBeenCalledWith({
           query: 'health check',
           tools: [],
           useCache: true,
@@ -287,7 +284,7 @@ describe('KnowledgeClientAdapter', () => {
     describe('Configuration Conversion', () => {
       it('should correctly convert UACL config to FACT config', () => {
         const uaclConfig: KnowledgeClientConfig = {
-          protocol: ProtocolTypes.HTTPS,
+          protocol: ProtocolTypes["HTTPS"],
           url: 'https://knowledge.api',
           provider: 'fact',
           factConfig: {
@@ -304,7 +301,7 @@ describe('KnowledgeClientAdapter', () => {
           timeout: 45000,
         };
 
-        const _adapter = new KnowledgeClientAdapter(uaclConfig);
+        const adapter = new KnowledgeClientAdapter(uaclConfig);
 
         // Verify the FACT integration was created with correct config
         expect(
@@ -325,11 +322,11 @@ describe('KnowledgeClientAdapter', () => {
       });
 
       it('should use environment variable for API key when not provided', () => {
-        const originalEnv = process.env.ANTHROPIC_API_KEY;
-        process.env.ANTHROPIC_API_KEY = 'env-test-key';
+        const originalEnv = process.env["ANTHROPIC_API_KEY"];
+        process.env["ANTHROPIC_API_KEY"] = 'env-test-key';
 
         const uaclConfig: KnowledgeClientConfig = {
-          protocol: ProtocolTypes.CUSTOM,
+          protocol: ProtocolTypes["CUSTOM"],
           url: 'fact://test',
           provider: 'fact',
           factConfig: {
@@ -348,7 +345,7 @@ describe('KnowledgeClientAdapter', () => {
           })
         );
 
-        process.env.ANTHROPIC_API_KEY = originalEnv;
+        process.env["ANTHROPIC_API_KEY"] = originalEnv;
       });
     });
 
@@ -366,7 +363,7 @@ describe('KnowledgeClientAdapter', () => {
           metadata: { source: 'stackoverflow', tags: ['javascript', 'nodejs'] },
         };
 
-        __mockFACTIntegration.query.mockResolvedValueOnce(mockFACTResult);
+        _mockFACTIntegration.query.mockResolvedValueOnce(mockFACTResult);
 
         const request: KnowledgeRequest = {
           query: 'Test transformation',
@@ -389,17 +386,17 @@ describe('KnowledgeClientAdapter', () => {
         });
 
         // Verify confidence calculation
-        expect(response.confidence).toBeGreaterThan(0.5);
-        expect(response.confidence).toBeLessThanOrEqual(1.0);
+        expect(response?.confidence).toBeGreaterThan(0.5);
+        expect(response?.confidence).toBeLessThanOrEqual(1.0);
 
         // Verify sources extraction
-        expect(response.sources).toHaveLength(2);
-        expect(response.sources?.[0]).toEqual({
+        expect(response?.sources).toHaveLength(2);
+        expect(response?.sources?.[0]).toEqual({
           title: 'web_scraper result',
           url: 'fact://tool/web_scraper',
           relevance: 1.0,
         });
-        expect(response.sources?.[1]).toEqual({
+        expect(response?.sources?.[1]).toEqual({
           title: 'documentation_parser result',
           url: 'fact://tool/documentation_parser',
           relevance: 0.9,
@@ -421,7 +418,7 @@ describe('KnowledgeClientAdapter', () => {
 
         for (const [index, req] of requests.entries()) {
           if (req.success) {
-            __mockFACTIntegration.query.mockResolvedValueOnce({
+            _mockFACTIntegration.query.mockResolvedValueOnce({
               queryId: `query-${index}`,
               response: 'Response',
               executionTimeMs: req.time,
@@ -430,7 +427,7 @@ describe('KnowledgeClientAdapter', () => {
               metadata: {},
             });
           } else {
-            __mockFACTIntegration.query.mockRejectedValueOnce(new Error('Query failed'));
+            _mockFACTIntegration.query.mockRejectedValueOnce(new Error('Query failed'));
           }
 
           const request: KnowledgeRequest = {
@@ -448,15 +445,15 @@ describe('KnowledgeClientAdapter', () => {
         const metadata = await knowledgeClient.getMetadata();
 
         // Verify metrics calculations
-        expect(metadata.metrics.totalRequests).toBe(4);
-        expect(metadata.metrics.successfulRequests).toBe(3);
-        expect(metadata.metrics.failedRequests).toBe(1);
+        expect(metadata?.["metrics"]?.["totalRequests"]).toBe(4);
+        expect(metadata?.["metrics"]?.["successfulRequests"]).toBe(3);
+        expect(metadata?.["metrics"]?.["failedRequests"]).toBe(1);
 
         // Average response time should be (1000 + 2000 + 1500 + 800) / 4 = 1325
-        expect(metadata.metrics.averageResponseTime).toBeCloseTo(1325, 0);
+        expect(metadata?.["metrics"]?.["averageResponseTime"]).toBeCloseTo(1325, 0);
 
-        expect(metadata.metrics.lastRequestTime).toBeInstanceOf(Date);
-        expect(metadata.metrics.uptime).toBeGreaterThan(0);
+        expect(metadata?.["metrics"]?.["lastRequestTime"]).toBeInstanceOf(Date);
+        expect(metadata?.["metrics"]?.["uptime"]).toBeGreaterThan(0);
       });
     });
 
@@ -473,7 +470,7 @@ describe('KnowledgeClientAdapter', () => {
           errorRate: 0.05,
         };
 
-        __mockFACTIntegration.getMetrics.mockResolvedValueOnce(mockFACTMetrics);
+        _mockFACTIntegration.getMetrics.mockResolvedValueOnce(mockFACTMetrics);
 
         const stats = await knowledgeClient.getKnowledgeStats();
 
@@ -517,7 +514,7 @@ describe('KnowledgeClientAdapter', () => {
         ];
 
         for (const [index, testCase] of testCases.entries()) {
-          __mockFACTIntegration.query.mockResolvedValueOnce({
+          _mockFACTIntegration.query.mockResolvedValueOnce({
             queryId: `confidence-test-${index}`,
             response: 'Test response',
             ...testCase.result,
@@ -530,7 +527,7 @@ describe('KnowledgeClientAdapter', () => {
           };
 
           const response = await knowledgeClient.send<KnowledgeResponse>(request);
-          expect(response.confidence).toBeCloseTo(testCase.expectedConfidence, 1);
+          expect(response?.confidence).toBeCloseTo(testCase.expectedConfidence, 1);
         }
       });
     });
@@ -545,23 +542,23 @@ describe('KnowledgeClientAdapter', () => {
 
     describe('Protocol Support', () => {
       it('should support HTTP, HTTPS, and CUSTOM protocols', () => {
-        expect(factory.supports(ProtocolTypes.HTTP)).toBe(true);
-        expect(factory.supports(ProtocolTypes.HTTPS)).toBe(true);
-        expect(factory.supports(ProtocolTypes.CUSTOM)).toBe(true);
-        expect(factory.supports(ProtocolTypes.WS)).toBe(false);
-        expect(factory.supports(ProtocolTypes.TCP)).toBe(false);
+        expect(factory.supports(ProtocolTypes["HTTP"])).toBe(true);
+        expect(factory.supports(ProtocolTypes["HTTPS"])).toBe(true);
+        expect(factory.supports(ProtocolTypes["CUSTOM"])).toBe(true);
+        expect(factory.supports(ProtocolTypes["WS"])).toBe(false);
+        expect(factory.supports(ProtocolTypes["TCP"])).toBe(false);
       });
 
       it('should return correct supported protocols', () => {
         const protocols = factory.getSupportedProtocols();
-        expect(protocols).toEqual([ProtocolTypes.HTTP, ProtocolTypes.HTTPS, ProtocolTypes.CUSTOM]);
+        expect(protocols).toEqual([ProtocolTypes["HTTP"], ProtocolTypes["HTTPS"], ProtocolTypes["CUSTOM"]]);
       });
     });
 
     describe('Configuration Validation', () => {
       it('should validate required fields', () => {
         const validConfig: KnowledgeClientConfig = {
-          protocol: ProtocolTypes.CUSTOM,
+          protocol: ProtocolTypes["CUSTOM"],
           url: 'fact://test',
           provider: 'fact',
           factConfig: {
@@ -570,26 +567,26 @@ describe('KnowledgeClientAdapter', () => {
           },
         };
 
-        expect(factory.validateConfig(ProtocolTypes.CUSTOM, validConfig)).toBe(true);
+        expect(factory.validateConfig(ProtocolTypes["CUSTOM"], validConfig)).toBe(true);
       });
 
       it('should reject invalid configurations', () => {
         const invalidConfigs = [
           // Missing URL
           {
-            protocol: ProtocolTypes.CUSTOM,
+            protocol: ProtocolTypes["CUSTOM"],
             provider: 'fact',
             factConfig: { factRepoPath: './fact', anthropicApiKey: 'key' },
           },
           // Missing FACT config for FACT provider
           {
-            protocol: ProtocolTypes.CUSTOM,
+            protocol: ProtocolTypes["CUSTOM"],
             url: 'fact://test',
             provider: 'fact',
           },
           // Missing required FACT fields
           {
-            protocol: ProtocolTypes.CUSTOM,
+            protocol: ProtocolTypes["CUSTOM"],
             url: 'fact://test',
             provider: 'fact',
             factConfig: { anthropicApiKey: 'key' }, // Missing factRepoPath
@@ -597,13 +594,13 @@ describe('KnowledgeClientAdapter', () => {
         ];
 
         for (const config of invalidConfigs) {
-          expect(factory.validateConfig(ProtocolTypes.CUSTOM, config as any)).toBe(false);
+          expect(factory.validateConfig(ProtocolTypes["CUSTOM"], config as any)).toBe(false);
         }
       });
 
       it('should reject unsupported protocols', () => {
         const config: KnowledgeClientConfig = {
-          protocol: ProtocolTypes.WS,
+          protocol: ProtocolTypes["WS"],
           url: 'ws://test',
           provider: 'fact',
           factConfig: {
@@ -612,14 +609,14 @@ describe('KnowledgeClientAdapter', () => {
           },
         };
 
-        expect(factory.validateConfig(ProtocolTypes.WS, config)).toBe(false);
+        expect(factory.validateConfig(ProtocolTypes["WS"], config)).toBe(false);
       });
     });
 
     describe('Client Creation', () => {
       it('should create knowledge client with valid configuration', async () => {
         const config: KnowledgeClientConfig = {
-          protocol: ProtocolTypes.CUSTOM,
+          protocol: ProtocolTypes["CUSTOM"],
           url: 'fact://test',
           provider: 'fact',
           factConfig: {
@@ -628,7 +625,7 @@ describe('KnowledgeClientAdapter', () => {
           },
         };
 
-        const client = await factory.create(ProtocolTypes.CUSTOM, config);
+        const client = await factory.create(ProtocolTypes["CUSTOM"], config);
 
         expect(client).toBeInstanceOf(KnowledgeClientAdapter);
         expect(client.getConfig()).toEqual(config);
@@ -636,12 +633,12 @@ describe('KnowledgeClientAdapter', () => {
 
       it('should throw error for invalid configuration', async () => {
         const invalidConfig = {
-          protocol: ProtocolTypes.CUSTOM,
+          protocol: ProtocolTypes["CUSTOM"],
           url: '', // Invalid URL
           provider: 'fact',
         };
 
-        await expect(factory.create(ProtocolTypes.CUSTOM, invalidConfig as any)).rejects.toThrow(
+        await expect(factory.create(ProtocolTypes["CUSTOM"], invalidConfig as any)).rejects.toThrow(
           'Invalid configuration for Knowledge client'
         );
       });
@@ -659,13 +656,13 @@ describe('KnowledgeClientAdapter', () => {
         expect(client).toBeInstanceOf(KnowledgeClientAdapter);
 
         const config = client.getConfig() as KnowledgeClientConfig;
-        expect(config.protocol).toBe(ProtocolTypes.CUSTOM);
-        expect(config.url).toBe('fact://local');
-        expect(config.provider).toBe('fact');
-        expect(config.factConfig?.factRepoPath).toBe('./test-fact');
-        expect(config.factConfig?.anthropicApiKey).toBe('test-api-key');
-        expect(config.timeout).toBe(45000);
-        expect(config.tools).toContain('custom_tool');
+        expect(config?.["protocol"]).toBe(ProtocolTypes["CUSTOM"]);
+        expect(config?.["url"]).toBe('fact://local');
+        expect(config?.["provider"]).toBe('fact');
+        expect(config?.["factConfig"]?.["factRepoPath"]).toBe('./test-fact');
+        expect(config?.["factConfig"]?.["anthropicApiKey"]).toBe('test-api-key');
+        expect(config?.["timeout"]).toBe(45000);
+        expect(config?.["tools"]).toContain('custom_tool');
       });
     });
 
@@ -678,10 +675,10 @@ describe('KnowledgeClientAdapter', () => {
         expect(client).toBeInstanceOf(KnowledgeClientAdapter);
 
         const config = client.getConfig() as KnowledgeClientConfig;
-        expect(config.protocol).toBe(ProtocolTypes.HTTPS);
-        expect(config.url).toBe('https://knowledge.api.com');
-        expect(config.provider).toBe('custom');
-        expect(config.timeout).toBe(20000);
+        expect(config?.["protocol"]).toBe(ProtocolTypes["HTTPS"]);
+        expect(config?.["url"]).toBe('https://knowledge.api.com');
+        expect(config?.["provider"]).toBe('custom');
+        expect(config?.["timeout"]).toBe(20000);
       });
     });
   });

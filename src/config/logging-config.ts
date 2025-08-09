@@ -49,7 +49,7 @@ class LoggingConfigurationManager {
   private loadConfiguration(): LoggingConfig {
     // Load from environment variables with sensible defaults
     const nodeEnv = process.env['NODE_ENV'] || 'development';
-    const defaultLevel = nodeEnv === 'development' ? LoggingLevel.DEBUG : LoggingLevel.INFO;
+    const defaultLevel = nodeEnv === 'development' ? LoggingLevel["DEBUG"] : LoggingLevel["INFO"];
     
     return {
       level: (process.env['LOG_LEVEL'] as LoggingLevel) || defaultLevel,
@@ -165,9 +165,9 @@ class LoggingConfigurationManager {
    */
   enableDebugMode(): void {
     this.updateConfig({
-      level: LoggingLevel.DEBUG,
+      level: LoggingLevel["DEBUG"],
       components: Object.fromEntries(
-        Object.keys(this.config.components).map(key => [key, LoggingLevel.DEBUG])
+        Object.keys(this.config.components).map(key => [key, LoggingLevel["DEBUG"]])
       )
     });
   }
@@ -177,9 +177,9 @@ class LoggingConfigurationManager {
    */
   setProductionMode(): void {
     this.updateConfig({
-      level: LoggingLevel.INFO,
+      level: LoggingLevel["INFO"],
       components: Object.fromEntries(
-        Object.keys(this.config.components).map(key => [key, LoggingLevel.INFO])
+        Object.keys(this.config.components).map(key => [key, LoggingLevel["INFO"]])
       )
     });
   }
@@ -189,9 +189,9 @@ class LoggingConfigurationManager {
    */
   setSilentMode(): void {
     this.updateConfig({
-      level: LoggingLevel.ERROR,
+      level: LoggingLevel["ERROR"],
       components: Object.fromEntries(
-        Object.keys(this.config.components).map(key => [key, LoggingLevel.ERROR])
+        Object.keys(this.config.components).map(key => [key, LoggingLevel["ERROR"]])
       )
     });
   }

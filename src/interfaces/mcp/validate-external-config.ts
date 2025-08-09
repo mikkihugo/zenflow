@@ -20,7 +20,7 @@ function validateConfigurationFiles(): void {
     '.github/copilot-config.yml',
   ];
 
-  let _validFiles = 0;
+  let validFiles = 0;
   const totalFiles = configFiles.length;
   const validationReport = {
     totalFiles,
@@ -38,7 +38,7 @@ function validateConfigurationFiles(): void {
 
         if (file.endsWith('.json')) {
           JSON.parse(content); // Validate JSON
-          _validFiles++;
+          validFiles++;
           validationReport.validFiles++;
         } else if (file.endsWith('.yml') || file.endsWith('.yaml')) {
           validationReport.warnings.push(`YAML validation skipped for ${file}`);
@@ -72,11 +72,11 @@ function testMCPConfiguration(): void {
     if (existsSync('claude_desktop_config.json')) {
       const config = JSON.parse(readFileSync('claude_desktop_config.json', 'utf8'));
 
-      if (config.mcpServers) {
-        const _serverCount = Object.keys(config.mcpServers).length;
+      if (config?.["mcpServers"]) {
+        const serverCount = Object.keys(config?.["mcpServers"]).length;
 
         // List configured servers
-        for (const [_name, _serverConfig] of Object.entries(config.mcpServers as any)) {
+        for (const [name, serverConfig] of Object.entries(config?.["mcpServers"] as any)) {
         }
       } else {
       }
@@ -86,14 +86,14 @@ function testMCPConfiguration(): void {
     if (existsSync('.copilotrc.json')) {
       const config = JSON.parse(readFileSync('.copilotrc.json', 'utf8'));
 
-      if (config.mcp?.external_servers) {
-        const externalServers = Object.keys(config.mcp.external_servers);
+      if (config?.["mcp"]?.["external_servers"]) {
+        const externalServers = Object.keys(config?.["mcp"]?.["external_servers"]);
         for (const server of externalServers) {
-          const _serverConfig = config.mcp.external_servers[server];
+          const serverConfig = config?.["mcp"]?.["external_servers"]?.[server];
         }
       }
     }
-  } catch (_error) {}
+  } catch (error) {}
 }
 
 /**

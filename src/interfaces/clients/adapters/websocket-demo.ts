@@ -15,8 +15,6 @@ import {
   EnhancedWebSocketClient,
   // UACL WebSocket components
   WebSocketClientAdapter,
-  // Configuration types
-  type WebSocketClientConfig,
   WebSocketClientFactory,
   // Utilities and presets
   WebSocketClientPresets,
@@ -56,22 +54,22 @@ export async function basicUACLWebSocketExample() {
   // Set up event listeners
   client.on('connect', () => {});
 
-  client.on('message', (_data) => {});
+  client.on('message', (data) => {});
 
-  client.on('disconnect', (_code, _reason) => {});
+  client.on('disconnect', (code, reason) => {});
 
   try {
     // Connect using UACL interface
     await client.connect();
 
     // Send a test message using REST-like interface
-    const _response = await client.post('/test', { message: 'Hello UACL!' });
+    const response = await client.post('/test', { message: 'Hello UACL!' });
 
     // Get health status
-    const _health = await client.healthCheck();
+    const health = await client.healthCheck();
 
     // Get metrics
-    const _metrics = await client.getMetrics();
+    const metrics = await client.getMetrics();
 
     // Disconnect
     await client.disconnect();
@@ -114,7 +112,7 @@ export async function enhancedWebSocketExample() {
       client.send({ type: 'test', data: `Hello from ${name}` });
 
       // UACL method (works on both)
-      const _health = await client.healthCheck();
+      const health = await client.healthCheck();
 
       await client.disconnect();
     } catch (error) {
@@ -131,7 +129,7 @@ export async function webSocketFactoryExample() {
 
   // Create multiple clients with different configurations
   const configs: WebSocketClientConfig[] = [
-    WebSocketClientPresets.HighPerformance('wss://echo.websocket.org'),
+    WebSocketClientPresets["HighPerformance"]('wss://echo.websocket.org'),
     WebSocketClientPresets.Robust('wss://echo.websocket.org'),
     WebSocketClientPresets.Simple('wss://echo.websocket.org'),
   ];
@@ -142,12 +140,12 @@ export async function webSocketFactoryExample() {
 
     // Health check all clients
     const healthResults = await factory.healthCheckAll();
-    for (const [_name, _status] of healthResults) {
+    for (const [name, status] of healthResults) {
     }
 
     // Get metrics for all clients
     const metricsResults = await factory.getMetricsAll();
-    for (const [_name, _metrics] of metricsResults) {
+    for (const [name, metrics] of metricsResults) {
     }
 
     // Shutdown all clients
@@ -165,9 +163,9 @@ export async function loadBalancedWebSocketExample() {
 
   // Create load-balanced client with multiple endpoints
   const configs = [
-    { ...WebSocketClientPresets.HighPerformance('wss://echo.websocket.org'), name: 'echo-1' },
+    { ...WebSocketClientPresets["HighPerformance"]('wss://echo.websocket.org'), name: 'echo-1' },
     {
-      ...WebSocketClientPresets.HighPerformance('wss://ws.postman-echo.com/raw'),
+      ...WebSocketClientPresets["HighPerformance"]('wss://ws.postman-echo.com/raw'),
       name: 'postman-1',
     },
   ];
@@ -176,12 +174,12 @@ export async function loadBalancedWebSocketExample() {
     const loadBalancedClient = await factory.createLoadBalanced(configs, 'round-robin');
 
     // Use the load balanced client
-    const _health = await loadBalancedClient.healthCheck();
+    const health = await loadBalancedClient.healthCheck();
 
     // Send requests - they will be distributed across endpoints
     for (let i = 0; i < 5; i++) {
       try {
-        const _response = await loadBalancedClient.post('/test', {
+        const response = await loadBalancedClient.post('/test', {
           message: `Load balanced message ${i}`,
         });
       } catch (error) {
@@ -203,16 +201,16 @@ export async function failoverWebSocketExample() {
 
   try {
     // Create failover client with primary and fallback endpoints
-    const primaryConfig = WebSocketClientPresets.HighPerformance('wss://invalid-url.example.com');
+    const primaryConfig = WebSocketClientPresets["HighPerformance"]('wss://invalid-url.example.com');
     const fallbackConfigs = [
-      WebSocketClientPresets.HighPerformance('wss://echo.websocket.org'),
-      WebSocketClientPresets.HighPerformance('wss://ws.postman-echo.com/raw'),
+      WebSocketClientPresets["HighPerformance"]('wss://echo.websocket.org'),
+      WebSocketClientPresets["HighPerformance"]('wss://ws.postman-echo.com/raw'),
     ];
 
     // This will fail on primary but succeed on fallback
     const failoverClient = await factory.createFailover(primaryConfig, fallbackConfigs);
 
-    const _health = await failoverClient.healthCheck();
+    const health = await failoverClient.healthCheck();
 
     await failoverClient.destroy();
   } catch (error) {
@@ -241,7 +239,7 @@ export async function webSocketHealthMonitoringExample() {
 
   // Get initial health status
   const healthStatus = await monitor.getHealthStatus();
-  for (const [_name, _status] of healthStatus) {
+  for (const [name, status] of healthStatus) {
   }
 
   // Let monitoring run for a bit
@@ -268,7 +266,7 @@ export async function migrationExample() {
     legacyClient.send({ type: 'test', message: 'Hello from legacy' });
   });
 
-  legacyClient.on('message', (_data) => {});
+  legacyClient.on('message', (data) => {});
 
   try {
     await legacyClient.connect();
@@ -289,15 +287,15 @@ export async function migrationExample() {
     enhancedClient.send({ type: 'test', message: 'Hello from enhanced' });
   });
 
-  enhancedClient.on('message', (_data) => {});
+  enhancedClient.on('message', (data) => {});
 
   try {
     await enhancedClient.connect();
 
     // But now UACL methods are also available
-    const _health = await enhancedClient.healthCheck();
+    const health = await enhancedClient.healthCheck();
 
-    const _metrics = await enhancedClient.getMetrics();
+    const metrics = await enhancedClient.getMetrics();
 
     // Enhanced WebSocket-specific features
     const _connectionInfo = enhancedClient.getConnectionInfo();

@@ -184,16 +184,31 @@ export class ClaudeAIIntegration {
    * Call Claude CLI with tool-based file fixing (Claude uses Read/Write tools directly)
    */
   async callClaudeCLI(filePath, prompt) {
-    const instruction = `${prompt}
+    const rateLimitEpochFile = path.resolve(REPO_ROOT, '.claude_rate_limit_epoch.txt');
 
-File to fix: ${filePath}
+    if (fs.existsSync(rateLimitEpochFile)) {
+      const rateLimitEpoch = parseInt(fs.readFileSync(rateLimitEpochFile, 'utf8'), 10);
+      const now = Math.floor(Date.now() / 1000);
 
-Please use your Read and Write tools to:
-1. Read the file: ${filePath}
-2. Apply the ESLint fix described above
-3. Write the corrected file back
+      if (now < rateLimitEpoch) {
+        console.log(`   🔁 Claude API rate limit active until ${new Date(rateLimitEpoch * 1000)}. Falling back to Gemini.`);
+        return new Promise((resolve, reject) => {
+          const gemini = spawn('gemini', ['-y', '-p', prompt], { stdio: 'inherit' });
+          gemini.on('close', (geminiCode) => {
+            if (geminiCode === 0) {
+              resolve('SUCCESS_GEMINI');
+            } else {
+              reject(new Error(`Gemini fallback failed with code ${geminiCode}`));
+            }
+          });
+        });
+      } else {
+        // Rate limit has expired, so we can remove the file and proceed with Claude
+        fs.unlinkSync(rateLimitEpochFile);
+      }
+    }
 
-Use your tools directly - do not return code in your response. Just fix the file and confirm it's done.`;
+    const instruction = `${prompt}\n\nFile to fix: ${filePath}\n\nPlease use your Read and Write tools to:\n1. Read the file: ${filePath}\n2. Apply the ESLint fix described above\n3. Write the corrected file back\n\nUse your tools directly - do not return code in your response. Just fix the file and confirm it's done.`;
 
     console.log(`   🤖 Calling NATIVE Claude CLI to fix: ${filePath}`);
     console.log(`   📋 Full instruction: "${instruction.slice(0, 200)}..."`);
@@ -258,7 +273,7 @@ Use your tools directly - do not return code in your response. Just fix the file
               );
               console.log(`   📝 Action: ${response.result}`);
               if (response.total_cost_usd) {
-                console.log(`   💰 Cost: $${response.total_cost_usd.toFixed(4)}`);
+                console.log(`   💰 Cost: ${response.total_cost_usd.toFixed(4)}`);
               }
             } else {
               console.log(
@@ -279,7 +294,27 @@ Use your tools directly - do not return code in your response. Just fix the file
           // Claude used tools directly - we don't need to return anything
           resolve('SUCCESS');
         } else {
-          reject(new Error(`Claude CLI exited with code ${code}: ${stderr}`));
+          const errorMessage = (stderr + stdout).toLowerCase();
+          if (errorMessage.includes('usage limit reached')) {
+            const epochMatch = (stderr + stdout).match(/(\d{10})/);
+            if (epochMatch) {
+              const epochTime = epochMatch[1];
+              fs.writeFileSync(rateLimitEpochFile, epochTime, 'utf8');
+              console.log(`   📝 Claude rate limit epoch (${epochTime}) saved. Will use Gemini until ${new Date(epochTime * 1000)}.`);
+            }
+            
+            console.log('   🔁 Claude API rate limit hit. Falling back to Gemini.');
+            const gemini = spawn('gemini', ['-y', '-p', prompt], { stdio: 'inherit' });
+            gemini.on('close', (geminiCode) => {
+              if (geminiCode === 0) {
+                resolve('SUCCESS_GEMINI');
+              } else {
+                reject(new Error(`Gemini fallback failed with code ${geminiCode}`));
+              }
+            });
+          } else {
+            reject(new Error(`Claude CLI exited with code ${code}: ${stderr}`));
+          }
         }
       });
 

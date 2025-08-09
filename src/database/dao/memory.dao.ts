@@ -1,13 +1,5 @@
-/**
- * Memory Repository Implementation.
- *
- * In-memory repository with TTL support, caching capabilities,
- * and memory management for fast data access.
- */
-
-import type { DatabaseAdapter, ILogger } from '../../core/interfaces/base-interfaces';
 import { BaseDao } from '../base.dao';
-import type { CustomQuery, IMemoryRepository, MemoryStats } from '../interfaces';
+import type { IMemoryRepository } from '../interfaces';
 
 /**
  * In-memory cache entry.
@@ -55,9 +47,9 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   ) {
     super(adapter, logger, tableName, entitySchema);
 
-    this.maxSize = options?.maxSize || 1000;
-    this.defaultTTL = options?.ttlDefault || 3600; // 1 hour
-    this.cleanupInterval = options?.cleanupInterval || 60000; // 1 minute
+    this.maxSize = options?.["maxSize"] || 1000;
+    this.defaultTTL = options?.["ttlDefault"] || 3600; // 1 hour
+    this.cleanupInterval = options?.["cleanupInterval"] || 60000; // 1 minute
 
     this.startCleanupTimer();
   }

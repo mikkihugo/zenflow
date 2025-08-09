@@ -1,12 +1,3 @@
-/**
- * ADR Manager - Architecture Decision Record Management System
- *
- * Manages hundreds of ADRs in the hive database with automatic numbering,
- * relationship tracking, and decision lifecycle management.
- */
-
-import { nanoid } from 'nanoid';
-import type { ADRDocumentEntity, ProjectEntity } from '../entities/document-entities';
 import { documentManager } from './document-manager';
 
 export interface ADRCreateOptions {
@@ -104,41 +95,41 @@ export class ADRManager {
     const adrId = `ADR-${adrNumber.toString().padStart(3, '0')}`;
 
     // Generate keywords from title and decision
-    const keywords = this.generateKeywords(options.title, options.decision);
+    const keywords = this.generateKeywords(options?.title, options?.["decision"]);
 
     const adr = await documentManager.createDocument<ADRDocumentEntity>(
       {
         type: 'adr',
-        title: `${adrId}: ${options.title}`,
+        title: `${adrId}: ${options?.title}`,
         content: this.formatADRContent(adrId, options),
-        summary: `Architecture decision ${adrId} regarding ${options.title}`,
-        author: options.author || 'architecture-team',
+        summary: `Architecture decision ${adrId} regarding ${options?.title}`,
+        author: options?.["author"] || 'architecture-team',
         project_id: this.architectureProject?.id,
         // TODO: TypeScript error TS2322 - Type '"proposed"' not assignable to status type (AI unsure of safe fix - human review needed)
         status: 'draft' as any, // Changed from 'proposed' due to type mismatch
-        priority: options.priority || 'medium',
+        priority: options?.["priority"] || 'medium',
         keywords,
         metadata: {
           adr_number: adrNumber,
           adr_id: adrId,
           decision_date: new Date().toISOString(),
-          stakeholders: options.stakeholders || [],
+          stakeholders: options?.["stakeholders"] || [],
           implementation_status: 'pending',
           supersedes: [],
           superseded_by: null,
           related_adrs: [],
-          ...options.metadata,
+          ...options?.["metadata"],
         },
         // ADR-specific fields
         status_type: 'proposed',
-        decision: options.decision,
-        context: options.context,
+        decision: options?.["decision"],
+        context: options?.context,
         // TODO: TypeScript error TS2322 - consequences should be string[] not string (AI unsure of safe fix - human review needed)
-        consequences: [options.consequences], // Wrapped in array due to type requirement
+        consequences: [options?.["consequences"]], // Wrapped in array due to type requirement
         // TODO: TypeScript error TS2322 - alternatives type mismatch (AI unsure of safe fix - human review needed)
-        alternatives_considered: (options.alternatives || []) as any, // Cast due to type mismatch
-        implementation_notes: options.implementation_notes || '',
-        success_criteria: options.success_criteria || [],
+        alternatives_considered: (options?.["alternatives"] || []) as any, // Cast due to type mismatch
+        implementation_notes: options?.["implementation_notes"] || '',
+        success_criteria: options?.["success_criteria"] || [],
         success_metrics: {},
       },
       {
@@ -188,16 +179,16 @@ export class ADRManager {
       projectId: this.architectureProject?.id,
     };
 
-    if (options.status) filters.status = options.status;
-    if (options.priority) filters.priority = options.priority;
-    if (options.author) filters.author = options.author;
+    if (options?.["status"]) filters.status = options?.["status"];
+    if (options?.["priority"]) filters.priority = options?.["priority"];
+    if (options?.["author"]) filters.author = options?.["author"];
 
     const queryOptions: any = {
       includeContent: true,
       includeRelationships: true,
       includeWorkflowState: true,
-      limit: options.limit || 50,
-      offset: options.offset || 0,
+      limit: options?.["limit"] || 50,
+      offset: options?.["offset"] || 0,
       sortBy: 'created_at',
       sortOrder: 'desc',
     };
@@ -205,28 +196,25 @@ export class ADRManager {
     const result = await documentManager.queryDocuments(filters, queryOptions);
 
     // Apply additional filters that can't be handled at query level
-    let filteredADRs = result.documents as ADRDocumentEntity[];
+    let filteredADRs = result?.documents as ADRDocumentEntity[];
 
-    if (options.date_range) {
+    if (options?.["date_range"]) {
       filteredADRs = filteredADRs.filter((adr) => {
-        const created = new Date(adr.created_at);
-        return (
-          (!options.date_range?.start || created >= options.date_range.start) &&
-          (!options.date_range?.end || created <= options.date_range.end)
-        );
+        const created = new Date(adr["created_at"]);
+        return ((!options?.["date_range"]?.["start"] || created >= options?.["date_range"]?.["start"]) && (!options?.["date_range"]?.["end"] || created <= options?.["date_range"]?.["end"]));
       });
     }
 
-    if (options.tags) {
+    if (options?.["tags"]) {
       filteredADRs = filteredADRs.filter((adr) =>
-        options.tags?.some((tag) => adr.keywords.includes(tag))
+        options?.["tags"]?.["some"]((tag) => adr.keywords.includes(tag))
       );
     }
 
     return {
       adrs: filteredADRs,
       total: filteredADRs.length,
-      hasMore: result.hasMore,
+      hasMore: result?.hasMore,
     };
   }
 
@@ -252,21 +240,21 @@ export class ADRManager {
     searchMetadata: any;
   }> {
     const searchOptions: any = {
-      searchType: options.searchType || 'combined',
+      searchType: options?.["searchType"] || 'combined',
       query,
       projectId: this.architectureProject?.id,
       documentTypes: ['adr'],
-      limit: options.limit || 20,
+      limit: options?.["limit"] || 20,
     };
 
     // Apply additional filters
-    if (options.filters) {
-      if (options.filters.status) searchOptions.status = [options.filters.status];
-      if (options.filters.priority) searchOptions.priority = [options.filters.priority];
-      if (options.filters.date_range)
-        searchOptions.dateRange = {
-          start: options.filters.date_range.start,
-          end: options.filters.date_range.end,
+    if (options?.["filters"]) {
+      if (options?.["filters"]?.["status"]) searchOptions?.status = [options?.["filters"]?.["status"]];
+      if (options?.["filters"]?.["priority"]) searchOptions?.priority = [options?.["filters"]?.["priority"]];
+      if (options?.["filters"]?.["date_range"])
+        searchOptions?.dateRange = {
+          start: options?.["filters"]?.["date_range"]?.["start"],
+          end: options?.["filters"]?.["date_range"]?.["end"],
           field: 'created_at' as const,
         };
     }
@@ -274,9 +262,9 @@ export class ADRManager {
     const result = await documentManager.searchDocuments<ADRDocumentEntity>(searchOptions);
 
     return {
-      adrs: result.documents,
-      total: result.total,
-      searchMetadata: result.searchMetadata,
+      adrs: result?.documents,
+      total: result?.total,
+      searchMetadata: result?.searchMetadata,
     };
   }
 
@@ -419,17 +407,17 @@ export class ADRManager {
     for (const adr of adrs) {
       // Status stats
       if (adr.status) { // Added null check
-        stats.by_status[adr.status] = (stats.by_status[adr.status] || 0) + 1;
+        stats["by_status"]?.[adr.status] = (stats["by_status"]?.[adr.status] || 0) + 1;
       }
 
       // Priority stats
       if (adr.priority) { // Added null check
-        stats.by_priority[adr.priority] = (stats.by_priority[adr.priority] || 0) + 1;
+        stats["by_priority"]?.[adr.priority] = (stats["by_priority"]?.[adr.priority] || 0) + 1;
       }
 
       // Author stats
       if (adr.author) { // Added null check
-        stats.by_author[adr.author] = (stats.by_author[adr.author] || 0) + 1;
+        stats["by_author"]?.[adr.author] = (stats["by_author"]?.[adr.author] || 0) + 1;
       }
 
       // TODO: TypeScript error TS2367 - Status comparison type mismatch (AI unsure of safe fix - human review needed)
@@ -448,7 +436,7 @@ export class ADRManager {
       */
     }
 
-    stats.implementation_rate = decidedCount > 0 ? (implementedCount / decidedCount) * 100 : 0;
+    stats["implementation_rate"] = decidedCount > 0 ? (implementedCount / decidedCount) * 100 : 0;
 
     return stats;
   }
@@ -479,7 +467,7 @@ export class ADRManager {
         status: adr.status || 'unknown', // Added fallback
         priority: adr.priority || 'medium', // Added fallback
         author: adr.author || 'unknown', // Added fallback
-        created: new Date(adr.created_at),
+        created: new Date(adr["created_at"]),
         // TODO: TypeScript error TS2339 - Property 'summary' does not exist (AI unsure of safe fix - human review needed)
         summary: (adr as any).summary || 'No summary available', // Cast and fallback due to type error
       }))
@@ -493,29 +481,29 @@ export class ADRManager {
    * @param options
    */
   private formatADRContent(adrId: string, options: ADRCreateOptions): string {
-    let content = `# ${adrId}: ${options.title}\n\n`;
+    let content = `# ${adrId}: ${options?.title}\n\n`;
     content += `## Status\n**PROPOSED**\n\n`;
-    content += `## Context\n${options.context}\n\n`;
-    content += `## Decision\n${options.decision}\n\n`;
-    content += `## Consequences\n${options.consequences}\n\n`;
+    content += `## Context\n${options?.context}\n\n`;
+    content += `## Decision\n${options?.["decision"]}\n\n`;
+    content += `## Consequences\n${options?.["consequences"]}\n\n`;
 
-    if (options.alternatives && options.alternatives.length > 0) {
+    if (options?.["alternatives"] && options?.["alternatives"].length > 0) {
       content += `## Alternatives Considered\n\n`;
-      for (const alt of options.alternatives) {
+      for (const alt of options?.["alternatives"]) {
         content += `### ${alt.name}\n`;
         content += `**Pros**: ${alt.pros.join(', ')}\n`;
         content += `**Cons**: ${alt.cons.join(', ')}\n`;
-        content += `**Rejected because**: ${alt.rejected_reason}\n\n`;
+        content += `**Rejected because**: ${alt["rejected_reason"]}\n\n`;
       }
     }
 
-    if (options.implementation_notes) {
-      content += `## Implementation Notes\n${options.implementation_notes}\n\n`;
+    if (options?.["implementation_notes"]) {
+      content += `## Implementation Notes\n${options?.["implementation_notes"]}\n\n`;
     }
 
-    if (options.success_criteria && options.success_criteria.length > 0) {
+    if (options?.["success_criteria"] && options?.["success_criteria"].length > 0) {
       content += `## Success Criteria\n`;
-      for (const criteria of options.success_criteria) {
+      for (const criteria of options?.["success_criteria"]) {
         content += `- ${criteria}\n`;
       }
       content += '\n';
@@ -523,10 +511,10 @@ export class ADRManager {
 
     content += `---\n\n`;
     content += `**Decision Date**: ${new Date().toISOString().split('T')[0]}\n`;
-    content += `**Author**: ${options.author || 'architecture-team'}\n`;
+    content += `**Author**: ${options?.["author"] || 'architecture-team'}\n`;
 
-    if (options.stakeholders && options.stakeholders.length > 0) {
-      content += `**Stakeholders**: ${options.stakeholders.join(', ')}\n`;
+    if (options?.["stakeholders"] && options?.["stakeholders"].length > 0) {
+      content += `**Stakeholders**: ${options?.["stakeholders"]?.join(', ')}\n`;
     }
 
     return content;

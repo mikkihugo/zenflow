@@ -7,14 +7,7 @@ const logger = getLogger("interfaces-api-safe-api-client");
  * for HTTP endpoints and external service interactions.
  */
 
-import {
-  type APIError,
-  type APIResult,
-  type APISuccess,
-  extractErrorMessage,
-  isAPIError,
-  isAPISuccess,
-} from '../../utils/type-guards';
+import { extractErrorMessage, isAPIError, isAPISuccess } from '../../utils/type-guards';
 
 export interface APIRequestOptions {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -127,21 +120,21 @@ export class SafeAPIClient {
 
     try {
       const url = `${this.baseURL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
-      const headers = { ...this.defaultHeaders, ...options.headers };
+      const headers = { ...this.defaultHeaders, ...options?.["headers"] };
 
       const requestOptions: RequestInit = {
-        method: options.method,
+        method: options?.["method"],
         headers,
-        signal: AbortSignal.timeout(options.timeout ?? this.timeout),
+        signal: AbortSignal.timeout(options?.["timeout"] ?? this.timeout),
       };
 
-      if (options.body && ['POST', 'PUT', 'PATCH'].includes(options.method)) {
-        requestOptions.body =
-          typeof options.body === 'string' ? options.body : JSON.stringify(options.body);
+      if (options?.["body"] && ['POST', 'PUT', 'PATCH'].includes(options?.["method"])) {
+        requestOptions?.body =
+          typeof options?.["body"] === 'string' ? options?.["body"] : JSON.stringify(options?.["body"]);
       }
 
       // Execute request with optional retries
-      const maxRetries = options.retries ?? 3;
+      const maxRetries = options?.["retries"] ?? 3;
       let lastError: Error | null = null;
 
       for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -158,15 +151,15 @@ export class SafeAPIClient {
           };
 
           // Handle response based on status
-          if (response.ok) {
+          if (response?.ok) {
             // Success response
-            const contentType = response.headers.get('content-type');
+            const contentType = response?.headers?.get('content-type');
             let data: T;
 
             if (contentType?.includes('application/json')) {
-              data = (await response.json()) as T;
+              data = (await response?.json()) as T;
             } else {
-              data = (await response.text()) as unknown as T;
+              data = (await response?.text()) as unknown as T;
             }
 
             return {
@@ -181,13 +174,13 @@ export class SafeAPIClient {
             return {
               success: false,
               error: {
-                code: `HTTP_${response.status}`,
-                message: errorData.message || response.statusText,
+                code: `HTTP_${response?.status}`,
+                message: errorData?.message || response?.statusText,
                 details: {
-                  status: response.status,
-                  statusText: response.statusText,
+                  status: response?.status,
+                  statusText: response?.statusText,
                   url,
-                  method: options.method,
+                  method: options?.["method"],
                   ...errorData,
                 },
               },
@@ -226,7 +219,7 @@ export class SafeAPIClient {
           message: lastError?.message || 'Request failed after all retries',
           details: {
             url,
-            method: options.method,
+            method: options?.["method"],
             maxRetries,
             originalError: lastError?.message,
           },
@@ -263,11 +256,11 @@ export class SafeAPIClient {
 
   private async parseErrorResponse(response: Response): Promise<any> {
     try {
-      const contentType = response.headers.get('content-type');
+      const contentType = response?.headers?.get('content-type');
       if (contentType?.includes('application/json')) {
-        return await response.json();
+        return await response?.json();
       } else {
-        const text = await response.text();
+        const text = await response?.text();
         return { message: text };
       }
     } catch {
@@ -423,19 +416,19 @@ export async function safeAPIUsageExample(): Promise<void> {
 
   if (isAPISuccess(createResult)) {
     // Get the created user
-    const getResult = await apiService.getResource<User>('/users', createResult.data.id);
+    const getResult = await apiService.getResource<User>('/users', createResult?.data?.id);
 
     if (isAPISuccess(getResult)) {
     } else if (isAPIError(getResult)) {
-      logger.error('❌ Failed to retrieve user:', getResult.error.message);
-      logger.error('Error code:', getResult.error.code);
+      logger.error('❌ Failed to retrieve user:', getResult?.error?.message);
+      logger.error('Error code:', getResult?.error?.code);
     }
   } else if (isAPIError(createResult)) {
-    logger.error('❌ Failed to create user:', createResult.error.message);
-    logger.error('Error details:', createResult.error.details);
+    logger.error('❌ Failed to create user:', createResult?.error?.message);
+    logger.error('Error details:', createResult?.error?.details);
 
     // Handle specific error codes
-    switch (createResult.error.code) {
+    switch (createResult?.error?.code) {
       case 'HTTP_409':
         logger.error('User already exists');
         break;
@@ -455,7 +448,7 @@ export async function safeAPIUsageExample(): Promise<void> {
   });
 
   if (isAPISuccess(listResult)) {
-    listResult.data.items.forEach((_user) => {});
+    listResult?.data?.items?.forEach((_user) => {});
   } else if (isAPIError(listResult)) {
     logger.error('❌ Failed to list users:', extractErrorMessage(listResult));
   }
@@ -477,11 +470,11 @@ export async function safeConcurrentAPIExample(): Promise<void> {
   const successfulUsers: User[] = [];
   const errors: string[] = [];
 
-  results.forEach((result, index) => {
+  results?.forEach((result, index) => {
     if (isAPISuccess(result)) {
-      successfulUsers.push(result.data);
+      successfulUsers.push(result?.data);
     } else if (isAPIError(result)) {
-      errors.push(`User ${userIds[index]}: ${result.error.message}`);
+      errors.push(`User ${userIds[index]}: ${result?.error?.message}`);
     }
   });
 

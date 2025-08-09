@@ -6,8 +6,6 @@
  */
 
 import { createLogger } from '../../core/logger';
-import type { DSPyProgram, DSPyWrapper } from '../../neural/dspy-wrapper';
-import type { DSPyExample } from '../../neural/types/dspy-types';
 
 const logger = createLogger({ prefix: 'DSPyAgentPrograms' });
 
@@ -60,7 +58,7 @@ export abstract class BaseDSPyAgentProgram {
     try {
       const result = await this.dspyWrapper.execute(this.program, input);
 
-      if (result.success) {
+      if (result?.success) {
         this.performance.successfulExecutions++;
         const responseTime = Date.now() - startTime;
         this.performance.averageResponseTime =
@@ -69,9 +67,9 @@ export abstract class BaseDSPyAgentProgram {
         this.performance.accuracy =
           this.performance.successfulExecutions / this.performance.totalExecutions;
 
-        return result.result;
+        return result?.result;
       } else {
-        throw new Error(result.error?.message || 'Execution failed');
+        throw new Error(result?.error?.message || 'Execution failed');
       }
     } catch (error) {
       logger.error(`Program execution failed: ${this.constructor.name}`, error);
@@ -114,10 +112,10 @@ export abstract class BaseDSPyAgentProgram {
         timeout: 30000,
       });
 
-      if (result.success) {
-        this.program = result.program;
+      if (result?.success) {
+        this.program = result?.program;
         logger.info(`Optimized DSPy program: ${this.constructor.name}`, {
-          improvement: result.metrics.improvementPercent,
+          improvement: result?.metrics?.improvementPercent,
         });
       }
     } catch (error) {

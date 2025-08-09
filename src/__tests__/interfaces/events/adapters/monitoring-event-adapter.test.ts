@@ -10,8 +10,6 @@ import { EventManagerTypes } from '../../core/interfaces';
 import {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
-  type MonitoringEventAdapter,
-  type MonitoringEventAdapterConfig,
   MonitoringEventHelpers,
 } from '../monitoring-event-adapter';
 
@@ -38,7 +36,7 @@ describe('MonitoringEventAdapter', () => {
   describe('TDD London: Monitoring Component Integration', () => {
     it('should wrap performance monitors and forward events to UEL', async () => {
       // Mock performance monitor
-      const _mockPerformanceMonitor = {
+      const mockPerformanceMonitor = {
         start: vi.fn(),
         stop: vi.fn(),
         record: vi.fn(),
@@ -72,7 +70,7 @@ describe('MonitoringEventAdapter', () => {
     });
 
     it('should wrap health components and correlate health events', async () => {
-      const _mockHealthComponent = {
+      const mockHealthComponent = {
         checkHealth: vi.fn().mockResolvedValue({ status: 'healthy', score: 0.95 }),
         getStatus: vi.fn().mockReturnValue('healthy'),
       };
@@ -97,7 +95,7 @@ describe('MonitoringEventAdapter', () => {
     });
 
     it('should wrap analytics components and process insights', async () => {
-      const _mockAnalyticsComponent = {
+      const mockAnalyticsComponent = {
         analyze: vi.fn().mockResolvedValue({ insights: ['trend-detected'] }),
         getInsights: vi.fn().mockReturnValue({ anomalies: [] }),
       };
@@ -128,7 +126,7 @@ describe('MonitoringEventAdapter', () => {
     });
 
     it('should wrap alert management and handle escalation', async () => {
-      const _mockAlertManager = {
+      const mockAlertManager = {
         createAlert: vi.fn(),
         escalateAlert: vi.fn(),
         resolveAlert: vi.fn(),
@@ -156,7 +154,7 @@ describe('MonitoringEventAdapter', () => {
     });
 
     it('should wrap dashboard integration and handle real-time updates', async () => {
-      const _mockDashboard = {
+      const mockDashboard = {
         update: vi.fn(),
         render: vi.fn(),
         streamData: vi.fn(),
@@ -328,7 +326,7 @@ describe('MonitoringEventAdapter', () => {
         enricher: async (event) => ({
           ...event,
           metadata: {
-            ...event.metadata,
+            ...event["metadata"],
             enriched: true,
             transformedAt: Date.now(),
           },
@@ -350,7 +348,7 @@ describe('MonitoringEventAdapter', () => {
 
       // Verify transform was applied
       expect(listener).toHaveBeenCalled();
-      const transformedEvent = listener.mock.calls[0][0];
+      const transformedEvent = listener.mock.calls[0]?.[0];
       expect(transformedEvent.metadata?.enriched).toBe(true);
       expect(transformedEvent.metadata?.transformedAt).toBeDefined();
 
@@ -484,8 +482,8 @@ describe('MonitoringEventAdapter', () => {
 
       // Events should be in chronological order
       for (let i = 1; i < history.length; i++) {
-        expect(history[i].timestamp.getTime()).toBeGreaterThanOrEqual(
-          history[i - 1].timestamp.getTime()
+        expect(history[i]?.timestamp?.getTime()).toBeGreaterThanOrEqual(
+          history[i - 1]?.timestamp?.getTime()
         );
       }
     });
@@ -517,7 +515,7 @@ describe('MonitoringEventAdapter', () => {
 
       expect(metrics).toBeDefined();
       expect(metrics.name).toBe('test-monitoring-adapter');
-      expect(metrics.type).toBe(EventManagerTypes.MONITORING);
+      expect(metrics.type).toBe(EventManagerTypes["MONITORING"]);
       expect(metrics.eventsProcessed).toBeGreaterThan(0);
       expect(metrics.averageLatency).toBeGreaterThanOrEqual(0);
       expect(metrics.throughput).toBeGreaterThanOrEqual(0);
@@ -550,8 +548,8 @@ describe('MonitoringEventAdapter', () => {
       const metricsData = adapter.getMetricsData(metricName);
 
       expect(metricsData).toBeDefined();
-      expect(metricsData.eventCount).toBe(values.length);
-      expect(metricsData.latestValue).toBe(values[values.length - 1]);
+      expect(metricsData?.eventCount).toBe(values.length);
+      expect(metricsData?.latestValue).toBe(values[values.length - 1]);
     });
 
     it('should calculate component health scores accurately', async () => {
@@ -577,8 +575,8 @@ describe('MonitoringEventAdapter', () => {
       const healthData = adapter.getHealthData(component);
 
       expect(healthData).toBeDefined();
-      expect(healthData.eventCount).toBe(healthScores.length);
-      expect(healthData.latestScore).toBe(healthScores[healthScores.length - 1]);
+      expect(healthData?.eventCount).toBe(healthScores.length);
+      expect(healthData?.latestScore).toBe(healthScores[healthScores.length - 1]);
     });
 
     it('should track alert patterns and frequencies', async () => {
@@ -604,8 +602,8 @@ describe('MonitoringEventAdapter', () => {
       const alertData = adapter.getAlertData(alertId);
 
       expect(alertData).toBeDefined();
-      expect(alertData.eventCount).toBe(severities.length);
-      expect(alertData.severity).toBe(severities[severities.length - 1]); // Latest severity
+      expect(alertData?.eventCount).toBe(severities.length);
+      expect(alertData?.severity).toBe(severities[severities.length - 1]); // Latest severity
     });
 
     it('should maintain performance insights over time', async () => {
@@ -771,14 +769,14 @@ describe('MonitoringEventAdapter', () => {
         { threshold: 80 }
       );
 
-      expect(event.source).toBe('performance-monitor');
+      expect(event["source"]).toBe('performance-monitor');
       expect(event.type).toBe('monitoring:metrics');
-      expect(event.operation).toBe('collect');
-      expect(event.component).toBe('web-server');
-      expect(event.priority).toBe('medium');
-      expect(event.details?.metricName).toBe('cpu_usage');
-      expect(event.details?.metricValue).toBe(85.5);
-      expect(event.details?.threshold).toBe(80);
+      expect(event["operation"]).toBe('collect');
+      expect(event["component"]).toBe('web-server');
+      expect(event["priority"]).toBe('medium');
+      expect(event["details"]?.["metricName"]).toBe('cpu_usage');
+      expect(event["details"]?.["metricValue"]).toBe(85.5);
+      expect(event["details"]?.["threshold"]).toBe(80);
     });
 
     it('should create health status events correctly', () => {
@@ -786,13 +784,13 @@ describe('MonitoringEventAdapter', () => {
         lastCheck: new Date(),
       });
 
-      expect(event.source).toBe('health-monitor');
+      expect(event["source"]).toBe('health-monitor');
       expect(event.type).toBe('monitoring:health');
-      expect(event.operation).toBe('alert');
-      expect(event.component).toBe('database');
-      expect(event.priority).toBe('high');
-      expect(event.details?.healthScore).toBe(0.45);
-      expect(event.details?.severity).toBe('error');
+      expect(event["operation"]).toBe('alert');
+      expect(event["component"]).toBe('database');
+      expect(event["priority"]).toBe('high');
+      expect(event["details"]?.["healthScore"]).toBe(0.45);
+      expect(event["details"]?.["severity"]).toBe('error');
     });
 
     it('should create alert events correctly', () => {
@@ -803,13 +801,13 @@ describe('MonitoringEventAdapter', () => {
         { threshold: 1000, currentValue: 2500 }
       );
 
-      expect(event.source).toBe('alert-manager');
+      expect(event["source"]).toBe('alert-manager');
       expect(event.type).toBe('monitoring:alert');
-      expect(event.operation).toBe('alert');
-      expect(event.component).toBe('payment-service');
-      expect(event.priority).toBe('critical');
-      expect(event.details?.alertId).toBe('alert-123');
-      expect(event.details?.severity).toBe('critical');
+      expect(event["operation"]).toBe('alert');
+      expect(event["component"]).toBe('payment-service');
+      expect(event["priority"]).toBe('critical');
+      expect(event["details"]?.["alertId"]).toBe('alert-123');
+      expect(event["details"]?.["severity"]).toBe('critical');
     });
 
     it('should create analytics insight events correctly', () => {
@@ -821,11 +819,11 @@ describe('MonitoringEventAdapter', () => {
 
       const event = MonitoringEventHelpers.createAnalyticsInsightEvent('trend-analyzer', insights);
 
-      expect(event.source).toBe('analytics-engine');
+      expect(event["source"]).toBe('analytics-engine');
       expect(event.type).toBe('monitoring:metrics');
-      expect(event.operation).toBe('report');
-      expect(event.component).toBe('trend-analyzer');
-      expect(event.details?.insights).toEqual(insights);
+      expect(event["operation"]).toBe('report');
+      expect(event["component"]).toBe('trend-analyzer');
+      expect(event["details"]?.["insights"]).toEqual(insights);
     });
 
     it('should create monitoring error events correctly', () => {
@@ -838,14 +836,14 @@ describe('MonitoringEventAdapter', () => {
         'collect'
       );
 
-      expect(event.source).toBe('metrics-collector');
+      expect(event["source"]).toBe('metrics-collector');
       expect(event.type).toBe('monitoring:alert');
-      expect(event.operation).toBe('alert');
-      expect(event.component).toBe('metrics-collector');
-      expect(event.priority).toBe('high');
-      expect(event.details?.severity).toBe('error');
-      expect(event.details?.errorCode).toBe('TimeoutError');
-      expect(event.details?.errorMessage).toBe('Connection timeout');
+      expect(event["operation"]).toBe('alert');
+      expect(event["component"]).toBe('metrics-collector');
+      expect(event["priority"]).toBe('high');
+      expect(event["details"]?.["severity"]).toBe('error');
+      expect(event["details"]?.["errorCode"]).toBe('TimeoutError');
+      expect(event["details"]?.["errorMessage"]).toBe('Connection timeout');
     });
   });
 });

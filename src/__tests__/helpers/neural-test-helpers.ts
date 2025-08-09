@@ -91,7 +91,7 @@ export class NeuralTestDataGenerator {
     for (let i = 0; i < samples; i++) {
       const x = Math.random() * 10;
       const y = 2 * x + 3 + (Math.random() - 0.5) * noise;
-      data.push({
+      data?.push({
         input: [x],
         output: [y],
         metadata: { label: `linear_${i}` },
@@ -123,7 +123,7 @@ export class NeuralTestDataGenerator {
       }
       y += (Math.random() - 0.5) * noise;
 
-      data.push({
+      data?.push({
         input: [x],
         output: [y],
         metadata: { label: `poly_${i}`, category: `degree_${degree}` },
@@ -153,7 +153,7 @@ export class NeuralTestDataGenerator {
         const output = Array(classes).fill(0);
         output[classIndex] = 1;
 
-        data.push({
+        data?.push({
           input: [x, y],
           output,
           metadata: { label: `spiral_class_${classIndex}_${i}`, category: `class_${classIndex}` },
@@ -161,7 +161,7 @@ export class NeuralTestDataGenerator {
       }
     }
 
-    return NeuralTestDataGenerator.shuffleArray(data);
+    return NeuralTestDataGenerator?.shuffleArray(data);
   }
 
   /**
@@ -184,7 +184,7 @@ export class NeuralTestDataGenerator {
       const nextValue =
         Math.sin(2 * Math.PI * frequency * (t + 1 / length)) + (Math.random() - 0.5) * noise;
 
-      data.push({
+      data?.push({
         input: [value],
         output: [nextValue],
         metadata: { label: `timeseries_${i}`, category: 'temporal' },
@@ -229,14 +229,14 @@ export class NeuralNetworkValidator {
     config: TrainingTestConfig
   ): { converged: boolean; finalError: number; epochs: number } {
     const finalError = errors[errors.length - 1];
-    const converged = finalError < config.convergenceThreshold;
+    const converged = finalError < config?.convergenceThreshold;
 
     expect(errors.length).toBeGreaterThan(0);
     expect(Number.isFinite(finalError)).toBe(true);
     expect(finalError).toBeGreaterThanOrEqual(0);
 
     if (converged) {
-      expect(finalError).toBeLessThan(config.convergenceThreshold);
+      expect(finalError).toBeLessThan(config?.convergenceThreshold);
     }
 
     return {
@@ -450,16 +450,16 @@ export class NeuralMathHelpers {
       for (let j = 0; j < cols; j++) {
         switch (fillType) {
           case 'random':
-            matrix[i][j] = Math.random() * 2 - 1; // Range [-1, 1]
+            matrix[i]?.[j] = Math.random() * 2 - 1; // Range [-1, 1]
             break;
           case 'zeros':
-            matrix[i][j] = 0;
+            matrix[i]?.[j] = 0;
             break;
           case 'ones':
-            matrix[i][j] = 1;
+            matrix[i]?.[j] = 1;
             break;
           case 'identity':
-            matrix[i][j] = i === j ? 1 : 0;
+            matrix[i]?.[j] = i === j ? 1 : 0;
             break;
         }
       }
@@ -479,11 +479,11 @@ export class NeuralMathHelpers {
 
     const result: number[][] = [];
     for (let i = 0; i < a.length; i++) {
-      result[i] = [];
+      result?.[i] = [];
       for (let j = 0; j < b[0].length; j++) {
-        result[i][j] = 0;
+        result?.[i]?.[j] = 0;
         for (let k = 0; k < b.length; k++) {
-          result[i][j] += a[i][k] * b[k][j];
+          result?.[i]?.[j] += a[i]?.[k] * b[k]?.[j];
         }
       }
     }
@@ -538,7 +538,7 @@ export class NeuralMathHelpers {
     for (let i = 0; i < a.length; i++) {
       if (a[i].length !== b[i].length) return false;
       for (let j = 0; j < a[i].length; j++) {
-        if (Math.abs(a[i][j] - b[i][j]) > tolerance) return false;
+        if (Math.abs(a[i]?.[j] - b[i]?.[j]) > tolerance) return false;
       }
     }
 

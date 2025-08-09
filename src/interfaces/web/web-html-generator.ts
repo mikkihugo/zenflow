@@ -1,12 +1,3 @@
-/**
- * Web HTML Generator - Inline HTML generation
- *
- * Generates inline HTML dashboard when no React build is available.
- * Provides fallback UI with basic functionality and theming support.
- */
-
-import type { WebConfig } from './web-config';
-
 export class WebHtmlGenerator {
   private config: WebConfig;
 

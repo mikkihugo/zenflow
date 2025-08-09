@@ -40,14 +40,14 @@ class ClaudeIntegrationOrchestrator {
 
   constructor(options: ClaudeIntegrationOptions = {}) {
     this.options = {
-      autoSetup: options.autoSetup || false,
-      forceSetup: options.forceSetup || false,
-      mergeSetup: options.mergeSetup || false,
-      backupSetup: options.backupSetup || false,
-      noBackup: options.noBackup || false,
-      interactive: options.interactive !== false, // Default to true
-      workingDir: options.workingDir || process.cwd(),
-      packageName: options.packageName || 'ruv-swarm',
+      autoSetup: options?.autoSetup || false,
+      forceSetup: options?.forceSetup || false,
+      mergeSetup: options?.mergeSetup || false,
+      backupSetup: options?.backupSetup || false,
+      noBackup: options?.noBackup || false,
+      interactive: options?.interactive !== false, // Default to true
+      workingDir: options?.workingDir || process.cwd(),
+      packageName: options?.packageName || 'ruv-swarm',
       ...options,
     };
 
@@ -68,28 +68,28 @@ class ClaudeIntegrationOrchestrator {
         success: true,
         modules: {},
       };
-      results.modules.docs = await this.docs.generateAll({
+      results?.modules?.docs = await this.docs.generateAll({
         force: this.options.forceSetup ?? false,
         merge: this.options.mergeSetup ?? false,
         backup: this.options.backupSetup ?? false,
         noBackup: this.options.noBackup ?? false,
         interactive: this.options.interactive ?? true,
       });
-      results.modules.remote = await this.remote.createAll();
+      results?.modules?.remote = await this.remote.createAll();
 
       // Step 3: Initialize core integration (if auto setup enabled)
       if (this.options.autoSetup) {
         try {
-          results.modules.core = await this.core.initialize();
+          results?.modules?.core = await this.core.initialize();
         } catch (error: any) {
-          results.modules.core = {
+          results?.modules?.core = {
             success: false,
             error: error.message,
             manualSetup: true,
           };
         }
       } else {
-        results.modules.core = {
+        results?.modules?.core = {
           success: true,
           manualSetup: true,
           instructions: [
@@ -98,7 +98,7 @@ class ClaudeIntegrationOrchestrator {
           ],
         };
       }
-      if (results.modules.core.manualSetup) {
+      if (results?.modules?.core?.manualSetup) {
       } else {
       }
 

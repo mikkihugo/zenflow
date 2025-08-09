@@ -38,14 +38,14 @@ describe('Training Convergence - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
         randomSeed: 42,
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS.INCREMENTAL_BACKPROP,
+        algorithm: TRAINING_ALGORITHMS["INCREMENTAL_BACKPROP"],
         learningRate: 0.7,
         maxEpochs: 3000,
         targetError: 0.01,
@@ -70,9 +70,9 @@ describe('Training Convergence - Classical TDD', () => {
       const result = await trainer.trainUntilTarget(network, xorData, 0.01, 3000);
 
       // Verify convergence
-      expect(result.converged).toBe(true);
-      expect(result.finalError).toBeLessThan(0.01);
-      expect(result.epochs).toBeLessThan(3000);
+      expect(result?.converged).toBe(true);
+      expect(result?.finalError).toBeLessThan(0.01);
+      expect(result?.epochs).toBeLessThan(3000);
 
       // Test actual XOR predictions
       const predictions = {
@@ -82,10 +82,10 @@ describe('Training Convergence - Classical TDD', () => {
         '1,1': await network.run([1, 1]),
       };
 
-      expect(predictions['0,0'][0]).toBeCloseTo(0, 1);
-      expect(predictions['0,1'][0]).toBeCloseTo(1, 1);
-      expect(predictions['1,0'][0]).toBeCloseTo(1, 1);
-      expect(predictions['1,1'][0]).toBeCloseTo(0, 1);
+      expect(predictions['0,0']?.[0]).toBeCloseTo(0, 1);
+      expect(predictions['0,1']?.[0]).toBeCloseTo(1, 1);
+      expect(predictions['1,0']?.[0]).toBeCloseTo(1, 1);
+      expect(predictions['1,1']?.[0]).toBeCloseTo(0, 1);
     });
 
     it('should demonstrate faster convergence with RProp algorithm', async () => {
@@ -97,9 +97,9 @@ describe('Training Convergence - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
         randomSeed: 42,
       };
 
@@ -115,7 +115,7 @@ describe('Training Convergence - Classical TDD', () => {
 
       // Train with standard backprop
       const backpropConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS.INCREMENTAL_BACKPROP,
+        algorithm: TRAINING_ALGORITHMS["INCREMENTAL_BACKPROP"],
         learningRate: 0.7,
         maxEpochs: 2000,
         targetError: 0.05,
@@ -123,7 +123,7 @@ describe('Training Convergence - Classical TDD', () => {
 
       // Train with RProp
       const rpropConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS.RPROP,
+        algorithm: TRAINING_ALGORITHMS["RPROP"],
         maxEpochs: 2000,
         targetError: 0.05,
       };
@@ -141,10 +141,10 @@ describe('Training Convergence - Classical TDD', () => {
       const rpropResult = await rpropTrainer.trainUntilTarget(network2, xorData, 0.05, 2000);
 
       // RProp should generally converge faster or achieve lower error
-      if (backpropResult.converged && rpropResult.converged) {
-        expect(rpropResult.epochs).toBeLessThanOrEqual(backpropResult.epochs * 1.5);
-      } else if (rpropResult.converged) {
-        expect(rpropResult.converged).toBe(true);
+      if (backpropResult?.converged && rpropResult?.converged) {
+        expect(rpropResult?.epochs).toBeLessThanOrEqual(backpropResult?.epochs * 1.5);
+      } else if (rpropResult?.converged) {
+        expect(rpropResult?.converged).toBe(true);
       }
     });
   });
@@ -159,13 +159,13 @@ describe('Training Convergence - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 1,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.LINEAR,
+        outputActivation: ACTIVATION_FUNCTIONS["LINEAR"],
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS.BATCH_BACKPROP,
+        algorithm: TRAINING_ALGORITHMS["BATCH_BACKPROP"],
         learningRate: 0.1,
         maxEpochs: 500,
         targetError: 0.01,
@@ -184,13 +184,13 @@ describe('Training Convergence - Classical TDD', () => {
 
       const result = await trainer.trainUntilTarget(network, linearData, 0.01, 500);
 
-      expect(result.converged).toBe(true);
-      expect(result.epochs).toBeLessThan(300); // Linear should converge quickly
+      expect(result?.converged).toBe(true);
+      expect(result?.epochs).toBeLessThan(300); // Linear should converge quickly
 
       // Test predictions on training data
-      for (let i = 0; i < linearData.inputs.length; i++) {
-        const prediction = await network.run(linearData.inputs[i]);
-        expect(prediction[0]).toBeCloseTo(linearData.outputs[i][0], 1);
+      for (let i = 0; i < linearData?.inputs.length; i++) {
+        const prediction = await network.run(linearData?.inputs?.[i]);
+        expect(prediction[0]).toBeCloseTo(linearData?.outputs?.[i]?.[0], 1);
       }
 
       // Test interpolation
@@ -210,15 +210,15 @@ describe('Training Convergence - Classical TDD', () => {
       const networkConfig: NetworkConfig = {
         inputSize: 1,
         hiddenLayers: [
-          { size: 8, activation: ACTIVATION_FUNCTIONS.TANH },
-          { size: 8, activation: ACTIVATION_FUNCTIONS.TANH },
+          { size: 8, activation: ACTIVATION_FUNCTIONS["TANH"] },
+          { size: 8, activation: ACTIVATION_FUNCTIONS["TANH"] },
         ],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.LINEAR,
+        outputActivation: ACTIVATION_FUNCTIONS["LINEAR"],
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS.RPROP,
+        algorithm: TRAINING_ALGORITHMS["RPROP"],
         maxEpochs: 1000,
         targetError: 0.05,
       };
@@ -230,10 +230,10 @@ describe('Training Convergence - Classical TDD', () => {
       };
 
       for (let i = 0; i <= 20; i++) {
-        const x = (i / 20) * 2 * Math.PI; // 0 to 2π
+        const x = (i / 20) * 2 * Math["PI"]; // 0 to 2π
         const y = Math.sin(x);
-        sineData.inputs.push([x / (2 * Math.PI)]); // Normalize to [0,1]
-        sineData.outputs.push([y]);
+        sineData?.inputs?.push([x / (2 * Math["PI"])]); // Normalize to [0,1]
+        sineData?.outputs?.push([y]);
       }
 
       const network = await createNeuralNetwork(networkConfig);
@@ -243,7 +243,7 @@ describe('Training Convergence - Classical TDD', () => {
 
       const result = await trainer.trainUntilTarget(network, sineData, 0.05, 1000);
 
-      expect(result.finalError).toBeLessThan(0.1); // Reasonable approximation
+      expect(result?.finalError).toBeLessThan(0.1); // Reasonable approximation
 
       // Test specific sine values
       const testPoints = [
@@ -270,13 +270,13 @@ describe('Training Convergence - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 6, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 6, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 3,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS.RPROP,
+        algorithm: TRAINING_ALGORITHMS["RPROP"],
         maxEpochs: 800,
         targetError: 0.1,
       };
@@ -326,7 +326,7 @@ describe('Training Convergence - Classical TDD', () => {
 
       const result = await trainer.trainUntilTarget(network, classificationData, 0.1, 800);
 
-      expect(result.finalError).toBeLessThan(0.2);
+      expect(result?.finalError).toBeLessThan(0.2);
 
       // Test classification accuracy
       const testClass0 = await network.run([0.15, 0.15]);
@@ -357,9 +357,9 @@ describe('Training Convergence - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
         randomSeed: 123,
       };
 
@@ -374,10 +374,10 @@ describe('Training Convergence - Classical TDD', () => {
       };
 
       const algorithms = [
-        TRAINING_ALGORITHMS.INCREMENTAL_BACKPROP,
-        TRAINING_ALGORITHMS.BATCH_BACKPROP,
-        TRAINING_ALGORITHMS.RPROP,
-        TRAINING_ALGORITHMS.QUICKPROP,
+        TRAINING_ALGORITHMS["INCREMENTAL_BACKPROP"],
+        TRAINING_ALGORITHMS["BATCH_BACKPROP"],
+        TRAINING_ALGORITHMS["RPROP"],
+        TRAINING_ALGORITHMS["QUICKPROP"],
       ];
 
       const results: { [key: string]: any } = {};
@@ -396,16 +396,16 @@ describe('Training Convergence - Classical TDD', () => {
         network.setTrainingData(xorData);
 
         const result = await trainer.trainUntilTarget(network, xorData, 0.05, 1500);
-        results[algorithm] = result;
+        results?.[algorithm] = result;
       }
 
       // At least one algorithm should converge
-      const convergedAlgorithms = Object.keys(results).filter((algo) => results[algo].converged);
+      const convergedAlgorithms = Object.keys(results).filter((algo) => results?.[algo]?.converged);
       expect(convergedAlgorithms.length).toBeGreaterThan(0);
 
       // Verify that converged algorithms achieve target error
       for (const algo of convergedAlgorithms) {
-        expect(results[algo].finalError).toBeLessThan(0.05);
+        expect(results?.[algo]?.finalError).toBeLessThan(0.05);
       }
     });
   });
@@ -420,9 +420,9 @@ describe('Training Convergence - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
         randomSeed: 456,
       };
 
@@ -441,7 +441,7 @@ describe('Training Convergence - Classical TDD', () => {
 
       for (const lr of learningRates) {
         const trainingConfig: TrainingConfig = {
-          algorithm: TRAINING_ALGORITHMS.INCREMENTAL_BACKPROP,
+          algorithm: TRAINING_ALGORITHMS["INCREMENTAL_BACKPROP"],
           learningRate: lr,
           maxEpochs: 1000,
           targetError: 0.05,
@@ -453,7 +453,7 @@ describe('Training Convergence - Classical TDD', () => {
         network.setTrainingData(andData);
 
         const result = await trainer.trainUntilTarget(network, andData, 0.05, 1000);
-        results.push(result.epochs);
+        results?.push(result?.epochs);
       }
 
       // Different learning rates should produce different convergence speeds
@@ -476,11 +476,11 @@ describe('Training Convergence - Classical TDD', () => {
       const networkConfig: NetworkConfig = {
         inputSize: 1,
         hiddenLayers: [
-          { size: 10, activation: ACTIVATION_FUNCTIONS.SIGMOID },
-          { size: 10, activation: ACTIVATION_FUNCTIONS.SIGMOID },
+          { size: 10, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
+          { size: 10, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
         ],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.LINEAR,
+        outputActivation: ACTIVATION_FUNCTIONS["LINEAR"],
       };
 
       // Small dataset with noise
@@ -490,7 +490,7 @@ describe('Training Convergence - Classical TDD', () => {
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS.RPROP,
+        algorithm: TRAINING_ALGORITHMS["RPROP"],
         maxEpochs: 100,
         targetError: 0.001, // Very low error
       };
@@ -515,17 +515,17 @@ describe('Training Convergence - Classical TDD', () => {
         freshNetwork.setTrainingData(noisyData);
 
         let totalError = 0;
-        for (let i = 0; i < noisyData.inputs.length; i++) {
+        for (let i = 0; i < noisyData?.inputs.length; i++) {
           await freshTrainer.trainEpoch(freshNetwork, noisyData);
         }
 
         // Calculate error on training data
-        for (let i = 0; i < noisyData.inputs.length; i++) {
-          const prediction = await freshNetwork.run(noisyData.inputs[i]);
-          totalError += Math.abs(prediction[0] - noisyData.outputs[i][0]);
+        for (let i = 0; i < noisyData?.inputs.length; i++) {
+          const prediction = await freshNetwork.run(noisyData?.inputs?.[i]);
+          totalError += Math.abs(prediction[0] - noisyData?.outputs?.[i]?.[0]);
         }
 
-        errors.push(totalError / noisyData.inputs.length);
+        errors.push(totalError / noisyData?.inputs.length);
       }
 
       // Training error should generally decrease

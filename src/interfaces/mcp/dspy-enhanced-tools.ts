@@ -8,7 +8,7 @@
  * - Context-aware task orchestration
  */
 
-import { DSPy, type DSPyProgram } from 'dspy.ts';
+import { DSPy } from 'dspy.ts';
 import { createLogger } from '../../core/logger';
 
 const logger = createLogger({ prefix: 'DSPyMCPTools' });
@@ -118,14 +118,14 @@ export class DSPyEnhancedMCPTools {
       return {
         success: true,
         result: {
-          analysis: result.analysis,
-          recommendations: result.recommendations || [],
-          priorityActions: result.priority_actions || [],
-          complexityScore: result.complexity_score || 50,
+          analysis: result?.analysis,
+          recommendations: result?.recommendations || [],
+          priorityActions: result?.["priority_actions"] || [],
+          complexityScore: result?.["complexity_score"] || 50,
         },
-        reasoning: result.reasoning || 'DSPy project analysis applied',
-        confidence: result.confidence || 0.8,
-        followupActions: this.generateFollowupActions(result.priority_actions),
+        reasoning: result?.reasoning || 'DSPy project analysis applied',
+        confidence: result?.confidence || 0.8,
+        followupActions: this.generateFollowupActions(result?.["priority_actions"]),
       };
     } catch (error) {
       logger.error('Project analysis failed:', error);
@@ -162,14 +162,14 @@ export class DSPyEnhancedMCPTools {
       return {
         success: true,
         result: {
-          generatedCode: result.generated_code,
-          explanation: result.explanation,
-          integrationSteps: result.integration_steps || [],
-          testingSuggestions: result.testing_suggestions || [],
+          generatedCode: result?.["generated_code"],
+          explanation: result?.explanation,
+          integrationSteps: result?.["integration_steps"] || [],
+          testingSuggestions: result?.["testing_suggestions"] || [],
         },
         reasoning: 'DSPy intelligent code generation',
-        confidence: result.confidence || 0.85,
-        suggestions: result.optimization_tips || [],
+        confidence: result?.confidence || 0.85,
+        suggestions: result?.["optimization_tips"] || [],
       };
     } catch (error) {
       logger.error('Code generation failed:', error);
@@ -208,13 +208,13 @@ export class DSPyEnhancedMCPTools {
       return {
         success: true,
         result: {
-          solution: result.solution,
-          fixCode: result.fix_code,
-          preventionTips: result.prevention_tips || [],
+          solution: result?.solution,
+          fixCode: result?.["fix_code"],
+          preventionTips: result?.["prevention_tips"] || [],
           severity: this.assessErrorSeverity(errorMessage),
         },
-        reasoning: result.explanation || 'DSPy error resolution applied',
-        confidence: result.confidence || 0.75,
+        reasoning: result?.explanation || 'DSPy error resolution applied',
+        confidence: result?.confidence || 0.75,
         followupActions: ['test-fix', 'validate-solution'],
       };
     } catch (error) {
@@ -249,14 +249,14 @@ export class DSPyEnhancedMCPTools {
       return {
         success: true,
         result: {
-          optimizedWorkflow: result.optimized_workflow,
-          improvementSuggestions: result.improvement_suggestions || [],
-          automationOpportunities: result.automation_opportunities || [],
-          estimatedTimeSaving: this.calculateTimeSaving(result.optimized_workflow),
+          optimizedWorkflow: result?.["optimized_workflow"],
+          improvementSuggestions: result?.["improvement_suggestions"] || [],
+          automationOpportunities: result?.["automation_opportunities"] || [],
+          estimatedTimeSaving: this.calculateTimeSaving(result?.["optimized_workflow"]),
         },
         reasoning: 'DSPy workflow optimization analysis',
-        confidence: result.confidence || 0.8,
-        suggestions: result.implementation_tips || [],
+        confidence: result?.confidence || 0.8,
+        suggestions: result?.["implementation_tips"] || [],
       };
     } catch (error) {
       logger.error('Workflow optimization failed:', error);
@@ -290,14 +290,14 @@ export class DSPyEnhancedMCPTools {
       return {
         success: true,
         result: {
-          taskPlan: result.task_plan,
-          toolSequence: result.tool_sequence || [],
-          riskAssessment: result.risk_assessment || {},
-          successPrediction: result.success_prediction || 0.7,
-          estimatedDuration: this.estimateTaskDuration(result.tool_sequence?.length || 1),
+          taskPlan: result?.["task_plan"],
+          toolSequence: result?.["tool_sequence"] || [],
+          riskAssessment: result?.["risk_assessment"] || {},
+          successPrediction: result?.["success_prediction"] || 0.7,
+          estimatedDuration: this.estimateTaskDuration(result?.["tool_sequence"]?.length || 1),
         },
         reasoning: 'DSPy task orchestration planning',
-        confidence: result.confidence || 0.8,
+        confidence: result?.confidence || 0.8,
         followupActions: ['execute-plan', 'monitor-progress'],
       };
     } catch (error) {
@@ -360,7 +360,7 @@ export class DSPyEnhancedMCPTools {
     if (usage) {
       usage.success = success;
       if (actualResult) {
-        usage.output.actual_result = actualResult;
+        usage.output["actual_result"] = actualResult;
       }
 
       logger.debug(`Updated tool outcome: ${toolName} -> ${success ? 'success' : 'failure'}`);

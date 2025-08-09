@@ -109,13 +109,13 @@ async function handleAnalyze(domainPath: string, options: any) {
   const fullPath = path.resolve(domainPath);
   const analysis = await demo.analyzeDomain(fullPath);
 
-  if (options.verbose) {
-    for (const [_category, files] of Object.entries(analysis.filesByCategory)) {
+  if (options?.["verbose"]) {
+    for (const [category, files] of Object.entries(analysis.filesByCategory)) {
       if (files.length > 0) {
         // Verbose output
       }
     }
-    analysis.recommendations.forEach((_rec) => {
+    analysis.recommendations.forEach((rec) => {
       // Verbose recommendations
     });
   }
@@ -133,13 +133,13 @@ async function handleSplit(domainPath: string, options: any) {
     const demo = new demoModule.default();
     await demo.demonstrateNeuralSplitting();
   } else {
-    if (options.dryRun) {
+    if (options?.["dryRun"]) {
     }
     // Handle other domains
   }
 }
 
-async function handleNeural(_options: any) {
+async function handleNeural(options: any) {
   const demoModule = await import('./demo.js');
   const demo = new demoModule.default();
   await demo.demonstrateNeuralSplitting();
@@ -179,7 +179,7 @@ async function handleValidate(domainPath: string) {
 
   if (issues.length === 0) {
   } else {
-    issues.forEach((_issue) => {});
+    issues.forEach((issue) => {});
   }
 }
 
@@ -197,7 +197,7 @@ async function getTypeScriptFiles(dir: string): Promise<string[]> {
 
       if (stat.isDirectory()) {
         await scanDirectory(itemPath);
-      } else if (item.endsWith('.ts') || item.endsWith('.tsx')) {
+      } else if (item?.endsWith('.ts') || item?.endsWith('.tsx')) {
         files.push(itemPath);
       }
     }

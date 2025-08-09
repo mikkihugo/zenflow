@@ -6,7 +6,7 @@ const logger = getLogger("intelligence-conversation-framework-memory");
  * Memory management for conversation persistence using existing memory backends
  */
 
-import type { ConversationMemory, ConversationQuery, ConversationSession } from './types';
+import type { ConversationMemory } from './types';
 
 /**
  * Memory backend adapter interface
@@ -146,13 +146,13 @@ export class ConversationMemoryImpl implements ConversationMemory {
     // Deserialize complex objects
     return {
       ...data,
-      messages: JSON.parse(data.messages || '[]'),
-      participants: JSON.parse(data.participants || '[]'),
-      outcomes: JSON.parse(data.outcomes || '[]'),
-      metrics: JSON.parse(data.metrics || '{}'),
-      context: JSON.parse(data.context || '{}'),
-      startTime: new Date(data.startTime),
-      endTime: data.endTime ? new Date(data.endTime) : undefined,
+      messages: JSON.parse(data?.["messages"] || '[]'),
+      participants: JSON.parse(data?.["participants"] || '[]'),
+      outcomes: JSON.parse(data?.["outcomes"] || '[]'),
+      metrics: JSON.parse(data?.["metrics"] || '{}'),
+      context: JSON.parse(data?.context || '{}'),
+      startTime: new Date(data?.["startTime"]),
+      endTime: data?.["endTime"] ? new Date(data?.["endTime"]) : undefined,
     };
   }
 
@@ -174,7 +174,7 @@ export class ConversationMemoryImpl implements ConversationMemory {
       for (const id of conversationIds.slice(offset, offset + limit)) {
         const conversation = await this.getConversation(id);
         if (conversation && this.matchesQuery(conversation, query)) {
-          results.push(conversation);
+          results?.push(conversation);
         }
       }
       return results;
@@ -188,7 +188,7 @@ export class ConversationMemoryImpl implements ConversationMemory {
       for (const id of conversationIds.slice(offset, offset + limit)) {
         const conversation = await this.getConversation(id);
         if (conversation && this.matchesQuery(conversation, query)) {
-          results.push(conversation);
+          results?.push(conversation);
         }
       }
       return results;
@@ -303,7 +303,7 @@ export class ConversationMemoryFactory {
     // The SQLiteBackend implementation is missing. Need to create sqlite.backend.ts
     // implementing BaseMemoryBackend interface (AI unsure of safe fix - human review needed)
     const { SQLiteBackend } = await import('../../memory/backends/sqlite.backend.js');
-    const backend = new SQLiteBackend({ type: 'sqlite', path: config.path || './data', ...config });
+    const backend = new SQLiteBackend({ type: 'sqlite', path: config?.["path"] || './data', ...config });
     await backend.initialize();
     return new ConversationMemoryImpl(backend);
   }
@@ -320,7 +320,7 @@ export class ConversationMemoryFactory {
     const { JSONBackend } = await import('../../memory/backends/json.backend.js');
     const backend = new JSONBackend({
       type: 'json',
-      path: config.basePath || '/tmp/conversations',
+      path: config?.["basePath"] || '/tmp/conversations',
       ...config,
     });
     await backend.initialize();
@@ -339,7 +339,7 @@ export class ConversationMemoryFactory {
     const { LanceDBBackend } = await import('../../memory/backends/lancedb.backend.js');
     const backend = new LanceDBBackend({
       type: 'lancedb',
-      path: config.path || './data',
+      path: config?.["path"] || './data',
       ...config,
     });
     await backend.initialize();

@@ -11,7 +11,7 @@ interface GeneratorOptions {
   [key: string]: unknown;
 }
 
-export class AdvancedCommandsGenerator {
+export class CommandsGenerator {
   constructor(_options: GeneratorOptions = {}) {
     // Options stored for future implementation
   }

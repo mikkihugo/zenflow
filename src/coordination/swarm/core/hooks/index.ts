@@ -9,8 +9,6 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import type { AgentMemoryCoordinationDao } from '../../../../database';
-
 // import { DALFactory } from '../../../../database'; // TODO: Implement proper DI integration
 
 type SwarmPersistence = AgentMemoryCoordinationDao;
@@ -141,12 +139,12 @@ class ZenSwarmHooks {
 
     // Check cache for similar patterns
     const cachedResult = this.sessionData.searchCache.get(pattern);
-    if (cachedResult && Date.now() - cachedResult.timestamp < 300000) {
+    if (cachedResult && Date.now() - cachedResult?.timestamp < 300000) {
       // 5 min cache
       return {
         continue: true,
         cached: true,
-        cacheHit: cachedResult.files.length,
+        cacheHit: cachedResult?.files.length,
         metadata: { pattern, cached: true },
       };
     }
@@ -291,14 +289,14 @@ class ZenSwarmHooks {
     // Auto-format if requested
     if (autoFormat) {
       const formatted = await this.autoFormatFile(file);
-      result.formatted = formatted.success;
-      result.formatDetails = formatted.details;
+      result?.formatted = formatted.success;
+      result?.formatDetails = formatted.details;
     }
 
     // Train neural patterns
     if (trainPatterns) {
       const training = await this.trainPatternsFromEdit(file);
-      result.training = training;
+      result?.training = training;
       this.sessionData.metrics.patternsImproved += training.improvement || 0;
     }
 
@@ -406,7 +404,7 @@ class ZenSwarmHooks {
 
     // Extract patterns from URL
     if (extractPatterns) {
-      result.patterns = this.extractUrlPatterns(url);
+      result?.patterns = this.extractUrlPatterns(url);
     }
 
     // Cache content for future use
@@ -416,9 +414,9 @@ class ZenSwarmHooks {
       }
       this.sessionData.contentCache.set(url, {
         timestamp: Date.now(),
-        patterns: result.patterns,
+        patterns: result?.patterns,
       });
-      result.cached = true;
+      result?.cached = true;
     }
 
     return result;
@@ -677,7 +675,7 @@ class ZenSwarmHooks {
         JSON.stringify(weightData, null, 2)
       );
 
-      result.saved = true;
+      result?.saved = true;
     }
 
     // Update cognitive patterns
@@ -692,7 +690,7 @@ class ZenSwarmHooks {
       };
 
       this.sessionData.learnings.push(patternUpdate);
-      result.patternsUpdated = true;
+      result?.patternsUpdated = true;
     }
 
     return result;
@@ -770,7 +768,7 @@ class ZenSwarmHooks {
         if (!fileMap.has(op.file)) {
           fileMap.set(op.file, []);
         }
-        fileMap.get(op.file).push(op.type);
+        fileMap.get(op.file)?.push(op.type);
       }
     });
 
@@ -814,7 +812,7 @@ class ZenSwarmHooks {
         ) {
           const memory = JSON.parse(await fs.readFile(memoryPath, 'utf-8'));
           this.sessionData = { ...this.sessionData, ...memory };
-          result.restored.memory = true;
+          result?.restored?.memory = true;
         }
       }
 
@@ -831,7 +829,7 @@ class ZenSwarmHooks {
           roster.forEach((agent: any) => {
             this.sessionData.agents.set(agent.id, agent);
           });
-          result.restored.agents = true;
+          result?.restored?.agents = true;
         }
       }
 
@@ -845,7 +843,7 @@ class ZenSwarmHooks {
       ) {
         const metrics = JSON.parse(await fs.readFile(metricsPath, 'utf-8'));
         this.sessionData.metrics = { ...this.sessionData.metrics, ...metrics };
-        result.restored.metrics = true;
+        result?.restored?.metrics = true;
       }
     } catch (error) {
       logger.error('Session restore error:', error.message);
@@ -872,7 +870,7 @@ class ZenSwarmHooks {
       const summary = this.generateSessionSummary();
       const summaryPath = path.join(sessionDir, `${timestamp}-summary.md`);
       await fs.writeFile(summaryPath, summary);
-      results.summary = summaryPath;
+      results?.summary = summaryPath;
     }
 
     // Save memory state
@@ -880,7 +878,7 @@ class ZenSwarmHooks {
       const state = this.captureSwarmState();
       const statePath = path.join(sessionDir, `${timestamp}-state.json`);
       await fs.writeFile(statePath, JSON.stringify(state, null, 2));
-      results.state = statePath;
+      results?.state = statePath;
     }
 
     // Export metrics
@@ -888,7 +886,7 @@ class ZenSwarmHooks {
       const metrics = this.calculateSessionMetrics();
       const metricsPath = path.join(sessionDir, `${timestamp}-metrics.json`);
       await fs.writeFile(metricsPath, JSON.stringify(metrics, null, 2));
-      results.metrics = metricsPath;
+      results?.metrics = metricsPath;
     }
 
     return {
@@ -1265,12 +1263,12 @@ ${this.sessionData.learnings
     }
 
     const node = graph.nodes.get(nodeId);
-    node.operations.push({
+    node?.operations?.push({
       type: operation,
       timestamp: Date.now(),
       agent: this.getCurrentAgent(),
     });
-    node.lastModified = Date.now();
+    node?.lastModified = Date.now();
 
     // Add edges for related files
     const relatedFiles = await this.findRelatedFiles(file);
@@ -1473,8 +1471,8 @@ ${this.sessionData.learnings
         kb.searches = [];
       }
       kb.searches.push({
-        query: data.query,
-        patterns: data.patterns,
+        query: data?.["query"],
+        patterns: data?.["patterns"],
         timestamp: Date.now(),
       });
 
@@ -1482,7 +1480,7 @@ ${this.sessionData.learnings
       if (!kb.patterns) {
         kb.patterns = {};
       }
-      data.patterns.forEach((pattern) => {
+      data?.["patterns"]?.forEach((pattern) => {
         kb.patterns[pattern] = (kb.patterns[pattern] || 0) + 1;
       });
     }
@@ -1699,7 +1697,7 @@ ${this.sessionData.learnings
     });
 
     const sorted = Object.entries(agentCounts).sort((a, b) => Number(b[1]) - Number(a[1]));
-    return sorted.length > 0 && sorted[0] ? sorted[0][0] : 'coordinator';
+    return sorted.length > 0 && sorted[0] ? sorted[0]?.[0] : 'coordinator';
   }
 
   async findRelatedFiles(filePath): Promise<string[]> {
@@ -1836,10 +1834,10 @@ ${this.sessionData.learnings
    * Get current session ID for coordination
    */
   getSessionId(): string {
-    if (!this._sessionId) {
-      this._sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+    if (!this["_sessionId"]) {
+      this["_sessionId"] = `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     }
-    return this._sessionId;
+    return this["_sessionId"];
   }
 
   /**

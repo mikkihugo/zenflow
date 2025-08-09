@@ -184,9 +184,9 @@ export class ConfigHealthChecker extends EventEmitter {
     
     // Collect all port configurations
     const portMappings = [
-      { name: 'MCP HTTP', port: config?.interfaces?.mcp?.http?.port, critical: true },
-      { name: 'Web Dashboard', port: config?.interfaces?.web?.port, critical: true },
-      { name: 'Monitoring', port: config?.monitoring?.dashboard?.port, critical: false },
+      { name: 'MCP HTTP', port: config?.["interfaces"]?.mcp?.http?.port, critical: true },
+      { name: 'Web Dashboard', port: config?.["interfaces"]?.web?.port, critical: true },
+      { name: 'Monitoring', port: config?.["monitoring"]?.dashboard?.port, critical: false },
     ].filter(mapping => typeof mapping.port === 'number');
 
     // Group by port

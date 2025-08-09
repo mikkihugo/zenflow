@@ -973,27 +973,27 @@ export const UACLHelpers = {
     } = {};
 
     try {
-      if (config.httpBaseURL) {
-        clients.http = await uacl.createHTTPClient('default-http', config.httpBaseURL);
+      if (config?.["httpBaseURL"]) {
+        clients.http = await uacl.createHTTPClient('default-http', config?.["httpBaseURL"]);
       }
 
-      if (config.websocketURL) {
+      if (config?.["websocketURL"]) {
         clients.websocket = await uacl.createWebSocketClient(
           'default-websocket',
-          config.websocketURL
+          config?.["websocketURL"]
         );
       }
 
-      if (config.factRepoPath && config.anthropicApiKey) {
+      if (config?.["factRepoPath"] && config?.["anthropicApiKey"]) {
         clients.knowledge = await uacl.createKnowledgeClient(
           'default-knowledge',
-          config.factRepoPath,
-          config.anthropicApiKey
+          config?.["factRepoPath"],
+          config?.["anthropicApiKey"]
         );
       }
 
-      if (config.mcpServers) {
-        clients.mcp = await uacl.createMCPClient('default-mcp', config.mcpServers);
+      if (config?.["mcpServers"]) {
+        clients.mcp = await uacl.createMCPClient('default-mcp', config?.["mcpServers"]);
       }
 
       // Connect all created clients
@@ -1006,10 +1006,10 @@ export const UACLHelpers = {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
         config: {
-          httpBaseURL: config.httpBaseURL,
-          websocketURL: config.websocketURL,
-          factRepoPath: config.factRepoPath,
-          hasMCPServers: !!config.mcpServers
+          httpBaseURL: config?.["httpBaseURL"],
+          websocketURL: config?.["websocketURL"],
+          factRepoPath: config?.["factRepoPath"],
+          hasMCPServers: !!config?.["mcpServers"]
         }
       });
       throw error;
@@ -1161,10 +1161,10 @@ export const UACLHelpers = {
    */
   async performHealthCheck(): Promise<Record<string, boolean>> {
     const allClients = uacl
-      .getClientsByType(ClientType.HTTP)
-      .concat(uacl.getClientsByType(ClientType.WEBSOCKET))
-      .concat(uacl.getClientsByType(ClientType.KNOWLEDGE))
-      .concat(uacl.getClientsByType(ClientType.MCP));
+      .getClientsByType(ClientType["HTTP"])
+      .concat(uacl.getClientsByType(ClientType["WEBSOCKET"]))
+      .concat(uacl.getClientsByType(ClientType["KNOWLEDGE"]))
+      .concat(uacl.getClientsByType(ClientType["MCP"]));
 
     const healthChecks = allClients.map(async (client) => {
       try {
@@ -1178,10 +1178,10 @@ export const UACLHelpers = {
 
     const results = await Promise.allSettled(healthChecks);
 
-    return results.reduce(
+    return results?.reduce(
       (acc, result) => {
-        if (result.status === 'fulfilled') {
-          Object.assign(acc, result.value);
+        if (result?.status === 'fulfilled') {
+          Object.assign(acc, result?.value);
         }
         return acc;
       },

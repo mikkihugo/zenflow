@@ -1,21 +1,6 @@
-/**
- * Coordination Event Manager Factory
- *
- * Factory implementation for creating CoordinationEventAdapter instances
- * following the UEL factory pattern and integrating with the main UELFactory.
- *
- * This factory specializes in creating coordination event managers for:
- * - Swarm coordination and lifecycle management
- * - Agent management and health monitoring
- * - Task distribution and execution tracking
- * - Inter-swarm communication and protocol management
- */
-
-import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces';
 import { createLogger } from '../../../core/logger';
-import type { IEventManager, IEventManagerFactory } from '../core/interfaces';
+import type { IEventManagerFactory } from '../core/interfaces';
 import { EventManagerTypes } from '../core/interfaces';
-import type { CoordinationEventAdapterConfig } from './coordination-event-adapter';
 import {
   CoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig,
@@ -47,7 +32,7 @@ export class CoordinationEventManagerFactory
    * @param config
    */
   async create(config: CoordinationEventAdapterConfig): Promise<IEventManager> {
-    this.logger.info(`Creating coordination event manager: ${config.name}`);
+    this.logger.info(`Creating coordination event manager: ${config?.name}`);
 
     try {
       // Validate configuration
@@ -57,12 +42,12 @@ export class CoordinationEventManagerFactory
       const adapter = new CoordinationEventAdapter(config);
 
       // Store instance for management
-      this.instances.set(config.name, adapter);
+      this.instances.set(config?.name, adapter);
 
-      this.logger.info(`Coordination event manager created successfully: ${config.name}`);
+      this.logger.info(`Coordination event manager created successfully: ${config?.name}`);
       return adapter;
     } catch (error) {
-      this.logger.error(`Failed to create coordination event manager ${config.name}:`, error);
+      this.logger.error(`Failed to create coordination event manager ${config?.name}:`, error);
       throw error;
     }
   }
@@ -75,19 +60,19 @@ export class CoordinationEventManagerFactory
   async createMultiple(configs: CoordinationEventAdapterConfig[]): Promise<IEventManager[]> {
     this.logger.info(`Creating ${configs.length} coordination event managers`);
 
-    const createPromises = configs.map((config) => this.create(config));
+    const createPromises = configs?.map((config) => this.create(config));
     const results = await Promise.allSettled(createPromises);
 
     const managers: IEventManager[] = [];
     const errors: Error[] = [];
 
-    results.forEach((result, index) => {
-      if (result.status === 'fulfilled') {
-        managers.push(result.value);
+    results?.forEach((result, index) => {
+      if (result?.status === 'fulfilled') {
+        managers.push(result?.value);
       } else {
         errors.push(
           new Error(
-            `Failed to create coordination manager ${configs[index].name}: ${result.reason}`
+            `Failed to create coordination manager ${configs?.[index]?.name}: ${result?.reason}`
           )
         );
       }
@@ -167,9 +152,9 @@ export class CoordinationEventManagerFactory
     const healthPromises = Array.from(this.instances.entries()).map(async ([name, manager]) => {
       try {
         const status = await manager.healthCheck();
-        results.set(name, status);
+        results?.set(name, status);
       } catch (error) {
-        results.set(name, {
+        results?.set(name, {
           name: manager.name,
           type: manager.type,
           status: 'unhealthy',
@@ -196,7 +181,7 @@ export class CoordinationEventManagerFactory
     const metricsPromises = Array.from(this.instances.entries()).map(async ([name, manager]) => {
       try {
         const metrics = await manager.getMetrics();
-        results.set(name, metrics);
+        results?.set(name, metrics);
       } catch (error) {
         this.logger.warn(`Failed to get metrics for coordination event manager ${name}:`, error);
       }
@@ -299,35 +284,35 @@ export class CoordinationEventManagerFactory
    * @param config
    */
   private validateConfig(config: CoordinationEventAdapterConfig): void {
-    if (!config.name || typeof config.name !== 'string') {
+    if (!config?.name || typeof config?.name !== 'string') {
       throw new Error('Coordination event manager configuration must have a valid name');
     }
 
-    if (config.type !== EventManagerTypes.COORDINATION) {
+    if (config?.type !== EventManagerTypes["COORDINATION"]) {
       throw new Error(
-        `Coordination event manager must have type '${EventManagerTypes.COORDINATION}'`
+        `Coordination event manager must have type '${EventManagerTypes["COORDINATION"]}'`
       );
     }
 
     // Validate coordination-specific configuration
-    if (config.swarmCoordination?.enabled === undefined) {
-      config.swarmCoordination = { ...config.swarmCoordination, enabled: true };
+    if (config?.["swarmCoordination"]?.["enabled"] === undefined) {
+      config?.["swarmCoordination"] = { ...config?.["swarmCoordination"], enabled: true };
     }
 
-    if (config.coordination?.enabled && !config.coordination.correlationTTL) {
+    if (config?.["coordination"]?.["enabled"] && !config?.["coordination"]?.["correlationTTL"]) {
       throw new Error('Coordination correlation TTL must be specified when correlation is enabled');
     }
 
     if (
-      config.agentHealthMonitoring?.enabled &&
-      !config.agentHealthMonitoring.healthCheckInterval
+      config?.["agentHealthMonitoring"]?.["enabled"] &&
+      !config?.["agentHealthMonitoring"]?.["healthCheckInterval"]
     ) {
       throw new Error(
         'Health check interval must be specified when agent health monitoring is enabled'
       );
     }
 
-    if (config.swarmOptimization?.enabled && !config.swarmOptimization.performanceThresholds) {
+    if (config?.["swarmOptimization"]?.["enabled"] && !config?.["swarmOptimization"]?.["performanceThresholds"]) {
       throw new Error(
         'Performance thresholds must be specified when swarm optimization is enabled'
       );
@@ -335,8 +320,8 @@ export class CoordinationEventManagerFactory
 
     // Validate coordinator list
     if (
-      config.swarmCoordination?.coordinators &&
-      !Array.isArray(config.swarmCoordination.coordinators)
+      config?.["swarmCoordination"]?.["coordinators"] &&
+      !Array.isArray(config?.["swarmCoordination"]?.["coordinators"])
     ) {
       throw new Error('Swarm coordinators must be an array');
     }

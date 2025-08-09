@@ -8,7 +8,7 @@
  * @file Coordination domain API routes
  */
 
-import { type Request, type Response, Router } from 'express';
+import { Router } from 'express';
 import { CoordinationAPI } from '../../../../coordination/api';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log } from '../middleware/logging';
@@ -29,7 +29,7 @@ export const createCoordinationRoutes = (): Router => {
   router.get(
     '/agents',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Listing agents', req, {
+      log(LogLevel["DEBUG"], 'Listing agents', req, {
         query: req.query,
       });
 
@@ -51,16 +51,16 @@ export const createCoordinationRoutes = (): Router => {
   router.post(
     '/agents',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Creating new agent', req, {
+      log(LogLevel["INFO"], 'Creating new agent', req, {
         agentType: req.body.type,
         capabilities: req.body.capabilities?.length,
       });
 
       const result = await CoordinationAPI.agents.createAgent(req.body);
 
-      log(LogLevel.INFO, 'Agent created successfully', req, {
-        agentId: result.id,
-        agentType: result.type,
+      log(LogLevel["INFO"], 'Agent created successfully', req, {
+        agentId: result?.id,
+        agentType: result?.type,
       });
 
       res.status(201).json(result);
@@ -76,7 +76,7 @@ export const createCoordinationRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const agentId = req.params.agentId;
 
-      log(LogLevel.DEBUG, 'Getting agent details', req, {
+      log(LogLevel["DEBUG"], 'Getting agent details', req, {
         agentId,
       });
 
@@ -94,13 +94,13 @@ export const createCoordinationRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const agentId = req.params.agentId;
 
-      log(LogLevel.INFO, 'Removing agent', req, {
+      log(LogLevel["INFO"], 'Removing agent', req, {
         agentId,
       });
 
       await CoordinationAPI.agents.removeAgent(agentId);
 
-      log(LogLevel.INFO, 'Agent removed successfully', req, {
+      log(LogLevel["INFO"], 'Agent removed successfully', req, {
         agentId,
       });
 
@@ -117,16 +117,16 @@ export const createCoordinationRoutes = (): Router => {
   router.post(
     '/tasks',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Creating new task', req, {
+      log(LogLevel["INFO"], 'Creating new task', req, {
         taskType: req.body.type,
         priority: req.body.priority,
       });
 
       const result = await CoordinationAPI.tasks.createTask(req.body);
 
-      log(LogLevel.INFO, 'Task created successfully', req, {
-        taskId: result.id,
-        taskType: result.type,
+      log(LogLevel["INFO"], 'Task created successfully', req, {
+        taskId: result?.id,
+        taskType: result?.type,
       });
 
       res.status(201).json(result);
@@ -142,7 +142,7 @@ export const createCoordinationRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const taskId = req.params.taskId;
 
-      log(LogLevel.DEBUG, 'Getting task details', req, {
+      log(LogLevel["DEBUG"], 'Getting task details', req, {
         taskId,
       });
 
@@ -160,7 +160,7 @@ export const createCoordinationRoutes = (): Router => {
   router.get(
     '/swarm/config',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Getting swarm configuration', req);
+      log(LogLevel["DEBUG"], 'Getting swarm configuration', req);
 
       const result = await CoordinationAPI.swarm.getConfig();
       res.json(result);
@@ -174,15 +174,15 @@ export const createCoordinationRoutes = (): Router => {
   router.put(
     '/swarm/config',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Updating swarm configuration', req, {
+      log(LogLevel["INFO"], 'Updating swarm configuration', req, {
         configKeys: Object.keys(req.body),
       });
 
       const result = await CoordinationAPI.swarm.updateConfig(req.body);
 
-      log(LogLevel.INFO, 'Swarm configuration updated', req, {
-        topology: result.topology,
-        maxAgents: result.maxAgents,
+      log(LogLevel["INFO"], 'Swarm configuration updated', req, {
+        topology: result?.topology,
+        maxAgents: result?.maxAgents,
       });
 
       res.json(result);
@@ -197,11 +197,11 @@ export const createCoordinationRoutes = (): Router => {
    */
   router.get(
     '/health',
-    asyncHandler(async (_req: Request, res: Response) => {
+    asyncHandler(async (req: Request, res: Response) => {
       const result = await CoordinationAPI.health.getHealth();
 
       // Set appropriate HTTP status based on health
-      const statusCode = result.status === 'healthy' ? 200 : 503;
+      const statusCode = result?.status === 'healthy' ? 200 : 503;
       res.status(statusCode).json(result);
     })
   );
@@ -215,7 +215,7 @@ export const createCoordinationRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const timeRange = req.query.timeRange as '1h' | '24h' | '7d' | '30d' | undefined;
 
-      log(LogLevel.DEBUG, 'Getting coordination metrics', req, {
+      log(LogLevel["DEBUG"], 'Getting coordination metrics', req, {
         timeRange: timeRange || 'default',
       });
 
@@ -233,7 +233,7 @@ export const createCoordinationRoutes = (): Router => {
   router.post(
     '/swarm/initialize',
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Initializing swarm', req, {
+      log(LogLevel["INFO"], 'Initializing swarm', req, {
         topology: req.body.topology,
         maxAgents: req.body.maxAgents,
       });
@@ -248,9 +248,9 @@ export const createCoordinationRoutes = (): Router => {
         created: new Date().toISOString(),
       };
 
-      log(LogLevel.INFO, 'Swarm initialization started', req, {
-        swarmId: result.swarmId,
-        topology: result.topology,
+      log(LogLevel["INFO"], 'Swarm initialization started', req, {
+        swarmId: result?.swarmId,
+        topology: result?.topology,
       });
 
       res.status(202).json(result);
@@ -266,7 +266,7 @@ export const createCoordinationRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const agentId = req.params.agentId;
 
-      log(LogLevel.DEBUG, 'Getting agent tasks', req, {
+      log(LogLevel["DEBUG"], 'Getting agent tasks', req, {
         agentId,
         status: req.query.status,
       });
@@ -294,7 +294,7 @@ export const createCoordinationRoutes = (): Router => {
       const taskId = req.params.taskId;
       const agentId = req.body.agentId;
 
-      log(LogLevel.INFO, 'Assigning task to agent', req, {
+      log(LogLevel["INFO"], 'Assigning task to agent', req, {
         taskId,
         agentId,
       });
@@ -307,7 +307,7 @@ export const createCoordinationRoutes = (): Router => {
         assignedAt: new Date().toISOString(),
       };
 
-      log(LogLevel.INFO, 'Task assigned successfully', req, {
+      log(LogLevel["INFO"], 'Task assigned successfully', req, {
         taskId,
         agentId,
       });
@@ -326,7 +326,7 @@ export const createCoordinationRoutes = (): Router => {
       const agentId = req.params.agentId;
 
       // Placeholder - would update agent heartbeat
-      log(LogLevel.DEBUG, 'Agent heartbeat received', req, {
+      log(LogLevel["DEBUG"], 'Agent heartbeat received', req, {
         agentId,
         workload: req.body.workload,
         status: req.body.status,

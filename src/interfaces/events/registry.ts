@@ -1,25 +1,4 @@
-/**
- * UEL (Unified Event Layer) - Event Registry System
- *
- * Central registry for managing all event types, factories, and lifecycle management.
- * Provides type-safe event registration, discovery, and health monitoring.
- *
- * @file Event Registry Implementation following UACL/USL patterns
- */
-
-import type { ILogger } from '../../core/interfaces/base-interfaces';
-import { inject, injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS } from '../../di/tokens/core-tokens';
-import type {
-  EventManagerConfig,
-  EventManagerMetrics,
-  EventManagerStatus,
-  EventManagerType,
-  IEventManager,
-  IEventManagerFactory,
-  IEventManagerRegistry,
-  SystemEvent,
-} from './core/interfaces';
+import type { IEventManagerRegistry } from './core/interfaces';
 import { EventManagerTypes } from './core/interfaces';
 import { EventCategories, EventPriorityMap } from './types';
 
@@ -308,16 +287,16 @@ export class EventRegistry implements IEventManagerRegistry {
     }
 
     // Apply configuration overrides
-    if (config?.healthMonitoring) {
-      this.healthMonitoring = { ...this.healthMonitoring, ...config.healthMonitoring };
+    if (config?.["healthMonitoring"]) {
+      this.healthMonitoring = { ...this.healthMonitoring, ...config?.["healthMonitoring"] };
     }
 
-    if (config?.discovery) {
-      this.discoveryConfig = { ...this.discoveryConfig, ...config.discovery };
+    if (config?.["discovery"]) {
+      this.discoveryConfig = { ...this.discoveryConfig, ...config?.["discovery"] };
     }
 
     // Register default event types
-    if (config?.autoRegisterDefaults !== false) {
+    if (config?.["autoRegisterDefaults"] !== false) {
       await this.registerDefaultEventTypes();
     }
 
@@ -448,14 +427,14 @@ export class EventRegistry implements IEventManagerRegistry {
     this.eventManagers.set(name, entry);
 
     // Update factory usage statistics
-    if (this.factoryRegistry[config.type]) {
-      const registry = this.factoryRegistry[config.type];
+    if (this.factoryRegistry[config?.type]) {
+      const registry = this.factoryRegistry[config?.type];
       if (registry) {
         registry.usage.managersCreated++;
       }
     }
 
-    this.logger.info(`📝 Registered event manager: ${name} (${config.type})`);
+    this.logger.info(`📝 Registered event manager: ${name} (${config?.type})`);
   }
 
   /**
@@ -535,11 +514,11 @@ export class EventRegistry implements IEventManagerRegistry {
   ): void {
     this.eventTypes[eventType] = {
       type: eventType,
-      category: config.category,
-      priority: config.priority || EventPriorityMap.medium || 2,
-      schema: config.schema,
-      managerTypes: config.managerTypes,
-      config: config.options || {},
+      category: config?.["category"],
+      priority: config?.["priority"] || EventPriorityMap.medium || 2,
+      schema: config?.["schema"],
+      managerTypes: config?.["managerTypes"],
+      config: config?.["options"] || {},
       registered: new Date(),
       usage: {
         totalEmissions: 0,
@@ -575,11 +554,11 @@ export class EventRegistry implements IEventManagerRegistry {
     for (const [name, entry] of this.eventManagers) {
       const healthPromise = this.performHealthCheck(name, entry)
         .then((status) => {
-          results.set(name, status);
+          results?.set(name, status);
         })
         .catch((error) => {
           this.logger.error(`❌ Health check failed for ${name}:`, error);
-          results.set(name, {
+          results?.set(name, {
             name: entry.manager.name,
             type: entry.manager.type,
             status: 'unhealthy',
@@ -628,7 +607,7 @@ export class EventRegistry implements IEventManagerRegistry {
     });
 
     const allMetrics = (await Promise.allSettled(metricsPromises))
-      .filter((result) => result.status === 'fulfilled' && result.value !== null)
+      .filter((result) => result?.status === 'fulfilled' && result?.value !== null)
       .map((result) => (result as PromiseFulfilledResult<EventManagerMetrics>).value);
 
     // Calculate aggregate metrics
@@ -905,56 +884,56 @@ export class EventRegistry implements IEventManagerRegistry {
     const defaultEventTypes = [
       {
         type: 'system:lifecycle',
-        category: EventCategories.SYSTEM,
-        managerTypes: [EventManagerTypes.SYSTEM],
+        category: EventCategories["SYSTEM"],
+        managerTypes: [EventManagerTypes["SYSTEM"]],
         priority: 3,
       },
       {
         type: 'coordination:swarm',
-        category: EventCategories.COORDINATION,
-        managerTypes: [EventManagerTypes.COORDINATION],
+        category: EventCategories["COORDINATION"],
+        managerTypes: [EventManagerTypes["COORDINATION"]],
         priority: 3,
       },
       {
         type: 'communication:websocket',
-        category: EventCategories.COMMUNICATION,
-        managerTypes: [EventManagerTypes.COMMUNICATION],
+        category: EventCategories["COMMUNICATION"],
+        managerTypes: [EventManagerTypes["COMMUNICATION"]],
         priority: 2,
       },
       {
         type: 'monitoring:metrics',
-        category: EventCategories.MONITORING,
-        managerTypes: [EventManagerTypes.MONITORING],
+        category: EventCategories["MONITORING"],
+        managerTypes: [EventManagerTypes["MONITORING"]],
         priority: 2,
       },
       {
         type: 'interface:user',
-        category: EventCategories.INTERFACE,
-        managerTypes: [EventManagerTypes.INTERFACE],
+        category: EventCategories["INTERFACE"],
+        managerTypes: [EventManagerTypes["INTERFACE"]],
         priority: 2,
       },
       {
         type: 'neural:training',
-        category: EventCategories.NEURAL,
-        managerTypes: [EventManagerTypes.NEURAL],
+        category: EventCategories["NEURAL"],
+        managerTypes: [EventManagerTypes["NEURAL"]],
         priority: 2,
       },
       {
         type: 'database:query',
-        category: EventCategories.DATABASE,
-        managerTypes: [EventManagerTypes.DATABASE],
+        category: EventCategories["DATABASE"],
+        managerTypes: [EventManagerTypes["DATABASE"]],
         priority: 1,
       },
       {
         type: 'memory:cache',
-        category: EventCategories.MEMORY,
-        managerTypes: [EventManagerTypes.MEMORY],
+        category: EventCategories["MEMORY"],
+        managerTypes: [EventManagerTypes["MEMORY"]],
         priority: 1,
       },
       {
         type: 'workflow:execution',
-        category: EventCategories.WORKFLOW,
-        managerTypes: [EventManagerTypes.WORKFLOW],
+        category: EventCategories["WORKFLOW"],
+        managerTypes: [EventManagerTypes["WORKFLOW"]],
         priority: 2,
       },
     ];

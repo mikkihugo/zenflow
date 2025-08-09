@@ -508,7 +508,7 @@ class NeuralNetworkManager {
 
     // Apply meta-learning if enabled
     if (
-      config.enableMetaLearning &&
+      config?.enableMetaLearning &&
       this.metaLearning &&
       typeof this.metaLearning.adaptConfiguration === 'function'
     ) {
@@ -516,7 +516,7 @@ class NeuralNetworkManager {
     }
 
     // Check if this is a new neural model type
-    const template = config.template || 'deep_analyzer';
+    const template = config?.template || 'deep_analyzer';
     const templateConfig = this.templates[template];
 
     if (templateConfig?.modelType) {
@@ -545,8 +545,8 @@ class NeuralNetworkManager {
       const networkId = neuralModule.exports.create_neural_network(
         JSON.stringify({
           agent_id: agentId,
-          layers: networkConfig.layers,
-          activation: networkConfig.activation,
+          layers: networkConfig?.layers,
+          activation: networkConfig?.activation,
           learning_rate: learningRate,
           optimizer,
         })
@@ -571,7 +571,7 @@ class NeuralNetworkManager {
   async createAdvancedNeuralModel(agentId: string, template: string, customConfig: any = {}) {
     const templateConfig = this.templates[template];
 
-    if (!templateConfig || !templateConfig.modelType) {
+    if (!templateConfig || !templateConfig?.modelType) {
       throw new Error(`Invalid template: ${template}`);
     }
 
@@ -583,10 +583,10 @@ class NeuralNetworkManager {
 
     // Select cognitive patterns based on model type and task
     const taskContext = {
-      requiresCreativity: customConfig.requiresCreativity || false,
-      requiresPrecision: customConfig.requiresPrecision || false,
-      requiresAdaptation: customConfig.requiresAdaptation || false,
-      complexity: customConfig.complexity || 'medium',
+      requiresCreativity: customConfig?.requiresCreativity || false,
+      requiresPrecision: customConfig?.requiresPrecision || false,
+      requiresAdaptation: customConfig?.requiresAdaptation || false,
+      complexity: customConfig?.complexity || 'medium',
     };
 
     // Check if cognitivePatternSelector has the required method
@@ -596,23 +596,23 @@ class NeuralNetworkManager {
       typeof this.cognitivePatternSelector.selectPatternsForPreset === 'function'
     ) {
       cognitivePatterns = this.cognitivePatternSelector.selectPatternsForPreset(
-        config.modelType,
+        config?.modelType,
         template,
         taskContext
       );
     }
 
-    config.cognitivePatterns = cognitivePatterns;
+    config?.cognitivePatterns = cognitivePatterns;
 
     // Use preset if specified
-    if (config.preset && (MODEL_PRESETS as any)[config.modelType]) {
-      const presetConfig = (MODEL_PRESETS as any)[config.modelType][config.preset];
+    if (config?.preset && (MODEL_PRESETS as any)[config?.modelType]) {
+      const presetConfig = (MODEL_PRESETS as any)[config?.modelType]?.[config?.preset];
       Object.assign(config, presetConfig);
     }
 
     try {
       // Create the neural model
-      const model = await (createNeuralModel as any)(config.modelType, config);
+      const model = await (createNeuralModel as any)(config?.modelType, config);
 
       // Wrap in a compatible interface
       const wrappedModel = new (AdvancedNeuralNetwork as any)(agentId, model, config);
@@ -634,7 +634,7 @@ class NeuralNetworkManager {
         this.neuralAdaptationEngine &&
         typeof this.neuralAdaptationEngine.initializeAdaptation === 'function'
       ) {
-        await this.neuralAdaptationEngine.initializeAdaptation(agentId, config.modelType, template);
+        await this.neuralAdaptationEngine.initializeAdaptation(agentId, config?.modelType, template);
       }
 
       // Initialize performance tracking
@@ -645,7 +645,7 @@ class NeuralNetworkManager {
         inferenceTime: 0,
         memoryUsage: 0,
         creationTime: Date.now(),
-        modelType: config.modelType,
+        modelType: config?.modelType,
         cognitivePatterns: cognitivePatterns || [],
         adaptationHistory: [],
         collaborationScore: 0,
@@ -699,7 +699,7 @@ class NeuralNetworkManager {
         timestamp: Date.now(),
         trainingResult: result,
         cognitiveGrowth: await this.cognitiveEvolution.assessGrowth(agentId),
-        accuracy: result.accuracy || 0,
+        accuracy: result?.accuracy || 0,
         cognitivePatterns: metrics.cognitivePatterns,
         performance: result,
         insights: [],
@@ -954,11 +954,11 @@ class NeuralNetworkManager {
 
     // Get optimized cognitive patterns
     const taskContext = {
-      requiresCreativity: customConfig.requiresCreativity || false,
-      requiresPrecision: customConfig.requiresPrecision || false,
-      requiresAdaptation: customConfig.requiresAdaptation || false,
-      complexity: customConfig.complexity || 'medium',
-      cognitivePreference: customConfig.cognitivePreference,
+      requiresCreativity: customConfig?.requiresCreativity || false,
+      requiresPrecision: customConfig?.requiresPrecision || false,
+      requiresAdaptation: customConfig?.requiresAdaptation || false,
+      complexity: customConfig?.complexity || 'medium',
+      cognitivePreference: customConfig?.cognitivePreference,
     };
 
     const cognitivePatterns = this.cognitivePatternSelector.selectPatternsForPreset(
@@ -1039,12 +1039,12 @@ class NeuralNetworkManager {
         throw new Error(`No preset found for use case: ${useCase}`);
       }
 
-      const bestMatch = searchResults[0];
+      const bestMatch = searchResults?.[0];
 
       return this.createAgentFromPreset(
         agentId,
-        bestMatch.type, // Use type instead of category
-        bestMatch.id, // Use id instead of presetName
+        bestMatch?.type, // Use type instead of category
+        bestMatch?.id, // Use id instead of presetName
         customConfig
       );
     }
@@ -1176,15 +1176,15 @@ class NeuralNetworkManager {
     for (const config of agentConfigs) {
       try {
         const agent = await this.createAgentFromPreset(
-          config.agentId,
-          config.category,
-          config.presetName,
-          config.customConfig || {}
+          config?.agentId,
+          config?.category,
+          config?.presetName,
+          config?.customConfig || {}
         );
-        results.push({ agentId: config.agentId, success: true, agent });
+        results?.push({ agentId: config?.agentId, success: true, agent });
       } catch (error) {
         errors.push({
-          agentId: config.agentId,
+          agentId: config?.agentId,
           error: error instanceof Error ? error.message : String(error),
         });
       }
@@ -1352,12 +1352,12 @@ class NeuralNetworkManager {
         const agentB = agentIds[j];
 
         if (i === j) {
-          matrix[agentA][agentB] = 1.0; // Self-similarity
+          matrix[agentA]?.[agentB] = 1.0; // Self-similarity
           continue;
         }
 
         const similarity = await this.calculateAgentSimilarity(agentA, agentB);
-        matrix[agentA][agentB] = similarity;
+        matrix[agentA]?.[agentB] = similarity;
       }
     }
 
@@ -1566,7 +1566,7 @@ class NeuralNetworkManager {
       const studentIdx = session.agentIds.indexOf(studentAgentId);
 
       if (teacherIdx >= 0 && studentIdx >= 0) {
-        session.coordinationMatrix[studentIdx][teacherIdx] += distillationResult.improvement;
+        session.coordinationMatrix[studentIdx]?.[teacherIdx] += distillationResult?.improvement;
       }
     } catch (error) {
       logger.error(
@@ -1657,7 +1657,7 @@ class NeuralNetworkManager {
 
         // Calculate interaction strength
         const interactionStrength = await this.calculateInteractionStrength(agentA, agentB);
-        session.coordinationMatrix[i][j] = interactionStrength;
+        session.coordinationMatrix[i]?.[j] = interactionStrength;
       }
     }
   }
@@ -1702,7 +1702,7 @@ class NeuralNetworkManager {
       return;
     }
 
-    for (const [agentId, coordination] of coordinationResults.entries()) {
+    for (const [agentId, coordination] of coordinationResults?.entries()) {
       const agent = this.neuralNetworks.get(agentId);
       if (!agent) {
         continue;
@@ -1741,7 +1741,7 @@ class NeuralNetworkManager {
       Object.entries(currentWeights).forEach(([layer, weights]) => {
         if (adjustments[layer] && Array.isArray(weights)) {
           (adjustedWeights as any)[layer] = weights.map((w: number, idx: number) => {
-            const adjustment = adjustments[layer][idx] || 0;
+            const adjustment = adjustments[layer]?.[idx] || 0;
             return w + adjustment * 0.1; // Scale adjustment factor
           });
         } else {
@@ -1979,8 +1979,8 @@ class NeuralNetwork {
       let batchCount = 0;
 
       // Process in batches
-      for (let i = 0; i < trainingData.samples.length; i += batchSize) {
-        const batch = trainingData.samples.slice(i, i + batchSize);
+      for (let i = 0; i < trainingData?.samples.length; i += batchSize) {
+        const batch = trainingData?.samples?.slice(i, i + batchSize);
 
         try {
           const loss = this.wasmModule.exports.train_batch(
@@ -2202,7 +2202,7 @@ class AdvancedNeuralNetwork {
     this.agentId = agentId;
     this.model = model;
     this.config = config;
-    this.modelType = config.modelType;
+    this.modelType = config?.modelType;
     this.isAdvanced = true;
   }
 
@@ -2236,7 +2236,7 @@ class AdvancedNeuralNetwork {
 
       // Return appropriate output based on model type
       if (this.modelType === 'autoencoder') {
-        return result.reconstruction;
+        return result?.reconstruction;
       }
 
       return result;

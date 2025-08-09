@@ -49,11 +49,11 @@ export class RecoveryWorkflows extends EventEmitter {
     super();
 
     this.options = {
-      maxRetries: options.maxRetries || 3,
-      retryDelay: options.retryDelay || 5000,
-      maxConcurrentRecoveries: options.maxConcurrentRecoveries || 3,
-      enableChaosEngineering: options.enableChaosEngineering === true,
-      recoveryTimeout: options.recoveryTimeout || 300000, // 5 minutes
+      maxRetries: options?.maxRetries || 3,
+      retryDelay: options?.retryDelay || 5000,
+      maxConcurrentRecoveries: options?.maxConcurrentRecoveries || 3,
+      enableChaosEngineering: options?.enableChaosEngineering === true,
+      recoveryTimeout: options?.recoveryTimeout || 300000, // 5 minutes
       ...options,
     };
 
@@ -171,7 +171,7 @@ export class RecoveryWorkflows extends EventEmitter {
       }
 
       // Sort by priority and execute the highest priority workflow
-      const sortedWorkflows = matchingWorkflows.sort((a: WorkflowDefinition, b: WorkflowDefinition) => {
+      const sortedWorkflows = matchingWorkflows?.sort((a: WorkflowDefinition, b: WorkflowDefinition) => {
         const priorityOrder: { [key: string]: number } = { critical: 4, high: 3, normal: 2, low: 1 };
         const aPriority = a.priority || 'normal';
         const bPriority = b.priority || 'normal';
@@ -264,15 +264,15 @@ export class RecoveryWorkflows extends EventEmitter {
         const stepResult = await this.executeStep(step, context, execution);
         execution.steps.push(stepResult);
 
-        if (stepResult.status === 'failed') {
+        if (stepResult?.status === 'failed') {
           if (step.continueOnFailure) {
             this.logger.warn(`Step failed but continuing: ${step.name}`, {
               executionId,
-              error: stepResult.error,
+              error: stepResult?.error,
             });
           } else {
             execution.rollbackRequired = true;
-            throw new Error(`Recovery step failed: ${step.name} - ${stepResult.error}`);
+            throw new Error(`Recovery step failed: ${step.name} - ${stepResult?.error}`);
           }
         }
 
@@ -375,20 +375,20 @@ export class RecoveryWorkflows extends EventEmitter {
 
       const result = await Promise.race([stepPromise, timeoutPromise]);
 
-      stepResult.status = 'completed';
-      stepResult.result = result;
-      stepResult.endTime = new Date();
-      stepResult.duration = Date.now() - stepStartTime;
+      stepResult?.status = 'completed';
+      stepResult?.result = result;
+      stepResult?.endTime = new Date();
+      stepResult?.duration = Date.now() - stepStartTime;
 
       this.logger.debug(`Recovery step completed: ${step.name}`, {
         executionId: execution.id,
-        duration: stepResult.duration,
+        duration: stepResult?.duration,
       });
     } catch (error) {
-      stepResult.status = 'failed';
-      stepResult.error = error.message;
-      stepResult.endTime = new Date();
-      stepResult.duration = Date.now() - stepStartTime;
+      stepResult?.status = 'failed';
+      stepResult?.error = error.message;
+      stepResult?.endTime = new Date();
+      stepResult?.duration = Date.now() - stepStartTime;
 
       this.logger.error(`Recovery step failed: ${step.name}`, {
         executionId: execution.id,
@@ -530,7 +530,7 @@ export class RecoveryWorkflows extends EventEmitter {
       });
 
       if (matches) {
-        matchingWorkflows.push(workflow);
+        matchingWorkflows?.push(workflow);
       }
     }
 
@@ -845,7 +845,7 @@ export class RecoveryWorkflows extends EventEmitter {
 
       // Restart with previous configuration
       const restartResult = await this.mcpTools.swarm_init({
-        ...currentState.options,
+        ...currentState?.options,
         swarmId,
       });
 
@@ -928,7 +928,7 @@ export class RecoveryWorkflows extends EventEmitter {
 
     try {
       const currentState = await this.mcpTools.swarm_status({ swarmId });
-      const currentCount = currentState.agents.length;
+      const currentCount = currentState?.agents.length;
 
       if (targetCount > currentCount) {
         // Scale up

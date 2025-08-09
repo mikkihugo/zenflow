@@ -1,13 +1,4 @@
 /**
- * Conversation Framework Types
- *
- * ag2.ai-inspired conversation types for multi-agent communication
- */
-
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import type { AgentId, AgentType } from '../../types/agent-types';
-
-/**
  * Conversation message types for structured agent communication
  *
  * @example

@@ -102,7 +102,7 @@ export async function runStartupValidation(
 
     // 2. Enhanced validation with production checks
     const detailedValidation = await configHealthChecker?.getHealthReport(true);
-    const validationDetails = detailedValidation.details!;
+    const validationDetails = detailedValidation.validationDetails!;
 
     // 3. Security validation (unless skipped)
     if (!skipValidation.includes('security')) {
@@ -397,11 +397,11 @@ export async function cli(): Promise<void> {
   };
 
   // Parse skip validation flags
-  if (args.includes('--skip-structure')) options?.skipValidation!.push('structure');
-  if (args.includes('--skip-security')) options?.skipValidation!.push('security');
-  if (args.includes('--skip-performance')) options?.skipValidation!.push('performance');
-  if (args.includes('--skip-ports')) options?.skipValidation!.push('ports');
-  if (args.includes('--skip-environment')) options?.skipValidation!.push('environment');
+  if (args.includes('--skip-structure')) options?.["skipValidation"]!.push('structure');
+  if (args.includes('--skip-security')) options?.["skipValidation"]!.push('security');
+  if (args.includes('--skip-performance')) options?.["skipValidation"]!.push('performance');
+  if (args.includes('--skip-ports')) options?.["skipValidation"]!.push('ports');
+  if (args.includes('--skip-environment')) options?.["skipValidation"]!.push('environment');
 
   // Show help
   if (args.includes('--help') || args.includes('-h')) {

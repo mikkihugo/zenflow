@@ -163,7 +163,7 @@ describe('DI Container - Core Functionality', () => {
       }
 
       const disposeFn = jest.fn(async (instance: MockDisposableService) => {
-        instance.disposed = true;
+        instance["disposed"] = true;
       });
 
       container.register(token, new ScopedProvider(() => new MockDisposableService(), disposeFn));
@@ -187,7 +187,7 @@ describe('DI Container - Core Functionality', () => {
       }
 
       const disposeFn = jest.fn(async (instance: MockDisposableService) => {
-        instance.disposed = true;
+        instance["disposed"] = true;
       });
 
       container.register(
@@ -283,10 +283,10 @@ describe('DI Container - Integration with Core Tokens', () => {
 
     // Test functionality
     logger.info('Test message');
-    config.set('test', 'value');
+    config?.["set"]('test', 'value');
 
     expect(logger.info).toHaveBeenCalledWith('Test message');
-    expect(config.get('test')).toBe('value');
+    expect(config?.["get"]('test')).toBe('value');
   });
 
   it('should work with swarm tokens', () => {
@@ -306,11 +306,11 @@ describe('DI Container - Integration with Core Tokens', () => {
     }
 
     container.register(
-      SWARM_TOKENS.SwarmCoordinator,
+      SWARM_TOKENS["SwarmCoordinator"],
       new SingletonProvider(() => new MockSwarmCoordinator())
     );
 
-    const coordinator = container.resolve(SWARM_TOKENS.SwarmCoordinator);
+    const coordinator = container.resolve(SWARM_TOKENS["SwarmCoordinator"]);
 
     expect(coordinator).toBeInstanceOf(MockSwarmCoordinator);
   });

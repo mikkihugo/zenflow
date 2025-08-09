@@ -1,14 +1,5 @@
-/**
- * @file Advanced MCP Tools Infrastructure
- *
- * Provides the foundation for the 87 advanced MCP tools from claude-zen.
- * Extends the existing MCP infrastructure with enhanced capabilities.
- */
-
-import type { MCPTool, MCPToolResult } from '../../coordination/swarm/mcp/types';
-
 // Enhanced interfaces for advanced tools
-export interface AdvancedMCPTool extends MCPTool {
+export interface MCPTool extends MCPTool {
   readonly category: MCPToolCategory;
   readonly version: string;
   readonly permissions: Permission[];
@@ -59,7 +50,7 @@ export interface ToolExample {
   expectedResult?: any;
 }
 
-export interface AdvancedMCPToolResult extends MCPToolResult {
+export interface MCPToolResult extends MCPToolResult {
   metadata?: {
     executionTime: number;
     cacheHit?: boolean;
@@ -70,7 +61,7 @@ export interface AdvancedMCPToolResult extends MCPToolResult {
 }
 
 // Base class for advanced tool handlers
-export abstract class AdvancedToolHandler {
+export abstract class ToolHandler {
   abstract execute(params: any): Promise<AdvancedMCPToolResult>;
 
   protected validateParams(params: any, schema: any): void {
@@ -106,7 +97,7 @@ export abstract class AdvancedToolHandler {
 }
 
 // Registry for advanced tools
-export class AdvancedToolRegistry {
+export class ToolRegistry {
   private tools = new Map<string, AdvancedMCPTool>();
   private categoryIndex = new Map<MCPToolCategory, string[]>();
   private tagIndex = new Map<string, string[]>();

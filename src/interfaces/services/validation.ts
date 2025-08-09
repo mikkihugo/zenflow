@@ -6,11 +6,8 @@
  * Following the same patterns as UACL Agent 6.
  */
 
-import { createLogger, type Logger } from '../../utils/logger';
+import { createLogger } from '../../utils/logger';
 import { USLCompatibilityLayer } from './compatibility';
-import type { IService, ServiceLifecycleStatus } from './core/interfaces';
-import type { ServiceManager } from './manager';
-import type { EnhancedServiceRegistry } from './registry';
 import { ServiceType } from './types';
 
 export interface ValidationConfig {
@@ -160,42 +157,42 @@ export class USLValidationFramework {
     this.logger = createLogger('USLValidation');
 
     this.config = {
-      strictness: config?.strictness || 'moderate',
+      strictness: config?.["strictness"] || 'moderate',
       scopes: {
-        configuration: config?.scopes?.configuration ?? true,
-        dependencies: config?.scopes?.dependencies ?? true,
-        performance: config?.scopes?.performance ?? true,
-        security: config?.scopes?.security ?? true,
-        compatibility: config?.scopes?.compatibility ?? true,
-        integration: config?.scopes?.integration ?? true,
+        configuration: config?.["scopes"]?.configuration ?? true,
+        dependencies: config?.["scopes"]?.dependencies ?? true,
+        performance: config?.["scopes"]?.performance ?? true,
+        security: config?.["scopes"]?.security ?? true,
+        compatibility: config?.["scopes"]?.compatibility ?? true,
+        integration: config?.["scopes"]?.integration ?? true,
       },
       thresholds: {
-        maxResponseTime: config?.thresholds?.maxResponseTime || 1000,
-        maxErrorRate: config?.thresholds?.maxErrorRate || 5,
-        minAvailability: config?.thresholds?.minAvailability || 99,
-        maxMemoryUsage: config?.thresholds?.maxMemoryUsage || 512,
-        maxConcurrentConnections: config?.thresholds?.maxConcurrentConnections || 100,
+        maxResponseTime: config?.["thresholds"]?.maxResponseTime || 1000,
+        maxErrorRate: config?.["thresholds"]?.maxErrorRate || 5,
+        minAvailability: config?.["thresholds"]?.minAvailability || 99,
+        maxMemoryUsage: config?.["thresholds"]?.maxMemoryUsage || 512,
+        maxConcurrentConnections: config?.["thresholds"]?.maxConcurrentConnections || 100,
       },
       timeouts: {
-        healthCheck: config?.timeouts?.healthCheck || 5000,
-        dependencyCheck: config?.timeouts?.dependencyCheck || 10000,
-        performanceTest: config?.timeouts?.performanceTest || 30000,
-        integrationTest: config?.timeouts?.integrationTest || 60000,
+        healthCheck: config?.["timeouts"]?.healthCheck || 5000,
+        dependencyCheck: config?.["timeouts"]?.dependencyCheck || 10000,
+        performanceTest: config?.["timeouts"]?.performanceTest || 30000,
+        integrationTest: config?.["timeouts"]?.integrationTest || 60000,
       },
       testScenarios: {
         loadTest: {
-          enabled: config?.testScenarios?.loadTest?.enabled ?? false,
-          concurrentUsers: config?.testScenarios?.loadTest?.concurrentUsers || 10,
-          duration: config?.testScenarios?.loadTest?.duration || 30000,
+          enabled: config?.["testScenarios"]?.loadTest?.enabled ?? false,
+          concurrentUsers: config?.["testScenarios"]?.loadTest?.concurrentUsers || 10,
+          duration: config?.["testScenarios"]?.loadTest?.duration || 30000,
         },
         stressTest: {
-          enabled: config?.testScenarios?.stressTest?.enabled ?? false,
-          maxLoad: config?.testScenarios?.stressTest?.maxLoad || 100,
-          duration: config?.testScenarios?.stressTest?.duration || 60000,
+          enabled: config?.["testScenarios"]?.stressTest?.enabled ?? false,
+          maxLoad: config?.["testScenarios"]?.stressTest?.maxLoad || 100,
+          duration: config?.["testScenarios"]?.stressTest?.duration || 60000,
         },
         failoverTest: {
-          enabled: config?.testScenarios?.failoverTest?.enabled ?? false,
-          scenarios: config?.testScenarios?.failoverTest?.scenarios || [
+          enabled: config?.["testScenarios"]?.failoverTest?.enabled ?? false,
+          scenarios: config?.["testScenarios"]?.failoverTest?.scenarios || [
             'service-failure',
             'network-partition',
           ],
@@ -241,48 +238,48 @@ export class USLValidationFramework {
     try {
       // Run validation sections based on configuration
       if (this.config.scopes.configuration) {
-        result.results.configuration = await this.validateConfiguration();
+        result?.results?.configuration = await this.validateConfiguration();
       }
 
       if (this.config.scopes.dependencies) {
-        result.results.dependencies = await this.validateDependencies();
+        result?.results?.dependencies = await this.validateDependencies();
       }
 
       if (this.config.scopes.performance) {
-        result.results.performance = await this.validatePerformance();
+        result?.results?.performance = await this.validatePerformance();
       }
 
       if (this.config.scopes.security) {
-        result.results.security = await this.validateSecurity();
+        result?.results?.security = await this.validateSecurity();
       }
 
       if (this.config.scopes.compatibility) {
-        result.results.compatibility = await this.validateCompatibility();
+        result?.results?.compatibility = await this.validateCompatibility();
       }
 
       if (this.config.scopes.integration) {
-        result.results.integration = await this.validateIntegration();
+        result?.results?.integration = await this.validateIntegration();
       }
 
       // Calculate overall results
       this.calculateOverallResults(result);
 
-      result.duration = Date.now() - startTime;
+      result?.duration = Date.now() - startTime;
 
       this.logger.info(
-        `Validation completed in ${result.duration}ms with overall status: ${result.overall} (Score: ${result.score})`
+        `Validation completed in ${result?.duration}ms with overall status: ${result?.overall} (Score: ${result?.score})`
       );
 
       return result;
     } catch (error) {
       this.logger.error('Validation failed with error:', error);
 
-      result.overall = 'fail';
-      result.score = 0;
-      result.duration = Date.now() - startTime;
-      result.summary.criticalIssues = 1;
+      result?.overall = 'fail';
+      result?.score = 0;
+      result?.duration = Date.now() - startTime;
+      result?.summary?.criticalIssues = 1;
 
-      result.recommendations.push({
+      result?.recommendations?.push({
         type: 'critical',
         category: 'system',
         description: 'Validation framework encountered a critical error',
@@ -368,7 +365,7 @@ export class USLValidationFramework {
     if (responseTimeP95 > this.config.thresholds.maxResponseTime) {
       alerts.push({
         severity: 'warning',
-        message: `System P95 response time (${responseTimeP95.toFixed(2)}ms) exceeds threshold (${this.config.thresholds.maxResponseTime}ms)`,
+        message: `System P95 response time (${responseTimeP95?.toFixed(2)}ms) exceeds threshold (${this.config.thresholds.maxResponseTime}ms)`,
         timestamp: new Date(),
       });
     }
@@ -672,8 +669,8 @@ export class USLValidationFramework {
       const totalServices = Object.keys(performanceMetrics.services).length;
 
       Object.entries(performanceMetrics.services).forEach(([serviceName, serviceData]) => {
-        const serviceLatency = serviceData.performance.responseTime;
-        const serviceErrorRate = serviceData.performance.errorRate;
+        const serviceLatency = serviceData?.performance?.responseTime;
+        const serviceErrorRate = serviceData?.performance?.errorRate;
 
         if (
           serviceLatency <= this.config.thresholds.maxResponseTime &&
@@ -711,14 +708,14 @@ export class USLValidationFramework {
         const loadTestResult = await this.performLoadTest();
         checks.push({
           name: 'Load Test',
-          status: loadTestResult.success ? 'pass' : 'fail',
-          message: loadTestResult.message,
-          details: loadTestResult.metrics,
-          duration: loadTestResult.duration,
+          status: loadTestResult?.success ? 'pass' : 'fail',
+          message: loadTestResult?.message,
+          details: loadTestResult?.metrics,
+          duration: loadTestResult?.duration,
         });
 
-        if (!loadTestResult.success) {
-          errors.push(`Load test failed: ${loadTestResult.message}`);
+        if (!loadTestResult?.success) {
+          errors.push(`Load test failed: ${loadTestResult?.message}`);
         }
       }
     } catch (error) {
@@ -789,13 +786,13 @@ export class USLValidationFramework {
       const sensitiveDataCheck = await this.checkSensitiveDataExposure();
       checks.push({
         name: 'Sensitive Data Protection',
-        status: sensitiveDataCheck.exposed ? 'fail' : 'pass',
-        message: sensitiveDataCheck.message,
-        details: sensitiveDataCheck.details,
-        duration: sensitiveDataCheck.duration,
+        status: sensitiveDataCheck?.exposed ? 'fail' : 'pass',
+        message: sensitiveDataCheck?.message,
+        details: sensitiveDataCheck?.details,
+        duration: sensitiveDataCheck?.duration,
       });
 
-      if (sensitiveDataCheck.exposed) {
+      if (sensitiveDataCheck?.exposed) {
         errors.push('Potential sensitive data exposure detected');
       }
     } catch (error) {
@@ -918,14 +915,14 @@ export class USLValidationFramework {
 
       checks.push({
         name: 'Data Flow Integrity',
-        status: dataFlowTest.success ? 'pass' : 'warning',
-        message: dataFlowTest.message,
-        details: dataFlowTest.details,
+        status: dataFlowTest?.success ? 'pass' : 'warning',
+        message: dataFlowTest?.message,
+        details: dataFlowTest?.details,
         duration: Date.now() - dataFlowStart,
       });
 
-      if (!dataFlowTest.success) {
-        warnings.push(...dataFlowTest.warnings);
+      if (!dataFlowTest?.success) {
+        warnings.push(...dataFlowTest?.warnings);
       }
 
       // Integration health check
@@ -973,35 +970,35 @@ export class USLValidationFramework {
   // ============================================
 
   private calculateOverallResults(result: ValidationResult): void {
-    const sections = Object.values(result.results);
+    const sections = Object.values(result?.results);
     const totalScore = sections.reduce((sum, section) => sum + section.score, 0);
     const sectionCount = sections.filter((section) => section.checks.length > 0).length;
 
-    result.score = sectionCount > 0 ? Math.round(totalScore / sectionCount) : 0;
+    result?.score = sectionCount > 0 ? Math.round(totalScore / sectionCount) : 0;
 
     // Calculate summary
     sections.forEach((section) => {
-      result.summary.totalChecks += section.checks.length;
-      result.summary.passed += section.checks.filter((c) => c.status === 'pass').length;
-      result.summary.warnings += section.checks.filter((c) => c.status === 'warning').length;
-      result.summary.failures += section.checks.filter((c) => c.status === 'fail').length;
-      result.summary.criticalIssues += section.errors.length;
+      result?.summary?.totalChecks += section.checks.length;
+      result?.summary?.passed += section.checks.filter((c) => c.status === 'pass').length;
+      result?.summary?.warnings += section.checks.filter((c) => c.status === 'warning').length;
+      result?.summary?.failures += section.checks.filter((c) => c.status === 'fail').length;
+      result?.summary?.criticalIssues += section.errors.length;
     });
 
     // Determine overall status
     if (
-      result.summary.criticalIssues > 0 ||
-      result.summary.failures > result.summary.totalChecks * 0.2
+      result?.summary?.criticalIssues > 0 ||
+      result?.summary?.failures > result?.summary?.totalChecks * 0.2
     ) {
-      result.overall = 'fail';
-    } else if (result.summary.warnings > 0 || result.summary.failures > 0) {
-      result.overall = 'warning';
+      result?.overall = 'fail';
+    } else if (result?.summary?.warnings > 0 || result?.summary?.failures > 0) {
+      result?.overall = 'warning';
     } else {
-      result.overall = 'pass';
+      result?.overall = 'pass';
     }
 
     // Generate recommendations
-    result.recommendations = this.generateRecommendations(result);
+    result?.recommendations = this.generateRecommendations(result);
   }
 
   private calculateSectionResult(
@@ -1029,7 +1026,7 @@ export class USLValidationFramework {
     const recommendations: ValidationResult['recommendations'] = [];
 
     // Critical issues
-    if (result.summary.criticalIssues > 0) {
+    if (result?.summary?.criticalIssues > 0) {
       recommendations.push({
         type: 'critical',
         category: 'system',
@@ -1041,7 +1038,7 @@ export class USLValidationFramework {
     }
 
     // Performance issues
-    if (result.results.performance.status === 'fail') {
+    if (result?.results?.performance?.status === 'fail') {
       recommendations.push({
         type: 'critical',
         category: 'performance',
@@ -1053,7 +1050,7 @@ export class USLValidationFramework {
     }
 
     // Security issues
-    if (result.results.security.status === 'fail') {
+    if (result?.results?.security?.status === 'fail') {
       recommendations.push({
         type: 'critical',
         category: 'security',
@@ -1065,7 +1062,7 @@ export class USLValidationFramework {
     }
 
     // Migration issues
-    if (result.results.compatibility.status !== 'pass') {
+    if (result?.results?.compatibility?.status !== 'pass') {
       recommendations.push({
         type: 'warning',
         category: 'migration',
@@ -1077,7 +1074,7 @@ export class USLValidationFramework {
     }
 
     // General improvements
-    if (result.score < 90) {
+    if (result?.score < 90) {
       recommendations.push({
         type: 'improvement',
         category: 'general',
@@ -1225,9 +1222,9 @@ export class USLValidationFramework {
     const responseTimes = Object.values(services).map((s: any) => s.performance.responseTime);
     if (responseTimes.length === 0) return 0;
 
-    responseTimes.sort((a, b) => a - b);
+    responseTimes?.sort((a, b) => a - b);
     const p95Index = Math.floor(responseTimes.length * 0.95);
-    return responseTimes[p95Index] || 0;
+    return responseTimes?.[p95Index] || 0;
   }
 
   private calculateTotalMemoryUsage(services: Record<string, any>): number {

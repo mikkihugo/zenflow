@@ -4,14 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type {
-  DataOptimizer,
-  NeuralOptimizer,
-  OptimizationResult,
-  PerformanceMetrics,
-  SwarmOptimizer,
-  WasmOptimizer,
-} from '../interfaces/optimization-interfaces';
 
 export interface PerformanceOptimizerConfig {
   enabled: boolean;
@@ -145,7 +137,7 @@ export class PerformanceOptimizer extends EventEmitter {
       // Execute optimizations
       for (const optimizationPlan of plan) {
         const result = await this.executeOptimizationPlan(optimizationPlan);
-        results.push(result);
+        results?.push(result);
       }
 
       // Measure final performance
@@ -394,12 +386,9 @@ export class PerformanceOptimizer extends EventEmitter {
   private needsOptimization(metrics: PerformanceMetrics): boolean {
     const targets = this.config.targetMetrics;
 
-    return (
-      metrics.latency > targets.latency ||
-      metrics.throughput < targets.throughput ||
-      metrics.memoryUsage > targets.memoryUsage ||
-      metrics.cpuUsage > targets.cpuUsage
-    );
+    return (metrics.latency > targets?.latency ||
+    metrics.throughput < targets?.throughput ||
+    metrics.memoryUsage > targets?.memoryUsage || metrics.cpuUsage > targets?.cpuUsage);
   }
 
   /**
@@ -411,16 +400,16 @@ export class PerformanceOptimizer extends EventEmitter {
     const bottlenecks: string[] = [];
     const targets = this.config.targetMetrics;
 
-    if (metrics.latency > targets.latency) {
+    if (metrics.latency > targets?.latency) {
       bottlenecks.push('latency');
     }
-    if (metrics.throughput < targets.throughput) {
+    if (metrics.throughput < targets?.throughput) {
       bottlenecks.push('throughput');
     }
-    if (metrics.memoryUsage > targets.memoryUsage) {
+    if (metrics.memoryUsage > targets?.memoryUsage) {
       bottlenecks.push('memory');
     }
-    if (metrics.cpuUsage > targets.cpuUsage) {
+    if (metrics.cpuUsage > targets?.cpuUsage) {
       bottlenecks.push('cpu');
     }
 

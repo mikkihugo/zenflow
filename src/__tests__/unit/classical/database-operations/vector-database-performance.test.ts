@@ -63,8 +63,8 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
       performance.end('single-vector-insert');
 
-      expect(result.success).toBe(true);
-      expect(result.id).toBeDefined();
+      expect(result?.success).toBe(true);
+      expect(result?.id).toBeDefined();
 
       const insertTime = performance.getDuration('single-vector-insert');
       expect(insertTime).toBeLessThan(PERFORMANCE_THRESHOLD_MS);
@@ -88,9 +88,9 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
       performance.end('batch-vector-insert');
 
-      expect(result.success).toBe(true);
-      expect(result.insertedCount).toBe(batchSize);
-      expect(result.failedCount).toBe(0);
+      expect(result?.success).toBe(true);
+      expect(result?.insertedCount).toBe(batchSize);
+      expect(result?.failedCount).toBe(0);
 
       const batchTime = performance.getDuration('batch-vector-insert');
       const timePerVector = batchTime / batchSize;
@@ -117,8 +117,8 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
       performance.end('high-dimensional-insert');
 
-      expect(result.success).toBe(true);
-      expect(result.insertedCount).toBe(100);
+      expect(result?.success).toBe(true);
+      expect(result?.insertedCount).toBe(100);
 
       const insertTime = performance.getDuration('high-dimensional-insert');
       expect(insertTime).toBeLessThan(5000); // 5 seconds max for 100 high-dim vectors
@@ -160,7 +160,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
       // Verify results are sorted by similarity (descending)
       for (let i = 1; i < results.length; i++) {
-        expect(results[i].similarity).toBeLessThanOrEqual(results[i - 1].similarity);
+        expect(results?.[i]?.similarity).toBeLessThanOrEqual(results?.[i - 1]?.similarity);
       }
 
       const searchTime = performance.getDuration('similarity-search');
@@ -185,9 +185,9 @@ describe('Vector Database Performance (Classical TDD)', () => {
       performance.end('filtered-search');
 
       // Verify all results match filter criteria
-      results.forEach((result) => {
-        expect(result.metadata.category).toBe(targetCategory);
-        expect(result.metadata.value).toBeGreaterThanOrEqual(50);
+      results?.forEach((result) => {
+        expect(result?.metadata?.category).toBe(targetCategory);
+        expect(result?.metadata?.value).toBeGreaterThanOrEqual(50);
       });
 
       const searchTime = performance.getDuration('filtered-search');
@@ -209,8 +209,8 @@ describe('Vector Database Performance (Classical TDD)', () => {
       performance.end('range-query');
 
       // Verify all results are within specified radius
-      results.forEach((result) => {
-        expect(result.similarity).toBeGreaterThanOrEqual(radius);
+      results?.forEach((result) => {
+        expect(result?.similarity).toBeGreaterThanOrEqual(radius);
       });
 
       expect(results.length).toBeLessThanOrEqual(100);
@@ -248,8 +248,8 @@ describe('Vector Database Performance (Classical TDD)', () => {
       expect(approxTime).toBeLessThan(exactTime * 0.5);
 
       // Approximate results should be reasonably similar to exact
-      const topExact = exactResults.slice(0, 5).map((r) => r.metadata.id);
-      const topApprox = approxResults.slice(0, 5).map((r) => r.metadata.id);
+      const topExact = exactResults?.slice(0, 5).map((r) => r.metadata.id);
+      const topApprox = approxResults?.slice(0, 5).map((r) => r.metadata.id);
       const overlap = topExact.filter((id) => topApprox.includes(id)).length;
 
       expect(overlap).toBeGreaterThanOrEqual(3); // At least 60% overlap in top 5
@@ -317,7 +317,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
         for (let i = 0; i < vectorsPerCluster; i++) {
           const noisyVector = testHelper.addNoiseToVector(clusterCenter, 0.1);
-          clusteredData.push({
+          clusteredData?.push({
             vector: noisyVector,
             metadata: {
               id: `cluster-${cluster}-vector-${i}`,
@@ -376,7 +376,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
       // Insert in chunks to test memory management
       const chunkSize = 1000;
       for (let i = 0; i < largeDataset.length; i += chunkSize) {
-        const chunk = largeDataset.slice(i, i + chunkSize);
+        const chunk = largeDataset?.slice(i, i + chunkSize);
         await vectorStore.batchInsert(chunk);
 
         // Force garbage collection between chunks
@@ -433,7 +433,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
       });
 
       expect(compressedResults.length).toBeGreaterThan(0);
-      expect(compressionResult.accuracyRetention).toBeGreaterThanOrEqual(0.95);
+      expect(compressionResult?.accuracyRetention).toBeGreaterThanOrEqual(0.95);
 
       const compressionTime = performance.getDuration('vector-compression');
       expect(compressionTime).toBeLessThan(30000); // 30 seconds max
@@ -470,7 +470,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
       // All reads should succeed
       expect(results.length).toBe(concurrentReads);
-      results.forEach((result) => {
+      results?.forEach((result) => {
         expect(result.length).toBeGreaterThan(0);
         expect(result.length).toBeLessThanOrEqual(5);
       });
@@ -517,10 +517,10 @@ describe('Vector Database Performance (Classical TDD)', () => {
       let writeCount = 0;
       let readCount = 0;
 
-      results.forEach((result, index) => {
+      results?.forEach((result, index) => {
         if (index % 3 === 0) {
           // Write result
-          expect(result.success).toBe(true);
+          expect(result?.success).toBe(true);
           writeCount++;
         } else {
           // Read result
@@ -565,7 +565,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
       performance.end('concurrent-updates');
 
       // Exactly one update should succeed due to concurrency control
-      const successfulUpdates = updateResults.filter((result) => result.success);
+      const successfulUpdates = updateResults?.filter((result) => result?.success);
       expect(successfulUpdates.length).toBe(1);
 
       // Verify final state is consistent

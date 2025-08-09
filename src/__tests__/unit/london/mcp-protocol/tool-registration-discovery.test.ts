@@ -8,8 +8,7 @@
  * - Focus on interaction patterns between components
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import type { MCPRequest, MCPResponse, MCPTool } from '../../../../utils/types';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
@@ -258,8 +257,8 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
           'success'
         );
 
-        expect(result.success).toBe(true);
-        expect(result.toolName).toBe('code_analyzer');
+        expect(result?.success).toBe(true);
+        expect(result?.toolName).toBe('code_analyzer');
       });
 
       it('should reject tool with invalid schema', async () => {
@@ -290,9 +289,9 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
         // Assert - Verify validation error handling
         expect(mockSchemaValidator.validateToolDefinition).toHaveBeenCalledWith(invalidTool);
         expect(mockMetricsCollector.recordToolRegistration).toHaveBeenCalledWith('', 'failed');
-        expect(result.success).toBe(false);
-        expect(result.errors).toContain('Tool name cannot be empty');
-        expect(result.errors).toContain('Description is required');
+        expect(result?.success).toBe(false);
+        expect(result?.errors).toContain('Tool name cannot be empty');
+        expect(result?.errors).toContain('Description is required');
       });
 
       it('should handle tool updates when re-registering existing tool', async () => {
@@ -336,8 +335,8 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
           name: 'existing_tool',
           tool: updatedTool,
         });
-        expect(result.success).toBe(true);
-        expect(result.warnings).toContain('Tool updated with new capabilities');
+        expect(result?.success).toBe(true);
+        expect(result?.warnings).toContain('Tool updated with new capabilities');
       });
     });
 
@@ -457,10 +456,10 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
         expect(mockLogger.debug).toHaveBeenCalledWith('Handling tools/list request', {
           id: 'tools-list-1',
         });
-        expect(response.jsonrpc).toBe('2.0');
-        expect(response.result).toBeDefined();
-        expect(response.result.tools).toHaveLength(1);
-        expect(response.result.tools[0]).toEqual({
+        expect(response?.jsonrpc).toBe('2.0');
+        expect(response?.result).toBeDefined();
+        expect(response?.result?.tools).toHaveLength(1);
+        expect(response?.result?.tools?.[0]).toEqual({
           name: 'test_tool',
           description: 'Test tool for demo',
           inputSchema: {
@@ -516,7 +515,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
         expect(codeRelatedTools.map((t) => t.name)).toContain('doc_writer');
 
         expect(testRelatedTools).toHaveLength(1); // test_generator
-        expect(testRelatedTools[0].name).toBe('test_generator');
+        expect(testRelatedTools[0]?.name).toBe('test_generator');
       });
     });
   });
@@ -607,8 +606,8 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
 
       // Verify call order
       const emitCalls = mockEventBus.emit.mock.calls;
-      expect(emitCalls[0][0]).toBe('tool:registered');
-      expect(emitCalls[1][0]).toBe('tool:unregistered');
+      expect(emitCalls[0]?.[0]).toBe('tool:registered');
+      expect(emitCalls[1]?.[0]).toBe('tool:unregistered');
     });
   });
 

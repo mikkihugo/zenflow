@@ -1,18 +1,4 @@
-/**
- * Conversation Orchestrator Tests - London TDD.
- *
- * Tests for conversation orchestration using London School TDD (mockist approach)
- * Focus on interactions between orchestrator and its dependencies.
- */
-
-import type { AgentId } from '../../../types/agent-types';
 import { ConversationOrchestratorImpl } from '../orchestrator';
-import type {
-  ConversationConfig,
-  ConversationMemory,
-  ConversationMessage,
-  ConversationSession,
-} from '../types';
 
 describe('ConversationOrchestratorImpl - London TDD', () => {
   let orchestrator: ConversationOrchestratorImpl;
@@ -61,13 +47,13 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
 
       // Assert
       expect(session).toMatchObject({
-        title: config.title,
-        participants: config.initialParticipants,
+        title: config?.title,
+        participants: config?.["initialParticipants"],
         status: 'active',
       });
       expect(mockMemory.storeConversation).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: config.title,
+          title: config?.title,
           status: 'initializing',
         })
       );
@@ -449,7 +435,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
       // Assert - Verify the interaction chain
       expect(mockMemory.storeConversation).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: config.title,
+          title: config?.title,
           status: 'initializing',
         })
       );

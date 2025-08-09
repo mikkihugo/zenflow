@@ -14,17 +14,7 @@ import { FACTIntegration } from '../../knowledge/knowledge-client';
 import { createAPIClient } from '../api/http/client';
 import { WebSocketClient } from '../api/websocket/client';
 import { ExternalMCPClient } from '../mcp/external-mcp-client';
-import {
-  type ClientConfig,
-  type ClientFactory,
-  type ClientInstance,
-  ClientRegistry,
-  ClientType,
-  type HTTPClientConfig,
-  type KnowledgeClientConfig,
-  type MCPClientConfig,
-  type WebSocketClientConfig,
-} from './registry';
+import { type ClientFactory, ClientRegistry, ClientType } from './registry';
 
 /**
  * Manager configuration options
@@ -85,23 +75,23 @@ export interface ClientMetrics {
  */
 class HTTPClientFactory implements ClientFactory {
   async create(config: ClientConfig): Promise<ClientInstance> {
-    if (config.type !== ClientType.HTTP) {
+    if (config?.type !== ClientType["HTTP"]) {
       throw new Error('Invalid client type for HTTP factory');
     }
 
     const httpConfig = config as HTTPClientConfig;
     const apiClient = createAPIClient({
-      baseURL: httpConfig.baseURL,
-      timeout: httpConfig.timeout,
-      apiKey: httpConfig.apiKey,
-      bearerToken: httpConfig.bearerToken,
-      headers: httpConfig.headers,
-      retryAttempts: httpConfig.retryAttempts,
+      baseURL: httpConfig?.baseURL,
+      timeout: httpConfig?.timeout,
+      apiKey: httpConfig?.apiKey,
+      bearerToken: httpConfig?.bearerToken,
+      headers: httpConfig?.headers,
+      retryAttempts: httpConfig?.retryAttempts,
     });
 
     return {
-      id: config.id,
-      type: ClientType.HTTP,
+      id: config?.id,
+      type: ClientType["HTTP"],
       config,
       client: apiClient,
       status: 'initialized',
@@ -110,13 +100,13 @@ class HTTPClientFactory implements ClientFactory {
   }
 
   validate(config: ClientConfig): boolean {
-    if (config.type !== ClientType.HTTP) return false;
+    if (config?.type !== ClientType["HTTP"]) return false;
     const httpConfig = config as HTTPClientConfig;
-    return !!(httpConfig.baseURL && httpConfig.id);
+    return !!(httpConfig?.baseURL && httpConfig?.id);
   }
 
   getDefaultConfig(type: ClientType): Partial<ClientConfig> {
-    if (type !== ClientType.HTTP) return {};
+    if (type !== ClientType["HTTP"]) return {};
     return {
       enabled: true,
       priority: 5,
@@ -149,21 +139,21 @@ class HTTPClientFactory implements ClientFactory {
  */
 class WebSocketClientFactory implements ClientFactory {
   async create(config: ClientConfig): Promise<ClientInstance> {
-    if (config.type !== ClientType.WEBSOCKET) {
+    if (config?.type !== ClientType["WEBSOCKET"]) {
       throw new Error('Invalid client type for WebSocket factory');
     }
 
     const wsConfig = config as WebSocketClientConfig;
-    const wsClient = new WebSocketClient(wsConfig.url, {
-      reconnect: wsConfig.reconnect,
-      reconnectInterval: wsConfig.reconnectInterval,
-      maxReconnectAttempts: wsConfig.maxReconnectAttempts,
-      timeout: wsConfig.timeout,
+    const wsClient = new WebSocketClient(wsConfig?.url, {
+      reconnect: wsConfig?.reconnect,
+      reconnectInterval: wsConfig?.reconnectInterval,
+      maxReconnectAttempts: wsConfig?.maxReconnectAttempts,
+      timeout: wsConfig?.timeout,
     });
 
     return {
-      id: config.id,
-      type: ClientType.WEBSOCKET,
+      id: config?.id,
+      type: ClientType["WEBSOCKET"],
       config,
       client: wsClient,
       status: 'initialized',
@@ -172,13 +162,13 @@ class WebSocketClientFactory implements ClientFactory {
   }
 
   validate(config: ClientConfig): boolean {
-    if (config.type !== ClientType.WEBSOCKET) return false;
+    if (config?.type !== ClientType["WEBSOCKET"]) return false;
     const wsConfig = config as WebSocketClientConfig;
-    return !!(wsConfig.url && wsConfig.id);
+    return !!(wsConfig?.url && wsConfig?.id);
   }
 
   getDefaultConfig(type: ClientType): Partial<ClientConfig> {
-    if (type !== ClientType.WEBSOCKET) return {};
+    if (type !== ClientType["WEBSOCKET"]) return {};
     return {
       enabled: true,
       priority: 5,
@@ -213,22 +203,22 @@ class WebSocketClientFactory implements ClientFactory {
  */
 class KnowledgeClientFactory implements ClientFactory {
   async create(config: ClientConfig): Promise<ClientInstance> {
-    if (config.type !== ClientType.KNOWLEDGE) {
+    if (config?.type !== ClientType["KNOWLEDGE"]) {
       throw new Error('Invalid client type for Knowledge factory');
     }
 
     const knowledgeConfig = config as KnowledgeClientConfig;
     const factClient = new FACTIntegration({
-      factRepoPath: knowledgeConfig.factRepoPath,
-      anthropicApiKey: knowledgeConfig.anthropicApiKey,
-      pythonPath: knowledgeConfig.pythonPath,
-      enableCache: knowledgeConfig.enableCache,
-      cacheConfig: knowledgeConfig.cacheConfig,
+      factRepoPath: knowledgeConfig?.factRepoPath,
+      anthropicApiKey: knowledgeConfig?.anthropicApiKey,
+      pythonPath: knowledgeConfig?.pythonPath,
+      enableCache: knowledgeConfig?.enableCache,
+      cacheConfig: knowledgeConfig?.cacheConfig,
     });
 
     return {
-      id: config.id,
-      type: ClientType.KNOWLEDGE,
+      id: config?.id,
+      type: ClientType["KNOWLEDGE"],
       config,
       client: factClient,
       status: 'initialized',
@@ -237,17 +227,17 @@ class KnowledgeClientFactory implements ClientFactory {
   }
 
   validate(config: ClientConfig): boolean {
-    if (config.type !== ClientType.KNOWLEDGE) return false;
+    if (config?.type !== ClientType["KNOWLEDGE"]) return false;
     const knowledgeConfig = config as KnowledgeClientConfig;
     return !!(
-      knowledgeConfig.factRepoPath &&
-      knowledgeConfig.anthropicApiKey &&
-      knowledgeConfig.id
+      knowledgeConfig?.factRepoPath &&
+      knowledgeConfig?.anthropicApiKey &&
+      knowledgeConfig?.id
     );
   }
 
   getDefaultConfig(type: ClientType): Partial<ClientConfig> {
-    if (type !== ClientType.KNOWLEDGE) return {};
+    if (type !== ClientType["KNOWLEDGE"]) return {};
     return {
       enabled: true,
       priority: 5,
@@ -281,7 +271,7 @@ class KnowledgeClientFactory implements ClientFactory {
  */
 class MCPClientFactory implements ClientFactory {
   async create(config: ClientConfig): Promise<ClientInstance> {
-    if (config.type !== ClientType.MCP) {
+    if (config?.type !== ClientType["MCP"]) {
       throw new Error('Invalid client type for MCP factory');
     }
 
@@ -289,8 +279,8 @@ class MCPClientFactory implements ClientFactory {
     const mcpClient = new ExternalMCPClient();
 
     return {
-      id: config.id,
-      type: ClientType.MCP,
+      id: config?.id,
+      type: ClientType["MCP"],
       config,
       client: mcpClient,
       status: 'initialized',
@@ -299,13 +289,13 @@ class MCPClientFactory implements ClientFactory {
   }
 
   validate(config: ClientConfig): boolean {
-    if (config.type !== ClientType.MCP) return false;
+    if (config?.type !== ClientType["MCP"]) return false;
     const mcpConfig = config as MCPClientConfig;
-    return !!(mcpConfig.servers && Object.keys(mcpConfig.servers).length > 0 && mcpConfig.id);
+    return !!(mcpConfig?.servers && Object.keys(mcpConfig?.servers).length > 0 && mcpConfig?.id);
   }
 
   getDefaultConfig(type: ClientType): Partial<ClientConfig> {
-    if (type !== ClientType.MCP) return {};
+    if (type !== ClientType["MCP"]) return {};
     return {
       enabled: true,
       priority: 5,
@@ -354,12 +344,12 @@ export class ClientManager extends EventEmitter {
     super();
 
     this.config = {
-      healthCheckInterval: config.healthCheckInterval ?? 30000,
-      autoReconnect: config.autoReconnect ?? true,
-      maxRetryAttempts: config.maxRetryAttempts ?? 3,
-      retryDelay: config.retryDelay ?? 1000,
-      metricsRetention: config.metricsRetention ?? 24 * 60 * 60 * 1000, // 1 day
-      enableLogging: config.enableLogging ?? true,
+      healthCheckInterval: config?.["healthCheckInterval"] ?? 30000,
+      autoReconnect: config?.["autoReconnect"] ?? true,
+      maxRetryAttempts: config?.["maxRetryAttempts"] ?? 3,
+      retryDelay: config?.["retryDelay"] ?? 1000,
+      metricsRetention: config?.["metricsRetention"] ?? 24 * 60 * 60 * 1000, // 1 day
+      enableLogging: config?.["enableLogging"] ?? true,
     };
 
     this.registry = new ClientRegistry(this.config.healthCheckInterval);
@@ -375,10 +365,10 @@ export class ClientManager extends EventEmitter {
     }
 
     // Register all client factories
-    this.registry.registerFactory(ClientType.HTTP, new HTTPClientFactory());
-    this.registry.registerFactory(ClientType.WEBSOCKET, new WebSocketClientFactory());
-    this.registry.registerFactory(ClientType.KNOWLEDGE, new KnowledgeClientFactory());
-    this.registry.registerFactory(ClientType.MCP, new MCPClientFactory());
+    this.registry.registerFactory(ClientType["HTTP"], new HTTPClientFactory());
+    this.registry.registerFactory(ClientType["WEBSOCKET"], new WebSocketClientFactory());
+    this.registry.registerFactory(ClientType["KNOWLEDGE"], new KnowledgeClientFactory());
+    this.registry.registerFactory(ClientType["MCP"], new MCPClientFactory());
 
     // Start health monitoring
     this.registry.startHealthMonitoring();
@@ -403,11 +393,11 @@ export class ClientManager extends EventEmitter {
     const instance = await this.registry.register(config);
 
     // Initialize metrics for this client
-    this.metricsStore.set(config.id, this.createInitialMetrics());
+    this.metricsStore.set(config?.id, this.createInitialMetrics());
 
     // Connect the client if it's enabled
-    if (config.enabled) {
-      await this.connectClient(config.id);
+    if (config?.["enabled"]) {
+      await this.connectClient(config?.id);
     }
 
     return instance;
@@ -429,12 +419,12 @@ export class ClientManager extends EventEmitter {
       metrics.connections.attempts++;
 
       // Connect based on client type
-      if (instance.type === ClientType.WEBSOCKET && 'connect' in instance.client) {
-        await (instance.client as WebSocketClient).connect();
-      } else if (instance.type === ClientType.KNOWLEDGE && 'initialize' in instance.client) {
-        await (instance.client as FACTIntegration).initialize();
-      } else if (instance.type === ClientType.MCP && 'connectAll' in instance.client) {
-        await (instance.client as ExternalMCPClient).connectAll();
+      if (instance.type === ClientType["WEBSOCKET"] && 'connect' in instance["client"]) {
+        await (instance["client"] as WebSocketClient).connect();
+      } else if (instance.type === ClientType["KNOWLEDGE"] && 'initialize' in instance["client"]) {
+        await (instance["client"] as FACTIntegration).initialize();
+      } else if (instance.type === ClientType["MCP"] && 'connectAll' in instance["client"]) {
+        await (instance["client"] as ExternalMCPClient).connectAll();
       }
       // HTTP clients are stateless, so they're always "connected"
 
@@ -488,12 +478,12 @@ export class ClientManager extends EventEmitter {
       }
 
       // Disconnect based on client type
-      if (instance.type === ClientType.WEBSOCKET && 'disconnect' in instance.client) {
-        (instance.client as WebSocketClient).disconnect();
-      } else if (instance.type === ClientType.KNOWLEDGE && 'shutdown' in instance.client) {
-        await (instance.client as FACTIntegration).shutdown();
-      } else if (instance.type === ClientType.MCP && 'disconnectAll' in instance.client) {
-        await (instance.client as ExternalMCPClient).disconnectAll();
+      if (instance.type === ClientType["WEBSOCKET"] && 'disconnect' in instance["client"]) {
+        (instance["client"] as WebSocketClient).disconnect();
+      } else if (instance.type === ClientType["KNOWLEDGE"] && 'shutdown' in instance["client"]) {
+        await (instance["client"] as FACTIntegration).shutdown();
+      } else if (instance.type === ClientType["MCP"] && 'disconnectAll' in instance["client"]) {
+        await (instance["client"] as ExternalMCPClient).disconnectAll();
       }
 
       const metrics = this.metricsStore.get(clientId);
@@ -805,7 +795,7 @@ export const ClientManagerHelpers = {
   ): Promise<ClientInstance> {
     return globalClientManager.createClient({
       id,
-      type: ClientType.HTTP,
+      type: ClientType["HTTP"],
       baseURL,
       enabled: true,
       priority: 5,
@@ -829,7 +819,7 @@ export const ClientManagerHelpers = {
   ): Promise<ClientInstance> {
     return globalClientManager.createClient({
       id,
-      type: ClientType.WEBSOCKET,
+      type: ClientType["WEBSOCKET"],
       url,
       enabled: true,
       priority: 5,
@@ -857,7 +847,7 @@ export const ClientManagerHelpers = {
   ): Promise<ClientInstance> {
     return globalClientManager.createClient({
       id,
-      type: ClientType.KNOWLEDGE,
+      type: ClientType["KNOWLEDGE"],
       factRepoPath,
       anthropicApiKey,
       enabled: true,
@@ -883,7 +873,7 @@ export const ClientManagerHelpers = {
   ): Promise<ClientInstance> {
     return globalClientManager.createClient({
       id,
-      type: ClientType.MCP,
+      type: ClientType["MCP"],
       servers,
       enabled: true,
       priority: 5,

@@ -135,7 +135,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       },
       ...config,
     };
-    this.knowledgeSwarm = new KnowledgeSwarm(config?.swarmConfig);
+    this.knowledgeSwarm = new KnowledgeSwarm(config?.["swarmConfig"]);
   }
 
   /**

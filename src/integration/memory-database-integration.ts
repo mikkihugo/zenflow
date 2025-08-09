@@ -78,7 +78,7 @@ export async function createIntegratedSystem() {
   });
 
   // Register database provider factory
-  container.register(DATABASE_TOKENS?.ProviderFactory, {
+  container.register(DATABASE_TOKENS?.["ProviderFactory"], {
     type: 'singleton',
     create: () => ({
       createProvider: async (type: string, config: any) => {
@@ -95,7 +95,7 @@ export async function createIntegratedSystem() {
       new DALFactory(
         c.resolve(CORE_TOKENS.Logger),
         c.resolve(CORE_TOKENS.Config),
-        c.resolve(DATABASE_TOKENS?.ProviderFactory) as any
+        c.resolve(DATABASE_TOKENS?.["ProviderFactory"]) as any
       ),
   });
 

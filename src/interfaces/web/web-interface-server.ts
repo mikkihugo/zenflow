@@ -6,18 +6,18 @@
  */
 
 import { existsSync } from 'node:fs';
-import { createServer, type Server as HTTPServer } from 'node:http';
+import { createServer } from 'node:http';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import express, { type Express } from 'express';
+import express from 'express';
 import { Server as SocketIOServer } from 'socket.io';
 import { createLogger } from '../../utils/logger';
 import { ApiRouteHandler } from './api-route-handler';
 import { DaemonProcessManager } from './daemon-process-manager';
 import { WebSocketCoordinator } from './web-socket-coordinator';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const _filename = fileURLToPath(import.meta.url);
+const _dirname = dirname(_filename);
 
 export interface WebConfig {
   port?: number;

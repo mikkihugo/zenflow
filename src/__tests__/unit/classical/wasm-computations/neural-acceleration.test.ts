@@ -28,7 +28,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
     // Initialize WASM module
     wasmAccelerator = new WasmNeuralAccelerator();
-    await wasmAccelerator.initialize();
+    await wasmAccelerator["initialize"]();
 
     neuralManager = new NeuralNetworkManager({
       accelerator: wasmAccelerator,
@@ -37,7 +37,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
   });
 
   afterAll(async () => {
-    await wasmAccelerator.cleanup();
+    await wasmAccelerator["cleanup"]();
   });
 
   describe('Matrix Operations Acceleration', () => {
@@ -55,7 +55,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
         // WASM accelerated implementation
         performance.start(`wasm-matrix-mult-${size}`);
-        const wasmResult = await wasmAccelerator.multiplyMatrices(matrixA, matrixB);
+        const wasmResult = await wasmAccelerator["multiplyMatrices"](matrixA, matrixB);
         performance.end(`wasm-matrix-mult-${size}`);
 
         // Verify mathematical correctness
@@ -72,7 +72,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
         // Large matrices should meet performance targets
         if (size >= 1000) {
           expect(wasmTime).toBeLessThan(
-            WASM_PERFORMANCE_TARGETS.matrixMultiplication * (size / 1000)
+            WASM_PERFORMANCE_TARGETS?.["matrixMultiplication"] * (size / 1000)
           );
         }
       }
@@ -84,27 +84,27 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
         testHelpers.generateRandomMatrix(size, size)
       );
 
-      const initialMemory = await wasmAccelerator.getMemoryUsage();
+      const initialMemory = await wasmAccelerator["getMemoryUsage"]();
 
       performance.start('batch-matrix-operations');
 
       // Perform batch operations to test memory efficiency
       const results = [];
       for (let i = 0; i < matrices.length - 1; i++) {
-        const result = await wasmAccelerator.multiplyMatrices(matrices[i], matrices[i + 1]);
-        results.push(result);
+        const result = await wasmAccelerator["multiplyMatrices"](matrices[i], matrices[i + 1]);
+        results?.push(result);
       }
 
       performance.end('batch-matrix-operations');
 
-      const finalMemory = await wasmAccelerator.getMemoryUsage();
+      const finalMemory = await wasmAccelerator["getMemoryUsage"]();
       const memoryIncrease = finalMemory - initialMemory;
 
       // Memory usage should be reasonable
       const expectedMemory = size * size * 4 * matrices.length; // 4 bytes per float
       const memoryEfficiency = expectedMemory / memoryIncrease;
 
-      expect(memoryEfficiency).toBeGreaterThan(WASM_PERFORMANCE_TARGETS.memoryEfficiency);
+      expect(memoryEfficiency).toBeGreaterThan(WASM_PERFORMANCE_TARGETS?.["memoryEfficiency"]);
 
       const totalTime = performance.getDuration('batch-matrix-operations');
       expect(totalTime).toBeLessThan(5000); // 5 seconds for batch operations
@@ -119,7 +119,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
       performance.start('sparse-matrix-vector-mult');
 
-      const result = await wasmAccelerator.multiplyMatrixVector(sparseMatrix, denseVector, {
+      const result = await wasmAccelerator["multiplyMatrixVector"](sparseMatrix, denseVector, {
         sparse: true,
       });
 
@@ -161,7 +161,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
       // WASM accelerated implementation
       performance.start('wasm-forward-pass');
-      const wasmOutputs = await wasmAccelerator.forwardPassBatch(
+      const wasmOutputs = await wasmAccelerator["forwardPassBatch"](
         network.getWeights(),
         inputBatch,
         networkConfig
@@ -194,7 +194,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
         // WASM implementation
         performance.start(`wasm-${activation}`);
-        const wasmResult = await wasmAccelerator.applyActivation(inputVector, activation);
+        const wasmResult = await wasmAccelerator["applyActivation"](inputVector, activation);
         performance.end(`wasm-${activation}`);
 
         // Verify mathematical correctness
@@ -208,7 +208,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
         expect(speedup).toBeGreaterThan(1.5);
 
         // Should meet performance targets
-        expect(wasmTime).toBeLessThan(WASM_PERFORMANCE_TARGETS.activation);
+        expect(wasmTime).toBeLessThan(WASM_PERFORMANCE_TARGETS?.["activation"]);
       }
     });
 
@@ -221,32 +221,32 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
         padding: 'same',
       };
 
-      const inputImage = testHelpers.generateRandomTensor(convConfig.inputShape);
+      const inputImage = testHelpers.generateRandomTensor(convConfig?.inputShape);
       const kernels = testHelpers.generateConvKernels(
-        convConfig.kernelSize,
-        convConfig.inputShape[2],
-        convConfig.filters
+        convConfig?.kernelSize,
+        convConfig?.inputShape?.[2],
+        convConfig?.filters
       );
 
       performance.start('wasm-convolution');
 
-      const convResult = await wasmAccelerator.convolve2D(inputImage, kernels, convConfig);
+      const convResult = await wasmAccelerator["convolve2D"](inputImage, kernels, convConfig);
 
       performance.end('wasm-convolution');
 
       // Verify output shape
       const expectedShape = testHelpers.calculateConvOutputShape(
-        convConfig.inputShape,
-        convConfig.kernelSize,
-        convConfig.stride,
-        convConfig.padding
+        convConfig?.inputShape,
+        convConfig?.kernelSize,
+        convConfig?.stride,
+        convConfig?.padding
       );
-      expectedShape[2] = convConfig.filters;
+      expectedShape[2] = convConfig?.filters;
 
-      expect(convResult.shape).toEqual(expectedShape);
+      expect(convResult?.shape).toEqual(expectedShape);
 
       const convTime = performance.getDuration('wasm-convolution');
-      expect(convTime).toBeLessThan(WASM_PERFORMANCE_TARGETS.convolution);
+      expect(convTime).toBeLessThan(WASM_PERFORMANCE_TARGETS?.["convolution"]);
 
       // Verify mathematical correctness with reference implementation
       const referenceResult = testHelpers.convolve2DReference(inputImage, kernels, convConfig);
@@ -270,7 +270,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       performance.start('js-backpropagation');
 
       let jsGradients = null;
-      for (const sample of trainingData.slice(0, 10)) {
+      for (const sample of trainingData?.slice(0, 10)) {
         // Small subset for comparison
         const output = await network.forwardPassJS(sample.input);
         const loss = testHelpers.calculateLoss(output, sample.target);
@@ -282,9 +282,9 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       // WASM accelerated backpropagation
       performance.start('wasm-backpropagation');
 
-      const wasmGradients = await wasmAccelerator.computeGradientsBatch(
+      const wasmGradients = await wasmAccelerator["computeGradientsBatch"](
         network.getWeights(),
-        trainingData.slice(0, 10),
+        trainingData?.slice(0, 10),
         networkConfig
       );
 
@@ -298,7 +298,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
       const speedup = jsTime / wasmTime;
       expect(speedup).toBeGreaterThan(3);
-      expect(wasmTime).toBeLessThan(WASM_PERFORMANCE_TARGETS.backpropagation);
+      expect(wasmTime).toBeLessThan(WASM_PERFORMANCE_TARGETS?.["backpropagation"]);
     });
 
     it('should optimize weight update operations', async () => {
@@ -324,7 +324,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
         // WASM weight update
         performance.start(`wasm-weight-update-${size}`);
-        const wasmUpdatedWeights = await wasmAccelerator.updateWeightsWithMomentum(
+        const wasmUpdatedWeights = await wasmAccelerator["updateWeightsWithMomentum"](
           weights,
           gradients,
           learningRate,
@@ -356,13 +356,13 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
         performance.start(`wasm-batch-norm-${batchSize}`);
 
-        const normalizedBatch = await wasmAccelerator.batchNormalize(batch, gamma, beta, epsilon);
+        const normalizedBatch = await wasmAccelerator["batchNormalize"](batch, gamma, beta, epsilon);
 
         performance.end(`wasm-batch-norm-${batchSize}`);
 
         // Verify batch normalization properties
         const batchMean = testHelpers.calculateBatchMean(normalizedBatch);
-        const _batchVariance = testHelpers.calculateBatchVariance(normalizedBatch, batchMean);
+        const batchVariance = testHelpers.calculateBatchVariance(normalizedBatch, batchMean);
 
         // Mean should be close to beta, variance should be close to gamma^2
         expect(testHelpers.vectorsEqual(batchMean, beta, 1e-6)).toBe(true);
@@ -375,28 +375,28 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
   describe('Memory Management and Optimization', () => {
     it('should efficiently manage WASM memory allocation', async () => {
-      const initialMemory = await wasmAccelerator.getMemoryUsage();
+      const initialMemory = await wasmAccelerator["getMemoryUsage"]();
       const allocatedBuffers: any[] = [];
 
       // Allocate multiple large buffers
       for (let i = 0; i < 10; i++) {
         const size = 1000000; // 1M floats
-        const buffer = await wasmAccelerator.allocateBuffer(size * 4); // 4 bytes per float
+        const buffer = await wasmAccelerator["allocateBuffer"](size * 4); // 4 bytes per float
         allocatedBuffers.push(buffer);
 
-        const currentMemory = await wasmAccelerator.getMemoryUsage();
+        const currentMemory = await wasmAccelerator["getMemoryUsage"]();
         expect(currentMemory).toBeGreaterThan(initialMemory);
       }
 
       // Free all buffers
       for (const buffer of allocatedBuffers) {
-        await wasmAccelerator.freeBuffer(buffer);
+        await wasmAccelerator["freeBuffer"](buffer);
       }
 
       // Force garbage collection
-      await wasmAccelerator.collectGarbage();
+      await wasmAccelerator["collectGarbage"]();
 
-      const finalMemory = await wasmAccelerator.getMemoryUsage();
+      const finalMemory = await wasmAccelerator["getMemoryUsage"]();
 
       // Memory should be mostly reclaimed
       const memoryLeakage = finalMemory - initialMemory;
@@ -411,12 +411,12 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
         // Measure transfer to WASM
         performance.start(`transfer-to-wasm-${size}`);
-        const wasmBuffer = await wasmAccelerator.transferToWasm(jsData);
+        const wasmBuffer = await wasmAccelerator["transferToWasm"](jsData);
         performance.end(`transfer-to-wasm-${size}`);
 
         // Measure transfer back to JS
         performance.start(`transfer-to-js-${size}`);
-        const retrievedData = await wasmAccelerator.transferFromWasm(wasmBuffer);
+        const retrievedData = await wasmAccelerator["transferFromWasm"](wasmBuffer);
         performance.end(`transfer-to-js-${size}`);
 
         // Verify data integrity
@@ -429,12 +429,12 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
         expect(toWasmTime).toBeLessThan(size / 1000);
         expect(fromWasmTime).toBeLessThan(size / 1000);
 
-        await wasmAccelerator.freeBuffer(wasmBuffer);
+        await wasmAccelerator["freeBuffer"](wasmBuffer);
       }
     });
 
     it('should handle memory pressure gracefully', async () => {
-      const initialMemory = await wasmAccelerator.getMemoryUsage();
+      const initialMemory = await wasmAccelerator["getMemoryUsage"]();
       let peakMemory = initialMemory;
       let memoryPressureDetected = false;
 
@@ -447,16 +447,16 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
           performance.start(`memory-pressure-alloc-${i}`);
 
-          const buffer = await wasmAccelerator.allocateBuffer(allocationSize);
+          const buffer = await wasmAccelerator["allocateBuffer"](allocationSize);
           allocations.push(buffer);
 
           performance.end(`memory-pressure-alloc-${i}`);
 
-          const currentMemory = await wasmAccelerator.getMemoryUsage();
+          const currentMemory = await wasmAccelerator["getMemoryUsage"]();
           peakMemory = Math.max(peakMemory, currentMemory);
 
           // Check if memory pressure is detected
-          const memoryPressure = await wasmAccelerator.getMemoryPressure();
+          const memoryPressure = await wasmAccelerator["getMemoryPressure"]();
           if (memoryPressure > 0.8) {
             memoryPressureDetected = true;
             break;
@@ -470,15 +470,15 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       // Clean up allocations
       for (const buffer of allocations) {
         try {
-          await wasmAccelerator.freeBuffer(buffer);
-        } catch (_error) {
+          await wasmAccelerator["freeBuffer"](buffer);
+        } catch (error) {
           // Some buffers might be invalid due to memory pressure
         }
       }
 
-      await wasmAccelerator.collectGarbage();
+      await wasmAccelerator["collectGarbage"]();
 
-      const finalMemory = await wasmAccelerator.getMemoryUsage();
+      const finalMemory = await wasmAccelerator["getMemoryUsage"]();
 
       // Should detect memory pressure before complete failure
       expect(memoryPressureDetected).toBe(true);
@@ -516,7 +516,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
           // SIMD-optimized WASM implementation
           performance.start(`simd-${operation.name}-${size}`);
-          const simdResult = await wasmAccelerator.vectorOperation(
+          const simdResult = await wasmAccelerator["vectorOperation"](
             vectorA,
             vectorB,
             operation.name,
@@ -553,7 +553,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       for (const reduction of reductions) {
         performance.start(`simd-${reduction.name}`);
 
-        const result = await wasmAccelerator.vectorReduction(testVector, reduction.name, {
+        const result = await wasmAccelerator["vectorReduction"](testVector, reduction.name, {
           useSIMD: true,
         });
 
@@ -570,7 +570,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
   describe('WebGPU Integration', () => {
     it('should offload computation to GPU when available', async () => {
-      const hasWebGPU = await wasmAccelerator.hasWebGPUSupport();
+      const hasWebGPU = await wasmAccelerator["hasWebGPUSupport"]();
 
       if (!hasWebGPU) {
         return;
@@ -582,12 +582,12 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
       // CPU-only computation
       performance.start('cpu-matrix-multiply');
-      const cpuResult = await wasmAccelerator.multiplyMatrices(matrixA, matrixB, { useGPU: false });
+      const cpuResult = await wasmAccelerator["multiplyMatrices"](matrixA, matrixB, { useGPU: false });
       performance.end('cpu-matrix-multiply');
 
       // GPU-accelerated computation
       performance.start('gpu-matrix-multiply');
-      const gpuResult = await wasmAccelerator.multiplyMatrices(matrixA, matrixB, { useGPU: true });
+      const gpuResult = await wasmAccelerator["multiplyMatrices"](matrixA, matrixB, { useGPU: true });
       performance.end('gpu-matrix-multiply');
 
       // Verify results match
@@ -602,31 +602,31 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
     });
 
     it('should handle GPU memory management efficiently', async () => {
-      const hasWebGPU = await wasmAccelerator.hasWebGPUSupport();
+      const hasWebGPU = await wasmAccelerator["hasWebGPUSupport"]();
 
       if (!hasWebGPU) {
         return;
       }
 
-      const initialGPUMemory = await wasmAccelerator.getGPUMemoryUsage();
+      const initialGPUMemory = await wasmAccelerator["getGPUMemoryUsage"]();
       const buffers: any[] = [];
 
       // Allocate GPU buffers
       for (let i = 0; i < 10; i++) {
         const size = 1024 * 1024; // 1MB each
-        const buffer = await wasmAccelerator.allocateGPUBuffer(size);
+        const buffer = await wasmAccelerator["allocateGPUBuffer"](size);
         buffers.push(buffer);
       }
 
-      const peakGPUMemory = await wasmAccelerator.getGPUMemoryUsage();
+      const peakGPUMemory = await wasmAccelerator["getGPUMemoryUsage"]();
       expect(peakGPUMemory).toBeGreaterThan(initialGPUMemory);
 
       // Free GPU buffers
       for (const buffer of buffers) {
-        await wasmAccelerator.freeGPUBuffer(buffer);
+        await wasmAccelerator["freeGPUBuffer"](buffer);
       }
 
-      const finalGPUMemory = await wasmAccelerator.getGPUMemoryUsage();
+      const finalGPUMemory = await wasmAccelerator["getGPUMemoryUsage"]();
 
       // GPU memory should be reclaimed
       const memoryLeakage = finalGPUMemory - initialGPUMemory;

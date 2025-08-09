@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { performance } from 'node:perf_hooks';
-import { type LoggerInterface, loggingConfig } from './logging-config';
+import { loggingConfig } from './logging-config';
 
 export interface ConnectionEvent {
   connectionId: string;
@@ -70,7 +70,7 @@ export class ConnectionDiagnostics {
   private activeConnections: Map<string, { startTime: number; [key: string]: any }>;
 
   constructor(logger?: LoggerInterface | null) {
-    this.logger = logger || loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });
+    this.logger = logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
     this.connectionHistory = [];
     this.maxHistorySize = 100;
     this.activeConnections = new Map();
@@ -126,7 +126,7 @@ export class ConnectionDiagnostics {
    */
   getConnectionSummary(): ConnectionSummary {
     const events = this.connectionHistory.reduce((acc: Record<string, number>, event) => {
-      acc[event.event] = (acc[event.event] || 0) + 1;
+      acc[event["event"]] = (acc[event["event"]] || 0) + 1;
       return acc;
     }, {});
 
@@ -277,7 +277,7 @@ export class PerformanceDiagnostics {
   private thresholds: Record<string, number>;
 
   constructor(logger?: LoggerInterface | null) {
-    this.logger = logger || loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });
+    this.logger = logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
     this.operations = new Map();
     this.thresholds = {
       swarm_init: 1000, // 1 second
@@ -334,7 +334,7 @@ export class PerformanceDiagnostics {
 
     this.operations.delete(id);
 
-    if (result.aboveThreshold) {
+    if (result?.aboveThreshold) {
       this.logger.warn('Operation exceeded threshold', {
         operation: operation.name,
         duration,
@@ -401,7 +401,7 @@ export class SystemDiagnostics {
   // private startTime?: number; // xxx NEEDS_HUMAN: Decide if startTime should be used for monitoring duration
 
   constructor(logger?: LoggerInterface | null) {
-    this.logger = logger || loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });
+    this.logger = logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
     this.samples = [];
     this.maxSamples = 60; // 1 minute of samples at 1Hz
     this.monitorInterval = null;
@@ -415,8 +415,8 @@ export class SystemDiagnostics {
       timestamp: Date.now(),
       memory: process.memoryUsage(),
       cpu: process.cpuUsage(),
-      handles: (process as any)._getActiveHandles?.().length || 0,
-      requests: (process as any)._getActiveRequests?.().length || 0,
+      handles: (process as any)["_getActiveHandles"]?.().length || 0,
+      requests: (process as any)["_getActiveRequests"]?.().length || 0,
     };
 
     this.samples.push(sample);
@@ -564,7 +564,7 @@ export class DiagnosticsManager {
   public system: SystemDiagnostics;
 
   constructor() {
-    this.logger = loggingConfig.getLogger('diagnostics', { level: 'DEBUG' });
+    this.logger = loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
     this.connection = new ConnectionDiagnostics(this.logger);
     this.performance = new PerformanceDiagnostics(this.logger);
     this.system = new SystemDiagnostics(this.logger);

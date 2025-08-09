@@ -65,11 +65,11 @@ export class MemoryError extends Error {
     this.name = 'MemoryError';
     this.code = code;
     this.context = context;
-    this.recoverable = options.recoverable ?? MemoryError.isRecoverable(code);
-    this.severity = options.severity ?? MemoryError.getSeverity(code);
+    this.recoverable = options?.["recoverable"] ?? MemoryError.isRecoverable(code);
+    this.severity = options?.["severity"] ?? MemoryError.getSeverity(code);
 
-    if (options.cause) {
-      this.cause = options.cause;
+    if (options?.["cause"]) {
+      this.cause = options?.["cause"];
     }
 
     // Maintain proper stack trace
@@ -85,12 +85,12 @@ export class MemoryError extends Error {
    */
   static isRecoverable(code: MemoryErrorCode): boolean {
     const recoverableErrors = new Set([
-      MemoryErrorCode.CONSENSUS_TIMEOUT,
-      MemoryErrorCode.NODE_UNREACHABLE,
-      MemoryErrorCode.BACKEND_CONNECTION_LOST,
-      MemoryErrorCode.OPTIMIZATION_FAILED,
-      MemoryErrorCode.CACHE_MISS_RATE_HIGH,
-      MemoryErrorCode.SYSTEM_OVERLOAD,
+      MemoryErrorCode["CONSENSUS_TIMEOUT"],
+      MemoryErrorCode["NODE_UNREACHABLE"],
+      MemoryErrorCode["BACKEND_CONNECTION_LOST"],
+      MemoryErrorCode["OPTIMIZATION_FAILED"],
+      MemoryErrorCode["CACHE_MISS_RATE_HIGH"],
+      MemoryErrorCode["SYSTEM_OVERLOAD"],
     ]);
 
     return recoverableErrors.has(code);
@@ -103,26 +103,26 @@ export class MemoryError extends Error {
    */
   static getSeverity(code: MemoryErrorCode): 'low' | 'medium' | 'high' | 'critical' {
     const severityMap = {
-      [MemoryErrorCode.COORDINATION_FAILED]: 'high',
-      [MemoryErrorCode.CONSENSUS_TIMEOUT]: 'medium',
-      [MemoryErrorCode.NODE_UNREACHABLE]: 'medium',
-      [MemoryErrorCode.QUORUM_NOT_REACHED]: 'high',
-      [MemoryErrorCode.BACKEND_INITIALIZATION_FAILED]: 'critical',
-      [MemoryErrorCode.BACKEND_CONNECTION_LOST]: 'high',
-      [MemoryErrorCode.BACKEND_CORRUPTED]: 'critical',
-      [MemoryErrorCode.BACKEND_CAPACITY_EXCEEDED]: 'high',
-      [MemoryErrorCode.DATA_CORRUPTION]: 'critical',
-      [MemoryErrorCode.DATA_INCONSISTENCY]: 'high',
-      [MemoryErrorCode.DATA_NOT_FOUND]: 'low',
-      [MemoryErrorCode.DATA_VERSION_CONFLICT]: 'medium',
-      [MemoryErrorCode.OPTIMIZATION_FAILED]: 'low',
-      [MemoryErrorCode.MEMORY_THRESHOLD_EXCEEDED]: 'medium',
-      [MemoryErrorCode.CACHE_MISS_RATE_HIGH]: 'low',
-      [MemoryErrorCode.LATENCY_THRESHOLD_EXCEEDED]: 'medium',
-      [MemoryErrorCode.RESOURCE_EXHAUSTED]: 'high',
-      [MemoryErrorCode.CONFIGURATION_INVALID]: 'critical',
-      [MemoryErrorCode.SYSTEM_OVERLOAD]: 'medium',
-      [MemoryErrorCode.UNKNOWN_ERROR]: 'medium',
+      [MemoryErrorCode["COORDINATION_FAILED"]]: 'high',
+      [MemoryErrorCode["CONSENSUS_TIMEOUT"]]: 'medium',
+      [MemoryErrorCode["NODE_UNREACHABLE"]]: 'medium',
+      [MemoryErrorCode["QUORUM_NOT_REACHED"]]: 'high',
+      [MemoryErrorCode["BACKEND_INITIALIZATION_FAILED"]]: 'critical',
+      [MemoryErrorCode["BACKEND_CONNECTION_LOST"]]: 'high',
+      [MemoryErrorCode["BACKEND_CORRUPTED"]]: 'critical',
+      [MemoryErrorCode["BACKEND_CAPACITY_EXCEEDED"]]: 'high',
+      [MemoryErrorCode["DATA_CORRUPTION"]]: 'critical',
+      [MemoryErrorCode["DATA_INCONSISTENCY"]]: 'high',
+      [MemoryErrorCode["DATA_NOT_FOUND"]]: 'low',
+      [MemoryErrorCode["DATA_VERSION_CONFLICT"]]: 'medium',
+      [MemoryErrorCode["OPTIMIZATION_FAILED"]]: 'low',
+      [MemoryErrorCode["MEMORY_THRESHOLD_EXCEEDED"]]: 'medium',
+      [MemoryErrorCode["CACHE_MISS_RATE_HIGH"]]: 'low',
+      [MemoryErrorCode["LATENCY_THRESHOLD_EXCEEDED"]]: 'medium',
+      [MemoryErrorCode["RESOURCE_EXHAUSTED"]]: 'high',
+      [MemoryErrorCode["CONFIGURATION_INVALID"]]: 'critical',
+      [MemoryErrorCode["SYSTEM_OVERLOAD"]]: 'medium',
+      [MemoryErrorCode["UNKNOWN_ERROR"]]: 'medium',
     } as const;
 
     return severityMap[code] || 'medium';
@@ -151,18 +151,18 @@ export class MemoryError extends Error {
    */
   static fromError(error: Error, context: MemoryErrorContext): MemoryError {
     // Try to determine error code from error message or type
-    let code = MemoryErrorCode.UNKNOWN_ERROR;
+    let code = MemoryErrorCode["UNKNOWN_ERROR"];
 
     if (error.message.includes('timeout')) {
-      code = MemoryErrorCode.CONSENSUS_TIMEOUT;
+      code = MemoryErrorCode["CONSENSUS_TIMEOUT"];
     } else if (error.message.includes('connection') || error.message.includes('unreachable')) {
-      code = MemoryErrorCode.NODE_UNREACHABLE;
+      code = MemoryErrorCode["NODE_UNREACHABLE"];
     } else if (error.message.includes('corruption') || error.message.includes('corrupted')) {
-      code = MemoryErrorCode.DATA_CORRUPTION;
+      code = MemoryErrorCode["DATA_CORRUPTION"];
     } else if (error.message.includes('not found')) {
-      code = MemoryErrorCode.DATA_NOT_FOUND;
+      code = MemoryErrorCode["DATA_NOT_FOUND"];
     } else if (error.message.includes('capacity') || error.message.includes('full')) {
-      code = MemoryErrorCode.BACKEND_CAPACITY_EXCEEDED;
+      code = MemoryErrorCode["BACKEND_CAPACITY_EXCEEDED"];
     }
 
     return new MemoryError(code, error.message, context, { cause: error });
@@ -171,7 +171,7 @@ export class MemoryError extends Error {
 
 export class MemoryCoordinationError extends MemoryError {
   constructor(message: string, context: MemoryErrorContext, options: { cause?: Error } = {}) {
-    super(MemoryErrorCode.COORDINATION_FAILED, message, context, options);
+    super(MemoryErrorCode["COORDINATION_FAILED"], message, context, options);
     this.name = 'MemoryCoordinationError';
   }
 }

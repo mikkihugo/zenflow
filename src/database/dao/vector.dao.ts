@@ -6,19 +6,7 @@
  */
 
 import { BaseDao } from '../base.dao';
-import type {
-  ClusteringOptions,
-  ClusterResult,
-  CustomQuery,
-  IVectorRepository,
-  VectorDocument,
-  VectorIndexConfig,
-  VectorInsertResult,
-  VectorSearchOptions,
-  VectorSearchResult,
-  VectorStats,
-} from '../interfaces';
-import type { VectorDatabaseAdapter } from '../providers/database-providers';
+import type { IVectorRepository } from '../interfaces';
 
 /**
  * Vector database repository implementation for LanceDB.
@@ -50,23 +38,22 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
       this.validateVector(queryVector);
 
       const searchOptions = {
-        limit: options?.limit || 10,
-        threshold: options?.threshold || 0.0,
-        metric: options?.metric || 'cosine',
-        filter: options?.filter,
+        limit: options?.["limit"] || 10,
+        threshold: options?.["threshold"] || 0.0,
+        metric: options?.["metric"] || 'cosine',
+        filter: options?.["filter"],
       };
 
       // Use the vector adapter for similarity search
-      const vectorResult = await this.vectorAdapter.vectorSearch(queryVector, searchOptions.limit);
+      const vectorResult = await this.vectorAdapter.vectorSearch(queryVector, searchOptions?.limit);
 
       // Convert results to VectorSearchResult format
-      const results: VectorSearchResult<T>[] = vectorResult.matches
-        .filter((match) => match.score >= searchOptions.threshold)
+      const results: VectorSearchResult<T>[] = vectorResult?.matches?.filter((match) => match?.score >= searchOptions?.threshold)
         .map((match) => ({
-          id: match.id,
-          score: match.score,
+          id: match?.id,
+          score: match?.score,
           document: this.mapVectorDocumentToEntity(match),
-          vector: match.vector,
+          vector: match?.vector,
         }));
 
       this.logger.debug(`Similarity search completed: ${results.length} results`);
@@ -113,7 +100,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
         errors: [],
       };
 
-      this.logger.debug(`Successfully added ${result.inserted} vectors`);
+      this.logger.debug(`Successfully added ${result?.inserted} vectors`);
       return result;
     } catch (error) {
       this.logger.error(`Add vectors failed: ${error}`);
@@ -135,11 +122,11 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
    * @param config
    */
   async createIndex(config: VectorIndexConfig): Promise<void> {
-    this.logger.debug(`Creating vector index: ${config.name}`, { config });
+    this.logger.debug(`Creating vector index: ${config?.name}`, { config });
 
     try {
       await this.vectorAdapter.createIndex(config);
-      this.logger.debug(`Successfully created vector index: ${config.name}`);
+      this.logger.debug(`Successfully created vector index: ${config?.name}`);
     } catch (error) {
       this.logger.error(`Create index failed: ${error}`);
       throw new Error(
@@ -185,10 +172,10 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
 
     try {
       const clusterOptions = {
-        algorithm: options?.algorithm || 'kmeans',
-        numClusters: options?.numClusters || 5,
-        epsilon: options?.epsilon || 0.5,
-        minSamples: options?.minSamples || 5,
+        algorithm: options?.["algorithm"] || 'kmeans',
+        numClusters: options?.["numClusters"] || 5,
+        epsilon: options?.["epsilon"] || 0.5,
+        minSamples: options?.["minSamples"] || 5,
       };
 
       // This is a simplified implementation - real clustering would use specialized algorithms
@@ -196,7 +183,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
       const vectorIds = allVectors.map((entity: any) => entity.id);
 
       // Simple k-means-like clustering (simplified)
-      const clusters = this.performSimpleClustering(vectorIds, clusterOptions.numClusters);
+      const clusters = this.performSimpleClustering(vectorIds, clusterOptions?.numClusters);
 
       const result: ClusterResult = {
         clusters,
@@ -206,7 +193,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
         },
       };
 
-      this.logger.debug(`Clustering completed: ${result.clusters.length} clusters`);
+      this.logger.debug(`Clustering completed: ${result?.clusters.length} clusters`);
       return result;
     } catch (error) {
       this.logger.error(`Clustering failed: ${error}`);
@@ -246,7 +233,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
 
       // Perform similarity search excluding the original entity
       const results = await this.similaritySearch(vector, options);
-      return results.filter((result) => result.id !== entityId);
+      return results?.filter((result) => result?.id !== entityId);
     } catch (error) {
       this.logger.error(`Find similar to entity failed: ${error}`);
       throw new Error(
@@ -310,7 +297,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
       );
 
       const batchResults = await Promise.all(searchPromises);
-      results.push(...batchResults);
+      results?.push(...batchResults);
 
       this.logger.debug(`Batch similarity search completed: ${results.length} result sets`);
       return results;
@@ -409,9 +396,9 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
 
   private mapVectorDocumentToEntity(match: any): T {
     return {
-      id: match.id,
-      vector: match.vector,
-      ...match.metadata,
+      id: match?.id,
+      vector: match?.vector,
+      ...match?.metadata,
     } as T;
   }
 

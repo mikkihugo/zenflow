@@ -11,7 +11,6 @@ const logger = getLogger("coordination-swarm-sparc-index");
 export { SPARCEngineCore } from './core/sparc-engine';
 
 import { SPARCEngineCore } from './core/sparc-engine';
-import type { SPARCProject, PhaseResult } from './types/sparc-types';
 
 // MCP Integration
 export { SPARCMCPTools, sparcMCPTools } from './integrations/mcp-sparc-tools';
@@ -89,7 +88,7 @@ export class SPARC {
       try {
         const project = await SPARC.getProject(projectId);
         const result = await engine.executePhase(project, phase);
-        results.push(result);
+        results?.push(result);
       } catch (error) {
         logger.error(`Failed to execute phase ${phase} for project ${projectId}:`, error);
       }

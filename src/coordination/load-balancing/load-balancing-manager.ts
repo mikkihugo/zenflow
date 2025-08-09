@@ -60,26 +60,11 @@ import { MLPredictiveAlgorithm } from './algorithms/ml-predictive';
 import { ResourceAwareAlgorithm } from './algorithms/resource-aware';
 import { WeightedRoundRobinAlgorithm } from './algorithms/weighted-round-robin';
 import { AgentCapacityManager } from './capacity/agent-capacity-manager';
-import type {
-  AutoScaler,
-  CapacityManager,
-  EmergencyHandler,
-  LoadBalancingObserver,
-  RoutingEngine,
-} from './interfaces';
 import { EmergencyProtocolHandler } from './optimization/emergency-protocol-handler';
 import { HealthChecker } from './routing/health-checker';
 import { IntelligentRoutingEngine } from './routing/intelligent-routing-engine';
 import { AutoScalingStrategy } from './strategies/auto-scaling-strategy';
-import {
-  type Agent,
-  AgentStatus,
-  LoadBalancingAlgorithm,
-  type LoadBalancingConfig,
-  type LoadMetrics,
-  type RoutingResult,
-  type Task,
-} from './types';
+import { AgentStatus, LoadBalancingAlgorithm } from './types';
 
 export class LoadBalancingManager extends EventEmitter {
   private agents: Map<string, Agent> = new Map();
@@ -123,13 +108,13 @@ export class LoadBalancingManager extends EventEmitter {
 
     // Initialize algorithms
     this.algorithms.set(
-      LoadBalancingAlgorithm.WEIGHTED_ROUND_ROBIN,
+      LoadBalancingAlgorithm["WEIGHTED_ROUND_ROBIN"],
       new WeightedRoundRobinAlgorithm()
     );
-    this.algorithms.set(LoadBalancingAlgorithm.LEAST_CONNECTIONS, new LeastConnectionsAlgorithm());
-    this.algorithms.set(LoadBalancingAlgorithm.RESOURCE_AWARE, new ResourceAwareAlgorithm());
-    this.algorithms.set(LoadBalancingAlgorithm.ML_PREDICTIVE, new MLPredictiveAlgorithm());
-    this.algorithms.set(LoadBalancingAlgorithm.ADAPTIVE_LEARNING, new AdaptiveLearningAlgorithm());
+    this.algorithms.set(LoadBalancingAlgorithm["LEAST_CONNECTIONS"], new LeastConnectionsAlgorithm());
+    this.algorithms.set(LoadBalancingAlgorithm["RESOURCE_AWARE"], new ResourceAwareAlgorithm());
+    this.algorithms.set(LoadBalancingAlgorithm["ML_PREDICTIVE"], new MLPredictiveAlgorithm());
+    this.algorithms.set(LoadBalancingAlgorithm["ADAPTIVE_LEARNING"], new AdaptiveLearningAlgorithm());
 
     // Set current algorithm
     this.currentAlgorithm = this.algorithms.get(this.config.algorithm)!;
@@ -272,7 +257,7 @@ export class LoadBalancingManager extends EventEmitter {
    */
   public async routeTask(task: Task): Promise<RoutingResult> {
     const availableAgents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status === AgentStatus.HEALTHY
+      (agent) => agent.status === AgentStatus["HEALTHY"]
     );
 
     if (availableAgents.length === 0) {
@@ -293,16 +278,16 @@ export class LoadBalancingManager extends EventEmitter {
 
     // Update capacity tracking
     await this.capacityManager.updateCapacity(
-      result.selectedAgent.id,
+      result?.selectedAgent?.id,
       this.createTaskMetrics(task)
     );
 
     // Notify observers
     for (const observer of this.observers) {
-      await observer.onTaskRouted(task, result.selectedAgent);
+      await observer.onTaskRouted(task, result?.selectedAgent);
     }
 
-    this.emit('task:routed', { task, agent: result.selectedAgent, result });
+    this.emit('task:routed', { task, agent: result?.selectedAgent, result });
     return result;
   }
 
@@ -380,7 +365,7 @@ export class LoadBalancingManager extends EventEmitter {
   public getStatistics(): Record<string, any> {
     const totalAgents = this.agents.size;
     const healthyAgents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status === AgentStatus.HEALTHY
+      (agent) => agent.status === AgentStatus["HEALTHY"]
     ).length;
 
     const avgLoad = this.calculateAverageLoad();
@@ -409,12 +394,12 @@ export class LoadBalancingManager extends EventEmitter {
     this.config = { ...this.config, ...newConfig };
 
     // Update algorithm if changed
-    if (newConfig.algorithm && newConfig.algorithm !== this.config.algorithm) {
-      await this.switchAlgorithm(newConfig.algorithm);
+    if (newConfig?.algorithm && newConfig?.algorithm !== this.config.algorithm) {
+      await this.switchAlgorithm(newConfig?.algorithm);
     }
 
     // Update health check interval if changed
-    if (newConfig.healthCheckInterval) {
+    if (newConfig?.healthCheckInterval) {
       // This would require restarting health checker with new interval
       // Implementation depends on HealthChecker interface
     }
@@ -453,7 +438,7 @@ export class LoadBalancingManager extends EventEmitter {
     const agent = this.agents.get(agentId);
     if (!agent) return;
 
-    agent.status = AgentStatus.UNHEALTHY;
+    agent.status = AgentStatus["UNHEALTHY"];
 
     // Trigger failover
     await this.routingEngine.handleFailover(agentId);
@@ -483,7 +468,7 @@ export class LoadBalancingManager extends EventEmitter {
     const agent = this.agents.get(agentId);
     if (!agent) return;
 
-    agent.status = AgentStatus.HEALTHY;
+    agent.status = AgentStatus["HEALTHY"];
     agent.lastHealthCheck = new Date();
 
     // Update routing table
@@ -579,7 +564,7 @@ export class LoadBalancingManager extends EventEmitter {
    */
   private async checkEmergencyConditions(): Promise<void> {
     const healthyAgents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status === AgentStatus.HEALTHY
+      (agent) => agent.status === AgentStatus["HEALTHY"]
     ).length;
 
     const totalAgents = this.agents.size;
@@ -595,23 +580,23 @@ export class LoadBalancingManager extends EventEmitter {
   // Helper methods
   private mergeConfig(config: Partial<LoadBalancingConfig>): LoadBalancingConfig {
     return {
-      algorithm: config.algorithm || LoadBalancingAlgorithm.WEIGHTED_ROUND_ROBIN,
-      healthCheckInterval: config.healthCheckInterval || 5000,
-      maxRetries: config.maxRetries || 3,
-      timeoutMs: config.timeoutMs || 30000,
-      circuitBreakerConfig: config.circuitBreakerConfig || {
+      algorithm: config?.["algorithm"] || LoadBalancingAlgorithm["WEIGHTED_ROUND_ROBIN"],
+      healthCheckInterval: config?.["healthCheckInterval"] || 5000,
+      maxRetries: config?.["maxRetries"] || 3,
+      timeoutMs: config?.["timeoutMs"] || 30000,
+      circuitBreakerConfig: config?.["circuitBreakerConfig"] || {
         failureThreshold: 5,
         recoveryTimeout: 60000,
         halfOpenMaxCalls: 3,
         monitoringPeriod: 10000,
       },
-      stickySessionConfig: config.stickySessionConfig || {
+      stickySessionConfig: config?.["stickySessionConfig"] || {
         enabled: false,
         sessionTimeout: 300000,
         affinityStrength: 0.8,
         fallbackStrategy: 'redistribute',
       },
-      autoScalingConfig: config.autoScalingConfig || {
+      autoScalingConfig: config?.["autoScalingConfig"] || {
         enabled: true,
         minAgents: 2,
         maxAgents: 20,
@@ -619,7 +604,7 @@ export class LoadBalancingManager extends EventEmitter {
         scaleDownThreshold: 0.3,
         cooldownPeriod: 300000,
       },
-      optimizationConfig: config.optimizationConfig || {
+      optimizationConfig: config?.["optimizationConfig"] || {
         connectionPooling: true,
         requestBatching: true,
         cacheAwareRouting: true,

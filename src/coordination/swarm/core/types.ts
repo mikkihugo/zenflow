@@ -2,11 +2,7 @@
  * Core types and interfaces for ZenSwarm
  */
 
-import type {
-  AgentType,
-  Agent as BaseAgent,
-  AgentConfig as BaseAgentConfig,
-} from '../../../types/agent-types';
+import type { AgentType } from '../../../types/agent-types';
 
 export interface SwarmOptions {
   topology?: SwarmTopology;

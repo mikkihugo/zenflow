@@ -24,7 +24,7 @@ async function testSPARCMCPTools() {
         tool.name.startsWith('sparc_validate_pseudocode') ||
         tool.name.startsWith('sparc_generate_algorithms_only')
     );
-    pseudocodeTools.forEach((_tool) => {});
+    pseudocodeTools.forEach((tool) => {});
 
     // Test pseudocode generation tool
     const generateTool = tools.find((tool) => tool.name === 'sparc_generate_pseudocode');
@@ -63,22 +63,22 @@ async function testSPARCMCPTools() {
         },
       });
 
-      if (result.success) {
+      if (result?.success) {
         // Test validation tool with the generated result
         const validateTool = tools.find((tool) => tool.name === 'sparc_validate_pseudocode');
         if (validateTool) {
           const validationResult = await validateTool.handler({
             pseudocodeStructure: {
-              id: result.data.pseudocodeId,
-              algorithms: result.data.algorithms,
-              dataStructures: result.data.dataStructures,
-              controlFlows: result.data.controlFlows,
-              optimizations: result.data.optimizations,
-              complexityAnalysis: result.data.complexityAnalysis,
+              id: result?.data?.pseudocodeId,
+              algorithms: result?.data?.algorithms,
+              dataStructures: result?.data?.dataStructures,
+              controlFlows: result?.data?.controlFlows,
+              optimizations: result?.data?.optimizations,
+              complexityAnalysis: result?.data?.complexityAnalysis,
             },
           });
 
-          if (validationResult.success) {
+          if (validationResult?.success) {
           } else {
           }
         }
@@ -105,7 +105,7 @@ async function testSPARCMCPTools() {
 
       const result = await algorithmsOnlyTool.handler({ specification: testSpec });
 
-      if (result.success) {
+      if (result?.success) {
       } else {
       }
     }
@@ -128,10 +128,10 @@ async function testSPARCMCPTools() {
 // Run the test if this file is executed directly
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   testSPARCMCPTools().then((result) => {
-    if (result.success) {
+    if (result?.success) {
       process.exit(0);
     } else {
-      logger.error('💥 MCP tools integration test failed:', result.error);
+      logger.error('💥 MCP tools integration test failed:', result?.error);
       process.exit(1);
     }
   });

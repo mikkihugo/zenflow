@@ -1,19 +1,4 @@
-/**
- * BaseCommand Tests - TDD London School
- *
- * Tests the behavior and interactions of the BaseCommand abstract class
- * using mocks for dependencies and focusing on command lifecycle,
- * validation behavior, and hook interactions.
- */
-
-import type { jest } from '@jest/globals';
-import { BaseCommand, type CommandHooks } from '../../../../cli/core/base-command';
-import type {
-  CommandConfig,
-  CommandContext,
-  CommandResult,
-  CommandValidationResult,
-} from '../../../../cli/types/index';
+import { BaseCommand } from '../../../../cli/core/base-command';
 
 // Concrete implementation for testing
 class TestCommand extends BaseCommand {
@@ -225,8 +210,8 @@ describe('BaseCommand - TDD London', () => {
       const result = await command.execute(invalidContext);
 
       // Assert - verify type validation
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('expected number but got string');
+      expect(result?.success).toBe(false);
+      expect(result?.error).toContain('expected number but got string');
     });
 
     it('should validate argument count', async () => {
@@ -240,8 +225,8 @@ describe('BaseCommand - TDD London', () => {
       const result1 = await command.execute(tooFewArgs);
 
       // Assert
-      expect(result1.success).toBe(false);
-      expect(result1.error).toContain('Expected at least 1 arguments, got 0');
+      expect(result1?.success).toBe(false);
+      expect(result1?.error).toContain('Expected at least 1 arguments, got 0');
 
       // Arrange - Too many arguments
       const tooManyArgs = {
@@ -253,8 +238,8 @@ describe('BaseCommand - TDD London', () => {
       const result2 = await command.execute(tooManyArgs);
 
       // Assert
-      expect(result2.success).toBe(false);
-      expect(result2.error).toContain('Expected at most 3 arguments, got 4');
+      expect(result2?.success).toBe(false);
+      expect(result2?.error).toContain('Expected at most 3 arguments, got 4');
     });
 
     it('should call custom validation and include its results', async () => {
@@ -271,8 +256,8 @@ describe('BaseCommand - TDD London', () => {
 
       // Assert - verify custom validation integration
       expect(customValidation).toHaveBeenCalledWith(mockContext);
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Custom validation failed');
+      expect(result?.success).toBe(false);
+      expect(result?.error).toContain('Custom validation failed');
 
       expect(mockEventHandler).toHaveBeenCalledWith(['Custom warning']);
     });
@@ -286,8 +271,8 @@ describe('BaseCommand - TDD London', () => {
       const result = await command.execute(mockContext);
 
       // Assert - verify validation error handling
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Validation failed: Validation exploded');
+      expect(result?.success).toBe(false);
+      expect(result?.error).toContain('Validation failed: Validation exploded');
     });
   });
 
@@ -349,8 +334,8 @@ describe('BaseCommand - TDD London', () => {
       const result = await command.execute(mockContext);
 
       // Assert - verify hook exception handling
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Hook failed');
+      expect(result?.success).toBe(false);
+      expect(result?.error).toContain('Hook failed');
       expect(mockHooks.onError).toHaveBeenCalled();
     });
 
@@ -447,7 +432,7 @@ describe('BaseCommand - TDD London', () => {
       expect(config1).not.toBe(config2);
 
       // Modify copy and verify original is unaffected
-      config1.name = 'modified';
+      config1?.name = 'modified';
       expect(command.getConfig().name).toBe('test-command');
     });
 

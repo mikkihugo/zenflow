@@ -68,7 +68,7 @@ export interface BaseComponentProps {
 }
 
 // Theme configuration for unified components
-export interface UnifiedTheme {
+export interface Theme {
   colors: {
     primary: string;
     secondary: string;

@@ -10,11 +10,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { HiveSwarmCoordinator } from '@coordination/hive-swarm-sync';
-import type { SwarmCoordinator } from '@coordination/swarm/core/swarm-coordinator';
 import { createLogger } from '@core/logger';
-import type { AGUIInterface } from '@interfaces/agui/agui-adapter';
-import type { SessionMemoryStore } from '@memory/memory';
 
 const logger = createLogger({ prefix: 'AutoSwarmFactory' });
 
@@ -192,7 +188,7 @@ export class AutoSwarmFactory extends EventEmitter {
       const swarmPromises = domainArray.map(async ([name, domain]) => {
         try {
           const config = await this.createSwarmForDomain(domain);
-          configs.push(config);
+          configs?.push(config);
           return config;
         } catch (error) {
           logger.error(`Failed to create swarm for domain ${name}:`, error);
@@ -202,7 +198,7 @@ export class AutoSwarmFactory extends EventEmitter {
       });
 
       const results = await Promise.all(swarmPromises);
-      const successfulConfigs = results.filter(Boolean) as SwarmConfig[];
+      const successfulConfigs = results?.filter(Boolean) as SwarmConfig[];
 
       // Validate resource constraints
       await this.validateResourceConstraints(successfulConfigs);
@@ -639,8 +635,8 @@ export class AutoSwarmFactory extends EventEmitter {
    * @param configs
    */
   private async validateResourceConstraints(configs: SwarmConfig[]): Promise<void> {
-    const totalAgents = configs.reduce(
-      (sum, config) => sum + config.agents.reduce((agentSum, agent) => agentSum + agent.count, 0),
+    const totalAgents = configs?.reduce(
+      (sum, config) => sum + config?.["agents"]?.reduce((agentSum, agent) => agentSum + agent.count, 0),
       0
     );
 
@@ -667,12 +663,12 @@ export class AutoSwarmFactory extends EventEmitter {
 
     logger.info('🤔 Requesting human validation for swarm configurations...');
 
-    const summary = configs.map((config) => ({
-      domain: config.domain,
-      topology: config.topology.type,
-      agents: config.agents.length,
-      totalAgentCount: config.agents.reduce((sum, a) => sum + a.count, 0),
-      confidence: `${(config.confidence * 100).toFixed(1)}%`,
+    const summary = configs?.map((config) => ({
+      domain: config?.["domain"],
+      topology: config?.["topology"]?.type,
+      agents: config?.["agents"].length,
+      totalAgentCount: config?.["agents"]?.reduce((sum, a) => sum + a.count, 0),
+      confidence: `${(config?.["confidence"] * 100).toFixed(1)}%`,
     }));
 
     const response = await this.agui.askQuestion({
@@ -698,11 +694,11 @@ export class AutoSwarmFactory extends EventEmitter {
       confidence: 0.9,
     });
 
-    if (response === '3' || response.toLowerCase().includes('cancel')) {
+    if (response === '3' || response?.toLowerCase().includes('cancel')) {
       throw new Error('Swarm creation cancelled by user');
     }
 
-    if (response === '2' || response.toLowerCase().includes('review')) {
+    if (response === '2' || response?.toLowerCase().includes('review')) {
       // Individual review (simplified for now)
       logger.info('Individual review requested - proceeding with approval for demo');
     }
@@ -718,7 +714,7 @@ export class AutoSwarmFactory extends EventEmitter {
   private async initializeSwarms(configs: SwarmConfig[]): Promise<void> {
     logger.info(`🚀 Initializing ${configs.length} swarms...`);
 
-    const initPromises = configs.map(async (config) => {
+    const initPromises = configs?.map(async (config) => {
       try {
         // 1. Initialize swarm with coordinator
         await this.swarmCoordinator.initialize(config);
@@ -727,18 +723,18 @@ export class AutoSwarmFactory extends EventEmitter {
         await this.hiveSync.registerSwarm(config);
 
         // 3. Store configuration in memory
-        await this.memoryStore.store(`swarm-${config.id}`, 'auto-factory-config', {
+        await this.memoryStore.store(`swarm-${config?.id}`, 'auto-factory-config', {
           config,
           created: Date.now(),
           status: 'active',
         });
 
         this.emit('swarm:initialized', { config });
-        logger.info(`✅ Swarm initialized: ${config.name}`);
+        logger.info(`✅ Swarm initialized: ${config?.name}`);
 
         return config;
       } catch (error) {
-        logger.error(`Failed to initialize swarm ${config.name}:`, error);
+        logger.error(`Failed to initialize swarm ${config?.name}:`, error);
         this.emit('swarm:init-error', { config, error });
         throw error;
       }

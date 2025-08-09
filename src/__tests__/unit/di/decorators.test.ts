@@ -12,8 +12,6 @@ import {
   getInjectionToken,
   type IConfig,
   type ILogger,
-  inject,
-  injectable,
   isInjectable,
   SingletonProvider,
 } from '../../../di/index';
@@ -46,7 +44,7 @@ describe('DI Decorators', () => {
       }
 
       const instance = new TestService();
-      expect(instance.getValue()).toBe('test-value');
+      expect(instance["getValue"]()).toBe('test-value');
     });
 
     it('should store injection metadata', () => {
@@ -59,7 +57,7 @@ describe('DI Decorators', () => {
 
       const metadata = getInjectionMetadata(TestService);
       expect(metadata).toBeDefined();
-      expect(metadata?.injectionTokens[0]).toBe(loggerToken);
+      expect(metadata?.["injectionTokens"][0]).toBe(loggerToken);
     });
 
     it('should work with TypeScript parameter types', () => {
@@ -70,7 +68,7 @@ describe('DI Decorators', () => {
 
       const metadata = getInjectionMetadata(TestService);
       expect(metadata).toBeDefined();
-      expect(metadata?.parameterTypes).toHaveLength(1);
+      expect(metadata?.["parameterTypes"]).toHaveLength(1);
     });
   });
 
@@ -167,7 +165,7 @@ describe('DI Decorators', () => {
         new SingletonProvider((c) => {
           const metadata = getInjectionMetadata(UserService);
           if (metadata) {
-            const dependencies = metadata.injectionTokens.map((token) =>
+            const dependencies = metadata?.["injectionTokens"]?.map((token) =>
               token ? c.resolve(token) : undefined
             );
             return new UserService(...dependencies);

@@ -6,14 +6,6 @@
  */
 
 import { nanoid } from 'nanoid';
-import type {
-  ArchitectureDesign,
-  DetailedSpecification,
-  ProjectSpecification,
-  PseudocodeStructure,
-  SPARCTemplate,
-  TemplateMetadata,
-} from '../types/sparc-types';
 
 export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
   id: 'memory-systems-template',
@@ -999,11 +991,11 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
     return customized;
   },
 
-  customizePseudocode(_projectSpec: ProjectSpecification): PseudocodeStructure {
+  customizePseudocode(projectSpec: ProjectSpecification): PseudocodeStructure {
     return { ...this.pseudocode };
   },
 
-  customizeArchitecture(_projectSpec: ProjectSpecification): ArchitectureDesign {
+  customizeArchitecture(projectSpec: ProjectSpecification): ArchitectureDesign {
     return { ...this.architecture };
   },
 

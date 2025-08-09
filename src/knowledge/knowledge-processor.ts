@@ -255,7 +255,7 @@ export class WASMFactIntegration extends EventEmitter {
       }
 
       // Process with WASM query processor (5.25x faster)
-      const result = this.queryProcessor.process_template(template, {
+      const result = this.queryProcessor["process_template"](template, {
         data,
         context: context ? this.serializeContext(context) : undefined,
         mode: this.config.cognitiveMode,
@@ -294,7 +294,7 @@ export class WASMFactIntegration extends EventEmitter {
 
     try {
       // Use cognitive engine to analyze context and suggest optimal templates
-      const analysis = this.cognitiveEngine.analyze_context({
+      const analysis = this.cognitiveEngine["analyze_context"]({
         query,
         projectContext: context ? this.serializeContext(context) : undefined,
         availableTemplates: Array.from(this.templates.keys()),
@@ -314,7 +314,7 @@ export class WASMFactIntegration extends EventEmitter {
       }
 
       // Post-process result with cognitive engine
-      const optimizedResult = this.cognitiveEngine.optimize_performance({
+      const optimizedResult = this.cognitiveEngine["optimize_performance"]({
         result,
         metrics: this.getPerformanceMetrics(),
         analysis,
@@ -405,7 +405,7 @@ export class WASMFactIntegration extends EventEmitter {
     try {
       // Get WASM-specific metrics
       const cacheStats = this.fastCache.stats();
-      const queryMetrics = this.queryProcessor.get_metrics();
+      const queryMetrics = this.queryProcessor["get_metrics"]();
 
       // Calculate performance improvements vs JavaScript
       const jsSpeedupFactor = this.calculateSpeedupFactor();
@@ -415,13 +415,13 @@ export class WASMFactIntegration extends EventEmitter {
         cacheOperations: {
           hits: cacheStats.hits,
           misses: cacheStats.misses,
-          hitRate: cacheStats.hit_rate,
+          hitRate: cacheStats["hit_rate"],
           avgLatency: this.performanceMetrics.cacheOperations.avgLatency,
         },
         queryProcessing: {
-          totalQueries: queryMetrics.total_queries || 0,
-          avgProcessingTime: queryMetrics.avg_processing_time || 0,
-          templatesUsed: queryMetrics.templates_used || 0,
+          totalQueries: queryMetrics["total_queries"] || 0,
+          avgProcessingTime: queryMetrics["avg_processing_time"] || 0,
+          templatesUsed: queryMetrics["templates_used"] || 0,
         },
         memoryUsage: {
           wasmHeapSize: this.getWASMHeapSize(),
@@ -470,7 +470,7 @@ export class WASMFactIntegration extends EventEmitter {
     }
 
     try {
-      const success = this.cognitiveEngine.create_template(name, pattern);
+      const success = this.cognitiveEngine["create_template"](name, pattern);
 
       if (success) {
         const template: CognitiveTemplate = {
@@ -619,14 +619,14 @@ export class WASMFactIntegration extends EventEmitter {
     }
 
     // Initialize FastCache (10x performance improvement)
-    this.fastCache = new this.wasmModule.FastCache(this.config.cacheSize);
+    this.fastCache = new this.wasmModule["FastCache"](this.config.cacheSize);
 
     // Initialize QueryProcessor (5.25x performance improvement)
-    this.queryProcessor = new this.wasmModule.QueryProcessor();
+    this.queryProcessor = new this.wasmModule["QueryProcessor"]();
 
     // Initialize CognitiveEngine
     if (this.config.enableTemplates) {
-      this.cognitiveEngine = new this.wasmModule.CognitiveEngine();
+      this.cognitiveEngine = new this.wasmModule["CognitiveEngine"]();
     }
   }
 
@@ -634,7 +634,7 @@ export class WASMFactIntegration extends EventEmitter {
    * Load cognitive templates
    */
   private async loadCognitiveTemplates(): Promise<void> {
-    for (const [name, templateDef] of Object.entries(WASMFactIntegration.COGNITIVE_TEMPLATES)) {
+    for (const [name, templateDef] of Object.entries(WASMFactIntegration["COGNITIVE_TEMPLATES"])) {
       const template: CognitiveTemplate = {
         name,
         category: templateDef.category,

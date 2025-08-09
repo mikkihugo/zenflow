@@ -171,13 +171,13 @@ export class ApplicationCoordinator extends EventEmitter {
   private setupEventHandlers(): void {
     // Document system events
     this.documentSystem.on('document:created', async (event) => {
-      logger.info(`Document created: ${event.type} - ${event.path}`);
+      logger.info(`Document created: ${event.type} - ${event["path"]}`);
 
       // Trigger workflows for new documents
       try {
         const workflowIds = await this.workflowEngine.processDocumentEvent(
           'document:created',
-          event.document
+          event["document"]
         );
 
         if (workflowIds.length > 0) {
@@ -189,22 +189,22 @@ export class ApplicationCoordinator extends EventEmitter {
     });
 
     this.documentSystem.on('workspace:loaded', (event) => {
-      this.activeWorkspaceId = event.workspaceId;
-      logger.info(`Workspace loaded: ${event.path}`);
+      this.activeWorkspaceId = event["workspaceId"];
+      logger.info(`Workspace loaded: ${event["path"]}`);
     });
 
     // Workflow engine events
     this.workflowEngine.on('workflow:completed', async (event) => {
-      logger.info(`Workflow completed: ${event.workflowId}`);
+      logger.info(`Workflow completed: ${event["workflowId"]}`);
 
       // Auto-export workflow results if configured
       if (this.config.export?.defaultFormat) {
         try {
-          const workflowData = await this.memorySystem.retrieve(`workflow:${event.workflowId}`);
+          const workflowData = await this.memorySystem.retrieve(`workflow:${event["workflowId"]}`);
           if (workflowData) {
             const exportOptions = {
               ...(this.config.export.outputPath !== undefined && { outputPath: this.config.export.outputPath }),
-              filename: `workflow_${event.workflowId}_result`,
+              filename: `workflow_${event["workflowId"]}_result`,
             };
             await this.exportSystem.exportData(workflowData, this.config.export.defaultFormat, exportOptions);
           }
@@ -222,7 +222,7 @@ export class ApplicationCoordinator extends EventEmitter {
     // Memory system events (if supported)
     if ('on' in this.memorySystem) {
       this.memorySystem.on('stored', (event) => {
-        logger.debug(`Memory stored: ${event.namespace}:${event.key}`);
+        logger.debug(`Memory stored: ${event["namespace"]}:${event["key"]}`);
       });
     }
 

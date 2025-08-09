@@ -6,7 +6,6 @@
  */
 
 import { nanoid } from 'nanoid';
-import type { ArchitecturalValidation, ArchitectureDesign, Component } from '../types/sparc-types';
 
 // Database interfaces
 export interface ArchitectureRecord {
@@ -190,15 +189,15 @@ export class ArchitectureStorageService {
     `,
       [
         record.id,
-        record.architecture_id,
-        record.project_id,
+        record["architecture_id"],
+        record["project_id"],
         record.name,
         record.domain,
-        record.design_data,
-        record.components_data,
-        record.validation_data,
-        record.created_at,
-        record.updated_at,
+        record["design_data"],
+        record["components_data"],
+        record["validation_data"],
+        record["created_at"],
+        record["updated_at"],
         record.tags,
         record.metadata,
       ]
@@ -224,11 +223,11 @@ export class ArchitectureStorageService {
       [architectureId]
     );
 
-    if (!result.rows || result.rows.length === 0) {
+    if (!result?.rows || result?.rows.length === 0) {
       return null;
     }
 
-    const record = result.rows[0] as ArchitectureRecord;
+    const record = result?.rows?.[0] as ArchitectureRecord;
     return this.recordToArchitecture(record);
   }
 
@@ -247,11 +246,11 @@ export class ArchitectureStorageService {
       [projectId]
     );
 
-    if (!result.rows || result.rows.length === 0) {
+    if (!result?.rows || result?.rows.length === 0) {
       return [];
     }
 
-    return result.rows.map((record: ArchitectureRecord) => this.recordToArchitecture(record));
+    return result?.rows?.map((record: ArchitectureRecord) => this.recordToArchitecture(record));
   }
 
   /**
@@ -269,11 +268,11 @@ export class ArchitectureStorageService {
       [domain]
     );
 
-    if (!result.rows || result.rows.length === 0) {
+    if (!result?.rows || result?.rows.length === 0) {
       return [];
     }
 
-    return result.rows.map((record: ArchitectureRecord) => this.recordToArchitecture(record));
+    return result?.rows?.map((record: ArchitectureRecord) => this.recordToArchitecture(record));
   }
 
   /**
@@ -379,13 +378,13 @@ export class ArchitectureStorageService {
     `,
       [
         record.id,
-        record.architecture_id,
-        record.validation_type,
+        record["architecture_id"],
+        record["validation_type"],
         record.passed,
         record.score,
-        record.results_data,
+        record["results_data"],
         record.recommendations,
-        record.created_at,
+        record["created_at"],
       ]
     );
   }
@@ -405,13 +404,13 @@ export class ArchitectureStorageService {
       [architectureId]
     );
 
-    if (!result.rows || result.rows.length === 0) {
+    if (!result?.rows || result?.rows.length === 0) {
       return [];
     }
 
-    return result.rows.map((record: ValidationRecord) => ({
+    return result?.rows?.map((record: ValidationRecord) => ({
       overallScore: record.score,
-      validationResults: JSON.parse(record.results_data),
+      validationResults: JSON.parse(record["results_data"]),
       recommendations: JSON.parse(record.recommendations),
       approved: record.passed,
     }));
@@ -437,14 +436,14 @@ export class ArchitectureStorageService {
 
     if (criteria.domain) {
       query += ' AND domain = ?';
-      params.push(criteria.domain);
+      params?.push(criteria.domain);
     }
 
     if (criteria.tags && criteria.tags.length > 0) {
       // Simple tag search - could be enhanced with proper JSON querying
       for (const tag of criteria.tags) {
         query += ' AND tags LIKE ?';
-        params.push(`%"${tag}"%`);
+        params?.push(`%"${tag}"%`);
       }
     }
 
@@ -452,16 +451,16 @@ export class ArchitectureStorageService {
 
     if (criteria.limit) {
       query += ' LIMIT ?';
-      params.push(criteria.limit);
+      params?.push(criteria.limit);
     }
 
     const result = await this.db.query(query, params);
 
-    if (!result.rows || result.rows.length === 0) {
+    if (!result?.rows || result?.rows.length === 0) {
       return [];
     }
 
-    let architectures = result.rows.map((record: ArchitectureRecord) =>
+    let architectures = result?.rows?.map((record: ArchitectureRecord) =>
       this.recordToArchitecture(record)
     );
 
@@ -493,7 +492,7 @@ export class ArchitectureStorageService {
     const totalResult = await this.db.query(`
       SELECT COUNT(*) as count FROM ${this.tableName}
     `);
-    const totalArchitectures = totalResult.rows[0].count;
+    const totalArchitectures = totalResult?.rows?.[0]?.count;
 
     // By domain
     const domainResult = await this.db.query(`
@@ -502,7 +501,7 @@ export class ArchitectureStorageService {
       GROUP BY domain
     `);
     const byDomain: Record<string, number> = {};
-    domainResult.rows.forEach((row: any) => {
+    domainResult?.rows?.forEach((row: any) => {
       byDomain[row.domain] = row.count;
     });
 
@@ -515,7 +514,7 @@ export class ArchitectureStorageService {
         GROUP BY architecture_id
       ) AS component_counts
     `);
-    const averageComponents = componentsResult.rows[0]?.avg_components || 0;
+    const averageComponents = componentsResult?.rows?.[0]?.["avg_components"] || 0;
 
     // Validation stats
     const validationResult = await this.db.query(`
@@ -526,9 +525,9 @@ export class ArchitectureStorageService {
       FROM ${this.validationsTableName}
     `);
     const validationStats = {
-      totalValidated: validationResult.rows[0]?.total_validated || 0,
-      averageScore: validationResult.rows[0]?.average_score || 0,
-      passRate: validationResult.rows[0]?.pass_rate || 0,
+      totalValidated: validationResult?.rows?.[0]?.["total_validated"] || 0,
+      averageScore: validationResult?.rows?.[0]?.["average_score"] || 0,
+      passRate: validationResult?.rows?.[0]?.["pass_rate"] || 0,
     };
 
     return {
@@ -577,16 +576,16 @@ export class ArchitectureStorageService {
       `,
         [
           record.id,
-          record.architecture_id,
-          record.component_id,
+          record["architecture_id"],
+          record["component_id"],
           record.name,
           record.type,
           record.responsibilities,
           record.interfaces,
           record.dependencies,
-          record.performance_data,
-          record.created_at,
-          record.updated_at,
+          record["performance_data"],
+          record["created_at"],
+          record["updated_at"],
         ]
       );
     }
@@ -598,17 +597,17 @@ export class ArchitectureStorageService {
   }
 
   private recordToArchitecture(record: ArchitectureRecord): ArchitectureDesign {
-    const designData = JSON.parse(record.design_data);
-    const components = JSON.parse(record.components_data);
-    const validationData = record.validation_data ? JSON.parse(record.validation_data) : undefined;
+    const designData = JSON.parse(record["design_data"]);
+    const components = JSON.parse(record["components_data"]);
+    const validationData = record["validation_data"] ? JSON.parse(record["validation_data"]) : undefined;
 
     return {
       ...designData,
-      id: record.architecture_id,
+      id: record["architecture_id"],
       components,
       validationResults: validationData,
-      createdAt: record.created_at,
-      updatedAt: record.updated_at,
+      createdAt: record["created_at"],
+      updatedAt: record["updated_at"],
     };
   }
 

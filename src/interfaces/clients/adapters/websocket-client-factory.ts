@@ -7,15 +7,9 @@ const logger = getLogger("interfaces-clients-adapters-websocket-client-factory")
  * following the UACL (Unified API Client Layer) architecture.
  */
 
-import type { ClientMetrics, ClientStatus, IClient, IClientFactory } from '../core/interfaces';
+import type { IClient, IClientFactory } from '../core/interfaces';
 import { EnhancedWebSocketClient } from './enhanced-websocket-client';
-import { createWebSocketClient, WebSocketClientAdapter } from './websocket-client-adapter';
-
-import type {
-  WebSocketClientConfig,
-  WebSocketConnectionInfo,
-  WebSocketMetrics,
-} from './websocket-types';
+import { WebSocketClientAdapter } from './websocket-client-adapter';
 
 /**
  * WebSocket Client Factory implementing UACL IClientFactory interface
@@ -41,7 +35,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
     // Create client based on configuration preference
     let client: IClient;
 
-    if (config.metadata?.clientType === 'enhanced') {
+    if (config?.["metadata"]?.["clientType"] === 'enhanced') {
       // Use enhanced client with backward compatibility
       client = new EnhancedWebSocketClient(config);
     } else {
@@ -53,7 +47,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
     await client.connect();
 
     // Register client
-    const clientName = config.name || this.generateClientName(config);
+    const clientName = config?.name || this.generateClientName(config);
     this.clients.set(clientName, client);
     this.clientConfigs.set(clientName, config);
 
@@ -73,7 +67,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
    * @param configs
    */
   async createMultiple(configs: WebSocketClientConfig[]): Promise<IClient[]> {
-    const creationPromises = configs.map((config) => this.create(config));
+    const creationPromises = configs?.map((config) => this.create(config));
     return Promise.all(creationPromises);
   }
 
@@ -133,9 +127,9 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
     const healthCheckPromises = Array.from(this.clients.entries()).map(async ([name, client]) => {
       try {
         const status = await client.healthCheck();
-        results.set(name, status);
+        results?.set(name, status);
       } catch (error) {
-        results.set(name, {
+        results?.set(name, {
           name,
           status: 'unhealthy',
           lastCheck: new Date(),
@@ -162,9 +156,9 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
     const metricsPromises = Array.from(this.clients.entries()).map(async ([name, client]) => {
       try {
         const metrics = await client.getMetrics();
-        results.set(name, metrics);
+        results?.set(name, metrics);
       } catch (error) {
-        results.set(name, {
+        results?.set(name, {
           name,
           requestCount: 0,
           successCount: 0,
@@ -217,13 +211,13 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
     }
 
     // Validate required fields
-    if (!config.url || typeof config.url !== 'string') {
+    if (!config?.["url"] || typeof config?.["url"] !== 'string') {
       return false;
     }
 
     // Validate URL format
     try {
-      const url = new URL(config.url);
+      const url = new URL(config?.["url"]);
       if (!['ws:', 'wss:'].includes(url.protocol)) {
         return false;
       }
@@ -232,12 +226,12 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
     }
 
     // Validate optional configurations
-    if (config.timeout && (typeof config.timeout !== 'number' || config.timeout < 0)) {
+    if (config?.["timeout"] && (typeof config?.["timeout"] !== 'number' || config?.["timeout"] < 0)) {
       return false;
     }
 
-    if (config.reconnection) {
-      const reconnect = config.reconnection;
+    if (config?.["reconnection"]) {
+      const reconnect = config?.["reconnection"];
       if (
         typeof reconnect.enabled !== 'boolean' ||
         (reconnect.maxAttempts && typeof reconnect.maxAttempts !== 'number') ||
@@ -247,8 +241,8 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
       }
     }
 
-    if (config.heartbeat) {
-      const heartbeat = config.heartbeat;
+    if (config?.["heartbeat"]) {
+      const heartbeat = config?.["heartbeat"];
       if (
         typeof heartbeat.enabled !== 'boolean' ||
         (heartbeat.interval && typeof heartbeat.interval !== 'number')
@@ -276,7 +270,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
     for (let i = 0; i < poolSize; i++) {
       const pooledConfig = {
         ...config,
-        name: `${config.name || 'ws-client'}-pool-${i}`,
+        name: `${config?.name || 'ws-client'}-pool-${i}`,
       };
 
       const client = await this.create(pooledConfig);
@@ -327,7 +321,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
         // Check if client supports WebSocket-specific metrics
         if (client instanceof EnhancedWebSocketClient) {
           const wsMetrics = await client.getWebSocketMetrics();
-          results.set(name, wsMetrics);
+          results?.set(name, wsMetrics);
         } else if (client instanceof WebSocketClientAdapter) {
           // Convert standard metrics to WebSocket format
           const metrics = await client.getMetrics();
@@ -363,7 +357,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
 
             timestamp: new Date(),
           };
-          results.set(name, wsMetrics);
+          results?.set(name, wsMetrics);
         }
       } catch (error) {
         logger.warn(`Failed to get WebSocket metrics for ${name}:`, error);
@@ -383,7 +377,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
       try {
         if (client instanceof EnhancedWebSocketClient) {
           const connectionInfo = client.getConnectionInfo();
-          results.set(name, connectionInfo);
+          results?.set(name, connectionInfo);
         }
       } catch (error) {
         logger.warn(`Failed to get connection info for ${name}:`, error);
@@ -398,7 +392,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
   // =============================================================================
 
   private generateClientName(config: WebSocketClientConfig): string {
-    const url = new URL(config.url);
+    const url = new URL(config?.["url"]);
     const host = url.hostname;
     const port = url.port || (url.protocol === 'wss:' ? '443' : '80');
     const timestamp = Date.now();
@@ -426,7 +420,7 @@ export class LoadBalancedWebSocketClient implements IClient {
   }
 
   get config() {
-    return this.clients[0].config;
+    return this.clients[0]?.config;
   }
 
   get name() {
@@ -475,11 +469,10 @@ export class LoadBalancedWebSocketClient implements IClient {
       this.clients.map((client) => client.getMetrics())
     );
 
-    const successfulMetrics = metricsResults
-      .filter(
-        (result): result is PromiseFulfilledResult<ClientMetrics> => result.status === 'fulfilled'
+    const successfulMetrics = metricsResults?.filter(
+        (result): result is PromiseFulfilledResult<ClientMetrics> => result?.status === 'fulfilled'
       )
-      .map((result) => result.value);
+      .map((result) => result?.value);
 
     if (successfulMetrics.length === 0) {
       return {

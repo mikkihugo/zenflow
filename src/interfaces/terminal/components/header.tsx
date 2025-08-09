@@ -6,7 +6,6 @@
  */
 
 import { Box, Text } from 'ink';
-import type React from 'react';
 
 export interface SwarmStatus {
   status: 'active' | 'initializing' | 'error' | 'idle';
@@ -128,7 +127,7 @@ export const Header: React.FC<HeaderProps> = ({
 };
 
 // Export specific variants for convenience
-export const StandardHeader: React.FC<Omit<HeaderProps, 'mode'>> = (props) => (
+export const Header: React.FC<Omit<HeaderProps, 'mode'>> = (props) => (
   <Header {...props} mode="standard" />
 );
 

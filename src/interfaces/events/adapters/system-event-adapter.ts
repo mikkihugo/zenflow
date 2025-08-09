@@ -12,26 +12,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ApplicationCoordinator } from '../../../core/application-coordinator';
-// Import core system classes to wrap their EventEmitter usage
-import type { CoreSystem } from '../../../core/core-system';
-import { createLogger, type Logger } from '../../../utils/logger';
-import type {
-  EventBatch,
-  EventEmissionOptions,
-  EventFilter,
-  EventListener,
-  EventManagerConfig,
-  EventManagerMetrics,
-  EventManagerStatus,
-  EventQueryOptions,
-  EventSubscription,
-  EventTransform,
-  IEventManager,
-  SystemEvent,
-} from '../core/interfaces';
+import { createLogger } from '../../../utils/logger';
+import type { IEventManager } from '../core/interfaces';
 import { EventEmissionError, EventManagerTypes, EventTimeoutError } from '../core/interfaces';
-import type { SystemLifecycleEvent } from '../types';
 import { EventPriorityMap } from '../types';
 
 /**
@@ -214,8 +197,8 @@ export class SystemEventAdapter implements IEventManager {
   private eventHistory: SystemEvent[] = [];
 
   constructor(config: SystemEventAdapterConfig) {
-    this.name = config.name;
-    this.type = config.type;
+    this.name = config?.name;
+    this.type = config?.type;
     this.config = {
       // Default configuration values
       coreSystem: {
@@ -223,35 +206,35 @@ export class SystemEventAdapter implements IEventManager {
         wrapLifecycleEvents: true,
         wrapHealthEvents: true,
         wrapConfigEvents: true,
-        ...config.coreSystem,
+        ...config?.["coreSystem"],
       },
       applicationCoordinator: {
         enabled: true,
         wrapComponentEvents: true,
         wrapStatusEvents: true,
         wrapWorkspaceEvents: true,
-        ...config.applicationCoordinator,
+        ...config?.["applicationCoordinator"],
       },
       processManagement: {
         enabled: true,
         wrapServiceEvents: true,
         wrapDaemonEvents: true,
         wrapResourceEvents: true,
-        ...config.processManagement,
+        ...config?.["processManagement"],
       },
       errorRecovery: {
         enabled: true,
         wrapRecoveryEvents: true,
         wrapStrategyEvents: true,
         correlateErrors: true,
-        ...config.errorRecovery,
+        ...config?.["errorRecovery"],
       },
       performance: {
         enableEventCorrelation: true,
         maxConcurrentEvents: 100,
         eventTimeout: 30000,
         enablePerformanceTracking: true,
-        ...config.performance,
+        ...config?.["performance"],
       },
       correlation: {
         enabled: true,
@@ -263,7 +246,7 @@ export class SystemEventAdapter implements IEventManager {
           'system:error->system:recovery',
           'config:change->system:restart',
         ],
-        ...config.correlation,
+        ...config?.["correlation"],
       },
       healthMonitoring: {
         enabled: true,
@@ -276,7 +259,7 @@ export class SystemEventAdapter implements IEventManager {
           'interface-manager': 0.8,
         },
         autoRecoveryEnabled: true,
-        ...config.healthMonitoring,
+        ...config?.["healthMonitoring"],
       },
       ...config,
     };
@@ -397,7 +380,7 @@ export class SystemEventAdapter implements IEventManager {
       }
 
       // Apply timeout if specified
-      const timeout = options?.timeout || this.config.performance?.eventTimeout || 30000;
+      const timeout = options?.["timeout"] || this.config.performance?.eventTimeout || 30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(() => reject(new EventTimeoutError(this.name, timeout, eventId)), timeout);
       });
@@ -411,11 +394,11 @@ export class SystemEventAdapter implements IEventManager {
       // Record success metrics
       this.recordEventMetrics({
         eventType: event.type,
-        component: event.source,
+        component: event["source"],
         operation: 'emit',
         executionTime: duration,
         success: true,
-        correlationId: event.correlationId,
+        correlationId: event["correlationId"],
         timestamp: new Date(),
       });
 
@@ -430,11 +413,11 @@ export class SystemEventAdapter implements IEventManager {
       // Record error metrics
       this.recordEventMetrics({
         eventType: event.type,
-        component: event.source,
+        component: event["source"],
         operation: 'emit',
         executionTime: duration,
         success: false,
-        correlationId: event.correlationId,
+        correlationId: event["correlationId"],
         errorType: error instanceof Error ? error.constructor.name : 'UnknownError',
         timestamp: new Date(),
       });
@@ -520,12 +503,12 @@ export class SystemEventAdapter implements IEventManager {
       id: subscriptionId,
       eventTypes: types,
       listener,
-      ...(options?.filter && { filter: options.filter }),
-      ...(options?.transform && { transform: options.transform }),
-      priority: options?.priority || 'medium',
+      ...(options?.["filter"] && { filter: options?.filter }),
+      ...(options?.["transform"] && { transform: options?.["transform"] }),
+      priority: options?.["priority"] || 'medium',
       created: new Date(),
       active: true,
-      metadata: options?.metadata || {},
+      metadata: options?.["metadata"] || {},
     };
 
     this.subscriptions.set(subscriptionId, subscription as EventSubscription);
@@ -642,23 +625,23 @@ export class SystemEventAdapter implements IEventManager {
     let events = [...this.eventHistory] as T[];
 
     // Apply filters
-    if (options.filter) {
-      events = events.filter((event) => this.applyFilter(event, options.filter!));
+    if (options?.filter) {
+      events = events.filter((event) => this.applyFilter(event, options?.filter!));
     }
 
     // Apply sorting
-    if (options.sortBy) {
+    if (options?.["sortBy"]) {
       events.sort((a, b) => {
-        const aVal = this.getEventSortValue(a, options.sortBy!);
-        const bVal = this.getEventSortValue(b, options.sortBy!);
+        const aVal = this.getEventSortValue(a, options?.["sortBy"]!);
+        const bVal = this.getEventSortValue(b, options?.["sortBy"]!);
         const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-        return options.sortOrder === 'desc' ? -comparison : comparison;
+        return options?.["sortOrder"] === 'desc' ? -comparison : comparison;
       });
     }
 
     // Apply pagination
-    const offset = options.offset || 0;
-    const limit = options.limit || 100;
+    const offset = options?.["offset"] || 0;
+    const limit = options?.["limit"] || 100;
     events = events.slice(offset, offset + limit);
 
     return events;
@@ -843,8 +826,8 @@ export class SystemEventAdapter implements IEventManager {
       ...event,
       id: this.generateEventId(),
       timestamp: new Date(),
-      priority: event.priority || EventPriorityMap[event.type] || 'medium',
-      correlationId: event.correlationId || this.generateCorrelationId(),
+      priority: event["priority"] || EventPriorityMap[event.type] || 'medium',
+      correlationId: event["correlationId"] || this.generateCorrelationId(),
     };
 
     // Start event correlation if enabled
@@ -962,7 +945,7 @@ export class SystemEventAdapter implements IEventManager {
         };
 
         this.systemHealth.set(componentName, healthEntry);
-        healthResults[componentName] = healthEntry;
+        healthResults?.[componentName] = healthEntry;
       } catch (error) {
         const healthEntry: SystemHealthEntry = {
           component: componentName,
@@ -977,7 +960,7 @@ export class SystemEventAdapter implements IEventManager {
         };
 
         this.systemHealth.set(componentName, healthEntry);
-        healthResults[componentName] = healthEntry;
+        healthResults?.[componentName] = healthEntry;
       }
     }
 
@@ -1189,7 +1172,7 @@ export class SystemEventAdapter implements IEventManager {
     }
 
     // Handle event correlation
-    if (this.config.correlation?.enabled && event.correlationId) {
+    if (this.config.correlation?.enabled && event["correlationId"]) {
       this.updateEventCorrelation(event);
     }
 
@@ -1336,7 +1319,7 @@ export class SystemEventAdapter implements IEventManager {
    * @param event
    */
   private startEventCorrelation(event: SystemEvent): void {
-    const correlationId = event.correlationId || this.generateCorrelationId();
+    const correlationId = event["correlationId"] || this.generateCorrelationId();
 
     if (!this.eventCorrelations.has(correlationId)) {
       const correlation: EventCorrelation = {
@@ -1344,7 +1327,7 @@ export class SystemEventAdapter implements IEventManager {
         events: [event],
         startTime: new Date(),
         lastUpdate: new Date(),
-        component: event.source,
+        component: event["source"],
         operation: this.extractOperationFromEvent(event.type),
         status: 'active',
         metadata: {},
@@ -1362,7 +1345,7 @@ export class SystemEventAdapter implements IEventManager {
    * @param event
    */
   private updateEventCorrelation(event: SystemEvent): void {
-    const correlationId = event.correlationId;
+    const correlationId = event["correlationId"];
     if (!correlationId) return;
 
     const correlation = this.eventCorrelations.get(correlationId);
@@ -1388,9 +1371,9 @@ export class SystemEventAdapter implements IEventManager {
     const recoveryCorrelationId = this.generateCorrelationId();
 
     // Update event with recovery correlation
-    event.correlationId = recoveryCorrelationId;
-    event.metadata = {
-      ...event.metadata,
+    event["correlationId"] = recoveryCorrelationId;
+    event["metadata"] = {
+      ...event["metadata"],
       recoveryData: data,
     };
 
@@ -1492,7 +1475,7 @@ export class SystemEventAdapter implements IEventManager {
    * @param event
    */
   private validateEvent(event: SystemEvent): boolean {
-    return !!(event.id && event.timestamp && event.source && event.type);
+    return !!(event.id && event["timestamp"] && event["source"] && event.type);
   }
 
   private applyFilter(event: SystemEvent, filter: EventFilter): boolean {
@@ -1502,19 +1485,19 @@ export class SystemEventAdapter implements IEventManager {
     }
 
     // Source filter
-    if (filter.sources && !filter.sources.includes(event.source)) {
+    if (filter.sources && !filter.sources.includes(event["source"])) {
       return false;
     }
 
     // Priority filter
-    if (filter.priorities && event.priority && !filter.priorities.includes(event.priority)) {
+    if (filter.priorities && event["priority"] && !filter.priorities.includes(event["priority"])) {
       return false;
     }
 
     // Metadata filter
     if (filter.metadata) {
       for (const [key, value] of Object.entries(filter.metadata)) {
-        if (!event.metadata || event.metadata[key] !== value) {
+        if (!event["metadata"] || event["metadata"]?.[key] !== value) {
           return false;
         }
       }
@@ -1555,17 +1538,17 @@ export class SystemEventAdapter implements IEventManager {
   private getEventSortValue(event: SystemEvent, sortBy: string): any {
     switch (sortBy) {
       case 'timestamp':
-        return event.timestamp.getTime();
+        return event["timestamp"]?.["getTime"]();
       case 'priority': {
         const priorities = { critical: 4, high: 3, medium: 2, low: 1 };
-        return priorities[event.priority || 'medium'];
+        return priorities[event["priority"] || 'medium'];
       }
       case 'type':
         return event.type;
       case 'source':
-        return event.source;
+        return event["source"];
       default:
-        return event.timestamp.getTime();
+        return event["timestamp"]?.["getTime"]();
     }
   }
 
@@ -1579,9 +1562,9 @@ export class SystemEventAdapter implements IEventManager {
 
   private extractStatusFromData(data: any): SystemLifecycleEvent['status'] {
     if (!data) return 'success';
-    if (data.error || data.status === 'error') return 'error';
-    if (data.warning || data.status === 'warning') return 'warning';
-    if (data.status === 'critical') return 'critical';
+    if (data?.error || data?.["status"] === 'error') return 'error';
+    if (data?.["warning"] || data?.["status"] === 'warning') return 'warning';
+    if (data?.["status"] === 'critical') return 'critical';
     return 'success';
   }
 
@@ -1672,7 +1655,7 @@ export function createDefaultSystemEventAdapterConfig(
 ): SystemEventAdapterConfig {
   return {
     name,
-    type: EventManagerTypes.SYSTEM,
+    type: EventManagerTypes["SYSTEM"],
     processing: {
       strategy: 'immediate',
       queueSize: 1000,

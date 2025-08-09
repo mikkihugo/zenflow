@@ -11,8 +11,6 @@ import {
   type ILogger,
   type IMessageBroker,
   type ISwarmCoordinator,
-  inject,
-  injectable,
   SingletonProvider,
   SWARM_TOKENS,
 } from '../index';
@@ -26,7 +24,7 @@ import {
  * @example
  */
 @injectable
-export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
+export class SwarmCoordinator implements ISwarmCoordinator {
   private isInitialized = false;
   private agents = new Map<string, any>();
   private tasks = new Map<string, any>();
@@ -37,19 +35,19 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     @inject(SWARM_TOKENS.AgentRegistry) private _agentRegistry: IAgentRegistry,
     @inject(SWARM_TOKENS.MessageBroker) private _messageBroker: IMessageBroker,
   ) {
-    this._logger.info('SwarmCoordinator created with DI');
+    this["_logger"]?.info('SwarmCoordinator created with DI');
   }
 
   async initializeSwarm(options: any): Promise<void> {
-    this._logger.info('Initializing swarm', { options });
+    this["_logger"]?.info('Initializing swarm', { options });
 
-    const maxAgents = this._config.get('swarm.maxAgents', 10);
-    const topology = this._config.get('swarm.topology', 'mesh');
+    const maxAgents = this["_config"]?.get('swarm.maxAgents', 10);
+    const topology = this["_config"]?.get('swarm.topology', 'mesh');
 
-    this._logger.debug('Swarm configuration', { maxAgents, topology });
+    this["_logger"]?.debug('Swarm configuration', { maxAgents, topology });
 
     this.isInitialized = true;
-    this._logger.info('Swarm initialized successfully');
+    this["_logger"]?.info('Swarm initialized successfully');
   }
 
   async addAgent(config: any): Promise<string> {
@@ -59,55 +57,55 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
 
     const agentId = `agent-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
-    this._logger.info('Adding agent', { agentId, config });
+    this["_logger"]?.info('Adding agent', { agentId, config });
 
     // Register with agent registry
-    await this._agentRegistry.registerAgent({ id: agentId, ...config });
+    await this["_agentRegistry"]?.registerAgent({ id: agentId, ...config });
 
     // Store locally
     this.agents.set(agentId, { id: agentId, ...config, status: 'idle' });
 
     // Announce to swarm
-    await this._messageBroker.broadcast({
+    await this["_messageBroker"]?.broadcast({
       type: 'agent_joined',
       agentId,
       timestamp: Date.now(),
     });
 
-    this._logger.info('Agent added successfully', { agentId });
+    this["_logger"]?.info('Agent added successfully', { agentId });
     return agentId;
   }
 
   async removeAgent(agentId: string): Promise<void> {
-    this._logger.info('Removing agent', { agentId });
+    this["_logger"]?.info('Removing agent', { agentId });
 
     if (!this.agents.has(agentId)) {
       throw new Error(`Agent ${agentId} not found`);
     }
 
     // Unregister from agent registry
-    await this._agentRegistry.unregisterAgent(agentId);
+    await this["_agentRegistry"]?.unregisterAgent(agentId);
 
     // Remove locally
     this.agents.delete(agentId);
 
     // Announce to swarm
-    await this._messageBroker.broadcast({
+    await this["_messageBroker"]?.broadcast({
       type: 'agent_left',
       agentId,
       timestamp: Date.now(),
     });
 
-    this._logger.info('Agent removed successfully', { agentId });
+    this["_logger"]?.info('Agent removed successfully', { agentId });
   }
 
   async assignTask(task: any): Promise<string> {
     const taskId = `task-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
-    this._logger.info('Assigning task', { taskId, task });
+    this["_logger"]?.info('Assigning task', { taskId, task });
 
     // Find available agents
-    const availableAgents = await this._agentRegistry.findAvailableAgents({
+    const availableAgents = await this["_agentRegistry"]?.findAvailableAgents({
       status: 'idle',
       capabilities: task.requiredCapabilities || [],
     });
@@ -123,20 +121,20 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     this.tasks.set(taskId, {
       id: taskId,
       ...task,
-      assignedAgentId: selectedAgent.id,
+      assignedAgentId: selectedAgent?.id,
       status: 'assigned',
       timestamp: Date.now(),
     });
 
     // Notify agent via message broker
-    await this._messageBroker.publish(`agent.${selectedAgent.id}`, {
+    await this["_messageBroker"]?.publish(`agent.${selectedAgent?.id}`, {
       type: 'task_assignment',
       taskId,
       task,
       timestamp: Date.now(),
     });
 
-    this._logger.info('Task assigned successfully', { taskId, agentId: selectedAgent.id });
+    this["_logger"]?.info('Task assigned successfully', { taskId, agentId: selectedAgent?.id });
     return taskId;
   }
 
@@ -157,12 +155,12 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
       timestamp: Date.now(),
     };
 
-    this._logger.debug('Retrieved swarm metrics', metrics);
+    this["_logger"]?.debug('Retrieved swarm metrics', metrics);
     return metrics;
   }
 
   async shutdown(): Promise<void> {
-    this._logger.info('Shutting down swarm');
+    this["_logger"]?.info('Shutting down swarm');
 
     // Remove all agents
     const agentIds = Array.from(this.agents.keys());
@@ -174,7 +172,7 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     this.tasks.clear();
 
     this.isInitialized = false;
-    this._logger.info('Swarm shutdown complete');
+    this["_logger"]?.info('Swarm shutdown complete');
   }
 }
 
@@ -310,24 +308,24 @@ export function createSwarmContainer(config: Record<string, any> = {}): DIContai
 
   // Register swarm services
   container.register(
-    SWARM_TOKENS.AgentRegistry,
+    SWARM_TOKENS["AgentRegistry"],
     new SingletonProvider(() => new MockAgentRegistry())
   );
   container.register(
-    SWARM_TOKENS.MessageBroker,
+    SWARM_TOKENS["MessageBroker"],
     new SingletonProvider(() => new MockMessageBroker())
   );
 
   // Register enhanced swarm coordinator
   container.register(
-    SWARM_TOKENS.SwarmCoordinator,
+    SWARM_TOKENS["SwarmCoordinator"],
     new SingletonProvider(
       (c) =>
         new EnhancedSwarmCoordinator(
           c.resolve(CORE_TOKENS.Logger),
           c.resolve(CORE_TOKENS.Config),
-          c.resolve(SWARM_TOKENS.AgentRegistry),
-          c.resolve(SWARM_TOKENS.MessageBroker)
+          c.resolve(SWARM_TOKENS["AgentRegistry"]),
+          c.resolve(SWARM_TOKENS["MessageBroker"])
         )
     )
   );
@@ -349,7 +347,7 @@ export async function demonstrateSwarmDI(): Promise<void> {
 
   try {
     // Resolve the swarm coordinator
-    const coordinator = container.resolve(SWARM_TOKENS.SwarmCoordinator);
+    const coordinator = container.resolve(SWARM_TOKENS["SwarmCoordinator"]);
 
     // Initialize swarm
     await coordinator.initializeSwarm({
@@ -369,7 +367,7 @@ export async function demonstrateSwarmDI(): Promise<void> {
     });
 
     // Assign a task
-    const _taskId = await coordinator.assignTask({
+    const taskId = await coordinator.assignTask({
       type: 'data-processing',
       description: 'Process large dataset',
       requiredCapabilities: ['data-processing'],
@@ -377,7 +375,7 @@ export async function demonstrateSwarmDI(): Promise<void> {
     });
 
     // Get metrics
-    const _metrics = coordinator.getMetrics();
+    const metrics = coordinator.getMetrics();
 
     // Cleanup
     await coordinator.removeAgent(agent1Id);

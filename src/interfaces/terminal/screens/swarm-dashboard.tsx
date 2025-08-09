@@ -6,7 +6,6 @@
  */
 
 import { Box, Text, useInput } from 'ink';
-import type React from 'react';
 import { useEffect, useState } from 'react';
 import {
   AgentProgress,
@@ -14,7 +13,6 @@ import {
   InteractiveFooter,
   StatusBadge,
   SwarmSpinner,
-  type SwarmStatus,
   TaskProgress,
 } from '../components/index';
 
@@ -94,8 +92,8 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
   onExit,
   showHeader = true,
 }) => {
-  const [_refreshKey, setRefreshKey] = useState(0);
-  const [_selectedSection, setSelectedSection] = useState<'overview' | 'agents' | 'tasks'>(
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [selectedSection, setSelectedSection] = useState<'overview' | 'agents' | 'tasks'>(
     'overview'
   );
 

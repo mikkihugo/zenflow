@@ -1,10 +1,3 @@
-/**
- * Hook System - Core Infrastructure
- * Provides safety validation, auto-assignment, performance tracking, and context loading
- */
-
-import type { AgentType } from '../../types/agent-types';
-
 // Hook Type Definitions
 export type HookType =
   | 'command'

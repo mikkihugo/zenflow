@@ -1,5 +1,3 @@
-import { getLogger } from "../config/logging-config";
-const logger = getLogger("src-core-logger");
 /**
  * @file Logger utility for Neural and Queen components
  * Simple wrapper around the core logger for component-specific logging
@@ -32,19 +30,19 @@ export interface ILogger {
 // Configuration from centralized config system
 const getLogLevel = (): LogLevel => {
   try {
-    const centralConfig = config?.getAll();
+    const centralConfig = config?.["getAll"]();
     const configLevel = centralConfig?.core?.logger?.level?.toUpperCase();
     // Fallback for development environment
     const level = centralConfig?.environment?.isDevelopment && configLevel === 'INFO' ? 'DEBUG' : configLevel;
-    return Object.values(LogLevel).find(l => l.toUpperCase() === level) as LogLevel || LogLevel.INFO;
+    return Object.values(LogLevel).find(l => l.toUpperCase() === level) as LogLevel || LogLevel["INFO"];
   } catch (error) {
     // Fallback to INFO if config is not available
-    return LogLevel.INFO;
+    return LogLevel["INFO"];
   }
 };
 
 const shouldLog = (messageLevel: LogLevel, configuredLevel: LogLevel = getLogLevel()): boolean => {
-  const levels = { [LogLevel.DEBUG]: 0, [LogLevel.INFO]: 1, [LogLevel.WARN]: 2, [LogLevel.ERROR]: 3 };
+  const levels = { [LogLevel["DEBUG"]]: 0, [LogLevel["INFO"]]: 1, [LogLevel["WARN"]]: 2, [LogLevel["ERROR"]]: 3 };
   return levels[messageLevel] >= levels[configuredLevel];
 };
 
@@ -62,24 +60,24 @@ function simpleCreateLogger(config: Partial<LoggerConfig> | string = {}) {
 
   return {
     debug: (message: string, meta?: any) => {
-      if (shouldLog(LogLevel.DEBUG, logLevel)) {
-        logger.debug(formatLogMessage('DEBUG', prefix, message, meta));
+      if (shouldLog(LogLevel["DEBUG"], logLevel)) {
+        console.debug(formatLogMessage('DEBUG', prefix, message, meta));
       }
     },
     info: (message: string, meta?: any) => {
-      if (shouldLog(LogLevel.INFO, logLevel)) {
-        logger.info(formatLogMessage('INFO', prefix, message, meta));
+      if (shouldLog(LogLevel["INFO"], logLevel)) {
+        console.info(formatLogMessage('INFO', prefix, message, meta));
       }
     },
     warn: (message: string, meta?: any) => {
-      if (shouldLog(LogLevel.WARN, logLevel)) {
-        logger.warn(formatLogMessage('WARN', prefix, message, meta));
+      if (shouldLog(LogLevel["WARN"], logLevel)) {
+        console.warn(formatLogMessage('WARN', prefix, message, meta));
       }
     },
     error: (message: string, meta?: any, error?: any) => {
-      if (shouldLog(LogLevel.ERROR, logLevel)) {
+      if (shouldLog(LogLevel["ERROR"], logLevel)) {
         const errorDetails = error ? ` Error: ${error}` : '';
-        logger.error(formatLogMessage('ERROR', prefix, message + errorDetails, meta));
+        console.error(formatLogMessage('ERROR', prefix, message + errorDetails, meta));
       }
     },
   };

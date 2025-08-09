@@ -9,8 +9,6 @@ const logger = getLogger("coordination-swarm-sparc-integrations-roadmap-integrat
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import type { ProjectDomain, SPARCProject } from '../types/sparc-types';
-import type { Epic, Feature, Roadmap, RoadmapItem } from './project-management-integration';
 
 export interface SPARCRoadmapPlanning {
   generateEpicFromSPARCProject(project: SPARCProject): Promise<Epic>;
@@ -166,7 +164,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
       // Add to roadmap
       roadmap.items.push(roadmapItem);
-      roadmap.last_updated = new Date().toISOString();
+      roadmap["last_updated"] = new Date().toISOString();
 
       // Ensure docs directory exists
       await fs.mkdir(path.dirname(this.roadmapFile), { recursive: true });
@@ -239,7 +237,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
       // Add new epic and features
       epics.push(epic);
-      featuresData.push(...features);
+      featuresData?.push(...features);
 
       // Save files
       await fs.writeFile(this.epicsFile, JSON.stringify(epics, null, 2));
@@ -424,8 +422,8 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
       description: strategy.description,
       type: 'epic' as const,
       quarter: timeframe.start,
-      effort_estimate: strategy.effort_estimate,
-      business_value: strategy.business_value,
+      effort_estimate: strategy["effort_estimate"],
+      business_value: strategy["business_value"],
       dependencies: [],
       status: 'planned' as const,
     }));

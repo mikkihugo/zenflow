@@ -150,7 +150,7 @@ function registerCoreServices(container: DIContainer): void {
  */
 function registerDatabaseServices(container: DIContainer): void {
   // Database provider factory
-  container.register(DATABASE_TOKENS?.ProviderFactory, {
+  container.register(DATABASE_TOKENS?.["ProviderFactory"], {
     type: 'singleton',
     create: (container) =>
       new DatabaseProviderFactory(
@@ -166,7 +166,7 @@ function registerDatabaseServices(container: DIContainer): void {
       new DALFactory(
         container.resolve(CORE_TOKENS.Logger),
         container.resolve(CORE_TOKENS.Config),
-        container.resolve(DATABASE_TOKENS?.ProviderFactory) as DatabaseProviderFactory
+        container.resolve(DATABASE_TOKENS?.["ProviderFactory"]) as DatabaseProviderFactory
       ),
   });
 }

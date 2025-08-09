@@ -4,7 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { SwarmTopology } from '../../coordination/swarm/core/strategy';
 
 // Core command interfaces
 export interface ValidationResult {
@@ -191,7 +190,7 @@ export class SwarmInitCommand implements MCPCommand<SwarmInitResult> {
         }
       );
 
-      this.swarmId = result.swarmId;
+      this.swarmId = result?.swarmId;
       const endResources = this.measureResources();
 
       return {
@@ -199,7 +198,7 @@ export class SwarmInitCommand implements MCPCommand<SwarmInitResult> {
         data: result,
         executionTime: Date.now() - this.executionStartTime,
         resourceUsage: this.calculateResourceDelta(startResources, endResources),
-        warnings: result.warnings,
+        warnings: result?.warnings,
         metadata: {
           topology: this.config.topology,
           agentCount: this.config.agentCount,
@@ -322,7 +321,7 @@ export class AgentSpawnCommand implements MCPCommand<AgentSpawnResult> {
 
     try {
       const result = await this.swarmManager.spawnAgent(this.swarmId, this.agentConfig);
-      this.agentId = result.agentId;
+      this.agentId = result?.agentId;
 
       return {
         success: true,
@@ -526,7 +525,7 @@ export class MCPCommandQueue extends EventEmitter {
     // Execute slow commands sequentially to avoid resource exhaustion
     const sequentialResults: CommandResult<T>[] = [];
     for (const command of slowCommands) {
-      sequentialResults.push(await this.execute(command));
+      sequentialResults?.push(await this.execute(command));
     }
 
     return [...parallelResults, ...sequentialResults];
@@ -550,18 +549,18 @@ export class MCPCommandQueue extends EventEmitter {
 
       for (const command of commands) {
         const result = await this.execute(command);
-        results.push(result);
+        results?.push(result);
 
-        if (!result.success) {
+        if (!result?.success) {
           // Rollback all successful commands in this transaction
           await this.rollbackTransaction(transactionId, results);
           transaction.status = 'rolled_back';
-          transaction.rollbackReason = result.error?.message;
+          transaction.rollbackReason = result?.error?.message;
           break;
         }
       }
 
-      if (results.every((r) => r.success)) {
+      if (results?.every((r) => r.success)) {
         transaction.status = 'completed';
         transaction.completedAt = new Date();
       }
@@ -605,10 +604,10 @@ export class MCPCommandQueue extends EventEmitter {
         const command = originalCommand.clone ? originalCommand.clone() : originalCommand;
         const result = await this.execute(command);
 
-        if (result.success) {
+        if (result?.success) {
           return result;
         }
-        lastError = result.error || new Error('Command failed without error details');
+        lastError = result?.error || new Error('Command failed without error details');
       } catch (error) {
         lastError = error as Error;
       }
@@ -690,13 +689,13 @@ export class MCPCommandQueue extends EventEmitter {
     for (const chunk of chunks) {
       const chunkResults = await Promise.allSettled(chunk.map((cmd) => this.execute(cmd)));
 
-      results.push(
-        ...chunkResults.map((result) =>
-          result.status === 'fulfilled'
-            ? result.value
+      results?.push(
+        ...chunkResults?.map((result) =>
+          result?.status === 'fulfilled'
+            ? result?.value
             : {
                 success: false,
-                error: result.reason,
+                error: result?.reason,
                 executionTime: 0,
                 resourceUsage: this.emptyResourceMetrics(),
               }
@@ -723,9 +722,9 @@ export class MCPCommandQueue extends EventEmitter {
       }
 
       this.currentlyExecuting++;
-      this.executeCommand(item.command)
-        .then(item.resolve)
-        .catch(item.reject)
+      this.executeCommand(item?.command)
+        .then(item?.resolve)
+        .catch(item?.reject)
         .finally(() => {
           this.currentlyExecuting--;
           setImmediate(processNext);
@@ -754,14 +753,14 @@ export class MCPCommandQueue extends EventEmitter {
       });
 
       // Add to undo stack if undoable
-      if (result.success && command.canUndo()) {
+      if (result?.success && command.canUndo()) {
         this.undoStack.push(command);
       }
 
       this.emit('command:executed', {
         commandType: command.getCommandType(),
-        success: result.success,
-        executionTime: result.executionTime,
+        success: result?.success,
+        executionTime: result?.executionTime,
       });
 
       return result;
@@ -773,7 +772,7 @@ export class MCPCommandQueue extends EventEmitter {
         resourceUsage: this.emptyResourceMetrics(),
       };
 
-      this.updateMetrics(command, errorResult, errorResult.executionTime);
+      this.updateMetrics(command, errorResult, errorResult?.executionTime);
 
       this.emit('command:error', {
         commandType: command.getCommandType(),
@@ -794,8 +793,8 @@ export class MCPCommandQueue extends EventEmitter {
     // Rollback commands in reverse order
     for (let i = results.length - 1; i >= 0; i--) {
       const command = transaction.commands[i];
-      const result = results[i];
-      if (command && result && result.success && command.canUndo() && command.undo) {
+      const result = results?.[i];
+      if (command && result && result?.success && command.canUndo() && command.undo) {
         try {
           await command.undo();
         } catch (error) {
@@ -811,7 +810,7 @@ export class MCPCommandQueue extends EventEmitter {
     actualExecutionTime: number
   ): void {
     this.metrics.totalExecuted++;
-    if (!result.success) {
+    if (!result?.success) {
       this.metrics.totalFailed++;
     }
 
@@ -825,7 +824,7 @@ export class MCPCommandQueue extends EventEmitter {
     stats.count++;
     stats.avgTime = (stats.avgTime * (stats.count - 1) + actualExecutionTime) / stats.count;
     stats.failureRate =
-      (stats.failureRate * (stats.count - 1) + (result.success ? 0 : 1)) / stats.count;
+      (stats.failureRate * (stats.count - 1) + (result?.success ? 0 : 1)) / stats.count;
 
     this.metrics.commandTypeStats.set(commandType, stats);
 

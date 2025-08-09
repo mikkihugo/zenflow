@@ -8,10 +8,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../../core/interfaces/base-interfaces';
-import type { EventManagerType, IEventManager, SystemEvent } from './core/interfaces';
 import { EventManagerTypes } from './core/interfaces';
-import type { EventManager } from './manager';
 
 /**
  * Enhanced EventEmitter that provides UEL integration while maintaining compatibility
@@ -33,10 +30,10 @@ export class UELCompatibleEventEmitter extends EventEmitter {
   }) {
     super();
 
-    this.uelEnabled = options?.enableUEL ?? false;
-    this.uelManager = options?.uelManager;
-    this.migrationMode = options?.migrationMode ?? 'passive';
-    this.logger = options?.logger;
+    this.uelEnabled = options?.["enableUEL"] ?? false;
+    this.uelManager = options?.["uelManager"];
+    this.migrationMode = options?.["migrationMode"] ?? 'passive';
+    this.logger = options?.["logger"];
 
     // Set higher max listeners for compatibility
     this.setMaxListeners(1000);
@@ -65,7 +62,7 @@ export class UELCompatibleEventEmitter extends EventEmitter {
     this.migrationMode = 'active';
 
     // Migrate existing listeners if requested
-    if (options?.migrateExistingListeners) {
+    if (options?.["migrateExistingListeners"]) {
       await this.migrateExistingListeners();
     }
 
@@ -217,7 +214,7 @@ export class UELCompatibleEventEmitter extends EventEmitter {
 
       // Subscribe to UEL manager
       const subscriptionId = this.uelManager.subscribe([uelEventType], uelListener, {
-        once: options?.once,
+        once: options?.["once"],
       });
 
       this.logger?.debug(`UEL subscription created: ${subscriptionId} for ${eventName}`);
@@ -246,8 +243,8 @@ export class UELCompatibleEventEmitter extends EventEmitter {
 
   private convertUELEventToArgs(event: SystemEvent): any[] {
     // Extract original args from metadata if available
-    if (event.metadata?.args && Array.isArray(event.metadata.args)) {
-      return event.metadata.args;
+    if (event["metadata"]?.["args"] && Array.isArray(event["metadata"]?.["args"])) {
+      return event["metadata"]?.["args"];
     }
 
     // Fallback to event object itself
@@ -303,7 +300,7 @@ export class EventEmitterMigrationHelper {
    */
   async createCompatibleEventEmitter(
     managerName: string,
-    managerType: EventManagerType = EventManagerTypes.SYSTEM,
+    managerType: EventManagerType = EventManagerTypes["SYSTEM"],
     options?: {
       enableUEL?: boolean;
       migrationMode?: 'disabled' | 'passive' | 'active';
@@ -318,14 +315,14 @@ export class EventEmitterMigrationHelper {
 
     // Create compatible EventEmitter
     const eventEmitter = new UELCompatibleEventEmitter({
-      enableUEL: options?.enableUEL ?? true,
+      enableUEL: options?.["enableUEL"] ?? true,
       uelManager,
-      migrationMode: options?.migrationMode ?? 'passive',
+      migrationMode: options?.["migrationMode"] ?? 'passive',
       logger: this.logger,
     });
 
     // Auto-migrate if requested
-    if (options?.autoMigrate) {
+    if (options?.["autoMigrate"]) {
       await eventEmitter.enableUEL(uelManager, {
         migrateExistingListeners: true,
         preserveEventEmitterBehavior: true,
@@ -346,7 +343,7 @@ export class EventEmitterMigrationHelper {
   async wrapEventEmitter(
     originalEmitter: EventEmitter,
     managerName: string,
-    managerType: EventManagerType = EventManagerTypes.SYSTEM
+    managerType: EventManagerType = EventManagerTypes["SYSTEM"]
   ): Promise<UELCompatibleEventEmitter> {
     try {
       this.migrationStats.scanned++;
@@ -596,7 +593,7 @@ export class CompatibilityFactory {
    */
   async createEnhancedEventEmitter(
     name: string,
-    type: EventManagerType = EventManagerTypes.SYSTEM,
+    type: EventManagerType = EventManagerTypes["SYSTEM"],
     options?: {
       enableUEL?: boolean;
       migrationMode?: 'disabled' | 'passive' | 'active';
@@ -619,7 +616,7 @@ export class CompatibilityFactory {
   async wrapExistingEmitter(
     emitter: EventEmitter,
     name: string,
-    type: EventManagerType = EventManagerTypes.SYSTEM
+    type: EventManagerType = EventManagerTypes["SYSTEM"]
   ): Promise<UELCompatibleEventEmitter> {
     if (!this.migrationHelper) {
       throw new Error('CompatibilityFactory not initialized');
@@ -649,7 +646,7 @@ export class CompatibilityFactory {
  */
 export async function createCompatibleEventEmitter(
   name: string,
-  type: EventManagerType = EventManagerTypes.SYSTEM,
+  type: EventManagerType = EventManagerTypes["SYSTEM"],
   eventManager?: EventManager
 ): Promise<UELCompatibleEventEmitter> {
   const factory = CompatibilityFactory.getInstance();
@@ -675,7 +672,7 @@ export async function createCompatibleEventEmitter(
 export async function wrapWithUEL(
   emitter: EventEmitter,
   name: string,
-  type: EventManagerType = EventManagerTypes.SYSTEM,
+  type: EventManagerType = EventManagerTypes["SYSTEM"],
   eventManager?: EventManager
 ): Promise<UELCompatibleEventEmitter> {
   const factory = CompatibilityFactory.getInstance();

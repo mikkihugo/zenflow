@@ -8,21 +8,7 @@
  * @file TypeScript API client with full type safety
  */
 
-import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
-import type {
-  Agent,
-  HealthStatus,
-  PerformanceMetrics,
-  SwarmConfig,
-  Task,
-} from '../../../coordination/schemas';
-import type { APIError } from './schemas/common';
-import type {
-  NeuralNetwork,
-  PredictionRequest,
-  PredictionResponse,
-  TrainingRequest,
-} from './schemas/neural';
+import axios from 'axios';
 import { getMCPServerURL } from '../../../config/url-builder';
 
 /**
@@ -106,7 +92,7 @@ export class APIClient {
       client.defaults.headers.common['X-API-Key'] = this.config.apiKey;
     }
     if (this.config.bearerToken) {
-      client.defaults.headers.common.Authorization = `Bearer ${this.config.bearerToken}`;
+      client.defaults.headers.common["Authorization"] = `Bearer ${this.config.bearerToken}`;
     }
 
     // Add retry logic
@@ -129,11 +115,11 @@ export class APIClient {
       async (error) => {
         const config = error.config;
 
-        if (!config || config.__retryCount >= (this.config.retryAttempts || 3)) {
+        if (!config || config?.["__retryCount"] >= (this.config.retryAttempts || 3)) {
           return Promise.reject(error);
         }
 
-        config.__retryCount = (config.__retryCount || 0) + 1;
+        config?.["__retryCount"] = (config?.["__retryCount"] || 0) + 1;
 
         // Only retry on network errors or 5xx status codes
         if (
@@ -194,12 +180,12 @@ export class APIClient {
       method,
       url: endpoint,
       data,
-      timeout: options?.timeout,
-      headers: options?.headers,
+      timeout: options?.["timeout"],
+      headers: options?.["headers"],
     };
 
     const response: AxiosResponse<T> = await this.http.request(config);
-    return response.data;
+    return response?.data;
   }
 
   // ===== COORDINATION API METHODS =====
@@ -228,10 +214,10 @@ export class APIClient {
       options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
-      if (params?.status) queryParams.set('status', params.status);
-      if (params?.type) queryParams.set('type', params.type);
-      if (params?.limit) queryParams.set('limit', params.limit.toString());
-      if (params?.offset) queryParams.set('offset', params.offset.toString());
+      if (params?.["status"]) queryParams?.set('status', params?.["status"]);
+      if (params?.["type"]) queryParams?.set('type', params?.type);
+      if (params?.["limit"]) queryParams?.set('limit', params?.["limit"].toString());
+      if (params?.["offset"]) queryParams?.set('offset', params?.["offset"].toString());
 
       return this.request<{
         agents: Agent[];
@@ -393,8 +379,8 @@ export class APIClient {
       options?: RequestOptions
     ) => {
       const queryParams = new URLSearchParams();
-      if (params?.type) queryParams.set('type', params.type);
-      if (params?.status) queryParams.set('status', params.status);
+      if (params?.["type"]) queryParams?.set('type', params?.type);
+      if (params?.["status"]) queryParams?.set('status', params?.["status"]);
 
       return this.request<{
         networks: NeuralNetwork[];

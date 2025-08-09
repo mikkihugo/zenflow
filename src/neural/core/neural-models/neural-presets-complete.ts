@@ -3,7 +3,7 @@
  * Complete collection of neural network presets and utilities
  */
 
-export interface CompletePreset {
+export interface Preset {
   id: string;
   architecture: string;
   layers?: number[] | number; // Some presets use numeric layer count instead of array
@@ -418,7 +418,7 @@ export class NeuralAdaptationEngine {
     });
 
     this.performanceHistory.push({
-      performance: adaptationResult.performance || adaptationResult,
+      performance: adaptationResult?.performance || adaptationResult,
       timestamp: new Date(),
     });
 

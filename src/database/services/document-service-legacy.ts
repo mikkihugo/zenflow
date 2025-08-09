@@ -10,21 +10,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import type { DocumentType } from '../../types/workflow-types';
-import type {
-  ADRDocumentEntity,
-  BaseDocumentEntity,
-  DocumentRelationshipEntity,
-  DocumentWorkflowStateEntity,
-  EpicDocumentEntity,
-  FeatureDocumentEntity,
-  PRDDocumentEntity,
-  ProjectEntity,
-  TaskDocumentEntity,
-  VisionDocumentEntity,
-} from '../entities/document-entities';
 import { createDao } from '../index';
-import type { DatabaseQuery, IRepository } from '../interfaces';
 
 export interface DocumentCreateOptions {
   autoGenerateRelationships?: boolean;
@@ -119,17 +105,17 @@ export class DocumentService {
     const created = await this.documentRepository.create(fullDocument as any);
 
     // Auto-generate relationships if requested
-    if (options.autoGenerateRelationships) {
+    if (options?.["autoGenerateRelationships"]) {
       await this.generateDocumentRelationships(created as T);
     }
 
     // Start workflow if specified
-    if (options.startWorkflow) {
-      await this.startDocumentWorkflow(id, options.startWorkflow);
+    if (options?.["startWorkflow"]) {
+      await this.startDocumentWorkflow(id, options?.["startWorkflow"]);
     }
 
     // Generate search index
-    if (options.generateSearchIndex !== false) {
+    if (options?.["generateSearchIndex"] !== false) {
       await this.generateSearchIndex(created as T);
     }
 
@@ -152,7 +138,7 @@ export class DocumentService {
       parameters: {
         collection: 'documents',
         filter: { id },
-        includeContent: options.includeContent !== false,
+        includeContent: options?.["includeContent"] !== false,
       },
       requirements: {
         consistency: 'eventual',
@@ -167,19 +153,19 @@ export class DocumentService {
 
     const result = await this.coordinator.executeQuery(query);
 
-    if (!result.result?.documents?.length) {
+    if (!result?.result?.documents?.length) {
       return null;
     }
 
-    const document: any = this.deserializeDocument<T>(result.result.documents[0]);
+    const document: any = this.deserializeDocument<T>(result?.result?.documents?.[0]);
 
     // Load relationships if requested
-    if (options.includeRelationships) {
+    if (options?.["includeRelationships"]) {
       document.relationships = await this.getDocumentRelationships(id);
     }
 
     // Load workflow state if requested
-    if (options.includeWorkflowState) {
+    if (options?.["includeWorkflowState"]) {
       document.workflowState = await this.getDocumentWorkflowState(id);
     }
 
@@ -238,7 +224,7 @@ export class DocumentService {
     }
 
     // Update relationships if content significantly changed
-    if (options.autoGenerateRelationships && updates.content) {
+    if (options?.["autoGenerateRelationships"] && updates.content) {
       await this.updateDocumentRelationships(updatedDocument);
     }
 
@@ -322,12 +308,12 @@ export class DocumentService {
         collection: 'documents',
         filter: this.buildQueryFilter(filters),
         options: {
-          limit: options.limit || 50,
-          offset: options.offset || 0,
+          limit: options?.["limit"] || 50,
+          offset: options?.["offset"] || 0,
           sort: {
-            [options.sortBy || 'updated_at']: options.sortOrder || 'desc',
+            [options?.["sortBy"] || 'updated_at']: options?.["sortOrder"] || 'desc',
           },
-          includeContent: options.includeContent !== false,
+          includeContent: options?.["includeContent"] !== false,
         },
       },
       requirements: {
@@ -343,12 +329,12 @@ export class DocumentService {
 
     const result = await this.coordinator.executeQuery(query);
     const documents =
-      result.result?.documents?.map((doc: any) => this.deserializeDocument<T>(doc)) || [];
+      result?.result?.documents?.map((doc: any) => this.deserializeDocument<T>(doc)) || [];
 
     return {
       documents,
-      total: result.result?.total || documents.length,
-      hasMore: (options.offset || 0) + documents.length < (result.result?.total || 0),
+      total: result?.result?.total || documents.length,
+      hasMore: (options?.["offset"] || 0) + documents.length < (result?.result?.total || 0),
     };
   }
 
@@ -374,7 +360,7 @@ export class DocumentService {
 
     let query: DatabaseQuery;
 
-    switch (searchOptions.searchType) {
+    switch (searchOptions?.searchType) {
       case 'fulltext':
         query = this.buildFullTextSearchQuery(searchOptions);
         break;
@@ -390,19 +376,19 @@ export class DocumentService {
 
     const result = await this.coordinator.executeQuery(query);
     const documents =
-      result.result?.documents?.map((doc: any) => this.deserializeDocument<T>(doc)) || [];
+      result?.result?.documents?.map((doc: any) => this.deserializeDocument<T>(doc)) || [];
 
     const processingTime = Date.now() - startTime;
 
     return {
       documents,
-      total: result.result?.total || documents.length,
-      hasMore: (searchOptions.offset || 0) + documents.length < (result.result?.total || 0),
+      total: result?.result?.total || documents.length,
+      hasMore: (searchOptions?.offset || 0) + documents.length < (result?.result?.total || 0),
       searchMetadata: {
-        searchType: searchOptions.searchType,
-        query: searchOptions.query,
+        searchType: searchOptions?.searchType,
+        query: searchOptions?.query,
         processingTime,
-        relevanceScores: result.result?.relevanceScores,
+        relevanceScores: result?.result?.relevanceScores,
       },
     };
   }
@@ -486,11 +472,11 @@ export class DocumentService {
 
     const projectResult = await this.coordinator.executeQuery(projectQuery);
 
-    if (!projectResult.result?.documents?.length) {
+    if (!projectResult?.result?.documents?.length) {
       return null;
     }
 
-    const project = projectResult.result.documents[0] as ProjectEntity;
+    const project = projectResult?.result?.documents?.[0] as ProjectEntity;
 
     // Get all project documents
     const { documents } = await this.queryDocuments(
@@ -587,11 +573,11 @@ export class DocumentService {
     const updatedState: DocumentWorkflowStateEntity = {
       ...existing,
       current_stage: nextStage,
-      stages_completed: [...existing.stages_completed, existing.current_stage],
+      stages_completed: [...existing["stages_completed"], existing["current_stage"]],
       updated_at: new Date(),
       workflow_results: results
-        ? { ...existing.workflow_results, ...results }
-        : existing.workflow_results,
+        ? { ...existing["workflow_results"], ...results }
+        : existing["workflow_results"],
     } as DocumentWorkflowStateEntity;
 
     const updateQuery: DatabaseQuery = {
@@ -622,7 +608,7 @@ export class DocumentService {
       ...document,
       tags: JSON.stringify(document.tags),
       dependencies: JSON.stringify(document.dependencies),
-      related_documents: JSON.stringify(document.related_documents),
+      related_documents: JSON.stringify(document["related_documents"]),
       keywords: JSON.stringify(document.keywords),
     };
   }
@@ -630,12 +616,12 @@ export class DocumentService {
   private deserializeDocument<T extends BaseDocumentEntity>(data: any): T {
     return {
       ...data,
-      tags: JSON.parse(data.tags || '[]'),
-      dependencies: JSON.parse(data.dependencies || '[]'),
-      related_documents: JSON.parse(data.related_documents || '[]'),
-      keywords: JSON.parse(data.keywords || '[]'),
-      created_at: new Date(data.created_at),
-      updated_at: new Date(data.updated_at),
+      tags: JSON.parse(data?.["tags"] || '[]'),
+      dependencies: JSON.parse(data?.["dependencies"] || '[]'),
+      related_documents: JSON.parse(data?.["related_documents"] || '[]'),
+      keywords: JSON.parse(data?.["keywords"] || '[]'),
+      created_at: new Date(data?.["created_at"]),
+      updated_at: new Date(data?.["updated_at"]),
     } as T;
   }
 
@@ -656,7 +642,7 @@ export class DocumentService {
     }
 
     if (filters.projectId) {
-      filter.project_id = filters.projectId;
+      filter["project_id"] = filters.projectId;
     }
 
     if (filters.status) {
@@ -678,11 +664,11 @@ export class DocumentService {
       operation: 'fulltext_search',
       parameters: {
         collection: 'documents',
-        query: options.query,
+        query: options?.["query"],
         fields: ['title', 'content', 'searchable_content'],
         filters: this.buildSearchFilters(options),
-        limit: options.limit || 20,
-        offset: options.offset || 0,
+        limit: options?.["limit"] || 20,
+        offset: options?.["offset"] || 0,
       },
       requirements: {
         consistency: 'eventual',
@@ -703,8 +689,8 @@ export class DocumentService {
       operation: 'vector_search',
       parameters: {
         collection: 'document_search_index',
-        vector: this.encodeSearchQuery(options.query), // Would use embedding service
-        limit: options.limit || 20,
+        vector: this.encodeSearchQuery(options?.["query"]), // Would use embedding service
+        limit: options?.["limit"] || 20,
         filters: this.buildSearchFilters(options),
       },
       requirements: {
@@ -726,10 +712,10 @@ export class DocumentService {
       operation: 'keyword_search',
       parameters: {
         collection: 'document_search_index',
-        keywords: options.query.split(' '),
+        keywords: options?.["query"]?.["split"](' '),
         filters: this.buildSearchFilters(options),
-        limit: options.limit || 20,
-        offset: options.offset || 0,
+        limit: options?.["limit"] || 20,
+        offset: options?.["offset"] || 0,
       },
       requirements: {
         consistency: 'eventual',
@@ -749,13 +735,13 @@ export class DocumentService {
       operation: 'hybrid_search',
       parameters: {
         collection: 'documents',
-        textQuery: options.query,
-        vectorQuery: this.encodeSearchQuery(options.query),
-        keywordQuery: options.query.split(' '),
+        textQuery: options?.["query"],
+        vectorQuery: this.encodeSearchQuery(options?.["query"]),
+        keywordQuery: options?.["query"]?.["split"](' '),
         weights: { text: 0.4, vector: 0.4, keyword: 0.2 },
         filters: this.buildSearchFilters(options),
-        limit: options.limit || 20,
-        offset: options.offset || 0,
+        limit: options?.["limit"] || 20,
+        offset: options?.["offset"] || 0,
       },
       requirements: {
         consistency: 'eventual',
@@ -773,26 +759,26 @@ export class DocumentService {
   private buildSearchFilters(options: DocumentSearchOptions): any {
     const filters: any = {};
 
-    if (options.documentTypes?.length) {
-      filters.document_type = { $in: options.documentTypes };
+    if (options?.["documentTypes"]?.["length"]) {
+      filters["document_type"] = { $in: options?.["documentTypes"] };
     }
 
-    if (options.projectId) {
-      filters.project_id = options.projectId;
+    if (options?.["projectId"]) {
+      filters["project_id"] = options?.["projectId"];
     }
 
-    if (options.status?.length) {
-      filters.status = { $in: options.status };
+    if (options?.["status"]?.["length"]) {
+      filters.status = { $in: options?.["status"] };
     }
 
-    if (options.priority?.length) {
-      filters.priority = { $in: options.priority };
+    if (options?.["priority"]?.["length"]) {
+      filters.priority = { $in: options?.["priority"] };
     }
 
-    if (options.dateRange) {
-      filters[options.dateRange.field] = {
-        $gte: options.dateRange.start,
-        $lte: options.dateRange.end,
+    if (options?.["dateRange"]) {
+      filters[options?.["dateRange"]?.["field"]] = {
+        $gte: options?.["dateRange"]?.["start"],
+        $lte: options?.["dateRange"]?.["end"],
       };
     }
 

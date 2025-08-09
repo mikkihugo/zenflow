@@ -1,15 +1,4 @@
 /**
- * Product Flow Entities - Clean Naming and Proper SPARC Integration
- *
- * MISSION ACCOMPLISHED: Renamed from document-entities.ts to product-entities.ts
- * - Clean Product Flow naming throughout (no generic "document" terminology)
- * - Proper SPARC integration in Features and Tasks
- * - Clear separation: Product Flow = WHAT, SPARC = HOW
- */
-
-import type { DocumentType } from '../../types/workflow-types';
-
-/**
  * Base entity for all Product Flow documents
  *
  * @example

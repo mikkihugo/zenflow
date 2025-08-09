@@ -9,7 +9,6 @@
 import { jest } from '@jest/globals';
 import { BaseCommand } from '../../../../cli/core/base-command';
 import { CommandRegistry } from '../../../../cli/core/command-registry';
-import type { CommandContext, CommandMetadata, CommandResult } from '../../../../cli/types/index';
 
 // Mock BaseCommand for testing
 class MockCommand extends BaseCommand {
@@ -193,7 +192,7 @@ describe('CommandRegistry - TDD London', () => {
         expect.arrayContaining(['status', 'init'])
       );
       expect(utilityCommands).toHaveLength(1);
-      expect(utilityCommands[0].config.name).toBe('deploy');
+      expect(utilityCommands[0]?.config?.name).toBe('deploy');
     });
 
     it('should search commands by name and description', () => {
@@ -204,13 +203,13 @@ describe('CommandRegistry - TDD London', () => {
 
       // Assert - verify search behavior
       expect(statusResults).toHaveLength(1);
-      expect(statusResults[0].config.name).toBe('status');
+      expect(statusResults?.[0]?.config?.name).toBe('status');
 
       expect(initResults).toHaveLength(1);
-      expect(initResults[0].config.name).toBe('init');
+      expect(initResults?.[0]?.config?.name).toBe('init');
 
       expect(deployResults).toHaveLength(1);
-      expect(deployResults[0].config.name).toBe('deploy');
+      expect(deployResults?.[0]?.config?.name).toBe('deploy');
     });
 
     it('should list all commands in alphabetical order', () => {

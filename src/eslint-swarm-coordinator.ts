@@ -1,6 +1,4 @@
-#!/usr/bin/env node
-
-/**
+#!/usr/bin/env node/**
  * @file ESLint Swarm Coordinator - Main Entry Point.
  *
  * Coordinates multiple specialized agents for efficient ESLint violation fixing
@@ -9,9 +7,8 @@
  * @version 2.0.0-alpha.73
  */
 
-import { type ChildProcess, execSync, spawn } from 'child_process';
+import { execSync, spawn } from 'child_process';
 import { EventEmitter } from 'events';
-import fs from 'fs';
 import path from 'path';
 import { getConsoleReplacementLogger } from './config/logging-config';
 
@@ -129,7 +126,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
     this.logger.info('🐝 Initializing ESLint Swarm Coordinator with Extended Timeouts');
     this.logger.info('='.repeat(80));
     this.logger.info(
-      `⏱️  Extended timeouts: Claude inactivity ${EXTENDED_TIMEOUTS.CLAUDE_INACTIVITY / 60000}min, Max total ${EXTENDED_TIMEOUTS.CLAUDE_MAX_TOTAL / 60000}min`
+      `⏱️  Extended timeouts: Claude inactivity ${EXTENDED_TIMEOUTS["CLAUDE_INACTIVITY"] / 60000}min, Max total ${EXTENDED_TIMEOUTS["CLAUDE_MAX_TOTAL"] / 60000}min`
     );
     this.logger.info('');
 
@@ -219,9 +216,9 @@ export class ESLintSwarmCoordinator extends EventEmitter {
       Object.entries(distribution).forEach(([agentType, data]) => {
         const agent = AGENT_SPECIALISTS[agentType];
         this.logger.info(
-          `  ${agent.color}${agent.name}\x1b[0m: ${data.count} violations (Priority ${agent.priority})`
+          `  ${agent.color}${agent.name}\x1b[0m: ${data["count"]} violations (Priority ${agent.priority})`
         );
-        this.agentStats.get(agentType)!.violations = data.violations;
+        this.agentStats.get(agentType)!.violations = data["violations"];
       });
 
       return distribution;
@@ -270,7 +267,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
     agentType: string,
     config: AgentConfig
   ): Promise<void> {
-    this.logger.info(`${config.color}🤖 Launching ${config.name} with extended timeouts...\x1b[0m`);
+    this.logger.info(`${config["color"]}🤖 Launching ${config.name} with extended timeouts...\x1b[0m`);
 
     const agentStats = this.agentStats.get(agentType)!;
     agentStats.status = 'launching';
@@ -278,7 +275,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
 
     const violations = agentStats.violations || [];
     if (violations.length === 0) {
-      this.logger.warn(`  ${config.color}⚠️ No violations assigned to ${config.name}\x1b[0m`);
+      this.logger.warn(`  ${config["color"]}⚠️ No violations assigned to ${config.name}\x1b[0m`);
       agentStats.status = 'completed';
       return;
     }
@@ -291,7 +288,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
       config,
       startTime: Date.now(),
       lastActivity: Date.now(),
-      violations: violations.slice(0, config.batchSize * 3), // Process 3 batches worth
+      violations: violations.slice(0, config["batchSize"] * 3), // Process 3 batches worth
       inactivityTimeout: null,
       maxTimeout: null,
     };
@@ -367,11 +364,11 @@ export class ESLintSwarmCoordinator extends EventEmitter {
         this.logger.warn('Agent inactive timeout reached, terminating', {
           agent: config.name,
           agentType,
-          timeoutMinutes: EXTENDED_TIMEOUTS.CLAUDE_INACTIVITY / 60000
+          timeoutMinutes: EXTENDED_TIMEOUTS["CLAUDE_INACTIVITY"] / 60000
         });
         agentProcess.process.kill('SIGTERM');
         this.handleAgentTimeout(agentType, 'inactivity');
-      }, EXTENDED_TIMEOUTS.CLAUDE_INACTIVITY);
+      }, EXTENDED_TIMEOUTS["CLAUDE_INACTIVITY"]);
     };
 
     // Absolute maximum timeout (never resets)
@@ -381,11 +378,11 @@ export class ESLintSwarmCoordinator extends EventEmitter {
         agent: config.name,
         agentType,
         durationMinutes: parseFloat(duration.toFixed(1)),
-        maxTimeoutMinutes: EXTENDED_TIMEOUTS.CLAUDE_MAX_TOTAL / 60000
+        maxTimeoutMinutes: EXTENDED_TIMEOUTS["CLAUDE_MAX_TOTAL"] / 60000
       });
       agentProcess.process.kill('SIGTERM');
       this.handleAgentTimeout(agentType, 'maximum');
-    }, EXTENDED_TIMEOUTS.CLAUDE_MAX_TOTAL);
+    }, EXTENDED_TIMEOUTS["CLAUDE_MAX_TOTAL"]);
 
     // Start inactivity monitoring
     resetInactivityTimeout();
@@ -511,12 +508,12 @@ export class ESLintSwarmCoordinator extends EventEmitter {
    */
   private startEnhancedProgressMonitoring(): void {
     this.logger.info('Starting enhanced real-time progress monitoring', {
-      updateInterval: EXTENDED_TIMEOUTS.PROGRESS_UPDATE
+      updateInterval: EXTENDED_TIMEOUTS["PROGRESS_UPDATE"]
     });
 
     this.progressInterval = setInterval(() => {
       this.displayEnhancedProgressDashboard();
-    }, EXTENDED_TIMEOUTS.PROGRESS_UPDATE);
+    }, EXTENDED_TIMEOUTS["PROGRESS_UPDATE"]);
 
     // Additional detailed monitoring every 30 seconds
     setInterval(() => {
@@ -542,7 +539,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
       `⏱️  Runtime: ${Math.floor(elapsed / 60)}m ${elapsed % 60}s | 📈 Progress: ${progress}% (${this.processedViolations}/${this.totalViolations})`
     );
     logger.info(
-      `🌡️  Extended Timeouts: Inactivity ${EXTENDED_TIMEOUTS.CLAUDE_INACTIVITY / 60000}min | Max ${EXTENDED_TIMEOUTS.CLAUDE_MAX_TOTAL / 60000}min`
+      `🌡️  Extended Timeouts: Inactivity ${EXTENDED_TIMEOUTS["CLAUDE_INACTIVITY"] / 60000}min | Max ${EXTENDED_TIMEOUTS["CLAUDE_MAX_TOTAL"] / 60000}min`
     );
     logger.info('');
 
@@ -564,7 +561,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
             ? '🟡 Recent'
             : '⭕ Inactive';
 
-      logger.info(`${config.color}${statusIcon} ${config.name.padEnd(30)}\x1b[0m | ` +
+      logger.info(`${config["color"]}${statusIcon} ${config.name["padEnd"](30)}\x1b[0m | ` +
         `P:${stats.processed.toString().padStart(3)} F:${stats.fixed.toString().padStart(3)} ` +
         `Rate:${successRate.toString().padStart(3)}% | ${activityStatus} (${timeSinceActivity}s ago)`);
     }
@@ -588,7 +585,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
         const config = agent.config;
         const runtime = Math.round((Date.now() - agent.startTime) / 1000);
         logger.info(
-          `  ${config.color}${config.name}\x1b[0m (PID: ${agent.process.pid}) - Running ${runtime}s`
+          `  ${config["color"]}${config.name}\x1b[0m (PID: ${agent.process.pid}) - Running ${runtime}s`
         );
       });
     }
@@ -617,7 +614,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
     };
 
     const violationSummary = violations
-      .slice(0, config.batchSize)
+      .slice(0, config["batchSize"])
       .map(
         (v) =>
           `- ${path.relative(process.cwd(), v.file)}:${v.line}:${v.column} - ${v.rule}: ${v.message}`
@@ -628,13 +625,13 @@ export class ESLintSwarmCoordinator extends EventEmitter {
 
 🎯 **MISSION**: Fix ${violations.length} ESLint violations in batch processing mode
 
-**Your Specialized Rules**: ${config.rules.join(', ')}
+**Your Specialized Rules**: ${config["rules"].join(', ')}
 
 **Extended Operation Guidelines**:
-- Process violations in batches of ${config.batchSize} for efficiency
+- Process violations in batches of ${config["batchSize"]} for efficiency
 - Use Edit tool for direct file modifications
 - Provide progress updates after each file
-- Take your time - extended timeouts are configured (${EXTENDED_TIMEOUTS.CLAUDE_INACTIVITY / 60000} min inactivity, ${EXTENDED_TIMEOUTS.CLAUDE_MAX_TOTAL / 60000} min total)
+- Take your time - extended timeouts are configured (${EXTENDED_TIMEOUTS["CLAUDE_INACTIVITY"] / 60000} min inactivity, ${EXTENDED_TIMEOUTS["CLAUDE_MAX_TOTAL"] / 60000} min total)
 - Stream your thought process for real-time monitoring
 
 **Priority Violations to Fix**:
@@ -658,11 +655,11 @@ Begin processing now with real-time progress updates.`;
         for (const message of file.messages) {
           violations.push({
             file: file?.filePath || 'unknown',
-            rule: message.ruleId || 'unknown',
-            message: message.message,
-            line: message.line,
-            column: message.column,
-            severity: message.severity === 2 ? 'error' : 'warning',
+            rule: message["ruleId"] || 'unknown',
+            message: message["message"],
+            line: message["line"],
+            column: message["column"],
+            severity: message["severity"] === 2 ? 'error' : 'warning',
           });
         }
       }
@@ -684,7 +681,7 @@ Begin processing now with real-time progress updates.`;
       let assigned = false;
 
       for (const [agentType, config] of Object.entries(AGENT_SPECIALISTS)) {
-        if (config.rules.some((rule) => violation.rule.includes(rule))) {
+        if (config["rules"]["some"]((rule) => violation.rule.includes(rule))) {
           distribution[agentType].violations.push(violation);
           distribution[agentType].count++;
           assigned = true;
@@ -775,7 +772,7 @@ Begin processing now with real-time progress updates.`;
       const agentSuccessRate =
         stats.processed > 0 ? Math.round((stats.fixed / stats.processed) * 100) : 0;
 
-      logger.info(`${config.color}${config.name}\x1b[0m:`);
+      logger.info(`${config["color"]}${config.name}\x1b[0m:`);
       logger.info(
         `  Processed: ${stats.processed} | Fixed: ${stats.fixed} | Success: ${agentSuccessRate}%`
       );

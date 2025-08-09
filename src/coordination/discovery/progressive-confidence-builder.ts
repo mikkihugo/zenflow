@@ -6,10 +6,7 @@
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from '@core/logger';
-import type { AGUIInterface } from '@interfaces/agui/agui-adapter';
-import type { SessionMemoryStore } from '@memory/memory';
-import { getHiveFACT, type HiveFACTSystem } from '../hive-fact-integration';
-import type { DiscoveredDomain, DomainDiscoveryBridge } from './domain-discovery-bridge';
+import { getHiveFACT } from '../hive-fact-integration';
 
 const logger = createLogger({ prefix: 'ProgressiveConfidence' });
 
@@ -425,10 +422,9 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
     const response = await this.agui.askQuestion(importQuestion);
 
-    if (response && response.toLowerCase() !== 'skip') {
+    if (response && response?.toLowerCase() !== 'skip') {
       // Parse document paths
-      const paths = response
-        .split(/[,\n]/)
+      const paths = response?.split(/[,\n]/)
         .map((p) => p.trim())
         .filter((p) => p);
 
@@ -481,7 +477,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
 
       for (let i = 0; i < batch.length; i++) {
         const question = batch[i];
-        const response = responses[i];
+        const response = responses?.[i];
 
         this.totalQuestionsAsked++;
 
@@ -814,7 +810,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     };
 
     this.learningHistory.push(event);
-    this.confidence = event.confidenceAfter;
+    this.confidence = event["confidenceAfter"];
   }
 
   private async analyzeDocument(_path: string): Promise<any> {
@@ -902,8 +898,8 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
   ): number {
     const positiveResponses = ['yes', 'correct', 'approve', 'continue'];
     const negativeResponses = ['no', 'incorrect', 'wrong', 'adjust'];
-    const isPositive = positiveResponses.some((r) => response.toLowerCase().includes(r));
-    const isNegative = negativeResponses.some((r) => response.toLowerCase().includes(r));
+    const isPositive = positiveResponses?.some((r) => response?.toLowerCase().includes(r));
+    const isNegative = negativeResponses?.some((r) => response?.toLowerCase().includes(r));
 
     let impact = 0.0;
 
@@ -1146,7 +1142,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     // Recalculate confidence based on historical events
     let confidence = 0.0;
     for (const event of this.learningHistory) {
-      confidence = event.confidenceAfter;
+      confidence = event["confidenceAfter"];
     }
     this.confidence = confidence;
   }

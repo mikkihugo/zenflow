@@ -33,7 +33,7 @@ export interface Config {
  *
  * @example
  */
-export interface CoreConfig extends Config {}
+export interface Config extends Config {}
 
 /**
  * Interface-specific configuration.

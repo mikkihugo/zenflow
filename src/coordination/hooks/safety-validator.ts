@@ -3,14 +3,7 @@
  * Validates potentially dangerous commands and operations, providing safer alternatives
  */
 
-import type {
-  FileOperation,
-  Operation,
-  RiskLevel,
-  SafetyValidator,
-  SecurityRisk,
-  ValidationResult,
-} from './hook-system-core';
+import type { SafetyValidator } from './hook-system-core';
 
 export class BashSafetyValidator implements SafetyValidator {
   private readonly DANGEROUS_PATTERNS: Array<{
@@ -224,7 +217,7 @@ export class BashSafetyValidator implements SafetyValidator {
     const alternatives: string[] = [];
 
     // Check for high-risk commands
-    for (const riskCmd of this.HIGH_RISK_COMMANDS) {
+    for (const riskCmd of this["HIGH_RISK_COMMANDS"]) {
       if (command.includes(riskCmd.command)) {
         alternatives.push(...riskCmd.alternatives);
       }
@@ -269,7 +262,7 @@ export class BashSafetyValidator implements SafetyValidator {
   async assessRiskLevel(operation: Operation): Promise<RiskLevel> {
     if (operation.command) {
       const result = await this.validateCommand(operation.command);
-      return result.riskLevel;
+      return result?.riskLevel;
     }
 
     if (operation.filePath) {
@@ -279,7 +272,7 @@ export class BashSafetyValidator implements SafetyValidator {
         content: operation.parameters['content'] as string,
       };
       const result = await this.validateFileOperation(fileOp);
-      return result.riskLevel;
+      return result?.riskLevel;
     }
 
     return 'LOW';
@@ -289,7 +282,7 @@ export class BashSafetyValidator implements SafetyValidator {
     const risks: SecurityRisk[] = [];
 
     // Check against dangerous patterns
-    for (const { pattern, type, severity, description, mitigation } of this.DANGEROUS_PATTERNS) {
+    for (const { pattern, type, severity, description, mitigation } of this["DANGEROUS_PATTERNS"]) {
       if (pattern.test(command)) {
         risks.push({
           type,
@@ -302,7 +295,7 @@ export class BashSafetyValidator implements SafetyValidator {
     }
 
     // Check for high-risk commands
-    for (const { command: riskCmd, description } of this.HIGH_RISK_COMMANDS) {
+    for (const { command: riskCmd, description } of this["HIGH_RISK_COMMANDS"]) {
       if (command.includes(riskCmd)) {
         risks.push({
           type: 'HIGH_RISK_COMMAND',
@@ -315,7 +308,7 @@ export class BashSafetyValidator implements SafetyValidator {
     }
 
     // Check for suspicious paths
-    for (const suspiciousPath of this.SUSPICIOUS_PATHS) {
+    for (const suspiciousPath of this["SUSPICIOUS_PATHS"]) {
       if (command.includes(suspiciousPath)) {
         risks.push({
           type: 'SUSPICIOUS_PATH',
@@ -333,7 +326,7 @@ export class BashSafetyValidator implements SafetyValidator {
     const risks: SecurityRisk[] = [];
 
     // Check for suspicious paths
-    for (const suspiciousPath of this.SUSPICIOUS_PATHS) {
+    for (const suspiciousPath of this["SUSPICIOUS_PATHS"]) {
       if (operation.path.startsWith(suspiciousPath)) {
         risks.push({
           type: 'SENSITIVE_PATH_ACCESS',
@@ -413,7 +406,7 @@ export class FileOperationValidator {
 
     // Check for restricted file extensions
     const extension = path.split('.').pop()?.toLowerCase();
-    if (extension && this.RESTRICTED_EXTENSIONS.includes(`.${extension}`)) {
+    if (extension && this["RESTRICTED_EXTENSIONS"]?.includes(`.${extension}`)) {
       risks.push({
         type: 'RESTRICTED_EXTENSION',
         severity: 'HIGH',
@@ -424,7 +417,7 @@ export class FileOperationValidator {
 
     // Check for sensitive filenames
     const filename = path.split('/').pop()?.toLowerCase();
-    if (filename && this.SENSITIVE_FILENAMES.includes(filename)) {
+    if (filename && this["SENSITIVE_FILENAMES"]?.includes(filename)) {
       risks.push({
         type: 'SENSITIVE_FILE',
         severity: operation === 'write' ? 'CRITICAL' : 'HIGH',

@@ -8,18 +8,8 @@
 // Using the official dspy.ts npm package instead of custom implementation
 // import { configureLM, default as DSPy, getLM } from 'dspy.ts'; // Not used, using wrapper instead
 import { createLogger } from '../../core/logger';
-import type { SessionMemoryStore } from '../../memory/memory';
-import type { DSPyProgram, DSPyWrapper } from '../../neural/dspy-wrapper';
 // Using the new wrapper architecture instead of direct dspy.ts imports
 import { createDSPyWrapper } from '../../neural/dspy-wrapper';
-import type {
-  DSPyConfig,
-  DSPyExample,
-  DSPyOptimizationConfig,
-  DSPyOptimizationResult,
-} from '../../neural/types/dspy-types';
-import type { AgentType } from '../../types/agent-types';
-import type { SwarmAgent, SwarmCoordinator } from '../swarm/core/swarm-coordinator';
 
 const logger = createLogger({ prefix: 'DSPyAgentIntegration' });
 
@@ -356,8 +346,8 @@ export class DSPyAgentIntegration {
   ): Promise<{ program: any; result: any }> {
     logger.info(`Starting DSPy optimization: ${programName}`, {
       signature,
-      agentTypes: options.agentTypes,
-      coordinationStrategy: options.coordinationStrategy,
+      agentTypes: options?.["agentTypes"],
+      coordinationStrategy: options?.["coordinationStrategy"],
     });
 
     // Use existing swarm coordination for DSPy agents
@@ -365,14 +355,14 @@ export class DSPyAgentIntegration {
       (agent) => agent.status === 'idle'
     );
 
-    if (options.agentTypes) {
+    if (options?.["agentTypes"]) {
       // Filter agents by requested types
       const filteredAgents = availableAgents.filter((agent) =>
-        options.agentTypes?.includes(agent.type as DSPyAgentType)
+        options?.["agentTypes"]?.["includes"](agent.type as DSPyAgentType)
       );
 
       if (filteredAgents.length === 0) {
-        throw new Error(`No available DSPy agents for types: ${options.agentTypes.join(', ')}`);
+        throw new Error(`No available DSPy agents for types: ${options?.["agentTypes"]?.join(', ')}`);
       }
     }
 
@@ -385,7 +375,7 @@ export class DSPyAgentIntegration {
     logger.info(`DSPy optimization completed successfully`, {
       programType: 'DSPyProgram',
       examplesUsed: examples.length,
-      performance: result.performance || 'Not measured',
+      performance: result?.performance || 'Not measured',
     });
 
     return { program, result };
@@ -459,9 +449,9 @@ export class DSPyAgentIntegration {
       canEnhance: true,
       enhancementCapabilities,
       exampleResults: {
-        accuracy: exampleResults.result.accuracy,
-        performance: exampleResults.result.performance,
-        neuralEnhancements: exampleResults.result.swarmCoordination,
+        accuracy: exampleResults?.result?.accuracy,
+        performance: exampleResults?.result?.performance,
+        neuralEnhancements: exampleResults?.result?.swarmCoordination,
       },
     };
   }
@@ -548,18 +538,18 @@ export class DSPyAgentIntegration {
 
       logger.info('DSPy program optimization completed', {
         examplesUsed: examples.length,
-        success: optimizationResult.success,
-        improvement: optimizationResult.metrics.improvementPercent,
+        success: optimizationResult?.success,
+        improvement: optimizationResult?.metrics?.improvementPercent,
       });
 
       return {
         performance: {
-          accuracy: optimizationResult.metrics.finalAccuracy || 0.95,
+          accuracy: optimizationResult?.metrics?.finalAccuracy || 0.95,
           optimizerType: 'wrapper-bootstrap',
           examplesUsed: examples.length,
-          improvement: optimizationResult.metrics.improvementPercent,
+          improvement: optimizationResult?.metrics?.improvementPercent,
         },
-        optimizedProgram: optimizationResult.program,
+        optimizedProgram: optimizationResult?.program,
       };
     } catch (error) {
       logger.error('DSPy optimization failed', {

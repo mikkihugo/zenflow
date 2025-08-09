@@ -100,7 +100,7 @@ export interface DocumentationMetrics {
   missingDocumentation: string[];
 }
 
-export interface MaintainabilityMetrics {
+export interface tainabilityMetrics {
   maintainabilityIndex: number;
   changeFrequency: number;
   bugFixRate: number;

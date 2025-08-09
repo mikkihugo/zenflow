@@ -1,11 +1,3 @@
-/**
- * @file Integration test for Auto-Swarm Factory dependency resolution
- *
- * Tests the integration between discover.ts and auto-swarm factory components
- */
-
-import { jest } from '@jest/globals';
-
 describe('Auto-Swarm Integration', () => {
   it('should be able to import all required swarm components', async () => {
     // Test dynamic imports used in discover.ts

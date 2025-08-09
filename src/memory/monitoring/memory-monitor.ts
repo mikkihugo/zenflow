@@ -4,9 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { BackendInterface } from '../../core/memory-system';
-import type { MemoryCoordinator } from '../core/memory-coordinator';
-import type { PerformanceOptimizer } from '../optimization/performance-optimizer';
 
 export interface MemoryMetrics {
   timestamp: number;
@@ -112,7 +109,7 @@ export class MemoryMonitor extends EventEmitter {
     super();
     this.config = config;
 
-    if (config.enabled) {
+    if (config?.["enabled"]) {
       this.startCollection();
     }
   }
@@ -555,13 +552,13 @@ export class MemoryMonitor extends EventEmitter {
     }
 
     const scores = {
-      latency: Math.max(0, 100 - currentMetrics.averageLatency),
-      errorRate: Math.max(0, 100 - currentMetrics.errorRate * 1000),
-      memory: Math.max(0, 100 - (currentMetrics.totalMemoryUsage / 1000) * 100),
-      cache: currentMetrics.cacheHitRate * 100,
+      latency: Math.max(0, 100 - currentMetrics?.averageLatency),
+      errorRate: Math.max(0, 100 - currentMetrics?.errorRate * 1000),
+      memory: Math.max(0, 100 - (currentMetrics?.totalMemoryUsage / 1000) * 100),
+      cache: currentMetrics?.cacheHitRate * 100,
       nodes:
-        currentMetrics.activeNodes > 0
-          ? (currentMetrics.healthyNodes / currentMetrics.activeNodes) * 100
+        currentMetrics?.activeNodes > 0
+          ? (currentMetrics?.healthyNodes / currentMetrics?.activeNodes) * 100
           : 100,
     };
 

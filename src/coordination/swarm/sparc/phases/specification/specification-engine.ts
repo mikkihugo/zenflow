@@ -10,29 +10,7 @@
 
 import { nanoid } from 'nanoid';
 import { TemplateEngine } from '../../core/template-engine';
-import type {
-  AcceptanceCriterion,
-  ConstraintAnalysis,
-  DetailedSpecification,
-  ExternalDependency,
-  FunctionalRequirement,
-  MitigationStrategy,
-  NonFunctionalRequirement,
-  ProjectAssumption,
-  ProjectContext,
-  ProjectDomain,
-  ProjectRisk,
-  ProjectSpecification,
-  RequirementSet,
-  RiskAnalysis,
-  RiskLevel,
-  SpecificationDocument,
-  SpecificationEngine,
-  SuccessMetric,
-  SystemConstraint,
-  ValidationReport,
-  ValidationResult,
-} from '../../types/sparc-types';
+import type { SpecificationEngine } from '../../types/sparc-types';
 
 export class SpecificationPhaseEngine implements SpecificationEngine {
   private readonly templateEngine: TemplateEngine;
@@ -63,14 +41,14 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       if (!bestMatch) {
         throw new Error(`No suitable template found for domain: ${projectSpec.domain}`);
       }
-      template = bestMatch.template;
+      template = bestMatch?.template;
     }
 
     // Apply template to project
     const result = await this.templateEngine.applyTemplate(template, projectSpec);
 
     // Generate additional specification details
-    const enhancedSpec = await this.enhanceTemplateSpecification(result.specification, projectSpec);
+    const enhancedSpec = await this.enhanceTemplateSpecification(result?.specification, projectSpec);
 
     return enhancedSpec;
   }
@@ -300,8 +278,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     ];
 
     const overallScore =
-      validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
-    const allPassed = validationResults.every((result) => result.passed);
+      validationResults?.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
+    const allPassed = validationResults?.every((result) => result?.passed);
 
     const recommendations = this.generateValidationRecommendations(validationResults);
 
@@ -705,7 +683,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   private extractConstraintsFromAnalysis(analysis: ConstraintAnalysis): SystemConstraint[] {
     return analysis.filter(
       (item): item is SystemConstraint =>
-        'type' in item && ['technical', 'business', 'regulatory', 'performance'].includes(item.type)
+        'type' in item && ['technical', 'business', 'regulatory', 'performance'].includes(item?.type)
     );
   }
 
@@ -741,9 +719,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   private generateValidationRecommendations(results: ValidationResult[]): string[] {
     const recommendations: string[] = [];
 
-    results.forEach((result) => {
-      if (!result.passed) {
-        switch (result.criterion) {
+    results?.forEach((result) => {
+      if (!result?.passed) {
+        switch (result?.criterion) {
           case 'functional-requirements-present':
             recommendations.push('Add detailed functional requirements for all major features');
             break;

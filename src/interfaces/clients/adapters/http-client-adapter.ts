@@ -84,26 +84,14 @@
  */
 
 import { EventEmitter } from 'node:events';
-import axios, {
-  type AxiosError,
-  type AxiosInstance,
-  type AxiosRequestConfig,
-  type AxiosResponse,
-} from 'axios';
-import type {
-  ClientMetrics,
-  ClientResponse,
-  ClientStatus,
-  IClient,
-  RequestOptions,
-} from '../core/interfaces';
+import axios from 'axios';
+import type { IClient } from '../core/interfaces';
 import {
   AuthenticationError,
   ConnectionError,
   RetryExhaustedError,
   TimeoutError,
 } from '../core/interfaces';
-import type { HTTPClientCapabilities, HTTPClientConfig, OAuthCredentials } from './http-types';
 
 /**
  * HTTP Client Adapter implementing UACL IClient interface
@@ -273,17 +261,17 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   constructor(config: HTTPClientConfig) {
     super();
     this.config = { ...config };
-    this.name = config.name;
+    this.name = config?.name;
     this.http = this.createHttpClient();
     this.metrics = this.initializeMetrics();
 
     // Setup monitoring if enabled
-    if (config.monitoring?.enabled) {
+    if (config?.["monitoring"]?.["enabled"]) {
       this.startMonitoring();
     }
 
     // Setup health checks
-    if (config.health) {
+    if (config?.["health"]) {
       this.startHealthChecks();
     }
   }
@@ -334,7 +322,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
     switch (auth.type) {
       case 'bearer':
         if (auth.token) {
-          client.defaults.headers.common.Authorization = `Bearer ${auth.token}`;
+          client.defaults.headers.common["Authorization"] = `Bearer ${auth.token}`;
         }
         break;
 
@@ -348,7 +336,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
       case 'basic':
         if (auth.username && auth.password) {
           const credentials = Buffer.from(`${auth.username}:${auth.password}`).toString('base64');
-          client.defaults.headers.common.Authorization = `Basic ${credentials}`;
+          client.defaults.headers.common["Authorization"] = `Basic ${credentials}`;
         }
         break;
 
@@ -380,8 +368,8 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
     client.interceptors.request.use(async (config) => {
       const token = await this.getValidOAuthToken(auth.credentials!);
       if (token) {
-        config.headers = config.headers || {};
-        config.headers.Authorization = `Bearer ${token}`;
+        config?.["headers"] = config?.["headers"] || {};
+        config?.["headers"]?.["Authorization"] = `Bearer ${token}`;
       }
       return config;
     });
@@ -406,9 +394,9 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
           client_secret: credentials.clientSecret,
         });
 
-        credentials.accessToken = response.data.access_token;
-        credentials.refreshToken = response.data.refresh_token || credentials.refreshToken;
-        credentials.expiresAt = new Date(Date.now() + response.data.expires_in * 1000);
+        credentials.accessToken = response?.data?.["access_token"];
+        credentials.refreshToken = response?.data?.["refresh_token"] || credentials.refreshToken;
+        credentials.expiresAt = new Date(Date.now() + response?.data?.["expires_in"] * 1000);
 
         return credentials.accessToken;
       } catch (error) {
@@ -432,20 +420,20 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
       async (error: AxiosError) => {
         const config = error.config as any;
 
-        if (!config || config.__retryCount >= retryConfig.attempts) {
-          this.emit('error', new RetryExhaustedError(this.name, retryConfig.attempts, error));
+        if (!config || config?.["__retryCount"] >= retryConfig?.attempts) {
+          this.emit('error', new RetryExhaustedError(this.name, retryConfig?.attempts, error));
           return Promise.reject(error);
         }
 
-        config.__retryCount = (config.__retryCount || 0) + 1;
+        config?.["__retryCount"] = (config?.["__retryCount"] || 0) + 1;
 
         // Check retry conditions
         if (this.shouldRetry(error, retryConfig)) {
-          const delay = this.calculateRetryDelay(config.__retryCount, retryConfig);
+          const delay = this.calculateRetryDelay(config?.["__retryCount"], retryConfig);
           await new Promise((resolve) => setTimeout(resolve, delay));
 
           this.emit('retry', {
-            attempt: config.__retryCount,
+            attempt: config?.["__retryCount"],
             error: error.message,
             delay,
           });
@@ -463,8 +451,8 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
    */
   private shouldRetry(error: AxiosError, retryConfig: any): boolean {
     // Use custom retry condition if provided
-    if (retryConfig.retryCondition) {
-      return retryConfig.retryCondition(error);
+    if (retryConfig?.retryCondition) {
+      return retryConfig?.retryCondition(error);
     }
 
     // Default retry logic
@@ -474,7 +462,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
     }
 
     const status = error.response.status;
-    const retryStatusCodes = retryConfig.retryStatusCodes || [408, 429, 500, 502, 503, 504];
+    const retryStatusCodes = retryConfig?.retryStatusCodes || [408, 429, 500, 502, 503, 504];
 
     return retryStatusCodes.includes(status);
   }
@@ -483,12 +471,12 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
    * Calculate retry delay with backoff strategy
    */
   private calculateRetryDelay(attempt: number, retryConfig: any): number {
-    const baseDelay = retryConfig.delay || 1000;
-    const maxDelay = retryConfig.maxDelay || 30000;
+    const baseDelay = retryConfig?.delay || 1000;
+    const maxDelay = retryConfig?.maxDelay || 30000;
 
     let delay: number;
 
-    switch (retryConfig.backoff) {
+    switch (retryConfig?.backoff) {
       case 'exponential':
         delay = baseDelay * 2 ** (attempt - 1);
         break;
@@ -560,14 +548,14 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
    */
   private setupMetricsCollection(client: AxiosInstance): void {
     client.interceptors.request.use((config) => {
-      (config as any).__startTime = Date.now();
+      (config as any)["__startTime"] = Date.now();
       this.requestCount++;
       return config;
     });
 
     client.interceptors.response.use(
       (response) => {
-        this.recordSuccess(response.config);
+        this.recordSuccess(response?.config);
         return response;
       },
       (error) => {
@@ -597,8 +585,8 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
    * Record request latency
    */
   private recordLatency(config: any): void {
-    if (config.__startTime) {
-      const latency = Date.now() - config.__startTime;
+    if (config?.["__startTime"]) {
+      const latency = Date.now() - config?.["__startTime"];
       this.latencySum += latency;
       this.latencies.push(latency);
 
@@ -822,9 +810,9 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
       method: method as any,
       url: endpoint,
       data,
-      timeout: options?.timeout,
-      headers: options?.headers,
-      metadata: options?.metadata,
+      timeout: options?.["timeout"],
+      headers: options?.["headers"],
+      metadata: options?.["metadata"],
     };
   }
 
@@ -833,12 +821,12 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
    */
   private transformResponse<T>(response: AxiosResponse<T>): ClientResponse<T> {
     return {
-      data: response.data,
-      status: response.status,
-      statusText: response.statusText,
-      headers: response.headers as Record<string, string>,
-      config: response.config as RequestOptions,
-      metadata: (response.config as any)?.metadata,
+      data: response?.data,
+      status: response?.status,
+      statusText: response?.statusText,
+      headers: response?.headers as Record<string, string>,
+      config: response?.config as RequestOptions,
+      metadata: (response?.config as any)?.metadata,
     };
   }
 

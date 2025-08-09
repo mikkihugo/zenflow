@@ -4,7 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { OptimizationResult, PerformanceMetrics } from '../interfaces/optimization-interfaces';
 
 export interface OptimizationAlert {
   id: string;
@@ -263,24 +262,24 @@ export class OptimizationMonitor extends EventEmitter {
    * @param result
    */
   private checkPerformanceDegradation(result: OptimizationResult): void {
-    if (!result.success) {
+    if (!result?.success) {
       this.createAlert({
         type: 'optimization_failure',
         severity: 'high',
         domain: 'system',
-        message: `Optimization failed: ${result.error}`,
-        metrics: result.beforeMetrics,
+        message: `Optimization failed: ${result?.error}`,
+        metrics: result?.beforeMetrics,
       });
       return;
     }
 
-    if (result.improvement < 0) {
+    if (result?.improvement < 0) {
       this.createAlert({
         type: 'performance_degradation',
         severity: 'medium',
         domain: 'system',
-        message: `Performance degraded by ${Math.abs(result.improvement * 100).toFixed(1)}%`,
-        metrics: result.afterMetrics,
+        message: `Performance degraded by ${Math.abs(result?.improvement * 100).toFixed(1)}%`,
+        metrics: result?.afterMetrics,
       });
     }
   }
@@ -467,14 +466,14 @@ export class OptimizationMonitor extends EventEmitter {
       let domainHealth: 'healthy' | 'warning' | 'critical' = 'healthy';
 
       if (
-        current.memoryUsage > thresholds.memoryUsage ||
-        current.errorRate > thresholds.errorRate
+        current?.memoryUsage > thresholds.memoryUsage ||
+        current?.errorRate > thresholds.errorRate
       ) {
         domainHealth = 'critical';
       } else if (
-        current.latency > thresholds.latency ||
-        current.cpuUsage > thresholds.cpuUsage ||
-        current.throughput < thresholds.throughput
+        current?.latency > thresholds.latency ||
+        current?.cpuUsage > thresholds.cpuUsage ||
+        current?.throughput < thresholds.throughput
       ) {
         domainHealth = 'warning';
       }
@@ -501,7 +500,7 @@ export class OptimizationMonitor extends EventEmitter {
     const thresholds = this.config.alertThresholds;
 
     // High latency recommendation
-    if (currentMetrics.latency > thresholds.latency) {
+    if (currentMetrics?.latency > thresholds.latency) {
       recommendations.push({
         id: 'latency-optimization',
         domain: 'system',
@@ -515,7 +514,7 @@ export class OptimizationMonitor extends EventEmitter {
     }
 
     // High memory usage recommendation
-    if (currentMetrics.memoryUsage > thresholds.memoryUsage) {
+    if (currentMetrics?.memoryUsage > thresholds.memoryUsage) {
       recommendations.push({
         id: 'memory-optimization',
         domain: 'system',
@@ -529,7 +528,7 @@ export class OptimizationMonitor extends EventEmitter {
     }
 
     // Low throughput recommendation
-    if (currentMetrics.throughput < thresholds.throughput) {
+    if (currentMetrics?.throughput < thresholds.throughput) {
       recommendations.push({
         id: 'throughput-optimization',
         domain: 'system',

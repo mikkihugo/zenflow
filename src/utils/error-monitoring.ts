@@ -258,8 +258,8 @@ export class ErrorMonitoring extends EventEmitter {
       const errorType = key.split(':')[1] || 'unknown';
       topErrors.push({
         error: errorType,
-        count: data?.count,
-        component: data?.component,
+        count: data?.["count"],
+        component: data?.["component"],
       });
     }
 

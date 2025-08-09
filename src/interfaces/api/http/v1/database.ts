@@ -8,14 +8,7 @@
  * @file Enhanced Database REST API routes with full DI integration
  */
 
-import { type Request, type Response, Router } from 'express';
-// Import interfaces from the simplified database controller
-import type {
-  BatchRequest,
-  CommandRequest,
-  MigrationRequest,
-  QueryRequest,
-} from '../di/database-container';
+import { Router } from 'express';
 import { checkDatabaseContainerHealth, getDatabaseController } from '../di/database-container';
 import { authMiddleware, hasPermission, optionalAuthMiddleware } from '../middleware/auth';
 import { asyncHandler, createInternalError, createValidationError } from '../middleware/errors';
@@ -177,7 +170,7 @@ export const createDatabaseRoutes = (): Router => {
     lightOperationsLimiter, // Light rate limiting
     optionalAuthMiddleware, // Optional auth for monitoring
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Getting database status', req);
+      log(LogLevel["DEBUG"], 'Getting database status', req);
       const startTime = Date.now();
 
       try {
@@ -187,8 +180,8 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_status', duration, req, {
-          success: result.success,
-          adapter: result.metadata?.adapter,
+          success: result?.success,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -215,7 +208,7 @@ export const createDatabaseRoutes = (): Router => {
     mediumOperationsLimiter, // Medium rate limiting for queries
     authMiddleware, // Require authentication for data access
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Executing database query', req, {
+      log(LogLevel["INFO"], 'Executing database query', req, {
         sqlLength: req.body.sql?.length,
         hasParams: Array.isArray(req.body.params) && req.body.params.length > 0,
         userId: req.auth?.user?.id,
@@ -230,9 +223,9 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_query', duration, req, {
-          success: result.success,
-          rowCount: result.metadata?.rowCount,
-          adapter: result.metadata?.adapter,
+          success: result?.success,
+          rowCount: result?.metadata?.rowCount,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -259,7 +252,7 @@ export const createDatabaseRoutes = (): Router => {
     mediumOperationsLimiter, // Medium rate limiting for commands
     authMiddleware, // Require authentication for data modification
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Executing database command', req, {
+      log(LogLevel["INFO"], 'Executing database command', req, {
         sqlLength: req.body.sql?.length,
         hasParams: Array.isArray(req.body.params) && req.body.params.length > 0,
         userId: req.auth?.user?.id,
@@ -274,9 +267,9 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_execute', duration, req, {
-          success: result.success,
-          rowCount: result.metadata?.rowCount,
-          adapter: result.metadata?.adapter,
+          success: result?.success,
+          rowCount: result?.metadata?.rowCount,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -303,7 +296,7 @@ export const createDatabaseRoutes = (): Router => {
     heavyOperationsLimiter, // Heavy rate limiting for transactions
     authMiddleware, // Require authentication for transactions
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Executing database transaction', req, {
+      log(LogLevel["INFO"], 'Executing database transaction', req, {
         operationCount: req.body.operations?.length,
         useTransaction: req.body.useTransaction,
         userId: req.auth?.user?.id,
@@ -318,9 +311,9 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_transaction', duration, req, {
-          success: result.success,
+          success: result?.success,
           operationCount: batchRequest.operations.length,
-          adapter: result.metadata?.adapter,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -347,7 +340,7 @@ export const createDatabaseRoutes = (): Router => {
     lightOperationsLimiter, // Light rate limiting for schema access
     authMiddleware, // Require authentication for schema access
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Getting database schema', req, {
+      log(LogLevel["DEBUG"], 'Getting database schema', req, {
         userId: req.auth?.user?.id,
       });
       const startTime = Date.now();
@@ -359,9 +352,9 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_schema', duration, req, {
-          success: result.success,
-          tableCount: result.metadata?.rowCount,
-          adapter: result.metadata?.adapter,
+          success: result?.success,
+          tableCount: result?.metadata?.rowCount,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -388,7 +381,7 @@ export const createDatabaseRoutes = (): Router => {
     adminOperationsLimiter, // Admin rate limiting for migrations
     authMiddleware, // Require authentication for migrations
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.INFO, 'Executing database migration', req, {
+      log(LogLevel["INFO"], 'Executing database migration', req, {
         version: req.body.version,
         statementCount: req.body.statements?.length,
         dryRun: req.body.dryRun,
@@ -404,10 +397,10 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_migration', duration, req, {
-          success: result.success,
+          success: result?.success,
           version: migrationRequest.version,
           statementCount: migrationRequest.statements.length,
-          adapter: result.metadata?.adapter,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -434,7 +427,7 @@ export const createDatabaseRoutes = (): Router => {
     lightOperationsLimiter, // Light rate limiting for analytics
     authMiddleware, // Require authentication for analytics
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Getting database analytics', req, {
+      log(LogLevel["DEBUG"], 'Getting database analytics', req, {
         userId: req.auth?.user?.id,
       });
       const startTime = Date.now();
@@ -446,8 +439,8 @@ export const createDatabaseRoutes = (): Router => {
 
         const duration = Date.now() - startTime;
         logPerformance('database_analytics', duration, req, {
-          success: result.success,
-          adapter: result.metadata?.adapter,
+          success: result?.success,
+          adapter: result?.metadata?.adapter,
           userId: req.auth?.user?.id,
         });
 
@@ -474,7 +467,7 @@ export const createDatabaseRoutes = (): Router => {
     '/health',
     lightOperationsLimiter,
     asyncHandler(async (req: Request, res: Response) => {
-      log(LogLevel.DEBUG, 'Checking database health', req);
+      log(LogLevel["DEBUG"], 'Checking database health', req);
       const startTime = Date.now();
 
       try {

@@ -356,8 +356,8 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
 
     try {
       const whereClause = criteria ? this.buildWhereClause(this.mapEntityToRow(criteria)) : '';
-      const orderClause = this.buildOrderClause(options?.sort);
-      const limitClause = this.buildLimitClause(options?.limit, options?.offset);
+      const orderClause = this.buildOrderClause(options?.["sort"]);
+      const limitClause = this.buildLimitClause(options?.["limit"], options?.["offset"]);
 
       const sql = `
         SELECT ${this.tableName}.* 
@@ -371,7 +371,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const params = criteria ? Object.values(this.mapEntityToRow(criteria)) : [];
       const result = await this.adapter.query(sql, params);
 
-      return result.rows.map((row) => this.mapRowToEntity(row));
+      return result?.rows?.map((row) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`JOIN query failed: ${error}`);
       throw new Error(
@@ -459,7 +459,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const params = criteria ? Object.values(this.mapEntityToRow(criteria)) : [];
 
       const result = await this.adapter.query(sql, params);
-      return Number(result.rows[0]?.result || 0);
+      return Number(result?.rows?.[0]?.result || 0);
     } catch (error) {
       this.logger.error(`Aggregate query failed: ${error}`);
       throw new Error(
@@ -650,7 +650,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const params = [...Object.values(mappedUpdates), ...Object.values(mappedCriteria)];
 
       const result = await this.adapter.query(sql, params);
-      return result.rowCount || 0;
+      return result?.rowCount || 0;
     } catch (error) {
       this.logger.error(`Update many failed: ${error}`);
       throw new Error(
@@ -726,7 +726,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const params = Object.values(mappedCriteria);
 
       const result = await this.adapter.query(sql, params);
-      return result.rowCount || 0;
+      return result?.rowCount || 0;
     } catch (error) {
       this.logger.error(`Delete many failed: ${error}`);
       throw new Error(
@@ -812,7 +812,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const params = [`%${searchTerm}%`];
 
       const result = await this.adapter.query(sql, params);
-      return result.rows.map((row) => this.mapRowToEntity(row));
+      return result?.rows?.map((row) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`Search failed: ${error}`);
       throw new Error(`Search failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -911,8 +911,8 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     );
 
     try {
-      const orderClause = this.buildOrderClause(options?.sort);
-      const limitClause = this.buildLimitClause(options?.limit, options?.offset);
+      const orderClause = this.buildOrderClause(options?.["sort"]);
+      const limitClause = this.buildLimitClause(options?.["limit"], options?.["offset"]);
 
       const sql = `
         SELECT * FROM ${this.tableName} 
@@ -924,7 +924,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const params = [startDate.toISOString(), endDate.toISOString()];
       const result = await this.adapter.query(sql, params);
 
-      return result.rows.map((row) => this.mapRowToEntity(row));
+      return result?.rows?.map((row) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`Date range query failed: ${error}`);
       throw new Error(

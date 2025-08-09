@@ -9,7 +9,6 @@ import { exec } from 'node:child_process';
 import * as os from 'node:os';
 import { promisify } from 'node:util';
 import { createLogger } from '../../../core/logger';
-import type { DALFactory } from '../../../database/factory';
 
 const logger = createLogger({ prefix: 'HiveTools' });
 
@@ -72,9 +71,9 @@ export class HiveTools {
         status: activeSwarms.length > 0 ? 'active' : 'idle',
         totalSwarms: activeSwarms.length,
         activeSwarms: activeSwarms.filter((s) => s.healthy).length,
-        totalAgents: agentData.result.total,
-        availableAgents: agentData.result.available,
-        busyAgents: agentData.result.busy,
+        totalAgents: agentData?.result?.total,
+        availableAgents: agentData?.result?.available,
+        busyAgents: agentData?.result?.busy,
         swarmDetails: activeSwarms.map((s) => ({
           id: s.id,
           type: s.type,
@@ -135,7 +134,7 @@ export class HiveTools {
       const results = {
         query,
         domain,
-        results: allResults.slice(0, 10), // Top 10 results
+        results: allResults?.slice(0, 10), // Top 10 results
         sources: {
           localKnowledge: localSearch.length,
           swarmMemory: memorySearch.length,
@@ -152,7 +151,7 @@ export class HiveTools {
       };
 
       logger.info(
-        `Swarm query completed: ${results.results.length} results from ${activeSwarms.length} swarms`
+        `Swarm query completed: ${results?.results.length} results from ${activeSwarms.length} swarms`
       );
       return results;
     } catch (error) {

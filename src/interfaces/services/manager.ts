@@ -68,37 +68,20 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../../utils/logger';
-import {
-  type CoordinationServiceAdapterConfig,
-  type CoordinationServiceFactory,
-  globalCoordinationServiceFactory,
-} from './adapters/coordination-service-factory';
+import { createLogger } from '../../utils/logger';
+import { globalCoordinationServiceFactory } from './adapters/coordination-service-factory';
 // Import all service adapter factories
-import {
-  type DataServiceAdapterConfig,
-  type DataServiceFactory,
-  globalDataServiceFactory,
-} from './adapters/data-service-factory';
-import {
-  globalInfrastructureServiceFactory,
-  type InfrastructureServiceAdapterConfig,
-  type InfrastructureServiceFactory,
-} from './adapters/infrastructure-service-factory';
-import {
-  type IntegrationServiceAdapterConfig,
-  type IntegrationServiceFactory,
-  integrationServiceFactory,
-} from './adapters/integration-service-factory';
-import type { IService, IServiceFactory, ServiceMetrics, ServiceStatus } from './core/interfaces';
+import { globalDataServiceFactory } from './adapters/data-service-factory';
+import { globalInfrastructureServiceFactory } from './adapters/infrastructure-service-factory';
+import { integrationServiceFactory } from './adapters/integration-service-factory';
 import {
   ServiceDependencyError,
   ServiceInitializationError,
   ServiceOperationError,
 } from './core/interfaces';
-import { USLFactory, type USLFactoryConfig } from './factories';
-import { EnhancedServiceRegistry, type ServiceRegistryConfig } from './registry';
-import { type AnyServiceConfig, ServicePriority, ServiceType } from './types';
+import { USLFactory } from './factories';
+import { EnhancedServiceRegistry } from './registry';
+import { ServicePriority, ServiceType } from './types';
 
 /**
  * Service Manager Configuration
@@ -370,11 +353,11 @@ export class ServiceManager extends EventEmitter {
     const systemMetrics = await this.registry.getSystemMetrics();
     const healthResults = await this.registry.healthCheckAll();
 
-    const _healthyCount = Array.from(healthResults.values()).filter(
+    const _healthyCount = Array.from(healthResults?.values()).filter(
       (status) => status.health === 'healthy'
     ).length;
 
-    const errorCount = Array.from(healthResults.values()).filter(
+    const errorCount = Array.from(healthResults?.values()).filter(
       (status) => status.health === 'unhealthy' || status.lifecycle === 'error'
     ).length;
 
@@ -477,13 +460,13 @@ export class ServiceManager extends EventEmitter {
 
         const results = await Promise.allSettled(createPromises);
 
-        results.forEach((result, index) => {
-          if (result.status === 'fulfilled') {
-            createdServices.push(result.value);
+        results?.forEach((result, index) => {
+          if (result?.status === 'fulfilled') {
+            createdServices.push(result?.value);
           } else {
             this.logger.error(
-              `Failed to create service ${request.services[index].name}:`,
-              result.reason
+              `Failed to create service ${request.services[index]?.name}:`,
+              result?.reason
             );
           }
         });
@@ -749,11 +732,11 @@ export class ServiceManager extends EventEmitter {
     const metrics = await this.registry.getSystemMetrics();
 
     const total = healthResults.size;
-    const healthy = Array.from(healthResults.values()).filter((s) => s.health === 'healthy').length;
-    const degraded = Array.from(healthResults.values()).filter(
+    const healthy = Array.from(healthResults?.values()).filter((s) => s.health === 'healthy').length;
+    const degraded = Array.from(healthResults?.values()).filter(
       (s) => s.health === 'degraded'
     ).length;
-    const unhealthy = Array.from(healthResults.values()).filter(
+    const unhealthy = Array.from(healthResults?.values()).filter(
       (s) => s.health === 'unhealthy'
     ).length;
 
@@ -832,7 +815,7 @@ export class ServiceManager extends EventEmitter {
     let serviceCount = 0;
 
     metrics.aggregatedMetrics.forEach((metric) => {
-      const health = healthResults.get(metric.name);
+      const health = healthResults?.get(metric.name);
       if (!health) return;
 
       const _successRate =
@@ -974,8 +957,8 @@ export class ServiceManager extends EventEmitter {
 
   private initializeConfig(config?: Partial<ServiceManagerConfig>): ServiceManagerConfig {
     return {
-      factory: config?.factory || {},
-      registry: config?.registry || {
+      factory: config?.["factory"] || {},
+      registry: config?.["registry"] || {
         healthMonitoring: {
           enabled: true,
           interval: 30000,
@@ -1014,12 +997,12 @@ export class ServiceManager extends EventEmitter {
         },
       },
       lifecycle: {
-        startupTimeout: config?.lifecycle?.startupTimeout || 60000,
-        shutdownTimeout: config?.lifecycle?.shutdownTimeout || 30000,
-        gracefulShutdownPeriod: config?.lifecycle?.gracefulShutdownPeriod || 10000,
-        parallelStartup: config?.lifecycle?.parallelStartup ?? true,
-        dependencyResolution: config?.lifecycle?.dependencyResolution ?? true,
-        ...config?.lifecycle,
+        startupTimeout: config?.["lifecycle"]?.startupTimeout || 60000,
+        shutdownTimeout: config?.["lifecycle"]?.shutdownTimeout || 30000,
+        gracefulShutdownPeriod: config?.["lifecycle"]?.gracefulShutdownPeriod || 10000,
+        parallelStartup: config?.["lifecycle"]?.parallelStartup ?? true,
+        dependencyResolution: config?.["lifecycle"]?.dependencyResolution ?? true,
+        ...config?.["lifecycle"],
       },
       monitoring: {
         healthCheckInterval: 30000,
@@ -1034,7 +1017,7 @@ export class ServiceManager extends EventEmitter {
           enabled: true,
           channels: [{ type: 'console', config: {} }],
         },
-        ...config?.monitoring,
+        ...config?.["monitoring"],
       },
       recovery: {
         enabled: true,
@@ -1047,7 +1030,7 @@ export class ServiceManager extends EventEmitter {
           failureThreshold: 5,
           recoveryTime: 60000,
         },
-        ...config?.recovery,
+        ...config?.["recovery"],
       },
       discovery: {
         enabled: true,
@@ -1058,7 +1041,7 @@ export class ServiceManager extends EventEmitter {
           persistent: false,
           storageType: 'memory',
         },
-        ...config?.discovery,
+        ...config?.["discovery"],
       },
       performance: {
         connectionPooling: {
@@ -1075,7 +1058,7 @@ export class ServiceManager extends EventEmitter {
           enabled: false,
           strategy: 'round-robin',
         },
-        ...config?.performance,
+        ...config?.["performance"],
       },
     };
   }
@@ -1096,30 +1079,30 @@ export class ServiceManager extends EventEmitter {
     const serviceTypeFactoryMappings = [
       // Data service types
       {
-        types: [ServiceType.DATA, ServiceType.WEB_DATA, ServiceType.DOCUMENT],
+        types: [ServiceType["DATA"], ServiceType["WEB_DATA"], ServiceType["DOCUMENT"]],
         factory: this.dataServiceFactory,
       },
 
       // Coordination service types
       {
         types: [
-          ServiceType.COORDINATION,
-          ServiceType.DAA,
-          ServiceType.SESSION_RECOVERY,
-          ServiceType.SWARM,
+          ServiceType["COORDINATION"],
+          ServiceType["DAA"],
+          ServiceType["SESSION_RECOVERY"],
+          ServiceType["SWARM"],
         ],
         factory: this.coordinationServiceFactory,
       },
 
       // Integration service types
       {
-        types: [ServiceType.API, ServiceType.SAFE_API, ServiceType.ARCHITECTURE_STORAGE],
+        types: [ServiceType["API"], ServiceType["SAFE_API"], ServiceType["ARCHITECTURE_STORAGE"]],
         factory: this.integrationServiceFactory,
       },
 
       // Infrastructure service types
       {
-        types: [ServiceType.INFRASTRUCTURE, ServiceType.SYSTEM],
+        types: [ServiceType["INFRASTRUCTURE"], ServiceType["SYSTEM"]],
         factory: this.infrastructureServiceFactory,
       },
     ];
@@ -1221,23 +1204,23 @@ export class ServiceManager extends EventEmitter {
   private getFactoryForServiceType(serviceType: ServiceType | string): IServiceFactory | null {
     // Map service types to their appropriate specialized factories
     switch (serviceType) {
-      case ServiceType.DATA:
-      case ServiceType.WEB_DATA:
-      case ServiceType.DOCUMENT:
+      case ServiceType["DATA"]:
+      case ServiceType["WEB_DATA"]:
+      case ServiceType["DOCUMENT"]:
         return this.dataServiceFactory;
 
-      case ServiceType.COORDINATION:
-      case ServiceType.DAA:
-      case ServiceType.SESSION_RECOVERY:
+      case ServiceType["COORDINATION"]:
+      case ServiceType["DAA"]:
+      case ServiceType["SESSION_RECOVERY"]:
         return this.coordinationServiceFactory;
 
-      case ServiceType.API:
-      case ServiceType.SAFE_API:
-      case ServiceType.ARCHITECTURE_STORAGE:
+      case ServiceType["API"]:
+      case ServiceType["SAFE_API"]:
+      case ServiceType["ARCHITECTURE_STORAGE"]:
         return this.integrationServiceFactory;
 
-      case ServiceType.INFRASTRUCTURE:
-      case ServiceType.SYSTEM:
+      case ServiceType["INFRASTRUCTURE"]:
+      case ServiceType["SYSTEM"]:
         return this.infrastructureServiceFactory;
 
       default:
@@ -1251,7 +1234,7 @@ export class ServiceManager extends EventEmitter {
       name: request.name,
       type: request.type,
       enabled: true,
-      priority: request.priority || ServicePriority.NORMAL,
+      priority: request.priority || ServicePriority["NORMAL"],
       tags: request.tags,
       metadata: request.metadata,
       dependencies: request.dependencies?.map((dep) => ({
@@ -1276,7 +1259,7 @@ export class ServiceManager extends EventEmitter {
       name: request.name,
       type: request.type,
       enabled: true,
-      priority: request.priority || ServicePriority.NORMAL,
+      priority: request.priority || ServicePriority["NORMAL"],
       tags: request.tags,
       metadata: request.metadata,
       dependencies: request.dependencies?.map((dep) => ({
@@ -1320,7 +1303,7 @@ export class ServiceManager extends EventEmitter {
 
       visiting.delete(serviceName);
       visited.add(serviceName);
-      result.push(service);
+      result?.push(service);
     };
 
     services.forEach((service) => visit(service.name));
@@ -1553,7 +1536,7 @@ export class ServiceManager extends EventEmitter {
     const timestamp = new Date();
 
     // Check service health alerts
-    healthResults.forEach((status, serviceName) => {
+    healthResults?.forEach((status, serviceName) => {
       if (status.health !== 'healthy') {
         alerts.push({
           type: 'service-health',

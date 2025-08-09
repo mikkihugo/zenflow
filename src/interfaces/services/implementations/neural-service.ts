@@ -6,7 +6,6 @@
  */
 
 import type { IService } from '../core/interfaces';
-import type { NeuralServiceConfig, ServiceOperationOptions } from '../types';
 import { BaseService } from './base-service';
 
 /**
@@ -20,7 +19,7 @@ export class NeuralService extends BaseService implements IService {
   private inferenceCache = new Map<string, any>();
 
   constructor(config: NeuralServiceConfig) {
-    super(config.name, config.type, config);
+    super(config?.name, config?.type, config);
 
     // Add neural service capabilities
     this.addCapability('model-loading');
@@ -40,13 +39,13 @@ export class NeuralService extends BaseService implements IService {
     const config = this.config as NeuralServiceConfig;
 
     // Initialize GPU if enabled and available
-    if (config.gpu?.enabled) {
+    if (config?.["gpu"]?.["enabled"]) {
       await this.initializeGPU();
     }
 
     // Load default model if specified
-    if (config.model?.path) {
-      await this.loadModel('default', config.model.path, config.model.config);
+    if (config?.["model"]?.["path"]) {
+      await this.loadModel('default', config?.["model"]?.["path"], config?.["model"]?.["config"]);
     }
 
     this.logger.info(`Neural service ${this.name} initialized successfully`);
@@ -102,7 +101,7 @@ export class NeuralService extends BaseService implements IService {
 
       // Check GPU health if enabled
       const config = this.config as NeuralServiceConfig;
-      if (config.gpu?.enabled) {
+      if (config?.["gpu"]?.["enabled"]) {
         const gpuHealthy = await this.checkGPUHealth();
         if (!gpuHealthy) {
           return false;
@@ -125,31 +124,31 @@ export class NeuralService extends BaseService implements IService {
 
     switch (operation) {
       case 'load-model':
-        return (await this.loadModel(params?.modelId, params?.path, params?.config)) as T;
+        return (await this.loadModel(params?.["modelId"], params?.["path"], params?.["config"])) as T;
 
       case 'unload-model':
-        return (await this.unloadModel(params?.modelId)) as T;
+        return (await this.unloadModel(params?.["modelId"])) as T;
 
       case 'get-models':
         return this.getModels() as T;
 
       case 'predict':
-        return (await this.predict(params?.modelId, params?.input, params?.options)) as T;
+        return (await this.predict(params?.["modelId"], params?.["input"], params?.["options"])) as T;
 
       case 'batch-predict':
-        return (await this.batchPredict(params?.modelId, params?.inputs, params?.options)) as T;
+        return (await this.batchPredict(params?.["modelId"], params?.["inputs"], params?.["options"])) as T;
 
       case 'start-training':
         return (await this.startTraining(params)) as T;
 
       case 'stop-training':
-        return (await this.stopTraining(params?.jobId)) as T;
+        return (await this.stopTraining(params?.["jobId"])) as T;
 
       case 'get-training-jobs':
         return this.getTrainingJobs() as T;
 
       case 'get-training-status':
-        return this.getTrainingStatus(params?.jobId) as T;
+        return this.getTrainingStatus(params?.["jobId"]) as T;
 
       case 'clear-cache':
         return (await this.clearInferenceCache()) as T;
@@ -178,14 +177,14 @@ export class NeuralService extends BaseService implements IService {
       id: modelId,
       path,
       config: config || {},
-      type: config?.type || 'neural-network',
+      type: config?.["type"] || 'neural-network',
       loadedAt: new Date(),
       status: 'loaded',
       metadata: {
         parameters: Math.floor(Math.random() * 1000000) + 100000,
         layers: Math.floor(Math.random() * 50) + 10,
-        inputShape: config?.inputShape || [784],
-        outputShape: config?.outputShape || [10],
+        inputShape: config?.["inputShape"] || [784],
+        outputShape: config?.["outputShape"] || [10],
       },
     };
 
@@ -221,7 +220,7 @@ export class NeuralService extends BaseService implements IService {
     const cacheKey = `${modelId}:${JSON.stringify(input)}`;
 
     // Check inference cache if enabled
-    if (config.inference?.caching && this.inferenceCache.has(cacheKey)) {
+    if (config?.["inference"]?.["caching"] && this.inferenceCache.has(cacheKey)) {
       this.logger.debug(`Cache hit for prediction: ${modelId}`);
       return this.inferenceCache.get(cacheKey);
     }
@@ -240,7 +239,7 @@ export class NeuralService extends BaseService implements IService {
     };
 
     // Cache result if enabled
-    if (config.inference?.caching) {
+    if (config?.["inference"]?.["caching"]) {
       this.inferenceCache.set(cacheKey, prediction);
     }
 
@@ -256,7 +255,7 @@ export class NeuralService extends BaseService implements IService {
     this.logger.debug(`Running batch prediction with model: ${modelId} (${inputs.length} samples)`);
 
     const config = this.config as NeuralServiceConfig;
-    const batchSize = config.inference?.batchSize || inputs.length;
+    const batchSize = config?.["inference"]?.["batchSize"] || inputs.length;
     const results: any[] = [];
 
     // Process in batches
@@ -265,7 +264,7 @@ export class NeuralService extends BaseService implements IService {
       const batchResults = await Promise.all(
         batch.map((input) => this.predict(modelId, input, options))
       );
-      results.push(...batchResults);
+      results?.push(...batchResults);
     }
 
     return results;
@@ -275,19 +274,19 @@ export class NeuralService extends BaseService implements IService {
     const jobId = `training-${Date.now()}`;
     const config = this.config as NeuralServiceConfig;
 
-    if (!config.training?.enabled) {
+    if (!config?.["training"]?.["enabled"]) {
       throw new Error('Training is not enabled for this neural service');
     }
 
     const job = {
       id: jobId,
-      modelId: params?.modelId || 'training-model',
-      dataPath: params?.dataPath || config.training.dataPath,
+      modelId: params?.["modelId"] || 'training-model',
+      dataPath: params?.["dataPath"] || config?.["training"]?.["dataPath"],
       config: {
-        batchSize: params?.batchSize || config.training.batchSize || 32,
-        epochs: params?.epochs || config.training.epochs || 100,
-        learningRate: params?.learningRate || config.training.learningRate || 0.001,
-        ...params?.config,
+        batchSize: params?.["batchSize"] || config?.["training"]?.["batchSize"] || 32,
+        epochs: params?.["epochs"] || config?.["training"]?.["epochs"] || 100,
+        learningRate: params?.["learningRate"] || config?.["training"]?.["learningRate"] || 0.001,
+        ...params?.["config"],
       },
       status: 'running',
       startTime: Date.now(),

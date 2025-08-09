@@ -134,7 +134,7 @@ export class KnowledgeSwarm extends EventEmitter {
 
     this.config = {
       swarmSize: 6,
-      specializations: KnowledgeSwarm.DEFAULT_SPECIALIZATIONS,
+      specializations: KnowledgeSwarm["DEFAULT_SPECIALIZATIONS"],
       parallelQueries: 3,
       loadBalancingStrategy: 'intelligent',
       crossAgentSharing: true,
@@ -159,15 +159,15 @@ export class KnowledgeSwarm extends EventEmitter {
       // Initialize vector database for knowledge storage
       if (this.config.persistentStorage) {
         this.vectorRepository = await createRepository(
-          EntityTypes.VectorDocument,
-          DatabaseTypes?.LanceDB,
+          EntityTypes["VectorDocument"],
+          DatabaseTypes?.["LanceDB"],
           {
             database: './data/knowledge-swarm',
             options: { vectorSize: 1536, metricType: 'cosine' },
           }
         );
 
-        this.vectorDAO = await createDAO(EntityTypes.VectorDocument, DatabaseTypes?.LanceDB, {
+        this.vectorDAO = await createDAO(EntityTypes["VectorDocument"], DatabaseTypes?.["LanceDB"], {
           database: './data/knowledge-swarm',
           options: { vectorSize: 1536 },
         });
@@ -851,7 +851,7 @@ export class KnowledgeSwarm extends EventEmitter {
       agents.length > 0 ? agents.reduce((sum, a) => sum + a.successRate, 0) / agents.length : 1.0;
 
     // Get UACL client health for knowledge clients
-    const knowledgeClients = uacl.getClientsByType(ClientType.KNOWLEDGE);
+    const knowledgeClients = uacl.getClientsByType(ClientType["KNOWLEDGE"]);
     const uaclStatus = {
       knowledgeClients: knowledgeClients.length,
       healthyKnowledgeClients: knowledgeClients.filter((c) => c.status === 'connected').length,

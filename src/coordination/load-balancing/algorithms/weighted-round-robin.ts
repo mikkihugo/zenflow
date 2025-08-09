@@ -4,7 +4,6 @@
  */
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
-import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 
 interface AgentWeight {
   agentId: string;
@@ -81,8 +80,8 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     }
 
     // Decrease the current weight of selected agent
-    const selectedWeight = this.weights.get(selectedAgent.id)!;
-    selectedWeight.currentWeight -= totalWeight;
+    const selectedWeight = this.weights.get(selectedAgent?.id)!;
+    selectedWeight?.currentWeight -= totalWeight;
 
     // Calculate confidence and alternatives
     const confidence = this.calculateConfidence(selectedAgent, availableAgents, metrics);
@@ -91,7 +90,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected based on weighted round robin (weight: ${selectedWeight.effectiveWeight})`,
+      reasoning: `Selected based on weighted round robin (weight: ${selectedWeight?.effectiveWeight})`,
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),
@@ -299,7 +298,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     availableAgents: Agent[],
     _metrics: Map<string, LoadMetrics>
   ): number {
-    const selectedWeight = this.weights.get(selectedAgent.id);
+    const selectedWeight = this.weights.get(selectedAgent?.id);
     if (!selectedWeight) return 0.5;
 
     // Calculate confidence based on weight advantage over others
@@ -329,7 +328,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     count: number
   ): Agent[] {
     return availableAgents
-      .filter((agent) => agent.id !== selectedAgent.id)
+      .filter((agent) => agent.id !== selectedAgent?.id)
       .sort((a, b) => {
         const weightA = this.weights.get(a.id)?.effectiveWeight || this.config.initialWeight;
         const weightB = this.weights.get(b.id)?.effectiveWeight || this.config.initialWeight;

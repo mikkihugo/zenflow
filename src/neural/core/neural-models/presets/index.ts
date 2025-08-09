@@ -129,7 +129,7 @@ export function validatePresetConfig(config: Partial<NeuralPreset>): boolean {
     throw new Error(`Invalid preset configuration. Missing: ${missing.join(', ')}`);
   }
 
-  if (!Array.isArray(config.layers) || config.layers.length === 0) {
+  if (!Array.isArray(config?.["layers"]) || config?.["layers"].length === 0) {
     throw new Error('Layers must be a non-empty array');
   }
 

@@ -864,7 +864,7 @@ export class NeuralCoordinationProtocol {
           coordinationSession,
           coordinationResult
         );
-        coordinationResult.consensus = consensusResult;
+        coordinationResult?.consensus = consensusResult;
       }
 
       // Store coordination results
@@ -1014,7 +1014,7 @@ export class NeuralCoordinationProtocol {
       const metrics = this.coordinationMetrics.get(agentId);
       if (metrics) {
         metrics.consensusParticipation++;
-        if (result.success) {
+        if (result?.success) {
           const currentSuccess = metrics.coordinationSuccessRate * metrics.consensusParticipation;
           metrics.coordinationSuccessRate =
             (currentSuccess + 1) / (metrics.consensusParticipation + 1);

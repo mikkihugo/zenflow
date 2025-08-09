@@ -3,16 +3,7 @@
  * Optimizes neural network training, inference, and memory usage
  */
 
-import type {
-  AccelerationResult,
-  BatchConfig,
-  ComputeUnit,
-  MemoryOptimization,
-  NetworkTrainer,
-  NeuralNetwork,
-  NeuralOptimizer,
-  OptimizationResult,
-} from '../interfaces/optimization-interfaces';
+import type { NeuralOptimizer } from '../interfaces/optimization-interfaces';
 
 export interface NeuralOptimizationConfig {
   enableGPUAcceleration: boolean;
@@ -530,7 +521,7 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   private selectOptimalGPU(gpuUnits: ComputeUnit[]): ComputeUnit {
     // Select GPU with highest memory
     return gpuUnits.reduce((optimal, current) =>
-      current.memory > optimal.memory ? current : optimal
+      current?.memory > optimal.memory ? current : optimal
     );
   }
 

@@ -6,7 +6,6 @@
  */
 
 import type { IService } from '../core/interfaces';
-import type { MemoryServiceConfig, ServiceOperationOptions } from '../types';
 import { BaseService } from './base-service';
 
 /**
@@ -20,7 +19,7 @@ export class MemoryService extends BaseService implements IService {
   private evictionTimer?: NodeJS.Timeout;
 
   constructor(config: MemoryServiceConfig) {
-    super(config.name, config.type, config);
+    super(config?.name, config?.type, config);
 
     // Add memory service capabilities
     this.addCapability('key-value-storage');
@@ -40,12 +39,12 @@ export class MemoryService extends BaseService implements IService {
     const config = this.config as MemoryServiceConfig;
 
     // Initialize eviction policy
-    if (config.eviction) {
+    if (config?.["eviction"]) {
       this.startEvictionProcess();
     }
 
     // Load persisted data if enabled
-    if (config.persistence?.enabled) {
+    if (config?.["persistence"]?.["enabled"]) {
       await this.loadPersistedData();
     }
 
@@ -58,10 +57,10 @@ export class MemoryService extends BaseService implements IService {
     const config = this.config as MemoryServiceConfig;
 
     // Start persistence timer if enabled
-    if (config.persistence?.enabled && config.persistence.interval) {
+    if (config?.["persistence"]?.["enabled"] && config?.["persistence"]?.["interval"]) {
       setInterval(() => {
         this.persistData();
-      }, config.persistence.interval);
+      }, config?.["persistence"]?.["interval"]);
     }
 
     this.logger.info(`Memory service ${this.name} started successfully`);
@@ -78,7 +77,7 @@ export class MemoryService extends BaseService implements IService {
 
     // Persist data before shutdown
     const config = this.config as MemoryServiceConfig;
-    if (config.persistence?.enabled) {
+    if (config?.["persistence"]?.["enabled"]) {
       await this.persistData();
     }
 
@@ -105,23 +104,23 @@ export class MemoryService extends BaseService implements IService {
       const config = this.config as MemoryServiceConfig;
 
       // Check memory usage
-      if (config.storage?.maxMemory) {
+      if (config?.["storage"]?.["maxMemory"]) {
         const currentUsage = this.estimateMemoryUsage();
-        if (currentUsage > config.storage.maxMemory * 1.1) {
+        if (currentUsage > config?.["storage"]?.["maxMemory"] * 1.1) {
           // Allow 10% overage
           this.logger.warn(
-            `Memory usage (${currentUsage}) exceeds limit (${config.storage.maxMemory})`
+            `Memory usage (${currentUsage}) exceeds limit (${config?.["storage"]?.["maxMemory"]})`
           );
           return false;
         }
       }
 
       // Check store size
-      if (config.eviction?.maxSize) {
-        if (this.store.size > config.eviction.maxSize * 1.1) {
+      if (config?.["eviction"]?.["maxSize"]) {
+        if (this.store.size > config?.["eviction"]?.["maxSize"] * 1.1) {
           // Allow 10% overage
           this.logger.warn(
-            `Store size (${this.store.size}) exceeds limit (${config.eviction.maxSize})`
+            `Store size (${this.store.size}) exceeds limit (${config?.["eviction"]?.["maxSize"]})`
           );
           return false;
         }
@@ -143,19 +142,19 @@ export class MemoryService extends BaseService implements IService {
 
     switch (operation) {
       case 'get':
-        return this.get(params?.key) as T;
+        return this.get(params?.["key"]) as T;
 
       case 'set':
-        return (await this.set(params?.key, params?.value, params?.ttl)) as T;
+        return (await this.set(params?.["key"], params?.["value"], params?.["ttl"])) as T;
 
       case 'delete':
-        return this.delete(params?.key) as T;
+        return this.delete(params?.["key"]) as T;
 
       case 'exists':
-        return this.exists(params?.key) as T;
+        return this.exists(params?.["key"]) as T;
 
       case 'keys':
-        return this.keys(params?.pattern) as T;
+        return this.keys(params?.["pattern"]) as T;
 
       case 'clear':
         return (await this.clear()) as T;
@@ -164,10 +163,10 @@ export class MemoryService extends BaseService implements IService {
         return this.size() as T;
 
       case 'ttl':
-        return this.getTTL(params?.key) as T;
+        return this.getTTL(params?.["key"]) as T;
 
       case 'expire':
-        return this.expire(params?.key, params?.seconds) as T;
+        return this.expire(params?.["key"], params?.["seconds"]) as T;
 
       case 'persist':
         return (await this.persistData()) as T;
@@ -225,8 +224,8 @@ export class MemoryService extends BaseService implements IService {
     let expiresAt: number | undefined;
     if (ttl) {
       expiresAt = Date.now() + ttl * 1000;
-    } else if (config.eviction?.ttl) {
-      expiresAt = Date.now() + config.eviction.ttl * 1000;
+    } else if (config?.["eviction"]?.["ttl"]) {
+      expiresAt = Date.now() + config?.["eviction"]?.["ttl"] * 1000;
     }
 
     // Store value and metadata
@@ -237,7 +236,7 @@ export class MemoryService extends BaseService implements IService {
       lastAccessed: Date.now(),
       ttl: expiresAt,
       size: this.estimateValueSize(serialized),
-      serialization: config.serialization?.type || 'json',
+      serialization: config?.["serialization"]?.["type"] || 'json',
     });
 
     this.logger.debug(`Set key: ${key}`);
@@ -358,7 +357,7 @@ export class MemoryService extends BaseService implements IService {
 
   private serialize(value: any): any {
     const config = this.config as MemoryServiceConfig;
-    const serializationType = config.serialization?.type || 'json';
+    const serializationType = config?.["serialization"]?.["type"] || 'json';
 
     switch (serializationType) {
       case 'json':
@@ -424,7 +423,7 @@ export class MemoryService extends BaseService implements IService {
   private async checkEviction(): Promise<void> {
     const config = this.config as MemoryServiceConfig;
 
-    if (config.eviction?.maxSize && this.store.size >= config.eviction.maxSize) {
+    if (config?.["eviction"]?.["maxSize"] && this.store.size >= config?.["eviction"]?.["maxSize"]) {
       await this.performEviction();
     }
   }
@@ -432,18 +431,18 @@ export class MemoryService extends BaseService implements IService {
   private async performEviction(): Promise<void> {
     const config = this.config as MemoryServiceConfig;
 
-    if (!config.eviction) return;
+    if (!config?.["eviction"]) return;
 
     // Remove expired items first
     this.removeExpiredItems();
 
     // Check if we still need to evict
-    if (config.eviction.maxSize && this.store.size <= config.eviction.maxSize) {
+    if (config?.["eviction"]?.["maxSize"] && this.store.size <= config?.["eviction"]?.["maxSize"]) {
       return;
     }
 
-    const policy = config.eviction.policy;
-    const targetSize = Math.floor((config.eviction.maxSize || this.store.size) * 0.8);
+    const policy = config?.["eviction"]?.["policy"];
+    const targetSize = Math.floor((config?.["eviction"]?.["maxSize"] || this.store.size) * 0.8);
     const toEvict = this.store.size - targetSize;
 
     if (toEvict <= 0) return;
@@ -536,7 +535,7 @@ export class MemoryService extends BaseService implements IService {
   private async persistData(): Promise<boolean> {
     const config = this.config as MemoryServiceConfig;
 
-    if (!config.persistence?.enabled) {
+    if (!config?.["persistence"]?.["enabled"]) {
       return false;
     }
 

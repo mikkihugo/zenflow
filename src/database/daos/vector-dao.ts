@@ -1,5 +1,4 @@
 import { BaseDao } from '../base.dao';
-import { Logger } from '../../utils/logger';
 
 interface VectorDocument<T> {
   id: string | number;
@@ -114,18 +113,18 @@ export class VectorDao<T = any> extends BaseDao<T> {
       try {
         if (operation === 'insert') {
           const insertResult = await this.vectorRepository.addVectors(batch);
-          results.successful += insertResult.inserted;
-          results.failed += insertResult.errors.length;
-          results.errors.push(...insertResult.errors);
+          results?.successful += insertResult?.inserted;
+          results?.failed += insertResult?.errors.length;
+          results?.errors?.push(...insertResult?.errors);
         } else if (operation === 'update') {
           // Handle batch updates
           for (const vector of batch) {
             try {
               await this.vectorRepository.updateVector(vector.id, vector.vector);
-              results.successful++;
+              results?.successful++;
             } catch (error) {
-              results.failed++;
-              results.errors.push({
+              results?.failed++;
+              results?.errors?.push({
                 id: vector.id,
                 error: error instanceof Error ? error.message : 'Unknown error',
               });
@@ -141,10 +140,10 @@ export class VectorDao<T = any> extends BaseDao<T> {
               } else {
                 await this.vectorRepository.addVectors([vector]);
               }
-              results.successful++;
+              results?.successful++;
             } catch (error) {
-              results.failed++;
-              results.errors.push({
+              results?.failed++;
+              results?.errors?.push({
                 id: vector.id,
                 error: error instanceof Error ? error.message : 'Unknown error',
               });
@@ -153,9 +152,9 @@ export class VectorDao<T = any> extends BaseDao<T> {
         }
       } catch (error) {
         this.logger.error(`Batch ${operation} failed: ${error}`);
-        results.failed += batch.length;
+        results?.failed += batch.length;
         batch.forEach((vector) => {
-          results.errors.push({
+          results?.errors?.push({
             id: vector.id,
             error: error instanceof Error ? error.message : 'Unknown error',
           });
@@ -164,7 +163,7 @@ export class VectorDao<T = any> extends BaseDao<T> {
     }
 
     this.logger.debug(
-      `Bulk ${operation} completed: ${results.successful} successful, ${results.failed} failed`
+      `Bulk ${operation} completed: ${results?.successful} successful, ${results?.failed} failed`
     );
     return results;
   }
@@ -198,23 +197,23 @@ export class VectorDao<T = any> extends BaseDao<T> {
 
       // Perform similarity search
       const results = await this.vectorRepository.similaritySearch(centroid, {
-        limit: (options?.limit || 10) * 2, // Get more to allow for filtering
-        threshold: options?.minSimilarity || 0.0,
+        limit: (options?.["limit"] || 10) * 2, // Get more to allow for filtering
+        threshold: options?.["minSimilarity"] || 0.0,
       });
 
       // Filter out excluded IDs
       let filtered = results;
-      if (options?.excludeIds && options.excludeIds.length > 0) {
-        filtered = results.filter((result) => !options.excludeIds?.includes(result.id));
+      if (options?.["excludeIds"] && options?.["excludeIds"].length > 0) {
+        filtered = results?.filter((result) => !options?.["excludeIds"]?.["includes"](result?.id));
       }
 
       // Apply diversity if requested
-      if (options?.diversityFactor && options.diversityFactor > 0) {
-        filtered = this.applyDiversity(filtered, options.diversityFactor);
+      if (options?.["diversityFactor"] && options?.["diversityFactor"] > 0) {
+        filtered = this.applyDiversity(filtered, options?.["diversityFactor"]);
       }
 
       // Limit results
-      const finalResults = filtered.slice(0, options?.limit || 10);
+      const finalResults = filtered.slice(0, options?.["limit"] || 10);
 
       this.logger.debug(`Recommendations generated: ${finalResults.length} results`);
       return finalResults;
@@ -306,47 +305,47 @@ export class VectorDao<T = any> extends BaseDao<T> {
       weights?: number[];
     }
   ): VectorSearchResult<T>[] {
-    const strategy = options?.strategy || 'average';
-    const weights = options?.weights || new Array(results.length).fill(1);
+    const strategy = options?.["strategy"] || 'average';
+    const weights = options?.["weights"] || new Array(results.length).fill(1);
 
     // Collect all unique results
     const allResults = new Map<string | number, VectorSearchResult<T>[]>();
 
     for (let i = 0; i < results.length; i++) {
-      const resultSet = results[i];
+      const resultSet = results?.[i];
       if (resultSet) {
         for (const result of resultSet) {
-          if (!allResults.has(result.id)) {
-            allResults.set(result.id, []);
+          if (!allResults?.has(result?.id)) {
+            allResults?.set(result?.id, []);
           }
-          allResults.get(result.id)?.push({ ...result, score: result.score * weights[i] });
+          allResults?.get(result?.id)?.push({ ...result, score: result?.score * weights[i] });
         }
       }
     }
 
     // Combine scores based on strategy
     const combined: VectorSearchResult<T>[] = [];
-    for (const [id, resultList] of allResults.entries()) {
+    for (const [id, resultList] of allResults?.entries()) {
       let combinedScore: number;
 
       switch (strategy) {
         case 'max':
-          combinedScore = Math.max(...resultList.map((r) => r.score));
+          combinedScore = Math.max(...resultList?.map((r) => r.score));
           break;
         case 'weighted':
-          combinedScore = resultList.reduce((sum, r) => sum + r.score, 0) / resultList.length;
+          combinedScore = resultList?.reduce((sum, r) => sum + r.score, 0) / resultList.length;
           break;
         default: // average
-          combinedScore = resultList.reduce((sum, r) => sum + r.score, 0) / resultList.length;
+          combinedScore = resultList?.reduce((sum, r) => sum + r.score, 0) / resultList.length;
       }
 
-      const firstResult = resultList[0];
+      const firstResult = resultList?.[0];
       if (firstResult) {
         combined.push({
           id,
           score: combinedScore,
-          document: firstResult.document,
-          vector: firstResult.vector,
+          document: firstResult?.document,
+          vector: firstResult?.vector,
         });
       }
     }
@@ -463,8 +462,8 @@ export class VectorDao<T = any> extends BaseDao<T> {
       let isDiverse = true;
 
       for (const existing of diverse) {
-        if (result.vector && existing.vector) {
-          const similarity = this.cosineSimilarity(result.vector, existing.vector);
+        if (result?.vector && existing.vector) {
+          const similarity = this.cosineSimilarity(result?.vector, existing.vector);
           if (similarity > threshold) {
             isDiverse = false;
             break;

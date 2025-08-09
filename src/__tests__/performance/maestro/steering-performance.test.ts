@@ -102,7 +102,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
 
       const averageDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
       const maxDuration = Math.max(...durations);
-      const _minDuration = Math.min(...durations);
+      const minDuration = Math.min(...durations);
 
       // Performance should be consistent (max shouldn't be more than 3x average)
       expect(maxDuration).toBeLessThan(averageDuration * 3);
@@ -169,11 +169,11 @@ describe('Maestro Steering Performance Benchmarks', () => {
         const duration = endTime - startTime;
         const perDocument = duration / size;
 
-        results.push({ count: size, duration, perDocument });
+        results?.push({ count: size, duration, perDocument });
       }
 
       // Check that per-document time remains relatively consistent
-      const perDocTimes = results.map((r) => r.perDocument);
+      const perDocTimes = results?.map((r) => r.perDocument);
       const avgPerDoc = perDocTimes.reduce((a, b) => a + b, 0) / perDocTimes.length;
       const maxPerDoc = Math.max(...perDocTimes);
 
@@ -230,13 +230,13 @@ describe('Maestro Steering Performance Benchmarks', () => {
       const startTime1 = performance.now();
       const context1 = await maestroOrchestrator.getSteeringContext('developer');
       const endTime1 = performance.now();
-      const _coldDuration = endTime1 - startTime1;
+      const coldDuration = endTime1 - startTime1;
 
       // Second request (should be faster if cached)
       const startTime2 = performance.now();
       const context2 = await maestroOrchestrator.getSteeringContext('developer');
       const endTime2 = performance.now();
-      const _warmDuration = endTime2 - startTime2;
+      const warmDuration = endTime2 - startTime2;
 
       expect(context1).toEqual(context2);
       // Note: Current implementation may not have caching, but this documents expected behavior
@@ -284,7 +284,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
     });
 
     it('should clean up resources after operations', async () => {
-      const _initialStats = maestroOrchestrator.getAgentPoolStats();
+      const initialStats = maestroOrchestrator.getAgentPoolStats();
 
       // Perform multiple operations
       await maestroOrchestrator.createSteeringDocument('cleanup-1', 'Content 1');
@@ -315,8 +315,8 @@ describe('Maestro Steering Performance Benchmarks', () => {
       const endTime = performance.now();
 
       const duration = endTime - startTime;
-      const successfulOperations = results.filter((r) => r.status === 'fulfilled').length;
-      const _failedOperations = results.filter((r) => r.status === 'rejected').length;
+      const successfulOperations = results?.filter((r) => r.status === 'fulfilled').length;
+      const failedOperations = results?.filter((r) => r.status === 'rejected').length;
 
       expect(successfulOperations).toBeGreaterThan(operationCount * 0.95); // 95% success rate
       expect(duration).toBeLessThan(10000); // Should complete within 10 seconds
@@ -351,7 +351,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
       const endTime = performance.now();
 
       const duration = endTime - startTime;
-      const successfulOperations = results.filter((r) => r.status === 'fulfilled').length;
+      const successfulOperations = results?.filter((r) => r.status === 'fulfilled').length;
 
       expect(successfulOperations).toBeGreaterThan(operations.length * 0.9); // 90% success rate
       expect(duration).toBeLessThan(5000); // Should complete within 5 seconds
@@ -395,7 +395,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
         const duration = endTime - startTime;
         const passedBaseline = duration <= test.expectedMax;
 
-        baselineResults.push({
+        baselineResults?.push({
           name: test.name,
           duration,
           passedBaseline,
@@ -403,7 +403,7 @@ describe('Maestro Steering Performance Benchmarks', () => {
       }
 
       // All baseline tests should pass
-      const allPassed = baselineResults.every((result) => result.passedBaseline);
+      const allPassed = baselineResults?.every((result) => result?.passedBaseline);
       expect(allPassed).toBe(true);
     });
   });

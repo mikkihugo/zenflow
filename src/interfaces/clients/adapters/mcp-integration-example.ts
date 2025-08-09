@@ -9,12 +9,7 @@ const logger = getLogger("interfaces-clients-adapters-mcp-integration-example");
 
 import { EventEmitter } from 'node:events';
 import { ExternalMCPClient } from '../../mcp/external-mcp-client.js';
-import type { IClient } from '../core/interfaces.js';
-import {
-  createMCPConfigFromLegacy,
-  type MCPClientConfig,
-  MCPClientFactory,
-} from './mcp-client-adapter.js';
+import { createMCPConfigFromLegacy, MCPClientFactory } from './mcp-client-adapter.js';
 
 /**
  * MCP Integration Manager
@@ -90,7 +85,7 @@ export class MCPIntegrationManager {
     const uaclConfig = createMCPConfigFromLegacy(serverName, baseConfig);
 
     // Enhance with additional UACL features
-    uaclConfig.monitoring = {
+    uaclConfig?.monitoring = {
       enabled: true,
       metricsInterval: 60000,
       trackLatency: true,
@@ -98,7 +93,7 @@ export class MCPIntegrationManager {
       trackErrors: true,
     };
 
-    uaclConfig.tools = {
+    uaclConfig?.tools = {
       timeout: 30000,
       retries: 3,
       discovery: true,
@@ -128,10 +123,10 @@ export class MCPIntegrationManager {
             toolName,
             success: true,
             source: 'UACL',
-            result: result.data,
+            result: result?.data,
             metrics: {
-              responseTime: result.metadata?.responseTime,
-              status: result.status,
+              responseTime: result?.metadata?.responseTime,
+              status: result?.status,
             },
           });
         } else {
@@ -141,10 +136,10 @@ export class MCPIntegrationManager {
           this.eventEmitter.emit('tool-executed', {
             serverName,
             toolName,
-            success: result.success,
+            success: result?.success,
             source: 'Legacy',
-            result: result.result,
-            error: result.error,
+            result: result?.result,
+            error: result?.error,
           });
         }
       } catch (error) {
@@ -163,13 +158,13 @@ export class MCPIntegrationManager {
    */
   private setupEventHandlers(): void {
     this.eventEmitter.on('tool-executed', (data) => {
-      if (data.metrics) {
+      if (data?.["metrics"]) {
       }
     });
 
     this.eventEmitter.on('tool-error', (data) => {
       logger.error(
-        `❌ Tool error: ${data.toolName} on ${data.serverName} (${data.source}): ${data.error}`
+        `❌ Tool error: ${data?.["toolName"]} on ${data?.["serverName"]} (${data?.["source"]}): ${data?.error}`
       );
     });
   }
@@ -194,8 +189,8 @@ export class MCPIntegrationManager {
         return {
           success: true,
           source: 'UACL',
-          data: result.data,
-          metadata: result.metadata,
+          data: result?.data,
+          metadata: result?.metadata,
         };
       } catch (_error) {
         logger.warn(`⚠️  UACL execution failed for ${toolName}, falling back to legacy...`);
@@ -206,10 +201,10 @@ export class MCPIntegrationManager {
     try {
       const result = await this.legacyClient.executeTool(serverName, toolName, parameters);
       return {
-        success: result.success,
+        success: result?.success,
         source: 'Legacy',
-        data: result.result,
-        error: result.error,
+        data: result?.result,
+        error: result?.error,
       };
     } catch (error) {
       throw new Error(`Both UACL and Legacy execution failed: ${(error as Error).message}`);

@@ -49,26 +49,26 @@ export class UACLValidator {
     const results: ValidationResult[] = [];
 
     // Test core UACL functionality
-    results.push(...(await this.validateCore()));
+    results?.push(...(await this.validateCore()));
 
     // Test client factories
-    results.push(...(await this.validateFactories()));
+    results?.push(...(await this.validateFactories()));
 
     // Test client creation
-    results.push(...(await this.validateClientCreation()));
+    results?.push(...(await this.validateClientCreation()));
 
     // Test backward compatibility
-    results.push(...(await this.validateCompatibility()));
+    results?.push(...(await this.validateCompatibility()));
 
     // Test integrations
-    results.push(...(await this.validateIntegrations()));
+    results?.push(...(await this.validateIntegrations()));
 
     // Calculate summary
     const summary = {
       total: results.length,
-      passed: results.filter((r) => r.status === 'pass').length,
-      failed: results.filter((r) => r.status === 'fail').length,
-      warnings: results.filter((r) => r.status === 'warning').length,
+      passed: results?.filter((r) => r.status === 'pass').length,
+      failed: results?.filter((r) => r.status === 'fail').length,
+      warnings: results?.filter((r) => r.status === 'warning').length,
     };
 
     const overall = summary.failed > 0 ? 'fail' : summary.warnings > 0 ? 'warning' : 'pass';
@@ -90,7 +90,7 @@ export class UACLValidator {
     try {
       // Test initialization
       await uacl.initialize();
-      results.push({
+      results?.push({
         component: 'UACL Core',
         status: 'pass',
         message: 'UACL initialized successfully',
@@ -98,7 +98,7 @@ export class UACLValidator {
 
       // Test status methods
       const isInitialized = uacl.isInitialized();
-      results.push({
+      results?.push({
         component: 'UACL Core',
         status: isInitialized ? 'pass' : 'fail',
         message: `Initialization status: ${isInitialized}`,
@@ -106,7 +106,7 @@ export class UACLValidator {
 
       // Test metrics
       const metrics = uacl.getMetrics();
-      results.push({
+      results?.push({
         component: 'UACL Metrics',
         status: 'pass',
         message: `Metrics retrieved: ${metrics.total} total clients`,
@@ -115,7 +115,7 @@ export class UACLValidator {
 
       // Test health status
       const health = uacl.getHealthStatus();
-      results.push({
+      results?.push({
         component: 'UACL Health',
         status:
           health.overall === 'critical'
@@ -127,7 +127,7 @@ export class UACLValidator {
         details: health,
       });
     } catch (error) {
-      results.push({
+      results?.push({
         component: 'UACL Core',
         status: 'fail',
         message: 'UACL core validation failed',
@@ -146,23 +146,23 @@ export class UACLValidator {
 
     // Test factory availability for each client type
     const clientTypes = [
-      ClientType.HTTP,
-      ClientType.WEBSOCKET,
-      ClientType.KNOWLEDGE,
-      ClientType.MCP,
+      ClientType["HTTP"],
+      ClientType["WEBSOCKET"],
+      ClientType["KNOWLEDGE"],
+      ClientType["MCP"],
     ];
 
     for (const clientType of clientTypes) {
       try {
         // This tests that the factory is properly registered
         const clients = uacl.getClientsByType(clientType);
-        results.push({
+        results?.push({
           component: `${clientType} Factory`,
           status: 'pass',
           message: `Factory available for ${clientType} (${clients.length} clients)`,
         });
       } catch (error) {
-        results.push({
+        results?.push({
           component: `${clientType} Factory`,
           status: 'fail',
           message: `Factory validation failed for ${clientType}`,
@@ -187,14 +187,14 @@ export class UACLValidator {
         getMCPServerURL(),
         { enabled: false, priority: 1 } // Disabled to avoid actual connections
       );
-      results.push({
+      results?.push({
         component: 'HTTP Client Creation',
         status: 'pass',
         message: 'HTTP client created successfully',
         details: { id: httpClient.id, type: httpClient.type },
       });
     } catch (error) {
-      results.push({
+      results?.push({
         component: 'HTTP Client Creation',
         status: 'fail',
         message: 'HTTP client creation failed',
@@ -208,14 +208,14 @@ export class UACLValidator {
         enabled: false,
         priority: 1,
       });
-      results.push({
+      results?.push({
         component: 'WebSocket Client Creation',
         status: 'pass',
         message: 'WebSocket client created successfully',
         details: { id: wsClient.id, type: wsClient.type },
       });
     } catch (error) {
-      results.push({
+      results?.push({
         component: 'WebSocket Client Creation',
         status: 'fail',
         message: 'WebSocket client creation failed',
@@ -231,14 +231,14 @@ export class UACLValidator {
         'fake-key',
         { enabled: false, priority: 1 }
       );
-      results.push({
+      results?.push({
         component: 'Knowledge Client Creation',
         status: 'pass',
         message: 'Knowledge client created successfully',
         details: { id: knowledgeClient.id, type: knowledgeClient.type },
       });
     } catch (error) {
-      results.push({
+      results?.push({
         component: 'Knowledge Client Creation',
         status: 'warning',
         message: 'Knowledge client creation failed (expected without valid FACT setup)',
@@ -253,14 +253,14 @@ export class UACLValidator {
         { 'test-server': { url: getMCPServerURL(), type: 'http', capabilities: [] } },
         { enabled: false, priority: 1 }
       );
-      results.push({
+      results?.push({
         component: 'MCP Client Creation',
         status: 'pass',
         message: 'MCP client created successfully',
         details: { id: mcpClient.id, type: mcpClient.type },
       });
     } catch (error) {
-      results.push({
+      results?.push({
         component: 'MCP Client Creation',
         status: 'fail',
         message: 'MCP client creation failed',
@@ -280,13 +280,13 @@ export class UACLValidator {
     // Test compatible client creation functions
     try {
       const _apiClient = createCompatibleAPIClient({ baseURL: 'http://test.local' });
-      results.push({
+      results?.push({
         component: 'HTTP Compatibility',
         status: 'pass',
         message: 'Compatible HTTP client created successfully',
       });
     } catch (error) {
-      results.push({
+      results?.push({
         component: 'HTTP Compatibility',
         status: 'fail',
         message: 'Compatible HTTP client creation failed',
@@ -296,13 +296,13 @@ export class UACLValidator {
 
     try {
       const _wsClient = createCompatibleWebSocketClient('ws://test.local');
-      results.push({
+      results?.push({
         component: 'WebSocket Compatibility',
         status: 'pass',
         message: 'Compatible WebSocket client created successfully',
       });
     } catch (error) {
-      results.push({
+      results?.push({
         component: 'WebSocket Compatibility',
         status: 'fail',
         message: 'Compatible WebSocket client creation failed',
@@ -315,13 +315,13 @@ export class UACLValidator {
         factRepoPath: '/fake/path',
         anthropicApiKey: 'fake-key',
       });
-      results.push({
+      results?.push({
         component: 'Knowledge Compatibility',
         status: 'pass',
         message: 'Compatible Knowledge client created successfully',
       });
     } catch (error) {
-      results.push({
+      results?.push({
         component: 'Knowledge Compatibility',
         status: 'warning',
         message: 'Compatible Knowledge client creation failed (expected without valid FACT setup)',
@@ -331,13 +331,13 @@ export class UACLValidator {
 
     try {
       const _mcpClient = createCompatibleMCPClient();
-      results.push({
+      results?.push({
         component: 'MCP Compatibility',
         status: 'pass',
         message: 'Compatible MCP client created successfully',
       });
     } catch (error) {
-      results.push({
+      results?.push({
         component: 'MCP Compatibility',
         status: 'fail',
         message: 'Compatible MCP client creation failed',
@@ -357,14 +357,14 @@ export class UACLValidator {
     // Test UACLHelpers functionality
     try {
       const quickStatus = UACLHelpers.getQuickStatus();
-      results.push({
+      results?.push({
         component: 'UACLHelpers',
         status: 'pass',
         message: `Quick status retrieved: ${quickStatus.status}`,
         details: quickStatus,
       });
     } catch (error) {
-      results.push({
+      results?.push({
         component: 'UACLHelpers',
         status: 'fail',
         message: 'UACLHelpers validation failed',
@@ -375,14 +375,14 @@ export class UACLValidator {
     // Test health check functionality
     try {
       const healthResults = await UACLHelpers.performHealthCheck();
-      results.push({
+      results?.push({
         component: 'Health Check Integration',
         status: 'pass',
         message: `Health check completed for ${Object.keys(healthResults).length} clients`,
         details: healthResults,
       });
     } catch (error) {
-      results.push({
+      results?.push({
         component: 'Health Check Integration',
         status: 'fail',
         message: 'Health check integration failed',
@@ -420,25 +420,25 @@ export class UACLValidator {
     // Group results by component
     const byComponent = new Map<string, ValidationResult[]>();
     for (const result of results) {
-      if (!byComponent.has(result.component)) {
-        byComponent.set(result.component, []);
+      if (!byComponent.has(result?.component)) {
+        byComponent.set(result?.component, []);
       }
-      byComponent.get(result.component)?.push(result);
+      byComponent.get(result?.component)?.push(result);
     }
 
     for (const [component, componentResults] of byComponent) {
       output += `### ${component}\n\n`;
 
       for (const result of componentResults) {
-        const icon = result.status === 'pass' ? '✅' : result.status === 'fail' ? '❌' : '⚠️';
-        output += `${icon} **${result.status.toUpperCase()}**: ${result.message}\n`;
+        const icon = result?.status === 'pass' ? '✅' : result?.status === 'fail' ? '❌' : '⚠️';
+        output += `${icon} **${result?.status?.toUpperCase()}**: ${result?.message}\n`;
 
-        if (result.error) {
-          output += `   - Error: ${result.error.message}\n`;
+        if (result?.error) {
+          output += `   - Error: ${result?.error?.message}\n`;
         }
 
-        if (result.details) {
-          output += `   - Details: ${JSON.stringify(result.details, null, 2)}\n`;
+        if (result?.details) {
+          output += `   - Details: ${JSON.stringify(result?.details, null, 2)}\n`;
         }
 
         output += '\n';

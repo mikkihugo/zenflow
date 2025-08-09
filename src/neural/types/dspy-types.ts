@@ -247,52 +247,43 @@ class DSPyOptimizationError extends DSPyBaseError {
  * Type guard to check if an object is a valid DSPyConfig
  */
 function isDSPyConfig(obj: any): obj is DSPyConfig {
-  return (
-    obj &&
-    typeof obj === 'object' &&
-    (obj.model === undefined || (typeof obj.model === 'string' && obj.model.length > 0)) &&
-    (obj.temperature === undefined ||
-      (typeof obj.temperature === 'number' && obj.temperature >= 0 && obj.temperature <= 2)) &&
-    (obj.maxTokens === undefined || (typeof obj.maxTokens === 'number' && obj.maxTokens > 0)) &&
-    (obj.apiKey === undefined || typeof obj.apiKey === 'string') &&
-    (obj.baseURL === undefined || typeof obj.baseURL === 'string') &&
-    (obj.modelParams === undefined ||
-      (typeof obj.modelParams === 'object' && obj.modelParams !== null)) &&
-    (obj.timeout === undefined || (typeof obj.timeout === 'number' && obj.timeout > 0)) &&
-    (obj.retryCount === undefined || (typeof obj.retryCount === 'number' && obj.retryCount >= 0)) &&
-    (obj.enableLogging === undefined || typeof obj.enableLogging === 'boolean')
-  );
+  return (obj &&
+  typeof obj === 'object' &&
+  (obj["model"] === undefined || (typeof obj["model"] === 'string' && obj["model"].length > 0)) &&
+  (obj["temperature"] === undefined ||
+    (typeof obj["temperature"] === 'number' && obj["temperature"] >= 0 && obj["temperature"] <= 2)) &&
+  (obj["maxTokens"] === undefined || (typeof obj["maxTokens"] === 'number' && obj["maxTokens"] > 0)) &&
+  (obj["apiKey"] === undefined || typeof obj["apiKey"] === 'string') &&
+  (obj["baseURL"] === undefined || typeof obj["baseURL"] === 'string') &&
+  (obj["modelParams"] === undefined ||
+    (typeof obj["modelParams"] === 'object' && obj["modelParams"] !== null)) &&
+  (obj["timeout"] === undefined || (typeof obj["timeout"] === 'number' && obj["timeout"] > 0)) &&
+  (obj["retryCount"] === undefined || (typeof obj["retryCount"] === 'number' && obj["retryCount"] >= 0)) && (obj["enableLogging"] === undefined || typeof obj["enableLogging"] === 'boolean'));
 }
 
 /**
  * Type guard to check if an object is a valid DSPyProgram
  */
 function isDSPyProgram(obj: any): obj is DSPyProgram {
-  return (
-    obj &&
-    typeof obj === 'object' &&
-    typeof obj.signature === 'string' &&
-    obj.signature.length > 0 &&
-    typeof obj.description === 'string' &&
-    obj.description.length > 0 &&
-    typeof obj.forward === 'function'
-  );
+  return (obj &&
+  typeof obj === 'object' &&
+  typeof obj["signature"] === 'string' &&
+  obj["signature"].length > 0 &&
+  typeof obj.description === 'string' &&
+  obj.description.length > 0 && typeof obj["forward"] === 'function');
 }
 
 /**
  * Type guard to check if an object is a valid DSPyExample
  */
 function isDSPyExample(obj: any): obj is DSPyExample {
-  return (
-    obj &&
-    typeof obj === 'object' &&
-    obj.input &&
-    typeof obj.input === 'object' &&
-    obj.input !== null &&
-    obj.output &&
-    typeof obj.output === 'object' &&
-    obj.output !== null
-  );
+  return (obj &&
+  typeof obj === 'object' &&
+  obj["input"] &&
+  typeof obj["input"] === 'object' &&
+  obj["input"] !== null &&
+  obj["output"] &&
+  typeof obj["output"] === 'object' && obj["output"] !== null);
 }
 
 /**
@@ -300,24 +291,20 @@ function isDSPyExample(obj: any): obj is DSPyExample {
  */
 function isDSPyOptimizationConfig(obj: any): obj is DSPyOptimizationConfig {
   const validStrategies = ['bootstrap', 'mipro', 'copro', 'auto', 'custom'];
-  return (
-    obj &&
-    typeof obj === 'object' &&
-    validStrategies.includes(obj.strategy) &&
-    typeof obj.maxIterations === 'number' &&
-    obj.maxIterations > 0 &&
-    (obj.minExamples === undefined ||
-      (typeof obj.minExamples === 'number' && obj.minExamples > 0)) &&
-    (obj.evaluationMetric === undefined || typeof obj.evaluationMetric === 'string') &&
-    (obj.validationSplit === undefined ||
-      (typeof obj.validationSplit === 'number' &&
-        obj.validationSplit > 0 &&
-        obj.validationSplit < 1)) &&
-    (obj.earlyStoppingPatience === undefined ||
-      (typeof obj.earlyStoppingPatience === 'number' && obj.earlyStoppingPatience > 0)) &&
-    (obj.strategyParams === undefined ||
-      (typeof obj.strategyParams === 'object' && obj.strategyParams !== null))
-  );
+  return (obj &&
+  typeof obj === 'object' &&
+  validStrategies.includes(obj["strategy"]) &&
+  typeof obj["maxIterations"] === 'number' &&
+  obj["maxIterations"] > 0 &&
+  (obj["minExamples"] === undefined ||
+    (typeof obj["minExamples"] === 'number' && obj["minExamples"] > 0)) &&
+  (obj["evaluationMetric"] === undefined || typeof obj["evaluationMetric"] === 'string') &&
+  (obj["validationSplit"] === undefined ||
+    (typeof obj["validationSplit"] === 'number' &&
+      obj["validationSplit"] > 0 &&
+      obj["validationSplit"] < 1)) &&
+  (obj["earlyStoppingPatience"] === undefined ||
+    (typeof obj["earlyStoppingPatience"] === 'number' && obj["earlyStoppingPatience"] > 0)) && (obj["strategyParams"] === undefined || (typeof obj["strategyParams"] === 'object' && obj["strategyParams"] !== null)));
 }
 
 // =============================================================================
@@ -351,7 +338,7 @@ function validateSignature(signature: string): boolean {
     return false;
   }
 
-  if (signature.length > DSPY_LIMITS.MAX_SIGNATURE_LENGTH) {
+  if (signature.length > DSPY_LIMITS["MAX_SIGNATURE_LENGTH"]) {
     return false;
   }
 
@@ -384,8 +371,8 @@ function sanitizeInput(input: Record<string, any>): Record<string, any> {
   const sanitized: Record<string, any> = {};
 
   for (const [key, value] of Object.entries(input)) {
-    if (typeof value === 'string' && value.length > DSPY_LIMITS.MAX_INPUT_SIZE) {
-      sanitized[key] = value.substring(0, DSPY_LIMITS.MAX_INPUT_SIZE);
+    if (typeof value === 'string' && value.length > DSPY_LIMITS["MAX_INPUT_SIZE"]) {
+      sanitized[key] = value.substring(0, DSPY_LIMITS["MAX_INPUT_SIZE"]);
     } else {
       sanitized[key] = value;
     }

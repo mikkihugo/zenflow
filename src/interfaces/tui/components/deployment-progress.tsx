@@ -4,8 +4,6 @@
 
 import { Box, Text } from 'ink';
 import Spinner from 'ink-spinner';
-import type React from 'react';
-import type { DeploymentStatus } from '../types.js';
 import { ProgressBar } from './progress-bar.js';
 
 export interface DeploymentProgressProps {

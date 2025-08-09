@@ -1,10 +1,4 @@
 /**
- * Utility functions for ZenSwarm
- */
-
-import type { AgentType, CognitiveProfile, SwarmTopology, TaskPriority } from './types';
-
-/**
  * Generate a unique ID for agents, tasks, and messages
  *
  * @param prefix
@@ -226,25 +220,25 @@ Swarm Metrics:
 export function validateSwarmOptions(options: any): string[] {
   const errors: string[] = [];
 
-  if (options.maxAgents !== undefined) {
-    if (typeof options.maxAgents !== 'number' || options.maxAgents < 1) {
+  if (options?.["maxAgents"] !== undefined) {
+    if (typeof options?.["maxAgents"] !== 'number' || options?.["maxAgents"] < 1) {
       errors.push('maxAgents must be a positive number');
     }
   }
 
-  if (options.connectionDensity !== undefined) {
+  if (options?.["connectionDensity"] !== undefined) {
     if (
-      typeof options.connectionDensity !== 'number' ||
-      options.connectionDensity < 0 ||
-      options.connectionDensity > 1
+      typeof options?.["connectionDensity"] !== 'number' ||
+      options?.["connectionDensity"] < 0 ||
+      options?.["connectionDensity"] > 1
     ) {
       errors.push('connectionDensity must be a number between 0 and 1');
     }
   }
 
-  if (options.topology !== undefined) {
+  if (options?.["topology"] !== undefined) {
     const validTopologies = ['mesh', 'hierarchical', 'distributed', 'centralized', 'hybrid'];
-    if (!validTopologies.includes(options.topology)) {
+    if (!validTopologies.includes(options?.["topology"])) {
       errors.push(`topology must be one of: ${validTopologies.join(', ')}`);
     }
   }
@@ -263,7 +257,7 @@ export function deepClone<T>(obj: T): T {
   }
 
   if (obj instanceof Date) {
-    return new Date(obj.getTime()) as any;
+    return new Date(obj["getTime"]()) as any;
   }
 
   if (Array.isArray(obj)) {

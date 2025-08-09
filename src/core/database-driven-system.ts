@@ -209,7 +209,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
     context.activeDocuments.set(document.id, document);
 
     // Start workflows based on document type
-    if (options?.startWorkflows !== false) {
+    if (options?.["startWorkflows"] !== false) {
       const workflowIds = await this.workflowEngine.processDocumentEvent(
         'document:created',
         document,
@@ -299,9 +299,9 @@ export class DatabaseDrivenSystem extends EventEmitter {
     };
 
     const document = await this.documentService.createDocument(visionDoc, {
-      autoGenerateRelationships: options?.autoGenerateRelationships !== false,
-      generateSearchIndex: options?.generateSearchIndex !== false,
-      ...(options?.startWorkflows !== false && { startWorkflow: 'vision-to-adrs' }),
+      autoGenerateRelationships: options?.["autoGenerateRelationships"] !== false,
+      generateSearchIndex: options?.["generateSearchIndex"] !== false,
+      ...(options?.["startWorkflows"] !== false && { startWorkflow: 'vision-to-adrs' }),
     });
 
     await this.processDocumentEntity(workspaceId, document, options);
@@ -433,7 +433,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
     );
 
     const completedDocs = allDocs.filter(
-      (doc) => doc.status === 'approved' || doc.completion_percentage === 100
+      (doc) => doc.status === 'approved' || doc["completion_percentage"] === 100
     ).length;
 
     const overallProgress =
@@ -510,15 +510,15 @@ export class DatabaseDrivenSystem extends EventEmitter {
   }
 
   private async handleDocumentProcessed(event: any): Promise<void> {
-    logger.debug(`Document processed: ${event.document.type} - ${event.document.title}`);
+    logger.debug(`Document processed: ${event["document"]?.type} - ${event["document"]?.title}`);
   }
 
   private async handleWorkspaceCreated(event: any): Promise<void> {
-    logger.debug(`Workspace created: ${event.workspaceId}`);
+    logger.debug(`Workspace created: ${event["workspaceId"]}`);
   }
 
   private async handleWorkspaceLoaded(event: any): Promise<void> {
-    logger.debug(`Workspace loaded: ${event.workspaceId} (${event.documentCount} documents)`);
+    logger.debug(`Workspace loaded: ${event["workspaceId"]} (${event["documentCount"]} documents)`);
   }
 
   private getSuggestedNextSteps(documentType: DocumentType): string[] {
@@ -657,7 +657,7 @@ ${decision.decision}
       content: `# Product Requirements Document: ${vision.title}
 
 ## Functional Requirements
-${vision.business_objectives.map((obj, i) => `- REQ-${String(i + 1).padStart(3, '0')}: ${obj}`).join('\n')}
+${vision["business_objectives"]?.map((obj, i) => `- REQ-${String(i + 1).padStart(3, '0')}: ${obj}`).join('\n')}
 
 ## Non-Functional Requirements
 - Performance: System must handle 1000+ concurrent users
@@ -666,7 +666,7 @@ ${vision.business_objectives.map((obj, i) => `- REQ-${String(i + 1).padStart(3, 
 - Scalability: Horizontal scaling capability
 
 ## User Stories
-${vision.business_objectives.map((obj, _i) => `- As a user, I want ${obj.toLowerCase()} so that I can achieve my business goals`).join('\n')}
+${vision["business_objectives"]?.map((obj, _i) => `- As a user, I want ${obj["toLowerCase"]()} so that I can achieve my business goals`).join('\n')}
 
 ---
 *Generated from vision: ${vision.title}*`,
@@ -688,7 +688,7 @@ ${vision.business_objectives.map((obj, _i) => `- As a user, I want ${obj.toLower
       keywords: [],
       workflow_stage: 'generated',
       completion_percentage: 100,
-      functional_requirements: vision.business_objectives.map((obj, i) => ({
+      functional_requirements: vision["business_objectives"]?.map((obj, i) => ({
         id: `REQ-${String(i + 1).padStart(3, '0')}`,
         description: obj,
         acceptance_criteria: [`${obj} is properly implemented`, `${obj} meets quality standards`],
@@ -714,10 +714,10 @@ ${vision.business_objectives.map((obj, _i) => `- As a user, I want ${obj.toLower
           metrics: 'Monthly uptime tracking',
         },
       ],
-      user_stories: vision.business_objectives.map((obj, i) => ({
+      user_stories: vision["business_objectives"]?.map((obj, i) => ({
         id: `US-${String(i + 1).padStart(3, '0')}`,
         title: obj,
-        description: `As a user, I want ${obj.toLowerCase()} so that I can achieve my business goals`,
+        description: `As a user, I want ${obj["toLowerCase"]()} so that I can achieve my business goals`,
         acceptance_criteria: [
           `${obj} functionality is accessible`,
           'User can complete the workflow',
@@ -741,16 +741,16 @@ ${vision.business_objectives.map((obj, _i) => `- As a user, I want ${obj.toLower
     const epics = [
       {
         title: 'User Management Epic',
-        requirements: prd.functional_requirements.slice(
+        requirements: prd["functional_requirements"]?.slice(
           0,
-          Math.ceil(prd.functional_requirements.length / 2)
+          Math.ceil(prd["functional_requirements"].length / 2)
         ),
         businessValue: 'Enable user registration, authentication, and profile management',
       },
       {
         title: 'Core Functionality Epic',
-        requirements: prd.functional_requirements.slice(
-          Math.ceil(prd.functional_requirements.length / 2)
+        requirements: prd["functional_requirements"]?.slice(
+          Math.ceil(prd["functional_requirements"].length / 2)
         ),
         businessValue: 'Deliver primary business functionality and user workflows',
       },
@@ -957,7 +957,7 @@ ${spec.title} for ${feature.title}
         },
         technical_specifications: {
           component: feature.title.toLowerCase().replace(/\s+/g, '-'),
-          module: feature.feature_type,
+          module: feature["feature_type"],
           functions: ['create', 'read', 'update', 'delete'],
           dependencies: ['react', 'typescript'],
         },
@@ -975,7 +975,7 @@ ${spec.title} for ${feature.title}
   private calculatePhaseProgress(documents: BaseDocumentEntity[]): number {
     if (documents.length === 0) return 0;
     const completed = documents.filter(
-      (doc) => doc.status === 'approved' || doc.completion_percentage === 100
+      (doc) => doc.status === 'approved' || doc["completion_percentage"] === 100
     ).length;
     return Math.round((completed / documents.length) * 100);
   }

@@ -52,7 +52,7 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
     container.register(CORE_TOKENS.Config, () => mockConfig);
 
     // Setup memory domain configuration
-    mockConfig.set('memory', {
+    mockConfig?.set('memory', {
       type: 'memory',
       maxSize: 1000,
       ttl: 300000,
@@ -60,7 +60,7 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
     });
 
     // Setup database domain configuration
-    mockConfig.set('database', {
+    mockConfig?.set('database', {
       type: 'sqlite',
       database: ':memory:',
       pool: { min: 1, max: 5 },
@@ -69,7 +69,7 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
 
   describe('Memory Domain DI Integration', () => {
     it('should create memory provider factory with DI', () => {
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
 
       const factory = container.resolve(MemoryProviderFactory);
       expect(factory).toBeInstanceOf(MemoryProviderFactory);
@@ -79,8 +79,8 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
     });
 
     it('should create memory controller with proper DI injection', () => {
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-      container.register(MEMORY_TOKENS.Config, () => mockConfig.get('memory'));
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+      container.register(MEMORY_TOKENS.Config, () => mockConfig?.get('memory'));
       container.register(MEMORY_TOKENS.Controller, MemoryController);
 
       const controller = container.resolve(MemoryController);
@@ -88,8 +88,8 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
     });
 
     it('should handle memory store operations through DI', async () => {
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-      container.register(MEMORY_TOKENS.Config, () => mockConfig.get('memory'));
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+      container.register(MEMORY_TOKENS.Config, () => mockConfig?.get('memory'));
       container.register(MEMORY_TOKENS.Controller, MemoryController);
 
       const controller = container.resolve(MemoryController);
@@ -101,31 +101,31 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
         options: { ttl: 60000, compress: false },
       });
 
-      expect(storeResult.success).toBe(true);
-      expect(storeResult.data?.stored).toBe(true);
-      expect(storeResult.data?.key).toBe('test-key');
-      expect(storeResult.metadata?.backend).toBe('memory');
+      expect(storeResult?.success).toBe(true);
+      expect(storeResult?.data?.stored).toBe(true);
+      expect(storeResult?.data?.key).toBe('test-key');
+      expect(storeResult?.metadata?.backend).toBe('memory');
     });
 
     it('should provide memory status with comprehensive health info', async () => {
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-      container.register(MEMORY_TOKENS.Config, () => mockConfig.get('memory'));
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+      container.register(MEMORY_TOKENS.Config, () => mockConfig?.get('memory'));
       container.register(MEMORY_TOKENS.Controller, MemoryController);
 
       const controller = container.resolve(MemoryController);
 
       const statusResult = await controller.getMemoryStatus();
 
-      expect(statusResult.success).toBe(true);
-      expect(statusResult.data?.status).toBe('healthy');
-      expect(statusResult.data?.backend).toBe('memory');
-      expect(statusResult.data?.configuration).toBeDefined();
-      expect(statusResult.metadata?.size).toBeDefined();
+      expect(statusResult?.success).toBe(true);
+      expect(statusResult?.data?.status).toBe('healthy');
+      expect(statusResult?.data?.backend).toBe('memory');
+      expect(statusResult?.data?.configuration).toBeDefined();
+      expect(statusResult?.metadata?.size).toBeDefined();
     });
 
     it('should handle memory batch operations', async () => {
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-      container.register(MEMORY_TOKENS.Config, () => mockConfig.get('memory'));
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+      container.register(MEMORY_TOKENS.Config, () => mockConfig?.get('memory'));
       container.register(MEMORY_TOKENS.Controller, MemoryController);
 
       const controller = container.resolve(MemoryController);
@@ -140,14 +140,14 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
         continueOnError: true,
       });
 
-      expect(batchResult.success).toBe(true);
-      expect(batchResult.data?.results).toHaveLength(4);
-      expect(batchResult.data?.totalOperations).toBe(4);
+      expect(batchResult?.success).toBe(true);
+      expect(batchResult?.data?.results).toHaveLength(4);
+      expect(batchResult?.data?.totalOperations).toBe(4);
     });
 
     it('should provide comprehensive memory analytics', async () => {
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-      container.register(MEMORY_TOKENS.Config, () => mockConfig.get('memory'));
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+      container.register(MEMORY_TOKENS.Config, () => mockConfig?.get('memory'));
       container.register(MEMORY_TOKENS.Controller, MemoryController);
 
       const controller = container.resolve(MemoryController);
@@ -157,17 +157,17 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
 
       const analyticsResult = await controller.getMemoryAnalytics();
 
-      expect(analyticsResult.success).toBe(true);
-      expect(analyticsResult.data?.backend).toBe('memory');
-      expect(analyticsResult.data?.performance).toBeDefined();
-      expect(analyticsResult.data?.usage).toBeDefined();
-      expect(analyticsResult.data?.health).toBeDefined();
+      expect(analyticsResult?.success).toBe(true);
+      expect(analyticsResult?.data?.backend).toBe('memory');
+      expect(analyticsResult?.data?.performance).toBeDefined();
+      expect(analyticsResult?.data?.usage).toBeDefined();
+      expect(analyticsResult?.data?.health).toBeDefined();
     });
   });
 
   describe('Database Domain DI Integration', () => {
     it('should create database provider factory with DI', () => {
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
 
       const factory = container.resolve(DatabaseProviderFactory);
       expect(factory).toBeInstanceOf(DatabaseProviderFactory);
@@ -177,33 +177,33 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
     });
 
     it('should create database controller with proper DI injection', () => {
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
-      container.register(DATABASE_TOKENS.Config, () => mockConfig.get('database'));
-      container.register(DATABASE_TOKENS.Controller, DatabaseController);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
+      container.register(DATABASE_TOKENS?.Config, () => mockConfig?.get('database'));
+      container.register(DATABASE_TOKENS?.Controller, DatabaseController);
 
       const controller = container.resolve(DatabaseController);
       expect(controller).toBeInstanceOf(DatabaseController);
     });
 
     it('should provide database status with health information', async () => {
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
-      container.register(DATABASE_TOKENS.Config, () => mockConfig.get('database'));
-      container.register(DATABASE_TOKENS.Controller, DatabaseController);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
+      container.register(DATABASE_TOKENS?.Config, () => mockConfig?.get('database'));
+      container.register(DATABASE_TOKENS?.Controller, DatabaseController);
 
       const controller = container.resolve(DatabaseController);
 
       const statusResult = await controller.getDatabaseStatus();
 
-      expect(statusResult.success).toBe(true);
-      expect(statusResult.data?.adapter).toBe('sqlite');
-      expect(statusResult.data?.connected).toBeDefined();
-      expect(statusResult.data?.connectionStats).toBeDefined();
+      expect(statusResult?.success).toBe(true);
+      expect(statusResult?.data?.adapter).toBe('sqlite');
+      expect(statusResult?.data?.connected).toBeDefined();
+      expect(statusResult?.data?.connectionStats).toBeDefined();
     });
 
     it('should handle database query execution', async () => {
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
-      container.register(DATABASE_TOKENS.Config, () => mockConfig.get('database'));
-      container.register(DATABASE_TOKENS.Controller, DatabaseController);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
+      container.register(DATABASE_TOKENS?.Config, () => mockConfig?.get('database'));
+      container.register(DATABASE_TOKENS?.Controller, DatabaseController);
 
       const controller = container.resolve(DatabaseController);
 
@@ -212,16 +212,16 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
         params: [],
       });
 
-      expect(queryResult.success).toBe(true);
-      expect(queryResult.data?.results).toBeDefined();
-      expect(queryResult.data?.fields).toBeDefined();
-      expect(queryResult.metadata?.rowCount).toBeDefined();
+      expect(queryResult?.success).toBe(true);
+      expect(queryResult?.data?.results).toBeDefined();
+      expect(queryResult?.data?.fields).toBeDefined();
+      expect(queryResult?.metadata?.rowCount).toBeDefined();
     });
 
     it('should handle database command execution', async () => {
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
-      container.register(DATABASE_TOKENS.Config, () => mockConfig.get('database'));
-      container.register(DATABASE_TOKENS.Controller, DatabaseController);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
+      container.register(DATABASE_TOKENS?.Config, () => mockConfig?.get('database'));
+      container.register(DATABASE_TOKENS?.Controller, DatabaseController);
 
       const controller = container.resolve(DatabaseController);
 
@@ -230,15 +230,15 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
         params: ['test_name'],
       });
 
-      expect(executeResult.success).toBe(true);
-      expect(executeResult.data?.affectedRows).toBeDefined();
-      expect(executeResult.metadata?.rowCount).toBeDefined();
+      expect(executeResult?.success).toBe(true);
+      expect(executeResult?.data?.affectedRows).toBeDefined();
+      expect(executeResult?.metadata?.rowCount).toBeDefined();
     });
 
     it('should handle database transactions', async () => {
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
-      container.register(DATABASE_TOKENS.Config, () => mockConfig.get('database'));
-      container.register(DATABASE_TOKENS.Controller, DatabaseController);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
+      container.register(DATABASE_TOKENS?.Config, () => mockConfig?.get('database'));
+      container.register(DATABASE_TOKENS?.Controller, DatabaseController);
 
       const controller = container.resolve(DatabaseController);
 
@@ -251,53 +251,53 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
         useTransaction: true,
       });
 
-      expect(transactionResult.success).toBe(true);
-      expect(transactionResult.data?.results).toBeDefined();
-      expect(transactionResult.data?.summary?.totalOperations).toBe(3);
+      expect(transactionResult?.success).toBe(true);
+      expect(transactionResult?.data?.results).toBeDefined();
+      expect(transactionResult?.data?.summary?.totalOperations).toBe(3);
     });
 
     it('should provide database schema information', async () => {
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
-      container.register(DATABASE_TOKENS.Config, () => mockConfig.get('database'));
-      container.register(DATABASE_TOKENS.Controller, DatabaseController);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
+      container.register(DATABASE_TOKENS?.Config, () => mockConfig?.get('database'));
+      container.register(DATABASE_TOKENS?.Controller, DatabaseController);
 
       const controller = container.resolve(DatabaseController);
 
       const schemaResult = await controller.getDatabaseSchema();
 
-      expect(schemaResult.success).toBe(true);
-      expect(schemaResult.data?.schema).toBeDefined();
-      expect(schemaResult.data?.statistics).toBeDefined();
-      expect(schemaResult.data?.version).toBeDefined();
+      expect(schemaResult?.success).toBe(true);
+      expect(schemaResult?.data?.schema).toBeDefined();
+      expect(schemaResult?.data?.statistics).toBeDefined();
+      expect(schemaResult?.data?.version).toBeDefined();
     });
 
     it('should provide comprehensive database analytics', async () => {
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
-      container.register(DATABASE_TOKENS.Config, () => mockConfig.get('database'));
-      container.register(DATABASE_TOKENS.Controller, DatabaseController);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
+      container.register(DATABASE_TOKENS?.Config, () => mockConfig?.get('database'));
+      container.register(DATABASE_TOKENS?.Controller, DatabaseController);
 
       const controller = container.resolve(DatabaseController);
 
       const analyticsResult = await controller.getDatabaseAnalytics();
 
-      expect(analyticsResult.success).toBe(true);
-      expect(analyticsResult.data?.adapter).toBe('sqlite');
-      expect(analyticsResult.data?.performance).toBeDefined();
-      expect(analyticsResult.data?.connections).toBeDefined();
-      expect(analyticsResult.data?.health).toBeDefined();
+      expect(analyticsResult?.success).toBe(true);
+      expect(analyticsResult?.data?.adapter).toBe('sqlite');
+      expect(analyticsResult?.data?.performance).toBeDefined();
+      expect(analyticsResult?.data?.connections).toBeDefined();
+      expect(analyticsResult?.data?.health).toBeDefined();
     });
   });
 
   describe('Cross-Domain Integration & Consistency', () => {
     it('should integrate memory and database controllers seamlessly', () => {
       // Register all required services
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-      container.register(MEMORY_TOKENS.Config, () => mockConfig.get('memory'));
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+      container.register(MEMORY_TOKENS.Config, () => mockConfig?.get('memory'));
       container.register(MEMORY_TOKENS.Controller, MemoryController);
 
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
-      container.register(DATABASE_TOKENS.Config, () => mockConfig.get('database'));
-      container.register(DATABASE_TOKENS.Controller, DatabaseController);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
+      container.register(DATABASE_TOKENS?.Config, () => mockConfig?.get('database'));
+      container.register(DATABASE_TOKENS?.Controller, DatabaseController);
 
       const memoryController = container.resolve(MemoryController);
       const databaseController = container.resolve(DatabaseController);
@@ -315,8 +315,8 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
     });
 
     it('should provide consistent error handling across domains', async () => {
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-      container.register(MEMORY_TOKENS.Config, () => mockConfig.get('memory'));
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+      container.register(MEMORY_TOKENS.Config, () => mockConfig?.get('memory'));
       container.register(MEMORY_TOKENS.Controller, MemoryController);
 
       const memoryController = container.resolve(MemoryController);
@@ -327,27 +327,27 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
         value: 'test',
       });
 
-      expect(errorResult.success).toBe(false);
-      expect(errorResult.error).toContain('Key is required');
-      expect(errorResult.metadata).toBeDefined();
+      expect(errorResult?.success).toBe(false);
+      expect(errorResult?.error).toContain('Key is required');
+      expect(errorResult?.metadata).toBeDefined();
     });
 
     it('should maintain consistent response formats across domains', async () => {
       // Setup both controllers
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-      container.register(MEMORY_TOKENS.Config, () => mockConfig.get('memory'));
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+      container.register(MEMORY_TOKENS.Config, () => mockConfig?.get('memory'));
       container.register(MEMORY_TOKENS.Controller, MemoryController);
 
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
-      container.register(DATABASE_TOKENS.Config, () => mockConfig.get('database'));
-      container.register(DATABASE_TOKENS.Controller, DatabaseController);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
+      container.register(DATABASE_TOKENS?.Config, () => mockConfig?.get('database'));
+      container.register(DATABASE_TOKENS?.Controller, DatabaseController);
 
       const memoryController = container.resolve(MemoryController);
       const databaseController = container.resolve(DatabaseController);
 
       // Get status from both domains
       const memoryStatus = await memoryController.getMemoryStatus();
-      const databaseStatus = await databaseController.getDatabaseStatus();
+      const databaseStatus = await databaseController?.getDatabaseStatus();
 
       // Verify consistent response structure
       expect(memoryStatus).toHaveProperty('success');
@@ -362,21 +362,21 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
       expect(memoryStatus.metadata).toHaveProperty('timestamp');
       expect(memoryStatus.metadata).toHaveProperty('executionTime');
 
-      expect(databaseStatus.metadata).toHaveProperty('timestamp');
-      expect(databaseStatus.metadata).toHaveProperty('executionTime');
+      expect(databaseStatus?.metadata).toHaveProperty('timestamp');
+      expect(databaseStatus?.metadata).toHaveProperty('executionTime');
     });
 
     it('should support dependency injection across domain boundaries', () => {
       // Test that shared services (logger, config) work across domains
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
 
       const memoryFactory = container.resolve(MemoryProviderFactory);
       const databaseFactory = container.resolve(DatabaseProviderFactory);
 
       // Both factories should use the same logger instance
       const memoryProvider = memoryFactory.createProvider({ type: 'memory' });
-      const databaseAdapter = databaseFactory.createAdapter({
+      const databaseAdapter = databaseFactory?.createAdapter({
         type: 'sqlite',
         database: ':memory:',
       });
@@ -399,8 +399,8 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
       // This test verifies that no 'any' types are used in the implementation
       // The fact that TypeScript compiles without errors indicates compliance
 
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
 
       const memoryFactory = container.resolve(MemoryProviderFactory);
       const databaseFactory = container.resolve(DatabaseProviderFactory);
@@ -419,14 +419,14 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
 
       // TypeScript should infer the correct types here
       expect(typeof resolvedLogger.info).toBe('function');
-      expect(typeof resolvedConfig.get).toBe('function');
+      expect(typeof resolvedConfig?.get).toBe('function');
     });
   });
 
   describe('Performance and Resource Management', () => {
     it('should handle high-frequency operations efficiently', async () => {
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-      container.register(MEMORY_TOKENS.Config, () => mockConfig.get('memory'));
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+      container.register(MEMORY_TOKENS.Config, () => mockConfig?.get('memory'));
       container.register(MEMORY_TOKENS.Controller, MemoryController);
 
       const controller = container.resolve(MemoryController);
@@ -451,7 +451,7 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
       const averageTime = totalTime / operations.length;
 
       // Verify all operations succeeded
-      expect(results.every((r) => r.success)).toBe(true);
+      expect(results?.every((r) => r.success)).toBe(true);
 
       // Verify reasonable performance (should complete in reasonable time)
       expect(averageTime).toBeLessThan(10); // Less than 10ms per operation
@@ -470,7 +470,7 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
         const testContainer = new DIContainer();
         testContainer.register(CORE_TOKENS.Logger, () => new MockLogger());
         testContainer.register(CORE_TOKENS.Config, () => new MockConfig());
-        testContainer.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
+        testContainer.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
       }
 
       const finalMemory = process.memoryUsage().heapUsed;
@@ -484,27 +484,27 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
   describe('Issue #63 Requirements Validation', () => {
     it('should satisfy all Issue #63 requirements', async () => {
       // ✅ Memory domain enhanced with DI patterns
-      container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-      container.register(MEMORY_TOKENS.Config, () => mockConfig.get('memory'));
+      container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+      container.register(MEMORY_TOKENS.Config, () => mockConfig?.get('memory'));
       container.register(MEMORY_TOKENS.Controller, MemoryController);
 
       const memoryController = container.resolve(MemoryController);
       expect(memoryController).toBeInstanceOf(MemoryController);
 
       // ✅ Database domain enhanced with DI patterns
-      container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
-      container.register(DATABASE_TOKENS.Config, () => mockConfig.get('database'));
-      container.register(DATABASE_TOKENS.Controller, DatabaseController);
+      container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
+      container.register(DATABASE_TOKENS?.Config, () => mockConfig?.get('database'));
+      container.register(DATABASE_TOKENS?.Controller, DatabaseController);
 
       const databaseController = container.resolve(DatabaseController);
       expect(databaseController).toBeInstanceOf(DatabaseController);
 
       // ✅ REST API layers created for both domains
       const memoryStatus = await memoryController.getMemoryStatus();
-      const databaseStatus = await databaseController.getDatabaseStatus();
+      const databaseStatus = await databaseController?.getDatabaseStatus();
 
       expect(memoryStatus.success).toBe(true);
-      expect(databaseStatus.success).toBe(true);
+      expect(databaseStatus?.success).toBe(true);
 
       // ✅ TypeScript strict mode compliance (verified by compilation)
       // ✅ Google standards compliance (verified by linting)
@@ -526,14 +526,14 @@ describe('Issue #63: Comprehensive Dependency Injection Implementation', () => {
       // 4. Consistent error handling
       // 5. Comprehensive configuration support
 
-      expect(MEMORY_TOKENS.ProviderFactory).toBeDefined();
-      expect(DATABASE_TOKENS.ProviderFactory).toBeDefined();
+      expect(MEMORY_TOKENS["ProviderFactory"]).toBeDefined();
+      expect(DATABASE_TOKENS?.["ProviderFactory"]).toBeDefined();
 
       expect(MEMORY_TOKENS.Controller).toBeDefined();
-      expect(DATABASE_TOKENS.Controller).toBeDefined();
+      expect(DATABASE_TOKENS?.Controller).toBeDefined();
 
       expect(MEMORY_TOKENS.Config).toBeDefined();
-      expect(DATABASE_TOKENS.Config).toBeDefined();
+      expect(DATABASE_TOKENS?.Config).toBeDefined();
 
       // Architecture consistency verified
       expect(true).toBe(true);
@@ -550,8 +550,8 @@ describe('Integration with Existing DI System', () => {
     container.register(CORE_TOKENS.Config, () => new MockConfig());
 
     // Register new domain services
-    container.register(MEMORY_TOKENS.ProviderFactory, MemoryProviderFactory);
-    container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
+    container.register(MEMORY_TOKENS["ProviderFactory"], MemoryProviderFactory);
+    container.register(DATABASE_TOKENS?.["ProviderFactory"], DatabaseProviderFactory);
 
     // Verify resolution works
     const memoryFactory = container.resolve(MemoryProviderFactory);

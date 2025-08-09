@@ -18,10 +18,10 @@ class MockGitHubAPI {
     const issue = {
       id: this.issues.length + 1,
       number: this.issues.length + 1,
-      title: data.title,
-      body: data.body,
-      labels: data.labels || [],
-      assignees: data.assignees || [],
+      title: data?.["title"],
+      body: data?.["body"],
+      labels: data?.["labels"] || [],
+      assignees: data?.["assignees"] || [],
       state: 'open',
       created_at: new Date().toISOString(),
     };
@@ -41,10 +41,10 @@ class MockGitHubAPI {
     const pr = {
       id: this.pullRequests.length + 1,
       number: this.pullRequests.length + 1,
-      title: data.title,
-      body: data.body,
-      head: { ref: data.head },
-      base: { ref: data.base },
+      title: data?.["title"],
+      body: data?.["body"],
+      head: { ref: data?.["head"] },
+      base: { ref: data?.["base"] },
       state: 'open',
       created_at: new Date().toISOString(),
     };
@@ -55,8 +55,8 @@ class MockGitHubAPI {
   async createProject(data: any) {
     const project = {
       id: this.projects.length + 1,
-      name: data.name,
-      body: data.body,
+      name: data?.["name"],
+      body: data?.["body"],
       state: 'open',
       created_at: new Date().toISOString(),
     };
@@ -85,7 +85,7 @@ describe('GitHub Integration Automation E2E Tests', () => {
   let documentSystem: DocumentDrivenSystem;
   let testSetup: IntegrationTestSetup;
   let fsHelper: RealFileSystemTestHelper;
-  let _networkHelper: RealNetworkTestHelper;
+  let networkHelper: RealNetworkTestHelper;
   let mockGitHub: MockGitHubAPI;
 
   const TEST_PROJECT_PATH = '/tmp/claude-zen-github-test';
@@ -94,7 +94,7 @@ describe('GitHub Integration Automation E2E Tests', () => {
   beforeAll(async () => {
     testSetup = new IntegrationTestSetup();
     fsHelper = new RealFileSystemTestHelper();
-    _networkHelper = new RealNetworkTestHelper();
+    networkHelper = new RealNetworkTestHelper();
     mockGitHub = new MockGitHubAPI();
 
     await testSetup.initializeFullEnvironment();
@@ -171,7 +171,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
 
       // Process vision document (should trigger GitHub integration)
       documentSystem.on('document:processed', async (event) => {
-        if (event.document.type === 'vision') {
+        if (event["document"]?.type === 'vision') {
           // Simulate GitHub issue creation from vision
           const issues = await Promise.all([
             mockGitHub.createIssue({
@@ -192,9 +192,9 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
           ]);
 
           expect(issues.length).toBe(3);
-          expect(issues[0].title).toContain('Authentication System');
-          expect(issues[1].title).toContain('Product Catalog');
-          expect(issues[2].title).toContain('Payment Processing');
+          expect(issues[0]?.title).toContain('Authentication System');
+          expect(issues[1]?.title).toContain('Product Catalog');
+          expect(issues[2]?.title).toContain('Payment Processing');
         }
       });
 
@@ -256,7 +256,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
 
       // Process PRD (should update GitHub issue)
       documentSystem.on('document:processed', async (event) => {
-        if (event.document.type === 'prd' && event.document.path.includes('auth-prd')) {
+        if (event["document"]?.type === 'prd' && event["document"]?.["path"]?.includes('auth-prd')) {
           // Simulate GitHub issue update
           await mockGitHub.updateIssue(authIssue.number, {
             body: `${authIssue.body}\n\n**Progress Update:**\n- ✅ Registration completed\n- ✅ Login implemented\n- 🔄 Password reset in progress\n- ⏳ Profile management pending`,
@@ -317,7 +317,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
 
       // Process completed task (should close GitHub issue)
       documentSystem.on('document:processed', async (event) => {
-        if (event.document.type === 'task' && event.document.content.includes('COMPLETED')) {
+        if (event["document"]?.type === 'task' && event["document"]?.["content"]?.includes('COMPLETED')) {
           await mockGitHub.updateIssue(completedIssue.number, {
             state: 'closed',
             labels: [...completedIssue.labels, 'completed'],
@@ -375,7 +375,7 @@ Build a modern e-commerce platform with AI-powered recommendations and real-time
 
       // Process feature (should create PR)
       documentSystem.on('document:processed', async (event) => {
-        if (event.document.type === 'feature') {
+        if (event["document"]?.type === 'feature') {
           const pr = await mockGitHub.createPullRequest({
             title: 'feat: implement product search functionality',
             body: `
@@ -500,7 +500,7 @@ src/
       };
 
       documentSystem.on('document:processed', async (event) => {
-        if (event.document.type === 'task' && event.document.content.includes('Implementation')) {
+        if (event["document"]?.type === 'task' && event["document"]?.["content"]?.includes('Implementation')) {
           // Simulate automated review checklist creation
           expect(reviewChecklist.security.length).toBe(5);
           expect(reviewChecklist.performance.length).toBe(5);
@@ -566,7 +566,7 @@ src/
 
       // Simulate CI/CD pipeline triggers
       documentSystem.on('document:processed', async (event) => {
-        if (event.document.path.includes('deployment-spec')) {
+        if (event["document"]?.["path"]?.includes('deployment-spec')) {
           pipelineEvents.push({
             trigger: 'documentation_update',
             pipeline: 'infrastructure_validation',
@@ -655,9 +655,9 @@ src/
       let readinessScore = 0;
 
       documentSystem.on('document:processed', async (event) => {
-        if (event.document.content.includes('Production Readiness Checklist')) {
+        if (event["document"]?.["content"]?.includes('Production Readiness Checklist')) {
           // Calculate readiness score based on completed items
-          const content = event.document.content;
+          const content = event["document"]?.["content"];
           const totalItems = (content.match(/- \[/g) || []).length;
           const completedItems = (content.match(/- \[x\]/g) || []).length;
           readinessScore = (completedItems / totalItems) * 100;
@@ -744,7 +744,7 @@ Complete e-commerce platform with user management, product catalog, and order pr
       );
 
       documentSystem.on('document:processed', async (event) => {
-        if (event.document.type === 'epic') {
+        if (event["document"]?.type === 'epic') {
           // Create GitHub project for epic
           const project = await mockGitHub.createProject({
             name: 'E-Commerce Platform Epic',
@@ -808,7 +808,7 @@ Complete e-commerce platform with user management, product catalog, and order pr
       );
 
       documentSystem.on('document:processed', async (event) => {
-        if (event.document.content.includes('Moving to Review')) {
+        if (event["document"]?.["content"]?.includes('Moving to Review')) {
           // Simulate moving card on project board
           const taskName = 'Product Search Enhancement';
 
@@ -844,11 +844,11 @@ Complete e-commerce platform with user management, product catalog, and order pr
 
       let projectStatus: any = {};
 
-      documentSystem.on('document:processed', async (_event) => {
+      documentSystem.on('document:processed', async (event) => {
         // Simulate status report generation
         const byType = projectDocs.reduce((acc, doc) => {
           if (!acc[doc.type]) acc[doc.type] = [];
-          acc[doc.type].push(doc);
+          acc[doc.type]?.push(doc);
           return acc;
         }, {} as any);
 

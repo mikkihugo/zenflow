@@ -4,7 +4,6 @@
  */
 
 import 'reflect-metadata';
-import type { DIToken, ParameterDecorator } from '../types/di-types';
 import { getInjectionTokens, setInjectionTokens } from './injectable';
 
 /**
@@ -13,7 +12,7 @@ import { getInjectionTokens, setInjectionTokens } from './injectable';
  * @param token
  */
 export function inject<T>(token: DIToken<T>): ParameterDecorator {
-  return (target: any, _propertyKey: string | symbol | undefined, parameterIndex: number) => {
+  return (target: any, propertyKey: string | symbol | undefined, parameterIndex: number) => {
     // Get existing injection tokens
     const existingTokens = getInjectionTokens(target) || [];
 

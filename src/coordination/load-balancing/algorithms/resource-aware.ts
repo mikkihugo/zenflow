@@ -4,7 +4,6 @@
  */
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
-import type { Agent, LoadMetrics, ResourceConstraint, RoutingResult, Task } from '../types';
 
 interface ResourceProfile {
   agentId: string;
@@ -125,17 +124,17 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     // Sort by resource fitness score (higher is better)
     viableAgents.sort((a, b) => b.score - a.score);
 
-    const selectedAgent = viableAgents[0].agent;
+    const selectedAgent = viableAgents[0]?.agent;
     const confidence = this.calculateConfidence(viableAgents);
     const alternatives = viableAgents.slice(1, 4).map((s) => s.agent);
 
     // Reserve resources for the task
-    await this.reserveResources(selectedAgent.id, taskRequirements);
+    await this.reserveResources(selectedAgent?.id, taskRequirements);
 
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected based on optimal resource fit (score: ${viableAgents[0].score.toFixed(2)})`,
+      reasoning: `Selected based on optimal resource fit (score: ${viableAgents[0]?.score?.toFixed(2)})`,
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics, false),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),
@@ -649,14 +648,14 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     agent: Agent;
     score: number;
   } {
-    return scoredAgents.reduce((best, current) => (current.score > best.score ? current : best));
+    return scoredAgents.reduce((best, current) => (current?.score > best.score ? current : best));
   }
 
   private calculateConfidence(viableAgents: Array<{ score: number }>): number {
     if (viableAgents.length < 2) return 1.0;
 
-    const bestScore = viableAgents[0].score;
-    const secondBestScore = viableAgents[1].score;
+    const bestScore = viableAgents[0]?.score;
+    const secondBestScore = viableAgents[1]?.score;
     const advantage = (bestScore - secondBestScore) / Math.max(bestScore, 0.1);
 
     return Math.min(1.0, Math.max(0.3, advantage + 0.5));
@@ -681,7 +680,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     resource: keyof Pick<ResourceProfile, 'cpu' | 'memory' | 'disk' | 'network'>
   ): number {
     if (profiles.length === 0) return 0;
-    return profiles.reduce((sum, p) => sum + p[resource].utilization, 0) / profiles.length;
+    return profiles.reduce((sum, p) => sum + p[resource]?.utilization, 0) / profiles.length;
   }
 
   private calculateResourceEfficiency(profiles: ResourceProfile[]): number {

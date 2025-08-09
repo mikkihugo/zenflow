@@ -30,16 +30,16 @@ export class Logger {
 
   constructor(options: LoggerOptions = {}) {
     // Use centralized configuration with user overrides
-    const centralConfig = config.getAll();
-    const loggerConfig = centralConfig.core.logger;
+    const centralConfig = config?.["getAll"]();
+    const loggerConfig = centralConfig?.core?.logger;
     
-    this.name = options.name || 'ruv-swarm';
-    this.level = options.level || loggerConfig.level.toUpperCase();
-    this.enableStderr = options.enableStderr === undefined ? loggerConfig.console : options.enableStderr;
-    this.enableFile = options.enableFile === undefined ? !!loggerConfig.file : options.enableFile;
-    this.formatJson = options.formatJson === undefined ? loggerConfig.structured : options.formatJson;
-    this.logDir = options.logDir || './logs';
-    this.metadata = options.metadata || {};
+    this.name = options?.["name"] || 'ruv-swarm';
+    this.level = options?.["level"] || loggerConfig?.level?.toUpperCase();
+    this.enableStderr = options?.["enableStderr"] === undefined ? loggerConfig?.console : options?.["enableStderr"];
+    this.enableFile = options?.["enableFile"] === undefined ? !!loggerConfig?.file : options?.["enableFile"];
+    this.formatJson = options?.["formatJson"] === undefined ? loggerConfig?.structured : options?.["formatJson"];
+    this.logDir = options?.["logDir"] || './logs';
+    this.metadata = options?.["metadata"] || {};
     this.correlationId = null;
     this.operations = new Map();
   }
@@ -79,39 +79,39 @@ export class Logger {
   }
 
   info(message: string, data: Record<string, any> = {}) {
-    this._log('INFO', message, data);
+    this["_log"]('INFO', message, data);
   }
 
   warn(message: string, data: Record<string, any> = {}) {
-    this._log('WARN', message, data);
+    this["_log"]('WARN', message, data);
   }
 
   error(message: string, data: Record<string, any> = {}) {
-    this._log('ERROR', message, data);
+    this["_log"]('ERROR', message, data);
   }
 
   debug(message: string, data: Record<string, any> = {}) {
-    const centralConfig = config.getAll();
-    const enableDebug = this.level === 'DEBUG' || centralConfig.environment.enableDebugEndpoints;
+    const centralConfig = config?.["getAll"]();
+    const enableDebug = this.level === 'DEBUG' || centralConfig?.environment?.enableDebugEndpoints;
     if (enableDebug) {
-      this._log('DEBUG', message, data);
+      this["_log"]('DEBUG', message, data);
     }
   }
 
   trace(message: string, data: Record<string, any> = {}) {
-    const centralConfig = config.getAll();
-    const enableTrace = this.level === 'TRACE' || centralConfig.environment.enableDebugEndpoints;
+    const centralConfig = config?.["getAll"]();
+    const enableTrace = this.level === 'TRACE' || centralConfig?.environment?.enableDebugEndpoints;
     if (enableTrace) {
-      this._log('TRACE', message, data);
+      this["_log"]('TRACE', message, data);
     }
   }
 
   success(message: string, data: Record<string, any> = {}) {
-    this._log('SUCCESS', message, data);
+    this["_log"]('SUCCESS', message, data);
   }
 
   fatal(message: string, data: Record<string, any> = {}) {
-    this._log('FATAL', message, data);
+    this["_log"]('FATAL', message, data);
   }
 
   startOperation(operationName: string): string {

@@ -1,6 +1,4 @@
-#!/usr/bin/env node
-
-/**
+#!/usr/bin/env node/**
  * Terminal Interface Router - Google Standard Entry Point
  *
  * Routes between different terminal interface modes based on context.
@@ -9,7 +7,6 @@
  */
 
 import { render } from 'ink';
-import type React from 'react';
 import { CommandExecutionRenderer } from './command-execution-renderer';
 import { InteractiveTerminalApplication } from './interactive-terminal-application';
 import { createSimpleLogger } from './utils/logger';

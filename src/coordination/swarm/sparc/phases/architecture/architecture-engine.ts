@@ -6,36 +6,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import type {
-  AlgorithmPseudocode,
-  ArchitecturalPattern,
-  ArchitecturalValidation,
-  ArchitectureDesign,
-  ArchitectureEngine,
-  Component,
-  ComponentDiagram,
-  ComponentRelationship,
-  DataFlowConnection,
-  DataFlowDiagram,
-  DeploymentPlan,
-  DeploymentUnit,
-  DetailedSpecification,
-  ImplementationPhase,
-  ImplementationPlan,
-  ImplementationTask,
-  InterfaceDefinition,
-  ProjectRisk,
-  ProjectTimeline,
-  PseudocodeStructure,
-  QualityAttribute,
-  ResourceRequirement,
-  RiskAssessment,
-  RiskLevel,
-  ScalabilityRequirement,
-  SecurityRequirement,
-  SystemArchitecture,
-  ValidationResult,
-} from '../../types/sparc-types';
+import type { ArchitectureEngine } from '../../types/sparc-types';
 
 // Additional types needed for this module
 interface SystemComponent {
@@ -208,22 +179,22 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   private async createComponentFromDataStructure(dataStructure: any): Promise<SystemComponent> {
     return {
       id: nanoid(),
-      name: `${dataStructure.name}Manager`,
+      name: `${dataStructure?.name}Manager`,
       type: 'data-manager',
-      description: `Manages ${dataStructure.description}`,
+      description: `Manages ${dataStructure?.description}`,
       responsibilities: [
         'Data storage and retrieval',
         'Data consistency',
         'Performance optimization',
         'Backup and recovery',
       ],
-      interfaces: [`I${dataStructure.name}Manager`],
+      interfaces: [`I${dataStructure?.name}Manager`],
       dependencies: await this.extractDataStructureDependencies(dataStructure),
       technologies: await this.selectTechnologiesForDataStructure(dataStructure),
       scalability: await this.assessDataStructureScalability(dataStructure),
       performance: {
         expectedLatency: this.getDataStructureLatency(
-          dataStructure.performance || { lookup: 'O(1)' }
+          dataStructure?.performance || { lookup: 'O(1)' }
         ),
       },
     };
@@ -432,9 +403,9 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
       const targetComponent = components.find((c) => c.id === relationship.targetId);
 
       if (sourceComponent && targetComponent) {
-        dataFlows.push({
+        dataFlows?.push({
           from: sourceComponent.name,
-          to: targetComponent.name,
+          to: targetComponent?.name,
           data: this.inferDataTypeFromSystemComponents(sourceComponent, targetComponent),
           protocol: this.selectProtocolForSystemComponents(sourceComponent, targetComponent),
           frequency: this.estimateDataFrequencyFromSystemComponents(
@@ -556,8 +527,8 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     source: SystemComponent,
     target: SystemComponent
   ): string {
-    if (source.name.includes('Agent') && target.name.includes('Registry')) return 'AgentInfo';
-    if (source.name.includes('Task') && target.name.includes('Queue')) return 'Task';
+    if (source.name.includes('Agent') && target?.name?.includes('Registry')) return 'AgentInfo';
+    if (source.name.includes('Task') && target?.name?.includes('Queue')) return 'Task';
     if (source.name.includes('Neural')) return 'Matrix';
     return 'JSON';
   }
@@ -566,9 +537,9 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     source: SystemComponent,
     target: SystemComponent
   ): string {
-    if (source.type === 'gateway' || target.type === 'gateway') return 'HTTP/REST';
-    if (source.type === 'service' && target.type === 'service') return 'HTTP/REST';
-    if (target.type === 'database') return 'TCP/SQL';
+    if (source.type === 'gateway' || target?.type === 'gateway') return 'HTTP/REST';
+    if (source.type === 'service' && target?.type === 'service') return 'HTTP/REST';
+    if (target?.type === 'database') return 'TCP/SQL';
     return 'Internal';
   }
 
@@ -577,28 +548,28 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     target: SystemComponent
   ): string {
     if (source.type === 'gateway') return 'High';
-    if (source.type === 'service' && target.type === 'database') return 'Medium';
+    if (source.type === 'service' && target?.type === 'database') return 'Medium';
     return 'Low';
   }
 
   // Helper methods for Component type (for public interface methods)
   private inferDataTypeFromComponents(source: Component, target: Component): string {
-    if (source.name.includes('Agent') && target.name.includes('Registry')) return 'AgentInfo';
-    if (source.name.includes('Task') && target.name.includes('Queue')) return 'Task';
+    if (source.name.includes('Agent') && target?.name?.includes('Registry')) return 'AgentInfo';
+    if (source.name.includes('Task') && target?.name?.includes('Queue')) return 'Task';
     if (source.name.includes('Neural')) return 'Matrix';
     return 'JSON';
   }
 
   private selectProtocolForComponents(source: Component, target: Component): string {
-    if (source.type === 'gateway' || target.type === 'gateway') return 'HTTP/REST';
-    if (source.type === 'service' && target.type === 'service') return 'HTTP/REST';
-    if (target.type === 'database') return 'TCP/SQL';
+    if (source.type === 'gateway' || target?.type === 'gateway') return 'HTTP/REST';
+    if (source.type === 'service' && target?.type === 'service') return 'HTTP/REST';
+    if (target?.type === 'database') return 'TCP/SQL';
     return 'Internal';
   }
 
   private estimateDataFrequencyFromComponents(source: Component, target: Component): string {
     if (source.type === 'gateway') return 'High';
-    if (source.type === 'service' && target.type === 'database') return 'Medium';
+    if (source.type === 'service' && target?.type === 'database') return 'Medium';
     return 'Low';
   }
 
@@ -679,17 +650,17 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   private parseEffortToHours(effort: string): number {
     if (effort.includes('hours')) {
       const match = effort.match(/(\d+)-?(\d*)\s*hours?/);
-      if (match && match[1]) {
-        const min = parseInt(match[1]);
-        const max = match[2] ? parseInt(match[2]) : min;
+      if (match && match?.[1]) {
+        const min = parseInt(match?.[1]);
+        const max = match?.[2] ? parseInt(match?.[2]) : min;
         return (min + max) / 2;
       }
     }
     if (effort.includes('days')) {
       const match = effort.match(/(\d+)-?(\d*)\s*days?/);
-      if (match && match[1]) {
-        const min = parseInt(match[1]);
-        const max = match[2] ? parseInt(match[2]) : min;
+      if (match && match?.[1]) {
+        const min = parseInt(match?.[1]);
+        const max = match?.[2] ? parseInt(match?.[2]) : min;
         return ((min + max) / 2) * 8; // 8 hours per day
       }
     }
@@ -838,9 +809,9 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   private async extractDataStructureDependencies(dataStructure: any): Promise<string[]> {
     const dependencies: string[] = [];
 
-    if (dataStructure.type === 'HashMap') dependencies.push('HashingService');
-    if (dataStructure.type === 'PriorityQueue') dependencies.push('ComparatorService');
-    if (dataStructure.type === 'Matrix') dependencies.push('WASMModule');
+    if (dataStructure?.type === 'HashMap') dependencies.push('HashingService');
+    if (dataStructure?.type === 'PriorityQueue') dependencies.push('ComparatorService');
+    if (dataStructure?.type === 'Matrix') dependencies.push('WASMModule');
 
     return dependencies;
   }
@@ -848,7 +819,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   private async selectTechnologiesForDataStructure(dataStructure: any): Promise<string[]> {
     const technologies = ['TypeScript'];
 
-    switch (dataStructure.type) {
+    switch (dataStructure?.type) {
       case 'HashMap':
         technologies.push('Map', 'Redis');
         break;
@@ -864,7 +835,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   }
 
   private async assessDataStructureScalability(dataStructure: any): Promise<string> {
-    if (dataStructure.expectedSize > 100000) {
+    if (dataStructure?.expectedSize > 100000) {
       return 'horizontal';
     }
     return 'vertical';
@@ -998,9 +969,9 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
         );
 
         if (targetComponent) {
-          dataFlows.push({
+          dataFlows?.push({
             from: component.name,
-            to: targetComponent.name,
+            to: targetComponent?.name,
             data: this.inferDataTypeFromComponents(component, targetComponent),
             protocol: this.selectProtocolForComponents(component, targetComponent),
             frequency: this.estimateDataFrequencyFromComponents(component, targetComponent),
@@ -1047,7 +1018,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     if (databaseComponents.length > 0) {
       deploymentUnits.push({
         name: 'database',
-        components: databaseComponents.map((c) => c.name),
+        components: databaseComponents?.map((c) => c.name),
         infrastructure: [
           {
             type: 'storage',
@@ -1102,7 +1073,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
           (c) => c.name === dependency || c.interfaces.includes(dependency)
         );
 
-        validationResults.push({
+        validationResults?.push({
           criterion: `Dependency validation for ${component.name}`,
           passed: !!dependentComponent,
           score: dependentComponent ? 1.0 : 0.0,
@@ -1118,7 +1089,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     for (const component of architecture.components) {
       for (const interfaceName of component.interfaces) {
         const hasInterface = allInterfaces.includes(interfaceName);
-        validationResults.push({
+        validationResults?.push({
           criterion: `Interface validation for ${component.name}`,
           passed: hasInterface,
           score: hasInterface ? 1.0 : 0.0,
@@ -1130,11 +1101,11 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     }
 
     return {
-      overall: validationResults.every((r) => r.passed),
+      overall: validationResults?.every((r) => r.passed),
       score:
-        (validationResults.reduce((sum, r) => sum + r.score, 0) / validationResults.length) * 100,
+        (validationResults?.reduce((sum, r) => sum + r.score, 0) / validationResults.length) * 100,
       results: validationResults,
-      recommendations: validationResults.filter((r) => !r.passed).map((r) => r.feedback || ''),
+      recommendations: validationResults?.filter((r) => !r.passed).map((r) => r.feedback || ''),
     };
   }
 
@@ -1202,7 +1173,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     const validationResults: ValidationResult[] = [];
 
     // Validate component design
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Component design',
       passed: architecture.components.length > 0,
       score: architecture.components.length > 0 ? 1.0 : 0.0,
@@ -1213,7 +1184,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     });
 
     // Validate relationships
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Component relationships',
       passed: architecture.relationships.length > 0,
       score: architecture.relationships.length > 0 ? 1.0 : 0.0,
@@ -1224,7 +1195,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     });
 
     // Validate patterns
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Architecture patterns',
       passed: architecture.patterns.length > 0,
       score: architecture.patterns.length > 0 ? 1.0 : 0.0,
@@ -1235,7 +1206,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     });
 
     // Validate quality attributes
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Quality attributes',
       passed: architecture.qualityAttributes.length >= 3,
       score: architecture.qualityAttributes.length >= 3 ? 1.0 : 0.5,
@@ -1246,7 +1217,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     });
 
     const _overallScore =
-      validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
+      validationResults?.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
 
     return validationResults;
   }

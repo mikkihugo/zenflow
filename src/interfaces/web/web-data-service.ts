@@ -115,9 +115,9 @@ export class WebDataService {
 
     const swarm: SwarmData = {
       id: `swarm-${Date.now()}`,
-      name: config.name || 'New Swarm',
+      name: config?.["name"] || 'New Swarm',
       status: 'initializing',
-      agents: config.agents || 4,
+      agents: config?.["agents"] || 4,
       tasks: 0,
       progress: 0,
       createdAt: new Date().toISOString(),
@@ -165,11 +165,11 @@ export class WebDataService {
 
     const task: TaskData = {
       id: `task-${Date.now()}`,
-      title: config.title || 'New Task',
+      title: config?.["title"] || 'New Task',
       status: 'pending',
       assignedAgents: [],
       progress: 0,
-      eta: config.eta || '30m',
+      eta: config?.["eta"] || '30m',
       createdAt: new Date().toISOString(),
     };
 

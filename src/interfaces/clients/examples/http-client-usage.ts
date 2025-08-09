@@ -30,18 +30,18 @@ async function basicUsage() {
 
   try {
     // Make requests
-    const _users = await client.get('/users');
+    const users = await client.get('/users');
 
-    const _newUser = await client.post('/users', {
+    const newUser = await client.post('/users', {
       name: 'John Doe',
       email: 'john@example.com',
     });
 
     // Check client status
-    const _status = await client.healthCheck();
+    const status = await client.healthCheck();
 
     // Get performance metrics
-    const _metrics = await client.getMetrics();
+    const metrics = await client.getMetrics();
   } catch (error) {
     if (isClientError(error)) {
       console.error(`Client error: ${error.code} - ${error.message}`);
@@ -69,7 +69,7 @@ async function bearerTokenAuth() {
   });
 
   try {
-    const _profile = await client.get('/profile');
+    const profile = await client.get('/profile');
   } catch (error) {
     if (isAuthenticationError(error)) {
       console.error('Authentication failed - token may be expired');
@@ -94,7 +94,7 @@ async function apiKeyAuth() {
   });
 
   try {
-    const _data = await client.get('/protected-endpoint');
+    const data = await client.get('/protected-endpoint');
   } finally {
     await client.destroy();
   }
@@ -123,7 +123,7 @@ async function oauthAuth() {
 
   try {
     // The client will automatically refresh the token if it's expired
-    const _data = await client.get('/protected-resource');
+    const data = await client.get('/protected-resource');
   } finally {
     await client.destroy();
   }
@@ -153,10 +153,10 @@ async function retryConfiguration() {
   });
 
   // Listen for retry events
-  client.on('retry', (_info) => {});
+  client.on('retry', (info) => {});
 
   try {
-    const _data = await client.get('/unreliable-endpoint');
+    const data = await client.get('/unreliable-endpoint');
   } finally {
     await client.destroy();
   }
@@ -211,7 +211,7 @@ async function monitoringExample() {
     }
 
     // Get final metrics
-    const _metrics = await client.getMetrics();
+    const metrics = await client.getMetrics();
   } finally {
     await client.destroy();
   }
@@ -248,17 +248,17 @@ async function factoryUsage() {
     // Get a specific client
     const usersClient = factory.get('users-api');
     if (usersClient) {
-      const _users = await usersClient.get('/users');
+      const users = await usersClient.get('/users');
     }
 
     // Health check all clients
     const healthResults = await factory.healthCheckAll();
-    for (const [_name, _status] of healthResults) {
+    for (const [name, status] of healthResults) {
     }
 
     // Get metrics for all clients
     const metricsResults = await factory.getMetricsAll();
-    for (const [_name, _metrics] of metricsResults) {
+    for (const [name, metrics] of metricsResults) {
     }
   } finally {
     await factory.shutdown();
@@ -300,9 +300,9 @@ async function presetUsage() {
 
   try {
     // Use the clients...
-    const _devData = await devClient.get('/test');
-    const _prodData = await prodClient.get('/data');
-    const _haData = await haClient.get('/critical');
+    const devData = await devClient.get('/test');
+    const prodData = await prodClient.get('/data');
+    const haData = await haClient.get('/critical');
   } finally {
     await Promise.all([devClient.destroy(), prodClient.destroy(), haClient.destroy()]);
   }
@@ -326,7 +326,7 @@ async function loadBalancingExample() {
     for (let i = 0; i < 10; i++) {
       const client = clients[i % clients.length];
       try {
-        const _response = await client.get('/data');
+        const response = await client.get('/data');
       } catch (error) {
         console.error(`Request ${i} failed on ${client.name}:`, error);
       }
@@ -356,17 +356,17 @@ async function backwardCompatibility() {
 
   try {
     // Use the old interface methods (all still work)
-    const _agents = await apiClient.coordination.listAgents();
+    const agents = await apiClient.coordination.listAgents();
 
-    const _networks = await apiClient.neural.listNetworks();
+    const networks = await apiClient.neural.listNetworks();
 
     // Use new UACL features
-    const _status = await apiClient.getClientStatus();
+    const status = await apiClient.getClientStatus();
 
-    const _metrics = await apiClient.getClientMetrics();
+    const metrics = await apiClient.getClientMetrics();
 
     // Test connectivity
-    const _isOnline = await apiClient.ping();
+    const isOnline = await apiClient.ping();
   } finally {
     await apiClient.destroy();
   }
@@ -398,7 +398,7 @@ async function errorHandlingExample() {
 
   for (const testCase of testCases) {
     try {
-      const _response = await client.get(testCase.endpoint);
+      const response = await client.get(testCase.endpoint);
     } catch (error) {
       if (isConnectionError(error)) {
         console.error(`❌ Connection Error: ${error.message}`);

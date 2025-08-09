@@ -85,7 +85,7 @@ export class DiagnosticsLoggingConfig {
    * @param options.level
    */
   getLogger(component: string, options: { level: string }): LoggerInterface {
-    const key = `${component}-${options.level}`;
+    const key = `${component}-${options?.["level"]}`;
 
     if (this.loggers.has(key)) {
       return this.loggers.get(key)!;

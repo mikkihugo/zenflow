@@ -38,11 +38,11 @@ export class DaemonProcessManager {
 
   constructor(config: DaemonConfig = {}) {
     this.config = {
-      pidFile: config.pidFile || join(process.cwd(), '.claude-zen-web.pid'),
-      logFile: config.logFile || join(process.cwd(), '.claude-zen-web.log'),
-      errorFile: config.errorFile || join(process.cwd(), '.claude-zen-web.error'),
-      cwd: config.cwd || process.cwd(),
-      detached: config.detached ?? true,
+      pidFile: config?.["pidFile"] || join(process.cwd(), '.claude-zen-web.pid'),
+      logFile: config?.["logFile"] || join(process.cwd(), '.claude-zen-web.log'),
+      errorFile: config?.["errorFile"] || join(process.cwd(), '.claude-zen-web.error'),
+      cwd: config?.["cwd"] || process.cwd(),
+      detached: config?.["detached"] ?? true,
     };
   }
 
@@ -71,12 +71,12 @@ export class DaemonProcessManager {
       stdio: ['ignore', 'ignore', 'ignore'],
     });
 
-    if (!child.pid) {
+    if (!child?.pid) {
       throw new Error('Failed to start daemon process');
     }
 
     const processInfo: ProcessInfo = {
-      pid: child.pid,
+      pid: child?.pid,
       startTime: new Date(),
       status: 'running',
       command,
@@ -84,26 +84,26 @@ export class DaemonProcessManager {
     };
 
     // Write PID file
-    await writeFile(this.config.pidFile, child.pid.toString());
+    await writeFile(this.config.pidFile, child?.pid.toString());
 
     // Handle process events
-    child.on('error', (error) => {
+    child?.on('error', (error) => {
       this.logger.error('Daemon process error:', error);
       this.handleProcessError(error);
     });
 
-    child.on('exit', (code, signal) => {
+    child?.on('exit', (code, signal) => {
       this.logger.info(`Daemon process exited with code ${code}, signal ${signal}`);
       this.cleanupPidFile();
     });
 
     // Detach from parent
     if (this.config.detached) {
-      child.unref();
+      child?.unref();
     }
 
     this.currentProcess = child;
-    this.logger.info(`Daemon started with PID: ${child.pid}`);
+    this.logger.info(`Daemon started with PID: ${child?.pid}`);
 
     return processInfo;
   }

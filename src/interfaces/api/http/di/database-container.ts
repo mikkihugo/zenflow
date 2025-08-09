@@ -452,7 +452,7 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       this.logger.debug(
-        `Query completed successfully in ${executionTime}ms, returned ${result.rowCount} rows`
+        `Query completed successfully in ${executionTime}ms, returned ${result?.rowCount} rows`
       );
 
       return {
@@ -460,11 +460,11 @@ class SimplifiedDatabaseController {
         data: {
           query: request.sql,
           parameters: request.params,
-          results: result.rows,
-          fields: result.fields,
+          results: result?.rows,
+          fields: result?.fields,
         },
         metadata: {
-          rowCount: result.rowCount,
+          rowCount: result?.rowCount,
           executionTime,
           timestamp: Date.now(),
           adapter: this.config.type,
@@ -506,7 +506,7 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       this.logger.debug(
-        `Command completed successfully in ${executionTime}ms, affected ${result.affectedRows} rows`
+        `Command completed successfully in ${executionTime}ms, affected ${result?.affectedRows} rows`
       );
 
       return {
@@ -514,11 +514,11 @@ class SimplifiedDatabaseController {
         data: {
           command: request.sql,
           parameters: request.params,
-          affectedRows: result.affectedRows,
-          insertId: result.insertId,
+          affectedRows: result?.affectedRows,
+          insertId: result?.insertId,
         },
         metadata: {
-          rowCount: result.affectedRows,
+          rowCount: result?.affectedRows,
           executionTime,
           timestamp: Date.now(),
           adapter: this.config.type,
@@ -562,23 +562,23 @@ class SimplifiedDatabaseController {
 
             if (operation.type === 'query') {
               result = await tx.query(operation.sql, operation.params);
-              transactionResults.push({
+              transactionResults?.push({
                 type: 'query',
                 sql: operation.sql,
                 params: operation.params,
                 success: true,
-                rowCount: result.rowCount,
-                data: result.rows,
+                rowCount: result?.rowCount,
+                data: result?.rows,
               });
             } else if (operation.type === 'execute') {
               result = await tx.execute(operation.sql, operation.params);
-              transactionResults.push({
+              transactionResults?.push({
                 type: 'execute',
                 sql: operation.sql,
                 params: operation.params,
                 success: true,
-                affectedRows: result.affectedRows,
-                insertId: result.insertId,
+                affectedRows: result?.affectedRows,
+                insertId: result?.insertId,
               });
             } else {
               throw new Error(`Unsupported operation type: ${operation.type}`);
@@ -592,7 +592,7 @@ class SimplifiedDatabaseController {
               error: error instanceof Error ? error.message : 'Unknown error',
             };
 
-            transactionResults.push(errorResult);
+            transactionResults?.push(errorResult);
 
             if (!request.continueOnError) {
               throw error;
@@ -607,8 +607,8 @@ class SimplifiedDatabaseController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      const totalRows = results.reduce((sum, r) => sum + (r.rowCount || r.affectedRows || 0), 0);
-      const successfulOps = results.filter((r) => r.success).length;
+      const totalRows = results?.reduce((sum, r) => sum + (r.rowCount || r.affectedRows || 0), 0);
+      const successfulOps = results?.filter((r) => r.success).length;
 
       this.logger.debug(
         `Transaction completed successfully in ${executionTime}ms, ${successfulOps}/${results.length} operations successful`
@@ -726,13 +726,13 @@ class SimplifiedDatabaseController {
         for (const statement of request.statements) {
           try {
             // In a real implementation, this would validate syntax
-            validationResults.push({
+            validationResults?.push({
               statement: `${statement.substring(0, 100)}...`,
               valid: true,
               issues: [],
             });
           } catch (error) {
-            validationResults.push({
+            validationResults?.push({
               statement: `${statement.substring(0, 100)}...`,
               valid: false,
               issues: [error instanceof Error ? error.message : 'Validation error'],
@@ -750,7 +750,7 @@ class SimplifiedDatabaseController {
             description: request.description,
             validationResults,
             totalStatements: request.statements.length,
-            validStatements: validationResults.filter((r) => r.valid).length,
+            validStatements: validationResults?.filter((r) => r.valid).length,
           },
           metadata: {
             rowCount: 0,
@@ -768,14 +768,14 @@ class SimplifiedDatabaseController {
         for (const statement of request.statements) {
           try {
             const result = await tx.execute(statement);
-            migrationResults.push({
+            migrationResults?.push({
               statement: `${statement.substring(0, 100)}...`,
               success: true,
-              affectedRows: result.affectedRows,
-              executionTime: result.executionTime,
+              affectedRows: result?.affectedRows,
+              executionTime: result?.executionTime,
             });
           } catch (error) {
-            migrationResults.push({
+            migrationResults?.push({
               statement: `${statement.substring(0, 100)}...`,
               success: false,
               error: error instanceof Error ? error.message : 'Execution error',
@@ -803,7 +803,7 @@ class SimplifiedDatabaseController {
           successfulStatements: results.length,
         },
         metadata: {
-          rowCount: results.reduce((sum, r) => sum + (r.affectedRows || 0), 0),
+          rowCount: results?.reduce((sum, r) => sum + (r.affectedRows || 0), 0),
           executionTime,
           timestamp: Date.now(),
           adapter: this.config.type,
@@ -996,7 +996,7 @@ export async function checkDatabaseContainerHealth(): Promise<{
     // Test controller functionality
     try {
       const result = await controller.getDatabaseStatus();
-      services.controller = result.success;
+      services.controller = result?.success;
       services.logger = true; // Logger is working if we got this far
       services.config = true; // Config is working if we got this far
       services.factory = true; // Factory is working if we got this far

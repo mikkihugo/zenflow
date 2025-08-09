@@ -45,12 +45,12 @@ export class MonitoringDashboard extends EventEmitter {
     super();
 
     this.options = {
-      metricsRetentionPeriod: options.metricsRetentionPeriod || 86400000, // 24 hours
-      aggregationInterval: options.aggregationInterval || 60000, // 1 minute
-      enableRealTimeStreaming: options.enableRealTimeStreaming !== false,
-      enableTrendAnalysis: options.enableTrendAnalysis !== false,
-      maxDataPoints: options.maxDataPoints || 1440, // 24 hours at 1-minute intervals
-      exportFormats: options.exportFormats || ['prometheus', 'json', 'grafana'],
+      metricsRetentionPeriod: options?.["metricsRetentionPeriod"] || 86400000, // 24 hours
+      aggregationInterval: options?.["aggregationInterval"] || 60000, // 1 minute
+      enableRealTimeStreaming: options?.["enableRealTimeStreaming"] !== false,
+      enableTrendAnalysis: options?.["enableTrendAnalysis"] !== false,
+      maxDataPoints: options?.["maxDataPoints"] || 1440, // 24 hours at 1-minute intervals
+      exportFormats: options?.["exportFormats"] || ['prometheus', 'json', 'grafana'],
       ...options,
     };
 
@@ -182,25 +182,25 @@ export class MonitoringDashboard extends EventEmitter {
    */
   recordHealthMetric(healthResult: any) {
     const timestamp = new Date();
-    const metricKey = `health.${healthResult.name}`;
+    const metricKey = `health.${healthResult?.name}`;
 
     const metric = {
       timestamp,
-      name: healthResult.name,
-      status: healthResult.status,
-      duration: healthResult.duration,
-      category: healthResult.metadata?.category || 'unknown',
-      priority: healthResult.metadata?.priority || 'normal',
-      failureCount: healthResult.failureCount || 0,
+      name: healthResult?.name,
+      status: healthResult?.status,
+      duration: healthResult?.duration,
+      category: healthResult?.metadata?.category || 'unknown',
+      priority: healthResult?.metadata?.priority || 'normal',
+      failureCount: healthResult?.failureCount || 0,
     };
 
     this.addMetric(metricKey, metric);
 
     // Update health status map
-    this.healthStatus.set(healthResult.name, {
-      status: healthResult.status,
+    this.healthStatus.set(healthResult?.name, {
+      status: healthResult?.status,
       lastUpdate: timestamp,
-      failureCount: healthResult.failureCount || 0,
+      failureCount: healthResult?.failureCount || 0,
     });
 
     // Stream to real-time clients
@@ -250,11 +250,11 @@ export class MonitoringDashboard extends EventEmitter {
     const metric = {
       timestamp,
       eventType,
-      executionId: event.executionId,
-      workflowName: event.workflow?.name || event.execution?.workflowName,
-      duration: event.execution?.duration,
-      status: event.execution?.status,
-      stepCount: event.execution?.steps?.length || 0,
+      executionId: event["executionId"],
+      workflowName: event["workflow"]?.["name"] || event["execution"]?.["workflowName"],
+      duration: event["execution"]?.["duration"],
+      status: event["execution"]?.["status"],
+      stepCount: event["execution"]?.["steps"]?.length || 0,
     };
 
     this.addMetric(metricKey, metric);
@@ -278,9 +278,9 @@ export class MonitoringDashboard extends EventEmitter {
     const metric = {
       timestamp,
       eventType,
-      connectionId: event.connectionId,
-      connectionType: event.connection?.type,
-      reconnectAttempts: event.connection?.reconnectAttempts || 0,
+      connectionId: event["connectionId"],
+      connectionType: event["connection"]?.["type"],
+      reconnectAttempts: event["connection"]?.["reconnectAttempts"] || 0,
     };
 
     this.addMetric(metricKey, metric);
@@ -620,9 +620,9 @@ export class MonitoringDashboard extends EventEmitter {
       if (this.healthMonitor) {
         const healthData = this.healthMonitor.exportHealthData();
         this.recordSystemMetric('health_summary', {
-          totalChecks: healthData.healthChecks.length,
-          activeAlerts: healthData.alerts.length,
-          isMonitoring: healthData.stats.isRunning,
+          totalChecks: healthData?.healthChecks.length,
+          activeAlerts: healthData?.alerts.length,
+          isMonitoring: healthData?.stats?.isRunning,
         });
       }
 
@@ -630,9 +630,9 @@ export class MonitoringDashboard extends EventEmitter {
       if (this.recoveryWorkflows) {
         const recoveryData = this.recoveryWorkflows.exportRecoveryData();
         this.recordSystemMetric('recovery_summary', {
-          activeRecoveries: recoveryData.activeRecoveries.length,
-          totalWorkflows: recoveryData.workflows.length,
-          stats: recoveryData.stats,
+          activeRecoveries: recoveryData?.activeRecoveries.length,
+          totalWorkflows: recoveryData?.workflows.length,
+          stats: recoveryData?.stats,
         });
       }
 
@@ -640,9 +640,9 @@ export class MonitoringDashboard extends EventEmitter {
       if (this.connectionManager) {
         const connectionData = this.connectionManager.exportConnectionData();
         this.recordSystemMetric('connection_summary', {
-          totalConnections: Object.keys(connectionData.connections).length,
-          activeConnections: connectionData.stats.activeConnections,
-          stats: connectionData.stats,
+          totalConnections: Object.keys(connectionData?.connections).length,
+          activeConnections: connectionData?.stats?.activeConnections,
+          stats: connectionData?.stats,
         });
       }
     } catch (error) {
@@ -800,13 +800,13 @@ export class MonitoringDashboard extends EventEmitter {
     // Get active recoveries from recovery workflows
     if (this.recoveryWorkflows) {
       const recoveryData = this.recoveryWorkflows.exportRecoveryData();
-      activeRecoveries = recoveryData.activeRecoveries.length;
+      activeRecoveries = recoveryData?.activeRecoveries.length;
     }
 
     // Get active connections
     if (this.connectionManager) {
       const connectionData = this.connectionManager.exportConnectionData();
-      activeConnections = connectionData.stats.activeConnections;
+      activeConnections = connectionData?.stats?.activeConnections;
     }
 
     return {
@@ -890,7 +890,7 @@ export class MonitoringDashboard extends EventEmitter {
     const trends = {};
 
     for (const [category, trendData] of this.trends) {
-      trends[category] = trendData.slice(-100); // Last 100 data points
+      trends[category] = trendData?.slice(-100); // Last 100 data points
     }
 
     return trends;
@@ -981,7 +981,7 @@ export class MonitoringDashboard extends EventEmitter {
     const connectionData = this.connectionManager.exportConnectionData();
     const healthStatus = {};
 
-    connectionData.connections.forEach((connection) => {
+    connectionData?.connections?.forEach((connection) => {
       healthStatus[connection.id] = {
         status: connection.health?.status || 'unknown',
         latency: connection.health?.latency,
@@ -1030,23 +1030,23 @@ export class MonitoringDashboard extends EventEmitter {
     // Health metrics
     metrics.push('# HELP ruv_swarm_health_checks_total Total number of health checks');
     metrics.push('# TYPE ruv_swarm_health_checks_total counter');
-    metrics.push(`ruv_swarm_health_checks_total ${data.health.recentMetrics.length}`);
+    metrics.push(`ruv_swarm_health_checks_total ${data?.["health"]?.recentMetrics.length}`);
 
     // Recovery metrics
     metrics.push('# HELP ruv_swarm_recoveries_total Total number of recoveries');
     metrics.push('# TYPE ruv_swarm_recoveries_total counter');
-    const recoveryTotal = data.recovery.recentMetrics.length;
+    const recoveryTotal = data?.["recovery"]?.recentMetrics.length;
     metrics.push(`ruv_swarm_recoveries_total ${recoveryTotal}`);
 
     // Connection metrics
     metrics.push('# HELP ruv_swarm_connections_active Active connections');
     metrics.push('# TYPE ruv_swarm_connections_active gauge');
-    metrics.push(`ruv_swarm_connections_active ${data.summary.activeConnections}`);
+    metrics.push(`ruv_swarm_connections_active ${data?.["summary"]?.activeConnections}`);
 
     // Alert metrics
     metrics.push('# HELP ruv_swarm_alerts_active Active alerts');
     metrics.push('# TYPE ruv_swarm_alerts_active gauge');
-    metrics.push(`ruv_swarm_alerts_active ${data.summary.activeAlerts}`);
+    metrics.push(`ruv_swarm_alerts_active ${data?.["summary"]?.activeAlerts}`);
 
     return metrics.join('\n');
   }

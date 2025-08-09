@@ -233,17 +233,17 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
   const finalConfig = { ...defaultConfig, ...config };
 
   // Initialize HTTP MCP for Claude Desktop (usually enabled)
-  if (finalConfig.mcp.http.enabled) {
+  if (finalConfig?.mcp?.http?.enabled) {
     const { HTTPMCPServer } = await import('./interfaces/mcp/http-mcp-server');
     const httpMcpServer = new HTTPMCPServer({
-      ...(finalConfig.mcp.http.port !== undefined && { port: finalConfig.mcp.http.port }),
-      ...(finalConfig.mcp.http.host !== undefined && { host: finalConfig.mcp.http.host }),
+      ...(finalConfig?.mcp?.http?.port !== undefined && { port: finalConfig?.mcp?.http?.port }),
+      ...(finalConfig?.mcp?.http?.host !== undefined && { host: finalConfig?.mcp?.http?.host }),
     });
     await httpMcpServer.start();
   }
 
   // Initialize stdio MCP only if explicitly enabled (for temporary Claude Code coordination)
-  if (finalConfig.mcp.stdio.enabled) {
+  if (finalConfig?.mcp?.stdio?.enabled) {
     const { MCPServer } = await import('./coordination/swarm/mcp/mcp-server');
     const stdioMcpServer = new MCPServer();
     await stdioMcpServer.start();
@@ -253,27 +253,27 @@ export async function initializeClaudeZen(config: Partial<ClaudeZenConfig> = {})
   // TODO: TypeScript error TS2339 - Property 'SwarmOrchestrator' does not exist on type (AI unsure of safe fix - human review needed)
   const { SwarmOrchestrator } = await import('./coordination/public-api');
   const orchestrator = new SwarmOrchestrator({
-    topology: finalConfig.swarm.topology,
-    maxAgents: finalConfig.swarm.maxAgents,
-    strategy: finalConfig.swarm.strategy,
+    topology: finalConfig?.swarm?.topology,
+    maxAgents: finalConfig?.swarm?.maxAgents,
+    strategy: finalConfig?.swarm?.strategy,
   });
   await orchestrator.initialize();
 
   // Initialize neural bridge if enabled
-  if (finalConfig.neural.enabled) {
+  if (finalConfig?.neural?.enabled) {
     const { NeuralBridge } = await import('./neural/neural-bridge');
-    const neuralBridge = NeuralBridge.getInstance(finalConfig.neural);
+    const neuralBridge = NeuralBridge.getInstance(finalConfig?.neural);
     await neuralBridge.initialize();
   }
 
   // Initialize SPARC methodology system if enabled
-  if (finalConfig.sparc.enabled) {
+  if (finalConfig?.sparc?.enabled) {
     const { SPARC } = await import('./coordination/swarm/sparc/index');
-    const _sparcEngine = SPARC.getEngine();
+    const sparcEngine = SPARC.getEngine();
   }
 
   // Initialize plugin system
-  if (finalConfig.plugins.autoLoad) {
+  if (finalConfig?.plugins?.autoLoad) {
     // const pluginManager = PluginManager.getInstance();
     // await pluginManager.initialize();
     // console.log('✅ Plugin Manager initialized');

@@ -1,11 +1,3 @@
-/**
- * @file GitHub Integration MCP Tools
- *
- * GitHub repository management, issue tracking, and automated workflows.
- */
-
-import type { MCPTool } from '../tool-registry';
-
 const githubIntegrationTools: MCPTool[] = [
   {
     name: 'github_status',

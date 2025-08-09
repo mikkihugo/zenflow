@@ -3,13 +3,7 @@
  * Hybrid TDD approach: London TDD for command execution flow, Classical TDD for command algorithms
  */
 
-import {
-  type CommandContext,
-  CommandFactory,
-  type CommandResult,
-  type MCPCommand,
-  MCPCommandQueue,
-} from '../../interfaces/mcp/command-system';
+import { CommandFactory, MCPCommandQueue } from '../../interfaces/mcp/command-system';
 
 // Mock service interfaces for testing
 interface MockSwarmService {
@@ -31,7 +25,7 @@ describe('Command Pattern Implementation', () => {
   describe('Command Execution Algorithms (Classical TDD)', () => {
     let mockSwarmService: MockSwarmService;
     let mockLogger: MockLogger;
-    let _commandQueue: MCPCommandQueue;
+    let commandQueue: MCPCommandQueue;
     let commandContext: CommandContext;
 
     beforeEach(() => {
@@ -49,7 +43,7 @@ describe('Command Pattern Implementation', () => {
         debug: vi.fn(),
       };
 
-      _commandQueue = new MCPCommandQueue(mockLogger);
+      commandQueue = new MCPCommandQueue(mockLogger);
 
       commandContext = {
         sessionId: 'test-session-123',
@@ -91,9 +85,9 @@ describe('Command Pattern Implementation', () => {
 
         const result = await command.execute();
 
-        expect(result.success).toBe(true);
-        expect(result.data).toEqual(expectedResult);
-        expect(result.executionTime).toBeGreaterThan(0);
+        expect(result?.success).toBe(true);
+        expect(result?.data).toEqual(expectedResult);
+        expect(result?.executionTime).toBeGreaterThan(0);
         expect(mockSwarmService.initializeSwarm).toHaveBeenCalledWith(swarmConfig);
       });
 
@@ -115,10 +109,10 @@ describe('Command Pattern Implementation', () => {
 
         const result = await command.execute();
 
-        expect(result.success).toBe(false);
-        expect(result.error).toBeDefined();
-        expect(result.error?.message).toBe('Insufficient resources for hierarchical swarm');
-        expect(result.data).toBeUndefined();
+        expect(result?.success).toBe(false);
+        expect(result?.error).toBeDefined();
+        expect(result?.error?.message).toBe('Insufficient resources for hierarchical swarm');
+        expect(result?.data).toBeUndefined();
       });
 
       it('should support undo operation for swarm initialization', async () => {
@@ -146,12 +140,12 @@ describe('Command Pattern Implementation', () => {
 
         // Execute command
         const executeResult = await command.execute();
-        expect(executeResult.success).toBe(true);
+        expect(executeResult?.success).toBe(true);
 
         // Test undo
         const undoResult = await command.undo();
-        expect(undoResult.success).toBe(true);
-        expect(undoResult.message).toContain('Successfully undone');
+        expect(undoResult?.success).toBe(true);
+        expect(undoResult?.message).toContain('Successfully undone');
       });
 
       it('should calculate resource usage accurately', async () => {
@@ -176,16 +170,16 @@ describe('Command Pattern Implementation', () => {
 
         const result = await command.execute();
 
-        expect(result.success).toBe(true);
-        expect(result.resourceUsage).toBeDefined();
-        expect(result.resourceUsage.cpu).toBeGreaterThan(0);
-        expect(result.resourceUsage.memory).toBeGreaterThan(0);
-        expect(result.resourceUsage.network).toBeGreaterThan(0);
-        expect(result.resourceUsage.storage).toBeGreaterThan(0);
+        expect(result?.success).toBe(true);
+        expect(result?.resourceUsage).toBeDefined();
+        expect(result?.resourceUsage?.cpu).toBeGreaterThan(0);
+        expect(result?.resourceUsage?.memory).toBeGreaterThan(0);
+        expect(result?.resourceUsage?.network).toBeGreaterThan(0);
+        expect(result?.resourceUsage?.storage).toBeGreaterThan(0);
 
         // Resource usage should scale with agent count and complexity
-        expect(result.resourceUsage.cpu).toBeGreaterThan(0.5); // Heavy computation
-        expect(result.resourceUsage.memory).toBeGreaterThan(0.6); // 8 agents
+        expect(result?.resourceUsage?.cpu).toBeGreaterThan(0.5); // Heavy computation
+        expect(result?.resourceUsage?.memory).toBeGreaterThan(0.6); // 8 agents
       });
     });
 
@@ -215,8 +209,8 @@ describe('Command Pattern Implementation', () => {
 
         const result = await command.execute();
 
-        expect(result.success).toBe(true);
-        expect(result.data).toEqual(expectedResult);
+        expect(result?.success).toBe(true);
+        expect(result?.data).toEqual(expectedResult);
         expect(mockSwarmService.spawnAgent).toHaveBeenCalledWith('swarm-test-123', agentConfig);
       });
 
@@ -239,9 +233,9 @@ describe('Command Pattern Implementation', () => {
 
         const result = await command.execute();
 
-        expect(result.success).toBe(false);
-        expect(result.error?.message).toBe('Agent type "invalid-agent-type" not supported');
-        expect(result.error?.context).toEqual(
+        expect(result?.success).toBe(false);
+        expect(result?.error?.message).toBe('Agent type "invalid-agent-type" not supported');
+        expect(result?.error?.context).toEqual(
           expect.objectContaining({
             swarmId: 'swarm-test-456',
             agentConfig,
@@ -266,11 +260,11 @@ describe('Command Pattern Implementation', () => {
         }));
 
         mockSwarmService.spawnAgent
-          .mockResolvedValueOnce(expectedResults[0])
-          .mockResolvedValueOnce(expectedResults[1])
-          .mockResolvedValueOnce(expectedResults[2])
-          .mockResolvedValueOnce(expectedResults[3])
-          .mockResolvedValueOnce(expectedResults[4]);
+          .mockResolvedValueOnce(expectedResults?.[0])
+          .mockResolvedValueOnce(expectedResults?.[1])
+          .mockResolvedValueOnce(expectedResults?.[2])
+          .mockResolvedValueOnce(expectedResults?.[3])
+          .mockResolvedValueOnce(expectedResults?.[4]);
 
         const commands = Array.from({ length: 5 }, (_, i) =>
           CommandFactory.createAgentSpawnCommand(
@@ -283,8 +277,8 @@ describe('Command Pattern Implementation', () => {
 
         const results = await Promise.all(commands.map((cmd) => cmd.execute()));
 
-        expect(results.every((r) => r.success)).toBe(true);
-        expect(results.map((r) => r.data)).toEqual(expectedResults);
+        expect(results?.every((r) => r.success)).toBe(true);
+        expect(results?.map((r) => r.data)).toEqual(expectedResults);
         expect(mockSwarmService.spawnAgent).toHaveBeenCalledTimes(5);
       });
     });
@@ -327,9 +321,9 @@ describe('Command Pattern Implementation', () => {
 
         const result = await command.execute();
 
-        expect(result.success).toBe(true);
-        expect(result.data).toEqual(expectedResult);
-        expect(result.metadata).toEqual(
+        expect(result?.success).toBe(true);
+        expect(result?.data).toEqual(expectedResult);
+        expect(result?.metadata).toEqual(
           expect.objectContaining({
             totalSteps: 3,
             estimatedDuration: 1100, // Sum of step estimates
@@ -369,10 +363,10 @@ describe('Command Pattern Implementation', () => {
 
         const result = await command.execute();
 
-        expect(result.success).toBe(true);
-        expect(result.data.status).toBe('waiting-dependencies');
-        expect(result.data.pendingDependencies).toEqual(['task-001', 'task-002']);
-        expect(result.metadata?.hasDependencies).toBe(true);
+        expect(result?.success).toBe(true);
+        expect(result?.data?.status).toBe('waiting-dependencies');
+        expect(result?.data?.pendingDependencies).toEqual(['task-001', 'task-002']);
+        expect(result?.metadata?.hasDependencies).toBe(true);
       });
 
       it('should calculate accurate performance metrics for orchestration', async () => {
@@ -411,13 +405,13 @@ describe('Command Pattern Implementation', () => {
 
         const result = await command.execute();
 
-        expect(result.success).toBe(true);
-        expect(result.data.metrics.actualThroughput).toBeGreaterThan(1000);
-        expect(result.data.metrics.averageLatency).toBeLessThan(100);
-        expect(result.data.metrics.accuracy).toBeGreaterThan(0.95);
+        expect(result?.success).toBe(true);
+        expect(result?.data?.metrics?.actualThroughput).toBeGreaterThan(1000);
+        expect(result?.data?.metrics?.averageLatency).toBeLessThan(100);
+        expect(result?.data?.metrics?.accuracy).toBeGreaterThan(0.95);
 
         // Verify performance exceeded expectations
-        expect(result.metadata?.performanceRating).toBe('exceeded');
+        expect(result?.metadata?.performanceRating).toBe('exceeded');
       });
     });
 
@@ -442,9 +436,9 @@ describe('Command Pattern Implementation', () => {
 
         const result = await command.execute();
 
-        expect(result.success).toBe(false);
-        expect(result.error?.message).toContain('Insufficient permissions');
-        expect(result.error?.type).toBe('PERMISSION_DENIED');
+        expect(result?.success).toBe(false);
+        expect(result?.error?.message).toContain('Insufficient permissions');
+        expect(result?.error?.type).toBe('PERMISSION_DENIED');
         expect(mockSwarmService.initializeSwarm).not.toHaveBeenCalled();
       });
 
@@ -474,9 +468,9 @@ describe('Command Pattern Implementation', () => {
 
         const result = await command.execute();
 
-        expect(result.success).toBe(false);
-        expect(result.error?.message).toContain('Insufficient resources');
-        expect(result.error?.type).toBe('RESOURCE_CONSTRAINT');
+        expect(result?.success).toBe(false);
+        expect(result?.error?.message).toContain('Insufficient resources');
+        expect(result?.error?.type).toBe('RESOURCE_CONSTRAINT');
         expect(mockSwarmService.initializeSwarm).not.toHaveBeenCalled();
       });
 
@@ -495,9 +489,9 @@ describe('Command Pattern Implementation', () => {
 
         mockSwarmService.initializeSwarm.mockImplementation((config) => {
           // Verify sanitization occurred
-          expect(config.metadata.script).not.toContain('<script>');
-          expect(config.metadata.command).not.toContain('rm -rf');
-          expect(config.metadata.sql).not.toContain('DROP TABLE');
+          expect(config?.["metadata"]?.["script"]).not.toContain('<script>');
+          expect(config?.["metadata"]?.["command"]).not.toContain('rm -rf');
+          expect(config?.["metadata"]?.["sql"]).not.toContain('DROP TABLE');
 
           return Promise.resolve({
             swarmId: 'secure-swarm-001',
@@ -515,7 +509,7 @@ describe('Command Pattern Implementation', () => {
 
         const result = await command.execute();
 
-        expect(result.success).toBe(true);
+        expect(result?.success).toBe(true);
         expect(mockSwarmService.initializeSwarm).toHaveBeenCalledWith(
           expect.objectContaining({
             metadata: expect.objectContaining({
@@ -566,10 +560,10 @@ describe('Command Pattern Implementation', () => {
 
         const result = await command.execute();
 
-        expect(result.success).toBe(true);
-        expect(result.data.optimizations.parallelization).toBeGreaterThan(1);
-        expect(result.data.optimizations.cacheHitRate).toBeGreaterThan(0.8);
-        expect(result.data.estimatedSpeedup).toBeGreaterThan(2.0);
+        expect(result?.success).toBe(true);
+        expect(result?.data?.optimizations?.parallelization).toBeGreaterThan(1);
+        expect(result?.data?.optimizations?.cacheHitRate).toBeGreaterThan(0.8);
+        expect(result?.data?.estimatedSpeedup).toBeGreaterThan(2.0);
       });
 
       it('should handle command timeout and cancellation gracefully', async () => {
@@ -594,10 +588,10 @@ describe('Command Pattern Implementation', () => {
         const result = await command.execute();
         const executionTime = Date.now() - startTime;
 
-        expect(result.success).toBe(false);
-        expect(result.error?.type).toBe('TIMEOUT');
+        expect(result?.success).toBe(false);
+        expect(result?.error?.type).toBe('TIMEOUT');
         expect(executionTime).toBeLessThan(1500); // Should timeout before 2 seconds
-        expect(result.error?.message).toContain('Command execution timed out');
+        expect(result?.error?.message).toContain('Command execution timed out');
       });
     });
   });
@@ -681,8 +675,8 @@ describe('Command Pattern Implementation', () => {
 
       const result = await commandQueue.execute(mockCommand);
 
-      expect(result.success).toBe(false);
-      expect(result.error?.message).toBe('Command execution failed');
+      expect(result?.success).toBe(false);
+      expect(result?.error?.message).toBe('Command execution failed');
       expect(mockLogger.error).toHaveBeenCalledWith(
         'Command execution failed:',
         expect.objectContaining({ commandId: 'failing-command', error })
@@ -731,8 +725,8 @@ describe('Command Pattern Implementation', () => {
 
       const result = await commandQueue.execute(mockCommand);
 
-      expect(result.success).toBe(false);
-      expect(result.error?.type).toBe('VALIDATION_ERROR');
+      expect(result?.success).toBe(false);
+      expect(result?.error?.type).toBe('VALIDATION_ERROR');
       expect(mockCommand.execute).not.toHaveBeenCalled();
     });
 
@@ -754,7 +748,7 @@ describe('Command Pattern Implementation', () => {
 
       const results = await Promise.all(commands.map((cmd) => commandQueue.execute(cmd)));
 
-      expect(results.every((r) => r.success)).toBe(true);
+      expect(results?.every((r) => r.success)).toBe(true);
       expect(results).toHaveLength(5);
       commands.forEach((cmd) => {
         expect(cmd.execute).toHaveBeenCalledTimes(1);
@@ -779,7 +773,7 @@ describe('Command Pattern Implementation', () => {
       }));
 
       // Make third command fail
-      commands[2].execute.mockResolvedValue({
+      commands[2]?.execute?.mockResolvedValue({
         success: false,
         commandId: 'metrics-cmd-2',
         executionTime: 200,
@@ -886,7 +880,7 @@ describe('Command Pattern Implementation', () => {
 
       const results = await commandQueue.executeTransaction(commands);
 
-      expect(results.every((r) => r.success)).toBe(true);
+      expect(results?.every((r) => r.success)).toBe(true);
       expect(results).toHaveLength(3);
       expect(mockSwarmService.initializeSwarm).toHaveBeenCalledTimes(1);
       expect(mockSwarmService.spawnAgent).toHaveBeenCalledTimes(1);
@@ -941,7 +935,7 @@ describe('Command Pattern Implementation', () => {
       const results = await commandQueue.executeTransaction(commands);
 
       // Transaction should fail
-      expect(results.some((r) => !r.success)).toBe(true);
+      expect(results?.some((r) => !r.success)).toBe(true);
 
       // First command should have been undone
       expect(mockSwarmCommand.undo).toHaveBeenCalledTimes(1);
@@ -1003,11 +997,11 @@ describe('Command Pattern Implementation', () => {
 
       // Execute parent transaction
       const parentResults = await commandQueue.executeTransaction(parentCommands);
-      expect(parentResults.every((r) => r.success)).toBe(true);
+      expect(parentResults?.every((r) => r.success)).toBe(true);
 
       // Execute child transaction
       const childResults = await commandQueue.executeTransaction(childCommands);
-      expect(childResults.every((r) => r.success)).toBe(true);
+      expect(childResults?.every((r) => r.success)).toBe(true);
 
       expect(mockSwarmService.initializeSwarm).toHaveBeenCalledTimes(1);
       expect(mockSwarmService.spawnAgent).toHaveBeenCalledTimes(2);
@@ -1173,10 +1167,10 @@ describe('Command Pattern Implementation', () => {
       const simpleMetadata = simpleCommand.getMetadata();
       const complexMetadata = complexCommand.getMetadata();
 
-      expect(simpleMetadata.complexity).toBe('low');
-      expect(complexMetadata.complexity).toBe('high');
-      expect(complexMetadata.estimatedDuration).toBeGreaterThan(
-        simpleMetadata.estimatedDuration || 0
+      expect(simpleMetadata?.complexity).toBe('low');
+      expect(complexMetadata?.complexity).toBe('high');
+      expect(complexMetadata?.estimatedDuration).toBeGreaterThan(
+        simpleMetadata?.estimatedDuration || 0
       );
     });
   });

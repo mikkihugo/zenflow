@@ -42,9 +42,9 @@ class SingletonContainer {
 
     this.factories.set(key, {
       factory,
-      lazy: options.lazy !== false, // Default to lazy loading
-      singleton: options.singleton !== false, // Default to singleton
-      dependencies: options.dependencies || [],
+      lazy: options?.["lazy"] !== false, // Default to lazy loading
+      singleton: options?.["singleton"] !== false, // Default to singleton
+      dependencies: options?.["dependencies"] || [],
     });
   }
 
@@ -71,14 +71,14 @@ class SingletonContainer {
     }
 
     // Resolve dependencies
-    const dependencies = config.dependencies.map((dep) => this.get(dep));
+    const dependencies = config?.["dependencies"]?.map((dep) => this.get(dep));
 
     try {
       // Create instance using factory
-      const instance = config.factory(...dependencies);
+      const instance = config?.["factory"](...dependencies);
 
       // Store singleton instance
-      if (config.singleton) {
+      if (config?.["singleton"]) {
         this.instances.set(key, instance);
       }
 
@@ -105,8 +105,8 @@ class SingletonContainer {
    */
   clear(key: string): void {
     const instance = this.instances.get(key);
-    if (instance && typeof instance.destroy === 'function') {
-      instance.destroy();
+    if (instance && typeof instance["destroy"] === 'function') {
+      instance["destroy"]();
     }
     this.instances.delete(key);
   }
@@ -122,8 +122,8 @@ class SingletonContainer {
 
     for (const [key, instance] of instances) {
       try {
-        if (instance && typeof instance.destroy === 'function') {
-          instance.destroy();
+        if (instance && typeof instance["destroy"] === 'function') {
+          instance["destroy"]();
         }
       } catch (error) {
         logger.warn(`Error destroying instance '${key}':`, error.message);

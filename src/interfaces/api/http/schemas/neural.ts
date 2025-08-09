@@ -1,15 +1,4 @@
 /**
- * Neural Network API Schemas
- *
- * OpenAPI 3.0 schemas for neural network domain.
- * Consolidates neural network types and validation schemas.
- *
- * @file Neural network API schemas and types
- */
-
-import type { EntityFields, ResourceState, TimestampFields } from './common';
-
-/**
  * Neural Network Layer Configuration
  *
  * @example

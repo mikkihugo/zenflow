@@ -47,8 +47,8 @@ describe('Simple Agent Manager - London TDD', () => {
 
       // London TDD: Verify interactions
       expect(mockAgentManager.registerAgent).toHaveBeenCalledWith(agent);
-      expect(result.success).toBe(true);
-      expect(result.agentId).toBe(agent.id);
+      expect(result?.success).toBe(true);
+      expect(result?.agentId).toBe(agent.id);
 
       // Verify event emission interaction
       expect(mockEventEmitter).toHaveBeenCalledWith(
@@ -72,8 +72,8 @@ describe('Simple Agent Manager - London TDD', () => {
       expect(mockAgentManager.registerAgent).toHaveBeenCalledTimes(2);
       expect(mockEventEmitter).toHaveBeenCalledTimes(2);
 
-      results.forEach((result) => {
-        expect(result.success).toBe(true);
+      results?.forEach((result) => {
+        expect(result?.success).toBe(true);
       });
     });
   });
@@ -85,8 +85,8 @@ describe('Simple Agent Manager - London TDD', () => {
 
       // Verify assignment interaction
       expect(mockAgentManager.assignTask).toHaveBeenCalledWith('worker-1', task);
-      expect(result.success).toBe(true);
-      expect(result.taskId).toBe(task.id);
+      expect(result?.success).toBe(true);
+      expect(result?.taskId).toBe(task.id);
 
       // Verify coordination event emission
       expect(mockEventEmitter).toHaveBeenCalledWith(
@@ -107,8 +107,8 @@ describe('Simple Agent Manager - London TDD', () => {
 
       // Verify broadcast interaction
       expect(mockAgentManager.broadcastMessage).toHaveBeenCalledWith(message);
-      expect(result.success).toBe(true);
-      expect(Array.isArray(result.recipients)).toBe(true);
+      expect(result?.success).toBe(true);
+      expect(Array.isArray(result?.recipients)).toBe(true);
 
       // Verify broadcast coordination event
       expect(mockEventEmitter).toHaveBeenCalledWith(
@@ -138,7 +138,7 @@ describe('Simple Agent Manager - London TDD', () => {
 
       // Test coordination interactions
       const initResult = swarm.coordinator('initialize', { type: 'test' });
-      expect(initResult.success).toBe(true);
+      expect(initResult?.success).toBe(true);
 
       const interactions = coordinationSuite.builder.getInteractions();
       expect(interactions.length).toBeGreaterThan(0);

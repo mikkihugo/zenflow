@@ -6,10 +6,6 @@
  */
 
 import { PseudocodePhaseEngine } from '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine';
-import type {
-  DetailedSpecification,
-  FunctionalRequirement,
-} from '../../coordination/swarm/sparc/types/sparc-types';
 
 describe('SPARC Pseudocode Engine Integration Tests', () => {
   let pseudocodeEngine: PseudocodePhaseEngine;
@@ -146,10 +142,10 @@ describe('SPARC Pseudocode Engine Integration Tests', () => {
 
       expect(dataStructures).toBeDefined();
       expect(dataStructures.length).toBeGreaterThan(0);
-      expect(dataStructures[0]).toHaveProperty('name');
-      expect(dataStructures[0]).toHaveProperty('type');
-      expect(dataStructures[0]).toHaveProperty('properties');
-      expect(dataStructures[0]).toHaveProperty('methods');
+      expect(dataStructures?.[0]).toHaveProperty('name');
+      expect(dataStructures?.[0]).toHaveProperty('type');
+      expect(dataStructures?.[0]).toHaveProperty('properties');
+      expect(dataStructures?.[0]).toHaveProperty('methods');
     });
   });
 
@@ -186,7 +182,7 @@ describe('SPARC Pseudocode Engine Integration Tests', () => {
       expect(controlFlows[0]).toHaveProperty('name');
       expect(controlFlows[0]).toHaveProperty('nodes');
       expect(controlFlows[0]).toHaveProperty('edges');
-      expect(controlFlows[0].nodes.length).toBeGreaterThan(0);
+      expect(controlFlows[0]?.nodes.length).toBeGreaterThan(0);
     });
   });
 
@@ -331,15 +327,15 @@ describe('SPARC Pseudocode Engine Integration Tests', () => {
       const result = await pseudocodeEngine.generatePseudocode(phaseOneOutput);
 
       expect(result).toBeDefined();
-      expect(result.algorithms.length).toBeGreaterThan(0);
+      expect(result?.algorithms.length).toBeGreaterThan(0);
 
       // Should generate optimization suggestions based on constraints
-      expect(result.optimizations.length).toBeGreaterThan(0);
+      expect(result?.optimizations.length).toBeGreaterThan(0);
 
       // Should include complexity analysis
-      expect(result.complexityAnalysis).toBeDefined();
-      expect(result.complexityAnalysis?.timeComplexity).toBeDefined();
-      expect(result.complexityAnalysis?.spaceComplexity).toBeDefined();
+      expect(result?.complexityAnalysis).toBeDefined();
+      expect(result?.complexityAnalysis?.timeComplexity).toBeDefined();
+      expect(result?.complexityAnalysis?.spaceComplexity).toBeDefined();
     });
   });
 });

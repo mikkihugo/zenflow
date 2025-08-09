@@ -349,7 +349,7 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.PERFORMANCE_FOCUSED,
+      ...MonitoringEventConfigs?.["PERFORMANCE_FOCUSED"],
       ...overrides,
     });
   },
@@ -365,7 +365,7 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.HEALTH_FOCUSED,
+      ...MonitoringEventConfigs?.["HEALTH_FOCUSED"],
       ...overrides,
     });
   },
@@ -381,7 +381,7 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.ANALYTICS_FOCUSED,
+      ...MonitoringEventConfigs?.["ANALYTICS_FOCUSED"],
       ...overrides,
     });
   },
@@ -397,7 +397,7 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.ALERT_FOCUSED,
+      ...MonitoringEventConfigs?.["ALERT_FOCUSED"],
       ...overrides,
     });
   },
@@ -413,7 +413,7 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.DASHBOARD_FOCUSED,
+      ...MonitoringEventConfigs?.["DASHBOARD_FOCUSED"],
       ...overrides,
     });
   },
@@ -429,7 +429,7 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.HIGH_THROUGHPUT,
+      ...MonitoringEventConfigs?.["HIGH_THROUGHPUT"],
       ...overrides,
     });
   },
@@ -445,7 +445,7 @@ export const MonitoringEventAdapterFactory = {
     overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
-      ...MonitoringEventConfigs.LOW_LATENCY,
+      ...MonitoringEventConfigs?.["LOW_LATENCY"],
       ...overrides,
     });
   },

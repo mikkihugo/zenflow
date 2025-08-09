@@ -1,11 +1,3 @@
-/**
- * @file Orchestration MCP Tools
- *
- * Workflow configuration, deployment automation, and service coordination.
- */
-
-import type { MCPTool } from '../tool-registry';
-
 const orchestrationTools: MCPTool[] = [
   {
     name: 'workflow_create',

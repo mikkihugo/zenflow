@@ -4,14 +4,12 @@
  */
 
 import {
-  type CoordinationContext,
   HierarchicalStrategy,
   MeshStrategy,
   RingStrategy,
   StarStrategy,
   StrategyFactory,
   SwarmCoordinator,
-  type SwarmTopology,
 } from '../../coordination/swarm/core/strategy';
 
 // Mock agent type for testing
@@ -53,12 +51,12 @@ describe('Strategy Pattern Implementation', () => {
       it('should create full mesh connections for all agents', async () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
-        expect(result.success).toBe(true);
-        expect(result.topology).toBe('mesh');
-        expect(result.connections).toBeDefined();
+        expect(result?.success).toBe(true);
+        expect(result?.topology).toBe('mesh');
+        expect(result?.connections).toBeDefined();
 
         // Verify full connectivity: each agent connects to all others
-        Object.entries(result.connections!).forEach(([agentId, connections]) => {
+        Object.entries(result?.connections!).forEach(([agentId, connections]) => {
           expect(connections).toHaveLength(mockAgents.length - 1);
           expect(connections).not.toContain(agentId); // Agent doesn't connect to itself
         });
@@ -67,18 +65,18 @@ describe('Strategy Pattern Implementation', () => {
       it('should calculate performance metrics accurately', async () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
-        expect(result.performance).toBeDefined();
-        expect(result.performance.executionTime).toBeGreaterThan(0);
-        expect(result.performance.coordinationEfficiency).toBeGreaterThan(0);
-        expect(result.performance.coordinationEfficiency).toBeLessThanOrEqual(1);
+        expect(result?.performance).toBeDefined();
+        expect(result?.performance?.executionTime).toBeGreaterThan(0);
+        expect(result?.performance?.coordinationEfficiency).toBeGreaterThan(0);
+        expect(result?.performance?.coordinationEfficiency).toBeLessThanOrEqual(1);
       });
 
       it('should have appropriate latency for mesh topology', async () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
         // Mesh should have low latency but scale with agent count
-        expect(result.latency).toBeGreaterThan(50); // Base latency
-        expect(result.latency).toBeLessThan(200); // Should be reasonable for 3 agents
+        expect(result?.latency).toBeGreaterThan(50); // Base latency
+        expect(result?.latency).toBeLessThan(200); // Should be reasonable for 3 agents
       });
 
       it('should generate recommendations for large swarms', async () => {
@@ -90,9 +88,9 @@ describe('Strategy Pattern Implementation', () => {
 
         const result = await strategy.coordinate(largeAgentSet, mockContext);
 
-        expect(result.recommendations).toBeDefined();
-        expect(result.recommendations?.length).toBeGreaterThan(0);
-        expect(result.recommendations?.[0]).toContain('hierarchical');
+        expect(result?.recommendations).toBeDefined();
+        expect(result?.recommendations?.length).toBeGreaterThan(0);
+        expect(result?.recommendations?.[0]).toContain('hierarchical');
       });
     });
 
@@ -106,12 +104,12 @@ describe('Strategy Pattern Implementation', () => {
       it('should create hierarchical leadership structure', async () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
-        expect(result.success).toBe(true);
-        expect(result.topology).toBe('hierarchical');
-        expect(result.leadership).toBeDefined();
-        expect(result.leadership?.leaders.length).toBeGreaterThan(0);
-        expect(result.leadership?.hierarchy).toBeDefined();
-        expect(result.leadership?.maxDepth).toBeGreaterThan(0);
+        expect(result?.success).toBe(true);
+        expect(result?.topology).toBe('hierarchical');
+        expect(result?.leadership).toBeDefined();
+        expect(result?.leadership?.leaders.length).toBeGreaterThan(0);
+        expect(result?.leadership?.hierarchy).toBeDefined();
+        expect(result?.leadership?.maxDepth).toBeGreaterThan(0);
       });
 
       it('should select leaders based on capabilities', async () => {
@@ -119,17 +117,17 @@ describe('Strategy Pattern Implementation', () => {
 
         // The agent with most capabilities should be selected as leader
         const topAgent = mockAgents.reduce((best, current) =>
-          current.capabilities.length > best.capabilities.length ? current : best
+          current?.capabilities.length > best.capabilities.length ? current : best
         );
 
-        expect(result.leadership?.leaders).toContain(topAgent.id);
+        expect(result?.leadership?.leaders).toContain(topAgent.id);
       });
 
       it('should have latency proportional to hierarchy depth', async () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
-        const expectedMinLatency = 50 + result.leadership?.maxDepth * 25;
-        expect(result.latency).toBeGreaterThanOrEqual(expectedMinLatency);
+        const expectedMinLatency = 50 + result?.leadership?.maxDepth * 25;
+        expect(result?.latency).toBeGreaterThanOrEqual(expectedMinLatency);
       });
     });
 
@@ -143,22 +141,22 @@ describe('Strategy Pattern Implementation', () => {
       it('should create circular connections', async () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
-        expect(result.success).toBe(true);
-        expect(result.topology).toBe('ring');
-        expect(result.connections).toBeDefined();
+        expect(result?.success).toBe(true);
+        expect(result?.topology).toBe('ring');
+        expect(result?.connections).toBeDefined();
 
         // Each agent should connect to exactly one other agent
-        Object.values(result.connections!).forEach((connections) => {
+        Object.values(result?.connections!).forEach((connections) => {
           expect(connections).toHaveLength(1);
         });
 
         // Verify circular nature - should be able to traverse all agents
         const visited = new Set<string>();
-        let current = mockAgents[0].id;
+        let current = mockAgents[0]?.id;
 
         while (!visited.has(current)) {
           visited.add(current);
-          current = result.connections?.[current][0];
+          current = result?.connections?.[current][0];
         }
 
         expect(visited.size).toBe(mockAgents.length);
@@ -168,7 +166,7 @@ describe('Strategy Pattern Implementation', () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
         const expectedLatency = 50 + mockAgents.length * 10;
-        expect(result.latency).toBe(expectedLatency);
+        expect(result?.latency).toBe(expectedLatency);
       });
     });
 
@@ -182,38 +180,38 @@ describe('Strategy Pattern Implementation', () => {
       it('should select hub based on capabilities', async () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
-        expect(result.success).toBe(true);
-        expect(result.topology).toBe('star');
-        expect(result.leadership).toBeDefined();
-        expect(result.leadership?.leaders).toHaveLength(1);
+        expect(result?.success).toBe(true);
+        expect(result?.topology).toBe('star');
+        expect(result?.leadership).toBeDefined();
+        expect(result?.leadership?.leaders).toHaveLength(1);
 
         // Hub should be the agent with most capabilities
         const expectedHub = mockAgents.reduce((best, current) =>
-          current.capabilities.length > best.capabilities.length ? current : best
+          current?.capabilities.length > best.capabilities.length ? current : best
         );
 
-        expect(result.leadership?.leaders[0]).toBe(expectedHub.id);
+        expect(result?.leadership?.leaders[0]).toBe(expectedHub.id);
       });
 
       it('should create star topology connections', async () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
-        const hub = result.leadership?.leaders[0];
+        const hub = result?.leadership?.leaders[0];
         const nonHubAgents = mockAgents.filter((a) => a.id !== hub);
 
         // Hub connects to all others
-        expect(result.connections?.[hub]).toHaveLength(nonHubAgents.length);
+        expect(result?.connections?.[hub]).toHaveLength(nonHubAgents.length);
 
         // Others connect only to hub
         nonHubAgents.forEach((agent) => {
-          expect(result.connections?.[agent.id]).toEqual([hub]);
+          expect(result?.connections?.[agent.id]).toEqual([hub]);
         });
       });
 
       it('should have low latency due to centralized communication', async () => {
         const result = await strategy.coordinate(mockAgents, mockContext);
 
-        expect(result.latency).toBe(30); // Fixed low latency for star topology
+        expect(result?.latency).toBe(30); // Fixed low latency for star topology
       });
     });
   });
@@ -298,8 +296,8 @@ describe('Strategy Pattern Implementation', () => {
 
       const history = swarmCoordinator.getHistory();
       expect(history).toHaveLength(1);
-      expect(history[0].action).toBe('coordinate');
-      expect(history[0].result).toBe('success');
+      expect(history[0]?.action).toBe('coordinate');
+      expect(history[0]?.result).toBe('success');
     });
 
     it('should handle coordination failures gracefully', async () => {
@@ -313,7 +311,7 @@ describe('Strategy Pattern Implementation', () => {
 
       const history = swarmCoordinator.getHistory();
       expect(history).toHaveLength(1);
-      expect(history[0].result).toBe('failure');
+      expect(history[0]?.result).toBe('failure');
     });
 
     it('should optimize strategy periodically', async () => {
@@ -484,10 +482,10 @@ describe('Strategy Pattern Implementation', () => {
         const actualExecutionTime = Date.now() - startTime;
 
         // Performance assertions
-        expect(result.success).toBe(true);
+        expect(result?.success).toBe(true);
         expect(actualExecutionTime).toBeLessThan(1000); // Should complete within 1 second
-        expect(result.performance.coordinationEfficiency).toBeGreaterThan(0.5);
-        expect(result.latency).toBeLessThan(500); // Reasonable latency
+        expect(result?.performance?.coordinationEfficiency).toBeGreaterThan(0.5);
+        expect(result?.latency).toBeLessThan(500); // Reasonable latency
       }
     });
   });

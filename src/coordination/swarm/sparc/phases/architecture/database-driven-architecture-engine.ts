@@ -4,25 +4,7 @@
 
 import { nanoid } from 'nanoid';
 import { ArchitectureStorageService } from '../../database/architecture-storage';
-import type {
-  AlgorithmPseudocode,
-  ArchitecturalPattern,
-  ArchitecturalValidation,
-  ArchitectureDesign,
-  ArchitectureEngine,
-  Component,
-  ComponentDiagram,
-  DataFlowConnection,
-  DataFlowDiagram,
-  DeploymentPlan,
-  DetailedSpecification,
-  PseudocodeStructure,
-  QualityAttribute,
-  ScalabilityRequirement,
-  SecurityRequirement,
-  SystemArchitecture,
-  ValidationResult,
-} from '../../types/sparc-types';
+import type { ArchitectureEngine } from '../../types/sparc-types';
 
 // Additional types needed for this module
 interface SystemComponent {
@@ -250,9 +232,9 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
         );
 
         if (targetComponent) {
-          dataFlowConnections.push({
+          dataFlowConnections?.push({
             from: component.name,
-            to: targetComponent.name,
+            to: targetComponent?.name,
             data: this.inferDataType(
               {
                 ...component,
@@ -261,8 +243,8 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
               },
               {
                 ...targetComponent,
-                id: targetComponent.id || targetComponent.name,
-                description: targetComponent.description || `${targetComponent.name} component`,
+                id: targetComponent?.id || targetComponent?.name,
+                description: targetComponent?.description || `${targetComponent?.name} component`,
               }
             ),
             protocol: this.selectProtocol(
@@ -273,8 +255,8 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
               },
               {
                 ...targetComponent,
-                id: targetComponent.id || targetComponent.name,
-                description: targetComponent.description || `${targetComponent.name} component`,
+                id: targetComponent?.id || targetComponent?.name,
+                description: targetComponent?.description || `${targetComponent?.name} component`,
               }
             ),
             frequency: this.estimateFrequency(
@@ -285,8 +267,8 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
               },
               {
                 ...targetComponent,
-                id: targetComponent.id || targetComponent.name,
-                description: targetComponent.description || `${targetComponent.name} component`,
+                id: targetComponent?.id || targetComponent?.name,
+                description: targetComponent?.description || `${targetComponent?.name} component`,
               }
             ),
           });
@@ -336,7 +318,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
     const validationResults: ValidationResult[] = [];
 
     // Component design validation
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Component design',
       passed: architecture.components.length > 0,
       score: architecture.components.length > 0 ? 1.0 : 0.0,
@@ -348,22 +330,22 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
 
     // Interface consistency validation
     const interfaceValidation = await this.validateInterfaces(architecture);
-    validationResults.push(interfaceValidation);
+    validationResults?.push(interfaceValidation);
 
     // Data flow validation
     const dataFlowValidation = await this.validateDataFlow(architecture);
-    validationResults.push(dataFlowValidation);
+    validationResults?.push(dataFlowValidation);
 
     // Pattern compliance validation
     const patternValidation = await this.validatePatternCompliance(architecture);
-    validationResults.push(patternValidation);
+    validationResults?.push(patternValidation);
 
     // Quality attributes validation
     const qualityValidation = await this.validateQualityAttributes(architecture);
-    validationResults.push(qualityValidation);
+    validationResults?.push(qualityValidation);
 
     const overallScore =
-      validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
+      validationResults?.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
 
     const architecturalValidation: ArchitecturalValidation = {
       overall: overallScore >= 0.7,
@@ -517,22 +499,22 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   private async createComponentFromDataStructure(dataStructure: any): Promise<SystemComponent> {
     return {
       id: nanoid(),
-      name: `${dataStructure.name}Manager`,
+      name: `${dataStructure?.name}Manager`,
       type: 'data-manager',
-      description: `Manages ${dataStructure.description || dataStructure.name}`,
+      description: `Manages ${dataStructure?.description || dataStructure?.name}`,
       responsibilities: [
         'Data storage and retrieval',
         'Data consistency',
         'Performance optimization',
         'Backup and recovery',
       ],
-      interfaces: [`I${dataStructure.name}Manager`],
+      interfaces: [`I${dataStructure?.name}Manager`],
       dependencies: await this.extractDataStructureDependencies(dataStructure),
       technologies: await this.selectTechnologiesForDataStructure(dataStructure),
       scalability: await this.assessDataStructureScalability(dataStructure),
       performance: {
-        expectedThroughput: `${dataStructure.expectedSize || 1000} items/sec`,
-        expectedLatency: this.getDataStructureLatency(dataStructure.performance || {}),
+        expectedThroughput: `${dataStructure?.expectedSize || 1000} items/sec`,
+        expectedLatency: this.getDataStructureLatency(dataStructure?.performance || {}),
         memoryUsage: this.estimateMemoryUsage(dataStructure),
       },
     };
@@ -757,9 +739,9 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
       const targetComponent = components.find((c) => c.id === relationship['targetId']);
 
       if (sourceComponent && targetComponent) {
-        dataFlows.push({
+        dataFlows?.push({
           id: nanoid(),
-          name: `${sourceComponent.name}To${targetComponent.name}Flow`,
+          name: `${sourceComponent.name}To${targetComponent?.name}Flow`,
           sourceComponentId: relationship['sourceId'],
           targetComponentId: relationship['targetId'],
           dataType: this.inferDataType(sourceComponent, targetComponent),
@@ -1037,7 +1019,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   private extractArchitectureId(architecture: SystemArchitecture): string | null {
     // Extract architecture ID from components or other identifying information
     if (architecture.components.length > 0 && architecture.components[0]?.id) {
-      return architecture.components[0].id.split('-')[0] || null; // Simple ID extraction
+      return architecture.components[0]?.id?.split('-')[0] || null; // Simple ID extraction
     }
     return null;
   }
@@ -1119,7 +1101,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
         if (targetComponent) {
           connections.push({
             from: component.name,
-            to: targetComponent.name,
+            to: targetComponent?.name,
             data: this.inferDataType(component, targetComponent),
             protocol: this.selectProtocol(component, targetComponent),
             frequency: this.estimateFrequency(component, targetComponent),
@@ -1160,7 +1142,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
     if (dataComponents.length > 0) {
       units.push({
         name: 'DataServices',
-        components: dataComponents.map((c) => c.name),
+        components: dataComponents?.map((c) => c.name),
         infrastructure: [
           { type: 'storage', specification: 'SSD, 100GB', constraints: ['backup required'] },
           { type: 'network', specification: 'Private network', constraints: [] },
@@ -1399,7 +1381,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   private async extractDataStructureDependencies(dataStructure: any): Promise<string[]> {
     const dependencies: string[] = [];
 
-    const type = dataStructure.type || dataStructure.name || '';
+    const type = dataStructure?.type || dataStructure?.name || '';
     if (type.includes('HashMap') || type.includes('Map')) dependencies.push('HashingService');
     if (type.includes('PriorityQueue') || type.includes('Queue'))
       dependencies.push('ComparatorService');
@@ -1411,7 +1393,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   private async selectTechnologiesForDataStructure(dataStructure: any): Promise<string[]> {
     const technologies = ['TypeScript'];
 
-    const type = dataStructure.type || dataStructure.name || '';
+    const type = dataStructure?.type || dataStructure?.name || '';
     if (type.includes('HashMap') || type.includes('Map')) {
       technologies.push('Map', 'Redis');
     } else if (type.includes('Queue')) {
@@ -1424,7 +1406,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   private async assessDataStructureScalability(dataStructure: any): Promise<string> {
-    const expectedSize = dataStructure.expectedSize || 1000;
+    const expectedSize = dataStructure?.expectedSize || 1000;
     return expectedSize > 100000 ? 'horizontal' : 'vertical';
   }
 
@@ -1434,7 +1416,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   private estimateMemoryUsage(dataStructure: any): string {
-    const size = dataStructure.expectedSize || 1000;
+    const size = dataStructure?.expectedSize || 1000;
     if (size > 1000000) return '1GB';
     if (size > 100000) return '100MB';
     if (size > 10000) return '10MB';
@@ -1467,14 +1449,14 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   private inferDataType(source: SystemComponent, target: SystemComponent): string {
-    if (source.name.includes('Agent') && target.name.includes('Registry')) return 'AgentInfo';
-    if (source.name.includes('Task') && target.name.includes('Queue')) return 'Task';
+    if (source.name.includes('Agent') && target?.name?.includes('Registry')) return 'AgentInfo';
+    if (source.name.includes('Task') && target?.name?.includes('Queue')) return 'Task';
     if (source.name.includes('Neural')) return 'Matrix';
     return 'JSON';
   }
 
   private estimateDataVolume(source: SystemComponent, target: SystemComponent): string {
-    if (source.type === 'service' && target.type === 'data-manager') return 'Medium';
+    if (source.type === 'service' && target?.type === 'data-manager') return 'Medium';
     if (source.name.includes('Neural')) return 'High';
     return 'Low';
   }
@@ -1486,13 +1468,13 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   private determineSecurityRequirements(source: SystemComponent, target: SystemComponent): string {
-    if (source.type === 'gateway' || target.type === 'gateway') return 'High';
-    if (source.type === 'data-manager' || target.type === 'data-manager') return 'Medium';
+    if (source.type === 'gateway' || target?.type === 'gateway') return 'High';
+    if (source.type === 'data-manager' || target?.type === 'data-manager') return 'Medium';
     return 'Low';
   }
 
   private identifyDataTransformation(source: SystemComponent, target: SystemComponent): string {
-    if (source.type !== target.type) return 'Format conversion required';
+    if (source.type !== target?.type) return 'Format conversion required';
     return 'Direct mapping';
   }
 
@@ -1510,7 +1492,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   private selectProtocol(component: SystemComponent, target?: SystemComponent): string {
     if (component.type === 'gateway') return 'HTTP/REST';
     if (component.type === 'service') return 'HTTP/REST';
-    if (target && target.type === 'data-manager') return 'TCP/SQL';
+    if (target && target?.type === 'data-manager') return 'TCP/SQL';
     return 'Internal';
   }
 
@@ -1527,7 +1509,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
   }
 
   private estimateFrequency(source: SystemComponent, target: SystemComponent): string {
-    if (source.type === 'service' && target.type === 'data-manager') return 'High';
+    if (source.type === 'service' && target?.type === 'data-manager') return 'High';
     if (source.type === 'gateway') return 'Very High';
     return 'Medium';
   }
@@ -1541,8 +1523,8 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
     const recommendations: string[] = [];
 
     for (const result of validationResults) {
-      if (!result.passed) {
-        switch (result.criterion) {
+      if (!result?.passed) {
+        switch (result?.criterion) {
           case 'Component design':
             recommendations.push('Define clear system components with specific responsibilities');
             break;
@@ -1561,7 +1543,7 @@ export class DatabaseDrivenArchitecturePhaseEngine implements ArchitectureEngine
             recommendations.push('Define more comprehensive and measurable quality attributes');
             break;
           default:
-            recommendations.push(`Address issues with: ${result.criterion}`);
+            recommendations.push(`Address issues with: ${result?.criterion}`);
         }
       }
     }

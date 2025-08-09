@@ -1,14 +1,4 @@
 /**
- * Database Entities for Document-Driven System
- *
- * PURE DATABASE-DRIVEN ARCHITECTURE
- * Replaces file-based document system with database entities
- * Provides typed interfaces for Vision/ADR/PRD/Epic/Feature/Task storage
- */
-
-import type { DocumentType } from '../../types/workflow-types';
-
-/**
  * Base document entity - all documents inherit from this
  *
  * @example

@@ -8,7 +8,7 @@
  * - Focus on client-server interaction patterns
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
@@ -114,7 +114,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
       mockWebSocket.on('error', this.handleError.bind(this));
 
       // Start heartbeat if enabled
-      if (options.heartbeat) {
+      if (options?.["heartbeat"]) {
         mockHeartbeatManager.start();
       }
 
@@ -132,7 +132,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
     }
 
     isConnected(): boolean {
-      return this.ws && mockWebSocket.readyState === mockWebSocket.OPEN;
+      return this.ws && mockWebSocket.readyState === mockWebSocket["OPEN"];
     }
 
     private handleOpen() {
@@ -211,7 +211,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
     describe('User Story: Message Transmission with Queuing', () => {
       it('should send messages immediately when connected, queue when disconnected', async () => {
         // Arrange - Mock connection states
-        mockWebSocket.readyState = mockWebSocket.OPEN;
+        mockWebSocket.readyState = mockWebSocket["OPEN"];
         mockWebSocket.send.mockResolvedValue(undefined);
         mockMessageQueue.enqueue.mockImplementation(() => {});
 
@@ -225,7 +225,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
         await client.send(connectedMessage);
 
         // Simulate disconnection
-        mockWebSocket.readyState = mockWebSocket.CLOSED;
+        mockWebSocket.readyState = mockWebSocket["CLOSED"];
 
         // Send message when disconnected
         await client.send(disconnectedMessage);
@@ -359,8 +359,8 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
       eventDrivenClient.setupEventHandlers();
 
       // Simulate events
-      mockEventBus.subscribe.mock.calls[0][1]('connected');
-      mockEventBus.subscribe.mock.calls[1][1]({ id: 'msg-123', data: 'test' });
+      mockEventBus.subscribe.mock.calls[0]?.[1]('connected');
+      mockEventBus.subscribe.mock.calls[1]?.[1]({ id: 'msg-123', data: 'test' });
 
       // Assert - Verify event interaction conversation
       expect(mockEventBus.subscribe).toHaveBeenCalledWith(
@@ -414,7 +414,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Reset WebSocket state
-    mockWebSocket.readyState = mockWebSocket.CLOSED;
+    mockWebSocket.readyState = mockWebSocket["CLOSED"];
   });
 
   afterEach(() => {

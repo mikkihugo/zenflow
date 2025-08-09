@@ -115,9 +115,9 @@ class MockErrorHandler implements ErrorHandler {
       (this.metrics.averageHandlingTime * (this.metrics.totalErrors - 1) + handlingTime) /
       this.metrics.totalErrors;
 
-    if (result.recovered) {
+    if (result?.recovered) {
       this.metrics.recoveredErrors++;
-    } else if (result.exitCode !== 0) {
+    } else if (result?.exitCode !== 0) {
       this.metrics.fatalErrors++;
     }
 
@@ -261,8 +261,8 @@ describe('ErrorHandler - TDD London', () => {
       // Assert - verify metrics tracking behavior
       const metrics = errorHandler.getMetrics();
       expect(metrics.totalErrors).toBe(3);
-      expect(metrics.errorsByType.ValidationError).toBe(2);
-      expect(metrics.errorsByType.NetworkError).toBe(1);
+      expect(metrics.errorsByType["ValidationError"]).toBe(2);
+      expect(metrics.errorsByType["NetworkError"]).toBe(1);
       expect(metrics.averageHandlingTime).toBeGreaterThan(0);
     });
 
@@ -433,8 +433,8 @@ describe('ErrorHandler - TDD London', () => {
       // Here we just verify strategies are available
       const strategies = errorHandler.getRecoveryStrategies();
       expect(strategies).toHaveLength(2);
-      expect(strategies[0].name).toBe('retry');
-      expect(strategies[1].name).toBe('fallback');
+      expect(strategies[0]?.name).toBe('retry');
+      expect(strategies[1]?.name).toBe('fallback');
     });
   });
 
@@ -462,10 +462,10 @@ describe('ErrorHandler - TDD London', () => {
       const result = await errorHandler.handle(validationError, context);
 
       // Assert - verify validation error handling
-      expect(result.handled).toBe(true);
-      expect(result.recovered).toBe(true);
-      expect(result.suggestion).toContain('email');
-      expect(result.retryable).toBe(true);
+      expect(result?.handled).toBe(true);
+      expect(result?.recovered).toBe(true);
+      expect(result?.suggestion).toContain('email');
+      expect(result?.retryable).toBe(true);
     });
 
     it('should handle network errors with retry suggestions', async () => {
@@ -490,9 +490,9 @@ describe('ErrorHandler - TDD London', () => {
       const result = await errorHandler.handle(networkError, context);
 
       // Assert - verify network error handling
-      expect(result.retryable).toBe(true);
-      expect(result.suggestion).toContain('try again');
-      expect(result.logged).toBe(true);
+      expect(result?.retryable).toBe(true);
+      expect(result?.suggestion).toContain('try again');
+      expect(result?.logged).toBe(true);
     });
 
     it('should handle command not found errors with suggestions', async () => {
@@ -517,9 +517,9 @@ describe('ErrorHandler - TDD London', () => {
       const result = await errorHandler.handle(commandError, context);
 
       // Assert - verify command not found handling
-      expect(result.exitCode).toBe(127);
-      expect(result.suggestion).toContain('deploy');
-      expect(result.retryable).toBe(false);
+      expect(result?.exitCode).toBe(127);
+      expect(result?.suggestion).toContain('deploy');
+      expect(result?.retryable).toBe(false);
     });
   });
 
@@ -581,8 +581,8 @@ describe('ErrorHandler - TDD London', () => {
       const highResult = await errorHandler.handle(highSeverityError, highContext);
 
       // Assert - verify severity-based logging behavior
-      expect(lowResult.logged).toBe(false);
-      expect(highResult.logged).toBe(true);
+      expect(lowResult?.logged).toBe(false);
+      expect(highResult?.logged).toBe(true);
     });
   });
 
@@ -613,8 +613,8 @@ describe('ErrorHandler - TDD London', () => {
 
       // Assert - verify context-aware handling
       expect(mockHandleFunction).toHaveBeenCalledWith(error, context);
-      expect(result.message).toContain('missing-app');
-      expect(result.message).toContain('production');
+      expect(result?.message).toContain('missing-app');
+      expect(result?.message).toContain('production');
     });
 
     it('should handle errors differently based on user permissions', async () => {

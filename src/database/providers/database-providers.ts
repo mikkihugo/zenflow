@@ -48,26 +48,7 @@
  * ```
  */
 
-import type {
-  ConnectionStats,
-  DatabaseAdapter,
-  ExecuteResult,
-  IConfig,
-  ILogger,
-  QueryResult,
-  SchemaInfo,
-  TransactionContext,
-} from '../../core/interfaces/base-interfaces';
-import { injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
-
-import {
-  type DatabaseResult,
-  isQueryError,
-  isQuerySuccess,
-  type QueryError,
-  type QuerySuccess,
-} from '../../utils/type-guards';
+import type { DatabaseAdapter } from '../../core/interfaces/base-interfaces';
 
 // Re-export DatabaseAdapter for external use
 export { DatabaseAdapter } from '../../core/interfaces/base-interfaces';
@@ -585,10 +566,10 @@ export class DatabaseProviderFactory {
    * ```
    */
   createAdapter(config: DatabaseConfig): DatabaseAdapter {
-    this.logger.info(`Creating database adapter: ${config.type}`);
+    this.logger.info(`Creating database adapter: ${config?.type}`);
 
     try {
-      switch (config.type) {
+      switch (config?.type) {
         case 'postgresql':
           return new PostgreSQLAdapter(config, this.logger);
         case 'sqlite':
@@ -600,7 +581,7 @@ export class DatabaseProviderFactory {
         case 'mysql':
           return new MySQLAdapter(config, this.logger);
         default:
-          throw new Error(`Unsupported database type: ${config.type}`);
+          throw new Error(`Unsupported database type: ${config?.type}`);
       }
     } catch (error) {
       this.logger.error(`Failed to create database adapter: ${error}`);
@@ -1657,9 +1638,9 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
         const limitMatch = sql.match(/LIMIT\s+(\d+)/i);
 
         if (vectorMatch && tableMatch) {
-          const vectorStr = vectorMatch[1];
-          const tableName = tableMatch[1] || 'default';
-          const limit = limitMatch ? parseInt(limitMatch[1], 10) : 10;
+          const vectorStr = vectorMatch?.[1];
+          const tableName = tableMatch?.[1] || 'default';
+          const limit = limitMatch ? parseInt(limitMatch?.[1], 10) : 10;
 
           // Parse vector from string - fix for possible undefined
           if (vectorStr) {
@@ -1672,13 +1653,13 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 
             // Convert vector results to QueryResult format
             const result: QueryResult = {
-              rows: vectorResults.matches.map((match) => ({
-                id: match.id,
-                vector: match.vector,
-                score: match.score,
-                metadata: match.metadata,
+              rows: vectorResults?.matches?.map((match) => ({
+                id: match?.id,
+                vector: match?.vector,
+                score: match?.score,
+                metadata: match?.metadata,
               })),
-              rowCount: vectorResults.matches.length,
+              rowCount: vectorResults?.matches.length,
               fields: [
                 { name: 'id', type: 'TEXT', nullable: false },
                 { name: 'vector', type: 'VECTOR', nullable: false },
@@ -1728,7 +1709,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
         // Extract table name and create it
         const tableMatch = sql.match(/CREATE TABLE\s+(\w+)/i);
         if (tableMatch) {
-          const tableName = tableMatch[1];
+          const tableName = tableMatch?.[1];
           // Table creation is handled automatically by DAL
           affectedRows = 1;
         }
@@ -1808,11 +1789,11 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 
       // Convert DAL results to VectorResult format
       const result: VectorResult = {
-        matches: searchResults.map((result: any) => ({
-          id: result.id,
-          vector: result.vector || query, // fallback to query vector if not available
-          score: result.score || result.similarity || 1.0,
-          metadata: result.metadata || {},
+        matches: searchResults?.map((result: any) => ({
+          id: result?.id,
+          vector: result?.vector || query, // fallback to query vector if not available
+          score: result?.score || result?.similarity || 1.0,
+          metadata: result?.metadata || {},
         })),
         executionTime,
       };
@@ -1849,21 +1830,21 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
   }
 
   async createIndex(config: IndexConfig): Promise<void> {
-    this.logger.debug(`Creating LanceDB index: ${config.name}`);
+    this.logger.debug(`Creating LanceDB index: ${config?.name}`);
     await this.ensureConnected();
 
     try {
       // DAL handles indexing automatically through repositories
       // Create a sample document to ensure table exists
       const sampleDoc = {
-        id: `index_${config.name}_${Date.now()}`,
-        vector: new Array(config.dimension).fill(0),
-        metadata: { index: config.name, type: 'sample' },
+        id: `index_${config?.name}_${Date.now()}`,
+        vector: new Array(config?.["dimension"]).fill(0),
+        metadata: { index: config?.name, type: 'sample' },
       };
       await this.vectorRepository.create(sampleDoc);
       await this.vectorRepository.delete(sampleDoc.id); // Clean up sample
 
-      this.logger.debug(`Successfully created LanceDB index: ${config.name}`);
+      this.logger.debug(`Successfully created LanceDB index: ${config?.name}`);
     } catch (error) {
       this.logger.error(`Failed to create LanceDB index: ${error}`);
       throw error;

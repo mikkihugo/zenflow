@@ -29,7 +29,7 @@ async function main() {
     const result = await handleHook(hookType, options);
 
     // Exit with appropriate code
-    if (result.continue === false) {
+    if (result?.continue === false) {
       process.exit(2); // Blocking error
     } else {
       process.exit(0); // Success
@@ -62,18 +62,18 @@ function parseArgs(args: string[]): any {
       const nextArg = args[i + 1];
       if (nextArg != null && !nextArg.startsWith('--')) {
         // Next arg is the value
-        options[toCamelCase(key)] = nextArg;
+        options?.[toCamelCase(key)] = nextArg;
         i++; // Skip the value in next iteration
       } else {
         // Boolean flag
-        options[toCamelCase(key)] = true;
+        options?.[toCamelCase(key)] = true;
       }
     } else if (!args[i - 1]?.startsWith('--')) {
       // Positional argument
-      if (!options._) {
-        options._ = [];
+      if (!options?._) {
+        options?._ = [];
       }
-      options._.push(arg);
+      options?._?.push(arg);
     }
   }
 

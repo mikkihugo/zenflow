@@ -40,7 +40,7 @@ export interface MCPTool {
  *
  * @example
  */
-class SimpleToolRegistry {
+class ToolRegistry {
   private tools = new Map<string, MCPTool>();
 
   registerTool(tool: MCPTool): void {

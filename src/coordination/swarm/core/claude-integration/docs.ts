@@ -55,7 +55,7 @@ class ClaudeDocsGenerator {
   private advancedGenerator: any;
 
   constructor(options: DocsGeneratorOptions = {}) {
-    this.workingDir = options.workingDir || process.cwd();
+    this.workingDir = options?.["workingDir"] || process.cwd();
     this.advancedGenerator = new AdvancedCommandsGenerator(options);
   }
 
@@ -1063,34 +1063,34 @@ Already configured by default for common file types.
 
       if (hasContent(config)) {
         // Use provided content for workflow files
-        content = config.content;
+        content = config?.["content"];
       } else if (hasTool(config)) {
         // Generate content for tool documentation
-        content = `# ${config.title}
+        content = `# ${config?.["title"]}
 
 ## 🎯 Key Principle
 **This tool coordinates Claude Code's actions. It does NOT write code or create content.**
 
 ## MCP Tool Usage in Claude Code
 
-**Tool:** \`${config.tool}\`
+**Tool:** \`${config?.["tool"]}\`
 
 ## Parameters
 \`\`\`json
-${config.params}
+${config?.["params"]}
 \`\`\`
 
 ## Description
-${config.description}
+${config?.["description"]}
 
 ## Details
-${config.details}
+${config?.["details"]}
 
 ## Example Usage
 
 **In Claude Code:**
-1. Use the tool: \`${config.tool}\`
-2. With parameters: \`${config.params}\`
+1. Use the tool: \`${config?.["tool"]}\`
+2. With parameters: \`${config?.["params"]}\`
 3. Claude Code then executes the coordinated plan using its native tools
 
 ## Important Reminders
@@ -1512,7 +1512,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
     for (let i = 0; i < lines.length; i++) {
       const lineElement = lines[i];
       if (lineElement) {
-        const line = lineElement.toLowerCase();
+        const line = lineElement?.toLowerCase();
         if (
           (line.includes('claude-zen') || line.includes('claude zen')) &&
           (line.startsWith('#') || line.includes('claude code configuration'))
@@ -1537,7 +1537,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
     // 1. After main title but before first major section
     for (let i = 0; i < existingLines.length; i++) {
       const lineElement = existingLines[i];
-      if (lineElement && lineElement.startsWith('# ') && i > 0) {
+      if (lineElement && lineElement?.startsWith('# ') && i > 0) {
         // Found first major heading after title
         insertIndex = i;
         break;
@@ -1548,7 +1548,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
     if (insertIndex === -1) {
       for (let i = 0; i < existingLines.length; i++) {
         const lineElement = existingLines[i];
-        if (lineElement && lineElement.startsWith('## ') && i > 5) {
+        if (lineElement && lineElement?.startsWith('## ') && i > 5) {
           insertIndex = i;
           break;
         }
@@ -1582,14 +1582,14 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
       const lineElement = lines[i];
       if (lineElement) {
         if (
-          lineElement.startsWith('# ') &&
-          !lineElement.includes('claude-zen') &&
-          !lineElement.includes('claude zen')
+          lineElement?.startsWith('# ') &&
+          !lineElement?.includes('claude-zen') &&
+          !lineElement?.includes('claude zen')
         ) {
           return i;
         }
         // Also check for horizontal rules that might separate sections
-        if (lineElement.trim() === '---' && i > startIndex + 10) {
+        if (lineElement?.trim() === '---' && i > startIndex + 10) {
           return i;
         }
       }

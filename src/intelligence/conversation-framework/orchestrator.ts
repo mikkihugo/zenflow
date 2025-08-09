@@ -5,17 +5,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import type { AgentId } from '../../types/agent-types';
-import type {
-  ConversationConfig,
-  ConversationMemory,
-  ConversationMessage,
-  ConversationOrchestrator,
-  ConversationOutcome,
-  ConversationPattern,
-  ConversationSession,
-  ModerationAction,
-} from './types';
+import type { ConversationOrchestrator } from './types';
 
 /**
  * Implementation of the conversation orchestrator
@@ -38,21 +28,21 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param config
    */
   async createConversation(config: ConversationConfig): Promise<ConversationSession> {
-    const pattern = this.patterns.get(config.pattern);
+    const pattern = this.patterns.get(config?.["pattern"]);
     if (!pattern) {
-      throw new Error(`Unknown conversation pattern: ${config.pattern}`);
+      throw new Error(`Unknown conversation pattern: ${config?.["pattern"]}`);
     }
 
     const session: ConversationSession = {
       id: nanoid(),
-      title: config.title,
-      description: config.description,
-      participants: [...config.initialParticipants],
-      initiator: config.initialParticipants[0] || { id: 'unknown', swarmId: 'system', type: 'coordinator', instance: 0 },
-      orchestrator: config.orchestrator,
+      title: config?.title,
+      description: config?.description,
+      participants: [...config?.["initialParticipants"]],
+      initiator: config?.["initialParticipants"]?.[0] || { id: 'unknown', swarmId: 'system', type: 'coordinator', instance: 0 },
+      orchestrator: config?.["orchestrator"],
       startTime: new Date(),
       status: 'initializing',
-      context: config.context,
+      context: config?.context,
       messages: [],
       outcomes: [],
       metrics: {
@@ -65,7 +55,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     };
 
     // Initialize participation tracking
-    config.initialParticipants.forEach((agent) => {
+    config?.["initialParticipants"]?.forEach((agent) => {
       session.metrics.participationByAgent[agent.id] = 0;
     });
 
@@ -129,9 +119,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param message
    */
   async sendMessage(message: ConversationMessage): Promise<void> {
-    const session = this.activeSessions.get(message.conversationId);
+    const session = this.activeSessions.get(message["conversationId"]);
     if (!session) {
-      throw new Error(`Conversation ${message.conversationId} not found`);
+      throw new Error(`Conversation ${message["conversationId"]} not found`);
     }
 
     if (session.status !== 'active') {
@@ -139,23 +129,23 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     }
 
     // Validate sender is participant
-    if (!session.participants.find((p) => p.id === message.fromAgent.id)) {
-      throw new Error(`Agent ${message.fromAgent.id} is not a participant in this conversation`);
+    if (!session.participants.find((p) => p.id === message["fromAgent"]?.id)) {
+      throw new Error(`Agent ${message["fromAgent"]?.id} is not a participant in this conversation`);
     }
 
     // Add timestamp and ID if not set
     if (!message.id) {
       message.id = nanoid();
     }
-    if (!message.timestamp) {
-      message.timestamp = new Date();
+    if (!message["timestamp"]) {
+      message["timestamp"] = new Date();
     }
 
     // Add to session
     session.messages.push(message);
     session.metrics.messageCount++;
-    session.metrics.participationByAgent[message.fromAgent.id] = 
-      (session.metrics.participationByAgent[message.fromAgent.id] || 0) + 1;
+    session.metrics.participationByAgent[message["fromAgent"]?.id] = 
+      (session.metrics.participationByAgent[message["fromAgent"]?.id] || 0) + 1;
 
     // Update session in memory
     await this.memory.updateConversation(session.id, {
@@ -475,7 +465,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     session: ConversationSession
   ): boolean {
     if (step.trigger.type === 'message') {
-      return step.trigger.condition.messageType === message.messageType;
+      return step.trigger.condition.messageType === message["messageType"];
     }
     if (step.trigger.type === 'consensus') {
       return this.checkConsensus(session, step.trigger.condition.threshold);
@@ -652,7 +642,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       const currentMsg = messages[i];
       const prevMsg = messages[i - 1];
       if (currentMsg && prevMsg) {
-        totalTime += currentMsg.timestamp.getTime() - prevMsg.timestamp.getTime();
+        totalTime += currentMsg?.timestamp?.getTime() - prevMsg.timestamp.getTime();
       }
     }
 

@@ -21,7 +21,7 @@ describe('Simplified E2E Workflow Tests', () => {
   afterAll(async () => {
     try {
       await fsHelper.deleteDirectory(TEST_PROJECT_PATH);
-    } catch (_error) {
+    } catch (error) {
       // Ignore cleanup errors
     }
   });
@@ -178,7 +178,7 @@ Test content with metadata in the header.
       let processedDocument: any = null;
 
       documentSystem.on('document:processed', (event) => {
-        if (event.document.path === docPath) {
+        if (event["document"]?.["path"] === docPath) {
           processedDocument = event;
         }
       });
@@ -223,12 +223,12 @@ Test content with metadata in the header.
 
       // Check that all documents are tracked
       const docPaths = Array.from(workspaceDocuments.keys());
-      expect(docPaths).toContain(docs[0].path);
-      expect(docPaths).toContain(docs[1].path);
-      expect(docPaths).toContain(docs[2].path);
+      expect(docPaths).toContain(docs[0]?.path);
+      expect(docPaths).toContain(docs[1]?.path);
+      expect(docPaths).toContain(docs[2]?.path);
 
       // Check document content is accessible
-      const visionDoc = workspaceDocuments.get(docs[0].path);
+      const visionDoc = workspaceDocuments.get(docs[0]?.path);
       expect(visionDoc).toBeDefined();
       expect(visionDoc?.type).toBe('vision');
       expect(visionDoc?.content).toContain('Workspace Vision');
@@ -249,10 +249,10 @@ Test content with metadata in the header.
       }));
 
       // Write all files
-      await Promise.all(concurrentDocs.map((doc) => fsHelper.createFile(doc.path, doc.content)));
+      await Promise.all(concurrentDocs?.map((doc) => fsHelper.createFile(doc.path, doc.content)));
 
       // Process all documents concurrently
-      const processingPromises = concurrentDocs.map((doc) =>
+      const processingPromises = concurrentDocs?.map((doc) =>
         documentSystem.processVisionaryDocument(workspaceId, doc.path)
       );
 
@@ -371,7 +371,7 @@ Optimize document processing pipeline for maximum throughput.
       let processedCount = 0;
       const processingTimes: number[] = [];
 
-      documentSystem.on('document:processed', (_event) => {
+      documentSystem.on('document:processed', (event) => {
         processedCount++;
         processingTimes.push(Date.now() - startTime);
       });

@@ -5,13 +5,7 @@ const logger = getLogger("di-container-di-container");
  * Provides type-safe service registration and resolution.
  */
 
-import type {
-  DIContainerOptions,
-  DIScope,
-  DIToken,
-  DIContainer as IDIContainer,
-  Provider,
-} from '../types/di-types';
+import type { DIScope, DIContainer as IDIContainer } from '../types/di-types';
 import { CircularDependencyError, DIError, ServiceNotFoundError } from '../types/di-types';
 
 export class DIContainer implements IDIContainer {
@@ -23,10 +17,10 @@ export class DIContainer implements IDIContainer {
 
   constructor(options: DIContainerOptions = {}) {
     this.options = {
-      enableCircularDependencyDetection: options.enableCircularDependencyDetection ?? true,
-      maxResolutionDepth: options.maxResolutionDepth ?? 50,
-      enablePerformanceMetrics: options.enablePerformanceMetrics ?? false,
-      autoRegisterByConvention: options.autoRegisterByConvention ?? false,
+      enableCircularDependencyDetection: options?.["enableCircularDependencyDetection"] ?? true,
+      maxResolutionDepth: options?.["maxResolutionDepth"] ?? 50,
+      enablePerformanceMetrics: options?.["enablePerformanceMetrics"] ?? false,
+      autoRegisterByConvention: options?.["autoRegisterByConvention"] ?? false,
     };
   }
 

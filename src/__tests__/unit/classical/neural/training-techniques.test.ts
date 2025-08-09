@@ -64,15 +64,15 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
       };
 
       // Test L1 penalty calculation
-      const l1Penalty = calculateL1Penalty(weights, l1Config.l1Lambda);
-      const expectedL1 = l1Config.l1Lambda * weights.reduce((sum, w) => sum + Math.abs(w), 0);
+      const l1Penalty = calculateL1Penalty(weights, l1Config?.l1Lambda);
+      const expectedL1 = l1Config?.l1Lambda * weights.reduce((sum, w) => sum + Math.abs(w), 0);
 
       expect(Math.abs(l1Penalty - expectedL1)).toBeLessThan(1e-10);
 
       // Test L1 gradient computation
-      const l1Gradients = computeL1Gradients(weights, l1Config.l1Lambda);
+      const l1Gradients = computeL1Gradients(weights, l1Config?.l1Lambda);
       weights.forEach((weight, i) => {
-        const expectedGradient = l1Config.l1Lambda * Math.sign(weight);
+        const expectedGradient = l1Config?.l1Lambda * Math.sign(weight);
         expect(Math.abs(l1Gradients[i] - expectedGradient)).toBeLessThan(1e-10);
       });
     });
@@ -90,23 +90,23 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
       };
 
       // Test L2 penalty calculation
-      const l2Penalty = calculateL2Penalty(weights, l2Config.l2Lambda);
-      const expectedL2 = (l2Config.l2Lambda * weights.reduce((sum, w) => sum + w * w, 0)) / 2;
+      const l2Penalty = calculateL2Penalty(weights, l2Config?.l2Lambda);
+      const expectedL2 = (l2Config?.l2Lambda * weights.reduce((sum, w) => sum + w * w, 0)) / 2;
 
       expect(Math.abs(l2Penalty - expectedL2)).toBeLessThan(1e-10);
 
       // Test L2 gradient computation
-      const l2Gradients = computeL2Gradients(weights, l2Config.l2Lambda);
+      const l2Gradients = computeL2Gradients(weights, l2Config?.l2Lambda);
       weights.forEach((weight, i) => {
-        const expectedGradient = l2Config.l2Lambda * weight;
+        const expectedGradient = l2Config?.l2Lambda * weight;
         expect(Math.abs(l2Gradients[i] - expectedGradient)).toBeLessThan(1e-10);
       });
     });
 
     it('should prevent overfitting with L1/L2 regularization', () => {
       // Classical TDD: Test overfitting prevention effectiveness
-      const trainingData = NeuralTestDataGenerator.generatePolynomialData(100, 3, 0.1);
-      const validationData = NeuralTestDataGenerator.generatePolynomialData(50, 3, 0.1);
+      const trainingData = NeuralTestDataGenerator?.generatePolynomialData(100, 3, 0.1);
+      const validationData = NeuralTestDataGenerator?.generatePolynomialData(50, 3, 0.1);
 
       // Train without regularization (prone to overfitting)
       const unregularizedNetwork = createRegularizedNetwork([1, 50, 50, 1]);
@@ -135,8 +135,8 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
       const regularizedGap = calculateGeneralizationGap(regularizedResult);
 
       expect(regularizedGap).toBeLessThan(unregularizedGap);
-      expect(regularizedResult.validationLoss[regularizedResult.bestEpoch]).toBeLessThan(
-        unregularizedResult.validationLoss[unregularizedResult.bestEpoch] * 1.1
+      expect(regularizedResult?.validationLoss?.[regularizedResult?.bestEpoch]).toBeLessThan(
+        unregularizedResult?.validationLoss?.[unregularizedResult?.bestEpoch] * 1.1
       );
     });
 
@@ -185,8 +185,8 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
         batchNormalization: false,
       };
 
-      const trainingData = NeuralTestDataGenerator.generateSpiralData(100, 2);
-      const validationData = NeuralTestDataGenerator.generateSpiralData(50, 2);
+      const trainingData = NeuralTestDataGenerator?.generateSpiralData(100, 2);
+      const validationData = NeuralTestDataGenerator?.generateSpiralData(50, 2);
 
       const result = trainWithRegularization(
         network,
@@ -198,8 +198,8 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
       );
 
       // Combined regularization should prevent overfitting
-      expect(result.converged).toBe(true);
-      expect(result.trainLoss.length).toBeGreaterThan(10);
+      expect(result?.converged).toBe(true);
+      expect(result?.trainLoss.length).toBeGreaterThan(10);
 
       // Validation loss should not diverge significantly from training loss
       const finalGap = calculateGeneralizationGap(result);
@@ -241,7 +241,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
 
       // Test momentum accumulation
       gradients.forEach((grad, i) => {
-        const expectedM = adamConfig.beta1! * 0 + (1 - adamConfig.beta1!) * grad;
+        const expectedM = adamConfig?.beta1! * 0 + (1 - adamConfig?.beta1!) * grad;
         expect(Math.abs(state.m[i] - expectedM)).toBeLessThan(1e-10);
       });
 
@@ -254,7 +254,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
       // Momentum should be accumulated from previous step
       secondGradients.forEach((grad, i) => {
         const prevM = state.m[i];
-        const expectedM = adamConfig.beta1! * prevM + (1 - adamConfig.beta1!) * grad;
+        const expectedM = adamConfig?.beta1! * prevM + (1 - adamConfig?.beta1!) * grad;
         expect(Math.abs(state.m[i] - expectedM)).toBeLessThan(1e-8);
       });
     });
@@ -280,18 +280,18 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
       expect(update).toHaveLength(weights.length);
 
       gradients.forEach((grad, i) => {
-        const expectedV = rmspropConfig.decay! * 0 + (1 - rmspropConfig.decay!) * grad * grad;
+        const expectedV = rmspropConfig?.decay! * 0 + (1 - rmspropConfig?.decay!) * grad * grad;
         expect(Math.abs(state.v[i] - expectedV)).toBeLessThan(1e-10);
 
         const expectedUpdate =
-          (-rmspropConfig.learningRate * grad) / (Math.sqrt(expectedV) + rmspropConfig.epsilon!);
+          (-rmspropConfig?.learningRate * grad) / (Math.sqrt(expectedV) + rmspropConfig?.epsilon!);
         expect(Math.abs(update[i] - expectedUpdate)).toBeLessThan(1e-10);
       });
     });
 
     it('should compare optimizer performance on XOR problem', () => {
       // Classical TDD: Compare optimizer convergence rates
-      const xorData = NeuralTestDataGenerator.generateXORData();
+      const xorData = NeuralTestDataGenerator?.generateXORData();
       const networkTopology = [2, 8, 1];
 
       const optimizers: OptimizerConfig[] = [
@@ -315,21 +315,21 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
           targetError: 0.01,
         });
 
-        results.push({
-          optimizer: optimizerConfig.type,
-          epochs: result.epochs,
-          finalError: result.finalError,
-          converged: result.converged,
+        results?.push({
+          optimizer: optimizerConfig?.type,
+          epochs: result?.epochs,
+          finalError: result?.finalError,
+          converged: result?.converged,
         });
       });
-      results.forEach((_result) => {});
+      results?.forEach((_result) => {});
 
       // At least some optimizers should converge
-      const convergedOptimizers = results.filter((r) => r.converged);
+      const convergedOptimizers = results?.filter((r) => r.converged);
       expect(convergedOptimizers.length).toBeGreaterThan(0);
 
       // Adam should perform well on this problem
-      const adamResult = results.find((r) => r.optimizer === 'adam');
+      const adamResult = results?.find((r) => r.optimizer === 'adam');
       expect(adamResult).toBeDefined();
       expect(adamResult?.finalError).toBeLessThan(0.1);
     });
@@ -337,7 +337,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
     it('should adapt learning rates dynamically', () => {
       // Classical TDD: Test adaptive learning rate mechanisms
       const network = createRegularizedNetwork([5, 10, 1]);
-      const trainingData = NeuralTestDataGenerator.generateLinearData(200, 0.1);
+      const trainingData = NeuralTestDataGenerator?.generateLinearData(200, 0.1);
 
       // Test learning rate scheduling
       const scheduleConfig = {
@@ -366,8 +366,8 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
 
       // Verify exponential decay formula
       const expectedFinalLR =
-        scheduleConfig.initialLearningRate *
-        scheduleConfig.decayRate ** Math.floor(199 / scheduleConfig.decaySteps);
+        scheduleConfig?.initialLearningRate *
+        scheduleConfig?.decayRate ** Math.floor(199 / scheduleConfig?.decaySteps);
       const actualFinalLR = learningRateHistory[learningRateHistory.length - 1];
       expect(Math.abs(actualFinalLR - expectedFinalLR)).toBeLessThan(1e-10);
 
@@ -381,8 +381,8 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
   describe('⏰ Early Stopping and Convergence Detection', () => {
     it('should implement early stopping correctly', () => {
       // Classical TDD: Test early stopping mechanism
-      const trainingData = NeuralTestDataGenerator.generatePolynomialData(150, 2, 0.1);
-      const validationData = NeuralTestDataGenerator.generatePolynomialData(50, 2, 0.1);
+      const trainingData = NeuralTestDataGenerator?.generatePolynomialData(150, 2, 0.1);
+      const validationData = NeuralTestDataGenerator?.generatePolynomialData(50, 2, 0.1);
 
       const network = createRegularizedNetwork([1, 20, 10, 1]);
       const earlyStoppingConfig = {
@@ -400,16 +400,16 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
       );
 
       // Early stopping should have triggered
-      expect(result.epochs).toBeLessThan(200);
-      expect(result.bestEpoch).toBeLessThan(result.epochs);
-      expect(result.stoppedEarly).toBe(true);
+      expect(result?.epochs).toBeLessThan(200);
+      expect(result?.bestEpoch).toBeLessThan(result?.epochs);
+      expect(result?.stoppedEarly).toBe(true);
 
       // Best validation loss should be better than final training loss plateau
-      const bestValidationLoss = Math.min(...result.validationLoss);
-      const finalValidationLoss = result.validationLoss[result.validationLoss.length - 1];
+      const bestValidationLoss = Math.min(...result?.validationLoss);
+      const finalValidationLoss = result?.validationLoss?.[result?.validationLoss.length - 1];
 
       expect(bestValidationLoss).toBeLessThanOrEqual(
-        finalValidationLoss + earlyStoppingConfig.minDelta
+        finalValidationLoss + earlyStoppingConfig?.minDelta
       );
     });
 
@@ -443,7 +443,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
     it('should handle learning rate reduction on plateau', () => {
       // Classical TDD: Test learning rate reduction strategy
       const network = createRegularizedNetwork([2, 15, 1]);
-      const trainingData = NeuralTestDataGenerator.generateXORData();
+      const trainingData = NeuralTestDataGenerator?.generateXORData();
 
       const plateauConfig = {
         patience: 5,
@@ -464,16 +464,16 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
         learningRateHistory.push(currentLearningRate);
 
         // Check for plateau and reduce learning rate
-        if (epoch > plateauConfig.patience) {
-          const recentLoss = lossHistory.slice(-plateauConfig.patience);
+        if (epoch > plateauConfig?.patience) {
+          const recentLoss = lossHistory.slice(-plateauConfig?.patience);
           const bestRecentLoss = Math.min(...recentLoss);
           const bestOverallLoss = Math.min(...lossHistory);
 
-          if (bestOverallLoss - bestRecentLoss < plateauConfig.threshold) {
-            if (epoch - lastImprovement >= plateauConfig.patience) {
+          if (bestOverallLoss - bestRecentLoss < plateauConfig?.threshold) {
+            if (epoch - lastImprovement >= plateauConfig?.patience) {
               const newLearningRate = Math.max(
-                currentLearningRate * plateauConfig.factor,
-                plateauConfig.minLearningRate
+                currentLearningRate * plateauConfig?.factor,
+                plateauConfig?.minLearningRate
               );
 
               if (newLearningRate < currentLearningRate) {
@@ -494,7 +494,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
 
       // Verify minimum learning rate bound
       learningRateHistory.forEach((lr) => {
-        expect(lr).toBeGreaterThanOrEqual(plateauConfig.minLearningRate);
+        expect(lr).toBeGreaterThanOrEqual(plateauConfig?.minLearningRate);
       });
     });
 
@@ -534,7 +534,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
   describe('🔄 Cross-Validation and Model Selection', () => {
     it('should implement k-fold cross-validation correctly', () => {
       // Classical TDD: Test k-fold cross-validation implementation
-      const fullDataset = NeuralTestDataGenerator.generateSpiralData(100, 2);
+      const fullDataset = NeuralTestDataGenerator?.generateSpiralData(100, 2);
       const k = 5;
 
       const folds = createKFolds(fullDataset, k);
@@ -557,7 +557,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
       const allIndices = new Set();
       folds.forEach((fold) => {
         fold.forEach((sample) => {
-          const index = fullDataset.indexOf(sample);
+          const index = fullDataset?.indexOf(sample);
           expect(allIndices.has(index)).toBe(false);
           allIndices.add(index);
         });
@@ -566,7 +566,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
 
     it('should perform cross-validation model evaluation', () => {
       // Classical TDD: Test cross-validation evaluation
-      const dataset = NeuralTestDataGenerator.generateLinearData(200, 0.1);
+      const dataset = NeuralTestDataGenerator?.generateLinearData(200, 0.1);
       const k = 5;
 
       const networkConfigs = [
@@ -584,21 +584,21 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
         worstFold: number;
       }> = [];
 
-      networkConfigs.forEach((config) => {
-        const foldResults = performKFoldCrossValidation(dataset, config.topology, k, {
+      networkConfigs?.forEach((config) => {
+        const foldResults = performKFoldCrossValidation(dataset, config?.["topology"], k, {
           epochs: 100,
           learningRate: 0.01,
         });
 
-        const meanError = foldResults.reduce((sum, err) => sum + err, 0) / foldResults.length;
+        const meanError = foldResults?.reduce((sum, err) => sum + err, 0) / foldResults.length;
         const variance =
-          foldResults.reduce((sum, err) => sum + (err - meanError) ** 2, 0) / foldResults.length;
+          foldResults?.reduce((sum, err) => sum + (err - meanError) ** 2, 0) / foldResults.length;
         const stdError = Math.sqrt(variance);
         const bestFold = Math.min(...foldResults);
         const worstFold = Math.max(...foldResults);
 
-        cvResults.push({
-          config: config.name,
+        cvResults?.push({
+          config: config?.name,
           foldResults,
           meanError,
           stdError,
@@ -610,11 +610,11 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
         expect(meanError).toBeGreaterThan(0);
         expect(stdError).toBeGreaterThanOrEqual(0);
       });
-      cvResults.forEach((_result) => {});
+      cvResults?.forEach((_result) => {});
 
       // Best model should have lowest mean error
-      const bestModel = cvResults.reduce((best, current) =>
-        current.meanError < best.meanError ? current : best
+      const bestModel = cvResults?.reduce((best, current) =>
+        current?.meanError < best.meanError ? current : best
       );
 
       expect(bestModel.meanError).toBeLessThan(1.0);
@@ -622,8 +622,8 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
 
     it('should implement hyperparameter grid search', () => {
       // Classical TDD: Test hyperparameter optimization
-      const trainingData = NeuralTestDataGenerator.generateXORData();
-      const validationData = NeuralTestDataGenerator.generateXORData(); // Same for XOR
+      const trainingData = NeuralTestDataGenerator?.generateXORData();
+      const validationData = NeuralTestDataGenerator?.generateXORData(); // Same for XOR
 
       const hyperparameterGrid = {
         learningRate: [0.01, 0.1, 0.5],
@@ -652,23 +652,23 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
               { epochs: 200, patience: 30 }
             );
 
-            gridSearchResults.push({
+            gridSearchResults?.push({
               params: { learningRate: lr, hiddenSize, regularization: reg },
-              validationError: result.validationLoss[result.bestEpoch],
-              trainingError: result.trainLoss[result.bestEpoch],
-              epochs: result.epochs,
+              validationError: result?.validationLoss?.[result?.bestEpoch],
+              trainingError: result?.trainLoss?.[result?.bestEpoch],
+              epochs: result?.epochs,
             });
           });
         });
       });
 
       // Find best hyperparameters
-      const bestResult = gridSearchResults.reduce((best, current) =>
-        current.validationError < best.validationError ? current : best
+      const bestResult = gridSearchResults?.reduce((best, current) =>
+        current?.validationError < best.validationError ? current : best
       );
 
-      expect(bestResult.validationError).toBeLessThan(0.1);
-      expect(bestResult.trainingError).toBeLessThan(0.1);
+      expect(bestResult?.validationError).toBeLessThan(0.1);
+      expect(bestResult?.trainingError).toBeLessThan(0.1);
 
       // Verify grid search covered all combinations
       const expectedCombinations =
@@ -681,7 +681,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
 
     it('should implement stratified cross-validation for classification', () => {
       // Classical TDD: Test stratified k-fold for balanced sampling
-      const dataset = NeuralTestDataGenerator.generateSpiralData(60, 3); // 3 classes
+      const dataset = NeuralTestDataGenerator?.generateSpiralData(60, 3); // 3 classes
       const k = 5;
 
       const stratifiedFolds = createStratifiedKFolds(dataset, k);
@@ -710,7 +710,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
 
     it('should implement nested cross-validation for unbiased evaluation', () => {
       // Classical TDD: Test nested CV for model selection and evaluation
-      const dataset = NeuralTestDataGenerator.generatePolynomialData(150, 2, 0.15);
+      const dataset = NeuralTestDataGenerator?.generatePolynomialData(150, 2, 0.15);
       const outerK = 5;
       const innerK = 3;
 
@@ -728,18 +728,18 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
         { epochs: 100, patience: 20 }
       );
 
-      expect(nestedCVResults.outerFoldResults).toHaveLength(outerK);
-      expect(nestedCVResults.selectedModels).toHaveLength(outerK);
+      expect(nestedCVResults?.outerFoldResults).toHaveLength(outerK);
+      expect(nestedCVResults?.selectedModels).toHaveLength(outerK);
 
       // Each outer fold should have selected a model
-      nestedCVResults.selectedModels.forEach((selectedModel, _foldIndex) => {
-        expect(selectedModel.configIndex).toBeGreaterThanOrEqual(0);
-        expect(selectedModel.configIndex).toBeLessThan(modelConfigurations.length);
-        expect(selectedModel.validationError).toBeGreaterThan(0);
+      nestedCVResults?.selectedModels?.forEach((selectedModel, _foldIndex) => {
+        expect(selectedModel?.configIndex).toBeGreaterThanOrEqual(0);
+        expect(selectedModel?.configIndex).toBeLessThan(modelConfigurations.length);
+        expect(selectedModel?.validationError).toBeGreaterThan(0);
       });
 
       // Unbiased performance estimate
-      const unbiasedError = nestedCVResults.unbiasedPerformanceEstimate;
+      const unbiasedError = nestedCVResults?.unbiasedPerformanceEstimate;
       expect(unbiasedError).toBeGreaterThan(0);
       expect(unbiasedError).toBeLessThan(2.0); // Reasonable for polynomial data
     });
@@ -828,10 +828,10 @@ function trainWithRegularization(
   let bestValidationLoss = Infinity;
   let patienceCounter = 0;
 
-  for (let epoch = 0; epoch < trainingConfig.epochs; epoch++) {
+  for (let epoch = 0; epoch < trainingConfig?.epochs; epoch++) {
     // Training epoch
     let epochTrainLoss = 0;
-    trainingData.forEach((sample) => {
+    trainingData?.forEach((sample) => {
       const prediction = forwardPass(network, sample.input);
       const loss = calculateLoss(prediction, sample.output);
       epochTrainLoss += loss;
@@ -848,7 +848,7 @@ function trainWithRegularization(
 
     // Validation epoch
     let epochValidationLoss = 0;
-    validationData.forEach((sample) => {
+    validationData?.forEach((sample) => {
       const prediction = forwardPass(network, sample.input);
       const loss = calculateLoss(prediction, sample.output);
       epochValidationLoss += loss;
@@ -871,7 +871,7 @@ function trainWithRegularization(
       patienceCounter++;
     }
 
-    if (patienceCounter >= trainingConfig.patience) {
+    if (patienceCounter >= trainingConfig?.patience) {
       break;
     }
   }
@@ -896,7 +896,7 @@ function calculateGeneralizationGap(metrics: TrainingMetrics): number {
 function createOptimizer(config: OptimizerConfig): any {
   return {
     initializeState: (paramCount: number) => {
-      switch (config.type) {
+      switch (config?.type) {
         case 'adam':
           return {
             m: Array(paramCount).fill(0),
@@ -918,36 +918,36 @@ function createOptimizer(config: OptimizerConfig): any {
     update: (_weights: number[], gradients: number[], state: any, t: number) => {
       const updates: number[] = [];
 
-      switch (config.type) {
+      switch (config?.type) {
         case 'adam':
           gradients.forEach((grad, i) => {
-            state.m[i] = config.beta1! * state.m[i] + (1 - config.beta1!) * grad;
-            state.v[i] = config.beta2! * state.v[i] + (1 - config.beta2!) * grad * grad;
+            state.m[i] = config?.["beta1"]! * state.m[i] + (1 - config?.["beta1"]!) * grad;
+            state.v[i] = config?.["beta2"]! * state.v[i] + (1 - config?.["beta2"]!) * grad * grad;
 
-            const mHat = state.m[i] / (1 - config.beta1! ** t);
-            const vHat = state.v[i] / (1 - config.beta2! ** t);
+            const mHat = state.m[i] / (1 - config?.["beta1"]! ** t);
+            const vHat = state.v[i] / (1 - config?.["beta2"]! ** t);
 
-            updates.push((-config.learningRate * mHat) / (Math.sqrt(vHat) + config.epsilon!));
+            updates.push((-config?.["learningRate"] * mHat) / (Math.sqrt(vHat) + config?.["epsilon"]!));
           });
           break;
 
         case 'rmsprop':
           gradients.forEach((grad, i) => {
-            state.v[i] = config.decay! * state.v[i] + (1 - config.decay!) * grad * grad;
-            updates.push((-config.learningRate * grad) / (Math.sqrt(state.v[i]) + config.epsilon!));
+            state.v[i] = config?.["decay"]! * state.v[i] + (1 - config?.["decay"]!) * grad * grad;
+            updates.push((-config?.["learningRate"] * grad) / (Math.sqrt(state.v[i]) + config?.["epsilon"]!));
           });
           break;
 
         case 'momentum':
           gradients.forEach((grad, i) => {
-            state.velocity[i] = config.momentum! * state.velocity[i] + config.learningRate * grad;
+            state.velocity[i] = config?.["momentum"]! * state.velocity[i] + config?.["learningRate"] * grad;
             updates.push(-state.velocity[i]);
           });
           break;
 
         default: // SGD
           gradients.forEach((grad) => {
-            updates.push(-config.learningRate * grad);
+            updates.push(-config?.["learningRate"] * grad);
           });
       }
 
@@ -969,10 +969,10 @@ function trainWithOptimizer(
   let finalError = Infinity;
   let epochs = 0;
 
-  for (let epoch = 0; epoch < config.epochs; epoch++) {
+  for (let epoch = 0; epoch < config?.["epochs"]; epoch++) {
     let epochError = 0;
 
-    trainingData.forEach((sample) => {
+    trainingData?.forEach((sample) => {
       const prediction = forwardPass(network, sample.input);
       const error = calculateLoss(prediction, sample.output);
       epochError += error;
@@ -990,7 +990,7 @@ function trainWithOptimizer(
     finalError = epochError / trainingData.length;
     epochs = epoch + 1;
 
-    if (finalError < config.targetError) {
+    if (finalError < config?.["targetError"]) {
       break;
     }
   }
@@ -998,7 +998,7 @@ function trainWithOptimizer(
   return {
     finalError,
     epochs,
-    converged: finalError < config.targetError,
+    converged: finalError < config?.["targetError"],
   };
 }
 
@@ -1009,9 +1009,9 @@ function forwardPass(network: any, input: number[]): number[] {
     const newActivations: number[] = [];
 
     for (let j = 0; j < network.weights[i].length; j++) {
-      let sum = network.biases[i][j];
+      let sum = network.biases[i]?.[j];
       for (let k = 0; k < activations.length; k++) {
-        sum += activations[k] * network.weights[i][j][k];
+        sum += activations[k] * network.weights[i]?.[j]?.[k];
       }
       newActivations.push(1 / (1 + Math.exp(-sum)));
     }
@@ -1023,7 +1023,7 @@ function forwardPass(network: any, input: number[]): number[] {
 }
 
 function calculateLoss(prediction: number[], target: number[]): number {
-  return prediction.reduce((sum, pred, i) => sum + (pred - target[i]) ** 2, 0) / prediction.length;
+  return prediction.reduce((sum, pred, i) => sum + (pred - target?.[i]) ** 2, 0) / prediction.length;
 }
 
 function updateWeightsWithRegularization(
@@ -1045,27 +1045,27 @@ function updateWeightsWithRegularization(
         gradient += regularization.l1Lambda * Math.sign(weight);
         gradient += regularization.l2Lambda * weight;
 
-        network.weights[layerIdx][neuronIdx][weightIdx] += gradient;
+        network.weights[layerIdx]?.[neuronIdx]?.[weightIdx] += gradient;
       });
     });
   });
 }
 
 function calculateScheduledLearningRate(config: any, epoch: number): number {
-  switch (config.type) {
+  switch (config?.type) {
     case 'exponential': {
-      const decaySteps = Math.floor(epoch / config.decaySteps);
-      return config.initialLearningRate * config.decayRate ** decaySteps;
+      const decaySteps = Math.floor(epoch / config?.["decaySteps"]);
+      return config?.["initialLearningRate"] * config?.["decayRate"] ** decaySteps;
     }
     default:
-      return config.initialLearningRate;
+      return config?.["initialLearningRate"];
   }
 }
 
 function simulateTrainingEpoch(network: any, data: any[], learningRate: number): number {
   let epochError = 0;
 
-  data.forEach((sample) => {
+  data?.forEach((sample) => {
     const prediction = forwardPass(network, sample.input);
     const error = calculateLoss(prediction, sample.output);
     epochError += error;
@@ -1099,10 +1099,10 @@ function trainWithEarlyStopping(
   let patienceCounter = 0;
   let stoppedEarly = false;
 
-  for (let epoch = 0; epoch < trainingConfig.epochs; epoch++) {
+  for (let epoch = 0; epoch < trainingConfig?.epochs; epoch++) {
     // Training
     let epochTrainLoss = 0;
-    trainingData.forEach((sample) => {
+    trainingData?.forEach((sample) => {
       const prediction = forwardPass(network, sample.input);
       epochTrainLoss += calculateLoss(prediction, sample.output);
     });
@@ -1110,7 +1110,7 @@ function trainWithEarlyStopping(
 
     // Validation
     let epochValidationLoss = 0;
-    validationData.forEach((sample) => {
+    validationData?.forEach((sample) => {
       const prediction = forwardPass(network, sample.input);
       epochValidationLoss += calculateLoss(prediction, sample.output);
     });
@@ -1118,7 +1118,7 @@ function trainWithEarlyStopping(
     validationLoss.push(avgValidationLoss);
 
     // Early stopping check
-    if (avgValidationLoss < bestValidationLoss - earlyStoppingConfig.minDelta) {
+    if (avgValidationLoss < bestValidationLoss - earlyStoppingConfig?.minDelta) {
       bestValidationLoss = avgValidationLoss;
       bestEpoch = epoch;
       patienceCounter = 0;
@@ -1126,7 +1126,7 @@ function trainWithEarlyStopping(
       patienceCounter++;
     }
 
-    if (patienceCounter >= earlyStoppingConfig.patience) {
+    if (patienceCounter >= earlyStoppingConfig?.patience) {
       stoppedEarly = true;
       break;
     }
@@ -1142,27 +1142,27 @@ function trainWithEarlyStopping(
 }
 
 function detectConvergencePlateau(lossHistory: number[], config: any): boolean {
-  if (lossHistory.length < config.window) return false;
+  if (lossHistory.length < config?.["window"]) return false;
 
-  const recentLosses = lossHistory.slice(-config.window);
+  const recentLosses = lossHistory.slice(-config?.["window"]);
   const maxChange = Math.max(...recentLosses) - Math.min(...recentLosses);
 
-  return maxChange < config.threshold;
+  return maxChange < config?.["threshold"];
 }
 
 function detectConvergenceRelative(lossHistory: number[], config: any): boolean {
-  if (lossHistory.length < config.window) return false;
+  if (lossHistory.length < config?.["window"]) return false;
 
-  const recentLosses = lossHistory.slice(-config.window);
+  const recentLosses = lossHistory.slice(-config?.["window"]);
   const avgRecent = recentLosses.reduce((a, b) => a + b) / recentLosses.length;
-  const prevLosses = lossHistory.slice(-config.window * 2, -config.window);
+  const prevLosses = lossHistory.slice(-config?.["window"] * 2, -config?.["window"]);
 
   if (prevLosses.length === 0) return false;
 
   const avgPrev = prevLosses.reduce((a, b) => a + b) / prevLosses.length;
   const relativeImprovement = (avgPrev - avgRecent) / avgPrev;
 
-  return relativeImprovement < config.relativeTolerance;
+  return relativeImprovement < config?.["relativeTolerance"];
 }
 
 function detectConvergenceAbsolute(lossHistory: number[], targetLoss: number): boolean {
@@ -1223,7 +1223,7 @@ function performKFoldCrossValidation(
     const _result = trainWithOptimizer(
       network,
       trainFolds,
-      { type: 'sgd', learningRate: trainingConfig.learningRate },
+      { type: 'sgd', learningRate: trainingConfig?.learningRate },
       trainingConfig
     );
 
@@ -1234,7 +1234,7 @@ function performKFoldCrossValidation(
       testError += calculateLoss(prediction, sample.output);
     });
 
-    results.push(testError / testFold.length);
+    results?.push(testError / testFold.length);
   }
 
   return results;
@@ -1243,12 +1243,12 @@ function performKFoldCrossValidation(
 function createStratifiedKFolds(dataset: any[], k: number): any[][] {
   // Group by class
   const classSamples: { [key: string]: any[] } = {};
-  dataset.forEach((sample) => {
+  dataset?.forEach((sample) => {
     const classKey = JSON.stringify(sample.output);
     if (!classSamples[classKey]) {
       classSamples[classKey] = [];
     }
-    classSamples[classKey].push(sample);
+    classSamples[classKey]?.push(sample);
   });
 
   // Create stratified folds
@@ -1259,7 +1259,7 @@ function createStratifiedKFolds(dataset: any[], k: number): any[][] {
   Object.values(classSamples).forEach((samples) => {
     const shuffled = [...samples].sort(() => Math.random() - 0.5);
     shuffled.forEach((sample, index) => {
-      folds[index % k].push(sample);
+      folds[index % k]?.push(sample);
     });
   });
 
@@ -1268,7 +1268,7 @@ function createStratifiedKFolds(dataset: any[], k: number): any[][] {
 
 function countClasses(dataset: any[]): { [key: string]: number } {
   const counts: { [key: string]: number } = {};
-  dataset.forEach((sample) => {
+  dataset?.forEach((sample) => {
     const classKey = JSON.stringify(sample.output);
     counts[classKey] = (counts[classKey] || 0) + 1;
   });
@@ -1294,15 +1294,15 @@ function performNestedCrossValidation(
     let bestConfigIndex = 0;
     let bestValidationError = Infinity;
 
-    modelConfigs.forEach((config, configIndex) => {
+    modelConfigs?.forEach((config, configIndex) => {
       const innerCVResults = performKFoldCrossValidation(
         trainValidationSet,
-        config.topology,
+        config?.["topology"],
         innerK,
         trainingConfig
       );
 
-      const avgError = innerCVResults.reduce((a, b) => a + b) / innerCVResults.length;
+      const avgError = innerCVResults?.reduce((a, b) => a + b) / innerCVResults.length;
 
       if (avgError < bestValidationError) {
         bestValidationError = avgError;
@@ -1311,12 +1311,12 @@ function performNestedCrossValidation(
     });
 
     // Train best model on full train-validation set and test on outer test set
-    const bestConfig = modelConfigs[bestConfigIndex];
-    const network = createRegularizedNetwork(bestConfig.topology);
+    const bestConfig = modelConfigs?.[bestConfigIndex];
+    const network = createRegularizedNetwork(bestConfig?.topology);
     trainWithOptimizer(
       network,
       trainValidationSet,
-      { type: 'sgd', learningRate: trainingConfig.learningRate },
+      { type: 'sgd', learningRate: trainingConfig?.learningRate },
       trainingConfig
     );
 
@@ -1328,8 +1328,8 @@ function performNestedCrossValidation(
     });
 
     const outerTestError = testError / testSet.length;
-    outerFoldResults.push(outerTestError);
-    selectedModels.push({
+    outerFoldResults?.push(outerTestError);
+    selectedModels?.push({
       configIndex: bestConfigIndex,
       validationError: bestValidationError,
       testError: outerTestError,
@@ -1337,7 +1337,7 @@ function performNestedCrossValidation(
   }
 
   const unbiasedPerformanceEstimate =
-    outerFoldResults.reduce((a, b) => a + b) / outerFoldResults.length;
+    outerFoldResults?.reduce((a, b) => a + b) / outerFoldResults.length;
 
   return {
     outerFoldResults,

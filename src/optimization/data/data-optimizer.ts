@@ -4,17 +4,7 @@
  */
 
 import { createLogger } from '../../core/logger';
-import type {
-  CacheLayer,
-  CacheOptimization,
-  CompressionResult,
-  Connection,
-  DatabaseQuery,
-  DataOptimizer,
-  PoolConfig,
-  QueryOptimization,
-  StorageLayer,
-} from '../interfaces/optimization-interfaces';
+import type { DataOptimizer } from '../interfaces/optimization-interfaces';
 
 export interface DataOptimizationConfig {
   enableQueryOptimization: boolean;
@@ -462,9 +452,9 @@ export class DataPerformanceOptimizer implements DataOptimizer {
    * @param dataAnalysis
    */
   private selectCompressionAlgorithm(dataAnalysis: any): string {
-    const dataType = dataAnalysis.predominantType || 'mixed';
-    const compressionSpeed = dataAnalysis.compressionSpeedRequirement || 'balanced';
-    const dataSize = dataAnalysis.averageDataSize || 1024;
+    const dataType = dataAnalysis?.predominantType || 'mixed';
+    const compressionSpeed = dataAnalysis?.compressionSpeedRequirement || 'balanced';
+    const dataSize = dataAnalysis?.averageDataSize || 1024;
 
     // Select algorithm based on requirements
     if (compressionSpeed === 'fast' || dataSize < 1024) {

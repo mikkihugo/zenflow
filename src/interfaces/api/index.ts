@@ -47,7 +47,7 @@ export const APIUtils = {
    * @param config
    */
   validateConfig: (config: APIInterfaceConfig): boolean => {
-    return Boolean(config.baseUrl || config.websocketUrl);
+    return Boolean(config?.["baseUrl"] || config?.["websocketUrl"]);
   },
 
   /**
@@ -57,8 +57,8 @@ export const APIUtils = {
    */
   parseResponse: (response: any): { success: boolean; data?: any; error?: string } => {
     if (response && typeof response === 'object') {
-      if (response.error) {
-        return { success: false, error: response.error };
+      if (response?.error) {
+        return { success: false, error: response?.error };
       }
       return { success: true, data: response };
     }

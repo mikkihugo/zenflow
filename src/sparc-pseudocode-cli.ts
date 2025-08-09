@@ -33,7 +33,7 @@ program
       const engine = new PseudocodePhaseEngine();
 
       // Read specification file
-      const specContent = await readFile(options.specFile, 'utf8');
+      const specContent = await readFile(options?.["specFile"], 'utf8');
       const specification = JSON.parse(specContent);
 
       // Generate pseudocode structure
@@ -41,15 +41,15 @@ program
 
       // Format output
       let output: string;
-      if (options.format === 'markdown') {
+      if (options?.["format"] === 'markdown') {
         output = formatPseudocodeAsMarkdown(pseudocodeStructure);
       } else {
         output = JSON.stringify(pseudocodeStructure, null, 2);
       }
 
       // Write output
-      await writeFile(options.output, output, 'utf8');
-      pseudocodeStructure.algorithms.forEach((_alg: any, _index: number) => {});
+      await writeFile(options?.["output"], output, 'utf8');
+      pseudocodeStructure.algorithms.forEach((alg: any, index: number) => {});
     } catch (error) {
       logger.error('❌ Failed to generate pseudocode:', error);
       process.exit(1);
@@ -70,22 +70,22 @@ program
       const engine = new PseudocodePhaseEngine();
 
       // Read pseudocode file
-      const pseudocodeContent = await readFile(options.pseudocodeFile, 'utf8');
+      const pseudocodeContent = await readFile(options?.["pseudocodeFile"], 'utf8');
       const pseudocodeStructure = JSON.parse(pseudocodeContent);
 
       // Validate the pseudocode structure
       const validation = await engine.validatePseudocode(pseudocodeStructure);
 
       if (validation.logicErrors.length > 0) {
-        validation.logicErrors.forEach((_error, _index) => {});
+        validation.logicErrors.forEach((error, index) => {});
       }
 
       if (validation.optimizationSuggestions.length > 0) {
-        validation.optimizationSuggestions.forEach((_suggestion, _index) => {});
+        validation.optimizationSuggestions.forEach((suggestion, index) => {});
       }
 
       if (validation.recommendations.length > 0) {
-        validation.recommendations.forEach((_rec, _index) => {});
+        validation.recommendations.forEach((rec, index) => {});
       }
 
       // Exit with appropriate code
@@ -109,13 +109,13 @@ program
   .action(async (options) => {
     try {
       const exampleSpec = {
-        id: `example-${options.domain}-spec`,
-        domain: options.domain,
+        id: `example-${options?.["domain"]}-spec`,
+        domain: options?.["domain"],
         functionalRequirements: [
           {
             id: 'req-001',
             title: 'Main Algorithm',
-            description: `Primary algorithm for ${options.domain} functionality`,
+            description: `Primary algorithm for ${options?.["domain"]} functionality`,
             type: 'algorithmic',
             priority: 'HIGH',
             testCriteria: ['Algorithm executes correctly', 'Performance meets requirements'],
@@ -165,7 +165,7 @@ program
         ],
       };
 
-      await writeFile(options.output, JSON.stringify(exampleSpec, null, 2), 'utf8');
+      await writeFile(options?.["output"], JSON.stringify(exampleSpec, null, 2), 'utf8');
     } catch (error) {
       logger.error('❌ Failed to create example specification:', error);
       process.exit(1);

@@ -8,10 +8,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { FACTIntegration } from '../../knowledge/knowledge-client';
-import type { APIClient } from '../api/http/client';
-import type { WebSocketClient } from '../api/websocket/client';
-import type { ExternalMCPClient } from '../mcp/external-mcp-client';
 
 /**
  * Client type enumeration for type safety
@@ -184,18 +180,18 @@ export class ClientRegistry extends EventEmitter {
   async register(config: ClientConfig): Promise<ClientInstance> {
     // Validate configuration
     if (!this.validateConfig(config)) {
-      throw new Error(`Invalid configuration for client ${config.id}`);
+      throw new Error(`Invalid configuration for client ${config?.id}`);
     }
 
     // Check if client already exists
-    if (this.clients.has(config.id)) {
-      throw new Error(`Client with id ${config.id} already registered`);
+    if (this.clients.has(config?.id)) {
+      throw new Error(`Client with id ${config?.id} already registered`);
     }
 
     // Get appropriate factory
-    const factory = this.factories.get(config.type);
+    const factory = this.factories.get(config?.type);
     if (!factory) {
-      throw new Error(`No factory available for client type ${config.type}`);
+      throw new Error(`No factory available for client type ${config?.type}`);
     }
 
     try {
@@ -203,7 +199,7 @@ export class ClientRegistry extends EventEmitter {
       const instance = await factory.create(config);
 
       // Store in registry
-      this.clients.set(config.id, instance);
+      this.clients.set(config?.id, instance);
 
       // Emit registration event
       this.emit('client:registered', instance);
@@ -228,11 +224,11 @@ export class ClientRegistry extends EventEmitter {
 
     try {
       // Cleanup client if it has a cleanup method
-      if ('disconnect' in instance.client && typeof instance.client.disconnect === 'function') {
-        await instance.client.disconnect();
+      if ('disconnect' in instance["client"] && typeof instance["client"]?.["disconnect"] === 'function') {
+        await instance["client"]?.["disconnect"]();
       }
-      if ('shutdown' in instance.client && typeof instance.client.shutdown === 'function') {
-        await instance.client.shutdown();
+      if ('shutdown' in instance["client"] && typeof instance["client"]?.["shutdown"] === 'function') {
+        await instance["client"]?.["shutdown"]();
       }
 
       // Remove from registry
@@ -410,17 +406,17 @@ export class ClientRegistry extends EventEmitter {
   private async checkClientHealth(instance: ClientInstance): Promise<boolean> {
     try {
       // Try to ping the client if it has a ping method
-      if ('ping' in instance.client && typeof instance.client.ping === 'function') {
-        return await instance.client.ping();
+      if ('ping' in instance["client"] && typeof instance["client"]?.["ping"] === 'function') {
+        return await instance["client"]?.["ping"]();
       }
 
       // For WebSocket clients, check connection status
-      if (instance.type === ClientType.WEBSOCKET && 'connected' in instance.client) {
-        return Boolean(instance.client.connected);
+      if (instance.type === ClientType["WEBSOCKET"] && 'connected' in instance["client"]) {
+        return Boolean(instance["client"]?.["connected"]);
       }
 
       // For other clients, assume healthy if not in error state
-      return instance.status !== 'error';
+      return instance["status"] !== 'error';
     } catch {
       return false;
     }
@@ -432,7 +428,7 @@ export class ClientRegistry extends EventEmitter {
    * @param config
    */
   private validateConfig(config: ClientConfig): boolean {
-    const factory = this.factories.get(config.type);
+    const factory = this.factories.get(config?.type);
     return factory ? factory.validate(config) : false;
   }
 
@@ -490,7 +486,7 @@ export const ClientRegistryHelpers = {
    * @param config
    */
   async registerHTTPClient(config: Omit<HTTPClientConfig, 'type'>): Promise<ClientInstance> {
-    return globalClientRegistry.register({ ...config, type: ClientType.HTTP });
+    return globalClientRegistry.register({ ...config, type: ClientType["HTTP"] });
   },
 
   /**
@@ -501,7 +497,7 @@ export const ClientRegistryHelpers = {
   async registerWebSocketClient(
     config: Omit<WebSocketClientConfig, 'type'>
   ): Promise<ClientInstance> {
-    return globalClientRegistry.register({ ...config, type: ClientType.WEBSOCKET });
+    return globalClientRegistry.register({ ...config, type: ClientType["WEBSOCKET"] });
   },
 
   /**
@@ -512,7 +508,7 @@ export const ClientRegistryHelpers = {
   async registerKnowledgeClient(
     config: Omit<KnowledgeClientConfig, 'type'>
   ): Promise<ClientInstance> {
-    return globalClientRegistry.register({ ...config, type: ClientType.KNOWLEDGE });
+    return globalClientRegistry.register({ ...config, type: ClientType["KNOWLEDGE"] });
   },
 
   /**
@@ -521,7 +517,7 @@ export const ClientRegistryHelpers = {
    * @param config
    */
   async registerMCPClient(config: Omit<MCPClientConfig, 'type'>): Promise<ClientInstance> {
-    return globalClientRegistry.register({ ...config, type: ClientType.MCP });
+    return globalClientRegistry.register({ ...config, type: ClientType["MCP"] });
   },
 
   /**

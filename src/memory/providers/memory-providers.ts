@@ -1,23 +1,4 @@
 /**
- * Memory Domain Dependency Injection Providers
- * Implements comprehensive DI patterns for memory management
- *
- * @file memory-providers.ts
- * @description Enhanced memory providers with DI integration for Issue #63
- */
-
-import type { DALFactory } from '../../database/factory';
-import type { ICoordinationRepository, IVectorRepository } from '../../database/interfaces';
-import { inject, injectable } from '../../di/decorators/injectable';
-import {
-  CORE_TOKENS,
-  DATABASE_TOKENS,
-  type IConfig,
-  type ILogger,
-  MEMORY_TOKENS,
-} from '../../di/tokens/core-tokens';
-
-/**
  * Interface for memory backend implementations
  * Updated to be compatible with BaseMemoryBackend
  *
@@ -77,10 +58,10 @@ export class MemoryProviderFactory {
    * @returns Appropriate memory backend implementation
    */
   createProvider(config: MemoryConfig): MemoryBackend {
-    this.logger.info(`Creating memory provider: ${config.type}`);
+    this.logger.info(`Creating memory provider: ${config?.type}`);
 
     try {
-      switch (config.type) {
+      switch (config?.type) {
         case 'sqlite':
           return new SqliteMemoryBackend(config, this.logger, this.dalFactory);
         case 'lancedb':
@@ -140,8 +121,8 @@ export class SqliteMemoryBackend implements MemoryBackend {
 
     try {
       const results = await this.repository.findAll({});
-      const filtered = results.filter((r: any) => r.id === key);
-      return filtered.length > 0 ? filtered[0].data : null;
+      const filtered = results?.filter((r: any) => r.id === key);
+      return filtered.length > 0 ? filtered[0]?.data : null;
     } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;
@@ -272,17 +253,17 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
     try {
       const results = await this.repository.similaritySearch([0], { limit: 1000 });
-      const match = results.find((r) => r.id === key);
+      const match = results?.find((r) => r.id === key);
       // Ensure metadata exists on VectorSearchResult and access originalValue safely
       if (
         match &&
         'metadata' in match &&
-        match.metadata &&
-        typeof match.metadata === 'object' &&
-        match.metadata !== null &&
-        'originalValue' in match.metadata
+        match?.metadata &&
+        typeof match?.metadata === 'object' &&
+        match?.metadata !== null &&
+        'originalValue' in match?.metadata
       ) {
-        return (match.metadata as any).originalValue;
+        return (match?.metadata as any).originalValue;
       }
       return null;
     } catch (error) {
@@ -516,7 +497,7 @@ export class InMemoryBackend implements MemoryBackend {
     private config: MemoryConfig,
     private logger: ILogger
   ) {
-    this.maxSize = config.maxSize || 10000;
+    this.maxSize = config?.["maxSize"] || 10000;
     this.logger.info(`Initialized in-memory backend with max size: ${this.maxSize}`);
   }
 

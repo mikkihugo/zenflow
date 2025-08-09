@@ -1,22 +1,3 @@
-/**
- * HTTP Auth middleware unit tests (allow/deny matrix)
- * Runner: Jest + ts-jest
- *
- * Scope:
- * - Deterministic allow/deny matrix for Authorization: Bearer / API key
- * - Missing/expired tokens, malformed headers, role-based access decisions
- * - Invariants: no secret leakage, idempotent outcomes, normalized headers only
- *
- * TODO Acceptance Criteria:
- * 1) Table-driven cases produce expected 200/401/403 outcomes from the middleware decision contract.
- * 2) Deny paths do not add user context to req/res; logs redact tokens/keys when present.
- * 3) Idempotent for same input: calling middleware twice yields same decision without side effects.
- * 4) Does not mutate req.headers beyond normalization (e.g., lower-casing, trimming).
- * 5) Time to parse typical headers stays within target budget (baseline micro-benchmark in unit scope).
- */
-
-import type { IncomingMessage, ServerResponse } from 'node:http';
-import type { NextFunction } from 'express'; // adjust if using another framework adapter
 import { createMock } from 'ts-auto-mock'; // optional; if unavailable, replace with simple stubs
 // Import the actual auth middleware when available. Keep path aligned with your project layout.
 import { authMiddleware } from '../../../../../interfaces/api/http/middleware/auth';
@@ -155,7 +136,7 @@ describe('HTTP Auth Middleware - Allow/Deny Matrix', () => {
     await runMiddleware(req, res);
 
     // Normalization is allowed (e.g., lower-case copy), but original keys should remain readable
-    expect(req.headers.authorization ?? req.headers.Authorization).toBeDefined();
+    expect(req.headers.authorization ?? req.headers["Authorization"]).toBeDefined();
     expect(req.headers['x-api-key'] ?? req.headers['X-API-KEY']).toBeDefined();
   });
 });

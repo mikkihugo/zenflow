@@ -4,7 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { BackendInterface } from '../../core/memory-system';
 
 export interface PerformanceMetrics {
   operationsPerSecond: number;
@@ -81,7 +80,7 @@ export class PerformanceOptimizer extends EventEmitter {
       lastUpdated: Date.now(),
     };
 
-    if (config.adaptation.enabled) {
+    if (config?.["adaptation"]?.["enabled"]) {
       this.startAdaptiveOptimization();
     }
   }
@@ -269,9 +268,9 @@ export class PerformanceOptimizer extends EventEmitter {
     for (const [id, _backend] of this.backends) {
       try {
         // Most backends don't expose cache control, but we can simulate
-        results.push({ backendId: id, oldSize: currentCacheSize, newSize: newCacheSize });
+        results?.push({ backendId: id, oldSize: currentCacheSize, newSize: newCacheSize });
       } catch (error) {
-        results.push({ backendId: id, error: error.message });
+        results?.push({ backendId: id, error: error.message });
       }
     }
 
@@ -286,9 +285,9 @@ export class PerformanceOptimizer extends EventEmitter {
     for (const [id, _backend] of this.backends) {
       try {
         // Simulate index rebuild
-        results.push({ backendId: id, status: 'rebuilt', duration: Math.random() * 1000 });
+        results?.push({ backendId: id, status: 'rebuilt', duration: Math.random() * 1000 });
       } catch (error) {
-        results.push({ backendId: id, error: error.message });
+        results?.push({ backendId: id, error: error.message });
       }
     }
 
@@ -304,9 +303,9 @@ export class PerformanceOptimizer extends EventEmitter {
       try {
         // Simulate compression toggle
         const savings = Math.random() * 0.3 + 0.1; // 10-40% savings
-        results.push({ backendId: id, compressionEnabled: true, memorySavings: savings });
+        results?.push({ backendId: id, compressionEnabled: true, memorySavings: savings });
       } catch (error) {
-        results.push({ backendId: id, error: error.message });
+        results?.push({ backendId: id, error: error.message });
       }
     }
 
@@ -324,9 +323,9 @@ export class PerformanceOptimizer extends EventEmitter {
         const newStrategy = ['aggressive', 'conservative', 'adaptive'][
           Math.floor(Math.random() * 3)
         ];
-        results.push({ backendId: id, strategy: newStrategy });
+        results?.push({ backendId: id, strategy: newStrategy });
       } catch (error) {
-        results.push({ backendId: id, error: error.message });
+        results?.push({ backendId: id, error: error.message });
       }
     }
 
@@ -342,9 +341,9 @@ export class PerformanceOptimizer extends EventEmitter {
       try {
         // Simulate partition rebalancing
         const partitionCount = Math.floor(Math.random() * 8) + 4; // 4-12 partitions
-        results.push({ backendId: id, partitions: partitionCount, status: 'rebalanced' });
+        results?.push({ backendId: id, partitions: partitionCount, status: 'rebalanced' });
       } catch (error) {
-        results.push({ backendId: id, error: error.message });
+        results?.push({ backendId: id, error: error.message });
       }
     }
 

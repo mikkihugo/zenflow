@@ -261,7 +261,7 @@ ${steeringContext}
             .replace(/^-+|-+$/g, '');
           if (sanitizedDomain) {
             const filePath = join(testDirectory, 'steering', `${sanitizedDomain}.md`);
-            const _exists = existsSync(filePath);
+            const exists = existsSync(filePath);
             // This behavior would depend on implementation - either file exists or error was thrown
           }
         } catch (error) {
@@ -275,7 +275,7 @@ ${steeringContext}
       const concurrentDomains = Array.from({ length: 5 }, (_, i) => `concurrent-${i}`);
 
       // Create all documents concurrently
-      const promises = concurrentDomains.map((domain) =>
+      const promises = concurrentDomains?.map((domain) =>
         maestroOrchestrator.createSteeringDocument(domain, `Content for ${domain}`)
       );
 
@@ -356,7 +356,7 @@ ${steeringContext}
 
   describe('agent integration workflow', () => {
     it('should track agent usage across steering document operations', async () => {
-      const _initialStats = maestroOrchestrator.getAgentPoolStats();
+      const initialStats = maestroOrchestrator.getAgentPoolStats();
 
       // Create multiple steering documents
       await maestroOrchestrator.createSteeringDocument('agent-test-1', 'Content 1');

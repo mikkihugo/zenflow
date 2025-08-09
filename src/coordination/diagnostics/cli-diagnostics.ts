@@ -1,14 +1,28 @@
 #!/usr/bin/env node
-
 /**
  * Diagnostic CLI for ruv-swarm
- * Usage: npx ruv-swarm diagnose [options]
+ * Usage: npx ruv-swarm diagnose [options].
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { diagnostics } from './diagnostics';
-import type { LogConfiguration, LoggerInterface } from './logging-config';
+
+// Type definitions for this CLI
+interface LoggerInterface {
+  info: (...args: unknown[]) => void;
+  warn: (...args: unknown[]) => void;
+  error: (...args: unknown[]) => void;
+  debug: (...args: unknown[]) => void;
+}
+
+interface LogConfiguration {
+  logLevel: string;
+  enableConsole: boolean;
+  enableFile: boolean;
+  timestamp: boolean;
+  component: string;
+}
 
 // Simple logger for CLI diagnostics
 const cliLoggingConfig = {

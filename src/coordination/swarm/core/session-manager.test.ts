@@ -3,11 +3,10 @@
  */
 
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import type { SessionCoordinationDao, SessionEntity, CoordinationLock, CoordinationChange, CoordinationEvent, CoordinationStats, QueryOptions, CustomQuery } from '../../../database';
+import type { SessionCoordinationDao } from '../../../database';
 import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
-import { SessionManager, type SessionState } from './session-manager';
+import { SessionManager } from './session-manager';
 import { SessionSerializer, SessionStats, SessionValidator } from './session-utils';
-import type { SwarmOptions, SwarmState } from './types';
 
 // TDD London Mock - Tests INTERACTIONS, not state
 class MockCoordinationDao implements SessionCoordinationDao {
@@ -404,7 +403,7 @@ describe('SessionEnabledSwarm', () => {
   });
 
   test('should auto-save on agent addition', async () => {
-    const _sessionId = await swarm.createSession('Test Swarm Session');
+    const sessionId = await swarm.createSession('Test Swarm Session');
 
     const agentId = swarm.addAgent({
       id: 'test-agent',
@@ -421,7 +420,7 @@ describe('SessionEnabledSwarm', () => {
   });
 
   test('should create and restore from checkpoint', async () => {
-    const _sessionId = await swarm.createSession('Test Swarm Session');
+    const sessionId = await swarm.createSession('Test Swarm Session');
 
     swarm.addAgent({
       id: 'test-agent',
@@ -477,8 +476,8 @@ describe('SessionValidator', () => {
 
   test('should validate valid session state', () => {
     const result = SessionValidator.validateSessionState(validSession);
-    expect(result.valid).toBe(true);
-    expect(result.errors).toHaveLength(0);
+    expect(result?.valid).toBe(true);
+    expect(result?.errors).toHaveLength(0);
   });
 
   test('should detect invalid session state', () => {
@@ -489,8 +488,8 @@ describe('SessionValidator', () => {
     } as any;
 
     const result = SessionValidator.validateSessionState(invalidSession);
-    expect(result.valid).toBe(false);
-    expect(result.errors.length).toBeGreaterThan(0);
+    expect(result?.valid).toBe(false);
+    expect(result?.errors.length).toBeGreaterThan(0);
   });
 });
 
@@ -604,11 +603,11 @@ describe('SessionStats', () => {
     expect(summary).toHaveProperty('checkpoints');
     expect(summary).toHaveProperty('performance');
 
-    expect(summary['agents']['total']).toBe(1);
-    expect(summary['tasks']['total']).toBe(10);
-    expect(summary['tasks']['completed']).toBe(8);
-    expect(summary['tasks']['successRate']).toBe(0.8);
-    expect(summary['checkpoints']['total']).toBe(1);
+    expect(summary['agents']?.['total']).toBe(1);
+    expect(summary['tasks']?.['total']).toBe(10);
+    expect(summary['tasks']?.['completed']).toBe(8);
+    expect(summary['tasks']?.['successRate']).toBe(0.8);
+    expect(summary['checkpoints']?.['total']).toBe(1);
   });
 });
 
@@ -670,12 +669,12 @@ describe('Session Management Integration', () => {
       expect(sessionId).toBeDefined();
 
       // Add agents and tasks
-      const _agentId = await swarm.addAgent({
+      const agentId = await swarm.addAgent({
         id: 'test-agent',
         type: 'researcher',
       });
 
-      const _taskId = await swarm.submitTask({
+      const taskId = await swarm.submitTask({
         description: 'Test task',
         priority: 'medium',
         dependencies: [],

@@ -109,7 +109,7 @@ describe('CoordinationServiceAdapter', () => {
 
   beforeEach(() => {
     config = createDefaultCoordinationServiceAdapterConfig('test-coordination', {
-      type: ServiceType.COORDINATION,
+      type: ServiceType["COORDINATION"],
       daaService: { enabled: true },
       sessionService: { enabled: true },
       swarmCoordinator: { enabled: true },
@@ -125,7 +125,7 @@ describe('CoordinationServiceAdapter', () => {
     if (adapter) {
       try {
         await adapter.destroy();
-      } catch (_error) {
+      } catch (error) {
         // Ignore cleanup errors in tests
       }
     }
@@ -234,9 +234,9 @@ describe('CoordinationServiceAdapter', () => {
       const result = await adapter.execute('agent-create', { config: agentConfig });
 
       // Assert
-      expect(result.success).toBe(true);
-      expect(result.data).toHaveProperty('id');
-      expect(result.metadata).toHaveProperty('duration');
+      expect(result?.success).toBe(true);
+      expect(result?.data).toHaveProperty('id');
+      expect(result?.metadata).toHaveProperty('duration');
     });
 
     it('should execute session operations', async () => {
@@ -248,9 +248,9 @@ describe('CoordinationServiceAdapter', () => {
       const listResult = await adapter.execute('session-list');
 
       // Assert
-      expect(createResult.success).toBe(true);
-      expect(listResult.success).toBe(true);
-      expect(Array.isArray(listResult.data)).toBe(true);
+      expect(createResult?.success).toBe(true);
+      expect(listResult?.success).toBe(true);
+      expect(Array.isArray(listResult?.data)).toBe(true);
     });
 
     it('should execute swarm coordination operations', async () => {
@@ -263,9 +263,9 @@ describe('CoordinationServiceAdapter', () => {
       const result = await adapter.execute('swarm-coordinate', { agents, topology: 'mesh' });
 
       // Assert
-      expect(result.success).toBe(true);
-      expect(result.data).toHaveProperty('averageLatency');
-      expect(result.data).toHaveProperty('successRate');
+      expect(result?.success).toBe(true);
+      expect(result?.data).toHaveProperty('averageLatency');
+      expect(result?.data).toHaveProperty('successRate');
     });
 
     it('should handle operation errors gracefully', async () => {
@@ -276,9 +276,9 @@ describe('CoordinationServiceAdapter', () => {
       const result = await adapter.execute('agent-create', { config: {} });
 
       // Assert
-      expect(result.success).toBe(false);
-      expect(result.error).toBeDefined();
-      expect(result.error?.code).toBe('OPERATION_ERROR');
+      expect(result?.success).toBe(false);
+      expect(result?.error).toBeDefined();
+      expect(result?.error?.code).toBe('OPERATION_ERROR');
     });
 
     it('should timeout operations correctly', async () => {
@@ -293,8 +293,8 @@ describe('CoordinationServiceAdapter', () => {
       );
 
       // Assert - Should timeout quickly
-      expect(result.success).toBe(false);
-      expect(result.error?.message).toContain('timeout');
+      expect(result?.success).toBe(false);
+      expect(result?.error?.message).toContain('timeout');
     });
   });
 
@@ -407,9 +407,9 @@ describe('CoordinationServiceAdapter', () => {
       const result2 = await adapter.execute('agent-learning-status', { agentId: 'agent-1' });
 
       // Assert - Both should succeed, second should be faster (cached)
-      expect(result1.success).toBe(true);
-      expect(result2.success).toBe(true);
-      expect(result1.data).toEqual(result2.data);
+      expect(result1?.success).toBe(true);
+      expect(result2?.success).toBe(true);
+      expect(result1?.data).toEqual(result2?.data);
     });
 
     it('should respect cache TTL', async () => {
@@ -426,8 +426,8 @@ describe('CoordinationServiceAdapter', () => {
       const result2 = await adapter.execute('agent-learning-status', { agentId: 'agent-1' });
 
       // Assert - Results should be consistent even after cache expiry
-      expect(result1.success).toBe(true);
-      expect(result2.success).toBe(true);
+      expect(result1?.success).toBe(true);
+      expect(result2?.success).toBe(true);
     });
 
     it('should clear cache correctly', async () => {
@@ -439,9 +439,9 @@ describe('CoordinationServiceAdapter', () => {
       const clearResult = await adapter.execute('clear-cache');
 
       // Assert
-      expect(clearResult.success).toBe(true);
-      expect(clearResult.data).toHaveProperty('cleared');
-      expect(typeof clearResult.data.cleared).toBe('number');
+      expect(clearResult?.success).toBe(true);
+      expect(clearResult?.data).toHaveProperty('cleared');
+      expect(typeof clearResult?.data?.cleared).toBe('number');
     });
   });
 
@@ -484,7 +484,7 @@ describe('CoordinationServiceAdapter', () => {
       const metrics = await adapter.getMetrics();
 
       // Assert - All operations should have failed
-      results.forEach((result) => expect(result.success).toBe(false));
+      results?.forEach((result) => expect(result?.success).toBe(false));
       expect(metrics.errorCount).toBe(3);
       expect(metrics.errorRate).toBeGreaterThan(0);
     });
@@ -554,7 +554,7 @@ describe('CoordinationServiceAdapter', () => {
       ]);
 
       // Assert
-      healthResults.forEach((result) => expect(result).toBe(false));
+      healthResults?.forEach((result) => expect(result).toBe(false));
 
       const status = await adapter.getStatus();
       expect(status.errorCount).toBeGreaterThan(0);
@@ -594,7 +594,7 @@ describe('CoordinationServiceAdapter', () => {
       await adapter.execute('session-create', { name: 'test' });
 
       const initialMetrics = await adapter.getMetrics();
-      const _initialMemory = initialMetrics.memoryUsage?.used;
+      const initialMemory = initialMetrics.memoryUsage?.used;
 
       // Act
       await adapter.destroy();
@@ -620,13 +620,13 @@ describe('CoordinationServiceAdapter', () => {
       // Assert
       expect(factoryAdapter).toBeInstanceOf(CoordinationServiceAdapter);
       expect(factoryAdapter.name).toBe('factory-test');
-      expect(factoryAdapter.type).toBe(ServiceType.COORDINATION);
+      expect(factoryAdapter.type).toBe(ServiceType["COORDINATION"]);
     });
 
     it('should create default configuration with overrides', () => {
       // Arrange
       const overrides = {
-        priority: ServicePriority.HIGH,
+        priority: ServicePriority["HIGH"],
         timeout: 60000,
         daaService: { enabled: false },
       };
@@ -635,10 +635,10 @@ describe('CoordinationServiceAdapter', () => {
       const config = createDefaultCoordinationServiceAdapterConfig('override-test', overrides);
 
       // Assert
-      expect(config.name).toBe('override-test');
-      expect(config.priority).toBe(ServicePriority.HIGH);
-      expect(config.timeout).toBe(60000);
-      expect(config.daaService?.enabled).toBe(false);
+      expect(config?.["name"]).toBe('override-test');
+      expect(config?.["priority"]).toBe(ServicePriority["HIGH"]);
+      expect(config?.["timeout"]).toBe(60000);
+      expect(config?.["daaService"]?.["enabled"]).toBe(false);
     });
   });
 
@@ -663,18 +663,18 @@ describe('CoordinationServiceAdapter', () => {
 
       const coordinationResult = await adapter.execute('swarm-coordinate', {
         agents: [
-          { id: agentResult.data.id, type: 'researcher', status: 'idle', capabilities: ['search'] },
+          { id: agentResult?.data?.id, type: 'researcher', status: 'idle', capabilities: ['search'] },
         ],
         topology: 'mesh',
       });
 
       // Assert - All operations should succeed
-      expect(agentResult.success).toBe(true);
-      expect(sessionResult.success).toBe(true);
-      expect(coordinationResult.success).toBe(true);
+      expect(agentResult?.success).toBe(true);
+      expect(sessionResult?.success).toBe(true);
+      expect(coordinationResult?.success).toBe(true);
 
       // Verify cross-service integration
-      expect(coordinationResult.data.agentsCoordinated).toBeGreaterThan(0);
+      expect(coordinationResult?.data?.agentsCoordinated).toBeGreaterThan(0);
     });
 
     it('should handle service failures gracefully', async () => {
@@ -687,12 +687,12 @@ describe('CoordinationServiceAdapter', () => {
       const invalidSessionResult = await adapter.execute('session-create', { name: null });
 
       // Assert - Should handle errors gracefully
-      expect(invalidAgentResult.success).toBe(false);
-      expect(invalidSessionResult.success).toBe(false);
+      expect(invalidAgentResult?.success).toBe(false);
+      expect(invalidSessionResult?.success).toBe(false);
 
       // Service should still be operational for valid requests
       const validResult = await adapter.execute('swarm-metrics');
-      expect(validResult.success).toBe(true);
+      expect(validResult?.success).toBe(true);
     });
   });
 

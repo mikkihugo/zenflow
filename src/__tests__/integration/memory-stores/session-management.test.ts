@@ -7,7 +7,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 
 // Session Management Interface
 interface SessionData {
@@ -358,7 +358,7 @@ describe('Session Management Integration Tests', () => {
     it('should delegate operations to storage', async () => {
       await sessionManager.initialize();
 
-      const _session = await sessionManager.createSession('test-session', { test: 'data' });
+      const session = await sessionManager.createSession('test-session', { test: 'data' });
       await sessionManager.getSession('test-session');
       await sessionManager.updateSession('test-session', { updated: true });
       await sessionManager.deleteSession('test-session');
@@ -570,19 +570,19 @@ describe('Session Management Integration Tests', () => {
       const events: string[] = [];
 
       sessionManager.on('sessionCreated', (data) => {
-        events.push(`created:${data.sessionId}`);
+        events.push(`created:${data?.["sessionId"]}`);
       });
 
       sessionManager.on('sessionAccessed', (data) => {
-        events.push(`accessed:${data.sessionId}`);
+        events.push(`accessed:${data?.["sessionId"]}`);
       });
 
       sessionManager.on('sessionUpdated', (data) => {
-        events.push(`updated:${data.sessionId}`);
+        events.push(`updated:${data?.["sessionId"]}`);
       });
 
       sessionManager.on('sessionDeleted', (data) => {
-        events.push(`deleted:${data.sessionId}`);
+        events.push(`deleted:${data?.["sessionId"]}`);
       });
 
       await sessionManager.createSession('event-test', {});
@@ -639,7 +639,7 @@ describe('Session Management Integration Tests', () => {
       const results = await Promise.all(accessPromises);
 
       expect(results).toHaveLength(5);
-      results.forEach((result) => {
+      results?.forEach((result) => {
         expect(result).toBeDefined();
         expect(result?.sessionId).toBe('concurrent-access');
       });
@@ -664,7 +664,7 @@ describe('Session Management Integration Tests', () => {
 
       // All operations should complete successfully
       expect(results).toHaveLength(5);
-      results.forEach((result) => {
+      results?.forEach((result) => {
         expect(result).toBeDefined();
       });
     });

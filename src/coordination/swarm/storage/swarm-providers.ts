@@ -9,9 +9,9 @@ const logger = getLogger("coordination-swarm-storage-swarm-providers");
 
 import { DIContainer } from '../../../di/container/di-container.js';
 import { CORE_TOKENS, DATABASE_TOKENS, SWARM_TOKENS } from '../../../di/tokens/core-tokens.js';
-import { type BackupConfig, SwarmBackupManager } from './backup-manager.js';
-import { type SwarmDatabaseConfig, SwarmDatabaseManager } from './swarm-database-manager.js';
-import { type MaintenanceConfig, SwarmMaintenanceManager } from './swarm-maintenance.js';
+import { SwarmBackupManager } from './backup-manager.js';
+import { SwarmDatabaseManager } from './swarm-database-manager.js';
+import { SwarmMaintenanceManager } from './swarm-maintenance.js';
 
 /**
  * Default swarm storage configuration
@@ -70,7 +70,7 @@ export function registerSwarmProviders(
   });
 
   // Register storage path for convenience
-  container.register(SWARM_TOKENS.StoragePath, {
+  container.register(SWARM_TOKENS["StoragePath"], {
     type: 'singleton',
     create: (container) => {
       const config = container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig;
@@ -79,22 +79,22 @@ export function registerSwarmProviders(
   });
 
   // Register swarm database manager
-  container.register(SWARM_TOKENS.DatabaseManager, {
+  container.register(SWARM_TOKENS["DatabaseManager"], {
     type: 'singleton',
     create: (container) =>
       new SwarmDatabaseManager(
         container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig,
-        container.resolve(DATABASE_TOKENS.DALFactory) as any,
+        container.resolve(DATABASE_TOKENS?.DALFactory) as any,
         container.resolve(CORE_TOKENS.Logger)
       ),
   });
 
   // Register maintenance manager
-  container.register(SWARM_TOKENS.MaintenanceManager, {
+  container.register(SWARM_TOKENS["MaintenanceManager"], {
     type: 'singleton',
     create: (container) => {
       const config = container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig;
-      return new SwarmMaintenanceManager(config.basePath, {
+      return new SwarmMaintenanceManager(config?.["basePath"], {
         ...defaultMaintenanceConfig,
         ...customConfig?.maintenance,
       });
@@ -102,11 +102,11 @@ export function registerSwarmProviders(
   });
 
   // Register backup manager
-  container.register(SWARM_TOKENS.BackupManager, {
+  container.register(SWARM_TOKENS["BackupManager"], {
     type: 'singleton',
     create: (container) => {
       const config = container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig;
-      return new SwarmBackupManager(config.basePath, {
+      return new SwarmBackupManager(config?.["basePath"], {
         ...defaultBackupConfig,
         ...customConfig?.backup,
       });
@@ -125,14 +125,14 @@ export async function initializeSwarmStorage(container: DIContainer): Promise<{
   backupManager: SwarmBackupManager;
 }> {
   // Resolve all swarm services
-  const databaseManager = container.resolve(SWARM_TOKENS.DatabaseManager) as SwarmDatabaseManager;
+  const databaseManager = container.resolve(SWARM_TOKENS["DatabaseManager"]) as SwarmDatabaseManager;
   const maintenanceManager = container.resolve(
-    SWARM_TOKENS.MaintenanceManager
+    SWARM_TOKENS["MaintenanceManager"]
   ) as SwarmMaintenanceManager;
-  const backupManager = container.resolve(SWARM_TOKENS.BackupManager) as SwarmBackupManager;
+  const backupManager = container.resolve(SWARM_TOKENS["BackupManager"]) as SwarmBackupManager;
 
   // Initialize in order
-  await databaseManager.initialize();
+  await databaseManager?.initialize();
   await maintenanceManager.initialize();
   await backupManager.initialize();
 
@@ -157,8 +157,8 @@ export function createSwarmContainer(
   container.register(CORE_TOKENS.Logger, {
     type: 'singleton',
     create: () => ({
-      debug: (_msg: string) => {},
-      info: (_msg: string) => {},
+      debug: (msg: string) => {},
+      info: (msg: string) => {},
       warn: (msg: string) => logger.warn(`[WARN] ${msg}`),
       error: (msg: string) => logger.error(`[ERROR] ${msg}`),
     }),
@@ -167,14 +167,14 @@ export function createSwarmContainer(
   container.register(CORE_TOKENS.Config, {
     type: 'singleton',
     create: () => ({
-      get: (_key: string, defaultValue?: any) => defaultValue,
-      set: (_key: string, _value: any) => {},
-      has: (_key: string) => false,
+      get: (key: string, defaultValue?: any) => defaultValue,
+      set: (key: string, value: any) => {},
+      has: (key: string) => false,
     }),
   });
 
   // Register DAL Factory (would normally come from database domain)
-  container.register(DATABASE_TOKENS.DALFactory, {
+  container.register(DATABASE_TOKENS?.DALFactory, {
     type: 'singleton',
     create: (container) => {
       const { DALFactory } = require('../../../database/factory.js');

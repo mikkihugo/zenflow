@@ -1,13 +1,4 @@
-/**
- * API Route Handler - RESTful API endpoints
- *
- * Handles all REST API routes for the web dashboard including system status,
- * swarm management, task operations, and command execution.
- */
-
-import type { Express, Request, Response } from 'express';
 import { createLogger } from '../../utils/logger';
-import type { WebSocketCoordinator } from './web-socket-coordinator';
 
 export interface ApiConfig {
   prefix: string;
@@ -307,10 +298,10 @@ export class ApiRouteHandler {
   private async createSwarm(config: any): Promise<any> {
     const swarm = {
       id: `swarm-${Date.now()}`,
-      name: config.name || 'New Swarm',
+      name: config?.name || 'New Swarm',
       status: 'active',
-      agents: config.agents || 4,
-      topology: config.topology || 'mesh',
+      agents: config?.["agents"] || 4,
+      topology: config?.["topology"] || 'mesh',
       uptime: 0,
       created: new Date().toISOString(),
     };
@@ -355,11 +346,11 @@ export class ApiRouteHandler {
   private async createTask(config: any): Promise<any> {
     const task = {
       id: `task-${Date.now()}`,
-      description: config.description || 'New Task',
+      description: config?.description || 'New Task',
       status: 'pending',
       progress: 0,
-      assignedAgents: config.assignedAgents || [],
-      priority: config.priority || 'medium',
+      assignedAgents: config?.["assignedAgents"] || [],
+      priority: config?.["priority"] || 'medium',
       created: new Date().toISOString(),
     };
 

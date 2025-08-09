@@ -138,7 +138,7 @@ export async function createKnowledgeSharingSystem(
 
   // Create logger and event bus if not provided
   const finalLogger = logger || console;
-  const finalEventBus = eventBus || new ((await import('node:events')).EventEmitter)();
+  const finalEventBus = eventBus || new ((await import('node:events'))["EventEmitter"])();
 
   const system = new CrossAgentKnowledgeIntegration(finalConfig, finalLogger, finalEventBus);
   await system.initialize();
@@ -175,32 +175,32 @@ export function validateKnowledgeConfig(config: CrossAgentKnowledgeConfig): {
   const warnings: string[] = [];
 
   // Validate collective intelligence config
-  if (!config?.collectiveIntelligence) {
+  if (!config?.["collectiveIntelligence"]) {
     errors.push('Missing collectiveIntelligence configuration');
   }
 
   // Validate integration config
-  if (!config?.integration) {
+  if (!config?.["integration"]) {
     errors.push('Missing integration configuration');
   } else {
     if (
-      config?.integration?.factIntegration?.enabled &&
-      !config?.integration?.factIntegration?.knowledgeSwarmIntegration
+      config?.["integration"]?.factIntegration?.enabled &&
+      !config?.["integration"]?.factIntegration?.knowledgeSwarmIntegration
     ) {
       warnings.push('FACT integration enabled but knowledge swarm integration disabled');
     }
 
     if (
-      config?.integration?.ragIntegration?.enabled &&
-      !config?.integration?.ragIntegration?.vectorStoreIntegration
+      config?.["integration"]?.ragIntegration?.enabled &&
+      !config?.["integration"]?.ragIntegration?.vectorStoreIntegration
     ) {
       warnings.push('RAG integration enabled but vector store integration disabled');
     }
   }
 
   // Validate distributed learning config
-  if (config?.distributedLearning?.federatedConfig) {
-    const fedConfig = config?.distributedLearning?.federatedConfig;
+  if (config?.["distributedLearning"]?.federatedConfig) {
+    const fedConfig = config?.["distributedLearning"]?.federatedConfig;
     if (fedConfig?.clientFraction > 1.0 || fedConfig?.clientFraction <= 0) {
       errors.push('federatedConfig.clientFraction must be between 0 and 1');
     }
@@ -229,14 +229,14 @@ export function getSystemCapabilities(config: CrossAgentKnowledgeConfig): {
   ragIntegration: boolean;
 } {
   return {
-    collectiveIntelligence: !!config?.collectiveIntelligence,
-    distributedLearning: !!config?.distributedLearning,
-    collaborativeReasoning: !!config?.collaborativeReasoning,
-    crossDomainTransfer: !!config?.intelligenceCoordination,
-    qualityManagement: !!config?.qualityManagement,
-    performanceOptimization: !!config?.performanceOptimization,
-    factIntegration: config?.integration?.factIntegration?.enabled || false,
-    ragIntegration: config?.integration?.ragIntegration?.enabled || false,
+    collectiveIntelligence: !!config?.["collectiveIntelligence"],
+    distributedLearning: !!config?.["distributedLearning"],
+    collaborativeReasoning: !!config?.["collaborativeReasoning"],
+    crossDomainTransfer: !!config?.["intelligenceCoordination"],
+    qualityManagement: !!config?.["qualityManagement"],
+    performanceOptimization: !!config?.["performanceOptimization"],
+    factIntegration: config?.["integration"]?.factIntegration?.enabled || false,
+    ragIntegration: config?.["integration"]?.ragIntegration?.enabled || false,
   };
 }
 

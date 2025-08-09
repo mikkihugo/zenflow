@@ -13,7 +13,7 @@ const logger = getLogger("interfaces-services-index");
  * @file Main USL exports following the same successful patterns as DAL and UACL
  */
 
-import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
+import { getMCPServerURL } from '../config/url-builder';
 
 // Data service adapters (enhanced implementations)
 // Integration service adapters (enhanced implementations)
@@ -297,8 +297,8 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createDataServiceConfig(name, {
-      type: ServiceType.DATA,
+    const config = ServiceConfigFactory?.createDataServiceConfig(name, {
+      type: ServiceType["DATA"],
       ...options,
     });
 
@@ -339,7 +339,7 @@ export class USL {
       await this.initialize();
     }
 
-    const adapter = await globalDataServiceFactory.createWebDataAdapter(name, options);
+    const adapter = await globalDataServiceFactory?.createWebDataAdapter(name, options);
     return adapter;
   }
 
@@ -382,7 +382,7 @@ export class USL {
       await this.initialize();
     }
 
-    const adapter = await globalDataServiceFactory.createDocumentAdapter(
+    const adapter = await globalDataServiceFactory?.createDocumentAdapter(
       name,
       databaseType,
       options
@@ -430,7 +430,7 @@ export class USL {
       await this.initialize();
     }
 
-    const adapter = await globalDataServiceFactory.createUnifiedDataAdapter(
+    const adapter = await globalDataServiceFactory?.createUnifiedDataAdapter(
       name,
       databaseType,
       options
@@ -480,8 +480,8 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createWebServiceConfig(name, {
-      type: ServiceType.WEB,
+    const config = ServiceConfigFactory?.createWebServiceConfig(name, {
+      type: ServiceType["WEB"],
       server: { port, host: 'localhost' },
       ...options,
     });
@@ -534,8 +534,8 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createCoordinationServiceConfig(name, {
-      type: ServiceType.SWARM,
+    const config = ServiceConfigFactory?.createCoordinationServiceConfig(name, {
+      type: ServiceType["SWARM"],
       ...options,
     });
 
@@ -593,8 +593,8 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createNeuralServiceConfig(name, {
-      type: ServiceType.NEURAL,
+    const config = ServiceConfigFactory?.createNeuralServiceConfig(name, {
+      type: ServiceType["NEURAL"],
       ...options,
     });
 
@@ -615,8 +615,8 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createMemoryServiceConfig(name, {
-      type: ServiceType.MEMORY,
+    const config = ServiceConfigFactory?.createMemoryServiceConfig(name, {
+      type: ServiceType["MEMORY"],
       ...options,
     });
 
@@ -637,8 +637,8 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createDatabaseServiceConfig(name, {
-      type: ServiceType.DATABASE,
+    const config = ServiceConfigFactory?.createDatabaseServiceConfig(name, {
+      type: ServiceType["DATABASE"],
       ...options,
     });
 
@@ -659,8 +659,8 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createIntegrationServiceConfig(name, {
-      type: ServiceType.API,
+    const config = ServiceConfigFactory?.createIntegrationServiceConfig(name, {
+      type: ServiceType["API"],
       ...options,
     });
 
@@ -877,8 +877,8 @@ export class USL {
       await this.initialize();
     }
 
-    const config = ServiceConfigFactory.createMonitoringServiceConfig(name, {
-      type: ServiceType.MONITORING,
+    const config = ServiceConfigFactory?.createMonitoringServiceConfig(name, {
+      type: ServiceType["MONITORING"],
       ...options,
     });
 
@@ -1291,29 +1291,29 @@ export const USLHelpers = {
 
     try {
       // Create core services
-      services.memory = await usl.createMemoryService('default-memory', config.memoryConfig);
+      services.memory = await usl.createMemoryService('default-memory', config?.["memoryConfig"]);
       services.data = await usl.createDataService('default-data');
 
-      if (config.webPort) {
-        services.web = await usl.createWebService('default-web', config.webPort);
+      if (config?.["webPort"]) {
+        services.web = await usl.createWebService('default-web', config?.["webPort"]);
       }
 
-      if (config.databaseConfig) {
+      if (config?.["databaseConfig"]) {
         services.database = await usl.createDatabaseService(
           'default-database',
-          config.databaseConfig
+          config?.["databaseConfig"]
         );
       }
 
-      if (config.enableCoordination) {
+      if (config?.["enableCoordination"]) {
         services.coordination = await usl.createCoordinationService('default-coordination');
       }
 
-      if (config.enableNeural) {
+      if (config?.["enableNeural"]) {
         services.neural = await usl.createNeuralService('default-neural');
       }
 
-      if (config.enableMonitoring) {
+      if (config?.["enableMonitoring"]) {
         services.monitoring = await usl.createMonitoringService('default-monitoring');
       }
 
@@ -1406,7 +1406,7 @@ export const USLHelpers = {
 
       // Simulate response time for now
       const simulatedResponseTime = Math.random() * 100 + 10;
-      services[name].responseTime = simulatedResponseTime;
+      services[name]?.responseTime = simulatedResponseTime;
       totalResponseTime += simulatedResponseTime;
       responseTimeCount++;
     });
@@ -1518,7 +1518,7 @@ export const USLHelpers = {
     for (const depName of dependencies) {
       const existingService = usl.getService(depName);
       if (!existingService) {
-        throw new ServiceDependencyError(config.name, depName);
+        throw new ServiceDependencyError(config?.name, depName);
       }
     }
 
@@ -1559,7 +1559,7 @@ export const USLHelpers = {
         const service = await USLHelpers.createServiceWithDependencies(config, dependencies);
         createdServices.push(service);
       } catch (error) {
-        logger.error(`Failed to create service ${config.name}:`, error);
+        logger.error(`Failed to create service ${config?.name}:`, error);
         throw error;
       }
     }
@@ -1609,38 +1609,38 @@ export const USLHelpers = {
 
     try {
       // Initialize Service Manager if enabled
-      if (config?.enableServiceManager ?? true) {
+      if (config?.["enableServiceManager"] ?? true) {
         const { ServiceManager } = await import('./manager');
-        const serviceManager = new ServiceManager(config?.serviceManagerConfig);
+        const serviceManager = new ServiceManager(config?.["serviceManagerConfig"]);
         await serviceManager.initialize();
-        result.serviceManager = serviceManager;
+        result?.serviceManager = serviceManager;
       }
 
       // Initialize Enhanced Registry if enabled
-      if (config?.enableEnhancedRegistry ?? true) {
+      if (config?.["enableEnhancedRegistry"] ?? true) {
         const { EnhancedServiceRegistry } = await import('./registry');
-        const registry = new EnhancedServiceRegistry(config?.registryConfig);
-        result.registry = registry;
+        const registry = new EnhancedServiceRegistry(config?.["registryConfig"]);
+        result?.registry = registry;
       }
 
       // Initialize Compatibility Layer if enabled
-      if (config?.enableCompatibilityLayer ?? true) {
+      if (config?.["enableCompatibilityLayer"] ?? true) {
         const { USLCompatibilityLayer } = await import('./compatibility');
-        const compatibility = new USLCompatibilityLayer(config?.compatibilityConfig);
+        const compatibility = new USLCompatibilityLayer(config?.["compatibilityConfig"]);
         await compatibility.initialize();
-        result.compatibility = compatibility;
+        result?.compatibility = compatibility;
       }
 
       // Initialize Validation Framework if enabled
-      if (config?.enableValidationFramework ?? false) {
+      if (config?.["enableValidationFramework"] ?? false) {
         const { USLValidationFramework } = await import('./validation');
-        if (result.serviceManager && result.registry) {
+        if (result?.serviceManager && result?.registry) {
           const validation = new USLValidationFramework(
-            result.serviceManager,
-            result.registry,
-            config?.validationConfig
+            result?.serviceManager,
+            result?.registry,
+            config?.["validationConfig"]
           );
-          result.validation = validation;
+          result?.validation = validation;
         }
       }
 
@@ -1677,10 +1677,10 @@ export const USLHelpers = {
       const compatibilityReport = MigrationUtils.generateCompatibilityReport();
 
       return {
-        success: migrationResult.failed.length === 0,
-        migrated: migrationResult.migrated,
-        failed: migrationResult.failed,
-        warnings: migrationResult.warnings,
+        success: migrationResult?.failed.length === 0,
+        migrated: migrationResult?.migrated,
+        failed: migrationResult?.failed,
+        warnings: migrationResult?.warnings,
         compatibilityReport,
       };
     } catch (error) {
@@ -1724,7 +1724,7 @@ export const USLHelpers = {
       // Generate recommendations
       const recommendations: string[] = [];
 
-      if (validationResult.overall === 'fail') {
+      if (validationResult?.overall === 'fail') {
         recommendations.push('Address critical validation failures before production deployment');
       }
 
@@ -1732,10 +1732,10 @@ export const USLHelpers = {
         recommendations.push('Resolve system health issues to ensure optimal performance');
       }
 
-      recommendations.push(...validationResult.recommendations.map((rec) => rec.action));
+      recommendations.push(...validationResult?.recommendations?.map((rec) => rec.action));
 
       return {
-        success: validationResult.overall !== 'fail',
+        success: validationResult?.overall !== 'fail',
         validationResult,
         healthValidation,
         recommendations,

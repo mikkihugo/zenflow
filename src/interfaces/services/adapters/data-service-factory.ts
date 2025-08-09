@@ -10,8 +10,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../../../utils/logger';
-import type { IService, IServiceFactory, ServiceMetrics, ServiceStatus } from '../core/interfaces';
+import { createLogger } from '../../../utils/logger';
+import type { IServiceFactory } from '../core/interfaces';
 
 import {
   ServiceConfigurationError,
@@ -19,12 +19,7 @@ import {
   ServiceInitializationError,
   ServiceOperationError,
 } from '../core/interfaces';
-import {
-  createDataServiceAdapter,
-  createDefaultDataServiceAdapterConfig,
-  type DataServiceAdapter,
-  type DataServiceAdapterConfig,
-} from './data-service-adapter';
+import { createDataServiceAdapter, createDefaultDataServiceAdapterConfig } from './data-service-adapter';
 
 /**
  * Data service factory configuration
@@ -85,27 +80,27 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
         mockData: true,
         cacheResponses: true,
         cacheTTL: 300000,
-        ...config.defaultWebDataConfig,
+        ...config?.["defaultWebDataConfig"],
       },
       defaultDocumentConfig: {
         enabled: true,
         databaseType: 'postgresql',
         autoInitialize: true,
         searchIndexing: true,
-        ...config.defaultDocumentConfig,
+        ...config?.["defaultDocumentConfig"],
       },
       defaultPerformanceConfig: {
         enableRequestDeduplication: true,
         maxConcurrency: 10,
         requestTimeout: 30000,
         enableMetricsCollection: true,
-        ...config.defaultPerformanceConfig,
+        ...config?.["defaultPerformanceConfig"],
       },
       monitoring: {
         enabled: true,
         healthCheckInterval: 30000,
         metricsCollectionInterval: 10000,
-        ...config.monitoring,
+        ...config?.["monitoring"],
       },
     };
 
@@ -123,22 +118,22 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
    * @param config
    */
   async create(config: DataServiceAdapterConfig): Promise<IService> {
-    this.logger.info(`Creating data service adapter: ${config.name}`);
+    this.logger.info(`Creating data service adapter: ${config?.name}`);
 
     try {
       // Validate configuration
       const isValid = await this.validateConfig(config);
       if (!isValid) {
         throw new ServiceConfigurationError(
-          config.name,
+          config?.name,
           'Invalid data service adapter configuration'
         );
       }
 
       // Check if service already exists
-      if (this.services.has(config.name)) {
+      if (this.services.has(config?.name)) {
         throw new ServiceInitializationError(
-          config.name,
+          config?.name,
           new Error('Service with this name already exists')
         );
       }
@@ -153,21 +148,21 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       await adapter.initialize();
 
       // Store the service
-      this.services.set(config.name, adapter);
+      this.services.set(config?.name, adapter);
 
       // Set up event forwarding
       this.setupServiceEventForwarding(adapter);
 
       // Emit creation event
-      this.eventEmitter.emit('service-created', config.name, adapter);
+      this.eventEmitter.emit('service-created', config?.name, adapter);
 
-      this.logger.info(`Data service adapter created successfully: ${config.name}`);
+      this.logger.info(`Data service adapter created successfully: ${config?.name}`);
       return adapter;
     } catch (error) {
-      this.logger.error(`Failed to create data service adapter ${config.name}:`, error);
+      this.logger.error(`Failed to create data service adapter ${config?.name}:`, error);
       throw error instanceof ServiceError
         ? error
-        : new ServiceInitializationError(config.name, error as Error);
+        : new ServiceInitializationError(config?.name, error as Error);
     }
   }
 
@@ -179,18 +174,18 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
   async createMultiple(configs: DataServiceAdapterConfig[]): Promise<IService[]> {
     this.logger.info(`Creating ${configs.length} data service adapters`);
 
-    const creationPromises = configs.map((config) => this.create(config));
+    const creationPromises = configs?.map((config) => this.create(config));
     const results = await Promise.allSettled(creationPromises);
 
     const services: IService[] = [];
     const errors: Error[] = [];
 
-    results.forEach((result, index) => {
-      if (result.status === 'fulfilled') {
-        services.push(result.value);
+    results?.forEach((result, index) => {
+      if (result?.status === 'fulfilled') {
+        services.push(result?.value);
       } else {
-        const config = configs[index];
-        errors.push(new ServiceInitializationError(config.name, result.reason));
+        const config = configs?.[index];
+        errors.push(new ServiceInitializationError(config?.name, result?.reason));
       }
     });
 
@@ -266,7 +261,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
    * Get supported service types
    */
   getSupportedTypes(): string[] {
-    return [ServiceType.DATA, ServiceType.WEB_DATA, ServiceType.DOCUMENT];
+    return [ServiceType["DATA"], ServiceType["WEB_DATA"], ServiceType["DOCUMENT"]];
   }
 
   /**
@@ -331,10 +326,10 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
     const healthCheckPromises = services.map(async (service) => {
       try {
         const status = await service.getStatus();
-        results.set(service.name, status);
+        results?.set(service.name, status);
       } catch (error) {
         this.logger.error(`Health check failed for data service adapter ${service.name}:`, error);
-        results.set(service.name, {
+        results?.set(service.name, {
           name: service.name,
           type: service.type,
           lifecycle: 'error',
@@ -363,7 +358,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
     const metricsPromises = services.map(async (service) => {
       try {
         const metrics = await service.getMetrics();
-        results.set(service.name, metrics);
+        results?.set(service.name, metrics);
       } catch (error) {
         this.logger.error(`Failed to get metrics for data service adapter ${service.name}:`, error);
       }
@@ -434,37 +429,37 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
   async validateConfig(config: DataServiceAdapterConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config.name || !config.type) {
+      if (!config?.name || !config?.type) {
         this.logger.error('Configuration missing required fields: name or type');
         return false;
       }
 
       // Check if type is supported
-      if (!this.supportsType(config.type)) {
-        this.logger.error(`Unsupported service type: ${config.type}`);
+      if (!this.supportsType(config?.type)) {
+        this.logger.error(`Unsupported service type: ${config?.type}`);
         return false;
       }
 
       // Validate web data configuration
-      if (config.webData?.enabled && config.webData.cacheTTL && config.webData.cacheTTL < 1000) {
+      if (config?.["webData"]?.["enabled"] && config?.["webData"]?.["cacheTTL"] && config?.["webData"]?.["cacheTTL"] < 1000) {
         this.logger.error('WebData cache TTL must be at least 1000ms');
         return false;
       }
 
       // Validate document data configuration
-      if (config.documentData?.enabled) {
+      if (config?.["documentData"]?.["enabled"]) {
         const validDbTypes = ['postgresql', 'sqlite', 'mysql'];
         if (
-          config.documentData.databaseType &&
-          !validDbTypes.includes(config.documentData.databaseType)
+          config?.["documentData"]?.["databaseType"] &&
+          !validDbTypes.includes(config?.["documentData"]?.["databaseType"])
         ) {
-          this.logger.error(`Invalid database type: ${config.documentData.databaseType}`);
+          this.logger.error(`Invalid database type: ${config?.["documentData"]?.["databaseType"]}`);
           return false;
         }
       }
 
       // Validate performance configuration
-      if (config.performance?.maxConcurrency && config.performance.maxConcurrency < 1) {
+      if (config?.["performance"]?.["maxConcurrency"] && config?.["performance"]?.["maxConcurrency"] < 1) {
         this.logger.error('Max concurrency must be at least 1');
         return false;
       }
@@ -558,7 +553,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
     config?: Partial<DataServiceAdapterConfig>
   ): Promise<DataServiceAdapter> {
     const webDataConfig = createDefaultDataServiceAdapterConfig(name, {
-      type: ServiceType.WEB_DATA,
+      type: ServiceType["WEB_DATA"],
       webData: {
         enabled: true,
         mockData: true,
@@ -589,7 +584,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
     config?: Partial<DataServiceAdapterConfig>
   ): Promise<DataServiceAdapter> {
     const documentConfig = createDefaultDataServiceAdapterConfig(name, {
-      type: ServiceType.DOCUMENT,
+      type: ServiceType["DOCUMENT"],
       webData: {
         enabled: false, // Disable web data for document-only adapter
       },
@@ -620,7 +615,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
     config?: Partial<DataServiceAdapterConfig>
   ): Promise<DataServiceAdapter> {
     const unifiedConfig = createDefaultDataServiceAdapterConfig(name, {
-      type: ServiceType.DATA,
+      type: ServiceType["DATA"],
       webData: {
         enabled: true,
         mockData: true,
@@ -695,15 +690,15 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       ...config,
       webData: {
         ...this.config.defaultWebDataConfig,
-        ...config.webData,
+        ...config?.["webData"],
       },
       documentData: {
         ...this.config.defaultDocumentConfig,
-        ...config.documentData,
+        ...config?.["documentData"],
       },
       performance: {
         ...this.config.defaultPerformanceConfig,
-        ...config.performance,
+        ...config?.["performance"],
       },
     };
   }
@@ -743,7 +738,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       this.healthCheckTimer = setInterval(async () => {
         try {
           const healthResults = await this.healthCheckAll();
-          const unhealthyServices = Array.from(healthResults.entries())
+          const unhealthyServices = Array.from(healthResults?.entries())
             .filter(([_, status]) => status.health !== 'healthy')
             .map(([name, _]) => name);
 

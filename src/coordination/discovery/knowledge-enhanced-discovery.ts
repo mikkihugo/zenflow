@@ -11,10 +11,6 @@
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from '@core/logger';
-import type { SessionMemoryStore } from '../../memory';
-import type { HiveFACTSystem } from '../hive-fact-integration';
-import type { SwarmKnowledgeSync } from '../swarm/knowledge-sync';
-import type { DiscoveredDomain } from './domain-discovery-bridge';
 
 const logger = createLogger({ prefix: 'Knowledge-Aware-Discovery' });
 
@@ -504,9 +500,9 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   ): DomainKnowledge {
     // Extract knowledge from swarm learning data
     const patterns = this.extractPatternsFromSwarmData(swarmData);
-    const bestPractices = swarmData.insights?.whatWorked || [];
-    const commonPitfalls = swarmData.insights?.whatFailed || [];
-    const optimizations = swarmData.insights?.optimizations || [];
+    const bestPractices = swarmData?.insights?.whatWorked || [];
+    const commonPitfalls = swarmData?.insights?.whatFailed || [];
+    const optimizations = swarmData?.insights?.optimizations || [];
 
     return {
       domain,
@@ -515,7 +511,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       commonPitfalls,
       relatedDomains: [],
       toolRecommendations: optimizations,
-      confidenceScore: swarmData.confidence || 0.8,
+      confidenceScore: swarmData?.confidence || 0.8,
       source,
     };
   }

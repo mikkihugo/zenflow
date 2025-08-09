@@ -111,7 +111,7 @@ export class MetaLearningFramework {
   private getBestStrategy() {
     const strategies = Array.from(this.learningStrategies.values());
     return strategies.reduce(
-      (best, current) => (current.performance > best.performance ? current : best),
+      (best, current) => (current?.performance > best.performance ? current : best),
       { performance: -1 }
     );
   }
@@ -137,8 +137,8 @@ export class MetaLearningFramework {
     // Adapt configuration based on best performance
     const adaptedConfig = {
       ...config,
-      learningRate: bestTask.config?.learningRate || config.learningRate,
-      architecture: bestTask.config?.architecture || config.architecture,
+      learningRate: bestTask.config?.learningRate || config?.learningRate,
+      architecture: bestTask.config?.architecture || config?.architecture,
     };
 
     return adaptedConfig;
@@ -166,9 +166,9 @@ export class MetaLearningFramework {
 
     // Adjust learning rate based on performance
     if (avgPerformance < 0.7) {
-      optimizedOptions.learningRate = (options.learningRate || 0.001) * 1.1;
+      optimizedOptions?.learningRate = (options?.learningRate || 0.001) * 1.1;
     } else if (avgPerformance > 0.9) {
-      optimizedOptions.learningRate = (options.learningRate || 0.001) * 0.9;
+      optimizedOptions?.learningRate = (options?.learningRate || 0.001) * 0.9;
     }
 
     return optimizedOptions;

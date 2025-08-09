@@ -5,7 +5,6 @@
 
 import { StdioMcpServer } from '../../coordination/mcp/mcp-server';
 import { HttpMcpServer } from '../../interfaces/mcp/http-mcp-server';
-import type { MCPRequest } from '../../interfaces/mcp/types';
 import { IntegrationTestSetup } from '../helpers/integration-test-setup';
 import { NetworkTestHelper } from '../helpers/network-test-helper';
 
@@ -48,8 +47,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
     it('should respond to health check with correct format', async () => {
       const response = await networkHelper.httpGet(`http://localhost:${TEST_PORT}/health`);
 
-      expect(response.status).toBe(200);
-      expect(response.data).toMatchObject({
+      expect(response?.status).toBe(200);
+      expect(response?.data).toMatchObject({
         status: 'healthy',
         timestamp: expect.any(String),
         uptime: expect.any(Number),
@@ -60,8 +59,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
     it('should return capabilities in MCP format', async () => {
       const response = await networkHelper.httpGet(`http://localhost:${TEST_PORT}/capabilities`);
 
-      expect(response.status).toBe(200);
-      expect(response.data).toMatchObject({
+      expect(response?.status).toBe(200);
+      expect(response?.data).toMatchObject({
         protocolVersion: expect.stringMatching(/^\d+\.\d+\.\d+$/),
         capabilities: {
           tools: expect.any(Object),
@@ -88,8 +87,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         mcpRequest
       );
 
-      expect(response.status).toBe(200);
-      expect(response.data).toMatchObject({
+      expect(response?.status).toBe(200);
+      expect(response?.data).toMatchObject({
         jsonrpc: '2.0',
         id: 1,
         result: {
@@ -113,8 +112,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         invalidRequest
       );
 
-      expect(response.status).toBe(200); // JSON-RPC errors return 200 with error in body
-      expect(response.data).toMatchObject({
+      expect(response?.status).toBe(200); // JSON-RPC errors return 200 with error in body
+      expect(response?.data).toMatchObject({
         jsonrpc: '2.0',
         id: 2,
         error: {
@@ -143,8 +142,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         toolCallRequest
       );
 
-      expect(response.status).toBe(200);
-      expect(response.data).toMatchObject({
+      expect(response?.status).toBe(200);
+      expect(response?.data).toMatchObject({
         jsonrpc: '2.0',
         id: 3,
         result: {
@@ -154,7 +153,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       });
 
       // Verify content structure
-      const content = response.data.result.content;
+      const content = response?.data?.result?.content;
       expect(content[0]).toMatchObject({
         type: 'text',
         text: expect.stringContaining('Claude-Zen System Information'),
@@ -226,7 +225,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       const startTime = Date.now();
 
       const responses = await Promise.all(
-        concurrentRequests.map((req) =>
+        concurrentRequests?.map((req) =>
           networkHelper.httpPost(`http://localhost:${TEST_PORT}/mcp`, req)
         )
       );
@@ -234,10 +233,10 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       const totalTime = Date.now() - startTime;
 
       // All requests should succeed
-      responses.forEach((response, index) => {
-        expect(response.status).toBe(200);
-        expect(response.data.id).toBe(index + 10);
-        expect(response.data.result).toBeDefined();
+      responses?.forEach((response, index) => {
+        expect(response?.status).toBe(200);
+        expect(response?.data?.id).toBe(index + 10);
+        expect(response?.data?.result).toBeDefined();
       });
 
       // Should handle concurrent requests efficiently (< 5 seconds for 10 requests)
@@ -251,10 +250,10 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         'Access-Control-Request-Headers': 'Content-Type',
       });
 
-      expect(corsResponse.status).toBe(200);
-      expect(corsResponse.headers['access-control-allow-origin']).toBe('*');
-      expect(corsResponse.headers['access-control-allow-methods']).toContain('POST');
-      expect(corsResponse.headers['access-control-allow-headers']).toContain('Content-Type');
+      expect(corsResponse?.status).toBe(200);
+      expect(corsResponse?.headers?.['access-control-allow-origin']).toBe('*');
+      expect(corsResponse?.headers?.['access-control-allow-methods']).toContain('POST');
+      expect(corsResponse?.headers?.['access-control-allow-headers']).toContain('Content-Type');
     });
   });
 
@@ -366,8 +365,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       const spawnResponse = await stdioMcpServer.processMessage(JSON.stringify(spawnRequest));
       const parsedSpawnResponse = JSON.parse(spawnResponse);
 
-      expect(parsedSpawnResponse.result.isError).toBe(false);
-      expect(parsedSpawnResponse.result.content[0].text).toContain('Agent spawned successfully');
+      expect(parsedSpawnResponse?.result?.isError).toBe(false);
+      expect(parsedSpawnResponse?.result?.content?.[0]?.text).toContain('Agent spawned successfully');
 
       // Check swarm status to verify session persistence
       const statusRequest: MCPRequest = {
@@ -383,7 +382,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       const statusResponse = await stdioMcpServer.processMessage(JSON.stringify(statusRequest));
       const parsedStatusResponse = JSON.parse(statusResponse);
 
-      expect(parsedStatusResponse.result.content[0].text).toContain('test-coordinator');
+      expect(parsedStatusResponse?.result?.content?.[0]?.text).toContain('test-coordinator');
     });
 
     it('should handle memory persistence operations', async () => {
@@ -408,7 +407,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       const storeResponse = await stdioMcpServer.processMessage(JSON.stringify(memoryStoreRequest));
       const parsedStoreResponse = JSON.parse(storeResponse);
 
-      expect(parsedStoreResponse.result.isError).toBe(false);
+      expect(parsedStoreResponse?.result?.isError).toBe(false);
 
       // Retrieve stored data
       const memoryRetrieveRequest: MCPRequest = {
@@ -429,9 +428,9 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       );
       const parsedRetrieveResponse = JSON.parse(retrieveResponse);
 
-      expect(parsedRetrieveResponse.result.isError).toBe(false);
+      expect(parsedRetrieveResponse?.result?.isError).toBe(false);
 
-      const retrievedData = JSON.parse(parsedRetrieveResponse.result.content[0].text);
+      const retrievedData = JSON.parse(parsedRetrieveResponse?.result?.content?.[0]?.text);
       expect(retrievedData).toMatchObject({
         sessionId: 'test-session-123',
         data: { important: true },
@@ -498,8 +497,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       );
       const parsedOrchResponse = JSON.parse(orchestrateResponse);
 
-      expect(parsedOrchResponse.result.isError).toBe(false);
-      expect(parsedOrchResponse.result.content[0].text).toContain('Task orchestration initiated');
+      expect(parsedOrchResponse?.result?.isError).toBe(false);
+      expect(parsedOrchResponse?.result?.content?.[0]?.text).toContain('Task orchestration initiated');
     });
 
     it('should validate tool parameters according to JSON schema', async () => {
@@ -573,7 +572,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         );
 
         const parsedStdioResponse = JSON.parse(stdioResponse);
-        expect(parsedStdioResponse.result.isError).toBe(false);
+        expect(parsedStdioResponse?.result?.isError).toBe(false);
 
         // Verify coordination between protocols
         const statusCheck = await networkHelper.httpPost(`http://localhost:${TEST_PORT}/mcp`, {
@@ -587,7 +586,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
         });
 
         expect(statusCheck.status).toBe(200);
-        expect(statusCheck.data.result.content[0].text).toContain('Swarm coordination active');
+        expect(statusCheck.data.result.content[0]?.text).toContain('Swarm coordination active');
       } finally {
         await Promise.all([httpMcpServer.stop(), stdioMcpServer.shutdown()]);
       }
@@ -644,8 +643,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           },
         });
 
-        expect(httpResponse.status).toBe(200);
-        expect(httpResponse.data.result.content[0].text).toContain('crossProtocolTest');
+        expect(httpResponse?.status).toBe(200);
+        expect(httpResponse?.data?.result?.content?.[0]?.text).toContain('crossProtocolTest');
       } finally {
         await Promise.all([httpMcpServer.stop(), stdioMcpServer.shutdown()]);
       }
@@ -682,17 +681,17 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           const batchResponses = await Promise.all(batchRequests);
           const batchTime = Date.now() - batchStartTime;
 
-          results.push(batchTime);
+          results?.push(batchTime);
 
           // All requests in batch should succeed
-          batchResponses.forEach((response) => {
-            expect(response.status).toBe(200);
-            expect(response.data.result).toBeDefined();
+          batchResponses?.forEach((response) => {
+            expect(response?.status).toBe(200);
+            expect(response?.data?.result).toBeDefined();
           });
         }
 
         // Performance should remain consistent across batches
-        const avgBatchTime = results.reduce((a, b) => a + b, 0) / results.length;
+        const avgBatchTime = results?.reduce((a, b) => a + b, 0) / results.length;
         const maxBatchTime = Math.max(...results);
         const minBatchTime = Math.min(...results);
 

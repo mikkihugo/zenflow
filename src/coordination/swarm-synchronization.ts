@@ -235,8 +235,8 @@ export class SwarmSynchronizer extends EventEmitter {
       const timeout = setTimeout(() => resolve(peerStates), this.config.consensusTimeout);
 
       const responseHandler = (data: any) => {
-        if (data?.syncId === syncId && data?.sourceSwarmId !== this.swarmId) {
-          peerStates.push(data?.state);
+        if (data?.["syncId"] === syncId && data?.["sourceSwarmId"] !== this.swarmId) {
+          peerStates.push(data?.["state"]);
 
           // If we have enough peers, resolve early
           if (peerStates.length >= 3) {
@@ -402,15 +402,15 @@ export class SwarmSynchronizer extends EventEmitter {
 
     // Handle sync broadcasts from other swarms
     this.eventBus.on('swarm:sync:broadcast', (data) => {
-      if (data?.sourceSwarmId !== this.swarmId) {
+      if (data?.["sourceSwarmId"] !== this.swarmId) {
         this.handlePeerSyncBroadcast(data);
       }
     });
 
     // Handle agent state updates
     this.eventBus.on('agent:state:updated', (data) => {
-      if (data?.swarmId === this.swarmId) {
-        this.updateAgentState(data?.agentId, data?.state);
+      if (data?.["swarmId"] === this.swarmId) {
+        this.updateAgentState(data?.["agentId"], data?.["state"]);
       }
     });
   }
@@ -429,7 +429,7 @@ export class SwarmSynchronizer extends EventEmitter {
         timestamp: new Date(),
         source: this.swarmId,
         swarmId: this.swarmId,
-        syncId: data?.syncId,
+        syncId: data?.["syncId"],
         respondingAgentId: this.swarmId,
         responseType: 'ack',
         responseData: this.gatherLocalState(),

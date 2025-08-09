@@ -4,18 +4,7 @@ const logger = getLogger("coordination-agents-agent");
  * Agent implementation and wrappers
  */
 
-import type {
-  Agent,
-  AgentConfig,
-  AgentMetrics,
-  AgentState,
-  AgentStatus,
-  AgentType,
-  ExecutionResult,
-  Message,
-  MessageType,
-  Task,
-} from '../../types/agent-types';
+import type { Agent } from '../../types/agent-types';
 import { generateId, getDefaultCognitiveProfile } from '../swarm/core/utils';
 
 export class BaseAgent implements Agent {
@@ -40,12 +29,12 @@ export class BaseAgent implements Agent {
   }
 
   constructor(config: AgentConfig) {
-    this.id = config.id || generateId('agent');
-    this.type = config.type;
+    this.id = config?.id || generateId('agent');
+    this.type = config?.type;
     this.config = {
       ...config,
       id: this.id,
-      cognitiveProfile: config.cognitiveProfile || getDefaultCognitiveProfile(config.type),
+      cognitiveProfile: config?.["cognitiveProfile"] || getDefaultCognitiveProfile(config?.type),
     };
 
     // Initialize metrics
@@ -69,8 +58,8 @@ export class BaseAgent implements Agent {
 
     this.state = {
       id: this.id as any, // Temporarily cast to any for AgentId compatibility
-      name: config.name || `Agent-${this.id}`,
-      type: config.type,
+      name: config?.name || `Agent-${this.id}`,
+      type: config?.type,
       status: 'idle',
       capabilities: {
         codeGeneration: true,
@@ -93,7 +82,7 @@ export class BaseAgent implements Agent {
         reliability: 0.95,
         speed: 0.8,
         quality: 0.9,
-        ...config.capabilities,
+        ...config?.["capabilities"],
       },
       metrics: this.metrics,
       workload: 0,
@@ -183,7 +172,7 @@ export class BaseAgent implements Agent {
   }
 
   private async handleTaskAssignment(message: Message): Promise<void> {
-    const task = message.payload as Task;
+    const task = message["payload"] as Task;
 
     // Execute the assigned task
     this.state.status = 'busy';
@@ -194,8 +183,8 @@ export class BaseAgent implements Agent {
       await this.communicate({
         id: `result-${Date.now()}`,
         fromAgentId: this.id,
-        toAgentId: message.fromAgentId,
-        swarmId: message.swarmId,
+        toAgentId: message["fromAgentId"],
+        swarmId: message["swarmId"],
         type: 'result',
         content: result,
         timestamp: new Date(),
@@ -216,7 +205,7 @@ export class BaseAgent implements Agent {
   private async handleKnowledgeShare(message: Message): Promise<void> {
     // Store shared knowledge in memory
     if (this.config.memory) {
-      this.config.memory.shortTerm.set(`knowledge_${message.id}`, message.payload);
+      this.config.memory.shortTerm.set(`knowledge_${message.id}`, message["payload"]);
     }
   }
 
@@ -259,7 +248,7 @@ export class BaseAgent implements Agent {
       };
 
       this.metrics.tasksCompleted++;
-      this.updatePerformanceMetrics(true, result.executionTime);
+      this.updatePerformanceMetrics(true, result?.executionTime);
       return result;
     } catch (error) {
       this.metrics.tasksFailed++;
@@ -318,7 +307,7 @@ export class ResearcherAgent extends BaseAgent {
 
     for (const phase of phases) {
       await new Promise((resolve) => setTimeout(resolve, 200));
-      results.push({
+      results?.push({
         phase,
         timestamp: Date.now(),
         findings: `${phase} completed for ${task.description}`,
@@ -412,7 +401,7 @@ export class AnalystAgent extends BaseAgent {
  * @param config
  */
 export function createAgent(config: AgentConfig): Agent {
-  switch (config.type) {
+  switch (config?.type) {
     case 'researcher':
       return new ResearcherAgent(config);
     case 'coder':
@@ -470,7 +459,7 @@ export class AgentPool {
     }
 
     if (selectedAgent?.id) {
-      this.availableAgents.delete(selectedAgent.id);
+      this.availableAgents.delete(selectedAgent?.id);
     }
 
     return selectedAgent;

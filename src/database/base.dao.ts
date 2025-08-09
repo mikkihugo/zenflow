@@ -253,8 +253,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
   ): { sql: string; params: any[] } {
     const mappedCriteria = this.mapEntityToRow(criteria);
     const whereClause = this.buildWhereClause(mappedCriteria);
-    const orderClause = this.buildOrderClause(options?.sort);
-    const limitClause = this.buildLimitClause(options?.limit, options?.offset);
+    const orderClause = this.buildOrderClause(options?.["sort"]);
+    const limitClause = this.buildLimitClause(options?.["limit"], options?.["offset"]);
 
     const sql =
       `SELECT * FROM ${this.tableName} ${whereClause} ${orderClause} ${limitClause}`.trim();
@@ -264,8 +264,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
   }
 
   protected buildFindAllQuery(options?: QueryOptions): { sql: string; params: any[] } {
-    const orderClause = this.buildOrderClause(options?.sort);
-    const limitClause = this.buildLimitClause(options?.limit, options?.offset);
+    const orderClause = this.buildOrderClause(options?.["sort"]);
+    const limitClause = this.buildLimitClause(options?.["limit"], options?.["offset"]);
 
     const sql = `SELECT * FROM ${this.tableName} ${orderClause} ${limitClause}`.trim();
 

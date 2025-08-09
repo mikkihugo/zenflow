@@ -6,21 +6,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type {
-  ClientMetrics,
-  ClientResponse,
-  ClientStatus,
-  IClient,
-  RequestOptions,
-} from '../core/interfaces';
-
-import type {
-  WebSocketClientConfig,
-  WebSocketConnectionInfo,
-  WebSocketMessage,
-  WebSocketMetrics,
-  WebSocketRequestOptions,
-} from './websocket-types';
+import type { IClient } from '../core/interfaces';
 
 // Legacy interface for backward compatibility
 interface WebSocketClientOptions {
@@ -38,7 +24,7 @@ interface WebSocketClientOptions {
  *
  * @example
  */
-export class EnhancedWebSocketClient extends EventEmitter implements IClient {
+export class WebSocketClient extends EventEmitter implements IClient {
   // UACL interface properties
   public readonly config: WebSocketClientConfig;
   public readonly name: string;
@@ -138,7 +124,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
         this.ws.onopen = () => {
           clearTimeout(timeout);
-          this._isConnected = true;
+          this["_isConnected"] = true;
           this.reconnectAttempts = 0;
           this.connectionId = this.generateConnectionId();
           this.connectionInfo.connectTime = new Date();
@@ -159,13 +145,13 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
         this.ws.onclose = (event) => {
           clearTimeout(timeout);
-          this._isConnected = false;
+          this["_isConnected"] = false;
           this.connectionInfo.readyState = this.ws?.readyState;
           this.stopHeartbeat();
 
           // Emit both legacy and UACL events
-          this.emit('disconnected', event.code, event.reason); // Legacy
-          this.emit('disconnect', event.code, event.reason); // UACL
+          this.emit('disconnected', event["code"], event["reason"]); // Legacy
+          this.emit('disconnect', event["code"], event["reason"]); // UACL
 
           if (
             this.options.reconnect &&
@@ -202,15 +188,15 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       }
       this.stopHeartbeat();
 
-      if (this.ws && this._isConnected) {
+      if (this.ws && this["_isConnected"]) {
         this.ws.onclose = () => {
-          this._isConnected = false;
+          this["_isConnected"] = false;
           this.emit('disconnect');
           resolve();
         };
         this.ws.close();
       } else {
-        this._isConnected = false;
+        this["_isConnected"] = false;
         resolve();
       }
     });
@@ -220,7 +206,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    * Check if client is connected (UACL interface)
    */
   isConnected(): boolean {
-    return this._isConnected && this.ws?.readyState === WebSocket.OPEN;
+    return this["_isConnected"] && this.ws?.readyState === WebSocket["OPEN"];
   }
 
   /**
@@ -231,7 +217,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
     return {
       name: this.name,
-      status: this._isConnected ? 'healthy' : 'disconnected',
+      status: this["_isConnected"] ? 'healthy' : 'disconnected',
       lastCheck: new Date(),
       responseTime,
       errorRate: this.calculateErrorRate(),
@@ -369,7 +355,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   send(data: any): void {
     const message = typeof data === 'string' ? data : JSON.stringify(data);
-    if (this._isConnected && this.ws) {
+    if (this["_isConnected"] && this.ws) {
       try {
         this.ws.send(message);
         this.connectionInfo.messagesSent++;
@@ -389,7 +375,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    * Get connection status (legacy property)
    */
   get connected(): boolean {
-    return this._isConnected;
+    return this["_isConnected"];
   }
 
   /**
@@ -429,7 +415,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
     const serialized = JSON.stringify(messageWithId);
 
-    if (this._isConnected && this.ws) {
+    if (this["_isConnected"] && this.ws) {
       try {
         this.ws.send(serialized);
         this.connectionInfo.messagesSent++;
@@ -471,7 +457,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
     return {
       connectionsOpened: 1,
       connectionsClosed: 0,
-      connectionsActive: this._isConnected ? 1 : 0,
+      connectionsActive: this["_isConnected"] ? 1 : 0,
       connectionDuration: Date.now() - this.startTime,
 
       messagesSent: this.connectionInfo.messagesSent,
@@ -509,7 +495,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    * Get current ready state
    */
   get readyState(): number {
-    return this.ws?.readyState || WebSocket.CLOSED;
+    return this.ws?.readyState || WebSocket["CLOSED"];
   }
 
   // =============================================================================
@@ -521,21 +507,21 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       let data: any;
 
       // Handle different message types
-      if (typeof event.data === 'string') {
+      if (typeof event["data"] === 'string') {
         try {
-          data = JSON.parse(event.data);
+          data = JSON.parse(event["data"]);
         } catch {
-          data = event.data;
+          data = event["data"];
         }
       } else {
-        data = event.data;
+        data = event["data"];
       }
 
       // Update connection info
       this.connectionInfo.messagesReceived++;
       this.connectionInfo.lastActivity = new Date();
-      if (typeof event.data === 'string') {
-        this.connectionInfo.bytesReceived += event.data.length;
+      if (typeof event["data"] === 'string') {
+        this.connectionInfo.bytesReceived += event["data"].length;
       }
 
       // Check for heartbeat response
@@ -545,8 +531,8 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       }
 
       // Check for response correlation
-      if (data?.id && data.type === 'response') {
-        this.emit(`response:${data.correlationId || data.id}`, data);
+      if (data?.["id"] && data?.type === 'response') {
+        this.emit(`response:${data?.["correlationId"] || data?.id}`, data);
         return;
       }
 
@@ -573,7 +559,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
         method,
         endpoint,
         body: data,
-        headers: options?.headers,
+        headers: options?.["headers"],
       },
       timestamp: startTime,
     };
@@ -584,7 +570,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
           this.off(`response:${requestId}`, responseHandler);
           reject(new Error('Request timeout'));
         },
-        options?.timeout || this.config.timeout || 30000
+        options?.["timeout"] || this.config.timeout || 30000
       );
 
       const responseHandler = (responseData: any) => {
@@ -592,10 +578,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
         const duration = Date.now() - startTime;
 
         resolve({
-          data: responseData.data,
-          status: responseData.status || 200,
-          statusText: responseData.statusText || 'OK',
-          headers: responseData.headers || {},
+          data: responseData?.data,
+          status: responseData?.status || 200,
+          statusText: responseData?.statusText || 'OK',
+          headers: responseData?.headers || {},
           config: options || {},
           metadata: {
             requestId,
@@ -623,7 +609,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   private flushMessageQueue(): void {
-    while (this.messageQueue.length > 0 && this._isConnected) {
+    while (this.messageQueue.length > 0 && this["_isConnected"]) {
       const message = this.messageQueue.shift();
       if (message) {
         try {
@@ -662,7 +648,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
     const message = this.config.heartbeat?.message || { type: 'ping' };
 
     this.heartbeatTimer = setInterval(() => {
-      if (this._isConnected && this.ws) {
+      if (this["_isConnected"] && this.ws) {
         try {
           this.ws.send(JSON.stringify(message));
         } catch (error) {
@@ -680,7 +666,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   private isHeartbeatResponse(data: any): boolean {
-    return data && (data.type === 'pong' || data.type === 'heartbeat' || data.type === 'ping');
+    return data && (data?.type === 'pong' || data?.type === 'heartbeat' || data?.type === 'ping');
   }
 
   private async measurePingTime(): Promise<number> {
@@ -691,7 +677,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       const pingId = this.generateMessageId();
 
       const pongHandler = (data: any) => {
-        if (data.id === pingId) {
+        if (data?.id === pingId) {
           const responseTime = Date.now() - startTime;
           this.off('message', pongHandler);
           this.connectionInfo.latency = responseTime;
@@ -740,7 +726,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
     return {
       id: this.connectionId,
       url: this.url,
-      readyState: WebSocket.CLOSED,
+      readyState: WebSocket["CLOSED"],
       bufferedAmount: 0,
       connectTime: new Date(),
       lastActivity: new Date(),
@@ -776,11 +762,11 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       name: `ws-client-${Date.now()}`,
       baseURL: url,
       url: url,
-      timeout: options.timeout,
+      timeout: options?.["timeout"],
       reconnection: {
-        enabled: options.reconnect || true,
-        maxAttempts: options.maxReconnectAttempts || 10,
-        initialDelay: options.reconnectInterval || 1000,
+        enabled: options?.["reconnect"] || true,
+        maxAttempts: options?.["maxReconnectAttempts"] || 10,
+        initialDelay: options?.["reconnectInterval"] || 1000,
         maxDelay: 30000,
         backoff: 'exponential',
       },
@@ -798,10 +784,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
   private convertUACLToLegacy(config: WebSocketClientConfig): WebSocketClientOptions {
     return {
-      reconnect: config.reconnection?.enabled || true,
-      reconnectInterval: config.reconnection?.initialDelay || 1000,
-      maxReconnectAttempts: config.reconnection?.maxAttempts || 10,
-      timeout: config.timeout || 30000,
+      reconnect: config?.["reconnection"]?.["enabled"] || true,
+      reconnectInterval: config?.["reconnection"]?.["initialDelay"] || 1000,
+      maxReconnectAttempts: config?.["reconnection"]?.["maxAttempts"] || 10,
+      timeout: config?.["timeout"] || 30000,
     };
   }
 }

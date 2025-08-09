@@ -51,19 +51,19 @@ enum LogLevel {
 // Configuration from centralized config system
 const getLogLevel = (): LogLevel => {
   try {
-    const centralConfig = config?.getAll();
+    const centralConfig = config?.["getAll"]();
     const configLevel = centralConfig?.core?.logger?.level?.toUpperCase();
     // Fallback for development environment
     const level = centralConfig?.environment?.isDevelopment && configLevel === 'INFO' ? 'DEBUG' : configLevel;
-    return Object.values(LogLevel).find(l => l.toUpperCase() === level) as LogLevel || LogLevel.INFO;
+    return Object.values(LogLevel).find(l => l.toUpperCase() === level) as LogLevel || LogLevel["INFO"];
   } catch (error) {
     // Fallback to INFO if config is not available
-    return LogLevel.INFO;
+    return LogLevel["INFO"];
   }
 };
 
 const shouldLog = (messageLevel: LogLevel, configuredLevel: LogLevel = getLogLevel()): boolean => {
-  const levels = { [LogLevel.DEBUG]: 0, [LogLevel.INFO]: 1, [LogLevel.WARN]: 2, [LogLevel.ERROR]: 3 };
+  const levels = { [LogLevel["DEBUG"]]: 0, [LogLevel["INFO"]]: 1, [LogLevel["WARN"]]: 2, [LogLevel["ERROR"]]: 3 };
   return levels[messageLevel] >= levels[configuredLevel];
 };
 
@@ -82,25 +82,25 @@ class Logger implements ILogger {
   }
 
   debug(message: string, meta?: any): void {
-    if (shouldLog(LogLevel.DEBUG, this.logLevel)) {
+    if (shouldLog(LogLevel["DEBUG"], this.logLevel)) {
       logger.debug(this.formatMessage('DEBUG', message, meta));
     }
   }
 
   info(message: string, meta?: any): void {
-    if (shouldLog(LogLevel.INFO, this.logLevel)) {
+    if (shouldLog(LogLevel["INFO"], this.logLevel)) {
       logger.info(this.formatMessage('INFO', message, meta));
     }
   }
 
   warn(message: string, meta?: any): void {
-    if (shouldLog(LogLevel.WARN, this.logLevel)) {
+    if (shouldLog(LogLevel["WARN"], this.logLevel)) {
       logger.warn(this.formatMessage('WARN', message, meta));
     }
   }
 
   error(message: string, meta?: any): void {
-    if (shouldLog(LogLevel.ERROR, this.logLevel)) {
+    if (shouldLog(LogLevel["ERROR"], this.logLevel)) {
       logger.error(this.formatMessage('ERROR', message, meta));
     }
   }

@@ -12,34 +12,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { BaseDocumentEntity } from '../../../database/entities/document-entities';
-import type {
-  DocumentCreateOptions,
-  DocumentQueryOptions,
-  DocumentSearchOptions,
-} from '../../../database/managers/document-manager';
-import type { DocumentType } from '../../../types/workflow-types';
-import { createLogger, type Logger } from '../../../utils/logger';
-import type {
-  CommandResult,
-  DocumentData,
-  SwarmData,
-  SystemStatusData,
-  TaskData,
-} from '../../web/web-data-service';
+import { createLogger } from '../../../utils/logger';
 import { WebDataService } from '../../web/web-data-service';
-import type {
-  IService,
-  ServiceDependencyConfig,
-  ServiceEvent,
-  ServiceEventType,
-  ServiceLifecycleStatus,
-  ServiceMetrics,
-  ServiceOperationOptions,
-  ServiceOperationResponse,
-  ServiceStatus,
-} from '../core/interfaces';
-import type { DataServiceConfig } from '../types';
+import type { IService } from '../core/interfaces';
 
 /**
  * Data service adapter configuration extending USL DataServiceConfig
@@ -178,8 +153,8 @@ export class DataServiceAdapter implements IService {
   };
 
   constructor(config: DataServiceAdapterConfig) {
-    this.name = config.name;
-    this.type = config.type;
+    this.name = config?.name;
+    this.type = config?.type;
     this.config = {
       // Default configuration values
       webData: {
@@ -187,21 +162,21 @@ export class DataServiceAdapter implements IService {
         mockData: true,
         cacheResponses: true,
         cacheTTL: 300000, // 5 minutes
-        ...config.webData,
+        ...config?.["webData"],
       },
       documentData: {
         enabled: true,
         databaseType: 'postgresql',
         autoInitialize: true,
         searchIndexing: true,
-        ...config.documentData,
+        ...config?.["documentData"],
       },
       performance: {
         enableRequestDeduplication: true,
         maxConcurrency: 10,
         requestTimeout: 30000,
         enableMetricsCollection: true,
-        ...config.performance,
+        ...config?.["performance"],
       },
       retry: {
         enabled: true,
@@ -216,7 +191,7 @@ export class DataServiceAdapter implements IService {
           'document-search',
           'document-create',
         ],
-        ...config.retry,
+        ...config?.["retry"],
       },
       cache: {
         enabled: true,
@@ -224,7 +199,7 @@ export class DataServiceAdapter implements IService {
         defaultTTL: 300000, // 5 minutes
         maxSize: 1000,
         keyPrefix: 'data-adapter:',
-        ...config.cache,
+        ...config?.["cache"],
       },
       ...config,
     };
@@ -605,43 +580,43 @@ export class DataServiceAdapter implements IService {
   async validateConfig(config: DataServiceAdapterConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config.name || !config.type) {
+      if (!config?.name || !config?.type) {
         this.logger.error('Configuration missing required fields: name or type');
         return false;
       }
 
       // Validate web data configuration
-      if (config.webData?.enabled && config.webData.cacheTTL && config.webData.cacheTTL < 1000) {
+      if (config?.["webData"]?.["enabled"] && config?.["webData"]?.["cacheTTL"] && config?.["webData"]?.["cacheTTL"] < 1000) {
         this.logger.error('WebData cache TTL must be at least 1000ms');
         return false;
       }
 
       // Validate document data configuration
-      if (config.documentData?.enabled) {
+      if (config?.["documentData"]?.["enabled"]) {
         const validDbTypes = ['postgresql', 'sqlite', 'mysql'];
         if (
-          config.documentData.databaseType &&
-          !validDbTypes.includes(config.documentData.databaseType)
+          config?.["documentData"]?.["databaseType"] &&
+          !validDbTypes.includes(config?.["documentData"]?.["databaseType"])
         ) {
-          this.logger.error(`Invalid database type: ${config.documentData.databaseType}`);
+          this.logger.error(`Invalid database type: ${config?.["documentData"]?.["databaseType"]}`);
           return false;
         }
       }
 
       // Validate performance configuration
-      if (config.performance?.maxConcurrency && config.performance.maxConcurrency < 1) {
+      if (config?.["performance"]?.["maxConcurrency"] && config?.["performance"]?.["maxConcurrency"] < 1) {
         this.logger.error('Max concurrency must be at least 1');
         return false;
       }
 
       // Validate retry configuration
-      if (config.retry?.enabled && config.retry.maxAttempts && config.retry.maxAttempts < 1) {
+      if (config?.["retry"]?.["enabled"] && config?.["retry"]?.["maxAttempts"] && config?.["retry"]?.["maxAttempts"] < 1) {
         this.logger.error('Retry max attempts must be at least 1');
         return false;
       }
 
       // Validate cache configuration
-      if (config.cache?.enabled && config.cache.maxSize && config.cache.maxSize < 1) {
+      if (config?.["cache"]?.["enabled"] && config?.["cache"]?.["maxSize"] && config?.["cache"]?.["maxSize"] < 1) {
         this.logger.error('Cache max size must be at least 1');
         return false;
       }
@@ -721,7 +696,7 @@ export class DataServiceAdapter implements IService {
       }
 
       // Apply timeout if specified
-      const timeout = options?.timeout || this.config.performance?.requestTimeout || 30000;
+      const timeout = options?.["timeout"] || this.config.performance?.requestTimeout || 30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(() => reject(new ServiceTimeoutError(this.name, operation, timeout)), timeout);
       });
@@ -842,7 +817,7 @@ export class DataServiceAdapter implements IService {
     try {
       const dependencyChecks = Array.from(this.dependencies.entries()).map(
         async ([name, config]) => {
-          if (!config.healthCheck) {
+          if (!config?.["healthCheck"]) {
             return true; // Skip health check if not required
           }
 
@@ -852,13 +827,13 @@ export class DataServiceAdapter implements IService {
             return true;
           } catch (error) {
             this.logger.warn(`Dependency ${name} health check failed:`, error);
-            return !config.required; // Return false only if dependency is required
+            return !config?.["required"]; // Return false only if dependency is required
           }
         }
       );
 
       const results = await Promise.all(dependencyChecks);
-      return results.every((result) => result === true);
+      return results?.every((result) => result === true);
     } catch (error) {
       this.logger.error(`Error checking dependencies for ${this.name}:`, error);
       return false;
@@ -1016,32 +991,32 @@ export class DataServiceAdapter implements IService {
         return (await this.getDocuments()) as T;
 
       case 'execute-command':
-        return (await this.executeCommand(params?.command, params?.args)) as T;
+        return (await this.executeCommand(params?.["command"], params?.["args"])) as T;
 
       // DocumentService operations
       case 'document-create':
-        return (await this.createDocument(params?.document, params?.options)) as T;
+        return (await this.createDocument(params?.["document"], params?.["options"])) as T;
 
       case 'document-get':
-        return (await this.getDocument(params?.id, params?.options)) as T;
+        return (await this.getDocument(params?.["id"], params?.["options"])) as T;
 
       case 'document-update':
-        return (await this.updateDocument(params?.id, params?.updates, params?.options)) as T;
+        return (await this.updateDocument(params?.["id"], params?.["updates"], params?.["options"])) as T;
 
       case 'document-delete':
-        return (await this.deleteDocument(params?.id)) as T;
+        return (await this.deleteDocument(params?.["id"])) as T;
 
       case 'document-query':
-        return (await this.queryDocuments(params?.filters, params?.options)) as T;
+        return (await this.queryDocuments(params?.["filters"], params?.["options"])) as T;
 
       case 'document-search':
-        return (await this.searchDocuments(params?.searchOptions)) as T;
+        return (await this.searchDocuments(params?.["searchOptions"])) as T;
 
       case 'project-create':
-        return (await this.createProject(params?.project)) as T;
+        return (await this.createProject(params?.["project"])) as T;
 
       case 'project-get':
-        return (await this.getProjectWithDocuments(params?.projectId)) as T;
+        return (await this.getProjectWithDocuments(params?.["projectId"])) as T;
 
       // Utility operations
       case 'cache-stats':
@@ -1334,7 +1309,7 @@ export class DataServiceAdapter implements IService {
 
     const toRemove = this.cache.size - targetSize;
     for (let i = 0; i < toRemove; i++) {
-      this.cache.delete(entries[i][0]);
+      this.cache.delete(entries[i]?.[0]);
     }
 
     this.logger.debug(`Cache cleanup: removed ${toRemove} entries`);
@@ -1480,10 +1455,10 @@ export function createDefaultDataServiceAdapterConfig(
 ): DataServiceAdapterConfig {
   return {
     name,
-    type: ServiceType.DATA,
+    type: ServiceType["DATA"],
     enabled: true,
-    priority: ServicePriority.NORMAL,
-    environment: ServiceEnvironment.DEVELOPMENT,
+    priority: ServicePriority["NORMAL"],
+    environment: ServiceEnvironment["DEVELOPMENT"],
     timeout: 30000,
     health: {
       enabled: true,

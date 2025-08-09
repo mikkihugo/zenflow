@@ -5,7 +5,7 @@
  * Tests focus on interactions and behavior verification rather than state testing.
  */
 
-import { beforeEach, describe, expect, it, type jest } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 
 // Mock types for testing CLI command processing
 interface MockCommandRegistry {
@@ -174,7 +174,7 @@ describe('CLI Command Processing - TDD London', () => {
 
       // Assert - verify validation behavior
       expect(mockParser.validate).toHaveBeenCalledWith(parseResult);
-      expect(result.valid).toBe(true);
+      expect(result?.valid).toBe(true);
     });
 
     it('should handle parsing errors gracefully', () => {
@@ -193,8 +193,8 @@ describe('CLI Command Processing - TDD London', () => {
 
       // Assert - verify error handling behavior
       expect(mockParser.parse).toHaveBeenCalledWith(invalidArgs);
-      expect(result.command).toBeNull();
-      expect(result.errors).toContain('No command specified');
+      expect(result?.command).toBeNull();
+      expect(result?.errors).toContain('No command specified');
     });
   });
 
@@ -241,8 +241,8 @@ describe('CLI Command Processing - TDD London', () => {
 
       // Assert - verify failure handling
       expect(mockRegistry.execute).toHaveBeenCalledWith('failing-command', context);
-      expect(result.success).toBe(false);
-      expect(result.exitCode).toBe(1);
+      expect(result?.success).toBe(false);
+      expect(result?.exitCode).toBe(1);
     });
 
     it('should handle command not found scenario', async () => {
@@ -263,8 +263,8 @@ describe('CLI Command Processing - TDD London', () => {
       const result = await mockRegistry.execute('unknown-command', context);
 
       // Assert - verify not found behavior
-      expect(result.exitCode).toBe(127);
-      expect(result.message).toContain('Command not found');
+      expect(result?.exitCode).toBe(127);
+      expect(result?.message).toContain('Command not found');
     });
   });
 
@@ -335,8 +335,8 @@ describe('CLI Command Processing - TDD London', () => {
 
       // Assert - verify error handling behavior
       expect(mockErrorHandler.handle).toHaveBeenCalledWith(error, context);
-      expect(result.handled).toBe(true);
-      expect(result.exitCode).toBe(1);
+      expect(result?.handled).toBe(true);
+      expect(result?.exitCode).toBe(1);
     });
 
     it('should register error handlers for specific error types', () => {
@@ -418,7 +418,7 @@ describe('CLI Command Processing - TDD London', () => {
       // Assert - Verify complete interaction chain
       expect(mockParser.parse).toHaveBeenCalledWith(input);
       expect(mockRegistry.execute).toHaveBeenCalledWith('status', expect.any(Object));
-      expect(mockFormatter.format).toHaveBeenCalledWith(executionResult.data, parseResult.flags);
+      expect(mockFormatter.format).toHaveBeenCalledWith(executionResult?.data, parseResult?.flags);
       expect(formatted).toBe(formattedOutput);
     });
 

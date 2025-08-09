@@ -6,8 +6,6 @@
 
 import { createHash, randomBytes } from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '@core/event-bus';
-import type { ILogger } from '@core/logger';
 
 // Core coordination types
 export interface CoordinationNode {
@@ -253,12 +251,12 @@ export class CoordinationPatterns extends EventEmitter {
   ) {
     super();
 
-    this.leaderElection = new LeaderElection(nodeId, config.election, logger, eventBus);
-    this.consensusEngine = new ConsensusEngine(nodeId, config.consensus, logger, eventBus);
-    this.workStealingSystem = new WorkStealingSystem(nodeId, config.workStealing, logger, eventBus);
+    this.leaderElection = new LeaderElection(nodeId, config?.["election"], logger, eventBus);
+    this.consensusEngine = new ConsensusEngine(nodeId, config?.["consensus"], logger, eventBus);
+    this.workStealingSystem = new WorkStealingSystem(nodeId, config?.["workStealing"], logger, eventBus);
     this.hierarchicalCoordinator = new HierarchicalCoordinator(
       nodeId,
-      config.hierarchical,
+      config?.["hierarchical"],
       logger,
       eventBus
     );
@@ -325,12 +323,12 @@ export class CoordinationPatterns extends EventEmitter {
    * @param node
    */
   async registerNode(node: CoordinationNode): Promise<void> {
-    this.nodes.set(node.id, node);
+    this.nodes.set(node?.id, node);
 
     this.logger.info('Node registered for coordination', {
-      nodeId: node.id,
-      type: node.type,
-      capabilities: node.capabilities,
+      nodeId: node?.id,
+      type: node?.type,
+      capabilities: node?.capabilities,
     });
 
     // Notify all subsystems
@@ -339,7 +337,7 @@ export class CoordinationPatterns extends EventEmitter {
     await this.workStealingSystem.addNode(node);
     await this.hierarchicalCoordinator.addNode(node);
 
-    this.emit('node:registered', { nodeId: node.id });
+    this.emit('node:registered', { nodeId: node?.id });
   }
 
   /**
@@ -593,27 +591,27 @@ export class CoordinationPatterns extends EventEmitter {
   private handleNodeJoined(data: any): void {
     // Update all subsystems with new node
     const node: CoordinationNode = {
-      id: data.nodeId,
+      id: data?.["nodeId"],
       type: 'follower',
       status: 'active',
-      capabilities: data.capabilities || [],
+      capabilities: data?.["capabilities"] || [],
       load: 0,
-      priority: data.priority || 1,
+      priority: data?.["priority"] || 1,
       lastHeartbeat: new Date(),
-      metadata: data.metadata || {},
+      metadata: data?.["metadata"] || {},
     };
 
     this.registerNode(node);
   }
 
   private handleNodeLeft(data: any): void {
-    this.nodes.delete(data.nodeId);
+    this.nodes.delete(data?.["nodeId"]);
 
     // Notify all subsystems
-    this.leaderElection.removeNode(data.nodeId);
-    this.consensusEngine.removeNode(data.nodeId);
-    this.workStealingSystem.removeNode(data.nodeId);
-    this.hierarchicalCoordinator.removeNode(data.nodeId);
+    this.leaderElection.removeNode(data?.["nodeId"]);
+    this.consensusEngine.removeNode(data?.["nodeId"]);
+    this.workStealingSystem.removeNode(data?.["nodeId"]);
+    this.hierarchicalCoordinator.removeNode(data?.["nodeId"]);
   }
 
   private handleNetworkPartition(data: any): void {
@@ -697,7 +695,7 @@ class LeaderElection extends EventEmitter {
   }
 
   async addNode(node: CoordinationNode): Promise<void> {
-    this.nodes.set(node.id, node);
+    this.nodes.set(node?.id, node);
   }
 
   removeNode(nodeId: string): void {
@@ -797,9 +795,9 @@ class LeaderElection extends EventEmitter {
     const myPriority = this.getNodePriority(this.nodeId);
     const higherPriorityNodes = Array.from(this.nodes.values()).filter(
       (node) =>
-        node.id !== this.nodeId &&
-        node.status === 'active' &&
-        this.getNodePriority(node.id) > myPriority
+        node?.id !== this.nodeId &&
+        node?.status === 'active' &&
+        this.getNodePriority(node?.id) > myPriority
     );
 
     if (higherPriorityNodes.length === 0) {
@@ -809,7 +807,7 @@ class LeaderElection extends EventEmitter {
     }
 
     // Send election messages to higher priority nodes
-    const responses = await this.sendElectionMessages(higherPriorityNodes.map((n) => n.id));
+    const responses = await this.sendElectionMessages(higherPriorityNodes?.map((n) => n.id));
 
     if (responses.length === 0) {
       // No responses from higher priority nodes, I win
@@ -824,10 +822,10 @@ class LeaderElection extends EventEmitter {
   private async ringElection(): Promise<string> {
     // Ring algorithm implementation
     const sortedNodes = Array.from(this.nodes.values())
-      .filter((node) => node.status === 'active')
+      .filter((node) => node?.status === 'active')
       .sort((a, b) => a.id.localeCompare(b.id));
 
-    const myIndex = sortedNodes.findIndex((node) => node.id === this.nodeId);
+    const myIndex = sortedNodes?.findIndex((node) => node?.id === this.nodeId);
     if (myIndex === -1) throw new Error('Node not found in ring');
 
     // Find highest priority active node in ring order
@@ -835,10 +833,10 @@ class LeaderElection extends EventEmitter {
     let leaderId = this.nodeId;
 
     for (const node of sortedNodes) {
-      const priority = this.getNodePriority(node.id);
+      const priority = this.getNodePriority(node?.id);
       if (priority > highestPriority) {
         highestPriority = priority;
-        leaderId = node.id;
+        leaderId = node?.id;
       }
     }
 
@@ -860,7 +858,7 @@ class LeaderElection extends EventEmitter {
 
     const responses = await Promise.allSettled(voteRequests);
     const grantedVotes =
-      responses.filter((result) => result.status === 'fulfilled' && result.value).length + 1; // +1 for self vote
+      responses?.filter((result) => result?.status === 'fulfilled' && result?.value).length + 1; // +1 for self vote
 
     const majority = Math.floor(this.nodes.size / 2) + 1;
 
@@ -880,11 +878,10 @@ class LeaderElection extends EventEmitter {
   }
 
   private async sendElectionMessages(nodeIds: string[]): Promise<any[]> {
-    const promises = nodeIds.map((nodeId) => this.sendElectionMessage(nodeId));
+    const promises = nodeIds?.map((nodeId) => this.sendElectionMessage(nodeId));
     const results = await Promise.allSettled(promises);
 
-    return results
-      .filter((result) => result.status === 'fulfilled')
+    return results?.filter((result) => result?.status === 'fulfilled')
       .map((result) => (result as PromiseFulfilledResult<any>).value);
   }
 
@@ -938,7 +935,7 @@ class LeaderElection extends EventEmitter {
         clearTimeout(timeout);
         // Return highest priority node as leader
         const highestPriorityNode = Array.from(this.nodes.values())
-          .filter((node) => node.status === 'active')
+          .filter((node) => node?.status === 'active')
           .sort((a, b) => this.getNodePriority(b.id) - this.getNodePriority(a.id))[0];
 
         resolve(highestPriorityNode?.id || this.nodeId);
@@ -1065,9 +1062,9 @@ class ConsensusEngine extends EventEmitter {
   }
 
   async addNode(node: CoordinationNode): Promise<void> {
-    this.nodes.set(node.id, node);
-    this.state.nextIndex.set(node.id, this.state.log.length);
-    this.state.matchIndex.set(node.id, -1);
+    this.nodes.set(node?.id, node);
+    this.state.nextIndex.set(node?.id, this.state.log.length);
+    this.state.matchIndex.set(node?.id, -1);
   }
 
   removeNode(nodeId: string): void {
@@ -1178,8 +1175,8 @@ class ConsensusEngine extends EventEmitter {
     );
 
     const responses = await Promise.allSettled(replicationPromises);
-    const successCount = responses.filter(
-      (result) => result.status === 'fulfilled' && result.value.success
+    const successCount = responses?.filter(
+      (result) => result?.status === 'fulfilled' && result?.value?.success
     ).length;
 
     const majority = Math.floor(this.nodes.size / 2) + 1;
@@ -1249,7 +1246,7 @@ class ConsensusEngine extends EventEmitter {
 
     const responses = await Promise.allSettled(voteRequests);
     const grantedVotes =
-      responses.filter((result) => result.status === 'fulfilled' && result.value.voteGranted)
+      responses?.filter((result) => result?.status === 'fulfilled' && result?.value?.voteGranted)
         .length + 1; // +1 for self vote
 
     const majority = Math.floor(this.nodes.size / 2) + 1;
@@ -1351,7 +1348,7 @@ class WorkStealingSystem extends EventEmitter {
     this.workQueues.set(nodeId, {
       nodeId,
       items: [],
-      capacity: config.maxQueueSize,
+      capacity: config?.["maxQueueSize"],
       processing: new Set(),
       completed: 0,
       failed: 0,
@@ -1368,11 +1365,11 @@ class WorkStealingSystem extends EventEmitter {
   }
 
   async addNode(node: CoordinationNode): Promise<void> {
-    this.nodes.set(node.id, node);
+    this.nodes.set(node?.id, node);
 
-    if (!this.workQueues.has(node.id)) {
-      this.workQueues.set(node.id, {
-        nodeId: node.id,
+    if (!this.workQueues.has(node?.id)) {
+      this.workQueues.set(node?.id, {
+        nodeId: node?.id,
         items: [],
         capacity: this.config.maxQueueSize,
         processing: new Set(),
@@ -1407,17 +1404,17 @@ class WorkStealingSystem extends EventEmitter {
 
     // Add to least loaded queue
     const targetQueue = this.findLeastLoadedQueue();
-    targetQueue.items.push(workItem);
-    targetQueue.lastActivity = new Date();
+    targetQueue?.items?.push(workItem);
+    targetQueue?.lastActivity = new Date();
 
     this.logger.debug('Work submitted', {
-      workId: workItem.id,
-      targetQueue: targetQueue.nodeId,
-      priority: workItem.priority,
+      workId: workItem?.id,
+      targetQueue: targetQueue?.nodeId,
+      priority: workItem?.priority,
     });
 
-    this.emit('work:submitted', { item: workItem, queue: targetQueue.nodeId });
-    return workItem.id;
+    this.emit('work:submitted', { item: workItem, queue: targetQueue?.nodeId });
+    return workItem?.id;
   }
 
   getQueueCount(): number {
@@ -1518,13 +1515,13 @@ class WorkStealingSystem extends EventEmitter {
   }
 
   private async stealWork(targetQueue: WorkQueue): Promise<void> {
-    const stealCount = Math.floor(targetQueue.items.length * this.config.stealRatio);
+    const stealCount = Math.floor(targetQueue?.items.length * this.config.stealRatio);
 
     if (stealCount === 0) return;
 
     const request: StealRequest = {
       requesterId: this.nodeId,
-      targetId: targetQueue.nodeId,
+      targetId: targetQueue?.nodeId,
       requestedCount: stealCount,
       timestamp: new Date(),
     };
@@ -1532,29 +1529,29 @@ class WorkStealingSystem extends EventEmitter {
     try {
       const response = await this.sendStealRequest(request);
 
-      if (response.success && response.items.length > 0) {
+      if (response?.success && response?.items.length > 0) {
         const myQueue = this.workQueues.get(this.nodeId)!;
 
-        for (const item of response.items) {
-          item.stolen = true;
-          item.owner = this.nodeId;
+        for (const item of response?.items) {
+          item?.stolen = true;
+          item?.owner = this.nodeId;
           myQueue.items.push(item);
         }
 
         this.logger.debug('Work stolen successfully', {
-          from: targetQueue.nodeId,
-          count: response.items.length,
+          from: targetQueue?.nodeId,
+          count: response?.items.length,
         });
 
         this.emit('work:stolen', {
-          from: targetQueue.nodeId,
+          from: targetQueue?.nodeId,
           to: this.nodeId,
-          count: response.items.length,
+          count: response?.items.length,
         });
       }
     } catch (error) {
       this.logger.error('Work stealing failed', {
-        target: targetQueue.nodeId,
+        target: targetQueue?.nodeId,
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -1566,20 +1563,20 @@ class WorkStealingSystem extends EventEmitter {
       setTimeout(() => {
         const targetQueue = this.workQueues.get(request.targetId);
 
-        if (!targetQueue || targetQueue.items.length === 0) {
+        if (!targetQueue || targetQueue?.items.length === 0) {
           resolve({ success: false, items: [], reason: 'No work available' });
           return;
         }
 
         // Steal lowest priority items
-        const sortedItems = [...targetQueue.items].sort((a, b) => a.priority - b.priority);
-        const stolenItems = sortedItems.slice(0, request.requestedCount);
+        const sortedItems = [...targetQueue?.items].sort((a, b) => a.priority - b.priority);
+        const stolenItems = sortedItems?.slice(0, request.requestedCount);
 
         // Remove from target queue
         for (const item of stolenItems) {
-          const index = targetQueue.items.indexOf(item);
+          const index = targetQueue?.items?.indexOf(item);
           if (index !== -1) {
-            targetQueue.items.splice(index, 1);
+            targetQueue?.items?.splice(index, 1);
           }
         }
 
@@ -1606,8 +1603,8 @@ class WorkStealingSystem extends EventEmitter {
     const startTime = Date.now();
     const myQueue = this.workQueues.get(this.nodeId)!;
 
-    myQueue.processing.add(item.id);
-    item.attempts++;
+    myQueue.processing.add(item?.id);
+    item?.attempts++;
     this.processedCount++;
 
     try {
@@ -1615,7 +1612,7 @@ class WorkStealingSystem extends EventEmitter {
       await this.simulateWork(item);
 
       // Work completed successfully
-      myQueue.processing.delete(item.id);
+      myQueue.processing.delete(item?.id);
       myQueue.completed++;
       this.successfulOperations++;
 
@@ -1626,30 +1623,30 @@ class WorkStealingSystem extends EventEmitter {
       }
 
       this.logger.debug('Work completed', {
-        workId: item.id,
+        workId: item?.id,
         latency,
-        attempts: item.attempts,
+        attempts: item?.attempts,
       });
 
       this.emit('work:completed', { item, latency });
     } catch (error) {
-      myQueue.processing.delete(item.id);
+      myQueue.processing.delete(item?.id);
       this.failureCount++;
 
-      if (item.attempts < item.maxAttempts) {
+      if (item?.attempts < item?.maxAttempts) {
         // Retry the work item
         myQueue.items.push(item);
         this.logger.debug('Work failed, retrying', {
-          workId: item.id,
-          attempts: item.attempts,
-          maxAttempts: item.maxAttempts,
+          workId: item?.id,
+          attempts: item?.attempts,
+          maxAttempts: item?.maxAttempts,
         });
       } else {
         // Max attempts reached
         myQueue.failed++;
         this.logger.error('Work failed permanently', {
-          workId: item.id,
-          attempts: item.attempts,
+          workId: item?.id,
+          attempts: item?.attempts,
           error: error instanceof Error ? error.message : String(error),
         });
 
@@ -1661,7 +1658,7 @@ class WorkStealingSystem extends EventEmitter {
   private async simulateWork(item: WorkItem): Promise<void> {
     // Simulate work execution time based on item type and complexity
     const baseTime = 100;
-    const complexity = item.payload?.complexity || 1;
+    const complexity = item?.payload?.complexity || 1;
     const executionTime = baseTime * complexity * (0.5 + Math.random());
 
     return new Promise((resolve, reject) => {
@@ -1695,7 +1692,7 @@ class WorkStealingSystem extends EventEmitter {
     for (const item of items) {
       const targetQueue = availableQueues[queueIndex];
       if (targetQueue) {
-        targetQueue.items.push(item);
+        targetQueue?.items?.push(item);
       }
       queueIndex = (queueIndex + 1) % availableQueues.length;
     }
@@ -1748,10 +1745,10 @@ class HierarchicalCoordinator extends EventEmitter {
       span: 0,
       role: 'root',
       delegation: {
-        maxDelegations: config.fanOut,
+        maxDelegations: config?.["fanOut"],
         currentDelegations: 0,
         thresholds: {
-          delegate: config.delegationThreshold,
+          delegate: config?.["delegationThreshold"],
           escalate: 0.8,
           rebalance: 0.7,
         },
@@ -1773,7 +1770,7 @@ class HierarchicalCoordinator extends EventEmitter {
   }
 
   async addNode(node: CoordinationNode): Promise<void> {
-    this.nodes.set(node.id, node);
+    this.nodes.set(node?.id, node);
     await this.insertNodeIntoHierarchy(node);
   }
 
@@ -1875,7 +1872,7 @@ class HierarchicalCoordinator extends EventEmitter {
   getDepth(): number {
     let maxDepth = 0;
     for (const node of this.hierarchy.values()) {
-      maxDepth = Math.max(maxDepth, node.level);
+      maxDepth = Math.max(maxDepth, node?.level);
     }
     return maxDepth + 1;
   }
@@ -1930,11 +1927,11 @@ class HierarchicalCoordinator extends EventEmitter {
 
     for (const node of this.hierarchy.values()) {
       if (
-        node.level < this.config.maxDepth - 1 &&
-        node.children.size < this.config.fanOut &&
-        node.load.utilization < minLoad
+        node?.level < this.config.maxDepth - 1 &&
+        node?.children.size < this.config.fanOut &&
+        node?.load?.utilization < minLoad
       ) {
-        minLoad = node.load.utilization;
+        minLoad = node?.load?.utilization;
         bestParent = node;
       }
     }
@@ -1944,10 +1941,10 @@ class HierarchicalCoordinator extends EventEmitter {
 
   private createChildNode(node: CoordinationNode, parent: HierarchyNode): void {
     const hierarchyNode: HierarchyNode = {
-      id: node.id,
-      parentId: parent.id,
+      id: node?.id,
+      parentId: parent?.id,
       children: new Set(),
-      level: parent.level + 1,
+      level: parent?.level + 1,
       span: 0,
       role: 'leaf',
       delegation: {
@@ -1967,19 +1964,19 @@ class HierarchicalCoordinator extends EventEmitter {
       },
     };
 
-    this.hierarchy.set(node.id, hierarchyNode);
-    parent.children.add(node.id);
-    parent.span++;
+    this.hierarchy.set(node?.id, hierarchyNode);
+    parent?.children?.add(node?.id);
+    parent?.span++;
 
     // Update roles
-    if (parent.role === 'leaf') {
-      parent.role = 'coordinator';
+    if (parent?.role === 'leaf') {
+      parent?.role = 'coordinator';
     }
 
     this.logger.debug('Node added to hierarchy', {
-      nodeId: node.id,
-      parentId: parent.id,
-      level: hierarchyNode.level,
+      nodeId: node?.id,
+      parentId: parent?.id,
+      level: hierarchyNode?.level,
     });
   }
 
@@ -1988,21 +1985,21 @@ class HierarchicalCoordinator extends EventEmitter {
     if (!node) return;
 
     // Remove from parent's children
-    if (node.parentId) {
-      const parent = this.hierarchy.get(node.parentId);
+    if (node?.parentId) {
+      const parent = this.hierarchy.get(node?.parentId);
       if (parent) {
-        parent.children.delete(nodeId);
-        parent.span--;
+        parent?.children?.delete(nodeId);
+        parent?.span--;
 
-        if (parent.children.size === 0 && parent.id !== this.nodeId) {
-          parent.role = 'leaf';
+        if (parent?.children.size === 0 && parent?.id !== this.nodeId) {
+          parent?.role = 'leaf';
         }
       }
     }
 
     // Reassign children to parent or siblings
-    if (node.children.size > 0) {
-      this.reassignOrphans(Array.from(node.children));
+    if (node?.children.size > 0) {
+      this.reassignOrphans(Array.from(node?.children));
     }
 
     this.hierarchy.delete(nodeId);
@@ -2015,10 +2012,10 @@ class HierarchicalCoordinator extends EventEmitter {
 
       const newParent = this.findBestParent();
       if (newParent) {
-        orphan.parentId = newParent.id;
-        orphan.level = newParent.level + 1;
-        newParent.children.add(orphanId);
-        newParent.span++;
+        orphan.parentId = newParent?.id;
+        orphan.level = newParent?.level + 1;
+        newParent?.children?.add(orphanId);
+        newParent?.span++;
       }
     }
   }
@@ -2034,7 +2031,7 @@ class HierarchicalCoordinator extends EventEmitter {
   private performRebalancing(): void {
     // Check for load imbalances and rebalance if necessary
     for (const node of this.hierarchy.values()) {
-      if (node.load.utilization > node.delegation.thresholds.rebalance) {
+      if (node?.load?.utilization > node?.delegation?.thresholds?.rebalance) {
         this.rebalanceNode(node);
       }
     }
@@ -2042,9 +2039,9 @@ class HierarchicalCoordinator extends EventEmitter {
 
   private rebalanceNode(node: HierarchyNode): void {
     this.logger.debug('Rebalancing node', {
-      nodeId: node.id,
-      utilization: node.load.utilization,
-      threshold: node.delegation.thresholds.rebalance,
+      nodeId: node?.id,
+      utilization: node?.load?.utilization,
+      threshold: node?.delegation?.thresholds?.rebalance,
     });
 
     // Implementation would redistribute load or restructure hierarchy

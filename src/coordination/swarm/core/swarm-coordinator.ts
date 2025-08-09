@@ -4,8 +4,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { AgentType } from '../../../types/agent-types';
-import type { SwarmTopology } from '../../../types/shared-types';
 
 export interface SwarmAgent {
   id: string;

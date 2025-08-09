@@ -7,17 +7,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type {
-  AdvancedCLISystem,
-  CommandCategory,
-  ControlResult,
-  DevPipeline,
-  MonitoringDashboard,
-  PipelineResult,
-  ProjectConfig,
-  ProjectCreationResult,
-  SwarmCommand,
-} from './types/advanced-cli-types';
+import type { AdvancedCLISystem } from './types/advanced-cli-types';
 
 /**
  * Advanced CLI System Implementation
@@ -27,7 +17,7 @@ import type {
  *
  * @example
  */
-export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem {
+export class CLIEngine extends EventEmitter implements AdvancedCLISystem {
   private readonly projectScaffolder: IntelligentProjectScaffolder;
   private readonly swarmController: RealTimeSwarmController;
   private readonly workflowOrchestrator: DevelopmentPipelineOrchestrator;
@@ -173,10 +163,10 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
       const result = await this.projectScaffolder.createOptimalProject(config);
 
       this.emit('projectCreationCompleted', {
-        projectName: config.name,
-        filesGenerated: result.generatedFiles.length,
-        optimizations: result.optimizationReport.improvements.length,
-        performanceGains: result.optimizationReport.performanceImprovements,
+        projectName: config?.name,
+        filesGenerated: result?.generatedFiles.length,
+        optimizations: result?.optimizationReport?.improvements.length,
+        performanceGains: result?.optimizationReport?.performanceImprovements,
       });
 
       return result;
@@ -207,7 +197,7 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
     const results = [];
     for (const stage of lifecycleStages) {
       const stageResult = await this.executeLifecycleStage(project, stage);
-      results.push(stageResult);
+      results?.push(stageResult);
 
       this.emit('lifecycleStageCompleted', {
         project: project.name,
@@ -219,7 +209,7 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
     return {
       project,
       stages: results,
-      overallSuccess: results.every((r) => r.success),
+      overallSuccess: results?.every((r) => r.success),
       recommendations: this.generateLifecycleRecommendations(results),
     };
   }
@@ -441,12 +431,12 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
   private async handleProjectCreate(args: any[], options: any): Promise<any> {
     const projectConfig: ProjectConfig = {
       name: args[0] || 'new-project',
-      type: options.type || 'full-stack',
-      complexity: options.complexity || 'moderate',
-      domains: options.domains || ['neural', 'swarm'],
-      integrations: options.integrations || [],
-      aiFeatures: options.aiFeatures || { enabled: true },
-      performance: options.performance || { targets: ['speed', 'efficiency'] },
+      type: options?.type || 'full-stack',
+      complexity: options?.["complexity"] || 'moderate',
+      domains: options?.["domains"] || ['neural', 'swarm'],
+      integrations: options?.["integrations"] || [],
+      aiFeatures: options?.["aiFeatures"] || { enabled: true },
+      performance: options?.["performance"] || { targets: ['speed', 'efficiency'] },
     };
 
     return await this.createIntelligentProject(projectConfig);
@@ -481,21 +471,21 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
   }
 
   private async handleSwarmSpawn(_args: any[], options: any): Promise<any> {
-    const topology = options.topology || 'mesh';
-    const agentCount = options.agents || 5;
+    const topology = options?.["topology"] || 'mesh';
+    const agentCount = options?.["agents"] || 5;
 
     return {
       swarmId: `swarm-${Date.now()}`,
       topology,
       agents: agentCount,
       status: 'active',
-      coordinationStrategy: options.strategy || 'adaptive',
+      coordinationStrategy: options?.["strategy"] || 'adaptive',
     };
   }
 
   private async handleSwarmCoordinate(args: any[], options: any): Promise<any> {
-    const task = args[0] || options.task;
-    const strategy = options.strategy || 'parallel';
+    const task = args[0] || options?.["task"];
+    const strategy = options?.["strategy"] || 'parallel';
 
     return {
       task,
@@ -524,8 +514,8 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
   }
 
   private async handleGenerateNeuralNetwork(_args: any[], options: any): Promise<any> {
-    const architecture = options.architecture || 'transformer';
-    const optimization = options.optimization || 'balanced';
+    const architecture = options?.["architecture"] || 'transformer';
+    const optimization = options?.["optimization"] || 'balanced';
 
     return {
       architecture,
@@ -545,7 +535,7 @@ export class AdvancedCLIEngine extends EventEmitter implements AdvancedCLISystem
  *
  * @example
  */
-export class AdvancedCommandRegistry {
+export class CommandRegistry {
   private categories: Map<string, any> = new Map();
   private commands: Map<string, any> = new Map();
 

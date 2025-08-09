@@ -4,10 +4,8 @@
  * automatic replacement, capability discovery, and performance ranking
  */
 
-import { type ChildProcess, type SpawnOptions, spawn } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '@core/event-bus';
-import type { ILogger } from '@core/logger';
 
 // Core lifecycle types
 export interface AgentLifecycleConfig {
@@ -373,24 +371,24 @@ export class AgentLifecycleManager extends EventEmitter {
       for (let i = 0; i < request.count; i++) {
         try {
           const agentId = await this.spawnSingleAgent(template, request);
-          result.agentIds.push(agentId);
+          result?.agentIds?.push(agentId);
         } catch (error) {
-          result.failures.push({
+          result?.failures?.push({
             error: error instanceof Error ? error.message : String(error),
             reason: 'spawn_failed',
           });
-          result.success = false;
+          result?.success = false;
         }
       }
 
-      result.duration = Date.now() - startTime;
+      result?.duration = Date.now() - startTime;
 
       this.logger.info('Agent spawn request completed', {
         templateId: request.templateId,
         requested: request.count,
-        spawned: result.agentIds.length,
-        failures: result.failures.length,
-        duration: result.duration,
+        spawned: result?.agentIds.length,
+        failures: result?.failures.length,
+        duration: result?.duration,
       });
 
       this.emit('agents:spawned', { request, result });
@@ -419,23 +417,23 @@ export class AgentLifecycleManager extends EventEmitter {
       for (const agentId of request.agentIds) {
         try {
           await this.terminateSingleAgent(agentId, request);
-          result.terminated.push(agentId);
+          result?.terminated?.push(agentId);
         } catch (error) {
-          result.failures.push({
+          result?.failures?.push({
             agentId,
             error: error instanceof Error ? error.message : String(error),
           });
-          result.success = false;
+          result?.success = false;
         }
       }
 
-      result.duration = Date.now() - startTime;
+      result?.duration = Date.now() - startTime;
 
       this.logger.info('Agent termination request completed', {
         requested: request.agentIds.length,
-        terminated: result.terminated.length,
-        failures: result.failures.length,
-        duration: result.duration,
+        terminated: result?.terminated.length,
+        failures: result?.failures.length,
+        duration: result?.duration,
       });
 
       this.emit('agents:terminated', { request, result });
@@ -701,19 +699,19 @@ export class AgentLifecycleManager extends EventEmitter {
     const childProcess = spawn(template.executable, template.args, options);
 
     // Setup process event handlers
-    childProcess.on('exit', (code, signal) => {
+    childProcess?.on('exit', (code, signal) => {
       this.handleProcessExit(agent, code, signal);
     });
 
-    childProcess.on('error', (error) => {
+    childProcess?.on('error', (error) => {
       this.handleProcessError(agent, error);
     });
 
-    childProcess.stdout?.on('data', (data) => {
+    childProcess?.stdout?.on('data', (data) => {
       this.handleProcessOutput(agent, data.toString(), 'stdout');
     });
 
-    childProcess.stderr?.on('data', (data) => {
+    childProcess?.stderr?.on('data', (data) => {
       this.handleProcessOutput(agent, data.toString(), 'stderr');
     });
 
@@ -1042,7 +1040,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   // Event handlers
   private handleAgentHeartbeat(data: any): void {
-    const agent = this.agents.get(data.agentId);
+    const agent = this.agents.get(data?.["agentId"]);
     if (agent) {
       agent.lastSeen = new Date();
       if (agent.status === 'ready') {
@@ -1052,16 +1050,16 @@ export class AgentLifecycleManager extends EventEmitter {
   }
 
   private handleTaskCompletion(data: any): void {
-    const agent = this.agents.get(data.agentId);
+    const agent = this.agents.get(data?.["agentId"]);
     if (agent) {
       agent.performance.tasksCompleted++;
       agent.performance.lastActivity = new Date();
 
-      const assignment = agent.assignments.find((a) => a.taskId === data.taskId);
+      const assignment = agent.assignments.find((a) => a.taskId === data?.["taskId"]);
       if (assignment) {
         assignment.status = 'completed';
         assignment.progress = 100;
-        assignment.quality = data.quality || 1.0;
+        assignment.quality = data?.["quality"] || 1.0;
       }
 
       this.performanceTracker.updateMetrics(agent, data);
@@ -1069,12 +1067,12 @@ export class AgentLifecycleManager extends EventEmitter {
   }
 
   private handleTaskFailure(data: any): void {
-    const agent = this.agents.get(data.agentId);
+    const agent = this.agents.get(data?.["agentId"]);
     if (agent) {
       agent.performance.tasksFailed++;
       agent.performance.lastActivity = new Date();
 
-      const assignment = agent.assignments.find((a) => a.taskId === data.taskId);
+      const assignment = agent.assignments.find((a) => a.taskId === data?.["taskId"]);
       if (assignment) {
         assignment.status = 'failed';
       }
@@ -1083,7 +1081,7 @@ export class AgentLifecycleManager extends EventEmitter {
         timestamp: new Date(),
         type: 'task',
         severity: 'medium',
-        message: `Task ${data.taskId} failed: ${data.error}`,
+        message: `Task ${data?.["taskId"]} failed: ${data?.error}`,
         context: data,
         recovered: false,
       });
@@ -1091,11 +1089,11 @@ export class AgentLifecycleManager extends EventEmitter {
   }
 
   private handleAgentError(data: any): void {
-    const agent = this.agents.get(data.agentId);
+    const agent = this.agents.get(data?.["agentId"]);
     if (agent) {
-      this.addAgentError(agent, data.error);
+      this.addAgentError(agent, data?.error);
 
-      if (data.error.severity === 'critical') {
+      if (data?.error?.["severity"] === 'critical') {
         agent.status = 'unhealthy';
       }
     }
@@ -1105,7 +1103,7 @@ export class AgentLifecycleManager extends EventEmitter {
     this.logger.warn('System resource pressure detected', data);
 
     // Could trigger scaling down or resource optimization
-    if (data.severity === 'critical') {
+    if (data?.["severity"] === 'critical') {
       this.emit('resource:pressure-critical', data);
     }
   }
@@ -1174,7 +1172,7 @@ export class AgentLifecycleManager extends EventEmitter {
     // Log agent output
     this.logger.debug(`Agent ${stream}`, {
       agentId: agent.id,
-      data: data.trim(),
+      data: data?.["trim"](),
     });
 
     // Could parse output for health indicators, capability discovery, etc.
@@ -1383,10 +1381,10 @@ class PerformanceTracker {
     metrics.successRate = totalTasks > 0 ? metrics.tasksCompleted / totalTasks : 1.0;
 
     // Update response time (if provided)
-    if (data.responseTime) {
+    if (data?.["responseTime"]) {
       metrics.averageResponseTime = this.updateMovingAverage(
         metrics.averageResponseTime,
-        data.responseTime,
+        data?.["responseTime"],
         totalTasks
       );
     }

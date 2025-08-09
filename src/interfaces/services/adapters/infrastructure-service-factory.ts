@@ -7,12 +7,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../../../utils/logger';
-import type { ServiceLifecycleStatus } from '../core/interfaces';
+import { createLogger } from '../../../utils/logger';
 import {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
-  type InfrastructureServiceAdapter,
   type InfrastructureServiceAdapterConfig,
 } from './infrastructure-service-adapter';
 
@@ -158,32 +156,32 @@ export class InfrastructureServiceFactory extends EventEmitter {
         suffix: 'service',
         includeTimestamp: false,
         includeEnvironment: true,
-        ...config.naming,
+        ...config?.["naming"],
       },
       limits: {
         maxServices: 100,
         maxMemoryPerService: 1024 * 1024 * 512, // 512MB
         maxConcurrentOperations: 1000,
-        ...config.limits,
+        ...config?.["limits"],
       },
       healthMonitoring: {
         enabled: true,
         checkInterval: 30000, // 30 seconds
         failureThreshold: 3,
         autoRestart: false,
-        ...config.healthMonitoring,
+        ...config?.["healthMonitoring"],
       },
       serviceDiscovery: {
         enabled: true,
         registry: 'memory',
         heartbeatInterval: 15000, // 15 seconds
-        ...config.serviceDiscovery,
+        ...config?.["serviceDiscovery"],
       },
       eventCoordination: {
         enabled: true,
         crossServiceEvents: true,
         eventPersistence: false,
-        ...config.eventCoordination,
+        ...config?.["eventCoordination"],
       },
       ...config,
     };
@@ -237,7 +235,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
       }
 
       // Merge configurations
-      const serviceConfig = this.createServiceConfig(serviceName, options.config);
+      const serviceConfig = this.createServiceConfig(serviceName, options?.["config"]);
 
       // Create the service adapter
       const service = createInfrastructureServiceAdapter(serviceConfig);
@@ -252,12 +250,12 @@ export class InfrastructureServiceFactory extends EventEmitter {
       await service.initialize();
 
       // Auto-start if requested
-      if (options.autoStart !== false) {
+      if (options?.["autoStart"] !== false) {
         await service.start();
       }
 
       // Start health monitoring if enabled
-      if (options.enableHealthMonitoring !== false && this.config.healthMonitoring?.enabled) {
+      if (options?.["enableHealthMonitoring"] !== false && this.config.healthMonitoring?.enabled) {
         this.startHealthMonitoring(serviceName);
       }
 
@@ -534,10 +532,10 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
     for (const [name, entry] of this.serviceRegistry.entries()) {
       try {
-        results[name] = await entry.service.healthCheck();
+        results?.[name] = await entry.service.healthCheck();
         entry.metadata.lastHealthCheck = new Date();
 
-        if (!results[name]) {
+        if (!results?.[name]) {
           this.emit('service-unhealthy', { serviceName: name });
 
           // Auto-restart if configured
@@ -549,7 +547,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
           }
         }
       } catch (error) {
-        results[name] = false;
+        results?.[name] = false;
         this.logger.error(`Health check failed for service ${name}:`, error);
         this.emit('service-health-check-failed', { serviceName: name, error });
       }
@@ -660,8 +658,8 @@ export class InfrastructureServiceFactory extends EventEmitter {
     const metadata = {
       created: new Date(),
       lastHealthCheck: new Date(0),
-      tags: options.tags || [],
-      dependencies: options.dependencies || [],
+      tags: options?.["tags"] || [],
+      dependencies: options?.["dependencies"] || [],
       operationCount: 0,
       errorCount: 0,
     };
@@ -669,14 +667,14 @@ export class InfrastructureServiceFactory extends EventEmitter {
     this.serviceRegistry.set(name, { service, metadata });
 
     // Index by tags
-    for (const tag of metadata.tags) {
+    for (const tag of metadata?.["tags"]) {
       if (!this.servicesByTag.has(tag)) {
         this.servicesByTag.set(tag, new Set());
       }
       this.servicesByTag.get(tag)?.add(name);
     }
 
-    this.logger.debug(`Service registered: ${name}`, { tags: metadata.tags });
+    this.logger.debug(`Service registered: ${name}`, { tags: metadata?.["tags"] });
   }
 
   private setupServiceEventHandlers(
@@ -766,11 +764,11 @@ export class InfrastructureServiceFactory extends EventEmitter {
     });
 
     this.on('service-error', (data) => {
-      this.logger.warn(`Service error in ${data.serviceName}:`, data.event);
+      this.logger.warn(`Service error in ${data?.["serviceName"]}:`, data?.["event"]);
     });
 
     this.on('service-unhealthy', (data) => {
-      this.logger.warn(`Service unhealthy: ${data.serviceName}`);
+      this.logger.warn(`Service unhealthy: ${data?.["serviceName"]}`);
     });
   }
 

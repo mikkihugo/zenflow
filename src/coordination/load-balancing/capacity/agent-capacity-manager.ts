@@ -4,7 +4,6 @@
  */
 
 import type { CapacityManager } from '../interfaces';
-import type { CapacityMetrics, LoadMetrics, ResourceConstraint } from '../types';
 import { CapacityPredictor } from './capacity-predictor';
 import { ResourceMonitor } from './resource-monitor';
 
@@ -186,7 +185,7 @@ export class AgentCapacityManager implements CapacityManager {
     }
 
     // Check if current utilization plus required resources exceeds capacity
-    const projectedUtilization = currentMetrics.activeTasks + (requiredResources.tasks || 1);
+    const projectedUtilization = currentMetrics?.activeTasks + (requiredResources.tasks || 1);
     const availableCapacity = this.calculateAvailableCapacity(profile);
 
     return projectedUtilization <= availableCapacity;

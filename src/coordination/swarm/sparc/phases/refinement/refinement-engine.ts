@@ -6,35 +6,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import type {
-  AlgorithmRefinement,
-  ArchitecturalRefinement,
-  ArchitectureDesign,
-  BenchmarkResult,
-  CodeQualityOptimization,
-  GapAnalysis,
-  ImpactAssessment,
-  Implementation,
-  ImprovementMetric,
-  OptimizationPlan,
-  OptimizationStrategy,
-  PerformanceFeedback,
-  PerformanceMetrics,
-  PerformanceOptimization,
-  RefactoringOpportunity,
-  RefinementChange,
-  RefinementEngine,
-  RefinementFeedback,
-  RefinementResult,
-  RefinementStrategy,
-  RefinementValidation,
-  ScalabilityOptimization,
-  SecurityOptimization,
-  SystemArchitecture,
-  TechnicalDebtAnalysis,
-  UpdatedArchitecture,
-  ValidationResult,
-} from '../../types/sparc-types';
+import type { RefinementEngine } from '../../types/sparc-types';
 
 export class RefinementPhaseEngine implements RefinementEngine {
   /**
@@ -870,7 +842,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
   // Helper methods
   private calculateImprovedPerformance(currentPerformance: string): string {
-    const currentMs = parseInt(currentPerformance.replace(/[^\d]/g, ''));
+    const currentMs = parseInt(currentPerformance?.replace(/[^\d]/g, ''));
     const improvedMs = Math.max(1, Math.floor(currentMs * 0.2)); // 80% improvement
     return `${improvedMs}ms`;
   }
@@ -896,7 +868,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     const validationResults: ValidationResult[] = [];
 
     // Validate optimization strategies
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Optimization strategies',
       passed: refinement.optimizationStrategies.length > 0,
       score: refinement.optimizationStrategies.length > 0 ? 1.0 : 0.0,
@@ -910,7 +882,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     const performanceImprovement = refinement.improvementMetrics.find(
       (m) => m.category === 'performance'
     );
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Performance improvements',
       passed: !!performanceImprovement && performanceImprovement.improvementPercentage > 50,
       score:
@@ -925,7 +897,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     const securityImprovement = refinement.improvementMetrics.find(
       (m) => m.category === 'security'
     );
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Security enhancements',
       passed: !!securityImprovement && securityImprovement.improvementPercentage > 20,
       score: !!securityImprovement && securityImprovement.improvementPercentage > 20 ? 1.0 : 0.5,
@@ -936,7 +908,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     });
 
     // Validate technical debt reduction
-    validationResults.push({
+    validationResults?.push({
       criterion: 'Technical debt analysis',
       passed:
         !!refinement.technicalDebtAnalysis && refinement.technicalDebtAnalysis.totalDebtScore < 4.0,
@@ -951,7 +923,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
     });
 
     const overallScore =
-      validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
+      validationResults?.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
 
     return {
       overallScore,
@@ -970,8 +942,8 @@ export class RefinementPhaseEngine implements RefinementEngine {
     const recommendations: string[] = [];
 
     for (const result of validationResults) {
-      if (!result.passed) {
-        switch (result.criterion) {
+      if (!result?.passed) {
+        switch (result?.criterion) {
           case 'Optimization strategies':
             recommendations.push(
               'Define comprehensive optimization strategies for all identified issues'

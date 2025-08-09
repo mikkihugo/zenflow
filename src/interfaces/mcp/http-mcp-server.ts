@@ -44,12 +44,12 @@ export class HTTPMCPServer {
 
   constructor(userConfig: Partial<MCPServerConfig> = {}) {
     // Use pure centralized configuration with user overrides
-    const centralConfig = config.getAll();
+    const centralConfig = config?.["getAll"]();
     this.config = {
-      port: userConfig.port || centralConfig.interfaces.mcp.http.port,
-      host: userConfig.host || centralConfig.interfaces.mcp.http.host,
-      timeout: userConfig.timeout || centralConfig.interfaces.mcp.http.timeout,
-      logLevel: userConfig.logLevel || centralConfig.core.logger.level,
+      port: userConfig?.port || centralConfig?.interfaces?.mcp?.http?.port,
+      host: userConfig?.host || centralConfig?.interfaces?.mcp?.http?.host,
+      timeout: userConfig?.timeout || centralConfig?.interfaces?.mcp?.http?.timeout,
+      logLevel: userConfig?.logLevel || centralConfig?.core?.logger?.level,
     };
 
     // Create MCP server with SDK
@@ -654,7 +654,7 @@ export class HTTPMCPServer {
 
         // Clean up transport
         if (sessionId && transports[sessionId]) {
-          await transports[sessionId].close();
+          await transports[sessionId]?.close();
           delete transports[sessionId];
         }
       } catch (error) {

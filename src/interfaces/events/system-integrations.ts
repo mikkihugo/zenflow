@@ -11,18 +11,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { EventEmitterMigrationHelper, type UELCompatibleEventEmitter } from './compatibility';
-import type {
-  EventManagerConfig,
-  EventManagerType,
-  IEventManager,
-  SystemEvent,
-} from './core/interfaces';
+import { EventEmitterMigrationHelper } from './compatibility';
 
 import { EventManagerTypes } from './core/interfaces';
 import { UEL } from './index';
-import type { EventManager } from './manager';
-import type { MonitoringEvent, SystemLifecycleEvent } from './types';
 
 /**
  * Enhanced Event Bus with UEL integration
@@ -50,11 +42,11 @@ export class UELEnhancedEventBus extends EventEmitter {
   ) {
     super();
 
-    this.logger = options.logger;
-    this.setMaxListeners(options.maxListeners || 100);
+    this.logger = options?.["logger"];
+    this.setMaxListeners(options?.["maxListeners"] || 100);
 
-    if (options.enableUEL && options.uelIntegration?.eventManager) {
-      this.initializeUELIntegration(options.uelIntegration);
+    if (options?.["enableUEL"] && options?.["uelIntegration"]?.["eventManager"]) {
+      this.initializeUELIntegration(options?.["uelIntegration"]);
     }
   }
 
@@ -74,7 +66,7 @@ export class UELEnhancedEventBus extends EventEmitter {
     try {
       // Create UEL event manager for this bus
       this.uelManager = await integration.eventManager.createEventManager({
-        type: integration.managerType || EventManagerTypes.SYSTEM,
+        type: integration.managerType || EventManagerTypes["SYSTEM"],
         name: integration.managerName || 'enhanced-event-bus',
         autoStart: true,
       });
@@ -205,11 +197,11 @@ export class UELEnhancedEventBus extends EventEmitter {
 
     await this.initializeUELIntegration({
       eventManager,
-      managerType: options?.managerType,
-      managerName: options?.managerName,
+      managerType: options?.["managerType"],
+      managerName: options?.["managerName"],
     });
 
-    if (options?.migrateExistingListeners) {
+    if (options?.["migrateExistingListeners"]) {
       await this.migrateExistingListeners();
     }
   }
@@ -258,8 +250,8 @@ export class UELEnhancedEventBus extends EventEmitter {
       const uelListener = (event: SystemEvent) => {
         // Extract original args from UEL event if available
         const _args =
-          event.details?.originalEvent === eventName && event.details?.args
-            ? new Array(event.details.args).fill(undefined)
+          event["details"]?.["originalEvent"] === eventName && event["details"]?.["args"]
+            ? new Array(event["details"]?.["args"]).fill(undefined)
             : [event];
 
         // Don't call the original listener here - it's already called by EventEmitter
@@ -313,10 +305,10 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
   ) {
     super();
 
-    this.logger = options.logger || console;
+    this.logger = options?.["logger"] || console;
 
-    if (options.enableUEL) {
-      this.initializeUEL(options.uelConfig);
+    if (options?.["enableUEL"]) {
+      this.initializeUEL(options?.["uelConfig"]);
     }
   }
 
@@ -337,9 +329,9 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
       this.uelSystem = UEL.getInstance();
 
       await this.uelSystem.initialize({
-        enableValidation: config?.enableValidation !== false,
-        enableCompatibility: config?.enableCompatibility !== false,
-        healthMonitoring: config?.healthMonitoring !== false,
+        enableValidation: config?.["enableValidation"] !== false,
+        enableCompatibility: config?.["enableCompatibility"] !== false,
+        healthMonitoring: config?.["healthMonitoring"] !== false,
         autoRegisterFactories: true,
         logger: this.logger,
       });
@@ -349,7 +341,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
         enableUEL: true,
         uelIntegration: {
           eventManager: this.uelSystem.getEventManager(),
-          managerType: EventManagerTypes.SYSTEM,
+          managerType: EventManagerTypes["SYSTEM"],
           managerName: 'application-coordinator',
         },
         logger: this.logger,
@@ -499,7 +491,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
    */
   async createComponentManager(
     componentName: string,
-    type: EventManagerType = EventManagerTypes.SYSTEM,
+    type: EventManagerType = EventManagerTypes["SYSTEM"],
     config?: Partial<EventManagerConfig>
   ): Promise<IEventManager | null> {
     if (!this.uelSystem) {
@@ -631,10 +623,10 @@ export class UELEnhancedObserverSystem extends EventEmitter {
   ) {
     super();
 
-    this.logger = options.logger;
+    this.logger = options?.["logger"];
 
-    if (options.enableUEL && options.eventManager) {
-      this.initializeUELIntegration(options.eventManager);
+    if (options?.["enableUEL"] && options?.["eventManager"]) {
+      this.initializeUELIntegration(options?.["eventManager"]);
     }
   }
 
@@ -826,16 +818,16 @@ export class SystemIntegrationFactory {
     } = {}
   ): UELEnhancedEventBus {
     return new UELEnhancedEventBus({
-      enableUEL: options.enableUEL && !!this.eventManager,
+      enableUEL: options?.["enableUEL"] && !!this.eventManager,
       uelIntegration: this.eventManager
         ? {
             eventManager: this.eventManager,
-            managerType: options.managerType || EventManagerTypes.SYSTEM,
-            managerName: options.managerName || 'enhanced-bus',
+            managerType: options?.["managerType"] || EventManagerTypes["SYSTEM"],
+            managerName: options?.["managerName"] || 'enhanced-bus',
           }
         : undefined,
       logger: this.logger,
-      maxListeners: options.maxListeners,
+      maxListeners: options?.["maxListeners"],
     });
   }
 
@@ -860,9 +852,9 @@ export class SystemIntegrationFactory {
     } = {}
   ): UELEnhancedApplicationCoordinator {
     return new UELEnhancedApplicationCoordinator({
-      enableUEL: options.enableUEL,
+      enableUEL: options?.["enableUEL"],
       logger: this.logger,
-      uelConfig: options.uelConfig,
+      uelConfig: options?.["uelConfig"],
     });
   }
 
@@ -874,7 +866,7 @@ export class SystemIntegrationFactory {
    */
   createEnhancedObserverSystem(options: { enableUEL?: boolean } = {}): UELEnhancedObserverSystem {
     return new UELEnhancedObserverSystem({
-      enableUEL: options.enableUEL && !!this.eventManager,
+      enableUEL: options?.["enableUEL"] && !!this.eventManager,
       eventManager: this.eventManager,
       logger: this.logger,
     });
@@ -920,7 +912,7 @@ export async function enhanceWithUEL<T extends EventEmitter>(
   originalInstance: T,
   name: string,
   eventManager: EventManager,
-  managerType: EventManagerType = EventManagerTypes.SYSTEM,
+  managerType: EventManagerType = EventManagerTypes["SYSTEM"],
   logger?: any
 ): Promise<UELCompatibleEventEmitter> {
   const migrationHelper = new EventEmitterMigrationHelper(eventManager, logger);

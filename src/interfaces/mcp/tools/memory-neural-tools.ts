@@ -1,11 +1,3 @@
-/**
- * @file Memory & Neural MCP Tools
- *
- * Memory management, neural network operations, and cognitive enhancements.
- */
-
-import type { MCPTool } from '../tool-registry';
-
 const memoryNeuralTools: MCPTool[] = [
   {
     name: 'memory_usage',

@@ -11,10 +11,6 @@ import { SPARCSwarmCoordinator } from '../../coordination/swarm/core/sparc-swarm
 import { DatabaseDrivenSystem } from '../../core/database-driven-system';
 import { createLogger } from '../../core/logger';
 import { WorkflowEngine } from '../../core/workflow-engine';
-import type {
-  FeatureDocumentEntity,
-  TaskDocumentEntity,
-} from '../../database/entities/product-entities';
 import { DocumentService } from '../../database/services/document-service-legacy';
 
 const logger = createLogger('SPARCSwarmCLI');
@@ -44,7 +40,7 @@ export function createSPARCSwarmCommands(): Command {
 
         await bridge.initialize();
 
-        if (options.projectId) {
+        if (options?.["projectId"]) {
         }
       } catch (error) {
         logger.error('❌ Failed to initialize SPARC-Swarm integration:', error);
@@ -60,7 +56,7 @@ export function createSPARCSwarmCommands(): Command {
     .option('--priority <level>', 'Override priority (low|medium|high|critical)')
     .action(async (options) => {
       try {
-        logger.info(`🎯 Assigning feature ${options.featureId} to SPARC swarm`);
+        logger.info(`🎯 Assigning feature ${options?.["featureId"]} to SPARC swarm`);
 
         // Initialize systems
         const { bridge, sparcSwarm } = await initializeSystems();
@@ -69,18 +65,18 @@ export function createSPARCSwarmCommands(): Command {
         const documentService = new DocumentService();
         await documentService.initialize();
 
-        const feature = await documentService.getDocumentById(options.featureId);
+        const feature = await documentService.getDocumentById(options?.["featureId"]);
         if (!feature || feature.type !== 'feature') {
-          throw new Error(`Feature not found: ${options.featureId}`);
+          throw new Error(`Feature not found: ${options?.["featureId"]}`);
         }
 
         // Override priority if specified
-        if (options.priority) {
-          feature.priority = options.priority;
+        if (options?.["priority"]) {
+          feature.priority = options?.["priority"];
         }
 
         // Assign to SPARC swarm
-        const _assignmentId = await bridge.assignFeatureToSparcs(feature as FeatureDocumentEntity);
+        const assignmentId = await bridge.assignFeatureToSparcs(feature as FeatureDocumentEntity);
       } catch (error) {
         logger.error('❌ Failed to assign feature to SPARC swarm:', error);
         process.exit(1);
@@ -95,7 +91,7 @@ export function createSPARCSwarmCommands(): Command {
     .option('--priority <level>', 'Override priority (low|medium|high|critical)')
     .action(async (options) => {
       try {
-        logger.info(`🔧 Assigning task ${options.taskId} to SPARC swarm`);
+        logger.info(`🔧 Assigning task ${options?.["taskId"]} to SPARC swarm`);
 
         // Initialize systems
         const { bridge } = await initializeSystems();
@@ -104,18 +100,18 @@ export function createSPARCSwarmCommands(): Command {
         const documentService = new DocumentService();
         await documentService.initialize();
 
-        const task = await documentService.getDocumentById(options.taskId);
+        const task = await documentService.getDocumentById(options?.["taskId"]);
         if (!task || task.type !== 'task') {
-          throw new Error(`Task not found: ${options.taskId}`);
+          throw new Error(`Task not found: ${options?.["taskId"]}`);
         }
 
         // Override priority if specified
-        if (options.priority) {
-          task.priority = options.priority;
+        if (options?.["priority"]) {
+          task.priority = options?.["priority"];
         }
 
         // Assign to SPARC swarm
-        const _assignmentId = await bridge.assignTaskToSparcs(task as TaskDocumentEntity);
+        const assignmentId = await bridge.assignTaskToSparcs(task as TaskDocumentEntity);
       } catch (error) {
         logger.error('❌ Failed to assign task to SPARC swarm:', error);
         process.exit(1);
@@ -135,16 +131,16 @@ export function createSPARCSwarmCommands(): Command {
         const { bridge, sparcSwarm } = await initializeSystems();
 
         // Get status
-        const _bridgeStatus = bridge.getStatus();
-        const _workStatus = await bridge.getWorkStatus();
-        const _sparcMetrics = sparcSwarm.getSPARCMetrics();
+        const bridgeStatus = bridge.getStatus();
+        const workStatus = await bridge.getWorkStatus();
+        const sparcMetrics = sparcSwarm.getSPARCMetrics();
         const activeTasks = sparcSwarm.getActiveSPARCTasks();
         if (activeTasks.length === 0) {
         } else {
           activeTasks.forEach((task) => {
-            if (options.detailed) {
-              Object.entries(task.phaseProgress).forEach(([_phase, progress]) => {
-                const _status =
+            if (options?.["detailed"]) {
+              Object.entries(task.phaseProgress).forEach(([phase, progress]) => {
+                const status =
                   progress.status === 'completed'
                     ? '✅'
                     : progress.status === 'in_progress'
@@ -166,7 +162,7 @@ export function createSPARCSwarmCommands(): Command {
   sparcSwarmCmd
     .command('phases')
     .description('Show SPARC phase metrics and performance')
-    .action(async (_options) => {
+    .action(async (options) => {
       try {
         logger.info('📊 Getting SPARC phase metrics');
 
@@ -181,7 +177,7 @@ export function createSPARCSwarmCommands(): Command {
           'completion',
         ] as const;
         phases.forEach((phase) => {
-          const _phaseMetrics = metrics.phaseMetrics[phase];
+          const phaseMetrics = metrics.phaseMetrics[phase];
         });
       } catch (error) {
         logger.error('❌ Failed to get SPARC phase metrics:', error);
@@ -214,7 +210,7 @@ export function createSPARCSwarmCommands(): Command {
         const engine = new PseudocodePhaseEngine();
 
         // Read specification file
-        const specContent = await fs.readFile(options.specFile, 'utf8');
+        const specContent = await fs.readFile(options?.["specFile"], 'utf8');
         const specification = JSON.parse(specContent);
 
         // Generate pseudocode structure
@@ -222,15 +218,15 @@ export function createSPARCSwarmCommands(): Command {
 
         // Format output
         let output: string;
-        if (options.format === 'markdown') {
+        if (options?.["format"] === 'markdown') {
           output = await formatPseudocodeAsMarkdown(pseudocodeStructure);
         } else {
           output = JSON.stringify(pseudocodeStructure, null, 2);
         }
 
         // Write output
-        await fs.writeFile(options.output, output, 'utf8');
-        pseudocodeStructure.algorithms.forEach((_alg, _index) => {});
+        await fs.writeFile(options?.["output"], output, 'utf8');
+        pseudocodeStructure.algorithms.forEach((alg, index) => {});
       } catch (error) {
         logger.error('❌ Failed to generate pseudocode:', error);
         process.exit(1);
@@ -254,22 +250,22 @@ export function createSPARCSwarmCommands(): Command {
         const engine = new PseudocodePhaseEngine();
 
         // Read pseudocode file
-        const pseudocodeContent = await fs.readFile(options.pseudocodeFile, 'utf8');
+        const pseudocodeContent = await fs.readFile(options?.["pseudocodeFile"], 'utf8');
         const pseudocodeStructure = JSON.parse(pseudocodeContent);
 
         // Validate the pseudocode structure
         const validation = await engine.validatePseudocode(pseudocodeStructure);
 
         if (validation.logicErrors.length > 0) {
-          validation.logicErrors.forEach((_error, _index) => {});
+          validation.logicErrors.forEach((error, index) => {});
         }
 
         if (validation.optimizationSuggestions.length > 0) {
-          validation.optimizationSuggestions.forEach((_suggestion, _index) => {});
+          validation.optimizationSuggestions.forEach((suggestion, index) => {});
         }
 
         if (validation.recommendations.length > 0) {
-          validation.recommendations.forEach((_rec, _index) => {});
+          validation.recommendations.forEach((rec, index) => {});
         }
 
         // Exit with appropriate code
@@ -301,19 +297,19 @@ export function createSPARCSwarmCommands(): Command {
         const engine = new PseudocodePhaseEngine();
 
         // Read specification file
-        const specContent = await fs.readFile(options.specFile, 'utf8');
+        const specContent = await fs.readFile(options?.["specFile"], 'utf8');
         const specification = JSON.parse(specContent);
 
         // Override domain if specified
-        if (options.domain) {
-          specification.domain = options.domain;
+        if (options?.["domain"]) {
+          specification.domain = options?.["domain"];
         }
 
         // Generate algorithms only
         const algorithms = await engine.generateAlgorithmPseudocode(specification);
 
         // Display algorithms
-        algorithms.forEach((_alg, _index) => {});
+        algorithms.forEach((alg, index) => {});
       } catch (error) {
         logger.error('❌ Failed to generate algorithms:', error);
         process.exit(1);
@@ -368,7 +364,7 @@ export function createSPARCSwarmCommands(): Command {
           },
         };
 
-        const example = complexityExamples[options.complexity as keyof typeof complexityExamples];
+        const example = complexityExamples[options?.["complexity"] as keyof typeof complexityExamples];
 
         // Create demo task document
         const demoTask: TaskDocumentEntity = {
@@ -377,9 +373,9 @@ export function createSPARCSwarmCommands(): Command {
           title: example.title,
           content: example.description,
           status: 'draft',
-          priority: options.complexity === 'complex' ? 'high' : 'medium',
+          priority: options?.["complexity"] === 'complex' ? 'high' : 'medium',
           author: 'sparc-demo',
-          tags: ['sparc-demo', options.complexity],
+          tags: ['sparc-demo', options?.["complexity"]],
           project_id: 'demo-project',
           parent_document_id: undefined,
           dependencies: [],
@@ -394,7 +390,7 @@ export function createSPARCSwarmCommands(): Command {
           checksum: 'demo-checksum',
           task_type: 'implementation',
           estimated_hours:
-            options.complexity === 'complex' ? 40 : options.complexity === 'moderate' ? 16 : 8,
+            options?.["complexity"] === 'complex' ? 40 : options?.["complexity"] === 'moderate' ? 16 : 8,
           implementation_details: {
             files_to_create: [],
             files_to_modify: [],
@@ -409,11 +405,11 @@ export function createSPARCSwarmCommands(): Command {
           },
           source_feature_id: undefined,
           completion_status: 'todo',
-          acceptance_criteria: example.acceptance_criteria,
+          acceptance_criteria: example["acceptance_criteria"],
         };
 
         // Assign to SPARC swarm
-        const _assignmentId = await bridge.assignTaskToSparcs(demoTask);
+        const assignmentId = await bridge.assignTaskToSparcs(demoTask);
 
         // In a real implementation, we would wait for actual completion
         // For demo, show what would happen
@@ -582,7 +578,7 @@ export function addArchitectureCommands(program: Command): void {
         const engine = new ArchitecturePhaseEngine();
 
         // Read pseudocode file
-        const pseudocodeContent = await fs.readFile(options.pseudocodeFile, 'utf8');
+        const pseudocodeContent = await fs.readFile(options?.["pseudocodeFile"], 'utf8');
         let pseudocodeData = JSON.parse(pseudocodeContent);
 
         // Convert to expected format if needed
@@ -600,8 +596,8 @@ export function addArchitectureCommands(program: Command): void {
 
         // Read specification if provided
         let specification = null;
-        if (options.specFile) {
-          const specContent = await fs.readFile(options.specFile, 'utf8');
+        if (options?.["specFile"]) {
+          const specContent = await fs.readFile(options?.["specFile"], 'utf8');
           specification = JSON.parse(specContent);
         }
 
@@ -610,7 +606,7 @@ export function addArchitectureCommands(program: Command): void {
         if (specification) {
           const systemArchitecture = await engine.designSystemArchitecture(
             specification,
-            pseudocodeData.algorithms
+            pseudocodeData?.algorithms
           );
           architecture = {
             systemArchitecture,
@@ -624,9 +620,9 @@ export function addArchitectureCommands(program: Command): void {
           architecture = await (engine as any).designArchitecture(pseudocodeData);
         }
 
-        const outputPath = options.output || 'architecture.json';
+        const outputPath = options?.["output"] || 'architecture.json';
 
-        if (options.format === 'markdown') {
+        if (options?.["format"] === 'markdown') {
           const markdownContent = generateArchitectureMarkdown(architecture);
           const mdPath = outputPath.replace(/\.json$/, '.md');
           await fs.writeFile(mdPath, markdownContent, 'utf8');
@@ -655,7 +651,7 @@ export function addArchitectureCommands(program: Command): void {
         const engine = new ArchitecturePhaseEngine();
 
         // Read architecture file
-        const archContent = await fs.readFile(options.architectureFile, 'utf8');
+        const archContent = await fs.readFile(options?.["architectureFile"], 'utf8');
         const architecture = JSON.parse(archContent);
 
         // Validate architecture
@@ -663,14 +659,14 @@ export function addArchitectureCommands(program: Command): void {
 
         // Calculate overall score
         const overallScore =
-          validationResults.reduce((sum, result) => sum + result.score, 0) /
+          validationResults?.reduce((sum, result) => sum + result?.score, 0) /
           validationResults.length;
-        const _passed = validationResults.filter((r) => r.passed).length;
-        const _total = validationResults.length;
+        const passed = validationResults?.filter((r) => r.passed).length;
+        const total = validationResults.length;
 
-        if (options.detailed) {
-          validationResults.forEach((result, _index) => {
-            const _status = result.passed ? '✅' : '❌';
+        if (options?.["detailed"]) {
+          validationResults?.forEach((result, index) => {
+            const status = result?.passed ? '✅' : '❌';
           });
         }
 
@@ -702,15 +698,15 @@ export function addArchitectureCommands(program: Command): void {
         const engine = new ArchitecturePhaseEngine();
 
         // Read architecture file
-        const archContent = await fs.readFile(options.architectureFile, 'utf8');
+        const archContent = await fs.readFile(options?.["architectureFile"], 'utf8');
         const architecture = JSON.parse(archContent);
 
         // Generate implementation plan
         const implementationPlan = await engine.generateImplementationPlan(architecture);
 
-        const outputPath = options.output || 'implementation-plan.json';
+        const outputPath = options?.["output"] || 'implementation-plan.json';
 
-        if (options.format === 'markdown') {
+        if (options?.["format"] === 'markdown') {
           const markdownContent = generateImplementationPlanMarkdown(implementationPlan);
           const mdPath = outputPath.replace(/\.json$/, '.md');
           await fs.writeFile(mdPath, markdownContent, 'utf8');

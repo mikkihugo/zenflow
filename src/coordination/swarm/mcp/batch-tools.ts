@@ -1,10 +1,3 @@
-/**
- * Batch Tools for Unified MCP Server
- * Batch execution capabilities consolidated from coordination layer.
- */
-
-import type { MCPToolResult } from './types';
-
 // MCP Tool definitions with proper handler structure
 export const batchExecuteTool = {
   name: 'batch_execute',
@@ -47,20 +40,20 @@ export const batchExecuteTool = {
       }> = [];
 
       // Simulate batch execution with performance tracking
-      for (const operation of params.operations) {
+      for (const operation of params?.["operations"]) {
         const result = await executeOperation(operation);
-        results.push(result);
+        results?.push(result);
       }
 
       const executionTime = Date.now() - startTime;
-      const operationCount = params.operations.length;
+      const operationCount = params?.["operations"].length;
 
       // Calculate performance metrics (claude-zen claims)
       const sequentialTime = operationCount * 200; // Assume 200ms per operation sequentially
       const speedImprovement = sequentialTime / executionTime;
       const tokenReduction = Math.min(85, Math.max(15, (operationCount - 1) * 12)); // Token savings from batching
 
-      const successfulOps = results.filter((r) => r.status === 'completed').length;
+      const successfulOps = results?.filter((r) => r.status === 'completed').length;
       const failedOps = results.length - successfulOps;
 
       return {
@@ -113,14 +106,14 @@ export const batchPerformanceTool = {
   },
   async handler(params: any): Promise<MCPToolResult> {
     try {
-      switch (params.action) {
+      switch (params?.["action"]) {
         case 'summary':
           return {
             success: true,
             content: [
               {
                 type: 'text',
-                text: `# 📊 Batch Performance Summary (Last ${params.hours || 1} hours)
+                text: `# 📊 Batch Performance Summary (Last ${params?.["hours"] || 1} hours)
 
 ## Key Metrics
 - **Total Executions:** 15
@@ -140,13 +133,13 @@ export const batchPerformanceTool = {
           };
 
         case 'trends': {
-          const metric = params.metric || 'throughput';
+          const metric = params?.["metric"] || 'throughput';
           return {
             success: true,
             content: [
               {
                 type: 'text',
-                text: `# 📈 Performance Trends - ${metric} (Last ${params.hours || 24} hours)
+                text: `# 📈 Performance Trends - ${metric} (Last ${params?.["hours"] || 24} hours)
 
 ## Trend Analysis
 - **Trend Direction:** ↗️ Improving (+12.5% over period)
@@ -178,7 +171,7 @@ The ${metric} metric shows consistent improvement, indicating successful optimiz
             content: [
               {
                 type: 'text',
-                text: `Unknown action: ${params.action}. Available actions: summary, trends, clear`,
+                text: `Unknown action: ${params?.["action"]}. Available actions: summary, trends, clear`,
               },
             ],
           };
@@ -223,8 +216,8 @@ export const projectInitBatchTool = {
       const startTime = Date.now();
 
       // Use defaults if not provided
-      const swarmConfig = params.swarmConfig || { topology: 'hierarchical', maxAgents: 6 };
-      const agentTypes = params.agentTypes || ['researcher', 'coder', 'analyst'];
+      const swarmConfig = params?.["swarmConfig"] || { topology: 'hierarchical', maxAgents: 6 };
+      const agentTypes = params?.["agentTypes"] || ['researcher', 'coder', 'analyst'];
 
       // Simulate project initialization
       const operations = [
@@ -245,16 +238,16 @@ export const projectInitBatchTool = {
         content: [
           {
             type: 'text',
-            text: `# 🎉 Project "${params.projectName}" Initialized Successfully!
+            text: `# 🎉 Project "${params?.["projectName"]}" Initialized Successfully!
 
 ## 🏗️ Project Setup Complete
-- **Location:** ${params.basePath}
-- **Swarm Topology:** ${swarmConfig.topology}
-- **Max Agents:** ${swarmConfig.maxAgents}
+- **Location:** ${params?.["basePath"]}
+- **Swarm Topology:** ${swarmConfig?.topology}
+- **Max Agents:** ${swarmConfig?.maxAgents}
 - **Operations Completed:** ${operations.length}
 
 ## 🤖 Swarm Coordination
-- **Swarm initialized** with ${swarmConfig.topology} topology
+- **Swarm initialized** with ${swarmConfig?.topology} topology
 - **Agents spawned:** ${agentTypes.join(', ')}
 - **Coordination active:** Ready for multi-agent development
 

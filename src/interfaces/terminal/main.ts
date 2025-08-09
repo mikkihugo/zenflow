@@ -27,7 +27,7 @@ async function main() {
 
     // Launch the terminal interface
     await launchTerminalInterface({
-      mode: flags.mode || modeResult.mode,
+      mode: flags.mode || modeResult?.mode,
       theme: flags.theme || 'dark',
       verbose: flags.verbose || false,
       autoRefresh: !flags['no-refresh'],

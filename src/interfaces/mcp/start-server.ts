@@ -1,6 +1,4 @@
-#!/usr/bin/env node
-
-/**
+#!/usr/bin/env node/**
  * Start HTTP MCP Server - Official SDK Implementation
  *
  * Startup script for the Claude-Zen HTTP MCP server using the official MCP SDK.
@@ -9,7 +7,6 @@
 
 import { HTTPMCPServer } from './http-mcp-server';
 import { createLogger } from './mcp-logger';
-import { DEFAULT_CONFIG } from '../../config/defaults';
 import { getConfig } from '../../config';
 
 const logger = createLogger('MCP-Starter');

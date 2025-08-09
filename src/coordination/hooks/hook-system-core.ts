@@ -42,7 +42,7 @@ export interface HookSystemConfig {
  *
  * @example
  */
-export class DefaultHookSystem extends EventEmitter implements HookSystem {
+export class HookSystem extends EventEmitter implements HookSystem {
   private config: HookSystemConfig;
 
   constructor(config?: Partial<HookSystemConfig>) {

@@ -4,7 +4,6 @@
  */
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
-import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 
 interface AdaptiveStrategy {
   name: string;
@@ -127,10 +126,10 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     this.config = { ...this.config, ...config };
 
     // Adjust exploration rate
-    if (config.explorationRate !== undefined) {
+    if (config?.["explorationRate"] !== undefined) {
       this.config.explorationRate = Math.max(
         this.config.minExplorationRate,
-        config.explorationRate
+        config?.["explorationRate"]
       );
     }
   }
@@ -153,7 +152,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
         : 0;
 
     const mostUsedStrategy = strategies.reduce(
-      (best, current) => (current.usageCount > best.usageCount ? current : best),
+      (best, current) => (current?.usageCount > best.usageCount ? current : best),
       strategies[0] || { name: 'none', usageCount: 0 }
     );
 
@@ -462,14 +461,14 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
         break;
     }
 
-    const alternatives = availableAgents.filter((a) => a.id !== selectedAgent.id).slice(0, 3);
+    const alternatives = availableAgents.filter((a) => a.id !== selectedAgent?.id).slice(0, 3);
 
     return {
       selectedAgent,
       confidence: this.strategies.get(strategyName)?.confidence || 0.5,
       reasoning: `${reasoning} (strategy: ${strategyName})`,
       alternativeAgents: alternatives,
-      estimatedLatency: metrics.get(selectedAgent.id)?.responseTime || 1000,
+      estimatedLatency: metrics.get(selectedAgent?.id)?.responseTime || 1000,
       expectedQuality: this.strategies.get(strategyName)?.successRate || 0.8,
     };
   }
@@ -560,7 +559,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     const decision: DecisionHistory = {
       timestamp: new Date(),
       taskId: task.id,
-      agentId: result.selectedAgent.id,
+      agentId: result?.selectedAgent?.id,
       strategy,
       features: {
         taskPriority: task.priority,
@@ -569,9 +568,9 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
         agentCount: context.agentCount,
       },
       outcome: {
-        latency: result.estimatedLatency,
+        latency: result?.estimatedLatency,
         success: true, // Will be updated when task completes
-        quality: result.expectedQuality,
+        quality: result?.expectedQuality,
       },
     };
 

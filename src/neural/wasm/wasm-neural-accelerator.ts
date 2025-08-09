@@ -7,19 +7,7 @@ const logger = getLogger("neural-wasm-wasm-neural-accelerator");
  * with SIMD support and optimized mathematical operations
  */
 
-import type {
-  WASMNeuralAccelerator as IWASMNeuralAccelerator,
-  WASMBenchmarkResult,
-  WASMExports,
-  WASMModelDefinition,
-  WASMNeuralConfig,
-  WASMNeuralInstance,
-  WASMOptimizationOptions,
-  WASMPerformanceMetrics,
-  WASMPredictionInput,
-  WASMPredictionOutput,
-  WASMTrainingData,
-} from '../types/wasm-types.js';
+import type { WASMNeuralAccelerator as IWASMNeuralAccelerator } from '../types/wasm-types.js';
 
 /**
  * WASM-powered neural network accelerator
@@ -195,8 +183,8 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
         (this.metrics.averageExecutionTime * (this.metrics.totalOperations - 1) + executionTime) /
         this.metrics.totalOperations;
 
-      this.metrics.throughput = trainingData.inputs.length / (executionTime / 1000);
-      this.metrics.memoryUsage = this.estimateMemoryUsage(model, trainingData.inputs.length);
+      this.metrics.throughput = trainingData?.inputs.length / (executionTime / 1000);
+      this.metrics.memoryUsage = this.estimateMemoryUsage(model, trainingData?.inputs.length);
 
       return { ...this.metrics };
     } catch (error) {
@@ -252,7 +240,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
         model.architecture.layers[model.architecture.layers.length - 1]
       );
       for (let i = 0; i < outputData.length; i++) {
-        outputData[i] = Math.random(); // Placeholder prediction
+        outputData?.[i] = Math.random(); // Placeholder prediction
       }
 
       return {
@@ -296,7 +284,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
             framework: 'wasm-benchmark',
           },
         });
-        results.create = performance.now() - createStart;
+        results?.create = performance.now() - createStart;
       }
 
       // Benchmark training
@@ -310,7 +298,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
           precision: 'fp32',
           cacheSize: 1024,
         });
-        results.train = performance.now() - trainStart;
+        results?.train = performance.now() - trainStart;
       }
 
       // Benchmark prediction
@@ -322,7 +310,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
         for (let i = 0; i < 100; i++) {
           await this.predict('benchmark-model', testData);
         }
-        results.predict = (performance.now() - predictStart) / 100; // Average per prediction
+        results?.predict = (performance.now() - predictStart) / 100; // Average per prediction
       }
 
       const _totalTime = performance.now() - benchmarkStart;
@@ -331,7 +319,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
       return {
         // Base BenchmarkResult properties
         operationsPerSecond: this.metrics.throughput,
-        averageLatency: results.predict || results.train || 0,
+        averageLatency: results?.predict || results?.train || 0,
         memoryBandwidth: this.calculateMemoryEfficiency() * 1000,
         simdUtilization: this.metrics.simdSupport ? 0.85 : 0,
         threadEfficiency: this.metrics.threadUtilization || 0.75,
@@ -491,7 +479,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
     };
 
     const result = await this.predict(networkId, wasmInput);
-    return Array.from(result.predictions);
+    return Array.from(result?.predictions);
   }
 
   freeNetwork(networkId: string): void {
@@ -538,7 +526,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
     // Safe property access with type guards
     if ('memory' in wasmModule && wasmModule['memory']) {
-      instance.memory = wasmModule['memory'];
+      instance["memory"] = wasmModule['memory'];
     }
 
     // Copy exports with proper type checking
@@ -584,8 +572,8 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
       return data;
     }
 
-    if (data.buffer && data.buffer instanceof ArrayBuffer) {
-      return data.buffer;
+    if (data?.["buffer"] && data?.["buffer"] instanceof ArrayBuffer) {
+      return data?.["buffer"];
     }
 
     if (Array.isArray(data)) {

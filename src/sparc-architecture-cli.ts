@@ -33,7 +33,7 @@ program
       const engine = new ArchitecturePhaseEngine();
 
       // Read pseudocode file
-      const pseudocodeContent = await readFile(options.pseudocodeFile, 'utf8');
+      const pseudocodeContent = await readFile(options?.["pseudocodeFile"], 'utf8');
       let pseudocodeData = JSON.parse(pseudocodeContent);
 
       // Convert to expected format if needed
@@ -51,8 +51,8 @@ program
 
       // Read specification if provided
       let specification = null;
-      if (options.specFile) {
-        const specContent = await readFile(options.specFile, 'utf8');
+      if (options?.["specFile"]) {
+        const specContent = await readFile(options?.["specFile"], 'utf8');
         specification = JSON.parse(specContent);
       }
 
@@ -61,7 +61,7 @@ program
       if (specification) {
         const systemArchitecture = await engine.designSystemArchitecture(
           specification,
-          pseudocodeData.algorithms
+          pseudocodeData?.algorithms
         );
         architecture = {
           systemArchitecture,
@@ -77,9 +77,9 @@ program
 
       // Format output
       let output: string;
-      let outputPath = options.output;
+      let outputPath = options?.["output"];
 
-      if (options.format === 'markdown') {
+      if (options?.["format"] === 'markdown') {
         output = generateArchitectureMarkdown(architecture);
         outputPath = outputPath.replace(/\.json$/, '.md');
       } else {
@@ -109,7 +109,7 @@ program
       const engine = new ArchitecturePhaseEngine();
 
       // Read architecture file
-      const archContent = await readFile(options.architectureFile, 'utf8');
+      const archContent = await readFile(options?.["architectureFile"], 'utf8');
       const architecture = JSON.parse(archContent);
 
       // Validate architecture
@@ -117,13 +117,13 @@ program
 
       // Calculate overall score
       const overallScore =
-        validationResults.reduce((sum, result) => sum + result.score, 0) / validationResults.length;
+        validationResults?.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
       // xxx NEEDS_HUMAN: These variables appear to be for logging/display but are unused
       // const passed = validationResults.filter((r) => r.passed).length;
       // const total = validationResults.length;
 
-      if (options.detailed) {
-        validationResults.forEach((result, _index) => {
+      if (options?.["detailed"]) {
+        validationResults?.forEach((result, index) => {
           // xxx NEEDS_HUMAN: Status display logic appears incomplete
           // const status = result.passed ? '✅' : '❌';
           // Consider adding console output here
@@ -154,7 +154,7 @@ program
       const engine = new ArchitecturePhaseEngine();
 
       // Read architecture file
-      const archContent = await readFile(options.architectureFile, 'utf8');
+      const archContent = await readFile(options?.["architectureFile"], 'utf8');
       const architecture = JSON.parse(archContent);
 
       // Generate implementation plan
@@ -162,9 +162,9 @@ program
 
       // Format output
       let output: string;
-      let outputPath = options.output;
+      let outputPath = options?.["output"];
 
-      if (options.format === 'markdown') {
+      if (options?.["format"] === 'markdown') {
         output = generateImplementationPlanMarkdown(implementationPlan);
         outputPath = outputPath.replace(/\.json$/, '.md');
       } else {

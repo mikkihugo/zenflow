@@ -1,35 +1,11 @@
 import { getLogger } from "../../../config/logging-config";
 const logger = getLogger("coordination-swarm-core-index");
-/**
- * 🚀 ULTIMATE ZenSwarm Implementation - FULLY INTEGRATED
- *
- * Advanced swarm orchestration with:
- * - WASM-accelerated neural networks
- * - Cognitive diversity and pattern evolution
- * - Progressive loading and memory optimization
- * - Full persistence with coordination DAO
- * - Enterprise-grade session management
- * - Real-time performance monitoring
- * - Chaos engineering and fault tolerance
- */
-
-import type { SessionCoordinationDao } from '../../../database';
 // import { DALFactory } from '../../../database'; // TODO: Implement proper DI integration
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
 import { AgentPool, createAgent } from '../../agents/agent';
 import { executeTaskWithAgent } from './agent-adapter';
 import { getContainer } from './singleton-container';
-import type {
-  AgentConfig,
-  Message,
-  SwarmEvent,
-  SwarmEventEmitter,
-  SwarmMetrics,
-  SwarmOptions,
-  SwarmState,
-  Task,
-  TaskStatus,
-} from './types';
+import type { SwarmEventEmitter } from './types';
 import { formatMetrics, generateId, priorityToNumber, validateSwarmOptions } from './utils';
 
 export * from '../../../neural/core/neural-network';
@@ -74,13 +50,13 @@ export class Agent {
   public status: 'idle' | 'active' | 'busy';
 
   constructor(config: any = {}) {
-    this.id = config.id || `agent-${Date.now()}`;
-    this.type = config.type || 'generic';
+    this.id = config?.id || `agent-${Date.now()}`;
+    this.type = config?.type || 'generic';
     this.config = config;
     this.isActive = false;
-    this.neuralNetworkId = config.enableNeuralNetwork ? `nn-${Date.now()}` : undefined;
-    this.cognitivePattern = config.cognitivePattern || 'adaptive';
-    this.capabilities = config.capabilities || [];
+    this.neuralNetworkId = config?.["enableNeuralNetwork"] ? `nn-${Date.now()}` : undefined;
+    this.cognitivePattern = config?.["cognitivePattern"] || 'adaptive';
+    this.capabilities = config?.["capabilities"] || [];
     this.status = 'idle';
   }
 
@@ -208,11 +184,11 @@ export class ZenSwarm implements SwarmEventEmitter {
     }
 
     this.options = {
-      topology: options.topology || 'mesh',
-      maxAgents: options.maxAgents || 10,
-      connectionDensity: options.connectionDensity || 0.5,
-      syncInterval: options.syncInterval || 1000,
-      wasmPath: options.wasmPath || './wasm/ruv_swarm_wasm.js',
+      topology: options?.["topology"] || 'mesh',
+      maxAgents: options?.["maxAgents"] || 10,
+      connectionDensity: options?.["connectionDensity"] || 0.5,
+      syncInterval: options?.["syncInterval"] || 1000,
+      wasmPath: options?.["wasmPath"] || './wasm/ruv_swarm_wasm.js',
       persistence: {
         enabled: false,
         dbPath: '',
@@ -319,7 +295,7 @@ export class ZenSwarm implements SwarmEventEmitter {
     } = options;
 
     // Check if already initialized through container
-    if (instance.isInitialized) {
+    if (instance["isInitialized"]) {
       if (debug) {
       }
       return instance;
@@ -329,20 +305,20 @@ export class ZenSwarm implements SwarmEventEmitter {
     if (loadingStrategy === 'minimal') {
       if (debug) {
       }
-      instance.isInitialized = true;
-      instance.features.simd_support = false; // Skip SIMD detection for speed
+      instance["isInitialized"] = true;
+      instance["features"]?.["simd_support"] = false; // Skip SIMD detection for speed
       return instance;
     }
 
     try {
       // Initialize WASM modules (skip for minimal loading)
       if (loadingStrategy !== 'minimal') {
-        await instance.wasmLoader.initialize(loadingStrategy);
+        await instance["wasmLoader"]?.["initialize"](loadingStrategy);
       }
 
       // Detect and enable features (skip for minimal loading)
       if (loadingStrategy !== 'minimal') {
-        await instance.detectFeatures(useSIMD);
+        await instance["detectFeatures"](useSIMD);
       }
 
       // Initialize DAO persistence if enabled
@@ -350,35 +326,35 @@ export class ZenSwarm implements SwarmEventEmitter {
         try {
           // Create a simple mock implementation for now
           // TODO: Implement proper DALFactory integration with DI
-          instance.persistence = {
+          instance["persistence"] = {
             query: async (_sql: string, _params?: any[]) => [],
             execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
           } as any;
         } catch (error) {
           logger.warn('⚠️ Persistence not available:', (error as Error).message);
-          instance.persistence = null;
+          instance["persistence"] = null;
         }
       }
 
       // Pre-load neural networks if enabled
       if (enableNeuralNetworks && loadingStrategy !== 'minimal') {
         try {
-          await instance.wasmLoader.loadModule();
-          instance.features.neural_networks = true;
+          await instance["wasmLoader"]?.["loadModule"]();
+          instance["features"]?.["neural_networks"] = true;
           if (debug) {
           }
         } catch (_error) {
-          instance.features.neural_networks = false;
+          instance["features"]?.["neural_networks"] = false;
         }
       }
 
       // Pre-load forecasting if enabled
       if (enableForecasting && enableNeuralNetworks && loadingStrategy !== 'minimal') {
         try {
-          await instance.wasmLoader.loadModule();
-          instance.features.forecasting = true;
+          await instance["wasmLoader"]?.["loadModule"]();
+          instance["features"]?.["forecasting"] = true;
         } catch (_error) {
-          instance.features.forecasting = false;
+          instance["features"]?.["forecasting"] = false;
         }
       }
 
@@ -388,7 +364,7 @@ export class ZenSwarm implements SwarmEventEmitter {
       }
 
       // Mark as initialized
-      instance.isInitialized = true;
+      instance["isInitialized"] = true;
 
       return instance;
     } catch (error) {
@@ -410,13 +386,13 @@ export class ZenSwarm implements SwarmEventEmitter {
 
       // Detect SIMD support
       if (useSIMD) {
-        this.features.simd_support = ZenSwarm.detectSIMDSupport();
+        this.features["simd_support"] = ZenSwarm.detectSIMDSupport();
       }
 
       // Check if core module has the expected exports
       if (coreModule?.exports) {
-        this.features.neural_networks = true;
-        this.features.cognitive_diversity = true;
+        this.features["neural_networks"] = true;
+        this.features["cognitive_diversity"] = true;
       }
     } catch (error) {
       logger.warn('⚠️ Feature detection failed:', (error as Error).message);
@@ -447,17 +423,17 @@ export class ZenSwarm implements SwarmEventEmitter {
       name,
       topology_type: topology,
       max_agents: maxAgents,
-      enable_cognitive_diversity: enableCognitiveDiversity && this.features.cognitive_diversity,
+      enable_cognitive_diversity: enableCognitiveDiversity && this.features["cognitive_diversity"],
     };
 
     // Use the core module exports to create swarm
     let wasmSwarm: any;
-    if (coreModule?.exports?.ZenSwarm) {
+    if (coreModule?.exports?.["ZenSwarm"]) {
       try {
-        wasmSwarm = new coreModule.exports.ZenSwarm();
+        wasmSwarm = new coreModule.exports["ZenSwarm"]();
         wasmSwarm.id = id || `swarm-${Date.now()}`;
         wasmSwarm.name = name;
-        wasmSwarm.config = swarmConfig;
+        wasmSwarm["config"] = swarmConfig;
       } catch (error) {
         logger.warn('Failed to create WASM swarm:', (error as Error).message);
         wasmSwarm = {
@@ -540,7 +516,7 @@ export class ZenSwarm implements SwarmEventEmitter {
     if (this.activeSwarms.size === 0) {
       await this.createSwarm({
         name: 'default-swarm',
-        maxAgents: options.maxAgents || 10,
+        maxAgents: options?.["maxAgents"] || 10,
       });
     }
 
@@ -914,13 +890,13 @@ export class SwarmWrapper {
 
   async spawnAgent(name: string, type = 'researcher', options: any = {}): Promise<Agent> {
     const agent = new Agent({
-      id: options.id || `agent-${Date.now()}`,
+      id: options?.id || `agent-${Date.now()}`,
       name,
       type,
       enableNeuralNetwork:
-        options.enableNeuralNetwork !== false && this.ruvSwarm.features.neural_networks,
-      cognitivePattern: options.cognitivePattern || 'adaptive',
-      capabilities: options.capabilities || ['neural-processing', 'pattern-matching'],
+        options?.["enableNeuralNetwork"] !== false && this.ruvSwarm.features["neural_networks"],
+      cognitivePattern: options?.["cognitivePattern"] || 'adaptive',
+      capabilities: options?.["capabilities"] || ['neural-processing', 'pattern-matching'],
       ...options,
     });
 
@@ -970,9 +946,9 @@ export class TaskWrapper {
 
   constructor(id: string, wasmResult: any, swarm: SwarmWrapper) {
     this.id = id;
-    this.description = wasmResult.task_description || wasmResult.description;
-    this.status = wasmResult.status || 'pending';
-    this.assignedAgents = wasmResult.assigned_agents || [];
+    this.description = wasmResult?.["task_description"] || wasmResult?.description;
+    this.status = wasmResult?.["status"] || 'pending';
+    this.assignedAgents = wasmResult?.["assigned_agents"] || [];
     this.result = null;
     this.swarm = swarm;
     this.startTime = null;

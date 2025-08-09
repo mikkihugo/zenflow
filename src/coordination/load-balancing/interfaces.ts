@@ -1,17 +1,3 @@
-/**
- * Interface definitions for the Load Balancing System
- */
-
-import type {
-  Agent,
-  CapacityMetrics,
-  LoadMetrics,
-  PredictionModel,
-  QoSRequirement,
-  RoutingResult,
-  Task,
-} from './types';
-
 export interface LoadBalancingAlgorithm {
   name: string;
   selectAgent(

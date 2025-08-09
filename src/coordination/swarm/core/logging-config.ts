@@ -100,24 +100,24 @@ export class LoggingConfig {
     const loggerOptions: any = {
       name: component,
       level,
-      logDir: process.env['LOG_DIR'] || options.logDir || './logs',
+      logDir: process.env['LOG_DIR'] || options?.logDir || './logs',
       ...options,
     };
 
     // Conditionally add optional properties only if they have truthy values
-    const enableStderr = process.env['MCP_MODE'] === 'stdio' || options.enableStderr;
+    const enableStderr = process.env['MCP_MODE'] === 'stdio' || options?.enableStderr;
     if (enableStderr) {
-      loggerOptions.enableStderr = true;
+      loggerOptions?.enableStderr = true;
     }
 
-    const enableFile = process.env['LOG_TO_FILE'] === 'true' || options.enableFile;
+    const enableFile = process.env['LOG_TO_FILE'] === 'true' || options?.enableFile;
     if (enableFile) {
-      loggerOptions.enableFile = true;
+      loggerOptions?.enableFile = true;
     }
 
-    const formatJson = process.env['LOG_FORMAT'] === 'json' || options.formatJson;
+    const formatJson = process.env['LOG_FORMAT'] === 'json' || options?.formatJson;
     if (formatJson) {
-      loggerOptions.formatJson = true;
+      loggerOptions?.formatJson = true;
     }
 
     const logger = new Logger(loggerOptions);
@@ -177,9 +177,9 @@ export class LoggingConfig {
    * @param correlationId
    */
   createChildLogger(parentLogger: any, module: string, correlationId: string | null = null): any {
-    return parentLogger.child({
+    return parentLogger?.child({
       module,
-      correlationId: correlationId || parentLogger.correlationId,
+      correlationId: correlationId || parentLogger?.correlationId,
     });
   }
 
@@ -211,20 +211,20 @@ export class LoggingConfig {
 export const loggingConfig = new LoggingConfig();
 
 // Convenience functions
-export const getLogger = (component: string, options?: any): Logger => loggingConfig.getLogger(component, options);
-export const setLogLevel = (component: string, level: string): void => loggingConfig.setLogLevel(component, level);
-export const setGlobalLogLevel = (level: string): void => loggingConfig.setGlobalLogLevel(level);
+export const getLogger = (component: string, options?: any): Logger => loggingConfig?.getLogger(component, options);
+export const setLogLevel = (component: string, level: string): void => loggingConfig?.setLogLevel(component, level);
+export const setGlobalLogLevel = (level: string): void => loggingConfig?.setGlobalLogLevel(level);
 
 // Pre-configured loggers for common components
-export const mcpLogger = loggingConfig.getLogger('mcp-server');
-export const toolsLogger = loggingConfig.getLogger('mcp-tools');
-export const swarmLogger = loggingConfig.getLogger('swarm-core');
-export const agentLogger = loggingConfig.getLogger('agent');
-export const neuralLogger = loggingConfig.getLogger('neural');
-export const wasmLogger = loggingConfig.getLogger('wasm-loader');
-export const dbLogger = loggingConfig.getLogger('persistence');
-export const hooksLogger = loggingConfig.getLogger('hooks');
-export const perfLogger = loggingConfig.getLogger('performance');
-export const memoryLogger = loggingConfig.getLogger('memory');
+export const mcpLogger = loggingConfig?.getLogger('mcp-server');
+export const toolsLogger = loggingConfig?.getLogger('mcp-tools');
+export const swarmLogger = loggingConfig?.getLogger('swarm-core');
+export const agentLogger = loggingConfig?.getLogger('agent');
+export const neuralLogger = loggingConfig?.getLogger('neural');
+export const wasmLogger = loggingConfig?.getLogger('wasm-loader');
+export const dbLogger = loggingConfig?.getLogger('persistence');
+export const hooksLogger = loggingConfig?.getLogger('hooks');
+export const perfLogger = loggingConfig?.getLogger('performance');
+export const memoryLogger = loggingConfig?.getLogger('memory');
 
 export default loggingConfig;

@@ -1,10 +1,3 @@
-/**
- * @file Tests for BatchPerformanceMonitor
- * Validates performance monitoring and comparison capabilities
- */
-
-import type { BatchExecutionSummary } from '../../../../coordination/batch/batch-engine';
-import type { PerformanceMetrics } from '../../../../coordination/batch/performance-monitor';
 import { BatchPerformanceMonitor } from '../../../../coordination/batch/performance-monitor';
 
 describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
@@ -354,10 +347,10 @@ describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
 
       const exportedData = monitor.exportPerformanceData();
 
-      expect(exportedData.metrics).toHaveLength(1);
-      expect(exportedData.baseline).toBeNull();
-      expect(exportedData.summary).toBeDefined();
-      expect(exportedData.summary.totalExecutions).toBe(1);
+      expect(exportedData?.metrics).toHaveLength(1);
+      expect(exportedData?.baseline).toBeNull();
+      expect(exportedData?.summary).toBeDefined();
+      expect(exportedData?.summary?.totalExecutions).toBe(1);
     });
 
     it('should manage history size limits', () => {

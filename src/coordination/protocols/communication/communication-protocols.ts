@@ -7,8 +7,6 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { gunzipSync, gzipSync } from 'node:zlib';
-import type { IEventBus } from '@core/event-bus';
-import type { ILogger } from '@core/logger';
 
 // Core communication types
 export interface Message {
@@ -186,11 +184,11 @@ export class CommunicationProtocols extends EventEmitter {
     super();
 
     this.initializeMessageQueues();
-    this.compressionEngine = new CompressionEngine(this._logger);
-    this.encryptionEngine = new EncryptionEngine(this.config.encryptionEnabled, this._logger);
-    this.routingEngine = new RoutingEngine(this._logger);
-    this.consensusEngine = new ConsensusEngine(this._nodeId, this._logger);
-    this.gossipEngine = new GossipEngine(this._nodeId, this._logger);
+    this.compressionEngine = new CompressionEngine(this["_logger"]);
+    this.encryptionEngine = new EncryptionEngine(this.config.encryptionEnabled, this["_logger"]);
+    this.routingEngine = new RoutingEngine(this["_logger"]);
+    this.consensusEngine = new ConsensusEngine(this["_nodeId"], this["_logger"]);
+    this.gossipEngine = new GossipEngine(this["_nodeId"], this["_logger"]);
 
     this.setupEventHandlers();
     this.startProcessing();
@@ -220,12 +218,12 @@ export class CommunicationProtocols extends EventEmitter {
    * @param node
    */
   async registerNode(node: CommunicationNode): Promise<void> {
-    this.nodes.set(node.id, node);
+    this.nodes.set(node?.id, node);
 
-    this._logger.info('Communication node registered', {
-      nodeId: node.id,
-      address: node.address,
-      capabilities: node.capabilities,
+    this["_logger"]?.info('Communication node registered', {
+      nodeId: node?.id,
+      address: node?.address,
+      capabilities: node?.capabilities,
     });
 
     // Update routing table
@@ -234,7 +232,7 @@ export class CommunicationProtocols extends EventEmitter {
     // Update broadcast trees
     await this.updateBroadcastTrees();
 
-    this.emit('node:registered', { nodeId: node.id });
+    this.emit('node:registered', { nodeId: node?.id });
   }
 
   /**
@@ -246,31 +244,31 @@ export class CommunicationProtocols extends EventEmitter {
     const fullMessage: Message = {
       id: message.id || this.generateMessageId(),
       type: message.type || 'unicast',
-      sender: message.sender || this._nodeId,
-      recipients: message.recipients || [],
-      payload: message.payload || {
+      sender: message["sender"] || this["_nodeId"],
+      recipients: message["recipients"] || [],
+      payload: message["payload"] || {
         data: null,
         metadata: {},
         contentType: 'application/json',
         encoding: 'utf8',
         version: '1.0',
       },
-      priority: message.priority || 'normal',
-      encryption: message.encryption || { enabled: this.config.encryptionEnabled },
-      compression: message.compression || {
+      priority: message["priority"] || 'normal',
+      encryption: message["encryption"] || { enabled: this.config.encryptionEnabled },
+      compression: message["compression"] || {
         enabled: true,
         algorithm: 'gzip',
         level: 6,
         threshold: this.config.compressionThreshold,
       },
-      routing: message.routing || {
+      routing: message["routing"] || {
         strategy: 'adaptive',
         maxHops: this.config.maxHops,
         reliabilityMode: 'at-least-once',
         acknowledgment: true,
         timeout: this.config.messageTimeout,
       },
-      qos: message.qos || {
+      qos: message["qos"] || {
         bandwidth: 0,
         latency: 0,
         reliability: 0.95,
@@ -278,7 +276,7 @@ export class CommunicationProtocols extends EventEmitter {
         deduplication: true,
       },
       timestamp: new Date(),
-      ttl: message.ttl || this.config.messageTimeout,
+      ttl: message["ttl"] || this.config.messageTimeout,
       checksum: '',
     };
 
@@ -303,7 +301,7 @@ export class CommunicationProtocols extends EventEmitter {
    * @param priority
    */
   async broadcast(payload: MessagePayload, priority: MessagePriority = 'normal'): Promise<string> {
-    const allNodes = Array.from(this.nodes.keys()).filter((id) => id !== this._nodeId);
+    const allNodes = Array.from(this.nodes.keys()).filter((id) => id !== this["_nodeId"]);
 
     return await this.sendMessage({
       type: 'broadcast',
@@ -410,7 +408,7 @@ export class CommunicationProtocols extends EventEmitter {
     const proposal: ConsensusProposal = {
       id: this.generateProposalId(),
       type,
-      proposer: this._nodeId,
+      proposer: this["_nodeId"],
       value,
       round: 1,
       timestamp: new Date(),
@@ -424,7 +422,7 @@ export class CommunicationProtocols extends EventEmitter {
     await this.consensusEngine.initiateConsensus(proposal.id, proposal);
 
     const targetNodes =
-      participants || Array.from(this.nodes.keys()).filter((id) => id !== this._nodeId);
+      participants || Array.from(this.nodes.keys()).filter((id) => id !== this["_nodeId"]);
 
     await this.multicast(
       targetNodes,
@@ -461,7 +459,7 @@ export class CommunicationProtocols extends EventEmitter {
 
     const vote: ConsensusVote = {
       proposalId,
-      voter: this._nodeId,
+      voter: this["_nodeId"],
       decision,
       ...(reasoning && { reasoning }),
       timestamp: new Date(),
@@ -485,7 +483,7 @@ export class CommunicationProtocols extends EventEmitter {
       'high'
     );
 
-    this.emit('vote:cast', { proposalId, decision, voter: this._nodeId });
+    this.emit('vote:cast', { proposalId, decision, voter: this["_nodeId"] });
   }
 
   /**
@@ -588,25 +586,25 @@ export class CommunicationProtocols extends EventEmitter {
 
   private async processOutgoingMessage(message: Message): Promise<void> {
     // Apply compression if enabled
-    if (message.compression.enabled) {
-      message.payload = await this.compressionEngine.compress(message.payload, message.compression);
+    if (message["compression"]?.["enabled"]) {
+      message["payload"] = await this.compressionEngine.compress(message["payload"], message["compression"]);
     }
 
     // Apply encryption if enabled
-    if (message.encryption.enabled) {
-      message.payload = await this.encryptionEngine.encrypt(message.payload, message.encryption);
+    if (message["encryption"]?.["enabled"]) {
+      message["payload"] = await this.encryptionEngine.encrypt(message["payload"], message["encryption"]);
     }
 
     // Add to appropriate queue based on priority
-    const queue = this.messageQueue.get(message.priority) || [];
+    const queue = this.messageQueue.get(message["priority"]) || [];
     queue.push(message);
-    this.messageQueue.set(message.priority, queue);
+    this.messageQueue.set(message["priority"], queue);
 
-    this._logger.debug('Message queued for processing', {
+    this["_logger"]?.debug('Message queued for processing', {
       messageId: message.id,
       type: message.type,
-      priority: message.priority,
-      recipients: message.recipients.length,
+      priority: message["priority"],
+      recipients: message["recipients"].length,
     });
   }
 
@@ -625,7 +623,7 @@ export class CommunicationProtocols extends EventEmitter {
         try {
           await this.routeMessage(message);
         } catch (error) {
-          this._logger.error('Failed to route message', {
+          this["_logger"]?.error('Failed to route message', {
             messageId: message.id,
             error: error instanceof Error ? error.message : String(error),
           });
@@ -661,30 +659,30 @@ export class CommunicationProtocols extends EventEmitter {
 
   private async handleIncomingMessage(data: any): Promise<void> {
     try {
-      const message: Message = data.message;
+      const message: Message = data?.["message"];
 
       // Verify checksum
       if (!this.verifyChecksum(message)) {
-        this._logger.warn('Message checksum verification failed', { messageId: message.id });
+        this["_logger"]?.warn('Message checksum verification failed', { messageId: message.id });
         return;
       }
 
       // Check TTL
       if (this.isMessageExpired(message)) {
-        this._logger.debug('Expired message received', { messageId: message.id });
+        this["_logger"]?.debug('Expired message received', { messageId: message.id });
         return;
       }
 
       // Decrypt if needed
-      if (message.encryption.enabled) {
-        message.payload = await this.encryptionEngine.decrypt(message.payload, message.encryption);
+      if (message["encryption"]?.["enabled"]) {
+        message["payload"] = await this.encryptionEngine.decrypt(message["payload"], message["encryption"]);
       }
 
       // Decompress if needed
-      if (message.compression.enabled) {
-        message.payload = await this.compressionEngine.decompress(
-          message.payload,
-          message.compression
+      if (message["compression"]?.["enabled"]) {
+        message["payload"] = await this.compressionEngine.decompress(
+          message["payload"],
+          message["compression"]
         );
       }
 
@@ -694,10 +692,10 @@ export class CommunicationProtocols extends EventEmitter {
       this.emit('message:received', {
         messageId: message.id,
         type: message.type,
-        sender: message.sender,
+        sender: message["sender"],
       });
     } catch (error) {
-      this._logger.error('Failed to handle incoming message', { error });
+      this["_logger"]?.error('Failed to handle incoming message', { error });
     }
   }
 
@@ -726,27 +724,27 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   private async handleHeartbeat(message: Message): Promise<void> {
-    const node = this.nodes.get(message.sender);
+    const node = this.nodes.get(message["sender"]);
     if (node) {
-      node.lastSeen = new Date();
-      node.status = 'online';
+      node?.lastSeen = new Date();
+      node?.status = 'online';
     }
   }
 
   private async handleGossipMessage(message: Message): Promise<void> {
-    const gossipData = message.payload.data;
-    if (gossipData.type === 'state_update') {
+    const gossipData = message["payload"]?.["data"];
+    if (gossipData?.type === 'state_update') {
       await this.gossipEngine.handleStateUpdate(gossipData, this.gossipState);
     }
   }
 
   private async handleConsensusMessage(message: Message): Promise<void> {
-    const consensusData = message.payload.data;
+    const consensusData = message["payload"]?.["data"];
 
-    if (consensusData.type === 'consensus_proposal') {
-      await this.handleConsensusProposal(consensusData.proposal);
-    } else if (consensusData.type === 'consensus_vote') {
-      await this.handleConsensusVote(consensusData.vote);
+    if (consensusData?.type === 'consensus_proposal') {
+      await this.handleConsensusProposal(consensusData?.proposal);
+    } else if (consensusData?.type === 'consensus_vote') {
+      await this.handleConsensusVote(consensusData?.vote);
     }
   }
 
@@ -793,7 +791,7 @@ export class CommunicationProtocols extends EventEmitter {
 
   private async handleElectionMessage(message: Message): Promise<void> {
     // Leader election logic would be implemented here
-    this._logger.debug('Election message received', { sender: message.sender });
+    this["_logger"]?.debug('Election message received', { sender: message["sender"] });
   }
 
   private async updateRoutingTable(): Promise<void> {
@@ -813,7 +811,7 @@ export class CommunicationProtocols extends EventEmitter {
 
     // Create spanning tree for efficient broadcast
     const tree: BroadcastTree = {
-      root: this._nodeId,
+      root: this["_nodeId"],
       children: new Map(),
       depth: 0,
       redundancy: 1,
@@ -822,12 +820,12 @@ export class CommunicationProtocols extends EventEmitter {
     // Simple binary tree construction
     for (let i = 0; i < nodeIds.length; i++) {
       const parentIndex = Math.floor((i - 1) / 2);
-      const parentId = i === 0 ? this._nodeId : nodeIds[parentIndex];
-      const nodeId = nodeIds[i];
+      const parentId = i === 0 ? this["_nodeId"] : nodeIds?.[parentIndex];
+      const nodeId = nodeIds?.[i];
 
       if (parentId && nodeId) {
         const children = tree.children.get(parentId) || [];
-        children.push(nodeId);
+        children?.push(nodeId);
         tree.children.set(parentId, children);
       }
     }
@@ -839,7 +837,7 @@ export class CommunicationProtocols extends EventEmitter {
     if (this.gossipState.size === 0 || this.nodes.size === 0) return;
 
     // Select random subset of nodes for gossip
-    const nodeIds = Array.from(this.nodes.keys()).filter((id) => id !== this._nodeId);
+    const nodeIds = Array.from(this.nodes.keys()).filter((id) => id !== this["_nodeId"]);
     const gossipTargets = this.selectRandomNodes(nodeIds, Math.min(3, nodeIds.length));
 
     for (const [key, state] of this.gossipState) {
@@ -861,7 +859,7 @@ export class CommunicationProtocols extends EventEmitter {
 
   private async sendHeartbeats(): Promise<void> {
     const heartbeatPayload: MessagePayload = {
-      data: { timestamp: Date.now(), nodeId: this._nodeId },
+      data: { timestamp: Date.now(), nodeId: this["_nodeId"] },
       metadata: { type: 'heartbeat' },
       contentType: 'application/json',
       encoding: 'utf8',
@@ -876,7 +874,7 @@ export class CommunicationProtocols extends EventEmitter {
 
     // Cleanup message history
     for (const [messageId, message] of this.messageHistory) {
-      if (now - message.timestamp.getTime() > message.ttl) {
+      if (now - message["timestamp"]?.["getTime"]() > message["ttl"]) {
         this.messageHistory.delete(messageId);
       }
     }
@@ -910,15 +908,15 @@ export class CommunicationProtocols extends EventEmitter {
     const now = new Date();
 
     for (const [nodeId, node] of this.nodes) {
-      const timeSinceLastSeen = now.getTime() - node.lastSeen.getTime();
+      const timeSinceLastSeen = now.getTime() - node?.lastSeen?.getTime();
 
       if (timeSinceLastSeen > this.config.heartbeatInterval * 3) {
-        node.status = 'offline';
-        this._logger.warn(`Node ${nodeId} marked as offline due to heartbeat timeout`);
+        node?.status = 'offline';
+        this["_logger"]?.warn(`Node ${nodeId} marked as offline due to heartbeat timeout`);
       } else if (timeSinceLastSeen > this.config.heartbeatInterval * 2) {
-        node.status = 'degraded';
+        node?.status = 'degraded';
       } else {
-        node.status = 'online';
+        node?.status = 'online';
       }
     }
   }
@@ -928,7 +926,7 @@ export class CommunicationProtocols extends EventEmitter {
     if (totalNodes === 0) return 1;
 
     const onlineNodes = Array.from(this.nodes.values()).filter(
-      (node) => node.status === 'online'
+      (node) => node?.status === 'online'
     ).length;
 
     return onlineNodes / totalNodes;
@@ -938,9 +936,9 @@ export class CommunicationProtocols extends EventEmitter {
     const topology = {
       nodes: Array.from(this.nodes.entries()).map(([id, node]) => ({
         id,
-        status: node.status,
-        address: node.address,
-        lastSeen: node.lastSeen,
+        status: node?.status,
+        address: node?.address,
+        lastSeen: node?.lastSeen,
       })),
       connections: Array.from(this.routingTable.entries()).map(([source, targets]) => ({
         source,
@@ -966,10 +964,10 @@ export class CommunicationProtocols extends EventEmitter {
 
   private calculateChecksum(message: Message): string {
     const data = JSON.stringify({
-      sender: message.sender,
-      recipients: message.recipients,
-      payload: message.payload,
-      timestamp: message.timestamp,
+      sender: message["sender"],
+      recipients: message["recipients"],
+      payload: message["payload"],
+      timestamp: message["timestamp"],
     });
 
     return createHash('sha256').update(data).digest('hex');
@@ -981,15 +979,15 @@ export class CommunicationProtocols extends EventEmitter {
 
   private verifyChecksum(message: Message): boolean {
     const expectedChecksum = this.calculateChecksum(message);
-    return message.checksum === expectedChecksum;
+    return message["checksum"] === expectedChecksum;
   }
 
   private isMessageExpired(message: Message): boolean {
-    return Date.now() - message.timestamp.getTime() > message.ttl;
+    return Date.now() - message["timestamp"]?.["getTime"]() > message["ttl"];
   }
 
   private signVote(proposalId: string, decision: ConsensusVote['decision']): string {
-    const data = `${proposalId}:${decision}:${this._nodeId}:${Date.now()}`;
+    const data = `${proposalId}:${decision}:${this["_nodeId"]}:${Date.now()}`;
     return createHash('sha256').update(data).digest('hex');
   }
 
@@ -1001,24 +999,24 @@ export class CommunicationProtocols extends EventEmitter {
 
   private updateMessageMetrics(message: Message): void {
     // Update sender metrics
-    const senderNode = this.nodes.get(message.sender);
+    const senderNode = this.nodes.get(message["sender"]);
     if (senderNode) {
-      senderNode.metrics.messagesSent++;
-      senderNode.metrics.lastUpdated = new Date();
+      senderNode?.metrics?.messagesSent++;
+      senderNode?.metrics?.lastUpdated = new Date();
     }
 
     // Update recipient metrics
-    for (const recipientId of message.recipients) {
+    for (const recipientId of message["recipients"]) {
       const recipientNode = this.nodes.get(recipientId);
       if (recipientNode) {
-        recipientNode.metrics.messagesReceived++;
-        recipientNode.metrics.lastUpdated = new Date();
+        recipientNode?.metrics?.messagesReceived++;
+        recipientNode?.metrics?.lastUpdated = new Date();
       }
     }
   }
 
   private async handleMessageFailure(message: Message, error: Error): Promise<void> {
-    this._logger.error('Message routing failed', {
+    this["_logger"]?.error('Message routing failed', {
       messageId: message.id,
       type: message.type,
       error: error.message,
@@ -1029,23 +1027,23 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   private handleNodeConnected(data: any): void {
-    this._logger.info('Node connected', { nodeId: data.nodeId });
+    this["_logger"]?.info('Node connected', { nodeId: data?.["nodeId"] });
     this.updateRoutingTable();
     this.updateBroadcastTrees();
   }
 
   private handleNodeDisconnected(data: any): void {
-    this._logger.info('Node disconnected', { nodeId: data.nodeId });
-    const node = this.nodes.get(data.nodeId);
+    this["_logger"]?.info('Node disconnected', { nodeId: data?.["nodeId"] });
+    const node = this.nodes.get(data?.["nodeId"]);
     if (node) {
-      node.status = 'offline';
+      node?.status = 'offline';
     }
     this.updateRoutingTable();
     this.updateBroadcastTrees();
   }
 
   private handleNetworkPartition(data: any): void {
-    this._logger.warn('Network partition detected', data);
+    this["_logger"]?.warn('Network partition detected', data);
     // Implement partition handling logic
   }
 
@@ -1062,7 +1060,7 @@ export class CommunicationProtocols extends EventEmitter {
     if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
 
     this.emit('shutdown');
-    this._logger.info('Communication protocols shutdown');
+    this["_logger"]?.info('Communication protocols shutdown');
   }
 }
 
@@ -1073,17 +1071,17 @@ class CompressionEngine {
   constructor(private logger: ILogger) {}
 
   async compress(payload: MessagePayload, config: CompressionConfig): Promise<MessagePayload> {
-    if (!config.enabled) return payload;
+    if (!config?.["enabled"]) return payload;
 
-    const data = JSON.stringify(payload.data);
-    if (data.length < config.threshold) return payload;
+    const data = JSON.stringify(payload["data"]);
+    if (data.length < config?.["threshold"]) return payload;
 
     try {
       let compressed: Buffer;
 
-      switch (config.algorithm) {
+      switch (config?.["algorithm"]) {
         case 'gzip':
-          compressed = gzipSync(data, { level: config.level });
+          compressed = gzipSync(data, { level: config?.["level"] });
           break;
         default:
           return payload;
@@ -1093,7 +1091,7 @@ class CompressionEngine {
         ...payload,
         data: compressed.toString('base64'),
         encoding: 'base64',
-        metadata: { ...payload.metadata, compressed: true, originalSize: data.length },
+        metadata: { ...payload["metadata"], compressed: true, originalSize: data.length },
       };
     } catch (error) {
       this.logger.error('Compression failed', { error });
@@ -1102,13 +1100,13 @@ class CompressionEngine {
   }
 
   async decompress(payload: MessagePayload, config: CompressionConfig): Promise<MessagePayload> {
-    if (!config.enabled || !payload.metadata['compressed']) return payload;
+    if (!config?.["enabled"] || !payload["metadata"]?.['compressed']) return payload;
 
     try {
-      const compressedData = Buffer.from(payload.data as string, 'base64');
+      const compressedData = Buffer.from(payload["data"] as string, 'base64');
       let decompressed: Buffer;
 
-      switch (config.algorithm) {
+      switch (config?.["algorithm"]) {
         case 'gzip':
           decompressed = gunzipSync(compressedData);
           break;
@@ -1120,7 +1118,7 @@ class CompressionEngine {
         ...payload,
         data: JSON.parse(decompressed.toString()),
         encoding: 'utf8',
-        metadata: { ...payload.metadata, compressed: false },
+        metadata: { ...payload["metadata"], compressed: false },
       };
     } catch (error) {
       this.logger.error('Decompression failed', { error });
@@ -1138,23 +1136,23 @@ class EncryptionEngine {
   }
 
   async encrypt(payload: MessagePayload, config: EncryptionConfig): Promise<MessagePayload> {
-    if (!this.enabled || !config.enabled) return payload;
+    if (!this.enabled || !config?.["enabled"]) return payload;
 
     // Placeholder for encryption implementation
     // Would use actual encryption algorithms like AES-GCM
     return {
       ...payload,
-      metadata: { ...payload.metadata, encrypted: true },
+      metadata: { ...payload["metadata"], encrypted: true },
     };
   }
 
   async decrypt(payload: MessagePayload, config: EncryptionConfig): Promise<MessagePayload> {
-    if (!this.enabled || !config.enabled || !payload.metadata['encrypted']) return payload;
+    if (!this.enabled || !config?.["enabled"] || !payload["metadata"]?.['encrypted']) return payload;
 
     // Placeholder for decryption implementation
     return {
       ...payload,
-      metadata: { ...payload.metadata, encrypted: false },
+      metadata: { ...payload["metadata"], encrypted: false },
     };
   }
 }
@@ -1170,7 +1168,7 @@ class RoutingEngine {
     nodes: Map<string, CommunicationNode>
   ): Promise<void> {
     // Generic routing implementation
-    for (const recipient of message.recipients) {
+    for (const recipient of message["recipients"]) {
       const route = routingTable.get(recipient);
       if (route && route.length > 0 && route[0]) {
         await this.forwardMessage(message, route[0], nodes);
@@ -1190,8 +1188,8 @@ class RoutingEngine {
   }
 
   async multicast(message: Message, nodes: Map<string, CommunicationNode>): Promise<void> {
-    for (const recipient of message.recipients) {
-      if (nodes.has(recipient)) {
+    for (const recipient of message["recipients"]) {
+      if (nodes?.has(recipient)) {
         await this.forwardMessage(message, recipient, nodes);
       }
     }
@@ -1202,11 +1200,11 @@ class RoutingEngine {
     routingTable: Map<string, string[]>,
     nodes: Map<string, CommunicationNode>
   ): Promise<void> {
-    if (message.recipients.length !== 1) {
+    if (message["recipients"].length !== 1) {
       throw new Error('Unicast requires exactly one recipient');
     }
 
-    const recipient = message.recipients[0];
+    const recipient = message["recipients"]?.[0];
     if (!recipient) {
       throw new Error('No recipient found');
     }
@@ -1222,8 +1220,8 @@ class RoutingEngine {
     targetId: string,
     nodes: Map<string, CommunicationNode>
   ): Promise<void> {
-    const targetNode = nodes.get(targetId);
-    if (!targetNode || targetNode.status === 'offline') {
+    const targetNode = nodes?.get(targetId);
+    if (!targetNode || targetNode?.status === 'offline') {
       throw new Error(`Target node ${targetId} is unreachable`);
     }
 
@@ -1231,7 +1229,7 @@ class RoutingEngine {
     this.logger.debug('Message forwarded', {
       messageId: message.id,
       target: targetId,
-      address: targetNode.address,
+      address: targetNode?.address,
     });
   }
 
@@ -1257,7 +1255,7 @@ class RoutingEngine {
 
     const children = tree.children.get(nodeId) || [];
     for (const childId of children) {
-      if (nodes.has(childId)) {
+      if (nodes?.has(childId)) {
         await this.forwardMessage(message, childId, nodes);
         await this.traverseBroadcastTree(message, childId, tree, nodes, visited);
       }
@@ -1340,7 +1338,7 @@ class GossipEngine {
     const { key, state } = data;
     const currentState = gossipState.get(key);
 
-    if (!currentState || state.version > currentState.version) {
+    if (!currentState || state.version > currentState?.version) {
       gossipState.set(key, state);
       this.logger.debug('Gossip state updated', {
         key,

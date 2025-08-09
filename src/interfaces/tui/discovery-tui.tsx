@@ -18,9 +18,6 @@ import { DomainCard } from './components/domain-card.js';
 import { ProgressBar } from './components/progress-bar.js';
 import { SwarmConfigPanel } from './components/swarm-config-panel.js';
 
-// Import shared types
-import type { DiscoveredDomain, DiscoveryState } from './types.js';
-
 export interface SwarmConfig {
   topology: 'mesh' | 'hierarchical' | 'star' | 'ring';
   maxAgents: number;
@@ -195,24 +192,24 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
       const newConfigs = new Map(prev.swarmConfigs);
 
       if (selected) {
-        newSelected.add(domain);
+        newSelected?.add(domain);
         // Set default config for newly selected domain
         const domainData = prev.domains.find((d) => d.name === domain);
         if (domainData) {
-          newConfigs.set(domain, {
-            topology: domainData.suggestedTopology,
-            maxAgents: domainData.estimatedAgents,
+          newConfigs?.set(domain, {
+            topology: domainData?.suggestedTopology,
+            maxAgents: domainData?.estimatedAgents,
             resourceLimits: {
-              memory: domainData.estimatedComplexity === 'extreme' ? '2GB' : '1GB',
-              cpu: Math.min(domainData.estimatedAgents, 4),
+              memory: domainData?.estimatedComplexity === 'extreme' ? '2GB' : '1GB',
+              cpu: Math.min(domainData?.estimatedAgents, 4),
             },
             enableAutoScaling: true,
-            persistence: domainData.technologies.includes('postgresql') ? 'sqlite' : 'json',
+            persistence: domainData?.technologies?.includes('postgresql') ? 'sqlite' : 'json',
           });
         }
       } else {
-        newSelected.delete(domain);
-        newConfigs.delete(domain);
+        newSelected?.delete(domain);
+        newConfigs?.delete(domain);
       }
 
       return {
@@ -226,9 +223,9 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
   const handleConfigChange = useCallback((domain: string, config: Partial<SwarmConfig>) => {
     setState((prev) => {
       const newConfigs = new Map(prev.swarmConfigs);
-      const currentConfig = newConfigs.get(domain);
+      const currentConfig = newConfigs?.get(domain);
       if (currentConfig) {
-        newConfigs.set(domain, { ...currentConfig, ...config });
+        newConfigs?.set(domain, { ...currentConfig, ...config });
       }
       return {
         ...prev,
@@ -252,7 +249,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
         status: 'pending',
         progress: 0,
         message: 'Queued for deployment',
-        agents: { created: 0, total: config?.maxAgents || 0 },
+        agents: { created: 0, total: config?.["maxAgents"] || 0 },
       });
     });
 
@@ -302,7 +299,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
           status: 'deploying',
           progress: 0,
           message: 'Initializing swarm infrastructure...',
-          agents: { created: 0, total: config.maxAgents },
+          agents: { created: 0, total: config?.["maxAgents"] },
         })
       ),
     }));
@@ -326,8 +323,8 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
             progress: ((i + 1) / phases.length) * 100,
             message: phases[i],
             agents: {
-              created: Math.floor(((i + 1) / phases.length) * config.maxAgents),
-              total: config.maxAgents,
+              created: Math.floor(((i + 1) / phases.length) * config?.["maxAgents"]),
+              total: config?.["maxAgents"],
             },
           })
         ),
@@ -344,7 +341,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
           status: 'deployed',
           progress: 100,
           message: 'Swarm operational',
-          agents: { created: config.maxAgents, total: config.maxAgents },
+          agents: { created: config?.["maxAgents"], total: config?.["maxAgents"] },
         })
       ),
     }));
@@ -489,7 +486,7 @@ const ConfigurationPhase: React.FC<{
   const [selectedDomain, setSelectedDomain] = useState(0);
   const selectedDomains = Array.from(state.selectedDomains);
 
-  useInput((_input, key) => {
+  useInput((input, key) => {
     if (key.leftArrow && selectedDomain > 0) {
       setSelectedDomain(selectedDomain - 1);
     } else if (key.rightArrow && selectedDomain < selectedDomains.length - 1) {
@@ -501,7 +498,7 @@ const ConfigurationPhase: React.FC<{
     }
   });
 
-  const currentDomain = selectedDomains[selectedDomain];
+  const currentDomain = selectedDomains?.[selectedDomain];
   const config = state.swarmConfigs.get(currentDomain);
 
   return (

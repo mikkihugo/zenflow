@@ -4,16 +4,7 @@
  */
 
 import { createLogger } from '../../core/logger';
-import type {
-  CacheStrategy,
-  CoordinationLayer,
-  LatencyReduction,
-  Protocol,
-  RoutingOptimization,
-  ScalingStrategy,
-  SwarmOptimizer,
-  SwarmTopology,
-} from '../interfaces/optimization-interfaces';
+import type { SwarmOptimizer } from '../interfaces/optimization-interfaces';
 
 export interface SwarmOptimizationConfig {
   maxAgents: number;
@@ -312,18 +303,18 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
     );
 
     // Select the best performing algorithm
-    const bestResult = results.reduce((best, current) =>
-      current.performance > best.performance ? current : best
+    const bestResult = results?.reduce((best, current) =>
+      current?.performance > best.performance ? current : best
     );
 
     // Update configuration if better algorithm found
-    if (bestResult.algorithm !== currentAlgorithm) {
-      this.config.routingAlgorithm = bestResult.algorithm as any;
+    if (bestResult?.algorithm !== currentAlgorithm) {
+      this.config.routingAlgorithm = bestResult?.algorithm as any;
     }
 
     return {
-      algorithm: bestResult.algorithm,
-      improvement: bestResult.performance,
+      algorithm: bestResult?.algorithm,
+      improvement: bestResult?.performance,
     };
   }
 

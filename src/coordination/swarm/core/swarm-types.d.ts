@@ -125,7 +125,7 @@ declare module 'ruv-swarm' {
   }
 
   // Enhanced MCP Tools
-  export class EnhancedMCPTools {
+  export class MCPTools {
     constructor();
 
     initialize(): Promise<ZenSwarm>;

@@ -1,19 +1,4 @@
-/**
- * USL Integration Service Helpers and Utilities
- *
- * Provides helper functions and utilities for working with IntegrationServiceAdapter
- * instances, including common operations, batch processing, validation helpers,
- * and specialized integration patterns.
- */
-
-import type { ArchitectureDesign } from '../../../coordination/swarm/sparc/database/architecture-storage';
-
-import type { APIResult } from '../../../interfaces/api/safe-api-client';
 import { createLogger } from '../../../utils/logger';
-import type {
-  IntegrationServiceAdapter,
-  IntegrationServiceAdapterConfig,
-} from './integration-service-adapter';
 
 /**
  * Integration operation result type
@@ -147,8 +132,8 @@ export class IntegrationServiceHelper {
   ): Promise<IntegrationOperationResult<string>> {
     try {
       // Apply custom validation if specified
-      if (config.customValidation) {
-        const isValid = await config.customValidation(architecture);
+      if (config?.["customValidation"]) {
+        const isValid = await config?.["customValidation"](architecture);
         if (!isValid) {
           return {
             success: false,
@@ -161,16 +146,16 @@ export class IntegrationServiceHelper {
       }
 
       // Apply tags if specified
-      if (config.tags) {
+      if (config?.["tags"]) {
         architecture.metadata = {
           ...architecture.metadata,
-          tags: config.tags,
+          tags: config?.["tags"],
         };
       }
 
       const result = await this.adapter.execute<string>('architecture-save', {
         architecture,
-        projectId: config.projectId,
+        projectId: config?.["projectId"],
       });
 
       return result;
@@ -215,11 +200,11 @@ export class IntegrationServiceHelper {
               ),
             ]);
 
-            if (result.success) {
-              return result.data || null;
+            if (result?.success) {
+              return result?.data || null;
             } else {
-              errors.push(result.error);
-              if (failFast) throw new Error(result.error?.message || 'Batch operation failed');
+              errors.push(result?.error);
+              if (failFast) throw new Error(result?.error?.message || 'Batch operation failed');
               return null;
             }
           } catch (error) {
@@ -230,10 +215,10 @@ export class IntegrationServiceHelper {
         });
 
         const batchResults = await Promise.all(batchPromises);
-        results.push(...batchResults);
+        results?.push(...batchResults);
       }
 
-      const successfulResults = results.filter((r) => r !== null) as string[];
+      const successfulResults = results?.filter((r) => r !== null) as string[];
 
       return {
         success: errors.length === 0 || !failFast,
@@ -289,9 +274,9 @@ export class IntegrationServiceHelper {
       });
 
       // Additional client-side filtering if needed
-      if (result.success && result.data && criteria.dateRange) {
+      if (result?.success && result?.data && criteria.dateRange) {
         const { start, end } = criteria.dateRange;
-        result.data = result.data.filter((arch) => {
+        result?.data = result?.data?.filter((arch) => {
           const createdAt = new Date(arch.createdAt || Date.now());
           return createdAt >= start && createdAt <= end;
         });
@@ -333,32 +318,32 @@ export class IntegrationServiceHelper {
         endpoint,
         data,
         options: {
-          timeout: config.timeout,
-          retries: config.retries,
-          headers: config.headers,
+          timeout: config?.["timeout"],
+          retries: config?.["retries"],
+          headers: config?.["headers"],
         },
       };
 
       const result = await this.adapter.execute<APIResult<T>>(operation, params);
 
-      if (result.success && result.data) {
+      if (result?.success && result?.data) {
         // Extract data from APIResult wrapper
-        const apiResult = result.data;
-        if (apiResult.success) {
+        const apiResult = result?.data;
+        if (apiResult?.success) {
           return {
             success: true,
-            data: apiResult.data,
-            metadata: result.metadata,
+            data: apiResult?.data,
+            metadata: result?.metadata,
           };
         } else {
           return {
             success: false,
             error: {
-              code: apiResult.error?.code || 'API_ERROR',
-              message: apiResult.error?.message || 'API request failed',
-              details: apiResult.error?.details,
+              code: apiResult?.error?.code || 'API_ERROR',
+              message: apiResult?.error?.message || 'API request failed',
+              details: apiResult?.error?.details,
             },
-            metadata: result.metadata,
+            metadata: result?.metadata,
           };
         }
       }
@@ -414,11 +399,11 @@ export class IntegrationServiceHelper {
               ),
             ]);
 
-            if (result.success) {
-              return result.data || null;
+            if (result?.success) {
+              return result?.data || null;
             } else {
-              errors.push(result.error);
-              if (failFast) throw new Error(result.error?.message || 'Batch request failed');
+              errors.push(result?.error);
+              if (failFast) throw new Error(result?.error?.message || 'Batch request failed');
               return null;
             }
           } catch (error) {
@@ -429,10 +414,10 @@ export class IntegrationServiceHelper {
         });
 
         const batchResults = await Promise.all(batchPromises);
-        results.push(...batchResults);
+        results?.push(...batchResults);
       }
 
-      const successfulResults = results.filter((r) => r !== null) as T[];
+      const successfulResults = results?.filter((r) => r !== null) as T[];
 
       return {
         success: errors.length === 0 || !failFast,
@@ -487,23 +472,23 @@ export class IntegrationServiceHelper {
       switch (operation) {
         case 'create':
           operationName = 'api-create-resource';
-          params = { endpoint, data: data?.resourceData };
+          params = { endpoint, data: data?.["resourceData"] };
           break;
         case 'read':
           operationName = 'api-get-resource';
-          params = { endpoint, id: data?.id };
+          params = { endpoint, id: data?.["id"] };
           break;
         case 'update':
           operationName = 'api-update-resource';
-          params = { endpoint, id: data?.id, data: data?.resourceData };
+          params = { endpoint, id: data?.["id"], data: data?.["resourceData"] };
           break;
         case 'delete':
           operationName = 'api-delete-resource';
-          params = { endpoint, id: data?.id };
+          params = { endpoint, id: data?.["id"] };
           break;
         case 'list':
           operationName = 'api-list-resources';
-          params = { endpoint, queryParams: data?.queryParams };
+          params = { endpoint, queryParams: data?.["queryParams"] };
           break;
         default:
           throw new Error(`Unknown resource operation: ${operation}`);
@@ -547,28 +532,28 @@ export class IntegrationServiceHelper {
         case 'connect':
           operationName = 'protocol-connect';
           params = {
-            protocol: config.protocol,
+            protocol: config?.["protocol"],
             config: {
-              timeout: config.connectionTimeout,
-              usePooling: config.useConnectionPooling,
+              timeout: config?.["connectionTimeout"],
+              usePooling: config?.["useConnectionPooling"],
             },
           };
           break;
         case 'disconnect':
           operationName = 'protocol-disconnect';
-          params = { protocol: config.protocol };
+          params = { protocol: config?.["protocol"] };
           break;
         case 'send':
           operationName = 'protocol-send';
-          params = { protocol: config.protocol, message: config.message };
+          params = { protocol: config?.["protocol"], message: config?.["message"] };
           break;
         case 'receive':
           operationName = 'protocol-receive';
-          params = { protocol: config.protocol, timeout: config.timeout };
+          params = { protocol: config?.["protocol"], timeout: config?.["timeout"] };
           break;
         case 'broadcast':
           operationName = 'protocol-broadcast';
-          params = { message: config.message, protocols: config.protocols };
+          params = { message: config?.["message"], protocols: config?.["protocols"] };
           break;
         default:
           throw new Error(`Unknown protocol operation: ${operation}`);
@@ -607,13 +592,13 @@ export class IntegrationServiceHelper {
     try {
       const targetProtocols = protocols || (await this.adapter.execute<string[]>('protocol-list'));
 
-      if (!targetProtocols.success || !targetProtocols.data) {
+      if (!targetProtocols?.success || !targetProtocols?.data) {
         throw new Error('Failed to get protocol list');
       }
 
       const healthResults: Record<string, any> = {};
 
-      for (const protocol of targetProtocols.data) {
+      for (const protocol of targetProtocols?.data) {
         try {
           const startTime = Date.now();
           const healthResult = await this.adapter.execute<boolean>('protocol-health-check', {
@@ -621,14 +606,14 @@ export class IntegrationServiceHelper {
           });
           const latency = Date.now() - startTime;
 
-          healthResults[protocol] = {
-            status: healthResult.success ? 'healthy' : 'unhealthy',
+          healthResults?.[protocol] = {
+            status: healthResult?.success ? 'healthy' : 'unhealthy',
             latency,
             lastCheck: new Date(),
-            errorCount: healthResult.success ? 0 : 1,
+            errorCount: healthResult?.success ? 0 : 1,
           };
         } catch (_error) {
-          healthResults[protocol] = {
+          healthResults?.[protocol] = {
             status: 'unhealthy',
             latency: -1,
             lastCheck: new Date(),
@@ -827,7 +812,7 @@ export class IntegrationServiceHelper {
           component: 'cache',
           action: 'Cleared cache',
           impact: 'Reduced memory usage and improved cache efficiency',
-          applied: clearResult.success,
+          applied: clearResult?.success,
         });
       }
 
@@ -971,7 +956,7 @@ export class IntegrationServiceUtils {
    */
   static calculateSuccessRate(results: IntegrationOperationResult[]): number {
     if (results.length === 0) return 0;
-    const successCount = results.filter((r) => r.success).length;
+    const successCount = results?.filter((r) => r.success).length;
     return (successCount / results.length) * 100;
   }
 
@@ -1037,10 +1022,10 @@ export class IntegrationServiceUtils {
     errorRate: number;
   } {
     const totalOperations = results.length;
-    const successCount = results.filter((r) => r.success).length;
+    const successCount = results?.filter((r) => r.success).length;
     const errorCount = totalOperations - successCount;
 
-    const latencies = results.filter((r) => r.metadata?.duration).map((r) => r.metadata?.duration);
+    const latencies = results?.filter((r) => r.metadata?.duration).map((r) => r.metadata?.duration);
 
     const averageLatency =
       latencies.length > 0 ? latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length : 0;

@@ -150,16 +150,7 @@ const logger = getLogger("interfaces-clients-adapters-websocket-client-adapter")
  */
 
 import { EventEmitter } from 'node:events';
-import type {
-  AuthenticationConfig,
-  ClientConfig,
-  ClientMetrics,
-  ClientResponse,
-  ClientStatus,
-  IClient,
-  RequestOptions,
-  RetryConfig,
-} from '../core/interfaces';
+import type { IClient } from '../core/interfaces';
 
 /**
  * WebSocket-specific authentication configuration
@@ -505,8 +496,8 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
       ...config,
     };
 
-    this.name = config.name || `ws-client-${Date.now()}`;
-    this._connectionId = this.generateConnectionId();
+    this.name = config?.name || `ws-client-${Date.now()}`;
+    this["_connectionId"] = this.generateConnectionId();
     this.startTime = Date.now();
     this.metrics = this.initializeMetrics();
   }
@@ -537,9 +528,9 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
         this.ws.onopen = () => {
           clearTimeout(timeout);
-          this._isConnected = true;
+          this["_isConnected"] = true;
           this.reconnectAttempts = 0;
-          this._connectionId = this.generateConnectionId();
+          this["_connectionId"] = this.generateConnectionId();
 
           this.emit('connect');
           this.emit('connected'); // Legacy event
@@ -557,11 +548,11 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
         this.ws.onclose = (event) => {
           clearTimeout(timeout);
-          this._isConnected = false;
+          this["_isConnected"] = false;
           this.stopHeartbeat();
 
-          this.emit('disconnect', event.code, event.reason);
-          this.emit('disconnected', event.code, event.reason); // Legacy event
+          this.emit('disconnect', event["code"], event["reason"]);
+          this.emit('disconnected', event["code"], event["reason"]); // Legacy event
 
           if (this.shouldReconnect(event)) {
             this.scheduleReconnect();
@@ -592,15 +583,15 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
       this.stopHeartbeat();
 
-      if (this.ws && this._isConnected) {
+      if (this.ws && this["_isConnected"]) {
         this.ws.onclose = () => {
-          this._isConnected = false;
+          this["_isConnected"] = false;
           this.emit('disconnect');
           resolve();
         };
         this.ws.close();
       } else {
-        this._isConnected = false;
+        this["_isConnected"] = false;
         resolve();
       }
     });
@@ -610,7 +601,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    * Check if client is connected (UACL interface)
    */
   isConnected(): boolean {
-    return this._isConnected && this.ws?.readyState === WebSocket.OPEN;
+    return this["_isConnected"] && this.ws?.readyState === WebSocket["OPEN"];
   }
 
   /**
@@ -621,13 +612,13 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
     return {
       name: this.name,
-      status: this._isConnected ? 'healthy' : 'disconnected',
+      status: this["_isConnected"] ? 'healthy' : 'disconnected',
       lastCheck: new Date(),
       responseTime,
       errorRate: this.calculateErrorRate(),
       uptime: Date.now() - this.startTime,
       metadata: {
-        connectionId: this._connectionId,
+        connectionId: this["_connectionId"],
         readyState: this.ws?.readyState || -1,
         queuedMessages: this.messageQueue.length,
         reconnectAttempts: this.reconnectAttempts,
@@ -731,7 +722,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   send(data: any): void {
     const message = typeof data === 'string' ? data : JSON.stringify(data);
 
-    if (this._isConnected && this.ws) {
+    if (this["_isConnected"] && this.ws) {
       try {
         this.ws.send(message);
         this.updateMetrics(true, 0);
@@ -760,7 +751,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
     const serialized = JSON.stringify(messageWithId);
 
-    if (this._isConnected && this.ws) {
+    if (this["_isConnected"] && this.ws) {
       try {
         this.ws.send(serialized);
         this.updateMetrics(true, 0);
@@ -799,14 +790,14 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    * Get current connection state
    */
   get readyState(): number {
-    return this.ws?.readyState || WebSocket.CLOSED;
+    return this.ws?.readyState || WebSocket["CLOSED"];
   }
 
   /**
    * Get connection ID
    */
   get connectionId(): string {
-    return this._connectionId;
+    return this["_connectionId"];
   }
 
   // =============================================================================
@@ -837,14 +828,14 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
       let data: any;
 
       // Handle different message types
-      if (typeof event.data === 'string') {
+      if (typeof event["data"] === 'string') {
         try {
-          data = JSON.parse(event.data);
+          data = JSON.parse(event["data"]);
         } catch {
-          data = event.data;
+          data = event["data"];
         }
       } else {
-        data = event.data;
+        data = event["data"];
       }
 
       // Check for heartbeat response
@@ -855,9 +846,9 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
       // Emit message event with rich data
       this.emit('message', data, {
-        messageType: typeof event.data === 'string' ? 'text' : 'binary',
+        messageType: typeof event["data"] === 'string' ? 'text' : 'binary',
         timestamp: Date.now(),
-        connectionId: this._connectionId,
+        connectionId: this["_connectionId"],
       });
     } catch (error) {
       this.emit('error', error);
@@ -880,7 +871,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
         method,
         endpoint,
         body: data,
-        headers: options?.headers,
+        headers: options?.["headers"],
       },
       timestamp: startTime,
     };
@@ -891,7 +882,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
           this.off(`response:${requestId}`, responseHandler);
           reject(new Error('Request timeout'));
         },
-        options?.timeout || this.config.timeout || 30000
+        options?.["timeout"] || this.config.timeout || 30000
       );
 
       const responseHandler = (responseData: any) => {
@@ -899,15 +890,15 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
         const duration = Date.now() - startTime;
 
         resolve({
-          data: responseData.data,
-          status: responseData.status || 200,
-          statusText: responseData.statusText || 'OK',
-          headers: responseData.headers || {},
+          data: responseData?.data,
+          status: responseData?.status || 200,
+          statusText: responseData?.statusText || 'OK',
+          headers: responseData?.headers || {},
           config: options || {},
           metadata: {
             requestId,
             duration,
-            connectionId: this._connectionId,
+            connectionId: this["_connectionId"],
             messageType: 'response',
           },
         });
@@ -934,7 +925,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   private flushMessageQueue(): void {
     if (!this.config.messageQueue?.enabled) return;
 
-    while (this.messageQueue.length > 0 && this._isConnected) {
+    while (this.messageQueue.length > 0 && this["_isConnected"]) {
       const message = this.messageQueue.shift();
       if (message) {
         try {
@@ -949,11 +940,8 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   private shouldReconnect(event: CloseEvent): boolean {
-    return (
-      this.config.reconnection?.enabled === true &&
-      this.reconnectAttempts < (this.config.reconnection.maxAttempts || 10) &&
-      event.code !== 1000
-    ); // Normal closure
+    return (this.config.reconnection?.enabled === true &&
+    this.reconnectAttempts < (this.config.reconnection.maxAttempts || 10) && event["code"] !== 1000); // Normal closure
   }
 
   private scheduleReconnect(): void {
@@ -994,7 +982,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
     const message = this.config.heartbeat.message || { type: 'ping' };
 
     this.heartbeatTimer = setInterval(() => {
-      if (this._isConnected && this.ws) {
+      if (this["_isConnected"] && this.ws) {
         try {
           this.ws.send(JSON.stringify(message));
         } catch (error) {
@@ -1012,18 +1000,18 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   private isHeartbeatResponse(data: any): boolean {
-    return data && (data.type === 'pong' || data.type === 'heartbeat' || data.type === 'ping');
+    return data && (data?.type === 'pong' || data?.type === 'heartbeat' || data?.type === 'ping');
   }
 
   private async measurePingTime(): Promise<number> {
-    if (!this._isConnected) return -1;
+    if (!this["_isConnected"]) return -1;
 
     return new Promise((resolve) => {
       const startTime = Date.now();
       const pingId = this.generateMessageId();
 
       const pongHandler = (data: any) => {
-        if (data.id === pingId) {
+        if (data?.id === pingId) {
           const responseTime = Date.now() - startTime;
           this.off('message', pongHandler);
           resolve(responseTime);
@@ -1116,7 +1104,7 @@ export class WebSocketClientFactory {
    * @param configs
    */
   async createMultiple(configs: WebSocketClientConfig[]): Promise<WebSocketClientAdapter[]> {
-    return Promise.all(configs.map((config) => this.create(config)));
+    return Promise.all(configs?.map((config) => this.create(config)));
   }
 
   /**
@@ -1168,9 +1156,9 @@ export class WebSocketClientFactory {
     for (const [name, client] of this.clients) {
       try {
         const status = await client.healthCheck();
-        results.set(name, status);
+        results?.set(name, status);
       } catch (error) {
-        results.set(name, {
+        results?.set(name, {
           name,
           status: 'unhealthy',
           lastCheck: new Date(),
@@ -1194,10 +1182,10 @@ export class WebSocketClientFactory {
     for (const [name, client] of this.clients) {
       try {
         const metrics = await client.getMetrics();
-        results.set(name, metrics);
+        results?.set(name, metrics);
       } catch (_error) {
         // Create error metrics
-        results.set(name, {
+        results?.set(name, {
           name,
           requestCount: 0,
           successCount: 0,

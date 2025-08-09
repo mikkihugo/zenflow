@@ -7,16 +7,10 @@
  */
 
 import { createLogger } from '../../../utils/logger';
-import type { ServiceOperationOptions } from '../core/interfaces';
-import type {
-  InfrastructureServiceAdapter,
-  InfrastructureServiceAdapterConfig,
-} from './infrastructure-service-adapter';
 import {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
 } from './infrastructure-service-adapter';
-import type { CreateServiceOptions } from './infrastructure-service-factory';
 import { getInfrastructureServiceFactory } from './infrastructure-service-factory';
 
 const logger = createLogger('InfrastructureServiceHelpers');
@@ -50,21 +44,21 @@ export async function quickCreateInfrastructureService(
 
   const config = createDefaultInfrastructureServiceAdapterConfig(name, {
     facade: {
-      enabled: options.enableFacade !== false,
+      enabled: options?.["enableFacade"] !== false,
       autoInitialize: true,
       enableMetrics: true,
-      enableHealthChecks: options.enableHealthMonitoring !== false,
+      enableHealthChecks: options?.["enableHealthMonitoring"] !== false,
     },
     patternIntegration: {
-      enabled: options.enablePatternIntegration !== false,
+      enabled: options?.["enablePatternIntegration"] !== false,
       enableAutoOptimization: true,
     },
     resourceManagement: {
-      enableResourceTracking: options.enableResourceTracking !== false,
+      enableResourceTracking: options?.["enableResourceTracking"] !== false,
       enableResourceOptimization: true,
     },
     healthMonitoring: {
-      enableAdvancedChecks: options.enableHealthMonitoring !== false,
+      enableAdvancedChecks: options?.["enableHealthMonitoring"] !== false,
       enablePerformanceAlerts: true,
     },
   });
@@ -72,7 +66,7 @@ export async function quickCreateInfrastructureService(
   const service = createInfrastructureServiceAdapter(config);
   await service.initialize();
 
-  if (options.autoStart !== false) {
+  if (options?.["autoStart"] !== false) {
     await service.start();
   }
 
@@ -102,9 +96,9 @@ export async function createFacadeOnlyInfrastructureService(
     facade: {
       enabled: true,
       autoInitialize: true,
-      mockServices: facadeOptions.mockServices !== false,
-      enableBatchOperations: facadeOptions.enableBatchOperations !== false,
-      systemStatusInterval: facadeOptions.systemStatusInterval || 30000,
+      mockServices: facadeOptions?.mockServices !== false,
+      enableBatchOperations: facadeOptions?.enableBatchOperations !== false,
+      systemStatusInterval: facadeOptions?.systemStatusInterval || 30000,
       enableMetrics: true,
       enableHealthChecks: true,
     },
@@ -144,9 +138,9 @@ export async function createPatternIntegrationOnlyService(
     facade: { enabled: false },
     patternIntegration: {
       enabled: true,
-      configProfile: patternOptions.configProfile || 'development',
-      maxAgents: patternOptions.maxAgents || 20,
-      enableAutoOptimization: patternOptions.enableAutoOptimization !== false,
+      configProfile: patternOptions?.configProfile || 'development',
+      maxAgents: patternOptions?.maxAgents || 20,
+      enableAutoOptimization: patternOptions?.enableAutoOptimization !== false,
       enableEventSystem: true,
       enableCommandSystem: true,
       enableProtocolSystem: true,
@@ -202,8 +196,8 @@ export async function createProductionInfrastructureService(
     orchestration: {
       enableServiceDiscovery: true,
       enableLoadBalancing: true,
-      enableCircuitBreaker: productionOptions.enableCircuitBreaker !== false,
-      maxConcurrentServices: productionOptions.maxConcurrentServices || 50,
+      enableCircuitBreaker: productionOptions?.enableCircuitBreaker !== false,
+      maxConcurrentServices: productionOptions?.maxConcurrentServices || 50,
       enableServiceMesh: true,
     },
     resourceManagement: {
@@ -217,14 +211,14 @@ export async function createProductionInfrastructureService(
       enableHotReload: true,
       enableValidation: true,
       enableVersioning: true,
-      configEncryption: productionOptions.configEncryption === true,
+      configEncryption: productionOptions?.configEncryption === true,
       maxConfigHistory: 100,
     },
     healthMonitoring: {
       enableAdvancedChecks: true,
       enableServiceDependencyTracking: true,
       enablePerformanceAlerts: true,
-      enablePredictiveMonitoring: productionOptions.enablePredictiveMonitoring !== false,
+      enablePredictiveMonitoring: productionOptions?.enablePredictiveMonitoring !== false,
       performanceThresholds: {
         responseTime: 500, // Stricter thresholds for production
         errorRate: 0.01,
@@ -266,9 +260,9 @@ export async function initializeProjectWithRetries(
         timeout: 60000, // 1 minute timeout for project initialization
       });
 
-      if (result.success) {
+      if (result?.success) {
         logger.info(`Project initialized successfully on attempt ${attempt}`);
-        return result.data;
+        return result?.data;
       }
     } catch (error) {
       lastError = error as Error;
@@ -311,8 +305,8 @@ export async function processDocumentEnhanced(
   logger.debug('Processing document with enhanced options', { documentPath, options });
 
   const operationOptions: ServiceOperationOptions = {
-    timeout: options.timeout || 120000, // 2 minute default for document processing
-    priority: options.priority || 'medium',
+    timeout: options?.["timeout"] || 120000, // 2 minute default for document processing
+    priority: options?.["priority"] || 'medium',
   };
 
   try {
@@ -325,14 +319,14 @@ export async function processDocumentEnhanced(
       operationOptions
     );
 
-    if (result.success) {
+    if (result?.success) {
       logger.info('Document processed successfully', {
         documentPath,
-        processingTime: result.metadata?.duration,
+        processingTime: result?.metadata?.duration,
       });
-      return result.data;
+      return result?.data;
     } else {
-      throw new Error(result.error?.message || 'Document processing failed');
+      throw new Error(result?.error?.message || 'Document processing failed');
     }
   } catch (error) {
     logger.error('Enhanced document processing failed:', error);
@@ -361,7 +355,7 @@ export async function executeBatchWithProgress(
     service.on('operation', (event) => {
       // This is simplified - in reality we'd need more sophisticated progress tracking
       const completed = Math.floor(Math.random() * operations.length); // Placeholder
-      onProgress(completed, operations.length, event.operation || 'unknown');
+      onProgress(completed, operations.length, event["operation"] || 'unknown');
     });
   }
 
@@ -374,14 +368,14 @@ export async function executeBatchWithProgress(
       }
     );
 
-    if (result.success) {
+    if (result?.success) {
       logger.info('Batch operations completed successfully', {
         operationCount: operations.length,
-        duration: result.metadata?.duration,
+        duration: result?.metadata?.duration,
       });
-      return result.data;
+      return result?.data;
     } else {
-      throw new Error(result.error?.message || 'Batch execution failed');
+      throw new Error(result?.error?.message || 'Batch execution failed');
     }
   } catch (error) {
     logger.error('Batch execution with progress failed:', error);
@@ -414,11 +408,11 @@ export async function getSystemStatusCached(
       }
     );
 
-    if (result.success) {
+    if (result?.success) {
       logger.debug('System status retrieved successfully');
-      return result.data;
+      return result?.data;
     } else {
-      throw new Error(result.error?.message || 'System status check failed');
+      throw new Error(result?.error?.message || 'System status check failed');
     }
   } catch (error) {
     logger.error('Cached system status retrieval failed:', error);
@@ -452,10 +446,10 @@ export async function initializeOptimizedSwarm(
   logger.debug('Initializing optimized swarm', { swarmConfig });
 
   const optimizedConfig = {
-    topology: swarmConfig.topology || 'hierarchical',
-    agentCount: swarmConfig.agentCount || 5,
-    capabilities: swarmConfig.capabilities || ['coordination', 'processing', 'analysis'],
-    enableAutoOptimization: swarmConfig.enableAutoOptimization !== false,
+    topology: swarmConfig?.topology || 'hierarchical',
+    agentCount: swarmConfig?.agentCount || 5,
+    capabilities: swarmConfig?.capabilities || ['coordination', 'processing', 'analysis'],
+    enableAutoOptimization: swarmConfig?.enableAutoOptimization !== false,
     resourceLimits: {
       cpu: 0.8,
       memory: 0.7,
@@ -470,14 +464,14 @@ export async function initializeOptimizedSwarm(
       timeout: 90000, // 1.5 minute timeout for swarm initialization
     });
 
-    if (result.success) {
+    if (result?.success) {
       logger.info('Optimized swarm initialized successfully', {
-        swarmId: result.data?.swarmId,
-        agentCount: optimizedConfig.agentCount,
+        swarmId: result?.data?.swarmId,
+        agentCount: optimizedConfig?.agentCount,
       });
-      return result.data;
+      return result?.data;
     } else {
-      throw new Error(result.error?.message || 'Swarm initialization failed');
+      throw new Error(result?.error?.message || 'Swarm initialization failed');
     }
   } catch (error) {
     logger.error('Optimized swarm initialization failed:', error);
@@ -507,8 +501,8 @@ export async function coordinateSwarmWithMonitoring(
       const monitoringInterval = setInterval(async () => {
         try {
           const metricsResult = await service.execute('swarm-status', { swarmId });
-          if (metricsResult.success) {
-            monitoringCallback(metricsResult.data);
+          if (metricsResult?.success) {
+            monitoringCallback(metricsResult?.data);
           }
         } catch (error) {
           logger.warn('Failed to get swarm metrics during monitoring:', error);
@@ -530,15 +524,15 @@ export async function coordinateSwarmWithMonitoring(
       }
     );
 
-    if (result.success) {
+    if (result?.success) {
       logger.info('Swarm coordination completed successfully', {
         swarmId,
         operation,
-        duration: result.metadata?.duration,
+        duration: result?.metadata?.duration,
       });
-      return result.data;
+      return result?.data;
     } else {
-      throw new Error(result.error?.message || 'Swarm coordination failed');
+      throw new Error(result?.error?.message || 'Swarm coordination failed');
     }
   } catch (error) {
     logger.error('Swarm coordination with monitoring failed:', error);
@@ -567,19 +561,19 @@ export async function optimizeResourcesComprehensive(
   try {
     // Get current resource stats
     const statsResult = await service.execute('resource-stats');
-    const _currentStats = statsResult.success ? statsResult.data : {};
+    const _currentStats = statsResult?.success ? statsResult?.data : {};
 
     // Perform optimization
     const optimizeResult = await service.execute('resource-optimize');
-    const optimizations = optimizeResult.success ? optimizeResult.data : {};
+    const optimizations = optimizeResult?.success ? optimizeResult?.data : {};
 
     // Perform cleanup
     const cleanupResult = await service.execute('resource-cleanup');
-    const cleanup = cleanupResult.success ? cleanupResult.data : {};
+    const cleanup = cleanupResult?.success ? cleanupResult?.data : {};
 
     // Generate performance report for recommendations
     const reportResult = await service.execute('performance-report');
-    const recommendations = reportResult.success ? reportResult.data?.recommendations || [] : [];
+    const recommendations = reportResult?.success ? reportResult?.data?.recommendations || [] : [];
 
     const result = {
       optimizations: [
@@ -637,8 +631,8 @@ export async function monitorResourcesWithAlerts(
   const monitoringInterval = setInterval(async () => {
     try {
       const trackResult = await service.execute('resource-track');
-      if (trackResult.success) {
-        const resources = trackResult.data;
+      if (trackResult?.success) {
+        const resources = trackResult?.data;
 
         // Check thresholds and trigger alerts
         if (alertCallback) {
@@ -681,21 +675,21 @@ export async function updateConfigurationSafely(
     // Validate configuration first if requested
     if (validateFirst) {
       const validateResult = await service.execute('config-validate');
-      if (!validateResult.success || !validateResult.data?.valid) {
+      if (!validateResult?.success || !validateResult?.data?.valid) {
         throw new Error('Configuration validation failed');
       }
     }
 
     // Get current version for potential rollback
     const versionsResult = await service.execute('config-version');
-    const currentVersions = versionsResult.success ? versionsResult.data : [];
+    const currentVersions = versionsResult?.success ? versionsResult?.data : [];
 
     // Apply the configuration update
     await service.updateConfig(newConfig);
 
     // Verify the update was successful
     const newValidateResult = await service.execute('config-validate');
-    const isValid = newValidateResult.success && newValidateResult.data?.valid;
+    const isValid = newValidateResult?.success && newValidateResult?.data?.valid;
 
     logger.info('Configuration updated safely', {
       success: isValid,
@@ -705,7 +699,7 @@ export async function updateConfigurationSafely(
     return {
       success: isValid,
       rollbackAvailable: currentVersions.length > 0,
-      version: newValidateResult.data?.configHash,
+      version: newValidateResult?.data?.configHash,
     };
   } catch (error) {
     logger.error('Safe configuration update failed:', error);
@@ -732,9 +726,9 @@ export async function rollbackConfiguration(
     // Get available versions if no specific version provided
     if (!version) {
       const versionsResult = await service.execute('config-version');
-      if (versionsResult.success && versionsResult.data?.length > 1) {
+      if (versionsResult?.success && versionsResult?.data?.length > 1) {
         // Use the second-to-last version (last is current)
-        version = versionsResult.data[versionsResult.data.length - 2].version;
+        version = versionsResult?.data?.[versionsResult?.data.length - 2]?.version;
       } else {
         throw new Error('No previous configuration version available');
       }
@@ -743,7 +737,7 @@ export async function rollbackConfiguration(
     // Perform the rollback
     const rollbackResult = await service.execute('config-rollback', { version });
 
-    if (rollbackResult.success) {
+    if (rollbackResult?.success) {
       logger.info('Configuration rolled back successfully', {
         rolledBackTo: version,
       });
@@ -752,7 +746,7 @@ export async function rollbackConfiguration(
         rolledBackTo: version,
       };
     } else {
-      throw new Error(rollbackResult.error?.message || 'Rollback failed');
+      throw new Error(rollbackResult?.error?.message || 'Rollback failed');
     }
   } catch (error) {
     logger.error('Configuration rollback failed:', error);
@@ -790,20 +784,20 @@ export async function performComprehensiveHealthCheck(
   try {
     // Perform basic health check
     const healthResult = await service.execute('health-check');
-    const basicHealth = healthResult.success && healthResult.data?.healthy;
+    const basicHealth = healthResult?.success && healthResult?.data?.healthy;
 
     // Get infrastructure stats
     const statsResult = await service.execute('infrastructure-stats');
-    const stats = statsResult.success ? statsResult.data : {};
+    const stats = statsResult?.success ? statsResult?.data : {};
 
     // Get performance report
     const reportResult = await service.execute('performance-report');
-    const report = reportResult.success ? reportResult.data : {};
+    const report = reportResult?.success ? reportResult?.data : {};
 
     // Analyze health components
     const details = {
       service: basicHealth,
-      dependencies: healthResult.data?.details?.dependencies === 0 || true, // Simplified
+      dependencies: healthResult?.data?.details?.dependencies === 0 || true, // Simplified
       resources: stats.resourceTracking?.currentUtilization
         ? Object.values(stats.resourceTracking.currentUtilization).every((v: any) => v < 0.9)
         : true,
@@ -892,7 +886,7 @@ export async function createInfrastructureServiceWithBestPractices(
   };
 
   if (environment === 'production') {
-    options.config = createDefaultInfrastructureServiceAdapterConfig(name, {
+    options?.["config"] = createDefaultInfrastructureServiceAdapterConfig(name, {
       facade: { mockServices: false },
       patternIntegration: { configProfile: 'production' },
       resourceManagement: {
@@ -1000,13 +994,13 @@ export async function executeWithRetries<T>(
     try {
       const result = await service.execute(operation, params, { timeout });
 
-      if (result.success) {
+      if (result?.success) {
         if (attempt > 1) {
           logger.info(`Operation succeeded on attempt ${attempt}`, { operation });
         }
-        return result.data;
+        return result?.data;
       } else {
-        throw new Error(result.error?.message || 'Operation failed');
+        throw new Error(result?.error?.message || 'Operation failed');
       }
     } catch (error) {
       lastError = error as Error;
@@ -1054,14 +1048,14 @@ export async function batchExecuteWithConcurrency<T>(
     const promise = service
       .execute(operation.operation, operation.params)
       .then((result) => {
-        results[i] = {
-          success: result.success,
-          data: result.data,
-          error: result.error ? new Error(result.error.message) : undefined,
+        results?.[i] = {
+          success: result?.success,
+          data: result?.data,
+          error: result?.error ? new Error(result?.error?.message) : undefined,
         };
       })
       .catch((error) => {
-        results[i] = {
+        results?.[i] = {
           success: false,
           error: error as Error,
         };
@@ -1081,8 +1075,8 @@ export async function batchExecuteWithConcurrency<T>(
 
   logger.info('Batch execution with concurrency completed', {
     total: results.length,
-    successful: results.filter((r) => r.success).length,
-    failed: results.filter((r) => !r.success).length,
+    successful: results?.filter((r) => r.success).length,
+    failed: results?.filter((r) => !r.success).length,
   });
 
   return results;

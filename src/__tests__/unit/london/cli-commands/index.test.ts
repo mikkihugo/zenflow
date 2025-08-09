@@ -7,16 +7,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { jest } from '@jest/globals';
-
-// Import the components we're testing
-import type {
-  CommandConfig,
-  CommandContext,
-  CommandMetadata,
-  CommandRegistry,
-  CommandResult,
-} from '../../../../cli/types/index';
 
 // Mock the full CLI command system integration
 interface CLICommandSystem {
@@ -361,7 +351,7 @@ describe('CLI Commands Integration - TDD London', () => {
       mockParser.parse.mockReturnValue(parseResult);
       mockRegistry.execute.mockResolvedValue(commandResult);
 
-      const _executionResult: ExecutionResult = {
+      const executionResult: ExecutionResult = {
         success: true,
         exitCode: 0,
         output: 'Deployed successfully',
@@ -373,9 +363,9 @@ describe('CLI Commands Integration - TDD London', () => {
         if (parsed.command) {
           const result = await mockRegistry.execute(parsed.command, context);
           return {
-            success: result.success,
-            exitCode: result.exitCode,
-            output: result.message,
+            success: result?.success,
+            exitCode: result?.exitCode,
+            output: result?.message,
           };
         }
         return { success: false, exitCode: 1 };
@@ -387,7 +377,7 @@ describe('CLI Commands Integration - TDD London', () => {
       // Assert - verify component coordination
       expect(mockParser.parse).toHaveBeenCalledWith(input);
       expect(mockRegistry.execute).toHaveBeenCalledWith('deploy', context);
-      expect(result.success).toBe(true);
+      expect(result?.success).toBe(true);
     });
 
     it('should format output using formatter when command succeeds', async () => {
@@ -412,7 +402,7 @@ describe('CLI Commands Integration - TDD London', () => {
 
       // Assert - verify formatter usage
       expect(mockFormatter.format).toHaveBeenCalledWith(commandData, { format: 'table' });
-      expect(result.output).toBe(formattedOutput);
+      expect(result?.output).toBe(formattedOutput);
     });
 
     it('should use error handler when command fails', async () => {
@@ -434,7 +424,7 @@ describe('CLI Commands Integration - TDD London', () => {
       // Act
       try {
         await cliSystem.execute(input);
-      } catch (_thrownError) {
+      } catch (thrownError) {
         // Expected to throw, but error handler should have been called
       }
 
@@ -588,7 +578,7 @@ describe('CLI Commands Integration - TDD London', () => {
       // Act
       try {
         await cliSystem.execute(input);
-      } catch (_e) {
+      } catch (e) {
         // Expected to throw
       }
 

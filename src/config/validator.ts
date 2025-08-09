@@ -67,34 +67,34 @@ export class ConfigValidator {
     }
 
     // Validate core subsections
-    if (config?.core) {
-      if (!config?.core?.logger) {
+    if (config?.["core"]) {
+      if (!config?.["core"]?.logger) {
         errors.push('Missing core.logger configuration');
       }
-      if (!config?.core?.performance) {
+      if (!config?.["core"]?.performance) {
         errors.push('Missing core.performance configuration');
       }
-      if (!config?.core?.security) {
+      if (!config?.["core"]?.security) {
         errors.push('Missing core.security configuration');
       }
     }
 
     // Validate interfaces subsections
-    if (config?.interfaces) {
+    if (config?.["interfaces"]) {
       const requiredInterfaces = ['shared', 'terminal', 'web', 'mcp'];
       for (const iface of requiredInterfaces) {
-        if (!config?.interfaces?.[iface as keyof typeof config.interfaces]) {
+        if (!config?.["interfaces"]?.[iface as keyof typeof config.interfaces]) {
           errors.push(`Missing interfaces.${iface} configuration`);
         }
       }
     }
 
     // Validate storage subsections
-    if (config?.storage) {
-      if (!config?.storage?.memory) {
+    if (config?.["storage"]) {
+      if (!config?.["storage"]?.memory) {
         errors.push('Missing storage.memory configuration');
       }
-      if (!config?.storage?.database) {
+      if (!config?.["storage"]?.database) {
         errors.push('Missing storage.database configuration');
       }
     }
@@ -170,35 +170,35 @@ export class ConfigValidator {
     warnings: string[]
   ): void {
     // Web interface dependencies
-    if (config?.interfaces?.web?.enableHttps && !config?.interfaces?.web?.corsOrigins) {
+    if (config?.["interfaces"]?.web?.enableHttps && !config?.["interfaces"]?.web?.corsOrigins) {
       warnings.push('HTTPS enabled but no CORS origins configured');
     }
 
     // Neural network dependencies
-    if (config?.neural?.enableCUDA && !config?.neural?.enableWASM) {
+    if (config?.["neural"]?.enableCUDA && !config?.["neural"]?.enableWASM) {
       warnings.push('CUDA enabled without WASM - may not be supported');
     }
 
     // Database dependencies
-    if (config?.storage?.memory?.backend === 'lancedb' && !config?.storage?.database?.lancedb) {
+    if (config?.["storage"]?.memory?.backend === 'lancedb' && !config?.["storage"]?.database?.lancedb) {
       errors.push('LanceDB backend selected but lancedb configuration missing');
     }
 
     // MCP tool dependencies
     if (
-      config?.interfaces?.mcp?.tools?.enableAll &&
-      config?.interfaces?.mcp?.tools?.disabledTools?.length > 0
+      config?.["interfaces"]?.mcp?.tools?.enableAll &&
+      config?.["interfaces"]?.mcp?.tools?.disabledTools?.length > 0
     ) {
       warnings.push('enableAll is true but some tools are disabled');
     }
 
     // Security dependencies
-    if (!config?.core?.security?.enableSandbox && config?.core?.security?.allowShellAccess) {
+    if (!config?.["core"]?.security?.enableSandbox && config?.["core"]?.security?.allowShellAccess) {
       warnings.push('Shell access enabled without sandbox - security risk');
     }
 
     // Performance dependencies
-    if (config?.core?.performance?.enableProfiling && !config?.core?.performance?.enableMetrics) {
+    if (config?.["core"]?.performance?.enableProfiling && !config?.["core"]?.performance?.enableMetrics) {
       warnings.push('Profiling enabled without metrics - limited functionality');
     }
   }
@@ -216,7 +216,7 @@ export class ConfigValidator {
     warnings: string[]
   ): void {
     // Port conflicts
-    const ports = [config?.interfaces?.web?.port, config?.interfaces?.mcp?.http?.port].filter(
+    const ports = [config?.["interfaces"]?.web?.port, config?.["interfaces"]?.mcp?.http?.port].filter(
       Boolean
     );
 
@@ -226,22 +226,22 @@ export class ConfigValidator {
     }
 
     // Memory constraints
-    if (config?.storage?.memory?.maxMemorySize && config?.storage?.memory?.cacheSize) {
-      if (config?.storage?.memory?.cacheSize > config?.storage?.memory?.maxMemorySize) {
+    if (config?.["storage"]?.memory?.maxMemorySize && config?.["storage"]?.memory?.cacheSize) {
+      if (config?.["storage"]?.memory?.cacheSize > config?.["storage"]?.memory?.maxMemorySize) {
         errors.push('Cache size cannot be larger than max memory size');
       }
     }
 
     // Agent constraints
-    if (config?.coordination?.maxAgents && config?.coordination?.maxAgents > 1000) {
+    if (config?.["coordination"]?.maxAgents && config?.["coordination"]?.maxAgents > 1000) {
       warnings.push('Very high agent count may impact performance');
     }
 
     // Timeout constraints
     const timeouts = [
-      config?.interfaces?.terminal?.timeout,
-      config?.interfaces?.mcp?.http?.timeout,
-      config?.coordination?.timeout,
+      config?.["interfaces"]?.terminal?.timeout,
+      config?.["interfaces"]?.mcp?.http?.timeout,
+      config?.["coordination"]?.timeout,
     ].filter(Boolean);
 
     for (const timeout of timeouts) {
@@ -256,10 +256,10 @@ export class ConfigValidator {
 
     // Directory constraints
     const directories = [
-      config?.storage?.memory?.directory,
-      config?.storage?.database?.sqlite?.path,
-      config?.storage?.database?.lancedb?.path,
-      config?.neural?.modelPath,
+      config?.["storage"]?.memory?.directory,
+      config?.["storage"]?.database?.sqlite?.path,
+      config?.["storage"]?.database?.lancedb?.path,
+      config?.["neural"]?.modelPath,
     ].filter(Boolean);
 
     for (const dir of directories) {
@@ -321,19 +321,19 @@ export class ConfigValidator {
     const failsafeApplied: string[] = [];
     
     // Check security issues
-    if (!config?.core?.security?.enableSandbox && config?.core?.security?.allowShellAccess) {
+    if (!config?.["core"]?.security?.enableSandbox && config?.["core"]?.security?.allowShellAccess) {
       securityIssues.push('Shell access enabled without sandbox protection');
     }
     
-    if (config?.core?.security?.trustedHosts?.length === 0) {
+    if (config?.["core"]?.security?.trustedHosts?.length === 0) {
       securityIssues.push('No trusted hosts configured for security');
     }
     
     // Check port conflicts
     const ports = [
-      config?.interfaces?.web?.port,
-      config?.interfaces?.mcp?.http?.port,
-      config?.monitoring?.dashboard?.port
+      config?.["interfaces"]?.web?.port,
+      config?.["interfaces"]?.mcp?.http?.port,
+      config?.["monitoring"]?.dashboard?.port
     ].filter((port): port is number => typeof port === 'number');
     
     const uniquePorts = new Set(ports);
@@ -342,11 +342,11 @@ export class ConfigValidator {
     }
     
     // Check performance warnings
-    if (config?.coordination?.maxAgents && config?.coordination?.maxAgents > 1000) {
+    if (config?.["coordination"]?.maxAgents && config?.["coordination"]?.maxAgents > 1000) {
       performanceWarnings.push('High agent count may impact performance');
     }
     
-    if (config?.core?.logger?.level === 'debug') {
+    if (config?.["core"]?.logger?.level === 'debug') {
       performanceWarnings.push('Debug logging enabled - may impact performance');
     }
     
@@ -354,7 +354,7 @@ export class ConfigValidator {
     const productionReady = basicResult?.valid && 
                            securityIssues.length === 0 && 
                            portConflicts.length === 0 &&
-                           config?.core?.security?.enableSandbox === true;
+                           config?.["core"]?.security?.enableSandbox === true;
     
     const result: ValidationResult = {
       valid: basicResult?.valid,

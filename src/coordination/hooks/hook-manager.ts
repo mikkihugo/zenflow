@@ -4,7 +4,6 @@
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from '../../core/logger';
-import type { HookSystem } from './hook-system-core';
 import { DefaultHookSystem } from './hook-system-core';
 
 const logger = createLogger({ prefix: 'HookManager' });
@@ -27,7 +26,7 @@ export interface HookExecutionResult {
  *
  * @example
  */
-export class DefaultHookManager extends EventEmitter {
+export class HookManager extends EventEmitter {
   private hookSystem: HookSystem;
   private config: HookManagerConfig;
   private activeHooks = new Set<string>();
@@ -133,9 +132,9 @@ export class DefaultHookManager extends EventEmitter {
         return Promise.all(promises);
       } else {
         return Promise.allSettled(promises).then((results) =>
-          results.map((result) =>
-            result.status === 'fulfilled'
-              ? result.value
+          results?.map((result) =>
+            result?.status === 'fulfilled'
+              ? result?.value
               : {
                   success: false,
                   error: new Error('Hook execution failed'),
@@ -149,9 +148,9 @@ export class DefaultHookManager extends EventEmitter {
 
       for (const { name, context } of hooks) {
         const result = await this.executeHook(name, context);
-        results.push(result);
+        results?.push(result);
 
-        if (failFast && !result.success) {
+        if (failFast && !result?.success) {
           break;
         }
       }

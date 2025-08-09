@@ -65,7 +65,7 @@ export class InterfaceLauncher extends EventEmitter {
   async launch(options: LaunchOptions = {}): Promise<LaunchResult> {
     const detection = InterfaceModeDetector.detect(options);
 
-    if (!options?.silent) {
+    if (!options?.["silent"]) {
       logger.info(`🚀 Launching ${detection.mode.toUpperCase()} interface`);
       logger.info(`Reason: ${detection.reason}`);
     }
@@ -112,7 +112,7 @@ export class InterfaceLauncher extends EventEmitter {
           pid: result?.pid,
         });
 
-        if (!options?.silent) {
+        if (!options?.["silent"]) {
           logger.info(`✅ ${detection.mode.toUpperCase()} interface launched successfully`);
           if (result?.url) {
             logger.info(`🌐 Available at: ${result?.url}`);
@@ -146,8 +146,8 @@ export class InterfaceLauncher extends EventEmitter {
       const { spawn } = await import('node:child_process');
       const cliArgs: string[] = [];
 
-      if (options?.verbose) cliArgs.push('--verbose');
-      if (options?.config?.theme) cliArgs.push('--theme', options?.config?.theme);
+      if (options?.["verbose"]) cliArgs.push('--verbose');
+      if (options?.["config"]?.theme) cliArgs.push('--theme', options?.["config"]?.theme);
 
       // CLI mode will be detected automatically based on presence of commands
       // Don't add interactive flag to keep CLI mode behavior
@@ -191,8 +191,8 @@ export class InterfaceLauncher extends EventEmitter {
       const { spawn } = await import('node:child_process');
       const tuiArgs = ['--ui']; // Force TUI mode
 
-      if (options?.verbose) tuiArgs.push('--verbose');
-      if (options?.config?.theme) tuiArgs.push('--theme', options?.config?.theme);
+      if (options?.["verbose"]) tuiArgs.push('--verbose');
+      if (options?.["config"]?.theme) tuiArgs.push('--theme', options?.["config"]?.theme);
 
       const tuiProcess = spawn('npx', ['tsx', 'src/interfaces/terminal/main.tsx', ...tuiArgs], {
         stdio: 'inherit',
@@ -229,7 +229,7 @@ export class InterfaceLauncher extends EventEmitter {
    * @param port
    */
   private async launchWeb(options: LaunchOptions, port?: number): Promise<LaunchResult> {
-    const webPort = port || options?.webPort || 3456;
+    const webPort = port || options?.["webPort"] || 3456;
 
     logger.debug(`Launching Web interface on port ${webPort}`);
 
@@ -239,9 +239,9 @@ export class InterfaceLauncher extends EventEmitter {
 
       const webConfig: WebInterfaceConfig = {
         port: webPort,
-        theme: options?.config?.theme || 'dark',
-        realTime: options?.config?.realTime !== false,
-        coreSystem: options?.config?.coreSystem,
+        theme: options?.["config"]?.theme || 'dark',
+        realTime: options?.["config"]?.realTime !== false,
+        coreSystem: options?.["config"]?.coreSystem,
       };
 
       const web = new WebInterface(webConfig);
@@ -280,8 +280,8 @@ export class InterfaceLauncher extends EventEmitter {
   private async launchBasicCLI(options: LaunchOptions): Promise<LaunchResult> {
     logger.info('🔧 Claude Code Zen - Basic CLI Mode');
 
-    if (options?.config?.coreSystem) {
-      const system = options?.config?.coreSystem;
+    if (options?.["config"]?.coreSystem) {
+      const system = options?.["config"]?.coreSystem;
 
       try {
         // Show system status

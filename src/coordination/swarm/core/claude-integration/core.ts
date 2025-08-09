@@ -25,9 +25,9 @@ class ClaudeIntegrationCore {
   private workingDir: string;
 
   constructor(options: ClaudeIntegrationOptions = {}) {
-    this._autoSetup = options.autoSetup || false;
-    this.forceSetup = options.forceSetup || false;
-    this.workingDir = options.workingDir || process.cwd();
+    this["_autoSetup"] = options?.["autoSetup"] || false;
+    this.forceSetup = options?.["forceSetup"] || false;
+    this.workingDir = options?.["workingDir"] || process.cwd();
   }
 
   /**
@@ -112,7 +112,7 @@ class ClaudeIntegrationCore {
     }
 
     // Default behavior for backward compatibility (legacy mode)
-    const addPermissions = options.secure !== true;
+    const addPermissions = options?.["secure"] !== true;
     const permissions = addPermissions ? ' --dangerously-skip-permissions' : '';
     const claudeCommand = `claude "${prompt.trim()}"${permissions}`;
 

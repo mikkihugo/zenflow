@@ -52,11 +52,11 @@ export class Orchestrator extends EventEmitter {
     super();
 
     this.config = {
-      name: config?.name || 'claude-zen-orchestrator',
-      timeout: config?.timeout || 30000,
-      maxConcurrentTasks: config?.maxConcurrentTasks || 10,
-      enableHealthCheck: config?.enableHealthCheck !== false,
-      healthCheckInterval: config?.healthCheckInterval || 30000,
+      name: config?.["name"] || 'claude-zen-orchestrator',
+      timeout: config?.["timeout"] || 30000,
+      maxConcurrentTasks: config?.["maxConcurrentTasks"] || 10,
+      enableHealthCheck: config?.["enableHealthCheck"] !== false,
+      healthCheckInterval: config?.["healthCheckInterval"] || 30000,
     };
 
     this.setupEventHandlers();

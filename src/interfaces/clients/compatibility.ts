@@ -10,10 +10,10 @@ const logger = getLogger("interfaces-clients-compatibility");
  */
 
 import { FACTIntegration } from '../../knowledge/knowledge-client';
-import { type APIClient, createAPIClient } from '../api/http/client';
+import { createAPIClient } from '../api/http/client';
 import { WebSocketClient } from '../api/websocket/client';
 import { ExternalMCPClient } from '../mcp/external-mcp-client';
-import { type ClientInstance, ClientType, uacl } from './index';
+import { ClientType, uacl } from './index';
 import { getMCPServerURL } from '../config/url-builder';
 
 /**
@@ -41,18 +41,18 @@ export const createManagedAPIClient = async (
   id: string,
   config: any = {}
 ): Promise<{ client: APIClient; instance: ClientInstance }> => {
-  const instance = await uacl.createHTTPClient(id, config.baseURL || getMCPServerURL(), {
+  const instance = await uacl.createHTTPClient(id, config?.["baseURL"] || getMCPServerURL(), {
     enabled: true,
     priority: 5,
-    timeout: config.timeout,
-    apiKey: config.apiKey,
-    bearerToken: config.bearerToken,
-    headers: config.headers,
-    retryAttempts: config.retryAttempts,
+    timeout: config?.["timeout"],
+    apiKey: config?.["apiKey"],
+    bearerToken: config?.["bearerToken"],
+    headers: config?.["headers"],
+    retryAttempts: config?.["retryAttempts"],
   });
 
   return {
-    client: instance.client as APIClient,
+    client: instance["client"] as APIClient,
     instance,
   };
 };
@@ -85,14 +85,14 @@ export const createManagedWebSocketClient = async (
   const instance = await uacl.createWebSocketClient(id, url, {
     enabled: true,
     priority: 5,
-    timeout: options.timeout,
-    reconnect: options.reconnect,
-    reconnectInterval: options.reconnectInterval,
-    maxReconnectAttempts: options.maxReconnectAttempts,
+    timeout: options?.["timeout"],
+    reconnect: options?.["reconnect"],
+    reconnectInterval: options?.["reconnectInterval"],
+    maxReconnectAttempts: options?.["maxReconnectAttempts"],
   });
 
   return {
-    client: instance.client as WebSocketClient,
+    client: instance["client"] as WebSocketClient,
     instance,
   };
 };
@@ -118,19 +118,19 @@ export const createManagedKnowledgeClient = async (
 ): Promise<{ client: FACTIntegration; instance: ClientInstance }> => {
   const instance = await uacl.createKnowledgeClient(
     id,
-    config.factRepoPath,
-    config.anthropicApiKey,
+    config?.["factRepoPath"],
+    config?.["anthropicApiKey"],
     {
       enabled: true,
       priority: 5,
-      pythonPath: config.pythonPath,
-      enableCache: config.enableCache,
-      cacheConfig: config.cacheConfig,
+      pythonPath: config?.["pythonPath"],
+      enableCache: config?.["enableCache"],
+      cacheConfig: config?.["cacheConfig"],
     }
   );
 
   return {
-    client: instance.client as FACTIntegration,
+    client: instance["client"] as FACTIntegration,
     instance,
   };
 };
@@ -160,7 +160,7 @@ export const createManagedMCPClient = async (
   });
 
   return {
-    client: instance.client as ExternalMCPClient,
+    client: instance["client"] as ExternalMCPClient,
     instance,
   };
 };
@@ -196,13 +196,13 @@ export class UACLMigrationHelper {
       migrated: false,
     };
 
-    current.lastAccess = new Date();
-    current.accessCount++;
+    current?.lastAccess = new Date();
+    current?.accessCount++;
 
     UACLMigrationHelper.migrationTracking.set(key, current);
 
     // Log recommendation for migration
-    if (current.accessCount === 1) {
+    if (current?.accessCount === 1) {
     }
   }
 
@@ -220,7 +220,7 @@ export class UACLMigrationHelper {
       migrated: false,
     };
 
-    current.migrated = true;
+    current?.migrated = true;
     UACLMigrationHelper.migrationTracking.set(key, current);
   }
 
@@ -245,9 +245,9 @@ export class UACLMigrationHelper {
         return {
           clientType,
           location,
-          accessCount: data.accessCount,
-          lastAccess: data.lastAccess,
-          migrated: data.migrated,
+          accessCount: data?.["accessCount"],
+          lastAccess: data?.["lastAccess"],
+          migrated: data?.["migrated"],
         };
       }
     );
@@ -279,19 +279,19 @@ export class UACLMigrationHelper {
       await uacl.initialize();
 
       switch (clientType) {
-        case ClientType.HTTP:
-          return await uacl.createHTTPClient(id, config.baseURL, config);
-        case ClientType.WEBSOCKET:
-          return await uacl.createWebSocketClient(id, config.url, config);
-        case ClientType.KNOWLEDGE:
+        case ClientType["HTTP"]:
+          return await uacl.createHTTPClient(id, config?.["baseURL"], config);
+        case ClientType["WEBSOCKET"]:
+          return await uacl.createWebSocketClient(id, config?.["url"], config);
+        case ClientType["KNOWLEDGE"]:
           return await uacl.createKnowledgeClient(
             id,
-            config.factRepoPath,
-            config.anthropicApiKey,
+            config?.["factRepoPath"],
+            config?.["anthropicApiKey"],
             config
           );
-        case ClientType.MCP:
-          return await uacl.createMCPClient(id, config.servers, config);
+        case ClientType["MCP"]:
+          return await uacl.createMCPClient(id, config?.["servers"], config);
         default:
           return null;
       }
@@ -480,10 +480,10 @@ export const performBatchMigration = async (): Promise<{
     try {
       // Placeholder for actual migration logic
       UACLMigrationHelper.markAsMigrated(client.clientType, client.location);
-      results.successful++;
+      results?.successful++;
     } catch (error) {
-      results.failed++;
-      results.errors.push({
+      results?.failed++;
+      results?.errors?.push({
         client: `${client.clientType}:${client.location}`,
         error: error instanceof Error ? error.message : String(error),
       });

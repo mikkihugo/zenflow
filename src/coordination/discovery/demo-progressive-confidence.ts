@@ -14,7 +14,7 @@ import { ProgressiveConfidenceBuilder } from './progressive-confidence-builder';
 const logger = createLogger({ prefix: 'ProgressiveConfidenceDemo' });
 
 // Mock AGUI interface for demo
-class DemoAGUI {
+class _DemoAGUI {
   async askQuestion(question: any): Promise<string> {
     logger.info('AGUI Question:', {
       type: question.type,
@@ -90,10 +90,10 @@ async function runDemo() {
   // Listen to progress events
   confidenceBuilder.on('progress', (event) => {
     logger.info('📊 Progress Event:', {
-      iteration: event.iteration,
-      confidence: `${(event.confidence * 100).toFixed(1)}%`,
-      domains: event.domainCount,
-      metrics: Object.entries(event.metrics)
+      iteration: event["iteration"],
+      confidence: `${(event["confidence"] * 100).toFixed(1)}%`,
+      domains: event["domainCount"],
+      metrics: Object.entries(event["metrics"])
         .map(([key, value]) => `${key}: ${(value * 100).toFixed(1)}%`)
         .join(', '),
     });
@@ -140,17 +140,17 @@ async function runDemo() {
 
     logger.info('\n🎉 Confidence Building Complete!\n');
     logger.info('Final Results:', {
-      domains: result.domains.size,
-      relationships: result.relationships.length,
-      finalConfidence: `${(result.confidence.overall * 100).toFixed(1)}%`,
-      validations: result.validationCount,
-      research: result.researchCount,
-      learningEvents: result.learningHistory.length,
+      domains: result?.domains.size,
+      relationships: result?.relationships.length,
+      finalConfidence: `${(result?.confidence?.overall * 100).toFixed(1)}%`,
+      validations: result?.validationCount,
+      research: result?.researchCount,
+      learningEvents: result?.learningHistory.length,
     });
 
     // Show domain details
     logger.info('\n📊 Domain Confidence Scores:');
-    for (const [name, domain] of result.domains) {
+    for (const [name, domain] of result?.domains) {
       logger.info(`  ${name}: ${(domain.confidence.overall * 100).toFixed(1)}%`, {
         validations: domain.validations.length,
         research: domain.research.length,
@@ -159,9 +159,9 @@ async function runDemo() {
     }
 
     // Show relationships
-    if (result.relationships.length > 0) {
+    if (result?.relationships.length > 0) {
       logger.info('\n🔗 Discovered Relationships:');
-      for (const rel of result.relationships) {
+      for (const rel of result?.relationships) {
         logger.info(
           `  ${rel.sourceDomain} ${rel.type} ${rel.targetDomain} (${(rel.confidence * 100).toFixed(0)}%)`
         );
@@ -170,7 +170,7 @@ async function runDemo() {
 
     // Show confidence breakdown
     logger.info('\n📈 Confidence Metrics Breakdown:');
-    Object.entries(result.confidence).forEach(([metric, value]) => {
+    Object.entries(result?.confidence).forEach(([metric, value]) => {
       logger.info(`  ${metric}: ${(value * 100).toFixed(1)}%`);
     });
   } catch (error) {

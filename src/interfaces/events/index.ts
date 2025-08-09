@@ -1095,10 +1095,10 @@ export class UEL {
 
       // Register factories that were successfully loaded
       factories.forEach((result, index) => {
-        if (result.status === 'fulfilled' && result.value) {
+        if (result?.status === 'fulfilled' && result?.value) {
           const eventTypes = Object.values(EventManagerTypes);
           const eventType = eventTypes[index];
-          if (eventType && result.value) {
+          if (eventType && result?.value) {
           }
         }
       });
@@ -1146,11 +1146,11 @@ export const UELHelpers = {
     } = {}
   ): Promise<UEL> {
     await uel.initialize({
-      enableValidation: config.enableValidation !== false,
-      enableCompatibility: config.enableCompatibility !== false,
-      healthMonitoring: config.healthMonitoring !== false,
-      autoRegisterFactories: config.autoRegisterFactories !== false,
-      logger: config.logger,
+      enableValidation: config?.enableValidation !== false,
+      enableCompatibility: config?.enableCompatibility !== false,
+      healthMonitoring: config?.healthMonitoring !== false,
+      autoRegisterFactories: config?.autoRegisterFactories !== false,
+      logger: config?.logger,
     });
 
     return uel;
@@ -1197,62 +1197,62 @@ export const UELHelpers = {
 
     try {
       // Use integrated event manager if available and requested
-      const eventManager = config.useIntegratedManager ? uel.getEventManager() : null;
+      const eventManager = config?.useIntegratedManager ? uel.getEventManager() : null;
 
-      if (config.systemEvents !== false) {
+      if (config?.systemEvents !== false) {
         managers.system = eventManager
           ? await eventManager.createSystemEventManager(
               'common-system',
-              config.customConfig?.system
+              config?.customConfig?.system
             )
-          : await uel.createSystemEventManager('common-system', config.customConfig?.system);
+          : await uel.createSystemEventManager('common-system', config?.customConfig?.system);
       }
 
-      if (config.coordinationEvents !== false) {
+      if (config?.coordinationEvents !== false) {
         managers.coordination = eventManager
           ? await eventManager.createCoordinationEventManager(
               'common-coordination',
-              config.customConfig?.coordination
+              config?.customConfig?.coordination
             )
           : await uel.createCoordinationEventManager(
               'common-coordination',
-              config.customConfig?.coordination
+              config?.customConfig?.coordination
             );
       }
 
-      if (config.communicationEvents !== false) {
+      if (config?.communicationEvents !== false) {
         managers.communication = eventManager
           ? await eventManager.createCommunicationEventManager(
               'common-communication',
-              config.customConfig?.communication
+              config?.customConfig?.communication
             )
           : await uel.createCommunicationEventManager(
               'common-communication',
-              config.customConfig?.communication
+              config?.customConfig?.communication
             );
       }
 
-      if (config.monitoringEvents !== false) {
+      if (config?.monitoringEvents !== false) {
         managers.monitoring = eventManager
           ? await eventManager.createMonitoringEventManager(
               'common-monitoring',
-              config.customConfig?.monitoring
+              config?.customConfig?.monitoring
             )
           : await uel.createMonitoringEventManager(
               'common-monitoring',
-              config.customConfig?.monitoring
+              config?.customConfig?.monitoring
             );
       }
 
-      if (config.interfaceEvents !== false) {
+      if (config?.interfaceEvents !== false) {
         managers.interface = eventManager
           ? await eventManager.createInterfaceEventManager(
               'common-interface',
-              config.customConfig?.interface
+              config?.customConfig?.interface
             )
           : await uel.createInterfaceEventManager(
               'common-interface',
-              config.customConfig?.interface
+              config?.customConfig?.interface
             );
       }
 
@@ -1293,9 +1293,9 @@ export const UELHelpers = {
           EventManagerTypes.SYSTEM
         );
         if (compatible) {
-          results.migratedManagers.push('migrated-observer');
+          results?.migratedManagers?.push('migrated-observer');
         } else {
-          results.errors.push('Failed to migrate main observer system');
+          results?.errors?.push('Failed to migrate main observer system');
         }
       }
 
@@ -1306,15 +1306,15 @@ export const UELHelpers = {
           ?.getMigrationHelper()
           ?.analyzeEventEmitter(observerSystem);
         if (analysis) {
-          results.recommendations.push(...analysis.recommendations);
+          results?.recommendations?.push(...analysis.recommendations);
         }
       }
 
-      results.success = results.errors.length === 0;
+      results?.success = results?.errors.length === 0;
       return results;
     } catch (error) {
-      results.success = false;
-      results.errors.push(
+      results?.success = false;
+      results?.errors?.push(
         `Migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
       return results;
@@ -1429,7 +1429,7 @@ export const UELHelpers = {
       // Migrate Event Bus
       if (systems.eventBus) {
         try {
-          result.eventBus = await uel.createEnhancedEventBus({
+          result?.eventBus = await uel.createEnhancedEventBus({
             enableUEL: true,
             managerName: 'migrated-event-bus',
           });
@@ -1444,7 +1444,7 @@ export const UELHelpers = {
       // Migrate Application Coordinator
       if (systems.applicationCoordinator) {
         try {
-          result.applicationCoordinator = await uel.createEnhancedApplicationCoordinator({
+          result?.applicationCoordinator = await uel.createEnhancedApplicationCoordinator({
             enableUEL: true,
             uelConfig: {
               enableValidation: true,
@@ -1463,7 +1463,7 @@ export const UELHelpers = {
       // Migrate Observer System
       if (systems.observerSystem) {
         try {
-          result.observerSystem = await uel.createEnhancedObserverSystem({
+          result?.observerSystem = await uel.createEnhancedObserverSystem({
             enableUEL: true,
           });
           migrationReport.migratedSystems.push('observerSystem');
@@ -1614,7 +1614,7 @@ export const UELHelpers = {
       // Create event managers
       const managerOptions = options?.eventManagers || {};
 
-      if (managerOptions.system !== false) {
+      if (managerOptions?.system !== false) {
         try {
           eventManagers.system = await uel.createSystemEventManager('complete-system');
           status.componentsCreated++;
@@ -1625,7 +1625,7 @@ export const UELHelpers = {
         }
       }
 
-      if (managerOptions.coordination !== false) {
+      if (managerOptions?.coordination !== false) {
         try {
           eventManagers.coordination =
             await uel.createCoordinationEventManager('complete-coordination');
@@ -1637,7 +1637,7 @@ export const UELHelpers = {
         }
       }
 
-      if (managerOptions.communication !== false) {
+      if (managerOptions?.communication !== false) {
         try {
           eventManagers.communication =
             await uel.createCommunicationEventManager('complete-communication');
@@ -1649,7 +1649,7 @@ export const UELHelpers = {
         }
       }
 
-      if (managerOptions.monitoring !== false) {
+      if (managerOptions?.monitoring !== false) {
         try {
           eventManagers.monitoring = await uel.createMonitoringEventManager('complete-monitoring');
           status.componentsCreated++;
@@ -1660,7 +1660,7 @@ export const UELHelpers = {
         }
       }
 
-      if (managerOptions.interface !== false) {
+      if (managerOptions?.interface !== false) {
         try {
           eventManagers.interface = await uel.createInterfaceEventManager('complete-interface');
           status.componentsCreated++;
@@ -1755,10 +1755,10 @@ export const UELHelpers = {
       );
 
       const summary = {
-        passed: validationResult.overall.valid,
-        score: validationResult.summary.totalScore,
-        criticalIssues: validationResult.summary.criticalIssues,
-        recommendations: validationResult.summary.recommendations,
+        passed: validationResult?.overall?.valid,
+        score: validationResult?.summary?.totalScore,
+        criticalIssues: validationResult?.summary?.criticalIssues,
+        recommendations: validationResult?.summary?.recommendations,
       };
 
       let reportPath: string | undefined;

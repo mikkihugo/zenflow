@@ -126,16 +126,16 @@ export async function setupClaudeZenMonitoring(
 }> {
   const centralConfig = getConfig();
   const config: Partial<IntegrationConfig> = {
-    dashboardPort: options?.dashboardPort || centralConfig?.monitoring?.dashboard?.port,
-    enableOptimization: options?.enableOptimization !== false,
-    metricsInterval: options?.metricsInterval || centralConfig?.core?.performance?.metricsInterval || 1000,
+    dashboardPort: options?.["dashboardPort"] || centralConfig?.monitoring?.dashboard?.port,
+    enableOptimization: options?.["enableOptimization"] !== false,
+    metricsInterval: options?.["metricsInterval"] || centralConfig?.core?.performance?.metricsInterval || 1000,
     enableAlerts: true,
     logLevel: centralConfig?.core?.logger?.level as any,
   };
 
   const system = await createMonitoringSystem(config);
   const hooks = system.getHooks();
-  const dashboardUrl = `http://${centralConfig?.monitoring?.dashboard?.host}:${config?.dashboardPort}`;
+  const dashboardUrl = `http://${centralConfig?.monitoring?.dashboard?.host}:${config?.["dashboardPort"]}`;
 
   return { system, hooks, dashboardUrl };
 }

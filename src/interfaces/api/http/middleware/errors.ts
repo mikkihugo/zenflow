@@ -1,15 +1,5 @@
 import { getLogger } from "../../../../config/logging-config";
 const logger = getLogger("interfaces-api-http-middleware-errors");
-/**
- * Error Handling Middleware
- *
- * Standardized error handling following Google API Design Guide.
- * Provides consistent error responses across all API endpoints.
- *
- * @file Express error handling middleware
- */
-
-import type { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 
 /**
  * Standard API Error Response Structure
@@ -99,36 +89,36 @@ const generateTraceId = (): string => {
  *
  * @param statusCode
  */
-const _getErrorCodeFromStatus = (statusCode: number): string => {
+const getErrorCodeFromStatus = (statusCode: number): string => {
   switch (statusCode) {
     case 400:
-      return ErrorCodes.BAD_REQUEST;
+      return ErrorCodes["BAD_REQUEST"];
     case 401:
-      return ErrorCodes.UNAUTHORIZED;
+      return ErrorCodes["UNAUTHORIZED"];
     case 403:
-      return ErrorCodes.FORBIDDEN;
+      return ErrorCodes["FORBIDDEN"];
     case 404:
-      return ErrorCodes.NOT_FOUND;
+      return ErrorCodes["NOT_FOUND"];
     case 405:
-      return ErrorCodes.METHOD_NOT_ALLOWED;
+      return ErrorCodes["METHOD_NOT_ALLOWED"];
     case 409:
-      return ErrorCodes.CONFLICT;
+      return ErrorCodes["CONFLICT"];
     case 422:
-      return ErrorCodes.UNPROCESSABLE_ENTITY;
+      return ErrorCodes["UNPROCESSABLE_ENTITY"];
     case 429:
-      return ErrorCodes.TOO_MANY_REQUESTS;
+      return ErrorCodes["TOO_MANY_REQUESTS"];
     case 500:
-      return ErrorCodes.INTERNAL_SERVER_ERROR;
+      return ErrorCodes["INTERNAL_SERVER_ERROR"];
     case 501:
-      return ErrorCodes.NOT_IMPLEMENTED;
+      return ErrorCodes["NOT_IMPLEMENTED"];
     case 502:
-      return ErrorCodes.BAD_GATEWAY;
+      return ErrorCodes["BAD_GATEWAY"];
     case 503:
-      return ErrorCodes.SERVICE_UNAVAILABLE;
+      return ErrorCodes["SERVICE_UNAVAILABLE"];
     case 504:
-      return ErrorCodes.GATEWAY_TIMEOUT;
+      return ErrorCodes["GATEWAY_TIMEOUT"];
     default:
-      return ErrorCodes.INTERNAL_SERVER_ERROR;
+      return ErrorCodes["INTERNAL_SERVER_ERROR"];
   }
 };
 
@@ -145,7 +135,7 @@ export const errorHandler: ErrorRequestHandler = (
   error: Error | APIError,
   req: Request,
   res: Response,
-  _next: NextFunction
+  next: NextFunction
 ): void => {
   const traceId = generateTraceId();
 
@@ -175,7 +165,7 @@ export const errorHandler: ErrorRequestHandler = (
   } else if (error.name === 'ValidationError') {
     // OpenAPI validation error
     statusCode = 422;
-    code = ErrorCodes.UNPROCESSABLE_ENTITY;
+    code = ErrorCodes["UNPROCESSABLE_ENTITY"];
     message = 'Request validation failed';
     details = {
       validationErrors: (error as any).errors || error.message,
@@ -183,7 +173,7 @@ export const errorHandler: ErrorRequestHandler = (
   } else if (error.name === 'SyntaxError' && 'body' in error) {
     // JSON parsing error
     statusCode = 400;
-    code = ErrorCodes.BAD_REQUEST;
+    code = ErrorCodes["BAD_REQUEST"];
     message = 'Invalid JSON in request body';
     details = {
       parseError: error.message,
@@ -191,7 +181,7 @@ export const errorHandler: ErrorRequestHandler = (
   } else if (error.message.includes('ENOTFOUND') || error.message.includes('ECONNREFUSED')) {
     // Network/connection error
     statusCode = 502;
-    code = ErrorCodes.BAD_GATEWAY;
+    code = ErrorCodes["BAD_GATEWAY"];
     message = 'External service unavailable';
     details = {
       networkError: error.message,
@@ -199,7 +189,7 @@ export const errorHandler: ErrorRequestHandler = (
   } else if (error.message.includes('timeout')) {
     // Timeout error
     statusCode = 504;
-    code = ErrorCodes.GATEWAY_TIMEOUT;
+    code = ErrorCodes["GATEWAY_TIMEOUT"];
     message = 'Request timeout';
     details = {
       timeoutError: error.message,
@@ -207,7 +197,7 @@ export const errorHandler: ErrorRequestHandler = (
   } else {
     // Generic error - treat as internal server error
     statusCode = 500;
-    code = ErrorCodes.INTERNAL_SERVER_ERROR;
+    code = ErrorCodes["INTERNAL_SERVER_ERROR"];
     message =
       process.env['NODE_ENV'] === 'production' ? 'An internal error occurred' : error.message;
 
@@ -246,7 +236,7 @@ export const errorHandler: ErrorRequestHandler = (
 export const notFoundHandler = (req: Request, res: Response): void => {
   const errorResponse: APIErrorResponse = {
     error: {
-      code: ErrorCodes.NOT_FOUND,
+      code: ErrorCodes["NOT_FOUND"],
       message: `The endpoint ${req.method} ${req.path} does not exist`,
       timestamp: new Date().toISOString(),
       path: req.path,
@@ -292,7 +282,7 @@ export const createValidationError = (
 ): APIError => {
   return new APIError(
     422,
-    ErrorCodes.UNPROCESSABLE_ENTITY,
+    ErrorCodes["UNPROCESSABLE_ENTITY"],
     `Validation failed for field '${field}'`,
     {
       field,
@@ -318,7 +308,7 @@ export const createNotFoundError = (
 ): APIError => {
   return new APIError(
     404,
-    ErrorCodes.NOT_FOUND,
+    ErrorCodes["NOT_FOUND"],
     `${resource} not found`,
     {
       resource,
@@ -343,7 +333,7 @@ export const createConflictError = (
 ): APIError => {
   return new APIError(
     409,
-    ErrorCodes.CONFLICT,
+    ErrorCodes["CONFLICT"],
     `${resource} conflict: ${reason}`,
     {
       resource,
@@ -368,7 +358,7 @@ export const createRateLimitError = (
 ): APIError => {
   return new APIError(
     429,
-    ErrorCodes.TOO_MANY_REQUESTS,
+    ErrorCodes["TOO_MANY_REQUESTS"],
     'Rate limit exceeded',
     {
       limit,
@@ -392,5 +382,5 @@ export const createInternalError = (
   details?: Record<string, unknown>,
   traceId?: string
 ): APIError => {
-  return new APIError(500, ErrorCodes.INTERNAL_SERVER_ERROR, message, details, traceId);
+  return new APIError(500, ErrorCodes["INTERNAL_SERVER_ERROR"], message, details, traceId);
 };

@@ -11,14 +11,9 @@ import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import { nanoid } from 'nanoid';
 import { ProductWorkflowEngine } from '../../coordination/orchestration/product-workflow-engine';
 import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine';
-import type { SPARCPhase, SPARCProject } from '../../coordination/swarm/sparc/types/sparc-types';
 import { MemorySystem } from '../../core/memory-system';
 import { ProductFlowSystem } from '../../core/product-flow-system';
 import { DatabaseCoordinator } from '../../database/core/database-coordinator';
-import type {
-  FeatureDocumentEntity,
-  TaskDocumentEntity,
-} from '../../database/entities/product-entities';
 
 describe('Product Flow + SPARC Integration', () => {
   let productWorkflowEngine: ProductWorkflowEngine;
@@ -118,12 +113,12 @@ describe('Product Flow + SPARC Integration', () => {
       };
 
       // Validate SPARC integration structure
-      expect(feature.sparc_implementation).toBeDefined();
-      expect(feature.sparc_implementation?.use_sparc_methodology).toBe(true);
-      expect(feature.sparc_implementation?.current_sparc_phase).toBe('specification');
+      expect(feature["sparc_implementation"]).toBeDefined();
+      expect(feature["sparc_implementation"]?.["use_sparc_methodology"]).toBe(true);
+      expect(feature["sparc_implementation"]?.["current_sparc_phase"]).toBe('specification');
 
       // Validate all SPARC phases are defined
-      const sparcPhases = feature.sparc_implementation?.sparc_phases;
+      const sparcPhases = feature["sparc_implementation"]?.["sparc_phases"];
       expect(sparcPhases?.specification).toBeDefined();
       expect(sparcPhases?.pseudocode).toBeDefined();
       expect(sparcPhases?.architecture).toBeDefined();
@@ -188,10 +183,10 @@ describe('Product Flow + SPARC Integration', () => {
       };
 
       // Validate SPARC task integration
-      expect(task.sparc_implementation_details).toBeDefined();
-      expect(task.sparc_implementation_details?.sparc_phase_assignment).toBe('completion');
-      expect(task.sparc_implementation_details?.sparc_deliverable_type).toBe('production_code');
-      expect(task.sparc_implementation_details?.sparc_quality_gates).toHaveLength(2);
+      expect(task["sparc_implementation_details"]).toBeDefined();
+      expect(task["sparc_implementation_details"]?.["sparc_phase_assignment"]).toBe('completion');
+      expect(task["sparc_implementation_details"]?.["sparc_deliverable_type"]).toBe('production_code');
+      expect(task["sparc_implementation_details"]?.["sparc_quality_gates"]).toHaveLength(2);
     });
   });
 
@@ -208,14 +203,14 @@ describe('Product Flow + SPARC Integration', () => {
         },
       });
 
-      expect(result.success).toBe(true);
-      expect(result.workflowId).toBeDefined();
+      expect(result?.success).toBe(true);
+      expect(result?.workflowId).toBeDefined();
 
       // Verify workflow is running
       const workflows = await productWorkflowEngine.getActiveProductWorkflows();
       expect(workflows.length).toBeGreaterThan(0);
 
-      const workflow = workflows.find((w) => w.id === result.workflowId);
+      const workflow = workflows.find((w) => w.id === result?.workflowId);
       expect(workflow).toBeDefined();
       expect(workflow?.productFlow.currentStep).toBeDefined();
       expect(workflow?.sparcIntegration).toBeDefined();
@@ -228,7 +223,7 @@ describe('Product Flow + SPARC Integration', () => {
         workspaceId,
       });
 
-      const workflow = await productWorkflowEngine.getProductWorkflowStatus(result.workflowId!);
+      const workflow = await productWorkflowEngine.getProductWorkflowStatus(result?.workflowId!);
       expect(workflow).toBeDefined();
 
       // Verify Product Flow step sequencing
@@ -268,7 +263,7 @@ describe('Product Flow + SPARC Integration', () => {
 
       // Check that API feature got SPARC project
       const apiFeature = workflow.productFlow.documents.features.find(
-        (f) => f.feature_type === 'api'
+        (f) => f["feature_type"] === 'api'
       );
       if (apiFeature) {
         expect(workflow.sparcIntegration.sparcProjects.has(apiFeature.id)).toBe(true);
@@ -296,9 +291,9 @@ describe('Product Flow + SPARC Integration', () => {
 
       for (const phase of phases) {
         const result = await sparcEngine.executePhase(sparcProject, phase);
-        results.push(result);
-        expect(result.success).toBe(true);
-        expect(result.phase).toBe(phase);
+        results?.push(result);
+        expect(result?.success).toBe(true);
+        expect(result?.phase).toBe(phase);
       }
 
       // Verify all phases completed
@@ -374,16 +369,16 @@ describe('Product Flow + SPARC Integration', () => {
       });
 
       // Pause workflow
-      const pauseResult = await productWorkflowEngine.pauseProductWorkflow(result.workflowId!);
-      expect(pauseResult.success).toBe(true);
+      const pauseResult = await productWorkflowEngine.pauseProductWorkflow(result?.workflowId!);
+      expect(pauseResult?.success).toBe(true);
 
       // Verify paused status
-      const workflow = await productWorkflowEngine.getProductWorkflowStatus(result.workflowId!);
+      const workflow = await productWorkflowEngine.getProductWorkflowStatus(result?.workflowId!);
       expect(workflow?.status).toBe('paused');
 
       // Resume workflow
-      const resumeResult = await productWorkflowEngine.resumeProductWorkflow(result.workflowId!);
-      expect(resumeResult.success).toBe(true);
+      const resumeResult = await productWorkflowEngine.resumeProductWorkflow(result?.workflowId!);
+      expect(resumeResult?.success).toBe(true);
     });
 
     it('should handle workflow errors gracefully', async () => {
@@ -394,8 +389,8 @@ describe('Product Flow + SPARC Integration', () => {
         workspaceId,
       });
 
-      expect(result.success).toBe(false);
-      expect(result.error).toBeDefined();
+      expect(result?.success).toBe(false);
+      expect(result?.error).toBeDefined();
     });
   });
 

@@ -1,12 +1,3 @@
-/**
- * Core Memory System Types and Interfaces
- *
- * Provides central types and interfaces for the memory management system
- * including backend interfaces and core system types.
- */
-
-import type { MemoryStats } from '../backends/base-backend';
-
 // JSON Value type for database compatibility
 export type JSONValue =
   | string

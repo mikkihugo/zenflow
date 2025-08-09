@@ -9,19 +9,6 @@
 
 import { EventEmitter } from 'node:events';
 import path from 'node:path';
-import type { DALFactory } from '../../../database/factory.js';
-import type {
-  ICoordinationRepository,
-  IGraphRepository,
-  IVectorRepository,
-} from '../../../database/interfaces.js';
-import { inject, injectable } from '../../../di/decorators/injectable.js';
-import {
-  CORE_TOKENS,
-  DATABASE_TOKENS,
-  type ILogger,
-  SWARM_TOKENS,
-} from '../../../di/tokens/core-tokens.js';
 
 export interface SwarmDatabaseConfig {
   // Central coordination database
@@ -56,26 +43,26 @@ export class SwarmDatabaseManager extends EventEmitter {
     @inject(CORE_TOKENS.Logger) private _logger: ILogger
   ) {
     super();
-    this._logger.info('SwarmDatabaseManager initialized with DI');
+    this["_logger"]?.info('SwarmDatabaseManager initialized with DI');
   }
 
   /**
    * Initialize central coordination repository.
    */
   async initialize(): Promise<void> {
-    this._logger.info('Initializing SwarmDatabaseManager');
+    this["_logger"]?.info('Initializing SwarmDatabaseManager');
 
     try {
       // Create central coordination repository using DAL Factory
-      this.centralRepo = await this._dalFactory.createCoordinationRepository('SwarmRegistry');
+      this.centralRepo = await this["_dalFactory"]?.createCoordinationRepository('SwarmRegistry');
 
       // Initialize central schema
       await this.initializeCentralSchema();
 
-      this._logger.info('SwarmDatabaseManager initialized successfully');
+      this["_logger"]?.info('SwarmDatabaseManager initialized successfully');
       this.emit('initialized');
     } catch (error) {
-      this._logger.error(`Failed to initialize SwarmDatabaseManager: ${error}`);
+      this["_logger"]?.error(`Failed to initialize SwarmDatabaseManager: ${error}`);
       throw error;
     }
   }
@@ -86,8 +73,8 @@ export class SwarmDatabaseManager extends EventEmitter {
    * @param swarmId
    */
   async createSwarmCluster(swarmId: string): Promise<SwarmRepositories> {
-    this._logger.info(`Creating swarm cluster for: ${swarmId}`);
-    const swarmPath = path.join(this._config.swarmsPath, swarmId);
+    this["_logger"]?.info(`Creating swarm cluster for: ${swarmId}`);
+    const swarmPath = path.join(this["_config"]?.swarmsPath, swarmId);
 
     try {
       // Create repositories using DAL Factory with per-swarm database paths
@@ -96,16 +83,16 @@ export class SwarmDatabaseManager extends EventEmitter {
         path: swarmPath,
         repositories: {
           // Kuzu graph repository for relationships
-          graph: await this._dalFactory.createKuzuGraphRepository('SwarmGraph', 'swarm_graph'),
+          graph: await this["_dalFactory"]?.createKuzuGraphRepository('SwarmGraph', 'swarm_graph'),
 
           // LanceDB vector repository for embeddings
-          vectors: await this._dalFactory.createLanceDBVectorRepository(
+          vectors: await this["_dalFactory"]?.createLanceDBVectorRepository(
             'SwarmVectors',
             1536 // OpenAI embedding size
           ),
 
           // SQLite coordination repository for transactional data
-          coordination: await this._dalFactory.createCoordinationRepository('SwarmData'),
+          coordination: await this["_dalFactory"]?.createCoordinationRepository('SwarmData'),
         },
       };
 
@@ -118,11 +105,11 @@ export class SwarmDatabaseManager extends EventEmitter {
       // Cache cluster
       this.swarmClusters.set(swarmId, repositories);
 
-      this._logger.info(`Swarm cluster created successfully: ${swarmId}`);
+      this["_logger"]?.info(`Swarm cluster created successfully: ${swarmId}`);
       this.emit('swarm:cluster_created', { swarmId, path: swarmPath });
       return repositories;
     } catch (error) {
-      this._logger.error(`Failed to create swarm cluster ${swarmId}: ${error}`);
+      this["_logger"]?.error(`Failed to create swarm cluster ${swarmId}: ${error}`);
       throw error;
     }
   }
@@ -321,7 +308,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   }): Promise<string[]> {
     // Use coordination repository for queries
     const result = await this.centralRepo.findBy(criteria);
-    return result.map((r) => r.swarmId);
+    return result?.map((r) => r.swarmId);
   }
 
   /**
@@ -424,7 +411,7 @@ export class SwarmDatabaseManager extends EventEmitter {
 
   private async initializeCentralSchema(): Promise<void> {
     // Register entity types with DAL Factory for better type safety
-    this._dalFactory.registerEntityType('SwarmRegistry', {
+    this["_dalFactory"]?.registerEntityType('SwarmRegistry', {
       schema: {
         swarmId: { type: 'string', primaryKey: true },
         name: { type: 'string', required: true },
@@ -442,7 +429,7 @@ export class SwarmDatabaseManager extends EventEmitter {
       tableName: 'swarm_registry',
     });
 
-    this._dalFactory.registerEntityType('CrossSwarmDependencies', {
+    this["_dalFactory"]?.registerEntityType('CrossSwarmDependencies', {
       schema: {
         fromSwarm: { type: 'string', required: true },
         toSwarm: { type: 'string', required: true },
@@ -456,7 +443,7 @@ export class SwarmDatabaseManager extends EventEmitter {
 
   private async initializeSwarmSchemas(_cluster: SwarmRepositories): Promise<void> {
     // Register swarm-specific entity types
-    this._dalFactory.registerEntityType('SwarmGraph', {
+    this["_dalFactory"]?.registerEntityType('SwarmGraph', {
       schema: {
         id: { type: 'string', primaryKey: true },
         labels: { type: 'array', required: true },
@@ -468,7 +455,7 @@ export class SwarmDatabaseManager extends EventEmitter {
       databaseType: 'kuzu',
     });
 
-    this._dalFactory.registerEntityType('SwarmVectors', {
+    this["_dalFactory"]?.registerEntityType('SwarmVectors', {
       schema: {
         id: { type: 'string', primaryKey: true },
         vector: { type: 'vector', required: true },
@@ -480,7 +467,7 @@ export class SwarmDatabaseManager extends EventEmitter {
       databaseType: 'lancedb',
     });
 
-    this._dalFactory.registerEntityType('SwarmData', {
+    this["_dalFactory"]?.registerEntityType('SwarmData', {
       schema: {
         id: { type: 'string', primaryKey: true },
         metricName: { type: 'string', required: true },
@@ -511,7 +498,7 @@ export class SwarmDatabaseManager extends EventEmitter {
     this.swarmClusters.clear();
 
     // Clear DAL factory caches
-    this._dalFactory.clearCaches();
+    this["_dalFactory"]?.clearCaches();
 
     this.emit('shutdown');
   }

@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-import { getLogger } from "../../../config/logging-config";
+#!/usr/bin/env nodeimport { getLogger } from "../../../config/logging-config";
 const logger = getLogger("coordination-swarm-sparc-test-template-engine");
 /**
  * Simple test script for SPARC Template Engine
@@ -7,12 +6,11 @@ const logger = getLogger("coordination-swarm-sparc-test-template-engine");
  */
 
 import { TemplateEngine } from './core/template-engine';
-import type { ProjectSpecification } from './types/sparc-types';
 
 async function testTemplateEngine() {
   const templateEngine = new TemplateEngine();
   const templates = templateEngine.getAllTemplates();
-  templates.forEach((_template) => {});
+  templates.forEach((template) => {});
 
   // Test 2: Create a test project specification
   const testProject: ProjectSpecification = {
@@ -25,16 +23,16 @@ async function testTemplateEngine() {
   const bestMatch = templateEngine.findBestTemplate(testProject);
 
   if (bestMatch) {
-    if (bestMatch.compatibility.warnings.length > 0) {
-      bestMatch.compatibility.warnings.forEach((_warning) => {});
+    if (bestMatch?.compatibility?.warnings.length > 0) {
+      bestMatch?.compatibility?.warnings?.forEach((warning) => {});
     }
     try {
-      const result = await templateEngine.applyTemplate(bestMatch.template, testProject);
+      const result = await templateEngine.applyTemplate(bestMatch?.template, testProject);
 
-      if (result.customizations.length > 0) {
-        result.customizations.forEach((_customization) => {});
+      if (result?.customizations.length > 0) {
+        result?.customizations?.forEach((customization) => {});
       }
-      const _stats = templateEngine.getTemplateStats();
+      const stats = templateEngine.getTemplateStats();
     } catch (error) {
       logger.error('❌ Failed to apply template:', error);
     }

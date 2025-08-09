@@ -6,13 +6,13 @@ const logger = getLogger("interfaces-shared-config");
  * Interface-specific configuration utilities that integrate with the unified config system
  */
 
-import { config, type InterfaceConfig } from '../../config';
+import { config } from '../../config';
 
 /**
  * Get interface configuration with fallbacks
  */
 export function getInterfaceConfig(): InterfaceConfig {
-  return config.getSection('interfaces').shared;
+  return config?.["getSection"]('interfaces').shared;
 }
 
 /**
@@ -20,7 +20,7 @@ export function getInterfaceConfig(): InterfaceConfig {
  */
 export const INTERFACE_CONSTANTS = {
   get DEFAULT_TIMEOUT() {
-    return config.get('interfaces.mcp.http.timeout') || 30000;
+    return config?.["get"]('interfaces.mcp.http.timeout') || 30000;
   },
   get DEFAULT_RETRY_ATTEMPTS() {
     return 3;
@@ -29,10 +29,10 @@ export const INTERFACE_CONSTANTS = {
     return 1000;
   },
   get MAX_COMMAND_HISTORY() {
-    return config.get('interfaces.shared.maxCommandHistory') || 100;
+    return config?.["get"]('interfaces.shared.maxCommandHistory') || 100;
   },
   get DEFAULT_PAGE_SIZE() {
-    return config.get('interfaces.shared.pageSize') || 25;
+    return config?.["get"]('interfaces.shared.pageSize') || 25;
   },
   get MIN_REFRESH_INTERVAL() {
     return 1000;
@@ -123,37 +123,37 @@ export class ConfigurationUtils {
   static validateConfig(configOverrides: Partial<InterfaceConfig>): string[] {
     const errors: string[] = [];
 
-    if (configOverrides.theme && !['dark', 'light', 'auto'].includes(configOverrides.theme)) {
+    if (configOverrides?.theme && !['dark', 'light', 'auto'].includes(configOverrides?.theme)) {
       errors.push('Invalid theme. Must be one of: dark, light, auto');
     }
 
     if (
-      configOverrides.verbosity &&
-      !['quiet', 'normal', 'verbose', 'debug'].includes(configOverrides.verbosity)
+      configOverrides?.verbosity &&
+      !['quiet', 'normal', 'verbose', 'debug'].includes(configOverrides?.verbosity)
     ) {
       errors.push('Invalid verbosity. Must be one of: quiet, normal, verbose, debug');
     }
 
-    if (configOverrides.refreshInterval) {
-      const interval = configOverrides.refreshInterval;
-      if (interval < INTERFACE_CONSTANTS.MIN_REFRESH_INTERVAL) {
-        errors.push(`Refresh interval must be >= ${INTERFACE_CONSTANTS.MIN_REFRESH_INTERVAL}ms`);
+    if (configOverrides?.refreshInterval) {
+      const interval = configOverrides?.refreshInterval;
+      if (interval < INTERFACE_CONSTANTS["MIN_REFRESH_INTERVAL"]) {
+        errors.push(`Refresh interval must be >= ${INTERFACE_CONSTANTS["MIN_REFRESH_INTERVAL"]}ms`);
       }
-      if (interval > INTERFACE_CONSTANTS.MAX_REFRESH_INTERVAL) {
-        errors.push(`Refresh interval must be <= ${INTERFACE_CONSTANTS.MAX_REFRESH_INTERVAL}ms`);
+      if (interval > INTERFACE_CONSTANTS["MAX_REFRESH_INTERVAL"]) {
+        errors.push(`Refresh interval must be <= ${INTERFACE_CONSTANTS["MAX_REFRESH_INTERVAL"]}ms`);
       }
     }
 
     if (
-      configOverrides.pageSize &&
-      (configOverrides.pageSize < 1 || configOverrides.pageSize > 1000)
+      configOverrides?.pageSize &&
+      (configOverrides?.pageSize < 1 || configOverrides?.pageSize > 1000)
     ) {
       errors.push('Page size must be between 1 and 1000');
     }
 
     if (
-      configOverrides.maxCommandHistory &&
-      (configOverrides.maxCommandHistory < 10 || configOverrides.maxCommandHistory > 10000)
+      configOverrides?.maxCommandHistory &&
+      (configOverrides?.maxCommandHistory < 10 || configOverrides?.maxCommandHistory > 10000)
     ) {
       errors.push('Max command history must be between 10 and 10000');
     }
@@ -167,7 +167,7 @@ export class ConfigurationUtils {
    * @param theme
    */
   static getColorScheme(theme?: 'dark' | 'light' | 'auto'): typeof COLOR_SCHEMES.dark {
-    const currentTheme = theme || config.get('interfaces.shared.theme') || 'dark';
+    const currentTheme = theme || config?.["get"]('interfaces.shared.theme') || 'dark';
 
     if (currentTheme === 'auto') {
       // In a real implementation, this would detect system theme
@@ -185,7 +185,7 @@ export class ConfigurationUtils {
    * @param updates
    */
   static updateInterfaceConfig(updates: Partial<InterfaceConfig>): boolean {
-    const errors = ConfigurationUtils.validateConfig(updates);
+    const errors = ConfigurationUtils?.validateConfig(updates);
     if (errors.length > 0) {
       logger.error('Interface configuration validation errors:', errors);
       return false;
@@ -193,9 +193,9 @@ export class ConfigurationUtils {
 
     // Update the unified configuration
     for (const [key, value] of Object.entries(updates)) {
-      const result = config.set(`interfaces.shared.${key}`, value);
-      if (!result.valid) {
-        logger.error(`Failed to update interfaces.shared.${key}:`, result.errors);
+      const result = config?.["set"](`interfaces.shared.${key}`, value);
+      if (!result?.valid) {
+        logger.error(`Failed to update interfaces.shared.${key}:`, result?.errors);
         return false;
       }
     }
@@ -217,15 +217,15 @@ export class ConfigurationUtils {
    */
   static onConfigChange(callback: (config: InterfaceConfig) => void): () => void {
     const handler = (event: any) => {
-      if (event.path.startsWith('interfaces.shared.')) {
+      if (event["path"]?.["startsWith"]('interfaces.shared.')) {
         callback(getInterfaceConfig());
       }
     };
 
-    config.onChange(handler);
+    config?.["onChange"](handler);
 
     // Return cleanup function
-    return () => config.removeListener(handler);
+    return () => config?.["removeListener"](handler);
   }
 }
 

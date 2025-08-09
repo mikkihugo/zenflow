@@ -11,16 +11,12 @@ import {
   createNeuralNetwork,
   createTrainer,
   initializeNeuralWasm,
-  type NetworkConfig,
-  type NeuralNetwork,
   TRAINING_ALGORITHMS,
-  type TrainingConfig,
-  type TrainingDataConfig,
 } from '../../../../neural/core/neural-network';
 
 describe('Memory Efficiency - Classical TDD', () => {
   let wasmModule: any;
-  let _initialMemory: NodeJS.MemoryUsage;
+  let initialMemory: NodeJS.MemoryUsage;
 
   beforeEach(async () => {
     try {
@@ -29,8 +25,8 @@ describe('Memory Efficiency - Classical TDD', () => {
       if (global.gc) {
         global.gc();
       }
-      _initialMemory = process.memoryUsage();
-    } catch (_error) {
+      initialMemory = process.memoryUsage();
+    } catch (error) {
       console.warn('WASM module not available, skipping memory efficiency tests');
     }
   });
@@ -55,9 +51,9 @@ describe('Memory Efficiency - Classical TDD', () => {
       // Create small network
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network = await createNeuralNetwork(networkConfig);
@@ -95,9 +91,9 @@ describe('Memory Efficiency - Classical TDD', () => {
 
         const networkConfig: NetworkConfig = {
           inputSize: size.inputs,
-          hiddenLayers: [{ size: size.hidden, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+          hiddenLayers: [{ size: size.hidden, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
           outputSize: size.outputs,
-          outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+          outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
         };
 
         const network = await createNeuralNetwork(networkConfig);
@@ -131,18 +127,18 @@ describe('Memory Efficiency - Classical TDD', () => {
       }
 
       const layerConfigurations = [
-        { layers: [{ size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }] },
+        { layers: [{ size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }] },
         {
           layers: [
-            { size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID },
-            { size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID },
+            { size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
+            { size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
           ],
         },
         {
           layers: [
-            { size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID },
-            { size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID },
-            { size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID },
+            { size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
+            { size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
+            { size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
           ],
         },
       ];
@@ -154,9 +150,9 @@ describe('Memory Efficiency - Classical TDD', () => {
 
         const networkConfig: NetworkConfig = {
           inputSize: 3,
-          hiddenLayers: config.layers,
+          hiddenLayers: config?.["layers"],
           outputSize: 2,
-          outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+          outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
         };
 
         const network = await createNeuralNetwork(networkConfig);
@@ -166,7 +162,7 @@ describe('Memory Efficiency - Classical TDD', () => {
 
         // Verify network was created correctly
         const info = network.getInfo();
-        expect(info.numLayers).toBe(config.layers.length + 2); // +input +output
+        expect(info.numLayers).toBe(config?.["layers"].length + 2); // +input +output
       }
 
       // Each additional layer should add reasonable memory overhead
@@ -188,13 +184,13 @@ describe('Memory Efficiency - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS.INCREMENTAL_BACKPROP,
+        algorithm: TRAINING_ALGORITHMS["INCREMENTAL_BACKPROP"],
         learningRate: 0.5,
         maxEpochs: 100,
         targetError: 0.1,
@@ -250,9 +246,9 @@ describe('Memory Efficiency - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 3,
-        hiddenLayers: [{ size: 6, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 6, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 2,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       // Generate large dataset
@@ -262,8 +258,8 @@ describe('Memory Efficiency - Classical TDD', () => {
       };
 
       for (let i = 0; i < 1000; i++) {
-        largeDataset.inputs.push([Math.random(), Math.random(), Math.random()]);
-        largeDataset.outputs.push([Math.random() > 0.5 ? 1 : 0, Math.random() > 0.5 ? 1 : 0]);
+        largeDataset?.inputs?.push([Math.random(), Math.random(), Math.random()]);
+        largeDataset?.outputs?.push([Math.random() > 0.5 ? 1 : 0, Math.random() > 0.5 ? 1 : 0]);
       }
 
       const preMemory = process.memoryUsage().heapUsed;
@@ -272,7 +268,7 @@ describe('Memory Efficiency - Classical TDD', () => {
       network.setTrainingData(largeDataset);
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS.BATCH_BACKPROP,
+        algorithm: TRAINING_ALGORITHMS["BATCH_BACKPROP"],
         learningRate: 0.1,
         maxEpochs: 10,
         targetError: 0.3,
@@ -307,9 +303,9 @@ describe('Memory Efficiency - Classical TDD', () => {
       for (let i = 0; i < 20; i++) {
         const networkConfig: NetworkConfig = {
           inputSize: 3,
-          hiddenLayers: [{ size: 5, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+          hiddenLayers: [{ size: 5, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
           outputSize: 2,
-          outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+          outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
         };
 
         const network = await createNeuralNetwork(networkConfig);
@@ -347,13 +343,13 @@ describe('Memory Efficiency - Classical TDD', () => {
       for (let i = 0; i < 10; i++) {
         const networkConfig: NetworkConfig = {
           inputSize: 2,
-          hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+          hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
           outputSize: 1,
-          outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+          outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
         };
 
         const trainingConfig: TrainingConfig = {
-          algorithm: TRAINING_ALGORITHMS.INCREMENTAL_BACKPROP,
+          algorithm: TRAINING_ALGORITHMS["INCREMENTAL_BACKPROP"],
           learningRate: 0.5,
           maxEpochs: 10,
           targetError: 0.5,
@@ -401,11 +397,11 @@ describe('Memory Efficiency - Classical TDD', () => {
       const networkConfig: NetworkConfig = {
         inputSize: 10,
         hiddenLayers: [
-          { size: 20, activation: ACTIVATION_FUNCTIONS.SIGMOID },
-          { size: 15, activation: ACTIVATION_FUNCTIONS.SIGMOID },
+          { size: 20, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
+          { size: 15, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
         ],
         outputSize: 5,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network = await createNeuralNetwork(networkConfig);
@@ -438,9 +434,9 @@ describe('Memory Efficiency - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 5,
-        hiddenLayers: [{ size: 8, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 8, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 3,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network = await createNeuralNetwork(networkConfig);
@@ -468,7 +464,7 @@ describe('Memory Efficiency - Classical TDD', () => {
       // Network should still function
       const result = await network.run([0.1, 0.2, 0.3, 0.4, 0.5]);
       expect(result).toHaveLength(3);
-      expect(result.every((v) => Number.isFinite(v))).toBe(true);
+      expect(result?.every((v) => Number.isFinite(v))).toBe(true);
     });
   });
 
@@ -489,9 +485,9 @@ describe('Memory Efficiency - Classical TDD', () => {
       for (let i = 0; i < 15; i++) {
         const networkConfig: NetworkConfig = {
           inputSize: 3,
-          hiddenLayers: [{ size: 6, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+          hiddenLayers: [{ size: 6, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
           outputSize: 2,
-          outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+          outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
         };
 
         networkPromises.push(createNeuralNetwork(networkConfig));
@@ -510,7 +506,7 @@ describe('Memory Efficiency - Classical TDD', () => {
       for (const network of networks) {
         const result = await network.run([0.5, 0.5, 0.5]);
         expect(result).toHaveLength(2);
-        expect(result.every((v) => Number.isFinite(v))).toBe(true);
+        expect(result?.every((v) => Number.isFinite(v))).toBe(true);
       }
 
       // Average memory per network should be reasonable

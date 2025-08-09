@@ -1,13 +1,4 @@
 /**
- * Unified Event Layer (UEL) - Type Definitions
- *
- * Core type definitions for event types, manager types, and enums
- * used throughout the UEL system for type-safe event operations.
- */
-
-import type { EventPriority, SystemEvent } from './core/interfaces';
-
-/**
  * System Events - Core system lifecycle and health
  *
  * @example
@@ -321,8 +312,8 @@ export const EventTypePatterns = {
 /**
  * Default configurations for different event manager types
  */
-export const DefaultEventManagerConfigs = {
-  [EventCategories.SYSTEM]: {
+export const EventManagerConfigs = {
+  [EventCategories["SYSTEM"]]: {
     maxListeners: 100,
     processing: {
       strategy: 'immediate' as const,
@@ -351,7 +342,7 @@ export const DefaultEventManagerConfigs = {
     },
   },
 
-  [EventCategories.COORDINATION]: {
+  [EventCategories["COORDINATION"]]: {
     maxListeners: 1000,
     processing: {
       strategy: 'queued' as const,
@@ -373,7 +364,7 @@ export const DefaultEventManagerConfigs = {
     },
   },
 
-  [EventCategories.COMMUNICATION]: {
+  [EventCategories["COMMUNICATION"]]: {
     maxListeners: 500,
     processing: {
       strategy: 'immediate' as const,
@@ -395,7 +386,7 @@ export const DefaultEventManagerConfigs = {
     },
   },
 
-  [EventCategories.MONITORING]: {
+  [EventCategories["MONITORING"]]: {
     maxListeners: 200,
     processing: {
       strategy: 'batched' as const,
@@ -412,7 +403,7 @@ export const DefaultEventManagerConfigs = {
     },
   },
 
-  [EventCategories.INTERFACE]: {
+  [EventCategories["INTERFACE"]]: {
     maxListeners: 100,
     processing: {
       strategy: 'immediate' as const,
@@ -428,7 +419,7 @@ export const DefaultEventManagerConfigs = {
     },
   },
 
-  [EventCategories.NEURAL]: {
+  [EventCategories["NEURAL"]]: {
     maxListeners: 50,
     processing: {
       strategy: 'queued' as const,
@@ -449,7 +440,7 @@ export const DefaultEventManagerConfigs = {
     },
   },
 
-  [EventCategories.DATABASE]: {
+  [EventCategories["DATABASE"]]: {
     maxListeners: 200,
     processing: {
       strategy: 'batched' as const,
@@ -466,7 +457,7 @@ export const DefaultEventManagerConfigs = {
     },
   },
 
-  [EventCategories.MEMORY]: {
+  [EventCategories["MEMORY"]]: {
     maxListeners: 100,
     processing: {
       strategy: 'throttled' as const,
@@ -483,7 +474,7 @@ export const DefaultEventManagerConfigs = {
     },
   },
 
-  [EventCategories.WORKFLOW]: {
+  [EventCategories["WORKFLOW"]]: {
     maxListeners: 300,
     processing: {
       strategy: 'queued' as const,
@@ -628,43 +619,43 @@ export const EventSources = {
  */
 export const UELTypeGuards = {
   isSystemLifecycleEvent: (event: SystemEvent): event is SystemLifecycleEvent => {
-    return event.type.startsWith('system:');
+    return event.type["startsWith"]('system:');
   },
 
   isCoordinationEvent: (event: SystemEvent): event is CoordinationEvent => {
-    return event.type.startsWith('coordination:');
+    return event.type["startsWith"]('coordination:');
   },
 
   isCommunicationEvent: (event: SystemEvent): event is CommunicationEvent => {
-    return event.type.startsWith('communication:');
+    return event.type["startsWith"]('communication:');
   },
 
   isMonitoringEvent: (event: SystemEvent): event is MonitoringEvent => {
-    return event.type.startsWith('monitoring:');
+    return event.type["startsWith"]('monitoring:');
   },
 
   isInterfaceEvent: (event: SystemEvent): event is InterfaceEvent => {
-    return event.type.startsWith('interface:');
+    return event.type["startsWith"]('interface:');
   },
 
   isNeuralEvent: (event: SystemEvent): event is NeuralEvent => {
-    return event.type.startsWith('neural:');
+    return event.type["startsWith"]('neural:');
   },
 
   isDatabaseEvent: (event: SystemEvent): event is DatabaseEvent => {
-    return event.type.startsWith('database:');
+    return event.type["startsWith"]('database:');
   },
 
   isMemoryEvent: (event: SystemEvent): event is MemoryEvent => {
-    return event.type.startsWith('memory:');
+    return event.type["startsWith"]('memory:');
   },
 
   isWorkflowEvent: (event: SystemEvent): event is WorkflowEvent => {
-    return event.type.startsWith('workflow:');
+    return event.type["startsWith"]('workflow:');
   },
 
   isUELEvent: (event: SystemEvent): event is UELEvent => {
-    const category = event.type.split(':')[0];
+    const category = event.type["split"](':')[0];
     return Object.values(EventCategories).includes(category as any);
   },
 } as const;

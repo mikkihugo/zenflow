@@ -31,7 +31,7 @@ async function main() {
 
         // Top categories with advantages
         const topAdvantages = Object.entries(analysis.categoryComparison)
-          .filter(([_, data]) => data?.advantage > 0)
+          .filter(([_, data]) => data?.["advantage"] > 0)
           .sort((a, b) => b[1]?.advantage - a[1]?.advantage)
           .slice(0, 5);
         for (const [category, data] of topAdvantages) {

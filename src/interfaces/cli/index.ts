@@ -47,15 +47,15 @@ export async function initializeAdvancedCLI(
   const engine = new AdvancedCLIEngine();
 
   // Configure based on provided settings
-  if (finalConfig.aiAssistance) {
+  if (finalConfig?.aiAssistance) {
     // Enable AI assistance features
   }
 
-  if (finalConfig.realTimeMonitoring) {
+  if (finalConfig?.realTimeMonitoring) {
     // Enable real-time monitoring
   }
 
-  if (finalConfig.autoOptimization) {
+  if (finalConfig?.autoOptimization) {
     // Enable automatic optimization
   }
 
@@ -67,7 +67,7 @@ export async function initializeAdvancedCLI(
  *
  * @param _options
  */
-export function createAdvancedCLI(_options: Partial<CLIModuleConfig> = {}): AdvancedCLIEngine {
+export function createAdvancedCLI(options: Partial<CLIModuleConfig> = {}): AdvancedCLIEngine {
   return new AdvancedCLIEngine();
 }
 

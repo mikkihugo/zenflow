@@ -19,8 +19,8 @@ class RemoteWrapperGenerator {
   private packageName: string;
 
   constructor(options: RemoteWrapperOptions = {}) {
-    this.workingDir = options.workingDir || process.cwd();
-    this.packageName = options.packageName || 'ruv-swarm';
+    this.workingDir = options?.["workingDir"] || process.cwd();
+    this.packageName = options?.["packageName"] || 'ruv-swarm';
   }
 
   /**

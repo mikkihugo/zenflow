@@ -773,8 +773,8 @@ class ValidationUtils {
     // Validate each parameter
     for (const [fieldName, fieldSchema] of Object.entries(schema)) {
       try {
-        const value = params[fieldName];
-        validatedParams[fieldName] = BaseValidator.validate(value, fieldSchema, fieldName);
+        const value = params?.[fieldName];
+        validatedParams?.[fieldName] = BaseValidator.validate(value, fieldSchema, fieldName);
       } catch (error) {
         // Add tool context to error
         if (error instanceof ValidationError) {
@@ -824,10 +824,10 @@ class ValidationUtils {
       };
 
       if (field.enum) {
-        doc.parameters[fieldName].allowedValues = field.enum;
+        doc.parameters[fieldName]?.allowedValues = field.enum;
       }
       if (field.min !== undefined || field.max !== undefined) {
-        doc.parameters[fieldName].range = {
+        doc.parameters[fieldName]?.range = {
           min: field.min,
           max: field.max,
         };

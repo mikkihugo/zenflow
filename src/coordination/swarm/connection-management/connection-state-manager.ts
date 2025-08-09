@@ -1,23 +1,6 @@
 import { getLogger } from "../../../config/logging-config";
 const logger = getLogger("coordination-swarm-connection-management-connection-state-manager");
-/**
- * MCP Connection State Manager for ZenSwarm.
- *
- * Provides comprehensive MCP connection state management with persistence,
- * automatic recovery, and health monitoring integration.
- *
- * Features:
- * - Connection state persistence and recovery
- * - Automatic reconnection with exponential backoff
- * - Health monitoring integration
- * - Connection pooling and load balancing
- * - Graceful degradation and fallback mechanisms
- * - Real-time connection status monitoring.
- */
-
-import type { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import type { Readable, Writable } from 'node:stream';
 
 // Helper functions and classes moved inline to avoid missing imports
 const generateId = (prefix: string) =>
@@ -112,7 +95,7 @@ interface ManagerStats {
 // Simple logger implementation
 class Logger {
   constructor(options: LoggerOptions) {
-    this.name = options.name;
+    this.name = options?.name;
   }
   name: string;
   info(_msg: string, ..._args: unknown[]): void {}
@@ -160,14 +143,14 @@ export class ConnectionStateManager extends EventEmitter {
     super();
 
     this.options = {
-      maxConnections: options.maxConnections || 10,
-      connectionTimeout: options.connectionTimeout || 30000,
-      reconnectDelay: options.reconnectDelay || 1000,
-      maxReconnectDelay: options.maxReconnectDelay || 30000,
-      maxReconnectAttempts: options.maxReconnectAttempts || 10,
-      healthCheckInterval: options.healthCheckInterval || 30000,
-      persistenceEnabled: options.persistenceEnabled !== false,
-      enableFallback: options.enableFallback !== false,
+      maxConnections: options?.["maxConnections"] || 10,
+      connectionTimeout: options?.["connectionTimeout"] || 30000,
+      reconnectDelay: options?.["reconnectDelay"] || 1000,
+      maxReconnectDelay: options?.["maxReconnectDelay"] || 30000,
+      maxReconnectAttempts: options?.["maxReconnectAttempts"] || 10,
+      healthCheckInterval: options?.["healthCheckInterval"] || 30000,
+      persistenceEnabled: options?.["persistenceEnabled"] !== false,
+      enableFallback: options?.["enableFallback"] !== false,
       ...options,
     };
 
@@ -252,12 +235,12 @@ export class ConnectionStateManager extends EventEmitter {
       await this.initialize();
     }
 
-    const connectionId = connectionConfig.id || generateId('connection');
+    const connectionId = connectionConfig?.id || generateId('connection');
     const startTime = Date.now();
 
     const connection: Connection = {
       id: connectionId,
-      type: connectionConfig.type || 'stdio',
+      type: connectionConfig?.type || 'stdio',
       config: connectionConfig,
       status: 'initializing',
       createdAt: new Date(),
@@ -271,7 +254,7 @@ export class ConnectionStateManager extends EventEmitter {
         latency: null,
         errors: [],
       },
-      metadata: connectionConfig.metadata || {},
+      metadata: connectionConfig?.metadata || {},
     };
 
     this.connections.set(connectionId, connection);
@@ -366,10 +349,10 @@ export class ConnectionStateManager extends EventEmitter {
       // Update health metrics
       const health = this.connectionHealth.get(connectionId);
       if (health) {
-        health.consecutive_failures = 0;
-        health.last_success = new Date();
-        health.total_attempts++;
-        health.success_rate = health.last_success ? 1 : 0;
+        health["consecutive_failures"] = 0;
+        health["last_success"] = new Date();
+        health["total_attempts"]++;
+        health["success_rate"] = health["last_success"] ? 1 : 0;
       }
 
       connection.health.status = 'healthy';
@@ -383,9 +366,9 @@ export class ConnectionStateManager extends EventEmitter {
       // Update failure metrics
       const health = this.connectionHealth.get(connectionId);
       if (health) {
-        health.consecutive_failures++;
-        health.last_failure = new Date();
-        health.total_attempts++;
+        health["consecutive_failures"]++;
+        health["last_failure"] = new Date();
+        health["total_attempts"]++;
       }
 
       connection.health.status = 'unhealthy';
@@ -413,8 +396,8 @@ export class ConnectionStateManager extends EventEmitter {
     const { spawn } = await import('node:child_process');
 
     const config = connection.config;
-    const command = config['command'] as string;
-    const args = (config['args'] as string[]) || [];
+    const command = config?.['command'] as string;
+    const args = (config?.['args'] as string[]) || [];
 
     if (!command) {
       throw new Error('Command is required for stdio connection');
@@ -428,15 +411,15 @@ export class ConnectionStateManager extends EventEmitter {
       try {
         const childProcess = spawn(command, args, {
           stdio: ['pipe', 'pipe', 'pipe'],
-          env: { ...process.env, ...((config['env'] as Record<string, string>) || {}) },
+          env: { ...process.env, ...((config?.['env'] as Record<string, string>) || {}) },
         });
 
-        childProcess.on('spawn', () => {
+        childProcess?.on('spawn', () => {
           clearTimeout(timeout);
           connection.process = childProcess;
-          connection.stdin = childProcess.stdin;
-          connection.stdout = childProcess.stdout;
-          connection.stderr = childProcess.stderr;
+          connection.stdin = childProcess?.stdin;
+          connection.stdout = childProcess?.stdout;
+          connection.stderr = childProcess?.stderr;
 
           // Set up message handling
           this.setupMessageHandling(connection);
@@ -444,12 +427,12 @@ export class ConnectionStateManager extends EventEmitter {
           resolve();
         });
 
-        childProcess.on('error', (error) => {
+        childProcess?.on('error', (error) => {
           clearTimeout(timeout);
           reject(new Error(`Failed to spawn process: ${error.message}`));
         });
 
-        childProcess.on('exit', (code, signal) => {
+        childProcess?.on('exit', (code, signal) => {
           this.handleConnectionClosed(connection.id, code, signal);
         });
       } catch (error) {
@@ -469,7 +452,7 @@ export class ConnectionStateManager extends EventEmitter {
     const WebSocket = (ws as any).default || ws;
 
     const config = connection.config;
-    const url = config['url'] as string;
+    const url = config?.['url'] as string;
 
     if (!url) {
       throw new Error('URL is required for WebSocket connection');
@@ -481,7 +464,7 @@ export class ConnectionStateManager extends EventEmitter {
       }, this.options.connectionTimeout);
 
       try {
-        const ws = new WebSocket(url, config['protocols'], config['options']);
+        const ws = new WebSocket(url, config?.['protocols'], config?.['options']);
 
         ws.on('open', () => {
           clearTimeout(timeout);
@@ -515,7 +498,7 @@ export class ConnectionStateManager extends EventEmitter {
    */
   async establishHttpConnection(connection: Connection) {
     const config = connection.config;
-    const baseUrl = config['baseUrl'] as string;
+    const baseUrl = config?.['baseUrl'] as string;
 
     if (!baseUrl) {
       throw new Error('Base URL is required for HTTP connection');
@@ -529,12 +512,12 @@ export class ConnectionStateManager extends EventEmitter {
       const response = await fetch(`${baseUrl}/health`, {
         method: 'GET',
         signal: controller.signal,
-        headers: (config['headers'] as Record<string, string>) || {},
+        headers: (config?.['headers'] as Record<string, string>) || {},
       });
       clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        throw new Error(`HTTP connection test failed: ${response.status} ${response.statusText}`);
+      if (!response?.ok) {
+        throw new Error(`HTTP connection test failed: ${response?.status} ${response?.statusText}`);
       }
     } catch (error: any) {
       clearTimeout(timeoutId);
@@ -546,11 +529,11 @@ export class ConnectionStateManager extends EventEmitter {
 
     connection.http = {
       baseUrl,
-      headers: (config['headers'] as Record<string, string>) || {},
+      headers: (config?.['headers'] as Record<string, string>) || {},
       fetch: (endpoint: string, options: any = {}) => {
         return fetch(`${baseUrl}${endpoint}`, {
           ...options,
-          headers: { ...connection.http!.headers, ...(options.headers || {}) },
+          headers: { ...connection.http!.headers, ...(options?.["headers"] || {}) },
         });
       },
     };
@@ -1001,7 +984,7 @@ export class ConnectionStateManager extends EventEmitter {
       // Update health metrics
       const health = this.connectionHealth.get(connectionId);
       if (health) {
-        health.consecutive_failures = 0;
+        health["consecutive_failures"] = 0;
       }
     } catch (error) {
       connection.health.status = 'unhealthy';
@@ -1015,8 +998,8 @@ export class ConnectionStateManager extends EventEmitter {
       // Update failure metrics
       const health = this.connectionHealth.get(connectionId);
       if (health) {
-        health.consecutive_failures++;
-        health.last_failure = new Date();
+        health["consecutive_failures"]++;
+        health["last_failure"] = new Date();
       }
 
       this.logger.warn(`Health check failed for connection ${connectionId}`, {
@@ -1024,16 +1007,16 @@ export class ConnectionStateManager extends EventEmitter {
       });
 
       // Trigger recovery if too many consecutive failures
-      if (health && health.consecutive_failures >= 3) {
+      if (health && health["consecutive_failures"] >= 3) {
         this.logger.error(`Connection ${connectionId} failing health checks`, {
-          consecutiveFailures: health.consecutive_failures,
+          consecutiveFailures: health["consecutive_failures"],
         });
 
         if (this.recoveryWorkflows) {
           await (this.recoveryWorkflows as any).triggerRecovery('mcp.connection.unhealthy', {
             connectionId,
             connection,
-            consecutiveFailures: health.consecutive_failures,
+            consecutiveFailures: health["consecutive_failures"],
           });
         }
       }
@@ -1108,10 +1091,10 @@ export class ConnectionStateManager extends EventEmitter {
           type: row.type,
           config: JSON.parse(row.config),
           status: 'disconnected', // Start as disconnected and let reconnection handle it
-          createdAt: new Date(row.created_at),
-          lastConnected: row.last_connected ? new Date(row.last_connected) : null,
-          lastDisconnected: row.last_disconnected ? new Date(row.last_disconnected) : null,
-          reconnectAttempts: row.reconnect_attempts,
+          createdAt: new Date(row["created_at"]),
+          lastConnected: row["last_connected"] ? new Date(row["last_connected"]) : null,
+          lastDisconnected: row["last_disconnected"] ? new Date(row["last_disconnected"]) : null,
+          reconnectAttempts: row["reconnect_attempts"],
           error: null,
           health: {
             status: 'unknown',

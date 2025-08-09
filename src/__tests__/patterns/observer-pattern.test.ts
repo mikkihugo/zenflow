@@ -4,13 +4,11 @@
  */
 
 import {
-  type AllSystemEvents,
   DatabaseObserver,
   EventBuilder,
   LoggerObserver,
   MetricsObserver,
   SystemEventManager,
-  type SystemObserver,
   WebSocketObserver,
 } from '../../interfaces/events/observer-system';
 
@@ -745,7 +743,7 @@ describe('Observer Pattern Implementation', () => {
 
         await dbObserver.update(testEvent);
 
-        expect(mockDatabase.insert).toHaveBeenCalledWith(
+        expect(mockDatabase?.insert).toHaveBeenCalledWith(
           'system_events',
           expect.objectContaining({
             event_id: testEvent.id,
@@ -757,7 +755,7 @@ describe('Observer Pattern Implementation', () => {
       });
 
       it('should handle database errors gracefully', async () => {
-        mockDatabase.insert.mockRejectedValue(new Error('Database connection failed'));
+        mockDatabase?.insert?.mockRejectedValue(new Error('Database connection failed'));
 
         const testEvent = EventBuilder.createSwarmEvent(
           'error-test',
@@ -936,7 +934,7 @@ describe('Observer Pattern Implementation', () => {
             );
         }
 
-        concurrentPromises.push(eventManager.notify(event));
+        concurrentPromises?.push(eventManager.notify(event));
       }
 
       await Promise.all(concurrentPromises);

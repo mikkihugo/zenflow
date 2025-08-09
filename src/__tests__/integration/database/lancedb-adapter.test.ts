@@ -3,12 +3,8 @@
  * Test the real LanceDB adapter implementation
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import type { ILogger } from '../../../core/types';
-import {
-  type DatabaseConfig,
-  LanceDBAdapter,
-} from '../../../database/providers/database-providers';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { LanceDBAdapter } from '../../../database/providers/database-providers';
 
 // Mock logger for tests
 const mockLogger: ILogger = {

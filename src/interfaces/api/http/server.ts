@@ -13,12 +13,10 @@ const logger = getLogger("interfaces-api-http-server");
 import cors from 'cors';
 // Core dependencies
 import { randomBytes } from 'crypto';
-import express, { type Application, type Request, type Response } from 'express';
+import express from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 
-// Import centralized configuration
-import { DEFAULT_CONFIG } from '../../config/defaults';
 import { getCORSOrigins, getAPIEndpoints } from '../../config/url-builder';
 
 // Optional dependencies - handle missing gracefully
@@ -29,13 +27,13 @@ let swaggerUi: any = null;
 
 try {
   compression = require('compression');
-} catch (_e) {
+} catch (e) {
   logger.warn('compression package not available - performance middleware disabled');
 }
 
 try {
   ({ OpenApiValidator } = require('express-openapi-validator'));
-} catch (_e) {
+} catch (e) {
   logger.warn(
     'express-openapi-validator package not available - request validation disabled'
   );
@@ -44,7 +42,7 @@ try {
 try {
   swaggerJsdoc = require('swagger-jsdoc');
   swaggerUi = require('swagger-ui-express');
-} catch (_e) {
+} catch (e) {
   logger.warn('swagger packages not available - API documentation disabled');
 }
 
@@ -100,16 +98,16 @@ export interface APIClientConfig {
 export const DEFAULT_API_CONFIG: APIServerConfig = (() => {
   const centralConfig = getConfig();
   return {
-    port: centralConfig.interfaces.web.port,
-    host: centralConfig.interfaces.web.host,
-    environment: centralConfig.environment.isProduction ? 'production' : 
-                 centralConfig.environment.isDevelopment ? 'development' : 'test',
-    enableSwagger: centralConfig.environment.enableDebugEndpoints,
-    enableValidation: centralConfig.environment.strictValidation,
+    port: centralConfig?.interfaces?.web?.port,
+    host: centralConfig?.interfaces?.web?.host,
+    environment: centralConfig?.environment?.isProduction ? 'production' : 
+                 centralConfig?.environment?.isDevelopment ? 'development' : 'test',
+    enableSwagger: centralConfig?.environment?.enableDebugEndpoints,
+    enableValidation: centralConfig?.environment?.strictValidation,
     enableRateLimit: true,
     rateLimitWindowMs: 15 * 60 * 1000, // 15 minutes
     rateLimitMaxRequests: 100, // 100 requests per window
-    corsOrigins: centralConfig.interfaces.web.corsOrigins,
+    corsOrigins: centralConfig?.interfaces?.web?.corsOrigins,
   } as const;
 })();
 
@@ -186,7 +184,7 @@ export class APIServer {
     this.config = { 
       ...DEFAULT_API_CONFIG, 
       ...config,
-      corsOrigins: config.corsOrigins || getCORSOrigins()
+      corsOrigins: config?.["corsOrigins"] || getCORSOrigins()
     };
     this.app = express();
     this.setupMiddleware();
@@ -506,7 +504,7 @@ if (require.main === module) {
   const server = new APIServer();
 
   // Graceful shutdown handling
-  const shutdown = async (_signal: string) => {
+  const shutdown = async (signal: string) => {
     try {
       await server.stop();
       process.exit(0);

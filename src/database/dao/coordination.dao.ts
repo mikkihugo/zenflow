@@ -6,16 +6,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { DatabaseAdapter, ILogger } from '../../core/interfaces/base-interfaces';
 import { BaseDao } from '../base.dao';
-import type {
-  CoordinationChange,
-  CoordinationEvent,
-  CoordinationLock,
-  CoordinationStats,
-  CustomQuery,
-  ICoordinationRepository,
-} from '../interfaces';
+import type { ICoordinationRepository } from '../interfaces';
 
 /**
  * Subscription information.
@@ -271,8 +263,8 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
     try {
       const result = await this.adapter.execute(sql, params);
       return {
-        affectedRows: result.rowCount,
-        insertId: result.insertId
+        affectedRows: result?.rowCount,
+        insertId: result?.insertId
       };
     } catch (error) {
       this.logger.error('Execute query failed:', error);
@@ -557,10 +549,10 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
       const eventData = {
         channel,
         event_type: event.type,
-        event_data: JSON.stringify(event.data),
-        source: event.source,
-        timestamp: event.timestamp,
-        metadata: JSON.stringify(event.metadata || {}),
+        event_data: JSON.stringify(event["data"]),
+        source: event["source"],
+        timestamp: event["timestamp"],
+        metadata: JSON.stringify(event["metadata"] || {}),
       };
 
       await this.adapter.execute(

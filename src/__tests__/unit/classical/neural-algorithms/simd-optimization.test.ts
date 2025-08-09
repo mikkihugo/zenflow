@@ -232,36 +232,36 @@ class SimdMatrixOps {
     switch (activation) {
       case ActivationFunction.Sigmoid:
         for (let i = 0; i < data.length; i++) {
-          data[i] = 1 / (1 + Math.exp(-data[i]));
+          data?.[i] = 1 / (1 + Math.exp(-data?.[i]));
         }
         break;
       case ActivationFunction.Tanh:
         for (let i = 0; i < data.length; i++) {
-          data[i] = Math.tanh(data[i]);
+          data?.[i] = Math.tanh(data?.[i]);
         }
         break;
       case ActivationFunction.Relu:
         for (let i = 0; i < data.length; i++) {
-          data[i] = Math.max(0, data[i]);
+          data?.[i] = Math.max(0, data?.[i]);
         }
         break;
-      case ActivationFunction.LeakyRelu: {
+      case ActivationFunction["LeakyRelu"]: {
         const alpha = 0.01;
         for (let i = 0; i < data.length; i++) {
-          data[i] = data[i] > 0 ? data[i] : alpha * data[i];
+          data?.[i] = data?.[i] > 0 ? data?.[i] : alpha * data?.[i];
         }
         break;
       }
       case ActivationFunction.Gelu:
         for (let i = 0; i < data.length; i++) {
-          const x = data[i];
-          const sqrt2OverPi = Math.sqrt(2 / Math.PI);
-          data[i] = x * 0.5 * (1 + Math.tanh(sqrt2OverPi * (x + 0.044715 * x * x * x)));
+          const x = data?.[i];
+          const sqrt2OverPi = Math.sqrt(2 / Math["PI"]);
+          data?.[i] = x * 0.5 * (1 + Math.tanh(sqrt2OverPi * (x + 0.044715 * x * x * x)));
         }
         break;
       case ActivationFunction.Swish:
         for (let i = 0; i < data.length; i++) {
-          data[i] = data[i] / (1 + Math.exp(-data[i]));
+          data?.[i] = data?.[i] / (1 + Math.exp(-data?.[i]));
         }
         break;
     }
@@ -275,14 +275,14 @@ class SimdMatrixOps {
       // Process in chunks (simulated SIMD)
       while (i + SIMD_WIDTH <= data.length) {
         for (let idx = 0; idx < SIMD_WIDTH; idx++) {
-          data[i + idx] = Math.max(0, data[i + idx]);
+          data?.[i + idx] = Math.max(0, data?.[i + idx]);
         }
         i += SIMD_WIDTH;
       }
 
       // Handle remaining elements
       while (i < data.length) {
-        data[i] = Math.max(0, data[i]);
+        data?.[i] = Math.max(0, data?.[i]);
         i++;
       }
     } else {
@@ -393,44 +393,44 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
 
       // Results should be identical
       for (let i = 0; i < dataSimd.length; i++) {
-        expect(dataSimd[i]).toBeCloseTo(dataScalar[i], 6);
+        expect(dataSimd?.[i]).toBeCloseTo(dataScalar?.[i], 6);
       }
 
       // Verify ReLU behavior
-      expect(dataSimd[0]).toBe(0); // -2 -> 0
-      expect(dataSimd[1]).toBe(0); // -1 -> 0
-      expect(dataSimd[2]).toBe(0); // 0 -> 0
-      expect(dataSimd[3]).toBe(1); // 1 -> 1
-      expect(dataSimd[4]).toBe(2); // 2 -> 2
+      expect(dataSimd?.[0]).toBe(0); // -2 -> 0
+      expect(dataSimd?.[1]).toBe(0); // -1 -> 0
+      expect(dataSimd?.[2]).toBe(0); // 0 -> 0
+      expect(dataSimd?.[3]).toBe(1); // 1 -> 1
+      expect(dataSimd?.[4]).toBe(2); // 2 -> 2
     });
 
     it('should produce correct sigmoid results', () => {
       const data = new Float32Array([-2, -1, 0, 1, 2]);
-      const expected = data.map((x) => 1 / (1 + Math.exp(-x)));
+      const expected = data?.map((x) => 1 / (1 + Math.exp(-x)));
 
       simdOps.applyActivation(data, ActivationFunction.Sigmoid);
 
       // Verify sigmoid values
       for (let i = 0; i < data.length; i++) {
-        expect(data[i]).toBeCloseTo(expected[i], 6);
+        expect(data?.[i]).toBeCloseTo(expected[i], 6);
       }
 
       // Specific sigmoid values
-      expect(data[2]).toBeCloseTo(0.5, 6); // sigmoid(0) = 0.5
+      expect(data?.[2]).toBeCloseTo(0.5, 6); // sigmoid(0) = 0.5
     });
 
     it('should produce correct tanh results', () => {
       const data = new Float32Array([-1, 0, 1]);
-      const expected = data.map((x) => Math.tanh(x));
+      const expected = data?.map((x) => Math.tanh(x));
 
       simdOps.applyActivation(data, ActivationFunction.Tanh);
 
       // Verify tanh values
       for (let i = 0; i < data.length; i++) {
-        expect(data[i]).toBeCloseTo(expected[i], 6);
+        expect(data?.[i]).toBeCloseTo(expected[i], 6);
       }
 
-      expect(data[1]).toBeCloseTo(0, 6); // tanh(0) = 0
+      expect(data?.[1]).toBeCloseTo(0, 6); // tanh(0) = 0
     });
   });
 
@@ -479,7 +479,7 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
     it('should demonstrate performance improvements for activation functions', () => {
       const data = new Float32Array(10000);
       for (let i = 0; i < data.length; i++) {
-        data[i] = (Math.random() - 0.5) * 10; // Random values in [-5, 5]
+        data?.[i] = (Math.random() - 0.5) * 10; // Random values in [-5, 5]
       }
 
       const dataSimd = new Float32Array(data);
@@ -497,7 +497,7 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
 
       // Results should be identical
       for (let i = 0; i < data.length; i++) {
-        expect(dataSimd[i]).toBeCloseTo(dataScalar[i], 6);
+        expect(dataSimd?.[i]).toBeCloseTo(dataScalar?.[i], 6);
       }
 
       // SIMD should be reasonably competitive (may be slower on some systems for small datasets)
@@ -535,15 +535,15 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
         ops.matmul(a, b, c, m, n, k);
         const time = performance.now() - start;
 
-        results.push({ blockSize, time });
+        results?.push({ blockSize, time });
       }
 
       // All block sizes should produce valid results
       for (const result of results) {
-        expect(result.time).toBeGreaterThan(0);
-        expect(result.time).toBeLessThan(1000); // Should complete within 1 second
+        expect(result?.time).toBeGreaterThan(0);
+        expect(result?.time).toBeLessThan(1000); // Should complete within 1 second
       }
-      results.forEach((_r) => {});
+      results?.forEach((_r) => {});
     });
 
     it('should handle non-aligned array sizes correctly', () => {
@@ -624,7 +624,7 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
     it('should handle very large activation arrays', () => {
       const largeData = new Float32Array(100000);
       for (let i = 0; i < largeData.length; i++) {
-        largeData[i] = (Math.random() - 0.5) * 10;
+        largeData?.[i] = (Math.random() - 0.5) * 10;
       }
 
       // Should complete without memory issues
@@ -634,7 +634,7 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
 
       // Verify ReLU was applied correctly
       for (let i = 0; i < largeData.length; i++) {
-        expect(largeData[i]).toBeGreaterThanOrEqual(0);
+        expect(largeData?.[i]).toBeGreaterThanOrEqual(0);
       }
     });
   });

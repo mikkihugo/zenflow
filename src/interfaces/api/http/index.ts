@@ -220,11 +220,11 @@ export const checkAPILayerHealth = async (
   try {
     // Check if server is running
     const serverConfig = layer.getServer().getConfig();
-    checks.server = serverConfig.port > 0;
+    checks.server = serverConfig?.port > 0;
 
     // Check if client is configured
     const clientConfig = layer.getClient().getConfig();
-    checks.client = !!clientConfig.baseURL;
+    checks.client = !!clientConfig?.baseURL;
 
     // Check connectivity
     checks.connectivity = await layer.ping();

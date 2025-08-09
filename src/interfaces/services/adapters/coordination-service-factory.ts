@@ -6,12 +6,10 @@
  * and dependency injection.
  */
 
-import { createLogger, type Logger } from '../../../utils/logger';
+import { createLogger } from '../../../utils/logger';
 import type { IServiceFactory } from '../core/interfaces';
 import { ServicePriority, ServiceType } from '../types';
 import {
-  type CoordinationServiceAdapter,
-  type CoordinationServiceAdapterConfig,
   createCoordinationServiceAdapter,
   createDefaultCoordinationServiceAdapterConfig,
 } from './coordination-service-adapter';
@@ -37,24 +35,24 @@ export class CoordinationServiceFactory
    * @param config
    */
   async create(config: CoordinationServiceAdapterConfig): Promise<CoordinationServiceAdapter> {
-    this.logger.info(`Creating coordination service adapter: ${config.name}`);
+    this.logger.info(`Creating coordination service adapter: ${config?.name}`);
 
     // Check if instance already exists
-    if (this.instances.has(config.name)) {
+    if (this.instances.has(config?.name)) {
       this.logger.warn(
-        `Coordination service adapter ${config.name} already exists, returning existing instance`
+        `Coordination service adapter ${config?.name} already exists, returning existing instance`
       );
-      return this.instances.get(config.name)!;
+      return this.instances.get(config?.name)!;
     }
 
     try {
       const adapter = createCoordinationServiceAdapter(config);
-      this.instances.set(config.name, adapter);
+      this.instances.set(config?.name, adapter);
 
-      this.logger.info(`Coordination service adapter created successfully: ${config.name}`);
+      this.logger.info(`Coordination service adapter created successfully: ${config?.name}`);
       return adapter;
     } catch (error) {
-      this.logger.error(`Failed to create coordination service adapter ${config.name}:`, error);
+      this.logger.error(`Failed to create coordination service adapter ${config?.name}:`, error);
       throw error;
     }
   }
@@ -74,9 +72,9 @@ export class CoordinationServiceFactory
     for (const config of configs) {
       try {
         const adapter = await this.create(config);
-        results.push(adapter);
+        results?.push(adapter);
       } catch (error) {
-        this.logger.error(`Failed to create coordination service adapter ${config.name}:`, error);
+        this.logger.error(`Failed to create coordination service adapter ${config?.name}:`, error);
         throw error;
       }
     }
@@ -135,7 +133,7 @@ export class CoordinationServiceFactory
    * Get supported service types
    */
   getSupportedTypes(): string[] {
-    return [ServiceType.COORDINATION, ServiceType.DAA, ServiceType.SESSION_RECOVERY];
+    return [ServiceType["COORDINATION"], ServiceType["DAA"], ServiceType["SESSION_RECOVERY"]];
   }
 
   /**
@@ -196,13 +194,13 @@ export class CoordinationServiceFactory
     const healthCheckPromises = adapters.map(async (adapter) => {
       try {
         const status = await adapter.getStatus();
-        results.set(adapter.name, status);
+        results?.set(adapter.name, status);
       } catch (error) {
         this.logger.error(
           `Health check failed for coordination service adapter ${adapter.name}:`,
           error
         );
-        results.set(adapter.name, {
+        results?.set(adapter.name, {
           name: adapter.name,
           type: adapter.type,
           lifecycle: 'error',
@@ -231,7 +229,7 @@ export class CoordinationServiceFactory
     const metricsPromises = adapters.map(async (adapter) => {
       try {
         const metrics = await adapter.getMetrics();
-        results.set(adapter.name, metrics);
+        results?.set(adapter.name, metrics);
       } catch (error) {
         this.logger.error(
           `Failed to get metrics for coordination service adapter ${adapter.name}:`,
@@ -302,30 +300,30 @@ export function createAgentCoordinationConfig(
   }
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
-    type: ServiceType.COORDINATION,
-    priority: ServicePriority.HIGH,
+    type: ServiceType["COORDINATION"],
+    priority: ServicePriority["HIGH"],
     daaService: {
       enabled: true,
       autoInitialize: true,
-      enableLearning: options?.enableLearning ?? true,
+      enableLearning: options?.["enableLearning"] ?? true,
       enableCognitive: true,
       enableMetaLearning: true,
     },
     swarmCoordinator: {
       enabled: true,
-      defaultTopology: options?.topology ?? 'mesh',
-      maxAgents: options?.maxAgents ?? 20,
+      defaultTopology: options?.["topology"] ?? 'mesh',
+      maxAgents: options?.["maxAgents"] ?? 20,
       coordinationTimeout: 15000,
       performanceThreshold: 0.85,
     },
     agentManagement: {
-      autoSpawn: options?.autoSpawn ?? false,
+      autoSpawn: options?.["autoSpawn"] ?? false,
       maxLifetime: 7200000, // 2 hours
       healthCheckInterval: 60000,
       performanceTracking: true,
     },
     learning: {
-      enableContinuousLearning: options?.enableLearning ?? true,
+      enableContinuousLearning: options?.["enableLearning"] ?? true,
       knowledgeSharing: true,
       patternAnalysis: true,
       metaLearningInterval: 1800000, // 30 minutes
@@ -351,14 +349,14 @@ export function createSessionCoordinationConfig(
   }
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
-    type: ServiceType.SESSION_RECOVERY,
-    priority: ServicePriority.HIGH,
+    type: ServiceType["SESSION_RECOVERY"],
+    priority: ServicePriority["HIGH"],
     sessionService: {
       enabled: true,
-      autoRecovery: options?.autoRecovery ?? true,
+      autoRecovery: options?.["autoRecovery"] ?? true,
       healthCheckInterval: 30000,
-      maxSessions: options?.maxSessions ?? 50,
-      checkpointInterval: options?.checkpointInterval ?? 300000, // 5 minutes
+      maxSessions: options?.["maxSessions"] ?? 50,
+      checkpointInterval: options?.["checkpointInterval"] ?? 300000, // 5 minutes
     },
     performance: {
       enableRequestDeduplication: true,
@@ -395,20 +393,20 @@ export function createDAACoordinationConfig(
   }
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
-    type: ServiceType.DAA,
-    priority: ServicePriority.HIGH,
+    type: ServiceType["DAA"],
+    priority: ServicePriority["HIGH"],
     daaService: {
       enabled: true,
       autoInitialize: true,
       enableLearning: true,
-      enableCognitive: options?.enableCognitive ?? true,
-      enableMetaLearning: options?.enableMetaLearning ?? true,
+      enableCognitive: options?.["enableCognitive"] ?? true,
+      enableMetaLearning: options?.["enableMetaLearning"] ?? true,
     },
     learning: {
       enableContinuousLearning: true,
       knowledgeSharing: true,
       patternAnalysis: true,
-      metaLearningInterval: options?.analysisInterval ?? 1200000, // 20 minutes
+      metaLearningInterval: options?.["analysisInterval"] ?? 1200000, // 20 minutes
     },
     performance: {
       enableRequestDeduplication: true,
@@ -437,12 +435,12 @@ export function createHighPerformanceCoordinationConfig(
   }
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
-    type: ServiceType.COORDINATION,
-    priority: ServicePriority.HIGH,
+    type: ServiceType["COORDINATION"],
+    priority: ServicePriority["HIGH"],
     performance: {
       enableRequestDeduplication: true,
-      maxConcurrency: options?.maxConcurrency ?? 50,
-      requestTimeout: options?.requestTimeout ?? 20000,
+      maxConcurrency: options?.["maxConcurrency"] ?? 50,
+      requestTimeout: options?.["requestTimeout"] ?? 20000,
       enableMetricsCollection: true,
       agentPooling: true,
       sessionCaching: true,
@@ -451,7 +449,7 @@ export function createHighPerformanceCoordinationConfig(
       enabled: true,
       strategy: 'memory',
       defaultTTL: 300000, // 5 minutes
-      maxSize: options?.cacheSize ?? 1000,
+      maxSize: options?.["cacheSize"] ?? 1000,
       keyPrefix: 'perf-coord:',
     },
     retry: {
@@ -486,8 +484,8 @@ export const CoordinationConfigPresets = {
    */
   BASIC: (name: string) =>
     createDefaultCoordinationServiceAdapterConfig(name, {
-      type: ServiceType.COORDINATION,
-      priority: ServicePriority.NORMAL,
+      type: ServiceType["COORDINATION"],
+      priority: ServicePriority["NORMAL"],
     }),
 
   /**

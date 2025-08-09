@@ -15,36 +15,7 @@
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
 import { createLogger } from '../../core/logger';
-import type { MemorySystem } from '../../core/memory-system';
-import type {
-  ADRDocumentEntity,
-  EpicDocumentEntity,
-  FeatureDocumentEntity,
-  PRDDocumentEntity,
-  TaskDocumentEntity,
-  VisionDocumentEntity,
-} from '../../database/entities/product-entities';
-import type { DocumentManager } from '../../database/managers/document-manager';
-import type {
-  CompletedStepInfo,
-  StepExecutionResult,
-  WorkflowContext,
-  WorkflowData,
-  WorkflowDefinition,
-  WorkflowEngineConfig,
-  WorkflowError,
-  WorkflowExecutionOptions,
-  WorkflowMetrics,
-  WorkflowStatus,
-  WorkflowStepResults,
-  WorkflowStepState,
-} from '../../types/workflow-types';
 import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine';
-import type {
-  ProjectSpecification,
-  SPARCPhase,
-  SPARCProject,
-} from '../swarm/sparc/types/sparc-types';
 
 const logger = createLogger({ prefix: 'ProductWorkflow' });
 
@@ -327,21 +298,21 @@ export class ProductWorkflowEngine extends EventEmitter {
       await this.saveWorkflow(workflow);
 
       // Apply execution options
-      if (options.dryRun) {
+      if (options?.["dryRun"]) {
         logger.info(`🧪 DRY RUN: Would execute Product Flow workflow: ${workflow.definition.name}`);
         return;
       }
 
       // Set timeout if specified
-      if (options.timeout) {
+      if (options?.["timeout"]) {
         setTimeout(() => {
-          throw new Error(`Workflow execution timed out after ${options.timeout}ms`);
-        }, options.timeout);
+          throw new Error(`Workflow execution timed out after ${options?.["timeout"]}ms`);
+        }, options?.["timeout"]);
       }
 
       logger.info(`🚀 Starting Product Flow workflow: ${workflow.definition.name}`);
-      if (options.maxConcurrency) {
-        logger.info(`⚡ Max concurrency: ${options.maxConcurrency}`);
+      if (options?.["maxConcurrency"]) {
+        logger.info(`⚡ Max concurrency: ${options?.["maxConcurrency"]}`);
       }
 
       // Execute Product Flow steps in sequence
@@ -480,7 +451,7 @@ export class ProductWorkflowEngine extends EventEmitter {
    */
   private shouldApplySPARCToFeature(feature: FeatureDocumentEntity): boolean {
     const technicalFeatureTypes = ['api', 'database', 'integration', 'infrastructure'];
-    return technicalFeatureTypes.includes(feature.feature_type);
+    return technicalFeatureTypes.includes(feature["feature_type"]);
   }
 
   /**
@@ -497,9 +468,9 @@ export class ProductWorkflowEngine extends EventEmitter {
 
     const sparcSpec: ProjectSpecification = {
       name: `SPARC: ${feature.title}`,
-      domain: this.mapFeatureTypeToSPARCDomain(feature.feature_type),
+      domain: this.mapFeatureTypeToSPARCDomain(feature["feature_type"]),
       complexity: this.assessFeatureComplexity(feature),
-      requirements: feature.acceptance_criteria,
+      requirements: feature["acceptance_criteria"],
       constraints: [], // Could be derived from feature constraints
       targetMetrics: [], // Could be derived from feature performance requirements
     };
@@ -513,9 +484,9 @@ export class ProductWorkflowEngine extends EventEmitter {
     workflow.sparcIntegration.completedPhases.set(feature.id, []);
 
     // Update feature with SPARC integration
-    if (!feature.sparc_implementation) {
+    if (!feature["sparc_implementation"]) {
       // This would be handled by the database update in a real system
-      feature.sparc_implementation = {
+      feature["sparc_implementation"] = {
         sparc_project_id: sparcProject.id,
         sparc_phases: {
           specification: { status: 'not_started', deliverables: [] },
@@ -527,7 +498,7 @@ export class ProductWorkflowEngine extends EventEmitter {
         current_sparc_phase: 'specification',
         sparc_progress_percentage: 0,
         use_sparc_methodology: true,
-        sparc_domain: this.mapFeatureTypeToSPARCDomain(feature.feature_type),
+        sparc_domain: this.mapFeatureTypeToSPARCDomain(feature["feature_type"]),
         sparc_complexity: this.assessFeatureComplexity(feature),
         integration_health: {
           sync_status: 'synced' as const,
@@ -564,14 +535,14 @@ export class ProductWorkflowEngine extends EventEmitter {
           // Execute SPARC phase
           const result = await this.sparcEngine.executePhase(sparcProject, phase);
 
-          if (result.success) {
+          if (result?.success) {
             // Update workflow state
             const completedPhases = workflow.sparcIntegration.completedPhases.get(featureId) || [];
             completedPhases.push(phase);
             workflow.sparcIntegration.completedPhases.set(featureId, completedPhases);
 
             // Update active phase
-            const nextPhase = result.nextPhase;
+            const nextPhase = result?.nextPhase;
             if (nextPhase) {
               workflow.sparcIntegration.activePhases.set(featureId, nextPhase);
             } else {
@@ -623,7 +594,7 @@ export class ProductWorkflowEngine extends EventEmitter {
    */
   private assessFeatureComplexity(feature: FeatureDocumentEntity): any {
     // Simple heuristic - in production this would be more sophisticated
-    const criteriaCount = feature.acceptance_criteria.length;
+    const criteriaCount = feature["acceptance_criteria"].length;
     if (criteriaCount <= 2) return 'simple';
     if (criteriaCount <= 5) return 'moderate';
     if (criteriaCount <= 10) return 'high';

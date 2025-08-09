@@ -92,7 +92,7 @@ class SQLiteMemoryStore {
     if (!this.isInitialized) throw new Error('Database not initialized');
 
     const result = await this.run('DELETE FROM sessions WHERE id = ?', [sessionId]);
-    return result.changes > 0;
+    return result?.changes > 0;
   }
 
   async getStats(): Promise<{ totalSessions: number; totalSize: number }> {
@@ -103,7 +103,7 @@ class SQLiteMemoryStore {
     );
 
     return {
-      totalSessions: result.count || 0,
+      totalSessions: result?.count || 0,
       totalSize: result.size || 0,
     };
   }
@@ -178,7 +178,7 @@ describe('SQLite Persistence Integration Tests', () => {
 
     // Clean up test database file
     try {
-      await access(dbPath, constants.F_OK);
+      await access(dbPath, constants["F_OK"]);
       await unlink(dbPath);
     } catch {
       // File doesn't exist, ignore
@@ -214,7 +214,7 @@ describe('SQLite Persistence Integration Tests', () => {
 
       const result = await mockConnection.query('SELECT * FROM sessions');
       expect(result).toHaveLength(1);
-      expect(result[0].id).toBe('session1');
+      expect(result?.[0]?.id).toBe('session1');
       expect(mockConnection.query).toHaveBeenCalledWith('SELECT * FROM sessions');
     });
 
@@ -279,9 +279,9 @@ describe('SQLite Persistence Integration Tests', () => {
       const retrieved = await store.retrieve(sessionId);
       const parsedData = JSON.parse(retrieved.data);
 
-      expect(parsedData.nested.array).toEqual([1, 2, 3, { deep: 'value' }]);
-      expect(parsedData.nested.date).toBe(complexData.nested.date);
-      expect(parsedData.nested.buffer).toBe(complexData.nested.buffer);
+      expect(parsedData?.nested?.array).toEqual([1, 2, 3, { deep: 'value' }]);
+      expect(parsedData?.nested?.date).toBe(complexData?.nested?.date);
+      expect(parsedData?.nested?.buffer).toBe(complexData?.nested?.buffer);
     });
 
     it('should list sessions in correct order', async () => {
@@ -386,9 +386,9 @@ describe('SQLite Persistence Integration Tests', () => {
       const results = await Promise.all(concurrentOperations);
 
       expect(results).toHaveLength(10);
-      results.forEach((result, index) => {
+      results?.forEach((result, index) => {
         expect(result).toBeDefined();
-        const parsed = JSON.parse(result.data);
+        const parsed = JSON.parse(result?.data);
         expect(parsed.index).toBe(index);
       });
     });

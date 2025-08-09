@@ -1,9 +1,3 @@
-/**
- * Analysis result types for domain splitting
- */
-
-import type { DependencyGraph } from './domain-types';
-
 export interface AnalysisConfig {
   includeTests: boolean;
   includeConfig: boolean;

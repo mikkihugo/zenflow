@@ -23,10 +23,10 @@ describe('LanceDB Integration Validation', () => {
       vectorDim: 128,
     });
 
-    expect(instance.initialize).toBeDefined();
-    expect(instance.searchSimilar).toBeDefined();
-    expect(instance.insertVectors).toBeDefined();
-    expect(instance.getStats).toBeDefined();
+    expect(instance["initialize"]).toBeDefined();
+    expect(instance["searchSimilar"]).toBeDefined();
+    expect(instance["insertVectors"]).toBeDefined();
+    expect(instance["getStats"]).toBeDefined();
   });
 
   it('should have LanceDBAdapter available with vector operations', async () => {
@@ -68,10 +68,10 @@ describe('LanceDB Integration Validation', () => {
     expect(DatabaseController).toBeDefined();
 
     // Check that vector methods exist on the prototype
-    expect(DatabaseController.prototype.vectorSearch).toBeDefined();
-    expect(DatabaseController.prototype.addVectors).toBeDefined();
-    expect(DatabaseController.prototype.getVectorStats).toBeDefined();
-    expect(DatabaseController.prototype.createVectorIndex).toBeDefined();
+    expect(DatabaseController?.prototype?.vectorSearch).toBeDefined();
+    expect(DatabaseController?.prototype?.addVectors).toBeDefined();
+    expect(DatabaseController?.prototype?.getVectorStats).toBeDefined();
+    expect(DatabaseController?.prototype?.createVectorIndex).toBeDefined();
   });
 
   it('should have proper vector interfaces defined', async () => {
@@ -79,7 +79,7 @@ describe('LanceDB Integration Validation', () => {
     const module = await import('../../../database/providers/database-providers');
 
     // These should be available as types, but we can test the class implements them
-    expect(module.LanceDBAdapter).toBeDefined();
+    expect(module["LanceDBAdapter"]).toBeDefined();
 
     const mockLogger = {
       debug: () => {},
@@ -89,7 +89,7 @@ describe('LanceDB Integration Validation', () => {
       configure: async () => {},
     };
 
-    const adapter = new module.LanceDBAdapter(
+    const adapter = new module["LanceDBAdapter"](
       { type: 'lancedb', database: './test.lance' },
       mockLogger
     );

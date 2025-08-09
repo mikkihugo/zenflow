@@ -65,7 +65,7 @@ export function createNeuralModel(modelType, config = {}) {
   return {
     ...actualConfig,
     created: new Date(),
-    id: actualConfig.id || `custom_${Date.now()}`,
+    id: actualConfig?.id || `custom_${Date.now()}`,
   };
 }
 
@@ -83,7 +83,7 @@ export function getAvailablePresets() {
  */
 export function validateModelConfig(config) {
   const required = ['architecture', 'layers'];
-  const missing = required.filter((field) => !config[field]);
+  const missing = required.filter((field) => !config?.[field]);
 
   if (missing.length > 0) {
     throw new Error(`Missing required fields: ${missing.join(', ')}`);

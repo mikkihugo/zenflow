@@ -64,8 +64,8 @@ export class NeuralCoordinationProtocol {
     // Update node stats
     const node = this.nodes.get(fromNode);
     if (node) {
-      node.messageCount++;
-      node.lastSync = new Date();
+      node?.messageCount++;
+      node?.lastSync = new Date();
     }
 
     // Cleanup old messages
@@ -89,8 +89,8 @@ export class NeuralCoordinationProtocol {
     }
 
     // Mock synchronization
-    node.lastSync = new Date();
-    node.status = 'synced';
+    node?.lastSync = new Date();
+    node?.status = 'synced';
 
     // Broadcast sync to other nodes
     const syncMessage = {
@@ -116,12 +116,12 @@ export class NeuralCoordinationProtocol {
     const nodes = Array.from(this.nodes.values());
     return {
       totalNodes: nodes.length,
-      activeNodes: nodes.filter((n) => n.status === 'active').length,
+      activeNodes: nodes?.filter((n) => n.status === 'active').length,
       totalMessages: this.messages.length,
       avgMessagesPerNode:
-        nodes.length > 0 ? nodes.reduce((sum, n) => sum + n.messageCount, 0) / nodes.length : 0,
+        nodes.length > 0 ? nodes?.reduce((sum, n) => sum + n.messageCount, 0) / nodes.length : 0,
       lastActivity:
-        this.messages.length > 0 ? this.messages[this.messages.length - 1].timestamp : null,
+        this.messages.length > 0 ? this.messages[this.messages.length - 1]?.timestamp : null,
     };
   }
 
@@ -160,7 +160,7 @@ export class NeuralCoordinationProtocol {
         await this.sendMessage(agentId, otherId, 'register', {
           type: 'agent_registration',
           agentId,
-          capabilities: nodeInfo.capabilities,
+          capabilities: nodeInfo?.capabilities,
           timestamp: new Date(),
         });
       }
@@ -231,7 +231,7 @@ export class NeuralCoordinationProtocol {
           timestamp: new Date(),
         };
 
-        coordinationResults.set(agentId, coordination);
+        coordinationResults?.set(agentId, coordination);
       }
     }
 
@@ -283,7 +283,7 @@ export class NeuralCoordinationProtocol {
     const nodes = Array.from(this.nodes.values());
     if (nodes.length === 0) return 0;
 
-    const total = nodes.reduce((sum, node) => sum + (node.messageCount || 0), 0);
+    const total = nodes?.reduce((sum, node) => sum + (node?.messageCount || 0), 0);
     return total / nodes.length;
   }
 }
