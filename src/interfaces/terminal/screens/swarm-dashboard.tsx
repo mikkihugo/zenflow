@@ -5,7 +5,7 @@
  * Consolidates swarm functionality from TUI interface.
  */
 /**
- * @file Interface implementation: swarm-dashboard
+ * @file Interface implementation: swarm-dashboard.
  */
 
 
@@ -186,7 +186,7 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
       <Box flexDirection="row" marginBottom={2}>
         <Box flexDirection="column" width="50%">
           <Box marginBottom={1}>
-            <StatusBadge.
+            <StatusBadge
               status={swarmStatus.status}
               text={`Swarm ${swarmStatus.status.toUpperCase()}`}
               variant="full"
@@ -287,7 +287,7 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
       </Box>
 
       {/* Footer */}
-      <InteractiveFooter.
+      <InteractiveFooter
         currentScreen="Swarm Dashboard"
         availableScreens={[
           { key: '2', name: 'Agents' },

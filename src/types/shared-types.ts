@@ -49,8 +49,34 @@ export interface SwarmConfig {
 
 export type SwarmTopology = 'mesh' | 'hierarchical' | 'ring' | 'star';
 export type SwarmStatus = 'initializing' | 'active' | 'paused' | 'stopped' | 'error';
-export type AgentStatus = 'idle' | 'busy' | 'offline' | 'error';
-export type AgentType = 'coordinator' | 'worker' | 'specialist' | 'observer';
+export type AgentStatus = 'initializing' | 'idle' | 'busy' | 'error' | 'offline' | 'terminated';
+export type AgentType = 
+  | 'researcher' 
+  | 'coder' 
+  | 'analyst' 
+  | 'requirements-engineer'
+  | 'design-architect'
+  | 'task-planner'
+  | 'developer'
+  | 'system-architect'
+  | 'tester'
+  | 'reviewer'
+  | 'steering-author'
+  | 'frontend-dev'
+  | 'ui-designer'
+  | 'ux-designer'
+  | 'accessibility-specialist'
+  | 'fullstack-dev'
+  | 'dev-backend-api'
+  | 'ai-ml-specialist'
+  | 'data-ml-model'
+  | 'performance-analyzer'
+  | 'database-architect'
+  | 'coordinator'
+  | 'worker'
+  | 'specialist'
+  | 'observer'
+  | 'manager';
 export type CoordinationStrategy = 'parallel' | 'sequential' | 'adaptive';
 
 // ============================================
@@ -96,6 +122,27 @@ export interface Message {
   timestamp: Date;
   priority?: 'low' | 'medium' | 'high' | 'urgent';
 }
+
+// ============================================
+// Task Types
+// ============================================
+
+export interface Task {
+  id: string;
+  name: string;
+  description: string;
+  status: TaskStatus;
+  type: TaskType;
+  assignedTo?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  completedAt?: Date;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  metadata?: Record<string, any>;
+}
+
+export type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'failed' | 'cancelled';
+export type TaskType = 'analysis' | 'generation' | 'review' | 'coordination' | 'research' | 'testing';
 
 // ============================================
 // Configuration Types

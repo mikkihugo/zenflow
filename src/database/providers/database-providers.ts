@@ -1561,8 +1561,8 @@ export class KuzuAdapter implements GraphDatabaseAdapter {
 @injectable
 export class LanceDBAdapter implements VectorDatabaseAdapter {
   private connected = false;
-  private vectorRepository?: any = null; // DAL repository instance
-  private vectorDAO?: any = null; // DAL DAO instance
+  private vectorRepository?: unknown = null; // DAL repository instance
+  private vectorDAO?: unknown = null; // DAL DAO instance
   private connectionStats: ConnectionStats = {
     total: 1,
     active: 0,

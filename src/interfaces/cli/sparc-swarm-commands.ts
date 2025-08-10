@@ -14,7 +14,7 @@ import { Command } from 'commander';
 import { DatabaseSPARCBridge } from '../coordination/database-sparc-bridge';
 import { SPARCSwarmCoordinator } from '../coordination/swarm/core/sparc-swarm-coordinator';
 import { DatabaseDrivenSystem } from '../core/database-driven-system';
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../core/logger';
 import { WorkflowEngine } from '../core/workflow-engine';
 import type {
   FeatureDocumentEntity,

@@ -1,5 +1,5 @@
 /**
- * @file memory-migration-example implementation
+ * @file Memory-migration-example implementation.
  */
 
 
@@ -8,14 +8,19 @@ import {
   isMemoryError,
   isMemoryNotFound,
   isMemorySuccess,
+  MemoryResult,
+  MemoryError,
+  MemoryNotFound,
+  MemorySuccess,
 } from '../utils/type-guards';
+import { SessionMemoryStore } from '../memory';
 
 // ============================================
 // BEFORE: Unsafe Memory Operations
 // ============================================
 
 /**
- * ❌ BEFORE: Unsafe memory service - potential runtime errors
+ * ❌ BEFORE: Unsafe memory service - potential runtime errors.
  *
  * @example
  */
@@ -53,7 +58,7 @@ class UnsafeMemoryService {
 // ============================================
 
 /**
- * ✅ AFTER: Type-safe memory service with proper error handling
+ * ✅ AFTER: Type-safe memory service with proper error handling.
  *
  * @example
  */
@@ -61,7 +66,7 @@ class SafeMemoryService {
   constructor(private store: SessionMemoryStore) {}
 
   /**
-   * ✅ Safe: Proper type guards and error handling
+   * ✅ Safe: Proper type guards and error handling.
    *
    * @param userId
    */
@@ -95,7 +100,7 @@ class SafeMemoryService {
   }
 
   /**
-   * ✅ Safe: Comprehensive error handling and logging
+   * ✅ Safe: Comprehensive error handling and logging.
    *
    * @param userId
    * @param sessionData
@@ -127,7 +132,7 @@ class SafeMemoryService {
   }
 
   /**
-   * ✅ Safe: Proper null checking and default values
+   * ✅ Safe: Proper null checking and default values.
    *
    * @param userId
    */
@@ -171,7 +176,7 @@ class SafeMemoryService {
   }
 
   /**
-   * ✅ Safe: Complex operation with multiple fallbacks
+   * ✅ Safe: Complex operation with multiple fallbacks.
    *
    * @param userId
    */
@@ -215,7 +220,7 @@ class SafeMemoryService {
   }
 
   /**
-   * ✅ Safe: Batch operations with individual error handling
+   * ✅ Safe: Batch operations with individual error handling.
    *
    * @param userIds
    */
@@ -383,6 +388,8 @@ interface UserSettings {
 
 /**
  * Example showing the difference in usage patterns.
+ *
+ * @example
  */
 export async function demonstrateMigration(): Promise<void> {
   // Mock store for demonstration
@@ -457,5 +464,7 @@ export async function demonstrateMigration(): Promise<void> {
 
 /**
  * Performance comparison between unsafe and safe approaches.
+ *
+ * @example
  */
 export async function performanceComparison(): Promise<void> {}

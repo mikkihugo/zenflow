@@ -4,7 +4,7 @@
  * Achieves 2.8-4.4x speed improvements through concurrent execution
  */
 
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../core/logger';
 
 // TODO: Use dependency injection for logger
 // Should inject ILogger from DI container instead of creating directly

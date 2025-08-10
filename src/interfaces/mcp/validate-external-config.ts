@@ -13,7 +13,7 @@ const logger = getLogger('interfaces-mcp-validate-external-config');
 
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import type { getLogger } from '../core/logger';
+import type { getLogger } from '../../core/logger';
 
 /**
  * Validate configuration files.

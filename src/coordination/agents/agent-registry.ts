@@ -2,23 +2,23 @@
  * Agent Registry - Manages registration and discovery of agents.
  *
  * Provides a centralized registry for agent management, allowing.
- * agents to be discovered, queried, and managed across the system.
+ * Agents to be discovered, queried, and managed across the system.
  */
 /**
- * @file Coordination system: agent-registry
+ * @file Coordination system: agent-registry.
  */
 
 
 
 import { EventEmitter } from 'node:events';
-import type { MemoryCoordinator } from '../memory/core/memory-coordinator';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import type {
   AgentCapabilities,
   AgentId,
   AgentMetrics,
   AgentStatus,
   AgentType,
-} from '../types/agent-types';
+} from '../../types/agent-types';
 
 export interface AgentRegistryQuery {
   type?: AgentType;
@@ -454,6 +454,8 @@ export class AgentRegistry extends EventEmitter {
       resourceUsage: {
         memory: 0,
         cpu: 0,
+        disk: 0,
+        network: 0,
       },
     };
   }

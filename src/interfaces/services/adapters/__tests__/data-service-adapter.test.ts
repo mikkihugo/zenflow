@@ -1,9 +1,9 @@
 /**
- * Data Service Adapter Test Suite
+ * Data Service Adapter Test Suite.
  *
  * Comprehensive test coverage for DataServiceAdapter following hybrid TDD approach:
  * - 70% London TDD (Mockist) for integration boundaries and service interactions
- * - 30% Classical TDD (Detroit) for business logic and data transformations
+ * - 30% Classical TDD (Detroit) for business logic and data transformations.
  *
  * Tests cover adapter functionality, service integration, error handling,
  * performance metrics, caching, retry logic, and helper functions.
@@ -19,7 +19,7 @@ import {
 } from '../data-service-adapter';
 import { DataServiceFactory } from '../data-service-factory';
 import { DataServiceHelper, DataServiceUtils } from '../data-service-helpers';
-import type { DocumentService } from '../services/document-service';
+import { DocumentService } from '../../../../database/managers/document-manager';
 
 // Mock external dependencies
 jest.mock('../../../web/web-data-service');
@@ -64,6 +64,7 @@ describe('DataServiceAdapter', () => {
         strategy: 'memory',
         defaultTTL: 60000,
         maxSize: 100,
+        keyPrefix: 'test-cache',
       },
       retry: {
         enabled: true,
@@ -131,7 +132,9 @@ describe('DataServiceAdapter', () => {
 
     it('should initialize only WebDataService when DocumentService is disabled', async () => {
       // Arrange
-      config?.documentData!.enabled = false;
+      if (config.documentData) {
+        config.documentData.enabled = false;
+      }
       adapter = new DataServiceAdapter(config);
 
       // Act
@@ -603,7 +606,9 @@ describe('DataServiceAdapter', () => {
 
     it('should report limited capabilities when only web data is enabled', async () => {
       // Arrange
-      config?.documentData!.enabled = false;
+      if (config.documentData) {
+        config.documentData.enabled = false;
+      }
       adapter = new DataServiceAdapter(config);
       await adapter.initialize();
 
@@ -678,7 +683,21 @@ describe('DataServiceFactory', () => {
   });
 
   describe('Specialized Factory Methods (Classical TDD)', () => {
+    let mockDocumentService: jest.Mocked<DocumentService>;
+    
     beforeEach(() => {
+      mockDocumentService = {
+        initialize: jest.fn(),
+        createDocument: jest.fn(),
+        getDocument: jest.fn(),
+        updateDocument: jest.fn(),
+        deleteDocument: jest.fn(),
+        queryDocuments: jest.fn(),
+        searchDocuments: jest.fn(),
+        createProject: jest.fn(),
+        getProjectWithDocuments: jest.fn(),
+      } as any;
+      MockedDocumentService.mockImplementation(() => mockDocumentService);
       mockDocumentService.initialize.mockResolvedValue();
     });
 
@@ -716,7 +735,21 @@ describe('DataServiceFactory', () => {
   });
 
   describe('Factory Statistics (Classical TDD)', () => {
+    let mockDocumentService: jest.Mocked<DocumentService>;
+    
     beforeEach(() => {
+      mockDocumentService = {
+        initialize: jest.fn(),
+        createDocument: jest.fn(),
+        getDocument: jest.fn(),
+        updateDocument: jest.fn(),
+        deleteDocument: jest.fn(),
+        queryDocuments: jest.fn(),
+        searchDocuments: jest.fn(),
+        createProject: jest.fn(),
+        getProjectWithDocuments: jest.fn(),
+      } as any;
+      MockedDocumentService.mockImplementation(() => mockDocumentService);
       mockDocumentService.initialize.mockResolvedValue();
     });
 
@@ -753,6 +786,18 @@ describe('DataServiceHelper', () => {
     adapter = new DataServiceAdapter(config);
     helper = new DataServiceHelper(adapter);
 
+    const mockDocumentService = {
+      initialize: jest.fn(),
+      createDocument: jest.fn(),
+      getDocument: jest.fn(),
+      updateDocument: jest.fn(),
+      deleteDocument: jest.fn(),
+      queryDocuments: jest.fn(),
+      searchDocuments: jest.fn(),
+      createProject: jest.fn(),
+      getProjectWithDocuments: jest.fn(),
+    } as any;
+    MockedDocumentService.mockImplementation(() => mockDocumentService);
     mockDocumentService.initialize.mockResolvedValue();
     await adapter.initialize();
     await adapter.start();
@@ -767,6 +812,17 @@ describe('DataServiceHelper', () => {
     it('should get system status with metadata', async () => {
       // Arrange
       const mockStatus = { system: 'healthy', version: '1.0.0' };
+      const mockWebDataService = {
+        getSystemStatus: jest.fn(),
+        getSwarms: jest.fn(),
+        createSwarm: jest.fn(),
+        getTasks: jest.fn(),
+        createTask: jest.fn(),
+        getDocuments: jest.fn(),
+        executeCommand: jest.fn(),
+        getServiceStats: jest.fn(),
+      } as any;
+      MockedWebDataService.mockImplementation(() => mockWebDataService);
       mockWebDataService?.getSystemStatus?.mockResolvedValue(mockStatus as any);
 
       // Act
@@ -799,6 +855,17 @@ describe('DataServiceHelper', () => {
           progress: 100,
         },
       ];
+      const mockWebDataService = {
+        getSystemStatus: jest.fn(),
+        getSwarms: jest.fn(),
+        createSwarm: jest.fn(),
+        getTasks: jest.fn(),
+        createTask: jest.fn(),
+        getDocuments: jest.fn(),
+        executeCommand: jest.fn(),
+        getServiceStats: jest.fn(),
+      } as any;
+      MockedWebDataService.mockImplementation(() => mockWebDataService);
       mockWebDataService?.getSwarms?.mockResolvedValue(mockSwarms as any);
 
       // Act
@@ -849,10 +916,10 @@ describe('DataServiceHelper', () => {
 
       // Assert
       expect(result).toHaveLength(2);
-      expect(result?.[0]?.id).toBe(3); // Highest value after sort
-      expect(result?.[0]?.doubled).toBe(60);
-      expect(result?.[1]?.id).toBe(1);
-      expect(result?.[1]?.doubled).toBe(20);
+      expect((result?.[0] as any)?.id).toBe(3); // Highest value after sort
+      expect((result?.[0] as any)?.doubled).toBe(60);
+      expect((result?.[1] as any)?.id).toBe(1);
+      expect((result?.[1] as any)?.doubled).toBe(20);
     });
 
     it('should export data in different formats', () => {

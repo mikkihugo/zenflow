@@ -1,5 +1,5 @@
 /**
- * USL Coordination Service Adapter Tests
+ * USL Coordination Service Adapter Tests.
  *
  * Comprehensive test suite for the CoordinationServiceAdapter following
  * the hybrid TDD approach (70% London + 30% Classical).
@@ -190,7 +190,7 @@ describe('CoordinationServiceAdapter', () => {
       const validConfig = createDefaultCoordinationServiceAdapterConfig('valid-test');
 
       // Act
-      const isValid = await adapter.validateConfig(validConfig);
+      const isValid = await adapter.validateConfig(validConfig as any);
 
       // Assert
       expect(isValid).toBe(true);
@@ -213,10 +213,10 @@ describe('CoordinationServiceAdapter', () => {
       const updateConfig = { performance: { maxConcurrency: 30 } };
 
       // Act
-      await adapter.updateConfig(updateConfig);
+      await adapter.updateConfig(updateConfig as any);
 
       // Assert
-      expect(adapter.config.performance?.maxConcurrency).toBe(30);
+      expect((adapter.config as any).performance?.maxConcurrency).toBe(30);
     });
   });
 
@@ -400,7 +400,7 @@ describe('CoordinationServiceAdapter', () => {
 
     it('should cache and retrieve operation results', async () => {
       // Arrange - Enable cache in configuration
-      adapter.config.cache!.enabled = true;
+      (adapter.config as any).cache!.enabled = true;
 
       // Act - Execute same operation twice
       const result1 = await adapter.execute('agent-learning-status', { agentId: 'agent-1' });
@@ -414,8 +414,8 @@ describe('CoordinationServiceAdapter', () => {
 
     it('should respect cache TTL', async () => {
       // Arrange
-      adapter.config.cache!.enabled = true;
-      adapter.config.cache!.defaultTTL = 100; // 100ms TTL
+      (adapter.config as any).cache!.enabled = true;
+      (adapter.config as any).cache!.defaultTTL = 100; // 100ms TTL
 
       // Act
       const result1 = await adapter.execute('agent-learning-status', { agentId: 'agent-1' });
@@ -432,7 +432,7 @@ describe('CoordinationServiceAdapter', () => {
 
     it('should clear cache correctly', async () => {
       // Arrange
-      adapter.config.cache!.enabled = true;
+      (adapter.config as any).cache!.enabled = true;
       await adapter.execute('agent-learning-status', { agentId: 'agent-1' });
 
       // Act
@@ -486,7 +486,7 @@ describe('CoordinationServiceAdapter', () => {
       // Assert - All operations should have failed
       results?.forEach((result) => expect(result?.success).toBe(false));
       expect(metrics.errorCount).toBe(3);
-      expect(metrics.errorRate).toBeGreaterThan(0);
+      expect((metrics as any).errorRate).toBeGreaterThan(0);
     });
 
     it('should track custom coordination metrics', async () => {
@@ -636,8 +636,8 @@ describe('CoordinationServiceAdapter', () => {
 
       // Assert
       expect(config?.name).toBe('override-test');
-      expect(config?.priority).toBe(ServicePriority.HIGH);
-      expect(config?.timeout).toBe(60000);
+      expect((config as any)?.priority).toBe(ServicePriority.HIGH);
+      expect((config as any)?.timeout).toBe(60000);
       expect(config?.daaService?.enabled).toBe(false);
     });
   });
@@ -707,16 +707,16 @@ describe('CoordinationServiceAdapter', () => {
 
   describe('Retry Logic', () => {
     beforeEach(async () => {
-      adapter.config.retry!.enabled = true;
-      adapter.config.retry!.maxAttempts = 3;
+      (adapter.config as any).retry!.enabled = true;
+      (adapter.config as any).retry!.attempts = 3;
       await adapter.initialize();
     });
 
     it('should retry failed operations', async () => {
       // This test would require more complex mocking to simulate intermittent failures
       // For now, we test that retry configuration is properly applied
-      expect(adapter.config.retry?.enabled).toBe(true);
-      expect(adapter.config.retry?.maxAttempts).toBe(3);
+      expect((adapter.config as any).retry?.enabled).toBe(true);
+      expect((adapter.config as any).retry?.attempts).toBe(3);
     });
   });
 });

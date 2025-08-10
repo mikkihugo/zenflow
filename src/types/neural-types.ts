@@ -14,7 +14,4 @@ export class NeuralError extends Error {
   }
 }
 
-// Convenience exports
-export type {
-  NeuralError,
-};
+// Class is already exported above - no need for type export

@@ -1,17 +1,17 @@
 /**
- * @file Neural network: safe-neural-network
+ * @file Neural network: safe-neural-network.
  */
 
 
-import { getLogger } from '../core/logger';
+import { Logger } from '../core/logger';
 
-const logger = getLogger('src-neural-safe-neural-network');
+const logger = new Logger('src-neural-safe-neural-network');
 
 /**
  * Safe Neural Network Operations.
  *
  * Provides type-safe neural network operations with proper union type handling.
- * for training, inference, and error scenarios.
+ * For training, inference, and error scenarios.
  */
 
 import {
@@ -19,6 +19,13 @@ import {
   isNeuralError,
   isTrainingResult,
   isWasmError,
+  NeuralResult,
+  TrainingResult,
+  InferenceResult,
+  NeuralError,
+  WasmResult,
+  WasmSuccess,
+  WasmError,
 } from '../utils/type-guards';
 
 export interface NeuralNetworkConfig {
@@ -469,7 +476,7 @@ export class SafeNeuralNetwork {
     for (let i = 0; i < predictions.length; i++) {
       const prediction = predictions[i];
       const target = expected[i]?.[0]; // Assuming single output
-      if (Math.abs(prediction - target) < 0.1) {
+      if (target !== undefined && Math.abs(prediction - target) < 0.1) {
         correct++;
       }
     }
@@ -484,6 +491,8 @@ export class SafeNeuralNetwork {
 
 /**
  * Example function showing safe neural network usage.
+ *
+ * @example
  */
 export async function safeNeuralUsageExample(): Promise<void> {
   const config: NeuralNetworkConfig = {

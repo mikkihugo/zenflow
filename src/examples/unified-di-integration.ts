@@ -139,7 +139,7 @@ function registerCoreServices(container: DIContainer): void {
           'memory.ttl.default': 3600000,
           'swarm.archive.days': 30,
         };
-        return configs?.[key] ?? defaultValue;
+        return configs?.[key as keyof typeof obj] ?? defaultValue;
       },
       set: (key: string, value: any) => {},
       has: (key: string) =>

@@ -8,7 +8,7 @@ const logger = getLogger('interfaces-terminal-main');
  * It gets called by the CLI binary and launches the appropriate terminal interface.
  */
 
-import type { getLogger } from '../core/logger';
+import type { getLogger } from '../../core/logger';
 import { detectModeWithReason, launchTerminalInterface } from './index';
 
 /**

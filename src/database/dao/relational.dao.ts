@@ -154,7 +154,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       throw new Error('Cannot map null/undefined row to entity');
     }
 
-    const entity: any = {};
+    const entity = {} as Record<string, any>;
 
     // Handle common SQL data type conversions
     for (const [key, value] of Object.entries(row)) {
@@ -245,7 +245,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       return {};
     }
 
-    const row: any = {};
+    const row = {} as Record<string, any>;
 
     for (const [key, value] of Object.entries(entity)) {
       if (value === null || value === undefined) {
@@ -384,8 +384,8 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
    * Execute SQL Aggregate Queries.
    *
    * Performs SQL aggregate functions including COUNT, SUM, AVG, MIN, and MAX operations.
-   * on specified columns with optional filtering criteria. Returns numeric results for
-   * statistical analysis and reporting.
+   * On specified columns with optional filtering criteria. Returns numeric results for
+   * statistical analysis and reporting..
    *
    * @param {('COUNT'|'SUM'|'AVG'|'MIN'|'MAX')} aggregateFunction - SQL aggregate function to execute.
    * @param {string} [column='*'] - Column name to aggregate (default: '*' for COUNT).
@@ -473,7 +473,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
    *
    * Performs efficient batch insertion of multiple entities in a single SQL statement.
    * Uses parameterized queries to prevent SQL injection and optimize database performance.
-   * by reducing round-trips to the database server.
+   * By reducing round-trips to the database server..
    *
    * @param {Omit<T, 'id'>[]} entities - Array of entities to insert (without ID field).
    * @returns {Promise<T[]>} Array of created entities with generated IDs.
@@ -544,6 +544,11 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
 
     try {
       const mappedEntities = entities.map((entity) => this.mapEntityToRow(entity as Partial<T>));
+      
+      if (mappedEntities.length === 0 || !mappedEntities[0]) {
+        throw new Error('No valid entities to insert');
+      }
+      
       const columns = Object.keys(mappedEntities[0]);
       const columnsList = columns.join(', ');
 
@@ -740,7 +745,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
    *
    * Performs text-based search using SQL LIKE operator with wildcard matching.
    * Supports partial string matching and is useful for implementing search functionality.
-   * across text fields.
+   * Across text fields..
    *
    * @param {string} field - Database field name to search in.
    * @param {string} searchTerm - Search term to match (automatically wrapped with %).

@@ -13,7 +13,7 @@ import { type ChildProcess, execSync, spawn } from 'child_process';
 import { EventEmitter } from 'events';
 import fs from 'fs';
 import path from 'path';
-import type { logger } from '../core/logger';
+import type { logger } from './core/logger';
 import { getConsoleReplacementLogger } from './config/logging-config';
 
 // Import existing coordination infrastructure (will be dynamically imported)

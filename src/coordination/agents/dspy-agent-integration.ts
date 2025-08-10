@@ -12,18 +12,18 @@
  */
 
 
-import { createLogger } from '../core/logger';
-import type { SessionMemoryStore } from '../memory/memory';
-import type { DSPyProgram, DSPyWrapper } from '../neural/dspy-wrapper';
+import { createLogger } from '../../core/logger';
+import type { SessionMemoryStore } from '../../memory/memory';
+import type { DSPyProgram, DSPyWrapper } from '../../neural/dspy-wrapper';
 // Using the new wrapper architecture instead of direct dspy.ts imports
-import { createDSPyWrapper } from '../neural/dspy-wrapper';
+import { createDSPyWrapper } from '../../neural/dspy-wrapper';
 import type {
   DSPyConfig,
   DSPyExample,
   DSPyOptimizationConfig,
   DSPyOptimizationResult,
-} from '../neural/types/dspy-types';
-import type { AgentType } from '../types/agent-types';
+} from '../../neural/types/dspy-types';
+import type { AgentType } from '../../types/agent-types';
 import type { SwarmAgent, SwarmCoordinator } from '../swarm/core/swarm-coordinator';
 
 const logger = createLogger({ prefix: 'DSPyAgentIntegration' });

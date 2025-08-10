@@ -4,7 +4,7 @@
  * Implements claude-zen's performance monitoring patterns.
  */
 
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../core/logger';
 import type { BatchExecutionSummary } from './batch-engine';
 
 const logger = createLogger({ prefix: 'BatchPerformanceMonitor' });

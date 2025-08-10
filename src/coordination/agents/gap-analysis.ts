@@ -1,16 +1,16 @@
 /**
- * Agent System Gap Analysis - Compare our 147+ agents vs claude-zen's 54
+ * Agent System Gap Analysis - Compare our 147+ agents vs claude-zen's 54.
  *
  * This utility provides comprehensive analysis of our agent system.
- * capabilities compared to claude-zen and other systems.
+ * Capabilities compared to claude-zen and other systems.
  */
 /**
- * @file Coordination system: gap-analysis
+ * @file Coordination system: gap-analysis.
  */
 
 
 
-import type { AgentType } from '../types/agent-types';
+import type { AgentType } from '../../types/agent-types';
 
 // claude-zen's 54 agent types (from their documentation)
 export const CLAUDE_FLOW_AGENTS: Record<string, string[]> = {
@@ -251,6 +251,8 @@ export interface GapAnalysisResult {
 
 /**
  * Perform comprehensive gap analysis between our agent system and claude-zen.
+ *
+ * @example
  */
 export function performGapAnalysis(): GapAnalysisResult {
   // Count our agents
@@ -338,6 +340,8 @@ export function performGapAnalysis(): GapAnalysisResult {
 
 /**
  * Generate a detailed comparison report.
+ *
+ * @example
  */
 export function generateComparisonReport(): string {
   const analysis = performGapAnalysis();
@@ -391,6 +395,8 @@ export function generateComparisonReport(): string {
 
 /**
  * Audit current auto-assignment capabilities.
+ *
+ * @example
  */
 export function auditAutoAssignmentCapabilities(): {
   hasIntelligentSelection: boolean;

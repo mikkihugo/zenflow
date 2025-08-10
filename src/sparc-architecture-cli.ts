@@ -13,7 +13,7 @@ const logger = getLogger('sparc-architecture-cli');
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
-import type { getLogger } from '../core/logger';
+import type { getLogger } from './core/logger';
 
 const program = new Command();
 

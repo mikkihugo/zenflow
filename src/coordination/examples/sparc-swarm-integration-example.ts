@@ -11,7 +11,7 @@
 
 
 import { DatabaseDrivenSystem } from '../core/database-driven-system';
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../core/logger';
 import { WorkflowEngine } from '../core/workflow-engine';
 import type { FeatureDocumentEntity } from '../database/entities/product-entities';
 import { DocumentManager } from '../database/managers/document-manager';

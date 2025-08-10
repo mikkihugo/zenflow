@@ -12,7 +12,7 @@ const logger = getLogger('coordination-swarm-core-claude-integration-index');
  * Coordinates all integration modules for modular, remote-capable setup.
  */
 
-import { ClaudeIntegrationCore } from './core';
+import { ClaudeIntegrationCore } from '../core';
 import { ClaudeDocsGenerator } from './docs';
 import { RemoteWrapperGenerator } from './remote';
 

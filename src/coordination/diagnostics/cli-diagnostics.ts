@@ -221,38 +221,7 @@ function showLoggingConfig(logger: LoggerInterface): void {
   logger.info('Logging configuration displayed successfully');
 }
 
-// xxx NEEDS_HUMAN: This function was unused but might be needed for future console output formatting
-// Keeping it commented out for reference
-/*
-function formatReportForConsole(report: any): string {
-  const output: string[] = [];
 
-  // Connection section
-  output.push('🔌 Connection Diagnostics:');
-  output.push(`   Active Connections: ${report.connection.connections.activeConnections}`);
-  output.push(`   Failure Rate: ${(report.connection.connections.failureRate * 100).toFixed(1)}%`);
-  output.push(`   Total Events: ${report.connection.connections.totalEvents}`);
-
-  if (report.connection.patterns.recommendations.length > 0) {
-    output.push('\n⚠️  Recommendations:');
-    report.connection.patterns.recommendations.forEach((rec: any) => {
-      output.push(`   [${rec.severity.toUpperCase()}] ${rec.issue}`);
-      output.push(`   → ${rec.suggestion}`);
-    });
-  }
-
-  // System section
-  output.push('\n💻 System Health:');
-  output.push(`   Status: ${report.system.status.toUpperCase()}`);
-  if (report.system.metrics) {
-    Object.entries(report.system.metrics).forEach(([key, value]) => {
-      output.push(`   ${key}: ${value}`);
-    });
-  }
-
-  return output.join('\n');
-}
-*/
 
 function formatReportAsMarkdown(report: any): string {
   const lines = [

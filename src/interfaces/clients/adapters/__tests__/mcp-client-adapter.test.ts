@@ -1,8 +1,8 @@
 /**
- * MCP Client Adapter Tests
+ * MCP Client Adapter Tests.
  *
  * Comprehensive test suite for UACL MCP client adapter
- * Tests both stdio and HTTP protocol implementations
+ * Tests both stdio and HTTP protocol implementations.
  */
 
 import { EventEmitter } from 'node:events';
@@ -53,7 +53,7 @@ describe('MCPClientAdapter', () => {
         baseURL: 'stdio://test',
         protocol: 'stdio',
         command: ['node', 'test.js'],
-        authentication: { type: 'none' },
+        authentication: { type: 'custom' },
         tools: { timeout: 10000, retries: 2, discovery: true },
         server: { name: 'test', version: '1.0.0' },
       };
@@ -84,7 +84,7 @@ describe('MCPClientAdapter', () => {
         baseURL: 'stdio://test',
         protocol: 'stdio',
         command: ['node', 'test.js'],
-        authentication: { type: 'none' },
+        authentication: { type: 'custom' },
         tools: { timeout: 10000, retries: 2, discovery: true },
         server: { name: 'test', version: '1.0.0' },
       };
@@ -103,7 +103,7 @@ describe('MCPClientAdapter', () => {
         baseURL: 'stdio://test',
         protocol: 'stdio',
         command: ['node', 'test-server.js'],
-        authentication: { type: 'none' },
+        authentication: { type: 'custom' },
         tools: { timeout: 10000, retries: 2, discovery: true },
         server: { name: 'test-server', version: '1.0.0' },
       };
@@ -237,7 +237,7 @@ describe('MCPClientAdapter', () => {
         baseURL: 'https://api.example.com',
         protocol: 'http',
         url: 'https://api.example.com/mcp',
-        authentication: { type: 'bearer', credentials: 'test-token' },
+        authentication: { type: 'bearer', credentials: { token: 'test-token' } },
         tools: { timeout: 30000, retries: 3, discovery: true },
         server: { name: 'remote-server', version: '2.0.0' },
       };
@@ -323,7 +323,7 @@ describe('MCPClientAdapter', () => {
         baseURL: 'stdio://test',
         protocol: 'stdio',
         command: ['node', 'test.js'],
-        authentication: { type: 'none' },
+        authentication: { type: 'custom' },
         tools: { timeout: 10000, retries: 2, discovery: true },
         server: { name: 'test', version: '1.0.0' },
       };
@@ -382,7 +382,7 @@ describe('MCPClientAdapter', () => {
         protocol: 'stdio',
         command: ['node', 'test.js'],
         timeout: 10000,
-        authentication: { type: 'none' },
+        authentication: { type: 'custom' },
         tools: { timeout: 10000, retries: 2, discovery: true },
         server: { name: 'test', version: '1.0.0' },
       };
@@ -401,7 +401,7 @@ describe('MCPClientAdapter', () => {
         name: 'bad-client',
         baseURL: 'invalid://test',
         protocol: 'invalid' as any,
-        authentication: { type: 'none' as const },
+        authentication: { type: 'custom' as const },
         tools: { timeout: 10000, retries: 2, discovery: true },
         server: { name: 'test', version: '1.0.0' },
       };
@@ -417,14 +417,14 @@ describe('MCPClientAdapter', () => {
         baseURL: 'stdio://test',
         protocol: 'stdio',
         command: ['node', 'test.js'],
-        authentication: { type: 'none' },
+        authentication: { type: 'custom' },
         tools: { timeout: 10000, retries: 2, discovery: true },
         server: { name: 'test', version: '1.0.0' },
       };
 
       adapter = new MCPClientAdapter(config);
 
-      await expect(adapter.put('/test')).rejects.toThrow('PUT not supported');
+      await expect(adapter.put('/test', {})).rejects.toThrow('PUT not supported');
       await expect(adapter.delete('/test')).rejects.toThrow('DELETE not supported');
     });
   });
@@ -480,7 +480,7 @@ describe('MCPClientFactory', () => {
         baseURL: 'stdio://test1',
         protocol: 'stdio',
         command: ['node', 'test1.js'],
-        authentication: { type: 'none' },
+        authentication: { type: 'custom' },
         tools: { timeout: 10000, retries: 2, discovery: true },
         server: { name: 'test1', version: '1.0.0' },
       },
@@ -489,7 +489,7 @@ describe('MCPClientFactory', () => {
         baseURL: 'stdio://test2',
         protocol: 'stdio',
         command: ['node', 'test2.js'],
-        authentication: { type: 'none' },
+        authentication: { type: 'custom' },
         tools: { timeout: 10000, retries: 2, discovery: true },
         server: { name: 'test2', version: '1.0.0' },
       },

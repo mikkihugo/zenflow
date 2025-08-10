@@ -8,7 +8,7 @@ export {
   Task,
   TaskStatus,
   TaskType,
-} from 'shared-types';
+} from './shared-types';
 
 // Export everything else as well
-export * from 'shared-types';
+export * from './shared-types';

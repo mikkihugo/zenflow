@@ -16,8 +16,8 @@
 
 
 
-import type { IConfig, ILogger } from '../core/interfaces/base-interfaces';
-import { createLogger } from '../core/logger';
+import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces';
+import { createLogger } from '../../../core/logger';
 import type { IEventManager, IEventManagerFactory } from '../core/interfaces';
 import { EventManagerTypes } from '../core/interfaces';
 import type { CoordinationEventAdapterConfig } from './coordination-event-adapter';
@@ -38,6 +38,7 @@ export class CoordinationEventManagerFactory
   implements IEventManagerFactory<CoordinationEventAdapterConfig>
 {
   private logger: ILogger;
+  private config: IConfig;
   private instances = new Map<string, CoordinationEventAdapter>();
 
   constructor(logger?: ILogger, config?: IConfig) {

@@ -1,9 +1,9 @@
 /**
- * @file Coordination system: agent
+ * @file Coordination system: agent.
  */
 
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('coordination-agents-agent');
 
@@ -22,7 +22,7 @@ import type {
   Message,
   MessageType,
   Task,
-} from '../types/agent-types';
+} from '../../types/agent-types';
 import { generateId, getDefaultCognitiveProfile } from '../swarm/core/utils';
 
 export class BaseAgent implements Agent {
@@ -59,6 +59,7 @@ export class BaseAgent implements Agent {
     this.metrics = {
       tasksCompleted: 0,
       tasksFailed: 0,
+      tasksInProgress: 0,
       averageExecutionTime: 0,
       successRate: 0,
       cpuUsage: 0,
@@ -72,6 +73,12 @@ export class BaseAgent implements Agent {
       totalUptime: 0,
       lastActivity: new Date(),
       responseTime: 0,
+      resourceUsage: {
+        cpu: 0,
+        memory: 0,
+        disk: 0,
+        network: 0
+      }
     };
 
     this.state = {
@@ -417,6 +424,7 @@ export class AnalystAgent extends BaseAgent {
  * Factory function to create specialized agents.
  *
  * @param config
+ * @example
  */
 export function createAgent(config: AgentConfig): Agent {
   switch (config?.type) {

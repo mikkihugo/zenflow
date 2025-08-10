@@ -6,16 +6,16 @@
  * session operations, and performance monitoring helpers.
  */
 /**
- * @file Interface implementation: coordination-service-helpers
+ * @file Interface implementation: coordination-service-helpers.
  */
 
 
 
-import type { SessionState } from '../coordination/swarm/core/session-manager';
-import type { SwarmAgent } from '../coordination/swarm/core/swarm-coordinator';
-import type { AgentType } from '../types/agent-types';
-import type { SwarmTopology } from '../types/shared-types';
-import { createLogger } from '../utils/logger';
+import type { SessionState } from '../../../coordination/swarm/core/session-manager';
+import type { SwarmAgent } from '../../../coordination/swarm/core/swarm-coordinator';
+import type { AgentType } from '../../../types/agent-types';
+import type { SwarmTopology } from '../../../types/shared-types';
+import { createLogger } from '../../../utils/logger';
 import type { CoordinationServiceAdapter } from './coordination-service-adapter';
 
 // ============================================
@@ -31,6 +31,7 @@ import type { CoordinationServiceAdapter } from './coordination-service-adapter'
  * @param config.capabilities
  * @param config.specialization
  * @param config.learningEnabled
+ * @example
  */
 export async function createIntelligentAgent(
   adapter: CoordinationServiceAdapter,
@@ -90,6 +91,7 @@ export async function createIntelligentAgent(
  * @param options
  * @param options.maxConcurrency
  * @param options.staggerDelay
+ * @example
  */
 export async function createAgentBatch(
   adapter: CoordinationServiceAdapter,
@@ -157,6 +159,7 @@ export async function createAgentBatch(
  *
  * @param adapter
  * @param agentIds
+ * @example
  */
 export async function optimizeAgentPerformance(
   adapter: CoordinationServiceAdapter,
@@ -245,6 +248,7 @@ export async function optimizeAgentPerformance(
  * @param options.autoCheckpoint
  * @param options.checkpointInterval
  * @param options.maxDuration
+ * @example
  */
 export async function createManagedSession(
   adapter: CoordinationServiceAdapter,
@@ -321,6 +325,7 @@ export async function createManagedSession(
  *
  * @param adapter
  * @param sessionIds
+ * @example
  */
 export async function monitorSessionHealth(
   adapter: CoordinationServiceAdapter,
@@ -408,6 +413,7 @@ export async function monitorSessionHealth(
  * @param options.targetLatency
  * @param options.minSuccessRate
  * @param options.adaptiveTopology
+ * @example
  */
 export async function coordinateIntelligentSwarm(
   adapter: CoordinationServiceAdapter,
@@ -519,6 +525,7 @@ export async function coordinateIntelligentSwarm(
  * @param options
  * @param options.strategy
  * @param options.maxTasksPerAgent
+ * @example
  */
 export async function distributeSwarmTasks(
   adapter: CoordinationServiceAdapter,
@@ -608,19 +615,19 @@ export async function distributeSwarmTasks(
       try {
         const assignResult = await adapter.execute('swarm-assign-task', { task });
 
-        if (assignResult?.success) {
-          agentTaskCounts[selectedAgent?.id]++;
+        if (assignResult?.success && selectedAgent?.id) {
+          agentTaskCounts[selectedAgent.id]++;
 
           const estimatedDuration = task.estimatedDuration || 30000; // 30 seconds default
           const estimatedCompletion = new Date(Date.now() + estimatedDuration);
 
           assignments.push({
             taskId: task.id,
-            agentId: selectedAgent?.id,
+            agentId: selectedAgent.id,
             estimatedCompletion,
           });
 
-          logger.debug(`Assigned task ${task.id} to agent ${selectedAgent?.id}`);
+          logger.debug(`Assigned task ${task.id} to agent ${selectedAgent.id}`);
         } else {
           unassigned.push(task.id);
           logger.warn(`Failed to assign task ${task.id}: ${assignResult?.error?.message}`);
@@ -656,6 +663,7 @@ export async function distributeSwarmTasks(
  * @param adapter
  * @param timeWindow
  * @param _timeWindow
+ * @example
  */
 export async function analyzeCoordinationPerformance(
   adapter: CoordinationServiceAdapter,
@@ -851,6 +859,7 @@ function findBestCapabilityMatch(
   maxTasks: number
 ): SwarmAgent | null {
   const suitableAgents = agents.filter((agent) => {
+    if (!agent.id) return false;
     const hasCapabilities = task.requirements.every((req: string) =>
       agent.capabilities.includes(req)
     );
@@ -862,8 +871,9 @@ function findBestCapabilityMatch(
 
   // Return agent with best performance and lowest current load
   return suitableAgents.reduce((best, current) => {
+    if (!best.id || !current.id) return best;
     const bestScore = calculateAgentScore(best) - taskCounts[best.id];
-    const currentScore = calculateAgentScore(current) - taskCounts[current?.id];
+    const currentScore = calculateAgentScore(current) - taskCounts[current.id];
     return currentScore > bestScore ? current : best;
   });
 }
@@ -873,12 +883,13 @@ function findLeastLoadedAgent(
   taskCounts: { [agentId: string]: number },
   maxTasks: number
 ): SwarmAgent | null {
-  const availableAgents = agents.filter((agent) => taskCounts[agent.id] < maxTasks);
+  const availableAgents = agents.filter((agent) => agent.id && taskCounts[agent.id] < maxTasks);
   if (availableAgents.length === 0) return null;
 
-  return availableAgents.reduce((least, current) =>
-    taskCounts[current?.id] < taskCounts[least.id] ? current : least
-  );
+  return availableAgents.reduce((least, current) => {
+    if (!least.id || !current.id) return least;
+    return taskCounts[current.id] < taskCounts[least.id] ? current : least;
+  });
 }
 
 function findRoundRobinAgent(
@@ -886,12 +897,13 @@ function findRoundRobinAgent(
   taskCounts: { [agentId: string]: number },
   maxTasks: number
 ): SwarmAgent | null {
-  const availableAgents = agents.filter((agent) => taskCounts[agent.id] < maxTasks);
+  const availableAgents = agents.filter((agent) => agent.id && taskCounts[agent.id] < maxTasks);
   if (availableAgents.length === 0) return null;
 
   // Simple round-robin: return first agent with minimum task count
-  const minTasks = Math.min(...availableAgents.map((agent) => taskCounts[agent.id]));
-  return availableAgents.find((agent) => taskCounts[agent.id] === minTasks) || null;
+  const taskCounts_ = availableAgents.map((agent) => agent.id ? taskCounts[agent.id] : 0);
+  const minTasks = Math.min(...taskCounts_);
+  return availableAgents.find((agent) => agent.id && taskCounts[agent.id] === minTasks) || null;
 }
 
 function calculateAgentScore(agent: SwarmAgent): number {
@@ -1020,17 +1032,3 @@ function analyzeCoordinationMetrics(swarmMetrics: any): {
   };
 }
 
-export {
-  // Agent management
-  createIntelligentAgent,
-  createAgentBatch,
-  optimizeAgentPerformance,
-  // Session management
-  createManagedSession,
-  monitorSessionHealth,
-  // Swarm coordination
-  coordinateIntelligentSwarm,
-  distributeSwarmTasks,
-  // Performance monitoring
-  analyzeCoordinationPerformance,
-};

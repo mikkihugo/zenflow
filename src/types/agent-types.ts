@@ -15,7 +15,327 @@ export interface GlobalAgentInfo {
   };
 }
 
-// Convenience exports
-export type {
-  GlobalAgentInfo,
-};
+// Agent type definitions
+export type AgentType = 
+  | 'researcher' 
+  | 'coder' 
+  | 'analyst' 
+  | 'requirements-engineer'
+  | 'design-architect'
+  | 'task-planner'
+  | 'developer'
+  | 'system-architect'
+  | 'tester'
+  | 'reviewer'
+  | 'steering-author'
+  | 'frontend-dev'
+  | 'ui-designer'
+  | 'ux-designer'
+  | 'accessibility-specialist'
+  | 'fullstack-dev'
+  | 'dev-backend-api'
+  | 'ai-ml-specialist'
+  | 'data-ml-model'
+  | 'performance-analyzer'
+  | 'database-architect'
+  | 'coordinator'
+  | 'manager'
+  // Data and ETL specialists
+  | 'etl-specialist'
+  // DevOps and Infrastructure
+  | 'ops-cicd-github'
+  | 'infrastructure-ops'
+  | 'deployment-ops'
+  | 'cloud-architect'
+  // Documentation specialists
+  | 'technical-writer'
+  | 'readme-writer'
+  | 'user-guide-writer'
+  // Performance specialists
+  | 'bottleneck-analyzer'
+  | 'latency-optimizer'
+  | 'embedded-specialist'
+  | 'memory-optimizer'
+  | 'cache-optimizer'
+  | 'performance-benchmarker'
+  | 'load-balancer'
+  | 'topology-optimizer'
+  // Migration specialists
+  | 'legacy-analyzer'
+  | 'modernization-agent'
+  | 'migration-coordinator'
+  | 'migration-plan'
+  // Testing specialists
+  | 'unit-tester'
+  | 'integration-tester'
+  | 'e2e-tester'
+  | 'performance-tester'
+  | 'tdd-london-swarm'
+  | 'production-validator'
+  // Development specialists
+  | 'api-dev'
+  // Analysis specialists
+  | 'analyze-code-quality'
+  | 'security-analyzer'
+  | 'refactoring-analyzer'
+  | 'architect'
+  | 'debug'
+  | 'queen'
+  | 'specialist'
+  | 'optimizer'
+  | 'documenter'
+  | 'monitor'
+  | 'planner'
+  | 'arch-system-design'
+  | 'security-architect'
+  | 'monitoring-ops'
+  | 'docs-api-openapi'
+  | 'analytics-specialist'
+  | 'visualization-specialist'
+  | 'spec-mobile-react-native'
+  | 'blockchain-specialist'
+  | 'code-review-swarm'
+  | 'github-modes'
+  | 'issue-tracker'
+  | 'multi-repo-swarm'
+  | 'pr-manager'
+  | 'project-board-sync'
+  | 'release-manager'
+  | 'release-swarm'
+  | 'repo-architect'
+  | 'swarm-issue'
+  | 'swarm-pr'
+  | 'sync-coordinator'
+  | 'workflow-automation'
+  | 'github-pr-manager'
+  | 'adaptive-coordinator'
+  | 'hierarchical-coordinator'
+  | 'mesh-coordinator'
+  | 'coordinator-swarm-init'
+  | 'orchestrator-task'
+  | 'memory-coordinator'
+  | 'swarm-memory-manager'
+  | 'collective-intelligence-coordinator'
+  | 'byzantine-coordinator'
+  | 'consensus-builder'
+  | 'crdt-synchronizer'
+  | 'gossip-coordinator'
+  | 'quorum-manager'
+  | 'raft-manager'
+  | 'security-manager'
+  | 'benchmark-suite'
+  | 'performance-monitor'
+  | 'resource-allocator'
+  | 'specification'
+  | 'architecture'
+  | 'refinement'
+  | 'pseudocode'
+  | 'sparc-coordinator'
+  | 'implementer-sparc-coder'
+  | 'quality-gate-agent'
+  | 'validation-specialist'
+  | 'automation-smart-agent'
+  | 'base-template-generator'
+  | 'requirements_analyst'
+  | 'design_architect'
+  | 'task_planner'
+  | 'implementation_coder'
+  | 'quality_reviewer'
+  | 'steering_documenter';
+
+export type AgentStatus = 
+  | 'initializing'
+  | 'idle'
+  | 'busy'
+  | 'error'
+  | 'offline'
+  | 'terminated';
+
+export interface AgentId {
+  id: string;
+  swarmId: string;
+  type: AgentType;
+  instance: number;
+}
+
+export interface AgentCapabilities {
+  codeGeneration: boolean;
+  codeReview: boolean;
+  testing: boolean;
+  documentation: boolean;
+  research: boolean;
+  analysis: boolean;
+  webSearch: boolean;
+  apiIntegration: boolean;
+  fileSystem: boolean;
+  terminalAccess: boolean;
+  languages: string[];
+  frameworks: string[];
+  domains: string[];
+  tools: string[];
+  maxConcurrentTasks: number;
+  maxMemoryUsage: number;
+  maxExecutionTime: number;
+  reliability: number;
+  speed: number;
+  quality: number;
+}
+
+export interface AgentConfig {
+  id?: string;
+  name: string;
+  type: AgentType;
+  swarmId: string;
+  autonomyLevel: number;
+  learningEnabled: boolean;
+  adaptationEnabled: boolean;
+  maxTasksPerHour: number;
+  maxConcurrentTasks: number;
+  timeoutThreshold: number;
+  reportingInterval: number;
+  heartbeatInterval: number;
+  permissions: string[];
+  trustedAgents: string[];
+  expertise: Record<string, number>;
+  preferences: Record<string, any>;
+  cognitiveProfile?: any;
+  capabilities?: Partial<AgentCapabilities>;
+  memory?: {
+    shortTerm: Map<string, any>;
+    longTerm: Map<string, any>;
+  };
+}
+
+export interface AgentEnvironment {
+  runtime: 'deno' | 'node' | 'claude' | 'browser';
+  version: string;
+  workingDirectory: string;
+  tempDirectory: string;
+  logDirectory: string;
+  apiEndpoints: Record<string, string>;
+  credentials: Record<string, any>;
+  availableTools: string[];
+  toolConfigs: Record<string, any>;
+}
+
+export interface AgentMetrics {
+  tasksCompleted: number;
+  tasksFailed: number;
+  tasksInProgress: number;
+  averageExecutionTime: number;
+  successRate: number;
+  cpuUsage: number;
+  memoryUsage: number;
+  diskUsage: number;
+  networkUsage: number;
+  codeQuality: number;
+  testCoverage: number;
+  bugRate: number;
+  userSatisfaction: number;
+  totalUptime: number;
+  lastActivity: Date;
+  responseTime: number;
+  resourceUsage: {
+    cpu: number;
+    memory: number;
+    disk: number;
+    network: number;
+  };
+}
+
+export interface AgentError {
+  timestamp: Date;
+  type: string;
+  message: string;
+  context: Record<string, any>;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  resolved: boolean;
+}
+
+export interface AgentState {
+  id: AgentId;
+  name: string;
+  type: AgentType;
+  status: AgentStatus;
+  capabilities: AgentCapabilities;
+  metrics: AgentMetrics;
+  workload: number;
+  health: number;
+  config: AgentConfig;
+  environment: AgentEnvironment;
+  endpoints: string[];
+  lastHeartbeat: Date;
+  taskHistory: any[];
+  errorHistory: AgentError[];
+  childAgents: string[];
+  collaborators: string[];
+  currentTask?: string | null;
+  load: number;
+  performance?: {
+    tasksCompleted: number;
+    tasksFailed: number;
+    averageExecutionTime: number;
+    successRate: number;
+  };
+}
+
+// Note: GlobalAgentInfo already exported as interface above
+
+export interface Task {
+  id: string;
+  type: string;
+  description: string;
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  assignedTo?: string;
+  createdAt: Date;
+  deadline?: Date;
+  status: 'pending' | 'in-progress' | 'completed' | 'failed';
+  payload?: any;
+  metadata?: Record<string, any>;
+}
+
+export interface ExecutionResult {
+  success: boolean;
+  data: any;
+  executionTime: number;
+  agentId: string;
+  metadata?: Record<string, any>;
+}
+
+export type MessageType = 
+  | 'task_assignment'
+  | 'coordination'
+  | 'knowledge_share'
+  | 'status_update'
+  | 'result'
+  | 'error'
+  | 'heartbeat';
+
+export interface Message {
+  id: string;
+  fromAgentId: string;
+  toAgentId: string;
+  swarmId: string;
+  type: MessageType;
+  content?: any;
+  payload?: any;
+  timestamp: Date;
+  requiresResponse: boolean;
+}
+
+export interface Agent {
+  id: string;
+  type: AgentType;
+  config: AgentConfig;
+  state: AgentState;
+  metrics: AgentMetrics;
+  connections: string[];
+  status: AgentStatus;
+  
+  initialize(): Promise<void>;
+  execute(task: Task): Promise<ExecutionResult>;
+  handleMessage(message: Message): Promise<void>;
+  updateState(updates: Partial<AgentState>): void;
+  getStatus(): AgentStatus;
+  shutdown(): Promise<void>;
+}

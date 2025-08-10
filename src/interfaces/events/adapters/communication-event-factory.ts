@@ -14,7 +14,7 @@
 
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../core/logger';
+import { createLogger, type Logger } from '../../../core/logger';
 import type {
   EventManagerMetrics,
   EventManagerStatus,

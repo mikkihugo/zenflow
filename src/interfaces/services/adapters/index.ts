@@ -10,7 +10,7 @@
  * - Data adapters: Web API integration, database operations, caching
  * - Coordination adapters: Agent management, task orchestration, swarm coordination
  * - Integration adapters: External system connectivity, protocol management
- * - Infrastructure adapters: System monitoring, health checks, metrics collection
+ * - Infrastructure adapters: System monitoring, health checks, metrics collection.
  * @example
  * ```typescript
  * import {
@@ -73,15 +73,12 @@ export type {
   TransformationStep,
 } from './data-service-helpers';
 export {
-  type DataOperationResult,
   DataServiceHelper,
   DataServiceUtils,
 } from './data-service-helpers';
 // Infrastructure service adapter exports
 export {
   createDefaultInfrastructureServiceAdapterConfig,
-  createDefaultInfrastructureServiceAdapterConfig,
-  createInfrastructureServiceAdapter,
   createInfrastructureServiceAdapter,
   InfrastructureServiceAdapter,
   type InfrastructureServiceAdapterConfig,
@@ -108,11 +105,18 @@ export * from './integration-service-helpers';
 
 // Integration with global service registry
 import { globalServiceRegistry } from '../factories';
-import { ServiceType } from '../types';
+import { ServiceType, IServiceFactory, ServiceConfig } from '../types';
 import { coordinationServiceFactory } from './coordination-service-factory';
 import { globalDataServiceFactory } from './data-service-factory';
 import { getInfrastructureServiceFactory } from './infrastructure-service-factory';
 import { integrationServiceFactory } from './integration-service-factory';
+
+// Additional imports for default export
+import { DataServiceAdapter } from './data-service-adapter';
+import { DataServiceHelper, DataServiceUtils } from './data-service-helpers';
+import { CoordinationServiceAdapter } from './coordination-service-adapter';
+import { IntegrationServiceAdapter } from './integration-service-adapter';
+import { InfrastructureServiceAdapter } from './infrastructure-service-adapter';
 
 /**
  * Register data service factory with global registry.
@@ -120,7 +124,7 @@ import { integrationServiceFactory } from './integration-service-factory';
  * @function registerDataServiceFactory
  * @returns {void}
  * @description Registers the specialized data service factory with the global USL registry
- * for handling DATA, WEB_DATA, and DOCUMENT service types
+ * for handling DATA, WEB_DATA, and DOCUMENT service types.
  * @example
  * ```typescript
  * // Manually register if needed (auto-registered by default)
@@ -135,9 +139,9 @@ import { integrationServiceFactory } from './integration-service-factory';
  */
 export function registerDataServiceFactory(): void {
   // Register the specialized data service factory for DATA, WEB_DATA, and DOCUMENT types
-  globalServiceRegistry.registerFactory(ServiceType.DATA, globalDataServiceFactory);
-  globalServiceRegistry.registerFactory(ServiceType.WEB_DATA, globalDataServiceFactory);
-  globalServiceRegistry.registerFactory(ServiceType.DOCUMENT, globalDataServiceFactory);
+  globalServiceRegistry.registerFactory(ServiceType.DATA, globalDataServiceFactory as IServiceFactory<ServiceConfig>);
+  globalServiceRegistry.registerFactory(ServiceType.WEB_DATA, globalDataServiceFactory as IServiceFactory<ServiceConfig>);
+  globalServiceRegistry.registerFactory(ServiceType.DOCUMENT, globalDataServiceFactory as IServiceFactory<ServiceConfig>);
 }
 
 /**
@@ -146,7 +150,7 @@ export function registerDataServiceFactory(): void {
  * @function registerCoordinationServiceFactory
  * @returns {void}
  * @description Registers the specialized coordination service factory with the global USL registry
- * for handling COORDINATION, DAA (Distributed Autonomous Agent), and SESSION_RECOVERY service types
+ * for handling COORDINATION, DAA (Distributed Autonomous Agent), and SESSION_RECOVERY service types.
  * @example
  * ```typescript
  * // Coordination services support agent management and task orchestration
@@ -161,9 +165,9 @@ export function registerDataServiceFactory(): void {
  */
 export function registerCoordinationServiceFactory(): void {
   // Register the specialized coordination service factory for COORDINATION, DAA, and SESSION_RECOVERY types
-  globalServiceRegistry.registerFactory(ServiceType.COORDINATION, coordinationServiceFactory);
-  globalServiceRegistry.registerFactory(ServiceType.DAA, coordinationServiceFactory);
-  globalServiceRegistry.registerFactory(ServiceType.SESSION_RECOVERY, coordinationServiceFactory);
+  globalServiceRegistry.registerFactory(ServiceType.COORDINATION, coordinationServiceFactory as IServiceFactory<ServiceConfig>);
+  globalServiceRegistry.registerFactory(ServiceType.DAA, coordinationServiceFactory as IServiceFactory<ServiceConfig>);
+  globalServiceRegistry.registerFactory(ServiceType.SESSION_RECOVERY, coordinationServiceFactory as IServiceFactory<ServiceConfig>);
 }
 
 /**
@@ -172,7 +176,7 @@ export function registerCoordinationServiceFactory(): void {
  * @function registerIntegrationServiceFactory
  * @returns {void}
  * @description Registers the specialized integration service factory with the global USL registry
- * for handling API, SAFE_API, and ARCHITECTURE_STORAGE service types
+ * for handling API, SAFE_API, and ARCHITECTURE_STORAGE service types.
  * @example
  * ```typescript
  * // Integration services provide external system connectivity
@@ -191,11 +195,11 @@ export function registerCoordinationServiceFactory(): void {
  */
 export function registerIntegrationServiceFactory(): void {
   // Register the specialized integration service factory for API, SAFE_API, and ARCHITECTURE_STORAGE types
-  globalServiceRegistry.registerFactory(ServiceType.API, integrationServiceFactory);
-  globalServiceRegistry.registerFactory(ServiceType.SAFE_API, integrationServiceFactory);
+  globalServiceRegistry.registerFactory(ServiceType.API, integrationServiceFactory as IServiceFactory<ServiceConfig>);
+  globalServiceRegistry.registerFactory(ServiceType.SAFE_API, integrationServiceFactory as IServiceFactory<ServiceConfig>);
   globalServiceRegistry.registerFactory(
     ServiceType.ARCHITECTURE_STORAGE,
-    integrationServiceFactory
+    integrationServiceFactory as IServiceFactory<ServiceConfig>
   );
 }
 
@@ -205,7 +209,7 @@ export function registerIntegrationServiceFactory(): void {
  * @function registerInfrastructureServiceFactory
  * @returns {void}
  * @description Registers the specialized infrastructure service factory with the global USL registry
- * for handling INFRASTRUCTURE, SYSTEM, and MONITORING service types
+ * for handling INFRASTRUCTURE, SYSTEM, and MONITORING service types.
  * @example
  * ```typescript
  * // Infrastructure services provide system monitoring and health checks
@@ -225,9 +229,9 @@ export function registerIntegrationServiceFactory(): void {
 export function registerInfrastructureServiceFactory(): void {
   // Register the specialized infrastructure service factory for INFRASTRUCTURE, SYSTEM, and MONITORING types
   const infrastructureFactory = getInfrastructureServiceFactory();
-  globalServiceRegistry.registerFactory(ServiceType.INFRASTRUCTURE, infrastructureFactory);
-  globalServiceRegistry.registerFactory(ServiceType.SYSTEM, infrastructureFactory);
-  globalServiceRegistry.registerFactory(ServiceType.MONITORING, infrastructureFactory);
+  globalServiceRegistry.registerFactory(ServiceType.INFRASTRUCTURE, infrastructureFactory as IServiceFactory<ServiceConfig>);
+  globalServiceRegistry.registerFactory(ServiceType.SYSTEM, infrastructureFactory as IServiceFactory<ServiceConfig>);
+  globalServiceRegistry.registerFactory(ServiceType.MONITORING, infrastructureFactory as IServiceFactory<ServiceConfig>);
 }
 
 /**

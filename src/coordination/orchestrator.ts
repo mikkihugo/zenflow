@@ -4,26 +4,27 @@
 
 import { EventEmitter } from 'node:events';
 import type { ILogger } from '../core/interfaces/base-interfaces';
-import type { IDatabase } from '../database/interfaces';
+import { IDatabase } from '../di/tokens/core-tokens';
 import type { ISwarmCoordinator } from '../di/tokens/swarm-tokens';
-import type { Agent } from '../types/agent-types';
-import type { Task } from '../types/shared-types';
+import type { Task, Agent } from './types';
 import { ZenSwarmStrategy } from './strategies/ruv-swarm.strategy';
+import type { SwarmStrategy, ExecutionPlan } from './types';
 
-@injectable
 export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
-  private strategy: SwarmStrategy;
+  private strategy: SwarmStrategy | ZenSwarmStrategy;
   private db: IDatabase;
   private executionPlans = new Map<string, ExecutionPlan>();
   private activeExecutions = new Map<string, any>();
   private taskAssignments = new Map<string, any[]>();
   private isActive = false;
+  private _logger: ILogger;
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
-    @inject(CORE_TOKENS.Database) database: IDatabase,
+    logger: ILogger,
+    database: IDatabase,
     strategy?: SwarmStrategy,
   ) {
+    this._logger = logger;
     super();
     this.strategy = strategy || new ZenSwarmStrategy();
     this.db = database;

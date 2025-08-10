@@ -2,12 +2,12 @@
  * UEL (Unified Event Layer) - System Integration Layer.
  *
  * Comprehensive system integration layer that enhances existing EventEmitter-based.
- * systems with UEL capabilities while maintaining 100% backward compatibility.
+ * Systems with UEL capabilities while maintaining 100% backward compatibility.
  *
  * This module provides migration utilities and enhanced versions of core systems.
- * that can gradually adopt UEL features without breaking existing functionality.
+ * That can gradually adopt UEL features without breaking existing functionality..
  *
- * @file System Integration and Migration Implementation
+ * @file System Integration and Migration Implementation.
  */
 
 import { EventEmitter } from 'node:events';
@@ -26,7 +26,7 @@ import type { MonitoringEvent, SystemLifecycleEvent } from './types';
 
 /**
  * Enhanced Event Bus with UEL integration.
- * Provides backward compatibility with existing event-bus.ts while adding UEL features
+ * Provides backward compatibility with existing event-bus.ts while adding UEL features.
  *
  * @example
  */
@@ -35,6 +35,7 @@ export class UELEnhancedEventBus extends EventEmitter {
   private uelEnabled = false;
   private eventMappings = new Map<string, string>();
   private logger?: any;
+  private migrationHelper?: any;
 
   constructor(
     options: {
@@ -54,7 +55,11 @@ export class UELEnhancedEventBus extends EventEmitter {
     this.setMaxListeners(options?.maxListeners || 100);
 
     if (options?.enableUEL && options?.uelIntegration?.eventManager) {
-      this.initializeUELIntegration(options?.uelIntegration);
+      this.initializeUELIntegration({
+        eventManager: options.uelIntegration.eventManager,
+        managerType: options.uelIntegration.managerType,
+        managerName: options.uelIntegration.managerName
+      });
     }
   }
 
@@ -95,7 +100,7 @@ export class UELEnhancedEventBus extends EventEmitter {
    * @param eventName
    * @param {...any} args
    */
-  emit(eventName: string | symbol, ...args: any[]): boolean {
+  override emit(eventName: string | symbol, ...args: any[]): boolean {
     const startTime = Date.now();
 
     // Standard EventEmitter behavior
@@ -117,7 +122,7 @@ export class UELEnhancedEventBus extends EventEmitter {
    * @param eventName
    * @param listener
    */
-  on(eventName: string | symbol, listener: (...args: any[]) => void): this {
+  override on(eventName: string | symbol, listener: (...args: any[]) => void): this {
     const result = super.on(eventName, listener);
 
     // Track UEL subscriptions if enabled
@@ -205,8 +210,8 @@ export class UELEnhancedEventBus extends EventEmitter {
 
     await this.initializeUELIntegration({
       eventManager,
-      managerType: options?.managerType,
-      managerName: options?.managerName,
+      managerType: options?.managerType || EventManagerTypes.SYSTEM,
+      managerName: options?.managerName || 'enhanced-event-bus',
     });
 
     if (options?.migrateExistingListeners) {
@@ -232,11 +237,10 @@ export class UELEnhancedEventBus extends EventEmitter {
         operation: 'emit' as any,
         status: 'success' as any,
         details: {
-          originalEvent: eventName,
           args: args.length,
           processingTime: Date.now() - startTime,
           listenerCount: this.listenerCount(eventName),
-        },
+        } as any,
       };
 
       await this.uelManager.emit(uelEvent);
@@ -257,9 +261,10 @@ export class UELEnhancedEventBus extends EventEmitter {
       // Create UEL-compatible listener wrapper
       const uelListener = (event: SystemEvent) => {
         // Extract original args from UEL event if available
+        const eventDetails = event as any;
         const _args =
-          event.details?.originalEvent === eventName && event.details?.args
-            ? new Array(event.details.args).fill(undefined)
+          eventDetails.details?.originalEvent === eventName && eventDetails.details?.args
+            ? new Array(eventDetails.details.args).fill(undefined)
             : [event];
 
         // Don't call the original listener here - it's already called by EventEmitter
@@ -290,7 +295,7 @@ export class UELEnhancedEventBus extends EventEmitter {
 
 /**
  * Enhanced Application Coordinator with UEL integration.
- * Maintains compatibility with existing application-coordinator.ts
+ * Maintains compatibility with existing application-coordinator.ts.
  *
  * @example
  */
@@ -385,7 +390,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
     ];
 
     for (const [eventName, uelType] of mappings) {
-      this.eventBus.mapEventToUEL(eventName, uelType);
+      this.eventBus.mapEventToUEL(eventName!, uelType);
     }
 
     this.logger.debug(`Configured ${mappings.length} event mappings`);
@@ -401,9 +406,8 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
       // System events manager
       const systemManager = await this.uelSystem.createSystemEventManager('app-system-events', {
         maxListeners: 50,
-        enableRetry: true,
         retryAttempts: 3,
-      });
+      } as any);
       this.systemManagers.set('system', systemManager);
 
       // Coordination events manager for workflows
@@ -411,8 +415,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
         'app-coordination',
         {
           maxListeners: 30,
-          queueSize: 1000,
-        }
+        } as any
       );
       this.systemManagers.set('coordination', coordinationManager);
 
@@ -434,7 +437,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
    * @param eventName
    * @param {...any} args
    */
-  emit(eventName: string | symbol, ...args: any[]): boolean {
+  override emit(eventName: string | symbol, ...args: any[]): boolean {
     // Standard EventEmitter behavior
     const result = super.emit(eventName, ...args);
 
@@ -487,7 +490,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
       }
     }
 
-    return status;
+    return status as any;
   }
 
   /**
@@ -511,9 +514,9 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
       const manager = await this.uelSystem.getEventManager().createEventManager({
         type,
         name: `app-${componentName}`,
-        config,
+        config: config || {},
         autoStart: true,
-      });
+      } as any);
 
       this.systemManagers.set(componentName, manager);
       this.logger.info(`Created event manager for component: ${componentName}`);
@@ -551,8 +554,9 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
           score -= 20;
         }
 
-        if (uelStatus.healthPercentage < 80) {
-          issues.push(`UEL system health degraded: ${uelStatus.healthPercentage}%`);
+        const healthPercentage = (uelStatus as any).healthPercentage || 100;
+        if (healthPercentage < 80) {
+          issues.push(`UEL system health degraded: ${healthPercentage}%`);
           score -= 15;
         }
       } catch (_error) {
@@ -600,10 +604,10 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
       // Shutdown UEL system
       if (this.uelSystem) {
         await this.uelSystem.shutdown();
-        this.uelSystem = undefined;
+        this.uelSystem = undefined as any;
       }
 
-      this.eventBus = undefined;
+      this.eventBus = undefined as any;
       this.logger.info('✅ Application Coordinator UEL integration shut down');
     } catch (error) {
       this.logger.error('❌ Failed to shutdown Application Coordinator UEL integration:', error);
@@ -613,7 +617,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
 
 /**
  * Observer System Enhancement with UEL integration.
- * Maintains compatibility with existing observer-system.ts
+ * Maintains compatibility with existing observer-system.ts.
  *
  * @example
  */
@@ -647,9 +651,8 @@ export class UELEnhancedObserverSystem extends EventEmitter {
     try {
       this.uelEventManager = await eventManager.createMonitoringEventManager('observer-system', {
         maxListeners: 100,
-        enableRetry: true,
         retryAttempts: 2,
-      });
+      } as any);
 
       this.logger?.info('✅ UEL integration initialized for Observer System');
     } catch (error) {
@@ -702,11 +705,10 @@ export class UELEnhancedObserverSystem extends EventEmitter {
           operation: 'observe' as any,
           component: type,
           details: {
-            observerName: name,
             observerType: type,
             eventName: eventName.toString(),
             argsCount: args.length,
-          },
+          } as any,
         };
 
         this.uelEventManager.emit(uelEvent).catch((error) => {
@@ -835,8 +837,8 @@ export class SystemIntegrationFactory {
           }
         : undefined,
       logger: this.logger,
-      maxListeners: options?.maxListeners,
-    });
+      maxListeners: options?.maxListeners || undefined,
+    } as any);
   }
 
   /**
@@ -860,10 +862,10 @@ export class SystemIntegrationFactory {
     } = {}
   ): UELEnhancedApplicationCoordinator {
     return new UELEnhancedApplicationCoordinator({
-      enableUEL: options?.enableUEL,
+      enableUEL: options?.enableUEL || false,
       logger: this.logger,
-      uelConfig: options?.uelConfig,
-    });
+      uelConfig: options?.uelConfig || undefined,
+    } as any);
   }
 
   /**
@@ -875,9 +877,9 @@ export class SystemIntegrationFactory {
   createEnhancedObserverSystem(options: { enableUEL?: boolean } = {}): UELEnhancedObserverSystem {
     return new UELEnhancedObserverSystem({
       enableUEL: options?.enableUEL && !!this.eventManager,
-      eventManager: this.eventManager,
+      eventManager: this.eventManager || undefined,
       logger: this.logger,
-    });
+    } as any);
   }
 
   /**
@@ -915,6 +917,7 @@ export class SystemIntegrationFactory {
  * @param eventManager
  * @param managerType
  * @param logger
+ * @example
  */
 export async function enhanceWithUEL<T extends EventEmitter>(
   originalInstance: T,
@@ -931,6 +934,7 @@ export async function enhanceWithUEL<T extends EventEmitter>(
  * Analyze existing EventEmitter usage across the system.
  *
  * @param logger
+ * @example
  */
 export function analyzeSystemEventEmitterUsage(
   systems: { [key: string]: EventEmitter },

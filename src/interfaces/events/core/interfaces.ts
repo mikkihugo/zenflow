@@ -1,5 +1,5 @@
 /**
- * @fileoverview UEL (Unified Event Layer) Core Interfaces
+ * @file UEL (Unified Event Layer) Core Interfaces
  *
  * Provides unified abstractions for all event management implementations:
  * - System, Coordination, Communication, Monitoring, and UI events

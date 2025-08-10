@@ -1,9 +1,9 @@
 /**
  * Neural Agent Module - Integrates ruv-FANN neural network capabilities
- * into agent processing for cognitive diversity and learning
+ * into agent processing for cognitive diversity and learning.
  */
 /**
- * @file Neural network: neural-agent
+ * @file Neural network: neural-agent.
  */
 
 
@@ -177,6 +177,11 @@ class NeuralNetwork {
       const inputSize = this.layers[i];
       const outputSize = this.layers[i + 1];
 
+      // Skip if layers are undefined
+      if (inputSize === undefined || outputSize === undefined) {
+        continue;
+      }
+
       // Xavier/Glorot initialization
       const limit = Math.sqrt(6 / (inputSize + outputSize));
 
@@ -213,7 +218,7 @@ class NeuralNetwork {
     for (let i = 0; i < rows; i++) {
       matrix[i] = [];
       for (let j = 0; j < cols; j++) {
-        matrix[i][j] = Math.random() * (max - min) + min;
+        matrix[i]![j] = Math.random() * (max - min) + min;
       }
     }
     return matrix;
@@ -264,10 +269,18 @@ class NeuralNetwork {
       const biases = this.biases[i];
       const output: number[] = [];
 
+      if (!weights || !biases) {
+        continue;
+      }
+
       for (let j = 0; j < weights.length; j++) {
-        let sum = biases[j];
+        let sum = biases[j] || 0;
         for (let k = 0; k < currentInput.length; k++) {
-          sum += weights[j]?.[k] * currentInput?.[k];
+          const weight = weights[j]?.[k];
+          const input = currentInput[k];
+          if (weight !== undefined && input !== undefined) {
+            sum += weight * input;
+          }
         }
         output[j] = this._activation(sum);
       }
@@ -292,8 +305,13 @@ class NeuralNetwork {
 
     // Calculate output layer error
     const outputError: number[] = [];
+    if (!output) {
+      return [];
+    }
     for (let i = 0; i < output.length; i++) {
-      outputError[i] = (target?.[i] - output[i]) * this._activation(output[i], true);
+      const targetValue = target?.[i] || 0;
+      const outputValue = output[i] || 0;
+      outputError[i] = (targetValue - outputValue) * this._activation(outputValue, true);
     }
     errors.unshift(outputError);
 
@@ -303,12 +321,21 @@ class NeuralNetwork {
       const weights = this.weights[i];
       const prevError = errors[0];
 
+      if (!weights || !prevError || !this.weights[i - 1]) {
+        continue;
+      }
+
       for (let j = 0; j < this.weights[i - 1].length; j++) {
         let error = 0;
         for (let k = 0; k < weights.length; k++) {
-          error += weights[k]?.[j] * prevError[k];
+          const weight = weights[k]?.[j];
+          const prevErr = prevError[k];
+          if (weight !== undefined && prevErr !== undefined) {
+            error += weight * prevErr;
+          }
         }
-        layerError[j] = error * this._activation(activations[i]?.[j], true);
+        const activationValue = activations[i]?.[j] || 0;
+        layerError[j] = error * this._activation(activationValue, true);
       }
       errors.unshift(layerError);
     }
@@ -320,21 +347,35 @@ class NeuralNetwork {
       const layerError = errors[i + 1];
       const layerInput = activations[i];
 
+      if (!weights || !biases || !layerError || !layerInput) {
+        continue;
+      }
+
       for (let j = 0; j < weights.length; j++) {
         // Update bias
-        biases[j] += lr * layerError[j];
+        const errorValue = layerError[j];
+        if (errorValue !== undefined) {
+          biases[j] = (biases[j] || 0) + lr * errorValue;
+        }
 
         // Update weights with momentum
         for (let k = 0; k < weights[j].length; k++) {
-          const delta = lr * layerError[j] * layerInput[k];
-          const momentumDelta = this.momentum * this.previousWeightDeltas[i]?.[j]?.[k];
-          weights[j][k] += delta + momentumDelta;
-          this.previousWeightDeltas[i]?.[j][k] = delta;
+          const layerErr = layerError[j];
+          const inputVal = layerInput[k];
+          if (layerErr !== undefined && inputVal !== undefined) {
+            const delta = lr * layerErr * inputVal;
+            const prevDelta = this.previousWeightDeltas[i]?.[j]?.[k] || 0;
+            const momentumDelta = this.momentum * prevDelta;
+            weights[j]![k] += delta + momentumDelta;
+            if (this.previousWeightDeltas[i]?.[j]) {
+              this.previousWeightDeltas[i]![j]![k] = delta;
+            }
+          }
         }
       }
     }
 
-    return output;
+    return output || [];
   }
 
   save(): { config: NeuralNetworkConfig; weights: number[][][]; biases: number[][] } {
@@ -372,7 +413,14 @@ class NeuralAgent extends EventEmitter {
     super();
     this.agent = agent;
     this.agentType = agentType;
-    this.cognitiveProfile = AGENT_COGNITIVE_PROFILES[agentType];
+    this.cognitiveProfile = AGENT_COGNITIVE_PROFILES[agentType] || {
+      primary: COGNITIVE_PATTERNS.CONVERGENT,
+      secondary: COGNITIVE_PATTERNS.LATERAL,
+      learningRate: 0.5,
+      momentum: 0.2,
+      networkLayers: [128, 64, 32],
+      activationFunction: 'sigmoid' as const,
+    };
     this.memoryOptimizer = memoryOptimizer || new MemoryOptimizer();
 
     // Add cognitive pattern to neural network config for memory optimization
@@ -967,8 +1015,8 @@ setImmediate(() => {
     .catch(() => null)
     .then((neural) => {
       if (neural) {
-        MemoryOptimizer = neural.MemoryOptimizer || MemoryOptimizer;
-        PATTERN_MEMORY_CONFIG = neural.PATTERN_MEMORY_CONFIG || PATTERN_MEMORY_CONFIG;
+        MemoryOptimizer = (neural as any).MemoryOptimizer || MemoryOptimizer;
+        PATTERN_MEMORY_CONFIG = (neural as any).PATTERN_MEMORY_CONFIG || PATTERN_MEMORY_CONFIG;
       }
     })
     .catch(() => {

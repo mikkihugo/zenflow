@@ -8,7 +8,7 @@
 
 
 
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../core/logger';
 import type {
   Bridge,
   Kernel,

@@ -1,9 +1,9 @@
-import { getLogger } from '../core/logger';
+import { createLogger } from '../core/logger';
 
-const logger = getLogger('src-config-loader');
+const logger = createLogger('src-config-loader');
 
 /**
- * @file Configuration Loader
+ * @file Configuration Loader.
  *
  * Handles loading configuration from multiple sources with proper priority.
  */

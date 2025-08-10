@@ -4,12 +4,12 @@
  * Comprehensive event manager for lifecycle management, factory registration,
  * and coordinated event processing across all UEL components.
  *
- * @file Event Manager Implementation following UACL/USL patterns
+ * @file Event Manager Implementation following UACL/USL patterns.
  */
 
-import type { IConfig, ILogger } from '../core/interfaces/base-interfaces';
-import { inject, injectable } from '../di/decorators/injectable';
-import { CORE_TOKENS } from '../di/tokens/core-tokens';
+import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
+import { inject, injectable } from '../../di/decorators/injectable';
+import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 import type {
   EventManagerConfig,
   EventManagerStatus,
@@ -211,14 +211,14 @@ export class EventManager {
   private coordinationSettings: CoordinationSettings;
   private statistics: ManagerStatistics;
   private initialized = false;
-  private healthCheckInterval?: NodeJS.Timeout;
+  private healthCheckInterval?: NodeJS.Timeout | undefined;
   private recoveryAttempts = new Map<string, number>();
 
   constructor(
     @inject(CORE_TOKENS.Logger) private _logger: ILogger,
     @inject(CORE_TOKENS.Config) private _config: IConfig
   ) {
-    this.registry = new EventRegistry(this.logger);
+    this.registry = new EventRegistry(this._logger);
     
     this.connectionManager = {
       connections: new Map(),
@@ -266,12 +266,12 @@ export class EventManager {
    *
    * Sets up the registry, registers default factories, and starts health monitoring.
    *
-   * @param options - Initialization configuration options
-   * @param options.autoRegisterFactories - Whether to register default factories (default: true)
-   * @param options.healthMonitoring - Whether to enable health monitoring (default: true)
-   * @param options.coordination - Coordination settings overrides
-   * @param options.connection - Connection manager overrides
-   * @throws {Error} If initialization fails
+   * @param options - Initialization configuration options.
+   * @param options.autoRegisterFactories - Whether to register default factories (default: true).
+   * @param options.healthMonitoring - Whether to enable health monitoring (default: true).
+   * @param options.coordination - Coordination settings overrides.
+   * @param options.connection - Connection manager overrides.
+   * @throws {Error} If initialization fails.
    * @example
    * ```typescript
    * await eventManager.initialize({
@@ -319,7 +319,7 @@ export class EventManager {
     }
 
     this.initialized = true;
-    this.logger.info('🚀 Event Manager system initialized successfully');
+    this._logger.info('🚀 Event Manager system initialized successfully');
   }
 
   /**
@@ -328,10 +328,10 @@ export class EventManager {
    * Creates a new event manager instance using the appropriate factory,
    * registers it with the system, and optionally starts it.
    *
-   * @template T - Event manager type
-   * @param options - Configuration options for manager creation
-   * @returns Promise resolving to the created event manager
-   * @throws {Error} If manager creation fails
+   * @template T - Event manager type.
+   * @param options - Configuration options for manager creation.
+   * @returns Promise resolving to the created event manager.
+   * @throws {Error} If manager creation fails.
    * @example
    * ```typescript
    * const manager = await eventManager.createEventManager({
@@ -352,7 +352,7 @@ export class EventManager {
     const startTime = Date.now();
 
     try {
-      this.logger.info(`🏗️ Creating event manager: ${options?.name} (${options?.type})`);
+      this._logger.info(`🏗️ Creating event manager: ${options?.name} (${options?.type})`);
 
       // Get or create factory
       const factory = await this.getOrCreateFactory(options?.type);
@@ -390,11 +390,11 @@ export class EventManager {
         (this.statistics.averageStartupTime * (this.statistics.totalCreated - 1) + duration) /
         this.statistics.totalCreated;
 
-      this.logger.info(`✅ Event manager created successfully: ${options?.name} (${duration}ms)`);
+      this._logger.info(`✅ Event manager created successfully: ${options?.name} (${duration}ms)`);
       return manager;
     } catch (error) {
       this.statistics.failedManagers++;
-      this.logger.error(`❌ Failed to create event manager ${options?.name}:`, error);
+      this._logger.error(`❌ Failed to create event manager ${options?.name}:`, error);
       throw new Error(
         `Event manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -414,7 +414,7 @@ export class EventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.SYSTEM,
       name,
-      config,
+      config: config || undefined,
       preset: 'REAL_TIME',
     });
 
@@ -434,7 +434,7 @@ export class EventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.COORDINATION,
       name,
-      config,
+      config: config || undefined,
       preset: 'HIGH_THROUGHPUT',
     });
 
@@ -454,7 +454,7 @@ export class EventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.COMMUNICATION,
       name,
-      config,
+      config: config || undefined,
       preset: 'REAL_TIME',
     });
 
@@ -474,7 +474,7 @@ export class EventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.MONITORING,
       name,
-      config,
+      config: config || undefined,
       preset: 'BATCH_PROCESSING',
     });
 
@@ -494,7 +494,7 @@ export class EventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.INTERFACE,
       name,
-      config,
+      config: config || undefined,
       preset: 'REAL_TIME',
     });
 
@@ -514,7 +514,7 @@ export class EventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.NEURAL,
       name,
-      config,
+      config: config || undefined,
       preset: 'RELIABLE',
     });
 
@@ -534,7 +534,7 @@ export class EventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.DATABASE,
       name,
-      config,
+      config: config || undefined,
       preset: 'BATCH_PROCESSING',
     });
 
@@ -554,7 +554,7 @@ export class EventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.MEMORY,
       name,
-      config,
+      config: config || undefined,
     });
 
     return manager as IMemoryEventManager;
@@ -573,7 +573,7 @@ export class EventManager {
     const manager = await this.createEventManager({
       type: EventManagerTypes.WORKFLOW,
       name,
-      config,
+      config: config || undefined,
       preset: 'RELIABLE',
     });
 
@@ -628,9 +628,9 @@ export class EventManager {
         });
 
         this.statistics.activeManagers--;
-        this.logger.info(`🗑️ Event manager removed: ${name}`);
+        this._logger.info(`🗑️ Event manager removed: ${name}`);
       } catch (error) {
-        this.logger.error(`❌ Failed to remove event manager ${name}:`, error);
+        this._logger.error(`❌ Failed to remove event manager ${name}:`, error);
         throw error;
       }
     }
@@ -653,7 +653,7 @@ export class EventManager {
     this.statistics.recoveryAttempts++;
 
     try {
-      this.logger.info(`🔄 Restarting event manager: ${name} (attempt ${attempts + 1})`);
+      this._logger.info(`🔄 Restarting event manager: ${name} (attempt ${attempts + 1})`);
 
       await manager.stop();
       await manager.start();
@@ -666,9 +666,9 @@ export class EventManager {
       });
 
       this.statistics.successfulRecoveries++;
-      this.logger.info(`✅ Event manager restarted successfully: ${name}`);
+      this._logger.info(`✅ Event manager restarted successfully: ${name}`);
     } catch (error) {
-      this.logger.error(`❌ Failed to restart event manager ${name}:`, error);
+      this._logger.error(`❌ Failed to restart event manager ${name}:`, error);
 
       // Mark as unhealthy
       this.connectionManager.health.set(name, {
@@ -767,7 +767,7 @@ export class EventManager {
     this.factoryCache.set(type, factory as IEventManagerFactory);
     this.registry.registerFactory(type, factory);
 
-    this.logger.debug(`🏭 Registered factory for type: ${type}`);
+    this._logger.debug(`🏭 Registered factory for type: ${type}`);
   }
 
   /**
@@ -811,7 +811,7 @@ export class EventManager {
    * Shutdown all event managers and cleanup.
    */
   async shutdown(): Promise<void> {
-    this.logger.info('🔄 Shutting down Event Manager system...');
+    this._logger.info('🔄 Shutting down Event Manager system...');
 
     // Stop health monitoring
     this.stopHealthMonitoring();
@@ -823,7 +823,7 @@ export class EventManager {
           await manager.stop();
           await manager.destroy();
         } catch (error) {
-          this.logger.error(`❌ Failed to shutdown manager ${name}:`, error);
+          this._logger.error(`❌ Failed to shutdown manager ${name}:`, error);
         }
       }
     );
@@ -841,7 +841,7 @@ export class EventManager {
     this.recoveryAttempts.clear();
 
     this.initialized = false;
-    this.logger.info('✅ Event Manager system shut down');
+    this._logger.info('✅ Event Manager system shut down');
   }
 
   /**
@@ -890,10 +890,16 @@ export class EventManager {
         }
 
         case EventManagerTypes.MONITORING: {
-          const { MonitoringEventManagerFactory } = await import(
+          const { MonitoringEventFactory } = await import(
             './adapters/monitoring-event-factory'
           );
-          FactoryClass = MonitoringEventManagerFactory;
+          // MonitoringEventFactory is static, wrap it in a compatible interface
+          FactoryClass = class implements IEventManagerFactory {
+            async create(config: EventManagerConfig) {
+              const adapter = MonitoringEventFactory.create(config.name, config);
+              return adapter as any; // Type assertion for compatibility
+            }
+          };
           break;
         }
 
@@ -901,13 +907,21 @@ export class EventManager {
           throw new Error(`No factory available for event manager type: ${type}`);
       }
 
-      const newFactory = new FactoryClass(this.logger, this.config);
+      // Try different constructor signatures based on factory type
+      let newFactory: IEventManagerFactory;
+      try {
+        // First try with logger and config parameters (SystemEventFactory pattern)
+        newFactory = new FactoryClass(this._logger, this._config);
+      } catch (error) {
+        // Fallback to no-parameter constructor (CommunicationEventFactory pattern)
+        newFactory = new FactoryClass();
+      }
       this.factoryCache.set(type, newFactory);
       this.registry.registerFactory(type, newFactory);
 
       return newFactory;
     } catch (importError) {
-      this.logger.error(`❌ Failed to load factory for ${type}:`, importError);
+      this._logger.error(`❌ Failed to load factory for ${type}:`, importError);
       throw new Error(`Factory not available for event manager type: ${type}`);
     }
   }
@@ -936,7 +950,7 @@ export class EventManager {
       try {
         await this.getOrCreateFactory(type);
       } catch (error) {
-        this.logger.warn(`⚠️ Could not register factory for ${type}:`, error);
+        this._logger.warn(`⚠️ Could not register factory for ${type}:`, error);
       }
     }
   }
@@ -962,21 +976,21 @@ export class EventManager {
             const attempts = this.recoveryAttempts.get(name) || 0;
 
             if (attempts < this.connectionManager.maxReconnectAttempts) {
-              this.logger.warn(`⚠️ Manager ${name} unhealthy, attempting recovery...`);
+              this._logger.warn(`⚠️ Manager ${name} unhealthy, attempting recovery...`);
               try {
                 await this.restartEventManager(name);
               } catch (error) {
-                this.logger.error(`❌ Recovery failed for ${name}:`, error);
+                this._logger.error(`❌ Recovery failed for ${name}:`, error);
               }
             }
           }
         }
       } catch (error) {
-        this.logger.error('❌ Health monitoring cycle failed:', error);
+        this._logger.error('❌ Health monitoring cycle failed:', error);
       }
     }, 30000); // Every 30 seconds
 
-    this.logger.debug('💓 Health monitoring started');
+    this._logger.debug('💓 Health monitoring started');
   }
 
   private stopHealthMonitoring(): void {
@@ -985,7 +999,7 @@ export class EventManager {
       this.healthCheckInterval = undefined;
     }
 
-    this.logger.debug('💓 Health monitoring stopped');
+    this._logger.debug('💓 Health monitoring stopped');
   }
 }
 

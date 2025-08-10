@@ -6,14 +6,15 @@
  * provides a single point of access for all client implementations.
  */
 /**
- * @file Interface implementation: factories
+ * @file Interface implementation: factories.
  */
 
 
 
-import type { IConfig, ILogger } from '../core/interfaces/base-interfaces';
-import { inject, injectable } from '../di/decorators/injectable';
-import { CORE_TOKENS } from '../di/tokens/core-tokens';
+import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
+import { injectable } from '../../di/decorators/injectable';
+import { inject } from '../../di/decorators/inject';
+import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 import type {
   ClientConfig,
   ClientHealthStatus,
@@ -55,7 +56,7 @@ export interface ClientFactoryConfig {
   name?: string;
 
   /** Client-specific configuration */
-  config?: Partial<ClientConfig>;
+  config?: Partial<ClientConfig> | undefined;
 
   /** Use existing client instance if available */
   reuseExisting?: boolean;
@@ -122,13 +123,13 @@ export class UACLFactory {
     const cacheKey = this.generateCacheKey(clientType, protocol, url, name);
 
     if (reuseExisting && this.clientCache.has(cacheKey)) {
-      this.logger.debug(`Returning cached client: ${cacheKey}`);
+      this._logger.debug(`Returning cached client: ${cacheKey}`);
       const cachedClient = this.clientCache.get(cacheKey)!;
       this.updateClientUsage(cacheKey);
       return cachedClient as ClientTypeMap<T>;
     }
 
-    this.logger.info(`Creating new client: ${clientType}/${protocol} (${url})`);
+    this._logger.info(`Creating new client: ${clientType}/${protocol} (${url})`);
 
     try {
       // Validate configuration
@@ -147,10 +148,10 @@ export class UACLFactory {
       const clientId = this.registerClient(client, mergedConfig, cacheKey);
       this.clientCache.set(cacheKey, client);
 
-      this.logger.info(`Successfully created client: ${clientId}`);
+      this._logger.info(`Successfully created client: ${clientId}`);
       return client as ClientTypeMap<T>;
     } catch (error) {
-      this.logger.error(`Failed to create client: ${error}`);
+      this._logger.error(`Failed to create client: ${error}`);
       throw new Error(
         `Client creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -173,7 +174,7 @@ export class UACLFactory {
       clientType: ClientTypes.HTTP,
       protocol,
       url,
-      config,
+      config: config || undefined,
     })) as IHttpClient<T>;
   }
 
@@ -193,7 +194,7 @@ export class UACLFactory {
       clientType: ClientTypes.WEBSOCKET,
       protocol,
       url,
-      config,
+      config: config || undefined,
     })) as IWebSocketClient<T>;
   }
 
@@ -211,7 +212,7 @@ export class UACLFactory {
       clientType: ClientTypes.KNOWLEDGE,
       protocol: url.startsWith('https') ? ProtocolTypes.HTTPS : ProtocolTypes.HTTP,
       url,
-      config,
+      config: config || undefined,
     })) as IKnowledgeClient<T>;
   }
 
@@ -239,7 +240,7 @@ export class UACLFactory {
       clientType: ClientTypes.MCP,
       protocol,
       url,
-      config,
+      config: config || undefined,
     })) as IMcpClient<T>;
   }
 
@@ -259,7 +260,7 @@ export class UACLFactory {
       clientType: ClientTypes.GENERIC,
       protocol,
       url,
-      config,
+      config: config || undefined,
     });
   }
 
@@ -374,7 +375,7 @@ export class UACLFactory {
         protocol: 'unknown' as ProtocolType,
       };
 
-      this.logger.error(`Transaction failed: ${transactionId}`, error);
+      this._logger.error(`Transaction failed: ${transactionId}`, error);
     }
 
     return transaction;
@@ -384,14 +385,14 @@ export class UACLFactory {
    * Disconnect and clean up all clients.
    */
   async disconnectAll(): Promise<void> {
-    this.logger.info('Disconnecting all clients');
+    this._logger.info('Disconnecting all clients');
 
     const disconnectPromises = Object.values(this.clientRegistry).map(async (entry) => {
       try {
         await entry.client.disconnect();
         entry.status = 'disconnected';
       } catch (error) {
-        this.logger.warn(`Failed to disconnect client: ${error}`);
+        this._logger.warn(`Failed to disconnect client: ${error}`);
       }
     });
 
@@ -454,7 +455,7 @@ export class UACLFactory {
     // These would be imported from specific implementation files
 
     // Note: In a real implementation, these would import actual factory classes
-    this.logger.debug('Initializing client factories');
+    this._logger.debug('Initializing client factories');
 
     // Placeholder for factory initialization
     // Real implementation would load specific factory classes
@@ -470,14 +471,14 @@ export class UACLFactory {
 
     switch (clientType) {
       case ClientTypes.HTTP: {
-        const { HttpClientFactory } = await import('./factories/http-client-factory');
-        FactoryClass = HttpClientFactory;
+        const { HTTPClientFactory } = await import('./factories/http-client-factory');
+        FactoryClass = HTTPClientFactory as new (...args: any[]) => IClientFactory;
         break;
       }
 
       case ClientTypes.WEBSOCKET: {
         const { WebSocketClientFactory } = await import('./adapters/websocket-client-factory');
-        FactoryClass = WebSocketClientFactory;
+        FactoryClass = WebSocketClientFactory as new (...args: any[]) => IClientFactory;
         break;
       }
 
@@ -490,22 +491,16 @@ export class UACLFactory {
       }
 
       case ClientTypes.MCP: {
-        // xxx NEEDS_HUMAN: MCP client factory not found - needs implementation
+        // TODO NEEDS_HUMAN: MCP client factory not found - needs implementation
         throw new Error('MCP client factory not yet implemented');
-        // const { McpClientFactory } = await import('./implementations/mcp-client-factory');
-        FactoryClass = McpClientFactory;
-        break;
       }
       default: {
-        // xxx NEEDS_HUMAN: Generic client factory not found - needs implementation
+        // TODO NEEDS_HUMAN: Generic client factory not found - needs implementation
         throw new Error('Generic client factory not yet implemented');
-        // const { GenericClientFactory } = await import('./implementations/generic-client-factory');
-        FactoryClass = GenericClientFactory;
-        break;
       }
     }
 
-    const factory = new FactoryClass(this.logger, this.config);
+    const factory = new FactoryClass(this._logger, this._config);
     this.factoryCache.set(clientType, factory);
 
     return factory;
@@ -566,7 +561,7 @@ export class UACLFactory {
   private updateClientUsage(cacheKey: string): void {
     // Find client by cache key and update last used time
     for (const entry of Object.values(this.clientRegistry)) {
-      if (entry.metadata.cacheKey === cacheKey) {
+      if (entry.metadata['cacheKey'] === cacheKey) {
         entry.lastUsed = new Date();
         break;
       }
@@ -632,7 +627,7 @@ export class MultiClientCoordinator {
           clientType: clientConfig?.type,
           protocol: clientConfig?.protocol,
           url: clientConfig?.url,
-          config: clientConfig?.config,
+          config: clientConfig?.config || undefined,
         })
       )
     );
@@ -681,14 +676,14 @@ export class MultiClientCoordinator {
           clientType: config?.type,
           protocol: config?.protocol,
           url: config?.url,
-          config: config?.config,
+          config: config?.config || undefined,
         }),
         weight: config?.weight || 1,
         url: config?.url,
       }))
     );
 
-    return new LoadBalancedClient<T>(clients, strategy, this.logger);
+    return new LoadBalancedClient<T>(clients, strategy);
   }
 }
 
@@ -699,6 +694,7 @@ export class MultiClientCoordinator {
  */
 export class LoadBalancedClient<T = any> implements IClient<T> {
   private currentIndex = 0;
+  private requestCount = 0;
 
   constructor(
     private clients: Array<{
@@ -747,12 +743,12 @@ export class LoadBalancedClient<T = any> implements IClient<T> {
       case 'round-robin': {
         const client = this.clients[this.currentIndex];
         this.currentIndex = (this.currentIndex + 1) % this.clients.length;
-        return client.client;
+        return client?.client || this.clients[0]?.client;
       }
 
       case 'random': {
         const randomIndex = Math.floor(Math.random() * this.clients.length);
-        return this.clients[randomIndex]?.client;
+        return this.clients[randomIndex]?.client || this.clients[0]?.client;
       }
 
       case 'weighted': {
@@ -785,6 +781,7 @@ export class LoadBalancedClient<T = any> implements IClient<T> {
  * @param protocol
  * @param url
  * @param config
+ * @example
  */
 export async function createClient<T = any>(
   clientType: ClientType,
@@ -800,16 +797,16 @@ export async function createClient<T = any>(
   const container = new DIContainer();
 
   // Register basic logger and config
-  container.register(CORE_TOKENS.Logger, () => ({
-    debug: console.debug,
-    info: console.info,
-    warn: console.warn,
-    error: console.error,
-  }));
+  container.register(CORE_TOKENS.Logger, (() => ({
+    debug: console.debug.bind(console),
+    info: console.info.bind(console),
+    warn: console.warn.bind(console),
+    error: console.error.bind(console),
+  })) as any);
 
-  container.register(CORE_TOKENS.Config, () => ({}));
+  container.register(CORE_TOKENS.Config, (() => ({})) as any);
 
-  const factory = container.resolve(UACLFactory);
+  const factory = container.resolve(UACLFactory as any) as UACLFactory;
 
   return await factory.createClient<T>({
     clientType,
@@ -824,6 +821,7 @@ export async function createClient<T = any>(
  *
  * @param url
  * @param config
+ * @example
  */
 export async function createHttpClient<T = any>(
   url: string,
@@ -838,6 +836,7 @@ export async function createHttpClient<T = any>(
  *
  * @param url
  * @param config
+ * @example
  */
 export async function createWebSocketClient<T = any>(
   url: string,
@@ -857,6 +856,7 @@ export async function createWebSocketClient<T = any>(
  *
  * @param url
  * @param config
+ * @example
  */
 export async function createMcpClient<T = any>(
   url: string,

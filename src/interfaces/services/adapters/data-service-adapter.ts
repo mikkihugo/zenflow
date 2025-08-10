@@ -1,5 +1,5 @@
 /**
- * @fileoverview USL Data Service Adapter
+ * @file USL Data Service Adapter.
  *
  * Unified Service Layer adapter for data-related services, providing
  * a consistent interface to WebDataService and DocumentService while.
@@ -12,22 +12,22 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { BaseDocumentEntity } from '../database/entities/product-entities';
+import type { BaseDocumentEntity } from '../../../database/entities/product-entities';
 import type {
   DocumentCreateOptions,
   DocumentQueryOptions,
   DocumentSearchOptions,
-} from '../database/managers/document-manager';
-import type { DocumentType } from '../types/workflow-types';
-import { createLogger, type Logger } from '../utils/logger';
+} from '../../../database/managers/document-manager';
+import type { DocumentType } from '../../../types/workflow-types';
+import { createLogger, type Logger } from '../../../utils/logger';
 import type {
   CommandResult,
   DocumentData,
   SwarmData,
   SystemStatusData,
   TaskData,
-} from '../web/web-data-service';
-import { WebDataService } from '../web/web-data-service';
+} from '../../../interfaces/web/web-data-service';
+import { WebDataService } from '../../../interfaces/web/web-data-service';
 import type {
   IService,
   ServiceDependencyConfig,
@@ -38,14 +38,14 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from '../core/interfaces';
-import type {
+} from '../../core/interfaces';
+import {
   ServiceEnvironment,
-  ServiceError,
   ServicePriority,
   ServiceType,
-} from '../interfaces/services/types';
-import type { DocumentService } from '../services/document-service';
+} from '../types';
+import type { ServiceError } from '../types';
+import { DocumentService } from '../../../database/services/document-service-legacy';
 import type { DataServiceConfig } from '../types';
 
 /**
@@ -53,7 +53,31 @@ import type { DataServiceConfig } from '../types';
  *
  * @example
  */
-export interface DataServiceAdapterConfig extends DataServiceConfig {
+export interface DataServiceAdapterConfig {
+  // Base service configuration
+  name: string;
+  type: string;
+  enabled?: boolean;
+  priority?: string;
+  environment?: string;
+  timeout?: number;
+  health?: {
+    enabled: boolean;
+    interval: number;
+    timeout: number;
+    failureThreshold: number;
+    successThreshold: number;
+  };
+  monitoring?: {
+    enabled: boolean;
+    metricsInterval: number;
+    trackLatency: boolean;
+    trackThroughput: boolean;
+    trackErrors: boolean;
+    trackMemoryUsage: boolean;
+  };
+
+  // Data service specific configuration
   /** WebDataService integration settings */
   webData?: {
     enabled: boolean;
@@ -139,7 +163,7 @@ interface PendingRequest<T = any> {
  * Unified Data Service Adapter.
  *
  * Provides a unified interface to WebDataService and DocumentService.
- * while implementing the IService interface for USL compatibility.
+ * While implementing the IService interface for USL compatibility.
  *
  * Features:
  * - Unified configuration management
@@ -148,7 +172,7 @@ interface PendingRequest<T = any> {
  * - Retry logic with backoff
  * - Health monitoring
  * - Event forwarding
- * - Error handling and recovery
+ * - Error handling and recovery.
  *
  * @example
  */
@@ -249,7 +273,7 @@ export class DataServiceAdapter implements IService {
    *
    * @param config
    */
-  async initialize(config?: Partial<DataServiceAdapterConfig>): Promise<void> {
+  async initialize(config?: Partial<ServiceConfig>): Promise<void> {
     this.logger.info(`Initializing data service adapter: ${this.name}`);
     this.lifecycleStatus = 'initializing';
     this.emit('initializing');
@@ -339,7 +363,7 @@ export class DataServiceAdapter implements IService {
       // Check dependencies before starting
       const dependenciesOk = await this.checkDependencies();
       if (!dependenciesOk) {
-        throw new ServiceDependencyError(this.name, 'One or more dependencies failed');
+        throw new Error(`ServiceDependencyError: ${this.name} - One or more dependencies failed`);
       }
 
       this.startTime = new Date();
@@ -583,13 +607,13 @@ export class DataServiceAdapter implements IService {
    *
    * @param config
    */
-  async updateConfig(config: Partial<DataServiceAdapterConfig>): Promise<void> {
+  async updateConfig(config: Partial<ServiceConfig>): Promise<void> {
     this.logger.info(`Updating configuration for data service adapter: ${this.name}`);
 
     try {
       // Validate the updated configuration
       const newConfig = { ...this.config, ...config };
-      const isValid = await this.validateConfig(newConfig);
+      const isValid = await this.validateConfig(newConfig as ServiceConfig);
       if (!isValid) {
         throw new Error('Invalid configuration update');
       }
@@ -609,7 +633,7 @@ export class DataServiceAdapter implements IService {
    *
    * @param config
    */
-  async validateConfig(config: DataServiceAdapterConfig): Promise<boolean> {
+  async validateConfig(config: ServiceConfig): Promise<boolean> {
     try {
       // Basic validation
       if (!config?.name || !config?.type) {
@@ -617,42 +641,45 @@ export class DataServiceAdapter implements IService {
         return false;
       }
 
+      // Cast to DataServiceAdapterConfig for specific validations
+      const dataConfig = config as DataServiceAdapterConfig;
+
       // Validate web data configuration
       if (
-        config?.webData?.enabled &&
-        config?.webData?.cacheTTL &&
-        config?.webData?.cacheTTL < 1000
+        dataConfig?.webData?.enabled &&
+        dataConfig?.webData?.cacheTTL &&
+        dataConfig?.webData?.cacheTTL < 1000
       ) {
         this.logger.error('WebData cache TTL must be at least 1000ms');
         return false;
       }
 
       // Validate document data configuration
-      if (config?.documentData?.enabled) {
+      if (dataConfig?.documentData?.enabled) {
         const validDbTypes = ['postgresql', 'sqlite', 'mysql'];
         if (
-          config?.documentData?.databaseType &&
-          !validDbTypes.includes(config?.documentData?.databaseType)
+          dataConfig?.documentData?.databaseType &&
+          !validDbTypes.includes(dataConfig?.documentData?.databaseType)
         ) {
-          this.logger.error(`Invalid database type: ${config?.documentData?.databaseType}`);
+          this.logger.error(`Invalid database type: ${dataConfig?.documentData?.databaseType}`);
           return false;
         }
       }
 
       // Validate performance configuration
-      if (config?.performance?.maxConcurrency && config?.performance?.maxConcurrency < 1) {
+      if (dataConfig?.performance?.maxConcurrency && dataConfig?.performance?.maxConcurrency < 1) {
         this.logger.error('Max concurrency must be at least 1');
         return false;
       }
 
       // Validate retry configuration
-      if (config?.retry?.enabled && config?.retry?.maxAttempts && config?.retry?.maxAttempts < 1) {
+      if (dataConfig?.retry?.enabled && dataConfig?.retry?.maxAttempts && dataConfig?.retry?.maxAttempts < 1) {
         this.logger.error('Retry max attempts must be at least 1');
         return false;
       }
 
       // Validate cache configuration
-      if (config?.cache?.enabled && config?.cache?.maxSize && config?.cache?.maxSize < 1) {
+      if (dataConfig?.cache?.enabled && dataConfig?.cache?.maxSize && dataConfig?.cache?.maxSize < 1) {
         this.logger.error('Cache max size must be at least 1');
         return false;
       }
@@ -728,13 +755,13 @@ export class DataServiceAdapter implements IService {
     try {
       // Check if service is ready
       if (!this.isReady()) {
-        throw new ServiceOperationError(this.name, operation, new Error('Service not ready'));
+        throw new Error(`ServiceOperationError: ${this.name} - Operation ${operation} failed: Service not ready`);
       }
 
       // Apply timeout if specified
       const timeout = options?.timeout || this.config.performance?.requestTimeout || 30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new ServiceTimeoutError(this.name, operation, timeout)), timeout);
+        setTimeout(() => reject(new Error(`ServiceTimeoutError: ${this.name} - Operation ${operation} timed out after ${timeout}ms`)), timeout);
       });
 
       // Execute operation with timeout
@@ -790,7 +817,7 @@ export class DataServiceAdapter implements IService {
       return {
         success: false,
         error: {
-          code: error instanceof ServiceError ? error.code : 'OPERATION_ERROR',
+          code: (error as any)?.code || 'OPERATION_ERROR',
           message: error.message,
           details: params,
           stack: error.stack,
@@ -825,8 +852,8 @@ export class DataServiceAdapter implements IService {
       type: event,
       serviceName: this.name,
       timestamp: new Date(),
-      data,
-      error,
+      ...(data !== undefined && { data }),
+      ...(error !== undefined && { error }),
     };
     this.eventEmitter.emit(event, serviceEvent);
   }
@@ -1065,11 +1092,7 @@ export class DataServiceAdapter implements IService {
         return (await this.getServiceStats()) as T;
 
       default:
-        throw new ServiceOperationError(
-          this.name,
-          operation,
-          new Error(`Unknown operation: ${operation}`)
-        );
+        throw new Error(`ServiceOperationError: ${this.name} - Operation ${operation} failed: Unknown operation`);
     }
   }
 
@@ -1256,7 +1279,12 @@ export class DataServiceAdapter implements IService {
     avgLatency: number;
     cacheHitRate: number;
     pendingRequests: number;
-    healthStats: typeof this.healthStats;
+    healthStats: {
+      lastHealthCheck: Date;
+      consecutiveFailures: number;
+      totalHealthChecks: number;
+      healthCheckFailures: number;
+    };
   }> {
     return {
       operationCount: this.operationCount,
@@ -1345,7 +1373,10 @@ export class DataServiceAdapter implements IService {
 
     const toRemove = this.cache.size - targetSize;
     for (let i = 0; i < toRemove; i++) {
-      this.cache.delete(entries[i]?.[0]);
+      const entryKey = entries[i]?.[0];
+      if (entryKey !== undefined) {
+        this.cache.delete(entryKey);
+      }
     }
 
     this.logger.debug(`Cache cleanup: removed ${toRemove} entries`);
@@ -1365,8 +1396,13 @@ export class DataServiceAdapter implements IService {
     }
 
     // Don't retry certain types of errors
-    if (error instanceof ServiceTimeoutError && error.timeout < 5000) {
-      return false; // Don't retry short timeouts
+    if (error?.message?.includes('ServiceTimeoutError') && error.message.includes('timeout')) {
+      // Extract timeout value from error message if possible
+      const timeoutMatch = error.message.match(/after (\d+)ms/);
+      const timeout = timeoutMatch ? parseInt(timeoutMatch[1]) : 5000;
+      if (timeout < 5000) {
+        return false; // Don't retry short timeouts
+      }
     }
 
     return true;
@@ -1474,6 +1510,7 @@ export class DataServiceAdapter implements IService {
  * Factory function for creating DataServiceAdapter instances.
  *
  * @param config
+ * @example
  */
 export function createDataServiceAdapter(config: DataServiceAdapterConfig): DataServiceAdapter {
   return new DataServiceAdapter(config);
@@ -1484,6 +1521,7 @@ export function createDataServiceAdapter(config: DataServiceAdapterConfig): Data
  *
  * @param name
  * @param overrides
+ * @example
  */
 export function createDefaultDataServiceAdapterConfig(
   name: string,

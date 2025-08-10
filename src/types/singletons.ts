@@ -23,9 +23,4 @@ export declare const globalServiceRegistry: {
   list(): string[];
 };
 
-// Re-export for convenience
-export {
-  globalClientManager,
-  globalUSLFactory,
-  globalServiceRegistry
-};
+// Singletons are already exported above - no need for re-export

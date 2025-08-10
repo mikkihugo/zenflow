@@ -9,7 +9,7 @@ import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { performance } from 'node:perf_hooks';
 import meow from 'meow';
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../../core/logger';
 
 const logger = createLogger({ prefix: 'SwarmCommand' });
 

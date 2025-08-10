@@ -1,5 +1,5 @@
 /**
- * @file Swarm Config Panel Component for TUI - Interactive swarm configuration
+ * @file Swarm Config Panel Component for TUI - Interactive swarm configuration.
  */
 
 import { Box, Text, useInput } from 'ink';
@@ -138,7 +138,7 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
           {editingField === 'topology' ? (
             <Box>
               <Text>Select: </Text>
-              <SelectInput.
+              <SelectInput
                 items={[
                   { label: '🕸️  Mesh (High Redundancy)', value: 'mesh' },
                   { label: '🌳 Hierarchical (Efficient)', value: 'hierarchical' },
@@ -169,7 +169,7 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
           {editingField === 'maxAgents' ? (
             <Box>
               <Text>Enter count: </Text>
-              <TextInput.
+              <TextInput
                 value={tempValue}
                 onChange={setTempValue}
                 onSubmit={handleFieldSave}
@@ -196,7 +196,7 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
           {editingField === 'memory' ? (
             <Box>
               <Text>Enter limit: </Text>
-              <TextInput.
+              <TextInput
                 value={tempValue}
                 onChange={setTempValue}
                 onSubmit={handleFieldSave}
@@ -256,7 +256,7 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
           {editingField === 'persistence' ? (
             <Box>
               <Text>Select: </Text>
-              <SelectInput.
+              <SelectInput
                 items={[
                   { label: '📄 JSON (Simple)', value: 'json' },
                   { label: '🗃️  SQLite (Structured)', value: 'sqlite' },

@@ -110,7 +110,7 @@ export class ConfigValidator {
    */
   private validateRules(config: SystemConfiguration, errors: string[], warnings: string[]): void {
     for (const [path, rule] of Object.entries(VALIDATION_RULES)) {
-      const value = this.getNestedValue(config, path);
+      const value = this.getNestedValue(config as any, path);
 
       if (value === undefined) {
         warnings.push(`Optional configuration missing: ${path}`);
@@ -147,7 +147,7 @@ export class ConfigValidator {
       }
 
       // Range validation
-      if (rule.type === 'number') {
+      if (rule.type === 'number' && typeof value === 'number') {
         if ('min' in rule && rule.min !== undefined && value < rule.min) {
           errors.push(`${path} must be >= ${rule.min}, got ${value}`);
         }
@@ -276,8 +276,8 @@ export class ConfigValidator {
    * @param obj
    * @param path
    */
-  private getNestedValue(obj: any, path: string): any {
-    return path.split('.').reduce((current, key) => current?.[key], obj);
+  private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+    return path.split('.').reduce((current: any, key) => current?.[key], obj);
   }
 
   /**
@@ -286,7 +286,7 @@ export class ConfigValidator {
    * @param _config
    * @param section
    */
-  validateSection(_config: any, section: string): ConfigValidationResult {
+  validateSection(_config: SystemConfiguration, section: string): ConfigValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
 

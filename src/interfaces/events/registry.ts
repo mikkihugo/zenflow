@@ -4,12 +4,12 @@
  * Central registry for managing all event types, factories, and lifecycle management.
  * Provides type-safe event registration, discovery, and health monitoring.
  *
- * @file Event Registry Implementation following UACL/USL patterns
+ * @file Event Registry Implementation following UACL/USL patterns.
  */
 
-import type { ILogger } from '../core/interfaces/base-interfaces';
-import { inject, injectable } from '../di/decorators/injectable';
-import { CORE_TOKENS } from '../di/tokens/core-tokens';
+import type { ILogger } from '../../core/interfaces/base-interfaces';
+import { inject, injectable } from '../../di/decorators/injectable';
+import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 import type {
   EventManagerConfig,
   EventManagerMetrics,
@@ -213,7 +213,7 @@ export interface EventDiscoveryConfig {
  * Main event registry implementation for centralized event manager management.
  *
  * Provides centralized registration, discovery, and lifecycle management of event managers.
- * and their factories. Includes health monitoring, metrics collection, and event broadcasting.
+ * And their factories. Includes health monitoring, metrics collection, and event broadcasting..
  *
  * @class EventRegistry
  * @implements IEventManagerRegistry
@@ -247,7 +247,7 @@ export class EventRegistry implements IEventManagerRegistry {
   private factoryRegistry: FactoryRegistry = {} as FactoryRegistry;
   private healthMonitoring: HealthMonitoringConfig;
   private discoveryConfig: EventDiscoveryConfig;
-  private healthCheckInterval?: NodeJS.Timeout;
+  private healthCheckInterval?: NodeJS.Timeout | undefined;
   private initialized = false;
 
   constructor(
@@ -275,11 +275,11 @@ export class EventRegistry implements IEventManagerRegistry {
    *
    * Sets up health monitoring, event discovery, and registers default event types.
    *
-   * @param config - Initialization configuration options
-   * @param config.healthMonitoring - Health monitoring settings overrides
-   * @param config.discovery - Event discovery settings overrides
-   * @param config.autoRegisterDefaults - Whether to register default event types (default: true)
-   * @throws {Error} If initialization fails
+   * @param config - Initialization configuration options.
+   * @param config.healthMonitoring - Health monitoring settings overrides.
+   * @param config.discovery - Event discovery settings overrides.
+   * @param config.autoRegisterDefaults - Whether to register default event types (default: true).
+   * @throws {Error} If initialization fails.
    * @example
    * ```typescript
    * await registry.initialize({
@@ -330,7 +330,7 @@ export class EventRegistry implements IEventManagerRegistry {
     }
 
     this.initialized = true;
-    this.logger.info('✅ Event Registry initialized successfully');
+    this._logger.info('✅ Event Registry initialized successfully');
   }
 
   /**
@@ -339,10 +339,10 @@ export class EventRegistry implements IEventManagerRegistry {
    * Registers a factory that can create event managers of the specified type.
    * Updates the factory registry with metadata and usage tracking.
    *
-   * @template T - Configuration type extending EventManagerConfig
-   * @param type - Event manager type this factory creates
-   * @param factory - Factory instance to register
-   * @throws {Error} If factory registration fails
+   * @template T - Configuration type extending EventManagerConfig.
+   * @param type - Event manager type this factory creates.
+   * @param factory - Factory instance to register.
+   * @throws {Error} If factory registration fails.
    * @example
    * ```typescript
    * const systemFactory = new SystemEventManagerFactory();
@@ -361,7 +361,7 @@ export class EventRegistry implements IEventManagerRegistry {
       metadata: {
         name: factory.constructor.name,
         version: '1.0.0',
-        capabilities: factory.getSupportedEventTypes?.() || [],
+        capabilities: [],  // getSupportedEventTypes method not available on IEventManagerFactory interface
         supported: [type],
       },
       registered: new Date(),
@@ -372,7 +372,7 @@ export class EventRegistry implements IEventManagerRegistry {
       },
     };
 
-    this.logger.debug(`📋 Registered event manager factory: ${type}`);
+    this._logger.debug(`📋 Registered event manager factory: ${type}`);
   }
 
   /**
@@ -405,10 +405,10 @@ export class EventRegistry implements IEventManagerRegistry {
    *
    * Creates a registry entry to track the manager's lifecycle, usage, and health.
    *
-   * @param name - Unique name for the event manager
-   * @param manager - Event manager instance to register
-   * @param factory - Factory that created this manager
-   * @param config - Configuration used to create the manager
+   * @param name - Unique name for the event manager.
+   * @param manager - Event manager instance to register.
+   * @param factory - Factory that created this manager.
+   * @param config - Configuration used to create the manager.
    * @example
    * ```typescript
    * registry.registerManager(
@@ -455,7 +455,7 @@ export class EventRegistry implements IEventManagerRegistry {
       }
     }
 
-    this.logger.info(`📝 Registered event manager: ${name} (${config?.type})`);
+    this._logger.info(`📝 Registered event manager: ${name} (${config?.type})`);
   }
 
   /**
@@ -536,7 +536,7 @@ export class EventRegistry implements IEventManagerRegistry {
     this.eventTypes[eventType] = {
       type: eventType,
       category: config?.category,
-      priority: config?.priority || EventPriorityMap.medium || 2,
+      priority: config?.priority || (typeof EventPriorityMap['medium'] === 'number' ? EventPriorityMap['medium'] : 2),
       schema: config?.schema,
       managerTypes: config?.managerTypes,
       config: config?.options || {},
@@ -548,7 +548,7 @@ export class EventRegistry implements IEventManagerRegistry {
       },
     };
 
-    this.logger.debug(`🏷️ Registered event type: ${eventType}`);
+    this._logger.debug(`🏷️ Registered event type: ${eventType}`);
   }
 
   /**
@@ -578,7 +578,7 @@ export class EventRegistry implements IEventManagerRegistry {
           results?.set(name, status);
         })
         .catch((error) => {
-          this.logger.error(`❌ Health check failed for ${name}:`, error);
+          this._logger.error(`❌ Health check failed for ${name}:`, error);
           results?.set(name, {
             name: entry.manager.name,
             type: entry.manager.type,
@@ -621,7 +621,7 @@ export class EventRegistry implements IEventManagerRegistry {
         entry.metrics = metrics;
         return metrics;
       } catch (error) {
-        this.logger.warn(`⚠️ Failed to get metrics for ${entry.manager.name}:`, error);
+        this._logger.warn(`⚠️ Failed to get metrics for ${entry.manager.name}:`, error);
         entry.usage.errorCount++;
         return null;
       }
@@ -691,7 +691,7 @@ export class EventRegistry implements IEventManagerRegistry {
             entry.usage.totalEvents++;
           })
           .catch((error) => {
-            this.logger.error(`❌ Broadcast failed for ${name}:`, error);
+            this._logger.error(`❌ Broadcast failed for ${name}:`, error);
             entry.usage.errorCount++;
           });
 
@@ -709,7 +709,7 @@ export class EventRegistry implements IEventManagerRegistry {
     const managers = this.getEventManagersByType(type);
     const broadcastPromises = managers.map((manager) =>
       manager.emit(event).catch((error) => {
-        this.logger.error(`❌ Type broadcast failed for ${manager.name}:`, error);
+        this._logger.error(`❌ Type broadcast failed for ${manager.name}:`, error);
       })
     );
 
@@ -720,7 +720,7 @@ export class EventRegistry implements IEventManagerRegistry {
    * Shutdown all event managers.
    */
   async shutdownAll(): Promise<void> {
-    this.logger.info('🔄 Shutting down all event managers...');
+    this._logger.info('🔄 Shutting down all event managers...');
 
     // Stop health monitoring
     this.stopHealthMonitoring();
@@ -731,7 +731,7 @@ export class EventRegistry implements IEventManagerRegistry {
         await entry.manager.destroy();
         entry.status = 'stopped';
       } catch (error) {
-        this.logger.error(`❌ Failed to shutdown ${entry.manager.name}:`, error);
+        this._logger.error(`❌ Failed to shutdown ${entry.manager.name}:`, error);
         entry.status = 'error';
       }
     });
@@ -745,7 +745,7 @@ export class EventRegistry implements IEventManagerRegistry {
     this.factoryRegistry = {} as FactoryRegistry;
     this.initialized = false;
 
-    this.logger.info('✅ All event managers shut down');
+    this._logger.info('✅ All event managers shut down');
   }
 
   /**
@@ -846,7 +846,7 @@ export class EventRegistry implements IEventManagerRegistry {
         entry.status === 'healthy' &&
         this.healthMonitoring.notifyOnStatusChange
       ) {
-        this.logger.info(`✅ Event manager ${name} recovered to healthy status`);
+        this._logger.info(`✅ Event manager ${name} recovered to healthy status`);
       }
 
       return status;
@@ -883,11 +883,11 @@ export class EventRegistry implements IEventManagerRegistry {
       try {
         await this.healthCheckAll();
       } catch (error) {
-        this.logger.error('❌ Health monitoring cycle failed:', error);
+        this._logger.error('❌ Health monitoring cycle failed:', error);
       }
     }, this.healthMonitoring.checkInterval);
 
-    this.logger.debug(
+    this._logger.debug(
       `💓 Health monitoring started (interval: ${this.healthMonitoring.checkInterval}ms)`
     );
   }
@@ -898,7 +898,7 @@ export class EventRegistry implements IEventManagerRegistry {
       this.healthCheckInterval = undefined;
     }
 
-    this.logger.debug('💓 Health monitoring stopped');
+    this._logger.debug('💓 Health monitoring stopped');
   }
 
   private async registerDefaultEventTypes(): Promise<void> {
@@ -967,16 +967,16 @@ export class EventRegistry implements IEventManagerRegistry {
       });
     }
 
-    this.logger.debug(`🏷️ Registered ${defaultEventTypes.length} default event types`);
+    this._logger.debug(`🏷️ Registered ${defaultEventTypes.length} default event types`);
   }
 
   private async performEventDiscovery(): Promise<void> {
     try {
       // Event discovery implementation would scan specified paths
       // and automatically register discovered event types
-      this.logger.debug('🔍 Event discovery completed');
+      this._logger.debug('🔍 Event discovery completed');
     } catch (error) {
-      this.logger.warn('⚠️ Event discovery failed:', error);
+      this._logger.warn('⚠️ Event discovery failed:', error);
     }
   }
 }

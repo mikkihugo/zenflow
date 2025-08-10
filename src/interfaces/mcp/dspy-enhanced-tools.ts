@@ -14,7 +14,7 @@
 
 
 import { DSPy, type DSPyProgram } from 'dspy.ts';
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../core/logger';
 
 const logger = createLogger({ prefix: 'DSPyMCPTools' });
 

@@ -1,5 +1,5 @@
 /**
- * @file Enhanced Terminal Interface Router
+ * @file Enhanced Terminal Interface Router.
  *
  * Integrates the Advanced CLI Engine with the existing terminal interface system.
  * Provides intelligent command routing, AI-assisted operations, and real-time monitoring.
@@ -45,31 +45,26 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
     mode: detectMode(commands, flags),
     cliEngine: new AdvancedCLIEngine(),
     config: {
-      theme: (flags.theme as 'dark' | 'light') || 'dark',
-      verbosity: (flags.verbose ? 'verbose' : flags.quiet ? 'quiet' : 'normal') as any,
-      autoCompletion: flags.autoComplete !== false,
-      realTimeUpdates: flags.realTime !== false,
+      theme: (flags['theme'] as 'dark' | 'light') || 'dark',
+      verbosity: (flags['verbose'] ? 'verbose' : flags['quiet'] ? 'quiet' : 'normal') as any,
+      autoCompletion: flags['autoComplete'] !== false,
+      realTimeUpdates: flags['realTime'] !== false,
       aiAssistance: {
-        enabled: flags.aiAssist !== false,
-        suggestions: flags.suggestions !== false,
-        autoCorrection: flags.autoCorrect !== false,
-        contextAware: flags.contextAware !== false,
-        learningMode: flags.learn !== false,
+        enabled: flags['aiAssist'] !== false,
+        suggestions: flags['suggestions'] !== false,
+        autoCorrection: flags['autoCorrect'] !== false,
+        contextAware: flags['contextAware'] !== false,
+        learningMode: flags['learn'] !== false,
       },
       performance: {
-        caching: flags.cache !== false,
-        parallelization: flags.parallel !== false,
-        optimization: flags.optimize !== false,
-        monitoring: flags.monitor !== false,
+        caching: flags['cache'] !== false,
+        parallelization: flags['parallel'] !== false,
+        optimization: flags['optimize'] !== false,
+        monitoring: flags['monitor'] !== false,
       },
     },
     isInitializing: true,
   });
-
-  // Initialize CLI engine and detect capabilities
-  useEffect(() => {
-    initializeEnhancedCLI();
-  }, [initializeEnhancedCLI]);
 
   const initializeEnhancedCLI = async () => {
     try {
@@ -85,11 +80,11 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
       state.cliEngine.on('projectCreationStarted', handleProjectStart);
       state.cliEngine.on('projectCreationCompleted', handleProjectComplete);
 
-      setState((prev) => ({
+      setState((prev: TerminalState) => ({
         ...prev,
         isInitializing: false,
         error: undefined,
-      }));
+      }) as TerminalState);
 
       // Auto-execute commands if in command mode
       if (state.mode === 'command' && commands.length > 0) {
@@ -104,6 +99,11 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
     }
   };
 
+  // Initialize CLI engine and detect capabilities
+  useEffect(() => {
+    initializeEnhancedCLI();
+  }, []);
+
   const executeAdvancedCommand = async (cmdArgs: string[], options: any) => {
     if (cmdArgs.length === 0) {
       setState((prev) => ({
@@ -117,19 +117,19 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
 
     try {
       // Check if this is an advanced CLI command
-      const command = state.cliEngine.getCommandRegistry().getCommand(commandName);
+      const command = state.cliEngine.getCommandRegistry().getCommand(commandName as string);
 
       if (command) {
         // Execute through advanced CLI engine
-        const result = await state.cliEngine.executeCommand(commandName, args, options);
-        setState((prev) => ({
+        const result = await state.cliEngine.executeCommand(commandName as string, args, options);
+        setState((prev: TerminalState) => ({
           ...prev,
           commandResult: result,
           error: undefined,
-        }));
+        }) as TerminalState);
       } else {
         // Handle traditional commands or show help
-        await handleTraditionalCommand(commandName, args, options);
+        await handleTraditionalCommand(commandName as string, args, options);
       }
     } catch (error) {
       setState((prev) => ({
@@ -236,31 +236,34 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
   };
 
   const levenshteinDistance = (str1: string, str2: string): number => {
-    const matrix = [];
+    const matrix: number[][] = [];
 
     for (let i = 0; i <= str2.length; i++) {
-      matrix[i] = [i];
+      matrix[i] = [i] as number[];
     }
 
     for (let j = 0; j <= str1.length; j++) {
-      matrix[0][j] = j;
+      if (matrix[0]) {
+        matrix[0][j] = j;
+      }
     }
 
     for (let i = 1; i <= str2.length; i++) {
       for (let j = 1; j <= str1.length; j++) {
+        if (!matrix[i]) matrix[i] = [];
         if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
-          matrix[i][j] = matrix[i - 1]?.[j - 1];
+          matrix[i][j] = matrix[i - 1]?.[j - 1] ?? 0;
         } else {
           matrix[i][j] = Math.min(
-            matrix[i - 1]?.[j - 1] + 1,
-            matrix[i]?.[j - 1] + 1,
-            matrix[i - 1]?.[j] + 1
+            (matrix[i - 1]?.[j - 1] ?? 0) + 1,
+            (matrix[i]?.[j - 1] ?? 0) + 1,
+            (matrix[i - 1]?.[j] ?? 0) + 1
           );
         }
       }
     }
 
-    return matrix[str2.length]?.[str1.length];
+    return matrix[str2.length]?.[str1.length] ?? 0;
   };
 
   // Event handlers
@@ -336,6 +339,8 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
         error={state.error}
         config={state.config}
         onExit={onExit}
+        commands={commands}
+        flags={flags}
       />
     );
   }

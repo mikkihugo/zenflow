@@ -93,7 +93,6 @@
     "src/utils/agent-gap-analysis.ts",
     "src/coordination/github/**/*",
     "src/coordination/hive-mind/**/*",
-    "src/coordination/maestro/**/*",
     "src/coordination/orchestration/**/*",
     "src/coordination/discovery/demo-*.ts",
     "src/coordination/discovery/test-*.ts",

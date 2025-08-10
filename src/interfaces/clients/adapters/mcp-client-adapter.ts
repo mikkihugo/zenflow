@@ -3,7 +3,7 @@
  */
 
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('interfaces-clients-adapters-mcp-client-adapter');
 
@@ -38,10 +38,6 @@ export interface MCPClientConfig extends ClientConfig {
   protocol: 'stdio' | 'http';
   command?: string[]; // For stdio protocol
   url?: string; // For HTTP protocol
-  authentication?: {
-    type: 'none' | 'bearer' | 'basic';
-    credentials?: string;
-  };
   tools?: {
     timeout: number;
     retries: number;
@@ -110,8 +106,10 @@ export interface MCPToolResult {
  * @example
  */
 export class MCPClientAdapter extends EventEmitter implements IClient {
-  readonly config: MCPClientConfig;
+  readonly config: ClientConfig;
   readonly name: string;
+  
+  private _mcpConfig: MCPClientConfig;
 
   private _isConnected = false;
   private _process?: ChildProcess;
@@ -143,6 +141,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
 
   constructor(config: MCPClientConfig) {
     super();
+    this._mcpConfig = { ...config };
     this.config = { ...config };
     this.name = config?.name;
     this._metrics.name = config?.name;
@@ -157,18 +156,18 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
     }
 
     try {
-      if (this.config.protocol === 'stdio') {
+      if (this._mcpConfig.protocol === 'stdio') {
         await this._connectStdio();
-      } else if (this.config.protocol === 'http') {
+      } else if (this._mcpConfig.protocol === 'http') {
         await this._connectHTTP();
       } else {
-        throw new Error(`Unsupported protocol: ${this.config.protocol}`);
+        throw new Error(`Unsupported protocol: ${this._mcpConfig.protocol}`);
       }
 
       this._isConnected = true;
 
       // Auto-discover tools if enabled
-      if (this.config.tools?.discovery !== false) {
+      if (this._mcpConfig.tools?.discovery !== false) {
         await this._discoverTools();
       }
 
@@ -182,38 +181,39 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
    * Connect via stdio protocol.
    */
   private async _connectStdio(): Promise<void> {
-    if (!this.config.command || this.config.command.length === 0) {
+    if (!this._mcpConfig.command || this._mcpConfig.command.length === 0) {
       throw new Error('Command required for stdio protocol');
     }
 
-    const [command, ...args] = this.config.command;
+    const [command, ...args] = this._mcpConfig.command;
 
     this._process = spawn(command, args, {
-      stdio: ['pipe', 'pipe', 'pipe'],
-      encoding: this.config.stdio?.encoding || 'utf8',
+      stdio: ['pipe', 'pipe', 'pipe']
     });
 
     // Handle process events
-    this._process.on('error', (error) => {
-      this.emit('error', new ConnectionError(this.name, error));
-    });
-
-    this._process.on('exit', (code, signal) => {
-      this._isConnected = false;
-      this.emit('disconnect', { client: this.name, code, signal });
-    });
-
-    // Setup message handling
-    if (this._process.stdout) {
-      this._process.stdout.on('data', (data) => {
-        this._handleStdioMessage(data.toString());
+    if (this._process) {
+      this._process.on('error', (error) => {
+        this.emit('error', new ConnectionError(this.name, error));
       });
-    }
 
-    if (this._process.stderr) {
-      this._process.stderr.on('data', (data) => {
-        logger.warn(`MCP stderr [${this.name}]:`, data.toString());
+      this._process.on('exit', (code, signal) => {
+        this._isConnected = false;
+        this.emit('disconnect', { client: this.name, code, signal });
       });
+
+      // Setup message handling
+      if (this._process.stdout) {
+        this._process.stdout.on('data', (data) => {
+          this._handleStdioMessage(data.toString());
+        });
+      }
+
+      if (this._process.stderr) {
+        this._process.stderr.on('data', (data) => {
+          logger.warn(`MCP stderr [${this.name}]:`, data.toString());
+        });
+      }
     }
 
     // Send initialization message
@@ -240,15 +240,15 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
    * Connect via HTTP protocol.
    */
   private async _connectHTTP(): Promise<void> {
-    if (!this.config.url) {
+    if (!this._mcpConfig.url) {
       throw new Error('URL required for HTTP protocol');
     }
 
     // Test connection with health check
-    const response = await fetch(`${this.config.url}/health`, {
+    const response = await fetch(`${this._mcpConfig.url}/health`, {
       method: 'GET',
       headers: this._getAuthHeaders(),
-      signal: AbortSignal.timeout(this.config.timeout || 10000),
+      signal: AbortSignal.timeout(this._mcpConfig.timeout || 10000),
     });
 
     if (!response?.ok) {
@@ -272,7 +272,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
       }
       this._pendingRequests.clear();
 
-      if (this.config.protocol === 'stdio' && this._process) {
+      if (this._mcpConfig.protocol === 'stdio' && this._process) {
         // Send shutdown notification
         try {
           await this._sendMessage({
@@ -284,10 +284,10 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
         }
 
         // Kill process
-        this._process.kill(this.config.stdio?.killSignal || 'SIGTERM');
+        this._process.kill(this._mcpConfig.stdio?.killSignal || 'SIGTERM');
 
         // Force kill if not terminated within timeout
-        const killTimeout = this.config.stdio?.killTimeout || 5000;
+        const killTimeout = this._mcpConfig.stdio?.killTimeout || 5000;
         setTimeout(() => {
           if (this._process && !this._process.killed) {
             this._process.kill('SIGKILL');
@@ -319,7 +319,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
     let responseTime = 0;
 
     try {
-      if (this.config.protocol === 'stdio') {
+      if (this._mcpConfig.protocol === 'stdio') {
         // Send ping message for stdio
         await this._sendMessage({
           jsonrpc: '2.0',
@@ -329,8 +329,8 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
         status = 'healthy';
       } else {
         // HTTP health check
-        const response = await fetch(`${this.config.url}/health`, {
-          signal: AbortSignal.timeout(this.config.health?.timeout || 5000),
+        const response = await fetch(`${this._mcpConfig.url}/health`, {
+          signal: AbortSignal.timeout(this._mcpConfig.health?.timeout || 5000),
         });
         status = response?.ok ? 'healthy' : 'degraded';
       }
@@ -349,7 +349,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
       errorRate: this._calculateErrorRate(),
       uptime: Date.now() - this._lastMetricsUpdate,
       metadata: {
-        protocol: this.config.protocol,
+        protocol: this._mcpConfig.protocol,
         toolCount: this._tools.size,
         processId: this._process?.pid,
       },
@@ -397,10 +397,11 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
         statusText: 'OK',
         headers: {},
         config: options || {},
+        timestamp: new Date(),
         metadata: {
           tool: toolName,
           responseTime,
-          protocol: this.config.protocol,
+          protocol: this._mcpConfig.protocol,
         },
       };
     } catch (error) {
@@ -425,6 +426,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
         statusText: 'OK',
         headers: {},
         config: options || {},
+        timestamp: new Date(),
         metadata: { endpoint },
       };
     }
@@ -437,6 +439,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
         statusText: 'OK',
         headers: {},
         config: options || {},
+        timestamp: new Date(),
         metadata: { endpoint },
       };
     }
@@ -463,8 +466,9 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
    *
    * @param config
    */
-  updateConfig(config: Partial<MCPClientConfig>): void {
+  updateConfig(config: Partial<ClientConfig>): void {
     Object.assign(this.config, config);
+    Object.assign(this._mcpConfig, config);
   }
 
   /**
@@ -497,7 +501,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
       },
     };
 
-    const timeout = options?.timeout || this.config.tools?.timeout || 30000;
+    const timeout = options?.timeout || this._mcpConfig.tools?.timeout || 30000;
     return this._sendMessage(message, timeout);
   }
 
@@ -534,7 +538,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
       throw new ConnectionError(this.name);
     }
 
-    if (this.config.protocol === 'stdio') {
+    if (this._mcpConfig.protocol === 'stdio') {
       return this._sendStdioMessage(message, timeout);
     } else {
       return this._sendHTTPMessage(message, timeout);
@@ -575,7 +579,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
           if (message.id !== undefined) {
             this._pendingRequests.delete(message.id);
           }
-          reject(new ClientError('Failed to send message', 'SEND_ERROR', this.name, error));
+          reject(new ClientError('Failed to send message', 'SEND_ERROR', this.name));
         } else if (message.id === undefined) {
           // Notification - resolve immediately
           resolve(undefined);
@@ -591,7 +595,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
    * @param timeout
    */
   private async _sendHTTPMessage(message: MCPMessage, timeout: number): Promise<any> {
-    const response = await fetch(`${this.config.url}/mcp`, {
+    const response = await fetch(`${this._mcpConfig.url}/mcp`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -646,7 +650,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
           }
         }
       } catch (error) {
-        logger.warn(`Failed to parse MCP message [${this.name}]:`, line, error);
+        logger.warn(`Failed to parse MCP message [${this.name}]: ${line}`, error);
       }
     }
   }
@@ -657,16 +661,23 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   private _getAuthHeaders(): Record<string, string> {
     const headers: Record<string, string> = {};
 
-    if (this.config.authentication) {
-      switch (this.config.authentication.type) {
+    if (this._mcpConfig.authentication) {
+      switch (this._mcpConfig.authentication.type) {
         case 'bearer':
-          if (this.config.authentication.credentials) {
-            headers.Authorization = `Bearer ${this.config.authentication.credentials}`;
+          if (this._mcpConfig.authentication.token) {
+            headers['Authorization'] = `Bearer ${this._mcpConfig.authentication.token}`;
           }
           break;
         case 'basic':
-          if (this.config.authentication.credentials) {
-            headers.Authorization = `Basic ${this.config.authentication.credentials}`;
+          if (this._mcpConfig.authentication.username && this._mcpConfig.authentication.password) {
+            const credentials = btoa(`${this._mcpConfig.authentication.username}:${this._mcpConfig.authentication.password}`);
+            headers['Authorization'] = `Basic ${credentials}`;
+          }
+          break;
+        case 'apikey':
+          if (this._mcpConfig.authentication.apiKey) {
+            const headerName = this._mcpConfig.authentication.apiKeyHeader || 'X-API-Key';
+            headers[headerName] = this._mcpConfig.authentication.apiKey;
           }
           break;
       }
@@ -732,7 +743,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
  *
  * @example
  */
-export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
+export class MCPClientFactory implements IClientFactory<ClientConfig> {
   private _clients: Map<string, MCPClientAdapter> = new Map();
 
   /**
@@ -740,10 +751,10 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
    *
    * @param config
    */
-  async create(config: MCPClientConfig): Promise<IClient> {
-    const client = new MCPClientAdapter(config);
+  async create(config: ClientConfig): Promise<IClient> {
+    const client = new MCPClientAdapter(config as unknown as MCPClientConfig);
     this._clients.set(config?.name, client);
-    return client;
+    return client as IClient;
   }
 
   /**
@@ -751,7 +762,7 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
    *
    * @param configs
    */
-  async createMultiple(configs: MCPClientConfig[]): Promise<IClient[]> {
+  async createMultiple(configs: ClientConfig[]): Promise<IClient[]> {
     const clients: IClient[] = [];
 
     for (const config of configs) {
@@ -768,14 +779,14 @@ export class MCPClientFactory implements IClientFactory<MCPClientConfig> {
    * @param name
    */
   get(name: string): IClient | undefined {
-    return this._clients.get(name);
+    return this._clients.get(name) as IClient | undefined;
   }
 
   /**
    * List all clients.
    */
   list(): IClient[] {
-    return Array.from(this._clients.values());
+    return Array.from(this._clients.values()) as IClient[];
   }
 
   /**
@@ -895,10 +906,10 @@ export function createMCPConfigFromLegacy(
     name,
     baseURL: legacyConfig?.url || '',
     protocol,
-    command: legacyConfig?.command,
-    url: legacyConfig?.url,
+    command: legacyConfig?.command || undefined,
+    url: legacyConfig?.url || undefined,
     timeout: legacyConfig?.timeout || 30000,
-    authentication: { type: 'none' },
+    authentication: { type: 'custom' },
     tools: {
       timeout: 30000,
       retries: 3,

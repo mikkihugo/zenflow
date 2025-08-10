@@ -3,7 +3,7 @@
  */
 
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../../config/logging-config';
 
 const logger = getLogger('interfaces-events-adapters-monitoring-usage-example');
 

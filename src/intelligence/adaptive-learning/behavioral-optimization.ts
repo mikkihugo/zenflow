@@ -1599,13 +1599,13 @@ export class BehavioralOptimization extends EventEmitter {
   }
 
   private getNestedProperty(obj: any, path: string): any {
-    return path.split('.').reduce((current, key) => current?.[key], obj);
+    return path.split('.').reduce((current, key) => current?.[key as keyof typeof obj], obj);
   }
 
   private setNestedProperty(obj: any, path: string, value: any): void {
     const keys = path.split('.');
     const lastKey = keys.pop()!;
-    const target = keys.reduce((current, key) => current?.[key], obj);
+    const target = keys.reduce((current, key) => current?.[key as keyof typeof obj], obj);
     target[lastKey] = value;
   }
 

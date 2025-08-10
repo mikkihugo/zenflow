@@ -333,7 +333,7 @@ export class DocumentManager {
     let relevanceScores: number[] = [];
 
     // Get all documents with filters applied
-    const baseFilters: any = {};
+    const baseFilters: unknown = {} as Record<string, unknown>;
     if (searchOptions?.projectId) baseFilters.projectId = searchOptions?.projectId;
     if (searchOptions?.documentTypes) baseFilters.type = searchOptions?.documentTypes;
     if (searchOptions?.status) baseFilters.status = searchOptions?.status;
@@ -1567,7 +1567,7 @@ abstract class WorkflowDefinition {
 class PRDWorkflowDefinition extends WorkflowDefinition {
   name = 'prd_workflow';
   stages = ['draft', 'review', 'approved', 'implementation', 'completed'];
-  autoTransitions = true;
+  autoTransitions = true as boolean;
 
   rules: WorkflowAutomationRule[] = [
     {
@@ -1627,7 +1627,7 @@ class PRDWorkflowDefinition extends WorkflowDefinition {
 class FeatureWorkflowDefinition extends WorkflowDefinition {
   name = 'feature_workflow';
   stages = ['draft', 'approved', 'implementation', 'testing', 'completed'];
-  autoTransitions = true;
+  autoTransitions = true as boolean;
 
   rules: WorkflowAutomationRule[] = [
     {
@@ -1731,7 +1731,7 @@ class ADRWorkflowDefinition extends WorkflowDefinition {
 class EpicWorkflowDefinition extends WorkflowDefinition {
   name = 'epic_workflow';
   stages = ['draft', 'groomed', 'in_progress', 'completed'];
-  autoTransitions = true;
+  autoTransitions = true as boolean;
 
   rules: WorkflowAutomationRule[] = [
     {

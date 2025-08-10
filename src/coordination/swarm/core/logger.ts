@@ -12,7 +12,7 @@ const logger = getLogger('coordination-swarm-core-logger');
  */
 
 import { randomUUID } from 'node:crypto';
-import { config } from '../config';
+import { config } from '../../config';
 
 interface LoggerOptions {
   name?: string;

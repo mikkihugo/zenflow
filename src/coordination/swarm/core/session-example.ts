@@ -14,7 +14,7 @@ const logger = getLogger('coordination-swarm-core-session-example');
  * for persistent swarm orchestration across multiple executions.
  */
 
-// import { DALFactory } from '../database'; // TODO: Implement proper DI integration
+// import { DALFactory } from '../../database'; // TODO: Implement proper DI integration
 import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
 import { SessionManager } from './session-manager';
 import { SessionStats, SessionValidator } from './session-utils';

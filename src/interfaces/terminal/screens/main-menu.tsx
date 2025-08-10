@@ -5,7 +5,7 @@
  * Consolidates menu functionality from command execution interface.
  */
 /**
- * @file Interface implementation: main-menu
+ * @file Interface implementation: main-menu.
  */
 
 

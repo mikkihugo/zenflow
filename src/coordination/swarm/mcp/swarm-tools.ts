@@ -10,7 +10,7 @@
 
 
 
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../../core/logger';
 
 const logger = createLogger({ prefix: 'SwarmTools' });
 

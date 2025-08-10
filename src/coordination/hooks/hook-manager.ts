@@ -8,7 +8,7 @@
 
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../core/logger';
 import type { HookSystem } from './hook-system-core';
 import { DefaultHookSystem } from './hook-system-core';
 

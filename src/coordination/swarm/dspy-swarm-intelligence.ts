@@ -13,7 +13,7 @@
 
 
 
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../core/logger';
 import type { DSPyWrapper } from '../neural/dspy-wrapper';
 // Using the new wrapper architecture instead of direct dspy.ts imports
 import { createDSPyWrapper } from '../neural/dspy-wrapper';

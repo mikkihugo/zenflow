@@ -3,9 +3,9 @@
  */
 
 
-import { getLogger } from '../core/logger';
+import { createLogger } from '../core/logger';
 
-const logger = getLogger('src-workflows-engine');
+const logger = createLogger('src-workflows-engine');
 
 /**
  * Workflow Engine

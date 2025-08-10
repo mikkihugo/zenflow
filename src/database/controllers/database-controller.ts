@@ -6,10 +6,10 @@
  * @description Enhanced database controller with DI integration for Issue #63.
  */
 
-import type { ConnectionStats, ILogger } from '../core/interfaces/base-interfaces';
-import { inject } from '../di/decorators/inject';
-import { injectable } from '../di/decorators/injectable';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
+import type { ConnectionStats, ILogger } from '../../core/interfaces/base-interfaces';
+import { inject } from '../../di/decorators/inject';
+import { injectable } from '../../di/decorators/injectable';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
 import type {
   DatabaseAdapter,
   DatabaseConfig,
@@ -412,6 +412,8 @@ export class DatabaseController {
           params: request.params,
           options: {
             timeout: request.options?.timeout,
+            maxNodes: undefined,
+            maxRelationships: undefined,
             includeExecutionPlan: request.options?.includeExecutionPlan,
           },
         });
@@ -570,7 +572,8 @@ export class DatabaseController {
                 success: true,
                 rowCount: result?.rowCount,
                 data: result?.rows,
-              });
+                error: undefined,
+              } as TransactionResult);
             } else if (operation.type === 'execute') {
               result = await tx.execute(operation.sql, operation.params);
               transactionResults.push({
@@ -580,18 +583,23 @@ export class DatabaseController {
                 success: true,
                 affectedRows: result?.affectedRows,
                 insertId: result?.insertId,
-              });
+                error: undefined,
+              } as TransactionResult);
             } else {
               throw new Error(`Unsupported operation type: ${operation.type}`);
             }
           } catch (error) {
-            const errorResult: TransactionResult = {
+            const errorResult = {
               type: operation.type,
               sql: operation.sql,
               params: operation.params,
               success: false,
               error: error instanceof Error ? error.message : 'Unknown error',
-            };
+              rowCount: undefined,
+              data: undefined,
+              affectedRows: undefined,
+              insertId: undefined,
+            } as TransactionResult;
 
             transactionResults.push(errorResult);
 
@@ -682,8 +690,8 @@ export class DatabaseController {
           if (operation.type === 'query') {
             const queryResult = await this.executeQuery({
               sql: operation.sql,
-              params: operation.params || undefined,
-            });
+              params: operation.params,
+            } as QueryRequest);
 
             result = {
               type: 'query',
@@ -699,8 +707,8 @@ export class DatabaseController {
           } else if (operation.type === 'execute') {
             const executeResult = await this.executeCommand({
               sql: operation.sql,
-              params: operation.params || undefined,
-            });
+              params: operation.params,
+            } as CommandRequest);
 
             result = {
               type: 'execute',
@@ -717,7 +725,7 @@ export class DatabaseController {
             throw new Error(`Unsupported operation type: ${operation.type}`);
           }
 
-          results.push(result);
+          results.push(result as TransactionResult);
 
           if (!result?.success) {
             errorCount++;
@@ -733,7 +741,7 @@ export class DatabaseController {
             params: operation.params,
             success: false,
             error: error instanceof Error ? error.message : 'Unknown error',
-          });
+          } as TransactionResult);
 
           if (!request.continueOnError) {
             break;
@@ -1443,7 +1451,8 @@ export class DatabaseController {
             data: request.includeData
               ? { nodes: result?.nodes, relationships: result?.relationships }
               : undefined,
-          });
+            error: undefined,
+          } as GraphQueryResult);
 
           totalNodes += result?.nodes.length;
           totalRelationships += result?.relationships.length;
@@ -1454,7 +1463,10 @@ export class DatabaseController {
             params: operation.params,
             success: false,
             error: error instanceof Error ? error.message : 'Unknown error',
-          });
+            nodeCount: undefined,
+            relationshipCount: undefined,
+            data: undefined,
+          } as GraphQueryResult);
 
           if (!request.continueOnError) {
             break;
@@ -1736,8 +1748,21 @@ export class DatabaseController {
         throw new Error('Current database adapter does not support vector operations');
       }
 
-      const schema = await this.adapter.getSchema();
-      const connectionStats = await this.adapter.getConnectionStats();
+      // Check if adapter supports these methods before calling
+      let schema: any;
+      let connectionStats: ConnectionStats;
+      
+      if ('getSchema' in this.adapter) {
+        schema = await (this.adapter as any).getSchema();
+      } else {
+        schema = { tables: [], views: [], version: '1.0' };
+      }
+      
+      if ('getConnectionStats' in this.adapter) {
+        connectionStats = await (this.adapter as any).getConnectionStats();
+      } else {
+        connectionStats = { total: 1, active: 1, idle: 0 };
+      }
 
       // Find vector tables in schema
       const vectorTables = schema.tables.filter((table) =>

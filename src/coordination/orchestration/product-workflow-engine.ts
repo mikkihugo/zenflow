@@ -19,7 +19,7 @@
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../core/logger';
 import type { MemorySystem } from '../core/memory-system';
 import type {
   ADRDocumentEntity,

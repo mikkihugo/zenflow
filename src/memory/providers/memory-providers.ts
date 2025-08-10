@@ -514,7 +514,7 @@ export class InMemoryBackend implements MemoryBackend {
 
   constructor(
     private config: MemoryConfig,
-    private logger: ILogger.
+    private logger: ILogger
   ) {
     this.maxSize = config?.maxSize || 10000;
     this.logger.info(`Initialized in-memory backend with max size: ${this.maxSize}`);

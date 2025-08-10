@@ -1,11 +1,11 @@
 /**
- * @file Advanced MCP Tools Infrastructure
+ * @file Advanced MCP Tools Infrastructure.
  *
  * Provides the foundation for the 87 advanced MCP tools from claude-zen.
  * Extends the existing MCP infrastructure with enhanced capabilities.
  */
 
-import type { MCPTool, MCPToolResult } from '../coordination/swarm/mcp/types';
+import type { MCPTool, MCPToolResult } from '../../coordination/swarm/mcp/types';
 import { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import * as fs from 'fs';
 
@@ -14,7 +14,11 @@ import * as fs from 'fs';
 let memoryCoordinator: MemoryCoordinator | null = null;
 
 // Enhanced interfaces for advanced tools
-export interface AdvancedMCPTool extends MCPTool {
+export interface AdvancedMCPTool {
+  readonly name: string;
+  readonly description: string;
+  readonly inputSchema: any;
+  readonly handler: any;
   readonly category: MCPToolCategory;
   readonly version: string;
   readonly permissions: Permission[];
@@ -66,6 +70,7 @@ export interface ToolExample {
 }
 
 export interface AdvancedMCPToolResult extends MCPToolResult {
+  success: boolean;
   metadata?: {
     executionTime: number;
     cacheHit?: boolean;
@@ -336,8 +341,8 @@ class FindSimilarDiscoveryPatternsHandler extends AdvancedToolHandler {
           target: '*' // Assuming a wildcard to get all patterns
       });
 
-      // Assuming allPatternsRaw.data is an array of patterns
-      const allPatterns = allPatternsRaw.data || [];
+      // Assuming allPatternsRaw.metadata contains the data
+      const allPatterns = allPatternsRaw.metadata?.data || [];
 
 
       const similarPatterns = allPatterns.filter(p => {
@@ -511,7 +516,7 @@ class UpdateDiscoveryPatternFromSwarmOperationHandler extends AdvancedToolHandle
         target: domainName,
       });
 
-      const existingPattern = existingPatternRaw.data;
+      const existingPattern = existingPatternRaw.metadata?.data;
 
       if (!existingPattern) {
         throw new Error(`Discovery pattern for domain '${domainName}' not found.`);
@@ -622,7 +627,7 @@ class ExportDiscoveryPatternsHandler extends AdvancedToolHandler {
           target: '*' // Assuming a wildcard to get all patterns
       });
 
-      const allPatterns = allPatternsRaw.data || [];
+      const allPatterns = allPatternsRaw.metadata?.data || [];
 
       fs.writeFileSync(filePath, JSON.stringify(allPatterns, null, 2));
 

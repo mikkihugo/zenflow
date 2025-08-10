@@ -11,7 +11,7 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
+import type { ILogger } from '../../core/logger';
 
 export interface TerminalConfig {
   shell?: string;

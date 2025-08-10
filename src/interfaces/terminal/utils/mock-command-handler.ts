@@ -10,7 +10,7 @@
 
 
 
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../../core/logger';
 import { CommandExecutionEngine } from '../command-execution-engine';
 
 const logger = createLogger({ prefix: 'mock-command-handler' });

@@ -1,5 +1,5 @@
 /**
- * @file Centralized Logging Configuration
+ * @fileoverview Centralized Logging Configuration
  * Provides unified logging configuration and factory methods for the entire application.
  */
 

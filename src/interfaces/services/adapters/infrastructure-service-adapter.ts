@@ -1,5 +1,5 @@
 /**
- * @fileoverview USL Infrastructure Service Adapter
+ * @file USL Infrastructure Service Adapter.
  *
  * Unified Service Layer adapter for infrastructure-related services, providing
  * a consistent interface to ClaudeZenFacade, IntegratedPatternSystem, and
@@ -21,12 +21,12 @@ import {
   type INeuralService,
   type ISwarmService,
   type IWorkflowService,
-} from '../core/facade';
+} from '../../../core/facade';
 import {
   ConfigurationFactory,
   IntegratedPatternSystem,
   type IntegrationConfig,
-} from '../core/pattern-integration';
+} from '../../../core/pattern-integration';
 import { createLogger, type Logger } from '../utils/logger';
 import type {
   IService,
@@ -39,13 +39,65 @@ import type {
   ServiceOperationResponse,
   ServiceStatus,
 } from '../core/interfaces';
-import type {
+import {
   ServiceEnvironment,
-  ServiceError,
   ServicePriority,
   ServiceType,
-} from '../interfaces/services/types';
+} from '../types';
+
+// Define ServiceError locally if not available in types
+class ServiceError extends Error {
+  public readonly code: string;
+  
+  constructor(code: string, message: string) {
+    super(message);
+    this.name = 'ServiceError';
+    this.code = code;
+  }
+}
 import type { InfrastructureServiceConfig } from '../types';
+
+// Error classes for infrastructure service operations
+class ServiceDependencyError extends Error {
+  public readonly serviceName: string;
+  public readonly code = 'SERVICE_DEPENDENCY_ERROR';
+  
+  constructor(serviceName: string, message: string) {
+    super(message);
+    this.name = 'ServiceDependencyError';
+    this.serviceName = serviceName;
+  }
+}
+
+class ServiceOperationError extends Error {
+  public readonly serviceName: string;
+  public readonly operation: string;
+  public readonly code = 'SERVICE_OPERATION_ERROR';
+  public readonly cause: Error;
+  
+  constructor(serviceName: string, operation: string, cause: Error) {
+    super(`Operation '${operation}' failed in service '${serviceName}': ${cause.message}`);
+    this.name = 'ServiceOperationError';
+    this.serviceName = serviceName;
+    this.operation = operation;
+    this.cause = cause;
+  }
+}
+
+class ServiceTimeoutError extends Error {
+  public readonly serviceName: string;
+  public readonly operation: string;
+  public readonly timeout: number;
+  public readonly code = 'SERVICE_TIMEOUT_ERROR';
+  
+  constructor(serviceName: string, operation: string, timeout: number) {
+    super(`Operation '${operation}' timed out after ${timeout}ms in service '${serviceName}'`);
+    this.name = 'ServiceTimeoutError';
+    this.serviceName = serviceName;
+    this.operation = operation;
+    this.timeout = timeout;
+  }
+}
 
 /**
  * Infrastructure service adapter configuration extending USL InfrastructureServiceConfig.
@@ -211,7 +263,7 @@ interface ResourceTrackingEntry {
  *
  * Provides a unified interface to ClaudeZenFacade, IntegratedPatternSystem,
  * and core infrastructure services while implementing the IService interface.
- * for USL compatibility.
+ * For USL compatibility.
  *
  * Features:
  * - Service orchestration and lifecycle management
@@ -222,7 +274,7 @@ interface ResourceTrackingEntry {
  * - Performance optimization and load balancing
  * - Unified configuration management
  * - Performance monitoring and metrics
- * - Error handling and recovery
+ * - Error handling and recovery.
  *
  * @example
  */
@@ -685,7 +737,10 @@ export class InfrastructureServiceAdapter implements IService {
         resourceOptimizationRatio: this.calculateResourceOptimization(),
         configManagementEffectiveness: this.calculateConfigEffectiveness(),
         systemHealthScore: this.performanceStats.avgSystemHealth,
-        resourceUtilization: this.performanceStats.resourceUtilization,
+        resourceUtilization: (this.performanceStats.resourceUtilization.cpu + 
+                             this.performanceStats.resourceUtilization.memory + 
+                             this.performanceStats.resourceUtilization.network + 
+                             this.performanceStats.resourceUtilization.storage) / 4,
         eventProcessingRate: this.calculateEventProcessingRate(),
         circuitBreakerActivations: Array.from(this.circuitBreakers.values()).filter((cb) => cb.open)
           .length,
@@ -1055,13 +1110,14 @@ export class InfrastructureServiceAdapter implements IService {
 
       this.logger.error(`Operation ${operation} failed:`, error);
 
+      const errorObj = error as Error;
       return {
         success: false,
         error: {
           code: error instanceof ServiceError ? error.code : 'OPERATION_ERROR',
-          message: error.message,
+          message: errorObj.message || 'Unknown error',
           details: params,
-          stack: error.stack,
+          stack: errorObj.stack,
         },
         metadata: {
           duration,
@@ -1094,7 +1150,7 @@ export class InfrastructureServiceAdapter implements IService {
       serviceName: this.name,
       timestamp: new Date(),
       data,
-      error,
+      ...(error !== undefined && { error }),
     };
     this.eventEmitter.emit(event, serviceEvent);
 
@@ -1314,7 +1370,7 @@ export class InfrastructureServiceAdapter implements IService {
           lastUpdated: new Date(),
           health: systemStatus.overall.status,
           components: systemStatus.components || {},
-          uptime: systemStatus.uptime || 0,
+          uptime: systemStatus.overall?.uptime || 0,
         };
       }
 
@@ -1346,7 +1402,7 @@ export class InfrastructureServiceAdapter implements IService {
         status: 'unknown',
         lastUpdated: new Date(),
         health: 'unknown',
-        error: error.message,
+        error: (error as Error).message,
       };
     }
   }
@@ -1568,7 +1624,7 @@ export class InfrastructureServiceAdapter implements IService {
 
     const resourceEntry: ResourceTrackingEntry = {
       timestamp: new Date(),
-      cpu: systemLoad[0] / (await import('node:os')).cpus().length, // Real CPU load
+      cpu: systemLoad[0] ? systemLoad[0] / (await import('node:os')).cpus().length : 0.1, // Real CPU load with fallback
       memory: memoryUsage.heapUsed / memoryUsage.heapTotal, // Real memory usage
       network: 0.05, // Network monitoring would need external tool
       storage: this.estimateStorageUsage(), // Calculate storage from actual data
@@ -1655,8 +1711,8 @@ export class InfrastructureServiceAdapter implements IService {
       },
       dataPoints: recent.length,
       trackingDuration:
-        this.resourceTracker.length > 0
-          ? Date.now() - this.resourceTracker[0]?.timestamp?.getTime()
+        this.resourceTracker.length > 0 && this.resourceTracker[0]?.timestamp
+          ? Date.now() - this.resourceTracker[0].timestamp.getTime()
           : 0,
     };
   }
@@ -2129,7 +2185,7 @@ export class InfrastructureServiceAdapter implements IService {
       config: JSON.parse(JSON.stringify(config)), // Deep copy
       timestamp: new Date(),
       hash: this.generateConfigHash(config),
-      description,
+      ...(description !== undefined && { description }),
     };
 
     this.configVersions.push(configVersion);
@@ -2290,7 +2346,7 @@ export class InfrastructureServiceAdapter implements IService {
       try {
         const os = await import('node:os');
         const loadavg = os.loadavg();
-        cpuLoad = loadavg[0] / os.cpus().length;
+        cpuLoad = loadavg[0] ? loadavg[0] / os.cpus().length : 0.1;
       } catch {
         // Fallback for systems without loadavg
         cpuLoad = 0.1;
@@ -2360,6 +2416,10 @@ export class InfrastructureServiceAdapter implements IService {
     const recent = this.resourceTracker[this.resourceTracker.length - 1];
     const previous = this.resourceTracker[this.resourceTracker.length - 2];
 
+    if (!recent || !previous) {
+      return 100; // Default optimization ratio if insufficient data
+    }
+
     const currentTotal = recent.cpu + recent.memory + recent.network + recent.storage;
     const previousTotal = previous.cpu + previous.memory + previous.network + previous.storage;
 
@@ -2424,7 +2484,7 @@ export class InfrastructureServiceAdapter implements IService {
     size += this.eventQueue.length * 150; // 150 bytes per event
 
     // Estimate cache memory usage
-    for (const entry of this.cache.values()) {
+    for (const entry of Array.from(this.cache.values())) {
       size += JSON.stringify(entry.data).length * 2 + 100; // Estimate with metadata
     }
 
@@ -2452,7 +2512,7 @@ export class InfrastructureServiceAdapter implements IService {
       storageBytes += this.resourceTracker.length * 150;
 
       // Cache storage
-      for (const entry of this.cache.values()) {
+      for (const entry of Array.from(this.cache.values())) {
         try {
           storageBytes += JSON.stringify(entry).length;
         } catch {
@@ -2488,6 +2548,7 @@ export class InfrastructureServiceAdapter implements IService {
  * Factory function for creating InfrastructureServiceAdapter instances.
  *
  * @param config
+ * @example
  */
 export function createInfrastructureServiceAdapter(
   config: InfrastructureServiceAdapterConfig
@@ -2500,6 +2561,7 @@ export function createInfrastructureServiceAdapter(
  *
  * @param name
  * @param overrides
+ * @example
  */
 export function createDefaultInfrastructureServiceAdapterConfig(
   name: string,

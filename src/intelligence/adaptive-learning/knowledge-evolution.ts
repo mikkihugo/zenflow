@@ -996,7 +996,7 @@ export class KnowledgeEvolution extends EventEmitter {
   }
 
   private extractEmergenceContext(patterns: ExecutionPattern[]): Record<string, any> {
-    const context: Record<string, any> = {};
+    const context: Record<string, any> = {} as Record<string, unknown>;
 
     if (patterns.length > 0) {
       const swarmIds = [...new Set(patterns.map((p) => p.context.swarmId))];
@@ -1453,7 +1453,7 @@ export class KnowledgeEvolution extends EventEmitter {
     const metadataKeys = new Set([...Object.keys(p1.metadata), ...Object.keys(p2.metadata)]);
     let matchingKeys = 0;
     metadataKeys?.forEach((key) => {
-      if ((p1.metadata as any)[key] === (p2.metadata as any)[key]) {
+      if ((p1.metadata as any)[key as keyof typeof obj] === (p2.metadata as any)[key as keyof typeof obj]) {
         matchingKeys++;
       }
     });

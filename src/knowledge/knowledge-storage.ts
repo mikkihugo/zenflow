@@ -1,22 +1,22 @@
 /**
- * @file knowledge-storage implementation
+ * @file Knowledge-storage implementation.
  */
 
 
-import { getLogger } from '../core/logger';
+import { Logger } from '../core/logger';
 
-const logger = getLogger('src-knowledge-knowledge-storage');
+const logger = new Logger('src-knowledge-knowledge-storage');
 
 /**
  * Independent FACT Storage System.
  *
  * Completely separate from RAG/LanceDB - provides pluggable backend storage.
- * for FACT (Fast Augmented Context Tools) external knowledge gathering results.
+ * For FACT (Fast Augmented Context Tools) external knowledge gathering results.
  *
  * Key Principles:
  * - FACT handles external knowledge gathering and caching
  * - RAG handles vector-based retrieval from existing knowledge corpus
- * - Both systems are complementary but completely independent
+ * - Both systems are complementary but completely independent.
  *
  * Storage Features:
  * - Memory cache for fast access (TTL-based)
@@ -28,6 +28,62 @@ const logger = getLogger('src-knowledge-knowledge-storage');
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import SQLiteBackend from './knowledge-cache-backends/sqlite-backend';
+
+// Type definitions
+export interface FACTStorageConfig {
+  backend: 'sqlite' | 'jsonb' | 'file' | 'memory';
+  maxMemoryCacheSize: number;
+  defaultTTL: number;
+  cleanupInterval: number;
+  maxEntryAge: number;
+  backendConfig?: any;
+}
+
+export interface FACTStorageBackend {
+  initialize(): Promise<void>;
+  store(entry: FACTKnowledgeEntry): Promise<void>;
+  get(id: string): Promise<FACTKnowledgeEntry | null>;
+  search(query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]>;
+  delete(id: string): Promise<boolean>;
+  clear(): Promise<void>;
+  cleanup(maxAge: number): Promise<number>;
+  getStats(): Promise<{ persistentEntries?: number; oldestEntry?: number; newestEntry?: number }>;
+  shutdown(): Promise<void>;
+}
+
+export interface FACTKnowledgeEntry {
+  id: string;
+  content: string;
+  query: string;
+  timestamp: number;
+  accessCount: number;
+  lastAccessed: number;
+  ttl: number;
+  metadata: {
+    type: string;
+    domains: string[];
+    [key: string]: any;
+  };
+}
+
+export interface FACTSearchQuery {
+  query?: string;
+  type?: string;
+  domains?: string[];
+  limit?: number;
+  minScore?: number;
+}
+
+export interface FACTStorageStats {
+  memoryEntries: number;
+  persistentEntries: number;
+  totalMemorySize: number;
+  cacheHitRate: number;
+  oldestEntry: number;
+  newestEntry: number;
+  topDomains: string[];
+  storageHealth: 'excellent' | 'good' | 'fair' | 'poor';
+}
 
 /**
  * Independent FACT Storage System with pluggable backends.
@@ -93,7 +149,7 @@ export class FACTStorageSystem extends EventEmitter {
   async storeKnowledge(
     entry: Omit<FACTKnowledgeEntry, 'id' | 'timestamp' | 'accessCount' | 'lastAccessed'>
   ): Promise<string> {
-    const id = this.generateEntryId(entry.query, entry.metadata.type);
+    const id = this.generateEntryId(entry.query, entry.metadata['type'] as string);
     const timestamp = Date.now();
 
     const knowledgeEntry: FACTKnowledgeEntry = {
@@ -112,7 +168,7 @@ export class FACTStorageSystem extends EventEmitter {
       await this.backend.store(knowledgeEntry);
 
       this.stats.entriesCreated++;
-      this.emit('knowledgeStored', { id, type: entry.metadata.type });
+      this.emit('knowledgeStored', { id, type: entry.metadata['type'] });
 
       return id;
     } catch (error) {
@@ -256,7 +312,7 @@ export class FACTStorageSystem extends EventEmitter {
   }
 
   /**
-   * Clear all storage (memory and backend)
+   * Clear all storage (memory and backend).
    */
   async clearAll(): Promise<void> {
     // Clear memory.

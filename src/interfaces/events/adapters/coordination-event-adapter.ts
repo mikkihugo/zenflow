@@ -3,25 +3,25 @@
  *
  * Unified Event Layer adapter for coordination-related events, providing
  * a consistent interface to scattered EventEmitter patterns across the coordination system.
- * while maintaining full backward compatibility and adding enhanced monitoring,
+ * While maintaining full backward compatibility and adding enhanced monitoring,
  * event correlation, performance tracking, and unified coordination functionality.
  *
  * This adapter follows the exact same patterns as the system event adapter,
  * implementing the IEventManager interface and providing unified configuration.
- * management for coordination events across Claude-Zen.
+ * Management for coordination events across Claude-Zen.
  */
 /**
- * @file coordination-event adapter implementation
+ * @file Coordination-event adapter implementation.
  */
 
 
 
 import { EventEmitter } from 'node:events';
-import type { AgentManager } from '../coordination/agents/agent-manager';
-import type { Orchestrator } from '../coordination/orchestrator';
+import type { AgentManager } from '../../../coordination/agents/agent-manager';
+import type { ProductWorkflowEngine as Orchestrator } from '../../../coordination/orchestration/product-workflow-engine';
 // Import coordination system classes to wrap their EventEmitter usage
-import type { SwarmCoordinator } from '../coordination/swarm/core/swarm-coordinator';
-import { createLogger, type Logger } from '../core/logger';
+import type { SPARCSwarmCoordinator as SwarmCoordinator } from '../../../coordination/swarm/core/sparc-swarm-coordinator';
+import { createLogger, type Logger } from '../../../core/logger';
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -30,13 +30,15 @@ import type {
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
+  EventManagerType,
   EventQueryOptions,
   EventSubscription,
   EventTransform,
   IEventManager,
 } from '../core/interfaces';
 import { EventEmissionError, EventManagerTypes, EventTimeoutError } from '../core/interfaces';
-import type { CoordinationEvent, EventPriority } from '../types';
+import type { CoordinationEvent } from '../types';
+import type { EventPriority } from '../core/interfaces';
 import { EventPriorityMap } from '../types';
 
 /**
@@ -223,7 +225,7 @@ interface WrappedCoordinationComponent {
  * Unified Coordination Event Adapter.
  *
  * Provides a unified interface to coordination-level EventEmitter patterns.
- * while implementing the IEventManager interface for UEL compatibility.
+ * While implementing the IEventManager interface for UEL compatibility.
  *
  * Features:
  * - Swarm lifecycle and coordination event management
@@ -235,7 +237,7 @@ interface WrappedCoordinationComponent {
  * - Unified configuration management for coordination components
  * - Health monitoring and auto-recovery for coordination failures
  * - Event forwarding and transformation for coordination events
- * - Error handling with retry logic for coordination operations
+ * - Error handling with retry logic for coordination operations.
  *
  * @example
  */
@@ -243,7 +245,7 @@ export class CoordinationEventAdapter implements IEventManager {
   // Core event manager properties
   public readonly config: CoordinationEventAdapterConfig;
   public readonly name: string;
-  public readonly type: string;
+  public readonly type: EventManagerType;
 
   // Event manager state
   private running = false;
@@ -523,7 +525,7 @@ export class CoordinationEventAdapter implements IEventManager {
         swarmId: this.extractSwarmId(event),
         agentId: this.extractAgentId(event),
         taskId: this.extractTaskId(event),
-        coordinationLatency: duration,
+        resourceUsage: { cpu: 0, memory: 0, network: 0 },
         timestamp: new Date(),
       });
 
@@ -547,6 +549,7 @@ export class CoordinationEventAdapter implements IEventManager {
         agentId: this.extractAgentId(event),
         taskId: this.extractTaskId(event),
         coordinationLatency: duration,
+        resourceUsage: { cpu: 0, memory: 0, network: 0 },
         errorType: error instanceof Error ? error.constructor.name : 'UnknownError',
         timestamp: new Date(),
       });
@@ -613,7 +616,7 @@ export class CoordinationEventAdapter implements IEventManager {
    *
    * @param event
    */
-  async emitImmediate<T extends CoordinationEvent>(event: T): Promise<void> {
+  async emitImmediate<T extends CoordinationEvent>(event: T): Promise<T> {
     await this.emit(event, { timeout: 5000 });
   }
 
@@ -777,6 +780,7 @@ export class CoordinationEventAdapter implements IEventManager {
     // Apply pagination
     const offset = options?.offset || 0;
     const limit = options?.limit || 100;
+    const total = events.length;
     events = events.slice(offset, offset + limit);
 
     return events;
@@ -892,10 +896,11 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   /**
-   * Event handler management (EventEmitter compatibility)
+   * Event handler management (EventEmitter compatibility).
    *
    * @param event
    * @param handler.
+   * @param handler
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
@@ -1606,8 +1611,6 @@ export class CoordinationEventAdapter implements IEventManager {
               operation: 'coordinate',
               targetId: component,
               details: {
-                healthScore: health.reliability,
-                coordinationLatency: health.coordinationLatency,
                 throughput: health.throughput,
                 consecutiveFailures: health.consecutiveFailures,
                 componentType: health.componentType,
@@ -1689,11 +1692,11 @@ export class CoordinationEventAdapter implements IEventManager {
               operation: 'coordinate',
               targetId: componentName,
               details: {
-                optimizationType: 'performance',
                 metrics: {
                   latency: health.coordinationLatency,
                   throughput: health.throughput,
                   reliability: health.reliability,
+                  resourceUsage: { cpu: 0, memory: 0, network: 0 }
                 },
               },
             });
@@ -1808,7 +1811,7 @@ export class CoordinationEventAdapter implements IEventManager {
     if (events.length < 2) return 1.0;
 
     // Calculate efficiency based on event timing and success rate
-    const successfulEvents = events.filter((e) => e.details?.success !== false).length;
+    const successfulEvents = events.filter((e) => (e.details as any)?.success !== false).length;
     const timeEfficiency = Math.max(0, 1 - correlation.performance.totalLatency / 60000); // Penalize long correlations
     const successRate = successfulEvents / events.length;
 
@@ -1999,21 +2002,21 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   private extractSwarmId(event: CoordinationEvent): string | undefined {
-    return event.details?.swarmId || event.metadata?.swarmId;
+    return (event.details as any)?.swarmId || (event.metadata as any)?.swarmId;
   }
 
   private extractAgentId(event: CoordinationEvent): string | undefined {
     return (
-      event.details?.agentId ||
-      event.metadata?.agentId ||
+      (event.details as any)?.agentId ||
+      (event.metadata as any)?.agentId ||
       (event.targetId.includes('agent') ? event.targetId : undefined)
     );
   }
 
   private extractTaskId(event: CoordinationEvent): string | undefined {
     return (
-      event.details?.taskId ||
-      event.metadata?.taskId ||
+      (event.details as any)?.taskId ||
+      (event.metadata as any)?.taskId ||
       (event.targetId.includes('task') ? event.targetId : undefined)
     );
   }
@@ -2162,6 +2165,7 @@ export class CoordinationEventAdapter implements IEventManager {
  * Factory function for creating CoordinationEventAdapter instances.
  *
  * @param config
+ * @example
  */
 export function createCoordinationEventAdapter(
   config: CoordinationEventAdapterConfig
@@ -2174,6 +2178,7 @@ export function createCoordinationEventAdapter(
  *
  * @param name
  * @param overrides
+ * @example
  */
 export function createDefaultCoordinationEventAdapterConfig(
   name: string,

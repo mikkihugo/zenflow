@@ -7,7 +7,7 @@ const logger = getLogger('coordination-strategies-ruv-swarmstrategy');
  */
 
 import { ZenSwarm } from '../swarm/core';
-import type { Agent, SwarmStrategy } from '../types';
+import type { Agent, SwarmStrategy } from '../../types';
 
 export class ZenSwarmStrategy implements SwarmStrategy {
   private swarm: ZenSwarm;

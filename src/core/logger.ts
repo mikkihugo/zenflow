@@ -1,12 +1,16 @@
-import { getLogger } from '../core/logger';
-
-const logger = getLogger('src-core-logger');
-
 /**
  * @file Logger utility for Neural and Queen components
  * Simple wrapper around the core logger for component-specific logging.
  * @module Logger
  */
+
+// Basic console logger for bootstrapping
+const logger = {
+  debug: (message: string, meta?: any) => console.debug(message, meta),
+  info: (message: string, meta?: any) => console.info(message, meta),
+  warn: (message: string, meta?: any) => console.warn(message, meta),
+  error: (message: string, meta?: any) => console.error(message, meta),
+};
 
 import { config } from '../config';
 

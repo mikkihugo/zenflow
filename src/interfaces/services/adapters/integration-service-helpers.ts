@@ -2,18 +2,18 @@
  * USL Integration Service Helpers and Utilities.
  *
  * Provides helper functions and utilities for working with IntegrationServiceAdapter.
- * instances, including common operations, batch processing, validation helpers,
+ * Instances, including common operations, batch processing, validation helpers,
  * and specialized integration patterns.
  */
 /**
- * @file Interface implementation: integration-service-helpers
+ * @file Interface implementation: integration-service-helpers.
  */
 
 
 
-import type { ArchitectureDesign } from '../coordination/swarm/sparc/database/architecture-storage';
+import type { ArchitectureDesign } from '../../../types/shared-types';
 
-import type { APIResult } from '../interfaces/api/safe-api-client';
+import type { APIResult } from '../../types/shared-types';
 import { createLogger } from '../utils/logger';
 import type {
   IntegrationServiceAdapter,
@@ -127,11 +127,13 @@ export interface ProtocolOperationConfig {
  * Integration Service Helper Class.
  *
  * Provides high-level helper methods for common integration operations.
- * across Architecture Storage, Safe API, and Protocol Management.
+ * Across Architecture Storage, Safe API, and Protocol Management..
  *
  * @example
  */
 export class IntegrationServiceHelper {
+  private logger: any;
+
   constructor(private adapter: IntegrationServiceAdapter) {
     this.logger = createLogger(`IntegrationServiceHelper:${adapter.name}`);
   }
@@ -251,7 +253,7 @@ export class IntegrationServiceHelper {
                 details: errors,
               }
             : undefined,
-      };
+      } as IntegrationOperationResult<string[]>;
     } catch (error) {
       return {
         success: false,
@@ -354,7 +356,7 @@ export class IntegrationServiceHelper {
             success: true,
             data: apiResult?.data,
             metadata: result?.metadata,
-          };
+          } as IntegrationOperationResult<T>;
         } else {
           return {
             success: false,
@@ -364,7 +366,7 @@ export class IntegrationServiceHelper {
               details: apiResult?.error?.details,
             },
             metadata: result?.metadata,
-          };
+          } as IntegrationOperationResult<T>;
         }
       }
 
@@ -450,7 +452,7 @@ export class IntegrationServiceHelper {
                 details: errors,
               }
             : undefined,
-      };
+      } as IntegrationOperationResult<T[]>;
     } catch (error) {
       return {
         success: false,
@@ -610,15 +612,20 @@ export class IntegrationServiceHelper {
     >
   > {
     try {
-      const targetProtocols = protocols || (await this.adapter.execute<string[]>('protocol-list'));
-
-      if (!targetProtocols?.success || !targetProtocols?.data) {
-        throw new Error('Failed to get protocol list');
+      let targetProtocols: string[];
+      if (protocols) {
+        targetProtocols = protocols;
+      } else {
+        const protocolListResult = await this.adapter.execute<string[]>('protocol-list');
+        if (!protocolListResult?.success || !protocolListResult?.data) {
+          throw new Error('Failed to get protocol list');
+        }
+        targetProtocols = protocolListResult.data;
       }
 
       const healthResults: Record<string, any> = {};
 
-      for (const protocol of targetProtocols?.data) {
+      for (const protocol of targetProtocols) {
         try {
           const startTime = Date.now();
           const healthResult = await this.adapter.execute<boolean>('protocol-health-check', {
@@ -994,14 +1001,19 @@ export class IntegrationServiceUtils {
       ...base,
       ...override,
       architectureStorage: {
+        enabled: true,
         ...base.architectureStorage,
         ...override.architectureStorage,
       },
       safeAPI: {
+        enabled: true,
         ...base.safeAPI,
         ...override.safeAPI,
       },
       protocolManagement: {
+        enabled: true,
+        supportedProtocols: ['http', 'https', 'websocket'],
+        defaultProtocol: 'http',
         ...base.protocolManagement,
         ...override.protocolManagement,
       },
@@ -1010,10 +1022,19 @@ export class IntegrationServiceUtils {
         ...override.performance,
       },
       retry: {
+        enabled: true,
+        maxAttempts: 3,
+        backoffMultiplier: 2,
+        retryableOperations: ['GET', 'POST', 'PUT', 'DELETE'],
         ...base.retry,
         ...override.retry,
       },
       cache: {
+        enabled: true,
+        strategy: 'memory' as const,
+        defaultTTL: 300000,
+        maxSize: 1000,
+        keyPrefix: 'integration:',
         ...base.cache,
         ...override.cache,
       },
@@ -1045,10 +1066,10 @@ export class IntegrationServiceUtils {
     const successCount = results.filter((r) => r.success).length;
     const errorCount = totalOperations - successCount;
 
-    const latencies = results.filter((r) => r.metadata?.duration).map((r) => r.metadata?.duration);
+    const latencies = results.filter((r) => r.metadata?.duration).map((r) => r.metadata!.duration!);
 
     const averageLatency =
-      latencies.length > 0 ? latencies.reduce((sum, lat) => sum + lat, 0) / latencies.length : 0;
+      latencies.length > 0 ? latencies.reduce((sum, lat) => (sum || 0) + (lat || 0), 0) / latencies.length : 0;
 
     const successRate = totalOperations > 0 ? (successCount / totalOperations) * 100 : 0;
     const errorRate = totalOperations > 0 ? (errorCount / totalOperations) * 100 : 0;

@@ -3,9 +3,9 @@
  */
 
 
-import { getLogger } from '../core/logger';
+import { Logger } from '../core/logger';
 
-const logger = getLogger('src-knowledge-project-context-analyzer');
+const logger = new Logger('src-knowledge-project-context-analyzer');
 
 /**
  * Hive-Controlled FACT System for Claude-Zen.
@@ -104,7 +104,7 @@ interface KnowledgeGatheringMission {
 
 interface ProjectAnalyzerConfig {
   projectRoot: string;
-  swarmConfig: KnowledgeSwarmConfig;
+  swarmConfig?: any; // KnowledgeSwarm config type
   analysisDepth: 'shallow' | 'medium' | 'deep';
   autoUpdate: boolean;
   cacheDuration: number; // hours
@@ -132,15 +132,15 @@ export class ProjectContextAnalyzer extends EventEmitter {
   constructor(config: ProjectAnalyzerConfig) {
     super();
     this.config = {
-      analysisDepth: 'medium',
-      autoUpdate: true,
-      cacheDuration: 24, // 24 hours
-      priorityThresholds: {
+      ...config,
+      analysisDepth: config.analysisDepth || 'medium',
+      autoUpdate: config.autoUpdate ?? true,
+      cacheDuration: config.cacheDuration ?? 24, // 24 hours
+      priorityThresholds: config.priorityThresholds || {
         critical: 0.8, // 80%+ usage
         high: 0.5, // 50%+ usage
         medium: 0.2, // 20%+ usage
       },
-      ...config,
     };
     this.knowledgeSwarm = new KnowledgeSwarm(config?.swarmConfig);
   }
@@ -387,7 +387,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
             context.monorepo.packages = packagesMatch?.[1]
               ?.split('\n')
               .map((line) => line.trim().replace(/^-\s*/, ''))
-              .filter(Boolean);
+              .filter(Boolean) || [];
           }
           break;
         }
@@ -398,6 +398,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
           );
           context.monorepo.version = rushConfig?.rushVersion;
           context.monorepo.packages = rushConfig?.projects?.map((p: any) => p.projectFolder) || [];
+          break;
+        }
+
+        case 'bazel': {
+          await this.analyzeBazelWorkspace(context);
           break;
         }
       }
@@ -411,6 +416,813 @@ export class ProjectContextAnalyzer extends EventEmitter {
     } catch (error) {
       logger.warn('Error analyzing monorepo structure:', error);
     }
+  }
+
+  /**
+   * Analyze Bazel workspace structure for comprehensive monorepo understanding.
+   * 
+   * @param context - Project context to populate with Bazel information
+   */
+  private async analyzeBazelWorkspace(context: ProjectContext): Promise<void> {
+    try {
+      // Parse WORKSPACE file for external dependencies and version info
+      const workspaceContent = await this.parseBazelWorkspace(context.rootPath);
+      
+      // Try Bazel query first for accurate dependency graph, fallback to BUILD parsing
+      let targets: any[] = [];
+      let dependencies: Record<string, Record<string, number>> = {};
+      
+      try {
+        // Use bazel query for ground truth dependency analysis
+        const queryResults = await this.runBazelQuery(context.rootPath);
+        targets = queryResults.targets;
+        dependencies = queryResults.dependencies;
+        
+        logger.info('🎯 Using Bazel query for accurate dependency analysis', {
+          targetsFound: targets.length
+        });
+      } catch (queryError) {
+        logger.warn('Bazel query failed, falling back to BUILD file parsing:', queryError);
+        
+        // Fallback: Discover all BUILD files and parse targets manually
+        targets = await this.discoverBazelTargets(context.rootPath);
+        dependencies = await this.analyzeBazelDependencies(context.rootPath, targets);
+      }
+      
+      // Extract packages from targets (directory-based)
+      const packages = this.extractBazelPackages(targets);
+      
+      // Analyze .bzl files for custom rules and macros
+      const bzlAnalysis = await this.analyzeBzlFiles(context.rootPath);
+      
+      // Update context with Bazel information
+      context.monorepo.version = workspaceContent.workspaceName || 'unknown';
+      context.monorepo.packages = packages;
+      context.monorepo.workspaces = packages;
+      
+      // Store Bazel-specific metadata for GNN domain analysis
+      (context.monorepo as any).bazelMetadata = {
+        workspaceName: workspaceContent.workspaceName || undefined,
+        externalDeps: workspaceContent.externalDeps,
+        targets: targets,
+        targetDependencies: dependencies,
+        languages: workspaceContent.languages,
+        toolchains: workspaceContent.toolchains,
+        customRules: bzlAnalysis.customRules,
+        macros: bzlAnalysis.macros,
+        starlarkFiles: bzlAnalysis.bzlFiles,
+        queryUsed: targets.length > 0 && dependencies && Object.keys(dependencies).length > 0,
+        // Bzlmod (MODULE.bazel) support
+        bzlmodEnabled: workspaceContent.bzlmodEnabled || undefined,
+        moduleInfo: workspaceContent.moduleInfo || undefined
+      };
+      
+      logger.info('Bazel workspace analyzed', {
+        packages: packages.length,
+        targets: targets.length,
+        externalDeps: workspaceContent.externalDeps.length,
+        bzlFiles: bzlAnalysis.bzlFiles.length,
+        customRules: bzlAnalysis.customRules.length,
+        queryUsed: (context.monorepo as any).bazelMetadata.queryUsed
+      });
+      
+    } catch (error) {
+      logger.error('Failed to analyze Bazel workspace:', error);
+      // Fallback to basic package discovery
+      context.monorepo.packages = await this.discoverBazelPackagesBasic(context.rootPath);
+    }
+  }
+
+  /**
+   * Parse WORKSPACE file for external dependencies and configuration.
+   * Also supports modern MODULE.bazel files (Bzlmod).
+   */
+  private async parseBazelWorkspace(rootPath: string): Promise<{
+    workspaceName?: string;
+    externalDeps: Array<{ name: string; type: string; version?: string }>;
+    languages: string[];
+    toolchains: string[];
+    bzlmodEnabled?: boolean;
+    moduleInfo?: {
+      name: string;
+      version?: string;
+      dependencies: Array<{ name: string; version: string; repo_name?: string }>;
+    };
+  }> {
+    const result = {
+      workspaceName: undefined as string | undefined,
+      externalDeps: [] as Array<{ name: string; type: string; version?: string }>,
+      languages: [] as string[],
+      toolchains: [] as string[],
+      bzlmodEnabled: false,
+      moduleInfo: undefined as {
+        name: string;
+        version?: string;
+        dependencies: Array<{ name: string; version: string; repo_name?: string }>;
+      } | undefined
+    };
+
+    // First check for modern MODULE.bazel (Bzlmod)
+    try {
+      const moduleContent = await readFile(path.join(rootPath, 'MODULE.bazel'), 'utf-8');
+      result.bzlmodEnabled = true;
+      result.moduleInfo = this.parseModuleBazel(moduleContent);
+      
+      logger.info('📦 Found MODULE.bazel - using Bzlmod module system', {
+        moduleName: result.moduleInfo.name,
+        dependencies: result.moduleInfo.dependencies.length
+      });
+      
+      // Extract language/toolchain info from module dependencies
+      this.extractLanguagesFromModuleDeps(result.moduleInfo.dependencies, result);
+      
+    } catch {
+      // MODULE.bazel not found, continue with legacy WORKSPACE parsing
+    }
+
+    // Parse legacy WORKSPACE file (still needed even with Bzlmod sometimes)
+    const workspaceFiles = ['WORKSPACE', 'WORKSPACE.bazel'];
+    let workspaceContent = '';
+    
+    for (const file of workspaceFiles) {
+      try {
+        workspaceContent = await readFile(path.join(rootPath, file), 'utf-8');
+        break;
+      } catch {
+        continue;
+      }
+    }
+    
+    if (!workspaceContent && !result.bzlmodEnabled) {
+      return result;
+    }
+    
+    // Extract workspace name
+    const workspaceMatch = workspaceContent.match(/workspace\s*\(\s*name\s*=\s*"([^"]+)"/);
+    result.workspaceName = workspaceMatch?.[1];
+    
+    // Extract external dependencies
+    const depPatterns = [
+      /http_archive\s*\(\s*name\s*=\s*"([^"]+)"/g,
+      /git_repository\s*\(\s*name\s*=\s*"([^"]+)"/g,
+      /maven_jar\s*\(\s*name\s*=\s*"([^"]+)"/g,
+      /rules_\w+\s*\(\s*name\s*=\s*"([^"]+)"/g
+    ];
+    
+    for (const pattern of depPatterns) {
+      let match;
+      while ((match = pattern.exec(workspaceContent)) !== null) {
+        const type = match[0].includes('http_archive') ? 'http_archive' :
+                    match[0].includes('git_repository') ? 'git_repository' :
+                    match[0].includes('maven_jar') ? 'maven_jar' : 'rules';
+        result.externalDeps.push({ name: match[1], type });
+      }
+    }
+    
+    // Detect languages from rules
+    const languageRules = {
+      'rules_go': 'go',
+      'rules_python': 'python',
+      'rules_java': 'java',
+      'rules_kotlin': 'kotlin',
+      'rules_scala': 'scala',
+      'rules_rust': 'rust',
+      'rules_nodejs': 'javascript',
+      'rules_typescript': 'typescript',
+      'rules_cc': 'cpp'
+    };
+    
+    for (const [rule, lang] of Object.entries(languageRules)) {
+      if (workspaceContent.includes(rule)) {
+        result.languages.push(lang);
+      }
+    }
+    
+    // Detect toolchains
+    if (workspaceContent.includes('rules_docker')) result.toolchains.push('docker');
+    if (workspaceContent.includes('rules_k8s')) result.toolchains.push('kubernetes');
+    if (workspaceContent.includes('rules_proto')) result.toolchains.push('protobuf');
+    
+    return result;
+  }
+
+  /**
+   * Discover all BUILD files and parse targets.
+   */
+  private async discoverBazelTargets(rootPath: string): Promise<Array<{
+    package: string;
+    name: string;
+    type: string;
+    visibility?: string[];
+    deps?: string[];
+    srcs?: string[];
+  }>> {
+    const targets: Array<{
+      package: string;
+      name: string;
+      type: string;
+      visibility?: string[];
+      deps?: string[];
+      srcs?: string[];
+    }> = [];
+    
+    try {
+      // Use find command to locate all BUILD files
+      const { stdout } = await execAsync(`find "${rootPath}" -name "BUILD" -o -name "BUILD.bazel" 2>/dev/null`);
+      const buildFiles = stdout.trim().split('\n').filter(Boolean);
+      
+      for (const buildFile of buildFiles) {
+        const packagePath = path.relative(rootPath, path.dirname(buildFile));
+        const buildContent = await readFile(buildFile, 'utf-8');
+        const fileTargets = this.parseBazelBuildFile(buildContent, packagePath);
+        targets.push(...fileTargets);
+      }
+    } catch (error) {
+      logger.warn('Error discovering Bazel targets:', error);
+    }
+    
+    return targets;
+  }
+
+  /**
+   * Parse a BUILD file to extract targets.
+   */
+  private parseBazelBuildFile(content: string, packagePath: string): Array<{
+    package: string;
+    name: string;
+    type: string;
+    visibility?: string[];
+    deps?: string[];
+    srcs?: string[];
+  }> {
+    const targets: Array<{
+      package: string;
+      name: string;
+      type: string;
+      visibility?: string[];
+      deps?: string[];
+      srcs?: string[];
+    }> = [];
+    
+    // Common Bazel rule patterns
+    const rulePatterns = [
+      // Language-specific rules
+      /(java_library|java_binary|java_test)\s*\(/g,
+      /(py_library|py_binary|py_test)\s*\(/g,
+      /(cc_library|cc_binary|cc_test)\s*\(/g,
+      /(go_library|go_binary|go_test)\s*\(/g,
+      /(ts_library|ts_config|nodejs_binary)\s*\(/g,
+      // Generic rules
+      /(genrule|filegroup|config_setting)\s*\(/g
+    ];
+    
+    for (const pattern of rulePatterns) {
+      let match;
+      while ((match = pattern.exec(content)) !== null) {
+        const ruleType = match[1];
+        const ruleStart = match.index + match[0].length;
+        
+        // Extract the rule block (simplified parsing)
+        const ruleBlock = this.extractBazelRuleBlock(content, ruleStart);
+        const target = this.parseTargetAttributes(ruleBlock, ruleType, packagePath);
+        
+        if (target.name) {
+          targets.push(target);
+        }
+      }
+    }
+    
+    return targets;
+  }
+
+  /**
+   * Extract a Bazel rule block from content starting at a position.
+   */
+  private extractBazelRuleBlock(content: string, startPos: number): string {
+    let depth = 0;
+    let i = startPos;
+    
+    // Find the opening parenthesis and track depth
+    while (i < content.length) {
+      const char = content[i];
+      if (char === '(') depth++;
+      else if (char === ')') depth--;
+      
+      if (depth === 0) break;
+      i++;
+    }
+    
+    return content.substring(startPos, i);
+  }
+
+  /**
+   * Parse target attributes from a rule block.
+   */
+  private parseTargetAttributes(ruleBlock: string, ruleType: string, packagePath: string): {
+    package: string;
+    name: string;
+    type: string;
+    visibility?: string[];
+    deps?: string[];
+    srcs?: string[];
+  } {
+    const target = {
+      package: packagePath,
+      name: '',
+      type: ruleType,
+      visibility: undefined,
+      deps: undefined,
+      srcs: undefined
+    };
+    
+    // Extract name
+    const nameMatch = ruleBlock.match(/name\s*=\s*"([^"]+)"/);
+    target.name = nameMatch?.[1] || '';
+    
+    // Extract deps
+    const depsMatch = ruleBlock.match(/deps\s*=\s*\[(.*?)\]/s);
+    if (depsMatch) {
+      target.deps = depsMatch?.[1]
+        .split(',')
+        .map(dep => dep.trim().replace(/['"]/g, ''))
+        .filter(dep => dep && dep.startsWith('//')) || undefined;
+    }
+    
+    // Extract srcs
+    const srcsMatch = ruleBlock.match(/srcs\s*=\s*\[(.*?)\]/s);
+    if (srcsMatch) {
+      target.srcs = srcsMatch?.[1]
+        .split(',')
+        .map(src => src.trim().replace(/['"]/g, ''))
+        .filter(Boolean) || undefined;
+    }
+    
+    // Extract visibility
+    const visibilityMatch = ruleBlock.match(/visibility\s*=\s*\[(.*?)\]/s);
+    if (visibilityMatch) {
+      target.visibility = visibilityMatch?.[1]
+        .split(',')
+        .map(vis => vis.trim().replace(/['"]/g, ''))
+        .filter(Boolean) || undefined;
+    }
+    
+    return target;
+  }
+
+  /**
+   * Extract unique packages from targets.
+   */
+  private extractBazelPackages(targets: Array<{ package: string; name: string; type: string }>): string[] {
+    const packages = new Set<string>();
+    
+    for (const target of targets) {
+      if (target.package && target.package !== '.') {
+        packages.add(target.package);
+      }
+    }
+    
+    return Array.from(packages);
+  }
+
+  /**
+   * Analyze target dependencies for domain mapping.
+   */
+  private async analyzeBazelDependencies(rootPath: string, targets: Array<{
+    package: string;
+    name: string;
+    type: string;
+    deps?: string[];
+  }>): Promise<Record<string, Record<string, number>>> {
+    const dependencies: Record<string, Record<string, number>> = {};
+    
+    for (const target of targets) {
+      if (!target.deps || target.deps.length === 0) continue;
+      
+      const sourcePackage = target.package || 'root';
+      
+      for (const dep of target.deps) {
+        // Parse Bazel target label (//package:target)
+        const depMatch = dep.match(/^\/\/([^:]+):/);
+        const targetPackage = depMatch?.[1] || '';
+        
+        if (targetPackage && targetPackage !== sourcePackage) {
+          if (!dependencies[sourcePackage]) {
+            dependencies[sourcePackage] = {};
+          }
+          dependencies[sourcePackage][targetPackage] = 
+            (dependencies[sourcePackage][targetPackage] || 0) + 1;
+        }
+      }
+    }
+    
+    return dependencies;
+  }
+
+  /**
+   * Fallback basic package discovery for Bazel workspaces.
+   */
+  private async discoverBazelPackagesBasic(rootPath: string): Promise<string[]> {
+    try {
+      const { stdout } = await execAsync(`find "${rootPath}" -name "BUILD" -o -name "BUILD.bazel" 2>/dev/null`);
+      const buildFiles = stdout.trim().split('\n').filter(Boolean);
+      
+      const packages = buildFiles
+        .map(file => path.relative(rootPath, path.dirname(file)))
+        .filter(pkg => pkg !== '.')
+        .sort();
+      
+      return [...new Set(packages)];
+    } catch (error) {
+      logger.warn('Basic Bazel package discovery failed:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Run Bazel query for accurate dependency analysis.
+   * This provides the ground truth dependency graph compared to BUILD file parsing.
+   */
+  private async runBazelQuery(rootPath: string): Promise<{
+    targets: Array<{
+      package: string;
+      name: string;
+      type: string;
+      visibility?: string[];
+      deps?: string[];
+      srcs?: string[];
+    }>;
+    dependencies: Record<string, Record<string, number>>;
+  }> {
+    try {
+      // Check if bazel binary exists
+      await execAsync('which bazel', { cwd: rootPath });
+      
+      logger.info('🔍 Running Bazel query for accurate dependency analysis...');
+      
+      // Get all targets in the workspace
+      const { stdout: targetsOutput } = await execAsync(
+        'bazel query "//..." --output=build 2>/dev/null',
+        { cwd: rootPath, timeout: 30000 } // 30 second timeout
+      );
+      
+      // Get dependency information
+      const { stdout: depsOutput } = await execAsync(
+        'bazel query "deps(//...)" --output=graph 2>/dev/null',
+        { cwd: rootPath, timeout: 30000 } // 30 second timeout
+      );
+      
+      // Parse targets from build output
+      const targets = this.parseBazelQueryTargets(targetsOutput);
+      
+      // Parse dependencies from graph output
+      const dependencies = this.parseBazelQueryDependencies(depsOutput);
+      
+      logger.info('✅ Bazel query completed successfully', {
+        targets: targets.length,
+        dependencyRelations: Object.keys(dependencies).length
+      });
+      
+      return { targets, dependencies };
+      
+    } catch (error) {
+      logger.debug('Bazel query failed:', error);
+      throw new Error(`Bazel query execution failed: ${error}`);
+    }
+  }
+
+  /**
+   * Parse targets from Bazel query --output=build.
+   */
+  private parseBazelQueryTargets(buildOutput: string): Array<{
+    package: string;
+    name: string;
+    type: string;
+    visibility?: string[];
+    deps?: string[];
+    srcs?: string[];
+  }> {
+    const targets: Array<{
+      package: string;
+      name: string;
+      type: string;
+      visibility?: string[];
+      deps?: string[];
+      srcs?: string[];
+    }> = [];
+    
+    // Split into rule blocks
+    const ruleBlocks = buildOutput.split(/(?=^[a-z_]+\s*\()/gm).filter(Boolean);
+    
+    for (const block of ruleBlocks) {
+      try {
+        const target = this.parseTargetAttributes(block, '', '');
+        if (target.name) {
+          // Extract package from target label
+          const packageMatch = block.match(/^# (\/\/[^:]+)/);
+          const packagePath = packageMatch ? packageMatch[1].replace('//', '') : '';
+          target.package = packagePath;
+          targets.push(target);
+        }
+      } catch (error) {
+        // Skip malformed blocks
+        continue;
+      }
+    }
+    
+    return targets;
+  }
+
+  /**
+   * Parse dependencies from Bazel query --output=graph.
+   */
+  private parseBazelQueryDependencies(graphOutput: string): Record<string, Record<string, number>> {
+    const dependencies: Record<string, Record<string, number>> = {};
+    
+    // Parse DOT graph format
+    const lines = graphOutput.split('\n').filter(line => line.includes('->'));
+    
+    for (const line of lines) {
+      const match = line.match(/^\s*"([^"]+)"\s*->\s*"([^"]+)"/);
+      if (match) {
+        const source = this.extractPackageFromTarget(match[1] || '');
+        const target = this.extractPackageFromTarget(match[2] || '');
+        
+        if (source && target && source !== target) {
+          if (!dependencies[source]) {
+            dependencies[source] = {};
+          }
+          dependencies[source][target] = (dependencies[source][target] || 0) + 1;
+        }
+      }
+    }
+    
+    return dependencies;
+  }
+
+  /**
+   * Extract package name from Bazel target label.
+   */
+  private extractPackageFromTarget(targetLabel: string): string {
+    // Handle various Bazel target formats: //package:target, @repo//package:target, etc.
+    const match = targetLabel.match(/(?:@[^\/]+)?\/\/([^:]+)/);
+    return match?.[1] || '';
+  }
+
+  /**
+   * Analyze .bzl files for custom rules and macros.
+   * This provides insights into custom build logic and architectural patterns.
+   */
+  private async analyzeBzlFiles(rootPath: string): Promise<{
+    bzlFiles: string[];
+    customRules: Array<{
+      name: string;
+      file: string;
+      type: 'rule' | 'macro';
+      parameters: string[];
+      description?: string;
+    }>;
+    macros: Array<{
+      name: string;
+      file: string;
+      usedRules: string[];
+      parameters: string[];
+    }>;
+  }> {
+    const result = {
+      bzlFiles: [] as string[],
+      customRules: [] as Array<{
+        name: string;
+        file: string;
+        type: 'rule' | 'macro';
+        parameters: string[];
+        description?: string;
+      }>,
+      macros: [] as Array<{
+        name: string;
+        file: string;
+        usedRules: string[];
+        parameters: string[];
+      }>
+    };
+
+    try {
+      // Find all .bzl files
+      const { stdout } = await execAsync(`find "${rootPath}" -name "*.bzl" 2>/dev/null`);
+      const bzlFiles = stdout.trim().split('\n').filter(Boolean);
+      result.bzlFiles = bzlFiles.map(file => path.relative(rootPath, file));
+
+      // Analyze each .bzl file
+      for (const bzlFile of bzlFiles) {
+        try {
+          const content = await readFile(bzlFile, 'utf-8');
+          const relativePath = path.relative(rootPath, bzlFile);
+          
+          // Extract custom rules
+          const ruleMatches = content.matchAll(/^([a-z_]+)\s*=\s*rule\s*\(/gm);
+          for (const match of ruleMatches) {
+            const ruleName = match[1];
+            const ruleBlock = this.extractStarlarkFunctionBlock(content, match.index || 0);
+            const parameters = this.extractStarlarkParameters(ruleBlock);
+            
+            result.customRules.push({
+              name: ruleName || '',
+              file: relativePath,
+              type: 'rule',
+              parameters
+            });
+          }
+          
+          // Extract macros (functions that call other rules)
+          const macroMatches = content.matchAll(/^def\s+([a-z_]+)\s*\(/gm);
+          for (const match of macroMatches) {
+            const macroName = match[1];
+            const macroBlock = this.extractStarlarkFunctionBlock(content, match.index || 0);
+            const parameters = this.extractStarlarkParameters(macroBlock);
+            const usedRules = this.extractUsedRules(macroBlock);
+            
+            result.macros.push({
+              name: macroName || '',
+              file: relativePath,
+              usedRules,
+              parameters
+            });
+          }
+          
+        } catch (error) {
+          logger.debug(`Failed to analyze .bzl file ${bzlFile}:`, error);
+        }
+      }
+      
+      logger.info('📜 Starlark (.bzl) analysis complete', {
+        bzlFiles: result.bzlFiles.length,
+        customRules: result.customRules.length,
+        macros: result.macros.length
+      });
+      
+    } catch (error) {
+      logger.warn('Failed to analyze .bzl files:', error);
+    }
+
+    return result;
+  }
+
+  /**
+   * Extract Starlark function block starting from a position.
+   */
+  private extractStarlarkFunctionBlock(content: string, startIndex: number): string {
+    const lines = content.substring(startIndex).split('\n');
+    const result: string[] = [];
+    let indentLevel = 0;
+    let inFunction = false;
+    
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed && !inFunction) continue;
+      
+      if (!inFunction && (trimmed.includes('=') || trimmed.startsWith('def'))) {
+        inFunction = true;
+        indentLevel = line.length - line.trimStart().length;
+        result.push(line);
+        continue;
+      }
+      
+      if (inFunction) {
+        const lineIndent = line.length - line.trimStart().length;
+        if (trimmed && lineIndent <= indentLevel && !line.startsWith(' ')) {
+          break; // End of function
+        }
+        result.push(line);
+      }
+    }
+    
+    return result.join('\n');
+  }
+
+  /**
+   * Extract parameters from Starlark function definition.
+   */
+  private extractStarlarkParameters(functionBlock: string): string[] {
+    const paramMatch = functionBlock.match(/\(([^)]*)\)/s);
+    if (!paramMatch?.[1]) return [];
+    
+    return paramMatch[1]
+      .split(',')
+      .map(param => param.trim().split(/[=:]/)[0].trim())
+      .filter(param => param && param !== 'ctx');
+  }
+
+  /**
+   * Extract rules used within a Starlark macro.
+   */
+  private extractUsedRules(macroBlock: string): string[] {
+    const rulePattern = /([a-z_]+)\s*\(/g;
+    const rules = new Set<string>();
+    
+    let match;
+    while ((match = rulePattern.exec(macroBlock)) !== null) {
+      const ruleName = match[1];
+      // Filter out common Python functions and focus on likely Bazel rules
+      if (!['def', 'if', 'for', 'len', 'str', 'int', 'print', 'fail'].includes(ruleName)) {
+        rules.add(ruleName);
+      }
+    }
+    
+    return Array.from(rules);
+  }
+
+  /**
+   * Parse MODULE.bazel file for Bzlmod module system.
+   */
+  private parseModuleBazel(moduleContent: string): {
+    name: string;
+    version?: string;
+    dependencies: Array<{ name: string; version: string; repo_name?: string }>;
+  } {
+    const result = {
+      name: '',
+      version: undefined,
+      dependencies: [] as Array<{ name: string; version: string; repo_name?: string }>
+    };
+
+    // Extract module name
+    const moduleMatch = moduleContent.match(/module\s*\(\s*name\s*=\s*"([^"]+)"(?:\s*,\s*version\s*=\s*"([^"]+)")?/);
+    if (moduleMatch) {
+      result.name = moduleMatch[1] || '';
+      result.version = moduleMatch[2] || undefined;
+    }
+
+    // Extract bazel_dep dependencies
+    const depMatches = moduleContent.matchAll(/bazel_dep\s*\(\s*name\s*=\s*"([^"]+)"\s*,\s*version\s*=\s*"([^"]+)"(?:\s*,\s*repo_name\s*=\s*"([^"]+)")?/g);
+    for (const match of depMatches) {
+      result.dependencies.push({
+        name: match[1] || '',
+        version: match[2] || '',
+        repo_name: match[3] || undefined
+      });
+    }
+
+    return result;
+  }
+
+  /**
+   * Extract language and toolchain information from Bzlmod dependencies.
+   */
+  private extractLanguagesFromModuleDeps(
+    dependencies: Array<{ name: string; version: string; repo_name?: string }>,
+    result: { languages: string[]; toolchains: string[] }
+  ): void {
+    const moduleLanguageMap: Record<string, string> = {
+      'rules_java': 'java',
+      'rules_python': 'python',
+      'rules_go': 'go',
+      'rules_kotlin': 'kotlin',
+      'rules_scala': 'scala',
+      'rules_rust': 'rust',
+      'rules_nodejs': 'javascript',
+      'rules_typescript': 'typescript',
+      'rules_cc': 'cpp',
+      'rules_swift': 'swift',
+      'rules_dotnet': 'csharp'
+    };
+
+    const moduleToolchainMap: Record<string, string> = {
+      'rules_docker': 'docker',
+      'rules_k8s': 'kubernetes',
+      'rules_proto': 'protobuf',
+      'rules_oci': 'containers',
+      'gazelle': 'code-generation',
+      'buildtools': 'build-tools'
+    };
+
+    for (const dep of dependencies) {
+      // Check for language modules
+      const depName = dep.name || '';
+      if (moduleLanguageMap[depName]) {
+        result.languages.push(moduleLanguageMap[depName]);
+      }
+
+      // Check for toolchain modules
+      if (moduleToolchainMap[depName]) {
+        result.toolchains.push(moduleToolchainMap[depName]);
+      }
+
+      // Check for language patterns in module names
+      if (depName.includes('java') || depName.includes('jvm')) {
+        result.languages.push('java');
+      } else if (depName.includes('python') || depName.includes('py')) {
+        result.languages.push('python');
+      } else if (depName.includes('go')) {
+        result.languages.push('go');
+      } else if (depName.includes('rust')) {
+        result.languages.push('rust');
+      } else if (depName.includes('node') || depName.includes('js')) {
+        result.languages.push('javascript');
+      }
+    }
+
+    // Remove duplicates
+    result.languages = [...new Set(result.languages)];
+    result.toolchains = [...new Set(result.toolchains)];
   }
 
   /**
@@ -838,7 +1650,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       priority,
       type: 'framework',
       target: framework.name,
-      version: framework.version,
+      version: framework.version || undefined,
       context: [framework.usage, 'best-practices'],
       requiredInfo: [
         'Latest features',

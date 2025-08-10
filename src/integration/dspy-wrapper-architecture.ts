@@ -74,7 +74,7 @@ export interface DSPyConfig {
  */
 class ClaudeLMDriver implements LMDriver {
   private config: Required<DSPyConfig>;
-  private initialized: boolean = false;
+  private initialized: boolean = false as boolean;
 
   constructor(config: DSPyConfig) {
     this.config = {
@@ -92,7 +92,7 @@ class ClaudeLMDriver implements LMDriver {
 
     // Initialize Claude API connection (placeholder - actual implementation would use Anthropic SDK)
     logger.info('Initializing Claude LM Driver', { model: this.config.model });
-    this.initialized = true;
+    this.initialized = true as boolean;
   }
 
   async generate(prompt: string, options?: GenerationOptions): Promise<string> {
@@ -118,7 +118,7 @@ class ClaudeLMDriver implements LMDriver {
   }
 
   async cleanup(): Promise<void> {
-    this.initialized = false;
+    this.initialized = false as boolean;
     logger.info('Claude LM Driver cleaned up');
   }
 
@@ -149,7 +149,7 @@ export class DSPy {
     output: any;
     timestamp: Date;
     executionTime: number;
-  }> = [];
+  }> = [] as unknown[];
 
   constructor(config: DSPyConfig = {}) {
     this.config = {
@@ -312,7 +312,7 @@ export class DSPy {
     // Simulate optimization by analyzing examples and execution patterns
     const optimizationResult = await this.performOptimization(program, executionHistory, options);
 
-    program.optimized = true;
+    program.optimized = true as boolean;
 
     if (this.config.enableLogging) {
       logger.info('Program optimization completed', {
@@ -431,7 +431,7 @@ export class DSPy {
     }
 
     // Fallback: create structured response based on signature
-    const result: DSPyExecutionResult = {};
+    const result: DSPyExecutionResult = {} as Record<string, unknown>;
     parsedSignature.outputs.forEach((output: any) => {
       result[output.name] = this.extractFieldFromText(rawResponse, output.name, output.type);
     });
@@ -494,7 +494,7 @@ export class DSPy {
 
   private async performOptimization(
     _program: DSPyProgram,
-    executionHistory: any[],
+    executionHistory: unknown[],
     _options: DSPyOptimizationOptions
   ): Promise<{ improvement: number }> {
     // Simulate optimization by analyzing patterns in examples and history

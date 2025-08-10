@@ -20,7 +20,7 @@
 
 import { EventEmitter } from 'node:events';
 import { ConfigurationError, SystemError, ValidationError } from '../core/errors';
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../../core/logger';
 import type { HealthMonitor } from '../diagnostics/health-monitor';
 import type { ConnectionStateManager as ConnectionManager } from '../connection-management/connection-state-manager';
 import type { RecoveryWorkflows } from '../core/recovery-workflows';
@@ -195,7 +195,7 @@ export class ChaosEngineering extends EventEmitter {
 
     // Safety controls
     this.safetyChecks = new Map();
-    this.emergencyStop = false;
+    this.emergencyStop = false as boolean;
     this.resourceUsage = {
       memory: 0,
       cpu: 0,
@@ -881,7 +881,7 @@ export class ChaosEngineering extends EventEmitter {
         const size = params.size || 100 * 1024 * 1024; // 100MB default
         const duration = params?.duration || 60000; // 1 minute
 
-        const arrays: Array<unknown[]> = [];
+        const arrays: Array<unknown[]> = [] as unknown[];
         for (let i = 0; i < 10; i++) {
           arrays.push(new Array(size / 10).fill(Math.random()));
         }
@@ -912,7 +912,7 @@ export class ChaosEngineering extends EventEmitter {
         const duration = params?.duration || 60000; // 1 minute
         const intensity = params?.intensity || 0.5; // 50% CPU usage
 
-        const workers: any[] = [];
+        const workers: unknown[] = [] as unknown[];
         const cpuCount = require('node:os').cpus().length;
         const targetWorkers = Math.ceil(cpuCount * intensity);
 
@@ -952,7 +952,7 @@ export class ChaosEngineering extends EventEmitter {
         const targetConnections = params?.connections || 'all';
         const failureType = params?.failureType || 'disconnect'; // disconnect, slow, drop
 
-        const affectedConnections: Array<{ id: string; action: string }> = [];
+        const affectedConnections: Array<{ id: string; action: string }> = [] as unknown[];
 
         if (this.connectionManager) {
           const connections = this.connectionManager.getConnectionStatus();
@@ -1290,7 +1290,7 @@ export class ChaosEngineering extends EventEmitter {
    * Clear emergency stop.
    */
   clearEmergencyStop() {
-    this.emergencyStop = false;
+    this.emergencyStop = false as boolean;
     this.logger.info('Emergency stop cleared');
     this.emit('emergency:cleared');
   }

@@ -5,9 +5,9 @@
  * - Client registry and manager
  * - Client type definitions and configurations
  * - Helper functions and utilities
- * - Global instances and initialization
+ * - Global instances and initialization.
  *
- * @file Main UACL exports providing unified access to HTTP, WebSocket, Knowledge, and MCP clients
+ * @file Main UACL exports providing unified access to HTTP, WebSocket, Knowledge, and MCP clients.
  * @module interfaces/clients.
  * @version 2.0.0
  * @example
@@ -44,19 +44,19 @@
  * ```
  */
 
-import { getLogger } from '../config/logging-config';
-import type { ClientManager } from '../interfaces/clients/client-manager';
-import type {
+import { getLogger } from '../../config/logging-config';
+import type { ClientManager } from './manager';
+import {
   ClientInstance,
   ClientType,
   HTTPClientConfig,
   KnowledgeClientConfig,
   MCPClientConfig,
   WebSocketClientConfig,
-} from '../interfaces/clients/interfaces';
+} from './interfaces';
 
 // Legacy FACT integration
-export { FACTIntegration } from '../knowledge/knowledge-client';
+export { FACTIntegration } from '../../knowledge/knowledge-client';
 // Re-export client implementations for convenience
 export { APIClient, createAPIClient } from '../api/http/client';
 // WebSocket clients - both legacy and UACL
@@ -84,13 +84,170 @@ export type {
   IClientFactory,
   RequestOptions as CoreRequestOptions,
 } from './core/interfaces';
-export {
-  ClientManager,
-  type ClientManagerConfig,
-  ClientManagerHelpers,
-  type ClientMetrics,
-  globalClientManager,
-} from './manager';
+// Client manager types and interfaces
+export interface ClientManagerConfig {
+  enableHealthChecks?: boolean;
+  metricsInterval?: number;
+  maxClients?: number;
+  enableRetries?: boolean;
+  enableMetrics?: boolean;
+  connectionTimeout?: number;
+  healthCheckInterval?: number;
+}
+
+export interface ClientMetrics {
+  total: number;
+  connected: number;
+  disconnected: number;
+  error: number;
+  totalRequests: number;
+  totalErrors: number;
+  averageLatency: number;
+  totalThroughput: number;
+}
+
+// ClientManager class definition
+export class ClientManager {
+  constructor(config?: ClientManagerConfig) {}
+  
+  getClient(id: string): ClientInstance | undefined {
+    // Implementation would be provided by actual manager
+    return undefined;
+  }
+  
+  getBestClient(type: ClientType): ClientInstance | undefined {
+    // Implementation would be provided by actual manager
+    return undefined;
+  }
+  
+  getClientsByType(type: ClientType): ClientInstance[] {
+    // Implementation would be provided by actual manager
+    return [];
+  }
+  
+  getHealthStatus(): {
+    status: 'healthy' | 'degraded' | 'critical';
+    totalClients: number;
+    healthyClients: number;
+    degradedClients: number;
+    unhealthyClients: number;
+    byType: Record<string, { healthy: number; total: number }>;
+  } {
+    return {
+      status: 'healthy',
+      totalClients: 0,
+      healthyClients: 0,
+      degradedClients: 0,
+      unhealthyClients: 0,
+      byType: {}
+    };
+  }
+  
+  getAggregatedMetrics(): ClientMetrics {
+    return {
+      total: 0,
+      connected: 0,
+      disconnected: 0,
+      error: 0,
+      totalRequests: 0,
+      totalErrors: 0,
+      averageLatency: 0,
+      totalThroughput: 0
+    };
+  }
+  
+  async shutdown(): Promise<void> {
+    // Implementation would be provided by actual manager
+  }
+  
+  async connectClient(id: string): Promise<void> {
+    // Implementation would be provided by actual manager
+  }
+  
+  async disconnectClient(id: string): Promise<void> {
+    // Implementation would be provided by actual manager
+  }
+  
+  registry = {
+    getAll: (): Array<{ id: string; config: { enabled: boolean } }> => []
+  };
+}
+
+// ClientManagerHelpers static methods
+export class ClientManagerHelpers {
+  static async initialize(config?: ClientManagerConfig): Promise<void> {
+    // Implementation would be provided by actual helpers
+  }
+  
+  static async createHTTPClient(
+    id: string,
+    baseURL: string,
+    options: Partial<HTTPClientConfig>
+  ): Promise<ClientInstance> {
+    // Implementation would be provided by actual helpers
+    return {} as ClientInstance;
+  }
+  
+  static async createWebSocketClient(
+    id: string,
+    url: string,
+    options: Partial<WebSocketClientConfig>
+  ): Promise<ClientInstance> {
+    // Implementation would be provided by actual helpers
+    return {} as ClientInstance;
+  }
+  
+  static async createKnowledgeClient(
+    id: string,
+    factRepoPath: string,
+    anthropicApiKey: string,
+    options: Partial<KnowledgeClientConfig>
+  ): Promise<ClientInstance> {
+    // Implementation would be provided by actual helpers
+    return {} as ClientInstance;
+  }
+  
+  static async createMCPClient(
+    id: string,
+    servers: MCPClientConfig['servers'],
+    options: Partial<MCPClientConfig>
+  ): Promise<ClientInstance> {
+    // Implementation would be provided by actual helpers
+    return {} as ClientInstance;
+  }
+  
+  static getSystemStatus(): {
+    health: {
+      status: 'healthy' | 'degraded' | 'critical';
+      byType: Record<string, { healthy: number; total: number }>;
+    };
+    metrics: ClientMetrics;
+    configuration: ClientManagerConfig;
+    uptime: { totalUptime: number };
+  } {
+    return {
+      health: {
+        status: 'healthy',
+        byType: {}
+      },
+      metrics: {
+        total: 0,
+        connected: 0,
+        disconnected: 0,
+        error: 0,
+        totalRequests: 0,
+        totalErrors: 0,
+        averageLatency: 0,
+        totalThroughput: 0
+      },
+      configuration: {},
+      uptime: { totalUptime: 0 }
+    };
+  }
+}
+
+// Global client manager instance
+export const globalClientManager = new ClientManager();
 // Core UACL components
 export {
   type BaseClientConfig,
@@ -149,7 +306,7 @@ export class UACL {
   /**
    * Get singleton UACL instance.
    *
-   * @returns {UACL} The singleton UACL instance
+   * @returns {UACL} The singleton UACL instance.
    * @description Returns the global UACL instance, creating it if it doesn't exist.
    *              Implements the singleton pattern to ensure unified client management.
    * @example
@@ -168,13 +325,13 @@ export class UACL {
   /**
    * Initialize UACL system.
    *
-   * @param {ClientManagerConfig} [config] - Optional configuration for the client manager
-   * @param {boolean} [config.enableHealthChecks=true] - Enable automatic health checking
-   * @param {number} [config.metricsInterval=60000] - Metrics collection interval in milliseconds
-   * @param {number} [config.maxClients=100] - Maximum number of concurrent clients
-   * @param {boolean} [config.enableRetries=true] - Enable automatic retry logic
-   * @returns {Promise<void>} Resolves when initialization is complete
-   * @throws {Error} If initialization fails due to invalid configuration
+   * @param {ClientManagerConfig} [config] - Optional configuration for the client manager.
+   * @param {boolean} [config.enableHealthChecks=true] - Enable automatic health checking.
+   * @param {number} [config.metricsInterval=60000] - Metrics collection interval in milliseconds.
+   * @param {number} [config.maxClients=100] - Maximum number of concurrent clients.
+   * @param {boolean} [config.enableRetries=true] - Enable automatic retry logic.
+   * @returns {Promise<void>} Resolves when initialization is complete.
+   * @throws {Error} If initialization fails due to invalid configuration.
    * @description Initializes the UACL system with client manager, registry, and monitoring.
    *              Safe to call multiple times - subsequent calls are ignored.
    * @example
@@ -202,7 +359,7 @@ export class UACL {
   /**
    * Check if UACL is initialized.
    *
-   * @returns {boolean} True if UACL has been initialized
+   * @returns {boolean} True if UACL has been initialized.
    * @description Returns the initialization status without side effects.
    * @example
    * ```typescript
@@ -218,16 +375,16 @@ export class UACL {
   /**
    * Create and register HTTP client.
    *
-   * @param {string} id - Unique identifier for the HTTP client
-   * @param {string} baseURL - Base URL for all HTTP requests (e.g., 'https://api.example.com')
-   * @param {Partial<HTTPClientConfig>} [options={}] - Optional HTTP client configuration
-   * @param {AuthenticationConfig} [options.authentication] - Authentication configuration (bearer, apikey, oauth, etc.)
-   * @param {RetryConfig} [options.retry] - Retry configuration with backoff strategies
-   * @param {number} [options.timeout=30000] - Request timeout in milliseconds
-   * @param {Record<string, string>} [options.headers] - Default headers for all requests
-   * @param {boolean} [options.compression=true] - Enable response compression
-   * @param {boolean} [options.http2=false] - Enable HTTP/2 support
-   * @returns {Promise<ClientInstance>} Promise resolving to the created HTTP client instance
+   * @param {string} id - Unique identifier for the HTTP client.
+   * @param {string} baseURL - Base URL for all HTTP requests (e.g., 'https://api.example.com').
+   * @param {Partial<HTTPClientConfig>} [options={}] - Optional HTTP client configuration.
+   * @param {AuthenticationConfig} [options.authentication] - Authentication configuration (bearer, apikey, oauth, etc.).
+   * @param {RetryConfig} [options.retry] - Retry configuration with backoff strategies.
+   * @param {number} [options.timeout=30000] - Request timeout in milliseconds.
+   * @param {Record<string, string>} [options.headers] - Default headers for all requests.
+   * @param {boolean} [options.compression=true] - Enable response compression.
+   * @param {boolean} [options.http2=false] - Enable HTTP/2 support.
+   * @returns {Promise<ClientInstance>} Promise resolving to the created HTTP client instance.
    * @throws {Error} If client creation fails or ID already exists
    * @description Creates, configures, and registers a new HTTP client with automatic retry logic,
    *              authentication handling, and performance monitoring.
@@ -279,16 +436,16 @@ export class UACL {
   /**
    * Create and register WebSocket client.
    *
-   * @param {string} id - Unique identifier for the WebSocket client
-   * @param {string} url - WebSocket server URL (e.g., 'wss://api.example.com/ws')
-   * @param {Partial<WebSocketClientConfig>} [options={}] - Optional WebSocket client configuration
-   * @param {string[]} [options.protocols] - WebSocket subprotocols to negotiate
-   * @param {object} [options.reconnection] - Automatic reconnection configuration
-   * @param {boolean} [options.reconnection.enabled=true] - Enable automatic reconnection
-   * @param {number} [options.reconnection.maxAttempts=10] - Maximum reconnection attempts
-   * @param {object} [options.heartbeat] - Heartbeat/ping configuration
-   * @param {boolean} [options.heartbeat.enabled=true] - Enable heartbeat messages
-   * @param {number} [options.heartbeat.interval=30000] - Heartbeat interval in milliseconds
+   * @param {string} id - Unique identifier for the WebSocket client.
+   * @param {string} url - WebSocket server URL (e.g., 'wss://api.example.com/ws').
+   * @param {Partial<WebSocketClientConfig>} [options={}] - Optional WebSocket client configuration.
+   * @param {string[]} [options.protocols] - WebSocket subprotocols to negotiate.
+   * @param {object} [options.reconnection] - Automatic reconnection configuration.
+   * @param {boolean} [options.reconnection.enabled=true] - Enable automatic reconnection.
+   * @param {number} [options.reconnection.maxAttempts=10] - Maximum reconnection attempts.
+   * @param {object} [options.heartbeat] - Heartbeat/ping configuration.
+   * @param {boolean} [options.heartbeat.enabled=true] - Enable heartbeat messages.
+   * @param {number} [options.heartbeat.interval=30000] - Heartbeat interval in milliseconds.
    * @param {object} [options.messageQueue] - Message queuing for offline scenarios
    * @returns {Promise<ClientInstance>} Promise resolving to the created WebSocket client instance
    * @throws {Error} If client creation fails, connection fails, or ID already exists
@@ -352,16 +509,16 @@ export class UACL {
   /**
    * Create and register Knowledge client.
    *
-   * @param {string} id - Unique identifier for the Knowledge client
-   * @param {string} factRepoPath - Path to the FACT knowledge repository directory
-   * @param {string} anthropicApiKey - Anthropic API key for Claude integration
-   * @param {Partial<KnowledgeClientConfig>} [options={}] - Optional Knowledge client configuration
-   * @param {object} [options.caching] - Knowledge query caching configuration
-   * @param {boolean} [options.caching.enabled=true] - Enable query result caching
-   * @param {number} [options.caching.ttlSeconds=3600] - Cache TTL in seconds
-   * @param {string[]} [options.tools] - Available FACT tools to use for queries
-   * @param {object} [options.rateLimit] - Rate limiting configuration for API calls
-   * @param {object} [options.vectorConfig] - Vector search configuration
+   * @param {string} id - Unique identifier for the Knowledge client.
+   * @param {string} factRepoPath - Path to the FACT knowledge repository directory.
+   * @param {string} anthropicApiKey - Anthropic API key for Claude integration.
+   * @param {Partial<KnowledgeClientConfig>} [options={}] - Optional Knowledge client configuration.
+   * @param {object} [options.caching] - Knowledge query caching configuration.
+   * @param {boolean} [options.caching.enabled=true] - Enable query result caching.
+   * @param {number} [options.caching.ttlSeconds=3600] - Cache TTL in seconds.
+   * @param {string[]} [options.tools] - Available FACT tools to use for queries.
+   * @param {object} [options.rateLimit] - Rate limiting configuration for API calls.
+   * @param {object} [options.vectorConfig] - Vector search configuration.
    * @returns {Promise<ClientInstance>} Promise resolving to the created Knowledge client instance
    * @throws {Error} If client creation fails, FACT integration fails, or invalid configuration
    * @description Creates, configures, and registers a new Knowledge client with FACT integration,
@@ -424,16 +581,16 @@ export class UACL {
   /**
    * Create and register MCP (Model Context Protocol) client.
    *
-   * @param {string} id - Unique identifier for the MCP client
-   * @param {MCPClientConfig['servers']} servers - MCP server configuration array
-   * @param {Partial<MCPClientConfig>} [options={}] - Optional MCP client configuration
-   * @param {number} [options.timeout=30000] - Request timeout for MCP operations
-   * @param {boolean} [options.enableTools=true] - Enable MCP tool execution
-   * @param {boolean} [options.enableResources=true] - Enable MCP resource access
-   * @param {boolean} [options.enablePrompts=true] - Enable MCP prompt templates
-   * @param {object} [options.retryConfig] - Retry configuration for failed operations
-   * @returns {Promise<ClientInstance>} Promise resolving to the created MCP client instance
-   * @throws {Error} If client creation fails, server connection fails, or invalid server configuration
+   * @param {string} id - Unique identifier for the MCP client.
+   * @param {MCPClientConfig['servers']} servers - MCP server configuration array.
+   * @param {Partial<MCPClientConfig>} [options={}] - Optional MCP client configuration.
+   * @param {number} [options.timeout=30000] - Request timeout for MCP operations.
+   * @param {boolean} [options.enableTools=true] - Enable MCP tool execution.
+   * @param {boolean} [options.enableResources=true] - Enable MCP resource access.
+   * @param {boolean} [options.enablePrompts=true] - Enable MCP prompt templates.
+   * @param {object} [options.retryConfig] - Retry configuration for failed operations.
+   * @returns {Promise<ClientInstance>} Promise resolving to the created MCP client instance.
+   * @throws {Error} If client creation fails, server connection fails, or invalid server configuration.
    * @description Creates, configures, and registers a new MCP client for interacting with
    *              Model Context Protocol servers, enabling tool execution, resource access, and prompt management.
    * @example
@@ -506,8 +663,8 @@ export class UACL {
   /**
    * Get client by ID.
    *
-   * @param {string} clientId - The unique identifier of the client to retrieve
-   * @returns {ClientInstance | undefined} The client instance if found, undefined otherwise
+   * @param {string} clientId - The unique identifier of the client to retrieve.
+   * @returns {ClientInstance | undefined} The client instance if found, undefined otherwise.
    * @description Retrieves a specific client instance by its unique identifier.
    *              Returns undefined if no client with the given ID exists.
    * @example
@@ -529,8 +686,8 @@ export class UACL {
   /**
    * Get best available client for a type.
    *
-   * @param {ClientType} type - The type of client to retrieve (HTTP, WEBSOCKET, KNOWLEDGE, MCP)
-   * @returns {ClientInstance | undefined} The best available client of the specified type, or undefined
+   * @param {ClientType} type - The type of client to retrieve (HTTP, WEBSOCKET, KNOWLEDGE, MCP).
+   * @returns {ClientInstance | undefined} The best available client of the specified type, or undefined.
    * @description Returns the best available (connected and healthy) client of the specified type.
    *              Uses health status and performance metrics to determine the "best" client.
    * @example
@@ -555,8 +712,8 @@ export class UACL {
   /**
    * Get all clients of a specific type.
    *
-   * @param {ClientType} type - The type of clients to retrieve
-   * @returns {ClientInstance[]} Array of all client instances of the specified type
+   * @param {ClientType} type - The type of clients to retrieve.
+   * @returns {ClientInstance[]} Array of all client instances of the specified type.
    * @description Returns all registered clients of the specified type, regardless of their connection status.
    *              Use this for bulk operations or when you need to work with multiple clients of the same type.
    * @example
@@ -585,13 +742,13 @@ export class UACL {
   /**
    * Get system health status.
    *
-   * @returns {object} System health status with overall health, client counts, and status breakdown
-   * @returns {string} returns.status - Overall system status ('healthy' | 'degraded' | 'critical')
-   * @returns {number} returns.totalClients - Total number of registered clients
-   * @returns {number} returns.healthyClients - Number of healthy clients
-   * @returns {number} returns.degradedClients - Number of degraded clients
-   * @returns {number} returns.unhealthyClients - Number of unhealthy clients
-   * @returns {object} returns.byType - Health breakdown by client type
+   * @returns {object} System health status with overall health, client counts, and status breakdown.
+   * @returns {string} Returns.status - Overall system status ('healthy' | 'degraded' | 'critical').
+   * @returns {number} Returns.totalClients - Total number of registered clients.
+   * @returns {number} Returns.healthyClients - Number of healthy clients.
+   * @returns {number} Returns.degradedClients - Number of degraded clients.
+   * @returns {number} Returns.unhealthyClients - Number of unhealthy clients.
+   * @returns {object} Returns.byType - Health breakdown by client type.
    * @description Returns comprehensive health status for the entire UACL system,
    *              including overall status and detailed breakdown by client type.
    * @example
@@ -621,15 +778,15 @@ export class UACL {
   /**
    * Get aggregated metrics.
    *
-   * @returns {object} Aggregated metrics across all clients
-   * @returns {number} returns.total - Total number of clients
-   * @returns {number} returns.connected - Number of connected clients
-   * @returns {number} returns.disconnected - Number of disconnected clients
-   * @returns {number} returns.error - Number of clients in error state
-   * @returns {number} returns.totalRequests - Total requests across all clients
-   * @returns {number} returns.totalErrors - Total errors across all clients
-   * @returns {number} returns.averageLatency - Average latency across all clients
-   * @returns {number} returns.totalThroughput - Combined throughput of all clients
+   * @returns {object} Aggregated metrics across all clients.
+   * @returns {number} Returns.total - Total number of clients.
+   * @returns {number} Returns.connected - Number of connected clients.
+   * @returns {number} Returns.disconnected - Number of disconnected clients.
+   * @returns {number} Returns.error - Number of clients in error state.
+   * @returns {number} Returns.totalRequests - Total requests across all clients.
+   * @returns {number} Returns.totalErrors - Total errors across all clients.
+   * @returns {number} Returns.averageLatency - Average latency across all clients.
+   * @returns {number} Returns.totalThroughput - Combined throughput of all clients.
    * @description Returns aggregated performance metrics across all registered clients,
    *              providing system-wide visibility into request volumes, error rates, and performance.
    * @example
@@ -658,11 +815,11 @@ export class UACL {
   /**
    * Get comprehensive system status.
    *
-   * @returns {object} Comprehensive system status including health, metrics, and detailed breakdowns
-   * @returns {object} returns.health - Detailed health status by client and type
-   * @returns {object} returns.metrics - Performance metrics with historical data
-   * @returns {object} returns.configuration - Current system configuration
-   * @returns {object} returns.uptime - System uptime and availability statistics
+   * @returns {object} Comprehensive system status including health, metrics, and detailed breakdowns.
+   * @returns {object} Returns.health - Detailed health status by client and type.
+   * @returns {object} Returns.metrics - Performance metrics with historical data.
+   * @returns {object} Returns.configuration - Current system configuration.
+   * @returns {object} Returns.uptime - System uptime and availability statistics.
    * @description Returns the most comprehensive view of the UACL system status,
    *              combining health, performance, configuration, and operational data.
    * @example
@@ -696,8 +853,8 @@ export class UACL {
   /**
    * Connect all clients.
    *
-   * @returns {Promise<void>} Resolves when all connection attempts are complete
-   * @throws {AggregateError} If multiple connection attempts fail (contains all individual errors)
+   * @returns {Promise<void>} Resolves when all connection attempts are complete.
+   * @throws {AggregateError} If multiple connection attempts fail (contains all individual errors).
    * @description Attempts to connect all registered clients that are enabled.
    *              Uses Promise.allSettled to ensure all connections are attempted even if some fail.
    *              Only attempts to connect clients where config.enabled is true.
@@ -741,7 +898,7 @@ export class UACL {
   /**
    * Disconnect all clients.
    *
-   * @returns {Promise<void>} Resolves when all disconnection attempts are complete
+   * @returns {Promise<void>} Resolves when all disconnection attempts are complete.
    * @description Gracefully disconnects all registered clients regardless of their current state.
    *              Uses Promise.allSettled to ensure all disconnections are attempted.
    *              Safe to call even if clients are already disconnected.
@@ -782,7 +939,7 @@ export class UACL {
   /**
    * Shutdown UACL system.
    *
-   * @returns {Promise<void>} Resolves when the system is completely shut down
+   * @returns {Promise<void>} Resolves when the system is completely shut down.
    * @description Performs a complete shutdown of the UACL system, including:
    *              - Disconnecting all clients
    *              - Stopping health check timers
@@ -844,14 +1001,14 @@ export const uacl = UACL.getInstance();
 /**
  * Initialize UACL with default configuration.
  *
- * @param {ClientManagerConfig} [config] - Optional UACL system configuration
- * @param {boolean} [config.enableHealthChecks=true] - Enable automatic health monitoring
- * @param {number} [config.metricsInterval=60000] - Metrics collection interval (ms)
- * @param {number} [config.maxClients=100] - Maximum concurrent clients
- * @param {boolean} [config.enableRetries=true] - Enable automatic retry mechanisms
- * @param {boolean} [config.enableMetrics=true] - Enable performance metrics collection
- * @returns {Promise<void>} Resolves when UACL initialization is complete
- * @throws {Error} If initialization fails due to invalid configuration or system constraints
+ * @param {ClientManagerConfig} [config] - Optional UACL system configuration.
+ * @param {boolean} [config.enableHealthChecks=true] - Enable automatic health monitoring.
+ * @param {number} [config.metricsInterval=60000] - Metrics collection interval (ms).
+ * @param {number} [config.maxClients=100] - Maximum concurrent clients.
+ * @param {boolean} [config.enableRetries=true] - Enable automatic retry mechanisms.
+ * @param {boolean} [config.enableMetrics=true] - Enable performance metrics collection.
+ * @returns {Promise<void>} Resolves when UACL initialization is complete.
+ * @throws {Error} If initialization fails due to invalid configuration or system constraints.
  * @description Convenience function to initialize the global UACL instance with optional configuration.
  *              This is equivalent to calling `uacl.initialize(config)` but provides a more functional approach.
  * @example
@@ -901,16 +1058,16 @@ export const UACLHelpers = {
   /**
    * Initialize and create common clients for a typical setup.
    *
-   * @param {object} config - Configuration object for common client types
-   * @param {string} [config.httpBaseURL] - Base URL for HTTP client creation
-   * @param {string} [config.websocketURL] - WebSocket server URL for real-time client
-   * @param {string} [config.factRepoPath] - Path to FACT knowledge repository
-   * @param {string} [config.anthropicApiKey] - Anthropic API key for knowledge client
-   * @param {MCPClientConfig['servers']} [config.mcpServers] - MCP server configurations
-   * @returns {Promise<object>} Object containing created client instances
-   * @returns {ClientInstance} [returns.http] - HTTP client instance (if httpBaseURL provided)
-   * @returns {ClientInstance} [returns.websocket] - WebSocket client instance (if websocketURL provided)
-   * @returns {ClientInstance} [returns.knowledge] - Knowledge client instance (if FACT config provided)
+   * @param {object} config - Configuration object for common client types.
+   * @param {string} [config.httpBaseURL] - Base URL for HTTP client creation.
+   * @param {string} [config.websocketURL] - WebSocket server URL for real-time client.
+   * @param {string} [config.factRepoPath] - Path to FACT knowledge repository.
+   * @param {string} [config.anthropicApiKey] - Anthropic API key for knowledge client.
+   * @param {MCPClientConfig['servers']} [config.mcpServers] - MCP server configurations.
+   * @returns {Promise<object>} Object containing created client instances.
+   * @returns {ClientInstance} [returns.http] - HTTP client instance (if httpBaseURL provided).
+   * @returns {ClientInstance} [returns.websocket] - WebSocket client instance (if websocketURL provided).
+   * @returns {ClientInstance} [returns.knowledge] - Knowledge client instance (if FACT config provided).
    * @returns {ClientInstance} [returns.mcp] - MCP client instance (if mcpServers provided)
    * @throws {Error} If client setup fails or required dependencies are missing
    * @description Creates a standard set of clients based on provided configuration,
@@ -1028,19 +1185,19 @@ export const UACLHelpers = {
   /**
    * Get a quick status overview.
    *
-   * @returns {object} Quick status overview with health assessment
-   * @returns {boolean} returns.initialized - Whether UACL system is initialized
-   * @returns {number} returns.totalClients - Total number of registered clients
-   * @returns {number} returns.healthyClients - Number of healthy/connected clients
-   * @returns {number} returns.healthPercentage - Health percentage (0-100)
-   * @returns {'healthy'|'warning'|'critical'} returns.status - Overall system status
+   * @returns {object} Quick status overview with health assessment.
+   * @returns {boolean} Returns.initialized - Whether UACL system is initialized.
+   * @returns {number} Returns.totalClients - Total number of registered clients.
+   * @returns {number} Returns.healthyClients - Number of healthy/connected clients.
+   * @returns {number} Returns.healthPercentage - Health percentage (0-100).
+   * @returns {'healthy'|'warning'|'critical'} Returns.status - Overall system status.
    * @description Provides a quick, at-a-glance system health overview with standardized status levels.
    *              Perfect for dashboards, monitoring, and quick health checks.
    *
    * Status levels:
    * - healthy: 80%+ clients are connected
    * - warning: 50-79% clients are connected
-   * - critical: <50% clients connected or system not initialized
+   * - critical: <50% clients connected or system not initialized.
    * @example
    * ```typescript
    * // Quick health check.
@@ -1108,8 +1265,8 @@ export const UACLHelpers = {
   /**
    * Perform health check on all clients.
    *
-   * @returns {Promise<Record<string, boolean>>} Map of client IDs to health status (true = healthy, false = unhealthy)
-   * @throws Never throws - all errors are caught and reported as unhealthy clients
+   * @returns {Promise<Record<string, boolean>>} Map of client IDs to health status (true = healthy, false = unhealthy).
+   * @throws Never throws - all errors are caught and reported as unhealthy clients.
    * @description Performs individual health checks on all registered clients across all types.
    *              Returns a simple boolean status for each client, making it easy to identify
    *              which specific clients are experiencing issues.

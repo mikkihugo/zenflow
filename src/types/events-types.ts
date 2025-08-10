@@ -15,8 +15,4 @@ export interface EventManagerTypes {
   enableMetrics: boolean;
 }
 
-// Convenience exports
-export type {
-  EventManagerConfig,
-  EventManagerTypes,
-};
+// Interfaces are already exported above - no need for type exports

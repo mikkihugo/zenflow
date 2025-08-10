@@ -11,7 +11,7 @@
 
 
 import { useEffect, useState } from 'react';
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../../core/logger';
 import type { SwarmAgent, SwarmMetrics, SwarmTask } from '../screens/index';
 
 const logger = createLogger({ prefix: 'SwarmStatusHook' });

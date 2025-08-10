@@ -1,9 +1,5 @@
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger('interfaces-events-adapters-communication-event-adapter');
-
 /**
- * @file UEL Communication Event Adapter providing unified event management for communication-related events.
+ * @fileoverview UEL Communication Event Adapter providing unified event management for communication-related events.
  *
  * Unified Event Layer adapter for communication-related events, providing
  * a consistent interface to scattered EventEmitter patterns across the communication system.
@@ -15,9 +11,13 @@ const logger = getLogger('interfaces-events-adapters-communication-event-adapter
  * management for communication events across Claude-Zen.
  */
 
+import { getLogger } from '../../../config/logging-config';
+
+const logger = getLogger('interfaces-events-adapters-communication-event-adapter');
+
 // Import communication system classes to wrap their EventEmitter usage
-import type { WebSocketClientAdapter } from '../clients/adapters/websocket-client-adapter';
-import type { HTTPMCPServer } from '../mcp/http-mcp-server';
+import type { WebSocketClientAdapter } from '../../clients/adapters/websocket-client-adapter';
+import type { HTTPMCPServer } from '../../mcp/http-mcp-server';
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -36,6 +36,7 @@ import type {
 import { EventManagerTypes } from '../core/interfaces';
 import type { CommunicationEvent } from '../types';
 import { EventPriorityMap } from '../types';
+import type { EventPriority } from '../core/interfaces';
 
 // Note: MCP SDK imports commented out for tests - would be real imports in production
 // import { McpServer } from '@modelcontextprotocol/sdk/server/mcp';
@@ -54,7 +55,7 @@ const createLogger = (name: string): Logger => ({
   debug: (_message: string, _meta?: any) => {},
   warn: (message: string, meta?: any) => logger.warn(`[WARN] ${name}: ${message}`, meta),
   error: (message: string, meta?: any, error?: any) =>
-    logger.error(`[ERROR] ${name}: ${message}`, meta, error),
+    logger.error(`[ERROR] ${name}: ${message}`, { ...meta, error }),
 });
 
 import { EventEmitter } from 'node:events';
@@ -160,18 +161,18 @@ interface CommunicationEventMetrics {
   operation: string;
   executionTime: number;
   success: boolean;
-  correlationId?: string;
-  connectionId?: string;
-  messageId?: string;
-  protocolType?: string;
-  communicationLatency?: number;
+  correlationId?: string | undefined;
+  connectionId?: string | undefined;
+  messageId?: string | undefined;
+  protocolType?: string | undefined;
+  communicationLatency?: number | undefined;
   resourceUsage?: {
     cpu: number;
     memory: number;
     network: number;
-  };
-  errorType?: string;
-  recoveryAttempts?: number;
+  } | undefined;
+  errorType?: string | undefined;
+  recoveryAttempts?: number | undefined;
   timestamp: Date;
 }
 
@@ -185,7 +186,7 @@ interface CommunicationCorrelation {
   events: CommunicationEvent[];
   startTime: Date;
   lastUpdate: Date;
-  connectionId?: string;
+  connectionId?: string | undefined;
   protocolType: string;
   messageIds: string[];
   operation: string;
@@ -246,7 +247,7 @@ interface WrappedCommunicationComponent {
  * Unified Communication Event Adapter.
  *
  * Provides a unified interface to communication-level EventEmitter patterns.
- * while implementing the IEventManager interface for UEL compatibility.
+ * While implementing the IEventManager interface for UEL compatibility.
  *
  * Features:
  * - WebSocket connection lifecycle and message routing
@@ -258,7 +259,7 @@ interface WrappedCommunicationComponent {
  * - Unified configuration management for communication components
  * - Health monitoring and auto-recovery for communication failures
  * - Event forwarding and transformation for communication events
- * - Error handling with retry logic for communication operations
+ * - Error handling with retry logic for communication operations.
  *
  * @example
  */
@@ -538,13 +539,13 @@ export class CommunicationEventAdapter implements IEventManager {
       this.recordCommunicationEventMetrics({
         eventType: event.type,
         component: event.source,
-        operation: event.operation,
+        operation: (event as any).operation,
         executionTime: duration,
         success: true,
         correlationId: event.correlationId,
-        connectionId: this.extractConnectionId(event),
-        messageId: this.extractMessageId(event),
-        protocolType: this.extractProtocolType(event),
+        connectionId: this.extractConnectionId(event as unknown as CommunicationEvent),
+        messageId: this.extractMessageId(event as unknown as CommunicationEvent),
+        protocolType: this.extractProtocolType(event as unknown as CommunicationEvent),
         communicationLatency: duration,
         timestamp: new Date(),
       });
@@ -561,13 +562,13 @@ export class CommunicationEventAdapter implements IEventManager {
       this.recordCommunicationEventMetrics({
         eventType: event.type,
         component: event.source,
-        operation: event.operation,
+        operation: (event as any).operation,
         executionTime: duration,
         success: false,
         correlationId: event.correlationId,
-        connectionId: this.extractConnectionId(event),
-        messageId: this.extractMessageId(event),
-        protocolType: this.extractProtocolType(event),
+        connectionId: this.extractConnectionId(event as unknown as CommunicationEvent),
+        messageId: this.extractMessageId(event as unknown as CommunicationEvent),
+        protocolType: this.extractProtocolType(event as unknown as CommunicationEvent),
         communicationLatency: duration,
         errorType: error instanceof Error ? error.constructor.name : 'UnknownError',
         timestamp: new Date(),
@@ -591,7 +592,7 @@ export class CommunicationEventAdapter implements IEventManager {
    * @param batch
    * @param options
    */
-  async emitBatch<T extends CommunicationEvent>(
+  async emitBatch<T extends SystemEvent>(
     batch: EventBatch<T>,
     options?: EventEmissionOptions
   ): Promise<void> {
@@ -603,21 +604,22 @@ export class CommunicationEventAdapter implements IEventManager {
       );
 
       // Process events based on strategy
+      // TODO: Fix batch type conversion issues - cast batches to CommunicationEvent when needed
       switch (this.config.processing?.strategy) {
         case 'immediate':
-          await this.processCommunicationBatchImmediate(batch, options);
+          await this.processCommunicationBatchImmediate(batch as EventBatch<CommunicationEvent>, options);
           break;
         case 'queued':
-          await this.processCommunicationBatchQueued(batch, options);
+          await this.processCommunicationBatchQueued(batch as EventBatch<CommunicationEvent>, options);
           break;
         case 'batched':
-          await this.processCommunicationBatchBatched(batch, options);
+          await this.processCommunicationBatchBatched(batch as EventBatch<CommunicationEvent>, options);
           break;
         case 'throttled':
-          await this.processCommunicationBatchThrottled(batch, options);
+          await this.processCommunicationBatchThrottled(batch as EventBatch<CommunicationEvent>, options);
           break;
         default:
-          await this.processCommunicationBatchQueued(batch, options);
+          await this.processCommunicationBatchQueued(batch as EventBatch<CommunicationEvent>, options);
       }
 
       const duration = Date.now() - startTime;
@@ -635,7 +637,7 @@ export class CommunicationEventAdapter implements IEventManager {
    *
    * @param event
    */
-  async emitImmediate<T extends CommunicationEvent>(event: T): Promise<void> {
+  async emitImmediate<T extends SystemEvent>(event: T): Promise<void> {
     await this.emit(event, { timeout: 5000 });
   }
 
@@ -779,18 +781,18 @@ export class CommunicationEventAdapter implements IEventManager {
    * @param options
    */
   async query<T extends SystemEvent>(options: EventQueryOptions): Promise<T[]> {
-    let events = [...this.eventHistory] as T[];
+    let events = [...this.eventHistory] as unknown as T[];
 
     // Apply filters
     if (options?.filter) {
-      events = events.filter((event) => this.applyFilter(event, options?.filter!));
+      events = events.filter((event) => this.applyFilter(event as CommunicationEvent, options?.filter!));
     }
 
     // Apply sorting
     if (options?.sortBy) {
       events.sort((a, b) => {
-        const aVal = this.getEventSortValue(a, options?.sortBy!);
-        const bVal = this.getEventSortValue(b, options?.sortBy!);
+        const aVal = this.getEventSortValue(a as CommunicationEvent, options?.sortBy!);
+        const bVal = this.getEventSortValue(b as CommunicationEvent, options?.sortBy!);
         const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
         return options.sortOrder === 'desc' ? -comparison : comparison;
       });
@@ -914,10 +916,11 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   /**
-   * Event handler management (EventEmitter compatibility)
+   * Event handler management (EventEmitter compatibility).
    *
    * @param event
    * @param handler.
+   * @param handler
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
@@ -1623,7 +1626,7 @@ export class CommunicationEventAdapter implements IEventManager {
     _options?: EventEmissionOptions
   ): Promise<void> {
     // Add to event history
-    this.eventHistory.push(event);
+    this.eventHistory.push(event as CommunicationEvent);
 
     // Limit history size
     if (this.eventHistory.length > 15000) {
@@ -1632,15 +1635,15 @@ export class CommunicationEventAdapter implements IEventManager {
 
     // Handle event correlation
     if (this.config.communication?.enabled && event.correlationId) {
-      this.updateCommunicationEventCorrelation(event);
+      this.updateCommunicationEventCorrelation(event as CommunicationEvent);
     }
 
     // Update communication-specific metrics
-    this.updateCommunicationMetrics(event);
+    this.updateCommunicationMetrics(event as CommunicationEvent);
 
     // Apply global filters
     for (const filter of this.filters.values()) {
-      if (!this.applyFilter(event, filter)) {
+      if (!this.applyFilter(event as unknown as CommunicationEvent, filter)) {
         this.logger.debug(`Communication event ${event.id} filtered out`);
         return;
       }
@@ -1649,7 +1652,7 @@ export class CommunicationEventAdapter implements IEventManager {
     // Apply global transforms
     let transformedEvent = event;
     for (const transform of this.transforms.values()) {
-      transformedEvent = await this.applyTransform(transformedEvent, transform);
+      transformedEvent = await this.applyTransform(transformedEvent as unknown as CommunicationEvent, transform) as unknown as T;
     }
 
     // Process subscriptions manually to handle filtering and transformation per subscription
@@ -1660,14 +1663,14 @@ export class CommunicationEventAdapter implements IEventManager {
 
       try {
         // Apply subscription-specific filters
-        if (subscription.filter && !this.applyFilter(transformedEvent, subscription.filter)) {
+        if (subscription.filter && !this.applyFilter(transformedEvent as unknown as CommunicationEvent, subscription.filter)) {
           continue;
         }
 
         // Apply subscription-specific transforms
         let subscriptionEvent = transformedEvent;
         if (subscription.transform) {
-          subscriptionEvent = await this.applyTransform(transformedEvent, subscription.transform);
+          subscriptionEvent = await this.applyTransform(transformedEvent as unknown as CommunicationEvent, subscription.transform) as unknown as T;
         }
 
         // Call the listener
@@ -2108,11 +2111,11 @@ export class CommunicationEventAdapter implements IEventManager {
   }
 
   private extractConnectionId(event: CommunicationEvent): string | undefined {
-    return event.details?.connectionId || event.metadata?.connectionId;
+    return event.details?.connectionId || event.metadata?.['connectionId'];
   }
 
   private extractMessageId(event: CommunicationEvent): string | undefined {
-    return event.details?.requestId || event.metadata?.messageId;
+    return event.details?.requestId || event.metadata?.['messageId'];
   }
 
   private extractProtocolType(event: CommunicationEvent): string {
@@ -2275,6 +2278,7 @@ export class CommunicationEventAdapter implements IEventManager {
  * Factory function for creating CommunicationEventAdapter instances.
  *
  * @param config
+ * @example
  */
 export function createCommunicationEventAdapter(
   config: CommunicationEventAdapterConfig
@@ -2287,6 +2291,7 @@ export function createCommunicationEventAdapter(
  *
  * @param name
  * @param overrides
+ * @example
  */
 export function createDefaultCommunicationEventAdapterConfig(
   name: string,

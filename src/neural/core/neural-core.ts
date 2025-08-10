@@ -1,9 +1,9 @@
 /**
- * @file Neural network: neural-core
+ * @file Neural network: neural-core.
  */
 
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('neural-core-neural-core');
 
@@ -11,9 +11,9 @@ const logger = getLogger('neural-core-neural-core');
  * Neural Core System - Advanced AI Computing Engine.
  *
  * Central neural network functionality with WASM acceleration, cognitive pattern.
- * optimization, and enterprise-scale AI capabilities. Provides comprehensive neural
+ * Optimization, and enterprise-scale AI capabilities. Provides comprehensive neural
  * training, real-time inference, pattern analysis, and performance optimization
- * for distributed AI development workflows.
+ * for distributed AI development workflows..
  *
  * @example
  * ```typescript
@@ -231,11 +231,11 @@ export class NeuralCLI {
 
       for (let i = 0; i < models.length; i++) {
         const model = models[i];
-        const modelInfo = persistenceInfo.modelDetails[model] || {};
+        const modelInfo = persistenceInfo.modelDetails[model!] || {};
         const isActive = Math.random() > 0.5; // Simulate active status
         const isLast = i === models.length - 1;
 
-        let _statusLine = isLast ? `└── ${model.padEnd(12)}` : `├── ${model.padEnd(12)}`;
+        let _statusLine = isLast ? `└── ${model!.padEnd(12)}` : `├── ${model!.padEnd(12)}`;
 
         // Add accuracy if available
         if (modelInfo.lastAccuracy) {
@@ -473,9 +473,10 @@ export class NeuralCLI {
   }
 
   /**
-   * Calculate trend (positive = improving)
+   * Calculate trend (positive = improving).
    *
    * @param values.
+   * @param values
    */
   private calculateTrend(values: number[]): number {
     if (values.length < 2) {
@@ -483,7 +484,7 @@ export class NeuralCLI {
     }
     const first = values[0];
     const last = values[values.length - 1];
-    return last - first;
+    return last! - first!;
   }
 
   /**
@@ -521,18 +522,18 @@ export class NeuralCLI {
               const modelType = modelMatch?.[1];
 
               // Update model details
-              if (!modelDetails[modelType]) {
-                modelDetails[modelType] = {};
+              if (!modelDetails[modelType!]) {
+                modelDetails[modelType!] = {};
               }
 
               if (
-                !modelDetails[modelType]?.lastTrained ||
-                new Date(data?.timestamp) > new Date(modelDetails[modelType]?.lastTrained!)
+                !modelDetails[modelType!]?.lastTrained ||
+                new Date(data?.timestamp) > new Date(modelDetails[modelType!]?.lastTrained!)
               ) {
-                modelDetails[modelType].lastTrained = data?.timestamp;
-                modelDetails[modelType].lastAccuracy = data?.finalAccuracy;
-                modelDetails[modelType].iterations = data?.iterations;
-                modelDetails[modelType].learningRate = data?.learningRate;
+                modelDetails[modelType!]!.lastTrained = data?.timestamp;
+                modelDetails[modelType!]!.lastAccuracy = data?.finalAccuracy;
+                modelDetails[modelType!]!.iterations = data?.iterations;
+                modelDetails[modelType!]!.learningRate = data?.learningRate;
               }
 
               // Update totals
@@ -543,7 +544,7 @@ export class NeuralCLI {
                 accuracyCount++;
 
                 if (accuracy > parseFloat(bestModel.accuracy)) {
-                  bestModel = { name: modelType, accuracy: accuracy.toFixed(1) };
+                  bestModel = { name: modelType!, accuracy: accuracy.toFixed(1) };
                 }
               }
             }
@@ -557,10 +558,10 @@ export class NeuralCLI {
           const modelMatch = file.match(/^([^-]+)-weights-/);
           if (modelMatch) {
             const modelType = modelMatch?.[1];
-            if (!modelDetails[modelType]) {
-              modelDetails[modelType] = {};
+            if (!modelDetails[modelType!]) {
+              modelDetails[modelType!] = {};
             }
-            modelDetails[modelType].hasSavedWeights = true;
+            modelDetails[modelType!]!.hasSavedWeights = true;
           }
         }
       }
@@ -711,12 +712,12 @@ export class NeuralCLI {
     ];
     const neuralModels = ['attention', 'lstm', 'transformer'];
     for (const pattern of cognitivePatterns) {
-      for (const [_category, items] of Object.entries(patterns[pattern])) {
+      for (const [_category, items] of Object.entries(patterns[pattern] || {})) {
         items?.forEach((_item) => {});
       }
     }
     for (const model of neuralModels) {
-      for (const [_category, items] of Object.entries(patterns[model])) {
+      for (const [_category, items] of Object.entries(patterns[model] || {})) {
         items?.forEach((_item) => {});
       }
     }
@@ -748,7 +749,7 @@ export class NeuralCLI {
    */
   private getArg(args: string[], flag: string): string | null {
     const index = args.indexOf(flag);
-    return index !== -1 && index + 1 < args.length ? args[index + 1] : null;
+    return index !== -1 && index + 1 < args.length ? args[index + 1] ?? null : null;
   }
 }
 

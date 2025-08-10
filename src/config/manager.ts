@@ -1,9 +1,9 @@
-import { getLogger } from '../core/logger';
+import { getLogger } from './logging-config';
 
 const logger = getLogger('src-config-manager');
 
 /**
- * @file Unified Configuration Manager
+ * @fileoverview Unified Configuration Manager
  *
  * Central configuration management with hot-reloading, validation, and event system.
  */

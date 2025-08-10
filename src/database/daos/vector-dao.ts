@@ -468,13 +468,13 @@ export class VectorDao<T = any> extends BaseDao<T> {
     const threshold = 1.0 - diversityFactor; // Higher diversity factor = lower similarity threshold
 
     for (const result of results) {
-      let isDiverse = true;
+      let isDiverse = true as boolean;
 
       for (const existing of diverse) {
         if (result?.vector && existing.vector) {
           const similarity = this.cosineSimilarity(result?.vector, existing.vector);
           if (similarity > threshold) {
-            isDiverse = false;
+            isDiverse = false as boolean;
             break;
           }
         }

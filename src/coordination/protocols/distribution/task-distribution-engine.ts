@@ -11,7 +11,7 @@
 
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '../core/event-bus';
-import type { ILogger } from '../core/logger';
+import type { ILogger } from '../../../core/logger';
 
 // Core types for task distribution
 export interface TaskDefinition {

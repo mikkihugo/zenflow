@@ -16,7 +16,7 @@
 
 
 
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../../core/logger';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,

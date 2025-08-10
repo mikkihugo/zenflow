@@ -4,8 +4,8 @@
  * Enables batch agent spawning, task distribution, and coordination.
  */
 
-import { createLogger } from '../core/logger';
-import type { AgentType } from '../types/agent-types';
+import { createLogger } from '../../core/logger';
+import type { AgentType } from '../../types/agent-types';
 import type { BatchOperation } from './batch-engine';
 
 const logger = createLogger({ prefix: 'SwarmBatch' });

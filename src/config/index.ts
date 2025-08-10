@@ -8,7 +8,7 @@
 import { configManager } from './manager';
 import type { SystemConfiguration } from './types';
 
-// Constants and defaults
+// Constants and defaults  
 export {
   DEFAULT_CONFIG,
   DEFAULT_PORT_ALLOCATION,
@@ -16,6 +16,15 @@ export {
   PORT_ALLOCATION_BY_ENV,
   PRODUCTION_VALIDATION_SCHEMA,
   VALIDATION_RULES,
+  // URL Builder functionality (consolidated from url-builder.ts)
+  URLBuilder,
+  defaultURLBuilder,
+  createURLBuilder,
+  getMCPServerURL,
+  getWebDashboardURL,
+  getMonitoringDashboardURL,
+  getCORSOrigins,
+  type URLBuilderConfig,
 } from './defaults';
 // Health checking and monitoring
 export {

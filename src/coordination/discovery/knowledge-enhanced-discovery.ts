@@ -11,7 +11,7 @@
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from '@core/logger';
-import type { SessionMemoryStore } from '../memory';
+import type { SessionMemoryStore } from '../../memory';
 import type { HiveFACTSystem } from '../hive-fact-integration';
 import type { SwarmKnowledgeSync } from '../swarm/knowledge-sync';
 import type { DiscoveredDomain } from './domain-discovery-bridge';

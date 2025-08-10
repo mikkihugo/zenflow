@@ -1,4 +1,4 @@
-import { getLogger } from '../core/logger';
+import { getLogger } from './logging-config';
 
 const logger = getLogger('src-config-startup-validator');
 

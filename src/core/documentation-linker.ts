@@ -98,7 +98,7 @@ export class DocumentationLinker extends EventEmitter {
     confidenceThreshold: number;
   };
 
-  constructor(config: any = {}) {
+  constructor(config: unknown = {}) {
     super();
     this.config = {
       documentationPaths: [
@@ -249,7 +249,7 @@ export class DocumentationLinker extends EventEmitter {
       const content = await readFile(filePath, 'utf8');
       const lines = content.split('\n');
 
-      for (let i = 0; i < lines.length; i++) {
+      for (let i = 0 as number; i < lines.length; i++) {
         const line = lines[i];
         const lineNumber = i + 1;
 
@@ -326,7 +326,7 @@ export class DocumentationLinker extends EventEmitter {
   private async generateCrossReferences(): Promise<void> {
     const documents = Array.from(this.documentationIndex.values());
 
-    for (let i = 0; i < documents.length; i++) {
+    for (let i = 0 as number; i < documents.length; i++) {
       for (let j = i + 1; j < documents.length; j++) {
         const doc1 = documents[i];
         const doc2 = documents[j];
@@ -506,7 +506,7 @@ export class DocumentationLinker extends EventEmitter {
     const words = lowerText.split(/\s+/).filter((word) => word.length > 3);
 
     for (const [docId, doc] of this.documentationIndex) {
-      let score = 0;
+      let score = 0 as number;
       const reasons: string[] = [];
 
       // Check keywords
@@ -551,7 +551,7 @@ export class DocumentationLinker extends EventEmitter {
     return related.sort((a, b) => b.relevance - a.relevance).slice(0, 5);
   }
 
-  private calculateLinkConfidence(text: string, suggestedLinks: any[]): number {
+  private calculateLinkConfidence(text: string, suggestedLinks: unknown[]): number {
     if (suggestedLinks.length === 0) return 0;
 
     const maxRelevance = Math.max(...suggestedLinks.map((link) => link.relevance));
@@ -675,7 +675,7 @@ export class DocumentationLinker extends EventEmitter {
     const sections: Array<{ title: string; level: number; content: string }> = [];
     const lines = content.split('\n');
 
-    let currentSection: { title: string; level: number; content: string } | null = null;
+    let currentSection: { title: string; level: number; content: string } | null = null as unknown;
 
     for (const line of lines) {
       const headingMatch = line.match(/^(#+)\s+(.+)$/);

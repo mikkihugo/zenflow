@@ -11,7 +11,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../../core/logger';
 import { dspySwarmMCPTools } from '../mcp/dspy-swarm-mcp-tools';
 import { HiveTools } from './hive-tools';
 import { SwarmTools } from './swarm-tools';

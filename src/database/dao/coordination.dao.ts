@@ -55,8 +55,8 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   private eventEmitter = new EventEmitter();
   private locks = new Map<string, LockInfo>();
   private subscriptions = new Map<string, Subscription>();
-  private publishedMessages = 0;
-  private receivedMessages = 0;
+  private publishedMessages = 0 as number;
+  private receivedMessages = 0 as number;
   private startTime = Date.now();
 
   constructor(
@@ -131,8 +131,8 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
     this.logger.debug(`Releasing lock: ${lockId}`);
 
     // Find lock by ID
-    let resourceId: string | null = null;
-    let lockInfo: LockInfo | null = null;
+    let resourceId: string | null = null as unknown;
+    let lockInfo: LockInfo | null = null as unknown;
 
     for (const [resource, lock] of this.locks.entries()) {
       if (lock.id === lockId) {
@@ -384,7 +384,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
       `Trying to acquire lock for resource: ${resourceId} (max retries: ${maxRetries})`
     );
 
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    for (let attempt = 0 as number; attempt <= maxRetries; attempt++) {
       try {
         return await this.acquireLock(resourceId, lockTimeout);
       } catch (error) {
@@ -441,7 +441,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
    * Get active locks.
    */
   async getActiveLocks(): Promise<CoordinationLock[]> {
-    const activeLocks: CoordinationLock[] = [];
+    const activeLocks: CoordinationLock[] = [] as unknown[];
     const now = new Date();
 
     for (const lock of this.locks.values()) {

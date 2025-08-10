@@ -3,13 +3,13 @@
  *
  * Factory implementation for creating and managing data service adapter instances.
  * Provides specialized factory methods for WebDataService and DocumentService.
- * integration through the unified DataServiceAdapter.
+ * Integration through the unified DataServiceAdapter.
  *
  * This factory follows the USL factory patterns and integrates seamlessly.
- * with the global service registry for unified service management.
+ * With the global service registry for unified service management.
  */
 /**
- * @file Interface implementation: data-service-factory
+ * @file Interface implementation: data-service-factory.
  */
 
 
@@ -23,7 +23,7 @@ import {
   ServiceInitializationError,
   ServiceOperationError,
 } from '../core/interfaces';
-import type { ServiceType } from '../interfaces/services/types';
+import { ServiceType } from '../types';
 import {
   createDataServiceAdapter,
   createDefaultDataServiceAdapterConfig,
@@ -167,7 +167,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       this.eventEmitter.emit('service-created', config?.name, adapter);
 
       this.logger.info(`Data service adapter created successfully: ${config?.name}`);
-      return adapter;
+      return adapter as unknown as IService;
     } catch (error) {
       this.logger.error(`Failed to create data service adapter ${config?.name}:`, error);
       throw error instanceof ServiceError
@@ -195,7 +195,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
         services.push(result?.value);
       } else {
         const config = configs?.[index];
-        errors.push(new ServiceInitializationError(config?.name, result?.reason));
+        errors.push(new ServiceInitializationError(config?.name || 'unknown', result?.reason));
       }
     });
 
@@ -216,14 +216,14 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
    * @param name
    */
   get(name: string): IService | undefined {
-    return this.services.get(name);
+    return this.services.get(name) as IService | undefined;
   }
 
   /**
    * List all services.
    */
   list(): IService[] {
-    return Array.from(this.services.values());
+    return Array.from(this.services.values()) as unknown as IService[];
   }
 
   /**
@@ -580,7 +580,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       ...config,
     });
 
-    const adapter = (await this.create(webDataConfig)) as DataServiceAdapter;
+    const adapter = (await this.create(webDataConfig)) as unknown as DataServiceAdapter;
     this.logger.info(`Created web data adapter: ${name}`);
     return adapter;
   }
@@ -611,7 +611,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       ...config,
     });
 
-    const adapter = (await this.create(documentConfig)) as DataServiceAdapter;
+    const adapter = (await this.create(documentConfig)) as unknown as DataServiceAdapter;
     this.logger.info(`Created document adapter: ${name} (${databaseType})`);
     return adapter;
   }
@@ -658,7 +658,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       ...config,
     });
 
-    const adapter = (await this.create(unifiedConfig)) as DataServiceAdapter;
+    const adapter = (await this.create(unifiedConfig)) as unknown as DataServiceAdapter;
     this.logger.info(`Created unified data adapter: ${name} (${databaseType})`);
     return adapter;
   }
@@ -703,10 +703,12 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
     return {
       ...config,
       webData: {
+        enabled: this.config.defaultWebDataConfig?.enabled ?? true,
         ...this.config.defaultWebDataConfig,
         ...config?.webData,
       },
       documentData: {
+        enabled: this.config.defaultDocumentConfig?.enabled ?? true,
         ...this.config.defaultDocumentConfig,
         ...config?.documentData,
       },

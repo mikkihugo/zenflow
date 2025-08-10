@@ -1,19 +1,19 @@
+/**
+ * @fileoverview Claude Code Hooks Implementation for ruv-swarm - provides automated coordination, formatting, and learning capabilities.
+ */
+
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-hooks-index');
-
-/**
- * @file Claude Code Hooks Implementation for ruv-swarm - provides automated coordination, formatting, and learning capabilities.
- */
 
 import { execSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import type { AgentMemoryCoordinationDao } from '../database';
+import type { AgentMemoryCoordinationDao } from '../../database';
 
-// import { DALFactory } from '../database'; // TODO: Implement proper DI integration
+// import { DALFactory } from '../../database'; // TODO: Implement proper DI integration
 
 type SwarmPersistence = AgentMemoryCoordinationDao;
 

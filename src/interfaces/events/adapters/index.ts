@@ -2,11 +2,47 @@
  * UEL Event Adapters - Unified Exports.
  *
  * Provides unified exports for all UEL event adapters, following the same.
- * patterns as UACL client adapters and USL service adapters.
+ * Patterns as UACL client adapters and USL service adapters.
  */
 /**
- * @file adapters module exports
+ * @file Adapters module exports.
  */
+
+// Import functions and types for local use in EventAdapterUtils
+import {
+  createDefaultSystemEventAdapterConfig as _createDefaultSystemEventAdapterConfig,
+  createSystemEventAdapter as _createSystemEventAdapter,
+  SystemEventAdapter,
+  SystemEventAdapterConfig,
+  SystemEventHelpers,
+} from './system-event-adapter';
+import {
+  createDefaultCoordinationEventAdapterConfig as _createDefaultCoordinationEventAdapterConfig,
+  createCoordinationEventAdapter as _createCoordinationEventAdapter,
+  CoordinationEventAdapter,
+  CoordinationEventAdapterConfig,
+  CoordinationEventHelpers,
+} from './coordination-event-adapter';
+import {
+  createDefaultCommunicationEventAdapterConfig as _createDefaultCommunicationEventAdapterConfig,
+  createCommunicationEventAdapter as _createCommunicationEventAdapter,
+  CommunicationEventAdapter,
+  CommunicationEventAdapterConfig,
+  CommunicationEventHelpers,
+} from './communication-event-adapter';
+import {
+  createDefaultMonitoringEventAdapterConfig as _createDefaultMonitoringEventAdapterConfig,
+  createMonitoringEventAdapter as _createMonitoringEventAdapter,
+  MonitoringEventAdapter,
+  MonitoringEventAdapterConfig,
+  MonitoringEventHelpers,
+} from './monitoring-event-adapter';
+
+// Import factory classes first to ensure they're available
+import { SystemEventManagerFactory } from './system-event-factory';
+import { CoordinationEventManagerFactory } from './coordination-event-factory';
+import { CommunicationEventFactory } from './communication-event-factory';
+import { MonitoringEventFactory } from './monitoring-event-factory';
 
 
 
@@ -32,10 +68,12 @@ export {
 } from '../core/interfaces';
 // Type exports for convenience
 export type {
-  CommunicationEvent,
-  CoordinationEvent,
   EventPriority,
   EventProcessingStrategy,
+} from '../core/interfaces';
+export type {
+  CommunicationEvent,
+  CoordinationEvent,
   MonitoringEvent,
   SystemLifecycleEvent,
 } from '../types';
@@ -50,12 +88,11 @@ export {
 
 // Communication Event Adapter - Main export
 export {
-  CommunicationEventAdapter,
-  type CommunicationEventAdapterConfig,
-  CommunicationEventHelpers,
   createCommunicationEventAdapter,
   createDefaultCommunicationEventAdapterConfig,
 } from './communication-event-adapter';
+export { CommunicationEventAdapter, CommunicationEventAdapterConfig, CommunicationEventHelpers };
+export type { CommunicationEventAdapterConfig as CommunicationEventAdapterConfigType } from './communication-event-adapter';
 
 // Communication Event Factory - Factory pattern
 export {
@@ -67,14 +104,15 @@ export {
   createProtocolCommunicationAdapter,
   createWebSocketCommunicationAdapter,
 } from './communication-event-factory';
+// Re-export CommunicationEventFactory for compatibility
+export { CommunicationEventFactory as CommunicationEventFactoryImpl } from './communication-event-factory';
 // Coordination Event Adapter - Main export
 export {
-  CoordinationEventAdapter,
-  type CoordinationEventAdapterConfig,
-  CoordinationEventHelpers,
   createCoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig,
 } from './coordination-event-adapter';
+export { CoordinationEventAdapter, CoordinationEventAdapterConfig, CoordinationEventHelpers };
+export type { CoordinationEventAdapterConfig as CoordinationEventAdapterConfigType } from './coordination-event-adapter';
 // Coordination Event Factory - Factory pattern
 export {
   CoordinationEventManagerFactory,
@@ -91,10 +129,9 @@ export {
 export {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
-  MonitoringEventAdapter,
-  type MonitoringEventAdapterConfig,
-  MonitoringEventHelpers,
 } from './monitoring-event-adapter';
+export { MonitoringEventAdapter, MonitoringEventAdapterConfig, MonitoringEventHelpers };
+export type { MonitoringEventAdapterConfig as MonitoringEventAdapterConfigType } from './monitoring-event-adapter';
 // Monitoring Event Factory - Factory pattern
 export {
   MonitoringEventAdapterFactory,
@@ -107,10 +144,9 @@ export {
 export {
   createDefaultSystemEventAdapterConfig,
   createSystemEventAdapter,
-  SystemEventAdapter,
-  type SystemEventAdapterConfig,
-  SystemEventHelpers,
 } from './system-event-adapter';
+export { SystemEventAdapter, SystemEventAdapterConfig, SystemEventHelpers };
+export type { SystemEventAdapterConfig as SystemEventAdapterConfigType } from './system-event-adapter';
 // System Event Factory - Factory pattern
 export {
   createApplicationCoordinatorEventManager,
@@ -154,8 +190,8 @@ export const EventAdapterUtils = {
    * @param overrides
    */
   createSystemAdapter: (name: string, overrides?: Partial<SystemEventAdapterConfig>) => {
-    const config = createDefaultSystemEventAdapterConfig(name, overrides);
-    return createSystemEventAdapter(config);
+    const config = _createDefaultSystemEventAdapterConfig(name, overrides);
+    return _createSystemEventAdapter(config);
   },
 
   /**
@@ -168,8 +204,8 @@ export const EventAdapterUtils = {
     name: string,
     overrides?: Partial<CoordinationEventAdapterConfig>
   ) => {
-    const config = createDefaultCoordinationEventAdapterConfig(name, overrides);
-    return createCoordinationEventAdapter(config);
+    const config = _createDefaultCoordinationEventAdapterConfig(name, overrides);
+    return _createCoordinationEventAdapter(config);
   },
 
   /**
@@ -182,8 +218,8 @@ export const EventAdapterUtils = {
     name: string,
     overrides?: Partial<CommunicationEventAdapterConfig>
   ) => {
-    const config = createDefaultCommunicationEventAdapterConfig(name, overrides);
-    return createCommunicationEventAdapter(config);
+    const config = _createDefaultCommunicationEventAdapterConfig(name, overrides);
+    return _createCommunicationEventAdapter(config);
   },
 
   /**
@@ -193,8 +229,8 @@ export const EventAdapterUtils = {
    * @param overrides
    */
   createMonitoringAdapter: (name: string, overrides?: Partial<MonitoringEventAdapterConfig>) => {
-    const config = createDefaultMonitoringEventAdapterConfig(name, overrides);
-    return createMonitoringEventAdapter(config);
+    const config = _createDefaultMonitoringEventAdapterConfig(name, overrides);
+    return _createMonitoringEventAdapter(config);
   },
 
   /**
@@ -215,7 +251,7 @@ export const EventAdapterUtils = {
   /**
    * Create monitoring event adapter factory.
    */
-  createMonitoringFactory: () => MonitoringEventFactory,
+  createMonitoringFactory: () => new MonitoringEventFactory(),
 
   /**
    * Get all available adapter types.
@@ -234,17 +270,17 @@ export const EventAdapterUtils = {
 
 // Default exports for convenience
 export default {
-  SystemEventAdapter,
-  SystemEventManagerFactory,
-  CoordinationEventAdapter,
-  CoordinationEventManagerFactory,
-  CommunicationEventAdapter,
-  CommunicationEventFactory,
-  MonitoringEventAdapter,
-  MonitoringEventFactory,
-  EventAdapterTypes,
-  EventAdapterFactories,
-  EventAdapterUtils,
+  SystemEventAdapter: SystemEventAdapter,
+  SystemEventManagerFactory: SystemEventManagerFactory,
+  CoordinationEventAdapter: CoordinationEventAdapter,
+  CoordinationEventManagerFactory: CoordinationEventManagerFactory,
+  CommunicationEventAdapter: CommunicationEventAdapter,
+  CommunicationEventFactory: CommunicationEventFactory,
+  MonitoringEventAdapter: MonitoringEventAdapter,
+  MonitoringEventFactory: MonitoringEventFactory,
+  EventAdapterTypes: EventAdapterTypes,
+  EventAdapterFactories: EventAdapterFactories,
+  EventAdapterUtils: EventAdapterUtils,
   SystemEventHelpers,
   CoordinationEventHelpers,
   CommunicationEventHelpers,

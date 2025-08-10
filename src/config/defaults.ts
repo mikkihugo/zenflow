@@ -2,7 +2,6 @@
  * @file defaults implementation
  */
 
-
 import type { SystemConfiguration } from './types.js';
 
 /**
@@ -439,3 +438,164 @@ export const PORT_ALLOCATION_BY_ENV = {
     'monitoring.dashboard.port': 3557,
   },
 } as const;
+
+/**
+ * URL Builder Configuration and Utilities (consolidated from url-builder.ts)
+ */
+
+export interface URLBuilderConfig {
+  protocol?: 'http' | 'https';
+  host?: string;
+  port?: number;
+  path?: string;
+}
+
+export class URLBuilder {
+  private config: SystemConfiguration;
+
+  constructor(config: SystemConfiguration = DEFAULT_CONFIG) {
+    this.config = config;
+  }
+
+  /**
+   * Build HTTP MCP server URL.
+   */
+  getMCPServerURL(overrides: Partial<URLBuilderConfig> = {}): string {
+    const protocol = overrides.protocol || this.getProtocol();
+    const host = overrides.host || this.config.interfaces.mcp.http.host;
+    const port = overrides.port || this.config.interfaces.mcp.http.port;
+    const path = overrides.path || '';
+
+    return this.buildURL(protocol, host, port, path);
+  }
+
+  /**
+   * Build web dashboard URL.
+   */
+  getWebDashboardURL(overrides: Partial<URLBuilderConfig> = {}): string {
+    const protocol = overrides.protocol || this.getProtocol();
+    const host = overrides.host || this.config.interfaces.web.host;
+    const port = overrides.port || this.config.interfaces.web.port;
+    const path = overrides.path || '';
+
+    return this.buildURL(protocol, host, port, path);
+  }
+
+  /**
+   * Build monitoring dashboard URL.
+   */
+  getMonitoringDashboardURL(overrides: Partial<URLBuilderConfig> = {}): string {
+    const protocol = overrides.protocol || this.getProtocol();
+    const host = overrides.host || this.config.monitoring.dashboard.host;
+    const port = overrides.port || this.config.monitoring.dashboard.port;
+    const path = overrides.path || '';
+
+    return this.buildURL(protocol, host, port, path);
+  }
+
+  /**
+   * Build CORS origins array.
+   */
+  getCORSOrigins(): string[] {
+    const protocol = this.getProtocol();
+    const mcpURL = this.getMCPServerURL({ protocol });
+    const webURL = this.getWebDashboardURL({ protocol });
+    const monitoringURL = this.getMonitoringDashboardURL({ protocol });
+    const configuredOrigins = this.config.interfaces.web.corsOrigins || [];
+
+    const updatedOrigins = configuredOrigins.map((origin) => {
+      if (origin.includes('localhost') && !origin.startsWith('http')) {
+        return `${protocol}://${origin}`;
+      }
+      if (origin.startsWith('http://localhost') && protocol === 'https') {
+        return origin.replace('http://', 'https://');
+      }
+      return origin;
+    });
+
+    const allOrigins = [...updatedOrigins, mcpURL, webURL, monitoringURL];
+    return Array.from(new Set(allOrigins));
+  }
+
+  /**
+   * Get service base URL.
+   */
+  getServiceBaseURL(
+    service: 'mcp' | 'web' | 'monitoring',
+    overrides: Partial<URLBuilderConfig> = {}
+  ): string {
+    switch (service) {
+      case 'mcp':
+        return this.getMCPServerURL(overrides);
+      case 'web':
+        return this.getWebDashboardURL(overrides);
+      case 'monitoring':
+        return this.getMonitoringDashboardURL(overrides);
+      default:
+        throw new Error(`Unknown service: ${service}`);
+    }
+  }
+
+  /**
+   * Build a URL from components.
+   */
+  private buildURL(protocol: string, host: string, port: number, path: string): string {
+    const shouldOmitPort =
+      (protocol === 'http' && port === 80) || (protocol === 'https' && port === 443);
+
+    const portPart = shouldOmitPort ? '' : `:${port}`;
+    const pathPart = path.startsWith('/') ? path : `/${path}`;
+    const cleanPath = path === '' ? '' : pathPart;
+
+    return `${protocol}://${host}${portPart}${cleanPath}`;
+  }
+
+  /**
+   * Get protocol based on environment and configuration.
+   */
+  private getProtocol(): 'http' | 'https' {
+    if (process.env['FORCE_HTTPS'] === 'true') {
+      return 'https';
+    }
+    if (process.env['FORCE_HTTP'] === 'true') {
+      return 'http';
+    }
+    if (this.config.interfaces.web.enableHttps) {
+      return 'https';
+    }
+    return this.config.environment.isProduction ? 'https' : 'http';
+  }
+
+  /**
+   * Update configuration.
+   */
+  updateConfig(config: SystemConfiguration): void {
+    this.config = config;
+  }
+}
+
+/**
+ * Default URL builder instance using default configuration.
+ */
+export const defaultURLBuilder = new URLBuilder();
+
+/**
+ * Create URL builder with custom configuration.
+ */
+export const createURLBuilder = (config: SystemConfiguration): URLBuilder => {
+  return new URLBuilder(config);
+};
+
+/**
+ * Convenience functions using default builder.
+ */
+export const getMCPServerURL = (overrides?: Partial<URLBuilderConfig>) =>
+  defaultURLBuilder.getMCPServerURL(overrides);
+
+export const getWebDashboardURL = (overrides?: Partial<URLBuilderConfig>) =>
+  defaultURLBuilder.getWebDashboardURL(overrides);
+
+export const getMonitoringDashboardURL = (overrides?: Partial<URLBuilderConfig>) =>
+  defaultURLBuilder.getMonitoringDashboardURL(overrides);
+
+export const getCORSOrigins = () => defaultURLBuilder.getCORSOrigins();

@@ -11,7 +11,7 @@
 
 
 
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../core/logger';
 import type { DSPyProgram, DSPyWrapper } from '../neural/dspy-wrapper';
 import { createDSPyWrapper } from '../neural/dspy-wrapper';
 import type { DSPyConfig } from '../neural/types/dspy-types';

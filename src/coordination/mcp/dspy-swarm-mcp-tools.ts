@@ -10,7 +10,7 @@
 
 
 
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../core/logger';
 import type { DSPyConfig } from '../neural/types/dspy-types';
 import type { AgentType } from '../types/agent-types';
 import type { DSPyTask } from '../swarm/dspy-swarm-coordinator';

@@ -1,12 +1,67 @@
 /**
- * @file conversation-demo implementation
+ * @file Conversation-demo implementation.
  */
 
 
-import { getLogger } from '../core/logger';
-import type { AgentId } from '../types/agent-types';
+import { Logger } from '../core/logger';
+import type { AgentId, AgentType } from '../types/agent-types';
 
-const logger = getLogger('src-intelligence-conversation-demo');
+// Define conversation types inline for this demo
+interface ConversationMessage {
+  id: string;
+  conversationId: string;
+  fromAgent: AgentId;
+  content: {
+    text: string;
+    code?: string;
+  };
+  messageType: 'task_request' | 'critique' | 'suggestion' | 'agreement' | 'decision';
+  timestamp: Date;
+  metadata: {
+    priority: 'low' | 'medium' | 'high';
+    requiresResponse: boolean;
+    context: any;
+    tags: string[];
+  };
+}
+
+interface ConversationConfig {
+  title: string;
+  description: string;
+  pattern: string;
+  context: {
+    goal: string;
+    domain: string;
+    constraints: string[];
+    resources: string[];
+    expertise: string[];
+  };
+  initialParticipants: AgentId[];
+  timeout: number;
+}
+
+interface ConversationSession {
+  id: string;
+  title: string;
+  description: string;
+  participants: AgentId[];
+  initiator: AgentId;
+  startTime: Date;
+  endTime?: Date;
+  status: 'active' | 'completed';
+  context: ConversationConfig['context'];
+  messages: ConversationMessage[];
+  outcomes: any[];
+  metrics: {
+    messageCount: number;
+    participationByAgent: Record<string, number>;
+    averageResponseTime: number;
+    consensusScore: number;
+    qualityRating: number;
+  };
+}
+
+const logger = Logger.getLogger('src-intelligence-conversation-demo');
 
 /**
  * Mock memory backend for demo purposes.
@@ -164,7 +219,7 @@ export async function runSimpleConversationDemo(): Promise<void> {
     const agents: AgentId[] = [
       { id: 'alice-coder', swarmId: 'demo-swarm', type: 'coder', instance: 0 },
       { id: 'bob-reviewer', swarmId: 'demo-swarm', type: 'reviewer', instance: 0 },
-      { id: 'charlie-architect', swarmId: 'demo-swarm', type: 'architect', instance: 0 },
+      { id: 'charlie-architect', swarmId: 'demo-swarm', type: 'system-architect', instance: 0 },
     ];
     const conversation = await orchestrator.createConversation({
       title: 'Review Pull Request #142',

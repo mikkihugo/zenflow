@@ -8,7 +8,7 @@
  */
 
 import type { Agent as BaseAgent, Task as BaseTask } from '../types/agent-types';
-import type { Agent as CoordinationAgent, Task as CoordinationTask, Message } from './types';
+import type { Agent as CoordinationAgent, Task as CoordinationTask, Message } from '../../../types';
 
 /**
  * Adapter function to convert base Agent to coordination Agent.

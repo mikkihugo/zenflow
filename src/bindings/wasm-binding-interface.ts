@@ -1,16 +1,16 @@
 /**
- * @file wasm-binding-interface implementation
+ * @file Wasm-binding-interface implementation.
  */
 
 
-import { getLogger } from '../core/logger';
+import { createLogger } from '../core/logger';
 import type {
   NeuralConfig,
   NeuralNetworkInterface,
   WasmNeuralBinding,
 } from '../core/interfaces/base-interfaces';
 
-const logger = getLogger('src-bindings-wasm-binding-interface');
+const logger = createLogger('src-bindings-wasm-binding-interface');
 
 /**
  * WASM binding interface contract.

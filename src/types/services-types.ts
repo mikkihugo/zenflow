@@ -30,9 +30,4 @@ export class ServiceTimeoutError extends Error {
   }
 }
 
-// Convenience exports
-export type {
-  ServiceOperationError,
-  ServiceConfigFactory,
-  ServiceTimeoutError,
-};
+// Classes are already exported above - no need for type exports

@@ -1,13 +1,13 @@
 /**
  * @fileoverview UEL System Event Adapter
- *
+ * 
  * Unified Event Layer adapter for system-level events, providing
- * a consistent interface to scattered EventEmitter patterns across the core system.
+ * a consistent interface to scattered EventEmitter patterns across the core system
  * while maintaining full backward compatibility and adding enhanced monitoring,
  * event correlation, performance tracking, and unified system-level functionality.
  *
  * This adapter follows the exact same patterns as the USL service adapters,
- * implementing the IEventManager interface and providing unified configuration.
+ * implementing the IEventManager interface and providing unified configuration
  * management for system events across Claude-Zen.
  */
 
@@ -24,6 +24,7 @@ import type {
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
+  EventManagerType,
   EventQueryOptions,
   EventSubscription,
   EventTransform,
@@ -183,7 +184,7 @@ export class SystemEventAdapter implements IEventManager {
   // Core event manager properties
   public readonly config: SystemEventAdapterConfig;
   public readonly name: string;
-  public readonly type: string;
+  public readonly type: EventManagerType;
 
   // Event manager state
   private running = false;
@@ -1282,7 +1283,7 @@ export class SystemEventAdapter implements IEventManager {
             await this.emitSystemLifecycleEvent({
               source: component,
               type: 'system:health',
-              operation: 'healthcheck',
+              operation: 'status',
               status: health.status === 'unhealthy' ? 'error' : 'warning',
               details: {
                 component,

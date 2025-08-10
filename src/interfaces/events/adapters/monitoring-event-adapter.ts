@@ -1,4 +1,4 @@
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../utils/logger';
 
 const logger = getLogger('interfaces-events-adapters-monitoring-event-adapter');
 
@@ -13,10 +13,25 @@ const logger = getLogger('interfaces-events-adapters-monitoring-event-adapter');
  * management for monitoring events across Claude-Zen.
  */
 
-import type { PerformanceAnalyzer } from '../monitoring/analytics/performance-analyzer';
-import type { MetricsCollector } from '../monitoring/core/metrics-collector';
 // Import monitoring system classes to wrap their EventEmitter usage
-import type { RealTimePerformanceMonitor } from '../monitoring/performance/real-time-monitor';
+// These would be actual monitoring components in production
+interface PerformanceAnalyzer {
+  healthCheck?(): Promise<{ responseTime?: number; errorRate?: number; healthScore?: number }>;
+  getMetrics?(): Promise<{ averageLatency?: number; requestCount: number; errorCount: number; performance?: { healthScore?: number } }>;
+  [key: string]: any;
+}
+
+interface MetricsCollector {
+  healthCheck?(): Promise<{ responseTime?: number; errorRate?: number; healthScore?: number }>;
+  getMetrics?(): Promise<{ averageLatency?: number; requestCount: number; errorCount: number; performance?: { healthScore?: number } }>;
+  [key: string]: any;
+}
+
+interface RealTimePerformanceMonitor {
+  healthCheck?(): Promise<{ responseTime?: number; errorRate?: number; healthScore?: number }>;
+  getMetrics?(): Promise<{ averageLatency?: number; requestCount: number; errorCount: number; performance?: { healthScore?: number } }>;
+  [key: string]: any;
+}
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -269,7 +284,7 @@ interface WrappedMonitoringComponent {
  * Unified Monitoring Event Adapter.
  *
  * Provides a unified interface to monitoring-level EventEmitter patterns.
- * while implementing the IEventManager interface for UEL compatibility.
+ * While implementing the IEventManager interface for UEL compatibility.
  *
  * Features:
  * - Performance monitoring with real-time metrics collection and alerting
@@ -281,7 +296,7 @@ interface WrappedMonitoringComponent {
  * - Unified configuration management for monitoring components
  * - Health monitoring and auto-recovery for monitoring failures
  * - Event forwarding and transformation for monitoring events
- * - Error handling with retry logic for monitoring operations
+ * - Error handling with retry logic for monitoring operations.
  *
  * @example
  */
@@ -388,7 +403,7 @@ export class MonitoringEventAdapter implements IEventManager {
       },
       monitoring: {
         enabled: true,
-        strategy: 'metrics',
+        strategy: 'metrics' as const,
         correlationTTL: 600000, // 10 minutes
         maxCorrelationDepth: 25,
         correlationPatterns: [
@@ -575,14 +590,14 @@ export class MonitoringEventAdapter implements IEventManager {
       this.recordMonitoringEventMetrics({
         eventType: event.type,
         component: event.source,
-        operation: event.operation || 'unknown',
+        operation: (event as any).operation || 'unknown',
         executionTime: duration,
         success: true,
-        correlationId: event.correlationId,
-        metricName: this.extractMetricName(event),
-        metricValue: this.extractMetricValue(event),
-        alertLevel: this.extractAlertLevel(event),
-        healthScore: this.extractHealthScore(event),
+        correlationId: event.correlationId || undefined,
+        metricName: this.extractMetricName(event) || undefined,
+        metricValue: this.extractMetricValue(event) || undefined,
+        alertLevel: this.extractAlertLevel(event) || undefined,
+        healthScore: this.extractHealthScore(event) || undefined,
         performanceData: this.extractPerformanceData(event),
         timestamp: new Date(),
       });
@@ -599,16 +614,17 @@ export class MonitoringEventAdapter implements IEventManager {
       this.recordMonitoringEventMetrics({
         eventType: event.type,
         component: event.source,
-        operation: event.operation || 'unknown',
+        operation: (event as any).operation || 'unknown',
         executionTime: duration,
         success: false,
-        correlationId: event.correlationId,
-        metricName: this.extractMetricName(event),
-        metricValue: this.extractMetricValue(event),
-        alertLevel: this.extractAlertLevel(event),
-        healthScore: this.extractHealthScore(event),
+        correlationId: event.correlationId || undefined,
+        metricName: this.extractMetricName(event) || undefined,
+        metricValue: this.extractMetricValue(event) || undefined,
+        alertLevel: this.extractAlertLevel(event) || undefined,
+        healthScore: this.extractHealthScore(event) || undefined,
         performanceData: this.extractPerformanceData(event),
         errorType: error instanceof Error ? error.constructor.name : 'UnknownError',
+        recoveryAttempts: undefined,
         timestamp: new Date(),
       });
 
@@ -954,10 +970,11 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   /**
-   * Event handler management (EventEmitter compatibility)
+   * Event handler management (EventEmitter compatibility).
    *
    * @param event
    * @param handler.
+   * @param handler
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
@@ -1827,8 +1844,8 @@ export class MonitoringEventAdapter implements IEventManager {
               operation: 'alert',
               component: component,
               details: {
-                healthScore: health.healthScore,
-                severity: health.status === 'unhealthy' ? 'error' : 'warning',
+                healthScore: health.healthScore || undefined,
+                severity: health.status === 'unhealthy' ? ('error' as const) : ('warning' as const),
                 performanceData: {
                   cpu: health.resourceUsage.cpu,
                   memory: health.resourceUsage.memory,
@@ -2231,23 +2248,23 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   private extractMetricName(event: SystemEvent): string | undefined {
-    return (event as any).details?.metricName || event.metadata?.metricName;
+    return (event as any).details?.metricName || event.metadata?.['metricName'];
   }
 
   private extractMetricValue(event: SystemEvent): number | undefined {
-    return (event as any).details?.metricValue || event.metadata?.metricValue;
+    return (event as any).details?.metricValue || event.metadata?.['metricValue'];
   }
 
   private extractAlertLevel(event: SystemEvent): string | undefined {
-    return (event as any).details?.severity || event.metadata?.severity;
+    return (event as any).details?.severity || event.metadata?.['severity'];
   }
 
   private extractHealthScore(event: SystemEvent): number | undefined {
-    return (event as any).details?.healthScore || event.metadata?.healthScore;
+    return (event as any).details?.healthScore || event.metadata?.['healthScore'];
   }
 
   private extractPerformanceData(event: SystemEvent): any {
-    return (event as any).details?.performanceData || event.metadata?.performanceData;
+    return (event as any).details?.performanceData || event.metadata?.['performanceData'];
   }
 
   private extractMonitoringType(event: MonitoringEvent): string {
@@ -2424,6 +2441,7 @@ export class MonitoringEventAdapter implements IEventManager {
  * Factory function for creating MonitoringEventAdapter instances.
  *
  * @param config
+ * @example
  */
 export function createMonitoringEventAdapter(
   config: MonitoringEventAdapterConfig
@@ -2436,6 +2454,7 @@ export function createMonitoringEventAdapter(
  *
  * @param name
  * @param overrides
+ * @example
  */
 export function createDefaultMonitoringEventAdapterConfig(
   name: string,

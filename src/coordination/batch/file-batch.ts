@@ -6,7 +6,7 @@
 
 import { promises as fs } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { createLogger } from '../core/logger';
+import { createLogger } from '../../core/logger';
 import type { BatchOperation } from './batch-engine';
 
 const logger = createLogger({ prefix: 'FileBatch' });

@@ -1,6 +1,6 @@
-import { getLogger } from '../core/logger';
+import { createLogger } from '../core/logger';
 
-const logger = getLogger('src-utils-logger');
+const logger = createLogger('src-utils-logger');
 
 /**
  * @fileoverview Utility logger implementation

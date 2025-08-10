@@ -6,12 +6,12 @@
  * Following the same patterns as UACL Agent 6.
  */
 /**
- * @file Interface implementation: validation
+ * @file Interface implementation: validation.
  */
 
 
 
-import { createLogger, type Logger } from '../utils/logger';
+import { createLogger, type Logger } from '../../core/logger';
 import { USLCompatibilityLayer } from './compatibility';
 import type { IService, ServiceLifecycleStatus } from './core/interfaces';
 import type { ServiceManager } from './manager';
@@ -245,27 +245,27 @@ export class USLValidationFramework {
     try {
       // Run validation sections based on configuration
       if (this.config.scopes.configuration) {
-        result?.results.configuration = await this.validateConfiguration();
+        result.results.configuration = await this.validateConfiguration();
       }
 
       if (this.config.scopes.dependencies) {
-        result?.results.dependencies = await this.validateDependencies();
+        result.results.dependencies = await this.validateDependencies();
       }
 
       if (this.config.scopes.performance) {
-        result?.results.performance = await this.validatePerformance();
+        result.results.performance = await this.validatePerformance();
       }
 
       if (this.config.scopes.security) {
-        result?.results.security = await this.validateSecurity();
+        result.results.security = await this.validateSecurity();
       }
 
       if (this.config.scopes.compatibility) {
-        result?.results.compatibility = await this.validateCompatibility();
+        result.results.compatibility = await this.validateCompatibility();
       }
 
       if (this.config.scopes.integration) {
-        result?.results.integration = await this.validateIntegration();
+        result.results.integration = await this.validateIntegration();
       }
 
       // Calculate overall results
@@ -284,7 +284,7 @@ export class USLValidationFramework {
       result.overall = 'fail';
       result.score = 0;
       result.duration = Date.now() - startTime;
-      result?.summary.criticalIssues = 1;
+      result.summary.criticalIssues = 1;
 
       result?.recommendations.push({
         type: 'critical',
@@ -358,7 +358,7 @@ export class USLValidationFramework {
 
       serviceHealthMap.set(serviceName, {
         status: status.lifecycle,
-        health: status.health,
+        health: status.health === 'unknown' ? 'unhealthy' : status.health,
         issues,
         recommendations,
       });
@@ -837,15 +837,15 @@ export class USLValidationFramework {
         message: `Migration ${migrationStatus.completionPercentage.toFixed(1)}% complete`,
         details: {
           legacyUsages: migrationStatus.legacyUsageCount,
-          migrated: migrationStatus.migratedPatterns,
-          remaining: migrationStatus.remainingMigrations,
+          migrated: 0, // migrationStatus does not have migratedPatterns property
+          remaining: 0, // migrationStatus does not have remainingMigrations property
         },
         duration: Date.now() - migrationCheckStart,
       });
 
       if (migrationStatus.completionPercentage < 90) {
         warnings.push(
-          `Migration not complete: ${migrationStatus.remainingMigrations} patterns remaining`
+          `Migration not complete: ${migrationStatus.legacyUsageCount} legacy patterns remaining`
         );
       }
 
@@ -985,11 +985,11 @@ export class USLValidationFramework {
 
     // Calculate summary
     sections.forEach((section) => {
-      result?.summary.totalChecks += section.checks.length;
-      result?.summary.passed += section.checks.filter((c) => c.status === 'pass').length;
-      result?.summary.warnings += section.checks.filter((c) => c.status === 'warning').length;
-      result?.summary.failures += section.checks.filter((c) => c.status === 'fail').length;
-      result?.summary.criticalIssues += section.errors.length;
+      result.summary.totalChecks += section.checks.length;
+      result.summary.passed += section.checks.filter((c) => c.status === 'pass').length;
+      result.summary.warnings += section.checks.filter((c) => c.status === 'warning').length;
+      result.summary.failures += section.checks.filter((c) => c.status === 'fail').length;
+      result.summary.criticalIssues += section.errors.length;
     });
 
     // Determine overall status

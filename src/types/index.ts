@@ -6,7 +6,7 @@
 
 // Neural WASM types export for system-wide availability
 /**
- * @file types module exports
+ * @file Types module exports.
  */
 
 
@@ -22,9 +22,7 @@ export type {
 } from '../neural/types/wasm-types';
 // Export specific types from agent-types with unique names to avoid conflicts
 export type {
-  Agent as AgentBase,
   AgentCapabilities,
-  AgentCapability,
   AgentConfig,
   AgentEnvironment,
   AgentError,
@@ -33,10 +31,7 @@ export type {
   AgentState,
   AgentStatus as DetailedAgentStatus,
   AgentType as DetailedAgentType,
-  ExecutionResult,
-  Message as DetailedMessage,
-  MessageType,
-  Task as DetailedTask,
+  GlobalAgentInfo,
 } from './agent-types';
 // Primary exports from shared-types (these are the main Agent interface)
 export type {
@@ -44,8 +39,13 @@ export type {
   SwarmConfig as SwarmConfiguration,
   ZenSwarm as SwarmType,
 } from './shared-types';
-// Re-export shared types (these will be the primary exports)
-export * from './shared-types';
+// Re-export shared types selectively to avoid conflicts
+export type {
+  ZenSwarm,
+  SwarmAgent,
+  SwarmConfig,
+  TaskStatus
+} from './shared-types';
 
 // Type guards and utilities
 export function isZenSwarm(obj: any): obj is import('./shared-types').ZenSwarm {
@@ -94,5 +94,4 @@ export * from './events-types';
 export * from './services-types';
 export * from './protocol-types';
 export * from './conversation-types';
-export * from './agent-types';
 export * from './singletons';

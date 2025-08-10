@@ -20,6 +20,15 @@ export interface NeuralPreset {
   batchSize: number;
   useCase: string[];
   dropout?: number;
+  config?: Record<string, any>;
+  model?: string;
+  description?: string;
+  performance?: {
+    accuracy?: number;
+    latency?: number;
+    memoryUsage?: number;
+    [key: string]: any;
+  };
 }
 
 export type NeuralPresetMap = Record<string, NeuralPreset>;

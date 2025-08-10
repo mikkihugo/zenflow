@@ -12,8 +12,8 @@ import { EventBus } from './event-bus';
 import { createLogger } from './logger';
 import { Orchestrator } from './orchestrator';
 
-let orchestratorInstance: Orchestrator | null = null;
-let coordinationProvider: CoordinationProvider | null = null;
+let orchestratorInstance: Orchestrator | null = null as unknown;
+let coordinationProvider: CoordinationProvider | null = null as unknown;
 
 /**
  * Set the coordination provider (dependency injection)
